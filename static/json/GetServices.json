@@ -1,0 +1,646 @@
+{
+  "services": [
+    {
+      "id": "HOP",
+      "name": "HORN OPERATION",
+      "category": 2,
+      "subServices": [
+        {
+          "id": "HOP1",
+          "name": "Replace horn mechanism",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP2",
+          "name": "Replace horn harness",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "HEADLIGHTS / TURN SIGNALS / HIGH BEAMS / FOG LIGHTS",
+      "category": 2,
+      "subServices": [
+        {
+          "id": "HOP3",
+          "name": "Replace left headlight bulb",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP4",
+          "name": "Replace right headlight bulb",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "LEFT WIPER BLADE",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP5",
+          "name": "Replace wiper blades",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP6",
+          "name": "Replace wiper inserts",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "RIGHT WIPER BLADE",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP7",
+          "name": "Replace wiper blades",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP8",
+          "name": "Replace wiper inserts",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "TAIL LIGHTS / BRAKE LIGHTS / TURN SIGNALS / REVERSE LIGHTS / EXTERIOR LAMPS / REAR WIPER",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP9",
+          "name": "Replace left tail light",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP10",
+          "name": "Replace right tail light",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "IN-CABIN MICROFILTER",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP11",
+          "name": "Replace cabin air filter",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP12",
+          "name": "Air conditioing service",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "ENGINE OIL",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP13",
+          "name": "Replace engine oil and filter",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP14",
+          "name": "Engine oil flush service",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "COOLANT",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP15",
+          "name": "Replace coolant",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP16",
+          "name": "Coolant test",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "POWER STEERING FLUID",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP17",
+          "name": "Replace power steering fluid",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP18",
+          "name": "Power steering flush",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "BRAKES",
+      "category": 1,
+      "subServices": [
+        {
+          "id": "HOP19",
+          "name": "Replace brake fluid",
+          "price": 29.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP20",
+          "name": "Replace brake pads",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "WINDSHIELD WASHER FLUID",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP21",
+          "name": "Top up windshield washer fluid",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "AUTOMATIC TRANSMISSION FLUID",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP22",
+          "name": "Replace automatic transmission fluid",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP23",
+          "name": "Transmission fluid flush",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "COOLING SYSTEM HOSES",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP24",
+          "name": "Replace coolant hoses",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "HEATER / AC HOSES AND CONNECTIONS",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP25",
+          "name": "Replace heater fluid",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP26",
+          "name": "Replace A/C hoses",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "RADIATOR CORE AND CAP",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP27",
+          "name": "Radiator repair",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP28",
+          "name": "Radiator cap replacement",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "ENGINE AIR FILTER",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP29",
+          "name": "Replace engine air filter",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "DRIVE BELTS",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP30",
+          "name": "Replace drive belts",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP31",
+          "name": "Replace drive belt pulley",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "REAR SHOCKS / SUSPENSION",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP32",
+          "name": "Replace rear shocks",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "REAR SUBFRAME",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP33",
+          "name": "Subframe repair (spot weld)",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "DIFFERENTIAL (CHECK CONDITION & LEAKS)",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP34",
+          "name": "Replace differential fluid",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP35",
+          "name": "Seal differential leak",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "DRIVE SHAFT",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP36",
+          "name": "Lubricate drive shaft",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "MUFFLER / EXHAUST / MOUNTINGS",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP37",
+          "name": "Replace exhaust",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP38",
+          "name": "Replace exhaust brackets",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "FRONT SHOCKS / SUSPENSION (CV BOOTS / TIE RODS / BUSHINGS)",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP39",
+          "name": "Replace front shocks",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP40",
+          "name": "Clean and lubricate CV joints",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "AXLES – VISUAL INSPECTION FOR LEAKS",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP41",
+          "name": "Seal axle leak",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP42",
+          "name": "Replace axle fluid",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "FLUID LEAKS (OIL / TRANSMISSION / COOLANT)",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP43",
+          "name": "Replace oil pan",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP44",
+          "name": "Seal transmission leak",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "BATTERY TERMINALS / CABLES / MOUNTING",
+      "category": 1,
+      "subServices": [
+        {
+          "id": "HOP45",
+          "name": "Replace battery",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP46",
+          "name": "Battery state of health report",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "BATTERY CAPACITY TEST (TEST RESULTS ATTACHED)",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP47",
+          "name": "Replace battery",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "LEFT FRONT TIRE",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP48",
+          "name": "Replace left front tire",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP49",
+          "name": "Repair left front tire",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "LEFT REAR TIRE",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP50",
+          "name": "Replace left rear tire",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP51",
+          "name": "Repare left rear tire",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "RIGHT FRONT TIRE",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP52",
+          "name": "Replace right front tire",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP53",
+          "name": "Repair right front tire",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "RIGHT REAR TIRE",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP54",
+          "name": "Replace right rear tire",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP55",
+          "name": "Repair right rear tire",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "SPARE TIRE",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP56",
+          "name": "Replace spare tire",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP57",
+          "name": "Repair spare spare tire",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "LEFT FRONT BRAKE PADS",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP58",
+          "name": "Replace left front brake pads",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP59",
+          "name": "Front brake service",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "LEFT REAR BRAKE PADS",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP60",
+          "name": "Replace left rear brake pads",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP61",
+          "name": "Rear brake service",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "RIGHT FRONT BRAKE PADS",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP62",
+          "name": "Replace right front brake pads",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP63",
+          "name": "Front brake service",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    },
+    {
+      "id": "HOP",
+      "name": "RIGHT REAR BRAKE PADS",
+      "category": 3,
+      "subServices": [
+        {
+          "id": "HOP64",
+          "name": "Replace right rear brake pads",
+          "price": 39.99,
+          "isSelected": false
+        },
+        {
+          "id": "HOP65",
+          "name": "Rear brake service",
+          "price": 39.99,
+          "isSelected": false
+        }
+      ]
+    }
+  ]
+}
