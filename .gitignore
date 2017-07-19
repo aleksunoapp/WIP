@@ -1,4 +1,4 @@
-.DS_Store
+﻿.DS_Store
 node_modules/
 dist/
 npm-debug.log*
@@ -12,3 +12,8 @@ test/unit/coverage
 *.ntvs*
 *.njsproj
 *.sln
+/bin
+/obj/Debug
+/.vs/config
+/Dynamic_MPI.csproj.user
+/.vs/VSWorkspaceState.json
