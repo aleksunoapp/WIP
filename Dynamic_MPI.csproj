@@ -42,22 +42,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include=".babelrc" />
-    <Content Include=".editorconfig" />
-    <Content Include=".eslintignore" />
-    <Content Include=".eslintrc.js" />
-    <Content Include=".gitignore" />
-    <Content Include=".postcssrc.js" />
-    <Content Include="build\**" />
-    <Content Include="config\**" />
-    <Content Include="dist\**" />
-    <Content Include="index.html" />
+    <Content Include="dist\**" >
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="package.json" />
-    <Content Include="packages.config" />
     <Content Include="Properties\AssemblyInfo.cs" />
     <Content Include="README.md" />
-    <Content Include="src\**" />
-    <Content Include="static\**" />
     <Content Include="Dynamic_MPI.csproj" />
   </ItemGroup>
   <PropertyGroup>
