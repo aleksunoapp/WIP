@@ -1,33 +1,36 @@
 <template>
 	<div class="wrapper">
-		<v-touch @swipeleft="changeOnboarding('second')" class="onboarding text" v-if="currentOnboarding === 'first'">
+		<v-touch @swipeleft="changeOnboarding('left')" class="onboarding text" v-if="currentOnboarding === 'first'">
 			<div class="content-body">
 				<div class="onboarding-first-text">
-					<div>Your Service Advisor,</div>
-					<div>Dennis Smith has</div>
+					<div>Your service advisor,</div>
+					<div><b>{{ $root.meta.advisor.advisorName }}</b>, has</div>
 					<span class="onboarding-first-text-highlight blue">
-						{{ this.$root.inspectionCounts.failCount + this.$root.inspectionCounts.warningCount }} recommendations
+						{{ this.$root.inspectionCounts.failCount + this.$root.inspectionCounts.warningCount }} RECOMMENDATIONS
 					</span>
-					<div>for your 2014 Altima.</div>
+					<div>for your <b>{{ $root.meta.carDescription }}.</b></div>
 				</div>
-				<img class="onboarding-first-image" src="../assets/images/guy.png">
+				<img class="onboarding-first-image" :src="$root.meta.advisor.advisorImageUrl">
+				<div class="onboarding-first-break">There are:</div>
 				<div class="onboarding-first-bottom pad-t-b" v-for="count in inspectionCounts">
 					<img :src="count.image">
-					<span> {{ count.count }} - {{ count.text }} </span>
+					<span><b> {{ count.count }} - {{ count.text }} </b></span>
 				</div>
 			</div>
 			<div class="footer">
-				<button @click="changeOnboarding('second')" class="button btn red"> CONTINUE </button>
+				<button @click="changeOnboarding('left')" class="button btn red"> CONTINUE </button>
 			</div>
 		</v-touch>
 
-		<v-touch @swipeleft="changeOnboarding('third')" @swiperight="changeOnboarding('first')" class="onboarding text" v-if="currentOnboarding === 'second'">
+		<v-touch @swipeleft="changeOnboarding('left')" @swiperight="changeOnboarding('right')" class="onboarding text" v-if="currentOnboarding === 'second'">
 			<div class="content-body">
 				<div class="timer-info">
 					<img src="../assets/images/clock.png">
 					<div class="timer-page-text">
 						<div>Select your services in</div>
 						<div id="timer">
+							<span v-if="timer.days > 0">{{ timer.days }}</span>
+							<span v-if="timer.days > 0" class="timer-text">d</span>
 							{{ timer.hours }}
 							<span class="timer-text">h</span>
 							{{ timer.minutes }}
@@ -35,39 +38,30 @@
 							{{ timer.seconds }}
 							<span class="timer-text">s</span>
 						</div>
-						<div>to have your car ready</div>
-						<div class="onboarding-second-bottom blue">by <span class="blue-time">4:00PM </span> today!</div>
+						<div>To have your vehicle ready by</div>
+						<div class="onboarding-second-bottom">{{ computedEndTimeFormat }} today!</div>
 					</div>
 				</div>
 			</div>
 			<div class="footer">
-				<button @click="changeOnboarding('third')" class="button btn red"> CONTINUE </button>
+				<button @click="changeOnboarding('left')" class="button btn red"> CONTINUE </button>
 			</div>
 		</v-touch>
 
-		<v-touch @swipeleft="changeOnboarding('fourth')" @swiperight="changeOnboarding('second')" class="onboarding text" v-if="currentOnboarding === 'third'">
+		<v-touch @swipeleft="finishTutorial()" @swiperight="changeOnboarding('right')" class="onboarding text" v-if="currentOnboarding === 'third'">
 			<div class="content-body">
-				<div class="onboarding-third-text pad-t-b">HELP IS ALWAYS A CLICK AWAY!</div>
-				<img src="../assets/images/page-3b.png">
+				<img class="forced-size-image" src="../assets/images/tutorial_combined.png">
 			</div>
 			<div class="footer">
-				<button @click="changeOnboarding('fourth')" class="button btn red"> CONTINUE </button>
-			</div>
-		</v-touch>
-
-		<v-touch @swipeleft="finishTutorial()" @swiperight="changeOnboarding('third')" class="onboarding text" v-if="currentOnboarding === 'fourth'">
-			<div class="content-body">
-				<div class="onboarding-fourth-text">APPROVE SERVICES</div>
-				<img src="../assets/images/page-4b.png">
-			</div>
-			<div class="footer">
-				<button class="button btn red" @click="finishTutorial()"> CONTINUE </button>
+				<button  @click="finishTutorial()" class="button btn red"> CONTINUE </button>
 			</div>
 		</v-touch>
 	</div>
 </template>
 
 <script>
+import $ from 'jquery'
+
 /**
  * To get the time remaining in the countdown
  * @param {string} endtime - The endtime of the countdown
@@ -94,19 +88,46 @@ export default {
 		return {
 			currentOnboarding: 'first',
 			inspectionCounts: [
-				{text: 'SAFETY CONCERNS', count: this.$root.inspectionCounts.failCount, image: require('../assets/images/fail.png')},
-				{text: 'NEEDS ATTENTION', count: this.$root.inspectionCounts.warningCount, image: require('../assets/images/warning.png')}
+				{text: 'Safety concerns', count: this.$root.inspectionCounts.failCount, image: require('../assets/images/fail.png')},
+				{text: 'Items requiring attention', count: this.$root.inspectionCounts.warningCount, image: require('../assets/images/warning.png')}
 			],
 			timer: ''
 		}
 	},
 	created () {
-		if (localStorage.getItem('verificationCode') === null) {
-			this.$router.push({name: 'code'})
-			return
-		}
+		$('html, body').scrollTop(0)
 
 		this.initTimer()
+	},
+	computed: {
+		/**
+		 * To compute the format of time the customers car will be ready
+		 * @function
+		 * @returns {string} - The formatted time
+		 */
+		computedEndTimeFormat () {
+			let formattedTime = ''
+			let fullDate = new Date(this.$root.meta.promise)
+			let hour = fullDate.getHours()
+			let minutes = fullDate.getMinutes()
+			let meridian = 'AM'
+
+			if (hour === 12) {
+				meridian = 'PM'
+			} else if (hour > 12) {
+				meridian = 'PM'
+				hour -= 12
+			} else if (hour === 0) {
+				hour = 12
+			}
+
+			if (minutes === 0) {
+				minutes = '00'
+			}
+
+			formattedTime = hour + ':' + minutes + ' ' + meridian
+			return formattedTime
+		}
 	},
 	methods: {
 		/**
@@ -120,11 +141,38 @@ export default {
 		/**
 		 * To move to the next or previous onboarding step
 		 * @function
-		 * @param {string} val - The value of the onboarding step to move to
+		 * @param {string} direction - The direction in which the user 'swiped' (clicking the `CONTINUE` button is reigisted as a swipe left)
 		 * @returns {undefined}
 		 */
-		changeOnboarding (val) {
-			this.currentOnboarding = val
+		changeOnboarding (direction) {
+			switch (this.currentOnboarding) {
+			case 'first':
+				if (direction === 'left') {
+					if (this.timer.total <= 0) {
+						this.currentOnboarding = 'third'
+					} else {
+						this.currentOnboarding = 'second'
+					}
+				}
+				break
+
+			case 'second':
+				if (direction === 'left') {
+					this.currentOnboarding = 'third'
+				} else if (direction === 'right') {
+					this.currentOnboarding = 'first'
+				}
+				break
+
+			case 'third':
+				if (direction === 'right') {
+					this.currentOnboarding = 'second'
+				}
+				break
+
+			default:
+				// Do nothing
+			}
 		},
 		/**
 		 * To initialize the timer
@@ -132,12 +180,15 @@ export default {
 		 * @returns {undefined}
 		 */
 		initTimer () {
-			let now = new Date()
-			let deadline = new Date().setHours(now.getHours() + 2)
+			let deadline = new Date(this.$root.meta.responseBy)
 			let timeInterval = setInterval(() => {
 				this.timer = getTimeRemaining(deadline)
 				if (this.timer.total <= 0) {
 					clearInterval(timeInterval)
+					this.timer.days = 0
+					this.timer.hours = 0
+					this.timer.minutes = 0
+					this.timer.seconds = 0
 				}
 			}, 1000)
 		}
@@ -148,7 +199,6 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .wrapper {
-	text-transform: uppercase;
 	overflow: hidden;
 	margin-left: auto;
 	margin-right: auto;
@@ -180,15 +230,6 @@ export default {
 	bottom: 0;
 	background-color: #fff;
 }
-@media (min-width: 600px) {
-	.content-body{
-		padding-top:60px;
-		min-height:530px;
-	}
-	.wrapper {
-		position:fixed
-	}
-}
 .button {
 	width:80%;
 	height:60px;
@@ -207,13 +248,11 @@ export default {
 .onboarding {
 	position: relative;
 	background-color: #fff;
-	height: 100vh;
 	width: 100%;
 }
 .timer-page-text {
 	color: #000;
 	font-size: 16px;
-	font-weight:600;
 }
 .timer-page-text .blue {
 	color: #000;
@@ -229,9 +268,6 @@ export default {
 	padding-top: 15px;
 	padding-bottom: 15px;
 }
-#timer span {
-	color: #000;
-}
 .onboarding-button {
 	color: #fff;
 	background-color: #c71444;
@@ -244,7 +280,6 @@ export default {
 }
 .onboarding-first-text {
 	font-size: 16px;
-	font-weight: 600;
 	margin-top: 20px;
 	margin-bottom: 20px;
 }
@@ -255,35 +290,52 @@ export default {
 .onboarding-first-image {
 	width: 50%;
 	height: 50%;
+}
+.onboarding-first-break {
 	margin-bottom: 20px;
 }
 .onboarding-first-bottom {
+	text-align: left;
 	font-size: 16px;
 	font-weight: 600;
+	width: 70%;
+	min-width: 275px;
+	margin: 0 auto;
 }
 .onboarding-first-bottom img {
-	width: 30px;
+	width: 25px;
 	position: relative;
 	left: 0;
 	top: 6px;
+	margin-right: 10px;
 }
 .onboarding-second-bottom {
 	font-size: 16px;
-	font-weight: 600;
+	font-weight: bold;
 }
 .onboarding-third-text {
 	font-size: 16px;
-	font-weight: 600;
-	padding-top: 50px;
-	padding-bottom: 67px;
 }
 .onboarding-fourth-text {
 	font-size: 16px;
-	font-weight: 600;
-	padding-top: 50px;
+	padding-top: 15px;
 }
 .timer-text {
 	text-transform: lowercase;
 	color: black;
+}
+.forced-size-image {
+	max-height: calc(100vh - 160px);
+}
+@media (min-width: 600px) {
+	.content-body {
+		padding-top: 10px;
+	}
+	.wrapper {
+		position:fixed
+	}
+	.forced-size-image {
+		max-height: calc(100vh - 92px);
+	}
 }
 </style>

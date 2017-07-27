@@ -4,7 +4,9 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import VueTouch from 'vue-touch'
-
+VueTouch.config.swipe = {
+	direction: 'horizontal'
+}
 Vue.use(VueTouch, {name: 'v-touch'})
 
 Vue.config.productionTip = false

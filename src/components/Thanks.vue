@@ -1,42 +1,78 @@
 <template>
 	<div class="wrapper thanks-page">
 		<div class="nissan-logo">
-			<img :src="this.$root.meta.topImageUrl">
+			<img :src="this.$root.meta.dealer.topImageUrl">
 		</div>
 		<div class="regal-nissan-logo">
-			<img :src="this.$root.meta.dealerContactInfo.logoUrl">
+			<img :src="$root.meta.dealer.logoUrl" v-if="$root.meta.dealer.logoUrl.length">
+			<h2 v-else>{{ $root.meta.dealer.name }}</h2>
 		</div>
 		<div class="login-header">
 			<div>
 				Thanks for your time.
 			</div>
-			<div class="ready-box">{{ this.$root.thanksInfo.confirmedMsg }}</div>
+			<div class="ready-box" v-if="!timeExpired">Your car will be ready at {{ computedPromiseTime }}</div>
 			<div class="thanks-confirm-text">
 				I will confirm with you when your vehicle is ready.
 			</div>
 		</div>
-		<img class="profile" :src="this.$root.thanksInfo.advisorImageUrl">
+		<img class="profile" :src="this.$root.meta.advisor.advisorImageUrl">
 		<div class="mechanic-name">
-			{{ this.$root.thanksInfo.advisorName }}
+			{{ this.$root.meta.advisor.advisorName }}
 		</div>
 		<div class="mechanic-title">
 			Service Advisor
 		</div>
 		<div>
-			<img :src="this.$root.meta.bottomImageUrl">
+			<img :src="this.$root.meta.dealer.bottomImageUrl">
 		</div>
 	</div>
 </template>
 
 <script>
+import $ from 'jquery'
+
 export default {
 	data () {
-		return {}
+		return {
+			timeExpired: false
+		}
 	},
 	created: function () {
-		if (localStorage.getItem('verificationCode') === null) {
-			this.$router.push({name: 'code'})
-			return
+		$('html, body').scrollTop(0)
+
+		let dateConst = new Date()
+		let responseDate = new Date(this.$root.meta.responseBy)
+		this.timeExpired = responseDate < dateConst
+	},
+	computed: {
+		/**
+		 * To compute the format of time the customers car will be ready
+		 * @function
+		 * @returns {string} - The formatted time
+		 */
+		computedPromiseTime () {
+			let formattedTime = ''
+			let fullDate = new Date(this.$root.meta.promise)
+			let hour = fullDate.getHours()
+			let minutes = fullDate.getMinutes()
+			let meridian = 'AM'
+
+			if (hour === 12) {
+				meridian = 'PM'
+			} else if (hour > 12) {
+				meridian = 'PM'
+				hour -= 12
+			} else if (hour === 0) {
+				hour = 12
+			}
+
+			if (minutes === 0) {
+				minutes = '00'
+			}
+
+			formattedTime = hour + ':' + minutes + ' ' + meridian
+			return formattedTime
 		}
 	}
 }

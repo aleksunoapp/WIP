@@ -2,20 +2,21 @@
 	<div>
 		<div class="wrapper">
 			<div class="nissan-logo">
-				<img :src="topImageUrl">
+				<img :src="$root.meta.dealer.topImageUrl">
 			</div>
 			<div class="regal-nissan-logo">
-				<img :src="dealerLogo">
+				<img :src="$root.meta.dealer.logoUrl" v-if="$root.meta.dealer.logoUrl.length">
+				<h2 v-else>{{ $root.meta.dealer.name }}</h2>
 			</div>
 			<div class="login-header">
 				Vehicle Inspection Update
 			</div>
 			<form class="access-form" @submit.prevent="enterPasscode()">
 				<label class="label">
-					Please enter your access code here:
+					Please enter your {{ $root.meta.customer.hintType === 1 ? 'email' : 'last name' }} below:
 				</label>
 				<div>
-					<input type="text" class="access-code" v-model="verificationCode">
+					<input type="text" class="access-code" v-model="verificationCode" :placeholder="$root.meta.customer.hintText">
 				</div>
 				<div>
 					<button class="enter-btn" type="submit">
@@ -23,7 +24,7 @@
 					</button>
 				</div>
 				<div>
-					<img :src="bottomImageUrl">
+					<img :src="$root.meta.dealer.bottomImageUrl">
 				</div>
 			</form>
 		</div>
@@ -33,10 +34,18 @@
 					<div class="clear"></div>
 				<div class="modal-content">
 					<div class="modal-header">
-						Error
+						{{ modal.title }}
 					</div>
-					<div class="modal-message">
-						Please enter your access code.
+					<div class="modal-message" v-if="!this.verificationCode.length">
+						{{ modal.content }}
+					</div>
+					<div class="modal-message no-padding-bottom" v-else>
+						<span v-html="modal.content"></span>
+						<ul class="modal-list-options">
+							<li><a @click="tryAgain()"><b>Try Again</b></a></li>
+							<li><a :href="`tel:${$root.meta.dealer.phone}`">Call Dealership</a></li>
+							<li><a :href="`sms:${$root.meta.dealer.smsPhone}`">Text Dealership</a></li>
+						</ul>
 					</div>
 				</div>
 			</div>
@@ -45,25 +54,21 @@
 </template>
 
 <script>
-// import jquery
 import $ from 'jquery'
+
 export default {
 	data () {
 		return {
 			verificationCode: '',
-			bottomImageUrl: '',
-			topImageUrl: '',
-			dealerLogo: '',
-			modalOpen: false
+			modalOpen: false,
+			modal: {
+				title: '',
+				content: ''
+			}
 		}
 	},
-	/**
-	 * Run on `created` to pull in meta data.
-	 * @function
-	 * @returns {undefined}
-	 */
-	created: function () {
-		this.getJson()
+	created () {
+		$('html, body').scrollTop(0)
 	},
 	methods: {
 		/**
@@ -71,35 +76,45 @@ export default {
 		 * @function
 		 * @returns {undefined}
 		 */
-		enterPasscode: function () {
+		enterPasscode () {
 			if (!this.verificationCode.length) {
 				this.modalOpen = true
+				this.modal.title = 'Error'
+				this.modal.content = 'Please enter your access code.'
 			} else {
-				// The verification will need to be verified at this point before continuing but for now we will assume it is correct
-				localStorage.setItem('verificationCode', this.verificationCode)
-				this.$router.push({name: 'tutorial'})
+				if (this.verificationCode.toLowerCase() === this.$root.meta.customer.authenticationAnswer.toLowerCase()) {
+					this.$router.push({name: 'tutorial'})
+				} else {
+					this.modalOpen = true
+					if (this.$root.meta.customer.hintType === 1) {
+						this.modal.title = 'Unrecognized email address'
+					} else {
+						this.modal.title = 'Unrecognized last name'
+					}
+					this.modal.content = `We're sorry but we don't recognize <b>${this.verificationCode}</b> in our database.`
+				}
 			}
-		},
-		/**
-		 * To pull in the meta data and assign to the proper models
-		 * @function
-		 * @returns {undefined}
-		 */
-		getJson: function () {
-			let _this = this
-			$.getJSON('/static/json/GetMetaData.json', function (result) {
-				_this.topImageUrl = result.topImageUrl
-				_this.bottomImageUrl = result.bottomImageUrl
-				_this.dealerLogo = result.dealerContactInfo.logoUrl
-			})
 		},
 		/**
 		 * To close the modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal: function () {
+		closeModal () {
 			this.modalOpen = false
+			this.modal = {
+				title: '',
+				content: ''
+			}
+		},
+		/**
+		 * To clear the input field and close the modal
+		 * @function
+		 * @returns {undefined}
+		 */
+		tryAgain () {
+			this.verificationCode = ''
+			this.closeModal()
 		}
 	}
 }
@@ -138,20 +153,5 @@ export default {
 	background-image: url('../assets/images/close-button.png');
 	background-size: 20px 20px;
 	cursor: pointer;
-}
-.modal-header {
-	font-size: 16px;
-	font-weight: 600;
-	text-transform: uppercase;
-	padding-top: 1em;
-	padding-bottom: 1em;
-	background-color: #fde7e7;
-}
-.modal-message {
-	font-size: 14px;
-	font-weight: 400;
-	text-transform: uppercase;
-	padding-top: 3em;
-	padding-bottom: 3em;
 }
 </style>

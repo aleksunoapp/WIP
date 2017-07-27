@@ -16,27 +16,35 @@
 					({{ this.$root.inspectionCounts.passCount }}) 
 				</div>
 			</div>
-			<template v-for="(category, index) in $root.meta.serviceCategories">
-				<div :class="{'accordian-open': category.defaultExpended, 'accordian-closed': !category.defaultExpended}" :style="{'background-color': category.bodyBgColor}" class="accordian">
-					<div @click="toggleAccordian(category)" :style="{'background-color': category.headerBgColor}" class="accordian-header">
-						<img :src="category.iconUrl"> {{ category.name }} ({{ $root.inspectionCounts[countVariables[category.type]] }})
-						<div class="accordian-status"></div>
+			<template v-for="(category, index) in serviceCategories" v-if="category.showOnInspection">
+				<div :class="{'accordion-open': category.defaultExpended, 'accordion-closed': !category.defaultExpended, 'red': category.serviceCategoryType === 'SAFETY', 'yellow': category.serviceCategoryType === 'ATTN', 'green': category.serviceCategoryType === 'PASS'}" class="accordion">
+					<div @click="toggleAccordion(category)" class="accordion-header">
+						<img :src="category.iconUrl"> {{ category.name }} ({{ $root.inspectionCounts[countVariables[category.serviceCategoryType]] }})
+						<div class="accordion-status"></div>
 						<div class="clear"></div>
 					</div>
-					<div class="accordian-contents">
+					<div class="accordion-contents">
+						<div v-if="category.serviceCategoryType === 'PASS'" class="view-full-report">
+							<div class="view-full-report-btn" @click="openFullInspection()">
+								<a id="viewReport">
+									View Full Report
+									<img src="../assets/images/external-link.png">
+								</a>
+							</div>
+						</div>
 						<div class="summary-table">
-							<div v-if="category.type !== 'pass'" class="summary-table-row">
+							<div v-if="category.serviceCategoryType !== 'PASS'" class="summary-table-row">
 								<div class="summary-table-cell">
 									<span class="summary-legend">
-										<b>PLEASE CHECK THE RECOMMENDATION THAT YOU WOULD WANT TO DO TODAY.</b>
+										<b>Check the recommended services you authorize.</b>
 									</span>
 								</div>
 
 								<div class="summary-table-cell">
 									<span> {{ (category.allSelected) ? 'Remove All' : 'Select All' }} </span>
 									<div class="service-checkbox">
-										<input type="checkbox" :id="`select-${category.type}`" v-model="category.allSelected" @change="toggleAll(category)">
-										<label :for="`select-${category.type}`">
+										<input type="checkbox" :id="`select-${category.serviceCategoryType}`" v-model="category.allSelected" @change="toggleAll(category)">
+										<label :for="`select-${category.serviceCategoryType}`">
 											<span class="check"></span>
 											<span class="box"></span>
 										</label>
@@ -44,37 +52,33 @@
 								</div>
 							</div>
 
-							<div v-if="category.type == 'pass'" class="view-full-report">
-								<div class="view-full-report-btn" @click="openFullInspection()">
-									<a id="viewReport">
-										View Full Report
-										<img src="../assets/images/external-link.png">
-									</a>
-								</div>
-							</div>
-
 							<template v-for="service in $root.services">
-								<template v-if="service.category === category.id">
-									<template v-for="subService in service.subServices">
-										<div class="summary-table-row  summary-item">
-											<div class="summary-table-cell">
-												<span class="information-icon"></span>
-												{{ subService.name }}
-											</div>
-											<div class="summary-table-cell">
-												<template v-if="category.type !== 'pass'">
-													<span class="price"> ${{ subService.price }} </span>
-													<div class="service-checkbox">
-														<input type="checkbox" :id="`sub-service-${subService.id}`" v-model="subService.isSelected" @change="toggleCheckbox(category, subService)">
-														<label :for="`sub-service-${subService.id}`">
-															<span class="check"></span>
-															<span class="box"></span>
-														</label>
-													</div>
-												</template>
-											</div>
+								<template v-if="service.serviceCategoryId === category.serviceCategoryId">
+									<!-- <div v-if="category.type !== 'pass'" class="summary-table-row summary-item">
+										<div class="summary-table-cell">
+											<b>{{ service.name }}</b>
 										</div>
-									</template>
+										<div class="summary-table-cell">
+										</div>
+									</div> -->
+									<div class="summary-table-row summary-item">
+										<div class="summary-table-cell">
+											<span class="information-icon" :class="{'no-icon-bg': category.serviceCategoryType === 'PASS'}" @click="openServiceModal(service)"></span>
+											<span class="service-name">{{ service.name }}</span>
+										</div>
+										<div class="summary-table-cell">
+											<template v-if="category.serviceCategoryType !== 'PASS'">
+												<span class="price"> ${{ (service.laborPrice + service.partsPrice).toFixed(2) }} </span>
+												<div class="service-checkbox">
+													<input type="checkbox" :id="`sub-service-${service.serviceId}`" v-model="service.isSelected" @change="toggleCheckbox(category, service)">
+													<label :for="`sub-service-${service.serviceId}`">
+														<span class="check"></span>
+														<span class="box"></span>
+													</label>
+												</div>
+											</template>
+										</div>
+									</div>
 								</template>
 							</template>
 						</div>
@@ -83,55 +87,134 @@
 			</template>
 
 			<div class="proceed-component">
-				<div class="time-notice">
-					If approved by 2:00PM your vehicle will be ready for pickup by 4:00PM.
+				<div class="time-notice" :class="{'danger-flag': timeExpired}">
+					<span v-if="!timeExpired">If approved by {{ computedReponseTime }} your vehicle will be ready for pickup by {{ computedPromiseTime }}.</span>
+					<span v-else>Your service advisor will contact you when your services are completed</span>
 				</div>
 				<div class="total-estimate">
 					<div class="total-label">
 						<div class="large">
-							Total Estimate:
-						</div>
-						<div class="small">
-							Tax Included
+							Estimate for Selected Services (not including taxes and fees)
 						</div>
 					</div>
 					<div class="total-estimate-value">
-						${{ $root.total.toFixed(2) }}
+						${{ inspectionTotal.total.toFixed(2) }}
+					</div>
+				</div>
+				<div class="total-estimate">
+					<div class="total-label">
+						<div class="large">
+							Estimate for Previously Approved Services
+						</div>
+					</div>
+					<div class="total-estimate-value">
+						${{ $root.totals.serviceTotal.total.toFixed(2) }}
 					</div>
 				</div>
 				<div @click="openServices()" class="proceed-btn">
 					Next
 				</div>
 				<div class="footer-bar">
-					<a href="tel:14166288553" class="contact-icon"></a>
-					<a href="sms:14166288553" class="chat-icon"></a>
-					<a :href="this.$root.fullInspectionLink" target="_blank" class="inspection-summary-link">
+					<a :href="`tel:${$root.meta.dealer.phone}`" class="contact-icon"></a>
+					<a :href="`sms:${$root.meta.dealer.smsPhone}`" class="chat-icon"></a>
+					<a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-summary-link">
 						Inspection Summary
 					</a>
 				</div>
 			</div>
 		</div>
+		<info-popup v-if="modalOpen" :viewingService="viewingService" @closeModal="closeServiceModal" @approve="approveService" @defer="deferService"></info-popup>
 	</div>
 </template>
 
 <script>
+import $ from 'jquery'
+import InfoPopup from './InfoPopup'
+
 export default {
 	data () {
 		return {
 			countVariables: {
-				fail: 'failCount',
-				warning: 'warningCount',
-				pass: 'passCount'
-			}
+				'SAFETY': 'failCount',
+				'ATTN': 'warningCount',
+				'PASS': 'passCount'
+			},
+			modalOpen: false,
+			serviceCategories: [],
+			inspectionTotal: 0,
+			viewingService: {},
+			timeExpired: false
 		}
 	},
 	created () {
-		if (localStorage.getItem('verificationCode') === null) {
-			this.$router.push({name: 'code'})
-			return
-		}
+		this.serviceCategories = this.$root.serviceCategories
+		this.inspectionTotal = this.$root.totals.inspectionTotal
+
+		$('html, body').scrollTop(0)
+
+		let dateConst = new Date()
+		let responseDate = new Date(this.$root.meta.responseBy)
+		this.timeExpired = responseDate < dateConst
 
 		this.checkSelectAll()
+	},
+	computed: {
+		/**
+		 * To compute the format of time the customer needs to respond by
+		 * @function
+		 * @returns {string} - The formatted time
+		 */
+		computedReponseTime () {
+			let formattedTime = ''
+			let fullDate = new Date(this.$root.meta.responseBy)
+			let hour = fullDate.getHours()
+			let minutes = fullDate.getMinutes()
+			let meridian = 'AM'
+
+			if (hour === 12) {
+				meridian = 'PM'
+			} else if (hour > 12) {
+				meridian = 'PM'
+				hour -= 12
+			} else if (hour === 0) {
+				hour = 12
+			}
+
+			if (minutes === 0) {
+				minutes = '00'
+			}
+
+			formattedTime = hour + ':' + minutes + ' ' + meridian
+			return formattedTime
+		},
+		/**
+		 * To compute the format of time the customers car will be ready
+		 * @function
+		 * @returns {string} - The formatted time
+		 */
+		computedPromiseTime () {
+			let formattedTime = ''
+			let fullDate = new Date(this.$root.meta.promise)
+			let hour = fullDate.getHours()
+			let minutes = fullDate.getMinutes()
+			let meridian = 'AM'
+
+			if (hour === 12) {
+				meridian = 'PM'
+			} else if (hour > 12) {
+				meridian = 'PM'
+				hour -= 12
+			} else if (hour === 0) {
+				hour = 12
+			}
+
+			if (minutes === 0) {
+				minutes = '00'
+			}
+
+			formattedTime = hour + ':' + minutes + ' ' + meridian
+			return formattedTime
+		}
 	},
 	methods: {
 		/**
@@ -140,40 +223,44 @@ export default {
 		 * @returns {undefined}
 		 */
 		openFullInspection () {
-			window.open(this.$root.fullInspectionLink, '_blank')
+			window.open(this.$root.meta.inspectionPdfUrl, '_blank')
 		},
 		/**
-		 * To toggle the category accordian open and close
+		 * To toggle the category accordion open and close
 		 * @param {object} category - The category to toggle
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleAccordian (category) {
+		toggleAccordion (category) {
 			category.defaultExpended = !category.defaultExpended
 		},
 		/**
-		 * To add and subtract the selected service from the total price and update localStorage
+		 * To add and subtract the selected service from the total price
 		 * @param {object} category - The parent category of the service
-		 * @param {object} subService - The service being toggled
+		 * @param {object} service - The service being toggled
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCheckbox (category, subService) {
-			if (subService.isSelected) {
-				this.$root.total += parseFloat(subService.price)
+		toggleCheckbox (category, service) {
+			if (service.isSelected) {
+				this.inspectionTotal.total += parseFloat(service.laborPrice) + parseFloat(service.partsPrice)
+				this.inspectionTotal.tax += parseFloat(service.taxAndFee)
 				this.checkSelectAll()
 			} else {
-				this.$root.total -= parseFloat(subService.price)
-				if (category.allSelected) {
+				this.inspectionTotal.total -= parseFloat(service.laborPrice) + parseFloat(service.partsPrice)
+				this.inspectionTotal.tax -= parseFloat(service.taxAndFee)
+				if (category && category.allSelected) {
 					category.allSelected = false
 				}
 			}
 
-			localStorage.setItem('services', JSON.stringify(this.$root.services))
-			localStorage.setItem('total', this.$root.total)
+			// Doing this only to prevent value of -0.00
+			this.inspectionTotal.total = Math.abs(this.inspectionTotal.total)
+
+			this.$root.totals.inspectionTotal = this.inspectionTotal
 		},
 		/**
-		 * To turn on or off the checkboxes for all category services as well as add and subtract the selected service from the total price and update localStorage
+		 * To turn on or off the checkboxes for all category services as well as add and subtract the selected service from the total price
 		 * @param {object} category - The category to be toggled
 		 * @function
 		 * @returns {undefined}
@@ -181,29 +268,30 @@ export default {
 		toggleAll (category) {
 			if (category.allSelected) {
 				this.$root.services.forEach(service => {
-					if (service.category === category.id) {
-						service.subServices.forEach(subService => {
-							if (!subService.isSelected) {
-								subService.isSelected = true
-								this.$root.total += parseFloat(subService.price)
-							}
-						})
+					if (service.serviceCategoryId === category.serviceCategoryId) {
+						if (!service.isSelected) {
+							service.isSelected = true
+							this.inspectionTotal.total += parseFloat(service.laborPrice) + parseFloat(service.partsPrice)
+							this.inspectionTotal.tax += parseFloat(service.taxAndFee)
+						}
 					}
 				})
 			} else {
 				this.$root.services.forEach(service => {
-					if (service.category === category.id) {
-						service.subServices.forEach(subService => {
-							if (subService.isSelected) {
-								subService.isSelected = false
-								this.$root.total -= parseFloat(subService.price)
-							}
-						})
+					if (service.serviceCategoryId === category.serviceCategoryId) {
+						if (service.isSelected) {
+							service.isSelected = false
+							this.inspectionTotal.total -= parseFloat(service.laborPrice) + parseFloat(service.partsPrice)
+							this.inspectionTotal.tax -= parseFloat(service.taxAndFee)
+						}
 					}
 				})
 			}
-			localStorage.setItem('services', JSON.stringify(this.$root.services))
-			localStorage.setItem('total', this.$root.total)
+
+			// Doing this only to prevent value of -0.00
+			this.inspectionTotal.total = Math.abs(this.inspectionTotal.total)
+
+			this.$root.totals.inspectionTotal = this.inspectionTotal
 		},
 		/**
 		 * To check if the select all toggle should be on or off
@@ -211,27 +299,64 @@ export default {
 		 * @returns {undefined}
 		 */
 		checkSelectAll () {
-			this.$root.meta.serviceCategories.forEach(category => {
+			this.serviceCategories.forEach(category => {
 				let count = 0
 				let total = 0
 
 				this.$root.services.forEach(service => {
-					if (service.category === category.id) {
-						service.subServices.forEach(subService => {
-							total += 1
-							if (subService.isSelected) {
-								count += 1
-							}
-						})
+					if (service.serviceCategoryId === category.serviceCategoryId) {
+						total += 1
+						if (service.isSelected) {
+							count += 1
+						}
 					}
 				})
 
 				if (count === total) {
-					category.allSelected = true
+					this.$set(category, 'allSelected', true)
 				} else {
-					category.allSelected = false
+					this.$set(category, 'allSelected', false)
 				}
 			})
+		},
+		/**
+		 * To open the detailed view modal
+		 * @function
+		 * @param {object} service - The service to be viewed in detail
+		 * @returns {undefined}
+		 */
+		openServiceModal (service) {
+			this.viewingService = service
+			this.modalOpen = true
+		},
+		/**
+		 * To close the detailed view modal
+		 * @function
+		 * @returns {undefined}
+		 */
+		closeServiceModal () {
+			this.viewingService = {}
+			this.modalOpen = false
+		},
+		/**
+		 * To approve the service and close the modal
+		 * @function
+		 * @returns {undefined}
+		 */
+		approveService () {
+			this.viewingService.isSelected = true
+			this.toggleCheckbox(null, this.viewingService)
+			this.closeServiceModal()
+		},
+		/**
+		 * To defer the service and close the modal
+		 * @function
+		 * @returns {undefined}
+		 */
+		deferService () {
+			this.viewingService.isSelected = false
+			this.toggleCheckbox(null, this.viewingService)
+			this.closeServiceModal()
 		},
 		/**
 		 * To redirect to the services route
@@ -241,28 +366,16 @@ export default {
 		openServices () {
 			this.$router.push({name: 'services'})
 		}
+	},
+	components: {
+		InfoPopup
 	}
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.accordian-header {
-	margin-top:30px;
-	font-size: 14px;
-	color: #fff;
-	padding: 5px 20px;
-	line-height: 24px;
-	text-align: left;
-	text-transform: uppercase;
-	cursor: pointer;
-}
-.accordian .accordian-header > img {
-	float: left;
-	width: 24px;
-	padding-right: 10px;
-}
-.accordian-open .accordian-status {
+.accordion-open .accordion-status {
 	float: right;
 	margin-top: 8px;
 	width: 0;
@@ -271,7 +384,7 @@ export default {
 	border-right: 6px solid transparent;
 	border-top: 6px solid #fff;
 }
-.accordian-closed .accordian-status {
+.accordion-closed .accordion-status {
 	float: right;
 	margin-top: 8px;
 	width: 0;
@@ -279,66 +392,6 @@ export default {
 	border-left: 6px solid transparent;
 	border-right: 6px solid transparent;
 	border-bottom: 6px solid #fff;
-}
-.accordian-closed .accordian-contents {
-	display: none;
-}
-.summary-table {
-	display: table;
-	width: 100%;
-}
-.summary-table-row {
-	display: table-row;
-}
-.summary-table-row .summary-table-cell {
-	border-bottom: 1px solid rgba(0,0,0,0.15);
-}
-.summary-table-cell {
-	font-size: 10px;
-	display: table-cell;
-	text-align: left;
-	padding: 5px 10px;
-}
-.summary-table-cell:first-child {
-	width: 66.6667%;
-}
-.summary-table-cell:last-child {
-	width: 33.3333%;
-	text-align: right;
-}
-.inspection .summary-item {
-	cursor: pointer;
-}
-.proceed-btn {
-	font-size: 18px;
-	font-weight: 700;
-	color: #266797;
-	padding: 5px 0;
-	text-transform: uppercase;
-	background-color: #bae4ff;
-	cursor: pointer;
-}
-.proceed-btn:hover {
-	background-color: #aad4ef;
-}
-.inspection .time-notice {
-	background-color: #f5f5f5;
-}
-.inspection .total-estimate {
-	background-color: #f5f5f5;
-}
-.inspection .footer-bar {
-	background-color: #f5f5f5;
-	text-align: right;
-}
-.proceed-component {
-	position: fixed;
-	min-width: 320px;
-	max-width: 414px;
-	width: 100%;
-	bottom: 0;
-	z-index: 3;
-	background-color:white;
 }
 .service-checkbox {
 	display: inline-block;
@@ -352,15 +405,13 @@ export default {
 	visibility: hidden;
 	position: absolute;
 }
-
 .service-checkbox label {
 	display: block;
 	background: #fff;
 	width: 100%;
 	height: 100%;
 	background-size: 15px 15px;
-}	
-
+}
 .service-checkbox input[type=checkbox]:checked~label {
 	background-image: url('../assets/images/checkbox-checked.png');
 }

@@ -1,175 +1,287 @@
 <template>
 	<div class="wrapper">
-		<div class="wrapper">
-			<div class="summary-header">
-				Service Summary
+		<div class="summary-header">
+			Service Summary
+		</div>
+		<div class="service-header">
+			<div class="large">
+				Newly Approved Services
 			</div>
-			<div class="service-header">
+			<div class="small">
+				Items you approved after the inspection
+			</div>
+		</div>
+		<div class="summary-table">
+			<template v-for="service in $root.services">
+				<!-- <template v-for="sub in service.subServices"> -->
+					<template v-if="service.isSelected && service.serviceCategoryId !== '4' && service.serviceCategoryId !== '3'">
+						<div class="summary-table-row summary-item">
+							<div class="summary-table-cell">
+								<span class="information-icon" @click="openServiceModal(service)"></span>
+								<span class="service-name">{{ service.name }}</span>
+							</div>
+							<div class="summary-table-cell">
+								<span class="price"> ${{ (service.laborPrice + service.partsPrice).toFixed(2) }} </span>
+							</div>
+						</div>
+					</template>
+				<!-- </template> -->
+			</template>
+			<div class="summary-table-row service-subtotal">
+				<div class="summary-table-cell">
+					Subtotal:
+				</div>
+				<div class="summary-table-cell">
+					<span class="price"> ${{ (this.$root.totals.inspectionTotal.total).toFixed(2) }} </span>
+				</div>
+			</div>
+		</div>
+
+		<div :class="{'accordion-open': this.accordion, 'accordion-closed': !this.accordion}" class="service-accordion">
+			<div @click="toggleAccordion()" class="service-accordion-header service-header">
+				<div class="service-accordion-status"></div>
 				<div class="large">
-					Newly Approved Service
+					Previously Approved Services
 				</div>
 				<div class="small">
-					Items you approved after the inspection
+					Items you approved when you checked into the dealership
 				</div>
 			</div>
-			<div class="summary-table">
-				<template v-for="service in $root.services">
-					<template v-for="sub in service.subServices">
-						<template v-if="sub.isSelected">
-							<div class="summary-table-row summary-item">
-								<div class="summary-table-cell">
-									<span class="information-icon"></span> {{ sub.name }}
+			<div class="accordion-contents">
+				<div class="summary-table">
+					<template v-for="service in $root.services">
+						<template v-if="service.serviceCategoryId === '4'">
+							<!-- <template v-for="sub in service.subServices"> -->
+								<div class="summary-table-row summary-item">
+									<div class="summary-table-cell">
+										<span class="information-icon" @click="openServiceModal(service)"></span>
+										<span class="service-name">{{ service.name }}</span>
+									</div>
+									<div class="summary-table-cell">
+										<span class="price"> ${{ (service.laborPrice + service.partsPrice).toFixed(2) }} </span>
+									</div>
 								</div>
-								<div class="summary-table-cell">
-									<span class="price"> ${{ sub.price }} </span>
-								</div>
-							</div>
+							<!-- </template> -->
 						</template>
 					</template>
-				</template>
-				<div class="summary-table-row service-subtotal">
-					<div class="summary-table-cell">
-						Subtotal:
-					</div>
-					<div class="summary-table-cell">
-						<span class="price"> ${{ (this.$root.total).toFixed(2) }} </span>
-					</div>
-				</div>
-			</div>
-
-			<div :class="{'accordian-open': this.accordian, 'accordian-closed': !this.accordian}" class="service-accordian">
-				<div @click="toggleAccordian()" class="service-accordian-header service-header">
-					<div class="service-accordian-status"></div>
-					<div class="large">
-						Previously approved services
-					</div>
-					<div class="small">
-						When you checked your vehicle in
-					</div>
-				</div>
-				<div class="accordian-contents">
-					<div class="summary-table">
-						<template v-for="service in $root.services">
-							<template v-if="service.category === 3">
-								<template v-for="sub in service.subServices">
-									<div class="summary-table-row summary-item">
-										<div class="summary-table-cell">
-											<span class="information-icon"></span> {{ sub.name }}
-										</div>
-										<div class="summary-table-cell"></div>
-									</div>
-								</template>
-							</template>
-						</template>
-					</div>
-				</div>
-			</div>
-
-			<div class="accept-estimate-component" v-if="!open">
-				<div class="service-total">
-					<div class="summary-table">
-						<div class="summary-table-row service-subtotal">
-							<div class="summary-table-cell">
-								Est. Taxes &amp; Fees:
-							</div>
-							<div class="summary-table-cell">
-								<span class="price">${{ (this.$root.total * 0.13).toFixed(2) }}</span>
-							</div>
+					<div class="summary-table-row service-subtotal">
+						<div class="summary-table-cell">
+							Subtotal:
 						</div>
-					</div>
-					<div class="summary-table">
-						<div class="summary-table-row service-subtotal">
-							<div class="summary-table-cell grand-total">
-								Estimated Total
-							</div>
-							<div class="summary-table-cell">
-								<span class="price">${{ (this.$root.total * 1.13).toFixed(2) }}</span>
-							</div>
+						<div class="summary-table-cell">
+							<span class="price"> ${{ (this.$root.totals.serviceTotal.total).toFixed(2) }} </span>
 						</div>
-					</div>
-					<div class="time-notice">
-						If approved by 2:00PM your vehicle will be ready for pickup by 4:00PM.
-					</div>
-				</div>
-				<div @click="openSignature(true)" class="proceed-btn">
-					Accept Estimate
-				</div>
-				<div class="footer-bar">
-					<div class="footer-bar">
-						<a href="tel:14166288553" class="contact-icon"></a>
-						<a href="sms:14166288553" class="chat-icon"></a>
-						<a :href="this.$root.fullInspectionLink" target="_blank" class="inspection-summary-link">
-							Inspection Summary
-						</a>
-					</div>
-				</div>
-			</div>
-
-			<div class="signature-component" v-if="open">
-				<div class="service-total white-background">
-					<div class="summary-table">
-						<div class="summary-table-row service-subtotal">
-							<div class="summary-table-cell">
-								Est. Taxes &amp; Fees:
-							</div>
-							<div class="summary-table-cell">
-								<span class="price">${{ (this.$root.total * 0.13).toFixed(2) }}</span>
-							</div>
-						</div>
-					</div>
-					<div class="summary-table">
-						<div class="summary-table-row service-subtotal">
-							<div class="summary-table-cell grand-total">
-								Estimated Total
-							</div>
-							<div class="summary-table-cell">
-								<span class="price">${{ (this.$root.total * 1.13).toFixed(2) }}</span>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="sign-below">
-					Please sign below that you agree with this estimate
-				</div>
-				<signature-pad></signature-pad>
-				<div class="modal-buttons">
-					<div @click="openThanks()" class="approve-btn">
-						Approve
-					</div>
-					<div @click="openSignature(false)" class="not-today-btn">
-						Cancel
 					</div>
 				</div>
 			</div>
 		</div>
+
+		<div class="accept-estimate-component" v-if="!open">
+			<div class="service-total">
+				<div class="summary-table">
+					<div class="summary-table-row service-subtotal">
+						<div class="summary-table-cell">
+							Estimated Taxes &amp; Fees
+						</div>
+						<div class="summary-table-cell">
+							<span class="price">${{ (this.$root.totals.inspectionTotal.tax + this.$root.totals.serviceTotal.tax).toFixed(2) }}</span>
+						</div>
+					</div>
+				</div>
+				<div class="summary-table">
+					<div class="summary-table-row service-subtotal">
+						<div class="summary-table-cell grand-total">
+							Estimate Total
+						</div>
+						<div class="summary-table-cell">
+							<span class="price">${{ (this.$root.totals.inspectionTotal.tax + this.$root.totals.serviceTotal.tax + this.$root.totals.inspectionTotal.total + this.$root.totals.serviceTotal.total).toFixed(2) }}</span>
+						</div>
+					</div>
+				</div>
+				<div class="time-notice" :class="{'danger-flag': timeExpired}">
+					<span v-if="!timeExpired">If approved by {{ computedReponseTime }} your vehicle will be ready for pickup by {{ computedPromiseTime }}.</span>
+					<span v-else>Your service advisor will contact you when your services are completed</span>
+				</div>
+			</div>
+			<div @click="openSignature(true)" class="proceed-btn">
+				Accept Estimate
+			</div>
+			<div class="footer-bar">
+				<div class="footer-bar">
+					<a :href="`tel:${$root.meta.dealer.phone}`" class="contact-icon"></a>
+					<a :href="`sms:${$root.meta.dealer.smsPhone}`" class="chat-icon"></a>
+					<a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-summary-link">
+						Inspection Summary
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="signature-component" v-if="open">
+			<div class="service-total white-background">
+				<div class="summary-table">
+					<div class="summary-table-row service-subtotal">
+						<div class="summary-table-cell">
+							Estimated Taxes &amp; Fees:
+						</div>
+						<div class="summary-table-cell">
+							<span class="price">${{ (this.$root.totals.inspectionTotal.tax + this.$root.totals.serviceTotal.tax).toFixed(2) }}</span>
+						</div>
+					</div>
+				</div>
+				<div class="summary-table">
+					<div class="summary-table-row service-subtotal">
+						<div class="summary-table-cell grand-total">
+							Estimate Total
+						</div>
+						<div class="summary-table-cell">
+							<span class="price">${{ (this.$root.totals.inspectionTotal.tax + this.$root.totals.serviceTotal.tax + this.$root.totals.inspectionTotal.total + this.$root.totals.serviceTotal.total).toFixed(2) }}</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="sign-below">
+				Please sign below
+			</div>
+			<signature-pad @signatureUpdate="signatureStatusChanged"></signature-pad>
+			<div>
+				<div class="css-checkbox">
+					<input type="checkbox" id="terms-and-conditions" v-model="termsAndConditions">
+					<label for="terms-and-conditions">
+						<span class="check"></span>
+						<span class="box"></span>
+						I acknowledge the agreement of the Dealership's <a @click.prevent="toggleTerms(true)">terms and conditions</a>
+					</label>
+				</div>
+			</div>
+			<div class="modal-buttons">
+				<div @click="openThanks()" class="approve-btn" :class="{'disabled': !termsAndConditions || !signagtureSigned}">
+					Approve
+				</div>
+				<div @click="returnToInspection()" class="not-today-btn">
+					Cancel
+				</div>
+			</div>
+		</div>
+		<div class="terms-and-conditions" v-if="showTerms">
+			<span class="close-btn" @click="toggleTerms(false)"></span>
+			<div class="terms-header">
+				<h2>Terms and Conditions</h2>
+			</div>
+			<div class="terms-body">
+				<h3>Exclusion of warranties</h3>
+				<p>All warranties on the parts and accessories sold hereby are made by the manufacturer. The undersigned purchaser understand and agrees that dealer makes no warranties of any kind, express or implied, and disclaims all warranties, including warranties of merchantability or fitness for a particular purpose; and that in no event shall dealer be liable for incidental or consequential damages or commercial losses arising out of such purchase. The undersighed purchaser further agrees that the warranties excluded by the dealer, include, but are not limited to any warranties that such parts and/or accessories are of merchantable quality or that they will enable any vehicle or any of its systems to perform with reasonable safety, efficiency, or comfort.</p>
+			</div>
+			<div class="terms-body">
+				<h3>Authorization for repairs</h3>
+				<p>I hereby authorize the repair work herein set forth to be done along with the necessary material and agree that you are not responsible for loss or damage to vehicle or articles left in vehicle in case of fire, theft, or any cause beyond your control or for any delays caused by unavailability of parts or delays in parts shipments by the supplier or transporter. I hereby grant you and/or your employees permission to operate the behicle herein described on streets, highways, or elsewhere for the purpose of testing and/or inspection. An express mechanical lien is hereby acknowledged on above vehicle to secure the amount of repairs thereto. The dealership is not responsible for damages from freezing due to lack of antifreeze.</p>
+			</div>
+			<div class="terms-close">
+				<div class="terms-close-btn" @click="toggleTerms(false)">CLOSE</div>
+			</div>
+		</div>
+		<info-popup v-if="modalOpen" :viewingService="viewingService" @closeModal="closeServiceModal" @approve="approveService" @defer="deferService"></info-popup>
 	</div>
 </template>
 
 <script>
+import $ from 'jquery'
+import InfoPopup from './InfoPopup'
 import SignaturePad from './SignaturePad'
 
 export default {
 	data () {
 		return {
 			signaturePad: null,
-			accordian: false,
-			open: false
+			accordion: false,
+			open: false,
+			termsAndConditions: false,
+			signagtureSigned: false,
+			showTerms: false,
+			modalOpen: false,
+			viewingService: {},
+			timeExpired: false
 		}
 	},
 	created () {
-		if (localStorage.getItem('verificationCode') === null) {
-			this.$router.push({name: 'code'})
-			return
+		this.$root.serviceCategories.forEach(category => {
+			if (category.serviceCategoryId === '4') {
+				this.accordion = category.defaultExpended
+			}
+		})
+
+		$('html, body').scrollTop(0)
+
+		let dateConst = new Date()
+		let responseDate = new Date(this.$root.meta.responseBy)
+		this.timeExpired = responseDate < dateConst
+	},
+	computed: {
+		/**
+		 * To compute the format of time the customer needs to respond by
+		 * @function
+		 * @returns {string} - The formatted time
+		 */
+		computedReponseTime () {
+			let formattedTime = ''
+			let fullDate = new Date(this.$root.meta.responseBy)
+			let hour = fullDate.getHours()
+			let minutes = fullDate.getMinutes()
+			let meridian = 'AM'
+
+			if (hour === 12) {
+				meridian = 'PM'
+			} else if (hour > 12) {
+				meridian = 'PM'
+				hour -= 12
+			} else if (hour === 0) {
+				hour = 12
+			}
+
+			if (minutes === 0) {
+				minutes = '00'
+			}
+
+			formattedTime = hour + ':' + minutes + ' ' + meridian
+			return formattedTime
+		},
+		/**
+		 * To compute the format of time the customers car will be ready
+		 * @function
+		 * @returns {string} - The formatted time
+		 */
+		computedPromiseTime () {
+			let formattedTime = ''
+			let fullDate = new Date(this.$root.meta.promise)
+			let hour = fullDate.getHours()
+			let minutes = fullDate.getMinutes()
+			let meridian = 'AM'
+
+			if (hour === 12) {
+				meridian = 'PM'
+			} else if (hour > 12) {
+				meridian = 'PM'
+				hour -= 12
+			} else if (hour === 0) {
+				hour = 12
+			}
+
+			if (minutes === 0) {
+				minutes = '00'
+			}
+
+			formattedTime = hour + ':' + minutes + ' ' + meridian
+			return formattedTime
 		}
 	},
 	methods: {
 		/**
-		 * To toggle the accordian open and close
+		 * To toggle the accordion open and close
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleAccordian () {
-			this.accordian = !this.accordian
+		toggleAccordion () {
+			this.accordion = !this.accordion
 		},
 		/**
 		 * To open and close the signature pad
@@ -181,15 +293,83 @@ export default {
 			this.open = val
 		},
 		/**
+		 * To return to the inspection page
+		 * @function
+		 * @returns {undefined}
+		 */
+		returnToInspection () {
+			this.$router.push({name: 'inspection'})
+		},
+		/**
 		 * To redirect to the thanks route
 		 * @function
 		 * @returns {undefined}
 		 */
 		openThanks () {
-			this.$router.push({name: 'thanks'})
+			if (this.termsAndConditions && this.signagtureSigned) {
+				this.$router.push({name: 'thanks'})
+			}
+		},
+		/**
+		 * To check if the signature pad has been signed and set the proper variable
+		 * @function
+		 * @param {boolean} val - The current value of isEmpty() on the signature pad
+		 * @returns {undefined}
+		 */
+		signatureStatusChanged (val) {
+			this.signagtureSigned = !val
+		},
+		/**
+		 * To toggle visibility of the terms and conditions overlay
+		 * @function
+		 * @param {boolean} val - Whether to show or hide the terms and conditions overlay
+		 * @returns {undefined}
+		 */
+		toggleTerms (val) {
+			this.showTerms = val
+		},
+		/**
+		 * To open the detailed view modal
+		 * @function
+		 * @param {object} service - The service to be viewed in detail
+		 * @returns {undefined}
+		 */
+		openServiceModal (service) {
+			this.viewingService = service
+			this.modalOpen = true
+		},
+		/**
+		 * To close the detailed view modal
+		 * @function
+		 * @returns {undefined}
+		 */
+		closeServiceModal () {
+			this.viewingService = {}
+			this.modalOpen = false
+		},
+		/**
+		 * To close the detailed view modal since the service is already approved
+		  * @function
+		  * @returns {undefined}
+		  */
+		approveService () {
+			// No need to do anything because the service is already approved
+			this.closeServiceModal()
+		},
+		/**
+		 * To remove the service from approved services
+		  * @function
+		  * @returns {undefined}
+		  */
+		deferService () {
+			this.viewingService.isSelected = false
+			this.$root.totals.inspectionTotal.total -= parseFloat(this.viewingService.laborPrice) + parseFloat(this.viewingService.partsPrice)
+			this.$root.totals.inspectionTotal.tax -= parseFloat(this.viewingService.taxAndFee)
+			this.closeServiceModal()
 		}
 	},
 	components: {
+		InfoPopup,
 		SignaturePad
 	}
 }
