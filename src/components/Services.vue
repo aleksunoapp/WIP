@@ -200,7 +200,8 @@ export default {
 			showTerms: false,
 			modalOpen: false,
 			viewingService: {},
-			timeExpired: false
+			timeExpired: false,
+			signaturePadData: ''
 		}
 	},
 	created () {
@@ -306,8 +307,30 @@ export default {
 		 * @returns {undefined}
 		 */
 		openThanks () {
+			let _this = this
+			let approvedServices = []
+			this.$root.services.forEach(service => {
+				if (service.isSelected && service.category !== '4' && service.category !== '3') {
+					approvedServices.push(service.id)
+				}
+			})
+
 			if (this.termsAndConditions && this.signagtureSigned) {
-				this.$router.push({name: 'thanks'})
+				$.ajax({
+					url: 'https://testdynamicmpi.dealer-fx.com/services/' + _this.$root.token,
+					method: 'POST',
+					data: {
+						approvedServices,
+						customerSignature: _this.signaturePadData
+					},
+					beforeSend (xhr) {
+						xhr.setRequestHeader('Authorization', 'Bearer ' + _this.$root.accessToken)
+					}
+				}).done(response => {
+					this.$router.push({name: 'thanks'})
+				}).fail(reason => {
+					console.log(reason)
+				})
 			}
 		},
 		/**
@@ -317,7 +340,8 @@ export default {
 		 * @returns {undefined}
 		 */
 		signatureStatusChanged (val) {
-			this.signagtureSigned = !val
+			this.signagtureSigned = !val.isEmpty
+			this.signaturePadData = val.data
 		},
 		/**
 		 * To toggle visibility of the terms and conditions overlay

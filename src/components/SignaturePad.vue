@@ -56,7 +56,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		checkSignature () {
-			this.$emit('signatureUpdate', this.signaturePad.isEmpty())
+			this.$emit('signatureUpdate', {isEmpty: this.signaturePad.isEmpty(), data: this.signaturePad.toDataURL()})
 		}
 	},
 	/**
