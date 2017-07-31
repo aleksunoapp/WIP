@@ -78,6 +78,10 @@
 
 		<div class="accept-estimate-component" v-if="!open">
 			<div class="service-total">
+				<div class="time-notice" :class="{'danger-flag': timeExpired}">
+					<span v-if="!timeExpired">If approved by {{ computedReponseTime }} your vehicle will be ready for pickup by {{ computedPromiseTime }}.</span>
+					<span v-else>Your service advisor will contact you when your services are completed</span>
+				</div>
 				<div class="summary-table">
 					<div class="summary-table-row service-subtotal">
 						<div class="summary-table-cell">
@@ -97,10 +101,6 @@
 							<span class="price">${{ (this.$root.totals.inspectionTotal.tax + this.$root.totals.serviceTotal.tax + this.$root.totals.inspectionTotal.total + this.$root.totals.serviceTotal.total).toFixed(2) }}</span>
 						</div>
 					</div>
-				</div>
-				<div class="time-notice" :class="{'danger-flag': timeExpired}">
-					<span v-if="!timeExpired">If approved by {{ computedReponseTime }} your vehicle will be ready for pickup by {{ computedPromiseTime }}.</span>
-					<span v-else>Your service advisor will contact you when your services are completed</span>
 				</div>
 			</div>
 			<div @click="openSignature(true)" class="proceed-btn">
