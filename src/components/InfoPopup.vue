@@ -4,7 +4,7 @@
 			<div @click="closeModal()" class="modal-close"></div>
 			<div class="clear"></div>
 			<div class="modal-content info-modal">
-				<div class="info-modal-image" :style="`background-image: url('${viewingService.topImageUrl}');`"></div>
+				<div class="info-modal-image" :style="`background-image: url('${viewingService.imageUrl}');`"></div>
 				<div>
 					<div class="info-modal-info-top">
 						<div class="green-bg">
@@ -18,13 +18,13 @@
 							<a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-summary-link">
 								Inspection Summary
 							</a>
-							<a :href="`sms:${$root.meta.dealer.smsPhone}`" class="chat-icon"></a>
-							<a :href="`tel:${$root.meta.dealer.phone}`" class="contact-icon"></a>
+							<a :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" class="chat-icon"></a>
+							<a :href="`tel:${$root.meta.dealerContactInfo.phone}`" class="contact-icon"></a>
 						</div>
-						<div class="info-modal-estimate">Estimated cost of this item <span>${{ (viewingService.laborPrice + viewingService.partsPrice).toFixed(2) }}</span></div>
+						<div class="info-modal-estimate">Estimated cost of this item <span>${{ (viewingService.price).toFixed(2) }}</span></div>
 					</div>
 				</div>
-				<div class="modal-buttons" v-if="viewingService.serviceCategoryId !== '4'">
+				<div class="modal-buttons" v-if="viewingService.category !== '4'">
 					<div @click="approveService()" class="approve-btn">
 						Approve
 					</div>

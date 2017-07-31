@@ -53,7 +53,7 @@
 							</div>
 
 							<template v-for="service in $root.services">
-								<template v-if="service.serviceCategoryId === category.serviceCategoryId">
+								<template v-if="service.category === category.id">
 									<!-- <div v-if="category.type !== 'pass'" class="summary-table-row summary-item">
 										<div class="summary-table-cell">
 											<b>{{ service.name }}</b>
@@ -68,10 +68,10 @@
 										</div>
 										<div class="summary-table-cell">
 											<template v-if="category.serviceCategoryType !== 'PASS'">
-												<span class="price"> ${{ (service.laborPrice + service.partsPrice).toFixed(2) }} </span>
+												<span class="price"> ${{ (service.price).toFixed(2) }} </span>
 												<div class="service-checkbox">
-													<input type="checkbox" :id="`sub-service-${service.serviceId}`" v-model="service.isSelected" @change="toggleCheckbox(category, service)">
-													<label :for="`sub-service-${service.serviceId}`">
+													<input type="checkbox" :id="`sub-service-${service.id}`" v-model="service.isSelected" @change="toggleCheckbox(category, service)">
+													<label :for="`sub-service-${service.id}`">
 														<span class="check"></span>
 														<span class="box"></span>
 													</label>
@@ -115,8 +115,8 @@
 					Next
 				</div>
 				<div class="footer-bar">
-					<a :href="`tel:${$root.meta.dealer.phone}`" class="contact-icon"></a>
-					<a :href="`sms:${$root.meta.dealer.smsPhone}`" class="chat-icon"></a>
+					<a :href="`tel:${$root.meta.dealerContactInfo.phone}`" class="contact-icon"></a>
+					<a :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" class="chat-icon"></a>
 					<a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-summary-link">
 						Inspection Summary
 					</a>
@@ -243,14 +243,18 @@ export default {
 		 */
 		toggleCheckbox (category, service) {
 			if (service.isSelected) {
-				this.inspectionTotal.total += parseFloat(service.laborPrice) + parseFloat(service.partsPrice)
+				this.inspectionTotal.total += parseFloat(service.price)
 				this.inspectionTotal.tax += parseFloat(service.taxAndFee)
 				this.checkSelectAll()
 			} else {
-				this.inspectionTotal.total -= parseFloat(service.laborPrice) + parseFloat(service.partsPrice)
+				this.inspectionTotal.total -= parseFloat(service.price)
 				this.inspectionTotal.tax -= parseFloat(service.taxAndFee)
-				if (category && category.allSelected) {
-					category.allSelected = false
+				if (category) {
+					if (category.allSelected) {
+						category.allSelected = false
+					}
+				} else {
+					this.checkSelectAll()
 				}
 			}
 
@@ -268,20 +272,20 @@ export default {
 		toggleAll (category) {
 			if (category.allSelected) {
 				this.$root.services.forEach(service => {
-					if (service.serviceCategoryId === category.serviceCategoryId) {
+					if (service.category === category.id) {
 						if (!service.isSelected) {
 							service.isSelected = true
-							this.inspectionTotal.total += parseFloat(service.laborPrice) + parseFloat(service.partsPrice)
+							this.inspectionTotal.total += parseFloat(service.price)
 							this.inspectionTotal.tax += parseFloat(service.taxAndFee)
 						}
 					}
 				})
 			} else {
 				this.$root.services.forEach(service => {
-					if (service.serviceCategoryId === category.serviceCategoryId) {
+					if (service.category === category.id) {
 						if (service.isSelected) {
 							service.isSelected = false
-							this.inspectionTotal.total -= parseFloat(service.laborPrice) + parseFloat(service.partsPrice)
+							this.inspectionTotal.total -= parseFloat(service.price)
 							this.inspectionTotal.tax -= parseFloat(service.taxAndFee)
 						}
 					}
@@ -304,7 +308,7 @@ export default {
 				let total = 0
 
 				this.$root.services.forEach(service => {
-					if (service.serviceCategoryId === category.serviceCategoryId) {
+					if (service.category === category.id) {
 						total += 1
 						if (service.isSelected) {
 							count += 1

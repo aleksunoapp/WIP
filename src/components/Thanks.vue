@@ -1,11 +1,11 @@
 <template>
 	<div class="wrapper thanks-page">
 		<div class="nissan-logo">
-			<img :src="this.$root.meta.dealer.topImageUrl">
+			<img :src="this.$root.meta.topImageUrl">
 		</div>
 		<div class="regal-nissan-logo">
-			<img :src="$root.meta.dealer.logoUrl" v-if="$root.meta.dealer.logoUrl.length">
-			<h2 v-else>{{ $root.meta.dealer.name }}</h2>
+			<img :src="$root.meta.dealerContactInfo.logoUrl" v-if="$root.meta.dealerContactInfo.length">
+			<h2 v-else>{{ $root.meta.dealerContactInfo.name }}</h2>
 		</div>
 		<div class="login-header">
 			<div>
@@ -24,7 +24,7 @@
 			Service Advisor
 		</div>
 		<div>
-			<img :src="this.$root.meta.dealer.bottomImageUrl">
+			<img :src="this.$root.meta.bottomImageUrl">
 		</div>
 	</div>
 </template>

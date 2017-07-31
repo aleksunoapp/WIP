@@ -25,7 +25,9 @@ new Vue({
 			services: [],
 			serviceDetails: [],
 			inspectionCounts: {},
-			total: 0
+			total: 0,
+			token: '',
+			accessToken: ''
 		}
 	}
 })

@@ -2,21 +2,25 @@
 	<div>
 		<div class="wrapper">
 			<div class="nissan-logo">
-				<img :src="$root.meta.dealer.topImageUrl">
+				<img :src="$root.meta.topImageUrl">
 			</div>
 			<div class="regal-nissan-logo">
-				<img :src="$root.meta.dealer.logoUrl" v-if="$root.meta.dealer.logoUrl.length">
-				<h2 v-else>{{ $root.meta.dealer.name }}</h2>
+				<img :src="$root.meta.dealerContactInfo.logoUrl" v-if="$root.meta.dealerContactInfo.logoUrl.length">
+				<h2 v-else>{{ $root.meta.dealerContactInfo.name }}</h2>
 			</div>
 			<div class="login-header">
 				Vehicle Inspection Update
 			</div>
 			<form class="access-form" @submit.prevent="enterPasscode()">
 				<label class="label">
-					Please enter your {{ $root.meta.customer.hintType === 1 ? 'email' : 'last name' }} below:
+					Please enter your 
+					{{ $root.meta.authenticationHint.hintType === 1 ? 'email' : '' }} 
+					{{ $root.meta.authenticationHint.hintType === 2 ? 'phone number' : '' }} 
+					{{ $root.meta.authenticationHint.hintType === 3 ? 'last name' : '' }} 
+					below:
 				</label>
 				<div>
-					<input type="text" class="access-code" v-model="verificationCode" :placeholder="$root.meta.customer.hintText">
+					<input type="text" class="access-code" v-model="verificationCode" :placeholder="$root.meta.authenticationHint.hintText">
 				</div>
 				<div>
 					<button class="enter-btn" type="submit">
@@ -24,7 +28,7 @@
 					</button>
 				</div>
 				<div>
-					<img :src="$root.meta.dealer.bottomImageUrl">
+					<img :src="$root.meta.bottomImageUrl">
 				</div>
 			</form>
 		</div>
@@ -43,8 +47,8 @@
 						<span v-html="modal.content"></span>
 						<ul class="modal-list-options">
 							<li><a @click="tryAgain()"><b>Try Again</b></a></li>
-							<li><a :href="`tel:${$root.meta.dealer.phone}`">Call Dealership</a></li>
-							<li><a :href="`sms:${$root.meta.dealer.smsPhone}`">Text Dealership</a></li>
+							<li><a :href="`tel:${$root.meta.dealerContactInfo.phone}`">Call Dealership</a></li>
+							<li><a :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`">Text Dealership</a></li>
 						</ul>
 					</div>
 				</div>
@@ -72,7 +76,7 @@ export default {
 	},
 	methods: {
 		/**
-		 * To submit the verification code and redirect to the tutorial page
+		 * To verify that the verificationCode is not empty and redirect to the authentication function
 		 * @function
 		 * @returns {undefined}
 		 */
@@ -82,18 +86,135 @@ export default {
 				this.modal.title = 'Error'
 				this.modal.content = 'Please enter your access code.'
 			} else {
-				if (this.verificationCode.toLowerCase() === this.$root.meta.customer.authenticationAnswer.toLowerCase()) {
-					this.$router.push({name: 'tutorial'})
-				} else {
-					this.modalOpen = true
-					if (this.$root.meta.customer.hintType === 1) {
-						this.modal.title = 'Unrecognized email address'
-					} else {
-						this.modal.title = 'Unrecognized last name'
-					}
-					this.modal.content = `We're sorry but we don't recognize <b>${this.verificationCode}</b> in our database.`
-				}
+				this.authenticateToken()
 			}
+		},
+		/**
+		 * To submit the verification code and redirect to the tutorial page
+		 * @function
+		 * @returns {undefined}
+		 */
+		authenticateToken () {
+			let _this = this
+
+			$.ajax({
+				url: 'https://testdynamicmpi.dealer-fx.com/oauth/token',
+				method: 'POST',
+				data: {
+					grant_type: 'client_credentials',
+					client_id: _this.$root.token,
+					client_secret: _this.verificationCode
+				}
+			}).done(response => {
+				_this.$root.accessToken = response.access_token
+
+				// Need to pull all other data before proceeding
+				$.when(
+					$.ajax({
+						url: 'https://testdynamicmpi.dealer-fx.com/services/' + _this.$root.token,
+						method: 'GET',
+						beforeSend (xhr) {
+							xhr.setRequestHeader('Authorization', 'Bearer ' + _this.$root.accessToken)
+						}
+					}),
+					$.ajax({
+						url: 'https://testdynamicmpi.dealer-fx.com/inspection/' + _this.$root.token,
+						method: 'GET',
+						beforeSend (xhr) {
+							xhr.setRequestHeader('Authorization', 'Bearer ' + _this.$root.accessToken)
+						}
+					}),
+					$.ajax({
+						url: 'https://testdynamicmpi.dealer-fx.com/confirmation/' + _this.$root.token,
+						method: 'GET',
+						beforeSend (xhr) {
+							xhr.setRequestHeader('Authorization', 'Bearer ' + _this.$root.accessToken)
+						}
+					})
+				).done((serviceResponse, inspectionResponse, confirmationResponse) => {
+					let inspectionCounts = {
+						failCount: 0,
+						warningCount: 0,
+						passCount: 0,
+						approvedCount: 0
+					}
+					let inspectionTotal = 0
+					let inspectionTaxTotal = 0
+					let serviceTotal = 0
+					let serviceTaxTotal = 0
+
+					_this.$root.services = serviceResponse[0]
+					_this.$root.meta.inspectionPdfUrl = inspectionResponse[0].fullInspectionUrl
+					_this.$root.meta.advisor = confirmationResponse[0]
+
+					// Loop through each service and sub service to get the total counts
+					_this.$root.services.forEach(service => {
+						if (service.category === '1') {
+							inspectionCounts.failCount += 1
+						} else if (service.category === '2') {
+							inspectionCounts.warningCount += 1
+						} else if (service.category === '3') {
+							inspectionCounts.passCount += 1
+						} else if (service.category === '4') {
+							inspectionCounts.approvedCount += 1
+						}
+					})
+
+					// Loop through all services to calculate the value of all pre approved services
+					_this.$root.serviceCategories.forEach(category => {
+						if (category.showOnInspection && category.id !== '3') {
+							_this.$root.services.forEach(service => {
+								if (service.category === category.id) {
+									if (service.isSelected) {
+										inspectionTotal += service.price
+										inspectionTaxTotal += service.taxAndFee
+										serviceTotal += service.price
+										serviceTaxTotal += service.taxAndFee
+									}
+								}
+							})
+						}
+
+						if (category.id === '4') {
+							_this.$root.services.forEach(service => {
+								if (service.category === '4') {
+									serviceTotal += service.price
+									serviceTaxTotal += service.taxAndFee
+								}
+							})
+						}
+					})
+
+					_this.$root.serviceCategories.sort((a, b) => {
+						return a.sortOrder - b.sortOrder
+					})
+
+					_this.$root.totals = {
+						inspectionTotal: {
+							total: inspectionTotal,
+							tax: inspectionTaxTotal
+						},
+						serviceTotal: {
+							total: serviceTotal,
+							tax: serviceTaxTotal
+						}
+					}
+
+					_this.$root.inspectionCounts = inspectionCounts
+
+					_this.$router.push({name: 'tutorial'})
+				})
+			}).fail(reason => {
+				_this.modalOpen = true
+				if (_this.$root.meta.authenticationHint.hintType === 1) {
+					_this.modal.title = 'Unrecognized email address'
+				} else if (_this.$root.meta.authenticationHint.hintType === 2) {
+					_this.modal.title = 'Unrecognized phone number'
+				} else {
+					_this.modal.title = 'Unrecognized last name'
+				}
+				_this.modal.content = `We're sorry but we don't recognize <b>${_this.verificationCode}</b> in our database.`
+			})
 		},
 		/**
 		 * To close the modal

@@ -14,14 +14,14 @@
 		<div class="summary-table">
 			<template v-for="service in $root.services">
 				<!-- <template v-for="sub in service.subServices"> -->
-					<template v-if="service.isSelected && service.serviceCategoryId !== '4' && service.serviceCategoryId !== '3'">
+					<template v-if="service.isSelected && service.category !== '4' && service.category !== '3'">
 						<div class="summary-table-row summary-item">
 							<div class="summary-table-cell">
 								<span class="information-icon" @click="openServiceModal(service)"></span>
 								<span class="service-name">{{ service.name }}</span>
 							</div>
 							<div class="summary-table-cell">
-								<span class="price"> ${{ (service.laborPrice + service.partsPrice).toFixed(2) }} </span>
+								<span class="price"> ${{ (service.price).toFixed(2) }} </span>
 							</div>
 						</div>
 					</template>
@@ -50,7 +50,7 @@
 			<div class="accordion-contents">
 				<div class="summary-table">
 					<template v-for="service in $root.services">
-						<template v-if="service.serviceCategoryId === '4'">
+						<template v-if="service.category === '4'">
 							<!-- <template v-for="sub in service.subServices"> -->
 								<div class="summary-table-row summary-item">
 									<div class="summary-table-cell">
@@ -58,7 +58,7 @@
 										<span class="service-name">{{ service.name }}</span>
 									</div>
 									<div class="summary-table-cell">
-										<span class="price"> ${{ (service.laborPrice + service.partsPrice).toFixed(2) }} </span>
+										<span class="price"> ${{ (service.price).toFixed(2) }} </span>
 									</div>
 								</div>
 							<!-- </template> -->
@@ -108,8 +108,8 @@
 			</div>
 			<div class="footer-bar">
 				<div class="footer-bar">
-					<a :href="`tel:${$root.meta.dealer.phone}`" class="contact-icon"></a>
-					<a :href="`sms:${$root.meta.dealer.smsPhone}`" class="chat-icon"></a>
+					<a :href="`tel:${$root.meta.dealerContactInfo.phone}`" class="contact-icon"></a>
+					<a :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" class="chat-icon"></a>
 					<a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-summary-link">
 						Inspection Summary
 					</a>
@@ -205,7 +205,7 @@ export default {
 	},
 	created () {
 		this.$root.serviceCategories.forEach(category => {
-			if (category.serviceCategoryId === '4') {
+			if (category.id === '4') {
 				this.accordion = category.defaultExpended
 			}
 		})
@@ -363,7 +363,7 @@ export default {
 		  */
 		deferService () {
 			this.viewingService.isSelected = false
-			this.$root.totals.inspectionTotal.total -= parseFloat(this.viewingService.laborPrice) + parseFloat(this.viewingService.partsPrice)
+			this.$root.totals.inspectionTotal.total -= parseFloat(this.viewingService.price)
 			this.$root.totals.inspectionTotal.tax -= parseFloat(this.viewingService.taxAndFee)
 			this.closeServiceModal()
 		}
