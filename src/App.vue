@@ -1,12 +1,14 @@
 <template>
 	<div id="app">
 		<router-view v-if="computedMeta"></router-view>
+		<error-message v-if="showErrorMessage" @closeErrorModal="closeErrorModal()"></error-message>
 	</div>
 </template>
 
 <script>
 import $ from 'jquery'
 import { isEmpty } from 'lodash'
+import ErrorMessage from './components/ErrorMessage'
 
 export default {
 	name: 'app',
@@ -23,7 +25,9 @@ export default {
 		this.getMetaData()
 	},
 	data () {
-		return {}
+		return {
+			showErrorMessage: false
+		}
 	},
 	computed: {
 		/**
@@ -49,12 +53,22 @@ export default {
 				this.$router.push({name: 'code'})
 			}
 
-			$.getJSON('https://testdynamicmpi.dealer-fx.com/metadata/' + this.$root.token).done(response => {
-				_this.$root.meta = Object.assign({}, response)
-				delete _this.$root.meta.serviceCategories
-				_this.$root.serviceCategories = response.serviceCategories
+			$.getJSON('https://testdynamicmpi.dealer-fx.com/metadata/' + this.$root.token).done((response, textStatus, xhr) => {
+				if (xhr.status === 200) {
+					_this.$root.meta = Object.assign({}, response)
+					delete _this.$root.meta.serviceCategories
+					_this.$root.serviceCategories = response.serviceCategories
+				} else {
+					this.showErrorMessage = true
+				}
 			})
+		},
+		closeErrorModal () {
+			this.showErrorMessage = false
 		}
+	},
+	components: {
+		ErrorMessage
 	}
 }
 </script>
