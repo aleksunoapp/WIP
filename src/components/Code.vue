@@ -168,8 +168,6 @@ export default {
 									if (service.isSelected) {
 										inspectionTotal += service.price
 										inspectionTaxTotal += service.taxAndFee
-										serviceTotal += service.price
-										serviceTaxTotal += service.taxAndFee
 									}
 								}
 							})
