@@ -54,14 +54,34 @@
 
 							<template v-for="service in $root.services">
 								<template v-if="service.category === category.id">
-									<!-- <div v-if="category.type !== 'pass'" class="summary-table-row summary-item">
-										<div class="summary-table-cell">
-											<b>{{ service.name }}</b>
+									<template v-if="service.subServices">
+										<div class="summary-table-row summary-item">
+											<div class="summary-table-cell">
+												<b>{{ service.name }}</b>
+											</div>
+											<div class="summary-table-cell">
+											</div>
 										</div>
-										<div class="summary-table-cell">
+										<div class="summary-table-row summary-item" v-for="subService in service.subServices">
+											<div class="summary-table-cell">
+												<span class="information-icon" :class="{'no-icon-bg': category.serviceCategoryType === 'PASS'}" @click="openServiceModal(subService)"></span>
+												<span class="service-name">{{ subService.name }}</span>
+											</div>
+											<div class="summary-table-cell">
+												<template v-if="category.serviceCategoryType !== 'PASS'">
+													<span class="price"> ${{ (subService.price).toFixed(2) }} </span>
+													<div class="service-checkbox">
+														<input type="checkbox" :id="`sub-service-${subService.id}`" v-model="subService.isSelected" @change="toggleCheckbox(category, subService)">
+														<label :for="`sub-service-${subService.id}`">
+															<span class="check"></span>
+															<span class="box"></span>
+														</label>
+													</div>
+												</template>
+											</div>
 										</div>
-									</div> -->
-									<div class="summary-table-row summary-item">
+									</template>
+									<div class="summary-table-row summary-item" v-else>
 										<div class="summary-table-cell">
 											<span class="information-icon" :class="{'no-icon-bg': category.serviceCategoryType === 'PASS'}" @click="openServiceModal(service)"></span>
 											<span class="service-name">{{ service.name }}</span>
@@ -244,11 +264,9 @@ export default {
 		toggleCheckbox (category, service) {
 			if (service.isSelected) {
 				this.inspectionTotal.total += parseFloat(service.price)
-				this.inspectionTotal.tax += parseFloat(service.taxAndFee)
 				this.checkSelectAll()
 			} else {
 				this.inspectionTotal.total -= parseFloat(service.price)
-				this.inspectionTotal.tax -= parseFloat(service.taxAndFee)
 				if (category) {
 					if (category.allSelected) {
 						category.allSelected = false
@@ -273,20 +291,36 @@ export default {
 			if (category.allSelected) {
 				this.$root.services.forEach(service => {
 					if (service.category === category.id) {
-						if (!service.isSelected) {
-							service.isSelected = true
-							this.inspectionTotal.total += parseFloat(service.price)
-							this.inspectionTotal.tax += parseFloat(service.taxAndFee)
+						if (service.subServices) {
+							service.subServices.forEach(subService => {
+								if (!subService.isSelected) {
+									subService.isSelected = true
+									this.inspectionTotal.total += parseFloat(subService.price)
+								}
+							})
+						} else {
+							if (!service.isSelected) {
+								service.isSelected = true
+								this.inspectionTotal.total += parseFloat(service.price)
+							}
 						}
 					}
 				})
 			} else {
 				this.$root.services.forEach(service => {
 					if (service.category === category.id) {
-						if (service.isSelected) {
-							service.isSelected = false
-							this.inspectionTotal.total -= parseFloat(service.price)
-							this.inspectionTotal.tax -= parseFloat(service.taxAndFee)
+						if (service.subServices) {
+							service.subServices.forEach(subService => {
+								if (subService.isSelected) {
+									subService.isSelected = false
+									this.inspectionTotal.total -= parseFloat(subService.price)
+								}
+							})
+						} else {
+							if (service.isSelected) {
+								service.isSelected = false
+								this.inspectionTotal.total -= parseFloat(service.price)
+							}
 						}
 					}
 				})
@@ -309,9 +343,18 @@ export default {
 
 				this.$root.services.forEach(service => {
 					if (service.category === category.id) {
-						total += 1
-						if (service.isSelected) {
-							count += 1
+						if (service.subServices) {
+							service.subServices.forEach(subService => {
+								total += 1
+								if (subService.isSelected) {
+									count += 1
+								}
+							})
+						} else {
+							total += 1
+							if (service.isSelected) {
+								count += 1
+							}
 						}
 					}
 				})
@@ -348,8 +391,10 @@ export default {
 		 * @returns {undefined}
 		 */
 		approveService () {
-			this.viewingService.isSelected = true
-			this.toggleCheckbox(null, this.viewingService)
+			if (!this.viewingService.isSelected) {
+				this.viewingService.isSelected = true
+				this.toggleCheckbox(null, this.viewingService)
+			}
 			this.closeServiceModal()
 		},
 		/**

@@ -13,7 +13,29 @@
 		</div>
 		<div class="summary-table">
 			<template v-for="service in $root.services">
-				<!-- <template v-for="sub in service.subServices"> -->
+				<template v-if="checkSubServices(service)">
+					<div class="summary-table-row summary-item">
+						<div class="summary-table-cell">
+							<span class="information-icon no-icon-bg"></span>
+							<span class="service-name"><b>{{ service.name }}</b></span>
+						</div>
+						<div class="summary-table-cell"></div>
+					</div>
+					<template v-for="subService in service.subServices">
+						<template v-if="subService.isSelected && service.category !== '4' && service.category !== '3'">
+							<div class="summary-table-row summary-item">
+								<div class="summary-table-cell">
+									<span class="information-icon" @click="openServiceModal(subService)"></span>
+									<span class="service-name">{{ subService.name }}</span>
+								</div>
+								<div class="summary-table-cell">
+									<span class="price"> ${{ (subService.price).toFixed(2) }} </span>
+								</div>
+							</div>
+						</template>
+					</template>
+				</template>
+				<template v-if="!service.subServices">
 					<template v-if="service.isSelected && service.category !== '4' && service.category !== '3'">
 						<div class="summary-table-row summary-item">
 							<div class="summary-table-cell">
@@ -25,7 +47,7 @@
 							</div>
 						</div>
 					</template>
-				<!-- </template> -->
+				</template>
 			</template>
 			<div class="summary-table-row service-subtotal">
 				<div class="summary-table-cell">
@@ -51,7 +73,27 @@
 				<div class="summary-table">
 					<template v-for="service in $root.services">
 						<template v-if="service.category === '4'">
-							<!-- <template v-for="sub in service.subServices"> -->
+							<template v-if="service.subServices">
+								<div class="summary-table-row summary-item">
+									<div class="summary-table-cell">
+										<span class="information-icon no-icon-bg"></span>
+										<span class="service-name"><b>{{ service.name }}</b></span>
+									</div>
+									<div class="summary-table-cell"></div>
+								</div>
+								<template v-for="subService in service.subServices">
+									<div class="summary-table-row summary-item">
+										<div class="summary-table-cell">
+											<span class="information-icon no-icon-bg"></span>
+											<span class="service-name">{{ subService.name }}</span>
+										</div>
+										<div class="summary-table-cell">
+											<span class="price"> ${{ (subService.price).toFixed(2) }} </span>
+										</div>
+									</div>
+								</template>
+							</template>
+							<template v-else>
 								<div class="summary-table-row summary-item">
 									<div class="summary-table-cell">
 										<span class="information-icon no-icon-bg"></span>
@@ -61,7 +103,7 @@
 										<span class="price"> ${{ (service.price).toFixed(2) }} </span>
 									</div>
 								</div>
-							<!-- </template> -->
+							</template>
 						</template>
 					</template>
 					<div class="summary-table-row service-subtotal">
@@ -314,8 +356,18 @@ export default {
 			let _this = this
 			let approvedServices = []
 			this.$root.services.forEach(service => {
-				if (service.isSelected && service.category !== '4' && service.category !== '3') {
-					approvedServices.push(service.id)
+				if (service.category !== '4' && service.category !== '3') {
+					if (service.subServices) {
+						service.subServices.forEach(subService => {
+							if (subService.isSelected) {
+								approvedServices.push(subService.id)
+							}
+						})
+					} else {
+						if (service.isSelected) {
+							approvedServices.push(service.id)
+						}
+					}
 				}
 			})
 
@@ -395,12 +447,27 @@ export default {
 			this.getTaxTotals()
 			this.closeServiceModal()
 		},
+		/**
+		 * To get the tax totals for the backend
+		 * @function
+		 * @returns {undefined}
+		 */
 		getTaxTotals () {
 			let _this = this
 			let approvedServices = []
 			this.$root.services.forEach(service => {
-				if (service.isSelected && service.category !== '3') {
-					approvedServices.push(service.id)
+				if (service.category !== '3') {
+					if (service.subServices) {
+						service.subServices.forEach(subService => {
+							if (subService.isSelected) {
+								approvedServices.push(subService.id)
+							}
+						})
+					} else {
+						if (service.isSelected) {
+							approvedServices.push(service.id)
+						}
+					}
 				}
 			})
 
@@ -418,6 +485,23 @@ export default {
 			}).fail(reason => {
 				console.log(reason)
 			})
+		},
+		/**
+		 * To check if the service has subServices and if it does, to check if at least one of them is selected
+		 * @function
+		 * @param {object} service - The service to be tested
+		 * @returns {boolean} - Whether the service passes or fails the test
+		 */
+		checkSubServices (service) {
+			let isSelected = false
+			if (service.subServices) {
+				service.subServices.forEach(subService => {
+					if (subService.isSelected) {
+						isSelected = true
+					}
+				})
+			}
+			return isSelected
 		}
 	},
 	components: {

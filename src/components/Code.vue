@@ -142,20 +142,60 @@ export default {
 					let serviceTotal = 0
 					let serviceTaxTotal = 0
 
-					_this.$root.services = serviceResponse[0]
 					_this.$root.meta.inspectionPdfUrl = inspectionResponse[0].fullInspectionUrl
 					_this.$root.meta.advisor = confirmationResponse[0]
+
+					serviceResponse[0].forEach(service => {
+						if (service.parentServiceId) {
+							serviceResponse[0].forEach(secondService => {
+								if (secondService.id === service.parentServiceId) {
+									if (!secondService.subServices) {
+										secondService.subServices = []
+									}
+									secondService.subServices.push(service)
+								}
+							})
+						}
+					})
+
+					_this.$root.services = serviceResponse[0].filter(service => {
+						return !service.parentServiceId
+					})
 
 					// Loop through each service and sub service to get the total counts
 					_this.$root.services.forEach(service => {
 						if (service.category === '1') {
-							inspectionCounts.failCount += 1
+							if (service.subServices) {
+								service.subServices.forEach(subService => {
+									inspectionCounts.failCount += 1
+								})
+							} else {
+								inspectionCounts.failCount += 1
+							}
 						} else if (service.category === '2') {
-							inspectionCounts.warningCount += 1
+							if (service.subServices) {
+								service.subServices.forEach(subService => {
+									inspectionCounts.warningCount += 1
+								})
+							} else {
+								inspectionCounts.warningCount += 1
+							}
 						} else if (service.category === '3') {
-							inspectionCounts.passCount += 1
+							if (service.subServices) {
+								service.subServices.forEach(subService => {
+									inspectionCounts.passCount += 1
+								})
+							} else {
+								inspectionCounts.passCount += 1
+							}
 						} else if (service.category === '4') {
-							inspectionCounts.approvedCount += 1
+							if (service.subServices) {
+								service.subServices.forEach(subService => {
+									inspectionCounts.approvedCount += 1
+								})
+							} else {
+								inspectionCounts.approvedCount += 1
+							}
 						}
 					})
 
@@ -164,8 +204,16 @@ export default {
 						if (category.showOnInspection && category.id !== '3') {
 							_this.$root.services.forEach(service => {
 								if (service.category === category.id) {
-									if (service.isSelected) {
-										inspectionTotal += service.price
+									if (service.subServices) {
+										service.subServices.forEach(subService => {
+											if (subService.isSelected) {
+												inspectionTotal += subService.price
+											}
+										})
+									} else {
+										if (service.isSelected) {
+											inspectionTotal += service.price
+										}
 									}
 								}
 							})
@@ -174,7 +222,13 @@ export default {
 						if (category.id === '4') {
 							_this.$root.services.forEach(service => {
 								if (service.category === '4') {
-									serviceTotal += service.price
+									if (service.subServices) {
+										service.subServices.forEach(subService => {
+											serviceTotal += subService.price
+										})
+									} else {
+										serviceTotal += service.price
+									}
 								}
 							})
 						}
