@@ -35,7 +35,7 @@
 		<div class="modal" v-if="modalOpen">
 			<div class="modal-window">
 				<div @click="closeModal()" class="modal-close"></div>
-					<div class="clear"></div>
+				<div class="clear"></div>
 				<div class="modal-content">
 					<div class="modal-header">
 						{{ modal.title }}
@@ -139,7 +139,6 @@ export default {
 						approvedCount: 0
 					}
 					let inspectionTotal = 0
-					let inspectionTaxTotal = 0
 					let serviceTotal = 0
 					let serviceTaxTotal = 0
 
@@ -167,7 +166,6 @@ export default {
 								if (service.category === category.id) {
 									if (service.isSelected) {
 										inspectionTotal += service.price
-										inspectionTaxTotal += service.taxAndFee
 									}
 								}
 							})
@@ -177,7 +175,6 @@ export default {
 							_this.$root.services.forEach(service => {
 								if (service.category === '4') {
 									serviceTotal += service.price
-									serviceTaxTotal += service.taxAndFee
 								}
 							})
 						}
@@ -189,8 +186,7 @@ export default {
 
 					_this.$root.totals = {
 						inspectionTotal: {
-							total: inspectionTotal,
-							tax: inspectionTaxTotal
+							total: inspectionTotal
 						},
 						serviceTotal: {
 							total: serviceTotal,

@@ -88,7 +88,7 @@
 							Estimated Taxes &amp; Fees
 						</div>
 						<div class="summary-table-cell">
-							<span class="price">${{ (this.$root.totals.inspectionTotal.tax + this.$root.totals.serviceTotal.tax).toFixed(2) }}</span>
+							<span class="price">${{ tax.toFixed(2) }}</span>
 						</div>
 					</div>
 				</div>
@@ -98,7 +98,7 @@
 							Estimate Total
 						</div>
 						<div class="summary-table-cell">
-							<span class="price">${{ (this.$root.totals.inspectionTotal.tax + this.$root.totals.serviceTotal.tax + this.$root.totals.inspectionTotal.total + this.$root.totals.serviceTotal.total).toFixed(2) }}</span>
+							<span class="price">${{ (tax + this.$root.totals.inspectionTotal.total + this.$root.totals.serviceTotal.total).toFixed(2) }}</span>
 						</div>
 					</div>
 				</div>
@@ -125,7 +125,7 @@
 							Estimated Taxes &amp; Fees:
 						</div>
 						<div class="summary-table-cell">
-							<span class="price">${{ (this.$root.totals.inspectionTotal.tax + this.$root.totals.serviceTotal.tax).toFixed(2) }}</span>
+							<span class="price">${{ tax.toFixed(2) }}</span>
 						</div>
 					</div>
 				</div>
@@ -135,7 +135,7 @@
 							Estimate Total
 						</div>
 						<div class="summary-table-cell">
-							<span class="price">${{ (this.$root.totals.inspectionTotal.tax + this.$root.totals.serviceTotal.tax + this.$root.totals.inspectionTotal.total + this.$root.totals.serviceTotal.total).toFixed(2) }}</span>
+							<span class="price">${{ (tax + this.$root.totals.inspectionTotal.total + this.$root.totals.serviceTotal.total).toFixed(2) }}</span>
 						</div>
 					</div>
 				</div>
@@ -201,7 +201,8 @@ export default {
 			modalOpen: false,
 			viewingService: {},
 			timeExpired: false,
-			signaturePadData: ''
+			signaturePadData: '',
+			tax: 0
 		}
 	},
 	created () {
@@ -216,6 +217,9 @@ export default {
 		let dateConst = new Date()
 		let responseDate = new Date(this.$root.meta.responseBy)
 		this.timeExpired = responseDate < dateConst
+		this.tax = this.$root.totals.serviceTotal.tax
+
+		this.getTaxTotals()
 	},
 	computed: {
 		/**
@@ -388,8 +392,32 @@ export default {
 		deferService () {
 			this.viewingService.isSelected = false
 			this.$root.totals.inspectionTotal.total -= parseFloat(this.viewingService.price)
-			this.$root.totals.inspectionTotal.tax -= parseFloat(this.viewingService.taxAndFee)
+			this.getTaxTotals()
 			this.closeServiceModal()
+		},
+		getTaxTotals () {
+			let _this = this
+			let approvedServices = []
+			this.$root.services.forEach(service => {
+				if (service.isSelected && service.category !== '3') {
+					approvedServices.push(service.id)
+				}
+			})
+
+			$.ajax({
+				url: 'https://testdynamicmpi.dealer-fx.com/tax/' + _this.$root.token,
+				method: 'POST',
+				data: JSON.stringify(approvedServices),
+				beforeSend (xhr) {
+					xhr.setRequestHeader('Content-Type', 'application/json')
+					xhr.setRequestHeader('Authorization', 'Bearer ' + _this.$root.accessToken)
+				}
+			}).done(response => {
+				_this.$root.totals.serviceTotal.tax = response.taxAndFee
+				_this.tax = response.taxAndFee
+			}).fail(reason => {
+				console.log(reason)
+			})
 		}
 	},
 	components: {
