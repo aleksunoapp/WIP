@@ -24,7 +24,7 @@
 						<div class="info-modal-estimate">Estimated cost of this item <span>${{ (viewingService.price).toFixed(2) }}</span></div>
 					</div>
 				</div>
-				<div class="modal-buttons" v-if="viewingService.category !== '4'">
+				<div class="modal-buttons">
 					<div @click="approveService()" class="approve-btn">
 						Approve
 					</div>

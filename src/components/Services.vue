@@ -54,7 +54,7 @@
 							<!-- <template v-for="sub in service.subServices"> -->
 								<div class="summary-table-row summary-item">
 									<div class="summary-table-cell">
-										<span class="information-icon" @click="openServiceModal(service)"></span>
+										<span class="information-icon no-icon-bg"></span>
 										<span class="service-name">{{ service.name }}</span>
 									</div>
 									<div class="summary-table-cell">
