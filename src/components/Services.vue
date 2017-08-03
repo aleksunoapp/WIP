@@ -29,7 +29,8 @@
 									<span class="service-name">{{ subService.name }}</span>
 								</div>
 								<div class="summary-table-cell">
-									<span class="price"> ${{ (subService.price).toFixed(2) }} </span>
+									<span class="price" v-if="subService.price !== 0"> ${{ (subService.price).toFixed(2) }} </span>
+									<span class="price" v-else> Free </span>
 								</div>
 							</div>
 						</template>
@@ -43,7 +44,8 @@
 								<span class="service-name">{{ service.name }}</span>
 							</div>
 							<div class="summary-table-cell">
-								<span class="price"> ${{ (service.price).toFixed(2) }} </span>
+								<span class="price" v-if="service.price !== 0"> ${{ (service.price).toFixed(2) }} </span>
+								<span class="price" v-else> Free </span>
 							</div>
 						</div>
 					</template>
@@ -88,7 +90,8 @@
 											<span class="service-name">{{ subService.name }}</span>
 										</div>
 										<div class="summary-table-cell">
-											<span class="price"> ${{ (subService.price).toFixed(2) }} </span>
+											<span class="price" v-if="subService.price !== 0"> ${{ (subService.price).toFixed(2) }} </span>
+											<span class="price" v-else> Free </span>
 										</div>
 									</div>
 								</template>
@@ -100,7 +103,8 @@
 										<span class="service-name">{{ service.name }}</span>
 									</div>
 									<div class="summary-table-cell">
-										<span class="price"> ${{ (service.price).toFixed(2) }} </span>
+										<span class="price" v-if="service.price !== 0"> ${{ (service.price).toFixed(2) }} </span>
+										<span class="price" v-else> Free </span>
 									</div>
 								</div>
 							</template>
