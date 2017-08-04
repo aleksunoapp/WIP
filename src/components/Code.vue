@@ -59,6 +59,7 @@
 
 <script>
 import $ from 'jquery'
+import ENV from '../environment'
 
 export default {
 	data () {
@@ -98,7 +99,7 @@ export default {
 			let _this = this
 
 			$.ajax({
-				url: 'https://testdynamicmpi.dealer-fx.com/oauth/token',
+				url: ENV.production_url + '/oauth/token',
 				method: 'POST',
 				data: {
 					grant_type: 'client_credentials',
@@ -111,21 +112,21 @@ export default {
 				// Need to pull all other data before proceeding
 				$.when(
 					$.ajax({
-						url: 'https://testdynamicmpi.dealer-fx.com/services/' + _this.$root.token,
+						url: ENV.production_url + '/services/' + _this.$root.token,
 						method: 'GET',
 						beforeSend (xhr) {
 							xhr.setRequestHeader('Authorization', 'Bearer ' + _this.$root.accessToken)
 						}
 					}),
 					$.ajax({
-						url: 'https://testdynamicmpi.dealer-fx.com/inspection/' + _this.$root.token,
+						url: ENV.production_url + '/inspection/' + _this.$root.token,
 						method: 'GET',
 						beforeSend (xhr) {
 							xhr.setRequestHeader('Authorization', 'Bearer ' + _this.$root.accessToken)
 						}
 					}),
 					$.ajax({
-						url: 'https://testdynamicmpi.dealer-fx.com/confirmation/' + _this.$root.token,
+						url: ENV.production_url + '/confirmation/' + _this.$root.token,
 						method: 'GET',
 						beforeSend (xhr) {
 							xhr.setRequestHeader('Authorization', 'Bearer ' + _this.$root.accessToken)

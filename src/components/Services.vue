@@ -232,6 +232,7 @@
 
 <script>
 import $ from 'jquery'
+import ENV from '../environment'
 import InfoPopup from './InfoPopup'
 import SignaturePad from './SignaturePad'
 
@@ -377,7 +378,7 @@ export default {
 
 			if (this.termsAndConditions && this.signagtureSigned) {
 				$.ajax({
-					url: 'https://testdynamicmpi.dealer-fx.com/services/' + _this.$root.token,
+					url: ENV.production_url + '/services/' + _this.$root.token,
 					method: 'POST',
 					data: {
 						approvedServices,
@@ -476,7 +477,7 @@ export default {
 			})
 
 			$.ajax({
-				url: 'https://testdynamicmpi.dealer-fx.com/tax/' + _this.$root.token,
+				url: ENV.production_url + '/tax/' + _this.$root.token,
 				method: 'POST',
 				data: JSON.stringify(approvedServices),
 				beforeSend (xhr) {

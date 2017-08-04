@@ -7,6 +7,7 @@
 
 <script>
 import $ from 'jquery'
+import ENV from './environment'
 import { isEmpty } from 'lodash'
 import ErrorMessage from './components/ErrorMessage'
 
@@ -53,7 +54,7 @@ export default {
 				this.$router.push({name: 'code'})
 			}
 
-			$.getJSON('https://testdynamicmpi.dealer-fx.com/metadata/' + this.$root.token).done((response, textStatus, xhr) => {
+			$.getJSON(ENV.production_url + '/metadata/' + this.$root.token).done((response, textStatus, xhr) => {
 				if (xhr.status === 200) {
 					_this.$root.meta = Object.assign({}, response)
 					delete _this.$root.meta.serviceCategories
