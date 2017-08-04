@@ -17,3 +17,5 @@ test/unit/coverage
 /.vs/config
 /Dynamic_MPI.csproj.user
 /.vs/VSWorkspaceState.json
+/.vs/ProjectSettings.json
+/.vs/slnx.sqlite
