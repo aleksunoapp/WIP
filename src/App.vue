@@ -64,6 +64,11 @@ export default {
 				}
 			})
 		},
+		/**
+		 * To close the error modal
+		 * @function
+		 * @returns {undefined}
+		 */
 		closeErrorModal () {
 			this.showErrorMessage = false
 		}

@@ -227,12 +227,14 @@
 			</div>
 		</div>
 		<info-popup v-if="modalOpen" :viewingService="viewingService" @closeModal="closeServiceModal" @approve="approveService" @defer="deferService"></info-popup>
+		<error-message v-if="showErrorMessage" @closeErrorModal="closeErrorModal()"></error-message>
 	</div>
 </template>
 
 <script>
 import $ from 'jquery'
 import ENV from '../environment'
+import ErrorMessage from './ErrorMessage'
 import InfoPopup from './InfoPopup'
 import SignaturePad from './SignaturePad'
 
@@ -249,7 +251,8 @@ export default {
 			viewingService: {},
 			timeExpired: false,
 			signaturePadData: '',
-			tax: 0
+			tax: 0,
+			showErrorMessage: false
 		}
 	},
 	created () {
@@ -387,8 +390,12 @@ export default {
 					beforeSend (xhr) {
 						xhr.setRequestHeader('Authorization', 'Bearer ' + _this.$root.accessToken)
 					}
-				}).done(response => {
-					this.$router.push({name: 'thanks'})
+				}).done((response, textStatus, xhr) => {
+					if (xhr.status === 202) {
+						this.$router.push({name: 'thanks'})
+					} else {
+						this.showErrorMessage = true
+					}
 				}).fail(reason => {
 					console.log(reason)
 				})
@@ -484,9 +491,13 @@ export default {
 					xhr.setRequestHeader('Content-Type', 'application/json')
 					xhr.setRequestHeader('Authorization', 'Bearer ' + _this.$root.accessToken)
 				}
-			}).done(response => {
-				_this.$root.totals.serviceTotal.tax = response.taxAndFee
-				_this.tax = response.taxAndFee
+			}).done((response, textStatus, xhr) => {
+				if (xhr.status === 202) {
+					_this.$root.totals.serviceTotal.tax = response.taxAndFee
+					_this.tax = response.taxAndFee
+				} else {
+					this.showErrorMessage = true
+				}
 			}).fail(reason => {
 				console.log(reason)
 			})
@@ -507,9 +518,18 @@ export default {
 				})
 			}
 			return isSelected
+		},
+		/**
+		 * To close the error modal
+		 * @function
+		 * @returns {undefined}
+		 */
+		closeErrorModal () {
+			this.showErrorMessage = false
 		}
 	},
 	components: {
+		ErrorMessage,
 		InfoPopup,
 		SignaturePad
 	}

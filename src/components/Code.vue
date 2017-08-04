@@ -54,12 +54,14 @@
 				</div>
 			</div>
 		</div>
+		<error-message v-if="showErrorMessage" @closeErrorModal="closeErrorModal()"></error-message>
 	</div>
 </template>
 
 <script>
 import $ from 'jquery'
 import ENV from '../environment'
+import ErrorMessage from './ErrorMessage'
 
 export default {
 	data () {
@@ -69,7 +71,8 @@ export default {
 			modal: {
 				title: '',
 				content: ''
-			}
+			},
+			showErrorMessage: false
 		}
 	},
 	created () {
@@ -106,153 +109,185 @@ export default {
 					client_id: _this.$root.token,
 					client_secret: _this.verificationCode
 				}
-			}).done(response => {
-				_this.$root.accessToken = response.access_token
+			}).done((response, textStatus, xhr) => {
+				if (xhr.status === 200) {
+					_this.$root.accessToken = response.access_token
 
-				// Need to pull all other data before proceeding
-				$.when(
-					$.ajax({
-						url: ENV.production_url + '/services/' + _this.$root.token,
-						method: 'GET',
-						beforeSend (xhr) {
-							xhr.setRequestHeader('Authorization', 'Bearer ' + _this.$root.accessToken)
-						}
-					}),
-					$.ajax({
-						url: ENV.production_url + '/inspection/' + _this.$root.token,
-						method: 'GET',
-						beforeSend (xhr) {
-							xhr.setRequestHeader('Authorization', 'Bearer ' + _this.$root.accessToken)
-						}
-					}),
-					$.ajax({
-						url: ENV.production_url + '/confirmation/' + _this.$root.token,
-						method: 'GET',
-						beforeSend (xhr) {
-							xhr.setRequestHeader('Authorization', 'Bearer ' + _this.$root.accessToken)
-						}
+					let getServices = new Promise((resolve, reject) => {
+						$.ajax({
+							url: ENV.production_url + '/services/' + _this.$root.token,
+							method: 'GET',
+							beforeSend (xhr) {
+								xhr.setRequestHeader('Authorization', 'Bearer ' + _this.$root.accessToken)
+							}
+						}).then((response, textStatus, xhr) => {
+							if (xhr.status === 200) {
+								resolve(response)
+							} else {
+								reject()
+							}
+						})
 					})
-				).done((serviceResponse, inspectionResponse, confirmationResponse) => {
-					let inspectionCounts = {
-						failCount: 0,
-						warningCount: 0,
-						passCount: 0,
-						approvedCount: 0
-					}
-					let inspectionTotal = 0
-					let serviceTotal = 0
-					let serviceTaxTotal = 0
 
-					_this.$root.meta.inspectionPdfUrl = inspectionResponse[0].fullInspectionUrl
-					_this.$root.meta.advisor = confirmationResponse[0]
+					let getInspection = new Promise((resolve, reject) => {
+						$.ajax({
+							url: ENV.production_url + '/inspection/' + _this.$root.token,
+							method: 'GET',
+							beforeSend (xhr) {
+								xhr.setRequestHeader('Authorization', 'Bearer ' + _this.$root.accessToken)
+							}
+						}).then((response, textStatus, xhr) => {
+							if (xhr.status === 200) {
+								resolve(response)
+							} else {
+								reject()
+							}
+						})
+					})
 
-					serviceResponse[0].forEach(service => {
-						if (service.parentServiceId) {
-							serviceResponse[0].forEach(secondService => {
-								if (secondService.id === service.parentServiceId) {
-									if (!secondService.subServices) {
-										secondService.subServices = []
+					let getConfirmation = new Promise((resolve, reject) => {
+						$.ajax({
+							url: ENV.production_url + '/confirmation/' + _this.$root.token,
+							method: 'GET',
+							beforeSend (xhr) {
+								xhr.setRequestHeader('Authorization', 'Bearer ' + _this.$root.accessToken)
+							}
+						}).then((response, textStatus, xhr) => {
+							if (xhr.status === 200) {
+								resolve(response)
+							} else {
+								reject()
+							}
+						})
+					})
+
+					// Need to pull all other data before proceeding
+					Promise.all([getServices, getInspection, getConfirmation]).then(values => {
+						let inspectionCounts = {
+							failCount: 0,
+							warningCount: 0,
+							passCount: 0,
+							approvedCount: 0
+						}
+						let inspectionTotal = 0
+						let serviceTotal = 0
+						let serviceTaxTotal = 0
+
+						_this.$root.meta.inspectionPdfUrl = values[1].fullInspectionUrl
+						_this.$root.meta.advisor = values[2]
+
+						values[0].forEach(service => {
+							if (service.parentServiceId) {
+								values[0].forEach(secondService => {
+									if (secondService.id === service.parentServiceId) {
+										if (!secondService.subServices) {
+											secondService.subServices = []
+										}
+										secondService.subServices.push(service)
 									}
-									secondService.subServices.push(service)
-								}
-							})
-						}
-					})
+								})
+							}
+						})
 
-					_this.$root.services = serviceResponse[0].filter(service => {
-						return !service.parentServiceId
-					})
+						_this.$root.services = values[0].filter(service => {
+							return !service.parentServiceId
+						})
 
-					// Loop through each service and sub service to get the total counts
-					_this.$root.services.forEach(service => {
-						if (service.category === '1') {
-							if (service.subServices) {
-								service.subServices.forEach(subService => {
+						// Loop through each service and sub service to get the total counts
+						_this.$root.services.forEach(service => {
+							if (service.category === '1') {
+								if (service.subServices) {
+									service.subServices.forEach(subService => {
+										inspectionCounts.failCount += 1
+									})
+								} else {
 									inspectionCounts.failCount += 1
-								})
-							} else {
-								inspectionCounts.failCount += 1
-							}
-						} else if (service.category === '2') {
-							if (service.subServices) {
-								service.subServices.forEach(subService => {
+								}
+							} else if (service.category === '2') {
+								if (service.subServices) {
+									service.subServices.forEach(subService => {
+										inspectionCounts.warningCount += 1
+									})
+								} else {
 									inspectionCounts.warningCount += 1
-								})
-							} else {
-								inspectionCounts.warningCount += 1
-							}
-						} else if (service.category === '3') {
-							if (service.subServices) {
-								service.subServices.forEach(subService => {
+								}
+							} else if (service.category === '3') {
+								if (service.subServices) {
+									service.subServices.forEach(subService => {
+										inspectionCounts.passCount += 1
+									})
+								} else {
 									inspectionCounts.passCount += 1
-								})
-							} else {
-								inspectionCounts.passCount += 1
-							}
-						} else if (service.category === '4') {
-							if (service.subServices) {
-								service.subServices.forEach(subService => {
+								}
+							} else if (service.category === '4') {
+								if (service.subServices) {
+									service.subServices.forEach(subService => {
+										inspectionCounts.approvedCount += 1
+									})
+								} else {
 									inspectionCounts.approvedCount += 1
-								})
-							} else {
-								inspectionCounts.approvedCount += 1
+								}
 							}
-						}
-					})
+						})
 
-					// Loop through all services to calculate the value of all pre approved services
-					_this.$root.serviceCategories.forEach(category => {
-						if (category.showOnInspection && category.id !== '3') {
-							_this.$root.services.forEach(service => {
-								if (service.category === category.id) {
-									if (service.subServices) {
-										service.subServices.forEach(subService => {
-											if (subService.isSelected) {
-												inspectionTotal += subService.price
+						// Loop through all services to calculate the value of all pre approved services
+						_this.$root.serviceCategories.forEach(category => {
+							if (category.showOnInspection && category.id !== '3') {
+								_this.$root.services.forEach(service => {
+									if (service.category === category.id) {
+										if (service.subServices) {
+											service.subServices.forEach(subService => {
+												if (subService.isSelected) {
+													inspectionTotal += subService.price
+												}
+											})
+										} else {
+											if (service.isSelected) {
+												inspectionTotal += service.price
 											}
-										})
-									} else {
-										if (service.isSelected) {
-											inspectionTotal += service.price
 										}
 									}
-								}
-							})
-						}
+								})
+							}
 
-						if (category.id === '4') {
-							_this.$root.services.forEach(service => {
-								if (service.category === '4') {
-									if (service.subServices) {
-										service.subServices.forEach(subService => {
-											serviceTotal += subService.price
-										})
-									} else {
-										serviceTotal += service.price
+							if (category.id === '4') {
+								_this.$root.services.forEach(service => {
+									if (service.category === '4') {
+										if (service.subServices) {
+											service.subServices.forEach(subService => {
+												serviceTotal += subService.price
+											})
+										} else {
+											serviceTotal += service.price
+										}
 									}
-								}
-							})
+								})
+							}
+						})
+
+						_this.$root.serviceCategories.sort((a, b) => {
+							return a.sortOrder - b.sortOrder
+						})
+
+						_this.$root.totals = {
+							inspectionTotal: {
+								total: inspectionTotal
+							},
+							serviceTotal: {
+								total: serviceTotal,
+								tax: serviceTaxTotal
+							}
 						}
+
+						_this.$root.inspectionCounts = inspectionCounts
+
+						_this.$router.push({name: 'tutorial'})
+					}).catch(reason => {
+						this.showErrorMessage = true
 					})
-
-					_this.$root.serviceCategories.sort((a, b) => {
-						return a.sortOrder - b.sortOrder
-					})
-
-					_this.$root.totals = {
-						inspectionTotal: {
-							total: inspectionTotal
-						},
-						serviceTotal: {
-							total: serviceTotal,
-							tax: serviceTaxTotal
-						}
-					}
-
-					_this.$root.inspectionCounts = inspectionCounts
-
-					_this.$router.push({name: 'tutorial'})
-				})
+				} else {
+					this.showErrorMessage = true
+				}
 			}).fail(reason => {
 				_this.modalOpen = true
 				if (_this.$root.meta.authenticationHint.hintType === 1) {
@@ -285,7 +320,18 @@ export default {
 		tryAgain () {
 			this.verificationCode = ''
 			this.closeModal()
+		},
+		/**
+		 * To close the error modal
+		 * @function
+		 * @returns {undefined}
+		 */
+		closeErrorModal () {
+			this.showErrorMessage = false
 		}
+	},
+	components: {
+		ErrorMessage
 	}
 }
 </script>
