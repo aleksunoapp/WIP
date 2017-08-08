@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<parameters >
+	<parameter name="ApiUrl" defaultValue="#{apiUrl}#" >
+		<parameterEntry kind="TextFile" scope="\\environment.js$" match="#{apiUrl}#" />
+	</parameter>
+</parameters>
