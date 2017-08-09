@@ -14,13 +14,13 @@
 		<div class="summary-table">
 			<template v-for="service in $root.services">
 				<template v-if="checkSubServices(service)">
-					<div class="summary-table-row summary-item">
+					<!-- <div class="summary-table-row summary-item">
 						<div class="summary-table-cell">
 							<span class="information-icon no-icon-bg"></span>
 							<span class="service-name"><b>{{ service.name }}</b></span>
 						</div>
 						<div class="summary-table-cell"></div>
-					</div>
+					</div> -->
 					<template v-for="subService in service.subServices">
 						<template v-if="subService.isSelected && service.category !== '4' && service.category !== '3'">
 							<div class="summary-table-row summary-item">
@@ -76,13 +76,13 @@
 					<template v-for="service in $root.services">
 						<template v-if="service.category === '4'">
 							<template v-if="service.subServices">
-								<div class="summary-table-row summary-item">
+								<!-- <div class="summary-table-row summary-item">
 									<div class="summary-table-cell">
 										<span class="information-icon no-icon-bg"></span>
 										<span class="service-name"><b>{{ service.name }}</b></span>
 									</div>
 									<div class="summary-table-cell"></div>
-								</div>
+								</div> -->
 								<template v-for="subService in service.subServices">
 									<div class="summary-table-row summary-item">
 										<div class="summary-table-cell">

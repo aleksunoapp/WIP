@@ -55,13 +55,13 @@
 							<template v-for="service in $root.services">
 								<template v-if="service.category === category.id">
 									<template v-if="service.subServices">
-										<div class="summary-table-row summary-item">
+										<!-- <div class="summary-table-row summary-item">
 											<div class="summary-table-cell">
 												<b>{{ service.name }}</b>
 											</div>
 											<div class="summary-table-cell">
 											</div>
-										</div>
+										</div> -->
 										<div class="summary-table-row summary-item" v-for="subService in service.subServices">
 											<div class="summary-table-cell">
 												<span class="information-icon" :class="{'no-icon-bg': category.serviceCategoryType === 'PASS'}" @click="openServiceModal(subService)"></span>
