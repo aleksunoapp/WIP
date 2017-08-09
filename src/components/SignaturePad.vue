@@ -48,7 +48,7 @@ export default {
 		 */
 		clearSignature () {
 			this.signaturePad.clear()
-			this.$emit('signatureUpdate', this.signaturePad.isEmpty())
+			this.$emit('signatureUpdate', {isEmpty: this.signaturePad.isEmpty()})
 		},
 		/**
 		 * To check if the signature pad has been signed and set the data to it's parent
