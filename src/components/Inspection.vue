@@ -19,7 +19,7 @@
 			<template v-for="(category, index) in serviceCategories" v-if="category.showOnInspection">
 				<div :class="{'accordion-open': category.defaultExpended, 'accordion-closed': !category.defaultExpended, 'red': category.serviceCategoryType === 'SAFETY', 'yellow': category.serviceCategoryType === 'ATTN', 'green': category.serviceCategoryType === 'PASS'}" class="accordion">
 					<div @click="toggleAccordion(category)" class="accordion-header">
-						<img :src="category.iconUrl"> {{ ($root.inspectionCounts[countVariables[category.serviceCategoryType]] === 0) ? 'No' : '' }} {{ category.name }} {{ ($root.inspectionCounts[countVariables[category.serviceCategoryType]] === 0) ? 'where found' : '' }} {{ ($root.inspectionCounts[countVariables[category.serviceCategoryType]] !== 0) ? `(${$root.inspectionCounts[countVariables[category.serviceCategoryType]]})` : '' }}
+						<img :src="category.iconUrl"> {{ ($root.inspectionCounts[countVariables[category.serviceCategoryType]] === 0) ? 'No' : '' }} {{ category.name }} {{ ($root.inspectionCounts[countVariables[category.serviceCategoryType]] === 0) ? 'were found' : '' }} {{ ($root.inspectionCounts[countVariables[category.serviceCategoryType]] !== 0) ? `(${$root.inspectionCounts[countVariables[category.serviceCategoryType]]})` : '' }}
 						<div class="accordion-status" v-if="$root.inspectionCounts[countVariables[category.serviceCategoryType]] !== 0"></div>
 						<div class="clear"></div>
 					</div>
