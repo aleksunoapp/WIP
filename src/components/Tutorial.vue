@@ -12,7 +12,7 @@
 				</div>
 				<img class="onboarding-first-image" :src="$root.meta.advisor.advisorImageUrl">
 				<div class="onboarding-first-break">There are:</div>
-				<div class="onboarding-first-bottom pad-t-b" v-for="count in inspectionCounts">
+				<div class="onboarding-first-bottom" v-for="count in inspectionCounts">
 					<img :src="count.image">
 					<span><b> {{ count.count }} - {{ count.text }} </b></span>
 				</div>
@@ -300,7 +300,7 @@ export default {
 	font-weight: 600;
 	width: 70%;
 	min-width: 275px;
-	margin: 0 auto;
+	margin: 0 auto 5px;
 }
 .onboarding-first-bottom img {
 	width: 25px;
