@@ -39,7 +39,7 @@
 							<span class="timer-text">s</span>
 						</div>
 						<div>To have your vehicle ready by</div>
-						<div class="onboarding-second-bottom">{{ computedEndTimeFormat }} today!</div>
+						<div class="onboarding-second-bottom">{{ computedEndTimeFormat }} {{ (checkSameDate()) ? 'today' : 'on ' + formatResponseDate }}!</div>
 					</div>
 				</div>
 			</div>
@@ -129,6 +129,17 @@ export default {
 
 			formattedTime = hour + ':' + minutes + ' ' + meridian
 			return formattedTime
+		},
+		/**
+		 * To compute the format of date on which customers must approve by
+		 * @function
+		 * @returns {string} - The formatted date
+		 */
+		formatResponseDate () {
+			let responseDate = new Date(this.$root.meta.responseBy)
+			let allMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
+			let formattedDate = `${allMonths[responseDate.getMonth()]} ${responseDate.getDate()}, ${responseDate.getFullYear()}`
+			return formattedDate
 		}
 	},
 	methods: {
@@ -193,6 +204,17 @@ export default {
 					this.timer.seconds = 0
 				}
 			}, 1000)
+		},
+		/**
+		 * To check whether the responseBy date is today or a future date
+		 * @function
+		 * @returns {boolean} - Whether or not it is the same date
+		 */
+		checkSameDate () {
+			let responseDate = new Date(this.$root.meta.responseBy)
+			let now = new Date()
+
+			return responseDate.getFullYear() === now.getFullYear() && responseDate.getMonth() === now.getMonth() && responseDate.getDate() === now.getDate()
 		}
 	}
 }
