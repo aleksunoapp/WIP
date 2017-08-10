@@ -24,7 +24,7 @@
 			Service Advisor
 		</div>
 		<div>
-			<img :src="this.$root.meta.bottomImageUrl">
+			<img :src="this.$root.meta.carImageUrl">
 		</div>
 	</div>
 </template>

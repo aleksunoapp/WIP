@@ -28,7 +28,7 @@
 					</button>
 				</div>
 				<div>
-					<img :src="$root.meta.bottomImageUrl">
+					<img :src="$root.meta.carImageUrl">
 				</div>
 			</form>
 		</div>
