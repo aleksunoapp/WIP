@@ -123,6 +123,8 @@ export default {
 
 			if (minutes === 0) {
 				minutes = '00'
+			} else if (minutes < 10) {
+				minutes = '0' + minutes
 			}
 
 			formattedTime = hour + ':' + minutes + ' ' + meridian
