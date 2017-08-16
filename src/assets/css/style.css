@@ -426,11 +426,14 @@ img {
 
 .time-notice {
 	font-size: 8px;
-	padding: 5px 0;
+	padding: 5px 15px;
 }
 .time-notice > span {
-	background-color: #fff;
-	padding: 1px 15px;
+	line-height: 1em;
+    display: inline;
+    background-color: #fff;
+    -webkit-box-shadow: 10px 0 0 #668c3c, -10px 0 0 #668c3c;
+    box-shadow: 10px 0 0 #fff, -10px 0 0 #fff;
 }
 .time-notice.danger-flag > span {
 	background-color: rgba(222, 0, 0, 0.3);

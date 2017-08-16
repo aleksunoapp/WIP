@@ -110,7 +110,7 @@
 
 			<div class="proceed-component">
 				<div class="time-notice" :class="{'danger-flag': timeExpired}">
-					<span v-if="!timeExpired">If approved by {{ computedReponseTime }} your vehicle will be ready for pickup by {{ computedPromiseTime }}.</span>
+					<span v-if="!timeExpired">If approved by {{ computedResponseTime }} your vehicle will be ready for pickup by {{ computedPromiseTime }}.</span>
 					<span v-else>Your service advisor will contact you when your services are completed</span>
 				</div>
 				<div class="total-estimate">
@@ -153,6 +153,8 @@
 import $ from 'jquery'
 import InfoPopup from './InfoPopup'
 
+let allMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
+
 export default {
 	data () {
 		return {
@@ -186,7 +188,7 @@ export default {
 		 * @function
 		 * @returns {string} - The formatted time
 		 */
-		computedReponseTime () {
+		computedResponseTime () {
 			let formattedTime = ''
 			let fullDate = new Date(this.$root.meta.responseBy)
 			let hour = fullDate.getHours()
@@ -209,6 +211,9 @@ export default {
 			}
 
 			formattedTime = hour + ':' + minutes + ' ' + meridian
+			if (!this.checkSameDate(this.$root.meta.responseBy)) {
+				formattedTime += ` on ${allMonths[fullDate.getMonth()]} ${fullDate.getDate()}, ${fullDate.getFullYear()}`
+			}
 			return formattedTime
 		},
 		/**
@@ -239,6 +244,9 @@ export default {
 			}
 
 			formattedTime = hour + ':' + minutes + ' ' + meridian
+			if (!this.checkSameDate(this.$root.meta.promise)) {
+				formattedTime += ` on ${allMonths[fullDate.getMonth()]} ${fullDate.getDate()}, ${fullDate.getFullYear()}`
+			}
 			return formattedTime
 		}
 	},
@@ -420,6 +428,18 @@ export default {
 		 */
 		openServices () {
 			this.$router.push({name: 'services'})
+		},
+		/**
+		 * To check whether the responseBy date is today or a future date
+		 * @function
+		 * @param {string} date - The date being checked
+		 * @returns {boolean} - Whether or not it is the same date
+		 */
+		checkSameDate (date) {
+			let checkDate = new Date(date)
+			let now = new Date()
+
+			return checkDate.getFullYear() === now.getFullYear() && checkDate.getMonth() === now.getMonth() && checkDate.getDate() === now.getDate()
 		}
 	},
 	components: {
