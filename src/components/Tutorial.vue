@@ -26,7 +26,7 @@
 			<div class="content-body">
 				<div class="timer-info">
 					<img src="../assets/images/clock.png">
-					<div class="timer-page-text">
+					<div v-if="timer > 0" class="timer-page-text">
 						<div>Select your services in</div>
 						<div id="timer">
 							<span v-if="timer.days > 0">{{ timer.days }}</span>
@@ -41,9 +41,25 @@
 						<div>To have your vehicle ready by</div>
 						<div class="onboarding-second-bottom">{{ computedEndTimeFormat }} {{ (checkSameDate()) ? 'today' : 'on ' + formatPromiseDate }}!</div>
 					</div>
+					<div v-else class="timer-page-text">
+						<div>
+							<p>We are sorry but this link has expired.</p>
+							<p>Please contact the dealership for the status of your vehicle.</p>
+						</div>
+						<div class="timer-page-no-timer">
+							<div>
+								<a :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" class="chat-icon"></a>
+								<span>Text Dealership</span>
+							</div>
+							<div>
+								<a :href="`tel:${$root.meta.dealerContactInfo.phone}`" class="contact-icon"></a>
+								<span>Phone Dealership</span>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
-			<div class="footer">
+			<div class="footer" v-if="timer > 0">
 				<button @click="changeOnboarding('left')" class="button btn red"> CONTINUE </button>
 			</div>
 		</v-touch>
@@ -161,17 +177,17 @@ export default {
 			switch (this.currentOnboarding) {
 			case 'first':
 				if (direction === 'left') {
-					if (this.timer.total <= 0) {
-						this.currentOnboarding = 'third'
+					this.currentOnboarding = 'second'
 					} else {
-						this.currentOnboarding = 'second'
 					}
 				}
 				break
 
 			case 'second':
 				if (direction === 'left') {
-					this.currentOnboarding = 'third'
+					if (this.timer > 0) {
+						this.currentOnboarding = 'third'
+					}
 				} else if (direction === 'right') {
 					this.currentOnboarding = 'first'
 				}
@@ -277,9 +293,23 @@ export default {
 .timer-page-text {
 	color: #000;
 	font-size: 16px;
+	width: 80%;
+	margin: 0 auto;
 }
 .timer-page-text .blue {
 	color: #000;
+}
+.timer-page-no-timer {
+	display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 14px;
+    margin-top: 70px;
+}
+.timer-page-no-timer .chat-icon, .timer-page-no-timer .contact-icon {
+	float: none;
+    display: block;
+    margin: 5px auto;
 }
 .timer-info {
 	padding-top: 50px;
