@@ -26,7 +26,7 @@
 			<div class="content-body">
 				<div class="timer-info">
 					<img src="../assets/images/clock.png">
-					<div v-if="timer > 0" class="timer-page-text">
+					<div class="timer-page-text">
 						<div>Select your services in</div>
 						<div id="timer">
 							<span v-if="timer.days > 0">{{ timer.days }}</span>
@@ -41,25 +41,9 @@
 						<div>To have your vehicle ready by</div>
 						<div class="onboarding-second-bottom">{{ computedEndTimeFormat }} {{ (checkSameDate()) ? 'today' : 'on ' + formatPromiseDate }}!</div>
 					</div>
-					<div v-else class="timer-page-text">
-						<div>
-							<p>We are sorry but this link has expired.</p>
-							<p>Please contact the dealership for the status of your vehicle.</p>
-						</div>
-						<div class="timer-page-no-timer">
-							<div>
-								<a :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" class="chat-icon"></a>
-								<span>Text Dealership</span>
-							</div>
-							<div>
-								<a :href="`tel:${$root.meta.dealerContactInfo.phone}`" class="contact-icon"></a>
-								<span>Phone Dealership</span>
-							</div>
-						</div>
-					</div>
 				</div>
 			</div>
-			<div class="footer" v-if="timer > 0">
+			<div class="footer">
 				<button @click="changeOnboarding('left')" class="button btn red"> CONTINUE </button>
 			</div>
 		</v-touch>
@@ -185,9 +169,7 @@ export default {
 
 			case 'second':
 				if (direction === 'left') {
-					if (this.timer > 0) {
-						this.currentOnboarding = 'third'
-					}
+					this.currentOnboarding = 'third'
 				} else if (direction === 'right') {
 					this.currentOnboarding = 'first'
 				}
