@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div class="wrapper">
+		<div class="wrapper" v-if="!$root.meta.expired">
 			<div class="nissan-logo">
 				<img :src="$root.meta.topImageUrl">
 			</div>
@@ -31,6 +31,29 @@
 					<img :src="$root.meta.carImageUrl">
 				</div>
 			</form>
+		</div>
+		<div v-else class="wrapper">
+			<div class="onboarding">
+				<div class="timer-info">
+					<img src="../assets/images/clock.png">
+					<div class="timer-page-text">
+						<div>
+							<p>We are sorry but this link has expired.</p>
+							<p>Please contact the dealership for the status of your vehicle.</p>
+						</div>
+						<div class="timer-page-no-timer">
+							<div>
+								<a :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" class="chat-icon"></a>
+								<span>Text Dealership</span>
+							</div>
+							<div>
+								<a :href="`tel:${$root.meta.dealerContactInfo.phone}`" class="contact-icon"></a>
+								<span>Phone Dealership</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 		<div class="modal" v-if="modalOpen">
 			<div class="modal-window">

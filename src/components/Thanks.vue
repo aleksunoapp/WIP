@@ -39,6 +39,9 @@ export default {
 		}
 	},
 	created: function () {
+		if (this.$root.meta.expired) {
+			this.$router.push('/')
+		}
 		$('html, body').scrollTop(0)
 
 		let dateConst = new Date()

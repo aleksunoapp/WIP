@@ -1054,3 +1054,34 @@ img {
 .modal-message.no-padding-bottom > span {
 	margin: 0 15px;
 }
+
+.timer-page-text {
+	color: #000;
+	font-size: 16px;
+	width: 80%;
+	margin: 0 auto;
+}
+.timer-page-text .blue {
+	color: #000;
+}
+.timer-page-no-timer {
+	display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 14px;
+    margin-top: 70px;
+}
+.timer-page-no-timer .chat-icon, .timer-page-no-timer .contact-icon {
+	float: none;
+    display: block;
+    margin: 5px auto;
+}
+.timer-info {
+	text-align: center;
+	padding-top: 50px;
+}
+.onboarding {
+	position: relative;
+	background-color: #fff;
+	width: 100%;
+}

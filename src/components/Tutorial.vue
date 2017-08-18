@@ -95,6 +95,9 @@ export default {
 		}
 	},
 	created () {
+		if (this.$root.meta.expired) {
+			this.$router.push('/')
+		}
 		$('html, body').scrollTop(0)
 
 		this.initTimer()
@@ -266,35 +269,6 @@ export default {
 .button:hover {
 	cursor:pointer;
 	background-color: #aa0000;
-}
-.onboarding {
-	position: relative;
-	background-color: #fff;
-	width: 100%;
-}
-.timer-page-text {
-	color: #000;
-	font-size: 16px;
-	width: 80%;
-	margin: 0 auto;
-}
-.timer-page-text .blue {
-	color: #000;
-}
-.timer-page-no-timer {
-	display: flex;
-    justify-content: space-around;
-    align-items: center;
-    font-size: 14px;
-    margin-top: 70px;
-}
-.timer-page-no-timer .chat-icon, .timer-page-no-timer .contact-icon {
-	float: none;
-    display: block;
-    margin: 5px auto;
-}
-.timer-info {
-	padding-top: 50px;
 }
 #timer {
 	/*font-family: 'Open Sans';*/

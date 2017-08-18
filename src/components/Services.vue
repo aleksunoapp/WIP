@@ -258,6 +258,9 @@ export default {
 		}
 	},
 	created () {
+		if (this.$root.meta.expired) {
+			this.$router.push('/')
+		}
 		this.$root.serviceCategories.forEach(category => {
 			if (category.id === '4') {
 				this.accordion = category.defaultExpended

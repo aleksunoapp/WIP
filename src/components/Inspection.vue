@@ -171,6 +171,9 @@ export default {
 		}
 	},
 	created () {
+		if (this.$root.meta.expired) {
+			this.$router.push('/')
+		}
 		this.serviceCategories = this.$root.serviceCategories
 		this.inspectionTotal = this.$root.totals.inspectionTotal
 
