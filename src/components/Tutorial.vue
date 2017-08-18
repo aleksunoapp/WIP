@@ -165,8 +165,6 @@ export default {
 			case 'first':
 				if (direction === 'left') {
 					this.currentOnboarding = 'second'
-					} else {
-					}
 				}
 				break
 
