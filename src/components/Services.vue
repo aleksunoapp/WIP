@@ -131,7 +131,7 @@
 				<div class="summary-table">
 					<div class="summary-table-row service-subtotal">
 						<div class="summary-table-cell">
-							Estimated Taxes &amp; Fees
+							Estimated Taxes &amp; Fees (Newly Approved Services)
 						</div>
 						<div class="summary-table-cell">
 							<span class="price">${{ tax.toFixed(2) }}</span>
@@ -168,7 +168,7 @@
 				<div class="summary-table">
 					<div class="summary-table-row service-subtotal">
 						<div class="summary-table-cell">
-							Estimated Taxes &amp; Fees:
+							Estimated Taxes &amp; Fees (Newly Approved Services):
 						</div>
 						<div class="summary-table-cell">
 							<span class="price">${{ tax.toFixed(2) }}</span>
