@@ -222,6 +222,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .wrapper {
+	max-width: 414px;
 	overflow: hidden;
 	margin-left: auto;
 	margin-right: auto;

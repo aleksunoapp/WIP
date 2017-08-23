@@ -25,7 +25,6 @@ img {
 }
 
 .wrapper {
-	max-width: 414px;
 	min-width: 320px;
 	text-align: center;
 	margin: auto;
@@ -820,7 +819,6 @@ img {
 .accept-estimate-component {
 	position: fixed;
 	min-width: 320px;
-	max-width: 414px;
 	width: 100%;
 	bottom: 0;
 	z-index: 3;
@@ -831,7 +829,6 @@ img {
 	background-color:white;
 	position: fixed;
 	min-width: 320px;
-	max-width: 414px;
 	width: 100%;
 	bottom: 0;
 	z-index: 3;
@@ -844,7 +841,6 @@ img {
 .proceed-component {
 	position: fixed;
 	min-width: 320px;
-	max-width: 414px;
 	width: 100%;
 	bottom: 0;
 	z-index: 3;
