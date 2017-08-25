@@ -18,8 +18,8 @@
 							<a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-summary-link">
 								Inspection Summary
 							</a>
-							<a :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" class="chat-icon"></a>
-							<a :href="`tel:${$root.meta.dealerContactInfo.phone}`" class="contact-icon"></a>
+							<a v-if="$root.mobile" :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" class="chat-icon"></a>
+							<a v-if="$root.mobile" :href="`tel:${$root.meta.dealerContactInfo.phone}`" class="contact-icon"></a>
 						</div>
 						<div class="info-modal-estimate">Estimated cost of this item <span>${{ (viewingService.price).toFixed(2) }}</span></div>
 					</div>

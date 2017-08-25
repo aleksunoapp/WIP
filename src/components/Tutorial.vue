@@ -161,6 +161,12 @@ export default {
 		 * @returns {undefined}
 		 */
 		changeOnboarding (direction) {
+			// Skip tutorial if dealer is logging in
+			if (this.$root.dealer) {
+				this.$router.push({name: 'inspection'})
+				return
+			}
+
 			switch (this.currentOnboarding) {
 			case 'first':
 				if (direction === 'left') {

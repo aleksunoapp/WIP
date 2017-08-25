@@ -24,10 +24,12 @@ export default {
 			this.$root.token = this.$route.params.uniqueUrl
 		}
 
+		// Check if device is mobile (for hiding call/text buttons)
 		if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
 			this.$root.mobile = true
 		}
 
+		// If url is from a dealer, authenticate right away
 		if (this.$route.query.secret) {
 			this.$root.dealer = true
 			this.verificationCode = this.$route.query.secret

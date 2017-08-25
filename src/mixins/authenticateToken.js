@@ -190,11 +190,7 @@ var authenticateToken = {
 
 						_this.$root.inspectionCounts = inspectionCounts
 
-						if (!_this.$root.dealer) {
-							_this.$router.push({name: 'tutorial'})
-						} else {
-							_this.$router.push({name: 'inspection'})
-						}
+						_this.$router.push({name: 'tutorial'})
 					}).catch(reason => {
 						this.showErrorMessage = true
 					})

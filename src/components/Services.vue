@@ -154,8 +154,8 @@
 			</div>
 			<div class="footer-bar">
 				<div class="footer-bar">
-					<a :href="`tel:${$root.meta.dealerContactInfo.phone}`" class="contact-icon"></a>
-					<a :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" class="chat-icon"></a>
+					<a v-if="$root.mobile" :href="`tel:${$root.meta.dealerContactInfo.phone}`" class="contact-icon"></a>
+					<a v-if="$root.mobile" :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" class="chat-icon"></a>
 					<a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-summary-link">
 						Inspection Summary
 					</a>
