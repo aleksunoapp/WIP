@@ -10,6 +10,7 @@ import $ from 'jquery'
 import ENV from './environment'
 import { isEmpty } from 'lodash'
 import ErrorMessage from './components/ErrorMessage'
+import authenticateToken from './mixins/authenticateToken.js'
 
 export default {
 	name: 'app',
@@ -23,11 +24,22 @@ export default {
 			this.$root.token = this.$route.params.uniqueUrl
 		}
 
+		if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+			this.$root.mobile = true
+		}
+
+		if (this.$route.query.secret) {
+			this.$root.dealer = true
+			this.verificationCode = this.$route.query.secret
+			this.authenticateToken()
+		}
+
 		this.getMetaData()
 	},
 	data () {
 		return {
-			showErrorMessage: false
+			showErrorMessage: false,
+			verificationCode: ''
 		}
 	},
 	computed: {
@@ -75,6 +87,7 @@ export default {
 	},
 	components: {
 		ErrorMessage
-	}
+	},
+	mixins: [authenticateToken]
 }
 </script>

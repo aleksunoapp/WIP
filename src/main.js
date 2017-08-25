@@ -27,7 +27,9 @@ new Vue({
 			inspectionCounts: {},
 			total: 0,
 			token: '',
-			accessToken: ''
+			accessToken: '',
+			dealer: false,
+			mobile: false
 		}
 	}
 })
