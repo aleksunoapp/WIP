@@ -51,6 +51,7 @@
 								<span>Phone Dealership</span>
 							</div>
 						</div>
+						<p v-else>You can call us at {{$root.meta.dealerContactInfo.phone}}.</p>
 					</div>
 				</div>
 			</div>
@@ -73,6 +74,7 @@
 							<li v-if="$root.mobile"><a :href="`tel:${$root.meta.dealerContactInfo.phone}`">Call Dealership</a></li>
 							<li v-if="$root.mobile"><a :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`">Text Dealership</a></li>
 						</ul>
+						<p v-if="!$root.mobile" class="modal-list-phone">Call us at {{$root.meta.dealerContactInfo.phone}}</p>
 					</div>
 				</div>
 			</div>
