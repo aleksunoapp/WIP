@@ -15,7 +15,7 @@
 					</div>
 					<div class="info-modal-info-bottom">
 						<div class="info-modal-contact">
-							<a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-summary-link">
+							<a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-summary-link" @click="$root.log(`Opened Inspection Summary PDF`)">
 								Inspection Summary
 							</a>
 							<a v-if="$root.mobile" :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" class="chat-icon"></a>
@@ -51,6 +51,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		closeModal () {
+			this.$root.log(`Closed ${this.viewingService.name} info window`)
 			this.$emit('closeModal')
 		},
 		/**
@@ -59,6 +60,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		approveService () {
+			this.$root.log(`Approved ${this.viewingService.name} service`)
 			this.$emit('approve')
 		},
 		/**
@@ -67,6 +69,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		deferService () {
+			this.$root.log(`Deferred ${this.viewingService.name} service`)
 			this.$emit('defer')
 		}
 	}

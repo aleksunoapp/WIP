@@ -47,6 +47,8 @@ export default {
 		let dateConst = new Date()
 		let responseDate = new Date(this.$root.meta.responseBy)
 		this.timeExpired = responseDate < dateConst
+
+		this.$root.log(`Thanks page loaded`)
 	},
 	computed: {
 		/**

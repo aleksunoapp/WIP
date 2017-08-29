@@ -29,7 +29,15 @@ new Vue({
 			token: '',
 			accessToken: '',
 			dealer: false,
-			mobile: false
+			mobile: false,
+			userActivity: []
+		}
+	},
+	methods: {
+		log (message) {
+			let d = new Date()
+			d = d.toString()
+			this.$root.userActivity.push(`${d} || ${message}`)
 		}
 	}
 })

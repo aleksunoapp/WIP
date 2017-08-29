@@ -137,9 +137,9 @@
 					Next
 				</div>
 				<div class="footer-bar">
-					<a v-if="$root.mobile" :href="`tel:${$root.meta.dealerContactInfo.phone}`" class="contact-icon"></a>
-					<a v-if="$root.mobile" :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" class="chat-icon"></a>
-					<a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-summary-link">
+					<a v-if="$root.mobile" :href="`tel:${$root.meta.dealerContactInfo.phone}`" class="contact-icon" @click="$root.log('Clicked Phone icon')"></a>
+					<a v-if="$root.mobile" :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" class="chat-icon" @click="$root.log('Clicked Text icon')"></a>
+					<a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-summary-link" @click="$root.log(`Opened Inspection Summary PDF`)">
 						Inspection Summary
 					</a>
 				</div>
@@ -184,6 +184,8 @@ export default {
 		this.timeExpired = responseDate < dateConst
 
 		this.checkSelectAll()
+
+		this.$root.log('Inspection Summary page loaded')
 	},
 	computed: {
 		/**
@@ -269,6 +271,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		toggleAccordion (category) {
+			category.defaultExpended ? this.$root.log(`Collapsed ${category.name} accordion`) : this.$root.log(`Expanded ${category.name} accordion`)
 			category.defaultExpended = !category.defaultExpended
 		},
 		/**
@@ -279,6 +282,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		toggleCheckbox (category, service) {
+			service.isSelected ? this.$root.log(`Checked ${service.name} checkbox`) : this.$root.log(`Unchecked ${service.name} checkbox`)
 			if (service.isSelected) {
 				this.inspectionTotal.total += parseFloat(service.price)
 				this.checkSelectAll()
@@ -306,6 +310,7 @@ export default {
 		 */
 		toggleAll (category) {
 			if (category.allSelected) {
+				this.$root.log(`Selected all in ${category.name} category`)
 				this.$root.services.forEach(service => {
 					if (service.category === category.id) {
 						if (service.subServices) {
@@ -324,6 +329,7 @@ export default {
 					}
 				})
 			} else {
+				this.$root.log(`Removed all in ${category.name} category`)
 				this.$root.services.forEach(service => {
 					if (service.category === category.id) {
 						if (service.subServices) {
@@ -390,6 +396,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		openServiceModal (service) {
+			this.$root.log(`Displayed ${service.name} info window`)
 			this.viewingService = service
 			this.modalOpen = true
 		},
@@ -430,6 +437,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		openServices () {
+			this.$root.log(`Clicked the Next button`)
 			this.$router.push({name: 'services'})
 		},
 		/**

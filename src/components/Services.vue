@@ -154,9 +154,9 @@
 			</div>
 			<div class="footer-bar">
 				<div class="footer-bar">
-					<a v-if="$root.mobile" :href="`tel:${$root.meta.dealerContactInfo.phone}`" class="contact-icon"></a>
-					<a v-if="$root.mobile" :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" class="chat-icon"></a>
-					<a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-summary-link">
+					<a v-if="$root.mobile" :href="`tel:${$root.meta.dealerContactInfo.phone}`" class="contact-icon" @click="$root.log(`Clicked Phone icon`)"></a>
+					<a v-if="$root.mobile" :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" class="chat-icon" @click="$root.log(`Clicked Text icon`)"></a>
+					<a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-summary-link" @click="$root.log(`Opened Inspection Summary PDF`)">
 						Inspection Summary
 					</a>
 				</div>
@@ -275,6 +275,17 @@ export default {
 		this.tax = this.$root.totals.serviceTotal.tax
 
 		this.getTaxTotals()
+
+		this.$root.log(`Service Summary page loaded`)
+	},
+	watch: {
+		termsAndConditions (value) {
+			value ? this.$root.log(`Checked the Terms and Conditions box`) : this.$root.log(`Unchecked the Terms and Conditions box`)
+		},
+		signagtureSigned (value) {
+			value ? this.$root.log(`Signed`) : this.$root.log(`Cleared signature`)
+		}
+
 	},
 	computed: {
 		/**
@@ -351,6 +362,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		toggleAccordion () {
+			this.accordion ? this.$root.log(`Collapsed Previously Approved Services accordion`) : this.$root.log(`Expanded Previously Approved Services accordion`)
 			this.accordion = !this.accordion
 		},
 		/**
@@ -360,6 +372,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		openSignature (val) {
+			this.$root.log(`Clicked Accept Estimate`)
 			this.open = val
 		},
 		/**
@@ -368,6 +381,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		returnToInspection () {
+			this.$root.log(`Declined estimate`)
 			this.$router.push({name: 'inspection'})
 		},
 		/**
@@ -376,6 +390,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		openThanks () {
+			this.$root.log(`Accepted estimate`)
 			let _this = this
 			let approvedServices = []
 			this.$root.services.forEach(service => {
@@ -433,6 +448,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		toggleTerms (val) {
+			val ? this.$root.log(`Displayed Terms and Conditions`) : this.$root.log(`Closed Terms and Conditions`)
 			this.showTerms = val
 		},
 		/**

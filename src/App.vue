@@ -37,6 +37,8 @@ export default {
 		}
 
 		this.getMetaData()
+
+		this.$root.log('Login page loaded')
 	},
 	data () {
 		return {
