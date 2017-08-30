@@ -283,6 +283,9 @@ export default {
 
 		this.$root.logPageDuration('services')
 	},
+	destroyed () {
+		this.$root.logPageDuration('services')
+	},
 	computed: {
 		/**
 		 * To compute the format of time the customer needs to respond by

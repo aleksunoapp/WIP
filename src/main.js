@@ -45,7 +45,11 @@ new Vue({
 					infoPopup: []
 				}
 			},
-			previousDuration: 0
+			previousDurations: {
+				services: 0,
+				inspection: 0,
+				home: 0
+			}
 		}
 	},
 	methods: {
@@ -67,9 +71,11 @@ new Vue({
 			if (this.$root.$data.userActivity.pageDurations[pageName] === null) {
 				this.$root.$data.userActivity.pageDurations[pageName] = Date.now()
 			} else if (this.$root.$data.userActivity.pageDurations[pageName] < 1000000000000) {
-				return
+				this.previousDurations[pageName] = this.$root.$data.userActivity.pageDurations[pageName]
+				this.$root.$data.userActivity.pageDurations[pageName] = Date.now()
 			} else {
-				this.$root.$data.userActivity.pageDurations[pageName] = Date.now() - this.$root.$data.userActivity.pageDurations[pageName] + this.previousDuration
+				this.$root.$data.userActivity.pageDurations[pageName] = Date.now() - this.$root.$data.userActivity.pageDurations[pageName] + this.previousDurations[pageName]
+				this.previousDurations[pageName] = 0
 			}
 		},
 		logTutorialDuration (slideNumber) {
