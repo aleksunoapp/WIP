@@ -102,7 +102,10 @@ export default {
 
 		this.initTimer()
 
-		this.$root.log('Tutorial page loaded')
+		this.$root.logTutorialDuration(this.currentOnboarding)
+	},
+	destroyed () {
+		this.$root.logTutorialDuration(this.currentOnboarding)
 	},
 	computed: {
 		/**
@@ -154,7 +157,6 @@ export default {
 		 * @returns {undefined}
 		 */
 		finishTutorial () {
-			this.$root.log('Finished tutorial')
 			this.$router.push({name: 'inspection'})
 		},
 		/**
@@ -173,25 +175,29 @@ export default {
 			switch (this.currentOnboarding) {
 			case 'first':
 				if (direction === 'left') {
-					this.$root.log('Moved to tutorial page 2')
+					this.$root.logTutorialDuration(this.currentOnboarding)
 					this.currentOnboarding = 'second'
+					this.$root.logTutorialDuration(this.currentOnboarding)
 				}
 				break
 
 			case 'second':
 				if (direction === 'left') {
-					this.$root.log('Moved to tutorial page 3')
+					this.$root.logTutorialDuration(this.currentOnboarding)
 					this.currentOnboarding = 'third'
+					this.$root.logTutorialDuration(this.currentOnboarding)
 				} else if (direction === 'right') {
-					this.$root.log('Moved to tutorial page 1')
+					this.$root.logTutorialDuration(this.currentOnboarding)
 					this.currentOnboarding = 'first'
+					this.$root.logTutorialDuration(this.currentOnboarding)
 				}
 				break
 
 			case 'third':
 				if (direction === 'right') {
-					this.$root.log('Moved to tutorial page 2')
+					this.$root.logTutorialDuration(this.currentOnboarding)
 					this.currentOnboarding = 'second'
+					this.$root.logTutorialDuration(this.currentOnboarding)
 				}
 				break
 

@@ -48,7 +48,8 @@ export default {
 		let responseDate = new Date(this.$root.meta.responseBy)
 		this.timeExpired = responseDate < dateConst
 
-		this.$root.log(`Thanks page loaded`)
+		this.$root.logPageDuration('services')
+		document.cookie = `userActivity=${JSON.stringify(this.$root.$data.userActivity)}`
 	},
 	computed: {
 		/**

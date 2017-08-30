@@ -195,10 +195,11 @@ var authenticateToken = {
 						this.showErrorMessage = true
 					})
 				} else {
+					this.$root.logError('Token authentication failed, error message displayed')
 					this.showErrorMessage = true
 				}
 			}).fail(reason => {
-				this.$root.log('Passcode failed authentication, error message displayed')
+				this.$root.logError('Passcode failed authentication, error message displayed')
 				_this.modalOpen = true
 				if (_this.$root.meta.authenticationHint.hintType === 1) {
 					_this.modal.title = 'Unrecognized email address'

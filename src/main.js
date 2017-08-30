@@ -30,14 +30,69 @@ new Vue({
 			accessToken: '',
 			dealer: false,
 			mobile: false,
-			userActivity: []
+			userActivity: {
+				clientId: this.$root.token,
+				eventTracker: [],
+				pageDurations: {
+					home: null,
+					tutorialSlide: {
+						first: null,
+						second: null,
+						third: null
+					},
+					inspection: null,
+					services: null,
+					infoPopup: []
+				}
+			},
+			previousDuration: 0
 		}
 	},
 	methods: {
-		log (message) {
-			let d = new Date()
-			d = d.toString()
-			this.$root.userActivity.push(`${d} || ${message}`)
+		logEvent (eventDescription) {
+			let eventObject = {
+				'page': this.$route.name,
+				'event': eventDescription
+			}
+			this.$root.$data.userActivity.eventTracker.push(eventObject)
+		},
+		logError (eventDescription) {
+			let eventObject = {
+				'page': this.$route.name,
+				'error': eventDescription
+			}
+			this.$root.$data.userActivity.eventTracker.push(eventObject)
+		},
+		logPageDuration (pageName) {
+			console.log(pageName)
+			console.log('found', this.$root.$data.userActivity.pageDurations[pageName])
+			if (this.$root.$data.userActivity.pageDurations[pageName] === null) {
+				this.$root.$data.userActivity.pageDurations[pageName] = Date.now()
+			} else if (this.$root.$data.userActivity.pageDurations[pageName] < 1000000000000) {
+				return
+			} else {
+				this.$root.$data.userActivity.pageDurations[pageName] = Date.now() - this.$root.$data.userActivity.pageDurations[pageName] + this.previousDuration
+			}
+			console.log('set to', this.$root.$data.userActivity.pageDurations[pageName])
+		},
+		logTutorialDuration (slideNumber) {
+			if (this.$root.$data.userActivity.pageDurations.tutorialSlide[slideNumber] === null) {
+				this.$root.$data.userActivity.pageDurations.tutorialSlide[slideNumber] = Date.now()
+			} else {
+				this.$root.$data.userActivity.pageDurations.tutorialSlide[slideNumber] = Date.now() - this.$root.$data.userActivity.pageDurations.tutorialSlide[slideNumber]
+			}
+		},
+		logInfoPopupDuration (id) {
+			let popup = this.$root.$data.userActivity.pageDurations.infoPopup.find(x => x.id === id)
+			if (popup === undefined) {
+				this.$root.$data.userActivity.pageDurations.infoPopup.push({id: id, duration: null})
+				popup = this.$root.$data.userActivity.pageDurations.infoPopup.find(x => x.id === id)
+			}
+			if (popup.duration === null) {
+				popup.duration = Date.now()
+			} else {
+				popup.duration = Date.now() - popup.duration
+			}
 		}
 	}
 })
