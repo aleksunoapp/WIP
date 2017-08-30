@@ -64,8 +64,6 @@ new Vue({
 			this.$root.$data.userActivity.eventTracker.push(eventObject)
 		},
 		logPageDuration (pageName) {
-			console.log(pageName)
-			console.log('found', this.$root.$data.userActivity.pageDurations[pageName])
 			if (this.$root.$data.userActivity.pageDurations[pageName] === null) {
 				this.$root.$data.userActivity.pageDurations[pageName] = Date.now()
 			} else if (this.$root.$data.userActivity.pageDurations[pageName] < 1000000000000) {
@@ -73,7 +71,6 @@ new Vue({
 			} else {
 				this.$root.$data.userActivity.pageDurations[pageName] = Date.now() - this.$root.$data.userActivity.pageDurations[pageName] + this.previousDuration
 			}
-			console.log('set to', this.$root.$data.userActivity.pageDurations[pageName])
 		},
 		logTutorialDuration (slideNumber) {
 			if (this.$root.$data.userActivity.pageDurations.tutorialSlide[slideNumber] === null) {
