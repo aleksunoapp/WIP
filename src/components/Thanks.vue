@@ -66,6 +66,7 @@ export default {
 			let weekday = fullDate.getDate()
 			let monthIndex = fullDate.getMonth()
 			const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+			let timeTillTomorrow = new Date().setHours(24, 0, 0, 0) - new Date()
 
 			if (hour === 12) {
 				meridian = 'PM'
@@ -86,7 +87,7 @@ export default {
 
 			formattedDate = 'on ' + weekday + ' ' + monthNames[monthIndex]
 
-			if (fullDate - new Date() > 86400000) {
+			if (fullDate - new Date() > timeTillTomorrow) {
 				return formattedDate
 			} else {
 				return formattedTime
