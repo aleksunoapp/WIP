@@ -284,6 +284,13 @@ export default {
 	margin-bottom:32px;
 	cursor: pointer;
 }
+
+@media (max-height: 530px) {
+	.button {
+		margin-bottom: 10px;
+	}
+}
+
 .button:hover {
 	cursor:pointer;
 	background-color: #aa0000;
@@ -311,6 +318,13 @@ export default {
 	margin-top: 20px;
 	margin-bottom: 20px;
 }
+
+@media (max-height: 495px) {
+	.onboarding-first-text {
+		margin-bottom: 10px;
+	}
+}
+
 .onboarding-first-text-highlight {
 	font-size: 24px;
 	font-weight: 700;
@@ -319,9 +333,24 @@ export default {
 	width: 50%;
 	height: 50%;
 }
+
+@media (max-height: 495px) {
+	.onboarding-first-image {
+		width: 30%;
+		height: 30%;
+	}
+}
+
 .onboarding-first-break {
 	margin-bottom: 20px;
 }
+
+@media (max-height: 450px) {
+	.onboarding-first-break {
+		margin-bottom: 10px;
+	}
+}
+
 .onboarding-first-bottom {
 	text-align: left;
 	font-size: 16px;
