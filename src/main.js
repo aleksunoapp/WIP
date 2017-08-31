@@ -31,7 +31,7 @@ new Vue({
 			dealer: false,
 			mobile: false,
 			userActivity: {
-				clientId: this.$root.token,
+				clientId: null,
 				eventTracker: [],
 				pageDurations: {
 					home: null,
