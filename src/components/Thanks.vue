@@ -11,7 +11,7 @@
 			<div>
 				Thanks for your time.
 			</div>
-			<div class="ready-box" v-if="!timeExpired">Your car will be ready at {{ computedPromiseTime }}</div>
+			<div class="ready-box" v-if="!timeExpired">Your car will be ready {{ computedPromiseTime }}</div>
 			<div class="thanks-confirm-text">
 				I will confirm with you when your vehicle is ready.
 			</div>
@@ -60,6 +60,11 @@ export default {
 			let hour = fullDate.getHours()
 			let minutes = fullDate.getMinutes()
 			let meridian = 'AM'
+			let formattedDate = ''
+			let weekday = fullDate.getDate()
+			let monthIndex = fullDate.getMonth()
+			const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+			let timeTillTomorrow = new Date().setHours(24, 0, 0, 0) - new Date()
 
 			if (hour === 12) {
 				meridian = 'PM'
@@ -76,8 +81,15 @@ export default {
 				minutes = '0' + minutes
 			}
 
-			formattedTime = hour + ':' + minutes + ' ' + meridian
-			return formattedTime
+			formattedTime = 'at ' + hour + ':' + minutes + ' ' + meridian
+
+			formattedDate = 'on ' + weekday + ' ' + monthNames[monthIndex]
+
+			if (fullDate - new Date() > timeTillTomorrow) {
+				return formattedDate
+			} else {
+				return formattedTime
+			}
 		}
 	}
 }
