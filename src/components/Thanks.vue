@@ -11,7 +11,7 @@
 			<div>
 				Thanks for your time.
 			</div>
-			<div class="ready-box" v-if="!timeExpired">Your car will be ready {{ computedPromiseTime }}</div>
+			<div class="ready-box" v-if="!timeExpired">Your car will be ready <br />{{ computedPromiseTime }}</div>
 			<div class="thanks-confirm-text">
 				I will confirm with you when your vehicle is ready.
 			</div>
@@ -59,17 +59,18 @@ export default {
 			let fullDate = new Date(this.$root.meta.promise)
 			let hour = fullDate.getHours()
 			let minutes = fullDate.getMinutes()
-			let meridian = 'AM'
+			let meridian = 'am'
 			let formattedDate = ''
-			let weekday = fullDate.getDate()
+			let day = fullDate.getDate()
 			let monthIndex = fullDate.getMonth()
+			let year = fullDate.getFullYear()
 			const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 			let timeTillTomorrow = new Date().setHours(24, 0, 0, 0) - new Date()
 
 			if (hour === 12) {
-				meridian = 'PM'
+				meridian = 'pm'
 			} else if (hour > 12) {
-				meridian = 'PM'
+				meridian = 'pm'
 				hour -= 12
 			} else if (hour === 0) {
 				hour = 12
@@ -81,14 +82,14 @@ export default {
 				minutes = '0' + minutes
 			}
 
-			formattedTime = 'at ' + hour + ':' + minutes + ' ' + meridian
+			formattedTime = hour + ':' + minutes + meridian
 
-			formattedDate = 'on ' + weekday + ' ' + monthNames[monthIndex]
+			formattedDate = monthNames[monthIndex] + ' ' + day + ', ' + year
 
 			if (fullDate - new Date() > timeTillTomorrow) {
-				return formattedDate
+				return 'on ' + formattedDate + ' at ' + formattedTime
 			} else {
-				return formattedTime
+				return 'at ' + formattedTime
 			}
 		}
 	}
