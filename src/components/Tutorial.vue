@@ -170,7 +170,14 @@ export default {
 			switch (this.currentOnboarding) {
 			case 'first':
 				if (direction === 'left') {
-					this.currentOnboarding = 'second'
+					console.log('today: ' + new Date().getTime())
+					console.log('response time: ' + new Date(this.$root.meta.responseBy).getTime())
+					console.log(new Date(this.$root.meta.responseBy).getTime() < new Date())
+					if (new Date(this.$root.meta.responseBy).getTime() > new Date().getTime()) {
+						this.currentOnboarding = 'second'
+					} else {
+						this.currentOnboarding = 'third'
+					}
 				}
 				break
 
