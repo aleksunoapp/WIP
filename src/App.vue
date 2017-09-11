@@ -19,9 +19,10 @@ export default {
 	 * @function
 	 * @returns {undefined}
 	 */
-	created: function () {
+	created () {
 		if (this.$route.params.uniqueUrl) {
 			this.$root.token = this.$route.params.uniqueUrl
+			this.$root.userActivity.clientId = this.$route.params.uniqueUrl
 		}
 
 		// Check if device is mobile (for hiding call/text buttons)

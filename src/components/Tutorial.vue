@@ -101,6 +101,11 @@ export default {
 		$('html, body').scrollTop(0)
 
 		this.initTimer()
+
+		this.$root.logTutorialDuration(this.currentOnboarding)
+	},
+	destroyed () {
+		this.$root.logTutorialDuration(this.currentOnboarding)
 	},
 	computed: {
 		/**
@@ -170,21 +175,29 @@ export default {
 			switch (this.currentOnboarding) {
 			case 'first':
 				if (direction === 'left') {
+					this.$root.logTutorialDuration(this.currentOnboarding)
 					this.currentOnboarding = 'second'
+					this.$root.logTutorialDuration(this.currentOnboarding)
 				}
 				break
 
 			case 'second':
 				if (direction === 'left') {
+					this.$root.logTutorialDuration(this.currentOnboarding)
 					this.currentOnboarding = 'third'
+					this.$root.logTutorialDuration(this.currentOnboarding)
 				} else if (direction === 'right') {
+					this.$root.logTutorialDuration(this.currentOnboarding)
 					this.currentOnboarding = 'first'
+					this.$root.logTutorialDuration(this.currentOnboarding)
 				}
 				break
 
 			case 'third':
 				if (direction === 'right') {
+					this.$root.logTutorialDuration(this.currentOnboarding)
 					this.currentOnboarding = 'second'
+					this.$root.logTutorialDuration(this.currentOnboarding)
 				}
 				break
 

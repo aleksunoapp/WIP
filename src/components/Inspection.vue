@@ -137,9 +137,9 @@
 					Next
 				</div>
 				<div class="footer-bar">
-					<a v-if="$root.mobile" :href="`tel:${$root.meta.dealerContactInfo.phone}`" class="contact-icon"></a>
-					<a v-if="$root.mobile" :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" class="chat-icon"></a>
-					<a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-summary-link">
+					<a v-if="$root.mobile" :href="`tel:${$root.meta.dealerContactInfo.phone}`" class="contact-icon" @click="$root.logEvent('Clicked Phone icon')"></a>
+					<a v-if="$root.mobile" :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" class="chat-icon" @click="$root.logEvent('Clicked Text icon')"></a>
+					<a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-summary-link" @click="$root.logEvent(`Opened Inspection Summary PDF`)">
 						Inspection Summary
 					</a>
 				</div>
@@ -170,6 +170,16 @@ export default {
 			timeExpired: false
 		}
 	},
+	watch: {
+		viewingService (thisService, previousService) {
+			if (previousService.id !== undefined) {
+				this.$root.logInfoPopupDuration(previousService.id)
+			}
+			if (thisService.id !== undefined) {
+				this.$root.logInfoPopupDuration(thisService.id)
+			}
+		}
+	},
 	created () {
 		if (this.$root.meta.expired) {
 			this.$router.push('/')
@@ -184,6 +194,11 @@ export default {
 		this.timeExpired = responseDate < dateConst
 
 		this.checkSelectAll()
+
+		this.$root.logPageDuration('inspection')
+	},
+	destroyed () {
+		this.$root.logPageDuration('inspection')
 	},
 	computed: {
 		/**
@@ -260,6 +275,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		openFullInspection () {
+			this.$root.logEvent('Opened Inspection Summary PDF')
 			window.open(this.$root.meta.inspectionPdfUrl, '_blank')
 		},
 		/**
@@ -269,6 +285,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		toggleAccordion (category) {
+			category.defaultExpended ? this.$root.logEvent(`Collapsed ${category.name} accordion`) : this.$root.logEvent(`Expanded ${category.name} accordion`)
 			category.defaultExpended = !category.defaultExpended
 		},
 		/**
@@ -279,6 +296,9 @@ export default {
 		 * @returns {undefined}
 		 */
 		toggleCheckbox (category, service) {
+			if (this.$root.$data.userActivity.eventTracker[this.$root.$data.userActivity.eventTracker.length - 1].event !== `Deferred ${service.name} service`) {
+				service.isSelected ? this.$root.logEvent(`Checked ${service.name} checkbox`) : this.$root.logEvent(`Unchecked ${service.name} checkbox`)
+			}
 			if (service.isSelected) {
 				this.inspectionTotal.total += parseFloat(service.price)
 				this.checkSelectAll()
@@ -306,6 +326,7 @@ export default {
 		 */
 		toggleAll (category) {
 			if (category.allSelected) {
+				this.$root.logEvent(`Selected all in ${category.name} category`)
 				this.$root.services.forEach(service => {
 					if (service.category === category.id) {
 						if (service.subServices) {
@@ -324,6 +345,7 @@ export default {
 					}
 				})
 			} else {
+				this.$root.logEvent(`Removed all in ${category.name} category`)
 				this.$root.services.forEach(service => {
 					if (service.category === category.id) {
 						if (service.subServices) {
@@ -390,6 +412,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		openServiceModal (service) {
+			this.$root.logEvent(`Displayed ${service.name} info window`)
 			this.viewingService = service
 			this.modalOpen = true
 		},
@@ -430,6 +453,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		openServices () {
+			this.$root.logEvent(`Clicked the Next button`)
 			this.$router.push({name: 'services'})
 		},
 		/**

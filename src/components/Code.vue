@@ -71,8 +71,8 @@
 						<span v-html="modal.content"></span>
 						<ul class="modal-list-options">
 							<li><a @click="tryAgain()"><b>Try Again</b></a></li>
-							<li v-if="$root.mobile"><a :href="`tel:${$root.meta.dealerContactInfo.phone}`">Call Dealership</a></li>
-							<li v-if="$root.mobile"><a :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`">Text Dealership</a></li>
+							<li v-if="$root.mobile"><a :href="`tel:${$root.meta.dealerContactInfo.phone}`" @click="$root.logEvent('Clicked Call Dealership')">Call Dealership</a></li>
+							<li v-if="$root.mobile"><a :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" @click="$root.logEvent('Clicked Text Dealership')">Text Dealership</a></li>
 						</ul>
 						<p v-if="!$root.mobile" class="modal-list-phone">Call us at {{$root.meta.dealerContactInfo.phone}}</p>
 					</div>
@@ -102,6 +102,11 @@ export default {
 	},
 	created () {
 		$('html, body').scrollTop(0)
+
+		this.$root.logPageDuration('home')
+	},
+	destroyed () {
+		this.$root.logPageDuration('home')
 	},
 	methods: {
 		/**
@@ -111,10 +116,12 @@ export default {
 		 */
 		enterPasscode () {
 			if (!this.verificationCode.length) {
+				this.$root.logError('Left passcode input empty')
 				this.modalOpen = true
 				this.modal.title = 'Error'
 				this.modal.content = 'Please enter your access code.'
 			} else {
+				this.$root.logEvent('Entered a passcode')
 				this.authenticateToken()
 			}
 		},
@@ -124,6 +131,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		closeModal () {
+			this.$root.logEvent('Closed error window')
 			this.modalOpen = false
 			this.modal = {
 				title: '',
@@ -136,6 +144,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		tryAgain () {
+			this.$root.logEvent('Clicked "Try Again"')
 			this.verificationCode = ''
 			this.closeModal()
 		},
@@ -145,6 +154,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		closeErrorModal () {
+			this.$root.logEvent('Closed error message')
 			this.showErrorMessage = false
 		}
 	},

@@ -154,9 +154,9 @@
 			</div>
 			<div class="footer-bar">
 				<div class="footer-bar">
-					<a v-if="$root.mobile" :href="`tel:${$root.meta.dealerContactInfo.phone}`" class="contact-icon"></a>
-					<a v-if="$root.mobile" :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" class="chat-icon"></a>
-					<a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-summary-link">
+					<a v-if="$root.mobile" :href="`tel:${$root.meta.dealerContactInfo.phone}`" class="contact-icon" @click="$root.logEvent(`Clicked Phone icon`)"></a>
+					<a v-if="$root.mobile" :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" class="chat-icon" @click="$root.logEvent(`Clicked Text icon`)"></a>
+					<a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-summary-link" @click="$root.logEvent(`Opened Inspection Summary PDF`)">
 						Inspection Summary
 					</a>
 				</div>
@@ -257,6 +257,11 @@ export default {
 			showErrorMessage: false
 		}
 	},
+	watch: {
+		termsAndConditions (oldValue, newValue) {
+			newValue ? this.$root.logEvent('Checked Terms and Conditions checkbox') : this.$root.logEvent('Unchecked Terms and Conditions checkbox')
+		}
+	},
 	created () {
 		if (this.$root.meta.expired) {
 			this.$router.push('/')
@@ -275,6 +280,11 @@ export default {
 		this.tax = this.$root.totals.serviceTotal.tax
 
 		this.getTaxTotals()
+
+		this.$root.logPageDuration('services')
+	},
+	destroyed () {
+		this.$root.logPageDuration('services')
 	},
 	computed: {
 		/**
@@ -351,6 +361,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		toggleAccordion () {
+			this.accordion ? this.$root.logEvent(`Collapsed Previously Approved Services accordion`) : this.$root.logEvent(`Expanded Previously Approved Services accordion`)
 			this.accordion = !this.accordion
 		},
 		/**
@@ -360,6 +371,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		openSignature (val) {
+			this.$root.logEvent(`Clicked Accept Estimate`)
 			this.open = val
 		},
 		/**
@@ -368,6 +380,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		returnToInspection () {
+			this.$root.logEvent(`Declined estimate`)
 			this.$router.push({name: 'inspection'})
 		},
 		/**
@@ -376,6 +389,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		openThanks () {
+			this.$root.logEvent(`Accepted estimate`)
 			let _this = this
 			let approvedServices = []
 			this.$root.services.forEach(service => {
@@ -423,6 +437,11 @@ export default {
 		 * @returns {undefined}
 		 */
 		signatureStatusChanged (val) {
+			if (val.isEmpty && this.$root.$data.userActivity.eventTracker[this.$root.$data.userActivity.eventTracker.length - 1].event !== `Signed`) {
+				this.$root.logEvent(`Signed`)
+			} else if (this.$root.$data.userActivity.eventTracker[this.$root.$data.userActivity.eventTracker.length - 1].event !== `Cleared signature`) {
+				this.$root.logEvent(`Cleared signature`)
+			}
 			this.signagtureSigned = !val.isEmpty
 			this.signaturePadData = val.data
 		},
@@ -433,6 +452,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		toggleTerms (val) {
+			val ? this.$root.logEvent(`Displayed Terms and Conditions`) : this.$root.logEvent(`Closed Terms and Conditions`)
 			this.showTerms = val
 		},
 		/**

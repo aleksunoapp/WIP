@@ -29,7 +29,73 @@ new Vue({
 			token: '',
 			accessToken: '',
 			dealer: false,
-			mobile: false
+			mobile: false,
+			userActivity: {
+				clientId: null,
+				eventTracker: [],
+				pageDurations: {
+					home: null,
+					tutorialSlide: {
+						first: null,
+						second: null,
+						third: null
+					},
+					inspection: null,
+					services: null,
+					infoPopup: []
+				}
+			},
+			previousDurations: {
+				services: 0,
+				inspection: 0,
+				home: 0
+			}
+		}
+	},
+	methods: {
+		logEvent (eventDescription) {
+			let eventObject = {
+				'page': this.$route.name,
+				'event': eventDescription
+			}
+			this.$root.$data.userActivity.eventTracker.push(eventObject)
+		},
+		logError (eventDescription) {
+			let eventObject = {
+				'page': this.$route.name,
+				'error': eventDescription
+			}
+			this.$root.$data.userActivity.eventTracker.push(eventObject)
+		},
+		logPageDuration (pageName) {
+			if (this.$root.$data.userActivity.pageDurations[pageName] === null) {
+				this.$root.$data.userActivity.pageDurations[pageName] = Date.now()
+			} else if (this.$root.$data.userActivity.pageDurations[pageName] < 1000000000000) {
+				this.previousDurations[pageName] = this.$root.$data.userActivity.pageDurations[pageName]
+				this.$root.$data.userActivity.pageDurations[pageName] = Date.now()
+			} else {
+				this.$root.$data.userActivity.pageDurations[pageName] = Date.now() - this.$root.$data.userActivity.pageDurations[pageName] + this.previousDurations[pageName]
+				this.previousDurations[pageName] = 0
+			}
+		},
+		logTutorialDuration (slideNumber) {
+			if (this.$root.$data.userActivity.pageDurations.tutorialSlide[slideNumber] === null) {
+				this.$root.$data.userActivity.pageDurations.tutorialSlide[slideNumber] = Date.now()
+			} else {
+				this.$root.$data.userActivity.pageDurations.tutorialSlide[slideNumber] = Date.now() - this.$root.$data.userActivity.pageDurations.tutorialSlide[slideNumber]
+			}
+		},
+		logInfoPopupDuration (id) {
+			let popup = this.$root.$data.userActivity.pageDurations.infoPopup.find(x => x.id === id)
+			if (popup === undefined) {
+				this.$root.$data.userActivity.pageDurations.infoPopup.push({id: id, duration: null})
+				popup = this.$root.$data.userActivity.pageDurations.infoPopup.find(x => x.id === id)
+			}
+			if (popup.duration === null) {
+				popup.duration = Date.now()
+			} else {
+				popup.duration = Date.now() - popup.duration
+			}
 		}
 	}
 })
