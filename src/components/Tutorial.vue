@@ -389,7 +389,7 @@ export default {
 		padding-top: 10px;
 	}
 	.wrapper {
-		position:fixed
+		position: relative;
 	}
 	.forced-size-image {
 		max-height: calc(100vh - 92px);
