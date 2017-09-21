@@ -1,4 +1,4 @@
 module.exports = {
 	production_url: '#{ApiUrl}#',
-	userActivityLogAPI: 'https://914d90d4.ngrok.io'
+	userActivityLogAPI: 'http://dfx-test2dmpilogs.us-east-1.elasticbeanstalk.com/'
 }
