@@ -1,6 +1,6 @@
 <template>
 	<div v-if="!$root.dealer">
-		<div class="wrapper" v-if="!linkExpired">
+		<div class="wrapper" v-if="!$root.meta.expired">
 			<div class="nissan-logo">
 				<img :src="$root.meta.topImageUrl">
 			</div>
@@ -107,17 +107,6 @@ export default {
 	},
 	destroyed () {
 		this.$root.logPageDuration('home')
-	},
-	computed: {
-		linkExpired () {
-			let deadline = new Date(this.$root.meta.responseBy)
-			let now = new Date()
-			if (this.$root.meta.expired || now >= deadline) {
-				return true
-			} else {
-				return false
-			}
-		}
 	},
 	methods: {
 		/**

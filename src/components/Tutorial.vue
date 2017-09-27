@@ -91,7 +91,8 @@ export default {
 				{text: 'Safety concerns', count: this.$root.inspectionCounts.failCount, image: require('../assets/images/fail.png')},
 				{text: 'Items requiring attention', count: this.$root.inspectionCounts.warningCount, image: require('../assets/images/warning.png')}
 			],
-			timer: ''
+			timer: '',
+			timeExpired: false
 		}
 	},
 	created () {
@@ -101,6 +102,10 @@ export default {
 		$('html, body').scrollTop(0)
 
 		this.initTimer()
+
+		let dateConst = new Date()
+		let responseDate = new Date(this.$root.meta.responseBy)
+		this.timeExpired = responseDate < dateConst
 
 		this.$root.logTutorialDuration(this.currentOnboarding)
 	},
@@ -176,7 +181,11 @@ export default {
 			case 'first':
 				if (direction === 'left') {
 					this.$root.logTutorialDuration(this.currentOnboarding)
-					this.currentOnboarding = 'second'
+					if (this.timeExpired) {
+						this.currentOnboarding = 'third'
+					} else {
+						this.currentOnboarding = 'second'
+					}
 					this.$root.logTutorialDuration(this.currentOnboarding)
 				}
 				break
@@ -196,7 +205,11 @@ export default {
 			case 'third':
 				if (direction === 'right') {
 					this.$root.logTutorialDuration(this.currentOnboarding)
-					this.currentOnboarding = 'second'
+					if (this.timeExpired) {
+						this.currentOnboarding = 'first'
+					} else {
+						this.currentOnboarding = 'second'
+					}
 					this.$root.logTutorialDuration(this.currentOnboarding)
 				}
 				break
