@@ -139,9 +139,7 @@
 				<div class="footer-bar">
 					<a v-if="$root.mobile" :href="`tel:${$root.meta.dealerContactInfo.phone}`" class="contact-icon" @click="$root.logEvent('Clicked Phone icon')"></a>
 					<a v-if="$root.mobile" :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" class="chat-icon" @click="$root.logEvent('Clicked Text icon')"></a>
-					<a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-summary-link" @click="$root.logEvent(`Opened Inspection Summary PDF`)">
-						Inspection Summary
-					</a>
+					<a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-icon" @click="$root.logEvent(`Opened Inspection Summary PDF`)"></a>
 				</div>
 			</div>
 		</div>
