@@ -22,7 +22,7 @@
 			</div>
 		</v-touch>
 
-		<v-touch @swipeleft="changeOnboarding('left')" @swiperight="changeOnboarding('right')" class="onboarding text" v-if="currentOnboarding === 'second'">
+		<v-touch @swipeleft="finishTutorial()" class="onboarding text" v-if="currentOnboarding === 'second'">
 			<div class="content-body">
 				<div class="timer-info">
 					<img src="../assets/images/clock.png">
@@ -44,16 +44,7 @@
 				</div>
 			</div>
 			<div class="footer">
-				<button @click="changeOnboarding('left')" class="button btn red"> CONTINUE </button>
-			</div>
-		</v-touch>
-
-		<v-touch @swipeleft="finishTutorial()" @swiperight="changeOnboarding('right')" class="onboarding text" v-if="currentOnboarding === 'third'">
-			<div class="content-body">
-				<img class="forced-size-image" src="../assets/images/tutorial_combined.png">
-			</div>
-			<div class="footer">
-				<button  @click="finishTutorial()" class="button btn red"> CONTINUE </button>
+				<button @click="finishTutorial()" class="button btn red"> CONTINUE </button>
 			</div>
 		</v-touch>
 	</div>
@@ -182,7 +173,7 @@ export default {
 				if (direction === 'left') {
 					this.$root.logTutorialDuration(this.currentOnboarding)
 					if (this.timeExpired) {
-						this.currentOnboarding = 'third'
+						this.finishTutorial()
 					} else {
 						this.currentOnboarding = 'second'
 					}
@@ -191,25 +182,9 @@ export default {
 				break
 
 			case 'second':
-				if (direction === 'left') {
-					this.$root.logTutorialDuration(this.currentOnboarding)
-					this.currentOnboarding = 'third'
-					this.$root.logTutorialDuration(this.currentOnboarding)
-				} else if (direction === 'right') {
-					this.$root.logTutorialDuration(this.currentOnboarding)
-					this.currentOnboarding = 'first'
-					this.$root.logTutorialDuration(this.currentOnboarding)
-				}
-				break
-
-			case 'third':
 				if (direction === 'right') {
 					this.$root.logTutorialDuration(this.currentOnboarding)
-					if (this.timeExpired) {
-						this.currentOnboarding = 'first'
-					} else {
-						this.currentOnboarding = 'second'
-					}
+					this.currentOnboarding = 'first'
 					this.$root.logTutorialDuration(this.currentOnboarding)
 				}
 				break

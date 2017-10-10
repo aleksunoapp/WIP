@@ -1,6 +1,59 @@
 <template>
 	<div>
-		<div class="wrapper">
+		<div class="help-screen-overlay" v-if="helpScreenShowing">
+			<a @click="closeHelpScreen()" class="help-screen-close">Close</a>
+			<div class="help-screen-information" v-if="this.$root.inspectionCounts.failCount !== 0 || this.$root.inspectionCounts.warningCount !== 0" :style="{'top': helpScreenVars.top, 'background-color': helpScreenVars.color}">
+				<span class="help-screen-text">View more information about the service</span>
+				<span class="help-screen-block">
+					<span class="information-icon"></span>
+				</span>
+				<div class="help-screen-arrow"></div>
+			</div>
+			<div class="help-screen-select-all" v-if="this.$root.inspectionCounts.failCount !== 0 || this.$root.inspectionCounts.warningCount !== 0" :style="{'top': helpScreenVars.selectTop, 'background-color': helpScreenVars.color, 'height': helpScreenVars.height - 1 + 'px'}">
+				<span class="help-screen-text">Select all services</span>
+				<span class="help-screen-block" :style="{'padding-left': helpScreenVars.selectChecked ? '6px' : '16px', 'padding-left': helpScreenVars.selectChecked && helpScreenVars.height > 30? '28px' : '', 'text-align': helpScreenVars.height > 30 ? 'right' : '', 'padding-right': helpScreenVars.height > 30 ? '10px' : ''}">
+					<span> {{ (helpScreenVars.selectChecked) ? 'Remove All' : 'Select All' }} </span>
+					<div class="service-checkbox">
+						<input type="checkbox" :checked="helpScreenVars.selectChecked">
+						<label>
+							<span class="check"></span>
+							<span class="box"></span>
+						</label>
+					</div>
+				</span>
+				<div class="help-screen-arrow"></div>
+			</div>
+			<div class="help-screen-select-individual" v-if="this.$root.inspectionCounts.failCount !== 0 || this.$root.inspectionCounts.warningCount !== 0" :style="{'top': helpScreenVars.top, 'background-color': helpScreenVars.color}">
+				<span class="help-screen-text">Select services individually</span>
+				<span class="help-screen-block">
+					<div class="service-checkbox">
+						<input type="checkbox" :checked="helpScreenVars.checked">
+						<label>
+							<span class="check"></span>
+							<span class="box"></span>
+						</label>
+					</div>
+				</span>
+				<div class="help-screen-arrow"></div>
+			</div>
+			<div class="help-screen-inspection">
+				<span class="help-screen-text">View your inspection summary</span>
+				<span class="inspection-icon"></span>
+				<div class="help-screen-arrow"></div>
+			</div>
+			<div class="help-screen-contact" v-if="$root.mobile">
+				<span class="help-screen-text">Call Us</span>
+				<span class="contact-icon"></span>
+				<div class="help-screen-arrow"></div>
+			</div>
+			<div class="help-screen-chat" v-if="$root.mobile">
+				<span class="help-screen-text">Message Us</span>
+				<span class="chat-icon"></span>
+				<div class="help-screen-arrow"></div>
+			</div>
+		</div>
+		<div class="wrapper" :class="{'wrapper-hold': helpScreenShowing}">
+			<span class="help-icon" @click="openHelpScreen()"></span>
 			<div class="summary-header"> Inspection Summary </div>
 			<div class="summary-icons">
 				<div class="icon">
@@ -165,7 +218,14 @@ export default {
 			serviceCategories: [],
 			inspectionTotal: 0,
 			viewingService: {},
-			timeExpired: false
+			timeExpired: false,
+			helpScreenShowing: false,
+			helpScreenVars: {
+				top: 0,
+				color: '#fff',
+				selectTop: 0,
+				height: 0
+			}
 		}
 	},
 	watch: {
@@ -194,6 +254,10 @@ export default {
 		this.checkSelectAll()
 
 		this.$root.logPageDuration('inspection')
+
+		$(window).resize(() => {
+			this.closeHelpScreen()
+		})
 	},
 	destroyed () {
 		this.$root.logPageDuration('inspection')
@@ -465,6 +529,43 @@ export default {
 			let now = new Date()
 
 			return checkDate.getFullYear() === now.getFullYear() && checkDate.getMonth() === now.getMonth() && checkDate.getDate() === now.getDate()
+		},
+		/**
+		 * To open the help screen and initialize help screen variables
+		 * @function
+		 * @returns {undefined}
+		 */
+		openHelpScreen () {
+			this.serviceCategories.forEach(category => {
+				category.defaultExpended = true
+			})
+			setTimeout(() => {
+				if (this.$root.inspectionCounts.failCount > 0) {
+					this.helpScreenVars.height = $('.wrapper').find('.accordion.red').find('.summary-table-row').first().height()
+					this.helpScreenVars.top = ($('.wrapper').find('.accordion.red').offset().top + this.helpScreenVars.height + 34) + 'px'
+					this.helpScreenVars.selectTop = ($('.wrapper').find('.accordion.red').offset().top + 34) + 'px'
+					this.helpScreenVars.color = '#f4b2b2'
+					this.helpScreenVars.checked = $('.accordion.red').find('.summary-item').find('input').first()[0].checked
+					this.helpScreenVars.selectChecked = $('.accordion.red').find('input').first()[0].checked
+				} else if (this.$root.inspectionCounts.warningCount > 0) {
+					this.helpScreenVars.height = $('.wrapper').find('.accordion.yellow').find('.summary-table-row').first().height()
+					this.helpScreenVars.top = ($('.wrapper').find('.accordion.yellow').offset().top + this.helpScreenVars.height + 34) + 'px'
+					this.helpScreenVars.selectTop = ($('.wrapper').find('.accordion.yellow').offset().top + 34) + 'px'
+					this.helpScreenVars.color = '#fbeab4'
+					this.helpScreenVars.checked = $('.accordion.yellow').find('.summary-item').find('input').first()[0].checked
+					this.helpScreenVars.selectChecked = $('.accordion.yellow').find('input').first()[0].checked
+				}
+
+				this.helpScreenShowing = true
+			}, 0)
+		},
+		/**
+		 * To close the help screen
+		 * @function
+		 * @returns {undefined}
+		 */
+		closeHelpScreen () {
+			this.helpScreenShowing = false
 		}
 	},
 	components: {

@@ -31,6 +31,10 @@ img {
 	margin-bottom:150px;
 	position: relative;
 }
+.wrapper.wrapper-hold {
+	overflow: hidden;
+	height: calc(100vh - 150px);
+}
 
 @media (min-width: 768px) {
 	.wrapper {
@@ -555,6 +559,190 @@ img {
   margin-left: 5px;
   float:left;
 }
+.help-icon {
+  display:inline-block;
+  width: 30px;
+  height: 30px;
+  background-image: url('../images/help.png');
+  background-size: cover;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 5px;
+}
+.help-screen-overlay {
+	background-color: rgba(0, 0, 0, 0.8);
+	height: 100vh;
+	width: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 10;
+}
+.help-screen-close {
+	color: #fff;
+	text-decoration: underline;
+	cursor: pointer;
+	float: right;
+	margin-top: 10px;
+	margin-right: 5px;
+}
+.help-screen-inspection {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	background-color: #fff;
+	width: 40px;
+	height: 30px;
+}
+.help-screen-inspection .help-screen-text {
+	position: absolute;
+	color: #fff;
+	font-size: 14px;
+	top: -60px;
+	left: 50px;
+	width: 200px;
+}
+.help-screen-inspection .help-screen-arrow {
+	border-left: 3px solid #fff;
+	height: 35px;
+	position: absolute;
+	top: -42px;
+	left: 34px;
+	transform: rotate(30deg);
+}
+
+.help-screen-information {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 30px;
+	height: 26px;
+}
+.help-screen-information .help-screen-text {
+	position: absolute;
+	color: #fff;
+	font-size: 14px;
+	top: -60px;
+	left: 50px;
+	width: 200px;
+}
+.help-screen-information .help-screen-block {
+	padding: 5px 10px;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+.help-screen-information .help-screen-arrow {
+	border-left: 3px solid #fff;
+	height: 35px;
+	position: absolute;
+	top: -42px;
+	left: 34px;
+	transform: rotate(30deg);
+}
+.help-screen-select-all {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 90px;
+}
+.help-screen-select-all .help-screen-text {
+	position: absolute;
+	color: #fff;
+	font-size: 14px;
+	top: -60px;
+	right: 0px;
+	width: 150px;
+}
+.help-screen-select-all .help-screen-arrow {
+	border-left: 3px solid #fff;
+	height: 35px;
+	position: absolute;
+	top: -42px;
+	right: 34px;
+	transform: rotate(-30deg);
+}
+.help-screen-select-all .help-screen-block {
+	font-size: 10px;
+	display: block;
+    padding: 5px 6px;
+}
+.help-screen-select-individual {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 30px;
+	height: 26px;
+}
+.help-screen-select-individual .help-screen-text {
+	position: absolute;
+	color: #fff;
+	font-size: 14px;
+	bottom: -60px;
+	right: 0px;
+	width: 200px;
+}
+.help-screen-select-individual .help-screen-arrow {
+	border-left: 3px solid #fff;
+	height: 35px;
+	position: absolute;
+	bottom: -42px;
+	right: 34px;
+	transform: rotate(30deg);
+}
+.help-screen-select-individual .help-screen-block {
+	padding-top: 1px;
+	display: block;
+}
+.help-screen-contact {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	background-color: #fff;
+	width: 35px;
+	height: 30px;
+}
+.help-screen-contact .help-screen-text {
+	position: absolute;
+	color: #fff;
+	font-size: 14px;
+	top: -60px;
+	left: -25px;
+	width: 50px;
+}
+.help-screen-contact .help-screen-arrow {
+	border-left: 3px solid #fff;
+	height: 35px;
+	position: absolute;
+	top: -42px;
+	right: 25px;
+	transform: rotate(-30deg);
+}
+.help-screen-chat {
+	position: absolute;
+	bottom: 0;
+	right: 35px;
+	background-color: #fff;
+	width: 32px;
+	height: 30px;
+}
+.help-screen-chat .help-screen-text {
+	position: absolute;
+	color: #fff;
+	font-size: 14px;
+	top: -60px;
+	left: -80px;
+	width: 80px;
+}
+.help-screen-chat .help-screen-arrow {
+	border-left: 3px solid #fff;
+	height: 35px;
+	position: absolute;
+	top: -42px;
+	right: 34px;
+	transform: rotate(-30deg);
+}
 
 .summary-icons {
   display: table;
@@ -845,6 +1033,11 @@ img {
 @media (min-width: 768px) {
 	.accept-estimate-component {
 		max-width: 75%;
+	}
+	.help-screen-overlay {
+		max-width: 75%;
+		left: 50%;
+    	transform: translateX(-50%);
 	}
 }
 
