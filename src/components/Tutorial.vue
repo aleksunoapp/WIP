@@ -14,7 +14,7 @@
 				<div class="onboarding-first-break">There are:</div>
 				<div class="onboarding-first-bottom" v-for="count in inspectionCounts">
 					<img :src="count.image">
-					<span><b> {{ count.count }} - {{ count.text }} </b></span>
+					<div class="onboarding-first-bottom-text"><b> {{ count.count }} {{ count.text }} </b></div>
 				</div>
 			</div>
 			<div class="footer">
@@ -79,8 +79,8 @@ export default {
 		return {
 			currentOnboarding: 'first',
 			inspectionCounts: [
-				{text: 'Safety concerns', count: this.$root.inspectionCounts.failCount, image: require('../assets/images/fail.png')},
-				{text: 'Items requiring attention', count: this.$root.inspectionCounts.warningCount, image: require('../assets/images/warning.png')}
+				{text: this.toTitleCase(this.$root.serviceCategories[0].name), count: this.$root.inspectionCounts.failCount, image: require('../assets/images/fail.png')},
+				{text: this.toTitleCase(this.$root.serviceCategories[1].name), count: this.$root.inspectionCounts.warningCount, image: require('../assets/images/warning.png')}
 			],
 			timer: '',
 			timeExpired: false
@@ -147,6 +147,15 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * To capitalize the first letter of every word in a string
+		 * @function
+		 * @param {string} str - The string to be reformatted
+		 * @returns {string} - The formatted string
+		 */
+		toTitleCase (str) {
+			return str.replace(/\w\S*/g, (txt) => { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase() })
+		},
 		/**
 		 * To complete the tutorial and move to the inspection route
 		 * @function
@@ -346,13 +355,18 @@ export default {
 	width: 70%;
 	min-width: 275px;
 	margin: 0 auto 5px;
+	position: relative;
 }
 .onboarding-first-bottom img {
 	width: 25px;
-	position: relative;
+	position: absolute;
 	left: 0;
-	top: 6px;
+	top: calc(50% - 13px);
 	margin-right: 10px;
+	display: inline-block;
+}
+.onboarding-first-bottom-text {
+	margin-left: 40px;
 }
 .onboarding-second-bottom {
 	font-size: 16px;
