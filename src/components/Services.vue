@@ -149,7 +149,10 @@
 					</div>
 				</div>
 			</div>
-			<div @click="openSignature(true)" class="proceed-btn">
+			<div v-if="noActionRequired" @click="openThanksWithoutSignature()" class="proceed-btn">
+				Continue
+			</div>
+			<div v-else @click="openSignature(true)" class="proceed-btn">
 				Accept Estimate
 			</div>
 			<div class="footer-bar">
@@ -285,6 +288,14 @@ export default {
 		this.$root.logPageDuration('services')
 	},
 	computed: {
+		/**
+		 * To check whether there are services in categories 1 or 2
+		 * @function
+		 * @returns {boolean} - True if categories 1 and 2 are empty, false otherwise
+		 */
+		noActionRequired () {
+			return this.$root.inspectionCounts.failCount === 0 && this.$root.inspectionCounts.warningCount === 0
+		},
 		/**
 		 * To compute the format of time the customer needs to respond by
 		 * @function
@@ -427,6 +438,15 @@ export default {
 					console.log(reason)
 				})
 			}
+		},
+		/**
+		 * To redirect to the thanks route without approving services
+		 * @function
+		 * @returns {undefined}
+		 */
+		openThanksWithoutSignature () {
+			this.$root.logEvent(`Accepted estimate`)
+			this.$router.push({name: 'thanks'})
 		},
 		/**
 		 * To check if the signature pad has been signed and set the proper variable
