@@ -190,7 +190,11 @@ var authenticateToken = {
 
 						_this.$root.inspectionCounts = inspectionCounts
 
-						_this.$router.push({name: 'tutorial'})
+						if (inspectionCounts.failCount === 0 && inspectionCounts.warningCount === 0) {
+							_this.$router.push({name: 'inspection'})
+						} else {
+							_this.$router.push({name: 'tutorial'})
+						}
 					}).catch(reason => {
 						this.showErrorMessage = true
 					})

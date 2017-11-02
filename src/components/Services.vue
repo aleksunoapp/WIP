@@ -3,7 +3,7 @@
 		<div class="summary-header">
 			Service Summary
 		</div>
-		<div class="service-header">
+		<div v-if="$root.inspectionCounts.failCount && $root.inspectionCounts.warningCount" class="service-header">
 			<div class="large">
 				Newly Approved Services
 			</div>
@@ -11,7 +11,7 @@
 				Items you approved after the inspection
 			</div>
 		</div>
-		<div class="summary-table">
+		<div v-if="$root.inspectionCounts.failCount && $root.inspectionCounts.warningCount" class="summary-table">
 			<template v-for="service in $root.services">
 				<template v-if="checkSubServices(service)">
 					<!-- <div class="summary-table-row summary-item">
@@ -124,9 +124,12 @@
 
 		<div class="accept-estimate-component" v-if="!open">
 			<div class="service-total">
-				<div class="time-notice" :class="{'danger-flag': timeExpired}">
+				<div v-if="$root.inspectionCounts.failCount && $root.inspectionCounts.warningCount" class="time-notice" :class="{'danger-flag': timeExpired}">
 					<span v-if="!timeExpired">If approved by {{ computedResponseTime }} your vehicle will be ready for pickup by {{ computedPromiseTime }}.</span>
 					<span v-else>Your service advisor will contact you when your services are completed</span>
+				</div>
+				<div v-if="!$root.inspectionCounts.failCount && !$root.inspectionCounts.warningCount" class="time-notice">
+					<span>Your vehicle will be ready for pickup by {{ computedPromiseTime }}.</span>
 				</div>
 				<div class="summary-table">
 					<div class="summary-table-row service-subtotal">
