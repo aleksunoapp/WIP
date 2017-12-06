@@ -16,7 +16,7 @@
 					Please enter your 
 					{{ $root.meta.authenticationHint.hintType === 1 ? 'email' : '' }} 
 					{{ $root.meta.authenticationHint.hintType === 2 ? 'phone number' : '' }} 
-					{{ $root.meta.authenticationHint.hintType === 3 ? 'last name' : '' }} 
+					{{ $root.meta.authenticationHint.hintType === 3 ? 'last name or company' : '' }} 
 					below:
 				</label>
 				<div>

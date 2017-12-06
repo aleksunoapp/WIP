@@ -3,7 +3,7 @@
 		<div class="summary-header">
 			Service Summary
 		</div>
-		<div class="service-header">
+		<div v-if="$root.inspectionCounts.failCount && $root.inspectionCounts.warningCount" class="service-header">
 			<div class="large">
 				Newly Approved Services
 			</div>
@@ -11,7 +11,7 @@
 				Items you approved after the inspection
 			</div>
 		</div>
-		<div class="summary-table">
+		<div v-if="$root.inspectionCounts.failCount && $root.inspectionCounts.warningCount" class="summary-table">
 			<template v-for="service in $root.services">
 				<template v-if="checkSubServices(service)">
 					<!-- <div class="summary-table-row summary-item">
@@ -124,9 +124,12 @@
 
 		<div class="accept-estimate-component" v-if="!open">
 			<div class="service-total">
-				<div class="time-notice" :class="{'danger-flag': timeExpired}">
+				<div v-if="$root.inspectionCounts.failCount && $root.inspectionCounts.warningCount" class="time-notice" :class="{'danger-flag': timeExpired}">
 					<span v-if="!timeExpired">If approved by {{ computedResponseTime }} your vehicle will be ready for pickup by {{ computedPromiseTime }}.</span>
 					<span v-else>Your service advisor will contact you when your services are completed</span>
+				</div>
+				<div v-if="!$root.inspectionCounts.failCount && !$root.inspectionCounts.warningCount" class="time-notice">
+					<span>Your vehicle will be ready for pickup by {{ computedPromiseTime }}.</span>
 				</div>
 				<div class="summary-table">
 					<div class="summary-table-row service-subtotal">
@@ -149,7 +152,10 @@
 					</div>
 				</div>
 			</div>
-			<div @click="openSignature(true)" class="proceed-btn">
+			<div v-if="noActionRequired" @click="openThanksWithoutSignature()" class="proceed-btn">
+				Continue
+			</div>
+			<div v-else @click="openSignature(true)" class="proceed-btn">
 				Accept Estimate
 			</div>
 			<div class="footer-bar">
@@ -286,6 +292,14 @@ export default {
 		this.$root.logPageDuration('services')
 	},
 	computed: {
+		/**
+		 * To check whether there are services in categories 1 or 2
+		 * @function
+		 * @returns {boolean} - True if categories 1 and 2 are empty, false otherwise
+		 */
+		noActionRequired () {
+			return this.$root.inspectionCounts.failCount === 0 && this.$root.inspectionCounts.warningCount === 0
+		},
 		/**
 		 * To compute the format of time the customer needs to respond by
 		 * @function
@@ -428,6 +442,15 @@ export default {
 					console.log(reason)
 				})
 			}
+		},
+		/**
+		 * To redirect to the thanks route without approving services
+		 * @function
+		 * @returns {undefined}
+		 */
+		openThanksWithoutSignature () {
+			this.$root.logEvent(`Accepted estimate`)
+			this.$router.push({name: 'thanks'})
 		},
 		/**
 		 * To check if the signature pad has been signed and set the proper variable

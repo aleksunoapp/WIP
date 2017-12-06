@@ -56,11 +56,11 @@
 			<span class="help-icon" @click="openHelpScreen()"></span>
 			<div class="summary-header"> Inspection Summary </div>
 			<div class="summary-icons">
-				<div class="icon">
+				<div v-if="$root.inspectionCounts.failCount" class="icon">
 					<img src="../assets/images/fail.png">
 					({{ this.$root.inspectionCounts.failCount }})
 				</div>
-				<div class="icon">
+				<div v-if="$root.inspectionCounts.warningCount" class="icon">
 					<img src="../assets/images/warning.png">
 					({{ this.$root.inspectionCounts.warningCount }})
 				</div>
@@ -160,11 +160,14 @@
 					</div>
 				</div>
 			</template>
-
+			
 			<div class="proceed-component">
-				<div class="time-notice" :class="{'danger-flag': timeExpired}">
+				<div v-if="$root.inspectionCounts.failCount && $root.inspectionCounts.warningCount" class="time-notice" :class="{'danger-flag': timeExpired}">
 					<span v-if="!timeExpired">If approved by {{ computedResponseTime }} your vehicle will be ready for pickup by {{ computedPromiseTime }}.</span>
 					<span v-else>Your service advisor will contact you when your services are completed</span>
+				</div>
+				<div v-if="!$root.inspectionCounts.failCount && !$root.inspectionCounts.warningCount" class="time-notice">
+					<span>Your vehicle will be ready for pickup by {{ computedPromiseTime }}.</span>
 				</div>
 				<div class="total-estimate">
 					<div class="total-label">
