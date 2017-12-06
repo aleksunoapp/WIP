@@ -189,12 +189,13 @@
 			</div>
 			<signature-pad @signatureUpdate="signatureStatusChanged"></signature-pad>
 			<div>
+				<div class="terms-warning"><p>** You need to acknowledge the Dealership's <a @click.prevent="toggleTerms(true)">terms and conditions</a> before you can approve these additional services.</p></div>
 				<div class="css-checkbox">
 					<input type="checkbox" id="terms-and-conditions" v-model="termsAndConditions">
 					<label for="terms-and-conditions">
 						<span class="check"></span>
 						<span class="box"></span>
-						I acknowledge the agreement of the Dealership's <a @click.prevent="toggleTerms(true)">terms and conditions</a>
+						I agree to the Dealership's <a @click.prevent="toggleTerms(true)">terms and conditions</a>
 					</label>
 				</div>
 			</div>
@@ -585,5 +586,16 @@ export default {
 <style scoped>
 .wrapper {
 	margin-bottom:235px;
+}
+.terms-warning {
+	font-size: 11px;
+    font-weight: bold;
+    margin: 10px auto 0;
+    width: 350px;
+}
+.terms-warning a {
+	color: -webkit-link;
+    cursor: pointer;
+    text-decoration: underline;
 }
 </style>

@@ -11,9 +11,9 @@
 			<div>
 				Thanks for your time.
 			</div>
-			<div class="ready-box" v-if="!timeExpired">Your car will be ready <br />{{ computedPromiseTime }}</div>
+			<div class="ready-box" v-if="!timeExpired">Your vehicle is estimated to be ready at <br />{{ computedPromiseTime }}</div>
 			<div class="thanks-confirm-text">
-				I will confirm with you when your vehicle is ready.
+				Your Service Advisor will confirm with you when your vehicle is ready.
 			</div>
 		</div>
 		<img class="profile" :src="this.$root.meta.advisor.advisorImageUrl">
