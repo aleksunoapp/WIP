@@ -404,18 +404,28 @@ export default {
 		openThanks () {
 			this.$root.logEvent(`Accepted estimate`)
 			let _this = this
-			let approvedServices = []
+			let confirmedServices = []
 			this.$root.services.forEach(service => {
 				if (service.category !== '4' && service.category !== '3') {
 					if (service.subServices) {
 						service.subServices.forEach(subService => {
 							if (subService.isSelected) {
-								approvedServices.push(subService.id)
+								subService.isApproved = true
+								subService.reasonId = null
+								confirmedServices.push(subService)
+							} else {
+								subService.isApproved = false
+								confirmedServices.push(subService)
 							}
 						})
 					} else {
 						if (service.isSelected) {
-							approvedServices.push(service.id)
+							service.isApproved = true
+							service.reasonId = null
+							confirmedServices.push(service)
+						} else {
+							service.isApproved = false
+							confirmedServices.push(service)
 						}
 					}
 				}
@@ -426,7 +436,7 @@ export default {
 					url: ENV.production_url + '/services/' + _this.$root.token,
 					method: 'POST',
 					data: {
-						approvedServices,
+						confirmedServices,
 						customerSignature: _this.signaturePadData
 					},
 					beforeSend (xhr) {

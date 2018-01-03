@@ -200,11 +200,13 @@
 			</div>
 		</div>
 		<info-popup v-if="modalOpen" :viewingService="viewingService" @closeModal="closeServiceModal" @approve="approveService" @defer="deferService"></info-popup>
+		<defer-modal v-if="deferModal" @deferReason="deferServiceReason"></defer-modal>
 	</div>
 </template>
 
 <script>
 import $ from 'jquery'
+import DeferModal from './DeferModal'
 import InfoPopup from './InfoPopup'
 
 let allMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
@@ -228,7 +230,11 @@ export default {
 				color: '#fff',
 				selectTop: 0,
 				height: 0
-			}
+			},
+			deferModal: false,
+			activeDeferralService: {},
+			activeDeferralCategory: {},
+			categoryDeferral: false
 		}
 	},
 	watch: {
@@ -376,12 +382,65 @@ export default {
 				} else {
 					this.checkSelectAll()
 				}
+
+				this.openDeferReasonModal(category, service)
 			}
 
 			// Doing this only to prevent value of -0.00
 			this.inspectionTotal.total = Math.abs(this.inspectionTotal.total)
 
 			this.$root.totals.inspectionTotal = this.inspectionTotal
+		},
+		/**
+		 * To open the defer modal and set the active servce as the one being deferred
+		 * @param {object} category - The parent category of the service
+		 * @param {object} service - The service being deferred
+		 * @param {boolean} multiple - Whether this is a category deferral or single service
+		 * @function
+		 * @returns {undefined}
+		 */
+		openDeferReasonModal (category, service, multiple) {
+			this.deferModal = true
+
+			if (multiple) {
+				this.categoryDeferral = true
+				this.activeDeferralCategory = Object.assign({}, category)
+			} else {
+				this.categoryDeferral = false
+				this.activeDeferralService = Object.assign({}, service)
+			}
+		},
+		/**
+		 * To add the deferral reason to the service
+		 * @param {object} reason - The reason for deferral
+		 * @function
+		 * @returns {undefined}
+		 */
+		deferServiceReason (reason) {
+			this.deferModal = false
+
+			if (this.categoryDeferral) {
+				this.$root.services.forEach(service => {
+					if (service.category === this.activeDeferralCategory.id) {
+						if (service.subServices) {
+							service.subServices.forEach(subService => {
+								subService.reasonId = reason.id
+							})
+						} else {
+							service.reasonId = reason.id
+						}
+					}
+				})
+				this.activeDeferralCategory = Object.assign({})
+			} else {
+				for (let i = 0, x = this.$root.services.length; i < x; i++) {
+					if (this.$root.services[i].id === this.activeDeferralService.id) {
+						this.$root.services[i].reasonId = reason.id
+						break
+					}
+				}
+				this.activeDeferralService = Object.assign({})
+			}
 		},
 		/**
 		 * To turn on or off the checkboxes for all category services as well as add and subtract the selected service from the total price
@@ -426,6 +485,8 @@ export default {
 								this.inspectionTotal.total -= parseFloat(service.price)
 							}
 						}
+
+						this.openDeferReasonModal(category, {}, true)
 					}
 				})
 			}
@@ -572,6 +633,7 @@ export default {
 		}
 	},
 	components: {
+		DeferModal,
 		InfoPopup
 	}
 }
