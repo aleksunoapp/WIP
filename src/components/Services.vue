@@ -411,7 +411,7 @@ export default {
 						service.subServices.forEach(subService => {
 							if (subService.isSelected) {
 								subService.isApproved = true
-								subService.reasonId = null
+								subService.reasonId = 'null'
 								confirmedServices.push(subService)
 							} else {
 								subService.isApproved = false
@@ -421,7 +421,7 @@ export default {
 					} else {
 						if (service.isSelected) {
 							service.isApproved = true
-							service.reasonId = null
+							service.reasonId = 'null'
 							confirmedServices.push(service)
 						} else {
 							service.isApproved = false
