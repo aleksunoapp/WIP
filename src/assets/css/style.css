@@ -1280,6 +1280,12 @@ img {
 .modal-message.no-padding-bottom {
 	padding-bottom: 0;
 }
+.modal-message.no-padding-top {
+	padding-top: 0;
+}
+.modal-message.no-padding-top ul {
+	margin-top: 0;
+}
 .modal-message.no-padding-bottom > span {
 	margin: 0 15px;
 }
