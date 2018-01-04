@@ -434,9 +434,18 @@ export default {
 				this.activeDeferralCategory = Object.assign({})
 			} else {
 				for (let i = 0, x = this.$root.services.length; i < x; i++) {
-					if (this.$root.services[i].id === this.activeDeferralService.id) {
-						this.$root.services[i].reasonId = reason.id
-						break
+					if (this.$root.services[i].subServices) {
+						for (let j = 0, y = this.$root.services[i].subServices.length; j < y; j++) {
+							if (this.$root.services[i].subServices[j].id === this.activeDeferralService.id) {
+								this.$root.services[i].subServices[j].reasonId = reason.id
+								break
+							}
+						}
+					} else {
+						if (this.$root.services[i].id === this.activeDeferralService.id) {
+							this.$root.services[i].reasonId = reason.id
+							break
+						}
 					}
 				}
 				this.activeDeferralService = Object.assign({})
