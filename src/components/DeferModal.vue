@@ -3,7 +3,7 @@
 		<div class="modal-window">
 			<div class="modal-content">
 				<div class="modal-header">
-					Select a reason for deferring this service
+					{{ langTerms.select_reason[$root.meta.local] }}
 				</div>
 				<div class="modal-message no-padding-bottom no-padding-top">
 					<ul class="modal-list-options">
@@ -19,6 +19,16 @@
 <script>
 export default {
 	name: 'defer-modal',
+	data () {
+		return {
+			langTerms: {
+				vehicle_inspection_update: {
+					en: 'Select a reason for deferring this service',
+					fr: 'Select a reason for deferring this service'
+				}
+			}
+		}
+	},
 	props: {},
 	methods: {
 		/**

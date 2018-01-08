@@ -9,11 +9,11 @@
 		</div>
 		<div class="login-header">
 			<div>
-				Thanks for your time.
+				{{ langTerms.thanks_for_your_time[$root.meta.local] }}
 			</div>
-			<div class="ready-box" v-if="!timeExpired">Your vehicle is estimated to be ready at <br />{{ computedPromiseTime }}</div>
+			<div class="ready-box" v-if="!timeExpired">{{ langTerms.your_vehicle_is_estimated[$root.meta.local] }} <br />{{ computedPromiseTime }}</div>
 			<div class="thanks-confirm-text">
-				Your Service Advisor will confirm with you when your vehicle is ready.
+				{{ langTerms.your_service_advisor_will_confirm[$root.meta.local] }}
 			</div>
 		</div>
 		<img class="profile" :src="this.$root.meta.advisor.advisorImageUrl">
@@ -21,7 +21,7 @@
 			{{ this.$root.meta.advisor.advisorName }}
 		</div>
 		<div class="mechanic-title">
-			Service Advisor
+			{{ langTerms.service_advisor[$root.meta.local] }}
 		</div>
 		<div>
 			<img :src="this.$root.meta.carImageUrl">
@@ -36,7 +36,25 @@ import ENV from '../environment.js'
 export default {
 	data () {
 		return {
-			timeExpired: false
+			timeExpired: false,
+			langTerms: {
+				thanks_for_your_time: {
+					en: 'Thanks for your time.',
+					fr: 'Merci de votre temps.'
+				},
+				your_vehicle_is_estimated: {
+					en: 'Your vehicle is estimated to be ready at',
+					fr: 'Votre véhicule sera prêt, approximativement, à'
+				},
+				your_service_advisor_will_confirm: {
+					en: 'Your Service Advisor will confirm with you when your vehicle is ready.',
+					fr: 'Votre conseiller au service vous notifiera lorsque votre véhicule sera prêt.'
+				},
+				service_advisor: {
+					en: 'Service Advisor',
+					fr: 'Conseiller au service'
+				}
+			}
 		}
 	},
 	created: function () {

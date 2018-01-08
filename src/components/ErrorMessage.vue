@@ -5,10 +5,10 @@
 			<div class="clear"></div>
 			<div class="modal-content">
 				<div class="modal-header">
-					Error
+					{{ langTerms.error[$root.meta.local] }}
 				</div>
 				<div class="modal-message">
-					An error has occurred.
+					{{ langTerms.error_occurred[$root.meta.local] }}
 				</div>
 			</div>
 		</div>
@@ -17,6 +17,20 @@
 <script>
 export default {
 	name: 'error-message',
+	data () {
+		return {
+			langTerms: {
+				error_occurred: {
+					en: 'An error has occurred.',
+					fr: 'An error has occurred.'
+				},
+				error: {
+					en: 'Error',
+					fr: 'Error'
+				}
+			}
+		}
+	},
 	methods: {
 		closeModal () {
 			this.$emit('closeErrorModal')

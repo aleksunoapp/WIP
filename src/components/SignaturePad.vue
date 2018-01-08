@@ -1,7 +1,7 @@
 <template>
 	<v-touch @pan="checkSignature()">
 		<div class="signature noselect">
-			<span class="signature-clear" @click="clearSignature()">CLEAR</span>
+			<span class="signature-clear" @click="clearSignature()">{{ langTerms.clear[$root.meta.local] }}</span>
 		</div>
 	</v-touch>
 </template>
@@ -14,7 +14,13 @@ export default {
 	name: 'signature-pad',
 	data () {
 		return {
-			signaturePad: false
+			signaturePad: false,
+			langTerms: {
+				clear: {
+					en: 'CLEAR',
+					fr: 'EFFACER'
+				}
+			}
 		}
 	},
 	mounted () {

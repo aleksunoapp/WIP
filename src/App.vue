@@ -71,6 +71,12 @@ export default {
 
 			$.getJSON(ENV.production_url + '/metadata/' + this.$root.token).done((response, textStatus, xhr) => {
 				if (xhr.status === 200) {
+					if (response.local === 'en-US') {
+						response.local = 'en'
+					} else {
+						response.local = 'fr'
+					}
+
 					_this.$root.meta = Object.assign({}, response)
 					delete _this.$root.meta.serviceCategories
 					_this.$root.serviceCategories = response.serviceCategories

@@ -8,7 +8,7 @@
 				<div>
 					<div class="info-modal-info-top">
 						<div class="green-bg">
-							<p>Recommendation</p>
+							<p>{{ langTerms.recommendation[$root.meta.local] }}</p>
 							<h2>{{ viewingService.name }}</h2>
 						</div>
 						<p>{{ viewingService.comment }}</p>
@@ -16,20 +16,20 @@
 					<div class="info-modal-info-bottom">
 						<div class="info-modal-contact">
 							<a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-summary-link" @click="$root.logEvent(`Opened Inspection Summary PDF`)">
-								Inspection Summary
+								{{ langTerms.inspection_summary[$root.meta.local] }}
 							</a>
 							<a v-if="$root.mobile" :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" class="chat-icon"></a>
 							<a v-if="$root.mobile" :href="`tel:${$root.meta.dealerContactInfo.phone}`" class="contact-icon"></a>
 						</div>
-						<div class="info-modal-estimate">Estimated cost of this item <span>${{ (viewingService.price).toFixed(2) }}</span></div>
+						<div class="info-modal-estimate">{{ langTerms.estimated_cost[$root.meta.local] }} <span>${{ (viewingService.price).toFixed(2) }}</span></div>
 					</div>
 				</div>
 				<div class="modal-buttons">
 					<div @click="approveService()" class="approve-btn">
-						Approve
+						{{ langTerms.approve[$root.meta.local] }}
 					</div>
 					<div @click="deferService()" class="not-today-btn">
-						Not Today
+						{{ langTerms.not_today[$root.meta.local] }}
 					</div>
 				</div>
 			</div>
@@ -39,6 +39,32 @@
 <script>
 export default {
 	name: 'info-popup',
+	data () {
+		return {
+			langTerms: {
+				approve: {
+					en: 'Approve',
+					fr: 'Approuver'
+				},
+				not_today: {
+					en: 'Not Today',
+					fr: 'Not Today'
+				},
+				recommendation: {
+					en: 'Recommendation',
+					fr: 'Recommendation'
+				},
+				inspection_summary: {
+					en: 'Inspection Summary',
+					fr: 'Récapitulatif de l\'inspection'
+				},
+				estimated_cost: {
+					en: 'Estimated cost of this item',
+					fr: 'Estimated cost of this item'
+				}
+			}
+		}
+	},
 	props: {
 		viewingService: {
 			default: null

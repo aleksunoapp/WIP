@@ -3,22 +3,22 @@
 		<v-touch @swipeleft="changeOnboarding('left')" class="onboarding text" v-if="currentOnboarding === 'first'">
 			<div class="content-body">
 				<div class="onboarding-first-text">
-					<div>Your service advisor,</div>
-					<div><b>{{ $root.meta.advisor.advisorName }}</b>, has</div>
+					<div>{{ langTerms.your_service_advisor[$root.meta.local] }},</div>
+					<div><b>{{ $root.meta.advisor.advisorName }}</b>, {{ langTerms.has[$root.meta.local] }}</div>
 					<span class="onboarding-first-text-highlight blue">
-						{{ this.$root.inspectionCounts.failCount + this.$root.inspectionCounts.warningCount }} RECOMMENDATIONS
+						{{ this.$root.inspectionCounts.failCount + this.$root.inspectionCounts.warningCount }} {{ langTerms.recommendations[$root.meta.local] }}
 					</span>
-					<div>for your <b>{{ $root.meta.carDescription }}.</b></div>
+					<div>{{ langTerms.for_your[$root.meta.local] }} <b>{{ $root.meta.carDescription }}.</b></div>
 				</div>
 				<img class="onboarding-first-image" :src="$root.meta.advisor.advisorImageUrl">
-				<div class="onboarding-first-break">There are:</div>
+				<div class="onboarding-first-break">{{ langTerms.there_are[$root.meta.local] }}:</div>
 				<div class="onboarding-first-bottom" v-for="count in inspectionCounts">
 					<img :src="count.image">
 					<div class="onboarding-first-bottom-text"><b> {{ count.count }} {{ count.text }} </b></div>
 				</div>
 			</div>
 			<div class="footer">
-				<button @click="changeOnboarding('left')" class="button btn red"> CONTINUE </button>
+				<button @click="changeOnboarding('left')" class="button btn red"> {{ langTerms.continue[$root.meta.local] }} </button>
 			</div>
 		</v-touch>
 
@@ -27,7 +27,7 @@
 				<div class="timer-info">
 					<img src="../assets/images/clock.png">
 					<div class="timer-page-text">
-						<div>Select your services in</div>
+						<div>{{ langTerms.select_your_services_in[$root.meta.local] }}</div>
 						<div id="timer">
 							<span v-if="timer.days > 0">{{ timer.days }}</span>
 							<span v-if="timer.days > 0" class="timer-text">d</span>
@@ -38,13 +38,13 @@
 							{{ timer.seconds }}
 							<span class="timer-text">s</span>
 						</div>
-						<div>To have your vehicle ready by</div>
-						<div class="onboarding-second-bottom">{{ computedEndTimeFormat }} {{ (checkSameDate()) ? 'today' : 'on ' + formatPromiseDate }}!</div>
+						<div>{{ langTerms.to_have_your_vehicle[$root.meta.local] }}</div>
+						<div class="onboarding-second-bottom">{{ computedEndTimeFormat }} {{ (checkSameDate()) ? langTerms.today[$root.meta.local] : langTerms.on[$root.meta.local] + ' ' + formatPromiseDate }}!</div>
 					</div>
 				</div>
 			</div>
 			<div class="footer">
-				<button @click="finishTutorial()" class="button btn red"> CONTINUE </button>
+				<button @click="finishTutorial()" class="button btn red"> {{ langTerms.continue[$root.meta.local] }} </button>
 			</div>
 		</v-touch>
 	</div>
@@ -83,7 +83,49 @@ export default {
 				{text: this.toTitleCase(this.$root.serviceCategories[1].name), count: this.$root.inspectionCounts.warningCount, image: require('../assets/images/warning.png')}
 			],
 			timer: '',
-			timeExpired: false
+			timeExpired: false,
+			langTerms: {
+				your_service_advisor: {
+					en: 'Your service advisor',
+					fr: 'Votre conseiller au service'
+				},
+				has: {
+					en: 'has',
+					fr: 'a'
+				},
+				recommendations: {
+					en: 'RECOMMENDATIONS',
+					fr: 'RECOMMANDATIONS'
+				},
+				for_your: {
+					en: 'for your',
+					fr: 'pour votr'
+				},
+				there_are: {
+					en: 'There are',
+					fr: 'Elles sont'
+				},
+				continue: {
+					en: 'CONTINUE',
+					fr: 'SUIVANT'
+				},
+				select_your_services_in: {
+					en: 'Select your services in',
+					fr: 'Sélectionnez vos services dans'
+				},
+				to_have_your_vehicle: {
+					en: 'To have your vehicle ready by',
+					fr: 'Pour que votre véhicule soit prêt pour'
+				},
+				today: {
+					en: 'today',
+					fr: 'aujourd\'hui'
+				},
+				on: {
+					en: 'on',
+					fr: 'on'
+				}
+			}
 		}
 	},
 	created () {
@@ -154,6 +196,13 @@ export default {
 		 * @returns {string} - The formatted string
 		 */
 		toTitleCase (str) {
+			if (this.$root.meta.local !== 'en') {
+				if (str === 'SAFETY CONCERNS') {
+					return 'Risque(s) sécuritaire(s)'
+				} else if (str === 'ITEMS REQUIRING ATTENTION') {
+					return 'Article(s) exigeant une intervention'
+				}
+			}
 			return str.replace(/\w\S*/g, (txt) => { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase() })
 		},
 		/**

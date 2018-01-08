@@ -1,14 +1,14 @@
 <template>
 	<div class="wrapper">
 		<div class="summary-header">
-			Service Summary
+			{{ langTerms.service_summary[$root.meta.local] }}
 		</div>
 		<div v-if="$root.inspectionCounts.failCount && $root.inspectionCounts.warningCount" class="service-header">
 			<div class="large">
-				Newly Approved Services
+				{{ langTerms.newly_approved_services[$root.meta.local] }}
 			</div>
 			<div class="small">
-				Items you approved after the inspection
+				{{ langTerms.items_you_approved[$root.meta.local] }}
 			</div>
 		</div>
 		<div v-if="$root.inspectionCounts.failCount && $root.inspectionCounts.warningCount" class="summary-table">
@@ -30,7 +30,7 @@
 								</div>
 								<div class="summary-table-cell">
 									<span class="price" v-if="subService.price !== 0"> ${{ (subService.price).toFixed(2) }} </span>
-									<span class="price" v-else> Free </span>
+									<span class="price" v-else> {{ langTerms.free[$root.meta.local] }} </span>
 								</div>
 							</div>
 						</template>
@@ -45,7 +45,7 @@
 							</div>
 							<div class="summary-table-cell">
 								<span class="price" v-if="service.price !== 0"> ${{ (service.price).toFixed(2) }} </span>
-								<span class="price" v-else> Free </span>
+								<span class="price" v-else> {{ langTerms.free[$root.meta.local] }} </span>
 							</div>
 						</div>
 					</template>
@@ -53,7 +53,7 @@
 			</template>
 			<div class="summary-table-row service-subtotal">
 				<div class="summary-table-cell">
-					Subtotal:
+					{{ langTerms.subtotal[$root.meta.local] }}:
 				</div>
 				<div class="summary-table-cell">
 					<span class="price"> ${{ (this.$root.totals.inspectionTotal.total).toFixed(2) }} </span>
@@ -65,10 +65,10 @@
 			<div @click="toggleAccordion()" class="service-accordion-header service-header">
 				<div class="service-accordion-status"></div>
 				<div class="large">
-					Previously Approved Services
+					{{ langTerms.previously_approved_services[$root.meta.local] }}
 				</div>
 				<div class="small">
-					Items you approved when you checked into the dealership
+					{{ langTerms.items_you_approved_when_you_checked[$root.meta.local] }}
 				</div>
 			</div>
 			<div class="accordion-contents">
@@ -91,7 +91,7 @@
 										</div>
 										<div class="summary-table-cell">
 											<span class="price" v-if="subService.price !== 0"> ${{ (subService.price).toFixed(2) }} </span>
-											<span class="price" v-else> Free </span>
+											<span class="price" v-else> {{ langTerms.free[$root.meta.local] }} </span>
 										</div>
 									</div>
 								</template>
@@ -104,7 +104,7 @@
 									</div>
 									<div class="summary-table-cell">
 										<span class="price" v-if="service.price !== 0"> ${{ (service.price).toFixed(2) }} </span>
-										<span class="price" v-else> Free </span>
+										<span class="price" v-else> {{ langTerms.free[$root.meta.local] }} </span>
 									</div>
 								</div>
 							</template>
@@ -112,7 +112,7 @@
 					</template>
 					<div class="summary-table-row service-subtotal">
 						<div class="summary-table-cell">
-							Subtotal:
+							{{ langTerms.subtotal[$root.meta.local] }}:
 						</div>
 						<div class="summary-table-cell">
 							<span class="price"> ${{ (this.$root.totals.serviceTotal.total).toFixed(2) }} </span>
@@ -125,16 +125,16 @@
 		<div class="accept-estimate-component" v-if="!open">
 			<div class="service-total">
 				<div v-if="$root.inspectionCounts.failCount && $root.inspectionCounts.warningCount" class="time-notice" :class="{'danger-flag': timeExpired}">
-					<span v-if="!timeExpired">If approved by {{ computedResponseTime }} your vehicle will be ready for pickup by {{ computedPromiseTime }}.</span>
-					<span v-else>Your service advisor will contact you when your services are completed</span>
+					<span v-if="!timeExpired">{{ langTerms.if_approved_by[$root.meta.local] }} {{ computedResponseTime }} {{ langTerms.your_vehicle_will_be_ready[$root.meta.local] }} {{ computedPromiseTime }}.</span>
+					<span v-else>{{ langTerms.your_service_advisor_will[$root.meta.local] }}</span>
 				</div>
 				<div v-if="!$root.inspectionCounts.failCount && !$root.inspectionCounts.warningCount" class="time-notice">
-					<span>Your vehicle will be ready for pickup by {{ computedPromiseTime }}.</span>
+					<span>{{ langTerms.your_vehicle_will_be_ready[$root.meta.local] }} {{ computedPromiseTime }}.</span>
 				</div>
 				<div class="summary-table">
 					<div class="summary-table-row service-subtotal">
 						<div class="summary-table-cell">
-							Estimated Taxes &amp; Fees (Newly Approved Services)
+							{{ langTerms.estimated_taxes_and_fees[$root.meta.local] }}
 						</div>
 						<div class="summary-table-cell">
 							<span class="price">${{ tax.toFixed(2) }}</span>
@@ -144,7 +144,7 @@
 				<div class="summary-table">
 					<div class="summary-table-row service-subtotal">
 						<div class="summary-table-cell grand-total">
-							Estimate Total
+							{{ langTerms.estimate_total[$root.meta.local] }}
 						</div>
 						<div class="summary-table-cell">
 							<span class="price">${{ (tax + this.$root.totals.inspectionTotal.total + this.$root.totals.serviceTotal.total).toFixed(2) }}</span>
@@ -153,10 +153,10 @@
 				</div>
 			</div>
 			<div v-if="noActionRequired" @click="openThanksWithoutSignature()" class="proceed-btn">
-				Continue
+				{{ langTerms.continue[$root.meta.local] }}
 			</div>
 			<div v-else @click="openSignature(true)" class="proceed-btn">
-				Accept Estimate
+				{{ langTerms.accept_estimate[$root.meta.local] }}
 			</div>
 			<div class="footer-bar">
 				<div class="footer-bar">
@@ -172,7 +172,7 @@
 				<div class="summary-table">
 					<div class="summary-table-row service-subtotal">
 						<div class="summary-table-cell">
-							Estimated Taxes &amp; Fees (Newly Approved Services):
+							{{ langTerms.estimated_taxes_and_fees[$root.meta.local] }}:
 						</div>
 						<div class="summary-table-cell">
 							<span class="price">${{ tax.toFixed(2) }}</span>
@@ -182,7 +182,7 @@
 				<div class="summary-table">
 					<div class="summary-table-row service-subtotal">
 						<div class="summary-table-cell grand-total">
-							Estimate Total
+							{{ langTerms.estimate_total[$root.meta.local] }}
 						</div>
 						<div class="summary-table-cell">
 							<span class="price">${{ (tax + this.$root.totals.inspectionTotal.total + this.$root.totals.serviceTotal.total).toFixed(2) }}</span>
@@ -191,44 +191,44 @@
 				</div>
 			</div>
 			<div class="sign-below">
-				Please sign below
+				{{ langTerms.please_sign_below[$root.meta.local] }}
 			</div>
 			<signature-pad @signatureUpdate="signatureStatusChanged"></signature-pad>
 			<div>
-				<div class="terms-warning"><p>** You need to acknowledge the Dealership's <a @click.prevent="toggleTerms(true)">terms and conditions</a> before you can approve these additional services.</p></div>
+				<div class="terms-warning"><p>** {{ langTerms.you_need_to_acknowledge[$root.meta.local] }} <a @click.prevent="toggleTerms(true)">{{ langTerms.terms_and_conditions[$root.meta.local] }}</a> {{ langTerms.before_you_can_approve[$root.meta.local] }}</p></div>
 				<div class="css-checkbox">
 					<input type="checkbox" id="terms-and-conditions" v-model="termsAndConditions">
 					<label for="terms-and-conditions">
 						<span class="check"></span>
 						<span class="box"></span>
-						I agree to the Dealership's <a @click.prevent="toggleTerms(true)">terms and conditions</a>
+						{{ langTerms.i_agree_to[$root.meta.local] }} <a @click.prevent="toggleTerms(true)">{{ langTerms.terms_and_conditions[$root.meta.local] }}</a>
 					</label>
 				</div>
 			</div>
 			<div class="modal-buttons">
 				<div @click="openThanks()" class="approve-btn" :class="{'disabled': !termsAndConditions || !signagtureSigned}">
-					Approve
+					{{ langTerms.approve[$root.meta.local] }}
 				</div>
 				<div @click="returnToInspection()" class="not-today-btn">
-					Cancel
+					{{ langTerms.cancel[$root.meta.local] }}
 				</div>
 			</div>
 		</div>
 		<div class="terms-and-conditions" v-if="showTerms">
 			<span class="close-btn" @click="toggleTerms(false)"></span>
 			<div class="terms-header">
-				<h2>Terms and Conditions</h2>
+				<h2>{{ langTerms.terms_header_1[$root.meta.local] }}</h2>
 			</div>
 			<div class="terms-body">
-				<h3>Exclusion of warranties</h3>
-				<p>All warranties on the parts and accessories sold hereby are made by the manufacturer. The undersigned purchaser understand and agrees that dealer makes no warranties of any kind, express or implied, and disclaims all warranties, including warranties of merchantability or fitness for a particular purpose; and that in no event shall dealer be liable for incidental or consequential damages or commercial losses arising out of such purchase. The undersighed purchaser further agrees that the warranties excluded by the dealer, include, but are not limited to any warranties that such parts and/or accessories are of merchantable quality or that they will enable any vehicle or any of its systems to perform with reasonable safety, efficiency, or comfort.</p>
+				<h3>{{ langTerms.terms_header_2[$root.meta.local] }}</h3>
+				<p>{{ langTerms.terms_body_1[$root.meta.local] }}</p>
 			</div>
 			<div class="terms-body">
-				<h3>Authorization for repairs</h3>
-				<p>I hereby authorize the repair work herein set forth to be done along with the necessary material and agree that you are not responsible for loss or damage to vehicle or articles left in vehicle in case of fire, theft, or any cause beyond your control or for any delays caused by unavailability of parts or delays in parts shipments by the supplier or transporter. I hereby grant you and/or your employees permission to operate the behicle herein described on streets, highways, or elsewhere for the purpose of testing and/or inspection. An express mechanical lien is hereby acknowledged on above vehicle to secure the amount of repairs thereto. The dealership is not responsible for damages from freezing due to lack of antifreeze.</p>
+				<h3>{{ langTerms.terms_header_3[$root.meta.local] }}</h3>
+				<p>{{ langTerms.terms_body_2[$root.meta.local] }}</p>
 			</div>
 			<div class="terms-close">
-				<div class="terms-close-btn" @click="toggleTerms(false)">CLOSE</div>
+				<div class="terms-close-btn" @click="toggleTerms(false)">{{ langTerms.close[$root.meta.local] }}</div>
 			</div>
 		</div>
 		<info-popup v-if="modalOpen" :viewingService="viewingService" @closeModal="closeServiceModal" @approve="approveService" @defer="deferService"></info-popup>
@@ -259,7 +259,117 @@ export default {
 			timeExpired: false,
 			signaturePadData: '',
 			tax: 0,
-			showErrorMessage: false
+			showErrorMessage: false,
+			langTerms: {
+				service_summary: {
+					en: 'Service Summary',
+					fr: 'Récap'
+				},
+				newly_approved_services: {
+					en: 'Newly Approved Services',
+					fr: 'Services approuvés'
+				},
+				items_you_approved: {
+					en: 'Items you approved after the inspection',
+					fr: 'Articles que vous avez approuvés après l\'inspection'
+				},
+				free: {
+					en: 'Free',
+					fr: 'Gratuit'
+				},
+				subtotal: {
+					en: 'Subtotal',
+					fr: 'Subtotal'
+				},
+				previously_approved_services: {
+					en: 'Previously Approved Services',
+					fr: 'Services précédemment approuvés'
+				},
+				items_you_approved_when_you_checked: {
+					en: 'Items you approved when you checked into the dealership',
+					fr: 'Articles que vous avez approuvés lorsque vous vous êtes enregistrés(es) chez le concessionnaire'
+				},
+				if_approved_by: {
+					en: 'If approved by',
+					fr: 'Si les recommandations sont approuvées avant'
+				},
+				your_vehicle_will_be_ready: {
+					en: 'your vehicle will be ready for pickup by',
+					fr: 'votre véhicule sera prêt pour'
+				},
+				your_service_advisor_will: {
+					en: 'Your service advisor will contact you when your services are completed',
+					fr: 'Your service advisor will contact you when your services are completed'
+				},
+				estimated_taxes_and_fees: {
+					en: 'Estimated Taxes & Fees (Newly Approved Services)',
+					fr: 'Taxes et frais estimatifs (Services approuvés)'
+				},
+				estimate_total: {
+					en: 'Estimate Total',
+					fr: 'Coût estimatif'
+				},
+				continue: {
+					en: 'Continue',
+					fr: 'Suivant'
+				},
+				accept_estimate: {
+					en: 'Accept Estimate',
+					fr: 'Accepter le Devis'
+				},
+				please_sign_below: {
+					en: 'Please sign below',
+					fr: 'Signez ici'
+				},
+				you_need_to_acknowledge: {
+					en: 'You need to acknowledge the Dealership\'s',
+					fr: 'Vous devez accepter les '
+				},
+				terms_and_conditions: {
+					en: 'terms and conditions',
+					fr: 'conditions générales du concessionnaire'
+				},
+				before_you_can_approve: {
+					en: 'before you can approve these additional services.',
+					fr: 'avant de pouvoir approuver ces services supplémentaires'
+				},
+				i_agree_to: {
+					en: 'I agree to the Dealership\'s',
+					fr: 'J\'accepte les'
+				},
+				approve: {
+					en: 'Approve',
+					fr: 'Approuver'
+				},
+				cancel: {
+					en: 'Cancel',
+					fr: 'Annuler'
+				},
+				close: {
+					en: 'CLOSE',
+					fr: 'CLOSE'
+				},
+				terms_header_1: {
+					en: 'Terms and Conditions',
+					fr: 'Conditions Générales du Concessionnaire'
+				},
+				terms_header_2: {
+					en: 'Exclusion of warranties',
+					fr: 'Exclusion of warranties'
+				},
+				terms_header_3: {
+					en: 'Authorization for repairs',
+					fr: 'Authorization for repairs'
+				},
+				terms_body_1: {
+					en: 'All warranties on the parts and accessories sold hereby are made by the manufacturer. The undersigned purchaser understand and agrees that dealer makes no warranties of any kind, express or implied, and disclaims all warranties, including warranties of merchantability or fitness for a particular purpose; and that in no event shall dealer be liable for incidental or consequential damages or commercial losses arising out of such purchase. The undersighed purchaser further agrees that the warranties excluded by the dealer, include, but are not limited to any warranties that such parts and/or accessories are of merchantable quality or that they will enable any vehicle or any of its systems to perform with reasonable safety, efficiency, or comfort.',
+					fr: 'All warranties on the parts and accessories sold hereby are made by the manufacturer. The undersigned purchaser understand and agrees that dealer makes no warranties of any kind, express or implied, and disclaims all warranties, including warranties of merchantability or fitness for a particular purpose; and that in no event shall dealer be liable for incidental or consequential damages or commercial losses arising out of such purchase. The undersighed purchaser further agrees that the warranties excluded by the dealer, include, but are not limited to any warranties that such parts and/or accessories are of merchantable quality or that they will enable any vehicle or any of its systems to perform with reasonable safety, efficiency, or comfort.'
+				},
+				terms_body_2: {
+					en: 'I hereby authorize the repair work herein set forth to be done along with the necessary material and agree that you are not responsible for loss or damage to vehicle or articles left in vehicle in case of fire, theft, or any cause beyond your control or for any delays caused by unavailability of parts or delays in parts shipments by the supplier or transporter. I hereby grant you and/or your employees permission to operate the behicle herein described on streets, highways, or elsewhere for the purpose of testing and/or inspection. An express mechanical lien is hereby acknowledged on above vehicle to secure the amount of repairs thereto. The dealership is not responsible for damages from freezing due to lack of antifreeze.',
+					fr: 'I hereby authorize the repair work herein set forth to be done along with the necessary material and agree that you are not responsible for loss or damage to vehicle or articles left in vehicle in case of fire, theft, or any cause beyond your control or for any delays caused by unavailability of parts or delays in parts shipments by the supplier or transporter. I hereby grant you and/or your employees permission to operate the behicle herein described on streets, highways, or elsewhere for the purpose of testing and/or inspection. An express mechanical lien is hereby acknowledged on above vehicle to secure the amount of repairs thereto. The dealership is not responsible for damages from freezing due to lack of antifreeze.'
+				}
+			}
 		}
 	},
 	watch: {

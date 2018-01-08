@@ -9,22 +9,19 @@
 				<h2 v-else>{{ $root.meta.dealerContactInfo.name }}</h2>
 			</div>
 			<div class="login-header">
-				Vehicle Inspection Update
+				{{ langTerms.vehicle_inspection_update[$root.meta.local] }}
 			</div>
 			<form class="access-form" @submit.prevent="enterPasscode()">
 				<label class="label">
-					Please enter your 
-					{{ $root.meta.authenticationHint.hintType === 1 ? 'email' : '' }} 
-					{{ $root.meta.authenticationHint.hintType === 2 ? 'phone number' : '' }} 
-					{{ $root.meta.authenticationHint.hintType === 3 ? 'last name or company' : '' }} 
-					below:
+					{{ langTerms.please_enter_your[$root.meta.local] }}
+					{{ $root.meta.authenticationHint.hintType === 1 ? langTerms.email[$root.meta.local] : '' }}{{ $root.meta.authenticationHint.hintType === 2 ? langTerms.phone_number[$root.meta.local] : '' }}{{ $root.meta.authenticationHint.hintType === 3 ? langTerms.last_name_or_company[$root.meta.local] : '' }}{{ $root.meta.local === 'en' ? ' below:' : ':' }} 
 				</label>
 				<div>
 					<input type="text" class="access-code" v-model="verificationCode" :placeholder="$root.meta.authenticationHint.hintText">
 				</div>
 				<div>
 					<button class="enter-btn" type="submit">
-						Enter
+						{{ langTerms.enter[$root.meta.local] }}
 					</button>
 				</div>
 				<div>
@@ -38,20 +35,20 @@
 					<img src="../assets/images/clock.png">
 					<div class="timer-page-text">
 						<div>
-							<p>We are sorry but this link has expired.</p>
-							<p>Please contact the dealership for the status of your vehicle.</p>
+							<p>{{ langTerms.expired_link[$root.meta.local] }}</p>
+							<p>{{ langTerms.please_contact_dealership[$root.meta.local] }}</p>
 						</div>
 						<div v-if="$root.mobile" class="timer-page-no-timer">
 							<div>
 								<a :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" class="chat-icon"></a>
-								<span>Text Dealership</span>
+								<span>{{ langTerms.text_dealership[$root.meta.local] }}</span>
 							</div>
 							<div>
 								<a :href="`tel:${$root.meta.dealerContactInfo.phone}`" class="contact-icon"></a>
-								<span>Phone Dealership</span>
+								<span>{{ langTerms.phone_dealership[$root.meta.local] }}</span>
 							</div>
 						</div>
-						<p v-else>You can call us at {{$root.meta.dealerContactInfo.phone}}.</p>
+						<p v-else>{{ langTerms.you_can_call_us_at[$root.meta.local] }} {{$root.meta.dealerContactInfo.phone}}.</p>
 					</div>
 				</div>
 			</div>
@@ -70,11 +67,11 @@
 					<div class="modal-message no-padding-bottom" v-else>
 						<span v-html="modal.content"></span>
 						<ul class="modal-list-options">
-							<li><a @click="tryAgain()"><b>Try Again</b></a></li>
-							<li v-if="$root.mobile"><a :href="`tel:${$root.meta.dealerContactInfo.phone}`" @click="$root.logEvent('Clicked Call Dealership')">Call Dealership</a></li>
-							<li v-if="$root.mobile"><a :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" @click="$root.logEvent('Clicked Text Dealership')">Text Dealership</a></li>
+							<li><a @click="tryAgain()"><b>{{ langTerms.try_again[$root.meta.local] }}</b></a></li>
+							<li v-if="$root.mobile"><a :href="`tel:${$root.meta.dealerContactInfo.phone}`" @click="$root.logEvent('Clicked Call Dealership')">{{ langTerms.call_dealership[$root.meta.local] }}</a></li>
+							<li v-if="$root.mobile"><a :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" @click="$root.logEvent('Clicked Text Dealership')">{{ langTerms.text_dealership[$root.meta.local] }}</a></li>
 						</ul>
-						<p v-if="!$root.mobile" class="modal-list-phone">Call us at {{$root.meta.dealerContactInfo.phone}}</p>
+						<p v-if="!$root.mobile" class="modal-list-phone">{{ langTerms.call_us_at[$root.meta.local] }} {{$root.meta.dealerContactInfo.phone}}</p>
 					</div>
 				</div>
 			</div>
@@ -97,7 +94,73 @@ export default {
 				title: '',
 				content: ''
 			},
-			showErrorMessage: false
+			showErrorMessage: false,
+			langTerms: {
+				vehicle_inspection_update: {
+					en: 'Vehicle Inspection Update',
+					fr: 'Résultats d\'inspection'
+				},
+				enter: {
+					en: 'Enter',
+					fr: 'Soumettre'
+				},
+				please_enter_your: {
+					en: 'Please enter your',
+					fr: 'Veuillez entrer votre'
+				},
+				last_name_or_company: {
+					en: 'last name or company',
+					'fr': 'surnom ou nom de d\'entreprise'
+				},
+				email: {
+					en: 'email',
+					'fr': 'email'
+				},
+				phone_number: {
+					en: 'phone_number',
+					'fr': 'phone_number'
+				},
+				expired_link: {
+					en: 'We are sorry but this link has expired.',
+					'fr': 'We are sorry but this link has expired.'
+				},
+				please_contact_dealership: {
+					en: 'Please contact the dealership for the status of your vehicle.',
+					'fr': 'Please contact the dealership for the status of your vehicle.'
+				},
+				text_dealership: {
+					en: 'Text Dealership',
+					'fr': 'Text Dealership'
+				},
+				phone_dealership: {
+					en: 'Phone Dealership',
+					'fr': 'Phone Dealership'
+				},
+				call_dealership: {
+					en: 'Call Dealership',
+					'fr': 'Call Dealership'
+				},
+				call_us_at: {
+					en: 'Call us at',
+					'fr': 'Call us at'
+				},
+				you_can_call_us_at: {
+					en: 'You can call us at',
+					'fr': 'You can call us at'
+				},
+				try_again: {
+					en: 'Try again',
+					'fr': 'Try again'
+				},
+				error: {
+					en: 'Error',
+					'fr': 'Error'
+				},
+				enter_access_code: {
+					'en_US': 'Please enter your access code.',
+					'fr': 'Please enter your access code.'
+				}
+			}
 		}
 	},
 	created () {
@@ -118,8 +181,8 @@ export default {
 			if (!this.verificationCode.length) {
 				this.$root.logError('Left passcode input empty')
 				this.modalOpen = true
-				this.modal.title = 'Error'
-				this.modal.content = 'Please enter your access code.'
+				this.modal.title = this.langTerms.error[this.$root.meta.local]
+				this.modal.content = this.langTerms.enter_access_code[this.$root.meta.local]
 			} else {
 				this.$root.logEvent('Entered a passcode')
 				this.authenticateToken()
