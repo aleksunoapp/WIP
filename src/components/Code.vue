@@ -1,6 +1,12 @@
 <template>
 	<div v-if="!$root.dealer">
 		<div class="wrapper" v-if="!$root.meta.expired">
+			<div class="language-selector">
+				<select v-model="selectedLanguage" @change="updateLanguage()">
+					<option value="English">English</option>
+					<option value="French">French</option>
+				</select>
+			</div>
 			<div class="nissan-logo">
 				<img :src="$root.meta.topImageUrl">
 			</div>
@@ -94,6 +100,7 @@ export default {
 				title: '',
 				content: ''
 			},
+			selectedLanguage: '',
 			showErrorMessage: false,
 			langTerms: {
 				vehicle_inspection_update: {
@@ -166,6 +173,12 @@ export default {
 	created () {
 		$('html, body').scrollTop(0)
 
+		if (this.$root.meta.local === 'en') {
+			this.selectedLanguage = 'English'
+		} else if (this.$root.meta.local === 'fr') {
+			this.selectedLanguage = 'French'
+		}
+
 		this.$root.logPageDuration('home')
 	},
 	destroyed () {
@@ -219,6 +232,18 @@ export default {
 		closeErrorModal () {
 			this.$root.logEvent('Closed error message')
 			this.showErrorMessage = false
+		},
+		/**
+		 * To update the language in the meta data
+		 * @function
+		 * @returns {undefined}
+		 */
+		updateLanguage () {
+			if (this.selectedLanguage === 'English') {
+				this.$root.meta.local = 'en'
+			} else if (this.selectedLanguage === 'French') {
+				this.$root.meta.local = 'fr'
+			}
 		}
 	},
 	components: {
@@ -261,5 +286,29 @@ export default {
 	background-image: url('../assets/images/close-button.png');
 	background-size: 20px 20px;
 	cursor: pointer;
+}
+.language-selector {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	background: url(http://i62.tinypic.com/15xvbd5.png) no-repeat 92% 0;
+	height: 31px;
+	overflow: hidden;
+	width: 125px;
+	background-color: #fff;
+	border: 1px solid #9e9fa4;
+}
+.language-selector select {
+	background: transparent;
+	border: none;
+	font-size: 14px;
+	height: 29px;
+	padding: 5px; /* If you add too much padding here, the options won't show in IE */
+	width: 143px;
+	cursor: pointer;
+	color: #9e9fa4;
+}
+.language-selector select:focus {
+	outline: none;
 }
 </style>
