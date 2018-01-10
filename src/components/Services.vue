@@ -3,7 +3,7 @@
 		<div class="summary-header">
 			{{ langTerms.service_summary[$root.meta.local] }}
 		</div>
-		<div v-if="$root.inspectionCounts.failCount && $root.inspectionCounts.warningCount" class="service-header">
+		<div v-if="$root.inspectionCounts.failCount || $root.inspectionCounts.warningCount" class="service-header">
 			<div class="large">
 				{{ langTerms.newly_approved_services[$root.meta.local] }}
 			</div>
@@ -11,7 +11,7 @@
 				{{ langTerms.items_you_approved[$root.meta.local] }}
 			</div>
 		</div>
-		<div v-if="$root.inspectionCounts.failCount && $root.inspectionCounts.warningCount" class="summary-table">
+		<div v-if="$root.inspectionCounts.failCount || $root.inspectionCounts.warningCount" class="summary-table">
 			<template v-for="service in $root.services">
 				<template v-if="checkSubServices(service)">
 					<!-- <div class="summary-table-row summary-item">
@@ -124,7 +124,7 @@
 
 		<div class="accept-estimate-component" v-if="!open">
 			<div class="service-total">
-				<div v-if="$root.inspectionCounts.failCount && $root.inspectionCounts.warningCount" class="time-notice" :class="{'danger-flag': timeExpired}">
+				<div v-if="$root.inspectionCounts.failCount || $root.inspectionCounts.warningCount" class="time-notice" :class="{'danger-flag': timeExpired}">
 					<span v-if="!timeExpired">{{ langTerms.if_approved_by[$root.meta.local] }} {{ computedResponseTime }} {{ langTerms.your_vehicle_will_be_ready[$root.meta.local] }} {{ computedPromiseTime }}.</span>
 					<span v-else>{{ langTerms.your_service_advisor_will[$root.meta.local] }}</span>
 				</div>
