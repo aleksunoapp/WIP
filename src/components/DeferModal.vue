@@ -22,7 +22,7 @@ export default {
 	data () {
 		return {
 			langTerms: {
-				vehicle_inspection_update: {
+				select_reason: {
 					en: 'Select a reason for deferring this service',
 					fr: 'Select a reason for deferring this service'
 				}
