@@ -94,7 +94,7 @@
 								</div>
 
 								<div class="summary-table-cell">
-									<span> {{ (category.allSelected) ? langTerms.remove_all[$root.meta.local] : langTerms.selected_all[$root.meta.local] }} </span>
+									<span> {{ (category.allSelected) ? langTerms.remove_all[$root.meta.local] : langTerms.select_all[$root.meta.local] }} </span>
 									<div class="service-checkbox">
 										<input type="checkbox" :id="`select-${category.serviceCategoryType}`" v-model="category.allSelected" @change="toggleAll(category)">
 										<label :for="`select-${category.serviceCategoryType}`">
