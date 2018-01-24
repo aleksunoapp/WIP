@@ -664,7 +664,7 @@ export default {
 				url: ENV.production_url + '/tax/' + _this.$root.token,
 				method: 'POST',
 				data: {
-						approvedServices
+						approvedServices: approvedServices
 					},
 				beforeSend (xhr) {
 					xhr.setRequestHeader('Content-Type', 'application/json')
