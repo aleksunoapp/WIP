@@ -663,7 +663,9 @@ export default {
 			$.ajax({
 				url: ENV.production_url + '/tax/' + _this.$root.token,
 				method: 'POST',
-				data: JSON.stringify(approvedServices),
+				data: {
+						approvedServices
+					},
 				beforeSend (xhr) {
 					xhr.setRequestHeader('Content-Type', 'application/json')
 					xhr.setRequestHeader('Authorization', 'Bearer ' + _this.$root.accessToken)
