@@ -71,10 +71,10 @@ export default {
 
 			$.getJSON(ENV.production_url + '/metadata/' + this.$root.token).done((response, textStatus, xhr) => {
 				if (xhr.status === 200) {
-					if (response.local === 'en-US') {
-						response.local = 'en'
-					} else {
+					if (response.local.toLowerCase().indexOf('fr') !== -1) {
 						response.local = 'fr'
+					} else {
+						response.local = 'en'
 					}
 
 					_this.$root.meta = Object.assign({}, response)
