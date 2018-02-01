@@ -99,7 +99,7 @@ export default {
 				},
 				for_your: {
 					en: 'for your',
-					fr: 'pour votr'
+					fr: 'pour votre'
 				},
 				there_are: {
 					en: 'There are',
