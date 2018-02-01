@@ -263,7 +263,7 @@ export default {
 			langTerms: {
 				service_summary: {
 					en: 'Service Summary',
-					fr: 'Récap'
+					fr: 'Récapitulatif de l\'entretien'
 				},
 				newly_approved_services: {
 					en: 'Newly Approved Services',
