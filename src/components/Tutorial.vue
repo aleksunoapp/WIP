@@ -206,14 +206,6 @@ export default {
 		 * @returns {string} - The formatted string
 		 */
 		toTitleCase (str) {
-			console.log(str)
-			// if (this.$root.meta.local !== 'en') {
-			// 	if (str === 'SAFETY CONCERNS') {
-			// 		return 'Risque(s) sécuritaire(s)'
-			// 	} else if (str === 'ITEMS REQUIRING ATTENTION') {
-			// 		return 'Article(s) exigeant une intervention'
-			// 	}
-			// }
 			return str.replace(/\w\S*/g, (txt) => { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase() })
 		},
 		/**
