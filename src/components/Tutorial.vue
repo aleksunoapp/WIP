@@ -86,44 +86,54 @@ export default {
 			timeExpired: false,
 			langTerms: {
 				your_service_advisor: {
-					en: 'Your service advisor',
-					fr: 'Votre conseiller au service'
+					'en-CA': 'Your service advisor',
+					'en-US': 'Your service advisor',
+					'fr-CA': 'Votre conseiller au service'
 				},
 				has: {
-					en: 'has',
-					fr: 'a'
+					'en-CA': 'has',
+					'en-US': 'has',
+					'fr-CA': 'a'
 				},
 				recommendations: {
-					en: 'RECOMMENDATIONS',
-					fr: 'RECOMMANDATIONS'
+					'en-CA': 'RECOMMENDATIONS',
+					'en-US': 'RECOMMENDATIONS',
+					'fr-CA': 'RECOMMANDATIONS'
 				},
 				for_your: {
-					en: 'for your',
-					fr: 'pour votre'
+					'en-CA': 'for your',
+					'en-US': 'for your',
+					'fr-CA': 'pour votre'
 				},
 				there_are: {
-					en: 'There are',
-					fr: 'Elles sont'
+					'en-CA': 'There are',
+					'en-US': 'There are',
+					'fr-CA': 'Elles sont'
 				},
 				continue: {
-					en: 'CONTINUE',
-					fr: 'SUIVANT'
+					'en-CA': 'CONTINUE',
+					'en-US': 'CONTINUE',
+					'fr-CA': 'SUIVANT'
 				},
 				select_your_services_in: {
-					en: 'Select your services in',
-					fr: 'Sélectionnez vos services dans'
+					'en-CA': 'Select your services in',
+					'en-US': 'Select your services in',
+					'fr-CA': 'Sélectionnez vos services dans'
 				},
 				to_have_your_vehicle: {
-					en: 'To have your vehicle ready by',
-					fr: 'Pour que votre véhicule soit prêt pour'
+					'en-CA': 'To have your vehicle ready by',
+					'en-US': 'To have your vehicle ready by',
+					'fr-CA': 'Pour que votre véhicule soit prêt pour'
 				},
 				today: {
-					en: 'today',
-					fr: 'aujourd\'hui'
+					'en-CA': 'today',
+					'en-US': 'today',
+					'fr-CA': 'aujourd\'hui'
 				},
 				on: {
-					en: 'on',
-					fr: 'on'
+					'en-CA': 'on',
+					'en-US': 'on',
+					'fr-CA': 'on'
 				}
 			}
 		}
@@ -196,13 +206,14 @@ export default {
 		 * @returns {string} - The formatted string
 		 */
 		toTitleCase (str) {
-			if (this.$root.meta.local !== 'en') {
-				if (str === 'SAFETY CONCERNS') {
-					return 'Risque(s) sécuritaire(s)'
-				} else if (str === 'ITEMS REQUIRING ATTENTION') {
-					return 'Article(s) exigeant une intervention'
-				}
-			}
+			console.log(str)
+			// if (this.$root.meta.local !== 'en') {
+			// 	if (str === 'SAFETY CONCERNS') {
+			// 		return 'Risque(s) sécuritaire(s)'
+			// 	} else if (str === 'ITEMS REQUIRING ATTENTION') {
+			// 		return 'Article(s) exigeant une intervention'
+			// 	}
+			// }
 			return str.replace(/\w\S*/g, (txt) => { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase() })
 		},
 		/**

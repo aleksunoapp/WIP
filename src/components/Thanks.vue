@@ -39,20 +39,24 @@ export default {
 			timeExpired: false,
 			langTerms: {
 				thanks_for_your_time: {
-					en: 'Thanks for your time.',
-					fr: 'Merci de votre temps.'
+					'en-CA': 'Thanks for your time.',
+					'en-US': 'Thanks for your time.',
+					'fr-CA': 'Merci de votre temps.'
 				},
 				your_vehicle_is_estimated: {
-					en: 'Your vehicle is estimated to be ready at',
-					fr: 'Votre véhicule sera prêt, approximativement, à'
+					'en-CA': 'Your vehicle is estimated to be ready at',
+					'en-US': 'Your vehicle is estimated to be ready at',
+					'fr-CA': 'Votre véhicule sera prêt, approximativement, à'
 				},
 				your_service_advisor_will_confirm: {
-					en: 'Your Service Advisor will confirm with you when your vehicle is ready.',
-					fr: 'Votre conseiller au service vous notifiera lorsque votre véhicule sera prêt.'
+					'en-CA': 'Your Service Advisor will confirm with you when your vehicle is ready.',
+					'en-US': 'Your Service Advisor will confirm with you when your vehicle is ready.',
+					'fr-CA': 'Votre conseiller au service vous notifiera lorsque votre véhicule sera prêt.'
 				},
 				service_advisor: {
-					en: 'Service Advisor',
-					fr: 'Conseiller au service'
+					'en-CA': 'Service Advisor',
+					'en-US': 'Service Advisor',
+					'fr-CA': 'Conseiller au service'
 				}
 			}
 		}

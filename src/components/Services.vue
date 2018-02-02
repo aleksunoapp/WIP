@@ -262,112 +262,139 @@ export default {
 			showErrorMessage: false,
 			langTerms: {
 				service_summary: {
-					en: 'Service Summary',
-					fr: 'Récapitulatif de l\'entretien'
+					'en-CA': 'Service Summary',
+					'en-US': 'Service Summary',
+					'fr-CA': 'Récapitulatif de l\'entretien'
 				},
 				newly_approved_services: {
-					en: 'Newly Approved Services',
-					fr: 'Services approuvés'
+					'en-CA': 'Newly Approved Services',
+					'en-US': 'Newly Approved Services',
+					'fr-CA': 'Services approuvés'
 				},
 				items_you_approved: {
-					en: 'Items you approved after the inspection',
-					fr: 'Articles que vous avez approuvés après l\'inspection'
+					'en-CA': 'Items you approved after the inspection',
+					'en-US': 'Items you approved after the inspection',
+					'fr-CA': 'Articles que vous avez approuvés après l\'inspection'
 				},
 				free: {
-					en: 'Free',
-					fr: 'Gratuit'
+					'en-CA': 'Free',
+					'en-US': 'Free',
+					'fr-CA': 'Gratuit'
 				},
 				subtotal: {
-					en: 'Subtotal',
-					fr: 'Subtotal'
+					'en-CA': 'Subtotal',
+					'en-US': 'Subtotal',
+					'fr-CA': 'Subtotal'
 				},
 				previously_approved_services: {
-					en: 'Previously Approved Services',
-					fr: 'Services précédemment approuvés'
+					'en-CA': 'Previously Approved Services',
+					'en-US': 'Previously Approved Services',
+					'fr-CA': 'Services précédemment approuvés'
 				},
 				items_you_approved_when_you_checked: {
-					en: 'Items you approved when you checked into the dealership',
-					fr: 'Articles que vous avez approuvés lorsque vous vous êtes enregistrés(es) chez le concessionnaire'
+					'en-CA': 'Items you approved when you checked into the dealership',
+					'en-US': 'Items you approved when you checked into the dealership',
+					'fr-CA': 'Articles que vous avez approuvés lorsque vous vous êtes enregistrés(es) chez le concessionnaire'
 				},
 				if_approved_by: {
-					en: 'If approved by',
-					fr: 'Si les recommandations sont approuvées avant'
+					'en-CA': 'If approved by',
+					'en-US': 'If approved by',
+					'fr-CA': 'Si les recommandations sont approuvées avant'
 				},
 				your_vehicle_will_be_ready: {
-					en: 'your vehicle will be ready for pickup by',
-					fr: 'votre véhicule sera prêt pour'
+					'en-CA': 'your vehicle will be ready for pickup by',
+					'en-US': 'your vehicle will be ready for pickup by',
+					'fr-CA': 'votre véhicule sera prêt pour'
 				},
 				your_service_advisor_will: {
-					en: 'Your service advisor will contact you when your services are completed',
-					fr: 'Your service advisor will contact you when your services are completed'
+					'en-CA': 'Your service advisor will contact you when your services are completed',
+					'en-US': 'Your service advisor will contact you when your services are completed',
+					'fr-CA': 'Your service advisor will contact you when your services are completed'
 				},
 				estimated_taxes_and_fees: {
-					en: 'Estimated Taxes & Fees (Newly Approved Services)',
-					fr: 'Taxes et frais estimatifs (Services approuvés)'
+					'en-CA': 'Estimated Taxes & Fees (Newly Approved Services)',
+					'en-US': 'Estimated Taxes & Fees (Newly Approved Services)',
+					'fr-CA': 'Taxes et frais estimatifs (Services approuvés)'
 				},
 				estimate_total: {
-					en: 'Estimate Total',
-					fr: 'Coût estimatif'
+					'en-CA': 'Estimate Total',
+					'en-US': 'Estimate Total',
+					'fr-CA': 'Coût estimatif'
 				},
 				continue: {
-					en: 'Continue',
-					fr: 'Suivant'
+					'en-CA': 'Continue',
+					'en-US': 'Continue',
+					'fr-CA': 'Suivant'
 				},
 				accept_estimate: {
-					en: 'Accept Estimate',
-					fr: 'Accepter le Devis'
+					'en-CA': 'Accept Estimate',
+					'en-US': 'Accept Estimate',
+					'fr-CA': 'Accepter le Devis'
 				},
 				please_sign_below: {
-					en: 'Please sign below',
-					fr: 'Signez ici'
+					'en-CA': 'Please sign below',
+					'en-US': 'Please sign below',
+					'fr-CA': 'Signez ici'
 				},
 				you_need_to_acknowledge: {
-					en: 'You need to acknowledge the Dealership\'s',
-					fr: 'Vous devez accepter les '
+					'en-CA': 'You need to acknowledge the Dealership\'s',
+					'en-US': 'You need to acknowledge the Dealership\'s',
+					'fr-CA': 'Vous devez accepter les '
 				},
 				terms_and_conditions: {
-					en: 'terms and conditions',
-					fr: 'conditions générales du concessionnaire'
+					'en-CA': 'terms and conditions',
+					'en-US': 'terms and conditions',
+					'fr-CA': 'conditions générales du concessionnaire'
 				},
 				before_you_can_approve: {
-					en: 'before you can approve these additional services.',
-					fr: 'avant de pouvoir approuver ces services supplémentaires'
+					'en-CA': 'before you can approve these additional services.',
+					'en-US': 'before you can approve these additional services.',
+					'fr-CA': 'avant de pouvoir approuver ces services supplémentaires'
 				},
 				i_agree_to: {
-					en: 'I agree to the Dealership\'s',
-					fr: 'J\'accepte les'
+					'en-CA': 'I agree to the Dealership\'s',
+					'en-US': 'I agree to the Dealership\'s',
+					'fr-CA': 'J\'accepte les'
 				},
 				approve: {
-					en: 'Approve',
-					fr: 'Approuver'
+					'en-CA': 'Approve',
+					'en-US': 'Approve',
+					'fr-CA': 'Approuver'
 				},
 				cancel: {
-					en: 'Cancel',
-					fr: 'Annuler'
+					'en-CA': 'Cancel',
+					'en-US': 'Cancel',
+					'fr-CA': 'Annuler'
 				},
 				close: {
-					en: 'CLOSE',
-					fr: 'CLOSE'
+					'en-CA': 'CLOSE',
+					'en-US': 'CLOSE',
+					'fr-CA': 'CLOSE'
 				},
 				terms_header_1: {
-					en: 'Terms and Conditions',
-					fr: 'Conditions Générales du Concessionnaire'
+					'en-CA': 'Terms and Conditions',
+					'en-US': 'Terms and Conditions',
+					'fr-CA': 'Conditions Générales du Concessionnaire'
 				},
 				terms_header_2: {
-					en: 'Exclusion of warranties',
-					fr: 'Exclusion of warranties'
+					'en-CA': 'Exclusion of warranties',
+					'en-US': 'Exclusion of warranties',
+					'fr-CA': 'Exclusion of warranties'
 				},
 				terms_header_3: {
-					en: 'Authorization for repairs',
-					fr: 'Authorization for repairs'
+					'en-CA': 'Authorization for repairs',
+					'en-US': 'Authorization for repairs',
+					'fr-CA': 'Authorization for repairs'
 				},
 				terms_body_1: {
-					en: 'All warranties on the parts and accessories sold hereby are made by the manufacturer. The undersigned purchaser understand and agrees that dealer makes no warranties of any kind, express or implied, and disclaims all warranties, including warranties of merchantability or fitness for a particular purpose; and that in no event shall dealer be liable for incidental or consequential damages or commercial losses arising out of such purchase. The undersighed purchaser further agrees that the warranties excluded by the dealer, include, but are not limited to any warranties that such parts and/or accessories are of merchantable quality or that they will enable any vehicle or any of its systems to perform with reasonable safety, efficiency, or comfort.',
-					fr: 'All warranties on the parts and accessories sold hereby are made by the manufacturer. The undersigned purchaser understand and agrees that dealer makes no warranties of any kind, express or implied, and disclaims all warranties, including warranties of merchantability or fitness for a particular purpose; and that in no event shall dealer be liable for incidental or consequential damages or commercial losses arising out of such purchase. The undersighed purchaser further agrees that the warranties excluded by the dealer, include, but are not limited to any warranties that such parts and/or accessories are of merchantable quality or that they will enable any vehicle or any of its systems to perform with reasonable safety, efficiency, or comfort.'
+					'en-CA': 'All warranties on the parts and accessories sold hereby are made by the manufacturer. The undersigned purchaser understand and agrees that dealer makes no warranties of any kind, express or implied, and disclaims all warranties, including warranties of merchantability or fitness for a particular purpose; and that in no event shall dealer be liable for incidental or consequential damages or commercial losses arising out of such purchase. The undersighed purchaser further agrees that the warranties excluded by the dealer, include, but are not limited to any warranties that such parts and/or accessories are of merchantable quality or that they will enable any vehicle or any of its systems to perform with reasonable safety, efficiency, or comfort.',
+					'en-US': 'All warranties on the parts and accessories sold hereby are made by the manufacturer. The undersigned purchaser understand and agrees that dealer makes no warranties of any kind, express or implied, and disclaims all warranties, including warranties of merchantability or fitness for a particular purpose; and that in no event shall dealer be liable for incidental or consequential damages or commercial losses arising out of such purchase. The undersighed purchaser further agrees that the warranties excluded by the dealer, include, but are not limited to any warranties that such parts and/or accessories are of merchantable quality or that they will enable any vehicle or any of its systems to perform with reasonable safety, efficiency, or comfort.',
+					'fr-CA': 'All warranties on the parts and accessories sold hereby are made by the manufacturer. The undersigned purchaser understand and agrees that dealer makes no warranties of any kind, express or implied, and disclaims all warranties, including warranties of merchantability or fitness for a particular purpose; and that in no event shall dealer be liable for incidental or consequential damages or commercial losses arising out of such purchase. The undersighed purchaser further agrees that the warranties excluded by the dealer, include, but are not limited to any warranties that such parts and/or accessories are of merchantable quality or that they will enable any vehicle or any of its systems to perform with reasonable safety, efficiency, or comfort.'
 				},
 				terms_body_2: {
-					en: 'I hereby authorize the repair work herein set forth to be done along with the necessary material and agree that you are not responsible for loss or damage to vehicle or articles left in vehicle in case of fire, theft, or any cause beyond your control or for any delays caused by unavailability of parts or delays in parts shipments by the supplier or transporter. I hereby grant you and/or your employees permission to operate the behicle herein described on streets, highways, or elsewhere for the purpose of testing and/or inspection. An express mechanical lien is hereby acknowledged on above vehicle to secure the amount of repairs thereto. The dealership is not responsible for damages from freezing due to lack of antifreeze.',
-					fr: 'I hereby authorize the repair work herein set forth to be done along with the necessary material and agree that you are not responsible for loss or damage to vehicle or articles left in vehicle in case of fire, theft, or any cause beyond your control or for any delays caused by unavailability of parts or delays in parts shipments by the supplier or transporter. I hereby grant you and/or your employees permission to operate the behicle herein described on streets, highways, or elsewhere for the purpose of testing and/or inspection. An express mechanical lien is hereby acknowledged on above vehicle to secure the amount of repairs thereto. The dealership is not responsible for damages from freezing due to lack of antifreeze.'
+					'en-CA': 'I hereby authorize the repair work herein set forth to be done along with the necessary material and agree that you are not responsible for loss or damage to vehicle or articles left in vehicle in case of fire, theft, or any cause beyond your control or for any delays caused by unavailability of parts or delays in parts shipments by the supplier or transporter. I hereby grant you and/or your employees permission to operate the behicle herein described on streets, highways, or elsewhere for the purpose of testing and/or inspection. An express mechanical lien is hereby acknowledged on above vehicle to secure the amount of repairs thereto. The dealership is not responsible for damages from freezing due to lack of antifreeze.',
+					'en-US': 'I hereby authorize the repair work herein set forth to be done along with the necessary material and agree that you are not responsible for loss or damage to vehicle or articles left in vehicle in case of fire, theft, or any cause beyond your control or for any delays caused by unavailability of parts or delays in parts shipments by the supplier or transporter. I hereby grant you and/or your employees permission to operate the behicle herein described on streets, highways, or elsewhere for the purpose of testing and/or inspection. An express mechanical lien is hereby acknowledged on above vehicle to secure the amount of repairs thereto. The dealership is not responsible for damages from freezing due to lack of antifreeze.',
+					'fr-CA': 'I hereby authorize the repair work herein set forth to be done along with the necessary material and agree that you are not responsible for loss or damage to vehicle or articles left in vehicle in case of fire, theft, or any cause beyond your control or for any delays caused by unavailability of parts or delays in parts shipments by the supplier or transporter. I hereby grant you and/or your employees permission to operate the behicle herein described on streets, highways, or elsewhere for the purpose of testing and/or inspection. An express mechanical lien is hereby acknowledged on above vehicle to secure the amount of repairs thereto. The dealership is not responsible for damages from freezing due to lack of antifreeze.'
 				}
 			}
 		}

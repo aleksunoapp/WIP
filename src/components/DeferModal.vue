@@ -23,8 +23,9 @@ export default {
 		return {
 			langTerms: {
 				select_reason: {
-					en: 'Select a reason for deferring this service',
-					fr: 'Select a reason for deferring this service'
+					'en-CA': 'Select a reason for deferring this service',
+					'en-US': 'Select a reason for deferring this service',
+					'fr-CA': 'Select a reason for deferring this service'
 				}
 			}
 		}

@@ -69,12 +69,17 @@ export default {
 				this.$router.push({name: 'code'})
 			}
 
-			$.getJSON(ENV.production_url + '/metadata/' + this.$root.token).done((response, textStatus, xhr) => {
+			let url = ENV.production_url + '/metadata/' + this.$root.token
+			let tempLocal = this.$root.meta.local
+
+			if (this.$root.meta.local) {
+				url += '/' + this.$root.meta.local
+			}
+
+			$.getJSON(url).done((response, textStatus, xhr) => {
 				if (xhr.status === 200) {
-					if (response.local.toLowerCase().indexOf('fr') !== -1) {
-						response.local = 'fr'
-					} else {
-						response.local = 'en'
+					if (tempLocal && response.local !== tempLocal) {
+						response.local = tempLocal
 					}
 
 					_this.$root.meta = Object.assign({}, response)
@@ -96,6 +101,13 @@ export default {
 	},
 	components: {
 		ErrorMessage
+	},
+	watch: {
+		'$root.meta.local' (newVal, oldVal) {
+			if (oldVal) {
+				this.getMetaData()
+			}
+		}
 	},
 	mixins: [authenticateToken]
 }

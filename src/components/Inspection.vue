@@ -237,88 +237,109 @@ export default {
 			categoryDeferral: false,
 			langTerms: {
 				close: {
-					en: 'Close',
-					fr: 'Close'
+					'en-CA': 'Close',
+					'en-US': 'Close',
+					'fr-CA': 'Close'
 				},
 				view_more_info: {
-					en: 'View more information about the service',
-					fr: 'Afficher des détails additionnels concernant le service'
+					'en-CA': 'View more information about the service',
+					'en-US': 'View more information about the service',
+					'fr-CA': 'Afficher des détails additionnels concernant le service'
 				},
 				select_all_services: {
-					en: 'Select all services',
-					fr: 'Sélectionner tous les services'
+					'en-CA': 'Select all services',
+					'en-US': 'Select all services',
+					'fr-CA': 'Sélectionner tous les services'
 				},
 				remove_all: {
-					en: 'Remove All',
-					fr: 'Supprimer tout'
+					'en-CA': 'Remove All',
+					'en-US': 'Remove All',
+					'fr-CA': 'Supprimer tout'
 				},
 				select_all: {
-					en: 'Select All',
-					fr: 'Sélectionner tout'
+					'en-CA': 'Select All',
+					'en-US': 'Select All',
+					'fr-CA': 'Sélectionner tout'
 				},
 				select_services_individually: {
-					en: 'Select services individually',
-					fr: 'Sélectionner les services individuellement'
+					'en-CA': 'Select services individually',
+					'en-US': 'Select services individually',
+					'fr-CA': 'Sélectionner les services individuellement'
 				},
 				view_inspection_summary: {
-					en: 'View your inspection summary',
-					fr: 'Afficher votre récapitulatif de l\'inspection'
+					'en-CA': 'View your inspection summary',
+					'en-US': 'View your inspection summary',
+					'fr-CA': 'Afficher votre récapitulatif de l\'inspection'
 				},
 				call_us: {
-					en: 'Call Us',
-					fr: 'Call Us'
+					'en-CA': 'Call Us',
+					'en-US': 'Call Us',
+					'fr-CA': 'Call Us'
 				},
 				message_us: {
-					en: 'Message Us',
-					fr: 'Message Us'
+					'en-CA': 'Message Us',
+					'en-US': 'Message Us',
+					'fr-CA': 'Message Us'
 				},
 				inspection_summary: {
-					en: 'Inspection Summary',
-					fr: 'Récapitulatif de l\'Inspection'
+					'en-CA': 'Inspection Summary',
+					'en-US': 'Inspection Summary',
+					'fr-CA': 'Récapitulatif de l\'Inspection'
 				},
 				no: {
-					en: 'No',
-					fr: 'Aucun'
+					'en-CA': 'No',
+					'en-US': 'No',
+					'fr-CA': 'Aucun'
 				},
 				were_found: {
-					en: 'were found',
-					fr: 'découvert'
+					'en-CA': 'were found',
+					'en-US': 'were found',
+					'fr-CA': 'découvert'
 				},
 				view_full_report: {
-					en: 'View Full Report',
-					fr: 'View Full Report'
+					'en-CA': 'View Full Report',
+					'en-US': 'View Full Report',
+					'fr-CA': 'View Full Report'
 				},
 				check_recommended_services: {
-					en: 'Check the recommended services you authorize.',
-					fr: 'Sélectionnez toutes les recommandations vous autorisez.'
+					'en-CA': 'Check the recommended services you authorize.',
+					'en-US': 'Check the recommended services you authorize.',
+					'fr-CA': 'Sélectionnez toutes les recommandations vous autorisez.'
 				},
 				free: {
-					en: 'Free',
-					fr: 'Gratuit'
+					'en-CA': 'Free',
+					'en-US': 'Free',
+					'fr-CA': 'Gratuit'
 				},
 				if_approved_by: {
-					en: 'If approved by',
-					fr: 'Si les recommandations sont approuvées avant'
+					'en-CA': 'If approved by',
+					'en-US': 'If approved by',
+					'fr-CA': 'Si les recommandations sont approuvées avant'
 				},
 				your_vehicle_will_be_ready: {
-					en: 'your vehicle will be ready for pickup by',
-					fr: 'votre véhicule sera prêt pour'
+					'en-CA': 'your vehicle will be ready for pickup by',
+					'en-US': 'your vehicle will be ready for pickup by',
+					'fr-CA': 'votre véhicule sera prêt pour'
 				},
 				your_service_advisor_will_contact: {
-					en: 'Your service advisor will contact you when your services are completed',
-					fr: 'Your service advisor will contact you when your services are completed'
+					'en-CA': 'Your service advisor will contact you when your services are completed',
+					'en-US': 'Your service advisor will contact you when your services are completed',
+					'fr-CA': 'Your service advisor will contact you when your services are completed'
 				},
 				estimate_for_selected_services: {
-					en: 'Estimate for Selected Services (not including taxes and fees)',
-					fr: 'Coût estimatif pour les services sélectionnés (taxes et frais non inclus)'
+					'en-CA': 'Estimate for Selected Services (not including taxes and fees)',
+					'en-US': 'Estimate for Selected Services (not including taxes and fees)',
+					'fr-CA': 'Coût estimatif pour les services sélectionnés (taxes et frais non inclus)'
 				},
 				estimate_for_previous_services: {
-					en: 'Estimate for Previously Approved Services',
-					fr: 'Coût estimatif pour les services précédemment approuvés'
+					'en-CA': 'Estimate for Previously Approved Services',
+					'en-US': 'Estimate for Previously Approved Services',
+					'fr-CA': 'Coût estimatif pour les services précédemment approuvés'
 				},
 				next: {
-					en: 'Next',
-					fr: 'Suivant'
+					'en-CA': 'Next',
+					'en-US': 'Next',
+					'fr-CA': 'Suivant'
 				}
 			}
 		}

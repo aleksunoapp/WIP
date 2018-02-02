@@ -21,12 +21,14 @@ export default {
 		return {
 			langTerms: {
 				error_occurred: {
-					en: 'An error has occurred.',
-					fr: 'An error has occurred.'
+					'en-CA': 'An error has occurred.',
+					'en-US': 'An error has occurred.',
+					'fr-CA': 'An error has occurred.'
 				},
 				error: {
-					en: 'Error',
-					fr: 'Error'
+					'en-CA': 'Error',
+					'en-US': 'Error',
+					'fr-CA': 'Error'
 				}
 			}
 		}

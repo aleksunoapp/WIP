@@ -17,8 +17,9 @@ export default {
 			signaturePad: false,
 			langTerms: {
 				clear: {
-					en: 'CLEAR',
-					fr: 'EFFACER'
+					'en-CA': 'CLEAR',
+					'en-US': 'CLEAR',
+					'fr-CA': 'EFFACER'
 				}
 			}
 		}

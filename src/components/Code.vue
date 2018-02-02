@@ -3,7 +3,8 @@
 		<div class="wrapper" v-if="!$root.meta.expired">
 			<div class="language-selector">
 				<select v-model="selectedLanguage" @change="updateLanguage()">
-					<option value="English">English</option>
+					<option value="English - CA">English - CA</option>
+					<option value="English - US">English - US</option>
 					<option value="French">French</option>
 				</select>
 			</div>
@@ -104,68 +105,84 @@ export default {
 			showErrorMessage: false,
 			langTerms: {
 				vehicle_inspection_update: {
-					en: 'Vehicle Inspection Update',
-					fr: 'Résultats d\'inspection'
+					'en-CA': 'Vehicle Inspection Update',
+					'en-US': 'Vehicle Inspection Update',
+					'fr-CA': 'Résultats d\'inspection'
 				},
 				enter: {
-					en: 'Enter',
-					fr: 'Soumettre'
+					'en-CA': 'Enter',
+					'en-US': 'Enter',
+					'fr-CA': 'Soumettre'
 				},
 				please_enter_your: {
-					en: 'Please enter your',
-					fr: 'Veuillez entrer votre'
+					'en-CA': 'Please enter your',
+					'en-US': 'Please enter your',
+					'fr-CA': 'Veuillez entrer votre'
 				},
 				last_name_or_company: {
-					en: 'last name or company',
-					'fr': 'surnom ou nom de d\'entreprise'
+					'en-CA': 'last name or company',
+					'en-US': 'last name or company',
+					'fr-CA': 'surnom ou nom de d\'entreprise'
 				},
 				email: {
-					en: 'email',
-					'fr': 'email'
+					'en-CA': 'email',
+					'en-US': 'email',
+					'fr-CA': 'email'
 				},
 				phone_number: {
-					en: 'phone_number',
-					'fr': 'phone_number'
+					'en-CA': 'phone_number',
+					'en-US': 'phone_number',
+					'fr-CA': 'phone_number'
 				},
 				expired_link: {
-					en: 'We are sorry but this link has expired.',
-					'fr': 'We are sorry but this link has expired.'
+					'en-CA': 'We are sorry but this link has expired.',
+					'en-US': 'We are sorry but this link has expired.',
+					'fr-CA': 'We are sorry but this link has expired.'
 				},
 				please_contact_dealership: {
-					en: 'Please contact the dealership for the status of your vehicle.',
-					'fr': 'Please contact the dealership for the status of your vehicle.'
+					'en-CA': 'Please contact the dealership for the status of your vehicle.',
+					'en-US': 'Please contact the dealership for the status of your vehicle.',
+					'fr-CA': 'Please contact the dealership for the status of your vehicle.'
 				},
 				text_dealership: {
-					en: 'Text Dealership',
-					'fr': 'Text Dealership'
+					'en-CA': 'Text Dealership',
+					'en-US': 'Text Dealership',
+					'fr-CA': 'Text Dealership'
 				},
 				phone_dealership: {
-					en: 'Phone Dealership',
-					'fr': 'Phone Dealership'
+					'en-CA': 'Phone Dealership',
+					'en-US': 'Phone Dealership',
+					'fr-CA': 'Phone Dealership'
 				},
 				call_dealership: {
-					en: 'Call Dealership',
-					'fr': 'Call Dealership'
+					'en-CA': 'Call Dealership',
+					'en-US': 'Call Dealership',
+					'fr-CA': 'Call Dealership'
 				},
 				call_us_at: {
-					en: 'Call us at',
-					'fr': 'Call us at'
+					'en-CA': 'Call us at',
+					'en-US': 'Call us at',
+					'fr-CA': 'Call us at'
 				},
 				you_can_call_us_at: {
-					en: 'You can call us at',
-					'fr': 'You can call us at'
+					'en-CA': 'You can call us at',
+					'en-US': 'You can call us at',
+					'fr-CA': 'You can call us at'
 				},
 				try_again: {
-					en: 'Try again',
-					'fr': 'Try again'
+					'en-CA': 'Try again',
+					'en-US': 'Try again',
+					'fr-CA': 'Try again'
 				},
 				error: {
-					en: 'Error',
-					'fr': 'Error'
+					'en-CA': 'Error',
+					'en-US': 'Error',
+					'fr-CA': 'Error'
 				},
 				enter_access_code: {
-					'en_US': 'Please enter your access code.',
-					'fr': 'Please enter your access code.'
+					'en-CA': 'Please enter your access code.',
+					'en-US': 'Please enter your access code.',
+					'fr-CA': 'Please enter your access code.'
 				}
 			}
 		}
@@ -173,9 +190,11 @@ export default {
 	created () {
 		$('html, body').scrollTop(0)
 
-		if (this.$root.meta.local === 'en') {
-			this.selectedLanguage = 'English'
-		} else if (this.$root.meta.local === 'fr') {
+		if (this.$root.meta.local === 'en-CA') {
+			this.selectedLanguage = 'English - CA'
+		} else if (this.$root.meta.local === 'en-US') {
+			this.selectedLanguage = 'English - US'
+		} else if (this.$root.meta.local === 'fr-CA') {
 			this.selectedLanguage = 'French'
 		}
 
@@ -239,10 +258,12 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateLanguage () {
-			if (this.selectedLanguage === 'English') {
-				this.$root.meta.local = 'en'
+			if (this.selectedLanguage === 'English - CA') {
+				this.$root.meta.local = 'en-CA'
+			} else if (this.selectedLanguage === 'English - US') {
+				this.$root.meta.local = 'en-US'
 			} else if (this.selectedLanguage === 'French') {
-				this.$root.meta.local = 'fr'
+				this.$root.meta.local = 'fr-CA'
 			}
 		}
 	},
@@ -294,7 +315,7 @@ export default {
 	background: url(http://i62.tinypic.com/15xvbd5.png) no-repeat 92% 0;
 	height: 31px;
 	overflow: hidden;
-	width: 125px;
+	width: 135px;
 	background-color: #fff;
 	border: 1px solid #9e9fa4;
 }
@@ -304,7 +325,7 @@ export default {
 	font-size: 14px;
 	height: 29px;
 	padding: 5px; /* If you add too much padding here, the options won't show in IE */
-	width: 143px;
+	width: 153px;
 	cursor: pointer;
 	color: #9e9fa4;
 }

@@ -43,24 +43,29 @@ export default {
 		return {
 			langTerms: {
 				approve: {
-					en: 'Approve',
-					fr: 'Approuver'
+					'en-CA': 'Approve',
+					'en-US': 'Approve',
+					'fr-CA': 'Approuver'
 				},
 				not_today: {
-					en: 'Not Today',
-					fr: 'Not Today'
+					'en-CA': 'Not Today',
+					'en-US': 'Not Today',
+					'fr-CA': 'Not Today'
 				},
 				recommendation: {
-					en: 'Recommendation',
-					fr: 'Recommendation'
+					'en-CA': 'Recommendation',
+					'en-US': 'Recommendation',
+					'fr-CA': 'Recommendation'
 				},
 				inspection_summary: {
-					en: 'Inspection Summary',
-					fr: 'Récapitulatif de l\'inspection'
+					'en-CA': 'Inspection Summary',
+					'en-US': 'Inspection Summary',
+					'fr-CA': 'Récapitulatif de l\'inspection'
 				},
 				estimated_cost: {
-					en: 'Estimated cost of this item',
-					fr: 'Estimated cost of this item'
+					'en-CA': 'Estimated cost of this item',
+					'en-US': 'Estimated cost of this item',
+					'fr-CA': 'Estimated cost of this item'
 				}
 			}
 		}
