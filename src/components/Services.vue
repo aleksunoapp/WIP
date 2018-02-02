@@ -232,6 +232,7 @@
 			</div>
 		</div>
 		<info-popup v-if="modalOpen" :viewingService="viewingService" @closeModal="closeServiceModal" @approve="approveService" @defer="deferService"></info-popup>
+		<defer-modal v-if="deferModal" @deferReason="deferServiceReason"></defer-modal>
 		<error-message v-if="showErrorMessage" @closeErrorModal="closeErrorModal()"></error-message>
 	</div>
 </template>
@@ -240,6 +241,7 @@
 import $ from 'jquery'
 import ENV from '../environment'
 import ErrorMessage from './ErrorMessage'
+import DeferModal from './DeferModal'
 import InfoPopup from './InfoPopup'
 import SignaturePad from './SignaturePad'
 
@@ -260,6 +262,8 @@ export default {
 			signaturePadData: '',
 			tax: 0,
 			showErrorMessage: false,
+			deferModal: false,
+			activeDeferralService: {},
 			langTerms: {
 				service_summary: {
 					'en-CA': 'Service Summary',
@@ -661,7 +665,44 @@ export default {
 			this.viewingService.isSelected = false
 			this.$root.totals.inspectionTotal.total -= parseFloat(this.viewingService.price)
 			this.getTaxTotals()
+			this.openDeferReasonModal(this.viewingService)
 			this.closeServiceModal()
+		},
+		/**
+		 * To add the deferral reason to the service
+		 * @param {object} reason - The reason for deferral
+		 * @function
+		 * @returns {undefined}
+		 */
+		deferServiceReason (reason) {
+			this.deferModal = false
+
+			for (let i = 0, x = this.$root.services.length; i < x; i++) {
+				if (this.$root.services[i].subServices) {
+					for (let j = 0, y = this.$root.services[i].subServices.length; j < y; j++) {
+						if (this.$root.services[i].subServices[j].id === this.activeDeferralService.id) {
+							this.$root.services[i].subServices[j].reasonId = reason.id
+							break
+						}
+					}
+				} else {
+					if (this.$root.services[i].id === this.activeDeferralService.id) {
+						this.$root.services[i].reasonId = reason.id
+						break
+					}
+				}
+			}
+			this.activeDeferralService = Object.assign({})
+		},
+		/**
+		 * To open the defer modal and set the active service as the one being deferred
+		 * @param {object} service - The service being deferred
+		 * @function
+		 * @returns {undefined}
+		 */
+		openDeferReasonModal (service) {
+			this.deferModal = true
+			this.activeDeferralService = Object.assign({}, service)
 		},
 		/**
 		 * To get the tax totals for the backend
@@ -745,6 +786,7 @@ export default {
 		}
 	},
 	components: {
+		DeferModal,
 		ErrorMessage,
 		InfoPopup,
 		SignaturePad

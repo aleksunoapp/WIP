@@ -499,7 +499,7 @@ export default {
 			this.$root.totals.inspectionTotal = this.inspectionTotal
 		},
 		/**
-		 * To open the defer modal and set the active servce as the one being deferred
+		 * To open the defer modal and set the active service as the one being deferred
 		 * @param {object} category - The parent category of the service
 		 * @param {object} service - The service being deferred
 		 * @param {boolean} multiple - Whether this is a category deferral or single service
