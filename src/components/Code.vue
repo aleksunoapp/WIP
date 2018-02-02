@@ -3,9 +3,9 @@
 		<div class="wrapper" v-if="!$root.meta.expired">
 			<div class="language-selector">
 				<select v-model="selectedLanguage" @change="updateLanguage()">
-					<option value="English - CA">English - CA</option>
-					<option value="English - US">English - US</option>
-					<option value="French">French</option>
+					<template v-for="lang in $root.meta.supportedLanguages">
+						<option :value="lang.culture">{{ lang.name }}</option>
+					</template>
 				</select>
 			</div>
 			<div class="nissan-logo">
@@ -190,13 +190,7 @@ export default {
 	created () {
 		$('html, body').scrollTop(0)
 
-		if (this.$root.meta.local === 'en-CA') {
-			this.selectedLanguage = 'English - CA'
-		} else if (this.$root.meta.local === 'en-US') {
-			this.selectedLanguage = 'English - US'
-		} else if (this.$root.meta.local === 'fr-CA') {
-			this.selectedLanguage = 'French'
-		}
+		this.selectedLanguage = this.$root.meta.local
 
 		this.$root.logPageDuration('home')
 	},
@@ -258,13 +252,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateLanguage () {
-			if (this.selectedLanguage === 'English - CA') {
-				this.$root.meta.local = 'en-CA'
-			} else if (this.selectedLanguage === 'English - US') {
-				this.$root.meta.local = 'en-US'
-			} else if (this.selectedLanguage === 'French') {
-				this.$root.meta.local = 'fr-CA'
-			}
+			this.$root.meta.local = this.selectedLanguage
 		}
 	},
 	components: {
