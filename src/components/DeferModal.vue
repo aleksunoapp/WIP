@@ -3,7 +3,7 @@
 		<div class="modal-window">
 			<div class="modal-content">
 				<div class="modal-header">
-					{{ langTerms.select_reason[$root.meta.local] }}
+					{{ langTerms.select_reason[$root.meta.local.toLowerCase()] }}
 				</div>
 				<div class="modal-message no-padding-bottom no-padding-top">
 					<ul class="modal-list-options">
@@ -23,9 +23,9 @@ export default {
 		return {
 			langTerms: {
 				select_reason: {
-					'en-CA': 'Select a reason for deferring this service',
-					'en-US': 'Select a reason for deferring this service',
-					'fr-CA': 'Select a reason for deferring this service'
+					'en-ca': 'Select a reason for deferring this service',
+					'en-us': 'Select a reason for deferring this service',
+					'fr-ca': 'Select a reason for deferring this service'
 				}
 			}
 		}

@@ -9,11 +9,11 @@
 		</div>
 		<div class="login-header">
 			<div>
-				{{ langTerms.thanks_for_your_time[$root.meta.local] }}
+				{{ langTerms.thanks_for_your_time[$root.meta.local.toLowerCase()] }}
 			</div>
-			<div class="ready-box" v-if="!timeExpired">{{ langTerms.your_vehicle_is_estimated[$root.meta.local] }} <br />{{ computedPromiseTime }}</div>
+			<div class="ready-box" v-if="!timeExpired">{{ langTerms.your_vehicle_is_estimated[$root.meta.local.toLowerCase()] }} <br />{{ computedPromiseTime }}</div>
 			<div class="thanks-confirm-text">
-				{{ langTerms.your_service_advisor_will_confirm[$root.meta.local] }}
+				{{ langTerms.your_service_advisor_will_confirm[$root.meta.local.toLowerCase()] }}
 			</div>
 		</div>
 		<img class="profile" :src="this.$root.meta.advisor.advisorImageUrl">
@@ -21,7 +21,7 @@
 			{{ this.$root.meta.advisor.advisorName }}
 		</div>
 		<div class="mechanic-title">
-			{{ langTerms.service_advisor[$root.meta.local] }}
+			{{ langTerms.service_advisor[$root.meta.local.toLowerCase()] }}
 		</div>
 		<div>
 			<img :src="this.$root.meta.carImageUrl">
@@ -39,24 +39,24 @@ export default {
 			timeExpired: false,
 			langTerms: {
 				thanks_for_your_time: {
-					'en-CA': 'Thanks for your time.',
-					'en-US': 'Thanks for your time.',
-					'fr-CA': 'Merci de votre temps.'
+					'en-ca': 'Thanks for your time.',
+					'en-us': 'Thanks for your time.',
+					'fr-ca': 'Merci de votre temps.'
 				},
 				your_vehicle_is_estimated: {
-					'en-CA': 'Your vehicle is estimated to be ready at',
-					'en-US': 'Your vehicle is estimated to be ready at',
-					'fr-CA': 'Votre véhicule sera prêt, approximativement, à'
+					'en-ca': 'Your vehicle is estimated to be ready at',
+					'en-us': 'Your vehicle is estimated to be ready at',
+					'fr-ca': 'Votre véhicule sera prêt, approximativement, à'
 				},
 				your_service_advisor_will_confirm: {
-					'en-CA': 'Your Service Advisor will confirm with you when your vehicle is ready.',
-					'en-US': 'Your Service Advisor will confirm with you when your vehicle is ready.',
-					'fr-CA': 'Votre conseiller au service vous notifiera lorsque votre véhicule sera prêt.'
+					'en-ca': 'Your Service Advisor will confirm with you when your vehicle is ready.',
+					'en-us': 'Your Service Advisor will confirm with you when your vehicle is ready.',
+					'fr-ca': 'Votre conseiller au service vous notifiera lorsque votre véhicule sera prêt.'
 				},
 				service_advisor: {
-					'en-CA': 'Service Advisor',
-					'en-US': 'Service Advisor',
-					'fr-CA': 'Conseiller au service'
+					'en-ca': 'Service Advisor',
+					'en-us': 'Service Advisor',
+					'fr-ca': 'Conseiller au service'
 				}
 			}
 		}

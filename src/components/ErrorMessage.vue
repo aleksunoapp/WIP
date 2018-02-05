@@ -5,10 +5,10 @@
 			<div class="clear"></div>
 			<div class="modal-content">
 				<div class="modal-header">
-					{{ langTerms.error[$root.meta.local] }}
+					{{ langTerms.error[$root.meta.local.toLowerCase()] }}
 				</div>
 				<div class="modal-message">
-					{{ langTerms.error_occurred[$root.meta.local] }}
+					{{ langTerms.error_occurred[$root.meta.local.toLowerCase()] }}
 				</div>
 			</div>
 		</div>
@@ -21,14 +21,14 @@ export default {
 		return {
 			langTerms: {
 				error_occurred: {
-					'en-CA': 'An error has occurred.',
-					'en-US': 'An error has occurred.',
-					'fr-CA': 'An error has occurred.'
+					'en-ca': 'An error has occurred.',
+					'en-us': 'An error has occurred.',
+					'fr-ca': 'An error has occurred.'
 				},
 				error: {
-					'en-CA': 'Error',
-					'en-US': 'Error',
-					'fr-CA': 'Error'
+					'en-ca': 'Error',
+					'en-us': 'Error',
+					'fr-ca': 'Error'
 				}
 			}
 		}

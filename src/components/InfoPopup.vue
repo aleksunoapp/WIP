@@ -8,7 +8,7 @@
 				<div>
 					<div class="info-modal-info-top">
 						<div class="green-bg">
-							<p>{{ langTerms.recommendation[$root.meta.local] }}</p>
+							<p>{{ langTerms.recommendation[$root.meta.local.toLowerCase()] }}</p>
 							<h2>{{ viewingService.name }}</h2>
 						</div>
 						<p>{{ viewingService.comment }}</p>
@@ -16,20 +16,20 @@
 					<div class="info-modal-info-bottom">
 						<div class="info-modal-contact">
 							<a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-summary-link" @click="$root.logEvent(`Opened Inspection Summary PDF`)">
-								{{ langTerms.inspection_summary[$root.meta.local] }}
+								{{ langTerms.inspection_summary[$root.meta.local.toLowerCase()] }}
 							</a>
 							<a v-if="$root.mobile" :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" class="chat-icon"></a>
 							<a v-if="$root.mobile" :href="`tel:${$root.meta.dealerContactInfo.phone}`" class="contact-icon"></a>
 						</div>
-						<div class="info-modal-estimate">{{ langTerms.estimated_cost[$root.meta.local] }} <span>${{ (viewingService.price).toFixed(2) }}</span></div>
+						<div class="info-modal-estimate">{{ langTerms.estimated_cost[$root.meta.local.toLowerCase()] }} <span>${{ (viewingService.price).toFixed(2) }}</span></div>
 					</div>
 				</div>
 				<div class="modal-buttons">
 					<div @click="approveService()" class="approve-btn">
-						{{ langTerms.approve[$root.meta.local] }}
+						{{ langTerms.approve[$root.meta.local.toLowerCase()] }}
 					</div>
 					<div @click="deferService()" class="not-today-btn">
-						{{ langTerms.not_today[$root.meta.local] }}
+						{{ langTerms.not_today[$root.meta.local.toLowerCase()] }}
 					</div>
 				</div>
 			</div>
@@ -43,29 +43,29 @@ export default {
 		return {
 			langTerms: {
 				approve: {
-					'en-CA': 'Approve',
-					'en-US': 'Approve',
-					'fr-CA': 'Approuver'
+					'en-ca': 'Approve',
+					'en-us': 'Approve',
+					'fr-ca': 'Approuver'
 				},
 				not_today: {
-					'en-CA': 'Not Today',
-					'en-US': 'Not Today',
-					'fr-CA': 'Not Today'
+					'en-ca': 'Not Today',
+					'en-us': 'Not Today',
+					'fr-ca': 'Not Today'
 				},
 				recommendation: {
-					'en-CA': 'Recommendation',
-					'en-US': 'Recommendation',
-					'fr-CA': 'Recommendation'
+					'en-ca': 'Recommendation',
+					'en-us': 'Recommendation',
+					'fr-ca': 'Recommendation'
 				},
 				inspection_summary: {
-					'en-CA': 'Inspection Summary',
-					'en-US': 'Inspection Summary',
-					'fr-CA': 'Récapitulatif de l\'inspection'
+					'en-ca': 'Inspection Summary',
+					'en-us': 'Inspection Summary',
+					'fr-ca': 'Récapitulatif de l\'inspection'
 				},
 				estimated_cost: {
-					'en-CA': 'Estimated cost of this item',
-					'en-US': 'Estimated cost of this item',
-					'fr-CA': 'Estimated cost of this item'
+					'en-ca': 'Estimated cost of this item',
+					'en-us': 'Estimated cost of this item',
+					'fr-ca': 'Estimated cost of this item'
 				}
 			}
 		}

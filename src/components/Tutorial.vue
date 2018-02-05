@@ -3,22 +3,22 @@
 		<v-touch @swipeleft="changeOnboarding('left')" class="onboarding text" v-if="currentOnboarding === 'first'">
 			<div class="content-body">
 				<div class="onboarding-first-text">
-					<div>{{ langTerms.your_service_advisor[$root.meta.local] }},</div>
-					<div><b>{{ $root.meta.advisor.advisorName }}</b>, {{ langTerms.has[$root.meta.local] }}</div>
+					<div>{{ langTerms.your_service_advisor[$root.meta.local.toLowerCase()] }},</div>
+					<div><b>{{ $root.meta.advisor.advisorName }}</b>, {{ langTerms.has[$root.meta.local.toLowerCase()] }}</div>
 					<span class="onboarding-first-text-highlight blue">
-						{{ this.$root.inspectionCounts.failCount + this.$root.inspectionCounts.warningCount }} {{ langTerms.recommendations[$root.meta.local] }}
+						{{ this.$root.inspectionCounts.failCount + this.$root.inspectionCounts.warningCount }} {{ langTerms.recommendations[$root.meta.local.toLowerCase()] }}
 					</span>
-					<div>{{ langTerms.for_your[$root.meta.local] }} <b>{{ $root.meta.carDescription }}.</b></div>
+					<div>{{ langTerms.for_your[$root.meta.local.toLowerCase()] }} <b>{{ $root.meta.carDescription }}.</b></div>
 				</div>
 				<img class="onboarding-first-image" :src="$root.meta.advisor.advisorImageUrl">
-				<div class="onboarding-first-break">{{ langTerms.there_are[$root.meta.local] }}:</div>
+				<div class="onboarding-first-break">{{ langTerms.there_are[$root.meta.local.toLowerCase()] }}:</div>
 				<div class="onboarding-first-bottom" v-for="count in inspectionCounts">
 					<img :src="count.image">
 					<div class="onboarding-first-bottom-text"><b> {{ count.count }} {{ count.text }} </b></div>
 				</div>
 			</div>
 			<div class="footer">
-				<button @click="changeOnboarding('left')" class="button btn red"> {{ langTerms.continue[$root.meta.local] }} </button>
+				<button @click="changeOnboarding('left')" class="button btn red"> {{ langTerms.continue[$root.meta.local.toLowerCase()] }} </button>
 			</div>
 		</v-touch>
 
@@ -27,7 +27,7 @@
 				<div class="timer-info">
 					<img src="../assets/images/clock.png">
 					<div class="timer-page-text">
-						<div>{{ langTerms.select_your_services_in[$root.meta.local] }}</div>
+						<div>{{ langTerms.select_your_services_in[$root.meta.local.toLowerCase()] }}</div>
 						<div id="timer">
 							<span v-if="timer.days > 0">{{ timer.days }}</span>
 							<span v-if="timer.days > 0" class="timer-text">d</span>
@@ -38,13 +38,13 @@
 							{{ timer.seconds }}
 							<span class="timer-text">s</span>
 						</div>
-						<div>{{ langTerms.to_have_your_vehicle[$root.meta.local] }}</div>
-						<div class="onboarding-second-bottom">{{ computedEndTimeFormat }} {{ (checkSameDate()) ? langTerms.today[$root.meta.local] : langTerms.on[$root.meta.local] + ' ' + formatPromiseDate }}!</div>
+						<div>{{ langTerms.to_have_your_vehicle[$root.meta.local.toLowerCase()] }}</div>
+						<div class="onboarding-second-bottom">{{ computedEndTimeFormat }} {{ (checkSameDate()) ? langTerms.today[$root.meta.local.toLowerCase()] : langTerms.on[$root.meta.local.toLowerCase()] + ' ' + formatPromiseDate }}!</div>
 					</div>
 				</div>
 			</div>
 			<div class="footer">
-				<button @click="finishTutorial()" class="button btn red"> {{ langTerms.continue[$root.meta.local] }} </button>
+				<button @click="finishTutorial()" class="button btn red"> {{ langTerms.continue[$root.meta.local.toLowerCase()] }} </button>
 			</div>
 		</v-touch>
 	</div>
@@ -86,54 +86,54 @@ export default {
 			timeExpired: false,
 			langTerms: {
 				your_service_advisor: {
-					'en-CA': 'Your service advisor',
-					'en-US': 'Your service advisor',
-					'fr-CA': 'Votre conseiller au service'
+					'en-ca': 'Your service advisor',
+					'en-us': 'Your service advisor',
+					'fr-ca': 'Votre conseiller au service'
 				},
 				has: {
-					'en-CA': 'has',
-					'en-US': 'has',
-					'fr-CA': 'a'
+					'en-ca': 'has',
+					'en-us': 'has',
+					'fr-ca': 'a'
 				},
 				recommendations: {
-					'en-CA': 'RECOMMENDATIONS',
-					'en-US': 'RECOMMENDATIONS',
-					'fr-CA': 'RECOMMANDATIONS'
+					'en-ca': 'RECOMMENDATIONS',
+					'en-us': 'RECOMMENDATIONS',
+					'fr-ca': 'RECOMMANDATIONS'
 				},
 				for_your: {
-					'en-CA': 'for your',
-					'en-US': 'for your',
-					'fr-CA': 'pour votre'
+					'en-ca': 'for your',
+					'en-us': 'for your',
+					'fr-ca': 'pour votre'
 				},
 				there_are: {
-					'en-CA': 'There are',
-					'en-US': 'There are',
-					'fr-CA': 'Elles sont'
+					'en-ca': 'There are',
+					'en-us': 'There are',
+					'fr-ca': 'Elles sont'
 				},
 				continue: {
-					'en-CA': 'CONTINUE',
-					'en-US': 'CONTINUE',
-					'fr-CA': 'SUIVANT'
+					'en-ca': 'CONTINUE',
+					'en-us': 'CONTINUE',
+					'fr-ca': 'SUIVANT'
 				},
 				select_your_services_in: {
-					'en-CA': 'Select your services in',
-					'en-US': 'Select your services in',
-					'fr-CA': 'Sélectionnez vos services dans'
+					'en-ca': 'Select your services in',
+					'en-us': 'Select your services in',
+					'fr-ca': 'Sélectionnez vos services dans'
 				},
 				to_have_your_vehicle: {
-					'en-CA': 'To have your vehicle ready by',
-					'en-US': 'To have your vehicle ready by',
-					'fr-CA': 'Pour que votre véhicule soit prêt pour'
+					'en-ca': 'To have your vehicle ready by',
+					'en-us': 'To have your vehicle ready by',
+					'fr-ca': 'Pour que votre véhicule soit prêt pour'
 				},
 				today: {
-					'en-CA': 'today',
-					'en-US': 'today',
-					'fr-CA': 'aujourd\'hui'
+					'en-ca': 'today',
+					'en-us': 'today',
+					'fr-ca': 'aujourd\'hui'
 				},
 				on: {
-					'en-CA': 'on',
-					'en-US': 'on',
-					'fr-CA': 'on'
+					'en-ca': 'on',
+					'en-us': 'on',
+					'fr-ca': 'on'
 				}
 			}
 		}

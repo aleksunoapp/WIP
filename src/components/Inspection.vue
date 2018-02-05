@@ -1,18 +1,18 @@
 <template>
 	<div>
 		<div class="help-screen-overlay" v-if="helpScreenShowing">
-			<a @click="closeHelpScreen()" class="help-screen-close">{{ langTerms.close[$root.meta.local] }}</a>
+			<a @click="closeHelpScreen()" class="help-screen-close">{{ langTerms.close[$root.meta.local.toLowerCase()] }}</a>
 			<div class="help-screen-information" v-if="this.$root.inspectionCounts.failCount !== 0 || this.$root.inspectionCounts.warningCount !== 0" :style="{'top': helpScreenVars.top, 'background-color': helpScreenVars.color}">
-				<span class="help-screen-text">{{ langTerms.view_more_info[$root.meta.local] }}</span>
+				<span class="help-screen-text">{{ langTerms.view_more_info[$root.meta.local.toLowerCase()] }}</span>
 				<span class="help-screen-block">
 					<span class="information-icon"></span>
 				</span>
 				<div class="help-screen-arrow"></div>
 			</div>
 			<div class="help-screen-select-all" v-if="this.$root.inspectionCounts.failCount !== 0 || this.$root.inspectionCounts.warningCount !== 0" :style="{'top': helpScreenVars.selectTop, 'background-color': helpScreenVars.color, 'height': helpScreenVars.height - 1 + 'px'}">
-				<span class="help-screen-text">{{ langTerms.select_all_services[$root.meta.local] }}</span>
+				<span class="help-screen-text">{{ langTerms.select_all_services[$root.meta.local.toLowerCase()] }}</span>
 				<span class="help-screen-block" :style="{'padding-left': helpScreenVars.selectChecked ? '6px' : '16px', 'padding-left': helpScreenVars.selectChecked && helpScreenVars.height > 30? '28px' : '', 'text-align': helpScreenVars.height > 30 ? 'right' : '', 'padding-right': helpScreenVars.height > 30 ? '10px' : ''}">
-					<span> {{ (helpScreenVars.selectChecked) ? langTerms.remove_all[$root.meta.local] : langTerms.select_all[$root.meta.local] }} </span>
+					<span> {{ (helpScreenVars.selectChecked) ? langTerms.remove_all[$root.meta.local.toLowerCase()] : langTerms.select_all[$root.meta.local.toLowerCase()] }} </span>
 					<div class="service-checkbox">
 						<input type="checkbox" :checked="helpScreenVars.selectChecked">
 						<label>
@@ -24,7 +24,7 @@
 				<div class="help-screen-arrow"></div>
 			</div>
 			<div class="help-screen-select-individual" v-if="this.$root.inspectionCounts.failCount !== 0 || this.$root.inspectionCounts.warningCount !== 0" :style="{'top': helpScreenVars.top, 'background-color': helpScreenVars.color}">
-				<span class="help-screen-text">{{ langTerms.select_services_individually[$root.meta.local] }}</span>
+				<span class="help-screen-text">{{ langTerms.select_services_individually[$root.meta.local.toLowerCase()] }}</span>
 				<span class="help-screen-block">
 					<div class="service-checkbox">
 						<input type="checkbox" :checked="helpScreenVars.checked">
@@ -37,24 +37,24 @@
 				<div class="help-screen-arrow"></div>
 			</div>
 			<div class="help-screen-inspection">
-				<span class="help-screen-text">{{ langTerms.view_inspection_summary[$root.meta.local] }}</span>
+				<span class="help-screen-text">{{ langTerms.view_inspection_summary[$root.meta.local.toLowerCase()] }}</span>
 				<span class="inspection-icon"></span>
 				<div class="help-screen-arrow"></div>
 			</div>
 			<div class="help-screen-contact" v-if="$root.mobile">
-				<span class="help-screen-text">{{ langTerms.call_us[$root.meta.local] }}</span>
+				<span class="help-screen-text">{{ langTerms.call_us[$root.meta.local.toLowerCase()] }}</span>
 				<span class="contact-icon"></span>
 				<div class="help-screen-arrow"></div>
 			</div>
 			<div class="help-screen-chat" v-if="$root.mobile">
-				<span class="help-screen-text">{{ langTerms.message_us[$root.meta.local] }}</span>
+				<span class="help-screen-text">{{ langTerms.message_us[$root.meta.local.toLowerCase()] }}</span>
 				<span class="chat-icon"></span>
 				<div class="help-screen-arrow"></div>
 			</div>
 		</div>
 		<div class="wrapper" :class="{'wrapper-hold': helpScreenShowing}">
 			<span class="help-icon" @click="openHelpScreen()"></span>
-			<div class="summary-header"> {{ langTerms.inspection_summary[$root.meta.local] }}</div>
+			<div class="summary-header"> {{ langTerms.inspection_summary[$root.meta.local.toLowerCase()] }}</div>
 			<div class="summary-icons">
 				<div v-if="$root.inspectionCounts.failCount" class="icon">
 					<img src="../assets/images/fail.png">
@@ -72,7 +72,7 @@
 			<template v-for="(category, index) in serviceCategories" v-if="category.showOnInspection">
 				<div :class="{'accordion-open': category.defaultExpended, 'accordion-closed': !category.defaultExpended, 'red': category.serviceCategoryType === 'SAFETY', 'yellow': category.serviceCategoryType === 'ATTN', 'green': category.serviceCategoryType === 'PASS'}" class="accordion">
 					<div @click="toggleAccordion(category)" class="accordion-header">
-						<img :src="category.iconUrl"> {{ ($root.inspectionCounts[countVariables[category.serviceCategoryType]] === 0) ? langTerms.no[$root.meta.local] : '' }} {{ category.name }} {{ ($root.inspectionCounts[countVariables[category.serviceCategoryType]] === 0) ? langTerms.were_found[$root.meta.local] : '' }} {{ ($root.inspectionCounts[countVariables[category.serviceCategoryType]] !== 0) ? `(${$root.inspectionCounts[countVariables[category.serviceCategoryType]]})` : '' }}
+						<img :src="category.iconUrl"> {{ ($root.inspectionCounts[countVariables[category.serviceCategoryType]] === 0) ? langTerms.no[$root.meta.local.toLowerCase()] : '' }} {{ category.name }} {{ ($root.inspectionCounts[countVariables[category.serviceCategoryType]] === 0) ? langTerms.were_found[$root.meta.local.toLowerCase()] : '' }} {{ ($root.inspectionCounts[countVariables[category.serviceCategoryType]] !== 0) ? `(${$root.inspectionCounts[countVariables[category.serviceCategoryType]]})` : '' }}
 						<div class="accordion-status" v-if="$root.inspectionCounts[countVariables[category.serviceCategoryType]] !== 0"></div>
 						<div class="clear"></div>
 					</div>
@@ -80,7 +80,7 @@
 						<div v-if="category.serviceCategoryType === 'PASS'" class="view-full-report">
 							<div class="view-full-report-btn" @click="openFullInspection()">
 								<a id="viewReport">
-									{{ langTerms.view_full_report[$root.meta.local] }}
+									{{ langTerms.view_full_report[$root.meta.local.toLowerCase()] }}
 									<img src="../assets/images/external-link.png">
 								</a>
 							</div>
@@ -89,12 +89,12 @@
 							<div v-if="category.serviceCategoryType !== 'PASS' && $root.inspectionCounts[countVariables[category.serviceCategoryType]] !== 0" class="summary-table-row">
 								<div class="summary-table-cell">
 									<span class="summary-legend">
-										<b>{{ langTerms.check_recommended_services[$root.meta.local] }}</b>
+										<b>{{ langTerms.check_recommended_services[$root.meta.local.toLowerCase()] }}</b>
 									</span>
 								</div>
 
 								<div class="summary-table-cell">
-									<span> {{ (category.allSelected) ? langTerms.remove_all[$root.meta.local] : langTerms.select_all[$root.meta.local] }} </span>
+									<span> {{ (category.allSelected) ? langTerms.remove_all[$root.meta.local.toLowerCase()] : langTerms.select_all[$root.meta.local.toLowerCase()] }} </span>
 									<div class="service-checkbox">
 										<input type="checkbox" :id="`select-${category.serviceCategoryType}`" v-model="category.allSelected" @change="toggleAll(category)">
 										<label :for="`select-${category.serviceCategoryType}`">
@@ -123,7 +123,7 @@
 											<div class="summary-table-cell">
 												<template v-if="category.serviceCategoryType !== 'PASS'">
 													<span class="price" v-if="subService.price !== 0"> ${{ (subService.price).toFixed(2) }} </span>
-													<span class="price" v-else> {{ langTerms.free[$root.meta.local] }} </span>
+													<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 													<div class="service-checkbox">
 														<input type="checkbox" :id="`sub-service-${subService.id}`" v-model="subService.isSelected" @change="toggleCheckbox(category, subService)">
 														<label :for="`sub-service-${subService.id}`">
@@ -143,7 +143,7 @@
 										<div class="summary-table-cell">
 											<template v-if="category.serviceCategoryType !== 'PASS'">
 												<span class="price" v-if="service.price !== 0"> ${{ (service.price).toFixed(2) }} </span>
-												<span class="price" v-else> {{ langTerms.free[$root.meta.local] }} </span>
+												<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 												<div class="service-checkbox">
 													<input type="checkbox" :id="`sub-service-${service.id}`" v-model="service.isSelected" @change="toggleCheckbox(category, service)">
 													<label :for="`sub-service-${service.id}`">
@@ -163,16 +163,16 @@
 			
 			<div class="proceed-component">
 				<div v-if="$root.inspectionCounts.failCount && $root.inspectionCounts.warningCount" class="time-notice" :class="{'danger-flag': timeExpired}">
-					<span v-if="!timeExpired">{{ langTerms.if_approved_by[$root.meta.local] }} {{ computedResponseTime }} {{ langTerms.your_vehicle_will_be_ready[$root.meta.local] }} {{ computedPromiseTime }}.</span>
-					<span v-else>{{ langTerms.your_service_advisor_will_contact[$root.meta.local] }}</span>
+					<span v-if="!timeExpired">{{ langTerms.if_approved_by[$root.meta.local.toLowerCase()] }} {{ computedResponseTime }} {{ langTerms.your_vehicle_will_be_ready[$root.meta.local.toLowerCase()] }} {{ computedPromiseTime }}.</span>
+					<span v-else>{{ langTerms.your_service_advisor_will_contact[$root.meta.local.toLowerCase()] }}</span>
 				</div>
 				<div v-if="!$root.inspectionCounts.failCount && !$root.inspectionCounts.warningCount" class="time-notice">
-					<span>{{ langTerms.your_vehicle_will_be_ready[$root.meta.local] }} {{ computedPromiseTime }}.</span>
+					<span>{{ langTerms.your_vehicle_will_be_ready[$root.meta.local.toLowerCase()] }} {{ computedPromiseTime }}.</span>
 				</div>
 				<div class="total-estimate">
 					<div class="total-label">
 						<div class="large">
-							{{ langTerms.estimate_for_selected_services[$root.meta.local] }}
+							{{ langTerms.estimate_for_selected_services[$root.meta.local.toLowerCase()] }}
 						</div>
 					</div>
 					<div class="total-estimate-value">
@@ -182,7 +182,7 @@
 				<div class="total-estimate">
 					<div class="total-label">
 						<div class="large">
-							{{ langTerms.estimate_for_previous_services[$root.meta.local] }}
+							{{ langTerms.estimate_for_previous_services[$root.meta.local.toLowerCase()] }}
 						</div>
 					</div>
 					<div class="total-estimate-value">
@@ -190,7 +190,7 @@
 					</div>
 				</div>
 				<div @click="openServices()" class="proceed-btn">
-					{{ langTerms.next[$root.meta.local] }}
+					{{ langTerms.next[$root.meta.local.toLowerCase()] }}
 				</div>
 				<div class="footer-bar">
 					<a v-if="$root.mobile" :href="`tel:${$root.meta.dealerContactInfo.phone}`" class="contact-icon" @click="$root.logEvent('Clicked Phone icon')"></a>
@@ -237,109 +237,109 @@ export default {
 			categoryDeferral: false,
 			langTerms: {
 				close: {
-					'en-CA': 'Close',
-					'en-US': 'Close',
-					'fr-CA': 'Close'
+					'en-ca': 'Close',
+					'en-us': 'Close',
+					'fr-ca': 'Close'
 				},
 				view_more_info: {
-					'en-CA': 'View more information about the service',
-					'en-US': 'View more information about the service',
-					'fr-CA': 'Afficher des détails additionnels concernant le service'
+					'en-ca': 'View more information about the service',
+					'en-us': 'View more information about the service',
+					'fr-ca': 'Afficher des détails additionnels concernant le service'
 				},
 				select_all_services: {
-					'en-CA': 'Select all services',
-					'en-US': 'Select all services',
-					'fr-CA': 'Sélectionner tous les services'
+					'en-ca': 'Select all services',
+					'en-us': 'Select all services',
+					'fr-ca': 'Sélectionner tous les services'
 				},
 				remove_all: {
-					'en-CA': 'Remove All',
-					'en-US': 'Remove All',
-					'fr-CA': 'Supprimer tout'
+					'en-ca': 'Remove All',
+					'en-us': 'Remove All',
+					'fr-ca': 'Supprimer tout'
 				},
 				select_all: {
-					'en-CA': 'Select All',
-					'en-US': 'Select All',
-					'fr-CA': 'Sélectionner tout'
+					'en-ca': 'Select All',
+					'en-us': 'Select All',
+					'fr-ca': 'Sélectionner tout'
 				},
 				select_services_individually: {
-					'en-CA': 'Select services individually',
-					'en-US': 'Select services individually',
-					'fr-CA': 'Sélectionner les services individuellement'
+					'en-ca': 'Select services individually',
+					'en-us': 'Select services individually',
+					'fr-ca': 'Sélectionner les services individuellement'
 				},
 				view_inspection_summary: {
-					'en-CA': 'View your inspection summary',
-					'en-US': 'View your inspection summary',
-					'fr-CA': 'Afficher votre récapitulatif de l\'inspection'
+					'en-ca': 'View your inspection summary',
+					'en-us': 'View your inspection summary',
+					'fr-ca': 'Afficher votre récapitulatif de l\'inspection'
 				},
 				call_us: {
-					'en-CA': 'Call Us',
-					'en-US': 'Call Us',
-					'fr-CA': 'Call Us'
+					'en-ca': 'Call Us',
+					'en-us': 'Call Us',
+					'fr-ca': 'Call Us'
 				},
 				message_us: {
-					'en-CA': 'Message Us',
-					'en-US': 'Message Us',
-					'fr-CA': 'Message Us'
+					'en-ca': 'Message Us',
+					'en-us': 'Message Us',
+					'fr-ca': 'Message Us'
 				},
 				inspection_summary: {
-					'en-CA': 'Inspection Summary',
-					'en-US': 'Inspection Summary',
-					'fr-CA': 'Récapitulatif de l\'Inspection'
+					'en-ca': 'Inspection Summary',
+					'en-us': 'Inspection Summary',
+					'fr-ca': 'Récapitulatif de l\'Inspection'
 				},
 				no: {
-					'en-CA': 'No',
-					'en-US': 'No',
-					'fr-CA': 'Aucun'
+					'en-ca': 'No',
+					'en-us': 'No',
+					'fr-ca': 'Aucun'
 				},
 				were_found: {
-					'en-CA': 'were found',
-					'en-US': 'were found',
-					'fr-CA': 'découvert'
+					'en-ca': 'were found',
+					'en-us': 'were found',
+					'fr-ca': 'découvert'
 				},
 				view_full_report: {
-					'en-CA': 'View Full Report',
-					'en-US': 'View Full Report',
-					'fr-CA': 'View Full Report'
+					'en-ca': 'View Full Report',
+					'en-us': 'View Full Report',
+					'fr-ca': 'View Full Report'
 				},
 				check_recommended_services: {
-					'en-CA': 'Check the recommended services you authorize.',
-					'en-US': 'Check the recommended services you authorize.',
-					'fr-CA': 'Sélectionnez toutes les recommandations vous autorisez.'
+					'en-ca': 'Check the recommended services you authorize.',
+					'en-us': 'Check the recommended services you authorize.',
+					'fr-ca': 'Sélectionnez toutes les recommandations vous autorisez.'
 				},
 				free: {
-					'en-CA': 'Free',
-					'en-US': 'Free',
-					'fr-CA': 'Gratuit'
+					'en-ca': 'Free',
+					'en-us': 'Free',
+					'fr-ca': 'Gratuit'
 				},
 				if_approved_by: {
-					'en-CA': 'If approved by',
-					'en-US': 'If approved by',
-					'fr-CA': 'Si les recommandations sont approuvées avant'
+					'en-ca': 'If approved by',
+					'en-us': 'If approved by',
+					'fr-ca': 'Si les recommandations sont approuvées avant'
 				},
 				your_vehicle_will_be_ready: {
-					'en-CA': 'your vehicle will be ready for pickup by',
-					'en-US': 'your vehicle will be ready for pickup by',
-					'fr-CA': 'votre véhicule sera prêt pour'
+					'en-ca': 'your vehicle will be ready for pickup by',
+					'en-us': 'your vehicle will be ready for pickup by',
+					'fr-ca': 'votre véhicule sera prêt pour'
 				},
 				your_service_advisor_will_contact: {
-					'en-CA': 'Your service advisor will contact you when your services are completed',
-					'en-US': 'Your service advisor will contact you when your services are completed',
-					'fr-CA': 'Your service advisor will contact you when your services are completed'
+					'en-ca': 'Your service advisor will contact you when your services are completed',
+					'en-us': 'Your service advisor will contact you when your services are completed',
+					'fr-ca': 'Your service advisor will contact you when your services are completed'
 				},
 				estimate_for_selected_services: {
-					'en-CA': 'Estimate for Selected Services (not including taxes and fees)',
-					'en-US': 'Estimate for Selected Services (not including taxes and fees)',
-					'fr-CA': 'Coût estimatif pour les services sélectionnés (taxes et frais non inclus)'
+					'en-ca': 'Estimate for Selected Services (not including taxes and fees)',
+					'en-us': 'Estimate for Selected Services (not including taxes and fees)',
+					'fr-ca': 'Coût estimatif pour les services sélectionnés (taxes et frais non inclus)'
 				},
 				estimate_for_previous_services: {
-					'en-CA': 'Estimate for Previously Approved Services',
-					'en-US': 'Estimate for Previously Approved Services',
-					'fr-CA': 'Coût estimatif pour les services précédemment approuvés'
+					'en-ca': 'Estimate for Previously Approved Services',
+					'en-us': 'Estimate for Previously Approved Services',
+					'fr-ca': 'Coût estimatif pour les services précédemment approuvés'
 				},
 				next: {
-					'en-CA': 'Next',
-					'en-US': 'Next',
-					'fr-CA': 'Suivant'
+					'en-ca': 'Next',
+					'en-us': 'Next',
+					'fr-ca': 'Suivant'
 				}
 			}
 		}

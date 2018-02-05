@@ -1,7 +1,7 @@
 <template>
 	<v-touch @pan="checkSignature()">
 		<div class="signature noselect">
-			<span class="signature-clear" @click="clearSignature()">{{ langTerms.clear[$root.meta.local] }}</span>
+			<span class="signature-clear" @click="clearSignature()">{{ langTerms.clear[$root.meta.local.toLowerCase()] }}</span>
 		</div>
 	</v-touch>
 </template>
@@ -17,9 +17,9 @@ export default {
 			signaturePad: false,
 			langTerms: {
 				clear: {
-					'en-CA': 'CLEAR',
-					'en-US': 'CLEAR',
-					'fr-CA': 'EFFACER'
+					'en-ca': 'CLEAR',
+					'en-us': 'CLEAR',
+					'fr-ca': 'EFFACER'
 				}
 			}
 		}

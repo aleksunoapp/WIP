@@ -16,19 +16,19 @@
 				<h2 v-else>{{ $root.meta.dealerContactInfo.name }}</h2>
 			</div>
 			<div class="login-header">
-				{{ langTerms.vehicle_inspection_update[$root.meta.local] }}
+				{{ langTerms.vehicle_inspection_update[$root.meta.local.toLowerCase()] }}
 			</div>
 			<form class="access-form" @submit.prevent="enterPasscode()">
 				<label class="label">
-					{{ langTerms.please_enter_your[$root.meta.local] }}
-					{{ $root.meta.authenticationHint.hintType === 1 ? langTerms.email[$root.meta.local] : '' }}{{ $root.meta.authenticationHint.hintType === 2 ? langTerms.phone_number[$root.meta.local] : '' }}{{ $root.meta.authenticationHint.hintType === 3 ? langTerms.last_name_or_company[$root.meta.local] : '' }}{{ $root.meta.local === 'en' ? ' below:' : ':' }} 
+					{{ langTerms.please_enter_your[$root.meta.local.toLowerCase()] }}
+					{{ $root.meta.authenticationHint.hintType === 1 ? langTerms.email[$root.meta.local.toLowerCase()] : '' }}{{ $root.meta.authenticationHint.hintType === 2 ? langTerms.phone_number[$root.meta.local.toLowerCase()] : '' }}{{ $root.meta.authenticationHint.hintType === 3 ? langTerms.last_name_or_company[$root.meta.local.toLowerCase()] : '' }}{{ $root.meta.local.toLowerCase() === 'en' ? ' below:' : ':' }} 
 				</label>
 				<div>
 					<input type="text" class="access-code" v-model="verificationCode" :placeholder="$root.meta.authenticationHint.hintText">
 				</div>
 				<div>
 					<button class="enter-btn" type="submit">
-						{{ langTerms.enter[$root.meta.local] }}
+						{{ langTerms.enter[$root.meta.local.toLowerCase()] }}
 					</button>
 				</div>
 				<div>
@@ -42,20 +42,20 @@
 					<img src="../assets/images/clock.png">
 					<div class="timer-page-text">
 						<div>
-							<p>{{ langTerms.expired_link[$root.meta.local] }}</p>
-							<p>{{ langTerms.please_contact_dealership[$root.meta.local] }}</p>
+							<p>{{ langTerms.expired_link[$root.meta.local.toLowerCase()] }}</p>
+							<p>{{ langTerms.please_contact_dealership[$root.meta.local.toLowerCase()] }}</p>
 						</div>
 						<div v-if="$root.mobile" class="timer-page-no-timer">
 							<div>
 								<a :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" class="chat-icon"></a>
-								<span>{{ langTerms.text_dealership[$root.meta.local] }}</span>
+								<span>{{ langTerms.text_dealership[$root.meta.local.toLowerCase()] }}</span>
 							</div>
 							<div>
 								<a :href="`tel:${$root.meta.dealerContactInfo.phone}`" class="contact-icon"></a>
-								<span>{{ langTerms.phone_dealership[$root.meta.local] }}</span>
+								<span>{{ langTerms.phone_dealership[$root.meta.local.toLowerCase()] }}</span>
 							</div>
 						</div>
-						<p v-else>{{ langTerms.you_can_call_us_at[$root.meta.local] }} {{$root.meta.dealerContactInfo.phone}}.</p>
+						<p v-else>{{ langTerms.you_can_call_us_at[$root.meta.local.toLowerCase()] }} {{$root.meta.dealerContactInfo.phone}}.</p>
 					</div>
 				</div>
 			</div>
@@ -74,11 +74,11 @@
 					<div class="modal-message no-padding-bottom" v-else>
 						<span v-html="modal.content"></span>
 						<ul class="modal-list-options">
-							<li><a @click="tryAgain()"><b>{{ langTerms.try_again[$root.meta.local] }}</b></a></li>
-							<li v-if="$root.mobile"><a :href="`tel:${$root.meta.dealerContactInfo.phone}`" @click="$root.logEvent('Clicked Call Dealership')">{{ langTerms.call_dealership[$root.meta.local] }}</a></li>
-							<li v-if="$root.mobile"><a :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" @click="$root.logEvent('Clicked Text Dealership')">{{ langTerms.text_dealership[$root.meta.local] }}</a></li>
+							<li><a @click="tryAgain()"><b>{{ langTerms.try_again[$root.meta.local.toLowerCase()] }}</b></a></li>
+							<li v-if="$root.mobile"><a :href="`tel:${$root.meta.dealerContactInfo.phone}`" @click="$root.logEvent('Clicked Call Dealership')">{{ langTerms.call_dealership[$root.meta.local.toLowerCase()] }}</a></li>
+							<li v-if="$root.mobile"><a :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" @click="$root.logEvent('Clicked Text Dealership')">{{ langTerms.text_dealership[$root.meta.local.toLowerCase()] }}</a></li>
 						</ul>
-						<p v-if="!$root.mobile" class="modal-list-phone">{{ langTerms.call_us_at[$root.meta.local] }} {{$root.meta.dealerContactInfo.phone}}</p>
+						<p v-if="!$root.mobile" class="modal-list-phone">{{ langTerms.call_us_at[$root.meta.local.toLowerCase()] }} {{$root.meta.dealerContactInfo.phone}}</p>
 					</div>
 				</div>
 			</div>
@@ -105,84 +105,84 @@ export default {
 			showErrorMessage: false,
 			langTerms: {
 				vehicle_inspection_update: {
-					'en-CA': 'Vehicle Inspection Update',
-					'en-US': 'Vehicle Inspection Update',
-					'fr-CA': 'Résultats d\'inspection'
+					'en-ca': 'Vehicle Inspection Update',
+					'en-us': 'Vehicle Inspection Update',
+					'fr-ca': 'Résultats d\'inspection'
 				},
 				enter: {
-					'en-CA': 'Enter',
-					'en-US': 'Enter',
-					'fr-CA': 'Soumettre'
+					'en-ca': 'Enter',
+					'en-us': 'Enter',
+					'fr-ca': 'Soumettre'
 				},
 				please_enter_your: {
-					'en-CA': 'Please enter your',
-					'en-US': 'Please enter your',
-					'fr-CA': 'Veuillez entrer votre'
+					'en-ca': 'Please enter your',
+					'en-us': 'Please enter your',
+					'fr-ca': 'Veuillez entrer votre'
 				},
 				last_name_or_company: {
-					'en-CA': 'last name or company',
-					'en-US': 'last name or company',
-					'fr-CA': 'surnom ou nom de d\'entreprise'
+					'en-ca': 'last name or company',
+					'en-us': 'last name or company',
+					'fr-ca': 'surnom ou nom de d\'entreprise'
 				},
 				email: {
-					'en-CA': 'email',
-					'en-US': 'email',
-					'fr-CA': 'email'
+					'en-ca': 'email',
+					'en-us': 'email',
+					'fr-ca': 'email'
 				},
 				phone_number: {
-					'en-CA': 'phone_number',
-					'en-US': 'phone_number',
-					'fr-CA': 'phone_number'
+					'en-ca': 'phone_number',
+					'en-us': 'phone_number',
+					'fr-ca': 'phone_number'
 				},
 				expired_link: {
-					'en-CA': 'We are sorry but this link has expired.',
-					'en-US': 'We are sorry but this link has expired.',
-					'fr-CA': 'We are sorry but this link has expired.'
+					'en-ca': 'We are sorry but this link has expired.',
+					'en-us': 'We are sorry but this link has expired.',
+					'fr-ca': 'We are sorry but this link has expired.'
 				},
 				please_contact_dealership: {
-					'en-CA': 'Please contact the dealership for the status of your vehicle.',
-					'en-US': 'Please contact the dealership for the status of your vehicle.',
-					'fr-CA': 'Please contact the dealership for the status of your vehicle.'
+					'en-ca': 'Please contact the dealership for the status of your vehicle.',
+					'en-us': 'Please contact the dealership for the status of your vehicle.',
+					'fr-ca': 'Please contact the dealership for the status of your vehicle.'
 				},
 				text_dealership: {
-					'en-CA': 'Text Dealership',
-					'en-US': 'Text Dealership',
-					'fr-CA': 'Text Dealership'
+					'en-ca': 'Text Dealership',
+					'en-us': 'Text Dealership',
+					'fr-ca': 'Text Dealership'
 				},
 				phone_dealership: {
-					'en-CA': 'Phone Dealership',
-					'en-US': 'Phone Dealership',
-					'fr-CA': 'Phone Dealership'
+					'en-ca': 'Phone Dealership',
+					'en-us': 'Phone Dealership',
+					'fr-ca': 'Phone Dealership'
 				},
 				call_dealership: {
-					'en-CA': 'Call Dealership',
-					'en-US': 'Call Dealership',
-					'fr-CA': 'Call Dealership'
+					'en-ca': 'Call Dealership',
+					'en-us': 'Call Dealership',
+					'fr-ca': 'Call Dealership'
 				},
 				call_us_at: {
-					'en-CA': 'Call us at',
-					'en-US': 'Call us at',
-					'fr-CA': 'Call us at'
+					'en-ca': 'Call us at',
+					'en-us': 'Call us at',
+					'fr-ca': 'Call us at'
 				},
 				you_can_call_us_at: {
-					'en-CA': 'You can call us at',
-					'en-US': 'You can call us at',
-					'fr-CA': 'You can call us at'
+					'en-ca': 'You can call us at',
+					'en-us': 'You can call us at',
+					'fr-ca': 'You can call us at'
 				},
 				try_again: {
-					'en-CA': 'Try again',
-					'en-US': 'Try again',
-					'fr-CA': 'Try again'
+					'en-ca': 'Try again',
+					'en-us': 'Try again',
+					'fr-ca': 'Try again'
 				},
 				error: {
-					'en-CA': 'Error',
-					'en-US': 'Error',
-					'fr-CA': 'Error'
+					'en-ca': 'Error',
+					'en-us': 'Error',
+					'fr-ca': 'Error'
 				},
 				enter_access_code: {
-					'en-CA': 'Please enter your access code.',
-					'en-US': 'Please enter your access code.',
-					'fr-CA': 'Please enter your access code.'
+					'en-ca': 'Please enter your access code.',
+					'en-us': 'Please enter your access code.',
+					'fr-ca': 'Please enter your access code.'
 				}
 			}
 		}
@@ -207,8 +207,8 @@ export default {
 			if (!this.verificationCode.length) {
 				this.$root.logError('Left passcode input empty')
 				this.modalOpen = true
-				this.modal.title = this.langTerms.error[this.$root.meta.local]
-				this.modal.content = this.langTerms.enter_access_code[this.$root.meta.local]
+				this.modal.title = this.langTerms.error[this.$root.meta.local.toLowerCase()]
+				this.modal.content = this.langTerms.enter_access_code[this.$root.meta.local.toLowerCase()]
 			} else {
 				this.$root.logEvent('Entered a passcode')
 				this.authenticateToken()
