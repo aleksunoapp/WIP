@@ -288,7 +288,7 @@ export default {
 				subtotal: {
 					'en-ca': 'Subtotal',
 					'en-us': 'Subtotal',
-					'fr-ca': 'Subtotal'
+					'fr-ca': 'Sous-total'
 				},
 				previously_approved_services: {
 					'en-ca': 'Previously Approved Services',
@@ -313,7 +313,7 @@ export default {
 				your_service_advisor_will: {
 					'en-ca': 'Your service advisor will contact you when your services are completed',
 					'en-us': 'Your service advisor will contact you when your services are completed',
-					'fr-ca': 'Your service advisor will contact you when your services are completed'
+					'fr-ca': 'Votre conseiller au service vous contactera lorsque les services seront complétés.'
 				},
 				estimated_taxes_and_fees: {
 					'en-ca': 'Estimated Taxes & Fees (Newly Approved Services)',
