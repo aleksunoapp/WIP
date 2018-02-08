@@ -162,17 +162,17 @@ export default {
 				call_us_at: {
 					'en-ca': 'Call us at',
 					'en-us': 'Call us at',
-					'fr-ca': 'Call us at'
+					'fr-ca': 'Veuillez nous contacter au'
 				},
 				you_can_call_us_at: {
 					'en-ca': 'You can call us at',
 					'en-us': 'You can call us at',
-					'fr-ca': 'You can call us at'
+					'fr-ca': 'Veuillez nous contacter au'
 				},
 				try_again: {
 					'en-ca': 'Try again',
 					'en-us': 'Try again',
-					'fr-ca': 'Try again'
+					'fr-ca': 'Réessayer'
 				},
 				error: {
 					'en-ca': 'Error',
@@ -182,7 +182,7 @@ export default {
 				enter_access_code: {
 					'en-ca': 'Please enter your access code.',
 					'en-us': 'Please enter your access code.',
-					'fr-ca': 'Please enter your access code.'
+					'fr-ca': 'Veuillez entrer votre code d\'accès.'
 				}
 			}
 		}
