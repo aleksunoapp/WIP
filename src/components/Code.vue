@@ -182,7 +182,7 @@ export default {
 				enter_access_code: {
 					'en-ca': 'Please enter your access code.',
 					'en-us': 'Please enter your access code.',
-					'fr-ca': 'Please enter your access code.'
+					'fr-ca': 'Veuillez entrer votre code d\'accès.'
 				}
 			}
 		}
