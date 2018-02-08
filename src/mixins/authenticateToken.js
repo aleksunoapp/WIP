@@ -15,17 +15,17 @@ var langTerms = {
 	unrecognized_name: {
 		'en-ca': 'Unrecognized last name',
 		'en-us': 'Unrecognized last name',
-		'fr-ca': 'Unrecognized last name'
+		'fr-ca': 'Nom de famille non reconnu'
 	},
 	were_sorry: {
 		'en-ca': 'We\'re sorry but we don\'t recognize',
 		'en-us': 'We\'re sorry but we don\'t recognize',
-		'fr-ca': 'We\'re sorry but we don\'t recognize'
+		'fr-ca': 'Désolé mais le nom'
 	},
 	database: {
 		'en-ca': 'in our database',
 		'en-us': 'in our database',
-		'fr-ca': 'in our database'
+		'fr-ca': 'est non reconnu dans notre système.'
 	}
 }
 

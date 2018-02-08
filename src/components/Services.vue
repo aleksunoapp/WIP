@@ -383,12 +383,12 @@ export default {
 				terms_header_2: {
 					'en-ca': 'Exclusion of warranties',
 					'en-us': 'Exclusion of warranties',
-					'fr-ca': 'Exclusion of warranties'
+					'fr-ca': 'EXCLUSION DES GARANTIES'
 				},
 				terms_header_3: {
 					'en-ca': 'Authorization for repairs',
 					'en-us': 'Authorization for repairs',
-					'fr-ca': 'Authorization for repairs'
+					'fr-ca': 'AUTORISATION DES RÉPARATIONS'
 				},
 				terms_body_1: {
 					'en-ca': 'All warranties on the parts and accessories sold hereby are made by the manufacturer. The undersigned purchaser understand and agrees that dealer makes no warranties of any kind, express or implied, and disclaims all warranties, including warranties of merchantability or fitness for a particular purpose; and that in no event shall dealer be liable for incidental or consequential damages or commercial losses arising out of such purchase. The undersighed purchaser further agrees that the warranties excluded by the dealer, include, but are not limited to any warranties that such parts and/or accessories are of merchantable quality or that they will enable any vehicle or any of its systems to perform with reasonable safety, efficiency, or comfort.',
