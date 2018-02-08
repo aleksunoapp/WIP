@@ -1,6 +1,34 @@
 import $ from 'jquery'
 import ENV from '../environment'
 
+var langTerms = {
+	unrecognized_email: {
+		'en-ca': 'Unrecognized email address',
+		'en-us': 'Unrecognized email address',
+		'fr-ca': 'Unrecognized email address'
+	},
+	unrecognized_phone: {
+		'en-ca': 'Unrecognized phone number',
+		'en-us': 'Unrecognized phone number',
+		'fr-ca': 'Unrecognized phone number'
+	},
+	unrecognized_name: {
+		'en-ca': 'Unrecognized last name',
+		'en-us': 'Unrecognized last name',
+		'fr-ca': 'Unrecognized last name'
+	},
+	were_sorry: {
+		'en-ca': 'We\'re sorry but we don\'t recognize',
+		'en-us': 'We\'re sorry but we don\'t recognize',
+		'fr-ca': 'We\'re sorry but we don\'t recognize'
+	},
+	database: {
+		'en-ca': 'in our database',
+		'en-us': 'in our database',
+		'fr-ca': 'in our database'
+	}
+}
+
 var authenticateToken = {
 	methods: {
 		/**
@@ -210,13 +238,13 @@ var authenticateToken = {
 				this.$root.logError('Passcode failed authentication, error message displayed')
 				_this.modalOpen = true
 				if (_this.$root.meta.authenticationHint.hintType === 1) {
-					_this.modal.title = 'Unrecognized email address'
+					_this.modal.title = langTerms.unrecognized_email[this.$root.meta.local.toLowerCase()]
 				} else if (_this.$root.meta.authenticationHint.hintType === 2) {
-					_this.modal.title = 'Unrecognized phone number'
+					_this.modal.title = langTerms.unrecognized_phone[this.$root.meta.local.toLowerCase()]
 				} else {
-					_this.modal.title = 'Unrecognized last name'
+					_this.modal.title = langTerms.unrecognized_name[this.$root.meta.local.toLowerCase()]
 				}
-				_this.modal.content = `We're sorry but we don't recognize <b>${_this.verificationCode}</b> in our database.`
+				_this.modal.content = `${langTerms.were_sorry[this.$root.meta.local.toLowerCase()]} <b>${_this.verificationCode}</b> ${langTerms.database[this.$root.meta.local.toLowerCase()]}.`
 			})
 		}
 	}
