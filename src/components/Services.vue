@@ -373,7 +373,7 @@ export default {
 				close: {
 					'en-ca': 'CLOSE',
 					'en-us': 'CLOSE',
-					'fr-ca': 'CLOSE'
+					'fr-ca': 'FERMER'
 				},
 				terms_header_1: {
 					'en-ca': 'Terms and Conditions',
