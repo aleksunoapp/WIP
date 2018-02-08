@@ -239,7 +239,7 @@ export default {
 				close: {
 					'en-ca': 'Close',
 					'en-us': 'Close',
-					'fr-ca': 'Close'
+					'fr-ca': 'Fermer'
 				},
 				view_more_info: {
 					'en-ca': 'View more information about the service',
@@ -299,7 +299,7 @@ export default {
 				view_full_report: {
 					'en-ca': 'View Full Report',
 					'en-us': 'View Full Report',
-					'fr-ca': 'View Full Report'
+					'fr-ca': 'Afficher le rapport complet'
 				},
 				check_recommended_services: {
 					'en-ca': 'Check the recommended services you authorize.',
@@ -324,7 +324,7 @@ export default {
 				your_service_advisor_will_contact: {
 					'en-ca': 'Your service advisor will contact you when your services are completed',
 					'en-us': 'Your service advisor will contact you when your services are completed',
-					'fr-ca': 'Your service advisor will contact you when your services are completed'
+					'fr-ca': 'Votre conseiller au service vous contactera lorsque les services seront complétés.'
 				},
 				estimate_for_selected_services: {
 					'en-ca': 'Estimate for Selected Services (not including taxes and fees)',

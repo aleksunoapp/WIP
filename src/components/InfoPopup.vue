@@ -50,7 +50,7 @@ export default {
 				not_today: {
 					'en-ca': 'Not Today',
 					'en-us': 'Not Today',
-					'fr-ca': 'Not Today'
+					'fr-ca': 'Pas aujourd’hui'
 				},
 				recommendation: {
 					'en-ca': 'Recommendation',
@@ -65,7 +65,7 @@ export default {
 				estimated_cost: {
 					'en-ca': 'Estimated cost of this item',
 					'en-us': 'Estimated cost of this item',
-					'fr-ca': 'Estimated cost of this item'
+					'fr-ca': 'Coût estimé de cet article'
 				}
 			}
 		}
