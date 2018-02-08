@@ -713,7 +713,7 @@ export default {
 			let _this = this
 			let approvedServices = []
 			this.$root.services.forEach(service => {
-				if (service.category !== '3') {
+				if (service.category !== '3' && service.category !== '4') {
 					if (service.subServices) {
 						service.subServices.forEach(subService => {
 							if (subService.isSelected) {
