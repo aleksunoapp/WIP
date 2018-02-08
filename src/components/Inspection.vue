@@ -9,9 +9,9 @@
 				</span>
 				<div class="help-screen-arrow"></div>
 			</div>
-			<div class="help-screen-select-all" v-if="this.$root.inspectionCounts.failCount !== 0 || this.$root.inspectionCounts.warningCount !== 0" :style="{'top': helpScreenVars.selectTop, 'background-color': helpScreenVars.color, 'height': helpScreenVars.height - 1 + 'px'}">
+			<div class="help-screen-select-all" :class="{'french-width': $root.meta.local.toLowerCase() === 'fr-ca'}" v-if="this.$root.inspectionCounts.failCount !== 0 || this.$root.inspectionCounts.warningCount !== 0" :style="{'top': helpScreenVars.selectTop, 'background-color': helpScreenVars.color, 'height': helpScreenVars.height - 1 + 'px'}">
 				<span class="help-screen-text">{{ langTerms.select_all_services[$root.meta.local.toLowerCase()] }}</span>
-				<span class="help-screen-block" :style="{'padding-left': helpScreenVars.selectChecked ? '6px' : '16px', 'padding-left': helpScreenVars.selectChecked && helpScreenVars.height > 30? '28px' : '', 'text-align': helpScreenVars.height > 30 ? 'right' : '', 'padding-right': helpScreenVars.height > 30 ? '10px' : ''}">
+				<span class="help-screen-block" :class="{'help-screen-height': helpScreenVars.height > 30, 'help-screen-selected': helpScreenVars.selectChecked, 'help-screen-not-selected': !helpScreenVars.selectChecked}">
 					<span> {{ (helpScreenVars.selectChecked) ? langTerms.remove_all[$root.meta.local.toLowerCase()] : langTerms.select_all[$root.meta.local.toLowerCase()] }} </span>
 					<div class="service-checkbox">
 						<input type="checkbox" :checked="helpScreenVars.selectChecked">
@@ -796,5 +796,22 @@ export default {
 }
 .service-checkbox input[type=checkbox]:checked~label {
 	background-image: url('../assets/images/checkbox-checked.png');
+}
+.help-screen-block.help-screen-height {
+	padding-left: 28px;
+	text-align: right;
+	padding-right: 10px;
+}
+.help-screen-block.help-screen-selected {
+	padding-left: 5px;
+}
+.french-width .help-screen-block.help-screen-selected {
+	padding-left: 25px;
+}
+.help-screen-block.help-screen-not-selected {
+	padding-left: 16px;
+}
+.help-screen-select-all.french-width {
+	width: 130px;
 }
 </style>
