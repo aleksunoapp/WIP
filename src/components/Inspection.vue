@@ -474,7 +474,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		toggleCheckbox (category, service) {
-			if (this.$root.$data.userActivity.eventTracker[this.$root.$data.userActivity.eventTracker.length - 1].event !== `Deferred ${service.name} service`) {
+			if (!this.$root.$data.userActivity.eventTracker.length || this.$root.$data.userActivity.eventTracker[this.$root.$data.userActivity.eventTracker.length - 1].event !== `Deferred ${service.name} service`) {
 				service.isSelected ? this.$root.logEvent(`Checked ${service.name} checkbox`) : this.$root.logEvent(`Unchecked ${service.name} checkbox`)
 			}
 			if (service.isSelected) {
