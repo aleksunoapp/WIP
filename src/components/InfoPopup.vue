@@ -55,7 +55,7 @@ export default {
 				recommendation: {
 					'en-ca': 'Recommendation',
 					'en-us': 'Recommendation',
-					'fr-ca': 'Recommendation'
+					'fr-ca': 'Recommandation'
 				},
 				inspection_summary: {
 					'en-ca': 'Inspection Summary',
