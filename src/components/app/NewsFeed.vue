@@ -1,0 +1,445 @@
+<template>
+	<div>
+		<!-- BEGIN PAGE BAR -->
+		<div class="page-bar">
+			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
+		</div>
+		<!-- END PAGE BAR -->
+		<!-- BEGIN PAGE TITLE-->
+	    <h1 class="page-title">News Feed</h1>
+	    <!-- END PAGE TITLE-->
+		<div class="note note-info">
+            <p>Create and manage the Application News Feed.</p>
+        </div>
+        <div class="margin-top-20">
+  			<!-- SEARCH PANEL START -->
+				<div class="portlet box blue-hoki">
+					<div class="portlet-title bg-blue-chambray" @click="toggleCreateFeedPanel()">
+						<div class="custom tools">
+							<a :class="{'expand': !createFeedCollapse, 'collapse': createFeedCollapse}"></a>
+						</div>
+						<div class="caption">
+							&emsp;Create News Feed
+						</div>
+					</div>
+					<div class="portlet-body" :class="{'display-hide': createFeedCollapse}">
+	      			<form role="form" @submit.prevent="createNewsFeed($event)">
+	      				<div class="row">
+	      					<div class="col-md-12">
+		      					<div class="alert alert-danger" v-if="createFeedError.length">
+		      					    <button class="close" data-close="alert" @click="clearCreateFeedError()"></button>
+		      					    <span>{{createFeedError}}</span>
+		      					</div>
+		      				</div>
+			        		<div class="col-md-2">
+			        			<label class="grey-label">Image</label>
+								<div class="image-wrapper clickable" v-if="!newNewsFeed.image.length">
+									<img class="image-fit" src="../../assets/img/app/image-placeholder.png" @click="openGalleryPopup()">
+								</div>
+								<div class="image-wrapper clickable" v-else>
+									<img class="image-fit" :src="newNewsFeed.image" @click="openGalleryPopup()">
+								</div>
+			        		</div>
+	      					<div class="col-md-5">
+	      						<div class="form-group form-md-line-input form-md-floating-label">
+	      						    <input type="text" class="form-control input-sm" id="form_control_1" v-model="newNewsFeed.title" :class="{'edited': newNewsFeed.title.length}">
+	      						    <label for="form_control_1">Title</label>
+	      						</div>
+	      						<div class="form-group form-md-line-input form-md-floating-label">
+	      						    <input type="text" class="form-control input-sm" id="form_control_2" v-model="newNewsFeed.short_description" :class="{'edited': newNewsFeed.short_description.length}">
+	      						    <label for="form_control_2">Short Description</label>
+	      						</div>
+	      					</div>
+	      					<div class="col-md-5">
+	      						<div class="form-group form-md-line-input form-md-floating-label">
+	      						    <textarea class="form-control input-sm" rows="4" v-model="newNewsFeed.body" :class="{'edited': newNewsFeed.body.length}"></textarea>
+	      						    <label for="form_control_1">Body</label>
+	      						</div>
+	      					</div>
+	      				</div>
+	      				<div class="form-actions right">
+	      					<button type="button" class="btn btn-default" @click="resetForm()"> Reset Search</button>
+	      					<button type="submit" class="btn blue">Save</button>
+	      				</div>
+	      			</form>
+	      		</div>
+	      	</div>
+	      	<!-- SEARCH PANEL END -->
+        </div>
+        <div class="margin-top-20">
+	        <div class="relative-block">
+	        	<div class="clearfix" v-if="newsFeed.length">
+					<el-dropdown trigger="click" @command="updateSortByOrder" size="mini" :show-timeout="50" :hide-timeout="50">
+						<el-button size="mini">
+							Sort by
+							<span>
+								<i class="fa fa-sort-alpha-asc" v-if="sortBy.order === 'ASC'"></i>
+								<i class="fa fa-sort-alpha-desc" v-if="sortBy.order === 'DESC'"></i>
+							</span>
+							<i class="el-icon-arrow-down el-icon--right"></i>
+						</el-button>
+						<el-dropdown-menu slot="dropdown">
+							<el-dropdown-item command="ASC"><i class="fa fa-sort-alpha-asc"></i></el-dropdown-item>
+							<el-dropdown-item command="DESC"><i class="fa fa-sort-alpha-desc"></i></el-dropdown-item>
+						</el-dropdown-menu>
+					</el-dropdown>
+	  				<page-results class="pull-right" :totalResults="totalResults" :activePage="activePage" @pageResults="pageResultsUpdate"></page-results>
+	  			</div>
+  				<div class="portlet light portlet-fit bordered margin-top-20" v-if="newsFeed.length">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-newspaper-o font-green"></i>
+                            <span class="caption-subject bold font-green uppercase"> News Feed</span>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="timeline">
+                            <!-- TIMELINE ITEM -->
+                            <div class="timeline-item" v-for="news in newsFeed">
+                                <div class="timeline-badge">
+                                    <img class="timeline-badge-userpic" v-if="news.image.length" :src="news.image">
+                                    <img class="timeline-badge-userpic" v-if="!news.image.length" src="../../../src/assets/img/app/image-placeholder.png">
+                                </div>
+                                <div class="timeline-body" :id="'news-' + news.id">
+                                    <div class="timeline-body-arrow"> </div>
+                                    <div class="timeline-body-head">
+                                        <div class="timeline-body-head-caption">
+                                            <a class="timeline-body-title font-blue-madison">{{ news.title }}</a>
+                                        </div>
+                                        <div class="timeline-body-head-actions">
+                                        	<div class="btn-group">
+                                                <button class="btn blue btn-sm" type="button" @click="editNewsFeed(news)"> Edit</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="timeline-body-content">
+                                    	<h5>{{ news.formatted_date }}</h5>
+                                        <span class="font-grey-cascade">{{ news.short_description }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END TIMELINE ITEM -->
+                    </div>
+                    <div class="alert alert-danger" v-if="!newsFeed.length && errorMessage.length">
+                        <button class="close" data-close="alert" @click="clearError()"></button>
+                        <span>{{errorMessage}}</span>
+                    </div>
+                </div>
+                <div v-else>
+                	<no-results :show="!newsFeed.length" :type="'news feed'"></no-results>
+                </div>
+				<pagination v-if="newsFeed.length && numPages > 1" :passedPage="activePage" :numPages="numPages" @activePageChange="activePageUpdate"></pagination>
+	        </div>
+	    </div>
+	    <edit-news-feed v-if="showEditFeedModal" :selectedFeedId="selectedFeedId" @closeEditFeedModal="closeEditFeedModal" @updateNewsFeed="updateNewsFeed"></edit-news-feed>
+	    <modal :show="showGalleryModal" effect="fade" @closeOnEscape="closeGalleryModal">
+	    	<div slot="modal-header" class="modal-header">
+	    		<button type="button" class="close" @click="closeGalleryModal()">
+	    			<span>&times;</span>
+	    		</button>
+	    		<h4 class="modal-title center">Select An Image</h4>
+	    	</div>
+	    	<div slot="modal-body" class="modal-body">
+	    		<gallery-popup @selectedImage="updateImage"></gallery-popup>
+	    	</div>
+	    	<div slot="modal-footer" class="modal-footer clear"></div>
+	    </modal>
+	</div>
+</template>
+
+<script>
+import $ from 'jquery'
+import Breadcrumb from '../modules/Breadcrumb'
+import NoResults from '../modules/NoResults'
+import PageResults from '../modules/PageResults'
+import Pagination from '../modules/Pagination'
+import Dropdown from '../modules/Dropdown'
+import Modal from '../modules/Modal'
+import NewsFeedFunctions from '../../controllers/NewsFeed'
+import EditNewsFeed from './NewsFeed/EditNewsFeed'
+import GalleryPopup from '../modules/GalleryPopup'
+
+export default {
+	data () {
+		return {
+			breadcrumbArray: [
+				{name: 'News Feed', link: false}
+			],
+			sortBy: {
+				order: 'ASC'
+			},
+			pageResultsValue: 0,
+			numPages: 0,
+			totalResults: 0,
+			activePage: 1,
+			newsFeed: [],
+			errorMessage: '',
+			createFeedCollapse: true,
+			newNewsFeed: {
+				title: '',
+				short_description: '',
+				body: '',
+				image: ''
+			},
+			createFeedError: '',
+			showEditFeedModal: false,
+			updateFeedError: '',
+			selectedFeedId: 0,
+			showGalleryModal: false
+		}
+	},
+	created () {
+		this.getNewsFeed()
+	},
+	methods: {
+		/**
+		 * To open the gallery modal.
+		 * @function
+		 * @returns {undefined}
+		 */
+		openGalleryPopup () {
+			this.showGalleryModal = true
+		},
+		/**
+		 * To close the gallery popup.
+		 * @function
+		 * @returns {undefined}
+		 */
+		closeGalleryModal () {
+			this.showGalleryModal = false
+		},
+		/**
+		 * To set the image to be same as the one emitted by the gallery modal.
+		 * @function
+		 * @param {object} val - The emitted image object.
+		 * @returns {undefined}
+		 */
+		updateImage (val) {
+			this.showGalleryModal = false
+			this.newNewsFeed.image = val.image_url
+		},
+		/**
+		 * To update the order property of sortBy.
+		 * @function
+		 * @param {object} value - The new value to assign.
+		 * @returns {undefined}
+		 */
+		updateSortByOrder (value) {
+			this.sortBy.order = value
+		},
+		/**
+		 * To catch updates from the PageResults component when the number of page results is updated.
+		 * @function
+		 * @param {integer} val - The number of page results to be returned.
+		 * @returns {undefined}
+		 */
+		pageResultsUpdate (val) {
+			if (parseInt(this.pageResultsValue) !== parseInt(val)) {
+				this.pageResultsValue = val
+				this.activePageUpdate(1)
+				this.getNewsFeed(0)
+			}
+		},
+		/**
+		 * To update the currently active pagination page.
+		 * @function
+		 * @param {integer} val - An integer representing the page number that we are updating to.
+		 * @returns {undefined}
+		 */
+		activePageUpdate (val) {
+			if (parseInt(this.activePage) !== parseInt(val)) {
+				this.activePage = val
+				this.getNewsFeed(this.activePage)
+			}
+		},
+		/**
+		 * To get the news feed for the current page.
+		 * @function
+		 * @param {integer} pageNumber - The current page that we are retrieving results for.
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getNewsFeed (pageNumber) {
+			this.newsFeed = []
+			var newsFeedVue = this
+			return NewsFeedFunctions.getNewsFeed(pageNumber, newsFeedVue.pageResultsValue, newsFeedVue.sortBy.order, newsFeedVue.$root.userToken, newsFeedVue.$root.appId, newsFeedVue.$root.appSecret).then(response => {
+				if (response.code === 200 && response.status === 'ok') {
+					newsFeedVue.totalResults = response.payload.data.length
+					newsFeedVue.newsFeed = response.payload.data
+					for (var i = 0; i < newsFeedVue.newsFeed.length; i++) {
+						var item = newsFeedVue.newsFeed[i].created_on.split(' ')
+						if (item[0] !== '0000-00-00') {
+							var date = new Date(item[0])
+							var dateSplit = date.toString().split(' ')
+							newsFeedVue.$set(newsFeedVue.newsFeed[i], 'formatted_date', dateSplit[1] + ' ' + dateSplit[2] + ', ' + dateSplit[3])
+						} else {
+							newsFeedVue.$set(newsFeedVue.newsFeed[i], 'formatted_date', 'Invalid Date')
+						}
+					}
+				} else {
+					newsFeedVue.errorMessage = response.message
+				}
+			}).catch(reason => {
+				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
+					newsFeedVue.$router.push('/login/expired')
+					return
+				}
+				newsFeedVue.errorMessage = reason
+				window.scrollTo(0, 0)
+			})
+		},
+		/**
+		 * To toggle the create feed panel, initially set to closed
+		 * @function
+		 * @returns {undefined}
+		 * @memberof Users
+		 * @version 0.0.4
+		 */
+		toggleCreateFeedPanel () {
+			this.createFeedCollapse = !this.createFeedCollapse
+		},
+		/**
+		 * To clear the current search error.
+		 * @function
+		 * @returns {undefined}
+		 * @memberof Users
+		 * @version 0.0.4
+		 */
+		clearCreateFeedError () {
+			this.createFeedError = ''
+		},
+		/**
+		 * To clear the create feed form.
+		 * @function
+		 * @returns {undefined}
+		 * @memberof Users
+		 * @version 0.0.4
+		 */
+		resetForm () {
+			this.newNewsFeed = {
+				title: '',
+				short_description: '',
+				body: '',
+				image: ''
+			}
+			this.clearCreateFeedError()
+		},
+		/**
+		 * To check if the news feed information are valid before submitting to the backend.
+		 * @function
+		 * @returns {object} A promise that will validate the input form
+		 */
+		validateNewsFeedData () {
+			var newsFeedVue = this
+			return new Promise(function (resolve, reject) {
+				if (!newsFeedVue.newNewsFeed.title.length) {
+					reject('Title cannot be blank')
+				} else if (!newsFeedVue.newNewsFeed.short_description.length) {
+					reject('Short description cannot be blank')
+				} else if (!newsFeedVue.newNewsFeed.body.length) {
+					reject('Body cannot be blank')
+				} else if (!newsFeedVue.newNewsFeed.image.length) {
+					reject('Image cannot be blank')
+				}
+				resolve('Hurray')
+			})
+		},
+		/**
+		 * To prompt the backend call that creates a new news feed.
+		 * @function
+		 * @param {object} event - The click event that prompted this function.
+		 * @returns {object} A promise that will either return an error message or display the success screen
+		 */
+		createNewsFeed (event) {
+			var newsFeedVue = this
+
+			this.clearCreateFeedError()
+			return newsFeedVue.validateNewsFeedData()
+			.then(response => {
+				NewsFeedFunctions.createNewsFeed(newsFeedVue.newNewsFeed, newsFeedVue.$root.userToken, newsFeedVue.$root.appId, newsFeedVue.$root.appSecret).then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						newsFeedVue.resetForm()
+						newsFeedVue.newsFeed.push(newsFeedVue.newNewsFeed)
+					} else {
+						newsFeedVue.createFeedError = response.message
+					}
+				}).catch(reason => {
+					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
+						newsFeedVue.$router.push('/login/expired')
+						return
+					}
+					throw reason
+				})
+			}).catch(reason => {
+				// If validation fails then display the error message
+				newsFeedVue.createFeedError = reason
+				window.scrollTo(0, 0)
+				throw reason
+			})
+		},
+		/**
+		 * To show input fields instead of the plain text for news feed.
+		 * @function
+		 * @param {object} news - The news object to be edited
+		 * @returns {undefined}
+		 */
+		editNewsFeed (news) {
+			this.showEditFeedModal = true
+			this.selectedFeedId = news.id
+		},
+		/**
+		 * To close the edit feed modal and get the updated list of news feed
+		 * @function
+		 * @returns {undefined}
+		 */
+		closeEditFeedModal () {
+			this.showEditFeedModal = false
+		},
+		updateNewsFeed (val) {
+			this.showEditFeedModal = false
+			for (var i = 0; i < this.newsFeed.length; i++) {
+				if (this.newsFeed[i].id === val.id) {
+					this.newsFeed[i] = val
+				}
+			}
+			$('#news-' + val.id).addClass('highlight')
+			setTimeout(function () {
+				$('#news-' + val.id).removeClass('highlight')
+			}, 2000)
+		}
+	},
+	watch: {
+		'sortBy.order' () {
+			if (this.sortBy.order) {
+				this.activePageUpdate(1)
+				this.getNewsFeed(0)
+			}
+		}
+	},
+	components: {
+		Breadcrumb,
+		PageResults,
+		Pagination,
+		Dropdown,
+		Modal,
+		EditNewsFeed,
+		NoResults,
+		GalleryPopup
+	}
+}
+</script>
+<style scoped>
+.image-wrapper {
+	height: 80px;
+	max-height: 80px;
+	width: 100%;
+	border: 1px dotted #c2cad8;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.image-fit {
+	max-height: 100%;
+	max-width: 100%;
+}
+</style>

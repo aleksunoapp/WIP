@@ -1,0 +1,454 @@
+/* here you can put your own css to customize and override the theme */
+
+/***
+Rounded Portlets
+***/
+/*
+.portlet {
+	border-radius: 4px !important;
+}
+
+.portlet .portlet-title {
+	border-radius: 4px 4px 0px 0px !important;
+}
+
+.portlet .portlet-body,
+.portlet .portlet-body .form-actions  {
+	border-radius: 0px 0px 4px 4px !important;
+}
+*/
+
+/*
+Change Quick Sidebar Width
+*/
+
+/*
+.page-quick-sidebar-wrapper {
+  right: -370px;
+  width: 370px;
+}
+
+.page-quick-sidebar-open.page-quick-sidebar-push-content .page-sidebar-wrapper {
+  margin-left: -370px;
+}
+
+.page-quick-sidebar-open.page-quick-sidebar-push-content .page-footer {
+  margin-right: 370px;
+  margin-left: -370px;
+}
+
+.page-sidebar-reversed.page-quick-sidebar-open.page-quick-sidebar-push-content .page-sidebar-wrapper {
+  margin-right: 370px;
+}
+
+.page-quick-sidebar-open.page-quick-sidebar-push-content.page-quick-sidebar-full-height .page-header {
+  margin-left: -370px;
+}
+
+.page-quick-sidebar-wrapper .page-quick-sidebar .page-quick-sidebar-list {
+  width: 370px !important;
+}
+
+.page-quick-sidebar-wrapper .page-quick-sidebar .page-quick-sidebar-item {
+  width: 370px !important;
+  margin-left: 370px;
+}
+
+.page-quick-sidebar-wrapper .page-quick-sidebar .page-quick-sidebar-content-item-shown .page-quick-sidebar-list {
+  margin-left: -370px;
+}
+*/
+
+/* All Custom Styles Added Here */
+.password-approval-blocks {
+  height: 5px;
+  margin-top: 5px;
+  transition: color 0.4s;
+}
+.password-approval-text {
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 11px;
+  text-align: right;
+  margin-top: 2px;
+  transition: color 0.4s;
+}
+.password-approval-blocks > div {
+  height: 5px;
+  width: 23.5%;
+  background-color: #dde3ec;
+  display: inline-block;
+  float: left;
+  margin-right: 2%;
+  transition: background-color 0.4s;
+}
+.password-approval-blocks > div:last-child {
+  margin-right: 0px;
+}
+.password-approval-text.very-weak {
+  color: #d9534f;
+}
+.password-approval-text.weak {
+  color: rgba(255, 140, 0, 0.7);
+}
+.password-approval-text.ok {
+  color: rgba(255, 215, 0, 0.7);
+}
+.password-approval-text.strong {
+  color: #5cb85c;
+}
+.password-approval-blocks.very-weak > div:first-child {
+  background-color: #d9534f;
+}
+.password-approval-blocks.weak > div:first-child {
+  background-color: rgba(255, 140, 0, 0.7);
+}
+.password-approval-blocks.ok > div:first-child {
+  background-color: rgba(255, 215, 0, 0.7);
+}
+.password-approval-blocks.strong > div:first-child {
+  background-color: #5cb85c;
+}
+.password-approval-blocks.weak > div:first-child + div {
+  background-color: rgba(255, 140, 0, 0.7);
+}
+.password-approval-blocks.ok > div:first-child + div {
+  background-color: rgba(255, 215, 0, 0.7);
+}
+.password-approval-blocks.strong > div:first-child + div {
+  background-color: #5cb85c;
+}
+.password-approval-blocks.ok > div:first-child + div + div {
+  background-color: rgba(255, 215, 0, 0.7);
+}
+.password-approval-blocks.strong > div:first-child + div + div {
+  background-color: #5cb85c;
+}
+.password-approval-blocks.strong > div:last-child {
+  background-color: #5cb85c;
+}
+.btn.centered-button {
+  margin: 0 auto;
+  display: block;
+}
+
+.background-animate {
+  transition: background-color 0.5s ease;
+}
+
+.user-login-5 .login-container > .login-content > .login-form .form-control {
+  margin-bottom: 5px;
+}
+p.margin-10 {
+  margin: 10px 0px;
+}
+.unselectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.clickable {
+  cursor: pointer;
+}
+
+/* Styles for side panel slider */
+.page-content {
+  overflow: hidden;
+}
+.sideways-page-one {
+  width: 100%;
+  transition: all 0.6s ease;
+}
+.sideways-page-one.disabled {
+  opacity: 0.3;
+  height: calc(100vh - 60px); 
+}
+.sideways-page-two {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  transition: left 0.5s ease;
+}
+.sideways-page-two.active, .sideways-content-fold.active {
+  left: 0%;
+}
+.sideways-page-two.inactive, .sideways-content-fold.inactive {
+  left: 100%;
+}
+.sideways-page-two > div {
+    width: 50%;
+    display: inline-block;
+    height: 100%;
+    float: left;
+}
+.sideways-content-fold > div {
+  height: 100%;
+}
+.sideways-blank-fold {
+  position: relative;
+}
+.sideways-blank-fold > div {
+  position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+}
+.sideways-blank-fold:hover > div {
+  display: block;
+}
+.page-content {
+  position: relative;
+}
+
+/* Override for help block to persist */
+.form-group.form-md-line-input .help-block.persist {
+  opacity: 1;
+  filter: alpha(opacity=100);
+}
+.form-group.form-md-line-input .form-control.edited:not([readonly]):not(:focus)~.help-block.persist {
+  opacity: 1;
+  filter: alpha(opacity=100);
+}
+
+/* Added condition for .form-actions.right without .form */
+.form-actions.right {
+  text-align:right;
+}
+
+/* Add missing margin classes */
+.margin-left-5 {
+  margin-left: 5px !important; 
+}
+.margin-right-5 {
+  margin-right: 5px !important;
+}
+
+.search-content-4 .search-table h3 {
+  margin: 0;
+  color: #4e5a64;
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.relative-block {
+  min-height: 200px;
+  position: relative;
+}
+
+.text-90 {
+  font-size: 90%;
+}
+.no-click {
+  cursor: auto !important;
+}
+.md-checkbox span.inc {
+  display: none !important;
+}
+
+/* Styles for asc/desc options in sort by */
+.rounded-button-group-block {
+  text-align: center;
+	padding: 10px;
+	border-bottom: 1px solid #ccc;
+}
+.rounded-button-group-block .btn-group > label.btn {
+  border-radius: 50% !important;
+	padding: 8px 7px 7px !important;
+	margin-right: 10px;
+}
+.rounded-button-group-block .btn-group > label.btn:last-child {
+  margin-right: 0px;
+}
+
+.swal2-container .swal2-modal .swal2-styled.swal2-loading {
+	margin: 0px 30px;
+	vertical-align: super;
+}
+.form-group.form-md-line-input {
+	margin-bottom: 15px;
+}
+.mt-element-list .list-news.mt-list-container {
+  border-left: 0px;
+  border-right: 0px;
+  border-bottom: 0px;
+}
+.mt-element-list .list-news.mt-list-container ul>.mt-list-item:first-child {
+  padding-top: 15px;
+}
+.mt-element-list .list-news.mt-list-container ul>.mt-list-item>.list-item-edit a {
+	color: #2f353b;
+}
+.mt-element-list .list-news.mt-list-container ul>.mt-list-item>.list-item-edit {
+	position: absolute;
+	right: 8px;
+	top: 10%;
+	margin-top: -10px;
+}
+.mt-list-item.expanded {
+	display: block;
+	background-color: #e7ecf1;
+}
+.mt-list-item.collapsed {
+	display: none;
+}
+.mt-list-item.expanded .list-item-container {
+	height: auto;
+	min-height: 80px;
+  background-color: #fff;
+  padding: 10px;
+}
+.mt-element-list .list-news.mt-list-container ul li {
+	border-left: 1px solid;
+	border-right: 1px solid;
+	border-color: #e7ecf1;
+}
+.mt-element-list .list-news.mt-list-container ul .mt-list-item {
+	border-top: 1px solid;
+	border-color: #e7ecf1;
+}
+.mt-element-list .list-news.mt-list-container ul>.mt-list-item:hover {
+	background-color: #e7ecf1;
+}
+.mt-element-list .list-news.mt-list-container ul>.mt-list-item:hover .list-item-actions {
+	background-color: #fff;
+}
+.mt-element-list .list-news.mt-list-container ul>.mt-list-item:last-child {
+  border: 1px solid #e7ecf1;
+}
+.mt-checkbox-inline, .mt-radio-inline {
+  padding: 0px;
+}
+.menu-image {
+	width: 80px;
+	height: 80px;
+	overflow: hidden;
+	float: left;
+	margin-right: 10px;
+}
+.menu-image-main {
+  width: 120px;
+  height: 60px;
+  overflow: hidden;
+  float: left;
+  margin-right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.menu-image img, .menu-image-main img {
+	max-width: 100%;
+	max-height: 100%;
+}
+.category-image {
+	width: 60px;
+	height: 60px;
+	overflow: hidden;
+	float: left;
+	margin-right: 10px;
+}
+.category-image img {
+	width: 100%;
+	height: 100%;
+}
+.mt-list-item.white {
+  background-color: #fff;
+}
+.mt-list-item .list-item-actions {
+	border-right: 1px solid #e7ecf1;
+	height: 100%;
+	width: 50px;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+.mt-element-list .list-news.mt-list-container ul>.mt-list-item .list-item-actions:hover {
+	background-color: #fff;
+}
+.mt-list-item .list-item-actions a {
+	margin: 0px 0px 5px 8px;
+	top: 4%;
+}
+.mt-element-list .list-news.mt-list-container ul>.mt-list-item.actions-at-left {
+	padding-left: 60px;
+}
+.table-fixed-height {
+    max-height: 350px;
+    overflow-y: auto;
+}
+@keyframes listItemHighlight {
+  0%, 100% {
+	background-color: transparent;
+  } 50% {
+	background-color: #bce8f1;
+	color: #31708f;
+  }
+}
+.mt-element-list .mt-list-item.highlight, .timeline .timeline-body.highlight {
+  animation: listItemHighlight 1s 2 ease-in-out both;
+}
+.height-mod-big {
+  min-height: 340px;
+}
+.table-height-mod {
+	max-height: 245px;
+	overflow-y: auto;
+}
+.timeline .timeline-badge-userpic {
+  height: 80px;
+}
+.new-location-search-dropdown {
+    position: absolute;
+    background-color: #fff;
+    z-index: 10;
+    width: calc(100% - 60px);
+    overflow: auto;
+    max-height: 250px;
+    border: 1px solid #9eacb4;
+}
+.new-location-search-dropdown > div {
+    padding: 8px 30px;
+    cursor: pointer;
+    position: relative;
+}
+.new-location-search-dropdown > div:hover {
+    background-color: #f2f6f9;
+}
+.new-location-form > div {
+    position: relative;
+}
+.new-location-search-dropdown > div.active {
+    color: #3BA93B;
+}
+.margin-left-50 {
+    margin-left: 50px;
+}
+i.back-button {
+    position: absolute;
+    left: 15px;
+    top: 22px;
+}
+.padding-box {
+    padding: 10px;
+}
+.icon-layers {
+    font-size: medium;
+}
+ul.simple-list {
+    list-style-type: none;
+}
+.margin-right-16 {
+  margin-right: 16px;
+}
+.inner-container {
+  float: left;
+  width: 49%;
+}
+ul.item-modifier-list {
+  list-style-type: none;
+}
+.mt-element-list .list-news.mt-list-container ul.item-modifier-list li {
+  border: none;
+}

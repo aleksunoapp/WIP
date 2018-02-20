@@ -1,0 +1,104 @@
+<template>
+	<modal :show="showDeleteMenuModal" effect="fade" @closeOnEscape="closeModal">
+		<div slot="modal-header" class="modal-header center">
+			<button type="button" class="close" @click="closeModal()">
+				<span>&times;</span>
+			</button>
+			<h4 class="modal-title center">Delete Menu</h4>
+		</div>
+		<div slot="modal-body" class="modal-body">
+			<div class="alert alert-danger" v-if="errorMessage.length">
+			    <button class="close" data-close="alert" @click="clearError()"></button>
+			    <span>{{errorMessage}}</span>
+			</div>
+			<div class="col-md-12">
+				Are you sure you want to delete this menu?
+			</div>
+		</div>
+		<div slot="modal-footer" class="modal-footer clear">
+			<button type="button" class="btn btn-primary" @click="deleteMenu()">Delete</button>
+		</div>
+	</modal>
+</template>
+
+<script>
+import Modal from '../../../modules/Modal'
+import MenusFunctions from '../../../../controllers/Menus'
+
+export default {
+	data () {
+		return {
+			showDeleteMenuModal: false,
+			errorMessage: '',
+			customWidth: 90
+		}
+	},
+	props: {
+		passedMenuId: {
+			type: Number
+		}
+	},
+	mounted () {
+		this.showDeleteMenuModal = true
+	},
+	methods: {
+		/**
+		 * To clear the current error.
+		 * @function
+		 * @returns {undefined}
+		 */
+		clearError () {
+			this.errorMessage = ''
+		},
+		/**
+		 * To delete the menu and close the modal.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		deleteMenu () {
+			var deleteMenuVue = this
+			deleteMenuVue.clearError()
+
+			MenusFunctions.deleteMenu(deleteMenuVue.passedMenuId, deleteMenuVue.$root.appId, deleteMenuVue.$root.appSecret, deleteMenuVue.$root.userToken).then(response => {
+				if (response.code === 200 && response.status === 'ok') {
+					this.deleteMenuAndCloseModal()
+				} else {
+					deleteMenuVue.errorMessage = response.message
+				}
+			}).catch(reason => {
+				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
+					deleteMenuVue.$router.push('/login/expired')
+					return
+				}
+				deleteMenuVue.errorMessage = reason
+				window.scrollTo(0, 0)
+			})
+		},
+		/**
+		 * To just close the modal when the user clicks on the 'x' to close the modal.
+		 * @function
+		 * @returns {undefined}
+		 */
+		closeModal () {
+			this.$emit('closeDeleteMenuModal')
+		},
+		/**
+		 * To close the modal and delete the menu.
+		 * @function
+		 * @returns {undefined}
+		 */
+		deleteMenuAndCloseModal () {
+			this.$emit('deleteMenuAndCloseModal')
+		}
+	},
+	components: {
+		Modal
+	}
+}
+</script>
+<style>
+.image-container {
+	border: 1px dotted #c2cad8;
+	text-align: center;
+}
+</style>

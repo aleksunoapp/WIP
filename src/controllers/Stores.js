@@ -1,0 +1,399 @@
+/**
+ * @module Stores
+ */
+import GlobalFunctions from '../global'
+
+export default ({
+	/**
+	 * Call to pitapit API to create a new store.
+	 * @function
+	 * @param {object} newStore - The new store object.
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {string} userToken - The auth token of the logged in user.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	createNewStore: function (newStore, appId, appSecret, userToken) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'POST',
+				dataType: 'json',
+				url: '/app/locations/create',
+				data: newStore,
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('auth-token', userToken)
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
+	 * Call to pitapit API to delete a store.
+	 * @function
+	 * @param {integer} storeId - The id of the store to delete.
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {string} userToken - The auth token of the logged in user.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	deleteStore: function (storeId, appId, appSecret, userToken) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'DELETE',
+				dataType: 'json',
+				url: '/app/locations/delete/' + storeId,
+				data: {},
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('auth-token', userToken)
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
+	 * Call to pitapit API to get the details of a store.
+	 * @function
+	 * @param {integer} storeId - The id of the selected store.
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	getStoreDetails: function (storeId, appId, appSecret) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'GET',
+				dataType: 'json',
+				url: '/app/locations/show/' + storeId,
+				data: {},
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
+	 * Call to pitapit API to update the store information.
+	 * @function
+	 * @param {object} updatedStoreInfo - The updated store info.
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {string} userToken - The auth token of the logged in user.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	updateStoreInformation: function (updatedStoreInfo, appId, appSecret, userToken) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'POST',
+				dataType: 'json',
+				url: '/app/locations/update/' + updatedStoreInfo.id,
+				data: updatedStoreInfo,
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('auth-token', userToken)
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
+	 * Call to pitapit API to get a store's meta.
+	 * @function
+	 * @param {integer} storeId - The id of the selected store.
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {string} userToken - The auth token of the logged in user.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	getStoreMeta (storeId, appId, appSecret, userToken) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'GET',
+				dataType: 'json',
+				url: '/app/locations/' + storeId + '/profile',
+				data: {},
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('auth-token', userToken)
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
+	 * Call to pitapit API to create the store meta.
+	 * @function
+	 * @param {integer} storeId - The id of the selected store.
+	 * @param {object} storeMeta - The store meta object.
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {string} userToken - The auth token of the logged in user.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	createStoreMeta (storeId, storeMeta, appId, appSecret, userToken) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'POST',
+				dataType: 'json',
+				url: '/app/locations/' + storeId + '/profile/create',
+				data: storeMeta,
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('auth-token', userToken)
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
+	 * Call to pitapit API to update the store meta.
+	 * @function
+	 * @param {object} updatedStoreMeta - The updated store meta.
+	 * @param {integer} storeId - The id of the selected store.
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {string} userToken - The auth token of the logged in user.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	updateStoreMeta (updatedStoreMeta, storeId, appId, appSecret, userToken) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'POST',
+				dataType: 'json',
+				url: '/app/locations/' + storeId + '/profile/update',
+				data: updatedStoreMeta,
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('auth-token', userToken)
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
+	 * Call to pitapit API to get a store's meta.
+	 * @function
+	 * @param {integer} storeId - The id of the selected store.
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {string} userToken - The auth token of the logged in user.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	getStoreHours (storeId, appId, appSecret, userToken) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'GET',
+				dataType: 'json',
+				url: '/app/hours/' + storeId,
+				data: {},
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('auth-token', userToken)
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
+	 * Call to pitapit API to update the store meta.
+	 * @function
+	 * @param {integer} storeId - The id of the selected store.
+	 * @param {object} storeHours - The store hours for a particular day.
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {string} userToken - The auth token of the logged in user.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	createStoreHours (storeId, storeHours, appId, appSecret, userToken) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'POST',
+				dataType: 'json',
+				url: '/app/hours/create',
+				data: {location_id: storeId, hours: storeHours},
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('auth-token', userToken)
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
+	 * Call to pitapit API to update the store meta.
+	 * @function
+	 * @param {integer} storeId - The id of the selected store.
+	 * @param {object} updatedStoreHours - The store hours for a particular day.
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {string} userToken - The auth token of the logged in user.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	updateStoreHours (storeId, updatedStoreHours, appId, appSecret, userToken) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'POST',
+				dataType: 'json',
+				url: '/app/hours/create',
+				data: {location_id: storeId, hours: updatedStoreHours},
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('auth-token', userToken)
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
+	 * Call to pitapit API to create holiday hours for a store.
+	 * @function
+	 * @param {object} holidayHours - The store holiday hours.
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {string} userToken - The auth token of the logged in user.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	createHolidayHours (holidayHours, appId, appSecret, userToken) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'POST',
+				dataType: 'json',
+				url: '/app/holiday_hours/create',
+				data: holidayHours,
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('auth-token', userToken)
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
+	 * Call to pitapit API to create holiday hours for a store.
+	 * @function
+	 * @param {object} holidayHours - The store holiday hours.
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {string} userToken - The auth token of the logged in user.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	updateHolidayHours (holidayHours, appId, appSecret, userToken) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'POST',
+				dataType: 'json',
+				url: '/app/holiday_hours/update',
+				data: holidayHours,
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('auth-token', userToken)
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
+	 * Call to pitapit API to update the store meta.
+	 * @function
+	 * @param {integer} storeId - The id of the selected store.
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {string} userToken - The auth token of the logged in user.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	getStoreHolidayHours (storeId, appId, appSecret, userToken) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'GET',
+				dataType: 'json',
+				url: '/app/locations/show_with_hours/' + storeId,
+				data: {},
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('auth-token', userToken)
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	}
+})

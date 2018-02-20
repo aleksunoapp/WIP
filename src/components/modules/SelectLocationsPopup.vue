@@ -1,0 +1,322 @@
+<template>
+	<div class="select-locations-popup-container">
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="alert alert-danger" v-if="errorMessage.length">
+				    <button class="close" data-close="alert" @click="clearError()"></button>
+				    <span>{{errorMessage}}</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-xs-6">
+				<el-dropdown trigger="click" @command="selectGroup" size="mini" :show-timeout="50" :hide-timeout="50">
+					<el-button size="mini">
+						{{ selectedGroup.name || 'All stores' }}
+						<i class="el-icon-arrow-down el-icon--right"></i>
+					</el-button>
+					<el-dropdown-menu slot="dropdown">
+						<el-dropdown-item :command="{}">All stores</el-dropdown-item>
+						<el-dropdown-item v-for="group in groups" :command="group" :key="group.id">{{ group.name }}</el-dropdown-item>
+					</el-dropdown-menu>
+				</el-dropdown>
+			</div>
+			<div class="col-xs-6">
+				<div class="form-group form-md-line-input form-md-floating-label form-md-line-input-trimmed">
+					<div class="input-icon right">
+						<input  
+							type="text" 
+							placeholder="Search Stores" 
+							class="form-control input-sm" 
+							:class="{'edited': searchTerm.length}" 
+							v-model="searchTerm" 
+							id="search_locations"
+						>
+						<i class="fa fa-times-circle-o clickable" @click.prevent="resetSearch()" aria-hidden="true"></i>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="margin-top-15 locations-container">
+			<table class="table">
+			    <thead>
+			        <tr>
+			        	<th>
+			        		<div class="md-checkbox has-success" @change="selectAll($event)">
+			                    <input type="checkbox" id="locations-promocodes" class="md-check" v-model="selectAllSelected">
+			                    <label for="locations-promocodes">
+			                        <span class="inc"></span>
+			                        <span class="check"></span>
+			                        <span class="box"></span>
+			                    </label>
+			                </div>
+			        	</th>
+			        	<th> Store Name </th>
+			        	<th> Street Address </th>
+			        	<th> City, Province, Country </th>
+			        </tr>
+			    </thead>
+			    <tbody>
+			        <tr v-for="store in searchResults">
+			        	<td>
+			        		<div class="md-checkbox has-success">
+			                    <input type="checkbox" :id="`store-${store.id}`" class="md-check" v-model="store.selected" @change="syncSelectAll(store.selected)">
+			                    <label :for="`store-${store.id}`">
+			                        <span class="inc"></span>
+			                        <span class="check"></span>
+			                        <span class="box"></span>
+			                    </label>
+			                </div>
+			        	</td>
+			            <td> {{ store.display_name }} </td>
+			            <td> {{ store.address_line_1 }} </td>
+			            <td> {{ store.city }}, {{ store.province }}, {{ store.country }} </td>
+			        </tr>
+			    </tbody>
+			</table>
+
+		</div>
+		<div class="clear" v-show="withButton">
+			<button type="button" class="pull-right margin-top-15 btn btn-primary" @click="selectLocations()">Select</button>
+		</div>
+	</div>
+</template>
+
+<script>
+import Dropdown from './Dropdown'
+import StoreGroupsFunctions from '../../controllers/StoreGroups'
+import App from '../../controllers/App'
+
+export default {
+	data () {
+		return {
+			locations: [],
+			groups: [],
+			selectedGroup: {},
+			selectAllSelected: false,
+			selectedLocations: [],
+			errorMessage: '',
+			searchTerm: ''
+		}
+	},
+	props: {
+		previouslySelected: {
+			type: Array,
+			default: () => [],
+			required: true
+		},
+		withButton: {
+			type: Boolean,
+			default: true,
+			required: false
+		}
+	},
+	computed: {
+		searchResults () {
+			if (this.searchTerm.length) {
+				return this.locations.filter((location) => {
+					let searchIn = location.display_name + location.address_line_1 + location.city + location.province + location.country
+					return searchIn.toLowerCase().includes(this.searchTerm)
+				})
+			} else {
+				return this.locations
+			}
+		}
+	},
+	mounted () {
+		this.getGroups()
+		this.getPaginatedStoreLocations()
+		if (!this.withButton) { this.$emit('selectedLocations', [...this.previouslySelected]) }
+	},
+	methods: {
+		/**
+		 * To clear the search term
+		 * @function
+		 * @returns {undefined}
+		 */
+		resetSearch () {
+			this.searchTerm = ''
+		},
+		/**
+		 * To clear the current error.
+		 * @function
+		 * @returns {undefined}
+		 */
+		clearError () {
+			this.errorMessage = ''
+		},
+		/**
+		 * To add the selected locations to the selected locations array
+		 * @function
+		 * @returns {undefined}
+		 */
+		selectLocations () {
+			this.locations.forEach(location => {
+				if (location.selected) {
+					this.selectedLocations.push(location.id)
+				}
+			})
+			this.$emit('closeSelectLocationsPopup', this.selectedLocations)
+		},
+		/**
+		 * To select all or deselect all items
+		 * @function
+		 * @returns {undefined}
+		 */
+		selectAll () {
+			for (var i = 0; i < this.searchResults.length; i++) {
+				this.searchResults[i].selected = this.selectAllSelected
+			}
+		},
+		/**
+		 * To select all or deselect all items
+		 * @function
+		 * @param {boolean} value - The value of the checkbox
+		 * @returns {undefined}
+		 */
+		syncSelectAll (value) {
+			if (!this.withButton) {
+				let payload = []
+				this.locations.forEach(location => {
+					if (location.selected) {
+						payload.push(location.id)
+					}
+				})
+				this.$emit('selectedLocations', payload)
+			}
+		},
+		/**
+		 * To get a list of location for the current application/business.
+		 * @function
+		 * @param {object} group - The object containing details of the selected store group
+		 * @returns {undefined}
+		 */
+		selectGroup (group) {
+			this.selectedGroup = group
+			if (group.name) {
+				this.getGroupLocations()
+			} else {
+				this.getPaginatedStoreLocations()
+			}
+		},
+		/**
+		 * To get a list of location for the current application/business.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getPaginatedStoreLocations () {
+			var selectLocationsVue = this
+
+			App.getPaginatedStoreLocations(selectLocationsVue.$root.appId, selectLocationsVue.$root.appSecret, selectLocationsVue.$root.userToken).then(response => {
+				if (response.code === 200 && response.status === 'ok') {
+					let all = true
+					response.payload.forEach(store => {
+						if (!selectLocationsVue.previouslySelected.includes(store.id)) {
+							all = false
+						}
+						selectLocationsVue.previouslySelected.forEach(previous => {
+							if (store.id === previous) {
+								store.selected = true
+							} else if (store.selected !== true) {
+								store.selected = false
+							}
+						})
+					})
+					selectLocationsVue.selectAllSelected = all
+					selectLocationsVue.locations = response.payload
+				}
+			}).catch(reason => {
+				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
+					selectLocationsVue.$router.push('/login/expired')
+					return
+				}
+				if (reason.responseJSON) {}
+				throw reason
+			})
+		},
+		/**
+		 * To get the details of the selected group.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getGroupLocations () {
+			var selectLocationsVue = this
+
+			StoreGroupsFunctions.getGroupLocations(selectLocationsVue.selectedGroup.id, selectLocationsVue.$root.appId, selectLocationsVue.$root.appSecret, selectLocationsVue.$root.userToken).then(response => {
+				if (response.code === 200 && response.status === 'ok') {
+					let all = true
+					response.payload.locations.forEach(store => {
+						if (!selectLocationsVue.previouslySelected.includes(store.id)) {
+							all = false
+						}
+						selectLocationsVue.previouslySelected.forEach(previous => {
+							if (store.id === previous) {
+								store.selected = true
+							} else if (store.selected !== true) {
+								store.selected = false
+							}
+						})
+					})
+					selectLocationsVue.selectAllSelected = all
+					selectLocationsVue.locations = response.payload.locations
+				}
+			}).catch(reason => {
+				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
+					selectLocationsVue.$router.push('/login/expired')
+					return
+				}
+				if (reason.responseJSON) {}
+				throw reason
+			})
+		},
+		/**
+		 * To get the details of the selected group.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getGroups () {
+			var selectLocationsVue = this
+
+			StoreGroupsFunctions.getGroups(selectLocationsVue.$root.appId, selectLocationsVue.$root.appSecret, selectLocationsVue.$root.userToken).then(response => {
+				if (response.code === 200 && response.status === 'ok') {
+					selectLocationsVue.groups = response.payload
+				}
+			}).catch(reason => {
+				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
+					selectLocationsVue.$router.push('/login/expired')
+					return
+				}
+				if (reason.responseJSON) {}
+				throw reason
+			})
+		}
+	},
+	components: {
+		Dropdown
+	}
+}
+</script>
+
+<style scoped>
+.select-locations-popup-container {
+	min-height: 200px;
+	max-height: calc(100vh - 60px);
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.dropdown-menu {
+	max-height: 300px;
+	overflow-y: auto;
+}
+.locations-container {
+	min-height: 200px;
+	max-height: calc(100vh - 400px);
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.form-md-line-input-trimmed {
+	padding-top:0 !important;
+	margin-bottom:0 !important;
+}
+</style>
