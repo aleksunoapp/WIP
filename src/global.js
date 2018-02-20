@@ -8,7 +8,7 @@ export default {
 	/**
 	 * base url for API calls, other than Message calls
 	 */
-	baseUrl: 'https://pitapit.staging.unoapp.io',
+	baseUrl: 'http://freshii2.unoapp.xyz',
 	/**
 	 * base url for API calls to send Messages
 	 */

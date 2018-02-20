@@ -37,7 +37,7 @@
 			    <div class="portlet light bordered">
 		            <div class="portlet-body form">
 		                <form role="form" novalidate>
-		                    <div class="alert alert-danger" v-if="storeInformationError.length">
+		                    <div class="alert alert-danger" v-show="storeInformationError.length" ref="storeInformationError">
 		                        <button class="close" data-close="alert" @click.prevent="clearError('storeInformationError')"></button>
 		                        <span>{{storeInformationError}}</span>
 		                    </div>
@@ -111,11 +111,12 @@
 										<el-option label="USD" value="USD"></el-option>
     	                        	</el-select>
 		                    	</div>
-		                    	<div class="form-group form-md-line-input form-md-floating-label" v-if="menuTiers.length">
+		                    	<div class="form-group form-md-line-input form-md-floating-label">
 		                    		<label>Menu Tier:</label><br>
 		                    		<el-select v-model="newStore.menu_tier_id" placeholder="Select a tier" size="mini">
 										<el-option label="Start Fresh" value="0"></el-option>
 										<el-option
+											v-if="menuTiers.length"
 											v-for="tier in menuTiers"
 											:key="tier.id"
 											:label="tier.name"
@@ -149,82 +150,10 @@
 		                    	    <input type="text" class="form-control input-sm" id="form_control_12" v-model="newStore.email">
 		                    	    <label for="form_control_12">Store Email</label>
 		                    	</div>
-		                    	<div class="form-group form-md-line-input form-md-floating-label">
-		                            <label>Store Has Delivery:</label><br>
-									<el-switch
-										v-model="newStore.delivery"
-										active-color="#0c6"
-										inactive-color="#ff4949"
-										:active-value="1"
-										:inactive-value="0"
-										active-text="Yes"
-										inactive-text="No">
-									</el-switch>
-		                        </div>
-		                    	<div class="form-group form-md-line-input form-md-floating-label">
-		                            <label>Store Has Delivery Enabled:</label><br>
-		                            <el-switch
-		                            	v-model="newStore.current_delivery_status"
-		                            	active-color="#0c6"
-		                            	inactive-color="#ff4949"
-		                            	:active-value="1"
-		                            	:inactive-value="0"
-		                            	active-text="Yes"
-		                            	inactive-text="No">
-		                            </el-switch>
-		                        </div>
-		                    	<div class="form-group form-md-line-input form-md-floating-label">
-	                    		    <label>Store Has Online Ordering:</label><br>
-	                    		    <el-switch
-	                    		    	v-model="newStore.online_ordering"
-	                    		    	active-color="#0c6"
-	                    		    	inactive-color="#ff4949"
-	                    		    	:active-value="1"
-	                    		    	:inactive-value="0"
-	                    		    	active-text="Yes"
-	                    		    	inactive-text="No">
-	                    		    </el-switch>
-	                    		</div>
-		                    	<div class="form-group form-md-line-input form-md-floating-label">
-	                    		    <label>Store Has Online Ordering Enabled:</label><br>
-	                    		    <el-switch
-	                    		    	v-model="newStore.current_online_ordering_status"
-	                    		    	active-color="#0c6"
-	                    		    	inactive-color="#ff4949"
-	                    		    	:active-value="1"
-	                    		    	:inactive-value="0"
-	                    		    	active-text="Yes"
-	                    		    	inactive-text="No">
-	                    		    </el-switch>
-	                    		</div>
 	                    		<div class="form-group form-md-line-input form-md-floating-label">
 	                    		    <label>Store Is Corporate:</label><br>
 	                    		    <el-switch
 	                    		    	v-model="newStore.is_corporate"
-	                    		    	active-color="#0c6"
-	                    		    	inactive-color="#ff4949"
-	                    		    	:active-value="1"
-	                    		    	:inactive-value="0"
-	                    		    	active-text="Yes"
-	                    		    	inactive-text="No">
-	                    		    </el-switch>
-	                    		</div>
-	                    		<div class="form-group form-md-line-input form-md-floating-label">
-	                    		    <label>Opening soon:</label><br>
-	                    		    <el-switch
-	                    		    	v-model="newStore.opening_soon"
-	                    		    	active-color="#0c6"
-	                    		    	inactive-color="#ff4949"
-	                    		    	:active-value="1"
-	                    		    	:inactive-value="0"
-	                    		    	active-text="Yes"
-	                    		    	inactive-text="No">
-	                    		    </el-switch>
-	                    		</div>
-	                    		<div class="form-group form-md-line-input form-md-floating-label">
-	                    		    <label>Catering:</label><br>
-	                    		    <el-switch
-	                    		    	v-model="newStore.catering"
 	                    		    	active-color="#0c6"
 	                    		    	inactive-color="#ff4949"
 	                    		    	:active-value="1"
@@ -254,7 +183,7 @@
 		            <div class="portlet-body form">
 		                <form role="form" novalidate>
 		                    <div class="form-body">
-		                    	<div class="alert alert-danger" v-if="storeMetaError.length">
+		                    	<div class="alert alert-danger" v-show="storeMetaError.length" ref="storeMetaError">
 		                    	    <button class="close" data-close="alert" @click="clearError('storeMetaError')"></button>
 		                    	    <span>{{storeMetaError}}</span>
 		                    	</div>
@@ -267,12 +196,62 @@
 			                    	        </tr>
 			                    	    </thead>
 			                    	    <tbody>
+        									<tr>
+        	                    	        	<td>
+        	                    	        		Opening Soon
+        	                    	        	</td>
+        	                    	            <td>
+        	                    	            	<el-switch
+	        	                    	            	ref="openingSoon"
+        	                    	            		v-model="newStoreMeta.opening_soon"
+        	                    	            		active-color="#0c6"
+        	                    	            		inactive-color="#ff4949"
+        	                    	            		:active-value="1"
+        	                    	            		:inactive-value="0"
+        	                    	            		active-text="Yes"
+        	                    	            		inactive-text="No">
+        	                    	            	</el-switch>
+        	                    	            </td>
+                            	            </tr>
+        									<tr>
+        	                    	        	<td>
+        	                    	        		Store Has Delivery
+        	                    	        	</td>
+        	                    	            <td>
+	        	    								<el-switch
+	            	    								ref="delivery"
+	        	    									v-model="newStoreMeta.delivery"
+	        	    									active-color="#0c6"
+	        	    									inactive-color="#ff4949"
+	        	    									:active-value="1"
+	        	    									:inactive-value="0"
+	        	    									active-text="Yes"
+	        	    									inactive-text="No">
+	        	    								</el-switch>
+        	                    	            </td>
+                            	            </tr>
+        									<tr>
+        	                    	        	<td>
+        	                    	        		Store Has Delivery Enabled
+        	                    	        	</td>
+        	                    	            <td>
+        	                    	            	<el-switch
+        	                    	            		v-model="newStoreMeta.current_delivery_status"
+        	                    	            		active-color="#0c6"
+        	                    	            		inactive-color="#ff4949"
+        	                    	            		:active-value="1"
+        	                    	            		:inactive-value="0"
+        	                    	            		active-text="Yes"
+        	                    	            		inactive-text="No">
+        	                    	            	</el-switch>
+        	                    	            </td>
+                            	            </tr>
 											<tr>
 			                    	        	<td>
 			                    	        		Delivery Price
 			                    	        	</td>
 			                    	            <td>
-			                    	            	<input ref="deliveryPrice" type="text" class="form-control input-sm" v-model="newStoreMeta.delivery_price">
+			                    	            	<input type="text" class="form-control input-sm" v-model="newStoreMeta.delivery_price">
 			                    	            </td>
 		                    	            </tr>
 		                    	            <tr>
@@ -314,6 +293,38 @@
     		                    	            	</el-switch>
     		                    	            </td>
     	                    	            </tr>
+	    									<tr>
+	    	                    	        	<td>
+	    	                    	        		Catering
+	    	                    	        	</td>
+	    	                    	            <td>
+	    	                    	            	<el-switch
+	    	                    	            		v-model="newStoreMeta.catering"
+	    	                    	            		active-color="#0c6"
+	    	                    	            		inactive-color="#ff4949"
+	    	                    	            		:active-value="1"
+	    	                    	            		:inactive-value="0"
+	    	                    	            		active-text="Yes"
+	    	                    	            		inactive-text="No">
+	    	                    	            	</el-switch>
+	    	                    	            </td>
+	                        	            </tr>
+        									<tr>
+        	                    	        	<td>
+        	                    	        		Catering Enabled
+        	                    	        	</td>
+        	                    	            <td>
+        	                    	            	<el-switch
+        	                    	            		v-model="newStoreMeta.current_catering_status"
+        	                    	            		active-color="#0c6"
+        	                    	            		inactive-color="#ff4949"
+        	                    	            		:active-value="1"
+        	                    	            		:inactive-value="0"
+        	                    	            		active-text="Yes"
+        	                    	            		inactive-text="No">
+        	                    	            	</el-switch>
+        	                    	            </td>
+                            	            </tr>
         									<tr>
         	                    	        	<td>
         	                    	        		Digital Rewards
@@ -330,6 +341,38 @@
         	                    	            	</el-switch>
         	                    	            </td>
                             	            </tr>
+			                    	    	<tr>
+		                    	    			<td>
+		                    	    				Store Has Online Ordering
+		                    	    			</td>
+		                    	    		    <td>
+		                    	    		    	<el-switch
+		                    	    		    		v-model="newStoreMeta.online_ordering"
+		                    	    		    		active-color="#0c6"
+		                    	    		    		inactive-color="#ff4949"
+		                    	    		    		:active-value="1"
+		                    	    		    		:inactive-value="0"
+		                    	    		    		active-text="Yes"
+		                    	    		    		inactive-text="No">
+		                    	    		    	</el-switch>
+		                    	    		    </td>
+			                    	    	</tr>
+    		                    	    	<tr>
+    	                    	    			<td>
+    	                    	    				Store Has Online Ordering Enabled
+    	                    	    			</td>
+    	                    	    		    <td>
+    	                    	    		    	<el-switch
+    	                    	    		    		v-model="newStoreMeta.current_online_ordering_status"
+    	                    	    		    		active-color="#0c6"
+    	                    	    		    		inactive-color="#ff4949"
+    	                    	    		    		:active-value="1"
+    	                    	    		    		:inactive-value="0"
+    	                    	    		    		active-text="Yes"
+    	                    	    		    		inactive-text="No">
+    	                    	    		    	</el-switch>
+    	                    	    		    </td>
+    		                    	    	</tr>
 		                    	            <tr>
                 	                        	<td>
                 	                        		Merchant ID
@@ -437,6 +480,7 @@ import MenuTiersFunctions from '../../../controllers/MenuTiers'
 import AppFunctions from '../../../controllers/App'
 import AddHolidayHours from './AddHolidayHours'
 import StoreGroupsFunctions from '../../../controllers/StoreGroups'
+import ajaxErrorHandler from '../../../controllers/ErrorController'
 import { debounce, isEqual } from 'lodash'
 
 /**
@@ -478,17 +522,11 @@ export default {
 				email: '',
 				timezone: '',
 				currency: '',
-				online_ordering: 0,
-				delivery: 0,
-				current_online_ordering_status: 0,
-				current_delivery_status: 0,
 				status: 1,
 				created_by: this.$root.createdBy,
 				is_corporate: 0,
 				api_key: null,
-				menu_tier_id: null,
-				opening_soon: 0,
-				catering: 0
+				menu_tier_id: null
 			},
 			displayLocationsDropdown: false,
 			locationDetails: {},
@@ -496,10 +534,17 @@ export default {
 			createStoreMode: 'info',
 			newStoreId: 0,
 			newStoreMeta: {
+				opening_soon: 0,
 				gift_card: 0,
 				digital_reward: 0,
+				catering: 0,
+				current_catering_status: 0,
+				delivery: 0,
+				current_delivery_status: 0,
 				delivery_price: null,
 				delivery_radius: 0,
+				online_ordering: 0,
+				current_online_ordering_status: 0,
 				tax: null,
 				merchant_id: null,
 				merchant_key: null,
@@ -763,17 +808,11 @@ export default {
 				email: '',
 				timezone: '',
 				currency: '',
-				online_ordering: 0,
-				current_online_ordering_status: 0,
-				delivery: 0,
-				current_delivery_status: 0,
 				status: 1,
 				created_by: this.$root.createdBy,
 				is_corporate: 0,
 				api_key: null,
-				menu_tier_id: null,
-				opening_soon: 0,
-				catering: 0
+				menu_tier_id: null
 			}
 		},
 		/**
@@ -787,10 +826,17 @@ export default {
 			this.storeMetaError = ''
 			this.storeHoursError = ''
 			this.newStoreMeta = {
+				opening_soon: 0,
 				gift_card: 0,
 				digital_reward: 0,
+				catering: 0,
+				current_catering_status: 0,
+				delivery: 0,
+				current_delivery_status: 0,
 				delivery_price: null,
 				delivery_radius: 0,
+				online_ordering: 0,
+				current_online_ordering_status: 0,
 				tax: null,
 				merchant_id: null,
 				merchant_key: null,
@@ -945,22 +991,20 @@ export default {
 						createStoreVue.steps.step1_status = 'finish'
 						createStoreVue.createStoreMode = 'meta'
 						createStoreVue.$nextTick(function () {
-							createStoreVue.$refs.deliveryPrice.focus()
+							createStoreVue.$refs.openingSoon.focus()
 						})
 					} else {
 						createStoreVue.loadingCreateNewStore = false
 						createStoreVue.storeInformationError = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						createStoreVue.$router.push('/login/expired')
-						return
-					}
-					if (reason.responseJSON) {
-						createStoreVue.storeInformationError = reason
-						window.scrollTo(0, 0)
-					}
 					createStoreVue.loadingCreateNewStore = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not create the store',
+						errorName: 'storeInformationError',
+						vue: createStoreVue
+					})
 				})
 			}).catch(reason => {
 				createStoreVue.loadingCreateNewStore = false
@@ -1011,13 +1055,12 @@ export default {
 						createStoreVue.storeMetaError = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						createStoreVue.$router.push('/login/expired')
-						return
-					}
-					if (reason.responseJSON) {
-					}
-					throw reason
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not save the store information',
+						errorName: 'storeMetaError',
+						vue: createStoreVue
+					})
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message
@@ -1291,6 +1334,7 @@ export default {
 	beforeRouteLeave (to, from, next) {
 		let createStoreVue = this
 		if (this.activeTab === 0 && !isEqual(createStoreVue.newStore, createStoreVue.blankNewStore())) {
+			console.log(createStoreVue.newStore, createStoreVue.blankNewStore())
 			this.showDiscardWarning({exists: false}, next)
 		} else if (this.activeTab !== 0 && this.steps.step2_status !== 'finish' && this.steps.step2_status !== 'success') {
 			this.showDiscardWarning({exists: true}, next)

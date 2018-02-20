@@ -18,7 +18,7 @@ export default ({
 			GlobalFunctions.$ajax({
 				method: 'GET',
 				dataType: 'json',
-				url: '/app/menu_tiers/' + locationId + '/tiers',
+				url: '/app/menu_tiers',
 				data: {},
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)

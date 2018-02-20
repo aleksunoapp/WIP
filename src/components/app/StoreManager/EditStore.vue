@@ -13,7 +13,7 @@
 				    <div class="portlet light bordered">
 			            <div class="portlet-body form">
 			                <form role="form" @submit.prevent="updateStoreInformation()" novalidate>
-			                    <div class="form-body">
+			                    <div class="row">
 				                    <div class="alert alert-danger" v-if="storeInformationError.length">
 				                        <button class="close" data-close="alert" @click.prevent="clearError('storeInformationError')"></button>
 				                        <span>{{storeInformationError}}</span>
@@ -135,54 +135,6 @@
 				                    	    <label for="form_control_13">Store Email</label>
 				                    	</div>
             	                        <div class="form-group form-md-line-input form-md-floating-label">
-            	                            <label>Store Has Delivery:</label><br>
-            	                            <el-switch
-            	                            	v-model="storeToBeEdited.delivery"
-            	                            	active-color="#0c6"
-            	                            	inactive-color="#ff4949"
-            	                            	:active-value="1"
-            	                            	:inactive-value="0"
-            	                            	active-text="Yes"
-            	                            	inactive-text="No">
-            	                            </el-switch>
-            	                        </div>
-				                    	<div class="form-group form-md-line-input form-md-floating-label">
-            	                            <label>Store Has Delivery Enabled:</label><br>
-            	                            <el-switch
-            	                            	v-model="storeToBeEdited.current_delivery_status"
-            	                            	active-color="#0c6"
-            	                            	inactive-color="#ff4949"
-            	                            	:active-value="1"
-            	                            	:inactive-value="0"
-            	                            	active-text="Yes"
-            	                            	inactive-text="No">
-            	                            </el-switch>
-            	                        </div>
-            	                        <div class="form-group form-md-line-input form-md-floating-label">
-			                    		    <label>Store Has Online Ordering:</label><br>
-			                    		    <el-switch
-			                    		    	v-model="storeToBeEdited.online_ordering"
-			                    		    	active-color="#0c6"
-			                    		    	inactive-color="#ff4949"
-			                    		    	:active-value="1"
-			                    		    	:inactive-value="0"
-			                    		    	active-text="Yes"
-			                    		    	inactive-text="No">
-			                    		    </el-switch>
-			                    		</div>
-				                    	<div class="form-group form-md-line-input form-md-floating-label">
-			                    		    <label>Store Has Online Ordering Enabled:</label><br>
-			                    		    <el-switch
-			                    		    	v-model="storeToBeEdited.current_online_ordering_status"
-			                    		    	active-color="#0c6"
-			                    		    	inactive-color="#ff4949"
-			                    		    	:active-value="1"
-			                    		    	:inactive-value="0"
-			                    		    	active-text="Yes"
-			                    		    	inactive-text="No">
-			                    		    </el-switch>
-			                    		</div>
-            	                        <div class="form-group form-md-line-input form-md-floating-label">
 			                    		    <label>Store Is Corporate:</label><br>
 			                    		    <el-switch
 			                    		    	v-model="storeToBeEdited.is_corporate"
@@ -195,30 +147,6 @@
 			                    		    	inactive-text="No">
 			                    		    </el-switch>
 			                    		    <p v-if="isCorporateUpdated">Corporate Store updates will take effect next time you log in.</p>
-			                    		</div>
-            	                        <div class="form-group form-md-line-input form-md-floating-label">
-			                    		    <label>Opening soon:</label><br>
-			                    		    <el-switch
-			                    		    	v-model="storeToBeEdited.opening_soon"
-			                    		    	active-color="#0c6"
-			                    		    	inactive-color="#ff4949"
-			                    		    	:active-value="1"
-			                    		    	:inactive-value="0"
-			                    		    	active-text="Yes"
-			                    		    	inactive-text="No">
-			                    		    </el-switch>
-			                    		</div>
-            	                        <div class="form-group form-md-line-input form-md-floating-label">
-			                    		    <label>Catering:</label><br>
-			                    		    <el-switch
-			                    		    	v-model="storeToBeEdited.catering"
-			                    		    	active-color="#0c6"
-			                    		    	inactive-color="#ff4949"
-			                    		    	:active-value="1"
-			                    		    	:inactive-value="0"
-			                    		    	active-text="Yes"
-			                    		    	inactive-text="No">
-			                    		    </el-switch>
 			                    		</div>
 				                    </div>
 			                    </div>
@@ -248,41 +176,88 @@
 				                    	        	<th> Value </th>
 				                    	        </tr>
 				                    	    </thead>
-				                    	    <tbody>
-												<tr>
-				                    	        	<td>
-				                    	        		Delivery Price
-				                    	        	</td>
-				                    	            <td>
-				                    	            	<input type="text" class="form-control input-sm" v-model="metaToBeEdited.delivery_price">
-				                    	            </td>
-			                    	            </tr>
-			                    	            <tr>
-			                    	            	<td>
-			                    	            		Delivery Radius
-			                    	            	</td>
-			                    	                <td>
-			                    	                	<el-dropdown trigger="click" @command="updateDeliveryRadius" size="mini" :show-timeout="50" :hide-timeout="50">
-			                    	                		<el-button size="mini">
-			                    	                			{{ metaToBeEdited.delivery_radius }}
-			                    	                			<i class="el-icon-arrow-down el-icon--right"></i>
-			                    	                		</el-button>
-			                    	                		<el-dropdown-menu slot="dropdown">
-			                    	                			<el-dropdown-item v-for="n in 11" :command="n - 1" :key="n">
-			                    	                				{{ n - 1 }}
-			                    	                			</el-dropdown-item>
-			                    	                		</el-dropdown-menu>
-			                    	                	</el-dropdown>
-			                    	                </td>
-		                    	                </tr>
-		                    	                <tr>
-		                    	                	<td>
-		                    	                		Tax
-		                    	                	</td>
-		                    	                    <td>
-		                    	                    	<input type="text" class="form-control input-sm" v-model="metaToBeEdited.tax">
-		                    	                    </td>
-	                    	                    </tr>
+    			                    	    <tbody>
+            									<tr>
+            	                    	        	<td>
+            	                    	        		Opening Soon
+            	                    	        	</td>
+            	                    	            <td>
+            	                    	            	<el-switch
+    	        	                    	            	ref="openingSoon"
+            	                    	            		v-model="metaToBeEdited.opening_soon"
+            	                    	            		active-color="#0c6"
+            	                    	            		inactive-color="#ff4949"
+            	                    	            		:active-value="1"
+            	                    	            		:inactive-value="0"
+            	                    	            		active-text="Yes"
+            	                    	            		inactive-text="No">
+            	                    	            	</el-switch>
+            	                    	            </td>
+                                	            </tr>
+            									<tr>
+            	                    	        	<td>
+            	                    	        		Store Has Delivery
+            	                    	        	</td>
+            	                    	            <td>
+    	        	    								<el-switch
+    	            	    								ref="delivery"
+    	        	    									v-model="metaToBeEdited.delivery"
+    	        	    									active-color="#0c6"
+    	        	    									inactive-color="#ff4949"
+    	        	    									:active-value="1"
+    	        	    									:inactive-value="0"
+    	        	    									active-text="Yes"
+    	        	    									inactive-text="No">
+    	        	    								</el-switch>
+            	                    	            </td>
+                                	            </tr>
+            									<tr>
+            	                    	        	<td>
+            	                    	        		Store Has Delivery Enabled
+            	                    	        	</td>
+            	                    	            <td>
+            	                    	            	<el-switch
+            	                    	            		v-model="metaToBeEdited.current_delivery_status"
+            	                    	            		active-color="#0c6"
+            	                    	            		inactive-color="#ff4949"
+            	                    	            		:active-value="1"
+            	                    	            		:inactive-value="0"
+            	                    	            		active-text="Yes"
+            	                    	            		inactive-text="No">
+            	                    	            	</el-switch>
+            	                    	            </td>
+                                	            </tr>
+    											<tr>
+    			                    	        	<td>
+    			                    	        		Delivery Price
+    			                    	        	</td>
+    			                    	            <td>
+    			                    	            	<input type="text" class="form-control input-sm" v-model="metaToBeEdited.delivery_price">
+    			                    	            </td>
+    		                    	            </tr>
+    		                    	            <tr>
+    		                    	            	<td>
+    		                    	            		Delivery Radius
+    		                    	            	</td>
+    		                    	                <td>
+    	                	                    		<el-select v-model="metaToBeEdited.delivery_radius" placeholder="0" size="mini">
+    	                									<el-option
+    	                										v-for="n in 11"
+    	                										:key="n"
+    	                										:label="n - 1"
+    	                										:value="n - 1">
+    	                									</el-option>
+    	                	                    		</el-select>
+    		                    	                </td>
+    	                    	                </tr>
+    	                    	                <tr>
+    	                    	                	<td>
+    	                    	                		Tax
+    	                    	                	</td>
+    	                    	                    <td>
+    	                    	                    	<input ref="tax" type="text" class="form-control input-sm" v-model="metaToBeEdited.tax">
+    	                    	                    </td>
+                        	                    </tr>
         										<tr>
         		                    	        	<td>
         		                    	        		Gift Cards
@@ -299,6 +274,38 @@
         		                    	            	</el-switch>
         		                    	            </td>
         	                    	            </tr>
+    	    									<tr>
+    	    	                    	        	<td>
+    	    	                    	        		Catering
+    	    	                    	        	</td>
+    	    	                    	            <td>
+    	    	                    	            	<el-switch
+    	    	                    	            		v-model="metaToBeEdited.catering"
+    	    	                    	            		active-color="#0c6"
+    	    	                    	            		inactive-color="#ff4949"
+    	    	                    	            		:active-value="1"
+    	    	                    	            		:inactive-value="0"
+    	    	                    	            		active-text="Yes"
+    	    	                    	            		inactive-text="No">
+    	    	                    	            	</el-switch>
+    	    	                    	            </td>
+    	                        	            </tr>
+            									<tr>
+            	                    	        	<td>
+            	                    	        		Catering Enabled
+            	                    	        	</td>
+            	                    	            <td>
+            	                    	            	<el-switch
+            	                    	            		v-model="metaToBeEdited.current_catering_status"
+            	                    	            		active-color="#0c6"
+            	                    	            		inactive-color="#ff4949"
+            	                    	            		:active-value="1"
+            	                    	            		:inactive-value="0"
+            	                    	            		active-text="Yes"
+            	                    	            		inactive-text="No">
+            	                    	            	</el-switch>
+            	                    	            </td>
+                                	            </tr>
             									<tr>
             	                    	        	<td>
             	                    	        		Digital Rewards
@@ -315,23 +322,55 @@
             	                    	            	</el-switch>
             	                    	            </td>
                                 	            </tr>
-			                    	            <tr>
-	                	                        	<td>
-	                	                        		Merchant ID
-	                	                        	</td>
-	                	                            <td>
-	                	                            	<input type="text" :readonly="$root.accountType === 'store_admin'"  class="form-control input-sm" v-model="metaToBeEdited.merchant_id">
-	                	                            </td>
-	            	                            </tr>
-	            	                            <tr>
-	            	                            	<td>
-	            	                            		Merchant Key
-	            	                            	</td>
-	            	                                <td>
-	            	                                	<input type="text" :readonly="$root.accountType === 'store_admin'" class="form-control input-sm" v-model="metaToBeEdited.merchant_key">
-	            	                                </td>
-				                    	        </tr>
-				                    	    </tbody>
+    			                    	    	<tr>
+    		                    	    			<td>
+    		                    	    				Store Has Online Ordering
+    		                    	    			</td>
+    		                    	    		    <td>
+    		                    	    		    	<el-switch
+    		                    	    		    		v-model="metaToBeEdited.online_ordering"
+    		                    	    		    		active-color="#0c6"
+    		                    	    		    		inactive-color="#ff4949"
+    		                    	    		    		:active-value="1"
+    		                    	    		    		:inactive-value="0"
+    		                    	    		    		active-text="Yes"
+    		                    	    		    		inactive-text="No">
+    		                    	    		    	</el-switch>
+    		                    	    		    </td>
+    			                    	    	</tr>
+        		                    	    	<tr>
+        	                    	    			<td>
+        	                    	    				Store Has Online Ordering Enabled
+        	                    	    			</td>
+        	                    	    		    <td>
+        	                    	    		    	<el-switch
+        	                    	    		    		v-model="metaToBeEdited.current_online_ordering_status"
+        	                    	    		    		active-color="#0c6"
+        	                    	    		    		inactive-color="#ff4949"
+        	                    	    		    		:active-value="1"
+        	                    	    		    		:inactive-value="0"
+        	                    	    		    		active-text="Yes"
+        	                    	    		    		inactive-text="No">
+        	                    	    		    	</el-switch>
+        	                    	    		    </td>
+        		                    	    	</tr>
+    		                    	            <tr>
+                    	                        	<td>
+                    	                        		Merchant ID
+                    	                        	</td>
+                    	                            <td>
+                    	                            	<input type="text" class="form-control input-sm" v-model="metaToBeEdited.merchant_id">
+                    	                            </td>
+                	                            </tr>
+                	                            <tr>
+                	                            	<td>
+                	                            		Merchant Key
+                	                            	</td>
+                	                                <td>
+                	                                	<input type="text" class="form-control input-sm" v-model="metaToBeEdited.merchant_key">
+                	                                </td>
+    			                    	        </tr>
+    			                    	    </tbody>
 				                    	</table>
 			                    	</div>
 			                    </div>
@@ -1044,12 +1083,8 @@ export default {
 					reject('Store email cannot be blank')
 				} else if (!emailPattern.test(editStoreVue.storeToBeEdited.email)) {
 					reject('Please enter a valid store email')
-				} else if (!$.isNumeric(editStoreVue.storeToBeEdited.delivery)) {
-					reject('Store delivery cannot be blank')
 				} else if (!editStoreVue.storeToBeEdited.display_name.length) {
 					reject('Store display name cannot be blank')
-				} else if (!$.isNumeric(editStoreVue.storeToBeEdited.online_ordering)) {
-					reject('Store online ordering cannot be blank')
 				} else if (!editStoreVue.storeToBeEdited.timezone.length) {
 					reject('Store timezone cannot be blank')
 				} else if (editStoreVue.storeToBeEdited.internal_id === null) {
