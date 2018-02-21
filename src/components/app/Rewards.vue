@@ -27,7 +27,7 @@
       				<div class="form-body row">
       					<div class="col-md-12">
 			        		<div class="alert alert-danger" v-if="errorMessage.length">
-			        		    <button class="close" data-close="alert" @click="clearError()"></button>
+			        		    <button class="close" data-close="alert" @click.prevent="clearError()"></button>
 			        		    <span>{{errorMessage}}</span>
 			        		</div>
 			        	</div>
@@ -37,11 +37,15 @@
 		        			    <label for="form_control_1">Reward Tier Name</label>
 		        			</div>
 		        			<div class="form-group form-md-line-input form-md-floating-label">
-		        			    <input type="text" class="form-control input-sm" :class="{'edited': newRewardsTier.points !== null}" id="form_control_2" v-model="newRewardsTier.points">
-		        			    <label for="form_control_2">Reward Tier Points</label>
+		        			    <input type="text" class="form-control input-sm" :class="{'edited': newRewardsTier.description.length}" id="form_control_3" v-model="newRewardsTier.description">
+		        			    <label for="form_control_3">Reward Tier Description</label>
 		        			</div>
 		        		</div>
 		        		<div class="col-md-6">
+		        			<div class="form-group form-md-line-input form-md-floating-label">
+		        			    <input type="text" class="form-control input-sm" :class="{'edited': newRewardsTier.points !== null}" id="form_control_2" v-model="newRewardsTier.points">
+		        			    <label for="form_control_2">Reward Tier Points</label>
+		        			</div>
 		        			<div class="form-group form-md-line-input form-md-floating-label">
 		        			    <input type="text" class="form-control input-sm" :class="{'edited': newRewardsTier.stars !== null}" id="form_control_3" v-model="newRewardsTier.stars">
 		        			    <label for="form_control_3">Reward Tier Stars</label>
@@ -78,22 +82,26 @@
 	                                            <i class="fa fa-lg fa-pencil"></i>
 	                                        </a>
 		                        		</el-tooltip>
-		                        		<el-tooltip content="Delete" effect="light" placement="right">
+<!-- 		                        		<el-tooltip content="Delete" effect="light" placement="right">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click.stop="showDeleteModal(tier)">
 	                                            <i class="fa fa-lg fa-trash"></i>
 	                                        </a>
-		                        		</el-tooltip>
+		                        		</el-tooltip> -->
 		                        	</div>
 		                        	<div class="list-icon-container">
                                         <i class="fa fa-angle-right"></i>
                                     </div>
 		                            <div class="list-item-content height-mod">
-		                            	<div class="col-sm-4">
+		                            	<div class="col-sm-5">
 			                            	<div class="bold uppercase font-red">
 			                            		<span>{{ tier.name }}</span>
 			                            	</div>
+			                            	<div>
+			                            		<strong>Description:</strong>
+			                            		<span>{{ tier.description }}</span>
+			                            	</div>
 		                            	</div>
-		                            	<div class="col-sm-4">
+		                            	<div class="col-sm-5">
 		                            		<div>
 		                            			<strong>Points:</strong>
 		                            			<span>{{ tier.points }}</span>
@@ -172,6 +180,7 @@ export default {
 				name: '',
 				points: null,
 				stars: null,
+				description: '',
 				created_by: this.$root.createdBy
 			},
 			displayDeleteModal: false,
@@ -241,6 +250,7 @@ export default {
 		clearNewRewardTier () {
 			this.newRewardsTier = {
 				name: '',
+				description: '',
 				points: null,
 				stars: null
 			}
@@ -255,6 +265,8 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (!rewardsVue.newRewardsTier.name.length) {
 					reject('Rewards tier name cannot be blank')
+				} else if (!rewardsVue.newRewardsTier.description.length) {
+					reject('Rewards tier description cannot be blank')
 				} else if (!$.isNumeric(rewardsVue.newRewardsTier.points)) {
 					reject('Rewards tier points should be a number')
 				} else if (!$.isNumeric(rewardsVue.newRewardsTier.stars)) {
@@ -330,12 +342,8 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateRewardTier (tier) {
+			this.getRewardTiers()
 			this.displayEditTierModal = false
-			for (var i = 0; i < this.rewardTiers.length; i++) {
-				if (this.rewardTiers[i].id === tier.id) {
-					this.rewardTiers[i] = tier
-				}
-			}
 		},
 		/**
 		 * To route to the reward items page.
@@ -345,7 +353,7 @@ export default {
 		 */
 		openTier (tier) {
 			this.$router.passedTier = tier
-			this.$router.push({path: '/app/rewards/' + tier.id + '/items', props: {passedTier: tier}})
+			this.$router.push({path: '/app/loyalty/rewards/' + tier.id + '/items', props: {passedTier: tier}})
 		},
 		/**
 		 * To clear the current error.

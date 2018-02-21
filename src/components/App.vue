@@ -301,12 +301,32 @@
 								<span class="selected"></span>
 							</router-link>
 						</li>
-						<li class="nav-item" v-bind:class="{'active': currentRoute === 'rewards'}" v-if="$root.accountType === 'application_admin'">
-							<router-link to="/app/rewards" class="nav-link nav-toggle">
-								<i class="fa fa-gift"></i>
-								<span class="title">Rewards</span>
+						<li class="nav-item" v-bind:class="{'active': currentRoute === 'loyalty'}" id="loyalty_link" v-if="$root.accountType === 'application_admin'">
+							<router-link to="/app/loyalty" class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
+								<i class="fa fa-link"></i>
+								<span class="title">Loyalty</span>
 								<span class="selected"></span>
 							</router-link>
+							<ul class="sub-menu">
+								<li class="nav-item" v-bind:class="{'active': currentRoute === 'loyalty' && currentSubRoute === 'base_rule'}" id="faq_users_link">
+									<router-link to="/app/loyalty/base_rule" class="nav-link">
+										<i class="fa fa-paperclip"></i>
+										<span class="title">Base Rule</span>
+									</router-link>
+								</li>
+								<li class="nav-item" v-bind:class="{'active': currentRoute === 'loyalty' && currentSubRoute === 'promotion_rules'}" id="faq_users_link">
+									<router-link to="/app/loyalty/promotion_rules" class="nav-link">
+										<i class="fa fa-list-ol"></i>
+										<span class="title">Promotion Rules</span>
+									</router-link>
+								</li>
+								<li class="nav-item" v-bind:class="{'active': currentRoute === 'loyalty' && currentSubRoute === 'rewards'}" id="faq_users_link">
+									<router-link to="/app/loyalty/rewards" class="nav-link">
+										<i class="fa fa-gift"></i>
+										<span class="title">Rewards</span>
+									</router-link>
+								</li>
+							</ul>
 						</li>
 						<li class="nav-item" v-bind:class="{'active': currentRoute === 'promocodes'}" v-if="$root.accountType === 'application_admin'">
 							<router-link to="/app/promocodes" class="nav-link nav-toggle">

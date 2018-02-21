@@ -14,7 +14,7 @@
 			            <div class="portlet-body form">
 			                <form role="form" @submit.prevent="updateStoreInformation()" novalidate>
 			                    <div class="row">
-				                    <div class="alert alert-danger" v-if="storeInformationError.length">
+				                    <div class="alert alert-danger" v-show="storeInformationError.length" ref="storeInformationError">
 				                        <button class="close" data-close="alert" @click.prevent="clearError('storeInformationError')"></button>
 				                        <span>{{storeInformationError}}</span>
 				                    </div>
@@ -120,7 +120,7 @@
 				                    	</div>
 				                    	<div class="form-group form-md-line-input form-md-floating-label">
 				                    	    <input type="text" :readonly="$root.accountType === 'store_admin'" class="form-control input-sm edited" id="form_control_10" v-model="storeToBeEdited.api_key">
-				                    	    <label for="form_control_10">Spoonity API Key</label>
+				                    	    <label for="form_control_10">External API Key (optional)</label>
 				                    	</div>
 				                    	<div class="form-group form-md-line-input form-md-floating-label">
 				                    	    <input type="text" class="form-control input-sm edited" id="form_control_11" v-model="storeToBeEdited.phone">
@@ -568,6 +568,7 @@ import StoresFunctions from '../../../controllers/Stores'
 import StoreGroupsFunctions from '../../../controllers/StoreGroups'
 import NoResults from '../../modules/NoResults'
 import AddHolidayHours from './AddHolidayHours'
+import ajaxErrorHandler from '../../../controllers/ErrorController'
 import { debounce } from 'lodash'
 
 /**
@@ -1115,15 +1116,12 @@ export default {
 						editStoreVue.storeInformationError = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						editStoreVue.$router.push('/login/expired')
-						return
-					}
-					if (reason.responseJSON) {
-						editStoreVue.storeInformationError = reason
-						window.scrollTo(0, 0)
-					}
-					throw reason
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not update the store',
+						errorName: 'storeInformationError',
+						vue: editStoreVue
+					})
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

@@ -18,6 +18,18 @@ export default {
 	 */
 	messageAppToken: 'bearer 9fca7d07b567f95d8a682cb4d2ea871e',
 	/**
+	 * base url for API calls to Loyalty endpoints
+	 */
+	loyaltyUrl: 'http://loyalty.unoapp.xyz',
+	/**
+	 * app id for API calls to Loyalty endpoints
+	 */
+	loyaltyAppId: 'TSh5JsOTHx8FKMqS6XnggH0Z5L0pkP1O',
+	/**
+	 * app secret for API calls to Loyalty endpoints
+	 */
+	loyaltyAppSecret: 'P6KWcbixUIkxUT4jpmcnCFUBC7hHSGnf',
+	/**
 	 * Ajax wrapper for making backend calls.
 	 * @function
 	 * @param {object} options - Options for the ajax call being made.

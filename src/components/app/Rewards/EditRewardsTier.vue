@@ -16,6 +16,10 @@
 			    <label for="form_control_1">Tier Name</label>
 			</div>
 			<div class="form-group form-md-line-input form-md-floating-label">
+			    <input type="text" class="form-control input-sm edited" id="form_control_1" v-model="rewardTierToBeEdited.description">
+			    <label for="form_control_1">Tier Description</label>
+			</div>
+			<div class="form-group form-md-line-input form-md-floating-label">
 			    <input type="text" class="form-control input-sm edited" id="form_control_2" v-model="rewardTierToBeEdited.points">
 			    <label for="form_control_2">Tier Points</label>
 			</div>
@@ -52,7 +56,7 @@ export default {
 	mounted () {
 		this.showEditTierModal = true
 		if (this.passedRewardTier && this.passedRewardTier.id) {
-			this.rewardTierToBeEdited = this.passedRewardTier
+			this.rewardTierToBeEdited = {...this.passedRewardTier}
 		}
 	},
 	methods: {
@@ -66,6 +70,8 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (!editRewardsTierVue.rewardTierToBeEdited.name.length) {
 					reject('Reward tier name cannot be blank')
+				} else if (!editRewardsTierVue.rewardTierToBeEdited.description.length) {
+					reject('Reward tier description cannot be blank')
 				} else if (!$.isNumeric(editRewardsTierVue.rewardTierToBeEdited.points)) {
 					reject('Reward tier points should be a number')
 				} else if (!$.isNumeric(editRewardsTierVue.rewardTierToBeEdited.stars)) {

@@ -11,7 +11,7 @@
 		<div class="note note-info">
             <p>Manage items for a reward tier.</p>
         </div>
-        <!-- BEGIN CREATE NEW MENU-->
+        <!-- BEGIN CREATE NEW -->
         <div class="portlet box blue-hoki">
 			<div class="portlet-title bg-blue-chambray" @click="toggleCreateItemPanel()">
 				<div class="caption">
@@ -26,8 +26,8 @@
       			<form role="form" @submit.prevent="createNewRewardItem()">
       				<div class="form-body row">
       					<div class="col-md-12">
-			        		<div class="alert alert-danger" v-if="errorMessage.length">
-			        		    <button class="close" data-close="alert" @click="clearError()"></button>
+			        		<div class="alert alert-danger" v-show="errorMessage.length" ref="errorMessage">
+			        		    <button class="close" data-close="alert" @click.prevent="clearError('errorMessage')"></button>
 			        		    <span>{{errorMessage}}</span>
 			        		</div>
 			        	</div>
@@ -36,20 +36,37 @@
 							    <input type="text" class="form-control input-sm" :class="{'edited': newRewardItem.name.length}" id="form_control_1" v-model="newRewardItem.name">
 							    <label for="form_control_1">Reward Item Name</label>
 							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-							    <input type="text" class="form-control input-sm" :class="{'edited': newRewardItem.value.length}" id="form_control_2" v-model="newRewardItem.value">
-							    <label for="form_control_2">Reward Item Value</label>
+							<div class="side-by-side-item">
+								<div class="form-group form-md-line-input form-md-floating-label">
+								    <input type="text" class="form-control input-sm" :class="{'edited': newRewardItem.value.length}" id="form_control_2" v-model="newRewardItem.value">
+								    <label for="form_control_2">Reward Item Value</label>
+								</div>
 							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-							    <label>Reward Item Expiry</label><br>
-					    	    <el-date-picker 
-					    	    	v-model="newRewardItem.expiry" 
-					    	    	type="date" 
-					    	    	format="yyyy-MM-dd" 
-					    	    	value-format="yyyy-MM-dd" 
-					    	    	:clearable="false" 
-					    	    	placeholder="Pick an expiry date">
-					        	</el-date-picker>
+							<el-select class="side-by-side-item" v-model="newRewardItem.value_type" placeholder="Select type" size="small">
+								<el-option label="$" value="dollar"></el-option>
+								<el-option label="%" value="percentage"></el-option>
+							</el-select>
+							<div class="side-by-side-item">
+								from: 
+								<el-date-picker 
+									v-model="newRewardItem.start_on" 
+									type="date" 
+									format="yyyy-MM-dd" 
+									value-format="yyyy-MM-dd" 
+									:clearable="false" 
+									placeholder="Select start date">
+								</el-date-picker>
+							</div>
+							<div class="side-by-side-item">
+								to: 
+								<el-date-picker 
+									v-model="newRewardItem.expiry" 
+									type="date" 
+									format="yyyy-MM-dd" 
+									value-format="yyyy-MM-dd" 
+									:clearable="false" 
+									placeholder="Select end date">
+								</el-date-picker>
 							</div>
 		        		</div>
 		        		<div class="col-md-6">
@@ -57,21 +74,18 @@
 							    <input type="text" class="form-control input-sm" id="form_control_3" :class="{'edited': newRewardItem.points.length}" v-model="newRewardItem.points">
 							    <label for="form_control_3">Reward Item Points</label>
 							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-							    <input type="text" class="form-control input-sm" :class="{'edited': newRewardItem.spoonity_reward_id.length}" id="form_control_4" v-model="newRewardItem.spoonity_reward_id">
-							    <label for="form_control_4">Reward Item Spoonity ID</label>
-							</div>
+							<button type="submit" class="btn blue btn-outline inline" @click.prevent="displayMenuModifierTreeModal(newRewardItem, $event)">Select Items</button>
+							<p v-if="newRewardItem.sku.length" class="margin-top-10 margin-left-10 inline">Selected <span>{{newRewardItem.sku.length}}</span> item<span v-if="newRewardItem.sku.length > 1">s</span></p>
 		        		</div>
 		        	</div>
-      				<div class="form-actions right margin-top-20">
-						<button type="submit" class="btn blue">Create</button>
+      				<div class="form-actions right">
+						<button type="submit" class="btn blue" @click.stop="">Create</button>
 					</div>
       			</form>
   			</div>
         </div>
-        <!-- END CREATE NEW MENU-->
-        <loading-screen :show="loadingRewardItems" :color="'#2C3E50'" :display="'inline'"></loading-screen>
-        <div v-if="rewardItems.length && !loadingRewardItems">
+        <!-- END CREATE NEW -->
+        <div>
 		    <div class="portlet light portlet-fit bordered margin-top-20">
 		        <div class="portlet-title bg-blue-chambray">
 		            <div class="caption">
@@ -79,8 +93,9 @@
 		                <div class="caption-desc font-grey-cascade">Edit a reward item or select items to apply the reward to.</div>
 		            </div>
 		        </div>
-		        <div class="portlet-body">
-		            <div class="mt-element-list margin-top-15">
+		        <div class="portlet-body relative-block">
+		        	<loading-screen :show="loadingRewardItems" :color="'#2C3E50'" :display="'inline'"></loading-screen>
+		            <div class="mt-element-list margin-top-15" v-if="rewardItems.length && !loadingRewardItems">
 		                <div class="mt-list-container list-news ext-1 no-border">
 		                    <ul>
 		                        <li class="mt-list-item actions-at-left margin-top-15" v-for="item in rewardItems" :id="'reward-' + item.id">
@@ -90,16 +105,16 @@
 		                                        <i class="fa fa-lg fa-pencil"></i>
 		                                    </a>
 		                        		</el-tooltip>
-		                        		<el-tooltip content="Apply to multiple" effect="light" placement="right">
+		                        		<el-tooltip content="Apply to items" effect="light" placement="right">
 		                                    <a class="btn btn-circle btn-icon-only btn-default" @click="checkForLocation(item, $event)">
 												<i class="icon-layers"></i>
 		                                    </a>
 		                        		</el-tooltip>
-		                        		<el-tooltip content="Delete" effect="light" placement="right">
+<!-- 		                        		<el-tooltip content="Delete" effect="light" placement="right">
 		                                    <a class="btn btn-circle btn-icon-only btn-default" @click.stop="showDeleteModal(item)">
 												<i class="fa fa-lg fa-trash"></i>
 		                                    </a>
-		                        		</el-tooltip>
+		                        		</el-tooltip> -->
 		                        	</div>
                                     <div style="min-height:95px">
                                     	<div class="col-sm-12">
@@ -110,18 +125,20 @@
                                     	<div class="col-sm-4">
                                     		<div>
                                     			<strong>Value:</strong>
-                                    			<span>{{ item.value }}</span>
+                                    			<span v-if="item.value_type === 'dollar'">$</span><span>{{ item.value }}</span><span v-if="item.value_type === 'percentage'">%</span>
                                     		</div>
                                     		<div>
                                     			<strong>Points:</strong>
                                     			<span>{{ item.points }}</span>
                                     		</div>
                                 		</div>
+                        				<div class="col-sm-4">
+                        		    		<div>
+                        		    			<strong>Starts:</strong>
+                        		    			<span>{{ item.start_on }}</span>
+                        		    		</div>
+                        		    	</div>
                                 		<div class="col-sm-4">
-                                    		<div>
-                                    			<strong>Spoonity ID:</strong>
-                                    			<span>{{ item.spoonity_reward_id }}</span>
-                                    		</div>
                                     		<div>
                                     			<strong>Expires:</strong>
                                     			<span>{{ item.expiry }}</span>
@@ -139,14 +156,23 @@
 		                    </ul>
 		                </div>
 		            </div>
+		            <div v-if="!rewardItems.length && !loadingRewardItems">
+		            	<no-results :show="true" :type="'reward items'"></no-results>
+		            </div>
 		        </div>
 		    </div>
         </div>
-        <div v-if="!rewardItems.length && !loadingRewardItems">
-        	<no-results :show="true" :type="'reward items'"></no-results>
-        </div>
         <edit-reward-item v-if="displayEditRewardItemModal" :passedRewardItem="passedRewardItem" :passedRewardTierId="passedRewardTierId" @updateRewardItemDetails="updateRewardItemDetails" @closeRewardItemModal="closeRewardItemModal"></edit-reward-item>
-        <menu-modifier-tree v-if="showMenuModifierTreeModal" :selectedObject="selectedItem" :headerText="headerText" :updateType="'option'" @closeMenuModifierTreeModal="closeMenuModifierTreeModal" @closeMenuModifierTreeModalAndUpdate="closeMenuModifierTreeModalAndUpdate"></menu-modifier-tree>
+
+        <menu-modifier-tree
+        	v-if="showMenuModifierTreeModal" 
+        	:selectedObject="selectedItem" 
+        	:headerText="headerText" 
+        	updateType="combo" 
+        	:errorMessage="menuModifierTreeErrorMessage"
+        	@closeMenuModifierTreeModal="closeMenuModifierTreeModal" 
+        	@closeMenuModifierTreeModalAndUpdate="applySelectedItems">
+        </menu-modifier-tree>
 
         <!-- DELETE MODAL START -->
         <modal :show="displayDeleteModal" effect="fade" @closeOnEscape="closeDeleteModal">
@@ -189,12 +215,13 @@ import LoadingScreen from '../modules/LoadingScreen'
 import Modal from '../modules/Modal'
 import RewardFunctions from '../../controllers/Rewards'
 import EditRewardItem from './Rewards/EditRewardItem'
+import ajaxErrorHandler from '../../controllers/ErrorController'
 
 export default {
 	data () {
 		return {
 			breadcrumbArray: [
-				{name: 'Reward Tiers', link: '/app/rewards'},
+				{name: 'Reward Tiers', link: '/app/loyalty/rewards'},
 				{name: 'Reward Items', link: false}
 			],
 			loadingRewardItems: false,
@@ -205,13 +232,15 @@ export default {
 			passedRewardTierId: this.$route.params.folder_id,
 			createItemCollapse: true,
 			newRewardItem: {
-				name: '',
-				created_by: this.$root.createdBy,
-				expiry: '',
-				value: '',
-				spoonity_reward_id: '',
+				sku: [],
 				points: '',
-				sku: []
+				loyalty_reward_id: this.$router.passedTier.loyalty_reward_id,
+				name: '',
+				value: '',
+				expiry: '',
+				start_on: '',
+				value_type: '', // 'dollar','percentage'
+				created_by: this.$root.createdBy
 			},
 			showMenuTreeModal: false,
 			showMenuModifierTreeModal: false,
@@ -224,19 +253,58 @@ export default {
 				reward_item_id: null,
 				name: ''
 			},
-			deleteErrorMessage: ''
-		}
-	},
-	props: {
-		passedTier: {
-			type: Object,
-			default: () => { return {} }
+			deleteErrorMessage: '',
+			menuModifierTreeErrorMessage: ''
 		}
 	},
 	mounted () {
 		this.getRewardItems()
 	},
 	methods: {
+		/**
+		 * To determine which function to call based on the update type passed in by the parent as a prop.
+		 * @function
+		 * @param {object} selection - An object containing the selected SKUs
+		 * @returns {undefined}
+		 */
+		applySelectedItems (selection) {
+			this.selectedItem.sku = selection.selectedSKUs
+			let payload = {
+				...this.selectedItem,
+				reward_item_id: this.selectedItem.id
+			}
+			var rewardItemsVue = this
+
+			RewardFunctions.updateRewardItemDetails(payload, rewardItemsVue.$root.appId, rewardItemsVue.$root.appSecret, rewardItemsVue.$root.userToken).then(response => {
+				if (response.code === 200 && response.status === 'ok') {
+					rewardItemsVue.closeMenuModifierTreeModal()
+					rewardItemsVue.getRewardItems()
+					rewardItemsVue.showApplySuccess()
+				} else {
+					rewardItemsVue.menuModifierTreeErrorMessage = response.message
+				}
+			}).catch(reason => {
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not create the reward item',
+					errorName: 'menuModifierTreeErrorMessage',
+					vue: rewardItemsVue
+				})
+			})
+		},
+		/**
+		 * To alert the user that the menu has been successfully created.
+		 * @function
+		 * @returns {undefined}
+		 */
+		showApplySuccess () {
+			this.$swal({
+				title: 'Success!',
+				text: 'Items successfully applied',
+				type: 'success',
+				confirmButtonText: 'OK'
+			})
+		},
 		/**
 		 * To close the menu tree modal.
 		 * @function
@@ -253,12 +321,7 @@ export default {
 		 */
 		closeMenuModifierTreeModalAndUpdate (data) {
 			this.showMenuModifierTreeModal = false
-			this.rewardItems.forEach(item => {
-				if (data.id === item.id) {
-					item.sku_array = data.selectedSKUs
-					return
-				}
-			})
+			this.selectedItem.sku = data.selectedSKUs
 		},
 		/**
 		 * To get a list of reward items for the current tier.
@@ -312,8 +375,6 @@ export default {
 					reject('Value should be a number')
 				} else if (!$.isNumeric(rewardItemsVue.newRewardItem.points)) {
 					reject('Points should be a number')
-				} else if (!rewardItemsVue.newRewardItem.spoonity_reward_id) {
-					reject('Spoonity ID cannot be blank')
 				} else if (!rewardItemsVue.newRewardItem.expiry.toString()) {
 					reject('Expiry date connot be blank')
 				}
@@ -327,7 +388,7 @@ export default {
 		 */
 		createNewRewardItem () {
 			var rewardItemsVue = this
-			rewardItemsVue.clearError()
+			rewardItemsVue.clearError('errorMessage')
 
 			return rewardItemsVue.validateRewardItemData()
 			.then(response => {
@@ -338,20 +399,19 @@ export default {
 						rewardItemsVue.addRewardItem(rewardItemsVue.newRewardItem)
 					} else {
 						rewardItemsVue.errorMessage = response.message
+						rewardItemsVue.$scrollTo(rewardItemsVue.$refs.errorMessage, 1000, { offset: -50 })
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						rewardItemsVue.$router.push('/login/expired')
-						return
-					}
-					rewardItemsVue.errorMessage = reason
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not create the reward item',
+						errorName: 'errorMessage',
+						vue: rewardItemsVue
+					})
 				})
 			}).catch(reason => {
-				// If validation fails then display the error message
 				rewardItemsVue.errorMessage = reason
-				window.scrollTo(0, 0)
-				throw reason
+				rewardItemsVue.$scrollTo(rewardItemsVue.$refs.errorMessage, 1000, { offset: -50 })
 			})
 		},
 		/**
@@ -391,7 +451,7 @@ export default {
 		 */
 		displayMenuModifierTreeModal (item, event) {
 			event.stopPropagation()
-			this.selectedItem = item
+			this.selectedItem = {...item}
 			this.headerText = 'Select Menu Items for Reward Items'
 			this.showMenuModifierTreeModal = true
 		},
@@ -406,7 +466,7 @@ export default {
 				created_by: this.$root.createdBy,
 				expiry: '',
 				value: '',
-				spoonity_reward_id: '',
+				loyalty_reward_id: this.$router.passedTier.loyalty_reward_id,
 				points: '',
 				sku: []
 			}
@@ -446,12 +506,22 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateRewardItemDetails (val) {
+			this.getRewardItems()
 			this.displayEditRewardItemModal = false
-			for (var i = 0; i < this.rewardItems.length; i++) {
-				if (this.rewardItems[i].id === val.id) {
-					this.rewardItems[i] = val
-				}
-			}
+			this.showEditSuccess()
+		},
+		/**
+		 * To confirm the item was updated
+		 * @function
+		 * @returns {undefined}
+		 */
+		showEditSuccess () {
+			this.$swal({
+				title: 'Success',
+				text: 'Reward Item updated',
+				type: 'success',
+				confirmButtonText: 'OK'
+			})
 		},
 		/**
 		 * To close the modal for editing the detils of an image.
@@ -464,10 +534,11 @@ export default {
 		/**
 		 * To clear the current error.
 		 * @function
+		 * @param {string} errorName - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
+		clearError (errorName) {
+			this[errorName] = ''
 		},
 		/**
 		 * To toggle the create menu panel, initially set to opened
@@ -578,6 +649,10 @@ export default {
 <style scoped>
 .grey-label {
 	color: rgb(153, 153, 153);
+}
+.side-by-side-item {
+	display: inline-block;
+	width: 49%;
 }
 .mt-element-list .list-news.ext-1.mt-list-container ul>.mt-list-item:hover, .mt-element-list .list-news.ext-2.mt-list-container ul>.mt-list-item:hover {
 	background-color: white;

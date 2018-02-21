@@ -136,7 +136,7 @@
 		                    	</div>
 		                    	<div class="form-group form-md-line-input form-md-floating-label">
 		                    	    <input type="text" class="form-control input-sm" id="form_control_9" v-model="newStore.api_key">
-		                    	    <label for="form_control_9">Spoonity API Key</label>
+		                    	    <label for="form_control_9">External API Key (optional)</label>
 		                    	</div>
 		                    	<div class="form-group form-md-line-input form-md-floating-label">
 		                    	    <input type="text" class="form-control input-sm" id="form_control_10" v-model="newStore.phone">
@@ -939,8 +939,6 @@ export default {
 					reject('Store display name cannot be blank')
 				} else if (createStoreVue.newStore.internal_id === null) {
 					reject('Store internal id cannot be blank')
-				} else if (!createStoreVue.newStore.api_key) {
-					reject('Third party API key cannot be blank')
 				} else if (typeof createStoreVue.newStore.phone === 'string' && createStoreVue.newStore.phone.length < 10) {
 					reject('Store phone number should have at least 10 digits')
 				} else if ($.isNumeric(createStoreVue.newStore.phone) && createStoreVue.newStore.phone.toString().length < 10) {
