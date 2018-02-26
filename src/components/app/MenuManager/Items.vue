@@ -159,19 +159,24 @@
 		            <div class="mt-element-list margin-top-15" v-if="categoryItems.length">
 		                <div class="mt-list-container list-news ext-1 no-border">
 		                    <ul>
-		                        <li v-for="item in categoryItems" class="mt-list-item actions-at-left margin-top-15" :class="{'no-hover-highlight' : expanded === item.id, 'clickable' : expanded !== item.id, 'animated' : animated === `item-${item.id}`}" :id="'item-' + item.id" @click="expandDetails(item.id)">
-		                        	<div class="list-item-actions">
-		                        		<el-tooltip content="Edit" effect="light" placement="right">
+		                        <li v-for="item in categoryItems" class="mt-list-item margin-top-15" :class="{'no-hover-highlight' : expanded === item.id, 'clickable' : expanded !== item.id, 'animated' : animated === `item-${item.id}`}" :id="'item-' + item.id" @click="expandDetails(item.id)">
+		                        	<div class="margin-bottom-15 actions-on-top">
+		                        		<el-tooltip content="Edit" effect="light" placement="bottom">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="displayEditItemModal(item, $event)">
 	                                            <i class="fa fa-lg fa-pencil"></i>
 	                                        </a>
 		                        		</el-tooltip>
-		                        		<el-tooltip content="Nutrition Info" effect="light" placement="right">
+		                        		<el-tooltip content="Images" effect="light" placement="bottom">
+	                                        <a class="btn btn-circle btn-icon-only btn-default" @click="openImagesModal(item, $event)">
+	                                            <i class="fa fa-lg fa-image"></i>
+	                                        </a>
+		                        		</el-tooltip>
+		                        		<el-tooltip content="Nutrition Info" effect="light" placement="bottom">
 	                                        <a class="btn btn-circle btn-icon-only btn-default" @click="viewNutritionInfo(item, $event)">
 	                                            <i class="fa fa-lg fa-heartbeat"></i>
 	                                        </a>
 		                        		</el-tooltip>
-		                        		<el-tooltip content="Delete" effect="light" placement="right">
+		                        		<el-tooltip content="Delete" effect="light" placement="bottom">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="displayDeleteItemModal(item, $event)">
 	                                            <i class="fa fa-lg fa-trash"></i>
 	                                        </a>
@@ -180,7 +185,7 @@
 		                        	<div class="list-icon-container" v-show="expanded !== item.id">
                                         <i :id="'icon-' + item.id" class="fa fa-angle-right"></i>
                                     </div>
-		                            <div class="list-thumb">
+		                            <div class="list-thumb"  @click="openImagesModal(item, $event)">
 		                                <a v-if="item.image_url.length">
 		                                    <img alt="" :src="item.image_url" />
 		                                </a>
@@ -357,6 +362,16 @@
 			</div>
 		</modal>
 		<!-- ASSIGN ITEM ATTRIBUTES END -->
+
+		<!-- ITEM IMAGES START -->
+		<item-images
+			v-if="displayImagesModal"
+			:item="selectedItem"
+			@closeImagesModal="closeImagesModal"
+			@closeImagesModalAndUpdate="closeImagesModalAndUpdate"
+		>
+		</item-images>
+		<!-- ITEM IMAGES END -->
 	</div>
 </template>
 
@@ -370,6 +385,7 @@ import CategoriesFunctions from '../../../controllers/Categories'
 import ItemsFunctions from '../../../controllers/Items'
 import ItemAttributesFunctions from '../../../controllers/ItemAttributes'
 import EditItem from './Items/EditItem'
+import ItemImages from './Items/ItemImages'
 import DeleteItem from './Items/DeleteItem'
 import NutritionInfo from './Items/NutritionInfo'
 import ModifiersList from './Modifiers/ModifiersList'
@@ -435,7 +451,12 @@ export default {
 			selectAllAttributesSelected: false,
 			assignItemAttributesErrorMessage: '',
 			selectedItemAttributes: [],
-			animated: null
+			animated: null,
+			displayImagesModal: false,
+			loadingImages: false,
+			imagesErrorMessage: '',
+			itemImages: [],
+			selectedImage: {}
 		}
 	},
 	computed: {
@@ -470,6 +491,39 @@ export default {
 		this.listItemAttributes()
 	},
 	methods: {
+		/**
+		 * To view the images of an item.
+		 * @function
+		 * @param {object} item - The selected item
+		 * @param {object} event - The click event that prompted this function.
+		 * @returns {undefined}
+		 */
+		openImagesModal (item, event) {
+			event.stopPropagation()
+			this.selectedItem = item
+			this.displayImagesModal = true
+		},
+		/**
+		 * To close the images modal.
+		 * @function
+		 * @param {object} item - The selected item
+		 * @param {object} event - The click event that prompted this function.
+		 * @returns {undefined}
+		 */
+		closeImagesModal () {
+			this.displayImagesModal = false
+			this.selectedItem = {}
+		},
+		/**
+		 * To close the images modal and refresh the list of items.
+		 * @function
+		 * @returns {undefined}
+		 */
+		closeImagesModalAndUpdate () {
+			this.getCategoryItems()
+			this.displayImagesModal = false
+			this.selectedItem = {}
+		},
 		/**
 		 * To to highlight the recently updated item
 		 * @function
@@ -1209,7 +1263,8 @@ export default {
 		ModifiersList,
 		TagsList,
 		NoResults,
-		GalleryPopup
+		GalleryPopup,
+		ItemImages
 	}
 }
 </script>

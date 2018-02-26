@@ -295,5 +295,128 @@ export default ({
 				}
 			})
 		})
+	},
+	/**
+	 * Call to pitapit API to fetch a list of images for an item.
+	 * @function
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {string} userToken - The token of the current logged in user.
+	 * @param {integer} itemId - The id of the item to fetch the images of.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	getItemImages: function (appId, appSecret, userToken, itemId) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'GET',
+				dataType: 'json',
+				url: '/app/items/' + itemId + '/images',
+				data: {},
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+					xhr.setRequestHeader('auth-token', userToken)
+				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
+	 * Call to pitapit API to create an image for an item.
+	 * @function
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {string} userToken - The token of the current logged in user.
+	 * @param {integer} itemId - The id of the item to fetch the images of.
+	 * @param {object} image - Details of the image to create.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	createItemImage: function (appId, appSecret, userToken, itemId, image) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'POST',
+				dataType: 'json',
+				url: '/app/items/' + itemId + '/images',
+				data: image,
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+					xhr.setRequestHeader('auth-token', userToken)
+				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
+	 * Call to pitapit API to update an image for an item.
+	 * @function
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {string} userToken - The token of the current logged in user.
+	 * @param {integer} itemId - The id of the item to fetch the images of.
+	 * @param {object} image - Details of the image to update.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	updateItemImage: function (appId, appSecret, userToken, itemId, image) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'PUT',
+				dataType: 'json',
+				url: '/app/items/' + itemId + '/images/' + image.id,
+				data: image,
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+					xhr.setRequestHeader('auth-token', userToken)
+				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
+	 * Call to pitapit API to update an image for an item.
+	 * @function
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {string} userToken - The token of the current logged in user.
+	 * @param {integer} itemId - The id of the item to fetch the images of.
+	 * @param {integer} imageId - The id of the image to delete.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	deleteItemImage: function (appId, appSecret, userToken, itemId, imageId) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'DELETE',
+				dataType: 'json',
+				url: '/app/items/' + itemId + '/images/' + imageId,
+				data: {},
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+					xhr.setRequestHeader('auth-token', userToken)
+				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
 	}
 })

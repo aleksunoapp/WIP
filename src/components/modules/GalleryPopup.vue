@@ -1,29 +1,31 @@
 <template>
 	<div>
-		<label>Gallery Folder:</label><br>
-		<el-dropdown trigger="click" @command="selectFolder" size="mini" :show-timeout="50" :hide-timeout="50">
-			<el-button size="mini">
-				{{ activeFolder.name || 'All' }}
-				<i class="el-icon-arrow-down el-icon--right"></i>
-			</el-button>
-			<el-dropdown-menu slot="dropdown">
-				<el-dropdown-item :command="{}">
-					All
-				</el-dropdown-item>
-				<el-dropdown-item v-for="folder in galleryFolders" :command="folder" :key="folder.id">
-					{{ folder.name }}
-				</el-dropdown-item>
-			</el-dropdown-menu>
-		</el-dropdown>
-		<div class="margin-top-30">
-			<label>Images for <span v-if="activeFolder.name">{{ '\'' + activeFolder.name + '\'' }} folder</span><span v-else>all folders</span>:</label>
-		</div>
+		<div class="row">	
+			<div class="col-xs-12 margin-bottom-10">
+				<div class="col-xs-12">
+					<el-dropdown trigger="click" @command="selectFolder" size="mini" :show-timeout="50" :hide-timeout="50">
+						<el-button size="mini">
+							{{ activeFolder.name || 'All Images' }}
+							<i class="el-icon-arrow-down el-icon--right"></i>
+						</el-button>
+						<el-dropdown-menu slot="dropdown">
+							<el-dropdown-item :command="{}">
+								All Images
+							</el-dropdown-item>
+							<el-dropdown-item v-for="folder in galleryFolders" :command="folder" :key="folder.id">
+								{{ folder.name }}
+							</el-dropdown-item>
+						</el-dropdown-menu>
+					</el-dropdown>
+				</div>
+			</div>
+		</div>		
 		<div class="images-container">
 			<loading-screen :show="displayImages" :color="'#2C3E50'" :display="'inline'"></loading-screen>
 			<div v-if="!displayImages">
 				<div class="tiles margin-top-10" v-if="!activeFolder.id">
-		    		<div v-if="allImages.length" class="col-md-4 margin-bottom-30" v-for="image in allImages" :id="'image-' + image.id">
-		        		<div class="tile image selected" @click="selectImage(image)" @dblclick=selectAndEmit(image) :class="{'active': image.id === selectedImage.id}">
+		    		<div v-if="allImages.length" class="col-md-4 center-x" v-for="image in allImages" :id="'image-' + image.id">
+		        		<div class="tile image selected" @click="selectImage(image)" @keyup.enter="selectImage(image)" @dblclick="selectAndEmit(image)" tabindex="0" :class="{'active': image.id === selectedImage.id}">
 		        			<div class="corner" v-if="image.id === selectedImage.id"> </div>
 		        			<div class="check" v-if="image.id === selectedImage.id"> </div>
 		                    <div class="tile-body custom-tile-body">
@@ -40,7 +42,7 @@
 		    	</div>
 		    	<div class="tiles margin-top-10" v-else>
 					<div v-if="folderImages.length" class="col-md-4 margin-bottom-30" v-for="folderImage in folderImages" :id="'folderImage-' + folderImage.id">
-						<div class="tile image selected" @click="selectImage(folderImage)" :class="{'active': folderImage.id === selectedImage.id}">
+						<div class="tile image selected" @click="selectImage(folderImage)" @keyup.enter="selectImage(image)" @dblclick="selectAndEmit(image)" tabindex="0" :class="{'active': folderImage.id === selectedImage.id}">
 			    			<div class="corner" v-if="folderImage.id === selectedImage.id"> </div>
 			    			<div class="check" v-if="folderImage.id === selectedImage.id"> </div>
 			                <div class="tile-body custom-tile-body">
@@ -222,19 +224,20 @@ export default {
 </script>
 
 <style scoped>
-.dropdown-menu {
-	max-height: 300px;
-	overflow-y: auto;
+.center-x {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 }
 .tiles .tile.selected.active {
 	border-color: rgba(55, 183, 217, 1) !important;
 }
 .images-container {
 	min-height: 200px;
-    max-height: 350px;
+    max-height: 400px;
     overflow-x: hidden;
     overflow-y: auto;
-    margin-bottom: 20px;
 }
 .custom-tile-body {
 	display: flex;
