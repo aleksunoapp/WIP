@@ -67,29 +67,16 @@
 				                    	</div>
 				                    	<div class="form-group form-md-line-input form-md-floating-label">
             	                        	<label>Store Timezone:</label><br>
-            	                        	<el-dropdown trigger="click" @command="updateTimezone" size="mini" :show-timeout="50" :hide-timeout="50">
-            	                        		<el-button size="mini">
-            	                        			{{ selectedTimezone || 'Select a Timezone' }}
-            	                        			<i class="el-icon-arrow-down el-icon--right"></i>
-            	                        		</el-button>
-            	                        		<el-dropdown-menu slot="dropdown">
-            	                        			<el-dropdown-item command="America/New_York">
-            	                        				Eastern Time
-            	                        			</el-dropdown-item>
-            	                        			<el-dropdown-item command="America/Chicago">
-            	                        				Central Time
-            	                        			</el-dropdown-item>
-            	                        			<el-dropdown-item command="America/Denver">
-            	                        				Mountain Time
-            	                        			</el-dropdown-item>            	                        			<el-dropdown-item command="America/Los_Angeles">
-            	                        				Pacific Time
-            	                        			</el-dropdown-item>            	                        			<el-dropdown-item command="America/Anchorage">
-            	                        				Alaska Time
-            	                        			</el-dropdown-item>            	                        			<el-dropdown-item command="America/Adak">
-            	                        				Hawaii-Aleutian
-            	                        			</el-dropdown-item>
-            	                        		</el-dropdown-menu>
-            	                        	</el-dropdown>
+											<el-select v-model="storeToBeEdited.timezone" placeholder="Select a timezone" size="mini">
+												<el-option label="Eastern Standard Time" value="Canada/Eastern"></el-option>
+												<el-option label="Atlantic Standard Time" value="Canada/Atlantic"></el-option>
+												<el-option label="Central Standard Time" value="Canada/Central"></el-option>
+												<el-option label="Saskatchewan" value="Canada/Saskatchewan"></el-option>		
+												<el-option label="Mountain Standard Time" value="Canada/Mountain"></el-option>
+												<el-option label="Newfoundland Standard Time" value="Canada/Newfoundland"></el-option>
+												<el-option label="Pacific Standard Time" value="Canada/Pacific"></el-option>
+												<el-option label="Yukon Standard Time" value="Canada/Yukon"></el-option>
+											</el-select>
             	                        </div>
 				                    	<div class="form-group form-md-line-input form-md-floating-label">
 				                    		<label>Store Currency:</label><br>
@@ -202,6 +189,7 @@
     	        	    								<el-switch
     	            	    								ref="delivery"
     	        	    									v-model="metaToBeEdited.delivery"
+    	        	    									:disabled="metaToBeEdited.opening_soon === 1"
     	        	    									active-color="#0c6"
     	        	    									inactive-color="#ff4949"
     	        	    									:active-value="1"
@@ -218,6 +206,7 @@
             	                    	            <td>
             	                    	            	<el-switch
             	                    	            		v-model="metaToBeEdited.current_delivery_status"
+            	                    	            		:disabled="metaToBeEdited.opening_soon === 1"
             	                    	            		active-color="#0c6"
             	                    	            		inactive-color="#ff4949"
             	                    	            		:active-value="1"
@@ -232,7 +221,7 @@
     			                    	        		Delivery Price
     			                    	        	</td>
     			                    	            <td>
-    			                    	            	<input type="text" class="form-control input-sm" v-model="metaToBeEdited.delivery_price">
+    			                    	            	<input type="text" :disabled="metaToBeEdited.opening_soon === 1" class="form-control input-sm" v-model="metaToBeEdited.delivery_price">
     			                    	            </td>
     		                    	            </tr>
     		                    	            <tr>
@@ -240,7 +229,7 @@
     		                    	            		Delivery Radius
     		                    	            	</td>
     		                    	                <td>
-    	                	                    		<el-select v-model="metaToBeEdited.delivery_radius" placeholder="0" size="mini">
+    	                	                    		<el-select v-model="metaToBeEdited.delivery_radius" :disabled="metaToBeEdited.opening_soon === 1" placeholder="0" size="mini">
     	                									<el-option
     	                										v-for="n in 11"
     	                										:key="n"
@@ -255,7 +244,7 @@
     	                    	                		Tax
     	                    	                	</td>
     	                    	                    <td>
-    	                    	                    	<input ref="tax" type="text" class="form-control input-sm" v-model="metaToBeEdited.tax">
+    	                    	                    	<input ref="tax" type="text" :disabled="metaToBeEdited.opening_soon === 1" class="form-control input-sm" v-model="metaToBeEdited.tax">
     	                    	                    </td>
                         	                    </tr>
         										<tr>
@@ -265,6 +254,7 @@
         		                    	            <td>
         		                    	            	<el-switch
         		                    	            		v-model="metaToBeEdited.gift_card"
+        		                    	            		:disabled="metaToBeEdited.opening_soon === 1"
         		                    	            		active-color="#0c6"
         		                    	            		inactive-color="#ff4949"
         		                    	            		:active-value="1"
@@ -281,6 +271,7 @@
     	    	                    	            <td>
     	    	                    	            	<el-switch
     	    	                    	            		v-model="metaToBeEdited.catering"
+    	    	                    	            		:disabled="metaToBeEdited.opening_soon === 1"
     	    	                    	            		active-color="#0c6"
     	    	                    	            		inactive-color="#ff4949"
     	    	                    	            		:active-value="1"
@@ -297,6 +288,7 @@
             	                    	            <td>
             	                    	            	<el-switch
             	                    	            		v-model="metaToBeEdited.current_catering_status"
+            	                    	            		:disabled="metaToBeEdited.opening_soon === 1"
             	                    	            		active-color="#0c6"
             	                    	            		inactive-color="#ff4949"
             	                    	            		:active-value="1"
@@ -313,6 +305,7 @@
             	                    	            <td>
             	                    	            	<el-switch
             	                    	            		v-model="metaToBeEdited.digital_reward"
+            	                    	            		:disabled="metaToBeEdited.opening_soon === 1"
             	                    	            		active-color="#0c6"
             	                    	            		inactive-color="#ff4949"
             	                    	            		:active-value="1"
@@ -329,6 +322,7 @@
     		                    	    		    <td>
     		                    	    		    	<el-switch
     		                    	    		    		v-model="metaToBeEdited.online_ordering"
+    		                    	    		    		:disabled="metaToBeEdited.opening_soon === 1"
     		                    	    		    		active-color="#0c6"
     		                    	    		    		inactive-color="#ff4949"
     		                    	    		    		:active-value="1"
@@ -345,6 +339,7 @@
         	                    	    		    <td>
         	                    	    		    	<el-switch
         	                    	    		    		v-model="metaToBeEdited.current_online_ordering_status"
+        	                    	    		    		:disabled="metaToBeEdited.opening_soon === 1"
         	                    	    		    		active-color="#0c6"
         	                    	    		    		inactive-color="#ff4949"
         	                    	    		    		:active-value="1"
@@ -359,7 +354,7 @@
                     	                        		Merchant ID
                     	                        	</td>
                     	                            <td>
-                    	                            	<input type="text" class="form-control input-sm" v-model="metaToBeEdited.merchant_id">
+                    	                            	<input type="text" :disabled="metaToBeEdited.opening_soon === 1" class="form-control input-sm" v-model="metaToBeEdited.merchant_id">
                     	                            </td>
                 	                            </tr>
                 	                            <tr>
@@ -367,7 +362,7 @@
                 	                            		Merchant Key
                 	                            	</td>
                 	                                <td>
-                	                                	<input type="text" class="form-control input-sm" v-model="metaToBeEdited.merchant_key">
+                	                                	<input type="text" :disabled="metaToBeEdited.opening_soon === 1" class="form-control input-sm" v-model="metaToBeEdited.merchant_key">
                 	                                </td>
     			                    	        </tr>
     			                    	    </tbody>
@@ -596,7 +591,6 @@ export default {
 			displayLocationsDropdown: false,
 			googleSearchResults: [],
 			locationDetails: {},
-			selectedTimezone: '',
 			customText: 'Click on the button above to add holiday hours for this location.',
 			showHolidayHoursModal: false,
 			noProfileData: '',
@@ -877,28 +871,6 @@ export default {
 			}
 		},
 		/**
-		 * To update the value of the timezone.
-		 * @function
-		 * @param {string} val - The selected timezone
-		 * @returns {undefined}
-		 */
-		updateTimezone (val) {
-			this.storeToBeEdited.timezone = val
-			if (val === 'America/New_York') {
-				this.selectedTimezone = 'Eastern Time'
-			} else if (val === 'America/Chicago') {
-				this.selectedTimezone = 'Central Time'
-			} else if (val === 'America/Denver') {
-				this.selectedTimezone = 'Mountain Time'
-			} else if (val === 'America/Los_Angeles') {
-				this.selectedTimezone = 'Pacific Time'
-			} else if (val === 'America/Anchorage') {
-				this.selectedTimezone = 'Alaska Time'
-			} else if (val === 'America/Adak') {
-				this.selectedTimezone = 'Hawaii-Aleutian'
-			}
-		},
-		/**
 		 * To update the value of the store 'currency' field.
 		 * @function
 		 * @param {integer} value - The new value.
@@ -960,15 +932,6 @@ export default {
 			StoresFunctions.getStoreDetails(editStoreVue.$route.params.store_id, editStoreVue.$root.appId, editStoreVue.$root.appSecret).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
 					editStoreVue.storeToBeEdited = response.payload
-					let timezones = {
-						'America/New_York': 'Eastern Time',
-						'America/Chicago': 'Central Time',
-						'America/Denver': 'Mountain Time',
-						'America/Los_Angeles': 'Pacific Time',
-						'America/Anchorage': 'Alaska Time',
-						'America/Adak': 'Hawaii-Aleutian'
-					}
-					editStoreVue.selectedTimezone = timezones[editStoreVue.storeToBeEdited.timezone]
 					editStoreVue.getStoreMeta()
 				}
 				editStoreVue.getStoreGroups()
@@ -1158,7 +1121,9 @@ export default {
 		validateStoreMeta () {
 			var editStoreVue = this
 			return new Promise(function (resolve, reject) {
-				if (editStoreVue.metaToBeEdited.delivery_price === null) {
+				if (editStoreVue.metaToBeEdited.opening_soon === 1) {
+					resolve('Hurray')
+				} else if (editStoreVue.metaToBeEdited.delivery_price === null) {
 					reject('Delivery Price cannot be blank')
 				} else if (editStoreVue.metaToBeEdited.tax === null) {
 					reject('Tax cannot be blank')
@@ -1185,12 +1150,21 @@ export default {
 			editStoreVue.metaToBeEdited.updated_by = editStoreVue.$root.createdBy
 			return editStoreVue.validateStoreMeta()
 			.then(response => {
-				if (typeof editStoreVue.metaToBeEdited.delivery_price === 'undefined') {
-					editStoreVue.metaToBeEdited.delivery_price = 0
+				if (editStoreVue.newStoreMeta.opening_soon === 1) {
+					if (!editStoreVue.newStoreMeta.delivery_price) {
+						editStoreVue.newStoreMeta.delivery_price = 0
+					}
+					if (!editStoreVue.newStoreMeta.tax) {
+						editStoreVue.newStoreMeta.tax = 0
+					}
+					if (!editStoreVue.newStoreMeta.merchant_id) {
+						editStoreVue.newStoreMeta.merchant_id = 0
+					}
+					if (!editStoreVue.newStoreMeta.merchant_key) {
+						editStoreVue.newStoreMeta.merchant_key = 0
+					}
 				}
-				if (typeof editStoreVue.metaToBeEdited.delivery_radius === 'undefined') {
-					editStoreVue.metaToBeEdited.delivery_radius = 0
-				}
+
 				StoresFunctions.updateStoreMeta(editStoreVue.metaToBeEdited, editStoreVue.$route.params.store_id, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						editStoreVue.showSuccessAlert('Store metas')
