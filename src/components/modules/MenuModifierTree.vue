@@ -4,18 +4,26 @@
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
 			</button>
-			<h4 class="modal-title center">Select Items for {{ selectedObject.name }}</h4>
+			<h4 class="modal-title center">Select Items<span v-if="selectedObject.name"> for {{ selectedObject.name }}</span></h4>
 		</div>
 		<div slot="modal-body" class="modal-body">
 			<div class="portlet light bordered height-mod">
 				<div class="portlet-body">
   					<div class="col-md-12">
-		        		<div class="alert alert-danger" v-if="errorMessage.length">
-		        		    <button class="close" data-close="alert" @click="clearError()"></button>
-		        		    <span>{{errorMessage}}</span>
+  						<div class="alert alert-danger" v-show="errorMessage.length" ref="errorMessage">
+  						    <button class="close" @click="clearError('errorMessage')"></button>
+  						    <span>{{errorMessage}}</span>
+  						</div>
+		        		<div class="alert alert-danger" v-show="internalErrorMessage.length" ref="internalErrorMessage">
+		        		    <button class="close" @click="clearError('internalErrorMessage')"></button>
+		        		    <span>{{internalErrorMessage}}</span>
+		        		</div>
+		        		<div class="alert alert-info center margin-top-20" v-if="$root.activeLocation.id === undefined">
+		        		    <h4>No Store Selected</h4>
+		        		    <p>Please select a store from the stores panel on the right to view Menus and Modifiers.</p>
 		        		</div>
 		        	</div>
-					<tabset :active="activeTab">
+					<tabset :active="activeTab" v-show="$root.activeLocation.id !== undefined">
 						<tab header="Menu Items">
 							<div class="col-md-4">
 								<h4>Menus</h4>
@@ -52,7 +60,9 @@
 							    </div>
 							</div>
 							<div class="col-md-4" v-if="isCategorySelected">
-								<h4><input type="checkbox" @change="selectAllMenuItems()" class="md-check" v-model="selectAllMenuItemsSelected"> {{ activeCategory.name }} - Items</h4>
+								<h4>
+									<i class="fa check clickable" @click="selectAllMenuItems()" :class="{'fa-check-square checked': selectAllMenuItemsSelected, 'fa-square-o unchecked': !selectAllMenuItemsSelected}" aria-hidden="true"></i>
+									{{ activeCategory.name }} - Items</h4>
 								<div class="dd" id="nestable_list_3" v-if="items.length">
 							        <ol class="dd-list">
 							            <li class="dd-item" v-for="item in items" :data-id="item.id">
@@ -92,7 +102,9 @@
 	                            </div>
 							</div>
 							<div class="col-md-6" v-if="isModifierCategorySelected">
-								<h4><input type="checkbox" @change="selectAllModifierItems()" class="md-check" v-model="selectAllModifierItemsSelected"> {{ activeModifier.name }} - Items</h4>
+								<h4>
+									<i class="fa check clickable" @click="selectAllModifierItems()" :class="{'fa-check-square checked': selectAllModifierItemsSelected, 'fa-square-o unchecked': !selectAllMenuItemsSelected}" aria-hidden="true"></i>
+									{{ activeModifier.name }} - Items</h4>
 								<div class="dd" id="nestable_list_3" v-if="modifierItems.length">
 	                                <ol class="dd-list">
 	                                    <li class="dd-item" v-for="item in modifierItems" :data-id="item.id">
@@ -118,7 +130,8 @@
 			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button type="button" class="btn btn-primary" @click="applySelectedItems()">Save</button>
+			<button type="button" class="btn btn-primary" @click="applySelectedItems()" v-show="$root.activeLocation.id !== undefined">Save</button>
+			<button type="button" class="btn btn-default" @click="closeModal()" v-show="$root.activeLocation.id === undefined">Close</button>
 		</div>
 	</modal>
 </template>
@@ -132,7 +145,7 @@ import ItemsFunctions from '../../controllers/Items'
 import ModifiersFunctions from '../../controllers/Modifiers'
 import Tab from '../modules/Tab'
 import Tabset from '../modules/Tabset'
-import RewardsFunctions from '../../controllers/Rewards'
+import ajaxErrorHandler from '../../controllers/ErrorController'
 
 export default {
 	data () {
@@ -144,8 +157,6 @@ export default {
 			modifiers: [],
 			modifierItems: [],
 			isMenuSelected: false,
-			selectAllMenuItemsSelected: false,
-			selectAllModifierItemsSelected: false,
 			isCategorySelected: false,
 			activeMenu: {},
 			activeCategory: {},
@@ -153,13 +164,33 @@ export default {
 			activeModifier: {},
 			activeTab: 0,
 			selectedSKUs: [],
-			errorMessage: ''
+			internalErrorMessage: '',
+			menuAll: false,
+			modifierAll: false
 		}
 	},
 	props: {
 		selectedObject: {
 			type: Object,
-			default: () => { return {} }
+			default: () => ({skuArray: []})
+		},
+		errorMessage: {
+			type: String,
+			default: () => ''
+		}
+	},
+	computed: {
+		selectAllMenuItemsSelected () {
+			if (this.items.length) {
+				return !this.items.some(item => !item.selected)
+			}
+			return false
+		},
+		selectAllModifierItemsSelected () {
+			if (this.modifierItems.length) {
+				return !this.modifierItems.some(item => !item.selected)
+			}
+			return false
 		}
 	},
 	created () {
@@ -168,7 +199,9 @@ export default {
 	},
 	mounted () {
 		this.showMenuModifierTreeModal = true
-		this.selectedObject.sku_array.forEach(sku => this.selectedSKUs.push(sku))
+		if (this.selectedObject.skuArray) {
+			this.selectedObject.skuArray.forEach(sku => this.selectedSKUs.push(sku))
+		}
 	},
 	methods: {
 		/**
@@ -220,11 +253,7 @@ export default {
 			modifierTreeVue.modifierItems = []
 			return ModifiersFunctions.getModifierCategoryItems(modifierTreeVue.activeModifier.id, modifierTreeVue.$root.appId, modifierTreeVue.$root.appSecret).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
-					let all = true
 					response.payload.forEach(item => {
-						if (!modifierTreeVue.selectedSKUs.includes(item.sku)) {
-							all = false
-						}
 						modifierTreeVue.selectedSKUs.forEach(previous => {
 							if (item.sku === previous) {
 								item.selected = true
@@ -233,17 +262,16 @@ export default {
 							}
 						})
 					})
-					modifierTreeVue.selectAllModifierItemsSelected = all
 					modifierTreeVue.modifierItems = response.payload
+					modifierTreeVue.modifierAll = Boolean(modifierTreeVue.selectAllModifierItemsSelected)
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					modifierTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch modifier items',
+					errorName: 'internalErrorMessage',
+					vue: modifierTreeVue
+				})
 			})
 		},
 		/**
@@ -259,13 +287,12 @@ export default {
 					modifierTreeVue.modifiers = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					modifierTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch modifier categories',
+					errorName: 'internalErrorMessage',
+					vue: modifierTreeVue
+				})
 			})
 		},
 		/**
@@ -289,13 +316,12 @@ export default {
 					menuTreeVue.menus = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					menuTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch menus',
+					errorName: 'internalErrorMessage',
+					vue: menuTreeVue
+				})
 			})
 		},
 		/**
@@ -311,13 +337,12 @@ export default {
 					menuTreeVue.categories = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					menuTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch menu categories',
+					errorName: 'internalErrorMessage',
+					vue: menuTreeVue
+				})
 			})
 		},
 		/**
@@ -330,11 +355,7 @@ export default {
 			menuTreeVue.items = []
 			return ItemsFunctions.getCategoryItemsFull(menuTreeVue.activeCategory.id, menuTreeVue.$root.appId, menuTreeVue.$root.appSecret).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
-					let all = true
 					response.payload.forEach(item => {
-						if (!menuTreeVue.selectedSKUs.includes(item.sku)) {
-							all = false
-						}
 						menuTreeVue.selectedSKUs.forEach(previous => {
 							if (item.sku === previous) {
 								item.selected = true
@@ -343,17 +364,16 @@ export default {
 							}
 						})
 					})
-					menuTreeVue.selectAllMenuItemsSelected = all
 					menuTreeVue.items = response.payload
+					menuTreeVue.menuAll = Boolean(menuTreeVue.selectAllMenuItemsSelected)
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					menuTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch menu items',
+					errorName: 'internalErrorMessage',
+					vue: menuTreeVue
+				})
 			})
 		},
 		/**
@@ -390,7 +410,6 @@ export default {
 			this.activeCategory = category
 			this.isCategorySelected = true
 			this.getItemsForActiveCategory()
-			this.selectAllMenuItemsSelected = false
 		},
 		/**
 		 * To select all or deselect all items
@@ -398,10 +417,11 @@ export default {
 		 * @returns {undefined}
 		 */
 		selectAllMenuItems () {
-			var menuTreeVue = this
-			for (var i = 0; i < menuTreeVue.items.length; i++) {
-				var item = menuTreeVue.items[i]
-				menuTreeVue.$set(item, 'selected', this.selectAllMenuItemsSelected)
+			console.log('selectAllMenuItems')
+			this.menuAll = !this.menuAll
+			for (var i = 0; i < this.items.length; i++) {
+				var item = this.items[i]
+				this.$set(item, 'selected', this.menuAll)
 				const index = this.selectedSKUs.indexOf(item.sku)
 				if (index !== -1) {
 					this.selectedSKUs.splice(index, 1)
@@ -416,10 +436,10 @@ export default {
 		 * @returns {undefined}
 		 */
 		selectAllModifierItems () {
-			var menuTreeVue = this
-			for (var i = 0; i < menuTreeVue.modifierItems.length; i++) {
-				var item = menuTreeVue.modifierItems[i]
-				menuTreeVue.$set(item, 'selected', this.selectAllModifierItemsSelected)
+			this.modifierAll = !this.modifierAll
+			for (var i = 0; i < this.modifierItems.length; i++) {
+				var item = this.modifierItems[i]
+				this.$set(item, 'selected', this.modifierAll)
 				const index = this.selectedSKUs.indexOf(item.sku)
 				if (index !== -1) {
 					this.selectedSKUs.splice(index, 1)
@@ -427,7 +447,6 @@ export default {
 					this.selectedSKUs.push(item.sku)
 				}
 			}
-			console.log('ran')
 		},
 		/**
 		 * To determine which function to call based on the update type passed in by the parent as a prop.
@@ -435,48 +454,16 @@ export default {
 		 * @returns {undefined}
 		 */
 		applySelectedItems () {
-			var editRewardItemVue = this
-			editRewardItemVue.clearError()
-			editRewardItemVue.selectedObject.updated_by = editRewardItemVue.$root.createdBy
-			editRewardItemVue.selectedObject.sku = editRewardItemVue.selectedSKUs
-			editRewardItemVue.selectedObject.reward_item_id = editRewardItemVue.selectedObject.id
-
-			RewardsFunctions.updateRewardItemDetails(editRewardItemVue.selectedObject, editRewardItemVue.$root.appId, editRewardItemVue.$root.appSecret, editRewardItemVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					editRewardItemVue.$emit('closeMenuModifierTreeModalAndUpdate', {id: editRewardItemVue.selectedObject.id, selectedSKUs: editRewardItemVue.selectedSKUs})
-					editRewardItemVue.showAlert()
-				} else {
-					editRewardItemVue.errorMessage = response.message
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editRewardItemVue.$router.push('/login/expired')
-					return
-				}
-				editRewardItemVue.errorMessage = reason
-				window.scrollTo(0, 0)
-			})
-		},
-		/**
-		 * To alert the user that the menu has been successfully created.
-		 * @function
-		 * @returns {undefined}
-		 */
-		showAlert () {
-			this.$swal({
-				title: 'Success!',
-				text: 'Items successfully applied',
-				type: 'success',
-				confirmButtonText: 'OK'
-			})
+			this.$emit('closeMenuModifierTreeModalAndUpdate', {selectedSKUs: this.selectedSKUs})
 		},
 		/**
 		 * To clear the current error.
 		 * @function
+		 * @param {string} errorName - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
+		clearError (errorName) {
+			this[errorName] = ''
 		}
 	},
 	components: {
@@ -506,14 +493,7 @@ export default {
     background: #fff;
 }
 .check {
-	color: rgb(46, 168, 229);
+	color: rgb(46, 168, 229); 
 	margin-right: 2px;
-}
-
-.checked {
-	color: rgb(46, 168, 229);
-}
-.unchecked {
-	color: rgb(51, 51, 51);
 }
 </style>

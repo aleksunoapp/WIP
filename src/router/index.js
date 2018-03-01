@@ -29,6 +29,8 @@ import Printers from '../components/app/Printers/Printers'
 import Gallery from '../components/app/Gallery'
 import GalleryImages from '../components/app/GalleryImages'
 import StoreGroups from '../components/app/StoreManager/StoreGroups'
+import BaseRule from '../components/app/Loyalty/BaseRule'
+import PromotionRules from '../components/app/Loyalty/PromotionRules'
 import Rewards from '../components/app/Rewards'
 import Promocodes from '../components/app/Promocodes'
 import RewardItems from '../components/app/RewardItems'
@@ -66,8 +68,11 @@ const router = new Router({
 				{path: 'printers', component: Printers, name: 'Printers', meta: { adminOnly: false }},
 				{path: 'gallery', component: Gallery, name: 'Gallery', meta: { adminOnly: false }},
 				{path: 'gallery/:folder_id/images', component: GalleryImages, name: 'Gallery Images', meta: { adminOnly: false }},
-				{path: 'rewards', component: Rewards, name: 'Rewards', meta: { adminOnly: true }},
-				{path: 'rewards/:reward_id/items', component: RewardItems, name: 'Reward Items', meta: { adminOnly: true }},
+				{path: 'loyalty', redirect: 'loyalty/base_rule', meta: { adminOnly: true }},
+				{path: 'loyalty/base_rule', component: BaseRule, name: 'Base Rule', meta: { adminOnly: true }},
+				{path: 'loyalty/promotion_rules', component: PromotionRules, name: 'Promotion Rules', meta: { adminOnly: true }},
+				{path: 'loyalty/rewards', component: Rewards, name: 'Rewards', meta: { adminOnly: true }},
+				{path: 'loyalty/rewards/:reward_id/items', component: RewardItems, props: true, name: 'Reward Items', meta: { adminOnly: true }},
 				{path: 'promocodes', component: Promocodes, name: 'Promocodes', meta: { adminOnly: true }},
 				{path: 'promotions', component: Promotions, name: 'Promotions', meta: { adminOnly: true }},
 				{path: 'promotions/geolocations', component: Geolocations, name: 'Geolocations', meta: { adminOnly: true }},

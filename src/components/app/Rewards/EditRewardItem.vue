@@ -7,33 +7,56 @@
 			<h4 class="modal-title center">Edit Reward Item - {{ passedRewardItem.name }}</h4>
 		</div>
 		<div slot="modal-body" class="modal-body">
-			<div class="alert alert-danger" v-if="errorMessage.length">
-			    <button class="close" data-close="alert" @click="clearError()"></button>
-			    <span>{{errorMessage}}</span>
-			</div>
-			<div class="form-group form-md-line-input form-md-floating-label">
-			    <input type="text" class="form-control input-sm edited" id="form_control_1" v-model="rewardItemToBeEdited.name">
-			    <label for="form_control_1">Reward Item Name</label>
-			</div>
-			<div class="form-group form-md-line-input form-md-floating-label">
-			    <input type="text" class="form-control input-sm edited" id="form_control_2" v-model="rewardItemToBeEdited.points">
-			    <label for="form_control_2">Reward Item Points</label>
-			</div>
-			<div class="form-group form-md-line-input form-md-floating-label">
-			    <input type="text" class="form-control input-sm edited" id="form_control_3" v-model="rewardItemToBeEdited.spoonity_reward_id">
-			    <label for="form_control_3">Reward Item Spoonity ID</label>
-			</div>
-			<div class="form-group form-md-line-input form-md-floating-label">
-			    <label>Reward Item Expiry</label><br>
-			    <el-date-picker 
-			    	v-model="expiry" 
-			    	type="datetime" 
-			    	format="yyyy-MM-dd" 
-			    	value-format="yyyy-MM-dd" 
-			    	:clearable="false" 
-			    	placeholder="Pick an expiry date">
-			    </el-date-picker>
-			</div>
+			<div class="row">
+				<div class="col-md-12">
+	        		<div class="alert alert-danger" v-show="errorMessage.length" ref="errorMessage">
+	        		    <button class="close" data-close="alert" @click.prevent="clearError('errorMessage')"></button>
+	        		    <span>{{errorMessage}}</span>
+	        		</div>
+	        	</div>
+        		<div class="col-md-12">
+					<div class="form-group form-md-line-input form-md-floating-label">
+					    <input type="text" class="form-control input-sm" :class="{'edited': rewardItemToBeEdited.name.length}" id="form_control_1" v-model="rewardItemToBeEdited.name">
+					    <label for="form_control_1">Reward Item Name</label>
+					</div>
+					<div class="side-by-side-item">
+						<div class="form-group form-md-line-input form-md-floating-label">
+						    <input type="text" class="form-control input-sm" :class="{'edited': rewardItemToBeEdited.value.length}" id="form_control_2" v-model="rewardItemToBeEdited.value">
+						    <label for="form_control_2">Reward Item Value</label>
+						</div>
+					</div>
+					<el-select class="side-by-side-item margin-top-15" v-model="rewardItemToBeEdited.value_type" placeholder="Select type" size="small">
+						<el-option label="$" value="dollar"></el-option>
+						<el-option label="%" value="percentage"></el-option>
+					</el-select>
+					<div class="side-by-side-item margin-top-15">
+						from:
+						<el-date-picker 
+							v-model="rewardItemToBeEdited.start_on" 
+							type="date" 
+							format="yyyy-MM-dd" 
+							value-format="yyyy-MM-dd" 
+							:clearable="false" 
+							placeholder="Select start date">
+						</el-date-picker>
+					</div>
+					<div class="side-by-side-item margin-top-15">
+						to:
+						<el-date-picker 
+							v-model="rewardItemToBeEdited.expiry" 
+							type="date" 
+							format="yyyy-MM-dd" 
+							value-format="yyyy-MM-dd" 
+							:clearable="false" 
+							placeholder="Select end date">
+						</el-date-picker>
+					</div>
+					<div class="form-group form-md-line-input form-md-floating-label margin-top-15">
+					    <input type="text" class="form-control input-sm" id="form_control_3" :class="{'edited': rewardItemToBeEdited.points.length}" v-model="rewardItemToBeEdited.points">
+					    <label for="form_control_3">Reward Item Points</label>
+					</div>
+        		</div>
+        	</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
 			<button type="button" class="btn btn-primary" @click="updateRewardItemDetails()">Save</button>
@@ -45,12 +68,24 @@
 import $ from 'jquery'
 import Modal from '../../modules/Modal'
 import RewardsFunctions from '../../../controllers/Rewards'
+import ajaxErrorHandler from '../../../controllers/ErrorController'
 
 export default {
 	data () {
 		return {
 			showRewardItemModal: false,
-			rewardItemToBeEdited: {},
+			rewardItemToBeEdited: {
+				id: null,
+				sku: [],
+				points: '',
+				loyalty_reward_id: this.$router.passedTier.loyalty_reward_id,
+				name: '',
+				value: '',
+				expiry: '',
+				start_on: '',
+				value_type: '', // 'dollar','percentage'
+				created_by: this.$root.createdBy
+			},
 			errorMessage: '',
 			expiry: ''
 		}
@@ -65,17 +100,11 @@ export default {
 		this.showRewardItemModal = true
 		if (this.passedRewardItem && this.passedRewardItem.id) {
 			this.expiry = this.passedRewardItem.expiry
-			this.rewardItemToBeEdited.created_by = this.passedRewardItem.created_by
-			this.rewardItemToBeEdited.id = this.passedRewardItem.id
-			this.rewardItemToBeEdited.expiry = this.passedRewardItem.expiry
-			this.rewardItemToBeEdited.name = this.passedRewardItem.name
-			this.rewardItemToBeEdited.percentage = this.passedRewardItem.percentage
-			this.rewardItemToBeEdited.points = this.passedRewardItem.points
-			this.rewardItemToBeEdited.reward_id = this.passedRewardItem.reward_id
-			this.rewardItemToBeEdited.sku = this.passedRewardItem.sku
-			this.rewardItemToBeEdited.sku_array = this.passedRewardItem.sku_array
-			this.rewardItemToBeEdited.spoonity_reward_id = this.passedRewardItem.spoonity_reward_id
-			this.rewardItemToBeEdited.value = this.passedRewardItem.value
+			this.rewardItemToBeEdited = {
+				...this.passedRewardItem,
+				points: String(this.passedRewardItem.points),
+				value: String(this.passedRewardItem.value)
+			}
 		}
 		$(document).off('click', '.el-date-editor')
 		$(document).on('click', '.el-date-editor', function () {
@@ -97,8 +126,6 @@ export default {
 					reject('Value should be a number')
 				} else if (!$.isNumeric(editRewardItemVue.rewardItemToBeEdited.points)) {
 					reject('Points should be a number')
-				} else if (!editRewardItemVue.rewardItemToBeEdited.spoonity_reward_id) {
-					reject('Spoonity ID cannot be blank')
 				} else if (!editRewardItemVue.expiry) {
 					reject('Expiry date connot be blank')
 				}
@@ -168,12 +195,12 @@ export default {
 						editRewardItemVue.errorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						editRewardItemVue.$router.push('/login/expired')
-						return
-					}
-					editRewardItemVue.errorMessage = reason
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not update this item',
+						errorName: 'errorMessage',
+						vue: editRewardItemVue
+					})
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message
@@ -204,3 +231,9 @@ export default {
 	}
 }
 </script>
+<style scoped>
+.side-by-side-item {
+	display: inline-block;
+	width: 49%;
+}
+</style>

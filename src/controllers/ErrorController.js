@@ -15,7 +15,11 @@ export default function ajaxErrorHandler ({reason, errorText = 'Something went w
 			return
 		}
 		// Show error message from backend
-		vue[errorName.toString()] = reason.responseJSON.message
+		if (reason.responseJSON.message.length) {
+			vue[errorName.toString()] = reason.responseJSON.message
+			return
+		}
+		vue[errorName.toString()] = errorText
 	} catch (error) {
 		// Any other error (unknown)
 		try {
