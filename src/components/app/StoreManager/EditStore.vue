@@ -247,6 +247,14 @@
     	                    	                    	<input ref="tax" type="text" :disabled="metaToBeEdited.opening_soon === 1" class="form-control input-sm" v-model="metaToBeEdited.tax">
     	                    	                    </td>
                         	                    </tr>
+    	                    	                <tr>
+    	                    	                	<td>
+    	                    	                		GST Number
+    	                    	                	</td>
+    	                    	                    <td>
+    	                    	                    	<input type="text" class="form-control input-sm" v-model="metaToBeEdited.gst_number">
+    	                    	                    </td>
+                        	                    </tr>
         										<tr>
         		                    	        	<td>
         		                    	        		Gift Cards
