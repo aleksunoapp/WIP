@@ -237,6 +237,12 @@
 										<span class="title">Attributes</span>
 									</router-link>
 								</li>
+								<li class="nav-item" v-bind:class="{'active': currentRoute === 'menu_manager' && currentSubRoute === 'amenities'}" id="menu_manager_amenities_link">
+									<router-link to="/app/menu_manager/amenities" class="nav-link">
+										<i class="fa fa-wifi"></i>
+										<span class="title">Amenities</span>
+									</router-link>
+								</li>
 							</ul>
 						</li>
 						<li class="nav-item" v-bind:class="{'active': currentRoute === 'printers'}" id="printers_link">

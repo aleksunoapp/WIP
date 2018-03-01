@@ -18,6 +18,7 @@ import Options from '../components/app/MenuManager/Options'
 import OptionItems from '../components/app/MenuManager/OptionItems'
 import ModifierItems from '../components/app/MenuManager/ModifierItems'
 import ItemAttributes from '../components/app/MenuManager/ItemAttributes'
+import Amenities from '../components/app/MenuManager/Amenities'
 import UserList from '../components/app/UserManager/UserList'
 import UserProfile from '../components/app/UserManager/UserProfile'
 import UserGroups from '../components/app/UserManager/UserGroups'
@@ -82,6 +83,7 @@ const router = new Router({
 				{path: 'menu_manager/options/:option_id/option_items', name: 'OptionItems', component: OptionItems, meta: { adminOnly: false }},
 				{path: 'menu_manager/modifier_items/:modifier_id', name: 'Modifier Items', component: ModifierItems, children: [{path: 'edit_modifier_item/:modifier_item_id', name: 'Edit Modifier Item'}], meta: { adminOnly: false }},
 				{path: 'menu_manager/item_attributes', name: 'Item Attributes', component: ItemAttributes, meta: { adminOnly: false }},
+				{path: 'menu_manager/amenities', name: 'Amenities', component: Amenities, meta: { adminOnly: false }},
 				// roles manager routes
 				{path: 'admin', redirect: 'admin/brand_admins', meta: { adminOnly: true }},
 				{path: 'admin/brand_admins', name: 'Brand Admins', component: BrandAdmins, meta: { adminOnly: true }},
