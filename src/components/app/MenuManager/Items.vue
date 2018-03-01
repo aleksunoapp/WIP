@@ -109,6 +109,10 @@
 							    <label for="form_control_2">Item Description</label>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
+							    <input type="text" class="form-control input-sm" :class="{'edited': newItem.short_description.length}" id="form_control_2" v-model="newItem.short_description">
+							    <label for="form_control_2">Item Short Description</label>
+							</div>
+							<div class="form-group form-md-line-input form-md-floating-label">
 							    <input type="text" class="form-control input-sm" :class="{'edited': newItem.price.length}" id="form_control_3" v-model="newItem.price">
 							    <label for="form_control_3">Item Price</label>
 							</div>			
@@ -202,13 +206,15 @@
 		                                	<span>{{ item.price }}</span><br>
 		                                	<strong>SKU:</strong>
 		                                	<span>{{ item.sku }}</span><br>
+		                                	<strong>Status:</strong>
+		                                	<span v-if="item.status == 1">Available</span>
+		                                	<span v-if="item.status == 0">Sold Out</span><br>
 		                                </div>
 	                                	<div class="col-md-4">
-	                                    	<strong>Status:</strong>
-	                                    	<span v-if="item.status == 1">Available</span>
-	                                    	<span v-if="item.status == 0">Sold Out</span><br>
                                         	<strong>Description:</strong>
-                                        	<span>{{ item.desc }}</span>
+                                        	<span>{{ item.desc }}</span><br>
+                                        	<strong>Short description:</strong>
+                                        	<span>{{ item.short_description }}</span>
 	                                    </div>
 		                            </div>
                                     <div class="row" :class="{'mt-list-item-expanded' : expanded === item.id, 'mt-list-item-collapsed' : expanded !== item.id}">
@@ -423,6 +429,7 @@ export default {
 				category_id: this.$route.params.category_id,
 				name: '',
 				desc: '',
+				short_description: '',
 				sku: '',
 				image_url: '',
 				user_id: this.$root.createdBy,
@@ -658,6 +665,7 @@ export default {
 		copyItem (item) {
 			this.newItem.name = item.name
 			this.newItem.desc = item.desc
+			this.newItem.short_description = item.short_description
 			this.newItem.sku = item.sku
 			this.newItem.image_url = item.image_url
 			this.newItem.status = item.status
@@ -719,6 +727,8 @@ export default {
 					reject('Item name cannot be blank')
 				} else if (!addItemVue.newItem.desc.length) {
 					reject('Item description cannot be blank')
+				} else if (!addItemVue.newItem.short_description.length) {
+					reject('Item short description cannot be blank')
 				} else if (!addItemVue.newItem.sku.length) {
 					reject('Item SKU cannot be blank')
 				} else if (!addItemVue.newItem.price.length) {
@@ -1083,6 +1093,7 @@ export default {
 				category_id: this.$route.params.category_id,
 				name: '',
 				desc: '',
+				short_description: '',
 				sku: '',
 				image_url: '',
 				user_id: this.$root.createdBy,

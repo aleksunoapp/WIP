@@ -103,14 +103,16 @@
 		                    	</div>
 		                    	<div class="form-group form-md-line-input form-md-floating-label">
 		                        	<label>Store Timezone:</label><br>
-    	                        	<el-select v-model="newStore.timezone" placeholder="Select a timezone" size="mini">
-										<el-option label="Eastern Time" value="America/New_York"></el-option>
-										<el-option label="Central Time" value="America/Chicago"></el-option>
-										<el-option label="Mountain Time" value="America/Denver"></el-option>		
-										<el-option label="Pacific Time" value="America/Los_Angeles"></el-option>
-										<el-option label="Alaska Time" value="America/Anchorage"></el-option>
-										<el-option label="Hawaii-Aleutian" value="America/Adak"></el-option>
-    	                        	</el-select>
+		                        	<el-select v-model="newStore.timezone" placeholder="Select a timezone" size="mini">
+		                        		<el-option label="Eastern Standard Time" value="Canada/Eastern"></el-option>
+		                        		<el-option label="Atlantic Standard Time" value="Canada/Atlantic"></el-option>
+		                        		<el-option label="Central Standard Time" value="Canada/Central"></el-option>
+		                        		<el-option label="Saskatchewan" value="Canada/Saskatchewan"></el-option>		
+		                        		<el-option label="Mountain Standard Time" value="Canada/Mountain"></el-option>
+		                        		<el-option label="Newfoundland Standard Time" value="Canada/Newfoundland"></el-option>
+		                        		<el-option label="Pacific Standard Time" value="Canada/Pacific"></el-option>
+		                        		<el-option label="Yukon Standard Time" value="Canada/Yukon"></el-option>
+		                        	</el-select>
 		                        </div>
 		                        <div class="form-group form-md-line-input form-md-floating-label">
 		                    		<label>Store Currency:</label><br>
@@ -212,6 +214,7 @@
         	                    	            	<el-switch
 	        	                    	            	ref="openingSoon"
         	                    	            		v-model="newStoreMeta.opening_soon"
+        	                    	            		@change="disableMetaForm()"
         	                    	            		active-color="#0c6"
         	                    	            		inactive-color="#ff4949"
         	                    	            		:active-value="1"
@@ -229,6 +232,7 @@
 	        	    								<el-switch
 	            	    								ref="delivery"
 	        	    									v-model="newStoreMeta.delivery"
+	        	    									:disabled="newStoreMeta.opening_soon === 1"
 	        	    									active-color="#0c6"
 	        	    									inactive-color="#ff4949"
 	        	    									:active-value="1"
@@ -245,6 +249,7 @@
         	                    	            <td>
         	                    	            	<el-switch
         	                    	            		v-model="newStoreMeta.current_delivery_status"
+        	                    	            		:disabled="newStoreMeta.opening_soon === 1"
         	                    	            		active-color="#0c6"
         	                    	            		inactive-color="#ff4949"
         	                    	            		:active-value="1"
@@ -259,7 +264,7 @@
 			                    	        		Delivery Price
 			                    	        	</td>
 			                    	            <td>
-			                    	            	<input type="text" class="form-control input-sm" v-model="newStoreMeta.delivery_price">
+			                    	            	<input type="text" class="form-control input-sm" :disabled="newStoreMeta.opening_soon === 1" v-model="newStoreMeta.delivery_price">
 			                    	            </td>
 		                    	            </tr>
 		                    	            <tr>
@@ -267,7 +272,7 @@
 		                    	            		Delivery Radius
 		                    	            	</td>
 		                    	                <td>
-	                	                    		<el-select v-model="newStoreMeta.delivery_radius" placeholder="0" size="mini">
+	                	                    		<el-select v-model="newStoreMeta.delivery_radius" :disabled="newStoreMeta.opening_soon === 1" placeholder="0" size="mini">
 	                									<el-option
 	                										v-for="n in 11"
 	                										:key="n"
@@ -282,7 +287,7 @@
 	                    	                		Tax
 	                    	                	</td>
 	                    	                    <td>
-	                    	                    	<input ref="tax" type="text" class="form-control input-sm" v-model="newStoreMeta.tax">
+	                    	                    	<input ref="tax" type="text" :disabled="newStoreMeta.opening_soon === 1" class="form-control input-sm" v-model="newStoreMeta.tax">
 	                    	                    </td>
                     	                    </tr>
     										<tr>
@@ -292,6 +297,7 @@
     		                    	            <td>
     		                    	            	<el-switch
     		                    	            		v-model="newStoreMeta.gift_card"
+    		                    	            		:disabled="newStoreMeta.opening_soon === 1"
     		                    	            		active-color="#0c6"
     		                    	            		inactive-color="#ff4949"
     		                    	            		:active-value="1"
@@ -308,6 +314,7 @@
 	    	                    	            <td>
 	    	                    	            	<el-switch
 	    	                    	            		v-model="newStoreMeta.catering"
+	    	                    	            		:disabled="newStoreMeta.opening_soon === 1"
 	    	                    	            		active-color="#0c6"
 	    	                    	            		inactive-color="#ff4949"
 	    	                    	            		:active-value="1"
@@ -324,6 +331,7 @@
         	                    	            <td>
         	                    	            	<el-switch
         	                    	            		v-model="newStoreMeta.current_catering_status"
+        	                    	            		:disabled="newStoreMeta.opening_soon === 1"
         	                    	            		active-color="#0c6"
         	                    	            		inactive-color="#ff4949"
         	                    	            		:active-value="1"
@@ -340,6 +348,7 @@
         	                    	            <td>
         	                    	            	<el-switch
         	                    	            		v-model="newStoreMeta.digital_reward"
+        	                    	            		:disabled="newStoreMeta.opening_soon === 1"
         	                    	            		active-color="#0c6"
         	                    	            		inactive-color="#ff4949"
         	                    	            		:active-value="1"
@@ -356,6 +365,7 @@
 		                    	    		    <td>
 		                    	    		    	<el-switch
 		                    	    		    		v-model="newStoreMeta.online_ordering"
+		                    	    		    		:disabled="newStoreMeta.opening_soon === 1"
 		                    	    		    		active-color="#0c6"
 		                    	    		    		inactive-color="#ff4949"
 		                    	    		    		:active-value="1"
@@ -372,6 +382,7 @@
     	                    	    		    <td>
     	                    	    		    	<el-switch
     	                    	    		    		v-model="newStoreMeta.current_online_ordering_status"
+    	                    	    		    		:disabled="newStoreMeta.opening_soon === 1"
     	                    	    		    		active-color="#0c6"
     	                    	    		    		inactive-color="#ff4949"
     	                    	    		    		:active-value="1"
@@ -386,7 +397,7 @@
                 	                        		Merchant ID
                 	                        	</td>
                 	                            <td>
-                	                            	<input type="text" class="form-control input-sm" v-model="newStoreMeta.merchant_id">
+                	                            	<input type="text" class="form-control input-sm" :disabled="newStoreMeta.opening_soon === 1" v-model="newStoreMeta.merchant_id">
                 	                            </td>
             	                            </tr>
             	                            <tr>
@@ -394,7 +405,7 @@
             	                            		Merchant Key
             	                            	</td>
             	                                <td>
-            	                                	<input type="text" class="form-control input-sm" v-model="newStoreMeta.merchant_key">
+            	                                	<input type="text" class="form-control input-sm" :disabled="newStoreMeta.opening_soon === 1" v-model="newStoreMeta.merchant_key">
             	                                </td>
 			                    	        </tr>
 			                    	    </tbody>
@@ -708,7 +719,7 @@ export default {
 			},
 			displayLocationsDropdown: false,
 			locationDetails: {},
-			activeTab: 0,
+			activeTab: 1,
 			createStoreMode: 'info',
 			newStoreId: 0,
 			newStoreMeta: {
@@ -828,6 +839,9 @@ export default {
 		this.$refs.name.focus()
 	},
 	methods: {
+		disableMetaForm () {
+
+		},
 		/**
 		 * To move to the selected step
 		 * @function
@@ -1224,7 +1238,9 @@ export default {
 		validateStoreMetaData () {
 			var createStoreVue = this
 			return new Promise(function (resolve, reject) {
-				if (createStoreVue.newStoreMeta.delivery_price === null) {
+				if (createStoreVue.newStoreMeta.opening_soon === 1) {
+					resolve('Hurray')
+				} else if (createStoreVue.newStoreMeta.delivery_price === null) {
 					reject('Delivery Price cannot be blank')
 				} else if (createStoreVue.newStoreMeta.tax === null) {
 					reject('Tax cannot be blank')
@@ -1247,6 +1263,21 @@ export default {
 
 			return createStoreVue.validateStoreMetaData()
 			.then(response => {
+				if (createStoreVue.newStoreMeta.opening_soon === 1) {
+					if (!createStoreVue.newStoreMeta.delivery_price) {
+						createStoreVue.newStoreMeta.delivery_price = 0
+					}
+					if (!createStoreVue.newStoreMeta.tax) {
+						createStoreVue.newStoreMeta.tax = 0
+					}
+					if (!createStoreVue.newStoreMeta.merchant_id) {
+						createStoreVue.newStoreMeta.merchant_id = 0
+					}
+					if (!createStoreVue.newStoreMeta.merchant_key) {
+						createStoreVue.newStoreMeta.merchant_key = 0
+					}
+				}
+
 				StoresFunctions.createStoreMeta(createStoreVue.newStoreId, createStoreVue.newStoreMeta, createStoreVue.$root.appId, createStoreVue.$root.appSecret, createStoreVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						createStoreVue.activeTab = 2

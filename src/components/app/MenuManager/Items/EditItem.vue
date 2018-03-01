@@ -35,6 +35,10 @@
 					    <label for="form_control_3">Item Description</label>
 					</div>
 					<div class="form-group form-md-line-input form-md-floating-label">
+					    <input type="text" class="form-control input-sm edited" id="form_control_3" v-model="itemToBeEdited.short_description">
+					    <label for="form_control_3">Item Description</label>
+					</div>
+					<div class="form-group form-md-line-input form-md-floating-label">
 					    <input type="text" class="form-control input-sm edited" id="form_control_4" v-model="itemToBeEdited.price">
 					    <label for="form_control_4">Item Price</label>
 					</div>
@@ -144,6 +148,8 @@ export default {
 					reject('Item name cannot be blank')
 				} else if (!editItemVue.itemToBeEdited.desc.length) {
 					reject('Item description cannot be blank')
+				} else if (!editItemVue.itemToBeEdited.short_description.length) {
+					reject('Item short description cannot be blank')
 				} else if (!editItemVue.itemToBeEdited.price.length) {
 					reject('Item price cannot be blank')
 				} else if (!editItemVue.itemToBeEdited.sku.length) {
