@@ -290,6 +290,14 @@
 	                    	                    	<input ref="tax" type="text" :disabled="newStoreMeta.opening_soon === 1" class="form-control input-sm" v-model="newStoreMeta.tax">
 	                    	                    </td>
                     	                    </tr>
+	                    	                <tr>
+	                    	                	<td>
+	                    	                		GST Number
+	                    	                	</td>
+	                    	                    <td>
+	                    	                    	<input type="text" class="form-control input-sm" v-model="newStoreMeta.gst_number">
+	                    	                    </td>
+                    	                    </tr>
     										<tr>
     		                    	        	<td>
     		                    	        		Gift Cards
@@ -723,6 +731,7 @@ export default {
 			createStoreMode: 'info',
 			newStoreId: 0,
 			newStoreMeta: {
+				gst_number: '',
 				opening_soon: 0,
 				gift_card: 0,
 				digital_reward: 0,
@@ -1044,6 +1053,7 @@ export default {
 			this.storeMetaError = ''
 			this.storeHoursError = ''
 			this.newStoreMeta = {
+				gst_number: '',
 				opening_soon: 0,
 				gift_card: 0,
 				digital_reward: 0,
