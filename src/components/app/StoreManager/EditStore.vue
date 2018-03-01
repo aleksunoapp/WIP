@@ -737,7 +737,6 @@ import NoResults from '../../modules/NoResults'
 import AddHolidayHours from './AddHolidayHours'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
 import { debounce } from 'lodash'
-import ajaxErrorHandler from '../../../controllers/ErrorController'
 
 /**
  * Define the email pattern to check for valid emails.

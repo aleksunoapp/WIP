@@ -719,7 +719,7 @@ export default {
 			},
 			displayLocationsDropdown: false,
 			locationDetails: {},
-			activeTab: 1,
+			activeTab: 0,
 			createStoreMode: 'info',
 			newStoreId: 0,
 			newStoreMeta: {
