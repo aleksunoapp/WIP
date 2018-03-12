@@ -188,6 +188,27 @@
 								<span class="selected"></span>
 							</router-link>
 						</li>
+						<li class="nav-item" v-bind:class="{'active': currentRoute === 'tax_manager'}" id="tax_manager_link">
+							<router-link to="/app/tax_manager" class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
+								<i class="fa fa-calculator"></i>
+								<span class="title">Tax Manager</span>
+								<span class="arrow"></span>
+							</router-link>
+							<ul class="sub-menu">
+								<li class="nav-item" v-bind:class="{'active': currentRoute === 'tax_manager' && currentSubRoute === 'tax_classes'}" id="tax_manager_tax_classes_link">
+									<router-link to="/app/tax_manager/tax_classes" class="nav-link">
+										<i class="fa fa-bar-chart"></i>
+										<span class="title">Tax Classes</span>
+									</router-link>
+								</li>
+								<li class="nav-item" v-bind:class="{'active': currentRoute === 'tax_manager' && currentSubRoute === 'item_types'}" id="tax_manager_item_types_link">
+									<router-link to="/app/tax_manager/item_types" class="nav-link">
+										<i class="fa fa-glass"></i>
+										<span class="title">Item Types</span>
+									</router-link>
+								</li>
+							</ul>
+						</li>
 						<li class="nav-item" v-bind:class="{'active': currentRoute === 'menu_manager'}" id="menu_manager_link">
 							<router-link to="/app/menu_manager/menus" class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
 								<i class="fa fa-cutlery"></i>

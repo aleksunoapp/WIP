@@ -7,6 +7,10 @@ import StoreList from '../components/app/StoreManager/StoreList'
 import EditStore from '../components/app/StoreManager/EditStore'
 import NewsFeed from '../components/app/NewsFeed'
 import SocialFeed from '../components/app/SocialFeed'
+// Tax Manager
+import TaxClasses from '../components/app/TaxManager/TaxClasses'
+import ItemTypes from '../components/app/TaxManager/ItemTypes'
+// Menu Manager
 import Menus from '../components/app/MenuManager/Menu'
 import Categories from '../components/app/MenuManager/Categories'
 import Items from '../components/app/MenuManager/Items'
@@ -76,6 +80,13 @@ const router = new Router({
 				{path: 'promocodes', component: Promocodes, name: 'Promocodes', meta: { adminOnly: true }},
 				{path: 'promotions', component: Promotions, name: 'Promotions', meta: { adminOnly: true }},
 				{path: 'promotions/geolocations', component: Geolocations, name: 'Geolocations', meta: { adminOnly: true }},
+
+				// Tax Manager
+				{path: 'tax_manager', redirect: 'tax_manager/tax_classes', meta: { adminOnly: false }},
+				{path: 'tax_manager/tax_classes', name: 'Tax Classes', component: TaxClasses, meta: { adminOnly: false }},
+				{path: 'tax_manager/item_types', name: 'Item Types', component: ItemTypes, meta: { adminOnly: false }},
+
+				// Menu Manager
 				{path: 'menu_manager', redirect: 'menu_manager/menus', meta: { adminOnly: false }},
 				{path: 'menu_manager/menus', name: 'Menus', component: Menus, meta: { adminOnly: false }},
 				{path: 'menu_manager/menu_tiers', name: 'MenuTiers', component: MenuTiers, children: [{path: 'edit_menu_tier/:menu_tier_id', name: 'Edit Menu Tier'}], meta: { adminOnly: false }},

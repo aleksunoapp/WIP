@@ -523,15 +523,23 @@ export default ({
 	 * Call to API to get a list of Item Types for this location.
 	 * @function
 	 * @param {integer} storeId - The id of the selected store.
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {string} userToken - The auth token of the logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	getItemTypes (storeId) {
+	getItemTypes (storeId, appId, appSecret, userToken) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'GET',
 				dataType: 'json',
 				url: '/app/locations/itemtypes/' + storeId,
 				data: {},
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('auth-token', userToken)
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+				},
 				success: function (response) {
 					resolve(response)
 				},
@@ -545,15 +553,23 @@ export default ({
 	 * Call to API to get a list of Tax Classes for this location.
 	 * @function
 	 * @param {integer} storeId - The id of the selected store.
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {string} userToken - The auth token of the logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	getTaxClasses (storeId) {
+	getTaxClasses (storeId, appId, appSecret, userToken) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'GET',
 				dataType: 'json',
 				url: '/app/locations/taxclass/' + storeId,
 				data: {},
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('auth-token', userToken)
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+				},
 				success: function (response) {
 					resolve(response)
 				},
