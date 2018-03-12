@@ -38,6 +38,12 @@
 									<input type="text" class="form-control input-sm" id="form_control_email" v-model="newStoreAppUser.email" :class="{'edited': newStoreAppUser.email.length}">
 									<label for="form_control_email">Email</label>
 								</div>
+								<div>
+									<button type="button" class="btn blue btn-outline" @click="assignStoreToStoreAppUser(newStoreAppUser, 'new')">Select a location</button>
+									<span class="grey-inline-label" v-if="newStoreAppUser.location_id">Selected {{selectedNewLocationName}}</span>
+								</div>
+							</div>
+							<div class="col-md-6">
 								<div class="form-group form-md-line-input form-md-floating-label">
 									<div class="input-group" v-show="passwordMasked">
 										<input type="password" class="form-control input-sm" id="form_control_password_masked" v-model="newStoreAppUser.password" :class="{'edited': newStoreAppUser.password.length}">
@@ -70,14 +76,12 @@
 										</span>
 									</div>
 								</div>
-								<div>		        				
-									<button type="button" class="btn blue btn-outline" @click="assignStoreToStoreAppUser(newStoreAppUser, 'new')">Select a location</button>
-									<p class="grey-label margin-top-10" v-if="newStoreAppUser.location_id">Selected {{selectedNewLocationName}}</p>
-								</div>
 							</div>
 						</div>
-						<div class="form-actions right">
-							<button type="submit" class="btn blue">Create</button>
+						<div class="row">
+							<div class="col-md-12">
+								<button type="submit" class="btn blue pull-right">Create</button>
+							</div>
 						</div>
 					</form>
 				</div>
@@ -360,6 +364,10 @@
 							<input type="text" class="form-control input-sm" id="form_control_edited_name" v-model="storeAppUserToBeEdited.name" :class="{'edited': storeAppUserToBeEdited.name.length}">
 							<label for="form_control_edited_name">Name </label>
 						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm" id="form_control_edited_password" v-model="storeAppUserToBeEdited.password" :class="{'edited': storeAppUserToBeEdited.password.length}">
+							<label for="form_control_edited_password">Password </label>
+						</div>
 						<div>		        				
 							<button type="button" class="btn blue btn-outline" @click="assignStoreToStoreAppUser(storeAppUserToBeEdited, 'existing')">Select a location</button>
 							<p class="grey-label margin-top-10" v-if="storeAppUserToBeEdited.location_id">Selected {{selectedEditedLocationName}}</p>
@@ -479,6 +487,7 @@ export default {
 			editErrorMessage: '',
 			storeAppUserToBeEdited: {
 				name: '',
+				password: '',
 				email: '',
 				location_id: 0,
 				is_active: 1
@@ -777,6 +786,7 @@ export default {
 		 */
 		editStoreAppUser (storeAppUser) {
 			this.storeAppUserToBeEdited.name = storeAppUser.name
+			this.storeAppUserToBeEdited.password = ''
 			this.storeAppUserToBeEdited.email = storeAppUser.email
 			this.storeAppUserToBeEdited.is_active = storeAppUser.is_active
 			this.storeAppUserToBeEdited.location_id = storeAppUser.location_id
@@ -903,6 +913,7 @@ export default {
 			this.storeAppUserToBeEdited = {
 				name: '',
 				email: '',
+				password: '',
 				location_id: 0,
 				is_active: 1
 			}
@@ -1145,5 +1156,9 @@ export default {
 .form-md-line-input-trimmed {
 	padding-top:0 !important;
 	margin-bottom:0 !important;
+}
+.grey-inline-label {
+	color: #555;
+	margin: 0 0 0 10px;
 }
 </style>

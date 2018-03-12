@@ -45,6 +45,8 @@
 	      						    <input type="text" class="form-control input-sm" id="form_control_phone" v-model="newOMAUser.phone" :class="{'edited': newOMAUser.phone.length}">
 	      						    <label for="form_control_phone">Phone</label>
 	      						</div>
+	      					</div>
+	      					<div class="col-md-6">
 	      						<div class="form-group form-md-line-input form-md-floating-label">
 	      							<div class="input-group" v-show="passwordMasked">
 		      						    <input type="password" class="form-control input-sm" id="form_control_password_masked" v-model="newOMAUser.password" :class="{'edited': newOMAUser.password.length}">
@@ -83,8 +85,10 @@
 			        			</div>
 	      					</div>
 	      				</div>
-	      				<div class="form-actions right">
-	      					<button type="button" @click="createOMAUser()" class="btn blue">Create</button>
+	      				<div class="row">
+	      					<div class="col-md-12">
+	      						<button type="button" @click="createOMAUser()" class="btn blue pull-right">Create</button>
+	      					</div>
 	      				</div>
 	      			</form>
 	      		</div>

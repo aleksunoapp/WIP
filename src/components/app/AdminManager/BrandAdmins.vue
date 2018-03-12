@@ -42,6 +42,8 @@
 	      						    <input type="text" class="form-control input-sm" id="form_control_email" v-model="newBrandAdmin.email" :class="{'edited': newBrandAdmin.email.length}">
 	      						    <label for="form_control_email">Email</label>
 	      						</div>
+      						</div>
+      						<div class="col-md-6">
 	      						<div class="form-group form-md-line-input form-md-floating-label">
 	      							<div class="input-group" v-show="passwordMasked">
 		      						    <input type="password" class="form-control input-sm" id="form_control_password_masked" v-model="newBrandAdmin.password" :class="{'edited': newBrandAdmin.password.length}">
@@ -76,8 +78,10 @@
 	      						</div>
 	      					</div>
 	      				</div>
-	      				<div class="form-actions right">
-	      					<button type="submit" class="btn blue">Create</button>
+	      				<div class="row">
+	      					<div class="col-md-12">
+	      						<button type="submit" class="btn blue pull-right">Create</button>	
+	      					</div>
 	      				</div>
 	      			</form>
 	      		</div>
