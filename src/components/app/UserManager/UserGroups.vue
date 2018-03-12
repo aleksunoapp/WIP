@@ -112,7 +112,7 @@
 							<div class="caption-desc font-grey-cascade">Click on a group to send a message to its members.</div>
 						</div>
 					</div>
-					<div class="portlet-body">
+					<div class="portlet-body relative-block">
 						<div class="mt-element-list">
 								<div class="clearfix margin-bottom-10">
 									<el-dropdown trigger="click" @command="updateSortByOrder" size="mini" :show-timeout="50" :hide-timeout="50">
@@ -131,7 +131,7 @@
 									</el-dropdown>
 					  				<page-results class="pull-right" :totalResults="totalResults" :activePage="activePage" @pageResults="resultsPerPageUpdate"></page-results>
 								</div>
-							<div class="mt-list-container list-news relative-block">
+							<div class="mt-list-container list-news">
 								<loading-screen :show="loadingGroupsData" :color="'#2C3E50'" :display="'inline'"></loading-screen>
 								<ul v-show="groups.length && !loadingGroupsData">
 									<li class="mt-list-item actions-at-left margin-top-15 clickable" v-for="group in groups" @click="sendMessageToGroup(group)" :id="'group-' + group.id">
@@ -165,14 +165,13 @@
 								<pagination :passedPage="activePage" :numPages="numPages" @activePageChange="activePageUpdate"></pagination>
 							</div>
 						</div>
+						<div v-if="!groups.length && !loadingGroupsData">
+							<no-results :show="!groups.length" :type="'store groups'"></no-results>
+						</div>
 					</div>
 				</div>
 			</div>
 			<!-- LIST END -->
-
-			<div v-if="!groups.length && !loadingGroupsData">
-				<no-results :show="!groups.length" :type="'store groups'"></no-results>
-			</div>
 		</div>
 
 		<!-- PANEL COMPONENTS END -->
