@@ -518,5 +518,49 @@ export default ({
 				}
 			})
 		})
+	},
+	/**
+	 * Call to API to get a list of Item Types for this location.
+	 * @function
+	 * @param {integer} storeId - The id of the selected store.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	getItemTypes (storeId) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'GET',
+				dataType: 'json',
+				url: '/app/locations/itemtypes/' + storeId,
+				data: {},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
+	 * Call to API to get a list of Tax Classes for this location.
+	 * @function
+	 * @param {integer} storeId - The id of the selected store.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	getTaxClasses (storeId) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'GET',
+				dataType: 'json',
+				url: '/app/locations/taxclass/' + storeId,
+				data: {},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
 	}
 })
