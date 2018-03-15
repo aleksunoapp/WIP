@@ -153,5 +153,95 @@ export default ({
 				}
 			})
 		})
+	},
+	/**
+	 * Call to pitapit API to get hours for a category.
+	 * @function
+	 * @param {integer} categoryId - The id of the category to get hours for.
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {string} userToken - The token of the current logged in user.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	getCategoryHours: function (categoryId, appId, appSecret, userToken) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'GET',
+				dataType: 'json',
+				url: '/app//categoryHours/forCategory/' + categoryId,
+				data: {},
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('auth-token', userToken)
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
+	 * Call to pitapit API to create hours for a category.
+	 * @function
+	 * @param {object} hours - The object containing hours to add.
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {string} userToken - The token of the current logged in user.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	createCategoryHours: function (hours, appId, appSecret, userToken) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'POST',
+				dataType: 'json',
+				url: '/app/categoryHours/create',
+				data: hours,
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('auth-token', userToken)
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
+	 * Call to pitapit API to update hours for a category.
+	 * @function
+	 * @param {object} hours - The object containing hours to add.
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {string} userToken - The token of the current logged in user.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	updateCategoryHours: function (hours, appId, appSecret, userToken) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'POST',
+				dataType: 'json',
+				url: '/app/categoryHours/update/' + hours.category_id,
+				data: hours,
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('auth-token', userToken)
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
 	}
 })
