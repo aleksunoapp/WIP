@@ -95,13 +95,18 @@
 		            <div class="mt-element-list margin-top-15" v-if="menuCategories.length">
 		                <div class="mt-list-container list-news ext-1 no-border">
 		                    <ul v-for="category in menuCategories">
-		                        <li class="mt-list-item actions-at-left margin-top-15 clickable" :id="'category-' + category.id" @click="determineNextAction(category)">
-		                        	<div class="list-item-actions">
+		                        <li class="mt-list-item margin-top-15 clickable" :id="'category-' + category.id" @click="determineNextAction(category)">
+		                        	<div class="margin-bottom-15 actions-on-top">
 		                        		<el-tooltip content="Edit" effect="light" placement="right">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editCategory(category, $event)">
 	                                            <i class="fa fa-lg fa-pencil"></i>
 	                                        </a>
 		                        		</el-tooltip>
+	                                    <el-tooltip content="Category Hours" effect="light" placement="top">
+		                                    <a class="btn btn-circle btn-icon-only btn-default" @click="showHoursModal(menu, $event)">
+		                                        <i class="fa fa-lg fa-clock-o"></i>
+		                                    </a>
+	                                    </el-tooltip>
 		                        		<el-tooltip content="Add subcategory" effect="light" placement="right">
 	                                        <a class="btn btn-circle btn-icon-only btn-default" @click="displayAddSubCategoryModal(category, $event)">
 	                                            <i class="fa fa-lg fa-plus"></i>
@@ -208,6 +213,7 @@
         <edit-sub-category v-if="editSubCategoryModalActive" @updateSubCategory="updateSubCategory" @deactivateEditSubCategoryModal="closeEditSubCategoryModal"></edit-sub-category>
         <delete-category v-if="deleteCategoryModalActive" :passedCategoryId="passedCategoryId" @closeDeleteCategoryModal="closeDeleteCategoryModal" @deleteCategoryAndCloseModal="deleteCategoryAndCloseModal"></delete-category>
         <delete-sub-category v-if="deleteSubCategoryModalActive" :passedSubCategoryId="passedSubCategoryId" @closeDeleteSubCategoryModal="closeDeleteSubCategoryModal" @deleteSubCategoryAndCloseModal="deleteSubCategoryAndCloseModal"></delete-sub-category>
+        <category-hours></category-hours>
         <modal :show="showGalleryModal" effect="fade" @closeOnEscape="closeGalleryModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closeGalleryModal()">
@@ -269,7 +275,9 @@ export default {
 				order: null,
 				parent_category: 0
 			},
-			showGalleryModal: false
+			showGalleryModal: false,
+			hoursModalActive: false,
+			categoryToAssignHoursTo: {}
 		}
 	},
 	watch: {
@@ -284,6 +292,18 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * To display the modal for category hours.
+		 * @function
+		 * @param {object} category - The selected category
+		 * @param {object} event - The click event that prompted this function.
+		 * @returns {undefined}
+		 */
+		showHoursModal (category, event) {
+			event.stopPropagation()
+			this.categoryToAssignHoursTo = category
+			this.hoursModalActive = true
+		},
 		/**
 		 * To close the gallery popup.
 		 * @function
@@ -777,5 +797,8 @@ export default {
 <style scoped>
 .mt-element-list .list-news.ext-1.mt-list-container ul > .sub-mt-list-item:hover {
 	background-color: #fff;
+}
+.actions-on-top {
+	margin-top: -5px;
 }
 </style>
