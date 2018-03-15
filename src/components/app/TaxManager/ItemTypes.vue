@@ -24,8 +24,14 @@
 					<a :class="{'expand': !createNewCollapse, 'collapse': createNewCollapse}"></a>
 				</div>
 			</div>
-			<div class="portlet-body" :class="{'display-hide': createNewCollapse}">
-				<form role="form" @submit.prevent="createItemType()">
+			<div class="portlet-body relative-block" :class="{'display-hide': createNewCollapse}">
+				<div class="col-md-12" v-show="activeLocationId === undefined">
+					<div class="alert center alert-info">
+						<h4>No Store Selected</h4>
+						<p>Please select a store from the stores panel on the right to create an item type.</p>
+					</div>
+				</div>
+				<form role="form" @submit.prevent="createItemType()" v-show="activeLocationId !== undefined">
 					<div class="row">
 						<div class="col-md-12">
 							<div class="alert alert-danger" v-show="createErrorMessage.length" ref="createErrorMessage">
@@ -65,12 +71,6 @@
 					</div>
 				</div>
 				<div class="portlet-body relative-block">
-					<div class="col-md-12" v-show="activeLocationId === undefined">
-						<div class="alert center alert-info">
-							<h4>No Store Selected</h4>
-							<p>Please select a store from the stores panel on the right to view and manage its item types.</p>
-						</div>
-					</div>
 					<loading-screen :show="loadingItemTypes && activeLocationId !== undefined" :color="'#2C3E50'" :display="'inline'"></loading-screen>
 					<div class="mt-element-list margin-top-15" v-if="itemTypes.length && !loadingItemTypes">
 						<div class="mt-list-container list-news ext-1 no-border">
