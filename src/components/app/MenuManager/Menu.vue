@@ -81,6 +81,21 @@
 	                            	inactive-text="No">
 	                            </el-switch>
 	                        </div>
+							<el-date-picker 
+								v-model="newMenu.start_from" 
+								:editable="false"
+								type="date" 
+								format="yyyy-MM-dd" 
+								value-format="yyyy-MM-dd" 
+								placeholder="From"></el-date-picker>
+							-
+							<el-date-picker 
+								v-model="newMenu.stop_on" 
+								:editable="false"
+								type="date" 
+								format="yyyy-MM-dd" 
+								value-format="yyyy-MM-dd" 
+								placeholder="To"></el-date-picker>
 							<button v-if="newMenu.addon === 1" type="submit" class="btn blue btn-outline" @click="selectAddOnCategories(newMenu, $event)">Select add-on categories</button>
 							<p class="grey-label margin-top-10" v-if="newMenu.addon.length">Selected {{newMenu.addon.length}} <span v-if="newMenu.addon.length === 1">category</span><span v-else>categories</span></p>
 	            			<div class="form-group form-md-line-input form-md-floating-label">
@@ -179,12 +194,18 @@
 		                            	<span>{{ menu.name }}</span>
 		                            </div>
 		                            <div class="list-item-content row">
-		                            	<div class="col-md-8">
+		                            	<div class="col-md-4">
 		                            		<strong>Description:</strong>
 		                            		<span>{{ menu.desc }}</span><br>
 		                            		<strong>Status:</strong>
 		                            		<span v-if="menu.status == 1">Available</span>
 		                            		<span v-if="menu.status == 0">Sold Out</span>
+		                            	</div>
+		                            	<div class="col-md-4" v-show="menu.start_from || menu.stop_on">
+		                            		<strong>From:</strong>
+		                            		<span>{{ menu.start_from }}</span><br>
+		                            		<strong>To:</strong>
+		                            		<span>{{ menu.stop_on }}</span><br>
 		                            	</div>
 		                            </div>
 		                        </li>
@@ -261,7 +282,9 @@ export default {
 				min: '',
 				max: '',
 				sku: '',
-				order: null
+				order: null,
+				start_from: '',
+				stop_on: ''
 			},
 			createMenuCollapse: true,
 			showGalleryModal: false,
@@ -457,7 +480,9 @@ export default {
 				min: '',
 				max: '',
 				sku: '',
-				order: null
+				order: null,
+				start_from: '',
+				stop_on: ''
 			}
 		},
 		/**
@@ -576,6 +601,10 @@ export default {
 					reject('Menu description cannot be blank')
 				} else if (!createMenuVue.newMenu.sku.length) {
 					reject('Menu SKU cannot be blank')
+				} else if (createMenuVue.newMenu.start_from.length && !createMenuVue.newMenu.stop_on.length) {
+					reject('Please provide an end date')
+				} else if (!createMenuVue.newMenu.start_from.length && createMenuVue.newMenu.stop_on.length) {
+					reject('Please provide a start date')
 				} else if (createMenuVue.newMenu.catering && !createMenuVue.newMenu.min) {
 					reject('Minimum order value cannot be blank')
 				} else if (createMenuVue.newMenu.catering && !createMenuVue.newMenu.max) {
