@@ -168,8 +168,8 @@ export default ({
 			GlobalFunctions.$ajax({
 				method: 'POST',
 				dataType: 'json',
-				url: '/app/item_type/' + id + '/taxclass',
-				data: {},
+				url: '/app/item_type/' + id + '/syncTaxclass',
+				data: taxClasses,
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
 					xhr.setRequestHeader('app-id', appId)

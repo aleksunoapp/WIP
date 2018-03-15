@@ -75,11 +75,16 @@
 					<div class="mt-element-list margin-top-15" v-if="itemTypes.length && !loadingItemTypes">
 						<div class="mt-list-container list-news ext-1 no-border">
 							<ul>
-								<li class="mt-list-item actions-at-left margin-top-15" v-for="itemType in itemTypes" :id="'itemType-' + itemType.id" :key="itemType.id">
+								<li class="mt-list-item actions-at-left margin-top-15 three-vertical-actions" v-for="itemType in itemTypes" :id="'itemType-' + itemType.id" :key="itemType.id">
 									<div class="list-item-actions">
 										<el-tooltip content="Edit" effect="light" placement="right">
 											<a class="btn btn-circle btn-icon-only btn-default" @click="editItemType(itemType, $event)">
 												<i class="fa fa-lg fa-pencil"></i>
+											</a>
+										</el-tooltip>
+										<el-tooltip content="Apply Tax Classes" effect="light" placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default" @click="openApplyModal(itemType, $event)">
+												<i class="icon-layers"></i>
 											</a>
 										</el-tooltip>
 										<el-tooltip content="Delete" effect="light" placement="right">
@@ -88,8 +93,11 @@
 											</a>
 										</el-tooltip>
 									</div>
-									<div class="list-datetime bold uppercase font-red height-mod">
+									<div class="col-md-12 bold uppercase font-red">
 										<span>{{ itemType.name }}</span>
+									</div>
+									<div class="col-md-6">
+										<strong></strong>
 									</div>
 								</li>
 							</ul>
@@ -135,6 +143,62 @@
 		</modal>
 		<!-- END EDIT -->
 
+		<!-- START APPLY -->
+		<modal :show="showApplyModal" effect="fade" @closeOnEscape="closeApplyModal">
+			<div slot="modal-header" class="modal-header">
+				<button type="button" class="close" @click="closeApplyModal()">
+					<span>&times;</span>
+				</button>
+				<h4 class="modal-title center">Apply Tax Classes</h4>
+			</div>
+			<div slot="modal-body" class="modal-body">
+				<div class="alert alert-danger" v-show="applyErrorMessage.length" ref="applyErrorMessage">
+					<button class="close" @click.prevent="clearError('applyErrorMessage')"></button>
+					<span>{{ applyErrorMessage }}</span>
+				</div>
+				<div class="alert alert-info center margin-top-20" v-show="!loadingTaxClasses && !taxClasses.length && !applyErrorMessage.length">
+					<h4>No Tax Classes</h4>
+					<p>No tax classes for this location yet. <router-link to="/app/tax_manager/tax_classes">Create the first one here.</router-link></p>
+				</div>
+		        <table class="table">
+		        	<thead>
+		        		<tr>
+		        			<th class="table-column--checkboxes">
+		        				<div class="md-checkbox has-success" @change="selectAll()">
+		        					<input type="checkbox" id="locations-promocodes" class="md-check" :checked="selectAllSelected">
+		        					<label for="locations-promocodes">
+		        						<span class="inc"></span>
+		        						<span class="check"></span>
+		        						<span class="box"></span>
+		        					</label>
+		        				</div>
+		        			</th>
+		        			<th> Name </th>
+		        		</tr>
+		        	</thead>
+		            <tbody>
+		                <tr v-for="taxClass in taxClasses">
+		                	<td>
+		                		<div class="md-checkbox has-success">
+	                                <input type="checkbox" :id="'checkbox_' + taxClass.id" class="md-check" v-model="taxClass.selected">
+	                                <label :for="'checkbox_' + taxClass.id">
+	                                    <span class="inc"></span>
+	                                    <span class="check"></span>
+	                                    <span class="box"></span>
+	                                </label>
+	                            </div>
+		                	</td>
+		                    <td> {{taxClass.name}} </td>
+		                </tr>
+		            </tbody>
+		        </table>
+			</div>
+			<div slot="modal-footer" class="modal-footer clear">
+				<button @click="applyTaxClassesToItemType()" type="submit" class="btn blue">Apply</button>
+			</div>
+		</modal>
+		<!-- END APPLY -->
+
 		<!-- START DELETE -->
 		<modal :show="showDeleteModal" effect="fade" @closeOnEscape="closeDeleteModal">
 			<div slot="modal-header" class="modal-header">
@@ -158,6 +222,7 @@
 import Breadcrumb from '../../modules/Breadcrumb'
 import LoadingScreen from '../../modules/LoadingScreen'
 import ItemTypesFunctions from '../../../controllers/ItemTypes'
+import TaxClassesFunctions from '../../../controllers/TaxClasses'
 import Modal from '../../modules/Modal'
 import NoResults from '../../modules/NoResults'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
@@ -189,12 +254,24 @@ export default {
 			deleteErrorMessage: '',
 			itemTypeToDelete: {
 				name: ''
-			}
+			},
+
+			loadingTaxClasses: false,
+			taxClasses: [],
+			applyErrorMessage: '',
+			itemTypeToAssignTo: {},
+			showApplyModal: false
 		}
 	},
 	computed: {
 		activeLocationId: function () {
 			return this.$root.activeLocation.id
+		},
+		selectAllSelected () {
+			if (this.taxClasses.length) {
+				return this.taxClasses.filter(taxClass => taxClass.selected).length > 0
+			}
+			return false
 		}
 	},
 	watch: {
@@ -477,6 +554,167 @@ export default {
 		 */
 		closeDeleteModal () {
 			this.showDeleteModal = false
+		},
+		/**
+		 * To show the modal to assign Tax Classes to an Item Type.
+		 * @function
+		 * @param {object} itemType - The selected item type.
+		 * @param {object} event - The click event that prompted this function.
+		 * @returns {undefined}
+		 */
+		openApplyModal (itemType, event) {
+			event.stopPropagation()
+			this.itemTypeToAssignTo = {...itemType}
+			let _this = this
+			Promise.all([_this.getTaxClasses(), _this.getTaxClassesForItemType()]).then(response => {
+				if (_this.itemTypeToAssignTo.taxclasses) {
+					_this.taxClasses.forEach(taxClass => {
+						let included = _this.itemTypeToAssignTo.taxclasses.filter(globalTaxClass =>
+							globalTaxClass.id === taxClass.id)
+						if (included.length) {
+							taxClass.selected = true
+						}
+					})
+				}
+			}).catch(reason => {
+				_this.applyErrorMessage = 'Something went wrong ...'
+			})
+			this.showApplyModal = true
+		},
+		/**
+		 * To get a list of all tax classes.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getTaxClasses () {
+			this.loadingTaxClasses = true
+			this.taxClasses = []
+			var _this = this
+			return TaxClassesFunctions.getTaxClasses(_this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
+			.then(response => {
+				if (response.code === 200 && response.status === 'ok') {
+					_this.loadingTaxClasses = false
+					_this.taxClasses = response.payload.map(taxClass => {
+						taxClass.selected = false
+						return taxClass
+					})
+					console.log(_this.taxClasses)
+				} else {
+					_this.loadingTaxClasses = false
+				}
+			}).catch(reason => {
+				_this.loadingTaxClasses = false
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch the list of tax classes',
+					errorName: 'applyErrorMessage',
+					vue: _this
+				})
+			})
+		},
+		/**
+		 * To get a list of all item types.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getTaxClassesForItemType () {
+			var _this = this
+			return ItemTypesFunctions.getTaxClassesForItemType(_this.itemTypeToAssignTo.id, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
+			.then(response => {
+				if (response.code === 200 && response.status === 'ok') {
+					_this.itemTypeToAssignTo = response.payload
+				} else {
+					_this.applyErrorMessage = response.message
+					_this.$scrollTo(_this.$refs.applyErrorMessage, 1000, { offset: -50 })
+				}
+			}).catch(reason => {
+				_this.loadingItemTypes = false
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch the list of item types',
+					errorName: 'listErrorMessage',
+					vue: _this
+				})
+			})
+		},
+		validateTaxClassesToApply () {
+			var _this = this
+			return new Promise(function (resolve, reject) {
+				if (!_this.taxClasses.some(taxClass => taxClass.selected)) {
+					reject('Select at least one')
+				}
+				resolve('Hurray')
+			})
+		},
+		/**
+		 * To get a list of all item types.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		applyTaxClassesToItemType () {
+			this.clearError('applyErrorMessage')
+			var _this = this
+			return this.validateTaxClassesToApply().then(response => {
+				let payload = {
+					tax_classes: this.taxClasses.filter(taxClass => {
+						if (taxClass.selected) {
+							return taxClass.id
+						}
+					})
+				}
+				return ItemTypesFunctions.applyTaxClassesToItemType(_this.itemTypeToAssignTo.id, payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						_this.showApplySuccess()
+					} else {
+						_this.applyErrorMessage = response.message
+						_this.$scrollTo(_this.$refs.applyErrorMessage, 1000, { offset: -50 })
+					}
+				}).catch(reason => {
+					_this.loadingItemTypes = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not apply tax classes to this item type',
+						errorName: 'applyErrorMessage',
+						vue: _this
+					})
+				})
+			}).catch(reason => {
+				_this.applyErrorMessage = reason
+				_this.$scrollTo(_this.$refs.applyErrorMessage, 1000, { offset: -50 })
+			})
+		},
+		/**
+		 * To close the apply modal.
+		 * @function
+		 * @returns {undefined}
+		 */
+		closeApplyModal () {
+			this.clearError('applyErrorMessage')
+			this.showApplyModal = false
+		},
+		/**
+		 * To select or deselect all items.
+		 * @function
+		 * @returns {undefined}
+		 */
+		selectAll () {
+			this.taxClasses.forEach(taxClass => {
+				taxClass.selected = !this.selectAllSelected
+			})
+		},
+		/**
+		 * To confirm tax classes have been successfully assigned.
+		 * @function
+		 * @returns {undefined}
+		 */
+		showApplySuccess () {
+			this.$swal({
+				title: 'Success',
+				text: 'Tax classes have been assigned',
+				type: 'success',
+				confirmButtonText: 'OK'
+			})
 		}
 	},
 	components: {
@@ -491,5 +729,8 @@ export default {
 <style scoped>
 .mt-element-list .list-news.ext-1.mt-list-container ul>.mt-list-item:hover {
 	background-color: white;
+}
+.three-vertical-actions {
+	min-height: 124px;
 }
 </style>

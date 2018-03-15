@@ -688,10 +688,6 @@ export default {
 				text: 'Brand Admin successfully created',
 				type: 'success',
 				confirmButtonText: 'OK'
-			}).then(() => {
-				// do nothing
-			}, dismiss => {
-				// do nothing
 			})
 		},
 		/**
