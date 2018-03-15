@@ -55,7 +55,7 @@
 					</div>
 					<div class="caption">
 						<span class="caption-subject font-green bold uppercase">Item Types</span>
-						<div class="caption-desc font-grey-cascade">Create, edit or delete item types and assign them to the active store.</div>
+						<div class="caption-desc font-grey-cascade">Create, edit or delete item types and assign them to tax classes.</div>
 					</div>
 				</div>
 				<div class="col-md-12">
@@ -269,7 +269,7 @@ export default {
 		},
 		selectAllSelected () {
 			if (this.taxClasses.length) {
-				return this.taxClasses.filter(taxClass => taxClass.selected).length > 0
+				return !this.taxClasses.filter(taxClass => !taxClass.selected).length > 0
 			}
 			return false
 		}
@@ -656,15 +656,12 @@ export default {
 			var _this = this
 			return this.validateTaxClassesToApply().then(response => {
 				let payload = {
-					tax_classes: this.taxClasses.filter(taxClass => {
-						if (taxClass.selected) {
-							return taxClass.id
-						}
-					})
+					tax_classes: this.taxClasses.filter(taxClass => taxClass.selected).map(taxClass => taxClass.id)
 				}
 				return ItemTypesFunctions.applyTaxClassesToItemType(_this.itemTypeToAssignTo.id, payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
+						_this.closeApplyModal()
 						_this.showApplySuccess()
 					} else {
 						_this.applyErrorMessage = response.message
@@ -699,8 +696,9 @@ export default {
 		 * @returns {undefined}
 		 */
 		selectAll () {
+			let current = this.selectAllSelected
 			this.taxClasses.forEach(taxClass => {
-				taxClass.selected = !this.selectAllSelected
+				taxClass.selected = !current
 			})
 		},
 		/**

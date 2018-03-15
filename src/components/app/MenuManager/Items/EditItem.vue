@@ -12,7 +12,7 @@
 		</div>
 		<div slot="modal-body" class="modal-body">
 			<div class="page-one" v-if="!selectImageMode && !selectLocationMode" :class="{'active': !selectImageMode, 'disabled': selectImageMode}">
-				<div class="alert alert-danger" v-if="errorMessage.length">
+				<div class="alert alert-danger" v-show="errorMessage.length" ref="errorMessage">
 				    <button class="close" data-close="alert" @click="clearError()"></button>
 				    <span>{{errorMessage}}</span>
 				</div>
@@ -43,12 +43,27 @@
 					    <label for="form_control_4">Item Price</label>
 					</div>
 					<div class="form-group form-md-line-input form-md-floating-label">
+					    <input type="text" class="form-control input-sm" :class="{'edited': itemToBeEdited.nutrition_summary.length}" id="form_control_3" v-model="itemToBeEdited.nutrition_summary">
+					    <label for="form_control_3">Nutrition Summary</label>
+					</div>
+					<div class="form-group form-md-line-input form-md-floating-label">
 					    <input type="text" class="form-control input-sm edited" id="form_control_5" v-model="itemToBeEdited.sku">
 					    <label for="form_control_5">Item SKU</label>
 					</div>
 					<div class="form-group form-md-line-input form-md-floating-label">
 					    <input type="text" class="form-control input-sm edited" id="form_control_6" v-model="itemToBeEdited.order">
 					    <label for="form_control_6">Item Order</label>
+					</div>
+				    <div class="form-group form-md-line-input form-md-floating-label" v-if="itemTypes.length">
+						<label>Item type:</label><br>
+						<el-dropdown trigger="click" @command="updateItemType" size="mini" :show-timeout="50" :hide-timeout="50">
+							<el-button size="mini">
+								{{ itemTypeLabel }} <i class="el-icon-arrow-down el-icon--right"></i>
+							</el-button>
+							<el-dropdown-menu slot="dropdown">
+								<el-dropdown-item v-for="type in itemTypes" :command="type.id" :key="id">{{type.name}}</el-dropdown-item>
+							</el-dropdown-menu>
+						</el-dropdown>
 					</div>
 					<div class="form-group form-md-line-input form-md-floating-label">
 		                <label>Item Status:</label><br>
@@ -86,6 +101,8 @@ import Modal from '../../../modules/Modal'
 import ItemsFunctions from '../../../../controllers/Items'
 import GalleryPopup from '../../../modules/GalleryPopup'
 import SelectLocationsPopup from '../../../modules/SelectLocationsPopup'
+import ItemTypesFunctions from '../../../../controllers/ItemTypes'
+import ajaxErrorHandler from '../../../../controllers/ErrorController'
 
 export default {
 	data () {
@@ -97,18 +114,29 @@ export default {
 			errorMessage: '',
 			selectImageMode: false,
 			selectedLocations: [],
-			selectLocationMode: false
+			selectLocationMode: false,
+			itemTypes: []
+		}
+	},
+	computed: {
+		itemTypeLabel () {
+			if (!this.itemToBeEdited.item_type_id) {
+				return 'Select'
+			} else {
+				return this.itemTypes.filter(type => type.id === this.itemToBeEdited.item_type_id).map(type => type.name)[0]
+			}
 		}
 	},
 	created () {
 		// get category details by category id passed as route param
 		this.getItemDetails()
+		this.getItemTypes()
 	},
 	mounted () {
 		this.showEditItemModal = true
 	},
 	methods: {
-				/**
+		/**
 		 * To toggle select location mode on.
 		 * @function
 		 * @param {object} event - The event that triggered the action
@@ -152,14 +180,18 @@ export default {
 					reject('Item short description cannot be blank')
 				} else if (!editItemVue.itemToBeEdited.price.length) {
 					reject('Item price cannot be blank')
+				} else if (!editItemVue.itemToBeEdited.nutrition_summary.length) {
+					reject('Nutrition summary cannot be blank')
 				} else if (!editItemVue.itemToBeEdited.sku.length) {
 					reject('Item SKU cannot be blank')
 				} else if (!editItemVue.itemToBeEdited.image_url.length) {
 					reject('Item image URL cannot be blank')
-				} else if (!$.isNumeric(editItemVue.itemToBeEdited.status)) {
-					reject('Item status cannot be blank')
 				} else if (!$.isNumeric(editItemVue.itemToBeEdited.order)) {
 					reject('Item order should be a number')
+				} else if (!editItemVue.itemToBeEdited.item_type_id) {
+					reject('Select an item type')
+				} else if (!$.isNumeric(editItemVue.itemToBeEdited.status)) {
+					reject('Item status cannot be blank')
 				}
 				resolve('Hurray')
 			})
@@ -202,6 +234,7 @@ export default {
 			var editItemVue = this
 			editItemVue.itemToBeEdited.user_id = editItemVue.$root.createdBy
 			editItemVue.itemToBeEdited.update_locations = editItemVue.selectedLocations
+			if (!editItemVue.itemToBeEdited.type) { editItemVue.itemToBeEdited.type === 'custom' }
 			editItemVue.clearError()
 
 			return editItemVue.validateCategoryData()
@@ -270,6 +303,52 @@ export default {
 		updateImage (val) {
 			this.goToPageOne()
 			this.itemToBeEdited.image_url = val.image_url
+		},
+		/**
+		 * To get a list of all item types.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getItemTypes () {
+			var _this = this
+			return ItemTypesFunctions.getItemTypes(_this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
+			.then(response => {
+				if (response.code === 200 && response.status === 'ok') {
+					_this.itemTypes = response.payload
+				} else {
+
+				}
+			}).catch(reason => {
+				_this.loadingItemTypes = false
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch the list of item types',
+					errorName: 'errorMessage',
+					vue: _this
+				})
+			})
+		},
+		/**
+		 * To update the item_type_id field of the new item
+		 * @function
+		 * @param {integer} id - The selected id
+		 * @returns {undefined}
+		 */
+		getItemTypeName (id) {
+			if (!id || !this.itemTypes.length) {
+				return 'n/a'
+			} else {
+				return this.itemTypes.filter(type => type.id === id).map(type => type.name)[0]
+			}
+		},
+		/**
+		 * To update the item_type_id field of the new item
+		 * @function
+		 * @param {integer} id - The selected id
+		 * @returns {undefined}
+		 */
+		updateItemType (id) {
+			this.itemToBeEdited.item_type_id = id
 		}
 	},
 	components: {
