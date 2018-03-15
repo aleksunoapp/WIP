@@ -12,7 +12,7 @@
 		</div>
 		<div slot="modal-body" class="modal-body">
 			<div class="page-one" v-if="!selectImageMode && !selectLocationMode" :class="{'active': !selectImageMode, 'disabled': selectImageMode}">
-				<div class="alert alert-danger" v-if="errorMessage.length">
+				<div class="alert alert-danger" v-show="errorMessage.length" ref="errorMessage">
 				    <button class="close" data-close="alert" @click="clearError()"></button>
 				    <span>{{errorMessage}}</span>
 				</div>
@@ -54,6 +54,23 @@
 		                	inactive-text="Sold Out">
 		                </el-switch>
 		            </div>
+		            <el-date-picker 
+		            	v-model="menuToBeEdited.start_from" 
+		            	:editable="false"
+		            	type="date" 
+		            	class="narrow-datepicker"
+		            	format="yyyy-MM-dd" 
+		            	value-format="yyyy-MM-dd" 
+		            	placeholder="From"></el-date-picker>
+		            -
+		            <el-date-picker 
+		            	v-model="menuToBeEdited.stop_on" 
+		            	:editable="false"
+		            	type="date" 
+		            	class="narrow-datepicker"
+		            	format="yyyy-MM-dd" 
+		            	value-format="yyyy-MM-dd" 
+		            	placeholder="To"></el-date-picker>
         			<div class="form-group form-md-line-input form-md-floating-label">
                         <label>Catering:</label><br>
                         <el-switch
@@ -96,6 +113,7 @@
 import $ from 'jquery'
 import Modal from '../../../modules/Modal'
 import MenusFunctions from '../../../../controllers/Menus'
+import ajaxErrorHandler from '../../../../controllers/ErrorController'
 import GalleryPopup from '../../../modules/GalleryPopup'
 import SelectLocationsPopup from '../../../modules/SelectLocationsPopup'
 
@@ -173,6 +191,10 @@ export default {
 					reject('Menu SKU cannot be blank')
 				} else if (!$.isNumeric(editMenuVue.menuToBeEdited.order)) {
 					reject('Menu order should be a number')
+				} else if (editMenuVue.menuToBeEdited.start_from && !editMenuVue.menuToBeEdited.stop_on) {
+					reject('Please provide an end date')
+				} else if (!editMenuVue.menuToBeEdited.start_from && editMenuVue.menuToBeEdited.stop_on) {
+					reject('Please provide a start date')
 				} else if (editMenuVue.menuToBeEdited.catering && !editMenuVue.menuToBeEdited.min) {
 					reject('Minimum order value cannot be blank')
 				} else if (editMenuVue.menuToBeEdited.catering && !editMenuVue.menuToBeEdited.max) {
@@ -240,12 +262,12 @@ export default {
 						editMenuVue.errorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						editMenuVue.$router.push('/login/expired')
-						return
-					}
-					editMenuVue.errorMessage = reason
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not update the item',
+						errorName: 'errorMessage',
+						vue: editMenuVue
+					})
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message
@@ -308,5 +330,8 @@ export default {
 .image-container {
 	border: 1px dotted #c2cad8;
 	text-align: center;
+}
+.narrow-datepicker {
+	max-width: 40%;
 }
 </style>
