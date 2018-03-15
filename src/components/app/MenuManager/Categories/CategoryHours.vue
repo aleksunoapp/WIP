@@ -1,83 +1,241 @@
 <template>
-	<modal :show="showEditCategoryModal" effect="fade" @closeOnEscape="closeModal">
+	<modal :show="showModal" :width="900" effect="fade" @closeOnEscape="closeModal">
 		<div slot="modal-header" class="modal-header center">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
 			</button>
-			<transition name="fade" mode="out-in">
-				<h4 class="modal-title center" v-if="!selectImageMode && !selectLocationMode" key="mainEditMode">Edit Category</h4>
-				<h4 class="modal-title center" v-if="!selectImageMode && selectLocationMode" key="selectLocationMode"><i class="fa fa-chevron-left clickable pull-left back-button" @click="closeSelectLocationsPopup()"></i>Select Stores</h4>
-				<h4 class="modal-title center" v-if="selectImageMode && !selectLocationMode" key="selectImageMode"><i class="fa fa-chevron-left clickable pull-left back-button" @click="goToPageOne()"></i>  Select An Image</h4>
-			</transition>
+			<h4 class="modal-title center">Category Hours</h4>
 		</div>
 		<div slot="modal-body" class="modal-body">
-			<div class="page-one" v-if="!selectImageMode && !selectLocationMode" :class="{'active': !selectImageMode, 'disabled': selectImageMode}">
-				<div class="alert alert-danger" v-if="errorMessage.length">
-					<button class="close" data-close="alert" @click="clearError()"></button>
-					<span>{{errorMessage}}</span>
+			<div class="row">
+				<div class="col-xs-12 margin-bottom-20">	
+					<label for="date-from">Start on: </label>
+					<el-date-picker 
+						v-model="newHours.start_from" 
+						:editable="false"
+						id="date-from"
+						type="date" 
+						class="margin-right-10"
+						format="yyyy-MM-dd" 
+						value-format="yyyy-MM-dd" 
+						placeholder="From"></el-date-picker>
+					<label for="date-to">End on: </label>
+					<el-date-picker 
+						v-model="newHours.stop_on" 
+						:editable="false"
+						id="date-to"
+						type="date" 
+						format="yyyy-MM-dd" 
+						value-format="yyyy-MM-dd" 
+						placeholder="To"></el-date-picker>
 				</div>
-				<div class="col-md-3">
-					<label for="form_control_1">Category Image</label>
-					<div class="image-container clickable" v-if="!categoryToBeEdited.image_url.length">
-						<img width="100" height="80" src="../../../../assets/img/app/image-placeholder.png" @click="goToPageTwo()">
-					</div>
-					<div class="image-container clickable" v-else>
-						<img width="100" height="80" :src="categoryToBeEdited.image_url" @click="goToPageTwo()">
-					</div>
-				</div>
-				<div class="col-md-9">
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<input type="text" class="form-control input-sm edited" id="form_control_2" v-model="categoryToBeEdited.name">
-						<label for="form_control_2">Category Name</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<input type="text" class="form-control input-sm edited" id="form_control_3" v-model="categoryToBeEdited.desc">
-						<label for="form_control_3">Category Description</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<input type="text" class="form-control input-sm edited" id="form_control_4" v-model="categoryToBeEdited.sku">
-						<label for="form_control_4">Category SKU</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<input type="text" class="form-control input-sm edited" id="form_control_5" v-model="categoryToBeEdited.order">
-						<label for="form_control_5">Category Order</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<label>Category Status:</label><br>
-						<el-switch
-							v-model="categoryToBeEdited.status"
-							active-color="#0c6"
-							inactive-color="#ff4949"
-							:active-value="1"
-							:inactive-value="0"
-							active-text="Active"
-							inactive-text="Sold Out">
-						</el-switch>
-					</div>
-					<div>
-						<p class="margin-bottom-10 margin-top-30 margin-right-10">Select locations to apply the changes to:</p>
-						<button type="submit" class="btn blue btn-outline" @click="selectLocations($event)">Select locations</button>
-						<p class="grey-label margin-top-10" v-if="selectedLocations.length">Selected {{ selectedLocations.length }} location<span v-if="selectedLocations.length !== 1">s</span></p>
-					</div>
-				</div>	
 			</div>
-			<div class="page-two" :class="{'active': selectImageMode, 'disabled': !selectImageMode}">
-				<gallery-popup v-if="selectImageMode" @selectedImage="updateImage"></gallery-popup>
-				<select-locations-popup v-if="selectLocationMode" @closeSelectLocationsPopup='updateSelectedLocations' :previouslySelected="selectedLocations"></select-locations-popup>
+			<div class="row">
+				<div class="col-xs-12">
+					<table class="table cells-vertically-centred">
+						<thead>
+							<th>Day</th>
+							<th>From</th>
+							<th>To</th>
+							<th>Available</th>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Sunday</td>
+								<td>
+									<el-time-select 
+										v-model="newHours.category_hours[0].open_time" 
+										placeholder="Start">
+									</el-time-select>
+								</td>
+								<td>
+									<el-time-select 
+										v-model="newHours.category_hours[0].close_time" 
+										placeholder="End">
+									</el-time-select>
+								</td>
+								<td>
+									<el-switch
+										v-model="newHours.category_hours[0].status"
+										active-color="#0c6"
+										inactive-color="#ff4949"
+										:active-value="1"
+										:inactive-value="0"
+										active-text="Yes"
+										inactive-text="No">
+									</el-switch>
+								</td>
+							</tr>
+							<tr>
+								<td>Monday</td>
+								<td>
+									<el-time-select 
+										v-model="newHours.category_hours[1].open_time" 
+										placeholder="Start">
+									</el-time-select>
+								</td>
+								<td>
+									<el-time-select 
+										v-model="newHours.category_hours[1].close_time" 
+										placeholder="End">
+									</el-time-select>
+								</td>
+								<td>
+									<el-switch
+										v-model="newHours.category_hours[1].status"
+										active-color="#0c6"
+										inactive-color="#ff4949"
+										:active-value="1"
+										:inactive-value="0"
+										active-text="Yes"
+										inactive-text="No">
+									</el-switch>
+								</td>
+							</tr>
+							<tr>
+								<td>Tuesday</td>
+								<td>
+									<el-time-select 
+										v-model="newHours.category_hours[2].open_time" 
+										placeholder="Start">
+									</el-time-select>
+								</td>
+								<td>
+									<el-time-select 
+										v-model="newHours.category_hours[2].close_time" 
+										placeholder="End">
+									</el-time-select>
+								</td>
+								<td>
+									<el-switch
+										v-model="newHours.category_hours[2].status"
+										active-color="#0c6"
+										inactive-color="#ff4949"
+										:active-value="1"
+										:inactive-value="0"
+										active-text="Yes"
+										inactive-text="No">
+									</el-switch>
+								</td>
+							</tr>
+							<tr>
+								<td>Wednesday</td>
+								<td>
+									<el-time-select 
+										v-model="newHours.category_hours[3].open_time" 
+										placeholder="Start">
+									</el-time-select>
+								</td>
+								<td>
+									<el-time-select 
+										v-model="newHours.category_hours[3].close_time" 
+										placeholder="End">
+									</el-time-select>
+								</td>
+								<td>
+									<el-switch
+										v-model="newHours.category_hours[3].status"
+										active-color="#0c6"
+										inactive-color="#ff4949"
+										:active-value="1"
+										:inactive-value="0"
+										active-text="Yes"
+										inactive-text="No">
+									</el-switch>
+								</td>
+							</tr>
+							<tr>
+								<td>Thursday</td>
+								<td>
+									<el-time-select 
+										v-model="newHours.category_hours[4].open_time" 
+										placeholder="Start">
+									</el-time-select>
+								</td>
+								<td>
+									<el-time-select 
+										v-model="newHours.category_hours[4].close_time" 
+										placeholder="End">
+									</el-time-select>
+								</td>
+								<td>
+									<el-switch
+										v-model="newHours.category_hours[4].status"
+										active-color="#0c6"
+										inactive-color="#ff4949"
+										:active-value="1"
+										:inactive-value="0"
+										active-text="Yes"
+										inactive-text="No">
+									</el-switch>
+								</td>
+							</tr>
+							<tr>
+								<td>Friday</td>
+								<td>
+									<el-time-select 
+										v-model="newHours.category_hours[5].open_time" 
+										placeholder="Start">
+									</el-time-select>
+								</td>
+								<td>
+									<el-time-select 
+										v-model="newHours.category_hours[5].close_time" 
+										placeholder="End">
+									</el-time-select>
+								</td>
+								<td>
+									<el-switch
+										v-model="newHours.category_hours[5].status"
+										active-color="#0c6"
+										inactive-color="#ff4949"
+										:active-value="1"
+										:inactive-value="0"
+										active-text="Yes"
+										inactive-text="No">
+									</el-switch>
+								</td>
+							</tr>
+							<tr>
+								<td>Saturday</td>
+								<td>
+									<el-time-select 
+										v-model="newHours.category_hours[6].open_time" 
+										placeholder="Start">
+									</el-time-select>
+								</td>
+								<td>
+									<el-time-select 
+										v-model="newHours.category_hours[6].close_time" 
+										placeholder="End">
+									</el-time-select>
+								</td>
+								<td>
+									<el-switch
+										v-model="newHours.category_hours[6].status"
+										active-color="#0c6"
+										inactive-color="#ff4949"
+										:active-value="1"
+										:inactive-value="0"
+										active-text="Yes"
+										inactive-text="No">
+									</el-switch>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button v-if="!selectImageMode && !selectLocationMode" type="button" class="btn btn-primary" @click="updateMenuCategory()">Save</button>
+			<button type="button" class="btn btn-primary">Save</button>
 		</div>
 	</modal>
 </template>
 
 <script>
-import $ from 'jquery'
 import Modal from '../../../modules/Modal'
 import CategoriesFunctions from '../../../../controllers/Categories'
-import GalleryPopup from '../../../modules/GalleryPopup'
-import SelectLocationsPopup from '../../../modules/SelectLocationsPopup'
 import ajaxErrorHandler from '../../../../controllers/ErrorController'
 
 export default {
@@ -85,7 +243,7 @@ export default {
 		return {
 			showModal: false,
 			errorMessage: '',
-			category: {
+			newHours: {
 				category_id: null,
 				start_from: '',
 				stop_on: '',
@@ -133,21 +291,23 @@ export default {
 						status: 1
 					}
 				]
-			}
+			},
+			existingHours: {}
 		}
 	},
 	props: {
-		originalCategory: {
+		category: {
 			type: Object,
 			required: true,
 			default: () => {}
 		}
 	},
 	created () {
-		this.category.id = this.originalCategory.id
+		this.newHours.category_id = this.category.id
+		this.getCategoryHours()
 	},
 	mounted () {
-		this.showEditCategoryModal = true
+		this.showModal = true
 	},
 	methods: {
 		/**
@@ -156,20 +316,14 @@ export default {
 		 * @returns {object} A promise that will validate the input form
 		 */
 		validateData () {
-			var editCategoryVue = this
+			var _this = this
 			return new Promise(function (resolve, reject) {
-				if (!editCategoryVue.categoryToBeEdited.name.length) {
-					reject('Category name cannot be blank')
-				} else if (!editCategoryVue.categoryToBeEdited.desc.length) {
-					reject('Category description cannot be blank')
-				} else if (!editCategoryVue.categoryToBeEdited.sku.length) {
-					reject('Category SKU cannot be blank')
-				} else if (!editCategoryVue.categoryToBeEdited.image_url.length) {
-					reject('Category image cannot be blank')
-				} else if (!$.isNumeric(editCategoryVue.categoryToBeEdited.status)) {
-					reject('Category status cannot be blank')
-				} else if (!$.isNumeric(editCategoryVue.categoryToBeEdited.order)) {
-					reject('Category order should be a number')
+				if (!_this.newHours.start_from.length) {
+					reject('Start date cannot be blank')
+				} else if (!_this.newHours.end_on.length) {
+					reject('End date cannot be blank')
+				} else if (_this.newHours.category_hours.indexOf(day => !day.start_from || !day.end_on) !== -1) {
+					reject('Please fill in all hours')
 				}
 				resolve('Hurray')
 			})
@@ -190,9 +344,11 @@ export default {
 		 */
 		getCategoryHours () {
 			let _this = this
-			CategoriesFunctions.getCategoryHours(_this.originalCategory.id, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken).then(response => {
+			CategoriesFunctions.getCategoryHours(_this.category.id, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
-					_this.hours
+					if (response.payload !== {}) {
+						_this.existingHours = response.payload
+					}
 				}
 			}).catch(reason => {
 				ajaxErrorHandler({
@@ -208,7 +364,7 @@ export default {
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		updateMenuCategory () {
+		updateCategory () {
 			var editCategoryVue = this
 			editCategoryVue.clearError()
 			editCategoryVue.categoryToBeEdited.user_id = editCategoryVue.$root.createdBy
@@ -243,49 +399,19 @@ export default {
 		 * @returns {undefined}
 		 */
 		closeModal () {
-			this.$emit('deactivateEditCategoryModal')
-			this.$router.push('/app/menu_manager/categories/' + this.$route.params.menu_id)
-		},
-		/**
-		 * To close the modal and emit the updated category object to the parent.
-		 * @function
-		 * @returns {undefined}
-		 */
-		closeModalAndUpdate () {
-			this.$emit('updateCategory', this.categoryToBeEdited)
-			this.$router.push('/app/menu_manager/categories/' + this.$route.params.menu_id)
-		},
-		/**
-		 * To change the page to the gallery view on the modal.
-		 * @function
-		 * @returns {undefined}
-		 */
-		goToPageTwo () {
-			this.selectImageMode = true
-		},
-		/**
-		 * To change the page to the main/form view on the modal.
-		 * @function
-		 * @returns {undefined}
-		 */
-		goToPageOne () {
-			this.selectImageMode = false
-		},
-		/**
-		 * To set the image to be same as the one emitted by the gallery modal.
-		 * @function
-		 * @param {object} val - The emitted image object.
-		 * @returns {undefined}
-		 */
-		updateImage (val) {
-			this.goToPageOne()
-			this.categoryToBeEdited.image_url = val.image_url
+			this.$emit('closeHoursModal')
 		}
 	},
 	components: {
-		Modal,
-		GalleryPopup,
-		SelectLocationsPopup
+		Modal
 	}
 }
 </script>
+<style scoped>
+.margin-right-10 {
+	margin-right: 10px;
+}
+table.cells-vertically-centred td {
+	vertical-align: middle;
+}
+</style>

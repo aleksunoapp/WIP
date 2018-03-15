@@ -103,7 +103,7 @@
 	                                        </a>
 		                        		</el-tooltip>
 	                                    <el-tooltip content="Category Hours" effect="light" placement="top">
-		                                    <a class="btn btn-circle btn-icon-only btn-default" @click="showHoursModal(menu, $event)">
+		                                    <a class="btn btn-circle btn-icon-only btn-default" @click="showHoursModal(category, $event)">
 		                                        <i class="fa fa-lg fa-clock-o"></i>
 		                                    </a>
 	                                    </el-tooltip>
@@ -213,7 +213,7 @@
         <edit-sub-category v-if="editSubCategoryModalActive" @updateSubCategory="updateSubCategory" @deactivateEditSubCategoryModal="closeEditSubCategoryModal"></edit-sub-category>
         <delete-category v-if="deleteCategoryModalActive" :passedCategoryId="passedCategoryId" @closeDeleteCategoryModal="closeDeleteCategoryModal" @deleteCategoryAndCloseModal="deleteCategoryAndCloseModal"></delete-category>
         <delete-sub-category v-if="deleteSubCategoryModalActive" :passedSubCategoryId="passedSubCategoryId" @closeDeleteSubCategoryModal="closeDeleteSubCategoryModal" @deleteSubCategoryAndCloseModal="deleteSubCategoryAndCloseModal"></delete-sub-category>
-        <category-hours></category-hours>
+        <category-hours v-if="hoursModalActive" @closeHoursModal="closeHoursModal" :category="categoryToAssignHoursTo"></category-hours>
         <modal :show="showGalleryModal" effect="fade" @closeOnEscape="closeGalleryModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closeGalleryModal()">
@@ -238,6 +238,7 @@ import LoadingScreen from '../../modules/LoadingScreen'
 import CategoriesFunctions from '../../../controllers/Categories'
 import MenusFunctions from '../../../controllers/Menus'
 import EditCategory from './Categories/EditCategory'
+import CategoryHours from './Categories/CategoryHours'
 import DeleteCategory from './Categories/DeleteCategory'
 import AddSubCategory from './SubCategories/AddSubCategory'
 import EditSubCategory from './SubCategories/EditSubCategory'
@@ -303,6 +304,14 @@ export default {
 			event.stopPropagation()
 			this.categoryToAssignHoursTo = category
 			this.hoursModalActive = true
+		},
+		/**
+		 * To close the modal for category hours.
+		 * @function
+		 * @returns {undefined}
+		 */
+		closeHoursModal () {
+			this.hoursModalActive = false
 		},
 		/**
 		 * To close the gallery popup.
@@ -790,7 +799,8 @@ export default {
 		EditSubCategory,
 		DeleteSubCategory,
 		NoResults,
-		GalleryPopup
+		GalleryPopup,
+		CategoryHours
 	}
 }
 </script>
