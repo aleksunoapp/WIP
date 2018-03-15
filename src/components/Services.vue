@@ -201,7 +201,7 @@
 				{{ langTerms.please_sign_below[$root.meta.local.toLowerCase()] }}
 			</div>
 
-			<signature-pad @signatureUpdate="signatureStatusChanged"></signature-pad>
+			<signature-pad ref='pad' @signatureUpdate="signatureStatusChanged"></signature-pad>
 
 			<div>
 				<div class="terms-warning"><p>** {{ langTerms.you_need_to_acknowledge[$root.meta.local.toLowerCase()] }} <a @click.prevent="toggleTerms(true)">{{ langTerms.terms_and_conditions[$root.meta.local.toLowerCase()] }}</a> {{ langTerms.before_you_can_approve[$root.meta.local.toLowerCase()] }}</p></div>
@@ -559,6 +559,7 @@ export default {
 		openThanks () {
 			this.$root.logEvent(`Accepted estimate`)
 			let _this = this
+			console.log(_this.signaturePadData)
 			let confirmedServices = []
 			this.$root.services.forEach(service => {
 				if (service.category !== '4' && service.category !== '3') {
@@ -585,7 +586,6 @@ export default {
 					}
 				}
 			})
-
 			if (this.termsAndConditions && this.signatureSigned) {
 				$.ajax({
 					url: ENV.production_url + '/services/' + _this.$root.token,
@@ -623,25 +623,15 @@ export default {
 		 * @returns {undefined}
 		 */
 		drawSignature () {
-			// let _this = this
-			// $.ajax({
-			// 	url: ENV.production_url + '/customer/' + _this.$root.token,
-			// 	method: 'GET',
-			// 	dataType: 'xml',
-			// 	beforeSend (xhr) {
-			// 		xhr.setRequestHeader('Authorization', 'Bearer ' + _this.$root.accessToken)
-			// 	}
-			// }).done((response, textStatus, xhr) => {
-			// 	console.log('hello')
-			// }).fail(reason => {
-			// 	console.log(reason)
-			// })
-
-			var name = 'Gary Kalk'
+			let name = 'Gary Kalk'
 			let canvas = document.querySelector('canvas')
-			var ctx = canvas.getContext('2d')
+			let ctx = canvas.getContext('2d')
 			ctx.font = '30px Arial'
 			ctx.fillText(name, 80, 90)
+			this.signatureSigned = true
+			this.isEmpty = false
+			console.log(this.$refs.pad)
+			this.$refs.pad.checkSignature()
 		},
 		/**
 		 * To check if the signature pad has been signed and set the proper variable
@@ -650,6 +640,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		signatureStatusChanged (val) {
+			console.log(val)
 			if (val.isEmpty && this.$root.$data.userActivity.eventTracker[this.$root.$data.userActivity.eventTracker.length - 1].event !== `Signed`) {
 				this.$root.logEvent(`Signed`)
 			} else if (this.$root.$data.userActivity.eventTracker[this.$root.$data.userActivity.eventTracker.length - 1].event !== `Cleared signature`) {

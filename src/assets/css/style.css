@@ -288,6 +288,9 @@ img {
 	border: 1px solid #0084d6;
 	color:#007ac5;
 }
+.more-info-popup svg{
+	margin-right: 3px;
+}
 
 
 .summary-header {
