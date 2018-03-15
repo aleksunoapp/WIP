@@ -190,10 +190,19 @@
 					</div>
 				</div>
 			</div>
+
+			<div @click="drawSignature()" class="click-sign">
+				<div>
+					{{ langTerms.click_sign[$root.meta.local.toLowerCase()] }}
+				</div>
+			</div>
+
 			<div class="sign-below">
 				{{ langTerms.please_sign_below[$root.meta.local.toLowerCase()] }}
 			</div>
+
 			<signature-pad @signatureUpdate="signatureStatusChanged"></signature-pad>
+
 			<div>
 				<div class="terms-warning"><p>** {{ langTerms.you_need_to_acknowledge[$root.meta.local.toLowerCase()] }} <a @click.prevent="toggleTerms(true)">{{ langTerms.terms_and_conditions[$root.meta.local.toLowerCase()] }}</a> {{ langTerms.before_you_can_approve[$root.meta.local.toLowerCase()] }}</p></div>
 				<div class="css-checkbox">
@@ -206,7 +215,7 @@
 				</div>
 			</div>
 			<div class="modal-buttons">
-				<div @click="openThanks()" class="approve-btn" :class="{'disabled': !termsAndConditions || !signagtureSigned}">
+				<div @click="openThanks()" class="approve-btn" :class="{'disabled': !termsAndConditions || !signatureSigned}">
 					{{ langTerms.approve[$root.meta.local.toLowerCase()] }}
 				</div>
 				<div @click="returnToInspection()" class="not-today-btn">
@@ -254,7 +263,7 @@ export default {
 			accordion: false,
 			open: false,
 			termsAndConditions: false,
-			signagtureSigned: false,
+			signatureSigned: false,
 			showTerms: false,
 			modalOpen: false,
 			viewingService: {},
@@ -334,6 +343,11 @@ export default {
 					'en-ca': 'Accept Estimate',
 					'en-us': 'Accept Estimate',
 					'fr-ca': 'Accepter le Devis'
+				},
+				click_sign: {
+					'en-ca': 'Click to sign',
+					'en-us': 'Click to sign',
+					'fr-ca': 'Cliquez pour signer'
 				},
 				please_sign_below: {
 					'en-ca': 'Please sign below',
@@ -572,7 +586,7 @@ export default {
 				}
 			})
 
-			if (this.termsAndConditions && this.signagtureSigned) {
+			if (this.termsAndConditions && this.signatureSigned) {
 				$.ajax({
 					url: ENV.production_url + '/services/' + _this.$root.token,
 					method: 'POST',
@@ -604,6 +618,32 @@ export default {
 			this.$router.push({name: 'thanks'})
 		},
 		/**
+		 * To auto-draw the signature
+		 * @function
+		 * @returns {undefined}
+		 */
+		drawSignature () {
+			// let _this = this
+			// $.ajax({
+			// 	url: ENV.production_url + '/customer/' + _this.$root.token,
+			// 	method: 'GET',
+			// 	dataType: 'xml',
+			// 	beforeSend (xhr) {
+			// 		xhr.setRequestHeader('Authorization', 'Bearer ' + _this.$root.accessToken)
+			// 	}
+			// }).done((response, textStatus, xhr) => {
+			// 	console.log('hello')
+			// }).fail(reason => {
+			// 	console.log(reason)
+			// })
+
+			var name = 'Gary Kalk'
+			let canvas = document.querySelector('canvas')
+			var ctx = canvas.getContext('2d')
+			ctx.font = '30px Arial'
+			ctx.fillText(name, 80, 90)
+		},
+		/**
 		 * To check if the signature pad has been signed and set the proper variable
 		 * @function
 		 * @param {boolean} val - The current value of isEmpty() on the signature pad
@@ -615,7 +655,7 @@ export default {
 			} else if (this.$root.$data.userActivity.eventTracker[this.$root.$data.userActivity.eventTracker.length - 1].event !== `Cleared signature`) {
 				this.$root.logEvent(`Cleared signature`)
 			}
-			this.signagtureSigned = !val.isEmpty
+			this.signatureSigned = !val.isEmpty
 			this.signaturePadData = val.data
 		},
 		/**

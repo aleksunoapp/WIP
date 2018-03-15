@@ -58,7 +58,7 @@ export default {
 			this.$emit('signatureUpdate', {isEmpty: this.signaturePad.isEmpty()})
 		},
 		/**
-		 * To check if the signature pad has been signed and set the data to it's parent
+		 * To check if the signature pad has been signed and send the data to it's parent
 		 * @function
 		 * @returns {undefined}
 		 */
