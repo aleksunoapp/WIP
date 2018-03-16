@@ -47,13 +47,11 @@ export default {
 		mountCanvas () {
 			let canvas = document.querySelector('canvas')
 			this.signaturePad = new SignaturePad(canvas)
-			console.log(this.signaturePad)
 			const data = [[
 			{x: 404, y: 113.125, time: 1521144304008, color: 'rgb(0, 0, 0)'},
 			{x: 416, y: 113.125, time: 1521144304069, color: 'rgb(0, 0, 0)'},
 			{x: 424, y: 113.125, time: 1521144304102, color: 'rgb(0, 0, 0)'},
 			{x: 404, y: 113.125, time: 1521144304008, color: 'rgb(0, 0, 0)'}]]
-			console.log('hello')
 			this.signaturePad.fromData(data)
 			this.signaturePad._data = data
 		},

@@ -559,7 +559,6 @@ export default {
 		openThanks () {
 			this.$root.logEvent(`Accepted estimate`)
 			let _this = this
-			console.log(_this.signaturePadData)
 			let confirmedServices = []
 			this.$root.services.forEach(service => {
 				if (service.category !== '4' && service.category !== '3') {
@@ -650,7 +649,6 @@ export default {
 		 * @returns {undefined}
 		 */
 		signatureStatusChanged (val) {
-			console.log(val)
 			if (val.isEmpty && this.$root.$data.userActivity.eventTracker[this.$root.$data.userActivity.eventTracker.length - 1].event !== `Signed`) {
 				this.$root.logEvent(`Signed`)
 			} else if (this.$root.$data.userActivity.eventTracker[this.$root.$data.userActivity.eventTracker.length - 1].event !== `Cleared signature`) {
