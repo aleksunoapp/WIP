@@ -623,15 +623,25 @@ export default {
 		 * @returns {undefined}
 		 */
 		drawSignature () {
-			let name = 'Gary Kalk'
-			let canvas = document.querySelector('canvas')
-			let ctx = canvas.getContext('2d')
-			ctx.font = '30px Arial'
-			ctx.fillText(name, 80, 90)
-			this.signatureSigned = true
-			this.isEmpty = false
-			console.log(this.$refs.pad)
-			this.$refs.pad.checkSignature()
+			$.ajax({
+				url: 'http://test2dynamicmpiapi.dealer-fx.com/test',
+				method: 'GET',
+				data: {}
+				// beforeSend (xhr) {
+				// 	xhr.setRequestHeader('Authorization', 'Bearer ' + this.$root.accessToken)
+				// }
+			}).done((response, xhr) => {
+				let name = response.customer.name
+				let canvas = document.querySelector('canvas')
+				let ctx = canvas.getContext('2d')
+				ctx.font = '30px Arial'
+				ctx.fillText(name, 80, 90)
+				this.signatureSigned = true
+				this.isEmpty = false
+				this.$refs.pad.checkSignature()
+			}).fail(reason => {
+				console.log(reason)
+			})
 		},
 		/**
 		 * To check if the signature pad has been signed and set the proper variable
