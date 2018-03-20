@@ -4,7 +4,7 @@
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
 			</button>
-			<h4 class="modal-title center"><span v-show="newView">Add</span><span v-show="!newView">Edit</span> Category Hours</h4>
+			<h4 class="modal-title center"><span v-show="view === 'new'">Add</span><span v-show="view === 'existing'">Edit</span> Category Hours</h4>
 		</div>
 		<div slot="modal-body" class="modal-body">
 			<div class="row">
@@ -25,11 +25,11 @@
 			</div>
 			<div class="row">
 				<div class="col-xs-12 margin-bottom-20">
-					<button class="btn" @click="toggleNewAndExistingView" :class="{'blue-chambray' : newView, 'blue btn-outline' : !newView}">Add hours</button>
-					<button class="btn" @click="toggleNewAndExistingView" :class="{'blue-chambray' : !newView, 'blue btn-outline' : newView}">Edit hours</button>
+					<button class="btn" @click="toggleNewAndExistingView('new')" :class="{'blue-chambray' : view === 'new', 'blue btn-outline' : view === 'existing'}">Add hours</button>
+					<button class="btn" @click="toggleNewAndExistingView('existing')" :class="{'blue-chambray' : view === 'existing', 'blue btn-outline' : view === 'new'}">Edit hours</button>
 				</div>
 			</div>
-			<div class="row" v-show="newView">
+			<div class="row" v-show="view === 'new'">
 				<div class="col-xs-12 margin-bottom-20 text-center">	
 					<label for="date-from">Start on: </label>
 					<el-date-picker 
@@ -50,7 +50,7 @@
 						value-format="yyyy-MM-dd"></el-date-picker>
 				</div>
 			</div>
-			<div class="row" v-show="newView">
+			<div class="row" v-show="view === 'new'">
 				<div class="col-xs-12">
 					<table class="table cells-vertically-centred">
 						<thead>
@@ -246,12 +246,12 @@
 					</table>
 				</div>
 			</div>
-			<div class="row" v-show="!newView">
+			<div class="row" v-show="view === 'existing'">
 				<div class="col-xs-12" v-show="!existingHours.length">
 					<no-results :show="!existingHours.length" :type="'hours'"></no-results>
 				</div>
 			</div>
-			<div class="row" v-show="!newView">
+			<div class="row" v-show="view === 'existing'">
 				<div class="col-xs-12" v-show="existingHours.length">
 					<table class="table cells-vertically-centred">
 						<thead>
@@ -321,7 +321,7 @@
 			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button v-show="newView" @click="createCategoryHours()" type="button" class="btn btn-primary">Save</button>
+			<button v-show="view === 'new'" @click="createCategoryHours()" type="button" class="btn btn-primary">Save</button>
 		</div>
 	</modal>
 </template>
@@ -338,7 +338,7 @@ export default {
 			showModal: false,
 			errorMessage: '',
 			saveMessage: '',
-			newView: true,
+			view: 'new',
 			newHours: {
 				category_id: null,
 				start_from: '',
@@ -410,10 +410,11 @@ export default {
 		/**
 		 * To switch between the new and existing hours views
 		 * @function
+		 * @param {string} view - The view to display
 		 * @returns {undefined}
 		 */
-		toggleNewAndExistingView () {
-			this.newView = !this.newView
+		toggleNewAndExistingView (view) {
+			this.view = view
 		},
 		/**
 		 * To clear the current error.
@@ -433,7 +434,7 @@ export default {
 			let _this = this
 			CategoriesFunctions.getCategoryHours(_this.category.id, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
-					if (response.payload !== {}) {
+					if (response.payload.length !== undefined) {
 						_this.existingHours = response.payload
 					}
 				}
@@ -458,7 +459,7 @@ export default {
 					reject('Start date cannot be blank')
 				} else if (!_this.newHours.stop_on.length) {
 					reject('End date cannot be blank')
-				} else if (_this.newHours.category_hours.indexOf(day => !day.open_time || !day.close_time) !== -1) {
+				} else if (_this.newHours.category_hours.find(day => !day.open_time || !day.close_time) !== undefined) {
 					reject('Please fill in all hours')
 				}
 				resolve('Hurray')
@@ -490,7 +491,7 @@ export default {
 				})
 			})
 			.catch(reason => {
-				_this.errorMessage = reason.message
+				_this.errorMessage = reason
 				_this.$scrollTo(_this.$refs.errorMessage, 1000, { offset: -50 })
 			})
 		},
@@ -558,7 +559,7 @@ export default {
 				})
 			})
 			.catch(reason => {
-				_this.errorMessage = reason.message
+				_this.errorMessage = reason
 				_this.$scrollTo(_this.$refs.errorMessage, 1000, { offset: -50 })
 			})
 		},

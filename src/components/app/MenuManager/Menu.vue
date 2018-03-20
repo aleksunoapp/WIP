@@ -223,7 +223,7 @@
 
         <apply-add-on-categories v-if="addOnCategoriesModalActive" :passedMenu="passedMenu" @closeAddOnCategoriesModal="closeAddOnCategoriesModal" @updateAddOnCategories="updateAddOnCategories"></apply-add-on-categories>
         <edit-menu v-if="editMenuModalActive" :passedMenuId="passedMenuId" @closeEditMenuModal="closeEditMenuModal" @updateMenu="updateMenu"></edit-menu>
-        <menu-hours v-if="menuHoursModalActive" :passedMenuId="passedMenuId" @closeMenuHoursModal="closeMenuHoursModal"></menu-hours>
+		<menu-hours v-if="menuHoursModalActive" @closeHoursModal="closeMenuHoursModal" :menu="menuToAssignHoursTo"></menu-hours>
         <delete-menu v-if="deleteMenuModalActive" :passedMenuId="passedMenuId" @closeDeleteMenuModal="closeDeleteMenuModal" @deleteMenuAndCloseModal="deleteMenuAndCloseModal"></delete-menu>
         <modal :show="showGalleryModal" effect="fade" @closeOnEscape="closeGalleryModal">
 			<div slot="modal-header" class="modal-header">
@@ -291,7 +291,8 @@ export default {
 			menuHoursModalActive: false,
 			promptForLocation: false,
 			menuFilter: '0',
-			animated: ''
+			animated: '',
+			menuToAssignHoursTo: {}
 		}
 	},
 	watch: {
@@ -395,7 +396,7 @@ export default {
 		 */
 		showMenuHours (menu, event) {
 			event.stopPropagation()
-			this.passedMenuId = menu.id
+			this.menuToAssignHoursTo = menu
 			this.menuHoursModalActive = true
 		},
 		/**
