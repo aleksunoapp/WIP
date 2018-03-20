@@ -97,7 +97,7 @@
 		                    <ul v-for="category in menuCategories">
 		                        <li class="mt-list-item margin-top-15 clickable" :id="'category-' + category.id" @click="determineNextAction(category)">
 		                        	<div class="margin-bottom-15 actions-on-top">
-		                        		<el-tooltip content="Edit" effect="light" placement="right">
+		                        		<el-tooltip content="Edit" effect="light" placement="top">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editCategory(category, $event)">
 	                                            <i class="fa fa-lg fa-pencil"></i>
 	                                        </a>
@@ -107,12 +107,12 @@
 		                                        <i class="fa fa-lg fa-clock-o"></i>
 		                                    </a>
 	                                    </el-tooltip>
-		                        		<el-tooltip content="Add subcategory" effect="light" placement="right">
+		                        		<el-tooltip content="Add subcategory" effect="light" placement="top">
 	                                        <a class="btn btn-circle btn-icon-only btn-default" @click="displayAddSubCategoryModal(category, $event)">
 	                                            <i class="fa fa-lg fa-plus"></i>
 	                                        </a>
 		                        		</el-tooltip>
-		                        		<el-tooltip content="Delete" effect="light" placement="right">
+		                        		<el-tooltip content="Delete" effect="light" placement="top">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="deleteCategory(category, $event)">
 	                                            <i class="fa fa-lg fa-trash"></i>
 	                                        </a>
