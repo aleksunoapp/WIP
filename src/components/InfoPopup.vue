@@ -36,16 +36,16 @@
 						{{ langTerms.not_today[$root.meta.local.toLowerCase()] }}
 					</div>
 					<div class="more-info-popup">
-						<div class="info-popup-btn">
+						<a v-if="$root.mobile" :href="`tel:${$root.meta.dealerContactInfo.phone}`"><div class="info-popup-btn">
 							<i class="fas fa-phone"
 							data-fa-transform="flip-h"></i>
 							{{ langTerms.more_info_call[$root.meta.local.toLowerCase()] }}
-						</div>
-						<div class="info-popup-btn">
+						</div></a>
+						<a v-if="$root.mobile" :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`"><div class="info-popup-btn">
 							<i class="fas fa-comment"
 							data-fa-transform="flip-h"></i>
 							{{ langTerms.more_info_text[$root.meta.local.toLowerCase()] }}
-						</div>
+						</div></a>
 					</div>
 				</div>
 			</div>
