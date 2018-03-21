@@ -22,7 +22,7 @@
 			<div class="portlet-body" :class="{'display-hide': newCollapse}">
 				<div class="form-group form-md-line-input form-md-floating-label">
 	      			<form role="form" @submit.prevent="createNewGeolocation()">
-	      				<div class="form-body row">
+	      				<div class="row">
 	      					<div class="col-md-12">
 	      						<div class="alert alert-danger" v-if="createErrorMessage.length">
 		    					    <button class="close" data-close="alert" @click.prevent="clearError('createErrorMessage')"></button>
@@ -34,11 +34,24 @@
 		    					    <input type="text" class="form-control input-sm" :class="{'edited': newGeolocation.name.length}" id="form_control_1" v-model="newGeolocation.name">
 		    					    <label for="form_control_1">Name</label>
 		    					</div>
+								<map-area
+									v-if="!newCollapse"
+									:key="this.mapComponentKey"
+									width="100%"
+									height="500px"
+									@polygonEmitted="updateNewPolygon"
+								>
+								</map-area>
 			        		</div>
 			        	</div>
-	      				<div class="form-actions right margin-top-20">
-							<button type="submit" class="btn blue">Create</button>
-						</div>
+			        	<div class="row">
+			        		<div class="col-md-6">
+			        			<el-tooltip content="Delete area" effect="light" placement="right">
+			        				<button type="submit" class="btn btn-circle btn-icon-only btn-default clickable margin-top-20" @click.prevent="reloadMap()"><i class="fa fa-trash" aria-hidden="true"></i></button>
+			        			</el-tooltip>
+			        			<button type="submit" class="btn blue pull-right margin-top-20">Create</button>
+			        		</div>
+			        	</div>
 	      			</form>
 				</div>
   			</div>
@@ -103,15 +116,29 @@
 				    <button class="close" data-close="alert" @click="clearError('editErrorMessage')"></button>
 				    <span>{{editErrorMessage}}</span>
 				</div>
-				<div class="col-md-6">
-					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm" :class="{'edited': editedGeolocation.name.length}" id="form_control_1" v-model="editedGeolocation.name">
-					    <label for="form_control_1">Geolocation Name</label>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group form-md-line-input form-md-floating-label">
+						    <input type="text" class="form-control input-sm" :class="{'edited': editedGeolocation.name.length}" id="form_control_1" v-model="editedGeolocation.name">
+						    <label for="form_control_1">Geolocation Name</label>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12">
+						<map-area
+							v-if="showEditModal"
+							:polygonToEdit="editedGeolocation.polygon"
+							width="100%"
+							height="500px"
+							@polygonEmitted="updateEditedPolygon"
+						>
+						</map-area>
 					</div>
 				</div>
 			</div>
 			<div slot="modal-footer" class="modal-footer">
-				<button type="button" class="btn btn-primary" @click="updateGeolocation()">Save</button>
+					<button type="button" class="btn btn-primary" @click="updateGeolocation()">Save</button>
 			</div>
 		</modal>
 		<!-- EDIT MODAL END -->
@@ -148,6 +175,7 @@ import LoadingScreen from '../../modules/LoadingScreen'
 import NoResults from '../../modules/NoResults'
 import PromotionsFunctions from '../../../controllers/Promotions'
 import Modal from '../../modules/Modal'
+import MapArea from '../../modules/MapArea'
 
 export default {
 	data () {
@@ -157,7 +185,8 @@ export default {
 			],
 			newCollapse: true,
 			newGeolocation: {
-				name: ''
+				name: '',
+				polygon: []
 			},
 			createErrorMessage: '',
 			loadingGeolocations: false,
@@ -174,7 +203,8 @@ export default {
 				name: '',
 				id: 0
 			},
-			deleteErrorMessage: ''
+			deleteErrorMessage: '',
+			mapComponentKey: 1
 		}
 	},
 	computed: {
@@ -185,6 +215,27 @@ export default {
 		this.getGeolocations()
 	},
 	methods: {
+		reloadMap () {
+			this.mapComponentKey += 1
+		},
+		/**
+		 * To update map area when user creates or edits it
+		 * @function
+		 * @param {array} pathsArray - An array of arrays containing coordinates of vertices in the format [lat, lng]
+		 * @returns {undefined}
+		 */
+		updateEditedPolygon (pathsArray) {
+			this.editedGeolocation.polygon = pathsArray
+		},
+		/**
+		 * To update map area when user creates or edits it
+		 * @function
+		 * @param {array} pathsArray - An array of arrays containing coordinates of vertices in the format [lat, lng]
+		 * @returns {undefined}
+		 */
+		updateNewPolygon (pathsArray) {
+			this.newGeolocation.polygon = pathsArray
+		},
 		/**
 		 * To toggle the create new panel
 		 * @function
@@ -226,6 +277,8 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (!geolocationsVue.newGeolocation.name.length) {
 					reject('Geolocation name cannot be blank')
+				} else if (!geolocationsVue.newGeolocation.polygon.length) {
+					reject('Please draw an area on the map.')
 				}
 				resolve('Hurray')
 			})
@@ -295,8 +348,10 @@ export default {
 		 * @returns {undefined}
 		 */
 		resetForm () {
+			this.newCollapse = true
 			this.newGeolocation = {
-				name: ''
+				name: '',
+				polygon: []
 			}
 		},
 		/**
@@ -337,6 +392,7 @@ export default {
 						geolocationsVue.geolocations.forEach((gl) => {
 							if (gl.id === response.payload.id) {
 								gl.name = response.payload.name
+								gl.polygon = response.payload.polygon
 							}
 						})
 						geolocationsVue.resetEdited()
@@ -373,6 +429,7 @@ export default {
 		 */
 		editGeolocation (geolocation) {
 			this.editedGeolocation.name = geolocation.name
+			this.editedGeolocation.polygon = geolocation.polygon
 			this.editedGeolocation.id = geolocation.id
 			this.showEditModal = true
 		},
@@ -464,7 +521,8 @@ export default {
 		Breadcrumb,
 		LoadingScreen,
 		NoResults,
-		Modal
+		Modal,
+		MapArea
 	}
 }
 </script>

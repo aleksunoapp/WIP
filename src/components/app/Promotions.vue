@@ -50,8 +50,12 @@
 		        			    <label for="form_control_2">Promotion Description</label>
 		        			</div>
 		        			<div class="form-group form-md-line-input form-md-floating-label">
-		        			    <input type="text" class="form-control input-sm" :class="{'edited': newPromotion.external_url.length}" id="form_control_3" v-model="newPromotion.external_url">
-		        			    <label for="form_control_3">Promotion Link</label>
+		        			    <input type="text" class="form-control input-sm" :class="{'edited': newPromotion.short_description.length}" id="form_control_short_description" v-model="newPromotion.short_description">
+		        			    <label for="form_control_short_description">Promotion Short Description</label>
+		        			</div>
+		        			<div class="form-group form-md-line-input form-md-floating-label">
+		        			    <input type="text" class="form-control input-sm" :class="{'edited': newPromotion.sort_order.length}" id="form_control_sort_order" v-model="newPromotion.sort_order">
+		        			    <label for="form_control_sort_order">Sort order</label>
 		        			</div>
 		        			<div class="form-group form-md-line-input form-md-floating-label">
 		        				<p class="grey-label">Promotion Start Date and Time</p>
@@ -77,6 +81,38 @@
 		        			</div>
 		        		</div>
 		        		<div class="col-md-5">
+							<div>
+								<p class="grey-label">Call to action type</p>
+								<el-select v-model="newPromotion.cta_type" placeholder="Select type" size="small" class="margin-bottom-15" id="form_control_cta_type">
+									<el-option label="hyperlink" value="hyperlink"></el-option>
+									<el-option label="menu item" value="menu_item"></el-option>
+									<el-option label="promo code" value="promo_code"></el-option>
+									<el-option label="camera" value="camera"></el-option>
+									<el-option label="call" value="call"></el-option>
+									<el-option label="SMS" value="sms"></el-option>
+									<el-option label="video" value="video"></el-option>
+								</el-select>
+							</div>
+		        			<div class="form-group form-md-line-input form-md-floating-label">
+		        			    <input type="text" class="form-control input-sm" :class="{'edited': newPromotion.cta_value.length}" id="form_control_cta_value" v-model="newPromotion.cta_value">
+		        			    <label for="form_control_cta_value">Call to action value</label>
+		        			</div>
+		        			<div class="form-group form-md-line-input form-md-floating-label">
+		        			    <input type="text" class="form-control input-sm" :class="{'edited': newPromotion.cta_text.length}" id="form_control_cta_text" v-model="newPromotion.cta_text">
+		        			    <label for="form_control_cta_text">Call to action text</label>
+		        			</div>
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<label>Featured:</label><br>
+								<el-switch
+									v-model="newPromotion.featured"
+									active-color="#0c6"
+									inactive-color="#ff4949"
+									:active-value="1"
+									:inactive-value="0"
+									active-text="Yes"
+									inactive-text="No">
+								</el-switch>
+							</div>
 		        			<div class="form-group form-md-line-input form-md-floating-label">
 		        				<label>Apply to all stores:</label><br>
 			        			<el-switch
@@ -139,19 +175,24 @@
 		            <div class="mt-element-list margin-top-15" v-if="promotions.length">
 		                <div class="mt-list-container list-news ext-1 no-border">
 		                    <ul>
-		                        <li class="mt-list-item actions-at-left margin-top-15" v-for="promotion in promotions" :id="'promotion-' + promotion.id" :key="promotion.id">
-		                        	<div class="list-item-actions">
-		                        		<el-tooltip content="Edit" effect="light" placement="right">
+		                        <li class="mt-list-item margin-top-15" v-for="promotion in promotions" :id="'promotion-' + promotion.id" :key="promotion.id">
+		                        	<div class="margin-bottom-15 actions-on-top">
+		                        		<el-tooltip content="Edit" effect="light" placement="top">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editPromotion(promotion, $event)">
 	                                            <i class="fa fa-lg fa-pencil"></i>
 	                                        </a>
 		                        		</el-tooltip>
-		                        		<el-tooltip content="Apply to ..." effect="light" placement="right">
+		                        		<el-tooltip content="Apply to ..." effect="light" placement="top">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="applyPromotion(promotion, $event)">
 	                                            <i class="icon-layers"></i>
 	                                        </a>
 		                        		</el-tooltip>
-		                        		<el-tooltip content="Delete" effect="light" placement="right">
+		                        		<el-tooltip content="QR code" effect="light" placement="top">
+			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="openQrCodeModal(promotion, $event)">
+	                                            <i class="fa fa-qrcode" aria-hidden="true"></i>
+	                                        </a>
+		                        		</el-tooltip>
+		                        		<el-tooltip content="Delete" effect="light" placement="top">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="deletePromotion(promotion, $event)">
 	                                            <i class="fa fa-lg fa-trash"></i>
 	                                        </a>
@@ -177,9 +218,18 @@
 	                            			<strong>End:</strong>
 	                            			<span>{{ promotion.end_date }}</span>
 	                            		</div>
+		                            	<div class="col-xs-5">
+	                            			<strong>Featured:</strong>
+	                            			<span v-show="promotion.featured === 1">yes</span>
+	                            			<span v-show="promotion.featured === 0">no</span>
+	                            		</div>
+		                            	<div class="col-xs-5">
+	                            			<strong>CTA:</strong>
+	                            			<span>{{ ctaLabel(promotion.cta_type) }}</span>
+	                            		</div>
 		                            	<div class="col-xs-10">
-	                            			<strong>Description:</strong>
-	                            			<span>{{ promotion.description }}</span>
+	                            			<strong>Short Description:</strong>
+	                            			<span>{{ promotion.short_description }}</span>
 	                            		</div>
 		                            </div>
 		                        	<div class="">
@@ -303,6 +353,94 @@
 				</div>
 			</div>
 		</modal>
+		<modal :show="showQrCodeModal" effect="fade" @closeOnEscape="closeQrCodeModal">
+			<div slot="modal-header" class="modal-header">
+				<button type="button" class="close" @click="closeQrCodeModal()">
+					<span>&times;</span>
+				</button>
+				<h4 class="modal-title center">QR Code</h4>
+			</div>
+			<div slot="modal-body" class="modal-body">
+				<div class="row">
+					<div class="col-md-12" v-show="qrErrorMessage.length" ref="qrErrorMessage">
+						<div class="alert alert-danger">
+						    <button class="close" data-close="alert" @click="clearError('qrErrorMessage')"></button>
+						    <span>{{ qrErrorMessage }}</span>
+						</div>
+					</div>
+				</div>
+				<div v-if="promotionForQrCode.qr_code.length">
+					<div class="row">
+						<div class="col-xs-12 text-center">
+							<qrcode class="limited-height" :text="promotionForQrCode.qr_code "></qrcode>
+						</div>
+					</div>
+					<div class="row margin-top-20">
+						<div class="col-xs-6 text-right"><strong>Minimum loyalty points: </strong></div>
+						<div class="col-xs-6">{{promotionForQrCode.min_loyalty_points}}</div>
+						<div class="col-xs-6 text-right"><strong>Maximum redemptions: </strong></div>
+						<div class="col-xs-6">{{promotionForQrCode.max_use}}</div>
+						<div class="col-xs-6 text-right"><strong>Maximum redemptions per person: </strong></div>
+						<div class="col-xs-6">{{promotionForQrCode.max_use_per_person}}</div>
+						<div class="col-xs-6 text-right"><strong>Locations: </strong></div>
+						<div class="col-xs-6"><span v-show="promotionForQrCode.locations[0] === 'all'">all</span><span v-show="promotionForQrCode.locations[0] !== 'all'">{{promotionForQrCode.locations.length}}</span></div>
+					</div>
+				</div>
+				<div v-if="!promotionForQrCode.qr_code.length && !promotionForQrCode.showStoreSelector">
+					<div class="form-group form-md-line-input form-md-floating-label">
+					    <input type="text" class="form-control input-sm" :class="{'edited': promotionForQrCode.min_loyalty_points.length}" id="form_control_min_loyalty_points" v-model="promotionForQrCode.min_loyalty_points">
+					    <label for="form_control_min_loyalty_points">Minimum Loyalty Points</label>
+					</div>
+					<div class="form-group form-md-line-input form-md-floating-label">
+					    <input type="text" class="form-control input-sm" :class="{'edited': promotionForQrCode.max_use.length}" id="form_control_max_use" v-model="promotionForQrCode.max_use">
+					    <label for="form_control_max_use">Maximum Redemptions</label>
+					</div>
+					<div class="form-group form-md-line-input form-md-floating-label">
+					    <input type="text" class="form-control input-sm" :class="{'edited': promotionForQrCode.max_use_per_person.length}" id="form_control_max_use_per_person" v-model="promotionForQrCode.max_use_per_person">
+					    <label for="form_control_max_use_per_person">Maximum Redemptions Per Person</label>
+					</div>
+					<div>
+						<button class="btn create-or-edit" @click="qrForAllLocations()" :class="{'blue-chambray' : promotionForQrCode.allLocations, 'blue btn-outline' : !promotionForQrCode.allLocations}">All stores</button>
+						<button class="btn" @click="qrForSelectLocations()" :class="{'blue-chambray' : !promotionForQrCode.allLocations, 'blue btn-outline' : promotionForQrCode.allLocations}">Select stores</button>
+						<p class="grey-label"><span v-show="promotionForQrCode.allLocations">All</span><span v-show="!promotionForQrCode.allLocations">{{promotionForQrCode.locations.length}}</span> store<span v-show="promotionForQrCode.allLocations || (!promotionForQrCode.allLocations && promotionForQrCode.locations.length !== 1)">s</span> selected</p>
+					</div>
+				</div>
+				<div v-if="!promotionForQrCode.qr_code.length && promotionForQrCode.showStoreSelector">
+			        <table class="table">
+			            <thead>
+			                <tr>
+			                	<th></th>
+			                	<th> Store Name </th>
+			                	<th> Street Address </th>
+			                	<th> City, Province, Country </th>
+			                </tr>
+			            </thead>
+			            <tbody>
+			                <tr v-for="location in locations">
+			                	<td>
+			                		<div class="md-checkbox has-success">
+		                                <input type="checkbox" :id="`location-${location.id}`" class="md-check" v-model="location.selected">
+		                                <label :for="`location-${location.id}`">
+		                                    <span class="inc"></span>
+		                                    <span class="check"></span>
+		                                    <span class="box"></span>
+		                                </label>
+		                            </div>
+			                	</td>
+			                    <td> {{ location.display_name }} </td>
+			                    <td> {{ location.address_line_1 }} </td>
+			                    <td> {{ location.city }}, {{ location.province }}, {{ location.country }} </td>
+			                </tr>
+			            </tbody>
+			        </table>
+				</div>
+			</div>
+			<div slot="modal-footer" class="modal-footer clear">
+				<button v-if="!promotionForQrCode.qr_code.length && !promotionForQrCode.showStoreSelector" @click="generateQrCode()" type="button" class="btn blue">Generate</button>
+				<button v-if="!promotionForQrCode.qr_code.length && promotionForQrCode.showStoreSelector" @click="selectQrLocations()" type="button" class="btn blue">Select</button>
+				<button v-if="promotionForQrCode.qr_code.length" @click="deleteQrCode()" type="button" class="btn blue">Delete</button>
+			</div>
+		</modal>
 	</div>
 </template>
 
@@ -312,11 +450,15 @@ import LoadingScreen from '../modules/LoadingScreen'
 import PromotionsFunctions from '../../controllers/Promotions'
 import StoreGroupsFunctions from '../../controllers/StoreGroups'
 import UserGroupsFunctions from '../../controllers/UserGroups'
+import App from '../../controllers/App'
+import ajaxErrorHandler from '../../controllers/ErrorController'
 import Modal from '../modules/Modal'
+import Qrcode from '../modules/QRCode'
 import GalleryPopup from '../modules/GalleryPopup'
 import NoResults from '../modules/NoResults'
 import EditPromotion from './Promotions/EditPromotion'
 import DeletePromotion from './Promotions/DeletePromotion'
+import $ from 'jquery'
 
 export default {
 	data () {
@@ -333,14 +475,19 @@ export default {
 				name: '',
 				description: '',
 				image: '',
-				external_url: '',
 				start_date: '',
 				end_date: '',
 				apply_to_all_locations: 0,
 				apply_to_a_store_group: 0,
 				location_group_id: '',
 				location_group_name: '',
-				created_by: this.$root.createdBy
+				created_by: this.$root.createdBy,
+				cta_type: '',
+				cta_value: '',
+				cta_text: '',
+				featured: 0,
+				short_description: '',
+				sort_order: ''
 			},
 			showGalleryModal: false,
 			showEditPromotionModal: false,
@@ -361,7 +508,22 @@ export default {
 			userGroups: [],
 			selectedUserGroupId: null,
 			pageCount: 1,
-			currentPage: 1
+			currentPage: 1,
+			showQrCodeModal: false,
+			promotionForQrCode: {
+				promotion_id: null,
+				allLocations: true,
+				qr_code: '',
+				qr_code_id: null,
+				showStoreSelector: false,
+				locations: ['all'],
+				min_loyalty_points: '',
+				max_use: '',
+				max_use_per_person: ''
+			},
+			qrCodes: [],
+			locations: [],
+			qrErrorMessage: ''
 		}
 	},
 	computed: {
@@ -390,8 +552,203 @@ export default {
 		this.getGroups()
 		this.getGeolocations()
 		this.getUserGroups()
+		this.getQrCodes()
+		this.getPaginatedStoreLocations()
 	},
 	methods: {
+		/**
+		 * To to move the selected locations to the QR code settings object
+		 * @function
+		 * @returns {undefined}
+		 */
+		selectQrLocations () {
+			this.promotionForQrCode.locations = []
+			this.locations.forEach(location => {
+				if (location.selected) {
+					this.promotionForQrCode.locations.push(location.id)
+				}
+			})
+			this.promotionForQrCode.showStoreSelector = false
+		},
+		/**
+		 * To get a list of location for the current application/business.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getPaginatedStoreLocations () {
+			var promotionsVue = this
+
+			App.getPaginatedStoreLocations(promotionsVue.$root.appId, promotionsVue.$root.appSecret, promotionsVue.$root.userToken).then(response => {
+				if (response.code === 200 && response.status === 'ok') {
+					response.payload.forEach(location => { location.selected = false })
+					promotionsVue.locations = response.payload
+				}
+			}).catch(reason => {
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not get a list of stores',
+					errorName: 'qrErrorMessage',
+					vue: promotionsVue
+				})
+			})
+		},
+		/**
+		 * To set the QR code settings to all locations.
+		 * @function
+		 * @returns {undefined}
+		 */
+		qrForAllLocations () {
+			this.promotionForQrCode.allLocations = true
+			this.promotionForQrCode.locations = ['all']
+			this.promotionForQrCode.showStoreSelector = false
+		},
+		/**
+		 * To set the QR code settings to select locations.
+		 * @function
+		 * @returns {undefined}
+		 */
+		qrForSelectLocations () {
+			this.promotionForQrCode.allLocations = false
+			this.promotionForQrCode.showStoreSelector = true
+		},
+		/**
+		 * To get a list of QR codes.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getQrCodes () {
+			var promotionsVue = this
+			PromotionsFunctions.getQrCodes(promotionsVue.$root.appId, promotionsVue.$root.appSecret, promotionsVue.$root.userToken).then(response => {
+				if (response.code === 200 && response.status === 'ok') {
+					promotionsVue.qrCodes = response.payload
+				}
+			}).catch(reason => {
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not get a list of QR codes',
+					errorName: 'qrErrorMessage',
+					vue: promotionsVue
+				})
+			})
+		},
+		/**
+		 * To display the modal for QR codes.
+		 * @function
+		 * @param {object} promotion - The selected promotion
+		 * @param {object} event - The click event that prompted this function.
+		 * @returns {undefined}
+		 */
+		openQrCodeModal (promotion, event) {
+			event.stopPropagation()
+			let filtered = this.qrCodes.filter(code => code.promotion_id === promotion.id)
+			if (filtered.length) {
+				this.promotionForQrCode.qr_code = filtered[0].qr_code
+				this.promotionForQrCode.qr_code_id = filtered[0].id
+				this.promotionForQrCode.locations = filtered[0].locations
+				this.promotionForQrCode.max_use = filtered[0].max_use
+				this.promotionForQrCode.max_use_per_person = filtered[0].max_use_per_person
+				this.promotionForQrCode.min_loyalty_points = filtered[0].min_loyalty_points
+			} else {
+				this.promotionForQrCode.promotion_id = promotion.id
+			}
+			this.showQrCodeModal = true
+		},
+		/**
+		 * To reset the QR code's promotion object.
+		 * @function
+		 * @returns {undefined}
+		 */
+		resetPromotionForQrCode () {
+			this.promotionForQrCode = {
+				promotion_id: null,
+				allLocations: true,
+				qr_code: '',
+				qr_code_id: null,
+				showStoreSelector: false,
+				locations: ['all'],
+				min_loyalty_points: '',
+				max_use: '',
+				max_use_per_person: ''
+			}
+		},
+		/**
+		 * To get a QR code from the api.
+		 * @function
+		 * @returns {object} - A promise
+		 */
+		generateQrCode () {
+			var promotionsVue = this
+			PromotionsFunctions.generateQrcode(promotionsVue.$root.appId, promotionsVue.$root.appSecret, promotionsVue.$root.userToken, promotionsVue.promotionForQrCode).then(response => {
+				if (response.code === 200 && response.status === 'ok') {
+					promotionsVue.promotionForQrCode.qr_code = response.payload.qr_code
+					promotionsVue.getQrCodes()
+				}
+			}).catch(reason => {
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not generate the QR code',
+					errorName: 'qrErrorMessage',
+					vue: promotionsVue
+				})
+			})
+		},
+		/**
+		 * To delete a QR code from the api.
+		 * @function
+		 * @returns {object} - A promise
+		 */
+		deleteQrCode () {
+			var promotionsVue = this
+			PromotionsFunctions.deleteQrCode(promotionsVue.$root.appId, promotionsVue.$root.appSecret, promotionsVue.$root.userToken, promotionsVue.promotionForQrCode.qr_code_id).then(response => {
+				if (response.code === 200 && response.status === 'ok') {
+					promotionsVue.resetPromotionForQrCode()
+					promotionsVue.getQrCodes()
+				}
+			}).catch(reason => {
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not delete the QR code',
+					errorName: 'qrErrorMessage',
+					vue: promotionsVue
+				})
+			})
+		},
+		/**
+		 * To close the QR code modal.
+		 * @function
+		 * @returns {undefined}
+		 */
+		closeQrCodeModal () {
+			this.locations.forEach(location => { location.selected = false })
+			this.resetPromotionForQrCode()
+			this.showQrCodeModal = false
+		},
+		/**
+		 * To get a text label for the CTA type
+		 * @function
+		 * @param {string} val - The api value
+		 * @returns {undefined}
+		 */
+		ctaLabel (val) {
+			switch (val) {
+			case 'hyperlink':
+				return 'hyperlink'
+			case 'menu_item':
+				return 'menu item'
+			case 'promo_code':
+				return 'promo code'
+			case 'camera':
+				return 'camera'
+			case 'call':
+				return 'call'
+			case 'sms':
+				return 'SMS'
+			case 'video':
+				return 'video'
+			default:
+				return 'n/a'
+			}
+		},
 		/**
 		 * To update the current page.
 		 * @function
@@ -897,14 +1254,19 @@ export default {
 				name: '',
 				description: '',
 				image: '',
-				external_url: '',
 				start_date: '',
 				end_date: '',
 				apply_to_all_locations: 0,
 				apply_to_a_store_group: 0,
 				location_group_id: '',
 				location_group_name: '',
-				created_by: this.$root.createdBy
+				created_by: this.$root.createdBy,
+				cta_type: '',
+				cta_value: '',
+				cta_text: '',
+				featured: 0,
+				short_description: '',
+				sort_order: ''
 			}
 		},
 		/**
@@ -915,18 +1277,26 @@ export default {
 		validatePromotionData () {
 			var promotionsVue = this
 			return new Promise(function (resolve, reject) {
-				if (!promotionsVue.newPromotion.name.length) {
+				if (!promotionsVue.newPromotion.image.length) {
+					reject('Promotion image cannot be blank')
+				} else if (!promotionsVue.newPromotion.name.length) {
 					reject('Promotion name cannot be blank')
 				} else if (!promotionsVue.newPromotion.description.length) {
 					reject('Promotion description cannot be blank')
-				} else if (!promotionsVue.newPromotion.image.length) {
-					reject('Promotion image cannot be blank')
-				} else if (!promotionsVue.newPromotion.external_url.length) {
-					reject('Promotion link cannot be blank')
+				} else if (!promotionsVue.newPromotion.short_description.length) {
+					reject('Promotion short description cannot be blank')
+				} else if (!$.isNumeric(promotionsVue.newPromotion.sort_order)) {
+					reject('Sort order must be a number')
 				} else if (!promotionsVue.newPromotion.start_date) {
 					reject('Please provide Start Date and Time')
 				} else if (!promotionsVue.newPromotion.end_date) {
 					reject('Please provide End Date and Time')
+				} else if (!promotionsVue.newPromotion.cta_type) {
+					reject('Please select type of call to action')
+				} else if (!promotionsVue.newPromotion.cta_value) {
+					reject('Call to action value cannot be blank')
+				} else if (!promotionsVue.newPromotion.cta_text) {
+					reject('Call to action text cannot be blank')
 				} else if (new Date(promotionsVue.newPromotion.start_date) > new Date(promotionsVue.newPromotion.end_date)) {
 					reject('Start Date cannot be after End Date')
 				} else if (promotionsVue.newPromotion.apply_to_a_store_group && promotionsVue.newPromotion.location_group_id === '') {
@@ -946,18 +1316,7 @@ export default {
 
 			return promotionsVue.validatePromotionData()
 			.then(response => {
-				let payload = {}
-				payload.name = promotionsVue.newPromotion.name
-				payload.description = promotionsVue.newPromotion.description
-				payload.image = promotionsVue.newPromotion.image
-				payload.external_url = promotionsVue.newPromotion.external_url
-				payload.start_date = promotionsVue.newPromotion.start_date
-				payload.end_date = promotionsVue.newPromotion.end_date
-				payload.apply_to_all_locations = promotionsVue.newPromotion.apply_to_all_locations
-				payload.location_group_id = promotionsVue.newPromotion.location_group_id
-				payload.created_by = promotionsVue.newPromotion.created_by
-
-				PromotionsFunctions.createNewPromotion(payload, promotionsVue.$root.appId, promotionsVue.$root.appSecret, promotionsVue.$root.userToken).then(response => {
+				PromotionsFunctions.createNewPromotion(promotionsVue.newPromotion, promotionsVue.$root.appId, promotionsVue.$root.appSecret, promotionsVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						promotionsVue.showAlert()
 						promotionsVue.getAllPromotions()
@@ -1069,7 +1428,8 @@ export default {
 		GalleryPopup,
 		NoResults,
 		EditPromotion,
-		DeletePromotion
+		DeletePromotion,
+		Qrcode
 	}
 }
 </script>
@@ -1142,5 +1502,11 @@ export default {
 .footer-wrapper {
 	display: flex;
 	justify-content: space-between;
+}
+.actions-on-top {
+	margin-top: -5px;
+}
+.limited-height {
+	height: 250px;
 }
 </style>

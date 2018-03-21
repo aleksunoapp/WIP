@@ -13,8 +13,11 @@
     "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs"
   },
   "dependencies": {
+    "@google/maps": "^0.4.5",
     "element-ui": "^2.0.7",
     "google-charts": "^1.0.0",
+    "google-maps-api-loader": "^1.1.1",
+    "qr-image": "^3.2.0",
     "sweetalert2": "^6.6.4",
     "vue": "^2.5.9",
     "vue-router": "^2.2.0",

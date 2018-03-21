@@ -31,17 +31,49 @@
 					    <label for="form_control_2">Promotion Description</label>
 					</div>
 					<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-					    <input type="text" class="form-control input-sm edited" id="form_control_3" v-model="promotionToBeEdited.external_url">
-					    <label for="form_control_3">Promotion Link</label>
+					    <input type="text" class="form-control input-sm" :class="{'edited': promotionToBeEdited.short_description.length}" id="form_control_short_description" v-model="promotionToBeEdited.short_description">
+					    <label for="form_control_short_description">Promotion Short Description</label>
 					</div>
-        			<div class="form-group form-md-line-input form-md-floating-label">
-        				<p>Promotion Start Date and Time</p>
+        			<div>
+        				<p class="grey-label">Promotion Start Date and Time</p>
 	        			<el-date-picker v-model="promotionToBeEdited.start_date" type="datetime" placeholder="Select end"></el-date-picker>
         			</div>
-        			<div class="form-group form-md-line-input form-md-floating-label">
-        				<p>Promotion End Date and Time</p>
+        			<div>
+        				<p class="grey-label">Promotion End Date and Time</p>
 	        			<el-date-picker v-model="promotionToBeEdited.end_date" type="datetime" placeholder="Select end"></el-date-picker>
         			</div>
+					<div>
+						<p class="grey-label">Call to action type</p>
+						<el-select v-model="promotionToBeEdited.cta_type" placeholder="Select type" size="small" class="margin-bottom-15" id="form_control_cta_type">
+							<el-option label="hyperlink" value="hyperlink"></el-option>
+							<el-option label="menu item" value="menu_item"></el-option>
+							<el-option label="promo code" value="promo_code"></el-option>
+							<el-option label="camera" value="camera"></el-option>
+							<el-option label="call" value="call"></el-option>
+							<el-option label="SMS" value="sms"></el-option>
+							<el-option label="video" value="video"></el-option>
+						</el-select>
+					</div>
+        			<div class="form-group form-md-line-input form-md-floating-label">
+        			    <input type="text" class="form-control input-sm" :class="{'edited': promotionToBeEdited.cta_value.length}" id="form_control_cta_value" v-model="promotionToBeEdited.cta_value">
+        			    <label for="form_control_cta_value">Call to action value</label>
+        			</div>
+        			<div class="form-group form-md-line-input form-md-floating-label">
+        			    <input type="text" class="form-control input-sm" :class="{'edited': promotionToBeEdited.cta_text.length}" id="form_control_cta_text" v-model="promotionToBeEdited.cta_text">
+        			    <label for="form_control_cta_text">Call to action text</label>
+        			</div>
+					<div class="form-group form-md-line-input form-md-floating-label">
+						<label>Featured:</label><br>
+						<el-switch
+							v-model="promotionToBeEdited.featured"
+							active-color="#0c6"
+							inactive-color="#ff4949"
+							:active-value="1"
+							:inactive-value="0"
+							active-text="Yes"
+							inactive-text="No">
+						</el-switch>
+					</div>
 				</div>
 			</div>
 			<div class="page-two" v-if="selectImageMode" :class="{'active': selectImageMode, 'disabled': !selectImageMode}">
@@ -64,7 +96,24 @@ export default {
 	data () {
 		return {
 			showEditPromotionModal: false,
-			promotionToBeEdited: {},
+			promotionToBeEdited: {
+				name: '',
+				description: '',
+				image: '',
+				start_date: '',
+				end_date: '',
+				apply_to_all_locations: 0,
+				apply_to_a_store_group: 0,
+				location_group_id: '',
+				location_group_name: '',
+				created_by: this.$root.createdBy,
+				cta_type: '',
+				cta_value: '',
+				cta_text: '',
+				featured: 0,
+				short_description: '',
+				sort_order: ''
+			},
 			errorMessage: '',
 			selectImageMode: false
 		}
@@ -93,18 +142,26 @@ export default {
 		validatePromotionData () {
 			var editPromotionVue = this
 			return new Promise(function (resolve, reject) {
-				if (!editPromotionVue.promotionToBeEdited.name.length) {
+				if (!editPromotionVue.promotionToBeEdited.image.length) {
+					reject('Promotion image cannot be blank')
+				} else if (!editPromotionVue.promotionToBeEdited.name.length) {
 					reject('Promotion name cannot be blank')
 				} else if (!editPromotionVue.promotionToBeEdited.description.length) {
 					reject('Promotion description cannot be blank')
-				} else if (!editPromotionVue.promotionToBeEdited.image.length) {
-					reject('Promotion image cannot be blank')
-				} else if (!editPromotionVue.promotionToBeEdited.external_url.length) {
-					reject('Promotion link cannot be blank')
+				} else if (!editPromotionVue.promotionToBeEdited.short_description.length) {
+					reject('Promotion short description cannot be blank')
+				} else if (!$.isNumeric(editPromotionVue.promotionToBeEdited.sort_order)) {
+					reject('Sort order must be a number')
 				} else if (!editPromotionVue.promotionToBeEdited.start_date) {
 					reject('Please provide Start Date and Time')
 				} else if (!editPromotionVue.promotionToBeEdited.end_date) {
 					reject('Please provide End Date and Time')
+				} else if (!editPromotionVue.promotionToBeEdited.cta_type) {
+					reject('Please select type of call to action')
+				} else if (!editPromotionVue.promotionToBeEdited.cta_value) {
+					reject('Call to action value cannot be blank')
+				} else if (!editPromotionVue.promotionToBeEdited.cta_text) {
+					reject('Call to action text cannot be blank')
 				} else if (new Date(editPromotionVue.promotionToBeEdited.start_date) > new Date(editPromotionVue.promotionToBeEdited.end_date)) {
 					reject('Start Date cannot be after End Date')
 				}
@@ -258,3 +315,11 @@ export default {
 	}
 }
 </script>
+
+<style scoped>
+.grey-label {
+	color: rgb(136, 136, 136);
+	font-size: 13px;
+	margin-bottom: 5px;
+}
+</style>

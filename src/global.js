@@ -30,6 +30,10 @@ export default {
 	 */
 	loyaltyAppSecret: 'P6KWcbixUIkxUT4jpmcnCFUBC7hHSGnf',
 	/**
+	 * API key for Google Maps Javascript API
+	 */
+	googleMapsJavascriptApiKey: 'AIzaSyAweYWedKzekUFGNFf-Qb1Ox7ce6Pul2xQ', // aleks@unoapp.com
+	/**
 	 * Ajax wrapper for making backend calls.
 	 * @function
 	 * @param {object} options - Options for the ajax call being made.
