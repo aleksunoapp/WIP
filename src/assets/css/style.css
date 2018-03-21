@@ -237,6 +237,7 @@ img {
 @media (max-width: 768px) {
 	.modal-buttons .more-info-btn {
 		display: none;
+		visibility: hidden;
 	}	
 }
 
