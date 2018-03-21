@@ -625,7 +625,6 @@ export default {
 			let _this = this
 			$.ajax({
 				url: ENV.production_url + '/metadata/' + _this.$root.token + '/en-CA',
-				// url: ENV.production_url + '/test',
 				method: 'GET',
 				data: {}
 			}).done((response, xhr) => {
