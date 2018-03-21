@@ -622,15 +622,13 @@ export default {
 		 * @returns {undefined}
 		 */
 		drawSignature () {
+			let _this = this
 			$.ajax({
-				url: ENV.production_url,
+				url: ENV.production_url + '/metadata/' + _this.$root.token + '/en-CA',
 				method: 'GET',
 				data: {}
-				// beforeSend (xhr) {
-				// 	xhr.setRequestHeader('Authorization', 'Bearer ' + this.$root.accessToken)
-				// }
 			}).done((response, xhr) => {
-				let name = response.customer.name
+				let name = response.firstName + ' ' + response.lastName
 				let canvas = document.querySelector('canvas')
 				let ctx = canvas.getContext('2d')
 				ctx.font = '30px Arial'
