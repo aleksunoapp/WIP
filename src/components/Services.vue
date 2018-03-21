@@ -623,7 +623,7 @@ export default {
 		 */
 		drawSignature () {
 			$.ajax({
-				url: ENV.production_url,
+				url: ENV.production_url + '/test',
 				method: 'GET',
 				data: {}
 				// beforeSend (xhr) {
