@@ -623,7 +623,7 @@ export default {
 		 */
 		drawSignature () {
 			$.ajax({
-				url: 'http://test2dynamicmpiapi.dealer-fx.com/test',
+				url: ENV.production_url,
 				method: 'GET',
 				data: {}
 				// beforeSend (xhr) {
