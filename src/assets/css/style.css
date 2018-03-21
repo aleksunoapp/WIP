@@ -30,6 +30,7 @@ img {
 	margin: auto;
 	margin-bottom:150px;
 	position: relative;
+	z-index: 0;
 }
 .wrapper.wrapper-hold {
 	overflow: hidden;
@@ -135,8 +136,7 @@ img {
 
 .modal-close {
 	position: absolute;
-	transform: translateX(345px);
-	margin-top: 5px;
+	transform: translateX(350px) translateY(-25px);
 	width: 20px;
 	height: 20px;
 	background-image: url('../images/close-button.png');
@@ -144,6 +144,7 @@ img {
 	box-shadow: 0 2px 10px rgba(0,0,0,0.5);
 	border-radius: 50%;
 	cursor: pointer;
+	z-index: 100;
 }
 
 .modal-image {
@@ -232,6 +233,11 @@ img {
 	color: #fff;
 	background-color: #f4c300;
 	padding: 16px 0;
+}
+@media (max-width: 768px) {
+	.modal-buttons .more-info-btn {
+		display: none;
+	}	
 }
 
 .modal-buttons .more-info-btn:hover {
