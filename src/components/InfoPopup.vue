@@ -1,3 +1,4 @@
+<script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
 <template>
 	<div class="modal">
 		<div class="modal-window">
@@ -28,8 +29,23 @@
 					<div @click="approveService()" class="approve-btn">
 						{{ langTerms.approve[$root.meta.local.toLowerCase()] }}
 					</div>
+					<div @click="toggleMoreInfo()" class="more-info-btn">
+						{{ langTerms.more_info[$root.meta.local.toLowerCase()] }}
+					</div>
 					<div @click="deferService()" class="not-today-btn">
 						{{ langTerms.not_today[$root.meta.local.toLowerCase()] }}
+					</div>
+					<div class="more-info-popup">
+						<div class="info-popup-btn">
+							<i class="fas fa-phone"
+							data-fa-transform="flip-h"></i>
+							{{ langTerms.more_info_call[$root.meta.local.toLowerCase()] }}
+						</div>
+						<div class="info-popup-btn">
+							<i class="fas fa-comment"
+							data-fa-transform="flip-h"></i>
+							{{ langTerms.more_info_text[$root.meta.local.toLowerCase()] }}
+						</div>
 					</div>
 				</div>
 			</div>
@@ -47,9 +63,24 @@ export default {
 					'en-us': 'Approve',
 					'fr-ca': 'Approuver'
 				},
+				more_info: {
+					'en-ca': 'I need more information',
+					'en-us': 'I need more information',
+					'fr-ca': `J'ai besoin de plus information`
+				},
+				more_info_call: {
+					'en-ca': 'Call Dealership',
+					'en-us': 'Call Dealership',
+					'fr-ca': `Appeler le Concessionnaire`
+				},
+				more_info_text: {
+					'en-ca': 'Text Dealership',
+					'en-us': 'Text Dealership',
+					'fr-ca': `Envoyer un SMS`
+				},
 				not_today: {
-					'en-ca': 'Not Today',
-					'en-us': 'Not Today',
+					'en-ca': 'Not today',
+					'en-us': 'Not today',
 					'fr-ca': 'Pas aujourd’hui'
 				},
 				recommendation: {
@@ -102,6 +133,11 @@ export default {
 		deferService () {
 			this.$root.logEvent(`Deferred ${this.viewingService.name} service`)
 			this.$emit('defer')
+		},
+		toggleMoreInfo () {
+			var moreInfoPopup = document.getElementsByClassName('more-info-popup')
+
+			moreInfoPopup[0].style.display = moreInfoPopup[0].style.display === 'block' ? '' : 'block'
 		}
 	}
 }

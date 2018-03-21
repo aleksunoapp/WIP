@@ -47,6 +47,13 @@ export default {
 		mountCanvas () {
 			let canvas = document.querySelector('canvas')
 			this.signaturePad = new SignaturePad(canvas)
+			const data = [[
+			{x: 404, y: 113.125, time: 1521144304008, color: 'rgb(0, 0, 0)'},
+			{x: 416, y: 113.125, time: 1521144304069, color: 'rgb(0, 0, 0)'},
+			{x: 424, y: 113.125, time: 1521144304102, color: 'rgb(0, 0, 0)'},
+			{x: 404, y: 113.125, time: 1521144304008, color: 'rgb(0, 0, 0)'}]]
+			this.signaturePad.fromData(data)
+			this.signaturePad._data = data
 		},
 		/**
 		 * To clear the signature pad
@@ -58,7 +65,7 @@ export default {
 			this.$emit('signatureUpdate', {isEmpty: this.signaturePad.isEmpty()})
 		},
 		/**
-		 * To check if the signature pad has been signed and set the data to it's parent
+		 * To check if the signature pad has been signed and send the data to it's parent
 		 * @function
 		 * @returns {undefined}
 		 */
