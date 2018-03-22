@@ -234,7 +234,7 @@ img {
 	background-color: #f4c300;
 	padding: 16px 0;
 }
-@media (max-width: 768px) {
+@media (min-width: 768px) {
 	.modal-buttons .more-info-btn {
 		display: none;
 		visibility: hidden;
