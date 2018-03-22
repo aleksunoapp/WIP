@@ -177,7 +177,7 @@ export default {
 				error: {
 					'en-ca': 'Error',
 					'en-us': 'Error',
-					'fr-ca': 'Error'
+					'fr-ca': 'Erreur'
 				},
 				enter_access_code: {
 					'en-ca': 'Please enter your access code.',
