@@ -585,7 +585,7 @@ export default {
 					}
 				}
 			})
-			if (this.termsAndConditions && this.signatureSigned) {
+			if (this.termsAndConditions && this.signatureSigned === true) {
 				$.ajax({
 					url: ENV.production_url + '/services/' + _this.$root.token,
 					method: 'POST',
@@ -623,22 +623,28 @@ export default {
 		 */
 		drawSignature () {
 			let _this = this
-			$.ajax({
-				url: ENV.production_url + '/metadata/' + _this.$root.token + '/en-CA',
-				method: 'GET',
-				data: {}
-			}).done((response, xhr) => {
-				let name = response.firstName + ' ' + response.lastName
-				let canvas = document.querySelector('canvas')
-				let ctx = canvas.getContext('2d')
-				ctx.font = '30px Arial'
-				ctx.fillText(name, 80, 90)
+			if (_this.signatureSigned === false) {
+				$.ajax({
+					url: ENV.production_url + '/metadata/' + _this.$root.token + '/en-CA',
+					method: 'GET',
+					data: {}
+				}).done((response, xhr) => {
+					let name = response.firstName + ' ' + response.lastName
+					let canvas = document.querySelector('canvas')
+					let ctx = canvas.getContext('2d')
+					ctx.font = '30px Arial'
+					ctx.fillText(name, 80, 90)
+					this.signatureSigned = true
+					this.isEmpty = false
+					this.$refs.pad.checkSignature()
+				}).fail(reason => {
+					console.log(reason)
+				})
+			} else if (_this.signatureSigned === true) {
+				console.log('already signed')
 				this.signatureSigned = true
-				this.isEmpty = false
-				this.$refs.pad.checkSignature()
-			}).fail(reason => {
-				console.log(reason)
-			})
+			}
+			this.signatureSigned = true
 		},
 		/**
 		 * To check if the signature pad has been signed and set the proper variable
@@ -648,12 +654,10 @@ export default {
 		 */
 		signatureStatusChanged (val) {
 			if (val.isEmpty && this.$root.$data.userActivity.eventTracker[this.$root.$data.userActivity.eventTracker.length - 1].event !== `Signed`) {
+				this.signatureSigned = !val.isEmpty
 				this.$root.logEvent(`Signed`)
-				this.signatureSigned = false
 			} else if (this.$root.$data.userActivity.eventTracker[this.$root.$data.userActivity.eventTracker.length - 1].event !== `Cleared signature`) {
 				this.$root.logEvent(`Cleared signature`)
-				console.log(this.$root.$data.userActivity.eventTracker[this.$root.$data.userActivity.eventTracker.length - 1].event !== `Cleared signature`)
-				this.signatureSigned = true
 			}
 			this.signaturePadData = val.data
 		},
@@ -665,7 +669,6 @@ export default {
 		 */
 		toggleTerms (val) {
 			val ? this.$root.logEvent(`Displayed Terms and Conditions`) : this.$root.logEvent(`Closed Terms and Conditions`)
-			this.showTerms = val
 		},
 		/**
 		 * To open the detailed view modal
