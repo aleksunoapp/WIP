@@ -316,7 +316,7 @@ export default {
 	min-width: 320px;
 	/* position: fixed; */
 	margin-left: auto;
-	margin-top: 50px;
+	margin-top: 55px;
 	margin-right: auto;
 	left: 0;
 	right: 0;
