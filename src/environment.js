@@ -1,4 +1,4 @@
 module.exports = {
-	production_url: 'https://test2dynamicmpiapi.dealer-fx.com/',
+	production_url: '#{ApiUrl}#',
 	userActivityLogAPI: 'https://test2dynamicmpiapi.dealer-fx.com/'
 }
