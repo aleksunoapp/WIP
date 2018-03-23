@@ -191,14 +191,14 @@
 				</div>
 			</div>
 
-			<div @click="drawSignature()" class="click-sign">
-				<div>
-					{{ langTerms.click_sign[$root.meta.local.toLowerCase()] }}
-				</div>
-			</div>
-
 			<div class="sign-below">
 				{{ langTerms.please_sign_below[$root.meta.local.toLowerCase()] }}
+			</div>
+
+			<div class="draw-sig">
+				<div @click="drawSignature()" class="click-sign">
+					{{ langTerms.click_sign[$root.meta.local.toLowerCase()] }}
+				</div>
 			</div>
 
 			<signature-pad ref='pad' @signatureUpdate="signatureStatusChanged"></signature-pad>
@@ -649,8 +649,11 @@ export default {
 		signatureStatusChanged (val) {
 			if (val.isEmpty && this.$root.$data.userActivity.eventTracker[this.$root.$data.userActivity.eventTracker.length - 1].event !== `Signed`) {
 				this.$root.logEvent(`Signed`)
+				this.signatureSigned = false
 			} else if (this.$root.$data.userActivity.eventTracker[this.$root.$data.userActivity.eventTracker.length - 1].event !== `Cleared signature`) {
 				this.$root.logEvent(`Cleared signature`)
+				console.log(this.$root.$data.userActivity.eventTracker[this.$root.$data.userActivity.eventTracker.length - 1].event !== `Cleared signature`)
+				this.signatureSigned = true
 			}
 			this.signaturePadData = val.data
 		},
