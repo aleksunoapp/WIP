@@ -652,7 +652,6 @@ export default {
 			} else if (this.$root.$data.userActivity.eventTracker[this.$root.$data.userActivity.eventTracker.length - 1].event !== `Cleared signature`) {
 				this.$root.logEvent(`Cleared signature`)
 			}
-			this.signatureSigned = !val.isEmpty
 			this.signaturePadData = val.data
 		},
 		/**
