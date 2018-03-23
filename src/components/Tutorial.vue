@@ -314,8 +314,9 @@ export default {
 .footer {
 	max-width: 414px;
 	min-width: 320px;
-	position: fixed;
+	/* position: fixed; */
 	margin-left: auto;
+	margin-top: 50px;
 	margin-right: auto;
 	left: 0;
 	right: 0;
