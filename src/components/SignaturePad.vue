@@ -62,7 +62,7 @@ export default {
 		 */
 		clearSignature () {
 			this.signaturePad.clear()
-			this.$emit('signatureUpdate', {isEmpty: this.signaturePad.isEmpty()})
+			this.$emit('signatureUpdate', {isEmpty: true})
 		},
 		/**
 		 * To check if the signature pad has been signed and send the data to it's parent
@@ -70,7 +70,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		checkSignature () {
-			this.$emit('signatureUpdate', {isEmpty: this.signaturePad.isEmpty(), data: this.signaturePad.toDataURL()})
+			this.$emit('signatureUpdate', {isEmpty: false, data: this.signaturePad.toDataURL()})
 		}
 	},
 	/**

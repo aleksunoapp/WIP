@@ -623,6 +623,7 @@ export default {
 		 */
 		drawSignature () {
 			let _this = this
+			this.isEmpty = true
 			if (_this.signatureSigned === false) {
 				$.ajax({
 					url: ENV.production_url + '/metadata/' + _this.$root.token + '/en-CA',
@@ -634,7 +635,6 @@ export default {
 					let ctx = canvas.getContext('2d')
 					ctx.font = '30px Arial'
 					ctx.fillText(name, 80, 90)
-					this.signatureSigned = true
 					this.isEmpty = false
 					this.$refs.pad.checkSignature()
 				}).fail(reason => {
@@ -643,7 +643,7 @@ export default {
 			} else if (_this.signatureSigned === true) {
 				console.log('already signed')
 			}
-			this.signatureSigned = true
+			// this.signatureSigned = true
 		},
 		/**
 		 * To check if the signature pad has been signed and set the proper variable
@@ -652,11 +652,16 @@ export default {
 		 * @returns {undefined}
 		 */
 		signatureStatusChanged (val) {
-			if (val.isEmpty && this.$root.$data.userActivity.eventTracker[this.$root.$data.userActivity.eventTracker.length - 1].event !== `Signed`) {
-				this.signatureSigned = !val.isEmpty
+			this.signatureSigned = false
+			this.$root.logEvent(`Cleared signature`)
+
+			if (!val.isEmpty) {
+				this.signatureSigned = true
 				this.$root.logEvent(`Signed`)
-			} else if (this.$root.$data.userActivity.eventTracker[this.$root.$data.userActivity.eventTracker.length - 1].event !== `Cleared signature`) {
-				this.$root.logEvent(`Cleared signature`)
+			}
+
+			if (this.$root.$data.userActivity.eventTracker[this.$root.$data.userActivity.eventTracker.length - 1].event !== `Cleared signature`) {
+				this.isEmpty = true
 			}
 			this.signaturePadData = val.data
 		},
