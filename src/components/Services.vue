@@ -585,7 +585,7 @@ export default {
 					}
 				}
 			})
-			if (this.termsAndConditions && this.signatureSigned === true) {
+			if (this.termsAndConditions && this.signatureSigned) {
 				$.ajax({
 					url: ENV.production_url + '/services/' + _this.$root.token,
 					method: 'POST',
@@ -642,7 +642,6 @@ export default {
 				})
 			} else if (_this.signatureSigned === true) {
 				console.log('already signed')
-				this.signatureSigned = true
 			}
 			this.signatureSigned = true
 		},
