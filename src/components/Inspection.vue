@@ -407,6 +407,9 @@ export default {
 			}
 
 			formattedTime = hour + ':' + minutes + ' ' + meridian
+			if (this.$root.meta.local === 'fr-CA') {
+				allMonths = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']
+			}
 			if (!this.checkSameDate(this.$root.meta.responseBy)) {
 				formattedTime += ` on ${allMonths[fullDate.getMonth()]} ${fullDate.getDate()}, ${fullDate.getFullYear()}`
 			}
@@ -440,6 +443,9 @@ export default {
 			}
 
 			formattedTime = hour + ':' + minutes + ' ' + meridian
+			if (this.$root.meta.local === 'fr-CA') {
+				allMonths = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']
+			}
 			if (!this.checkSameDate(this.$root.meta.promise)) {
 				formattedTime += ` on ${allMonths[fullDate.getMonth()]} ${fullDate.getDate()}, ${fullDate.getFullYear()}`
 			}

@@ -194,6 +194,9 @@ export default {
 		formatPromiseDate () {
 			let promiseDate = new Date(this.$root.meta.promise)
 			let allMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
+			if (this.$root.meta.local === 'fr-CA') {
+				allMonths = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']
+			}
 			let formattedDate = `${allMonths[promiseDate.getMonth()]} ${promiseDate.getDate()}, ${promiseDate.getFullYear()}`
 			return formattedDate
 		}
