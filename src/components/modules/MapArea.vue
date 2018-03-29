@@ -34,13 +34,11 @@ export default {
 			required: false,
 			default: () => '100px'
 		},
-		// positive in western hemisphere, negative in eastern hemisphere
 		lat: {
 			type: Number,
 			required: false,
 			default: () => 43.6532
 		},
-		// positive in northern hemisphere, negative in southern hemisphere
 		lng: {
 			type: Number,
 			required: false,

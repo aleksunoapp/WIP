@@ -36,6 +36,8 @@
 		    					</div>
 								<map-area
 									v-if="!newCollapse"
+									:lat="latitude"
+									:lng="longitude"
 									:key="this.mapComponentKey"
 									width="100%"
 									height="500px"
@@ -208,8 +210,25 @@ export default {
 		}
 	},
 	computed: {
+		latitude () {
+			if (this.$root.activeLocation.latitude !== null && this.$root.activeLocation.latitude !== undefined) {
+				return Number(this.$root.activeLocation.latitude)
+			} else {
+				return 43.6532
+			}
+		},
+		longitude () {
+			if (this.$root.activeLocation.longitude !== null && this.$root.activeLocation.longitude !== undefined) {
+				return Number(this.$root.activeLocation.longitude)
+			} else {
+				return -79.3832
+			}
+		}
 	},
 	watch: {
+		'$root.activeLocation' () {
+			this.mapComponentKey += 1
+		}
 	},
 	mounted () {
 		this.getGeolocations()
