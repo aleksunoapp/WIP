@@ -95,7 +95,7 @@
 							<div class="col-xs-12 no-gutter" v-show="newRule.parameter === 'sku' || newRule.parameter === 'sku-combination'">
 								<button class="btn" @click.prevent="selectAllItems(newRule)" :class="{'blue-chambray' : newRule.sku === 'all', 'blue btn-outline' : newRule.sku !== 'all'}">All items</button>
 								<button class="btn" @click.prevent="selectItems(newRule)" :class="{'blue-chambray' : newRule.sku !== 'all', 'blue btn-outline' : newRule.sku === 'all'}">Select items</button>
-								<label class="grey-label"><span v-show="newRule.sku === 'all'">All</span><span v-show="newRule.sku !== 'all'">{{newRule.sku.length}}</span> item<span v-show="newRule.sku.length > 1">s</span> selected</label>
+								<label class="grey-label"><span v-show="newRule.sku === 'all'">All</span><span v-show="newRule.sku !== 'all'">{{numberOfItemsNew}}</span> item<span v-show="numberOfItemsNew !== 1 || newRule.sku === 'all'">s</span> selected</label>
 							</div>
 							<div class="col-xs-12 no-gutter margin-top-20" v-show="newRule.parameter === 'time' || newRule.parameter === 'sku-combination'">
 								<el-time-select v-model="newRule.start" :picker-options="{ start: '00:00', step: '00:15', end: '23:59' }" placeholder="Set start time"></el-time-select>
@@ -281,7 +281,7 @@
 						<div class="col-xs-12 no-gutter" v-show="ruleToEdit.parameter === 'sku' || ruleToEdit.parameter === 'sku-combination'">
 							<button class="btn" @click.prevent="selectAllItems(ruleToEdit)" :class="{'blue-chambray' : ruleToEdit.sku === 'all', 'blue btn-outline' : ruleToEdit.sku !== 'all'}">All items</button>
 							<button class="btn" @click.prevent="selectItems(ruleToEdit)" :class="{'blue-chambray' : ruleToEdit.sku !== 'all', 'blue btn-outline' : ruleToEdit.sku === 'all'}">Select items</button>
-							<label class="grey-label"><span v-show="ruleToEdit.sku === 'all'">All</span><span v-show="ruleToEdit.sku !== 'all'">{{ruleToEdit.sku.length}}</span> item<span v-show="ruleToEdit.sku.length > 1">s</span> selected</label>
+							<label class="grey-label"><span v-show="ruleToEdit.sku === 'all'">All</span><span v-show="ruleToEdit.sku !== 'all'">{{numberOfItemsEdited}}</span> item<span v-show="numberOfItemsEdited !== 1 || ruleToEdit.sku === 'all'">s</span> selected</label>
 						</div>
 						<div class="col-xs-12 no-gutter margin-top-20" v-show="ruleToEdit.parameter === 'time' || ruleToEdit.parameter === 'sku-combination'">
 							<el-time-select v-model="ruleToEdit.start" :picker-options="{ start: '00:00', step: '00:15', end: '23:59' }" placeholder="Set start time"></el-time-select>
@@ -392,6 +392,14 @@ export default {
 			deleteErrorMessage: '',
 			showMenuModifierTreeModal: false,
 			ruleToSelectSKUsFor: {}
+		}
+	},
+	computed: {
+		numberOfItemsNew () {
+			return this.newRule.sku === '' ? 0 : this.newRule.sku.split(',').length
+		},
+		numberOfItemsEdited () {
+			return this.ruleToEdit.sku === '' ? 0 : this.ruleToEdit.sku.split(',').length
 		}
 	},
 	mounted () {
