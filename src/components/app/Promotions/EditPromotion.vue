@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showEditPromotionModal" effect="fade" @closeOnEscape="closeModal">
+	<modal :show="showEditPromotionModal" effect="fade" @closeOnEscape="closeModal" :width="900">
 		<div slot="modal-header" class="modal-header center">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -54,9 +54,13 @@
 							<el-option label="video" value="video"></el-option>
 						</el-select>
 					</div>
-        			<div class="form-group form-md-line-input form-md-floating-label">
+        			<div class="form-group form-md-line-input form-md-floating-label" v-show="promotionToBeEdited.cta_type !== 'menu_item'">
         			    <input type="text" class="form-control input-sm" :class="{'edited': promotionToBeEdited.cta_value.length}" id="form_control_cta_value" v-model="promotionToBeEdited.cta_value">
         			    <label for="form_control_cta_value">Call to action value</label>
+        			</div>
+        			<div class="form-group form-md-line-input form-md-floating-label" v-show="promotionToBeEdited.cta_type === 'menu_item'">
+        				<button type="button" class="btn blue btn-outline" @click="openMenuModifierTree()">Select</button>	
+        				<p class="grey-label margin-top-10" v-show="promotionToBeEdited.skuArray.length">Selected {{promotionToBeEdited.skuArray.length}} item<span v-show="promotionToBeEdited.skuArray.length !== 1">s</span></p>									
         			</div>
         			<div class="form-group form-md-line-input form-md-floating-label">
         			    <input type="text" class="form-control input-sm" :class="{'edited': promotionToBeEdited.cta_text.length}" id="form_control_cta_text" v-model="promotionToBeEdited.cta_text">
@@ -79,6 +83,14 @@
 			<div class="page-two" v-if="selectImageMode" :class="{'active': selectImageMode, 'disabled': !selectImageMode}">
 				<gallery-popup @selectedImage="updateIcon"></gallery-popup>
 			</div>
+			<menu-modifier-tree
+				v-if="showMenuModifierTreeModal" 
+				:selectedObject="promotionToBeEdited" 
+				:showModifierItems="false"
+				@closeMenuModifierTreeModal="closeMenuModifierTree" 
+				@closeMenuModifierTreeModalAndUpdate="setSelectedItems"
+			>
+			</menu-modifier-tree>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
 			<button v-if="!selectImageMode" type="button" class="btn btn-primary" @click="updatePromotion()">Save</button>
@@ -91,6 +103,7 @@ import $ from 'jquery'
 import Modal from '../../modules/Modal'
 import PromotionsFunctions from '../../../controllers/Promotions'
 import GalleryPopup from '../../modules/GalleryPopup'
+import MenuModifierTree from '../../modules/MenuModifierTree'
 
 export default {
 	data () {
@@ -109,13 +122,15 @@ export default {
 				created_by: this.$root.createdBy,
 				cta_type: '',
 				cta_value: '',
+				skuArray: [],
 				cta_text: '',
 				featured: 0,
 				short_description: '',
 				sort_order: ''
 			},
 			errorMessage: '',
-			selectImageMode: false
+			selectImageMode: false,
+			showMenuModifierTreeModal: false
 		}
 	},
 	props: {
@@ -134,6 +149,16 @@ export default {
 		})
 	},
 	methods: {
+		openMenuModifierTree () {
+			this.showMenuModifierTreeModal = true
+		},
+		closeMenuModifierTree () {
+			this.showMenuModifierTreeModal = false
+		},
+		setSelectedItems (data) {
+			this.promotionToBeEdited.skuArray = data.selectedSKUs
+			this.showMenuModifierTreeModal = false
+		},
 		/**
 		 * To check if the promotion data is valid before submitting to the backend.
 		 * @function
@@ -158,7 +183,9 @@ export default {
 					reject('Please provide End Date and Time')
 				} else if (!editPromotionVue.promotionToBeEdited.cta_type) {
 					reject('Please select type of call to action')
-				} else if (!editPromotionVue.promotionToBeEdited.cta_value) {
+				} else if (editPromotionVue.promotionToBeEdited.cta_type === 'menu_item' && !editPromotionVue.promotionToBeEdited.skuArray.length) {
+					reject('Select at least one menu item')
+				} else if (editPromotionVue.promotionToBeEdited.cta_type !== 'menu_item' && !editPromotionVue.promotionToBeEdited.cta_value) {
 					reject('Call to action value cannot be blank')
 				} else if (!editPromotionVue.promotionToBeEdited.cta_text) {
 					reject('Call to action text cannot be blank')
@@ -217,6 +244,7 @@ export default {
 			var editPromotionVue = this
 			PromotionsFunctions.getPromotionDetails(editPromotionVue.selectedPromotionId, editPromotionVue.$root.appId, editPromotionVue.$root.appSecret).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
+					response.payload.cta_type === 'menu_item' ? response.payload.skuArray = response.payload.cta_value.split(',') : response.payload.skuArray = []
 					editPromotionVue.promotionToBeEdited = response.payload
 					editPromotionVue.promotionToBeEdited.start_date = new Date(response.payload.start_date)
 					editPromotionVue.promotionToBeEdited.end_date = new Date(response.payload.end_date)
@@ -241,10 +269,15 @@ export default {
 
 			return editPromotionVue.validatePromotionData()
 			.then(response => {
-				let promotionToBeEdited = editPromotionVue.promotionToBeEdited
-				promotionToBeEdited.start_date = editPromotionVue.formatDateTimeForApi(promotionToBeEdited.start_date)
-				promotionToBeEdited.end_date = editPromotionVue.formatDateTimeForApi(promotionToBeEdited.end_date)
-				PromotionsFunctions.updatePromotion(editPromotionVue.promotionToBeEdited, editPromotionVue.$root.appId, editPromotionVue.$root.appSecret, editPromotionVue.$root.userToken).then(response => {
+				let payload = {...editPromotionVue.promotionToBeEdited}
+				payload.start_date = editPromotionVue.formatDateTimeForApi(payload.start_date)
+				payload.end_date = editPromotionVue.formatDateTimeForApi(payload.end_date)
+				if (payload.cta_type === 'menu_item') {
+					payload.cta_value = payload.skuArray.toString()
+				}
+				delete payload.skuArray
+
+				PromotionsFunctions.updatePromotion(payload, editPromotionVue.$root.appId, editPromotionVue.$root.appSecret, editPromotionVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						this.closeModalAndUpdate()
 					} else {
@@ -311,7 +344,8 @@ export default {
 	},
 	components: {
 		Modal,
-		GalleryPopup
+		GalleryPopup,
+		MenuModifierTree
 	}
 }
 </script>

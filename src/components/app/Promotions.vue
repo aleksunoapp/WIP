@@ -93,9 +93,13 @@
 									<el-option label="video" value="video"></el-option>
 								</el-select>
 							</div>
-		        			<div class="form-group form-md-line-input form-md-floating-label">
+		        			<div class="form-group form-md-line-input form-md-floating-label" v-show="newPromotion.cta_type !== 'menu_item'">
 		        			    <input type="text" class="form-control input-sm" :class="{'edited': newPromotion.cta_value.length}" id="form_control_cta_value" v-model="newPromotion.cta_value">
 		        			    <label for="form_control_cta_value">Call to action value</label>
+		        			</div>
+		        			<div class="form-group form-md-line-input form-md-floating-label" v-show="newPromotion.cta_type === 'menu_item'">
+		        				<button type="button" class="btn blue btn-outline" @click="openMenuModifierTree()">Select</button>	
+		        				<p class="grey-label margin-top-10" v-show="newPromotion.skuArray.length">Selected {{newPromotion.skuArray.length}} item<span v-show="newPromotion.skuArray.length !== 1">s</span></p>									
 		        			</div>
 		        			<div class="form-group form-md-line-input form-md-floating-label">
 		        			    <input type="text" class="form-control input-sm" :class="{'edited': newPromotion.cta_text.length}" id="form_control_cta_text" v-model="newPromotion.cta_text">
@@ -441,6 +445,14 @@
 				<button v-if="promotionForQrCode.qr_code.length" @click="deleteQrCode()" type="button" class="btn blue">Delete</button>
 			</div>
 		</modal>
+		<menu-modifier-tree
+			v-if="showMenuModifierTreeModal" 
+			:selectedObject="newPromotion" 
+			:showModifierItems="false"
+			@closeMenuModifierTreeModal="closeMenuModifierTree" 
+			@closeMenuModifierTreeModalAndUpdate="setSelectedItems"
+		>
+		</menu-modifier-tree>
 	</div>
 </template>
 
@@ -456,6 +468,7 @@ import Modal from '../modules/Modal'
 import Qrcode from '../modules/QRCode'
 import GalleryPopup from '../modules/GalleryPopup'
 import NoResults from '../modules/NoResults'
+import MenuModifierTree from '../modules/MenuModifierTree'
 import EditPromotion from './Promotions/EditPromotion'
 import DeletePromotion from './Promotions/DeletePromotion'
 import $ from 'jquery'
@@ -484,6 +497,7 @@ export default {
 				created_by: this.$root.createdBy,
 				cta_type: '',
 				cta_value: '',
+				skuArray: [],
 				cta_text: '',
 				featured: 0,
 				short_description: '',
@@ -523,7 +537,8 @@ export default {
 			},
 			qrCodes: [],
 			locations: [],
-			qrErrorMessage: ''
+			qrErrorMessage: '',
+			showMenuModifierTreeModal: false
 		}
 	},
 	computed: {
@@ -556,6 +571,16 @@ export default {
 		this.getPaginatedStoreLocations()
 	},
 	methods: {
+		openMenuModifierTree () {
+			this.showMenuModifierTreeModal = true
+		},
+		closeMenuModifierTree () {
+			this.showMenuModifierTreeModal = false
+		},
+		setSelectedItems (data) {
+			this.newPromotion.skuArray = data.selectedSKUs
+			this.showMenuModifierTreeModal = false
+		},
 		/**
 		 * To to move the selected locations to the QR code settings object
 		 * @function
@@ -1263,6 +1288,7 @@ export default {
 				created_by: this.$root.createdBy,
 				cta_type: '',
 				cta_value: '',
+				skuArray: [],
 				cta_text: '',
 				featured: 0,
 				short_description: '',
@@ -1293,7 +1319,9 @@ export default {
 					reject('Please provide End Date and Time')
 				} else if (!promotionsVue.newPromotion.cta_type) {
 					reject('Please select type of call to action')
-				} else if (!promotionsVue.newPromotion.cta_value) {
+				} else if (promotionsVue.newPromotion.cta_type === 'menu_item' && !promotionsVue.newPromotion.skuArray.length) {
+					reject('Select at least one menu item')
+				} else if (promotionsVue.newPromotion.cta_type !== 'menu_item' && !promotionsVue.newPromotion.cta_value) {
 					reject('Call to action value cannot be blank')
 				} else if (!promotionsVue.newPromotion.cta_text) {
 					reject('Call to action text cannot be blank')
@@ -1316,7 +1344,12 @@ export default {
 
 			return promotionsVue.validatePromotionData()
 			.then(response => {
-				PromotionsFunctions.createNewPromotion(promotionsVue.newPromotion, promotionsVue.$root.appId, promotionsVue.$root.appSecret, promotionsVue.$root.userToken).then(response => {
+				let payload = {...promotionsVue.newPromotion}
+				if (payload.cta_type === 'menu_item') {
+					payload.cta_value = payload.skuArray.toString()
+					delete payload.skuArray
+				}
+				PromotionsFunctions.createNewPromotion(payload, promotionsVue.$root.appId, promotionsVue.$root.appSecret, promotionsVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						promotionsVue.showAlert()
 						promotionsVue.getAllPromotions()
@@ -1429,7 +1462,8 @@ export default {
 		NoResults,
 		EditPromotion,
 		DeletePromotion,
-		Qrcode
+		Qrcode,
+		MenuModifierTree
 	}
 }
 </script>

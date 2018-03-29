@@ -83,7 +83,7 @@
 							    </div>
 							</div>
 						</tab>
-						<tab header="Modifier Items">
+						<tab header="Modifier Items" v-if="showModifierItems">
 							<div class="col-md-6">
 								<h4>Modifier Categories</h4>
 								<div class="dd" id="nestable_list_1" v-if="modifiers.length">
@@ -177,6 +177,10 @@ export default {
 		errorMessage: {
 			type: String,
 			default: () => ''
+		},
+		showModifierItems: {
+			type: Boolean,
+			default: () => true
 		}
 	},
 	computed: {
