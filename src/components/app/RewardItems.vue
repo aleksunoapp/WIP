@@ -171,7 +171,7 @@
         	updateType="combo" 
         	:errorMessage="menuModifierTreeErrorMessage"
         	@closeMenuModifierTreeModal="closeMenuModifierTreeModal" 
-        	@closeMenuModifierTreeModalAndUpdate="applySelectedItems">
+        	@closeMenuModifierTreeModalAndUpdate="skusSelected">
         </menu-modifier-tree>
 
         <!-- DELETE MODAL START -->
@@ -261,6 +261,14 @@ export default {
 		this.getRewardItems()
 	},
 	methods: {
+		skusSelected (selection) {
+			if (this.selectedItem.id === undefined) {
+				this.newRewardItem.sku = selection.selectedSKUs
+				this.closeMenuModifierTreeModal()
+			} else {
+				this.applySelectedItems(selection)
+			}
+		},
 		/**
 		 * To determine which function to call based on the update type passed in by the parent as a prop.
 		 * @function
@@ -311,6 +319,8 @@ export default {
 		 * @returns {undefined}
 		 */
 		closeMenuModifierTreeModal () {
+			this.selectedItem = {}
+			this.menuModifierTreeErrorMessage = ''
 			this.showMenuModifierTreeModal = false
 		},
 		/**
@@ -320,6 +330,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		closeMenuModifierTreeModalAndUpdate (data) {
+			this.menuModifierTreeErrorMessage = ''
 			this.showMenuModifierTreeModal = false
 			this.selectedItem.sku = data.selectedSKUs
 		},

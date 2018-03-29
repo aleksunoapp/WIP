@@ -137,7 +137,7 @@
 	                    				{{ newItemTypeLabel }} <i class="el-icon-arrow-down el-icon--right"></i>
 	                    			</el-button>
 	                    			<el-dropdown-menu slot="dropdown">
-	                    				<el-dropdown-item v-for="type in itemTypes" :command="type.id" :key="id">{{type.name}}</el-dropdown-item>
+	                    				<el-dropdown-item v-for="type in itemTypes" :command="type.id" :key="type.id">{{type.name}}</el-dropdown-item>
 	                    			</el-dropdown-menu>
 	                    		</el-dropdown>
 	                    	</div>
@@ -551,6 +551,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		closeImagesModal () {
+			this.getCategoryItems()
 			this.displayImagesModal = false
 			this.selectedItem = {}
 		},
@@ -765,20 +766,20 @@ export default {
 					reject('Item description cannot be blank')
 				} else if (!addItemVue.newItem.short_description.length) {
 					reject('Item short description cannot be blank')
-				} else if (!addItemVue.newItem.sku.length) {
-					reject('Item SKU cannot be blank')
 				} else if (!addItemVue.newItem.price.length) {
 					reject('Item price cannot be blank')
 				} else if (!addItemVue.newItem.nutrition_summary.length) {
 					reject('Nutrition summary cannot be blank')
+				} else if (!$.isNumeric(addItemVue.newItem.order)) {
+					reject('Item order should be a number')
+				} else if (!addItemVue.newItem.sku.length) {
+					reject('Item SKU cannot be blank')
+				} else if (!addItemVue.newItem.item_type_id) {
+					reject('Select an item type')
 				} else if (!addItemVue.newItem.image_url.length) {
 					reject('Item image URL cannot be blank')
 				} else if (!$.isNumeric(addItemVue.newItem.status)) {
 					reject('Item status cannot be blank')
-				} else if (!$.isNumeric(addItemVue.newItem.order)) {
-					reject('Item order should be a number')
-				} else if (addItemVue.newItem.item_type_id === null) {
-					reject('Select an item type')
 				}
 				resolve('Hurray')
 			})

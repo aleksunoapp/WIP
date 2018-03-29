@@ -16,16 +16,7 @@
 				    <button class="close" data-close="alert" @click="clearError()"></button>
 				    <span>{{errorMessage}}</span>
 				</div>
-				<div class="col-md-3">
-					<label for="form_control_1">Item Image</label>
-					<div class="image-container clickable" v-if="!itemToBeEdited.image_url.length">
-						<img width="100" height="80" src="../../../../assets/img/app/image-placeholder.png" @click="goToPageTwo()">
-					</div>
-					<div class="image-container clickable" v-else>
-						<img width="100" height="80" :src="itemToBeEdited.image_url" @click="goToPageTwo()">
-					</div>
-				</div>
-				<div class="col-md-9">
+				<div class="col-md-12">
 					<div class="form-group form-md-line-input form-md-floating-label">
 					    <input type="text" class="form-control input-sm edited" id="form_control_2" v-model="itemToBeEdited.name">
 					    <label for="form_control_2">Item Name</label>
@@ -53,7 +44,7 @@
 					<div class="form-group form-md-line-input form-md-floating-label">
 					    <input type="text" class="form-control input-sm edited" id="form_control_6" v-model="itemToBeEdited.order">
 					    <label for="form_control_6">Item Order</label>
-					</div>
+ 					</div>
 				    <div class="form-group form-md-line-input form-md-floating-label" v-if="itemTypes.length">
 						<label>Item type:</label><br>
 						<el-dropdown trigger="click" @command="updateItemType" size="mini" :show-timeout="50" :hide-timeout="50">
@@ -61,7 +52,7 @@
 								{{ itemTypeLabel }} <i class="el-icon-arrow-down el-icon--right"></i>
 							</el-button>
 							<el-dropdown-menu slot="dropdown">
-								<el-dropdown-item v-for="type in itemTypes" :command="type.id" :key="id">{{type.name}}</el-dropdown-item>
+								<el-dropdown-item v-for="type in itemTypes" :command="type.id" :key="type.id">{{type.name}}</el-dropdown-item>
 							</el-dropdown-menu>
 						</el-dropdown>
 					</div>
@@ -85,7 +76,6 @@
 				</div>
 			</div>
 			<div class="page-two" :class="{'active': selectImageMode, 'disabled': !selectImageMode}">
-				<gallery-popup v-if="selectImageMode" @selectedImage="updateImage"></gallery-popup>
 				<select-locations-popup v-if="selectLocationMode" @closeSelectLocationsPopup='updateSelectedLocations' :previouslySelected="selectedLocations"></select-locations-popup>
 			</div>
 		</div>
@@ -99,7 +89,6 @@
 import $ from 'jquery'
 import Modal from '../../../modules/Modal'
 import ItemsFunctions from '../../../../controllers/Items'
-import GalleryPopup from '../../../modules/GalleryPopup'
 import SelectLocationsPopup from '../../../modules/SelectLocationsPopup'
 import ItemTypesFunctions from '../../../../controllers/ItemTypes'
 import ajaxErrorHandler from '../../../../controllers/ErrorController'
@@ -109,7 +98,9 @@ export default {
 		return {
 			showEditItemModal: false,
 			itemToBeEdited: {
-				image_url: ''
+				image_url: '',
+				nutrition_summary: '',
+				sku: ''
 			},
 			errorMessage: '',
 			selectImageMode: false,
@@ -353,7 +344,6 @@ export default {
 	},
 	components: {
 		Modal,
-		GalleryPopup,
 		SelectLocationsPopup
 	}
 }
