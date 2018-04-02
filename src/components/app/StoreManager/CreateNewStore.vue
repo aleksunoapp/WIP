@@ -213,118 +213,6 @@
         	                    	            	<el-switch
 	        	                    	            	ref="openingSoon"
         	                    	            		v-model="newStoreMeta.opening_soon"
-        	                    	            		@change="disableMetaForm()"
-        	                    	            		active-color="#0c6"
-        	                    	            		inactive-color="#ff4949"
-        	                    	            		:active-value="1"
-        	                    	            		:inactive-value="0"
-        	                    	            		active-text="Yes"
-        	                    	            		inactive-text="No">
-        	                    	            	</el-switch>
-        	                    	            </td>
-                            	            </tr>
-        									<tr>
-        	                    	        	<td>
-        	                    	        		Store Has Delivery
-        	                    	        	</td>
-        	                    	            <td>
-	        	    								<el-switch
-	            	    								ref="delivery"
-	        	    									v-model="newStoreMeta.delivery"
-	        	    									:disabled="newStoreMeta.opening_soon === 1"
-	        	    									active-color="#0c6"
-	        	    									inactive-color="#ff4949"
-	        	    									:active-value="1"
-	        	    									:inactive-value="0"
-	        	    									active-text="Yes"
-	        	    									inactive-text="No">
-	        	    								</el-switch>
-        	                    	            </td>
-                            	            </tr>
-        									<tr>
-        	                    	        	<td>
-        	                    	        		Store Has Delivery Enabled
-        	                    	        	</td>
-        	                    	            <td>
-        	                    	            	<el-switch
-        	                    	            		v-model="newStoreMeta.current_delivery_status"
-        	                    	            		:disabled="newStoreMeta.opening_soon === 1"
-        	                    	            		active-color="#0c6"
-        	                    	            		inactive-color="#ff4949"
-        	                    	            		:active-value="1"
-        	                    	            		:inactive-value="0"
-        	                    	            		active-text="Yes"
-        	                    	            		inactive-text="No">
-        	                    	            	</el-switch>
-        	                    	            </td>
-                            	            </tr>
-	                    	                <tr>
-	                    	                	<td>
-	                    	                		GST Number
-	                    	                	</td>
-	                    	                    <td>
-	                    	                    	<input type="text" class="form-control input-sm" v-model="newStoreMeta.gst_number">
-	                    	                    </td>
-                    	                    </tr>
-    										<tr>
-    		                    	        	<td>
-    		                    	        		Gift Cards
-    		                    	        	</td>
-    		                    	            <td>
-    		                    	            	<el-switch
-    		                    	            		v-model="newStoreMeta.gift_card"
-    		                    	            		:disabled="newStoreMeta.opening_soon === 1"
-    		                    	            		active-color="#0c6"
-    		                    	            		inactive-color="#ff4949"
-    		                    	            		:active-value="1"
-    		                    	            		:inactive-value="0"
-    		                    	            		active-text="Yes"
-    		                    	            		inactive-text="No">
-    		                    	            	</el-switch>
-    		                    	            </td>
-    	                    	            </tr>
-	    									<tr>
-	    	                    	        	<td>
-	    	                    	        		Catering
-	    	                    	        	</td>
-	    	                    	            <td>
-	    	                    	            	<el-switch
-	    	                    	            		v-model="newStoreMeta.catering"
-	    	                    	            		:disabled="newStoreMeta.opening_soon === 1"
-	    	                    	            		active-color="#0c6"
-	    	                    	            		inactive-color="#ff4949"
-	    	                    	            		:active-value="1"
-	    	                    	            		:inactive-value="0"
-	    	                    	            		active-text="Yes"
-	    	                    	            		inactive-text="No">
-	    	                    	            	</el-switch>
-	    	                    	            </td>
-	                        	            </tr>
-        									<tr>
-        	                    	        	<td>
-        	                    	        		Catering Enabled
-        	                    	        	</td>
-        	                    	            <td>
-        	                    	            	<el-switch
-        	                    	            		v-model="newStoreMeta.current_catering_status"
-        	                    	            		:disabled="newStoreMeta.opening_soon === 1"
-        	                    	            		active-color="#0c6"
-        	                    	            		inactive-color="#ff4949"
-        	                    	            		:active-value="1"
-        	                    	            		:inactive-value="0"
-        	                    	            		active-text="Yes"
-        	                    	            		inactive-text="No">
-        	                    	            	</el-switch>
-        	                    	            </td>
-                            	            </tr>
-        									<tr>
-        	                    	        	<td>
-        	                    	        		Digital Rewards
-        	                    	        	</td>
-        	                    	            <td>
-        	                    	            	<el-switch
-        	                    	            		v-model="newStoreMeta.digital_reward"
-        	                    	            		:disabled="newStoreMeta.opening_soon === 1"
         	                    	            		active-color="#0c6"
         	                    	            		inactive-color="#ff4949"
         	                    	            		:active-value="1"
@@ -358,7 +246,7 @@
     	                    	    		    <td>
     	                    	    		    	<el-switch
     	                    	    		    		v-model="newStoreMeta.current_online_ordering_status"
-    	                    	    		    		:disabled="newStoreMeta.opening_soon === 1"
+    	                    	    		    		:disabled="newStoreMeta.online_ordering === 0 || newStoreMeta.opening_soon === 1"
     	                    	    		    		active-color="#0c6"
     	                    	    		    		inactive-color="#ff4949"
     	                    	    		    		:active-value="1"
@@ -368,20 +256,146 @@
     	                    	    		    	</el-switch>
     	                    	    		    </td>
     		                    	    	</tr>
+        									<tr>
+        	                    	        	<td>
+        	                    	        		Store Has Delivery
+        	                    	        	</td>
+        	                    	            <td>
+	        	    								<el-switch
+	            	    								ref="delivery"
+	        	    									v-model="newStoreMeta.delivery"
+	        	    									:disabled="newStoreMeta.opening_soon === 1"
+	        	    									active-color="#0c6"
+	        	    									inactive-color="#ff4949"
+	        	    									:active-value="1"
+	        	    									:inactive-value="0"
+	        	    									active-text="Yes"
+	        	    									inactive-text="No">
+	        	    								</el-switch>
+        	                    	            </td>
+                            	            </tr>
+        									<tr>
+        	                    	        	<td>
+        	                    	        		Store Has Delivery Enabled
+        	                    	        	</td>
+        	                    	            <td>
+        	                    	            	<el-switch
+        	                    	            		v-model="newStoreMeta.current_delivery_status"
+        	                    	            		:disabled="newStoreMeta.delivery === 0 || newStoreMeta.opening_soon === 1"
+        	                    	            		active-color="#0c6"
+        	                    	            		inactive-color="#ff4949"
+        	                    	            		:active-value="1"
+        	                    	            		:inactive-value="0"
+        	                    	            		active-text="Yes"
+        	                    	            		inactive-text="No">
+        	                    	            	</el-switch>
+        	                    	            </td>
+                            	            </tr>
+        									<tr>
+        	                    	        	<td>
+        	                    	        		Catering
+        	                    	        	</td>
+        	                    	            <td>
+        	                    	            	<el-switch
+        	                    	            		v-model="newStoreMeta.catering"
+        	                    	            		:disabled="newStoreMeta.opening_soon === 1"
+        	                    	            		active-color="#0c6"
+        	                    	            		inactive-color="#ff4949"
+        	                    	            		:active-value="1"
+        	                    	            		:inactive-value="0"
+        	                    	            		active-text="Yes"
+        	                    	            		inactive-text="No">
+        	                    	            	</el-switch>
+        	                    	            </td>
+                            	            </tr>
+        									<tr>
+        	                    	        	<td>
+        	                    	        		Catering Enabled
+        	                    	        	</td>
+        	                    	            <td>
+        	                    	            	<el-switch
+        	                    	            		v-model="newStoreMeta.current_catering_status"
+        	                    	            		:disabled="newStoreMeta.catering === 0 || newStoreMeta.opening_soon === 1"
+        	                    	            		active-color="#0c6"
+        	                    	            		inactive-color="#ff4949"
+        	                    	            		:active-value="1"
+        	                    	            		:inactive-value="0"
+        	                    	            		active-text="Yes"
+        	                    	            		inactive-text="No">
+        	                    	            	</el-switch>
+        	                    	            </td>
+                            	            </tr>
+
+
+    										<tr>
+    		                    	        	<td>
+    		                    	        		Gift Cards
+    		                    	        	</td>
+    		                    	            <td>
+    		                    	            	<el-switch
+    		                    	            		v-model="newStoreMeta.gift_card"
+    		                    	            		:disabled="newStoreMeta.opening_soon === 1"
+    		                    	            		active-color="#0c6"
+    		                    	            		inactive-color="#ff4949"
+    		                    	            		:active-value="1"
+    		                    	            		:inactive-value="0"
+    		                    	            		active-text="Yes"
+    		                    	            		inactive-text="No">
+    		                    	            	</el-switch>
+    		                    	            </td>
+    	                    	            </tr>
+
+        									<tr>
+        	                    	        	<td>
+        	                    	        		Digital Rewards
+        	                    	        	</td>
+        	                    	            <td>
+        	                    	            	<el-switch
+        	                    	            		v-model="newStoreMeta.digital_reward"
+        	                    	            		:disabled="newStoreMeta.opening_soon === 1"
+        	                    	            		active-color="#0c6"
+        	                    	            		inactive-color="#ff4949"
+        	                    	            		:active-value="1"
+        	                    	            		:inactive-value="0"
+        	                    	            		active-text="Yes"
+        	                    	            		inactive-text="No">
+        	                    	            	</el-switch>
+        	                    	            </td>
+                            	            </tr>
+	                    	                <tr>
+	                    	                	<td>
+	                    	                		GST Number
+	                    	                	</td>
+	                    	                    <td>
+	                    	                    	<input 
+	                    	                    		type="text" 
+	                    	                    		class="form-control input-sm" 
+	                    	                    		v-model="newStoreMeta.gst_number"
+	                    	                    		:disabled="newStoreMeta.opening_soon === 1" >
+	                    	                    </td>
+                    	                    </tr>
 		                    	            <tr>
                 	                        	<td>
-                	                        		Merchant ID
+                	                        		Payment Processor Merchant ID (MID)
                 	                        	</td>
                 	                            <td>
-                	                            	<input type="text" class="form-control input-sm" :disabled="newStoreMeta.opening_soon === 1" v-model="newStoreMeta.merchant_id">
+                	                            	<input 
+                	                            		type="text" 
+                	                            		class="form-control input-sm" 
+                	                            		:disabled="newStoreMeta.opening_soon === 1" 
+                	                            		v-model="newStoreMeta.merchant_id">
                 	                            </td>
             	                            </tr>
             	                            <tr>
             	                            	<td>
-            	                            		Merchant Key
+            	                            		Payment Processor Merchant Key
             	                            	</td>
             	                                <td>
-            	                                	<input type="text" class="form-control input-sm" :disabled="newStoreMeta.opening_soon === 1" v-model="newStoreMeta.merchant_key">
+            	                                	<input 
+            	                                		type="text" 
+            	                                		class="form-control input-sm" 
+            	                                		:disabled="newStoreMeta.opening_soon === 1" 
+            	                                		v-model="newStoreMeta.merchant_key">
             	                                </td>
 			                    	        </tr>
 			                    	    </tbody>
@@ -814,9 +828,6 @@ export default {
 		this.$refs.name.focus()
 	},
 	methods: {
-		disableMetaForm () {
-
-		},
 		/**
 		 * To move to the selected step
 		 * @function
