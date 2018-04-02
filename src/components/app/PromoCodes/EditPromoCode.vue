@@ -83,6 +83,7 @@
 	        					v-model="promoCode.start_from" 
 	        					format="yyyy-MM-dd" 
 	        					value-format="yyyy-MM-dd" 
+	        					:picker-options="{disabledDate: afterToday}"
 	        					:clearable="false" 
 	        					placeholder="Select start date">
         					</el-date-picker>
@@ -93,6 +94,7 @@
 		        				v-model="promoCode.end_on" 
 		        				format="yyyy-MM-dd" 
 		        				value-format="yyyy-MM-dd" 
+		        				:picker-options="{disabledDate: afterStartFrom}"
 		        				:clearable="false" 
 		        				placeholder="Select end date">
 	        				</el-date-picker>
@@ -237,6 +239,82 @@ export default {
 		this.showEditPromoCodeModal = true
 	},
 	methods: {
+		/**
+		 * To disable dates up to and including today
+		 * @function
+		 * @param {string} date - The date to evaluate
+		 * @returns {boolean} false if date should not be disabled, true if it should
+		 */
+		afterToday (date) {
+			try {
+				let input = new Date(date)
+				input.setMinutes(input.getMinutes() + input.getTimezoneOffset())
+				let today = new Date()
+				let inputDay = input.getDate()
+				if (inputDay < 10) {
+					inputDay = '0' + inputDay
+				}
+				let inputMonth = input.getMonth()
+				if (inputMonth < 10) {
+					inputMonth = '0' + inputMonth
+				}
+				let inputYear = input.getFullYear()
+				let todayDay = today.getDate()
+				if (todayDay < 10) {
+					todayDay = '0' + todayDay
+				}
+				let todayMonth = today.getMonth()
+				if (todayMonth < 10) {
+					todayMonth = '0' + todayMonth
+				}
+				let todayYear = today.getFullYear()
+
+				return `${inputYear}-${inputMonth}-${inputDay}` <= `${todayYear}-${todayMonth}-${todayDay}`
+			} catch (err) {
+				return false
+			}
+		},
+		/**
+		 * To disable dates up to and including the start date
+		 * @function
+		 * @param {string} date - The date to evaluate
+		 * @returns {boolean} false if date should not be disabled, true if it should
+		 */
+		afterStartFrom (date) {
+			try {
+				// wait for start date to be selected
+				if (this.promoCode.start_from === '' || this.promoCode.start_from === null || this.afterToday(this.promoCode.start_from)) return true
+
+				let input = new Date(date)
+				input.setMinutes(input.getMinutes() + input.getTimezoneOffset())
+				let compare = new Date(this.promoCode.start_from)
+				compare.setMinutes(compare.getMinutes() + compare.getTimezoneOffset())
+
+				let inputDay = input.getDate()
+				if (inputDay < 10) {
+					inputDay = '0' + inputDay
+				}
+				let inputMonth = input.getMonth()
+				if (inputMonth < 10) {
+					inputMonth = '0' + inputMonth
+				}
+				let inputYear = input.getFullYear()
+
+				let compareDay = compare.getDate()
+				if (compareDay < 10) {
+					compareDay = '0' + compareDay
+				}
+				let compareMonth = compare.getMonth()
+				if (compareMonth < 10) {
+					compareMonth = '0' + compareMonth
+				}
+				let compareYear = compare.getFullYear()
+
+				return `${inputYear}-${inputMonth}-${inputDay}` <= `${compareYear}-${compareMonth}-${compareDay}`
+			} catch (err) {
+				return false
+			}
+		},
 		/**
 		 * To get details of the promo code being edited.
 		 * @function
