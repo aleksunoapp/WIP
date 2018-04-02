@@ -165,6 +165,12 @@
 										<span class="title">Stores</span>
 									</router-link>
 								</li>
+								<li class="nav-item" v-bind:class="{'active': currentRoute === 'store_manager' && currentSubRoute === 'amenities'}" id="store_manager_amenities_link">
+									<router-link to="/app/store_manager/amenities" class="nav-link">
+										<i class="fa fa-wifi"></i>
+										<span class="title">Amenities</span>
+									</router-link>
+								</li>
 							</ul>
 						</li>
 						<li class="nav-item" v-bind:class="{'active': currentRoute === 'store_manager'}" id="store_manager_link" v-if="$root.accountType === 'store_admin'">
@@ -256,12 +262,6 @@
 									<router-link to="/app/menu_manager/item_attributes" class="nav-link">
 										<i class="fa fa-sticky-note-o"></i>
 										<span class="title">Attributes</span>
-									</router-link>
-								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'menu_manager' && currentSubRoute === 'amenities'}" id="menu_manager_amenities_link">
-									<router-link to="/app/menu_manager/amenities" class="nav-link">
-										<i class="fa fa-wifi"></i>
-										<span class="title">Amenities</span>
 									</router-link>
 								</li>
 							</ul>

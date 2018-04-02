@@ -2,9 +2,12 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '../components/Login'
 import App from '../components/App'
+// Store Manager
 import CreateNewStore from '../components/app/StoreManager/CreateNewStore'
 import StoreList from '../components/app/StoreManager/StoreList'
 import EditStore from '../components/app/StoreManager/EditStore'
+import Amenities from '../components/app/MenuManager/Amenities'
+
 import NewsFeed from '../components/app/NewsFeed'
 import SocialFeed from '../components/app/SocialFeed'
 // Tax Manager
@@ -22,7 +25,6 @@ import Options from '../components/app/MenuManager/Options'
 import OptionItems from '../components/app/MenuManager/OptionItems'
 import ModifierItems from '../components/app/MenuManager/ModifierItems'
 import ItemAttributes from '../components/app/MenuManager/ItemAttributes'
-import Amenities from '../components/app/MenuManager/Amenities'
 import UserList from '../components/app/UserManager/UserList'
 import UserProfile from '../components/app/UserManager/UserProfile'
 import UserGroups from '../components/app/UserManager/UserGroups'
@@ -99,7 +101,6 @@ const router = new Router({
 				{path: 'menu_manager/options/:option_id/option_items', name: 'OptionItems', component: OptionItems, meta: { adminOnly: false }},
 				{path: 'menu_manager/modifier_items/:modifier_id', name: 'Modifier Items', component: ModifierItems, children: [{path: 'edit_modifier_item/:modifier_item_id', name: 'Edit Modifier Item'}], meta: { adminOnly: false }},
 				{path: 'menu_manager/item_attributes', name: 'Item Attributes', component: ItemAttributes, meta: { adminOnly: false }},
-				{path: 'menu_manager/amenities', name: 'Amenities', component: Amenities, meta: { adminOnly: false }},
 				// roles manager routes
 				{path: 'admin', redirect: 'admin/brand_admins', meta: { adminOnly: true }},
 				{path: 'admin/brand_admins', name: 'Brand Admins', component: BrandAdmins, meta: { adminOnly: true }},
@@ -111,6 +112,7 @@ const router = new Router({
 				{path: 'store_manager/create_new', name: 'Create New Store', component: CreateNewStore, meta: { adminOnly: true }},
 				{path: 'store_manager/edit_store/:store_id', name: 'Edit Store', component: EditStore, meta: { adminOnly: false }},
 				{path: 'store_manager/stores', name: 'Stores', component: StoreList, meta: { adminOnly: false }},
+				{path: 'store_manager/amenities', name: 'Amenities', component: Amenities, meta: { adminOnly: false }},
 				{path: 'store_manager/store_groups', name: 'Store Groups', component: StoreGroups, meta: { adminOnly: true }},
 				// user manager routes
 				{path: 'user_manager', redirect: 'user_manager/users', meta: { adminOnly: true }},
