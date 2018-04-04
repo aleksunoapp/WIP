@@ -381,17 +381,16 @@
 					<div class="row">
 						<div class="col-xs-12 text-center">
 							<qrcode 
+								class="limited-height"
 								:content="promotionForQrCode.qr_code"
+								:image="freshiiLogo"
+								color="#007B3F"
+								backgroundColor="#ffffff"
+								:width="1000"
 								:downloadName="`${promotionForQrCode.name}.png`"
-								id="canvas-1"
+								id="qrcode1"
 							>
 							</qrcode>
-							<!-- 
-								:width="109"
-								:download="downloadTrigger"
-								:image="`${promotionForQrCode.image_url}.png`"
-							 -->
-							<!-- <qrcode class="limited-height" :text="promotionForQrCode.qr_code "></qrcode> -->
 						</div>
 					</div>
 					<div class="row margin-top-20">
@@ -540,6 +539,7 @@ import MenuModifierTree from '../modules/MenuModifierTree'
 import EditPromotion from './Promotions/EditPromotion'
 import DeletePromotion from './Promotions/DeletePromotion'
 import $ from 'jquery'
+import freshiiLogo from '../../../static/client_logo.png'
 
 export default {
 	data () {
@@ -593,6 +593,7 @@ export default {
 			currentPage: 1,
 			showQrCodeModal: false,
 			promotionForQrCode: {
+				name: '',
 				promotion_id: null,
 				allLocations: true,
 				qr_code: '',
@@ -613,7 +614,8 @@ export default {
 			provider: {
 				downloadTrigger: false,
 				width: 200
-			}
+			},
+			freshiiLogo: freshiiLogo
 		}
 	},
 	// Allows any child component to `inject: ['provider']` and have access to it.
@@ -654,23 +656,6 @@ export default {
 		this.getAllPromoCodes()
 	},
 	methods: {
-		/**
-		 * To trigger a .png file download.
-		 * @function
-		 * @returns {undefined}
-		 */
-		downloadOnce () {
-			if (this.provider.downloadTrigger === false) {
-				console.log('downloadOnce false > true')
-				this.provider.downloadTrigger = true
-				this.provider.width = 400
-				// this.downloadOnce()
-			}
-			// if (this.download === true) {
-			// 	console.log('downloadOnce true > false')
-			// 	this.download = false
-			// }
-		},
 		/**
 		 * To open menu item selection.
 		 * @function
@@ -842,6 +827,7 @@ export default {
 			event.stopPropagation()
 			let filtered = this.qrCodes.filter(code => code.promotion_id === promotion.id)
 			if (filtered.length) {
+				this.promotionForQrCode.name = promotion.name
 				this.promotionForQrCode.qr_code = filtered[0].qr_code
 				this.promotionForQrCode.qr_code_id = filtered[0].id
 				this.promotionForQrCode.locations = filtered[0].locations
@@ -860,6 +846,7 @@ export default {
 		 */
 		resetPromotionForQrCode () {
 			this.promotionForQrCode = {
+				name: '',
 				promotion_id: null,
 				allLocations: true,
 				qr_code: '',

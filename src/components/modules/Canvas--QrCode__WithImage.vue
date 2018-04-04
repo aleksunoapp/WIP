@@ -1,9 +1,28 @@
 <template>
-  <canvas 
-    :id="this.id"
-    :ref="this.id"
-  >
-  </canvas>
+	<div class="qr-code-container">
+		<div class="qr-image-container">
+			<a 
+				@click="downloadAsImage()"
+				title="Click to download the QR code" 
+				alt="Click to download the QR code"
+			>
+				<img
+					class="qr-image"
+					crossOrigin="Anonymous"
+					ref="imageTag"
+				>
+			</a>
+		</div>
+		<div>
+			<button 
+				@click="downloadAsImage()" 
+				type="button" 
+				class="btn btn-circle btn-icon-only btn-default clickable"
+			>
+				<i class="fa fa-download" aria-hidden="true"></i>
+			</button>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -18,12 +37,20 @@ export default {
 			required: true
 		},
 
-		// download trigger, download starts on true
-		download: {
-			type: Boolean,
-			required: false,
-			default: () => false
+		// hex color value
+		color: {
+			type: String,
+			default: () => '#000000',
+			required: false
 		},
+
+		// hex color value
+		backgroundColor: {
+			type: String,
+			default: () => '#ffffff',
+			required: false
+		},
+
 		// name of downloaded file
 		downloadName: {
 			type: String,
@@ -41,7 +68,7 @@ export default {
 		// number of pixels (I think) to use as value of CSS width; positive float
 		width: {
 			type: Number,
-			default: () => 100,
+			default: () => 1000,
 			required: false
 		},
 
@@ -52,37 +79,68 @@ export default {
 			required: true
 		}
 	},
-	data () {
-		return {
-			start: true
-		}
-	},
-	inject: ['downloadTrigger', 'width'],
 	mounted () {
 		const options = {
-			canvas: this.$refs[this.id],
+			image: this.$refs.imageTag,
+			download: false,
 			content: this.content,
 			width: this.width,
-			logo: this.image ? {src: this.image} : undefined
+			logo: {
+				src: this.image ? this.image : undefined
+			},
+			nodeQrCodeOptions: {
+				color: {
+					dark: this.color,
+					light: this.backgroundColor
+				}
+			}
 		}
 
-		qrCodeWithLogo.toCanvas(options)
-	},
-	updated () {
-		console.log('updated canvas')
+		qrCodeWithLogo.toImage(options)
 	},
 	methods: {
-    // Download function, linked to a download button <a href="#">
-    // IMPORTANT: Call it from within a onclick event.
+		downloadAsImage () {
+			const options = {
+				image: this.$refs.imageTag,
+				download: true,
+				downloadName: this.downloadName,
+				content: this.content,
+				width: this.width,
+				logo: {
+					src: this.image ? this.image : undefined
+				},
+				nodeQrCodeOptions: {
+					color: {
+						dark: this.color,
+						light: this.backgroundColor
+					}
+				}
+			}
 
-    // https://stackoverflow.com/questions/12796513/html5-canvas-to-png-file?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
-    // https://jsfiddle.net/AbdiasSoftware/7PRNN/
-		downloadCanvas (link, canvasId, filename) {
-			link.href = document.getElementById(canvasId).toDataURL()
-			link.download = filename
-
-			this.$emit('downloadCanvas', {link, canvasId, filename})
+			qrCodeWithLogo.toImage(options)
 		}
 	}
 }
 </script>
+<style scoped>
+.qr-code-container {
+	max-width: 100%;
+	max-height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+.qr-image-container {
+	max-width: 100%;
+	max-height: 100%;
+	height: calc(100% - 35px);
+}
+.qr-image {
+	max-height: 100%;
+	max-width: 100%;
+}
+.download-button-container {
+	height: 35px;
+}
+</style>
