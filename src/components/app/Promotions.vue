@@ -380,7 +380,18 @@
 				<div v-if="promotionForQrCode.qr_code.length">
 					<div class="row">
 						<div class="col-xs-12 text-center">
-							<qrcode class="limited-height" :text="promotionForQrCode.qr_code "></qrcode>
+							<qrcode 
+								:content="promotionForQrCode.qr_code"
+								:downloadName="`${promotionForQrCode.name}.png`"
+								id="canvas-1"
+							>
+							</qrcode>
+							<!-- 
+								:width="109"
+								:download="downloadTrigger"
+								:image="`${promotionForQrCode.image_url}.png`"
+							 -->
+							<!-- <qrcode class="limited-height" :text="promotionForQrCode.qr_code "></qrcode> -->
 						</div>
 					</div>
 					<div class="row margin-top-20">
@@ -522,7 +533,7 @@ import PromoCodesFunctions from '../../controllers/PromoCodes'
 import App from '../../controllers/App'
 import ajaxErrorHandler from '../../controllers/ErrorController'
 import Modal from '../modules/Modal'
-import Qrcode from '../modules/QRCode'
+import Qrcode from '../modules/Canvas--QrCode__WithImage.vue'
 import GalleryPopup from '../modules/GalleryPopup'
 import NoResults from '../modules/NoResults'
 import MenuModifierTree from '../modules/MenuModifierTree'
@@ -598,7 +609,18 @@ export default {
 			showMenuModifierTreeModal: false,
 			showPromoCodesModal: false,
 			promoCodesErrorMessage: '',
-			promoCodes: []
+			promoCodes: [],
+			provider: {
+				downloadTrigger: false,
+				width: 200
+			}
+		}
+	},
+	// Allows any child component to `inject: ['provider']` and have access to it.
+	provide () {
+		return {
+			downloadTrigger: this.provider.downloadTrigger,
+			width: this.provider.width
 		}
 	},
 	computed: {
@@ -632,6 +654,23 @@ export default {
 		this.getAllPromoCodes()
 	},
 	methods: {
+		/**
+		 * To trigger a .png file download.
+		 * @function
+		 * @returns {undefined}
+		 */
+		downloadOnce () {
+			if (this.provider.downloadTrigger === false) {
+				console.log('downloadOnce false > true')
+				this.provider.downloadTrigger = true
+				this.provider.width = 400
+				// this.downloadOnce()
+			}
+			// if (this.download === true) {
+			// 	console.log('downloadOnce true > false')
+			// 	this.download = false
+			// }
+		},
 		/**
 		 * To open menu item selection.
 		 * @function
