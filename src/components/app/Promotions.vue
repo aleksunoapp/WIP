@@ -532,7 +532,7 @@ import PromoCodesFunctions from '../../controllers/PromoCodes'
 import App from '../../controllers/App'
 import ajaxErrorHandler from '../../controllers/ErrorController'
 import Modal from '../modules/Modal'
-import Qrcode from '../modules/Canvas--QrCode__WithImage.vue'
+import Qrcode from '../modules/QRCode'
 import GalleryPopup from '../modules/GalleryPopup'
 import NoResults from '../modules/NoResults'
 import MenuModifierTree from '../modules/MenuModifierTree'
@@ -616,13 +616,6 @@ export default {
 				width: 200
 			},
 			freshiiLogo: freshiiLogo
-		}
-	},
-	// Allows any child component to `inject: ['provider']` and have access to it.
-	provide () {
-		return {
-			downloadTrigger: this.provider.downloadTrigger,
-			width: this.provider.width
 		}
 	},
 	computed: {
