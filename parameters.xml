@@ -4,4 +4,8 @@
 		<parameterEntry kind="TextFile" scope="\\*.js$" match="#{apiUrl}#" />
 		<parameterEntry kind="TextFile" scope="\\*.js.map$" match="#{apiUrl}#" />
 	</parameter>
+	<parameter name="UserActivityLog" defaultValue="#{UserActivityLog}#" >
+		<parameterEntry kind="TextFile" scope="\\*.js$" match="#{UserActivityLog}#" />
+		<parameterEntry kind="TextFile" scope="\\*.js.map$" match="#{UserActivityLog}#" />
+	</parameter>
 </parameters>
