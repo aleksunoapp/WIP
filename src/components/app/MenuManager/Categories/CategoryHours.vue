@@ -65,13 +65,25 @@
 								<td>
 									<el-time-select 
 										v-model="newHours.category_hours[0].open_time" 
-										placeholder="Start">
+										placeholder="Start"
+										:picker-options="{
+											start: '00:00',
+											step: '00:15',
+											end: '23:59'
+										}"
+									>
 									</el-time-select>
 								</td>
 								<td>
 									<el-time-select 
 										v-model="newHours.category_hours[0].close_time" 
-										placeholder="End">
+										placeholder="End"
+										:picker-options="{
+											start: '00:00',
+											step: '00:15',
+											end: '23:59'
+										}"
+									>
 									</el-time-select>
 								</td>
 								<td>
@@ -91,13 +103,25 @@
 								<td>
 									<el-time-select 
 										v-model="newHours.category_hours[1].open_time" 
-										placeholder="Start">
+										placeholder="Start"
+										:picker-options="{
+											start: '00:00',
+											step: '00:15',
+											end: '23:59'
+										}"
+									>
 									</el-time-select>
 								</td>
 								<td>
 									<el-time-select 
 										v-model="newHours.category_hours[1].close_time" 
-										placeholder="End">
+										placeholder="End"
+										:picker-options="{
+											start: '00:00',
+											step: '00:15',
+											end: '23:59'
+										}"
+									>
 									</el-time-select>
 								</td>
 								<td>
@@ -117,13 +141,25 @@
 								<td>
 									<el-time-select 
 										v-model="newHours.category_hours[2].open_time" 
-										placeholder="Start">
+										placeholder="Start"
+										:picker-options="{
+											start: '00:00',
+											step: '00:15',
+											end: '23:59'
+										}"
+									>
 									</el-time-select>
 								</td>
 								<td>
 									<el-time-select 
 										v-model="newHours.category_hours[2].close_time" 
-										placeholder="End">
+										placeholder="End"
+										:picker-options="{
+											start: '00:00',
+											step: '00:15',
+											end: '23:59'
+										}"
+									>
 									</el-time-select>
 								</td>
 								<td>
@@ -143,13 +179,25 @@
 								<td>
 									<el-time-select 
 										v-model="newHours.category_hours[3].open_time" 
-										placeholder="Start">
+										placeholder="Start"
+										:picker-options="{
+											start: '00:00',
+											step: '00:15',
+											end: '23:59'
+										}"
+									>
 									</el-time-select>
 								</td>
 								<td>
 									<el-time-select 
 										v-model="newHours.category_hours[3].close_time" 
-										placeholder="End">
+										placeholder="End"
+										:picker-options="{
+											start: '00:00',
+											step: '00:15',
+											end: '23:59'
+										}"
+									>
 									</el-time-select>
 								</td>
 								<td>
@@ -169,13 +217,25 @@
 								<td>
 									<el-time-select 
 										v-model="newHours.category_hours[4].open_time" 
-										placeholder="Start">
+										placeholder="Start"
+										:picker-options="{
+											start: '00:00',
+											step: '00:15',
+											end: '23:59'
+										}"
+									>
 									</el-time-select>
 								</td>
 								<td>
 									<el-time-select 
 										v-model="newHours.category_hours[4].close_time" 
-										placeholder="End">
+										placeholder="End"
+										:picker-options="{
+											start: '00:00',
+											step: '00:15',
+											end: '23:59'
+										}"
+									>
 									</el-time-select>
 								</td>
 								<td>
@@ -195,13 +255,25 @@
 								<td>
 									<el-time-select 
 										v-model="newHours.category_hours[5].open_time" 
-										placeholder="Start">
+										placeholder="Start"
+										:picker-options="{
+											start: '00:00',
+											step: '00:15',
+											end: '23:59'
+										}"
+									>
 									</el-time-select>
 								</td>
 								<td>
 									<el-time-select 
 										v-model="newHours.category_hours[5].close_time" 
-										placeholder="End">
+										placeholder="End"
+										:picker-options="{
+											start: '00:00',
+											step: '00:15',
+											end: '23:59'
+										}"
+									>
 									</el-time-select>
 								</td>
 								<td>
@@ -221,13 +293,25 @@
 								<td>
 									<el-time-select 
 										v-model="newHours.category_hours[6].open_time" 
-										placeholder="Start">
+										placeholder="Start"
+										:picker-options="{
+											start: '00:00',
+											step: '00:15',
+											end: '23:59'
+										}"
+									>
 									</el-time-select>
 								</td>
 								<td>
 									<el-time-select 
 										v-model="newHours.category_hours[6].close_time" 
-										placeholder="End">
+										placeholder="End"
+										:picker-options="{
+											start: '00:00',
+											step: '00:15',
+											end: '23:59'
+										}"
+									>
 									</el-time-select>
 								</td>
 								<td>
@@ -292,14 +376,26 @@
 									<el-time-select 
 										v-model="day.open_time" 
 										class="narrow-picker"
-										placeholder="Start">
+										placeholder="Start"
+										:picker-options="{
+											start: '00:00',
+											step: '00:15',
+											end: '23:59'
+										}"
+									>
 									</el-time-select>
 								</td>
 								<td>
 									<el-time-select 
 										v-model="day.close_time" 
 										class="narrow-picker"
-										placeholder="End">
+										placeholder="End"
+										:picker-options="{
+											start: '00:00',
+											step: '00:15',
+											end: '23:59'
+										}"
+									>
 									</el-time-select>
 								</td>
 								<td>
