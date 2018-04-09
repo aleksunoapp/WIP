@@ -1,62 +1,127 @@
 <template>
 	<div class="qr-code-container">
 		<div class="qr-image-container">
-			<a :href="`data:image/png;base64, ${base64}`" download="QR_code.png" title="Click to download the QR code" alt="Click to download the QR code">
-				<img class="qr-image" :src="`data:image/png;base64, ${base64}`" alt="Promotion QR code">
+			<a 
+				@click="downloadAsImage()"
+				title="Click to download the QR code" 
+				alt="Click to download the QR code"
+			>
+				<img
+					class="qr-image"
+					crossOrigin="Anonymous"
+					ref="imageTag"
+				>
 			</a>
 		</div>
 		<div>
-			<a :href="`data:image/png;base64, ${base64}`" download="QR_code.png" title="Download the QR code" alt="Download the QR code">
-				<button type="button" class="btn btn-circle btn-icon-only btn-default clickable"><i class="fa fa-download" aria-hidden="true"></i></button>
-			</a>
+			<button 
+				@click="downloadAsImage()" 
+				type="button" 
+				class="btn btn-circle btn-icon-only btn-default clickable"
+			>
+				<i class="fa fa-download" aria-hidden="true"></i>
+			</button>
 		</div>
 	</div>
 </template>
 
 <script>
-import QRImage from 'qr-image'
+import qrCodeWithLogo from 'qr-code-with-logo'
 
 export default {
 	props: {
-		// string to encode
-		text: {
+		// content to encode; string, required
+		content: {
 			type: String,
-			required: true,
-			default: () => ''
-		}
-	},
-	data () {
-		return {
-			base64: null
+			default: () => '',
+			required: true
+		},
+
+		// hex color value
+		color: {
+			type: String,
+			default: () => '#000000',
+			required: false
+		},
+
+		// hex color value
+		backgroundColor: {
+			type: String,
+			default: () => '#ffffff',
+			required: false
+		},
+
+		// name of downloaded file
+		downloadName: {
+			type: String,
+			required: false,
+			default: () => 'UNOcode.png'
+		},
+
+		// path to file containing image to place in center; string
+		image: {
+			type: String,
+			default: () => '',
+			required: false
+		},
+
+		// number of pixels (I think) to use as value of CSS width; positive float
+		width: {
+			type: Number,
+			default: () => 1000,
+			required: false
+		},
+
+		// value of id attribute of HTML canvas element; string, required
+		id: {
+			type: String,
+			default: () => 'canvasVue',
+			required: true
 		}
 	},
 	mounted () {
-		this.generateImage()
-	},
-	methods: {
-		/**
-		 * To generate a png QR code.
-		 * @function
-		 * @returns {array} - A Uint8 buffer array
-		 */
-		generateImage () {
-			let image = QRImage.imageSync(this.text, { type: 'png', size: 30 })
-			this.decodeUint8(image)
-		},
-		/**
-		 * To decode the u8int array to base64
-		 * @function
-		 * @param {array} uint8 - A uint8 array to decode
-		 * @returns {undefined}
-		 */
-		decodeUint8 (uint8) {
-			this.base64 = window.btoa(String.fromCharCode.apply(null, uint8))
+		const options = {
+			image: this.$refs.imageTag,
+			download: false,
+			content: this.content,
+			width: this.width,
+			logo: {
+				src: this.image ? this.image : undefined
+			},
+			nodeQrCodeOptions: {
+				color: {
+					dark: this.color,
+					light: this.backgroundColor
+				}
+			}
 		}
 
+		qrCodeWithLogo.toImage(options)
+	},
+	methods: {
+		downloadAsImage () {
+			const options = {
+				image: this.$refs.imageTag,
+				download: true,
+				downloadName: this.downloadName,
+				content: this.content,
+				width: this.width,
+				logo: {
+					src: this.image ? this.image : undefined
+				},
+				nodeQrCodeOptions: {
+					color: {
+						dark: this.color,
+						light: this.backgroundColor
+					}
+				}
+			}
+
+			qrCodeWithLogo.toImage(options)
+		}
 	}
 }
 </script>
-
 <style scoped>
 .qr-code-container {
 	max-width: 100%;

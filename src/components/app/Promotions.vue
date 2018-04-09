@@ -83,7 +83,7 @@
 		        		<div class="col-md-5">
 							<div>
 								<p class="grey-label">Call to action type</p>
-								<el-select v-model="newPromotion.cta_type" placeholder="Select type" size="small" class="margin-bottom-15" id="form_control_cta_type">
+								<el-select v-model="newPromotion.cta_type" placeholder="Select type" size="small" class="margin-bottom-15" id="form_control_cta_type" @change="clearCtaValue()">
 									<el-option label="hyperlink" value="hyperlink"></el-option>
 									<el-option label="menu item" value="menu_item"></el-option>
 									<el-option label="promo code" value="promo_code"></el-option>
@@ -93,13 +93,17 @@
 									<el-option label="video" value="video"></el-option>
 								</el-select>
 							</div>
-		        			<div class="form-group form-md-line-input form-md-floating-label" v-show="newPromotion.cta_type !== 'menu_item'">
+		        			<div class="form-group form-md-line-input form-md-floating-label" v-show="newPromotion.cta_type !== 'menu_item' && newPromotion.cta_type !== 'promo_code'">
 		        			    <input type="text" class="form-control input-sm" :class="{'edited': newPromotion.cta_value.length}" id="form_control_cta_value" v-model="newPromotion.cta_value">
 		        			    <label for="form_control_cta_value">Call to action value</label>
 		        			</div>
 		        			<div class="form-group form-md-line-input form-md-floating-label" v-show="newPromotion.cta_type === 'menu_item'">
 		        				<button type="button" class="btn blue btn-outline" @click="openMenuModifierTree()">Select</button>	
 		        				<p class="grey-label margin-top-10" v-show="newPromotion.skuArray.length">Selected {{newPromotion.skuArray.length}} item<span v-show="newPromotion.skuArray.length !== 1">s</span></p>									
+		        			</div>
+		        			<div class="form-group form-md-line-input form-md-floating-label" v-show="newPromotion.cta_type === 'promo_code'">
+		        				<button type="button" class="btn blue btn-outline" @click="openPromoCodesCodeModal()">Select</button>
+		        				<p class="grey-label margin-top-10" v-show="newPromotion.cta_value.length">Selected {{newPromotion.cta_value.split(',').length}} code<span v-show="newPromotion.cta_value.split(',').length !== 1">s</span></p>
 		        			</div>
 		        			<div class="form-group form-md-line-input form-md-floating-label">
 		        			    <input type="text" class="form-control input-sm" :class="{'edited': newPromotion.cta_text.length}" id="form_control_cta_text" v-model="newPromotion.cta_text">
@@ -376,7 +380,17 @@
 				<div v-if="promotionForQrCode.qr_code.length">
 					<div class="row">
 						<div class="col-xs-12 text-center">
-							<qrcode class="limited-height" :text="promotionForQrCode.qr_code "></qrcode>
+							<qrcode 
+								class="limited-height"
+								:content="promotionForQrCode.qr_code"
+								:image="freshiiLogo"
+								color="#007B3F"
+								backgroundColor="#ffffff"
+								:width="1000"
+								:downloadName="`${promotionForQrCode.name}.png`"
+								id="qrcode1"
+							>
+							</qrcode>
 						</div>
 					</div>
 					<div class="row margin-top-20">
@@ -445,6 +459,58 @@
 				<button v-if="promotionForQrCode.qr_code.length" @click="deleteQrCode()" type="button" class="btn blue">Delete</button>
 			</div>
 		</modal>
+		<modal :show="showPromoCodesModal" effect="fade" @closeOnEscape="closePromoCodesCodeModal">
+			<div slot="modal-header" class="modal-header">
+				<button type="button" class="close" @click="closePromoCodesCodeModal()">
+					<span>&times;</span>
+				</button>
+				<h4 class="modal-title center">Promo Codes</h4>
+			</div>
+			<div slot="modal-body" class="modal-body">
+				<div class="row">
+					<div class="col-md-12" v-show="promoCodesErrorMessage.length" ref="promoCodesErrorMessage">
+						<div class="alert alert-danger">
+						    <button class="close" data-close="alert" @click="clearError('promoCodesErrorMessage')"></button>
+						    <span>{{ promoCodesErrorMessage }}</span>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+			        <table class="table">
+			            <thead>
+			                <tr>
+			                	<th></th>
+			                	<th> Code </th>
+			                	<th> Value </th>
+			                	<th> From </th>
+			                	<th> To </th>
+			                </tr>
+			            </thead>
+			            <tbody>
+			                <tr v-for="code in promoCodes">
+			                	<td>
+			                		<div class="md-checkbox has-success">
+		                                <input type="checkbox" :id="`code-${code.id}`" class="md-check" v-model="code.selected">
+		                                <label :for="`code-${code.id}`">
+		                                    <span class="inc"></span>
+		                                    <span class="check"></span>
+		                                    <span class="box"></span>
+		                                </label>
+		                            </div>
+			                	</td>
+			                    <td> {{ code.codes }} </td>
+			                    <td> <span v-show="code.value_type === 'dollar'">$</span>{{ code.value }}<span v-show="code.value_type === 'percentage'">%</span> </td>
+			                    <td> {{ code.start_from }} </td>
+			                    <td> {{ code.end_on }} </td>
+			                </tr>
+			            </tbody>
+			        </table>
+				</div>
+			</div>
+			<div slot="modal-footer" class="modal-footer clear">
+				<button @click="selectPromoCodes()" type="button" class="btn blue">Select</button>
+			</div>
+		</modal>
 		<menu-modifier-tree
 			v-if="showMenuModifierTreeModal" 
 			:selectedObject="newPromotion" 
@@ -462,6 +528,7 @@ import LoadingScreen from '../modules/LoadingScreen'
 import PromotionsFunctions from '../../controllers/Promotions'
 import StoreGroupsFunctions from '../../controllers/StoreGroups'
 import UserGroupsFunctions from '../../controllers/UserGroups'
+import PromoCodesFunctions from '../../controllers/PromoCodes'
 import App from '../../controllers/App'
 import ajaxErrorHandler from '../../controllers/ErrorController'
 import Modal from '../modules/Modal'
@@ -472,6 +539,7 @@ import MenuModifierTree from '../modules/MenuModifierTree'
 import EditPromotion from './Promotions/EditPromotion'
 import DeletePromotion from './Promotions/DeletePromotion'
 import $ from 'jquery'
+import freshiiLogo from '../../../static/client_logo.png'
 
 export default {
 	data () {
@@ -525,6 +593,7 @@ export default {
 			currentPage: 1,
 			showQrCodeModal: false,
 			promotionForQrCode: {
+				name: '',
 				promotion_id: null,
 				allLocations: true,
 				qr_code: '',
@@ -538,7 +607,15 @@ export default {
 			qrCodes: [],
 			locations: [],
 			qrErrorMessage: '',
-			showMenuModifierTreeModal: false
+			showMenuModifierTreeModal: false,
+			showPromoCodesModal: false,
+			promoCodesErrorMessage: '',
+			promoCodes: [],
+			provider: {
+				downloadTrigger: false,
+				width: 200
+			},
+			freshiiLogo: freshiiLogo
 		}
 	},
 	computed: {
@@ -569,17 +646,93 @@ export default {
 		this.getUserGroups()
 		this.getQrCodes()
 		this.getPaginatedStoreLocations()
+		this.getAllPromoCodes()
 	},
 	methods: {
+		/**
+		 * To open menu item selection.
+		 * @function
+		 * @returns {undefined}
+		 */
 		openMenuModifierTree () {
 			this.showMenuModifierTreeModal = true
 		},
+		/**
+		 * To close menu items selection
+		 * @function
+		 * @returns {undefined}
+		 */
 		closeMenuModifierTree () {
 			this.showMenuModifierTreeModal = false
 		},
+		/**
+		 * To record the selected items
+		 * @function
+		 * @param {object} data - An object containing a selectedSKUs property
+		 * @returns {undefined}
+		 */
 		setSelectedItems (data) {
 			this.newPromotion.skuArray = data.selectedSKUs
 			this.showMenuModifierTreeModal = false
+		},
+		/**
+		 * To open the promo codes selection
+		 * @function
+		 * @returns {undefined}
+		 */
+		openPromoCodesCodeModal () {
+			this.showPromoCodesModal = true
+		},
+		/**
+		 * To close the promo codes modal
+		 * @function
+		 * @returns {undefined}
+		 */
+		closePromoCodesCodeModal () {
+			this.clearError('promoCodesErrorMessage')
+			this.showPromoCodesModal = false
+		},
+		/**
+		 * To set the selected promo codes as cta_value and close promo code selection
+		 * @function
+		 * @returns {undefined}
+		 */
+		selectPromoCodes () {
+			this.newPromotion.cta_value = this.promoCodes.filter(code => code.selected).map(code => code.id).toString()
+			this.closePromoCodesCodeModal()
+		},
+		/**
+		 * To reset the cta_value when cta_type changes.
+		 * @function
+		 * @returns {undefined}
+		 */
+		clearCtaValue () {
+			this.newPromotion.cta_value = ''
+		},
+		/**
+		 * To get a list of all promoCodes.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getAllPromoCodes () {
+			var promotionsVue = this
+			return PromoCodesFunctions.getAllPromoCodes(promotionsVue.$root.appId, promotionsVue.$root.appSecret, promotionsVue.$root.userToken).then(response => {
+				if (response.code === 200 && response.status === 'ok') {
+					promotionsVue.promoCodes = response.payload.map(code => {
+						code.selected = false
+						return code
+					})
+				} else {
+					throw new Error('We could not fetch a list of promo codes')
+				}
+			}).catch(reason => {
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch a list of promo codes',
+					errorName: 'promoCodesErrorMessage',
+					vue: promotionsVue
+				})
+			})
 		},
 		/**
 		 * To to move the selected locations to the QR code settings object
@@ -667,6 +820,7 @@ export default {
 			event.stopPropagation()
 			let filtered = this.qrCodes.filter(code => code.promotion_id === promotion.id)
 			if (filtered.length) {
+				this.promotionForQrCode.name = promotion.name
 				this.promotionForQrCode.qr_code = filtered[0].qr_code
 				this.promotionForQrCode.qr_code_id = filtered[0].id
 				this.promotionForQrCode.locations = filtered[0].locations
@@ -685,6 +839,7 @@ export default {
 		 */
 		resetPromotionForQrCode () {
 			this.promotionForQrCode = {
+				name: '',
 				promotion_id: null,
 				allLocations: true,
 				qr_code: '',
@@ -1294,6 +1449,7 @@ export default {
 				short_description: '',
 				sort_order: ''
 			}
+			this.promoCodes.forEach(code => { code.selected = false })
 		},
 		/**
 		 * To check if the category data is valid before submitting to the backend.
@@ -1321,7 +1477,9 @@ export default {
 					reject('Please select type of call to action')
 				} else if (promotionsVue.newPromotion.cta_type === 'menu_item' && !promotionsVue.newPromotion.skuArray.length) {
 					reject('Select at least one menu item')
-				} else if (promotionsVue.newPromotion.cta_type !== 'menu_item' && !promotionsVue.newPromotion.cta_value) {
+				} else if (promotionsVue.newPromotion.cta_type === 'promo_code' && !promotionsVue.newPromotion.cta_value.length) {
+					reject('Select at least one promo code')
+				} else if (promotionsVue.newPromotion.cta_type !== 'menu_item' && promotionsVue.newPromotion.cta_type !== 'promo_code' && !promotionsVue.newPromotion.cta_value) {
 					reject('Call to action value cannot be blank')
 				} else if (!promotionsVue.newPromotion.cta_text) {
 					reject('Call to action text cannot be blank')
@@ -1401,6 +1559,12 @@ export default {
 					this.promotions[i] = promotion
 				}
 			}
+			this.$swal({
+				title: 'Success!',
+				text: 'Promotion has been successfully updated',
+				type: 'success',
+				confirmButtonText: 'OK'
+			})
 		},
 		/**
 		 * To clear the current error.

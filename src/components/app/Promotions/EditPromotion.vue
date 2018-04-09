@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showEditPromotionModal" effect="fade" @closeOnEscape="closeModal" :width="900">
+	<modal :show="showEditPromotionModal" effect="fade" @closeOnEscape="closeModal" :width="modalWidth">
 		<div slot="modal-header" class="modal-header center">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -7,7 +7,7 @@
 			<h4 class="modal-title center" v-if="!selectImageMode">Update Promotion</h4>
 		</div>
 		<div slot="modal-body" class="modal-body">
-			<div class="page-one" v-if="!selectImageMode" :class="{'active': !selectImageMode, 'disabled': selectImageMode}">
+			<div class="page-one" v-if="!selectImageMode && !selectPromoCodesMode" :class="{'active': !selectImageMode, 'disabled': selectImageMode}">
 				<div class="alert alert-danger" v-if="errorMessage.length">
 				    <button class="close" data-close="alert" @click="clearError()"></button>
 				    <span>{{errorMessage}}</span>
@@ -44,7 +44,7 @@
         			</div>
 					<div>
 						<p class="grey-label">Call to action type</p>
-						<el-select v-model="promotionToBeEdited.cta_type" placeholder="Select type" size="small" class="margin-bottom-15" id="form_control_cta_type">
+						<el-select v-model="promotionToBeEdited.cta_type" placeholder="Select type" size="small" class="margin-bottom-15" id="form_control_cta_type" @change="clearCtaValue()">
 							<el-option label="hyperlink" value="hyperlink"></el-option>
 							<el-option label="menu item" value="menu_item"></el-option>
 							<el-option label="promo code" value="promo_code"></el-option>
@@ -54,10 +54,14 @@
 							<el-option label="video" value="video"></el-option>
 						</el-select>
 					</div>
-        			<div class="form-group form-md-line-input form-md-floating-label" v-show="promotionToBeEdited.cta_type !== 'menu_item'">
+        			<div class="form-group form-md-line-input form-md-floating-label" v-show="promotionToBeEdited.cta_type !== 'menu_item' && promotionToBeEdited.cta_type !== 'promo_code'">
         			    <input type="text" class="form-control input-sm" :class="{'edited': promotionToBeEdited.cta_value.length}" id="form_control_cta_value" v-model="promotionToBeEdited.cta_value">
         			    <label for="form_control_cta_value">Call to action value</label>
         			</div>
+					<div class="form-group form-md-line-input form-md-floating-label" v-show="promotionToBeEdited.cta_type === 'promo_code'">
+						<button type="button" class="btn blue btn-outline" @click="openPromoCodesCodeModal()">Select</button>
+						<p class="grey-label margin-top-10" v-show="promotionToBeEdited.cta_value.length">Selected {{promotionToBeEdited.cta_value.split(',').length}} code<span v-show="promotionToBeEdited.cta_value.split(',').length !== 1">s</span></p>
+					</div>
         			<div class="form-group form-md-line-input form-md-floating-label" v-show="promotionToBeEdited.cta_type === 'menu_item'">
         				<button type="button" class="btn blue btn-outline" @click="openMenuModifierTree()">Select</button>	
         				<p class="grey-label margin-top-10" v-show="promotionToBeEdited.skuArray.length">Selected {{promotionToBeEdited.skuArray.length}} item<span v-show="promotionToBeEdited.skuArray.length !== 1">s</span></p>									
@@ -83,6 +87,41 @@
 			<div class="page-two" v-if="selectImageMode" :class="{'active': selectImageMode, 'disabled': !selectImageMode}">
 				<gallery-popup @selectedImage="updateIcon"></gallery-popup>
 			</div>
+			<div class="page-two" v-if="selectPromoCodesMode">
+				<div class="row">
+					<div class="col-xs-12">
+				        <table class="table">
+				            <thead>
+				                <tr>
+				                	<th></th>
+				                	<th> Code </th>
+				                	<th> Value </th>
+				                	<th> From </th>
+				                	<th> To </th>
+				                </tr>
+				            </thead>
+				            <tbody>
+				                <tr v-for="code in promoCodes">
+				                	<td>
+				                		<div class="md-checkbox has-success">
+			                                <input type="checkbox" :id="`code-${code.id}`" class="md-check" v-model="code.selected">
+			                                <label :for="`code-${code.id}`">
+			                                    <span class="inc"></span>
+			                                    <span class="check"></span>
+			                                    <span class="box"></span>
+			                                </label>
+			                            </div>
+				                	</td>
+				                    <td> {{ code.codes }} </td>
+				                    <td> <span v-show="code.value_type === 'dollar'">$</span>{{ code.value }}<span v-show="code.value_type === 'percentage'">%</span> </td>
+				                    <td> {{ code.start_from }} </td>
+				                    <td> {{ code.end_on }} </td>
+				                </tr>
+				            </tbody>
+				        </table>
+					</div>
+				</div>
+			</div>
 			<menu-modifier-tree
 				v-if="showMenuModifierTreeModal" 
 				:selectedObject="promotionToBeEdited" 
@@ -93,7 +132,8 @@
 			</menu-modifier-tree>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button v-if="!selectImageMode" type="button" class="btn btn-primary" @click="updatePromotion()">Save</button>
+			<button v-if="selectPromoCodesMode" type="button" class="btn btn-primary" @click="selectPromoCodes()">Select</button>
+			<button v-if="!selectImageMode && !selectPromoCodesMode" type="button" class="btn btn-primary" @click="updatePromotion()">Save</button>
 		</div>
 	</modal>
 </template>
@@ -102,6 +142,8 @@
 import $ from 'jquery'
 import Modal from '../../modules/Modal'
 import PromotionsFunctions from '../../../controllers/Promotions'
+import PromoCodesFunctions from '../../../controllers/PromoCodes'
+import ajaxErrorHandler from '../../../controllers/ErrorController'
 import GalleryPopup from '../../modules/GalleryPopup'
 import MenuModifierTree from '../../modules/MenuModifierTree'
 
@@ -130,7 +172,14 @@ export default {
 			},
 			errorMessage: '',
 			selectImageMode: false,
-			showMenuModifierTreeModal: false
+			showMenuModifierTreeModal: false,
+			selectPromoCodesMode: false,
+			promoCodes: []
+		}
+	},
+	computed: {
+		modalWidth () {
+			return this.showMenuModifierTreeModal ? 900 : null
 		}
 	},
 	props: {
@@ -147,17 +196,93 @@ export default {
 			$('.el-time-panel').css('z-index', '10501')
 			$('.time-select').css('z-index', '10501')
 		})
+		this.getAllPromoCodes()
 	},
 	methods: {
+		/**
+		 * To open menu item selection.
+		 * @function
+		 * @returns {undefined}
+		 */
 		openMenuModifierTree () {
 			this.showMenuModifierTreeModal = true
 		},
+		/**
+		 * To close menu items selection
+		 * @function
+		 * @returns {undefined}
+		 */
 		closeMenuModifierTree () {
 			this.showMenuModifierTreeModal = false
 		},
+		/**
+		 * To record the selected items
+		 * @function
+		 * @param {object} data - An object containing a selectedSKUs property
+		 * @returns {undefined}
+		 */
 		setSelectedItems (data) {
 			this.promotionToBeEdited.skuArray = data.selectedSKUs
 			this.showMenuModifierTreeModal = false
+		},
+		/**
+		 * To open the promo codes selection
+		 * @function
+		 * @returns {undefined}
+		 */
+		openPromoCodesCodeModal () {
+			this.selectPromoCodesMode = true
+		},
+		/**
+		 * To close the promo codes modal
+		 * @function
+		 * @returns {undefined}
+		 */
+		closePromoCodesCodeModal () {
+			this.clearError('promoCodesErrorMessage')
+			this.selectPromoCodesMode = false
+		},
+		/**
+		 * To set the selected promo codes as cta_value and close promo code selection
+		 * @function
+		 * @returns {undefined}
+		 */
+		selectPromoCodes () {
+			this.promotionToBeEdited.cta_value = this.promoCodes.filter(code => code.selected).map(code => code.id).toString()
+			this.closePromoCodesCodeModal()
+		},
+		/**
+		 * To reset the cta_value when cta_type changes.
+		 * @function
+		 * @returns {undefined}
+		 */
+		clearCtaValue () {
+			this.promotionToBeEdited.cta_value = ''
+		},
+		/**
+		 * To get a list of all promoCodes.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getAllPromoCodes () {
+			var editPromotionVue = this
+			return PromoCodesFunctions.getAllPromoCodes(editPromotionVue.$root.appId, editPromotionVue.$root.appSecret, editPromotionVue.$root.userToken).then(response => {
+				if (response.code === 200 && response.status === 'ok') {
+					editPromotionVue.promoCodes = response.payload.map(code => {
+						code.selected = false
+						return code
+					})
+				} else {
+					throw new Error('We could not fetch a list of promo codes')
+				}
+			}).catch(reason => {
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch a list of promo codes',
+					errorName: 'promoCodesErrorMessage',
+					vue: editPromotionVue
+				})
+			})
 		},
 		/**
 		 * To check if the promotion data is valid before submitting to the backend.
@@ -185,7 +310,9 @@ export default {
 					reject('Please select type of call to action')
 				} else if (editPromotionVue.promotionToBeEdited.cta_type === 'menu_item' && !editPromotionVue.promotionToBeEdited.skuArray.length) {
 					reject('Select at least one menu item')
-				} else if (editPromotionVue.promotionToBeEdited.cta_type !== 'menu_item' && !editPromotionVue.promotionToBeEdited.cta_value) {
+				} else if (editPromotionVue.promotionToBeEdited.cta_type === 'promo_code' && !editPromotionVue.promotionToBeEdited.cta_value.length) {
+					reject('Select at least one promo code')
+				} else if (editPromotionVue.promotionToBeEdited.cta_type !== 'menu_item' && editPromotionVue.promotionToBeEdited.cta_type !== 'promo_code' && !editPromotionVue.promotionToBeEdited.cta_value) {
 					reject('Call to action value cannot be blank')
 				} else if (!editPromotionVue.promotionToBeEdited.cta_text) {
 					reject('Call to action text cannot be blank')

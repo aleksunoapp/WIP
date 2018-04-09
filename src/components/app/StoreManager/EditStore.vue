@@ -110,11 +110,11 @@
 				                    	    <label for="form_control_10">External API Key (optional)</label>
 				                    	</div>
 				                    	<div class="form-group form-md-line-input form-md-floating-label">
-				                    	    <input type="text" class="form-control input-sm edited" id="form_control_11" v-model="storeToBeEdited.phone">
+				                    	    <input type="text" class="form-control input-sm edited" id="form_control_11" v-model="storeToBeEdited.phone" v-mask="'(###) ###-####'">
 				                    	    <label for="form_control_11">Store Phone Number</label>
 				                    	</div>
 				                    	<div class="form-group form-md-line-input form-md-floating-label">
-				                    	    <input type="text" class="form-control input-sm edited" id="form_control_12" v-model="storeToBeEdited.fax">
+				                    	    <input type="text" class="form-control input-sm edited" id="form_control_12" v-model="storeToBeEdited.fax" v-mask="'(###) ###-####'">
 				                    	    <label for="form_control_12">Store Fax Number</label>
 				                    	</div>
 				                    	<div class="form-group form-md-line-input form-md-floating-label">
@@ -163,217 +163,201 @@
 				                    	        	<th> Value </th>
 				                    	        </tr>
 				                    	    </thead>
-    			                    	    <tbody>
-            									<tr>
-            	                    	        	<td>
-            	                    	        		Opening Soon
-            	                    	        	</td>
-            	                    	            <td>
-            	                    	            	<el-switch
-    	        	                    	            	ref="openingSoon"
-            	                    	            		v-model="metaToBeEdited.opening_soon"
-            	                    	            		active-color="#0c6"
-            	                    	            		inactive-color="#ff4949"
-            	                    	            		:active-value="1"
-            	                    	            		:inactive-value="0"
-            	                    	            		active-text="Yes"
-            	                    	            		inactive-text="No">
-            	                    	            	</el-switch>
-            	                    	            </td>
-                                	            </tr>
-            									<tr>
-            	                    	        	<td>
-            	                    	        		Store Has Delivery
-            	                    	        	</td>
-            	                    	            <td>
-    	        	    								<el-switch
-    	            	    								ref="delivery"
-    	        	    									v-model="metaToBeEdited.delivery"
-    	        	    									:disabled="metaToBeEdited.opening_soon === 1"
-    	        	    									active-color="#0c6"
-    	        	    									inactive-color="#ff4949"
-    	        	    									:active-value="1"
-    	        	    									:inactive-value="0"
-    	        	    									active-text="Yes"
-    	        	    									inactive-text="No">
-    	        	    								</el-switch>
-            	                    	            </td>
-                                	            </tr>
-            									<tr>
-            	                    	        	<td>
-            	                    	        		Store Has Delivery Enabled
-            	                    	        	</td>
-            	                    	            <td>
-            	                    	            	<el-switch
-            	                    	            		v-model="metaToBeEdited.current_delivery_status"
-            	                    	            		:disabled="metaToBeEdited.opening_soon === 1"
-            	                    	            		active-color="#0c6"
-            	                    	            		inactive-color="#ff4949"
-            	                    	            		:active-value="1"
-            	                    	            		:inactive-value="0"
-            	                    	            		active-text="Yes"
-            	                    	            		inactive-text="No">
-            	                    	            	</el-switch>
-            	                    	            </td>
-                                	            </tr>
-    											<tr>
-    			                    	        	<td>
-    			                    	        		Delivery Price
-    			                    	        	</td>
-    			                    	            <td>
-    			                    	            	<input type="text" :disabled="metaToBeEdited.opening_soon === 1" class="form-control input-sm" v-model="metaToBeEdited.delivery_price">
-    			                    	            </td>
-    		                    	            </tr>
-    		                    	            <tr>
-    		                    	            	<td>
-    		                    	            		Delivery Radius
-    		                    	            	</td>
-    		                    	                <td>
-    	                	                    		<el-select v-model="metaToBeEdited.delivery_radius" :disabled="metaToBeEdited.opening_soon === 1" placeholder="0" size="mini">
-    	                									<el-option
-    	                										v-for="n in 11"
-    	                										:key="n"
-    	                										:label="n - 1"
-    	                										:value="n - 1">
-    	                									</el-option>
-    	                	                    		</el-select>
-    		                    	                </td>
-    	                    	                </tr>
-    	                    	                <tr>
-    	                    	                	<td>
-    	                    	                		Tax
-    	                    	                	</td>
-    	                    	                    <td>
-    	                    	                    	<input ref="tax" type="text" :disabled="metaToBeEdited.opening_soon === 1" class="form-control input-sm" v-model="metaToBeEdited.tax">
-    	                    	                    </td>
-                        	                    </tr>
-    	                    	                <tr>
-    	                    	                	<td>
-    	                    	                		GST Number
-    	                    	                	</td>
-    	                    	                    <td>
-    	                    	                    	<input type="text" class="form-control input-sm" v-model="metaToBeEdited.gst_number">
-    	                    	                    </td>
-                        	                    </tr>
-        										<tr>
-        		                    	        	<td>
-        		                    	        		Gift Cards
-        		                    	        	</td>
-        		                    	            <td>
-        		                    	            	<el-switch
-        		                    	            		v-model="metaToBeEdited.gift_card"
-        		                    	            		:disabled="metaToBeEdited.opening_soon === 1"
-        		                    	            		active-color="#0c6"
-        		                    	            		inactive-color="#ff4949"
-        		                    	            		:active-value="1"
-        		                    	            		:inactive-value="0"
-        		                    	            		active-text="Yes"
-        		                    	            		inactive-text="No">
-        		                    	            	</el-switch>
-        		                    	            </td>
-        	                    	            </tr>
-    	    									<tr>
-    	    	                    	        	<td>
-    	    	                    	        		Catering
-    	    	                    	        	</td>
-    	    	                    	            <td>
-    	    	                    	            	<el-switch
-    	    	                    	            		v-model="metaToBeEdited.catering"
-    	    	                    	            		:disabled="metaToBeEdited.opening_soon === 1"
-    	    	                    	            		active-color="#0c6"
-    	    	                    	            		inactive-color="#ff4949"
-    	    	                    	            		:active-value="1"
-    	    	                    	            		:inactive-value="0"
-    	    	                    	            		active-text="Yes"
-    	    	                    	            		inactive-text="No">
-    	    	                    	            	</el-switch>
-    	    	                    	            </td>
-    	                        	            </tr>
-            									<tr>
-            	                    	        	<td>
-            	                    	        		Catering Enabled
-            	                    	        	</td>
-            	                    	            <td>
-            	                    	            	<el-switch
-            	                    	            		v-model="metaToBeEdited.current_catering_status"
-            	                    	            		:disabled="metaToBeEdited.opening_soon === 1"
-            	                    	            		active-color="#0c6"
-            	                    	            		inactive-color="#ff4949"
-            	                    	            		:active-value="1"
-            	                    	            		:inactive-value="0"
-            	                    	            		active-text="Yes"
-            	                    	            		inactive-text="No">
-            	                    	            	</el-switch>
-            	                    	            </td>
-                                	            </tr>
-            									<tr>
-            	                    	        	<td>
-            	                    	        		Digital Rewards
-            	                    	        	</td>
-            	                    	            <td>
-            	                    	            	<el-switch
-            	                    	            		v-model="metaToBeEdited.digital_reward"
-            	                    	            		:disabled="metaToBeEdited.opening_soon === 1"
-            	                    	            		active-color="#0c6"
-            	                    	            		inactive-color="#ff4949"
-            	                    	            		:active-value="1"
-            	                    	            		:inactive-value="0"
-            	                    	            		active-text="Yes"
-            	                    	            		inactive-text="No">
-            	                    	            	</el-switch>
-            	                    	            </td>
-                                	            </tr>
-    			                    	    	<tr>
-    		                    	    			<td>
-    		                    	    				Store Has Online Ordering
-    		                    	    			</td>
-    		                    	    		    <td>
-    		                    	    		    	<el-switch
-    		                    	    		    		v-model="metaToBeEdited.online_ordering"
-    		                    	    		    		:disabled="metaToBeEdited.opening_soon === 1"
-    		                    	    		    		active-color="#0c6"
-    		                    	    		    		inactive-color="#ff4949"
-    		                    	    		    		:active-value="1"
-    		                    	    		    		:inactive-value="0"
-    		                    	    		    		active-text="Yes"
-    		                    	    		    		inactive-text="No">
-    		                    	    		    	</el-switch>
-    		                    	    		    </td>
-    			                    	    	</tr>
-        		                    	    	<tr>
-        	                    	    			<td>
-        	                    	    				Store Has Online Ordering Enabled
-        	                    	    			</td>
-        	                    	    		    <td>
-        	                    	    		    	<el-switch
-        	                    	    		    		v-model="metaToBeEdited.current_online_ordering_status"
-        	                    	    		    		:disabled="metaToBeEdited.opening_soon === 1"
-        	                    	    		    		active-color="#0c6"
-        	                    	    		    		inactive-color="#ff4949"
-        	                    	    		    		:active-value="1"
-        	                    	    		    		:inactive-value="0"
-        	                    	    		    		active-text="Yes"
-        	                    	    		    		inactive-text="No">
-        	                    	    		    	</el-switch>
-        	                    	    		    </td>
-        		                    	    	</tr>
-    		                    	            <tr>
-                    	                        	<td>
-                    	                        		Merchant ID
-                    	                        	</td>
-                    	                            <td>
-                    	                            	<input type="text" :disabled="metaToBeEdited.opening_soon === 1" class="form-control input-sm" v-model="metaToBeEdited.merchant_id">
-                    	                            </td>
-                	                            </tr>
-                	                            <tr>
-                	                            	<td>
-                	                            		Merchant Key
-                	                            	</td>
-                	                                <td>
-                	                                	<input type="text" :disabled="metaToBeEdited.opening_soon === 1" class="form-control input-sm" v-model="metaToBeEdited.merchant_key">
-                	                                </td>
-    			                    	        </tr>
-    			                    	    </tbody>
+				                    	    <tbody>
+				                    	    	<tr>
+				                    	    		<td>
+				                    	    			Opening Soon
+				                    	    		</td>
+				                    	    		<td>
+				                    	    			<el-switch
+				                    	    				ref="openingSoon"
+				                    	    				v-model="metaToBeEdited.opening_soon"
+				                    	    				active-color="#0c6"
+				                    	    				inactive-color="#ff4949"
+				                    	    				:active-value="1"
+				                    	    				:inactive-value="0"
+				                    	    				active-text="Yes"
+				                    	    				inactive-text="No">
+				                    	    			</el-switch>
+				                    	    		</td>
+				                    	    	</tr>
+				                    	    	<tr>
+				                    	    		<td>
+				                    	    			Store Has Online Ordering
+				                    	    		</td>
+				                    	    		<td>
+				                    	    			<el-switch
+				                    	    				v-model="metaToBeEdited.online_ordering"
+				                    	    				:disabled="metaToBeEdited.opening_soon === 1"
+				                    	    				active-color="#0c6"
+				                    	    				inactive-color="#ff4949"
+				                    	    				:active-value="1"
+				                    	    				:inactive-value="0"
+				                    	    				active-text="Yes"
+				                    	    				inactive-text="No">
+				                    	    			</el-switch>
+				                    	    		</td>
+				                    	    	</tr>
+				                    	    	<tr>
+				                    	    		<td>
+				                    	    			Store Has Online Ordering Enabled
+				                    	    		</td>
+				                    	    		<td>
+				                    	    			<el-switch
+				                    	    				v-model="metaToBeEdited.current_online_ordering_status"
+				                    	    				:disabled="metaToBeEdited.online_ordering === 0 || metaToBeEdited.opening_soon === 1"
+				                    	    				active-color="#0c6"
+				                    	    				inactive-color="#ff4949"
+				                    	    				:active-value="1"
+				                    	    				:inactive-value="0"
+				                    	    				active-text="Yes"
+				                    	    				inactive-text="No">
+				                    	    			</el-switch>
+				                    	    		</td>
+				                    	    	</tr>
+				                    	    	<tr>
+				                    	    		<td>
+				                    	    			Store Has Delivery
+				                    	    		</td>
+				                    	    		<td>
+				                    	    			<el-switch
+				                    	    				ref="delivery"
+				                    	    				v-model="metaToBeEdited.delivery"
+				                    	    				:disabled="metaToBeEdited.opening_soon === 1"
+				                    	    				active-color="#0c6"
+				                    	    				inactive-color="#ff4949"
+				                    	    				:active-value="1"
+				                    	    				:inactive-value="0"
+				                    	    				active-text="Yes"
+				                    	    				inactive-text="No">
+				                    	    			</el-switch>
+				                    	    		</td>
+				                    	    	</tr>
+				                    	    	<tr>
+				                    	    		<td>
+				                    	    			Store Has Delivery Enabled
+				                    	    		</td>
+				                    	    		<td>
+				                    	    			<el-switch
+				                    	    				v-model="metaToBeEdited.current_delivery_status"
+				                    	    				:disabled="metaToBeEdited.delivery === 0 || metaToBeEdited.opening_soon === 1"
+				                    	    				active-color="#0c6"
+				                    	    				inactive-color="#ff4949"
+				                    	    				:active-value="1"
+				                    	    				:inactive-value="0"
+				                    	    				active-text="Yes"
+				                    	    				inactive-text="No">
+				                    	    			</el-switch>
+				                    	    		</td>
+				                    	    	</tr>
+				                    	    	<tr>
+				                    	    		<td>
+				                    	    			Catering
+				                    	    		</td>
+				                    	    		<td>
+				                    	    			<el-switch
+				                    	    				v-model="metaToBeEdited.catering"
+				                    	    				:disabled="metaToBeEdited.opening_soon === 1"
+				                    	    				active-color="#0c6"
+				                    	    				inactive-color="#ff4949"
+				                    	    				:active-value="1"
+				                    	    				:inactive-value="0"
+				                    	    				active-text="Yes"
+				                    	    				inactive-text="No">
+				                    	    			</el-switch>
+				                    	    		</td>
+				                    	    	</tr>
+				                    	    	<tr>
+				                    	    		<td>
+				                    	    			Catering Enabled
+				                    	    		</td>
+				                    	    		<td>
+				                    	    			<el-switch
+				                    	    				v-model="metaToBeEdited.current_catering_status"
+				                    	    				:disabled="metaToBeEdited.catering === 0 || metaToBeEdited.opening_soon === 1"
+				                    	    				active-color="#0c6"
+				                    	    				inactive-color="#ff4949"
+				                    	    				:active-value="1"
+				                    	    				:inactive-value="0"
+				                    	    				active-text="Yes"
+				                    	    				inactive-text="No">
+				                    	    			</el-switch>
+				                    	    		</td>
+				                    	    	</tr>
+
+
+				                    	    	<tr>
+				                    	    		<td>
+				                    	    			Gift Cards
+				                    	    		</td>
+				                    	    		<td>
+				                    	    			<el-switch
+				                    	    				v-model="metaToBeEdited.gift_card"
+				                    	    				:disabled="metaToBeEdited.opening_soon === 1"
+				                    	    				active-color="#0c6"
+				                    	    				inactive-color="#ff4949"
+				                    	    				:active-value="1"
+				                    	    				:inactive-value="0"
+				                    	    				active-text="Yes"
+				                    	    				inactive-text="No">
+				                    	    			</el-switch>
+				                    	    		</td>
+				                    	    	</tr>
+
+				                    	    	<tr>
+				                    	    		<td>
+				                    	    			Digital Rewards
+				                    	    		</td>
+				                    	    		<td>
+				                    	    			<el-switch
+				                    	    				v-model="metaToBeEdited.digital_reward"
+				                    	    				:disabled="metaToBeEdited.opening_soon === 1"
+				                    	    				active-color="#0c6"
+				                    	    				inactive-color="#ff4949"
+				                    	    				:active-value="1"
+				                    	    				:inactive-value="0"
+				                    	    				active-text="Yes"
+				                    	    				inactive-text="No">
+				                    	    			</el-switch>
+				                    	    		</td>
+				                    	    	</tr>
+				                    	    	<tr>
+				                    	    		<td>
+				                    	    			GST Number
+				                    	    		</td>
+				                    	    		<td>
+				                    	    			<input 
+				                    	    				type="text" 
+				                    	    				class="form-control input-sm" 
+				                    	    				v-model="metaToBeEdited.gst_number"
+				                    	    				:disabled="metaToBeEdited.opening_soon === 1" >
+				                    	    		</td>
+				                    	    	</tr>
+				                    	    	<tr>
+				                    	    		<td>
+				                    	    			Payment Processor Merchant ID (MID)
+				                    	    		</td>
+				                    	    		<td>
+				                    	    			<input 
+				                    	    				type="text" 
+				                    	    				class="form-control input-sm" 
+				                    	    				:disabled="metaToBeEdited.opening_soon === 1" 
+				                    	    				v-model="metaToBeEdited.merchant_id">
+				                    	    		</td>
+				                    	    	</tr>
+				                    	    	<tr>
+				                    	    		<td>
+				                    	    			Payment Processor Merchant Key
+				                    	    		</td>
+				                    	    		<td>
+				                    	    			<input 
+				                    	    				type="text" 
+				                    	    				class="form-control input-sm" 
+				                    	    				:disabled="metaToBeEdited.opening_soon === 1" 
+				                    	    				v-model="metaToBeEdited.merchant_key">
+				                    	    		</td>
+				                    	    	</tr>
+				                    	    </tbody>
 				                    	</table>
 			                    	</div>
 			                    </div>
@@ -744,6 +728,7 @@ import StoreGroupsFunctions from '../../../controllers/StoreGroups'
 import NoResults from '../../modules/NoResults'
 import AddHolidayHours from './AddHolidayHours'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
+import {mask} from 'vue-the-mask'
 import { debounce } from 'lodash'
 
 /**
@@ -1066,15 +1051,6 @@ export default {
 			this.storeToBeEdited.currency = value
 		},
 		/**
-		 * To update the value of the 'delivery_radius' field.
-		 * @function
-		 * @param {integer} val - The new value.
-		 * @returns {undefined}
-		 */
-		updateDeliveryRadius (val) {
-			this.metaToBeEdited.delivery_radius = val
-		},
-		/**
 		 * To sync the menu.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
@@ -1225,9 +1201,9 @@ export default {
 					reject('Store country cannot be blank')
 				} else if (!editStoreVue.storeToBeEdited.postal_code.length) {
 					reject('Store postal code cannot be blank')
-				} else if (!$.isNumeric(editStoreVue.storeToBeEdited.phone)) {
+				} else if (editStoreVue.storeToBeEdited.phone.length < 14) {
 					reject('Store phone should be numeric')
-				} else if (!$.isNumeric(editStoreVue.storeToBeEdited.fax)) {
+				} else if (editStoreVue.storeToBeEdited.phone.length < 14) {
 					reject('Store fax should be numeric')
 				} else if (!editStoreVue.storeToBeEdited.email.length) {
 					reject('Store email cannot be blank')
@@ -1307,10 +1283,6 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (editStoreVue.metaToBeEdited.opening_soon === 1) {
 					resolve('Hurray')
-				} else if (editStoreVue.metaToBeEdited.delivery_price === null) {
-					reject('Delivery Price cannot be blank')
-				} else if (editStoreVue.metaToBeEdited.tax === null) {
-					reject('Tax cannot be blank')
 				} else if (editStoreVue.metaToBeEdited.gateway_name === null) {
 					reject('Gateway Name cannot be blank')
 				} else if (editStoreVue.metaToBeEdited.merchant_id === '') {
@@ -1335,12 +1307,6 @@ export default {
 			return editStoreVue.validateStoreMeta()
 			.then(response => {
 				if (editStoreVue.newStoreMeta.opening_soon === 1) {
-					if (!editStoreVue.newStoreMeta.delivery_price) {
-						editStoreVue.newStoreMeta.delivery_price = 0
-					}
-					if (!editStoreVue.newStoreMeta.tax) {
-						editStoreVue.newStoreMeta.tax = 0
-					}
 					if (!editStoreVue.newStoreMeta.merchant_id) {
 						editStoreVue.newStoreMeta.merchant_id = 0
 					}
@@ -1908,6 +1874,9 @@ export default {
 		AddHolidayHours,
 		LoadingScreen,
 		GalleryPopup
+	},
+	directives: {
+		mask
 	}
 }
 </script>

@@ -316,6 +316,7 @@ export default {
 			.then(response => {
 				MenuTiersFunctions.createNewMenuTier(menuTiersVue.newMenuTier, menuTiersVue.$root.appId, menuTiersVue.$root.appSecret, menuTiersVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
+						menuTiersVue.showAlert()
 						menuTiersVue.newMenuTier.id = response.payload.id
 						menuTiersVue.addMenuTier(menuTiersVue.newMenuTier)
 					} else {

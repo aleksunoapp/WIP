@@ -70,6 +70,18 @@
 				                </el-switch>
 				            </div>
 	            			<div class="form-group form-md-line-input form-md-floating-label">
+	                            <label>Menu Type:</label><br>
+	                            <el-switch
+	                            	v-model="newMenu.catering"
+	                            	active-color="#0c6"
+	                            	inactive-color="#ff4949"
+	                            	:active-value="1"
+	                            	:inactive-value="0"
+	                            	active-text="Catering"
+	                            	inactive-text="Regular">
+	                            </el-switch>
+	                        </div>
+	            			<div class="form-group form-md-line-input form-md-floating-label margin-bottom-20">
 	                            <label>Is an Add-on Menu:</label><br>
 	                            <el-switch
 	                            	v-model="newMenu.addon"
@@ -97,19 +109,7 @@
 								value-format="yyyy-MM-dd" 
 								placeholder="To"></el-date-picker>
 							<button v-if="newMenu.addon === 1" type="submit" class="btn blue btn-outline" @click="selectAddOnCategories(newMenu, $event)">Select add-on categories</button>
-							<p class="grey-label margin-top-10" v-if="newMenu.addon.length">Selected {{newMenu.addon.length}} <span v-if="newMenu.addon.length === 1">category</span><span v-else>categories</span></p>
-	            			<div class="form-group form-md-line-input form-md-floating-label">
-	                            <label>Catering:</label><br>
-	                            <el-switch
-	                            	v-model="newMenu.catering"
-	                            	active-color="#0c6"
-	                            	inactive-color="#ff4949"
-	                            	:active-value="1"
-	                            	:inactive-value="0"
-	                            	active-text="Active"
-	                            	inactive-text="Unavailable">
-	                            </el-switch>
-	                        </div>
+							<p class="grey-label margin-top-10" v-if="newMenu.add_on.length">Selected {{newMenu.add_on.length}} <span v-if="newMenu.add_on.length === 1">category</span><span v-else>categories</span></p>
                 			<div v-if="newMenu.catering" class="form-group form-md-line-input form-md-floating-label">
         					    <input type="text" class="form-control input-sm" id="form_control_6" :class="{'edited': newMenu.min.length}" v-model="newMenu.min">
         					    <label for="form_control_6">Minimum order value</label>
@@ -284,7 +284,8 @@ export default {
 				sku: '',
 				order: null,
 				start_from: '',
-				stop_on: ''
+				stop_on: '',
+				add_on: []
 			},
 			createMenuCollapse: true,
 			showGalleryModal: false,
@@ -472,44 +473,22 @@ export default {
 		 */
 		clearNewMenu () {
 			this.newMenu = {
+				id: 'new',
 				name: '',
 				desc: '',
 				image_url: '',
 				user_id: this.$root.createdBy,
 				status: 1,
+				addon: 0,
 				catering: 0,
 				min: '',
 				max: '',
 				sku: '',
 				order: null,
 				start_from: '',
-				stop_on: ''
+				stop_on: '',
+				add_on: []
 			}
-		},
-		/**
-		 * To add the newly created menu to the list.
-		 * @function
-		 * @param {object} val - The new menu object
-		 * @returns {undefined}
-		 */
-		addMenu (val) {
-			if (parseInt(val.order) > 0) {
-				var done = false
-				for (var i = 0; i < this.storeMenus.length; i++) {
-					if (parseInt(this.storeMenus[i].order) < parseInt(val.order)) {
-						this.storeMenus.splice(i, 0, val)
-						done = true
-						break
-					}
-				}
-				if (!done) {
-					this.storeMenus.push(val)
-				}
-			} else {
-				this.storeMenus.push(val)
-			}
-			this.showAlert()
-			this.clearNewMenu()
 		},
 		/**
 		 * To alert the user that the menu has been successfully created.
@@ -629,8 +608,9 @@ export default {
 				createMenuVue.newMenu.location_id = createMenuVue.$root.activeLocation.id
 				MenusFunctions.createNewMenu(createMenuVue.newMenu, createMenuVue.$root.appId, createMenuVue.$root.appSecret, createMenuVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						createMenuVue.newMenu.id = response.payload.new_menu_id
-						createMenuVue.addMenu(createMenuVue.newMenu)
+						createMenuVue.getStoreMenus()
+						createMenuVue.clearNewMenu()
+						createMenuVue.showAlert()
 					} else {
 						createMenuVue.errorMessage = response.message
 					}
