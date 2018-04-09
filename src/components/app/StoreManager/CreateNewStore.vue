@@ -467,6 +467,23 @@
 	                    <div class="form-actions noborder clear">
 	                        <button type="button" class="btn blue" :disabled="createStoreMode !== 'hours'" @click="createStoreHours()">Save</button>
 	                    </div>
+                		<modal :show="showHoursAlertModal" effect="fade" @closeOnEscape="closeHoursAlert">
+							<div slot="modal-header" class="modal-header">
+								<button type="button" class="close" @click="closeHoursAlert()">
+									<span>&times;</span>
+								</button>
+								<h4 class="modal-title center">Success</h4>
+							</div>
+							<div slot="modal-body" class="modal-body">
+								<div>Do you want to <strong>set up holiday hours</strong>, <strong>add images</strong> or <strong>set up amenities</strong> for this store?</div>
+							</div>
+							<div slot="modal-footer" class="modal-footer">
+								<button class="btn btn-primary" @click="setUpHolidayHours()">Set up Holiday Hours</button>
+								<button class="btn btn-primary" @click="addImages()">Add Images</button>
+								<router-link to="/app/store_manager/amenities"><button class="btn btn-primary" @click="">Set up Amenities</button></router-link>
+								<button class="btn" @click="imDone()">I'm done</button>
+							</div>
+                		</modal>
 		            </div>
 		        </div>
         	</div>
@@ -653,6 +670,7 @@
 <script>
 import $ from 'jquery'
 import Breadcrumb from '../../modules/Breadcrumb'
+import Modal from '../../modules/Modal'
 import StoresFunctions from '../../../controllers/Stores'
 import MenuTiersFunctions from '../../../controllers/MenuTiers'
 import AppFunctions from '../../../controllers/App'
@@ -811,7 +829,8 @@ export default {
 				default: 0
 			},
 			imageToEdit: {},
-			imageToDelete: {}
+			imageToDelete: {},
+			showHoursAlertModal: false
 		}
 	},
 	created () {
@@ -1326,29 +1345,62 @@ export default {
 			})
 		},
 		/**
-		 * To ask the user if they want to set up store holiday hours next or exit the setup.
+		 * To ask the user if they want to set up other features.
 		 * @function
 		 * @returns {undefined}
 		 */
 		showHoursAlert () {
-			this.$swal({
-				title: 'Success!',
-				html: '<div>Do you want to <strong>set up holiday hours</strong> or <strong>add images</strong> for this store?</div>',
-				type: 'success',
-				showCancelButton: true,
-				confirmButtonText: 'Yes',
-				cancelButtonText: 'No'
-			}).then(() => {
-				this.activeTab = 3
-				this.steps.step2_status = 'success'
-				this.steps.step3_status = 'finish'
-				this.createStoreMode = 'optionals'
-			}, dismiss => {
-				this.resetForm()
-				this.activeTab = 0
-				this.createStoreMode = 'info'
-				window.scrollTo(0, 0)
-			})
+			this.showHoursAlertModal = true
+		},
+		/**
+		 * To close the modal.
+		 * @function
+		 * @returns {undefined}
+		 */
+		closeHoursAlert () {
+			this.showHoursAlertModal = false
+		},
+		/**
+		 * To reset the store create form to blank.
+		 * @function
+		 * @returns {undefined}
+		 */
+		imDone () {
+			this.closeHoursAlert()
+			this.resetForm()
+			this.activeTab = 0
+			this.createStoreMode = 'info'
+			window.scrollTo(0, 0)
+		},
+		/**
+		 * To set the create form to add Holiday Hours.
+		 * @function
+		 * @returns {undefined}
+		 */
+		setUpHolidayHours () {
+			this.closeHoursAlert()
+			this.activeTab = 3
+			this.steps.step2_status = 'success'
+
+			this.steps.step3_status === 'wait' ? this.steps.step3_status = 'finish' : this.steps.step3_status = this.steps.step3_status
+
+			this.steps.step4_status === 'wait' ? this.steps.step4_status = 'process' : this.steps.step4_status = this.steps.step4_status
+
+			this.createStoreMode = 'optionals'
+		},
+		/**
+		 * To to set the create form to add Images.
+		 * @function
+		 * @returns {undefined}
+		 */
+		addImages () {
+			this.closeHoursAlert()
+			this.activeTab = 4
+			this.steps.step2_status = 'success'
+
+			this.steps.step3_status === 'wait' ? this.steps.step3_status = 'process' : this.steps.step3_status = this.steps.step3_status
+
+			this.steps.step4_status === 'wait' ? this.steps.step4_status = 'finish' : this.steps.step4_status = this.steps.step4_status
 		},
 		/**
 		 * To alert the user that the store has been successfully created and provide them an option for creating another one.
@@ -1364,14 +1416,9 @@ export default {
 				confirmButtonText: 'Yes',
 				cancelButtonText: 'No'
 			}).then(() => {
-				this.activeTab = 4
-				this.steps.step3_status = 'success'
-				this.steps.step4_status = 'finish'
+				this.addImages()
 			}, dismiss => {
-				this.resetForm()
-				this.activeTab = 0
-				this.createStoreMode = 'info'
-				window.scrollTo(0, 0)
+				this.imDone()
 			})
 		},
 		/**
@@ -1798,7 +1845,8 @@ export default {
 	components: {
 		Breadcrumb,
 		AddHolidayHours,
-		GalleryPopup
+		GalleryPopup,
+		Modal
 	},
 	directives: {
 		mask
