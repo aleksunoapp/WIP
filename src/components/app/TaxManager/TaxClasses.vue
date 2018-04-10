@@ -56,6 +56,16 @@
 								<input type="text" class="form-control input-sm" :class="{'edited': newTaxClass.max_amount.length}" id="form_control_3" v-model="newTaxClass.max_amount">
 								<label for="form_control_3">Maximum Amount</label>
 							</div>
+							<label v-if="!loadingItemTypes">
+								Pair with:
+								<el-select v-if="!loadingItemTypes" v-model="newTaxClass.pair_with" placeholder="Select Item Type" size="small">
+									<el-option v-for="type in itemTypes" :label="type.name" :value="type.id" :key="id"></el-option>
+								</el-select>
+							</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
 							<button type="submit" class="btn blue pull-right">Create</button>
 						</div>
 					</div>
@@ -163,6 +173,12 @@
 								<input type="text" class="form-control input-sm" :class="{'edited': taxClassToEdit.max_amount.length}" id="form_control_3" v-model="taxClassToEdit.max_amount">
 								<label for="form_control_3">Maximum amount</label>
 							</div>
+							<label v-if="!loadingItemTypes">
+								Pair with:
+							<el-select v-model="newTaxClass.pair_with" placeholder="Select Item Type" size="small" :key="id">
+								<el-option v-for="type in itemTypes" :label="type.name" :value="type.id" :key="id"></el-option>
+							</el-select>
+							</label>
 						</div>
 					</div>
 				</form>
@@ -196,6 +212,7 @@
 import Breadcrumb from '../../modules/Breadcrumb'
 import LoadingScreen from '../../modules/LoadingScreen'
 import TaxClassesFunctions from '../../../controllers/TaxClasses'
+import ItemTypesFunctions from '../../../controllers/ItemTypes'
 import Modal from '../../modules/Modal'
 import NoResults from '../../modules/NoResults'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
@@ -215,7 +232,8 @@ export default {
 				name: '',
 				percentage: '',
 				min_amount: '',
-				max_amount: ''
+				max_amount: '',
+				pair_with: ''
 			},
 
 			loadingTaxClasses: false,
@@ -236,7 +254,9 @@ export default {
 			deleteErrorMessage: '',
 			taxClassToDelete: {
 				name: ''
-			}
+			},
+			loadingItemTypes: false,
+			itemTypes: []
 		}
 	},
 	computed: {
@@ -253,8 +273,36 @@ export default {
 	},
 	mounted () {
 		this.getTaxClasses()
+		this.getItemTypes()
 	},
 	methods: {
+		/**
+		 * To get a list of all item types.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getItemTypes () {
+			this.loadingItemTypes = true
+			this.itemTypes = []
+			var _this = this
+			return ItemTypesFunctions.getItemTypes(_this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
+			.then(response => {
+				if (response.code === 200 && response.status === 'ok') {
+					_this.loadingItemTypes = false
+					_this.itemTypes = response.payload
+				} else {
+					_this.loadingItemTypes = false
+				}
+			}).catch(reason => {
+				_this.loadingItemTypes = false
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch the list of item types',
+					errorName: 'createErrorMessage',
+					vue: _this
+				})
+			})
+		},
 		/**
 		 * To toggle the create tier panel, initially set to closed
 		 * @function
@@ -304,7 +352,10 @@ export default {
 
 			return _this.validateNewTaxClassData()
 			.then(response => {
-				TaxClassesFunctions.createTaxClass(_this.newTaxClass, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
+				let payload = this.newTaxClass
+				if (!payload.pair_with) { delete payload.pair_with }
+
+				TaxClassesFunctions.createTaxClass(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						_this.showCreateSuccess()
@@ -353,7 +404,8 @@ export default {
 				name: '',
 				percentage: '',
 				min_amount: '',
-				max_amount: ''
+				max_amount: '',
+				pair_with: ''
 			}
 		},
 		/**
@@ -432,7 +484,10 @@ export default {
 
 			return _this.validateEditedTaxClassData()
 			.then(response => {
-				TaxClassesFunctions.updateTaxClass(_this.taxClassToEdit, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken).then(response => {
+				let payload = this.taxClassToEdit
+				if (!payload.pair_with) { delete payload.pair_with }
+
+				TaxClassesFunctions.updateTaxClass(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						_this.getTaxClasses()
 						_this.closeEditModal()
@@ -487,7 +542,8 @@ export default {
 				name: '',
 				percentage: '',
 				min_amount: '',
-				max_amount: ''
+				max_amount: '',
+				pair_with: ''
 			}
 		},
 		/**
