@@ -347,7 +347,7 @@ export default {
 				click_sign: {
 					'en-ca': 'Click to sign',
 					'en-us': 'Click to sign',
-					'fr-ca': 'Cliquez pour signer'
+					'fr-ca': 'Veuillez cliquer pour signer'
 				},
 				please_sign_below: {
 					'en-ca': 'Please sign below',

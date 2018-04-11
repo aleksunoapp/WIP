@@ -66,17 +66,17 @@ export default {
 				more_info: {
 					'en-ca': 'I need more information',
 					'en-us': 'I need more information',
-					'fr-ca': `J'ai besoin de plus information`
+					'fr-ca': 'J’ai besoin de précisions'
 				},
 				more_info_call: {
 					'en-ca': 'Call Dealership',
 					'en-us': 'Call Dealership',
-					'fr-ca': `Appeler le Concessionnaire`
+					'fr-ca': 'Appeler la concession'
 				},
 				more_info_text: {
 					'en-ca': 'Text Dealership',
 					'en-us': 'Text Dealership',
-					'fr-ca': `Envoyer un SMS`
+					'fr-ca': 'Envoyer un texto à la concession'
 				},
 				not_today: {
 					'en-ca': 'Not today',
