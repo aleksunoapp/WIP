@@ -679,6 +679,8 @@ export default {
 		 */
 		toggleTerms (val) {
 			val ? this.$root.logEvent(`Displayed Terms and Conditions`) : this.$root.logEvent(`Closed Terms and Conditions`)
+
+			val ? this.showTerms = true : this.showTerms = false
 		},
 		/**
 		 * To open the detailed view modal
