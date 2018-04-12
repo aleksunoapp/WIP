@@ -93,7 +93,12 @@ export default {
 			let day = fullDate.getDate()
 			let monthIndex = fullDate.getMonth()
 			let year = fullDate.getFullYear()
-			const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+			let monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+
+			if (this.$root.meta.local === 'fr-CA') {
+				monthNames = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']
+			}
+
 			let timeTillTomorrow = new Date().setHours(24, 0, 0, 0) - new Date()
 
 			if (hour === 12) {
