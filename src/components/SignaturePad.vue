@@ -1,6 +1,6 @@
 <template>
-	<v-touch @pan="checkSignature()">
-		<div class="signature noselect">
+	<v-touch style="pointer-events:none" @pan="checkSignature()">
+		<div class="signature noselect" style="pointer-events:all">
 			<span class="signature-clear" @click="clearSignature()">{{ langTerms.clear[$root.meta.local.toLowerCase()] }}</span>
 		</div>
 	</v-touch>
