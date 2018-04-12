@@ -75,19 +75,19 @@
 		                    	    <label for="form_control_2">Address Line 2</label>
 		                    	</div>
 		                    	<div class="form-group form-md-line-input form-md-floating-label">
-		                    	    <input type="text" readonly class="form-control input-sm" id="form_control_3" :class="{'edited': newStore.city.length}" v-model="newStore.city">
+		                    	    <input type="text" :readonly="placesApi.city" class="form-control input-sm" id="form_control_3" :class="{'edited': newStore.city.length}" v-model="newStore.city">
 		                    	    <label for="form_control_3">Store City</label>
 		                    	</div>
 		                    	<div class="form-group form-md-line-input form-md-floating-label">
-		                    	    <input type="text" readonly class="form-control input-sm" id="form_control_4" :class="{'edited': newStore.province.length}" v-model="newStore.province">
+		                    	    <input type="text" :readonly="placesApi.province" class="form-control input-sm" id="form_control_4" :class="{'edited': newStore.province.length}" v-model="newStore.province">
 		                    	    <label for="form_control_4">Store Province</label>
 		                    	</div>
 		                    	<div class="form-group form-md-line-input form-md-floating-label">
-		                    	    <input type="text" readonly class="form-control input-sm" id="form_control_5" :class="{'edited': newStore.country.length}" v-model="newStore.country">
+		                    	    <input type="text" :readonly="placesApi.country" class="form-control input-sm" id="form_control_5" :class="{'edited': newStore.country.length}" v-model="newStore.country">
 		                    	    <label for="form_control_5">Store Country</label>
 		                    	</div>
 		                    	<div class="form-group form-md-line-input form-md-floating-label">
-		                    	    <input type="text" readonly class="form-control input-sm" id="form_control_6" :class="{'edited': newStore.postal_code.length}" v-model="newStore.postal_code">
+		                    	    <input type="text" :readonly="placesApi.postal_code" class="form-control input-sm" id="form_control_6" :class="{'edited': newStore.postal_code.length}" v-model="newStore.postal_code">
 		                    	    <label for="form_control_6">Store Postal Code</label>
 		                    	</div>
     	                        <div class="form-group form-md-line-input form-md-floating-label" v-if="storeGroups.length">
@@ -830,7 +830,14 @@ export default {
 			},
 			imageToEdit: {},
 			imageToDelete: {},
-			showHoursAlertModal: false
+			showHoursAlertModal: false,
+			placesApi: {
+				address_line_1: true,
+				city: true,
+				province: true,
+				country: true,
+				postal_code: true
+			}
 		}
 	},
 	created () {
@@ -1480,6 +1487,10 @@ export default {
 						}
 					}
 				}
+				createStoreVue.newStore.postal_code ? createStoreVue.placesApi.postal_code = true : createStoreVue.placesApi.postal_code = false
+				createStoreVue.newStore.country ? createStoreVue.placesApi.country = true : createStoreVue.placesApi.country = false
+				createStoreVue.newStore.city ? createStoreVue.placesApi.city = true : createStoreVue.placesApi.city = false
+				createStoreVue.newStore.province ? createStoreVue.placesApi.province = true : createStoreVue.placesApi.province = false
 			}).catch(reason => {
 				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
 					createStoreVue.$router.push('/login/expired')
