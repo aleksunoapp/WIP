@@ -1306,12 +1306,12 @@ export default {
 			editStoreVue.metaToBeEdited.updated_by = editStoreVue.$root.createdBy
 			return editStoreVue.validateStoreMeta()
 			.then(response => {
-				if (editStoreVue.newStoreMeta.opening_soon === 1) {
-					if (!editStoreVue.newStoreMeta.merchant_id) {
-						editStoreVue.newStoreMeta.merchant_id = 0
+				if (editStoreVue.metaToBeEdited.opening_soon === 1) {
+					if (!editStoreVue.metaToBeEdited.merchant_id) {
+						editStoreVue.metaToBeEdited.merchant_id = 0
 					}
-					if (!editStoreVue.newStoreMeta.merchant_key) {
-						editStoreVue.newStoreMeta.merchant_key = 0
+					if (!editStoreVue.metaToBeEdited.merchant_key) {
+						editStoreVue.metaToBeEdited.merchant_key = 0
 					}
 				}
 
