@@ -38,7 +38,7 @@
 		        			<div class="image-container" v-else>
 		        				<img width="100" height="80" :src="newMenu.image_url">
 		        			</div>
-		        			<resource-modal @selected="updateImage" buttonText="Select Image" class="margin-top-15"></resource-modal>
+		        			<resource-picker @selected="updateImage" buttonText="Select Image" class="margin-top-15"></resource-picker>
 
 							<div class="form-group form-md-line-input form-md-floating-label">
 							    <input type="text" class="form-control input-sm" id="form_control_2" :class="{'edited': newMenu.name.length}" v-model="newMenu.name">
@@ -234,7 +234,7 @@
 				<h4 class="modal-title center">Select An Image</h4>
 			</div>
 			<div slot="modal-body" class="modal-body">
-				<gallery-popup @selectedImage="updateImage"></gallery-popup>
+				<resource-picker @selected="updateImage" buttonText="Select Image" class="margin-top-15"></resource-picker>
 			</div>
 			<div slot="modal-footer" class="modal-footer clear"></div>
 		</modal>
@@ -254,7 +254,7 @@ import ApplyAddOnCategories from './Menus/ApplyAddOnCategories'
 import DeleteMenu from './Menus/DeleteMenu'
 import MenuHours from './Menus/MenuHours'
 import GalleryPopup from '../../modules/GalleryPopup'
-import ResourceModal from '../../modules/ResourceModal'
+import ResourcePicker from '../../modules/ResourcePicker'
 
 export default {
 	data () {
@@ -678,7 +678,7 @@ export default {
 		Modal,
 		GalleryPopup,
 		MenuHours,
-		ResourceModal
+		ResourcePicker
 	}
 }
 </script>

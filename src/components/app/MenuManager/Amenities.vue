@@ -35,12 +35,18 @@
 						</div>
 		        		<div class="col-md-2">
 		        			<label>Image</label>
-							<div class="image-container clickable" v-show="newAmenity.image_url === ''">
-								<img width="100" height="80" src="../../../assets/img/app/image-placeholder.png" @click="openGalleryPopup()">
+							<div class="image-container" v-show="newAmenity.image_url === ''">
+								<img width="100" height="80" src="../../../assets/img/app/image-placeholder.png">
 							</div>
-							<div class="image-container clickable" v-show="newAmenity.image_url !== ''">
-								<img width="100" height="80" :src="newAmenity.image_url" @click="openGalleryPopup()">
+							<div class="image-container" v-show="newAmenity.image_url !== ''">
+								<img width="100" height="80" :src="newAmenity.image_url">
 							</div>
+							<resource-picker 
+								@selected="updateNewImage" 
+								buttonText="Select Image" 
+								:isModal="true"
+								class="margin-top-15">
+							</resource-picker>
 		        		</div>
 						<div class="col-md-6">
 							<div class="form-group form-md-line-input form-md-floating-label">
@@ -58,21 +64,6 @@
 			</div>
 		</div>
 		<!-- END CREATE -->
-
-		<!-- START GALLERY -->
-	    <modal :show="showGalleryModal" effect="fade" @closeOnEscape="closeGalleryModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeGalleryModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Select An Image</h4>
-			</div>
-			<div slot="modal-body" class="modal-body">
-				<gallery-popup @selectedImage="updateNewImage"></gallery-popup>
-			</div>
-			<div slot="modal-footer" class="modal-footer clear"></div>
-		</modal>
-		<!-- END GALLERY -->
 
 		<!-- BEGIN LIST -->
 		<div>
@@ -176,11 +167,18 @@
 						<div class="col-md-3">
 							<label>Image</label>
 							<div class="image-container clickable" v-if="!amenityToEdit.image_url">
-								<img width="100" height="80" src="../../../assets/img/app/image-placeholder.png" @click="imageEdit()">
+								<img width="100" height="80" src="../../../assets/img/app/image-placeholder.png">
 							</div>
 							<div class="image-container clickable" v-else>
-								<img width="100" height="80" :src="amenityToEdit.image_url" @click="imageEdit()">
+								<img width="100" height="80" :src="amenityToEdit.image_url">
 							</div>
+							<resource-picker 
+								@selected="updateEditedImage" 
+								buttonText="Select Image" 
+								:isModal="false"
+								class="margin-top-15"
+								@click="imageEdit()">
+							</resource-picker>
 						</div>
 						<div class="col-md-9">
 							<div class="form-group form-md-line-input form-md-floating-label">
@@ -194,7 +192,6 @@
 						</div>
 					</div>
 				</form>
-				<gallery-popup v-show="selectImageMode" @selectedImage="updateEditedImage"></gallery-popup>
 			</div>
 			<div slot="modal-footer" class="modal-footer clear">
 				<button @click="updateAmenity()" v-show="!selectImageMode" type="submit" class="btn blue">Save</button>
@@ -226,7 +223,7 @@ import Breadcrumb from '../../modules/Breadcrumb'
 import LoadingScreen from '../../modules/LoadingScreen'
 import AmenitiesFunctions from '../../../controllers/Amenities'
 import Modal from '../../modules/Modal'
-import GalleryPopup from '../../modules/GalleryPopup'
+import ResourcePicker from '../../modules/ResourcePicker'
 import NoResults from '../../modules/NoResults'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
 import $ from 'jquery'
@@ -246,8 +243,6 @@ export default {
 				image_url: '',
 				order: ''
 			},
-
-			showGalleryModal: false,
 
 			loadingAmenities: false,
 			listErrorMessage: '',
@@ -294,30 +289,13 @@ export default {
 			this.createNewCollapse = !this.createNewCollapse
 		},
 		/**
-		 * To open the gallery modal.
-		 * @function
-		 * @returns {undefined}
-		 */
-		openGalleryPopup () {
-			this.showGalleryModal = true
-		},
-		/**
 		 * To set the image to be same as the one emitted by the gallery modal.
 		 * @function
 		 * @param {object} val - The emitted image object.
 		 * @returns {undefined}
 		 */
 		updateNewImage (val) {
-			this.showGalleryModal = false
 			this.newAmenity.image_url = val.image_url
-		},
-		/**
-		 * To close the gallery popup.
-		 * @function
-		 * @returns {undefined}
-		 */
-		closeGalleryModal () {
-			this.showGalleryModal = false
 		},
 		/**
 		 * To clear the current error.
@@ -705,7 +683,7 @@ export default {
 		LoadingScreen,
 		Modal,
 		NoResults,
-		GalleryPopup
+		ResourcePicker
 	}
 }
 </script>

@@ -33,12 +33,13 @@
 		      				</div>
 			        		<div class="col-md-2">
 			        			<label class="grey-label">Image</label>
-								<div class="image-wrapper clickable" v-if="!newNewsFeed.image.length">
-									<img class="image-fit" src="../../assets/img/app/image-placeholder.png" @click="openGalleryPopup()">
+								<div class="image-wrapper" v-if="!newNewsFeed.image.length">
+									<img class="image-fit" src="../../assets/img/app/image-placeholder.png">
 								</div>
-								<div class="image-wrapper clickable" v-else>
-									<img class="image-fit" :src="newNewsFeed.image" @click="openGalleryPopup()">
+								<div class="image-wrapper" v-else>
+									<img class="image-fit" :src="newNewsFeed.image">
 								</div>
+								<resource-picker @selected="updateImage" buttonText="Select Image" class="margin-top-15"></resource-picker>
 			        		</div>
 	      					<div class="col-md-5">
 	      						<div class="form-group form-md-line-input form-md-floating-label">
@@ -141,7 +142,7 @@
 	    		<h4 class="modal-title center">Select An Image</h4>
 	    	</div>
 	    	<div slot="modal-body" class="modal-body">
-	    		<gallery-popup @selectedImage="updateImage"></gallery-popup>
+	    		<resource-picker @selected="updateImage" buttonText="Select Image" class="margin-top-15"></resource-picker>
 	    	</div>
 	    	<div slot="modal-footer" class="modal-footer clear"></div>
 	    </modal>
@@ -158,7 +159,7 @@ import Dropdown from '../modules/Dropdown'
 import Modal from '../modules/Modal'
 import NewsFeedFunctions from '../../controllers/NewsFeed'
 import EditNewsFeed from './NewsFeed/EditNewsFeed'
-import GalleryPopup from '../modules/GalleryPopup'
+import ResourcePicker from '../modules/ResourcePicker'
 
 export default {
 	data () {
@@ -185,8 +186,7 @@ export default {
 			createFeedError: '',
 			showEditFeedModal: false,
 			updateFeedError: '',
-			selectedFeedId: 0,
-			showGalleryModal: false
+			selectedFeedId: 0
 		}
 	},
 	created () {
@@ -194,29 +194,12 @@ export default {
 	},
 	methods: {
 		/**
-		 * To open the gallery modal.
-		 * @function
-		 * @returns {undefined}
-		 */
-		openGalleryPopup () {
-			this.showGalleryModal = true
-		},
-		/**
-		 * To close the gallery popup.
-		 * @function
-		 * @returns {undefined}
-		 */
-		closeGalleryModal () {
-			this.showGalleryModal = false
-		},
-		/**
-		 * To set the image to be same as the one emitted by the gallery modal.
+		 * To set the image to be same as the one emitted by the resource picker.
 		 * @function
 		 * @param {object} val - The emitted image object.
 		 * @returns {undefined}
 		 */
 		updateImage (val) {
-			this.showGalleryModal = false
 			this.newNewsFeed.image = val.image_url
 		},
 		/**
@@ -424,7 +407,7 @@ export default {
 		Modal,
 		EditNewsFeed,
 		NoResults,
-		GalleryPopup
+		ResourcePicker
 	}
 }
 </script>

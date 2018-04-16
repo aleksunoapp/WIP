@@ -7,6 +7,7 @@ import locale from 'element-ui/lib/locale/lang/en'
 import 'element-ui/lib/theme-chalk/index.css'
 import VueSweetAlert from 'vue-sweetalert'
 import VueScrollTo from 'vue-scrollto'
+// import globals from './global.js'
 
 require('./assets/css/font-awesome/css/font-awesome.min.css')
 require('./assets/css/simple-line-icons/simple-line-icons.min.css')
@@ -58,6 +59,35 @@ var App = new Vue({
 			this.storeLocations = []
 			this.businessId = null
 			this.accountToken = ''
+		},
+		/**
+		 * A wrapper to handle errors for special cases
+		 * @param {function} errorCallback - A function to be run if all of the special error cases are passed
+		 * @returns {function} - A function that determines if it needs to apply special logic or just run the callback
+		 * @version 0.0.9
+		 */
+		errorWrapper (errorCallback) {
+			return e => {
+				if (e.responseJSON && e.responseJSON.declaration) {
+					switch (e.responseJSON.declaration) {
+
+					case 'auth_token_needs_refresh':
+					case 'no_account_selected':
+					case 'csrf_token_mismatch':
+					case 'auth_token_missing':
+					case 'auth_token_expired':
+					case 'auth_token_invalid':
+							// Redirect to the login screen and clear all variables
+						// window.location.href = `${globals.accountsUrl}/login/?redirect_to=ecomm`
+						return
+
+					default:
+							// No default
+					}
+				}
+
+				errorCallback(e)
+			}
 		}
 	},
 	router

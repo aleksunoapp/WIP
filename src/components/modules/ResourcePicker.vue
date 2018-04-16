@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<button class="btn blue" @click.stop.prevent="openResourceModal()">{{ buttonText }}</button>
+		<button class="btn blue btn-outline" @click.stop.prevent="openResourceModal()">{{ buttonText }}</button>
 		<modal v-show="isModal" :show.sync="showResourceModal" effect="custom" :width="'96%'">
 			<div slot="modal-header" class="modal-header center">
 				<h4 class="modal-title">Select a Resource</h4>
@@ -66,9 +66,8 @@
 										<div class="form-group form-md-line-input form-md-floating-label margin-top-20">
 											<input type="text" class="form-control input-sm" id="search_options_search" :class="{'edited': advancedSearch.search.length}" v-model="advancedSearch.search">
 											<label for="search_options_search">Search</label>
-											<span class="help-block persist"> Select search range below.</span>
 										</div>
-										<div class="md-radio-inline margin-top-25">
+										<div class="md-radio-inline margin-top-20">
 											<div class="md-radio" v-for="option in advancedSearch.searchOptions">
 												<input type="radio" :id="`advanced_search_radio_${option.value}`" :name="`advanced_search_radio_${option.value}`" class="md-radiobtn" v-model="advancedSearch.range" :value="option.value">
 												<label :for="`advanced_search_radio_${option.value}`">
@@ -121,7 +120,7 @@
 														</li>
 													</ul>
 												</dropdown>
-												<page-results class="pull-right" :totalResults="totalResults" :activePage="activePage" :allowPageChange="false" :resultsPerPageOverride="27"></page-results>
+												<page-results class="pull-right" :totalResults="totalResults" :activePage="activePage" @pageResults="updatePerPage"></page-results>
 											</div>
 											<div class="margin-top-20" v-if="currentResources.length">
 												<pagination :passedPage="activePage":numPages="numPages" @activePageChange="activePageUpdate"></pagination>
@@ -212,7 +211,6 @@
 										<div class="form-group form-md-line-input form-md-floating-label margin-top-20">
 											<input type="text" class="form-control input-sm" id="search_options_search" :class="{'edited': advancedSearch.search.length}" v-model="advancedSearch.search">
 											<label for="search_options_search">Search</label>
-											<span class="help-block persist"> Select search range below.</span>
 										</div>
 										<div class="md-radio-inline margin-top-25">
 											<div class="md-radio" v-for="option in advancedSearch.searchOptions">
@@ -267,10 +265,10 @@
 														</li>
 													</ul>
 												</dropdown>
-												<page-results class="pull-right" :totalResults="totalResults" :activePage="activePage" :allowPageChange="false" :resultsPerPageOverride="27"></page-results>
+												<page-results class="pull-right" :totalResults="totalResults" :activePage="activePage" @pageResults="updatePerPage"></page-results>
 											</div>
 											<div class="margin-top-20" v-if="currentResources.length">
-												<pagination :passedPage="activePage":numPages="numPages" @activePageChange="activePageUpdate"></pagination>
+												<pagination :passedPage="activePage" :numPages="numPages" @activePageChange="activePageUpdate"></pagination>
 											</div>
 											<div class="cbp-no-files text-center margin-top-20" v-if="!currentResources.length">There are currently no resources in this folder.</div>
 											<template v-for="resource in currentResources">
@@ -335,6 +333,7 @@ export default {
 			numPages: 0,
 			totalResults: 0,
 			activePage: 1,
+			recordsPerPage: 25,
 			loadingResourceData: false,
 			allFoldersView: false,
 			advancedSearch: {
@@ -357,15 +356,24 @@ export default {
 			isSaving: false,
 			searchError: '',
 			tags: [],
-			fileTypes: [{name: 'image', icon: 'fa fa-file-image-o', active: false}, {name: 'video', icon: 'fa fa-file-video-o', active: false}, {name: 'documents', icon: 'fa fa-file-text-o', active: false}, {name: 'other', icon: 'fa fa-file-o', active: false}],
+			fileTypes: [
+				{name: 'image', icon: 'fa fa-file-image-o', active: false},
+				{name: 'video', icon: 'fa fa-file-video-o', active: false},
+				{name: 'documents', icon: 'fa fa-file-text-o', active: false},
+				{name: 'other', icon: 'fa fa-file-o', active: false}
+			],
 			selectedResource: {},
 			activeBusinessId: 30,
 			activeBusinessName: null,
 			activeLocationId: null,
-			activeLocationName: null
+			activeLocationName: null,
+			errorMessage: ''
 		}
 	},
 	methods: {
+		updatePerPage (val) {
+			this.recordsPerPage = val
+		},
 		/**
 		 * To open the resource modal and initialize content
 		 * @function
@@ -402,7 +410,7 @@ export default {
 			const businessId = this.activeBusinessId
 			const locationId = this.activeLocationId
 			const pageNumber = 1
-			const recordsPerPage = 100
+			const recordsPerPage = this.recordsPerPage
 			if (!parentId) {
 				parentId = 0
 			}
@@ -545,7 +553,7 @@ export default {
 			let _this = this
 			const businessId = this.activeBusinessId
 			const locationId = this.activeLocationId
-			const recordsPerPage = 27
+			const recordsPerPage = this.recordsPerPage
 			const searchCriteria = this.formatSearchCriteria()
 			const sortCriteria = {sort_by: this.sortBy.field, sort_order: this.sortBy.order}
 
@@ -620,7 +628,7 @@ export default {
 			const businessId = this.activeBusinessId
 			const locationId = this.activeLocationId
 			const pageNumber = 1
-			const recordsPerPage = 100
+			const recordsPerPage = this.recordsPerPage
 
 			return Resources.getTags(businessId, locationId, pageNumber, recordsPerPage).then(response => {
 				_this.tags = response.payload.tags.map(tag => {
@@ -630,7 +638,12 @@ export default {
 			}).catch(_this.$root.errorWrapper(e => {
 				if (e.responseJSON) {
 					switch (e.responseJSON.declaration) {
+					case 'tags_not_found':
+						_this.tags = []
+						return
 
+					default:
+						_this.errorMessage = 'We couldn\'t fetch file types'
 					}
 				}
 			}))
@@ -851,5 +864,9 @@ export default {
 }
 .relative {
 	position: relative;
+}
+
+.cbp-wrapper {
+	min-height: 100px;
 }
 </style>

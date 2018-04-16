@@ -34,11 +34,17 @@
 		        		<div class="col-md-2">
 		        			<label class="grey-label">Promotion Image</label>
 							<div class="image-container" v-if="!newPromotion.image.length">
-								<img width="100" height="80" src="../../assets/img/app/image-placeholder.png" @click="openGalleryPopup()">
+								<img width="100" height="80" src="../../assets/img/app/image-placeholder.png">
 							</div>
 							<div class="image-container" v-else>
-								<img width="100" height="80" :src="newPromotion.image" @click="openGalleryPopup()">
+								<img width="100" height="80" :src="newPromotion.image">
 							</div>
+							<resource-picker 
+								@selected="updateImage" 
+								buttonText="Select Image" 
+								:isModal="true"
+								class="margin-top-15">
+							</resource-picker>
 		        		</div>
 		        		<div class="col-md-5">
 		        			<div class="form-group form-md-line-input form-md-floating-label">
@@ -264,19 +270,7 @@
         <!-- END DISPLAY PROMOTIONS -->
         <edit-promotion v-if="showEditPromotionModal" :selectedPromotionId="selectedPromotionId" @updatePromotion="updatePromotion" @closeEditPromotionModal="closeEditPromotionModal"></edit-promotion>
         <delete-promotion v-if="deletePromotionModalActive" :selectedPromotionId="selectedPromotionId" @closeDeletePromotionModal="closeDeletePromotionModal" @deletePromotionAndCloseModal="deletePromotionAndCloseModal"></delete-promotion>
-		<modal :show="showGalleryModal" effect="fade" @closeOnEscape="closeGalleryModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeGalleryModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Select An Image</h4>
-			</div>
-			<div slot="modal-body" class="modal-body">
-				<gallery-popup @selectedImage="updateImage"></gallery-popup>
-			</div>
-			<div slot="modal-footer" class="modal-footer clear"></div>
-		</modal>
-		<modal :show="showStoreGroupsModal" effect="fade" @closeOnEscape="closeGalleryModal">
+		<modal :show="showStoreGroupsModal" effect="fade" @closeOnEscape="closeStoreGroupsModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closeStoreGroupsModal()">
 					<span>&times;</span>
@@ -533,7 +527,7 @@ import App from '../../controllers/App'
 import ajaxErrorHandler from '../../controllers/ErrorController'
 import Modal from '../modules/Modal'
 import Qrcode from '../modules/QRCode'
-import GalleryPopup from '../modules/GalleryPopup'
+import ResourcePicker from '../modules/ResourcePicker'
 import NoResults from '../modules/NoResults'
 import MenuModifierTree from '../modules/MenuModifierTree'
 import EditPromotion from './Promotions/EditPromotion'
@@ -571,7 +565,6 @@ export default {
 				short_description: '',
 				sort_order: ''
 			},
-			showGalleryModal: false,
 			showEditPromotionModal: false,
 			selectedPromotionId: 0,
 			deletePromotionModalActive: false,
@@ -1584,22 +1577,6 @@ export default {
 			this.createNewPromotionCollapse = !this.createNewPromotionCollapse
 		},
 		/**
-		 * To open the gallery modal.
-		 * @function
-		 * @returns {undefined}
-		 */
-		openGalleryPopup () {
-			this.showGalleryModal = true
-		},
-		/**
-		 * To close the gallery popup.
-		 * @function
-		 * @returns {undefined}
-		 */
-		closeGalleryModal () {
-			this.showGalleryModal = false
-		},
-		/**
 		 * To close the apply promotion modal.
 		 * @function
 		 * @returns {undefined}
@@ -1608,13 +1585,12 @@ export default {
 			this.showApplyPromotionModal = false
 		},
 		/**
-		 * To set the image to be same as the one emitted by the gallery modal.
+		 * To set the image to be same as the one emitted by the resource picker.
 		 * @function
 		 * @param {object} val - The emitted image object.
 		 * @returns {undefined}
 		 */
 		updateImage (val) {
-			this.showGalleryModal = false
 			this.newPromotion.image = val.image_url
 		}
 	},
@@ -1622,7 +1598,7 @@ export default {
 		Breadcrumb,
 		LoadingScreen,
 		Modal,
-		GalleryPopup,
+		ResourcePicker,
 		NoResults,
 		EditPromotion,
 		DeletePromotion,

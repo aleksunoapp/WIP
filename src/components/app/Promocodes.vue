@@ -227,7 +227,6 @@ import LoadingScreen from '../modules/LoadingScreen'
 import PromoCodesFunctions from '../../controllers/PromoCodes'
 import Modal from '../modules/Modal'
 import Dropdown from '../modules/Dropdown'
-import GalleryPopup from '../modules/GalleryPopup'
 import NoResults from '../modules/NoResults'
 import EditPromoCode from './PromoCodes/EditPromoCode'
 import DeletePromoCode from './PromoCodes/DeletePromoCode'
@@ -261,7 +260,6 @@ export default {
 				'value_type': ''
 			},
 			editedPromoCode: {},
-			showGalleryModal: false,
 			showEditPromoCodeModal: false,
 			selectedPromoCodeId: 0,
 			deletePromoCodeModalActive: false,
@@ -754,39 +752,12 @@ export default {
 		 */
 		toggleCreatePromoCodePanel () {
 			this.createNewPromoCodeCollapse = !this.createNewPromoCodeCollapse
-		},
-		/**
-		 * To open the gallery modal.
-		 * @function
-		 * @returns {undefined}
-		 */
-		openGalleryPopup () {
-			this.showGalleryModal = true
-		},
-		/**
-		 * To close the gallery popup.
-		 * @function
-		 * @returns {undefined}
-		 */
-		closeGalleryModal () {
-			this.showGalleryModal = false
-		},
-		/**
-		 * To set the image to be same as the one emitted by the gallery modal.
-		 * @function
-		 * @param {object} val - The emitted image object.
-		 * @returns {undefined}
-		 */
-		updateImage (val) {
-			this.showGalleryModal = false
-			this.newPromoCode.image = val.image_url
 		}
 	},
 	components: {
 		Breadcrumb,
 		LoadingScreen,
 		Modal,
-		GalleryPopup,
 		NoResults,
 		EditPromoCode,
 		DeletePromoCode,

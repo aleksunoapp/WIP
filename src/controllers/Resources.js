@@ -5,6 +5,7 @@
  */
 import $ from 'jquery'
 import GlobalFunctions from '../global'
+import {App} from '../main.js'
 
 export default {
 	/**
@@ -79,11 +80,15 @@ export default {
 		}
 
 		return new Promise((resolve, reject) => {
-			GlobalFunctions.$ajax({
+			$.ajax({
 				method: 'POST',
 				dataType: 'json',
 				url,
-				data: httpParams,
+				data: JSON.stringify(httpParams),
+				contentType: 'application/json',
+				xhrFields: {
+					withCredentials: true
+				},
 				success (response) {
 					resolve(response)
 				},
@@ -287,7 +292,11 @@ export default {
 				method: 'POST',
 				dataType: 'json',
 				url,
-				data: httpParams,
+				data: JSON.stringify(httpParams),
+				contentType: 'application/json',
+				xhrFields: {
+					withCredentials: true
+				},
 				success (response) {
 					resolve(response)
 				},
@@ -421,6 +430,9 @@ export default {
 				data: file,
 				contentType: false,
 				processData: false,
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('token', App.accountToken)
+				},
 				success (response) {
 					resolve(response)
 				},
@@ -454,10 +466,10 @@ export default {
 
 		if (locationId) {
 			httpParams.location_id = locationId
-			url = '/resources/location_tags'
+			url = GlobalFunctions.v3BaseUrl + '/resources/location_tags'
 		} else {
 			httpParams.business_id = businessId
-			url = '/resources/business_tags'
+			url = GlobalFunctions.v3BaseUrl + '/resources/business_tags'
 		}
 
 		return new Promise((resolve, reject) => {

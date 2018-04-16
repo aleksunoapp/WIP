@@ -30,10 +30,6 @@ export default {
 	 */
 	v3BaseUrl: 'https://api.staging.unoapp.io',
 	/**
-	 * base url for API calls, other than Message calls
-	 */
-	v3BaseUrl: 'https://api.staging.unoapp.io',
-	/**
 	 * base url for API calls to send Messages
 	 */
 	messageBaseUrl: 'http://35.162.38.115:8004',
@@ -71,6 +67,14 @@ export default {
 	$ajax: function (options, noRetry) {
 		var localhost = this.baseUrl + '/api'
 
+		// CSRF token, in cookie and headers
+		let csrfToken = ('' + Math.random()).replace('0.', '')
+		if (document.cookie.indexOf('csrf_token=') !== -1) {
+			csrfToken = document.cookie.split('csrf_token=')[1]
+		} else {
+			document.cookie = 'csrf_token=' + csrfToken + ';domain=.unoapp.io'
+		}
+
 		options.url = localhost + options.url
 		if (options.method.toLowerCase() === 'post') {
 			options.contentType = 'application/json'
@@ -78,11 +82,21 @@ export default {
 		}
 
 		options.beforeSend = function (xhr) {
+			// ecomm API's auth headers
 			xhr.setRequestHeader('app-id', App.appId)
 			xhr.setRequestHeader('app-secret', App.appSecret)
 			xhr.setRequestHeader('auth-token', App.userToken)
-			xhr.setRequestHeader('auth-token', App.userToken)
 			xhr.setRequestHeader('unoapp-token', App.accountToken)
+			xhr.setRequestHeader('token', App.accountToken)
+			xhr.setRequestHeader('X-CSRF-Token', csrfToken)
+		}
+
+		// Allow cross-domain cookies
+		options.xhrFields = {
+			// development
+			withCredentials: false
+			// production
+			// withCredentials: true
 		}
 
 		$.ajax(options)
