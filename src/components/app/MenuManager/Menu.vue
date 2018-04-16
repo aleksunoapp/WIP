@@ -32,12 +32,13 @@
       					</div>
 		        		<div class="col-md-6">
 		        			<label for="form_control_1">Menu Image</label>
-		        			<div class="image-container clickable" v-if="!newMenu.image_url.length">
-		        				<img width="100" height="80" src="../../../assets/img/app/image-placeholder.png" @click="openGalleryPopup()">
+		        			<div class="image-container" v-if="!newMenu.image_url.length">
+		        				<img width="100" height="80" src="../../../assets/img/app/image-placeholder.png">
 		        			</div>
-		        			<div class="image-container clickable" v-else>
-		        				<img width="100" height="80" :src="newMenu.image_url" @click="openGalleryPopup()">
+		        			<div class="image-container" v-else>
+		        				<img width="100" height="80" :src="newMenu.image_url">
 		        			</div>
+		        			<resource-modal @selected="updateImage" buttonText="Select Image" class="margin-top-15"></resource-modal>
 
 							<div class="form-group form-md-line-input form-md-floating-label">
 							    <input type="text" class="form-control input-sm" id="form_control_2" :class="{'edited': newMenu.name.length}" v-model="newMenu.name">
@@ -253,6 +254,7 @@ import ApplyAddOnCategories from './Menus/ApplyAddOnCategories'
 import DeleteMenu from './Menus/DeleteMenu'
 import MenuHours from './Menus/MenuHours'
 import GalleryPopup from '../../modules/GalleryPopup'
+import ResourceModal from '../../modules/ResourceModal'
 
 export default {
 	data () {
@@ -652,6 +654,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateImage (val) {
+			console.log('updateImage', val)
 			this.showGalleryModal = false
 			this.newMenu.image_url = val.image_url
 		},
@@ -674,7 +677,8 @@ export default {
 		NoResults,
 		Modal,
 		GalleryPopup,
-		MenuHours
+		MenuHours,
+		ResourceModal
 	}
 }
 </script>

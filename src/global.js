@@ -5,6 +5,14 @@ import $ from 'jquery'
 import {App} from './main.js'
 // import environment from './environment'
 
+/**
+ * Initialize csrfToken for use in backend calls.
+ * @var {string}
+ * @memberof Global
+ * @version 0.0.1
+ */
+let csrfToken
+
 export default {
 	/**
 	 * base url for UNOapp accounts frontend, with # if accounts router is in hash mode
@@ -17,6 +25,10 @@ export default {
 	 * base url for API calls, other than Message calls
 	 */
 	baseUrl: 'https://ecomm.dev.api.unoapp.io',
+	/**
+	 * base url for API calls, other than Message calls
+	 */
+	v3BaseUrl: 'https://api.staging.unoapp.io',
 	/**
 	 * base url for API calls, other than Message calls
 	 */
@@ -132,6 +144,43 @@ export default {
 			},
 			cancel: function () {
 				setTimeout(function () { button.text(originalText); button.prop('disabled', false) }, 100)
+			}
+		}
+	},
+	/**
+	 * Wrapper for handling whether or not the auth token needs refreshing.
+	 * @function
+	 * @param {function} callback - A callback function to be used for success and error response handling.
+	 * @returns {function} - The refreshWrapper function.
+	 * @memberof Global
+	 * @version 0.0.9
+	 */
+	refreshWrapper (callback) {
+		return e => {
+			if (e.status === 401 && e.responseJSON && e.responseJSON.declaration === 'auth_token_needs_refresh') {
+				// Refresh token
+				$.ajax({
+					url: 'https://api.staging.unoapp.io/auth/refresh',
+					method: 'POST',
+					dataType: 'json',
+					xhrFields: {
+						withCredentials: true
+					},
+					beforeSend (xhr) {
+						xhr.setRequestHeader('X-CSRF-Token', csrfToken)
+					},
+					success (response) {
+						// store.dispatch('setV3Token', response.payload.token)
+
+						callback(response, 'success')
+					},
+					error (refreshError) {
+						callback(refreshError, 'error')
+					}
+				})
+			} else {
+				let status = (e.status === 0 || e.status === 401 || e.status === 403 || e.status === 404 || e.status === 500 || (e.responseJSON && e.responseJSON.status === 'error')) ? 'error' : 'success'
+				callback(e, status)
 			}
 		}
 	}
