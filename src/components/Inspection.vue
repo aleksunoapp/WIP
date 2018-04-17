@@ -346,7 +346,7 @@ export default {
 				new_recommendation: {
 					'en-ca': '* - indicates a new recommendation has been added',
 					'en-us': '* - indicates a new recommendation has been added',
-					'fr-ca': '* - indicates a new recommendation has been added'
+					'fr-ca': '* - indique une recommandation ajoutée ou mise à jour'
 				}
 			}
 		}
