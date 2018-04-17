@@ -66,7 +66,7 @@
 				</div>
 				<div class="icon">
 					<img src="../assets/images/pass.png">
-					({{ this.$root.inspectionCounts.passCount }}) 
+					({{ this.$root.inspectionCounts.passCount }})
 				</div>
 			</div>
 			<template v-for="(category, index) in serviceCategories" v-if="category.showOnInspection">
@@ -118,7 +118,7 @@
 										<div class="summary-table-row summary-item" v-for="subService in service.subServices">
 											<div class="summary-table-cell">
 												<span class="information-icon" :class="{'no-icon-bg': category.serviceCategoryType === 'PASS'}" @click="openServiceModal(subService)"></span>
-												<span class="service-name">{{ subService.name }}</span>
+												<span class="service-name"><span v-if="subService.isHighlighted === true">* </span>{{ subService.name }}</span>
 											</div>
 											<div class="summary-table-cell">
 												<template v-if="category.serviceCategoryType !== 'PASS'">
@@ -135,10 +135,10 @@
 											</div>
 										</div>
 									</template>
-									<div class="summary-table-row summary-item" v-else>
+									<div class="summary-table-row summary-item">
 										<div class="summary-table-cell">
 											<span class="information-icon" :class="{'no-icon-bg': category.serviceCategoryType === 'PASS'}" @click="openServiceModal(service)"></span>
-											<span class="service-name">{{ service.name }}</span>
+											<span class="service-name"><span v-if="service.isHighlighted === true">* </span>{{ service.name }}</span>
 										</div>
 										<div class="summary-table-cell">
 											<template v-if="category.serviceCategoryType !== 'PASS'">
@@ -160,7 +160,7 @@
 					</div>
 				</div>
 			</template>
-			
+
 			<div class="proceed-component">
 				<div v-if="$root.inspectionCounts.failCount && $root.inspectionCounts.warningCount" class="time-notice" :class="{'danger-flag': timeExpired}">
 					<span v-if="!timeExpired">{{ langTerms.if_approved_by[$root.meta.local.toLowerCase()] }} {{ computedResponseTime }} {{ langTerms.your_vehicle_will_be_ready[$root.meta.local.toLowerCase()] }} {{ computedPromiseTime }}.</span>
@@ -219,6 +219,7 @@ export default {
 				'ATTN': 'warningCount',
 				'PASS': 'passCount'
 			},
+			services: this.$root.services,
 			modalOpen: false,
 			serviceCategories: [],
 			inspectionTotal: 0,
