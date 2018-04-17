@@ -63,6 +63,7 @@ var authenticateToken = {
 							}
 						}).then((response, textStatus, xhr) => {
 							if (xhr.status === 200) {
+								console.log(response)
 								resolve(response)
 							} else {
 								reject()

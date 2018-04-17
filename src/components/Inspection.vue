@@ -118,7 +118,7 @@
 										<div class="summary-table-row summary-item" v-for="subService in service.subServices">
 											<div class="summary-table-cell">
 												<span class="information-icon" :class="{'no-icon-bg': category.serviceCategoryType === 'PASS'}" @click="openServiceModal(subService)"></span>
-												<span class="service-name"><span v-if="subService.isHighlighted === true">* </span>{{ subService.name }}</span>
+												<span class="service-name" v-bind:class="{'bold': (subService.isHighlighted ===  true)}"><span v-if="subService.isHighlighted === true">* </span>{{ subService.name }}</span>
 											</div>
 											<div class="summary-table-cell">
 												<template v-if="category.serviceCategoryType !== 'PASS'">
@@ -138,7 +138,7 @@
 									<div class="summary-table-row summary-item">
 										<div class="summary-table-cell">
 											<span class="information-icon" :class="{'no-icon-bg': category.serviceCategoryType === 'PASS'}" @click="openServiceModal(service)"></span>
-											<span class="service-name"><span v-if="service.isHighlighted === true">* </span>{{ service.name }}</span>
+											<span class="service-name" v-bind:class="{'bold': (service.isHighlighted === true)}"><span v-if="service.isHighlighted === true">* </span>{{ service.name }}</span>
 										</div>
 										<div class="summary-table-cell">
 											<template v-if="category.serviceCategoryType !== 'PASS'">
@@ -159,6 +159,7 @@
 						</div>
 					</div>
 				</div>
+				<div><p class="newRecAst">{{ langTerms.new_recommendation[$root.meta.local.toLowerCase()] }}</p></div>
 			</template>
 
 			<div class="proceed-component">
@@ -341,6 +342,11 @@ export default {
 					'en-ca': 'Next',
 					'en-us': 'Next',
 					'fr-ca': 'Suivant'
+				},
+				new_recommendation: {
+					'en-ca': '* - indicates a new recommendation has been added',
+					'en-us': '* - indicates a new recommendation has been added',
+					'fr-ca': '* - indicates a new recommendation has been added'
 				}
 			}
 		}
@@ -385,6 +391,7 @@ export default {
 		 * @function
 		 * @returns {string} - The formatted time
 		 */
+
 		computedResponseTime () {
 			let formattedTime = ''
 			let fullDate = new Date(this.$root.meta.responseBy)
@@ -454,6 +461,7 @@ export default {
 		}
 	},
 	methods: {
+
 		/**
 		 * To open the full inspection in a separate tab
 		 * @function
@@ -764,6 +772,15 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.bold{
+	font-weight: bold;
+}
+.newRecAst{
+	font-size: 12px;
+	text-align: left;
+	padding: 3px 10px;
+	font-weight: bold;
+}
 .accordion-open .accordion-status {
 	float: right;
 	margin-top: 8px;
