@@ -115,7 +115,7 @@
 											<div class="summary-table-cell">
 											</div>
 										</div> -->
-										<div class="summary-table-row summary-item" v-for="subService in service.subServices">
+										<div class="summary-table-row summary-item" v-for="subService in service.subServices" v-if="subService.price">
 											<div class="summary-table-cell">
 												<span class="information-icon" :class="{'no-icon-bg': category.serviceCategoryType === 'PASS'}" @click="openServiceModal(subService)"></span>
 												<span class="service-name" v-bind:class="{'bold': (subService.isHighlighted ===  true)}"><span v-if="subService.isHighlighted === true">* </span>{{ subService.name }}</span>
@@ -135,7 +135,7 @@
 											</div>
 										</div>
 									</template>
-									<div class="summary-table-row summary-item">
+									<div class="summary-table-row summary-item" v-if="service.price !== 0">
 										<div class="summary-table-cell">
 											<span class="information-icon" :class="{'no-icon-bg': category.serviceCategoryType === 'PASS'}" @click="openServiceModal(service)"></span>
 											<span class="service-name" v-bind:class="{'bold': (service.isHighlighted === true)}"><span v-if="service.isHighlighted === true">* </span>{{ service.name }}</span>
@@ -159,7 +159,7 @@
 						</div>
 					</div>
 				</div>
-				<div><p class="newRecAst">{{ langTerms.new_recommendation[$root.meta.local.toLowerCase()] }}</p></div>
+				<div v-if="showLegend(category)"><p class="newRecAst">{{ langTerms.new_recommendation[$root.meta.local.toLowerCase()] }}</p></div>
 			</template>
 
 			<div class="proceed-component">
@@ -461,7 +461,12 @@ export default {
 		}
 	},
 	methods: {
-
+		showLegend (category) {
+			let _this = this
+			// $root.services.category === category.id
+			console.log('showLegend', _this.$root.services.filter(service => service.category === category.id && service.isHighlighted))
+			return _this.$root.services.filter(service => service.category === category.id && service.isHighlighted).length
+		},
 		/**
 		 * To open the full inspection in a separate tab
 		 * @function
