@@ -445,14 +445,13 @@ export default {
 			var amenitiesVue = this
 			return AmenitiesFunctions.getAmenitiesForStore(amenitiesVue.$root.appId, amenitiesVue.$root.appSecret, amenitiesVue.$root.userToken, amenitiesVue.$root.activeLocation.id).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
+					amenitiesVue.amenities.forEach(globalAmenity => { globalAmenity.selected = false })
 					response.payload.forEach(
 						(storeAmenity) => {
 							amenitiesVue.amenities.forEach(
 								(globalAmenity) => {
-									if (globalAmenity.id === storeAmenity.id) {
+									if (globalAmenity.id === storeAmenity.pivot.amenities_id) {
 										globalAmenity.selected = true
-									} else {
-										globalAmenity.selected = false
 									}
 								}
 							)
