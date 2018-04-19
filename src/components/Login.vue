@@ -46,7 +46,7 @@ var img3 = require('../assets/img/app/login/bg3.jpg')
  */
 
 import $ from 'jquery'
-import GlobalFunctions from '../global'
+// import GlobalFunctions from '../global'
 import LoginFunctions from '../controllers/Login'
 import Dropdown from './modules/Dropdown'
 import {BackgroundRotator} from '../assets/scripts/backgroundRotator'
@@ -95,6 +95,10 @@ export default {
 		BackgroundRotator(elm, images, options).init()
 
 		this.$refs.email.focus()
+
+		let _this = this
+		console.log('mounted', _this.$route)
+		this.login()
 	},
 	methods: {
 		/**
@@ -149,60 +153,53 @@ export default {
 		 * @returns {object} A promise that will either return an error message or display the success screen
 		 */
 		login (event) {
-			var disabledButton = GlobalFunctions.disableButton(event)
-			var loginVue = this
+			const loginVue = this
 
-			this.clearError()
-			return loginVue.validateLoginData()
-			.then(response => {
-				/* eslint-disable no-undef */
-				LoginFunctions.login(loginVue.user.email, loginVue.user.password).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						// set account type && locations for Location Managers
-						if (response.payload.type === 'admin') {
-							loginVue.$root.accountType = 'application_admin'
-						} else if (response.payload.type === 'restricted') {
-							loginVue.$root.accountType = 'store_admin'
-							loginVue.$root.storeLocations = response.payload.locations
-						}
-						localStorage.setItem('accountType', this.$root.accountType)
-						// set active user name
-						loginVue.$root.activeUser = response.payload.name
-						localStorage.setItem('activeUser', loginVue.$root.activeUser)
-						// set userToken
-						loginVue.$root.userToken = response.session.token
-						localStorage.setItem('userToken', loginVue.$root.userToken)
-						// set appId
-						loginVue.$root.appId = response.App.app_id
-						localStorage.setItem('appId', loginVue.$root.appId)
-						// set appSecret
-						loginVue.$root.appSecret = response.App.app_secret
-						localStorage.setItem('appSecret', loginVue.$root.appSecret)
-						// set createdBy
-						loginVue.$root.createdBy = response.session.admin_id
-						localStorage.setItem('createdBy', loginVue.$root.createdBy)
-
-						// set account type && locations for Location Managers
-						if (response.payload.type === 'admin') {
-							loginVue.$router.push('/app')
-						} else if (response.payload.type === 'restricted') {
-							loginVue.$router.push('/app/store_manager/stores')
-						}
-
-						disabledButton.complete()
-					} else {
-						loginVue.errorMessage = response.message
-						disabledButton.cancel()
+			let data = {
+				business_id: this.$route.query.business_id,
+				v3_token: this.$route.query.v3_token
+			}
+			console.log(data)
+			/* eslint-disable no-undef */
+			LoginFunctions.login(data).then(response => {
+				if (response.code === 200 && response.status === 'ok') {
+					// set account type && locations for Location Managers
+					if (response.payload.type === 'admin') {
+						loginVue.$root.accountType = 'application_admin'
+					} else if (response.payload.type === 'restricted') {
+						loginVue.$root.accountType = 'store_admin'
+						loginVue.$root.storeLocations = response.payload.locations
 					}
-				}).catch(reason => {
+					localStorage.setItem('accountType', this.$root.accountType)
+					// set active user name
+					loginVue.$root.activeUser = response.payload.name
+					localStorage.setItem('activeUser', loginVue.$root.activeUser)
+					// set userToken
+					loginVue.$root.userToken = response.session.token
+					localStorage.setItem('userToken', loginVue.$root.userToken)
+					// set appId
+					loginVue.$root.appId = response.App.app_id
+					localStorage.setItem('appId', loginVue.$root.appId)
+					// set appSecret
+					loginVue.$root.appSecret = response.App.app_secret
+					localStorage.setItem('appSecret', loginVue.$root.appSecret)
+					// set createdBy
+					loginVue.$root.createdBy = response.session.admin_id
+					localStorage.setItem('createdBy', loginVue.$root.createdBy)
+
+					// set account type && locations for Location Managers
+					if (response.payload.type === 'admin') {
+						loginVue.$router.push('/app')
+					} else if (response.payload.type === 'restricted') {
+						loginVue.$router.push('/app/store_manager/stores')
+					}
+
+					disabledButton.complete()
+				} else {
+					loginVue.errorMessage = response.message
 					disabledButton.cancel()
-					throw reason
-				})
+				}
 			}).catch(reason => {
-				// If validation fails then display the error message
-				loginVue.errorMessage = reason
-				window.scrollTo(0, 0)
-				disabledButton.cancel()
 				throw reason
 			})
 		}

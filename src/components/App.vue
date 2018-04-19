@@ -634,8 +634,6 @@ export default {
 		if (this.$root.accountType === 'application_admin') {
 			this.getStoreLocations()
 		}
-
-		this.validateToken()
 	},
 	methods: {
 		/**
@@ -779,10 +777,6 @@ export default {
 					}
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					appVue.$router.push('/login/expired')
-					return
-				}
 				if (reason.responseJSON) {}
 				throw reason
 			})

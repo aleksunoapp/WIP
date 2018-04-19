@@ -8,7 +8,7 @@ export default {
 	/**
 	 * base url for API calls, other than Message calls
 	 */
-	baseUrl: 'http://freshii2.unoapp.xyz',
+	baseUrl: 'http://ecomm.dev.api.unoapp.io',
 	/**
 	 * base url for API calls to send Messages
 	 */
