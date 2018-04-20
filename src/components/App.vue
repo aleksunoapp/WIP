@@ -521,6 +521,7 @@
 
 <script>
 import $ from 'jquery'
+import Global from '../global.js'
 import App from '../controllers/App'
 import Modal from './modules/Modal'
 import Dropdown from './modules/Dropdown'
@@ -605,7 +606,7 @@ export default {
 		var activeUser = localStorage.getItem('activeUser')
 
 		if (!appId || !appSecret || !userToken || !createdBy || !accountType || !activeUser) {
-			this.$router.push('/login')
+			this.$router.push('/')
 		} else {
 			this.$root.activeUser = activeUser
 			this.$root.userToken = userToken
@@ -867,7 +868,7 @@ export default {
 			localStorage.removeItem('createdBy')
 			localStorage.removeItem('accountType')
 			localStorage.removeItem('activeLocation')
-			this.$router.push('/login')
+			window.location.href = `${Global.accountsUrl}/?redirect_to=ecomm&logged_out=true`
 		}
 	},
 	components: {

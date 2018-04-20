@@ -6,6 +6,10 @@ import $ from 'jquery'
 
 export default {
 	/**
+	 * base url for UNOapp accounts frontend, with # if accounts router is in hash mode
+	 */
+	accountsUrl: 'http://localhost:6969/#',
+	/**
 	 * base url for API calls, other than Message calls
 	 */
 	baseUrl: 'http://ecomm.dev.api.unoapp.io',

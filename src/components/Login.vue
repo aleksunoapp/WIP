@@ -96,8 +96,6 @@ export default {
 
 		this.$refs.email.focus()
 
-		let _this = this
-		console.log('mounted', _this.$route)
 		this.login()
 	},
 	methods: {
@@ -157,9 +155,9 @@ export default {
 
 			let data = {
 				business_id: this.$route.query.business_id,
-				v3_token: this.$route.query.v3_token
+				v3_token: this.$route.query.account_token
 			}
-			console.log(data)
+
 			/* eslint-disable no-undef */
 			LoginFunctions.login(data).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
