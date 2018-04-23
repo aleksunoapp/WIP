@@ -19,8 +19,6 @@
 							<a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-summary-link" @click="$root.logEvent(`Opened Inspection Summary PDF`)">
 								{{ langTerms.inspection_summary[$root.meta.local.toLowerCase()] }}
 							</a>
-							<a v-if="$root.mobile" :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" class="chat-icon"></a>
-							<a v-if="$root.mobile" :href="`tel:${$root.meta.dealerContactInfo.phone}`" class="contact-icon"></a>
 						</div>
 						<div class="info-modal-estimate">{{ langTerms.estimated_cost[$root.meta.local.toLowerCase()] }} <span>${{ (viewingService.price).toFixed(2) }}</span></div>
 					</div>

@@ -461,11 +461,14 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * To determine if the legend should be displayed by checking if the category includes highlighted services (skip free services as they aren't shown)
+		 * @function
+		 * @param {object} category - The category to check
+		 * @returns {Number} - Positive integer if legend should be displayed, 0 if not
+		 */
 		showLegend (category) {
-			let _this = this
-			// $root.services.category === category.id
-			console.log('showLegend', _this.$root.services.filter(service => service.category === category.id && service.isHighlighted))
-			return _this.$root.services.filter(service => service.category === category.id && service.isHighlighted).length
+			return this.$root.services.filter(service => service.category === category.id && service.isHighlighted && service.price !== 0).length
 		},
 		/**
 		 * To open the full inspection in a separate tab
