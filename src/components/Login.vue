@@ -48,6 +48,7 @@ var img3 = require('../assets/img/app/login/bg3.jpg')
 import $ from 'jquery'
 // import GlobalFunctions from '../global'
 import LoginFunctions from '../controllers/Login'
+import ajaxErrorHandler from '../controllers/ErrorController'
 import Dropdown from './modules/Dropdown'
 import {BackgroundRotator} from '../assets/scripts/backgroundRotator'
 
@@ -153,6 +154,8 @@ export default {
 		login (event) {
 			const loginVue = this
 
+			// if query params missing redirect to accounts
+
 			let data = {
 				business_id: this.$route.query.business_id,
 				v3_token: this.$route.query.account_token
@@ -204,7 +207,9 @@ export default {
 					disabledButton.cancel()
 				}
 			}).catch(reason => {
-				throw reason
+				ajaxErrorHandler({
+					reason
+				})
 			})
 		}
 	},

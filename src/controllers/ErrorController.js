@@ -9,7 +9,13 @@
  */
 export default function ajaxErrorHandler ({reason, errorText = 'Something went wrong ...', errorName, vue}) {
 	try {
-		// Expired token
+		// Incorrect account token
+		if (reason.responseJSON && reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
+			window.location.href = '' // redirect to accounts
+			return
+		}
+
+		// Expired ecomm token
 		if (reason.responseJSON && reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
 			vue.$router.push('/login/expired')
 			return
