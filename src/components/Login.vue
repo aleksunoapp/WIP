@@ -184,6 +184,12 @@ export default {
 					// set createdBy
 					loginVue.$root.createdBy = response.session.admin_id
 					localStorage.setItem('createdBy', loginVue.$root.createdBy)
+					// set accountToken
+					loginVue.$root.accountToken = loginVue.$route.query.account_token
+					localStorage.setItem('accountToken', loginVue.$route.query.account_token)
+					// set v3 business id
+					loginVue.$root.businessId = loginVue.$route.query.business_id
+					localStorage.setItem('businessId', loginVue.$route.params.business_id)
 
 					// set account type && locations for Location Managers
 					if (response.payload.type === 'admin') {
@@ -192,7 +198,7 @@ export default {
 						loginVue.$router.push('/app/store_manager/stores')
 					}
 
-					disabledButton.complete()
+					// disabledButton.complete()
 				} else {
 					loginVue.errorMessage = response.message
 					disabledButton.cancel()

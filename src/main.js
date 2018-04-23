@@ -39,7 +39,9 @@ var App = new Vue({
 			createdBy: 0,
 			activeMenuId: 0,
 			corporateStoreId: 0,
-			storeLocations: []
+			storeLocations: [],
+			businessId: null,
+			accountToken: ''
 		}
 	},
 	methods: {
@@ -54,6 +56,8 @@ var App = new Vue({
 			this.activeMenuId = 0
 			this.corporateStoreId = 0
 			this.storeLocations = []
+			this.businessId = null
+			this.accountToken = ''
 		}
 	},
 	router

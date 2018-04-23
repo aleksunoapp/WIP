@@ -401,7 +401,7 @@
 					<span class="icon-close"></span>
 				</a>
 				<div class="page-quick-sidebar">
-					<div>
+					<div v-if="$root.accountType === 'store_admin'">
 						<div class="tab-content">
 							<div class="tab-pane active page-quick-sidebar-chat">
 								<div class="page-quick-sidebar-chat-users active-business" data-rail-color="#ddd" data-wrapper-class="page-quick-sidebar-list">
@@ -498,7 +498,7 @@
 												</div>
 											</li>
 										</ul>
-										<div class="pagination-wrapper">
+										<div class="pagination-wrapper" v-show="lastPage > 1">
 											<div @click="goToPreviousPage()" class="pagination-arrow" :class="{ 'disabled' : currentPage === 1 }"><i class="fa fa-angle-left" aria-hidden="true"></i></div>
 											<div @click="goToNextPage()" class="pagination-arrow" :class="{ 'disabled' : currentPage === lastPage }"><i class="fa fa-angle-right" aria-hidden="true"></i></div>
 										</div>
@@ -507,6 +507,79 @@
 							</div>
 						</div>
 						<div v-if="!locations.length" class="padding-box">
+							<div class="alert alert-info">
+                                <span>There are no store locations for this application.</span>
+                            </div>
+						</div>
+					</div>
+					<div v-if="$root.accountType === 'application_admin'">
+						<div class="tab-content">
+							<div class="tab-pane active page-quick-sidebar-chat">
+								<div class="page-quick-sidebar-chat-users active-business" data-rail-color="#ddd" data-wrapper-class="page-quick-sidebar-list">
+									<ul class="media-list list-items">
+										<li class="media selected-location current-location">
+											<img class="media-object" src="../assets/img/app/logo-refresh.png" alt="...">
+											<div class="media-status" v-if="!activeLocation.display_name">
+												<i class="fa fa-circle"></i>
+											</div>
+											<div class="media-status deactivate-location-dot-top" v-if="activeLocation.display_name" @click="unselectLocation($event)">
+												<i class="fa fa-times-circle"></i>
+											</div>
+											<div class="media-body">
+												<h4 class="media-heading">{{ $root.activeUser }}</h4>
+												<div class="media-heading-sub" v-if="!activeLocation.display_name">Master Account Selected</div>
+												<div class="media-heading-sub" v-else>{{ activeLocation.display_name }}</div>
+											</div>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="padding-box">
+							<div class="alert alert-danger" v-show="v3SearchError.length" ref="v3SearchError">
+								<span>{{ v3SearchError }}</span>
+							</div>
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<input type="text" class="form-control input-sm padding-right-20" id="location_search" v-model="v3Locations.searchQuery" :class="{'edited': v3Locations.searchQuery.length}">
+								<i v-if="v3Locations.searchQuery.length" class="fa fa-times clear-icon" @click="clearV3Search()"></i>
+								<label for="location_search">Search All Stores</label>
+								<span class="help-block persist">
+									<span>Search by store name</span>
+								</span>
+							</div>
+						</div>
+						<div class="margin-top-30" v-if="v3Locations.locations.length">
+							<h3 class="list-heading location-panel-heading blue">Search Results</h3>
+							<div class="tab-content" v-if="!v3SearchError.length">
+								<div class="tab-pane active page-quick-sidebar-chat scrollable">
+									<div class="page-quick-sidebar-chat-users" data-rail-color="#ddd" data-wrapper-class="page-quick-sidebar-list">
+										<ul class="media-list list-items">
+											<li class="media" v-for="location in v3Locations.locations" @click="checkV3Location(location)" :key="location.id">
+												<div class="media-status" v-if="location.location_id == activeLocation.v3_location_id" @click="unselectLocation($event)">
+													<div class="active-location-dots">
+														<div class="active-location-dot">
+															<i class="fa fa-circle blue"></i>
+														</div>
+														<div class="deactivate-location-dot">
+															<i class="fa fa-times-circle"></i>
+														</div>
+													</div>
+												</div>
+												<div class="media-body">
+													<h4 class="media-heading">{{ location.location_name }}</h4>
+													<div class="media-heading-sub" v-show="location.address_line_1">{{ location.address_line_1 }}</div>
+												</div>
+											</li>
+										</ul>
+										<div class="pagination-wrapper" v-show="lastPage > 1">
+											<div @click="goToPreviousV3Page()" class="pagination-arrow" :class="{ 'disabled' : v3Locations.currentPage === 1 }"><i class="fa fa-angle-left" aria-hidden="true"></i></div>
+											<div @click="goToNextV3Page()" class="pagination-arrow" :class="{ 'disabled' : v3Locations.currentPage === v3Locations.lastPage }"><i class="fa fa-angle-right" aria-hidden="true"></i></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div v-if="!v3Locations.locations.length" class="padding-box">
 							<div class="alert alert-info">
                                 <span>There are no store locations for this application.</span>
                             </div>
@@ -551,7 +624,14 @@ export default {
 			searchError: '',
 			noRecordsError: '',
 			currentPage: 1,
-			currentPageFiltered: 1
+			currentPageFiltered: 1,
+			v3SearchError: '',
+			v3Locations: {
+				locations: [],
+				searchQuery: '',
+				currentPage: 1,
+				lastPage: 1
+			}
 		}
 	},
 	computed: {
@@ -587,6 +667,7 @@ export default {
 				this.filteredLocations = []
 			} else {
 				this.getFilteredLocations()
+				this.getV3Locations()
 			}
 		}
 	},
@@ -604,8 +685,9 @@ export default {
 		var accountType = localStorage.getItem('accountType')
 		this.$root.accountType = localStorage.getItem('accountType')
 		var activeUser = localStorage.getItem('activeUser')
+		var accountToken = localStorage.getItem('accountToken')
 
-		if (!appId || !appSecret || !userToken || !createdBy || !accountType || !activeUser) {
+		if (!appId || !appSecret || !userToken || !createdBy || !accountType || !activeUser || !accountToken) {
 			this.$router.push('/')
 		} else {
 			this.$root.activeUser = activeUser
@@ -614,6 +696,7 @@ export default {
 			this.$root.appSecret = appSecret
 			this.$root.createdBy = createdBy
 			this.$root.accountType = accountType
+			this.$root.accountToken = accountToken
 			this.setCurrentRoute()
 		}
 	},
@@ -634,9 +717,65 @@ export default {
 		// get list of stores
 		if (this.$root.accountType === 'application_admin') {
 			this.getStoreLocations()
+			this.getV3Locations()
 		}
 	},
 	methods: {
+		checkV3Location (location) {
+			var appVue = this
+			App.checkV3Location(appVue.$root.appId, appVue.$root.appSecret, appVue.$root.userToken, appVue.$root.accountToken, location.location_id)
+			.then(response => {
+				appVue.selectLocation(response.payload)
+			})
+			.catch(reason => {
+				if (reason.responseJSON && reason.responseJSON.code === 404 && reason.responseJSON.status === 'notfound') {
+					appVue.promptCreateStore(location)
+				} else {
+					console.log('checkV3Location')
+					ajaxErrorHandler({
+						reason,
+						errorText: 'Could not select location',
+						errorName: 'v3SearchError',
+						vue: appVue
+					})
+				}
+			})
+		},
+		/**
+		 * To alert the user that the menu has been successfully created.
+		 * @function
+		 * @param {object} location - The v3 location to create
+		 * @returns {undefined}
+		 */
+		promptCreateStore (location) {
+			this.$swal({
+				title: 'Store not in Ecomm',
+				html: '<div>This store does not yet exist in Ecomm.<br/><br/>Do you want to create it now?</div>',
+				type: 'info',
+				confirmButtonText: 'OK',
+				showCancelButton: true,
+				cancelButtonText: 'Cancel'
+			}).then(() => {
+				this.toggleQuickSidebar()
+				this.$router.push({path: '/app/store_manager/create_new', query: {v3Location: true, ...location}})
+			})
+		},
+		goToPreviousV3Page () {
+			if (this.v3Locations.currentPage === 1) {
+				return
+			} else {
+				this.v3Locations.currentPage = this.v3Locations.currentPage - 1
+				this.getV3Locations()
+			}
+		},
+		goToNextV3Page () {
+			if (this.v3Locations.currentPage === this.v3Locations.lastPage) {
+				return
+			} else {
+				this.v3Locations.currentPage = this.v3Locations.currentPage + 1
+				this.getV3Locations()
+			}
+		},
 		/**
 		 * To check if the token is still valid.
 		 * @function
@@ -780,6 +919,43 @@ export default {
 			}).catch(reason => {
 				if (reason.responseJSON) {}
 				throw reason
+			})
+		},
+		/**
+		 * To get a list of store locations for the current application.
+		 * @function
+		 * @returns {undefined}
+		 */
+		getV3Locations () {
+			var appVue = this
+			let paginationPreferences = {
+				business_id: Number(this.$root.businessId),
+				records_per_page: 25,
+				page_number: this.v3Locations.currentPage,
+				sort_by: 'name',
+				sort_order: 'asc'
+			}
+			if (this.v3Locations.searchQuery) {
+				paginationPreferences.search_query = this.v3Locations.searchQuery
+				paginationPreferences.search_in = 'name'
+			}
+			App.getV3StoreLocations(appVue.$root.accountToken, paginationPreferences).then(response => {
+				if (response.declaration === 'locations_found') {
+					appVue.v3Locations.locations = response.payload.locations
+					appVue.v3Locations.lastPage = response.payload.locations.number_of_pages
+					// eslint-disable-next-line no-undef
+					var activeLocation = localStorage.getItem('activeLocation')
+					if (activeLocation !== null) {
+						appVue.selectLocation(JSON.parse(activeLocation))
+					}
+				}
+			}).catch(reason => {
+				ajaxErrorHandler({
+					reason,
+					errorText: 'No locations found',
+					errorName: 'v3SearchError',
+					vue: appVue
+				})
 			})
 		},
 		/**

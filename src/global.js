@@ -2,6 +2,7 @@
  * @module Global
  */
 import $ from 'jquery'
+import {App} from './main.js'
 // import environment from './environment'
 
 export default {
@@ -13,6 +14,10 @@ export default {
 	 * base url for API calls, other than Message calls
 	 */
 	baseUrl: 'http://ecomm.dev.api.unoapp.io',
+	/**
+	 * base url for API calls, other than Message calls
+	 */
+	v3BaseUrl: 'https://api.staging.unoapp.io',
 	/**
 	 * base url for API calls to send Messages
 	 */
@@ -51,6 +56,14 @@ export default {
 		if (options.method.toLowerCase() === 'post') {
 			options.contentType = 'application/json'
 			options.data = JSON.stringify(options.data)
+		}
+
+		options.beforeSend = function (xhr) {
+			xhr.setRequestHeader('app-id', App.appId)
+			xhr.setRequestHeader('app-secret', App.appSecret)
+			xhr.setRequestHeader('auth-token', App.userToken)
+			xhr.setRequestHeader('auth-token', App.userToken)
+			xhr.setRequestHeader('unoapp-token', App.accountToken)
 		}
 
 		$.ajax(options)
