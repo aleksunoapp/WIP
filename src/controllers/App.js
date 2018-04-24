@@ -1,5 +1,6 @@
 import $ from 'jquery'
 import GlobalFunctions from '../global'
+import {App} from '../main.js'
 
 /** Required for some IE specific logic however the only IE we will test for is 10. */
 var isIE10 = false
@@ -408,15 +409,13 @@ export default ({
 	 */
 	logOut: function (appId, appSecret, userToken) {
 		return new Promise(function (resolve, reject) {
-			GlobalFunctions.$ajax({
-				method: 'GET',
+			$.ajax({
+				method: 'POST',
 				dataType: 'json',
-				url: '/application/admin/logout',
+				url: GlobalFunctions.v3BaseUrl + '/auth/logout',
 				data: {},
 				beforeSend: function (xhr) {
-					xhr.setRequestHeader('app-id', appId)
-					xhr.setRequestHeader('app-secret', appSecret)
-					xhr.setRequestHeader('auth-token', userToken)
+					xhr.setRequestHeader('token', App.accountToken)
 				},
 				success: function (response) {
 					resolve(response)

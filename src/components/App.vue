@@ -1015,16 +1015,12 @@ export default {
 		 * @returns {undefined}
 		 */
 		logOut () {
-			App.logOut(this.$root.appId, this.$root.appSecret, this.$root.userToken)
-			/* eslint-disable no-undef */
+			App.logOut()
+
 			this.$root.clearGlobalVariables()
-			localStorage.removeItem('activeUser')
-			localStorage.removeItem('userToken')
-			localStorage.removeItem('appId')
-			localStorage.removeItem('appSecret')
-			localStorage.removeItem('createdBy')
-			localStorage.removeItem('accountType')
-			localStorage.removeItem('activeLocation')
+			// eslint-disable-next-line
+			localStorage.clear()
+
 			window.location.href = `${Global.accountsUrl}/?redirect_to=ecomm&logged_out=true`
 		}
 	},
