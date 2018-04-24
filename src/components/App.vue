@@ -596,6 +596,7 @@
 import $ from 'jquery'
 import Global from '../global.js'
 import App from '../controllers/App'
+import ajaxErrorHandler from '../controllers/ErrorController'
 import Modal from './modules/Modal'
 import Dropdown from './modules/Dropdown'
 import LoadingScreen from './modules/LoadingScreen'
@@ -677,28 +678,7 @@ export default {
 	 * @returns {undefined}
 	 */
 	created () {
-		/* eslint-disable no-undef */
-		var appId = localStorage.getItem('appId')
-		var appSecret = localStorage.getItem('appSecret')
-		var userToken = localStorage.getItem('userToken')
-		var createdBy = localStorage.getItem('createdBy')
-		var accountType = localStorage.getItem('accountType')
-		this.$root.accountType = localStorage.getItem('accountType')
-		var activeUser = localStorage.getItem('activeUser')
-		var accountToken = localStorage.getItem('accountToken')
-
-		if (!appId || !appSecret || !userToken || !createdBy || !accountType || !activeUser || !accountToken) {
-			this.$router.push('/')
-		} else {
-			this.$root.activeUser = activeUser
-			this.$root.userToken = userToken
-			this.$root.appId = appId
-			this.$root.appSecret = appSecret
-			this.$root.createdBy = createdBy
-			this.$root.accountType = accountType
-			this.$root.accountToken = accountToken
-			this.setCurrentRoute()
-		}
+		this.setCurrentRoute()
 	},
 	/**
 	 * Run on `mounted` to initialize the app defaults.
@@ -911,6 +891,7 @@ export default {
 						}
 					}
 					// set the active location if already present in local storage
+					// eslint-disable-next-line
 					var activeLocation = localStorage.getItem('activeLocation')
 					if (activeLocation) {
 						appVue.selectLocation(JSON.parse(activeLocation))

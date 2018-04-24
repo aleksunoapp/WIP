@@ -46,7 +46,7 @@ var img3 = require('../assets/img/app/login/bg3.jpg')
  */
 
 import $ from 'jquery'
-// import GlobalFunctions from '../global'
+import GlobalFunctions from '../global'
 import LoginFunctions from '../controllers/Login'
 import ajaxErrorHandler from '../controllers/ErrorController'
 import Dropdown from './modules/Dropdown'
@@ -72,6 +72,38 @@ export default {
 			emailSent: false
 		}
 	},
+	created () {
+		if (this.$route.query.business_id !== undefined && this.$route.query.account_token !== undefined) {
+			this.login()
+		} else {
+			/* eslint-disable no-undef */
+			var appId = localStorage.getItem('appId')
+			var appSecret = localStorage.getItem('appSecret')
+			var userToken = localStorage.getItem('userToken')
+			var createdBy = localStorage.getItem('createdBy')
+			var accountType = localStorage.getItem('accountType')
+			var activeUser = localStorage.getItem('activeUser')
+			var accountToken = localStorage.getItem('accountToken')
+			var businessId = localStorage.getItem('businessId')
+			let routePath = sessionStorage.getItem('routePath')
+			/* eslint-enable no-undef */
+
+			if (!appId || !appSecret || !userToken || !createdBy || !accountType || !activeUser || !accountToken || !businessId) {
+				window.location.href = `${GlobalFunctions.accountsUrl}/?redirect_to=ecomm`
+			} else {
+				this.$root.activeUser = activeUser
+				this.$root.userToken = userToken
+				this.$root.appId = appId
+				this.$root.appSecret = appSecret
+				this.$root.createdBy = createdBy
+				this.$root.accountType = accountType
+				this.$root.accountToken = accountToken
+				this.$root.businessId = businessId
+			}
+
+			this.$router.push(routePath || '/app')
+		}
+	},
 	/**
 	 * Run on `mounted` to initialize the background rotator.
 	 * @function
@@ -94,10 +126,6 @@ export default {
 		var options = {fade: 1000, duration: 6000}
 
 		BackgroundRotator(elm, images, options).init()
-
-		this.$refs.email.focus()
-
-		this.login()
 	},
 	methods: {
 		/**
@@ -192,7 +220,7 @@ export default {
 					localStorage.setItem('accountToken', loginVue.$route.query.account_token)
 					// set v3 business id
 					loginVue.$root.businessId = loginVue.$route.query.business_id
-					localStorage.setItem('businessId', loginVue.$route.params.business_id)
+					localStorage.setItem('businessId', loginVue.$route.query.business_id)
 
 					// set account type && locations for Location Managers
 					if (response.payload.type === 'admin') {
