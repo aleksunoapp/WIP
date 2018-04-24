@@ -9,7 +9,10 @@ export default {
 	/**
 	 * base url for UNOapp accounts frontend, with # if accounts router is in hash mode
 	 */
-	accountsUrl: 'http://localhost:6968/#',
+	// production
+	accountsUrl: 'http://localhost:8002/#',
+	// development
+	// accountsUrl: 'http://accounts.dev.unoapp.io/#',
 	/**
 	 * base url for API calls, other than Message calls
 	 */
