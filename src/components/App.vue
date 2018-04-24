@@ -321,7 +321,7 @@
 								</li>
 							</ul>
 						</li>
-						<li class="nav-item" v-bind:class="{'active': currentRoute === 'gallery'}">
+						<li v-show="false" class="nav-item" v-bind:class="{'active': currentRoute === 'gallery'}">
 							<router-link to="/app/gallery" class="nav-link nav-toggle">
 								<i class="fa fa-image"></i>
 								<span class="title">Gallery</span>
