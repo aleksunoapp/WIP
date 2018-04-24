@@ -1,3 +1,5 @@
+import globals from '../global.js'
+
 /**
  * Error handler for ajax calls
  * @function
@@ -11,7 +13,7 @@ export default function ajaxErrorHandler ({reason, errorText = 'Something went w
 	try {
 		// Incorrect account token
 		if (reason.responseJSON && reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-			window.location.href = '' // redirect to accounts
+			window.location.href = `${globals.accountsUrl}/login/?redirect_to=ecomm`
 			return
 		}
 
