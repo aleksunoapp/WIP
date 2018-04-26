@@ -124,6 +124,11 @@
 		                    	<div class="form-group form-md-line-input form-md-floating-label">
 		                    		<label>Menu Tier:</label><br>
 		                    		<el-select v-model="newStore.menu_tier_id" placeholder="Select a tier" size="mini">
+		                    			<el-option
+		                    				key="default"
+		                    				label="none"
+		                    				value="0">
+		                    			</el-option>
 										<el-option
 											v-if="menuTiers.length"
 											v-for="tier in menuTiers"
