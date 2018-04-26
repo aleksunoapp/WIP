@@ -15,6 +15,15 @@ export default function ajaxErrorHandler ({reason, errorText = 'Something went w
 		if (reason.responseJSON && reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
 			window.location.href = `${globals.accountsUrl}/login/?redirect_to=ecomm`
 			return
+		// If incorrect business_id and token pair, return to V3
+		} else if (reason.responseJSON && reason.responseJSON.code === 500 && reason.responseJSON.message === 'Token mismatch') {
+			window.location.href = `${globals.accountsUrl}/login/`
+			return
+		}
+
+		if (reason.responseJSON && reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
+			window.location.href = `${globals.accountsUrl}/login/?redirect_to=ecomm`
+			return
 		}
 
 		// Expired ecomm token

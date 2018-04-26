@@ -1021,7 +1021,7 @@ export default {
 			// eslint-disable-next-line
 			localStorage.clear()
 
-			window.location.href = `${Global.accountsUrl}/?redirect_to=ecomm&logged_out=true`
+			window.location.href = `${Global.accountsUrl}/?logged_out=true`
 		}
 	},
 	components: {
