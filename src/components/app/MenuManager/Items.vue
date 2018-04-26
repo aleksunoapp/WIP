@@ -1011,8 +1011,8 @@ export default {
 				if (response.code === 200 && response.status === 'ok') {
 					for (var i = 0; i < itemsVue.categoryItems.length; i++) {
 						if (itemsVue.categoryItems[i].id === itemId) {
-							itemsVue.$set(itemsVue.categoryItems[i], 'modifiers', response.payload[0].modifiers)
-							itemsVue.$set(itemsVue.categoryItems[i], 'tags', response.payload[0].tags)
+							itemsVue.$set(itemsVue.categoryItems[i], 'modifiers', response.payload.modifiers)
+							itemsVue.$set(itemsVue.categoryItems[i], 'tags', response.payload.tags)
 						}
 					}
 				}
