@@ -262,8 +262,13 @@ export default {
 		 * @returns {string} The formatted phone string
 		 */
 		formatPhone (phone) {
-			let digits = phone.replace(/\D/g, '')
-			return digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
+			try {
+				let digits = phone.replace(/\D/g, '')
+				return digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
+			} catch (err) {
+				console.log('formatPhone', err)
+				return '--'
+			}
 		},
 		/**
 		 * To update the order property of sortBy.
@@ -388,11 +393,11 @@ export default {
 					usersVue.displayUserData = false
 				}
 			}).catch(reason => {
+				usersVue.displayUserData = false
 				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
 					usersVue.$router.push('/login/expired')
 					return
 				}
-				usersVue.displayUserData = false
 				if (reason.responseJSON) {}
 				throw reason
 			})
