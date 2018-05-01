@@ -1,6 +1,9 @@
 <template>
 	<div class="loading-spinner" :style="{'color': this.color}" :class="{'no-z-index': this.display === 'inline'}">
-        <i class="fa fa-spinner fa-spin"></i>
+		<img 
+			:src="spinner" 
+			class="spinner"
+			alt="UNOapp logo, two half-circle arrows pointing in the same direction laid on a circle, spinning">
 	</div>
 </template>
 
@@ -17,6 +20,7 @@
  */
 
 import $ from 'jquery'
+import spinner from '@/assets/img/loading.gif'
 
 export default {
 	props: {
@@ -38,6 +42,7 @@ export default {
 	},
 	data () {
 		return {
+			spinner,
 			timeout: '',
 			activeSpinner: false
 		}
@@ -139,7 +144,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .loading-spinner {
 	display: none;
 	position: absolute;
@@ -151,5 +156,11 @@ export default {
 }
 .loading-spinner.no-z-index {
 	z-index: 0;
+}
+.spinner {
+	width: 50px;
+	height: 50px;
+	max-width: 100%;
+	max-height: 100%;
 }
 </style>
