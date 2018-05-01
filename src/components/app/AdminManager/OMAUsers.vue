@@ -830,8 +830,6 @@ export default {
 					reject('Please enter a valid email')
 				} else if (OMAUsersVue.newOMAUser.phone.replace(/\D/g, '').length < 10) {
 					reject('Phone number should have at least 10 digits')
-				} else if (OMAUsersVue.newOMAUser.password.length < 6) {
-					reject('Password should be at least 6 characters')
 				} else if (OMAUsersVue.newOMAUser.password !== OMAUsersVue.passwordCheck) {
 					reject('Passwords do not match')
 				} else if (!OMAUsersVue.newOMAUser.locations.length) {
@@ -1066,8 +1064,6 @@ export default {
 					reject('Please enter a valid email')
 				} else if (OMAUsersVue.OMAUserToBeEdited.phone.replace(/\D/g, '').length < 10) {
 					reject('Phone number should have at least 10 digits')
-				} else if (OMAUsersVue.OMAUserToBeEdited.password.length < 6) {
-					reject('Password should be at least 6 characters')
 				} else if (!OMAUsersVue.OMAUserToBeEdited.locations.length) {
 					reject('Please select at least one location')
 				}
