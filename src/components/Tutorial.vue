@@ -133,7 +133,7 @@ export default {
 				on: {
 					'en-ca': 'on',
 					'en-us': 'on',
-					'fr-ca': 'on'
+					'fr-ca': 'le'
 				}
 			}
 		}
@@ -168,6 +168,16 @@ export default {
 			let minutes = fullDate.getMinutes()
 			let meridian = 'AM'
 
+			if (minutes === 0) {
+				minutes = '00'
+			} else if (minutes < 10) {
+				minutes = '0' + minutes
+			}
+
+			if (this.$root.meta.local === 'fr-CA') {
+				return hour + ' h ' + minutes
+			}
+
 			if (hour === 12) {
 				meridian = 'PM'
 			} else if (hour > 12) {
@@ -175,12 +185,6 @@ export default {
 				hour -= 12
 			} else if (hour === 0) {
 				hour = 12
-			}
-
-			if (minutes === 0) {
-				minutes = '00'
-			} else if (minutes < 10) {
-				minutes = '0' + minutes
 			}
 
 			formattedTime = hour + ':' + minutes + ' ' + meridian

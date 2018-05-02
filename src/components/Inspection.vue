@@ -177,7 +177,9 @@
 						</div>
 					</div>
 					<div class="total-estimate-value">
-						${{ inspectionTotal.total.toFixed(2) }}
+						<span v-show="$root.meta.local === 'en-CA'">$</span>
+						{{ inspectionTotal.total.toFixed(2) }}
+						<span v-show="$root.meta.local === 'fr-CA'"> $</span>
 					</div>
 				</div>
 				<div class="total-estimate">
@@ -187,7 +189,9 @@
 						</div>
 					</div>
 					<div class="total-estimate-value">
-						${{ $root.totals.serviceTotal.total.toFixed(2) }}
+						<span v-show="$root.meta.local === 'en-CA'">$</span>
+						{{ $root.totals.serviceTotal.total.toFixed(2) }}
+						<span v-show="$root.meta.local === 'fr-CA'"> $</span>
 					</div>
 				</div>
 				<div @click="openServices()" class="proceed-btn">
@@ -398,14 +402,17 @@ export default {
 			let hour = fullDate.getHours()
 			let minutes = fullDate.getMinutes()
 			let meridian = 'AM'
+			let preposition = this.$root.meta.local === 'en-CA' ? 'on' : 'le'
 
-			if (hour === 12) {
-				meridian = 'PM'
-			} else if (hour > 12) {
-				meridian = 'PM'
-				hour -= 12
-			} else if (hour === 0) {
-				hour = 12
+			if (this.$root.meta.local === 'en-CA') {
+				if (hour === 12) {
+					meridian = 'PM'
+				} else if (hour > 12) {
+					meridian = 'PM'
+					hour -= 12
+				} else if (hour === 0) {
+					hour = 12
+				}
 			}
 
 			if (minutes === 0) {
@@ -414,12 +421,17 @@ export default {
 				minutes = '0' + minutes
 			}
 
-			formattedTime = hour + ':' + minutes + ' ' + meridian
+			if (this.$root.meta.local === 'fr-CA') {
+				formattedTime = hour + ' h ' + minutes
+			} else {
+				formattedTime = hour + ':' + minutes + ' ' + meridian
+			}
+
 			if (this.$root.meta.local === 'fr-CA') {
 				allMonths = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']
 			}
 			if (!this.checkSameDate(this.$root.meta.responseBy)) {
-				formattedTime += ` on ${allMonths[fullDate.getMonth()]} ${fullDate.getDate()}, ${fullDate.getFullYear()}`
+				formattedTime += ` ${preposition} ${allMonths[fullDate.getMonth()]} ${fullDate.getDate()}, ${fullDate.getFullYear()}`
 			}
 			return formattedTime
 		},
@@ -434,14 +446,17 @@ export default {
 			let hour = fullDate.getHours()
 			let minutes = fullDate.getMinutes()
 			let meridian = 'AM'
+			let preposition = this.$root.meta.local === 'en-CA' ? 'on' : 'le'
 
-			if (hour === 12) {
-				meridian = 'PM'
-			} else if (hour > 12) {
-				meridian = 'PM'
-				hour -= 12
-			} else if (hour === 0) {
-				hour = 12
+			if (this.$root.meta.local === 'en-CA') {
+				if (hour === 12) {
+					meridian = 'PM'
+				} else if (hour > 12) {
+					meridian = 'PM'
+					hour -= 12
+				} else if (hour === 0) {
+					hour = 12
+				}
 			}
 
 			if (minutes === 0) {
@@ -450,12 +465,17 @@ export default {
 				minutes = '0' + minutes
 			}
 
-			formattedTime = hour + ':' + minutes + ' ' + meridian
+			if (this.$root.meta.local === 'fr-CA') {
+				formattedTime = hour + ' h ' + minutes
+			} else {
+				formattedTime = hour + ':' + minutes + ' ' + meridian
+			}
+
 			if (this.$root.meta.local === 'fr-CA') {
 				allMonths = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']
 			}
 			if (!this.checkSameDate(this.$root.meta.promise)) {
-				formattedTime += ` on ${allMonths[fullDate.getMonth()]} ${fullDate.getDate()}, ${fullDate.getFullYear()}`
+				formattedTime += ` ${preposition} ${allMonths[fullDate.getMonth()]} ${fullDate.getDate()}, ${fullDate.getFullYear()}`
 			}
 			return formattedTime
 		}
