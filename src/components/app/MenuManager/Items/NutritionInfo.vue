@@ -55,6 +55,18 @@
 						<p class="margin-bottom-10 margin-top-30 margin-right-10">Select locations to apply the changes to:</p>
         				<button type="submit" class="btn blue btn-outline" @click="selectLocations($event)">Select locations</button>
         				<p class="grey-label margin-top-10" v-if="selectedLocations.length">Selected {{ selectedLocations.length }} location<span v-if="selectedLocations.length !== 1">s</span></p>
+        				<div class="form-group form-md-line-input form-md-floating-label">
+        					<label>Update all items?</label><br>
+        					<el-switch
+        						v-model="itemNutritionInfo.update_all_items"
+        						active-color="#0c6"
+        						inactive-color="#ff4949"
+        						:active-value="1"
+        						:inactive-value="0"
+        						active-text="Yes"
+        						inactive-text="No">
+        					</el-switch>
+        				</div>
         			</div>
                 </div>
             </div>
