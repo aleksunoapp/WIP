@@ -24,11 +24,15 @@ export default {
 	/**
 	 * base url for API calls to send Messages
 	 */
-	messageBaseUrl: 'https://35.162.38.115:8004',
+	messageBaseUrl: 'http://35.162.38.115:8004',
 	/**
 	 * app token for API calls to send Messages
 	 */
 	messageAppToken: 'bearer 9fca7d07b567f95d8a682cb4d2ea871e',
+	/**
+	 * app token for API calls to send Messages to OMA users
+	 */
+	OMAUsersMessageAppToken: 'bearer ca2af2fcffeb3685f04d67bf610db085',
 	/**
 	 * base url for API calls to Loyalty endpoints
 	 */

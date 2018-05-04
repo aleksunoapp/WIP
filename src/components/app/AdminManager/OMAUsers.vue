@@ -160,6 +160,19 @@
             </div>
             <!-- SEARCH END -->
 
+	        <!-- MESSAGE START -->
+            <div class="margin-top-20" v-if="OMAUsers.length">
+    			<div class="portlet box blue-hoki">
+    				<div class="portlet-title clickable" @click="toggleMessageModal(true)">
+    					<div class="caption">
+    						<i class="fa fa-envelope-o"></i>
+    						Message
+    					</div>
+    				</div>
+          		</div>
+            </div>
+            <!-- MESSAGE END -->
+
 			<!-- LIST START -->
 	        <loading-screen :show="loadingOMAUsersData" :color="'#2C3E50'" :display="'inline'"></loading-screen>
 	        <div v-if="OMAUsers.length && !loadingOMAUsersData && ! filteredResults.length">
@@ -384,6 +397,14 @@
 		</modal>
 		<!-- DELETE MODAL END -->
 
+		<!-- MESSAGE MODAL START -->
+		<OMAUsersMessage
+			:isOpen="showMessageModal"
+			:users="OMAUsers"
+			@closeMessageModal="toggleMessageModal"
+		>
+		</OMAUsersMessage>
+		<!-- MESSAGE MODAL END -->
 	</div>
 </template>
 
@@ -397,6 +418,7 @@ import Dropdown from '../../modules/Dropdown'
 import Pagination from '../../modules/Pagination'
 import PageResults from '../../modules/PageResults'
 import SelectLocationsPopup from '../../modules/SelectLocationsPopup'
+import OMAUsersMessage from './OMAUsersMessage'
 
 /**
  * Define the email pattern to check for valid emails.
@@ -455,7 +477,8 @@ export default {
 			},
 			searchActivePage: 1,
 			passwordMasked: true,
-			passwordCheck: ''
+			passwordCheck: '',
+			showMessageModal: false
 		}
 	},
 	computed: {
@@ -479,6 +502,9 @@ export default {
 		this.getAllOMAUsers()
 	},
 	methods: {
+		toggleMessageModal (value) {
+			this.showMessageModal = value
+		},
 		/**
 		 * To update the locations selected in the child component
 		 * @function
@@ -1124,7 +1150,8 @@ export default {
 		Dropdown,
 		Pagination,
 		PageResults,
-		SelectLocationsPopup
+		SelectLocationsPopup,
+		OMAUsersMessage
 	}
 }
 </script>
