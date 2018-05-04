@@ -296,6 +296,22 @@
         	                    	            	</el-switch>
         	                    	            </td>
                             	            </tr>
+    	                    	            <tr>
+    	                    	            	<td>
+    	                    	            		Pickup Later
+    	                    	            	</td>
+    	                    	                <td>
+    	                    	                	<el-switch
+    	                    	                		v-model="newStoreMeta.enable_pickup_later"
+    	                    	                		active-color="#0c6"
+    	                    	                		inactive-color="#ff4949"
+    	                    	                		:active-value="1"
+    	                    	                		:inactive-value="0"
+    	                    	                		active-text="Yes"
+    	                    	                		inactive-text="No">
+    	                    	                	</el-switch>
+    	                    	                </td>
+                        	                </tr>
         									<tr>
         	                    	        	<td>
         	                    	        		Catering
@@ -749,7 +765,8 @@ export default {
 				current_online_ordering_status: 0,
 				merchant_id: null,
 				merchant_key: null,
-				created_by: this.$root.createdBy
+				created_by: this.$root.createdBy,
+				enable_pickup_later: 0
 			},
 			newStoreHours: [
 				{
@@ -1074,7 +1091,8 @@ export default {
 				current_online_ordering_status: 0,
 				merchant_id: null,
 				merchant_key: null,
-				created_by: this.$root.createdBy
+				created_by: this.$root.createdBy,
+				enable_pickup_later: 0
 			}
 			this.newHolidayHours = []
 			this.newStoreHours = [

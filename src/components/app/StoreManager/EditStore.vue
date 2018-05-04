@@ -250,6 +250,22 @@
 				                    	    			</el-switch>
 				                    	    		</td>
 				                    	    	</tr>
+    		                    	            <tr>
+    		                    	            	<td>
+    		                    	            		Pickup Later
+    		                    	            	</td>
+    		                    	                <td>
+    		                    	                	<el-switch
+    		                    	                		v-model="metaToBeEdited.enable_pickup_later"
+    		                    	                		active-color="#0c6"
+    		                    	                		inactive-color="#ff4949"
+    		                    	                		:active-value="1"
+    		                    	                		:inactive-value="0"
+    		                    	                		active-text="Yes"
+    		                    	                		inactive-text="No">
+    		                    	                	</el-switch>
+    		                    	                </td>
+    	                    	                </tr>
 				                    	    	<tr>
 				                    	    		<td>
 				                    	    			Catering
