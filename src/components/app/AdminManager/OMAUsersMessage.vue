@@ -133,17 +133,14 @@
 						<i class="el-icon-arrow-down el-icon--right"></i>
 					</el-button>
 					<el-dropdown-menu slot="dropdown">
-						<el-dropdown-item :command="17">
+						<el-dropdown-item :command="29">
 							Call
 						</el-dropdown-item>
-						<el-dropdown-item :command="14">
+						<el-dropdown-item :command="26">
 							Website
 						</el-dropdown-item>
-						<el-dropdown-item :command="13">
+						<el-dropdown-item :command="25">
 							Close
-						</el-dropdown-item>
-						<el-dropdown-item :command="15">
-							Camera
 						</el-dropdown-item>
 					</el-dropdown-menu>
 				</el-dropdown>
@@ -429,11 +426,11 @@ export default {
 		 */
 		updateCallToAction (id) {
 			let type
-			if (id === 17) {
+			if (id === 29) {
 				type = 'CALL'
-			} else if (id === 14) {
+			} else if (id === 26) {
 				type = 'GOTO_LINK'
-			} else if (id === 13) {
+			} else if (id === 25) {
 				type = 'CLOSE'
 			} else if (id === 15) {
 				type = 'CAMERA'
