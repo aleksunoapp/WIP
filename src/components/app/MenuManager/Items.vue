@@ -195,6 +195,11 @@
 	                                            <i class="fa fa-lg fa-heartbeat"></i>
 	                                        </a>
 		                        		</el-tooltip>
+		                        		<el-tooltip content="Apply To Locations" effect="light" placement="bottom">
+			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="displayApplyToLocationsModal(item, $event)">
+	                                            <i class="icon-layers"></i>
+	                                        </a>
+		                        		</el-tooltip>
 		                        		<el-tooltip content="Delete" effect="light" placement="bottom">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="displayDeleteItemModal(item, $event)">
 	                                            <i class="fa fa-lg fa-trash"></i>
@@ -388,6 +393,43 @@
 		</modal>
 		<!-- ASSIGN ITEM ATTRIBUTES END -->
 
+		<!-- APPLY TO LOCATIONS START -->
+		<modal :show="applyToLocationsModalActive" effect="fade" @closeOnEscape="closeApplyToLocationsModal">
+			<div slot="modal-header" class="modal-header">
+				<button type="button" class="close" @click="closeApplyToLocationsModal()">
+					<span>&times;</span>
+				</button>
+				<h4 class="modal-title center">Apply Item To Locations</h4>
+			</div>
+			<div slot="modal-body" class="modal-body">
+				<div class="row" v-show="applyToLocationsErrorMessage.length" ref="applyToLocationsErrorMessage">
+					<div class="col-md-12">
+						<div class="alert alert-danger">
+							<button class="close" @click="clearLocationsError()"></button>
+							<span>{{applyToLocationsErrorMessage}}</span>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<select-locations-popup 
+							@selectedLocations="selectedLocations"
+							:previouslySelected="locationsToApplyItemTo"
+							:withButton="false">
+						</select-locations-popup>
+					</div>
+				</div>
+			</div>
+			<div slot="modal-footer" class="modal-footer clear">
+				<div class="row">
+					<div class="col-md-12">
+						<button @click="applyItemToLocations()" type="button" class="btn blue pull-right">Apply</button>
+					</div>
+				</div>
+			</div>
+		</modal>
+		<!-- APPLY TO LOCATIONS END -->
+
 		<!-- ITEM IMAGES START -->
 		<item-images
 			v-if="displayImagesModal"
@@ -419,6 +461,7 @@ import GalleryPopup from '../../modules/GalleryPopup'
 import MenusFunctions from '../../../controllers/Menus'
 import ItemTypesFunctions from '../../../controllers/ItemTypes'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
+import SelectLocationsPopup from '../../modules/SelectLocationsPopup'
 
 export default {
 	data () {
@@ -488,7 +531,11 @@ export default {
 			imagesErrorMessage: '',
 			itemImages: [],
 			selectedImage: {},
-			itemTypes: []
+			itemTypes: [],
+			applyToLocationsModalActive: false,
+			applyToLocationsErrorMessage: '',
+			passedItemId: null,
+			locationsToApplyItemTo: []
 		}
 	},
 	computed: {
@@ -531,6 +578,81 @@ export default {
 		this.getItemTypes()
 	},
 	methods: {
+		/**
+		 * To apply an Item to selected locations
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		applyItemToLocations () {
+			var itemsVue = this
+			if (!this.locationsToApplyItemTo.length) {
+				this.applyToLocationsErrorMessage = 'Please select at least one location'
+				return
+			}
+
+			let payload = {
+				item_id: this.passedItemId,
+				locations: this.locationsToApplyItemTo
+			}
+			return ItemsFunctions.applyItemToLocations(payload, itemsVue.$root.appId, itemsVue.$root.appSecret, itemsVue.$root.userToken)
+			.then(response => {
+				if (response.code === 200 && response.status === 'ok') {
+					itemsVue.passedItemId = null
+					itemsVue.closeApplyToLocationsModal()
+					itemsVue.$swal({
+						title: 'Success',
+						text: 'Item successfully applied',
+						type: 'success',
+						confirmButtonText: 'OK'
+					})
+				}
+			}).catch(reason => {
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not apply the item',
+					errorName: 'applyToLocationsErrorMessage',
+					vue: itemsVue
+				})
+			})
+		},
+		/**
+		 * To record the selected locations
+		 * @function
+		 * @param {array} locations - An array of location ids
+		 * @returns {undefined}
+		 */
+		selectedLocations (locations) {
+			this.locationsToApplyItemTo = locations
+		},
+		/**
+		 * To clear the error message in modal for applying to locations
+		 * @function
+		 * @returns {undefined}
+		 */
+		clearLocationsError () {
+			this.applyToLocationsErrorMessage = ''
+		},
+		/**
+		 * To close the modal to copy an item to multiple locations
+		 * @function
+		 * @returns {undefined}
+		 */
+		closeApplyToLocationsModal () {
+			this.applyToLocationsModalActive = false
+			this.passedItemId = null
+		},
+		/**
+		 * To display the modal to copy an item to multiple locations
+		 * @function
+		 * @param {object} item - The selected item
+		 * @param {object} event - The click event that prompted this function.
+		 * @returns {undefined}
+		 */
+		displayApplyToLocationsModal (item, event) {
+			event.stopPropagation()
+			this.applyToLocationsModalActive = true
+			this.passedItemId = item.id
+		},
 		/**
 		 * To view the images of an item.
 		 * @function
@@ -1365,7 +1487,8 @@ export default {
 		TagsList,
 		NoResults,
 		GalleryPopup,
-		ItemImages
+		ItemImages,
+		SelectLocationsPopup
 	}
 }
 </script>
