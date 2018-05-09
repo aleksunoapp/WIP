@@ -1,0 +1,143 @@
+<div data-v-c43f6976="">
+    <div data-v-c43f6976="" class="page-bar">
+        <ul data-v-c43f6976="" class="page-breadcrumb">
+            <li><!----> 
+                <span>Menu Manager</span> 
+            <i class="fa fa-circle"></i>
+            </li>
+            <li><!----> <span>Amenities</span> <!----></li>
+        </ul>
+    </div> 
+    <h1 data-v-c43f6976="" class="page-title">Amenities</h1> 
+    <div data-v-c43f6976="" class="note note-info">
+        <p data-v-c43f6976="">Add and manage a store amenities.</p>
+    </div> 
+    <div data-v-c43f6976="" class="portlet box blue-hoki">
+        <div data-v-c43f6976="" class="portlet-title bg-blue-chambray">
+            <div data-v-c43f6976="" class="caption">
+                <i data-v-c43f6976="" class="fa fa-2x fa-plus-circle"></i>
+				Create a New Amenity
+			</div> 
+            <div data-v-c43f6976="" class="tools">
+                <a data-v-c43f6976="" class="expand"></a>
+            </div>
+        </div> 
+        <div data-v-c43f6976="" class="portlet-body">
+            <form data-v-c43f6976="" role="form">
+                <div data-v-c43f6976="" class="row"><div data-v-c43f6976="" class="col-md-12">
+                    <div data-v-c43f6976="" class="alert alert-danger" style="display: none;">
+                        <button data-v-c43f6976="" data-close="alert" class="close"></button> 
+                        <span data-v-c43f6976=""></span>
+                    </div>
+                </div> 
+                <div data-v-c43f6976="" class="col-md-2">
+                    <label data-v-c43f6976="">Image</label> 
+                    <div data-v-c43f6976="" class="image-container">
+                        <img data-v-c43f6976="" width="100" height="80" src=""></div> 
+                        <div data-v-c43f6976="" class="image-container" style="display: none;">
+                        <img data-v-c43f6976="" width="100" height="80" src="">
+                    </div> 
+
+
+
+
+
+
+
+                    <div data-v-5e9e3052="" data-v-c43f6976="" class="margin-top-15">
+                        <button data-v-5e9e3052="" class="btn blue btn-outline">Select Image</button> 
+                        <div data-v-5e9e3052="" role="dialog" class="modal fade custom">
+                            <div role="document" class="modal-dialog" style="width: 96%;">
+                                <div class="modal-content">
+                                    <div data-v-5e9e3052="" class="modal-header center">
+                                        <h4 data-v-5e9e3052="" class="modal-title">Select a Resource</h4>
+                                    </div>
+                                    <div data-v-5e9e3052="" class="modal-body" style="height: calc(100vh - 180px); max-height: none;">
+                                        <div data-v-5e9e3052="" class="margin-top-20">
+                                            <div data-v-5e9e3052="" class="margin-bottom-25 col-sm-4">
+                                            <div data-v-5e9e3052="" class="jstree-default">
+                                                <ul data-v-5e9e3052="" class="jstree-container-ul jstree-children">
+                                                    <li data-v-5e9e3052="" class="jstree-node jstree-last jstree-closed">
+                                                        <i data-v-5e9e3052="" class="jstree-icon jstree-ocl"></i> 
+                                                        <a data-v-5e9e3052="" class="jstree-anchor jstree-clicked">
+                    						    			 Resources
+					                        			</a>
+                                                        <!---->
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div data-v-5e9e3052="" class="col-sm-8">
+                                            <div data-v-5e9e3052="" class="center margin-top-20">Select a folder to view resources.</div> 
+                                            <!---->
+                                        </div>
+                                    </div>
+                                </div> 
+                                <div data-v-5e9e3052="" class="modal-footer">
+                                    <button data-v-5e9e3052="" type="button" class="btn btn-default">Close</button> 
+                                    <button data-v-5e9e3052="" type="button" disabled="disabled" class="btn btn-primary">Done</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <section data-v-5e9e3052="" style="display: none;">
+                        <div data-v-5e9e3052="" slot="modal-header" class="modal-header center">
+                            <h4 data-v-5e9e3052="" class="modal-title">Select a Resource</h4>
+                        </div> 
+                        <div data-v-5e9e3052="" slot="modal-body" class="modal-body" style="height: calc(100vh - 180px); max-height: none;">
+                            <div data-v-5e9e3052="" class="margin-top-20">
+                            <div data-v-5e9e3052="" class="margin-bottom-25 col-sm-4">
+                            <div data-v-5e9e3052="" class="jstree-default">
+                                <ul data-v-5e9e3052="" class="jstree-container-ul jstree-children">
+                                <li data-v-5e9e3052="" class="jstree-node jstree-last jstree-closed">
+                                    <i data-v-5e9e3052="" class="jstree-icon jstree-ocl"></i> 
+                                    <a data-v-5e9e3052="" class="jstree-anchor jstree-clicked">
+                                        Resources
+                                    </a> 
+                                    <!---->
+                                </li>
+                            </ul>
+                        </div>
+                    </div> 
+                    <div data-v-5e9e3052="" class="col-sm-8">
+                        <div data-v-5e9e3052="" class="center margin-top-20">Select a folder to view resources.</div> 
+                        <!---->
+                        </div>
+                    </div>
+                </div> 
+                <div data-v-5e9e3052="" slot="modal-footer" class="modal-footer">
+                    <button data-v-5e9e3052="" type="button" class="btn btn-default">Close</button> 
+                    <button data-v-5e9e3052="" type="button" disabled="disabled" class="btn btn-primary">Done</button>
+                </div>
+            </section>
+        </div>
+    </div> 
+
+
+
+    <div data-v-c43f6976="" class="col-md-6"><div data-v-c43f6976="" class="form-group form-md-line-input form-md-floating-label">
+        <input data-v-c43f6976="" type="text" id="form_control_1" class="form-control input-sm"> 
+        <label data-v-c43f6976="" for="form_control_1">Amenity Name</label>
+    </div> 
+    <div data-v-c43f6976="" class="form-group form-md-line-input form-md-floating-label">
+        <input data-v-c43f6976="" type="text" id="form_control_3" class="form-control input-sm"> 
+        <label data-v-c43f6976="" for="form_control_3">Amenity Order</label>
+    </div>
+<button data-v-c43f6976="" type="submit" class="btn blue pull-right">Create</button>
+</div>
+
+</div>
+
+</form>
+
+</div>
+
+</div> 
+
+<div data-v-c43f6976=""><div data-v-c43f6976="" id="amenities-container" class="portlet light portlet-fit bordered margin-top-20"><div data-v-c43f6976="" class="portlet-title bg-blue-chambray"><div data-v-c43f6976="" class="menu-image-main"><img data-v-c43f6976="" src="data:image/png;base64,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"></div> <div data-v-c43f6976="" class="caption"><span data-v-c43f6976="" class="caption-subject font-green bold uppercase">Amenities</span> <div data-v-c43f6976="" class="caption-desc font-grey-cascade">Create, edit or delete amenities and assign them to the active store.</div> <!----></div></div> <div data-v-c43f6976="" class="col-md-12"><div data-v-c43f6976="" class="alert alert-danger" style="display: none;"><button data-v-c43f6976="" data-close="alert" class="close"></button> <span data-v-c43f6976=""></span></div></div> <div data-v-c43f6976="" class="portlet-body relative-block"><div data-v-c43f6976="" class="col-md-12" style="display: none;"><div data-v-c43f6976="" class="alert center alert-info"><h4 data-v-c43f6976="">No Store Selected</h4> <p data-v-c43f6976="">Please select a store from the stores panel on the right to view amenities and apply them to the store.</p></div></div> <div data-v-c43f6976="" class="loading-spinner no-z-index" style="color: rgb(44, 62, 80); display: none;"><i class="fa fa-spinner fa-spin"></i></div> <div data-v-c43f6976="" class="mt-element-list margin-top-15"><div data-v-c43f6976="" class="mt-list-container list-news ext-1 no-border"><ul data-v-c43f6976=""><li data-v-c43f6976="" id="amenity-1" class="mt-list-item actions-at-left margin-top-15"><div data-v-c43f6976="" class="list-item-actions"><a data-v-c43f6976="" class="btn btn-circle btn-icon-only btn-default el-tooltip " aria-describedby="el-tooltip-5768" tabindex="0"><i data-v-c43f6976="" class="fa fa-lg fa-pencil"></i></a> <a data-v-c43f6976="" class="btn btn-circle btn-icon-only btn-default el-tooltip" aria-describedby="el-tooltip-8399" tabindex="0"><i data-v-c43f6976="" class="fa fa-lg fa-trash"></i></a></div> <div data-v-c43f6976="" class="list-thumb"><img data-v-c43f6976="" src="https://unoapp-resources.s3.ca-central-1.amazonaws.com/30/WWWQOFCGg9IGCWofvBDObX54mTOzNhQljdyo22HG.webp"></div> <div data-v-c43f6976="" class="list-datetime bold uppercase font-red"><span data-v-c43f6976="">VISA</span></div> <div data-v-c43f6976="" class="list-item-content height-mod"><div data-v-c43f6976="" class="col-xs-5"><strong data-v-c43f6976="">Order:</strong> <span data-v-c43f6976="">1</span></div> <div data-v-c43f6976=""><!----> <div data-v-c43f6976=""><button data-v-c43f6976="" class="btn btn-danger custom-button full-width"><i data-v-c43f6976="" class="fa fa-2x fa-times"></i></button></div></div></div></li></ul> <div data-v-c43f6976="" class="form-actions right margin-top-20"><button data-v-c43f6976="" type="button" class="btn blue">Save</button></div></div></div> <div data-v-c43f6976="" class="margin-top-20"><div data-v-c43f6976=""><!----> <!----></div></div></div></div></div> <div data-v-c43f6976="" role="dialog" class="modal fade in" style="display: block;"><div role="document" class="modal-dialog"><div class="modal-content"><div data-v-c43f6976="" class="modal-header"><button data-v-c43f6976="" type="button" class="close"><span data-v-c43f6976="">×</span></button> <h4 data-v-c43f6976="" class="modal-title center"><i data-v-c43f6976="" class="fa fa-chevron-left clickable pull-left back-button" style="display: none;"></i>
+				Edit Amenity
+			</h4></div> <div data-v-c43f6976="" class="modal-body"><form data-v-c43f6976="" role="form"><div data-v-c43f6976="" class="row"><div data-v-c43f6976="" class="col-md-12"><div data-v-c43f6976="" class="alert alert-danger" style="display: none;"><button data-v-c43f6976="" data-close="alert" class="close"></button> <span data-v-c43f6976=""></span></div></div> <div data-v-c43f6976="" class="col-md-3"><label data-v-c43f6976="">Image</label> <div data-v-c43f6976="" class="image-container clickable"><img data-v-c43f6976="" width="100" height="80" src="https://unoapp-resources.s3.ca-central-1.amazonaws.com/30/WWWQOFCGg9IGCWofvBDObX54mTOzNhQljdyo22HG.webp"></div> <div data-v-5e9e3052="" data-v-c43f6976="" class="margin-top-15"><button data-v-5e9e3052="" class="btn blue btn-outline">Select Image</button> <div data-v-5e9e3052="" role="dialog" class="modal fade custom in" style="display: block;"><div role="document" class="modal-dialog" style="width: 96%;"><div class="modal-content"><div data-v-5e9e3052="" class="modal-header center"><h4 data-v-5e9e3052="" class="modal-title">Select a Resource</h4></div> <div data-v-5e9e3052="" class="modal-body" style="height: calc(100vh - 180px); max-height: none;"><div data-v-5e9e3052="" class="margin-top-20"><div data-v-5e9e3052="" class="margin-bottom-25 col-sm-4"><div data-v-5e9e3052="" class="jstree-default"><ul data-v-5e9e3052="" class="jstree-container-ul jstree-children"><li data-v-5e9e3052="" class="jstree-node jstree-last jstree-closed"><i data-v-5e9e3052="" class="jstree-icon jstree-ocl"></i> <a data-v-5e9e3052="" class="jstree-anchor">
+									 Resources
+								</a> <!----></li></ul></div></div> <div data-v-5e9e3052="" class="col-sm-8"><div data-v-5e9e3052="" class="center margin-top-20">Select a folder to view resources.</div> <!----></div></div></div> <div data-v-5e9e3052="" class="modal-footer"><button data-v-5e9e3052="" type="button" class="btn btn-default">Close</button> <button data-v-5e9e3052="" type="button" disabled="disabled" class="btn btn-primary">Done</button></div></div></div></div> <section data-v-5e9e3052="" style=""><div data-v-5e9e3052="" slot="modal-header" class="modal-header center"><h4 data-v-5e9e3052="" class="modal-title">Select a Resource</h4></div> <div data-v-5e9e3052="" slot="modal-body" class="modal-body" style="height: calc(100vh - 180px); max-height: none;"><div data-v-5e9e3052="" class="margin-top-20"><div data-v-5e9e3052="" class="margin-bottom-25 col-sm-4"><div data-v-5e9e3052="" class="jstree-default"><ul data-v-5e9e3052="" class="jstree-container-ul jstree-children"><li data-v-5e9e3052="" class="jstree-node jstree-last jstree-closed"><i data-v-5e9e3052="" class="jstree-icon jstree-ocl"></i> <a data-v-5e9e3052="" class="jstree-anchor">
+									 Resources
+								</a> <!----></li></ul></div></div> <div data-v-5e9e3052="" class="col-sm-8"><div data-v-5e9e3052="" class="center margin-top-20">Select a folder to view resources.</div> <!----></div></div></div> <div data-v-5e9e3052="" slot="modal-footer" class="modal-footer"><button data-v-5e9e3052="" type="button" class="btn btn-default">Close</button> <button data-v-5e9e3052="" type="button" disabled="disabled" class="btn btn-primary">Done</button></div></section></div></div> <div data-v-c43f6976="" class="col-md-9"><div data-v-c43f6976="" class="form-group form-md-line-input form-md-floating-label"><input data-v-c43f6976="" type="text" id="form_control_1" class="form-control input-sm edited"> <label data-v-c43f6976="" for="form_control_1">Amenity Name</label></div> <div data-v-c43f6976="" class="form-group form-md-line-input form-md-floating-label"><input data-v-c43f6976="" type="text" id="form_control_3" class="form-control input-sm edited"> <label data-v-c43f6976="" for="form_control_3">Amenity Order</label></div></div></div></form></div> <div data-v-c43f6976="" class="modal-footer clear"><button data-v-c43f6976="" type="submit" class="btn blue">Save</button></div></div></div></div> <div data-v-c43f6976="" role="dialog" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><div data-v-c43f6976="" class="modal-header"><button data-v-c43f6976="" type="button" class="close"><span data-v-c43f6976="">×</span></button> <h4 data-v-c43f6976="" class="modal-title center">Confirm Delete</h4></div> <div data-v-c43f6976="" class="modal-body"><p data-v-c43f6976="">Are you sure you want to delete ?</p></div> <div data-v-c43f6976="" class="modal-footer clear"><button data-v-c43f6976="" type="button" class="btn blue">Delete</button></div></div></div></div></div>
