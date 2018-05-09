@@ -7,25 +7,35 @@
 			<transition name="fade" mode="out-in">
 				<h4 class="modal-title center" v-if="!selectImageMode && !selectLocationMode" key="mainEditMode">Edit Modifier Category</h4>
 				<h4 class="modal-title center" v-if="!selectImageMode && selectLocationMode" key="selectLocationMode"><i class="fa fa-chevron-left clickable pull-left back-button" @click="closeSelectLocationsPopup()"></i>Select Stores</h4>
-				<h4 class="modal-title center" v-if="selectImageMode && !selectLocationMode" key="selectImageMode"><i class="fa fa-chevron-left clickable pull-left back-button" @click="goToPageOne()"></i>  Select An Image</h4>
+			    <h4 class="modal-title center" v-if="selectImageMode && !selectLocationMode" key="selectImageMode"><i class="fa fa-chevron-left clickable pull-left back-button" @click="goToPageOne()"></i>  Select An Image</h4>
 			</transition>
 		</div>
 		<div slot="modal-body" class="modal-body">
-			<div class="page-one" v-if="!selectImageMode && !selectLocationMode" :class="{'active': !selectImageMode, 'disabled': selectImageMode}">
+			<div class="col-xs-12">
 				<div class="alert alert-danger" v-if="errorMessage.length">
 				    <button class="close" data-close="alert" @click="clearError()"></button>
 				    <span>{{errorMessage}}</span>
 				</div>
-				<div class="col-md-3">
-					<label>Modifier Image</label>
-					<div class="image-container clickable" v-if="!categoryToBeEdited.image_url.length">
-						<img width="100" height="80" src="../../../../assets/img/app/image-placeholder.png" @click="goToPageTwo()">
-					</div>
-					<div class="image-container clickable" v-else>
-						<img width="100" height="80" :src="categoryToBeEdited.image_url" @click="goToPageTwo()">
-					</div>
-				</div>
-				<div class="col-md-9">
+			    <div v-if="!selectLocationMode" :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
+					<resource-picker 
+						@open="goToPageTwo()"
+						@close="goToPageOne()"
+						@selected="updateImage" 
+						:imageButton="true"
+						:imageUrl="categoryToBeEdited.image_url"
+						class="margin-top-15"
+					>
+					</resource-picker>
+        		</div>
+				    <div class="col-xs-12">        			
+	    			 <select-locations-popup 
+	    				v-if="selectLocationMode" 
+	    				@closeSelectLocationsPopup='updateSelectedLocations' 
+	    				:previouslySelected="selectedLocations"
+	    			 >
+					 </select-locations-popup>
+        		</div>
+				<div class="col-md-12" v-show="!selectImageMode && !selectLocationMode">
 					<div class="form-group form-md-line-input form-md-floating-label">
 					    <input type="text" class="form-control input-sm edited" id="form_control_1" v-model="categoryToBeEdited.name">
 					    <label for="form_control_1">Modifier Category Name</label>
@@ -71,15 +81,11 @@
         				<button type="submit" class="btn blue btn-outline" @click="selectLocations($event)">Select locations</button>
         				<p class="grey-label margin-top-10" v-if="selectedLocations.length">Selected {{ selectedLocations.length }} location<span v-if="selectedLocations.length !== 1">s</span></p>
         			</div>
-				</div>
-			</div>
-			<div class="page-two" :class="{'active': selectImageMode, 'disabled': !selectImageMode}">
-				<gallery-popup v-if="selectImageMode" @selectedImage="updateImage"></gallery-popup>
-				<select-locations-popup v-if="selectLocationMode" @closeSelectLocationsPopup='updateSelectedLocations' :previouslySelected="selectedLocations"></select-locations-popup>
+					<button type="button" class="btn btn-primary pull-right" @click="updateModifierCategory()">Save</button>
+	         	</div>
 			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button v-if="!selectImageMode && !selectLocationMode" type="button" class="btn btn-primary" @click="updateModifierCategory()">Save</button>
 		</div>
 	</modal>
 </template>
@@ -88,8 +94,8 @@
 import $ from 'jquery'
 import Modal from '../../../modules/Modal'
 import ModifiersFunctions from '../../../../controllers/Modifiers'
-import GalleryPopup from '../../../modules/GalleryPopup'
 import SelectLocationsPopup from '../../../modules/SelectLocationsPopup'
+import ResourcePicker from '../../../modules/ResourcePicker'
 
 export default {
 	data () {
@@ -100,6 +106,7 @@ export default {
 			},
 			errorMessage: '',
 			selectImageMode: false,
+			customWidth: 90,
 			selectLocationMode: false,
 			selectedLocations: []
 		}
@@ -280,8 +287,19 @@ export default {
 	},
 	components: {
 		Modal,
-		GalleryPopup,
+		ResourcePicker,
 		SelectLocationsPopup
+
 	}
 }
 </script>
+</script>
+<style scoped>
+.image-container {
+	border: 1px dotted #c2cad8;
+	text-align: center;
+}
+.narrow-datepicker {
+	max-width: 40%;
+}
+</style>

@@ -29,14 +29,16 @@
 			        		    <span>{{errorMessage}}</span>
 			        		</div>
 			        	</div>
-		        		<div class="col-md-2">
-		        			<label>Option Image</label>
-							<div class="image-container clickable" v-if="!newOptionItem.image_url.length">
-								<img width="100" height="80" src="../../../assets/img/app/image-placeholder.png" @click="openGalleryPopup()">
-							</div>
-							<div class="image-container clickable" v-else>
-								<img width="100" height="80" :src="newOptionItem.image_url" @click="openGalleryPopup()">
-							</div>
+		        			<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
+							<resource-picker 
+								@open="toggleImageMode('newMenu', true)"
+								@close="toggleImageMode('newMenu', false)"
+								@selected="updateImage" 
+								:imageButton="true"
+								:imageUrl="newOptionItem.image_url"
+								class="margin-top-15"
+							>
+							</resource-picker>
 		        		</div>
 		        		<div class="col-md-5">
 							<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
@@ -130,19 +132,7 @@
 	        </div>
 	    </div>
 	    <edit-option-item v-if="showEditOptionItemModal" :selectedOptionItemId="selectedOptionItemId" @updateOptionItem="updateOptionItem" @closeEditOptionItemModal="closeEditOptionItemModal"></edit-option-item>
-	    <modal :show="showGalleryModal" effect="fade" @closeOnEscape="closeGalleryModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeGalleryModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Select An Image</h4>
-			</div>
-			<div slot="modal-body" class="modal-body">
-				<gallery-popup @selectedImage="updateImage"></gallery-popup>
-			</div>
-			<div slot="modal-footer" class="modal-footer clear"></div>
-		</modal>
-    </div>
+	  </div>
 </template>
 
 <script>
@@ -152,7 +142,7 @@ import Dropdown from '../../modules/Dropdown'
 import NoResults from '../../modules/NoResults'
 import Modal from '../../modules/Modal'
 import LoadingScreen from '../../modules/LoadingScreen'
-import GalleryPopup from '../../modules/GalleryPopup'
+import ResourcePicker from '../../modules/ResourcePicker'
 import OptionsFunctions from '../../../controllers/Options'
 import EditOptionItem from './Options/EditOptionItem'
 
@@ -165,7 +155,6 @@ export default {
 				{name: 'Option Items', link: false}
 			],
 			createItemCollapse: true,
-			showGalleryModal: false,
 			errorMessage: '',
 			loadingOptionItemsData: false,
 			newOptionItem: {
@@ -181,7 +170,10 @@ export default {
 			optionItems: [],
 			showEditOptionItemModal: false,
 			selectedOptionItemId: 0,
-			optionDetails: {}
+			optionDetails: {},
+			imageMode: {
+				newMenu: false
+			}
 		}
 	},
 	mounted () {
@@ -191,12 +183,23 @@ export default {
 	},
 	methods: {
 		/**
-		 * To close the gallery popup.
+		 * To toggle between the open and closed state of the resource picker
 		 * @function
+		 * @param {string} object - The name of the object the image is for
+		 * @param {object} value - The open / closed value of the picker
 		 * @returns {undefined}
 		 */
-		closeGalleryModal () {
-			this.showGalleryModal = false
+		toggleImageMode (object, value) {
+			this.imageMode[object] = value
+		},
+		/**
+		 * To set the image to be same as the one emitted by the gallery modal.
+		 * @function
+		 * @param {object} val - The emitted image object.
+		 * @returns {undefined}
+		 */
+		updateImage (val) {
+			this.newCategory.image_url = val.image_url
 		},
 		/**
 		 * To toggle the create option panel, initially set to closed
@@ -247,24 +250,6 @@ export default {
 				if (reason.responseJSON) {}
 				throw reason
 			})
-		},
-		/**
-		 * To open the gallery modal.
-		 * @function
-		 * @returns {undefined}
-		 */
-		openGalleryPopup () {
-			this.showGalleryModal = true
-		},
-		/**
-		 * To set the image to be same as the one emitted by the gallery modal.
-		 * @function
-		 * @param {object} val - The emitted image object.
-		 * @returns {undefined}
-		 */
-		updateImage (val) {
-			this.showGalleryModal = false
-			this.newOptionItem.image_url = val.image_url
 		},
 		/**
 		 * To check if the option data is valid before submitting to the backend.
@@ -429,9 +414,9 @@ export default {
 		Modal,
 		LoadingScreen,
 		NoResults,
-		GalleryPopup,
 		Dropdown,
-		EditOptionItem
+		EditOptionItem,
+		ResourcePicker
 	}
 }
 </script>

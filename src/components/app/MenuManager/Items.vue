@@ -90,14 +90,16 @@
 							    </div>
 							</div>
 						</div>
-		        		<div class="col-md-2" v-show="!showCorporateItems">
-		        			<label for="form_control_1">Item Image</label>
-							<div class="image-container clickable" v-if="!newItem.image_url.length">
-								<img width="100" height="80" src="../../../assets/img/app/image-placeholder.png" @click="openGalleryPopup()">
-							</div>
-							<div class="image-container clickable" v-else>
-								<img width="100" height="80" :src="newItem.image_url" @click="openGalleryPopup()">
-							</div>
+	                         <div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}"  v-show="!showCorporateItems" >
+							<resource-picker 
+								@open="toggleImageMode('newMenu', true)"
+								@close="toggleImageMode('newMenu', false)"
+								@selected="updateImage" 
+								:imageButton="true"
+								:imageUrl="newItem.image_url"
+								class="margin-top-15"
+							>
+							</resource-picker>
 		        		</div>
 		        		<div class="col-md-5" v-show="!showCorporateItems">
 							<div class="form-group form-md-line-input form-md-floating-label">
@@ -317,19 +319,7 @@
         <nutrition-info v-if="displayNutritionModal" :item="selectedItem" @nutritionInfoSaved="nutritionInfoSaved" @deactivateNutritionInfoModal="displayNutritionModal = false"></nutrition-info>
         <modifiers-list v-if="displayModifierModal" :appliedModifiers="appliedModifiers" :selectedItemId="selectedItemId" @deactivateModifierModal="closeModifierModal"></modifiers-list>
         <tags-list v-if="displayTagsListModal" :appliedTags="appliedTags" :selectedItemId="selectedItemId" @deactivateTagsListModal="closeTagsListModal"></tags-list>
-        <modal :show="showGalleryModal" effect="fade" @closeOnEscape="closeGalleryModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeGalleryModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Select An Image</h4>
-			</div>
-			<div slot="modal-body" class="modal-body">
-				<gallery-popup @selectedImage="updateImage"></gallery-popup>
-			</div>
-			<div slot="modal-footer" class="modal-footer clear"></div>
-		</modal>
-		<!-- ASSIGN ITEM ATTRIBUTES START -->
+    	<!-- ASSIGN ITEM ATTRIBUTES START -->
 		<modal :show="showAssignItemAttributesModal" effect="fade" @closeOnEscape="closeAssignItemAttributesModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closeAssignItemAttributesModal()">
@@ -457,7 +447,7 @@ import DeleteItem from './Items/DeleteItem'
 import NutritionInfo from './Items/NutritionInfo'
 import ModifiersList from './Modifiers/ModifiersList'
 import TagsList from './Tags/TagsList'
-import GalleryPopup from '../../modules/GalleryPopup'
+import ResourcePicker from '../../modules/ResourcePicker'
 import MenusFunctions from '../../../controllers/Menus'
 import ItemTypesFunctions from '../../../controllers/ItemTypes'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
@@ -487,7 +477,6 @@ export default {
 			displayCreateTagModal: false,
 			customText: 'There are no items in this category. Click on the button above to add one.',
 			errorMessage: '',
-			showGalleryModal: false,
 			createItemCollapse: true,
 			newItem: {
 				category_id: this.$route.params.category_id,
@@ -535,7 +524,10 @@ export default {
 			applyToLocationsModalActive: false,
 			applyToLocationsErrorMessage: '',
 			passedItemId: null,
-			locationsToApplyItemTo: []
+			locationsToApplyItemTo: [],
+			imageMode: {
+				newMenu: false
+			}
 		}
 	},
 	computed: {
@@ -833,14 +825,6 @@ export default {
 			this.itemCopied = true
 		},
 		/**
-		 * To close the gallery popup.
-		 * @function
-		 * @returns {undefined}
-		 */
-		closeGalleryModal () {
-			this.showGalleryModal = false
-		},
-		/**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
@@ -849,21 +833,12 @@ export default {
 			this.errorMessage = ''
 		},
 		/**
-		 * To open the gallery modal.
-		 * @function
-		 * @returns {undefined}
-		 */
-		openGalleryPopup () {
-			this.showGalleryModal = true
-		},
-		/**
 		 * To set the image to be same as the one emitted by the gallery modal.
 		 * @function
 		 * @param {object} val - The emitted image object.
 		 * @returns {undefined}
 		 */
 		updateImage (val) {
-			this.showGalleryModal = false
 			this.newItem.image_url = val.image_url
 		},
 		/**
@@ -1486,7 +1461,7 @@ export default {
 		ModifiersList,
 		TagsList,
 		NoResults,
-		GalleryPopup,
+		ResourcePicker,
 		ItemImages,
 		SelectLocationsPopup
 	}

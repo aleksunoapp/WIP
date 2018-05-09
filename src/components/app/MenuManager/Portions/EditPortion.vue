@@ -7,21 +7,31 @@
 			<h4 class="modal-title center" v-if="!selectImageMode">Update Portion</h4>
 		</div>
 		<div slot="modal-body" class="modal-body">
-			<div class="page-one" v-if="!selectImageMode" :class="{'active': !selectImageMode, 'disabled': selectImageMode}">
+			<div class="col-xs-12">
 				<div class="alert alert-danger" v-if="errorMessage.length">
 				    <button class="close" data-close="alert" @click="clearError()"></button>
 				    <span>{{errorMessage}}</span>
 				</div>
-				<div class="col-md-3">
-					<label>Portion Icon</label>
-					<div class="image-container clickable" v-if="!portionToBeEdited.icon_url">
-						<img width="100" height="80" src="../../../../assets/img/app/image-placeholder.png" @click="goToPageTwo()">
-					</div>
-					<div class="image-container clickable" v-else>
-						<img width="100" height="80" :src="portionToBeEdited.icon_url" @click="goToPageTwo()">
-					</div>
-				</div>
-				<div class="col-md-9">
+        		<div v-if="!selectLocationMode" :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
+					<resource-picker 
+						@open="goToPageTwo()"
+						@close="goToPageOne()"
+						@selected="updateIcon" 
+						:imageButton="true"
+						:imageUrl="portionToBeEdited.icon_url"
+						class="margin-top-15"
+					>
+					</resource-picker>
+        		</div>
+        		<div class="col-xs-12">        			
+	    			<select-locations-popup 
+	    				v-if="selectLocationMode" 
+	    				@closeSelectLocationsPopup='updateSelectedLocations' 
+	    				:previouslySelected="selectedLocations"
+	    			>
+					</select-locations-popup>
+        		</div>
+				<div class="col-md-12" v-show="!selectImageMode && !selectLocationMode">
 					<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
 					    <input type="text" class="form-control input-sm edited" id="form_control_1" v-model="portionToBeEdited.name">
 					    <label for="form_control_1">Portion Name</label>
@@ -36,9 +46,6 @@
 					</div>
 				</div>
 			</div>
-			<div class="page-two" v-if="selectImageMode" :class="{'active': selectImageMode, 'disabled': !selectImageMode}">
-				<gallery-popup @selectedImage="updateIcon"></gallery-popup>
-			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
 			<button v-if="!selectImageMode" type="button" class="btn btn-primary" @click="updatePortion()">Save</button>
@@ -51,7 +58,7 @@ import $ from 'jquery'
 import Modal from '../../../modules/Modal'
 import Dropdown from '../../../modules/Dropdown'
 import PortionsFunctions from '../../../../controllers/Portions'
-import GalleryPopup from '../../../modules/GalleryPopup'
+import ResourcePicker from '../../../modules/ResourcePicker'
 
 export default {
 	data () {
@@ -200,7 +207,7 @@ export default {
 	components: {
 		Modal,
 		Dropdown,
-		GalleryPopup
+		ResourcePicker
 	}
 }
 </script>

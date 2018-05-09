@@ -11,21 +11,33 @@
 			</transition>
 		</div>
 		<div slot="modal-body" class="modal-body">
-			<div class="page-one" v-if="!selectImageMode && !selectLocationMode" :class="{'active': !selectImageMode, 'disabled': selectImageMode}">
-				<div class="alert alert-danger" v-show="errorMessage.length" ref="errorMessage">
-				    <button class="close" data-close="alert" @click="clearError()"></button>
-				    <span>{{errorMessage}}</span>
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="alert alert-danger" v-show="errorMessage.length" ref="errorMessage">
+					    <button class="close" data-close="alert" @click="clearError()"></button>
+					    <span>{{errorMessage}}</span>
+					</div>					
 				</div>
-				<div class="col-md-3">
-					<label for="form_control_7">Menu Image</label>
-					<div class="image-container clickable" v-if="!menuToBeEdited.image_url.length">
-						<img width="100" height="80" src="../../../../assets/img/app/image-placeholder.png" @click="goToPageTwo()">
-					</div>
-					<div class="image-container clickable" v-else>
-						<img width="100" height="80" :src="menuToBeEdited.image_url" @click="goToPageTwo()">
-					</div>
-				</div>
-				<div class="col-md-9">
+        		<div v-if="!selectLocationMode" :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
+					<resource-picker 
+						@open="goToPageTwo()"
+						@close="goToPageOne()"
+						@selected="updateImage" 
+						:imageButton="true"
+						:imageUrl="menuToBeEdited.image_url"
+						class="margin-top-15"
+					>
+					</resource-picker>
+        		</div>
+        		<div class="col-xs-12">        			
+	    			<select-locations-popup 
+	    				v-if="selectLocationMode" 
+	    				@closeSelectLocationsPopup='updateSelectedLocations' 
+	    				:previouslySelected="selectedLocations"
+	    			>
+					</select-locations-popup>
+        		</div>
+				<div class="col-md-12" v-show="!selectImageMode && !selectLocationMode">
 					<div class="form-group form-md-line-input form-md-floating-label">
 					    <input type="text" class="form-control input-sm edited" id="form_control_1" v-model="menuToBeEdited.name">
 					    <label for="form_control_1">Menu Name</label>
@@ -96,16 +108,11 @@
         				<button type="submit" class="btn blue btn-outline" @click="selectLocations($event)">Select locations</button>
         				<p class="grey-label margin-top-10" v-if="selectedLocations.length">Selected {{ selectedLocations.length }} location<span v-if="selectedLocations.length !== 1">s</span></p>
         			</div>
+        			<button type="button" class="btn btn-primary pull-right" @click="updateMenu()">Save</button>
 				</div>
 			</div>
-			<div class="page-two" :class="{'active': selectImageMode, 'disabled': !selectImageMode}">
-				<gallery-popup v-if="selectImageMode" @selectedImage="updateImage"></gallery-popup>
-				<select-locations-popup v-if="selectLocationMode" @closeSelectLocationsPopup='updateSelectedLocations' :previouslySelected="selectedLocations"></select-locations-popup>
-			</div>
 		</div>
-		<div slot="modal-footer" class="modal-footer clear">
-			<button v-if="!selectImageMode && !selectLocationMode" type="button" class="btn btn-primary" @click="updateMenu()">Save</button>
-		</div>
+		<div slot="modal-footer"></div>
 	</modal>
 </template>
 
@@ -114,7 +121,7 @@ import $ from 'jquery'
 import Modal from '../../../modules/Modal'
 import MenusFunctions from '../../../../controllers/Menus'
 import ajaxErrorHandler from '../../../../controllers/ErrorController'
-import GalleryPopup from '../../../modules/GalleryPopup'
+import ResourcePicker from '../../../modules/ResourcePicker'
 import SelectLocationsPopup from '../../../modules/SelectLocationsPopup'
 
 export default {
@@ -321,7 +328,7 @@ export default {
 	},
 	components: {
 		Modal,
-		GalleryPopup,
+		ResourcePicker,
 		SelectLocationsPopup
 	}
 }

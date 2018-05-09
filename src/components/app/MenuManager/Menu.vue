@@ -30,16 +30,18 @@
       						    <span>{{errorMessage}}</span>
       						</div>
       					</div>
-		        		<div class="col-md-6">
-		        			<label for="form_control_1">Menu Image</label>
-		        			<div class="image-container" v-if="!newMenu.image_url.length">
-		        				<img width="100" height="80" src="../../../assets/img/app/image-placeholder.png">
-		        			</div>
-		        			<div class="image-container" v-else>
-		        				<img width="100" height="80" :src="newMenu.image_url">
-		        			</div>
-		        			<resource-picker @selected="updateImage" buttonText="Select Image" class="margin-top-15"></resource-picker>
-
+		        		<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
+							<resource-picker 
+								@open="toggleImageMode('newMenu', true)"
+								@close="toggleImageMode('newMenu', false)"
+								@selected="updateImage" 
+								:imageButton="true"
+								:imageUrl="newMenu.image_url"
+								class="margin-top-15"
+							>
+							</resource-picker>
+		        		</div>
+		        		<div class="col-md-5" v-show="!imageMode.newMenu">
 							<div class="form-group form-md-line-input form-md-floating-label">
 							    <input type="text" class="form-control input-sm" id="form_control_2" :class="{'edited': newMenu.name.length}" v-model="newMenu.name">
 							    <label for="form_control_2">Menu Name</label>
@@ -57,7 +59,7 @@
 							    <label for="form_control_5">Menu SKU</label>
 							</div>
 		        		</div>
-		        		<div class="col-md-6">
+		        		<div class="col-md-5" v-show="!imageMode.newMenu">
 							<div class="form-group form-md-line-input form-md-floating-label">
 				                <label>Menu Status:</label><br>
 				                <el-switch
@@ -82,6 +84,15 @@
 	                            	inactive-text="Regular">
 	                            </el-switch>
 	                        </div>
+                			<div v-if="newMenu.catering" class="form-group form-md-line-input form-md-floating-label">
+        					    <input type="text" class="form-control input-sm" id="form_control_6" :class="{'edited': newMenu.min.length}" v-model="newMenu.min">
+        					    <label for="form_control_6">Minimum order value</label>
+        					</div>
+		        			<div v-if="newMenu.catering" class="form-group form-md-line-input form-md-floating-label">
+							    <input type="text" class="form-control input-sm" id="form_control_7" :class="{'edited': newMenu.max.length}" v-model="newMenu.max">
+							    <label for="form_control_7">Maximum order value</label>
+							</div>
+
 	            			<div class="form-group form-md-line-input form-md-floating-label margin-bottom-20">
 	                            <label>Is an Add-on Menu:</label><br>
 	                            <el-switch
@@ -91,9 +102,14 @@
 	                            	:active-value="1"
 	                            	:inactive-value="0"
 	                            	active-text="Yes"
-	                            	inactive-text="No">
+	                            	inactive-text="No"
+	                            	class="margin-right-10"
+	                            >
 	                            </el-switch>
+		                        <button v-if="newMenu.addon === 1" type="submit" class="btn btn-xs blue btn-outline" @click="selectAddOnCategories(newMenu, $event)">Select add-on categories</button>
+		                        <p class="grey-label margin-top-10" v-if="newMenu.add_on.length">Selected {{newMenu.add_on.length}} <span v-if="newMenu.add_on.length === 1">category</span><span v-else>categories</span></p>
 	                        </div>
+
 							<el-date-picker 
 								v-model="newMenu.start_from" 
 								:editable="false"
@@ -109,19 +125,10 @@
 								format="yyyy-MM-dd" 
 								value-format="yyyy-MM-dd" 
 								placeholder="To"></el-date-picker>
-							<button v-if="newMenu.addon === 1" type="submit" class="btn blue btn-outline" @click="selectAddOnCategories(newMenu, $event)">Select add-on categories</button>
-							<p class="grey-label margin-top-10" v-if="newMenu.add_on.length">Selected {{newMenu.add_on.length}} <span v-if="newMenu.add_on.length === 1">category</span><span v-else>categories</span></p>
-                			<div v-if="newMenu.catering" class="form-group form-md-line-input form-md-floating-label">
-        					    <input type="text" class="form-control input-sm" id="form_control_6" :class="{'edited': newMenu.min.length}" v-model="newMenu.min">
-        					    <label for="form_control_6">Minimum order value</label>
-        					</div>
-		        			<div v-if="newMenu.catering" class="form-group form-md-line-input form-md-floating-label">
-							    <input type="text" class="form-control input-sm" id="form_control_7" :class="{'edited': newMenu.max.length}" v-model="newMenu.max">
-							    <label for="form_control_7">Maximum order value</label>
-							</div>
+
 		        		</div>
 		        	</div>
-      				<div class="form-actions right margin-top-20">
+      				<div class="form-actions right margin-top-20" v-show="!imageMode.newMenu">
 						<button type="submit" class="btn blue">Create</button>
 					</div>
       			</form>
@@ -226,19 +233,7 @@
         <edit-menu v-if="editMenuModalActive" :passedMenuId="passedMenuId" @closeEditMenuModal="closeEditMenuModal" @updateMenu="updateMenu"></edit-menu>
 		<menu-hours v-if="menuHoursModalActive" @closeHoursModal="closeMenuHoursModal" :menu="menuToAssignHoursTo"></menu-hours>
         <delete-menu v-if="deleteMenuModalActive" :passedMenuId="passedMenuId" @closeDeleteMenuModal="closeDeleteMenuModal" @deleteMenuAndCloseModal="deleteMenuAndCloseModal"></delete-menu>
-        <modal :show="showGalleryModal" effect="fade" @closeOnEscape="closeGalleryModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeGalleryModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Select An Image</h4>
-			</div>
-			<div slot="modal-body" class="modal-body">
-				<resource-picker @selected="updateImage" buttonText="Select Image" class="margin-top-15"></resource-picker>
-			</div>
-			<div slot="modal-footer" class="modal-footer clear"></div>
-		</modal>
-	</div>
+  	</div>
 </template>
 
 <script>
@@ -253,7 +248,6 @@ import EditMenu from './Menus/EditMenu'
 import ApplyAddOnCategories from './Menus/ApplyAddOnCategories'
 import DeleteMenu from './Menus/DeleteMenu'
 import MenuHours from './Menus/MenuHours'
-import GalleryPopup from '../../modules/GalleryPopup'
 import ResourcePicker from '../../modules/ResourcePicker'
 
 export default {
@@ -290,12 +284,14 @@ export default {
 				add_on: []
 			},
 			createMenuCollapse: true,
-			showGalleryModal: false,
 			menuHoursModalActive: false,
 			promptForLocation: false,
 			menuFilter: '0',
 			animated: '',
-			menuToAssignHoursTo: {}
+			menuToAssignHoursTo: {},
+			imageMode: {
+				newMenu: false
+			}
 		}
 	},
 	watch: {
@@ -312,6 +308,16 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * To toggle between the open and closed state of the resource picker
+		 * @function
+		 * @param {string} object - The name of the object the image is for
+		 * @param {object} value - The open / closed value of the picker
+		 * @returns {undefined}
+		 */
+		toggleImageMode (object, value) {
+			this.imageMode[object] = value
+		},
 		/**
 		 * To display the add-on categories modal
 		 * @function
@@ -459,14 +465,6 @@ export default {
 					break
 				}
 			}
-		},
-		/**
-		 * To close the gallery popup.
-		 * @function
-		 * @returns {undefined}
-		 */
-		closeGalleryModal () {
-			this.showGalleryModal = false
 		},
 		/**
 		 * To clear the new menu form.
@@ -640,22 +638,12 @@ export default {
 			this.errorMessage = ''
 		},
 		/**
-		 * To open the gallery modal.
-		 * @function
-		 * @returns {undefined}
-		 */
-		openGalleryPopup () {
-			this.showGalleryModal = true
-		},
-		/**
 		 * To set the image to be same as the one emitted by the gallery modal.
 		 * @function
 		 * @param {object} val - The emitted image object.
 		 * @returns {undefined}
 		 */
 		updateImage (val) {
-			console.log('updateImage', val)
-			this.showGalleryModal = false
 			this.newMenu.image_url = val.image_url
 		},
 		/**
@@ -676,7 +664,6 @@ export default {
 		DeleteMenu,
 		NoResults,
 		Modal,
-		GalleryPopup,
 		MenuHours,
 		ResourcePicker
 	}

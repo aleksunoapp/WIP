@@ -33,21 +33,19 @@
 								<span>{{ createErrorMessage }}</span>
 							</div>
 						</div>
-		        		<div class="col-md-2">
-		        			<label>Image</label>
-							<div class="image-container" v-show="newAmenity.image_url === ''">
-								<img width="100" height="80" src="../../../assets/img/app/image-placeholder.png">
-							</div>
-							<div class="image-container" v-show="newAmenity.image_url !== ''">
-								<img width="100" height="80" :src="newAmenity.image_url">
-							</div>
+		        		<div :class="{'col-md-2 col-md-offset-2' : !newAmenity.selectImageMode, 'col-md-12' : !newAmenity.selectImageMode}">
 							<resource-picker 
+								@open="toggleImageMode(newAmenity, true)"
+								@close="toggleImageMode(newAmenity, false)"
 								@selected="updateNewImage" 
-								buttonText="Select Image" 
-								:isModal="true"
-								class="margin-top-15">
+								:imageButton="true"
+								:imageUrl="newAmenity.image_url"
+								class="margin-top-15"
+							>
 							</resource-picker>
 		        		</div>
+		        	</div>
+		        	<div class="row" v-show="!newAmenity.selectImageMode">
 						<div class="col-md-6">
 							<div class="form-group form-md-line-input form-md-floating-label">
 								<input type="text" class="form-control input-sm" :class="{'edited': newAmenity.name.length}" id="form_control_1" v-model="newAmenity.name">
@@ -151,12 +149,11 @@
 					<span>&times;</span>
 				</button>
 				<h4 class="modal-title center">
-					<i class="fa fa-chevron-left clickable pull-left back-button" v-show="selectImageMode" @click="mainEdit()"></i>
 					Edit Amenity
 				</h4>
 			</div>
 			<div slot="modal-body" class="modal-body">
-				<form role="form" v-show="!selectImageMode">
+				<form role="form" >
 					<div class="row">
 						<div class="col-md-12">
 							<div class="alert alert-danger" v-show="editErrorMessage.length" ref="editErrorMessage">
@@ -164,23 +161,22 @@
 								<span>{{ editErrorMessage }}</span>
 							</div>
 						</div>
-						<div class="col-md-3">
-							<label>Image</label>
-							<div class="image-container clickable" v-if="!amenityToEdit.image_url">
-								<img width="100" height="80" src="../../../assets/img/app/image-placeholder.png">
-							</div>
-							<div class="image-container clickable" v-else>
-								<img width="100" height="80" :src="amenityToEdit.image_url">
-							</div>
-							<resource-picker 
+						<div 
+							:class="{'col-xs-4 col-xs-offset-4' : !selectImageMode, 'col-xs-12' : selectImageMode}"
+							>
+							<resource-picker
+								@open="imageEdit()"
+								@close="mainEdit()"
 								@selected="updateEditedImage" 
 								buttonText="Select Image" 
 								:isModal="false"
+								:imageUrl="amenityToEdit.image_url"
+								:imageButton="true"
 								class="margin-top-15"
-								@click="imageEdit()">
+							>
 							</resource-picker>
 						</div>
-						<div class="col-md-9">
+						<div v-show="!selectImageMode" class="col-xs-12">
 							<div class="form-group form-md-line-input form-md-floating-label">
 								<input type="text" class="form-control input-sm" :class="{'edited': amenityToEdit.name.length}" id="form_control_1" v-model="amenityToEdit.name">
 								<label for="form_control_1">Amenity Name</label>
@@ -232,8 +228,8 @@ export default {
 	data () {
 		return {
 			breadcrumbArray: [
-				{name: 'Menu Manager', link: false},
-				{name: 'Amenities', link: false}
+        { name: 'Menu Manager', link: false },
+        { name: 'Amenities', link: false }
 			],
 
 			createNewCollapse: true,
@@ -241,7 +237,8 @@ export default {
 			newAmenity: {
 				name: '',
 				image_url: '',
-				order: ''
+				order: '',
+				selectImageMode: false
 			},
 
 			loadingAmenities: false,
@@ -281,36 +278,46 @@ export default {
 	},
 	methods: {
 		/**
-		 * To toggle the create tier panel, initially set to closed
+		 * To toggle between the open and closed state of the resource picker
 		 * @function
+		 * @param {object} object - The object an image is selected for
+		 * @param {object} value - The open / closed value of the picker
 		 * @returns {undefined}
 		 */
+		toggleImageMode (object, value) {
+			object.selectImageMode = value
+		},
+    /**
+     * To toggle the create tier panel, initially set to closed
+     * @function
+     * @returns {undefined}
+     */
 		toggleCreatePanel () {
 			this.createNewCollapse = !this.createNewCollapse
 		},
-		/**
-		 * To set the image to be same as the one emitted by the gallery modal.
-		 * @function
-		 * @param {object} val - The emitted image object.
-		 * @returns {undefined}
-		 */
+    /**
+     * To set the image to be same as the one emitted by the gallery modal.
+     * @function
+     * @param {object} val - The emitted image object.
+     * @returns {undefined}
+     */
 		updateNewImage (val) {
 			this.newAmenity.image_url = val.image_url
 		},
-		/**
-		 * To clear the current error.
-		 * @function
-		 * @param {object} errorMessageName - The error message to be cleared.
-		 * @returns {undefined}
-		 */
+    /**
+     * To clear the current error.
+     * @function
+     * @param {object} errorMessageName - The error message to be cleared.
+     * @returns {undefined}
+     */
 		clearError (errorMessageName) {
 			this[errorMessageName] = ''
 		},
-		/**
-		 * To check if the amenity data is valid before submitting to the backend.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
+    /**
+     * To check if the amenity data is valid before submitting to the backend.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
 		validateNewAmenityData () {
 			var amenitiesVue = this
 			return new Promise(function (resolve, reject) {
@@ -324,58 +331,74 @@ export default {
 				resolve('Hurray')
 			})
 		},
-		/**
-		 * To create a new amenity.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
+    /**
+     * To create a new amenity.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
 		createAmenity () {
 			var amenitiesVue = this
 			amenitiesVue.clearError('createErrorMessage')
 
-			return amenitiesVue.validateNewAmenityData()
-			.then(response => {
-				AmenitiesFunctions.createAmenity(amenitiesVue.$root.appId, amenitiesVue.$root.appSecret, amenitiesVue.$root.userToken, amenitiesVue.newAmenity).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						amenitiesVue.showCreateSuccess()
-						amenitiesVue.getAllAmenities()
-					} else {
-						amenitiesVue.createErrorMessage = response.message
-						amenitiesVue.$scrollTo(amenitiesVue.$refs.createErrorMessage, 1000, { offset: -50 })
-					}
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not create the amenity',
-						errorName: 'createErrorMessage',
-						vue: amenitiesVue
-					})
-				})
-			}).catch(reason => {
-				amenitiesVue.createErrorMessage = reason
-				amenitiesVue.$scrollTo(amenitiesVue.$refs.createErrorMessage, 1000, { offset: -50 })
-			})
+			return amenitiesVue
+        .validateNewAmenityData()
+        .then(response => {
+	AmenitiesFunctions.createAmenity(
+            amenitiesVue.$root.appId,
+            amenitiesVue.$root.appSecret,
+            amenitiesVue.$root.userToken,
+            amenitiesVue.newAmenity
+          )
+            .then(response => {
+	if (response.code === 200 && response.status === 'ok') {
+		amenitiesVue.showCreateSuccess()
+		amenitiesVue.getAllAmenities()
+	} else {
+		amenitiesVue.createErrorMessage = response.message
+		amenitiesVue.$scrollTo(
+                  amenitiesVue.$refs.createErrorMessage,
+                  1000,
+                  { offset: -50 }
+                )
+	}
+})
+            .catch(reason => {
+	ajaxErrorHandler({
+		reason,
+		errorText: 'We could not create the amenity',
+		errorName: 'createErrorMessage',
+		vue: amenitiesVue
+	})
+})
+})
+        .catch(reason => {
+	amenitiesVue.createErrorMessage = reason
+	amenitiesVue.$scrollTo(amenitiesVue.$refs.createErrorMessage, 1000, {
+		offset: -50
+	})
+})
 		},
-		/**
-		 * To alert the user that the amenity has been successfully created.
-		 * @function
-		 * @returns {undefined}
-		 */
+    /**
+     * To alert the user that the amenity has been successfully created.
+     * @function
+     * @returns {undefined}
+     */
 		showCreateSuccess () {
 			this.$swal({
 				title: 'Success!',
-				text: 'Amenity \'' + this.newAmenity.name + '\' has been successfully added!',
+				text:
+          "Amenity '" + this.newAmenity.name + "' has been successfully added!",
 				type: 'success',
 				confirmButtonText: 'OK'
 			}).then(() => {
 				this.clearNewAmenity()
 			})
 		},
-		/**
-		 * To clear the new amenity form.
-		 * @function
-		 * @returns {undefined}
-		 */
+    /**
+     * To clear the new amenity form.
+     * @function
+     * @returns {undefined}
+     */
 		clearNewAmenity () {
 			this.newAmenity = {
 				name: '',
@@ -383,88 +406,99 @@ export default {
 				order: ''
 			}
 		},
-		/**
-		 * To get a list of all amenities.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+    /**
+     * To get a list of all amenities.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
 		getAllAmenities () {
 			this.loadingAmenities = true
 			this.amenities = []
 			var amenitiesVue = this
-			return AmenitiesFunctions.getAllAmenities(amenitiesVue.$root.appId, amenitiesVue.$root.appSecret, amenitiesVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					amenitiesVue.amenities = response.payload.map(amenity => {
-						amenity.selected = false
-						return amenity
-					})
-					if (amenitiesVue.$root.activeLocation.id !== undefined) {
-						amenitiesVue.getAmenitiesForStore()
-					}
-				} else {
-					amenitiesVue.loadingAmenities = false
-				}
-			}).catch(reason => {
-				amenitiesVue.loadingAmenities = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch the list of amenities',
-					errorName: 'listErrorMessage',
-					vue: amenitiesVue
-				})
-			})
+			return AmenitiesFunctions.getAllAmenities(
+        amenitiesVue.$root.appId,
+        amenitiesVue.$root.appSecret,
+        amenitiesVue.$root.userToken
+      )
+        .then(response => {
+	if (response.code === 200 && response.status === 'ok') {
+		amenitiesVue.amenities = response.payload.map(amenity => {
+			amenity.selected = false
+			return amenity
+		})
+		if (amenitiesVue.$root.activeLocation.id !== undefined) {
+			amenitiesVue.getAmenitiesForStore()
+		}
+	} else {
+		amenitiesVue.loadingAmenities = false
+	}
+})
+        .catch(reason => {
+	amenitiesVue.loadingAmenities = false
+	ajaxErrorHandler({
+		reason,
+		errorText: 'We could not fetch the list of amenities',
+		errorName: 'listErrorMessage',
+		vue: amenitiesVue
+	})
+})
 		},
-		/**
-		 * To get a list of amenities for the current active store.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+    /**
+     * To get a list of amenities for the current active store.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
 		getAmenitiesForStore () {
 			var amenitiesVue = this
-			return AmenitiesFunctions.getAmenitiesForStore(amenitiesVue.$root.appId, amenitiesVue.$root.appSecret, amenitiesVue.$root.userToken, amenitiesVue.$root.activeLocation.id).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					amenitiesVue.amenities.forEach(globalAmenity => { globalAmenity.selected = false })
-					response.payload.forEach(
-						(storeAmenity) => {
-							amenitiesVue.amenities.forEach(
-								(globalAmenity) => {
-									if (globalAmenity.id === storeAmenity.pivot.amenities_id) {
-										globalAmenity.selected = true
-									}
-								}
-							)
-						}
-					)
-					amenitiesVue.loadingAmenities = false
+			return AmenitiesFunctions.getAmenitiesForStore(
+        amenitiesVue.$root.appId,
+        amenitiesVue.$root.appSecret,
+        amenitiesVue.$root.userToken,
+        amenitiesVue.$root.activeLocation.id
+      )
+        .then(response => {
+	if (response.code === 200 && response.status === 'ok') {
+		amenitiesVue.amenities.forEach(globalAmenity => {
+			globalAmenity.selected = false
+		})
+		response.payload.forEach(storeAmenity => {
+			amenitiesVue.amenities.forEach(globalAmenity => {
+				if (globalAmenity.id === storeAmenity.pivot.amenities_id) {
+					globalAmenity.selected = true
 				}
-			}).catch(reason => {
-				amenitiesVue.loadingAmenities = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not get amenities for the active store',
-					errorName: 'listErrorMessage',
-					vue: amenitiesVue
-				})
 			})
+		})
+		amenitiesVue.loadingAmenities = false
+	}
+})
+        .catch(reason => {
+	amenitiesVue.loadingAmenities = false
+	ajaxErrorHandler({
+		reason,
+		errorText: 'We could not get amenities for the active store',
+		errorName: 'listErrorMessage',
+		vue: amenitiesVue
+	})
+})
 		},
-		/**
-		 * To toggle the checkbox of the amenity.
-		 * @function
-		 * @param {object} amenity - The selected amenity
-		 * @param {object} event - The click event that prompted this function.
-		 * @returns {undefined}
-		 */
+    /**
+     * To toggle the checkbox of the amenity.
+     * @function
+     * @param {object} amenity - The selected amenity
+     * @param {object} event - The click event that prompted this function.
+     * @returns {undefined}
+     */
 		toggleChecked (amenity, event) {
 			event.stopPropagation()
 			amenity.selected = !amenity.selected
 		},
-		/**
-		 * To show the modal to edit an amenity's details.
-		 * @function
-		 * @param {object} amenity - The selected amenity.
-		 * @param {object} event - The click event that prompted this function.
-		 * @returns {undefined}
-		 */
+    /**
+     * To show the modal to edit an amenity's details.
+     * @function
+     * @param {object} amenity - The selected amenity.
+     * @param {object} event - The click event that prompted this function.
+     * @returns {undefined}
+     */
 		editAmenity (amenity, event) {
 			event.stopPropagation()
 			this.amenityToEdit = {
@@ -473,37 +507,39 @@ export default {
 			}
 			this.showEditModal = true
 		},
-		/**
-		 * To change the page to the gallery view on the modal.
-		 * @function
-		 * @returns {undefined}
-		 */
+    /**
+     * To change the page to the gallery view on the modal.
+     * @function
+     * @returns {undefined}
+     */
 		imageEdit () {
 			this.selectImageMode = true
+			const wide = this.selectImageMode
+			console.log('imageEdit', wide)
 		},
-		/**
-		 * To change the page to the main/form view on the modal.
-		 * @function
-		 * @returns {undefined}
-		 */
+    /**
+     * To change the page to the main/form view on the modal.
+     * @function
+     * @returns {undefined}
+     */
 		mainEdit () {
 			this.selectImageMode = false
 		},
-		/**
-		 * To set the image to be same as the one emitted by the gallery modal.
-		 * @function
-		 * @param {object} val - The emitted image object.
-		 * @returns {undefined}
-		 */
+    /**
+     * To set the image to be same as the one emitted by the gallery modal.
+     * @function
+     * @param {object} val - The emitted image object.
+     * @returns {undefined}
+     */
 		updateEditedImage (val) {
 			this.mainEdit()
 			this.amenityToEdit.image_url = val.image_url
 		},
-		/**
-		 * To check if the amenity data is valid before submitting to the backend.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
+    /**
+     * To check if the amenity data is valid before submitting to the backend.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
 		validateEditedAmenityData () {
 			var amenitiesVue = this
 			return new Promise(function (resolve, reject) {
@@ -517,45 +553,60 @@ export default {
 				resolve('Hurray')
 			})
 		},
-		/**
-		 * To update an amenity.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
+    /**
+     * To update an amenity.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
 		updateAmenity () {
 			var amenitiesVue = this
 			amenitiesVue.clearError('editErrorMessage')
 
-			return amenitiesVue.validateEditedAmenityData()
-			.then(response => {
-				AmenitiesFunctions.updateAmenity(amenitiesVue.$root.appId, amenitiesVue.$root.appSecret, amenitiesVue.$root.userToken, amenitiesVue.amenityToEdit).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						amenitiesVue.getAllAmenities()
-						amenitiesVue.closeEditModal()
-						amenitiesVue.showEditSuccess()
-						amenitiesVue.resetEdit()
-					} else {
-						amenitiesVue.editErrorMessage = response.message
-						amenitiesVue.$scrollTo(amenitiesVue.$refs.editErrorMessage, 1000, { offset: -50 })
-					}
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not update the amenity',
-						errorName: 'editErrorMessage',
-						vue: amenitiesVue
-					})
-				})
-			}).catch(reason => {
-				amenitiesVue.editErrorMessage = reason
-				amenitiesVue.$scrollTo(amenitiesVue.$refs.editErrorMessage, 1000, { offset: -50 })
-			})
+			return amenitiesVue
+        .validateEditedAmenityData()
+        .then(response => {
+	AmenitiesFunctions.updateAmenity(
+            amenitiesVue.$root.appId,
+            amenitiesVue.$root.appSecret,
+            amenitiesVue.$root.userToken,
+            amenitiesVue.amenityToEdit
+          )
+            .then(response => {
+	if (response.code === 200 && response.status === 'ok') {
+		amenitiesVue.getAllAmenities()
+		amenitiesVue.closeEditModal()
+		amenitiesVue.showEditSuccess()
+		amenitiesVue.resetEdit()
+	} else {
+		amenitiesVue.editErrorMessage = response.message
+		amenitiesVue.$scrollTo(
+                  amenitiesVue.$refs.editErrorMessage,
+                  1000,
+                  { offset: -50 }
+                )
+	}
+})
+            .catch(reason => {
+	ajaxErrorHandler({
+		reason,
+		errorText: 'We could not update the amenity',
+		errorName: 'editErrorMessage',
+		vue: amenitiesVue
+	})
+})
+})
+        .catch(reason => {
+	amenitiesVue.editErrorMessage = reason
+	amenitiesVue.$scrollTo(amenitiesVue.$refs.editErrorMessage, 1000, {
+		offset: -50
+	})
+})
 		},
-		/**
-		 * To display notification that amenities were successfully saved.
-		 * @function
-		 * @returns {undefined}
-		 */
+    /**
+     * To display notification that amenities were successfully saved.
+     * @function
+     * @returns {undefined}
+     */
 		showEditSuccess () {
 			this.$swal({
 				title: 'Success!',
@@ -564,19 +615,19 @@ export default {
 				confirmButtonText: 'OK'
 			})
 		},
-		/**
-		 * To close the modal for editing a promotion.
-		 * @function
-		 * @returns {undefined}
-		 */
+    /**
+     * To close the modal for editing a promotion.
+     * @function
+     * @returns {undefined}
+     */
 		closeEditModal () {
 			this.showEditModal = false
 		},
-		/**
-		 * To reset the edit form
-		 * @function
-		 * @returns {undefined}
-		 */
+    /**
+     * To reset the edit form
+     * @function
+     * @returns {undefined}
+     */
 		resetEdit () {
 			this.amenityToEdit = {
 				name: '',
@@ -584,34 +635,48 @@ export default {
 				order: ''
 			}
 		},
-		/**
-		 * To apply amenities to the current active location
-		 * @function
-		 * @returns {undefined}
-		 */
+    /**
+     * To apply amenities to the current active location
+     * @function
+     * @returns {undefined}
+     */
 		assignAmenitiesToLocation () {
 			var amenitiesVue = this
 			let payload = {
-				amenities: [...this.amenities.filter(amenity => amenity.selected).map(amenity => amenity.id)]
+				amenities: [
+					...this.amenities
+            .filter(amenity => amenity.selected)
+            .map(amenity => amenity.id)
+				]
 			}
-			return AmenitiesFunctions.assignAmenitiesToLocation(amenitiesVue.$root.appId, amenitiesVue.$root.appSecret, amenitiesVue.$root.userToken, amenitiesVue.$root.activeLocation.id, payload).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					amenitiesVue.showAssignSuccess()
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: `We could not save amenities for ${this.$root.activeLocation.display_name}`,
-					errorName: 'listErrorMessage',
-					vue: amenitiesVue
-				})
-			})
+			return AmenitiesFunctions.assignAmenitiesToLocation(
+        amenitiesVue.$root.appId,
+        amenitiesVue.$root.appSecret,
+        amenitiesVue.$root.userToken,
+        amenitiesVue.$root.activeLocation.id,
+        payload
+      )
+        .then(response => {
+	if (response.code === 200 && response.status === 'ok') {
+		amenitiesVue.showAssignSuccess()
+	}
+})
+        .catch(reason => {
+	ajaxErrorHandler({
+		reason,
+		errorText: `We could not save amenities for ${
+              this.$root.activeLocation.display_name
+            }`,
+		errorName: 'listErrorMessage',
+		vue: amenitiesVue
+	})
+})
 		},
-		/**
-		 * To display notification that amenities were successfully saved.
-		 * @function
-		 * @returns {undefined}
-		 */
+    /**
+     * To display notification that amenities were successfully saved.
+     * @function
+     * @returns {undefined}
+     */
 		showAssignSuccess () {
 			this.$swal({
 				title: 'Success!',
@@ -620,47 +685,52 @@ export default {
 				confirmButtonText: 'OK'
 			})
 		},
-		/**
-		 * To display the modal for deleting an amenity.
-		 * @function
-		 * @param {object} amenity - The selected amenity
-		 * @param {object} event - The click event that prompted this function.
-		 * @returns {undefined}
-		 */
+    /**
+     * To display the modal for deleting an amenity.
+     * @function
+     * @param {object} amenity - The selected amenity
+     * @param {object} event - The click event that prompted this function.
+     * @returns {undefined}
+     */
 		confirmDelete (amenity, event) {
 			event.stopPropagation()
-			this.amenityToDelete = {...amenity}
+			this.amenityToDelete = { ...amenity }
 			this.showDeleteModal = true
 		},
-		/**
-		 * To close the modal for deleting a promotion and remove that promotion from DOM.
-		 * @function
-		 * @returns {undefined}
-		 */
+    /**
+     * To close the modal for deleting a promotion and remove that promotion from DOM.
+     * @function
+     * @returns {undefined}
+     */
 		deleteAmenity () {
 			var amenitiesVue = this
-			return AmenitiesFunctions.deleteAmenity(amenitiesVue.$root.appId, amenitiesVue.$root.appSecret, amenitiesVue.$root.userToken, amenitiesVue.amenityToDelete.id)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					amenitiesVue.getAllAmenities()
-					amenitiesVue.closeDeleteModal()
-					amenitiesVue.showDeleteSuccess()
-				}
-			})
-			.catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: `We could not delete ${this.amenityToDelete.name}`,
-					errorName: 'deleteErrorMessage',
-					vue: amenitiesVue
-				})
-			})
+			return AmenitiesFunctions.deleteAmenity(
+        amenitiesVue.$root.appId,
+        amenitiesVue.$root.appSecret,
+        amenitiesVue.$root.userToken,
+        amenitiesVue.amenityToDelete.id
+      )
+        .then(response => {
+	if (response.code === 200 && response.status === 'ok') {
+		amenitiesVue.getAllAmenities()
+		amenitiesVue.closeDeleteModal()
+		amenitiesVue.showDeleteSuccess()
+	}
+})
+        .catch(reason => {
+	ajaxErrorHandler({
+		reason,
+		errorText: `We could not delete ${this.amenityToDelete.name}`,
+		errorName: 'deleteErrorMessage',
+		vue: amenitiesVue
+	})
+})
 		},
-		/**
-		 * To display notification that amenities were successfully saved.
-		 * @function
-		 * @returns {undefined}
-		 */
+    /**
+     * To display notification that amenities were successfully saved.
+     * @function
+     * @returns {undefined}
+     */
 		showDeleteSuccess () {
 			this.$swal({
 				title: 'Success!',
@@ -669,11 +739,11 @@ export default {
 				confirmButtonText: 'OK'
 			})
 		},
-		/**
-		 * To close the delete modal.
-		 * @function
-		 * @returns {undefined}
-		 */
+    /**
+     * To close the delete modal.
+     * @function
+     * @returns {undefined}
+     */
 		closeDeleteModal () {
 			this.showDeleteModal = false
 		}
@@ -690,71 +760,71 @@ export default {
 
 <style scoped>
 .btn.custom-button:not(.md-skip):not(.bs-select-all):not(.bs-deselect-all) {
-	position: absolute;
-	bottom: 0;
-	height: 100%;
-	width: 5em;
-	border-radius: 0;
+  position: absolute;
+  bottom: 0;
+  height: 100%;
+  width: 5em;
+  border-radius: 0;
 }
 .custom-button.full-width {
-	right: 0;
+  right: 0;
 }
-.mt-element-list .list-news.ext-1.mt-list-container ul>.mt-list-item:hover {
-	background-color: white;
+.mt-element-list .list-news.ext-1.mt-list-container ul > .mt-list-item:hover {
+  background-color: white;
 }
 .tiles .tile .tile-body > div {
-	height: 80px;
-	background-size: cover;
-	background-repeat: no-repeat;
-	background-size: 100%;
+  height: 80px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-size: 100%;
 }
 .tile-width {
-	width: 127px;
-	text-align: center;
+  width: 127px;
+  text-align: center;
 }
 .tile-width > span {
-	max-width: 90%;
-	height: 20px;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	overflow: hidden;
-	display: inline-block;
-	font-size: 13px;
+  max-width: 90%;
+  height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+  font-size: 13px;
 }
 .tiles .tile.image .corner:after {
-	z-index: 1;
+  z-index: 1;
 }
 .tiles .tile.image.selected .check:after {
-	z-index: 1;
-	content: "\f040";
-	color: #000;
+  z-index: 1;
+  content: "\f040";
+  color: #000;
 }
 .tiles .tile.image.selected.active .check:after {
-	content: "\F00C";
+  content: "\F00C";
 }
 .tiles .tile.image.selected.active .corner:after {
-	border-right: 40px solid rgba(55, 183, 217, 1);
+  border-right: 40px solid rgba(55, 183, 217, 1);
 }
 .grey-label {
-	color: rgb(136, 136, 136);
-	font-size: 13px;
-	margin-bottom: 5px;
+  color: rgb(136, 136, 136);
+  font-size: 13px;
+  margin-bottom: 5px;
 }
 .group-radio {
-	display: block;
+  display: block;
 }
-.group-radio.el-radio+.group-radio.el-radio {
-	margin-left: 0;
+.group-radio.el-radio + .group-radio.el-radio {
+  margin-left: 0;
 }
 .container__flex-row--center {
-	width: 100%;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 .footer-wrapper {
-	display: flex;
-	justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 </style>

@@ -8,21 +8,31 @@
 			<h4 class="modal-title center" v-if="selectImageMode" key="selectLocationMode"><i class="fa fa-chevron-left clickable pull-left back-button" @click="goToPageOne()"></i>Select Image</h4>
 		</div>
 		<div slot="modal-body" class="modal-body">
-			<div class="page-one" v-if="!selectImageMode" :class="{'active': !selectImageMode, 'disabled': selectImageMode}">
-				<div class="alert alert-danger" v-if="errorMessage.length">
+				<div class="col-xs-12">
+		    	<div class="alert alert-danger" v-if="errorMessage.length">
 				    <button class="close" data-close="alert" @click="clearError()"></button>
 				    <span>{{errorMessage}}</span>
 				</div>
-				<div class="col-md-3">
-					<label>Tag Image</label>
-					<div class="image-container clickable" v-if="!tagToBeEdited.image_url.length">
-						<img width="100" height="80" src="../../../../assets/img/app/image-placeholder.png" @click="goToPageTwo()">
-					</div>
-					<div class="image-container clickable" v-else>
-						<img width="100" height="80" :src="tagToBeEdited.image_url" @click="goToPageTwo()">
-					</div>
-				</div>
-				<div class="col-md-9">
+			    <div v-if="!selectLocationMode" :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
+					<resource-picker 
+						@open="goToPageTwo()"
+						@close="goToPageOne()"
+						@selected="updateImage" 
+						:imageButton="true"
+						:imageUrl="tagToBeEdited.image_url"
+						class="margin-top-15"
+					>
+					</resource-picker>
+        		</div>
+				    <div class="col-xs-12">        			
+	    			 <select-locations-popup 
+	    				v-if="selectLocationMode" 
+	    				@closeSelectLocationsPopup='updateSelectedLocations' 
+	    				:previouslySelected="selectedLocations"
+	    			 >
+					 </select-locations-popup>
+        		</div>
+				<div class="col-md-12" v-show="!selectImageMode && !selectLocationMode">
 					<el-dropdown trigger="click" @command="updateTagToBeEdited" size="small" :show-timeout="50" :hide-timeout="50" class='margin-bottom-20'>										
 						<el-button size="small">
 							{{ tagTypeLabel }}
@@ -39,9 +49,6 @@
 					</div>
 				</div>
 			</div>
-			<div class="page-two" v-if="selectImageMode" :class="{'active': selectImageMode, 'disabled': !selectImageMode}">
-				<gallery-popup @selectedImage="updateImage"></gallery-popup>
-			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
 			<button v-if="!selectImageMode" type="button" class="btn btn-primary" @click="updateTag()">Save</button>
@@ -53,8 +60,8 @@
 import Modal from '../../../modules/Modal'
 import Dropdown from '../../../modules/Dropdown'
 import TagsFunctions from '../../../../controllers/Tags'
-import GalleryPopup from '../../../modules/GalleryPopup'
-
+import ResourcePicker from '../../../modules/ResourcePicker'
+import SelectLocationsPopup from '../../../modules/SelectLocationsPopup'
 export default {
 	data () {
 		return {
@@ -216,7 +223,8 @@ export default {
 	components: {
 		Modal,
 		Dropdown,
-		GalleryPopup
+		ResourcePicker,
+		SelectLocationsPopup
 	}
 }
 </script>

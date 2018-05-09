@@ -30,16 +30,18 @@
 			        		    <span>{{errorMessage}}</span>
 			        		</div>
 		        		</div>
-		        		<div class="col-md-2">
-		        			<label for="form_control_1">Category Image</label>
-							<div class="image-container clickable" v-if="!newCategory.image_url.length">
-								<img width="100" height="80" src="../../../assets/img/app/image-placeholder.png" @click="openGalleryPopup()">
-							</div>
-							<div class="image-container clickable" v-else>
-								<img width="100" height="80" :src="newCategory.image_url" @click="openGalleryPopup()">
-							</div>
+		        		<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
+							<resource-picker 
+								@open="toggleImageMode('newMenu', true)"
+								@close="toggleImageMode('newMenu', false)"
+								@selected="updateImage" 
+								:imageButton="true"
+								:imageUrl="newCategory.image_url"
+								class="margin-top-15"
+							>
+							</resource-picker>
 		        		</div>
-		        		<div class="col-md-5">
+		        		<div class="col-md-5" v-show="!imageMode.newMenu">
 							<div class="form-group form-md-line-input form-md-floating-label">
 							    <input type="text" class="form-control input-sm" :class="{'edited': newCategory.name.length}" id="form_control_2" v-model="newCategory.name">
 							    <label for="form_control_2">Category Name</label>
@@ -53,7 +55,7 @@
 							    <label for="form_control_4">Category SKU</label>
 							</div>
 		        		</div>
-		        		<div class="col-md-5">
+		        		<div class="col-md-5" v-show="!imageMode.newMenu">
     						<div class="form-group form-md-line-input form-md-floating-label">
     						    <input type="number" class="form-control input-sm" :class="{'edited': newCategory.order}" id="form_control_5" v-model="newCategory.order">
     						    <label for="form_control_5">Category Order</label>
@@ -72,7 +74,7 @@
     			            </div>
 		        		</div>
 		        	</div>
-      				<div class="form-actions right margin-top-20">
+      				<div class="form-actions right margin-top-20" v-show="!imageMode.newMenu"> 
 						<button type="submit" class="btn blue">Create</button>
 					</div>
       			</form>
@@ -214,18 +216,6 @@
         <delete-category v-if="deleteCategoryModalActive" :passedCategoryId="passedCategoryId" @closeDeleteCategoryModal="closeDeleteCategoryModal" @deleteCategoryAndCloseModal="deleteCategoryAndCloseModal"></delete-category>
         <delete-sub-category v-if="deleteSubCategoryModalActive" :passedSubCategoryId="passedSubCategoryId" @closeDeleteSubCategoryModal="closeDeleteSubCategoryModal" @deleteSubCategoryAndCloseModal="deleteSubCategoryAndCloseModal"></delete-sub-category>
         <category-hours v-if="hoursModalActive" @closeHoursModal="closeHoursModal" :category="categoryToAssignHoursTo"></category-hours>
-        <modal :show="showGalleryModal" effect="fade" @closeOnEscape="closeGalleryModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeGalleryModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Select An Image</h4>
-			</div>
-			<div slot="modal-body" class="modal-body">
-				<gallery-popup @selectedImage="updateImage"></gallery-popup>
-			</div>
-			<div slot="modal-footer" class="modal-footer clear"></div>
-		</modal>
 	</div>
 </template>
 
@@ -243,7 +233,7 @@ import DeleteCategory from './Categories/DeleteCategory'
 import AddSubCategory from './SubCategories/AddSubCategory'
 import EditSubCategory from './SubCategories/EditSubCategory'
 import DeleteSubCategory from './SubCategories/DeleteSubCategory'
-import GalleryPopup from '../../modules/GalleryPopup'
+import ResourcePicker from '../../modules/ResourcePicker'
 
 export default {
 	data () {
@@ -276,9 +266,11 @@ export default {
 				order: null,
 				parent_category: 0
 			},
-			showGalleryModal: false,
 			hoursModalActive: false,
-			categoryToAssignHoursTo: {}
+			categoryToAssignHoursTo: {},
+			imageMode: {
+				newMenu: false
+			}
 		}
 	},
 	watch: {
@@ -293,6 +285,25 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * To toggle between the open and closed state of the resource picker
+		 * @function
+		 * @param {string} object - The name of the object the image is for
+		 * @param {object} value - The open / closed value of the picker
+		 * @returns {undefined}
+		 */
+		toggleImageMode (object, value) {
+			this.imageMode[object] = value
+		},
+		/**
+		 * To set the image to be same as the one emitted by the gallery modal.
+		 * @function
+		 * @param {object} val - The emitted image object.
+		 * @returns {undefined}
+		 */
+		updateImage (val) {
+			this.newCategory.image_url = val.image_url
+		},
 		/**
 		 * To display the modal for category hours.
 		 * @function
@@ -314,38 +325,12 @@ export default {
 			this.hoursModalActive = false
 		},
 		/**
-		 * To close the gallery popup.
-		 * @function
-		 * @returns {undefined}
-		 */
-		closeGalleryModal () {
-			this.showGalleryModal = false
-		},
-		/**
 		 * To toggle the create category panel, initially set to opened
 		 * @function
 		 * @returns {undefined}
 		 */
 		toggleCreateCategoryPanel () {
 			this.createCategoryCollapse = !this.createCategoryCollapse
-		},
-		/**
-		 * To open the gallery modal.
-		 * @function
-		 * @returns {undefined}
-		 */
-		openGalleryPopup () {
-			this.showGalleryModal = true
-		},
-		/**
-		 * To set the image to be same as the one emitted by the gallery modal.
-		 * @function
-		 * @param {object} val - The emitted image object.
-		 * @returns {undefined}
-		 */
-		updateImage (val) {
-			this.showGalleryModal = false
-			this.newCategory.image_url = val.image_url
 		},
 		/**
 		 * To check if the category data is valid before submitting to the backend.
@@ -799,7 +784,7 @@ export default {
 		EditSubCategory,
 		DeleteSubCategory,
 		NoResults,
-		GalleryPopup,
+		ResourcePicker,
 		CategoryHours
 	}
 }

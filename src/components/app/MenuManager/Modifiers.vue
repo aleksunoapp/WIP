@@ -30,16 +30,18 @@
 			        		    <span>{{errorMessage}}</span>
 			        		</div>
 			        	</div>
-		        		<div class="col-md-2">
-		        			<label>Modifier Image</label>
-							<div class="image-container clickable" v-if="!newCategory.image_url.length">
-								<img width="100" height="80" src="../../../assets/img/app/image-placeholder.png" @click="openGalleryPopup()">
-							</div>
-							<div class="image-container clickable" v-else>
-								<img width="100" height="80" :src="newCategory.image_url" @click="openGalleryPopup()">
-							</div>
+		        			<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
+							<resource-picker 
+								@open="toggleImageMode('newMenu', true)"
+								@close="toggleImageMode('newMenu', false)"
+								@selected="updateImage" 
+								:imageButton="true"
+								:imageUrl="newCategory.image_url"
+								class="margin-top-15"
+							>
+							</resource-picker>
 		        		</div>
-		        		<div class="col-md-5">
+		        		<div class="col-md-5" v-show="!imageMode.newMenu">
 							<div class="form-group form-md-line-input form-md-floating-label">
 							    <input type="text" class="form-control input-sm"  :class="{'edited': newCategory.name.length}" id="form_control_1" v-model="newCategory.name">
 							    <label for="form_control_1">Modifier Category Name</label>
@@ -57,7 +59,7 @@
 							    <label for="form_control_4">Modifier Category Max</label>
 							</div>
 		        		</div>
-		        		<div class="col-md-5">
+		        		<div class="col-md-5" v-show="!imageMode.newMenu">
 		        			<div class="form-group form-md-line-input form-md-floating-label">
 							    <input type="text" class="form-control input-sm"  :class="{'edited': newCategory.sku.length}" id="form_control_5" v-model="newCategory.sku">
 							    <label for="form_control_5">Modifier Category SKU</label>
@@ -84,7 +86,7 @@
 				            </div>
 		        		</div>
 		        	</div>
-      				<div class="form-actions right margin-top-20">
+      				<div class="form-actions right margin-top-20" v-show="!imageMode.newMenu">
 						<button type="submit" class="btn blue">Create</button>
 					</div>
       			</form>
@@ -183,18 +185,6 @@
         </div>
         <edit-modifier-category v-if="editCategoryModalActive" @updateModifierCategory="updateModifierCategory" @deactivateEditCategoryModal="closeEditCategoryModal"></edit-modifier-category>
         <delete-modifier-category v-if="deleteCategoryModalActive" :passedModifierCategoryId="passedModifierCategoryId" @closeDeleteModifierCategoryModal="closeDeleteModifierCategoryModal" @deleteModifierCategoryAndCloseModal="deleteModifierCategoryAndCloseModal"></delete-modifier-category>
-        <modal :show="showGalleryModal" effect="fade" @closeOnEscape="closeGalleryModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeGalleryModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Select An Image</h4>
-			</div>
-			<div slot="modal-body" class="modal-body">
-				<gallery-popup @selectedImage="updateImage"></gallery-popup>
-			</div>
-			<div slot="modal-footer" class="modal-footer clear"></div>
-		</modal>
 		<menu-tree v-if="showMenuTreeModal" :selectedObject="selectedModifier" :headerText="headerText" :updateType="'modifier'" @closeMenuTreeModal="closeMenuTreeModal"></menu-tree>
 	</div>
 </template>
@@ -208,8 +198,8 @@ import LoadingScreen from '../../modules/LoadingScreen'
 import EditModifierCategory from './Modifiers/EditModifierCategory'
 import DeleteModifierCategory from './Modifiers/DeleteModifierCategory'
 import ModifiersFunctions from '../../../controllers/Modifiers'
-import GalleryPopup from '../../modules/GalleryPopup'
 import MenuTree from '../../modules/MenuTree'
+import ResourcePicker from '../../modules/ResourcePicker'
 
 export default {
 	data () {
@@ -237,11 +227,14 @@ export default {
 			},
 			errorMessage: '',
 			createModifierCollapse: true,
-			showGalleryModal: false,
 			showMenuTreeModal: false,
 			selectedModifier: {},
 			passedModifierCategoryId: 0,
-			headerText: ''
+			headerText: '',
+			imageMode: {
+				newMenu: false
+			}
+
 		}
 	},
 	mounted () {
@@ -251,12 +244,23 @@ export default {
 	},
 	methods: {
 		/**
-		 * To close the gallery popup.
+		 * To toggle between the open and closed state of the resource picker
 		 * @function
+		 * @param {string} object - The name of the object the image is for
+		 * @param {object} value - The open / closed value of the picker
 		 * @returns {undefined}
 		 */
-		closeGalleryModal () {
-			this.showGalleryModal = false
+		toggleImageMode (object, value) {
+			this.imageMode[object] = value
+		},
+		/**
+		 * To set the image to be same as the one emitted by the gallery modal.
+		 * @function
+		 * @param {object} val - The emitted image object.
+		 * @returns {undefined}
+		 */
+		updateImage (val) {
+			this.newCategory.image_url = val.image_url
 		},
 		/**
 		 * To display the modal to apply a modifier to multiple items.
@@ -517,24 +521,6 @@ export default {
 			this.errorMessage = ''
 		},
 		/**
-		 * To open the gallery modal.
-		 * @function
-		 * @returns {undefined}
-		 */
-		openGalleryPopup () {
-			this.showGalleryModal = true
-		},
-		/**
-		 * To set the image to be same as the one emitted by the gallery modal.
-		 * @function
-		 * @param {object} val - The emitted image object.
-		 * @returns {undefined}
-		 */
-		updateImage (val) {
-			this.showGalleryModal = false
-			this.newCategory.image_url = val.image_url
-		},
-		/**
 		 * To toggle the create menu panel, initially set to opened
 		 * @function
 		 * @returns {undefined}
@@ -555,8 +541,8 @@ export default {
 		EditModifierCategory,
 		DeleteModifierCategory,
 		NoResults,
-		GalleryPopup,
-		MenuTree
+		MenuTree,
+		ResourcePicker
 	}
 }
 </script>

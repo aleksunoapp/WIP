@@ -29,16 +29,18 @@
 			        		    <span>{{errorMessage}}</span>
 			        		</div>
 			        	</div>
-		        		<div class="col-md-2">
-		        			<label>Option Image</label>
-							<div class="image-container clickable" v-if="!newOption.image_url.length">
-								<img width="100" height="80" src="../../../assets/img/app/image-placeholder.png" @click="openGalleryPopup()">
-							</div>
-							<div class="image-container clickable" v-else>
-								<img width="100" height="80" :src="newOption.image_url" @click="openGalleryPopup()">
-							</div>
+		        		<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
+							<resource-picker 
+								@open="toggleImageMode('newMenu', true)"
+								@close="toggleImageMode('newMenu', false)"
+								@selected="updateImage" 
+								:imageButton="true"
+								:imageUrl="newOption.image_url"
+								class="margin-top-15"
+							>
+							</resource-picker>
 		        		</div>
-		        		<div class="col-md-5">
+		        		<div class="col-md-5" v-show="!imageMode.newMenu">
 							<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
 							    <input type="text" class="form-control input-sm" :class="{'edited': newOption.name.length}" id="form_control_1" v-model="newOption.name">
 							    <label for="form_control_1">Option Name</label>
@@ -48,14 +50,14 @@
 							    <label for="form_control_2">Option Description</label>
 							</div>
 		        		</div>
-		        		<div class="col-md-5">
+		        		<div class="col-md-5" v-show="!imageMode.newMenu">
 		        			<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
 							    <input type="number" class="form-control input-sm" :class="{'edited': newOption.order}" id="form_control_3" v-model="newOption.order">
 							    <label for="form_control_3">Option Order</label>
 							</div>
 		        		</div>
 		        	</div>
-      				<div class="form-actions right margin-top-20">
+      				<div class="form-actions right margin-top-20" v-show="!imageMode.newMenu">
 						<button type="submit" class="btn blue">Create</button>
 					</div>
       			</form>
@@ -117,19 +119,7 @@
 	        </div>
 	    </div>
 	    <edit-option v-if="showEditOptionModal" :selectedOptionId="selectedOption.id" @updateOption="updateOption" @closeEditOptionModal="closeEditOptionModal"></edit-option>
-	    <modal :show="showGalleryModal" effect="fade" @closeOnEscape="closeGalleryModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeGalleryModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Select An Image</h4>
-			</div>
-			<div slot="modal-body" class="modal-body">
-				<gallery-popup @selectedImage="updateImage"></gallery-popup>
-			</div>
-			<div slot="modal-footer" class="modal-footer clear"></div>
-		</modal>
-		<modifier-tree v-if="showModifierTreeModal" :selectedObject="selectedOption" :headerText="headerText" :updateType="'option'" @closeModifierTreeModal="closeModifierTreeModal"></modifier-tree>
+	    <modifier-tree v-if="showModifierTreeModal" :selectedObject="selectedOption" :headerText="headerText" :updateType="'option'" @closeModifierTreeModal="closeModifierTreeModal"></modifier-tree>
     </div>
 </template>
 
@@ -140,10 +130,10 @@ import Dropdown from '../../modules/Dropdown'
 import NoResults from '../../modules/NoResults'
 import Modal from '../../modules/Modal'
 import LoadingScreen from '../../modules/LoadingScreen'
-import GalleryPopup from '../../modules/GalleryPopup'
 import OptionsFunctions from '../../../controllers/Options'
 import EditOption from './Options/EditOption'
 import ModifierTree from '../../modules/ModifierTree'
+import ResourcePicker from '../../modules/ResourcePicker'
 
 export default {
 	data () {
@@ -153,7 +143,6 @@ export default {
 				{name: 'Options', link: false}
 			],
 			createOptionCollapse: true,
-			showGalleryModal: false,
 			errorMessage: '',
 			loadingOptionsData: false,
 			newOption: {
@@ -167,6 +156,9 @@ export default {
 			showEditOptionModal: false,
 			selectedOption: {},
 			headerText: '',
+			imageMode: {
+				newMenu: false
+			},
 			showModifierTreeModal: false
 		}
 	},
@@ -175,6 +167,16 @@ export default {
 		this.getOptions()
 	},
 	methods: {
+		/**
+		 * To toggle between the open and closed state of the resource picker
+		 * @function
+		 * @param {string} object - The name of the object the image is for
+		 * @param {object} value - The open / closed value of the picker
+		 * @returns {undefined}
+		 */
+		toggleImageMode (object, value) {
+			this.imageMode[object] = value
+		},
 		/**
 		 * To display the modal to apply a option to multiple modifier items.
 		 * @function
@@ -204,14 +206,6 @@ export default {
 		 */
 		viewOptionItems (option) {
 			this.$router.push('/app/menu_manager/options/' + option.id + '/option_items')
-		},
-		/**
-		 * To close the gallery popup.
-		 * @function
-		 * @returns {undefined}
-		 */
-		closeGalleryModal () {
-			this.showGalleryModal = false
 		},
 		/**
 		 * To toggle the create option panel, initially set to closed
@@ -248,21 +242,12 @@ export default {
 			})
 		},
 		/**
-		 * To open the gallery modal.
-		 * @function
-		 * @returns {undefined}
-		 */
-		openGalleryPopup () {
-			this.showGalleryModal = true
-		},
-		/**
 		 * To set the image to be same as the one emitted by the gallery modal.
 		 * @function
 		 * @param {object} val - The emitted image object.
 		 * @returns {undefined}
 		 */
 		updateImage (val) {
-			this.showGalleryModal = false
 			this.newOption.image_url = val.image_url
 		},
 		/**
@@ -426,10 +411,10 @@ export default {
 		Modal,
 		LoadingScreen,
 		NoResults,
-		GalleryPopup,
 		Dropdown,
 		EditOption,
-		ModifierTree
+		ModifierTree,
+		ResourcePicker
 	}
 }
 </script>

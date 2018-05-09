@@ -13,15 +13,17 @@
 				    <button class="close" data-close="alert" @click="clearError()"></button>
 				    <span>{{errorMessage}}</span>
 				</div>
-				<div class="col-md-3">
-					<label>Sub Category Image</label>
-					<div class="image-container clickable" v-if="!newSubCategory.image_url.length">
-						<img width="100" height="80" src="../../../../assets/img/app/image-placeholder.png" @click="goToPageTwo()">
-					</div>
-					<div class="image-container clickable" v-else>
-						<img width="100" height="80" :src="newSubCategory.image_url" @click="goToPageTwo()">
-					</div>
-				</div>
+				<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
+							<resource-picker 
+								@open="toggleImageMode('newMenu', true)"
+								@close="toggleImageMode('newMenu', false)"
+								@selected="updateImage" 
+								:imageButton="true"
+								:imageUrl="newSubCategory.image_url"
+								class="margin-top-15"
+							>
+							</resource-picker>
+		        		</div>
 				<div class="col-md-9">
 					<div class="form-group form-md-line-input form-md-floating-label">
 					    <input type="text" class="form-control input-sm" :class="{'edited': newSubCategory.name.length}" id="form_control_1" v-model="newSubCategory.name">
@@ -53,9 +55,6 @@
 		            </div>
 				</div>
 	        </div>
-	        <div class="page-two" v-if="selectImageMode" :class="{'active': selectImageMode, 'disabled': !selectImageMode}">
-	        	<gallery-popup @selectedImage="updateImage"></gallery-popup>
-	        </div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
 			<button v-if="!selectImageMode" type="button" class="btn btn-primary" @click="addNewMenuCategory()">Add</button>
@@ -67,7 +66,7 @@
 import $ from 'jquery'
 import Modal from '../../../modules/Modal'
 import CategoriesFunctions from '../../../../controllers/Categories'
-import GalleryPopup from '../../../modules/GalleryPopup'
+import ResourcePicker from '../../../modules/ResourcePicker'
 
 export default {
 	data () {
@@ -85,7 +84,10 @@ export default {
 				parent_category: this.parentCategoryId
 			},
 			errorMessage: '',
-			selectImageMode: false
+			selectImageMode: false,
+			imageMode: {
+				newMenu: false
+			}
 		}
 	},
 	props: {
@@ -173,23 +175,6 @@ export default {
 			this.$router.push('/app/menu_manager/categories/' + this.$route.params.menu_id)
 		},
 		/**
-		 * To just close the modal when the user clicks on the 'x' to close the modal without creating a new category.
-		 * @function
-		 * @returns {undefined}
-		 */
-		closeModal () {
-			this.$emit('deactivateAddSubCategoryModal')
-			this.$router.push('/app/menu_manager/categories/' + this.$route.params.menu_id)
-		},
-		/**
-		 * To change the page to the gallery view on the modal.
-		 * @function
-		 * @returns {undefined}
-		 */
-		goToPageTwo () {
-			this.selectImageMode = true
-		},
-		/**
 		 * To change the page to the main/form view on the modal.
 		 * @function
 		 * @returns {undefined}
@@ -204,13 +189,12 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateImage (val) {
-			this.goToPageOne()
 			this.newSubCategory.image_url = val.image_url
 		}
 	},
 	components: {
 		Modal,
-		GalleryPopup
+		ResourcePicker
 	}
 }
 </script>

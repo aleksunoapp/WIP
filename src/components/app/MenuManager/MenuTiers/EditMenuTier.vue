@@ -32,7 +32,6 @@
 // import $ from 'jquery'
 import Modal from '../../../modules/Modal'
 import MenuTiersFunctions from '../../../../controllers/MenuTiers'
-import GalleryPopup from '../../../modules/GalleryPopup'
 
 export default {
 	data () {
@@ -152,8 +151,7 @@ export default {
 		}
 	},
 	components: {
-		Modal,
-		GalleryPopup
+		Modal
 	}
 }
 </script>

@@ -684,7 +684,14 @@
 														inactive-text="No">
 													</el-switch>
 											</div>
-											<gallery-popup @selectedImage="updateImageToCreate"></gallery-popup>
+											<resource-picker 
+												@selected="updateImageToCreate" 
+												:imageButton="true"
+												:noButton="true"
+												:imageUrl="imageToCreate.url"
+												class="margin-top-15"
+											>
+											</resource-picker>
 										</div>
 										<!-- CREATE END -->
 										
@@ -708,7 +715,13 @@
 														inactive-text="No">
 													</el-switch>
 											</div>
-											<gallery-popup @selectedImage="updateImageToEdit"></gallery-popup>
+											<resource-picker 
+												@selected="updateImageToEdit" 
+												:noButton="true"
+												:imageUrl="imageToEdit.url"
+												class="margin-top-15"
+											>
+											</resource-picker>
 										</div>
 										<!-- EDIT END -->
 
@@ -747,7 +760,7 @@ import Tab from '../../modules/Tab'
 import Tabset from '../../modules/Tabset'
 import Dropdown from '../../modules/Dropdown'
 import LoadingScreen from '../../modules/LoadingScreen'
-import GalleryPopup from '../../modules/GalleryPopup'
+import ResourcePicker from '../../modules/ResourcePicker'
 import AppFunctions from '../../../controllers/App'
 import StoresFunctions from '../../../controllers/Stores'
 import StoreGroupsFunctions from '../../../controllers/StoreGroups'
@@ -1932,7 +1945,7 @@ export default {
 		NoResults,
 		AddHolidayHours,
 		LoadingScreen,
-		GalleryPopup
+		ResourcePicker
 	},
 	directives: {
 		mask

@@ -7,21 +7,31 @@
 			<h4 class="modal-title center" v-if="!selectImageMode">Update Promotion</h4>
 		</div>
 		<div slot="modal-body" class="modal-body">
-			<div class="page-one" v-if="!selectImageMode && !selectPromoCodesMode" :class="{'active': !selectImageMode, 'disabled': selectImageMode}">
+			<div class="col-xs-12">
 				<div class="alert alert-danger" v-if="errorMessage.length">
 				    <button class="close" data-close="alert" @click="clearError()"></button>
 				    <span>{{errorMessage}}</span>
 				</div>
-				<div class="col-md-3">
-					<label>Promotion Icon</label>
-					<div class="image-container clickable" v-if="!promotionToBeEdited.image">
-						<img width="100" height="80" src="../../../assets/img/app/image-placeholder.png" @click="goToPageTwo()">
-					</div>
-					<div class="image-container clickable" v-else>
-						<img width="100" height="80" :src="promotionToBeEdited.image" @click="goToPageTwo()">
-					</div>
-				</div>
-				<div class="col-md-9">
+        		<div :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
+					<resource-picker 
+						@open="goToPageTwo()"
+						@close="goToPageOne()"
+						@selected="updateIcon" 
+						:imageButton="true"
+						:imageUrl="promotionToBeEdited.image"
+						class="margin-top-15"
+					>
+					</resource-picker>
+        		</div>
+				    <div class="col-xs-12">        			
+	    			<select-locations-popup 
+	    				v-if="selectLocationMode" 
+	    				@closeSelectLocationsPopup='updateSelectedLocations' 
+	    				:previouslySelected="selectedLocations"
+	    			>
+					</select-locations-popup>
+        		</div>
+				<div class="col-md-12" v-show="!selectImageMode && !selectLocationMode">
 					<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
 					    <input type="text" class="form-control input-sm edited" id="form_control_1" v-model="promotionToBeEdited.name">
 					    <label for="form_control_1">Promotion Name</label>
@@ -84,9 +94,6 @@
 					</div>
 				</div>
 			</div>
-			<div class="page-two" v-if="selectImageMode" :class="{'active': selectImageMode, 'disabled': !selectImageMode}">
-				<gallery-popup @selectedImage="updateIcon"></gallery-popup>
-			</div>
 			<div class="page-two" v-if="selectPromoCodesMode">
 				<div class="row">
 					<div class="col-xs-12">
@@ -144,7 +151,7 @@ import Modal from '../../modules/Modal'
 import PromotionsFunctions from '../../../controllers/Promotions'
 import PromoCodesFunctions from '../../../controllers/PromoCodes'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
-import GalleryPopup from '../../modules/GalleryPopup'
+import ResourcePicker from '../../modules/ResourcePicker'
 import MenuModifierTree from '../../modules/MenuModifierTree'
 
 export default {
@@ -471,7 +478,7 @@ export default {
 	},
 	components: {
 		Modal,
-		GalleryPopup,
+		ResourcePicker,
 		MenuModifierTree
 	}
 }

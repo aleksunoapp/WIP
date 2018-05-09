@@ -7,91 +7,96 @@
 			<h4 class="modal-title center" v-if="!selectImageMode">New Notification</h4>
 		</div>
 		<div slot="modal-body" class="modal-body">
-			<div class="page-one" v-if="!selectImageMode" :class="{'active': !selectImageMode, 'disabled': selectImageMode}">
-				<div class="alert alert-danger" v-if="errorMessage.length">
-					<button class="close" data-close="alert" @click="clearError()"></button>
-					<span>{{errorMessage}}</span>
-				</div>
-				<div class="form-group form-md-line-input form-md-floating-label">
-					<label class="btn blue btn-outline" for="push_notification" :class="{'active': message.notification_type === 'push'}">
-						<input type="radio" class="toggle" id="push_notification" value="push" v-model="message.notification_type">
-						Push Notification
-					</label>
-					<label class="btn blue btn-outline" for="inapp_notification" :class="{'active': message.notification_type === 'inapp'}">
-						<input type="radio" class="toggle" id="inapp_notification" value="inapp" v-model="message.notification_type">
-						In App Notification
-					</label>
-					<label class="btn blue btn-outline" for="sms_notification" :class="{'active': message.notification_type === 'sms'}">
-						<input type="radio" class="toggle" id="sms_notification" value="sms" v-model="message.notification_type">
-						SMS
-					</label>
-				</div>
-				<div v-if="message.notification_type === 'push'" class="form-group form-md-line-input form-md-floating-label">
-					<input type="text" class="form-control input-sm" :class="{'edited': message.title.length}" id="form_control_1" v-model="message.title">
-					<label for="form_control_1">Title</label>
-				</div>
-				<div v-if="message.notification_type === 'push'" class="form-group form-md-line-input form-md-floating-label">
-					<input type="text" class="form-control input-sm" :class="{'edited': message.message.length}" id="form_control_2" v-model="message.message">
-					<label for="form_control_2">Message</label>
-				</div>
-				<div v-if="message.notification_type === 'inapp'" class="form-group form-md-line-input form-md-floating-label">
-					<input type="text" class="form-control input-sm" :class="{'edited': message.title.length}" id="form_control_3" v-model="message.title">
-					<label for="form_control_3">Title</label>
-				</div>
-				<div v-if="message.notification_type === 'inapp'" class="form-group form-md-line-input form-md-floating-label">
-					<input type="text" class="form-control input-sm" :class="{'edited': message.push_message.length}" id="form_control_4" v-model="message.push_message">
-					<label for="form_control_4">Push message</label>
-				</div>
-				<div v-if="message.notification_type === 'inapp'" class="form-group form-md-line-input form-md-floating-label">
-					<input type="text" class="form-control input-sm" :class="{'edited': message.message.length}" id="form_control_5" v-model="message.message">
-					<label for="form_control_5">Body</label>
-				</div>
-    			<div v-if="message.notification_type === 'push'" class="form-group form-md-line-input form-md-floating-label">
-	    			<el-date-picker 
-	    				v-model="message.expire_at" 
-	    				type="date" 
-	    				format="yyyy-MM-dd" 
-	    				value-format="yyyy-MM-dd" 
-	    				:clearable="false" 
-	    				placeholder="Expires on">
-					</el-date-picker>
-    			</div>
-				<div v-if="message.notification_type === 'inapp'" class="form-group form-md-line-input form-md-floating-label">
-					<label>Choose image</label>
-					<div class="image-container clickable" v-if="!message.media_path">
-						<img width="100" height="80" src="../../../assets/img/app/image-placeholder.png" @click="showGalleryPopup()">
-					</div>
-					<div class="image-container clickable" v-else>
-						<img width="100" height="80" :src="message.media_path" @click="showGalleryPopup()">
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="alert alert-danger" v-if="errorMessage.length">
+						<button class="close" data-close="alert" @click="clearError()"></button>
+						<span>{{errorMessage}}</span>
 					</div>
 				</div>
-				<el-dropdown v-if="message.notification_type === 'inapp'" @command="updateCallToAction" size="mini" :show-timeout="50" :hide-timeout="50"  class="margin-top-15">
-					<el-button size="mini">
-						{{ selectedCallLabel }}
-						<i class="el-icon-arrow-down el-icon--right"></i>
-					</el-button>
-					<el-dropdown-menu slot="dropdown">
-						<el-dropdown-item :command="17">
-							Call
-						</el-dropdown-item>
-						<el-dropdown-item :command="14">
-							Website
-						</el-dropdown-item>
-						<el-dropdown-item :command="13">
-							Close
-						</el-dropdown-item>
-						<el-dropdown-item :command="15">
-							Camera
-						</el-dropdown-item>
-					</el-dropdown-menu>
-				</el-dropdown>
-    			<div v-if="message.call_to_action === 'CALL' || message.call_to_action === 'GOTO_LINK'" class="form-group form-md-line-input form-md-floating-label margin-top-10">
-    				<input type="text" class="form-control input-sm edited" id="form_control_6" v-model="message.action_value">
-    				<label for="form_control_6">{{ numberOrUrl }}</label>
-    			</div>
-			</div>
-			<div class="page-two" v-if="selectImageMode" :class="{'active': selectImageMode, 'disabled': !selectImageMode}">
-				<gallery-popup @selectedImage="updateIcon"></gallery-popup>
+				<div class="col-xs-12" v-show="!selectImageMode">
+					<div class="form-group form-md-line-input form-md-floating-label">
+						<label class="btn blue btn-outline" for="push_notification" :class="{'active': message.notification_type === 'push'}">
+							<input type="radio" class="toggle" id="push_notification" value="push" v-model="message.notification_type">
+							Push Notification
+						</label>
+						<label class="btn blue btn-outline" for="inapp_notification" :class="{'active': message.notification_type === 'inapp'}">
+							<input type="radio" class="toggle" id="inapp_notification" value="inapp" v-model="message.notification_type">
+							In App Notification
+						</label>
+						<label class="btn blue btn-outline" for="sms_notification" :class="{'active': message.notification_type === 'sms'}">
+							<input type="radio" class="toggle" id="sms_notification" value="sms" v-model="message.notification_type">
+							SMS
+						</label>
+					</div>
+				</div>
+				<div v-if="message.notification_type === 'inapp'" :class="{'col-xs-4 col-xs-offset-4' : !selectImageMode, 'col-xs-12' : selectImageMode}">
+		                    <resource-picker 
+								@open="toggleImageMode('newMenu', true)"
+								@close="toggleImageMode('newMenu', false)"
+								@selected="updateImage" 
+								:imageButton="true"
+								:imageUrl="message.media_path"
+								class="margin-top-15"
+							>
+							</resource-picker>
+				</div>
+				<div class="col-xs-12" v-show="!selectImageMode">
+					<div v-if="message.notification_type === 'push'" class="form-group form-md-line-input form-md-floating-label">
+						<input type="text" class="form-control input-sm" :class="{'edited': message.title.length}" id="form_control_1" v-model="message.title">
+						<label for="form_control_1">Title</label>
+					</div>
+					<div v-if="message.notification_type === 'push'" class="form-group form-md-line-input form-md-floating-label">
+						<input type="text" class="form-control input-sm" :class="{'edited': message.message.length}" id="form_control_2" v-model="message.message">
+						<label for="form_control_2">Message</label>
+					</div>
+					<div v-if="message.notification_type === 'inapp'" class="form-group form-md-line-input form-md-floating-label">
+						<input type="text" class="form-control input-sm" :class="{'edited': message.title.length}" id="form_control_3" v-model="message.title">
+						<label for="form_control_3">Title</label>
+					</div>
+					<div v-if="message.notification_type === 'inapp'" class="form-group form-md-line-input form-md-floating-label">
+						<input type="text" class="form-control input-sm" :class="{'edited': message.push_message.length}" id="form_control_4" v-model="message.push_message">
+						<label for="form_control_4">Push message</label>
+					</div>
+					<div v-if="message.notification_type === 'inapp'" class="form-group form-md-line-input form-md-floating-label">
+						<input type="text" class="form-control input-sm" :class="{'edited': message.message.length}" id="form_control_5" v-model="message.message">
+						<label for="form_control_5">Body</label>
+					</div>
+					<div v-if="message.notification_type === 'push'" class="form-group form-md-line-input form-md-floating-label">
+						<el-date-picker 
+							v-model="message.expire_at" 
+							type="date" 
+							format="yyyy-MM-dd" 
+							value-format="yyyy-MM-dd" 
+							:clearable="false" 
+							placeholder="Expires on">
+						</el-date-picker>
+					</div>
+					<el-dropdown v-if="message.notification_type === 'inapp'" @command="updateCallToAction" size="mini" :show-timeout="50" :hide-timeout="50"  class="margin-top-15">
+						<el-button size="mini">
+							{{ selectedCallLabel }}
+							<i class="el-icon-arrow-down el-icon--right"></i>
+						</el-button>
+						<el-dropdown-menu slot="dropdown">
+							<el-dropdown-item :command="17">
+								Call
+							</el-dropdown-item>
+							<el-dropdown-item :command="14">
+								Website
+							</el-dropdown-item>
+							<el-dropdown-item :command="13">
+								Close
+							</el-dropdown-item>
+							<el-dropdown-item :command="15">
+								Camera
+							</el-dropdown-item>
+						</el-dropdown-menu>
+					</el-dropdown>
+	    			<div v-if="message.call_to_action === 'CALL' || message.call_to_action === 'GOTO_LINK'" class="form-group form-md-line-input form-md-floating-label margin-top-10">
+	    				<input type="text" class="form-control input-sm edited" id="form_control_6" v-model="message.action_value">
+	    				<label for="form_control_6">{{ numberOrUrl }}</label>
+	    			</div>
+				</div>
 			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
@@ -107,7 +112,7 @@ import MessageFunctions from '../../../controllers/Message'
 import ButtonGroup from '../../modules/ButtonGroup'
 import Checkbox from '../../modules/Checkbox'
 import Dropdown from '../../modules/Dropdown'
-import GalleryPopup from '../../modules/GalleryPopup'
+import ResourcePicker from '../../modules/ResourcePicker'
 import GlobalFunctions from '../../../global.js'
 
 export default {
@@ -132,7 +137,10 @@ export default {
 				expire_at: null
 			},
 			selectImageMode: false,
-			sending: false
+			sending: false,
+			imageMode: {
+				newMenu: false
+			}
 		}
 	},
 	computed: {
@@ -168,6 +176,16 @@ export default {
 		})
 	},
 	methods: {
+		/**
+		 * To toggle between the open and closed state of the resource picker
+		 * @function
+		 * @param {string} object - The name of the object the image is for
+		 * @param {object} value - The open / closed value of the picker
+		 * @returns {undefined}
+		 */
+		toggleImageMode (object, value) {
+			this.imageMode[object] = value
+		},
 		/**
 		 * To reset the message form
 		 * @function
@@ -269,9 +287,6 @@ export default {
 			this.message.call_to_action = type
 			this.message.app_action_id = id
 		},
-		showGalleryPopup () {
-			this.selectImageMode = true
-		},
 		/**
 		 * To set the image to be same as the one emitted by the gallery modal.
 		 * @function
@@ -291,17 +306,21 @@ export default {
 			this.errorMessage = ''
 		},
 		/**
+		 * To return to the main form
+		 * @function
+		 * @returns {undefined}
+		 */
+		exitImageMode () {
+			this.selectImageMode = false
+		},
+		/**
 		 * To close the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
 		closeModal () {
-			if (this.selectImageMode) {
-				this.selectImageMode = false
-			} else {
-				this.$emit('closeMessageModal')
-				this.resetForm()
-			}
+			this.$emit('closeMessageModal')
+			this.resetForm()
 		},
 		/**
 		 * To generate alert text
@@ -348,7 +367,7 @@ export default {
 		Modal,
 		ButtonGroup,
 		Checkbox,
-		GalleryPopup,
+		ResourcePicker,
 		Dropdown
 	}
 }

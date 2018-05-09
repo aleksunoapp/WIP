@@ -29,16 +29,18 @@
 			        		    <span>{{errorMessage}}</span>
 			        		</div>
 			        	</div>
-		        		<div class="col-md-2">
-		        			<label>Portion Icon</label>
-							<div class="image-container clickable" v-if="!newPortion.icon_url.length">
-								<img class="gallery-thumb" src="../../../assets/img/app/image-placeholder.png" @click="openGalleryPopup()">
-							</div>
-							<div class="image-container clickable" v-else>
-								<img class="gallery-thumb" :src="newPortion.icon_url" @click="openGalleryPopup()">
-							</div>
+		        		<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
+							<resource-picker 
+								@open="toggleImageMode('newMenu', true)"
+								@close="toggleImageMode('newMenu', false)"
+								@selected="updateImage" 
+								:imageButton="true"
+								:imageUrl="newPortion.icon_url"
+								class="margin-top-15"
+							>
+							</resource-picker>
 		        		</div>
-		        		<div class="col-md-5">
+		        		<div class="col-md-5" v-show="!imageMode.newMenu">
 							<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
 							    <input type="text" class="form-control input-sm" :class="{'edited': newPortion.name.length}" id="form_control_1" v-model="newPortion.name">
 							    <label for="form_control_1">Portion Name</label>
@@ -48,14 +50,14 @@
 							    <label for="form_control_2">Portion Multiplier</label>
 							</div>
 		        		</div>
-		        		<div class="col-md-5">
+		        		<div class="col-md-5" v-show="!imageMode.newMenu">
 		        			<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
 							    <input type="number" class="form-control input-sm" :class="{'edited': newPortion.order}" id="form_control_3" v-model="newPortion.order">
 							    <label for="form_control_3">Portion Order</label>
 							</div>
 		        		</div>
 		        	</div>
-      				<div class="form-actions right margin-top-20">
+      				<div class="form-actions right margin-top-20" v-show="!imageMode.newMenu">
 						<button type="submit" class="btn blue">Create</button>
 					</div>
       			</form>
@@ -88,15 +90,15 @@
 	                                        <i class="icon-layers"></i>
 	                                    </a>
 	                        		</el-tooltip>
-	                        	</div>
-	                            <div class="list-thumb">
-	                                <a v-if="portion.icon_url">
-	                                    <img alt="" :src="portion.icon_url" />
-	                                </a>
-	                                <a v-else>
-	                                	<img src="../../../assets/img/app/image-placeholder.png">
-	                                </a>
-	                            </div>
+								</div>
+								    <div class="list-thumb">
+		                                <a v-if="portion.icon_url.length">
+		                                   <img alt="" :src="portion.icon_url" />
+		                            </a>
+		                            <a v-else>
+		                                <img src="../../../assets/img/app/image-placeholder.png">
+		                            </a>
+		                            </div>
 	                            <div class="list-datetime bold uppercase font-red">
 	                            	<span>{{ portion.name }}</span>
 	                            </div>
@@ -104,6 +106,7 @@
                         			<strong>Multipler:</strong>
                         			<span>{{ portion.multiplier }}</span>
 	                            </div>
+
 	                        </li>
 	                    </ul>
 	                </div>
@@ -114,18 +117,6 @@
 	        </div>
 	    </div>
 	    <edit-portion v-if="showEditPortionModal" :selectedPortionId="selectedPortionId" @updatePortion="updatePortion" @closeEditPortionModal="closeEditPortionModal"></edit-portion>
-	    <modal :show="showGalleryModal" effect="fade" @closeOnEscape="closeGalleryModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeGalleryModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Select An Image</h4>
-			</div>
-			<div slot="modal-body" class="modal-body">
-				<gallery-popup @selectedImage="updateIcon"></gallery-popup>
-			</div>
-			<div slot="modal-footer" class="modal-footer clear"></div>
-		</modal>
 		<modifier-tree v-if="showModifierTreeModal" :selectedObject="selectedPortion" :headerText="headerText" :updateType="'portion'" @closeModifierTreeModal="closeModifierTreeModal"></modifier-tree>
     </div>
 </template>
@@ -137,10 +128,10 @@ import Dropdown from '../../modules/Dropdown'
 import NoResults from '../../modules/NoResults'
 import Modal from '../../modules/Modal'
 import LoadingScreen from '../../modules/LoadingScreen'
-import GalleryPopup from '../../modules/GalleryPopup'
 import PortionsFunctions from '../../../controllers/Portions'
 import EditPortion from './Portions/EditPortion'
 import ModifierTree from '../../modules/ModifierTree'
+import ResourcePicker from '../../modules/ResourcePicker'
 
 export default {
 	data () {
@@ -150,7 +141,6 @@ export default {
 				{name: 'Portions', link: false}
 			],
 			createPortionCollapse: true,
-			showGalleryModal: false,
 			errorMessage: '',
 			loadingPortionsData: false,
 			newPortion: {
@@ -164,7 +154,10 @@ export default {
 			selectedPortionId: 0,
 			showModifierTreeModal: false,
 			selectedPortion: {},
-			headerText: ''
+			headerText: '',
+			imageMode: {
+				newMenu: false
+			}
 		}
 	},
 	mounted () {
@@ -173,12 +166,23 @@ export default {
 	},
 	methods: {
 		/**
-		 * To close the gallery popup.
+		 * To toggle between the open and closed state of the resource picker
 		 * @function
+		 * @param {string} object - The name of the object the image is for
+		 * @param {object} value - The open / closed value of the picker
 		 * @returns {undefined}
 		 */
-		closeGalleryModal () {
-			this.showGalleryModal = false
+		toggleImageMode (object, value) {
+			this.imageMode[object] = value
+		},
+		/**
+		 * To set the image to be same as the one emitted by the gallery modal.
+		 * @function
+		 * @param {object} val - The emitted image object.
+		 * @returns {undefined}
+		 */
+		updateImage (val) {
+			this.newPortion.icon_url = val.image_url
 		},
 		/**
 		 * To display the modal to apply a portion to multiple modifier items.
@@ -232,24 +236,6 @@ export default {
 				if (reason.responseJSON) {}
 				throw reason
 			})
-		},
-		/**
-		 * To open the gallery modal.
-		 * @function
-		 * @returns {undefined}
-		 */
-		openGalleryPopup () {
-			this.showGalleryModal = true
-		},
-		/**
-		 * To set the image to be same as the one emitted by the gallery modal.
-		 * @function
-		 * @param {object} val - The emitted image object.
-		 * @returns {undefined}
-		 */
-		updateIcon (val) {
-			this.showGalleryModal = false
-			this.newPortion.icon_url = val.image_url
 		},
 		/**
 		 * To check if the portion data is valid before submitting to the backend.
@@ -409,10 +395,10 @@ export default {
 		Modal,
 		LoadingScreen,
 		NoResults,
-		GalleryPopup,
 		Dropdown,
 		EditPortion,
-		ModifierTree
+		ModifierTree,
+		ResourcePicker
 	}
 }
 </script>

@@ -14,7 +14,6 @@
 				<el-dropdown-item :command="100">100</el-dropdown-item>
 			</el-dropdown-menu>
 		</el-dropdown>
-		<small>Results Per Page</small>
 	</div>
 </template>
 

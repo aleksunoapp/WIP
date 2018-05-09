@@ -630,7 +630,13 @@
 		            								inactive-text="No">
 		            							</el-switch>
 		            					</div>
-		            					<gallery-popup @selectedImage="updateImageToCreate"></gallery-popup>
+										<resource-picker 
+											@selected="updateImageToCreate" 
+											:noButton="true"
+											:imageUrl="imageToCreate.url"
+											class="margin-top-15"
+										>
+										</resource-picker>
 		            				</div>
 		            				<!-- CREATE END -->
 		            				
@@ -654,7 +660,13 @@
 		            								inactive-text="No">
 		            							</el-switch>
 		            					</div>
-		            					<gallery-popup @selectedImage="updateImageToEdit"></gallery-popup>
+		            					<resource-picker 
+		            						@selected="updateImageToEdit" 
+		            						:noButton="true"
+		            						:imageUrl="imageToEdit.url"
+		            						class="margin-top-15"
+		            					>
+		            					</resource-picker>
 		            				</div>
 		            				<!-- EDIT END -->
 
@@ -697,7 +709,7 @@ import MenuTiersFunctions from '../../../controllers/MenuTiers'
 import AppFunctions from '../../../controllers/App'
 import AddHolidayHours from './AddHolidayHours'
 import StoreGroupsFunctions from '../../../controllers/StoreGroups'
-import GalleryPopup from '../../modules/GalleryPopup'
+import ResourcePicker from '../../modules/ResourcePicker'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
 import {mask} from 'vue-the-mask'
 import { debounce, isEqual } from 'lodash'
@@ -1880,7 +1892,7 @@ export default {
 	components: {
 		Breadcrumb,
 		AddHolidayHours,
-		GalleryPopup,
+		ResourcePicker,
 		Modal
 	},
 	directives: {

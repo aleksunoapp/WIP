@@ -29,16 +29,18 @@
 			        		    <span>{{errorMessage}}</span>
 			        		</div>
 			        	</div>
-		        		<div class="col-md-2">
-		        			<label>Tag Image</label>
-							<div class="image-container" v-if="!newTag.image_url.length">
-								<img width="100" height="80" src="../../../assets/img/app/image-placeholder.png" @click="openGalleryPopup()">
-							</div>
-							<div class="image-container" v-else>
-								<img width="100" height="80" :src="newTag.image_url" @click="openGalleryPopup()">
-							</div>
+		        		<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
+							<resource-picker 
+								@open="toggleImageMode('newMenu', true)"
+								@close="toggleImageMode('newMenu', false)"
+								@selected="updateImage" 
+								:imageButton="true"
+								:imageUrl="newTag.image_url"
+								class="margin-top-15"
+							>
+							</resource-picker>
 		        		</div>
-		        		<div class="col-md-5">
+		        		<div class="col-md-5" v-show="!imageMode.newMenu">
 		        			<el-dropdown trigger="click" @command="updateNewTagType" size="small" :show-timeout="50" :hide-timeout="50" class='margin-bottom-20'>										
 		        				<el-button size="small">
 		        					{{ tagTypeLabel }}<i class="el-icon-arrow-down el-icon--right"></i>
@@ -54,7 +56,7 @@
 							</div>
 		        		</div>
 		        	</div>
-      				<div class="form-actions right margin-top-20">
+      				<div class="form-actions right margin-top-20" v-show="!imageMode.newMenu">
 						<button type="submit" class="btn blue">Create</button>
 					</div>
       			</form>
@@ -114,18 +116,6 @@
 	        </div>
 	    </div>
 	    <edit-tag v-if="displayEditTagModal" @updateTag="updateTag" @closeEditTagModal="closeEditTagModal"></edit-tag>
-	    <modal :show="showGalleryModal" effect="fade" @closeOnEscape="closeGalleryModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeGalleryModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Select An Image</h4>
-			</div>
-			<div slot="modal-body" class="modal-body">
-				<gallery-popup @selectedImage="updateImage"></gallery-popup>
-			</div>
-			<div slot="modal-footer" class="modal-footer clear"></div>
-		</modal>
 		<menu-tree v-if="showMenuTreeModal" :selectedObject="selectedTag" :headerText="headerText" :updateType="'tag'" @closeMenuTreeModal="closeMenuTreeModal"></menu-tree>
     </div>
 </template>
@@ -139,8 +129,8 @@ import LoadingScreen from '../../modules/LoadingScreen'
 import TagsFunctions from '../../../controllers/Tags'
 import EditTag from './Tags/EditTag'
 import Dropdown from '../../modules/Dropdown'
-import GalleryPopup from '../../modules/GalleryPopup'
 import MenuTree from '../../modules/MenuTree'
+import ResourcePicker from '../../modules/ResourcePicker'
 
 export default {
 	data () {
@@ -160,10 +150,13 @@ export default {
 				image_url: '',
 				user_id: this.$root.createdBy
 			},
-			showGalleryModal: false,
 			showMenuTreeModal: false,
 			selectedTag: {},
-			headerText: ''
+			headerText: '',
+			imageMode: {
+				newMenu: false
+			}
+
 		}
 	},
 	computed: {
@@ -196,6 +189,16 @@ export default {
 			}
 		},
 		/**
+		 * To toggle between the open and closed state of the resource picker
+		 * @function
+		 * @param {string} object - The name of the object the image is for
+		 * @param {object} value - The open / closed value of the picker
+		 * @returns {undefined}
+		 */
+		toggleImageMode (object, value) {
+			this.imageMode[object] = value
+		},
+		/**
 		 * To update the type property of newTag.
 		 * @function
 		 * @param {object} value - The new value to assign.
@@ -203,14 +206,6 @@ export default {
 		 */
 		updateNewTagType (value) {
 			this.newTag.type = value
-		},
-		/**
-		 * To close the gallery popup.
-		 * @function
-		 * @returns {undefined}
-		 */
-		closeGalleryModal () {
-			this.showGalleryModal = false
 		},
 		/**
 		 * To display the modal to apply a tag to multiple modifier items.
@@ -398,14 +393,6 @@ export default {
 			this.errorMessage = ''
 		},
 		/**
-		 * To open the gallery modal.
-		 * @function
-		 * @returns {undefined}
-		 */
-		openGalleryPopup () {
-			this.showGalleryModal = true
-		},
-		/**
 		 * To set the image to be same as the one emitted by the gallery modal.
 		 * @function
 		 * @param {object} val - The emitted image object.
@@ -431,8 +418,8 @@ export default {
 		EditTag,
 		NoResults,
 		Dropdown,
-		GalleryPopup,
-		MenuTree
+		MenuTree,
+		ResourcePicker
 	}
 }
 </script>

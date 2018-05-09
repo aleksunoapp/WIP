@@ -11,20 +11,30 @@
 			</transition>
 		</div>
 		<div slot="modal-body" class="modal-body">
-			<div class="page-one" v-if="!selectImageMode && !selectLocationMode" :class="{'active': !selectImageMode, 'disabled': selectImageMode}">
+			<div class="col-xs-12">
 				<div class="alert alert-danger" v-if="errorMessage.length">
 				    <button class="close" data-close="alert" @click="clearError()"></button>
 				    <span>{{errorMessage}}</span>
 				</div>
-				<div class="col-md-3">
-					<label for="form_control_1">Category Image</label>
-					<div class="image-container clickable" v-if="!categoryToBeEdited.image_url.length">
-						<img width="100" height="80" src="../../../../assets/img/app/image-placeholder.png" @click="goToPageTwo()">
-					</div>
-					<div class="image-container clickable" v-else>
-						<img width="100" height="80" :src="categoryToBeEdited.image_url" @click="goToPageTwo()">
-					</div>
-				</div>
+        		<div v-if="!selectLocationMode" :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
+					<resource-picker 
+						@open="goToPageTwo()"
+						@close="goToPageOne()"
+						@selected="updateImage" 
+						:imageButton="true"
+						:imageUrl="categoryToBeEdited.image_url"
+						class="margin-top-15"
+					>
+					</resource-picker>
+        		</div>
+        		<div class="col-xs-12">        			
+	    			<select-locations-popup 
+	    				v-if="selectLocationMode" 
+	    				@closeSelectLocationsPopup='updateSelectedLocations' 
+	    				:previouslySelected="selectedLocations"
+	    			>
+					</select-locations-popup>
+        		</div>
 				<div class="col-md-9">
 					<div class="form-group form-md-line-input form-md-floating-label">
 					    <input type="text" class="form-control input-sm edited" id="form_control_2" v-model="categoryToBeEdited.name">
@@ -76,7 +86,7 @@
 import $ from 'jquery'
 import Modal from '../../../modules/Modal'
 import CategoriesFunctions from '../../../../controllers/Categories'
-import GalleryPopup from '../../../modules/GalleryPopup'
+import ResourcePicker from '../../../modules/ResourcePicker'
 import SelectLocationsPopup from '../../../modules/SelectLocationsPopup'
 
 export default {
@@ -262,7 +272,7 @@ export default {
 	},
 	components: {
 		Modal,
-		GalleryPopup,
+		ResourcePicker,
 		SelectLocationsPopup
 	}
 }

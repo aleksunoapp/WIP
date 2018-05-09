@@ -8,21 +8,31 @@
 			<h4 class="modal-title center" v-else><i class="fa fa-chevron-left clickable pull-left back-button" @click="goToPageOne()"></i>Select An Image</h4>
 		</div>
 		<div slot="modal-body" class="modal-body">
-			<div class="page-one" v-if="!selectImageMode" :class="{'active': !selectImageMode, 'disabled': selectImageMode}">
+				<div class="col-xs-12">
 				<div class="alert alert-danger" v-if="errorMessage.length">
 					<button class="close" data-close="alert" @click="clearError()"></button>
 					<span>{{errorMessage}}</span>
 				</div>
-				<div class="col-md-3">
-					<label>News Feed Image</label>
-					<div class="image-container clickable" v-if="!newsToBeEdited.image.length">
-						<img width="100" height="80" src="../../../assets/img/app/image-placeholder.png" @click="goToPageTwo()">
-					</div>
-					<div class="image-container clickable" v-else>
-						<img width="100" height="80" :src="newsToBeEdited.image" @click="goToPageTwo()">
-					</div>
-				</div>
-				<div class="col-md-9">
+			    <div v-if="!selectLocationMode" :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
+					<resource-picker 
+						@open="goToPageTwo()"
+						@close="goToPageOne()"
+						@selected="updateImage" 
+						:imageButton="true"
+						:imageUrl="newsToBeEdited.image"
+						class="margin-top-15"
+					>
+					</resource-picker>
+        		</div>
+				    <div class="col-xs-12">        			
+	    			 <select-locations-popup 
+	    				v-if="selectLocationMode" 
+	    				@closeSelectLocationsPopup='updateSelectedLocations' 
+	    				:previouslySelected="selectedLocations"
+	    			 >
+					 </select-locations-popup>
+        		</div>
+				<div class="col-md-12" v-show="!selectImageMode && !selectLocationMode">
 					<div class="form-group form-md-line-input form-md-floating-label">
 						<input type="text" class="form-control input-sm edited" id="form_control_1" v-model="newsToBeEdited.title">
 						<label for="form_control_1">News Feed Title</label>
@@ -35,10 +45,7 @@
 						<textarea rows="5" class="form-control edited" id="form_control_3" v-model="newsToBeEdited.body"></textarea>
 						<label for="form_control_3">News Feed Body</label>
 					</div>
-				</div>
-			</div>
-			<div class="page-two" v-if="selectImageMode" :class="{'active': selectImageMode, 'disabled': !selectImageMode}">
-				<gallery-popup @selectedImage="updateImage"></gallery-popup>
+		      	</div>
 			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
@@ -50,8 +57,7 @@
 <script>
 import Modal from '../../modules/Modal'
 import NewsFeedFunctions from '../../../controllers/NewsFeed'
-import GalleryPopup from '../../modules/GalleryPopup'
-
+import ResourcePicker from '../../modules/ResourcePicker'
 export default {
 	data () {
 		return {
@@ -197,7 +203,7 @@ export default {
 	},
 	components: {
 		Modal,
-		GalleryPopup
+		ResourcePicker
 	}
 }
 </script>

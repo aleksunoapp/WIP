@@ -167,6 +167,7 @@ export default {
 	justify-content: center;
 	align-items: center;
 	list-style-type: none;
+	padding: 0;
 }
 .pagination-list a, .pagination-list a:hover {
 	text-decoration: none;

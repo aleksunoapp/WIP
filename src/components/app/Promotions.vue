@@ -31,22 +31,18 @@
 			        		    <span>{{ createErrorMessage }}</span>
 			        		</div>
 			        	</div>
-		        		<div class="col-md-2">
-		        			<label class="grey-label">Promotion Image</label>
-							<div class="image-container" v-if="!newPromotion.image.length">
-								<img width="100" height="80" src="../../assets/img/app/image-placeholder.png">
-							</div>
-							<div class="image-container" v-else>
-								<img width="100" height="80" :src="newPromotion.image">
-							</div>
+		        		<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
 							<resource-picker 
+								@open="toggleImageMode('newMenu', true)"
+								@close="toggleImageMode('newMenu', false)"
 								@selected="updateImage" 
-								buttonText="Select Image" 
-								:isModal="true"
-								class="margin-top-15">
+								:imageButton="true"
+								:imageUrl="newPromotion.image"
+								class="margin-top-15"
+							>
 							</resource-picker>
 		        		</div>
-		        		<div class="col-md-5">
+		        		<div class="col-md-5" v-show="!imageMode.newMenu">
 		        			<div class="form-group form-md-line-input form-md-floating-label">
 		        			    <input type="text" class="form-control input-sm" :class="{'edited': newPromotion.name.length}" id="form_control_1" v-model="newPromotion.name">
 		        			    <label for="form_control_1">Promotion Name</label>
@@ -86,7 +82,7 @@
 		        				</el-date-picker>
 		        			</div>
 		        		</div>
-		        		<div class="col-md-5">
+		        		<div class="col-md-5" v-show="!imageMode.newMenu">
 							<div>
 								<p class="grey-label">Call to action type</p>
 								<el-select v-model="newPromotion.cta_type" placeholder="Select type" size="small" class="margin-bottom-15" id="form_control_cta_type" @change="clearCtaValue()">
@@ -158,7 +154,7 @@
 		        		</div>
 		        	</div>
 
-      				<div class="form-actions right margin-top-20">
+      				<div class="form-actions right margin-top-20" v-show="!imageMode.newMenu">
 						<button type="submit" class="btn blue">Create</button>
 					</div>
       			</form>
@@ -608,7 +604,10 @@ export default {
 				downloadTrigger: false,
 				width: 200
 			},
-			freshiiLogo: freshiiLogo
+			freshiiLogo: freshiiLogo,
+			imageMode: {
+				newMenu: false
+			}
 		}
 	},
 	computed: {
@@ -642,6 +641,25 @@ export default {
 		this.getAllPromoCodes()
 	},
 	methods: {
+		/**
+		 * To toggle between the open and closed state of the resource picker
+		 * @function
+		 * @param {string} object - The name of the object the image is for
+		 * @param {object} value - The open / closed value of the picker
+		 * @returns {undefined}
+		 */
+		toggleImageMode (object, value) {
+			this.imageMode[object] = value
+		},
+		/**
+		 * To set the image to be same as the one emitted by the gallery modal.
+		 * @function
+		 * @param {object} val - The emitted image object.
+		 * @returns {undefined}
+		 */
+		updateImage (val) {
+			this.newPromotion.image = val.image_url
+		},
 		/**
 		 * To open menu item selection.
 		 * @function
@@ -1583,15 +1601,6 @@ export default {
 		 */
 		closeApplyModal () {
 			this.showApplyPromotionModal = false
-		},
-		/**
-		 * To set the image to be same as the one emitted by the resource picker.
-		 * @function
-		 * @param {object} val - The emitted image object.
-		 * @returns {undefined}
-		 */
-		updateImage (val) {
-			this.newPromotion.image = val.image_url
 		}
 	},
 	components: {

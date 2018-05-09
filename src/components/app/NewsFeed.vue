@@ -31,17 +31,18 @@
 		      					    <span>{{createFeedError}}</span>
 		      					</div>
 		      				</div>
-			        		<div class="col-md-2">
-			        			<label class="grey-label">Image</label>
-								<div class="image-wrapper" v-if="!newNewsFeed.image.length">
-									<img class="image-fit" src="../../assets/img/app/image-placeholder.png">
-								</div>
-								<div class="image-wrapper" v-else>
-									<img class="image-fit" :src="newNewsFeed.image">
-								</div>
-								<resource-picker @selected="updateImage" buttonText="Select Image" class="margin-top-15"></resource-picker>
-			        		</div>
-	      					<div class="col-md-5">
+			        		<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
+							<resource-picker 
+								@open="toggleImageMode('newMenu', true)"
+								@close="toggleImageMode('newMenu', false)"
+								@selected="updateImage" 
+								:imageButton="true"
+								:imageUrl="newNewsFeed.image"
+								class="margin-top-15"
+							>
+							</resource-picker>
+		        		</div>
+	      					<div class="col-md-5" v-show="!imageMode.newMenu">
 	      						<div class="form-group form-md-line-input form-md-floating-label">
 	      						    <input type="text" class="form-control input-sm" id="form_control_1" v-model="newNewsFeed.title" :class="{'edited': newNewsFeed.title.length}">
 	      						    <label for="form_control_1">Title</label>
@@ -51,14 +52,14 @@
 	      						    <label for="form_control_2">Short Description</label>
 	      						</div>
 	      					</div>
-	      					<div class="col-md-5">
+	      					<div class="col-md-5" v-show="!imageMode.newMenu">
 	      						<div class="form-group form-md-line-input form-md-floating-label">
 	      						    <textarea class="form-control input-sm" rows="4" v-model="newNewsFeed.body" :class="{'edited': newNewsFeed.body.length}"></textarea>
 	      						    <label for="form_control_1">Body</label>
 	      						</div>
 	      					</div>
 	      				</div>
-	      				<div class="form-actions right">
+	      				<div class="form-actions right" v-show="!imageMode.newMenu">
 	      					<button type="button" class="btn btn-default" @click="resetForm()"> Reset Search</button>
 	      					<button type="submit" class="btn blue">Save</button>
 	      				</div>
@@ -141,9 +142,6 @@
 	    		</button>
 	    		<h4 class="modal-title center">Select An Image</h4>
 	    	</div>
-	    	<div slot="modal-body" class="modal-body">
-	    		<resource-picker @selected="updateImage" buttonText="Select Image" class="margin-top-15"></resource-picker>
-	    	</div>
 	    	<div slot="modal-footer" class="modal-footer clear"></div>
 	    </modal>
 	</div>
@@ -186,13 +184,26 @@ export default {
 			createFeedError: '',
 			showEditFeedModal: false,
 			updateFeedError: '',
-			selectedFeedId: 0
+			selectedFeedId: 0,
+			imageMode: {
+				newMenu: false
+			}
 		}
 	},
 	created () {
 		this.getNewsFeed()
 	},
 	methods: {
+			/**
+		 * To toggle between the open and closed state of the resource picker
+		 * @function
+		 * @param {string} object - The name of the object the image is for
+		 * @param {object} value - The open / closed value of the picker
+		 * @returns {undefined}
+		 */
+		toggleImageMode (object, value) {
+			this.imageMode[object] = value
+		},
 		/**
 		 * To set the image to be same as the one emitted by the resource picker.
 		 * @function
