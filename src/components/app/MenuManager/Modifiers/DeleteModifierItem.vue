@@ -34,7 +34,7 @@ export default {
 		}
 	},
 	props: {
-		selectedItemId: {
+		itemId: {
 			type: Number
 		}
 	},
@@ -59,7 +59,7 @@ export default {
 			var deleteModifierItemVue = this
 			deleteModifierItemVue.clearError()
 
-			ModifiersFunctions.deleteModifierItem(deleteModifierItemVue.selectedItemId, deleteModifierItemVue.$root.appId, deleteModifierItemVue.$root.appSecret, deleteModifierItemVue.$root.userToken).then(response => {
+			ModifiersFunctions.deleteModifierItem(deleteModifierItemVue.itemId, deleteModifierItemVue.$root.appId, deleteModifierItemVue.$root.appSecret, deleteModifierItemVue.$root.userToken).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
 					this.deleteModifierItemAndCloseModal()
 				} else {

@@ -107,7 +107,14 @@
 					<div class="mt-element-list margin-top-15" v-if="modifierCategoryItems.length">
 						<div class="mt-list-container list-news ext-1 no-border">
 							<ul>
-							<li v-for="modifierItem in modifierCategoryItems" class="mt-list-item margin-top-15 actions-at-left"  :class="{'no-hover-highlight' : expanded === modifierItem.id, 'clickable' : expanded !== modifierItem.id}" :id="'modifierItem-' + modifierItem.id" @click="expandDetails(modifierItem.id)" >
+							<li 
+								v-for="modifierItem in modifierCategoryItems" 
+								class="mt-list-item margin-top-15 actions-at-left"  
+								:class="{'no-hover-highlight' : expanded === modifierItem.id, 'clickable' : expanded !== modifierItem.id}" 
+								:id="'modifierItem-' + modifierItem.id" 
+								@click="expandDetails(modifierItem.id)"
+								:key="modifierItem.id"
+							>
 								<div class="list-item-actions">
 									<el-tooltip content="Edit" effect="light" placement="right">
 										<a class="btn btn-circle btn-icon-only btn-default" @click="displayEditItemModal(modifierItem, $event)">
@@ -238,7 +245,7 @@
 			<no-results :show="!$root.activeLocation || !$root.activeLocation.id" :type="'modifier items'"></no-results>
 		</div>
 		<edit-modifier-item v-if="editItemModalActive" @editModifierItem="editModifierItem" @deactivateEditItemModal="closeEditItemModal"></edit-modifier-item>
-		<delete-modifier-item v-if="deleteItemModalActive" @deleteModifierItem="deleteModifierItem" :selectedItemId="selectedItemId" @closeDeleteItemModal="closeDeleteItemModal" @deleteModifierItemAndCloseModal="deleteModifierItemAndCloseModal"></delete-modifier-item>
+		<delete-modifier-item v-if="deleteItemModalActive" :itemId="selectedItemId" @closeDeleteModifierItemModal="closeDeleteItemModal" @deleteModifierItemAndCloseModal="deleteModifierItemAndCloseModal"></delete-modifier-item>
 		<modifier-nutrition-info v-if="displayNutritionModal" :modifierItem="selectedItem" @deactivateNutritionInfoModal="displayNutritionModal = false"></modifier-nutrition-info>
 		<tags-list v-if="displayTagsListModal" :itemType="'modifier-item'" :appliedTags="appliedTags" :selectedItemId="selectedItemId" @deactivateTagsListModal="closeTagsListModal"></tags-list>
 		<portions-list v-if="displayPortionsListModal" :itemType="'modifier-item'" :appliedPortions="appliedPortions" :selectedItemId="selectedItemId" @closePortionsListModal="closePortionsListModal"></portions-list>
@@ -533,8 +540,9 @@ export default {
 		 */
 		displayDeleteItemModal (modifierItem, event) {
 			event.stopPropagation()
-			this.deleteItemModalActive = true
+			console.log('displayDeleteItemModal', modifierItem.id)
 			this.selectedItemId = modifierItem.id
+			this.deleteItemModalActive = true
 		},
 		/**
 		 * To clear the new modifier item form.
@@ -630,7 +638,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		closeDeleteItemModal () {
-			this.editItemModalActive = false
+			this.deleteItemModalActive = false
 		},
 		/**
 		 * To close the modal to delete a modifier item.
