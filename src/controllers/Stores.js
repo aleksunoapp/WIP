@@ -397,6 +397,36 @@ export default ({
 		})
 	},
 	/**
+	 * Call to pitapit API to delete the holiday hours.
+	 * @function
+	 * @param {object} data - IDs of the store and hours to delete.
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {string} userToken - The auth token of the logged in user.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	deleteStoreHolidayHours (data, appId, appSecret, userToken) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'DELETE',
+				dataType: 'json',
+				url: '/app/holiday_hours/delete_in_date_range',
+				data: data,
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('auth-token', userToken)
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
 	 * Call to pitapit API to fetch a list of images for a store.
 	 * @function
 	 * @param {string} appId - The appId of the current application.
