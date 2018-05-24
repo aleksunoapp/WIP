@@ -33,7 +33,6 @@ import StoresFAQ from '../components/app/Faq/StoresFAQ'
 import UsersFAQ from '../components/app/Faq/UsersFAQ'
 import Printers from '../components/app/Printers/Printers'
 import Gallery from '../components/app/Gallery'
-import GalleryImages from '../components/app/GalleryImages'
 import StoreGroups from '../components/app/StoreManager/StoreGroups'
 import BaseRule from '../components/app/Loyalty/BaseRule'
 import PromotionRules from '../components/app/Loyalty/PromotionRules'
@@ -72,7 +71,6 @@ const router = new Router({
 				{path: 'faq/stores', name: 'Stores FAQ', component: StoresFAQ, meta: { adminOnly: true }},
 				{path: 'printers', component: Printers, name: 'Printers', meta: { adminOnly: false }},
 				{path: 'gallery', component: Gallery, name: 'Gallery', meta: { adminOnly: false }},
-				{path: 'gallery/:folder_id/images', component: GalleryImages, name: 'Gallery Images', meta: { adminOnly: false }},
 				{path: 'loyalty', redirect: 'loyalty/base_rule', meta: { adminOnly: true }},
 				{path: 'loyalty/base_rule', component: BaseRule, name: 'Base Rule', meta: { adminOnly: true }},
 				{path: 'loyalty/promotion_rules', component: PromotionRules, name: 'Promotion Rules', meta: { adminOnly: true }},
