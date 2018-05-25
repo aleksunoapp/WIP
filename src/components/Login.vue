@@ -24,6 +24,10 @@ export default {
 		}
 	},
 	created () {
+		if (this.$route.redirectedFrom === '/login/expired') {
+			window.location.href = `${GlobalFunctions.accountsUrl}/?redirect_to=ecomm`
+		}
+
 		if (this.$route.query.business_id !== undefined && this.$route.query.account_token !== undefined) {
 			this.login()
 		} else {
