@@ -337,7 +337,36 @@
 				                    	    			</el-switch>
 				                    	    		</td>
 				                    	    	</tr>
-				                    	    	<tr>
+												<tr>
+				                    	    		<td>
+				                    	    			External online ordering enabled
+				                    	    		</td>
+				                    	    		<td>
+				                    	    			<el-switch
+				                    	    				v-model="metaToBeEdited.external_online_ordering_enabled"
+				                    	    				:disabled="metaToBeEdited.opening_soon === 1"
+				                    	    				active-color="#0c6"
+				                    	    				inactive-color="#ff4949"
+				                    	    				:active-value="1"
+				                    	    				:inactive-value="0"
+				                    	    				active-text="Yes"
+				                    	    				inactive-text="No">
+				                    	    			</el-switch>
+				                    	    		</td>
+				                    	    	</tr>
+				                    	    	<tr v-show="metaToBeEdited.external_online_ordering_enabled">
+				                    	    		<td>
+				                    	    			External order link
+				                    	    		</td>
+				                    	    		<td>
+				                    	    			<input 
+				                    	    				type="text" 
+				                    	    				class="form-control input-sm" 
+				                    	    				v-model="metaToBeEdited.external_online_ordering_url"
+				                    	    				:disabled="metaToBeEdited.opening_soon === 1" >
+				                    	    		</td>
+				                    	    	</tr>
+												<tr>
 				                    	    		<td>
 				                    	    			GST Number
 				                    	    		</td>
@@ -466,7 +495,7 @@
 			            	</div>
 			            	<add-holiday-hours v-if="addAHoliday" :selectedLocationId="parseInt($route.params.store_id)" @closeHolidayHoursModal="showHolidayHoursModal = false" @addHolidayHours="addHolidayHours"></add-holiday-hours>
     	    	    	    <div v-else class="margin-top-20">
-    	    	    	    	<div class="alert alert-danger" v-show="updateHolidayHoursError.length" ref="updateHolidayHoursError">
+    	    	    	    	<div class="alert alert-danger" v-if="updateHolidayHoursError.length">
     	    	    	    	    <button class="close" data-close="alert" @click="clearError('updateHolidayHoursError')"></button>
     	    	    	    	    <span>{{updateHolidayHoursError}}</span>
     	    	    	    	</div>
@@ -481,7 +510,6 @@
 			    	    	                	<th> Opening Time </th>
 			    	    	                    <th> Closing Time </th>
 			    	    	                    <th> Status </th>
-			    	    	                    <th></th>
 			    	    	                    <th></th>
 			    	    	                </tr>
 			    	    	            </thead>
@@ -544,15 +572,6 @@
 			    	    	                    		size="small"
 			    	    	                    		@click="updateHolidayHours(hour, $event)"
 			    	    	                    	><span v-show="!hour.loading">Save</span></el-button>
-			    	    	                    </td>
-			    	    	                    <td class="align-middle">
-			    	    	                    	<el-button 
-			    	    	                    		type="primary" 
-			    	    	                    		:loading="hour.loading"
-			    	    	                    		:disabled="hour.loading"
-			    	    	                    		size="small"
-			    	    	                    		@click="deleteHolidayHours(hour, $event)"
-			    	    	                    	><span v-show="!hour.loading">Delete</span></el-button>
 			    	    	                    </td>
 			    	    	                </tr>
 			    	    	            </tbody>
@@ -1022,38 +1041,6 @@ export default {
 			})
 		},
 		/**
-		 * To submit the holiday hours (that are oassed in a parameter) to the backend.
-		 * @function
-		 * @param {object} val - The object emitted by the child.
-		 * @param {object} event - The click event that initiated the action.
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		deleteHolidayHours (val, event) {
-			event.stopPropagation()
-			event.preventDefault()
-			var editStoreVue = this
-			val.deleting = true
-
-			let payload = {
-				location_id: val.location_id,
-				holiday_hour_id: val.id
-			}
-
-			StoresFunctions.deleteStoreHolidayHours(payload, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					val.deleting = false
-					editStoreVue.getStoreHolidayHours()
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not delete the holiday',
-					errorName: 'updateHolidayHoursError',
-					vue: editStoreVue
-				})
-			})
-		},
-		/**
 		 * To alert the user that the store has been successfully created and provide them an option for creating another one.
 		 * @function
 		 * @returns {undefined}
@@ -1240,7 +1227,6 @@ export default {
 						day.open_time = day.open_time.slice(0, -3)
 						day.close_time = day.close_time.slice(0, -3)
 						day.loading = false
-						day.deleting = false
 					})
 					editStoreVue.holidayHoursToBeEdited = response.payload.location_holiday_hours
 				}
@@ -1355,6 +1341,8 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (editStoreVue.metaToBeEdited.opening_soon === 1) {
 					resolve('Hurray')
+				} else if (editStoreVue.metaToBeEdited.external_online_ordering_enabled && !editStoreVue.metaToBeEdited.external_online_ordering_url) {
+					reject('The external online ordering enabled field is required')
 				} else if (editStoreVue.metaToBeEdited.gateway_name === null) {
 					reject('Gateway Name cannot be blank')
 				} else if (editStoreVue.metaToBeEdited.merchant_id === '') {
