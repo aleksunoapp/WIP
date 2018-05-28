@@ -16,7 +16,10 @@
 					</div>
 					<div class="info-modal-info-bottom">
 						<div class="info-modal-contact">
-							<a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-summary-link" @click="$root.logEvent(`Opened Inspection Summary PDF`)">
+							<!-- <a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-summary-link" @click="$root.logEvent(`Opened Inspection Summary PDF`)">
+								{{ langTerms.inspection_summary[$root.meta.local.toLowerCase()] }}
+							</a> -->
+							<a @click.stop="openFullInspection()" class="inspection-summary-link">
 								{{ langTerms.inspection_summary[$root.meta.local.toLowerCase()] }}
 							</a>
 						</div>
@@ -105,6 +108,15 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * To open the full inspection in a separate tab
+		 * @function
+		 * @returns {undefined}
+		 */
+		openFullInspection () {
+			this.$root.logEvent('Opened Inspection Summary PDF')
+			window.open(this.$root.meta.inspectionPdfUrl, '_blank')
+		},
 		/**
 		 * To tell the parent component to close the modal
 		 * @function

@@ -162,7 +162,8 @@
 				<div class="footer-bar">
 					<a v-if="$root.mobile" :href="`tel:${$root.meta.dealerContactInfo.phone}`" class="contact-icon" @click="$root.logEvent(`Clicked Phone icon`)"></a>
 					<a v-if="$root.mobile" :href="`sms:${$root.meta.dealerContactInfo.smsPhone}`" class="chat-icon" @click="$root.logEvent(`Clicked Text icon`)"></a>
-					<a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-icon" @click="$root.logEvent(`Opened Inspection Summary PDF`)"></a>
+					<!-- <a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-icon" @click="$root.logEvent(`Opened Inspection Summary PDF`)"></a> -->
+					<a @click.stop="openFullInspection()" href="javascript:void(0);" class="inspection-icon"></a>
 				</div>
 			</div>
 		</div>
@@ -529,6 +530,15 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * To open the full inspection in a separate tab
+		 * @function
+		 * @returns {undefined}
+		 */
+		openFullInspection () {
+			this.$root.logEvent('Opened Inspection Summary PDF')
+			window.open(this.$root.meta.inspectionPdfUrl, '_blank')
+		},
 		/**
 		 * To toggle the accordion open and close
 		 * @function
