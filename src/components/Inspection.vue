@@ -115,7 +115,7 @@
 											<div class="summary-table-cell">
 											</div>
 										</div> -->
-										<div class="summary-table-row summary-item" v-for="subService in service.subServices" v-if="subService.price">
+										<div class="summary-table-row summary-item" v-for="subService in service.subServices">
 											<div class="summary-table-cell">
 												<span class="information-icon" :class="{'no-icon-bg': category.serviceCategoryType === 'PASS'}" @click="openServiceModal(subService)"></span>
 												<span class="service-name" v-bind:class="{'bold': (subService.isHighlighted ===  true)}"><span v-if="subService.isHighlighted === true">* </span>{{ subService.name }}</span>
