@@ -11,29 +11,34 @@
 		<div class="note note-info">
             <p>Preview and upload images.</p>
         </div>
-        <!-- BEGIN CREATE NEW MENU-->
-			<div class="portlet-body">
-      			<form role="form">
-      				<div class="form-body row">
-		        		<div :class="{'col-md-6 col-md-offset-3' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
-							<resource-picker 
-							    :noButton="true"
-								@open="toggleImageMode('newMenu', true)"
-								@close="toggleImageMode('newMenu', false)"
-								@selected="updateImage"
-								:imageButton="true"
-								:imageUrl="newFolder.cover_image"
-							>
-							</resource-picker>
-		        		</div>
-		        	</div>
-      				<div class="form-actions right margin-top-20" v-show="!imageMode.newMenu">
-					<button type="button" class="btn btn-default pull-right" @click="closeResourceModal()">
-					Close
-				</button>
-					</div>
-      			</form>
-  			</div>
+		<div class="portlet-body">
+			<div class="row" v-show="!previewMode">
+				<div class="col-md-12">
+					<resource-picker 
+						:noButton="true"
+						@selected="updateImage"
+						:showCloseButton="false"
+						:imageButton="false"
+						:selectOnly="false"
+					>
+					</resource-picker>
+				</div>
+			</div>
+			<div class="row margin-top-20" v-show="previewMode">
+				<div class="col-xs-12 text-center">
+					<img :src="image">
+				</div>
+				<div class="col-xs-12">
+					<button 
+						type="button" 
+						class="btn btn-default pull-right" 
+						@click="closePreview()"
+					>
+						Close
+					</button>					
+				</div>
+			</div>
+		</div>
     </div>
 </template>
 
@@ -50,26 +55,25 @@ export default {
 				{name: 'Gallery', link: false}
 			],
 			galleryData: [],
-			errorMessage: '',
+			image: '',
+			previewMode: false,
 			newFolder: {
-				cover_image: ''
+				name: '',
+				is_shared: false
 			},
-			imageMode: {
-				newMenu: false
-			}
-
+			parentFolderId: 0,
+			createErrorMessage: ''
 		}
 	},
 	methods: {
 		/**
 		 * To toggle between the open and closed state of the resource picker
 		 * @function
-		 * @param {string} object - The name of the object the image is for
-		 * @param {object} value - The open / closed value of the picker
+		 * @param {object} val - The open / closed value of the picker
 		 * @returns {undefined}
 		 */
-		toggleImageMode (object, value) {
-			this.imageMode[object] = value
+		toggleImageMode (val) {
+			this.previewMode = val
 		},
 		/**
 		 * To set the image to be same as the one emitted by the gallery modal.
@@ -78,7 +82,8 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateImage (val) {
-			this.newFolder.cover_image = val.image_url
+			this.image = val.image_url
+			this.toggleImageMode(true)
 		},
 		/**
 		 * To close the resource modal
@@ -87,8 +92,8 @@ export default {
 		 * @memberof ResourceModal
 		 * @version 0.0.9
 		 */
-		closeResourceModal () {
-			this.imageMode.newMenu = false
+		closePreview () {
+			this.previewMode = false
 		}
 	},
 	watch: {},
@@ -101,3 +106,9 @@ export default {
 }
 </script>
 
+<style scoped>
+img {
+	max-height: 80vh;
+	max-width: 100%;
+}
+</style>

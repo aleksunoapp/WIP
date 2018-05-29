@@ -9,7 +9,7 @@
 		<ul class="jstree-children" v-if="folder.expanded">
 			<li class="jstree-node jstree-leaf" :class="{'jstree-last': !folder.children || !folder.children.length}" v-if="!selectOnly">
 				<i class="jstree-icon jstree-ocl"></i>
-				<a class="jstree-anchor" @click="createFolder()"><button class="btn blue btn-xs">Create Folder</button></a>
+				<a class="jstree-anchor" @click="createFolder()"><button class="btn blue btn-outline btn-xs">Create Folder</button></a>
 			</li>
 			<template v-for="(subfolder, subindex) in folder.children">
 				<resource-folder :folder="subfolder" :activeFolder="activeFolder" :last="subindex === folder.children.length - 1" @expandNode="expandNode" @createFolder="createFolder" @manageFolder="manageFolder" @getResources="getResources" :selectOnly="selectOnly"></resource-folder>

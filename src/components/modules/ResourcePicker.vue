@@ -1,7 +1,7 @@
 <template>
 	<div class="resource-picker">
-		<img v-if="imageButton" v-show="!showResourceModal" @click.stop.prevent="openResourceModal()" :src="placeholderUrl" alt="A greyed out outline of a mountain and the sun">
-		<button v-else v-show="!showResourceModal" class="btn blue btn-outline" @click.stop.prevent="openResourceModal()">{{ buttonText }}</button>
+		<img v-show="imageButton && !showResourceModal" @click.stop.prevent="openResourceModal()" :src="placeholderUrl" alt="A greyed out outline of a mountain and the sun">
+		<button v-show="!showResourceModal && !noButton" class="btn blue btn-outline" @click.stop.prevent="openResourceModal()">{{ buttonText }}</button>
 		<section v-show="showResourceModal">
 			<div class="col-sm-4 margin-top-10">
 				<div class="jstree-default">
@@ -12,16 +12,29 @@
 								{{ activeLocationId ? activeLocationName : activeBusinessName }} Resources
 							</a>
 							<ul class="jstree-children" v-if="folders.expanded">
+								<li 
+									v-if="!selectOnly"
+									class="jstree-node jstree-leaf" 
+									:class="{'jstree-last': !folders.children || !folders.children.length}">
+									<i class="jstree-icon jstree-ocl"></i>
+									<a 
+										class="jstree-anchor" 
+										@click="createFolder(folders)"
+									>
+										<button class="btn blue btn-xs btn-outline">Create Folder</button>
+									</a>
+								</li>
 								<template v-for="(folder, index) in folders.children">
 									<resource-folder 
 										:folder="folder" 
 										:activeFolder="activeFolder.id" 
 										:last="index === folders.children.length - 1" 
 										@expandNode="expandNode" 
-										@createFolder="" 
-										@manageFolder="" 
+										@createFolder="createFolder" 
+										@manageFolder="manageFolder" 
 										@getResources="activePageUpdate" 
-										:selectOnly="true">
+										:selectOnly="selectOnly"
+									>
 									</resource-folder>
 								</template>
 							</ul>
@@ -146,6 +159,7 @@
 			</div>
 			<div class="col-sm-12 margin-top-10">
 				<button 
+					v-if="showCloseButton"
 					type="button" 
 					class="btn btn-default pull-right" 
 					@click="closeResourceModal()"
@@ -153,11 +167,10 @@
 					Close
 				</button>
 				<button
-					v-if="activeFolder.id !== undefined"
+					v-show="selectedResource.id"
 					type="button" 
 					class="btn btn-primary pull-right margin-right-10" 
 					@click="resourceSelectionComplete()" 
-					:disabled="!selectedResource.id"
 				>
 					Select
 				</button>
@@ -193,7 +206,7 @@ export default {
 		},
 		noButton: {
 			type: Boolean,
-			default: () => false
+			default: () => true
 		},
 		imageUrl: {
 			type: String,
@@ -202,6 +215,14 @@ export default {
 		imageButton: {
 			type: Boolean,
 			default: () => false
+		},
+		showCloseButton: {
+			type: Boolean,
+			default: true
+		},
+		selectOnly: {
+			type: Boolean,
+			default: true
 		}
 	},
 	data () {
@@ -261,9 +282,31 @@ export default {
 		}
 	},
 	mounted () {
-		if (this.noButton) { this.openResourceModal() }
+		if (!this.imageButton && this.noButton) { this.openResourceModal() }
 	},
 	methods: {
+		/**
+		 * To initialize the edit folder process by redirecting to the edit folder route
+		 * @function
+		 * @param {object} folder - The parent folder where the user is creating a new folder
+		 * @returns {undefined}
+		 * @memberof Resources
+		 * @version 0.0.9
+		 */
+		manageFolder (folder) {
+			this.$router.push({path: `/app/gallery/edit_folder/${JSON.stringify(folder)}`})
+		},
+		/**
+		 * To initialize the create folder process by redirecting to the create folder route
+		 * @function
+		 * @param {object} folder - The parent folder where the user is creating a new folder
+		 * @returns {undefined}
+		 * @memberof Resources
+		 * @version 0.0.9
+		 */
+		createFolder (folder) {
+			this.$router.push({path: `/app/gallery/create_folder/${folder.id}`})
+		},
 		/**
 		 * To update the number of images shown on a page
 		 * @function
@@ -433,23 +476,23 @@ export default {
 		 * @memberof ResourceModal
 		 * @version 0.0.9
 		 */
-		preloadImages () {
-			let _this = this
+		// preloadImages () {
+		// 	let _this = this
 
-			return new Promise((resolve, reject) => {
-				if (!_this.currentResources.length) {
-					resolve()
-				}
+		// 	return new Promise((resolve, reject) => {
+		// 		if (!_this.currentResources.length) {
+		// 			resolve()
+		// 		}
 
-				_this.currentResources.forEach(resource => {
-				/* eslint-disable no-undef */
-					let img = new Image()
-					img.src = resource.url
-				})
+		// 		_this.currentResources.forEach(resource => {
+		// 		/* eslint-disable no-undef */
+		// 			let img = new Image()
+		// 			img.src = resource.url
+		// 		})
 
-				resolve()
-			})
-		},
+		// 		resolve()
+		// 	})
+		// },
 		/**
 		 * To fetch the resources in the selected folder.
 		 * @function
@@ -500,16 +543,16 @@ export default {
 				_this.currentResources = response.payload.files
 				_this.numPages = response.payload.number_of_pages
 				_this.totalResults = response.payload.number_of_records
+				_this.loadingResourceData = false
 
-				_this.preloadImages()
-				.then(response => {
-					setTimeout(() => {
-						_this.loadingResourceData = false
-					}, 500)
-				})
-				.catch(error => {
-					console.log(error)
-				})
+				// _this.preloadImages()
+				// .then(response => {
+				// 	setTimeout(() => {
+				// 	}, 500)
+				// })
+				// .catch(error => {
+				// 	console.log(error)
+				// })
 			})
 			.catch(
 				_this.$root.errorWrapper(e => {
@@ -736,7 +779,7 @@ export default {
 			let payload = { ...this.selectedResource }
 			payload.image_url = payload.url
 			this.$emit('selected', payload)
-			this.closeResourceModal()
+			if (this.showCloseButton) { this.closeResourceModal() }
 		},
 		/**
 		 * To select the resource and complete the selection process

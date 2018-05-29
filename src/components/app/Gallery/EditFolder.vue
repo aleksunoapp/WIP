@@ -1,163 +1,133 @@
 <template>
-	<modal :show="showEditFolderModal" effect="fade" @closeOnEscape="closeModal">
-		<div slot="modal-header" class="modal-header">
-			<button type="button" class="close" @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Edit Gallery Folder</h4>
-		</div>
-		<div slot="modal-body" class="modal-body">
-			<div class="alert alert-danger" v-if="errorMessage.length">
-			    <button class="close" data-close="alert" @click="clearError()"></button>
-			    <span>{{errorMessage}}</span>
+	<div class="portlet box blue-hoki margin-top-20">
+		<div class="portlet-title bg-blue-chambray">
+			<div class="caption">
+				<i class="fa fa-plus-circle"></i>
+				Create Resource Folder
 			</div>
-			<div class="form-group form-md-line-input form-md-floating-label">
-			    <input type="text" class="form-control input-sm edited" id="form_control_1" v-model="folderToBeEdited.name">
-			    <label for="form_control_1">Folder Name</label>
-			</div>
-			<div class="form-group form-md-line-input form-md-floating-label">
-			    <input type="text" class="form-control input-sm edited" id="form_control_2" v-model="folderToBeEdited.description">
-			    <label for="form_control_2">Folder Description</label>
-			</div>
-			<div class="form-group form-md-line-input form-md-floating-label">
-			    <input type="text" class="form-control input-sm edited" id="form_control_3" v-model="folderToBeEdited.cover_image">
-			    <label for="form_control_3">Folder Image</label>
+			<div class="tools">
+				<a class="expand"></a>
 			</div>
 		</div>
-		<div slot="modal-footer" class="modal-footer">
-			<button type="button" class="btn btn-primary" @click="updateFolder()">Save</button>
+		<div class="portlet-body">
+			<form role="form" @submit.prevent="updateFolder()">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="alert alert-danger" v-if="errorMessage.length">
+							<button class="close" data-close="alert" @click.prevent="clearError('errorMessage')"></button>
+							<span>{{errorMessage}}</span>
+						</div>
+					</div>
+					<div class="col-xs-12 col-md-6">
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input 
+								type="text" 
+								class="form-control input-sm" 
+								:class="{'edited' : folder.name}" 
+								id="form_control_name" 
+								v-model="folder.name"
+							>
+							<label for="form_control_name">Name</label>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12 col-md-6">
+						<button type="submit" class="btn blue pull-right">Save</button>	
+					</div>
+				</div>
+			</form>
 		</div>
-	</modal>
+	</div>
 </template>
 
 <script>
-import $ from 'jquery'
-import Modal from '../../modules/Modal'
-import GalleryFunctions from '../../../controllers/Gallery'
+import ResourcesFunctions from '@/controllers/Resources'
 
 export default {
 	data () {
 		return {
-			showEditFolderModal: false,
-			folderToBeEdited: {},
-			errorMessage: ''
-		}
-	},
-	props: {
-		passedFolderId: {
-			type: Number
+			errorMessage: '',
+			newFolder: {
+				name: '',
+				is_shared: 1
+			},
+			folder: {}
 		}
 	},
 	created () {
-		// get folder details
-		this.getGalleryFolderDetails()
-	},
-	mounted () {
-		this.showEditFolderModal = true
+		this.folder = JSON.parse(this.$route.params.folder)
 	},
 	methods: {
 		/**
-		 * To check if the folder data is valid before submitting to the backend.
+		 * To validate that all information is accurate before allowing the user to proceed.
 		 * @function
-		 * @returns {object} A promise that will validate the input form
+		 * @returns {object} A promise that will either return an error message or display the success screen.
+		 * @memberof CreateFolder
+		 * @version 0.0.9
 		 */
-		validateFolderData () {
-			var editFolderVue = this
-			return new Promise(function (resolve, reject) {
-				if (!editFolderVue.folderToBeEdited.name.length) {
-					reject('Folder name cannot be blank')
-				} else if (!editFolderVue.folderToBeEdited.description.length) {
-					reject('Folder description cannot be blank')
-				} else if (!editFolderVue.folderToBeEdited.cover_image.length) {
-					reject('Folder image URL cannot be blank')
-				} else if (!$.isNumeric(editFolderVue.folderToBeEdited.status)) {
-					reject('Folder status cannot be blank')
+		validateFormData () {
+			let _this = this
+
+			return new Promise((resolve, reject) => {
+				if (!_this.folder.name.length) {
+					reject('Folder name cannot be blank.')
 				}
-				resolve('Hurray')
+				resolve()
 			})
 		},
 		/**
-		 * To clear the current error.
+		 * To clear an error.
 		 * @function
+		 * @param {string} name - Name of the error variable
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
+		clearError (name) {
+			this[name] = ''
 		},
 		/**
-		 * To get the details of the folder to be updated.
+		 * To send the details of the updated folder to the backend.
 		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		getGalleryFolderDetails () {
-			var editFolderVue = this
-			GalleryFunctions.getGalleryFolderDetails(editFolderVue.passedFolderId, editFolderVue.$root.appId, editFolderVue.$root.appSecret).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					editFolderVue.folderToBeEdited = response.payload
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editFolderVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
-			})
-		},
-		/**
-		 * To update the folder and close the modal.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 * @returns {object} A promise that will either return an error message or display the success screen.
+		 * @memberof CreateFolder
+		 * @version 0.0.9
 		 */
 		updateFolder () {
-			var editFolderVue = this
-			editFolderVue.clearError()
-			editFolderVue.folderToBeEdited.gallery_id = editFolderVue.folderToBeEdited.id
-			editFolderVue.folderToBeEdited.user_id = editFolderVue.$root.createdBy
+			let _this = this
 
-			return editFolderVue.validateFolderData()
-			.then(response => {
-				GalleryFunctions.updateFolder(editFolderVue.folderToBeEdited, editFolderVue.$root.appId, editFolderVue.$root.appSecret).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						this.closeModalAndUpdate()
-					} else {
-						editFolderVue.errorMessage = response.message
-					}
-				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						editFolderVue.$router.push('/login/expired')
-						return
-					}
-					editFolderVue.errorMessage = reason
-					window.scrollTo(0, 0)
+			return _this.validateFormData().then(response => {
+				_this.clearError('errorMessage')
+				const businessId = _this.$root.businessId
+				let folderName = _this.folder.name
+
+				ResourcesFunctions.updateFolder(businessId, undefined, _this.folder.id, folderName, _this.folder.is_shared)
+				.then(response => {
+					_this.showUpdateSuccess()
+				}).catch(err => {
+					console.log(err)
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message
-				editFolderVue.errorMessage = reason
-				window.scrollTo(0, 0)
-				throw reason
+				_this.errorMessage = reason
 			})
 		},
 		/**
-		 * To just close the modal when the user clicks on the 'x' to close the modal.
+		 * To notify user that the operation succeeded.
 		 * @function
-		 * @returns {undefined}
+		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		closeModal () {
-			this.$emit('closeEditFolderModal')
-		},
-		/**
-		 * To close the modal and emit the updated folder object to the parent.
-		 * @function
-		 * @returns {undefined}
-		 */
-		closeModalAndUpdate () {
-			this.$emit('updateFolder', this.folderToBeEdited)
+		showUpdateSuccess () {
+			this.$swal({
+				title: 'Success',
+				text: 'Folder saved',
+				type: 'success',
+				confirmButtonText: 'OK'
+			}).then(() => {
+				this.$router.push({name: 'Gallery'})
+			}, dismiss => {
+				this.$router.push({name: 'Gallery'})
+			})
 		}
-	},
-	components: {
-		Modal
 	}
 }
 </script>

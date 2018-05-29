@@ -122,31 +122,26 @@ export default {
 
 		if (locationId) {
 			httpParams.location_id = locationId
-			url = '/resources/location_folders'
+			url = GlobalFunctions.v3BaseUrl + '/resources/location_folders'
 		} else {
 			httpParams.business_id = businessId
-			httpParams.is_shared = GlobalFunctions.convertBooleanToInt(folder.is_shared)
-			url = '/resources/business_folders'
+			httpParams.is_shared = folder.is_shared
+			url = GlobalFunctions.v3BaseUrl + '/resources/business_folders'
 		}
 		return new Promise((resolve, reject) => {
-			GlobalFunctions.$ajax({
+			$.ajax({
 				method: 'PUT',
 				dataType: 'json',
 				url,
 				data: httpParams,
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('token', App.accountToken)
+				},
 				success (response) {
 					resolve(response)
 				},
 				error (e) {
-					let _this = this
-					let _wrapper = GlobalFunctions.refreshWrapper((e, status) => {
-						if (status === 'error') {
-							reject(e)
-						} else {
-							GlobalFunctions.$ajax(_this)
-						}
-					})
-					_wrapper(e)
+					reject(e)
 				}
 			})
 		})
@@ -168,19 +163,22 @@ export default {
 
 		if (locationId) {
 			httpParams.location_id = locationId
-			url = '/resources/location_folders'
+			url = GlobalFunctions.v3BaseUrl + '/resources/location_folders'
 		} else {
 			httpParams.business_id = businessId
-			httpParams.is_shared = GlobalFunctions.convertBooleanToInt(folderPrivacy)
-			url = '/resources/business_folders'
+			httpParams.is_shared = folderPrivacy
+			url = GlobalFunctions.v3BaseUrl + '/resources/business_folders'
 		}
 
 		return new Promise((resolve, reject) => {
-			GlobalFunctions.$ajax({
+			$.ajax({
 				method: 'PATCH',
 				dataType: 'json',
 				url,
 				data: httpParams,
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('token', App.accountToken)
+				},
 				success (response) {
 					resolve(response)
 				},
