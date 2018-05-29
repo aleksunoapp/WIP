@@ -41,7 +41,7 @@ var App = new Vue({
 			activeMenuId: 0,
 			corporateStoreId: 0,
 			storeLocations: [],
-			businessId: null,
+			businessId: 2,
 			accountToken: ''
 		}
 	},

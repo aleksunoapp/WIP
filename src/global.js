@@ -24,11 +24,11 @@ export default {
 	/**
 	 * base url for API calls, other than Message calls
 	 */
-	baseUrl: 'https://ecomm.dev.api.unoapp.io',
+	baseUrl: 'https://freshii.beta.api.unoapp.io',
 	/**
 	 * base url for API calls, other than Message calls
 	 */
-	v3BaseUrl: 'https://api.staging.unoapp.io',
+	v3BaseUrl: 'https://resources.beta.api.unoapp.io',
 	/**
 	 * base url for API calls to send Messages
 	 */

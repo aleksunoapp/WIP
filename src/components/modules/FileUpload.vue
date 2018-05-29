@@ -45,7 +45,7 @@ export default {
 			uploadError: null,
 			currentStatus: null,
 			uploadFieldName: 'file',
-			activeBusinessId: 30,
+			activeBusinessId: 2,
 			activeLocationId: null
 		}
 	},
