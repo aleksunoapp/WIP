@@ -49,7 +49,7 @@
 					<div class="relative cbp cbp-caption-active cbp-caption-overlayBottomReveal cbp-ready">
 						<div class="cbp-wrapper-outer">
 							<div class="cbp-wrapper">
-								<div v-if="!loadingResourceData && !isSaving">
+								<div v-show="!loadingResourceData && !isSaving">
 									<div>
 										<dropdown>
 											<button slot="button" type="button" class="btn btn-sm btn-outline dropdown-toggle btn-default" data-toggle="dropdown">
@@ -146,10 +146,10 @@
 										<pagination :passedPage="activePage" :numPages="numPages" @activePageChange="activePageUpdate"></pagination>
 									</div>
 									<file-upload 
-										v-if="!allFoldersView" 
+										v-show="!allFoldersView" 
 										:folderId="activeFolder.id" 
 										@savingUpdate="checkSaving" 
-										@success="imageUploaded">
+										@uploadSuccess="imageUploaded()">
 									</file-upload>
 								</div>
 							</div>

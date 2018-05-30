@@ -49,13 +49,13 @@ export default {
 			activeLocationId: null
 		}
 	},
-  /**
-   * Run on `created` to run the reset function to initialize data.
-   * @function
-   * @returns {undefined}
-   * @memberof FileUpload
-   * @version 0.0.9
-   */
+	/**
+	* Run on `created` to run the reset function to initialize data.
+	* @function
+	* @returns {undefined}
+	* @memberof FileUpload
+	* @version 0.0.9
+	*/
 	created () {
 		this.reset()
 	},
@@ -74,51 +74,51 @@ export default {
 		}
 	},
 	methods: {
-    /**
-     * To reset the initial values of the data
-     * @function
-     * @returns {undefined}
-     * @memberof FileUpload
-     * @version 0.0.9
-     */
+		/**
+		 * To reset the initial values of the data
+		 * @function
+		 * @returns {undefined}
+		 * @memberof FileUpload
+		 * @version 0.0.9
+		 */
 		reset () {
-      // reset form to initial state
+			// reset form to initial state
 			this.currentStatus = STATUS_INITIAL
 			this.uploadedFiles = []
 			this.uploadError = null
 		},
-    /**
-     * Run when the file input changes to format the file for upload.
-     * @function
-     * @param {string} fieldName - The name to be set in the FormData object.
-     * @param {array} fileList - The list of files being uploaded.
-     * @returns {undefined}
-     * @memberof FileUpload
-     * @version 0.0.9
-     */
+		/**
+		 * Run when the file input changes to format the file for upload.
+		 * @function
+		 * @param {string} fieldName - The name to be set in the FormData object.
+		 * @param {array} fileList - The list of files being uploaded.
+		 * @returns {undefined}
+		 * @memberof FileUpload
+		 * @version 0.0.9
+		 */
 		filesChange (fieldName, fileList) {
-      // handle file changes
-      /* eslint-disable no-undef */
+			// handle file changes
+			/* eslint-disable no-undef */
 			const formData = new FormData()
 
 			if (!fileList.length) return
 
-      // append the files to FormData
+			// append the files to FormData
 			Array.from(Array(fileList.length).keys()).map(x => {
 				formData.append(fieldName, fileList[x], fileList[x].name)
 			})
 
-      // save it
+			// save it
 			this.upload(formData)
 		},
-    /**
-     * To make the call to the UNOapp API to upload the file to the selected folder
-     * @function
-     * @param {object} form - The formatted FormData object being sent to the backend.
-     * @returns {undefined}
-     * @memberof FileUpload
-     * @version 0.0.9
-     */
+		/**
+		 * To make the call to the UNOapp API to upload the file to the selected folder
+		 * @function
+		 * @param {object} form - The formatted FormData object being sent to the backend.
+		 * @returns {undefined}
+		 * @memberof FileUpload
+		 * @version 0.0.9
+		 */
 		upload (form) {
 			let _this = this
 			const businessId = this.activeBusinessId
@@ -127,21 +127,19 @@ export default {
 			this.$emit('savingUpdate', true)
 
 			return Resources.upload(businessId, locationId, _this.folderId, form)
-        .then(response => {
-	setTimeout(() => {
-		_this.currentStatus = STATUS_INITIAL
-		_this.$emit('savingUpdate', false)
-		_this.$emit('success', response.payload.file_id)
-	}, 200)
-})
-        .catch(
-          _this.$root.errorWrapper(e => {
-	setTimeout(() => {
-		_this.currentStatus = STATUS_INITIAL
-		_this.$emit('savingUpdate', false)
-	}, 200)
-})
-        )
+			.then(response => {
+				_this.currentStatus = STATUS_INITIAL
+				_this.$emit('savingUpdate', false)
+				_this.$emit('uploadSuccess', response.payload.file_id)
+			})
+			.catch(
+				_this.$root.errorWrapper(e => {
+					setTimeout(() => {
+						_this.currentStatus = STATUS_INITIAL
+						_this.$emit('savingUpdate', false)
+					}, 200)
+				})
+			)
 		}
 	},
 	components: {
