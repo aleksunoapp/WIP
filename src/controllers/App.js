@@ -420,49 +420,6 @@ export default ({
 		})
 	},
 	/**
-	 * Call to API to get the list of locations from V3.
-	 * @function
-	 * @param {string} accountToken - The V3 accountToken.
-	 * @param {string} paginationPreferences - The paginationPreferences object containing pagination preferences.
-	 * @returns {object} A promise that will return either a success object or an error object.
-	 */
-	getV3StoreLocations: function (accountToken, paginationPreferences) {
-		return new Promise(function (resolve, reject) {
-			let options = {
-				method: 'POST',
-				dataType: 'json',
-				url: GlobalFunctions.v3BaseUrl + '/location/search',
-				data: JSON.stringify(paginationPreferences),
-				contentType: 'application/json',
-				xhrFields: {
-					withCredentials: true
-				},
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader('token', accountToken)
-					let csrfToken = ('' + Math.random()).replace('0.', '')
-					if (document.cookie !== '' && document.cookie.indexOf('csrf_token=') !== -1) {
-						csrfToken = document.cookie.split('csrf_token=')[1]
-					} else {
-						if (process.env.NODE_ENV === 'development') {
-							document.cookie = 'csrf_token=' + csrfToken
-						} else {
-							document.cookie = 'csrf_token=' + csrfToken + '; domain=.unoapp.io;'
-						}
-					}
-					xhr.setRequestHeader('X-CSRF-Token', csrfToken)
-				},
-				success: function (response) {
-					resolve(response)
-				},
-				error: function (error) {
-					reject(error)
-				}
-			}
-
-			$.ajax(options)
-		})
-	},
-	/**
 	 * Call to pitapit API to get the list of locations for a business.
 	 * @function
 	 * @param {string} appId - The appId of the current application.
@@ -595,32 +552,6 @@ export default ({
 					xhr.setRequestHeader('app-id', appId)
 					xhr.setRequestHeader('app-secret', appSecret)
 				},
-				success: function (response) {
-					resolve(response)
-				},
-				error: function (error) {
-					reject(error)
-				}
-			})
-		})
-	},
-	/**
-	 * To check if the location exists in ecomm
-	 * @function
-	 * @param {string} appId - The appId of the current application.
-	 * @param {string} appSecret - The appSecret of the current application.
-	 * @param {string} userToken - The userToken of the current user.
-	 * @param {string} accountToken - The accountToken of the current user.
-	 * @param {string} locationId - ID of the location to check
-	 * @returns {object} A promise that will return either a success object or an error object.
-	 */
-	checkV3Location: function (appId, appSecret, userToken, accountToken, locationId) {
-		return new Promise(function (resolve, reject) {
-			GlobalFunctions.$ajax({
-				method: 'POST',
-				dataType: 'json',
-				url: '/app/locations/selectLocation',
-				data: {v3_location_id: locationId},
 				success: function (response) {
 					resolve(response)
 				},

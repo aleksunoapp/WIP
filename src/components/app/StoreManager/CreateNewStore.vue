@@ -51,7 +51,7 @@
 		                    </div>
 		                    <div class="col-md-6">
 		                    	<div class="form-group form-md-line-input form-md-floating-label">
-		                    	    <input ref="name" type="text" class="form-control input-sm" :class="{'edited' : newStore.name.length}" id="form_control_1" v-model="newStore.name" :disabled="$route.query.v3Location === true">
+		                    	    <input ref="name" type="text" class="form-control input-sm" :class="{'edited' : newStore.name.length}" id="form_control_1" v-model="newStore.name">
 		                    	    <label for="form_control_1">Store Name</label>
 		                    	</div>
     	                    	<div class="autocomplete-wrapper">
@@ -909,11 +909,6 @@ export default {
 		// get store groups
 		this.getStoreGroups()
 		this.getMenuTiers()
-
-		if (this.$route.query.v3Location === true) {
-			this.newStore.v3_location_id = String(this.$route.query.location_id)
-			this.newStore.name = String(this.$route.query.location_name)
-		}
 	},
 	mounted () {
 		this.$refs.name.focus()
@@ -1006,10 +1001,6 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateStoreIsCorporate (val) {
-			if (!this.$root.storeLocations.length && val === 0) {
-				this.storeInformationError = 'The first Store you create should be the corporate location.'
-				return
-			}
 			this.newStore.is_corporate = val
 		},
 		/**
