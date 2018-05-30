@@ -76,66 +76,68 @@
 						<div class="caption-desc font-grey-cascade" v-if="$root.accountType === 'store_admin'">View amenities and assign them to the active store.</div>
 					</div>
 				</div>
-				<div class="col-md-12">
-					<div class="alert alert-danger" v-show="listErrorMessage.length" ref="listErrorMessage">
-						<button class="close" data-close="alert" @click="clearError('listErrorMessage')"></button>
-						<span>{{ listErrorMessage }}</span>
-					</div>
-				</div>
 				<div class="portlet-body relative-block">
-					<div class="col-md-12" v-show="activeLocationId === undefined">
+					<div class="col-md-12" v-if="activeLocationId === undefined">
 						<div class="alert center alert-info">
 							<h4>No Store Selected</h4>
 							<p>Please select a store from the stores panel on the right to view amenities and apply them to the store.</p>
 						</div>
 					</div>
-					<loading-screen :show="loadingAmenities && activeLocationId !== undefined" :color="'#2C3E50'" :display="'inline'"></loading-screen>
-					<div class="mt-element-list margin-top-15" v-if="amenities.length && !loadingAmenities">
-						<div class="mt-list-container list-news ext-1 no-border" v-show="activeLocationId">
-							<ul>
-								<li class="mt-list-item actions-at-left margin-top-15" v-for="amenity in amenities" :id="'amenity-' + amenity.id" :key="amenity.id">
-									<div class="list-item-actions">
-										<el-tooltip content="Edit" effect="light" placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default" @click="editAmenity(amenity, $event)">
-												<i class="fa fa-lg fa-pencil"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip content="Delete" effect="light" placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default" @click="confirmDelete(amenity, $event)">
-												<i class="fa fa-lg fa-trash"></i>
-											</a>
-										</el-tooltip>
-									</div>
-									<div class="list-thumb">
-										<img v-if="amenity.image_url.length" :src="amenity.image_url" />
-								    	<img v-else src="../../../assets/img/app/image-placeholder.png">
-									</div>
-									<div class="list-datetime bold uppercase font-red">
-										<span>{{ amenity.name }}</span>
-									</div>
-									<div class="list-item-content height-mod">
-										<div class="col-xs-5">
-											<strong>Order:</strong>
-											<span>{{ amenity.order }}</span>
-										</div>
-			                        	<div class="">
-			                        		<div v-if="amenity.selected">
-				                        		<button @click="toggleChecked(amenity, $event)" class="btn btn-success custom-button full-width"><i class="fa fa-2x fa-check"></i></button>
-			                        		</div>
-			                        		<div v-if="!amenity.selected">
-				                        		<button @click="toggleChecked(amenity, $event)" class="btn btn-danger custom-button full-width"><i class="fa fa-2x fa-times"></i></button>
-			                        		</div>
-			                        	</div>
-									</div>
-								</li>
-							</ul>
-							<div class="form-actions right margin-top-20" v-show="$root.activeLocation.id !== undefined">
-								<button type="button" class="btn blue" @click="assignAmenitiesToLocation()">Save</button>
+					<div v-else>
+						<div class="col-md-12">
+							<div class="alert alert-danger" v-show="listErrorMessage.length" ref="listErrorMessage">
+								<button class="close" data-close="alert" @click="clearError('listErrorMessage')"></button>
+								<span>{{ listErrorMessage }}</span>
 							</div>
 						</div>
-					</div>
-					<div class="margin-top-20">
-						<no-results :show="!amenities.length && !loadingAmenities" :type="'amenities'"></no-results>
+						<loading-screen :show="loadingAmenities" :color="'#2C3E50'" :display="'inline'"></loading-screen>
+						<div class="mt-element-list margin-top-15" v-if="amenities.length && !loadingAmenities">
+							<div class="mt-list-container list-news ext-1 no-border" v-show="activeLocationId">
+								<ul>
+									<li class="mt-list-item actions-at-left margin-top-15" v-for="amenity in amenities" :id="'amenity-' + amenity.id" :key="amenity.id">
+										<div class="list-item-actions">
+											<el-tooltip content="Edit" effect="light" placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default" @click="editAmenity(amenity, $event)">
+													<i class="fa fa-lg fa-pencil"></i>
+												</a>
+											</el-tooltip>
+											<el-tooltip content="Delete" effect="light" placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default" @click="confirmDelete(amenity, $event)">
+													<i class="fa fa-lg fa-trash"></i>
+												</a>
+											</el-tooltip>
+										</div>
+										<div class="list-thumb">
+											<img v-if="amenity.image_url.length" :src="amenity.image_url" />
+									    	<img v-else src="../../../assets/img/app/image-placeholder.png">
+										</div>
+										<div class="list-datetime bold uppercase font-red">
+											<span>{{ amenity.name }}</span>
+										</div>
+										<div class="list-item-content height-mod">
+											<div class="col-xs-5">
+												<strong>Order:</strong>
+												<span>{{ amenity.order }}</span>
+											</div>
+				                        	<div class="">
+				                        		<div v-if="amenity.selected">
+					                        		<button @click="toggleChecked(amenity, $event)" class="btn btn-success custom-button full-width"><i class="fa fa-2x fa-check"></i></button>
+				                        		</div>
+				                        		<div v-if="!amenity.selected">
+					                        		<button @click="toggleChecked(amenity, $event)" class="btn btn-danger custom-button full-width"><i class="fa fa-2x fa-times"></i></button>
+				                        		</div>
+				                        	</div>
+										</div>
+									</li>
+								</ul>
+								<div class="form-actions right margin-top-20" v-show="$root.activeLocation.id !== undefined">
+									<button type="button" class="btn blue" @click="assignAmenitiesToLocation()">Save</button>
+								</div>
+							</div>
+						</div>
+						<div class="margin-top-20">
+							<no-results :show="!amenities.length && !loadingAmenities" :type="'amenities'"></no-results>
+						</div>						
 					</div>
 				</div>
 			</div>
@@ -437,7 +439,7 @@ export default {
 	amenitiesVue.loadingAmenities = false
 	ajaxErrorHandler({
 		reason,
-		errorText: 'We could not fetch the list of amenities',
+		errorText: 'We could not fetch amenities',
 		errorName: 'listErrorMessage',
 		vue: amenitiesVue
 	})
