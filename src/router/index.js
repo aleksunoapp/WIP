@@ -32,11 +32,8 @@ import UserAttributes from '../components/app/UserManager/UserAttributes'
 import StoresFAQ from '../components/app/Faq/StoresFAQ'
 import UsersFAQ from '../components/app/Faq/UsersFAQ'
 import Printers from '../components/app/Printers/Printers'
-// Resources
 import Gallery from '../components/app/Gallery'
-import CreateFolder from '../components/app/Gallery/CreateFolder'
-import EditFolder from '../components/app/Gallery/EditFolder'
-
+import GalleryImages from '../components/app/GalleryImages'
 import StoreGroups from '../components/app/StoreManager/StoreGroups'
 import BaseRule from '../components/app/Loyalty/BaseRule'
 import PromotionRules from '../components/app/Loyalty/PromotionRules'
@@ -50,17 +47,22 @@ import LocationSales from '../components/app/Analytics/LocationSales'
 import ItemSales from '../components/app/Analytics/ItemSales'
 import UserAnalytics from '../components/app/Analytics/UserAnalytics'
 import Localization from '../components/app/Localization/Localization'
+// Admin Manager
 import BrandAdmins from '../components/app/AdminManager/BrandAdmins'
 import LocationManagers from '../components/app/AdminManager/LocationManagers'
 import OMAUsers from '../components/app/AdminManager/OMAUsers'
 import StoreAppUsers from '../components/app/AdminManager/StoreAppUsers'
+import Roles from '../components/app/AdminManager/Roles'
+import Permissions from '../components/app/AdminManager/Permissions'
+import Modules from '../components/app/AdminManager/Modules'
+import Approvals from '../components/app/AdminManager/Approvals'
 
 Vue.use(Router)
 
 const router = new Router({
 	routes: [
 		{path: '/', component: Login, name: 'Login', adminOnly: false},
-		{path: '/login/:expired', name: 'Login Expires', adminOnly: false},
+		{path: '/login/:expired', adminOnly: false},
 		{path: '/app', redirect: '/app/analytics/overview', adminOnly: false},
 		{
 			path: '/app',
@@ -74,13 +76,8 @@ const router = new Router({
 				{path: 'faq/users', name: 'Users FAQ', component: UsersFAQ, meta: { adminOnly: true }},
 				{path: 'faq/stores', name: 'Stores FAQ', component: StoresFAQ, meta: { adminOnly: true }},
 				{path: 'printers', component: Printers, name: 'Printers', meta: { adminOnly: false }},
-
-				// Resources
 				{path: 'gallery', component: Gallery, name: 'Gallery', meta: { adminOnly: false }},
-				{path: 'gallery/create_folder/:parent_id', component: CreateFolder, name: 'Create Resource Folder', meta: { adminOnly: false }},
-				{path: 'gallery/edit_folder/:folder', component: EditFolder, name: 'Edit Resource Folder', meta: { adminOnly: false }},
-
-				// Loyalty
+				{path: 'gallery/:folder_id/images', component: GalleryImages, name: 'Gallery Images', meta: { adminOnly: false }},
 				{path: 'loyalty', redirect: 'loyalty/base_rule', meta: { adminOnly: true }},
 				{path: 'loyalty/base_rule', component: BaseRule, name: 'Base Rule', meta: { adminOnly: true }},
 				{path: 'loyalty/promotion_rules', component: PromotionRules, name: 'Promotion Rules', meta: { adminOnly: true }},
@@ -108,12 +105,18 @@ const router = new Router({
 				{path: 'menu_manager/options/:option_id/option_items', name: 'OptionItems', component: OptionItems, meta: { adminOnly: false }},
 				{path: 'menu_manager/modifier_items/:modifier_id', name: 'Modifier Items', component: ModifierItems, children: [{path: 'edit_modifier_item/:modifier_item_id', name: 'Edit Modifier Item'}], meta: { adminOnly: false }},
 				{path: 'menu_manager/item_attributes', name: 'Item Attributes', component: ItemAttributes, meta: { adminOnly: false }},
-				// roles manager routes
+				// admin manager routes
 				{path: 'admin', redirect: 'admin/brand_admins', meta: { adminOnly: true }},
 				{path: 'admin/brand_admins', name: 'Brand Admins', component: BrandAdmins, meta: { adminOnly: true }},
 				{path: 'admin/location_managers', name: 'Location Managers', component: LocationManagers, meta: { adminOnly: true }},
 				{path: 'admin/OMA_users', name: 'OMA Users', component: OMAUsers, meta: { adminOnly: true }},
 				{path: 'admin/store_app_users', name: 'Store App Users', component: StoreAppUsers, meta: { adminOnly: true }},
+
+				// Approvals, Roles and Permissions routes
+				{path: 'approvals/roles', name: 'Roles', component: Roles, meta: { adminOnly: true }},
+				{path: 'approvals/permissions', name: 'Permissions', component: Permissions, meta: { adminOnly: true }},
+				{path: 'approvals/modules', name: 'Modules', component: Modules, meta: { adminOnly: true }},
+				{path: 'approvals/approvals', name: 'Approvals', component: Approvals, meta: { adminOnly: true }},
 				// store manager routes
 				{path: 'store_manager', redirect: 'store_manager/create_new', meta: { adminOnly: true }},
 				{path: 'store_manager/create_new', name: 'Create New Store', component: CreateNewStore, meta: { adminOnly: true }},

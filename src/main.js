@@ -31,7 +31,7 @@ Vue.use(VueScrollTo)
 var App = new Vue({
 	data () {
 		return {
-			activeUser: '',
+			activeUser: {},
 			userToken: '',
 			appId: '',
 			appSecret: '',
@@ -40,12 +40,13 @@ var App = new Vue({
 			createdBy: 0,
 			activeMenuId: 0,
 			corporateStoreId: 0,
-			storeLocations: []
+			storeLocations: [],
+			requestsPending: false
 		}
 	},
 	methods: {
 		clearGlobalVariables () {
-			this.activeUser = ''
+			this.activeUser = {}
 			this.userToken = ''
 			this.appId = ''
 			this.appSecret = ''

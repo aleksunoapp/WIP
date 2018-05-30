@@ -161,7 +161,7 @@
 			            <div class="mt-element-list">
 			                <div class="mt-list-container list-news">
 			                    <ul>
-			                        <li class="mt-list-item actions-at-left margin-top-15" v-for="locationManager in currentActivePageItems" :id="'locationManager-' + locationManager.id" :class="{'animated' : animated === `locationManager-${locationManager.id}`}">
+			                        <li class="mt-list-item actions-at-left margin-top-15" v-for="locationManager in currentActivePageItems" :id="'locationManager-' + locationManager.id" :class="{'animated' : animated === `locationManager-${locationManager.id}`}" :key="locationManager.id">
 			                        	<div class="list-item-actions">
         	                        		<el-tooltip content="Edit" effect="light" placement="right">
 	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editLocationManager(locationManager)">
@@ -173,6 +173,11 @@
 			                                        <i class="icon-layers"></i>
 			                                    </a>
 											</el-tooltip>
+			                        		<el-tooltip content="Roles" effect="light" placement="right">
+	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="openRolesModal(locationManager)">
+	                                                <i class="fa fa-user" aria-hidden="true"></i>
+	                                            </a>
+			                        		</el-tooltip>
 			                        	</div>
 			                            <div class="list-datetime bold uppercase font-red">
 			                            	<span>{{ locationManager.name }}</span>
@@ -231,7 +236,7 @@
 			            <div class="mt-element-list">
 			                <div class="mt-list-container list-news">
 			                    <ul>
-			                        <li class="mt-list-item actions-at-left margin-top-15" v-for="locationManager in currentActiveSearchPageItems" :id="'locationManager-' + locationManager.id" :class="{'animated' : animated === `locationManager-${locationManager.id}`}">
+			                        <li class="mt-list-item actions-at-left margin-top-15" v-for="locationManager in currentActiveSearchPageItems" :id="'locationManager-' + locationManager.id" :class="{'animated' : animated === `locationManager-${locationManager.id}`}" :key="locationManager.id">
 			                        	<div class="list-item-actions">
         	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editLocationManager(locationManager)">
 	        	                        		<el-tooltip content="Edit" effect="light" placement="right">
@@ -243,6 +248,11 @@
                                                     <i class="icon-layers"></i>
             									</el-tooltip>
                                             </a>
+    		                        		<el-tooltip content="Edit" effect="light" placement="right">
+            	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="openRolesModal(locationManager)">
+                                                    <i class="fa fa-user" aria-hidden="true"></i>
+                                                </a>
+    		                        		</el-tooltip>
 			                        	</div>
 			                            <div class="list-datetime bold uppercase font-red">
 			                            	<span>{{ locationManager.name }}</span>
@@ -342,6 +352,31 @@
 		</modal>
 		<!-- EDIT MODAL END -->
 
+		<!-- ROLES MODAL START -->
+		<modal :show="showAssignRolesModal" effect="fade" @closeOnEscape="closeRolesModal">
+			<div slot="modal-header" class="modal-header">
+				<button type="button" class="close" @click="closeRolesModal()">
+					<span>&times;</span>
+				</button>
+				<h4 class="modal-title center">Assign Roles</h4>
+			</div>
+			<div slot="modal-body" class="modal-body">
+				<div class="alert alert-danger" v-show="assignRolesErrorMessage.length" ref="assignRolesErrorMessage">
+				    <button class="close" data-close="alert" @click="clearRolesError()"></button>
+				    <span>{{assignRolesErrorMessage}}</span>
+				</div>
+				<roles-picker
+					v-if="showAssignRolesModal"
+					@rolesSelected="updateRoles"
+					:previouslySelected="locationManagerToAssignRolesTo.roles"
+				></roles-picker>
+			</div>
+			<div slot="modal-footer" class="modal-footer">
+				<button type="button" class="btn btn-primary" @click="assignRoles()">Save</button>
+			</div>
+		</modal>
+		<!-- ROLES MODAL END -->
+
 	</div>
 </template>
 
@@ -355,6 +390,8 @@ import Dropdown from '../../modules/Dropdown'
 import Pagination from '../../modules/Pagination'
 import PageResults from '../../modules/PageResults'
 import SelectLocationsPopup from '../../modules/SelectLocationsPopup'
+import RolesPicker from './RolesPicker'
+import ajaxErrorHandler from '../../../controllers/ErrorController'
 
 /**
  * Define the email pattern to check for valid emails.
@@ -408,7 +445,10 @@ export default {
 			},
 			searchActivePage: 1,
 			passwordMasked: true,
-			passwordCheck: ''
+			passwordCheck: '',
+			locationManagerToAssignRolesTo: {},
+			showAssignRolesModal: false,
+			assignRolesErrorMessage: ''
 		}
 	},
 	computed: {
@@ -432,6 +472,139 @@ export default {
 		this.getAllLocationManagers()
 	},
 	methods: {
+		/**
+		 * To get roles already assigned to the user
+		 * @function
+		 * @param {object} user - The user to fetch roles for
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getUserRoles (user) {
+			return AdminManagerFunctions.getUserRoles(user)
+			.then(response => {
+				return response.payload.map(role => role.id)
+			}).catch(reason => {
+				return []
+			})
+		},
+		/**
+		 * To update the roles based on user's selection
+		 * @function
+		 * @param {array} roles - An array of role ids
+		 * @returns {undefined}
+		 */
+		updateRoles (roles) {
+			this.locationManagerToAssignRolesTo.roles = roles
+		},
+		/**
+		 * To validate data before submitting to the backend
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		validateRoles () {
+			var locationManagersVue = this
+			return new Promise(function (resolve, reject) {
+				if (!locationManagersVue.locationManagerToAssignRolesTo.roles.length) {
+					reject('Select at least one role')
+				}
+				resolve('Hurray')
+			})
+		},
+		/**
+		 * To clear the current error.
+		 * @function
+		 * @returns {undefined}
+		 */
+		clearRolesError () {
+			this.assignRolesErrorMessage = ''
+		},
+		/**
+		 * To assign roles to a user
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		assignRoles () {
+			var locationManagersVue = this
+
+			return this.validateRoles()
+			.then((response) => {
+				locationManagersVue.clearRolesError()
+				return AdminManagerFunctions.assignRoles(locationManagersVue.locationManagerToAssignRolesTo, locationManagersVue.$root.appId, locationManagersVue.$root.appSecret, locationManagersVue.$root.userToken)
+				.then(response => {
+					locationManagersVue.closeRolesModal()
+					locationManagersVue.showRolesSuccess()
+					this.animated = `locationManager-${locationManagersVue.locationManagerToBeEdited.id}`
+					window.setTimeout(() => {
+						locationManagersVue.animated = ''
+					}, 3000)
+					locationManagersVue.resetRolesForm()
+				}).catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'Could not assign roles',
+						errorName: 'assignRolesErrorMessage',
+						vue: locationManagersVue
+					})
+				})
+			}).catch(reason => {
+				console.log(reason)
+				locationManagersVue.assignRolesErrorMessage = reason
+				locationManagersVue.$scrollTo(locationManagersVue.$refs.assignRolesErrorMessage, 1000, { offset: -50 })
+			})
+		},
+		/**
+		 * To open the roles modal
+		 * @function
+		 * @param {object} locationManager - The selected locations manager
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		openRolesModal (locationManager) {
+			let locationManagersVue = this
+			this.getUserRoles(locationManager)
+			.then(roles => {
+				locationManagersVue.locationManagerToAssignRolesTo = {
+					...locationManager,
+					roles
+				}
+			}).catch(err => {
+				locationManagersVue.locationManagerToAssignRolesTo = {
+					...locationManager,
+					roles: []
+				}
+				console.log(err)
+			}).finally(() => {
+				locationManagersVue.showAssignRolesModal = true
+			})
+		},
+		/**
+		 * To notify user that the operation succeeded.
+		 * @function
+		 * @returns {undefined}
+		 */
+		showRolesSuccess () {
+			this.$swal({
+				title: 'Success',
+				text: 'Roles saved',
+				type: 'success',
+				confirmButtonText: 'OK'
+			})
+		},
+		/**
+		 * To close the modal
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		closeRolesModal () {
+			this.clearRolesError()
+			this.showAssignRolesModal = false
+		},
+		/**
+		 * To reset the roles form
+		 * @function
+		 * @returns {undefined}
+		 */
+		resetRolesForm () {
+			this.locationManagerToAssignRolesTo = {}
+		},
 		/**
 		 * To format a phone number
 		 * @function
@@ -626,6 +799,7 @@ export default {
 				locations: assignStoresVue.selectedLocationManager.selectedLocations,
 				admin: assignStoresVue.selectedLocationManager.id
 			}
+			this.clearAssignError()
 			AdminManagerFunctions.assignStores(payload, assignStoresVue.$root.appId, assignStoresVue.$root.appSecret, assignStoresVue.$root.userToken).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
 					assignStoresVue.getAllLocationManagers()
@@ -668,6 +842,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		closeEditLocationManagerModal () {
+			this.clearEditError()
 			this.showEditLocationManagerModal = false
 		},
 		/**
@@ -887,6 +1062,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		closeAssignStoresModal () {
+			this.clearAssignError()
 			this.showAssignStoresModal = false
 		},
 		/**
@@ -899,7 +1075,7 @@ export default {
 
 			return this.validateEditedLocationManagerData()
 			.then((response) => {
-				locationManagersVue.clearCreateError()
+				locationManagersVue.clearEditError()
 				return AdminManagerFunctions.updateAdmin(locationManagersVue.locationManagerToBeEdited, locationManagersVue.$root.appId, locationManagersVue.$root.appSecret, locationManagersVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						locationManagersVue.closeEditLocationManagerModal()
@@ -989,7 +1165,8 @@ export default {
 		Dropdown,
 		Pagination,
 		PageResults,
-		SelectLocationsPopup
+		SelectLocationsPopup,
+		RolesPicker
 	}
 }
 </script>

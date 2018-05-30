@@ -35,11 +35,11 @@
 									<img class="business-logo" src="../assets/img/app/logo-refresh.png" width="38" height="38">
 								</div>
 								<div class="location-name-container" v-if="activeLocation.display_name">
-									<span class="business-name">{{$root.activeUser}}</span>
+									<span class="business-name">{{$root.activeUser.name}}</span>
 									<span class="business-location-name">{{activeLocation.display_name}}</span>
 								</div>
 								<div class="location-name-container" v-else>
-									<span class="business-name big">{{$root.activeUser}}</span>
+									<span class="business-name big">{{$root.activeUser.name}}</span>
 								</div>
 							</a>
 						</li>
@@ -107,11 +107,44 @@
 								</li>
 							</ul>
 						</li>
-						<li class="nav-item" v-bind:class="{'active': currentRoute === 'admin'}" id="roles_manager_link" v-if="$root.accountType === 'application_admin'">
+						<li class="nav-item" v-bind:class="{'active': currentRoute === 'approvals'}" id="admin_manager_link" v-if="$root.accountType === 'application_admin'">
+							<router-link to="/app/approvals/approvals" class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
+								<i class="fa fa-check-square-o"></i>
+								<span class="title">Approvals Manager
+									<i v-if="$root.requestsPending" class="fa fa-circle danger"></i>
+								</span>
+							</router-link>
+							<ul class="sub-menu">
+								<li class="nav-item" v-bind:class="{'active': currentRoute === 'approvals' && currentSubRoute === 'approvals'}" id="admin_manager_approvals_link">
+									<router-link to="/app/approvals/approvals" class="nav-link">
+										<i class="fa fa-check-square-o"></i>
+										<span class="title">Approvals</span>
+									</router-link>
+								</li>
+								<li class="nav-item" v-bind:class="{'active': currentRoute === 'approvals' && currentSubRoute === 'roles'}" id="admin_manager_roles_link">
+									<router-link to="/app/approvals/roles" class="nav-link">
+										<i class="fa fa-id-badge"></i>
+										<span class="title">Roles</span>
+									</router-link>
+								</li>
+								<li class="nav-item" v-bind:class="{'active': currentRoute === 'approvals' && currentSubRoute === 'permissions'}" id="admin_manager_permissions_link">
+									<router-link to="/app/approvals/permissions" class="nav-link">
+										<i class="fa fa-ban"></i>
+										<span class="title">Permissions</span>
+									</router-link>
+								</li>
+								<li class="nav-item" v-bind:class="{'active': currentRoute === 'approvals' && currentSubRoute === 'modules'}" id="admin_manager_modules_link">
+									<router-link to="/app/approvals/modules" class="nav-link">
+										<i class="fa fa-circle-o"></i>
+										<span class="title">Modules</span>
+									</router-link>
+								</li>
+							</ul>
+						</li>
+						<li class="nav-item" v-bind:class="{'active': currentRoute === 'admin'}" id="admin_manager_link" v-if="$root.accountType === 'application_admin'">
 							<router-link to="/app/admin/brand_admins" class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
 								<i class="fa fa-cogs"></i>
 								<span class="title">Admin Manager</span>
-								<span class="arrow"></span>
 							</router-link>
 							<ul class="sub-menu">
 								<li class="nav-item" v-bind:class="{'active': currentRoute === 'admin' && currentSubRoute === 'brand_admins'}" id="store_manager_create_new_link">
@@ -415,7 +448,7 @@
 												<i class="fa fa-times-circle"></i>
 											</div>
 											<div class="media-body">
-												<h4 class="media-heading">{{ $root.activeUser }}</h4>
+												<h4 class="media-heading">{{ $root.activeUser.name }}</h4>
 												<div class="media-heading-sub" v-if="!activeLocation.display_name">Master Account Selected</div>
 												<div class="media-heading-sub" v-else>{{ activeLocation.display_name }}</div>
 											</div>
@@ -526,6 +559,7 @@ import Modal from './modules/Modal'
 import Dropdown from './modules/Dropdown'
 import LoadingScreen from './modules/LoadingScreen'
 import { findIndex } from 'lodash'
+import ApprovalsFunctions from '../controllers/Approvals'
 
 /**
  * App module is the main component which holds the navigation, page header, and side panel.
@@ -596,6 +630,7 @@ export default {
 	 */
 	created () {
 		this.setCurrentRoute()
+		this.getRequests()
 	},
 	/**
 	 * Run on `mounted` to initialize the app defaults.
@@ -618,19 +653,25 @@ export default {
 	},
 	methods: {
 		/**
-		 * To check if the token is still valid.
+		 * To get a list of pending requests.
 		 * @function
-		 * @returns {undefined}
+		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		validateToken () {
+		getRequests () {
 			var appVue = this
-			App.validateToken(appVue.$root.appId, appVue.$root.appSecret, appVue.$root.userToken)
-			.then(response => {})
-			.catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					appVue.$router.push('/login/expired')
-					return
+			let pagination = {
+				page: 1,
+				records_per_page: 1
+			}
+			return ApprovalsFunctions.getRequests(pagination)
+			.then(response => {
+				if (response.payload.docs.length) {
+					appVue.$root.requestsPending = true
+				} else {
+					appVue.$root.requestsPending = false
 				}
+			}).catch(reason => {
+				console.log(reason)
 			})
 		},
 		/**
@@ -1084,5 +1125,8 @@ export default {
 	}
 	.page-header.navbar .top-menu .navbar-nav>li.dropdown>.dropdown-toggle.log-out-button:last-child {
 		padding-right: 8px;
+	}
+	.fa.danger {
+		color: rgba(201, 0, 0, .8)
 	}
 </style>

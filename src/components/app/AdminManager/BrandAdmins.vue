@@ -161,11 +161,16 @@
 			            <div class="mt-element-list">
 			                <div class="mt-list-container list-news">
 			                    <ul>
-			                        <li class="mt-list-item actions-at-left margin-top-15" v-for="brandAdmin in currentActivePageItems" :id="'brandAdmin-' + brandAdmin.id" :class="{'animated' : animated === `brandAdmin-${brandAdmin.id}`}">
+			                        <li class="mt-list-item actions-at-left margin-top-15" v-for="brandAdmin in currentActivePageItems" :id="'brandAdmin-' + brandAdmin.id" :class="{'animated' : animated === `brandAdmin-${brandAdmin.id}`}" :key="brandAdmin.id">
 			                        	<div class="list-item-actions">
 			                        		<el-tooltip content="Edit" effect="light" placement="right">
 	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editBrandAdmin(brandAdmin)">
 	                                                <i class="fa fa-pencil" aria-hidden="true"></i>
+	                                            </a>
+			                        		</el-tooltip>
+			                        		<el-tooltip content="Roles" effect="light" placement="right">
+	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="openRolesModal(brandAdmin)">
+	                                                <i class="fa fa-id-badge" aria-hidden="true"></i>
 	                                            </a>
 			                        		</el-tooltip>
 			                        	</div>
@@ -226,11 +231,16 @@
 			            <div class="mt-element-list">
 			                <div class="mt-list-container list-news">
 			                    <ul>
-			                        <li class="mt-list-item actions-at-left margin-top-15" v-for="brandAdmin in currentActiveSearchPageItems" :id="'brandAdmin-' + brandAdmin.id" :class="{'animated' : animated === `brandAdmin-${brandAdmin.id}`}">
+			                        <li class="mt-list-item actions-at-left margin-top-15" v-for="brandAdmin in currentActiveSearchPageItems" :id="'brandAdmin-' + brandAdmin.id" :class="{'animated' : animated === `brandAdmin-${brandAdmin.id}`}" :key="brandAdmin.id">
 			                        	<div class="list-item-actions">
         	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editBrandAdmin(brandAdmin)">
 			                        			<el-tooltip content="Edit" effect="light" placement="right">
 	                                                <i class="fa fa-pencil" aria-hidden="true"></i>
+			                        			</el-tooltip>
+                                            </a>
+        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="openRolesModal(brandAdmin)">
+			                        			<el-tooltip content="Roles" effect="light" placement="right">
+	                                                <i class="fa fa-id-badge" aria-hidden="true"></i>
 			                        			</el-tooltip>
                                             </a>
 			                        	</div>
@@ -305,6 +315,31 @@
 		</modal>
 		<!-- EDIT MODAL END -->
 
+		<!-- ROLES MODAL START -->
+		<modal :show="showAssignRolesModal" effect="fade" @closeOnEscape="closeRolesModal">
+			<div slot="modal-header" class="modal-header">
+				<button type="button" class="close" @click="closeRolesModal()">
+					<span>&times;</span>
+				</button>
+				<h4 class="modal-title center">Assign Roles</h4>
+			</div>
+			<div slot="modal-body" class="modal-body">
+				<div class="alert alert-danger" v-show="assignRolesErrorMessage.length" ref="assignRolesErrorMessage">
+				    <button class="close" data-close="alert" @click="clearRolesError()"></button>
+				    <span>{{assignRolesErrorMessage}}</span>
+				</div>
+				<roles-picker
+					v-if="showAssignRolesModal"
+					@rolesSelected="updateRoles"
+					:previouslySelected="brandAdminToAssignRolesTo.roles"
+				></roles-picker>
+			</div>
+			<div slot="modal-footer" class="modal-footer">
+				<button type="button" class="btn btn-primary" @click="assignRoles()">Save</button>
+			</div>
+		</modal>
+		<!-- ROLES MODAL END -->
+
 	</div>
 </template>
 
@@ -317,6 +352,8 @@ import Modal from '../../modules/Modal'
 import Dropdown from '../../modules/Dropdown'
 import Pagination from '../../modules/Pagination'
 import PageResults from '../../modules/PageResults'
+import RolesPicker from './RolesPicker'
+import ajaxErrorHandler from '../../../controllers/ErrorController'
 
 /**
  * Define the email pattern to check for valid emails.
@@ -365,7 +402,10 @@ export default {
 			},
 			searchActivePage: 1,
 			passwordMasked: true,
-			passwordCheck: ''
+			passwordCheck: '',
+			brandAdminToAssignRolesTo: {},
+			showAssignRolesModal: false,
+			assignRolesErrorMessage: ''
 		}
 	},
 	computed: {
@@ -555,6 +595,130 @@ export default {
 			this.clearSearchError()
 		},
 		/**
+		 * To get roles already assigned to the user
+		 * @function
+		 * @param {object} user - The user to fetch roles for
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getUserRoles (user) {
+			return AdminManagerFunctions.getUserRoles(user)
+			.then(response => {
+				return response.payload.map(role => role.id)
+			}).catch(reason => {
+				return []
+			})
+		},
+		/**
+		 * To update the roles based on user's selection
+		 * @function
+		 * @param {array} roles - An array of role ids
+		 * @returns {undefined}
+		 */
+		updateRoles (roles) {
+			this.brandAdminToAssignRolesTo.roles = roles
+		},
+		/**
+		 * To validate data before submitting to the backend
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		validateRoles () {
+			var brandAdminsVue = this
+			return new Promise(function (resolve, reject) {
+				if (!brandAdminsVue.brandAdminToAssignRolesTo.roles.length) {
+					reject('Select at least one role')
+				}
+				resolve('Hurray')
+			})
+		},
+		/**
+		 * To assign roles to a user
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		assignRoles () {
+			var brandAdminsVue = this
+
+			return this.validateRoles()
+			.then((response) => {
+				brandAdminsVue.clearRolesError()
+				return AdminManagerFunctions.assignRoles(brandAdminsVue.brandAdminToAssignRolesTo, brandAdminsVue.$root.appId, brandAdminsVue.$root.appSecret, brandAdminsVue.$root.userToken)
+				.then(response => {
+					brandAdminsVue.closeRolesModal()
+					brandAdminsVue.showRolesSuccess()
+					this.animated = `brandAdmin-${brandAdminsVue.brandAdminToBeEdited.id}`
+					window.setTimeout(() => {
+						brandAdminsVue.animated = ''
+					}, 3000)
+					brandAdminsVue.resetRolesForm()
+				}).catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'Could not assign roles',
+						errorName: 'assignRolesErrorMessage',
+						vue: brandAdminsVue
+					})
+				})
+			}).catch(reason => {
+				brandAdminsVue.assignRolesErrorMessage = reason
+				brandAdminsVue.$scrollTo(brandAdminsVue.$refs.assignRolesErrorMessage, 1000, { offset: -50 })
+			})
+		},
+		/**
+		 * To open the roles modal
+		 * @function
+		 * @param {object} brandAdmin - The selected brand admin
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		openRolesModal (brandAdmin) {
+			let brandAdminsVue = this
+			this.getUserRoles(brandAdmin)
+			.then(roles => {
+				brandAdminsVue.brandAdminToAssignRolesTo = {
+					...brandAdmin,
+					roles
+				}
+			}).catch(err => {
+				brandAdminsVue.brandAdminToAssignRolesTo = {
+					...brandAdmin,
+					roles: []
+				}
+				console.log(err)
+			}).finally(() => {
+				brandAdminsVue.showAssignRolesModal = true
+			})
+		},
+		/**
+		 * To notify user that the operation succeeded.
+		 * @function
+		 * @returns {undefined}
+		 */
+		showRolesSuccess () {
+			this.$swal({
+				title: 'Success',
+				text: 'Roles saved',
+				type: 'success',
+				confirmButtonText: 'OK'
+			})
+		},
+		/**
+		 * To close the modal
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		closeRolesModal () {
+			this.clearRolesError()
+			this.showAssignRolesModal = false
+		},
+		/**
+		 * To reset the roles form
+		 * @function
+		 * @returns {undefined}
+		 */
+		resetRolesForm () {
+			this.brandAdminToAssignRolesTo = {}
+		},
+		/**
 		 * To display the edit modal
 		 * @function
 		 * @param {object} brandAdmin - The brand admin object to be edited
@@ -573,6 +737,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		closeEditBrandAdminModal () {
+			this.clearEditError()
 			this.showEditBrandAdminModal = false
 		},
 		/**
@@ -740,6 +905,14 @@ export default {
 			this.editErrorMessage = ''
 		},
 		/**
+		 * To clear the current error.
+		 * @function
+		 * @returns {undefined}
+		 */
+		clearRolesError () {
+			this.assignRolesErrorMessage = ''
+		},
+		/**
 		 * To update the brand admin object.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
@@ -749,7 +922,7 @@ export default {
 
 			return this.validateEditedBrandAdminData()
 			.then((response) => {
-				brandAdminsVue.clearCreateError()
+				brandAdminsVue.clearEditError()
 				return AdminManagerFunctions.updateAdmin(brandAdminsVue.brandAdminToBeEdited, brandAdminsVue.$root.appId, brandAdminsVue.$root.appSecret, brandAdminsVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						brandAdminsVue.closeEditBrandAdminModal()
@@ -838,7 +1011,8 @@ export default {
 		Modal,
 		Dropdown,
 		Pagination,
-		PageResults
+		PageResults,
+		RolesPicker
 	}
 }
 </script>

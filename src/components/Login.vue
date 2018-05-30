@@ -185,8 +185,8 @@ export default {
 					disabledButton.complete()
 
 					// set active user name
-					loginVue.$root.activeUser = response.payload.name
-					localStorage.setItem('activeUser', loginVue.$root.activeUser)
+					loginVue.$root.activeUser = response.payload
+					localStorage.setItem('activeUser', JSON.stringify(loginVue.$root.activeUser))
 					// set userToken
 					loginVue.$root.userToken = response.session.token
 					localStorage.setItem('userToken', loginVue.$root.userToken)

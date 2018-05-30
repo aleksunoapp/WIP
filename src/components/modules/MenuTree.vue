@@ -433,9 +433,9 @@ export default {
 			var unselectedItems = []
 			for (var i = 0; i < this.items.length; i++) {
 				if (this.items[i].selected) {
-					selectedItems.push(this.items[i].id)
+					selectedItems.push(this.items[i].sku)
 				} else {
-					unselectedItems.push(this.items[i].id)
+					unselectedItems.push(this.items[i].sku)
 				}
 			}
 			this.$emit('closeMenuTreeModal', {selectedItems, unselectedItems})

@@ -3,9 +3,13 @@
  */
 import $ from 'jquery'
 import {App} from './main.js'
-// import environment from './environment'
+import environment from './environment'
+const { development } = environment
 
 export default {
+	urls: {
+		'approvals': 'http://approval.dev.api.unoapp.io'
+	},
 	/**
 	 * business id to identify the business aka brand aka customer (2 is Freshii)
 	 */
@@ -13,10 +17,8 @@ export default {
 	/**
 	 * base url for UNOapp accounts frontend, with # if accounts router is in hash mode
 	 */
-	// production
-	accountsUrl: 'http://localhost:8002/#',
 	// development
-	// accountsUrl: 'http://accounts.beta.unoapp.io/#',
+	accountsUrl: development ? 'http://localhost:8002/#' : 'http://accounts.beta.unoapp.io/#',
 	/**
 	 * base url for API calls, other than Message calls
 	 */
@@ -57,42 +59,28 @@ export default {
 	 * Ajax wrapper for making backend calls.
 	 * @function
 	 * @param {object} options - Options for the ajax call being made.
-	 * @param {boolean} noRetry - Used to prevent retrying the call.
+	 * @param {boolean} api - The api to call
 	 * @returns {undefined}
 	 */
-	$ajax: function (options, noRetry) {
+	$ajax: function (options, api) {
 		var localhost = this.baseUrl + '/api'
 
-		// CSRF token, in cookie and headers
-		let csrfToken = ('' + Math.random()).replace('0.', '')
-		if (document.cookie.indexOf('csrf_token=') !== -1) {
-			csrfToken = document.cookie.split('csrf_token=')[1]
+		if (api) {
+			options.url = this.urls[api] + options.url
 		} else {
-			document.cookie = 'csrf_token=' + csrfToken + ';domain=.unoapp.io'
+			options.url = localhost + options.url
+
+			// ecomm API's auth headers
+			options.beforeSend = function (xhr) {
+				xhr.setRequestHeader('app-id', App.appId)
+				xhr.setRequestHeader('app-secret', App.appSecret)
+				xhr.setRequestHeader('auth-token', App.userToken)
+			}
 		}
 
-		options.url = localhost + options.url
-		if (options.method.toLowerCase() === 'post') {
+		if (options.method.toLowerCase() === 'post' || options.method.toLowerCase() === 'put') {
 			options.contentType = 'application/json'
 			options.data = JSON.stringify(options.data)
-		}
-
-		options.beforeSend = function (xhr) {
-			// ecomm API's auth headers
-			xhr.setRequestHeader('app-id', App.appId)
-			xhr.setRequestHeader('app-secret', App.appSecret)
-			xhr.setRequestHeader('auth-token', App.userToken)
-			xhr.setRequestHeader('unoapp-token', App.accountToken)
-			xhr.setRequestHeader('token', App.accountToken)
-			xhr.setRequestHeader('X-CSRF-Token', csrfToken)
-		}
-
-		// Allow cross-domain cookies
-		options.xhrFields = {
-			// development
-			withCredentials: false
-			// production
-			// withCredentials: true
 		}
 
 		$.ajax(options)

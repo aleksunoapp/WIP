@@ -101,7 +101,7 @@
 					</div>
 					<div class="caption">
 						<span class="caption-subject font-green bold uppercase">Printers</span>
-						<div class="caption-desc font-grey-cascade">Printers for {{ $root.activeUser ? $root.activeUser : 'User' }}.</div>
+						<div class="caption-desc font-grey-cascade">Printers for {{ $root.activeUser.name ? $root.activeUser.name : 'User' }}.</div>
 					</div>
 				</div>
 				<div class="portlet-body">
