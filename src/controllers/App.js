@@ -1,6 +1,5 @@
 import $ from 'jquery'
 import GlobalFunctions from '../global'
-import {App} from '../main.js'
 
 /** Required for some IE specific logic however the only IE we will test for is 10. */
 var isIE10 = false
@@ -402,21 +401,15 @@ export default ({
 	/**
 	 * Call to pitapit API to log a user out.
 	 * @function
-	 * @param {string} appId - The appId of the current application.
-	 * @param {string} appSecret - The appSecret of the current application.
-	 * @param {string} userToken - The userToken of the current user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	logOut: function (appId, appSecret, userToken) {
+	logOut: function () {
 		return new Promise(function (resolve, reject) {
-			$.ajax({
-				method: 'POST',
+			GlobalFunctions.$ajax({
+				method: 'GET',
 				dataType: 'json',
-				url: GlobalFunctions.v3BaseUrl + '/auth/logout',
+				url: '/application/admin/logout',
 				data: {},
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader('token', App.accountToken)
-				},
 				success: function (response) {
 					resolve(response)
 				},

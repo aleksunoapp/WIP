@@ -40,9 +40,7 @@ var App = new Vue({
 			createdBy: 0,
 			activeMenuId: 0,
 			corporateStoreId: 0,
-			storeLocations: [],
-			businessId: 2,
-			accountToken: ''
+			storeLocations: []
 		}
 	},
 	methods: {
@@ -57,8 +55,6 @@ var App = new Vue({
 			this.activeMenuId = 0
 			this.corporateStoreId = 0
 			this.storeLocations = []
-			this.businessId = null
-			this.accountToken = ''
 		},
 		/**
 		 * A wrapper to handle errors for special cases

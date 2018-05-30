@@ -60,7 +60,7 @@ Vue.use(Router)
 const router = new Router({
 	routes: [
 		{path: '/', component: Login, name: 'Login', adminOnly: false},
-		{path: '/login/expired', redirect: '/', adminOnly: false},
+		{path: '/login/:expired', name: 'Login Expires', adminOnly: false},
 		{path: '/app', redirect: '/app/analytics/overview', adminOnly: false},
 		{
 			path: '/app',

@@ -594,7 +594,6 @@
 
 <script>
 import $ from 'jquery'
-import Global from '../global.js'
 import App from '../controllers/App'
 import ajaxErrorHandler from '../controllers/ErrorController'
 import Modal from './modules/Modal'
@@ -1021,7 +1020,7 @@ export default {
 			// eslint-disable-next-line
 			localStorage.clear()
 
-			window.location.href = `${Global.accountsUrl}/?logged_out=true`
+			this.$router.push({name: 'Login'})
 		}
 	},
 	components: {

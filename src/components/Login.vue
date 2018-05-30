@@ -11,16 +11,32 @@
                 	<div class="login-content" v-if="!forgotPassword">
                 		<h1>UNOapp Commerce Login</h1>
                 		<form class="login-form" @submit.prevent="login($event)" novalidate>
-                            <div class="alert alert-danger" v-if="errorMessage.length">
+                            <div class="alert alert-danger" v-show="errorMessage.length" ref="errorMessage">
                                 <button class="close" data-close="alert" @click.prevent="clearError()"></button>
                                 <span>{{errorMessage}}</span>
                             </div>
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <input ref="email" class="form-control form-control-solid placeholder-no-fix form-group" type="email" autocomplete="off" placeholder="Email" name="email" v-model="user.email"/>
+                                    <input 
+                                    	ref="email" 
+                                    	class="form-control form-control-solid placeholder-no-fix form-group"
+                                    	type="email"
+                                    	placeholder="Email" 
+                                    	name="email" 
+                                    	v-model="user.email"
+                                    	@keyup.enter="focusPassword"
+                                    />
                                	</div>
                                 <div class="col-sm-6">
-                                    <input class="form-control form-control-solid placeholder-no-fix form-group" type="password" autocomplete="off" placeholder="Password" name="password"  v-model="user.password"/> 
+                                    <input 
+                                    	ref="password"
+                                    	class="form-control form-control-solid placeholder-no-fix form-group"
+                                    	type="password" 
+                                    	placeholder="Password" 
+                                    	name="password"
+                                    	v-model="user.password"
+                                    	@keyup.enter="login"
+                                    /> 
                                 </div>
                             </div>
                             <div class="row">
@@ -50,6 +66,7 @@ import GlobalFunctions from '../global'
 import LoginFunctions from '../controllers/Login'
 import Dropdown from './modules/Dropdown'
 import {BackgroundRotator} from '../assets/scripts/backgroundRotator'
+import ajaxErrorHandler from '../controllers/ErrorController'
 
 /**
  * Define the email pattern to check for valid emails.
@@ -97,6 +114,14 @@ export default {
 		this.$refs.email.focus()
 	},
 	methods: {
+		/**
+		 * To focus the password field
+		 * @function
+		 * @returns {undefined}
+		 */
+		focusPassword () {
+			this.$refs.password.focus()
+		},
 		/**
 		 * To show the forgot password form.
 		 * @function
@@ -157,53 +182,49 @@ export default {
 			.then(response => {
 				/* eslint-disable no-undef */
 				LoginFunctions.login(loginVue.user.email, loginVue.user.password).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						// set account type && locations for Location Managers
-						if (response.payload.type === 'admin') {
-							loginVue.$root.accountType = 'application_admin'
-						} else if (response.payload.type === 'restricted') {
-							loginVue.$root.accountType = 'store_admin'
-							loginVue.$root.storeLocations = response.payload.locations
-						}
-						localStorage.setItem('accountType', this.$root.accountType)
-						// set active user name
-						loginVue.$root.activeUser = response.payload.name
-						localStorage.setItem('activeUser', loginVue.$root.activeUser)
-						// set userToken
-						loginVue.$root.userToken = response.session.token
-						localStorage.setItem('userToken', loginVue.$root.userToken)
-						// set appId
-						loginVue.$root.appId = response.App.app_id
-						localStorage.setItem('appId', loginVue.$root.appId)
-						// set appSecret
-						loginVue.$root.appSecret = response.App.app_secret
-						localStorage.setItem('appSecret', loginVue.$root.appSecret)
-						// set createdBy
-						loginVue.$root.createdBy = response.session.admin_id
-						localStorage.setItem('createdBy', loginVue.$root.createdBy)
+					disabledButton.complete()
 
-						// set account type && locations for Location Managers
-						if (response.payload.type === 'admin') {
-							loginVue.$router.push('/app')
-						} else if (response.payload.type === 'restricted') {
-							loginVue.$router.push('/app/store_manager/stores')
-						}
-
-						disabledButton.complete()
-					} else {
-						loginVue.errorMessage = response.message
-						disabledButton.cancel()
+					// set active user name
+					loginVue.$root.activeUser = response.payload.name
+					localStorage.setItem('activeUser', loginVue.$root.activeUser)
+					// set userToken
+					loginVue.$root.userToken = response.session.token
+					localStorage.setItem('userToken', loginVue.$root.userToken)
+					// set appId
+					loginVue.$root.appId = response.App.app_id
+					localStorage.setItem('appId', loginVue.$root.appId)
+					// set appSecret
+					loginVue.$root.appSecret = response.App.app_secret
+					localStorage.setItem('appSecret', loginVue.$root.appSecret)
+					// set createdBy
+					loginVue.$root.createdBy = response.session.admin_id
+					localStorage.setItem('createdBy', loginVue.$root.createdBy)
+					// set account type && locations for Location Managers
+					if (response.payload.type === 'admin') {
+						loginVue.$root.accountType = 'application_admin'
+						localStorage.setItem('accountType', loginVue.$root.accountType)
+						loginVue.$router.push('/app')
+					} else if (response.payload.type === 'restricted') {
+						loginVue.$root.accountType = 'store_admin'
+						loginVue.$root.storeLocations = response.payload.locations
+						localStorage.setItem('accountType', loginVue.$root.accountType)
+						loginVue.$router.push('/app/store_manager/stores')
 					}
 				}).catch(reason => {
 					disabledButton.cancel()
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not log you in',
+						errorName: 'errorMessage',
+						vue: loginVue
+					})
 					throw reason
 				})
 			}).catch(reason => {
+				disabledButton.cancel()
 				// If validation fails then display the error message
 				loginVue.errorMessage = reason
 				window.scrollTo(0, 0)
-				disabledButton.cancel()
-				throw reason
 			})
 		}
 	},

@@ -15,6 +15,10 @@ let csrfToken
 
 export default {
 	/**
+	 * business id to identify the business aka brand aka customer (2 is Freshii)
+	 */
+	businessId: 2,
+	/**
 	 * base url for UNOapp accounts frontend, with # if accounts router is in hash mode
 	 */
 	// production
