@@ -33,7 +33,14 @@ field and value label directory (parse each create call):
 				<p>Approve or reject pending requests.</p>
 			</div>
 
-			<div class="portlet light portlet-fit bordered">
+			<no-results 
+				:show="noResults" 
+				:custom="true" 
+				text="There are no changes to review"
+			>
+			</no-results>
+
+			<div class="portlet light portlet-fit bordered" v-show="!noResults">
 				<div class="portlet-title bg-blue-chambray">
 					<div class="menu-image-main">
 						<img src="../../../../static/client_logo.png">
@@ -43,6 +50,7 @@ field and value label directory (parse each create call):
 						<div class="caption-desc font-grey-cascade">Review and approve or reject the changes below.</div>
 					</div>
 				</div>
+
 				<div class="portlet-body">
 					<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
 						<button class="close" data-close="alert" @click="clearError('errorMessage')"></button>
@@ -51,9 +59,7 @@ field and value label directory (parse each create call):
 
 					<loading-screen :show="loading" :color="'#2C3E50'" :display="'inline'"></loading-screen>
 
-					<p v-if="noResults">There are no changes to review.</p>
-
-					<div class="row">
+					<div class="row" v-show="!loading">
 						<div class="col-xs-12" ref="request">
 							<table class="table">
 								<thead>

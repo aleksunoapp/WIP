@@ -69,13 +69,13 @@ export default {
 			options.url = this.urls[api] + options.url
 		} else {
 			options.url = localhost + options.url
+		}
 
-			// ecomm API's auth headers
-			options.beforeSend = function (xhr) {
-				xhr.setRequestHeader('app-id', App.appId)
-				xhr.setRequestHeader('app-secret', App.appSecret)
-				xhr.setRequestHeader('auth-token', App.userToken)
-			}
+		// ecomm API's auth headers
+		options.beforeSend = function (xhr) {
+			xhr.setRequestHeader('app-id', App.appId)
+			xhr.setRequestHeader('app-secret', App.appSecret)
+			xhr.setRequestHeader('auth-token', App.userToken)
 		}
 
 		if (options.method.toLowerCase() === 'post' || options.method.toLowerCase() === 'put') {
