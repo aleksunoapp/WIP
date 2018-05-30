@@ -45,15 +45,7 @@ export default {
 					resolve(response)
 				},
 				error (e) {
-					let _this = this
-					let _wrapper = GlobalFunctions.refreshWrapper((e, status) => {
-						if (status === 'error') {
-							reject(e)
-						} else {
-							GlobalFunctions.$ajax(_this)
-						}
-					})
-					_wrapper(e)
+					reject(e)
 				}
 			})
 		})
@@ -93,15 +85,7 @@ export default {
 					resolve(response)
 				},
 				error (e) {
-					let _this = this
-					let _wrapper = GlobalFunctions.refreshWrapper((e, status) => {
-						if (status === 'error') {
-							reject(e)
-						} else {
-							GlobalFunctions.$ajax(_this)
-						}
-					})
-					_wrapper(e)
+					reject(e)
 				}
 			})
 		})
@@ -183,15 +167,7 @@ export default {
 					resolve(response)
 				},
 				error (e) {
-					let _this = this
-					let _wrapper = GlobalFunctions.refreshWrapper((e, status) => {
-						if (status === 'error') {
-							reject(e)
-						} else {
-							GlobalFunctions.$ajax(_this)
-						}
-					})
-					_wrapper(e)
+					reject(e)
 				}
 			})
 		})
@@ -251,15 +227,7 @@ export default {
 					resolve(response)
 				},
 				error (e) {
-					let _this = this
-					let _wrapper = GlobalFunctions.refreshWrapper((e, status) => {
-						if (status === 'error') {
-							reject(e)
-						} else {
-							GlobalFunctions.$ajax(_this)
-						}
-					})
-					_wrapper(e)
+					reject(e)
 				}
 			})
 		})
@@ -299,15 +267,7 @@ export default {
 					resolve(response)
 				},
 				error (e) {
-					let _this = this
-					let _wrapper = GlobalFunctions.refreshWrapper((e, status) => {
-						if (status === 'error') {
-							reject(e)
-						} else {
-							GlobalFunctions.$ajax(_this)
-						}
-					})
-					_wrapper(e)
+					reject(e)
 				}
 			})
 		})
@@ -344,15 +304,7 @@ export default {
 					resolve(response)
 				},
 				error (e) {
-					let _this = this
-					let _wrapper = GlobalFunctions.refreshWrapper((e, status) => {
-						if (status === 'error') {
-							reject(e)
-						} else {
-							GlobalFunctions.$ajax(_this)
-						}
-					})
-					_wrapper(e)
+					reject(e)
 				}
 			})
 		})
@@ -389,15 +341,7 @@ export default {
 					resolve(response)
 				},
 				error (e) {
-					let _this = this
-					let _wrapper = GlobalFunctions.refreshWrapper((e, status) => {
-						if (status === 'error') {
-							reject(e)
-						} else {
-							GlobalFunctions.$ajax(_this)
-						}
-					})
-					_wrapper(e)
+					reject(e)
 				}
 			})
 		})
@@ -435,15 +379,7 @@ export default {
 					resolve(response)
 				},
 				error (e) {
-					let _this = this
-					let _wrapper = GlobalFunctions.refreshWrapper((e, status) => {
-						if (status === 'error') {
-							reject(e)
-						} else {
-							GlobalFunctions.$ajax(_this)
-						}
-					})
-					_wrapper(e)
+					reject(e)
 				}
 			})
 		})
@@ -484,15 +420,7 @@ export default {
 					resolve(response)
 				},
 				error (e) {
-					let _this = this
-					let _wrapper = GlobalFunctions.refreshWrapper((e, status) => {
-						if (status === 'error') {
-							reject(e)
-						} else {
-							GlobalFunctions.$ajax(_this)
-						}
-					})
-					_wrapper(e)
+					reject(e)
 				}
 			})
 		})
