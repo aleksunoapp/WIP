@@ -8,7 +8,7 @@ const { development } = environment
 
 export default {
 	urls: {
-		'approvals': 'http://approval.dev.api.unoapp.io'
+		'approvals': 'https://approval.dev.api.unoapp.io'
 	},
 	/**
 	 * business id to identify the business aka brand aka customer (2 is Freshii)
@@ -22,11 +22,11 @@ export default {
 	/**
 	 * base url for API calls, other than Message calls
 	 */
-	baseUrl: 'https://freshii.beta.api.unoapp.io',
+	baseUrl: 'https://freshii.dev.api.unoapp.io',
 	/**
 	 * base url for API calls, other than Message calls
 	 */
-	v3BaseUrl: 'https://resources.beta.api.unoapp.io',
+	v3BaseUrl: 'https://resources.dev.api.unoapp.io',
 	/**
 	 * base url for API calls to send Messages
 	 */
