@@ -7,6 +7,7 @@ import CreateNewStore from '../components/app/StoreManager/CreateNewStore'
 import StoreList from '../components/app/StoreManager/StoreList'
 import EditStore from '../components/app/StoreManager/EditStore'
 import Amenities from '../components/app/MenuManager/Amenities'
+import OrderSettings from '../components/app/StoreManager/OrderSettings'
 
 import NewsFeed from '../components/app/NewsFeed'
 import SocialFeed from '../components/app/SocialFeed'
@@ -62,7 +63,7 @@ Vue.use(Router)
 const router = new Router({
 	routes: [
 		{path: '/', component: Login, name: 'Login', adminOnly: false},
-		{path: '/login/:expired', adminOnly: false},
+		{path: '/login/:expired', component: Login, adminOnly: false},
 		{path: '/app', redirect: '/app/analytics/overview', adminOnly: false},
 		{
 			path: '/app',
@@ -124,6 +125,7 @@ const router = new Router({
 				{path: 'store_manager/stores', name: 'Stores', component: StoreList, meta: { adminOnly: false }},
 				{path: 'store_manager/amenities', name: 'Amenities', component: Amenities, meta: { adminOnly: false }},
 				{path: 'store_manager/store_groups', name: 'Store Groups', component: StoreGroups, meta: { adminOnly: true }},
+				{path: 'store_manager/order_settings', name: 'OrderSettings', component: OrderSettings, meta: { adminOnly: false }},
 				// user manager routes
 				{path: 'user_manager', redirect: 'user_manager/users', meta: { adminOnly: true }},
 				{path: 'user_manager/users', name: 'Users', component: UserList, meta: { adminOnly: true }},

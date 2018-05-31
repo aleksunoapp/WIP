@@ -204,6 +204,12 @@
 										<span class="title">Amenities</span>
 									</router-link>
 								</li>
+								<li class="nav-item" v-bind:class="{'active': currentRoute === 'store_manager' && currentSubRoute === 'order_settings'}" id="store_manager_order_settings_link">
+									<router-link to="/app/store_manager/order_settings" class="nav-link">
+										<i class="fa fa-gear"></i>
+										<span class="title">Order Settings</span>
+									</router-link>
+								</li>
 							</ul>
 						</li>
 						<li class="nav-item" v-bind:class="{'active': currentRoute === 'store_manager'}" id="store_manager_link" v-if="$root.accountType === 'store_admin'">
