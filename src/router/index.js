@@ -33,8 +33,11 @@ import UserAttributes from '../components/app/UserManager/UserAttributes'
 import StoresFAQ from '../components/app/Faq/StoresFAQ'
 import UsersFAQ from '../components/app/Faq/UsersFAQ'
 import Printers from '../components/app/Printers/Printers'
+// Resources
 import Gallery from '../components/app/Gallery'
-import GalleryImages from '../components/app/GalleryImages'
+import CreateFolder from '../components/app/Gallery/CreateFolder'
+import EditFolder from '../components/app/Gallery/EditFolder'
+
 import StoreGroups from '../components/app/StoreManager/StoreGroups'
 import BaseRule from '../components/app/Loyalty/BaseRule'
 import PromotionRules from '../components/app/Loyalty/PromotionRules'
@@ -77,8 +80,12 @@ const router = new Router({
 				{path: 'faq/users', name: 'Users FAQ', component: UsersFAQ, meta: { adminOnly: true }},
 				{path: 'faq/stores', name: 'Stores FAQ', component: StoresFAQ, meta: { adminOnly: true }},
 				{path: 'printers', component: Printers, name: 'Printers', meta: { adminOnly: false }},
+
+				// Resources
 				{path: 'gallery', component: Gallery, name: 'Gallery', meta: { adminOnly: false }},
-				{path: 'gallery/:folder_id/images', component: GalleryImages, name: 'Gallery Images', meta: { adminOnly: false }},
+				{path: 'gallery/create_folder/:parent_id', component: CreateFolder, name: 'Create Resource Folder', meta: { adminOnly: false }},
+				{path: 'gallery/edit_folder/:folder', component: EditFolder, name: 'Edit Resource Folder', meta: { adminOnly: false }},
+
 				{path: 'loyalty', redirect: 'loyalty/base_rule', meta: { adminOnly: true }},
 				{path: 'loyalty/base_rule', component: BaseRule, name: 'Base Rule', meta: { adminOnly: true }},
 				{path: 'loyalty/promotion_rules', component: PromotionRules, name: 'Promotion Rules', meta: { adminOnly: true }},

@@ -43,6 +43,7 @@
 
 <script>
 import ResourcesFunctions from '@/controllers/Resources'
+import GlobalVariables from '@/global.js'
 
 export default {
 	data () {
@@ -97,7 +98,7 @@ export default {
 
 			return _this.validateFormData().then(response => {
 				_this.clearError('errorMessage')
-				const businessId = _this.$root.businessId
+				const businessId = GlobalVariables.businessId
 				let folderName = _this.folder.name
 
 				ResourcesFunctions.updateFolder(businessId, undefined, _this.folder.id, folderName, _this.folder.is_shared)

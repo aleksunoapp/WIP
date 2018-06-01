@@ -42,6 +42,7 @@
 
 <script>
 import ResourcesFunctions from '@/controllers/Resources'
+import GlobalVariables from '@/global.js'
 
 export default {
 	data () {
@@ -92,7 +93,7 @@ export default {
 
 			return _this.validateFormData().then(response => {
 				_this.clearError('errorMessage')
-				const businessId = this.$root.businessId
+				const businessId = GlobalVariables.businessId
 
 				ResourcesFunctions.createFolder(businessId, undefined, _this.newFolder, _this.$route.params.parent_id)
 				.then(response => {
