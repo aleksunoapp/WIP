@@ -16,6 +16,9 @@
 				    <button class="close" data-close="alert" @click="clearError()"></button>
 				    <span>{{errorMessage}}</span>
 				</div>
+				<div class="alert alert-info" v-show="noItemTypes" ref="noItemTypes">
+				    Menu Items require a tax type classification. <router-link to="/app/tax_manager/item_types">Create an Item Type in Tax Manager</router-link> before updating this  Menu Item.
+				</div>
 				<div class="col-md-12">
 					<div class="form-group form-md-line-input form-md-floating-label">
 					    <input type="text" class="form-control input-sm edited" id="form_control_2" v-model="itemToBeEdited.name">
@@ -80,7 +83,15 @@
 			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button v-if="!selectImageMode && !selectLocationMode" type="button" class="btn btn-primary" @click="updateCategoryItem()">Save</button>
+			<button 
+				v-if="!selectImageMode && !selectLocationMode" 
+				type="button" 
+				class="btn btn-primary" 
+				:disabled="noItemTypes"
+				@click="updateCategoryItem()"
+			>
+				Save
+			</button>
 		</div>
 	</modal>
 </template>
@@ -106,7 +117,8 @@ export default {
 			selectImageMode: false,
 			selectedLocations: [],
 			selectLocationMode: false,
-			itemTypes: []
+			itemTypes: [],
+			noItemTypes: false
 		}
 	},
 	computed: {
@@ -304,11 +316,8 @@ export default {
 			var _this = this
 			return ItemTypesFunctions.getItemTypes(_this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
 			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					_this.itemTypes = response.payload
-				} else {
-
-				}
+				_this.itemTypes = response.payload
+				if (response.payload.length === 0) { this.noItemTypes = true }
 			}).catch(reason => {
 				_this.loadingItemTypes = false
 				ajaxErrorHandler({

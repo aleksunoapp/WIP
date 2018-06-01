@@ -29,6 +29,9 @@
 			        		    <button class="close" data-close="alert" @click.prevent="clearError()"></button>
 			        		    <span>{{errorMessage}}</span>
 			        		</div>
+			        		<div class="alert alert-info" v-show="noItemTypes" ref="noItemTypes">
+			        		    Menu Items require a tax type classification. <router-link to="/app/tax_manager/item_types">Create an Item Type in Tax Manager</router-link> before creating a Menu Item.
+			        		</div>
 		        		</div>
 		        		<div class="col-md-12 margin-bottom-20" v-if="$root.activeLocation.is_corporate !== undefined && $root.activeLocation.is_corporate !== 1">
 		        			<button class="btn create-or-edit" @click.prevent="flipCopyCreate" :class="{'blue-chambray' : copyMode, 'blue btn-outline' : !copyMode}">Copy existing</button>
@@ -90,7 +93,7 @@
 							    </div>
 							</div>
 						</div>
-	                         <div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}"  v-show="!showCorporateItems" >
+                        <div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}"  v-show="!showCorporateItems" >
 							<resource-picker 
 								@open="toggleImageMode('newMenu', true)"
 								@close="toggleImageMode('newMenu', false)"
@@ -101,7 +104,7 @@
 							>
 							</resource-picker>
 		        		</div>
-		        		<div class="col-md-5" v-show="!showCorporateItems">
+		        		<div class="col-md-5" v-show="!showCorporateItems && !imageMode.newMenu">
 							<div class="form-group form-md-line-input form-md-floating-label">
 							    <input type="text" class="form-control input-sm" :class="{'edited': newItem.name.length}" id="form_control_2" v-model="newItem.name">
 							    <label for="form_control_2">Item Name</label>
@@ -123,7 +126,7 @@
 							    <label for="form_control_3">Nutrition Summary</label>
 							</div>
 		        		</div>
-		        		<div class="col-md-5" v-show="!showCorporateItems">
+		        		<div class="col-md-5" v-show="!showCorporateItems && !imageMode.newMenu">
     						<div class="form-group form-md-line-input form-md-floating-label">
     						    <input type="number" class="form-control input-sm" :class="{'edited': newItem.order}" id="form_control_4" v-model="newItem.order">
     						    <label for="form_control_4">Item Order</label>
@@ -157,8 +160,8 @@
     			            </div>
 		        		</div>
 		        	</div>
-      				<div class="form-actions right margin-top-20" v-show="!showCorporateItems">
-						<button type="submit" class="btn blue">Create</button>
+      				<div class="form-actions right margin-top-20" v-show="!showCorporateItems && !imageMode.newMenu">
+						<button type="submit" class="btn blue" :disabled="noItemTypes">Create</button>
 					</div>
       			</form>
   			</div>
@@ -527,7 +530,8 @@ export default {
 			locationsToApplyItemTo: [],
 			imageMode: {
 				newMenu: false
-			}
+			},
+			noItemTypes: false
 		}
 	},
 	computed: {
@@ -570,6 +574,16 @@ export default {
 		this.getItemTypes()
 	},
 	methods: {
+		/**
+		 * To toggle between the open and closed state of the resource picker
+		 * @function
+		 * @param {string} object - The name of the object the image is for
+		 * @param {object} value - The open / closed value of the picker
+		 * @returns {undefined}
+		 */
+		toggleImageMode (object, value) {
+			this.imageMode[object] = value
+		},
 		/**
 		 * To apply an Item to selected locations
 		 * @function
@@ -1413,11 +1427,8 @@ export default {
 			var _this = this
 			return ItemTypesFunctions.getItemTypes(_this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
 			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					_this.itemTypes = response.payload
-				} else {
-
-				}
+				_this.itemTypes = response.payload
+				if (response.payload.length === 0) { this.noItemTypes = true }
 			}).catch(reason => {
 				_this.loadingItemTypes = false
 				ajaxErrorHandler({
