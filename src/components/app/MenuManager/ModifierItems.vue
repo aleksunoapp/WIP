@@ -252,18 +252,6 @@
 		<tags-list v-if="displayTagsListModal" :itemType="'modifier-item'" :appliedTags="appliedTags" :selectedItemId="selectedItemId" @deactivateTagsListModal="closeTagsListModal"></tags-list>
 		<portions-list v-if="displayPortionsListModal" :itemType="'modifier-item'" :appliedPortions="appliedPortions" :selectedItemId="selectedItemId" @closePortionsListModal="closePortionsListModal"></portions-list>
 		<options-list v-if="displayOptionsListModal" :itemType="'modifier-item'" :appliedOptions="appliedOptions" :selectedItemId="selectedItemId" @closeOptionsListModal="closeOptionsListModal"></options-list>
-		<modal :show="showGalleryModal" effect="fade" @closeOnEscape="closeGalleryModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeGalleryModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Select An Image</h4>
-			</div>
-			<div slot="modal-body" class="modal-body">
-				<gallery-popup @selectedImage="updateImage"></gallery-popup>
-			</div>
-			<div slot="modal-footer" class="modal-footer clear"></div>
-		</modal>
 	</div>
 </template>
 
@@ -271,7 +259,6 @@
 import $ from 'jquery'
 import Breadcrumb from '../../modules/Breadcrumb'
 import NoResults from '../../modules/NoResults'
-import Modal from '../../modules/Modal'
 import LoadingScreen from '../../modules/LoadingScreen'
 import ModifiersFunctions from '../../../controllers/Modifiers'
 import EditModifierItem from './Modifiers/EditModifierItem'
@@ -345,28 +332,12 @@ export default {
 			this.imageMode[object] = value
 		},
 		/**
-		 * To close the gallery popup.
-		 * @function
-		 * @returns {undefined}
-		 */
-		closeGalleryModal () {
-			this.showGalleryModal = false
-		},
-		/**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
 		clearError () {
 			this.errorMessage = ''
-		},
-		/**
-		 * To open the gallery modal.
-		 * @function
-		 * @returns {undefined}
-		 */
-		openGalleryPopup () {
-			this.showGalleryModal = true
 		},
 		/**
 		 * To set the image to be same as the one emitted by the gallery modal.
@@ -749,7 +720,6 @@ export default {
 	},
 	components: {
 		Breadcrumb,
-		Modal,
 		LoadingScreen,
 		EditModifierItem,
 		DeleteModifierItem,

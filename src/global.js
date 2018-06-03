@@ -4,11 +4,19 @@
 import $ from 'jquery'
 import {App} from './main.js'
 import environment from './environment'
-const { development } = environment
+const { production, staging, development } = environment
 
 export default {
 	urls: {
-		'approvals': 'https://approval.dev.api.unoapp.io'
+		approvals: (function () {
+			if (production) {
+				return ''
+			} else if (staging) {
+				return 'https://approval.beta.api.unoapp.io'
+			} else {
+				return 'https://approval.dev.api.unoapp.io'
+			}
+		}())
 	},
 	/**
 	 * business id to identify the business aka brand aka customer (2 is Freshii)
@@ -22,7 +30,15 @@ export default {
 	/**
 	 * base url for API calls, other than Message calls
 	 */
-	baseUrl: 'https://freshii.dev.api.unoapp.io',
+	baseUrl: (function () {
+		if (production) {
+			return ''
+		} else if (staging) {
+			return 'https://freshii.beta.api.unoapp.io'
+		} else {
+			return 'https://freshii.dev.api.unoapp.io'
+		}
+	}()),
 	/**
 	 * base url for API calls, other than Message calls
 	 */
