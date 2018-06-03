@@ -12,8 +12,21 @@
 			<div class="note note-info">
 	            <p>Manage a store's menu tiers.</p>
 	        </div>
-	        <!-- BEGIN CREATE NEW MENU-->
-	        <div class="portlet box blue-hoki" v-if="$root.corporateStoreId">
+	        <!-- BEGIN CREATE NEW TIER-->
+	        <div class="row">
+	        	<div class="col-xs-12">
+	        		<div class="alert alert-info" v-if="noCorporateStore">
+	        			A Corporate Store is required to use Menu Tiers. 
+	        			<span v-if="$root.accountType === 'application_admin'">
+		        			<router-link to="/app/store_manager/stores">Make one of your Stores the corporate store in the Stores Manager</router-link> before using Menu Tiers.
+	        			</span>
+	        			<span v-else>
+	        				Your Brand Admin can set a Store to be corporate.
+	        			</span>
+	        		</div>
+	        	</div>
+	        </div>
+	        <div class="portlet box blue-hoki" v-if="!noCorporateStore">
 				<div class="portlet-title bg-blue-chambray" @click="toggleCreateMenuTierPanel()">
 					<div class="custom tools">
 						<a :class="{'expand': !createMenuTierCollapse, 'collapse': createMenuTierCollapse}"></a>
@@ -48,10 +61,10 @@
 	      			</form>
 	  			</div>
 	        </div>
-	        <!-- END CREATE NEW MENU-->
+	        <!-- END CREATE NEW TIER-->
 	        <loading-screen :show="displayMenuTiersData" :color="'#2C3E50'" :display="'inline'"></loading-screen>
 	        <!-- BEGIN MENUS LIST-->
-	        <div v-if="menuTiers.length && !displayMenuTiersData">
+	        <div v-if="!noCorporateStore">
 			    <div class="portlet light portlet-fit bordered margin-top-20">
 			        <div class="portlet-title bg-blue-chambray">
 			        	<div class="menu-image-main">
@@ -63,7 +76,8 @@
 			            </div>
 			        </div>
 			        <div class="portlet-body">
-			            <div class="mt-element-list margin-top-15">
+			        	<no-results v-if="$root.accountType === 'application_admin'" :show="!menuTiers.length" :type="'menu tiers'"></no-results>
+			            <div class="mt-element-list margin-top-15" v-else>
 			                <div class="mt-list-container list-news">
 			                    <ul>
 			                        <li id="parent" class="mt-list-item actions-at-left margin-top-15 clickable" v-for="tier in menuTiers" :id="'tier-' + tier.id" @click="assignMenusToTier(tier)">
@@ -94,10 +108,6 @@
 			    </div>
 	        </div>
 	        <!-- END MENUS LIST-->
-	        <div v-if="!menuTiers.length && !displayMenuTiersData">
-	        	<no-results v-if="$root.accountType === 'application_admin'" :show="!menuTiers.length" :type="'menu tiers'"></no-results>
-	            <no-results v-if="$root.accountType === 'store_admin'" :show="!menuTiers.length" :type="'menu tiers'" :custom="true" :text="customText"></no-results>
-	        </div>
         </div>
     	<assign-menus v-if="showAssignMenusModal" :passedTierId="passedTierId" @closeAssignMenusModal="closeAssignMenusModal"></assign-menus>
 	    <edit-menu-tier v-if="showEditTierModal" :passedTierId="passedTierId" @closeEditTierModal="closeEditTierModal" @updateMenuTier="updateMenuTier"></edit-menu-tier>
@@ -132,38 +142,18 @@ export default {
 				name: '',
 				description: '',
 				location_id: this.$root.corporateStoreId
-			}
+			},
+			noCorporateStore: false
 		}
 	},
-	mounted () {
-		this.checkForCorporateLocation()
+	created () {
+		if (this.$root.corporateStoreId !== null) {
+			this.getMenuTiers()
+		} else {
+			this.noCorporateStore = true
+		}
 	},
 	methods: {
-		/**
-		 * To check if a location has been selected.
-		 * @function
-		 * @returns {undefined}
-		 */
-		checkForCorporateLocation () {
-			if (this.$root.corporateStoreId) {
-				this.getMenuTiers()
-			} else {
-				this.showCorporateLocationAlert()
-			}
-		},
-		/**
-		 * To display a prompt to select a location.
-		 * @function
-		 * @returns {undefined}
-		 */
-		showCorporateLocationAlert () {
-			this.$swal({
-				title: 'No Corporate Store',
-				html: '<div><strong>Set a Corporate Store<br/>to create or manage Menu Tiers.</strong><br/><br/>You can create a new Store and set it as Corporate<br/>or update a current Store to be Corporate<br/>in the Stores Manager.</div>',
-				type: 'warning',
-				confirmButtonText: 'OK'
-			})
-		},
 		/**
 		 * To close anything active in the side panel
 		 * @function

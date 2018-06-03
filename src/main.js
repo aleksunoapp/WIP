@@ -39,7 +39,7 @@ var App = new Vue({
 			activeLocation: {},
 			createdBy: 0,
 			activeMenuId: 0,
-			corporateStoreId: 0,
+			corporateStoreId: null,
 			storeLocations: [],
 			requestsPending: false
 		}
@@ -54,7 +54,7 @@ var App = new Vue({
 			this.activeLocation = {}
 			this.createdBy = 0
 			this.activeMenuId = 0
-			this.corporateStoreId = 0
+			this.corporateStoreId = null
 			this.storeLocations = []
 		},
 		/**

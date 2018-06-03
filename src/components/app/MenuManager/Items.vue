@@ -22,7 +22,7 @@
 				</div>
 			</div>
 			<div class="portlet-body" :class="{'display-hide': createItemCollapse}">
-      			<form role="form" @submit.prevent="addNewCategoryItem()">
+      			<form role="form" @submit.prevent="addNewCategoryItem()" :disabled="noItemTypes">
       				<div class="form-body row">
       					<div class="col-md-12">
 			        		<div class="alert alert-danger" v-show="errorMessage.length" ref="errorMessage">
