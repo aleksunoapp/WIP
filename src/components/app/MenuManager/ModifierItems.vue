@@ -11,7 +11,7 @@
 		<div class="note note-info">
 			<p>View items for modifier category '{{ modifierCategoryDetails.name }}'.</p>
 		</div>
-		<!-- BEGIN CREATE NEW MENU-->
+		<!-- BEGIN CREATE NEW MODIFIER ITEM -->
 		<div class="portlet box blue-hoki" v-if="$root.activeLocation && $root.activeLocation.id">
 			<div class="portlet-title bg-blue-chambray" @click="toggleCreateModifierItemPanel()">
 				<div class="custom tools">
@@ -30,16 +30,18 @@
 								<span>{{errorMessage}}</span>
 							</div>
 						</div>
-						<div class="col-md-2">
-							<label>Modifier Item Image</label>
-							<div class="image-container clickable" v-if="!newModifierItem.image_url.length">
-								<img width="100" height="80" src="../../../assets/img/app/image-placeholder.png" @click="openGalleryPopup()">
-							</div>
-							<div class="image-container clickable" v-else>
-								<img width="100" height="80" :src="newModifierItem.image_url" @click="openGalleryPopup()">
-							</div>
+						<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
+							<resource-picker 
+								@open="toggleImageMode('newMenu', true)"
+								@close="toggleImageMode('newMenu', false)"
+								@selected="updateImage" 
+								:imageButton="true"
+								:imageUrl="newModifierItem.image_url"
+								class="margin-top-15"
+							>
+							</resource-picker>
 						</div>
-						<div class="col-md-5">
+						<div class="col-md-5" v-show="!imageMode.newMenu">
 							<div class="form-group form-md-line-input form-md-floating-label">
 								<input type="text" class="form-control input-sm" :class="{'edited': newModifierItem.name.length}" id="form_control_1" v-model="newModifierItem.name">
 								<label for="form_control_1">Modifier Item Name</label>
@@ -57,7 +59,7 @@
 								<label for="form_control_4">Modifier Item SKU</label>
 							</div>
 						</div>
-						<div class="col-md-5">
+						<div class="col-md-5" v-show="!imageMode.newMenu">
 							<div class="form-group form-md-line-input form-md-floating-label">
 								<input type="number" class="form-control input-sm" :class="{'edited': newModifierItem.min}" id="form_control_5" v-model="newModifierItem.min">
 								<label for="form_control_5">Modifier Item Min</label>
@@ -84,13 +86,13 @@
 							</div>
 						</div>
 					</div>
-					<div class="form-actions right margin-top-20">
+					<div class="form-actions right margin-top-20" v-show="!imageMode.newMenu">
 						<button type="submit" class="btn blue">Create</button>
 					</div>
 				</form>
 			</div>
 		</div>
-		<!-- END CREATE NEW MENU-->
+		<!-- END CREATE NEW MODIFIER ITEM -->
 		<loading-screen :show="displayModifierItemData" :color="'#2C3E50'" :display="'inline'"></loading-screen>
 		<div v-if="$root.activeLocation && $root.activeLocation.id && !displayModifierItemData">
 			<div class="portlet light portlet-fit bordered margin-top-20">
@@ -278,7 +280,7 @@ import ModifierNutritionInfo from './Modifiers/ModifierNutritionInfo'
 import TagsList from './Tags/TagsList'
 import PortionsList from './Portions/PortionsList'
 import OptionsList from './Options/OptionsList'
-import GalleryPopup from '../../modules/GalleryPopup'
+import ResourcePicker from '../../modules/ResourcePicker'
 
 export default {
 	data () {
@@ -319,7 +321,10 @@ export default {
 			errorMessage: '',
 			displayPortionsListModal: false,
 			displayOptionsListModal: false,
-			expanded: null
+			expanded: null,
+			imageMode: {
+				newMenu: false
+			}
 		}
 	},
 	mounted () {
@@ -329,6 +334,16 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * To toggle between the open and closed state of the resource picker
+		 * @function
+		 * @param {string} object - The name of the object the image is for
+		 * @param {object} value - The open / closed value of the picker
+		 * @returns {undefined}
+		 */
+		toggleImageMode (object, value) {
+			this.imageMode[object] = value
+		},
 		/**
 		 * To close the gallery popup.
 		 * @function
@@ -741,7 +756,7 @@ export default {
 		ModifierNutritionInfo,
 		TagsList,
 		NoResults,
-		GalleryPopup,
+		ResourcePicker,
 		PortionsList,
 		OptionsList
 	}

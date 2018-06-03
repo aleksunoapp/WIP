@@ -159,12 +159,12 @@
 			</div>
 			<div class="col-sm-12 margin-top-10">
 				<button 
-					v-if="showCloseButton"
+					v-if="showDoneButton"
 					type="button" 
 					class="btn btn-default pull-right" 
 					@click="closeResourceModal()"
 				>
-					Close
+					Done
 				</button>
 				<button
 					v-show="selectedResource.id"
@@ -216,7 +216,7 @@ export default {
 			type: Boolean,
 			default: () => false
 		},
-		showCloseButton: {
+		showDoneButton: {
 			type: Boolean,
 			default: true
 		},
@@ -779,7 +779,7 @@ export default {
 			let payload = { ...this.selectedResource }
 			payload.image_url = payload.url
 			this.$emit('selected', payload)
-			if (this.showCloseButton) { this.closeResourceModal() }
+			if (this.showDoneButton) { this.closeResourceModal() }
 		},
 		/**
 		 * To select the resource and complete the selection process

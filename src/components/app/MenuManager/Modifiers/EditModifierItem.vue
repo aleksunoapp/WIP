@@ -7,7 +7,6 @@
 			<transition name="fade" mode="out-in">
 				<h4 class="modal-title center" v-if="!selectImageMode && !selectLocationMode" key="mainEditMode">Edit Modifier Item</h4>
 				<h4 class="modal-title center" v-if="!selectImageMode && selectLocationMode" key="selectLocationMode"><i class="fa fa-chevron-left clickable pull-left back-button" @click="closeSelectLocationsPopup()"></i>Select Stores</h4>
-				<h4 class="modal-title center" v-if="selectImageMode && !selectLocationMode" key="selectImageMode"><i class="fa fa-chevron-left clickable pull-left back-button" @click="goToPageOne()"></i>  Select An Image</h4>
 			</transition>
 		</div>
 		<div slot="modal-body" class="modal-body">
@@ -35,7 +34,7 @@
 	    			>
 					</select-locations-popup>
         		</div>
-				<div class="col-md-9" v-show="!selectImageMode && !selectLocationMode">
+				<div class="col-xs-12" v-show="!selectImageMode && !selectLocationMode">
 					<div class="form-group form-md-line-input form-md-floating-label">
 					    <input type="text" class="form-control input-sm edited" id="form_control_1" v-model="itemToBeEdited.name">
 					    <label for="form_control_1">Modifier Item Name</label>

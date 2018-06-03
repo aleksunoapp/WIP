@@ -17,7 +17,7 @@
 					<resource-picker 
 						:noButton="true"
 						@selected="updateImage"
-						:showCloseButton="false"
+						:showDoneButton="false"
 						:imageButton="false"
 						:selectOnly="false"
 					>
