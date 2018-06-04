@@ -228,7 +228,6 @@ import LoadingScreen from '../modules/LoadingScreen'
 import PromoCodesFunctions from '../../controllers/PromoCodes'
 import Modal from '../modules/Modal'
 import Dropdown from '../modules/Dropdown'
-import GalleryPopup from '../modules/GalleryPopup'
 import NoResults from '../modules/NoResults'
 import EditPromoCode from './PromoCodes/EditPromoCode'
 import DeletePromoCode from './PromoCodes/DeletePromoCode'
@@ -732,7 +731,6 @@ export default {
 		Breadcrumb,
 		LoadingScreen,
 		Modal,
-		GalleryPopup,
 		NoResults,
 		EditPromoCode,
 		DeletePromoCode,

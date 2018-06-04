@@ -116,7 +116,14 @@
 									inactive-text="No">
 								</el-switch>
 						</div>
-						<gallery-popup @selectedImage="updateImageToCreate"></gallery-popup>
+						<resource-picker 
+							:noButton="true"
+							@selected="updateImageToCreate"
+							:showDoneButton="false"
+							:imageButton="false"
+							:selectOnly="true"
+						>
+						</resource-picker>
 					</div>
 					<!-- CREATE END -->
 					
@@ -140,7 +147,14 @@
 									inactive-text="No">
 								</el-switch>
 						</div>
-						<gallery-popup @selectedImage="updateImageToEdit"></gallery-popup>
+						<resource-picker 
+							:noButton="true"
+							@selected="updateImageToEdit"
+							:showDoneButton="false"
+							:imageButton="false"
+							:selectOnly="true"
+						>
+						</resource-picker>
 					</div>
 					<!-- EDIT END -->
 
@@ -173,7 +187,7 @@ import $ from 'jquery'
 import Modal from '../../../modules/Modal'
 import LoadingScreen from '../../../modules/LoadingScreen'
 import ItemsFunctions from '../../../../controllers/Items'
-import GalleryPopup from '../../../modules/GalleryPopup'
+import ResourcePicker from '../../../modules/ResourcePicker'
 import ajaxErrorHandler from '../../../../controllers/ErrorController'
 
 export default {
@@ -502,7 +516,7 @@ export default {
 	components: {
 		Modal,
 		LoadingScreen,
-		GalleryPopup
+		ResourcePicker
 	}
 }
 </script>

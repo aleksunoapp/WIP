@@ -68,7 +68,7 @@
 					</tbody>
 				</table>
 			</div>
-			<div class="page-one" v-if="!selectUsersMode && !selectImageMode" :class="{'active': !selectImageMode, 'disabled': selectImageMode}">
+			<div class="page-one" v-if="!selectUsersMode">
 				<div class="alert alert-danger" v-if="errorMessage.length">
 					<button class="close" data-close="alert" @click="clearError()"></button>
 					<span>{{errorMessage}}</span>
@@ -88,69 +88,72 @@
 						SMS
 					</label>
 				</div>
-				<div v-if="message.notification_type === 'push'" class="form-group form-md-line-input form-md-floating-label">
-					<input type="text" class="form-control input-sm" :class="{'edited': message.title.length}" id="form_control_1" v-model="message.title">
-					<label for="form_control_1">Title</label>
+				<div class="row" v-if="message.notification_type === 'inapp'">
+					<div :class="{'col-xs-4 col-xs-offset-4' : !selectImageMode, 'col-xs-12' : selectImageMode}">
+	                    <resource-picker 
+							@open="toggleImageMode('selectImageMode', true)"
+							@close="toggleImageMode('selectImageMode', false)"
+							@selected="updateIcon" 
+							:imageButton="true"
+							:imageUrl="message.media_path"
+							class="margin-top-15"
+						>
+						</resource-picker>
+					</div>			
 				</div>
-				<div v-if="message.notification_type === 'push'" class="form-group form-md-line-input form-md-floating-label">
-					<input type="text" class="form-control input-sm" :class="{'edited': message.message.length}" id="form_control_2" v-model="message.message">
-					<label for="form_control_2">Message</label>
-				</div>
-				<div v-if="message.notification_type === 'inapp'" class="form-group form-md-line-input form-md-floating-label">
-					<input type="text" class="form-control input-sm" :class="{'edited': message.title.length}" id="form_control_3" v-model="message.title">
-					<label for="form_control_3">Title</label>
-				</div>
-				<div v-if="message.notification_type === 'inapp'" class="form-group form-md-line-input form-md-floating-label">
-					<input type="text" class="form-control input-sm" :class="{'edited': message.push_message.length}" id="form_control_4" v-model="message.push_message">
-					<label for="form_control_4">Push message</label>
-				</div>
-				<div v-if="message.notification_type === 'inapp'" class="form-group form-md-line-input form-md-floating-label">
-					<input type="text" class="form-control input-sm" :class="{'edited': message.message.length}" id="form_control_5" v-model="message.message">
-					<label for="form_control_5">Body</label>
-				</div>
-    			<div v-if="message.notification_type === 'push'" class="form-group form-md-line-input form-md-floating-label">
-	    			<el-date-picker 
-	    				v-model="message.expire_at" 
-	    				type="date" 
-	    				format="yyyy-MM-dd" 
-	    				value-format="yyyy-MM-dd" 
-	    				:clearable="false" 
-	    				placeholder="Expires on">
-					</el-date-picker>
-    			</div>
-				<div v-if="message.notification_type === 'inapp'" class="form-group form-md-line-input form-md-floating-label">
-					<label>Choose image</label>
-					<div class="image-container clickable" v-if="!message.media_path">
-						<img width="100" height="80" src="../../../assets/img/app/image-placeholder.png" @click="showGalleryPopup()">
+				<div v-show="!selectImageMode">
+					<div v-if="message.notification_type === 'push'" class="form-group form-md-line-input form-md-floating-label">
+						<input type="text" class="form-control input-sm" :class="{'edited': message.title.length}" id="form_control_1" v-model="message.title">
+						<label for="form_control_1">Title</label>
 					</div>
-					<div class="image-container clickable" v-else>
-						<img width="100" height="80" :src="message.media_path" @click="showGalleryPopup()">
+					<div v-if="message.notification_type === 'push'" class="form-group form-md-line-input form-md-floating-label">
+						<input type="text" class="form-control input-sm" :class="{'edited': message.message.length}" id="form_control_2" v-model="message.message">
+						<label for="form_control_2">Message</label>
 					</div>
+					<div v-if="message.notification_type === 'inapp'" class="form-group form-md-line-input form-md-floating-label">
+						<input type="text" class="form-control input-sm" :class="{'edited': message.title.length}" id="form_control_3" v-model="message.title">
+						<label for="form_control_3">Title</label>
+					</div>
+					<div v-if="message.notification_type === 'inapp'" class="form-group form-md-line-input form-md-floating-label">
+						<input type="text" class="form-control input-sm" :class="{'edited': message.push_message.length}" id="form_control_4" v-model="message.push_message">
+						<label for="form_control_4">Push message</label>
+					</div>
+					<div v-if="message.notification_type === 'inapp'" class="form-group form-md-line-input form-md-floating-label">
+						<input type="text" class="form-control input-sm" :class="{'edited': message.message.length}" id="form_control_5" v-model="message.message">
+						<label for="form_control_5">Body</label>
+					</div>
+	    			<div v-if="message.notification_type === 'push'" class="form-group form-md-line-input form-md-floating-label">
+		    			<el-date-picker 
+		    				v-model="message.expire_at" 
+		    				type="date" 
+		    				format="yyyy-MM-dd" 
+		    				value-format="yyyy-MM-dd" 
+		    				:clearable="false" 
+		    				placeholder="Expires on">
+						</el-date-picker>
+	    			</div>
+					<el-dropdown v-if="message.notification_type === 'inapp'" @command="updateCallToAction" size="mini" :show-timeout="50" :hide-timeout="50"  class="margin-top-15">
+						<el-button size="mini">
+							{{ selectedCallLabel }}
+							<i class="el-icon-arrow-down el-icon--right"></i>
+						</el-button>
+						<el-dropdown-menu slot="dropdown">
+							<el-dropdown-item :command="29">
+								Call
+							</el-dropdown-item>
+							<el-dropdown-item :command="26">
+								Website
+							</el-dropdown-item>
+							<el-dropdown-item :command="25">
+								Close
+							</el-dropdown-item>
+						</el-dropdown-menu>
+					</el-dropdown>
+	    			<div v-if="message.call_to_action === 'CALL' || message.call_to_action === 'GOTO_LINK'" class="form-group form-md-line-input form-md-floating-label margin-top-10">
+	    				<input type="text" class="form-control input-sm edited" id="form_control_6" v-model="message.action_value">
+	    				<label for="form_control_6">{{ numberOrUrl }}</label>
+	    			</div>
 				</div>
-				<el-dropdown v-if="message.notification_type === 'inapp'" @command="updateCallToAction" size="mini" :show-timeout="50" :hide-timeout="50"  class="margin-top-15">
-					<el-button size="mini">
-						{{ selectedCallLabel }}
-						<i class="el-icon-arrow-down el-icon--right"></i>
-					</el-button>
-					<el-dropdown-menu slot="dropdown">
-						<el-dropdown-item :command="29">
-							Call
-						</el-dropdown-item>
-						<el-dropdown-item :command="26">
-							Website
-						</el-dropdown-item>
-						<el-dropdown-item :command="25">
-							Close
-						</el-dropdown-item>
-					</el-dropdown-menu>
-				</el-dropdown>
-    			<div v-if="message.call_to_action === 'CALL' || message.call_to_action === 'GOTO_LINK'" class="form-group form-md-line-input form-md-floating-label margin-top-10">
-    				<input type="text" class="form-control input-sm edited" id="form_control_6" v-model="message.action_value">
-    				<label for="form_control_6">{{ numberOrUrl }}</label>
-    			</div>
-			</div>
-			<div class="page-two" v-if="selectImageMode" :class="{'active': selectImageMode, 'disabled': !selectImageMode}">
-				<gallery-popup @selectedImage="updateIcon"></gallery-popup>
 			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
@@ -175,7 +178,7 @@ import MessageFunctions from '../../../controllers/Message'
 import ButtonGroup from '../../modules/ButtonGroup'
 import Checkbox from '../../modules/Checkbox'
 import Dropdown from '../../modules/Dropdown'
-import GalleryPopup from '../../modules/GalleryPopup'
+import ResourcePicker from '../../modules/ResourcePicker'
 import GlobalFunctions from '../../../global.js'
 
 export default {
@@ -255,6 +258,16 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * To toggle between the open and closed state of the resource picker
+		 * @function
+		 * @param {string} object - The name of the object the image is for
+		 * @param {object} value - The open / closed value of the picker
+		 * @returns {undefined}
+		 */
+		toggleImageMode (object, value) {
+			this[object] = value
+		},
 		/**
 		 * To clear the user search
 		 * @function
@@ -439,14 +452,6 @@ export default {
 			this.message.app_action_id = id
 		},
 		/**
-		 * To display image selection
-		 * @function
-		 * @returns {undefined}
-		 */
-		showGalleryPopup () {
-			this.selectImageMode = true
-		},
-		/**
 		 * To set the image to be same as the one emitted by the gallery modal.
 		 * @function
 		 * @param {object} val - The emitted image object.
@@ -513,7 +518,7 @@ export default {
 		Modal,
 		ButtonGroup,
 		Checkbox,
-		GalleryPopup,
+		ResourcePicker,
 		Dropdown
 	}
 }

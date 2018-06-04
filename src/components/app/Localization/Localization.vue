@@ -177,7 +177,14 @@
         		<h4 class="modal-title center">Select Image To Use in {{localeForTranslation.country}}</h4>
         	</div>
         	<div slot="modal-body" class="modal-body">
-				<gallery-popup @selectedImage="updateImage"></gallery-popup>
+        		<resource-picker 
+        			:noButton="true"
+        			@selected="updateImage"
+        			:showDoneButton="false"
+        			:imageButton="false"
+        			:selectOnly="true"
+        		>
+        		</resource-picker>
         	</div>
         	<div slot="modal-footer" class="modal-footer clear"></div>
         </modal>
@@ -189,7 +196,7 @@ import Breadcrumb from '../../modules/Breadcrumb'
 import LocalizationFunctions from '../../../controllers/Localization'
 import Dropdown from '../../modules/Dropdown'
 import Modal from '../../modules/Modal'
-import GalleryPopup from '../../modules/GalleryPopup'
+import ResourcePicker from '../../modules/ResourcePicker'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
 
 export default {
@@ -404,6 +411,16 @@ export default {
 		this.getLocales()
 	},
 	methods: {
+		/**
+		 * To toggle between the open and closed state of the resource picker
+		 * @function
+		 * @param {string} object - The name of the object the image is for
+		 * @param {object} value - The open / closed value of the picker
+		 * @returns {undefined}
+		 */
+		toggleImageMode (object, value) {
+			this[object] = value
+		},
 		/**
 		 * To open the image preview modal
 		 * @function
@@ -807,7 +824,7 @@ export default {
 		Breadcrumb,
 		Dropdown,
 		Modal,
-		GalleryPopup
+		ResourcePicker
 	}
 }
 </script>
