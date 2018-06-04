@@ -30,7 +30,7 @@
 			        		    <span>{{errorMessage}}</span>
 			        		</div>
 			        		<div class="alert alert-info" v-show="noItemTypes" ref="noItemTypes">
-			        		    Menu Items require a tax type classification. <router-link to="/app/tax_manager/item_types">Create an Item Type in Tax Manager</router-link> before creating a Menu Item.
+			        		    Menu Items require a tax classification. <router-link to="/app/tax_manager/item_types">Create an Item Type in Tax Manager</router-link> before creating a Menu Item.
 			        		</div>
 		        		</div>
 		        		<div class="col-md-12 margin-bottom-20" v-if="$root.activeLocation.is_corporate !== undefined && $root.activeLocation.is_corporate !== 1">
@@ -136,16 +136,29 @@
 		        			    <label for="form_control_5">Item SKU</label>
 		        			</div>
 	                        <div class="form-group form-md-line-input form-md-floating-label" v-if="itemTypes.length">
-	                    		<label>Item type:</label><br>
-	                    		<el-dropdown trigger="click" @command="updateItemType" size="mini" :show-timeout="50" :hide-timeout="50">
+	                    		<label>Tax class:</label><br>
+	                    		<el-dropdown trigger="click" @command="updateTaxClass" size="mini" :show-timeout="50" :hide-timeout="50">
 	                    			<el-button size="mini">
-	                    				{{ newItemTypeLabel }} <i class="el-icon-arrow-down el-icon--right"></i>
+	                    				{{ newTaxClassLabel }} <i class="el-icon-arrow-down el-icon--right"></i>
 	                    			</el-button>
 	                    			<el-dropdown-menu slot="dropdown">
 	                    				<el-dropdown-item v-for="type in itemTypes" :command="type.id" :key="type.id">{{type.name}}</el-dropdown-item>
 	                    			</el-dropdown-menu>
 	                    		</el-dropdown>
 	                    	</div>
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<label>Item type:</label><br>
+								<el-dropdown trigger="click" @command="updateItemType" size="mini" :show-timeout="50" :hide-timeout="50">
+									<el-button size="mini">
+										{{ newItemTypeLabel }} <i class="el-icon-arrow-down el-icon--right"></i>
+									</el-button>
+									<el-dropdown-menu slot="dropdown">
+										<el-dropdown-item command="regular">regular</el-dropdown-item>
+										<el-dropdown-item command="custom">custom</el-dropdown-item>
+										<el-dropdown-item command="preset">preset</el-dropdown-item>
+									</el-dropdown-menu>
+								</el-dropdown>
+							</div>
     						<div class="form-group form-md-line-input form-md-floating-label">
     			                <label>Item Status:</label><br>
     			                <el-switch
@@ -494,7 +507,7 @@ export default {
 				order: null,
 				item_type_id: null,
 				nutrition_summary: '',
-				type: 'custom'
+				type: ''
 			},
 			menus: [],
 			categories: [],
@@ -551,11 +564,18 @@ export default {
 				return true
 			}
 		},
-		newItemTypeLabel () {
+		newTaxClassLabel () {
 			if (this.newItem.item_type_id === null) {
 				return 'Select'
 			} else {
 				return this.itemTypes.filter(type => type.id === this.newItem.item_type_id).map(type => type.name)[0]
+			}
+		},
+		newItemTypeLabel () {
+			if (!this.newItem.type) {
+				return 'Select'
+			} else {
+				return this.newItem.type
 			}
 		}
 	},
@@ -574,6 +594,15 @@ export default {
 		this.getItemTypes()
 	},
 	methods: {
+		/**
+		 * To update the type field of the new item
+		 * @function
+		 * @param {string} type - The selected type
+		 * @returns {undefined}
+		 */
+		updateItemType (type) {
+			this.newItem.type = type
+		},
 		/**
 		 * To toggle between the open and closed state of the resource picker
 		 * @function
@@ -1458,7 +1487,7 @@ export default {
 		 * @param {integer} id - The selected id
 		 * @returns {undefined}
 		 */
-		updateItemType (id) {
+		updateTaxClass (id) {
 			this.newItem.item_type_id = id
 		}
 	},

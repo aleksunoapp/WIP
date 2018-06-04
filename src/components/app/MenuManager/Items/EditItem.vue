@@ -49,13 +49,26 @@
 					    <label for="form_control_6">Item Order</label>
  					</div>
 				    <div class="form-group form-md-line-input form-md-floating-label" v-if="itemTypes.length">
+						<label>Tax class:</label><br>
+						<el-dropdown trigger="click" @command="updateTaxClass" size="mini" :show-timeout="50" :hide-timeout="50">
+							<el-button size="mini">
+								{{ taxClassLabel }} <i class="el-icon-arrow-down el-icon--right"></i>
+							</el-button>
+							<el-dropdown-menu slot="dropdown">
+								<el-dropdown-item v-for="type in itemTypes" :command="type.id" :key="type.id">{{type.name}}</el-dropdown-item>
+							</el-dropdown-menu>
+						</el-dropdown>
+					</div>
+					<div class="form-group form-md-line-input form-md-floating-label">
 						<label>Item type:</label><br>
 						<el-dropdown trigger="click" @command="updateItemType" size="mini" :show-timeout="50" :hide-timeout="50">
 							<el-button size="mini">
 								{{ itemTypeLabel }} <i class="el-icon-arrow-down el-icon--right"></i>
 							</el-button>
 							<el-dropdown-menu slot="dropdown">
-								<el-dropdown-item v-for="type in itemTypes" :command="type.id" :key="type.id">{{type.name}}</el-dropdown-item>
+								<el-dropdown-item command="regular">regular</el-dropdown-item>
+								<el-dropdown-item command="custom">custom</el-dropdown-item>
+								<el-dropdown-item command="preset">preset</el-dropdown-item>
 							</el-dropdown-menu>
 						</el-dropdown>
 					</div>
@@ -122,11 +135,18 @@ export default {
 		}
 	},
 	computed: {
-		itemTypeLabel () {
+		taxClassLabel () {
 			if (!this.itemToBeEdited.item_type_id) {
 				return 'Select'
 			} else {
 				return this.itemTypes.filter(type => type.id === this.itemToBeEdited.item_type_id).map(type => type.name)[0]
+			}
+		},
+		itemTypeLabel () {
+			if (!this.itemToBeEdited.type) {
+				return 'Select'
+			} else {
+				return this.itemToBeEdited.type
 			}
 		}
 	},
@@ -139,6 +159,15 @@ export default {
 		this.showEditItemModal = true
 	},
 	methods: {
+		/**
+		 * To update the type field of the item
+		 * @function
+		 * @param {string} type - The selected type
+		 * @returns {undefined}
+		 */
+		updateItemType (type) {
+			this.itemToBeEdited.type = type
+		},
 		/**
 		 * To toggle select location mode on.
 		 * @function
@@ -347,7 +376,7 @@ export default {
 		 * @param {integer} id - The selected id
 		 * @returns {undefined}
 		 */
-		updateItemType (id) {
+		updateTaxClass (id) {
 			this.itemToBeEdited.item_type_id = id
 		}
 	},
