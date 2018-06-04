@@ -431,7 +431,9 @@
 			<div class="page-content-wrapper">
 				<!-- BEGIN CONTENT BODY -->
 				<div class="page-content">
-					<router-view></router-view>
+					<transition name="fade" mode="out-in">
+						<router-view></router-view>
+					</transition>
 				</div>
 			</div>
 			<!-- BEGIN QUICK SIDEBAR -->
@@ -1134,5 +1136,20 @@ export default {
 	}
 	.fa.danger {
 		color: rgba(201, 0, 0, .8)
+	}
+
+	/* Transition */
+	.fade-enter {
+		opacity: 0;
+	}
+	.fade-enter-active {
+		transition: opacity 0.4s;
+	}
+	.fade-leave{
+		/*opacity:1;*/
+	}
+	.fade-leave-active{
+		transition: opacity 0.4s;
+		opacity: 0;
 	}
 </style>
