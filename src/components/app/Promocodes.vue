@@ -35,9 +35,12 @@
 				        	</div>
 			        		<div class="col-xs-5">
 			        			<div class="form-group form-md-line-input form-md-floating-label">
-			        			    <input type="text" class="form-control input-sm  text-uppercase" :class="{'edited': newPromoCode.codes.length}" id="form_control_1" v-model="newPromoCode.codes">
-			        			    <label for="form_control_1">Enter a Code</label>
-			        			</div>
+                                    <div class="input-icon right">
+                                        <input type="text" class="form-control input-sm  text-uppercase" :class="{'edited': newPromoCode.codes.length}" id="form_control_1" v-model="newPromoCode.codes">                                    
+                                        <i class="fa fa-magic clickable" @click.prevent="setRandomCode(newPromoCode)" aria-hidden="true"></i>
+                                    </div>
+                                    <label for="form_control_1">Enter a Code</label>
+                                </div>
 			        			<div class="side-by-side-wrapper center">
 									<div class="form-group form-md-line-input form-md-floating-label side-by-side-item">
 									    <input type="text" class="form-control input-sm" :class="{'edited': newPromoCode.value}" id="form_control_2" v-model="newPromoCode.value">
@@ -95,7 +98,6 @@
 			        					v-model="newPromoCode.start_from" 
 			        					format="yyyy-MM-dd" 
 			        					value-format="yyyy-MM-dd" 
-			        					:picker-options="{disabledDate: afterToday}"
 			        					:clearable="false" 
 			        					placeholder="Select start date">
 		        					</el-date-picker>
@@ -106,7 +108,6 @@
 				        				v-model="newPromoCode.end_on" 
 				        				format="yyyy-MM-dd" 
 				        				value-format="yyyy-MM-dd" 
-				        				:picker-options="{disabledDate: afterStartFrom}"
 				        				:clearable="false" 
 				        				placeholder="Select end date">
 			        				</el-date-picker>
@@ -183,11 +184,11 @@
 			                            		</div>
 				                            	<div>
 			                            			<strong>Total Redemptions:</strong>
-			                            			<span>{{ promoCode.max_use_per_person }}</span>
+			                            			<span>{{ promoCode.max_use }}</span>
 			                            		</div>
 				                            	<div>
 			                            			<strong>Max Per User:</strong>
-			                            			<span>{{ promoCode.max_use }}</span>
+			                            			<span>{{ promoCode.max_use_per_person }}</span>
 			                            		</div>
 			                            	</div>
 			                            	<div class="col-sm-4">
@@ -227,6 +228,7 @@ import LoadingScreen from '../modules/LoadingScreen'
 import PromoCodesFunctions from '../../controllers/PromoCodes'
 import Modal from '../modules/Modal'
 import Dropdown from '../modules/Dropdown'
+import GalleryPopup from '../modules/GalleryPopup'
 import NoResults from '../modules/NoResults'
 import EditPromoCode from './PromoCodes/EditPromoCode'
 import DeletePromoCode from './PromoCodes/DeletePromoCode'
@@ -260,6 +262,7 @@ export default {
 				'value_type': ''
 			},
 			editedPromoCode: {},
+			showGalleryModal: false,
 			showEditPromoCodeModal: false,
 			selectedPromoCodeId: 0,
 			deletePromoCodeModalActive: false,
@@ -313,80 +316,25 @@ export default {
 	},
 	methods: {
 		/**
-		 * To disable dates up to and including today
+		 * To generate a random string from the characters provided
 		 * @function
-		 * @param {string} date - The date to evaluate
-		 * @returns {boolean} false if date should not be disabled, true if it should
+		 * @param {ingeger} length - The length of the string provided]
+		 * @param {string} chars - All the characters allowed in the string
+		 * @returns {string} A random string of the length provided
 		 */
-		afterToday (date) {
-			try {
-				let input = new Date(date)
-				input.setMinutes(input.getMinutes() + input.getTimezoneOffset())
-				let today = new Date()
-				let inputDay = input.getDate()
-				if (inputDay < 10) {
-					inputDay = '0' + inputDay
-				}
-				let inputMonth = input.getMonth()
-				if (inputMonth < 10) {
-					inputMonth = '0' + inputMonth
-				}
-				let inputYear = input.getFullYear()
-				let todayDay = today.getDate()
-				if (todayDay < 10) {
-					todayDay = '0' + todayDay
-				}
-				let todayMonth = today.getMonth()
-				if (todayMonth < 10) {
-					todayMonth = '0' + todayMonth
-				}
-				let todayYear = today.getFullYear()
-
-				return `${inputYear}-${inputMonth}-${inputDay}` <= `${todayYear}-${todayMonth}-${todayDay}`
-			} catch (err) {
-				return false
-			}
+		randomString (length, chars) {
+			var result = ''
+			for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)]
+			return result
 		},
 		/**
-		 * To disable dates up to and including the start date
+		 * To set the promo code to a random 6 digit all caps alphanumeric string
 		 * @function
-		 * @param {string} date - The date to evaluate
-		 * @returns {boolean} false if date should not be disabled, true if it should
+		 * @param {object} code - The code object to modify
+		 * @returns {undefined}
 		 */
-		afterStartFrom (date) {
-			try {
-				// wait for start date to be selected
-				if (this.newPromoCode.start_from === '') return true
-
-				let input = new Date(date)
-				input.setMinutes(input.getMinutes() + input.getTimezoneOffset())
-				let compare = new Date(this.newPromoCode.start_from)
-				compare.setMinutes(compare.getMinutes() + compare.getTimezoneOffset())
-
-				let inputDay = input.getDate()
-				if (inputDay < 10) {
-					inputDay = '0' + inputDay
-				}
-				let inputMonth = input.getMonth()
-				if (inputMonth < 10) {
-					inputMonth = '0' + inputMonth
-				}
-				let inputYear = input.getFullYear()
-
-				let compareDay = compare.getDate()
-				if (compareDay < 10) {
-					compareDay = '0' + compareDay
-				}
-				let compareMonth = compare.getMonth()
-				if (compareMonth < 10) {
-					compareMonth = '0' + compareMonth
-				}
-				let compareYear = compare.getFullYear()
-
-				return `${inputYear}-${inputMonth}-${inputDay}` <= `${compareYear}-${compareMonth}-${compareDay}`
-			} catch (err) {
-				return false
-			}
+		setRandomCode (code) {
+			code.codes = this.randomString(6, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ')
 		},
 		/**
 		 * To update the value_type property of newPromoCode.
@@ -752,12 +700,39 @@ export default {
 		 */
 		toggleCreatePromoCodePanel () {
 			this.createNewPromoCodeCollapse = !this.createNewPromoCodeCollapse
+		},
+		/**
+		 * To open the gallery modal.
+		 * @function
+		 * @returns {undefined}
+		 */
+		openGalleryPopup () {
+			this.showGalleryModal = true
+		},
+		/**
+		 * To close the gallery popup.
+		 * @function
+		 * @returns {undefined}
+		 */
+		closeGalleryModal () {
+			this.showGalleryModal = false
+		},
+		/**
+		 * To set the image to be same as the one emitted by the gallery modal.
+		 * @function
+		 * @param {object} val - The emitted image object.
+		 * @returns {undefined}
+		 */
+		updateImage (val) {
+			this.showGalleryModal = false
+			this.newPromoCode.image = val.image_url
 		}
 	},
 	components: {
 		Breadcrumb,
 		LoadingScreen,
 		Modal,
+		GalleryPopup,
 		NoResults,
 		EditPromoCode,
 		DeletePromoCode,
@@ -766,6 +741,7 @@ export default {
 		MenuTree
 	}
 }
+
 </script>
 
 <style scoped>
