@@ -68,14 +68,13 @@
 				                    	<div class="form-group form-md-line-input form-md-floating-label">
             	                        	<label>Store Timezone:</label><br>
 											<el-select v-model="storeToBeEdited.timezone" placeholder="Select a timezone" size="mini">
-												<el-option label="Eastern Standard Time" value="Canada/Eastern"></el-option>
-												<el-option label="Atlantic Standard Time" value="Canada/Atlantic"></el-option>
-												<el-option label="Central Standard Time" value="Canada/Central"></el-option>
-												<el-option label="Saskatchewan" value="Canada/Saskatchewan"></el-option>		
-												<el-option label="Mountain Standard Time" value="Canada/Mountain"></el-option>
-												<el-option label="Newfoundland Standard Time" value="Canada/Newfoundland"></el-option>
-												<el-option label="Pacific Standard Time" value="Canada/Pacific"></el-option>
-												<el-option label="Yukon Standard Time" value="Canada/Yukon"></el-option>
+				                        		<el-option
+				                        			v-for="(zone, i) in timezones"
+				                        			:label="zone.label"
+				                        			:value="zone.value"
+				                        			:key="i"
+				                        		>
+			                        			</el-option>
 											</el-select>
             	                        </div>
 				                    	<div class="form-group form-md-line-input form-md-floating-label">
@@ -788,6 +787,7 @@ import AddHolidayHours from './AddHolidayHours'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
 import {mask} from 'vue-the-mask'
 import { debounce } from 'lodash'
+import TimezonesArray from './TimezonesArray'
 
 /**
  * Define the email pattern to check for valid emails.
@@ -840,10 +840,12 @@ export default {
 				default: 0
 			},
 			imageToEdit: {},
-			imageToDelete: {}
+			imageToDelete: {},
+			timezones: []
 		}
 	},
 	created () {
+		this.timezones = TimezonesArray
 		this.getStoreDetails()
 		this.getStoreHolidayHours()
 	},
