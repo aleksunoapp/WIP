@@ -219,20 +219,20 @@
 								<span class="selected"></span>
 							</router-link>
 						</li>
-						<li class="nav-item" v-bind:class="{'active': currentRoute === 'news_feed'}" v-if="$root.accountType === 'application_admin'">
+<!-- 						<li class="nav-item" v-bind:class="{'active': currentRoute === 'news_feed'}" v-if="$root.accountType === 'application_admin'">
 							<router-link to="/app/news_feed" class="nav-link nav-toggle">
 								<i class="fa fa-newspaper-o"></i>
 								<span class="title">News Feed</span>
 								<span class="selected"></span>
 							</router-link>
-						</li>
-						<li class="nav-item" v-bind:class="{'active': currentRoute === 'social_feed'}" v-if="$root.accountType === 'application_admin'">
+						</li> -->
+<!-- 						<li class="nav-item" v-bind:class="{'active': currentRoute === 'social_feed'}" v-if="$root.accountType === 'application_admin'">
 							<router-link to="/app/social_feed" class="nav-link nav-toggle">
 								<i class="fa fa-user"></i>
 								<span class="title">Social Feed</span>
 								<span class="selected"></span>
 							</router-link>
-						</li>
+						</li> -->
 						<li class="nav-item" v-bind:class="{'active': currentRoute === 'tax_manager'}" id="tax_manager_link">
 							<router-link to="/app/tax_manager" class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
 								<i class="fa fa-calculator"></i>
@@ -394,13 +394,13 @@
 								</li>
 							</ul>
 						</li>
-						<li class="nav-item" v-bind:class="{'active': currentRoute === 'promocodes'}" v-if="$root.accountType === 'application_admin'">
+<!-- 						<li class="nav-item" v-bind:class="{'active': currentRoute === 'promocodes'}" v-if="$root.accountType === 'application_admin'">
 							<router-link to="/app/promocodes" class="nav-link nav-toggle">
 								<i class="fa fa-scissors"></i>
 								<span class="title">Promo codes</span>
 								<span class="selected"></span>
 							</router-link>
-						</li>
+						</li> -->
 						<li class="nav-item" v-bind:class="{'active': currentRoute === 'promotions'}" v-if="$root.accountType === 'application_admin'">
 							<router-link to="/app/promotions" class="nav-link nav-toggle">
 								<i class="fa fa-money"></i>
