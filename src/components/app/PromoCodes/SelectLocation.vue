@@ -17,7 +17,7 @@
 			            <thead>
 			                <tr>
 			                	<th> 
-			                		<div class="md-checkbox has-success" @click="selectAll()">
+			                		<div class="md-checkbox has-success" @click.prevent="selectAll()">
 		                                <input type="checkbox" id="locations-promocodes" class="md-check" v-model="selectAllSelected">
 		                                <label for="locations-promocodes">
 		                                    <span class="inc"></span>
@@ -216,6 +216,7 @@ export default {
 		Modal
 	}
 }
+
 </script>
 
 <style scoped>
