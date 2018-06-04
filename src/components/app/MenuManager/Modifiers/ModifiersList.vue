@@ -15,7 +15,16 @@
     	        <table class="table">
     	            <thead>
     	                <tr>
-    	                	<th>  </th>
+    	                	<th> 
+    	                		<div class="md-checkbox has-success">
+	                                <input type="checkbox" id="select_all" class="md-check" @click="selectAllModifiers" v-model="allSelected">
+	                                <label for="select_all">
+	                                    <span class="inc"></span>
+	                                    <span class="check"></span>
+	                                    <span class="box"></span>
+	                                </label>
+	                            </div>
+							</th>
     	                	<th> Image </th>
     	                    <th> Name </th>
     	                    <th> Description </th>
@@ -65,7 +74,8 @@ export default {
 		return {
 			showModifierModal: false,
 			errorMessage: '',
-			storeModifiers: []
+			storeModifiers: [],
+			allSelected: false
 		}
 	},
 	props: {
@@ -161,6 +171,17 @@ export default {
 				}
 				throw reason
 			})
+		},
+		/**
+		 * To select all modifiers on an item
+		 * @function
+		 * @returns {undefined}
+		 */
+		selectAllModifiers () {
+			this.allSelected = !this.allSelected
+			for (let i = 0; i < this.storeModifiers.length; i++) {
+				this.storeModifiers[i].selected = this.allSelected
+			}
 		}
 	},
 	components: {
