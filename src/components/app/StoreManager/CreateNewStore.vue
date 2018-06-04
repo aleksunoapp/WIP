@@ -1235,8 +1235,6 @@ export default {
 					reject('Store email cannot be blank')
 				} else if (!emailPattern.test(createStoreVue.newStore.email)) {
 					reject('Please enter a valid store email')
-				} else if (!createStoreVue.$root.storeLocations.length && !createStoreVue.newStore.is_corporate) {
-					reject('The first Store you create should be the corporate location')
 				}
 				resolve('Hurray')
 			})
