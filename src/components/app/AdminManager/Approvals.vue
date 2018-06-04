@@ -224,7 +224,9 @@ export default {
 					approvalsVue.noResults = true
 					approvalsVue.$root.requestsPending = false
 				}
+				approvalsVue.loading = false
 			}).catch(reason => {
+				approvalsVue.loading = false
 				console.log(reason)
 				ajaxErrorHandler({
 					reason,
