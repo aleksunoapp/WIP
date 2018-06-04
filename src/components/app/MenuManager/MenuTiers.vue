@@ -76,8 +76,8 @@
 			            </div>
 			        </div>
 			        <div class="portlet-body">
-			        	<no-results v-if="$root.accountType === 'application_admin'" :show="!menuTiers.length" :type="'menu tiers'"></no-results>
-			            <div class="mt-element-list margin-top-15" v-else>
+			        	<no-results :show="!menuTiers.length" :type="'menu tiers'"></no-results>
+			            <div class="mt-element-list margin-top-15">
 			                <div class="mt-list-container list-news">
 			                    <ul>
 			                        <li id="parent" class="mt-list-item actions-at-left margin-top-15 clickable" v-for="tier in menuTiers" :id="'tier-' + tier.id" @click="assignMenusToTier(tier)">
