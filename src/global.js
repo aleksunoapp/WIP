@@ -46,27 +46,27 @@ export default {
 	/**
 	 * base url for API calls to send Messages
 	 */
-	messageBaseUrl: 'http://35.162.38.115:8004',
+	messageBaseUrl: 'https://notifications.dev.api.unoapp.io',
 	/**
 	 * app token for API calls to send Messages
 	 */
-	messageAppToken: 'bearer 9fca7d07b567f95d8a682cb4d2ea871e',
+	messageAppToken: 'bearer bed62ee5c3cc97a2d5297f973af1c15e',
 	/**
 	 * app token for API calls to send Messages to OMA users
 	 */
-	OMAUsersMessageAppToken: 'bearer ca2af2fcffeb3685f04d67bf610db085',
+	OMAUsersMessageAppToken: 'bearer 6b1642515315f527604919b430fe79de',
 	/**
 	 * base url for API calls to Loyalty endpoints
 	 */
-	loyaltyUrl: 'http://loyalty.unoapp.xyz',
+	loyaltyUrl: 'https://loyalty.dev.api.unoapp.io',
 	/**
 	 * app id for API calls to Loyalty endpoints
 	 */
-	loyaltyAppId: 'TSh5JsOTHx8FKMqS6XnggH0Z5L0pkP1O',
+	loyaltyAppId: '0CA0D7Lk9D6jZvgeklHiBTX99PYbTDIs',
 	/**
 	 * app secret for API calls to Loyalty endpoints
 	 */
-	loyaltyAppSecret: 'P6KWcbixUIkxUT4jpmcnCFUBC7hHSGnf',
+	loyaltyAppSecret: 'JnJqjxCKnVpvgO5cWGWSkfesTQWaiP46',
 	/**
 	 * API key for Google Maps Javascript API
 	 */
