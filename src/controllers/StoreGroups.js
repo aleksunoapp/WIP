@@ -214,5 +214,27 @@ export default ({
 				}
 			})
 		})
+	},
+	/**
+	 * Call to pitapit API to assign a menu tier to a location group.
+	 * @function
+	 * @param {object} data - Object containing location IDs and override options
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	assignMenuTiersToGroup (data) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'POST',
+				dataType: 'json',
+				url: '/app/sync/' + data.tier + '/menu_tier_to_locations',
+				data,
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
 	}
 })

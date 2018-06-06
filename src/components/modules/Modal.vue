@@ -75,7 +75,7 @@ export default {
 			default: 'Close'
 		},
 		effect: {
-			default: null
+			default: 'fade'
 		},
 		okText: {
 			default: 'Save'

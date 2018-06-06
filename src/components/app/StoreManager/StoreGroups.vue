@@ -25,7 +25,7 @@
 		      				<div class="row">
 		      					<div class="col-md-12">
 			      					<div class="alert alert-danger" v-if="errorMessage.length">
-			      					    <button class="close" data-close="alert" @click="clearError()"></button>
+			      					    <button class="close" data-close="alert" @click="clearError('errorMessage')"></button>
 			      					    <span>{{errorMessage}}</span>
 			      					</div>
 		      					</div>
@@ -64,13 +64,18 @@
 			            <div class="mt-element-list">
 			                <div class="mt-list-container list-news">
 			                    <ul>
-			                        <li class="mt-list-item actions-at-left margin-top-15 clickable" v-for="group in groups" @click="assignStoresToGroup(group)" :id="'group-' + group.id">
+			                        <li class="mt-list-item actions-at-left margin-top-15 clickable" v-for="group in groups" @click="assignStoresToGroup(group)" :id="'group-' + group.id" :key="group.id">
 			                        	<div class="list-item-actions">
 			                        		<el-tooltip content="Edit" effect="light" placement="right">
 				                        		<a class="btn btn-circle btn-icon-only btn-default" @click="displayEditGroupModal(group, $event)">
 			                                        <i class="fa fa-lg fa-pencil"></i>
 			                                    </a>
 			                        		</el-tooltip>
+    		                        		<el-tooltip content="Apply Menu Tiers" effect="light" placement="right">
+    			                        		<a class="btn btn-circle btn-icon-only btn-default" @click.stop="displayTiersModal(group)">
+    		                                        <i class="icon-layers"></i>
+    		                                    </a>
+    		                        		</el-tooltip>
 			                        	</div>
 			                        	<div class="list-icon-container">
 	                                        <i class="fa fa-angle-right"></i>
@@ -96,6 +101,44 @@
 		</div>
     	<assign-stores v-if="showAssignStoresModal" :passedGroupId="selectedGroupId" @closeAssignStoresModal="closeAssignStoresModal"></assign-stores>
 	    <edit-store-group v-if="showEditGroupModal" :passedGroupId="passedGroupId" @closeEditGroupModal="closeEditGroupModal" @updateGroup="updateGroup"></edit-store-group>
+
+		<modal :show="showTiersModal" @closeOnEscape="closeTiersModal">
+			<div slot="modal-header" class="modal-header">
+				<button type="button" class="close" @click="closeTiersModal()">
+					<span>&times;</span>
+				</button>
+				<h4 class="modal-title center">Apply Menu Tier to Store Group</h4>
+			</div>
+			<div slot="modal-body" class="modal-body">
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="alert alert-danger" v-show="tiersErrorMessage.length" ref="tiersErrorMessage">
+							<button class="close" data-close="alert" @click="clearError('tiersErrorMessage')"></button>
+							<span>{{tiersErrorMessage}}</span>
+						</div>
+						<menu-tiers-picker
+							@tiersSelect="updateTier"
+						></menu-tiers-picker>
+					</div>
+					<div class="col-xs-12">
+						<p>Replace existing menus?</p>
+						<el-switch
+							v-model="groupToAssignMenuTiersTo.replaceExisting"
+							active-color="#0c6"
+							inactive-color="#ff4949"
+							:active-value="1"
+							:inactive-value="0"
+							active-text="Yes"
+							inactive-text="No">
+						</el-switch>
+					</div>
+				</div>
+			</div>
+			<div slot="modal-footer" class="modal-footer clear">
+				<button type="button" class="btn btn-primary" @click="assignMenuTiers()">Save</button>
+			</div>
+		</modal>
+
 	</div>
 </template>
 
@@ -107,13 +150,16 @@ import NoResults from '../../modules/NoResults'
 import AssignStores from './AssignStores'
 import EditStoreGroup from './EditStoreGroup'
 import StoreGroupsFunctions from '../../../controllers/StoreGroups'
+import MenuTiersPicker from '@/components/app/MenuManager/MenuTiers/MenuTiersPicker.vue'
+import Modal from '@/components/modules/Modal'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
 		return {
 			breadcrumbArray: [
-				{name: 'Store Manager', link: false},
-				{name: 'Store Groups', link: false}
+				{ name: 'Store Manager', link: false },
+				{ name: 'Store Groups', link: false }
 			],
 			createGroupCollapse: true,
 			errorMessage: '',
@@ -129,13 +175,123 @@ export default {
 				status: 1,
 				created_by: this.$root.createdBy
 			},
-			showAssignStoresModal: false
+			showAssignStoresModal: false,
+			groupToAssignMenuTiersTo: {},
+			showTiersModal: false,
+			tiersErrorMessage: ''
 		}
 	},
 	mounted () {
 		this.getGroups()
 	},
 	methods: {
+		/**
+		 * To get the list of locations that belong to the current group.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getGroupLocations () {
+			var storeGroupsVue = this
+
+			StoreGroupsFunctions.getGroupLocations(
+				storeGroupsVue.groupToAssignMenuTiersTo.id
+			)
+				.then(response => {
+					storeGroupsVue.groupToAssignMenuTiersTo.locations = response.payload.locations.map(
+						location => location.id
+					)
+				})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'Could not get tier details',
+						errorName: 'tiersErrorMessage',
+						vue: storeGroupsVue
+					})
+				})
+		},
+		/**
+		 * To update the selected tier in the storage object
+		 * @function
+		 * @param {integer} id - ID of the tier selected
+		 * @returns {undefined}
+		 */
+		updateTier (id) {
+			this.groupToAssignMenuTiersTo.tier = id
+		},
+		/**
+		 * To close the Assign Tiers To Group modal
+		 * @function
+		 * @returns {undefined}
+		 */
+		closeTiersModal () {
+			this.showTiersModal = false
+			this.groupToAssignMenuTiersTo = {
+				tier: null,
+				replaceExisting: 0,
+				locations: []
+			}
+		},
+		/**
+		 * To init a storage object and display Assign Tiers modal
+		 * @function
+		 * @param {object} group - Group the user clicked
+		 * @returns {undefined}
+		 */
+		displayTiersModal (group) {
+			this.groupToAssignMenuTiersTo = {
+				...group,
+				tier: null,
+				replaceExisting: 0,
+				locations: []
+			}
+			this.getGroupLocations()
+			this.showTiersModal = true
+		},
+		/**
+		 * To save the assignment
+		 * @function
+		 * @returns {undefined}
+		 */
+		assignMenuTiers () {
+			let storeGroupsVue = this
+			let payload = {
+				tier: this.groupToAssignMenuTiersTo.tier,
+				replace_existing: this.groupToAssignMenuTiersTo.replaceExisting,
+				locations: this.groupToAssignMenuTiersTo.locations
+			}
+			StoreGroupsFunctions.assignMenuTiersToGroup(
+				payload,
+				storeGroupsVue.$root.appId,
+				storeGroupsVue.$root.appSecret,
+				storeGroupsVue.$root.userToken
+			)
+				.then(response => {
+					this.closeTiersModal()
+					this.showAssignTiersSuccess()
+				})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'Could not get tier details',
+						errorName: 'tiersErrorMessage',
+						vue: storeGroupsVue
+					})
+				})
+		},
+		/**
+		 * To confirm success
+		 * @function
+		 * @returns {undefined}
+		 */
+		showAssignTiersSuccess () {
+			this.$swal({
+				title: 'Success!',
+				text: 'Menu Tiers assigned',
+				type: 'success',
+				confirmButtonText: 'OK'
+			})
+		},
 		/**
 		 * To get a list of store groups.
 		 * @function
@@ -145,23 +301,32 @@ export default {
 			this.loadingGroupsData = true
 			var storeGroupsVue = this
 			storeGroupsVue.groups = []
-			return StoreGroupsFunctions.getGroups(storeGroupsVue.$root.appId, storeGroupsVue.$root.appSecret, storeGroupsVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
+			return StoreGroupsFunctions.getGroups(
+				storeGroupsVue.$root.appId,
+				storeGroupsVue.$root.appSecret,
+				storeGroupsVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						storeGroupsVue.loadingGroupsData = false
+						storeGroupsVue.groups = response.payload
+					} else {
+						storeGroupsVue.loadingGroupsData = false
+					}
+				})
+				.catch(reason => {
+					if (
+						reason.responseJSON.code === 401 &&
+						reason.responseJSON.status === 'unauthorized'
+					) {
+						storeGroupsVue.$router.push('/login/expired')
+						return
+					}
 					storeGroupsVue.loadingGroupsData = false
-					storeGroupsVue.groups = response.payload
-				} else {
-					storeGroupsVue.loadingGroupsData = false
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					storeGroupsVue.$router.push('/login/expired')
-					return
-				}
-				storeGroupsVue.loadingGroupsData = false
-				if (reason.responseJSON) {
-				}
-				throw reason
-			})
+					if (reason.responseJSON) {
+					}
+					throw reason
+				})
 		},
 		/**
 		 * To compute height to display based on window height and navbar.
@@ -185,10 +350,11 @@ export default {
 		/**
 		 * To clear the current error.
 		 * @function
+		 * @param {string} name - Name of the error variable
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
+		clearError (name) {
+			this[name] = ''
 		},
 		/**
 		 * To activate the right half panel which lists the store locations.
@@ -292,32 +458,47 @@ export default {
 		 */
 		createNewGroup () {
 			var storeGroupsVue = this
-			storeGroupsVue.clearError()
+			storeGroupsVue.clearError('errorMessage')
 
-			return storeGroupsVue.validateGroupData()
-			.then(response => {
-				StoreGroupsFunctions.createNewGroup(storeGroupsVue.newGroup, storeGroupsVue.$root.appId, storeGroupsVue.$root.appSecret, storeGroupsVue.$root.userToken).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						storeGroupsVue.newGroup.id = response.payload.id
-						storeGroupsVue.addGroup(storeGroupsVue.newGroup)
-						storeGroupsVue.confirmCreated()
-					} else {
-						storeGroupsVue.errorMessage = response.message
-					}
-				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						storeGroupsVue.$router.push('/login/expired')
-						return
-					}
+			return storeGroupsVue
+				.validateGroupData()
+				.then(response => {
+					StoreGroupsFunctions.createNewGroup(
+						storeGroupsVue.newGroup,
+						storeGroupsVue.$root.appId,
+						storeGroupsVue.$root.appSecret,
+						storeGroupsVue.$root.userToken
+					)
+						.then(response => {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
+								storeGroupsVue.newGroup.id = response.payload.id
+								storeGroupsVue.addGroup(storeGroupsVue.newGroup)
+								storeGroupsVue.confirmCreated()
+							} else {
+								storeGroupsVue.errorMessage = response.message
+							}
+						})
+						.catch(reason => {
+							if (
+								reason.responseJSON.code === 401 &&
+								reason.responseJSON.status === 'unauthorized'
+							) {
+								storeGroupsVue.$router.push('/login/expired')
+								return
+							}
+							storeGroupsVue.errorMessage = reason
+							window.scrollTo(0, 0)
+						})
+				})
+				.catch(reason => {
+					// If validation fails then display the error message
 					storeGroupsVue.errorMessage = reason
 					window.scrollTo(0, 0)
+					throw reason
 				})
-			}).catch(reason => {
-				// If validation fails then display the error message
-				storeGroupsVue.errorMessage = reason
-				window.scrollTo(0, 0)
-				throw reason
-			})
 		},
 		/**
 		 * To confirm creation.
@@ -338,7 +519,9 @@ export default {
 		NoResults,
 		LoadingScreen,
 		AssignStores,
-		EditStoreGroup
+		EditStoreGroup,
+		MenuTiersPicker,
+		Modal
 	}
 }
 </script>
