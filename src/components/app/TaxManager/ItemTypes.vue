@@ -152,49 +152,72 @@
 				<h4 class="modal-title center">Apply Tax Classes</h4>
 			</div>
 			<div slot="modal-body" class="modal-body">
-				<div class="alert alert-danger" v-show="applyErrorMessage.length" ref="applyErrorMessage">
-					<button class="close" @click.prevent="clearError('applyErrorMessage')"></button>
-					<span>{{ applyErrorMessage }}</span>
+				<div v-if="activeLocationId === undefined">
+					<div class="alert center alert-info">
+						<h4>No Store Selected</h4>
+						<p>Please select a store from the stores panel.</p>
+					</div>
 				</div>
-				<div class="alert alert-info center margin-top-20" v-show="!loadingTaxClasses && !taxClasses.length && !applyErrorMessage.length">
-					<h4>No Tax Classes</h4>
-					<p>No tax classes for this location yet. <router-link to="/app/tax_manager/tax_classes">Create the first one here.</router-link></p>
+				<div v-else>
+					<div class="alert alert-danger" v-show="applyErrorMessage.length" ref="applyErrorMessage">
+						<button class="close" @click.prevent="clearError('applyErrorMessage')"></button>
+						<span>{{ applyErrorMessage }}</span>
+					</div>
+					<div class="alert alert-info center margin-top-20" v-show="!loadingTaxClasses && !taxClasses.length && !applyErrorMessage.length">
+						<h4>No Tax Classes</h4>
+						<p>No tax classes for this location yet. <router-link to="/app/tax_manager/tax_classes">Create the first one here.</router-link></p>
+					</div>
+					<table class="table">
+						<thead>
+							<tr>
+								<th class="table-column--checkboxes">
+									<div class="md-checkbox has-success" @change="selectAll()">
+										<input type="checkbox" id="locations-promocodes" class="md-check" :checked="selectAllSelected">
+										<label for="locations-promocodes">
+											<span class="inc"></span>
+											<span class="check"></span>
+											<span class="box"></span>
+										</label>
+									</div>
+								</th>
+								<th> Name </th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="taxClass in taxClasses">
+								<td>
+									<div class="md-checkbox has-success">
+										<input type="checkbox" :id="'checkbox_' + taxClass.id" class="md-check" v-model="taxClass.selected">
+										<label :for="'checkbox_' + taxClass.id">
+											<span class="inc"></span>
+											<span class="check"></span>
+											<span class="box"></span>
+										</label>
+									</div>
+								</td>
+								<td> {{taxClass.name}} </td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
-		        <table class="table">
-		        	<thead>
-		        		<tr>
-		        			<th class="table-column--checkboxes">
-		        				<div class="md-checkbox has-success" @change="selectAll()">
-		        					<input type="checkbox" id="locations-promocodes" class="md-check" :checked="selectAllSelected">
-		        					<label for="locations-promocodes">
-		        						<span class="inc"></span>
-		        						<span class="check"></span>
-		        						<span class="box"></span>
-		        					</label>
-		        				</div>
-		        			</th>
-		        			<th> Name </th>
-		        		</tr>
-		        	</thead>
-		            <tbody>
-		                <tr v-for="taxClass in taxClasses">
-		                	<td>
-		                		<div class="md-checkbox has-success">
-	                                <input type="checkbox" :id="'checkbox_' + taxClass.id" class="md-check" v-model="taxClass.selected">
-	                                <label :for="'checkbox_' + taxClass.id">
-	                                    <span class="inc"></span>
-	                                    <span class="check"></span>
-	                                    <span class="box"></span>
-	                                </label>
-	                            </div>
-		                	</td>
-		                    <td> {{taxClass.name}} </td>
-		                </tr>
-		            </tbody>
-		        </table>
 			</div>
 			<div slot="modal-footer" class="modal-footer clear">
-				<button @click="applyTaxClassesToItemType()" type="submit" class="btn blue">Apply</button>
+				<button 
+					v-if="activeLocationId === undefined" 
+					@click="closeApplyModal()" 
+					type="submit" 
+					class="btn btn-outline"
+				>
+					Close
+				</button>
+				<button 
+					v-else 
+					@click="applyTaxClassesToItemType()"
+					type="submit"
+					class="btn blue"
+				>
+					Apply
+				</button>
 			</div>
 		</modal>
 		<!-- END APPLY -->
@@ -590,7 +613,8 @@ export default {
 			this.loadingTaxClasses = true
 			this.taxClasses = []
 			var _this = this
-			return TaxClassesFunctions.getTaxClasses(_this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
+			let payload = {location_id: _this.activeLocationId}
+			return TaxClassesFunctions.getTaxClasses(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
 			.then(response => {
 				if (response.code === 200 && response.status === 'ok') {
 					_this.loadingTaxClasses = false

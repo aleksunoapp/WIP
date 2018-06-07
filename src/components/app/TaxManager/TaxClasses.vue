@@ -59,7 +59,7 @@
 							<label v-if="!loadingItemTypes">
 								Pair with:
 								<el-select v-if="!loadingItemTypes" v-model="newTaxClass.pair_with" placeholder="Select Item Type" size="small">
-									<el-option v-for="type in itemTypes" :label="type.name" :value="type.id" :key="id"></el-option>
+									<el-option v-for="type in itemTypes" :label="type.name" :value="type.id" :key="type.id"></el-option>
 								</el-select>
 							</label>
 						</div>
@@ -175,8 +175,8 @@
 							</div>
 							<label v-if="!loadingItemTypes">
 								Pair with:
-							<el-select v-model="newTaxClass.pair_with" placeholder="Select Item Type" size="small" :key="id">
-								<el-option v-for="type in itemTypes" :label="type.name" :value="type.id" :key="id"></el-option>
+							<el-select v-model="newTaxClass.pair_with" placeholder="Select Item Type" size="small">
+								<el-option v-for="type in itemTypes" :label="type.name" :value="type.id" :key="type.id"></el-option>
 							</el-select>
 							</label>
 						</div>
@@ -417,7 +417,8 @@ export default {
 			this.loadingTaxClasses = true
 			this.taxClasses = []
 			var _this = this
-			return TaxClassesFunctions.getTaxClasses(_this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
+			let payload = {location_id: _this.activeLocationId}
+			return TaxClassesFunctions.getTaxClasses(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
 			.then(response => {
 				if (response.code === 200 && response.status === 'ok') {
 					_this.loadingTaxClasses = false

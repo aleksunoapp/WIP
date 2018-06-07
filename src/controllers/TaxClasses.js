@@ -7,18 +7,19 @@ export default ({
 	/**
 	 * Call to API to get a list of existing tax classes.
 	 * @function
+	 * @param {object} data - An object containing the active location's ID
 	 * @param {string} appId - The appId of the current application.
 	 * @param {string} appSecret - The appSecret of the current application.
 	 * @param {string} userToken - The auth token of the logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	getTaxClasses: function (appId, appSecret, userToken) {
+	getTaxClasses: function (data, appId, appSecret, userToken) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'GET',
 				dataType: 'json',
 				url: '/app/taxclass',
-				data: {},
+				data,
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
 					xhr.setRequestHeader('app-id', appId)
