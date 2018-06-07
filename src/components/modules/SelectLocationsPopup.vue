@@ -58,7 +58,7 @@
 			        </tr>
 			    </thead>
 			    <tbody>
-			        <tr v-for="store in searchResults">
+			        <tr v-for="store in searchResults" :key="store.id">
 			        	<td>
 			        		<div class="md-checkbox has-success">
 			                    <input type="checkbox" :id="`store-${store.id}`" class="md-check" v-model="store.selected" @change="syncSelectAll(store.selected)">
