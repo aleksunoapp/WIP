@@ -75,7 +75,13 @@
 		<!-- END CREATE -->
 
 		<!-- BEGIN LIST -->
-		<div>
+		<div v-if="activeLocationId === undefined">
+			<div class="alert center alert-info">
+				<h4>No Store Selected</h4>
+				<p>Please select a store from the stores panel on the right to view tax classes for it.</p>
+			</div>
+		</div>
+		<div v-else>
 			<div class="portlet light portlet-fit bordered margin-top-20" id="taxClasses-container">
 				<div class="portlet-title bg-blue-chambray">
 					<div class="menu-image-main">
@@ -267,6 +273,7 @@ export default {
 	watch: {
 		activeLocationId: function (newId) {
 			if (newId !== undefined) {
+				this.clearError('listErrorMessage')
 				this.getTaxClasses()
 			}
 		}
