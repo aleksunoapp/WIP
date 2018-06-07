@@ -449,5 +449,27 @@ export default ({
 				}
 			})
 		})
+	},
+	/**
+	 * Call to API to apply a modifier to locations.
+	 * @function
+	 * @param {object} data - An object containing IDs of the modifier and of the locations
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	applyModifierToLocations (data) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'POST',
+				dataType: 'json',
+				url: '/app/moditems/addModifierItemToMultipleLocations',
+				data,
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
 	}
 })

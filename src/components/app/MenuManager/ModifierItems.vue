@@ -26,7 +26,7 @@
 					<div class="form-body row">
 						<div class="col-md-12">
 							<div class="alert alert-danger" v-if="errorMessage.length">
-								<button class="close" data-close="alert" @click="clearError()"></button>
+								<button class="close" data-close="alert" @click="clearError('errorMessage')"></button>
 								<span>{{errorMessage}}</span>
 							</div>
 						</div>
@@ -111,13 +111,13 @@
 							<ul>
 							<li 
 								v-for="modifierItem in modifierCategoryItems" 
-								class="mt-list-item margin-top-15 actions-at-left"  
+								class="mt-list-item margin-top-15"  
 								:class="{'no-hover-highlight' : expanded === modifierItem.id, 'clickable' : expanded !== modifierItem.id}" 
 								:id="'modifierItem-' + modifierItem.id" 
 								@click="expandDetails(modifierItem.id)"
 								:key="modifierItem.id"
 							>
-								<div class="list-item-actions">
+								<div class="margin-bottom-15 actions-on-top">
 									<el-tooltip content="Edit" effect="light" placement="right">
 										<a class="btn btn-circle btn-icon-only btn-default" @click="displayEditItemModal(modifierItem, $event)">
 											<i class="fa fa-lg fa-pencil"></i>
@@ -126,6 +126,11 @@
 									<el-tooltip content="Nutrition info" effect="light" placement="right">
 										<a class="btn btn-circle btn-icon-only btn-default" @click="viewModifierNutritionInfo(modifierItem, $event)">
 											<i class="fa fa-lg fa-heartbeat"></i>
+										</a>
+									</el-tooltip>
+									<el-tooltip content="Apply To Locations" effect="light" placement="right">
+										<a class="btn btn-circle btn-icon-only btn-default" @click="openApplyToLocationsModal(modifierItem)">
+											<i class="icon-layers"></i>
 										</a>
 									</el-tooltip>
 									<el-tooltip content="Delete" effect="light" placement="right">
@@ -246,6 +251,32 @@
 		<div class="margin-top-20" v-if="!displayModifierItemData">
 			<no-results :show="!$root.activeLocation || !$root.activeLocation.id" :type="'modifier items'"></no-results>
 		</div>
+
+		<!-- ASSIGN TO STORES MODAL START -->
+		<modal :show="showApplyToLocationsModal" effect="fade" @closeOnEscape="closeApplyToLocationsModal">
+			<div slot="modal-header" class="modal-header center">
+				<button type="button" class="close" @click="closeApplyToLocationsModal()">
+					<span>&times;</span>
+				</button>
+				<h4 class="modal-title center">Assign {{modifierToApplyToLocations.name}} To Stores</h4>
+			</div>
+			<div slot="modal-body" class="modal-body relative-block">
+				<div class="alert alert-danger" v-show="applyErrorMessage.length" ref="applyErrorMessage">
+				    <button class="close" data-close="alert" @click="clearError('applyErrorMessage')"></button>
+                    <span>{{ applyErrorMessage }}</span>
+				</div>
+				<select-locations-popup 
+					v-if="showApplyToLocationsModal"
+					@selectedLocations="selectedLocations" 
+					:withButton="false">
+				</select-locations-popup>
+			</div>
+			<div slot="modal-footer" class="modal-footer">
+				<button type="button" class="btn blue" @click="applyModifierToLocations()">Assign</button>
+			</div>
+		</modal>
+		<!-- ASSIGN TO STORES MODAL END -->
+
 		<edit-modifier-item v-if="editItemModalActive" @editModifierItem="editModifierItem" @deactivateEditItemModal="closeEditItemModal"></edit-modifier-item>
 		<delete-modifier-item v-if="deleteItemModalActive" :itemId="selectedItemId" @closeDeleteModifierItemModal="closeDeleteItemModal" @deleteModifierItemAndCloseModal="deleteModifierItemAndCloseModal"></delete-modifier-item>
 		<modifier-nutrition-info v-if="displayNutritionModal" :modifierItem="selectedItem" @deactivateNutritionInfoModal="displayNutritionModal = false"></modifier-nutrition-info>
@@ -268,6 +299,9 @@ import TagsList from './Tags/TagsList'
 import PortionsList from './Portions/PortionsList'
 import OptionsList from './Options/OptionsList'
 import ResourcePicker from '../../modules/ResourcePicker'
+import ajaxErrorHandler from '@/controllers/ErrorController'
+import SelectLocationsPopup from '@/components/modules/SelectLocationsPopup'
+import Modal from '@/components/modules/Modal'
 
 export default {
 	data () {
@@ -311,7 +345,10 @@ export default {
 			expanded: null,
 			imageMode: {
 				newMenu: false
-			}
+			},
+			showApplyToLocationsModal: false,
+			modifierToApplyToLocations: {},
+			applyErrorMessage: ''
 		}
 	},
 	mounted () {
@@ -321,6 +358,96 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * To update the locations selected in the child component
+		 * @function
+		 * @param {array} locations - Arrray of store ids
+		 * @returns {undefined}
+		 */
+		selectedLocations (locations) {
+			this.modifierToApplyToLocations.locations = locations
+		},
+		/**
+		 * To open the modal for applying a modifier to locations
+		 * @function
+		 * @param {object} modifier - Modifier the user clicked
+		 * @returns {undefined}
+		 */
+		openApplyToLocationsModal (modifier) {
+			this.modifierToApplyToLocations = {
+				...modifier,
+				locations: []
+			}
+			this.showApplyToLocationsModal = true
+		},
+		/**
+		 * To close the modal for applying a modifier to locations
+		 * @function
+		 * @returns {undefined}
+		 */
+		closeApplyToLocationsModal () {
+			this.modifierToApplyToLocations = {}
+			this.showApplyToLocationsModal = false
+		},
+		/**
+		 * To check if data is ready to post
+		 * @function
+		 * @returns {object} - A resolved promise if ok, a reject with error message if failed
+		 */
+		validateApplyToLocations () {
+			var modifierItemsVue = this
+			return new Promise(function (resolve, reject) {
+				if (!modifierItemsVue.modifierToApplyToLocations.locations.length) {
+					reject('Select at least one store')
+				}
+				resolve('Hurray')
+			})
+		},
+		/**
+		 * To save selected modifier-locaton links in the API
+		 * @function
+		 * @returns {undefined}
+		 */
+		applyModifierToLocations () {
+			var modifierItemsVue = this
+			modifierItemsVue.clearError('applyErrorMessage')
+
+			this.validateApplyToLocations()
+			.then(response => {
+				let payload = {
+					'modifier_item_id': modifierItemsVue.modifierToApplyToLocations.id,
+					'locations': modifierItemsVue.modifierToApplyToLocations.locations
+				}
+				ModifiersFunctions.applyModifierToLocations(payload).then(response => {
+					modifierItemsVue.closeApplyToLocationsModal()
+					modifierItemsVue.showApplySuccess()
+				}).catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'Could apply modifier to stores',
+						errorName: 'applyErrorMessage',
+						vue: modifierItemsVue
+					})
+				})
+			}).catch(reason => {
+				// If validation fails then display the error message
+				modifierItemsVue.applyErrorMessage = reason
+				window.scrollTo(0, 0)
+			})
+		},
+		/**
+		 * To confirm operation succeeded
+		 * @function
+		 * @returns {undefined}
+		 */
+		showApplySuccess () {
+			this.$swal({
+				title: 'Success!',
+				text: 'Modifier applied to selected stores',
+				type: 'success',
+				confirmButtonText: 'OK'
+			})
+		},
 		/**
 		 * To toggle between the open and closed state of the resource picker
 		 * @function
@@ -332,12 +459,13 @@ export default {
 			this.imageMode[object] = value
 		},
 		/**
-		 * To clear the current error.
+		 * To clear an error.
 		 * @function
+		 * @param {string} name - Name of the error to clear
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
+		clearError (name) {
+			this[name] = ''
 		},
 		/**
 		 * To set the image to be same as the one emitted by the gallery modal.
@@ -357,31 +485,31 @@ export default {
 		toggleCreateModifierItemPanel () {
 			this.createModifierItemCollapse = !this.createModifierItemCollapse
 		},
-				/**
+		/**
 		 * To check if the modifier item data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
 		validateModifierItemData () {
-			var addModifierItemVue = this
+			var modifierItemsVue = this
 			return new Promise(function (resolve, reject) {
-				if (!addModifierItemVue.newModifierItem.name.length) {
+				if (!modifierItemsVue.newModifierItem.name.length) {
 					reject('Modifier Item name cannot be blank')
-				} else if (!addModifierItemVue.newModifierItem.desc.length) {
+				} else if (!modifierItemsVue.newModifierItem.desc.length) {
 					reject('Modifier Item description cannot be blank')
-				} else if (!addModifierItemVue.newModifierItem.sku.length) {
+				} else if (!modifierItemsVue.newModifierItem.sku.length) {
 					reject('Modifier Item SKU cannot be blank')
-				} else if (!addModifierItemVue.newModifierItem.price.length) {
+				} else if (!modifierItemsVue.newModifierItem.price.length) {
 					reject('Modifier Item price cannot be blank')
-				} else if (!addModifierItemVue.newModifierItem.image_url.length) {
+				} else if (!modifierItemsVue.newModifierItem.image_url.length) {
 					reject('Modifier Item image URL cannot be blank')
-				} else if (!$.isNumeric(addModifierItemVue.newModifierItem.status)) {
+				} else if (!$.isNumeric(modifierItemsVue.newModifierItem.status)) {
 					reject('Modifier Item status cannot be blank')
-				} else if (!$.isNumeric(addModifierItemVue.newModifierItem.min)) {
+				} else if (!$.isNumeric(modifierItemsVue.newModifierItem.min)) {
 					reject('Modifier Item min should be a number')
-				} else if (!$.isNumeric(addModifierItemVue.newModifierItem.max)) {
+				} else if (!$.isNumeric(modifierItemsVue.newModifierItem.max)) {
 					reject('Modifier Item max should be a number')
-				} else if (!$.isNumeric(addModifierItemVue.newModifierItem.order)) {
+				} else if (!$.isNumeric(modifierItemsVue.newModifierItem.order)) {
 					reject('Modifier Item order should be a number')
 				}
 				resolve('Hurray')
@@ -393,29 +521,29 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		addNewModifierItem () {
-			var addModifierItemVue = this
-			addModifierItemVue.clearError()
+			var modifierItemsVue = this
+			modifierItemsVue.clearError('errorMessage')
 
-			return addModifierItemVue.validateModifierItemData()
+			return modifierItemsVue.validateModifierItemData()
 			.then(response => {
-				ModifiersFunctions.addNewModifierItem(addModifierItemVue.newModifierItem, addModifierItemVue.$root.appId, addModifierItemVue.$root.appSecret, addModifierItemVue.$root.userToken).then(response => {
+				ModifiersFunctions.addNewModifierItem(modifierItemsVue.newModifierItem, modifierItemsVue.$root.appId, modifierItemsVue.$root.appSecret, modifierItemsVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						addModifierItemVue.newModifierItem.id = response.payload.new_modifier_item_id
-						addModifierItemVue.addModifierItem(addModifierItemVue.newModifierItem)
+						modifierItemsVue.newModifierItem.id = response.payload.new_modifier_item_id
+						modifierItemsVue.addModifierItem(modifierItemsVue.newModifierItem)
 					} else {
-						addModifierItemVue.errorMessage = response.message
+						modifierItemsVue.errorMessage = response.message
 					}
 				}).catch(reason => {
 					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						addModifierItemVue.$router.push('/login/expired')
+						modifierItemsVue.$router.push('/login/expired')
 						return
 					}
-					addModifierItemVue.errorMessage = reason.responseJSON.message
+					modifierItemsVue.errorMessage = reason.responseJSON.message
 					window.scrollTo(0, 0)
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message
-				addModifierItemVue.errorMessage = reason
+				modifierItemsVue.errorMessage = reason
 				window.scrollTo(0, 0)
 				throw reason
 			})
@@ -728,7 +856,9 @@ export default {
 		NoResults,
 		ResourcePicker,
 		PortionsList,
-		OptionsList
+		OptionsList,
+		SelectLocationsPopup,
+		Modal
 	}
 }
 </script>
@@ -747,5 +877,8 @@ export default {
 .mt-element-list .list-news.ext-1.mt-list-container ul>.mt-list-item.no-hover-highlight:hover, 
 .mt-element-list .list-news.ext-2.mt-list-container ul>.mt-list-item.no-hover-highlight:hover {
 	background-color: rgb(255, 255, 255);
+}
+.actions-on-top {
+	margin-top: -5px;
 }
 </style>

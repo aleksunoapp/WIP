@@ -104,7 +104,7 @@ export default {
 		previouslySelected: {
 			type: Array,
 			default: () => [],
-			required: true
+			required: false
 		},
 		withButton: {
 			type: Boolean,
