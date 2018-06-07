@@ -168,6 +168,13 @@ export default {
 			for (var i = 0; i < this.searchResults.length; i++) {
 				this.searchResults[i].selected = this.selectAllSelected
 			}
+			let payload = []
+			this.locations.forEach(location => {
+				if (location.selected) {
+					payload.push(location.id)
+				}
+			})
+			this.$emit('selectedLocations', payload)
 		},
 		/**
 		 * To select all or deselect all items
