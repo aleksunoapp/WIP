@@ -81,11 +81,22 @@
 		            <div class="mt-element-list">
 		                <div class="mt-list-container list-news">
 		                    <ul>
-		                        <li id="parent" class="mt-list-item actions-at-left margin-top-15 clickable" v-for="store in currentActivePageItems" @click="editStore(store)">
+		                        <li 
+									id="parent" 
+									class="mt-list-item actions-at-left margin-top-15 clickable" 
+									v-for="store in currentActivePageItems" 
+									:key="store.id">
 		                        	<div class="list-item-actions">
-		                        		<a class="btn btn-circle btn-icon-only btn-default">
-                                            <i class="fa fa-lg fa-pencil"></i>
-                                        </a>
+										<el-tooltip content="Edit" effect="light" placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default" @click="editStore(store)">
+                                            	<i class="fa fa-lg fa-pencil"></i>
+                                        	</a>
+										</el-tooltip>
+										<el-tooltip content="Delete" effect="light" placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default" @click="confirmDelete(store)">
+                                            	<i class="fa fa-lg fa-trash"></i>
+                                        	</a>
+										</el-tooltip>
 		                        	</div>
 		                        	<div class="list-icon-container">
                                         <i class="fa fa-angle-right"></i>
@@ -177,6 +188,27 @@
         	<no-results :show="!stores.length" :type="'stores'"></no-results>
         </div>
         <!-- LIST END -->
+
+		<!-- DELETE MODAL START -->
+		<modal :show="showDeleteModal" effect="fade" @closeOnEscape="closeDeleteModal">
+			<div slot="modal-header" class="modal-header">
+				<button type="button" class="close" @click="closeDeleteModal()">
+					<span>&times;</span>
+				</button>
+				<h4 class="modal-title center">Delete Store</h4>
+			</div>
+			<div slot="modal-body" class="modal-body">
+				<div class="alert alert-danger" v-show="deleteErrorMessage.length" ref="deleteErrorMessage">
+				    <button class="close" data-close="alert" @click="clearError('deleteErrorMessage')"></button>
+				    <span>{{deleteErrorMessage}}</span>
+				</div>
+				<p>Are you sure you want to delete {{storeToDelete.display_name}}</p>
+			</div>
+			<div slot="modal-footer" class="modal-footer">
+				<button type="button" class="btn btn-primary" @click="deleteStore()">Delete</button>
+			</div>
+		</modal>
+		<!-- DELETE MODAL END -->
     </div>
 </template>
 
@@ -188,6 +220,9 @@ import LoadingScreen from '../../modules/LoadingScreen'
 import Dropdown from '../../modules/Dropdown'
 import Pagination from '../../modules/Pagination'
 import PageResults from '../../modules/PageResults'
+import StoresFunctions from '@/controllers/Stores'
+import ajaxErrorHandler from '@/controllers/ErrorController'
+import Modal from '@/components/modules/Modal'
 
 export default {
 	data () {
@@ -208,7 +243,10 @@ export default {
 				order: 'ASC'
 			},
 			searchActivePage: 1,
-			filteredResults: []
+			filteredResults: [],
+			storeToDelete: {},
+			showDeleteModal: false,
+			deleteErrorMessage: ''
 		}
 	},
 	computed: {
@@ -233,6 +271,60 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * To update the order property of sortBy.
+		 * @function
+		 * @param {object} store - Store the user clicked on
+		 * @returns {undefined}
+		 */
+		confirmDelete (store) {
+			this.storeToDelete = {
+				...store
+			}
+			this.showDeleteModal = true
+		},
+		/**
+		 * To close the delete modal
+		 * @function
+		 * @param {object} store - Store the user clicked on
+		 * @returns {undefined}
+		 */
+		closeDeleteModal (store) {
+			this.showDeleteModal = false
+		},
+		/**
+		 * To confirm the change was saved
+		 * @function
+		 * @returns {undefined}
+		 */
+		showDeleteSuccess () {
+			this.$swal({
+				title: 'Success',
+				text: 'Store deleted',
+				type: 'success',
+				confirmButtonText: 'OK'
+			})
+		},
+		/**
+		 * To delete store from the database
+		 * @function
+		 * @returns {undefined}
+		 */
+		deleteStore () {
+			var storesVue = this
+			StoresFunctions.deleteStore(storesVue.storeToDelete.id).then(response => {
+				storesVue.getStores()
+				storesVue.closeDeleteModal()
+				storesVue.showDeleteSuccess()
+			}).catch(reason => {
+				ajaxErrorHandler({
+					reason,
+					errorText: 'Could not delete store',
+					errorName: 'deleteErrorMessage',
+					vue: storesVue
+				})
+			})
+		},
 		/**
 		 * To update the order property of sortBy.
 		 * @function
@@ -342,6 +434,15 @@ export default {
 			this.searchError = ''
 		},
 		/**
+		 * To clear an error.
+		 * @function
+		 * @param {string} name - Name of the error variable
+		 * @returns {undefined}
+		 */
+		clearError (name) {
+			this[name] = ''
+		},
+		/**
 		 * To clear the current store search criteria.
 		 * @function
 		 * @returns {undefined}
@@ -422,7 +523,8 @@ export default {
 		NoResults,
 		Dropdown,
 		Pagination,
-		PageResults
+		PageResults,
+		Modal
 	}
 }
 </script>
