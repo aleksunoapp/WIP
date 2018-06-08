@@ -46,27 +46,75 @@ export default {
 	/**
 	 * base url for API calls to send Messages
 	 */
-	messageBaseUrl: 'https://notifications.dev.api.unoapp.io',
+	messageBaseUrl: (function () {
+		if (production) {
+			return ''
+		} else if (staging) {
+			return 'https://notifications.beta.api.unoapp.io'
+		} else {
+			return 'https://notifications.dev.api.unoapp.io'
+		}
+	}()),
 	/**
 	 * app token for API calls to send Messages
 	 */
-	messageAppToken: 'bearer bed62ee5c3cc97a2d5297f973af1c15e',
+	messageAppToken: (function () {
+		if (production) {
+			return ''
+		} else if (staging) {
+			return 'bearer e3e7f5af3c458aa04b3722dc77c4020a'
+		} else {
+			return 'bearer bed62ee5c3cc97a2d5297f973af1c15e'
+		}
+	}()),
 	/**
 	 * app token for API calls to send Messages to OMA users
 	 */
-	OMAUsersMessageAppToken: 'bearer 6b1642515315f527604919b430fe79de',
+	OMAUsersMessageAppToken: (function () {
+		if (production) {
+			return ''
+		} else if (staging) {
+			return 'bearer 39d270dc380d5ac331f0affc7a4ddb59'
+		} else {
+			return 'bearer 6b1642515315f527604919b430fe79de'
+		}
+	}()),
 	/**
 	 * base url for API calls to Loyalty endpoints
 	 */
-	loyaltyUrl: 'https://loyalty.dev.api.unoapp.io',
+	loyaltyUrl: (function () {
+		if (production) {
+			return ''
+		} else if (staging) {
+			return 'https://loyalty.beta.api.unoapp.io'
+		} else {
+			return 'https://loyalty.dev.api.unoapp.io'
+		}
+	}()),
 	/**
 	 * app id for API calls to Loyalty endpoints
 	 */
-	loyaltyAppId: '0CA0D7Lk9D6jZvgeklHiBTX99PYbTDIs',
+	loyaltyAppId: (function () {
+		if (production) {
+			return ''
+		} else if (staging) {
+			return '0CA0D7Lk9D6jZvgeklHiBTX99PYbTDIs'
+		} else {
+			return '0CA0D7Lk9D6jZvgeklHiBTX99PYbTDIs'
+		}
+	}()),
 	/**
 	 * app secret for API calls to Loyalty endpoints
 	 */
-	loyaltyAppSecret: 'JnJqjxCKnVpvgO5cWGWSkfesTQWaiP46',
+	loyaltyAppSecret: (function () {
+		if (production) {
+			return ''
+		} else if (staging) {
+			return 'JnJqjxCKnVpvgO5cWGWSkfesTQWaiP46'
+		} else {
+			return 'JnJqjxCKnVpvgO5cWGWSkfesTQWaiP46'
+		}
+	}()),
 	/**
 	 * API key for Google Maps Javascript API
 	 */
