@@ -58,7 +58,7 @@
         				<div class="form-group form-md-line-input form-md-floating-label">
         					<label>Update all items?</label><br>
         					<el-switch
-        						v-model="itemNutritionInfo.update_all_items"
+        						v-model="update_all_items"
         						active-color="#0c6"
         						inactive-color="#ff4949"
         						:active-value="1"
@@ -187,7 +187,8 @@ export default {
 				user_id: this.$root.createdBy
 			},
 			selectLocationMode: false,
-			selectedLocations: []
+			selectedLocations: [],
+			update_all_items: false
 		}
 	},
 	props: {
@@ -322,6 +323,7 @@ export default {
 			updatedNutritionInfo.modifier_item_id = nutritionInfoVue.modifierItem.id
 			updatedNutritionInfo.user_id = nutritionInfoVue.$root.createdBy
 			updatedNutritionInfo.update_locations = nutritionInfoVue.selectedLocations
+			updatedNutritionInfo.update_all_items = nutritionInfoVue.update_all_items
 			nutritionInfoVue.editNutritionError = ''
 
 			return nutritionInfoVue.validateNutritionData(updatedNutritionInfo)
