@@ -58,7 +58,7 @@
 							</div>
 							<label v-if="!loadingItemTypes">
 								Pair with:
-								<el-select v-if="!loadingItemTypes" v-model="newTaxClass.pair_with" placeholder="Select Item Type" size="small">
+								<el-select v-if="!loadingItemTypes" v-model="newTaxClass.paired_with" placeholder="Select Item Type" size="small">
 									<el-option v-for="type in itemTypes" :label="type.name" :value="type.id" :key="type.id"></el-option>
 								</el-select>
 							</label>
@@ -181,7 +181,7 @@
 							</div>
 							<label v-if="!loadingItemTypes">
 								Pair with:
-							<el-select v-model="newTaxClass.pair_with" placeholder="Select Item Type" size="small">
+							<el-select v-model="taxClassToEdit.paired_with" placeholder="Select Item Type" size="small">
 								<el-option v-for="type in itemTypes" :label="type.name" :value="type.id" :key="type.id"></el-option>
 							</el-select>
 							</label>
@@ -239,7 +239,7 @@ export default {
 				percentage: '',
 				min_amount: '',
 				max_amount: '',
-				pair_with: ''
+				paired_with: ''
 			},
 
 			loadingTaxClasses: false,
@@ -360,7 +360,7 @@ export default {
 			return _this.validateNewTaxClassData()
 			.then(response => {
 				let payload = this.newTaxClass
-				if (!payload.pair_with) { delete payload.pair_with }
+				if (!payload.paired_with) { delete payload.paired_with }
 
 				TaxClassesFunctions.createTaxClass(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
 				.then(response => {
@@ -412,7 +412,7 @@ export default {
 				percentage: '',
 				min_amount: '',
 				max_amount: '',
-				pair_with: ''
+				paired_with: ''
 			}
 		},
 		/**
@@ -493,7 +493,7 @@ export default {
 			return _this.validateEditedTaxClassData()
 			.then(response => {
 				let payload = this.taxClassToEdit
-				if (!payload.pair_with) { delete payload.pair_with }
+				if (!payload.paired_with) { delete payload.paired_with }
 
 				TaxClassesFunctions.updateTaxClass(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
@@ -551,7 +551,7 @@ export default {
 				percentage: '',
 				min_amount: '',
 				max_amount: '',
-				pair_with: ''
+				paired_with: ''
 			}
 		},
 		/**
