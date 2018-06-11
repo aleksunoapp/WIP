@@ -7,18 +7,19 @@ export default ({
 	/**
 	 * Call to API to get a list of existing item types.
 	 * @function
+	 * @param {object} data - An object containing the location ID to get Item Types for
 	 * @param {string} appId - The appId of the current application.
 	 * @param {string} appSecret - The appSecret of the current application.
 	 * @param {string} userToken - The auth token of the logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	getItemTypes: function (appId, appSecret, userToken) {
+	getItemTypes: function (data, appId, appSecret, userToken) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'GET',
 				dataType: 'json',
 				url: '/app/item_type',
-				data: {},
+				data,
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
 					xhr.setRequestHeader('app-id', appId)

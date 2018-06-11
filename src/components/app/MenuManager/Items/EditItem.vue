@@ -343,7 +343,8 @@ export default {
 		 */
 		getItemTypes () {
 			var _this = this
-			return ItemTypesFunctions.getItemTypes(_this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
+			let payload = {location_id: this.$root.activeLocation.id}
+			return ItemTypesFunctions.getItemTypes(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
 			.then(response => {
 				_this.itemTypes = response.payload
 				if (response.payload.length === 0) { this.noItemTypes = true }

@@ -53,7 +53,13 @@
 		<!-- END CREATE -->
 
 		<!-- BEGIN LIST -->
-		<div>
+		<div v-if="activeLocationId === undefined">
+			<div class="alert center alert-info">
+				<h4>No Store Selected</h4>
+				<p>Please select a store from the stores panel on the right to view item types for it.</p>
+			</div>
+		</div>
+		<div v-else>
 			<div class="portlet light portlet-fit bordered margin-top-20" id="itemTypes-container">
 				<div class="portlet-title bg-blue-chambray">
 					<div class="menu-image-main">
@@ -184,7 +190,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr v-for="taxClass in taxClasses">
+							<tr v-for="(taxClass, index) in taxClasses" :key="index">
 								<td>
 									<div class="md-checkbox has-success">
 										<input type="checkbox" :id="'checkbox_' + taxClass.id" class="md-check" v-model="taxClass.selected">
@@ -406,10 +412,12 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		getItemTypes () {
+			this.clearError('listErrorMessage')
 			this.loadingItemTypes = true
 			this.itemTypes = []
 			var _this = this
-			return ItemTypesFunctions.getItemTypes(_this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
+			let payload = {location_id: _this.activeLocationId}
+			return ItemTypesFunctions.getItemTypes(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
 			.then(response => {
 				if (response.code === 200 && response.status === 'ok') {
 					_this.loadingItemTypes = false

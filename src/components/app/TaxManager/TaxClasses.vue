@@ -99,7 +99,7 @@
 					</div>
 				</div>
 				<div class="portlet-body relative-block">
-					<loading-screen :show="loadingTaxClasses && activeLocationId !== undefined" :color="'#2C3E50'" :display="'inline'"></loading-screen>
+					<loading-screen :show="loadingTaxClasses" :color="'#2C3E50'" :display="'inline'"></loading-screen>
 					<div class="mt-element-list margin-top-15" v-if="taxClasses.length && !loadingTaxClasses">
 						<div class="mt-list-container list-news ext-1 no-border">
 							<ul>
@@ -275,6 +275,7 @@ export default {
 			if (newId !== undefined) {
 				this.clearError('listErrorMessage')
 				this.getTaxClasses()
+				this.getItemTypes()
 			}
 		}
 	},
@@ -292,7 +293,8 @@ export default {
 			this.loadingItemTypes = true
 			this.itemTypes = []
 			var _this = this
-			return ItemTypesFunctions.getItemTypes(_this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
+			let payload = {location_id: this.$root.activeLocation.id}
+			return ItemTypesFunctions.getItemTypes(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
 			.then(response => {
 				if (response.code === 200 && response.status === 'ok') {
 					_this.loadingItemTypes = false
