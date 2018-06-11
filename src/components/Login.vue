@@ -218,7 +218,7 @@ export default {
 						errorName: 'errorMessage',
 						vue: loginVue
 					})
-					throw reason
+					this.$refs.email.focus()
 				})
 			}).catch(reason => {
 				disabledButton.cancel()
