@@ -1,0 +1,296 @@
+{
+    "stores": {
+        "store info read": false,
+        "store info create": false,
+        "store info update": false,
+        "store info delete": false, // also deletes meta, hours, images, amenities
+
+        "store meta read": false,
+        "store meta create": false,
+        "store meta update": false,
+        "store meta delete": false, // doesn't exist?
+
+        "store hours read": false,
+        "store hours create": false,
+        "store hours update": false,
+        "store hours delete": false, // doesn't exist?
+
+        "store holiday hours read": false,
+        "store holiday hours create": false,
+        "store holiday hours update": false,
+        "store holiday hours delete": false,
+
+        "store images read": false,
+        "store images create": false,
+        "store images update": false,
+        "store images delete": false,
+
+        "store groups": {
+            "store groups read": false,
+            "store groups create": false,
+            "store groups update": false, // covers assign locations to group?
+            "store groups delete": false
+        },
+        "amenities": {
+            "amenities read": false,
+            "amenities create": false,
+            "amenities update": false, // covers apply to location?
+            "amenities delete": false
+        },
+        "order settings": {
+            "order settings read": false,
+            "order settings create": false, // doesn't exist, update call used instead
+            "order settings update": false,
+            "order settings delete": false
+        }
+    },
+    "analytics": {
+        "overview": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        },
+        "store": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        },
+        "item": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        },
+        "user": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        }
+    },
+    "admin_manager": {
+        "brand_admins": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        },
+        "location_managers": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        },
+        "oma_users": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        },
+        "store_app_users": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        },
+        "roles": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        }
+    },
+    "roles": {
+        "brand_admins": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        },
+        "location_managers": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        },
+        "oma_users": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        },
+        "store_app_users": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        }
+    },
+    "news_feed": {
+        "read": false,
+        "create": false,
+        "update": false,
+        "delete": false
+    },
+    "social_feed": {
+        "read": false,
+        "create": false,
+        "update": false,
+        "delete": false
+    },
+    "tax_manager": {
+        "tax_classes": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        },
+        "item_types": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        }
+    },
+    "menu_manager": {
+        "menus": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false,
+            "categories": {
+                "read": false,
+                "create": false,
+                "update": false,
+                "delete": false,
+                "items": {
+                    "read": false,
+                    "create": false,
+                    "update": false,
+                    "delete": false
+                }
+            }
+        },
+        "menu_tiers": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        },
+        "modifiers": {
+            "items": {
+                "read": false,
+                "create": false,
+                "update": false,
+                "delete": false
+            }
+        },
+        "tags": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        },
+        "portions": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        },
+        "options": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        },
+        "attributes": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        }
+    },
+    "printers": {
+        "read": false,
+        "create": false,
+        "update": false,
+        "delete": false
+    },
+    "user_manager": {
+        "users": {
+            "read": false
+        },
+        "user_groups": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        },
+        "attributes": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        }
+    },
+    "faq": {
+        "store": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        },
+        "user": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        }
+    },
+    "loyalty": {
+        "base_rule": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        },
+        "promotion_rules": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        },
+        "reward_tiers": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        }
+    },
+    "promo_codes": {
+        "read": false,
+        "create": false,
+        "update": false,
+        "delete": false
+    },
+    "promotions": {
+        "read": false,
+        "create": false,
+        "update": false,
+        "delete": false,
+        "geolocations": {
+            "read": false,
+            "create": false,
+            "update": false,
+            "delete": false
+        }
+    },
+    "localization": {
+        "read": false,
+        "create": false,
+        "update": false,
+        "delete": false
+    }
+}
