@@ -1,27 +1,3 @@
-<!-- 
-Next steps:
-
-move to own tab
-
-sub-tabs: sorted by type (check with Ramesh)
-
-field and value label directory (parse each create call):
-
-	[
-		{'online_ordering_enabled': 
-			{
-				display: false, 
-				label: '', 
-				values: {
-					0: 'No',
-					1: 'Yes'
-				}
-				
-			}
-		}
-	]
- -->
-
 <template>
 	<div>
 		<div>
@@ -133,6 +109,7 @@ import NoResults from '../../modules/NoResults'
 import ApprovalsFunctions from '../../../controllers/Approvals'
 import Pagination from '../../modules/Pagination'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
+import FieldLabels from '@/components/app/AdminManager/FieldLabels.js'
 
 export default {
 	data () {
@@ -153,15 +130,21 @@ export default {
 		request () {
 			if (this.requests[0]) {
 				const keys = Object.keys(this.requests[0].existing_values)
-
 				return keys.map(key => {
-					let label = key.replace(/_/g, ' ')
-					label = label.charAt(0).toUpperCase() + label.slice(1)
-
+					let label
+					let display = true
+					if (FieldLabels[key] === undefined) {
+						label = key.replace(/_/g, ' ')
+						label = label.charAt(0).toUpperCase() + label.slice(1)
+					} else {
+						label = FieldLabels[key].label
+						display = FieldLabels[key].display
+					}
 					return {
 						label,
 						existing: this.requests[0].existing_values[key],
-						modified: this.requests[0].new_values[key]
+						modified: this.requests[0].new_values[key],
+						display
 					}
 				})
 			} else {
@@ -169,6 +152,26 @@ export default {
 			}
 		}
 	},
+	// computed: {
+	// 	request () {
+	// 		if (this.requests[0]) {
+	// 			const keys = Object.keys(this.requests[0].existing_values)
+
+	// 			return keys.map(key => {
+	// 				let label = key.replace(/_/g, ' ')
+	// 				label = label.charAt(0).toUpperCase() + label.slice(1)
+
+	// 				return {
+	// 					label,
+	// 					existing: this.requests[0].existing_values[key],
+	// 					modified: this.requests[0].new_values[key]
+	// 				}
+	// 			})
+	// 		} else {
+	// 			return []
+	// 		}
+	// 	}
+	// },
 	created () {
 		this.getRequests()
 	},
@@ -192,6 +195,7 @@ export default {
 		activePageUpdate (val) {
 			if (parseInt(this.activePage) !== parseInt(val)) {
 				this.activePage = val
+				this.getRequests()
 				window.scrollTo(0, 0)
 			}
 		},
