@@ -42,7 +42,13 @@
 								<h4>Select Menu</h4>
 								<div class="dd" id="nestable_list_1" v-if="menus.length">
 	                            	<ol class="dd-list">
-	                                	<li class="dd-item clickable" v-for="menu in menus" :data-id="menu.id" @click="selectMenu(menu)">
+	                                	<li 
+											class="dd-item clickable" 
+											v-for="menu in menus" 
+											:data-id="menu.id" 
+											@click="selectMenu(menu)"
+											:key="menu.id"
+										>
 	                                    	<div class="dd-handle clickable" :class="{'active': menu.id === activeMenu.id}"> {{ menu.name }}
 	                                    	<span class="pull-right"><i class="fa fa-chevron-right"></i></span>
 	                                    	</div>
@@ -59,7 +65,13 @@
 								<h4>Select Category</h4>
 								<div class="dd" id="nestable_list_2" v-if="categories.length">
 						            <ol class="dd-list">
-						                <li class="dd-item clickable" v-for="category in categories" :data-id="category.id" @click="selectCategory(category)">
+						                <li 
+											class="dd-item clickable" 
+											v-for="category in categories" 
+											:data-id="category.id" 
+											@click="selectCategory(category)"
+											:key="category.id"
+										>
 						                    <div class="dd-handle clickable" :class="{'active': category.id === activeCategory.id}"> {{ category.name }}
 						                        <span class="pull-right"><i class="fa fa-chevron-right"></i></span>
 						                    </div>
@@ -76,7 +88,13 @@
 								<h4>Select Item</h4>
 								<div class="dd" id="nestable_list_3" v-if="items.length">
 							        <ol class="dd-list clickable">
-							            <li class="dd-item clickable" v-for="item in items" :data-id="item.id" @click="copyItem(item)">
+							            <li 
+											class="dd-item clickable" 
+											v-for="item in items" 
+											:data-id="item.id" 
+											@click="copyItem(item)"
+											:key="item.id"
+										>
 							                <div class="dd-handle clickable">
 							                    <span class="pull-left">
 							                    	<label class="clickable">{{ item.name }}
@@ -196,7 +214,13 @@
 		            <div class="mt-element-list margin-top-15" v-if="categoryItems.length">
 		                <div class="mt-list-container list-news ext-1 no-border">
 		                    <ul>
-		                        <li v-for="item in categoryItems" class="mt-list-item margin-top-15" :class="{'no-hover-highlight' : expanded === item.id, 'clickable' : expanded !== item.id, 'animated' : animated === `item-${item.id}`}" :id="'item-' + item.id" @click="expandDetails(item.id)">
+		                        <li 
+									v-for="item in categoryItems" 
+									class="mt-list-item margin-top-15" 
+									:class="{'no-hover-highlight' : expanded === item.id, 'clickable' : expanded !== item.id, 'animated' : animated === `item-${item.id}`}" :id="'item-' + item.id" 
+									@click="expandDetails(item.id)"
+									:key="item.id"
+								>
 		                        	<div class="margin-bottom-15 actions-on-top">
 		                        		<el-tooltip content="Edit" effect="light" placement="bottom">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="displayEditItemModal(item, $event)">
@@ -267,7 +291,11 @@
     			                        	<div class="col-md-12">
     			                        		<div v-if="item.modifiers && item.modifiers.length">
                     				        	    <ul class="item-modifier-list">
-                    				        	    	<li class="col-md-6" v-for="modifier in item.modifiers">
+                    				        	    	<li 
+															class="col-md-6" 
+															v-for="modifier in item.modifiers"
+															:key="modifier.id"
+														>
                     				        	    		<router-link :to="'/app/menu_manager/modifier_items/' + modifier.id">{{modifier.name}}</router-link>
                     				        	    	</li>
                     				        	    </ul>
@@ -287,7 +315,13 @@
     			                        	<div class="col-md-12">
     			                        		<div v-if="item.tags && item.tags.length">
                     				        	    <ul class="item-modifier-list">
-                    				        	    	<li class="col-md-6" v-for="tag in item.tags"> {{tag.type + ' ' + tag.name}} </li>
+                    				        	    	<li 
+															class="col-md-6" 
+															v-for="tag in item.tags"
+															:key="tag.id"
+														> 
+															{{tag.type + ' ' + tag.name}} 
+														</li>
                     				        	    </ul>
     			                        		</div>
     			                        		<div class="col-md-12" v-if="!item.tags || !item.tags.length">
@@ -305,7 +339,13 @@
     			                        	<div class="col-md-12">
     			                        		<div v-show="selectedItemAttributes.length">
                     				        	    <ul class="item-modifier-list">
-                    				        	    	<li class="col-md-6" v-for="attribute in selectedItemAttributes"> {{attribute.name}} </li>
+                    				        	    	<li 
+															class="col-md-6" 
+															v-for="attribute in selectedItemAttributes"
+															:key="attribute.id"
+														>
+														 {{attribute.name}} 
+														</li>
                     				        	    </ul>
     			                        		</div>
     			                        		<div class="col-md-12" v-show="!selectedItemAttributes.length">
@@ -1012,6 +1052,8 @@ export default {
 		 * @returns {undefined}
 		 */
 		expandDetails (itemId) {
+			if (this.expanded === itemId) return
+
 			this.getItemDetailsFull(itemId)
 			this.itemAttributes.forEach((itemAttribute) => { itemAttribute.selected = false })
 			this.getItemAttributesOfItem(itemId)
