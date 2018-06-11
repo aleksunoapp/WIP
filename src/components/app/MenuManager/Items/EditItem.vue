@@ -21,29 +21,63 @@
 				</div>
 				<div class="col-md-12">
 					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm edited" id="form_control_2" v-model="itemToBeEdited.name">
-					    <label for="form_control_2">Item Name</label>
+						<input type="text" class="form-control input-sm edited" id="form_control_2" v-model="itemToBeEdited.name">
+						<label for="form_control_2">Item Name</label>
 					</div>
 					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm edited" id="form_control_3" v-model="itemToBeEdited.desc">
-					    <label for="form_control_3">Item Description</label>
+						<input type="text" class="form-control input-sm edited" id="form_control_3" v-model="itemToBeEdited.desc">
+						<label for="form_control_3">Item Description</label>
 					</div>
 					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm edited" id="form_control_3" v-model="itemToBeEdited.short_description">
-					    <label for="form_control_3">Item Description</label>
+						<input type="text" class="form-control input-sm edited" id="form_control_3" v-model="itemToBeEdited.short_description">
+						<label for="form_control_3">Item Description</label>
 					</div>
 					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm edited" id="form_control_4" v-model="itemToBeEdited.price">
-					    <label for="form_control_4">Item Price</label>
+						<input type="text" class="form-control input-sm edited" id="form_control_4" v-model="itemToBeEdited.price">
+						<label for="form_control_4">Item Price</label>
 					</div>
 					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm" :class="{'edited': itemToBeEdited.nutrition_summary.length}" id="form_control_3" v-model="itemToBeEdited.nutrition_summary">
-					    <label for="form_control_3">Nutrition Summary</label>
+						<input type="text" class="form-control input-sm" :class="{'edited': itemToBeEdited.nutrition_summary.length}" id="form_control_3" v-model="itemToBeEdited.nutrition_summary">
+						<label for="form_control_3">Nutrition Summary</label>
 					</div>
+				</div>
+				<div :class="{'col-xs-10' : skuDisabled, 'col-xs-12' : !skuDisabled}">
 					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm edited" id="form_control_5" v-model="itemToBeEdited.sku">
-					    <label for="form_control_5">Item SKU</label>
+						<input 
+							type="text" 
+							class="form-control input-sm edited" 
+							id="form_control_5" 
+							v-model="itemToBeEdited.sku"
+							:disabled="skuDisabled"
+						>
+						<label for="form_control_5">Item SKU</label>
 					</div>
+				</div>
+				<div class="col-xs-2" v-show="skuDisabled && !confirmingSkuEdit">
+					<div class="form-group form-md-line-input form-md-floating-label">
+						<button 
+							type="button" 
+							class="btn btn-outline btn-xs"
+							@click="confirmSkuEdit()"
+						>
+							Edit
+						</button>
+					</div>
+				</div>
+				<div class="col-xs-12" v-show="confirmingSkuEdit">
+					<div class="alert alert-danger">
+					<button class="close" data-close="alert" @click="cancelSkuEdit()"></button>
+				    <span>Editing the SKU may cause loss of data. Are you sure?</span>
+					<button 
+						type="button" 
+						class="btn btn-outline btn-xs pull-right margin-left-5 margin-right-10"
+						@click="enableSkuEdit()"
+					>
+						Yes, edit
+					</button>
+				</div>
+				</div>
+				<div class="col-xs-12">
 					<div class="form-group form-md-line-input form-md-floating-label">
 					    <input type="text" class="form-control input-sm edited" id="form_control_6" v-model="itemToBeEdited.order">
 					    <label for="form_control_6">Item Order</label>
@@ -96,15 +130,19 @@
 			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button 
-				v-if="!selectImageMode && !selectLocationMode" 
-				type="button" 
-				class="btn btn-primary" 
-				:disabled="noItemTypes"
-				@click="updateCategoryItem()"
-			>
-				Save
-			</button>
+			<div class="row">
+				<div class="col-xs-12">
+					<button 
+						v-if="!selectImageMode && !selectLocationMode" 
+						type="button" 
+						class="btn btn-primary" 
+						:disabled="noItemTypes"
+						@click="updateCategoryItem()"
+					>
+						Save
+					</button>
+				</div>
+			</div>
 		</div>
 	</modal>
 </template>
@@ -131,7 +169,9 @@ export default {
 			selectedLocations: [],
 			selectLocationMode: false,
 			itemTypes: [],
-			noItemTypes: false
+			noItemTypes: false,
+			skuDisabled: true,
+			confirmingSkuEdit: false
 		}
 	},
 	computed: {
@@ -159,6 +199,31 @@ export default {
 		this.showEditItemModal = true
 	},
 	methods: {
+		/**
+		 * To show a confirmation prompt before editing the SKU
+		 * @function
+		 * @returns {undefined}
+		 */
+		confirmSkuEdit () {
+			this.confirmingSkuEdit = true
+		},
+		/**
+		 * To dismiss the SKU edit confirmation prompt without editing
+		 * @function
+		 * @returns {undefined}
+		 */
+		cancelSkuEdit () {
+			this.confirmingSkuEdit = false
+		},
+		/**
+		 * To dismiss the SKU edit confirmation prompt and enable editing
+		 * @function
+		 * @returns {undefined}
+		 */
+		enableSkuEdit () {
+			this.confirmingSkuEdit = false
+			this.skuDisabled = false
+		},
 		/**
 		 * To update the type field of the item
 		 * @function
