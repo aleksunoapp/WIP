@@ -12,61 +12,66 @@
             <p>Create and manage the Application News Feed.</p>
         </div>
         <div class="margin-top-20">
-  			<!-- SEARCH PANEL START -->
-				<div class="portlet box blue-hoki">
-					<div class="portlet-title bg-blue-chambray" @click="toggleCreateFeedPanel()">
-						<div class="custom tools">
-							<a :class="{'expand': !createFeedCollapse, 'collapse': createFeedCollapse}"></a>
-						</div>
-						<div class="caption">
-							&emsp;Create News Feed
-						</div>
+  			<!-- CREATE START -->
+			<div class="portlet box blue-hoki">
+				<div class="portlet-title bg-blue-chambray" @click="toggleCreateFeedPanel()">
+					<div class="custom tools">
+						<a :class="{'expand': !createFeedCollapse, 'collapse': createFeedCollapse}"></a>
 					</div>
-					<div class="portlet-body" :class="{'display-hide': createFeedCollapse}">
-	      			<form role="form" @submit.prevent="createNewsFeed($event)">
-	      				<div class="row">
-	      					<div class="col-md-12">
-		      					<div class="alert alert-danger" v-if="createFeedError.length">
-		      					    <button class="close" data-close="alert" @click="clearCreateFeedError()"></button>
-		      					    <span>{{createFeedError}}</span>
-		      					</div>
-		      				</div>
-			        		<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
-							<resource-picker 
-								@open="toggleImageMode('newMenu', true)"
-								@close="toggleImageMode('newMenu', false)"
-								@selected="updateImage" 
-								:imageButton="true"
-								:imageUrl="newNewsFeed.image"
-								class="margin-top-15"
-							>
-							</resource-picker>
-		        		</div>
-	      					<div class="col-md-5" v-show="!imageMode.newMenu">
-	      						<div class="form-group form-md-line-input form-md-floating-label">
-	      						    <input type="text" class="form-control input-sm" id="form_control_1" v-model="newNewsFeed.title" :class="{'edited': newNewsFeed.title.length}">
-	      						    <label for="form_control_1">Title</label>
-	      						</div>
-	      						<div class="form-group form-md-line-input form-md-floating-label">
-	      						    <input type="text" class="form-control input-sm" id="form_control_2" v-model="newNewsFeed.short_description" :class="{'edited': newNewsFeed.short_description.length}">
-	      						    <label for="form_control_2">Short Description</label>
-	      						</div>
-	      					</div>
-	      					<div class="col-md-5" v-show="!imageMode.newMenu">
-	      						<div class="form-group form-md-line-input form-md-floating-label">
-	      						    <textarea class="form-control input-sm" rows="4" v-model="newNewsFeed.body" :class="{'edited': newNewsFeed.body.length}"></textarea>
-	      						    <label for="form_control_1">Body</label>
-	      						</div>
-	      					</div>
-	      				</div>
-	      				<div class="form-actions right" v-show="!imageMode.newMenu">
-	      					<button type="button" class="btn btn-default" @click="resetForm()"> Reset Search</button>
-	      					<button type="submit" class="btn blue">Save</button>
-	      				</div>
-	      			</form>
+					<div class="caption">
+						&emsp;Create News Feed
+					</div>
+				</div>
+				<div class="portlet-body" :class="{'display-hide': createFeedCollapse}">
+					<form role="form" @submit.prevent="createNewsFeed($event)">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="alert alert-danger" v-show="createFeedError.length" ref="createFeedError">
+									<button class="close" data-close="alert" @click.prevent="clearCreateFeedError()"></button>
+									<span>{{createFeedError}}</span>
+								</div>
+							</div>
+							<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
+								<resource-picker 
+									@open="toggleImageMode('newMenu', true)"
+									@close="toggleImageMode('newMenu', false)"
+									@selected="updateImage" 
+									:imageButton="true"
+									:imageUrl="newNewsFeed.image"
+									class="margin-top-15"
+								>
+								</resource-picker>
+							</div>
+							<div class="col-md-5" v-show="!imageMode.newMenu">
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<input type="text" class="form-control input-sm" id="form_control_1" v-model="newNewsFeed.title" :class="{'edited': newNewsFeed.title.length}">
+									<label for="form_control_1">Title</label>
+								</div>
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<input type="text" class="form-control input-sm" id="form_control_2" v-model="newNewsFeed.short_description" :class="{'edited': newNewsFeed.short_description.length}">
+									<label for="form_control_2">Short Description</label>
+								</div>
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<input type="text" class="form-control input-sm" id="form_control_external_url" v-model="newNewsFeed.external_url" :class="{'edited': newNewsFeed.external_url.length}">
+									<label for="form_control_2">Link</label>
+								</div>
+							</div>
+							<div class="col-md-5" v-show="!imageMode.newMenu">
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<textarea class="form-control input-sm" rows="4" v-model="newNewsFeed.body" :class="{'edited': newNewsFeed.body.length}"></textarea>
+									<label for="form_control_1">Body</label>
+								</div>
+							</div>
+							<div class="col-xs-12" v-show="!imageMode.newMenu">
+								<div class="pull-right">
+									<button type="submit" class="btn blue">Save</button>
+								</div>
+							</div>
+						</div>
+					</form>
 	      		</div>
-	      	</div>
-	      	<!-- SEARCH PANEL END -->
+			</div>
+	      	<!-- CREATE END -->
         </div>
         <div class="margin-top-20">
 	        <div class="relative-block">
@@ -97,7 +102,7 @@
                     <div class="portlet-body">
                         <div class="timeline">
                             <!-- TIMELINE ITEM -->
-                            <div class="timeline-item" v-for="news in newsFeed">
+                            <div class="timeline-item" v-for="(news, index) in newsFeed" :key="index">
                                 <div class="timeline-badge">
                                     <img class="timeline-badge-userpic" v-if="news.image.length" :src="news.image">
                                     <img class="timeline-badge-userpic" v-if="!news.image.length" src="../../../src/assets/img/app/image-placeholder.png">
@@ -117,6 +122,7 @@
                                     <div class="timeline-body-content">
                                     	<h5>{{ news.formatted_date }}</h5>
                                         <span class="font-grey-cascade">{{ news.short_description }}</span>
+										<span class="font-grey-cascade">{{ news.external_url }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -135,15 +141,6 @@
 	        </div>
 	    </div>
 	    <edit-news-feed v-if="showEditFeedModal" :selectedFeedId="selectedFeedId" @closeEditFeedModal="closeEditFeedModal" @updateNewsFeed="updateNewsFeed"></edit-news-feed>
-	    <modal :show="showGalleryModal" effect="fade" @closeOnEscape="closeGalleryModal">
-	    	<div slot="modal-header" class="modal-header">
-	    		<button type="button" class="close" @click="closeGalleryModal()">
-	    			<span>&times;</span>
-	    		</button>
-	    		<h4 class="modal-title center">Select An Image</h4>
-	    	</div>
-	    	<div slot="modal-footer" class="modal-footer clear"></div>
-	    </modal>
 	</div>
 </template>
 
@@ -154,10 +151,10 @@ import NoResults from '../modules/NoResults'
 import PageResults from '../modules/PageResults'
 import Pagination from '../modules/Pagination'
 import Dropdown from '../modules/Dropdown'
-import Modal from '../modules/Modal'
 import NewsFeedFunctions from '../../controllers/NewsFeed'
 import EditNewsFeed from './NewsFeed/EditNewsFeed'
 import ResourcePicker from '../modules/ResourcePicker'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -179,7 +176,8 @@ export default {
 				title: '',
 				short_description: '',
 				body: '',
-				image: ''
+				image: '',
+				external_url: ''
 			},
 			createFeedError: '',
 			showEditFeedModal: false,
@@ -314,7 +312,8 @@ export default {
 				title: '',
 				short_description: '',
 				body: '',
-				image: ''
+				image: '',
+				external_url: ''
 			}
 			this.clearCreateFeedError()
 		},
@@ -352,17 +351,18 @@ export default {
 			.then(response => {
 				NewsFeedFunctions.createNewsFeed(newsFeedVue.newNewsFeed, newsFeedVue.$root.userToken, newsFeedVue.$root.appId, newsFeedVue.$root.appSecret).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						newsFeedVue.resetForm()
 						newsFeedVue.newsFeed.push(newsFeedVue.newNewsFeed)
+						newsFeedVue.resetForm()
 					} else {
 						newsFeedVue.createFeedError = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						newsFeedVue.$router.push('/login/expired')
-						return
-					}
-					throw reason
+					ajaxErrorHandler({
+						reason,
+						errorText: 'Could not create news feed',
+						errorName: 'createFeedError',
+						vue: newsFeedVue
+					})
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message
@@ -415,7 +415,6 @@ export default {
 		PageResults,
 		Pagination,
 		Dropdown,
-		Modal,
 		EditNewsFeed,
 		NoResults,
 		ResourcePicker
