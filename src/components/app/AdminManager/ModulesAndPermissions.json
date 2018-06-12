@@ -1,296 +1,506 @@
 {
+    "create role": true,
+    "update role": true,
+    "delete role": true,
+    "list role": true,
+    "create permission": true,
+    "update permission": true,
+    "delete permission": true,
+    "list permission": true,
+    "list role's permissions": true,
+    "assign permissions to role": true,
+    "revoke permissions from role": true,
+    "sync permissions for role": true,
+    "list user's roles": true,
+    "assign roles to user": true,
+    "revoke roles from user": true,
+    "sync roles for user": true,
+    "list user's permissions": true,
+    "assign permissions to user": true,
+    "revoke permissions from user": true,
+    "sync permissions for user": true,
+    "search users with role & permission": true,
     "stores": {
-        "store info read": false,
-        "store info create": false,
-        "store info update": false,
-        "store info delete": false, // also deletes meta, hours, images, amenities
+        "stores info read": false,
+        "stores info create": false,
+        "stores info update": false,
+        "stores info delete": false,
 
-        "store meta read": false,
-        "store meta create": false,
-        "store meta update": false,
-        "store meta delete": false, // doesn't exist?
+        "stores meta read": false,
+        "stores meta create": false,
+        "stores meta update": false,
 
-        "store hours read": false,
-        "store hours create": false,
-        "store hours update": false,
-        "store hours delete": false, // doesn't exist?
+        "stores hours read": false,
+        "stores hours create": false,
+        "stores hours update": false,
 
-        "store holiday hours read": false,
-        "store holiday hours create": false,
-        "store holiday hours update": false,
-        "store holiday hours delete": false,
+        "stores holiday_hours read": false,
+        "stores holiday_hours create": false,
+        "stores holiday_hours update": false,
+        "stores holiday_hours delete": false,
 
-        "store images read": false,
-        "store images create": false,
-        "store images update": false,
-        "store images delete": false,
+        "stores images read": false,
+        "stores images create": false,
+        "stores images update": false,
+        "stores images delete": false,
 
-        "store groups": {
-            "store groups read": false,
-            "store groups create": false,
-            "store groups update": false, // covers assign locations to group?
-            "store groups delete": false
+        "groups": {
+            "stores groups read": false,
+            "stores groups create": false,
+            "stores groups update": false,
+            "stores groups delete": false
         },
         "amenities": {
-            "amenities read": false,
-            "amenities create": false,
-            "amenities update": false, // covers apply to location?
-            "amenities delete": false
+            "stores amenities read": false,
+            "stores amenities create": false,
+            "stores amenities update": false,
+            "stores amenities delete": false
         },
-        "order settings": {
-            "order settings read": false,
-            "order settings create": false, // doesn't exist, update call used instead
-            "order settings update": false,
-            "order settings delete": false
+        "order_settings": {
+            "stores order_settings read": false,
+            "stores order_settings update": false,
+            "stores order_settings delete": false
         }
     },
     "analytics": {
         "overview": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
+            "analytics overview read": false
         },
         "store": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
+            "analytics store read": false
         },
         "item": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
+            "analytics item read": false
         },
         "user": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
+            "analytics user read": false
         }
     },
-    "admin_manager": {
-        "brand_admins": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
-        },
-        "location_managers": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
-        },
-        "oma_users": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
-        },
-        "store_app_users": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
-        },
-        "roles": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
-        }
+    "approvals": {
+        "approvals read": false,
+        "approvals update": false
     },
-    "roles": {
+    "admin": {
         "brand_admins": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
+            "admin brand_admins read": false,
+            "admin brand_admins create": false,
+            "admin brand_admins update": false
         },
         "location_managers": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
+            "admin location_managers read": false,
+            "admin location_managers create": false,
+            "admin location_managers update": false
         },
         "oma_users": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
+            "admin oma_users read": false,
+            "admin oma_users create": false,
+            "admin oma_users update": false,
+            "admin oma_users delete": false
         },
         "store_app_users": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
+            "admin store_app_users read": false,
+            "admin store_app_users create": false,
+            "admin store_app_users update": false
         }
     },
     "news_feed": {
-        "read": false,
-        "create": false,
-        "update": false,
-        "delete": false
+        "news_feed read": false,
+        "news_feed create": false,
+        "news_feed update": false
     },
     "social_feed": {
-        "read": false,
-        "create": false,
-        "update": false,
-        "delete": false
+        "social_feed read": false,
+        "social_feed update": false
     },
-    "tax_manager": {
-        "tax_classes": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
+    "tax": {
+        "tax tax_classes": {
+            "tax tax_classes read": false,
+            "tax tax_classes create": false,
+            "tax tax_classes update": false,
+            "tax tax_classes delete": false
         },
         "item_types": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
+            "tax item_types read": false,
+            "tax item_types create": false,
+            "tax item_types update": false,
+            "tax item_types delete": false
         }
     },
     "menu_manager": {
         "menus": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false,
+            "menu_manager menus read": false,
+            "menu_manager menus create": false,
+            "menu_manager menus update": false,
+            "menu_manager menus delete": false,
             "categories": {
-                "read": false,
-                "create": false,
-                "update": false,
-                "delete": false,
-                "items": {
-                    "read": false,
-                    "create": false,
-                    "update": false,
-                    "delete": false
+                "menu_manager menus categories read": false,
+                "menu_manager menus categories create": false,
+                "menu_manager menus categories update": false,
+                "menu_manager menus categories delete": false,
+                "subcategories": {
+                    "menu_manager menus categories subcategories read": false,
+                    "menu_manager menus categories subcategories create": false,
+                    "menu_manager menus categories subcategories update": false,
+                    "menu_manager menus categories subcategories delete": false,
+                    "items": {
+                        "menu_manager menus categories subcategories items read": false,
+                        "menu_manager menus categories subcategories items create": false,
+                        "menu_manager menus categories subcategories items update": false,
+                        "menu_manager menus categories subcategories items delete": false
+                    }
                 }
             }
         },
-        "menu_tiers": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
+        "tiers": {
+            "menu_manager tiers read": false,
+            "menu_manager tiers create": false,
+            "menu_manager tiers update": false
         },
         "modifiers": {
+            "menu_manager modifiers read": false,
+            "menu_manager modifiers create": false,
+            "menu_manager modifiers update": false,
+            "menu_manager modifiers delete": false,
             "items": {
-                "read": false,
-                "create": false,
-                "update": false,
-                "delete": false
+                "menu_manager modifiers items read": false,
+                "menu_manager modifiers items create": false,
+                "menu_manager modifiers items update": false,
+                "menu_manager modifiers items delete": false
             }
         },
         "tags": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
+            "menu_manager tags read": false,
+            "menu_manager tags create": false,
+            "menu_manager tags update": false
         },
         "portions": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
+            "menu_manager portions read": false,
+            "menu_manager portions create": false,
+            "menu_manager portions update": false
         },
         "options": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
+            "menu_manager options read": false,
+            "menu_manager options create": false,
+            "menu_manager options update": false
         },
         "attributes": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
+            "menu_manager attributes read": false,
+            "menu_manager attributes create": false,
+            "menu_manager attributes update": false,
+            "menu_manager attributes delete": false
         }
     },
     "printers": {
-        "read": false,
-        "create": false,
-        "update": false,
-        "delete": false
+        "printers read": false,
+        "printers create": false,
+        "printers update": false
     },
     "user_manager": {
         "users": {
-            "read": false
+            "user_manager users read": false
         },
         "user_groups": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
+            "user_manager user_groups read": false,
+            "user_manager user_groups create": false,
+            "user_manager user_groups update": false,
+            "user_manager user_groups delete": false
         },
         "attributes": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
+            "user_manager attributes read": false,
+            "user_manager attributes create": false,
+            "user_manager attributes update": false,
+            "user_manager attributes delete": false
         }
     },
     "faq": {
         "store": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
+            "faq store read": false,
+            "faq store create": false,
+            "faq store update": false
         },
         "user": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
+            "faq user read": false,
+            "faq user create": false,
+            "faq user update": false
         }
+    },
+    "gallery": {
+        "gallery read": false,
+        "gallery create": false
     },
     "loyalty": {
         "base_rule": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
+            "loyalty base_rule read": false,
+            "loyalty base_rule create": false,
+            "loyalty base_rule update": false,
+            "loyalty base_rule delete": false
         },
         "promotion_rules": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
+            "loyalty promotion_rules read": false,
+            "loyalty promotion_rules create": false,
+            "loyalty promotion_rules update": false,
+            "loyalty promotion_rules delete": false
         },
         "reward_tiers": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
+            "reward_tiers read": false,
+            "reward_tiers create": false,
+            "reward_tiers update": false,
+            "items": {
+                "reward_tiers items read": false,
+                "reward_tiers items create": false,
+                "reward_tiers items update": false,
+            }
         }
     },
-    "promo_codes": {
-        "read": false,
-        "create": false,
-        "update": false,
-        "delete": false
+    "promocodes": {
+        "promocodes read": false,
+        "promocodes create": false,
+        "promocodes update": false,
+        "promocodes delete": false
     },
     "promotions": {
-        "read": false,
-        "create": false,
-        "update": false,
-        "delete": false,
+        "promotions read": false,
+        "promotions create": false,
+        "promotions update": false,
+        "promotions delete": false,
         "geolocations": {
-            "read": false,
-            "create": false,
-            "update": false,
-            "delete": false
+            "promotions geolocations read": false,
+            "promotions geolocations create": false,
+            "promotions geolocations update": false,
+            "promotions geolocations delete": false
         }
     },
     "localization": {
-        "read": false,
-        "create": false,
-        "update": false,
-        "delete": false
+        "localization read": false,
+        "localization create": false,
+        "localization update": false
     }
 }
+
+===============================================
+Permissions
+===============================================
+"create role": true,
+"update role": true,
+"delete role": true,
+"list role": true,
+"create permission": true,
+"update permission": true,
+"delete permission": true,
+"list permission": true,
+"list role's permissions": true,
+"assign permissions to role": true,
+"revoke permissions from role": true,
+"sync permissions for role": true,
+"list user's roles": true,
+"assign roles to user": true,
+"revoke roles from user": true,
+"sync roles for user": true,
+"list user's permissions": true,
+"assign permissions to user": true,
+"revoke permissions from user": true,
+"sync permissions for user": true,
+"search users with role & permission": true,
+"stores info read": false,
+"stores info create": false,
+"stores info update": false,
+"stores info delete": false,
+"stores meta read": false,
+"stores meta create": false,
+"stores meta update": false,
+"stores hours read": false,
+"stores hours create": false,
+"stores hours update": false,
+"stores holiday_hours read": false,
+"stores holiday_hours create": false,
+"stores holiday_hours update": false,
+"stores holiday_hours delete": false,
+"stores images read": false,
+"stores images create": false,
+"stores images update": false,
+"stores images delete": false,
+"stores groups read": false,
+"stores groups create": false,
+"stores groups update": false,
+"stores groups delete": false
+"stores amenities read": false,
+"stores amenities create": false,
+"stores amenities update": false,
+"stores amenities delete": false
+"stores order_settings read": false,
+"stores order_settings update": false,
+"stores order_settings delete": false
+"analytics overview read": false
+"analytics store read": false
+"analytics item read": false
+"analytics user read": false
+"approvals read": false,
+"approvals update": false
+"admin brand_admins read": false,
+"admin brand_admins create": false,
+"admin brand_admins update": false
+"admin location_managers read": false,
+"admin location_managers create": false,
+"admin location_managers update": false
+"admin oma_users read": false,
+"admin oma_users create": false,
+"admin oma_users update": false,
+"admin oma_users delete": false
+"admin store_app_users read": false,
+"admin store_app_users create": false,
+"admin store_app_users update": false
+"news_feed read": false,
+"news_feed create": false,
+"news_feed update": false
+"social_feed read": false,
+"social_feed update": false
+"tax tax_classes read": false,
+"tax tax_classes create": false,
+"tax tax_classes update": false,
+"tax tax_classes delete": false
+"tax item_types read": false,
+"tax item_types create": false,
+"tax item_types update": false,
+"tax item_types delete": false
+"menu_manager menus read": false,
+"menu_manager menus create": false,
+"menu_manager menus update": false,
+"menu_manager menus delete": false,
+"menu_manager menus categories read": false,
+"menu_manager menus categories create": false,
+"menu_manager menus categories update": false,
+"menu_manager menus categories delete": false,
+"menu_manager menus categories subcategories read": false,
+"menu_manager menus categories subcategories create": false,
+"menu_manager menus categories subcategories update": false,
+"menu_manager menus categories subcategories delete": false,
+"menu_manager menus categories subcategories items read": false,
+"menu_manager menus categories subcategories items create": false,
+"menu_manager menus categories subcategories items update": false,
+"menu_manager menus categories subcategories items delete": false
+"menu_manager tiers read": false,
+"menu_manager tiers create": false,
+"menu_manager tiers update": false
+"menu_manager modifiers read": false,
+"menu_manager modifiers create": false,
+"menu_manager modifiers update": false,
+"menu_manager modifiers delete": false,
+"menu_manager modifiers items read": false,
+"menu_manager modifiers items create": false,
+"menu_manager modifiers items update": false,
+"menu_manager modifiers items delete": false
+"menu_manager tags read": false,
+"menu_manager tags create": false,
+"menu_manager tags update": false
+"menu_manager portions read": false,
+"menu_manager portions create": false,
+"menu_manager portions update": false
+"menu_manager options read": false,
+"menu_manager options create": false,
+"menu_manager options update": false
+"menu_manager attributes read": false,
+"menu_manager attributes create": false,
+"menu_manager attributes update": false,
+"menu_manager attributes delete": false
+"printers read": false,
+"printers create": false,
+"printers update": false
+"user_manager users read": false
+"user_manager user_groups read": false,
+"user_manager user_groups create": false,
+"user_manager user_groups update": false,
+"user_manager user_groups delete": false
+"user_manager attributes read": false,
+"user_manager attributes create": false,
+"user_manager attributes update": false,
+"user_manager attributes delete": false
+"faq store read": false,
+"faq store create": false,
+"faq store update": false
+"faq user read": false,
+"faq user create": false,
+"faq user update": false
+"gallery read": false,
+"gallery create": false
+"loyalty base_rule read": false,
+"loyalty base_rule create": false,
+"loyalty base_rule update": false,
+"loyalty base_rule delete": false
+"loyalty promotion_rules read": false,
+"loyalty promotion_rules create": false,
+"loyalty promotion_rules update": false,
+"loyalty promotion_rules delete": false
+"reward_tiers read": false,
+"reward_tiers create": false,
+"reward_tiers update": false,
+"reward_tiers items read": false,
+"reward_tiers items create": false,
+"reward_tiers items update": false,
+"promocodes read": false,
+"promocodes create": false,
+"promocodes update": false,
+"promocodes delete": false
+"promotions read": false,
+"promotions create": false,
+"promotions update": false,
+"promotions delete": false,
+"promotions geolocations read": false,
+"promotions geolocations create": false,
+"promotions geolocations update": false,
+"promotions geolocations delete": false
+"localization read": false,
+"localization create": false,
+"localization update": false
+
+===============================================
+Modules
+===============================================
+"groups"
+"amenities"
+"order_settings"
+"analytics"
+"overview"
+"store"
+"item"
+"user"
+"approvals"
+"admin"
+"brand_admins"
+"location_managers"
+"oma_users"
+"store_app_users"
+"news_feed"
+"social_feed"
+"tax"
+"tax tax_classes"
+"item_types"
+"menu_manager"
+"menus"
+"categories"
+"subcategories"
+"items"
+"tiers"
+"modifiers"
+"items"
+"tags"
+"portions"
+"options"
+"attributes"
+"printers"
+"user_manager"
+"users"
+"user_groups"
+"attributes"
+"faq"
+"store"
+"user"
+"gallery"
+"loyalty"
+"base_rule"
+"promotion_rules"
+"reward_tiers"
+"items"
+"promocodes"
+"promotions"
+"geolocations"
+"localization"
