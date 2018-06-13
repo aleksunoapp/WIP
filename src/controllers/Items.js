@@ -496,7 +496,7 @@ export default ({
 				contentType: 'application/json',
 				dataType: 'json',
 				url: '/app/preset_products/' + itemId + '/update',
-				data: JSON.stringify(presetSettings),
+				data: presetSettings,
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
 					xhr.setRequestHeader('app-id', appId)

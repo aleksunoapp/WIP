@@ -357,7 +357,7 @@
     			                        	</div>
     			                        </div>
 										<div class="col-md-3" v-show="item.type === 'preset'">
-											<h5 class="inline-block">Preset Settings</h5>
+											<h5>Preset Settings</h5>
 											<ul class="item-modifier-list" v-show="item.preset_item_modifier_item">
 												<li 
 													v-for="(modifier, index) in item.preset_item_modifier_item"
@@ -1513,6 +1513,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		editItem (val) {
+			if (val.type === 'preset') { this.getPresetDetails(val.id) }
 			this.editItemModalActive = false
 			for (let i = 0; i < this.categoryItems.length; i++) {
 				if (this.categoryItems[i].id === val.id) {
