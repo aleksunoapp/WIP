@@ -63,7 +63,6 @@ var authenticateToken = {
 							}
 						}).then((response, textStatus, xhr) => {
 							if (xhr.status === 200) {
-								console.log(response)
 								resolve(response)
 							} else {
 								reject()
@@ -73,7 +72,7 @@ var authenticateToken = {
 
 					let getInspection = new Promise((resolve, reject) => {
 						$.ajax({
-							url: ENV.production_url + '/inspection/' + _this.$root.token,
+							url: ENV.production_url + '/inspection/' + _this.$root.token + '/' + _this.$root.meta.local,
 							method: 'GET',
 							beforeSend (xhr) {
 								xhr.setRequestHeader('Authorization', 'Bearer ' + _this.$root.accessToken)
