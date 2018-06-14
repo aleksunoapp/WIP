@@ -56,11 +56,11 @@
 			<span class="help-icon" @click="openHelpScreen()"></span>
 			<div class="summary-header"> {{ langTerms.inspection_summary[$root.meta.local.toLowerCase()] }}</div>
 			<div class="summary-icons">
-				<div v-if="$root.inspectionCounts.failCount" class="icon">
+				<div class="icon">
 					<img src="../assets/images/fail.png">
 					({{ this.$root.inspectionCounts.failCount }})
 				</div>
-				<div v-if="$root.inspectionCounts.warningCount" class="icon">
+				<div class="icon">
 					<img src="../assets/images/warning.png">
 					({{ this.$root.inspectionCounts.warningCount }})
 				</div>
