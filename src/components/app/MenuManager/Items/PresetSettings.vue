@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showModal" effect="fade" @closeOnEscape="closeModal">
+	<modal :show="showModal" effect="fade" @closeOnEscape="closeModal" ref="modal" id="preset-settings">
 
 		<div slot="modal-header" class="modal-header">
 			<button type="button" class="close" @click="closeModal()" ref="closeModalButton">
@@ -28,6 +28,108 @@
 					</div>
 				</div>
 			</div>
+
+			<!-- MODIFIERS START -->
+			<div class="row" v-show="showModifiersSelection">
+				<div class="col-xs-12">
+					<div class="clickable pull-right" @click="hideModifiersSelection()">
+						<i class="fa fa-times-circle-o" aria-hidden="true"></i>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<h5>Select Modifier Category</h5>
+					<div class="dd">
+						<ol class="dd-list">
+							<li 
+                                class="dd-item" 
+                                v-for="modifierCategory in modifierCategories" 
+                                @click="selectModifierCategory(modifierCategory)"
+                                :key="modifierCategory.id"
+                            >
+								<div class="dd-handle" :class="{'active': modifierCategory.id === activeModifierCategory.id}"> {{ modifierCategory.name }}
+									<span class="pull-right"><i class="fa fa-chevron-right"></i></span>
+								</div>
+							</li>
+						</ol>
+					</div>
+					<div class="alert alert-warning" v-show="!modifierCategories && !loadingModifierCategories">
+						There are no Modifier Categories. Create one <router-link :to="'/app/menu_manager/modifiers'">in Menu Manager.</router-link>
+					</div>
+				</div>
+				<div class="col-md-6" v-show="activeModifierCategory.name">
+					<h5>Select Modifier</h5>
+					<div class="dd">
+						<ol class="dd-list">
+							<li 
+                                class="dd-item" 
+                                v-for="item in modifierItems" 
+                                @click="selectModifierItem(item)"
+                                :key="item.id"
+                            >
+								<div class="dd-handle" :class="{'inactive' : modifierInSettings(item)}">
+									{{ item.name }}
+								</div>
+							</li>
+						</ol>
+					</div>
+					<div class="alert alert-warning" v-show="!loadingModifierItems && !modifierItems.length">
+						There are no Modifiers in {{ activeModifierCategory.name }}. Create one <router-link :to="`/app/menu_manager/modifier_items/${activeModifierCategory.id}`">in Menu Manager.</router-link>
+					</div>
+				</div>				
+			</div>
+			<!-- MODIFIERS END -->
+
+			<!-- OPTIONS START -->
+			<div class="row" v-show="showOptionsSelection">
+				<div class="col-xs-12">
+					<div class="clickable pull-right" @click="hideOptionsSelection()">
+						<i class="fa fa-times-circle-o" aria-hidden="true"></i>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<h5>Select Option Category</h5>
+					<div class="dd">
+						<ol class="dd-list">
+							<li 
+                                class="dd-item" 
+                                v-for="optionCategory in optionCategories" 
+                                @click="selectOptionCategory(optionCategory)"
+                                :key="optionCategory.id"
+                            >
+								<div class="dd-handle" :class="{'active': optionCategory.id === activeOptionCategory.id}"> {{ optionCategory.name }}
+									<span class="pull-right"><i class="fa fa-chevron-right"></i></span>
+								</div>
+							</li>
+						</ol>
+					</div>
+					<div class="alert alert-warning" v-show="!optionCategories && !loadingOptionsCategories">
+						There are no Option Categories. Create one <router-link :to="'/app/menu_manager/options'">in Menu Manager.</router-link>
+					</div>
+				</div>
+				<div class="col-md-6" v-show="activeOptionCategory.name">
+					<h5>Select Option</h5>
+					<div class="dd">
+						<ol class="dd-list">
+							<li 
+                                class="dd-item" 
+                                v-for="item in optionItems" 
+                                @click="selectOptionItem(item)"
+                                :key="item.id"
+                            >
+								<div class="dd-handle" :class="{'inactive' : optionInSetting(item)}">
+									{{ item.name }}
+								</div>
+							</li>
+						</ol>
+					</div>
+					<div class="alert alert-warning" v-show="!loadingOptionItems && !optionItems.length">
+						There are no Options in {{ activeOptionCategory.name }}. Create one <router-link :to="`/app/menu_manager/options/${activeOptionCategory.id}/option_items`">in Menu Manager.</router-link>
+					</div>
+				</div>				
+			</div>
+			<!-- OPTIONS END -->
+
+			<hr v-show="showModifiersSelection || showOptionsSelection" ref="selection" />
 
 			<!-- SETTINGS START -->
 			<div class="row">
@@ -75,98 +177,6 @@
 				</div>
 			</div>
 			<!-- SETTINGS END -->
-
-			<hr v-show="showModifiersSelection || showOptionsSelection" />
-
-			<!-- MODIFIERS START -->
-			<div class="row" v-show="showModifiersSelection">
-				<div class="col-md-6">
-					<h5>Select Modifier Category</h5>
-					<div class="dd">
-						<ol class="dd-list">
-							<li 
-                                class="dd-item" 
-                                v-for="modifierCategory in modifierCategories" 
-                                @click="selectModifierCategory(modifierCategory)"
-                                :key="modifierCategory.id"
-                            >
-								<div class="dd-handle" :class="{'active': modifierCategory.id === activeModifierCategory.id}"> {{ modifierCategory.name }}
-									<span class="pull-right"><i class="fa fa-chevron-right"></i></span>
-								</div>
-							</li>
-						</ol>
-					</div>
-					<div class="alert alert-warning" v-show="!modifierCategories && !loadingModifierCategories">
-						There are no Modifier Categories. Create one <router-link :to="'/app/menu_manager/modifiers'">in Menu Manager.</router-link>
-					</div>
-				</div>
-				<div class="col-md-6" v-show="activeModifierCategory.name">
-					<h5>Select Modifier</h5>
-					<div class="dd">
-						<ol class="dd-list">
-							<li 
-                                class="dd-item" 
-                                v-for="item in modifierItems" 
-                                @click="selectModifierItem(item)"
-                                :key="item.id"
-                            >
-								<div class="dd-handle" :class="{'inactive' : modifierInSettings(item)}">
-									{{ item.name }}
-								</div>
-							</li>
-						</ol>
-					</div>
-					<div class="alert alert-warning" v-show="!loadingModifierItems && !modifierItems.length">
-						There are no Modifiers in {{ activeModifierCategory.name }}. Create one <router-link :to="`/app/menu_manager/modifier_items/${activeModifierCategory.id}`">in Menu Manager.</router-link>
-					</div>
-				</div>				
-			</div>
-			<!-- MODIFIERS END -->
-
-			<!-- OPTIONS START -->
-			<div class="row" v-show="showOptionsSelection">
-				<div class="col-md-6">
-					<h5>Select Option Category</h5>
-					<div class="dd">
-						<ol class="dd-list">
-							<li 
-                                class="dd-item" 
-                                v-for="optionCategory in optionCategories" 
-                                @click="selectOptionCategory(optionCategory)"
-                                :key="optionCategory.id"
-                            >
-								<div class="dd-handle" :class="{'active': optionCategory.id === activeOptionCategory.id}"> {{ optionCategory.name }}
-									<span class="pull-right"><i class="fa fa-chevron-right"></i></span>
-								</div>
-							</li>
-						</ol>
-					</div>
-					<div class="alert alert-warning" v-show="!optionCategories && !loadingOptionsCategories">
-						There are no Option Categories. Create one <router-link :to="'/app/menu_manager/options'">in Menu Manager.</router-link>
-					</div>
-				</div>
-				<div class="col-md-6" v-show="activeOptionCategory.name">
-					<h5>Select Option</h5>
-					<div class="dd">
-						<ol class="dd-list">
-							<li 
-                                class="dd-item" 
-                                v-for="item in optionItems" 
-                                @click="selectOptionItem(item)"
-                                :key="item.id"
-                            >
-								<div class="dd-handle" :class="{'inactive' : optionInSetting(item)}">
-									{{ item.name }}
-								</div>
-							</li>
-						</ol>
-					</div>
-					<div class="alert alert-warning" v-show="!loadingOptionItems && !optionItems.length">
-						There are no Options in {{ activeOptionCategory.name }}. Create one <router-link :to="`/app/menu_manager/options/${activeOptionCategory.id}/option_items`">in Menu Manager.</router-link>
-					</div>
-				</div>				
-			</div>
-			<!-- OPTIONS END -->
 
 		</div>
 
@@ -373,6 +383,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		displayModifiersSelection () {
+			this.$refs.modal.$el.scrollTop = 0
 			this.activeModifierCategory.id = null
 			this.activeModifierCategory.name = ''
 			this.showOptionsSelection = false
@@ -448,7 +459,6 @@ export default {
 						preset_item_modifier_item_option_item: []
 					}
 				)
-				this.hideModifiersSelection()
 			}
 		},
 		/**
@@ -465,6 +475,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		displayOptionsSelection () {
+			this.$refs.modal.$el.scrollTop = 0
 			this.showModifiersSelection = false
 			this.showOptionsSelection = true
 		},
@@ -541,7 +552,6 @@ export default {
 					}
 				}
 			})
-			this.hideOptionsSelection()
 		},
 		/**
 		 * To hide option selection.
