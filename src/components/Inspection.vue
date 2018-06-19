@@ -135,7 +135,7 @@
 											</div>
 										</div>
 									</template>
-									<div class="summary-table-row summary-item">
+									<div class="summary-table-row summary-item" v-if="showCategoryItems(category, service)">
 										<div class="summary-table-cell">
 											<span class="information-icon" :class="{'no-icon-bg': category.serviceCategoryType === 'PASS'}" @click="openServiceModal(service)"></span>
 											<span class="service-name" v-bind:class="{'bold': (service.isHighlighted === true)}"><span v-if="service.isHighlighted === true">* </span>{{ service.name }}</span>
@@ -490,6 +490,16 @@ export default {
 		 */
 		showLegend (category) {
 			return this.$root.services.filter(service => service.category === category.id && service.isHighlighted && service.price !== 0).length
+		},
+		/**
+		 * To determine if the items in categories needs to shown or not.
+		 * @function
+		 * @param {object} category - The category to check
+		 * @param {object} service - The service price to check
+		 * @returns {Number} - True|False.
+		 */
+		showCategoryItems (category, service) {
+			return (category.serviceCategoryType !== 'PASS' && service.price !== 0) || category.serviceCategoryType === 'PASS'
 		},
 		/**
 		 * To open the full inspection in a separate tab
