@@ -94,6 +94,66 @@ export default ({
 		})
 	},
 	/**
+	 * Call to pitapit API to duplicate a menu.
+	 * @function
+	 * @param {object} data - Object containing id of menu to duplicate and id of target location
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {string} userToken - The token of the current logged in user.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	duplicateMenu (data, appId, appSecret, userToken) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'POST',
+				dataType: 'json',
+				url: '/app/copy/menu_to_location',
+				data,
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('auth-token', userToken)
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
+	 * Call to pitapit API to copy a menu.
+	 * @function
+	 * @param {object} data - Object containing id of menu to copy and id of target locations
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {string} userToken - The token of the current logged in user.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	copyMenu (data, appId, appSecret, userToken) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'POST',
+				dataType: 'json',
+				url: '/app/sync/menu_to_locations',
+				data,
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('auth-token', userToken)
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
 	 * Call to pitapit API to delete a menu.
 	 * @function
 	 * @param {object} menuId - The menuId to be deleted.

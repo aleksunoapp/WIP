@@ -164,7 +164,13 @@
 		            <div class="mt-element-list margin-top-15">
 		                <div class="mt-list-container list-news ext-1 no-border">
 		                    <ul>
-		                        <li id="parent" class="mt-list-item margin-top-15 clickable" :class="{'animated' : animated === `menu-${menu.id}`}" v-for="menu in storeMenus" :id="'menu-' + menu.id" @click="viewMenuCategories(menu)" :key="menu.id">
+		                        <li 
+									class="mt-list-item margin-top-15 clickable" 
+									:class="{'animated' : animated === `menu-${menu.id}`}" 
+									v-for="menu in storeMenus" 
+									:id="'menu-' + menu.id" @click="viewMenuCategories(menu)" 
+									:key="menu.id"
+								>
 		                        	<div class="margin-bottom-15 actions-on-top">
 		                        		<el-tooltip content="Edit" effect="light" placement="top">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editMenu(menu, $event)">
@@ -179,6 +185,16 @@
 	                                    <el-tooltip content="Apply Add-on Category" effect="light" placement="top">
 		                                    <a class="btn btn-circle btn-icon-only btn-default" @click="applyAddOnCategories(menu, $event)" v-if="menuFilter !== '2'">
 		                                        <i class="icon-layers"></i>
+		                                    </a>
+	                                    </el-tooltip>
+										<el-tooltip content="Duplicate" effect="light" placement="top" v-if="$root.activeLocation.is_corporate">
+			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="duplicateMenu(menu, $event)">
+		                                        <i class="fa fa-lg fa-clone"></i>
+		                                    </a>
+	                                    </el-tooltip>
+										<el-tooltip content="Copy" effect="light" placement="top" v-if="$root.activeLocation.is_corporate">
+			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="copyMenu(menu, $event)">
+		                                        <i class="fa fa-lg fa-files-o"></i>
 		                                    </a>
 	                                    </el-tooltip>
 	                                    <el-tooltip content="Delete" effect="light" placement="top">
@@ -231,7 +247,9 @@
 
         <apply-add-on-categories v-if="addOnCategoriesModalActive" :passedMenu="passedMenu" @closeAddOnCategoriesModal="closeAddOnCategoriesModal" @updateAddOnCategories="updateAddOnCategories"></apply-add-on-categories>
         <edit-menu v-if="editMenuModalActive" :passedMenuId="passedMenuId" @closeEditMenuModal="closeEditMenuModal" @updateMenu="updateMenu"></edit-menu>
-		<menu-hours v-if="menuHoursModalActive" @closeHoursModal="closeMenuHoursModal" :menu="menuToAssignHoursTo"></menu-hours>
+		<menu-hours v-if="menuHoursModalActive" @closeCopyModal="closeCopyModal" :menu="menuToAssignHoursTo"></menu-hours>
+		<duplicate-menu v-if="duplicateMenuModalActive" :passedMenuId="passedMenuId" @closeDuplicateMenuModal="closeDuplicateMenuModal" @duplicateSuccess="confirmDuplicateSuccess"></duplicate-menu>
+		<copy-menu v-if="copyMenuModalActive" :passedMenuId="passedMenuId" @closeCopyMenuModal="closeCopyMenuModal" @copySuccess="confirmCopySuccess"></copy-menu>
         <delete-menu v-if="deleteMenuModalActive" :passedMenuId="passedMenuId" @closeDeleteMenuModal="closeDeleteMenuModal" @deleteMenuAndCloseModal="deleteMenuAndCloseModal"></delete-menu>
   	</div>
 </template>
@@ -245,6 +263,8 @@ import LoadingScreen from '../../modules/LoadingScreen'
 import MenusFunctions from '../../../controllers/Menus'
 import Categories from './Categories'
 import EditMenu from './Menus/EditMenu'
+import DuplicateMenu from './Menus/DuplicateMenu'
+import CopyMenu from './Menus/CopyMenu'
 import ApplyAddOnCategories from './Menus/ApplyAddOnCategories'
 import DeleteMenu from './Menus/DeleteMenu'
 import MenuHours from './Menus/MenuHours'
@@ -291,7 +311,9 @@ export default {
 			menuToAssignHoursTo: {},
 			imageMode: {
 				newMenu: false
-			}
+			},
+			duplicateMenuModalActive: false,
+			copyMenuModalActive: false
 		}
 	},
 	watch: {
@@ -308,6 +330,82 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * To display the modal for copying menus.
+		 * @function
+		 * @param {object} menu - The selected menu
+		 * @param {object} event - The click event that prompted this function.
+		 * @returns {undefined}
+		 */
+		copyMenu (menu, event) {
+			event.stopPropagation()
+			this.passedMenuId = menu.id
+			this.copyMenuModalActive = true
+		},
+		/**
+		 * To confirm the copy succeeded
+		 * @function
+		 * @param {integer} ids - Array of location IDs menu was copied to
+		 * @returns {undefined}
+		 */
+		confirmCopySuccess (ids) {
+			if (ids.includes(this.$root.activeLocation.id)) {
+				this.getStoreMenus()
+			}
+			this.closeCopyMenuModal()
+			this.$swal({
+				title: 'Success',
+				text: 'Menu copied',
+				type: 'success',
+				confirmButtonText: 'OK'
+			})
+		},
+		/**
+		 * To close the menu copy modal
+		 * @function
+		 * @returns {undefined}
+		 */
+		closeCopyMenuModal () {
+			this.copyMenuModalActive = false
+		},
+		/**
+		 * To display the modal for duplicating menus.
+		 * @function
+		 * @param {object} menu - The selected menu
+		 * @param {object} event - The click event that prompted this function.
+		 * @returns {undefined}
+		 */
+		duplicateMenu (menu, event) {
+			event.stopPropagation()
+			this.passedMenuId = menu.id
+			this.duplicateMenuModalActive = true
+		},
+		/**
+		 * To confirm the duplication succeeded
+		 * @function
+		 * @param {integer} id - ID of the location menu was copied to
+		 * @returns {undefined}
+		 */
+		confirmDuplicateSuccess (id) {
+			if (id === this.$root.activeLocation.id) {
+				this.getStoreMenus()
+			}
+			this.closeDuplicateMenuModal()
+			this.$swal({
+				title: 'Success',
+				text: 'Menu duplicated',
+				type: 'success',
+				confirmButtonText: 'OK'
+			})
+		},
+		/**
+		 * To close the menu duplication modal
+		 * @function
+		 * @returns {undefined}
+		 */
+		closeDuplicateMenuModal () {
+			this.duplicateMenuModalActive = false
+		},
 		/**
 		 * To toggle between the open and closed state of the resource picker
 		 * @function
@@ -665,7 +763,9 @@ export default {
 		NoResults,
 		Modal,
 		MenuHours,
-		ResourcePicker
+		ResourcePicker,
+		DuplicateMenu,
+		CopyMenu
 	}
 }
 </script>
