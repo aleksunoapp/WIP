@@ -46,8 +46,8 @@
 					v-model="printerToBeEdited.status"
 					active-color="#0c6"
 					inactive-color="#ff4949"
-					active-value="1"
-					inactive-value="0"
+					:active-value="1"
+					:inactive-value="0"
 					active-text="Enabled"
 					inactive-text="Disabled">
 				</el-switch>
@@ -76,7 +76,7 @@ export default {
 				created_by: '',
 				paper_width: '',
 				copies: '1',
-				status: '0'
+				status: 0
 			},
 			errorMessage: ''
 		}
@@ -139,7 +139,7 @@ export default {
 			var editPrinterVue = this
 			PrintersFunctions.getPrinterDetails(editPrinterVue.printerId, editPrinterVue.$root.appId, editPrinterVue.$root.appSecret, editPrinterVue.$root.userToken).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
-					response.payload.status = response.payload.status.toString()
+					console.log('getPrinterDetails', response.payload)
 					editPrinterVue.printerToBeEdited = response.payload
 				}
 			}).catch(reason => {
