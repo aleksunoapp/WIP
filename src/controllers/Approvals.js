@@ -2,6 +2,7 @@
  * @module Admin Manager
  */
 import GlobalFunctions from '../global'
+// import {App} from '@/main.js'
 
 export default ({
 	/**
@@ -39,7 +40,7 @@ export default ({
 			let options = {
 				method: 'GET',
 				dataType: 'json',
-				url: '/app/request/list/5b1564221b92eb042d958529',
+				url: '/app/request/list/' + '5b1564221b92eb042d958529',
 				data: pagination,
 				success: function (response) {
 					resolve(response)

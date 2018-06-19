@@ -9,14 +9,7 @@
 				<p>Approve or reject pending requests.</p>
 			</div>
 
-			<no-results 
-				:show="noResults" 
-				:custom="true" 
-				text="There are no changes to review"
-			>
-			</no-results>
-
-			<div class="portlet light portlet-fit bordered" v-show="!noResults">
+			<div class="portlet light portlet-fit bordered min-height-200">
 				<div class="portlet-title bg-blue-chambray">
 					<div class="menu-image-main">
 						<img src="../../../../static/client_logo.png">
@@ -28,14 +21,22 @@
 				</div>
 
 				<div class="portlet-body">
-					<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
-						<button class="close" data-close="alert" @click="clearError('errorMessage')"></button>
+					<div class="alert alert-danger text-center" v-show="errorMessage" ref="errorMessage">
 						<span>{{errorMessage}}</span>
 					</div>
 
-					<loading-screen :show="loading" :color="'#2C3E50'" :display="'inline'"></loading-screen>
+					<loading-screen 
+						:show="loading" 
+					></loading-screen>
 
-					<div class="row" v-show="!loading">
+					<no-results 
+						:show="noResults" 
+						:custom="true" 
+						text="There are no changes to review"
+					>
+					</no-results>
+
+					<div class="row" v-show="!loading && !noResults && !errorMessage.length">
 						<div class="col-xs-12" ref="request">
 							<table class="table">
 								<thead>
@@ -152,27 +153,7 @@ export default {
 			}
 		}
 	},
-	// computed: {
-	// 	request () {
-	// 		if (this.requests[0]) {
-	// 			const keys = Object.keys(this.requests[0].existing_values)
-
-	// 			return keys.map(key => {
-	// 				let label = key.replace(/_/g, ' ')
-	// 				label = label.charAt(0).toUpperCase() + label.slice(1)
-
-	// 				return {
-	// 					label,
-	// 					existing: this.requests[0].existing_values[key],
-	// 					modified: this.requests[0].new_values[key]
-	// 				}
-	// 			})
-	// 		} else {
-	// 			return []
-	// 		}
-	// 	}
-	// },
-	created () {
+	mounted () {
 		this.getRequests()
 	},
 	methods: {
@@ -293,3 +274,8 @@ export default {
 	}
 }
 </script>
+<style scoped>
+.min-height-200 {
+	min-height: 300px;
+}
+</style>
