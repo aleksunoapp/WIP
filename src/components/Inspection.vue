@@ -403,9 +403,9 @@ export default {
 			let hour = fullDate.getHours()
 			let minutes = fullDate.getMinutes()
 			let meridian = 'AM'
-			let preposition = this.$root.meta.local === 'en-CA' ? 'on' : 'le'
+			let preposition = this.$root.meta.local === 'en-CA' || 'en-US' ? 'on' : 'le'
 
-			if (this.$root.meta.local === 'en-CA') {
+			if (this.$root.meta.local === 'en-CA' || 'en-US') {
 				if (hour === 12) {
 					meridian = 'PM'
 				} else if (hour > 12) {
@@ -447,9 +447,9 @@ export default {
 			let hour = fullDate.getHours()
 			let minutes = fullDate.getMinutes()
 			let meridian = 'AM'
-			let preposition = this.$root.meta.local === 'en-CA' ? 'on' : 'le'
+			let preposition = this.$root.meta.local === 'en-CA' || 'en-US' ? 'on' : 'le'
 
-			if (this.$root.meta.local === 'en-CA') {
+			if (this.$root.meta.local === 'en-CA' || 'en-US') {
 				if (hour === 12) {
 					meridian = 'PM'
 				} else if (hour > 12) {
