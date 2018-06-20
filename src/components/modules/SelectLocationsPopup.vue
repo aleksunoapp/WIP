@@ -110,6 +110,11 @@ export default {
 			type: Boolean,
 			default: true,
 			required: false
+		},
+		exclude: {
+			type: Array,
+			default: [],
+			required: false
 		}
 	},
 	computed: {
@@ -231,7 +236,7 @@ export default {
 						})
 					})
 					selectLocationsVue.selectAllSelected = all
-					selectLocationsVue.locations = response.payload
+					selectLocationsVue.locations = response.payload.filter(location => !selectLocationsVue.exclude.includes(location.id))
 				}
 			}).catch(reason => {
 				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
@@ -266,7 +271,7 @@ export default {
 						})
 					})
 					selectLocationsVue.selectAllSelected = all
-					selectLocationsVue.locations = response.payload.locations
+					selectLocationsVue.locations = response.payload.locations.filter(location => !selectLocationsVue.exclude.includes(location.id))
 				}
 			}).catch(reason => {
 				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {

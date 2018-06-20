@@ -387,9 +387,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		confirmDuplicateSuccess (id) {
-			if (id === this.$root.activeLocation.id) {
-				this.getStoreMenus()
-			}
+			this.getStoreMenus()
 			this.closeDuplicateMenuModal()
 			this.$swal({
 				title: 'Success',

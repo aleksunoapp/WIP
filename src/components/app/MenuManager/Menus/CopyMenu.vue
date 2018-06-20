@@ -20,6 +20,7 @@
 					<select-locations-popup
 						@selectedLocations="updateLocations" 
 						:withButton="false"
+						:exclude="[$root.activeLocation.id]"
 					></select-locations-popup>
 					<div class="form-group form-md-line-input form-md-floating-label">
 						<label>Replace existing?</label><br>
