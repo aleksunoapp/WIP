@@ -113,7 +113,7 @@ export default {
 		},
 		exclude: {
 			type: Array,
-			default: [],
+			default: () => [],
 			required: false
 		}
 	},

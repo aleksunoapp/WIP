@@ -471,5 +471,35 @@ export default ({
 				}
 			})
 		})
+	},
+	/**
+	 * Call to pitapit API to apply a modifier category to items at selected locations.
+	 * @function
+	 * @param {integer} data - An object containing modifier ID and selected items and locations.
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {string} userToken - The token of the current logged in user.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	applyModifierToItemsAtLocations (data, appId, appSecret, userToken) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'POST',
+				dataType: 'json',
+				url: '/app/modifiers/addItemToMultipleLocation',
+				data,
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('auth-token', userToken)
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
 	}
 })

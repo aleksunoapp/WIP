@@ -113,16 +113,27 @@
 		            <div class="mt-element-list margin-top-15" v-if="storeModifiers.length">
 		                <div class="mt-list-container list-news ext-1 no-border">
 		                    <ul>
-		                        <li class="mt-list-item actions-at-left margin-top-15 clickable" @click="viewModifierCategoryItems(modifier)" v-for="modifier in storeModifiers" :id="'modifierCategory-' + modifier.id">
-		                        	<div class="list-item-actions">
+		                        <li 
+									class="mt-list-item margin-top-15 clickable" 
+									@click="viewModifierCategoryItems(modifier)" 
+									v-for="modifier in storeModifiers" 
+									:id="'modifierCategory-' + modifier.id"
+									:key="modifier.id"
+								>
+		                        	<div class="actions-on-top margin-bottom-15">
 		                        		<el-tooltip content="Edit" effect="light" placement="right">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editModifierCategory(modifier, $event)">
 	                                            <i class="fa fa-lg fa-pencil"></i>
 	                                        </a>
 		                        		</el-tooltip>
-		                        		<el-tooltip content="Apply to multiple" effect="light" placement="right">
+		                        		<el-tooltip content="Apply to items" effect="light" placement="right">
 	                                        <a class="btn btn-circle btn-icon-only btn-default" @click="displayMenuTreeModal(modifier, $event)">
 	                                            <i class="icon-layers"></i>
+	                                        </a>
+		                        		</el-tooltip>
+										<el-tooltip content="Apply to items at locations" effect="light" placement="right">
+	                                        <a class="btn btn-circle btn-icon-only btn-default" @click="displayApplyToItemsAtLocationsModal(modifier, $event)">
+	                                            <i class="fa fa-lg fa-plus"></i>
 	                                        </a>
 		                        		</el-tooltip>
 		                        		<el-tooltip content="Delete" effect="light" placement="right">
@@ -186,6 +197,13 @@
         <edit-modifier-category v-if="editCategoryModalActive" @updateModifierCategory="updateModifierCategory" @deactivateEditCategoryModal="closeEditCategoryModal"></edit-modifier-category>
         <delete-modifier-category v-if="deleteCategoryModalActive" :passedModifierCategoryId="passedModifierCategoryId" @closeDeleteModifierCategoryModal="closeDeleteModifierCategoryModal" @deleteModifierCategoryAndCloseModal="deleteModifierCategoryAndCloseModal"></delete-modifier-category>
 		<menu-tree v-if="showMenuTreeModal" :selectedObject="selectedModifier" :headerText="headerText" :updateType="'modifier'" @closeMenuTreeModal="closeMenuTreeModal"></menu-tree>
+		<apply-modifier-to-items-at-locations
+			v-if="showModifierToApplyToItemsAtLocationsModal"
+			:modifier="modifierToApplyToItemsAtLocations"
+			@closeApplyModifierToItemsAtLocations="closeApplyModifierToItemsAtLocationsModal"
+			@applyModifierToItemsAtLocationsSuccess="showApplyModifierToItemsAtLocationsSuccess"
+		>
+		</apply-modifier-to-items-at-locations>
 	</div>
 </template>
 
@@ -200,6 +218,7 @@ import DeleteModifierCategory from './Modifiers/DeleteModifierCategory'
 import ModifiersFunctions from '../../../controllers/Modifiers'
 import MenuTree from '../../modules/MenuTree'
 import ResourcePicker from '../../modules/ResourcePicker'
+import ApplyModifierToItemsAtLocations from '@/components/app/MenuManager/Modifiers/ApplyModifierToItemsAtLocations'
 
 export default {
 	data () {
@@ -233,8 +252,9 @@ export default {
 			headerText: '',
 			imageMode: {
 				newMenu: false
-			}
-
+			},
+			modifierToApplyToItemsAtLocations: {},
+			showModifierToApplyToItemsAtLocationsModal: false
 		}
 	},
 	mounted () {
@@ -243,6 +263,39 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * To display the modal to apply a modifier to selected items at selected locations.
+		 * @function
+		 * @param {object} modifier - The selected modifier category.
+		 * @param {object} event - The click event that prompted this function.
+		 * @returns {undefined}
+		 */
+		displayApplyToItemsAtLocationsModal (modifier, event) {
+			event.stopPropagation()
+			this.modifierToApplyToItemsAtLocations = modifier
+			this.showModifierToApplyToItemsAtLocationsModal = true
+		},
+		/**
+		 * To close the modal to apply a modifier to selected items at selected locations.
+		 * @function
+		 * @returns {undefined}
+		 */
+		closeApplyModifierToItemsAtLocationsModal () {
+			this.showModifierToApplyToItemsAtLocationsModal = false
+		},
+		/**
+		 * To confirm operation succeeded
+		 * @function
+		 * @returns {undefined}
+		 */
+		showApplyModifierToItemsAtLocationsSuccess () {
+			this.$swal({
+				title: 'Success',
+				text: 'Modifier applied',
+				type: 'success',
+				confirmButtonText: 'OK'
+			})
+		},
 		/**
 		 * To toggle between the open and closed state of the resource picker
 		 * @function
@@ -542,8 +595,15 @@ export default {
 		DeleteModifierCategory,
 		NoResults,
 		MenuTree,
-		ResourcePicker
+		ResourcePicker,
+		ApplyModifierToItemsAtLocations
 	}
 }
 </script>
+
+<style scoped>
+.actions-on-top {
+	margin-top: -5px;
+}
+</style>
 
