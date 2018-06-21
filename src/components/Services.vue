@@ -467,6 +467,7 @@ export default {
 			let hour = fullDate.getHours()
 			let minutes = fullDate.getMinutes()
 			let meridian = 'AM'
+			let preposition = this.$root.meta.local === 'en-CA' || this.$root.meta.local === 'en-US' ? 'on' : 'le'
 
 			if (hour === 12) {
 				meridian = 'PM'
@@ -488,7 +489,7 @@ export default {
 				allMonths = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']
 			}
 			if (!this.checkSameDate(this.$root.meta.responseBy)) {
-				formattedTime += ` on ${allMonths[fullDate.getMonth()]} ${fullDate.getDate()}, ${fullDate.getFullYear()}`
+				formattedTime += ' ' + preposition + ` ${allMonths[fullDate.getMonth()]} ${fullDate.getDate()}, ${fullDate.getFullYear()}`
 			}
 			return formattedTime
 		},
@@ -503,6 +504,7 @@ export default {
 			let hour = fullDate.getHours()
 			let minutes = fullDate.getMinutes()
 			let meridian = 'AM'
+			let preposition = this.$root.meta.local === 'en-CA' || this.$root.meta.local === 'en-US' ? 'on' : 'le'
 
 			if (hour === 12) {
 				meridian = 'PM'
@@ -524,7 +526,7 @@ export default {
 				allMonths = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']
 			}
 			if (!this.checkSameDate(this.$root.meta.promise)) {
-				formattedTime += ` on ${allMonths[fullDate.getMonth()]} ${fullDate.getDate()}, ${fullDate.getFullYear()}`
+				formattedTime += ' ' + preposition + ` ${allMonths[fullDate.getMonth()]} ${fullDate.getDate()}, ${fullDate.getFullYear()}`
 			}
 			return formattedTime
 		}
