@@ -22,32 +22,48 @@
 						<a :class="{'expand': !createFAQCollapse, 'collapse': createFAQCollapse}"></a>
 					</div>
 				</div>
-				<div class="portlet-body fixed-height" :class="{'display-hide': createFAQCollapse}">
+				<div class="portlet-body" :class="{'display-hide': createFAQCollapse}">
 	      			<form role="form" @submit.prevent="createUserFAQ($event)">
-	      				<div class="alert alert-danger" v-if="createFAQError.length">
-	      				    <button class="close" data-close="alert" @click="clearCreateFAQError()"></button>
-	      				    <span>{{createFAQError}}</span>
-	      				</div>
-	      				<div class="col-md-6">
-	      					<div class="form-group form-md-line-input form-md-floating-label">
-	      					    <input type="text" class="form-control input-sm" id="form_control_1" v-model="newFAQ.question" :class="{'edited': newFAQ.question.length}">
-	      					    <label for="form_control_1">Question</label>
-	      					</div>
-	      					<div class="form-group form-md-line-input form-md-floating-label">
-	      					    <textarea class="form-control input-sm" rows="5" v-model="newFAQ.answer" :class="{'edited': newFAQ.answer.length}" id="form_control_2"></textarea>
-	      					    <label for="form_control_2">Answer</label>
-	      					</div>
-	      				</div>
-	      				<div class="col-md-6">
-	      					<div class="form-group form-md-line-input form-md-floating-label">
-	      					    <input type="text" class="form-control input-sm" id="form_control_3" v-model="newFAQ.external_link" :class="{'edited': newFAQ.external_link.length}">
-	      					    <label for="form_control_3">External Link</label>
-	      					</div>
-	      				</div><br>
-	      				<div class="clear form-actions right">
-	      					<button type="button" class="btn btn-default" @click="resetForm()"> Reset Form</button>
-	      					<button type="submit" class="btn blue">Save</button>
-	      				</div>
+						<div class="row">
+							<div class="col-xs-12">
+								<div class="alert alert-danger" v-if="createFAQError.length">
+									<button class="close" data-close="alert" @click="clearCreateFAQError()"></button>
+									<span>{{createFAQError}}</span>
+								</div>
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<input type="text" class="form-control input-sm" id="form_control_1" v-model="newFAQ.question" :class="{'edited': newFAQ.question.length}">
+									<label for="form_control_1">Question</label>
+								</div>
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<textarea class="form-control input-sm" rows="5" v-model="newFAQ.answer" :class="{'edited': newFAQ.answer.length}" id="form_control_2"></textarea>
+									<label for="form_control_2">Answer</label>
+								</div>
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<input type="text" class="form-control input-sm" id="form_control_3" v-model="newFAQ.external_link" :class="{'edited': newFAQ.external_link.length}">
+									<label for="form_control_3">External Link</label>
+								</div>
+								<div>
+									<p class="grey-label">Call to action type</p>
+									<el-select v-model="newFAQ.cta_type" placeholder="Select type" size="small" class="margin-bottom-15" id="form_control_cta_type">
+										<el-option label="none" value=""></el-option>
+										<el-option label="hyperlink" value="hyperlink"></el-option>
+										<el-option label="menu item" value="menu_item"></el-option>
+										<el-option label="promo code" value="promo_code"></el-option>
+										<el-option label="camera" value="camera"></el-option>
+										<el-option label="call" value="call"></el-option>
+										<el-option label="SMS" value="sms"></el-option>
+										<el-option label="video" value="video"></el-option>
+									</el-select>
+								</div>
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<input type="text" class="form-control input-sm" id="form_control_cta_value" v-model="newFAQ.cta_value" :class="{'edited': newFAQ.cta_value.length}">
+									<label for="form_control_cta_value">Call to action value</label>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<button type="submit" class="btn blue pull-right">Save</button>
+							</div>
+						</div>
 	      			</form>
 	      		</div>
 	      	</div>
@@ -66,7 +82,11 @@
     		        </div>
                     <div class="portlet-body">
                         <div class="timeline" v-if="faqs.length">
-                            <div class="timeline-item" v-for="faq in faqs">
+                            <div 
+								class="timeline-item" 
+								v-for="faq in faqs"
+								:key="faq.id"
+							>
                                 <div class="timeline-badge">
                                     <div class="timeline-icon">
             							<i class="font-blue-sharp icon-bubbles"></i>
@@ -106,7 +126,6 @@
 </template>
 
 <script>
-import $ from 'jquery'
 import Breadcrumb from '../../modules/Breadcrumb'
 import NoResults from '../../modules/NoResults'
 import GlobalFunctions from '../../../global'
@@ -127,7 +146,9 @@ export default {
 				answer: '',
 				external_link: '',
 				status: 1,
-				user_id: this.$root.createdBy
+				user_id: this.$root.createdBy,
+				cta_type: '',
+				cta_value: ''
 			},
 			faqs: [],
 			errorMessage: '',
@@ -189,7 +210,9 @@ export default {
 				answer: '',
 				external_link: '',
 				status: 1,
-				user_id: this.$root.createdBy
+				user_id: this.$root.createdBy,
+				cta_type: '',
+				cta_value: ''
 			}
 			this.clearCreateFAQError()
 		},
@@ -207,6 +230,8 @@ export default {
 					reject('Answer cannot be blank')
 				} else if (!usersFAQVue.newFAQ.external_link.length) {
 					reject('External link cannot be blank')
+				} else if (usersFAQVue.newFAQ.cta_type && !usersFAQVue.newFAQ.cta_value) {
+					reject('Call to action value cannot be blank')
 				}
 				resolve('Hurray')
 			})
@@ -289,20 +314,17 @@ export default {
 		/**
 		 * To close the modal and highlight the recently updated user faq.
 		 * @function
-		 * @param {object} val - The recently updated FAQ object.
 		 * @returns {undefined}
 		 */
-		highlightFAQ (val) {
+		highlightFAQ () {
+			this.getUserFAQs()
 			this.showEditFAQModal = false
-			for (var i = 0; i < this.faqs.length; i++) {
-				if (this.faqs[i].id === val.id) {
-					this.faqs[i] = val
-				}
-			}
-			$('#faq-' + val.id).addClass('highlight')
-			setTimeout(function () {
-				$('#faq-' + val.id).removeClass('highlight')
-			}, 2000)
+			this.$swal({
+				title: 'Success',
+				text: 'Question saved',
+				type: 'success',
+				confirmButtonText: 'OK'
+			})
 		}
 	},
 	components: {
@@ -313,7 +335,12 @@ export default {
 }
 </script>
 <style scoped>
-.fixed-height {
-	height: 300px;
+.grey-label {
+	color: rgb(136, 136, 136);
+	font-size: 13px;
+	margin-bottom: 5px;
+}
+.animated {
+	animation: listItemHighlight 1s 2 ease-in-out both;
 }
 </style>
