@@ -584,20 +584,22 @@ export default {
 						service.subServices.forEach(subService => {
 							if (subService.isSelected) {
 								subService.isApproved = true
-								subService.reasonId = null
+								subService.reasonId = subService.declinedReasonId
 								confirmedServices.push(subService)
 							} else {
 								subService.isApproved = false
+								subService.reasonId = !subService.reasonId ? subService.declinedReasonId : subService.reasonId
 								confirmedServices.push(subService)
 							}
 						})
 					} else {
 						if (service.isSelected) {
 							service.isApproved = true
-							service.reasonId = null
+							service.reasonId = service.declinedReasonId
 							confirmedServices.push(service)
 						} else {
 							service.isApproved = false
+							service.reasonId = !service.reasonId ? service.declinedReasonId : service.reasonId
 							confirmedServices.push(service)
 						}
 					}
