@@ -489,7 +489,19 @@ export default {
 		 * @returns {Number} - Positive integer if legend should be displayed, 0 if not
 		 */
 		showLegend (category) {
-			return this.$root.services.filter(service => service.category === category.id && service.isHighlighted && service.price !== 0).length
+			let show = 0
+			this.$root.services.forEach(service => {
+				if (service.category === category.id) {
+					if (service.subServices) {
+						service.subServices.forEach(subService => {
+							show = subService.isHighlighted && subService.price !== 0
+						})
+					} else {
+						show = service.isHighlighted && service.price !== 0
+					}
+				}
+			})
+			return show
 		},
 		/**
 		 * To determine if the items in categories needs to shown or not.
