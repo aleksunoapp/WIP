@@ -71,8 +71,12 @@ var authenticateToken = {
 					})
 
 					let getInspection = new Promise((resolve, reject) => {
+						let url = ENV.production_url + '/inspection/' + _this.$root.token
+						if (this.$root.meta.local) {
+							url += '/' + this.$root.meta.local
+						}
 						$.ajax({
-							url: ENV.production_url + '/inspection/' + _this.$root.token + '/' + _this.$root.meta.local,
+							url,
 							method: 'GET',
 							beforeSend (xhr) {
 								xhr.setRequestHeader('Authorization', 'Bearer ' + _this.$root.accessToken)
