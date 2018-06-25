@@ -42,7 +42,7 @@
 						<ol class="dd-list">
 							<li 
                                 class="dd-item" 
-                                v-for="modifierCategory in modifierCategories" 
+                                v-for="modifierCategory in item.modifiers" 
                                 @click="selectModifierCategory(modifierCategory)"
                                 :key="modifierCategory.id"
                             >
@@ -52,8 +52,8 @@
 							</li>
 						</ol>
 					</div>
-					<div class="alert alert-warning" v-show="!modifierCategories && !loadingModifierCategories">
-						There are no Modifier Categories. Create one <router-link :to="'/app/menu_manager/modifiers'">in Menu Manager.</router-link>
+					<div class="alert alert-warning" v-show="!item.modifiers.length">
+						This item doesn't have any modifiers.
 					</div>
 				</div>
 				<div class="col-md-6" v-show="activeModifierCategory.name">
@@ -66,8 +66,15 @@
                                 @click="selectModifierItem(item)"
                                 :key="item.id"
                             >
-								<div class="dd-handle" :class="{'inactive' : modifierInSettings(item)}">
-									{{ item.name }}
+								<div class="dd-handle" :class="{'included' : modifierInSettings(item)}">
+									<label>
+										<i 
+											class="fa check" 
+											:class="{'fa-check-square checked': modifierInSettings(item), 'fa-square-o unchecked': !modifierInSettings(item)}" aria-hidden="true"
+										>
+										</i>
+										{{ item.name }}
+									</label>
 								</div>
 							</li>
 						</ol>
@@ -116,8 +123,15 @@
                                 @click="selectOptionItem(item)"
                                 :key="item.id"
                             >
-								<div class="dd-handle" :class="{'inactive' : optionInSetting(item)}">
-									{{ item.name }}
+								<div class="dd-handle" :class="{'included' : optionInSetting(item)}">
+									<label>
+										<i 
+											class="fa check" 
+											:class="{'fa-check-square checked': optionInSetting(item), 'fa-square-o unchecked': !optionInSetting(item)}" aria-hidden="true"
+										>
+										</i>
+										{{ item.name }}
+									</label>
 								</div>
 							</li>
 						</ol>
@@ -181,7 +195,7 @@
 		</div>
 
 		<div slot="modal-footer" class="modal-footer">
-			<button type="button" class="btn btn-primary" :disabled="!modifierCategories.length" @click="savePresetSettings()">Save</button>
+			<button type="button" class="btn btn-primary" :disabled="!item.modifiers.length" @click="savePresetSettings()">Save</button>
 		</div>
 
 	</modal>
@@ -208,8 +222,6 @@ export default {
 				modifier_id: null,
 				modifier_item_id: null
 			},
-			loadingModifierCategories: false,
-			modifierCategories: [],
 			updateMode: false,
 			showModifiersSelection: false,
 			showOptionsSelection: false,
@@ -241,7 +253,6 @@ export default {
 		}
 	},
 	created () {
-		this.getModifierCategories()
 		this.getOptionCategories()
 	},
 	mounted () {
@@ -275,33 +286,6 @@ export default {
 				ajaxErrorHandler({
 					reason,
 					errorText: 'Could not get options',
-					errorName: 'errorMessage',
-					vue: presetsVue
-				})
-			})
-		},
-		/**
-		 * To get a list of modifier categories.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		getModifierCategories () {
-			var presetsVue = this
-			presetsVue.modifierCategories = []
-			presetsVue.loadingModifierCategories = true
-			ModifiersFunctions.getStoreModifiers(presetsVue.$root.appId, presetsVue.$root.appSecret, presetsVue.$root.activeLocation.id).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					presetsVue.modifierCategories = response.payload
-					presetsVue.loadingModifierCategories = false
-				} else {
-					presetsVue.errorMessage = response.payload.message || 'Couldn\'t load Modifier Categories'
-					presetsVue.loadingModifierCategories = false
-				}
-			}).catch(reason => {
-				presetsVue.loadingModifierCategories = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'Could not get modifiers',
 					errorName: 'errorMessage',
 					vue: presetsVue
 				})
@@ -459,6 +443,12 @@ export default {
 						preset_item_modifier_item_option_item: []
 					}
 				)
+			} else {
+				let i = this.preset_item_modifier_item.findIndex(
+				function (element) {
+					return element.modifier_item_id === item.id && element.modifier_id === item.modifier_id
+				})
+				this.preset_item_modifier_item.splice(i, 1)
 			}
 		},
 		/**
@@ -549,6 +539,13 @@ export default {
 							option_item_id: optionItem.id,
 							option_item_name: optionItem.name
 						})
+					} else {
+						let i = modifier.preset_item_modifier_item_option_item.findIndex(
+							function (element) {
+								return element.option_id === optionItem.option_id &&
+								element.option_item_id === optionItem.id
+							})
+						modifier.preset_item_modifier_item_option_item.splice(i, 1)
 					}
 				}
 			})
@@ -619,6 +616,11 @@ export default {
 </script>
 
 <style scoped>
+.fa {
+	opacity: .2;
+	transition: opacity .2s ease-in;
+}
+
 .settings__container {
 	width: 100%;
 	display: flex;
@@ -648,17 +650,19 @@ export default {
 .dd-handle {
 	cursor: pointer;
 }
+.dd-handle .fa {
+	color: #2ea8e5;
+	opacity: 1;
+	transition: none;
+}
 .dd-handle.active {
 	color: #2ea8e5;
 }
-.dd-handle.inactive {
-	cursor: not-allowed;
+.dd-handle.included {
 	color: #333;
 }
-
-.fa {
-	opacity: .2;
-	transition: opacity .2s ease-in;
+.dd-handle.included label {
+	font-weight: 600;
 }
 
 .pill-container {

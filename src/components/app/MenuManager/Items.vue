@@ -721,6 +721,7 @@ export default {
 		showPresetModal (item) {
 			this.itemToSetPresetSettingsFor.id = item.id
 			this.itemToSetPresetSettingsFor.name = item.name
+			this.itemToSetPresetSettingsFor.modifiers = item.modifiers
 			this.itemToSetPresetSettingsFor.preset_item_modifier_item = item.preset_item_modifier_item
 			this.displayPresetModal = true
 		},
@@ -1185,13 +1186,15 @@ export default {
 		expandDetails (item) {
 			if (this.expanded === item.id) return
 
-			if (item.type === 'preset') {
-				this.getPresetDetails(item.id)
-			}
-			this.getItemDetailsFull(item.id)
+			const itemsVue = this
+			Promise.all([
+				itemsVue.getItemDetailsFull(item.id),
+				itemsVue.getItemAttributesOfItem(item.id),
+				item.type === 'preset' ? itemsVue.getPresetDetails(item.id) : null
+			]).then(() => {
+				itemsVue.expanded = item.id
+			})
 			this.itemAttributes.forEach((itemAttribute) => { itemAttribute.selected = false })
-			this.getItemAttributesOfItem(item.id)
-			this.expanded = item.id
 		},
 		/**
 		 * To get the complete details of an item.
