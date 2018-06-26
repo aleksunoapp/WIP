@@ -44,9 +44,9 @@ export default {
 					'fr-ca': 'Merci de votre temps.'
 				},
 				your_vehicle_is_estimated: {
-					'en-ca': 'Your vehicle is estimated to be ready at',
-					'en-us': 'Your vehicle is estimated to be ready at',
-					'fr-ca': 'Votre véhicule sera prêt, approximativement, à'
+					'en-ca': 'Your vehicle is estimated to be ready',
+					'en-us': 'Your vehicle is estimated to be ready',
+					'fr-ca': 'Votre véhicule sera prêt, approximativement'
 				},
 				your_service_advisor_will_confirm: {
 					'en-ca': 'Your Service Advisor will confirm with you when your vehicle is ready.',
@@ -95,9 +95,11 @@ export default {
 			let year = fullDate.getFullYear()
 			let monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 			let atTranslation = 'at'
+			let onTranslation = 'on'
 
 			if (this.$root.meta.local === 'fr-CA') {
 				atTranslation = 'à'
+				onTranslation = 'le'
 				monthNames = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']
 			}
 
@@ -123,9 +125,9 @@ export default {
 			formattedDate = monthNames[monthIndex] + ' ' + day + ', ' + year
 
 			if (fullDate - new Date() > timeTillTomorrow) {
-				return formattedDate + ' ' + atTranslation + ' ' + formattedTime
+				return onTranslation + ' ' + formattedDate + ' ' + atTranslation + ' ' + formattedTime
 			} else {
-				return formattedTime
+				return onTranslation + ' ' + formattedTime
 			}
 		}
 	}
