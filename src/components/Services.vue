@@ -588,7 +588,7 @@ export default {
 								confirmedServices.push(subService)
 							} else {
 								subService.isApproved = false
-								subService.reasonId = !subService.reasonId ? subService.declinedReasonId : subService.reasonId
+								subService.reasonId = typeof subService.reasonId === 'undefined' ? subService.declinedReasonId : subService.reasonId
 								confirmedServices.push(subService)
 							}
 						})
@@ -599,7 +599,7 @@ export default {
 							confirmedServices.push(service)
 						} else {
 							service.isApproved = false
-							service.reasonId = !service.reasonId ? service.declinedReasonId : service.reasonId
+							service.reasonId = typeof service.reasonId === 'undefined' ? service.declinedReasonId : service.reasonId
 							confirmedServices.push(service)
 						}
 					}
