@@ -169,7 +169,7 @@
 							<div class="remove-modifier clickable" @click="removeModifierCategory(index)">
 								<i class="fa fa-times-circle-o" aria-hidden="true"></i>
 							</div>
-							<ul class="list-unstyled margin-top-15 options-list">
+							<ul class="list-unstyled options-list">
 								<li 
                                     v-for="(option, index) in modifier.preset_item_modifier_item_option_item"
                                     :key="index"
@@ -182,7 +182,31 @@
 								<li class="margin-top-10">
 									<button type="button" class="btn btn-outline blue btn-xs" @click="displayOptionsSelection()">add Option</button>
 								</li>
-							</ul>						
+							</ul>
+							<div class="switch-container">
+								<label class="switch-label">Can remove</label>
+								<el-switch
+									v-model="modifier.can_remove"
+									active-color="#0c6"
+									inactive-color="#ff4949"
+									:active-value="1"
+									:inactive-value="0"
+									active-text="Yes"
+									inactive-text="No">
+								</el-switch>
+							</div>
+							<div class="switch-container">
+								<label class="switch-label">Calculate price difference</label>
+								<el-switch
+									v-model="modifier.calculate_price_difference"
+									active-color="#0c6"
+									inactive-color="#ff4949"
+									:active-value="1"
+									:inactive-value="0"
+									active-text="Yes"
+									inactive-text="No">
+								</el-switch>
+							</div>
 						</div>
 						<div class="preset-option add">
 							<button type="button margin-top-20 margin-bottom-20" class="btn btn-outline blue btn-sm" @click="displayModifiersSelection()">Add Modifier</button>	
@@ -440,7 +464,9 @@ export default {
 						modifier_item_max: item.max,
 						modifier_id: this.activeModifierCategory.id,
 						qty: 1,
-						preset_item_modifier_item_option_item: []
+						preset_item_modifier_item_option_item: [],
+						can_remove: 1,
+						calculate_price_difference: 0
 					}
 				)
 			} else {
@@ -692,8 +718,21 @@ export default {
 }
 
 .options-list {
-	margin-left: 20px;
+	margin: 15px 0 0 20px;
 }
+
+.switch-container {
+	width: 100%;
+	margin: 15px 0 0 0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.switch-label {
+	display: inline;
+	margin: 0 15px 0 0;
+}
+
 
 .add-modifier {
 	cursor: pointer;
