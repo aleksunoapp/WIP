@@ -94,8 +94,10 @@ export default {
 			let monthIndex = fullDate.getMonth()
 			let year = fullDate.getFullYear()
 			let monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+			let atTranslation = 'at'
 
 			if (this.$root.meta.local === 'fr-CA') {
+				atTranslation = 'à'
 				monthNames = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']
 			}
 
@@ -121,9 +123,9 @@ export default {
 			formattedDate = monthNames[monthIndex] + ' ' + day + ', ' + year
 
 			if (fullDate - new Date() > timeTillTomorrow) {
-				return 'on ' + formattedDate + ' at ' + formattedTime
+				return formattedDate + ' ' + atTranslation + ' ' + formattedTime
 			} else {
-				return 'at ' + formattedTime
+				return formattedTime
 			}
 		}
 	}
