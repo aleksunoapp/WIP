@@ -292,7 +292,6 @@
     			                        		<div v-if="item.modifiers && item.modifiers.length">
                     				        	    <ul class="item-modifier-list">
                     				        	    	<li 
-															class="col-md-6" 
 															v-for="modifier in item.modifiers"
 															:key="modifier.id"
 														>
@@ -315,12 +314,13 @@
     			                        	<div class="col-md-12">
     			                        		<div v-if="item.tags && item.tags.length">
                     				        	    <ul class="item-modifier-list">
-                    				        	    	<li 
-															class="col-md-6" 
+                    				        	    	<li  
 															v-for="tag in item.tags"
 															:key="tag.id"
 														> 
-															{{tag.type + ' ' + tag.name}} 
+															<span v-show="tag.type === 'may_contain'">may contain</span>
+															<span v-show="tag.type === 'contains'">contains</span>
+															 {{tag.name}} 
 														</li>
                     				        	    </ul>
     			                        		</div>
@@ -389,7 +389,14 @@
         <div class="margin-top-20" v-if="!displayItemData">
             <no-results :show="!$root.activeLocation || !$root.activeLocation.id" :type="'items'"></no-results>
         </div>
-        <edit-item v-if="editItemModalActive" @editItem="editItem" @deactivateEditItemModal="closeEditItemModal"></edit-item>
+
+        <edit-item 
+			v-if="editItemModalActive" 
+			@editItem="editItem" 
+			@deactivateEditItemModal="closeEditItemModal"
+		>
+		</edit-item>
+
         <delete-item v-if="deleteItemModalActive" :passedItemId="passedItemId" @closeDeleteItemModal="closeDeleteItemModal" @deleteItemAndCloseModal="deleteItemAndCloseModal"></delete-item>
         <nutrition-info v-if="displayNutritionModal" :item="selectedItem" @nutritionInfoSaved="nutritionInfoSaved" @deactivateNutritionInfoModal="displayNutritionModal = false"></nutrition-info>
         <modifiers-list v-if="displayModifierModal" :appliedModifiers="appliedModifiers" :selectedItemId="selectedItemId" @deactivateModifierModal="closeModifierModal"></modifiers-list>
@@ -1162,7 +1169,7 @@ export default {
 			return ItemsFunctions.getCategoryItems(itemsVue.$route.params.category_id, itemsVue.$root.appId, itemsVue.$root.appSecret).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
 					itemsVue.displayItemData = false
-					itemsVue.categoryItems = response.payload
+					itemsVue.categoryItems = response.payload.sort((a, b) => a.name > b.name)
 				} else {
 					itemsVue.displayItemData = false
 				}
@@ -1516,6 +1523,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		editItem (val) {
+			this.getItemDetailsFull(val.id)
 			if (val.type === 'preset') { this.getPresetDetails(val.id) }
 			this.editItemModalActive = false
 			for (let i = 0; i < this.categoryItems.length; i++) {
@@ -1535,6 +1543,7 @@ export default {
 			if (!done) {
 				this.categoryItems.push(val)
 			}
+			this.categoryItems.sort((a, b) => a.name > b.name)
 			setTimeout(function () {
 				$('#item-' + val.id).addClass('highlight')
 				setTimeout(function () {
