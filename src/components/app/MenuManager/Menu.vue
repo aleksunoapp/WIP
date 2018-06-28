@@ -247,7 +247,14 @@
 
         <apply-add-on-categories v-if="addOnCategoriesModalActive" :passedMenu="passedMenu" @closeAddOnCategoriesModal="closeAddOnCategoriesModal" @updateAddOnCategories="updateAddOnCategories"></apply-add-on-categories>
         <edit-menu v-if="editMenuModalActive" :passedMenuId="passedMenuId" @closeEditMenuModal="closeEditMenuModal" @updateMenu="updateMenu"></edit-menu>
-		<menu-hours v-if="menuHoursModalActive" @closeCopyModal="closeCopyModal" :menu="menuToAssignHoursTo"></menu-hours>
+
+		<menu-hours 
+			v-if="menuHoursModalActive" 
+			@closeHoursModal="closeMenuHoursModal" 
+			:menu="menuToAssignHoursTo"
+		>
+		</menu-hours>
+
 		<duplicate-menu v-if="duplicateMenuModalActive" :passedMenuId="passedMenuId" @closeDuplicateMenuModal="closeDuplicateMenuModal" @duplicateSuccess="confirmDuplicateSuccess"></duplicate-menu>
 		<copy-menu v-if="copyMenuModalActive" :passedMenuId="passedMenuId" @closeCopyMenuModal="closeCopyMenuModal" @copySuccess="confirmCopySuccess"></copy-menu>
         <delete-menu v-if="deleteMenuModalActive" :passedMenuId="passedMenuId" @closeDeleteMenuModal="closeDeleteMenuModal" @deleteMenuAndCloseModal="deleteMenuAndCloseModal"></delete-menu>
