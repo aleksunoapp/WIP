@@ -122,7 +122,7 @@
 											</div>
 											<div class="summary-table-cell">
 												<template v-if="category.serviceCategoryType !== 'PASS'">
-													<span class="price" v-if="subService.price !== 0"> ${{ (subService.price).toFixed(2) }} </span>
+													<span class="price" v-if="subService.price !== 0">{{ formatCurrency(subService.price) }} </span>
 													<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 													<div class="service-checkbox">
 														<input type="checkbox" :id="`sub-service-${subService.id}`" v-model="subService.isSelected" @change="toggleCheckbox(category, subService)">
@@ -142,7 +142,7 @@
 										</div>
 										<div class="summary-table-cell">
 											<template v-if="category.serviceCategoryType !== 'PASS'">
-												<span class="price" v-if="service.price !== 0"> ${{ (service.price).toFixed(2) }} </span>
+												<span class="price" v-if="service.price !== 0">{{ formatCurrency(service.price) }}</span>
 												<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 												<div class="service-checkbox">
 													<input type="checkbox" :id="`sub-service-${service.id}`" v-model="service.isSelected" @change="toggleCheckbox(category, service)">
@@ -177,9 +177,7 @@
 						</div>
 					</div>
 					<div class="total-estimate-value">
-						<span v-show="$root.meta.local === 'en-CA'">$</span>
-						{{ inspectionTotal.total.toFixed(2) }}
-						<span v-show="$root.meta.local === 'fr-CA'"> $</span>
+						{{ formatCurrency(inspectionTotal.total) }}
 					</div>
 				</div>
 				<div class="total-estimate">
@@ -189,9 +187,7 @@
 						</div>
 					</div>
 					<div class="total-estimate-value">
-						<span v-show="$root.meta.local === 'en-CA'">$</span>
-						{{ $root.totals.serviceTotal.total.toFixed(2) }}
-						<span v-show="$root.meta.local === 'fr-CA'"> $</span>
+						{{ formatCurrency($root.totals.serviceTotal.total) }}
 					</div>
 				</div>
 				<div @click="openServices()" class="proceed-btn">
@@ -482,6 +478,22 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * To format a number by locale to two decimal digits
+		 * @function
+		 * @param {number} number - The number to format
+		 * @returns {String} - A formatted string
+		 */
+		formatCurrency (number) {
+			const local = number.toLocaleString(this.$root.meta.local, {
+				minimumFractionDigits: 2, maximumFractionDigits: 2
+			})
+			if (this.$root.meta.local === 'fr-CA') {
+				return `${local} $`
+			} else {
+				return `$${local}`
+			}
+		},
 		/**
 		 * To determine if the legend should be displayed by checking if the category includes highlighted services (skip free services as they aren't shown)
 		 * @function

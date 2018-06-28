@@ -23,7 +23,7 @@
 								{{ langTerms.inspection_summary[$root.meta.local.toLowerCase()] }}
 							</a>
 						</div>
-						<div class="info-modal-estimate">{{ langTerms.estimated_cost[$root.meta.local.toLowerCase()] }} <span>${{ (viewingService.price).toFixed(2) }}</span></div>
+						<div class="info-modal-estimate">{{ langTerms.estimated_cost[$root.meta.local.toLowerCase()] }} <span>{{ formatCurrency(viewingService.price) }}</span></div>
 					</div>
 				</div>
 				<div class="modal-buttons">
@@ -108,6 +108,22 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * To format a number by locale to two decimal digits
+		 * @function
+		 * @param {number} number - The number to format
+		 * @returns {String} - A formatted string
+		 */
+		formatCurrency (number) {
+			const local = number.toLocaleString(this.$root.meta.local, {
+				minimumFractionDigits: 2, maximumFractionDigits: 2
+			})
+			if (this.$root.meta.local === 'fr-CA') {
+				return `${local} $`
+			} else {
+				return `$${local}`
+			}
+		},
 		/**
 		 * To open the full inspection in a separate tab
 		 * @function

@@ -29,7 +29,7 @@
 									<span class="service-name">{{ subService.name }}</span>
 								</div>
 								<div class="summary-table-cell">
-									<span class="price" v-if="subService.price !== 0"> ${{ (subService.price).toFixed(2) }} </span>
+									<span class="price" v-if="subService.price !== 0">{{ formatCurrency(subService.price) }}</span>
 									<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 								</div>
 							</div>
@@ -44,7 +44,7 @@
 								<span class="service-name">{{ service.name }}</span>
 							</div>
 							<div class="summary-table-cell">
-								<span class="price" v-if="service.price !== 0"> ${{ (service.price).toFixed(2) }} </span>
+								<span class="price" v-if="service.price !== 0">{{ formatCurrency(service.price) }}</span>
 								<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 							</div>
 						</div>
@@ -56,7 +56,7 @@
 					{{ langTerms.subtotal[$root.meta.local.toLowerCase()] }}:
 				</div>
 				<div class="summary-table-cell">
-					<span class="price"> ${{ (this.$root.totals.inspectionTotal.total).toFixed(2) }} </span>
+					<span class="price">{{ formatCurrency(this.$root.totals.inspectionTotal.total) }}</span>
 				</div>
 			</div>
 		</div>
@@ -90,7 +90,7 @@
 											<span class="service-name">{{ subService.name }}</span>
 										</div>
 										<div class="summary-table-cell">
-											<span class="price" v-if="subService.price !== 0"> ${{ (subService.price).toFixed(2) }} </span>
+											<span class="price" v-if="subService.price !== 0">{{ formatCurrency(subService.price) }}</span>
 											<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 										</div>
 									</div>
@@ -103,7 +103,7 @@
 										<span class="service-name">{{ service.name }}</span>
 									</div>
 									<div class="summary-table-cell">
-										<span class="price" v-if="service.price !== 0"> ${{ (service.price).toFixed(2) }} </span>
+										<span class="price" v-if="service.price !== 0">{{ formatCurrency(service.price) }}</span>
 										<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 									</div>
 								</div>
@@ -115,7 +115,7 @@
 							{{ langTerms.subtotal[$root.meta.local.toLowerCase()] }}:
 						</div>
 						<div class="summary-table-cell">
-							<span class="price"> ${{ (this.$root.totals.serviceTotal.total).toFixed(2) }} </span>
+							<span class="price">{{ formatCurrency(this.$root.totals.serviceTotal.total) }}</span>
 						</div>
 					</div>
 				</div>
@@ -137,7 +137,7 @@
 							{{ langTerms.estimated_taxes_and_fees[$root.meta.local.toLowerCase()] }}
 						</div>
 						<div class="summary-table-cell">
-							<span class="price">${{ tax.toFixed(2) }}</span>
+							<span class="price">{{ formatCurrency(tax) }}</span>
 						</div>
 					</div>
 				</div>
@@ -147,7 +147,7 @@
 							{{ langTerms.estimate_total[$root.meta.local.toLowerCase()] }}
 						</div>
 						<div class="summary-table-cell">
-							<span class="price">${{ (tax + this.$root.totals.inspectionTotal.total + this.$root.totals.serviceTotal.total).toFixed(2) }}</span>
+							<span class="price">{{ formatCurrency(tax + this.$root.totals.inspectionTotal.total + this.$root.totals.serviceTotal.total) }}</span>
 						</div>
 					</div>
 				</div>
@@ -176,7 +176,7 @@
 							{{ langTerms.estimated_taxes_and_fees[$root.meta.local.toLowerCase()] }}:
 						</div>
 						<div class="summary-table-cell">
-							<span class="price">${{ tax.toFixed(2) }}</span>
+							<span class="price">{{ formatCurrency(tax) }}</span>
 						</div>
 					</div>
 				</div>
@@ -186,7 +186,7 @@
 							{{ langTerms.estimate_total[$root.meta.local.toLowerCase()] }}
 						</div>
 						<div class="summary-table-cell">
-							<span class="price">${{ (tax + this.$root.totals.inspectionTotal.total + this.$root.totals.serviceTotal.total).toFixed(2) }}</span>
+							<span class="price">{{ formatCurrency(tax + this.$root.totals.inspectionTotal.total + this.$root.totals.serviceTotal.total) }}</span>
 						</div>
 					</div>
 				</div>
@@ -532,6 +532,22 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * To format a number by locale to two decimal digits
+		 * @function
+		 * @param {number} number - The number to format
+		 * @returns {String} - A formatted string
+		 */
+		formatCurrency (number) {
+			const local = number.toLocaleString(this.$root.meta.local, {
+				minimumFractionDigits: 2, maximumFractionDigits: 2
+			})
+			if (this.$root.meta.local === 'fr-CA') {
+				return `${local} $`
+			} else {
+				return `$${local}`
+			}
+		},
 		/**
 		 * To open the full inspection in a separate tab
 		 * @function
