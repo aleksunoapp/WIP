@@ -33,7 +33,7 @@
 				        		    <span>{{ createErrorMessage }}</span>
 				        		</div>
 				        	</div>
-			        		<div class="col-xs-5">
+			        		<div class="col-xs-9 col-md-5">
 			        			<div class="form-group form-md-line-input form-md-floating-label">
                                     <div class="input-icon right">
                                         <input type="text" class="form-control input-sm  text-uppercase" :class="{'edited': newPromoCode.codes.length}" id="form_control_1" v-model="newPromoCode.codes">                                    
@@ -42,7 +42,7 @@
                                     <label for="form_control_1">Enter a Code</label>
                                 </div>
 			        			<div class="side-by-side-wrapper center">
-									<div class="form-group form-md-line-input form-md-floating-label side-by-side-item">
+									<div class="form-group form-md-line-input form-md-floating-label side-by-side-item margin-right-10">
 									    <input type="text" class="form-control input-sm" :class="{'edited': newPromoCode.value}" id="form_control_2" v-model="newPromoCode.value">
 									    <label for="form_control_2">Value of Promo Code</label>
 									</div>
@@ -91,7 +91,7 @@
 								    <label for="form_control_4">Total Redemptions Permitted</label>
 								</div>
 			        		</div>
-			        		<div class="col-xs-5">
+			        		<div class="col-xs-9 col-md-5">
 			        			<div class="form-group form-md-line-input form-md-floating-label">
 			        				<p class="date-label">Start Date</p>
 			        				<el-date-picker 
@@ -768,18 +768,6 @@ export default {
 }
 .dropdown.side-by-side-item {
 	margin-left: 10px;
-}
-@media (max-width: 1150px) {
-	.side-by-side-wrapper {
-		flex-direction: column;
-		align-items: flex-start;
-	}
-	.side-by-side-item {
-		max-width: 100%;
-	}
-	.dropdown.side-by-side-item {
-		margin-left: 0px;
-	}
 }
 .date-label {
 	color: rgb(136, 136, 136);
