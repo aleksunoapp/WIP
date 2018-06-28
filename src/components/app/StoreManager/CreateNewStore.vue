@@ -813,14 +813,6 @@ export default {
 			newStoreHours: [
 				{
 					created_by: this.$root.createdBy,
-					day: 0,
-					open: 1,
-					open_time: '00:00',
-					close_time: '00:00',
-					status: 1
-				},
-				{
-					created_by: this.$root.createdBy,
 					day: 1,
 					open: 1,
 					open_time: '00:00',
@@ -862,6 +854,14 @@ export default {
 				{
 					created_by: this.$root.createdBy,
 					day: 6,
+					open: 1,
+					open_time: '00:00',
+					close_time: '00:00',
+					status: 1
+				},
+				{
+					created_by: this.$root.createdBy,
+					day: 0,
 					open: 1,
 					open_time: '00:00',
 					close_time: '00:00',
@@ -1136,14 +1136,6 @@ export default {
 			this.newStoreHours = [
 				{
 					created_by: this.$root.createdBy,
-					day: 0,
-					open: 1,
-					open_time: '00:00',
-					close_time: '00:00',
-					status: 1
-				},
-				{
-					created_by: this.$root.createdBy,
 					day: 1,
 					open: 1,
 					open_time: '00:00',
@@ -1185,6 +1177,14 @@ export default {
 				{
 					created_by: this.$root.createdBy,
 					day: 6,
+					open: 1,
+					open_time: '00:00',
+					close_time: '00:00',
+					status: 1
+				},
+				{
+					created_by: this.$root.createdBy,
+					day: 0,
 					open: 1,
 					open_time: '00:00',
 					close_time: '00:00',

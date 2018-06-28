@@ -438,7 +438,7 @@
 		            		                </tr>
 		            		            </thead>
 		            		            <tbody>
-		            		                <tr v-for="hour in hoursToBeEdited">
+		            		                <tr v-for="hour in hoursToBeEdited" :key="hour.id">
 		            		                	<td  class="align-middle" v-if="hour.day === 0"> Sunday </td>
 		            		                	<td  class="align-middle" v-if="hour.day === 1"> Monday </td>
 		            		                	<td  class="align-middle" v-if="hour.day === 2"> Tuesday </td>
@@ -513,7 +513,7 @@
 			    	    	                </tr>
 			    	    	            </thead>
 			    	    	            <tbody>
-			    	    	                <tr v-for="hour in holidayHoursToBeEdited">
+			    	    	                <tr v-for="hour in holidayHoursToBeEdited" :key="hour.id">
 			    	    	                	<td class="align-middle"> <input type="text" class="form-control input-sm" v-model="hour.name"> </td>
 			    	    	                	<td class="align-middle" v-if="hour.day === 0"> Sun </td>
 			    	    	                	<td class="align-middle" v-if="hour.day === 1"> Mon </td>
@@ -984,7 +984,11 @@ export default {
 
 			StoresFunctions.createHolidayHours(val, createStoreVue.$root.appId, createStoreVue.$root.appSecret, createStoreVue.$root.userToken).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
-					createStoreVue.holidayHoursToBeEdited = response.payload
+					const sunday = response.payload.findIndex(day => day.day === 0)
+					let weekStartingMonday = response.payload
+					weekStartingMonday.push(response.payload[sunday])
+					weekStartingMonday.splice(sunday, 1)
+					createStoreVue.holidayHoursToBeEdited = weekStartingMonday
 					createStoreVue.showAlert()
 				}
 			}).catch(reason => {
@@ -1204,10 +1208,15 @@ export default {
 					if (response.message === 'No hours to display') {
 						editStoreVue.noHoursData = response.message
 					} else {
-						editStoreVue.hoursToBeEdited = response.payload
+						const sunday = response.payload.findIndex(day => day.day === 0)
+						let weekStartingMonday = response.payload
+						weekStartingMonday.push(response.payload[sunday])
+						weekStartingMonday.splice(sunday, 1)
+						editStoreVue.hoursToBeEdited = weekStartingMonday
 					}
 				}
 			}).catch(reason => {
+				console.log(reason)
 				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
 					editStoreVue.$router.push('/login/expired')
 					return
@@ -1230,7 +1239,11 @@ export default {
 						day.close_time = day.close_time.slice(0, -3)
 						day.loading = false
 					})
-					editStoreVue.holidayHoursToBeEdited = response.payload.location_holiday_hours
+					const sunday = response.payload.location_holiday_hours.findIndex(day => day.day === 0)
+					let weekStartingMonday = response.payload.location_holiday_hours
+					weekStartingMonday.push(response.payload.location_holiday_hours[sunday])
+					weekStartingMonday.splice(sunday, 1)
+					editStoreVue.holidayHoursToBeEdited = weekStartingMonday
 				}
 			}).catch(reason => {
 				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {

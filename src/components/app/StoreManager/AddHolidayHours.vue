@@ -47,7 +47,7 @@
 			                </tr>
 			            </thead>
 			            <tbody>
-			                <tr v-for="hour in holidayHourDetails.holidayhour">
+			                <tr v-for="hour in holidayHourDetails.holidayhour" :key="hour.id">
 			                	<td class="align-middle" v-if="hour.day === 0"> Sunday </td>
 			                	<td class="align-middle" v-if="hour.day === 1"> Monday </td>
 			                	<td class="align-middle" v-if="hour.day === 2"> Tuesday </td>
@@ -103,13 +103,6 @@ export default {
 				name: '',
 				holidayhour: [
 					{
-						day: 0,
-						open: 1,
-						open_time: '00:00',
-						close_time: '00:00',
-						status: 1
-					},
-					{
 						day: 1,
 						open: 1,
 						open_time: '00:00',
@@ -146,6 +139,13 @@ export default {
 					},
 					{
 						day: 6,
+						open: 1,
+						open_time: '00:00',
+						close_time: '00:00',
+						status: 1
+					},
+					{
+						day: 0,
 						open: 1,
 						open_time: '00:00',
 						close_time: '00:00',
@@ -240,13 +240,6 @@ export default {
 				name: '',
 				holidayhour: [
 					{
-						day: 0,
-						open: 1,
-						open_time: '00:00',
-						close_time: '00:00',
-						status: 1
-					},
-					{
 						day: 1,
 						open: 1,
 						open_time: '00:00',
@@ -283,6 +276,13 @@ export default {
 					},
 					{
 						day: 6,
+						open: 1,
+						open_time: '00:00',
+						close_time: '00:00',
+						status: 1
+					},
+					{
+						day: 0,
 						open: 1,
 						open_time: '00:00',
 						close_time: '00:00',
