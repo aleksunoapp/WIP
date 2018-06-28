@@ -173,7 +173,7 @@ router.beforeEach((to, from, next) => {
 router.afterEach((to, from, next) => {
 	if (to.path !== '/') {
 		// eslint-disable-next-line
-		sessionStorage.setItem('routePath', to.path)		
+		sessionStorage.setItem('routePath', to.path)
 	}
 })
 
