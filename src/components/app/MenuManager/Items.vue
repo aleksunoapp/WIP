@@ -12,7 +12,7 @@
             <p>View items for category '{{ categoryDetails.name }}'.</p>
         </div>
         <!-- BEGIN CREATE NEW MENU-->
-        <div class="portlet box blue-hoki">
+        <div class="portlet box blue-hoki" v-if="$root.permissions['menu_manager menus categories subcategories items create']">
 			<div class="portlet-title bg-blue-chambray" @click="toggleCreateItemPanel()">
 				<div class="custom tools">
 					<a :class="{'expand': !createItemCollapse, 'collapse': createItemCollapse}"></a>
@@ -222,27 +222,47 @@
 									:key="item.id"
 								>
 		                        	<div class="margin-bottom-15 actions-on-top">
-		                        		<el-tooltip content="Edit" effect="light" placement="bottom">
+		                        		<el-tooltip 
+											v-if="$root.permissions['menu_manager menus categories subcategories items update']"
+											content="Edit" 
+											effect="light" 
+											placement="bottom">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="displayEditItemModal(item, $event)">
 	                                            <i class="fa fa-lg fa-pencil"></i>
 	                                        </a>
 		                        		</el-tooltip>
-		                        		<el-tooltip content="Images" effect="light" placement="bottom">
+		                        		<el-tooltip 
+											v-if="$root.permissions['menu_manager menus categories subcategories items update']"
+											content="Images" 
+											effect="light" 
+											placement="bottom">
 	                                        <a class="btn btn-circle btn-icon-only btn-default" @click="openImagesModal(item, $event)">
 	                                            <i class="fa fa-lg fa-image"></i>
 	                                        </a>
 		                        		</el-tooltip>
-		                        		<el-tooltip content="Nutrition Info" effect="light" placement="bottom">
+		                        		<el-tooltip 
+											v-if="$root.permissions['menu_manager menus categories subcategories items update']"
+											content="Nutrition Info" 
+											effect="light" 
+											placement="bottom">
 	                                        <a class="btn btn-circle btn-icon-only btn-default" @click="viewNutritionInfo(item, $event)">
 	                                            <i class="fa fa-lg fa-heartbeat"></i>
 	                                        </a>
 		                        		</el-tooltip>
-		                        		<el-tooltip content="Apply To Locations" effect="light" placement="bottom">
+		                        		<el-tooltip 
+											v-if="$root.permissions['menu_manager menus categories subcategories items update']"
+											content="Apply To Locations" 
+											effect="light" 
+											placement="bottom">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="displayApplyToLocationsModal(item, $event)">
 	                                            <i class="icon-layers"></i>
 	                                        </a>
 		                        		</el-tooltip>
-		                        		<el-tooltip content="Delete" effect="light" placement="bottom">
+		                        		<el-tooltip 
+											v-if="$root.permissions['menu_manager menus categories subcategories items delete']"
+											content="Delete" 
+											effect="light" 
+											placement="bottom">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="displayDeleteItemModal(item, $event)">
 	                                            <i class="fa fa-lg fa-trash"></i>
 	                                        </a>
@@ -251,7 +271,7 @@
 		                        	<div class="list-icon-container" v-show="expanded !== item.id">
                                         <i :id="'icon-' + item.id" class="fa fa-angle-right"></i>
                                     </div>
-		                            <div class="list-thumb"  @click="openImagesModal(item, $event)">
+		                            <div class="list-thumb">
 		                                <a v-if="item.image_url.length">
 		                                    <img alt="" :src="item.image_url" />
 		                                </a>

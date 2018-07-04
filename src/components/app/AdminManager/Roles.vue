@@ -7,10 +7,10 @@
 			<h1 class='page-title'>Roles</h1>
 			<div class="note note-info">
 				<p>Create and manage user roles.</p>
-			</div
+			</div>
 
 			<!-- CREATE NEW START -->
-			<div class="portlet box blue-hoki margin-top-20">
+			<div class="portlet box blue-hoki margin-top-20" v-if="$root.permissions['create role']">
 				<div class="portlet-title bg-blue-chambray" @click="toggleCreateRolePanel()">
 					<div class="caption">
 						<i class="fa fa-plus-circle"></i>
@@ -38,7 +38,7 @@
 									<label for="form_control_name">Name</label>
 								</div>
 								<el-tree 
-									:data="rolePrototype" 
+									:data="roleTree" 
 									:default-expand-all="true"
 									:highlight-current="true"
 									:props="{'label': 'name', 'children': 'combined'}"
@@ -141,12 +141,20 @@
 								<ul>
 									<li class="mt-list-item actions-at-left margin-top-15" v-for="role in currentActivePageItems" :id="'role-' + role.id" :class="{'animated' : animated === `role-${role.id}`}" :key="role.id">
 										<div class="list-item-actions">
-											<el-tooltip content="Edit" effect="light" placement="right">
+											<el-tooltip 
+												v-if="$root.permissions['update role']"
+												content="Edit" 
+												effect="light" 
+												placement="right">
 												<a class="btn btn-circle btn-icon-only btn-default" @click="editRole(role)">
 													<i class="fa fa-pencil" aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip content="Delete" effect="light" placement="right">
+											<el-tooltip 
+												v-if="$root.permissions['delete role']"
+												content="Delete" 
+												effect="light" 
+												placement="right">
 												<a class="btn btn-circle btn-icon-only btn-default" @click="openDeleteModal(role)">
 													<i class="fa fa-trash" aria-hidden="true"></i>
 												</a>
@@ -203,11 +211,24 @@
 								<ul>
 									<li class="mt-list-item actions-at-left margin-top-15" v-for="role in currentActiveSearchPageItems" :id="'role-' + role.id" :class="{'animated' : animated === `role-${role.id}`}" :key="role.id">
 										<div class="list-item-actions">
-											<a class="btn btn-circle btn-icon-only btn-default" @click="editRole(role)">
-												<el-tooltip content="Edit" effect="light" placement="right">
+											<el-tooltip 
+												v-if="$root.permissions['update role']"
+												content="Edit" 
+												effect="light" 
+												placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default" @click="editRole(role)">
 													<i class="fa fa-pencil" aria-hidden="true"></i>
-												</el-tooltip>
-											</a>
+												</a>
+											</el-tooltip>
+											<el-tooltip 
+												v-if="$root.permissions['delete role']"
+												content="Delete" 
+												effect="light" 
+												placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default" @click="openDeleteModal(role)">
+													<i class="fa fa-trash" aria-hidden="true"></i>
+												</a>
+											</el-tooltip>
 										</div>
 										<div class="list-datetime bold uppercase font-red">
 											<span>{{ role.name }}</span>
@@ -229,7 +250,7 @@
 		<!-- LIST END -->
 
 		<!-- EDIT MODAL START -->
-		<modal :show="showEditRoleModal" effect="fade" @closeOnEscape="closeEditRoleModal">
+		<modal :show="showEditRoleModal" effect="fade" @closeOnEscape="closeEditRoleModal" ref="editModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closeEditRoleModal()">
 					<span>&times;</span>
@@ -247,7 +268,7 @@
 				</div>
 				<el-tree 
 					v-if="showEditRoleModal"
-					:data="rolePrototype" 
+					:data="roleTree" 
 					:default-expand-all="true"
 					:highlight-current="true"
 					:props="{'label': 'name', 'children': 'combined'}"
@@ -345,7 +366,8 @@ export default {
 				order: 'ASC'
 			},
 			searchActivePage: 1,
-			rolePrototype: [],
+			roleTree: [],
+			cleanRoleTree: [],
 			modules: []
 		}
 	},
@@ -382,9 +404,14 @@ export default {
 				if (response.code === 200 && response.status === 'ok') {
 					rolesVue.loading = false
 
-					rolesVue.rolePrototype = rolesVue.listToTree(response.payload, response.payload.filter(mod => mod.parent_module === 0)[0])
+					let role = rolesVue.listToTree(response.payload, response.payload.filter(mod => mod.parent_module === 0)[0])
 
-					rolesVue.combinePermissionsAndModules(rolesVue.rolePrototype[0])
+					for (let mod of role) {
+						rolesVue.combinePermissionsAndModules(mod)
+					}
+
+					rolesVue.cleanRoleTree = role
+					rolesVue.roleTree = role
 
 					rolesVue.modules = response.payload
 				} else {
@@ -418,8 +445,8 @@ export default {
 				for (var i = 0, len = arr.length; i < len; i++) {
 					arrElem = arr[i]
 					mappedArr[arrElem.id] = arrElem
-					mappedArr[arrElem.id]['sub_modules'] = []
 				}
+				console.log(mappedArr)
 
 				for (var id in mappedArr) {
 					if (mappedArr.hasOwnProperty(id)) {
@@ -452,10 +479,10 @@ export default {
 					item.nodeId = item.module_id === undefined ? `m${item.id}` : `p${item.id}`
 					return item
 				})
-				let depth = 0
+
 				var children = current.sub_modules
 				for (var i = 0; i < children.length; i++) {
-					_this.combinePermissionsAndModules(children[i], depth + 1)
+					_this.combinePermissionsAndModules(children[i])
 				}
 			} catch (e) {
 				console.log(e)
@@ -477,7 +504,7 @@ export default {
 					}
 				} else {
 					if (index !== -1) {
-						this.roleToEdit.permissions = this.newRole.permissions.filter(x => x !== node.id)
+						this.roleToEdit.permissions = this.roleToEdit.permissions.filter(x => x !== node.id)
 					}
 				}
 			}
@@ -801,6 +828,7 @@ export default {
 				guard_name: 'admin',
 				permissions: []
 			}
+			this.roleTree = [...this.cleanRoleTree]
 		},
 		/**
 		 * To reset the create new form.
@@ -901,7 +929,7 @@ export default {
 						rolesVue.animated = ''
 					}, 3000)
 				}).catch(reason => {
-					console.log()
+					rolesVue.$refs.editModal.$el.scrollTop = 0
 					ajaxErrorHandler({
 						reason,
 						errorText: 'Could not save role',
@@ -911,7 +939,7 @@ export default {
 				})
 			}).catch(reason => {
 				rolesVue.editErrorMessage = reason
-				rolesVue.$scrollTo(rolesVue.$refs.editErrorMessage, 1000, { offset: -50 })
+				rolesVue.$refs.editModal.$el.scrollTop = 0
 			})
 		},
 		/**
@@ -940,8 +968,6 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (!rolesVue.roleToEdit.name.length) {
 					reject('Name cannot be blank')
-				} else if (!rolesVue.roleToEdit.permissions.length) {
-					reject('Select at least one permission')
 				}
 				resolve('Hurray')
 			})

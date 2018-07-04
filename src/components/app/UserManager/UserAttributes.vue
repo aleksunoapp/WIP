@@ -14,7 +14,7 @@
 		<!-- HEADER END -->
 		
 		<!-- CREATE START -->
-		<div class="portlet box blue-hoki">
+		<div class="portlet box blue-hoki" v-if="$root.permissions['user_manager attributes create']">
 			<div class="portlet-title bg-blue-chambray" @click="toggleCreatePanel()">
 				<div class="caption">
 					<i class="fa fa-plus-circle"></i>
@@ -148,17 +148,29 @@
 								:class="{'animated' : animatedId === userAttribute.id}"
 							>
 								<div class="margin-bottom-15 actions-on-top">
-									<el-tooltip content="Edit" effect="light" placement="top">
+									<el-tooltip 
+										v-if="$root.permissions['user_manager attributes update']"
+										content="Edit" 
+										effect="light" 
+										placement="top">
 										<a class="btn btn-circle btn-icon-only btn-default" @click="openEditModal(userAttribute)">
 											<i class="fa fa-lg fa-pencil"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip content="Apply to Item Attributes" effect="light" placement="top">
+									<el-tooltip 
+										v-if="$root.permissions['user_manager attributes update']"
+										content="Apply to Item Attributes" 
+										effect="light" 
+										placement="top">
 										<a class="btn btn-circle btn-icon-only btn-default" @click="openAssignItemAttributesModal(userAttribute)">
 											<i class="icon-layers"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip content="Delete" effect="light" placement="top">
+									<el-tooltip 
+										v-if="$root.permissions['user_manager attributes delete']"
+										content="Delete" 
+										effect="light" 
+										placement="top">
 										<a class="btn btn-circle btn-icon-only btn-default" @click="openDeleteModal(userAttribute)">
 											<i class="fa fa-lg fa-trash"></i>
 										</a>

@@ -12,7 +12,7 @@
             <p>View categories for menu '{{ menuDetails.name }}'.</p>
         </div>
         <!-- BEGIN CREATE NEW MENU-->
-        <div class="portlet box blue-hoki">
+        <div class="portlet box blue-hoki" v-if="$root.permissions['menu_manager menus categories create']">
 			<div class="portlet-title bg-blue-chambray" @click="toggleCreateCategoryPanel()">
 				<div class="custom tools">
 					<a :class="{'expand': !createCategoryCollapse, 'collapse': createCategoryCollapse}"></a>
@@ -99,22 +99,38 @@
 		                    <ul v-for="category in menuCategories" :key="category.id">
 		                        <li class="mt-list-item margin-top-15 clickable" :id="'category-' + category.id" @click="determineNextAction(category)">
 		                        	<div class="margin-bottom-15 actions-on-top">
-		                        		<el-tooltip content="Edit" effect="light" placement="top">
+		                        		<el-tooltip 
+											v-if="$root.permissions['menu_manager menus categories update']"
+											content="Edit" 
+											effect="light" 
+											placement="top">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editCategory(category, $event)">
 	                                            <i class="fa fa-lg fa-pencil"></i>
 	                                        </a>
 		                        		</el-tooltip>
-	                                    <el-tooltip content="Category Hours" effect="light" placement="top">
+	                                    <el-tooltip 
+											v-if="$root.permissions['menu_manager menus categories update']"
+											content="Category Hours" 
+											effect="light" 
+											placement="top">
 		                                    <a class="btn btn-circle btn-icon-only btn-default" @click="showHoursModal(category, $event)">
 		                                        <i class="fa fa-lg fa-clock-o"></i>
 		                                    </a>
 	                                    </el-tooltip>
-		                        		<el-tooltip content="Add subcategory" effect="light" placement="top">
+		                        		<el-tooltip 
+											v-if="$root.permissions['menu_manager menus categories subcategories create']"
+											content="Add subcategory" 
+											effect="light" 
+											placement="top">
 	                                        <a class="btn btn-circle btn-icon-only btn-default" @click="displayAddSubCategoryModal(category, $event)">
 	                                            <i class="fa fa-lg fa-plus"></i>
 	                                        </a>
 		                        		</el-tooltip>
-		                        		<el-tooltip content="Delete" effect="light" placement="top">
+		                        		<el-tooltip 
+											v-if="$root.permissions['menu_manager menus categories delete']"
+											content="Delete" 
+											effect="light" 
+											placement="top">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="deleteCategory(category, $event)">
 	                                            <i class="fa fa-lg fa-trash"></i>
 	                                        </a>
@@ -153,14 +169,27 @@
 		                        <li :id="'category-details-' + category.id" class="mt-list-item collapsed" v-if="category.subcategories && category.subcategories.length">
 		                        	<h4>Sub Categories</h4>
 		                        	<ul>
-				                        <li class="mt-list-item actions-at-left margin-top-15 white clickable sub-mt-list-item" v-for="subcategory in category.subcategories" :id="'subcategory-' + subcategory.id" @click="viewCategoryItems(subcategory)" :key="subcategory.id">
+				                        <li 
+											class="mt-list-item actions-at-left margin-top-15 white clickable sub-mt-list-item" 
+											v-for="subcategory in category.subcategories" 
+											:id="'subcategory-' + subcategory.id" 
+											@click="viewCategoryItems(subcategory)"
+											:key="subcategory.id">
 				                        	<div class="list-item-actions">
-				                        		<el-tooltip content="Edit" effect="light" placement="right">
+				                        		<el-tooltip 
+													v-if="$root.permissions['menu_manager menus categories subcategories update']"
+													content="Edit" 
+													effect="light" 
+													placement="right">
 					                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editSubCategory(subcategory, $event)">
 					                        			<i class="fa fa-lg fa-pencil"></i>
 			                                        </a>
 				                        		</el-tooltip>
-				                        		<el-tooltip content="Delete" effect="light" placement="right">
+				                        		<el-tooltip 
+													v-if="$root.permissions['menu_manager menus categories subcategories delete']"
+													content="Delete" 
+													effect="light" 
+													placement="right">
 					                        		<a class="btn btn-circle btn-icon-only btn-default" @click="deleteSubCategory(subcategory, $event)">
 					                        			<i class="fa fa-lg fa-trash"></i>
 			                                        </a>

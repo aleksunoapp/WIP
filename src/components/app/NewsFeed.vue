@@ -11,68 +11,68 @@
 		<div class="note note-info">
             <p>Create and manage the Application News Feed.</p>
         </div>
-        <div class="margin-top-20">
-  			<!-- CREATE START -->
-			<div class="portlet box blue-hoki">
-				<div class="portlet-title bg-blue-chambray" @click="toggleCreateFeedPanel()">
-					<div class="custom tools">
-						<a :class="{'expand': !createFeedCollapse, 'collapse': createFeedCollapse}"></a>
-					</div>
-					<div class="caption">
-						&emsp;Create News Feed
-					</div>
+
+		<!-- CREATE START -->
+		<div class="portlet box blue-hoki margin-top-20" v-if="$root.permissions['news_feed create']">
+			<div class="portlet-title bg-blue-chambray" @click="toggleCreateFeedPanel()">
+				<div class="custom tools">
+					<a :class="{'expand': !createFeedCollapse, 'collapse': createFeedCollapse}"></a>
 				</div>
-				<div class="portlet-body" :class="{'display-hide': createFeedCollapse}">
-					<form role="form" @submit.prevent="createNewsFeed($event)">
-						<div class="row">
-							<div class="col-md-12">
-								<div class="alert alert-danger" v-show="createFeedError.length" ref="createFeedError">
-									<button class="close" data-close="alert" @click.prevent="clearCreateFeedError()"></button>
-									<span>{{createFeedError}}</span>
-								</div>
-							</div>
-							<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
-								<resource-picker 
-									@open="toggleImageMode('newMenu', true)"
-									@close="toggleImageMode('newMenu', false)"
-									@selected="updateImage" 
-									:imageButton="true"
-									:imageUrl="newNewsFeed.image"
-									class="margin-top-15"
-								>
-								</resource-picker>
-							</div>
-							<div class="col-md-5" v-show="!imageMode.newMenu">
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text" class="form-control input-sm" id="form_control_1" v-model="newNewsFeed.title" :class="{'edited': newNewsFeed.title.length}">
-									<label for="form_control_1">Title</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text" class="form-control input-sm" id="form_control_2" v-model="newNewsFeed.short_description" :class="{'edited': newNewsFeed.short_description.length}">
-									<label for="form_control_2">Short Description</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text" class="form-control input-sm" id="form_control_external_url" v-model="newNewsFeed.external_url" :class="{'edited': newNewsFeed.external_url.length}">
-									<label for="form_control_2">Link</label>
-								</div>
-							</div>
-							<div class="col-md-5" v-show="!imageMode.newMenu">
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<textarea class="form-control input-sm" rows="4" v-model="newNewsFeed.body" :class="{'edited': newNewsFeed.body.length}"></textarea>
-									<label for="form_control_1">Body</label>
-								</div>
-							</div>
-							<div class="col-xs-12" v-show="!imageMode.newMenu">
-								<div class="pull-right">
-									<button type="submit" class="btn blue">Save</button>
-								</div>
+				<div class="caption">
+					&emsp;Create News Feed
+				</div>
+			</div>
+			<div class="portlet-body" :class="{'display-hide': createFeedCollapse}">
+				<form role="form" @submit.prevent="createNewsFeed($event)">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="alert alert-danger" v-show="createFeedError.length" ref="createFeedError">
+								<button class="close" data-close="alert" @click.prevent="clearCreateFeedError()"></button>
+								<span>{{createFeedError}}</span>
 							</div>
 						</div>
-					</form>
-	      		</div>
+						<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
+							<resource-picker 
+								@open="toggleImageMode('newMenu', true)"
+								@close="toggleImageMode('newMenu', false)"
+								@selected="updateImage" 
+								:imageButton="true"
+								:imageUrl="newNewsFeed.image"
+								class="margin-top-15"
+							>
+							</resource-picker>
+						</div>
+						<div class="col-md-5" v-show="!imageMode.newMenu">
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<input type="text" class="form-control input-sm" id="form_control_1" v-model="newNewsFeed.title" :class="{'edited': newNewsFeed.title.length}">
+								<label for="form_control_1">Title</label>
+							</div>
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<input type="text" class="form-control input-sm" id="form_control_2" v-model="newNewsFeed.short_description" :class="{'edited': newNewsFeed.short_description.length}">
+								<label for="form_control_2">Short Description</label>
+							</div>
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<input type="text" class="form-control input-sm" id="form_control_external_url" v-model="newNewsFeed.external_url" :class="{'edited': newNewsFeed.external_url.length}">
+								<label for="form_control_2">Link</label>
+							</div>
+						</div>
+						<div class="col-md-5" v-show="!imageMode.newMenu">
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<textarea class="form-control input-sm" rows="4" v-model="newNewsFeed.body" :class="{'edited': newNewsFeed.body.length}"></textarea>
+								<label for="form_control_1">Body</label>
+							</div>
+						</div>
+						<div class="col-xs-12" v-show="!imageMode.newMenu">
+							<div class="pull-right">
+								<button type="submit" class="btn blue">Save</button>
+							</div>
+						</div>
+					</div>
+				</form>
 			</div>
-	      	<!-- CREATE END -->
-        </div>
+		</div>
+		<!-- CREATE END -->
+
         <div class="margin-top-20">
 	        <div class="relative-block">
 	        	<div class="clearfix" v-if="newsFeed.length">
@@ -114,7 +114,7 @@
                                             <a class="timeline-body-title font-blue-madison">{{ news.title }}</a>
                                         </div>
                                         <div class="timeline-body-head-actions">
-                                        	<div class="btn-group">
+                                        	<div class="btn-group" v-if="$root.permissions['news_feed update']">
                                                 <button class="btn blue btn-sm" type="button" @click="editNewsFeed(news)"> Edit</button>
                                             </div>
                                         </div>

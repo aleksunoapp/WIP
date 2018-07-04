@@ -21,8 +21,9 @@
 				</div>
 
 				<div class="portlet-body">
-					<div class="alert alert-danger text-center" v-show="errorMessage" ref="errorMessage">
+					<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
 						<span>{{errorMessage}}</span>
+						<button class="close" @click="clearError('errorMessage')"></button>
 					</div>
 
 					<loading-screen 
@@ -36,7 +37,7 @@
 					>
 					</no-results>
 
-					<div class="row" v-show="!loading && !noResults && !errorMessage.length">
+					<div class="row" v-show="!loading && !noResults && requests.length">
 						<div class="col-xs-12" ref="request">
 							<table class="table">
 								<thead>
@@ -73,8 +74,9 @@
 								:numPages="total" 
 								@activePageChange="activePageUpdate">
 							</pagination>
-							<div class="pull-right">
+							<div class="pull-right" v-if="$root.permissions['approvals update']">
 								<button 
+									v-show="total !== activePage"
 									class="btn blue btn-outline margin-right-10"
 									@click="skip(1)"
 								>
@@ -236,12 +238,8 @@ export default {
 			}
 			return ApprovalsFunctions.approveRequest(approvalsVue.requests[0], review)
 			.then(response => {
-				approvalsVue.requests = response.payload.docs
-				approvalsVue.total = response.payload.total
-				if (!response.payload.docs.length) {
-					approvalsVue.noResults = true
-					approvalsVue.$root.requestsPending = false
-				}
+				approvalsVue.getRequests()
+				approvalsVue.showApproveSuccess(approved)
 			}).catch(reason => {
 				console.log(reason)
 				ajaxErrorHandler({
@@ -255,12 +253,13 @@ export default {
 		/**
 		 * To notify user that the operation succeeded.
 		 * @function
+		 * @param {boolean} approved - Status of the approval
 		 * @returns {undefined}
 		 */
-		showApproveSuccess () {
+		showApproveSuccess (approved) {
 			this.$swal({
 				title: 'Success',
-				text: 'Changes approved',
+				text: approved ? 'Changes approved' : 'Changes rejected',
 				type: 'success',
 				confirmButtonText: 'OK'
 			})

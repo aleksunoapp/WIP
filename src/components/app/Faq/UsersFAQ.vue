@@ -11,63 +11,65 @@
 		<div class="note note-info">
             <p>Create and manage user FAQs.</p>
         </div>
-        <div class="margin-top-20">
-			<div class="portlet box blue-hoki">
-				<div class="portlet-title bg-blue-chambray" @click="toggleCreateFAQPanel()">
-					<div class="caption">
-						<i class="fa fa-plus-circle"></i>
-						Post A Question
-					</div>
-					<div class="tools">
-						<a :class="{'expand': !createFAQCollapse, 'collapse': createFAQCollapse}"></a>
-					</div>
+
+		<!-- CREATE START -->
+		<div class="portlet box blue-hoki margin-top-20" v-if="$root.permissions['faq user create']">
+			<div class="portlet-title bg-blue-chambray" @click="toggleCreateFAQPanel()">
+				<div class="caption">
+					<i class="fa fa-plus-circle"></i>
+					Post A Question
 				</div>
-				<div class="portlet-body" :class="{'display-hide': createFAQCollapse}">
-	      			<form role="form" @submit.prevent="createUserFAQ($event)">
-						<div class="row">
-							<div class="col-xs-12">
-								<div class="alert alert-danger" v-if="createFAQError.length">
-									<button class="close" data-close="alert" @click="clearCreateFAQError()"></button>
-									<span>{{createFAQError}}</span>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text" class="form-control input-sm" id="form_control_1" v-model="newFAQ.question" :class="{'edited': newFAQ.question.length}">
-									<label for="form_control_1">Question</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<textarea class="form-control input-sm" rows="5" v-model="newFAQ.answer" :class="{'edited': newFAQ.answer.length}" id="form_control_2"></textarea>
-									<label for="form_control_2">Answer</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text" class="form-control input-sm" id="form_control_3" v-model="newFAQ.external_link" :class="{'edited': newFAQ.external_link.length}">
-									<label for="form_control_3">External Link</label>
-								</div>
-								<div>
-									<p class="grey-label">Call to action type</p>
-									<el-select v-model="newFAQ.cta_type" placeholder="Select type" size="small" class="margin-bottom-15" id="form_control_cta_type">
-										<el-option label="none" value=""></el-option>
-										<el-option label="hyperlink" value="hyperlink"></el-option>
-										<el-option label="menu item" value="menu_item"></el-option>
-										<el-option label="promo code" value="promo_code"></el-option>
-										<el-option label="camera" value="camera"></el-option>
-										<el-option label="call" value="call"></el-option>
-										<el-option label="SMS" value="sms"></el-option>
-										<el-option label="video" value="video"></el-option>
-									</el-select>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text" class="form-control input-sm" id="form_control_cta_value" v-model="newFAQ.cta_value" :class="{'edited': newFAQ.cta_value.length}">
-									<label for="form_control_cta_value">Call to action value</label>
-								</div>
+				<div class="tools">
+					<a :class="{'expand': !createFAQCollapse, 'collapse': createFAQCollapse}"></a>
+				</div>
+			</div>
+			<div class="portlet-body" :class="{'display-hide': createFAQCollapse}">
+				<form role="form" @submit.prevent="createUserFAQ($event)">
+					<div class="row">
+						<div class="col-xs-12">
+							<div class="alert alert-danger" v-if="createFAQError.length">
+								<button class="close" data-close="alert" @click="clearCreateFAQError()"></button>
+								<span>{{createFAQError}}</span>
 							</div>
-							<div class="col-md-12">
-								<button type="submit" class="btn blue pull-right">Save</button>
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<input type="text" class="form-control input-sm" id="form_control_1" v-model="newFAQ.question" :class="{'edited': newFAQ.question.length}">
+								<label for="form_control_1">Question</label>
+							</div>
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<textarea class="form-control input-sm" rows="5" v-model="newFAQ.answer" :class="{'edited': newFAQ.answer.length}" id="form_control_2"></textarea>
+								<label for="form_control_2">Answer</label>
+							</div>
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<input type="text" class="form-control input-sm" id="form_control_3" v-model="newFAQ.external_link" :class="{'edited': newFAQ.external_link.length}">
+								<label for="form_control_3">External Link</label>
+							</div>
+							<div>
+								<p class="grey-label">Call to action type</p>
+								<el-select v-model="newFAQ.cta_type" placeholder="Select type" size="small" class="margin-bottom-15" id="form_control_cta_type">
+									<el-option label="none" value=""></el-option>
+									<el-option label="hyperlink" value="hyperlink"></el-option>
+									<el-option label="menu item" value="menu_item"></el-option>
+									<el-option label="promo code" value="promo_code"></el-option>
+									<el-option label="camera" value="camera"></el-option>
+									<el-option label="call" value="call"></el-option>
+									<el-option label="SMS" value="sms"></el-option>
+									<el-option label="video" value="video"></el-option>
+								</el-select>
+							</div>
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<input type="text" class="form-control input-sm" id="form_control_cta_value" v-model="newFAQ.cta_value" :class="{'edited': newFAQ.cta_value.length}">
+								<label for="form_control_cta_value">Call to action value</label>
 							</div>
 						</div>
-	      			</form>
-	      		</div>
-	      	</div>
-        </div>
+						<div class="col-md-12">
+							<button type="submit" class="btn blue pull-right">Save</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!-- CREATE END -->
+
         <div class="margin-top-20">
 	        <div class="relative-block">
   				<div class="portlet light portlet-fit bordered">
@@ -100,7 +102,13 @@
                                         </div>
                                         <div class="timeline-body-head-actions">
                                         	<div class="btn-group">
-                                                <button class="btn blue btn-sm" type="button" @click="editFAQ(faq)"> Edit</button>
+                                                <button 
+													v-if="$root.permissions['faq user update']"
+													class="btn blue btn-sm" 
+													type="button" 
+													@click="editFAQ(faq)">
+													 Edit
+												</button>
                                             </div>
                                         </div>
                                     </div>

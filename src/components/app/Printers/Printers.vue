@@ -9,7 +9,9 @@
 		</div>
 
 		<!-- BEGIN CREATE NEW PRINTER-->
-        <div class="portlet box blue-hoki" v-if="$root.activeLocation && $root.activeLocation.id">
+        <div 
+			class="portlet box blue-hoki" 
+			v-if="$root.activeLocation && $root.activeLocation.id && $root.permissions['printers create']">
 			<div class="portlet-title bg-blue-chambray" @click="toggleNewPrinterPanel()">
 				<div class="caption">
 					<i class="fa fa-2x fa-plus-circle"></i>
@@ -101,7 +103,7 @@
 					</div>
 					<div class="caption">
 						<span class="caption-subject font-green bold uppercase">Printers</span>
-						<div class="caption-desc font-grey-cascade">Printers for {{ $root.activeUser ? $root.activeUser : 'User' }}.</div>
+						<div class="caption-desc font-grey-cascade">View and manage printers for the selected store.</div>
 					</div>
 				</div>
 				<div class="portlet-body">
@@ -114,9 +116,15 @@
 									:id="'printer-' + printer.id" 
 									:key="printer.id">
 									<div class="list-item-actions">
-		                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editPrinter(printer)">
-                                            <i class="fa fa-lg fa-pencil"></i>
-                                        </a>
+										<el-tooltip 
+											v-if="$root.permissions['printers update']"
+											content="Edit" 
+											effect="light" 
+											placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default" @click="editPrinter(printer)">
+												<i class="fa fa-lg fa-pencil"></i>
+											</a>
+										</el-tooltip>
 		                        	</div>
 		                            <div class="list-datetime bold uppercase font-red">
 		                            	<span>{{ printer.printer_name }}</span>

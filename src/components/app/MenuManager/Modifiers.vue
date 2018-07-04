@@ -12,7 +12,9 @@
             <p>Create and manage menu modifiers.</p>
         </div>
         <!-- BEGIN CREATE NEW MODIFIER CATEGORY-->
-        <div class="portlet box blue-hoki" v-if="$root.activeLocation && $root.activeLocation.id">
+        <div 
+			class="portlet box blue-hoki" 
+			v-if="$root.activeLocation && $root.activeLocation.id && $root.permissions['menu_manager modifiers create']">
 			<div class="portlet-title bg-blue-chambray" @click="toggleCreateModifierPanel()">
 				<div class="custom tools">
 					<a :class="{'expand': !createModifierCollapse, 'collapse': createModifierCollapse}"></a>
@@ -147,22 +149,38 @@
 									:key="modifier.id"
 								>
 		                        	<div class="actions-on-top margin-bottom-15">
-		                        		<el-tooltip content="Edit" effect="light" placement="right">
+		                        		<el-tooltip 
+											v-if="$root.permissions['menu_manager modifiers update']"
+											content="Edit" 
+											effect="light" 
+											placement="right">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editModifierCategory(modifier, $event)">
 	                                            <i class="fa fa-lg fa-pencil"></i>
 	                                        </a>
 		                        		</el-tooltip>
-		                        		<el-tooltip content="Apply to items" effect="light" placement="right">
+		                        		<el-tooltip 
+											v-if="$root.permissions['menu_manager modifiers update']"
+											content="Apply to items" 
+											effect="light" 
+											placement="right">
 	                                        <a class="btn btn-circle btn-icon-only btn-default" @click="displayMenuTreeModal(modifier, $event)">
 	                                            <i class="icon-layers"></i>
 	                                        </a>
 		                        		</el-tooltip>
-										<el-tooltip content="Apply to items at locations" effect="light" placement="right">
+										<el-tooltip 
+											v-if="$root.permissions['menu_manager modifiers update']"
+											content="Apply to items at locations" 
+											effect="light" 
+											placement="right">
 	                                        <a class="btn btn-circle btn-icon-only btn-default" @click="displayApplyToItemsAtLocationsModal(modifier, $event)">
 	                                            <i class="fa fa-lg fa-plus"></i>
 	                                        </a>
 		                        		</el-tooltip>
-		                        		<el-tooltip content="Delete" effect="light" placement="right">
+		                        		<el-tooltip 
+											v-if="$root.permissions['menu_manager modifiers delete']"
+											content="Delete" 
+											effect="light" 
+											placement="right">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="deleteModifierCategory(modifier, $event)">
 	                                            <i class="fa fa-lg fa-trash"></i>
 	                                        </a>

@@ -12,7 +12,9 @@
             <p>Manage a store's menus.</p>
         </div>
         <!-- BEGIN CREATE NEW MENU-->
-        <div class="portlet box blue-hoki" v-if="$root.activeLocation && $root.activeLocation.id">
+        <div 
+			class="portlet box blue-hoki" 
+			v-if="$root.activeLocation && $root.activeLocation.id && $root.permissions['menu_manager menus create']">
 			<div class="portlet-title bg-blue-chambray" @click="toggleCreateMenuPanel()">
 				<div class="custom tools">
 					<a :class="{'expand': !createMenuCollapse, 'collapse': createMenuCollapse}"></a>
@@ -213,32 +215,56 @@
 									:key="menu.id"
 								>
 		                        	<div class="margin-bottom-15 actions-on-top">
-		                        		<el-tooltip content="Edit" effect="light" placement="top">
+		                        		<el-tooltip 
+											v-if="$root.permissions['menu_manager menus update']"
+											content="Edit" 
+											effect="light" 
+											placement="top">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editMenu(menu, $event)">
 		                                        <i class="fa fa-lg fa-pencil"></i>
 		                                    </a>
 	                                    </el-tooltip>
-	                                    <el-tooltip content="Menu Hours" effect="light" placement="top">
+	                                    <el-tooltip 
+											v-if="$root.permissions['menu_manager menus update']"
+											content="Menu Hours" 
+											effect="light" 
+											placement="top">
 		                                    <a class="btn btn-circle btn-icon-only btn-default" @click="showMenuHours(menu, $event)">
 		                                        <i class="fa fa-lg fa-clock-o"></i>
 		                                    </a>
 	                                    </el-tooltip>
-	                                    <el-tooltip content="Apply Add-on Category" effect="light" placement="top">
+	                                    <el-tooltip 
+											v-if="$root.permissions['menu_manager menus update']"
+											content="Apply Add-on Category" 
+											effect="light" 
+											placement="top">
 		                                    <a class="btn btn-circle btn-icon-only btn-default" @click="applyAddOnCategories(menu, $event)" v-if="menuFilter !== '2'">
 		                                        <i class="icon-layers"></i>
 		                                    </a>
 	                                    </el-tooltip>
-										<el-tooltip content="Duplicate" effect="light" placement="top" v-if="$root.activeLocation.is_corporate">
+										<el-tooltip 
+											v-if="$root.permissions['menu_manager menus update'] && $root.activeLocation.is_corporate"
+											content="Duplicate" 
+											effect="light" 
+											placement="top">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="duplicateMenu(menu, $event)">
 		                                        <i class="fa fa-lg fa-clone"></i>
 		                                    </a>
 	                                    </el-tooltip>
-										<el-tooltip content="Copy" effect="light" placement="top" v-if="$root.activeLocation.is_corporate">
+										<el-tooltip 
+											v-if="$root.activeLocation.is_corporate && $root.permissions['menu_manager menus update']"
+											content="Copy" 
+											effect="light" 
+											placement="top">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="copyMenu(menu, $event)">
 		                                        <i class="fa fa-lg fa-files-o"></i>
 		                                    </a>
 	                                    </el-tooltip>
-	                                    <el-tooltip content="Delete" effect="light" placement="top">
+	                                    <el-tooltip 
+											v-if="$root.permissions['menu_manager menus delete']"
+											content="Delete" 
+											effect="light" 
+											placement="top">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="deleteMenu(menu, $event)">
 		                                        <i class="fa fa-lg fa-trash"></i>
 		                                    </a>

@@ -11,7 +11,7 @@
             <p>Create and manage items for modifier category option '{{ optionDetails.name }}'.</p>
         </div>
         <!-- BEGIN CREATE NEW MENU-->
-        <div class="portlet box blue-hoki">
+        <div class="portlet box blue-hoki" v-if="$root.permissions['menu_manager options items create']">
 			<div class="portlet-title bg-blue-chambray" @click="toggleCreateItemPanel()">
 				<div class="custom tools">
 					<a :class="{'expand': !createItemCollapse, 'collapse': createItemCollapse}"></a>
@@ -87,9 +87,17 @@
 	            <div class="mt-element-list margin-top-15" v-if="optionItems.length">
 	                <div class="mt-list-container list-news ext-1 no-border">
 	                    <ul>
-	                        <li class="mt-list-item actions-at-left margin-top-15" v-for="optionItem in optionItems" :id="'optionItem-' + optionItem.id">
+	                        <li 
+								class="mt-list-item actions-at-left margin-top-15" 
+								v-for="optionItem in optionItems" 
+								:id="'optionItem-' + optionItem.id"
+								:key="optionItem.id">
 	                        	<div class="list-item-actions">
-	                        		<el-tooltip content="Edit" effect="light" placement="right">
+	                        		<el-tooltip 
+										v-if="$root.permissions['menu_manager options items update']"
+										content="Edit" 
+										effect="light" 
+										placement="right">
 		                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editOptionItem(optionItem, $event)">
 	                                        <i class="fa fa-lg fa-pencil"></i>
 	                                    </a>

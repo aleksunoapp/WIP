@@ -182,8 +182,6 @@ export default {
 			.then(response => {
 				/* eslint-disable no-undef */
 				LoginFunctions.login(loginVue.user.email, loginVue.user.password).then(response => {
-					disabledButton.complete()
-
 					// set active user name
 					loginVue.$root.activeUser = response.payload
 					localStorage.setItem('activeUser', JSON.stringify(loginVue.$root.activeUser))
@@ -199,7 +197,14 @@ export default {
 					// set createdBy
 					loginVue.$root.createdBy = response.session.admin_id
 					localStorage.setItem('createdBy', loginVue.$root.createdBy)
-					// set account type && locations for Location Managers
+					// set permissions
+					let userPermissions = {}
+					response.payload.assigned_permissions.forEach(permission => {
+						userPermissions[permission.name] = true
+					})
+					loginVue.$root.permissions = userPermissions
+					localStorage.setItem('permissions', JSON.stringify(loginVue.$root.permissions))
+
 					if (response.payload.type === 'admin') {
 						loginVue.$root.accountType = 'application_admin'
 						localStorage.setItem('accountType', loginVue.$root.accountType)
@@ -210,7 +215,10 @@ export default {
 						localStorage.setItem('accountType', loginVue.$root.accountType)
 						loginVue.$router.push('/app/store_manager/stores')
 					}
+
+					disabledButton.complete()
 				}).catch(reason => {
+					console.log(reason)
 					disabledButton.cancel()
 					ajaxErrorHandler({
 						reason,

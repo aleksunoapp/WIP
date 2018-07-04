@@ -83,25 +83,30 @@
 		                    <ul>
 		                        <li 
 									id="parent" 
-									class="mt-list-item actions-at-left margin-top-15 clickable" 
+									class="mt-list-item actions-at-left margin-top-15" 
 									v-for="store in currentActivePageItems" 
 									@click="editStore(store)"
 									:key="store.id">
 		                        	<div class="list-item-actions">
-										<el-tooltip content="Edit" effect="light" placement="right">
+										<el-tooltip 
+											v-if="$root.permissions['stores info update']"
+											content="Edit" 
+											effect="light" 
+											placement="right">
 											<a class="btn btn-circle btn-icon-only btn-default" @click="editStore(store)">
                                             	<i class="fa fa-lg fa-pencil"></i>
                                         	</a>
 										</el-tooltip>
-										<el-tooltip content="Delete" effect="light" placement="right">
+										<el-tooltip 
+											v-if="$root.permissions['stores info delete']"
+											content="Delete" 
+											effect="light" 
+											placement="right">
 											<a class="btn btn-circle btn-icon-only btn-default" @click="confirmDelete(store)">
                                             	<i class="fa fa-lg fa-trash"></i>
                                         	</a>
 										</el-tooltip>
 		                        	</div>
-		                        	<div class="list-icon-container">
-                                        <i class="fa fa-angle-right"></i>
-                                    </div>
 		                            <div class="list-datetime bold uppercase font-red">
 		                            	<span>{{ store.display_name }}</span>
 		                            </div>
@@ -155,15 +160,31 @@
 		            <div class="mt-element-list">
 		                <div class="mt-list-container list-news">
 		                    <ul>
-		                        <li id="parent" class="mt-list-item actions-at-left margin-top-15 clickable" v-for="store in currentActiveSearchPageItems" @click="editStore(store)" :key="store.id">
+		                        <li 
+									id="parent" 
+									class="mt-list-item actions-at-left margin-top-15" 
+									v-for="store in currentActiveSearchPageItems" 
+									:key="store.id">
 		                        	<div class="list-item-actions">
-		                        		<a class="btn btn-circle btn-icon-only btn-default">
-                                            <i class="fa fa-lg fa-pencil"></i>
-                                        </a>
+										<el-tooltip 
+											v-if="$root.permissions['stores info update']"
+											content="Edit" 
+											effect="light" 
+											placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default" @click="editStore(store)">
+                                            	<i class="fa fa-lg fa-pencil"></i>
+                                        	</a>
+										</el-tooltip>
+										<el-tooltip 
+											v-if="$root.permissions['stores info delete']"
+											content="Delete" 
+											effect="light" 
+											placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default" @click="confirmDelete(store)">
+                                            	<i class="fa fa-lg fa-trash"></i>
+                                        	</a>
+										</el-tooltip>
 		                        	</div>
-		                        	<div class="list-icon-container">
-                                        <i class="fa fa-angle-right"></i>
-                                    </div>
 		                            <div class="list-datetime bold uppercase font-red">
 		                            	<span>{{ store.display_name }}</span>
 		                            </div>
@@ -533,3 +554,9 @@ export default {
 	}
 }
 </script>
+
+<style scoped>
+.mt-element-list .list-news.mt-list-container ul>.mt-list-item:hover {
+	background-color: #fff;
+}
+</style>

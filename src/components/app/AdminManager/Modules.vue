@@ -7,10 +7,10 @@
 			<h1 class='page-title'>Modules</h1>
 			<div class="note note-info">
 				<p>Create and manage permission modules.</p>
-			</div
+			</div>
 
 			<!-- CREATE NEW START -->
-			<div class="portlet box blue-hoki margin-top-20">
+			<div class="portlet box blue-hoki margin-top-20" v-if="$root.permissions['approvals modules create']">
 				<div class="portlet-title bg-blue-chambray" @click="toggleCreateModulePanel()">
 					<div class="caption">
 						<i class="fa fa-plus-circle"></i>
@@ -73,7 +73,7 @@
 							<div class="form-body row">
 								<div class="col-md-12">
 									<div class="alert alert-danger" v-if="searchError.length">
-										<button class="close" data-close="alert" @click="clearSearchError()"></button>
+										<button class="close" @click.prevent="clearSearchError()"></button>
 										<span>{{searchError}}</span>
 									</div>
 								</div>
@@ -135,17 +135,29 @@
 								<ul>
 									<li class="mt-list-item actions-at-left margin-top-15" v-for="mod in currentActivePageItems" :id="'module-' + mod.id" :class="{'animated' : animated === `module-${mod.id}`}" :key="mod.id">
 										<div class="list-item-actions">
-											<el-tooltip content="Edit" effect="light" placement="right">
+											<el-tooltip 
+												v-if="$root.permissions['approvals modules update']"
+												content="Edit" 
+												effect="light" 
+												placement="right">
 												<a class="btn btn-circle btn-icon-only btn-default" @click="editModule(mod)">
 													<i class="fa fa-pencil" aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip content="Permissions" effect="light" placement="right">
+											<el-tooltip 
+												v-if="$root.permissions['approvals modules update']"
+												content="Permissions" 
+												effect="light" 
+												placement="right">
 												<a class="btn btn-circle btn-icon-only btn-default" @click="editModulePermissions(mod)">
 													<i class="fa fa-ban" aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip content="Delete" effect="light" placement="right">
+											<el-tooltip 
+												v-if="$root.permissions['approvals modules delete']"
+												content="Delete" 
+												effect="light" 
+												placement="right">
 												<a class="btn btn-circle btn-icon-only btn-default" @click="showDeleteModal(mod)">
 													<i class="fa fa-trash" aria-hidden="true"></i>
 												</a>
@@ -198,17 +210,29 @@
 								<ul>
 									<li class="mt-list-item actions-at-left margin-top-15" v-for="mod in currentActiveSearchPageItems" :id="'module-' + mod.id" :class="{'animated' : animated === `module-${mod.id}`}" :key="mod.id">
 										<div class="list-item-actions">
-											<a class="btn btn-circle btn-icon-only btn-default" @click="editModule(mod)">
-												<el-tooltip content="Edit" effect="light" placement="right">
+											<el-tooltip 
+												v-if="$root.permissions['approvals modules update']"
+												content="Edit" 
+												effect="light" 
+												placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default" @click="editModule(mod)">
 													<i class="fa fa-pencil" aria-hidden="true"></i>
-												</el-tooltip>
-											</a>
-											<el-tooltip content="Permissions" effect="light" placement="right">
+												</a>
+											</el-tooltip>
+											<el-tooltip 
+												v-if="$root.permissions['approvals modules update']"
+												content="Permissions" 
+												effect="light" 
+												placement="right">
 												<a class="btn btn-circle btn-icon-only btn-default" @click="editModulePermissions(mod)">
 													<i class="fa fa-ban" aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip content="Delete" effect="light" placement="right">
+											<el-tooltip 
+												v-if="$root.permissions['approvals modules delete']"
+												content="Delete" 
+												effect="light" 
+												placement="right">
 												<a class="btn btn-circle btn-icon-only btn-default" @click="showDeleteModal(mod)">
 													<i class="fa fa-trash" aria-hidden="true"></i>
 												</a>
@@ -445,7 +469,9 @@ export default {
 			var modulesVue = this
 			return ModulesFunctions.deleteModule(modulesVue.moduleToDelete)
 			.then(response => {
-				modulesVue.getModules()
+				modulesVue.filteredResults = modulesVue.filteredResults.filter(module => module.id !== !modulesVue.moduleToDelete.id)
+				modulesVue.modules = modulesVue.modules.filter(module => module.id !== modulesVue.moduleToDelete.id)
+				modulesVue.advancedSearch()
 				modulesVue.closeDeleteModal()
 				modulesVue.showDeleteSuccess()
 				modulesVue.resetDeleteForm()
@@ -657,8 +683,21 @@ export default {
 		 * @returns {undefined}
 		 */
 		editModulePermissions (module) {
-			this.moduleToEditApplyPermissionsTo = {...module}
-			this.showEditModulePermissionsModal = true
+			let _this = this
+			ModulesFunctions.getPermissionsForModule(module).then(response => {
+				this.moduleToEditApplyPermissionsTo = {
+					...module,
+					permissions: response.payload.permissions
+				}
+				this.showEditModulePermissionsModal = true
+			}).catch(reason => {
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not find permissions for this module',
+					errorName: 'editPermissionsErrorMessage',
+					vue: _this
+				})
+			})
 		},
 		/**
 		 * To close the edit modal
@@ -685,7 +724,7 @@ export default {
 			this.loading = true
 			this.clearListError()
 			var modulesVue = this
-			return ModulesFunctions.getFullModules()
+			return ModulesFunctions.getModules()
 			.then(response => {
 				if (response.code === 200 && response.status === 'ok') {
 					modulesVue.loading = false
@@ -827,6 +866,18 @@ export default {
 			})
 		},
 		/**
+		 * To notify user that the operation succeeded.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		showAssignSuccess () {
+			this.$swal({
+				title: 'Success',
+				text: 'Permissions saved',
+				type: 'success'
+			})
+		},
+		/**
 		 * To toggle the create new panel.
 		 * @function
 		 * @returns {undefined}
@@ -933,11 +984,9 @@ export default {
 				modulesVue.clearPermissionsEditError()
 				return ModulesFunctions.assignPermissionsToModule(modulesVue.moduleToEditApplyPermissionsTo)
 				.then(response => {
+					modulesVue.getModules()
 					modulesVue.closeEditModulePermissionsModal()
-					modulesVue.animated = `module-${modulesVue.moduleToEdit.id}`
-					window.setTimeout(() => {
-						modulesVue.animated = ''
-					}, 3000)
+					modulesVue.showAssignSuccess()
 				}).catch(reason => {
 					ajaxErrorHandler({
 						reason,

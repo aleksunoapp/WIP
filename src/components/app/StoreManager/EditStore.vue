@@ -29,7 +29,13 @@
 				                    	</div>
 				                    	<div v-if="displayLocationsDropdown" class="new-location-search-dropdown">
 											<div v-if="!googleSearchResults.length">There are no locations that match your search.</div>
-											<div v-for="location in googleSearchResults" @mousedown.prevent="selectLocation(location)" :class="{'active': storeToBeEdited.address_line_1 == location.description}" :key="location.id">{{location.description}}</div>
+											<div 
+												v-for="(location, index) in googleSearchResults" 
+												@mousedown.prevent="selectLocation(location)" 
+												:class="{'active': storeToBeEdited.address_line_1 == location.description}"
+												:key="index">
+												{{location.description}}
+											</div>
 										</div>
 				                    	<div class="form-group form-md-line-input form-md-floating-label">
 				                    	    <input type="text" class="form-control input-sm edited" id="form_control_3" v-model="storeToBeEdited.address_line_2">

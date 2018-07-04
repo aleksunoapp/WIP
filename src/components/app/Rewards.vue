@@ -11,8 +11,8 @@
 		<div class="note note-info">
             <p>Add and manage an application's reward tiers and their items.</p>
         </div>
-        <!-- BEGIN CREATE NEW MENU-->
-        <div class="portlet box blue-hoki">
+        <!-- BEGIN CREATE NEW-->
+        <div class="portlet box blue-hoki" v-if="$root.permissions['reward_tiers create']">
 			<div class="portlet-title bg-blue-chambray" @click="toggleCreateTierPanel()">
 				<div class="caption">
 					<i class="fa fa-2x fa-plus-circle"></i>
@@ -58,7 +58,8 @@
       			</form>
   			</div>
         </div>
-        <!-- END CREATE NEW MENU-->
+        <!-- END CREATE NEW-->
+
         <loading-screen :show="displayRewardsData" :color="'#2C3E50'" :display="'inline'"></loading-screen>
         <div v-if="rewardTiers.length && !displayRewardsData">
 		    <div class="portlet light portlet-fit bordered margin-top-20">
@@ -77,7 +78,11 @@
 		                    <ul>
 		                        <li class="mt-list-item actions-at-left margin-top-15 clickable" v-for="tier in rewardTiers" :id="'tier-' + tier.id" :key="tier.id" @click="openTier(tier)">
 		                        	<div class="list-item-actions cursor-pointer" @click.stop>
-		                        		<el-tooltip content="Edit" effect="light" placement="right">
+		                        		<el-tooltip 
+											v-if="$root.permissions['reward_tiers update']"
+											content="Edit" 
+											effect="light" 
+											placement="right">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="showEditTierModal(tier, $event)">
 	                                            <i class="fa fa-lg fa-pencil"></i>
 	                                        </a>

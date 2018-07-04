@@ -12,7 +12,9 @@
 			<p>View items for modifier category '{{ modifierCategoryDetails.name }}'.</p>
 		</div>
 		<!-- BEGIN CREATE NEW MODIFIER ITEM -->
-		<div class="portlet box blue-hoki" v-if="$root.activeLocation && $root.activeLocation.id">
+		<div 
+			class="portlet box blue-hoki" 
+			v-if="$root.activeLocation && $root.activeLocation.id && $root.permissions['menu_manager modifiers items create']">
 			<div class="portlet-title bg-blue-chambray" @click="toggleCreateModifierItemPanel()">
 				<div class="custom tools">
 					<a :class="{'expand': !createModifierItemCollapse, 'collapse': createModifierItemCollapse}"></a>
@@ -118,22 +120,38 @@
 								:key="modifierItem.id"
 							>
 								<div class="margin-bottom-15 actions-on-top">
-									<el-tooltip content="Edit" effect="light" placement="right">
+									<el-tooltip 
+										v-if="$root.permissions['menu_manager modifiers items update']"
+										content="Edit" 
+										effect="light" 
+										placement="right">
 										<a class="btn btn-circle btn-icon-only btn-default" @click="displayEditItemModal(modifierItem, $event)">
 											<i class="fa fa-lg fa-pencil"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip content="Nutrition info" effect="light" placement="right">
+									<el-tooltip 
+										v-if="$root.permissions['menu_manager modifiers items update']"
+										content="Nutrition info" 
+										effect="light" 
+										placement="right">
 										<a class="btn btn-circle btn-icon-only btn-default" @click="viewModifierNutritionInfo(modifierItem, $event)">
 											<i class="fa fa-lg fa-heartbeat"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip content="Apply To Locations" effect="light" placement="right">
+									<el-tooltip 
+										v-if="$root.permissions['menu_manager modifiers items update']"
+										content="Apply To Locations" 
+										effect="light" 
+										placement="right">
 										<a class="btn btn-circle btn-icon-only btn-default" @click="openApplyToLocationsModal(modifierItem)">
 											<i class="icon-layers"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip content="Delete" effect="light" placement="right">
+									<el-tooltip 
+										v-if="$root.permissions['menu_manager modifiers items delete']"
+										content="Delete" 
+										effect="light" 
+										placement="right">
 										<a class="btn btn-circle btn-icon-only btn-default" @click="displayDeleteItemModal(modifierItem, $event)">
 											<i class="fa fa-lg fa-trash"></i>
 										</a>

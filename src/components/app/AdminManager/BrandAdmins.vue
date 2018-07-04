@@ -10,7 +10,7 @@
 	        </div>
 
   			<!-- CREATE NEW START -->
-			<div class="portlet box blue-hoki margin-top-20">
+			<div class="portlet box blue-hoki margin-top-20" v-if="$root.permissions['admin brand_admins create']">
 				<div class="portlet-title bg-blue-chambray" @click="toggleCreateBrandAdminPanel()">
 					<div class="caption">
 						<i class="fa fa-plus-circle"></i>
@@ -169,12 +169,20 @@
 			                    <ul>
 			                        <li class="mt-list-item actions-at-left margin-top-15" v-for="brandAdmin in currentActivePageItems" :id="'brandAdmin-' + brandAdmin.id" :class="{'animated' : animated === `brandAdmin-${brandAdmin.id}`}" :key="brandAdmin.id">
 			                        	<div class="list-item-actions">
-			                        		<el-tooltip content="Edit" effect="light" placement="right">
+			                        		<el-tooltip 
+												v-if="$root.permissions['admin brand_admins update']"
+												content="Edit" 
+												effect="light" 
+												placement="right">
 	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editBrandAdmin(brandAdmin)">
 	                                                <i class="fa fa-pencil" aria-hidden="true"></i>
 	                                            </a>
 			                        		</el-tooltip>
-			                        		<el-tooltip content="Roles" effect="light" placement="right">
+			                        		<el-tooltip 
+												v-if="$root.permissions['admin brand_admins update']"
+												content="Roles" 
+												effect="light" 
+												placement="right">
 	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="openRolesModal(brandAdmin)">
 	                                                <i class="fa fa-id-badge" aria-hidden="true"></i>
 	                                            </a>
@@ -239,16 +247,24 @@
 			                    <ul>
 			                        <li class="mt-list-item actions-at-left margin-top-15" v-for="brandAdmin in currentActiveSearchPageItems" :id="'brandAdmin-' + brandAdmin.id" :class="{'animated' : animated === `brandAdmin-${brandAdmin.id}`}" :key="brandAdmin.id">
 			                        	<div class="list-item-actions">
-        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editBrandAdmin(brandAdmin)">
-			                        			<el-tooltip content="Edit" effect="light" placement="right">
+			                        		<el-tooltip 
+												v-if="$root.permissions['admin brand_admins update']"
+												content="Edit" 
+												effect="light" 
+												placement="right">
+	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editBrandAdmin(brandAdmin)">
 	                                                <i class="fa fa-pencil" aria-hidden="true"></i>
-			                        			</el-tooltip>
-                                            </a>
-        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="openRolesModal(brandAdmin)">
-			                        			<el-tooltip content="Roles" effect="light" placement="right">
+	                                            </a>
+			                        		</el-tooltip>
+			                        		<el-tooltip 
+												v-if="$root.permissions['admin brand_admins update']"
+												content="Roles" 
+												effect="light" 
+												placement="right">
+	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="openRolesModal(brandAdmin)">
 	                                                <i class="fa fa-id-badge" aria-hidden="true"></i>
-			                        			</el-tooltip>
-                                            </a>
+	                                            </a>
+			                        		</el-tooltip>
 			                        	</div>
 			                            <div class="list-datetime bold uppercase font-red">
 			                            	<span>{{ brandAdmin.name }}</span>

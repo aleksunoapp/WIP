@@ -10,7 +10,7 @@
 	        </div>
 
   			<!-- CREATE NEW START -->
-			<div class="portlet box blue-hoki margin-top-20">
+			<div class="portlet box blue-hoki margin-top-20" v-if="$root.permissions['admin location_managers create']">
 				<div class="portlet-title bg-blue-chambray" @click="toggleCreateLocationManagerPanel()">
 					<div class="caption">
 						<i class="fa fa-plus-circle"></i>
@@ -169,19 +169,31 @@
 			                    <ul>
 			                        <li class="mt-list-item actions-at-left margin-top-15" v-for="locationManager in currentActivePageItems" :id="'locationManager-' + locationManager.id" :class="{'animated' : animated === `locationManager-${locationManager.id}`}" :key="locationManager.id">
 			                        	<div class="list-item-actions">
-        	                        		<el-tooltip content="Edit" effect="light" placement="right">
+        	                        		<el-tooltip 
+												v-if="$root.permissions['admin location_managers update']"
+												content="Edit" 
+												effect="light" 
+												placement="right">
 	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editLocationManager(locationManager)">
 	                                                <i class="fa fa-pencil" aria-hidden="true"></i>
 	                                            </a>
 											</el-tooltip>
-											<el-tooltip content="Assign stores" effect="light" placement="right">
+											<el-tooltip 
+												v-if="$root.permissions['admin location_managers update']"
+												content="Assign stores" 
+												effect="light" 
+												placement="right">
 				                        		<a class="btn btn-circle btn-icon-only btn-default" @click="assignStoresToLocationManager(locationManager)">
 			                                        <i class="icon-layers"></i>
 			                                    </a>
 											</el-tooltip>
-			                        		<el-tooltip content="Roles" effect="light" placement="right">
+			                        		<el-tooltip 
+												v-if="$root.permissions['admin location_managers update']"
+												content="Roles" 
+												effect="light" 
+												placement="right">
 	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="openRolesModal(locationManager)">
-	                                                <i class="fa fa-user" aria-hidden="true"></i>
+	                                                <i class="fa fa-id-badge" aria-hidden="true"></i>
 	                                            </a>
 			                        		</el-tooltip>
 			                        	</div>
@@ -244,21 +256,33 @@
 			                    <ul>
 			                        <li class="mt-list-item actions-at-left margin-top-15" v-for="locationManager in currentActiveSearchPageItems" :id="'locationManager-' + locationManager.id" :class="{'animated' : animated === `locationManager-${locationManager.id}`}" :key="locationManager.id">
 			                        	<div class="list-item-actions">
-        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editLocationManager(locationManager)">
-	        	                        		<el-tooltip content="Edit" effect="light" placement="right">
+        	                        		<el-tooltip 
+												v-if="$root.permissions['admin location_managers update']"
+												content="Edit" 
+												effect="light" 
+												placement="right">
+	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editLocationManager(locationManager)">
 	                                                <i class="fa fa-pencil" aria-hidden="true"></i>
-    	    	                        		</el-tooltip>
-                                            </a>
-        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="assignStoresToLocationManager(locationManager)">
-            									<el-tooltip content="Assign stores" effect="light" placement="right">
-                                                    <i class="icon-layers"></i>
-            									</el-tooltip>
-                                            </a>
-    		                        		<el-tooltip content="Edit" effect="light" placement="right">
-            	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="openRolesModal(locationManager)">
-                                                    <i class="fa fa-user" aria-hidden="true"></i>
-                                                </a>
-    		                        		</el-tooltip>
+	                                            </a>
+											</el-tooltip>
+											<el-tooltip 
+												v-if="$root.permissions['admin location_managers update']"
+												content="Assign stores" 
+												effect="light" 
+												placement="right">
+				                        		<a class="btn btn-circle btn-icon-only btn-default" @click="assignStoresToLocationManager(locationManager)">
+			                                        <i class="icon-layers"></i>
+			                                    </a>
+											</el-tooltip>
+			                        		<el-tooltip 
+												v-if="$root.permissions['admin location_managers update']"
+												content="Roles" 
+												effect="light" 
+												placement="right">
+	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="openRolesModal(locationManager)">
+	                                                <i class="fa fa-id-badge" aria-hidden="true"></i>
+	                                            </a>
+			                        		</el-tooltip>
 			                        	</div>
 			                            <div class="list-datetime bold uppercase font-red">
 			                            	<span>{{ locationManager.name }}</span>

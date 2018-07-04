@@ -42,7 +42,10 @@
 		    		<loading-screen :show="loadingFilteredData" :color="'#2C3E50'" :display="'inline'"></loading-screen>
 		    		<div v-if="!loadingFilteredData && socialFeed.length">
 			    		<div class="row" v-if="filteredSocialFeed.length">
-			    			<div class="col-md-3 col-sm-3 col-xs-4" v-for="feed in filteredSocialFeed">
+			    			<div 
+								class="col-md-3 col-sm-3 col-xs-4" 
+								v-for="(feed, index) in filteredSocialFeed"
+								:key="index">
 			    				<div class="blog-post-sm blog-container blog-shadow" :id="'social-feed-' + feed.id">
 			    					<div class="blog-top-wrap">
 			    						<div class="pull-left">
@@ -65,8 +68,20 @@
 			    			                	<a v-if="feed.instagram" class="socicon-btn socicon-btn-circle socicon-instagram"></a>
 			    			                </div>
 			    			            </div>
-	    			                	<button v-if="feed.status === 1" type="button" class="btn btn-danger custom-button full-width" @click="updateFeedStatus(feed, 0)">Off</button>
-	    			                	<button v-if="feed.status === 0" type="button" class="btn btn-success custom-button full-width" @click="updateFeedStatus(feed, 1)">On</button>
+	    			                	<button 
+											v-if="feed.status === 1" 
+											type="button" 
+											class="btn btn-danger custom-button full-width" 
+											@click="updateFeedStatus(feed, 0)">
+												Off
+											</button>
+	    			                	<button 
+											v-if="feed.status === 0" 
+											type="button" 
+											class="btn btn-success custom-button full-width" 
+											@click="updateFeedStatus(feed, 1)">
+												On
+											</button>
 			    			        </div>
 			    			    </div>
 			    			</div>
@@ -236,6 +251,8 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateFeedStatus (feed, val) {
+			if (!this.$root.permissions['social_feed update']) return
+
 			var socialFeedVue = this
 			SocialFeedFunctions.updateFeedStatus(feed.id, val, socialFeedVue.$root.appId, socialFeedVue.$root.appSecret, socialFeedVue.$root.userToken).then(response => {
 				if (response.code === 200 && response.status === 'ok') {

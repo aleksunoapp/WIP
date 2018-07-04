@@ -12,7 +12,7 @@
             <p>Manage items for a reward tier.</p>
         </div>
         <!-- BEGIN CREATE NEW -->
-        <div class="portlet box blue-hoki">
+        <div class="portlet box blue-hoki" v-if="$root.permissions['reward_tiers items create']">
 			<div class="portlet-title bg-blue-chambray" @click="toggleCreateItemPanel()">
 				<div class="caption">
 					<i class="fa fa-2x fa-plus-circle"></i>
@@ -79,7 +79,7 @@
 		        		</div>
 		        	</div>
       				<div class="form-actions right">
-						<button type="submit" class="btn blue" @click.stop="">Create</button>
+						<button type="submit" class="btn blue">Create</button>
 					</div>
       			</form>
   			</div>
@@ -98,14 +98,26 @@
 		            <div class="mt-element-list margin-top-15" v-if="rewardItems.length && !loadingRewardItems">
 		                <div class="mt-list-container list-news ext-1 no-border">
 		                    <ul>
-		                        <li class="mt-list-item actions-at-left margin-top-15" v-for="item in rewardItems" :id="'reward-' + item.id">
+		                        <li 
+									class="mt-list-item actions-at-left margin-top-15" 
+									v-for="item in rewardItems" 
+									:id="'reward-' + item.id"
+									:key="item.id">
 		                        	<div class="list-item-actions">
-		                        		<el-tooltip content="Edit" effect="light" placement="right">
+		                        		<el-tooltip 
+											v-if="$root.permissions['reward_tiers items update']"
+											content="Edit" 
+											effect="light" 
+											placement="right">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="showEditRewardItemModal(item)">
 		                                        <i class="fa fa-lg fa-pencil"></i>
 		                                    </a>
 		                        		</el-tooltip>
-		                        		<el-tooltip content="Apply to items" effect="light" placement="right">
+		                        		<el-tooltip 
+											v-if="$root.permissions['reward_tiers items update']"
+											content="Apply to items" 
+											effect="light" 
+											placement="right">
 		                                    <a class="btn btn-circle btn-icon-only btn-default" @click="checkForLocation(item, $event)">
 												<i class="icon-layers"></i>
 		                                    </a>

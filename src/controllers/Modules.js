@@ -125,7 +125,7 @@ export default ({
 				method: 'PUT',
 				dataType: 'json',
 				url: '/app/admin/modules/' + mod.id + '/permissions',
-				data: {permissions: mod.permissions.map(permission => permission.id)},
+				data: {permissions: mod.permissions},
 				success: function (response) {
 					resolve(response)
 				},

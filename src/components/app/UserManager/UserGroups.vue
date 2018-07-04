@@ -8,97 +8,96 @@
 			<div class="note note-info">
 				<p>A list of user groups for PitaPit.</p>
 			</div>
-			<div class="margin-top-20">
-				<!-- CREATE GROUP PANEL START -->
-					<div class="portlet box blue-hoki">
-						<div class="portlet-title bg-blue-chambray" @click="toggleCreateGroupPanel()">
-							<div class="caption">
-								<i class="fa fa-plus-circle"></i>
-								Create New Group
+
+			<!-- CREATE GROUP PANEL START -->
+			<div class="portlet box blue-hoki margin-top-20" v-if="$root.permissions['user_manager user_groups create']">
+					<div class="portlet-title bg-blue-chambray" @click="toggleCreateGroupPanel()">
+						<div class="caption">
+							<i class="fa fa-plus-circle"></i>
+							Create New Group
+						</div>
+						<div class="tools">
+							<a :class="{'expand': !createGroupCollapse, 'collapse': createGroupCollapse}"></a>
+						</div>
+					</div>
+					<div class="portlet-body" :class="{'display-hide': createGroupCollapse}">
+					<form role="form" @submit.prevent="createNewGroup()">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="alert alert-danger" v-if="errorMessage.length">
+									<button class="close" data-close="alert" @click="clearError()"></button>
+									<span>{{errorMessage}}</span>
+								</div>
 							</div>
-							<div class="tools">
-								<a :class="{'expand': !createGroupCollapse, 'collapse': createGroupCollapse}"></a>
+							<div class="col-md-6">
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<input type="text" class="form-control input-sm" id="form_control_1" v-model="newGroup.name" :class="{'edited': newGroup.name.length}">
+									<label for="form_control_1">Group Name</label>
+								</div>
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<input type="text" class="form-control input-sm" id="form_control_2" v-model="newGroup.description" :class="{'edited': newGroup.description.length}">
+									<label for="form_control_2">Group Description</label>
+								</div>
+								<h4 class="margin-top-20">All users with:</h4>
+								<div>
+									<el-dropdown trigger="click" @command="updateSignUpDate" size="mini" :show-timeout="50" :hide-timeout="50"  class="margin-top-15">
+										<el-button size="mini">
+											{{ selectedSignUpDate }}
+											<i class="el-icon-arrow-down el-icon--right"></i>
+										</el-button>
+										<el-dropdown-menu slot="dropdown">
+											<el-dropdown-item :command="7">
+												Signed up in the last 7 days
+											</el-dropdown-item>
+											<el-dropdown-item :command="14">
+												Signed up in the last 14 days
+											</el-dropdown-item>
+											<el-dropdown-item :command="30">
+												Signed up in the last 30 days
+											</el-dropdown-item>
+										</el-dropdown-menu>
+									</el-dropdown>
+								</div>
+								<div>
+									<el-dropdown trigger="click" @command="updateTotalOrders" size="mini" :show-timeout="50" :hide-timeout="50"  class="margin-top-15">
+										<el-button size="mini">
+											{{ selectedTotalOrders }}
+											<i class="el-icon-arrow-down el-icon--right"></i>
+										</el-button>
+										<el-dropdown-menu slot="dropdown">
+											<el-dropdown-item :command="[10, '<']">
+												Less than 10 orders
+											</el-dropdown-item>
+											<el-dropdown-item :command="[25, '>']">
+												More than 25 orders
+											</el-dropdown-item>
+											<el-dropdown-item :command="[50, '>']">
+												More than 50 orders
+											</el-dropdown-item>
+										</el-dropdown-menu>
+									</el-dropdown>
+								</div>
+								<div>
+									<div class="form-group form-md-line-input form-md-floating-label">
+										<input type="text" class="form-control input-sm" id="form_control_3" v-model="city" :class="{'edited': city.length}" v-on:change="addRule('city')">
+										<label for="form_control_3">City</label>
+									</div>
+								</div>
+								<div>
+									<div class="form-group form-md-line-input form-md-floating-label">
+										<input type="text" class="form-control input-sm" id="form_control_4" v-model="province" :class="{'edited': province.length}" v-on:change="addRule('province')">
+										<label for="form_control_4">Province</label>
+									</div>
+								</div>
 							</div>
 						</div>
-						<div class="portlet-body" :class="{'display-hide': createGroupCollapse}">
-						<form role="form" @submit.prevent="createNewGroup()">
-							<div class="row">
-								<div class="col-md-12">
-									<div class="alert alert-danger" v-if="errorMessage.length">
-										<button class="close" data-close="alert" @click="clearError()"></button>
-										<span>{{errorMessage}}</span>
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="form-group form-md-line-input form-md-floating-label">
-										<input type="text" class="form-control input-sm" id="form_control_1" v-model="newGroup.name" :class="{'edited': newGroup.name.length}">
-										<label for="form_control_1">Group Name</label>
-									</div>
-									<div class="form-group form-md-line-input form-md-floating-label">
-										<input type="text" class="form-control input-sm" id="form_control_2" v-model="newGroup.description" :class="{'edited': newGroup.description.length}">
-										<label for="form_control_2">Group Description</label>
-									</div>
-									<h4 class="margin-top-20">All users with:</h4>
-									<div>
-										<el-dropdown trigger="click" @command="updateSignUpDate" size="mini" :show-timeout="50" :hide-timeout="50"  class="margin-top-15">
-											<el-button size="mini">
-												{{ selectedSignUpDate }}
-												<i class="el-icon-arrow-down el-icon--right"></i>
-											</el-button>
-											<el-dropdown-menu slot="dropdown">
-												<el-dropdown-item :command="7">
-													Signed up in the last 7 days
-												</el-dropdown-item>
-												<el-dropdown-item :command="14">
-													Signed up in the last 14 days
-												</el-dropdown-item>
-												<el-dropdown-item :command="30">
-													Signed up in the last 30 days
-												</el-dropdown-item>
-											</el-dropdown-menu>
-										</el-dropdown>
-									</div>
-									<div>
-										<el-dropdown trigger="click" @command="updateTotalOrders" size="mini" :show-timeout="50" :hide-timeout="50"  class="margin-top-15">
-											<el-button size="mini">
-												{{ selectedTotalOrders }}
-												<i class="el-icon-arrow-down el-icon--right"></i>
-											</el-button>
-											<el-dropdown-menu slot="dropdown">
-												<el-dropdown-item :command="[10, '<']">
-													Less than 10 orders
-												</el-dropdown-item>
-												<el-dropdown-item :command="[25, '>']">
-													More than 25 orders
-												</el-dropdown-item>
-												<el-dropdown-item :command="[50, '>']">
-													More than 50 orders
-												</el-dropdown-item>
-											</el-dropdown-menu>
-										</el-dropdown>
-									</div>
-									<div>
-										<div class="form-group form-md-line-input form-md-floating-label">
-											<input type="text" class="form-control input-sm" id="form_control_3" v-model="city" :class="{'edited': city.length}" v-on:change="addRule('city')">
-											<label for="form_control_3">City</label>
-										</div>
-									</div>
-									<div>
-										<div class="form-group form-md-line-input form-md-floating-label">
-											<input type="text" class="form-control input-sm" id="form_control_4" v-model="province" :class="{'edited': province.length}" v-on:change="addRule('province')">
-											<label for="form_control_4">Province</label>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="form-actions right">
-								<button type="submit" class="btn blue">Create</button>
-							</div>
-						</form>
-					</div>
+						<div class="form-actions right">
+							<button type="submit" class="btn blue">Create</button>
+						</div>
+					</form>
 				</div>
-				<!-- CREATE GROUP PANEL END -->
 			</div>
+			<!-- CREATE GROUP PANEL END -->
 
 			<!-- LIST START -->
 			<div>
@@ -134,14 +133,27 @@
 							<div class="mt-list-container list-news">
 								<loading-screen :show="loadingGroupsData" :color="'#2C3E50'" :display="'inline'"></loading-screen>
 								<ul v-show="groups.length && !loadingGroupsData">
-									<li class="mt-list-item actions-at-left margin-top-15 clickable" v-for="group in groups" @click="sendMessageToGroup(group)" :id="'group-' + group.id">
+									<li 
+										class="mt-list-item actions-at-left margin-top-15 clickable" 
+										v-for="group in groups" 
+										@click="sendMessageToGroup(group)" 
+										:id="'group-' + group.id"
+										:key="group.id">
 										<div class="list-item-actions">
-											<el-tooltip content="Edit" effect="light" placement="right">
+											<el-tooltip 
+												v-if="$root.permissions['user_manager user_groups update']"
+												content="Edit" 
+												effect="light" 
+												placement="right">
 												<a class="btn btn-circle btn-icon-only btn-default" @click="displayEditGroupModal(group, $event)">
 													<i class="fa fa-lg fa-pencil"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip content="Delete" effect="light" placement="right">
+											<el-tooltip 
+												v-if="$root.permissions['user_manager user_groups delete']"
+												content="Delete" 
+												effect="light" 
+												placement="right">
 												<a class="btn btn-circle btn-icon-only btn-default" @click="deleteGroup(group, $event)">
 													<i class="fa fa-lg fa-trash"></i>
 												</a>

@@ -91,7 +91,7 @@ export default {
 		}
 	},
 	created () {
-		this.getPermissions()
+		this.getAllPermissions()
 	},
 	mounted () {
 		this.instanceId = this._uid
@@ -120,10 +120,10 @@ export default {
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getPermissions () {
+		getAllPermissions () {
 			this.loadingPermissions = true
 			var permissionsVue = this
-			return PermissionsFunctions.getPermissions()
+			return PermissionsFunctions.getAllPermissions()
 			.then(response => {
 				permissionsVue.permissions = response.payload.map(permission => {
 					return {

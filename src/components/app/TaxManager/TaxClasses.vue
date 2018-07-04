@@ -14,7 +14,7 @@
 		</div>
 
 		<!-- BEGIN CREATE -->
-		<div class="portlet box blue-hoki">
+		<div class="portlet box blue-hoki" v-if="$root.permissions['tax tax_classes create']">
 			<div class="portlet-title bg-blue-chambray" @click="toggleCreatePanel()">
 				<div class="caption">
 					<i class="fa fa-2x fa-plus-circle"></i>
@@ -105,12 +105,20 @@
 							<ul>
 								<li class="mt-list-item actions-at-left margin-top-15" v-for="taxClass in taxClasses" :id="'taxClass-' + taxClass.id" :key="taxClass.id">
 									<div class="list-item-actions">
-										<el-tooltip content="Edit" effect="light" placement="right">
+										<el-tooltip 
+											v-if="$root.permissions['tax tax_classes update']"
+											content="Edit" 
+											effect="light" 
+											placement="right">
 											<a class="btn btn-circle btn-icon-only btn-default" @click="editTaxClass(taxClass, $event)">
 												<i class="fa fa-lg fa-pencil"></i>
 											</a>
 										</el-tooltip>
-										<el-tooltip content="Delete" effect="light" placement="right">
+										<el-tooltip 
+											v-if="$root.permissions['tax tax_classes delete']"
+											content="Delete" 
+											effect="light" 
+											placement="right">
 											<a class="btn btn-circle btn-icon-only btn-default" @click="confirmDelete(taxClass, $event)">
 												<i class="fa fa-lg fa-trash"></i>
 											</a>

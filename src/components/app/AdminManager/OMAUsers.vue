@@ -10,7 +10,7 @@
 	        </div>
 
   			<!-- CREATE NEW START -->
-			<div class="portlet box blue-hoki margin-top-20">
+			<div class="portlet box blue-hoki margin-top-20" v-if="$root.permissions['admin oma_users create']">
 				<div class="portlet-title bg-blue-chambray" @click="toggleCreateOMAUserPanel()">
 					<div class="caption">
 						<i class="fa fa-plus-circle"></i>
@@ -207,14 +207,27 @@
 			            <div class="mt-element-list">
 			                <div class="mt-list-container list-news">
 			                    <ul>
-			                        <li class="mt-list-item actions-at-left margin-top-15" v-for="OMAUser in currentActivePageItems" :id="'OMAUser-' + OMAUser.id" :class="{'animated' : animated === `OMAUser-${OMAUser.id}`}">
+			                        <li 
+										class="mt-list-item actions-at-left margin-top-15" 
+										v-for="OMAUser in currentActivePageItems" 
+										:id="'OMAUser-' + OMAUser.id" 
+										:class="{'animated' : animated === `OMAUser-${OMAUser.id}`}"
+										:key="OMAUser.id">
 			                        	<div class="list-item-actions">
-        	                        		<el-tooltip content="Edit" effect="light" placement="right">
+        	                        		<el-tooltip 
+												v-if="$root.permissions['admin oma_users update']"
+												content="Edit" 
+												effect="light" 
+												placement="right">
 	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editOMAUser(OMAUser)">
 	                                                <i class="fa fa-pencil" aria-hidden="true"></i>
 	                                            </a>
         	                        		</el-tooltip>
-        	                        		<el-tooltip content="Delete" effect="light" placement="right">
+        	                        		<el-tooltip 
+												v-if="$root.permissions['admin oma_users delete']"
+												content="Delete" 
+												effect="light" 
+												placement="right">
 	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="showDeleteModal(OMAUser)">
 	                                                <i class="fa fa-trash" aria-hidden="true"></i>
 	                                            </a>
@@ -270,18 +283,31 @@
 			            <div class="mt-element-list">
 			                <div class="mt-list-container list-news">
 			                    <ul>
-			                        <li class="mt-list-item actions-at-left margin-top-15" v-for="OMAUser in currentActiveSearchPageItems" :id="'OMAUser-' + OMAUser.id" :class="{'animated' : animated === `OMAUser-${OMAUser.id}`}">
+			                        <li 
+										class="mt-list-item actions-at-left margin-top-15" 
+										v-for="OMAUser in currentActiveSearchPageItems" 
+										:id="'OMAUser-' + OMAUser.id" 
+										:class="{'animated' : animated === `OMAUser-${OMAUser.id}`}"
+										:key="OMAUser.id">
 			                        	<div class="list-item-actions">
-        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editOMAUser(OMAUser)">
-			                        			<el-tooltip content="Edit" effect="light" placement="right">
+        	                        		<el-tooltip 
+												v-if="$root.permissions['admin oma_users update']"
+												content="Edit" 
+												effect="light" 
+												placement="right">
+	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editOMAUser(OMAUser)">
 	                                                <i class="fa fa-pencil" aria-hidden="true"></i>
-			                        			</el-tooltip>
-                                            </a>
-        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="showDeleteModal(OMAUser)">
-	        	                        		<el-tooltip content="Delete" effect="light" placement="right">
+	                                            </a>
+        	                        		</el-tooltip>
+        	                        		<el-tooltip 
+												v-if="$root.permissions['admin oma_users delete']"
+												content="Delete" 
+												effect="light" 
+												placement="right">
+	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="showDeleteModal(OMAUser)">
 	                                                <i class="fa fa-trash" aria-hidden="true"></i>
-	        	                        		</el-tooltip>
-                                            </a>
+	                                            </a>
+        	                        		</el-tooltip>
 			                        	</div>
 			                            <div class="list-item-content height-mod">
 			                            	<div class="col-md-4">

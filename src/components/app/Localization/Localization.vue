@@ -9,7 +9,7 @@
 		</div>
 
 		<!-- BEGIN CREATE OR EDIT LANGUAGE-->
-        <div class="portlet box blue-hoki">
+        <div class="portlet box blue-hoki" v-if="$root.permissions['localization create'] && $root.permissions['localization update']">
 			<div class="portlet-title bg-blue-chambray" @click="toggleNewLocalePanel()">
 				<div class="caption">
 					<i class="fa fa-2x fa-plus-circle"></i>

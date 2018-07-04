@@ -84,25 +84,44 @@
 								<span class="arrow"></span>
 							</a>
 							<ul class="sub-menu">
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'analytics' && currentSubRoute === 'overview'}" id="store_manager_create_new_link">
+								<li 
+									v-if="$root.permissions['analytics overview read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'analytics' && currentSubRoute === 'overview'}" 
+									id="store_manager_create_new_link"
+								>
 									<router-link to="/app/analytics/overview" class="nav-link">
 										<i class="fa fa-compress"></i>
 										<span class="title">Overview</span>
 									</router-link>
 								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'analytics' && currentSubRoute === 'locationsales'}" id="store_manager_applications_link">
+								<li 
+									v-if="$root.permissions['analytics store read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'analytics' && currentSubRoute === 'locationsales'}" id="store_manager_applications_link"
+								>
 									<router-link to="/app/analytics/locationsales" class="nav-link">
 										<i class="fa fa-map-marker"></i>
 										<span class="title">Store Sales</span>
 									</router-link>
 								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'analytics' && currentSubRoute === 'itemsales'}" id="item_sales_link">
+								<li 
+									v-if="$root.permissions['analytics item read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'analytics' && currentSubRoute === 'itemsales'}" 
+									id="item_sales_link"
+								>
 									<router-link to="/app/analytics/itemsales" class="nav-link">
 										<i class="fa fa-th-large"></i>
 										<span class="title">Item Sales</span>
 									</router-link>
 								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'analytics' && currentSubRoute === 'useranalytics'}" id="user_analytics_link">
+								<li 
+									v-if="$root.permissions['analytics user read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'analytics' && currentSubRoute === 'useranalytics'}" 
+									id="user_analytics_link"
+								>
 									<router-link to="/app/analytics/useranalytics" class="nav-link">
 										<i class="fa fa-users"></i>
 										<span class="title">User Analytics</span>
@@ -128,25 +147,47 @@
 								</span>
 							</a>
 							<ul class="sub-menu">
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'approvals' && currentSubRoute === 'approvals'}" id="admin_manager_approvals_link">
+								<li 
+									v-if="$root.permissions['approvals read'] ||
+										$root.permissions['approvals request read']
+									"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'approvals' && currentSubRoute === 'approvals'}" 
+									id="admin_manager_approvals_link"
+								>
 									<router-link to="/app/approvals/approvals" class="nav-link">
 										<i class="fa fa-check-square-o"></i>
 										<span class="title">Approvals</span>
 									</router-link>
 								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'approvals' && currentSubRoute === 'roles'}" id="admin_manager_roles_link">
+								<li 
+									v-if="$root.permissions['list role']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'approvals' && currentSubRoute === 'roles'}" 
+									id="admin_manager_roles_link"
+								>
 									<router-link to="/app/approvals/roles" class="nav-link">
 										<i class="fa fa-id-badge"></i>
 										<span class="title">Roles</span>
 									</router-link>
 								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'approvals' && currentSubRoute === 'permissions'}" id="admin_manager_permissions_link">
+								<li 
+									v-if="$root.permissions['list permission']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'approvals' && currentSubRoute === 'permissions'}" 
+									id="admin_manager_permissions_link"
+								>
 									<router-link to="/app/approvals/permissions" class="nav-link">
 										<i class="fa fa-ban"></i>
 										<span class="title">Permissions</span>
 									</router-link>
 								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'approvals' && currentSubRoute === 'modules'}" id="admin_manager_modules_link">
+								<li 
+									v-if="$root.permissions['approvals modules read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'approvals' && currentSubRoute === 'modules'}" 
+									id="admin_manager_modules_link"
+								>
 									<router-link to="/app/approvals/modules" class="nav-link">
 										<i class="fa fa-circle-o"></i>
 										<span class="title">Modules</span>
@@ -169,25 +210,45 @@
 								<span class="title">Admin Manager</span>
 							</a>
 							<ul class="sub-menu">
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'admin' && currentSubRoute === 'brand_admins'}" id="store_manager_create_new_link">
+								<li 
+									v-if="$root.permissions['admin brand_admins read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'admin' && currentSubRoute === 'brand_admins'}" 
+									id="store_manager_create_new_link"
+								>
 									<router-link to="/app/admin/brand_admins" class="nav-link">
 										<i class="fa fa-user"></i>
 										<span class="title">Brand Admins</span>
 									</router-link>
 								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'admin' && currentSubRoute === 'location_managers'}" id="store_manager_create_new_link">
+								<li 
+									v-if="$root.permissions['admin location_managers read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'admin' && currentSubRoute === 'location_managers'}" 
+									id="store_manager_create_new_link"
+								>
 									<router-link to="/app/admin/location_managers" class="nav-link">
 										<i class="fa fa-home"></i>
 										<span class="title">Location Managers</span>
 									</router-link>
 								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'admin' && currentSubRoute === 'OMA_users'}" id="store_manager_applications_link">
+								<li 
+									v-if="$root.permissions['admin oma_users read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'admin' && currentSubRoute === 'OMA_users'}" 
+									id="store_manager_applications_link"
+								>
 									<router-link to="/app/admin/OMA_users" class="nav-link">
 										<i class="fa fa-bar-chart"></i>
 										<span class="title">OMA Users</span>
 									</router-link>
 								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'admin' && currentSubRoute === 'store_app_users'}" id="store_manager_applications_link">
+								<li 
+									v-if="$root.permissions['admin store_app_users read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'admin' && currentSubRoute === 'store_app_users'}" 
+									id="store_manager_applications_link"
+								>
 									<router-link to="/app/admin/store_app_users" class="nav-link">
 										<i class="fa fa-tablet"></i>
 										<span class="title">Store App Users</span>
@@ -212,31 +273,56 @@
 								<span class="arrow"></span>
 							</a>
 							<ul class="sub-menu">
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'store_manager' && currentSubRoute === 'create_new'}" id="store_manager_create_new_link">
+								<li 
+									v-if="$root.permissions['stores info create']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'store_manager' && currentSubRoute === 'create_new'}" 
+									id="store_manager_create_new_link"
+								>
 									<router-link to="/app/store_manager/create_new" class="nav-link">
 										<i class="fa fa-plus"></i>
 										<span class="title">Create New Store</span>
 									</router-link>
 								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'store_manager' && currentSubRoute === 'store_groups'}" id="store_manager_applications_link">
+								<li 
+									v-if="$root.permissions['stores groups read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'store_manager' && currentSubRoute === 'store_groups'}" 
+									id="store_manager_applications_link"
+								>
 									<router-link to="/app/store_manager/store_groups" class="nav-link">
 										<i class="fa fa-sitemap"></i>
 										<span class="title">Store Groups</span>
 									</router-link>
 								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'store_manager' && (currentSubRoute === 'stores' || currentSubRoute === 'edit_store')}" id="store_manager_applications_link">
+								<li 
+									v-if="$root.permissions['stores info read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'store_manager' && (currentSubRoute === 'stores' || currentSubRoute === 'edit_store')}" 
+									id="store_manager_applications_link"
+								>
 									<router-link to="/app/store_manager/stores" class="nav-link">
 										<i class="fa fa-map-marker"></i>
 										<span class="title">Stores</span>
 									</router-link>
 								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'store_manager' && currentSubRoute === 'amenities'}" id="store_manager_amenities_link">
+								<li 
+									v-if="$root.permissions['stores amenities read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'store_manager' && currentSubRoute === 'amenities'}" 
+									id="store_manager_amenities_link"
+								>
 									<router-link to="/app/store_manager/amenities" class="nav-link">
 										<i class="fa fa-wifi"></i>
 										<span class="title">Amenities</span>
 									</router-link>
 								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'store_manager' && currentSubRoute === 'order_settings'}" id="store_manager_order_settings_link">
+								<li 
+									v-if="$root.permissions['stores order_settings read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'store_manager' && currentSubRoute === 'order_settings'}" 
+									id="store_manager_order_settings_link"
+								>
 									<router-link to="/app/store_manager/order_settings" class="nav-link">
 										<i class="fa fa-gear"></i>
 										<span class="title">Order Settings</span>
@@ -244,10 +330,25 @@
 								</li>
 							</ul>
 						</li>
-						<li class="nav-item" v-bind:class="{'active': currentRoute === 'store_manager'}" id="store_manager_link" v-if="$root.accountType === 'store_admin'">
-							<router-link :to="'/app/store_manager/stores'" class="nav-link nav-toggle">
-								<i class="fa fa-dashboard"></i>
-								<span class="title">Store Manager</span>
+						<li 
+							v-if="$root.permissions['news_feed read']"
+							class="nav-item" 
+							:class="{'active': currentRoute === 'news_feed'}" 
+						>
+							<router-link to="/app/news_feed" class="nav-link nav-toggle">
+								<i class="fa fa-newspaper-o"></i>
+								<span class="title">News Feed</span>
+								<span class="selected"></span>
+							</router-link>
+						</li>
+						<li 
+							v-if="$root.permissions['social_feed read']"
+							class="nav-item" 
+							:class="{'active': currentRoute === 'social_feed'}" 
+						>
+							<router-link to="/app/social_feed" class="nav-link nav-toggle">
+								<i class="fa fa-user"></i>
+								<span class="title">Social Feed</span>
 								<span class="selected"></span>
 							</router-link>
 						</li>
@@ -265,13 +366,23 @@
 								<span class="arrow"></span>
 							</a>
 							<ul class="sub-menu">
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'tax_manager' && currentSubRoute === 'tax_classes'}" id="tax_manager_tax_classes_link">
+								<li 
+									v-if="$root.permissions['tax tax_classes read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'tax_manager' && currentSubRoute === 'tax_classes'}" 
+									id="tax_manager_tax_classes_link"
+								>
 									<router-link to="/app/tax_manager/tax_classes" class="nav-link">
 										<i class="fa fa-bar-chart"></i>
 										<span class="title">Tax Classes</span>
 									</router-link>
 								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'tax_manager' && currentSubRoute === 'item_types'}" id="tax_manager_item_types_link">
+								<li 
+									v-if="$root.permissions['tax item_types read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'tax_manager' && currentSubRoute === 'item_types'}" 
+									id="tax_manager_item_types_link"
+								>
 									<router-link to="/app/tax_manager/item_types" class="nav-link">
 										<i class="fa fa-glass"></i>
 										<span class="title">Item Types</span>
@@ -298,55 +409,78 @@
 								<span class="arrow"></span>
 							</a>
 							<ul class="sub-menu">
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'menu_manager' && (currentSubRoute === 'menus' || currentSubRoute === 'categories' || currentSubRoute === 'items')}" id="menu_manager_menus_link">
+								<li 
+									v-if="$root.permissions['menu_manager menus read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'menu_manager' && (currentSubRoute === 'menus' || currentSubRoute === 'categories' || currentSubRoute === 'items')}" 
+									id="menu_manager_menus_link"
+								>
 									<router-link to="/app/menu_manager/menus" class="nav-link">
 										<i class="fa fa-file-text-o"></i>
 										<span class="title">Menus</span>
 									</router-link>
 								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'menu_manager' && currentSubRoute === 'location_items'}" id="menu_manager_location_items_link">
-									<router-link to="/app/menu_manager/location_items" class="nav-link">
-										<i class="fa fa-lemon-o"></i>
-										<span class="title">Items</span>
-									</router-link>
-								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'menu_manager' && currentSubRoute === 'menu_tiers'}" id="menu_manager_menu_tiers_link">
+								<li 
+									v-if="$root.permissions['menu_manager tiers read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'menu_manager' && currentSubRoute === 'menu_tiers'}" 
+									id="menu_manager_menu_tiers_link"
+								>
 									<router-link to="/app/menu_manager/menu_tiers" class="nav-link">
 										<i class="fa fa-sitemap"></i>
 										<span class="title">Menu Tiers</span>
 									</router-link>
 								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'menu_manager' && (currentSubRoute === 'modifiers' || currentSubRoute === 'modifier_items')}" id="menu_manager_modifiers_link">
+								<li 
+									v-if="$root.permissions['menu_manager modifiers read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'menu_manager' && (currentSubRoute === 'modifiers' || currentSubRoute === 'modifier_items')}" 
+									id="menu_manager_modifiers_link"
+								>
 									<router-link to="/app/menu_manager/modifiers" class="nav-link">
 										<i class="fa fa-cogs"></i>
 										<span class="title">Modifiers</span>
 									</router-link>
 								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'menu_manager' && currentSubRoute === 'modifier_tiers'}" id="menu_manager_modifier_tiers_link">
-									<router-link to="/app/menu_manager/modifier_tiers" class="nav-link">
-										<i class="fa fa-sitemap"></i>
-										<span class="title">Modifier Tiers</span>
-									</router-link>
-								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'menu_manager' && currentSubRoute === 'tags'}" id="menu_manager_tags_link">
+								<li 
+									v-if="$root.permissions['menu_manager tags read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'menu_manager' && currentSubRoute === 'tags'}" 
+									id="menu_manager_tags_link"
+								>
 									<router-link to="/app/menu_manager/tags" class="nav-link">
 										<i class="fa fa-tags"></i>
 										<span class="title">Tags</span>
 									</router-link>
 								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'menu_manager' && currentSubRoute === 'portions'}" id="menu_manager_portions_link">
+								<li 
+									v-if="$root.permissions['menu_manager portions read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'menu_manager' && currentSubRoute === 'portions'}" 
+									id="menu_manager_portions_link"
+								>
 									<router-link to="/app/menu_manager/portions" class="nav-link">
 										<i class="fa fa-pie-chart"></i>
 										<span class="title">Portions</span>
 									</router-link>
 								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'menu_manager' && currentSubRoute === 'options'}" id="menu_manager_options_link">
+								<li 
+									v-if="$root.permissions['menu_manager options read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'menu_manager' && currentSubRoute === 'options'}" 
+									id="menu_manager_options_link"
+								>
 									<router-link to="/app/menu_manager/options" class="nav-link">
 										<i class="fa fa-list-ul"></i>
 										<span class="title">Options</span>
 									</router-link>
 								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'menu_manager' && currentSubRoute === 'item_attributes'}" id="menu_manager_item_attributes_link">
+								<li 
+									v-if="$root.permissions['menu_manager attributes read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'menu_manager' && currentSubRoute === 'item_attributes'}" 
+									id="menu_manager_item_attributes_link"
+								>
 									<router-link to="/app/menu_manager/item_attributes" class="nav-link">
 										<i class="fa fa-sticky-note-o"></i>
 										<span class="title">Attributes</span>
@@ -354,7 +488,12 @@
 								</li>
 							</ul>
 						</li>
-						<li class="nav-item" v-bind:class="{'active': currentRoute === 'printers'}" id="printers_link">
+						<li 
+							v-if="$root.permissions['printers read']"							
+							class="nav-item" 
+							:class="{'active': currentRoute === 'printers'}" 
+							id="printers_link"
+						>
 							<router-link :to="'/app/printers'" class="nav-link nav-toggle">
 								<i class="icon-printer"></i>
 								<span class="title">Printers</span>
@@ -376,19 +515,34 @@
 								<span class="arrow"></span>
 							</a>
 							<ul class="sub-menu">
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'user_manager' && currentSubRoute === 'users'}" id="user_manager_applications_link">
+								<li 
+									v-if="$root.permissions['user_manager users read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'user_manager' && currentSubRoute === 'users'}" 
+									id="user_manager_applications_link"
+								>
 									<router-link to="/app/user_manager/users" class="nav-link">
 										<i class="fa fa-user"></i>
 										<span class="title">Users</span>
 									</router-link>
 								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'user_manager' && currentSubRoute === 'user_groups'}" id="user_manager_applications_link">
+								<li 
+									v-if="$root.permissions['user_manager user_groups read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'user_manager' && currentSubRoute === 'user_groups'}" 
+									id="user_manager_applications_link"
+								>
 									<router-link to="/app/user_manager/user_groups" class="nav-link">
 										<i class="fa fa-sitemap"></i>
 										<span class="title">User Groups</span>
 									</router-link>
 								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'user_manager' && currentSubRoute === 'user_attributes'}" id="user_attributes_applications_link">
+								<li 
+									v-if="$root.permissions['user_manager attributes read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'user_manager' && currentSubRoute === 'user_attributes'}" 
+									id="user_attributes_applications_link"
+								>
 									<router-link to="/app/user_manager/user_attributes" class="nav-link">
 										<i class="fa fa-sticky-note-o"></i>
 										<span class="title">Attributes</span>
@@ -410,13 +564,23 @@
 								<span class="arrow"></span>
 							</a>
 							<ul class="sub-menu">
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'faq' && currentSubRoute === 'users'}" id="faq_users_link">
+								<li 
+									v-if="$root.permissions['faq user read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'faq' && currentSubRoute === 'users'}" 
+									id="faq_users_link"
+								>
 									<router-link to="/app/faq/users" class="nav-link">
 										<i class="fa fa-user"></i>
 										<span class="title">Users</span>
 									</router-link>
 								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'faq' && currentSubRoute === 'stores'}" id="faq_stores_link">
+								<li 
+									v-if="$root.permissions['faq store read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'faq' && currentSubRoute === 'stores'}" 
+									id="faq_stores_link"
+								>
 									<router-link to="/app/faq/stores" class="nav-link">
 										<i class="fa fa-map-marker"></i>
 										<span class="title">Stores</span>
@@ -424,7 +588,11 @@
 								</li>
 							</ul>
 						</li>
-						<li class="nav-item" v-bind:class="{'active': currentRoute === 'gallery'}">
+						<li 
+							v-if="$root.permissions['gallery read']"
+							class="nav-item" 
+							:class="{'active': currentRoute === 'gallery'}"
+						>
 							<router-link to="/app/gallery" class="nav-link nav-toggle">
 								<i class="fa fa-image"></i>
 								<span class="title">Gallery</span>
@@ -446,19 +614,34 @@
 								<span class="selected"></span>
 							</a>
 							<ul class="sub-menu">
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'loyalty' && currentSubRoute === 'base_rule'}" id="faq_users_link">
+								<li 
+									v-if="$root.permissions['loyalty base_rule read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'loyalty' && currentSubRoute === 'base_rule'}" 
+									id="faq_users_link"
+								>
 									<router-link to="/app/loyalty/base_rule" class="nav-link">
 										<i class="fa fa-paperclip"></i>
 										<span class="title">Base Rule</span>
 									</router-link>
 								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'loyalty' && currentSubRoute === 'promotion_rules'}" id="faq_users_link">
+								<li 
+									v-if="$root.permissions['loyalty promotion_rules read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'loyalty' && currentSubRoute === 'promotion_rules'}" 
+									id="faq_users_link"
+								>
 									<router-link to="/app/loyalty/promotion_rules" class="nav-link">
 										<i class="fa fa-list-ol"></i>
 										<span class="title">Promotion Rules</span>
 									</router-link>
 								</li>
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'loyalty' && currentSubRoute === 'rewards'}" id="faq_users_link">
+								<li 
+									v-if="$root.permissions['reward_tiers read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'loyalty' && currentSubRoute === 'rewards'}" 
+									id="faq_users_link"
+								>
 									<router-link to="/app/loyalty/rewards" class="nav-link">
 										<i class="fa fa-gift"></i>
 										<span class="title">Rewards</span>
@@ -466,7 +649,11 @@
 								</li>
 							</ul>
 						</li>
- 						<li class="nav-item" v-bind:class="{'active': currentRoute === 'promocodes'}" v-if="$root.accountType === 'application_admin'">
+						<li 
+							v-if="$root.permissions['promocodes read']"
+							class="nav-item" 
+							:class="{'active': currentRoute === 'promocodes'}" 
+						>
 							<router-link to="/app/promocodes" class="nav-link nav-toggle">
 								<i class="fa fa-scissors"></i>
 								<span class="title">Promo codes</span>
@@ -484,7 +671,12 @@
 								<span class="arrow"></span>
 							</a>
 							<ul class="sub-menu">
-								<li class="nav-item" v-bind:class="{'active': currentRoute === 'promotions' && currentSubRoute === 'geolocations'}" id="promotions_geolocations_link">
+								<li 
+									v-if="$root.permissions['promotions geolocations read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'promotions' && currentSubRoute === 'geolocations'}" 
+									id="promotions_geolocations_link"
+								>
 									<router-link to="/app/promotions/geolocations" class="nav-link">
 										<i class="fa fa-compass"></i>
 										<span class="title">Geolocations</span>
@@ -492,7 +684,11 @@
 								</li>
 							</ul>
 						</li>
-						<li class="nav-item" v-bind:class="{'active': currentRoute === 'localization'}" v-if="$root.accountType === 'application_admin'">
+						<li 
+							v-if="$root.permissions['localization read']"
+							class="nav-item" 
+							:class="{'active': currentRoute === 'localization'}" 
+						>
 							<router-link to="/app/localization" class="nav-link nav-toggle">
 								<i class="fa fa-language"></i>
 								<span class="title">Localization</span>

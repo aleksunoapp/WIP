@@ -23,7 +23,9 @@
 		</div>
 
 		<!-- BEGIN CREATE -->
-		<div class="portlet box blue-hoki" v-if="activeLocationId !== undefined && orderSettingsToEdit.id === undefined">
+		<div 
+			class="portlet box blue-hoki" 
+			v-if="activeLocationId !== undefined && orderSettingsToEdit.id === undefined && $root.permissions['stores order_settings update']">
 			<div class="portlet-title bg-blue-chambray" @click="toggleCreatePanel()">
 				<div class="caption">
 					<i class="fa fa-2x fa-plus-circle"></i>
@@ -318,6 +320,7 @@
 							<div class="col-xs-12 right margin-top-20">
 								<div class="pull-right">
 									<button 
+										v-if="$root.permissions['stores order_settings delete']"
 										type="button" 
 										class="btn btn-outline blue margin-right-10" 
 										@click.stop.prevent="confirmDelete()"
@@ -325,6 +328,7 @@
 										Delete
 									</button>
 									<button 
+										v-if="$root.permissions['stores order_settings update']"
 										type="button" 
 										class="btn blue" 
 										@click="updateOrderSettings()"

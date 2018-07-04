@@ -10,7 +10,7 @@
 			</div>
 
 			<!-- CREATE NEW START -->
-			<div class="portlet box blue-hoki margin-top-20">
+			<div class="portlet box blue-hoki margin-top-20" v-if="$root.permissions['admin store_app_users create']">
 				<div class="portlet-title bg-blue-chambray" @click="toggleCreateStoreAppUserPanel()">
 					<div class="caption">
 						<i class="fa fa-plus-circle"></i>
@@ -161,9 +161,18 @@
 						<div class="mt-element-list">
 							<div class="mt-list-container list-news">
 								<ul>
-									<li class="mt-list-item actions-at-left margin-top-15" v-for="storeAppUser in currentActivePageItems" :id="'storeAppUser-' + storeAppUser.id" :class="{'animated' : animated === `storeAppUser-${storeAppUser.id}`}">
+									<li 
+										class="mt-list-item actions-at-left margin-top-15" 
+										v-for="storeAppUser in currentActivePageItems" 
+										:id="'storeAppUser-' + storeAppUser.id" 
+										:class="{'animated' : animated === `storeAppUser-${storeAppUser.id}`}"
+										:key="storeAppUser.id">
 										<div class="list-item-actions">
-											<el-tooltip content="Edit" effect="light" placement="right">
+											<el-tooltip 
+												v-if="$root.permissions['admin store_app_users update']"
+												content="Edit" 
+												effect="light" 
+												placement="right">
 												<a class="btn btn-circle btn-icon-only btn-default" @click="editStoreAppUser(storeAppUser)">
 													<i class="fa fa-pencil" aria-hidden="true"></i>
 												</a>
@@ -223,13 +232,22 @@
 						<div class="mt-element-list">
 							<div class="mt-list-container list-news">
 								<ul>
-									<li class="mt-list-item actions-at-left margin-top-15" v-for="storeAppUser in currentActiveSearchPageItems" :id="'storeAppUser-' + storeAppUser.id" :class="{'animated' : animated === `storeAppUser-${storeAppUser.id}`}">
+									<li 
+										class="mt-list-item actions-at-left margin-top-15" 
+										v-for="storeAppUser in currentActiveSearchPageItems" 
+										:id="'storeAppUser-' + storeAppUser.id" 
+										:class="{'animated' : animated === `storeAppUser-${storeAppUser.id}`}"
+										:key="storeAppUser.id">
 										<div class="list-item-actions">
-											<a class="btn btn-circle btn-icon-only btn-default" @click="editStoreAppUser(storeAppUser)">
-												<el-tooltip content="Edit" effect="light" placement="right">
+											<el-tooltip 
+												v-if="$root.permissions['admin store_app_users update']"
+												content="Edit" 
+												effect="light" 
+												placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default" @click="editStoreAppUser(storeAppUser)">
 													<i class="fa fa-pencil" aria-hidden="true"></i>
-												</el-tooltip>
-											</a>
+												</a>
+											</el-tooltip>
 										</div>
 										<div class="list-datetime bold uppercase font-red">
 											<span>{{ storeAppUser.name }}</span>

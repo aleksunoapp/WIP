@@ -41,7 +41,8 @@ var App = new Vue({
 			activeMenuId: 0,
 			corporateStoreId: null,
 			storeLocations: [],
-			requestsPending: false
+			requestsPending: false,
+			permissions: {}
 		}
 	},
 	created () {
@@ -86,6 +87,7 @@ var App = new Vue({
 			this.activeMenuId = 0
 			this.corporateStoreId = null
 			this.storeLocations = []
+			this.permissions = {}
 		},
 		/**
 		 * A wrapper to handle errors for special cases
