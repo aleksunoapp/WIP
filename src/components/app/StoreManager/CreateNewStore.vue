@@ -528,7 +528,7 @@
 							<div slot="modal-footer" class="modal-footer">
 								<button class="btn btn-primary" @click="setUpHolidayHours()">Set up Holiday Hours</button>
 								<button class="btn btn-primary" @click="addImages()">Add Images</button>
-								<router-link to="/app/store_manager/amenities"><button class="btn btn-primary" @click="">Set up Amenities</button></router-link>
+								<router-link to="/app/store_manager/amenities"><button class="btn btn-primary">Set up Amenities</button></router-link>
 								<button class="btn" @click="imDone()">I'm done</button>
 							</div>
                 		</modal>
@@ -566,7 +566,11 @@
 		            			<div class="col-md-12">
 		            				<!-- LIST START -->
 		            				<div v-if="mode === 'list'">
-		            					<div v-for="image in images" class="col-md-4 margin-bottom-15" :id="'image-' + image.id">
+		            					<div 
+											v-for="image in images" 
+											class="col-md-4 margin-bottom-15" 
+											:id="'image-' + image.id"
+											:key="image.id">
 		            						<div class="tile image">
 		            							<div class="tile-body custom-tile-body">
 		            								<img class="custom-tile-body-img clickable"  @click="previewMode(image)" :src="image.url">
@@ -714,7 +718,7 @@
 		            		<div class="row">
 		            			<div class="col-md-12">
 		            				<router-link v-show="mode === 'list'" to="/app/store_manager/stores" class="nav-link">
-										<button @click="" type="button" class="btn blue pull-right">Done</button>
+										<button type="button" class="btn blue pull-right">Done</button>
 		            				</router-link>
 		            				<button v-show="mode === 'delete'" @click="deleteImage()" type="button" class="btn blue pull-right">Delete</button>
 		            			</div>
@@ -1959,7 +1963,6 @@ div.autocomplete-wrapper {
 	transition-timing-function: ease;
 }
 .fake-md-label.raised {
-	font-color: #888;
 	font-size: 13px;
 	top: -21px;
 }

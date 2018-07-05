@@ -29,7 +29,7 @@
 				                    	</div>
 				                    	<div v-if="displayLocationsDropdown" class="new-location-search-dropdown">
 											<div v-if="!googleSearchResults.length">There are no locations that match your search.</div>
-											<div v-for="location in googleSearchResults" @mousedown.prevent="selectLocation(location)" :class="{'active': storeToBeEdited.address_line_1 == location.description}">{{location.description}}</div>
+											<div v-for="location in googleSearchResults" @mousedown.prevent="selectLocation(location)" :class="{'active': storeToBeEdited.address_line_1 == location.description}" :key="location.id">{{location.description}}</div>
 										</div>
 				                    	<div class="form-group form-md-line-input form-md-floating-label">
 				                    	    <input type="text" class="form-control input-sm edited" id="form_control_3" v-model="storeToBeEdited.address_line_2">
@@ -510,6 +510,7 @@
 			    	    	                    <th> Closing Time </th>
 			    	    	                    <th> Status </th>
 			    	    	                    <th></th>
+												<th></th>
 			    	    	                </tr>
 			    	    	            </thead>
 			    	    	            <tbody>
@@ -572,6 +573,16 @@
 			    	    	                    		@click="updateHolidayHours(hour, $event)"
 			    	    	                    	><span v-show="!hour.loading">Save</span></el-button>
 			    	    	                    </td>
+												<td class="align-middle">
+			    	    	                    	<el-button 
+			    	    	                    		type="primary" 
+			    	    	                    		:loading="hour.loading"
+			    	    	                    		:disabled="hour.loading"
+			    	    	                    		size="small"
+														plain
+			    	    	                    		@click="openDeleteHolidayHoursModal(hour)"
+			    	    	                    	><span v-show="!hour.loading">Delete</span></el-button>
+			    	    	                    </td>
 			    	    	                </tr>
 			    	    	            </tbody>
 			    	    	        </table>
@@ -611,7 +622,7 @@
 
 										<!-- LIST START -->
 										<div v-if="mode === 'list'">
-											<div v-for="image in images" class="col-md-4 margin-bottom-15" :id="'image-' + image.id">
+											<div v-for="image in images" class="col-md-4 margin-bottom-15" :id="'image-' + image.id" :key="image.id">
 												<div class="tile image">
 													<div class="tile-body custom-tile-body">
 														<img class="custom-tile-body-img clickable"  @click="previewMode(image)" :src="image.url">
@@ -768,6 +779,27 @@
         		</div>
         	</tab>
         </tabset>
+
+		<!-- DELETE HOLIDAY HOURS MODAL START -->
+		<modal :show="showDeleteHolidayHoursModal" effect="fade" @closeOnEscape="closeDeleteHolidayHoursModal">
+			<div slot="modal-header" class="modal-header">
+				<button type="button" class="close" @click="closeDeleteHolidayHoursModal()">
+					<span>&times;</span>
+				</button>
+				<h4 class="modal-title center">Delete Holiday Hours</h4>
+			</div>
+			<div slot="modal-body" class="modal-body">
+				<div class="alert alert-danger" v-show="deleteHolidayHoursErrorMessage.length" ref="deleteHolidayHoursErrorMessage">
+					<button class="close" data-close="alert" @click="clearDeleteHolidayHoursError()"></button>
+					<span>{{deleteHolidayHoursErrorMessage}}</span>
+				</div>
+				<p>Are you sure you want to delete these holiday hours?</p>
+			</div>
+			<div slot="modal-footer" class="modal-footer">
+				<button type="button" class="btn btn-primary" @click="deleteHolidayHours()">Delete</button>
+			</div>
+		</modal>
+		<!-- DELETE HOLIDAY HOURS MODAL END -->
 	</div>
 </template>
 
@@ -778,6 +810,7 @@ import Tab from '../../modules/Tab'
 import Tabset from '../../modules/Tabset'
 import Dropdown from '../../modules/Dropdown'
 import LoadingScreen from '../../modules/LoadingScreen'
+import Modal from '@/components/modules/Modal'
 import ResourcePicker from '../../modules/ResourcePicker'
 import AppFunctions from '../../../controllers/App'
 import StoresFunctions from '../../../controllers/Stores'
@@ -841,7 +874,10 @@ export default {
 			},
 			imageToEdit: {},
 			imageToDelete: {},
-			timezones: []
+			timezones: [],
+			holidayHourToDelete: {},
+			showDeleteHolidayHoursModal: false,
+			deleteHolidayHoursErrorMessage: ''
 		}
 	},
 	created () {
@@ -1044,6 +1080,71 @@ export default {
 					window.scrollTo(0, 0)
 				}
 				throw reason
+			})
+		},
+		/**
+		 * To open the delete holiday hours modal
+		 * @function
+		 * @param {object} hour - The hour to delete
+		 * @returns {undefined}
+		 */
+		openDeleteHolidayHoursModal (hour) {
+			this.holidayHourToDelete = hour
+			this.showDeleteHolidayHoursModal = true
+		},
+		/**
+		 * To close the delete holiday hours modal
+		 * @function
+		 * @returns {undefined}
+		 */
+		closeDeleteHolidayHoursModal () {
+			this.showDeleteHolidayHoursModal = false
+		},
+		/**
+		 * To clear the error
+		 * @function
+		 * @returns {undefined}
+		 */
+		clearDeleteHolidayHoursError () {
+			this.deleteHolidayHoursErrorMessage = ''
+		},
+		/**
+		 * To submit delete the hours from the database
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		deleteHolidayHours () {
+			var createStoreVue = this
+
+			let payload = {
+				'id': this.holidayHourToDelete.id,
+				'location_id': this.holidayHourToDelete.location_id
+			}
+
+			StoresFunctions.deleteStoreHolidayHours(payload, createStoreVue.$root.appId, createStoreVue.$root.appSecret, createStoreVue.$root.userToken).then(response => {
+				this.getStoreHolidayHours()
+				this.closeDeleteHolidayHoursModal()
+				this.confirmHolidayHoursDeleted()
+			}).catch(reason => {
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not delete the holiday hours',
+					errorName: 'deleteHolidayHoursErrorMessage',
+					vue: createStoreVue
+				})
+			})
+		},
+		/**
+		 * To confirm that the hours were deleted
+		 * @function
+		 * @returns {undefined}
+		 */
+		confirmHolidayHoursDeleted () {
+			this.$swal({
+				title: 'Success!',
+				text: 'Holiday hours deleted',
+				type: 'success',
+				confirmButtonText: 'OK'
 			})
 		},
 		/**
@@ -1948,7 +2049,8 @@ export default {
 		NoResults,
 		AddHolidayHours,
 		LoadingScreen,
-		ResourcePicker
+		ResourcePicker,
+		Modal
 	},
 	directives: {
 		mask
@@ -1993,7 +2095,6 @@ export default {
 .preview-container {
 	height: 100%;
 	width: 100%;
-	max-height: ;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -2012,7 +2113,6 @@ export default {
 .delete-preview-container {
 	height: 100px;
 	width: 100%;
-	max-height: ;
 	display: flex;
 	justify-content: center;
 	align-items: center;
