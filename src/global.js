@@ -42,7 +42,19 @@ export default {
 	/**
 	 * base url for API calls, other than Message calls
 	 */
-	v3BaseUrl: 'https://resources.dev.api.unoapp.io',
+	resourcesBaseUrl: (function () {
+		if (production) {
+			return ''
+		} else if (staging) {
+			return 'https://resources.dev.api.unoapp.io'
+		} else {
+			return 'https://resources.dev.api.unoapp.io'
+		}
+	}()),
+	/**
+	 * business ID to use for the Resources API
+	 */
+	resourcesBusinessId: 2,
 	/**
 	 * base url for API calls to send Messages
 	 */

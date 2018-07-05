@@ -34,6 +34,7 @@
 										@manageFolder="manageFolder" 
 										@getResources="activePageUpdate" 
 										:selectOnly="selectOnly"
+										:key="index"
 									>
 									</resource-folder>
 								</template>
@@ -116,7 +117,7 @@
 													<label for="search_options_search">Search</label>
 												</div>
 												<div class="md-radio-inline">
-													<div class="md-radio" v-for="option in advancedSearch.searchOptions">
+													<div class="md-radio" v-for="option in advancedSearch.searchOptions" :key="option.id">
 														<input type="radio" :id="`advanced_search_radio_${option.value}`" :name="`advanced_search_radio_${option.value}`" class="md-radiobtn" v-model="advancedSearch.range" :value="option.value">
 														<label :for="`advanced_search_radio_${option.value}`">
 															<span></span>
