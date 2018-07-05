@@ -68,18 +68,21 @@
 					<!-- NOTE: Set data-keep-expand="true" to keep the submenues expanded -->
 					<!-- NOTE: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
 					<ul class="page-sidebar-menu page-header-fixed" data-keep-expand="false">
-						<li class="heading" v-if="$root.accountType === 'application_admin'">
-							<h3 class="uppercase">Application Admin Tools</h3>
-						</li>
-						<li class="heading" v-if="$root.accountType === 'store_admin'">
-							<h3 class="uppercase">Store Admin Tools</h3>
-						</li>
-						<li class="nav-item" v-bind:class="{'active': currentRoute === 'analytics'}" id="store_manager_link" v-if="$root.accountType === 'application_admin'">
-							<router-link to="/app/analytics/overview" class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
+						<li 
+							v-if="$root.permissions['analytics overview read'] ||
+								$root.permissions['analytics store read'] ||
+								$root.permissions['analytics item read'] ||
+								$root.permissions['analytics user read']
+							"
+							class="nav-item" 
+							:class="{'active': currentRoute === 'analytics'}" 
+							id="store_manager_link" 
+						>
+							<a class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
 								<i class="fa fa-line-chart"></i>
 								<span class="title">Analytics</span>
 								<span class="arrow"></span>
-							</router-link>
+							</a>
 							<ul class="sub-menu">
 								<li class="nav-item" v-bind:class="{'active': currentRoute === 'analytics' && currentSubRoute === 'overview'}" id="store_manager_create_new_link">
 									<router-link to="/app/analytics/overview" class="nav-link">
@@ -107,13 +110,23 @@
 								</li>
 							</ul>
 						</li>
-						<li class="nav-item" v-bind:class="{'active': currentRoute === 'approvals'}" id="admin_manager_link" v-if="$root.accountType === 'application_admin'">
-							<router-link to="/app/approvals/approvals" class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
+						<li 
+							v-if="$root.permissions['approvals read'] ||
+								$root.permissions['approvals request read'] ||
+								$root.permissions['list role'] ||
+								$root.permissions['list permission'] ||
+								$root.permissions['approvals modules read']
+							"
+							class="nav-item" 
+							:class="{'active': currentRoute === 'approvals'}" 
+							id="admin_manager_link" 
+						>
+							<a class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
 								<i class="fa fa-check-square-o"></i>
 								<span class="title">Approvals Manager
 									<i v-if="$root.requestsPending" class="fa fa-circle danger"></i>
 								</span>
-							</router-link>
+							</a>
 							<ul class="sub-menu">
 								<li class="nav-item" v-bind:class="{'active': currentRoute === 'approvals' && currentSubRoute === 'approvals'}" id="admin_manager_approvals_link">
 									<router-link to="/app/approvals/approvals" class="nav-link">
@@ -141,11 +154,20 @@
 								</li>
 							</ul>
 						</li>
-						<li class="nav-item" v-bind:class="{'active': currentRoute === 'admin'}" id="admin_manager_link" v-if="$root.accountType === 'application_admin'">
-							<router-link to="/app/admin/brand_admins" class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
+						<li 
+							v-if="$root.permissions['admin brand_admins read'] ||
+								$root.permissions['admin location_managers read'] ||
+								$root.permissions['admin oma_users read'] ||
+								$root.permissions['admin store_app_users read']
+							"
+							class="nav-item" 
+							:class="{'active': currentRoute === 'admin'}" 
+							id="admin_manager_link"
+						>
+							<a class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
 								<i class="fa fa-cogs"></i>
 								<span class="title">Admin Manager</span>
-							</router-link>
+							</a>
 							<ul class="sub-menu">
 								<li class="nav-item" v-bind:class="{'active': currentRoute === 'admin' && currentSubRoute === 'brand_admins'}" id="store_manager_create_new_link">
 									<router-link to="/app/admin/brand_admins" class="nav-link">
@@ -173,12 +195,22 @@
 								</li>
 							</ul>
 						</li>
-						<li class="nav-item" v-bind:class="{'active': currentRoute === 'store_manager'}" id="store_manager_link" v-if="$root.accountType === 'application_admin'">
-							<router-link to="/app/store_manager/create_new" class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
+						<li 
+							v-if="$root.permissions['stores info read'] ||
+								$root.permissions['stores info create'] ||
+								$root.permissions['stores groups read'] ||
+								$root.permissions['stores amenities read'] ||
+								$root.permissions['stores order_settings read']
+							"
+							class="nav-item" 
+							:class="{'active': currentRoute === 'store_manager'}" 
+							id="store_manager_link"
+						>
+							<a class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
 								<i class="fa fa-home"></i>
 								<span class="title">Stores Manager</span>
 								<span class="arrow"></span>
-							</router-link>
+							</a>
 							<ul class="sub-menu">
 								<li class="nav-item" v-bind:class="{'active': currentRoute === 'store_manager' && currentSubRoute === 'create_new'}" id="store_manager_create_new_link">
 									<router-link to="/app/store_manager/create_new" class="nav-link">
@@ -219,12 +251,19 @@
 								<span class="selected"></span>
 							</router-link>
 						</li>
-						<li class="nav-item" v-bind:class="{'active': currentRoute === 'tax_manager'}" id="tax_manager_link">
-							<router-link to="/app/tax_manager" class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
+						<li 
+							v-if="$root.permissions['tax tax_classes read'] ||
+								$root.permissions['tax item_types read']
+							"
+							class="nav-item" 
+							:class="{'active': currentRoute === 'tax_manager'}" 
+							id="tax_manager_link"
+						>
+							<a class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
 								<i class="fa fa-calculator"></i>
 								<span class="title">Tax Manager</span>
 								<span class="arrow"></span>
-							</router-link>
+							</a>
 							<ul class="sub-menu">
 								<li class="nav-item" v-bind:class="{'active': currentRoute === 'tax_manager' && currentSubRoute === 'tax_classes'}" id="tax_manager_tax_classes_link">
 									<router-link to="/app/tax_manager/tax_classes" class="nav-link">
@@ -240,12 +279,24 @@
 								</li>
 							</ul>
 						</li>
-						<li class="nav-item" v-bind:class="{'active': currentRoute === 'menu_manager'}" id="menu_manager_link">
-							<router-link to="/app/menu_manager/menus" class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
+						<li 
+							v-if="$root.permissions['menu_manager menus read'] ||
+								$root.permissions['menu_manager tiers read'] ||
+								$root.permissions['menu_manager modifiers read'] ||
+								$root.permissions['menu_manager tags read'] ||
+								$root.permissions['menu_manager portions read'] ||
+								$root.permissions['menu_manager options read'] ||
+								$root.permissions['menu_manager attributes read']
+							"
+							class="nav-item" 
+							:class="{'active': currentRoute === 'menu_manager'}" 
+							id="menu_manager_link"
+						>
+							<a class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
 								<i class="fa fa-cutlery"></i>
 								<span class="title">Menu Manager</span>
 								<span class="arrow"></span>
-							</router-link>
+							</a>
 							<ul class="sub-menu">
 								<li class="nav-item" v-bind:class="{'active': currentRoute === 'menu_manager' && (currentSubRoute === 'menus' || currentSubRoute === 'categories' || currentSubRoute === 'items')}" id="menu_manager_menus_link">
 									<router-link to="/app/menu_manager/menus" class="nav-link">
@@ -310,12 +361,20 @@
 								<span class="selected"></span>
 							</router-link>
 						</li>
-						<li class="nav-item" v-bind:class="{'active': currentRoute === 'user_manager'}" id="user_manager_link" v-if="$root.accountType === 'application_admin'">
-							<router-link to="/app/user_manager/users" class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
+						<li 
+							v-if="$root.permissions['user_manager users read'] ||
+								$root.permissions['user_manager user_groups read'] ||
+								$root.permissions['user_manager attributes read']
+							"
+							class="nav-item" 
+							:class="{'active': currentRoute === 'user_manager'}" 
+							id="user_manager_link" 
+						>
+							<a class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
 								<i class="fa fa-users"></i>
 								<span class="title">Users Manager</span>
 								<span class="arrow"></span>
-							</router-link>
+							</a>
 							<ul class="sub-menu">
 								<li class="nav-item" v-bind:class="{'active': currentRoute === 'user_manager' && currentSubRoute === 'users'}" id="user_manager_applications_link">
 									<router-link to="/app/user_manager/users" class="nav-link">
@@ -337,12 +396,19 @@
 								</li>
 							</ul>
 						</li>
-						<li class="nav-item" v-bind:class="{'active': currentRoute === 'faq'}" id="faq_link" v-if="$root.accountType === 'application_admin'">
-							<router-link to="/app/faq/users" class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
+						<li 
+							v-if="$root.permissions['faq user read'] ||
+								$root.permissions['faq store read']
+							"
+							class="nav-item" 
+							:class="{'active': currentRoute === 'faq'}" 
+							id="faq_link" 
+						>
+							<a class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
 								<i class="fa fa-comments"></i>
 								<span class="title">FAQ</span>
 								<span class="arrow"></span>
-							</router-link>
+							</a>
 							<ul class="sub-menu">
 								<li class="nav-item" v-bind:class="{'active': currentRoute === 'faq' && currentSubRoute === 'users'}" id="faq_users_link">
 									<router-link to="/app/faq/users" class="nav-link">
@@ -365,12 +431,20 @@
 								<span class="selected"></span>
 							</router-link>
 						</li>
-						<li class="nav-item" v-bind:class="{'active': currentRoute === 'loyalty'}" id="loyalty_link" v-if="$root.accountType === 'application_admin'">
-							<router-link to="/app/loyalty" class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
+						<li 
+							v-if="$root.permissions['loyalty base_rule read'] ||
+								$root.permissions['loyalty promotion_rules read'] ||
+								$root.permissions['reward_tiers read']
+							"
+							class="nav-item" 
+							:class="{'active': currentRoute === 'loyalty'}" 
+							id="loyalty_link" 
+						>
+							<a class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
 								<i class="fa fa-link"></i>
 								<span class="title">Loyalty</span>
 								<span class="selected"></span>
-							</router-link>
+							</a>
 							<ul class="sub-menu">
 								<li class="nav-item" v-bind:class="{'active': currentRoute === 'loyalty' && currentSubRoute === 'base_rule'}" id="faq_users_link">
 									<router-link to="/app/loyalty/base_rule" class="nav-link">
@@ -392,19 +466,23 @@
 								</li>
 							</ul>
 						</li>
-<!-- 						<li class="nav-item" v-bind:class="{'active': currentRoute === 'promocodes'}" v-if="$root.accountType === 'application_admin'">
+ 						<li class="nav-item" v-bind:class="{'active': currentRoute === 'promocodes'}" v-if="$root.accountType === 'application_admin'">
 							<router-link to="/app/promocodes" class="nav-link nav-toggle">
 								<i class="fa fa-scissors"></i>
 								<span class="title">Promo codes</span>
 								<span class="selected"></span>
 							</router-link>
-						</li> -->
-						<li class="nav-item" v-bind:class="{'active': currentRoute === 'promotions'}" v-if="$root.accountType === 'application_admin'">
-							<router-link to="/app/promotions" class="nav-link nav-toggle">
+						</li>
+						<li 
+							v-if="$root.permissions['promotions read']"
+							class="nav-item" 
+							:class="{'active': currentRoute === 'promotions'}" 
+						>
+							<a class="nav-link nav-toggle">
 								<i class="fa fa-money"></i>
 								<span class="title">Promotions</span>
 								<span class="arrow"></span>
-							</router-link>
+							</a>
 							<ul class="sub-menu">
 								<li class="nav-item" v-bind:class="{'active': currentRoute === 'promotions' && currentSubRoute === 'geolocations'}" id="promotions_geolocations_link">
 									<router-link to="/app/promotions/geolocations" class="nav-link">
