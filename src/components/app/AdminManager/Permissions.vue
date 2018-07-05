@@ -59,7 +59,7 @@
 							<div class="form-body row">
 								<div class="col-md-12">
 									<div class="alert alert-danger" v-if="searchError.length">
-										<button class="close" data-close="alert" @click="clearSearchError()"></button>
+										<button class="close" data-close="alert" @click.prevent="clearSearchError()"></button>
 										<span>{{searchError}}</span>
 									</div>
 								</div>
