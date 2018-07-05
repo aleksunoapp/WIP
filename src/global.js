@@ -40,7 +40,7 @@ export default {
 		}
 	}()),
 	/**
-	 * base url for API calls, other than Message calls
+	 * base url for Resources API calls
 	 */
 	resourcesBaseUrl: (function () {
 		if (production) {
