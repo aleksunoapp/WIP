@@ -96,33 +96,6 @@ export default {
 	mounted () {
 		if (this.$route.params.expired === 'expired') {
 			this.errorMessage = 'Your session has expired. Please log back in.'
-		} else {
-			/* eslint-disable no-undef */
-			// check for login info in localStorage
-			const activeUser = localStorage.getItem('activeUser')
-			const userToken = localStorage.getItem('userToken')
-			const appId = localStorage.getItem('appId')
-			const appSecret = localStorage.getItem('appSecret')
-			const createdBy = localStorage.getItem('createdBy')
-			const accountType = localStorage.getItem('accountType')
-			const routePath = sessionStorage.getItem('routePath')
-			/* eslint-enable no-undef */
-			if (
-				activeUser &&
-				userToken &&
-				appId &&
-				appSecret &&
-				createdBy &&
-				accountType
-			) {
-				this.$root.activeUser = activeUser
-				this.$root.userToken = userToken
-				this.$root.appId = appId
-				this.$root.appSecret = appSecret
-				this.$root.createdBy = createdBy
-				this.$root.accountType = accountType
-				this.$router.push(routePath || '/app')
-			}
 		}
 
 		$('body').removeClass()

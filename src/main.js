@@ -44,6 +44,46 @@ var App = new Vue({
 			requestsPending: false
 		}
 	},
+	created () {
+		/* eslint-disable no-undef */
+		// check for login info in localStorage
+		const activeUser = localStorage.getItem('activeUser')
+		const userToken = localStorage.getItem('userToken')
+		const appId = localStorage.getItem('appId')
+		const appSecret = localStorage.getItem('appSecret')
+		const createdBy = localStorage.getItem('createdBy')
+		const accountType = localStorage.getItem('accountType')
+		const activeLocation = localStorage.getItem('activeLocation')
+		const routePath = sessionStorage.getItem('routePath')
+		console.log({
+			activeUser,
+			userToken,
+			appId,
+			appSecret,
+			createdBy,
+			accountType,
+			activeLocation,
+			routePath
+		})
+		/* eslint-enable no-undef */
+		if (
+			activeUser &&
+			userToken &&
+			appId &&
+			appSecret &&
+			createdBy &&
+			accountType
+		) {
+			this.activeUser = activeUser
+			this.userToken = userToken
+			this.appId = appId
+			this.appSecret = appSecret
+			this.createdBy = createdBy
+			this.accountType = accountType
+			this.activeLocation = JSON.parse(activeLocation)
+			this.$router.push(routePath || '/app')
+		}
+	},
 	methods: {
 		clearGlobalVariables () {
 			this.activeUser = {}
