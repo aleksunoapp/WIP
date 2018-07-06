@@ -96,7 +96,7 @@
 		        <div class="portlet-body">
 		            <div class="mt-element-list margin-top-15" v-if="menuCategories.length">
 		                <div class="mt-list-container list-news ext-1 no-border">
-		                    <ul v-for="category in menuCategories">
+		                    <ul v-for="category in menuCategories" :key="category.id">
 		                        <li class="mt-list-item margin-top-15 clickable" :id="'category-' + category.id" @click="determineNextAction(category)">
 		                        	<div class="margin-bottom-15 actions-on-top">
 		                        		<el-tooltip content="Edit" effect="light" placement="top">
@@ -153,7 +153,7 @@
 		                        <li :id="'category-details-' + category.id" class="mt-list-item collapsed" v-if="category.subcategories && category.subcategories.length">
 		                        	<h4>Sub Categories</h4>
 		                        	<ul>
-				                        <li class="mt-list-item actions-at-left margin-top-15 white clickable sub-mt-list-item" v-for="subcategory in category.subcategories" :id="'subcategory-' + subcategory.id" @click="viewCategoryItems(subcategory)">
+				                        <li class="mt-list-item actions-at-left margin-top-15 white clickable sub-mt-list-item" v-for="subcategory in category.subcategories" :id="'subcategory-' + subcategory.id" @click="viewCategoryItems(subcategory)" :key="subcategory.id">
 				                        	<div class="list-item-actions">
 				                        		<el-tooltip content="Edit" effect="light" placement="right">
 					                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editSubCategory(subcategory, $event)">
