@@ -32,7 +32,7 @@
 			                </tr>
 			            </thead>
 			            <tbody>
-			                <tr v-for="menu in menus">
+			                <tr v-for="menu in menus" :key="menu.id">
 			                	<td>
 			                		<div class="md-checkbox has-success">
 		                                <input type="checkbox" :id="`menu-${menu.id}`" class="md-check" v-model="menu.selected" @change="syncSelectAll(menu.selected)">
@@ -159,7 +159,7 @@ export default {
 							}
 						}
 					}
-					assignMenusVue.selectAllSelected = !(response.payload.some(menu => menu.selected === false))
+					assignMenusVue.selectAllSelected = response.payload.length && !response.payload.some(menu => !menu.selected)
 					assignMenusVue.menus = response.payload
 				}
 				assignMenusVue.displaySpinner = false
