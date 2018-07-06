@@ -506,10 +506,16 @@ export default {
 				if (service.category === category.id) {
 					if (service.subServices) {
 						service.subServices.forEach(subService => {
-							show = subService.isHighlighted && subService.price !== 0
+							let condition = subService.isHighlighted
+							if (condition) {
+								show = 1
+							}
 						})
 					} else {
-						show = service.isHighlighted && service.price !== 0
+						let condition = service.isHighlighted
+						if (condition) {
+							show = 1
+						}
 					}
 				}
 			})
