@@ -33,7 +33,7 @@
         						<div class="form-group form-md-line-input form-md-floating-label">
               						<input type="text" class="form-control input-sm" :class="{'edited': searchTerm.length}" v-model="searchTerm">
               						<label for="search_options_search">Search</label>
-              						<span class="help-block persist">Search by Store Name or Store Address.</span>
+              						<span class="help-block persist">Search by name, address or internal ID.</span>
               					</div>
 							</div>
 						</div>
@@ -85,6 +85,7 @@
 									id="parent" 
 									class="mt-list-item actions-at-left margin-top-15 clickable" 
 									v-for="store in currentActivePageItems" 
+									@click="editStore(store)"
 									:key="store.id">
 		                        	<div class="list-item-actions">
 										<el-tooltip content="Edit" effect="light" placement="right">
@@ -154,7 +155,7 @@
 		            <div class="mt-element-list">
 		                <div class="mt-list-container list-news">
 		                    <ul>
-		                        <li id="parent" class="mt-list-item actions-at-left margin-top-15 clickable" v-for="store in currentActiveSearchPageItems" @click="editStore(store)">
+		                        <li id="parent" class="mt-list-item actions-at-left margin-top-15 clickable" v-for="store in currentActiveSearchPageItems" @click="editStore(store)" :key="store.id">
 		                        	<div class="list-item-actions">
 		                        		<a class="btn btn-circle btn-icon-only btn-default">
                                             <i class="fa fa-lg fa-pencil"></i>
@@ -465,7 +466,11 @@ export default {
 					this.searchError = 'In order to use the search field your term must be at least 3 characters.'
 				} else {
 					for (var i = 0; i < this.stores.length; i++) {
-						if ((this.stores[i].display_name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) > -1) || (this.stores[i].address_line_1.toLowerCase().indexOf(this.searchTerm.toLowerCase()) > -1)) {
+						let searchArea = this.stores[i].display_name.toLowerCase() +
+							this.stores[i].address_line_1.toLowerCase() +
+							this.stores[i].city.toLowerCase() +
+							this.stores[i].internal_id.toLowerCase()
+						if (searchArea.indexOf(this.searchTerm.toLowerCase()) > -1) {
 							this.filteredResults.push(this.stores[i])
 						}
 					}
