@@ -80,7 +80,7 @@
 			            <div class="mt-element-list margin-top-15">
 			                <div class="mt-list-container list-news">
 			                    <ul>
-			                        <li id="parent" class="mt-list-item actions-at-left margin-top-15 clickable" v-for="tier in menuTiers" :id="'tier-' + tier.id" @click="assignMenusToTier(tier)">
+			                        <li class="mt-list-item actions-at-left margin-top-15 clickable" v-for="tier in menuTiers" :id="'tier-' + tier.id" @click="assignMenusToTier(tier)" :key="tier.id">
 			                        	<div class="list-item-actions">
 			                        		<el-tooltip content="Edit" effect="light" placement="right">
 				                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editMenuTier(tier, $event)">

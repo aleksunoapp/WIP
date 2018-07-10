@@ -219,20 +219,6 @@
 								<span class="selected"></span>
 							</router-link>
 						</li>
-<!-- 						<li class="nav-item" v-bind:class="{'active': currentRoute === 'news_feed'}" v-if="$root.accountType === 'application_admin'">
-							<router-link to="/app/news_feed" class="nav-link nav-toggle">
-								<i class="fa fa-newspaper-o"></i>
-								<span class="title">News Feed</span>
-								<span class="selected"></span>
-							</router-link>
-						</li> -->
-<!-- 						<li class="nav-item" v-bind:class="{'active': currentRoute === 'social_feed'}" v-if="$root.accountType === 'application_admin'">
-							<router-link to="/app/social_feed" class="nav-link nav-toggle">
-								<i class="fa fa-user"></i>
-								<span class="title">Social Feed</span>
-								<span class="selected"></span>
-							</router-link>
-						</li> -->
 						<li class="nav-item" v-bind:class="{'active': currentRoute === 'tax_manager'}" id="tax_manager_link">
 							<router-link to="/app/tax_manager" class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
 								<i class="fa fa-calculator"></i>
@@ -277,6 +263,12 @@
 									<router-link to="/app/menu_manager/modifiers" class="nav-link">
 										<i class="fa fa-cogs"></i>
 										<span class="title">Modifiers</span>
+									</router-link>
+								</li>
+								<li class="nav-item" v-bind:class="{'active': currentRoute === 'menu_manager' && currentSubRoute === 'modifier_tiers'}" id="menu_manager_modifier_tiers_link">
+									<router-link to="/app/menu_manager/modifier_tiers" class="nav-link">
+										<i class="fa fa-sitemap"></i>
+										<span class="title">Modifier Tiers</span>
 									</router-link>
 								</li>
 								<li class="nav-item" v-bind:class="{'active': currentRoute === 'menu_manager' && currentSubRoute === 'tags'}" id="menu_manager_tags_link">

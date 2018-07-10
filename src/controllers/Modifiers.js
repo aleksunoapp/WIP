@@ -7,22 +7,16 @@ export default ({
 	/**
 	 * Call to pitapit API to get a list of the modifiers for a store.
 	 * @function
-	 * @param {string} appId - The appId of the current application.
-	 * @param {string} appSecret - The appSecret of the current application.
 	 * @param {integer} storeId - The id of the store to get the modifier for.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	getStoreModifiers: function (appId, appSecret, storeId) {
+	getStoreModifiers: function (storeId) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'GET',
 				dataType: 'json',
 				url: '/app/modifiers/' + storeId,
 				data: {},
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader('app-id', appId)
-					xhr.setRequestHeader('app-secret', appSecret)
-				},
 				success: function (response) {
 					resolve(response)
 				},

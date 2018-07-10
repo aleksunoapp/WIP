@@ -34,7 +34,7 @@
     	                </tr>
     	            </thead>
     	            <tbody>
-    	                <tr v-for="modifier in storeModifiers">
+    	                <tr v-for="modifier in storeModifiers" :key="modifier.id">
     	                	<td>
     	                		<div class="md-checkbox has-success">
                                     <input type="checkbox" :id="'modifier_checkbox_' + modifier.id" class="md-check" v-model="modifier.selected">
@@ -119,7 +119,7 @@ export default {
 		getStoreModifiers () {
 			var modifiersListVue = this
 			modifiersListVue.storeModifiers = []
-			ModifiersFunctions.getStoreModifiers(modifiersListVue.$root.appId, modifiersListVue.$root.appSecret, modifiersListVue.$root.activeLocation.id).then(response => {
+			ModifiersFunctions.getStoreModifiers(modifiersListVue.$root.activeLocation.id).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
 					modifiersListVue.storeModifiers = response.payload
 					if (modifiersListVue.appliedModifiers.length) {

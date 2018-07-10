@@ -20,6 +20,7 @@ import Categories from '../components/app/MenuManager/Categories'
 import Items from '../components/app/MenuManager/Items'
 import Modifiers from '../components/app/MenuManager/Modifiers'
 import MenuTiers from '../components/app/MenuManager/MenuTiers'
+import ModifierTiers from '../components/app/MenuManager/ModifierTiers/ModifierTiers'
 import Tags from '../components/app/MenuManager/Tags'
 import Portions from '../components/app/MenuManager/Portions'
 import Options from '../components/app/MenuManager/Options'
@@ -107,6 +108,7 @@ const router = new Router({
 				{path: 'menu_manager/categories/:menu_id', name: 'Categories', component: Categories, children: [{path: 'edit_category/:category_id', name: 'Edit Category', meta: { adminOnly: false }}, {path: 'add_sub_category', name: 'Add Sub Category', meta: { adminOnly: false }}, {path: 'edit_sub_category/:sub_category_id', name: 'Edit Sub Category'}], meta: { adminOnly: false }},
 				{path: 'menu_manager/items/:category_id', name: 'Items', component: Items, children: [{path: 'edit_item/:item_id', name: 'Edit Item'}], meta: { adminOnly: false }},
 				{path: 'menu_manager/modifiers', name: 'Modifiers', component: Modifiers, children: [{path: 'edit_category/:modifier_category_id', name: 'Edit Modifier Category'}], meta: { adminOnly: false }},
+				{path: 'menu_manager/modifier_tiers', name: 'ModifierTiers', component: ModifierTiers, children: [{path: 'edit/:modifier_tier_id', name: 'Edit Modifier Tier'}], meta: { adminOnly: false }},
 				{path: 'menu_manager/tags', name: 'Tags', component: Tags, children: [{path: 'edit_tag/:tag_id', name: 'Edit Tag'}], meta: { adminOnly: false }},
 				{path: 'menu_manager/portions', name: 'Portions', component: Portions, meta: { adminOnly: false }},
 				{path: 'menu_manager/options', name: 'Options', component: Options, meta: { adminOnly: false }},

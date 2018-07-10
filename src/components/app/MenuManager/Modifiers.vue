@@ -345,7 +345,7 @@ export default {
 			this.displayModifierData = true
 			var menusVue = this
 			menusVue.storeModifiers = []
-			return ModifiersFunctions.getStoreModifiers(menusVue.$root.appId, menusVue.$root.appSecret, menusVue.$root.activeLocation.id).then(response => {
+			return ModifiersFunctions.getStoreModifiers(menusVue.$root.activeLocation.id).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
 					menusVue.displayModifierData = false
 					menusVue.storeModifiers = response.payload
