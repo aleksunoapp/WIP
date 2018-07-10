@@ -35,7 +35,7 @@
 <script>
 import Modal from '@/components/modules/Modal'
 import ModifierPicker from '@/components/app/MenuManager/Modifiers/ModifierCategoryPicker'
-import ModifierTierFunctions from '@/controllers/ModifierTiers'
+import ModifierTiersFunctions from '@/controllers/ModifierTiers'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
@@ -67,7 +67,7 @@ export default {
 		 */
 		getModifierTierDetails () {
 			let assignTiersVue = this
-			return ModifierTierFunctions.getModifierTierDetails(assignTiersVue.tier).then(response => {
+			return ModifierTiersFunctions.getModifierTierDetails(assignTiersVue.tier).then(response => {
 				assignTiersVue.assignedModifiers = response.payload.map(category => category.id)
 				assignTiersVue.showModal = true
 			}).catch(reason => {
@@ -123,7 +123,7 @@ export default {
 				id: this.tier.id
 			}
 			this.validate().then(response => {
-				return ModifierTierFunctions.addModifiersToTier(payload).then(response => {
+				return ModifierTiersFunctions.addModifiersToTier(payload).then(response => {
 					assignTiersVue.$emit('assigned')
 				}).catch(reason => {
 					assignTiersVue.showModal = true

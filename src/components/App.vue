@@ -671,7 +671,10 @@ export default {
 					appVue.$root.requestsPending = false
 				}
 			}).catch(reason => {
-				console.log(reason)
+				console.log(`
+					Requests are not currently available.
+					${reason.responseJSON && reason.responseJSON.message ? reason.responseJSON.message : ''}
+				`)
 			})
 		},
 		/**

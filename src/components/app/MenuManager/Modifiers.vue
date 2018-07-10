@@ -1,3 +1,10 @@
+<!--
+
+on load, get Modifier Tiers, add <el-select> under portlet-header with an extra <el-option>all Tiers</el-option>
+when <el-select> emits @change, call ModifierTiersFunctions.getModifierTierDetails() => storeModifiers = response.payload
+
+-->
+
 <template>
 	<div>
 		<!-- BEGIN PAGE BAR -->
@@ -110,6 +117,32 @@
 		            </div>
 		        </div>
 		        <div class="portlet-body">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="alert alert-danger" v-show="errorMessage.length" ref="listErrorMessage">
+								<button class="close" @click.prevent="clearError('listErrorMessage')"></button>
+								<span>{{listErrorMessage}}</span>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-12">
+							<el-select
+								v-if="modifierTiers !== null"
+								size="small"
+								v-model="indexOfTierToDisplay"
+								placeholder="all Tiers"
+								@change="updateList()"
+								:clearable="true">
+								<el-option
+									v-for="(tier, index) in modifierTiers"
+									:label="tier.name"
+									:value="index"
+									:key="tier.id">
+								</el-option>
+							</el-select>
+						</div>
+					</div>
 		            <div class="mt-element-list margin-top-15" v-if="storeModifiers.length">
 		                <div class="mt-list-container list-news ext-1 no-border">
 		                    <ul>
@@ -219,6 +252,8 @@ import ModifiersFunctions from '../../../controllers/Modifiers'
 import MenuTree from '../../modules/MenuTree'
 import ResourcePicker from '../../modules/ResourcePicker'
 import ApplyModifierToItemsAtLocations from '@/components/app/MenuManager/Modifiers/ApplyModifierToItemsAtLocations'
+import ajaxErrorHandler from '@/controllers/ErrorController'
+import ModifierTiersFunctions from '@/controllers/ModifierTiers'
 
 export default {
 	data () {
@@ -231,7 +266,6 @@ export default {
 			editCategoryModalActive: false,
 			deleteCategoryModalActive: false,
 			storeModifiers: [],
-			customText: 'There are no modifier categories in this menu. Click on the button above to add one.',
 			newCategory: {
 				name: '',
 				desc: '',
@@ -254,15 +288,77 @@ export default {
 				newMenu: false
 			},
 			modifierToApplyToItemsAtLocations: {},
-			showModifierToApplyToItemsAtLocationsModal: false
+			showModifierToApplyToItemsAtLocationsModal: false,
+			modifierTiers: null,
+			listErrorMessage: '',
+			indexOfTierToDisplay: null
+		}
+	},
+	computed: {
+		customText () {
+			if (this.indexOfTierToDisplay === '') {
+				return 'There are no Modifier Categories in this Menu.'
+			} else {
+				return 'There are no Modifier Categories in this Tier.'
+			}
 		}
 	},
 	mounted () {
 		if (this.$root.activeLocation && this.$root.activeLocation.id) {
 			this.getStoreModifiers()
 		}
+		this.getModifierTiers()
 	},
 	methods: {
+        /**
+		 * To update the modifiers shown in the list based on user's filter selection
+		 * @function
+		 * @returns {undefined}
+		 */
+		updateList () {
+			if (this.indexOfTierToDisplay !== '') {
+				this.getModifierTierDetails()
+			} else {
+				this.getStoreModifiers()
+			}
+		},
+        /**
+		 * To fetch a list of modifiers for a tier
+		 * @function
+		 * @returns {object} - A network call promise
+		 */
+		getModifierTierDetails () {
+			let modifiersVue = this
+			const tier = modifiersVue.modifierTiers[modifiersVue.indexOfTierToDisplay]
+			return ModifierTiersFunctions.getModifierTierDetails(tier).then(response => {
+				modifiersVue.storeModifiers = response.payload
+			}).catch(reason => {
+				ajaxErrorHandler({
+					reason,
+					errorName: 'listErrorMessage',
+					errorText: 'We couldn\'t fetch modifiers for this tier',
+					vue: modifiersVue
+				})
+			})
+		},
+		/**
+		 * To fetch a list of Modifier Tiers
+		 * @function
+		 * @returns {object} Network call promise
+		 */
+		getModifierTiers () {
+			let modifiersVue = this
+			return ModifierTiersFunctions.getModifierTiers().then(response => {
+				modifiersVue.modifierTiers = response.payload
+			}).catch(reason => {
+				ajaxErrorHandler({
+					reason,
+					errorName: 'listErrorMessage',
+					errorText: 'We couldn\'t fetch modifier tiers',
+					vue: modifiersVue
+				})
+			})
+		},
 		/**
 		 * To display the modal to apply a modifier to selected items at selected locations.
 		 * @function
@@ -568,10 +664,11 @@ export default {
 		/**
 		 * To clear the current error.
 		 * @function
+		 * @param {string} name - Name of the error variable
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
+		clearError (name = 'errorMessage') {
+			this[name] = ''
 		},
 		/**
 		 * To toggle the create menu panel, initially set to opened

@@ -55,16 +55,6 @@ var App = new Vue({
 		const accountType = localStorage.getItem('accountType')
 		const activeLocation = localStorage.getItem('activeLocation')
 		const routePath = sessionStorage.getItem('routePath')
-		console.log({
-			activeUser,
-			userToken,
-			appId,
-			appSecret,
-			createdBy,
-			accountType,
-			activeLocation,
-			routePath
-		})
 		/* eslint-enable no-undef */
 		if (
 			activeUser &&

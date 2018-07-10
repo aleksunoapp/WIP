@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import ModifierTierFunctions from '@/controllers/ModifierTiers'
+import ModifierTiersFunctions from '@/controllers/ModifierTiers'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
@@ -92,8 +92,8 @@ export default {
 		},
 		getModifierTiers () {
 			let pickerVue = this
-			return ModifierTierFunctions.getModifierTiers().then(response => {
-				this.modifierTiers = response.payload.map(tier => {
+			return ModifierTiersFunctions.getModifierTiers().then(response => {
+				pickerVue.modifierTiers = response.payload.map(tier => {
 					return {
 						...tier,
 						selected: pickerVue.previouslySelected.includes(tier.id)
