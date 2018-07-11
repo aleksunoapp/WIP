@@ -835,9 +835,6 @@ export default {
   margin: 3px;
 }
 
-.rounded-button-group-block {
-}
-
 .resource-wrapper {
   display: flex;
   flex-direction: column;
