@@ -862,11 +862,21 @@ export default {
 				if (this.locationSearch.search.length < 3) {
 					this.searchError = 'Search term must be at least 3 characters'
 				} else {
-					if (this.activeLocation && this.activeLocation.id && ((this.activeLocation.display_name.toLowerCase().indexOf(this.locationSearch.search.toLowerCase()) > -1) || (this.activeLocation.address_line_1.toLowerCase().indexOf(this.locationSearch.search.toLowerCase()) > -1))) {
-						this.filteredLocations.push(this.activeLocation)
+					if (this.activeLocation && this.activeLocation.id) {
+						let searchArea =
+							this.activeLocation.display_name +
+							this.activeLocation.address_line_1 +
+							this.activeLocation.internal_id
+						if (searchArea.toLowerCase().indexOf(this.locationSearch.search.toLowerCase()) > -1) {
+							this.filteredLocations.push(this.activeLocation)
+						}
 					} else {
 						for (var i = 0; i < this.$root.storeLocations.length; i++) {
-							if ((this.$root.storeLocations[i].display_name.toLowerCase().indexOf(this.locationSearch.search.toLowerCase()) > -1) || (this.$root.storeLocations[i].address_line_1.toLowerCase().indexOf(this.locationSearch.search.toLowerCase()) > -1)) {
+							let searchArea =
+								this.$root.storeLocations[i].display_name +
+								this.$root.storeLocations[i].address_line_1 +
+								this.$root.storeLocations[i].internal_id
+							if (searchArea.toLowerCase().indexOf(this.locationSearch.search.toLowerCase()) > -1) {
 								this.filteredLocations.push(this.$root.storeLocations[i])
 							}
 						}
