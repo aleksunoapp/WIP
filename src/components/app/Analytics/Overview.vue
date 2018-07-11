@@ -338,7 +338,8 @@ export default {
 		 */
 		formatUSD (val) {
 			if (val !== null && val !== undefined) {
-				let local = val.toLocaleString('en-US', {style: 'currency', currency: 'USD'})
+				let local = Number(val)
+				local = local.toLocaleString('en-US', {style: 'currency', currency: 'USD'})
 				if (local.indexOf('.') !== -1) {
 					return local.slice(0, -3)
 				} else {
