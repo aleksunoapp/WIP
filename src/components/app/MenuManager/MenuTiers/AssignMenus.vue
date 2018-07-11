@@ -14,7 +14,7 @@
                     <span>{{ errorMessage }}</span>
 				</div>
 				<div class="form-body invite-user-form height-mod">
-			        <table class="table">
+			        <table class="table" v-show="menus.length">
 			            <thead>
 			                <tr>
 			                	<th> 
@@ -48,11 +48,25 @@
 			                </tr>
 			            </tbody>
 			        </table>
+					<p v-show="!displaySpinner && !menus.length">
+						The corporate store does not have any Menus.
+					</p>
 				</div>
 			</form>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button type="button" class="btn blue" @click="assignMenusToTier()">Assign</button>
+			<button 
+				v-show="menus.length"
+				type="button" 
+				class="btn blue" 
+				@click="assignMenusToTier()">
+				Assign
+			</button>
+			<button 
+				v-show="!displaySpinner && !menus.length"
+				type="button" 
+				class="btn blue" 
+				@click="closeModal()">Close</button>
 		</div>
 	</modal>
 </template>

@@ -135,11 +135,12 @@
   			</div>
         </div>
         <!-- END CREATE NEW MENU-->
-        <loading-screen :show="displayMenuData" :color="'#2C3E50'" :display="'inline'"></loading-screen>
+
         <div class="alert alert-info center margin-top-20" v-if="!$root.activeLocation.id">
             <h4>No Store Selected</h4>
             <p>Please select a store from the stores panel on the right to view its menus</p>
         </div>
+
         <!-- BEGIN MENUS LIST-->
         <div v-if="$root.activeLocation && $root.activeLocation.id">
 		    <div class="portlet light portlet-fit bordered margin-top-20">
@@ -160,7 +161,47 @@
 						<input type="radio" class="toggle" v-model="menuFilter" value="2"> Add-on Menus </label>
 					</div>
 		        </div>
-		        <div class="portlet-body" v-if="$root.activeLocation && $root.activeLocation.id && storeMenus.length && !displayMenuData">
+
+		        <div class="portlet-body" v-if="$root.activeLocation && $root.activeLocation.id && !displayMenuData">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="alert alert-danger" v-show="listErrorMessage.length" ref="listErrorMessage">
+								<button class="close" @click.prevent="clearError('listErrorMessage')"></button>
+								<span>{{listErrorMessage}}</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="row" v-show="$root.activeLocation.is_corporate">
+						<div class="col-xs-12">
+							<el-select
+								v-if="menuTiers !== null"
+								size="small"
+								v-model="indexOfTierToDisplay"
+								placeholder="Select Tier"
+								@change="updateList()"
+								:clearable="true">
+								<el-option
+									v-for="(tier, index) in menuTiers"
+									:label="tier.name"
+									:value="index"
+									:key="tier.id">
+								</el-option>
+							</el-select>
+						</div>
+					</div>
+
+			        <loading-screen :show="displayMenuData" :color="'#2C3E50'" :display="'inline'"></loading-screen>
+
+					<div v-if="!storeMenus.length && !displayMenuData">
+						<no-results 
+							:show="!storeMenus.length" 
+							:type="'menus'" 
+							:custom="true" 
+							:text="customText">
+						</no-results>
+					</div>
+
 		            <div class="mt-element-list margin-top-15">
 		                <div class="mt-list-container list-news ext-1 no-border">
 		                    <ul>
@@ -237,10 +278,6 @@
 		                </div>
 		            </div>
 		        </div>
-		        <div v-if="$root.activeLocation.id && !storeMenus.length && !displayMenuData">
-		        	<no-results v-if="$root.accountType === 'application_admin'" :show="!storeMenus.length" :type="'menus'"></no-results>
-		            <no-results v-if="$root.accountType === 'store_admin'" :show="!storeMenus.length" :type="'menus'" :custom="true" :text="customText"></no-results>
-		        </div>
 		    </div>
         </div>
         <!-- END MENUS LIST-->
@@ -276,6 +313,8 @@ import ApplyAddOnCategories from './Menus/ApplyAddOnCategories'
 import DeleteMenu from './Menus/DeleteMenu'
 import MenuHours from './Menus/MenuHours'
 import ResourcePicker from '../../modules/ResourcePicker'
+import ajaxErrorHandler from '@/controllers/ErrorController'
+import MenuTiersFunctions from '@/controllers/MenuTiers'
 
 export default {
 	data () {
@@ -290,7 +329,6 @@ export default {
 			editMenuModalActive: false,
 			deleteMenuModalActive: false,
 			addOnCategoriesModalActive: false,
-			customText: 'No menus found for this location.',
 			passedMenuId: 0,
 			passedMenu: {},
 			newMenu: {
@@ -320,12 +358,26 @@ export default {
 				newMenu: false
 			},
 			duplicateMenuModalActive: false,
-			copyMenuModalActive: false
+			copyMenuModalActive: false,
+			menuTiers: null,
+			listErrorMessage: '',
+			indexOfTierToDisplay: null
+		}
+	},
+	computed: {
+		customText () {
+			if (!this.indexOfTierToDisplay) {
+				return 'This location does not have any Menus.'
+			} else {
+				return 'This Tier does not have any Menus.'
+			}
 		}
 	},
 	watch: {
 		'$root.activeLocation' () {
 			this.getStoreMenus()
+			this.indexOfTierToDisplay = null
+			this.getMenuTiers()
 		},
 		menuFilter () {
 			this.getStoreMenus()
@@ -335,8 +387,58 @@ export default {
 		if (this.$root.activeLocation && this.$root.activeLocation.id) {
 			this.getStoreMenus()
 		}
+		this.getMenuTiers()
 	},
 	methods: {
+        /**
+		 * To update the modifiers shown in the list based on user's filter selection
+		 * @function
+		 * @returns {undefined}
+		 */
+		updateList () {
+			if (this.indexOfTierToDisplay !== '') {
+				this.getMenuTierDetails()
+			} else {
+				this.getStoreMenus()
+			}
+		},
+        /**
+		 * To fetch a list of modifiers for a tier
+		 * @function
+		 * @returns {object} - A network call promise
+		 */
+		getMenuTierDetails () {
+			let menusVue = this
+			const tier = menusVue.menuTiers[menusVue.indexOfTierToDisplay]
+			return MenuTiersFunctions.getTierMenus(tier.id).then(response => {
+				menusVue.storeMenus = response.payload
+			}).catch(reason => {
+				ajaxErrorHandler({
+					reason,
+					errorName: 'listErrorMessage',
+					errorText: 'We couldn\'t fetch modifiers for this tier',
+					vue: menusVue
+				})
+			})
+		},
+		/**
+		 * To fetch a list of Menu Tiers
+		 * @function
+		 * @returns {object} Network call promise
+		 */
+		getMenuTiers () {
+			let menusVue = this
+			return MenuTiersFunctions.getMenuTiers().then(response => {
+				menusVue.menuTiers = response.payload
+			}).catch(reason => {
+				ajaxErrorHandler({
+					reason,
+					errorName: 'listErrorMessage',
+					errorText: 'We couldn\'t fetch modifier tiers',
+					vue: menusVue
+				})
+			})
+		},
 		/**
 		 * To display the modal for copying menus.
 		 * @function

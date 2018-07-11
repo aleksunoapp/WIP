@@ -1,10 +1,3 @@
-<!--
-
-on load, get Modifier Tiers, add <el-select> under portlet-header with an extra <el-option>all Tiers</el-option>
-when <el-select> emits @change, call ModifierTiersFunctions.getModifierTierDetails() => storeModifiers = response.payload
-
--->
-
 <template>
 	<div>
 		<!-- BEGIN PAGE BAR -->
@@ -119,19 +112,19 @@ when <el-select> emits @change, call ModifierTiersFunctions.getModifierTierDetai
 		        <div class="portlet-body">
 					<div class="row">
 						<div class="col-md-12">
-							<div class="alert alert-danger" v-show="errorMessage.length" ref="listErrorMessage">
+							<div class="alert alert-danger" v-show="listErrorMessage.length" ref="listErrorMessage">
 								<button class="close" @click.prevent="clearError('listErrorMessage')"></button>
 								<span>{{listErrorMessage}}</span>
 							</div>
 						</div>
 					</div>
-					<div class="row">
+					<div class="row" v-show="$root.activeLocation.is_corporate">
 						<div class="col-xs-12">
 							<el-select
 								v-if="modifierTiers !== null"
 								size="small"
 								v-model="indexOfTierToDisplay"
-								placeholder="all Tiers"
+								placeholder="Select Tier"
 								@change="updateList()"
 								:clearable="true">
 								<el-option
@@ -297,9 +290,9 @@ export default {
 	computed: {
 		customText () {
 			if (this.indexOfTierToDisplay === '') {
-				return 'There are no Modifier Categories in this Menu.'
+				return 'This location does not have any Modifier Categories.'
 			} else {
-				return 'There are no Modifier Categories in this Tier.'
+				return 'This tier does not have any Modifier Categories.'
 			}
 		}
 	},
@@ -682,6 +675,8 @@ export default {
 	watch: {
 		'$root.activeLocation' () {
 			this.getStoreModifiers()
+			this.indexOfTierToDisplay = null
+			this.getModifierTiers()
 		}
 	},
 	components: {
