@@ -184,7 +184,10 @@
 			                        	<div class="col-md-12">
 			                        		<div v-if="modifierItem.tags && modifierItem.tags.length">
                 				        	    <ul class="item-modifier-list">
-                				        	    	<li class="col-md-6" v-for="tag in modifierItem.tags">
+                				        	    	<li 
+														class="col-md-6" 
+														v-for="tag in modifierItem.tags"
+														:key="tag.id">
                 				        	    		{{tag.name}}
                 				        	    	</li>
                 				        	    </ul>
@@ -204,7 +207,10 @@
 			                        	<div class="col-md-12">
 			                        		<div v-if="modifierItem.modifier_item_portions && modifierItem.modifier_item_portions.length">
                 				        	    <ul class="item-modifier-list">
-                				        	    	<li class="col-md-6" v-for="portion in modifierItem.modifier_item_portions">
+                				        	    	<li 
+														class="col-md-6" 
+														v-for="portion in modifierItem.modifier_item_portions"
+														:key="portion.id">
                 				        	    		{{portion.name}}
                 				        	    	</li>
                 				        	    </ul>
@@ -224,7 +230,10 @@
 			                        	<div class="col-md-12">
 			                        		<div v-if="modifierItem.options && modifierItem.options.length">
                 				        	    <ul class="item-modifier-list">
-                				        	    	<li class="col-md-6" v-for="option in modifierItem.options">
+                				        	    	<li 
+														class="col-md-6" 
+														v-for="option in modifierItem.options"
+														:key="option.id">
                 				        	    		{{option.name}}
                 				        	    	</li>
                 				        	    </ul>
