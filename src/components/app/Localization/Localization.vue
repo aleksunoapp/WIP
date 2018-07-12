@@ -108,7 +108,14 @@
 					<div class="col-md-3">
 						<el-collapse class="accordion margin-bottom-20" v-model="languageAccordionOpen" accordion>
 						  <el-collapse-item title="Language" name="1">
-						    <div v-for="language in allLocales" class="clickable" :class="{'active-term' : language.language_code === localeForTranslation.language_code}" @click="selectLocaleForTranslation(language)">{{language.country}} ({{language.language_code}})</div>
+						    <div 
+								v-for="language in allLocales" 
+								class="clickable" 
+								:class="{'active-term' : language.language_code === localeForTranslation.language_code}" 
+								@click="selectLocaleForTranslation(language)"
+								:key="language.id">
+								{{language.country}} ({{language.language_code}})
+							</div>
 						    <div class="helper-text" v-if="!allLocales.length">No languages yet. Create one above.</div>
 						  </el-collapse-item>
 						</el-collapse>
@@ -116,7 +123,14 @@
 					<div class="col-md-6" v-show="localeForTranslation.id">
 						<el-collapse class="accordion margin-bottom-20" v-model="activeAccordionSection" accordion>
 						  <el-collapse-item v-for="(group, index) in translationTermGroups" :title="group.group" :name="index + 1" :key="group.group">
-						    <div v-for="term in group.terms" class="clickable" :class="{'active-term' : term.term === activeTranslationGroup.term}" @click="getTerm(group.groupUrl, term.term)">{{term.label}}</div>
+						    <div 
+								v-for="term in group.terms" 
+								class="clickable" 
+								:class="{'active-term' : term.term === activeTranslationGroup.term}" 
+								@click="getTerm(group.groupUrl, term.term)"
+								:key="term.id">
+								{{term.label}}
+							</div>
 						  </el-collapse-item>
 						</el-collapse>
 					</div>
@@ -148,7 +162,10 @@
       				<div class="left margin-top-20">
 						<button v-if="terms.length" @click="translateTerms()" class="btn blue">Save</button>
 					</div>
-					<p v-if="!terms.length" class="no-data center">Select a term to begin translating.</p>
+					<div v-show="!loadingTerms">
+						<p v-if="!activeTranslationGroup.term" class="no-data center">Select a term to begin translating.</p>
+						<p v-if="activeTranslationGroup.term && !terms.length" class="no-data center">There are no items to translate.</p>
+					</div>
 				</div>
   			</div>
         </div>
@@ -382,8 +399,27 @@ export default {
 							label: 'Option Item Image'
 						}
 					]
+				},
+				{
+					group: 'News',
+					groupUrl: 'news',
+					terms: [
+						{
+							term: 'news_title',
+							label: 'News Title'
+						},
+						{
+							term: 'news_short_description',
+							label: 'News Short Description'
+						},
+						{
+							term: 'news_body',
+							label: 'News Body'
+						}
+					]
 				}
 			],
+			loadingTerms: false,
 			terms: [],
 			activeTranslationGroup: {
 				groupUrl: '',
@@ -585,14 +621,17 @@ export default {
 			this.activeTranslationGroup.groupUrl = groupUrl
 			this.activeTranslationGroup.term = term
 			this.terms = []
+			this.loadingTerms = true
 			var localizationVue = this
 			LocalizationFunctions.getTerm({'field': term, 'language': localizationVue.localeForTranslation.language_code}, localizationVue.$root.appId, localizationVue.$root.appSecret, localizationVue.$root.userToken).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
 					localizationVue.terms = response.payload
+					localizationVue.loadingTerms = false
 				} else {
 					localizationVue.createOrEditErrorMessage = response.message
 				}
 			}).catch(reason => {
+				localizationVue.loadingTerms = false
 				ajaxErrorHandler({
 					reason,
 					errorText: 'We could not fetch translation terms for this entry',
@@ -642,7 +681,7 @@ export default {
 		 */
 		getLocales () {
 			var localizationVue = this
-			LocalizationFunctions.getLocales(localizationVue.$root.activeLocation.id, localizationVue.$root.appId, localizationVue.$root.appSecret, localizationVue.$root.userToken).then(response => {
+			LocalizationFunctions.getLocales().then(response => {
 				if (response.code === 200 && response.status === 'ok') {
 					if (response.payload.length) {
 						localizationVue.allLocales = response.payload.sort((a, b) => {
