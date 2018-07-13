@@ -107,5 +107,23 @@ export default ({
 				error: (error) => reject(error)
 			})
 		})
+	},
+	/**
+	 * Call to API apply a tier of modifiers to menu items
+	 * @function
+	 * @param {object} data - ID of the tier and array of menu item IDs
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	applyModifierTierToMenuItems (data) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'POST',
+				dataType: 'json',
+				url: '/app/modifier_tiers/items',
+				data,
+				success: (response) => resolve(response),
+				error: (error) => reject(error)
+			})
+		})
 	}
 })

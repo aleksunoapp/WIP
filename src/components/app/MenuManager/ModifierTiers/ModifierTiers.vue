@@ -68,10 +68,6 @@
 			</div>
 			<div class="portlet-body">
 
-				<loading-screen :show="loadingModifierTiers" :color="'#2C3E50'" :display="'inline'"></loading-screen>
-
-				<no-results :show="!modifierTiers.length" :type="'menu tiers'"></no-results>
-
 				<div class="col-xs-12">
 					<div class="alert alert-danger" v-show="listErrorMessage.length" ref="listErrorMessage">
 						<button class="close" data-close="alert" @click="clearError('listErrorMessage')"></button>
@@ -79,27 +75,36 @@
 					</div>
 				</div>
 
+				<loading-screen :show="loadingModifierTiers" :color="'#2C3E50'" :display="'inline'"></loading-screen>
+
+				<no-results :show="!modifierTiers.length" :type="'menu tiers'"></no-results>
+
 				<div class="mt-element-list margin-top-15">
 					<div class="mt-list-container list-news">
 						<ul>
 							<li 
-								class="mt-list-item actions-at-left margin-top-15" 
+								class="mt-list-item margin-top-15" 
 								:class="{'highlight' : animated === `tier-${tier.id}`}" 
 								v-for="tier in modifierTiers" 
 								:id="'tier-' + tier.id" 
 								:key="tier.id">
-								<div class="list-item-actions">
-									<el-tooltip content="Edit" effect="light" placement="right">
+								<div class="margin-bottom-15 actions-on-top">
+									<el-tooltip content="Edit" effect="light" placement="top">
 										<a class="btn btn-circle btn-icon-only btn-default" @click="openEditModal(tier)">
 											<i class="fa fa-lg fa-pencil"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip content="Assign modifiers" effect="light" placement="right">
+									<el-tooltip content="Assign modifiers" effect="light" placement="top">
 										<a class="btn btn-circle btn-icon-only btn-default" @click="openAssignModal(tier)" >
 											<i class="icon-layers"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip content="Assign modifiers" effect="light" placement="right">
+									<el-tooltip content="Apply to items" effect="light" placement="top">
+										<a class="btn btn-circle btn-icon-only btn-default" @click="openApplyToMenuItemsModal(tier)" >
+											<i class="fa fa-lg fa-plus"></i>
+										</a>
+									</el-tooltip>
+									<el-tooltip content="Delete tier" effect="light" placement="top">
 										<a class="btn btn-circle btn-icon-only btn-default" @click="openDeleteModal(tier)" >
 											<i class="fa fa-lg fa-trash"></i>
 										</a>
@@ -126,9 +131,16 @@
     	<assign-modifiers 
 			v-if="showAssignModifiersModal"
 			:tier="tierToAssignTo" 
-			@assigned="confirmAssigned"
+			@applied="confirmAssigned"
 			@close="closeAssignModal">
 		</assign-modifiers>
+
+		<apply-modifier-tier-to-menu-items 
+			v-if="showApplyToMenuItemsModal"
+			:tier="tierToApplyToMenuItems" 
+			@assigned="confirmAppliedToMenuItems"
+			@close="closeApplyToMenuItemsModal">
+		</apply-modifier-tier-to-menu-items>
 
 		<delete-modifier-tier 
 			v-if="showDeleteTierModal" 
@@ -147,6 +159,7 @@ import ModifierTiersFunctions from '@/controllers/ModifierTiers'
 import EditModifierTier from '@/components/app/MenuManager/ModifierTiers/EditModifierTier'
 import DeleteModifierTier from '@/components/app/MenuManager/ModifierTiers/DeleteModifierTier'
 import AssignModifiers from '@/components/app/MenuManager/ModifierTiers/AssignModifiersToModifierTier'
+import ApplyModifierTierToMenuItems from '@/components/app/MenuManager/ModifierTiers/ApplyModifierTierToMenuItems'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
@@ -162,13 +175,15 @@ export default {
 				name: ''
 			},
 			loadingModifierTiers: false,
-			modifierTiers: [],
 			listErrorMessage: '',
+			modifierTiers: [],
+			animated: '',
 			showAssignModifiersModal: false,
 			tierToAssignTo: {},
 			showEditTierModal: false,
 			tierToEdit: {},
-			animated: '',
+			showApplyToMenuItemsModal: false,
+			tierToApplyToMenuItems: {},
 			showDeleteTierModal: false,
 			tierToDelete: {}
 		}
@@ -372,6 +387,38 @@ export default {
 			this.showAssignModifiersModal = false
 		},
 		/**
+		 * To display the modal for applying a modifier tier to menu items.
+		 * @function
+		 * @param {object} tier - The selected modifier tier.
+		 * @returns {undefined}
+		 */
+		openApplyToMenuItemsModal (tier) {
+			this.tierToApplyToMenuItems = tier
+			this.showApplyToMenuItemsModal = true
+		},
+		/**
+		 * To confirm tier was assigned to menu items
+		 * @function
+		 * @returns {undefined}
+		 */
+		confirmAppliedToMenuItems () {
+			this.closeApplyToMenuItemsModal()
+			this.$swal({
+				title: 'Success!',
+				text: 'Modifier tier applied to items',
+				type: 'success',
+				confirmButtonText: 'OK'
+			})
+		},
+		/**
+		 * To close the modal for applying a modifier tier to menu items.
+		 * @function
+		 * @returns {undefined}
+		 */
+		closeApplyToMenuItemsModal () {
+			this.showApplyToMenuItemsModal = false
+		},
+		/**
 		 * To display the modal for deleting a modifier tier.
 		 * @function
 		 * @param {object} tier - The selected modifier tier.
@@ -411,7 +458,8 @@ export default {
 		NoResults,
 		AssignModifiers,
 		EditModifierTier,
-		DeleteModifierTier
+		DeleteModifierTier,
+		ApplyModifierTierToMenuItems
 	}
 }
 </script>
@@ -425,5 +473,8 @@ export default {
 }
 .mt-element-list .list-news.mt-list-container ul>.mt-list-item:hover {
 	background-color: #fff;
+}
+.actions-on-top {
+	margin-top: -5px;
 }
 </style>
