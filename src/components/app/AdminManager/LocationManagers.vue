@@ -52,6 +52,9 @@
 	      									<i class="fa fa-eye"></i>
 	      								</span>
 	      							</div>
+									<span class="help-block persist" v-show="passwordMasked">
+										Minimum 8 characters. English letters only. Include at least one capital and one number.
+									</span>
 	      							<div class="input-group" v-show="!passwordMasked">
 		      						    <input type="text" class="form-control input-sm" id="form_control_password" v-model="newLocationManager.password" :class="{'edited': newLocationManager.password.length}">
 		      						    <label for="form_control_password">Password</label>
@@ -59,6 +62,9 @@
 	      									<i class="fa fa-eye-slash"></i>
 	      								</span>
 	      							</div>
+									<span class="help-block persist" v-show="!passwordMasked">
+										Minimum 8 characters. English letters only. Include at least one capital and one number.
+									</span>
 	      						</div>
 	      						<div class="form-group form-md-line-input form-md-floating-label">
 	      							<div class="input-group" v-show="passwordMasked">
@@ -1123,6 +1129,7 @@ export default {
 		 */
 		validateNewLocationManagerData () {
 			var locationManagersVue = this
+			const passwordRegex = new RegExp(/^((?=\S*?[A-Z])(?=\S*?[0-9]).{7,})\S$/)
 			return new Promise(function (resolve, reject) {
 				if (!locationManagersVue.newLocationManager.name.length) {
 					reject('Name cannot be blank')
@@ -1132,8 +1139,8 @@ export default {
 					reject('Email cannot be blank')
 				} else if (!emailPattern.test(locationManagersVue.newLocationManager.email)) {
 					reject('Please enter a valid email')
-				} else if (locationManagersVue.newLocationManager.password.length < 6) {
-					reject('Password should be at least 6 characters')
+				} else if (!passwordRegex.test(locationManagersVue.newLocationManager.password)) {
+					reject('Password should: be at least 8 characters long, contain only English letters and numbers, contain at least one uppercase letter and one number')
 				} else if (locationManagersVue.newLocationManager.password !== locationManagersVue.passwordCheck) {
 					reject('Passwords do not match')
 				}
