@@ -510,5 +510,28 @@ export default ({
 				}
 			})
 		})
+	},
+	/**
+	 * Call to API to fetch all Menu Items for a location
+	 * @function
+	 * @param {integer} locationId - ID of the location
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	getAllItemsOfLocation: function (locationId) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'GET',
+				contentType: 'application/json',
+				dataType: 'json',
+				url: '/app/items/allItemsOfLocation/' + locationId,
+				data: {},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
 	}
 })

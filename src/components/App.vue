@@ -253,6 +253,12 @@
 										<span class="title">Menus</span>
 									</router-link>
 								</li>
+								<li class="nav-item" v-bind:class="{'active': currentRoute === 'menu_manager' && currentSubRoute === 'location_items'}" id="menu_manager_location_items_link">
+									<router-link to="/app/menu_manager/location_items" class="nav-link">
+										<i class="fa fa-lemon-o"></i>
+										<span class="title">Items</span>
+									</router-link>
+								</li>
 								<li class="nav-item" v-bind:class="{'active': currentRoute === 'menu_manager' && currentSubRoute === 'menu_tiers'}" id="menu_manager_menu_tiers_link">
 									<router-link to="/app/menu_manager/menu_tiers" class="nav-link">
 										<i class="fa fa-sitemap"></i>

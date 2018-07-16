@@ -18,6 +18,7 @@ import ItemTypes from '../components/app/TaxManager/ItemTypes'
 import Menus from '../components/app/MenuManager/Menu'
 import Categories from '../components/app/MenuManager/Categories'
 import Items from '../components/app/MenuManager/Items'
+import LocationItems from '@/components/app/MenuManager/LocationItems'
 import Modifiers from '../components/app/MenuManager/Modifiers'
 import MenuTiers from '../components/app/MenuManager/MenuTiers'
 import ModifierTiers from '../components/app/MenuManager/ModifierTiers/ModifierTiers'
@@ -104,6 +105,7 @@ const router = new Router({
 				// Menu Manager
 				{path: 'menu_manager', redirect: 'menu_manager/menus', meta: { adminOnly: false }},
 				{path: 'menu_manager/menus', name: 'Menus', component: Menus, meta: { adminOnly: false }},
+				{path: 'menu_manager/location_items', name: 'Location Items', component: LocationItems, meta: { adminOnly: false }},
 				{path: 'menu_manager/menu_tiers', name: 'MenuTiers', component: MenuTiers, children: [{path: 'edit_menu_tier/:menu_tier_id', name: 'Edit Menu Tier'}], meta: { adminOnly: false }},
 				{path: 'menu_manager/categories/:menu_id', name: 'Categories', component: Categories, children: [{path: 'edit_category/:category_id', name: 'Edit Category', meta: { adminOnly: false }}, {path: 'add_sub_category', name: 'Add Sub Category', meta: { adminOnly: false }}, {path: 'edit_sub_category/:sub_category_id', name: 'Edit Sub Category'}], meta: { adminOnly: false }},
 				{path: 'menu_manager/items/:category_id', name: 'Items', component: Items, children: [{path: 'edit_item/:item_id', name: 'Edit Item'}], meta: { adminOnly: false }},
