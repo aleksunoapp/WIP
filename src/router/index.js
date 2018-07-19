@@ -6,6 +6,8 @@ import Login from '@/components/Login'
 import Nav from '@/components/App'
 // Unauthorized
 import Unauthorized from '@/components/Unauthorized'
+// Profile
+import Profile from '@/components/app/Profile'
 // Analytics
 import Overview from '@/components/app/Analytics/Overview'
 import LocationSales from '@/components/app/Analytics/LocationSales'
@@ -94,6 +96,11 @@ const router = new Router({
 			permissions: []
 		},
 		{
+			path: '/forgot-password',
+			name: 'ForgotPassword',
+			component: Login
+		},
+		{
 			path: '/app',
 			redirect: '/app/analytics/overview',
 			permissions: []
@@ -104,6 +111,11 @@ const router = new Router({
 			name: 'App',
 			adminOnly: false,
 			children: [
+				{
+					path: 'profile',
+					component: Profile,
+					name: 'Profile'
+				},
 				// Analytics
 				{
 					path: 'analytics',

@@ -719,20 +719,16 @@
 							<div class="tab-pane active page-quick-sidebar-chat">
 								<div class="page-quick-sidebar-chat-users active-business" data-rail-color="#ddd" data-wrapper-class="page-quick-sidebar-list">
 									<ul class="media-list list-items">
-										<li class="media selected-location current-location">
+										<router-link tag="li" to="/app/profile" class="media selected-location current-location">
 											<img class="media-object" src="../assets/img/app/logo-refresh.png" alt="...">
-											<div class="media-status" v-if="!activeLocation.display_name">
-												<i class="fa fa-circle"></i>
-											</div>
-											<div class="media-status deactivate-location-dot-top" v-if="activeLocation.display_name" @click="unselectLocation($event)">
-												<i class="fa fa-times-circle"></i>
+											<div class="media-status">
+												<i class="fa fa-gear"></i>
 											</div>
 											<div class="media-body">
 												<h4 class="media-heading">{{ $root.activeUser.name }}</h4>
-												<div class="media-heading-sub" v-if="!activeLocation.display_name">Master Account Selected</div>
-												<div class="media-heading-sub" v-else>{{ activeLocation.display_name }}</div>
+												<div class="media-heading-sub">Account Settings</div>
 											</div>
-										</li>
+										</router-link>
 									</ul>
 								</div>
 							</div>
@@ -1268,16 +1264,9 @@ export default {
 	.page-quick-sidebar-wrapper .page-quick-sidebar .page-quick-sidebar-chat .page-quick-sidebar-chat-users .media-list .media.selected-location:hover {
 		background-color: rgba(55, 183, 217, .5);
 	}
-	.page-quick-sidebar-wrapper .page-quick-sidebar .page-quick-sidebar-chat .page-quick-sidebar-chat-users .media-list .media.current-location:hover {
-		cursor: default;
-	}
 	.deactivate-location-dot-top {
 		transition: opacity 0.2s ease-in;
 		opacity: 0;
-	}
-	.page-quick-sidebar-wrapper .page-quick-sidebar .page-quick-sidebar-chat .page-quick-sidebar-chat-users .media-list .media.selected-location:hover .deactivate-location-dot-top {
-		opacity: 1;
-		cursor: pointer;
 	}
 	.page-quick-sidebar-wrapper .page-quick-sidebar .list-heading.location-panel-heading {
 		color: rgba(55, 183, 217, .5);
