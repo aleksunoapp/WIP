@@ -145,6 +145,15 @@
 												</a>
 											</el-tooltip>
 											<el-tooltip 
+												v-if="$root.permissions['approvals modules read'] && !$root.permissions['approvals modules update']"
+												content="View" 
+												effect="light" 
+												placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default" @click="editModule(mod)">
+													<i class="fa fa-eye" aria-hidden="true"></i>
+												</a>
+											</el-tooltip>
+											<el-tooltip 
 												v-if="$root.permissions['approvals modules update']"
 												content="Permissions" 
 												effect="light" 
@@ -220,6 +229,15 @@
 												</a>
 											</el-tooltip>
 											<el-tooltip 
+												v-if="$root.permissions['approvals modules read'] && !$root.permissions['approvals modules update']"
+												content="View" 
+												effect="light" 
+												placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default" @click="editModule(mod)">
+													<i class="fa fa-eye" aria-hidden="true"></i>
+												</a>
+											</el-tooltip>
+											<el-tooltip 
 												v-if="$root.permissions['approvals modules update']"
 												content="Permissions" 
 												effect="light" 
@@ -271,12 +289,32 @@
 					<span>{{editErrorMessage}}</span>
 				</div>
 				<div class="form-group form-md-line-input form-md-floating-label">
-					<input type="text" class="form-control input-sm" id="form_control_edited_name" v-model="moduleToEdit.name" :class="{'edited': moduleToEdit.name.length}">
+					<input 
+						:disabled="$root.permissions['approvals modules read'] && !$root.permissions['approvals modules update']"
+						type="text" 
+						class="form-control input-sm" 
+						id="form_control_edited_name" 
+						v-model="moduleToEdit.name" 
+						:class="{'edited': moduleToEdit.name.length}">
 					<label for="form_control_edited_name">Name</label>
 				</div>
 			</div>
 			<div slot="modal-footer" class="modal-footer">
-				<button type="button" class="btn btn-primary" @click="updateModule()">Save</button>
+				
+				<button 
+					v-if="$root.permissions['approvals modules read'] && !$root.permissions['approvals modules update']"
+					type="button" 
+					class="btn btn-primary" 
+					@click="closeEditModuleModal()">
+					Close
+				</button>
+				<button 
+					v-else
+					type="button" 
+					class="btn btn-primary" 
+					@click="updateModule()">
+					Save
+				</button>
 			</div>
 		</modal>
 		<!-- EDIT MODAL END -->

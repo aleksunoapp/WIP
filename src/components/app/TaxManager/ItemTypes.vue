@@ -93,6 +93,15 @@
 											</a>
 										</el-tooltip>
 										<el-tooltip 
+											v-if="$root.permissions['tax item_types read'] && !$root.permissions['tax item_types update']"
+											content="View" 
+											effect="light" 
+											placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default" @click="editItemType(itemType, $event)">
+												<i class="fa fa-lg fa-eye"></i>
+											</a>
+										</el-tooltip>
+										<el-tooltip 
 											v-if="$root.permissions['tax item_types update']"
 											content="Apply Tax Classes" 
 											effect="light" 
@@ -148,7 +157,13 @@
 						</div>
 						<div class="col-md-12">
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': itemTypeToEdit.name.length}" id="form_control_1" v-model="itemTypeToEdit.name">
+								<input 
+									:disabled="!$root.permissions['tax item_types update']"
+									type="text" 
+									class="form-control input-sm" 
+									:class="{'edited': itemTypeToEdit.name.length}" 
+									id="form_control_1" 
+									v-model="itemTypeToEdit.name">
 								<label for="form_control_1">Name</label>
 							</div>
 						</div>
@@ -156,7 +171,20 @@
 				</form>
 			</div>
 			<div slot="modal-footer" class="modal-footer clear">
-				<button @click="updateItemType()" type="submit" class="btn blue">Save</button>
+				<button 
+					v-if="!$root.permissions['tax item_types update']"
+					@click="closeEditModal()" 
+					type="button" 
+					class="btn blue">
+					Close
+				</button>				
+				<button 
+					v-else
+					@click="updateItemType()" 
+					type="submit" 
+					class="btn blue">
+					Save
+				</button>
 			</div>
 		</modal>
 		<!-- END EDIT -->

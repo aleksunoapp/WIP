@@ -29,7 +29,7 @@
 			        		    <span>{{errorMessage}}</span>
 			        		</div>
 			        	</div>
-		        			<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
+						<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
 							<resource-picker 
 								@open="toggleImageMode('newMenu', true)"
 								@close="toggleImageMode('newMenu', false)"
@@ -100,6 +100,15 @@
 										placement="right">
 		                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editOptionItem(optionItem, $event)">
 	                                        <i class="fa fa-lg fa-pencil"></i>
+	                                    </a>
+	                        		</el-tooltip>
+	                        		<el-tooltip 
+										v-if="$root.permissions['menu_manager options items read'] && !$root.permissions['menu_manager options items update']"
+										content="View" 
+										effect="light" 
+										placement="right">
+		                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editOptionItem(optionItem, $event)">
+	                                        <i class="fa fa-lg fa-eye"></i>
 	                                    </a>
 	                        		</el-tooltip>
 	                        	</div>
@@ -207,7 +216,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateImage (val) {
-			this.newCategory.image_url = val.image_url
+			this.newOptionItem.image_url = val.image_url
 		},
 		/**
 		 * To toggle the create option panel, initially set to closed

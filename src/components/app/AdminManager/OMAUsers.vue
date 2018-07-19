@@ -224,6 +224,15 @@
 	                                            </a>
         	                        		</el-tooltip>
         	                        		<el-tooltip 
+												v-if="$root.permissions['admin oma_users read'] && !$root.permissions['admin oma_users update']"
+												content="View" 
+												effect="light" 
+												placement="right">
+	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editOMAUser(OMAUser)">
+	                                                <i class="fa fa-eye" aria-hidden="true"></i>
+	                                            </a>
+        	                        		</el-tooltip>
+        	                        		<el-tooltip 
 												v-if="$root.permissions['admin oma_users delete']"
 												content="Delete" 
 												effect="light" 
@@ -300,6 +309,15 @@
 	                                            </a>
         	                        		</el-tooltip>
         	                        		<el-tooltip 
+												v-if="$root.permissions['admin oma_users read'] && !$root.permissions['admin oma_users update']"
+												content="View" 
+												effect="light" 
+												placement="right">
+	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editOMAUser(OMAUser)">
+	                                                <i class="fa fa-eye" aria-hidden="true"></i>
+	                                            </a>
+        	                        		</el-tooltip>
+        	                        		<el-tooltip 
 												v-if="$root.permissions['admin oma_users delete']"
 												content="Delete" 
 												effect="light" 
@@ -361,25 +379,33 @@
 						    <button class="close" data-close="alert" @click="clearEditError()"></button>
 						    <span>{{editErrorMessage}}</span>
 						</div>
-						<el-select v-model="OMAUserToBeEdited.type" placeholder="Select type" size="small" class="margin-bottom-15" ref="editedOMAUserType">
+						<el-select 
+							:disabled="$root.permissions['admin oma_users read'] && !$root.permissions['admin oma_users update']"
+							v-model="OMAUserToBeEdited.type" 
+							placeholder="Select type" 
+							size="small" 
+							class="margin-bottom-15" 
+							ref="editedOMAUserType">
 							<el-option label="Admin" :value="1"></el-option>
 							<el-option label="Coach" :value="3"></el-option>
 							<el-option label="Manager" :value="4"></el-option>
 							<el-option label="Staff" :value="5"></el-option>
 							<el-option label="Line Staff" :value="6"></el-option>
 						</el-select>
-						<div class="form-group form-md-line-input form-md-floating-label">
-						    <input type="text" class="form-control input-sm" id="form_control_edited_email" v-model="OMAUserToBeEdited.email" :class="{'edited': OMAUserToBeEdited.email.length}">
-						    <label for="form_control_edited_email">Email</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-						    <input type="text" class="form-control input-sm" id="form_control_edited_phone" v-model="OMAUserToBeEdited.phone" :class="{'edited': OMAUserToBeEdited.phone.length}">
-						    <label for="form_control_edited_phone">Phone</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-						    <input type="text" class="form-control input-sm" id="form_control_edited_password" v-model="OMAUserToBeEdited.password" :class="{'edited': OMAUserToBeEdited.password.length}">
-						    <label for="form_control_edited_password">Password</label>
-						</div>
+						<fieldset :disabled="$root.permissions['admin oma_users read'] && !$root.permissions['admin oma_users update']">
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<input type="text" class="form-control input-sm" id="form_control_edited_email" v-model="OMAUserToBeEdited.email" :class="{'edited': OMAUserToBeEdited.email.length}">
+								<label for="form_control_edited_email">Email</label>
+							</div>
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<input type="text" class="form-control input-sm" id="form_control_edited_phone" v-model="OMAUserToBeEdited.phone" :class="{'edited': OMAUserToBeEdited.phone.length}">
+								<label for="form_control_edited_phone">Phone</label>
+							</div>
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<input type="text" class="form-control input-sm" id="form_control_edited_password" v-model="OMAUserToBeEdited.password" :class="{'edited': OMAUserToBeEdited.password.length}">
+								<label for="form_control_edited_password">Password</label>
+							</div>
+						</fieldset>
 	        			<div class="margin-bottom-15">
 	        				<button type="button" class="btn blue btn-outline" @click="assignStoreToOMAUser(OMAUserToBeEdited, 'existing')">Select a location</button>
 	        				<p class="grey-label margin-top-10" v-if="OMAUserToBeEdited.locations.length">Selected {{OMAUserToBeEdited.locations.length}} location<span v-if="OMAUserToBeEdited.locations.length > 1">s</span></p>
@@ -400,8 +426,34 @@
 				</transition>
 			</div>
 			<div slot="modal-footer" class="modal-footer">
-				<button v-if="editLocationMode" type="button" class="btn btn-primary" @click="assignStores($event)">Select</button>
-				<button v-if="!editLocationMode" type="button" class="btn btn-primary" @click="updateOMAUser()">Save</button>
+				<button 
+					v-if="editLocationMode && $root.permissions['admin oma_users update']" 
+					type="button" 
+					class="btn btn-primary" 
+					@click="assignStores($event)">
+					Select
+				</button>
+				<button 
+					v-if="editLocationMode && !$root.permissions['admin oma_users update']" 
+					type="button" 
+					class="btn btn-primary" 
+					@click="closeEditLocationMode()">
+					Back
+				</button>
+				<button 
+					v-if="!editLocationMode && $root.permissions['admin oma_users update']"
+					type="button" 
+					class="btn btn-primary" 
+					@click="updateOMAUser()">
+					Save
+				</button>
+				<button 
+					v-if="!editLocationMode && !$root.permissions['admin oma_users update']"
+					type="button" 
+					class="btn btn-primary" 
+					@click="closeEditOMAUserModal()">
+					Close
+				</button>
 			</div>
 		</modal>
 		<!-- EDIT MODAL END -->

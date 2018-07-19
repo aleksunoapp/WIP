@@ -232,6 +232,15 @@
 	                                        </a>
 		                        		</el-tooltip>
 		                        		<el-tooltip 
+											v-if="$root.permissions['menu_manager menus categories subcategories items read'] && !$root.permissions['menu_manager menus categories subcategories items update']"
+											content="View" 
+											effect="light" 
+											placement="bottom">
+			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="displayEditItemModal(item, $event)">
+	                                            <i class="fa fa-lg fa-eye"></i>
+	                                        </a>
+		                        		</el-tooltip>
+		                        		<el-tooltip 
 											v-if="$root.permissions['menu_manager menus categories subcategories items update']"
 											content="Images" 
 											effect="light" 
@@ -323,7 +332,13 @@
     			                        			<p class="grey-text">No modifiers have been applied to this item.</p>
     			                        		</div>
     			                        		<div class="col-md-12">
-				                        			<button type="button" class="btn btn-outline btn-xs blue margin-top-10" @click.stop="showModifierModal(item.id, item.modifiers)">Add Modifiers</button>
+				                        			<button 
+														v-if="$root.permissions['menu_manager menus categories subcategories items update']"
+														type="button" 
+														class="btn btn-outline btn-xs blue margin-top-10" 
+														@click.stop="showModifierModal(item.id, item.modifiers)">
+														Add Modifiers
+													</button>
     			                        		</div>
     			                        	</div>
     			                        </div>
@@ -348,7 +363,13 @@
     			                        			<p class="grey-text">No tags have been applied to this item.</p>
     			                        		</div>
     			                        		<div class="col-md-12">
-				                        			<button type="button" class="btn btn-outline btn-xs blue margin-top-10" @click.stop="showTagsModal(item.id, item.tags)">Add Tags</button>
+				                        			<button 
+														v-if="$root.permissions['menu_manager menus categories subcategories items update']"
+														type="button" 
+														class="btn btn-outline btn-xs blue margin-top-10" 
+														@click.stop="showTagsModal(item.id, item.tags)">
+														Add Tags
+													</button>
     			                        		</div>
     			                        	</div>
     			                        </div>
@@ -372,7 +393,13 @@
     			                        			<p class="grey-text">No attributes have been applied to this item.</p>
     			                        		</div>
     			                        		<div class="col-md-12">
-				                        			<button type="button" class="btn btn-outline btn-xs blue margin-top-10" @click.stop="showAttributesModal(item)">Add Attributes</button>
+				                        			<button 
+														v-if="$root.permissions['menu_manager menus categories subcategories items update']"
+														type="button" 
+														class="btn btn-outline btn-xs blue margin-top-10" 
+														@click.stop="showAttributesModal(item)">
+														Add Attributes
+													</button>
     			                        		</div>
     			                        	</div>
     			                        </div>
@@ -390,7 +417,11 @@
 												</li>
 											</ul>
 											<p class="grey-text" v-show="item.preset_item_modifier_item && !item.preset_item_modifier_item.length">No preset settings yet.</p>
-											<button type="button" class="btn btn-outline btn-xs blue margin-top-10" @click.stop="showPresetModal(item)">
+											<button 
+												v-if="$root.permissions['menu_manager menus categories subcategories items update']"
+												type="button" 
+												class="btn btn-outline btn-xs blue margin-top-10" 
+												@click.stop="showPresetModal(item)">
 												<span v-if="item.preset_item_modifier_item && !item.preset_item_modifier_item.length">Add</span>
 												<span v-else>Edit</span> Preset Settings
 											</button>

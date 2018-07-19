@@ -6,12 +6,11 @@
 		</div>
 		<!-- END PAGE BAR -->
 		<!-- BEGIN PAGE TITLE-->
-	    <h1 class="page-title">News Feed</h1>
-	    <!-- END PAGE TITLE-->
+	  <h1 class="page-title">News Feed</h1>
+	  <!-- END PAGE TITLE-->
 		<div class="note note-info">
-            <p>Create and manage the Application News Feed.</p>
-        </div>
-
+			<p>Create and manage the Application News Feed.</p>
+		</div>
 		<!-- CREATE START -->
 		<div class="portlet box blue-hoki margin-top-20" v-if="$root.permissions['news_feed create']">
 			<div class="portlet-title bg-blue-chambray" @click="toggleCreateFeedPanel()">
@@ -32,10 +31,10 @@
 							</div>
 						</div>
 						<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
-							<resource-picker 
+							<resource-picker
 								@open="toggleImageMode('newMenu', true)"
 								@close="toggleImageMode('newMenu', false)"
-								@selected="updateImage" 
+								@selected="updateImage"
 								:imageButton="true"
 								:imageUrl="newNewsFeed.image"
 								class="margin-top-15"
@@ -72,10 +71,9 @@
 			</div>
 		</div>
 		<!-- CREATE END -->
-
-        <div class="margin-top-20">
-	        <div class="relative-block">
-	        	<div class="clearfix" v-if="newsFeed.length">
+    <div class="margin-top-20">
+      <div class="relative-block">
+      	<div class="clearfix" v-if="newsFeed.length">
 					<el-dropdown trigger="click" @command="updateSortByOrder" size="mini" :show-timeout="50" :hide-timeout="50">
 						<el-button size="mini">
 							Sort by
@@ -90,57 +88,60 @@
 							<el-dropdown-item command="DESC"><i class="fa fa-sort-alpha-desc"></i></el-dropdown-item>
 						</el-dropdown-menu>
 					</el-dropdown>
-	  				<page-results class="pull-right" :totalResults="totalResults" :activePage="activePage" @pageResults="pageResultsUpdate"></page-results>
-	  			</div>
-  				<div class="portlet light portlet-fit bordered margin-top-20" v-if="newsFeed.length">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            <i class="fa fa-newspaper-o font-green"></i>
-                            <span class="caption-subject bold font-green uppercase"> News Feed</span>
-                        </div>
-                    </div>
-                    <div class="portlet-body">
-                        <div class="timeline">
-                            <!-- TIMELINE ITEM -->
-                            <div class="timeline-item" v-for="(news, index) in newsFeed" :key="index">
-                                <div class="timeline-badge">
-                                    <img class="timeline-badge-userpic" v-if="news.image.length" :src="news.image">
-                                    <img class="timeline-badge-userpic" v-if="!news.image.length" src="../../../src/assets/img/app/image-placeholder.png">
-                                </div>
-                                <div class="timeline-body" :id="'news-' + news.id">
-                                    <div class="timeline-body-arrow"> </div>
-                                    <div class="timeline-body-head">
-                                        <div class="timeline-body-head-caption">
-                                            <a class="timeline-body-title font-blue-madison">{{ news.title }}</a>
-                                        </div>
-                                        <div class="timeline-body-head-actions">
-                                        	<div class="btn-group" v-if="$root.permissions['news_feed update']">
-                                                <button class="btn blue btn-sm" type="button" @click="editNewsFeed(news)"> Edit</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="timeline-body-content">
-                                    	<h5>{{ news.formatted_date }}</h5>
-                                        <span class="font-grey-cascade">{{ news.short_description }}</span>
-										<span class="font-grey-cascade">{{ news.external_url }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- END TIMELINE ITEM -->
-                    </div>
-                    <div class="alert alert-danger" v-if="!newsFeed.length && errorMessage.length">
-                        <button class="close" data-close="alert" @click="clearError()"></button>
-                        <span>{{errorMessage}}</span>
-                    </div>
-                </div>
-                <div v-else>
-                	<no-results :show="!newsFeed.length" :type="'news feed'"></no-results>
-                </div>
-				<pagination v-if="newsFeed.length && numPages > 1" :passedPage="activePage" :numPages="numPages" @activePageChange="activePageUpdate"></pagination>
+					<page-results class="pull-right" :totalResults="totalResults" :activePage="activePage" @pageResults="pageResultsUpdate"></page-results>
+				</div>
+				<div class="portlet light portlet-fit bordered margin-top-20" v-if="newsFeed.length">
+	        <div class="portlet-title">
+	          <div class="caption">
+	            <i class="fa fa-newspaper-o font-green"></i>
+	            <span class="caption-subject bold font-green uppercase"> News Feed</span>
+	          </div>
 	        </div>
-	    </div>
-	    <edit-news-feed v-if="showEditFeedModal" :selectedFeedId="selectedFeedId" @closeEditFeedModal="closeEditFeedModal" @updateNewsFeed="updateNewsFeed"></edit-news-feed>
+					<div class="portlet-body">
+	          <div class="timeline">
+							<!-- TIMELINE ITEM -->
+							<div class="timeline-item" v-for="(news, index) in newsFeed" :key="index">
+	              <div class="timeline-badge">
+	                <img class="timeline-badge-userpic" v-if="news.image.length" :src="news.image">
+	                <img class="timeline-badge-userpic" v-if="!news.image.length" src="../../../src/assets/img/app/image-placeholder.png">
+	              </div>
+                <div class="timeline-body" :id="'news-' + news.id">
+	                <div class="timeline-body-arrow"> </div>
+	                <div class="timeline-body-head">
+	                  <div class="timeline-body-head-caption">
+											<a class="timeline-body-title font-blue-madison">{{ news.title }}</a>
+	                  </div>
+                    <div class="timeline-body-head-actions">
+	                  	<div class="btn-group" v-if="$root.permissions['news_feed update']">
+	                      <button class="btn blue btn-sm" type="button" @click="editNewsFeed(news)"> Edit</button>
+											</div>
+                			<div class="btn-group" v-if="$root.permissions['news_feed read'] && !$root.permissions['news_feed update']">
+                      	<button class="btn blue btn-sm" type="button" @click="editNewsFeed(news)"> View</button>
+                      </div>
+                    </div>
+									</div>
+                  <div class="timeline-body-content">
+                  	<h5>{{ news.formatted_date }}</h5>
+                    <span class="font-grey-cascade">{{ news.short_description }}</span>
+										<span class="font-grey-cascade">{{ news.external_url }}</span>
+                  </div>
+								</div>
+							</div>
+	          </div>
+						<!-- END TIMELINE ITEM -->
+          </div>
+          <div class="alert alert-danger" v-if="!newsFeed.length && errorMessage.length">
+              <button class="close" data-close="alert" @click="clearError()"></button>
+              <span>{{errorMessage}}</span>
+          </div>
+				</div>
+        <div v-else>
+					<no-results :show="!newsFeed.length" :type="'news feed'"></no-results>
+				</div>
+				<pagination v-if="newsFeed.length && numPages > 1" :passedPage="activePage" :numPages="numPages" @activePageChange="activePageUpdate"></pagination>
+			</div>
+		</div>
+		<edit-news-feed v-if="showEditFeedModal" :selectedFeedId="selectedFeedId" @closeEditFeedModal="closeEditFeedModal" @updateNewsFeed="updateNewsFeed"></edit-news-feed>
 	</div>
 </template>
 

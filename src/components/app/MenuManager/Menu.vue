@@ -224,6 +224,15 @@
 		                                        <i class="fa fa-lg fa-pencil"></i>
 		                                    </a>
 	                                    </el-tooltip>
+		                        		<el-tooltip 
+											v-if="$root.permissions['menu_manager menus read'] && !$root.permissions['menu_manager menus update']"
+											content="View" 
+											effect="light" 
+											placement="top">
+			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editMenu(menu, $event)">
+		                                        <i class="fa fa-lg fa-eye"></i>
+		                                    </a>
+	                                    </el-tooltip>
 	                                    <el-tooltip 
 											v-if="$root.permissions['menu_manager menus update']"
 											content="Menu Hours" 

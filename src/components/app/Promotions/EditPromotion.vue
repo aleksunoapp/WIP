@@ -23,38 +23,49 @@
 					>
 					</resource-picker>
         		</div>
-				    <div class="col-xs-12">        			
-	    			<select-locations-popup 
-	    				v-if="selectLocationMode" 
-	    				@closeSelectLocationsPopup='updateSelectedLocations' 
-	    				:previouslySelected="selectedLocations"
-	    			>
-					</select-locations-popup>
-        		</div>
-				<div class="col-md-12" v-show="!selectImageMode && !selectLocationMode">
-					<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-					    <input type="text" class="form-control input-sm edited" id="form_control_1" v-model="promotionToBeEdited.name">
-					    <label for="form_control_1">Promotion Name</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-					    <input type="text" class="form-control input-sm edited" id="form_control_2" v-model="promotionToBeEdited.description">
-					    <label for="form_control_2">Promotion Description</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-					    <input type="text" class="form-control input-sm" :class="{'edited': promotionToBeEdited.short_description.length}" id="form_control_short_description" v-model="promotionToBeEdited.short_description">
-					    <label for="form_control_short_description">Promotion Short Description</label>
-					</div>
+				<div class="col-md-12" v-show="!selectImageMode">
+					<fieldset :disabled="!$root.permissions['promotions update']">
+						<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
+							<input type="text" class="form-control input-sm edited" id="form_control_1" v-model="promotionToBeEdited.name">
+							<label for="form_control_1">Promotion Name</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
+							<input type="text" class="form-control input-sm edited" id="form_control_2" v-model="promotionToBeEdited.description">
+							<label for="form_control_2">Promotion Description</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
+							<input type="text" class="form-control input-sm" :class="{'edited': promotionToBeEdited.short_description.length}" id="form_control_short_description" v-model="promotionToBeEdited.short_description">
+							<label for="form_control_short_description">Promotion Short Description</label>
+						</div>
+					</fieldset>
         			<div>
         				<p class="grey-label">Promotion Start Date and Time</p>
-	        			<el-date-picker v-model="promotionToBeEdited.start_date" type="datetime" placeholder="Select end"></el-date-picker>
+	        			<el-date-picker 
+							:disabled="!$root.permissions['promotions update']"
+							v-model="promotionToBeEdited.start_date" 
+							type="datetime" 
+							placeholder="Select end">
+						</el-date-picker>
         			</div>
         			<div>
         				<p class="grey-label">Promotion End Date and Time</p>
-	        			<el-date-picker v-model="promotionToBeEdited.end_date" type="datetime" placeholder="Select end"></el-date-picker>
+	        			<el-date-picker 
+							:disabled="!$root.permissions['promotions update']"
+							v-model="promotionToBeEdited.end_date" 
+							type="datetime" 
+							placeholder="Select end">
+						</el-date-picker>
         			</div>
 					<div>
 						<p class="grey-label">Call to action type</p>
-						<el-select v-model="promotionToBeEdited.cta_type" placeholder="Select type" size="small" class="margin-bottom-15" id="form_control_cta_type" @change="clearCtaValue()">
+						<el-select 
+							:disabled="!$root.permissions['promotions update']"
+							v-model="promotionToBeEdited.cta_type" 
+							placeholder="Select type" 
+							size="small" 
+							class="margin-bottom-15" 
+							id="form_control_cta_type" 
+							@change="clearCtaValue()">
 							<el-option label="hyperlink" value="hyperlink"></el-option>
 							<el-option label="menu item" value="menu_item"></el-option>
 							<el-option label="promo code" value="promo_code"></el-option>
@@ -64,25 +75,28 @@
 							<el-option label="video" value="video"></el-option>
 						</el-select>
 					</div>
-        			<div class="form-group form-md-line-input form-md-floating-label" v-show="promotionToBeEdited.cta_type !== 'menu_item' && promotionToBeEdited.cta_type !== 'promo_code'">
-        			    <input type="text" class="form-control input-sm" :class="{'edited': promotionToBeEdited.cta_value.length}" id="form_control_cta_value" v-model="promotionToBeEdited.cta_value">
-        			    <label for="form_control_cta_value">Call to action value</label>
-        			</div>
-					<div class="form-group form-md-line-input form-md-floating-label" v-show="promotionToBeEdited.cta_type === 'promo_code'">
-						<button type="button" class="btn blue btn-outline" @click="openPromoCodesCodeModal()">Select</button>
-						<p class="grey-label margin-top-10" v-show="promotionToBeEdited.cta_value.length">Selected {{promotionToBeEdited.cta_value.split(',').length}} code<span v-show="promotionToBeEdited.cta_value.split(',').length !== 1">s</span></p>
-					</div>
-        			<div class="form-group form-md-line-input form-md-floating-label" v-show="promotionToBeEdited.cta_type === 'menu_item'">
-        				<button type="button" class="btn blue btn-outline" @click="openMenuModifierTree()">Select</button>	
-        				<p class="grey-label margin-top-10" v-show="promotionToBeEdited.skuArray.length">Selected {{promotionToBeEdited.skuArray.length}} item<span v-show="promotionToBeEdited.skuArray.length !== 1">s</span></p>									
-        			</div>
-        			<div class="form-group form-md-line-input form-md-floating-label">
-        			    <input type="text" class="form-control input-sm" :class="{'edited': promotionToBeEdited.cta_text.length}" id="form_control_cta_text" v-model="promotionToBeEdited.cta_text">
-        			    <label for="form_control_cta_text">Call to action text</label>
-        			</div>
+					<fieldset :disabled="!$root.permissions['promotions update']">
+						<div class="form-group form-md-line-input form-md-floating-label" v-show="promotionToBeEdited.cta_type !== 'menu_item' && promotionToBeEdited.cta_type !== 'promo_code'">
+							<input type="text" class="form-control input-sm" :class="{'edited': promotionToBeEdited.cta_value.length}" id="form_control_cta_value" v-model="promotionToBeEdited.cta_value">
+							<label for="form_control_cta_value">Call to action value</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label" v-show="promotionToBeEdited.cta_type === 'promo_code'">
+							<button type="button" class="btn blue btn-outline" @click="openPromoCodesCodeModal()">Select</button>
+							<p class="grey-label margin-top-10" v-show="promotionToBeEdited.cta_value.length">Selected {{promotionToBeEdited.cta_value.split(',').length}} code<span v-show="promotionToBeEdited.cta_value.split(',').length !== 1">s</span></p>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label" v-show="promotionToBeEdited.cta_type === 'menu_item'">
+							<button type="button" class="btn blue btn-outline" @click="openMenuModifierTree()">Select</button>	
+							<p class="grey-label margin-top-10" v-show="promotionToBeEdited.skuArray.length">Selected {{promotionToBeEdited.skuArray.length}} item<span v-show="promotionToBeEdited.skuArray.length !== 1">s</span></p>									
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm" :class="{'edited': promotionToBeEdited.cta_text.length}" id="form_control_cta_text" v-model="promotionToBeEdited.cta_text">
+							<label for="form_control_cta_text">Call to action text</label>
+						</div>
+					</fieldset>
 					<div class="form-group form-md-line-input form-md-floating-label">
 						<label>Featured:</label><br>
 						<el-switch
+							:disabled="!$root.permissions['promotions update']"
 							v-model="promotionToBeEdited.featured"
 							active-color="#0c6"
 							inactive-color="#ff4949"
@@ -108,10 +122,15 @@
 				                </tr>
 				            </thead>
 				            <tbody>
-				                <tr v-for="code in promoCodes">
+				                <tr v-for="code in promoCodes" :key="code.id">
 				                	<td>
 				                		<div class="md-checkbox has-success">
-			                                <input type="checkbox" :id="`code-${code.id}`" class="md-check" v-model="code.selected">
+			                                <input 
+												:disabled="!$root.permissions['promotions update']"
+												type="checkbox" 
+												:id="`code-${code.id}`" 
+												class="md-check" 
+												v-model="code.selected">
 			                                <label :for="`code-${code.id}`">
 			                                    <span class="inc"></span>
 			                                    <span class="check"></span>
@@ -139,8 +158,34 @@
 			</menu-modifier-tree>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button v-if="selectPromoCodesMode" type="button" class="btn btn-primary" @click="selectPromoCodes()">Select</button>
-			<button v-if="!selectImageMode && !selectPromoCodesMode" type="button" class="btn btn-primary" @click="updatePromotion()">Save</button>
+			<button 
+				v-if="selectPromoCodesMode && !$root.permissions['promotions update']" 
+				type="button" 
+				class="btn btn-primary" 
+				@click="closePromoCodesCodeModal()">
+				Back
+			</button>
+			<button 
+				v-if="selectPromoCodesMode && $root.permissions['promotions update']" 
+				type="button" 
+				class="btn btn-primary" 
+				@click="selectPromoCodes()">
+				Select
+			</button>
+			<button 
+				v-if="!selectImageMode && !selectPromoCodesMode && !$root.permissions['promotions update']" 
+				type="button" 
+				class="btn btn-primary" 
+				@click="closeModal()">
+				Close
+			</button>
+			<button 
+				v-if="!selectImageMode && !selectPromoCodesMode && $root.permissions['promotions update']" 
+				type="button" 
+				class="btn btn-primary" 
+				@click="updatePromotion()">
+				Save
+			</button>
 		</div>
 	</modal>
 </template>
@@ -229,7 +274,9 @@ export default {
 		 * @returns {undefined}
 		 */
 		setSelectedItems (data) {
-			this.promotionToBeEdited.skuArray = data.selectedSKUs
+			if (this.$root.permissions['promotions update']) {
+				this.promotionToBeEdited.skuArray = data.selectedSKUs
+			}
 			this.showMenuModifierTreeModal = false
 		},
 		/**
@@ -472,8 +519,10 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateIcon (val) {
+			if (this.$root.permissions['promotions update']) {
+				this.promotionToBeEdited.image = val.image_url
+			}
 			this.goToPageOne()
-			this.promotionToBeEdited.image = val.image_url
 		}
 	},
 	components: {

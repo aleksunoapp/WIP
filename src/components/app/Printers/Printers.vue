@@ -125,6 +125,15 @@
 												<i class="fa fa-lg fa-pencil"></i>
 											</a>
 										</el-tooltip>
+										<el-tooltip 
+											v-if="$root.permissions['printers read'] && !$root.permissions['printers update']"
+											content="View" 
+											effect="light" 
+											placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default" @click="editPrinter(printer)">
+												<i class="fa fa-lg fa-eye"></i>
+											</a>
+										</el-tooltip>
 		                        	</div>
 		                            <div class="list-datetime bold uppercase font-red">
 		                            	<span>{{ printer.printer_name }}</span>

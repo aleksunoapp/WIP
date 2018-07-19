@@ -34,10 +34,10 @@
 							</div>
 						</div>
 		        		<div :class="{'col-md-2 col-md-offset-2' : !newAmenity.selectImageMode, 'col-md-12' : !newAmenity.selectImageMode}">
-							<resource-picker 
+							<resource-picker
 								@open="toggleImageMode(newAmenity, true)"
 								@close="toggleImageMode(newAmenity, false)"
-								@selected="updateNewImage" 
+								@selected="updateNewImage"
 								:imageButton="true"
 								:imageUrl="newAmenity.image_url"
 								class="margin-top-15"
@@ -96,19 +96,28 @@
 								<ul>
 									<li class="mt-list-item actions-at-left margin-top-15" v-for="amenity in amenities" :id="'amenity-' + amenity.id" :key="amenity.id">
 										<div class="list-item-actions">
-											<el-tooltip 
+											<el-tooltip
+												v-if="!$root.permissions['stores amenities update'] && !$root.permissions['stores amenities read']"
+												content="View"
+												effect="light"
+												placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default" @click="editAmenity(amenity, $event)">
+													<i class="fa fa-lg fa-eye"></i>
+												</a>
+											</el-tooltip>
+											<el-tooltip
 												v-if="$root.permissions['stores amenities update']"
-												content="Edit" 
-												effect="light" 
+												content="Edit"
+												effect="light"
 												placement="right">
 												<a class="btn btn-circle btn-icon-only btn-default" @click="editAmenity(amenity, $event)">
 													<i class="fa fa-lg fa-pencil"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip 
+											<el-tooltip
 												v-if="$root.permissions['stores amenities delete']"
-												content="Delete" 
-												effect="light" 
+												content="Delete"
+												effect="light"
 												placement="right">
 												<a class="btn btn-circle btn-icon-only btn-default" @click="confirmDelete(amenity, $event)">
 													<i class="fa fa-lg fa-trash"></i>
@@ -129,23 +138,42 @@
 											</div>
 				                        	<div class="">
 				                        		<div v-if="amenity.selected">
-					                        		<button @click="toggleChecked(amenity, $event)" class="btn btn-success custom-button full-width"><i class="fa fa-2x fa-check"></i></button>
+					                        		<button
+																				@click="toggleChecked(amenity, $event)"
+																				class="btn btn-success custom-button full-width"
+																				:disabled="!$root.permissions['stores amenities update']"
+																			>
+																				<i class="fa fa-2x fa-check"></i>
+																			</button>
 				                        		</div>
 				                        		<div v-if="!amenity.selected">
-					                        		<button @click="toggleChecked(amenity, $event)" class="btn btn-danger custom-button full-width"><i class="fa fa-2x fa-times"></i></button>
+					                        		<button
+																				@click="toggleChecked(amenity, $event)"
+																				class="btn btn-danger custom-button full-width"
+																				:disabled="!$root.permissions['stores amenities update']"
+																			>
+																				<i class="fa fa-2x fa-times"></i>
+																			</button>
 				                        		</div>
 				                        	</div>
 										</div>
 									</li>
 								</ul>
 								<div class="form-actions right margin-top-20" v-show="$root.activeLocation.id !== undefined">
-									<button type="button" class="btn blue" @click="assignAmenitiesToLocation()">Save</button>
+									<button
+										type="button"
+										class="btn blue"
+										@click="assignAmenitiesToLocation()"
+										:disabled="!$root.permissions['stores amenities update']"
+									>
+										Save
+									</button>
 								</div>
 							</div>
 						</div>
 						<div class="margin-top-20">
 							<no-results :show="!amenities.length && !loadingAmenities" :type="'amenities'"></no-results>
-						</div>						
+						</div>
 					</div>
 				</div>
 			</div>
@@ -158,7 +186,10 @@
 				<button type="button" class="close" @click="closeEditModal()">
 					<span>&times;</span>
 				</button>
-				<h4 class="modal-title center">
+				<h4 class="modal-title center" v-if="!$root.permissions['stores amenities update']">
+					View Amenity
+				</h4>
+				<h4 class="modal-title center" v-if="$root.permissions['stores amenities update']">
 					Edit Amenity
 				</h4>
 			</div>
@@ -167,32 +198,51 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="alert alert-danger" v-show="editErrorMessage.length" ref="editErrorMessage">
-								<button class="close" data-close="alert" @click.prevent="clearError('editErrorMessage')"></button>
+								<button
+									class="close"
+									data-close="alert"
+									@click.prevent="clearError('editErrorMessage')"
+								>
+								</button>
 								<span>{{ editErrorMessage }}</span>
 							</div>
 						</div>
-						<div 
+						<div
 							:class="{'col-xs-4 col-xs-offset-4' : !selectImageMode, 'col-xs-12' : selectImageMode}"
 							>
 							<resource-picker
 								@open="imageEdit()"
 								@close="mainEdit()"
-								@selected="updateEditedImage" 
-								buttonText="Select Image" 
+								@selected="updateEditedImage"
+								buttonText="Select Image"
 								:isModal="false"
 								:imageUrl="amenityToEdit.image_url"
 								:imageButton="true"
 								class="margin-top-15"
+								:disabled="!$root.permissions['stores amenities update']"
 							>
 							</resource-picker>
 						</div>
 						<div v-show="!selectImageMode" class="col-xs-12">
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': amenityToEdit.name.length}" id="form_control_1" v-model="amenityToEdit.name">
+								<input
+									type="text"
+									class="form-control input-sm"
+									:class="{'edited': amenityToEdit.name.length}"
+									id="form_control_1"
+									v-model="amenityToEdit.name"
+									:disabled="!$root.permissions['stores amenities update']"
+								>
 								<label for="form_control_1">Amenity Name</label>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': amenityToEdit.order.length}" id="form_control_3" v-model="amenityToEdit.order">
+								<input
+									type="text"
+									class="form-control input-sm"
+									:class="{'edited': amenityToEdit.order.length}" id="form_control_3"
+									:disabled="!$root.permissions['stores amenities update']"
+									v-model="amenityToEdit.order"
+								>
 								<label for="form_control_3">Amenity Order</label>
 							</div>
 						</div>
@@ -200,7 +250,8 @@
 				</form>
 			</div>
 			<div slot="modal-footer" class="modal-footer clear">
-				<button @click="updateAmenity()" v-show="!selectImageMode" type="submit" class="btn blue">Save</button>
+				<button @click="updateAmenity()" v-show="!selectImageMode" v-if="$root.permissions['stores amenities update']" type="submit" class="btn blue">Save</button>
+				<button @click="closeEditModal()" v-show="!selectImageMode" v-if="!$root.permissions['stores amenities update']" type="submit" class="btn blue">Close</button>
 			</div>
 		</modal>
 		<!-- END EDIT -->

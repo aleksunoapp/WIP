@@ -13,7 +13,7 @@
 							</a>
 							<ul class="jstree-children" v-if="folders.expanded">
 								<li 
-									v-if="!selectOnly"
+									v-if="!selectOnly && $root.permissions['gallery create']"
 									class="jstree-node jstree-leaf" 
 									:class="{'jstree-last': !folders.children || !folders.children.length}">
 									<i class="jstree-icon jstree-ocl"></i>
@@ -147,7 +147,7 @@
 										<pagination :passedPage="activePage" :numPages="numPages" @activePageChange="activePageUpdate"></pagination>
 									</div>
 									<file-upload 
-										v-show="!allFoldersView" 
+										v-show="!allFoldersView && $root.permissions['gallery create']" 
 										:folderId="activeFolder.id" 
 										@savingUpdate="checkSaving" 
 										@uploadSuccess="imageUploaded()">

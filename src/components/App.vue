@@ -665,11 +665,11 @@
 							class="nav-item" 
 							:class="{'active': currentRoute === 'promotions'}" 
 						>
-							<a class="nav-link nav-toggle">
+							<router-link to="/app/promotions" class="nav-link">
 								<i class="fa fa-money"></i>
 								<span class="title">Promotions</span>
 								<span class="arrow"></span>
-							</a>
+							</router-link>
 							<ul class="sub-menu">
 								<li 
 									v-if="$root.permissions['promotions geolocations read']"

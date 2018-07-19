@@ -5,7 +5,8 @@
 				<span>&times;</span>
 			</button>
 			<h4 class="modal-title">
-				<span v-if="!selectLocationsMode && !selectItemsMode">Update Promo Code</span>
+				<span v-if="!selectLocationsMode && !selectItemsMode && $root.permissions['promocodes update']">Update Promo Code</span>
+				<span v-if="!selectLocationsMode && !selectItemsMode && $root.permissions['promocodes read'] && !$root.permissions['promocodes update']">View Promo Code</span>
 				<h4 v-else-if="selectLocationsMode" class="modal-title center"><i class="fa fa-chevron-left clickable pull-left back-button" @click="closeModal()"></i> Select Stores</h4>
 				<span v-else-if="selectItemsMode">Select Items</span>
 			</h4>
@@ -13,160 +14,194 @@
 		<div slot="modal-body" class="modal-body">
 			<loading-screen :show="displaySpinner" :color="'#2C3E50'" :display="'inline'"></loading-screen>
   			<form v-show="!displaySpinner" role="form" @submit.prevent="createNewpromoCode()" v-if="!selectLocationsMode && !selectItemsMode">
-  				<div class="form-body row">
-  					<div class="col-md-12">
+					<fieldset :disabled="!$root.permissions['promocodes update']">
+	  				<div class="form-body row">
+	  					<div class="col-md-12">
 		        		<div class="alert alert-danger" v-if="errorMessage.length">
-		        		    <button class="close" data-close="alert" @click="clearError('errorMessage')"></button>
-		        		    <span>{{ errorMessage }}</span>
+	        		    <button class="close" data-close="alert" @click="clearError('errorMessage')"></button>
+	        		    <span>{{ errorMessage }}</span>
 		        		</div>
 		        	</div>
 	        		<div class="col-xs-7">
 	        			<div class="form-group form-md-line-input form-md-floating-label">
-	        			    <input ref="codes" type="text" class="form-control input-sm  text-uppercase" :class="{'edited': promoCode.codes.length}" id="form_control_1" v-model="promoCode.codes">
-	        			    <label for="form_control_1">Enter a Code</label>
+        			    <input ref="codes" type="text" class="form-control input-sm  text-uppercase" :class="{'edited': promoCode.codes.length}" id="form_control_1" v-model="promoCode.codes">
+        			    <label for="form_control_1">Enter a Code</label>
 	        			</div>
 	        			<div class="side-by-side-wrapper">
-							<div class="form-group form-md-line-input form-md-floating-label side-by-side-item">
-							    <input type="text" class="form-control input-sm" :class="{'edited': promoCode.value}" id="form_control_2" v-model="promoCode.value">
-							    <label for="form_control_2">Value of Promo Code</label>
-							</div>
-                    		<el-select v-model="promoCode.value_type" placeholder="Select type" size="mini" class="margin-bottom-15">
-								<el-option
-									label="%"
-									value="percentage">
-								</el-option>
-								<el-option
-									label="$"
-									value="dollar">
-								</el-option>
-                    		</el-select>
-	        			</div>
+									<div class="form-group form-md-line-input form-md-floating-label side-by-side-item">
+								    <input type="text" class="form-control input-sm" :class="{'edited': promoCode.value}" id="form_control_2" v-model="promoCode.value">
+								    <label for="form_control_2">Value of Promo Code</label>
+									</div>
+	            		<el-select
+										v-model="promoCode.value_type"
+										placeholder="Select type"
+										size="mini"
+										class="margin-bottom-15"
+										:disabled="!$root.permissions['promocodes update']"
+									>
+										<el-option
+											label="%"
+											value="percentage">
+										</el-option>
+										<el-option
+											label="$"
+											value="dollar">
+										</el-option>
+									</el-select>
+								</div>
 	        			<div>
-                    		<el-select v-model="promoCode.apply_on" placeholder="Discount is applied to" size="mini" class="margin-bottom-15">
-								<el-option
-									label="Menu Items"
-									value="items">
-								</el-option>
-								<el-option
-									label="Delivery Fee"
-									value="delivery">
-								</el-option>
-                    		</el-select>
-							<button v-if="promoCode.apply_on === 'items'" type="submit" class="btn blue btn-outline select-items-button" @click="displayMenuTreeModal($event)">
-								<span v-if="!promoCode.sku_array.length">Select</span><span v-else>Add</span> items
-							</button>
-							<p class="grey-label" v-if="promoCode.sku_array.length">Selected <span v-if="promoCode.sku === 'all'">all</span><span v-else>{{ promoCode.sku_array.length }}</span> item<span v-if="promoCode.sku.length !== 1">s</span></p>
-	        			</div>
-						<div>
-                    		<el-select v-model="promoCode.type" placeholder="Single or Multi Use?" size="mini" class="margin-bottom-15">
-								<el-option
-									label="Single Use"
-									value="single_use">
-								</el-option>
-								<el-option
-									label="Multi Use"
-									value="multi_use">
-								</el-option>
-                    		</el-select>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-						    <input type="text" class="form-control input-sm" :class="{'edited': promoCode.max_use_per_person !== ''}" id="form_control_3" v-model="promoCode.max_use_per_person">
-						    <label for="form_control_3">Maximum Redemptions Per User</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label narrow-input">
-						    <input type="text" class="form-control input-sm" :class="{'edited': promoCode.max_use  !== ''}" id="form_control_4" v-model="promoCode.max_use">
-						    <label for="form_control_4">Total Redemptions Permitted</label>
-						</div>
+	            		<el-select
+										v-model="promoCode.apply_on"
+										placeholder="Discount is applied to"
+										size="mini"
+										class="margin-bottom-15"
+										:disabled="!$root.permissions['promocodes update']"
+									>
+										<el-option
+											label="Menu Items"
+											value="items">
+										</el-option>
+										<el-option
+											label="Delivery Fee"
+											value="delivery">
+										</el-option>
+	            		</el-select>
+									<button v-if="promoCode.apply_on === 'items'" type="submit" class="btn blue btn-outline select-items-button" @click="displayMenuTreeModal($event)">
+										<span v-if="!promoCode.sku_array.length">Select</span><span v-else>Add</span> items
+									</button>
+									<p class="grey-label" v-if="promoCode.sku_array.length">Selected <span v-if="promoCode.sku === 'all'">all</span><span v-else>{{ promoCode.sku_array.length }}</span> item<span v-if="promoCode.sku.length !== 1">s</span></p>
+								</div>
+								<div>
+	            		<el-select
+										v-model="promoCode.type"
+										placeholder="Single or Multi Use?"
+										size="mini"
+										class="margin-bottom-15"
+										:disabled="!$root.permissions['promocodes update']"
+									>
+										<el-option
+											label="Single Use"
+											value="single_use">
+										</el-option>
+										<el-option
+											label="Multi Use"
+											value="multi_use">
+										</el-option>
+	            		</el-select>
+								</div>
+								<div class="form-group form-md-line-input form-md-floating-label">
+							    <input type="text" class="form-control input-sm" :class="{'edited': promoCode.max_use_per_person !== ''}" id="form_control_3" v-model="promoCode.max_use_per_person">
+							    <label for="form_control_3">Maximum Redemptions Per User</label>
+								</div>
+								<div class="form-group form-md-line-input form-md-floating-label narrow-input">
+							    <input type="text" class="form-control input-sm" :class="{'edited': promoCode.max_use  !== ''}" id="form_control_4" v-model="promoCode.max_use">
+							    <label for="form_control_4">Total Redemptions Permitted</label>
+								</div>
 	        			<div class="form-group">
 	        				<p class="date-label">Start Date</p>
-	        				<el-date-picker 
-	        					v-model="promoCode.start_from" 
-	        					format="yyyy-MM-dd" 
-	        					value-format="yyyy-MM-dd" 
+	        				<el-date-picker
+	        					v-model="promoCode.start_from"
+	        					format="yyyy-MM-dd"
+	        					value-format="yyyy-MM-dd"
 	        					:picker-options="{disabledDate: afterToday}"
-	        					:clearable="false" 
-	        					placeholder="Select start date">
+	        					:clearable="false"
+	        					placeholder="Select start date"
+										:disabled="!$root.permissions['promocodes update']"
+									>
         					</el-date-picker>
 	        			</div>
 	        			<div class="form-group">
 	        				<p class="date-label">End Date</p>
-		        			<el-date-picker 
-		        				v-model="promoCode.end_on" 
-		        				format="yyyy-MM-dd" 
-		        				value-format="yyyy-MM-dd" 
+		        			<el-date-picker
+		        				v-model="promoCode.end_on"
+		        				format="yyyy-MM-dd"
+		        				value-format="yyyy-MM-dd"
 		        				:picker-options="{disabledDate: afterStartFrom}"
-		        				:clearable="false" 
-		        				placeholder="Select end date">
+		        				:clearable="false"
+		        				placeholder="Select end date"
+										:disabled="!$root.permissions['promocodes update']"
+									>
 	        				</el-date-picker>
 	        			</div>
 	        			<div>
-							<p class="inline margin-right-10">Availability</p>			        				
+									<p class="inline margin-right-10">Availability</p>
 	        				<button type="submit" class="btn blue btn-outline" @click="selectLocations($event, 'new')">Select Stores</button>
 	        				<p class="grey-label margin-top-10" v-if="promoCode.locations.length">Selected <span v-if="promoCode.locations === 'all'">all</span><span v-else>{{ promoCode.locations.length }}</span> location<span v-if="promoCode.locations.length !== 1">s</span></p>
 	        			</div>
 	        		</div>
 	        	</div>
-  				<div class="form-actions right margin-top-20">
-				</div>
-  			</form>
+	  				<div class="form-actions right margin-top-20">
+						</div>
+					</fieldset>
+				</form>
 			<div v-show="!displaySpinner" class="row" v-if="selectItemsMode">
 				<div class="col-md-4">
 					<h4>Menus</h4>
 					<div class="dd" id="nestable_list_1" v-if="menus.length">
-                    	<ol class="dd-list">
-                        	<li class="dd-item" v-for="menu in menus" :data-id="menu.id" @click="selectMenu(menu)">
-                            	<div class="dd-handle" :class="{'active': menu.id === activeMenu.id}"> {{ menu.name }}
-                            	<span class="pull-right"><i class="fa fa-chevron-right"></i></span>
-                            	</div>
-                        	</li>
-                    	</ol>
-                	</div>
-                	<div v-else>
-                		<div class="alert alert-warning">
-	   							<span>There are no menus to display.</span>
-							</div>
-                	</div>
+	        	<ol class="dd-list">
+	          	<li class="dd-item" v-for="menu in menus" :data-id="menu.id" @click="selectMenu(menu)">
+              	<div class="dd-handle" :class="{'active': menu.id === activeMenu.id}"> {{ menu.name }}
+              	<span class="pull-right"><i class="fa fa-chevron-right"></i></span>
+              	</div>
+	          	</li>
+	        	</ol>
+	    		</div>
+        	<div v-else>
+	      		<div class="alert alert-warning">
+							<span>There are no menus to display.</span>
+						</div>
+        	</div>
 				</div>
 				<div class="col-md-4" v-if="isMenuSelected">
 					<h4>{{ activeMenu.name }} - Categories</h4>
 					<div class="dd" id="nestable_list_2" v-if="categories.length">
-			            <ol class="dd-list">
-			                <li class="dd-item" v-for="category in categories" :data-id="category.id" @click="selectCategory(category)">
-			                    <div class="dd-handle" :class="{'active': category.id === activeCategory.id}"> {{ category.name }}
-			                        <span class="pull-right"><i class="fa fa-chevron-right"></i></span>
-			                    </div>
-			                </li>
-			            </ol>
-				    </div>
-				    <div v-else>
-				    	<div class="alert alert-warning">
-				           	<span>There are no categories in the menu '{{ activeMenu.name }}'.</span>
-				        </div>
-				    </div>
+	          <ol class="dd-list">
+	            <li class="dd-item" v-for="category in categories" :data-id="category.id" @click="selectCategory(category)">
+	              <div class="dd-handle" :class="{'active': category.id === activeCategory.id}"> {{ category.name }}
+                  <span class="pull-right"><i class="fa fa-chevron-right"></i></span>
+	              </div>
+	            </li>
+	          </ol>
+			    </div>
+			    <div v-else>
+			    	<div class="alert alert-warning">
+           		<span>There are no categories in the menu '{{ activeMenu.name }}'.</span>
+		        </div>
+			    </div>
 				</div>
 				<div class="col-md-4" v-if="isCategorySelected">
 					<h4><input type="checkbox" @click="selectAll()" class="md-check" v-model="selectAllSelected"> {{ activeCategory.name }} - Items</h4>
 					<div class="dd" id="nestable_list_3" v-if="items.length">
-				        <ol class="dd-list">
-				            <li class="dd-item" v-for="item in items" :data-id="item.id">
-				                <div class="dd-handle">
-				                    <span class="pull-left"><input type="checkbox" :id="'item_checkbox_' + item.id" class="md-check" v-model="item.selected">&emsp;</span>{{ item.name }}
-				                </div>
-				            </li>
-				        </ol>
-				    </div>
-				    <div v-else>
-				        <div class="alert alert-warning">
-				           	<span>There are no items in the category '{{ activeCategory.name }}'.</span>
-				        </div>
-				    </div>
+		        <ol class="dd-list">
+	            <li class="dd-item" v-for="item in items" :data-id="item.id">
+	              <div class="dd-handle">
+	                <span class="pull-left">
+										<input
+											type="checkbox"
+											:id="'item_checkbox_' + item.id" class="md-check"
+											v-model="item.selected"
+											:disabled="!$root.permissions['promocodes update']"
+										>
+										&emsp;
+									</span>
+									{{ item.name }}
+	              </div>
+	            </li>
+		        </ol>
+			    </div>
+			    <div v-else>
+		        <div class="alert alert-warning">
+	           	<span>There are no items in the category '{{ activeCategory.name }}'.</span>
+		        </div>
+			    </div>
 				</div>
 			</div>
 			<select-locations-popup v-if="!displaySpinner && selectLocationsMode" @closeSelectLocationsPopup='selectStores' :previouslySelected="promoCode.locations"></select-locations-popup>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button type="button" class="btn btn-primary" @click="applySelectedItems()" v-if="selectItemsMode">Save</button>
-			<button type="button" class="btn btn-primary" @click="updatePromoCode()" v-if="!selectLocationsMode && !selectItemsMode">Update</button>
+			<button type="button" class="btn btn-primary" @click="applySelectedItems()" v-if="selectItemsMode && $root.permissions['promocodes update']">Save</button>
+			<button type="button" class="btn btn-primary" @click="updatePromoCode()" v-if="!selectLocationsMode && !selectItemsMode && $root.permissions['promocodes update']">Update</button>
+			<button type="button" class="btn btn-primary" @click="updatePromoCode()" v-if="!selectLocationsMode && !selectItemsMode && !$root.permissions['promocodes update']">Close</button>
 		</div>
 	</modal>
 </template>

@@ -7,7 +7,7 @@
 			<transition name="fade" mode="out-in">
 				<h4 class="modal-title center" v-if="!selectImageMode && !selectLocationMode" key="mainEditMode">Edit Item</h4>
 				<h4 class="modal-title center" v-if="!selectImageMode && selectLocationMode" key="selectLocationMode"><i class="fa fa-chevron-left clickable pull-left back-button" @click="closeSelectLocationsPopup()"></i>Select Stores</h4>
-				<h4 class="modal-title center" v-if="selectImageMode && !selectLocationMode" key="selectImageMode"><i class="fa fa-chevron-left clickable pull-left back-button" @click="goToPageOne()"></i>  Select An Image</h4>
+				<h4 class="modal-title center" v-if="selectImageMode && !selectLocationMode" key="selectImageMode">Select An Image</h4>
 			</transition>
 		</div>
 		<div slot="modal-body" class="modal-body">
@@ -19,72 +19,85 @@
 				<div class="alert alert-info" v-show="noItemTypes" ref="noItemTypes">
 				    Menu Items require a tax type classification. <router-link to="/app/tax_manager/item_types">Create an Item Type in Tax Manager</router-link> before updating this  Menu Item.
 				</div>
-				<div class="col-md-12">
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<input type="text" class="form-control input-sm edited" id="form_control_2" v-model="itemToBeEdited.name">
-						<label for="form_control_2">Item Name</label>
+				<fieldset :disabled="!$root.permissions['menu_manager menus categories subcategories items update']">
+					<div class="col-md-12">
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm edited" id="form_control_2" v-model="itemToBeEdited.name">
+							<label for="form_control_2">Item Name</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm edited" id="form_control_3" v-model="itemToBeEdited.desc">
+							<label for="form_control_3">Item Description</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm edited" id="form_control_3" v-model="itemToBeEdited.short_description">
+							<label for="form_control_3">Item Description</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm edited" id="form_control_4" v-model="itemToBeEdited.price">
+							<label for="form_control_4">Item Price</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm" :class="{'edited': itemToBeEdited.nutrition_summary.length}" id="form_control_3" v-model="itemToBeEdited.nutrition_summary">
+							<label for="form_control_3">Nutrition Summary</label>
+						</div>
 					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<input type="text" class="form-control input-sm edited" id="form_control_3" v-model="itemToBeEdited.desc">
-						<label for="form_control_3">Item Description</label>
+					<div :class="{'col-xs-10' : skuDisabled, 'col-xs-12' : !skuDisabled}">
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input 
+								type="text" 
+								class="form-control input-sm edited" 
+								id="form_control_5" 
+								v-model="itemToBeEdited.sku"
+								:disabled="skuDisabled"
+							>
+							<label for="form_control_5">Item SKU</label>
+						</div>
 					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<input type="text" class="form-control input-sm edited" id="form_control_3" v-model="itemToBeEdited.short_description">
-						<label for="form_control_3">Item Description</label>
+					<div class="col-xs-2" v-show="skuDisabled && !confirmingSkuEdit">
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<button 
+								:disabled="!$root.permissions['menu_manager menus categories subcategories items update']"
+								type="button" 
+								class="btn btn-outline btn-xs"
+								@click="confirmSkuEdit()"
+							>
+								Edit
+							</button>
+						</div>
 					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<input type="text" class="form-control input-sm edited" id="form_control_4" v-model="itemToBeEdited.price">
-						<label for="form_control_4">Item Price</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<input type="text" class="form-control input-sm" :class="{'edited': itemToBeEdited.nutrition_summary.length}" id="form_control_3" v-model="itemToBeEdited.nutrition_summary">
-						<label for="form_control_3">Nutrition Summary</label>
-					</div>
-				</div>
-				<div :class="{'col-xs-10' : skuDisabled, 'col-xs-12' : !skuDisabled}">
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<input 
-							type="text" 
-							class="form-control input-sm edited" 
-							id="form_control_5" 
-							v-model="itemToBeEdited.sku"
-							:disabled="skuDisabled"
-						>
-						<label for="form_control_5">Item SKU</label>
-					</div>
-				</div>
-				<div class="col-xs-2" v-show="skuDisabled && !confirmingSkuEdit">
-					<div class="form-group form-md-line-input form-md-floating-label">
+					<div class="col-xs-12" v-show="confirmingSkuEdit">
+						<div class="alert alert-danger">
+						<button class="close" data-close="alert" @click="cancelSkuEdit()"></button>
+						<span>Editing the SKU may cause loss of data. Are you sure?</span>
 						<button 
 							type="button" 
-							class="btn btn-outline btn-xs"
-							@click="confirmSkuEdit()"
+							class="btn btn-outline btn-xs pull-right margin-left-5 margin-right-10"
+							@click="enableSkuEdit()"
 						>
-							Edit
+							Yes, edit
 						</button>
 					</div>
-				</div>
-				<div class="col-xs-12" v-show="confirmingSkuEdit">
-					<div class="alert alert-danger">
-					<button class="close" data-close="alert" @click="cancelSkuEdit()"></button>
-				    <span>Editing the SKU may cause loss of data. Are you sure?</span>
-					<button 
-						type="button" 
-						class="btn btn-outline btn-xs pull-right margin-left-5 margin-right-10"
-						@click="enableSkuEdit()"
-					>
-						Yes, edit
-					</button>
-				</div>
-				</div>
+					</div>
+				</fieldset>
 				<div class="col-xs-12">
 					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm edited" id="form_control_6" v-model="itemToBeEdited.order">
-					    <label for="form_control_6">Item Order</label>
- 					</div>
-				    <div class="form-group form-md-line-input form-md-floating-label" v-if="itemTypes.length">
+						<input 
+							:disabled="!$root.permissions['menu_manager menus categories subcategories items update']"
+							type="text" 
+							class="form-control input-sm edited" 
+							id="form_control_6" 
+							v-model="itemToBeEdited.order">
+						<label for="form_control_6">Item Order</label>
+					</div>
+					<div class="form-group form-md-line-input form-md-floating-label" v-if="itemTypes.length">
 						<label>Tax class:</label><br>
-						<el-dropdown trigger="click" @command="updateTaxClass" size="mini" :show-timeout="50" :hide-timeout="50">
+						<el-dropdown 
+							trigger="click" 
+							@command="updateTaxClass" 
+							size="mini" 
+							:show-timeout="50" 
+							:hide-timeout="50">
 							<el-button size="mini">
 								{{ taxClassLabel }} <i class="el-icon-arrow-down el-icon--right"></i>
 							</el-button>
@@ -95,7 +108,12 @@
 					</div>
 					<div class="form-group form-md-line-input form-md-floating-label">
 						<label>Item type:</label><br>
-						<el-dropdown trigger="click" @command="updateItemType" size="mini" :show-timeout="50" :hide-timeout="50">
+						<el-dropdown 
+							trigger="click" 
+							@command="updateItemType" 
+							size="mini" 
+							:show-timeout="50" 
+							:hide-timeout="50">
 							<el-button size="mini">
 								{{ itemTypeLabel }} <i class="el-icon-arrow-down el-icon--right"></i>
 							</el-button>
@@ -107,22 +125,23 @@
 						</el-dropdown>
 					</div>
 					<div class="form-group form-md-line-input form-md-floating-label">
-		                <label>Item Status:</label><br>
-		                <el-switch
-		                	v-model="itemToBeEdited.status"
-		                	active-color="#0c6"
-		                	inactive-color="#ff4949"
-		                	:active-value="1"
-		                	:inactive-value="0"
-		                	active-text="Active"
-		                	inactive-text="Sold Out">
-		                </el-switch>
-		            </div>
-        			<div>
+						<label>Item Status:</label><br>
+						<el-switch
+							:disabled="!$root.permissions['menu_manager menus categories subcategories items update']"
+							v-model="itemToBeEdited.status"
+							active-color="#0c6"
+							inactive-color="#ff4949"
+							:active-value="1"
+							:inactive-value="0"
+							active-text="Active"
+							inactive-text="Sold Out">
+						</el-switch>
+					</div>
+					<div>
 						<p class="margin-bottom-10 margin-top-30 margin-right-10">Select locations to apply the changes to:</p>
-        				<button type="submit" class="btn blue btn-outline" @click="selectLocations($event)">Select locations</button>
-        				<p class="grey-label margin-top-10" v-if="selectedLocations.length">Selected {{ selectedLocations.length }} location<span v-if="selectedLocations.length !== 1">s</span></p>
-        			</div>
+						<button type="submit" class="btn blue btn-outline" @click="selectLocations($event)">Select locations</button>
+						<p class="grey-label margin-top-10" v-if="selectedLocations.length">Selected {{ selectedLocations.length }} location<span v-if="selectedLocations.length !== 1">s</span></p>
+					</div>
 				</div>
 			</div>
 			<div class="page-two" :class="{'active': selectImageMode, 'disabled': !selectImageMode}">
@@ -133,7 +152,15 @@
 			<div class="row">
 				<div class="col-xs-12">
 					<button 
-						v-if="!selectImageMode && !selectLocationMode" 
+						v-if="!selectImageMode && !selectLocationMode && !$root.permissions['menu_manager menus categories subcategories items update']"
+						type="button" 
+						class="btn btn-primary" 
+						@click="closeModal()"
+					>
+						Close
+					</button>
+					<button 
+						v-if="!selectImageMode && !selectLocationMode && $root.permissions['menu_manager menus categories subcategories items update']"
 						type="button" 
 						class="btn btn-primary" 
 						:disabled="noItemTypes"
@@ -231,7 +258,9 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateItemType (type) {
-			this.itemToBeEdited.type = type
+			if (this.$root.permissions['menu_manager menus categories subcategories items update']) {
+				this.itemToBeEdited.type = type
+			}
 		},
 		/**
 		 * To toggle select location mode on.
@@ -250,7 +279,9 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateSelectedLocations (locations) {
-			this.selectedLocations = locations
+			if (this.$root.permissions['menu_manager menus categories subcategories items update']) {
+				this.selectedLocations = locations
+			}
 			this.closeSelectLocationsPopup()
 		},
 		/**
@@ -443,7 +474,9 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateTaxClass (id) {
-			this.itemToBeEdited.item_type_id = id
+			if (this.$root.permissions['menu_manager menus categories subcategories items update']) {
+				this.itemToBeEdited.item_type_id = id
+			}
 		}
 	},
 	components: {

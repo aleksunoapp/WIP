@@ -5,6 +5,7 @@
 				<span>&times;</span>
 			</button>
 			<h4 class="modal-title center" v-if="!selectImageMode">Update Portion</h4>
+			<h4 class="modal-title center" v-if="selectImageMode">Select an Image</h4>
 		</div>
 		<div slot="modal-body" class="modal-body">
 			<div class="col-xs-12">
@@ -12,7 +13,7 @@
 				    <button class="close" data-close="alert" @click="clearError()"></button>
 				    <span>{{errorMessage}}</span>
 				</div>
-        		<div v-if="!selectLocationMode" :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
+        		<div :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
 					<resource-picker 
 						@open="goToPageTwo()"
 						@close="goToPageOne()"
@@ -23,32 +24,39 @@
 					>
 					</resource-picker>
         		</div>
-        		<div class="col-xs-12">        			
-	    			<select-locations-popup 
-	    				v-if="selectLocationMode" 
-	    				@closeSelectLocationsPopup='updateSelectedLocations' 
-	    				:previouslySelected="selectedLocations"
-	    			>
-					</select-locations-popup>
-        		</div>
-				<div class="col-md-12" v-show="!selectImageMode && !selectLocationMode">
-					<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-					    <input type="text" class="form-control input-sm edited" id="form_control_1" v-model="portionToBeEdited.name">
-					    <label for="form_control_1">Portion Name</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-					    <input type="text" class="form-control input-sm edited" id="form_control_2" v-model="portionToBeEdited.multiplier">
-					    <label for="form_control_2">Portion Multipler</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-					    <input type="text" class="form-control input-sm edited" id="form_control_3" v-model="portionToBeEdited.order">
-					    <label for="form_control_3">Portion Order</label>
-					</div>
+				<div class="col-md-12" v-show="!selectImageMode">
+					<fieldset :disabled="!$root.permissions['menu_manager portions update']">
+						<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
+							<input type="text" class="form-control input-sm edited" id="form_control_1" v-model="portionToBeEdited.name">
+							<label for="form_control_1">Portion Name</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
+							<input type="text" class="form-control input-sm edited" id="form_control_2" v-model="portionToBeEdited.multiplier">
+							<label for="form_control_2">Portion Multipler</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
+							<input type="text" class="form-control input-sm edited" id="form_control_3" v-model="portionToBeEdited.order">
+							<label for="form_control_3">Portion Order</label>
+						</div>
+					</fieldset>
 				</div>
 			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button v-if="!selectImageMode" type="button" class="btn btn-primary" @click="updatePortion()">Save</button>
+			<button 
+				v-if="!selectImageMode && !$root.permissions['menu_manager portions update']" 
+				type="button" 
+				class="btn btn-primary" 
+				@click="closeModal()">
+				Close
+			</button>
+			<button 
+				v-if="!selectImageMode && $root.permissions['menu_manager portions update']" 
+				type="button" 
+				class="btn btn-primary" 
+				@click="updatePortion()">
+				Save
+			</button>
 		</div>
 	</modal>
 </template>
@@ -200,8 +208,10 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateIcon (val) {
+			if (this.$root.permissions['menu_manager portions update']) {
+				this.portionToBeEdited.icon_url = val.image_url
+			}
 			this.goToPageOne()
-			this.portionToBeEdited.icon_url = val.image_url
 		}
 	},
 	components: {

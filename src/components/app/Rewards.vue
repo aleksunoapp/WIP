@@ -87,11 +87,15 @@
 	                                            <i class="fa fa-lg fa-pencil"></i>
 	                                        </a>
 		                        		</el-tooltip>
-<!-- 		                        		<el-tooltip content="Delete" effect="light" placement="right">
-			                        		<a class="btn btn-circle btn-icon-only btn-default" @click.stop="showDeleteModal(tier)">
-	                                            <i class="fa fa-lg fa-trash"></i>
+		                        		<el-tooltip 
+											v-if="$root.permissions['reward_tiers read'] && !$root.permissions['reward_tiers update']"
+											content="View" 
+											effect="light" 
+											placement="right">
+			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="showEditTierModal(tier, $event)">
+	                                            <i class="fa fa-lg fa-eye"></i>
 	                                        </a>
-		                        		</el-tooltip> -->
+		                        		</el-tooltip>
 		                        	</div>
 		                        	<div class="list-icon-container">
                                         <i class="fa fa-angle-right"></i>

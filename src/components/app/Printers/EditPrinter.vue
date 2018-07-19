@@ -11,22 +11,24 @@
 			    <button class="close" data-close="alert" @click="clearError()"></button>
 			    <span>{{errorMessage}}</span>
 			</div>
-			<div class="form-group form-md-line-input form-md-floating-label">
-			    <input type="text" class="form-control input-sm edited" id="form_control_1" v-model="printerToBeEdited.printer_name">
-			    <label for="form_control_1">Printer Name</label>
-			</div>
-			<div class="form-group form-md-line-input form-md-floating-label">
-			    <input type="text" class="form-control input-sm edited" id="form_control_2" v-model="printerToBeEdited.printer_key">
-			    <label for="form_control_2">Printer Key</label>
-			</div>
-			<div class="form-group form-md-line-input form-md-floating-label">
-			    <input type="text" class="form-control input-sm edited" id="form_control_3" v-model="printerToBeEdited.printer_serialno">
-			    <label for="form_control_3">Printer Serial Number</label>
-			</div>
-			<div class="form-group form-md-line-input form-md-floating-label">
-				<input type="text" class="form-control input-sm edited" id="form_control_4" v-model="printerToBeEdited.copies">
-				<label for="form_control_4">Copies</label>
-			</div>
+			<fieldset :disabled="!$root.permissions['printers update']">
+				<div class="form-group form-md-line-input form-md-floating-label">
+					<input type="text" class="form-control input-sm edited" id="form_control_1" v-model="printerToBeEdited.printer_name">
+					<label for="form_control_1">Printer Name</label>
+				</div>
+				<div class="form-group form-md-line-input form-md-floating-label">
+					<input type="text" class="form-control input-sm edited" id="form_control_2" v-model="printerToBeEdited.printer_key">
+					<label for="form_control_2">Printer Key</label>
+				</div>
+				<div class="form-group form-md-line-input form-md-floating-label">
+					<input type="text" class="form-control input-sm edited" id="form_control_3" v-model="printerToBeEdited.printer_serialno">
+					<label for="form_control_3">Printer Serial Number</label>
+				</div>
+				<div class="form-group form-md-line-input form-md-floating-label">
+					<input type="text" class="form-control input-sm edited" id="form_control_4" v-model="printerToBeEdited.copies">
+					<label for="form_control_4">Copies</label>
+				</div>
+			</fieldset>
 			<div class="side-by-side-wrapper">
 				<p class="paper-width-label">Paper width:</p>
 				<el-dropdown trigger="click" @command="updatePrinterToBeEditedPaperWidth" size="mini" :show-timeout="50" :hide-timeout="50">
@@ -43,6 +45,7 @@
 			<div class="side-by-side-wrapper">
 				<p class="side-by-side-item status-label">Status:</p>
 				<el-switch
+					:disabled="!$root.permissions['printers update']"
 					v-model="printerToBeEdited.status"
 					active-color="#0c6"
 					inactive-color="#ff4949"
@@ -54,7 +57,20 @@
 			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button type="button" class="btn btn-primary" @click="updatePrinter()">Save</button>
+			<button 
+				v-if="!$root.permissions['printers update']"
+				type="button" 
+				class="btn btn-primary" 
+				@click="closeModal()">
+				Close
+			</button>
+			<button 
+				v-else
+				type="button" 
+				class="btn btn-primary" 
+				@click="updatePrinter()">
+				Save
+			</button>
 		</div>
 	</modal>
 </template>
@@ -102,7 +118,9 @@ export default {
 		 * @returns {undefined}
 		 */
 		updatePrinterToBeEditedPaperWidth (value) {
-			this.printerToBeEdited.paper_width = value
+			if (this.$root.permissions['printers update']) {
+				this.printerToBeEdited.paper_width = value
+			}
 		},
 		/**
 		 * To check if the category data is valid before submitting to the backend.
@@ -139,7 +157,6 @@ export default {
 			var editPrinterVue = this
 			PrintersFunctions.getPrinterDetails(editPrinterVue.printerId, editPrinterVue.$root.appId, editPrinterVue.$root.appSecret, editPrinterVue.$root.userToken).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
-					console.log('getPrinterDetails', response.payload)
 					editPrinterVue.printerToBeEdited = response.payload
 				}
 			}).catch(reason => {

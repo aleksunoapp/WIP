@@ -151,6 +151,15 @@
 												</a>
 											</el-tooltip>
 											<el-tooltip 
+												v-if="$root.permissions['create role'] && !$root.permissions['update role']"
+												content="View" 
+												effect="light" 
+												placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default" @click="editRole(role)">
+													<i class="fa fa-eye" aria-hidden="true"></i>
+												</a>
+											</el-tooltip>
+											<el-tooltip 
 												v-if="$root.permissions['delete role']"
 												content="Delete" 
 												effect="light" 
@@ -221,6 +230,15 @@
 												</a>
 											</el-tooltip>
 											<el-tooltip 
+												v-if="$root.permissions['create role'] && !$root.permissions['update role']"
+												content="View" 
+												effect="light" 
+												placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default" @click="editRole(role)">
+													<i class="fa fa-eye" aria-hidden="true"></i>
+												</a>
+											</el-tooltip>
+											<el-tooltip 
 												v-if="$root.permissions['delete role']"
 												content="Delete" 
 												effect="light" 
@@ -271,7 +289,7 @@
 					:data="roleTree" 
 					:default-expand-all="true"
 					:highlight-current="true"
-					:props="{'label': 'name', 'children': 'combined'}"
+					:props="{'label': 'name', 'children': 'combined', 'disabled': 'disabled'}"
 					:check-on-click-node="true"
 					:expand-on-click-node="false"
 					@check-change="setEditedRolePermission"
@@ -288,7 +306,20 @@
 				</el-tree>
 			</div>
 			<div slot="modal-footer" class="modal-footer">
-				<button type="button" class="btn btn-primary" @click="updateRole()">Save</button>
+				<button 
+					v-if="$root.permissions['create role'] && !$root.permissions['update role']"
+					type="button" 
+					class="btn btn-primary" 
+					@click="closeEditRoleModal()">
+					Close
+				</button>
+				<button 
+					v-else
+					type="button" 
+					class="btn btn-primary" 
+					@click="updateRole()">
+					Save
+				</button>
 			</div>
 		</modal>
 		<!-- EDIT MODAL END -->
@@ -446,7 +477,6 @@ export default {
 					arrElem = arr[i]
 					mappedArr[arrElem.id] = arrElem
 				}
-				console.log(mappedArr)
 
 				for (var id in mappedArr) {
 					if (mappedArr.hasOwnProperty(id)) {
@@ -456,6 +486,7 @@ export default {
 							mappedArr[mappedElem['parent_module']]['sub_modules'].push(mappedElem)
 						// If the element is at the root level, add it to first level elements array.
 						} else {
+							mappedElem.disabled = this.$root.permissions['update role'] === undefined
 							tree.push(mappedElem)
 						}
 					}
@@ -477,6 +508,7 @@ export default {
 				current.combined = [...current.permissions, ...current.sub_modules]
 				current.combined = current.combined.map(item => {
 					item.nodeId = item.module_id === undefined ? `m${item.id}` : `p${item.id}`
+					item.disabled = _this.$root.permissions['update role'] === undefined
 					return item
 				})
 

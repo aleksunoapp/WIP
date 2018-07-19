@@ -6,6 +6,7 @@
 			</button>
 			<transition name="fade" mode="out-in">
 				<h4 class="modal-title center" v-if="!selectImageMode && !selectLocationMode" key="mainEditMode">Edit Modifier Item</h4>
+				<h4 class="modal-title center" v-if="selectImageMode && !selectLocationMode" key="imageMode">Select an Image</h4>
 				<h4 class="modal-title center" v-if="!selectImageMode && selectLocationMode" key="selectLocationMode"><i class="fa fa-chevron-left clickable pull-left back-button" @click="closeSelectLocationsPopup()"></i>Select Stores</h4>
 			</transition>
 		</div>
@@ -35,38 +36,41 @@
 					</select-locations-popup>
         		</div>
 				<div class="col-xs-12" v-show="!selectImageMode && !selectLocationMode">
-					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm edited" id="form_control_1" v-model="itemToBeEdited.name">
-					    <label for="form_control_1">Modifier Item Name</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm edited" id="form_control_2" v-model="itemToBeEdited.desc">
-					    <label for="form_control_2">Modifier Item Description</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm edited" id="form_control_3" v-model="itemToBeEdited.price">
-					    <label for="form_control_3">Modifier Item Price</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm edited" id="form_control_4" v-model="itemToBeEdited.sku">
-					    <label for="form_control_4">Modifier Item SKU</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm edited" id="form_control_5" v-model="itemToBeEdited.min">
-					    <label for="form_control_5">Modifier Item Min</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm edited" id="form_control_6" v-model="itemToBeEdited.max">
-					    <label for="form_control_6">Modifier Item Max</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm edited" id="form_control_7" v-model="itemToBeEdited.order">
-					    <label for="form_control_7">Modifier Item Order</label>
-					</div>
+					<fieldset :disabled="!$root.permissions['menu_manager modifiers items update']">
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm edited" id="form_control_1" v-model="itemToBeEdited.name">
+							<label for="form_control_1">Modifier Item Name</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm edited" id="form_control_2" v-model="itemToBeEdited.desc">
+							<label for="form_control_2">Modifier Item Description</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm edited" id="form_control_3" v-model="itemToBeEdited.price">
+							<label for="form_control_3">Modifier Item Price</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm edited" id="form_control_4" v-model="itemToBeEdited.sku">
+							<label for="form_control_4">Modifier Item SKU</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm edited" id="form_control_5" v-model="itemToBeEdited.min">
+							<label for="form_control_5">Modifier Item Min</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm edited" id="form_control_6" v-model="itemToBeEdited.max">
+							<label for="form_control_6">Modifier Item Max</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm edited" id="form_control_7" v-model="itemToBeEdited.order">
+							<label for="form_control_7">Modifier Item Order</label>
+						</div>
+					</fieldset>
 					<div class="form-group form-md-line-input form-md-floating-label">
 		                <label>Modifier Item Status:</label><br>
 		                <el-switch
-		                	v-model="itemToBeEdited.status"
+		                	:disabled="!$root.permissions['menu_manager modifiers items update']"
+							v-model="itemToBeEdited.status"
 		                	active-color="#0c6"
 		                	inactive-color="#ff4949"
 		                	:active-value="1"
@@ -84,7 +88,20 @@
 	        </div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button v-if="!selectImageMode && !selectLocationMode" type="button" class="btn btn-primary" @click="updateModifierItem()">Save</button>
+			<button 
+				v-if="!selectImageMode && !selectLocationMode && !$root.permissions['menu_manager modifiers items update']" 
+				type="button" 
+				class="btn btn-primary" 
+				@click="closeModal()">
+				Close
+			</button>
+			<button 
+				v-if="!selectImageMode && !selectLocationMode && $root.permissions['menu_manager modifiers items update']" 
+				type="button" 
+				class="btn btn-primary" 
+				@click="updateModifierItem()">
+				Save
+			</button>
 		</div>
 	</modal>
 </template>
@@ -134,7 +151,9 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateSelectedLocations (locations) {
-			this.selectedLocations = locations
+			if (this.$root.permissions['menu_manager modifiers items update']) {
+				this.selectedLocations = locations
+			}
 			this.closeSelectLocationsPopup()
 		},
 		/**
@@ -279,8 +298,10 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateImage (val) {
+			if (this.$root.permissions['menu_manager modifiers items update']) {
+				this.itemToBeEdited.image_url = val.image_url
+			}
 			this.goToPageOne()
-			this.itemToBeEdited.image_url = val.image_url
 		}
 	},
 	components: {

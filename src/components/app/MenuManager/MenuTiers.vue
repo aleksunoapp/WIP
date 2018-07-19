@@ -96,6 +96,15 @@
 			                                        <i class="fa fa-lg fa-pencil"></i>
 			                                    </a>
 			                        		</el-tooltip>
+			                        		<el-tooltip 
+												v-if="$root.permissions['menu_manager tiers read'] && !$root.permissions['menu_manager tiers update']"
+												content="Edit" 
+												effect="light" 
+												placement="right">
+				                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editMenuTier(tier, $event)">
+			                                        <i class="fa fa-lg fa-eye"></i>
+			                                    </a>
+			                        		</el-tooltip>
 			                        	</div>
 			                        	<div class="list-icon-container">
 	                                        <i class="fa fa-angle-right"></i>

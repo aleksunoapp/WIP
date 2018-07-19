@@ -115,6 +115,15 @@
 											</a>
 										</el-tooltip>
 										<el-tooltip 
+											v-if="$root.permissions['tax tax_classes read'] && !$root.permissions['tax tax_classes update']"
+											content="View" 
+											effect="light" 
+											placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default" @click="editTaxClass(taxClass, $event)">
+												<i class="fa fa-lg fa-eye"></i>
+											</a>
+										</el-tooltip>
+										<el-tooltip 
 											v-if="$root.permissions['tax tax_classes delete']"
 											content="Delete" 
 											effect="light" 
@@ -171,25 +180,31 @@
 							</div>
 						</div>
 						<div class="col-md-12">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': taxClassToEdit.name.length}" id="form_control_1" v-model="taxClassToEdit.name">
-								<label for="form_control_1">Name</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': taxClassToEdit.percentage.length}" id="form_control_3" v-model="taxClassToEdit.percentage">
-								<label for="form_control_3">Percentage</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': taxClassToEdit.min_amount.length}" id="form_control_3" v-model="taxClassToEdit.min_amount">
-								<label for="form_control_3">Minimum amount</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': taxClassToEdit.max_amount.length}" id="form_control_3" v-model="taxClassToEdit.max_amount">
-								<label for="form_control_3">Maximum amount</label>
-							</div>
+							<fieldset :disabled="!$root.permissions['tax tax_classes update']">
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<input type="text" class="form-control input-sm" :class="{'edited': taxClassToEdit.name.length}" id="form_control_1" v-model="taxClassToEdit.name">
+									<label for="form_control_1">Name</label>
+								</div>
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<input type="text" class="form-control input-sm" :class="{'edited': taxClassToEdit.percentage.length}" id="form_control_3" v-model="taxClassToEdit.percentage">
+									<label for="form_control_3">Percentage</label>
+								</div>
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<input type="text" class="form-control input-sm" :class="{'edited': taxClassToEdit.min_amount.length}" id="form_control_3" v-model="taxClassToEdit.min_amount">
+									<label for="form_control_3">Minimum amount</label>
+								</div>
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<input type="text" class="form-control input-sm" :class="{'edited': taxClassToEdit.max_amount.length}" id="form_control_3" v-model="taxClassToEdit.max_amount">
+									<label for="form_control_3">Maximum amount</label>
+								</div>
+							</fieldset>
 							<label v-if="!loadingItemTypes">
 								Pair with:
-							<el-select v-model="taxClassToEdit.paired_with" placeholder="Select Item Type" size="small">
+							<el-select 
+								:disabled="!$root.permissions['tax tax_classes update']"
+								v-model="taxClassToEdit.paired_with" 
+								placeholder="Select Item Type" 
+								size="small">
 								<el-option v-for="type in itemTypes" :label="type.name" :value="type.id" :key="type.id"></el-option>
 							</el-select>
 							</label>
@@ -198,7 +213,20 @@
 				</form>
 			</div>
 			<div slot="modal-footer" class="modal-footer clear">
-				<button @click="updateTaxClass()" type="submit" class="btn blue">Save</button>
+				<button 
+					v-if="!$root.permissions['tax tax_classes update']"
+					@click="closeEditModal()" 
+					type="button" 
+					class="btn blue">
+					Close
+				</button>
+				<button 
+					v-else
+					@click="updateTaxClass()" 
+					type="submit" 
+					class="btn blue">
+					Save
+				</button>
 			</div>
 		</modal>
 		<!-- END EDIT -->

@@ -95,6 +95,15 @@
 	                                    </a>
 	                        		</el-tooltip>
 	                        		<el-tooltip 
+										v-if="$root.permissions['menu_manager options read'] && !$root.permissions['menu_manager options update']"
+										content="View" 
+										effect="light" 
+										placement="right">
+		                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editOption(option, $event)">
+	                                        <i class="fa fa-lg fa-eye"></i>
+	                                    </a>
+	                        		</el-tooltip>
+	                        		<el-tooltip 
 										v-if="$root.permissions['menu_manager options update']"
 										content="Apply to multiple" 
 										effect="light" 

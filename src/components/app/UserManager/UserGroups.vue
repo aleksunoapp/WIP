@@ -150,6 +150,15 @@
 												</a>
 											</el-tooltip>
 											<el-tooltip 
+												v-if="$root.permissions['user_manager user_groups read'] && !$root.permissions['user_manager user_groups update']"
+												content="View" 
+												effect="light" 
+												placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default" @click="displayEditGroupModal(group, $event)">
+													<i class="fa fa-lg fa-eye"></i>
+												</a>
+											</el-tooltip>
+											<el-tooltip 
 												v-if="$root.permissions['user_manager user_groups delete']"
 												content="Delete" 
 												effect="light" 

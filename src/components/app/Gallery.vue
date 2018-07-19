@@ -38,6 +38,7 @@
 						Close
 					</button>
 					<button 
+						v-if="$root.permissions['gallery delete']"
 						type="button" 
 						class="btn btn-outline blue pull-right margin-right-10" 
 						@click="openDeleteModal()"

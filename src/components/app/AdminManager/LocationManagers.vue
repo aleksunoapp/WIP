@@ -178,6 +178,15 @@
 	                                                <i class="fa fa-pencil" aria-hidden="true"></i>
 	                                            </a>
 											</el-tooltip>
+        	                        		<el-tooltip 
+												v-if="$root.permissions['admin location_managers read'] && !$root.permissions['admin location_managers update']"
+												content="View" 
+												effect="light" 
+												placement="right">
+	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editLocationManager(locationManager)">
+	                                                <i class="fa fa-eye" aria-hidden="true"></i>
+	                                            </a>
+											</el-tooltip>
 											<el-tooltip 
 												v-if="$root.permissions['admin location_managers update']"
 												content="Assign stores" 
@@ -263,6 +272,15 @@
 												placement="right">
 	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editLocationManager(locationManager)">
 	                                                <i class="fa fa-pencil" aria-hidden="true"></i>
+	                                            </a>
+											</el-tooltip>
+        	                        		<el-tooltip 
+												v-if="$root.permissions['admin location_managers read'] && !$root.permissions['admin location_managers update']"
+												content="View" 
+												effect="light" 
+												placement="right">
+	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editLocationManager(locationManager)">
+	                                                <i class="fa fa-eye" aria-hidden="true"></i>
 	                                            </a>
 											</el-tooltip>
 											<el-tooltip 
@@ -355,17 +373,20 @@
 				    <button class="close" data-close="alert" @click="clearEditError()"></button>
 				    <span>{{editErrorMessage}}</span>
 				</div>
-				<div class="form-group form-md-line-input form-md-floating-label">
-				    <input type="text" class="form-control input-sm" id="form_control_edited_name" v-model="locationManagerToBeEdited.name" :class="{'edited': locationManagerToBeEdited.name.length}">
-				    <label for="form_control_edited_name">Name</label>
-				</div>
-				<div class="form-group form-md-line-input form-md-floating-label">
-				    <input type="text" class="form-control input-sm" id="form_control_edited_phone" v-model="locationManagerToBeEdited.phone" :class="{'edited': locationManagerToBeEdited.phone.length}">
-				    <label for="form_control_edited_phone">Phone</label>
-				</div>
+				<fieldset :disabled="$root.permissions['admin location_managers read'] && !$root.permissions['admin location_managers update']">
+					<div class="form-group form-md-line-input form-md-floating-label">
+						<input type="text" class="form-control input-sm" id="form_control_edited_name" v-model="locationManagerToBeEdited.name" :class="{'edited': locationManagerToBeEdited.name.length}">
+						<label for="form_control_edited_name">Name</label>
+					</div>
+					<div class="form-group form-md-line-input form-md-floating-label">
+						<input type="text" class="form-control input-sm" id="form_control_edited_phone" v-model="locationManagerToBeEdited.phone" :class="{'edited': locationManagerToBeEdited.phone.length}">
+						<label for="form_control_edited_phone">Phone</label>
+					</div>
+				</fieldset>
 				<div class="form-group form-md-line-input form-md-floating-label">
 				    <label>Status</label><br>
 				    <el-switch
+						:disabled="$root.permissions['admin location_managers read'] && !$root.permissions['admin location_managers update']"
 				    	v-model="locationManagerToBeEdited.active"
 				    	active-color="#0c6"
 				    	inactive-color="#ff4949"
@@ -377,7 +398,20 @@
 				</div>
 			</div>
 			<div slot="modal-footer" class="modal-footer">
-				<button type="button" class="btn btn-primary" @click="updateLocationManager()">Save</button>
+				<button 
+					v-if="$root.permissions['admin location_managers read'] && !$root.permissions['admin location_managers update']"
+					type="button" 
+					class="btn btn-primary" 
+					@click="closeEditLocationManagerModal()">
+					Close
+				</button>
+				<button 
+					v-else
+					type="button" 
+					class="btn btn-primary" 
+					@click="updateLocationManager()">
+					Save
+				</button>
 			</div>
 		</modal>
 		<!-- EDIT MODAL END -->

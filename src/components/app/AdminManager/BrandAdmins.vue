@@ -179,6 +179,15 @@
 	                                            </a>
 			                        		</el-tooltip>
 			                        		<el-tooltip 
+												v-if="$root.permissions['admin brand_admins read'] && !$root.permissions['admin brand_admins update']"
+												content="View" 
+												effect="light" 
+												placement="right">
+	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editBrandAdmin(brandAdmin)">
+	                                                <i class="fa fa-eye" aria-hidden="true"></i>
+	                                            </a>
+			                        		</el-tooltip>
+			                        		<el-tooltip 
 												v-if="$root.permissions['admin brand_admins update']"
 												content="Roles" 
 												effect="light" 
@@ -257,6 +266,15 @@
 	                                            </a>
 			                        		</el-tooltip>
 			                        		<el-tooltip 
+												v-if="$root.permissions['admin brand_admins read'] && !$root.permissions['admin brand_admins update']"
+												content="View" 
+												effect="light" 
+												placement="right">
+	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editBrandAdmin(brandAdmin)">
+	                                                <i class="fa fa-eye" aria-hidden="true"></i>
+	                                            </a>
+			                        		</el-tooltip>
+			                        		<el-tooltip 
 												v-if="$root.permissions['admin brand_admins update']"
 												content="Roles" 
 												effect="light" 
@@ -310,17 +328,20 @@
 				    <button class="close" data-close="alert" @click="clearEditError()"></button>
 				    <span>{{editErrorMessage}}</span>
 				</div>
-				<div class="form-group form-md-line-input form-md-floating-label">
-				    <input type="text" class="form-control input-sm" id="form_control_edited_name" v-model="brandAdminToBeEdited.name" :class="{'edited': brandAdminToBeEdited.name.length}">
-				    <label for="form_control_edited_name">Name</label>
-				</div>
-				<div class="form-group form-md-line-input form-md-floating-label">
-				    <input type="text" class="form-control input-sm" id="form_control_edited_phone" v-model="brandAdminToBeEdited.phone" :class="{'edited': brandAdminToBeEdited.phone.length}">
-				    <label for="form_control_edited_phone">Phone</label>
-				</div>
+				<fieldset :disabled="$root.permissions['admin brand_admins read'] && !$root.permissions['admin brand_admins update']">
+					<div class="form-group form-md-line-input form-md-floating-label">
+						<input type="text" class="form-control input-sm" id="form_control_edited_name" v-model="brandAdminToBeEdited.name" :class="{'edited': brandAdminToBeEdited.name.length}">
+						<label for="form_control_edited_name">Name</label>
+					</div>
+					<div class="form-group form-md-line-input form-md-floating-label">
+						<input type="text" class="form-control input-sm" id="form_control_edited_phone" v-model="brandAdminToBeEdited.phone" :class="{'edited': brandAdminToBeEdited.phone.length}">
+						<label for="form_control_edited_phone">Phone</label>
+					</div>
+				</fieldset>
 				<div class="form-group form-md-line-input form-md-floating-label">
 				    <label>Status</label><br>
 				    <el-switch
+						:disabled="$root.permissions['admin brand_admins read'] && !$root.permissions['admin brand_admins update']"
 				    	v-model="brandAdminToBeEdited.active"
 				    	active-color="#0c6"
 				    	inactive-color="#ff4949"
@@ -332,7 +353,20 @@
 				</div>
 			</div>
 			<div slot="modal-footer" class="modal-footer">
-				<button type="button" class="btn btn-primary" @click="updateBrandAdmin()">Save</button>
+				<button 
+					v-if="$root.permissions['admin brand_admins read'] && !$root.permissions['admin brand_admins update']"
+					type="button" 
+					class="btn btn-primary" 
+					@click="closeEditBrandAdminModal()">
+					Close
+				</button>
+				<button 
+					v-else
+					type="button" 
+					class="btn btn-primary" 
+					@click="updateBrandAdmin()">
+					Save
+				</button>
 			</div>
 		</modal>
 		<!-- EDIT MODAL END -->

@@ -81,26 +81,36 @@
 		            <div class="mt-element-list">
 		                <div class="mt-list-container list-news">
 		                    <ul>
-		                        <li 
-									id="parent" 
-									class="mt-list-item actions-at-left margin-top-15" 
-									v-for="store in currentActivePageItems" 
+		                        <li
+									id="parent"
+									class="mt-list-item actions-at-left margin-top-15"
+									v-for="store in currentActivePageItems"
 									@click="editStore(store)"
 									:key="store.id">
 		                        	<div class="list-item-actions">
-										<el-tooltip 
+
+                    <el-tooltip
+                      v-if="$root.permissions['stores info read'] && !$root.permissions['stores info update']"
+                      content="View"
+                      effect="light"
+                      placement="right">
+                      <a class="btn btn-circle btn-icon-only btn-default" @click="editStore(store)">
+                                              <i class="fa fa-lg fa-eye"></i>
+                                          </a>
+                    </el-tooltip>
+                    <el-tooltip
 											v-if="$root.permissions['stores info update']"
-											content="Edit" 
-											effect="light" 
+											content="Edit"
+											effect="light"
 											placement="right">
 											<a class="btn btn-circle btn-icon-only btn-default" @click="editStore(store)">
                                             	<i class="fa fa-lg fa-pencil"></i>
                                         	</a>
 										</el-tooltip>
-										<el-tooltip 
+										<el-tooltip
 											v-if="$root.permissions['stores info delete']"
-											content="Delete" 
-											effect="light" 
+											content="Delete"
+											effect="light"
 											placement="right">
 											<a class="btn btn-circle btn-icon-only btn-default" @click="confirmDelete(store)">
                                             	<i class="fa fa-lg fa-trash"></i>
@@ -166,19 +176,19 @@
 									v-for="store in currentActiveSearchPageItems" 
 									:key="store.id">
 		                        	<div class="list-item-actions">
-										<el-tooltip 
+										<el-tooltip
 											v-if="$root.permissions['stores info update']"
-											content="Edit" 
-											effect="light" 
+											content="Edit"
+											effect="light"
 											placement="right">
 											<a class="btn btn-circle btn-icon-only btn-default" @click="editStore(store)">
                                             	<i class="fa fa-lg fa-pencil"></i>
                                         	</a>
 										</el-tooltip>
-										<el-tooltip 
+										<el-tooltip
 											v-if="$root.permissions['stores info delete']"
-											content="Delete" 
-											effect="light" 
+											content="Delete"
+											effect="light"
 											placement="right">
 											<a class="btn btn-circle btn-icon-only btn-default" @click="confirmDelete(store)">
                                             	<i class="fa fa-lg fa-trash"></i>

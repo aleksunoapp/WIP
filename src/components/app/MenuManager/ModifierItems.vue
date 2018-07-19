@@ -130,6 +130,15 @@
 										</a>
 									</el-tooltip>
 									<el-tooltip 
+										v-if="$root.permissions['menu_manager modifiers items read'] && !$root.permissions['menu_manager modifiers items update']"
+										content="View" 
+										effect="light" 
+										placement="right">
+										<a class="btn btn-circle btn-icon-only btn-default" @click="displayEditItemModal(modifierItem, $event)">
+											<i class="fa fa-lg fa-eye"></i>
+										</a>
+									</el-tooltip>
+									<el-tooltip 
 										v-if="$root.permissions['menu_manager modifiers items update']"
 										content="Nutrition info" 
 										effect="light" 
@@ -214,7 +223,13 @@
 			                        			<p class="grey-text">No tags have been applied to this modifier item.</p>
 			                        		</div>
 			                        		<div class="col-md-12">
-			                        			<button type="button" class="btn btn-outline btn-xs blue margin-top-10" @click="showTagsModal(modifierItem.id, modifierItem.tags)">Add Tags</button>
+			                        			<button 
+													v-if="$root.permissions['menu_manager modifiers items update']"
+													type="button" 
+													class="btn btn-outline btn-xs blue margin-top-10" 
+													@click="showTagsModal(modifierItem.id, modifierItem.tags)">
+													Add Tags
+												</button>
 			                        		</div>
 			                        	</div>
 			                        </div>
@@ -237,7 +252,13 @@
 			                        			<p class="grey-text">No portions have been applied to this modifier item.</p>
 			                        		</div>
 			                        		<div class="col-md-12">
-			                        			<button type="button" class="btn btn-outline btn-xs blue margin-top-10" @click="showPortionsModal(modifierItem.id, modifierItem.modifier_item_portions)">Add Portions</button>
+			                        			<button 
+													v-if="$root.permissions['menu_manager modifiers items update']"
+													type="button" 
+													class="btn btn-outline btn-xs blue margin-top-10" 
+													@click="showPortionsModal(modifierItem.id, modifierItem.modifier_item_portions)">
+													Add Portions
+												</button>
 			                        		</div>
 			                        	</div>
 			                        </div>
@@ -260,7 +281,13 @@
 			                        			<p class="grey-text">No options have been applied to this modifier item.</p>
 			                        		</div>
 			                        		<div class="col-md-12">
-			                        			<button type="button" class="btn btn-outline btn-xs blue margin-top-10" @click="showOptionsModal(modifierItem.id, modifierItem.options)">Add Options</button>
+			                        			<button 
+													v-if="$root.permissions['menu_manager modifiers items update']"
+													type="button" 
+													class="btn btn-outline btn-xs blue margin-top-10" 
+													@click="showOptionsModal(modifierItem.id, modifierItem.options)">
+													Add Options
+												</button>
 			                        		</div>
 			                        	</div>
 			                        </div>

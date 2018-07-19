@@ -19,7 +19,12 @@
 			                <tr>
 			                	<th> 
 			                		<div class="md-checkbox has-success" @change="selectAll()">
-		                                <input type="checkbox" id="locations-promocodes" class="md-check" v-model="selectAllSelected">
+		                                <input 
+											:disabled="!$root.permissions['menu_manager tiers update']"
+											type="checkbox" 
+											id="locations-promocodes" 
+											class="md-check" 
+											v-model="selectAllSelected">
 		                                <label for="locations-promocodes">
 		                                    <span class="inc"></span>
 		                                    <span class="check"></span>
@@ -35,7 +40,13 @@
 			                <tr v-for="menu in menus" :key="menu.id">
 			                	<td>
 			                		<div class="md-checkbox has-success">
-		                                <input type="checkbox" :id="`menu-${menu.id}`" class="md-check" v-model="menu.selected" @change="syncSelectAll(menu.selected)">
+		                                <input 
+											:disabled="!$root.permissions['menu_manager tiers update']"
+											type="checkbox" 
+											:id="`menu-${menu.id}`" 
+											class="md-check" 
+											v-model="menu.selected" 
+											@change="syncSelectAll(menu.selected)">
 		                                <label :for="`menu-${menu.id}`">
 		                                    <span class="inc"></span>
 		                                    <span class="check"></span>
@@ -56,17 +67,19 @@
 		</div>
 		<div slot="modal-footer" class="modal-footer">
 			<button 
-				v-show="menus.length"
+				v-if="!$root.permissions['menu_manager tiers update']"
+				type="button" 
+				class="btn blue" 
+				@click="closeModal()">
+				Close
+			</button>
+			<button 
+				v-else
 				type="button" 
 				class="btn blue" 
 				@click="assignMenusToTier()">
 				Assign
 			</button>
-			<button 
-				v-show="!displaySpinner && !menus.length"
-				type="button" 
-				class="btn blue" 
-				@click="closeModal()">Close</button>
 		</div>
 	</modal>
 </template>

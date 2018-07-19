@@ -255,7 +255,7 @@ const router = new Router({
 					component: EditStore,
 					meta: {
 						adminOnly: false,
-						permissions: ['stores info update']
+						permissions: ['stores info read', 'stores info update']
 					}
 				},
 				{
@@ -372,7 +372,7 @@ const router = new Router({
 							path: 'edit_menu_tier/:menu_tier_id',
 							name: 'Edit Menu Tier',
 							meta: {
-								permissions: ['menu_manager tiers update']
+								permissions: ['menu_manager tiers read']
 							}
 						}
 					]
@@ -391,7 +391,7 @@ const router = new Router({
 							name: 'Edit Category',
 							meta: {
 								adminOnly: false,
-								permissions: ['menu_manager menus categories update']
+								permissions: ['menu_manager menus categories read']
 							}
 						},
 						{
@@ -424,7 +424,7 @@ const router = new Router({
 							path: 'edit_item/:item_id',
 							name: 'Edit Item',
 							meta: {
-								permissions: ['menu_manager menus categories subcategories items update']
+								permissions: ['menu_manager menus categories subcategories items read']
 							}
 						}
 					]
@@ -442,7 +442,7 @@ const router = new Router({
 							path: 'edit_category/:modifier_category_id',
 							name: 'Edit Modifier Category',
 							meta: {
-								permissions: ['menu_manager modifiers update']
+								permissions: ['menu_manager modifiers read']
 							}
 						}
 					]
@@ -460,7 +460,7 @@ const router = new Router({
 							path: 'edit_tag/:tag_id',
 							name: 'Edit Tag',
 							meta: {
-								permissions: ['menu_manager tags update']
+								permissions: ['menu_manager tags read']
 							}
 						}
 					]
@@ -505,7 +505,7 @@ const router = new Router({
 							path: 'edit_modifier_item/:modifier_item_id',
 							name: 'Edit Modifier Item',
 							meta: {
-								permissions: ['menu_manager modifiers items update']
+								permissions: ['menu_manager modifiers items read']
 							}
 						}
 					]
@@ -738,18 +738,22 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
 	window.scrollTo(0, 0)
-	try {
-		if (to.meta.permissions.some(permission => !App.permissions[permission])) {
+	if (to.meta.permissions.length === 0) {
+		next()
+	} else {
+		try {
+			if (to.meta.permissions.some(permission => App.permissions[permission])) {
+				next()
+			} else {
+				next({
+					path: '/app/unauthorized'
+				})
+			}
+		} catch (e) {
 			next({
-				path: '/app/unauthorized'
+				path: '/'
 			})
-		} else {
-			next()
 		}
-	} catch (e) {
-		next({
-			path: '/'
-		})
 	}
 })
 

@@ -177,6 +177,15 @@
 													<i class="fa fa-pencil" aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
+											<el-tooltip 
+												v-if="$root.permissions['admin store_app_users read'] && !$root.permissions['admin store_app_users update']"
+												content="View" 
+												effect="light" 
+												placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default" @click="editStoreAppUser(storeAppUser)">
+													<i class="fa fa-eye" aria-hidden="true"></i>
+												</a>
+											</el-tooltip>
 										</div>
 										<div class="list-datetime bold uppercase font-red">
 											<span>{{ storeAppUser.name }}</span>
@@ -246,6 +255,15 @@
 												placement="right">
 												<a class="btn btn-circle btn-icon-only btn-default" @click="editStoreAppUser(storeAppUser)">
 													<i class="fa fa-pencil" aria-hidden="true"></i>
+												</a>
+											</el-tooltip>
+											<el-tooltip 
+												v-if="$root.permissions['admin store_app_users read'] && !$root.permissions['admin store_app_users update']"
+												content="View" 
+												effect="light" 
+												placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default" @click="editStoreAppUser(storeAppUser)">
+													<i class="fa fa-eye" aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
 										</div>
@@ -378,14 +396,16 @@
 							<button class="close" data-close="alert" @click="clearEditError()"></button>
 							<span>{{editErrorMessage}}</span>
 						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm" id="form_control_edited_name" v-model="storeAppUserToBeEdited.name" :class="{'edited': storeAppUserToBeEdited.name.length}">
-							<label for="form_control_edited_name">Name </label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm" id="form_control_edited_password" v-model="storeAppUserToBeEdited.password" :class="{'edited': storeAppUserToBeEdited.password.length}">
-							<label for="form_control_edited_password">Password </label>
-						</div>
+						<fieldset :disabled="$root.permissions['admin store_app_users read'] && !$root.permissions['admin store_app_users update']">
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<input type="text" class="form-control input-sm" id="form_control_edited_name" v-model="storeAppUserToBeEdited.name" :class="{'edited': storeAppUserToBeEdited.name.length}">
+								<label for="form_control_edited_name">Name </label>
+							</div>
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<input type="text" class="form-control input-sm" id="form_control_edited_password" v-model="storeAppUserToBeEdited.password" :class="{'edited': storeAppUserToBeEdited.password.length}">
+								<label for="form_control_edited_password">Password </label>
+							</div>
+						</fieldset>
 						<div>		        				
 							<button type="button" class="btn blue btn-outline" @click="assignStoreToStoreAppUser(storeAppUserToBeEdited, 'existing')">Select a location</button>
 							<p class="grey-label margin-top-10" v-if="storeAppUserToBeEdited.location_id">Selected {{selectedEditedLocationName}}</p>
@@ -393,6 +413,7 @@
 						<div class="form-group form-md-line-input form-md-floating-label">
 							<label>Status</label><br>
 							<el-switch
+								:disabled="$root.permissions['admin store_app_users read'] && !$root.permissions['admin store_app_users update']"
 								v-model="storeAppUserToBeEdited.is_active"
 								active-color="#0c6"
 								inactive-color="#ff4949"
@@ -422,7 +443,13 @@
 									<tr v-for="store in filteredStores" :key="store.id">
 										<td>
 											<div class="md-radio">
-												<input type="radio" v-model="selectedLocationId" :id="`store-${store.id}`" class="md-radiobtn" :value="store.id">
+												<input 
+													:disabled="$root.permissions['admin store_app_users read'] && !$root.permissions['admin store_app_users update']"
+													type="radio" 
+													v-model="selectedLocationId" 
+													:id="`store-${store.id}`" 
+													class="md-radiobtn" 
+													:value="store.id">
 												<label :for="`store-${store.id}`">
 													<span class="inc"></span>
 													<span class="check"></span>
@@ -458,10 +485,36 @@
 						</div>
 					</div>
 					<div class="col-xs-6">
-						<button type="button" class="btn btn-primary" @click="assignStores($event)">Select</button>
+						<button 
+							v-if="$root.permissions['admin store_app_users read'] && !$root.permissions['admin store_app_users update']"
+							type="button" 
+							class="btn btn-primary" 
+							@click="closeEditLocationMode()">
+							Back
+						</button>
+						<button 
+							v-else
+							type="button" 
+							class="btn btn-primary" 
+							@click="assignStores($event)">
+							Select
+						</button>
 					</div>
 				</div>
-				<button v-if="!editLocationMode" type="button" class="btn btn-primary" @click="updateStoreAppUser()">Save</button>
+				<button 
+					v-if="!editLocationMode && $root.permissions['admin store_app_users read'] && !$root.permissions['admin store_app_users update']"
+					type="button" 
+					class="btn btn-primary" 
+					@click="closeEditStoreAppUserModal()">
+					Close
+				</button>
+				<button 
+					v-if="!editLocationMode && $root.permissions['admin store_app_users update']"
+					type="button" 
+					class="btn btn-primary" 
+					@click="updateStoreAppUser()">
+					Save
+				</button>
 			</div>
 		</modal>
 		<!-- EDIT MODAL END -->

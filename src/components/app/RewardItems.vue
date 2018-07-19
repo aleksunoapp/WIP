@@ -114,6 +114,15 @@
 		                                    </a>
 		                        		</el-tooltip>
 		                        		<el-tooltip 
+											v-if="$root.permissions['reward_tiers items read'] && !$root.permissions['reward_tiers items update']"
+											content="View" 
+											effect="light" 
+											placement="right">
+			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="showEditRewardItemModal(item)">
+		                                        <i class="fa fa-lg fa-eye"></i>
+		                                    </a>
+		                        		</el-tooltip>
+		                        		<el-tooltip 
 											v-if="$root.permissions['reward_tiers items update']"
 											content="Apply to items" 
 											effect="light" 
@@ -122,11 +131,6 @@
 												<i class="icon-layers"></i>
 		                                    </a>
 		                        		</el-tooltip>
-<!-- 		                        		<el-tooltip content="Delete" effect="light" placement="right">
-		                                    <a class="btn btn-circle btn-icon-only btn-default" @click.stop="showDeleteModal(item)">
-												<i class="fa fa-lg fa-trash"></i>
-		                                    </a>
-		                        		</el-tooltip> -->
 		                        	</div>
                                     <div style="min-height:95px">
                                     	<div class="col-sm-12">

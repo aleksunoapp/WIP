@@ -92,6 +92,13 @@
 													@click="editFAQ(faq)">
 													 Edit
 												</button>
+                                                <button 
+													v-if="$root.permissions['faq store read'] && !$root.permissions['faq store update']"
+													class="btn blue btn-sm" 
+													type="button" 
+													@click="editFAQ(faq)">
+													 View
+												</button>
                                             </div>
                                         </div>
                                     </div>

@@ -151,6 +151,15 @@
 											</a>
 										</el-tooltip>
 										<el-tooltip 
+											v-if="$root.permissions['loyalty promotion_rules read'] && !$root.permissions['loyalty promotion_rules update']"
+											content="View" 
+											effect="light" 
+											placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default" @click="openEditModal(rule)">
+												<i class="fa fa-eye" aria-hidden="true"></i>
+											</a>
+										</el-tooltip>
+										<el-tooltip 
 											v-if="$root.permissions['loyalty promotion_rules delete']"
 											content="Delete" 
 											effect="light" 
@@ -230,13 +239,20 @@
 					<div class="col-md-12">
 						<div class="col-xs-12 no-gutter">
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input ref="newName" type="text" class="form-control input-sm" v-model="ruleToEdit.name" :class="{'edited': ruleToEdit.name.length}">
+								<input 
+									:disabled="!$root.permissions['loyalty promotion_rules update']"
+									ref="newName" 
+									type="text" 
+									class="form-control input-sm" 
+									v-model="ruleToEdit.name" 
+									:class="{'edited': ruleToEdit.name.length}">
 								<label for="form_control_name">Name</label>
 							</div>
 						</div>
 						<div class="col-xs-12 no-gutter">
 							<label class="grey-label">Start on</label>
 							<el-date-picker 
+								:disabled="!$root.permissions['loyalty promotion_rules update']"
 								v-model="ruleToEdit.start_from" 
 								type="date" 
 								format="yyyy-MM-dd" 
@@ -248,6 +264,7 @@
 						<div class="col-xs-12 no-gutter margin-top-15">
 							<label class="grey-label">End on</label>
 							<el-date-picker 
+								:disabled="!$root.permissions['loyalty promotion_rules update']"
 								v-model="ruleToEdit.end_on" 
 								type="date" 
 								format="yyyy-MM-dd" 
@@ -258,7 +275,12 @@
 						</div>
 						<div class="col-xs-12 no-gutter margin-top-15">
 							<label class="grey-label">Points awarded for</label>
-							<el-select v-model="ruleToEdit.parameter" placeholder="select rule" size="small" class="margin-bottom-15 wide-select">
+							<el-select 
+								:disabled="!$root.permissions['loyalty promotion_rules update']"
+								v-model="ruleToEdit.parameter" 
+								placeholder="select rule" 
+								size="small" 
+								class="margin-bottom-15 wide-select">
 								<el-option label="total amount spent" value="total-spend"></el-option>
 								<el-option label="purchasing specified items" value="sku"></el-option>
 								<el-option label="purchases made during specified times" value="time"></el-option>
@@ -267,40 +289,89 @@
 						</div>
 						<div class="col-xs-12 no-gutter">
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" v-model="ruleToEdit.min_amount" :class="{'edited': ruleToEdit.min_amount.length}">
+								<input 
+									:disabled="!$root.permissions['loyalty promotion_rules update']"
+									type="text" 
+									class="form-control input-sm" 
+									v-model="ruleToEdit.min_amount" 
+									:class="{'edited': ruleToEdit.min_amount.length}">
 								<label for="form_control_name">Minimum purchase amount</label>
 							</div>
 						</div>
 						<div class="col-xs-12 no-gutter">
 							<div class="side-by-side">
 								<label class="grey-label">Type of points reward</label>
-								<el-select v-model="ruleToEdit.bonus_type" placeholder="select type" size="small">
+								<el-select 
+									:disabled="!$root.permissions['loyalty promotion_rules update']"
+									v-model="ruleToEdit.bonus_type" 
+									placeholder="select type" 
+									size="small">
 									<el-option label="proportional bonus" value="multiplier"></el-option>
 									<el-option label="flat bonus" value="add-on"></el-option>
 								</el-select>
 								
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label side-by-side">
-								<input type="text" class="form-control input-sm" v-model="ruleToEdit.bonus" :class="{'edited': ruleToEdit.bonus.length}">
+								<input 
+									:disabled="!$root.permissions['loyalty promotion_rules update']"
+									type="text" 
+									class="form-control input-sm" 
+									v-model="ruleToEdit.bonus" 
+									:class="{'edited': ruleToEdit.bonus.length}">
 								<label v-show="ruleToEdit.bonus_type === ''">Bonus type value</label>
 								<label v-show="ruleToEdit.bonus_type === 'multiplier'">Multiplier for bonus points</label>
 								<label v-show="ruleToEdit.bonus_type === 'add-on'">Number of bonus points</label>
 							</div>
 						</div>
 						<div class="col-xs-12 no-gutter" v-show="ruleToEdit.parameter === 'sku' || ruleToEdit.parameter === 'sku-combination'">
-							<button class="btn" @click.prevent="selectAllItems(ruleToEdit)" :class="{'blue-chambray' : ruleToEdit.sku === 'all', 'blue btn-outline' : ruleToEdit.sku !== 'all'}">All items</button>
-							<button class="btn" @click.prevent="selectItems(ruleToEdit)" :class="{'blue-chambray' : ruleToEdit.sku !== 'all', 'blue btn-outline' : ruleToEdit.sku === 'all'}">Select items</button>
-							<label class="grey-label"><span v-show="ruleToEdit.sku === 'all'">All</span><span v-show="ruleToEdit.sku !== 'all'">{{numberOfItemsEdited}}</span> item<span v-show="numberOfItemsEdited !== 1 || ruleToEdit.sku === 'all'">s</span> selected</label>
+							<button 
+								class="btn" 
+								@click.prevent="selectAllItems(ruleToEdit)" 
+								:class="{'blue-chambray' : ruleToEdit.sku === 'all', 'blue btn-outline' : ruleToEdit.sku !== 'all'}">
+								All items
+							</button>
+							<button 
+								class="btn" 
+								@click.prevent="selectItems(ruleToEdit)" 
+								:class="{'blue-chambray' : ruleToEdit.sku !== 'all', 'blue btn-outline' : ruleToEdit.sku === 'all'}">
+								Select items
+							</button>
+							<label class="grey-label">
+								<span v-show="ruleToEdit.sku === 'all'">All</span>
+								<span v-show="ruleToEdit.sku !== 'all'">{{numberOfItemsEdited}}</span> item<span v-show="numberOfItemsEdited !== 1 || ruleToEdit.sku === 'all'">s</span> selected</label>
 						</div>
 						<div class="col-xs-12 no-gutter margin-top-20" v-show="ruleToEdit.parameter === 'time' || ruleToEdit.parameter === 'sku-combination'">
-							<el-time-select v-model="ruleToEdit.start" :picker-options="{ start: '00:00', step: '00:15', end: '23:59' }" placeholder="Set start time"></el-time-select>
-							<el-time-select v-model="ruleToEdit.end" :picker-options="{ start: '00:00', step: '00:15', end: '23:59' }" placeholder="Set end time"></el-time-select>
+							<el-time-select 
+								:disabled="!$root.permissions['loyalty promotion_rules update']"
+								v-model="ruleToEdit.start" 
+								:picker-options="{ start: '00:00', step: '00:15', end: '23:59' }" 
+								placeholder="Set start time">
+							</el-time-select>
+							<el-time-select 
+								:disabled="!$root.permissions['loyalty promotion_rules update']"
+								v-model="ruleToEdit.end" 
+								:picker-options="{ start: '00:00', step: '00:15', end: '23:59' }" 
+								placeholder="Set end time">
+							</el-time-select>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div slot="modal-footer" class="modal-footer">
-				<button type="button" class="btn btn-primary" @click="updateRule()">Save</button>
+				<button 
+					v-if="$root.permissions['loyalty promotion_rules update']"
+					type="button" 
+					class="btn btn-primary" 
+					@click="closeEditModal()">
+					Close
+				</button>
+				<button 
+					v-else
+					type="button" 
+					class="btn btn-primary" 
+					@click="updateRule()">
+					Save
+				</button>
 			</div>
 		</modal>
 		<!-- EDIT MODAL END -->

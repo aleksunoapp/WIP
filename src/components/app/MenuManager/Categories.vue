@@ -108,6 +108,15 @@
 	                                            <i class="fa fa-lg fa-pencil"></i>
 	                                        </a>
 		                        		</el-tooltip>
+		                        		<el-tooltip 
+											v-if="$root.permissions['menu_manager menus categories read'] && !$root.permissions['menu_manager menus categories update']"
+											content="View" 
+											effect="light" 
+											placement="top">
+			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editCategory(category, $event)">
+	                                            <i class="fa fa-lg fa-eye"></i>
+	                                        </a>
+		                        		</el-tooltip>
 	                                    <el-tooltip 
 											v-if="$root.permissions['menu_manager menus categories update']"
 											content="Category Hours" 
@@ -183,6 +192,15 @@
 													placement="right">
 					                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editSubCategory(subcategory, $event)">
 					                        			<i class="fa fa-lg fa-pencil"></i>
+			                                        </a>
+				                        		</el-tooltip>
+				                        		<el-tooltip 
+													v-if="$root.permissions['menu_manager menus categories subcategories read'] && !$root.permissions['menu_manager menus categories subcategories update']"
+													content="View" 
+													effect="light" 
+													placement="right">
+					                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editSubCategory(subcategory, $event)">
+					                        			<i class="fa fa-lg fa-eye"></i>
 			                                        </a>
 				                        		</el-tooltip>
 				                        		<el-tooltip 

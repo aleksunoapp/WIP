@@ -127,6 +127,15 @@
 												</a>
 											</el-tooltip>
 											<el-tooltip 
+												v-if="$root.permissions['list permission'] && !$root.permissions['update permission']"
+												content="View" 
+												effect="light" 
+												placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default" @click="editPermission(permission)">
+													<i class="fa fa-eye" aria-hidden="true"></i>
+												</a>
+											</el-tooltip>
+											<el-tooltip 
 												v-if="$root.permissions['delete permission']"
 												content="Delete" 
 												effect="light" 
@@ -197,6 +206,15 @@
 												</a>
 											</el-tooltip>
 											<el-tooltip 
+												v-if="$root.permissions['list permission'] && !$root.permissions['update permission']"
+												content="View" 
+												effect="light" 
+												placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default" @click="editPermission(permission)">
+													<i class="fa fa-eye" aria-hidden="true"></i>
+												</a>
+											</el-tooltip>
+											<el-tooltip 
 												v-if="$root.permissions['delete permission']"
 												content="Delete" 
 												effect="light" 
@@ -239,12 +257,31 @@
 					<span>{{editErrorMessage}}</span>
 				</div>
 				<div class="form-group form-md-line-input form-md-floating-label">
-					<input type="text" class="form-control input-sm" id="form_control_edited_name" v-model="permissionToEdit.name" :class="{'edited': permissionToEdit.name.length}">
+					<input 
+						:disabled="$root.permissions['list permission'] && !$root.permissions['update permission']"
+						type="text" 
+						class="form-control input-sm" 
+						id="form_control_edited_name" 
+						v-model="permissionToEdit.name" 
+						:class="{'edited': permissionToEdit.name.length}">
 					<label for="form_control_edited_name">Name</label>
 				</div>
 			</div>
 			<div slot="modal-footer" class="modal-footer">
-				<button type="button" class="btn btn-primary" @click="updatePermission()">Save</button>
+				<button 
+					v-if="$root.permissions['list permission'] && !$root.permissions['update permission']"
+					type="button" 
+					class="btn btn-primary" 
+					@click="closeEditPermissionModal()">
+					Close
+				</button>
+				<button 
+					v-else
+					type="button" 
+					class="btn btn-primary" 
+					@click="updatePermission()">
+					Save
+				</button>
 			</div>
 		</modal>
 		<!-- EDIT MODAL END -->

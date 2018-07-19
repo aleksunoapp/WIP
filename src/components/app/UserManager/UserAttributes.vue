@@ -158,6 +158,15 @@
 										</a>
 									</el-tooltip>
 									<el-tooltip 
+										v-if="$root.permissions['user_manager attributes read'] && !$root.permissions['user_manager attributes update']"
+										content="View" 
+										effect="light" 
+										placement="top">
+										<a class="btn btn-circle btn-icon-only btn-default" @click="openEditModal(userAttribute)">
+											<i class="fa fa-lg fa-eye"></i>
+										</a>
+									</el-tooltip>
+									<el-tooltip 
 										v-if="$root.permissions['user_manager attributes update']"
 										content="Apply to Item Attributes" 
 										effect="light" 
@@ -209,9 +218,15 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-md-6">
+					<div class="col-md-12">
 						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm" id="form_control_2" :class="{'edited': userAttributeToEdit.name.length}" v-model="userAttributeToEdit.name">
+							<input 
+								:disabled="!$root.permissions['user_manager attributes update']"
+								type="text" 
+								class="form-control input-sm" 
+								id="form_control_2" 
+								:class="{'edited': userAttributeToEdit.name.length}" 
+								v-model="userAttributeToEdit.name">
 							<label for="form_control_2">User Attribute Name</label>
 						</div>
 					</div>
@@ -220,7 +235,20 @@
 			<div slot="modal-footer" class="modal-footer clear">
 				<div class="row">
 					<div class="col-md-12">
-						<button @click="updateUserAttribute()" type="button" class="btn blue pull-right">Save</button>
+						<button 
+							v-if="!$root.permissions['user_manager attributes update']"
+							@click="closeEditModal()" 
+							type="button" 
+							class="btn blue pull-right">
+							Close
+						</button>
+						<button 
+							v-else
+							@click="updateUserAttribute()" 
+							type="button" 
+							class="btn blue pull-right">
+							Save
+						</button>
 					</div>
 				</div>
 			</div>

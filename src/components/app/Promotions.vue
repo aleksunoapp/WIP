@@ -197,6 +197,15 @@
 	                                        </a>
 		                        		</el-tooltip>
 		                        		<el-tooltip 
+											v-if="$root.permissions['promotions read'] && !$root.permissions['promotions update']"
+											content="View" 
+											effect="light" 
+											placement="top">
+			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editPromotion(promotion, $event)">
+	                                            <i class="fa fa-lg fa-eye"></i>
+	                                        </a>
+		                        		</el-tooltip>
+		                        		<el-tooltip 
 											v-if="$root.permissions['promotions update']"
 											content="Apply to ..." 
 											effect="light" 

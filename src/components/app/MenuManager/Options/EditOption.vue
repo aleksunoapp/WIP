@@ -23,32 +23,39 @@
 					>
 					</resource-picker>
         		</div>
-				    <div class="col-xs-12">        			
-	    			 <select-locations-popup 
-	    				v-if="selectLocationMode" 
-	    				@closeSelectLocationsPopup='updateSelectedLocations' 
-	    				:previouslySelected="selectedLocations"
-	    			 >
-					 </select-locations-popup>
-        		</div>
-				<div class="col-md-12" v-show="!selectImageMode && !selectLocationMode" >
-					<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-					    <input type="text" class="form-control input-sm edited" id="form_control_1" v-model="optionToBeEdited.name">
-					    <label for="form_control_1">Option Name</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-					    <input type="text" class="form-control input-sm edited" id="form_control_2" v-model="optionToBeEdited.description">
-					    <label for="form_control_2">Option Description</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-					    <input type="text" class="form-control input-sm edited" id="form_control_3" v-model="optionToBeEdited.order">
-					    <label for="form_control_3">Option Order</label>
-					</div>
+				<div class="col-md-12" v-show="!selectImageMode">
+					<fieldset :disabled="!$root.permissions['menu_manager options update']">
+						<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
+							<input type="text" class="form-control input-sm edited" id="form_control_1" v-model="optionToBeEdited.name">
+							<label for="form_control_1">Option Name</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
+							<input type="text" class="form-control input-sm edited" id="form_control_2" v-model="optionToBeEdited.description">
+							<label for="form_control_2">Option Description</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
+							<input type="text" class="form-control input-sm edited" id="form_control_3" v-model="optionToBeEdited.order">
+							<label for="form_control_3">Option Order</label>
+						</div>
+					</fieldset>
 				</div>
 			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button v-if="!selectImageMode" type="button" class="btn btn-primary" @click="updateOption()">Save</button>
+			<button 
+				v-if="!selectImageMode && !$root.permissions['menu_manager options update']"
+				type="button" 
+				class="btn btn-primary" 
+				@click="closeModal()">
+				Close
+			</button>
+			<button 
+				v-if="!selectImageMode && $root.permissions['menu_manager options update']"
+				type="button" 
+				class="btn btn-primary" 
+				@click="updateOption()">
+				Save
+			</button>
 		</div>
 	</modal>
 </template>
@@ -200,8 +207,10 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateImage (val) {
+			if (this.$root.permissions['menu_manager options update']) {
+				this.optionToBeEdited.image_url = val.image_url
+			}
 			this.goToPageOne()
-			this.optionToBeEdited.image_url = val.image_url
 		}
 	},
 	components: {

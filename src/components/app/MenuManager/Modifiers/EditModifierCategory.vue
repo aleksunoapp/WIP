@@ -7,7 +7,7 @@
 			<transition name="fade" mode="out-in">
 				<h4 class="modal-title center" v-if="!selectImageMode && !selectLocationMode" key="mainEditMode">Edit Modifier Category</h4>
 				<h4 class="modal-title center" v-if="!selectImageMode && selectLocationMode" key="selectLocationMode"><i class="fa fa-chevron-left clickable pull-left back-button" @click="closeSelectLocationsPopup()"></i>Select Stores</h4>
-			    <h4 class="modal-title center" v-if="selectImageMode && !selectLocationMode" key="selectImageMode"><i class="fa fa-chevron-left clickable pull-left back-button" @click="goToPageOne()"></i>  Select An Image</h4>
+			    <h4 class="modal-title center" v-if="selectImageMode && !selectLocationMode" key="selectImageMode">Select An Image</h4>
 			</transition>
 		</div>
 		<div slot="modal-body" class="modal-body">
@@ -36,38 +36,41 @@
 					 </select-locations-popup>
         		</div>
 				<div class="col-md-12" v-show="!selectImageMode && !selectLocationMode">
-					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm edited" id="form_control_1" v-model="categoryToBeEdited.name">
-					    <label for="form_control_1">Modifier Category Name</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm edited" id="form_control_2" v-model="categoryToBeEdited.desc">
-					    <label for="form_control_2">Modifier Category Description</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm edited" id="form_control_3" v-model="categoryToBeEdited.sku">
-					    <label for="form_control_3">Modifier Category SKU</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm edited" id="form_control_4" v-model="categoryToBeEdited.min">
-					    <label for="form_control_4">Modifier Category Min</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm edited" id="form_control_5" v-model="categoryToBeEdited.max">
-					    <label for="form_control_5">Modifier Category Max</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm edited" id="form_control_6" v-model="categoryToBeEdited.included">
-					    <label for="form_control_6">Modifier Category Number Free</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm edited" id="form_control_7" v-model="categoryToBeEdited.order">
-					    <label for="form_control_7">Modifier Category Order</label>
-					</div>
+					<fieldset :disabled="!$root.permissions['menu_manager modifiers update']">
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm edited" id="form_control_1" v-model="categoryToBeEdited.name">
+							<label for="form_control_1">Modifier Category Name</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm edited" id="form_control_2" v-model="categoryToBeEdited.desc">
+							<label for="form_control_2">Modifier Category Description</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm edited" id="form_control_3" v-model="categoryToBeEdited.sku">
+							<label for="form_control_3">Modifier Category SKU</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm edited" id="form_control_4" v-model="categoryToBeEdited.min">
+							<label for="form_control_4">Modifier Category Min</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm edited" id="form_control_5" v-model="categoryToBeEdited.max">
+							<label for="form_control_5">Modifier Category Max</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm edited" id="form_control_6" v-model="categoryToBeEdited.included">
+							<label for="form_control_6">Modifier Category Number Free</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm edited" id="form_control_7" v-model="categoryToBeEdited.order">
+							<label for="form_control_7">Modifier Category Order</label>
+						</div>
+					</fieldset>
 					<div class="form-group form-md-line-input form-md-floating-label">
 		                <label>Modifier Category Status:</label><br>
 		                <el-switch
-		                	v-model="categoryToBeEdited.status"
+		                	:disabled="!$root.permissions['menu_manager modifiers update']"
+							v-model="categoryToBeEdited.status"
 		                	active-color="#0c6"
 		                	inactive-color="#ff4949"
 		                	:active-value="1"
@@ -81,7 +84,20 @@
         				<button type="submit" class="btn blue btn-outline" @click="selectLocations($event)">Select locations</button>
         				<p class="grey-label margin-top-10" v-if="selectedLocations.length">Selected {{ selectedLocations.length }} location<span v-if="selectedLocations.length !== 1">s</span></p>
         			</div>
-					<button type="button" class="btn btn-primary pull-right" @click="updateModifierCategory()">Save</button>
+					<button 
+						v-if="!$root.permissions['menu_manager modifiers update']"
+						type="button" 
+						class="btn btn-primary pull-right" 
+						@click="closeModal()">
+						Close
+					</button>
+					<button 
+						v-else
+						type="button" 
+						class="btn btn-primary pull-right" 
+						@click="updateModifierCategory()">
+						Save
+					</button>
 	         	</div>
 			</div>
 		</div>
@@ -136,7 +152,9 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateSelectedLocations (locations) {
-			this.selectedLocations = locations
+			if (this.$root.permissions['menu_manager modifiers update']) {
+				this.selectedLocations = locations
+			}
 			this.closeSelectLocationsPopup()
 		},
 		/**
@@ -281,8 +299,10 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateImage (val) {
+			if (this.$root.permissions['menu_manager modifiers update']) {
+				this.categoryToBeEdited.image_url = val.image_url
+			}
 			this.goToPageOne()
-			this.categoryToBeEdited.image_url = val.image_url
 		}
 	},
 	components: {
