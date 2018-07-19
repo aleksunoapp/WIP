@@ -93,7 +93,9 @@ const router = new Router({
 		{
 			path: '/login/:expired',
 			component: Login,
-			permissions: []
+			meta: {
+				permissions: []
+			}
 		},
 		{
 			path: '/forgot-password',
@@ -114,7 +116,10 @@ const router = new Router({
 				{
 					path: 'profile',
 					component: Profile,
-					name: 'Profile'
+					name: 'Profile',
+					meta: {
+						permissions: []
+					}
 				},
 				// Analytics
 				{
