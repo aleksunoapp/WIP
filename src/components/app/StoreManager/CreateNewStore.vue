@@ -462,7 +462,7 @@
 			    <div class="portlet light bordered">
 		            <div class="portlet-body form">
 		            	<div class="form-body">
-		            		<div class="alert alert-danger" v-if="storeHoursError.length">
+		            		<div class="alert alert-danger" v-show="storeHoursError.length" ref="storeHoursError">
 		            		    <button class="close" data-close="alert" @click="clearError('storeHoursError')"></button>
 		            		    <span>{{storeHoursError}}</span>
 		            		</div>
@@ -938,7 +938,6 @@ export default {
 				enable_pickup_later: 0,
 				external_online_ordering_enabled: 0,
 				external_online_ordering_url: ''
-
 			}
 			this.newHolidayHours = []
 			this.newStoreHours = [
@@ -1208,13 +1207,12 @@ export default {
 						createStoreVue.storeHoursError = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						createStoreVue.$router.push('/login/expired')
-						return
-					}
-					if (reason.responseJSON) {
-					}
-					throw reason
+					ajaxErrorHandler({
+						reason,
+						errorText: `We could not save store hours`,
+						errorName: 'storeHoursError',
+						vue: createStoreVue
+					})
 				})
 			}).catch(reason => {
 				createStoreVue.storeHoursError = reason
