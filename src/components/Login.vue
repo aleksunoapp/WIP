@@ -67,6 +67,7 @@ import LoginFunctions from '../controllers/Login'
 import Dropdown from './modules/Dropdown'
 import {BackgroundRotator} from '../assets/scripts/backgroundRotator'
 import ajaxErrorHandler from '../controllers/ErrorController'
+import {permissions} from '@/components/app/AdminManager/ModulesAndPermissions.js'
 
 /**
  * Define the email pattern to check for valid emails.
@@ -199,11 +200,17 @@ export default {
 					localStorage.setItem('createdBy', loginVue.$root.createdBy)
 					// set permissions
 					let userPermissions = {}
-					response.payload.assigned_permissions.forEach(permission => {
-						userPermissions[permission.name] = true
-					})
-					loginVue.$root.permissions = userPermissions
-					localStorage.setItem('permissions', JSON.stringify(loginVue.$root.permissions))
+
+					if (response.payload.assigned_permissions === undefined) {
+						loginVue.$root.permissions = permissions
+						localStorage.setItem('permissions', JSON.stringify(loginVue.$root.permissions))
+					} else {
+						response.payload.assigned_permissions.forEach(permission => {
+							userPermissions[permission.name] = true
+						})
+						loginVue.$root.permissions = userPermissions
+						localStorage.setItem('permissions', JSON.stringify(loginVue.$root.permissions))
+					}
 
 					if (response.payload.type === 'admin') {
 						loginVue.$root.accountType = 'application_admin'
