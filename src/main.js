@@ -42,7 +42,8 @@ var App = new Vue({
 			corporateStoreId: null,
 			storeLocations: [],
 			requestsPending: false,
-			permissions: {}
+			permissions: {},
+			roles: []
 		}
 	},
 	created () {
@@ -56,6 +57,8 @@ var App = new Vue({
 		const accountType = localStorage.getItem('accountType')
 		const activeLocation = localStorage.getItem('activeLocation')
 		const routePath = sessionStorage.getItem('routePath')
+		const permissions = sessionStorage.getItem('permissions')
+		const roles = sessionStorage.getItem('roles')
 		/* eslint-enable no-undef */
 		if (
 			activeUser &&
@@ -72,6 +75,8 @@ var App = new Vue({
 			this.createdBy = createdBy
 			this.accountType = accountType
 			this.activeLocation = JSON.parse(activeLocation)
+			this.permissions = JSON.parse(permissions)
+			this.roles = JSON.parse(roles)
 			this.$router.push(routePath || '/app')
 		}
 	},
@@ -88,6 +93,7 @@ var App = new Vue({
 			this.corporateStoreId = null
 			this.storeLocations = []
 			this.permissions = {}
+			this.roles = []
 		},
 		/**
 		 * A wrapper to handle errors for special cases

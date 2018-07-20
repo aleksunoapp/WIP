@@ -94,6 +94,7 @@ const router = new Router({
 		{
 			path: '/login/:expired',
 			component: Login,
+			name: 'LoginExpired',
 			meta: {
 				permissions: []
 			}

@@ -8,7 +8,7 @@
 	        </div>
         </div>
         <div class="col-md-6 login-container bs-reset mt-login-5-bsfix">
-        	<div class="login-content" v-if="this.$route.name === 'Login' && forgotPassword === false">
+        	<div class="login-content" v-if="(this.$route.name === 'Login' || this.$route.name === 'LoginExpired') && forgotPassword === false">
         		<h1>UNOapp Commerce Login</h1>
         		<form class="login-form" @submit.prevent="login($event)" novalidate>
 	            <div class="alert alert-danger" v-show="errorMessage.length" ref="errorMessage">
@@ -93,6 +93,15 @@
 							</div>
 						</div>
 					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<p>
+								Your new password must be at least 8 characters long, 
+								contain English letters only 
+								and include at least one capital letter and one number.
+							</p>
+						</div>
+					</div>
 					<div class="col-md-6-wide">
 						<div class="form-group form-md-line-input form-md-floating-label">
 							<input type="text" class="form-control input-sm" id="form_control_email" v-model="user.email" :class="{'edited': user.email.length}">
@@ -106,9 +115,6 @@
 									<i class="fa fa-eye"></i>
 								</span>
 							</div>
-							<span class="help-block persist" v-show="passwordMasked">
-								Minimum 8 characters. English letters only. Include at least one capital and one number.
-							</span>
 							<div class="input-group" v-show="!passwordMasked">
 								<input type="text" class="form-control input-sm" id="form_control_password" v-model="newPassword" :class="{'edited': newPassword.length}">
 								<label for="form_control_password">Password</label>
@@ -116,9 +122,6 @@
 									<i class="fa fa-eye-slash"></i>
 								</span>
 							</div>
-							<span class="help-block persist" v-show="!passwordMasked">
-								Minimum 8 characters. English letters only. Include at least one capital and one number.
-							</span>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label">
 							<div class="input-group" v-show="passwordMasked">
@@ -367,7 +370,10 @@ export default {
 						// set createdBy
 						loginVue.$root.createdBy = response.session.admin_id
 						localStorage.setItem('createdBy', loginVue.$root.createdBy)
-
+						// set roles
+						let userRoles = response.payload.roles.map(role => role.name)
+						loginVue.$root.roles = userRoles
+						localStorage.setItem('roles', JSON.stringify(loginVue.$root.roles))
 						// set permissions
 						let userPermissions = {}
 						response.payload.assigned_permissions.forEach(permission => {

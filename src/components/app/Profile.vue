@@ -11,9 +11,12 @@
 				<p>Name: {{$root.activeUser.name}}</p>
 				<p>Email: {{$root.activeUser.email}}</p>
 				<p>Roles: </p>
+				<ul>
+					<li v-for="(role, index) in $root.roles" :key="index">{{role}}</li>
+				</ul>
 			</div>
 		</div>
-		<div class="row">
+		<div class="row margin-top-20">
 			<div class="col-xs-12">
 				<form role="form" @submit.prevent="changePassword()">
 					<div class="row">
@@ -213,9 +216,16 @@ export default {
 		showCreateSuccess () {
 			this.$swal({
 				title: 'Success',
-				text: 'Password changed',
+				text: 'Password changed. Please log in again.',
 				type: 'success',
 				confirmButtonText: 'OK'
+			}).then(() => {
+				// eslint-disable-next-line
+				localStorage.clear()
+				// eslint-disable-next-line
+				sessionStorage.clear()
+				this.$root.clearGlobalVariables()
+				this.$router.push('/')
 			})
 		},
 		/**
