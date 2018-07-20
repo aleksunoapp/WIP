@@ -12,140 +12,138 @@
         		<h1>UNOapp Commerce Login</h1>
         		<form class="login-form" @submit.prevent="login($event)" novalidate>
 	            <div class="alert alert-danger" v-show="errorMessage.length" ref="errorMessage">
-	              <button class="close" data-close="alert" @click.prevent="clearError()"></button>
-	              <span>{{errorMessage}}</span>
+					<button class="close" data-close="alert" @click.prevent="clearError()"></button>
+					<span>{{errorMessage}}</span>
 	            </div>
-              <div class="row">
-	              <div class="col-sm-6">
-		              <input
-		              	ref="email"
-		              	class="form-control form-control-solid placeholder-no-fix form-group"
-		              	type="email"
-		              	placeholder="Email"
-		              	name="email"
-		              	v-model="user.email"
-		              	@keyup.enter="focusPassword"
-		              />
-	             	</div>
-	              <div class="col-sm-6">
-	                <input
-	                	ref="password"
-	                	class="form-control form-control-solid placeholder-no-fix form-group"
-	                	type="password"
-	                	placeholder="Password"
-	                	name="password"
-	                	v-model="user.password"
-	                	@keyup.enter="login"
-	                />
-	              </div>
-              </div>
-              <div class="row">
-	              <div class="col-sm-12 text-right">
-                	<button class="btn green" type="submit">Login</button>
-									<a class="forgot-link forgot-link-text" @click="showForgotPassword()">Forgot your password?</a>
-	              </div>
-              </div>
-            </form>
+					<div class="row">
+						<div class="col-sm-6">
+							<input
+							ref="email"
+							class="form-control form-control-solid placeholder-no-fix form-group"
+							type="email"
+							placeholder="Email"
+							name="email"
+							v-model="user.email"
+							@keyup.enter="focusPassword"
+							/>
+						</div>
+						<div class="col-sm-6">
+						<input
+							ref="password"
+							class="form-control form-control-solid placeholder-no-fix form-group"
+							type="password"
+							placeholder="Password"
+							name="password"
+							v-model="user.password"
+							@keyup.enter="login"
+						/>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 text-right">
+						<button class="btn green" type="submit">Login</button>
+							<a class="forgot-link forgot-link-text" @click="showForgotPassword()">Forgot your password?</a>
+						</div>
+					</div>
+            	</form>
         	</div>
-					<div class="login-content" v-if="this.$route.name === 'ForgotPassword' && resetPassword === false">
-						<h1>UNOapp Commerce Forgotten Password</h1>
+			<div class="login-content" v-if="this.$route.name === 'ForgotPassword' && resetPassword === false">
+				<h1>UNOapp Commerce Forgotten Password</h1>
         		<form v-if="!emailSent" class="login-form" @submit.prevent="forgot($event)" novalidate>
 	            <div class="alert alert-danger" v-show="errorMessage.length" ref="errorMessage">
-	              <button class="close" data-close="alert" @click.prevent="clearError()"></button>
-	              <span>{{errorMessage}}</span>
+					<button class="close" data-close="alert" @click.prevent="clearError()"></button>
+					<span>{{errorMessage}}</span>
 	            </div>
-              <div class="row">
-	              <div class="col-sm-6-wide">
-		              <input
-		              	ref="email"
-		              	class="form-control form-control-solid placeholder-no-fix form-group"
-		              	type="email"
-		              	placeholder="Email"
-		              	name="email"
-		              	v-model="user.email"
-		              	@keyup.enter="focusPassword"
-		              />
-	             	</div>
-              </div>
-              <div class="row">
-	              <div class="col-sm-12 text-right">
-                	<button class="btn green" type="submit">Send</button>
-	              </div>
-              </div>
-            </form>
-						<div v-if="emailSent">
-							<p>{{forgotMessage}}</p>
-							<div class="row">
-								<div class="col-sm-12 text-right">
-									<button class="btn green" type="submit" @click="goBack()">Okay</button>
-								</div>
+				<div class="row">
+					<div class="col-sm-6-wide">
+						<input
+						ref="email"
+						class="form-control form-control-solid placeholder-no-fix form-group"
+						type="email"
+						placeholder="Email"
+						name="email"
+						v-model="user.email"
+						@keyup.enter="focusPassword"
+						/>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12 text-right">
+					<button class="btn green" type="submit">Send</button>
+					</div>
+				</div>
+            	</form>
+				<div v-if="emailSent">
+					<p>{{forgotMessage}}</p>
+					<div class="row">
+						<div class="col-sm-12 text-right">
+							<button class="btn green" type="submit" @click="goBack()">Okay</button>
+						</div>
+					</div>
+				</div>
+        	</div>
+			<div class="login-content" v-if="this.$route.name === 'ForgotPassword' && resetPassword === true">
+				<h1>UNOapp Commerce Reset Password</h1>
+				<form class="form reset-form" @submit.prevent="reset($event)" novalidate>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="alert alert-danger" v-show="errorMessage.length" ref="errorMessage">
+								<button class="close" data-close="alert" @click.prevent="clearError()"></button>
+								<span>{{errorMessage}}</span>
 							</div>
 						</div>
-        	</div>
-					<div class="login-content" v-if="this.$route.name === 'ForgotPassword' && resetPassword === true">
-						<h1>UNOapp Commerce Reset Password</h1>
-						<form class="form reset-form" @submit.prevent="reset($event)" novalidate>
-							<div class="row">
-								<div class="col-md-12">
-									<div class="alert alert-danger" v-show="errorMessage.length" ref="errorMessage">
-										<button class="close" data-close="alert" @click.prevent="clearError()"></button>
-										<span>{{errorMessage}}</span>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-6-wide">
-								<div class="form-group form-md-line-input form-md-floating-label">
-										<input type="text" class="form-control input-sm" id="form_control_email" v-model="user.email" :class="{'edited': user.email.length}">
-										<label for="form_control_email">Email</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<div class="input-group" v-show="passwordMasked">
-											<input type="password" class="form-control input-sm" id="form_control_password_masked" v-model="newPassword" :class="{'edited': newPassword.length}">
-											<label for="form_control_password_masked">Password</label>
-										<span class="input-group-addon clickable" @click="flipPasswordMask()">
-											<i class="fa fa-eye"></i>
-										</span>
-									</div>
-									<span class="help-block persist" v-show="passwordMasked">
-										Minimum 8 characters. English letters only. Include at least one capital and one number.
-									</span>
-									<div class="input-group" v-show="!passwordMasked">
-											<input type="text" class="form-control input-sm" id="form_control_password" v-model="newPassword" :class="{'edited': newPassword.length}">
-											<label for="form_control_password">Password</label>
-										<span class="input-group-addon clickable" @click="flipPasswordMask()">
-											<i class="fa fa-eye-slash"></i>
-										</span>
-									</div>
-									<span class="help-block persist" v-show="!passwordMasked">
-										Minimum 8 characters. English letters only. Include at least one capital and one number.
-									</span>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<div class="input-group" v-show="passwordMasked">
-											<input type="password" class="form-control input-sm" id="form_control_confirm_masked" v-model="passwordCheck" :class="{'edited': passwordCheck}">
-											<label for="form_control_confirm_masked">Confirm password</label>
-										<span class="input-group-addon clickable" @click="flipPasswordMask()">
-											<i class="fa fa-eye"></i>
-										</span>
-									</div>
-									<div class="input-group" v-show="!passwordMasked">
-											<input type="text" class="form-control input-sm" id="form_control_confirm" v-model="passwordCheck" :class="{'edited': passwordCheck}">
-											<label for="form_control_confirm">Confirm password</label>
-										<span class="input-group-addon clickable" @click="flipPasswordMask()">
-											<i class="fa fa-eye-slash"></i>
-										</span>
-									</div>
-								</div>
-							</div>
-							<!-- <div class="col-md-6">
-							</div> -->
-							<div class="row">
-								<div class="col-sm-12 text-right">
-									<button class="btn green" type="submit">Reset</button>
-								</div>
-							</div>
-						</form>
 					</div>
+					<div class="col-md-6-wide">
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm" id="form_control_email" v-model="user.email" :class="{'edited': user.email.length}">
+							<label for="form_control_email">Email</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<div class="input-group" v-show="passwordMasked">
+								<input type="password" class="form-control input-sm" id="form_control_password_masked" v-model="newPassword" :class="{'edited': newPassword.length}">
+								<label for="form_control_password_masked">Password</label>
+								<span class="input-group-addon clickable" @click="flipPasswordMask()">
+									<i class="fa fa-eye"></i>
+								</span>
+							</div>
+							<span class="help-block persist" v-show="passwordMasked">
+								Minimum 8 characters. English letters only. Include at least one capital and one number.
+							</span>
+							<div class="input-group" v-show="!passwordMasked">
+								<input type="text" class="form-control input-sm" id="form_control_password" v-model="newPassword" :class="{'edited': newPassword.length}">
+								<label for="form_control_password">Password</label>
+								<span class="input-group-addon clickable" @click="flipPasswordMask()">
+									<i class="fa fa-eye-slash"></i>
+								</span>
+							</div>
+							<span class="help-block persist" v-show="!passwordMasked">
+								Minimum 8 characters. English letters only. Include at least one capital and one number.
+							</span>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<div class="input-group" v-show="passwordMasked">
+								<input type="password" class="form-control input-sm" id="form_control_confirm_masked" v-model="passwordCheck" :class="{'edited': passwordCheck}">
+								<label for="form_control_confirm_masked">Confirm password</label>
+								<span class="input-group-addon clickable" @click="flipPasswordMask()">
+									<i class="fa fa-eye"></i>
+								</span>
+							</div>
+							<div class="input-group" v-show="!passwordMasked">
+								<input type="text" class="form-control input-sm" id="form_control_confirm" v-model="passwordCheck" :class="{'edited': passwordCheck}">
+								<label for="form_control_confirm">Confirm password</label>
+								<span class="input-group-addon clickable" @click="flipPasswordMask()">
+									<i class="fa fa-eye-slash"></i>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 text-right">
+							<button class="btn green" type="submit">Reset</button>
+						</div>
+					</div>
+				</form>
+			</div>
         </div>
 			</div>
 		</div>

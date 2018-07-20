@@ -550,9 +550,9 @@ export default {
 			return localizationVue.validateTranslationTermsData()
 			.then(response => {
 				let field
-				if (localizationVue.activeTranslationGroup.term !== 'faq_users_question') {
+				if (localizationVue.activeTranslationGroup.term === 'faq_users_question') {
 					field = 'question'
-				} else if (localizationVue.activeTranslationGroup.term !== 'faq_users_answer') {
+				} else if (localizationVue.activeTranslationGroup.term === 'faq_users_answer') {
 					field = 'answer'
 				} else {
 					field = localizationVue.activeTranslationGroup.term

@@ -101,7 +101,10 @@ const router = new Router({
 		{
 			path: '/forgot-password',
 			name: 'ForgotPassword',
-			component: Login
+			component: Login,
+			meta: {
+				permissions: []
+			}
 		},
 		{
 			path: '/app',
