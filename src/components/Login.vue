@@ -168,6 +168,7 @@ import LoginFunctions from '../controllers/Login'
 import Dropdown from './modules/Dropdown'
 import {BackgroundRotator} from '../assets/scripts/backgroundRotator'
 import ajaxErrorHandler from '../controllers/ErrorController'
+import {routes} from '@/router'
 
 /**
  * Define the email pattern to check for valid emails.
@@ -254,7 +255,6 @@ export default {
 		 * @returns {undefined}
 		 */
 		goReset () {
-			console.log('AT GO RESET')
 			this.forgotPassword = true
 			this.emailSent = false
 			this.resetPassword = true
@@ -386,12 +386,25 @@ export default {
 						if (response.payload.type === 'admin') {
 							loginVue.$root.accountType = 'application_admin'
 							localStorage.setItem('accountType', loginVue.$root.accountType)
-							loginVue.$router.push('/app')
 						} else if (response.payload.type === 'restricted') {
 							loginVue.$root.accountType = 'store_admin'
 							loginVue.$root.storeLocations = response.payload.locations
 							localStorage.setItem('accountType', loginVue.$root.accountType)
-							loginVue.$router.push('/app/store_manager/stores')
+						}
+
+						// redirect
+						let appRoutes = routes.filter(route => route.path === '/app')[0].children
+						let accessible = false
+						for (let i = 0; i < appRoutes.length; i++) {
+							const route = appRoutes[i]
+							accessible = route.meta.permissions.some(permission => this.$root.permissions[permission])
+							if (accessible) {
+								this.$router.push({path: `/app/${route.path}`})
+								break
+							}
+						}
+						if (!accessible) {
+							this.$router.push('/app/unauthorized')
 						}
 					}
 

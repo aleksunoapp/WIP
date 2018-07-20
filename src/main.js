@@ -2,7 +2,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import ElementUI from 'element-ui'
-import router from './router'
+import router, {routes} from './router'
 import locale from 'element-ui/lib/locale/lang/en'
 import 'element-ui/lib/theme-chalk/index.css'
 import VueSweetAlert from 'vue-sweetalert'
@@ -56,17 +56,19 @@ var App = new Vue({
 		const createdBy = localStorage.getItem('createdBy')
 		const accountType = localStorage.getItem('accountType')
 		const activeLocation = localStorage.getItem('activeLocation')
-		const routePath = sessionStorage.getItem('routePath')
-		const permissions = sessionStorage.getItem('permissions')
-		const roles = sessionStorage.getItem('roles')
+		// const routePath = sessionStorage.getItem('routePath')
+		const permissions = localStorage.getItem('permissions')
+		const roles = localStorage.getItem('roles')
 		/* eslint-enable no-undef */
 		if (
-			activeUser &&
-			userToken &&
-			appId &&
-			appSecret &&
-			createdBy &&
-			accountType
+			activeUser !== null &&
+			userToken !== null &&
+			appId !== null &&
+			appSecret !== null &&
+			createdBy !== null &&
+			accountType !== null &&
+			permissions !== null &&
+			roles !== null
 		) {
 			this.activeUser = activeUser
 			this.userToken = userToken
@@ -74,10 +76,25 @@ var App = new Vue({
 			this.appSecret = appSecret
 			this.createdBy = createdBy
 			this.accountType = accountType
-			this.activeLocation = JSON.parse(activeLocation)
+			this.activeLocation = JSON.parse(activeLocation) || {}
 			this.permissions = JSON.parse(permissions)
 			this.roles = JSON.parse(roles)
-			this.$router.push(routePath || '/app')
+
+			let appRoutes = routes.filter(route => route.path === '/app')[0].children
+			let accessible = false
+			for (let i = 0; i < appRoutes.length; i++) {
+				const route = appRoutes[i]
+				accessible = route.meta.permissions.some(permission => this.permissions[permission])
+				if (accessible) {
+					console.log('pushing to', `/app/${route.path}`)
+					this.$router.push({path: `/app/${route.path}`})
+					break
+				}
+			}
+
+			if (!accessible) {
+				this.$router.push('/app/unauthorized')
+			}
 		}
 	},
 	methods: {

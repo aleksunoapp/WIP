@@ -81,696 +81,699 @@ import {App} from '@/main.js'
 
 Vue.use(Router)
 
-const router = new Router({
-	routes: [
-		{
-			path: '/',
-			component: Login,
-			name: 'Login',
-			meta: {
-				permissions: []
-			}
-		},
-		{
-			path: '/login/:expired',
-			component: Login,
-			name: 'LoginExpired',
-			meta: {
-				permissions: []
-			}
-		},
-		{
-			path: '/forgot-password',
-			name: 'ForgotPassword',
-			component: Login,
-			meta: {
-				permissions: []
-			}
-		},
-		{
-			path: '/app',
-			redirect: '/app/analytics/overview',
-			permissions: []
-		},
-		{
-			path: '/app',
-			component: Nav,
-			name: 'App',
-			adminOnly: false,
-			children: [
-				{
-					path: 'profile',
-					component: Profile,
-					name: 'Profile',
-					meta: {
-						permissions: []
-					}
-				},
-				// Analytics
-				{
-					path: 'analytics',
-					redirect: 'analytics/overview',
-					meta: {
-						adminOnly: true,
-						permissions: []
-					}
-				},
-				{
-					path: 'analytics/overview',
-					name: 'Overview',
-					component: Overview,
-					meta: {
-						adminOnly: true,
-						permissions: ['analytics overview read']
-					}
-				},
-				{
-					path: 'analytics/locationsales',
-					name: 'LocationSales',
-					component: LocationSales,
-					meta: {
-						adminOnly: true,
-						permissions: ['analytics store read']
-					}
-				},
-				{
-					path: 'analytics/itemsales',
-					name: 'ItemSales',
-					component: ItemSales,
-					meta: {
-						adminOnly: true,
-						permissions: ['analytics item read']
-					}
-				},
-				{
-					path: 'analytics/useranalytics',
-					name: 'UserAnalytics',
-					component: UserAnalytics,
-					meta: {
-						adminOnly: true,
-						permissions: ['analytics user read']
-					}
-				},
-				// Approvals Manager
-				{
-					path: 'approvals/roles',
-					name: 'Roles',
-					component: Roles,
-					meta: {
-						adminOnly: true,
-						permissions: ['list role']
-					}
-				},
-				{
-					path: 'approvals/permissions',
-					name: 'Permissions',
-					component: Permissions,
-					meta: {
-						adminOnly: true,
-						permissions: ['list permission']
-					}
-				},
-				{
-					path: 'approvals/modules',
-					name: 'Modules',
-					component: Modules,
-					meta: {
-						adminOnly: true,
-						permissions: ['approvals modules read']
-					}
-				},
-				{
-					path: 'approvals/approvals',
-					name: 'Approvals',
-					component: Approvals,
-					meta: {
-						adminOnly: true,
-						permissions: ['approvals read']
-					}
-				},
-				// Admin Manager
-				{
-					path: 'admin',
-					redirect: 'admin/brand_admins',
-					meta: {
-						adminOnly: true,
-						permissions: []
-					}
-				},
-				{
-					path: 'admin/brand_admins',
-					name: 'Brand Admins',
-					component: BrandAdmins,
-					meta: {
-						adminOnly: true,
-						permissions: ['admin brand_admins read']
-					}
-				},
-				{
-					path: 'admin/location_managers',
-					name: 'Location Managers',
-					component: LocationManagers,
-					meta: {
-						adminOnly: true,
-						permissions: ['admin location_managers read']
-					}
-				},
-				{
-					path: 'admin/OMA_users',
-					name: 'OMA Users',
-					component: OMAUsers,
-					meta: {
-						adminOnly: true,
-						permissions: ['admin oma_users read']
-					}
-				},
-				{
-					path: 'admin/store_app_users',
-					name: 'Store App Users',
-					component: StoreAppUsers,
-					meta: {
-						adminOnly: true,
-						permissions: ['admin store_app_users read']
-					}
-				},
-				// Store Manager
-				{
-					path: 'store_manager',
-					redirect: 'store_manager/create_new',
-					meta: {
-						adminOnly: true,
-						permissions: []
-					}
-				},
-				{
-					path: 'store_manager/create_new',
-					name: 'Create New Store',
-					component: CreateNewStore,
-					meta: {
-						adminOnly: true,
-						permissions: ['stores info create']
-					}
-				},
-				{
-					path: 'store_manager/edit_store/:store_id',
-					name: 'Edit Store',
-					component: EditStore,
-					meta: {
-						adminOnly: false,
-						permissions: ['stores info read', 'stores info update']
-					}
-				},
-				{
-					path: 'store_manager/stores',
-					name: 'Stores',
-					component: StoreList,
-					meta: {
-						adminOnly: false,
-						permissions: ['stores info read']
-					}
-				},
-				{
-					path: 'store_manager/amenities',
-					name: 'Amenities',
-					component: Amenities,
-					meta: {
-						adminOnly: false,
-						permissions: ['stores amenities read']
-					}
-				},
-				{
-					path: 'store_manager/store_groups',
-					name: 'Store Groups',
-					component: StoreGroups,
-					meta: {
-						adminOnly: true,
-						permissions: ['stores groups read']
-					}
-				},
-				{
-					path: 'store_manager/order_settings',
-					name: 'OrderSettings',
-					component: OrderSettings,
-					meta: {
-						adminOnly: false,
-						permissions: ['stores order_settings read']
-					}
-				},
-				// News Feed
-				{
-					path: 'news_feed',
-					component: NewsFeed,
-					name: 'News Feed',
-					meta: {
-						adminOnly: true,
-						permissions: ['news_feed read']
-					}
-				},
-				// Social Feed
-				{
-					path: 'social_feed',
-					component: SocialFeed,
-					name: 'Social Feed',
-					meta: {
-						adminOnly: true,
-						permissions: ['social_feed read']
-					}
-				},
-				// Tax Manager
-				{
-					path: 'tax_manager',
-					redirect: 'tax_manager/tax_classes',
-					meta: {
-						adminOnly: false,
-						permissions: []
-					}
-				},
-				{
-					path: 'tax_manager/tax_classes',
-					name: 'Tax Classes',
-					component: TaxClasses,
-					meta: {
-						adminOnly: false,
-						permissions: ['tax tax_classes read']
-					}
-				},
-				{
-					path: 'tax_manager/item_types',
-					name: 'Item Types',
-					component: ItemTypes,
-					meta: {
-						adminOnly: false,
-						permissions: ['tax item_types read']
-					}
-				},
-				// Menu Manager
-				{
-					path: 'menu_manager',
-					redirect: 'menu_manager/menus',
-					meta: {
-						adminOnly: false,
-						permissions: []
-					}
-				},
-				{
-					path: 'menu_manager/menus',
-					name: 'Menus',
-					component: Menus,
-					meta: {
-						adminOnly: false,
-						permissions: ['menu_manager menus read']
-					}
-				},
-				{
-					path: 'menu_manager/menu_tiers',
-					name: 'MenuTiers',
-					component: MenuTiers,
-					meta: {
-						adminOnly: false,
-						permissions: ['menu_manager tiers read']
-					},
-					children: [
-						{
-							path: 'edit_menu_tier/:menu_tier_id',
-							name: 'Edit Menu Tier',
-							meta: {
-								permissions: ['menu_manager tiers read']
-							}
-						}
-					]
-				},
-				{
-					path: 'menu_manager/categories/:menu_id',
-					name: 'Categories',
-					component: Categories,
-					meta: {
-						adminOnly: false,
-						permissions: ['menu_manager menus categories read']
-					},
-					children: [
-						{
-							path: 'edit_category/:category_id',
-							name: 'Edit Category',
-							meta: {
-								adminOnly: false,
-								permissions: ['menu_manager menus categories read']
-							}
-						},
-						{
-							path: 'add_sub_category',
-							name: 'Add Sub Category',
-							meta: {
-								adminOnly: false,
-								permissions: ['menu_manager menus categories subcategories create']
-							}
-						},
-						{
-							path: 'edit_sub_category/:sub_category_id',
-							name: 'Edit Sub Category',
-							meta: {
-								permissions: ['menu_manager menus categories subcategories update']
-							}
-						}
-					]
-				},
-				{
-					path: 'menu_manager/items/:category_id',
-					name: 'Items',
-					component: Items,
-					meta: {
-						adminOnly: false,
-						permissions: ['menu_manager menus categories subcategories items read']
-					},
-					children: [
-						{
-							path: 'edit_item/:item_id',
-							name: 'Edit Item',
-							meta: {
-								permissions: ['menu_manager menus categories subcategories items read']
-							}
-						}
-					]
-				},
-				{
-					path: 'menu_manager/modifiers',
-					name: 'Modifiers',
-					component: Modifiers,
-					meta: {
-						adminOnly: false,
-						permissions: ['menu_manager modifiers read']
-					},
-					children: [
-						{
-							path: 'edit_category/:modifier_category_id',
-							name: 'Edit Modifier Category',
-							meta: {
-								permissions: ['menu_manager modifiers read']
-							}
-						}
-					]
-				},
-				{
-					path: 'menu_manager/modifier_tiers',
-					name: 'Modifier Tiers',
-					component: ModifierTiers,
-					meta: {
-						adminOnly: false,
-						permissions: ['menu_manager modifier_tiers read']
-					},
-					children: [
-						{
-							path: 'edit/:modifier_tier_id',
-							name: 'Edit Modifier Tier',
-							meta: {
-								permissions: ['menu_manager modifier_tiers read']
-							}
-						}
-					]
-				},
-				{
-					path: 'menu_manager/tags',
-					name: 'Tags',
-					component: Tags,
-					meta: {
-						adminOnly: false,
-						permissions: ['menu_manager tags read']
-					},
-					children: [
-						{
-							path: 'edit_tag/:tag_id',
-							name: 'Edit Tag',
-							meta: {
-								permissions: ['menu_manager tags read']
-							}
-						}
-					]
-				},
-				{
-					path: 'menu_manager/portions',
-					name: 'Portions',
-					component: Portions,
-					meta: {
-						adminOnly: false,
-						permissions: ['menu_manager portions read']
-					}
-				},
-				{
-					path: 'menu_manager/options',
-					name: 'Options',
-					component: Options,
-					meta: {
-						adminOnly: false,
-						permissions: ['menu_manager options read']
-					}
-				},
-				{
-					path: 'menu_manager/options/:option_id/option_items',
-					name: 'OptionItems',
-					component: OptionItems,
-					meta: {
-						adminOnly: false,
-						permissions: ['menu_manager options items read']
-					}
-				},
-				{
-					path: 'menu_manager/modifier_items/:modifier_id',
-					name: 'Modifier Items',
-					component: ModifierItems,
-					meta: {
-						adminOnly: false,
-						permissions: ['menu_manager modifiers items read']
-					},
-					children: [
-						{
-							path: 'edit_modifier_item/:modifier_item_id',
-							name: 'Edit Modifier Item',
-							meta: {
-								permissions: ['menu_manager modifiers items read']
-							}
-						}
-					]
-				},
-				{
-					path: 'menu_manager/item_attributes',
-					name: 'Item Attributes',
-					component: ItemAttributes,
-					meta: {
-						adminOnly: false,
-						permissions: ['menu_manager attributes read']
-					}
-				},
-				// Printers
-				{
-					path: 'printers',
-					component: Printers,
-					name: 'Printers',
-					meta: {
-						adminOnly: false,
-						permissions: ['printers read']
-					}
-				},
-				// User Manager
-				{
-					path: 'user_manager',
-					redirect: 'user_manager/users',
-					meta: {
-						adminOnly: true,
-						permissions: []
-					}
-				},
-				{
-					path: 'user_manager/users',
-					name: 'Users',
-					component: UserList,
-					meta: {
-						adminOnly: true,
-						permissions: ['user_manager users read']
-					}
-				},
-				{
-					path: 'user_manager/users/:user_id',
-					name: 'User Profile',
-					component: UserProfile,
-					meta: {
-						adminOnly: true,
-						permissions: ['user_manager users read']
-					}
-				},
-				{
-					path: 'user_manager/user_groups',
-					name: 'User Groups',
-					component: UserGroups,
-					meta: {
-						adminOnly: true,
-						permissions: ['user_manager user_groups read']
-					}
-				},
-				{
-					path: 'user_manager/user_attributes',
-					name: 'Attributes',
-					component: UserAttributes,
-					meta: {
-						adminOnly: true,
-						permissions: ['user_manager attributes read']
-					}
-				},
-				// FAQ
-				{
-					path: 'faq',
-					redirect: 'faq/users',
-					meta: {
-						adminOnly: true,
-						permissions: []
-					}
-				},
-				{
-					path: 'faq/users',
-					name: 'Users FAQ',
-					component: UsersFAQ,
-					meta: {
-						adminOnly: true,
-						permissions: ['faq user read']
-					}
-				},
-				{
-					path: 'faq/stores',
-					name: 'Stores FAQ',
-					component: StoresFAQ,
-					meta: {
-						adminOnly: true,
-						permissions: ['faq store read']
-					}
-				},
-				// Gallery
-				{
-					path: 'gallery',
-					component: Gallery,
-					name: 'Gallery',
-					meta: {
-						adminOnly: false,
-						permissions: ['gallery read']
-					}
-				},
-				{
-					path: 'gallery/create_folder/:parent_id',
-					component: CreateFolder,
-					name: 'Create Resource Folder',
-					meta: {
-						adminOnly: false,
-						permissions: ['gallery create']
-					}
-				},
-				{
-					path: 'gallery/edit_folder/:folder',
-					component: EditFolder,
-					name: 'Edit Resource Folder',
-					meta: {
-						adminOnly: false,
-						permissions: ['gallery update']
-					}
-				},
-				// Loyalty
-				{
-					path: 'loyalty',
-					redirect: 'loyalty/base_rule',
-					meta: {
-						adminOnly: true,
-						permissions: []
-					}
-				},
-				{
-					path: 'loyalty/base_rule',
-					component: BaseRule,
-					name: 'Base Rule',
-					meta: {
-						adminOnly: true,
-						permissions: ['loyalty base_rule read']
-					}
-				},
-				{
-					path: 'loyalty/promotion_rules',
-					component: PromotionRules,
-					name: 'Promotion Rules',
-					meta: {
-						adminOnly: true,
-						permissions: ['loyalty promotion_rules read']
-					}
-				},
-				{
-					path: 'loyalty/rewards',
-					component: Rewards,
-					name: 'Rewards',
-					meta: {
-						adminOnly: true,
-						permissions: ['reward_tiers read']
-					}
-				},
-				{
-					path: 'loyalty/rewards/:reward_id/items',
-					component: RewardItems,
-					props: true,
-					name: 'Reward Items',
-					meta: {
-						adminOnly: true,
-						permissions: ['reward_tiers items read']
-					}
-				},
-				// Promo Codes
-				{
-					path: 'promocodes',
-					component: Promocodes,
-					name: 'Promocodes',
-					meta: {
-						adminOnly: true,
-						permissions: ['promocodes read']
-					}
-				},
-				// Promotions
-				{
-					path: 'promotions',
-					component: Promotions,
-					name: 'Promotions',
-					meta: {
-						adminOnly: true,
-						permissions: ['promotions read']
-					}
-				},
-				{
-					path: 'promotions/geolocations',
-					component: Geolocations,
-					name: 'Geolocations',
-					meta: {
-						adminOnly: true,
-						permissions: ['promotions geolocations read']
-					}
-				},
-				// Localization
-				{
-					path: 'localization',
-					name: 'localization',
-					component: Localization,
-					meta: {
-						adminOnly: true,
-						permissions: ['localization read']
-					}
-				},
-				// Unauthorized
-				{
-					path: 'unauthorized',
-					name: 'unauthorized',
-					component: Unauthorized,
-					meta: {
-						permissions: []
-					}
-				}
-			]
-		},
-		{
-			path: '*',
-			redirect: '/',
+export const routes = [
+	{
+		path: '/',
+		component: Login,
+		name: 'Login',
+		meta: {
 			permissions: []
 		}
-	],
+	},
+	{
+		path: '/login/:expired',
+		component: Login,
+		name: 'LoginExpired',
+		meta: {
+			permissions: []
+		}
+	},
+	{
+		path: '/forgot-password',
+		name: 'ForgotPassword',
+		component: Login,
+		meta: {
+			permissions: []
+		}
+	},
+	{
+		path: '/app',
+		component: Nav,
+		name: 'App',
+		adminOnly: false,
+		meta: {
+			permissions: []
+		},
+		children: [
+			// Analytics
+			{
+				path: 'analytics',
+				redirect: 'analytics/overview',
+				meta: {
+					adminOnly: true,
+					permissions: []
+				}
+			},
+			{
+				path: 'analytics/overview',
+				name: 'Overview',
+				component: Overview,
+				meta: {
+					adminOnly: true,
+					permissions: ['analytics overview read']
+				}
+			},
+			{
+				path: 'analytics/locationsales',
+				name: 'LocationSales',
+				component: LocationSales,
+				meta: {
+					adminOnly: true,
+					permissions: ['analytics store read']
+				}
+			},
+			{
+				path: 'analytics/itemsales',
+				name: 'ItemSales',
+				component: ItemSales,
+				meta: {
+					adminOnly: true,
+					permissions: ['analytics item read']
+				}
+			},
+			{
+				path: 'analytics/useranalytics',
+				name: 'UserAnalytics',
+				component: UserAnalytics,
+				meta: {
+					adminOnly: true,
+					permissions: ['analytics user read']
+				}
+			},
+			// Approvals Manager
+			{
+				path: 'approvals/roles',
+				name: 'Roles',
+				component: Roles,
+				meta: {
+					adminOnly: true,
+					permissions: ['list role']
+				}
+			},
+			{
+				path: 'approvals/permissions',
+				name: 'Permissions',
+				component: Permissions,
+				meta: {
+					adminOnly: true,
+					permissions: ['list permission']
+				}
+			},
+			{
+				path: 'approvals/modules',
+				name: 'Modules',
+				component: Modules,
+				meta: {
+					adminOnly: true,
+					permissions: ['approvals modules read']
+				}
+			},
+			{
+				path: 'approvals/approvals',
+				name: 'Approvals',
+				component: Approvals,
+				meta: {
+					adminOnly: true,
+					permissions: ['approvals read']
+				}
+			},
+			// Admin Manager
+			{
+				path: 'admin',
+				redirect: 'admin/brand_admins',
+				meta: {
+					adminOnly: true,
+					permissions: []
+				}
+			},
+			{
+				path: 'admin/brand_admins',
+				name: 'Brand Admins',
+				component: BrandAdmins,
+				meta: {
+					adminOnly: true,
+					permissions: ['admin brand_admins read']
+				}
+			},
+			{
+				path: 'admin/location_managers',
+				name: 'Location Managers',
+				component: LocationManagers,
+				meta: {
+					adminOnly: true,
+					permissions: ['admin location_managers read']
+				}
+			},
+			{
+				path: 'admin/OMA_users',
+				name: 'OMA Users',
+				component: OMAUsers,
+				meta: {
+					adminOnly: true,
+					permissions: ['admin oma_users read']
+				}
+			},
+			{
+				path: 'admin/store_app_users',
+				name: 'Store App Users',
+				component: StoreAppUsers,
+				meta: {
+					adminOnly: true,
+					permissions: ['admin store_app_users read']
+				}
+			},
+			// Store Manager
+			{
+				path: 'store_manager',
+				redirect: 'store_manager/create_new',
+				meta: {
+					adminOnly: true,
+					permissions: []
+				}
+			},
+			{
+				path: 'store_manager/create_new',
+				name: 'Create New Store',
+				component: CreateNewStore,
+				meta: {
+					adminOnly: true,
+					permissions: ['stores info create']
+				}
+			},
+			{
+				path: 'store_manager/edit_store/:store_id',
+				name: 'Edit Store',
+				component: EditStore,
+				meta: {
+					adminOnly: false,
+					permissions: ['stores info read', 'stores info update']
+				}
+			},
+			{
+				path: 'store_manager/stores',
+				name: 'Stores',
+				component: StoreList,
+				meta: {
+					adminOnly: false,
+					permissions: ['stores info read']
+				}
+			},
+			{
+				path: 'store_manager/amenities',
+				name: 'Amenities',
+				component: Amenities,
+				meta: {
+					adminOnly: false,
+					permissions: ['stores amenities read']
+				}
+			},
+			{
+				path: 'store_manager/store_groups',
+				name: 'Store Groups',
+				component: StoreGroups,
+				meta: {
+					adminOnly: true,
+					permissions: ['stores groups read']
+				}
+			},
+			{
+				path: 'store_manager/order_settings',
+				name: 'OrderSettings',
+				component: OrderSettings,
+				meta: {
+					adminOnly: false,
+					permissions: ['stores order_settings read']
+				}
+			},
+			// News Feed
+			{
+				path: 'news_feed',
+				component: NewsFeed,
+				name: 'News Feed',
+				meta: {
+					adminOnly: true,
+					permissions: ['news_feed read']
+				}
+			},
+			// Social Feed
+			{
+				path: 'social_feed',
+				component: SocialFeed,
+				name: 'Social Feed',
+				meta: {
+					adminOnly: true,
+					permissions: ['social_feed read']
+				}
+			},
+			// Tax Manager
+			{
+				path: 'tax_manager',
+				redirect: 'tax_manager/tax_classes',
+				meta: {
+					adminOnly: false,
+					permissions: []
+				}
+			},
+			{
+				path: 'tax_manager/tax_classes',
+				name: 'Tax Classes',
+				component: TaxClasses,
+				meta: {
+					adminOnly: false,
+					permissions: ['tax tax_classes read']
+				}
+			},
+			{
+				path: 'tax_manager/item_types',
+				name: 'Item Types',
+				component: ItemTypes,
+				meta: {
+					adminOnly: false,
+					permissions: ['tax item_types read']
+				}
+			},
+			// Menu Manager
+			{
+				path: 'menu_manager',
+				redirect: 'menu_manager/menus',
+				meta: {
+					adminOnly: false,
+					permissions: []
+				}
+			},
+			{
+				path: 'menu_manager/menus',
+				name: 'Menus',
+				component: Menus,
+				meta: {
+					adminOnly: false,
+					permissions: ['menu_manager menus read']
+				}
+			},
+			{
+				path: 'menu_manager/menu_tiers',
+				name: 'MenuTiers',
+				component: MenuTiers,
+				meta: {
+					adminOnly: false,
+					permissions: ['menu_manager tiers read']
+				},
+				children: [
+					{
+						path: 'edit_menu_tier/:menu_tier_id',
+						name: 'Edit Menu Tier',
+						meta: {
+							permissions: ['menu_manager tiers read']
+						}
+					}
+				]
+			},
+			{
+				path: 'menu_manager/categories/:menu_id',
+				name: 'Categories',
+				component: Categories,
+				meta: {
+					adminOnly: false,
+					permissions: ['menu_manager menus categories read']
+				},
+				children: [
+					{
+						path: 'edit_category/:category_id',
+						name: 'Edit Category',
+						meta: {
+							adminOnly: false,
+							permissions: ['menu_manager menus categories read']
+						}
+					},
+					{
+						path: 'add_sub_category',
+						name: 'Add Sub Category',
+						meta: {
+							adminOnly: false,
+							permissions: ['menu_manager menus categories subcategories create']
+						}
+					},
+					{
+						path: 'edit_sub_category/:sub_category_id',
+						name: 'Edit Sub Category',
+						meta: {
+							permissions: ['menu_manager menus categories subcategories update']
+						}
+					}
+				]
+			},
+			{
+				path: 'menu_manager/items/:category_id',
+				name: 'Items',
+				component: Items,
+				meta: {
+					adminOnly: false,
+					permissions: ['menu_manager menus categories subcategories items read']
+				},
+				children: [
+					{
+						path: 'edit_item/:item_id',
+						name: 'Edit Item',
+						meta: {
+							permissions: ['menu_manager menus categories subcategories items read']
+						}
+					}
+				]
+			},
+			{
+				path: 'menu_manager/modifiers',
+				name: 'Modifiers',
+				component: Modifiers,
+				meta: {
+					adminOnly: false,
+					permissions: ['menu_manager modifiers read']
+				},
+				children: [
+					{
+						path: 'edit_category/:modifier_category_id',
+						name: 'Edit Modifier Category',
+						meta: {
+							permissions: ['menu_manager modifiers read']
+						}
+					}
+				]
+			},
+			{
+				path: 'menu_manager/modifier_tiers',
+				name: 'Modifier Tiers',
+				component: ModifierTiers,
+				meta: {
+					adminOnly: false,
+					permissions: ['menu_manager modifier_tiers read']
+				},
+				children: [
+					{
+						path: 'edit/:modifier_tier_id',
+						name: 'Edit Modifier Tier',
+						meta: {
+							permissions: ['menu_manager modifier_tiers read']
+						}
+					}
+				]
+			},
+			{
+				path: 'menu_manager/tags',
+				name: 'Tags',
+				component: Tags,
+				meta: {
+					adminOnly: false,
+					permissions: ['menu_manager tags read']
+				},
+				children: [
+					{
+						path: 'edit_tag/:tag_id',
+						name: 'Edit Tag',
+						meta: {
+							permissions: ['menu_manager tags read']
+						}
+					}
+				]
+			},
+			{
+				path: 'menu_manager/portions',
+				name: 'Portions',
+				component: Portions,
+				meta: {
+					adminOnly: false,
+					permissions: ['menu_manager portions read']
+				}
+			},
+			{
+				path: 'menu_manager/options',
+				name: 'Options',
+				component: Options,
+				meta: {
+					adminOnly: false,
+					permissions: ['menu_manager options read']
+				}
+			},
+			{
+				path: 'menu_manager/options/:option_id/option_items',
+				name: 'OptionItems',
+				component: OptionItems,
+				meta: {
+					adminOnly: false,
+					permissions: ['menu_manager options items read']
+				}
+			},
+			{
+				path: 'menu_manager/modifier_items/:modifier_id',
+				name: 'Modifier Items',
+				component: ModifierItems,
+				meta: {
+					adminOnly: false,
+					permissions: ['menu_manager modifiers items read']
+				},
+				children: [
+					{
+						path: 'edit_modifier_item/:modifier_item_id',
+						name: 'Edit Modifier Item',
+						meta: {
+							permissions: ['menu_manager modifiers items read']
+						}
+					}
+				]
+			},
+			{
+				path: 'menu_manager/item_attributes',
+				name: 'Item Attributes',
+				component: ItemAttributes,
+				meta: {
+					adminOnly: false,
+					permissions: ['menu_manager attributes read']
+				}
+			},
+			// Printers
+			{
+				path: 'printers',
+				component: Printers,
+				name: 'Printers',
+				meta: {
+					adminOnly: false,
+					permissions: ['printers read']
+				}
+			},
+			// User Manager
+			{
+				path: 'user_manager',
+				redirect: 'user_manager/users',
+				meta: {
+					adminOnly: true,
+					permissions: []
+				}
+			},
+			{
+				path: 'user_manager/users',
+				name: 'Users',
+				component: UserList,
+				meta: {
+					adminOnly: true,
+					permissions: ['user_manager users read']
+				}
+			},
+			{
+				path: 'user_manager/users/:user_id',
+				name: 'User Profile',
+				component: UserProfile,
+				meta: {
+					adminOnly: true,
+					permissions: ['user_manager users read']
+				}
+			},
+			{
+				path: 'user_manager/user_groups',
+				name: 'User Groups',
+				component: UserGroups,
+				meta: {
+					adminOnly: true,
+					permissions: ['user_manager user_groups read']
+				}
+			},
+			{
+				path: 'user_manager/user_attributes',
+				name: 'Attributes',
+				component: UserAttributes,
+				meta: {
+					adminOnly: true,
+					permissions: ['user_manager attributes read']
+				}
+			},
+			// FAQ
+			{
+				path: 'faq',
+				redirect: 'faq/users',
+				meta: {
+					adminOnly: true,
+					permissions: []
+				}
+			},
+			{
+				path: 'faq/users',
+				name: 'Users FAQ',
+				component: UsersFAQ,
+				meta: {
+					adminOnly: true,
+					permissions: ['faq user read']
+				}
+			},
+			{
+				path: 'faq/stores',
+				name: 'Stores FAQ',
+				component: StoresFAQ,
+				meta: {
+					adminOnly: true,
+					permissions: ['faq store read']
+				}
+			},
+			// Gallery
+			{
+				path: 'gallery',
+				component: Gallery,
+				name: 'Gallery',
+				meta: {
+					adminOnly: false,
+					permissions: ['gallery read']
+				}
+			},
+			{
+				path: 'gallery/create_folder/:parent_id',
+				component: CreateFolder,
+				name: 'Create Resource Folder',
+				meta: {
+					adminOnly: false,
+					permissions: ['gallery create']
+				}
+			},
+			{
+				path: 'gallery/edit_folder/:folder',
+				component: EditFolder,
+				name: 'Edit Resource Folder',
+				meta: {
+					adminOnly: false,
+					permissions: ['gallery update']
+				}
+			},
+			// Loyalty
+			{
+				path: 'loyalty',
+				redirect: 'loyalty/base_rule',
+				meta: {
+					adminOnly: true,
+					permissions: []
+				}
+			},
+			{
+				path: 'loyalty/base_rule',
+				component: BaseRule,
+				name: 'Base Rule',
+				meta: {
+					adminOnly: true,
+					permissions: ['loyalty base_rule read']
+				}
+			},
+			{
+				path: 'loyalty/promotion_rules',
+				component: PromotionRules,
+				name: 'Promotion Rules',
+				meta: {
+					adminOnly: true,
+					permissions: ['loyalty promotion_rules read']
+				}
+			},
+			{
+				path: 'loyalty/rewards',
+				component: Rewards,
+				name: 'Rewards',
+				meta: {
+					adminOnly: true,
+					permissions: ['reward_tiers read']
+				}
+			},
+			{
+				path: 'loyalty/rewards/:reward_id/items',
+				component: RewardItems,
+				props: true,
+				name: 'Reward Items',
+				meta: {
+					adminOnly: true,
+					permissions: ['reward_tiers items read']
+				}
+			},
+			// Promo Codes
+			{
+				path: 'promocodes',
+				component: Promocodes,
+				name: 'Promocodes',
+				meta: {
+					adminOnly: true,
+					permissions: ['promocodes read']
+				}
+			},
+			// Promotions
+			{
+				path: 'promotions',
+				component: Promotions,
+				name: 'Promotions',
+				meta: {
+					adminOnly: true,
+					permissions: ['promotions read']
+				}
+			},
+			{
+				path: 'promotions/geolocations',
+				component: Geolocations,
+				name: 'Geolocations',
+				meta: {
+					adminOnly: true,
+					permissions: ['promotions geolocations read']
+				}
+			},
+			// Localization
+			{
+				path: 'localization',
+				name: 'localization',
+				component: Localization,
+				meta: {
+					adminOnly: true,
+					permissions: ['localization read']
+				}
+			},
+			// Unauthorized
+			{
+				path: 'unauthorized',
+				name: 'unauthorized',
+				component: Unauthorized,
+				meta: {
+					permissions: []
+				}
+			},
+			// Profile
+			{
+				path: 'profile',
+				component: Profile,
+				name: 'Profile',
+				meta: {
+					permissions: []
+				}
+			}
+		]
+	},
+	{
+		path: '*',
+		redirect: '/',
+		meta: {
+			permissions: []
+		}
+	}
+]
+
+const router = new Router({
+	routes,
 	scrollBehavior (to, from, savedPosition) {
 		return { x: 0, y: 0 }
 	}
@@ -778,11 +781,13 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
 	window.scrollTo(0, 0)
-	if (to.meta.permissions.length === 0) {
+	if (to.meta && to.meta.permissions.length === 0) {
 		next()
 	} else {
 		try {
-			if (to.meta.permissions.some(permission => App.permissions[permission])) {
+			if (App === undefined) {
+				next()
+			} else if (to.meta && to.meta.permissions.some(permission => App.permissions[permission])) {
 				next()
 			} else {
 				next({
