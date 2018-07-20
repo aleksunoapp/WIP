@@ -32,7 +32,7 @@
 									<span>{{createErrorMessage}}</span>
 								</div>
 							</div>
-							<div class="col-xs-6">
+							<div class="col-xs-12">
 								<div class="form-group form-md-line-input form-md-floating-label">
 									<input ref="newRoleName" type="text" class="form-control input-sm" id="form_control_name" v-model="newRole.name" :class="{'edited': newRole.name.length}">
 									<label for="form_control_name">Name</label>
@@ -267,7 +267,12 @@
 		<!-- LIST END -->
 
 		<!-- EDIT MODAL START -->
-		<modal :show="showEditRoleModal" effect="fade" @closeOnEscape="closeEditRoleModal" ref="editModal">
+		<modal 
+			:width="900"
+			:show="showEditRoleModal" 
+			effect="fade" 
+			@closeOnEscape="closeEditRoleModal" 
+			ref="editModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closeEditRoleModal()">
 					<span>&times;</span>
@@ -503,7 +508,8 @@ export default {
 		combinePermissionsAndModules (current) {
 			try {
 				const _this = this
-				current.combined = [...current.permissions, ...current.sub_modules]
+				let ownPermissions = current.permissions.filter(permission => this.$root.permissions[permission.name])
+				current.combined = [...ownPermissions, ...current.sub_modules]
 				current.combined = current.combined.map(item => {
 					item.nodeId = item.module_id === undefined ? `m${item.id}` : `p${item.id}`
 					item.disabled = _this.$root.permissions['update role'] === undefined
