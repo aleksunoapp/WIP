@@ -10,6 +10,7 @@
 			<div class="col-xs-12">
 				<p>Name: {{$root.activeUser.name}}</p>
 				<p>Email: {{$root.activeUser.email}}</p>
+				<p>Assigned: {{userLocationCount}} store<span v-if="userLocationCount !== 0">s</span></p>
 				<p>Roles: </p>
 				<ul>
 					<li v-for="(role, index) in $root.roles" :key="index">{{role}}</li>
@@ -140,6 +141,16 @@ export default {
 			currentPassword: '',
 			newPassword: '',
 			newPasswordConfirmation: ''
+		}
+	},
+	computed: {
+		userLocationCount () {
+			let count = this.$root.storeLocations.length
+			if (this.$root.activeLocation.id !== undefined) {
+				return count + 1
+			} else {
+				return count
+			}
 		}
 	},
 	methods: {
