@@ -316,8 +316,10 @@ export default {
 		}
 	},
 	mounted () {
-		this.getTaxClasses()
-		this.getItemTypes()
+		if (this.$root.activeLocation.id !== undefined) {
+			this.getTaxClasses()
+			this.getItemTypes()
+		}
 	},
 	methods: {
 		/**
