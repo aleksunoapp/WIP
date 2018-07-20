@@ -41,7 +41,6 @@
 								<p v-show="modules.length">Place inside:</p>
 								<el-tree 
 									:data="moduleTree" 
-									:default-expand-all="true"
 									:highlight-current="true"
 									:expand-on-click-node="false"
 									:props="{'label': 'name', 'children': 'sub_modules'}" 

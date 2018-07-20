@@ -39,7 +39,6 @@
 								</div>
 								<el-tree 
 									:data="roleTree" 
-									:default-expand-all="true"
 									:highlight-current="true"
 									:props="{'label': 'name', 'children': 'combined'}"
 									:check-on-click-node="true"
@@ -287,7 +286,6 @@
 				<el-tree 
 					v-if="showEditRoleModal"
 					:data="roleTree" 
-					:default-expand-all="true"
 					:highlight-current="true"
 					:props="{'label': 'name', 'children': 'combined', 'disabled': 'disabled'}"
 					:check-on-click-node="true"
