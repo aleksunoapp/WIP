@@ -443,6 +443,16 @@
 									</router-link>
 								</li>
 								<li 
+									v-if="$root.permissions['menu_manager modifier_tiers read']"
+									class="nav-item" 
+									v-bind:class="{'active': currentRoute === 'menu_manager' && currentSubRoute === 'modifier_tiers'}" 
+									id="menu_manager_modifier_tiers_link">
+									<router-link to="/app/menu_manager/modifier_tiers" class="nav-link">
+										<i class="fa fa-sitemap"></i>
+										<span class="title">Modifier Tiers</span>
+									</router-link>
+								</li>
+								<li 
 									v-if="$root.permissions['menu_manager tags read']"
 									class="nav-item" 
 									:class="{'active': currentRoute === 'menu_manager' && currentSubRoute === 'tags'}" 

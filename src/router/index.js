@@ -48,6 +48,7 @@ import Portions from '@/components/app/MenuManager/Portions'
 import Options from '@/components/app/MenuManager/Options'
 import OptionItems from '@/components/app/MenuManager/OptionItems'
 import ModifierItems from '@/components/app/MenuManager/ModifierItems'
+import ModifierTiers from '@/components/app/MenuManager/ModifierTiers/ModifierTiers'
 import ItemAttributes from '@/components/app/MenuManager/ItemAttributes'
 // Printers
 import Printers from '@/components/app/Printers/Printers'
@@ -460,6 +461,24 @@ const router = new Router({
 							name: 'Edit Modifier Category',
 							meta: {
 								permissions: ['menu_manager modifiers read']
+							}
+						}
+					]
+				},
+				{
+					path: 'menu_manager/modifier_tiers',
+					name: 'Modifier Tiers',
+					component: ModifierTiers,
+					meta: {
+						adminOnly: false,
+						permissions: ['menu_manager modifier_tiers read']
+					},
+					children: [
+						{
+							path: 'edit/:modifier_tier_id',
+							name: 'Edit Modifier Tier',
+							meta: {
+								permissions: ['menu_manager modifier_tiers read']
 							}
 						}
 					]
