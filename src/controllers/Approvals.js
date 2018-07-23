@@ -40,7 +40,7 @@ export default ({
 			let options = {
 				method: 'GET',
 				dataType: 'json',
-				url: '/app/request/list/' + '5b1564221b92eb042d958529',
+				url: '/app/request/list/' + GlobalFunctions.approvalsAppId,
 				data: pagination,
 				success: function (response) {
 					resolve(response)

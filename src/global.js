@@ -19,6 +19,10 @@ export default {
 		}())
 	},
 	/**
+	 * app_id for the Approvals API
+	 */
+	approvalsAppId: '5b291f11dc35e663e8847981',
+	/**
 	 * business id to identify the business aka brand aka customer (2 is Freshii)
 	 */
 	businessId: 2,
