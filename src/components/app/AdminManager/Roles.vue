@@ -808,7 +808,11 @@ export default {
 			.then(response => {
 				if (response.code === 200 && response.status === 'ok') {
 					rolesVue.loading = false
-					rolesVue.roles = response.payload
+					if (this.$root.roles.includes('super admin')) {
+						rolesVue.roles = response.payload
+					} else {
+						rolesVue.roles = response.payload.filter(role => role.name !== 'super admin')
+					}
 				} else {
 					rolesVue.loading = false
 				}
