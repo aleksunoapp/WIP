@@ -259,10 +259,10 @@
 				<div class="tab-content">
 					<div class="portlet light bordered">
 						<div class="portlet-body form">
-							<form role="form" @submit.prevent="updateStoreMeta()" novalidate v-if="!noProfileData.length">
+							<form role="form" @submit.prevent="updateStoreMeta()" novalidate>
 								<fieldset :disabled="!$root.permissions['stores meta update']? true : false">
 									<div class="form-body">
-										<div class="alert alert-danger" v-if="storeMetaError.length">
+										<div class="alert alert-danger" v-show="storeMetaError.length" ref="storeMetaError">
 											<button class="close" data-close="alert" @click.prevent="clearError('storeMetaError')"></button>
 											<span>{{storeMetaError}}</span>
 										</div>
@@ -529,9 +529,6 @@
 									</div>
 								</fieldset>
 							</form>
-							<div v-if="noProfileData.length">
-								<no-results :show="noProfileData.length" :type="'store profile'" :custom="true" :text="noProfileData"></no-results>
-							</div>
 						</div>
 					</div>
 				</div>
@@ -540,7 +537,7 @@
 				<div class="tab-content">
 					<div class="portlet light bordered">
 						<div class="portlet-body form">
-							<form role="form" @submit.prevent="updateStoreHours()" novalidate v-if="!noHoursData.length">
+							<form role="form" @submit.prevent="updateStoreHours()" novalidate>
 								<fieldset :disabled="!$root.permissions['stores hours update']? true : false">
 									<div class="form-body">
 										<div class="alert alert-danger" v-if="storeHourError.length">
@@ -623,13 +620,10 @@
 											:disabled="!$root.permissions['stores hours update']? true : false"
 											>
 												Save
-											</button>
+										</button>
 									</div>
 								</fieldset>
 							</form>
-							<div v-if="noHoursData.length">
-								<no-results :show="noHoursData.length" :type="'store profile'" :custom="true" :text="noHoursData"></no-results>
-							</div>
 						</div>
 					</div>
 				</div>
@@ -864,7 +858,64 @@ export default {
 			updateHolidayHoursError: '',
 			storeToBeEdited: {},
 			metaToBeEdited: {},
-			hoursToBeEdited: [],
+			hoursToBeEdited: [
+				{
+					created_by: this.$root.createdBy,
+					day: 1,
+					open: 1,
+					open_time: '00:00',
+					close_time: '00:00',
+					status: 1
+				},
+				{
+					created_by: this.$root.createdBy,
+					day: 2,
+					open: 1,
+					open_time: '00:00',
+					close_time: '00:00',
+					status: 1
+				},
+				{
+					created_by: this.$root.createdBy,
+					day: 3,
+					open: 1,
+					open_time: '00:00',
+					close_time: '00:00',
+					status: 1
+				},
+				{
+					created_by: this.$root.createdBy,
+					day: 4,
+					open: 1,
+					open_time: '00:00',
+					close_time: '00:00',
+					status: 1
+				},
+				{
+					created_by: this.$root.createdBy,
+					day: 5,
+					open: 1,
+					open_time: '00:00',
+					close_time: '00:00',
+					status: 1
+				},
+				{
+					created_by: this.$root.createdBy,
+					day: 6,
+					open: 1,
+					open_time: '00:00',
+					close_time: '00:00',
+					status: 1
+				},
+				{
+					created_by: this.$root.createdBy,
+					day: 0,
+					open: 1,
+					open_time: '00:00',
+					close_time: '00:00',
+					status: 1
+				}
+			],
 			holidayHoursToBeEdited: [],
 			displayLocationsDropdown: false,
 			googleSearchResults: [],
@@ -1037,20 +1088,20 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		createHolidayHours (val) {
-			var createStoreVue = this
+			var editStoreVue = this
 
-			StoresFunctions.createHolidayHours(val, createStoreVue.$root.appId, createStoreVue.$root.appSecret, createStoreVue.$root.userToken).then(response => {
+			StoresFunctions.createHolidayHours(val, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
 					const sunday = response.payload.findIndex(day => day.day === 0)
 					let weekStartingMonday = response.payload
 					weekStartingMonday.push(response.payload[sunday])
 					weekStartingMonday.splice(sunday, 1)
-					createStoreVue.holidayHoursToBeEdited = weekStartingMonday
-					createStoreVue.showAlert()
+					editStoreVue.holidayHoursToBeEdited = weekStartingMonday
+					editStoreVue.showAlert()
 				}
 			}).catch(reason => {
 				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					createStoreVue.$router.push('/login/expired')
+					editStoreVue.$router.push('/login/expired')
 					return
 				}
 				if (reason.responseJSON) {}
@@ -1067,7 +1118,7 @@ export default {
 		updateHolidayHours (val, event) {
 			event.stopPropagation()
 			event.preventDefault()
-			var createStoreVue = this
+			var editStoreVue = this
 			val.loading = true
 
 			let payload = {
@@ -1087,17 +1138,17 @@ export default {
 				'updated_by': val.updated_by
 			}
 
-			StoresFunctions.updateHolidayHours(payload, createStoreVue.$root.appId, createStoreVue.$root.appSecret, createStoreVue.$root.userToken).then(response => {
+			StoresFunctions.updateHolidayHours(payload, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
 					val.loading = false
 				}
 			}).catch(reason => {
 				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					createStoreVue.$router.push('/login/expired')
+					editStoreVue.$router.push('/login/expired')
 					return
 				}
 				if (reason.responseJSON) {
-					createStoreVue.updateHolidayHoursError = reason
+					editStoreVue.updateHolidayHoursError = reason
 					window.scrollTo(0, 0)
 				}
 				throw reason
@@ -1135,14 +1186,14 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		deleteHolidayHours () {
-			var createStoreVue = this
+			var editStoreVue = this
 
 			let payload = {
 				'id': this.holidayHourToDelete.id,
 				'location_id': this.holidayHourToDelete.location_id
 			}
 
-			StoresFunctions.deleteStoreHolidayHours(payload, createStoreVue.$root.appId, createStoreVue.$root.appSecret, createStoreVue.$root.userToken).then(response => {
+			StoresFunctions.deleteStoreHolidayHours(payload, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
 				this.getStoreHolidayHours()
 				this.closeDeleteHolidayHoursModal()
 				this.confirmHolidayHoursDeleted()
@@ -1151,7 +1202,7 @@ export default {
 					reason,
 					errorText: 'We could not delete the holiday hours',
 					errorName: 'deleteHolidayHoursErrorMessage',
-					vue: createStoreVue
+					vue: editStoreVue
 				})
 			})
 		},
@@ -1511,23 +1562,38 @@ export default {
 					}
 				}
 
-				StoresFunctions.updateStoreMeta(editStoreVue.metaToBeEdited, editStoreVue.$route.params.store_id, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
+				if (editStoreVue.noProfileData === 'No profile to display') {
+					editStoreVue.metaToBeEdited.created_by = editStoreVue.$root.createdBy
+					StoresFunctions.createStoreMeta(editStoreVue.storeToBeEdited.id, editStoreVue.metaToBeEdited, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
+						editStoreVue.noProfileData = ''
 						editStoreVue.showSuccessAlert('Store metas')
-					} else {
-						editStoreVue.storeMetaError = response.message
-					}
-				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						editStoreVue.$router.push('/login/expired')
-						return
-					}
-					if (reason.responseJSON) {
-						editStoreVue.storeMetaError = reason
-						window.scrollTo(0, 0)
-					}
-					throw reason
-				})
+					}).catch(reason => {
+						ajaxErrorHandler({
+							reason,
+							errorText: 'We could not save the store information',
+							errorName: 'storeMetaError',
+							vue: editStoreVue
+						})
+					})
+				} else {
+					StoresFunctions.updateStoreMeta(editStoreVue.metaToBeEdited, editStoreVue.$route.params.store_id, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
+						if (response.code === 200 && response.status === 'ok') {
+							editStoreVue.showSuccessAlert('Store metas')
+						} else {
+							editStoreVue.storeMetaError = response.message
+						}
+					}).catch(reason => {
+						if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
+							editStoreVue.$router.push('/login/expired')
+							return
+						}
+						if (reason.responseJSON) {
+							editStoreVue.storeMetaError = reason
+							window.scrollTo(0, 0)
+						}
+						throw reason
+					})
+				}
 			}).catch(reason => {
 				// If validation fails then display the error message
 				editStoreVue.storeInformationError = reason
@@ -1567,25 +1633,48 @@ export default {
 		updateStoreHours (day, hours) {
 			var editStoreVue = this
 
-			return editStoreVue.validateStoreHours().then(response => {
-				StoresFunctions.updateStoreHours(editStoreVue.$route.params.store_id, editStoreVue.hoursToBeEdited, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						editStoreVue.showSuccessAlert('Store hours')
-					} else {
-						editStoreVue.storeHourError = response.message
-					}
+			if (editStoreVue.noHoursData === 'No hours to display') {
+				return editStoreVue.validateStoreHours().then(response => {
+					StoresFunctions.createStoreHours(editStoreVue.$route.params.store_id, editStoreVue.hoursToBeEdited, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
+						if (response.code === 200 && response.status === 'ok') {
+							editStoreVue.getStoreHours()
+							editStoreVue.showSuccessAlert('Store hours')
+						} else {
+							editStoreVue.storeHourError = response.message
+						}
+					}).catch(reason => {
+						if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
+							editStoreVue.$router.push('/login/expired')
+							return
+						}
+						if (reason.responseJSON) {}
+						throw reason
+					})
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						editStoreVue.$router.push('/login/expired')
-						return
-					}
-					if (reason.responseJSON) {}
-					throw reason
+					editStoreVue.storeHourError = reason
+					window.scrollTo(0, 0)
 				})
-			}).catch(reason => {
-				editStoreVue.storeHourError = reason
-				window.scrollTo(0, 0)
-			})
+			} else {
+				return editStoreVue.validateStoreHours().then(response => {
+					StoresFunctions.updateStoreHours(editStoreVue.$route.params.store_id, editStoreVue.hoursToBeEdited, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
+						if (response.code === 200 && response.status === 'ok') {
+							editStoreVue.showSuccessAlert('Store hours')
+						} else {
+							editStoreVue.storeHourError = response.message
+						}
+					}).catch(reason => {
+						if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
+							editStoreVue.$router.push('/login/expired')
+							return
+						}
+						if (reason.responseJSON) {}
+						throw reason
+					})
+				}).catch(reason => {
+					editStoreVue.storeHourError = reason
+					window.scrollTo(0, 0)
+				})
+			}
 		},
 		/**
 		 * To check if the POS settings are valid before submitting to the backend.
