@@ -14,7 +14,7 @@
 				<div class="alert alert-danger">
 	                <span>{{ errorMessage }}</span>
 	                <div class="margin-top-15">
-	                	<button type="button" class="btn blue" @click="creatingNutritionInfo = true">Add Nutrition Info</button>
+	                	<button type="button" class="btn blue" @click="enableCreate()">Add Nutrition Info</button>
 	                </div>
 	            </div>
 	        </div>
@@ -22,7 +22,7 @@
                 <div class="portlet-title">
                     <div class="caption">Click on the button on the right to edit</div>
                     <div class="actions">
-                    	<a class="btn btn-circle btn-icon-only btn-default" @click="editingNutritionInfo = true">
+                    	<a class="btn btn-circle btn-icon-only btn-default" @click="enableEdit()">
 		                    <i class="fa fa-lg fa-pencil"></i>
 		                </a>
                     </div>
@@ -42,10 +42,14 @@
 	        	                </tr>
 	        	            </thead>
 	        	            <tbody>
-	        	                <tr v-for="info in itemNutritionInfo">
+	        	                <tr v-for="info in itemNutritionInfo" :key="info.id">
 	        	                    <td v-if="info.key !== 'id' && info.key !== 'item_id'"> {{ info.name }} </td>
 	        	                    <td v-if="info.key !== 'id' && info.key !== 'item_id'">
-	        	                    	<input type="text" class="form-control input-sm" v-model="info.value" :disabled="!editingNutritionInfo">
+	        	                    	<input 
+											:disabled="!editingNutritionInfo && !$root.permissions['menu_manager menus categories subcategories items nutrition update']"
+											type="text" 
+											class="form-control input-sm" 
+											v-model="info.value">
 	        	                    </td>
 	        	                </tr>
 	        	            </tbody>
@@ -58,7 +62,8 @@
         				<div class="form-group form-md-line-input form-md-floating-label">
         					<label>Update all items?</label><br>
         					<el-switch
-        						v-model="update_all_items"
+        						:disabled="!$root.permissions['menu_manager menus categories subcategories items nutrition update']"
+								v-model="update_all_items"
         						active-color="#0c6"
         						inactive-color="#ff4949"
         						:active-value="1"
@@ -70,7 +75,11 @@
         			</div>
                 </div>
             </div>
-			<select-locations-popup v-if="selectLocationMode" @closeSelectLocationsPopup='updateSelectedLocations' :previouslySelected="selectedLocations"></select-locations-popup>
+			<select-locations-popup 
+				v-if="selectLocationMode" 
+				@closeSelectLocationsPopup='updateSelectedLocations' 
+				:previouslySelected="selectedLocations">
+			</select-locations-popup>
 		</div>
 		<div slot="modal-body" class="modal-body" v-if="creatingNutritionInfo">
     	    <div class="portlet light bg-inverse clear">
@@ -84,84 +93,104 @@
         	            </div>
         	        </div>
             		<div class='table-scrollable table-fixed-height'>
-	        	        <table class='table'>
-	        	            <thead>
-	        	                <tr>
-	        	                	<th> Category </th>
-	        	                    <th> Value </th>
-	        	                </tr>
-	        	            </thead>
-	        	            <tbody>
-	        	                <tr>
-	        	                    <td> Calories </td>
-	        	                    <td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.calories"> </td>
-	        	                </tr>
-	        	                <tr>
-	        	                    <td> Minimum Calories </td>
-	        	                    <td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.min_cal"> </td>
-	        	                </tr>
-	        	                <tr>
-	        	                    <td> Total Fat </td>
-	        	                    <td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.total_fat"> </td>
-	        	                </tr>
-	        	                <tr>
-	        	                    <td> Saturated Fat </td>
-	        	                    <td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.saturated_fat"> </td>
-	        	                </tr>
-	        	                <tr>
-	        	                    <td> Trans Fat </td>
-	        	                    <td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.trans_fat"> </td>
-	        	                </tr>
-	        	                <tr>
-	        	                    <td> Cholesterol </td>
-	        	                    <td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.cholesterol"> </td>
-	        	                </tr>
-	        	                <tr>
-	        	                    <td> Sodium </td>
-	        	                    <td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.sodium"> </td>
-	        	                </tr>
-	        	                <tr>
-	        	                    <td> Carbohydrates </td>
-	        	                    <td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.carbs"> </td>
-	        	                </tr>
-	        	                <tr>
-	        	                    <td> Fibre </td>
-	        	                    <td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.fibre"> </td>
-	        	                </tr>
-	        	                <tr>
-	        	                    <td> Sugar </td>
-	        	                    <td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.sugar"> </td>
-	        	                </tr>
-	        	                <tr>
-	        	                    <td> Protein </td>
-	        	                    <td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.protein"> </td>
-	        	                </tr>
-	        	                <tr>
-	        	                    <td> Vitamin A </td>
-	        	                    <td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.vit_a"> </td>
-	        	                </tr>
-	        	                <tr>
-	        	                    <td> Vitamin C </td>
-	        	                    <td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.vit_c"> </td>
-	        	                </tr>
-	        	                <tr>
-	        	                    <td> Calcium </td>
-	        	                    <td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.calcium"> </td>
-	        	                </tr>
-	        	                <tr>
-	        	                    <td> Iron </td>
-	        	                    <td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.iron"> </td>
-	        	                </tr>
-	        	            </tbody>
-	        	        </table>
+						<fieldset :disabled="!$root.permissions['menu_manager menus categories subcategories items nutrition create']">
+							<table class='table'>
+								<thead>
+									<tr>
+										<th> Category </th>
+										<th> Value </th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td> Calories </td>
+										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.calories"> </td>
+									</tr>
+									<tr>
+										<td> Minimum Calories </td>
+										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.min_cal"> </td>
+									</tr>
+									<tr>
+										<td> Total Fat </td>
+										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.total_fat"> </td>
+									</tr>
+									<tr>
+										<td> Saturated Fat </td>
+										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.saturated_fat"> </td>
+									</tr>
+									<tr>
+										<td> Trans Fat </td>
+										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.trans_fat"> </td>
+									</tr>
+									<tr>
+										<td> Cholesterol </td>
+										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.cholesterol"> </td>
+									</tr>
+									<tr>
+										<td> Sodium </td>
+										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.sodium"> </td>
+									</tr>
+									<tr>
+										<td> Carbohydrates </td>
+										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.carbs"> </td>
+									</tr>
+									<tr>
+										<td> Fibre </td>
+										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.fibre"> </td>
+									</tr>
+									<tr>
+										<td> Sugar </td>
+										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.sugar"> </td>
+									</tr>
+									<tr>
+										<td> Protein </td>
+										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.protein"> </td>
+									</tr>
+									<tr>
+										<td> Vitamin A </td>
+										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.vit_a"> </td>
+									</tr>
+									<tr>
+										<td> Vitamin C </td>
+										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.vit_c"> </td>
+									</tr>
+									<tr>
+										<td> Calcium </td>
+										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.calcium"> </td>
+									</tr>
+									<tr>
+										<td> Iron </td>
+										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.iron"> </td>
+									</tr>
+								</tbody>
+							</table>
+						</fieldset>
 	        	    </div>
                 </div>
             </div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button type="button" class="btn btn-primary" v-if="editingNutritionInfo && !creatingNutritionInfo && !selectLocationMode" @click="updateItemNutritionInfo()">Save</button>
-			<button type="button" class="btn btn-primary" v-if="!editingNutritionInfo && creatingNutritionInfo && !selectLocationMode" @click="createItemNutritionInfo()">Create</button>
-			<button type="button" class="btn btn-primary" v-if="!editingNutritionInfo && !creatingNutritionInfo && !selectLocationMode">Save</button>
+			<button 
+				type="button" 
+				class="btn btn-primary" 
+				v-if="editingNutritionInfo && !creatingNutritionInfo && !selectLocationMode" 
+				@click="updateItemNutritionInfo()">
+				Save
+			</button>
+			<button 
+				type="button"
+				class="btn btn-primary"
+				v-if="!editingNutritionInfo && creatingNutritionInfo && !selectLocationMode" 
+				@click="createItemNutritionInfo()">
+				Create
+			</button>
+			<button 
+				type="button" 
+				class="btn btn-primary" 
+				v-if="!editingNutritionInfo && !creatingNutritionInfo && !selectLocationMode"
+				@click="closeModal()">
+				Close
+			</button>
 		</div>
 	</modal>
 </template>
@@ -202,6 +231,26 @@ export default {
 		this.getItemNutritionInfo()
 	},
 	methods: {
+		/**
+		 * To toggle edit mode on.
+		 * @function
+		 * @returns {undefined}
+		 */
+		enableCreate () {
+			if (this.$root.permissions['menu_manager menus categories subcategories items nutrition create']) {
+				this.creatingNutritionInfo = true
+			}
+		},
+		/**
+		 * To toggle edit mode on.
+		 * @function
+		 * @returns {undefined}
+		 */
+		enableEdit () {
+			if (this.$root.permissions['menu_manager menus categories subcategories items nutrition update']) {
+				this.editingNutritionInfo = true
+			}
+		},
 		/**
 		 * To toggle select location mode on.
 		 * @function

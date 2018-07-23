@@ -103,7 +103,7 @@
 	                                    </a>
 	                        		</el-tooltip>
 	                        		<el-tooltip 
-										v-if="$root.permissions['menu_manager tags update']"
+										v-if="$root.permissions['menu_manager tags add items']"
 										content="Apply to multiple" 
 										effect="light" 
 										placement="right">

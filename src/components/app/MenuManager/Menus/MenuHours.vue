@@ -33,34 +33,10 @@
 						</thead>
 						<tbody>
 							<tr>
-								<td>Sunday</td>
-								<td>
-									<el-time-select 
-										v-model="newHours.hours[0].open_time" 
-										placeholder="Start"
-										:picker-options="{
-											start: '00:00',
-											step: '00:15',
-											end: '23:59'
-										}">
-									</el-time-select>
-								</td>
-								<td>
-									<el-time-select 
-										v-model="newHours.hours[0].close_time" 
-										placeholder="End"
-										:picker-options="{
-											start: '00:00',
-											step: '00:15',
-											end: '23:59'
-										}">
-									</el-time-select>
-								</td>
-							</tr>
-							<tr>
 								<td>Monday</td>
 								<td>
 									<el-time-select 
+										:disabled="!$root.permissions['menu_manager menus menu_hours create']"
 										v-model="newHours.hours[1].open_time" 
 										placeholder="Start"
 										:picker-options="{
@@ -72,6 +48,7 @@
 								</td>
 								<td>
 									<el-time-select 
+										:disabled="!$root.permissions['menu_manager menus menu_hours create']"
 										v-model="newHours.hours[1].close_time" 
 										placeholder="End"
 										:picker-options="{
@@ -86,6 +63,7 @@
 								<td>Tuesday</td>
 								<td>
 									<el-time-select 
+										:disabled="!$root.permissions['menu_manager menus menu_hours create']"
 										v-model="newHours.hours[2].open_time" 
 										placeholder="Start"
 										:picker-options="{
@@ -97,6 +75,7 @@
 								</td>
 								<td>
 									<el-time-select 
+										:disabled="!$root.permissions['menu_manager menus menu_hours create']"
 										v-model="newHours.hours[2].close_time" 
 										placeholder="End"
 										:picker-options="{
@@ -111,6 +90,7 @@
 								<td>Wednesday</td>
 								<td>
 									<el-time-select 
+										:disabled="!$root.permissions['menu_manager menus menu_hours create']"
 										v-model="newHours.hours[3].open_time" 
 										placeholder="Start"
 										:picker-options="{
@@ -122,6 +102,7 @@
 								</td>
 								<td>
 									<el-time-select 
+										:disabled="!$root.permissions['menu_manager menus menu_hours create']"
 										v-model="newHours.hours[3].close_time" 
 										placeholder="End"
 										:picker-options="{
@@ -136,6 +117,7 @@
 								<td>Thursday</td>
 								<td>
 									<el-time-select 
+										:disabled="!$root.permissions['menu_manager menus menu_hours create']"
 										v-model="newHours.hours[4].open_time" 
 										placeholder="Start"
 										:picker-options="{
@@ -147,6 +129,7 @@
 								</td>
 								<td>
 									<el-time-select 
+										:disabled="!$root.permissions['menu_manager menus menu_hours create']"
 										v-model="newHours.hours[4].close_time" 
 										placeholder="End"
 										:picker-options="{
@@ -161,6 +144,7 @@
 								<td>Friday</td>
 								<td>
 									<el-time-select 
+										:disabled="!$root.permissions['menu_manager menus menu_hours create']"
 										v-model="newHours.hours[5].open_time" 
 										placeholder="Start"
 										:picker-options="{
@@ -172,6 +156,7 @@
 								</td>
 								<td>
 									<el-time-select 
+										:disabled="!$root.permissions['menu_manager menus menu_hours create']"
 										v-model="newHours.hours[5].close_time" 
 										placeholder="End"
 										:picker-options="{
@@ -186,6 +171,7 @@
 								<td>Saturday</td>
 								<td>
 									<el-time-select 
+										:disabled="!$root.permissions['menu_manager menus menu_hours create']"
 										v-model="newHours.hours[6].open_time" 
 										placeholder="Start"
 										:picker-options="{
@@ -197,7 +183,35 @@
 								</td>
 								<td>
 									<el-time-select 
+										:disabled="!$root.permissions['menu_manager menus menu_hours create']"
 										v-model="newHours.hours[6].close_time" 
+										placeholder="End"
+										:picker-options="{
+											start: '00:00',
+											step: '00:15',
+											end: '23:59'
+										}">
+									</el-time-select>
+								</td>
+							</tr>
+							<tr>
+								<td>Sunday</td>
+								<td>
+									<el-time-select 
+										:disabled="!$root.permissions['menu_manager menus menu_hours create']"
+										v-model="newHours.hours[0].open_time" 
+										placeholder="Start"
+										:picker-options="{
+											start: '00:00',
+											step: '00:15',
+											end: '23:59'
+										}">
+									</el-time-select>
+								</td>
+								<td>
+									<el-time-select 
+										:disabled="!$root.permissions['menu_manager menus menu_hours create']"
+										v-model="newHours.hours[0].close_time" 
 										placeholder="End"
 										:picker-options="{
 											start: '00:00',
@@ -226,10 +240,11 @@
 							<th></th>
 						</thead>
 						<tbody>
-							<tr v-for="day in existingHours">
+							<tr v-for="day in existingHours" :key="day.id">
 								<td>{{dayNames[day.day]}}</td>
 								<td>
 									<el-time-select 
+										:disabled="!$root.permissions['menu_manager menus menu_hours update']"
 										v-model="day.open_time" 
 										class="narrow-picker"
 										placeholder="Start"
@@ -242,6 +257,7 @@
 								</td>
 								<td>
 									<el-time-select 
+										:disabled="!$root.permissions['menu_manager menus menu_hours update']"
 										v-model="day.close_time" 
 										class="narrow-picker"
 										placeholder="End"
@@ -253,7 +269,13 @@
 									</el-time-select>
 								</td>
 								<td>
-									<button @click.stop.prevent="updateMenuHours(day)" type="button" class="btn btn-primary">Save</button>
+									<button 
+										:disabled="!$root.permissions['menu_manager menus menu_hours update']"
+										@click.stop.prevent="updateMenuHours(day)" 
+										type="button" 
+										class="btn btn-primary">
+										Save
+									</button>
 								</td>
 							</tr>
 						</tbody>
@@ -262,7 +284,14 @@
 			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button v-show="view === 'new'" @click="createMenuHours()" type="button" class="btn btn-primary">Save</button>
+			<button 
+				:disabled="!$root.permissions['menu_manager menus menu_hours create']"
+				v-show="view === 'new'" 
+				@click="createMenuHours()" 
+				type="button" 
+				class="btn btn-primary">
+				Save
+			</button>
 		</div>
 	</modal>
 </template>

@@ -250,7 +250,11 @@
 	                                        </a>
 		                        		</el-tooltip>
 		                        		<el-tooltip 
-											v-if="$root.permissions['menu_manager menus categories subcategories items update']"
+											v-if="
+												$root.permissions['menu_manager menus categories subcategories items nutrition read'] ||
+												$root.permissions['menu_manager menus categories subcategories items nutrition create'] ||
+												$root.permissions['menu_manager menus categories subcategories items nutrition update']
+											"
 											content="Nutrition Info" 
 											effect="light" 
 											placement="bottom">
@@ -333,7 +337,7 @@
     			                        		</div>
     			                        		<div class="col-md-12">
 				                        			<button 
-														v-if="$root.permissions['menu_manager menus categories subcategories items update']"
+														v-if="$root.permissions['menu_manager menus categories subcategories items assign modifier']"
 														type="button" 
 														class="btn btn-outline btn-xs blue margin-top-10" 
 														@click.stop="showModifierModal(item.id, item.modifiers)">
@@ -364,7 +368,7 @@
     			                        		</div>
     			                        		<div class="col-md-12">
 				                        			<button 
-														v-if="$root.permissions['menu_manager menus categories subcategories items update']"
+														v-if="$root.permissions['menu_manager menus categories subcategories items tags update']"
 														type="button" 
 														class="btn btn-outline btn-xs blue margin-top-10" 
 														@click.stop="showTagsModal(item.id, item.tags)">

@@ -234,7 +234,11 @@
 		                                    </a>
 	                                    </el-tooltip>
 	                                    <el-tooltip 
-											v-if="$root.permissions['menu_manager menus update']"
+											v-if="
+												$root.permissions['menu_manager menus menu_hours read'] ||
+												$root.permissions['menu_manager menus menu_hours create'] ||
+												$root.permissions['menu_manager menus menu_hours update']
+											"
 											content="Menu Hours" 
 											effect="light" 
 											placement="top">
@@ -243,7 +247,7 @@
 		                                    </a>
 	                                    </el-tooltip>
 	                                    <el-tooltip 
-											v-if="$root.permissions['menu_manager menus update']"
+											v-if="$root.permissions['add category addons']"
 											content="Apply Add-on Category" 
 											effect="light" 
 											placement="top">

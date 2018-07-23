@@ -118,7 +118,11 @@
 	                                        </a>
 		                        		</el-tooltip>
 	                                    <el-tooltip 
-											v-if="$root.permissions['menu_manager menus categories update']"
+											v-if="
+												$root.permissions['menu_manager menus categories hours create'] ||
+												$root.permissions['menu_manager menus categories hours read'] ||
+												$root.permissions['menu_manager menus categories hours update']
+											"
 											content="Category Hours" 
 											effect="light" 
 											placement="top">

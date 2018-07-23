@@ -224,7 +224,7 @@
 			                        		</div>
 			                        		<div class="col-md-12">
 			                        			<button 
-													v-if="$root.permissions['menu_manager modifiers items update']"
+													v-if="$root.permissions['menu_manager modifiers items update tags']"
 													type="button" 
 													class="btn btn-outline btn-xs blue margin-top-10" 
 													@click="showTagsModal(modifierItem.id, modifierItem.tags)">
@@ -253,7 +253,7 @@
 			                        		</div>
 			                        		<div class="col-md-12">
 			                        			<button 
-													v-if="$root.permissions['menu_manager modifiers items update']"
+													v-if="$root.permissions['menu_manager modifiers items update portions']"
 													type="button" 
 													class="btn btn-outline btn-xs blue margin-top-10" 
 													@click="showPortionsModal(modifierItem.id, modifierItem.modifier_item_portions)">
@@ -282,7 +282,7 @@
 			                        		</div>
 			                        		<div class="col-md-12">
 			                        			<button 
-													v-if="$root.permissions['menu_manager modifiers items update']"
+													v-if="$root.permissions['menu_manager modifiers items update options']"
 													type="button" 
 													class="btn btn-outline btn-xs blue margin-top-10" 
 													@click="showOptionsModal(modifierItem.id, modifierItem.options)">

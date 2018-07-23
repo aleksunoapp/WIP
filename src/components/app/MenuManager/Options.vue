@@ -104,7 +104,7 @@
 	                                    </a>
 	                        		</el-tooltip>
 	                        		<el-tooltip 
-										v-if="$root.permissions['menu_manager options update']"
+										v-if="$root.permissions['menu_manager options add modifier items']"
 										content="Apply to multiple" 
 										effect="light" 
 										placement="right">
