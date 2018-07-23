@@ -452,6 +452,32 @@ export default {
 							label: 'Stores FAQ Answer'
 						}
 					]
+				},
+				{
+					group: 'Promotions',
+					groupUrl: 'promotion',
+					terms: [
+						{
+							term: 'promotions_name',
+							label: 'Promotion Name'
+						},
+						{
+							term: 'promotions_description',
+							label: 'Promotion Description'
+						},
+						{
+							term: 'promotions_short_description',
+							label: 'Promotion Short Description'
+						},
+						{
+							term: 'promotions_image',
+							label: 'Promotion Image'
+						},
+						{
+							term: 'promotions_cta_text',
+							label: 'Promotion CTA Text'
+						}
+					]
 				}
 			],
 			loadingTerms: false,
@@ -564,13 +590,38 @@ export default {
 			return localizationVue.validateTranslationTermsData()
 			.then(response => {
 				let field
-				if (localizationVue.activeTranslationGroup.term === 'faq_users_question' || localizationVue.activeTranslationGroup.term === 'faq_stores_question') {
+				switch (localizationVue.activeTranslationGroup.term) {
+				case 'faq_users_question':
 					field = 'question'
-				} else if (localizationVue.activeTranslationGroup.term === 'faq_users_answer' || localizationVue.activeTranslationGroup.term === 'faq_stores_answer') {
+					break
+				case 'faq_stores_question':
+					field = 'question'
+					break
+				case 'faq_users_answer':
 					field = 'answer'
-				} else {
+					break
+				case 'faq_stores_answer':
+					field = 'answer'
+					break
+				case 'promotions_name':
+					field = 'name'
+					break
+				case 'promotions_description':
+					field = 'description'
+					break
+				case 'promotions_short_description':
+					field = 'short_description'
+					break
+				case 'promotions_image':
+					field = 'image'
+					break
+				case 'promotions_cta_text':
+					field = 'cta_text'
+					break
+				default:
 					field = localizationVue.activeTranslationGroup.term
 				}
+
 				let payload = {
 					'field': field,
 					'language': localizationVue.localeForTranslation.language_code,
