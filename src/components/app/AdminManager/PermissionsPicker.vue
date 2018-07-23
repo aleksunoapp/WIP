@@ -40,7 +40,7 @@
 				<pagination 
 					class="pull-left"
 					:passedPage="permissionsPage" 
-					:numPages="Math.ceil(permissions.length / 10)" 
+					:numPages="Math.ceil(permissionsSearchResults.length / 10)" 
 					@activePageChange="changePermissionsPage">
 				</pagination>
 			</div>
