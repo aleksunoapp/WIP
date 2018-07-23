@@ -426,7 +426,7 @@ export default {
 					]
 				},
 				{
-					group: 'FAQ',
+					group: 'User FAQs',
 					groupUrl: 'faq_user',
 					terms: [
 						{
@@ -436,6 +436,20 @@ export default {
 						{
 							term: 'faq_users_answer',
 							label: 'Users FAQ Answer'
+						}
+					]
+				},
+				{
+					group: 'Stores FAQs',
+					groupUrl: 'faq_stores',
+					terms: [
+						{
+							term: 'faq_stores_question',
+							label: 'Stores FAQ Question'
+						},
+						{
+							term: 'faq_stores_answer',
+							label: 'Stores FAQ Answer'
 						}
 					]
 				}
@@ -550,9 +564,9 @@ export default {
 			return localizationVue.validateTranslationTermsData()
 			.then(response => {
 				let field
-				if (localizationVue.activeTranslationGroup.term === 'faq_users_question') {
+				if (localizationVue.activeTranslationGroup.term === 'faq_users_question' || localizationVue.activeTranslationGroup.term === 'faq_stores_question') {
 					field = 'question'
-				} else if (localizationVue.activeTranslationGroup.term === 'faq_users_answer') {
+				} else if (localizationVue.activeTranslationGroup.term === 'faq_users_answer' || localizationVue.activeTranslationGroup.term === 'faq_stores_answer') {
 					field = 'answer'
 				} else {
 					field = localizationVue.activeTranslationGroup.term
