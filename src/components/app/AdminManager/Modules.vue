@@ -463,6 +463,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		closeDeleteModal () {
+			this.clearDeleteError()
 			this.showDeleteModuleModal = false
 		},
 		/**
@@ -750,6 +751,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		closeEditModulePermissionsModal () {
+			this.clearPermissionsEditError()
 			this.showEditModulePermissionsModal = false
 		},
 		/**
@@ -817,7 +819,12 @@ export default {
 						}
 					}
 				}
-				return tree
+				return [{
+					name: 'module container',
+					id: 0,
+					parent_module: 0,
+					sub_modules: tree
+				}]
 			} catch (e) {
 				console.log(e)
 			}
