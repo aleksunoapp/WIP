@@ -56,10 +56,6 @@
 								<label for="form_control_3">Pickup Orders Per Slot</label>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': newOrderSettings.pickup_order_time_cut_off.length}" id="create_pickup_order_time_cut_off" v-model="newOrderSettings.pickup_order_time_cut_off">
-								<label for="create_pickup_order_time_cut_off">Pickup Order Time Cut Off</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
 								<input type="text" class="form-control input-sm" :class="{'edited': newOrderSettings.pickup_cancellation_time_cut_off.length}" id="form_control_3" v-model="newOrderSettings.pickup_cancellation_time_cut_off">
 								<label for="form_control_3">Pickup Cancellation Time Cut Off</label>
 							</div>
@@ -205,10 +201,6 @@
 									<div class="form-group form-md-line-input form-md-floating-label">
 										<input type="text" class="form-control input-sm" :class="{'edited': orderSettingsToEdit.pickup_orders_per_slot.length}" id="form_control_3" v-model="orderSettingsToEdit.pickup_orders_per_slot">
 										<label for="form_control_3">Pickup Orders Per Slot</label>
-									</div>
-									<div class="form-group form-md-line-input form-md-floating-label">
-										<input type="text" class="form-control input-sm" :class="{'edited': orderSettingsToEdit.pickup_order_time_cut_off.length}" id="create_pickup_order_time_cut_off" v-model="orderSettingsToEdit.pickup_order_time_cut_off">
-										<label for="create_pickup_order_time_cut_off">Pickup Order Time Cut Off</label>
 									</div>
 									<div class="form-group form-md-line-input form-md-floating-label">
 										<input type="text" class="form-control input-sm" :class="{'edited': orderSettingsToEdit.pickup_cancellation_time_cut_off.length}" id="form_control_3" v-model="orderSettingsToEdit.pickup_cancellation_time_cut_off">
@@ -407,7 +399,6 @@ export default {
 			newOrderSettings: {
 				pickup_time_slot: '',
 				pickup_orders_per_slot: '',
-				pickup_order_time_cut_off: '',
 				pickup_cancellation_time_cut_off: '',
 				pickup_cancellation_enabled: '0',
 				catering_time_slot: '',
@@ -428,7 +419,6 @@ export default {
 			loading: false,
 			orderSettingsToEdit: {
 				pickup_orders_per_slot: '',
-				pickup_order_time_cut_off: '',
 				pickup_cancellation_time_cut_off: '',
 				pickup_cancellation_enabled: '0',
 				catering_time_slot: '',
@@ -496,8 +486,6 @@ export default {
 					reject('Pickup Time Slot cannot be blank')
 				} else if (!orderSettingsVue.newOrderSettings.pickup_orders_per_slot) {
 					reject('Pickup Orders Per Slot cannot be blank')
-				} else if (!orderSettingsVue.newOrderSettings.pickup_order_time_cut_off) {
-					reject('Pickup Order Time Cut Off cannot be blank')
 				} else if (!orderSettingsVue.newOrderSettings.pickup_cancellation_time_cut_off) {
 					reject('Pickup Cancellation Time Cut Off cannot be blank')
 				} else if (!orderSettingsVue.newOrderSettings.pickup_cancellation_enabled) {
@@ -634,7 +622,6 @@ export default {
 			return {
 				pickup_time_slot: '',
 				pickup_orders_per_slot: '',
-				pickup_order_time_cut_off: '',
 				pickup_cancellation_time_cut_off: '',
 				pickup_cancellation_enabled: '',
 				catering_time_slot: '',
@@ -700,8 +687,6 @@ export default {
 					reject('Pickup Time Slot cannot be blank')
 				} else if (!orderSettingsVue.orderSettingsToEdit.pickup_orders_per_slot) {
 					reject('Pickup Orders Per Slot cannot be blank')
-				} else if (!orderSettingsVue.orderSettingsToEdit.pickup_order_time_cut_off) {
-					reject('Pickup Order Time Cut Off cannot be blank')
 				} else if (!orderSettingsVue.orderSettingsToEdit.pickup_cancellation_time_cut_off) {
 					reject('Pickup Cancellation Time Cut Off cannot be blank')
 				} else if (!orderSettingsVue.orderSettingsToEdit.pickup_cancellation_enabled) {
