@@ -141,6 +141,7 @@
   						<span>{{tiersErrorMessage}}</span>
   					</div>
   					<menu-tiers-picker
+					  	v-if="showTiersModal"
   						@tiersSelect="updateTier"
   					></menu-tiers-picker>
   				</div>
