@@ -44,6 +44,7 @@
 									:check-on-click-node="true"
 									:expand-on-click-node="false"
 									@check-change="setNewRolePermission"
+									ref="newRoleTree"
 									show-checkbox 
 								>
 									<span 
@@ -56,7 +57,7 @@
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-xs-6">
+							<div class="col-xs-12">
 								<button type="submit" class="btn blue pull-right">Create</button>	
 							</div>
 						</div>
@@ -298,6 +299,7 @@
 					@check-change="setEditedRolePermission"
 					show-checkbox 
 					node-key="nodeId"
+					ref="editedRoleTree"
 					:default-checked-keys="roleToEdit.previouslySelected"
 				>
 					<span 
@@ -527,44 +529,18 @@ export default {
 		/**
 		 * To update the permissions selection when editing a role
 		 * @function
-		 * @param {object} node - The node object being selected
-		 * @param {boolean} selected - The status of the node
 		 * @returns {undefined}
 		 */
-		setEditedRolePermission (node, selected) {
-			if (node.module_id !== undefined) {
-				let index = this.roleToEdit.permissions.indexOf(node.id)
-				if (selected) {
-					if (index === -1) {
-						this.roleToEdit.permissions.push(node.id)
-					}
-				} else {
-					if (index !== -1) {
-						this.roleToEdit.permissions = this.roleToEdit.permissions.filter(x => x !== node.id)
-					}
-				}
-			}
+		setEditedRolePermission () {
+			this.roleToEdit.permissions = this.$refs.editedRoleTree.getCheckedNodes().filter(node => node.module_id !== undefined).map(node => node.id)
 		},
 		/**
 		 * To update the permissions selection when creating a role
 		 * @function
-		 * @param {object} node - The node object being selected
-		 * @param {boolean} selected - The status of the node
 		 * @returns {undefined}
 		 */
-		setNewRolePermission (node, selected) {
-			if (node.module_id !== undefined) {
-				let index = this.newRole.permissions.indexOf(node.id)
-				if (selected) {
-					if (index === -1) {
-						this.newRole.permissions.push(node.id)
-					}
-				} else {
-					if (index !== -1) {
-						this.newRole.permissions = this.newRole.permissions.filter(x => x !== node.id)
-					}
-				}
-			}
+		setNewRolePermission () {
+			this.newRole.permissions = this.$refs.newRoleTree.getCheckedNodes().filter(node => node.module_id !== undefined).map(node => node.id)
 		},
 		/**
 		 * To update permissions based on user's selection
