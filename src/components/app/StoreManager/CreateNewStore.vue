@@ -537,7 +537,10 @@
         	<div  class="panel" v-show="activeTab === 3">
 			    <div class="portlet light bordered">
 		            <div class="portlet-body form">
-		            	<add-holiday-hours :selectedLocationId="newStoreId" @closeHolidayHoursModal="showHolidayHoursModal = false" @addHolidayHours="addHolidayHours"></add-holiday-hours>
+		            	<add-holiday-hours 
+							:selectedLocationId="newStoreId" 
+							@addHolidayHours="addHolidayHours">
+						</add-holiday-hours>
 		            </div>
 		        </div>
         	</div>
@@ -691,7 +694,6 @@ export default {
 				}
 			],
 			newHolidayHours: [],
-			showHolidayHoursModal: false,
 			storeGroups: [],
 			menuTiers: [],
 			autocompleteFocused: false,
@@ -1002,7 +1004,8 @@ export default {
 				step0_status: 'finish',
 				step1_status: 'process',
 				step2_status: 'process',
-				step3_status: 'wait'
+				step3_status: 'wait',
+				step4_status: 'wait'
 			}
 			this.newStoreId = null
 		},
@@ -1047,14 +1050,6 @@ export default {
 				}
 				resolve('Hurray')
 			})
-		},
-		/**
-		 * To add location holiday hours.
-		 * @function
-		 * @returns {undefined}
-		 */
-		displayHolidayHoursModal () {
-			this.showHolidayHoursModal = true
 		},
 		/**
 		 * To create a new store.
@@ -1375,7 +1370,6 @@ export default {
 		 * @returns {undefined}
 		 */
 		addHolidayHours (val) {
-			this.showHolidayHoursModal = false
 			this.newHolidayHours.push(val)
 			this.createHolidayHours(val)
 		},
@@ -1390,6 +1384,7 @@ export default {
 
 			StoresFunctions.createHolidayHours(val, createStoreVue.$root.appId, createStoreVue.$root.appSecret, createStoreVue.$root.userToken).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
+					createStoreVue.steps.step3_status = 'success'
 					createStoreVue.showHolidayHoursAlert()
 				}
 			}).catch(reason => {
