@@ -495,5 +495,27 @@ export default ({
 				}
 			})
 		})
+	},
+	/**
+	 * Call to pitapit API to apply a modifier category to items at selected locations.
+	 * @function
+	 * @param {integer} data - An object containing modifier ID and location IDs.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	copyModifierToMultipleLocations (data) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'POST',
+				dataType: 'json',
+				url: '/app/modifiers/copyModifierToMultipleLocations',
+				data,
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
 	}
 })

@@ -153,7 +153,7 @@
 											v-if="$root.permissions['menu_manager modifiers update']"
 											content="Edit" 
 											effect="light" 
-											placement="right">
+											placement="top">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editModifierCategory(modifier, $event)">
 	                                            <i class="fa fa-lg fa-pencil"></i>
 	                                        </a>
@@ -162,7 +162,7 @@
 											v-if="$root.permissions['menu_manager modifiers read'] && !$root.permissions['menu_manager modifiers update']"
 											content="View" 
 											effect="light" 
-											placement="right">
+											placement="top">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editModifierCategory(modifier, $event)">
 	                                            <i class="fa fa-lg fa-eye"></i>
 	                                        </a>
@@ -171,16 +171,25 @@
 											v-if="$root.permissions['menu_manager modifiers update']"
 											content="Apply to items" 
 											effect="light" 
-											placement="right">
+											placement="top">
 	                                        <a class="btn btn-circle btn-icon-only btn-default" @click="displayMenuTreeModal(modifier, $event)">
 	                                            <i class="icon-layers"></i>
 	                                        </a>
 		                        		</el-tooltip>
+		                        		<el-tooltip 
+											v-if="$root.permissions['menu_manager modifiers update']"
+											content="Copy to stores" 
+											effect="light" 
+											placement="top">
+	                                        <a class="btn btn-circle btn-icon-only btn-default" @click="displayCopyToLocationsModal(modifier, $event)">
+	                                            <i class="fa fa-lg fa-copy"></i>
+	                                        </a>
+		                        		</el-tooltip>
 										<el-tooltip 
 											v-if="$root.permissions['menu_manager modifiers update']"
-											content="Apply to items at locations" 
+											content="Apply to items at stores" 
 											effect="light" 
-											placement="right">
+											placement="top">
 	                                        <a class="btn btn-circle btn-icon-only btn-default" @click="displayApplyToItemsAtLocationsModal(modifier, $event)">
 	                                            <i class="fa fa-lg fa-plus"></i>
 	                                        </a>
@@ -189,7 +198,7 @@
 											v-if="$root.permissions['menu_manager modifiers delete']"
 											content="Delete" 
 											effect="light" 
-											placement="right">
+											placement="top">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="deleteModifierCategory(modifier, $event)">
 	                                            <i class="fa fa-lg fa-trash"></i>
 	                                        </a>
@@ -257,6 +266,13 @@
 			@applyModifierToItemsAtLocationsSuccess="showApplyModifierToItemsAtLocationsSuccess"
 		>
 		</apply-modifier-to-items-at-locations>
+		<copy-modifier-to-locations
+			v-if="showCopyModifierToLocationsModal"
+			:modifier="modifierToCopyToLocations"
+			@closeCopyModifierToLocations="closeCopyModifierToLocationsModal"
+			@copyModifierToLocationsSuccess="showCopyModifierToLocationsSuccess"
+		>
+		</copy-modifier-to-locations>
 	</div>
 </template>
 
@@ -272,6 +288,7 @@ import ModifiersFunctions from '../../../controllers/Modifiers'
 import MenuTree from '../../modules/MenuTree'
 import ResourcePicker from '../../modules/ResourcePicker'
 import ApplyModifierToItemsAtLocations from '@/components/app/MenuManager/Modifiers/ApplyModifierToItemsAtLocations'
+import CopyModifierToLocations from '@/components/app/MenuManager/Modifiers/CopyModifierToLocations'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 import ModifierTiersFunctions from '@/controllers/ModifierTiers'
 
@@ -311,7 +328,9 @@ export default {
 			showModifierToApplyToItemsAtLocationsModal: false,
 			modifierTiers: null,
 			listErrorMessage: '',
-			indexOfTierToDisplay: null
+			indexOfTierToDisplay: null,
+			showCopyModifierToLocationsModal: false,
+			modifierToCopyToLocations: {}
 		}
 	},
 	computed: {
@@ -392,6 +411,26 @@ export default {
 			this.showModifierToApplyToItemsAtLocationsModal = true
 		},
 		/**
+		 * To display the modal to copy a modifier to selected locations.
+		 * @function
+		 * @param {object} modifier - The selected modifier category.
+		 * @param {object} event - The click event that prompted this function.
+		 * @returns {undefined}
+		 */
+		displayCopyToLocationsModal (modifier, event) {
+			event.stopPropagation()
+			this.modifierToCopyToLocations = modifier
+			this.showCopyModifierToLocationsModal = true
+		},
+		/**
+		 * To close the modal to copy a modifier to selected locations.
+		 * @function
+		 * @returns {undefined}
+		 */
+		closeCopyModifierToLocationsModal () {
+			this.showCopyModifierToLocationsModal = false
+		},
+		/**
 		 * To close the modal to apply a modifier to selected items at selected locations.
 		 * @function
 		 * @returns {undefined}
@@ -408,6 +447,19 @@ export default {
 			this.$swal({
 				title: 'Success',
 				text: 'Modifier applied',
+				type: 'success',
+				confirmButtonText: 'OK'
+			})
+		},
+		/**
+		 * To confirm operation succeeded
+		 * @function
+		 * @returns {undefined}
+		 */
+		showCopyModifierToLocationsSuccess () {
+			this.$swal({
+				title: 'Success',
+				text: 'Modifier copied',
 				type: 'success',
 				confirmButtonText: 'OK'
 			})
@@ -715,7 +767,8 @@ export default {
 		NoResults,
 		MenuTree,
 		ResourcePicker,
-		ApplyModifierToItemsAtLocations
+		ApplyModifierToItemsAtLocations,
+		CopyModifierToLocations
 	}
 }
 </script>
