@@ -670,7 +670,6 @@ export default {
 						taxClass.selected = false
 						return taxClass
 					})
-					console.log(_this.taxClasses)
 				} else {
 					_this.loadingTaxClasses = false
 				}

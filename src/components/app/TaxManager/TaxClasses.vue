@@ -45,8 +45,8 @@
 								<label for="form_control_1">Name</label>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': newTaxClass.percentage.length}" id="form_control_3" v-model="newTaxClass.percentage">
-								<label for="form_control_3">Percentage</label>
+								<input type="text" class="form-control input-sm" :class="{'edited': newTaxClass.value.length}" id="form_control_3" v-model="newTaxClass.value">
+								<label for="form_control_3">Value</label>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
 								<input type="text" class="form-control input-sm" :class="{'edited': newTaxClass.min_amount.length}" id="form_control_3" v-model="newTaxClass.min_amount">
@@ -56,10 +56,22 @@
 								<input type="text" class="form-control input-sm" :class="{'edited': newTaxClass.max_amount.length}" id="form_control_3" v-model="newTaxClass.max_amount">
 								<label for="form_control_3">Maximum Amount</label>
 							</div>
-							<label v-if="!loadingItemTypes">
-								Pair with:
-								<el-select v-if="!loadingItemTypes" v-model="newTaxClass.paired_with" placeholder="Select Item Type" size="small">
-									<el-option v-for="type in itemTypes" :label="type.name" :value="type.id" :key="type.id"></el-option>
+							<label>
+								Apply:
+								<el-select 
+									v-model="newTaxClass.apply" 
+									placeholder="Select an option" 
+									size="small">
+									<el-option 
+										label="flat"
+										value="flat"
+										key="flat">
+									</el-option>
+									<el-option 
+										label="percentage"
+										value="percentage"
+										key="percentage">
+									</el-option>
 								</el-select>
 							</label>
 						</div>
@@ -138,8 +150,8 @@
 									</div>
 									<div class="list-item-content height-mod">
 										<div class="col-xs-5">
-											<strong>Percentage:</strong>
-											<span>{{ taxClass.percentage }}%</span>
+											<strong>Value:</strong>
+											<span>{{ taxClass.value }}</span>
 										</div>
 										<div class="col-xs-5">
 											<strong>Minimum amount:</strong>
@@ -186,8 +198,8 @@
 									<label for="form_control_1">Name</label>
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text" class="form-control input-sm" :class="{'edited': taxClassToEdit.percentage.length}" id="form_control_3" v-model="taxClassToEdit.percentage">
-									<label for="form_control_3">Percentage</label>
+									<input type="text" class="form-control input-sm" :class="{'edited': taxClassToEdit.value.length}" id="form_control_3" v-model="taxClassToEdit.value">
+									<label for="form_control_3">Value</label>
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
 									<input type="text" class="form-control input-sm" :class="{'edited': taxClassToEdit.min_amount.length}" id="form_control_3" v-model="taxClassToEdit.min_amount">
@@ -198,15 +210,23 @@
 									<label for="form_control_3">Maximum amount</label>
 								</div>
 							</fieldset>
-							<label v-if="!loadingItemTypes">
-								Pair with:
-							<el-select 
-								:disabled="!$root.permissions['tax tax_classes update']"
-								v-model="taxClassToEdit.paired_with" 
-								placeholder="Select Item Type" 
-								size="small">
-								<el-option v-for="type in itemTypes" :label="type.name" :value="type.id" :key="type.id"></el-option>
-							</el-select>
+							<label>
+								Apply:
+								<el-select 
+									v-model="taxClassToEdit.apply" 
+									placeholder="Select an option" 
+									size="small">
+									<el-option 
+										label="flat"
+										value="flat"
+										key="flat">
+									</el-option>
+									<el-option 
+										label="percentage"
+										value="percentage"
+										key="percentage">
+									</el-option>
+								</el-select>
 							</label>
 						</div>
 					</div>
@@ -254,7 +274,6 @@
 import Breadcrumb from '../../modules/Breadcrumb'
 import LoadingScreen from '../../modules/LoadingScreen'
 import TaxClassesFunctions from '../../../controllers/TaxClasses'
-import ItemTypesFunctions from '../../../controllers/ItemTypes'
 import Modal from '../../modules/Modal'
 import NoResults from '../../modules/NoResults'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
@@ -272,10 +291,10 @@ export default {
 			newTaxClass: {
 				location_id: '',
 				name: '',
-				percentage: '',
+				value: '',
 				min_amount: '',
 				max_amount: '',
-				paired_with: ''
+				apply: ''
 			},
 
 			loadingTaxClasses: false,
@@ -287,7 +306,8 @@ export default {
 			taxClassToEdit: {
 				location_id: '',
 				name: '',
-				percentage: '',
+				value: '',
+				apply: '',
 				min_amount: '',
 				max_amount: ''
 			},
@@ -296,9 +316,7 @@ export default {
 			deleteErrorMessage: '',
 			taxClassToDelete: {
 				name: ''
-			},
-			loadingItemTypes: false,
-			itemTypes: []
+			}
 		}
 	},
 	computed: {
@@ -311,45 +329,15 @@ export default {
 			if (newId !== undefined) {
 				this.clearError('listErrorMessage')
 				this.getTaxClasses()
-				this.getItemTypes()
 			}
 		}
 	},
 	mounted () {
 		if (this.$root.activeLocation.id !== undefined) {
 			this.getTaxClasses()
-			this.getItemTypes()
 		}
 	},
 	methods: {
-		/**
-		 * To get a list of all item types.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		getItemTypes () {
-			this.loadingItemTypes = true
-			this.itemTypes = []
-			var _this = this
-			let payload = {location_id: this.$root.activeLocation.id}
-			return ItemTypesFunctions.getItemTypes(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					_this.loadingItemTypes = false
-					_this.itemTypes = response.payload
-				} else {
-					_this.loadingItemTypes = false
-				}
-			}).catch(reason => {
-				_this.loadingItemTypes = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch the list of item types',
-					errorName: 'createErrorMessage',
-					vue: _this
-				})
-			})
-		},
 		/**
 		 * To toggle the create tier panel, initially set to closed
 		 * @function
@@ -377,8 +365,8 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (!_this.newTaxClass.name.length) {
 					reject('Name cannot be blank')
-				} else if (!$.isNumeric(_this.newTaxClass.percentage)) {
-					reject('Percentage must be a number')
+				} else if (!$.isNumeric(_this.newTaxClass.value)) {
+					reject('Value must be a number')
 				} else if (!$.isNumeric(_this.newTaxClass.min_amount)) {
 					reject('Minimum amount must be a number')
 				} else if (!$.isNumeric(_this.newTaxClass.max_amount)) {
@@ -400,7 +388,6 @@ export default {
 			return _this.validateNewTaxClassData()
 			.then(response => {
 				let payload = this.newTaxClass
-				if (!payload.paired_with) { delete payload.paired_with }
 
 				TaxClassesFunctions.createTaxClass(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
 				.then(response => {
@@ -449,10 +436,10 @@ export default {
 			this.newTaxClass = {
 				location_id: '',
 				name: '',
-				percentage: '',
+				value: '',
 				min_amount: '',
 				max_amount: '',
-				paired_with: ''
+				apply: ''
 			}
 		},
 		/**
@@ -494,7 +481,7 @@ export default {
 			event.stopPropagation()
 			this.taxClassToEdit = {
 				...taxClass,
-				percentage: String(taxClass.percentage),
+				value: String(taxClass.value),
 				min_amount: String(taxClass.min_amount),
 				max_amount: String(taxClass.max_amount)
 			}
@@ -510,8 +497,8 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (!_this.taxClassToEdit.name.length) {
 					reject('Name cannot be blank')
-				} else if (!$.isNumeric(_this.taxClassToEdit.percentage)) {
-					reject('Percentage must be a number')
+				} else if (!$.isNumeric(_this.taxClassToEdit.value)) {
+					reject('Value must be a number')
 				} else if (!$.isNumeric(_this.taxClassToEdit.min_amount)) {
 					reject('Minimum amount must be a number')
 				} else if (!$.isNumeric(_this.taxClassToEdit.max_amount)) {
@@ -533,7 +520,6 @@ export default {
 			return _this.validateEditedTaxClassData()
 			.then(response => {
 				let payload = this.taxClassToEdit
-				if (!payload.paired_with) { delete payload.paired_with }
 
 				TaxClassesFunctions.updateTaxClass(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
@@ -588,10 +574,10 @@ export default {
 			this.taxClassToEdit = {
 				location_id: '',
 				name: '',
-				percentage: '',
+				value: '',
 				min_amount: '',
 				max_amount: '',
-				paired_with: ''
+				apply: ''
 			}
 		},
 		/**
