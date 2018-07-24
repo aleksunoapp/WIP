@@ -42,7 +42,7 @@
 								<el-tree 
 									:data="moduleTree" 
 									:highlight-current="true"
-									:expand-on-click-node="false"
+									:expand-on-click-node="true"
 									:props="{'label': 'name', 'children': 'sub_modules'}" 
 									@node-click="setParentModule"
 								>

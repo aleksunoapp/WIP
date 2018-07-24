@@ -40,12 +40,15 @@
 								<el-tree 
 									:data="roleTree" 
 									:highlight-current="true"
-									:props="{'label': 'name', 'children': 'combined'}"
-									:check-on-click-node="true"
-									:expand-on-click-node="false"
+									:props="{
+										'label': 'name', 
+										'children': 'combined',
+										'disabled': 'disabled'
+									}"
+									:expand-on-click-node="true"
 									@check-change="setNewRolePermission"
 									ref="newRoleTree"
-									show-checkbox 
+									show-checkbox
 								>
 									<span 
 										slot-scope="{ node, data }"
@@ -294,10 +297,9 @@
 					:data="roleTree" 
 					:highlight-current="true"
 					:props="{'label': 'name', 'children': 'combined', 'disabled': 'disabled'}"
-					:check-on-click-node="true"
-					:expand-on-click-node="false"
+					:expand-on-click-node="true"
 					@check-change="setEditedRolePermission"
-					show-checkbox 
+					show-checkbox
 					node-key="nodeId"
 					ref="editedRoleTree"
 					:default-checked-keys="roleToEdit.previouslySelected"
@@ -442,6 +444,23 @@ export default {
 
 					let role = rolesVue.listToTree(response.payload, response.payload.filter(mod => mod.parent_module === 0)[0])
 
+					try {
+						let mark = (tree) => {
+							if (!tree.permissions.length) {
+								tree.empty = true
+							}
+							if (tree.sub_modules) {
+								mark(tree.sub_modules)
+							} else if (tree.empty) {
+								return null
+							}
+						}
+						role = mark(role)
+						console.log(role)
+					} catch (e) {
+						console.log(e)
+					}
+
 					for (let mod of role) {
 						rolesVue.combinePermissionsAndModules(mod)
 					}
@@ -517,6 +536,7 @@ export default {
 					item.disabled = _this.$root.permissions['update role'] === undefined
 					return item
 				})
+				current.disabled = current.combined.length === 0
 
 				var children = current.sub_modules
 				for (var i = 0; i < children.length; i++) {
