@@ -81,7 +81,7 @@
 							<a class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
 								<i class="fa fa-line-chart"></i>
 								<span class="title">Analytics</span>
-								<span class="arrow"></span>
+								<i class="fa fa-chevron-down pull-right" aria-hidden="true"></i>
 							</a>
 							<ul class="sub-menu">
 								<li 
@@ -145,6 +145,7 @@
 								<span class="title">Approvals Manager
 									<i v-if="$root.requestsPending" class="fa fa-circle danger"></i>
 								</span>
+								<i class="fa fa-chevron-down pull-right" aria-hidden="true"></i>
 							</a>
 							<ul class="sub-menu">
 								<li 
@@ -208,6 +209,7 @@
 							<a class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
 								<i class="fa fa-cogs"></i>
 								<span class="title">Admin Manager</span>
+								<i class="fa fa-chevron-down pull-right" aria-hidden="true"></i>
 							</a>
 							<ul class="sub-menu">
 								<li 
@@ -270,7 +272,7 @@
 							<a class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
 								<i class="fa fa-home"></i>
 								<span class="title">Stores Manager</span>
-								<span class="arrow"></span>
+								<i class="fa fa-chevron-down pull-right" aria-hidden="true"></i>
 							</a>
 							<ul class="sub-menu">
 								<li 
@@ -338,7 +340,6 @@
 							<router-link to="/app/news_feed" class="nav-link nav-toggle">
 								<i class="fa fa-newspaper-o"></i>
 								<span class="title">News Feed</span>
-								<span class="selected"></span>
 							</router-link>
 						</li>
 						<li 
@@ -349,7 +350,6 @@
 							<router-link to="/app/social_feed" class="nav-link nav-toggle">
 								<i class="fa fa-user"></i>
 								<span class="title">Social Feed</span>
-								<span class="selected"></span>
 							</router-link>
 						</li>
 						<li 
@@ -363,7 +363,7 @@
 							<a class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
 								<i class="fa fa-calculator"></i>
 								<span class="title">Tax Manager</span>
-								<span class="arrow"></span>
+								<i class="fa fa-chevron-down pull-right" aria-hidden="true"></i>
 							</a>
 							<ul class="sub-menu">
 								<li 
@@ -406,7 +406,7 @@
 							<a class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
 								<i class="fa fa-cutlery"></i>
 								<span class="title">Menu Manager</span>
-								<span class="arrow"></span>
+								<i class="fa fa-chevron-down pull-right" aria-hidden="true"></i>
 							</a>
 							<ul class="sub-menu">
 								<li 
@@ -507,7 +507,6 @@
 							<router-link :to="'/app/printers'" class="nav-link nav-toggle">
 								<i class="icon-printer"></i>
 								<span class="title">Printers</span>
-								<span class="selected"></span>
 							</router-link>
 						</li>
 						<li 
@@ -522,7 +521,7 @@
 							<a class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
 								<i class="fa fa-users"></i>
 								<span class="title">Users Manager</span>
-								<span class="arrow"></span>
+								<i class="fa fa-chevron-down pull-right" aria-hidden="true"></i>
 							</a>
 							<ul class="sub-menu">
 								<li 
@@ -571,7 +570,7 @@
 							<a class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
 								<i class="fa fa-comments"></i>
 								<span class="title">FAQ</span>
-								<span class="arrow"></span>
+								<i class="fa fa-chevron-down pull-right" aria-hidden="true"></i>
 							</a>
 							<ul class="sub-menu">
 								<li 
@@ -606,7 +605,6 @@
 							<router-link to="/app/gallery" class="nav-link nav-toggle">
 								<i class="fa fa-image"></i>
 								<span class="title">Gallery</span>
-								<span class="selected"></span>
 							</router-link>
 						</li>
 						<li 
@@ -621,7 +619,7 @@
 							<a class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
 								<i class="fa fa-link"></i>
 								<span class="title">Loyalty</span>
-								<span class="selected"></span>
+								<i class="fa fa-chevron-down pull-right" aria-hidden="true"></i>
 							</a>
 							<ul class="sub-menu">
 								<li 
@@ -667,7 +665,6 @@
 							<router-link to="/app/promocodes" class="nav-link nav-toggle">
 								<i class="fa fa-scissors"></i>
 								<span class="title">Promo codes</span>
-								<span class="selected"></span>
 							</router-link>
 						</li>
 						<li 
@@ -678,7 +675,7 @@
 							<router-link to="/app/promotions" class="nav-link">
 								<i class="fa fa-money"></i>
 								<span class="title">Promotions</span>
-								<span class="arrow"></span>
+								<i class="fa fa-chevron-down pull-right" aria-hidden="true"></i>
 							</router-link>
 							<ul class="sub-menu">
 								<li 
@@ -702,7 +699,6 @@
 							<router-link to="/app/localization" class="nav-link nav-toggle">
 								<i class="fa fa-language"></i>
 								<span class="title">Localization</span>
-								<span class="selected"></span>
 							</router-link>
 						</li>
 					</ul>
