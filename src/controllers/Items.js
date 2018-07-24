@@ -448,5 +448,90 @@ export default ({
 				}
 			})
 		})
+	},
+		/**
+	 * Call to pitapit API to fetch details of a Preset Item's settings.
+	 * @function
+	 * @param {integer} itemId - The id of the item to fetch the details of.
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {string} userToken - The token of the current logged in user.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	getPresetDetails: function (itemId, appId, appSecret, userToken) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'GET',
+				dataType: 'json',
+				url: '/app/preset_products/' + itemId,
+				data: {},
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+					xhr.setRequestHeader('auth-token', userToken)
+				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
+	 * Call to pitapit API to update settings of a preset Item.
+	 * @function
+	 * @param {string} appId - The appId of the current application.
+	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {string} userToken - The token of the current logged in user.
+	 * @param {integer} itemId - The id of the preset Item to update.
+	 * @param {object} presetSettings - The settings to save.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	updatePresetItem: function (appId, appSecret, userToken, itemId, presetSettings) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'PUT',
+				contentType: 'application/json',
+				dataType: 'json',
+				url: '/app/preset_products/' + itemId + '/update',
+				data: presetSettings,
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('auth-token', userToken)
+					xhr.setRequestHeader('app-id', appId)
+					xhr.setRequestHeader('app-secret', appSecret)
+				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
+	 * Call to API to fetch all Menu Items for a location
+	 * @function
+	 * @param {integer} locationId - ID of the location
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	getAllItemsOfLocation: function (locationId) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'GET',
+				contentType: 'application/json',
+				dataType: 'json',
+				url: '/app/items/allItemsOfLocation/' + locationId,
+				data: {},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
 	}
 })

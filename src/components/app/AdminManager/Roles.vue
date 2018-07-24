@@ -7,10 +7,10 @@
 			<h1 class='page-title'>Roles</h1>
 			<div class="note note-info">
 				<p>Create and manage user roles.</p>
-			</div
+			</div>
 
 			<!-- CREATE NEW START -->
-			<div class="portlet box blue-hoki margin-top-20">
+			<div class="portlet box blue-hoki margin-top-20" v-if="$root.permissions['create role']">
 				<div class="portlet-title bg-blue-chambray" @click="toggleCreateRolePanel()">
 					<div class="caption">
 						<i class="fa fa-plus-circle"></i>
@@ -32,20 +32,23 @@
 									<span>{{createErrorMessage}}</span>
 								</div>
 							</div>
-							<div class="col-xs-6">
+							<div class="col-xs-12">
 								<div class="form-group form-md-line-input form-md-floating-label">
 									<input ref="newRoleName" type="text" class="form-control input-sm" id="form_control_name" v-model="newRole.name" :class="{'edited': newRole.name.length}">
 									<label for="form_control_name">Name</label>
 								</div>
 								<el-tree 
-									:data="rolePrototype" 
-									:default-expand-all="true"
+									:data="roleTree" 
 									:highlight-current="true"
-									:props="{'label': 'name', 'children': 'combined'}"
-									:check-on-click-node="true"
-									:expand-on-click-node="false"
+									:props="{
+										'label': 'name', 
+										'children': 'combined',
+										'disabled': 'disabled'
+									}"
+									:expand-on-click-node="true"
 									@check-change="setNewRolePermission"
-									show-checkbox 
+									ref="newRoleTree"
+									show-checkbox
 								>
 									<span 
 										slot-scope="{ node, data }"
@@ -57,7 +60,7 @@
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-xs-6">
+							<div class="col-xs-12">
 								<button type="submit" class="btn blue pull-right">Create</button>	
 							</div>
 						</div>
@@ -141,12 +144,29 @@
 								<ul>
 									<li class="mt-list-item actions-at-left margin-top-15" v-for="role in currentActivePageItems" :id="'role-' + role.id" :class="{'animated' : animated === `role-${role.id}`}" :key="role.id">
 										<div class="list-item-actions">
-											<el-tooltip content="Edit" effect="light" placement="right">
+											<el-tooltip 
+												v-if="$root.permissions['update role']"
+												content="Edit" 
+												effect="light" 
+												placement="right">
 												<a class="btn btn-circle btn-icon-only btn-default" @click="editRole(role)">
 													<i class="fa fa-pencil" aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip content="Delete" effect="light" placement="right">
+											<el-tooltip 
+												v-if="$root.permissions['create role'] && !$root.permissions['update role']"
+												content="View" 
+												effect="light" 
+												placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default" @click="editRole(role)">
+													<i class="fa fa-eye" aria-hidden="true"></i>
+												</a>
+											</el-tooltip>
+											<el-tooltip 
+												v-if="$root.permissions['delete role']"
+												content="Delete" 
+												effect="light" 
+												placement="right">
 												<a class="btn btn-circle btn-icon-only btn-default" @click="openDeleteModal(role)">
 													<i class="fa fa-trash" aria-hidden="true"></i>
 												</a>
@@ -203,11 +223,33 @@
 								<ul>
 									<li class="mt-list-item actions-at-left margin-top-15" v-for="role in currentActiveSearchPageItems" :id="'role-' + role.id" :class="{'animated' : animated === `role-${role.id}`}" :key="role.id">
 										<div class="list-item-actions">
-											<a class="btn btn-circle btn-icon-only btn-default" @click="editRole(role)">
-												<el-tooltip content="Edit" effect="light" placement="right">
+											<el-tooltip 
+												v-if="$root.permissions['update role']"
+												content="Edit" 
+												effect="light" 
+												placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default" @click="editRole(role)">
 													<i class="fa fa-pencil" aria-hidden="true"></i>
-												</el-tooltip>
-											</a>
+												</a>
+											</el-tooltip>
+											<el-tooltip 
+												v-if="$root.permissions['create role'] && !$root.permissions['update role']"
+												content="View" 
+												effect="light" 
+												placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default" @click="editRole(role)">
+													<i class="fa fa-eye" aria-hidden="true"></i>
+												</a>
+											</el-tooltip>
+											<el-tooltip 
+												v-if="$root.permissions['delete role']"
+												content="Delete" 
+												effect="light" 
+												placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default" @click="openDeleteModal(role)">
+													<i class="fa fa-trash" aria-hidden="true"></i>
+												</a>
+											</el-tooltip>
 										</div>
 										<div class="list-datetime bold uppercase font-red">
 											<span>{{ role.name }}</span>
@@ -229,7 +271,12 @@
 		<!-- LIST END -->
 
 		<!-- EDIT MODAL START -->
-		<modal :show="showEditRoleModal" effect="fade" @closeOnEscape="closeEditRoleModal">
+		<modal 
+			:width="900"
+			:show="showEditRoleModal" 
+			effect="fade" 
+			@closeOnEscape="closeEditRoleModal" 
+			ref="editModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closeEditRoleModal()">
 					<span>&times;</span>
@@ -247,15 +294,14 @@
 				</div>
 				<el-tree 
 					v-if="showEditRoleModal"
-					:data="rolePrototype" 
-					:default-expand-all="true"
+					:data="roleTree" 
 					:highlight-current="true"
-					:props="{'label': 'name', 'children': 'combined'}"
-					:check-on-click-node="true"
-					:expand-on-click-node="false"
+					:props="{'label': 'name', 'children': 'combined', 'disabled': 'disabled'}"
+					:expand-on-click-node="true"
 					@check-change="setEditedRolePermission"
-					show-checkbox 
+					show-checkbox
 					node-key="nodeId"
+					ref="editedRoleTree"
 					:default-checked-keys="roleToEdit.previouslySelected"
 				>
 					<span 
@@ -267,7 +313,20 @@
 				</el-tree>
 			</div>
 			<div slot="modal-footer" class="modal-footer">
-				<button type="button" class="btn btn-primary" @click="updateRole()">Save</button>
+				<button 
+					v-if="$root.permissions['create role'] && !$root.permissions['update role']"
+					type="button" 
+					class="btn btn-primary" 
+					@click="closeEditRoleModal()">
+					Close
+				</button>
+				<button 
+					v-else
+					type="button" 
+					class="btn btn-primary" 
+					@click="updateRole()">
+					Save
+				</button>
 			</div>
 		</modal>
 		<!-- EDIT MODAL END -->
@@ -345,7 +404,8 @@ export default {
 				order: 'ASC'
 			},
 			searchActivePage: 1,
-			rolePrototype: [],
+			roleTree: [],
+			cleanRoleTree: [],
 			modules: []
 		}
 	},
@@ -382,9 +442,31 @@ export default {
 				if (response.code === 200 && response.status === 'ok') {
 					rolesVue.loading = false
 
-					rolesVue.rolePrototype = rolesVue.listToTree(response.payload, response.payload.filter(mod => mod.parent_module === 0)[0])
+					let role = rolesVue.listToTree(response.payload, response.payload.filter(mod => mod.parent_module === 0)[0])
 
-					rolesVue.combinePermissionsAndModules(rolesVue.rolePrototype[0])
+					try {
+						let mark = (tree) => {
+							if (!tree.permissions.length) {
+								tree.empty = true
+							}
+							if (tree.sub_modules) {
+								mark(tree.sub_modules)
+							} else if (tree.empty) {
+								return null
+							}
+						}
+						role = mark(role)
+						console.log(role)
+					} catch (e) {
+						console.log(e)
+					}
+
+					for (let mod of role) {
+						rolesVue.combinePermissionsAndModules(mod)
+					}
+
+					rolesVue.cleanRoleTree = role
+					rolesVue.roleTree = role
 
 					rolesVue.modules = response.payload
 				} else {
@@ -418,7 +500,6 @@ export default {
 				for (var i = 0, len = arr.length; i < len; i++) {
 					arrElem = arr[i]
 					mappedArr[arrElem.id] = arrElem
-					mappedArr[arrElem.id]['sub_modules'] = []
 				}
 
 				for (var id in mappedArr) {
@@ -429,6 +510,7 @@ export default {
 							mappedArr[mappedElem['parent_module']]['sub_modules'].push(mappedElem)
 						// If the element is at the root level, add it to first level elements array.
 						} else {
+							mappedElem.disabled = this.$root.permissions['update role'] === undefined
 							tree.push(mappedElem)
 						}
 					}
@@ -447,15 +529,18 @@ export default {
 		combinePermissionsAndModules (current) {
 			try {
 				const _this = this
-				current.combined = [...current.permissions, ...current.sub_modules]
+				let ownPermissions = current.permissions.filter(permission => this.$root.permissions[permission.name])
+				current.combined = [...ownPermissions, ...current.sub_modules]
 				current.combined = current.combined.map(item => {
 					item.nodeId = item.module_id === undefined ? `m${item.id}` : `p${item.id}`
+					item.disabled = _this.$root.permissions['update role'] === undefined
 					return item
 				})
-				let depth = 0
+				current.disabled = current.combined.length === 0
+
 				var children = current.sub_modules
 				for (var i = 0; i < children.length; i++) {
-					_this.combinePermissionsAndModules(children[i], depth + 1)
+					_this.combinePermissionsAndModules(children[i])
 				}
 			} catch (e) {
 				console.log(e)
@@ -464,44 +549,18 @@ export default {
 		/**
 		 * To update the permissions selection when editing a role
 		 * @function
-		 * @param {object} node - The node object being selected
-		 * @param {boolean} selected - The status of the node
 		 * @returns {undefined}
 		 */
-		setEditedRolePermission (node, selected) {
-			if (node.module_id !== undefined) {
-				let index = this.roleToEdit.permissions.indexOf(node.id)
-				if (selected) {
-					if (index === -1) {
-						this.roleToEdit.permissions.push(node.id)
-					}
-				} else {
-					if (index !== -1) {
-						this.roleToEdit.permissions = this.newRole.permissions.filter(x => x !== node.id)
-					}
-				}
-			}
+		setEditedRolePermission () {
+			this.roleToEdit.permissions = this.$refs.editedRoleTree.getCheckedNodes().filter(node => node.module_id !== undefined).map(node => node.id)
 		},
 		/**
 		 * To update the permissions selection when creating a role
 		 * @function
-		 * @param {object} node - The node object being selected
-		 * @param {boolean} selected - The status of the node
 		 * @returns {undefined}
 		 */
-		setNewRolePermission (node, selected) {
-			if (node.module_id !== undefined) {
-				let index = this.newRole.permissions.indexOf(node.id)
-				if (selected) {
-					if (index === -1) {
-						this.newRole.permissions.push(node.id)
-					}
-				} else {
-					if (index !== -1) {
-						this.newRole.permissions = this.newRole.permissions.filter(x => x !== node.id)
-					}
-				}
-			}
+		setNewRolePermission () {
+			this.newRole.permissions = this.$refs.newRoleTree.getCheckedNodes().filter(node => node.module_id !== undefined).map(node => node.id)
 		},
 		/**
 		 * To update permissions based on user's selection
@@ -745,7 +804,11 @@ export default {
 			.then(response => {
 				if (response.code === 200 && response.status === 'ok') {
 					rolesVue.loading = false
-					rolesVue.roles = response.payload
+					if (this.$root.roles.includes('super admin')) {
+						rolesVue.roles = response.payload
+					} else {
+						rolesVue.roles = response.payload.filter(role => role.name !== 'super admin')
+					}
 				} else {
 					rolesVue.loading = false
 				}
@@ -801,6 +864,7 @@ export default {
 				guard_name: 'admin',
 				permissions: []
 			}
+			this.roleTree = [...this.cleanRoleTree]
 		},
 		/**
 		 * To reset the create new form.
@@ -901,7 +965,7 @@ export default {
 						rolesVue.animated = ''
 					}, 3000)
 				}).catch(reason => {
-					console.log()
+					rolesVue.$refs.editModal.$el.scrollTop = 0
 					ajaxErrorHandler({
 						reason,
 						errorText: 'Could not save role',
@@ -911,7 +975,7 @@ export default {
 				})
 			}).catch(reason => {
 				rolesVue.editErrorMessage = reason
-				rolesVue.$scrollTo(rolesVue.$refs.editErrorMessage, 1000, { offset: -50 })
+				rolesVue.$refs.editModal.$el.scrollTop = 0
 			})
 		},
 		/**
@@ -940,8 +1004,6 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (!rolesVue.roleToEdit.name.length) {
 					reject('Name cannot be blank')
-				} else if (!rolesVue.roleToEdit.permissions.length) {
-					reject('Select at least one permission')
 				}
 				resolve('Hurray')
 			})

@@ -13,7 +13,7 @@
 	            <p>Manage a store's menu tiers.</p>
 	        </div>
 	        <!-- BEGIN CREATE NEW TIER-->
-	        <div class="row">
+	        <div class="row" v-if="$root.permissions['menu_manager tiers create']">
 	        	<div class="col-xs-12">
 	        		<div class="alert alert-info" v-if="noCorporateStore">
 	        			A Corporate Store is required to use Menu Tiers. 
@@ -26,7 +26,7 @@
 	        		</div>
 	        	</div>
 	        </div>
-	        <div class="portlet box blue-hoki" v-if="!noCorporateStore">
+	        <div class="portlet box blue-hoki" v-if="!noCorporateStore && $root.permissions['menu_manager tiers create']">
 				<div class="portlet-title bg-blue-chambray" @click="toggleCreateMenuTierPanel()">
 					<div class="custom tools">
 						<a :class="{'expand': !createMenuTierCollapse, 'collapse': createMenuTierCollapse}"></a>
@@ -80,11 +80,29 @@
 			            <div class="mt-element-list margin-top-15">
 			                <div class="mt-list-container list-news">
 			                    <ul>
-			                        <li id="parent" class="mt-list-item actions-at-left margin-top-15 clickable" v-for="tier in menuTiers" :id="'tier-' + tier.id" @click="assignMenusToTier(tier)">
+			                        <li 
+										class="mt-list-item actions-at-left margin-top-15 clickable" 
+										v-for="tier in menuTiers" 
+										:id="'tier-' + tier.id" 
+										@click="assignMenusToTier(tier)"
+										:key="tier.id">
 			                        	<div class="list-item-actions">
-			                        		<el-tooltip content="Edit" effect="light" placement="right">
+			                        		<el-tooltip 
+												v-if="$root.permissions['menu_manager tiers update']"
+												content="Edit" 
+												effect="light" 
+												placement="right">
 				                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editMenuTier(tier, $event)">
 			                                        <i class="fa fa-lg fa-pencil"></i>
+			                                    </a>
+			                        		</el-tooltip>
+			                        		<el-tooltip 
+												v-if="$root.permissions['menu_manager tiers read'] && !$root.permissions['menu_manager tiers update']"
+												content="Edit" 
+												effect="light" 
+												placement="right">
+				                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editMenuTier(tier, $event)">
+			                                        <i class="fa fa-lg fa-eye"></i>
 			                                    </a>
 			                        		</el-tooltip>
 			                        	</div>

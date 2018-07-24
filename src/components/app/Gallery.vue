@@ -20,13 +20,14 @@
 						:showDoneButton="false"
 						:imageButton="false"
 						:selectOnly="false"
+						:key="pickerKey"
 					>
 					</resource-picker>
 				</div>
 			</div>
 			<div class="row margin-top-20" v-show="previewMode">
 				<div class="col-xs-12 text-center">
-					<img :src="image">
+					<img :src="image.image_url">
 				</div>
 				<div class="col-xs-12">
 					<button 
@@ -35,10 +36,39 @@
 						@click="closePreview()"
 					>
 						Close
-					</button>					
+					</button>
+					<button 
+						v-if="$root.permissions['gallery delete']"
+						type="button" 
+						class="btn btn-outline blue pull-right margin-right-10" 
+						@click="openDeleteModal()"
+					>
+						Delete
+					</button>
 				</div>
 			</div>
 		</div>
+
+		<!-- DELETE IMAGE MODAL START -->
+		<modal :show="showDeleteModal" effect="fade" @closeOnEscape="closeDeleteModal">
+			<div slot="modal-header" class="modal-header">
+				<button type="button" class="close" @click="closeDeleteModal()">
+					<span>&times;</span>
+				</button>
+				<h4 class="modal-title center">Delete Image</h4>
+			</div>
+			<div slot="modal-body" class="modal-body">
+				<div class="alert alert-danger" v-show="deleteErrorMessage.length" ref="deleteErrorMessage">
+					<button class="close" @click="clearDeleteErrorMessage()"></button>
+					<span>{{deleteErrorMessage}}</span>
+				</div>
+				<p>Are you sure you want to delete this image?</p>
+			</div>
+			<div slot="modal-footer" class="modal-footer">
+				<button type="button" class="btn btn-primary" @click="deleteImage()">Delete</button>
+			</div>
+		</modal>
+		<!-- DELETE IMAGE MODAL END -->
     </div>
 </template>
 
@@ -47,6 +77,10 @@ import Breadcrumb from '../modules/Breadcrumb'
 import NoResults from '../modules/NoResults'
 import LoadingScreen from '../modules/LoadingScreen'
 import ResourcePicker from '../modules/ResourcePicker'
+import ResourcesFunctions from '@/controllers/Resources'
+import ajaxErrorHandler from '@/controllers/ErrorController'
+import Modal from '@/components/modules/Modal'
+import global from '@/global'
 
 export default {
 	data () {
@@ -54,15 +88,13 @@ export default {
 			breadcrumbArray: [
 				{name: 'Gallery', link: false}
 			],
-			galleryData: [],
-			image: '',
-			previewMode: false,
-			newFolder: {
-				name: '',
-				is_shared: false
+			image: {
+				image_url: ''
 			},
-			parentFolderId: 0,
-			createErrorMessage: ''
+			previewMode: false,
+			pickerKey: 1,
+			deleteErrorMessage: '',
+			showDeleteModal: false
 		}
 	},
 	methods: {
@@ -82,7 +114,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateImage (val) {
-			this.image = val.image_url
+			this.image = val
 			this.toggleImageMode(true)
 		},
 		/**
@@ -94,6 +126,46 @@ export default {
 		 */
 		closePreview () {
 			this.previewMode = false
+		},
+		openDeleteModal () {
+			this.showDeleteModal = true
+		},
+		closeDeleteModal () {
+			this.deleteErrorMessage = ''
+			this.showDeleteModal = false
+		},
+		clearDeleteErrorMessage () {
+			this.deleteErrorMessage = ''
+		},
+		deleteImage () {
+			let galleryVue = this
+			return ResourcesFunctions.deleteResource(global.resourcesBusinessId, galleryVue.image.id).then(response => {
+				galleryVue.closeDeleteModal()
+				galleryVue.confirmDelete()
+				galleryVue.pickerKey++
+				galleryVue.previewMode = false
+				galleryVue.image = {image_url: ''}
+			}).catch(reason => {
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not delete the image',
+					errorName: 'deleteErrorMessage',
+					vue: galleryVue
+				})
+			})
+		},
+		/**
+		 * To notify user that the operation succeeded.
+		 * @function
+		 * @returns {undefined}
+		 */
+		confirmDelete () {
+			this.$swal({
+				title: 'Success',
+				text: 'Image deleted',
+				type: 'success',
+				confirmButtonText: 'OK'
+			})
 		}
 	},
 	watch: {},
@@ -101,7 +173,8 @@ export default {
 		Breadcrumb,
 		NoResults,
 		LoadingScreen,
-		ResourcePicker
+		ResourcePicker,
+		Modal
 	}
 }
 </script>

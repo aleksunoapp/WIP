@@ -9,7 +9,7 @@
 		</div>
 
 		<!-- BEGIN CREATE NEW -->
-        <div class="portlet box blue-hoki">
+        <div class="portlet box blue-hoki" v-if="$root.permissions['promotions geolocations create']">
 			<div class="portlet-title bg-blue-chambray" @click="toggleNewPanel()">
 				<div class="caption">
 					<i class="fa fa-2x fa-plus-circle"></i>
@@ -78,12 +78,29 @@
 						<ul>
 							<li class="mt-list-item actions-at-left margin-top-15" :class="{'animated' : animated === gl.id}" v-for="gl in geolocations" :key="gl.id">
 								<div class="list-item-actions">
-									<el-tooltip content="Edit" effect="light" placement="right">
+									<el-tooltip 
+										v-if="$root.permissions['promotions geolocations update']"
+										content="Edit" 
+										effect="light" 
+										placement="right">
 		                        		<a class="btn btn-circle btn-icon-only btn-default clickable" @click="editGeolocation(gl)">
 	                                        <i class="fa fa-lg fa-pencil"></i>
 	                                    </a>
 	                                </el-tooltip>
-									<el-tooltip content="Delete" effect="light" placement="right">
+									<el-tooltip 
+										v-if="$root.permissions['promotions geolocations read'] && !$root.permissions['promotions geolocations update']"
+										content="View" 
+										effect="light" 
+										placement="right">
+		                        		<a class="btn btn-circle btn-icon-only btn-default clickable" @click="editGeolocation(gl)">
+	                                        <i class="fa fa-lg fa-eye"></i>
+	                                    </a>
+	                                </el-tooltip>
+									<el-tooltip 
+										v-if="$root.permissions['promotions geolocations delete']"
+										content="Delete" 
+										effect="light" 
+										placement="right">
 		                        		<a class="btn btn-circle btn-icon-only btn-default clickable" @click="openDelete(gl)">
 	                                        <i class="fa fa-lg fa-trash"></i>
 	                                    </a>
@@ -121,7 +138,13 @@
 				<div class="row">
 					<div class="col-md-6">
 						<div class="form-group form-md-line-input form-md-floating-label">
-						    <input type="text" class="form-control input-sm" :class="{'edited': editedGeolocation.name.length}" id="form_control_1" v-model="editedGeolocation.name">
+						    <input 
+								:disabled="!$root.permissions['promotions geolocations update']"
+								type="text" 
+								class="form-control input-sm" 
+								:class="{'edited': editedGeolocation.name.length}" 
+								id="form_control_1" 
+								v-model="editedGeolocation.name">
 						    <label for="form_control_1">Geolocation Name</label>
 						</div>
 					</div>
@@ -140,7 +163,20 @@
 				</div>
 			</div>
 			<div slot="modal-footer" class="modal-footer">
-					<button type="button" class="btn btn-primary" @click="updateGeolocation()">Save</button>
+					<button 
+						v-if="!$root.permissions['promotions geolocations update']"
+						type="button" 
+						class="btn btn-primary" 
+						@click="closeEditModal()">
+						Close
+					</button>
+					<button 
+						v-else
+						type="button" 
+						class="btn btn-primary" 
+						@click="updateGeolocation()">
+						Save
+					</button>
 			</div>
 		</modal>
 		<!-- EDIT MODAL END -->

@@ -7,10 +7,10 @@
 			<h1 class='page-title'>Brand Admins</h1>
 			<div class="note note-info">
 	            <p>Create and manage Brand Admin accounts.</p>
-	        </div
+	        </div>
 
   			<!-- CREATE NEW START -->
-			<div class="portlet box blue-hoki margin-top-20">
+			<div class="portlet box blue-hoki margin-top-20" v-if="$root.permissions['admin brand_admins create']">
 				<div class="portlet-title bg-blue-chambray" @click="toggleCreateBrandAdminPanel()">
 					<div class="caption">
 						<i class="fa fa-plus-circle"></i>
@@ -52,6 +52,9 @@
 	      									<i class="fa fa-eye"></i>
 	      								</span>
 	      							</div>
+									<span class="help-block persist" v-show="passwordMasked">
+										Minimum 8 characters. English letters only. Include at least one capital and one number.
+									</span>
 	      							<div class="input-group" v-show="!passwordMasked">
 		      						    <input type="text" class="form-control input-sm" id="form_control_password" v-model="newBrandAdmin.password" :class="{'edited': newBrandAdmin.password.length}">
 		      						    <label for="form_control_password">Password</label>
@@ -59,6 +62,9 @@
 	      									<i class="fa fa-eye-slash"></i>
 	      								</span>
 	      							</div>
+									<span class="help-block persist" v-show="!passwordMasked">
+										Minimum 8 characters. English letters only. Include at least one capital and one number.
+									</span>
 	      						</div>
 	      						<div class="form-group form-md-line-input form-md-floating-label">
 	      							<div class="input-group" v-show="passwordMasked">
@@ -163,12 +169,29 @@
 			                    <ul>
 			                        <li class="mt-list-item actions-at-left margin-top-15" v-for="brandAdmin in currentActivePageItems" :id="'brandAdmin-' + brandAdmin.id" :class="{'animated' : animated === `brandAdmin-${brandAdmin.id}`}" :key="brandAdmin.id">
 			                        	<div class="list-item-actions">
-			                        		<el-tooltip content="Edit" effect="light" placement="right">
+			                        		<el-tooltip 
+												v-if="$root.permissions['admin brand_admins update']"
+												content="Edit" 
+												effect="light" 
+												placement="right">
 	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editBrandAdmin(brandAdmin)">
 	                                                <i class="fa fa-pencil" aria-hidden="true"></i>
 	                                            </a>
 			                        		</el-tooltip>
-			                        		<el-tooltip content="Roles" effect="light" placement="right">
+			                        		<el-tooltip 
+												v-if="$root.permissions['admin brand_admins read'] && !$root.permissions['admin brand_admins update']"
+												content="View" 
+												effect="light" 
+												placement="right">
+	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editBrandAdmin(brandAdmin)">
+	                                                <i class="fa fa-eye" aria-hidden="true"></i>
+	                                            </a>
+			                        		</el-tooltip>
+			                        		<el-tooltip 
+												v-if="$root.permissions['admin brand_admins update']"
+												content="Roles" 
+												effect="light" 
+												placement="right">
 	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="openRolesModal(brandAdmin)">
 	                                                <i class="fa fa-id-badge" aria-hidden="true"></i>
 	                                            </a>
@@ -233,16 +256,33 @@
 			                    <ul>
 			                        <li class="mt-list-item actions-at-left margin-top-15" v-for="brandAdmin in currentActiveSearchPageItems" :id="'brandAdmin-' + brandAdmin.id" :class="{'animated' : animated === `brandAdmin-${brandAdmin.id}`}" :key="brandAdmin.id">
 			                        	<div class="list-item-actions">
-        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editBrandAdmin(brandAdmin)">
-			                        			<el-tooltip content="Edit" effect="light" placement="right">
+			                        		<el-tooltip 
+												v-if="$root.permissions['admin brand_admins update']"
+												content="Edit" 
+												effect="light" 
+												placement="right">
+	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editBrandAdmin(brandAdmin)">
 	                                                <i class="fa fa-pencil" aria-hidden="true"></i>
-			                        			</el-tooltip>
-                                            </a>
-        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="openRolesModal(brandAdmin)">
-			                        			<el-tooltip content="Roles" effect="light" placement="right">
+	                                            </a>
+			                        		</el-tooltip>
+			                        		<el-tooltip 
+												v-if="$root.permissions['admin brand_admins read'] && !$root.permissions['admin brand_admins update']"
+												content="View" 
+												effect="light" 
+												placement="right">
+	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editBrandAdmin(brandAdmin)">
+	                                                <i class="fa fa-eye" aria-hidden="true"></i>
+	                                            </a>
+			                        		</el-tooltip>
+			                        		<el-tooltip 
+												v-if="$root.permissions['admin brand_admins update']"
+												content="Roles" 
+												effect="light" 
+												placement="right">
+	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="openRolesModal(brandAdmin)">
 	                                                <i class="fa fa-id-badge" aria-hidden="true"></i>
-			                        			</el-tooltip>
-                                            </a>
+	                                            </a>
+			                        		</el-tooltip>
 			                        	</div>
 			                            <div class="list-datetime bold uppercase font-red">
 			                            	<span>{{ brandAdmin.name }}</span>
@@ -288,17 +328,20 @@
 				    <button class="close" data-close="alert" @click="clearEditError()"></button>
 				    <span>{{editErrorMessage}}</span>
 				</div>
-				<div class="form-group form-md-line-input form-md-floating-label">
-				    <input type="text" class="form-control input-sm" id="form_control_edited_name" v-model="brandAdminToBeEdited.name" :class="{'edited': brandAdminToBeEdited.name.length}">
-				    <label for="form_control_edited_name">Name</label>
-				</div>
-				<div class="form-group form-md-line-input form-md-floating-label">
-				    <input type="text" class="form-control input-sm" id="form_control_edited_phone" v-model="brandAdminToBeEdited.phone" :class="{'edited': brandAdminToBeEdited.phone.length}">
-				    <label for="form_control_edited_phone">Phone</label>
-				</div>
+				<fieldset :disabled="$root.permissions['admin brand_admins read'] && !$root.permissions['admin brand_admins update']">
+					<div class="form-group form-md-line-input form-md-floating-label">
+						<input type="text" class="form-control input-sm" id="form_control_edited_name" v-model="brandAdminToBeEdited.name" :class="{'edited': brandAdminToBeEdited.name.length}">
+						<label for="form_control_edited_name">Name</label>
+					</div>
+					<div class="form-group form-md-line-input form-md-floating-label">
+						<input type="text" class="form-control input-sm" id="form_control_edited_phone" v-model="brandAdminToBeEdited.phone" :class="{'edited': brandAdminToBeEdited.phone.length}">
+						<label for="form_control_edited_phone">Phone</label>
+					</div>
+				</fieldset>
 				<div class="form-group form-md-line-input form-md-floating-label">
 				    <label>Status</label><br>
 				    <el-switch
+						:disabled="$root.permissions['admin brand_admins read'] && !$root.permissions['admin brand_admins update']"
 				    	v-model="brandAdminToBeEdited.active"
 				    	active-color="#0c6"
 				    	inactive-color="#ff4949"
@@ -310,7 +353,20 @@
 				</div>
 			</div>
 			<div slot="modal-footer" class="modal-footer">
-				<button type="button" class="btn btn-primary" @click="updateBrandAdmin()">Save</button>
+				<button 
+					v-if="$root.permissions['admin brand_admins read'] && !$root.permissions['admin brand_admins update']"
+					type="button" 
+					class="btn btn-primary" 
+					@click="closeEditBrandAdminModal()">
+					Close
+				</button>
+				<button 
+					v-else
+					type="button" 
+					class="btn btn-primary" 
+					@click="updateBrandAdmin()">
+					Save
+				</button>
 			</div>
 		</modal>
 		<!-- EDIT MODAL END -->
@@ -970,6 +1026,7 @@ export default {
 		 */
 		validateNewBrandAdminData () {
 			var brandAdminsVue = this
+			const passwordRegex = new RegExp(/^((?=\S*?[A-Z])(?=\S*?[0-9]).{7,})\S$/)
 			return new Promise(function (resolve, reject) {
 				if (!brandAdminsVue.newBrandAdmin.name.length) {
 					reject('Name cannot be blank')
@@ -979,8 +1036,8 @@ export default {
 					reject('Email cannot be blank')
 				} else if (!emailPattern.test(brandAdminsVue.newBrandAdmin.email)) {
 					reject('Please enter a valid email')
-				} else if (brandAdminsVue.newBrandAdmin.password.length < 6) {
-					reject('Password should be at least 6 characters')
+				} else if (!passwordRegex.test(brandAdminsVue.newBrandAdmin.password)) {
+					reject('Password should: be at least 8 characters long, contain only English letters and numbers, contain at least one uppercase letter and one number')
 				} else if (brandAdminsVue.newBrandAdmin.password !== brandAdminsVue.passwordCheck) {
 					reject('Passwords do not match')
 				}

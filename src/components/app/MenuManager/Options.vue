@@ -11,7 +11,7 @@
             <p>Create and manage options for modifier categories.</p>
         </div>
         <!-- BEGIN CREATE NEW MENU-->
-        <div class="portlet box blue-hoki">
+        <div class="portlet box blue-hoki" v-if="$root.permissions['menu_manager options create']">
 			<div class="portlet-title bg-blue-chambray" @click="toggleCreateOptionPanel()">
 				<div class="custom tools">
 					<a :class="{'expand': !createOptionCollapse, 'collapse': createOptionCollapse}"></a>
@@ -78,14 +78,36 @@
 	            <div class="mt-element-list margin-top-15" v-if="options.length">
 	                <div class="mt-list-container list-news ext-1 no-border">
 	                    <ul>
-	                        <li class="mt-list-item actions-at-left margin-top-15 clickable" v-for="option in options" :id="'option-' + option.id" @click="viewOptionItems(option)">
+	                        <li 
+								class="mt-list-item actions-at-left margin-top-15 clickable" 
+								v-for="option in options" 
+								:id="'option-' + option.id" 
+								@click="viewOptionItems(option)"
+								:key="option.id">
 	                        	<div class="list-item-actions">
-	                        		<el-tooltip content="Edit" effect="light" placement="right">
+	                        		<el-tooltip 
+										v-if="$root.permissions['menu_manager options update']"
+										content="Edit" 
+										effect="light" 
+										placement="right">
 		                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editOption(option, $event)">
 	                                        <i class="fa fa-lg fa-pencil"></i>
 	                                    </a>
 	                        		</el-tooltip>
-	                        		<el-tooltip content="Apply to multiple" effect="light" placement="right">
+	                        		<el-tooltip 
+										v-if="$root.permissions['menu_manager options read'] && !$root.permissions['menu_manager options update']"
+										content="View" 
+										effect="light" 
+										placement="right">
+		                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editOption(option, $event)">
+	                                        <i class="fa fa-lg fa-eye"></i>
+	                                    </a>
+	                        		</el-tooltip>
+	                        		<el-tooltip 
+										v-if="$root.permissions['menu_manager options add modifier items']"
+										content="Apply to multiple" 
+										effect="light" 
+										placement="right">
 	                                    <a class="btn btn-circle btn-icon-only btn-default" @click="displayMenuTreeModal(option, $event)">
 	                                        <i class="icon-layers"></i>
 	                                    </a>

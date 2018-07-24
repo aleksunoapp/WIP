@@ -2,7 +2,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import ElementUI from 'element-ui'
-import router from './router'
+import router, {routes} from './router'
 import locale from 'element-ui/lib/locale/lang/en'
 import 'element-ui/lib/theme-chalk/index.css'
 import VueSweetAlert from 'vue-sweetalert'
@@ -41,7 +41,60 @@ var App = new Vue({
 			activeMenuId: 0,
 			corporateStoreId: null,
 			storeLocations: [],
-			requestsPending: false
+			requestsPending: false,
+			permissions: {},
+			roles: []
+		}
+	},
+	created () {
+		/* eslint-disable no-undef */
+		// check for login info in localStorage
+		const activeUser = localStorage.getItem('activeUser')
+		const userToken = localStorage.getItem('userToken')
+		const appId = localStorage.getItem('appId')
+		const appSecret = localStorage.getItem('appSecret')
+		const createdBy = localStorage.getItem('createdBy')
+		const accountType = localStorage.getItem('accountType')
+		const activeLocation = localStorage.getItem('activeLocation')
+		// const routePath = sessionStorage.getItem('routePath')
+		const permissions = localStorage.getItem('permissions')
+		const roles = localStorage.getItem('roles')
+		/* eslint-enable no-undef */
+		if (
+			activeUser !== null &&
+			userToken !== null &&
+			appId !== null &&
+			appSecret !== null &&
+			createdBy !== null &&
+			accountType !== null &&
+			permissions !== null &&
+			roles !== null
+		) {
+			this.activeUser = activeUser
+			this.userToken = userToken
+			this.appId = appId
+			this.appSecret = appSecret
+			this.createdBy = createdBy
+			this.accountType = accountType
+			this.activeLocation = JSON.parse(activeLocation) || {}
+			this.permissions = JSON.parse(permissions)
+			this.roles = JSON.parse(roles)
+
+			let appRoutes = routes.filter(route => route.path === '/app')[0].children
+			let accessible = false
+			for (let i = 0; i < appRoutes.length; i++) {
+				const route = appRoutes[i]
+				accessible = route.meta.permissions.some(permission => this.permissions[permission])
+				if (accessible) {
+					console.log('pushing to', `/app/${route.path}`)
+					this.$router.push({path: `/app/${route.path}`})
+					break
+				}
+			}
+
+			if (!accessible) {
+				this.$router.push('/app/unauthorized')
+			}
 		}
 	},
 	methods: {
@@ -56,6 +109,8 @@ var App = new Vue({
 			this.activeMenuId = 0
 			this.corporateStoreId = null
 			this.storeLocations = []
+			this.permissions = {}
+			this.roles = []
 		},
 		/**
 		 * A wrapper to handle errors for special cases

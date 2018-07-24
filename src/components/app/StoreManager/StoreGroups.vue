@@ -1,145 +1,169 @@
 <template>
-	<div>
-		<div class="sideways-page-one">
-			<div class="page-bar">
-				<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-			</div>
-			<h1 class='page-title'>Store Groups</h1>
-			<div class="note note-info">
-	            <p>A list of store groups for PitaPit.</p>
-	        </div>
-	        <div class="margin-top-20">
-	  			<!-- SEARCH PANEL START -->
-					<div class="portlet box blue-hoki">
-						<div class="portlet-title bg-blue-chambray" @click="toggleCreateGroupPanel()">
-							<div class="caption">
-								<i class="fa fa-plus-circle"></i>
-								Create New Group
-							</div>
-							<div class="tools">
-								<a :class="{'expand': !createGroupCollapse, 'collapse': createGroupCollapse}"></a>
-							</div>
-						</div>
-						<div class="portlet-body" :class="{'display-hide': createGroupCollapse}">
-		      			<form role="form" @submit.prevent="createNewGroup()">
-		      				<div class="row">
-		      					<div class="col-md-12">
-			      					<div class="alert alert-danger" v-if="errorMessage.length">
-			      					    <button class="close" data-close="alert" @click="clearError('errorMessage')"></button>
-			      					    <span>{{errorMessage}}</span>
-			      					</div>
-		      					</div>
-		      					<div class="col-md-6">
-		      						<div class="form-group form-md-line-input form-md-floating-label">
-		      						    <input type="text" class="form-control input-sm" id="form_control_1" v-model="newGroup.name" :class="{'edited': newGroup.name.length}">
-		      						    <label for="form_control_1">Group Name</label>
-		      						</div>
-		      						<div class="form-group form-md-line-input form-md-floating-label">
-		      						    <input type="text" class="form-control input-sm" id="form_control_2" v-model="newGroup.description" :class="{'edited': newGroup.description.length}">
-		      						    <label for="form_control_2">Group Description</label>
-		      						</div>
-		      					</div>
-		      				</div>
-		      				<div class="form-actions right">
-		      					<button type="submit" class="btn blue">Create</button>
-		      				</div>
-		      			</form>
-		      		</div>
-		      	</div>
-		      	<!-- SEARCH PANEL END -->
-	        </div>
-	        <loading-screen :show="loadingGroupsData" :color="'#2C3E50'" :display="'inline'"></loading-screen>
-	        <div v-if="groups.length && !loadingGroupsData">
-			    <div class="portlet light portlet-fit bordered margin-top-20">
-			        <div class="portlet-title bg-blue-chambray">
-			        	<div class="menu-image-main">
-			        		<img src="../../../../static/client_logo.png">
-			        	</div>
-			            <div class="caption">
-			                <span class="caption-subject font-green bold uppercase">Store Groups</span>
-	                        <div class="caption-desc font-grey-cascade">Click on a group to view the store locations assigned to it and assign more.</div>
-			            </div>
-			        </div>
-			        <div class="portlet-body">
-			            <div class="mt-element-list">
-			                <div class="mt-list-container list-news">
-			                    <ul>
-			                        <li class="mt-list-item actions-at-left margin-top-15 clickable" v-for="group in groups" @click="assignStoresToGroup(group)" :id="'group-' + group.id" :key="group.id">
-			                        	<div class="list-item-actions">
-			                        		<el-tooltip content="Edit" effect="light" placement="right">
-				                        		<a class="btn btn-circle btn-icon-only btn-default" @click="displayEditGroupModal(group, $event)">
-			                                        <i class="fa fa-lg fa-pencil"></i>
-			                                    </a>
-			                        		</el-tooltip>
-    		                        		<el-tooltip content="Apply Menu Tiers" effect="light" placement="right">
-    			                        		<a class="btn btn-circle btn-icon-only btn-default" @click.stop="displayTiersModal(group)">
-    		                                        <i class="icon-layers"></i>
-    		                                    </a>
-    		                        		</el-tooltip>
-			                        	</div>
-			                        	<div class="list-icon-container">
-	                                        <i class="fa fa-angle-right"></i>
-	                                    </div>
-			                            <div class="list-datetime bold uppercase font-red">
-			                            	<span>{{ group.name }}</span>
-			                            </div>
-			                            <div class="list-item-content height-mod">
-			                            	<div class="col-md-8">
-			                            		<span>{{ group.description }}</span>
-			                            	</div>
-			                            </div>
-			                        </li>
-			                    </ul>
-			                </div>
-			            </div>
-			        </div>
-			    </div>
-	        </div>
-	        <div v-if="!groups.length && !loadingGroupsData">
-	        	<no-results :show="!groups.length" :type="'store groups'"></no-results>
-	        </div>
-		</div>
-    	<assign-stores v-if="showAssignStoresModal" :passedGroupId="selectedGroupId" @closeAssignStoresModal="closeAssignStoresModal"></assign-stores>
-	    <edit-store-group v-if="showEditGroupModal" :passedGroupId="passedGroupId" @closeEditGroupModal="closeEditGroupModal" @updateGroup="updateGroup"></edit-store-group>
-
-		<modal :show="showTiersModal" @closeOnEscape="closeTiersModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeTiersModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Apply Menu Tier to Store Group</h4>
-			</div>
-			<div slot="modal-body" class="modal-body">
-				<div class="row">
-					<div class="col-xs-12">
-						<div class="alert alert-danger" v-show="tiersErrorMessage.length" ref="tiersErrorMessage">
-							<button class="close" data-close="alert" @click="clearError('tiersErrorMessage')"></button>
-							<span>{{tiersErrorMessage}}</span>
-						</div>
-						<menu-tiers-picker
-							@tiersSelect="updateTier"
-						></menu-tiers-picker>
-					</div>
-					<div class="col-xs-12">
-						<p>Replace existing menus?</p>
-						<el-switch
-							v-model="groupToAssignMenuTiersTo.replaceExisting"
-							active-color="#0c6"
-							inactive-color="#ff4949"
-							:active-value="1"
-							:inactive-value="0"
-							active-text="Yes"
-							inactive-text="No">
-						</el-switch>
-					</div>
-				</div>
-			</div>
-			<div slot="modal-footer" class="modal-footer clear">
-				<button type="button" class="btn btn-primary" @click="assignMenuTiers()">Save</button>
-			</div>
-		</modal>
-
-	</div>
+  <div>
+    <div class="sideways-page-one">
+  		<div class="page-bar">
+  			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
+  		</div>
+  		<h1 class='page-title'>Store Groups</h1>
+  		<div class="note note-info">
+        <p>A list of store groups for PitaPit.</p>
+      </div>
+  		<!-- CREATE START -->
+  		<div class="portlet box blue-hoki margin-top-20" v-if="$root.permissions['stores groups create']">
+        <div class="portlet-title bg-blue-chambray" @click="toggleCreateGroupPanel()">
+  				<div class="caption">
+  					<i class="fa fa-plus-circle"></i>
+  					Create New Group
+  				</div>
+  				<div class="tools">
+  					<a :class="{'expand': !createGroupCollapse, 'collapse': createGroupCollapse}"></a>
+  				</div>
+  			</div>
+  			<div class="portlet-body" :class="{'display-hide': createGroupCollapse}">
+  				<form role="form" @submit.prevent="createNewGroup()">
+  					<div class="row">
+  						<div class="col-md-12">
+  							<div class="alert alert-danger" v-if="errorMessage.length">
+  								<button class="close" data-close="alert" @click="clearError('errorMessage')"></button>
+  								<span>{{errorMessage}}</span>
+  							</div>
+  						</div>
+  						<div class="col-md-6">
+  							<div class="form-group form-md-line-input form-md-floating-label">
+  								<input type="text" class="form-control input-sm" id="form_control_1" v-model="newGroup.name" :class="{'edited': newGroup.name.length}">
+  								<label for="form_control_1">Group Name</label>
+  							</div>
+  							<div class="form-group form-md-line-input form-md-floating-label">
+  								<input type="text" class="form-control input-sm" id="form_control_2" v-model="newGroup.description" :class="{'edited': newGroup.description.length}">
+  								<label for="form_control_2">Group Description</label>
+  							</div>
+  						</div>
+  					</div>
+  					<div class="form-actions right">
+  						<button type="submit" class="btn blue">Create</button>
+  					</div>
+  				</form>
+        </div>
+      </div>
+  		<!-- CREATE END -->
+      <loading-screen :show="loadingGroupsData" :color="'#2C3E50'" :display="'inline'"></loading-screen>
+      <div v-if="groups.length && !loadingGroupsData">
+  	    <div class="portlet light portlet-fit bordered margin-top-20">
+          <div class="portlet-title bg-blue-chambray">
+            <div class="menu-image-main">
+              <img src="../../../../static/client_logo.png">
+  	        </div>
+            <div class="caption">
+              <span class="caption-subject font-green bold uppercase">Store Groups</span>
+              <div class="caption-desc font-grey-cascade">Click on a group to view the store locations assigned to it and assign more.</div>
+            </div>
+          </div>
+          <div class="portlet-body">
+            <div class="mt-element-list">
+              <div class="mt-list-container list-news">
+                <ul>
+                  <li class="mt-list-item actions-at-left margin-top-15" v-for="group in groups" :id="'group-' + group.id" :key="group.id">
+                  	<div class="list-item-actions">
+                      <el-tooltip
+                        v-if="!$root.permissions['stores groups update'] && $root.permissions['stores groups read']"
+    				            content="View"
+                        effect="light"
+    				            placement="right"
+                      >
+                        <a class="btn btn-circle btn-icon-only btn-default" @click="displayEditGroupModal(group, $event)">
+                          <i class="fa fa-lg fa-eye"></i>
+                        </a>
+                  		</el-tooltip>
+                  		<el-tooltip
+                        v-if="$root.permissions['stores groups update']"
+    				            content="Edit"
+                        effect="light"
+    				            placement="right"
+                      >
+                        <a class="btn btn-circle btn-icon-only btn-default" @click="displayEditGroupModal(group, $event)">
+                          <i class="fa fa-lg fa-pencil"></i>
+                        </a>
+                  		</el-tooltip>
+    									<el-tooltip
+    										v-if="$root.permissions['stores groups update']"
+    										content="Select stores"
+    										effect="light"
+    										placement="right"
+                      >
+                    		<a class="btn btn-circle btn-icon-only btn-default" @click="assignStoresToGroup(group)">
+                          <i class="fa fa-lg fa-home"></i>
+                        </a>
+    	                </el-tooltip>
+                    	<el-tooltip
+                      v-if="$root.permissions['stores groups update']"
+    				          content="Apply Menu Tiers"
+    			            effect="light"
+    				          placement="right"
+                      >
+                    		<a class="btn btn-circle btn-icon-only btn-default" @click.stop="displayTiersModal(group)">
+                          <i class="fa fa-lg fa-cutlery"></i>
+                        </a>
+                    	</el-tooltip>
+                  	</div>
+                    <div class="list-datetime bold uppercase font-red">
+                    	<span>{{ group.name }}</span>
+                    </div>
+                    <div class="list-item-content height-mod">
+                    	<div class="col-md-8">
+                    		<span>{{ group.description }}</span>
+                    	</div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-if="!groups.length && !loadingGroupsData">
+        <no-results :show="!groups.length" :type="'store groups'"></no-results>
+      </div>
+    </div>
+    <assign-stores v-if="showAssignStoresModal" :passedGroupId="selectedGroupId" @closeAssignStoresModal="closeAssignStoresModal"></assign-stores>
+    <edit-store-group v-if="showEditGroupModal" :passedGroupId="passedGroupId" @closeEditGroupModal="closeEditGroupModal" @updateGroup="updateGroup"></edit-store-group>
+  	<modal :show="showTiersModal" @closeOnEscape="closeTiersModal">
+  		<div slot="modal-header" class="modal-header">
+  			<button type="button" class="close" @click="closeTiersModal()">
+  				<span>&times;</span>
+  			</button>
+  			<h4 class="modal-title center">Apply Menu Tier to Store Group</h4>
+  		</div>
+  		<div slot="modal-body" class="modal-body">
+  			<div class="row">
+  				<div class="col-xs-12">
+  					<div class="alert alert-danger" v-show="tiersErrorMessage.length" ref="tiersErrorMessage">
+  						<button class="close" data-close="alert" @click="clearError('tiersErrorMessage')"></button>
+  						<span>{{tiersErrorMessage}}</span>
+  					</div>
+  					<menu-tiers-picker
+					  	v-if="showTiersModal"
+  						@tiersSelect="updateTier"
+  					></menu-tiers-picker>
+  				</div>
+  				<div class="col-xs-12">
+  					<p>Replace existing menus?</p>
+  					<el-switch
+  						v-model="groupToAssignMenuTiersTo.replaceExisting"
+  						active-color="#0c6"
+  						inactive-color="#ff4949"
+  						:active-value="1"
+  						:inactive-value="0"
+  						active-text="Yes"
+  						inactive-text="No">
+  					</el-switch>
+  				</div>
+  			</div>
+  		</div>
+  		<div slot="modal-footer" class="modal-footer clear">
+  			<button type="button" class="btn btn-primary" @click="assignMenuTiers()">Save</button>
+  		</div>
+  	</modal>
+  </div>
 </template>
 
 <script>
@@ -525,3 +549,9 @@ export default {
 	}
 }
 </script>
+
+<style scoped>
+.mt-list-item:hover {
+	background-color: white !important;
+}
+</style>

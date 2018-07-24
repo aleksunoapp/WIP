@@ -1,27 +1,3 @@
-<!-- 
-Next steps:
-
-move to own tab
-
-sub-tabs: sorted by type (check with Ramesh)
-
-field and value label directory (parse each create call):
-
-	[
-		{'online_ordering_enabled': 
-			{
-				display: false, 
-				label: '', 
-				values: {
-					0: 'No',
-					1: 'Yes'
-				}
-				
-			}
-		}
-	]
- -->
-
 <template>
 	<div>
 		<div>
@@ -33,14 +9,7 @@ field and value label directory (parse each create call):
 				<p>Approve or reject pending requests.</p>
 			</div>
 
-			<no-results 
-				:show="noResults" 
-				:custom="true" 
-				text="There are no changes to review"
-			>
-			</no-results>
-
-			<div class="portlet light portlet-fit bordered" v-show="!noResults">
+			<div class="portlet light portlet-fit bordered min-height-200">
 				<div class="portlet-title bg-blue-chambray">
 					<div class="menu-image-main">
 						<img src="../../../../static/client_logo.png">
@@ -53,13 +22,22 @@ field and value label directory (parse each create call):
 
 				<div class="portlet-body">
 					<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
-						<button class="close" data-close="alert" @click="clearError('errorMessage')"></button>
 						<span>{{errorMessage}}</span>
+						<button class="close" @click="clearError('errorMessage')"></button>
 					</div>
 
-					<loading-screen :show="loading" :color="'#2C3E50'" :display="'inline'"></loading-screen>
+					<loading-screen 
+						:show="loading" 
+					></loading-screen>
 
-					<div class="row" v-show="!loading">
+					<no-results 
+						:show="noResults" 
+						:custom="true" 
+						text="There are no changes to review"
+					>
+					</no-results>
+
+					<div class="row" v-show="!loading && !noResults && requests.length">
 						<div class="col-xs-12" ref="request">
 							<table class="table">
 								<thead>
@@ -96,8 +74,9 @@ field and value label directory (parse each create call):
 								:numPages="total" 
 								@activePageChange="activePageUpdate">
 							</pagination>
-							<div class="pull-right">
+							<div class="pull-right" v-if="$root.permissions['approvals update']">
 								<button 
+									v-show="total !== activePage"
 									class="btn blue btn-outline margin-right-10"
 									@click="skip(1)"
 								>
@@ -133,6 +112,7 @@ import NoResults from '../../modules/NoResults'
 import ApprovalsFunctions from '../../../controllers/Approvals'
 import Pagination from '../../modules/Pagination'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
+import FieldLabels from '@/components/app/AdminManager/FieldLabels.js'
 
 export default {
 	data () {
@@ -153,15 +133,21 @@ export default {
 		request () {
 			if (this.requests[0]) {
 				const keys = Object.keys(this.requests[0].existing_values)
-
 				return keys.map(key => {
-					let label = key.replace(/_/g, ' ')
-					label = label.charAt(0).toUpperCase() + label.slice(1)
-
+					let label
+					let display = true
+					if (FieldLabels[key] === undefined) {
+						label = key.replace(/_/g, ' ')
+						label = label.charAt(0).toUpperCase() + label.slice(1)
+					} else {
+						label = FieldLabels[key].label
+						display = FieldLabels[key].display
+					}
 					return {
 						label,
 						existing: this.requests[0].existing_values[key],
-						modified: this.requests[0].new_values[key]
+						modified: this.requests[0].new_values[key],
+						display
 					}
 				})
 			} else {
@@ -169,7 +155,7 @@ export default {
 			}
 		}
 	},
-	created () {
+	mounted () {
 		this.getRequests()
 	},
 	methods: {
@@ -192,6 +178,7 @@ export default {
 		activePageUpdate (val) {
 			if (parseInt(this.activePage) !== parseInt(val)) {
 				this.activePage = val
+				this.getRequests()
 				window.scrollTo(0, 0)
 			}
 		},
@@ -251,12 +238,8 @@ export default {
 			}
 			return ApprovalsFunctions.approveRequest(approvalsVue.requests[0], review)
 			.then(response => {
-				approvalsVue.requests = response.payload.docs
-				approvalsVue.total = response.payload.total
-				if (!response.payload.docs.length) {
-					approvalsVue.noResults = true
-					approvalsVue.$root.requestsPending = false
-				}
+				approvalsVue.getRequests()
+				approvalsVue.showApproveSuccess(approved)
 			}).catch(reason => {
 				console.log(reason)
 				ajaxErrorHandler({
@@ -270,12 +253,13 @@ export default {
 		/**
 		 * To notify user that the operation succeeded.
 		 * @function
+		 * @param {boolean} approved - Status of the approval
 		 * @returns {undefined}
 		 */
-		showApproveSuccess () {
+		showApproveSuccess (approved) {
 			this.$swal({
 				title: 'Success',
-				text: 'Changes approved',
+				text: approved ? 'Changes approved' : 'Changes rejected',
 				type: 'success',
 				confirmButtonText: 'OK'
 			})
@@ -289,3 +273,8 @@ export default {
 	}
 }
 </script>
+<style scoped>
+.min-height-200 {
+	min-height: 300px;
+}
+</style>

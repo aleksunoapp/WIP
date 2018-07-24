@@ -14,7 +14,7 @@
 		</div>
 
 		<!-- BEGIN CREATE -->
-		<div class="portlet box blue-hoki">
+		<div class="portlet box blue-hoki" v-if="$root.permissions['tax tax_classes create']">
 			<div class="portlet-title bg-blue-chambray" @click="toggleCreatePanel()">
 				<div class="caption">
 					<i class="fa fa-2x fa-plus-circle"></i>
@@ -45,8 +45,8 @@
 								<label for="form_control_1">Name</label>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': newTaxClass.percentage.length}" id="form_control_3" v-model="newTaxClass.percentage">
-								<label for="form_control_3">Percentage</label>
+								<input type="text" class="form-control input-sm" :class="{'edited': newTaxClass.value.length}" id="form_control_3" v-model="newTaxClass.value">
+								<label for="form_control_3">Value</label>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
 								<input type="text" class="form-control input-sm" :class="{'edited': newTaxClass.min_amount.length}" id="form_control_3" v-model="newTaxClass.min_amount">
@@ -56,10 +56,22 @@
 								<input type="text" class="form-control input-sm" :class="{'edited': newTaxClass.max_amount.length}" id="form_control_3" v-model="newTaxClass.max_amount">
 								<label for="form_control_3">Maximum Amount</label>
 							</div>
-							<label v-if="!loadingItemTypes">
-								Pair with:
-								<el-select v-if="!loadingItemTypes" v-model="newTaxClass.paired_with" placeholder="Select Item Type" size="small">
-									<el-option v-for="type in itemTypes" :label="type.name" :value="type.id" :key="type.id"></el-option>
+							<label>
+								Apply:
+								<el-select 
+									v-model="newTaxClass.apply" 
+									placeholder="Select an option" 
+									size="small">
+									<el-option 
+										label="flat"
+										value="flat"
+										key="flat">
+									</el-option>
+									<el-option 
+										label="percentage"
+										value="percentage"
+										key="percentage">
+									</el-option>
 								</el-select>
 							</label>
 						</div>
@@ -105,12 +117,29 @@
 							<ul>
 								<li class="mt-list-item actions-at-left margin-top-15" v-for="taxClass in taxClasses" :id="'taxClass-' + taxClass.id" :key="taxClass.id">
 									<div class="list-item-actions">
-										<el-tooltip content="Edit" effect="light" placement="right">
+										<el-tooltip 
+											v-if="$root.permissions['tax tax_classes update']"
+											content="Edit" 
+											effect="light" 
+											placement="right">
 											<a class="btn btn-circle btn-icon-only btn-default" @click="editTaxClass(taxClass, $event)">
 												<i class="fa fa-lg fa-pencil"></i>
 											</a>
 										</el-tooltip>
-										<el-tooltip content="Delete" effect="light" placement="right">
+										<el-tooltip 
+											v-if="$root.permissions['tax tax_classes read'] && !$root.permissions['tax tax_classes update']"
+											content="View" 
+											effect="light" 
+											placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default" @click="editTaxClass(taxClass, $event)">
+												<i class="fa fa-lg fa-eye"></i>
+											</a>
+										</el-tooltip>
+										<el-tooltip 
+											v-if="$root.permissions['tax tax_classes delete']"
+											content="Delete" 
+											effect="light" 
+											placement="right">
 											<a class="btn btn-circle btn-icon-only btn-default" @click="confirmDelete(taxClass, $event)">
 												<i class="fa fa-lg fa-trash"></i>
 											</a>
@@ -121,8 +150,8 @@
 									</div>
 									<div class="list-item-content height-mod">
 										<div class="col-xs-5">
-											<strong>Percentage:</strong>
-											<span>{{ taxClass.percentage }}%</span>
+											<strong>Value:</strong>
+											<span>{{ taxClass.value }}</span>
 										</div>
 										<div class="col-xs-5">
 											<strong>Minimum amount:</strong>
@@ -163,34 +192,61 @@
 							</div>
 						</div>
 						<div class="col-md-12">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': taxClassToEdit.name.length}" id="form_control_1" v-model="taxClassToEdit.name">
-								<label for="form_control_1">Name</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': taxClassToEdit.percentage.length}" id="form_control_3" v-model="taxClassToEdit.percentage">
-								<label for="form_control_3">Percentage</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': taxClassToEdit.min_amount.length}" id="form_control_3" v-model="taxClassToEdit.min_amount">
-								<label for="form_control_3">Minimum amount</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': taxClassToEdit.max_amount.length}" id="form_control_3" v-model="taxClassToEdit.max_amount">
-								<label for="form_control_3">Maximum amount</label>
-							</div>
-							<label v-if="!loadingItemTypes">
-								Pair with:
-							<el-select v-model="taxClassToEdit.paired_with" placeholder="Select Item Type" size="small">
-								<el-option v-for="type in itemTypes" :label="type.name" :value="type.id" :key="type.id"></el-option>
-							</el-select>
+							<fieldset :disabled="!$root.permissions['tax tax_classes update']">
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<input type="text" class="form-control input-sm" :class="{'edited': taxClassToEdit.name.length}" id="form_control_1" v-model="taxClassToEdit.name">
+									<label for="form_control_1">Name</label>
+								</div>
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<input type="text" class="form-control input-sm" :class="{'edited': taxClassToEdit.value.length}" id="form_control_3" v-model="taxClassToEdit.value">
+									<label for="form_control_3">Value</label>
+								</div>
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<input type="text" class="form-control input-sm" :class="{'edited': taxClassToEdit.min_amount.length}" id="form_control_3" v-model="taxClassToEdit.min_amount">
+									<label for="form_control_3">Minimum amount</label>
+								</div>
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<input type="text" class="form-control input-sm" :class="{'edited': taxClassToEdit.max_amount.length}" id="form_control_3" v-model="taxClassToEdit.max_amount">
+									<label for="form_control_3">Maximum amount</label>
+								</div>
+							</fieldset>
+							<label>
+								Apply:
+								<el-select 
+									v-model="taxClassToEdit.apply" 
+									placeholder="Select an option" 
+									size="small">
+									<el-option 
+										label="flat"
+										value="flat"
+										key="flat">
+									</el-option>
+									<el-option 
+										label="percentage"
+										value="percentage"
+										key="percentage">
+									</el-option>
+								</el-select>
 							</label>
 						</div>
 					</div>
 				</form>
 			</div>
 			<div slot="modal-footer" class="modal-footer clear">
-				<button @click="updateTaxClass()" type="submit" class="btn blue">Save</button>
+				<button 
+					v-if="!$root.permissions['tax tax_classes update']"
+					@click="closeEditModal()" 
+					type="button" 
+					class="btn blue">
+					Close
+				</button>
+				<button 
+					v-else
+					@click="updateTaxClass()" 
+					type="submit" 
+					class="btn blue">
+					Save
+				</button>
 			</div>
 		</modal>
 		<!-- END EDIT -->
@@ -218,7 +274,6 @@
 import Breadcrumb from '../../modules/Breadcrumb'
 import LoadingScreen from '../../modules/LoadingScreen'
 import TaxClassesFunctions from '../../../controllers/TaxClasses'
-import ItemTypesFunctions from '../../../controllers/ItemTypes'
 import Modal from '../../modules/Modal'
 import NoResults from '../../modules/NoResults'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
@@ -236,10 +291,10 @@ export default {
 			newTaxClass: {
 				location_id: '',
 				name: '',
-				percentage: '',
+				value: '',
 				min_amount: '',
 				max_amount: '',
-				paired_with: ''
+				apply: ''
 			},
 
 			loadingTaxClasses: false,
@@ -251,7 +306,8 @@ export default {
 			taxClassToEdit: {
 				location_id: '',
 				name: '',
-				percentage: '',
+				value: '',
+				apply: '',
 				min_amount: '',
 				max_amount: ''
 			},
@@ -260,9 +316,7 @@ export default {
 			deleteErrorMessage: '',
 			taxClassToDelete: {
 				name: ''
-			},
-			loadingItemTypes: false,
-			itemTypes: []
+			}
 		}
 	},
 	computed: {
@@ -280,38 +334,11 @@ export default {
 		}
 	},
 	mounted () {
-		this.getTaxClasses()
-		this.getItemTypes()
+		if (this.$root.activeLocation.id !== undefined) {
+			this.getTaxClasses()
+		}
 	},
 	methods: {
-		/**
-		 * To get a list of all item types.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		getItemTypes () {
-			this.loadingItemTypes = true
-			this.itemTypes = []
-			var _this = this
-			let payload = {location_id: this.$root.activeLocation.id}
-			return ItemTypesFunctions.getItemTypes(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					_this.loadingItemTypes = false
-					_this.itemTypes = response.payload
-				} else {
-					_this.loadingItemTypes = false
-				}
-			}).catch(reason => {
-				_this.loadingItemTypes = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch the list of item types',
-					errorName: 'createErrorMessage',
-					vue: _this
-				})
-			})
-		},
 		/**
 		 * To toggle the create tier panel, initially set to closed
 		 * @function
@@ -339,8 +366,8 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (!_this.newTaxClass.name.length) {
 					reject('Name cannot be blank')
-				} else if (!$.isNumeric(_this.newTaxClass.percentage)) {
-					reject('Percentage must be a number')
+				} else if (!$.isNumeric(_this.newTaxClass.value)) {
+					reject('Value must be a number')
 				} else if (!$.isNumeric(_this.newTaxClass.min_amount)) {
 					reject('Minimum amount must be a number')
 				} else if (!$.isNumeric(_this.newTaxClass.max_amount)) {
@@ -362,7 +389,6 @@ export default {
 			return _this.validateNewTaxClassData()
 			.then(response => {
 				let payload = this.newTaxClass
-				if (!payload.paired_with) { delete payload.paired_with }
 
 				TaxClassesFunctions.createTaxClass(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
 				.then(response => {
@@ -411,10 +437,10 @@ export default {
 			this.newTaxClass = {
 				location_id: '',
 				name: '',
-				percentage: '',
+				value: '',
 				min_amount: '',
 				max_amount: '',
-				paired_with: ''
+				apply: ''
 			}
 		},
 		/**
@@ -456,7 +482,7 @@ export default {
 			event.stopPropagation()
 			this.taxClassToEdit = {
 				...taxClass,
-				percentage: String(taxClass.percentage),
+				value: String(taxClass.value),
 				min_amount: String(taxClass.min_amount),
 				max_amount: String(taxClass.max_amount)
 			}
@@ -472,8 +498,8 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (!_this.taxClassToEdit.name.length) {
 					reject('Name cannot be blank')
-				} else if (!$.isNumeric(_this.taxClassToEdit.percentage)) {
-					reject('Percentage must be a number')
+				} else if (!$.isNumeric(_this.taxClassToEdit.value)) {
+					reject('Value must be a number')
 				} else if (!$.isNumeric(_this.taxClassToEdit.min_amount)) {
 					reject('Minimum amount must be a number')
 				} else if (!$.isNumeric(_this.taxClassToEdit.max_amount)) {
@@ -495,7 +521,6 @@ export default {
 			return _this.validateEditedTaxClassData()
 			.then(response => {
 				let payload = this.taxClassToEdit
-				if (!payload.paired_with) { delete payload.paired_with }
 
 				TaxClassesFunctions.updateTaxClass(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
@@ -550,10 +575,10 @@ export default {
 			this.taxClassToEdit = {
 				location_id: '',
 				name: '',
-				percentage: '',
+				value: '',
 				min_amount: '',
 				max_amount: '',
-				paired_with: ''
+				apply: ''
 			}
 		},
 		/**

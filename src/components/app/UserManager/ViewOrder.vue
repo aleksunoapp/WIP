@@ -148,7 +148,17 @@ export default {
 		 * @returns {string} The formatted currency amount
 		 */
 		formatUSD (val = '') {
-			return val.toLocaleString('en-US', {style: 'currency', currency: 'USD'})
+			if (val !== null && val !== undefined) {
+				let local = Number(val)
+				local = local.toLocaleString('en-US', {style: 'currency', currency: 'USD'})
+				if (local.indexOf('.') !== -1) {
+					return local.slice(0, -3)
+				} else {
+					return local
+				}
+			} else {
+				return 'n/a'
+			}
 		},
 		/**
 		 * To refund the order.

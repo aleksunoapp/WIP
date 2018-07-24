@@ -12,7 +12,9 @@
 			<p>View items for modifier category '{{ modifierCategoryDetails.name }}'.</p>
 		</div>
 		<!-- BEGIN CREATE NEW MODIFIER ITEM -->
-		<div class="portlet box blue-hoki" v-if="$root.activeLocation && $root.activeLocation.id">
+		<div 
+			class="portlet box blue-hoki" 
+			v-if="$root.activeLocation && $root.activeLocation.id && $root.permissions['menu_manager modifiers items create']">
 			<div class="portlet-title bg-blue-chambray" @click="toggleCreateModifierItemPanel()">
 				<div class="custom tools">
 					<a :class="{'expand': !createModifierItemCollapse, 'collapse': createModifierItemCollapse}"></a>
@@ -118,22 +120,47 @@
 								:key="modifierItem.id"
 							>
 								<div class="margin-bottom-15 actions-on-top">
-									<el-tooltip content="Edit" effect="light" placement="right">
+									<el-tooltip 
+										v-if="$root.permissions['menu_manager modifiers items update']"
+										content="Edit" 
+										effect="light" 
+										placement="right">
 										<a class="btn btn-circle btn-icon-only btn-default" @click="displayEditItemModal(modifierItem, $event)">
 											<i class="fa fa-lg fa-pencil"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip content="Nutrition info" effect="light" placement="right">
+									<el-tooltip 
+										v-if="$root.permissions['menu_manager modifiers items read'] && !$root.permissions['menu_manager modifiers items update']"
+										content="View" 
+										effect="light" 
+										placement="right">
+										<a class="btn btn-circle btn-icon-only btn-default" @click="displayEditItemModal(modifierItem, $event)">
+											<i class="fa fa-lg fa-eye"></i>
+										</a>
+									</el-tooltip>
+									<el-tooltip 
+										v-if="$root.permissions['menu_manager modifiers items update']"
+										content="Nutrition info" 
+										effect="light" 
+										placement="right">
 										<a class="btn btn-circle btn-icon-only btn-default" @click="viewModifierNutritionInfo(modifierItem, $event)">
 											<i class="fa fa-lg fa-heartbeat"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip content="Apply To Locations" effect="light" placement="right">
+									<el-tooltip 
+										v-if="$root.permissions['menu_manager modifiers items update']"
+										content="Apply To Locations" 
+										effect="light" 
+										placement="right">
 										<a class="btn btn-circle btn-icon-only btn-default" @click="openApplyToLocationsModal(modifierItem)">
 											<i class="icon-layers"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip content="Delete" effect="light" placement="right">
+									<el-tooltip 
+										v-if="$root.permissions['menu_manager modifiers items delete']"
+										content="Delete" 
+										effect="light" 
+										placement="right">
 										<a class="btn btn-circle btn-icon-only btn-default" @click="displayDeleteItemModal(modifierItem, $event)">
 											<i class="fa fa-lg fa-trash"></i>
 										</a>
@@ -184,7 +211,10 @@
 			                        	<div class="col-md-12">
 			                        		<div v-if="modifierItem.tags && modifierItem.tags.length">
                 				        	    <ul class="item-modifier-list">
-                				        	    	<li class="col-md-6" v-for="tag in modifierItem.tags">
+                				        	    	<li 
+														class="col-md-6" 
+														v-for="tag in modifierItem.tags"
+														:key="tag.id">
                 				        	    		{{tag.name}}
                 				        	    	</li>
                 				        	    </ul>
@@ -193,7 +223,13 @@
 			                        			<p class="grey-text">No tags have been applied to this modifier item.</p>
 			                        		</div>
 			                        		<div class="col-md-12">
-			                        			<button type="button" class="btn btn-outline btn-xs blue margin-top-10" @click="showTagsModal(modifierItem.id, modifierItem.tags)">Add Tags</button>
+			                        			<button 
+													v-if="$root.permissions['menu_manager modifiers items update tags']"
+													type="button" 
+													class="btn btn-outline btn-xs blue margin-top-10" 
+													@click="showTagsModal(modifierItem.id, modifierItem.tags)">
+													Add Tags
+												</button>
 			                        		</div>
 			                        	</div>
 			                        </div>
@@ -204,7 +240,10 @@
 			                        	<div class="col-md-12">
 			                        		<div v-if="modifierItem.modifier_item_portions && modifierItem.modifier_item_portions.length">
                 				        	    <ul class="item-modifier-list">
-                				        	    	<li class="col-md-6" v-for="portion in modifierItem.modifier_item_portions">
+                				        	    	<li 
+														class="col-md-6" 
+														v-for="portion in modifierItem.modifier_item_portions"
+														:key="portion.id">
                 				        	    		{{portion.name}}
                 				        	    	</li>
                 				        	    </ul>
@@ -213,7 +252,13 @@
 			                        			<p class="grey-text">No portions have been applied to this modifier item.</p>
 			                        		</div>
 			                        		<div class="col-md-12">
-			                        			<button type="button" class="btn btn-outline btn-xs blue margin-top-10" @click="showPortionsModal(modifierItem.id, modifierItem.modifier_item_portions)">Add Portions</button>
+			                        			<button 
+													v-if="$root.permissions['menu_manager modifiers items update portions']"
+													type="button" 
+													class="btn btn-outline btn-xs blue margin-top-10" 
+													@click="showPortionsModal(modifierItem.id, modifierItem.modifier_item_portions)">
+													Add Portions
+												</button>
 			                        		</div>
 			                        	</div>
 			                        </div>
@@ -224,7 +269,10 @@
 			                        	<div class="col-md-12">
 			                        		<div v-if="modifierItem.options && modifierItem.options.length">
                 				        	    <ul class="item-modifier-list">
-                				        	    	<li class="col-md-6" v-for="option in modifierItem.options">
+                				        	    	<li 
+														class="col-md-6" 
+														v-for="option in modifierItem.options"
+														:key="option.id">
                 				        	    		{{option.name}}
                 				        	    	</li>
                 				        	    </ul>
@@ -233,7 +281,13 @@
 			                        			<p class="grey-text">No options have been applied to this modifier item.</p>
 			                        		</div>
 			                        		<div class="col-md-12">
-			                        			<button type="button" class="btn btn-outline btn-xs blue margin-top-10" @click="showOptionsModal(modifierItem.id, modifierItem.options)">Add Options</button>
+			                        			<button 
+													v-if="$root.permissions['menu_manager modifiers items update options']"
+													type="button" 
+													class="btn btn-outline btn-xs blue margin-top-10" 
+													@click="showOptionsModal(modifierItem.id, modifierItem.options)">
+													Add Options
+												</button>
 			                        		</div>
 			                        	</div>
 			                        </div>

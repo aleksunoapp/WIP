@@ -12,7 +12,9 @@
             <p>Create and manage menu modifiers.</p>
         </div>
         <!-- BEGIN CREATE NEW MODIFIER CATEGORY-->
-        <div class="portlet box blue-hoki" v-if="$root.activeLocation && $root.activeLocation.id">
+        <div 
+			class="portlet box blue-hoki" 
+			v-if="$root.activeLocation && $root.activeLocation.id && $root.permissions['menu_manager modifiers create']">
 			<div class="portlet-title bg-blue-chambray" @click="toggleCreateModifierPanel()">
 				<div class="custom tools">
 					<a :class="{'expand': !createModifierCollapse, 'collapse': createModifierCollapse}"></a>
@@ -110,22 +112,84 @@
 		            </div>
 		        </div>
 		        <div class="portlet-body">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="alert alert-danger" v-show="listErrorMessage.length" ref="listErrorMessage">
+								<button class="close" @click.prevent="clearError('listErrorMessage')"></button>
+								<span>{{listErrorMessage}}</span>
+							</div>
+						</div>
+					</div>
+					<div class="row" v-show="$root.activeLocation.is_corporate">
+						<div class="col-xs-12">
+							<el-select
+								v-if="modifierTiers !== null"
+								size="small"
+								v-model="indexOfTierToDisplay"
+								placeholder="Select Tier"
+								@change="updateList()"
+								:clearable="true">
+								<el-option
+									v-for="(tier, index) in modifierTiers"
+									:label="tier.name"
+									:value="index"
+									:key="tier.id">
+								</el-option>
+							</el-select>
+						</div>
+					</div>
 		            <div class="mt-element-list margin-top-15" v-if="storeModifiers.length">
 		                <div class="mt-list-container list-news ext-1 no-border">
 		                    <ul>
-		                        <li class="mt-list-item actions-at-left margin-top-15 clickable" @click="viewModifierCategoryItems(modifier)" v-for="modifier in storeModifiers" :id="'modifierCategory-' + modifier.id">
-		                        	<div class="list-item-actions">
-		                        		<el-tooltip content="Edit" effect="light" placement="right">
+		                        <li 
+									class="mt-list-item margin-top-15 clickable" 
+									@click="viewModifierCategoryItems(modifier)" 
+									v-for="modifier in storeModifiers" 
+									:id="'modifierCategory-' + modifier.id"
+									:key="modifier.id"
+								>
+		                        	<div class="actions-on-top margin-bottom-15">
+		                        		<el-tooltip 
+											v-if="$root.permissions['menu_manager modifiers update']"
+											content="Edit" 
+											effect="light" 
+											placement="right">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editModifierCategory(modifier, $event)">
 	                                            <i class="fa fa-lg fa-pencil"></i>
 	                                        </a>
 		                        		</el-tooltip>
-		                        		<el-tooltip content="Apply to multiple" effect="light" placement="right">
+		                        		<el-tooltip 
+											v-if="$root.permissions['menu_manager modifiers read'] && !$root.permissions['menu_manager modifiers update']"
+											content="View" 
+											effect="light" 
+											placement="right">
+			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editModifierCategory(modifier, $event)">
+	                                            <i class="fa fa-lg fa-eye"></i>
+	                                        </a>
+		                        		</el-tooltip>
+		                        		<el-tooltip 
+											v-if="$root.permissions['menu_manager modifiers update']"
+											content="Apply to items" 
+											effect="light" 
+											placement="right">
 	                                        <a class="btn btn-circle btn-icon-only btn-default" @click="displayMenuTreeModal(modifier, $event)">
 	                                            <i class="icon-layers"></i>
 	                                        </a>
 		                        		</el-tooltip>
-		                        		<el-tooltip content="Delete" effect="light" placement="right">
+										<el-tooltip 
+											v-if="$root.permissions['menu_manager modifiers update']"
+											content="Apply to items at locations" 
+											effect="light" 
+											placement="right">
+	                                        <a class="btn btn-circle btn-icon-only btn-default" @click="displayApplyToItemsAtLocationsModal(modifier, $event)">
+	                                            <i class="fa fa-lg fa-plus"></i>
+	                                        </a>
+		                        		</el-tooltip>
+		                        		<el-tooltip 
+											v-if="$root.permissions['menu_manager modifiers delete']"
+											content="Delete" 
+											effect="light" 
+											placement="right">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="deleteModifierCategory(modifier, $event)">
 	                                            <i class="fa fa-lg fa-trash"></i>
 	                                        </a>
@@ -186,6 +250,13 @@
         <edit-modifier-category v-if="editCategoryModalActive" @updateModifierCategory="updateModifierCategory" @deactivateEditCategoryModal="closeEditCategoryModal"></edit-modifier-category>
         <delete-modifier-category v-if="deleteCategoryModalActive" :passedModifierCategoryId="passedModifierCategoryId" @closeDeleteModifierCategoryModal="closeDeleteModifierCategoryModal" @deleteModifierCategoryAndCloseModal="deleteModifierCategoryAndCloseModal"></delete-modifier-category>
 		<menu-tree v-if="showMenuTreeModal" :selectedObject="selectedModifier" :headerText="headerText" :updateType="'modifier'" @closeMenuTreeModal="closeMenuTreeModal"></menu-tree>
+		<apply-modifier-to-items-at-locations
+			v-if="showModifierToApplyToItemsAtLocationsModal"
+			:modifier="modifierToApplyToItemsAtLocations"
+			@closeApplyModifierToItemsAtLocations="closeApplyModifierToItemsAtLocationsModal"
+			@applyModifierToItemsAtLocationsSuccess="showApplyModifierToItemsAtLocationsSuccess"
+		>
+		</apply-modifier-to-items-at-locations>
 	</div>
 </template>
 
@@ -200,6 +271,9 @@ import DeleteModifierCategory from './Modifiers/DeleteModifierCategory'
 import ModifiersFunctions from '../../../controllers/Modifiers'
 import MenuTree from '../../modules/MenuTree'
 import ResourcePicker from '../../modules/ResourcePicker'
+import ApplyModifierToItemsAtLocations from '@/components/app/MenuManager/Modifiers/ApplyModifierToItemsAtLocations'
+import ajaxErrorHandler from '@/controllers/ErrorController'
+import ModifierTiersFunctions from '@/controllers/ModifierTiers'
 
 export default {
 	data () {
@@ -212,7 +286,6 @@ export default {
 			editCategoryModalActive: false,
 			deleteCategoryModalActive: false,
 			storeModifiers: [],
-			customText: 'There are no modifier categories in this menu. Click on the button above to add one.',
 			newCategory: {
 				name: '',
 				desc: '',
@@ -233,16 +306,112 @@ export default {
 			headerText: '',
 			imageMode: {
 				newMenu: false
+			},
+			modifierToApplyToItemsAtLocations: {},
+			showModifierToApplyToItemsAtLocationsModal: false,
+			modifierTiers: null,
+			listErrorMessage: '',
+			indexOfTierToDisplay: null
+		}
+	},
+	computed: {
+		customText () {
+			if (this.indexOfTierToDisplay === '') {
+				return 'This location does not have any Modifier Categories.'
+			} else {
+				return 'This tier does not have any Modifier Categories.'
 			}
-
 		}
 	},
 	mounted () {
 		if (this.$root.activeLocation && this.$root.activeLocation.id) {
 			this.getStoreModifiers()
 		}
+		this.getModifierTiers()
 	},
 	methods: {
+        /**
+		 * To update the modifiers shown in the list based on user's filter selection
+		 * @function
+		 * @returns {undefined}
+		 */
+		updateList () {
+			if (this.indexOfTierToDisplay !== '') {
+				this.getModifierTierDetails()
+			} else {
+				this.getStoreModifiers()
+			}
+		},
+        /**
+		 * To fetch a list of modifiers for a tier
+		 * @function
+		 * @returns {object} - A network call promise
+		 */
+		getModifierTierDetails () {
+			let modifiersVue = this
+			const tier = modifiersVue.modifierTiers[modifiersVue.indexOfTierToDisplay]
+			return ModifierTiersFunctions.getModifierTierDetails(tier).then(response => {
+				modifiersVue.storeModifiers = response.payload
+			}).catch(reason => {
+				ajaxErrorHandler({
+					reason,
+					errorName: 'listErrorMessage',
+					errorText: 'We couldn\'t fetch modifiers for this tier',
+					vue: modifiersVue
+				})
+			})
+		},
+		/**
+		 * To fetch a list of Modifier Tiers
+		 * @function
+		 * @returns {object} Network call promise
+		 */
+		getModifierTiers () {
+			let modifiersVue = this
+			return ModifierTiersFunctions.getModifierTiers().then(response => {
+				modifiersVue.modifierTiers = response.payload
+			}).catch(reason => {
+				ajaxErrorHandler({
+					reason,
+					errorName: 'listErrorMessage',
+					errorText: 'We couldn\'t fetch modifier tiers',
+					vue: modifiersVue
+				})
+			})
+		},
+		/**
+		 * To display the modal to apply a modifier to selected items at selected locations.
+		 * @function
+		 * @param {object} modifier - The selected modifier category.
+		 * @param {object} event - The click event that prompted this function.
+		 * @returns {undefined}
+		 */
+		displayApplyToItemsAtLocationsModal (modifier, event) {
+			event.stopPropagation()
+			this.modifierToApplyToItemsAtLocations = modifier
+			this.showModifierToApplyToItemsAtLocationsModal = true
+		},
+		/**
+		 * To close the modal to apply a modifier to selected items at selected locations.
+		 * @function
+		 * @returns {undefined}
+		 */
+		closeApplyModifierToItemsAtLocationsModal () {
+			this.showModifierToApplyToItemsAtLocationsModal = false
+		},
+		/**
+		 * To confirm operation succeeded
+		 * @function
+		 * @returns {undefined}
+		 */
+		showApplyModifierToItemsAtLocationsSuccess () {
+			this.$swal({
+				title: 'Success',
+				text: 'Modifier applied',
+				type: 'success',
+				confirmButtonText: 'OK'
+			})
+		},
 		/**
 		 * To toggle between the open and closed state of the resource picker
 		 * @function
@@ -292,7 +461,7 @@ export default {
 			this.displayModifierData = true
 			var menusVue = this
 			menusVue.storeModifiers = []
-			return ModifiersFunctions.getStoreModifiers(menusVue.$root.appId, menusVue.$root.appSecret, menusVue.$root.activeLocation.id).then(response => {
+			return ModifiersFunctions.getStoreModifiers(menusVue.$root.activeLocation.id).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
 					menusVue.displayModifierData = false
 					menusVue.storeModifiers = response.payload
@@ -515,10 +684,11 @@ export default {
 		/**
 		 * To clear the current error.
 		 * @function
+		 * @param {string} name - Name of the error variable
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
+		clearError (name = 'errorMessage') {
+			this[name] = ''
 		},
 		/**
 		 * To toggle the create menu panel, initially set to opened
@@ -532,6 +702,8 @@ export default {
 	watch: {
 		'$root.activeLocation' () {
 			this.getStoreModifiers()
+			this.indexOfTierToDisplay = null
+			this.getModifierTiers()
 		}
 	},
 	components: {
@@ -542,8 +714,15 @@ export default {
 		DeleteModifierCategory,
 		NoResults,
 		MenuTree,
-		ResourcePicker
+		ResourcePicker,
+		ApplyModifierToItemsAtLocations
 	}
 }
 </script>
+
+<style scoped>
+.actions-on-top {
+	margin-top: -5px;
+}
+</style>
 

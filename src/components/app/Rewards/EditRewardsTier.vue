@@ -11,25 +11,40 @@
 			    <button class="close" data-close="alert" @click="clearError()"></button>
 			    <span>{{errorMessage}}</span>
 			</div>
-			<div class="form-group form-md-line-input form-md-floating-label">
-			    <input type="text" class="form-control input-sm edited" id="form_control_1" v-model="rewardTierToBeEdited.name">
-			    <label for="form_control_1">Tier Name</label>
-			</div>
-			<div class="form-group form-md-line-input form-md-floating-label">
-			    <input type="text" class="form-control input-sm edited" id="form_control_1" v-model="rewardTierToBeEdited.description">
-			    <label for="form_control_1">Tier Description</label>
-			</div>
-			<div class="form-group form-md-line-input form-md-floating-label">
-			    <input type="text" class="form-control input-sm edited" id="form_control_2" v-model="rewardTierToBeEdited.points">
-			    <label for="form_control_2">Tier Points</label>
-			</div>
-			<div class="form-group form-md-line-input form-md-floating-label">
-			    <input type="text" class="form-control input-sm edited" id="form_control_3" v-model="rewardTierToBeEdited.stars">
-			    <label for="form_control_3">Tier Stars</label>
-			</div>
+			<fieldset :disabled="!$root.permissions['reward_tiers update']">
+				<div class="form-group form-md-line-input form-md-floating-label">
+					<input type="text" class="form-control input-sm edited" id="form_control_1" v-model="rewardTierToBeEdited.name">
+					<label for="form_control_1">Tier Name</label>
+				</div>
+				<div class="form-group form-md-line-input form-md-floating-label">
+					<input type="text" class="form-control input-sm edited" id="form_control_1" v-model="rewardTierToBeEdited.description">
+					<label for="form_control_1">Tier Description</label>
+				</div>
+				<div class="form-group form-md-line-input form-md-floating-label">
+					<input type="text" class="form-control input-sm edited" id="form_control_2" v-model="rewardTierToBeEdited.points">
+					<label for="form_control_2">Tier Points</label>
+				</div>
+				<div class="form-group form-md-line-input form-md-floating-label">
+					<input type="text" class="form-control input-sm edited" id="form_control_3" v-model="rewardTierToBeEdited.stars">
+					<label for="form_control_3">Tier Stars</label>
+				</div>				
+			</fieldset>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button type="button" class="btn btn-primary" @click="updateRewardTier()">Save</button>
+			<button 
+				v-if="!$root.permissions['reward_tiers update']"
+				type="button" 
+				class="btn btn-primary" 
+				@click="closeModal()">
+				Close
+			</button>
+			<button 
+				v-else
+				type="button" 
+				class="btn btn-primary" 
+				@click="updateRewardTier()">
+				Save
+			</button>
 		</div>
 	</modal>
 </template>

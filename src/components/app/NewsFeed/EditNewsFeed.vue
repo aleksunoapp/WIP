@@ -5,7 +5,7 @@
 				<span>&times;</span>
 			</button>
 			<h4 class="modal-title center" v-if="!selectImageMode">Edit News Feed</h4>
-			<h4 class="modal-title center" v-else><i class="fa fa-chevron-left clickable pull-left back-button" @click="goToPageOne()"></i>Select An Image</h4>
+			<h4 class="modal-title center" v-else>Select An Image</h4>
 		</div>
 		<div slot="modal-body" class="modal-body">
 				<div class="col-xs-12">
@@ -13,7 +13,7 @@
 					<button class="close" data-close="alert" @click="clearError()"></button>
 					<span>{{errorMessage}}</span>
 				</div>
-			    <div v-if="!selectLocationMode" :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
+			    <div :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
 					<resource-picker 
 						@open="goToPageTwo()"
 						@close="goToPageOne()"
@@ -24,32 +24,43 @@
 					>
 					</resource-picker>
         		</div>
-				    <div class="col-xs-12">        			
-	    			 <select-locations-popup 
-	    				v-if="selectLocationMode" 
-	    				@closeSelectLocationsPopup='updateSelectedLocations' 
-	    				:previouslySelected="selectedLocations"
-	    			 >
-					 </select-locations-popup>
-        		</div>
-				<div class="col-md-12" v-show="!selectImageMode && !selectLocationMode">
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<input type="text" class="form-control input-sm edited" id="form_control_1" v-model="newsToBeEdited.title">
-						<label for="form_control_1">News Feed Title</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<input type="text" class="form-control input-sm edited" id="form_control_2" v-model="newsToBeEdited.short_description">
-						<label for="form_control_2">Short Description</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<textarea rows="5" class="form-control edited" id="form_control_3" v-model="newsToBeEdited.body"></textarea>
-						<label for="form_control_3">News Feed Body</label>
-					</div>
+				<div class="col-md-12" v-show="!selectImageMode">
+					<fieldset :disabled="$root.permissions['news_feed read'] && !$root.permissions['news_feed update']">
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm edited" id="form_control_1" v-model="newsToBeEdited.title">
+							<label for="form_control_1">News Feed Title</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm edited" id="form_control_2" v-model="newsToBeEdited.short_description">
+							<label for="form_control_2">Short Description</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm edited" id="form_control_external_url_edit" v-model="newsToBeEdited.external_url">
+							<label for="form_control_external_url_edit">Link</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<textarea rows="5" class="form-control edited" id="form_control_3" v-model="newsToBeEdited.body"></textarea>
+							<label for="form_control_3">News Feed Body</label>
+						</div>
+					</fieldset>
 		      	</div>
 			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button v-if="!selectImageMode" type="button" class="btn btn-primary" @click="saveEditedFeed()">Save</button>
+			<button 
+				v-if="!selectImageMode && $root.permissions['news_feed read'] && !$root.permissions['news_feed update']"
+				type="button" 
+				class="btn btn-primary" 
+				@click="closeModal()">
+				Close
+			</button>
+			<button 
+				v-if="!selectImageMode && $root.permissions['news_feed update']" 
+				type="button" 
+				class="btn btn-primary" 
+				@click="saveEditedFeed()">
+				Save
+			</button>
 		</div>
 	</modal>
 </template>
@@ -58,6 +69,7 @@
 import Modal from '../../modules/Modal'
 import NewsFeedFunctions from '../../../controllers/NewsFeed'
 import ResourcePicker from '../../modules/ResourcePicker'
+
 export default {
 	data () {
 		return {

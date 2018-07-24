@@ -119,13 +119,12 @@ export default ({
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
 	assignPermissionsToModule: function (mod) {
-		console.log('assignPermissionsToModule', mod)
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'PUT',
 				dataType: 'json',
 				url: '/app/admin/modules/' + mod.id + '/permissions',
-				data: {permissions: mod.permissions.map(permission => permission.id)},
+				data: {permissions: mod.permissions},
 				success: function (response) {
 					resolve(response)
 				},

@@ -11,19 +11,34 @@
 			    <button class="close" data-close="alert" @click="clearError()"></button>
 			    <span>{{errorMessage}}</span>
 			</div>
-			<div class="col-md-9">
-				<div class="form-group form-md-line-input form-md-floating-label">
-				    <input type="text" class="form-control input-sm edited" id="form_control_1" v-model="menuTierToBeEdited.name">
-				    <label for="form_control_1">Menu Tier Name</label>
-				</div>
-				<div class="form-group form-md-line-input form-md-floating-label">
-				    <input type="text" class="form-control input-sm edited" id="form_control_2" v-model="menuTierToBeEdited.description">
-				    <label for="form_control_2">Menu Tier Description</label>
-				</div>
+			<div class="col-md-12">
+				<fieldset :disabled="!$root.permissions['menu_manager tiers update']">
+					<div class="form-group form-md-line-input form-md-floating-label">
+						<input type="text" class="form-control input-sm edited" id="form_control_1" v-model="menuTierToBeEdited.name">
+						<label for="form_control_1">Menu Tier Name</label>
+					</div>
+					<div class="form-group form-md-line-input form-md-floating-label">
+						<input type="text" class="form-control input-sm edited" id="form_control_2" v-model="menuTierToBeEdited.description">
+						<label for="form_control_2">Menu Tier Description</label>
+					</div>
+				</fieldset>
 			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer clear">
-			<button type="button" class="btn btn-primary" @click="updateMenuTier()">Save</button>
+			<button 
+				v-if="!$root.permissions['menu_manager tiers update']"
+				type="button" 
+				class="btn btn-primary" 
+				@click="closeModal()">
+				Close
+			</button>
+			<button 
+				v-else
+				type="button" 
+				class="btn btn-primary" 
+				@click="updateMenuTier()">
+				Save
+			</button>
 		</div>
 	</modal>
 </template>

@@ -4,7 +4,8 @@
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
 			</button>
-			<h4 class="modal-title center">Edit Store Group</h4>
+			<h4 class="modal-title center" v-if="$root.permissions['stores groups update']">Edit Store Group</h4>
+			<h4 class="modal-title center" v-if="!$root.permissions['stores groups update'] && $root.permissions['stores groups read']">View Store Group</h4>
 		</div>
 		<div slot="modal-body" class="modal-body">
 			<div class="alert alert-danger" v-if="errorMessage.length">
@@ -12,16 +13,43 @@
 			    <span>{{errorMessage}}</span>
 			</div>
 			<div class="form-group form-md-line-input form-md-floating-label">
-			    <input type="text" class="form-control input-sm edited" id="form_control_1" v-model="groupToBeEdited.name">
+			    <input
+						type="text"
+						class="form-control input-sm edited"
+						id="form_control_1"
+						v-model="groupToBeEdited.name"
+						:disabled="!$root.permissions['stores groups update']"
+					>
 			    <label for="form_control_1">Group Name</label>
 			</div>
 			<div class="form-group form-md-line-input form-md-floating-label">
-			    <input type="text" class="form-control input-sm edited" id="form_control_2" v-model="groupToBeEdited.description">
+			    <input
+						type="text"
+						class="form-control input-sm edited"
+						id="form_control_2"
+						v-model="groupToBeEdited.description"
+						:disabled="!$root.permissions['stores groups update']"
+					>
 			    <label for="form_control_2">Group Description</label>
 			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button type="button" class="btn btn-primary" @click="updateGroup()">Save</button>
+			<button
+				v-if="$root.permissions['stores groups update']"
+				type="button"
+				class="btn btn-primary"
+				@click="updateGroup()"
+			>
+				Save
+			</button>
+			<button
+				v-if="!$root.permissions['stores groups update'] && $root.permissions['stores groups read']"
+				type="button"
+				class="btn btn-primary"
+				@click="closeModal()"
+			>
+				Close
+			</button>
 		</div>
 	</modal>
 </template>

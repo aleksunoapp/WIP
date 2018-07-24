@@ -286,7 +286,7 @@ export default {
 		getModifiers () {
 			this.modifiers = []
 			var modifierTreeVue = this
-			return ModifiersFunctions.getStoreModifiers(modifierTreeVue.$root.appId, modifierTreeVue.$root.appSecret, modifierTreeVue.$root.activeLocation.id).then(response => {
+			return ModifiersFunctions.getStoreModifiers(modifierTreeVue.$root.activeLocation.id).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
 					modifierTreeVue.modifiers = response.payload
 				}

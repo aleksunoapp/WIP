@@ -125,7 +125,14 @@ export default {
 			var rolesVue = this
 			return RolesFunctions.getRoles()
 			.then(response => {
-				rolesVue.roles = response.payload.map(role => {
+				let rolesArray = []
+				if (this.$root.roles.includes('super admin')) {
+					rolesArray = response.payload
+				} else {
+					rolesArray = response.payload.filter(role => role.name !== 'super admin')
+				}
+
+				rolesVue.roles = rolesArray.map(role => {
 					return {
 						...role,
 						selected: rolesVue.previouslySelected.includes(role.id)

@@ -11,7 +11,7 @@
             <p>Create and manage portions for modifier items.</p>
         </div>
         <!-- BEGIN CREATE NEW MENU-->
-        <div class="portlet box blue-hoki">
+        <div class="portlet box blue-hoki" v-if="$root.permissions['menu_manager portions create']">
 			<div class="portlet-title bg-blue-chambray" @click="toggleCreatePortionPanel()">
 				<div class="custom tools">
 					<a :class="{'expand': !createPortionCollapse, 'collapse': createPortionCollapse}"></a>
@@ -78,14 +78,35 @@
 	            <div class="mt-element-list margin-top-15" v-if="portions.length">
 	                <div class="mt-list-container list-news ext-1 no-border">
 	                    <ul>
-	                        <li class="mt-list-item actions-at-left margin-top-15" v-for="portion in portions" :id="'portion-' + portion.id">
+	                        <li 
+								class="mt-list-item actions-at-left margin-top-15" 
+								v-for="portion in portions" 
+								:id="'portion-' + portion.id"
+								:key="portion.id">
 	                        	<div class="list-item-actions">
-	                        		<el-tooltip content="Edit" effect="light" placement="right">
+	                        		<el-tooltip 
+										v-if="$root.permissions['menu_manager portions update']"
+										content="Edit" 
+										effect="light" 
+										placement="right">
 		                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editPortion(portion)">
 	                                        <i class="fa fa-lg fa-pencil"></i>
 	                                    </a>
 	                        		</el-tooltip>
-	                        		<el-tooltip content="Apply to multiple" effect="light" placement="right">
+	                        		<el-tooltip 
+										v-if="$root.permissions['menu_manager portions read'] && !$root.permissions['menu_manager portions update']"
+										content="View" 
+										effect="light" 
+										placement="right">
+		                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editPortion(portion)">
+	                                        <i class="fa fa-lg fa-eye"></i>
+	                                    </a>
+	                        		</el-tooltip>
+	                        		<el-tooltip 
+										v-if="$root.permissions['menu_manager portions update']"
+										content="Apply to multiple" 
+										effect="light" 
+										placement="right">
 	                                    <a class="btn btn-circle btn-icon-only btn-default" @click="displayMenuTreeModal(portion, $event)">
 	                                        <i class="icon-layers"></i>
 	                                    </a>

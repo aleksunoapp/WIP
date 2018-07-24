@@ -12,7 +12,7 @@
             <p>View items for category '{{ categoryDetails.name }}'.</p>
         </div>
         <!-- BEGIN CREATE NEW MENU-->
-        <div class="portlet box blue-hoki">
+        <div class="portlet box blue-hoki" v-if="$root.permissions['menu_manager menus categories subcategories items create']">
 			<div class="portlet-title bg-blue-chambray" @click="toggleCreateItemPanel()">
 				<div class="custom tools">
 					<a :class="{'expand': !createItemCollapse, 'collapse': createItemCollapse}"></a>
@@ -218,31 +218,64 @@
 									v-for="item in categoryItems" 
 									class="mt-list-item margin-top-15" 
 									:class="{'no-hover-highlight' : expanded === item.id, 'clickable' : expanded !== item.id, 'animated' : animated === `item-${item.id}`}" :id="'item-' + item.id" 
-									@click="expandDetails(item.id)"
+									@click="expandDetails(item)"
 									:key="item.id"
 								>
 		                        	<div class="margin-bottom-15 actions-on-top">
-		                        		<el-tooltip content="Edit" effect="light" placement="bottom">
+		                        		<el-tooltip 
+											v-if="$root.permissions['menu_manager menus categories subcategories items update']"
+											content="Edit" 
+											effect="light" 
+											placement="bottom">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="displayEditItemModal(item, $event)">
 	                                            <i class="fa fa-lg fa-pencil"></i>
 	                                        </a>
 		                        		</el-tooltip>
-		                        		<el-tooltip content="Images" effect="light" placement="bottom">
+		                        		<el-tooltip 
+											v-if="$root.permissions['menu_manager menus categories subcategories items read'] && !$root.permissions['menu_manager menus categories subcategories items update']"
+											content="View" 
+											effect="light" 
+											placement="bottom">
+			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="displayEditItemModal(item, $event)">
+	                                            <i class="fa fa-lg fa-eye"></i>
+	                                        </a>
+		                        		</el-tooltip>
+		                        		<el-tooltip 
+											v-if="$root.permissions['menu_manager menus categories subcategories items update']"
+											content="Images" 
+											effect="light" 
+											placement="bottom">
 	                                        <a class="btn btn-circle btn-icon-only btn-default" @click="openImagesModal(item, $event)">
 	                                            <i class="fa fa-lg fa-image"></i>
 	                                        </a>
 		                        		</el-tooltip>
-		                        		<el-tooltip content="Nutrition Info" effect="light" placement="bottom">
+		                        		<el-tooltip 
+											v-if="
+												$root.permissions['menu_manager menus categories subcategories items nutrition read'] ||
+												$root.permissions['menu_manager menus categories subcategories items nutrition create'] ||
+												$root.permissions['menu_manager menus categories subcategories items nutrition update']
+											"
+											content="Nutrition Info" 
+											effect="light" 
+											placement="bottom">
 	                                        <a class="btn btn-circle btn-icon-only btn-default" @click="viewNutritionInfo(item, $event)">
 	                                            <i class="fa fa-lg fa-heartbeat"></i>
 	                                        </a>
 		                        		</el-tooltip>
-		                        		<el-tooltip content="Apply To Locations" effect="light" placement="bottom">
+		                        		<el-tooltip 
+											v-if="$root.permissions['menu_manager menus categories subcategories items update']"
+											content="Apply To Locations" 
+											effect="light" 
+											placement="bottom">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="displayApplyToLocationsModal(item, $event)">
 	                                            <i class="icon-layers"></i>
 	                                        </a>
 		                        		</el-tooltip>
-		                        		<el-tooltip content="Delete" effect="light" placement="bottom">
+		                        		<el-tooltip 
+											v-if="$root.permissions['menu_manager menus categories subcategories items delete']"
+											content="Delete" 
+											effect="light" 
+											placement="bottom">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="displayDeleteItemModal(item, $event)">
 	                                            <i class="fa fa-lg fa-trash"></i>
 	                                        </a>
@@ -251,7 +284,7 @@
 		                        	<div class="list-icon-container" v-show="expanded !== item.id">
                                         <i :id="'icon-' + item.id" class="fa fa-angle-right"></i>
                                     </div>
-		                            <div class="list-thumb"  @click="openImagesModal(item, $event)">
+		                            <div class="list-thumb">
 		                                <a v-if="item.image_url.length">
 		                                    <img alt="" :src="item.image_url" />
 		                                </a>
@@ -284,7 +317,7 @@
 	                                    </div>
 		                            </div>
                                     <div class="row" :class="{'mt-list-item-expanded' : expanded === item.id, 'mt-list-item-collapsed' : expanded !== item.id}">
-    			                        <div class="col-md-4">
+    			                        <div :class="{'col-md-3' : item.type === 'preset', 'col-md-4' : item.type !== 'preset'}">
     			                        	<div class="col-md-12">
     				                        	<h5 class="inline-block">Modifiers</h5>
     			                        	</div>
@@ -292,7 +325,6 @@
     			                        		<div v-if="item.modifiers && item.modifiers.length">
                     				        	    <ul class="item-modifier-list">
                     				        	    	<li 
-															class="col-md-6" 
 															v-for="modifier in item.modifiers"
 															:key="modifier.id"
 														>
@@ -304,23 +336,30 @@
     			                        			<p class="grey-text">No modifiers have been applied to this item.</p>
     			                        		</div>
     			                        		<div class="col-md-12">
-				                        			<button type="button" class="btn btn-outline btn-xs blue margin-top-10" @click.stop="showModifierModal(item.id, item.modifiers)">Add Modifiers</button>
+				                        			<button 
+														v-if="$root.permissions['menu_manager menus categories subcategories items assign modifier']"
+														type="button" 
+														class="btn btn-outline btn-xs blue margin-top-10" 
+														@click.stop="showModifierModal(item.id, item.modifiers)">
+														Add Modifiers
+													</button>
     			                        		</div>
     			                        	</div>
     			                        </div>
-    			                        <div class="col-md-4">
+    			                        <div :class="{'col-md-3' : item.type === 'preset', 'col-md-4' : item.type !== 'preset'}">
     			                        	<div class="col-md-12">
     				                        	<h5 class="inline-block">Tags</h5>
     			                        	</div>
     			                        	<div class="col-md-12">
     			                        		<div v-if="item.tags && item.tags.length">
                     				        	    <ul class="item-modifier-list">
-                    				        	    	<li 
-															class="col-md-6" 
+                    				        	    	<li  
 															v-for="tag in item.tags"
 															:key="tag.id"
 														> 
-															{{tag.type + ' ' + tag.name}} 
+															<span v-show="tag.type === 'may_contain'">may contain</span>
+															<span v-show="tag.type === 'contains'">contains</span>
+															 {{tag.name}} 
 														</li>
                     				        	    </ul>
     			                        		</div>
@@ -328,11 +367,17 @@
     			                        			<p class="grey-text">No tags have been applied to this item.</p>
     			                        		</div>
     			                        		<div class="col-md-12">
-				                        			<button type="button" class="btn btn-outline btn-xs blue margin-top-10" @click.stop="showTagsModal(item.id, item.tags)">Add Tags</button>
+				                        			<button 
+														v-if="$root.permissions['menu_manager menus categories subcategories items tags update']"
+														type="button" 
+														class="btn btn-outline btn-xs blue margin-top-10" 
+														@click.stop="showTagsModal(item.id, item.tags)">
+														Add Tags
+													</button>
     			                        		</div>
     			                        	</div>
     			                        </div>
-    			                        <div class="col-md-4">
+    			                        <div :class="{'col-md-3' : item.type === 'preset', 'col-md-4' : item.type !== 'preset'}">
     			                        	<div class="col-md-12">
     				                        	<h5 class="inline-block">Attributes</h5>
     			                        	</div>
@@ -352,10 +397,39 @@
     			                        			<p class="grey-text">No attributes have been applied to this item.</p>
     			                        		</div>
     			                        		<div class="col-md-12">
-				                        			<button type="button" class="btn btn-outline btn-xs blue margin-top-10" @click.stop="showAttributesModal(item)">Add Attributes</button>
+				                        			<button 
+														v-if="$root.permissions['menu_manager menus categories subcategories items update']"
+														type="button" 
+														class="btn btn-outline btn-xs blue margin-top-10" 
+														@click.stop="showAttributesModal(item)">
+														Add Attributes
+													</button>
     			                        		</div>
     			                        	</div>
     			                        </div>
+										<div class="col-md-3" v-show="item.type === 'preset'">
+											<h5>Preset Settings</h5>
+											<ul class="item-modifier-list" v-show="item.preset_item_modifier_item">
+												<li 
+													v-for="(modifier, index) in item.preset_item_modifier_item"
+													:key="index"
+												>
+													{{modifier.modifier_item_name}}
+													<span v-if="modifier.preset_item_modifier_item_option_item.length > 0">
+														(<span v-for="(option, index) in modifier.preset_item_modifier_item_option_item" :key="index">{{option.option_item_name}}<span v-show="modifier.preset_item_modifier_item_option_item.length - 1 !== index"> | </span></span>)
+													</span>
+												</li>
+											</ul>
+											<p class="grey-text" v-show="item.preset_item_modifier_item && !item.preset_item_modifier_item.length">No preset settings yet.</p>
+											<button 
+												v-if="$root.permissions['menu_manager menus categories subcategories items update']"
+												type="button" 
+												class="btn btn-outline btn-xs blue margin-top-10" 
+												@click.stop="showPresetModal(item)">
+												<span v-if="item.preset_item_modifier_item && !item.preset_item_modifier_item.length">Add</span>
+												<span v-else>Edit</span> Preset Settings
+											</button>
+										</div>
     			                    </div>
 		                        </li>
 		                    </ul>
@@ -370,7 +444,14 @@
         <div class="margin-top-20" v-if="!displayItemData">
             <no-results :show="!$root.activeLocation || !$root.activeLocation.id" :type="'items'"></no-results>
         </div>
-        <edit-item v-if="editItemModalActive" @editItem="editItem" @deactivateEditItemModal="closeEditItemModal"></edit-item>
+
+        <edit-item 
+			v-if="editItemModalActive" 
+			@editItem="editItem" 
+			@deactivateEditItemModal="closeEditItemModal"
+		>
+		</edit-item>
+
         <delete-item v-if="deleteItemModalActive" :passedItemId="passedItemId" @closeDeleteItemModal="closeDeleteItemModal" @deleteItemAndCloseModal="deleteItemAndCloseModal"></delete-item>
         <nutrition-info v-if="displayNutritionModal" :item="selectedItem" @nutritionInfoSaved="nutritionInfoSaved" @deactivateNutritionInfoModal="displayNutritionModal = false"></nutrition-info>
         <modifiers-list v-if="displayModifierModal" :appliedModifiers="appliedModifiers" :selectedItemId="selectedItemId" @deactivateModifierModal="closeModifierModal"></modifiers-list>
@@ -485,6 +566,15 @@
 		>
 		</item-images>
 		<!-- ITEM IMAGES END -->
+
+		<!-- PRESET SETTINGS START -->
+		<preset-settings 
+			v-if="displayPresetModal" 
+			:item="itemToSetPresetSettingsFor"
+			@closePresetModal="closePresetModal"
+			@closeAndUpdate="closePresetModalAndUpdate">
+		</preset-settings>
+		<!-- PRESET SETTINGS START -->
 	</div>
 </template>
 
@@ -508,6 +598,7 @@ import MenusFunctions from '../../../controllers/Menus'
 import ItemTypesFunctions from '../../../controllers/ItemTypes'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
 import SelectLocationsPopup from '../../modules/SelectLocationsPopup'
+import PresetSettings from '@/components/app/MenuManager/Items/PresetSettings'
 
 export default {
 	data () {
@@ -547,7 +638,8 @@ export default {
 				order: null,
 				item_type_id: null,
 				nutrition_summary: '',
-				type: ''
+				type: '',
+				preset_item_modifier_item: []
 			},
 			menus: [],
 			categories: [],
@@ -584,7 +676,13 @@ export default {
 			imageMode: {
 				newMenu: false
 			},
-			noItemTypes: false
+			noItemTypes: false,
+			displayPresetModal: false,
+			itemToSetPresetSettingsFor: {
+				id: null,
+				name: '',
+				preset_item_modifier_item: []
+			}
 		}
 	},
 	computed: {
@@ -634,6 +732,101 @@ export default {
 		this.getItemTypes()
 	},
 	methods: {
+		/**
+	 	 * To get the preset settings of an item.
+		 * @function
+		 * @param {integer} itemId - The selected item id
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getPresetDetails (itemId) {
+			var itemsVue = this
+			return ItemsFunctions.getPresetDetails(itemId, itemsVue.$root.appId, itemsVue.$root.appSecret, itemsVue.$root.userToken).then(response => {
+				if (response.code === 200 && response.status === 'ok') {
+					for (var i = 0; i < itemsVue.categoryItems.length; i++) {
+						if (itemsVue.categoryItems[i].id === itemId) {
+							itemsVue.$set(itemsVue.categoryItems[i], 'preset_item_modifier_item', response.payload.preset_item_modifier_item)
+						}
+					}
+				}
+			}).catch(reason => {
+				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
+					itemsVue.$router.push('/login/expired')
+					return
+				}
+			})
+		},
+		/**
+		 * To alert the user that the menu has been successfully created.
+		 * @function
+		 * @param {object} item - The recently created item
+		 * @returns {undefined}
+		 */
+		showPresetItemAlert (item) {
+			this.$swal({
+				type: 'success',
+				title: 'Success!',
+				html: `<div>${item.name} created<br/><br/><strong>Do you want to add preset settings now?</strong></div>`,
+				showCancelButton: true,
+				confirmButtonText: 'Yes',
+				cancelButtonText: 'No'
+			}).then(() => {
+				this.showPresetModal(item)
+			}, dismiss => {})
+		},
+
+		/**
+		 * To display the Preset settings modal
+		 * @function
+		 * @param {object} item - The item to set Preset Settings for
+		 * @returns {undefined}
+		 */
+		showPresetModal (item) {
+			this.itemToSetPresetSettingsFor.id = item.id
+			this.itemToSetPresetSettingsFor.name = item.name
+			this.itemToSetPresetSettingsFor.modifiers = item.modifiers
+			this.itemToSetPresetSettingsFor.preset_item_modifier_item = item.preset_item_modifier_item
+			this.displayPresetModal = true
+		},
+		/**
+		 * To close the Preset settings modal
+		 * @function
+		 * @returns {undefined}
+		 */
+		closePresetModal () {
+			this.displayPresetModal = false
+		},
+				/**
+		 * To close the Preset settings modal and update Preset settins
+		 * @function
+		 * @param {array} updatedSettings - The updated settings
+		 * @returns {undefined}
+		 */
+		closePresetModalAndUpdate (updatedSettings) {
+			this.categoryItems.forEach((item) => {
+				if (item.id === this.itemToSetPresetSettingsFor.id) {
+					item.preset_item_modifier_item = updatedSettings
+				}
+			})
+			this.confirmPresetSettings()
+
+			this.displayPresetModal = false
+			this.itemToSetPresetSettingsFor.id = null
+			this.itemToSetPresetSettingsFor.name = ''
+			this.itemToSetPresetSettingsFor.preset_item_modifier_item = []
+		},
+		/**
+		 * To confirm the Item Attributes were assigned
+		 * @function
+		 * @returns {undefined}
+		 */
+		confirmPresetSettings () {
+			this.$swal({
+				title: 'Success',
+				text: `Preset settings saved`,
+				type: 'success',
+				confirmButtonText: 'OK'
+			})
+		},
 		/**
 		 * To update the type field of the new item
 		 * @function
@@ -906,6 +1099,7 @@ export default {
 			this.newItem.item_type_id = item.item_type_id
 			this.newItem.type = item.type || 'custom'
 			this.itemCopied = true
+			this.newItem.preset_item_modifier_item = item.preset_item_modifier_item || []
 		},
 		/**
 		 * To clear the current error.
@@ -1030,7 +1224,7 @@ export default {
 			return ItemsFunctions.getCategoryItems(itemsVue.$route.params.category_id, itemsVue.$root.appId, itemsVue.$root.appSecret).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
 					itemsVue.displayItemData = false
-					itemsVue.categoryItems = response.payload
+					itemsVue.categoryItems = response.payload.sort((a, b) => a.name > b.name)
 				} else {
 					itemsVue.displayItemData = false
 				}
@@ -1048,16 +1242,21 @@ export default {
 		/**
 		 * To expand/collapse the dropdown div under an item.
 		 * @function
-		 * @param {integer} itemId - The selected item id
+		 * @param {object} item - The selected item
 		 * @returns {undefined}
 		 */
-		expandDetails (itemId) {
-			if (this.expanded === itemId) return
+		expandDetails (item) {
+			if (this.expanded === item.id) return
 
-			this.getItemDetailsFull(itemId)
+			const itemsVue = this
+			Promise.all([
+				itemsVue.getItemDetailsFull(item.id),
+				itemsVue.getItemAttributesOfItem(item.id),
+				item.type === 'preset' ? itemsVue.getPresetDetails(item.id) : null
+			]).then(() => {
+				itemsVue.expanded = item.id
+			})
 			this.itemAttributes.forEach((itemAttribute) => { itemAttribute.selected = false })
-			this.getItemAttributesOfItem(itemId)
-			this.expanded = itemId
 		},
 		/**
 		 * To get the complete details of an item.
@@ -1325,7 +1524,8 @@ export default {
 				order: null,
 				item_type_id: null,
 				nutrition_summary: '',
-				type: 'custom'
+				type: 'custom',
+				preset_item_modifier_item: []
 			}
 			this.itemCopied = false
 		},
@@ -1351,7 +1551,7 @@ export default {
 			} else {
 				this.categoryItems.push(val)
 			}
-			this.showAlert()
+			val.type === 'preset' ? this.showPresetItemAlert(val) : this.showAlert()
 			this.clearNewItem()
 		},
 		/**
@@ -1378,6 +1578,8 @@ export default {
 		 * @returns {undefined}
 		 */
 		editItem (val) {
+			this.getItemDetailsFull(val.id)
+			if (val.type === 'preset') { this.getPresetDetails(val.id) }
 			this.editItemModalActive = false
 			for (let i = 0; i < this.categoryItems.length; i++) {
 				if (this.categoryItems[i].id === val.id) {
@@ -1396,6 +1598,7 @@ export default {
 			if (!done) {
 				this.categoryItems.push(val)
 			}
+			this.categoryItems.sort((a, b) => a.name > b.name)
 			setTimeout(function () {
 				$('#item-' + val.id).addClass('highlight')
 				setTimeout(function () {
@@ -1546,7 +1749,8 @@ export default {
 		NoResults,
 		ResourcePicker,
 		ItemImages,
-		SelectLocationsPopup
+		SelectLocationsPopup,
+		PresetSettings
 	}
 }
 </script>

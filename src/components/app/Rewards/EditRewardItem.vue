@@ -15,51 +15,78 @@
 	        		</div>
 	        	</div>
         		<div class="col-md-12">
-					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm" :class="{'edited': rewardItemToBeEdited.name.length}" id="form_control_1" v-model="rewardItemToBeEdited.name">
-					    <label for="form_control_1">Reward Item Name</label>
-					</div>
-					<div class="side-by-side-item">
+					<fieldset :disabled="!$root.permissions['reward_tiers items update']">
 						<div class="form-group form-md-line-input form-md-floating-label">
-						    <input type="text" class="form-control input-sm" :class="{'edited': rewardItemToBeEdited.value.length}" id="form_control_2" v-model="rewardItemToBeEdited.value">
-						    <label for="form_control_2">Reward Item Value</label>
+							<input type="text" class="form-control input-sm" :class="{'edited': rewardItemToBeEdited.name.length}" id="form_control_1" v-model="rewardItemToBeEdited.name">
+							<label for="form_control_1">Reward Item Name</label>
 						</div>
-					</div>
-					<el-select class="side-by-side-item margin-top-15" v-model="rewardItemToBeEdited.value_type" placeholder="Select type" size="small">
-						<el-option label="$" value="dollar"></el-option>
-						<el-option label="%" value="percentage"></el-option>
-					</el-select>
-					<div class="side-by-side-item margin-top-15">
-						from:
-						<el-date-picker 
-							v-model="rewardItemToBeEdited.start_on" 
-							type="date" 
-							format="yyyy-MM-dd" 
-							value-format="yyyy-MM-dd" 
-							:clearable="false" 
-							placeholder="Select start date">
-						</el-date-picker>
-					</div>
-					<div class="side-by-side-item margin-top-15">
-						to:
-						<el-date-picker 
-							v-model="rewardItemToBeEdited.expiry" 
-							type="date" 
-							format="yyyy-MM-dd" 
-							value-format="yyyy-MM-dd" 
-							:clearable="false" 
-							placeholder="Select end date">
-						</el-date-picker>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label margin-top-15">
-					    <input type="text" class="form-control input-sm" id="form_control_3" :class="{'edited': rewardItemToBeEdited.points.length}" v-model="rewardItemToBeEdited.points">
-					    <label for="form_control_3">Reward Item Points</label>
-					</div>
+						<div class="side-by-side-item">
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<input type="text" class="form-control input-sm" :class="{'edited': rewardItemToBeEdited.value.length}" id="form_control_2" v-model="rewardItemToBeEdited.value">
+								<label for="form_control_2">Reward Item Value</label>
+							</div>
+						</div>
+						<el-select 
+							:disabled="!$root.permissions['reward_tiers items update']"
+							class="side-by-side-item margin-top-15" 
+							v-model="rewardItemToBeEdited.value_type" 
+							placeholder="Select type" 
+							size="small">
+							<el-option label="$" value="dollar"></el-option>
+							<el-option label="%" value="percentage"></el-option>
+						</el-select>
+						<div class="side-by-side-item margin-top-15">
+							from:
+							<el-date-picker 
+								:disabled="!$root.permissions['reward_tiers items update']"
+								v-model="rewardItemToBeEdited.start_on" 
+								type="date" 
+								format="yyyy-MM-dd" 
+								value-format="yyyy-MM-dd" 
+								:clearable="false" 
+								placeholder="Select start date">
+							</el-date-picker>
+						</div>
+						<div class="side-by-side-item margin-top-15">
+							to:
+							<el-date-picker 
+								:disabled="!$root.permissions['reward_tiers items update']"
+								v-model="rewardItemToBeEdited.expiry" 
+								type="date" 
+								format="yyyy-MM-dd" 
+								value-format="yyyy-MM-dd" 
+								:clearable="false" 
+								placeholder="Select end date">
+							</el-date-picker>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label margin-top-15">
+							<input 
+								type="text" 
+								class="form-control input-sm" 
+								id="form_control_3" 
+								:class="{'edited': rewardItemToBeEdited.points.length}" 
+								v-model="rewardItemToBeEdited.points">
+							<label for="form_control_3">Reward Item Points</label>
+						</div>
+					</fieldset>
         		</div>
         	</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button type="button" class="btn btn-primary" @click="updateRewardItemDetails()">Save</button>
+			<button 
+				v-if="!$root.permissions['reward_tiers items update']"
+				type="button" 
+				class="btn btn-primary" 
+				@click="closeModal()">
+				Close
+			</button>
+			<button 
+				v-else
+				type="button" 
+				class="btn btn-primary" 
+				@click="updateRewardItemDetails()">
+				Save
+			</button>
 		</div>
 	</modal>
 </template>

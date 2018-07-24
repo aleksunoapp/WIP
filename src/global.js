@@ -19,6 +19,10 @@ export default {
 		}())
 	},
 	/**
+	 * app_id for the Approvals API
+	 */
+	approvalsAppId: '5b291f11dc35e663e8847981',
+	/**
 	 * business id to identify the business aka brand aka customer (2 is Freshii)
 	 */
 	businessId: 2,
@@ -40,9 +44,21 @@ export default {
 		}
 	}()),
 	/**
-	 * base url for API calls, other than Message calls
+	 * base url for Resources API calls
 	 */
-	v3BaseUrl: 'https://resources.dev.api.unoapp.io',
+	resourcesBaseUrl: (function () {
+		if (production) {
+			return ''
+		} else if (staging) {
+			return 'https://resources.dev.api.unoapp.io'
+		} else {
+			return 'https://resources.dev.api.unoapp.io'
+		}
+	}()),
+	/**
+	 * business ID to use for the Resources API
+	 */
+	resourcesBusinessId: 2,
 	/**
 	 * base url for API calls to send Messages
 	 */

@@ -5,7 +5,7 @@
 				<span>&times;</span>
 			</button>
 			<h4 class="modal-title center" v-if="!selectImageMode">Update Tag</h4>
-			<h4 class="modal-title center" v-if="selectImageMode" key="selectLocationMode"><i class="fa fa-chevron-left clickable pull-left back-button" @click="goToPageOne()"></i>Select Image</h4>
+			<h4 class="modal-title center" v-if="selectImageMode" key="selectImageMode">Select Image</h4>
 		</div>
 		<div slot="modal-body" class="modal-body">
 				<div class="col-xs-12">
@@ -13,7 +13,7 @@
 				    <button class="close" data-close="alert" @click="clearError()"></button>
 				    <span>{{errorMessage}}</span>
 				</div>
-			    <div v-if="!selectLocationMode" :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
+			    <div :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
 					<resource-picker 
 						@open="goToPageTwo()"
 						@close="goToPageOne()"
@@ -24,15 +24,7 @@
 					>
 					</resource-picker>
         		</div>
-				    <div class="col-xs-12">        			
-	    			 <select-locations-popup 
-	    				v-if="selectLocationMode" 
-	    				@closeSelectLocationsPopup='updateSelectedLocations' 
-	    				:previouslySelected="selectedLocations"
-	    			 >
-					 </select-locations-popup>
-        		</div>
-				<div class="col-md-12" v-show="!selectImageMode && !selectLocationMode">
+				<div class="col-md-12" v-show="!selectImageMode">
 					<el-dropdown trigger="click" @command="updateTagToBeEdited" size="small" :show-timeout="50" :hide-timeout="50" class='margin-bottom-20'>										
 						<el-button size="small">
 							{{ tagTypeLabel }}
@@ -44,14 +36,32 @@
 						</el-dropdown-menu>
 					</el-dropdown>
 					<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-					    <input type="text" class="form-control input-sm edited" id="form_control_1" v-model="tagToBeEdited.name">
+					    <input 
+							:disabled="!$root.permissions['menu_manager tags update']"
+							type="text" 
+							class="form-control input-sm edited" 
+							id="form_control_1" 
+							v-model="tagToBeEdited.name">
 					    <label for="form_control_1">Tag Name</label>
 					</div>
 				</div>
 			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button v-if="!selectImageMode" type="button" class="btn btn-primary" @click="updateTag()">Save</button>
+			<button 
+				v-if="!selectImageMode && !$root.permissions['menu_manager tags update']" 
+				type="button" 
+				class="btn btn-primary" 
+				@click="closeModal()">
+				Close
+			</button>
+			<button 
+				v-if="!selectImageMode && $root.permissions['menu_manager tags update']" 
+				type="button" 
+				class="btn btn-primary" 
+				@click="updateTag()">
+				Save
+			</button>
 		</div>
 	</modal>
 </template>
@@ -96,7 +106,9 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateTagToBeEdited (value) {
-			this.tagToBeEdited.type = value
+			if (this.$root.permissions['menu_manager tags update']) {
+				this.tagToBeEdited.type = value
+			}
 		},
 		/**
 		 * To check if the tag data is valid before submitting to the backend.
@@ -216,8 +228,10 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateImage (val) {
+			if (this.$root.permissions['menu_manager tags update']) {
+				this.tagToBeEdited.image_url = val.image_url
+			}
 			this.goToPageOne()
-			this.tagToBeEdited.image_url = val.image_url
 		}
 	},
 	components: {

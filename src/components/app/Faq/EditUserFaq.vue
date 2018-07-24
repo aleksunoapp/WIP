@@ -23,6 +23,23 @@
 				<input type="text" class="form-control input-sm edited" id="form_control_3" v-model="faqToBeEdited.external_link">
 				<label for="form_control_3">External Link</label>
 			</div>
+			<div>
+				<p class="grey-label">Call to action type</p>
+				<el-select v-model="faqToBeEdited.cta_type" placeholder="Select type" size="small" class="margin-bottom-15" id="form_control_cta_type">
+					<el-option label="none" value=""></el-option>
+					<el-option label="hyperlink" value="hyperlink"></el-option>
+					<el-option label="menu item" value="menu_item"></el-option>
+					<el-option label="promo code" value="promo_code"></el-option>
+					<el-option label="camera" value="camera"></el-option>
+					<el-option label="call" value="call"></el-option>
+					<el-option label="SMS" value="sms"></el-option>
+					<el-option label="video" value="video"></el-option>
+				</el-select>
+			</div>
+			<div class="form-group form-md-line-input form-md-floating-label">
+				<input type="text" class="form-control input-sm" id="form_control_cta_value" v-model="faqToBeEdited.cta_value" :class="{'edited': faqToBeEdited.cta_value.length}">
+				<label for="form_control_cta_value">Call to action value</label>
+			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
 			<button type="button" class="btn btn-primary" @click="saveEditedUserFAQ()">Save</button>
@@ -38,7 +55,13 @@ export default {
 	data () {
 		return {
 			showEditFAQModal: false,
-			faqToBeEdited: {},
+			faqToBeEdited: {
+				question: '',
+				answer: '',
+				external_link: '',
+				cta_type: '',
+				cta_value: ''
+			},
 			errorMessage: ''
 		}
 	},
@@ -68,6 +91,10 @@ export default {
 					reject('Question cannot be blank')
 				} else if (!editFAQVue.faqToBeEdited.answer.length) {
 					reject('Answer cannot be blank')
+				} else if (!editFAQVue.faqToBeEdited.external_link.length) {
+					reject('External link cannot be blank')
+				} else if (editFAQVue.faqToBeEdited.cta_type && !editFAQVue.faqToBeEdited.cta_value) {
+					reject('Call to action value cannot be blank')
 				}
 				resolve('Hurray')
 			})

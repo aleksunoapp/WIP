@@ -175,6 +175,14 @@ export default {
 			this.$router.push('/app/menu_manager/categories/' + this.$route.params.menu_id)
 		},
 		/**
+		 * To close the modal.
+		 * @function
+		 * @returns {undefined}
+		 */
+		closeModal () {
+			this.$emit('deactivateAddSubCategoryModal')
+		},
+		/**
 		 * To change the page to the main/form view on the modal.
 		 * @function
 		 * @returns {undefined}

@@ -7,7 +7,7 @@
 			<transition name="fade" mode="out-in">
 				<h4 class="modal-title center" v-if="!selectImageMode && !selectLocationMode" key="mainEditMode">Edit Menu</h4>
 				<h4 class="modal-title center" v-if="!selectImageMode && selectLocationMode" key="selectLocationMode"><i class="fa fa-chevron-left clickable pull-left back-button" @click="closeSelectLocationsPopup()"></i>Select Stores</h4>
-				<h4 class="modal-title center" v-if="selectImageMode && !selectLocationMode" key="selectImageMode"><i class="fa fa-chevron-left clickable pull-left back-button" @click="goToPageOne()"></i>  Select An Image</h4>
+				<h4 class="modal-title center" v-if="selectImageMode && !selectLocationMode" key="selectImageMode">Select An Image</h4>
 			</transition>
 		</div>
 		<div slot="modal-body" class="modal-body">
@@ -38,25 +38,28 @@
 					</select-locations-popup>
         		</div>
 				<div class="col-md-12" v-show="!selectImageMode && !selectLocationMode">
-					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm edited" id="form_control_1" v-model="menuToBeEdited.name">
-					    <label for="form_control_1">Menu Name</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm edited" id="form_control_2" v-model="menuToBeEdited.desc">
-					    <label for="form_control_2">Menu Description</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm edited" id="form_control_3" v-model="menuToBeEdited.sku">
-					    <label for="form_control_3">Menu SKU</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm edited" id="form_control_4" v-model="menuToBeEdited.order">
-					    <label for="form_control_4">Menu Order</label>
-					</div>
+					<fieldset :disabled="!$root.permissions['menu_manager menus update']">
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm edited" id="form_control_1" v-model="menuToBeEdited.name">
+							<label for="form_control_1">Menu Name</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm edited" id="form_control_2" v-model="menuToBeEdited.desc">
+							<label for="form_control_2">Menu Description</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm edited" id="form_control_3" v-model="menuToBeEdited.sku">
+							<label for="form_control_3">Menu SKU</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm edited" id="form_control_4" v-model="menuToBeEdited.order">
+							<label for="form_control_4">Menu Order</label>
+						</div>
+					</fieldset>
 					<div class="form-group form-md-line-input form-md-floating-label">
 		                <label>Menu Status:</label><br>
 		                <el-switch
+							:disabled="!$root.permissions['menu_manager menus update']"
 		                	v-model="menuToBeEdited.status"
 		                	active-color="#0c6"
 		                	inactive-color="#ff4949"
@@ -67,6 +70,7 @@
 		                </el-switch>
 		            </div>
 		            <el-date-picker 
+						:disabled="!$root.permissions['menu_manager menus update']"
 		            	v-model="menuToBeEdited.start_from" 
 		            	:editable="false"
 		            	type="date" 
@@ -76,6 +80,7 @@
 		            	placeholder="From"></el-date-picker>
 		            -
 		            <el-date-picker 
+						:disabled="!$root.permissions['menu_manager menus update']"
 		            	v-model="menuToBeEdited.stop_on" 
 		            	:editable="false"
 		            	type="date" 
@@ -86,7 +91,8 @@
         			<div class="form-group form-md-line-input form-md-floating-label">
                         <label>Catering:</label><br>
                         <el-switch
-                        	v-model="menuToBeEdited.catering"
+                        	:disabled="!$root.permissions['menu_manager menus update']"
+							v-model="menuToBeEdited.catering"
                         	active-color="#0c6"
                         	inactive-color="#ff4949"
                         	:active-value="1"
@@ -95,20 +101,36 @@
                         	inactive-text="Unavailable">
                         </el-switch>
                     </div>
-        			<div v-if="menuToBeEdited.catering" class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm" id="form_control_5" :class="{'edited': menuToBeEdited.min.length}" v-model="menuToBeEdited.min">
-					    <label for="form_control_5">Minimum order value</label>
-					</div>
-        			<div v-if="menuToBeEdited.catering" class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm" id="form_control_6" :class="{'edited': menuToBeEdited.max.length}" v-model="menuToBeEdited.max">
-					    <label for="form_control_6">Maximum order value</label>
-					</div>
+					<fieldset :disabled="!$root.permissions['menu_manager menus update']">
+						<div v-if="menuToBeEdited.catering" class="form-group form-md-line-input form-md-floating-label">
+							<input 
+								type="text" class="form-control input-sm" id="form_control_5" :class="{'edited': menuToBeEdited.min.length}" v-model="menuToBeEdited.min">
+							<label for="form_control_5">Minimum order value</label>
+						</div>
+						<div v-if="menuToBeEdited.catering" class="form-group form-md-line-input form-md-floating-label">
+							<input type="text" class="form-control input-sm" id="form_control_6" :class="{'edited': menuToBeEdited.max.length}" v-model="menuToBeEdited.max">
+							<label for="form_control_6">Maximum order value</label>
+						</div>
+					</fieldset>
         			<div>
 						<p class="margin-bottom-10 margin-top-30 margin-right-10">Select locations to apply the changes to:</p>
         				<button type="submit" class="btn blue btn-outline" @click="selectLocations($event)">Select locations</button>
         				<p class="grey-label margin-top-10" v-if="selectedLocations.length">Selected {{ selectedLocations.length }} location<span v-if="selectedLocations.length !== 1">s</span></p>
         			</div>
-        			<button type="button" class="btn btn-primary pull-right" @click="updateMenu()">Save</button>
+        			<button 
+						v-if="!$root.permissions['menu_manager menus update']"
+						type="button" 
+						class="btn btn-primary pull-right" 
+						@click="closeModal()">
+						Close
+					</button>
+        			<button 
+						v-else
+						type="button" 
+						class="btn btn-primary pull-right" 
+						@click="updateMenu()">
+						Save
+					</button>
 				</div>
 			</div>
 		</div>
@@ -169,7 +191,9 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateSelectedLocations (locations) {
-			this.selectedLocations = locations
+			if (this.$root.permissions['menu_manager menus update']) {
+				this.selectedLocations = locations
+			}
 			this.closeSelectLocationsPopup()
 		},
 		/**
@@ -323,7 +347,9 @@ export default {
 		 */
 		updateImage (val) {
 			this.goToPageOne()
-			this.menuToBeEdited.image_url = val.image_url
+			if (this.$root.permissions['menu_manager menus update']) {
+				this.menuToBeEdited.image_url = val.image_url
+			}
 		}
 	},
 	components: {

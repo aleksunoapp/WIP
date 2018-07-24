@@ -12,7 +12,7 @@
 			<!-- HEADER END -->
 
 			<!-- CREATE NEW START -->
-			<div class="portlet box blue-hoki margin-top-20">
+			<div class="portlet box blue-hoki margin-top-20" v-if="$root.permissions['loyalty base_rule create']">
 				<div class="portlet-title bg-blue-chambray" @click="toggleCreateNew()">
 					<div class="caption">
 						<i class="fa fa-plus-circle"></i>
@@ -92,14 +92,31 @@
 										:id="`rule-${rule.id}`"
 										class="mt-list-item actions-at-left margin-top-15"
 										:class="{'animated' : animated === `rule-${rule.id}`}"
-									>
+										:key="rule.id">
 										<div class="list-item-actions">
-											<el-tooltip content="Edit" effect="light" placement="right">
+											<el-tooltip 
+												v-if="$root.permissions['loyalty base_rule update']"
+												content="Edit" 
+												effect="light" 
+												placement="right">
 												<a class="btn btn-circle btn-icon-only btn-default" @click="openEditModal(rule)">
 													<i class="fa fa-pencil" aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip content="Delete" effect="light" placement="right">
+											<el-tooltip 
+												v-if="$root.permissions['loyalty base_rule read'] && !$root.permissions['loyalty base_rule update']"
+												content="View" 
+												effect="light" 
+												placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default" @click="openEditModal(rule)">
+													<i class="fa fa-eye" aria-hidden="true"></i>
+												</a>
+											</el-tooltip>
+											<el-tooltip 
+												v-if="$root.permissions['loyalty base_rule delete']"
+												content="Delete" 
+												effect="light" 
+												placement="right">
 												<a class="btn btn-circle btn-icon-only btn-default" @click="openDeleteModal(rule)">
 													<i class="fa fa-trash" aria-hidden="true"></i>
 												</a>
@@ -155,31 +172,56 @@
 						</div>						
 					</div>
 					<div class="col-xs-6">
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input ref="editedName" type="text" class="form-control input-sm" v-model="ruleToEdit.name" :class="{'edited': ruleToEdit.name.length}">
-							<label for="form_control_name">Name</label>
-						</div>
-						<el-select v-model="ruleToEdit.type" :disabled="true" placeholder="Select type" size="small" class="margin-bottom-15">
-							<el-option label="points per dollars spent" value="dollar-to-points"></el-option>
-							<el-option label="points per transaction" value="transactions-to-points"></el-option>
-						</el-select>
-						<div class="form-group form-md-line-input form-md-floating-label" v-show="ruleToEdit.type === 'dollar-to-points'">
-							<input type="text" class="form-control input-sm" v-model="ruleToEdit.base_counter" :class="{'edited': ruleToEdit.base_counter.length}">
-							<label for="form_control_name">Amount to award points for</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm" v-model="ruleToEdit.min_amount" :class="{'edited': ruleToEdit.min_amount.length}">
-							<label for="form_control_name">Minimum purchase amount</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm" v-model="ruleToEdit.points" :class="{'edited': ruleToEdit.points.length}">
-							<label for="form_control_name">Points to award</label>
-						</div>
+						<fieldset :disabled="!$root.permissions['loyalty base_rule update']">
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<input 
+									ref="editedName" 
+									type="text" 
+									class="form-control input-sm" 
+									v-model="ruleToEdit.name" 
+									:class="{'edited': ruleToEdit.name.length}">
+								<label for="form_control_name">Name</label>
+							</div>
+							<el-select 
+								v-model="ruleToEdit.type" 
+								:disabled="true" 
+								placeholder="Select type" 
+								size="small" 
+								class="margin-bottom-15">
+								<el-option label="points per dollars spent" value="dollar-to-points"></el-option>
+								<el-option label="points per transaction" value="transactions-to-points"></el-option>
+							</el-select>
+							<div class="form-group form-md-line-input form-md-floating-label" v-show="ruleToEdit.type === 'dollar-to-points'">
+								<input type="text" class="form-control input-sm" v-model="ruleToEdit.base_counter" :class="{'edited': ruleToEdit.base_counter.length}">
+								<label for="form_control_name">Amount to award points for</label>
+							</div>
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<input type="text" class="form-control input-sm" v-model="ruleToEdit.min_amount" :class="{'edited': ruleToEdit.min_amount.length}">
+								<label for="form_control_name">Minimum purchase amount</label>
+							</div>
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<input type="text" class="form-control input-sm" v-model="ruleToEdit.points" :class="{'edited': ruleToEdit.points.length}">
+								<label for="form_control_name">Points to award</label>
+							</div>
+						</fieldset>
 					</div>				
 				</div>
 			</div>
 			<div slot="modal-footer" class="modal-footer">
-				<button type="button" class="btn btn-primary" @click="updateRule()">Save</button>
+				<button 
+					v-if="!$root.permissions['loyalty base_rule update']"
+					type="button" 
+					class="btn btn-primary" 
+					@click="closeEditModal()">
+					Close
+				</button>
+				<button 
+					v-else
+					type="button" 
+					class="btn btn-primary" 
+					@click="updateRule()">
+					Save
+				</button>
 			</div>
 		</modal>
 		<!-- EDIT MODAL END -->

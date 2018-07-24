@@ -15,72 +15,87 @@
 							<span>{{errorMessage}}</span>
 						</div>
 					</div>
-					<div class="col-md-6">
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm" id="form_control_1" v-model="groupToBeEdited.name" :class="{'edited': groupToBeEdited.name.length}">
-							<label for="form_control_1">Group Name</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm" id="form_control_2" v-model="groupToBeEdited.description" :class="{'edited': groupToBeEdited.description.length}">
-							<label for="form_control_2">Group Description</label>
-						</div>
-						<h4 class="margin-top-20">All users with:</h4>
-						<div>
-							<el-dropdown trigger="click" @command="updateSignUpDate" size="mini" :show-timeout="50" :hide-timeout="50"  class="margin-top-15">
-								<el-button size="mini">
-									{{ selectedSignUpDate }}
-									<i class="el-icon-arrow-down el-icon--right"></i>
-								</el-button>
-								<el-dropdown-menu slot="dropdown">
-									<el-dropdown-item :command="7">
-										Signed up in the last 7 days
-									</el-dropdown-item>
-									<el-dropdown-item :command="14">
-										Signed up in the last 14 days
-									</el-dropdown-item>
-									<el-dropdown-item :command="30">
-										Signed up in the last 30 days
-									</el-dropdown-item>
-								</el-dropdown-menu>
-							</el-dropdown>
-						</div>
-						<div>
-							<el-dropdown trigger="click" @command="updateTotalOrders" size="mini" :show-timeout="50" :hide-timeout="50"  class="margin-top-15">
-								<el-button size="mini">
-									{{ selectedTotalOrders }}
-									<i class="el-icon-arrow-down el-icon--right"></i>
-								</el-button>
-								<el-dropdown-menu slot="dropdown">
-									<el-dropdown-item :command="[10, '<']">
-										Less than 10 orders
-									</el-dropdown-item>
-									<el-dropdown-item :command="[25, '>']">
-										More than 25 orders
-									</el-dropdown-item>
-									<el-dropdown-item :command="[50, '>']">
-										More than 50 orders
-									</el-dropdown-item>
-								</el-dropdown-menu>
-							</el-dropdown>
-						</div>
-						<div>
+					<div class="col-md-12">
+						<fieldset :disabled="!$root.permissions['user_manager user_groups update']">
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" id="form_control_3" v-model="city" :class="{'edited': city.length}" v-on:change="addRule('city')">
-								<label for="form_control_3">City</label>
+								<input type="text" class="form-control input-sm" id="form_control_1" v-model="groupToBeEdited.name" :class="{'edited': groupToBeEdited.name.length}">
+								<label for="form_control_1">Group Name</label>
 							</div>
-						</div>
-						<div>
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" id="form_control_4" v-model="province" :class="{'edited': province.length}" v-on:change="addRule('province')">
-								<label for="form_control_4">Province</label>
+								<input type="text" class="form-control input-sm" id="form_control_2" v-model="groupToBeEdited.description" :class="{'edited': groupToBeEdited.description.length}">
+								<label for="form_control_2">Group Description</label>
 							</div>
-						</div>
+							<h4 class="margin-top-20">All users with:</h4>
+							<div>
+								<el-dropdown trigger="click" @command="updateSignUpDate" size="mini" :show-timeout="50" :hide-timeout="50"  class="margin-top-15">
+									<el-button size="mini">
+										{{ selectedSignUpDate }}
+										<i class="el-icon-arrow-down el-icon--right"></i>
+									</el-button>
+									<el-dropdown-menu slot="dropdown">
+										<el-dropdown-item :command="7">
+											Signed up in the last 7 days
+										</el-dropdown-item>
+										<el-dropdown-item :command="14">
+											Signed up in the last 14 days
+										</el-dropdown-item>
+										<el-dropdown-item :command="30">
+											Signed up in the last 30 days
+										</el-dropdown-item>
+									</el-dropdown-menu>
+								</el-dropdown>
+							</div>
+							<div>
+								<el-dropdown trigger="click" @command="updateTotalOrders" size="mini" :show-timeout="50" :hide-timeout="50"  class="margin-top-15">
+									<el-button size="mini">
+										{{ selectedTotalOrders }}
+										<i class="el-icon-arrow-down el-icon--right"></i>
+									</el-button>
+									<el-dropdown-menu slot="dropdown">
+										<el-dropdown-item :command="[10, '<']">
+											Less than 10 orders
+										</el-dropdown-item>
+										<el-dropdown-item :command="[25, '>']">
+											More than 25 orders
+										</el-dropdown-item>
+										<el-dropdown-item :command="[50, '>']">
+											More than 50 orders
+										</el-dropdown-item>
+									</el-dropdown-menu>
+								</el-dropdown>
+							</div>
+							<div>
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<input type="text" class="form-control input-sm" id="form_control_3" v-model="city" :class="{'edited': city.length}" v-on:change="addRule('city')">
+									<label for="form_control_3">City</label>
+								</div>
+							</div>
+							<div>
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<input type="text" class="form-control input-sm" id="form_control_4" v-model="province" :class="{'edited': province.length}" v-on:change="addRule('province')">
+									<label for="form_control_4">Province</label>
+								</div>
+							</div>
+						</fieldset>
 					</div>
 				</div>
 			</form>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button type="button" class="btn btn-primary" @click="updateGroup()">Save</button>
+			<button 
+				v-if="!$root.permissions['user_manager user_groups update']"
+				type="button" 
+				class="btn btn-primary" 
+				@click="closeModal()">
+				Close
+			</button>
+			<button 
+				v-else
+				type="button" 
+				class="btn btn-primary" 
+				@click="updateGroup()">
+				Save
+			</button>
 		</div>
 	</modal>
 </template>
@@ -161,20 +176,22 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateSignUpDate (days) {
-			let rule = {
-				'parameter': 'sign-up-date',
-				'value': this.daysBeforeToday(days),
-				'operator': '>',
-				'text': `Signed up in the last ${days} days`
-			}
-
-			for (let i = 0; i < this.groupToBeEdited.rules.length; i++) {
-				if (this.groupToBeEdited.rules[i].parameter === 'sign-up-date') {
-					this.groupToBeEdited.rules.splice(i, 1)
+			if (!this.$root.permissions['user_manager user_groups update']) {
+				let rule = {
+					'parameter': 'sign-up-date',
+					'value': this.daysBeforeToday(days),
+					'operator': '>',
+					'text': `Signed up in the last ${days} days`
 				}
-			}
 
-			this.groupToBeEdited.rules.push(rule)
+				for (let i = 0; i < this.groupToBeEdited.rules.length; i++) {
+					if (this.groupToBeEdited.rules[i].parameter === 'sign-up-date') {
+						this.groupToBeEdited.rules.splice(i, 1)
+					}
+				}
+
+				this.groupToBeEdited.rules.push(rule)
+			}
 		},
 		/**
 		 * To update the total orders rule of the group.
@@ -183,20 +200,22 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateTotalOrders (argsArray) {
-			let rule = {
-				'parameter': 'total-orders',
-				'value': argsArray[0],
-				'operator': argsArray[1],
-				'text': `${(argsArray[1] === '<' ? 'Less' : 'More')} than ${argsArray[0]} orders`
-			}
-
-			for (let i = 0; i < this.groupToBeEdited.rules.length; i++) {
-				if (this.groupToBeEdited.rules[i].parameter === 'total-orders') {
-					this.groupToBeEdited.rules.splice(i, 1)
+			if (!this.$root.permissions['user_manager user_groups update']) {
+				let rule = {
+					'parameter': 'total-orders',
+					'value': argsArray[0],
+					'operator': argsArray[1],
+					'text': `${(argsArray[1] === '<' ? 'Less' : 'More')} than ${argsArray[0]} orders`
 				}
-			}
 
-			this.groupToBeEdited.rules.push(rule)
+				for (let i = 0; i < this.groupToBeEdited.rules.length; i++) {
+					if (this.groupToBeEdited.rules[i].parameter === 'total-orders') {
+						this.groupToBeEdited.rules.splice(i, 1)
+					}
+				}
+
+				this.groupToBeEdited.rules.push(rule)
+			}
 		},
 		daysBeforeToday (days) {
 			let date = new Date(new Date().setDate(new Date().getDate() - days))

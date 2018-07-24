@@ -12,7 +12,7 @@
             <p>Add and manage an application's promotions.</p>
         </div>
         <!-- BEGIN CREATE NEW PROMOTION -->
-        <div class="portlet box blue-hoki" v-if="$root.accountType !== 'store_admin'">
+        <div class="portlet box blue-hoki" v-if="$root.permissions['promotions create']">
 			<div class="portlet-title bg-blue-chambray" @click="toggleCreatePromotionPanel()">
 				<div class="caption">
 					<i class="fa fa-2x fa-plus-circle"></i>
@@ -187,22 +187,47 @@
 		                    <ul>
 		                        <li class="mt-list-item margin-top-15" v-for="promotion in promotions" :id="'promotion-' + promotion.id" :key="promotion.id">
 		                        	<div class="margin-bottom-15 actions-on-top">
-		                        		<el-tooltip content="Edit" effect="light" placement="top">
+		                        		<el-tooltip 
+											v-if="$root.permissions['promotions update']"
+											content="Edit" 
+											effect="light" 
+											placement="top">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editPromotion(promotion, $event)">
 	                                            <i class="fa fa-lg fa-pencil"></i>
 	                                        </a>
 		                        		</el-tooltip>
-		                        		<el-tooltip content="Apply to ..." effect="light" placement="top">
+		                        		<el-tooltip 
+											v-if="$root.permissions['promotions read'] && !$root.permissions['promotions update']"
+											content="View" 
+											effect="light" 
+											placement="top">
+			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editPromotion(promotion, $event)">
+	                                            <i class="fa fa-lg fa-eye"></i>
+	                                        </a>
+		                        		</el-tooltip>
+		                        		<el-tooltip 
+											v-if="$root.permissions['promotions update']"
+											content="Apply to ..." 
+											effect="light" 
+											placement="top">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="applyPromotion(promotion, $event)">
 	                                            <i class="icon-layers"></i>
 	                                        </a>
 		                        		</el-tooltip>
-		                        		<el-tooltip content="QR code" effect="light" placement="top">
+		                        		<el-tooltip 
+											v-if="$root.permissions['promotions update']"
+											content="QR code" 
+											effect="light" 
+											placement="top">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="openQrCodeModal(promotion, $event)">
 	                                            <i class="fa fa-qrcode" aria-hidden="true"></i>
 	                                        </a>
 		                        		</el-tooltip>
-		                        		<el-tooltip content="Delete" effect="light" placement="top">
+		                        		<el-tooltip 
+											v-if="$root.permissions['promotions delete']"
+											content="Delete" 
+											effect="light" 
+											placement="top">
 			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="deletePromotion(promotion, $event)">
 	                                            <i class="fa fa-lg fa-trash"></i>
 	                                        </a>
@@ -424,7 +449,7 @@
 			                </tr>
 			            </thead>
 			            <tbody>
-			                <tr v-for="location in locations">
+			                <tr v-for="location in locations" :key="location.id">
 			                	<td>
 			                		<div class="md-checkbox has-success">
 		                                <input type="checkbox" :id="`location-${location.id}`" class="md-check" v-model="location.selected">
@@ -477,7 +502,7 @@
 			                </tr>
 			            </thead>
 			            <tbody>
-			                <tr v-for="code in promoCodes">
+			                <tr v-for="code in promoCodes" :key="code.id">
 			                	<td>
 			                		<div class="md-checkbox has-success">
 		                                <input type="checkbox" :id="`code-${code.id}`" class="md-check" v-model="code.selected">

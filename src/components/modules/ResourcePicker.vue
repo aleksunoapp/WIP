@@ -13,7 +13,7 @@
 							</a>
 							<ul class="jstree-children" v-if="folders.expanded">
 								<li 
-									v-if="!selectOnly"
+									v-if="!selectOnly && $root.permissions['gallery create']"
 									class="jstree-node jstree-leaf" 
 									:class="{'jstree-last': !folders.children || !folders.children.length}">
 									<i class="jstree-icon jstree-ocl"></i>
@@ -34,6 +34,7 @@
 										@manageFolder="manageFolder" 
 										@getResources="activePageUpdate" 
 										:selectOnly="selectOnly"
+										:key="index"
 									>
 									</resource-folder>
 								</template>
@@ -116,7 +117,7 @@
 													<label for="search_options_search">Search</label>
 												</div>
 												<div class="md-radio-inline">
-													<div class="md-radio" v-for="option in advancedSearch.searchOptions">
+													<div class="md-radio" v-for="option in advancedSearch.searchOptions" :key="option.id">
 														<input type="radio" :id="`advanced_search_radio_${option.value}`" :name="`advanced_search_radio_${option.value}`" class="md-radiobtn" v-model="advancedSearch.range" :value="option.value">
 														<label :for="`advanced_search_radio_${option.value}`">
 															<span></span>
@@ -146,7 +147,7 @@
 										<pagination :passedPage="activePage" :numPages="numPages" @activePageChange="activePageUpdate"></pagination>
 									</div>
 									<file-upload 
-										v-show="!allFoldersView" 
+										v-show="!allFoldersView && $root.permissions['gallery create']" 
 										:folderId="activeFolder.id" 
 										@savingUpdate="checkSaving" 
 										@uploadSuccess="imageUploaded()">
@@ -832,9 +833,6 @@ export default {
 }
 .filter-tags button {
   margin: 3px;
-}
-
-.rounded-button-group-block {
 }
 
 .resource-wrapper {

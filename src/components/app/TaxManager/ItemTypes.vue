@@ -14,7 +14,7 @@
 		</div>
 
 		<!-- BEGIN CREATE -->
-		<div class="portlet box blue-hoki">
+		<div class="portlet box blue-hoki" v-if="$root.permissions['tax item_types create']">
 			<div class="portlet-title bg-blue-chambray" @click="toggleCreatePanel()">
 				<div class="caption">
 					<i class="fa fa-2x fa-plus-circle"></i>
@@ -83,17 +83,38 @@
 							<ul>
 								<li class="mt-list-item actions-at-left margin-top-15 three-vertical-actions" v-for="itemType in itemTypes" :id="'itemType-' + itemType.id" :key="itemType.id">
 									<div class="list-item-actions">
-										<el-tooltip content="Edit" effect="light" placement="right">
+										<el-tooltip 
+											v-if="$root.permissions['tax item_types update']"
+											content="Edit" 
+											effect="light" 
+											placement="right">
 											<a class="btn btn-circle btn-icon-only btn-default" @click="editItemType(itemType, $event)">
 												<i class="fa fa-lg fa-pencil"></i>
 											</a>
 										</el-tooltip>
-										<el-tooltip content="Apply Tax Classes" effect="light" placement="right">
+										<el-tooltip 
+											v-if="$root.permissions['tax item_types read'] && !$root.permissions['tax item_types update']"
+											content="View" 
+											effect="light" 
+											placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default" @click="editItemType(itemType, $event)">
+												<i class="fa fa-lg fa-eye"></i>
+											</a>
+										</el-tooltip>
+										<el-tooltip 
+											v-if="$root.permissions['tax item_types update']"
+											content="Apply Tax Classes" 
+											effect="light" 
+											placement="right">
 											<a class="btn btn-circle btn-icon-only btn-default" @click="openApplyModal(itemType, $event)">
 												<i class="icon-layers"></i>
 											</a>
 										</el-tooltip>
-										<el-tooltip content="Delete" effect="light" placement="right">
+										<el-tooltip 
+											v-if="$root.permissions['tax item_types delete']"
+											content="Delete" 
+											effect="light" 
+											placement="right">
 											<a class="btn btn-circle btn-icon-only btn-default" @click="confirmDelete(itemType, $event)">
 												<i class="fa fa-lg fa-trash"></i>
 											</a>
@@ -136,7 +157,13 @@
 						</div>
 						<div class="col-md-12">
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': itemTypeToEdit.name.length}" id="form_control_1" v-model="itemTypeToEdit.name">
+								<input 
+									:disabled="!$root.permissions['tax item_types update']"
+									type="text" 
+									class="form-control input-sm" 
+									:class="{'edited': itemTypeToEdit.name.length}" 
+									id="form_control_1" 
+									v-model="itemTypeToEdit.name">
 								<label for="form_control_1">Name</label>
 							</div>
 						</div>
@@ -144,7 +171,20 @@
 				</form>
 			</div>
 			<div slot="modal-footer" class="modal-footer clear">
-				<button @click="updateItemType()" type="submit" class="btn blue">Save</button>
+				<button 
+					v-if="!$root.permissions['tax item_types update']"
+					@click="closeEditModal()" 
+					type="button" 
+					class="btn blue">
+					Close
+				</button>				
+				<button 
+					v-else
+					@click="updateItemType()" 
+					type="submit" 
+					class="btn blue">
+					Save
+				</button>
 			</div>
 		</modal>
 		<!-- END EDIT -->
@@ -630,7 +670,6 @@ export default {
 						taxClass.selected = false
 						return taxClass
 					})
-					console.log(_this.taxClasses)
 				} else {
 					_this.loadingTaxClasses = false
 				}

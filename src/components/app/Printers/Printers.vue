@@ -9,7 +9,9 @@
 		</div>
 
 		<!-- BEGIN CREATE NEW PRINTER-->
-        <div class="portlet box blue-hoki" v-if="$root.activeLocation && $root.activeLocation.id">
+        <div 
+			class="portlet box blue-hoki" 
+			v-if="$root.activeLocation && $root.activeLocation.id && $root.permissions['printers create']">
 			<div class="portlet-title bg-blue-chambray" @click="toggleNewPrinterPanel()">
 				<div class="caption">
 					<i class="fa fa-2x fa-plus-circle"></i>
@@ -72,8 +74,8 @@
 									v-model="newPrinter.status"
 									active-color="#0c6"
 									inactive-color="#ff4949"
-									:active-value="'1'"
-									:inactive-value="'0'"
+									:active-value="1"
+									:inactive-value="0"
 									active-text="Enabled"
 									inactive-text="Disabled">
 								</el-switch>
@@ -101,18 +103,37 @@
 					</div>
 					<div class="caption">
 						<span class="caption-subject font-green bold uppercase">Printers</span>
-						<div class="caption-desc font-grey-cascade">Printers for {{ $root.activeUser.name ? $root.activeUser.name : 'User' }}.</div>
+						<div class="caption-desc font-grey-cascade">View and manage printers for the selected store.</div>
 					</div>
 				</div>
 				<div class="portlet-body">
 					<div class="mt-element-list">
 						<div class="mt-list-container list-news">
 							<ul>
-								<li id="parent" class="mt-list-item actions-at-left margin-top-15" v-for="printer in storePrinters" :id="'printer-' + printer.id" :key="printer.id">
+								<li 
+									class="mt-list-item actions-at-left margin-top-15" 
+									v-for="printer in storePrinters" 
+									:id="'printer-' + printer.id" 
+									:key="printer.id">
 									<div class="list-item-actions">
-		                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editPrinter(printer)">
-                                            <i class="fa fa-lg fa-pencil"></i>
-                                        </a>
+										<el-tooltip 
+											v-if="$root.permissions['printers update']"
+											content="Edit" 
+											effect="light" 
+											placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default" @click="editPrinter(printer)">
+												<i class="fa fa-lg fa-pencil"></i>
+											</a>
+										</el-tooltip>
+										<el-tooltip 
+											v-if="$root.permissions['printers read'] && !$root.permissions['printers update']"
+											content="View" 
+											effect="light" 
+											placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default" @click="editPrinter(printer)">
+												<i class="fa fa-lg fa-eye"></i>
+											</a>
+										</el-tooltip>
 		                        	</div>
 		                            <div class="list-datetime bold uppercase font-red">
 		                            	<span>{{ printer.printer_name }}</span>
@@ -129,7 +150,7 @@
 										<div class="col-md-5">
 											<span>
 		                            			<strong>Status: </strong>
-												<span v-if="printer.status === '1' || printer.status === 1">ON</span>
+												<span v-if="printer.status === 1">ON</span>
 												<span v-else>OFF</span>
 		                            		</span><br>
 											<span>
@@ -177,7 +198,7 @@ export default {
 				created_by: this.$root.createdBy,
 				paper_width: 'Select',
 				copies: '1',
-				status: '1'
+				status: 1
 			},
 			errorMessage: '',
 			newPrinterCollapse: true
@@ -221,7 +242,7 @@ export default {
 			this.newPrinter.printer_name = ''
 			this.newPrinter.paper_width = 'Select'
 			this.newPrinter.copies = '1'
-			this.newPrinter.status = '1'
+			this.newPrinter.status = 1
 		},
 		/**
 		 * To get the printers for a store.

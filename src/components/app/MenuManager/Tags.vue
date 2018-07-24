@@ -10,8 +10,8 @@
 		<div class="note note-info">
             <p>Create and manage menu tags.</p>
         </div>
-        <!-- BEGIN CREATE NEW MENU-->
-        <div class="portlet box blue-hoki">
+        <!-- BEGIN CREATE NEW -->
+        <div class="portlet box blue-hoki" v-if="$root.permissions['menu_manager tags create']">
 			<div class="portlet-title bg-blue-chambray" @click="toggleCreateTagPanel()">
 				<div class="custom tools">
 					<a :class="{'expand': !createTagCollapse, 'collapse': createTagCollapse}"></a>
@@ -62,7 +62,7 @@
       			</form>
   			</div>
         </div>
-        <!-- END CREATE NEW MENU-->
+        <!-- END CREATE NEW -->
         <loading-screen :show="displayTagsData" :color="'#2C3E50'" :display="'inline'"></loading-screen>
 	    <div class="portlet light portlet-fit bordered margin-top-20" v-if="!displayTagsData">
 	        <div class="portlet-title bg-blue-chambray">
@@ -78,14 +78,35 @@
 	            <div class="mt-element-list margin-top-15" v-if="tags.length">
 	                <div class="mt-list-container list-news ext-1 no-border">
 	                    <ul>
-	                        <li class="mt-list-item actions-at-left margin-top-15" v-for="tag in tags" :id="'tag-' + tag.id">
+	                        <li 
+								class="mt-list-item actions-at-left margin-top-15" 
+								v-for="tag in tags" 
+								:id="'tag-' + tag.id"
+								:key="tag.id">
 	                        	<div class="list-item-actions">
-	                        		<el-tooltip content="Edit" effect="light" placement="right">
+	                        		<el-tooltip 
+										v-if="$root.permissions['menu_manager tags update']"
+										content="Edit" 
+										effect="light" 
+										placement="right">
 		                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editTag(tag)">
 	                                        <i class="fa fa-lg fa-pencil"></i>
 	                                    </a>
 	                        		</el-tooltip>
-	                        		<el-tooltip content="Apply to multiple" effect="light" placement="right">
+	                        		<el-tooltip 
+										v-if="$root.permissions['menu_manager tags read'] && !$root.permissions['menu_manager tags update']"
+										content="View" 
+										effect="light" 
+										placement="right">
+		                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editTag(tag)">
+	                                        <i class="fa fa-lg fa-eye"></i>
+	                                    </a>
+	                        		</el-tooltip>
+	                        		<el-tooltip 
+										v-if="$root.permissions['menu_manager tags add items']"
+										content="Apply to multiple" 
+										effect="light" 
+										placement="right">
 	                                    <a class="btn btn-circle btn-icon-only btn-default" @click="displayMenuTreeModal(tag, $event)">
 											<i class="icon-layers"></i>
 	                                    </a>

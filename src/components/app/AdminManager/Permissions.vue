@@ -7,10 +7,10 @@
 			<h1 class='page-title'>Permissions</h1>
 			<div class="note note-info">
 				<p>Create and manage user permissions.</p>
-			</div
+			</div>
 
 			<!-- CREATE NEW START -->
-			<div class="portlet box blue-hoki margin-top-20">
+			<div class="portlet box blue-hoki margin-top-20" v-if="$root.permissions['create permission']">
 				<div class="portlet-title bg-blue-chambray" @click="toggleCreatePermissionPanel()">
 					<div class="caption">
 						<i class="fa fa-plus-circle"></i>
@@ -59,7 +59,7 @@
 							<div class="form-body row">
 								<div class="col-md-12">
 									<div class="alert alert-danger" v-if="searchError.length">
-										<button class="close" data-close="alert" @click="clearSearchError()"></button>
+										<button class="close" data-close="alert" @click.prevent="clearSearchError()"></button>
 										<span>{{searchError}}</span>
 									</div>
 								</div>
@@ -117,16 +117,33 @@
 								<ul>
 									<li class="mt-list-item actions-at-left margin-top-15" v-for="permission in currentActivePageItems" :id="'permission-' + permission.id" :class="{'animated' : animated === `permission-${permission.id}`}" :key="permission.id">
 										<div class="list-item-actions">
-											<el-tooltip content="Edit" effect="light" placement="right">
+											<el-tooltip 
+												v-if="$root.permissions['update permission']"
+												content="Edit" 
+												effect="light" 
+												placement="right">
 												<a class="btn btn-circle btn-icon-only btn-default" @click="editPermission(permission)">
 													<i class="fa fa-pencil" aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<a class="btn btn-circle btn-icon-only btn-default" @click="showDeleteModal(permission)">
-												<el-tooltip content="Delete" effect="light" placement="right">
+											<el-tooltip 
+												v-if="$root.permissions['list permission'] && !$root.permissions['update permission']"
+												content="View" 
+												effect="light" 
+												placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default" @click="editPermission(permission)">
+													<i class="fa fa-eye" aria-hidden="true"></i>
+												</a>
+											</el-tooltip>
+											<el-tooltip 
+												v-if="$root.permissions['delete permission']"
+												content="Delete" 
+												effect="light" 
+												placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default" @click="showDeleteModal(permission)">
 													<i class="fa fa-trash" aria-hidden="true"></i>
-												</el-tooltip>
-											</a>
+												</a>
+											</el-tooltip>
 										</div>
 										<div class="list-datetime bold uppercase font-red">
 											<span>{{ permission.name }}</span>
@@ -179,16 +196,33 @@
 								<ul>
 									<li class="mt-list-item actions-at-left margin-top-15" v-for="permission in currentActiveSearchPageItems" :id="'permission-' + permission.id" :class="{'animated' : animated === `permission-${permission.id}`}" :key="permission.id">
 										<div class="list-item-actions">
-											<a class="btn btn-circle btn-icon-only btn-default" @click="editPermission(permission)">
-												<el-tooltip content="Edit" effect="light" placement="right">
+											<el-tooltip 
+												v-if="$root.permissions['update permission']"
+												content="Edit" 
+												effect="light" 
+												placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default" @click="editPermission(permission)">
 													<i class="fa fa-pencil" aria-hidden="true"></i>
-												</el-tooltip>
-											</a>
-											<a class="btn btn-circle btn-icon-only btn-default" @click="showDeleteModal(permission)">
-												<el-tooltip content="Delete" effect="light" placement="right">
+												</a>
+											</el-tooltip>
+											<el-tooltip 
+												v-if="$root.permissions['list permission'] && !$root.permissions['update permission']"
+												content="View" 
+												effect="light" 
+												placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default" @click="editPermission(permission)">
+													<i class="fa fa-eye" aria-hidden="true"></i>
+												</a>
+											</el-tooltip>
+											<el-tooltip 
+												v-if="$root.permissions['delete permission']"
+												content="Delete" 
+												effect="light" 
+												placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default" @click="showDeleteModal(permission)">
 													<i class="fa fa-trash" aria-hidden="true"></i>
-												</el-tooltip>
-											</a>
+												</a>
+											</el-tooltip>
 										</div>
 										<div class="list-datetime bold uppercase font-red">
 											<span>{{ permission.name }}</span>
@@ -223,12 +257,31 @@
 					<span>{{editErrorMessage}}</span>
 				</div>
 				<div class="form-group form-md-line-input form-md-floating-label">
-					<input type="text" class="form-control input-sm" id="form_control_edited_name" v-model="permissionToEdit.name" :class="{'edited': permissionToEdit.name.length}">
+					<input 
+						:disabled="$root.permissions['list permission'] && !$root.permissions['update permission']"
+						type="text" 
+						class="form-control input-sm" 
+						id="form_control_edited_name" 
+						v-model="permissionToEdit.name" 
+						:class="{'edited': permissionToEdit.name.length}">
 					<label for="form_control_edited_name">Name</label>
 				</div>
 			</div>
 			<div slot="modal-footer" class="modal-footer">
-				<button type="button" class="btn btn-primary" @click="updatePermission()">Save</button>
+				<button 
+					v-if="$root.permissions['list permission'] && !$root.permissions['update permission']"
+					type="button" 
+					class="btn btn-primary" 
+					@click="closeEditPermissionModal()">
+					Close
+				</button>
+				<button 
+					v-else
+					type="button" 
+					class="btn btn-primary" 
+					@click="updatePermission()">
+					Save
+				</button>
 			</div>
 		</modal>
 		<!-- EDIT MODAL END -->
@@ -324,7 +377,7 @@ export default {
 		}
 	},
 	created () {
-		this.getPermissions()
+		this.getAllPermissions()
 	},
 	methods: {
 		/**
@@ -531,7 +584,7 @@ export default {
 			var permissionsVue = this
 			return PermissionsFunctions.deletePermission(permissionsVue.permissionToDelete)
 			.then(response => {
-				permissionsVue.getPermissions()
+				permissionsVue.getAllPermissions()
 				permissionsVue.closeDeletePermissionModal()
 				permissionsVue.showDeleteSuccess()
 				permissionsVue.resetDeleteForm()
@@ -559,11 +612,11 @@ export default {
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getPermissions () {
+		getAllPermissions () {
 			this.loading = true
 			this.clearListError()
 			var permissionsVue = this
-			return PermissionsFunctions.getPermissions()
+			return PermissionsFunctions.getAllPermissions()
 			.then(response => {
 				if (response.code === 200 && response.status === 'ok') {
 					permissionsVue.loading = false
@@ -594,7 +647,7 @@ export default {
 				permissionsVue.clearCreateError()
 				return PermissionsFunctions.createPermission(permissionsVue.newPermission)
 				.then(response => {
-					permissionsVue.getPermissions()
+					permissionsVue.getAllPermissions()
 					permissionsVue.resetCreateForm()
 					permissionsVue.showCreateSuccess()
 				}).catch(reason => {

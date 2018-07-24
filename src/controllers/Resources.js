@@ -25,10 +25,10 @@ export default {
 
 		if (locationId) {
 			httpParams.location_id = locationId
-			url = GlobalFunctions.v3BaseUrl + '/resources/search/location_folders'
+			url = GlobalFunctions.resourcesBaseUrl + '/resources/search/location_folders'
 		} else {
 			httpParams.business_id = businessId
-			url = GlobalFunctions.v3BaseUrl + '/resources/search/business_folders'
+			url = GlobalFunctions.resourcesBaseUrl + '/resources/search/business_folders'
 		}
 
 		return new Promise((resolve, reject) => {
@@ -106,11 +106,11 @@ export default {
 
 		if (locationId) {
 			httpParams.location_id = locationId
-			url = GlobalFunctions.v3BaseUrl + '/resources/location_folders'
+			url = GlobalFunctions.resourcesBaseUrl + '/resources/location_folders'
 		} else {
 			httpParams.business_id = businessId
 			httpParams.is_shared = folder.is_shared
-			url = GlobalFunctions.v3BaseUrl + '/resources/business_folders'
+			url = GlobalFunctions.resourcesBaseUrl + '/resources/business_folders'
 		}
 		return new Promise((resolve, reject) => {
 			$.ajax({
@@ -147,11 +147,11 @@ export default {
 
 		if (locationId) {
 			httpParams.location_id = locationId
-			url = GlobalFunctions.v3BaseUrl + '/resources/location_folders'
+			url = GlobalFunctions.resourcesBaseUrl + '/resources/location_folders'
 		} else {
 			httpParams.business_id = businessId
 			httpParams.is_shared = folderPrivacy
-			url = GlobalFunctions.v3BaseUrl + '/resources/business_folders'
+			url = GlobalFunctions.resourcesBaseUrl + '/resources/business_folders'
 		}
 
 		return new Promise((resolve, reject) => {
@@ -191,10 +191,10 @@ export default {
 
 		if (locationId) {
 			httpParams.location_id = locationId
-			url = GlobalFunctions.v3BaseUrl + '/resources/search/location_files'
+			url = GlobalFunctions.resourcesBaseUrl + '/resources/search/location_files'
 		} else {
 			httpParams.business_id = businessId
-			url = GlobalFunctions.v3BaseUrl + '/resources/search/business_files'
+			url = GlobalFunctions.resourcesBaseUrl + '/resources/search/business_files'
 		}
 
 		if (folderId) {
@@ -359,9 +359,9 @@ export default {
 	upload (businessId, locationId, folderId, file) {
 		let url
 		if (locationId) {
-			url = GlobalFunctions.v3BaseUrl + '/resources/location_file/' + locationId + '/' + folderId
+			url = GlobalFunctions.resourcesBaseUrl + '/resources/location_file/' + locationId + '/' + folderId
 		} else {
-			url = GlobalFunctions.v3BaseUrl + '/resources/business_file/' + businessId + '/' + folderId
+			url = GlobalFunctions.resourcesBaseUrl + '/resources/business_file/' + businessId + '/' + folderId
 		}
 
 		return new Promise((resolve, reject) => {
@@ -400,10 +400,10 @@ export default {
 
 		if (locationId) {
 			httpParams.location_id = locationId
-			url = GlobalFunctions.v3BaseUrl + '/resources/location_tags'
+			url = GlobalFunctions.resourcesBaseUrl + '/resources/location_tags'
 		} else {
 			httpParams.business_id = businessId
-			url = GlobalFunctions.v3BaseUrl + '/resources/business_tags'
+			url = GlobalFunctions.resourcesBaseUrl + '/resources/business_tags'
 		}
 
 		return new Promise((resolve, reject) => {
@@ -416,6 +416,34 @@ export default {
 				xhrFields: {
 					withCredentials: true
 				},
+				success (response) {
+					resolve(response)
+				},
+				error (e) {
+					reject(e)
+				}
+			})
+		})
+	},
+	/**
+	 * Call to unoapp API that deletes a resource
+	 * @function
+	 * @param {integer} businessId - The id of the business where the resource is being deleted.
+	 * @param {integer} resourceId - The id of the resource to be deleted.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 * @version 0.0.8
+	 */
+	deleteResource (businessId, resourceId) {
+		let httpParams = {file_id: resourceId, business_id: businessId}
+
+		return new Promise((resolve, reject) => {
+			$.ajax({
+				method: 'DELETE',
+				dataType: 'json',
+				url: GlobalFunctions.resourcesBaseUrl + '/resources/business_file',
+				data: JSON.stringify(httpParams),
+				contentType: 'application/json',
+				processData: false,
 				success (response) {
 					resolve(response)
 				},

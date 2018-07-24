@@ -14,12 +14,17 @@
                     <span>{{ errorMessage }}</span>
 				</div>
 				<div class="form-body invite-user-form height-mod">
-			        <table class="table">
+			        <table class="table" v-show="menus.length">
 			            <thead>
 			                <tr>
 			                	<th> 
 			                		<div class="md-checkbox has-success" @change="selectAll()">
-		                                <input type="checkbox" id="locations-promocodes" class="md-check" v-model="selectAllSelected">
+		                                <input 
+											:disabled="!$root.permissions['menu_manager tiers update']"
+											type="checkbox" 
+											id="locations-promocodes" 
+											class="md-check" 
+											v-model="selectAllSelected">
 		                                <label for="locations-promocodes">
 		                                    <span class="inc"></span>
 		                                    <span class="check"></span>
@@ -32,10 +37,16 @@
 			                </tr>
 			            </thead>
 			            <tbody>
-			                <tr v-for="menu in menus">
+			                <tr v-for="menu in menus" :key="menu.id">
 			                	<td>
 			                		<div class="md-checkbox has-success">
-		                                <input type="checkbox" :id="`menu-${menu.id}`" class="md-check" v-model="menu.selected" @change="syncSelectAll(menu.selected)">
+		                                <input 
+											:disabled="!$root.permissions['menu_manager tiers update']"
+											type="checkbox" 
+											:id="`menu-${menu.id}`" 
+											class="md-check" 
+											v-model="menu.selected" 
+											@change="syncSelectAll(menu.selected)">
 		                                <label :for="`menu-${menu.id}`">
 		                                    <span class="inc"></span>
 		                                    <span class="check"></span>
@@ -48,11 +59,27 @@
 			                </tr>
 			            </tbody>
 			        </table>
+					<p v-show="!displaySpinner && !menus.length">
+						The corporate store does not have any Menus.
+					</p>
 				</div>
 			</form>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button type="button" class="btn blue" @click="assignMenusToTier()">Assign</button>
+			<button 
+				v-if="!$root.permissions['menu_manager tiers update']"
+				type="button" 
+				class="btn blue" 
+				@click="closeModal()">
+				Close
+			</button>
+			<button 
+				v-else
+				type="button" 
+				class="btn blue" 
+				@click="assignMenusToTier()">
+				Assign
+			</button>
 		</div>
 	</modal>
 </template>
@@ -159,7 +186,7 @@ export default {
 							}
 						}
 					}
-					assignMenusVue.selectAllSelected = !(response.payload.some(menu => menu.selected === false))
+					assignMenusVue.selectAllSelected = response.payload.length && !response.payload.some(menu => !menu.selected)
 					assignMenusVue.menus = response.payload
 				}
 				assignMenusVue.displaySpinner = false

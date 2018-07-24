@@ -10,7 +10,7 @@
 	        </div>
 
   			<!-- CREATE NEW START -->
-			<div class="portlet box blue-hoki margin-top-20">
+			<div class="portlet box blue-hoki margin-top-20" v-if="$root.permissions['admin location_managers create']">
 				<div class="portlet-title bg-blue-chambray" @click="toggleCreateLocationManagerPanel()">
 					<div class="caption">
 						<i class="fa fa-plus-circle"></i>
@@ -52,6 +52,9 @@
 	      									<i class="fa fa-eye"></i>
 	      								</span>
 	      							</div>
+									<span class="help-block persist" v-show="passwordMasked">
+										Minimum 8 characters. English letters only. Include at least one capital and one number.
+									</span>
 	      							<div class="input-group" v-show="!passwordMasked">
 		      						    <input type="text" class="form-control input-sm" id="form_control_password" v-model="newLocationManager.password" :class="{'edited': newLocationManager.password.length}">
 		      						    <label for="form_control_password">Password</label>
@@ -59,6 +62,9 @@
 	      									<i class="fa fa-eye-slash"></i>
 	      								</span>
 	      							</div>
+									<span class="help-block persist" v-show="!passwordMasked">
+										Minimum 8 characters. English letters only. Include at least one capital and one number.
+									</span>
 	      						</div>
 	      						<div class="form-group form-md-line-input form-md-floating-label">
 	      							<div class="input-group" v-show="passwordMasked">
@@ -163,19 +169,40 @@
 			                    <ul>
 			                        <li class="mt-list-item actions-at-left margin-top-15" v-for="locationManager in currentActivePageItems" :id="'locationManager-' + locationManager.id" :class="{'animated' : animated === `locationManager-${locationManager.id}`}" :key="locationManager.id">
 			                        	<div class="list-item-actions">
-        	                        		<el-tooltip content="Edit" effect="light" placement="right">
+        	                        		<el-tooltip 
+												v-if="$root.permissions['admin location_managers update']"
+												content="Edit" 
+												effect="light" 
+												placement="right">
 	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editLocationManager(locationManager)">
 	                                                <i class="fa fa-pencil" aria-hidden="true"></i>
 	                                            </a>
 											</el-tooltip>
-											<el-tooltip content="Assign stores" effect="light" placement="right">
+        	                        		<el-tooltip 
+												v-if="$root.permissions['admin location_managers read'] && !$root.permissions['admin location_managers update']"
+												content="View" 
+												effect="light" 
+												placement="right">
+	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editLocationManager(locationManager)">
+	                                                <i class="fa fa-eye" aria-hidden="true"></i>
+	                                            </a>
+											</el-tooltip>
+											<el-tooltip 
+												v-if="$root.permissions['admin location_managers update']"
+												content="Assign stores" 
+												effect="light" 
+												placement="right">
 				                        		<a class="btn btn-circle btn-icon-only btn-default" @click="assignStoresToLocationManager(locationManager)">
 			                                        <i class="icon-layers"></i>
 			                                    </a>
 											</el-tooltip>
-			                        		<el-tooltip content="Roles" effect="light" placement="right">
+			                        		<el-tooltip 
+												v-if="$root.permissions['admin location_managers update']"
+												content="Roles" 
+												effect="light" 
+												placement="right">
 	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="openRolesModal(locationManager)">
-	                                                <i class="fa fa-user" aria-hidden="true"></i>
+	                                                <i class="fa fa-id-badge" aria-hidden="true"></i>
 	                                            </a>
 			                        		</el-tooltip>
 			                        	</div>
@@ -238,21 +265,42 @@
 			                    <ul>
 			                        <li class="mt-list-item actions-at-left margin-top-15" v-for="locationManager in currentActiveSearchPageItems" :id="'locationManager-' + locationManager.id" :class="{'animated' : animated === `locationManager-${locationManager.id}`}" :key="locationManager.id">
 			                        	<div class="list-item-actions">
-        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editLocationManager(locationManager)">
-	        	                        		<el-tooltip content="Edit" effect="light" placement="right">
+        	                        		<el-tooltip 
+												v-if="$root.permissions['admin location_managers update']"
+												content="Edit" 
+												effect="light" 
+												placement="right">
+	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editLocationManager(locationManager)">
 	                                                <i class="fa fa-pencil" aria-hidden="true"></i>
-    	    	                        		</el-tooltip>
-                                            </a>
-        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="assignStoresToLocationManager(locationManager)">
-            									<el-tooltip content="Assign stores" effect="light" placement="right">
-                                                    <i class="icon-layers"></i>
-            									</el-tooltip>
-                                            </a>
-    		                        		<el-tooltip content="Edit" effect="light" placement="right">
-            	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="openRolesModal(locationManager)">
-                                                    <i class="fa fa-user" aria-hidden="true"></i>
-                                                </a>
-    		                        		</el-tooltip>
+	                                            </a>
+											</el-tooltip>
+        	                        		<el-tooltip 
+												v-if="$root.permissions['admin location_managers read'] && !$root.permissions['admin location_managers update']"
+												content="View" 
+												effect="light" 
+												placement="right">
+	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editLocationManager(locationManager)">
+	                                                <i class="fa fa-eye" aria-hidden="true"></i>
+	                                            </a>
+											</el-tooltip>
+											<el-tooltip 
+												v-if="$root.permissions['admin location_managers update']"
+												content="Assign stores" 
+												effect="light" 
+												placement="right">
+				                        		<a class="btn btn-circle btn-icon-only btn-default" @click="assignStoresToLocationManager(locationManager)">
+			                                        <i class="icon-layers"></i>
+			                                    </a>
+											</el-tooltip>
+			                        		<el-tooltip 
+												v-if="$root.permissions['admin location_managers update']"
+												content="Roles" 
+												effect="light" 
+												placement="right">
+	        	                        		<a class="btn btn-circle btn-icon-only btn-default" @click="openRolesModal(locationManager)">
+	                                                <i class="fa fa-id-badge" aria-hidden="true"></i>
+	                                            </a>
+			                        		</el-tooltip>
 			                        	</div>
 			                            <div class="list-datetime bold uppercase font-red">
 			                            	<span>{{ locationManager.name }}</span>
@@ -325,17 +373,20 @@
 				    <button class="close" data-close="alert" @click="clearEditError()"></button>
 				    <span>{{editErrorMessage}}</span>
 				</div>
-				<div class="form-group form-md-line-input form-md-floating-label">
-				    <input type="text" class="form-control input-sm" id="form_control_edited_name" v-model="locationManagerToBeEdited.name" :class="{'edited': locationManagerToBeEdited.name.length}">
-				    <label for="form_control_edited_name">Name</label>
-				</div>
-				<div class="form-group form-md-line-input form-md-floating-label">
-				    <input type="text" class="form-control input-sm" id="form_control_edited_phone" v-model="locationManagerToBeEdited.phone" :class="{'edited': locationManagerToBeEdited.phone.length}">
-				    <label for="form_control_edited_phone">Phone</label>
-				</div>
+				<fieldset :disabled="$root.permissions['admin location_managers read'] && !$root.permissions['admin location_managers update']">
+					<div class="form-group form-md-line-input form-md-floating-label">
+						<input type="text" class="form-control input-sm" id="form_control_edited_name" v-model="locationManagerToBeEdited.name" :class="{'edited': locationManagerToBeEdited.name.length}">
+						<label for="form_control_edited_name">Name</label>
+					</div>
+					<div class="form-group form-md-line-input form-md-floating-label">
+						<input type="text" class="form-control input-sm" id="form_control_edited_phone" v-model="locationManagerToBeEdited.phone" :class="{'edited': locationManagerToBeEdited.phone.length}">
+						<label for="form_control_edited_phone">Phone</label>
+					</div>
+				</fieldset>
 				<div class="form-group form-md-line-input form-md-floating-label">
 				    <label>Status</label><br>
 				    <el-switch
+						:disabled="$root.permissions['admin location_managers read'] && !$root.permissions['admin location_managers update']"
 				    	v-model="locationManagerToBeEdited.active"
 				    	active-color="#0c6"
 				    	inactive-color="#ff4949"
@@ -347,7 +398,20 @@
 				</div>
 			</div>
 			<div slot="modal-footer" class="modal-footer">
-				<button type="button" class="btn btn-primary" @click="updateLocationManager()">Save</button>
+				<button 
+					v-if="$root.permissions['admin location_managers read'] && !$root.permissions['admin location_managers update']"
+					type="button" 
+					class="btn btn-primary" 
+					@click="closeEditLocationManagerModal()">
+					Close
+				</button>
+				<button 
+					v-else
+					type="button" 
+					class="btn btn-primary" 
+					@click="updateLocationManager()">
+					Save
+				</button>
 			</div>
 		</modal>
 		<!-- EDIT MODAL END -->
@@ -1123,6 +1187,7 @@ export default {
 		 */
 		validateNewLocationManagerData () {
 			var locationManagersVue = this
+			const passwordRegex = new RegExp(/^((?=\S*?[A-Z])(?=\S*?[0-9]).{7,})\S$/)
 			return new Promise(function (resolve, reject) {
 				if (!locationManagersVue.newLocationManager.name.length) {
 					reject('Name cannot be blank')
@@ -1132,8 +1197,8 @@ export default {
 					reject('Email cannot be blank')
 				} else if (!emailPattern.test(locationManagersVue.newLocationManager.email)) {
 					reject('Please enter a valid email')
-				} else if (locationManagersVue.newLocationManager.password.length < 6) {
-					reject('Password should be at least 6 characters')
+				} else if (!passwordRegex.test(locationManagersVue.newLocationManager.password)) {
+					reject('Password should: be at least 8 characters long, contain only English letters and numbers, contain at least one uppercase letter and one number')
 				} else if (locationManagersVue.newLocationManager.password !== locationManagersVue.passwordCheck) {
 					reject('Passwords do not match')
 				}

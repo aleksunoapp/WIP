@@ -9,7 +9,7 @@ export default ({
 	 * @function
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	getPermissions: function () {
+	getAllPermissions: function () {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'GET',
@@ -84,6 +84,30 @@ export default ({
 				dataType: 'json',
 				url: '/app/admin/permissions/' + permission.id,
 				data: {},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
+	 * Call to API to get a list of permissions of a user.
+	 * @function
+	 * @param {integer} id - ID of the user
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	getPermissionsOfUser: function (id) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'GET',
+				dataType: 'json',
+				url: `/app/admin/users/${id}/all_permissions`,
+				data: {
+					guard_name: 'admin'
+				},
 				success: function (response) {
 					resolve(response)
 				},

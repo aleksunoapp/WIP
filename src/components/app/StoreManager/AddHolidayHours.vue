@@ -2,88 +2,137 @@
 	<div>
 		<div>
 			<div class="alert alert-danger" v-if="errorMessage.length">
-    		    <button class="close" data-close="alert" @click="clearError()"></button>
-    		    <span>{{ errorMessage }}</span>
-    		</div>
-    		<div class="row">
-    			<div class="col-md-4">
-    				<div class="form-group form-md-line-input form-md-floating-label">
-                	    <input type="text" class="form-control input-sm" id="form_control_1" v-model="holidayHourDetails.name">
-                	    <label for="form_control_1">Holiday Name</label>
-                	</div>
-    			</div>
-    		</div>
+		    <button class="close" data-close="alert" @click="clearError()"></button>
+		    <span>{{ errorMessage }}</span>
+    	</div>
+  		<div class="row">
+  			<div class="col-md-4">
+  				<div class="form-group form-md-line-input form-md-floating-label">
+      	    <input
+              type="text"
+              class="form-control input-sm"
+              id="form_control_1"
+              v-model="holidayHourDetails.name"
+              :disabled="!$root.permissions['stores holiday_hours update']? true : false"
+            >
+	         <label for="form_control_1">Holiday Name</label>
+        	</div>
+  			</div>
+  		</div>
     		<div class="row margin-top-20">
     			<div class="col-md-2">
     				<label>Start Date:</label><br>
-    				<el-date-picker 
-    					v-model="holidayHourDetails.start_date" 
-    					type="date" 
-    					format="yyyy-MM-dd" 
-    					value-format="yyyy-MM-dd" 
-    					:clearable="false" 
-    					placeholder="Pick a start date"></el-date-picker>
+    				<el-date-picker
+    					v-model="holidayHourDetails.start_date"
+    					type="date"
+    					format="yyyy-MM-dd"
+    					value-format="yyyy-MM-dd"
+    					:clearable="false"
+    					placeholder="Pick a start date"
+              :disabled="!$root.permissions['stores holiday_hours update']? true : false"
+            >
+            </el-date-picker>
     			</div>
     			<div class="col-md-2 col-md-offset-1">
     				<label>End Date:</label><br>
-    				<el-date-picker 
-    					v-model="holidayHourDetails.end_date" 
-    					type="date" 
-    					format="yyyy-MM-dd" 
-    					value-format="yyyy-MM-dd" 
-    					:clearable="false" 
-    					placeholder="Pick an end date"></el-date-picker>
+    				<el-date-picker
+    					v-model="holidayHourDetails.end_date"
+    					type="date"
+    					format="yyyy-MM-dd"
+    					value-format="yyyy-MM-dd"
+    					:clearable="false"
+    					placeholder="Pick an end date"
+              :disabled="!$root.permissions['stores holiday_hours update']? true : false"
+            >
+            </el-date-picker>
     			</div>
     		</div>
 			<div class="portlet margin-top-20 clear">
 				<div class="portlet-body">
-			        <table class="table">
-			            <thead>
-			                <tr>
-			                	<th>Day</th>
-			                	<th>Opening Time</th>
-			                    <th>Closing Time</th>
-			                    <th>Status</th>
-			                </tr>
-			            </thead>
-			            <tbody>
-			                <tr v-for="hour in holidayHourDetails.holidayhour">
-			                	<td class="align-middle" v-if="hour.day === 0"> Sunday </td>
-			                	<td class="align-middle" v-if="hour.day === 1"> Monday </td>
-			                	<td class="align-middle" v-if="hour.day === 2"> Tuesday </td>
-			                	<td class="align-middle" v-if="hour.day === 3"> Wednesday </td>
-			                	<td class="align-middle" v-if="hour.day === 4"> Thursday </td>
-			                	<td class="align-middle" v-if="hour.day === 5"> Friday </td>
-			                	<td class="align-middle" v-if="hour.day === 6"> Saturday </td>
-			                    <td class="align-middle">
-			                    	<el-time-select v-model="hour.open_time" :picker-options="{ start: '00:00', step: '00:15', end: '23:45' }" :clearable="false" placeholder="Opening time" class="narrow-picker"></el-time-select>
-			                    	<button data-toggle="tooltip" title="Copy to all" class="btn btn-icon-only btn-outline blue" @click="applyOpeningTimeToAll(hour.open_time)">
-			                    		<i class="fa fa-clone" aria-hidden="true"></i>
-			                    	</button>
-			                    </td>
-			                    <td class="align-middle">
-			                    	<el-time-select v-model="hour.close_time" :picker-options="{ start: '00:00', step: '00:15', end: '23:45' }" :clearable="false" placeholder="Closing time" class="narrow-picker"></el-time-select>
-			                    	<button data-toggle="tooltip" title="Copy to all" class="btn btn-icon-only btn-outline blue" @click="applyClosingTimeToAll(hour.close_time)">
-			                    		<i class="fa fa-clone" aria-hidden="true"></i>
-			                    	</button>
-			                    </td>
-			                    <td class="align-middle">
-			                    	<el-switch
-			                    		v-model="hour.open"
-			                    		active-color="#0c6"
-			                    		inactive-color="#ff4949"
-			                    		:active-value="1"
-			                    		:inactive-value="0"
-			                    		active-text="Open"
-			                    		inactive-text="Closed">
-			                    	</el-switch>
-			                    </td>
-			                </tr>
-			            </tbody>
-			        </table>
+          <table class="table">
+            <thead>
+              <tr>
+              	<th>Day</th>
+              	<th>Opening Time</th>
+                <th>Closing Time</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="hour in holidayHourDetails.holidayhour" :key="hour.id">
+              	<td class="align-middle" v-if="hour.day === 0"> Sunday </td>
+              	<td class="align-middle" v-if="hour.day === 1"> Monday </td>
+              	<td class="align-middle" v-if="hour.day === 2"> Tuesday </td>
+              	<td class="align-middle" v-if="hour.day === 3"> Wednesday </td>
+              	<td class="align-middle" v-if="hour.day === 4"> Thursday </td>
+              	<td class="align-middle" v-if="hour.day === 5"> Friday </td>
+              	<td class="align-middle" v-if="hour.day === 6"> Saturday </td>
+                <td class="align-middle">
+                	<el-time-select
+                    v-model="hour.open_time"
+                    :picker-options="{ start: '00:00', step: '00:15', end: '23:45' }"
+                    :clearable="false"
+                    placeholder="Opening time"
+                    class="narrow-picker"
+                    :disabled="!$root.permissions['stores holiday_hours update']? true : false"
+                  >
+                  </el-time-select>
+                	<button
+                    data-toggle="tooltip"
+                    title="Copy to all"
+                    class="btn btn-icon-only btn-outline blue"
+                    @click="applyOpeningTimeToAll(hour.open_time)"
+                    :disabled="!$root.permissions['stores holiday_hours update']? true : false"
+                  >
+                		<i class="fa fa-clone" aria-hidden="true"></i>
+                	</button>
+                </td>
+                <td class="align-middle">
+                	<el-time-select
+                    v-model="hour.close_time"
+                    :picker-options="{ start: '00:00', step: '00:15', end: '23:45' }"
+                    :clearable="false"
+                    placeholder="Closing time"
+                    class="narrow-picker"
+                    :disabled="!$root.permissions['stores holiday_hours update']? true : false"
+                  >
+                  </el-time-select>
+                	<button
+                    data-toggle="tooltip"
+                    title="Copy to all"
+                    class="btn btn-icon-only btn-outline blue"
+                    @click="applyClosingTimeToAll(hour.close_time)"
+                    :disabled="!$root.permissions['stores holiday_hours update']? true : false"
+                  >
+                		<i class="fa fa-clone" aria-hidden="true"></i>
+                	</button>
+                </td>
+                <td class="align-middle">
+                	<el-switch
+                		v-model="hour.open"
+                		active-color="#0c6"
+                		inactive-color="#ff4949"
+                		:active-value="1"
+                		:inactive-value="0"
+                		active-text="Open"
+                		inactive-text="Closed"
+                    :disabled="!$root.permissions['stores holiday_hours update']? true : false"
+                  >
+                	</el-switch>
+                </td>
+              </tr>
+            </tbody>
+          </table>
 				</div>
 			</div>
-			<button type="button" class="btn btn-primary" @click="addHolidayHours()">Add</button>
+			<button
+        type="button"
+        class="btn btn-primary"
+        @click="addHolidayHours()"
+        :disabled="!$root.permissions['stores holiday_hours update']? true : false"
+      >
+        Add
+      </button>
 		</div>
 	</div>
 </template>
@@ -102,13 +151,6 @@ export default {
 				end_date: '',
 				name: '',
 				holidayhour: [
-					{
-						day: 0,
-						open: 1,
-						open_time: '00:00',
-						close_time: '00:00',
-						status: 1
-					},
 					{
 						day: 1,
 						open: 1,
@@ -146,6 +188,13 @@ export default {
 					},
 					{
 						day: 6,
+						open: 1,
+						open_time: '00:00',
+						close_time: '00:00',
+						status: 1
+					},
+					{
+						day: 0,
 						open: 1,
 						open_time: '00:00',
 						close_time: '00:00',
@@ -240,13 +289,6 @@ export default {
 				name: '',
 				holidayhour: [
 					{
-						day: 0,
-						open: 1,
-						open_time: '00:00',
-						close_time: '00:00',
-						status: 1
-					},
-					{
 						day: 1,
 						open: 1,
 						open_time: '00:00',
@@ -283,6 +325,13 @@ export default {
 					},
 					{
 						day: 6,
+						open: 1,
+						open_time: '00:00',
+						close_time: '00:00',
+						status: 1
+					},
+					{
+						day: 0,
 						open: 1,
 						open_time: '00:00',
 						close_time: '00:00',

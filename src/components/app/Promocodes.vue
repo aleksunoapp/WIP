@@ -7,14 +7,13 @@
 			</div>
 			<!-- END PAGE BAR -->
 			<!-- BEGIN PAGE TITLE-->
-		    <h1 class="page-title">Promo codes</h1>
-		    <!-- END PAGE TITLE -->
+	    <h1 class="page-title">Promo codes</h1>
+    	<!-- END PAGE TITLE -->
 			<div class="note note-info">
-	            <p>Add and manage an application's promo codes.</p>
-	        </div>
-
-	        <!-- BEGIN CREATE NEW PROMO CODE -->
-	        <div class="portlet box blue-hoki">
+        <p>Add and manage an application's promo codes.</p>
+			</div>
+      <!-- BEGIN CREATE NEW PROMO CODE -->
+      <div class="portlet box blue-hoki" v-if="$root.permissions['promocodes create']">
 				<div class="portlet-title bg-blue-chambray" @click="toggleCreatePromoCodePanel()">
 					<div class="caption">
 						<i class="fa fa-2x fa-plus-circle"></i>
@@ -25,28 +24,34 @@
 					</div>
 				</div>
 				<div class="portlet-body" :class="{'display-hide': createNewPromoCodeCollapse}">
-	      			<form role="form" @submit.prevent="createNewPromoCode()">
-	      				<div class="form-body row">
-	      					<div class="col-md-12">
-				        		<div class="alert alert-danger" v-if="createErrorMessage.length">
-				        		    <button class="close" data-close="alert" @click.prevent="clearError('createErrorMessage')"></button>
-				        		    <span>{{ createErrorMessage }}</span>
-				        		</div>
-				        	</div>
-			        		<div class="col-xs-5">
-			        			<div class="form-group form-md-line-input form-md-floating-label">
-                                    <div class="input-icon right">
-                                        <input type="text" class="form-control input-sm  text-uppercase" :class="{'edited': newPromoCode.codes.length}" id="form_control_1" v-model="newPromoCode.codes">                                    
-                                        <i class="fa fa-magic clickable" @click.prevent="setRandomCode(newPromoCode)" aria-hidden="true"></i>
-                                    </div>
-                                    <label for="form_control_1">Enter a Code</label>
-                                </div>
-			        			<div class="side-by-side-wrapper center">
-									<div class="form-group form-md-line-input form-md-floating-label side-by-side-item">
-									    <input type="text" class="form-control input-sm" :class="{'edited': newPromoCode.value}" id="form_control_2" v-model="newPromoCode.value">
-									    <label for="form_control_2">Value of Promo Code</label>
+	  			<form role="form" @submit.prevent="createNewPromoCode()">
+	  				<div class="form-body row">
+	  					<div class="col-md-12">
+		        		<div class="alert alert-danger" v-if="createErrorMessage.length">
+	        		    <button class="close" data-close="alert" @click.prevent="clearError('createErrorMessage')"></button>
+	        		    <span>{{ createErrorMessage }}</span>
+		        		</div>
+		        	</div>
+	        		<div class="col-xs-9 col-md-5">
+	        			<div class="form-group form-md-line-input form-md-floating-label">
+	                <div class="input-icon right">
+	                  <input type="text" class="form-control input-sm  text-uppercase" :class="{'edited': newPromoCode.codes.length}" id="form_control_1" v-model="newPromoCode.codes">
+	                  <i class="fa fa-magic clickable" @click.prevent="setRandomCode(newPromoCode)" aria-hidden="true"></i>
+	                </div>
+	                <label for="form_control_1">Enter a Code</label>
+          			</div>
+	        			<div class="side-by-side-wrapper center">
+									<div class="form-group form-md-line-input form-md-floating-label side-by-side-item margin-right-10">
+								    <input type="text" class="form-control input-sm" :class="{'edited': newPromoCode.value}" id="form_control_2" v-model="newPromoCode.value">
+								    <label for="form_control_2">Value of Promo Code</label>
 									</div>
-									<el-dropdown trigger="click" @command="updateNewPromoCodeValueType" size="small" :show-timeout="50" :hide-timeout="50">										
+									<el-dropdown
+										trigger="click"
+										@command="updateNewPromoCodeValueType"
+										size="small"
+										:show-timeout="50"
+										:hide-timeout="50"
+									>
 										<el-button size="small">
 											{{ newPromoCodeValueTypeLabel }}<i class="el-icon-arrow-down el-icon--right"></i>
 										</el-button>
@@ -55,24 +60,24 @@
 											<el-dropdown-item command="dollar">$</el-dropdown-item>
 										</el-dropdown-menu>
 									</el-dropdown>
-			        			</div>
-			        			<div class="side-by-side-wrapper start">
-									<el-dropdown trigger="click" @command="updateNewPromoCodeApplyOn" size="small" :show-timeout="50" :hide-timeout="50" class="margin-bottom-10">										
-			        					<el-button size="small">
-			        						{{ newPromoCodeAppliesToLabel }}<i class="el-icon-arrow-down el-icon--right"></i>
-			        					</el-button>
-			        					<el-dropdown-menu slot="dropdown">
-			        						<el-dropdown-item command="items">Menu Items</el-dropdown-item>
-			        						<el-dropdown-item command="delivery">Delivery Fee</el-dropdown-item>
-			        					</el-dropdown-menu>
-			        				</el-dropdown>
-			        				<button v-if="newPromoCode.apply_on === 'items'" type="submit" class="btn blue btn-outline select-items-button" @click="displayMenuTreeModal($event)">
-			        					<span v-if="!newPromoCode.sku.length">Select</span><span v-else>Add</span> items
-			        				</button>
-			        				<p class="grey-label" v-if="newPromoCode.sku.length">Selected <span>{{ newPromoCode.sku.length }}</span> item<span v-if="newPromoCode.sku.length !== 1">s</span></p>
-			        			</div>
+	        			</div>
+	        			<div class="side-by-side-wrapper start">
+									<el-dropdown trigger="click" @command="updateNewPromoCodeApplyOn" size="small" :show-timeout="50" :hide-timeout="50" class="margin-bottom-10">
+	        					<el-button size="small">
+	        						{{ newPromoCodeAppliesToLabel }}<i class="el-icon-arrow-down el-icon--right"></i>
+	        					</el-button>
+	        					<el-dropdown-menu slot="dropdown">
+	        						<el-dropdown-item command="items">Menu Items</el-dropdown-item>
+	        						<el-dropdown-item command="delivery">Delivery Fee</el-dropdown-item>
+	        					</el-dropdown-menu>
+        					</el-dropdown>
+	        				<button v-if="newPromoCode.apply_on === 'items'" type="submit" class="btn blue btn-outline select-items-button" @click="displayMenuTreeModal($event)">
+	        					<span v-if="!newPromoCode.sku.length">Select</span><span v-else>Add</span> items
+	        				</button>
+	        				<p class="grey-label" v-if="newPromoCode.sku.length">Selected <span>{{ newPromoCode.sku.length }}</span> item<span v-if="newPromoCode.sku.length !== 1">s</span></p>
+	        			</div>
 								<div class="margin-top-15">
-									<el-dropdown trigger="click" @command="updateNewPromoCodeType" size="small" :show-timeout="50" :hide-timeout="50">										
+									<el-dropdown trigger="click" @command="updateNewPromoCodeType" size="small" :show-timeout="50" :hide-timeout="50">
 										<el-button size="small">
 											{{ newPromoCodeTypeLabel }}<i class="el-icon-arrow-down el-icon--right"></i>
 										</el-button>
@@ -83,142 +88,161 @@
 									</el-dropdown>
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
-								    <input type="text" class="form-control input-sm" :class="{'edited': newPromoCode.max_use_per_person.length}" id="form_control_3" v-model="newPromoCode.max_use_per_person">
-								    <label for="form_control_3">Maximum Redemptions Per User</label>
+							    <input type="text" class="form-control input-sm" :class="{'edited': newPromoCode.max_use_per_person.length}" id="form_control_3" v-model="newPromoCode.max_use_per_person">
+							    <label for="form_control_3">Maximum Redemptions Per User</label>
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label narrow-input">
-								    <input type="text" class="form-control input-sm" :class="{'edited': newPromoCode.max_use.length}" id="form_control_4" v-model="newPromoCode.max_use">
-								    <label for="form_control_4">Total Redemptions Permitted</label>
+							    <input type="text" class="form-control input-sm" :class="{'edited': newPromoCode.max_use.length}" id="form_control_4" v-model="newPromoCode.max_use">
+							    <label for="form_control_4">Total Redemptions Permitted</label>
 								</div>
-			        		</div>
-			        		<div class="col-xs-5">
-			        			<div class="form-group form-md-line-input form-md-floating-label">
-			        				<p class="date-label">Start Date</p>
-			        				<el-date-picker 
-			        					v-model="newPromoCode.start_from" 
-			        					format="yyyy-MM-dd" 
-			        					value-format="yyyy-MM-dd" 
-			        					:clearable="false" 
-			        					placeholder="Select start date">
-		        					</el-date-picker>
-			        			</div>
-			        			<div class="form-group form-md-line-input form-md-floating-label">
-			        				<p class="date-label">End Date</p>
-				        			<el-date-picker 
-				        				v-model="newPromoCode.end_on" 
-				        				format="yyyy-MM-dd" 
-				        				value-format="yyyy-MM-dd" 
-				        				:clearable="false" 
-				        				placeholder="Select end date">
-			        				</el-date-picker>
-			        			</div>
-			        			<div>
-									<p class="inline margin-right-10">Availability</p>			        				
-			        				<button type="submit" class="btn blue btn-outline" @click="selectLocations(newPromoCode, $event, 'new')">Select stores</button>
-			        				<p class="grey-label margin-top-10" v-if="newPromoCode.locations.length">Selected <span v-if="newPromoCode.locations === 'all'">all</span><span v-else>{{ newPromoCode.locations.length }}</span> store<span v-if="newPromoCode.locations.length !== 1">s</span></p>
-			        			</div>
-			        		</div>
-			        	</div>
-	      				<div class="form-actions right margin-top-20">
+	        		</div>
+	        		<div class="col-xs-9 col-md-5">
+	        			<div class="form-group form-md-line-input form-md-floating-label">
+	        				<p class="date-label">Start Date</p>
+	        				<el-date-picker
+	        					v-model="newPromoCode.start_from"
+	        					format="yyyy-MM-dd"
+	        					value-format="yyyy-MM-dd"
+	        					:clearable="false"
+	        					placeholder="Select start date">
+	      					</el-date-picker>
+	        			</div>
+	        			<div class="form-group form-md-line-input form-md-floating-label">
+	        				<p class="date-label">End Date</p>
+		        			<el-date-picker
+		        				v-model="newPromoCode.end_on"
+		        				format="yyyy-MM-dd"
+		        				value-format="yyyy-MM-dd"
+		        				:clearable="false"
+		        				placeholder="Select end date">
+	        				</el-date-picker>
+	        			</div>
+	        			<div>
+									<p class="inline margin-right-10">Availability</p>
+	        				<button type="submit" class="btn blue btn-outline" @click="selectLocations(newPromoCode, $event, 'new')">Select stores</button>
+	        				<p class="grey-label margin-top-10" v-if="newPromoCode.locations.length">Selected <span v-if="newPromoCode.locations === 'all'">all</span><span v-else>{{ newPromoCode.locations.length }}</span> store<span v-if="newPromoCode.locations.length !== 1">s</span></p>
+	        			</div>
+	        		</div>
+	        	</div>
+	  				<div class="form-actions right margin-top-20">
 							<button type="submit" class="btn blue">Create</button>
 						</div>
-	      			</form>
-	  			</div>
-	        </div>
-	        <!-- END CREATE NEW PROMO CODE -->
-
-	        <!-- BEGIN DISPLAY PROMO CODES -->
-	        <loading-screen :show="displayPromoCodesData" :color="'#2C3E50'" :display="'inline'"></loading-screen>
-	        <div v-if="!displayPromoCodesData">
-			    <div class="portlet light portlet-fit bordered margin-top-20" id="promoCodes-container">
-			        <div class="portlet-title bg-blue-chambray">
-			        	<div class="menu-image-main">
-			        		<img src="../../../static/client_logo.png">
-			        	</div>
-			            <div class="caption">
-			                <span class="caption-subject font-green bold uppercase">Promo Codes</span>
-	                        <div class="caption-desc font-grey-cascade">Click on a promo code to edit or delete it.</div>
-			            </div>
-			        </div>
+	  			</form>
+  			</div>
+    	</div>
+	    <!-- END CREATE NEW PROMO CODE -->
+      <!-- BEGIN DISPLAY PROMO CODES -->
+      <loading-screen :show="displayPromoCodesData" :color="'#2C3E50'" :display="'inline'"></loading-screen>
+      <div v-if="!displayPromoCodesData">
+		    <div class="portlet light portlet-fit bordered margin-top-20" id="promoCodes-container">
+		      <div class="portlet-title bg-blue-chambray">
+		      	<div class="menu-image-main">
+		      		<img src="../../../static/client_logo.png">
+		      	</div>
+	          <div class="caption">
+		          <span class="caption-subject font-green bold uppercase">Promo Codes</span>
+		          <div v-if="$root.permissions['promocodes update'] || $root.permissions['promocodes delete']" class="caption-desc font-grey-cascade">Click on a promo code to edit or delete it.</div>
+							<div v-if="$root.permissions['promocodes read'] && !$root.permissions['promocodes update']" class="caption-desc font-grey-cascade">Click on a promo code to view it.</div>
+	          </div>
+		      </div>
 					<div class="col-md-12">
-		        		<div class="alert alert-danger" v-if="assignErrorMessage.length">
-		        		    <button class="close" data-close="alert" @click="clearError('assignErrorMessage')"></button>
-		        		    <span>{{ assignErrorMessage }}</span>
-		        		</div>
-		        	</div>
-			        <div class="portlet-body">
-			            <div class="mt-element-list margin-top-15" v-if="promoCodes.length">
-			                <div class="mt-list-container list-news ext-1 no-border">
-			                    <ul>
-			                        <li class="mt-list-item actions-at-left margin-top-15" :class="{'animated' : animated === `promoCode-${promoCode.id}`}" v-for="promoCode in promoCodes" :id="'promoCode-' + promoCode.id" :key="`promoCode-${promoCode.id}`">
-			                        	<div class="list-item-actions">
-			                        		<el-tooltip content="Edit" effect="light" placement="right">
-				                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editPromoCode(promoCode, $event)">
-		                                            <i class="fa fa-lg fa-pencil"></i>
-		                                        </a>
-			                        		</el-tooltip>
-			                        		<el-tooltip content="Delete" effect="light" placement="right">
-				                        		<a class="btn btn-circle btn-icon-only btn-default" @click="deletePromoCode(promoCode, $event)">
-		                                            <i class="fa fa-lg fa-trash"></i>
-		                                        </a>
-			                        		</el-tooltip>
-			                        	</div>
-			                            <div class="list-item-content height-mod">
-			                            	<div class="col-sm-4">
-				                            	<div class="bold uppercase font-red">
-				                            		<span>{{ promoCode.codes }}</span>
-				                            	</div>
-			                            		<div>
-			                            			<strong>Value:</strong>
-			                            			<span v-if="promoCode.value_type === 'dollar'">$</span><span>{{ promoCode.value }}</span><span v-if="promoCode.value_type === 'percentage'">%</span>
-			                            		</div>
-			                            		<div>
-			                            			<strong>Applies to:</strong>
-			                            			<span>{{ promoCode.apply_on }}</span>
-			                            		</div>
-			                            	</div>
-			                            	<div class="col-sm-4">
-			                            		<div class="">
-			                            			<strong>Type:</strong>
-			                            			<span>{{ promoCode.type }}</span>
-			                            		</div>
-				                            	<div>
-			                            			<strong>Total Redemptions:</strong>
-			                            			<span>{{ promoCode.max_use }}</span>
-			                            		</div>
-				                            	<div>
-			                            			<strong>Max Per User:</strong>
-			                            			<span>{{ promoCode.max_use_per_person }}</span>
-			                            		</div>
-			                            	</div>
-			                            	<div class="col-sm-4">
-			                            		<div>
-			                            			<strong>Start:</strong>
-			                            			<span>{{ promoCode.start_from }}</span>
-			                            		</div>
-			                            		<div>
-			                            			<strong>End:</strong>
-			                            			<span>{{ promoCode.end_on }}</span>
-			                            		</div>
-			                            	</div>
-			                            </div>
-			                        </li>
-			                    </ul>
-			                </div>
-			            </div>
-						<div class="margin-top-20" v-if="!promoCodes.length && !displayPromoCodesData">
-				        	<no-results :show="!promoCodes.length" :type="'promo codes'"></no-results>
-				        </div>
-					</div>
+			  		<div class="alert alert-danger" v-if="assignErrorMessage.length">
+		  		    <button class="close" data-close="alert" @click="clearError('assignErrorMessage')"></button>
+		  		    <span>{{ assignErrorMessage }}</span>
+			  		</div>
+			  	</div>
+					<div class="portlet-body">
+		      	<div class="mt-element-list margin-top-15" v-if="promoCodes.length">
+		        	<div class="mt-list-container list-news ext-1 no-border">
+			          <ul>
+			            <li class="mt-list-item actions-at-left margin-top-15" :class="{'animated' : animated === `promoCode-${promoCode.id}`}" v-for="promoCode in promoCodes" :id="'promoCode-' + promoCode.id" :key="`promoCode-${promoCode.id}`">
+			            	<div class="list-item-actions">
+											<el-tooltip
+												v-if="$root.permissions['promocodes read'] && !$root.permissions['promocodes update']"
+												content="View"
+												effect="light"
+												placement="right"
+											>
+												<a class="btn btn-circle btn-icon-only btn-default" @click="editPromoCode(promoCode, $event)">
+													<i class="fa fa-lg fa-eye"></i>
+												</a>
+											</el-tooltip>
+											<el-tooltip
+												v-if="$root.permissions['promocodes update']"
+												content="Edit"
+												effect="light"
+												placement="right"
+											>
+		              			<a class="btn btn-circle btn-icon-only btn-default" @click="editPromoCode(promoCode, $event)">
+			                    <i class="fa fa-lg fa-pencil"></i>
+			                	</a>
+			            		</el-tooltip>
+			            		<el-tooltip
+												v-if="$root.permissions['promocodes delete']"
+												content="Delete"
+												effect="light"
+												placement="right"
+											>
+			              		<a class="btn btn-circle btn-icon-only btn-default" @click="deletePromoCode(promoCode, $event)">
+			                    <i class="fa fa-lg fa-trash"></i>
+			                	</a>
+			            		</el-tooltip>
+		          			</div>
+		                <div class="list-item-content height-mod">
+		                	<div class="col-sm-4">
+		                  	<div class="bold uppercase font-red">
+		                  		<span>{{ promoCode.codes }}</span>
+		                  	</div>
+		                		<div>
+		                			<strong>Value:</strong>
+		                			<span v-if="promoCode.value_type === 'dollar'">$</span><span>{{ promoCode.value }}</span><span v-if="promoCode.value_type === 'percentage'">%</span>
+		                		</div>
+		                		<div>
+		                			<strong>Applies to:</strong>
+		                			<span>{{ promoCode.apply_on }}</span>
+		                		</div>
+		                	</div>
+		                	<div class="col-sm-4">
+		                		<div class="">
+		                			<strong>Type:</strong>
+		                			<span>{{ promoCode.type }}</span>
+		                		</div>
+		                  	<div>
+		                			<strong>Total Redemptions:</strong>
+		                			<span>{{ promoCode.max_use }}</span>
+		                		</div>
+		                  	<div>
+		                			<strong>Max Per User:</strong>
+		                			<span>{{ promoCode.max_use_per_person }}</span>
+		                		</div>
+		                	</div>
+		                	<div class="col-sm-4">
+		                		<div>
+		                			<strong>Start:</strong>
+		                			<span>{{ promoCode.start_from }}</span>
+		                		</div>
+		                		<div>
+		                			<strong>End:</strong>
+		                			<span>{{ promoCode.end_on }}</span>
+		                		</div>
+		                	</div>
+		                </div>
+			            </li>
+			          </ul>
+		          </div>
 		        </div>
-		    </div>
-        </div>
-        <!-- END DISPLAY PROMO CODES -->
-
-        <menu-tree v-if="showMenuTreeModal" :updateType="'promocode'" @closeMenuTreeModal="closeMenuTreeModal"></menu-tree>
-    	<select-location v-if="showSelectLocationModal" :promoCode="passedPromoCode" @closeSelectLocationModal="closeSelectLocationModal"></select-location>
-        <edit-promoCode v-if="showEditPromoCodeModal" :promoCodeId="passedPromoCode.id" @updatePromoCode="updatePromoCode" @closeEditPromoCodeModal="closeEditPromoCodeModal"></edit-promoCode>
-        <delete-promoCode v-if="deletePromoCodeModalActive" :selectedPromoCodeId="selectedPromoCodeId" @closeDeletePromoCodeModal="closeDeletePromoCodeModal" @deletePromoCodeAndCloseModal="deletePromoCodeAndCloseModal"></delete-promoCode>
+						<div class="margin-top-20" v-if="!promoCodes.length && !displayPromoCodesData">
+			      	<no-results :show="!promoCodes.length" :type="'promo codes'"></no-results>
+			      </div>
+					</div>
+				</div>
+			</div>
+		</div>
+	  <!-- END DISPLAY PROMO CODES -->
+	  <menu-tree v-if="showMenuTreeModal" :updateType="'promocode'" @closeMenuTreeModal="closeMenuTreeModal"></menu-tree>
+		<select-location v-if="showSelectLocationModal" :promoCode="passedPromoCode" @closeSelectLocationModal="closeSelectLocationModal"></select-location>
+	  <edit-promoCode v-if="showEditPromoCodeModal" :promoCodeId="passedPromoCode.id" @updatePromoCode="updatePromoCode" @closeEditPromoCodeModal="closeEditPromoCodeModal"></edit-promoCode>
+	  <delete-promoCode v-if="deletePromoCodeModalActive" :selectedPromoCodeId="selectedPromoCodeId" @closeDeletePromoCodeModal="closeDeletePromoCodeModal" @deletePromoCodeAndCloseModal="deletePromoCodeAndCloseModal"></delete-promoCode>
 	</div>
 </template>
 
@@ -768,18 +792,6 @@ export default {
 }
 .dropdown.side-by-side-item {
 	margin-left: 10px;
-}
-@media (max-width: 1150px) {
-	.side-by-side-wrapper {
-		flex-direction: column;
-		align-items: flex-start;
-	}
-	.side-by-side-item {
-		max-width: 100%;
-	}
-	.dropdown.side-by-side-item {
-		margin-left: 0px;
-	}
 }
 .date-label {
 	color: rgb(136, 136, 136);

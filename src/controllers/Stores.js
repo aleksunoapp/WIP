@@ -410,7 +410,7 @@ export default ({
 			GlobalFunctions.$ajax({
 				method: 'DELETE',
 				dataType: 'json',
-				url: '/app/holiday_hours/delete_in_date_range',
+				url: '/app/holiday_hours/delete',
 				data: data,
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
