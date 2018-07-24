@@ -619,7 +619,7 @@ export default {
 					field = 'cta_text'
 					break
 				default:
-					field = localizationVue.activeTranslationGroup.term
+					field = localizationVue.termRegex.exec(localizationVue.activeTranslationGroup.term)[0].slice(1)
 				}
 
 				let payload = {
