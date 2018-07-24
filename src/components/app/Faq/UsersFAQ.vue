@@ -47,13 +47,16 @@
 								<p class="grey-label">Call to action type</p>
 								<el-select v-model="newFAQ.cta_type" placeholder="Select type" size="small" class="margin-bottom-15" id="form_control_cta_type">
 									<el-option label="none" value=""></el-option>
-									<el-option label="hyperlink" value="hyperlink"></el-option>
-									<el-option label="menu item" value="menu_item"></el-option>
-									<el-option label="promo code" value="promo_code"></el-option>
-									<el-option label="camera" value="camera"></el-option>
+									<el-option label="email" value="email"></el-option>
+									<el-option label="locations" value="locations"></el-option>
+									<el-option label="orders" value="orders"></el-option>
+									<el-option label="profile" value="profile"></el-option>
+									<el-option label="payment" value="payment"></el-option>
+									<el-option label="menus" value="menus"></el-option>
+									<el-option label="rewards" value="rewards"></el-option>
 									<el-option label="call" value="call"></el-option>
-									<el-option label="SMS" value="sms"></el-option>
-									<el-option label="video" value="video"></el-option>
+									<el-option label="web" value="web"></el-option>
+									<el-option label="feedback" value="feedback"></el-option>
 								</el-select>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">

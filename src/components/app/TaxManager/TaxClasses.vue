@@ -56,6 +56,12 @@
 								<input type="text" class="form-control input-sm" :class="{'edited': newTaxClass.max_amount.length}" id="form_control_3" v-model="newTaxClass.max_amount">
 								<label for="form_control_3">Maximum Amount</label>
 							</div>
+							<label v-if="!loadingItemTypes" class="display-block margin-bottom-15">
+								Pair with:
+								<el-select v-if="!loadingItemTypes" v-model="newTaxClass.paired_with" placeholder="Select Item Type" size="small">
+									<el-option v-for="type in itemTypes" :label="type.name" :value="type.id" :key="type.id"></el-option>
+								</el-select>
+							</label>
 							<label>
 								Apply:
 								<el-select 
@@ -210,6 +216,16 @@
 									<label for="form_control_3">Maximum amount</label>
 								</div>
 							</fieldset>
+							<label v-if="!loadingItemTypes" class="display-block margin-bottom-15">
+								Pair with:
+								<el-select 
+									:disabled="!$root.permissions['tax tax_classes update']"
+									v-model="taxClassToEdit.paired_with" 
+									placeholder="Select Item Type" 
+									size="small">
+									<el-option v-for="type in itemTypes" :label="type.name" :value="type.id" :key="type.id"></el-option>
+								</el-select>
+							</label>
 							<label>
 								Apply:
 								<el-select 
@@ -274,6 +290,7 @@
 import Breadcrumb from '../../modules/Breadcrumb'
 import LoadingScreen from '../../modules/LoadingScreen'
 import TaxClassesFunctions from '../../../controllers/TaxClasses'
+import ItemTypesFunctions from '../../../controllers/ItemTypes'
 import Modal from '../../modules/Modal'
 import NoResults from '../../modules/NoResults'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
@@ -294,6 +311,7 @@ export default {
 				value: '',
 				min_amount: '',
 				max_amount: '',
+				paired_with: '',
 				apply: ''
 			},
 
@@ -307,6 +325,7 @@ export default {
 				location_id: '',
 				name: '',
 				value: '',
+				paired_with: '',
 				apply: '',
 				min_amount: '',
 				max_amount: ''
@@ -316,7 +335,9 @@ export default {
 			deleteErrorMessage: '',
 			taxClassToDelete: {
 				name: ''
-			}
+			},
+			loadingItemTypes: false,
+			itemTypes: []
 		}
 	},
 	computed: {
@@ -336,9 +357,38 @@ export default {
 	mounted () {
 		if (this.$root.activeLocation.id !== undefined) {
 			this.getTaxClasses()
+			this.getItemTypes()
 		}
 	},
 	methods: {
+		/**
+		 * To get a list of all item types.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getItemTypes () {
+			this.loadingItemTypes = true
+			this.itemTypes = []
+			var _this = this
+			let payload = {location_id: this.$root.activeLocation.id}
+			return ItemTypesFunctions.getItemTypes(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
+			.then(response => {
+				if (response.code === 200 && response.status === 'ok') {
+					_this.loadingItemTypes = false
+					_this.itemTypes = response.payload
+				} else {
+					_this.loadingItemTypes = false
+				}
+			}).catch(reason => {
+				_this.loadingItemTypes = false
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch the list of item types',
+					errorName: 'createErrorMessage',
+					vue: _this
+				})
+			})
+		},
 		/**
 		 * To toggle the create tier panel, initially set to closed
 		 * @function
@@ -440,6 +490,7 @@ export default {
 				value: '',
 				min_amount: '',
 				max_amount: '',
+				paired_with: '',
 				apply: ''
 			}
 		},
@@ -578,6 +629,7 @@ export default {
 				value: '',
 				min_amount: '',
 				max_amount: '',
+				paired_with: '',
 				apply: ''
 			}
 		},
@@ -651,5 +703,8 @@ export default {
 <style scoped>
 .mt-element-list .list-news.ext-1.mt-list-container ul>.mt-list-item:hover {
 	background-color: white;
+}
+.display-block {
+	display: block;
 }
 </style>
