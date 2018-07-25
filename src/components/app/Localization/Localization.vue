@@ -3,94 +3,16 @@
 		<div class="page-bar">
 			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
 		</div>
-		<h1 class='page-title'>Localization</h1>
+		<h1 class='page-title'>Admin</h1>
 		<div class="note note-info">
-			<p>Create new languages, add and edit translations.</p>
+			<p>Translate your store and menu terms.</p>
 		</div>
-		<!-- BEGIN CREATE OR EDIT LANGUAGE-->
-		<div class="portlet box blue-hoki" v-if="$root.permissions['localization create'] && $root.permissions['localization update']">
-			<div class="portlet-title bg-blue-chambray" @click="toggleNewLocalePanel()">
-				<div class="caption">
-					<i class="fa fa-2x fa-plus-circle"></i>
-					Create or Edit a Language
-				</div>
-				<div class="tools">
-					<a :class="{'expand': !createOrEditLanguageCollapse, 'collapse': createOrEditLanguageCollapse}"></a>
-				</div>
-			</div>
-			<div class="portlet-body" :class="{'display-hide': createOrEditLanguageCollapse}">
-				<div v-if="allLocales.length">
-					<button class="btn create-or-edit" @click="flipCreateAndEditModes" :class="{'blue-chambray' : createOrSelectMode === 'Create a new language', 'blue btn-outline' : createOrSelectMode === 'Edit a language'}">Create a new language</button>
-					<button class="btn" @click="flipCreateAndEditModes" :class="{'blue-chambray' : createOrSelectMode === 'Edit a language', 'blue btn-outline' : createOrSelectMode === 'Create a new language'}">Edit a language</button>
-				</div>
-				<form v-if="createOrSelectMode === 'Create a new language'" role="form" @submit.prevent="createNewLocale()">
-					<div class="form-body row">
-						<div class="col-md-12">
-							<div ref="createOrEditErrorMessage" class="alert alert-danger" v-show="createOrEditErrorMessage.length">
-								<button class="close" data-close="alert" @click.prevent="clearError('createOrEditErrorMessage')"></button>
-								<span>{{createOrEditErrorMessage}}</span>
-							</div>
-							</div>
-						<div class="col-md-6">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': newLocale.country.length}" id="form_control_1" v-model="newLocale.country">
-								<label for="form_control_1">Language Name</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': newLocale.language_code.length}" id="form_control_2" v-model="newLocale.language_code">
-								<label for="form_control_2">Language Code</label>
-							</div>
-						</div>
-					</div>
-					<div class="form-actions left margin-top-20">
-						<button type="submit" class="btn blue">Create</button>
-					</div>
-				</form>
-				<form v-if="createOrSelectMode === 'Edit a language'" role="form" @submit.prevent="editLocale()">
-					<div class="form-body row">
-						<div class="col-md-12">
-							<div class="alert alert-danger" v-show="createOrEditErrorMessage.length">
-								<button class="close" data-close="alert" @click.prevent="clearError('createOrEditErrorMessage')"></button>
-								<span>{{createOrEditErrorMessage}}</span>
-							</div>
-						</div>
-					<div class="col-md-6">
-						<el-dropdown trigger="click" @command="selectLocaleToEdit" size="small" :show-timeout="50" :hide-timeout="50" class='margin-bottom-20'>
-							<el-button size="small">
-								{{ selectedLocale.id ? `${selectedLocale.country} (${selectedLocale.language_code})` : 'Select a language'}}<i class="el-icon-arrow-down el-icon--right"></i>
-							</el-button>
-							<el-dropdown-menu slot="dropdown">
-								<el-dropdown-item  v-for="locale in allLocales" :command="locale" :key="locale.id">
-									{{ locale.country }} ({{ locale.language_code }})
-								</el-dropdown-item>
-							</el-dropdown-menu>
-						</el-dropdown>
-								<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': localeToBeEdited.country.length}" id="form_control_3" v-model="localeToBeEdited.country">
-								<label for="form_control_3">Language name</label>
-								</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': localeToBeEdited.language_code.length}" id="form_control_4" v-model="localeToBeEdited.language_code">
-								<label for="form_control_4">Language Code</label>
-							</div>
-					</div>
-				</div>
-					<div class="form-actions left margin-top-20">
-							<button type="submit" class="btn blue">Save</button>
-						</div>
-					</form>
-				</div>
-			</div>
-		<!-- END CREATE NEW OR EDIT LANGUAGE-->
-			<!-- BEGIN TRANSLATE-->
+
+		<!-- BEGIN TRANSLATE-->
 		<div class="portlet box blue-hoki">
-				<div class="portlet-title bg-blue-chambray" @click="toggleNewLocalePanel()">
+				<div class="portlet-title bg-blue-chambray">
 					<div class="caption">
-						<i class="fa fa-2x fa-plus-circle"></i>
 						Translate
-					</div>
-					<div class="tools">
-						<a :class="{'expand': createOrEditLanguageCollapse, 'collapse': !createOrEditLanguageCollapse}"></a>
 					</div>
 				</div>
 				<div class="portlet-body" :class="{'display-hide': !createOrEditLanguageCollapse}">
@@ -778,9 +700,9 @@ export default {
 				if (response.code === 200 && response.status === 'ok') {
 					if (response.payload.length) {
 						localizationVue.allLocales = response.payload.sort((a, b) => {
-							if (a.country.toLowerCase() > b.country.toLowerCase()) {
+							if (a.language_code.toLowerCase() > b.language_code.toLowerCase()) {
 								return 1
-							} else if (a.country.toLowerCase() < b.country.toLowerCase()) {
+							} else if (a.language_code.toLowerCase() < b.language_code.toLowerCase()) {
 								return -1
 							} else {
 								return 0

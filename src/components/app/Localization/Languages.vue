@@ -455,7 +455,12 @@ export default {
 		 */
 		editLanguage (language, event) {
 			event.stopPropagation()
-			this.languageToEdit = {...language}
+			this.languageToEdit = {
+				id: language.id,
+				country_id: language.country_id,
+				language_code: language.language_code,
+				isDefault: language.default
+			}
 			this.showEditModal = true
 		},
 		/**

@@ -102,15 +102,6 @@
 											</a>
 										</el-tooltip>
 										<el-tooltip 
-											v-if="$root.permissions['localization countries update']"
-											content="Select languages" 
-											effect="light" 
-											placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default" @click="openApplyModal(country, $event)">
-												<i class="icon-layers"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip 
 											v-if="$root.permissions['localization countries delete']"
 											content="Delete" 
 											effect="light" 
@@ -189,85 +180,6 @@
 		</modal>
 		<!-- END EDIT -->
 
-		<!-- START APPLY -->
-		<modal :show="showApplyModal" effect="fade" @closeOnEscape="closeApplyModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeApplyModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Apply Tax Classes</h4>
-			</div>
-			<div slot="modal-body" class="modal-body">
-				<div v-if="activeLocationId === undefined">
-					<div class="alert center alert-info">
-						<h4>No Store Selected</h4>
-						<p>Please select a store from the stores panel.</p>
-					</div>
-				</div>
-				<div v-else>
-					<div class="alert alert-danger" v-show="applyErrorMessage.length" ref="applyErrorMessage">
-						<button class="close" @click.prevent="clearError('applyErrorMessage')"></button>
-						<span>{{ applyErrorMessage }}</span>
-					</div>
-					<div class="alert alert-info center margin-top-20" v-show="!loadingLanguages && !taxClasses.length && !applyErrorMessage.length">
-						<h4>No Tax Classes</h4>
-						<p>No tax classes for this location yet. <router-link to="/app/tax_manager/tax_classes">Create the first one here.</router-link></p>
-					</div>
-					<table class="table">
-						<thead>
-							<tr>
-								<th class="table-column--checkboxes">
-									<div class="md-checkbox has-success" @change="selectAll()">
-										<input type="checkbox" id="locations-promocodes" class="md-check" :checked="selectAllSelected">
-										<label for="locations-promocodes">
-											<span class="inc"></span>
-											<span class="check"></span>
-											<span class="box"></span>
-										</label>
-									</div>
-								</th>
-								<th> Name </th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr v-for="(taxClass, index) in taxClasses" :key="index">
-								<td>
-									<div class="md-checkbox has-success">
-										<input type="checkbox" :id="'checkbox_' + taxClass.id" class="md-check" v-model="taxClass.selected">
-										<label :for="'checkbox_' + taxClass.id">
-											<span class="inc"></span>
-											<span class="check"></span>
-											<span class="box"></span>
-										</label>
-									</div>
-								</td>
-								<td> {{taxClass.name}} </td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-			<div slot="modal-footer" class="modal-footer clear">
-				<button 
-					v-if="activeLocationId === undefined" 
-					@click="closeApplyModal()" 
-					type="submit" 
-					class="btn btn-outline"
-				>
-					Close
-				</button>
-				<button 
-					v-else 
-					@click="applyLanguagesToCountry()"
-					type="submit"
-					class="btn blue"
-				>
-					Apply
-				</button>
-			</div>
-		</modal>
-		<!-- END APPLY -->
-
 		<!-- START DELETE -->
 		<modal :show="showDeleteModal" effect="fade" @closeOnEscape="closeDeleteModal">
 			<div slot="modal-header" class="modal-header">
@@ -291,7 +203,6 @@
 import Breadcrumb from '@/components/modules/Breadcrumb'
 import LoadingScreen from '@/components/modules/LoadingScreen'
 import CountriesFunctions from '@/controllers/Countries'
-import LanguagesFunctions from '@/controllers/Languages'
 import Modal from '@/components/modules/Modal'
 import NoResults from '@/components/modules/NoResults'
 import ajaxErrorHandler from '@/controllers/ErrorController'
@@ -323,24 +234,12 @@ export default {
 			deleteErrorMessage: '',
 			countryToDelete: {
 				name: ''
-			},
-
-			loadingLanguages: false,
-			taxClasses: [],
-			applyErrorMessage: '',
-			countryToAssignTo: {},
-			showApplyModal: false
+			}
 		}
 	},
 	computed: {
 		activeLocationId: function () {
 			return this.$root.activeLocation.id
-		},
-		selectAllSelected () {
-			if (this.taxClasses.length) {
-				return !this.taxClasses.filter(taxClass => !taxClass.selected).length > 0
-			}
-			return false
 		}
 	},
 	watch: {
@@ -625,165 +524,6 @@ export default {
 		 */
 		closeDeleteModal () {
 			this.showDeleteModal = false
-		},
-		/**
-		 * To show the modal to assign Tax Classes to an Country.
-		 * @function
-		 * @param {object} country - The selected country.
-		 * @param {object} event - The click event that prompted this function.
-		 * @returns {undefined}
-		 */
-		openApplyModal (country, event) {
-			event.stopPropagation()
-			this.countryToAssignTo = {...country}
-			let _this = this
-			Promise.all([_this.getLanguages(), _this.getLanguagesForCountry()]).then(response => {
-				if (_this.countryToAssignTo.taxclasses) {
-					_this.taxClasses.forEach(taxClass => {
-						let included = _this.countryToAssignTo.taxclasses.filter(globalTaxClass =>
-							globalTaxClass.id === taxClass.id)
-						if (included.length) {
-							taxClass.selected = true
-						}
-					})
-				}
-			}).catch(reason => {
-				_this.applyErrorMessage = 'Something went wrong ...'
-			})
-			this.showApplyModal = true
-		},
-		/**
-		 * To get a list of all tax classes.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		getLanguages () {
-			this.loadingLanguages = true
-			this.taxClasses = []
-			var _this = this
-			let payload = {location_id: _this.activeLocationId}
-			return LanguagesFunctions.getLanguages(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					_this.loadingLanguages = false
-					_this.taxClasses = response.payload.map(taxClass => {
-						taxClass.selected = false
-						return taxClass
-					})
-				} else {
-					_this.loadingLanguages = false
-				}
-			}).catch(reason => {
-				_this.loadingLanguages = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch the list of tax classes',
-					errorName: 'applyErrorMessage',
-					vue: _this
-				})
-			})
-		},
-		/**
-		 * To get a list of all countries.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		getLanguagesForCountry () {
-			var _this = this
-			return CountriesFunctions.getLanguagesForCountry(_this.countryToAssignTo.id, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					_this.countryToAssignTo = response.payload
-				} else {
-					_this.applyErrorMessage = response.message
-					_this.$scrollTo(_this.$refs.applyErrorMessage, 1000, { offset: -50 })
-				}
-			}).catch(reason => {
-				_this.loadingCountries = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch the list of countries',
-					errorName: 'listErrorMessage',
-					vue: _this
-				})
-			})
-		},
-		validateLanguagesToApply () {
-			var _this = this
-			return new Promise(function (resolve, reject) {
-				if (!_this.taxClasses.some(taxClass => taxClass.selected)) {
-					reject('Select at least one')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
-		 * To get a list of all countries.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		applyLanguagesToCountry () {
-			this.clearError('applyErrorMessage')
-			var _this = this
-			return this.validateLanguagesToApply().then(response => {
-				let payload = {
-					tax_classes: this.taxClasses.filter(taxClass => taxClass.selected).map(taxClass => taxClass.id)
-				}
-				return CountriesFunctions.applyLanguagesToCountry(_this.countryToAssignTo.id, payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						_this.closeApplyModal()
-						_this.showApplySuccess()
-					} else {
-						_this.applyErrorMessage = response.message
-						_this.$scrollTo(_this.$refs.applyErrorMessage, 1000, { offset: -50 })
-					}
-				}).catch(reason => {
-					_this.loadingCountries = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not apply tax classes to this country',
-						errorName: 'applyErrorMessage',
-						vue: _this
-					})
-				})
-			}).catch(reason => {
-				_this.applyErrorMessage = reason
-				_this.$scrollTo(_this.$refs.applyErrorMessage, 1000, { offset: -50 })
-			})
-		},
-		/**
-		 * To close the apply modal.
-		 * @function
-		 * @returns {undefined}
-		 */
-		closeApplyModal () {
-			this.clearError('applyErrorMessage')
-			this.showApplyModal = false
-		},
-		/**
-		 * To select or deselect all items.
-		 * @function
-		 * @returns {undefined}
-		 */
-		selectAll () {
-			let current = this.selectAllSelected
-			this.taxClasses.forEach(taxClass => {
-				taxClass.selected = !current
-			})
-		},
-		/**
-		 * To confirm tax classes have been successfully assigned.
-		 * @function
-		 * @returns {undefined}
-		 */
-		showApplySuccess () {
-			this.$swal({
-				title: 'Success',
-				text: 'Tax classes have been assigned',
-				type: 'success',
-				confirmButtonText: 'OK'
-			})
 		}
 	},
 	components: {
