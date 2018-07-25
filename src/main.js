@@ -70,7 +70,7 @@ var App = new Vue({
 			permissions !== null &&
 			roles !== null
 		) {
-			this.activeUser = activeUser
+			this.activeUser = JSON.parse(activeUser)
 			this.userToken = userToken
 			this.appId = appId
 			this.appSecret = appSecret
