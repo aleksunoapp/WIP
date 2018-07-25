@@ -787,92 +787,70 @@
 								</div>
 							</div>
 						</div>
-						<div class="padding-box">
-	                        <div class="alert alert-danger" v-if="noRecordsError.length">
-	                            <span>{{ noRecordsError }}</span>
-	                        </div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm padding-right-20" id="location_search" v-model="locationSearch.search" :class="{'edited': locationSearch.search.length}">
-								<i v-if="locationSearch.search.length" class="fa fa-times clear-icon" @click="clearSearch()"></i>
-								<label for="location_search">Search All Stores</label>
-								<span class="help-block persist">
-									<span v-if="searchError.length">{{ searchError }}</span>
-									<span v-else>Search by Store Name or Store Address.</span>
-								</span>
-							</div>
-						</div>
-						<div class="margin-top-30" v-if="filteredLocationsPaginated.length">
-							<h3 class="list-heading location-panel-heading blue">Search Results</h3>
-							<div class="tab-content" v-if="!searchError.length">
-								<div class="tab-pane active page-quick-sidebar-chat scrollable">
-									<div class="page-quick-sidebar-chat-users" data-rail-color="#ddd" data-wrapper-class="page-quick-sidebar-list">
-										<ul class="media-list list-items">
-											<li class="media" v-for="location in filteredLocationsPaginated" @click="selectLocation(location)" :key="location.id">
-												<div class="media-status" v-if="location.id === activeLocation.id" @click="unselectLocation($event)">
-													<div class="active-location-dots">
-														<div class="active-location-dot">
-															<i class="fa fa-circle blue"></i>
-														</div>
-														<div class="deactivate-location-dot">
-															<i class="fa fa-times-circle"></i>
-														</div>
+						<div class="tab-content">
+							<div class="tab-pane active page-quick-sidebar-chat">
+								<div class="page-quick-sidebar-chat-users" data-rail-color="#ddd" data-wrapper-class="page-quick-sidebar-list">
+									<h3 
+										v-if="activeLocation.id !== undefined"
+										class="list-heading location-panel-heading blue">
+										Active Store
+									</h3>
+									<ul class="media-list list-items" v-if="activeLocation.id !== undefined">
+										<li class="media">
+											<div class="media-status" @click="unselectLocation($event)">
+												<div class="active-location-dots">
+													<div class="active-location-dot">
+														<i class="fa fa-circle blue"></i>
+													</div>
+													<div class="deactivate-location-dot">
+														<i class="fa fa-times-circle"></i>
 													</div>
 												</div>
-												<div class="media-body">
-													<h4 class="media-heading">{{ location.display_name }}</h4>
-													<div class="media-heading-sub">{{ location.address_line_1 }}</div>
-												</div>
-											</li>
-										</ul>
-										<div class="pagination-wrapper">
-											<div @click="goToPreviousPageFiltered()" class="pagination-arrow" :class="{ 'disabled' : currentPageFiltered === 1 }"><i class="fa fa-angle-left" aria-hidden="true"></i></div>
-											<div @click="goToNextPageFiltered()" class="pagination-arrow" :class="{ 'disabled' : currentPageFiltered === lastPageFiltered }"><i class="fa fa-angle-right" aria-hidden="true"></i></div>
+											</div>
+											<div class="media-body">
+												<h4 class="media-heading">{{ activeLocation.display_name }}</h4>
+												<div class="media-heading-sub">{{ activeLocation.address_line_1 }}</div>
+											</div>
+										</li>
+									</ul>
+									<div class="padding-box">
+										<div class="alert alert-danger" v-if="noRecordsError.length">
+											<span>{{ noRecordsError }}</span>
 										</div>
+										<div class="form-group form-md-line-input form-md-floating-label">
+											<input 
+												type="text" 
+												class="form-control input-sm padding-right-20" 
+												id="location_search" 
+												v-model="locationSearch.search" 
+												:class="{'edited': locationSearch.search.length}">
+											<i 
+												v-if="locationSearch.search.length" 
+												class="fa fa-times clear-icon" 
+												@click="clearSearch()">
+											</i>
+											<label for="location_search">Search for a store</label>
+											<span class="help-block persist">
+												<span v-if="searchError.length">{{ searchError }}</span>
+												<span v-else>Search by name, address or ID</span>
+											</span>
+										</div>
+									</div>
+									<h3 class="list-heading location-panel-heading blue">Stores</h3>
+									<ul class="media-list list-items scrollable">
+										<li class="media" v-for="location in searchResult" @click="selectLocation(location)" :key="location.id">
+											<div class="media-body">
+												<h4 class="media-heading">{{ location.display_name }}</h4>
+												<div class="media-heading-sub">{{ location.address_line_1 }}</div>
+											</div>
+										</li>
+									</ul>
+									<div class="pagination-wrapper" v-show="lastPage > 1">
+										<div @click="goToPreviousPage()" class="pagination-arrow" :class="{ 'disabled' : currentPage === 1 }"><i class="fa fa-angle-left" aria-hidden="true"></i></div>
+										<div @click="goToNextPage()" class="pagination-arrow" :class="{ 'disabled' : currentPage === lastPage }"><i class="fa fa-angle-right" aria-hidden="true"></i></div>
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="margin-top-30" v-else>
-							<h3 class="list-heading location-panel-heading blue">Stores</h3>
-							<div class="tab-content">
-								<div class="tab-pane active page-quick-sidebar-chat scrollable">
-									<div class="page-quick-sidebar-chat-users" data-rail-color="#ddd" data-wrapper-class="page-quick-sidebar-list">
-										<ul class="media-list list-items">
-											<li class="media" v-if="activeLocation && activeLocation.id">
-												<div class="media-status" @click="unselectLocation($event)">
-													<div class="active-location-dots">
-														<div class="active-location-dot">
-															<i class="fa fa-circle blue"></i>
-														</div>
-														<div class="deactivate-location-dot">
-															<i class="fa fa-times-circle"></i>
-														</div>
-													</div>
-												</div>
-												<div class="media-body">
-													<h4 class="media-heading">{{ activeLocation.display_name }}</h4>
-													<div class="media-heading-sub">{{ activeLocation.address_line_1 }}</div>
-												</div>
-											</li>
-											<li class="media" v-if="locations.length" v-for="location in locations" @click="selectLocation(location)" :key="location.id">
-												<div class="media-body">
-													<h4 class="media-heading">{{ location.display_name }}</h4>
-													<div class="media-heading-sub">{{ location.address_line_1 }}</div>
-												</div>
-											</li>
-										</ul>
-										<div class="pagination-wrapper" v-show="lastPage > 1">
-											<div @click="goToPreviousPage()" class="pagination-arrow" :class="{ 'disabled' : currentPage === 1 }"><i class="fa fa-angle-left" aria-hidden="true"></i></div>
-											<div @click="goToNextPage()" class="pagination-arrow" :class="{ 'disabled' : currentPage === lastPage }"><i class="fa fa-angle-right" aria-hidden="true"></i></div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div v-if="!locations.length" class="padding-box">
-							<div class="alert alert-info">
-                                <span>There are no store locations for this application.</span>
-                            </div>
 						</div>
 					</div>
 				</div>
@@ -929,10 +907,28 @@ export default {
 			return this.filteredLocations.slice(begin, end)
 		},
 		lastPage () {
-			return Math.ceil(this.$root.storeLocations.length / 10)
+			if (this.locationSearch.search) {
+				return Math.ceil(this.searchResult.length / 5)
+			} else {
+				return Math.ceil(this.$root.storeLocations.length / 5)
+			}
 		},
 		lastPageFiltered () {
-			return Math.ceil(this.filteredLocations.length / 10)
+			return Math.ceil(this.searchResult.length / 5)
+		},
+		searchResult () {
+			let searchArray = this.$root.storeLocations
+
+			const searchResult = searchArray.filter(store => {
+				let searchArea = store.display_name + store.address_line_1 + store.internal_id
+				return searchArea.toLowerCase().indexOf(this.locationSearch.search.toLowerCase()) > -1
+			})
+			searchResult.sort((a, b) => a.display_name > b.display_name)
+
+			let begin = ((this.currentPage - 1) * 5)
+			let end = (this.currentPage * 5)
+
+			return searchResult.slice(begin, end)
 		}
 	},
 	watch: {
@@ -943,14 +939,6 @@ export default {
 		 */
 		'$route' () {
 			this.setCurrentRoute()
-		},
-		'locationSearch.search' () {
-			if (!this.locationSearch.search.length) {
-				this.clearSearchError()
-				this.filteredLocations = []
-			} else {
-				this.getFilteredLocations()
-			}
 		}
 	},
 	/**
@@ -1181,43 +1169,6 @@ export default {
 			this.noRecordsError = ''
 		},
 		/**
-		 * To filter the stores based on the search term.
-		 * @function
-		 * @returns {undefined}
-		 */
-		getFilteredLocations () {
-			this.clearSearchError()
-			this.filteredLocations = []
-			if (this.locationSearch.search.length) {
-				if (this.locationSearch.search.length < 3) {
-					this.searchError = 'Search term must be at least 3 characters'
-				} else {
-					if (this.activeLocation && this.activeLocation.id) {
-						let searchArea =
-							this.activeLocation.display_name +
-							this.activeLocation.address_line_1 +
-							this.activeLocation.internal_id
-						if (searchArea.toLowerCase().indexOf(this.locationSearch.search.toLowerCase()) > -1) {
-							this.filteredLocations.push(this.activeLocation)
-						}
-					} else {
-						for (var i = 0; i < this.$root.storeLocations.length; i++) {
-							let searchArea =
-								this.$root.storeLocations[i].display_name +
-								this.$root.storeLocations[i].address_line_1 +
-								this.$root.storeLocations[i].internal_id
-							if (searchArea.toLowerCase().indexOf(this.locationSearch.search.toLowerCase()) > -1) {
-								this.filteredLocations.push(this.$root.storeLocations[i])
-							}
-						}
-					}
-				}
-				if (!this.filteredLocations.length && !this.searchError.length) {
-					this.noRecordsError = 'There are no matching records. Please try again.'
-				}
-			}
-		},
-		/**
 		 * To log the user out of their current session and clear global variables and local storage.
 		 * @function
 		 * @returns {undefined}
@@ -1311,6 +1262,7 @@ export default {
 	}
 	.page-quick-sidebar {
 		margin-top: 50px;
+		height: calc(100%-50px);
 	}
 	.page-quick-sidebar-wrapper .page-quick-sidebar .page-quick-sidebar-chat .page-quick-sidebar-chat-users .media-list .media.selected-location {
 		background-color: rgba(55, 183, 217, .3);
@@ -1354,7 +1306,7 @@ export default {
 		color: #fff!important;
 	}
 	.scrollable {
-		height: calc(100vh - 295px);
+		max-height: 100%;
 	    overflow-y: auto;
 	    overflow-x: hidden;
 	}
