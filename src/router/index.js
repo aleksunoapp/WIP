@@ -76,6 +76,7 @@ import Promotions from '@/components/app/Promotions'
 import Geolocations from '@/components/app/Promotions/Geolocations'
 // Localization
 import Localization from '@/components/app/Localization/Localization'
+import Countries from '@/components/app/Localization/Countries'
 // list of permissions
 import {App} from '@/main.js'
 
@@ -736,11 +737,19 @@ export const routes = [
 			// Localization
 			{
 				path: 'localization',
-				name: 'localization',
+				name: 'Localization',
 				component: Localization,
 				meta: {
 					adminOnly: true,
 					permissions: ['localization read']
+				}
+			},
+			{
+				path: 'countries',
+				name: 'Countries',
+				component: Countries,
+				meta: {
+					permissions: ['localization countries read']
 				}
 			},
 			// Unauthorized

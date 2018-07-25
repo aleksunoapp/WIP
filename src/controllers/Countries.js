@@ -43,7 +43,7 @@ export const createCountry = ({
 			method: 'POST',
 			dataType: 'json',
 			url: '/app/country/create',
-			data: {},
+			data: {name},
 			success: function (response) {
 				resolve(response)
 			},
@@ -93,15 +93,17 @@ export const updateCountry = ({
 export const deleteCountry = ({
 	id = null
 }) => {
-	if (!id && id !== 0) {
-		return Error('Country ID is missing.')
-	}
 	return new Promise(function (resolve, reject) {
+		if (id !== 0 && !id) {
+			reject('Country ID is missing.')
+			return
+		}
+
 		GlobalFunctions.$ajax({
-			method: 'POST',
+			method: 'DELETE',
 			dataType: 'json',
 			url: `/app/country/${id}/delete`,
-			data: {name},
+			data: {},
 			success: function (response) {
 				resolve(response)
 			},
@@ -114,6 +116,8 @@ export const deleteCountry = ({
 
 export default ({
 	listCountries,
-	createCountry
+	createCountry,
+	updateCountry,
+	deleteCountry
 })
 
