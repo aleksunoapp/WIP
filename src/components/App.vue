@@ -692,14 +692,62 @@
 							</ul>
 						</li>
 						<li 
-							v-if="$root.permissions['localization read']"
+							v-if="$root.permissions['localization read'] ||
+								$root.permissions['localization languages read'] ||
+								$root.permissions['localization countries read']
+							"
 							class="nav-item" 
 							:class="{'active': currentRoute === 'localization'}" 
+							id="localization_link" 
 						>
-							<router-link to="/app/localization" class="nav-link nav-toggle">
-								<i class="fa fa-language"></i>
+							<a class="nav-link nav-toggle unselectable" @click="toggleNavigation($event)">
+								<i class="fa fa-link"></i>
 								<span class="title">Localization</span>
-							</router-link>
+								<i class="fa fa-chevron-down pull-right" aria-hidden="true"></i>
+							</a>
+							<ul class="sub-menu">
+								<li 
+									v-if="$root.permissions['localization countries read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'loyalty' && currentSubRoute === 'countries'}" 
+									id="localization_countries_link"
+								>
+									<router-link to="/app/localization/countries" class="nav-link">
+										<i class="fa fa-globe"></i>
+										<span class="title">Countries</span>
+									</router-link>
+								</li>
+								<li 
+									v-if="$root.permissions['localization languages read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'localization' && currentSubRoute === 'languages'}" 
+									id="localization_languages_link"
+								>
+									<router-link to="/app/localization/languages" class="nav-link">
+										<i class="fa fa-language"></i>
+										<span class="title">Languages</span>
+									</router-link>
+								</li>
+								<li 
+									v-if="$root.permissions['localization read']"
+									class="nav-item" 
+									:class="{'active': currentRoute === 'localization' && currentSubRoute === 'admin'}" 
+									id="localization_admin_link"
+								>
+									<router-link to="/app/localization/admin" class="nav-link">
+										<i class="fa fa-bars"></i>
+										<span class="title">Admin</span>
+									</router-link>
+								</li>
+							</ul>
+						</li>
+						<li 
+							class="nav-item" 
+						>
+							<a class="nav-link nav-toggle">
+								<i class=""></i>
+								<span class="title"></span>
+							</a>
 						</li>
 					</ul>
 				</div>
