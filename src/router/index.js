@@ -753,7 +753,7 @@ export const routes = [
 				}
 			},
 			{
-				path: '/localization/translate/admin',
+				path: 'localization/admin',
 				name: 'Localization',
 				component: Localization,
 				meta: {
