@@ -180,6 +180,7 @@
 							<label>
 								Country:
 								<el-select 
+									:disabled="!$root.permissions['localization languages update']"
 									v-model="languageToEdit.country_id" 
 									placeholder="Select a country" 
 									size="small"
