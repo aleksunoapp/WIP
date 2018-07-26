@@ -6,8 +6,8 @@
 		</div>
 		<!-- END PAGE BAR -->
 		<!-- BEGIN PAGE TITLE-->
-	  <h1 class="page-title">News Feed</h1>
-	  <!-- END PAGE TITLE-->
+		<h1 class="page-title">News Feed</h1>
+		<!-- END PAGE TITLE-->
 		<div class="note note-info">
 			<p>Create and manage the Application News Feed.</p>
 		</div>
@@ -71,9 +71,9 @@
 			</div>
 		</div>
 		<!-- CREATE END -->
-    <div class="margin-top-20">
-      <div class="relative-block">
-      	<div class="clearfix" v-if="newsFeed.length">
+	    <div class="margin-top-20">
+	    	<div class="relative-block">
+				<div class="clearfix" v-if="newsFeed.length">
 					<el-dropdown trigger="click" @command="updateSortByOrder" size="mini" :show-timeout="50" :hide-timeout="50">
 						<el-button size="mini">
 							Sort by
@@ -91,57 +91,83 @@
 					<page-results class="pull-right" :totalResults="totalResults" :activePage="activePage" @pageResults="pageResultsUpdate"></page-results>
 				</div>
 				<div class="portlet light portlet-fit bordered margin-top-20" v-if="newsFeed.length">
-	        <div class="portlet-title">
-	          <div class="caption">
-	            <i class="fa fa-newspaper-o font-green"></i>
-	            <span class="caption-subject bold font-green uppercase"> News Feed</span>
-	          </div>
-	        </div>
+					<div class="portlet-title">
+					<div class="caption">
+						<i class="fa fa-newspaper-o font-green"></i>
+						<span class="caption-subject bold font-green uppercase"> News Feed</span>
+					</div>
+					</div>
 					<div class="portlet-body">
-	          <div class="timeline">
+						<div class="timeline">
 							<!-- TIMELINE ITEM -->
 							<div class="timeline-item" v-for="(news, index) in newsFeed" :key="index">
-	              <div class="timeline-badge">
-	                <img class="timeline-badge-userpic" v-if="news.image.length" :src="news.image">
-	                <img class="timeline-badge-userpic" v-if="!news.image.length" src="../../../src/assets/img/app/image-placeholder.png">
-	              </div>
-                <div class="timeline-body" :id="'news-' + news.id">
-	                <div class="timeline-body-arrow"> </div>
-	                <div class="timeline-body-head">
-	                  <div class="timeline-body-head-caption">
+								<div class="timeline-badge">
+									<img class="timeline-badge-userpic" v-if="news.image.length" :src="news.image">
+									<img class="timeline-badge-userpic" v-if="!news.image.length" src="../../../src/assets/img/app/image-placeholder.png">
+								</div>
+								<div class="timeline-body" :id="'news-' + news.id">
+									<div class="timeline-body-arrow"> </div>
+									<div class="timeline-body-head">
+										<div class="timeline-body-head-caption">
 											<a class="timeline-body-title font-blue-madison">{{ news.title }}</a>
-	                  </div>
-                    <div class="timeline-body-head-actions">
-	                  	<div class="btn-group" v-if="$root.permissions['news_feed update']">
-	                      <button class="btn blue btn-sm" type="button" @click="editNewsFeed(news)"> Edit</button>
+										</div>
+										<div class="timeline-body-head-actions">
+											<div class="btn-group" v-if="$root.permissions['news_feed update']">
+												<button class="btn blue btn-sm" type="button" @click="editNewsFeed(news)"> Edit</button>
 											</div>
-                			<div class="btn-group" v-if="$root.permissions['news_feed read'] && !$root.permissions['news_feed update']">
-                      	<button class="btn blue btn-sm" type="button" @click="editNewsFeed(news)"> View</button>
-                      </div>
-                    </div>
+											<div class="btn-group" v-if="$root.permissions['news_feed read'] && !$root.permissions['news_feed update']">
+												<button class="btn blue btn-sm" type="button" @click="editNewsFeed(news)"> View</button>
+											</div>
+											<div class="btn-group" v-if="$root.permissions['news_feed delete']">
+												<button class="btn blue btn-outline btn-sm" type="button" @click="openDeleteModal(news)"> Delete</button>
+											</div>
+										</div>
 									</div>
-                  <div class="timeline-body-content">
-                  	<h5>{{ news.formatted_date }}</h5>
-                    <span class="font-grey-cascade">{{ news.short_description }}</span>
+									<div class="timeline-body-content">
+										<h5>{{ news.formatted_date }}</h5>
+										<span class="font-grey-cascade">{{ news.short_description }}</span>
 										<span class="font-grey-cascade">{{ news.external_url }}</span>
-                  </div>
+									</div>
 								</div>
 							</div>
-	          </div>
+						</div>
 						<!-- END TIMELINE ITEM -->
-          </div>
-          <div class="alert alert-danger" v-if="!newsFeed.length && errorMessage.length">
-              <button class="close" data-close="alert" @click="clearError()"></button>
-              <span>{{errorMessage}}</span>
-          </div>
+					</div>
+					<div class="alert alert-danger" v-if="!newsFeed.length && errorMessage.length">
+						<button class="close" data-close="alert" @click="clearError('errorMessage')"></button>
+						<span>{{errorMessage}}</span>
+					</div>
 				</div>
-        <div v-else>
+				<div v-else>
 					<no-results :show="!newsFeed.length" :type="'news feed'"></no-results>
 				</div>
 				<pagination v-if="newsFeed.length && numPages > 1" :passedPage="activePage" :numPages="numPages" @activePageChange="activePageUpdate"></pagination>
 			</div>
 		</div>
+
 		<edit-news-feed v-if="showEditFeedModal" :selectedFeedId="selectedFeedId" @closeEditFeedModal="closeEditFeedModal" @updateNewsFeed="updateNewsFeed"></edit-news-feed>
+
+		<!-- START DELETE -->
+		<modal :show="showDeleteModal" effect="fade" @closeOnEscape="closeDeleteModal">
+			<div slot="modal-header" class="modal-header">
+				<button type="button" class="close" @click="closeDeleteModal()">
+					<span>&times;</span>
+				</button>
+				<h4 class="modal-title center">Confirm Delete</h4>
+			</div>
+			<div slot="modal-body" class="modal-body">
+				<div class="alert alert-danger" v-show="deleteErrorMessage" ref="deleteErrorMessage">
+					<button class="close" @click="clearError('deleteErrorMessage')"></button>
+					<span>{{deleteErrorMessage}}</span>
+				</div>
+
+				<p>Are you sure you want to delete the news feed?</p>
+			</div>
+			<div slot="modal-footer" class="modal-footer clear">
+				<button type="button" class="btn blue" @click="deleteNewsFeed()">Delete</button>
+			</div>
+		</modal>
+		<!-- START DELETE -->
 	</div>
 </template>
 
@@ -150,6 +176,7 @@ import $ from 'jquery'
 import Breadcrumb from '../modules/Breadcrumb'
 import NoResults from '../modules/NoResults'
 import PageResults from '../modules/PageResults'
+import Modal from '@/components/modules/Modal'
 import Pagination from '../modules/Pagination'
 import Dropdown from '../modules/Dropdown'
 import NewsFeedFunctions from '../../controllers/NewsFeed'
@@ -186,14 +213,77 @@ export default {
 			selectedFeedId: 0,
 			imageMode: {
 				newMenu: false
-			}
+			},
+			showDeleteModal: false,
+			newsToDelete: {},
+			deleteErrorMessage: ''
 		}
 	},
 	created () {
 		this.getNewsFeed()
 	},
 	methods: {
-			/**
+		/**
+		 * To close the modal for deleting a promotion and remove that promotion from DOM.
+		 * @function
+		 * @returns {undefined}
+		 */
+		deleteNewsFeed () {
+			var _this = this
+			return NewsFeedFunctions.deleteNewsFeed(_this.newsToDelete.id)
+			.then(response => {
+				if (response.code === 200 && response.status === 'ok') {
+					_this.getNewsFeed()
+					_this.closeDeleteModal()
+					_this.showDeleteSuccess()
+				}
+			})
+			.catch(reason => {
+				ajaxErrorHandler({
+					reason,
+					errorText: `We could not delete the news feed`,
+					errorName: 'deleteErrorMessage',
+					vue: _this
+				})
+			})
+		},
+		/**
+		 * To confirm the operaion succeeded
+		 * @function
+		 * @returns {undefined}
+		 */
+		showDeleteSuccess () {
+			this.$swal({
+				title: 'Success!',
+				text: `News feed deleted`,
+				type: 'success',
+				confirmButtonText: 'OK'
+			})
+		},
+		/**
+		 * To clear an error
+		 * @function
+		 * @param {string} name - Name of the variable to clear
+		 * @returns {undefined}
+		 */
+		clearError (name) {
+			this[name] = ''
+		},
+		/**
+		 * To show the delete modal
+		 * @function
+		 * @param {object} news - The news object to delete
+		 * @returns {undefined}
+		 */
+		openDeleteModal (news) {
+			this.newsToDelete = {...news}
+			this.showDeleteModal = true
+		},
+		closeDeleteModal () {
+			this.clearError('deleteErrorMessage')
+			this.showDeleteModal = false
+		},
+		/**
 		 * To toggle between the open and closed state of the resource picker
 		 * @function
 		 * @param {string} object - The name of the object the image is for
@@ -352,7 +442,7 @@ export default {
 			.then(response => {
 				NewsFeedFunctions.createNewsFeed(newsFeedVue.newNewsFeed, newsFeedVue.$root.userToken, newsFeedVue.$root.appId, newsFeedVue.$root.appSecret).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						newsFeedVue.newsFeed.push(newsFeedVue.newNewsFeed)
+						newsFeedVue.newsFeed.push(response.payload)
 						newsFeedVue.resetForm()
 					} else {
 						newsFeedVue.createFeedError = response.message
@@ -418,7 +508,8 @@ export default {
 		Dropdown,
 		EditNewsFeed,
 		NoResults,
-		ResourcePicker
+		ResourcePicker,
+		Modal
 	}
 }
 </script>
