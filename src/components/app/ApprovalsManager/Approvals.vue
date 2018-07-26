@@ -20,7 +20,7 @@
 					</div>
 				</div>
 
-				<div class="portlet-body">
+				<div class="portlet-body relative-block">
 					<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
 						<span>{{errorMessage}}</span>
 						<button class="close" @click="clearError('errorMessage')"></button>
@@ -37,63 +37,65 @@
 					>
 					</no-results>
 
-					<div class="row" v-show="!loading && !noResults && requests.length">
-						<div class="col-xs-12" ref="request">
-							<table class="table">
-								<thead>
-									<th>
-										Field
-									</th>
-									<th>
-										Current
-									</th>
-									<th>
-										After approval
-									</th>
-								</thead>
-								<tbody>
-									<tr 
-										v-for="(field, index) in request" 
-										:key="index"
-										:class="{'warning' : field.existing !== field.modified}"
+					<div 
+						ref="request"
+						v-show="!loading && !noResults && requests.length">
+
+						<div class="row bold padding-y-20">
+							<div class="col-xs-2">
+								<p>Field</p>
+							</div>
+							<div class="col-xs-5">
+								<p>Current</p>
+							</div>
+							<div class="col-xs-5">
+								<p>After approval</p>
+							</div>
+						</div>
+
+						<div 
+							class="row padding-y-10 border-bottom-light"
+							v-for="(field, index) in request" 
+							:key="index"
+							:class="{'changed' : field.existing !== field.modified}">
+								<div class="col-xs-2">
+									{{field.label}}	
+								</div>
+								<div class="col-xs-5 break-long">
+									<p>{{field.existing}}</p>
+								</div>
+								<div class="col-xs-5">
+									{{field.modified}}
+								</div>
+						</div>
+						<div class="row margin-top-20">
+							<div class="col-xs-12">
+								<pagination 
+									:passedPage="activePage" 
+									:numPages="total" 
+									@activePageChange="activePageUpdate">
+								</pagination>
+								<div class="pull-right" v-if="$root.permissions['approvals update']">
+									<button 
+										v-show="total !== activePage"
+										class="btn blue btn-outline margin-right-10"
+										@click="skip(1)"
 									>
-										<td>
-											{{field.label}}	
-										</td>
-										<td>
-											{{field.existing}}	
-										</td>
-										<td>
-											{{field.modified}}
-										</td>
-									</tr>									
-								</tbody>
-							</table>
-							<pagination 
-								:passedPage="activePage" 
-								:numPages="total" 
-								@activePageChange="activePageUpdate">
-							</pagination>
-							<div class="pull-right" v-if="$root.permissions['approvals update']">
-								<button 
-									v-show="total !== activePage"
-									class="btn blue btn-outline margin-right-10"
-									@click="skip(1)"
-								>
-									Skip
-								</button>
-								<button 
-									class="btn btn-danger margin-right-10"
-									@click="approveRequest(false)"
-								>
-									Reject
-								</button>
-								<button 
-									@click="approveRequest(true)"
-									class="btn blue"
-								>
-									Approve
-								</button>
+										Skip
+									</button>
+									<button 
+										class="btn btn-danger margin-right-10"
+										@click="approveRequest(false)"
+									>
+										Reject
+									</button>
+									<button 
+										@click="approveRequest(true)"
+										class="btn blue"
+									>
+										Approve
+									</button>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -112,7 +114,7 @@ import NoResults from '../../modules/NoResults'
 import ApprovalsFunctions from '../../../controllers/Approvals'
 import Pagination from '../../modules/Pagination'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
-import FieldLabels from '@/components/app/AdminManager/FieldLabels.js'
+import FieldLabels from '@/components/app/ApprovalsManager/FieldLabels.js'
 
 export default {
 	data () {
@@ -276,5 +278,26 @@ export default {
 <style scoped>
 .min-height-200 {
 	min-height: 300px;
+}
+.break-long {
+	overflow-wrap: break-word;
+	word-wrap: break-word;
+}
+.changed {
+	background-color: #fcf8e3;
+}
+.padding-y-20 {
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+.padding-y-10 {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+p {
+	margin: 0;
+}
+.border-bottom-light {
+	border-bottom: 1px solid #f2f2f2;
 }
 </style>

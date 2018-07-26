@@ -408,7 +408,7 @@ import Modal from '../../modules/Modal'
 import Dropdown from '../../modules/Dropdown'
 import Pagination from '../../modules/Pagination'
 import PageResults from '../../modules/PageResults'
-import RolesPicker from './RolesPicker'
+import RolesPicker from '@/components/app/ApprovalsManager/RolesPicker'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
 
 /**

@@ -14,10 +14,10 @@ import LocationSales from '@/components/app/Analytics/LocationSales'
 import ItemSales from '@/components/app/Analytics/ItemSales'
 import UserAnalytics from '@/components/app/Analytics/UserAnalytics'
 // Approvals
-import Roles from '@/components/app/AdminManager/Roles'
-import Permissions from '@/components/app/AdminManager/Permissions'
-import Modules from '@/components/app/AdminManager/Modules'
-import Approvals from '@/components/app/AdminManager/Approvals'
+import Roles from '@/components/app/ApprovalsManager/Roles'
+import Permissions from '@/components/app/ApprovalsManager/Permissions'
+import Modules from '@/components/app/ApprovalsManager/Modules'
+import Approvals from '@/components/app/ApprovalsManager/Approvals'
 // Admin Manager
 import BrandAdmins from '@/components/app/AdminManager/BrandAdmins'
 import LocationManagers from '@/components/app/AdminManager/LocationManagers'
@@ -76,6 +76,8 @@ import Promotions from '@/components/app/Promotions'
 import Geolocations from '@/components/app/Promotions/Geolocations'
 // Localization
 import Localization from '@/components/app/Localization/Localization'
+import Countries from '@/components/app/Localization/Countries'
+import Languages from '@/components/app/Localization/Languages'
 // list of permissions
 import {App} from '@/main.js'
 
@@ -735,8 +737,24 @@ export const routes = [
 			},
 			// Localization
 			{
-				path: 'localization',
-				name: 'localization',
+				path: 'localization/countries',
+				name: 'Countries',
+				component: Countries,
+				meta: {
+					permissions: ['localization countries read']
+				}
+			},
+			{
+				path: 'localization/languages',
+				name: 'Languages',
+				component: Languages,
+				meta: {
+					permissions: ['localization languages read']
+				}
+			},
+			{
+				path: 'localization/admin',
+				name: 'Localization',
 				component: Localization,
 				meta: {
 					adminOnly: true,

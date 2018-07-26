@@ -125,5 +125,27 @@ export default ({
 				}
 			})
 		})
+	},
+	/**
+	 * Call to pitapit API to get the details of a specific news feed.
+	 * @function
+	 * @param {integer} newsFeedId - The id of the selected news feed.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	deleteNewsFeed: function (newsFeedId) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'DELETE',
+				dataType: 'json',
+				url: '/application/news/delete/' + newsFeedId,
+				data: {},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
 	}
 })
