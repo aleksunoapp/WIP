@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showModal" :width="1000" effect="fade" @closeOnEscape="closeModal">
+	<modal :show="showModal" :width="1100" effect="fade" @closeOnEscape="closeModal">
 		<div slot="modal-header" class="modal-header center">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -74,6 +74,13 @@
 										}"
 									>
 									</el-time-select>
+									<button
+										title="Copy to all"
+										class="btn btn-icon-only btn-outline blue"
+										@click="applyOpenTimeToAll(newHours.category_hours[1].open_time, newHours.category_hours)"
+									>
+										<i class="fa fa-clone" aria-hidden="true"></i>
+									</button>
 								</td>
 								<td>
 									<el-time-select 
@@ -87,6 +94,13 @@
 										}"
 									>
 									</el-time-select>
+									<button
+										title="Copy to all"
+										class="btn btn-icon-only btn-outline blue"
+										@click="applyCloseTimeToAll(newHours.category_hours[1].close_time, newHours.category_hours)"
+									>
+										<i class="fa fa-clone" aria-hidden="true"></i>
+									</button>
 								</td>
 								<td>
 									<el-switch
@@ -115,6 +129,13 @@
 										}"
 									>
 									</el-time-select>
+									<button
+										title="Copy to all"
+										class="btn btn-icon-only btn-outline blue"
+										@click="applyOpenTimeToAll(newHours.category_hours[2].open_time, newHours.category_hours)"
+									>
+										<i class="fa fa-clone" aria-hidden="true"></i>
+									</button>
 								</td>
 								<td>
 									<el-time-select 
@@ -128,6 +149,13 @@
 										}"
 									>
 									</el-time-select>
+									<button
+										title="Copy to all"
+										class="btn btn-icon-only btn-outline blue"
+										@click="applyCloseTimeToAll(newHours.category_hours[2].close_time, newHours.category_hours)"
+									>
+										<i class="fa fa-clone" aria-hidden="true"></i>
+									</button>
 								</td>
 								<td>
 									<el-switch
@@ -156,6 +184,13 @@
 										}"
 									>
 									</el-time-select>
+									<button
+										title="Copy to all"
+										class="btn btn-icon-only btn-outline blue"
+										@click="applyOpenTimeToAll(newHours.category_hours[3].open_time, newHours.category_hours)"
+									>
+										<i class="fa fa-clone" aria-hidden="true"></i>
+									</button>
 								</td>
 								<td>
 									<el-time-select 
@@ -169,6 +204,13 @@
 										}"
 									>
 									</el-time-select>
+									<button
+										title="Copy to all"
+										class="btn btn-icon-only btn-outline blue"
+										@click="applyCloseTimeToAll(newHours.category_hours[3].close_time, newHours.category_hours)"
+									>
+										<i class="fa fa-clone" aria-hidden="true"></i>
+									</button>
 								</td>
 								<td>
 									<el-switch
@@ -197,6 +239,13 @@
 										}"
 									>
 									</el-time-select>
+									<button
+										title="Copy to all"
+										class="btn btn-icon-only btn-outline blue"
+										@click="applyOpenTimeToAll(newHours.category_hours[4].open_time, newHours.category_hours)"
+									>
+										<i class="fa fa-clone" aria-hidden="true"></i>
+									</button>
 								</td>
 								<td>
 									<el-time-select 
@@ -210,6 +259,13 @@
 										}"
 									>
 									</el-time-select>
+									<button
+										title="Copy to all"
+										class="btn btn-icon-only btn-outline blue"
+										@click="applyCloseTimeToAll(newHours.category_hours[4].close_time, newHours.category_hours)"
+									>
+										<i class="fa fa-clone" aria-hidden="true"></i>
+									</button>
 								</td>
 								<td>
 									<el-switch
@@ -238,6 +294,13 @@
 										}"
 									>
 									</el-time-select>
+									<button
+										title="Copy to all"
+										class="btn btn-icon-only btn-outline blue"
+										@click="applyOpenTimeToAll(newHours.category_hours[5].open_time, newHours.category_hours)"
+									>
+										<i class="fa fa-clone" aria-hidden="true"></i>
+									</button>
 								</td>
 								<td>
 									<el-time-select 
@@ -251,6 +314,13 @@
 										}"
 									>
 									</el-time-select>
+									<button
+										title="Copy to all"
+										class="btn btn-icon-only btn-outline blue"
+										@click="applyCloseTimeToAll(newHours.category_hours[5].close_time, newHours.category_hours)"
+									>
+										<i class="fa fa-clone" aria-hidden="true"></i>
+									</button>
 								</td>
 								<td>
 									<el-switch
@@ -279,6 +349,13 @@
 										}"
 									>
 									</el-time-select>
+									<button
+										title="Copy to all"
+										class="btn btn-icon-only btn-outline blue"
+										@click="applyOpenTimeToAll(newHours.category_hours[6].open_time, newHours.category_hours)"
+									>
+										<i class="fa fa-clone" aria-hidden="true"></i>
+									</button>
 								</td>
 								<td>
 									<el-time-select 
@@ -292,6 +369,13 @@
 										}"
 									>
 									</el-time-select>
+									<button
+										title="Copy to all"
+										class="btn btn-icon-only btn-outline blue"
+										@click="applyCloseTimeToAll(newHours.category_hours[6].close_time, newHours.category_hours)"
+									>
+										<i class="fa fa-clone" aria-hidden="true"></i>
+									</button>
 								</td>
 								<td>
 									<el-switch
@@ -320,6 +404,13 @@
 										}"
 									>
 									</el-time-select>
+									<button
+										title="Copy to all"
+										class="btn btn-icon-only btn-outline blue"
+										@click="applyOpenTimeToAll(newHours.category_hours[0].open_time, newHours.category_hours)"
+									>
+										<i class="fa fa-clone" aria-hidden="true"></i>
+									</button>
 								</td>
 								<td>
 									<el-time-select 
@@ -333,6 +424,13 @@
 										}"
 									>
 									</el-time-select>
+									<button
+										title="Copy to all"
+										class="btn btn-icon-only btn-outline blue"
+										@click="applyCloseTimeToAll(newHours.category_hours[0].close_time, newHours.category_hours)"
+									>
+										<i class="fa fa-clone" aria-hidden="true"></i>
+									</button>
 								</td>
 								<td>
 									<el-switch
@@ -408,6 +506,13 @@
 										}"
 									>
 									</el-time-select>
+									<button
+										title="Copy to all"
+										class="btn btn-icon-only btn-outline blue"
+										@click="applyOpenTimeToAll(day.open_time, existingHours)"
+									>
+										<i class="fa fa-clone" aria-hidden="true"></i>
+									</button>
 								</td>
 								<td>
 									<el-time-select 
@@ -422,6 +527,13 @@
 										}"
 									>
 									</el-time-select>
+									<button
+										title="Copy to all"
+										class="btn btn-icon-only btn-outline blue"
+										@click="applyCloseTimeToAll(day.close_time, existingHours)"
+									>
+										<i class="fa fa-clone" aria-hidden="true"></i>
+									</button>
 								</td>
 								<td>
 									<el-switch
@@ -445,6 +557,16 @@
 							</tr>
 						</tbody>
 					</table>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12">
+					<button 
+						@click="useStoreHours()"
+						type="button" 
+						class="btn blue btn-outline">
+						Use store hours
+					</button>
 				</div>
 			</div>
 		</div>
@@ -542,6 +664,47 @@ export default {
 		this.showModal = true
 	},
 	methods: {
+		/**
+		 * To copy time to all other days
+		 * @function
+		 * @param {string} time - The time to copy
+		 * @param {object} hoursObject - The array of days to copy to
+		 * @returns {undefined}
+		 */
+		applyCloseTimeToAll (time, hoursObject) {
+			hoursObject.forEach(day => {
+				day.close_time = time
+			})
+		},
+		/**
+		 * To copy time to all other days
+		 * @function
+		 * @param {string} time - The time to copy
+		 * @param {object} hoursObject - The array of days to copy to
+		 * @returns {undefined}
+		 */
+		applyOpenTimeToAll (time, hoursObject) {
+			hoursObject.forEach(day => {
+				day.open_time = time
+			})
+		},
+		/**
+		 * To copy hours from store hours
+		 * @function
+		 * @returns {undefined}
+		 */
+		useStoreHours () {
+			this.$root.activeLocation.location_hours.forEach(storeDay => {
+				let match
+				if (this.view === 'new') {
+					match = this.newHours.category_hours.filter(menuDay => menuDay.day === storeDay.day)[0]
+				} else {
+					match = this.existingHours.filter(menuDay => menuDay.day === storeDay.day)[0]
+				}
+				match.open_time = storeDay.open_time
+				match.close_time = storeDay.close_time
+			})
+		},
 		/**
 		 * To switch between the new and existing hours views
 		 * @function
