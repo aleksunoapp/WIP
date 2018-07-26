@@ -114,7 +114,7 @@ import NoResults from '../../modules/NoResults'
 import ApprovalsFunctions from '../../../controllers/Approvals'
 import Pagination from '../../modules/Pagination'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
-import FieldLabels from '@/components/app/AdminManager/FieldLabels.js'
+import FieldLabels from '@/components/app/ApprovalsManager/FieldLabels.js'
 
 export default {
 	data () {

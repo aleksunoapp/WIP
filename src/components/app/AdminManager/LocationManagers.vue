@@ -454,7 +454,7 @@ import Dropdown from '../../modules/Dropdown'
 import Pagination from '../../modules/Pagination'
 import PageResults from '../../modules/PageResults'
 import SelectLocationsPopup from '../../modules/SelectLocationsPopup'
-import RolesPicker from './RolesPicker'
+import RolesPicker from '@/components/app/ApprovalsManager/RolesPicker'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
 
 /**
