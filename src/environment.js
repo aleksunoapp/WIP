@@ -1,6 +1,6 @@
 export default {
 	// careful, one only
-	development: true,
-	staging: false,
+	development: false,
+	staging: true,
 	production: false
 }
