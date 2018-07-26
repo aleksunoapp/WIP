@@ -86,7 +86,6 @@ var App = new Vue({
 				const route = appRoutes[i]
 				accessible = route.meta.permissions.some(permission => this.permissions[permission])
 				if (accessible) {
-					console.log('pushing to', `/app/${route.path}`)
 					this.$router.push({path: `/app/${route.path}`})
 					break
 				}
