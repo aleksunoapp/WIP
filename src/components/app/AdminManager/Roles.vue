@@ -444,23 +444,6 @@ export default {
 
 					let role = rolesVue.listToTree(response.payload, response.payload.filter(mod => mod.parent_module === 0)[0])
 
-					try {
-						let mark = (tree) => {
-							if (!tree.permissions.length) {
-								tree.empty = true
-							}
-							if (tree.sub_modules) {
-								mark(tree.sub_modules)
-							} else if (tree.empty) {
-								return null
-							}
-						}
-						role = mark(role)
-						console.log(role)
-					} catch (e) {
-						console.log(e)
-					}
-
 					for (let mod of role) {
 						rolesVue.combinePermissionsAndModules(mod)
 					}
