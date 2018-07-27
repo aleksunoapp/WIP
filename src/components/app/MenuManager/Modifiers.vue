@@ -177,7 +177,7 @@
 	                                        </a>
 		                        		</el-tooltip>
 		                        		<el-tooltip 
-											v-if="$root.permissions['menu_manager modifiers update'] && false"
+											v-if="$root.permissions['menu_manager modifiers update']"
 											content="Copy to stores" 
 											effect="light" 
 											placement="top">
