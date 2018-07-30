@@ -156,7 +156,7 @@
 		                    	</div>
 		                    	<div class="form-group form-md-line-input form-md-floating-label">
 		                    	    <input type="text" class="form-control input-sm" id="form_control_11" v-model="newStore.fax" v-mask="'(###) ###-####'">
-		                    	    <label for="form_control_11">Store Fax Number</label>
+		                    	    <label for="form_control_11">Store Fax Number (optional)</label>
 		                    	</div>
 		                    	<div class="form-group form-md-line-input form-md-floating-label">
 		                    	    <input type="text" class="form-control input-sm" id="form_control_12" v-model="newStore.email">
@@ -1041,7 +1041,7 @@ export default {
 					reject('Store internal id cannot be blank')
 				} else if (createStoreVue.newStore.phone.length < 14) {
 					reject('Store phone number should have at least 10 digits')
-				} else if (createStoreVue.newStore.fax.length < 14) {
+				} else if (createStoreVue.newStore.fax && createStoreVue.newStore.fax.length < 14) {
 					reject('Store fax number should have at least 10 digits')
 				} else if (!createStoreVue.newStore.email.length) {
 					reject('Store email cannot be blank')
@@ -1065,6 +1065,9 @@ export default {
 			.then(response => {
 				createStoreVue.newStore.phone = createStoreVue.newStore.phone.replace(/[^\d]/g, '')
 				createStoreVue.newStore.fax = createStoreVue.newStore.fax.replace(/[^\d]/g, '')
+				if (!createStoreVue.newStore.fax) {
+					createStoreVue.newStore.fax = '0000000000'
+				}
 				StoresFunctions.createNewStore(createStoreVue.newStore, createStoreVue.$root.appId, createStoreVue.$root.appSecret, createStoreVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						createStoreVue.loadingCreateNewStore = false

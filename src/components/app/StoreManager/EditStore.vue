@@ -207,12 +207,13 @@
 											<div class="form-group form-md-line-input form-md-floating-label">
 												<input
 													type="text"
-													class="form-control input-sm edited"
+													class="form-control input-sm"
+													:class="{'edited': storeToBeEdited.fax.length}"
 													id="form_control_12"
 													v-model="storeToBeEdited.fax"
 													v-mask="'(###) ###-####'"
 												>
-												<label for="form_control_12">Store Fax Number</label>
+												<label for="form_control_12">Store Fax Number (optional)</label>
 											</div>
 											<div class="form-group form-md-line-input form-md-floating-label">
 												<input
@@ -1447,9 +1448,9 @@ export default {
 				} else if (!editStoreVue.storeToBeEdited.postal_code.length) {
 					reject('Store postal code cannot be blank')
 				} else if (editStoreVue.storeToBeEdited.phone.length < 14) {
-					reject('Store phone should be numeric')
-				} else if (editStoreVue.storeToBeEdited.phone.length < 14) {
-					reject('Store fax should be numeric')
+					reject('Store phone should have at least 10 digits')
+				} else if (editStoreVue.storeToBeEdited.fax && editStoreVue.storeToBeEdited.fax.length < 14) {
+					reject('Store fax number should have at least 10 digits')
 				} else if (!editStoreVue.storeToBeEdited.email.length) {
 					reject('Store email cannot be blank')
 				} else if (!emailPattern.test(editStoreVue.storeToBeEdited.email)) {
@@ -1479,6 +1480,9 @@ export default {
 			.then(response => {
 				editStoreVue.storeToBeEdited.phone = editStoreVue.storeToBeEdited.phone.replace(/[^\d]/g, '')
 				editStoreVue.storeToBeEdited.fax = editStoreVue.storeToBeEdited.fax.replace(/[^\d]/g, '')
+				if (!editStoreVue.storeToBeEdited.fax) {
+					editStoreVue.storeToBeEdited.fax = '0000000000'
+				}
 				StoresFunctions.updateStoreInformation(editStoreVue.storeToBeEdited, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						editStoreVue.showSuccessAlert('Store details')
