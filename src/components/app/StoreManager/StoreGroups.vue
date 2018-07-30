@@ -75,34 +75,31 @@
                         </a>
                   		</el-tooltip>
                   		<el-tooltip
-                        v-if="$root.permissions['stores groups update']"
-    				            content="Edit"
-                        effect="light"
-    				            placement="right"
-                      >
-                        <a class="btn btn-circle btn-icon-only btn-default" @click="displayEditGroupModal(group, $event)">
-                          <i class="fa fa-lg fa-pencil"></i>
-                        </a>
+	                        v-if="$root.permissions['stores groups update']"
+							content="Edit"
+                	        effect="light"
+							placement="right">
+	                        <a class="btn btn-circle btn-icon-only btn-default" @click="displayEditGroupModal(group, $event)">
+    	                    	<i class="fa fa-lg fa-pencil"></i>
+        	                </a>
                   		</el-tooltip>
-    									<el-tooltip
-    										v-if="$root.permissions['stores groups update']"
-    										content="Select stores"
-    										effect="light"
-    										placement="right"
-                      >
+						<el-tooltip
+							v-if="$root.permissions['stores groups update']"
+							content="Select stores"
+							effect="light"
+							placement="right">
                     		<a class="btn btn-circle btn-icon-only btn-default" @click="assignStoresToGroup(group)">
-                          <i class="fa fa-lg fa-home"></i>
-                        </a>
+                        		<i class="fa fa-lg fa-home"></i>
+                        	</a>
     	                </el-tooltip>
                     	<el-tooltip
-                      v-if="$root.permissions['stores groups update']"
-    				          content="Apply Menu Tiers"
+							v-if="$root.permissions['stores groups update']"
+    				        content="Apply Menu Tiers"
     			            effect="light"
-    				          placement="right"
-                      >
-                    		<a class="btn btn-circle btn-icon-only btn-default" @click.stop="displayTiersModal(group)">
-                          <i class="fa fa-lg fa-cutlery"></i>
-                        </a>
+    				        placement="right">
+							<a class="btn btn-circle btn-icon-only btn-default" @click.stop="displayTiersModal(group)">
+								<i class="fa fa-lg fa-cutlery"></i>
+                        	</a>
                     	</el-tooltip>
                   	</div>
                     <div class="list-datetime bold uppercase font-red">
