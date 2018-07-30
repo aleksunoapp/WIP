@@ -534,6 +534,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		closeEditModal () {
+			this.clearError('editErrorMessage')
 			this.showEditModal = false
 		},
 		/**
