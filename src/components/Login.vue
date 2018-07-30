@@ -169,6 +169,7 @@ import Dropdown from './modules/Dropdown'
 import {BackgroundRotator} from '../assets/scripts/backgroundRotator'
 import ajaxErrorHandler from '../controllers/ErrorController'
 import {routes} from '@/router'
+import { mapMutations } from 'vuex'
 
 /**
  * Define the email pattern to check for valid emails.
@@ -379,6 +380,7 @@ export default {
 						response.payload.assigned_permissions.forEach(permission => {
 							userPermissions[permission.name] = true
 						})
+						loginVue.setPermissions(userPermissions)
 						loginVue.$root.permissions = userPermissions
 						localStorage.setItem('permissions', JSON.stringify(loginVue.$root.permissions))
 
@@ -495,7 +497,10 @@ export default {
 				loginVue.errorMessage = reason
 				window.scrollTo(0, 0)
 			})
-		}
+		},
+		...mapMutations({
+			setPermissions: 'SET_PERMISSIONS'
+		})
 	},
 	components: {
 		Dropdown
