@@ -203,7 +203,8 @@ export default {
 			var approvalsVue = this
 			let pagination = {
 				page: this.activePage,
-				records_per_page: 1
+				records_per_page: 1,
+				status: 0 // only show requests that have not yet been approved
 			}
 			return ApprovalsFunctions.getRequests(pagination)
 			.then(response => {
