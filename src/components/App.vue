@@ -209,6 +209,7 @@ export default {
 	},
 	computed: {
 		lastPage () {
+			this.currentPage = 1
 			if (this.locationSearch.search) {
 				return Math.ceil(this.searchResult.length / 5)
 			} else {
