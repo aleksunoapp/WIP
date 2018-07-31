@@ -89,7 +89,7 @@
 		    <div class="portlet light portlet-fit bordered margin-top-20">
 		        <div class="portlet-title bg-blue-chambray">
 		            <div class="caption">
-		                <span class="caption-subject font-green bold uppercase">{{ $router.passedTier.name }}</span>
+		                <span class="caption-subject font-default bold uppercase">{{ $router.passedTier.name }}</span>
 		                <div class="caption-desc font-grey-cascade">Edit a reward item or select items to apply the reward to.</div>
 		            </div>
 		        </div>

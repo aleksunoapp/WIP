@@ -142,7 +142,7 @@
 			        		<img src="../../../../static/client_logo.png">
 			        	</div>
 			            <div class="caption">
-			                <span class="caption-subject font-green bold uppercase">Brand Admins</span>
+			                <span class="caption-subject font-default bold uppercase">Brand Admins</span>
 	                        <div class="caption-desc font-grey-cascade">Click on the edit icon to edit a brand admin.</div>
 			            </div>
 			        </div>
@@ -229,7 +229,7 @@
 			        		<img src="../../../../static/client_logo.png">
 			        	</div>
 			            <div class="caption">
-			                <span class="caption-subject font-green bold uppercase">Search Results</span>
+			                <span class="caption-subject font-default bold uppercase">Search Results</span>
 	                        <div class="caption-desc font-grey-cascade">Click on the edit icon to edit a brand admin.</div>
 			            </div>
 			        </div>

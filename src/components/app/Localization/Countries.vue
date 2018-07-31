@@ -66,7 +66,7 @@
 						<img src="../../../../static/client_logo.png">
 					</div>
 					<div class="caption">
-						<span class="caption-subject font-green bold uppercase">Countries</span>
+						<span class="caption-subject font-default bold uppercase">Countries</span>
 						<div class="caption-desc font-grey-cascade">Create, edit or delete countries and assign languages to them.</div>
 					</div>
 				</div>

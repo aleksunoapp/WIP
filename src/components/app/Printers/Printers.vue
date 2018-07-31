@@ -102,7 +102,7 @@
 						<img src="../../../../static/client_logo.png">
 					</div>
 					<div class="caption">
-						<span class="caption-subject font-green bold uppercase">Printers</span>
+						<span class="caption-subject font-default bold uppercase">Printers</span>
 						<div class="caption-desc font-grey-cascade">View and manage printers for the selected store.</div>
 					</div>
 				</div>

@@ -105,7 +105,7 @@
 								<div class="page-quick-sidebar-chat-users" data-rail-color="#ddd" data-wrapper-class="page-quick-sidebar-list">
 									<h3 
 										v-if="activeLocation.id !== undefined"
-										class="list-heading location-panel-heading blue">
+										class="list-heading location-panel-heading blue font-default">
 										Active Store
 									</h3>
 									<ul class="media-list list-items" v-if="activeLocation.id !== undefined">
@@ -149,7 +149,7 @@
 											</span>
 										</div>
 									</div>
-									<h3 class="list-heading location-panel-heading blue">Stores</h3>
+									<h3 class="list-heading location-panel-heading blue font-default">Stores</h3>
 									<ul class="media-list list-items scrollable">
 										<li class="media" v-for="location in searchResult" @click="selectLocation(location)" :key="location.id">
 											<div class="media-body">

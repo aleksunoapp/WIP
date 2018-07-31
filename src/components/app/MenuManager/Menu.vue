@@ -151,7 +151,7 @@
 		        		<img src="../../../../static/client_logo.png">
 		        	</div>
 		            <div class="caption">
-		                <span class="caption-subject font-green bold uppercase">Menus</span>
+		                <span class="caption-subject font-default bold uppercase">Menus</span>
                         <div class="caption-desc font-grey-cascade">Click on a menu to view its categories.</div>
 		            </div>
 					<div class="btn-group-vertical pull-right" data-toggle="buttons">

@@ -56,7 +56,7 @@
 		        		<img src="../../../../static/client_logo.png">
 		        	</div>
 		            <div class="caption">
-		                <span class="caption-subject font-green bold uppercase">Stores</span>
+		                <span class="caption-subject font-default bold uppercase">Stores</span>
                         <div class="caption-desc font-grey-cascade">Click on a store to edit it.</div>
 		            </div>
 		        </div>
@@ -145,7 +145,7 @@
 		        		<img src="../../../../static/client_logo.png">
 		        	</div>
 		            <div class="caption">
-		                <span class="caption-subject font-green bold uppercase">Stores</span>
+		                <span class="caption-subject font-default bold uppercase">Stores</span>
                         <div class="caption-desc font-grey-cascade">Click on a store to edit it.</div>
 		            </div>
 		        </div>

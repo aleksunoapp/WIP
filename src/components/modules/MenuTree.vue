@@ -11,8 +11,8 @@
 			<div class="portlet light bordered height-mod">
 				<div v-if="updateType !== 'sku' && selectedObject.name" class="portlet-title">
 					<div class="caption">
-                        <i class="fa fa-cog font-green"></i>
-                        <span class="caption-subject font-green sbold uppercase">{{ selectedObject.name }}</span>
+                        <i class="fa fa-cog font-default"></i>
+                        <span class="caption-subject font-default sbold uppercase">{{ selectedObject.name }}</span>
                     </div>
 				</div>
 				<div class="portlet-body">

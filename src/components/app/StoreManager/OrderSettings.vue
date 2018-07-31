@@ -182,7 +182,7 @@
 						<img src="../../../../static/client_logo.png">
 					</div>
 					<div class="caption">
-						<span class="caption-subject font-green bold uppercase">Order Settings</span>
+						<span class="caption-subject font-default bold uppercase">Order Settings</span>
 						<div class="caption-desc font-grey-cascade">Create, edit or delete Order Settings for the active store.</div>
 					</div>
 				</div>

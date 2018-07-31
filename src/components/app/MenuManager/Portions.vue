@@ -71,7 +71,7 @@
 	        		<img src="../../../../static/client_logo.png">
 	        	</div>
 	            <div class="caption">
-	                <span class="caption-subject font-green bold uppercase">Portions</span>
+	                <span class="caption-subject font-default bold uppercase">Portions</span>
 	            </div>
 	        </div>
 	        <div class="portlet-body">

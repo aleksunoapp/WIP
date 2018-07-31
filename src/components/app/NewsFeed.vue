@@ -93,8 +93,8 @@
 				<div class="portlet light portlet-fit bordered margin-top-20" v-if="newsFeed.length">
 					<div class="portlet-title">
 					<div class="caption">
-						<i class="fa fa-newspaper-o font-green"></i>
-						<span class="caption-subject bold font-green uppercase"> News Feed</span>
+						<i class="fa fa-newspaper-o font-default"></i>
+						<span class="caption-subject bold font-default uppercase"> News Feed</span>
 					</div>
 					</div>
 					<div class="portlet-body">

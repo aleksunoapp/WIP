@@ -66,7 +66,7 @@
 						<img src="../../../../static/client_logo.png">
 					</div>
 					<div class="caption">
-						<span class="caption-subject font-green bold uppercase">Item Types</span>
+						<span class="caption-subject font-default bold uppercase">Item Types</span>
 						<div class="caption-desc font-grey-cascade">Create, edit or delete item types and assign them to tax classes.</div>
 					</div>
 				</div>

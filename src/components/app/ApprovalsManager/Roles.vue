@@ -117,7 +117,7 @@
 							<img src="../../../../static/client_logo.png">
 						</div>
 						<div class="caption">
-							<span class="caption-subject font-green bold uppercase">Roles</span>
+							<span class="caption-subject font-default bold uppercase">Roles</span>
 							<div class="caption-desc font-grey-cascade">Click on the edit button to edit a role and change the permissions it contains.</div>
 						</div>
 					</div>
@@ -196,7 +196,7 @@
 							<img src="../../../../static/client_logo.png">
 						</div>
 						<div class="caption">
-							<span class="caption-subject font-green bold uppercase">Search Results</span>
+							<span class="caption-subject font-default bold uppercase">Search Results</span>
 							<div class="caption-desc font-grey-cascade">Click on the edit button to edit a role and change the permissions it contains.</div>
 						</div>
 					</div>

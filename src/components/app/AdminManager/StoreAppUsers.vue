@@ -136,7 +136,7 @@
 							<img src="../../../../static/client_logo.png">
 						</div>
 						<div class="caption">
-							<span class="caption-subject font-green bold uppercase">Store App Users</span>
+							<span class="caption-subject font-default bold uppercase">Store App Users</span>
 							<div class="caption-desc font-grey-cascade">Click on a store app user to edit their details or change the store assigned to them.</div>
 						</div>
 					</div>
@@ -216,7 +216,7 @@
 							<img src="../../../../static/client_logo.png">
 						</div>
 						<div class="caption">
-							<span class="caption-subject font-green bold uppercase">Search Results</span>
+							<span class="caption-subject font-default bold uppercase">Search Results</span>
 							<div class="caption-desc font-grey-cascade">Click on a store app user to edit their details or change the store assigned to them.</div>
 						</div>
 					</div>

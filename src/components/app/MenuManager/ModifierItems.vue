@@ -103,7 +103,7 @@
 						<img :src="modifierCategoryDetails.image_url">
 					</div>
 					<div class="caption">
-						<span class="caption-subject font-green bold uppercase">{{ modifierCategoryDetails.name }}</span>
+						<span class="caption-subject font-default bold uppercase">{{ modifierCategoryDetails.name }}</span>
 						<div class="caption-desc font-grey-cascade">{{ modifierCategoryDetails.desc }}</div>
 					</div>
 				</div>

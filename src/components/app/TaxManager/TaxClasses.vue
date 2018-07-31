@@ -106,7 +106,7 @@
 						<img src="../../../../static/client_logo.png">
 					</div>
 					<div class="caption">
-						<span class="caption-subject font-green bold uppercase">Tax Classes</span>
+						<span class="caption-subject font-default bold uppercase">Tax Classes</span>
 						<div class="caption-desc font-grey-cascade">Create, edit or delete tax classes.</div>
 					</div>
 				</div>

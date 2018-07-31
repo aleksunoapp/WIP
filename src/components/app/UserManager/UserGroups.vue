@@ -107,7 +107,7 @@
 							<img src="../../../../static/client_logo.png">
 						</div>
 						<div class="caption">
-							<span class="caption-subject font-green bold uppercase">User Groups</span>
+							<span class="caption-subject font-default bold uppercase">User Groups</span>
 							<div class="caption-desc font-grey-cascade">Click on a group to send a message to its members.</div>
 						</div>
 					</div>

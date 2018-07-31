@@ -95,7 +95,7 @@
 						<img src="../../../../static/client_logo.png">
 					</div>
 					<div class="caption">
-						<span class="caption-subject font-green bold uppercase">Languages</span>
+						<span class="caption-subject font-default bold uppercase">Languages</span>
 						<div class="caption-desc font-grey-cascade">Create, edit or delete languages.</div>
 					</div>
 				</div>

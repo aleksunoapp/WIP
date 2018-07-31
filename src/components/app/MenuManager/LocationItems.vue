@@ -28,7 +28,7 @@
 		        		<img src="../../../../static/client_logo.png">
 		        	</div>
 		            <div class="caption">
-		                <span class="caption-subject font-green bold uppercase">Location Items</span>
+		                <span class="caption-subject font-default bold uppercase">Location Items</span>
                         <div class="caption-desc font-grey-cascade">View all Menu Items for {{$root.activeLocation.display_name}}</div>
 		            </div>
 		        </div>

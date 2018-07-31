@@ -67,7 +67,7 @@
 					<img src="../../../../static/client_logo.png">
 				</div>
 				<div class="caption">
-					<span class="caption-subject font-green bold uppercase">Geolocations</span>
+					<span class="caption-subject font-default bold uppercase">Geolocations</span>
 					<div class="caption-desc font-grey-cascade">See and edit geolocations</div>
 				</div>
 			</div>
