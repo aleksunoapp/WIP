@@ -10,7 +10,7 @@ export default {
 	urls: {
 		approvals: (function () {
 			if (production) {
-				return ''
+				return 'http://approval.api.unoapp.io/'
 			} else if (staging) {
 				return 'https://approval.beta.api.unoapp.io'
 			} else {
@@ -21,7 +21,15 @@ export default {
 	/**
 	 * app_id for the Approvals API
 	 */
-	approvalsAppId: '5b291f11dc35e663e8847981',
+	approvalsAppId: (function () {
+		if (production) {
+			return '5b60a158baf2d10681b79cd1'
+		} else if (staging) {
+			return '5b291f11dc35e663e8847981'
+		} else {
+			return '5b291f11dc35e663e8847981'
+		}
+	}()),
 	/**
 	 * business id to identify the business aka brand aka customer (2 is Freshii)
 	 */
