@@ -18,29 +18,6 @@ export default {
 			}
 		}())
 	},
-	headers: {
-		approvals: (function () {
-			if (production) {
-				return {
-					appId: '3jJIMoDLAJW2qzQk0DmFCVxhbRzVIL4Qn',
-					appSecret: 'cgLb2aWAyY1k3TBmquEjjbOjWxZRc6iw2',
-					userToken: App.userToken
-				}
-			} else if (staging) {
-				return {
-					appId: App.appId,
-					appSecret: App.appSecret,
-					userToken: App.userToken
-				}
-			} else {
-				return {
-					appId: App.appId,
-					appSecret: App.appSecret,
-					userToken: App.userToken
-				}
-			}
-		}())
-	},
 	/**
 	 * app_id for the Approvals API
 	 */
