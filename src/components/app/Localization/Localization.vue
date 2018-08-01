@@ -29,7 +29,7 @@
 							<el-collapse class="accordion margin-bottom-20" v-model="languageAccordionOpen" accordion>
 							<el-collapse-item title="Language" name="1">
 								<div v-for="language in allLocales" class="clickable" :class="{'active-term' : language.language_code === localeForTranslation.language_code}" @click="selectLocaleForTranslation(language)" :key="language.id">
-										{{language.country}} ({{language.language_code}})
+										{{language.country.name}} ({{language.language_code}})
 									</div>
 								<div class="helper-text" v-if="!allLocales.length">No languages yet. Create one above.</div>
 							</el-collapse-item>
@@ -48,7 +48,7 @@
 					<div class="translations-table" v-show="localeForTranslation.id">
 						<div class="translations-table-header">
 							<div class="translations-table-header-cell">Term</div>
-							<div class="translations-table-header-cell">{{localeForTranslation.country}} Translation</div>
+							<div class="translations-table-header-cell">{{localeForTranslation.country.name}} Translation</div>
 						</div>
 					<div v-for="(term, index) in terms" class="translations-table-body" label="Field" :key="index">
 						<div class="translations-table-body-row">
@@ -120,7 +120,7 @@
 				<button type="button" class="close" @click="closeGallery">
 					<span>&times;</span>
 				</button>
-				<h4 class="modal-title center">Select Image To Use in {{localeForTranslation.country}}</h4>
+				<h4 class="modal-title center">Select Image To Use in {{localeForTranslation.country.name}}</h4>
 			</div>
 			<div slot="modal-body" class="modal-body">
 				<resource-picker
