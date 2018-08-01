@@ -176,13 +176,12 @@ export default {
 	$ajax: function (options, api) {
 		var localhost = this.baseUrl + '/api'
 
-		if (api) {
+		if (api === 'approvals') {
 			options.url = this.urls[api] + options.url
-			const headers = this.headers
 
 			options.beforeSend = function (xhr) {
-				xhr.setRequestHeader('app-id', headers[api].appId)
-				xhr.setRequestHeader('app-secret', headers[api].appSecret)
+				xhr.setRequestHeader('app-id', '3jJIMoDLAJW2qzQk0DmFCVxhbRzVIL4Qn')
+				xhr.setRequestHeader('app-secret', 'cgLb2aWAyY1k3TBmquEjjbOjWxZRc6iw2')
 				xhr.setRequestHeader('auth-token', App.userToken)
 			}
 		} else {
