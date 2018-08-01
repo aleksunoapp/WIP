@@ -10,11 +10,34 @@ export default {
 	urls: {
 		approvals: (function () {
 			if (production) {
-				return 'http://approval.api.unoapp.io/'
+				return 'http://approval.api.unoapp.io'
 			} else if (staging) {
 				return 'https://approval.beta.api.unoapp.io'
 			} else {
 				return 'https://approval.dev.api.unoapp.io'
+			}
+		}())
+	},
+	headers: {
+		approvals: (function () {
+			if (production) {
+				return {
+					appId: '3jJIMoDLAJW2qzQk0DmFCVxhbRzVIL4Qn',
+					appSecret: 'cgLb2aWAyY1k3TBmquEjjbOjWxZRc6iw2',
+					userToken: App.userToken
+				}
+			} else if (staging) {
+				return {
+					appId: App.appId,
+					appSecret: App.appSecret,
+					userToken: App.userToken
+				}
+			} else {
+				return {
+					appId: App.appId,
+					appSecret: App.appSecret,
+					userToken: App.userToken
+				}
 			}
 		}())
 	},
@@ -44,7 +67,7 @@ export default {
 	 */
 	baseUrl: (function () {
 		if (production) {
-			return ''
+			return 'https://freshii.api.unoapp.io'
 		} else if (staging) {
 			return 'https://freshii.beta.api.unoapp.io'
 		} else {
@@ -155,15 +178,20 @@ export default {
 
 		if (api) {
 			options.url = this.urls[api] + options.url
+			const headers = this.headers
+
+			options.beforeSend = function (xhr) {
+				xhr.setRequestHeader('app-id', headers[api].appId)
+				xhr.setRequestHeader('app-secret', headers[api].appSecret)
+				xhr.setRequestHeader('auth-token', App.userToken)
+			}
 		} else {
 			options.url = localhost + options.url
-		}
-
-		// ecomm API's auth headers
-		options.beforeSend = function (xhr) {
-			xhr.setRequestHeader('app-id', App.appId)
-			xhr.setRequestHeader('app-secret', App.appSecret)
-			xhr.setRequestHeader('auth-token', App.userToken)
+			options.beforeSend = function (xhr) {
+				xhr.setRequestHeader('app-id', App.appId)
+				xhr.setRequestHeader('app-secret', App.appSecret)
+				xhr.setRequestHeader('auth-token', App.userToken)
+			}
 		}
 
 		if (options.method.toLowerCase() === 'post' || options.method.toLowerCase() === 'put') {
