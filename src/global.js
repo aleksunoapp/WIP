@@ -10,7 +10,7 @@ export default {
 	urls: {
 		approvals: (function () {
 			if (production) {
-				return 'http://approval.api.unoapp.io/'
+				return 'http://approval.api.unoapp.io'
 			} else if (staging) {
 				return 'https://approval.beta.api.unoapp.io'
 			} else {
@@ -44,7 +44,7 @@ export default {
 	 */
 	baseUrl: (function () {
 		if (production) {
-			return ''
+			return 'https://freshii.api.unoapp.io'
 		} else if (staging) {
 			return 'https://freshii.beta.api.unoapp.io'
 		} else {
@@ -153,17 +153,21 @@ export default {
 	$ajax: function (options, api) {
 		var localhost = this.baseUrl + '/api'
 
-		if (api) {
+		if (api === 'approvals') {
 			options.url = this.urls[api] + options.url
+
+			options.beforeSend = function (xhr) {
+				xhr.setRequestHeader('app-id', '46c9485f92a0f8ac29d66570893a3805')
+				xhr.setRequestHeader('app-secret', '0276a6fd79282e1b73cdd209540cdfcd')
+				xhr.setRequestHeader('auth-token', App.userToken)
+			}
 		} else {
 			options.url = localhost + options.url
-		}
-
-		// ecomm API's auth headers
-		options.beforeSend = function (xhr) {
-			xhr.setRequestHeader('app-id', App.appId)
-			xhr.setRequestHeader('app-secret', App.appSecret)
-			xhr.setRequestHeader('auth-token', App.userToken)
+			options.beforeSend = function (xhr) {
+				xhr.setRequestHeader('app-id', App.appId)
+				xhr.setRequestHeader('app-secret', App.appSecret)
+				xhr.setRequestHeader('auth-token', App.userToken)
+			}
 		}
 
 		if (options.method.toLowerCase() === 'post' || options.method.toLowerCase() === 'put') {
