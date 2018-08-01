@@ -62,10 +62,12 @@
 									{{field.label}}	
 								</div>
 								<div class="col-xs-5 break-long">
-									<p>{{field.existing}}</p>
+									<span v-if="field.label === 'Location'">{{field.existing.display_name}}</span>
+									<span v-else>{{field.existing}}</span>
 								</div>
 								<div class="col-xs-5">
-									{{field.modified}}
+									<span v-if="field.label === 'Location'">{{field.modified.display_name}}</span>
+									<span v-else>{{field.modified}}</span>
 								</div>
 						</div>
 						<div class="row margin-top-20">
