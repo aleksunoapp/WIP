@@ -18,6 +18,26 @@ export default {
 			}
 		}())
 	},
+	headers: {
+		approvals: (function () {
+			if (production) {
+				return {
+					appId: '3jJIMoDLAJW2qzQk0DmFCVxhbRzVIL4Qn',
+					appSecret: 'cgLb2aWAyY1k3TBmquEjjbOjWxZRc6iw2'
+				}
+			} else if (staging) {
+				return {
+					appId: '46c9485f92a0f8ac29d66570893a3805',
+					appSecret: '0276a6fd79282e1b73cdd209540cdfcd'
+				}
+			} else {
+				return {
+					appId: '46c9485f92a0f8ac29d66570893a3805',
+					appSecret: '0276a6fd79282e1b73cdd209540cdfcd'
+				}
+			}
+		}())
+	},
 	/**
 	 * app_id for the Approvals API
 	 */
@@ -155,10 +175,11 @@ export default {
 
 		if (api === 'approvals') {
 			options.url = this.urls[api] + options.url
+			const headers = this.headers
 
 			options.beforeSend = function (xhr) {
-				xhr.setRequestHeader('app-id', '46c9485f92a0f8ac29d66570893a3805')
-				xhr.setRequestHeader('app-secret', '0276a6fd79282e1b73cdd209540cdfcd')
+				xhr.setRequestHeader('app-id', headers[api].appId)
+				xhr.setRequestHeader('app-secret', headers[api].appSecret)
 				xhr.setRequestHeader('auth-token', App.userToken)
 			}
 		} else {
