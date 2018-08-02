@@ -43,9 +43,14 @@
 			    <thead>
 			        <tr>
 			        	<th>
-			        		<div class="md-checkbox has-success" @change="selectAll($event)">
-			                    <input type="checkbox" id="locations-promocodes" class="md-check" v-model="selectAllSelected">
-			                    <label for="locations-promocodes">
+			        		<div class="md-checkbox has-success">
+			                    <input 
+									type="checkbox" 
+									id="locations-selectAll" 
+									class="md-check"
+									@change="selectAll()"
+									v-model="selectAllSelected">
+			                    <label for="locations-selectAll">
 			                        <span class="inc"></span>
 			                        <span class="check"></span>
 			                        <span class="box"></span>
@@ -165,7 +170,7 @@ export default {
 			this.$emit('closeSelectLocationsPopup', this.selectedLocations)
 		},
 		/**
-		 * To select all or deselect all items
+		 * To select or deselect all stores
 		 * @function
 		 * @returns {undefined}
 		 */
@@ -188,13 +193,18 @@ export default {
 		 * @returns {undefined}
 		 */
 		syncSelectAll (value) {
+			let payload = []
+			this.locations.forEach(location => {
+				if (location.selected) {
+					payload.push(location.id)
+				}
+			})
+			if (payload.length === this.locations.length) {
+				this.selectAllSelected = true
+			} else {
+				this.selectAllSelected = false
+			}
 			if (!this.withButton) {
-				let payload = []
-				this.locations.forEach(location => {
-					if (location.selected) {
-						payload.push(location.id)
-					}
-				})
 				this.$emit('selectedLocations', payload)
 			}
 		},
