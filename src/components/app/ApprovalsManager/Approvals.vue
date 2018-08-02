@@ -16,11 +16,12 @@
 					</div>
 					<div class="caption">
 						<span class="caption-subject font-default bold uppercase">Approval</span>
-						<div class="caption-desc font-grey-cascade">Review and approve or reject the changes below.</div>
+						<div class="caption-desc font-grey-cascade">Review and approve or reject pending change requests.</div>
 					</div>
 				</div>
 
-				<div class="portlet-body relative-block">
+				<div 
+					class="portlet-body relative-block">
 					<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
 						<span>{{errorMessage}}</span>
 						<button class="close" @click="clearError('errorMessage')"></button>
@@ -37,9 +38,69 @@
 					>
 					</no-results>
 
+					<div
+						v-show="view === 'list'">
+						<div class="row bold padding-y-20">
+							<div class="col-xs-3">
+								<p>Type</p>
+							</div>
+							<div class="col-xs-3">
+								<p>Submitted by</p>
+							</div>
+							<div class="col-xs-3">
+								<p>Created</p>
+							</div>
+						</div>
+
+						<div 
+							class="row padding-y-10 border-bottom-light clickable hover-highlight v-center"
+							:class="{'transparent' : loading}"
+							v-for="(request, index) in requests" 
+							:key="index"
+							@click="viewRequest(request)">
+								<div class="col-xs-3">
+									{{request.action}}	
+								</div>
+								<div class="col-xs-3 break-long">
+									<p>{{request.created_by_name}}</p>
+								</div>
+								<div class="col-xs-3">
+									{{request.formattedDate}}
+								</div>
+								<div class="col-xs-4">
+									<button 
+										class="btn btn-danger btn-sm third-width"
+										@click.stop="rejectRequest(request)"
+									>
+										Reject
+									</button>
+									<button 
+										@click.stop="approveRequest(request)"
+										class="btn blue btn-sm third-width"
+									>
+										Approve
+									</button>
+									<button 
+										class="btn blue btn-outline btn-sm third-width"
+									>
+										Details
+									</button>
+								</div>
+						</div>
+						<div class="row margin-top-20">
+							<div class="col-xs-12">
+								<pagination 
+									:passedPage="activePage" 
+									:numPages="total" 
+									@activePageChange="activePageUpdate">
+								</pagination>
+							</div>
+						</div>
+					</div>
+
 					<div 
-						ref="request"
-						v-show="!loading && !noResults && requests.length">
+						v-show="view === 'single'"
+						ref="request">
 
 						<div class="row bold padding-y-20">
 							<div class="col-xs-2">
@@ -59,43 +120,41 @@
 							:key="index"
 							:class="{'changed' : field.existing !== field.modified}">
 								<div class="col-xs-2">
-									{{field.label}}	
+									<p>{{field.label}}</p>
 								</div>
 								<div class="col-xs-5 break-long">
-									<p>{{field.existing}}</p>
+									<span v-if="field.label === 'Location'">{{field.existing.display_name}}</span>
+									<span v-else>{{field.existing}}</span>
 								</div>
 								<div class="col-xs-5">
-									{{field.modified}}
+									<span v-if="field.label === 'Location'">{{field.modified.display_name}}</span>
+									<span v-else>{{field.modified}}</span>
 								</div>
 						</div>
-						<div class="row margin-top-20">
-							<div class="col-xs-12">
-								<pagination 
-									:passedPage="activePage" 
-									:numPages="total" 
-									@activePageChange="activePageUpdate">
-								</pagination>
-								<div class="pull-right" v-if="$root.permissions['approvals update']">
-									<button 
-										v-show="total !== activePage"
-										class="btn blue btn-outline margin-right-10"
-										@click="skip(1)"
-									>
-										Skip
-									</button>
-									<button 
-										class="btn btn-danger margin-right-10"
-										@click="approveRequest(false)"
-									>
-										Reject
-									</button>
-									<button 
-										@click="approveRequest(true)"
-										class="btn blue"
-									>
-										Approve
-									</button>
-								</div>
+
+						<div 
+							class="row margin-top-20"
+							v-if="$root.permissions['approvals update']">
+							<div class="col-xs-4 col-xs-offset-8">
+								<button 
+									class="btn btn-danger third-width"
+									@click="rejectRequest(selectedRequest)"
+								>
+									Reject
+								</button>
+								<button 
+									@click="approveRequest(selectedRequest)"
+									class="btn blue third-width"
+								>
+									Approve
+								</button>
+								<button 
+									v-show="total !== activePage"
+									class="btn blue btn-outline third-width"
+									@click="viewList()"
+								>
+									List
+								</button>
 							</div>
 						</div>
 					</div>
@@ -123,32 +182,36 @@ export default {
 				{name: 'Admin Manager', link: false},
 				{name: 'Approvals', link: false}
 			],
+			view: 'list',
 			requests: [],
+			selectedRequest: {},
 			errorMessage: '',
 			loading: false,
 			noResults: false,
 			activePage: 1,
-			total: 0
+			total: 0,
+			recordsPerPage: 10
 		}
 	},
 	computed: {
 		request () {
-			if (this.requests[0]) {
-				const keys = Object.keys(this.requests[0].existing_values)
+			if (this.selectedRequest._id !== undefined) {
+				const keys = Object.keys(this.selectedRequest.new_values)
 				return keys.map(key => {
 					let label
-					let display = true
+					let display
 					if (FieldLabels[key] === undefined) {
 						label = key.replace(/_/g, ' ')
 						label = label.charAt(0).toUpperCase() + label.slice(1)
+						display = true
 					} else {
 						label = FieldLabels[key].label
 						display = FieldLabels[key].display
 					}
 					return {
 						label,
-						existing: this.requests[0].existing_values[key],
-						modified: this.requests[0].new_values[key],
+						existing: this.selectedRequest.existing_values[key],
+						modified: this.selectedRequest.new_values[key],
 						display
 					}
 				})
@@ -162,14 +225,43 @@ export default {
 	},
 	methods: {
 		/**
-		 * To skip items
+		 * To approve a request
 		 * @function
-		 * @param {integer} num - An integer representing how many to skip
+		 * @param {object} request - The selected request
 		 * @returns {undefined}
 		 */
-		skip (num) {
-			this.clearError('errorMessage')
-			this.activePageUpdate(this.activePage + num)
+		approveRequest (request) {
+			this.selectedRequest = request
+			this.submitApproval(true)
+		},
+		/**
+		 * To reject a request
+		 * @function
+		 * @param {object} request - The selected request
+		 * @returns {undefined}
+		 */
+		rejectRequest (request) {
+			this.selectedRequest = request
+			this.submitApproval(false)
+		},
+		/**
+		 * To switch to the list view
+		 * @function
+		 * @returns {undefined}
+		 */
+		viewList () {
+			this.selectedRequest = {}
+			this.view = 'list'
+		},
+		/**
+		 * To view the details of the selected request
+		 * @function
+		 * @param {object} request - The request to preview
+		 * @returns {undefined}
+		 */
+		viewRequest (request) {
+			this.selectedRequest = request
+			this.view = 'single'
 		},
 		/**
 		 * To update the currently active pagination page.
@@ -181,7 +273,6 @@ export default {
 			if (parseInt(this.activePage) !== parseInt(val)) {
 				this.activePage = val
 				this.getRequests()
-				window.scrollTo(0, 0)
 			}
 		},
 		/**
@@ -203,13 +294,27 @@ export default {
 			var approvalsVue = this
 			let pagination = {
 				page: this.activePage,
-				records_per_page: 1,
+				records_per_page: this.recordsPerPage,
 				status: 0 // only show requests that have not yet been approved
 			}
 			return ApprovalsFunctions.getRequests(pagination)
 			.then(response => {
-				approvalsVue.requests = response.payload.docs
-				approvalsVue.total = response.payload.total
+				approvalsVue.requests = response.payload.docs.map(request => {
+					try {
+						let date = new Date(request.createdAt)
+						let formattedDate = date.toLocaleDateString('en-US') + ' ' + date.toLocaleTimeString('en-US')
+						return {
+							...request,
+							action: request.action ? request.action : '(unavailable)',
+							date,
+							formattedDate
+						}
+					} catch (e) {
+						console.log(e)
+						return request
+					}
+				})
+				approvalsVue.total = Math.ceil(response.payload.total / approvalsVue.recordsPerPage)
 				if (!response.payload.docs.length) {
 					approvalsVue.noResults = true
 					approvalsVue.$root.requestsPending = false
@@ -232,15 +337,16 @@ export default {
 		 * @param {boolean} approved - Approval status
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		approveRequest (approved) {
+		submitApproval (approved) {
 			var approvalsVue = this
 			let review = {
 				approve: approved ? 1 : 0,
 				approved_by: this.$root.activeUser.id,
 				approved_by_name: this.$root.activeUser.name
 			}
-			return ApprovalsFunctions.approveRequest(approvalsVue.requests[0], review)
+			return ApprovalsFunctions.approveRequest(approvalsVue.selectedRequest, review)
 			.then(response => {
+				approvalsVue.view = 'list'
 				approvalsVue.getRequests()
 				approvalsVue.showApproveSuccess(approved)
 			}).catch(reason => {
@@ -300,5 +406,19 @@ p {
 }
 .border-bottom-light {
 	border-bottom: 1px solid #f2f2f2;
+}
+.third-width {
+	width: 30%;
+}
+.transparent {
+	opacity: 0;
+}
+.hover-highlight:hover {
+	background-color: #e5e5e5;
+	transition: background-color .5s;
+}
+.v-center {
+	display: flex;
+	align-items: center;
 }
 </style>
