@@ -5,7 +5,7 @@
 				<span>&times;</span>
 			</button>
 			<h4 class="modal-title center" v-if="!imageMode">Add New Sub Category</h4>
-			<h4 class="modal-title center" v-else><i class="fa fa-chevron-left clickable pull-left back-button" @click="toggleImageMode()"></i>Select An Image</h4>
+			<h4 class="modal-title center" v-else>Select An Image</h4>
 		</div>
 		<div slot="modal-body" class="modal-body">
 			<div class="alert alert-danger" v-if="errorMessage.length">
