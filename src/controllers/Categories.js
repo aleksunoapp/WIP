@@ -243,5 +243,27 @@ export default ({
 				}
 			})
 		})
+	},
+	/**
+	 * Call to API to set category hours to be the same as menu hours.
+	 * @function
+	 * @param {integer} categoryId - ID of category to copy meny hours to
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	copyMenuHoursToCategoryHours: function (categoryId) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'GET',
+				dataType: 'json',
+				url: '/app/categoryHours/copyMenuHoursToCategoryHours/' + categoryId,
+				data: {},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
 	}
 })
