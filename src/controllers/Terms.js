@@ -192,7 +192,7 @@ export const deleteTerm = ({
 		GlobalFunctions.$ajax({
 			method: 'DELETE',
 			dataType: 'json',
-			url: `/app/country/${id}/delete`,
+			url: `/app/term/${id}/delete`,
 			data: {},
 			success: function (response) {
 				resolve(response)
