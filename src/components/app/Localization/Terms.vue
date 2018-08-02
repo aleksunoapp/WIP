@@ -7,18 +7,18 @@
 		<!-- END PAGE BAR -->
 
 		<!-- BEGIN PAGE TITLE-->
-		<h1 class="page-title">Countries</h1>
+		<h1 class="page-title">Terms</h1>
 		<!-- END PAGE TITLE -->
 		<div class="note note-info">
-			<p>Add and manage countries.</p>
+			<p>Add and manage terms.</p>
 		</div>
 
 		<!-- BEGIN CREATE -->
-		<div class="portlet box blue-hoki" v-if="$root.permissions['localization countries create']">
+		<div class="portlet box blue-hoki" v-if="$root.permissions['localization terms create']">
 			<div class="portlet-title bg-blue-chambray" @click="toggleCreatePanel()">
 				<div class="caption">
 					<i class="fa fa-2x fa-plus-circle"></i>
-					Create a New Country
+					Create a new Term
 				</div>
 				<div class="tools">
 					<a :class="{'expand': !createNewCollapse, 'collapse': createNewCollapse}"></a>
@@ -28,10 +28,10 @@
 				<div class="col-md-12" v-show="activeLocationId === undefined">
 					<div class="alert center alert-info">
 						<h4>No Store Selected</h4>
-						<p>Please select a store from the stores panel on the right to create a country.</p>
+						<p>Please select a store from the stores panel on the right to create a term.</p>
 					</div>
 				</div>
-				<form role="form" @submit.prevent="createCountry()" v-show="activeLocationId !== undefined">
+				<form role="form" @submit.prevent="createTerm()" v-show="activeLocationId !== undefined">
 					<div class="row">
 						<div class="col-md-12">
 							<div class="alert alert-danger" v-show="createErrorMessage.length" ref="createErrorMessage">
@@ -41,12 +41,8 @@
 						</div>
 						<div class="col-md-6">
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': newCountry.name.length}" id="form_control_1" v-model="newCountry.name">
-								<label for="form_control_1">Name</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': newCountry.code.length}" id="form_control_code" v-model="newCountry.code">
-								<label for="form_control_code">Code</label>
+								<input type="text" class="form-control input-sm" :class="{'edited': newTerm.term.length}" id="form_control_1" v-model="newTerm.term">
+								<label for="form_control_1">Term</label>
 							</div>
 							<button type="submit" class="btn blue pull-right">Create</button>
 						</div>
@@ -56,22 +52,64 @@
 		</div>
 		<!-- END CREATE -->
 
+		<!-- SEARCH START -->
+		<div class="margin-top-20" v-if="activeLocationId !== undefined">
+			<div class="portlet box blue-hoki">
+				<div class="portlet-title" @click="toggleSearchPanel()">
+					<div class="caption">
+						<i class="fa fa-search"></i>
+						Search
+					</div>
+					<div class="tools">
+						<a :class="{'expand': !searchCollapse, 'collapse': searchCollapse}"></a>
+					</div>
+				</div>
+				<div class="portlet-body" v-show="!searchCollapse">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="alert alert-danger" v-show="searchError.length" ref="searchError">
+								<button class="close" @click="clearError('searchError')"></button>
+								<span>{{searchError}}</span>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group form-md-line-input form-md-floating-label form-md-line-input-trimmed">
+								<div class="input-icon right">
+									<input  
+										type="text" 
+										ref="search"
+										placeholder="Term" 
+										class="form-control input-sm" 
+										:class="{'edited': searchTerm.length}" 
+										v-model="searchTerm" 
+										id="search_terms"
+									>
+									<i class="fa fa-times-circle-o clickable" @click.prevent="resetSearch()" aria-hidden="true"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- SEARCH END -->
+
 		<!-- BEGIN LIST -->
 		<div v-if="activeLocationId === undefined">
 			<div class="alert center alert-info">
 				<h4>No Store Selected</h4>
-				<p>Please select a store from the stores panel on the right to view countries for it.</p>
+				<p>Please select a store from the stores panel on the right to view terms for it.</p>
 			</div>
 		</div>
 		<div v-else>
-			<div class="portlet light portlet-fit bordered margin-top-20" id="countries-container">
+			<div class="portlet light portlet-fit bordered margin-top-20" id="terms-container">
 				<div class="portlet-title bg-blue-chambray">
 					<div class="menu-image-main">
 						<img src="../../../../static/client_logo.png">
 					</div>
 					<div class="caption">
-						<span class="caption-subject font-default bold uppercase">Countries</span>
-						<div class="caption-desc font-grey-cascade">Create, edit or delete countries and assign languages to them.</div>
+						<span class="caption-subject font-green bold uppercase">Terms</span>
+						<div class="caption-desc font-grey-cascade">Create, edit or delete terms.</div>
 					</div>
 				</div>
 				<div class="col-md-12">
@@ -81,42 +119,50 @@
 					</div>
 				</div>
 				<div class="portlet-body relative-block">
-					<loading-screen :show="loadingCountries && activeLocationId !== undefined" :color="'#2C3E50'" :display="'inline'"></loading-screen>
-					<div class="mt-element-list margin-top-15" v-if="countries.length && !loadingCountries">
+					<loading-screen 
+						:show="loadingTerms && activeLocationId !== undefined" 
+						:color="'#2C3E50'" 
+						:display="'inline'">
+					</loading-screen>
+					<div class="mt-element-list margin-top-15" v-if="terms.length && !loadingTerms">
 						<div class="mt-list-container list-news ext-1 no-border">
 							<ul>
-								<li class="mt-list-item actions-at-left margin-top-15 three-vertical-actions" v-for="country in countries" :id="'country-' + country.id" :key="country.id">
+								<li 
+									class="mt-list-item actions-at-left margin-top-15 three-vertical-actions" 
+									v-for="term in terms" 
+									:id="'term-' + term.id" 
+									:key="term.id">
 									<div class="list-item-actions">
 										<el-tooltip 
-											v-if="$root.permissions['localization countries update']"
+											v-if="$root.permissions['localization terms update']"
 											content="Edit" 
 											effect="light" 
 											placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default" @click="editCountry(country, $event)">
+											<a class="btn btn-circle btn-icon-only btn-default" @click="editTerm(term, $event)">
 												<i class="fa fa-lg fa-pencil"></i>
 											</a>
 										</el-tooltip>
 										<el-tooltip 
-											v-if="$root.permissions['localization countries read'] && !$root.permissions['localization countries update']"
+											v-if="$root.permissions['localization terms read'] && !$root.permissions['localization terms update']"
 											content="View" 
 											effect="light" 
 											placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default" @click="editCountry(country, $event)">
+											<a class="btn btn-circle btn-icon-only btn-default" @click="editTerm(term, $event)">
 												<i class="fa fa-lg fa-eye"></i>
 											</a>
 										</el-tooltip>
 										<el-tooltip 
-											v-if="$root.permissions['localization countries delete']"
+											v-if="$root.permissions['localization terms delete']"
 											content="Delete" 
 											effect="light" 
 											placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default" @click="confirmDelete(country, $event)">
+											<a class="btn btn-circle btn-icon-only btn-default" @click="confirmDelete(term, $event)">
 												<i class="fa fa-lg fa-trash"></i>
 											</a>
 										</el-tooltip>
 									</div>
 									<div class="col-md-12 bold uppercase font-red">
-										<span>{{ country.name }}</span>
+										<span>{{ term.term }}</span>
 									</div>
 									<div class="col-md-6">
 										<strong></strong>
@@ -125,8 +171,11 @@
 							</ul>
 						</div>
 					</div>
+					<div class="clearfix margin-top-20" v-if="lastPage > 1">
+						<pagination :passedPage="currentPage" :numPages="lastPage" @activePageChange="changePage"></pagination>
+					</div>
 					<div class="margin-top-20">
-						<no-results :show="!countries.length && !loadingCountries" :type="'countries'"></no-results>
+						<no-results :show="!terms.length && !loadingTerms" :type="'terms'"></no-results>
 					</div>
 				</div>
 			</div>
@@ -139,7 +188,7 @@
 				<button type="button" class="close" @click="closeEditModal()">
 					<span>&times;</span>
 				</button>
-				<h4 class="modal-title center">Edit Country</h4>
+				<h4 class="modal-title center">Edit Term</h4>
 			</div>
 			<div slot="modal-body" class="modal-body">
 				<form role="form">
@@ -153,23 +202,13 @@
 						<div class="col-md-12">
 							<div class="form-group form-md-line-input form-md-floating-label">
 								<input 
-									:disabled="!$root.permissions['localization countries update']"
+									:disabled="!$root.permissions['localization terms update']"
 									type="text" 
 									class="form-control input-sm" 
-									:class="{'edited': countryToEdit.name.length}" 
+									:class="{'edited': termToEdit.term.length}" 
 									id="form_control_1" 
-									v-model="countryToEdit.name">
-								<label for="form_control_1">Name</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">									
-								<input 
-									:disabled="!$root.permissions['localization countries update']"
-									type="text" 
-									class="form-control input-sm" 
-									:class="{'edited': countryToEdit.code.length}" 
-									id="form_control_code" 
-									v-model="countryToEdit.code">
-								<label for="form_control_code">Code</label>								
+									v-model="termToEdit.term">
+								<label for="form_control_1">Term</label>
 							</div>
 						</div>
 					</div>
@@ -177,7 +216,7 @@
 			</div>
 			<div slot="modal-footer" class="modal-footer clear">
 				<button 
-					v-if="!$root.permissions['localization countries update']"
+					v-if="!$root.permissions['localization terms update']"
 					@click="closeEditModal()" 
 					type="button" 
 					class="btn blue">
@@ -185,7 +224,7 @@
 				</button>				
 				<button 
 					v-else
-					@click="updateCountry()" 
+					@click="updateTerm()" 
 					type="submit" 
 					class="btn blue">
 					Save
@@ -203,10 +242,10 @@
 				<h4 class="modal-title center">Confirm Delete</h4>
 			</div>
 			<div slot="modal-body" class="modal-body">
-				<p>Are you sure you want to delete {{countryToDelete.name}}?</p>
+				<p>Are you sure you want to delete {{termToDelete.term}}?</p>
 			</div>
 			<div slot="modal-footer" class="modal-footer clear">
-				<button type="button" class="btn blue" @click="deleteCountry()">Delete</button>
+				<button type="button" class="btn blue" @click="deleteTerm()">Delete</button>
 			</div>
 		</modal>
 		<!-- START DELETE -->
@@ -216,8 +255,9 @@
 <script>
 import Breadcrumb from '@/components/modules/Breadcrumb'
 import LoadingScreen from '@/components/modules/LoadingScreen'
-import CountriesFunctions from '@/controllers/Countries'
+import TermsFunctions from '@/controllers/Terms'
 import Modal from '@/components/modules/Modal'
+import Pagination from '@/components/modules/Pagination'
 import NoResults from '@/components/modules/NoResults'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
@@ -225,49 +265,67 @@ export default {
 	data () {
 		return {
 			breadcrumbArray: [
-				{name: 'Countries', link: false}
+				{name: 'Terms', link: false}
 			],
 
 			createNewCollapse: true,
 			createErrorMessage: '',
-			newCountry: {
-				name: '',
-				code: ''
+			newTerm: {
+				term: ''
 			},
 
-			loadingCountries: false,
+			searchCollapse: true,
+			searchTerm: '',
+			searchError: '',
+			currentPage: 1,
+			itemsPerPage: 10,
+
+			loadingTerms: false,
 			listErrorMessage: '',
-			countries: [],
+			allTerms: [],
 
 			showEditModal: false,
 			editErrorMessage: '',
-			countryToEdit: {
-				name: '',
-				code: ''
+			termToEdit: {
+				term: ''
 			},
 
 			showDeleteModal: false,
 			deleteErrorMessage: '',
-			countryToDelete: {
-				name: '',
-				code: ''
+			termToDelete: {
+				term: ''
 			}
 		}
 	},
 	computed: {
 		activeLocationId: function () {
 			return this.$root.activeLocation.id
+		},
+		terms: function () {
+			const searchResult = this.allTerms.filter(term => {
+				return term.term.toLowerCase().indexOf(this.searchTerm.toLowerCase()) > -1
+			})
+			searchResult.sort((a, b) => a.term > b.term)
+
+			let begin = ((this.currentPage - 1) * this.itemsPerPage)
+			let end = (this.currentPage * this.itemsPerPage)
+
+			return searchResult.slice(begin, end)
+		},
+		lastPage: function () {
+			this.currentPage = 1
+			return this.searchTerm ? Math.ceil(this.terms.length / this.itemsPerPage) : Math.ceil(this.allTerms.length / this.itemsPerPage)
 		}
 	},
 	watch: {
 		activeLocationId: function (newId) {
 			if (newId !== undefined) {
-				this.getCountries()
+				this.getTerms()
 			}
 		}
 	},
 	mounted () {
-		this.getCountries()
+		this.getTerms()
 	},
 	methods: {
 		/**
@@ -288,38 +346,35 @@ export default {
 			this[errorMessageName] = ''
 		},
 		/**
-		 * To check if the country data is valid before submitting to the backend.
+		 * To check if the term data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateNewCountryData () {
+		validateNewTermData () {
 			var _this = this
 			return new Promise(function (resolve, reject) {
-				if (!_this.newCountry.name.length) {
-					reject('Name cannot be blank')
-				} else if (!_this.newCountry.code.length) {
-					reject('Code cannot be blank')
+				if (!_this.newTerm.term.length) {
+					reject('Term cannot be blank')
 				}
 				resolve('Hurray')
 			})
 		},
 		/**
-		 * To create a new country.
+		 * To create a new term.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		createCountry () {
+		createTerm () {
 			var _this = this
 			_this.clearError('createErrorMessage')
-			this.newCountry.location_id = this.activeLocationId
 
-			return _this.validateNewCountryData()
+			return _this.validateNewTermData()
 			.then(response => {
-				CountriesFunctions.createCountry(_this.newCountry)
+				TermsFunctions.createTerm(_this.newTerm)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						_this.showCreateSuccess()
-						_this.getCountries()
+						_this.getTerms()
 					} else {
 						_this.createErrorMessage = response.message
 						_this.$scrollTo(_this.$refs.createErrorMessage, 1000, { offset: -50 })
@@ -328,7 +383,7 @@ export default {
 				.catch(reason => {
 					ajaxErrorHandler({
 						reason,
-						errorText: 'We could not create the country',
+						errorText: 'We could not create the term',
 						errorName: 'createErrorMessage',
 						vue: _this
 					})
@@ -339,106 +394,136 @@ export default {
 			})
 		},
 		/**
-		 * To alert the user that the country has been successfully created.
+		 * To alert the user that the term has been successfully created.
 		 * @function
 		 * @returns {undefined}
 		 */
 		showCreateSuccess () {
 			this.$swal({
 				title: 'Success!',
-				text: 'Country \'' + this.newCountry.name + '\' has been successfully added!',
+				text: 'Term \'' + this.newTerm.term + '\' has been successfully added!',
 				type: 'success',
 				confirmButtonText: 'OK'
 			}).then(() => {
-				this.clearNewCountry()
+				this.clearNewTerm()
 			})
 		},
 		/**
-		 * To clear the new country form.
+		 * To clear the new term form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearNewCountry () {
-			this.newCountry = {
-				location_id: '',
-				name: '',
-				code: ''
+		clearNewTerm () {
+			this.newTerm = {
+				term: ''
 			}
 		},
 		/**
-		 * To get a list of all countries.
+		 * To toggle the search panel
+		 * @function
+		 * @returns {undefined}
+		 */
+		toggleSearchPanel () {
+			this.searchCollapse = !this.searchCollapse
+			this.$nextTick(function () {
+				if (!this.searchCollapse) {
+					this.$refs.search.focus()
+				}
+			})
+		},
+		/**
+		 * To reset the search.
+		 * @function
+		 * @returns {undefined}
+		 */
+		resetSearch () {
+			this.clearError('searchError')
+			this.searchTerm = ''
+		},
+		/**
+		 * To update the currently active pagination page.
+		 * @function
+		 * @param {integer} val - An integer representing the page number that we are updating to.
+		 * @returns {undefined}
+		 */
+		changePage (val) {
+			if (parseInt(this.currentPage) !== parseInt(val)) {
+				this.currentPage = val
+				window.scrollTo(0, 0)
+			}
+		},
+		/**
+		 * To get a list of all terms.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getCountries () {
+		getTerms () {
 			this.clearError('listErrorMessage')
-			this.loadingCountries = true
-			this.countries = []
+			this.loadingTerms = true
+			this.allTerms = []
 			var _this = this
-			return CountriesFunctions.listCountries()
+			return TermsFunctions.listTerms()
 			.then(response => {
 				if (response.code === 200 && response.status === 'ok') {
-					_this.loadingCountries = false
-					_this.countries = response.payload
+					_this.loadingTerms = false
+					_this.allTerms = response.payload
 				} else {
-					_this.loadingCountries = false
+					_this.loadingTerms = false
 				}
 			}).catch(reason => {
-				_this.loadingCountries = false
+				_this.loadingTerms = false
 				ajaxErrorHandler({
 					reason,
-					errorText: 'We could not fetch the list of countries',
+					errorText: 'We could not fetch the list of terms',
 					errorName: 'listErrorMessage',
 					vue: _this
 				})
 			})
 		},
 		/**
-		 * To show the modal to edit an country details.
+		 * To show the modal to edit an term details.
 		 * @function
-		 * @param {object} country - The selected country.
+		 * @param {object} term - The selected term.
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		editCountry (country, event) {
+		editTerm (term, event) {
 			event.stopPropagation()
-			this.countryToEdit = {...country}
+			this.termToEdit = {...term}
 			this.showEditModal = true
 		},
 		/**
-		 * To check if the country data is valid before submitting to the backend.
+		 * To check if the term data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateEditedCountryData () {
+		validateEditedTermData () {
 			var _this = this
 			return new Promise(function (resolve, reject) {
-				if (!_this.countryToEdit.name.length) {
-					reject('Name cannot be blank')
-				} else if (!_this.countryToEdit.code.length) {
-					reject('Code cannot be blank')
+				if (!_this.termToEdit.term.length) {
+					reject('Term cannot be blank')
 				}
 				resolve('Hurray')
 			})
 		},
 		/**
-		 * To update a country.
+		 * To update a term.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		updateCountry () {
+		updateTerm () {
 			var _this = this
 			_this.clearError('editErrorMessage')
-			let payload = {...this.countryToEdit}
-			payload.location_id = this.activeLocationId
+			let payload = {...this.termToEdit}
 
-			return _this.validateEditedCountryData()
+			return _this.validateEditedTermData()
 			.then(response => {
-				CountriesFunctions.updateCountry(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken).then(response => {
+				TermsFunctions.updateTerm(payload).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						_this.getCountries()
+						_this.getTerms()
 						_this.closeEditModal()
 						_this.showEditSuccess()
+						_this.resetEdit()
 					} else {
 						_this.editErrorMessage = response.message
 						_this.$scrollTo(_this.$refs.editErrorMessage, 1000, { offset: -50 })
@@ -446,30 +531,27 @@ export default {
 				}).catch(reason => {
 					ajaxErrorHandler({
 						reason,
-						errorText: 'We could not update the country',
+						errorText: 'We could not update the term',
 						errorName: 'editErrorMessage',
 						vue: _this
 					})
 				})
 			}).catch(reason => {
-				console.log(reason)
 				_this.editErrorMessage = reason
 				_this.$scrollTo(_this.$refs.editErrorMessage, 1000, { offset: -50 })
 			})
 		},
 		/**
-		 * To display notification that countries were successfully saved.
+		 * To display notification that terms were successfully saved.
 		 * @function
 		 * @returns {undefined}
 		 */
 		showEditSuccess () {
 			this.$swal({
 				title: 'Success!',
-				text: `${this.countryToEdit.name} updated`,
+				text: `${this.termToEdit.term} updated`,
 				type: 'success',
 				confirmButtonText: 'OK'
-			}).then(() => {
-				this.resetEdit()
 			})
 		},
 		/**
@@ -478,6 +560,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		closeEditModal () {
+			this.clearError('editErrorMessage')
 			this.showEditModal = false
 		},
 		/**
@@ -486,22 +569,20 @@ export default {
 		 * @returns {undefined}
 		 */
 		resetEdit () {
-			this.countryToEdit = {
-				location_id: '',
-				name: '',
-				code: ''
+			this.termToEdit = {
+				term: ''
 			}
 		},
 		/**
-		 * To display the modal for deleting an country.
+		 * To display the modal for deleting an term.
 		 * @function
-		 * @param {object} country - The selected country
+		 * @param {object} term - The selected term
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		confirmDelete (country, event) {
+		confirmDelete (term, event) {
 			event.stopPropagation()
-			this.countryToDelete = {...country}
+			this.termToDelete = {...term}
 			this.showDeleteModal = true
 		},
 		/**
@@ -509,12 +590,12 @@ export default {
 		 * @function
 		 * @returns {undefined}
 		 */
-		deleteCountry () {
+		deleteTerm () {
 			var _this = this
-			return CountriesFunctions.deleteCountry(_this.countryToDelete)
+			return TermsFunctions.deleteTerm(_this.termToDelete)
 			.then(response => {
 				if (response.code === 200 && response.status === 'ok') {
-					_this.getCountries()
+					_this.getTerms()
 					_this.closeDeleteModal()
 					_this.showDeleteSuccess()
 				}
@@ -522,21 +603,21 @@ export default {
 			.catch(reason => {
 				ajaxErrorHandler({
 					reason,
-					errorText: `We could not delete ${this.countryToDelete.name}`,
+					errorText: `We could not delete ${this.termToDelete.term}`,
 					errorName: 'deleteErrorMessage',
 					vue: _this
 				})
 			})
 		},
 		/**
-		 * To display notification that countries were successfully saved.
+		 * To display notification that terms were successfully saved.
 		 * @function
 		 * @returns {undefined}
 		 */
 		showDeleteSuccess () {
 			this.$swal({
 				title: 'Success!',
-				text: `${this.countryToDelete.name} was deleted`,
+				text: `${this.termToDelete.term} was deleted`,
 				type: 'success',
 				confirmButtonText: 'OK'
 			})
@@ -547,6 +628,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		closeDeleteModal () {
+			this.clearError('deleteErrorMessage')
 			this.showDeleteModal = false
 		}
 	},
@@ -554,7 +636,8 @@ export default {
 		Breadcrumb,
 		LoadingScreen,
 		Modal,
-		NoResults
+		NoResults,
+		Pagination
 	}
 }
 </script>

@@ -674,12 +674,34 @@
                         <li 
                             v-if="can('localization read')"
                             class="nav-item" 
-                            :class="{'active': currentRoute === 'localization' && currentSubRoute === 'admin'}" 
+                            :class="{'active': currentRoute === 'localization' && currentSubRoute === 'terms'}" 
+                            id="localization_terms_link"
+                        >
+                            <router-link to="/app/localization/terms" class="nav-link">
+                                <i class="fa fa-comment-o"></i>
+                                <span class="title">Terms</span>
+                            </router-link>
+                        </li>
+                        <li 
+                            v-if="can('localization read')"
+                            class="nav-item" 
+                            :class="{'active': currentRoute === 'localization' && currentSubRoute === 'ecomm'}" 
                             id="localization_admin_link"
                         >
-                            <router-link to="/app/localization/admin" class="nav-link">
+                            <router-link to="/app/localization/ecomm" class="nav-link">
                                 <i class="fa fa-bars"></i>
-                                <span class="title">Admin</span>
+                                <span class="title">eComm Data</span>
+                            </router-link>
+                        </li>
+                        <li 
+                            v-if="can('localization read')"
+                            class="nav-item" 
+                            :class="{'active': currentRoute === 'localization' && currentSubRoute === 'custom'}" 
+                            id="localization_static_link"
+                        >
+                            <router-link to="/app/localization/custom" class="nav-link">
+                                <i class="fa fa-bars"></i>
+                                <span class="title">Custom Data</span>
                             </router-link>
                         </li>
                     </ul>

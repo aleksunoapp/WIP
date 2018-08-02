@@ -3,54 +3,69 @@
 		<div class="page-bar">
 			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
 		</div>
-		<h1 class='page-title'>Admin</h1>
+		<h1 class='page-title'>eComm Translations</h1>
 		<div class="note note-info">
 			<p>Translate your store and menu terms.</p>
 		</div>
 
 		<!-- BEGIN TRANSLATE-->
 		<div class="portlet box blue-hoki">
-				<div class="portlet-title bg-blue-chambray">
-					<div class="caption">
-						Translate
+			<div class="portlet-title bg-blue-chambray">
+				<div class="caption">
+					Translate
+				</div>
+			</div>
+			<div class="portlet-body">
+				<div class="row">
+					<div class="col-md-12">
+						<div ref="translationsTableErrorMessage" class="alert alert-danger" v-show="translationsTableErrorMessage.length">
+						<button class="close" data-close="alert" @click="clearError('translationsTableErrorMessage')"></button>
+						<span>{{translationsTableErrorMessage}}</span>
+						</div>
 					</div>
 				</div>
-				<div class="portlet-body" :class="{'display-hide': !createOrEditLanguageCollapse}">
-					<div class="row">
-						<div class="col-md-12">
-							<div ref="translationsTableErrorMessage" class="alert alert-danger" v-show="translationsTableErrorMessage.length">
-							<button class="close" data-close="alert" @click="clearError('translationsTableErrorMessage')"></button>
-							<span>{{translationsTableErrorMessage}}</span>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-3">
-							<el-collapse class="accordion margin-bottom-20" v-model="languageAccordionOpen" accordion>
-							<el-collapse-item title="Language" name="1">
-								<div v-for="language in allLocales" class="clickable" :class="{'active-term' : language.language_code === localeForTranslation.language_code}" @click="selectLocaleForTranslation(language)" :key="language.id">
-										{{language.country}} ({{language.language_code}})
-									</div>
-								<div class="helper-text" v-if="!allLocales.length">No languages yet. Create one above.</div>
-							</el-collapse-item>
-							</el-collapse>
-						</div>
-						<div class="col-md-6" v-show="localeForTranslation.id">
-							<el-collapse class="accordion margin-bottom-20" v-model="activeAccordionSection" accordion>
-							<el-collapse-item v-for="(group, index) in translationTermGroups" :title="group.group" :name="index + 1" :key="group.group">
-								<div v-for="term in group.terms" class="clickable" :class="{'active-term' : term.term === activeTranslationGroup.term}" @click="getTerm(group.groupUrl, term.term)" :key="term.id">
-									{{term.label}}
+				<div class="row">
+					<div class="col-md-3">
+						<el-collapse class="accordion margin-bottom-20" v-model="languageAccordionOpen" accordion>
+						<el-collapse-item title="Language" name="1">
+							<div v-for="language in allLocales" class="clickable" :class="{'active-term' : language.language_code === localeForTranslation.language_code}" @click="selectLocaleForTranslation(language)" :key="language.id">
+									{{language.country.name}} ({{language.language_code}})
 								</div>
-							</el-collapse-item>
-							</el-collapse>
-						</div>
+							<div class="helper-text" v-if="!allLocales.length">
+								No languages yet. 
+								<router-link to="/app/localization/languages">Create one.</router-link>
+							</div>
+						</el-collapse-item>
+						</el-collapse>
 					</div>
-					<div class="translations-table" v-show="localeForTranslation.id">
-						<div class="translations-table-header">
-							<div class="translations-table-header-cell">Term</div>
-							<div class="translations-table-header-cell">{{localeForTranslation.country}} Translation</div>
-						</div>
-					<div v-for="(term, index) in terms" class="translations-table-body" label="Field" :key="index">
+					<div class="col-md-6" v-show="localeForTranslation.id">
+						<el-collapse class="accordion margin-bottom-20" v-model="activeAccordionSection" accordion>
+						<el-collapse-item v-for="(group, index) in translationTermGroups" :title="group.group" :name="index + 1" :key="group.group">
+							<div v-for="term in group.terms" class="clickable" :class="{'active-term' : term.term === activeTranslationGroup.term}" @click="getTerm(group.groupUrl, term.term)" :key="term.id">
+								{{term.label}}
+							</div>
+						</el-collapse-item>
+						</el-collapse>
+					</div>
+				</div>
+				<div class="translations-table">
+					<div class="translations-table-header">
+						<div class="translations-table-header-cell">Term</div>
+						<div class="translations-table-header-cell">{{localeForTranslation.country.name}} Translation</div>
+					</div>
+
+					<loading-screen 
+						class="margin-top-20"
+						:show="loadingTerms" 
+						:color="'#2C3E50'">
+					</loading-screen>
+
+					<div 
+						v-show="!loadingTerms"
+						v-for="(term, index) in terms" 
+						class="translations-table-body" 
+						label="Field" 
+						:key="index">
 						<div class="translations-table-body-row">
 								<div v-if="activeTranslationGroup.term.substr(activeTranslationGroup.term.length - 3) !== 'url'" class="translations-table-body-cell">{{term.term}}</div>
 								<div v-else class="translations-table-body-cell">
@@ -59,13 +74,12 @@
 								<div class="translations-table-body-cell">
 									<div v-if="activeTranslationGroup.term.substr(activeTranslationGroup.term.length - 3) !== 'url'" class="form-group form-md-line-input form-md-floating-label">
 									<input
-											type="text"
-											class="form-control input-sm"
-											:class="{'edited': term.translation.length}"
-											:id="`term${term.id}`"
-											v-model="term.translation"
-											:disabled="!$root.permissions['localization update']"
-										>
+										type="text"
+										class="form-control input-sm"
+										:class="{'edited': term.translation.length}"
+										:id="`term${term.id}`"
+										v-model="term.translation"
+										:disabled="!$root.permissions['localization update']">
 									<label :for="`term${term.id}`">Translation</label>
 									</div>
 									<div v-else>
@@ -84,22 +98,22 @@
 						</div>
 					</div>
 					<div class="left margin-top-20">
-							<button
-								v-if="terms.length"
-								@click="translateTerms()"
-								class="btn blue"
-								:disabled="!$root.permissions['localization update']"
-							>
-								Save
-							</button>
-						</div>
-						<div v-show="!loadingTerms">
-							<p v-if="!activeTranslationGroup.term" class="no-data center">Select a term to begin translating.</p>
-							<p v-if="activeTranslationGroup.term && !terms.length" class="no-data center">There are no items to translate.</p>
-						</div>
+						<button
+							v-if="!loadingTerms && terms.length"
+							@click="translateTerms()"
+							class="btn blue"
+							:disabled="!$root.permissions['localization update']"
+						>
+							Save
+						</button>
+					</div>
+					<div v-show="!loadingTerms">
+						<p v-if="!activeTranslationGroup.term" class="no-data center">Select a language and a term to begin translating.</p>
+						<p v-if="activeTranslationGroup.term && !terms.length" class="no-data center">There are no items to translate.</p>
 					</div>
 				</div>
 			</div>
+		</div>
 		<!-- END TRANSLATE-->
 		<modal :show="imagePreviewShown" effect="fade" @closeOnEscape="closeImagePreview()">
 			<div slot="modal-header" class="modal-header center">
@@ -144,28 +158,16 @@ import Dropdown from '../../modules/Dropdown'
 import Modal from '../../modules/Modal'
 import ResourcePicker from '../../modules/ResourcePicker'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
+import LoadingScreen from '@/components/modules/LoadingScreen'
 
 export default {
 	data () {
 		return {
 			breadcrumbArray: [
-				{name: 'Localization', link: false}
+				{name: 'eComm Translations', link: false}
 			],
 			allLocales: [],
-			selectedLocale: {
-				country: '',
-				language_code: ''
-			},
-			localeToBeEdited: {
-				country: '',
-				language_code: ''
-			},
-			newLocale: {
-				country: '',
-				language_code: ''
-			},
-			createOrSelectMode: 'Create a new language',
-			createOrEditLanguageCollapse: true,
+
 			localeForTranslation: {
 				country: '',
 				language_code: ''
@@ -492,14 +494,7 @@ export default {
 		closeGallery () {
 			this.galleryPopupShown = false
 		},
-		/**
-		 * To switch between creating a new language and editing a language.
-		 * @function
-		 * @returns {undefined}
-		 */
-		flipCreateAndEditModes () {
-			this.createOrSelectMode === 'Create a new language' ? this.createOrSelectMode = 'Edit a language' : this.createOrSelectMode = 'Create a new language'
-		},
+
 		/**
 		 * To fetch instances of the selected term for translation.
 		 * @function
@@ -656,29 +651,6 @@ export default {
 			})
 		},
 		/**
-		 * To update the status of the locale being created.
-		 * @function
-		 * @param {object} locale - An object containing the selected locale
-		 * @returns {undefined}
-		 */
-		selectLocale (locale) {
-			this.selectedLocale = locale
-		},
-		/**
-		 * To update the status of the locale being edited.
-		 * @function
-		 * @param {object} locale - An object containing the selected locale
-		 * @returns {undefined}
-		 */
-		selectLocaleToEdit (locale) {
-			this.selectedLocale.id = locale.id
-			this.selectedLocale.country = locale.country
-			this.selectedLocale.language_code = locale.language_code
-			this.localeToBeEdited.id = locale.id
-			this.localeToBeEdited.country = locale.country
-			this.localeToBeEdited.language_code = locale.language_code
-		},
-		/**
 		 * To update the status of the locale selected for translation.
 		 * @function
 		 * @param {object} locale - An object containing the selected locale
@@ -729,156 +701,14 @@ export default {
 		 */
 		clearError (type) {
 			this[type] = ''
-		},
-		/**
-		 * To clear the form to create new locale.
-		 * @function
-		 * @returns {undefined}
-		 */
-		clearNewLocaleForm () {
-			this.newLocale = {
-				country: '',
-				language_code: ''
-			}
-		},
-		/**
-		 * To clear the form to edit a locale.
-		 * @function
-		 * @returns {undefined}
-		 */
-		clearLocaleToBeEditedForm () {
-			this.localeToBeEdited = {
-				country: '',
-				language_code: ''
-			}
-		},
-		/**
-		 * To clear the selectedLocale object.
-		 * @function
-		 * @returns {undefined}
-		 */
-		clearSelectedLocaleForm () {
-			this.selectedLocale = {
-				country: '',
-				language_code: ''
-			}
-		},
-		/**
-		 * To add the new category to the menu and close the modal and redirect to the menus page.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		createNewLocale () {
-			var localizationVue = this
-			localizationVue.clearError('createOrEdit')
-
-			return localizationVue.validateLocaleData()
-			.then(response => {
-				LocalizationFunctions.createLocale(localizationVue.newLocale, localizationVue.$root.appId, localizationVue.$root.appSecret, localizationVue.$root.userToken).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						localizationVue.getLocales()
-						localizationVue.showAlert('Language created')
-						localizationVue.clearNewLocaleForm()
-					} else {
-						localizationVue.createOrEditErrorMessage = response.message
-					}
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not create the language',
-						errorName: 'createOrEditErrorMessage',
-						vue: localizationVue
-					})
-				})
-			}).catch(reason => {
-				// If validation fails then display the error message
-				localizationVue.createOrEditErrorMessage = reason
-				window.scrollTo(0, 0)
-				throw reason
-			})
-		},
-		/**
-		 * To show the modal to edit locale details.
-		 * @function
-		 * @param {object} locale - The selected locale.
-		 * @returns {undefined}
-		 */
-		editLocale () {
-			var localizationVue = this
-			LocalizationFunctions.updateLocale(localizationVue.localeToBeEdited, localizationVue.$root.appId, localizationVue.$root.appSecret, localizationVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					localizationVue.getLocales()
-					localizationVue.showAlert('Changes saved')
-					localizationVue.clearLocaleToBeEditedForm()
-					localizationVue.clearSelectedLocaleForm()
-				} else {
-					localizationVue.createOrEditErrorMessage = response.message
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not update the language',
-					errorName: 'createOrEditErrorMessage',
-					vue: localizationVue
-				})
-			})
-		},
-		/**
-		 * To check if the category data is valid before submitting to the backend.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
-		validateLocaleData () {
-			var localizationVue = this
-			return new Promise(function (resolve, reject) {
-				if (localizationVue.createOrSelectMode === 'Create a new language' &&
-					!localizationVue.newLocale.country.length) {
-					reject('Language name cannot be blank')
-				} else if (localizationVue.createOrSelectMode === 'Create a new language' &&
-					!localizationVue.newLocale.language_code.length) {
-					reject('Language code cannot be blank')
-				} else if (localizationVue.createOrSelectMode === 'Edit a language' &&
-					!localizationVue.localeToBeEdited.country.length) {
-					reject('Language name cannot be blank')
-				} else if (localizationVue.createOrSelectMode === 'Edit a language' &&
-					!localizationVue.localeToBeEdited.language_code.length) {
-					reject('Language code cannot be blank')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
-		 * To toggle the create locale panel, initially set to closed
-		 * @function
-		 * @returns {undefined}
-		 */
-		toggleNewLocalePanel () {
-			this.createOrEditLanguageCollapse = !this.createOrEditLanguageCollapse
-		},
-		/**
-		 * To alert the user whether the printer was successfully added.
-		 * @function
-		 * @param {string} input - The input string.
-		 * @returns {undefined}
-		 */
-		showAlert (input) {
-			this.$swal({
-				title: 'Success!',
-				text: input,
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(() => {
-				this.clearNewPrinterForm()
-			}, dismiss => {
-				// Do nothing on dismiss
-			})
 		}
 	},
 	components: {
 		Breadcrumb,
 		Dropdown,
 		Modal,
-		ResourcePicker
+		ResourcePicker,
+		LoadingScreen
 	}
 }
 </script>
@@ -895,6 +725,8 @@ export default {
 	font-weight: 600;
 }
 .translations-table {
+	position: relative;
+	min-height: 100px;
 	color: rgb(63, 68, 74);
 }
 .translations-table-header {
