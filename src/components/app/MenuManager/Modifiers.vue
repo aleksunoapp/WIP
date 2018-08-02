@@ -107,7 +107,7 @@
 		        		<img src="../../../../static/client_logo.png">
 		        	</div>
 		            <div class="caption">
-		                <span class="caption-subject font-green bold uppercase">Modifiers</span>
+		                <span class="caption-subject font-default bold uppercase">Modifiers</span>
                         <div class="caption-desc font-grey-cascade">Click on a modifer category to view its items.</div>
 		            </div>
 		        </div>

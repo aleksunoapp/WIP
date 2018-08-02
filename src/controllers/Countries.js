@@ -1,6 +1,6 @@
 import GlobalFunctions from '@/global.js'
 /**
- * Call to pitapit API to get all available languages.
+ * Call to API to get all available countries.
  * @function
  * @returns {object} A promise with response shaped
  * [
@@ -28,12 +28,13 @@ export const listCountries = () => {
 }
 
 /**
- * Call to pitapit API to get all available languages.
+ * Call to API to create a country
  * @function
  * @returns {object} A promise with response shaped ...
  */
 export const createCountry = ({
-	name = ''
+	name = '',
+	code = ''
 }) => {
 	if (!name) {
 		return Error('Please provide a name')
@@ -43,7 +44,10 @@ export const createCountry = ({
 			method: 'POST',
 			dataType: 'json',
 			url: '/app/country/create',
-			data: {name},
+			data: {
+				name,
+				code
+			},
 			success: function (response) {
 				resolve(response)
 			},
@@ -55,12 +59,13 @@ export const createCountry = ({
 }
 
 /**
- * Call to pitapit API to get all available languages.
+ * Call to API to update a country
  * @function
  * @returns {object} A promise with response shaped ...
  */
 export const updateCountry = ({
 	name = '',
+	code = '',
 	id = null
 }) => {
 	if (!name) {
@@ -74,7 +79,10 @@ export const updateCountry = ({
 			method: 'POST',
 			dataType: 'json',
 			url: `/app/country/${id}/update`,
-			data: {name},
+			data: {
+				name,
+				code
+			},
 			success: function (response) {
 				resolve(response)
 			},
@@ -86,7 +94,7 @@ export const updateCountry = ({
 }
 
 /**
- * Call to pitapit API to get all available languages.
+ * Call to API to delete a country
  * @function
  * @returns {object} A promise with response shaped ...
  */

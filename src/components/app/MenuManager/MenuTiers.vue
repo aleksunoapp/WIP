@@ -71,7 +71,7 @@
 			        		<img src="../../../../static/client_logo.png">
 			        	</div>
 			            <div class="caption">
-			                <span class="caption-subject font-green bold uppercase">Menu Tiers</span>
+			                <span class="caption-subject font-default bold uppercase">Menu Tiers</span>
 	                        <div class="caption-desc font-grey-cascade">Click on a menu tier to edit it.</div>
 			            </div>
 			        </div>

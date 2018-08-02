@@ -182,7 +182,7 @@
 			        		<img src="../../../../static/client_logo.png">
 			        	</div>
 			            <div class="caption">
-			                <span class="caption-subject font-green bold uppercase">OMA Users</span>
+			                <span class="caption-subject font-default bold uppercase">OMA Users</span>
 	                        <div class="caption-desc font-grey-cascade">Click on an OMA user to edit store locations assigned to them or to delete the user.</div>
 			            </div>
 			        </div>
@@ -267,7 +267,7 @@
 			        		<img src="../../../../static/client_logo.png">
 			        	</div>
 			            <div class="caption">
-			                <span class="caption-subject font-green bold uppercase">Search Results</span>
+			                <span class="caption-subject font-default bold uppercase">Search Results</span>
 	                        <div class="caption-desc font-grey-cascade">Click on an OMA user to edit store locations assigned to them or to delete the user.</div>
 			            </div>
 			        </div>

@@ -406,6 +406,13 @@ export const role = {
 			'localization languages update': false,
 			'localization languages delete': false,
 			'localization languages approve': false
+		},
+		'terms': {
+			'localization terms create': false,
+			'localization terms read': false,
+			'localization terms update': false,
+			'localization terms delete': false,
+			'localization terms approve': false
 		}
 	}
 }

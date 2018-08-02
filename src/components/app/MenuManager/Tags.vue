@@ -70,7 +70,7 @@
 	        		<img src="../../../../static/client_logo.png">
 	        	</div>
 	            <div class="caption">
-	                <span class="caption-subject font-green bold uppercase">Tags</span>
+	                <span class="caption-subject font-default bold uppercase">Tags</span>
 	                <div class="caption-desc font-grey-cascade">Tags represent dietary restrictions.</div>
 	            </div>
 	        </div>

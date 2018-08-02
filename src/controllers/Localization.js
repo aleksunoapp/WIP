@@ -1,106 +1,3 @@
-/*
-
-questions / issues
-the current localization remains as is, under Admin.
-new localization goes under Static or Website.
-
-- will Static and Admin share the new COUNTRY - LANGUAGE, or will they continue to use the old Locale
-
-COUNTRY has many LANGUAGE, country is a container for LANGUAGE
-TERM can be dynamically created
-TRANSLATION is an instance of a TERM and LANGUAGE with a string value. create and update TRANSLATION is one endpoint (sql update if exists).
-
-FLOWS:
-- create country
-- assign languages to country
-
-- create language
-- assign language to country
-
-- create term
-
-- select country
-- select language
-- select term
-- create a translation
-
-COUNTRIES
-
-    listCountries
-		GET {{url}}/api/app/country
-		[
-			{
-				"id": 1,
-				"name": "France"
-			}
-		]
-
-    createCountry
-		{
-			"name": "France"
-		}
-		POST {{url}}/api/app/country/create
-
-    updateCountry
-		{
-			"name": "France"
-		}
-		POST {{url}}/api/app/country/ + country.id + /update
-
-    deleteCountry
-	    DELETE {{url}}/api/app/country/ + country.id + /delete
-
-LANGUAGES
-
-	listLanguages
-		GET {{url}}/api/app/locale
-		[
-			{
-				"id": 1,
-				"language_code": "fr",
-				"default": 0,
-				"country_id": 0,
-				"country": ""
-			}
-		]
-
-	createLanguage
-		{
-			"language_code": "fr",
-			"country_id": 1,
-			"default": 0
-		}
-		POST {{url}}/api/app/locale/create
-
-    updateLanguage
-		{
-			"language_code": "fr",
-			"country_id": 1,
-			"default": 0 // updating to 1 gets 500 Whoops
-		}
-		POST {{url}}/api/app/locale/ + language.id + /update
-
-TERMS
-
-	listAllTerms
-		GET {{url}}/api/app/term_translation/3/getTermForAllLocale
-		[
-			{
-				"en": {
-					"register with email": "register with email"
-				}
-			},
-			{
-				"fr": {
-					"register with email": "register with email"
-				}
-			}
-		]
-
-TRANSLATIONS
-
-*/
-
 /**
  * @module Stores
  */
@@ -117,7 +14,7 @@ export default ({
 			GlobalFunctions.$ajax({
 				method: 'GET',
 				dataType: 'json',
-				url: '/app/locale',
+				url: '/app/locale/all',
 				data: {},
 				success: function (response) {
 					resolve(response)

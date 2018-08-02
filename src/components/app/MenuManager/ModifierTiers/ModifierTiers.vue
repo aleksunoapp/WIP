@@ -62,7 +62,7 @@
 					<img src="../../../../../static/client_logo.png">
 				</div>
 				<div class="caption">
-					<span class="caption-subject font-green bold uppercase">Modifier Tiers</span>
+					<span class="caption-subject font-default bold uppercase">Modifier Tiers</span>
 					<div class="caption-desc font-grey-cascade">Edit modifier tiers, assign modifier categories to tiers, and remove tiers.</div>
 				</div>
 			</div>

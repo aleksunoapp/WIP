@@ -4,11 +4,12 @@
 
             <ul class="page-sidebar-menu page-header-fixed" data-keep-expand="false">
                 <li 
-                    v-if="$root.permissions['analytics overview read'] ||
-                        $root.permissions['analytics store read'] ||
-                        $root.permissions['analytics item read'] ||
-                        $root.permissions['analytics user read']
-                    "
+                    v-if="canAny([
+                        'analytics overview read', 
+                        'analytics store read', 
+                        'analytics item read', 
+                        'analytics user read'
+                    ])"
                     class="nav-item" 
                     :class="{'active': currentRoute === 'analytics'}" 
                     id="store_manager_link" 
@@ -20,7 +21,7 @@
                     </a>
                     <ul class="sub-menu">
                         <li 
-                            v-if="$root.permissions['analytics overview read']"
+                            v-if="can('analytics overview read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'analytics' && currentSubRoute === 'overview'}" 
                             id="store_manager_create_new_link"
@@ -31,7 +32,7 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['analytics store read']"
+                            v-if="can('analytics store read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'analytics' && currentSubRoute === 'locationsales'}" id="store_manager_applications_link"
                         >
@@ -41,7 +42,7 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['analytics item read']"
+                            v-if="can('analytics item read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'analytics' && currentSubRoute === 'itemsales'}" 
                             id="item_sales_link"
@@ -52,7 +53,7 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['analytics user read']"
+                            v-if="can('analytics user read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'analytics' && currentSubRoute === 'useranalytics'}" 
                             id="user_analytics_link"
@@ -65,12 +66,13 @@
                     </ul>
                 </li>
                 <li 
-                    v-if="$root.permissions['approvals read'] ||
-                        $root.permissions['approvals request read'] ||
-                        $root.permissions['list role'] ||
-                        $root.permissions['list permission'] ||
-                        $root.permissions['approvals modules read']
-                    "
+                    v-if="canAny([
+                        'approvals read', 
+                        'approvals request read', 
+                        'list role', 
+                        'list permission', 
+                        'approvals modules read'
+                    ])"
                     class="nav-item" 
                     :class="{'active': currentRoute === 'approvals'}" 
                     id="admin_manager_link" 
@@ -84,9 +86,7 @@
                     </a>
                     <ul class="sub-menu">
                         <li 
-                            v-if="$root.permissions['approvals read'] ||
-                                $root.permissions['approvals request read']
-                            "
+                            v-if="canAny(['approvals read', 'approvals request read'])"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'approvals' && currentSubRoute === 'approvals'}" 
                             id="admin_manager_approvals_link"
@@ -97,7 +97,7 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['list role']"
+                            v-if="can('list role')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'approvals' && currentSubRoute === 'roles'}" 
                             id="admin_manager_roles_link"
@@ -108,7 +108,7 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['list permission']"
+                            v-if="can('list permission')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'approvals' && currentSubRoute === 'permissions'}" 
                             id="admin_manager_permissions_link"
@@ -119,7 +119,7 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['approvals modules read']"
+                            v-if="can('approvals modules read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'approvals' && currentSubRoute === 'modules'}" 
                             id="admin_manager_modules_link"
@@ -132,11 +132,12 @@
                     </ul>
                 </li>
                 <li 
-                    v-if="$root.permissions['admin brand_admins read'] ||
-                        $root.permissions['admin location_managers read'] ||
-                        $root.permissions['admin oma_users read'] ||
-                        $root.permissions['admin store_app_users read']
-                    "
+                    v-if="canAny([
+                        'admin brand_admins read', 
+                        'admin location_managers read', 
+                        'admin oma_users read', 
+                        'admin store_app_users read'
+                    ])"
                     class="nav-item" 
                     :class="{'active': currentRoute === 'admin'}" 
                     id="admin_manager_link"
@@ -148,7 +149,7 @@
                     </a>
                     <ul class="sub-menu">
                         <li 
-                            v-if="$root.permissions['admin brand_admins read']"
+                            v-if="can('admin brand_admins read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'admin' && currentSubRoute === 'brand_admins'}" 
                             id="store_manager_create_new_link"
@@ -159,7 +160,7 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['admin location_managers read']"
+                            v-if="can('admin location_managers read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'admin' && currentSubRoute === 'location_managers'}" 
                             id="store_manager_create_new_link"
@@ -170,7 +171,7 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['admin oma_users read']"
+                            v-if="can('admin oma_users read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'admin' && currentSubRoute === 'OMA_users'}" 
                             id="store_manager_applications_link"
@@ -181,7 +182,7 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['admin store_app_users read']"
+                            v-if="can('admin store_app_users read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'admin' && currentSubRoute === 'store_app_users'}" 
                             id="store_manager_applications_link"
@@ -194,12 +195,13 @@
                     </ul>
                 </li>
                 <li 
-                    v-if="$root.permissions['stores info read'] ||
-                        $root.permissions['stores info create'] ||
-                        $root.permissions['stores groups read'] ||
-                        $root.permissions['stores amenities read'] ||
-                        $root.permissions['stores order_settings read']
-                    "
+                    v-if="canAny([
+                        'stores info read', 
+                        'stores info create', 
+                        'stores groups read', 
+                        'stores amenities read', 
+                        'stores order_settings read'
+                    ])"
                     class="nav-item" 
                     :class="{'active': currentRoute === 'store_manager'}" 
                     id="store_manager_link"
@@ -211,7 +213,7 @@
                     </a>
                     <ul class="sub-menu">
                         <li 
-                            v-if="$root.permissions['stores info create']"
+                            v-if="can('stores info create')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'store_manager' && currentSubRoute === 'create_new'}" 
                             id="store_manager_create_new_link"
@@ -222,7 +224,7 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['stores groups read']"
+                            v-if="can('stores groups read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'store_manager' && currentSubRoute === 'store_groups'}" 
                             id="store_manager_applications_link"
@@ -233,7 +235,7 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['stores info read']"
+                            v-if="can('stores info read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'store_manager' && (currentSubRoute === 'stores' || currentSubRoute === 'edit_store')}" 
                             id="store_manager_applications_link"
@@ -244,7 +246,7 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['stores amenities read']"
+                            v-if="can('stores amenities read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'store_manager' && currentSubRoute === 'amenities'}" 
                             id="store_manager_amenities_link"
@@ -255,7 +257,7 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['stores order_settings read']"
+                            v-if="can('stores order_settings read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'store_manager' && currentSubRoute === 'order_settings'}" 
                             id="store_manager_order_settings_link"
@@ -268,7 +270,7 @@
                     </ul>
                 </li>
                 <li 
-                    v-if="$root.permissions['news_feed read']"
+                    v-if="can('news_feed read')"
                     class="nav-item" 
                     :class="{'active': currentRoute === 'news_feed'}" 
                 >
@@ -278,7 +280,7 @@
                     </router-link>
                 </li>
                 <li 
-                    v-if="$root.permissions['social_feed read']"
+                    v-if="can('social_feed read')"
                     class="nav-item" 
                     :class="{'active': currentRoute === 'social_feed'}" 
                 >
@@ -288,9 +290,10 @@
                     </router-link>
                 </li>
                 <li 
-                    v-if="$root.permissions['tax tax_classes read'] ||
-                        $root.permissions['tax item_types read']
-                    "
+                    v-if="canAny([
+                        'tax tax_classes read', 
+                        'tax item_types read'
+                    ])"
                     class="nav-item" 
                     :class="{'active': currentRoute === 'tax_manager'}" 
                     id="tax_manager_link"
@@ -302,7 +305,7 @@
                     </a>
                     <ul class="sub-menu">
                         <li 
-                            v-if="$root.permissions['tax tax_classes read']"
+                            v-if="can('tax tax_classes read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'tax_manager' && currentSubRoute === 'tax_classes'}" 
                             id="tax_manager_tax_classes_link"
@@ -313,7 +316,7 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['tax item_types read']"
+                            v-if="can('tax item_types read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'tax_manager' && currentSubRoute === 'item_types'}" 
                             id="tax_manager_item_types_link"
@@ -326,14 +329,15 @@
                     </ul>
                 </li>
                 <li 
-                    v-if="$root.permissions['menu_manager menus read'] ||
-                        $root.permissions['menu_manager tiers read'] ||
-                        $root.permissions['menu_manager modifiers read'] ||
-                        $root.permissions['menu_manager tags read'] ||
-                        $root.permissions['menu_manager portions read'] ||
-                        $root.permissions['menu_manager options read'] ||
-                        $root.permissions['menu_manager attributes read']
-                    "
+                    v-if="canAny([
+                        'menu_manager menus read', 
+                        'menu_manager tiers read', 
+                        'menu_manager modifiers read', 
+                        'menu_manager tags read',
+                        'menu_manager portions read', 
+                        'menu_manager options read', 
+                        'menu_manager attributes read'
+                    ])"
                     class="nav-item" 
                     :class="{'active': currentRoute === 'menu_manager'}" 
                     id="menu_manager_link"
@@ -345,7 +349,7 @@
                     </a>
                     <ul class="sub-menu">
                         <li 
-                            v-if="$root.permissions['menu_manager menus read']"
+                            v-if="can('menu_manager menus read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'menu_manager' && (currentSubRoute === 'menus' || currentSubRoute === 'categories' || currentSubRoute === 'items')}" 
                             id="menu_manager_menus_link"
@@ -356,7 +360,7 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['menu_manager tiers read']"
+                            v-if="can('menu_manager tiers read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'menu_manager' && currentSubRoute === 'menu_tiers'}" 
                             id="menu_manager_menu_tiers_link"
@@ -367,7 +371,7 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['menu_manager modifiers read']"
+                            v-if="can('menu_manager modifiers read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'menu_manager' && (currentSubRoute === 'modifiers' || currentSubRoute === 'modifier_items')}" 
                             id="menu_manager_modifiers_link"
@@ -378,7 +382,7 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['menu_manager modifier_tiers read']"
+                            v-if="can('menu_manager modifier_tiers read')"
                             class="nav-item" 
                             v-bind:class="{'active': currentRoute === 'menu_manager' && currentSubRoute === 'modifier_tiers'}" 
                             id="menu_manager_modifier_tiers_link">
@@ -388,7 +392,7 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['menu_manager tags read']"
+                            v-if="can('menu_manager tags read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'menu_manager' && currentSubRoute === 'tags'}" 
                             id="menu_manager_tags_link"
@@ -399,7 +403,7 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['menu_manager portions read']"
+                            v-if="can('menu_manager portions read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'menu_manager' && currentSubRoute === 'portions'}" 
                             id="menu_manager_portions_link"
@@ -410,7 +414,7 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['menu_manager options read']"
+                            v-if="can('menu_manager options read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'menu_manager' && currentSubRoute === 'options'}" 
                             id="menu_manager_options_link"
@@ -421,7 +425,7 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['menu_manager attributes read']"
+                            v-if="can('menu_manager attributes read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'menu_manager' && currentSubRoute === 'item_attributes'}" 
                             id="menu_manager_item_attributes_link"
@@ -434,7 +438,7 @@
                     </ul>
                 </li>
                 <li 
-                    v-if="$root.permissions['printers read']"							
+                    v-if="can('printers read')"							
                     class="nav-item" 
                     :class="{'active': currentRoute === 'printers'}" 
                     id="printers_link"
@@ -445,10 +449,11 @@
                     </router-link>
                 </li>
                 <li 
-                    v-if="$root.permissions['user_manager users read'] ||
-                        $root.permissions['user_manager user_groups read'] ||
-                        $root.permissions['user_manager attributes read']
-                    "
+                    v-if="canAny([
+                        'user_manager users read',
+                        'user_manager user_groups read',
+                        'user_manager attributes read'
+                    ])"
                     class="nav-item" 
                     :class="{'active': currentRoute === 'user_manager'}" 
                     id="user_manager_link" 
@@ -460,7 +465,7 @@
                     </a>
                     <ul class="sub-menu">
                         <li 
-                            v-if="$root.permissions['user_manager users read']"
+                            v-if="can('user_manager users read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'user_manager' && currentSubRoute === 'users'}" 
                             id="user_manager_applications_link"
@@ -471,7 +476,7 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['user_manager user_groups read']"
+                            v-if="can('user_manager user_groups read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'user_manager' && currentSubRoute === 'user_groups'}" 
                             id="user_manager_applications_link"
@@ -482,7 +487,7 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['user_manager attributes read']"
+                            v-if="can('user_manager attributes read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'user_manager' && currentSubRoute === 'user_attributes'}" 
                             id="user_attributes_applications_link"
@@ -495,9 +500,10 @@
                     </ul>
                 </li>
                 <li 
-                    v-if="$root.permissions['faq user read'] ||
-                        $root.permissions['faq store read']
-                    "
+                    v-if="canAny([
+                        'faq user read',
+                        'faq store read'
+                    ])"
                     class="nav-item" 
                     :class="{'active': currentRoute === 'faq'}" 
                     id="faq_link" 
@@ -509,7 +515,7 @@
                     </a>
                     <ul class="sub-menu">
                         <li 
-                            v-if="$root.permissions['faq user read']"
+                            v-if="can('faq user read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'faq' && currentSubRoute === 'users'}" 
                             id="faq_users_link"
@@ -520,7 +526,7 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['faq store read']"
+                            v-if="can('faq store read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'faq' && currentSubRoute === 'stores'}" 
                             id="faq_stores_link"
@@ -533,7 +539,7 @@
                     </ul>
                 </li>
                 <li 
-                    v-if="$root.permissions['gallery read']"
+                    v-if="can('gallery read')"
                     class="nav-item" 
                     :class="{'active': currentRoute === 'gallery'}"
                 >
@@ -543,10 +549,11 @@
                     </router-link>
                 </li>
                 <li 
-                    v-if="$root.permissions['loyalty base_rule read'] ||
-                        $root.permissions['loyalty promotion_rules read'] ||
-                        $root.permissions['reward_tiers read']
-                    "
+                    v-if="canAny([
+                        'loyalty base_rule read',
+                        'loyalty promotion_rules read',
+                        'reward_tiers read'
+                    ])"
                     class="nav-item" 
                     :class="{'active': currentRoute === 'loyalty'}" 
                     id="loyalty_link" 
@@ -558,7 +565,7 @@
                     </a>
                     <ul class="sub-menu">
                         <li 
-                            v-if="$root.permissions['loyalty base_rule read']"
+                            v-if="can('loyalty base_rule read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'loyalty' && currentSubRoute === 'base_rule'}" 
                             id="faq_users_link"
@@ -569,7 +576,7 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['loyalty promotion_rules read']"
+                            v-if="can('loyalty promotion_rules read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'loyalty' && currentSubRoute === 'promotion_rules'}" 
                             id="faq_users_link"
@@ -580,7 +587,7 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['reward_tiers read']"
+                            v-if="can('reward_tiers read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'loyalty' && currentSubRoute === 'rewards'}" 
                             id="faq_users_link"
@@ -593,7 +600,7 @@
                     </ul>
                 </li>
                 <li 
-                    v-if="$root.permissions['promocodes read']"
+                    v-if="can('promocodes read')"
                     class="nav-item" 
                     :class="{'active': currentRoute === 'promocodes'}" 
                 >
@@ -603,7 +610,7 @@
                     </router-link>
                 </li>
                 <li 
-                    v-if="$root.permissions['promotions read']"
+                    v-if="can('promotions read')"
                     class="nav-item" 
                     :class="{'active': currentRoute === 'promotions'}" 
                 >
@@ -614,7 +621,7 @@
                     </router-link>
                     <ul class="sub-menu">
                         <li 
-                            v-if="$root.permissions['promotions geolocations read']"
+                            v-if="can('promotions geolocations read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'promotions' && currentSubRoute === 'geolocations'}" 
                             id="promotions_geolocations_link"
@@ -627,10 +634,11 @@
                     </ul>
                 </li>
                 <li 
-                    v-if="$root.permissions['localization read'] ||
-                        $root.permissions['localization languages read'] ||
-                        $root.permissions['localization countries read']
-                    "
+                    v-if="canAny([
+                        'localization read',
+                        'localization languages read',
+                        'localization countries read'
+                    ])"
                     class="nav-item" 
                     :class="{'active': currentRoute === 'localization'}" 
                     id="localization_link" 
@@ -642,7 +650,7 @@
                     </a>
                     <ul class="sub-menu">
                         <li 
-                            v-if="$root.permissions['localization countries read']"
+                            v-if="can('localization countries read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'loyalty' && currentSubRoute === 'countries'}" 
                             id="localization_countries_link"
@@ -653,7 +661,7 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['localization languages read']"
+                            v-if="can('localization languages read')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'localization' && currentSubRoute === 'languages'}" 
                             id="localization_languages_link"
@@ -664,14 +672,36 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="$root.permissions['localization read']"
+                            v-if="can('localization read')"
                             class="nav-item" 
-                            :class="{'active': currentRoute === 'localization' && currentSubRoute === 'admin'}" 
+                            :class="{'active': currentRoute === 'localization' && currentSubRoute === 'terms'}" 
+                            id="localization_terms_link"
+                        >
+                            <router-link to="/app/localization/terms" class="nav-link">
+                                <i class="fa fa-comment-o"></i>
+                                <span class="title">Terms</span>
+                            </router-link>
+                        </li>
+                        <li 
+                            v-if="can('localization read')"
+                            class="nav-item" 
+                            :class="{'active': currentRoute === 'localization' && currentSubRoute === 'ecomm'}" 
                             id="localization_admin_link"
                         >
-                            <router-link to="/app/localization/admin" class="nav-link">
+                            <router-link to="/app/localization/ecomm" class="nav-link">
                                 <i class="fa fa-bars"></i>
-                                <span class="title">Admin</span>
+                                <span class="title">eComm Data</span>
+                            </router-link>
+                        </li>
+                        <li 
+                            v-if="can('localization read')"
+                            class="nav-item" 
+                            :class="{'active': currentRoute === 'localization' && currentSubRoute === 'custom'}" 
+                            id="localization_static_link"
+                        >
+                            <router-link to="/app/localization/custom" class="nav-link">
+                                <i class="fa fa-bars"></i>
+                                <span class="title">Custom Data</span>
                             </router-link>
                         </li>
                     </ul>
@@ -690,12 +720,20 @@
 </template>
 <script>
 import $ from 'jquery'
+import { mapGetters } from 'vuex'
+
 export default {
 	name: 'left-sidebar',
 	data: () => ({
 		currentRoute: '',
 		currentSubRoute: ''
 	}),
+	computed: {
+		...mapGetters([
+			'can',
+			'canAny'
+		])
+	},
 	watch: {
 		/**
 		 * Watch `$route` so that we can reset the current route on change.

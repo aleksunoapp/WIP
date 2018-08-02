@@ -4,60 +4,57 @@
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
 			</button>
-			<h4 class="modal-title center" v-if="!selectImageMode">Add New Sub Category</h4>
-			<h4 class="modal-title center" v-else><i class="fa fa-chevron-left clickable pull-left back-button" @click="goToPageOne()"></i>Select An Image</h4>
+			<h4 class="modal-title center" v-if="!imageMode">Add New Sub Category</h4>
+			<h4 class="modal-title center" v-else>Select An Image</h4>
 		</div>
 		<div slot="modal-body" class="modal-body">
-			<div class="page-one" v-if="!selectImageMode" :class="{'active': !selectImageMode, 'disabled': selectImageMode}">
-				<div class="alert alert-danger" v-if="errorMessage.length">
-				    <button class="close" data-close="alert" @click="clearError()"></button>
-				    <span>{{errorMessage}}</span>
+			<div class="alert alert-danger" v-if="errorMessage.length">
+				<button class="close" data-close="alert" @click="clearError()"></button>
+				<span>{{errorMessage}}</span>
+			</div>
+			<div :class="{'col-md-2' : !imageMode, 'col-md-12' : imageMode}">
+				<resource-picker 
+					@open="toggleImageMode()"
+					@close="toggleImageMode()"
+					@selected="updateImage" 
+					:imageButton="true"
+					:imageUrl="newSubCategory.image_url"
+					class="margin-top-15">
+				</resource-picker>
+			</div>
+			<div class="col-md-9" v-show="!imageMode">
+				<div class="form-group form-md-line-input form-md-floating-label">
+					<input type="text" class="form-control input-sm" :class="{'edited': newSubCategory.name.length}" id="form_control_1" v-model="newSubCategory.name">
+					<label for="form_control_1">Sub Category Name</label>
 				</div>
-				<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
-							<resource-picker 
-								@open="toggleImageMode('newMenu', true)"
-								@close="toggleImageMode('newMenu', false)"
-								@selected="updateImage" 
-								:imageButton="true"
-								:imageUrl="newSubCategory.image_url"
-								class="margin-top-15"
-							>
-							</resource-picker>
-		        		</div>
-				<div class="col-md-9">
-					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm" :class="{'edited': newSubCategory.name.length}" id="form_control_1" v-model="newSubCategory.name">
-					    <label for="form_control_1">Sub Category Name</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm" :class="{'edited': newSubCategory.desc.length}" id="form_control_2" v-model="newSubCategory.desc">
-					    <label for="form_control_2">Sub Category Description</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="text" class="form-control input-sm" :class="{'edited': newSubCategory.sku.length}" id="form_control_3" v-model="newSubCategory.sku">
-					    <label for="form_control_3">Sub Category SKU</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-					    <input type="number" class="form-control input-sm" :class="{'edited': newSubCategory.order}" id="form_control_4" v-model="newSubCategory.order">
-					    <label for="form_control_4">Sub Category Order</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-		                <label>Sub Category Status:</label><br>
-		                <el-switch
-		                	v-model="newSubCategory.status"
-		                	active-color="#0c6"
-		                	inactive-color="#ff4949"
-		                	:active-value="1"
-		                	:inactive-value="0"
-		                	active-text="Available"
-		                	inactive-text="Sold Out">
-		                </el-switch>
-		            </div>
+				<div class="form-group form-md-line-input form-md-floating-label">
+					<input type="text" class="form-control input-sm" :class="{'edited': newSubCategory.desc.length}" id="form_control_2" v-model="newSubCategory.desc">
+					<label for="form_control_2">Sub Category Description</label>
 				</div>
-	        </div>
+				<div class="form-group form-md-line-input form-md-floating-label">
+					<input type="text" class="form-control input-sm" :class="{'edited': newSubCategory.sku.length}" id="form_control_3" v-model="newSubCategory.sku">
+					<label for="form_control_3">Sub Category SKU</label>
+				</div>
+				<div class="form-group form-md-line-input form-md-floating-label">
+					<input type="number" class="form-control input-sm" :class="{'edited': newSubCategory.order}" id="form_control_4" v-model="newSubCategory.order">
+					<label for="form_control_4">Sub Category Order</label>
+				</div>
+				<div class="form-group form-md-line-input form-md-floating-label">
+					<label>Sub Category Status:</label><br>
+					<el-switch
+						v-model="newSubCategory.status"
+						active-color="#0c6"
+						inactive-color="#ff4949"
+						:active-value="1"
+						:inactive-value="0"
+						active-text="Available"
+						inactive-text="Sold Out">
+					</el-switch>
+				</div>
+			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button v-if="!selectImageMode" type="button" class="btn btn-primary" @click="addNewMenuCategory()">Add</button>
+			<button v-if="!imageMode" type="button" class="btn btn-primary" @click="addNewMenuCategory()">Add</button>
 		</div>
 	</modal>
 </template>
@@ -84,10 +81,7 @@ export default {
 				parent_category: this.parentCategoryId
 			},
 			errorMessage: '',
-			selectImageMode: false,
-			imageMode: {
-				newMenu: false
-			}
+			imageMode: false
 		}
 	},
 	props: {
@@ -100,6 +94,14 @@ export default {
 		this.showAddCategoryModal = true
 	},
 	methods: {
+		/**
+		 * To toggle between the open and closed state of the resource picker
+		 * @function
+		 * @returns {undefined}
+		 */
+		toggleImageMode () {
+			this.imageMode = !this.imageMode
+		},
 		/**
 		 * To check if the category data is valid before submitting to the backend.
 		 * @function
@@ -181,14 +183,6 @@ export default {
 		 */
 		closeModal () {
 			this.$emit('deactivateAddSubCategoryModal')
-		},
-		/**
-		 * To change the page to the main/form view on the modal.
-		 * @function
-		 * @returns {undefined}
-		 */
-		goToPageOne () {
-			this.selectImageMode = false
 		},
 		/**
 		 * To set the image to be same as the one emitted by the gallery modal.

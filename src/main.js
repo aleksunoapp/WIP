@@ -1,6 +1,7 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
+import store from './store'
 import ElementUI from 'element-ui'
 import router, {routes} from './router'
 import locale from 'element-ui/lib/locale/lang/en'
@@ -8,7 +9,7 @@ import locale from 'element-ui/lib/locale/lang/en'
 import 'element-ui/lib/theme-chalk/index.css'
 import VueSweetAlert from 'vue-sweetalert'
 import VueScrollTo from 'vue-scrollto'
-// import globals from './global.js'
+import { mapMutations } from 'vuex'
 
 require('./assets/css/font-awesome/css/font-awesome.min.css')
 require('./assets/css/simple-line-icons/simple-line-icons.min.css')
@@ -30,6 +31,7 @@ Vue.use(VueSweetAlert)
 Vue.use(VueScrollTo)
 
 var App = new Vue({
+	store,
 	data () {
 		return {
 			activeUser: {},
@@ -79,6 +81,7 @@ var App = new Vue({
 			this.accountType = accountType
 			this.activeLocation = JSON.parse(activeLocation) || {}
 			this.permissions = JSON.parse(permissions)
+			this.setPermissions(this.permissions)
 			this.roles = JSON.parse(roles)
 
 			let appRoutes = routes.filter(route => route.path === '/app')[0].children
@@ -140,7 +143,10 @@ var App = new Vue({
 
 				errorCallback(e)
 			}
-		}
+		},
+		...mapMutations({
+			setPermissions: 'SET_PERMISSIONS'
+		})
 	},
 	router
 })

@@ -81,7 +81,7 @@
     		        		<img src="../../../../static/client_logo.png">
     		        	</div>
     		            <div class="caption">
-    		                <span class="caption-subject font-green bold uppercase">User FAQs</span>
+    		                <span class="caption-subject font-default bold uppercase">User FAQs</span>
                             <div class="caption-desc font-grey-cascade">Click on the edit button to edit the questions and answers.</div>
     		            </div>
     		        </div>

@@ -71,7 +71,7 @@
 						<img src="../../../../static/client_logo.png">
 					</div>
 					<div class="caption">
-						<span class="caption-subject font-green bold uppercase">Amenities</span>
+						<span class="caption-subject font-default bold uppercase">Amenities</span>
 						<div class="caption-desc font-grey-cascade" v-if="$root.accountType !== 'store_admin'">Create, edit or delete amenities and assign them to the active store.</div>
 						<div class="caption-desc font-grey-cascade" v-if="$root.accountType === 'store_admin'">View amenities and assign them to the active store.</div>
 					</div>

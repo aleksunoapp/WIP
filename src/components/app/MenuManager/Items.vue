@@ -206,7 +206,7 @@
 		        		<img :src="categoryDetails.image_url">
 		        	</div>
 		            <div class="caption">
-		                <span class="caption-subject font-green bold uppercase">{{ categoryDetails.name }}</span>
+		                <span class="caption-subject font-default bold uppercase">{{ categoryDetails.name }}</span>
                         <div class="caption-desc font-grey-cascade">{{ categoryDetails.desc }}</div>
 		            </div>
 		        </div>

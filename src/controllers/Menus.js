@@ -391,5 +391,27 @@ export default ({
 				}
 			})
 		})
+	},
+	/**
+	 * Call to API to set menu hours to be the same as store hours.
+	 * @function
+	 * @param {integer} menuId - ID of menu to copy store hours to
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	copyStoreHoursToMenuHours: function (menuId) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'GET',
+				dataType: 'json',
+				url: '/app/menuHours/copyStoreHoursToMenuHours/' + menuId,
+				data: {},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
 	}
 })

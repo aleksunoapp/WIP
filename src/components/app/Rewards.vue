@@ -68,7 +68,7 @@
 		        		<img src="../../../static/client_logo.png">
 		        	</div>
 		            <div class="caption">
-		                <span class="caption-subject font-green bold uppercase">Reward Tier</span>
+		                <span class="caption-subject font-default bold uppercase">Reward Tier</span>
                         <div class="caption-desc font-grey-cascade">Click on a tier to view its items.</div>
 		            </div>
 		        </div>

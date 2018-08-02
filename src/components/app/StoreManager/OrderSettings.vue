@@ -97,7 +97,7 @@
 	                            	active-value="1"
 	                            	inactive-value="0"
 	                            	active-text="Active"
-	                            	inactive-text="In Active">
+	                            	inactive-text="Inactive">
 	                            </el-switch>
 	                        </div>
                     	</div>
@@ -139,7 +139,7 @@
 				                	active-value="1"
 				                	inactive-value="0"
 				                	active-text="Active"
-				                	inactive-text="In Active">
+				                	inactive-text="Inactive">
 				                </el-switch>
 				            </div>
 							<div class="form-group form-md-line-input form-md-floating-label">
@@ -163,7 +163,7 @@
 				                	active-value="1"
 				                	inactive-value="0"
 				                	active-text="Active"
-				                	inactive-text="In Active">
+				                	inactive-text="Inactive">
 				                </el-switch>
 				            </div>
                             <button type="submit" class="btn blue pull-right">Create</button>
@@ -182,7 +182,7 @@
 						<img src="../../../../static/client_logo.png">
 					</div>
 					<div class="caption">
-						<span class="caption-subject font-green bold uppercase">Order Settings</span>
+						<span class="caption-subject font-default bold uppercase">Order Settings</span>
 						<div class="caption-desc font-grey-cascade">Create, edit or delete Order Settings for the active store.</div>
 					</div>
 				</div>
@@ -249,7 +249,7 @@
 	                  	active-value="1"
 	                  	inactive-value="0"
 	                  	active-text="Active"
-	                  	inactive-text="In Active"
+	                  	inactive-text="Inactive"
 											:disable="!$root.permissions['stores order_settings update']"
 										>
 	                  </el-switch>
@@ -293,7 +293,7 @@
 		                	active-value="1"
 		                	inactive-value="0"
 		                	active-text="Active"
-		                	inactive-text="In Active"
+		                	inactive-text="Inactive"
 											:disable="!$root.permissions['stores order_settings update']"
 										>
 		                </el-switch>
@@ -319,7 +319,7 @@
 		                	active-value="1"
 		                	inactive-value="0"
 		                	active-text="Active"
-		                	inactive-text="In Active"
+		                	inactive-text="Inactive"
 											:disable="!$root.permissions['stores order_settings update']"
 										>
 		                </el-switch>

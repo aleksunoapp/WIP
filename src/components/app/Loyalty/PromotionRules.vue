@@ -120,7 +120,7 @@
 						<img src="../../../../static/client_logo.png">
 					</div>
 					<div class="caption">
-						<span class="caption-subject font-green bold uppercase">Rules</span>
+						<span class="caption-subject font-default bold uppercase">Rules</span>
 						<div class="caption-desc font-grey-cascade">View, edit or delete promotion rules.</div>
 					</div>
 				</div>

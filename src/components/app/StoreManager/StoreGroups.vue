@@ -54,7 +54,7 @@
               <img src="../../../../static/client_logo.png">
   	        </div>
             <div class="caption">
-              <span class="caption-subject font-green bold uppercase">Store Groups</span>
+              <span class="caption-subject font-default bold uppercase">Store Groups</span>
               <div class="caption-desc font-grey-cascade">Click on a group to view the store locations assigned to it and assign more.</div>
             </div>
           </div>

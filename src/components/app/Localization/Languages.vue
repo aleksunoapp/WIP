@@ -41,6 +41,10 @@
 						</div>
 						<div class="col-md-6">
 							<div class="form-group form-md-line-input form-md-floating-label">
+								<input type="text" class="form-control input-sm" :class="{'edited': newLanguage.name.length}" id="form_control_create_name" v-model="newLanguage.name">
+								<label for="form_control_create_name">Name</label>
+							</div>
+							<div class="form-group form-md-line-input form-md-floating-label">
 								<input type="text" class="form-control input-sm" :class="{'edited': newLanguage.language_code.length}" id="form_control_1" v-model="newLanguage.language_code">
 								<label for="form_control_1">Language code</label>
 							</div>
@@ -73,6 +77,18 @@
 									inactive-text="No">
 								</el-switch>
 							</div>
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<label>Status</label><br>
+								<el-switch
+									v-model="newLanguage.status"
+									active-color="#0c6"
+									inactive-color="#ff4949"
+									:active-value="1"
+									:inactive-value="0"
+									active-text="Enabled"
+									inactive-text="Disabled">
+								</el-switch>
+							</div>
 							<button type="submit" class="btn blue pull-right">Create</button>
 						</div>
 					</div>
@@ -95,7 +111,7 @@
 						<img src="../../../../static/client_logo.png">
 					</div>
 					<div class="caption">
-						<span class="caption-subject font-green bold uppercase">Languages</span>
+						<span class="caption-subject font-default bold uppercase">Languages</span>
 						<div class="caption-desc font-grey-cascade">Create, edit or delete languages.</div>
 					</div>
 				</div>
@@ -132,7 +148,7 @@
 										</el-tooltip>
 									</div>
 									<div class="col-md-12 bold uppercase font-red">
-										<span>{{ language.language_code }} - {{countryNames[language.country_id]}}</span>
+										<span>{{ language.name }} - {{countryNames[language.country_id]}}</span>
 									</div>
 									<div class="col-md-6">
 										<strong></strong>
@@ -172,6 +188,16 @@
 									:disabled="!$root.permissions['localization languages update']"
 									type="text" 
 									class="form-control input-sm" 
+									:class="{'edited': languageToEdit.name.length}" 
+									id="form_control_edit_name" 
+									v-model="languageToEdit.name">
+								<label for="form_control_edit_name">Name</label>
+							</div>
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<input 
+									:disabled="!$root.permissions['localization languages update']"
+									type="text" 
+									class="form-control input-sm" 
 									:class="{'edited': languageToEdit.language_code.length}" 
 									id="form_control_1" 
 									v-model="languageToEdit.language_code">
@@ -206,6 +232,19 @@
 									:inactive-value="0"
 									active-text="Yes"
 									inactive-text="No">
+								</el-switch>
+							</div>
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<label>Status</label><br>
+								<el-switch
+									:disabled="!$root.permissions['localization languages update']"
+									v-model="languageToEdit.status"
+									active-color="#0c6"
+									inactive-color="#ff4949"
+									:active-value="1"
+									:inactive-value="0"
+									active-text="Enabled"
+									inactive-text="Disabled">
 								</el-switch>
 							</div>
 						</div>
@@ -252,9 +291,11 @@ export default {
 			createNewCollapse: true,
 			createErrorMessage: '',
 			newLanguage: {
+				name: '',
 				language_code: '',
 				isDefault: 0,
-				country_id: ''
+				country_id: '',
+				status: 0
 			},
 
 			loadingLanguages: false,
@@ -264,9 +305,11 @@ export default {
 			showEditModal: false,
 			editErrorMessage: '',
 			languageToEdit: {
+				name: '',
 				language_code: '',
 				isDefault: 0,
-				country_id: ''
+				country_id: '',
+				status: 0
 			},
 
 			loadingCountries: false,
@@ -351,7 +394,9 @@ export default {
 		validateNewLanguageData () {
 			var _this = this
 			return new Promise(function (resolve, reject) {
-				if (!_this.newLanguage.language_code.length) {
+				if (!_this.newLanguage.name.length) {
+					reject('Name cannot be blank')
+				} else if (!_this.newLanguage.language_code.length) {
 					reject('Language code cannot be blank')
 				}
 				resolve('Hurray')
@@ -400,7 +445,7 @@ export default {
 		showCreateSuccess () {
 			this.$swal({
 				title: 'Success!',
-				text: 'Language \'' + this.newLanguage.language_code + '\' has been successfully added!',
+				text: 'Language \'' + this.newLanguage.name + '\' has been successfully added!',
 				type: 'success',
 				confirmButtonText: 'OK'
 			}).then(() => {
@@ -414,9 +459,11 @@ export default {
 		 */
 		clearNewLanguage () {
 			this.newLanguage = {
+				name: '',
 				language_code: '',
 				isDefault: 0,
-				country_id: ''
+				country_id: '',
+				status: 0
 			}
 		},
 		/**
@@ -457,10 +504,12 @@ export default {
 		editLanguage (language, event) {
 			event.stopPropagation()
 			this.languageToEdit = {
+				name: language.name,
 				id: language.id,
 				country_id: language.country_id,
 				language_code: language.language_code,
-				isDefault: language.default
+				isDefault: language.default,
+				status: language.status
 			}
 			this.showEditModal = true
 		},
@@ -472,7 +521,9 @@ export default {
 		validateEditedLanguageData () {
 			var _this = this
 			return new Promise(function (resolve, reject) {
-				if (!_this.languageToEdit.language_code.length) {
+				if (!_this.languageToEdit.name.length) {
+					reject('Name cannot be blank')
+				} else if (!_this.languageToEdit.language_code.length) {
 					reject('Language code cannot be blank')
 				}
 				resolve('Hurray')
@@ -496,7 +547,6 @@ export default {
 						_this.getLanguages()
 						_this.closeEditModal()
 						_this.showEditSuccess()
-						_this.resetEdit()
 					} else {
 						_this.editErrorMessage = response.message
 						_this.$scrollTo(_this.$refs.editErrorMessage, 1000, { offset: -50 })
@@ -523,9 +573,11 @@ export default {
 		showEditSuccess () {
 			this.$swal({
 				title: 'Success!',
-				text: `${this.languageToEdit.language_code} updated`,
+				text: `${this.languageToEdit.name} updated`,
 				type: 'success',
 				confirmButtonText: 'OK'
+			}).then(() => {
+				this.resetEdit()
 			})
 		},
 		/**
@@ -544,9 +596,11 @@ export default {
 		 */
 		resetEdit () {
 			this.languageToEdit = {
+				name: '',
 				language_code: '',
 				isDefault: 0,
-				country_id: ''
+				country_id: '',
+				status: 0
 			}
 		}
 	},

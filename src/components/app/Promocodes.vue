@@ -140,7 +140,7 @@
 		      		<img src="../../../static/client_logo.png">
 		      	</div>
 	          <div class="caption">
-		          <span class="caption-subject font-green bold uppercase">Promo Codes</span>
+		          <span class="caption-subject font-default bold uppercase">Promo Codes</span>
 		          <div v-if="$root.permissions['promocodes update'] || $root.permissions['promocodes delete']" class="caption-desc font-grey-cascade">Click on a promo code to edit or delete it.</div>
 							<div v-if="$root.permissions['promocodes read'] && !$root.permissions['promocodes update']" class="caption-desc font-grey-cascade">Click on a promo code to view it.</div>
 	          </div>

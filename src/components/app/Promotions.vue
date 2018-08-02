@@ -171,7 +171,7 @@
 		        		<img src="../../../static/client_logo.png">
 		        	</div>
 		            <div class="caption">
-		                <span class="caption-subject font-green bold uppercase">Promotions</span>
+		                <span class="caption-subject font-default bold uppercase">Promotions</span>
                         <div class="caption-desc font-grey-cascade">Select promotions to assign to a store.</div>
 		            </div>
 		        </div>

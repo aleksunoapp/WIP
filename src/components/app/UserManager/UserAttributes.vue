@@ -108,7 +108,7 @@
 					<img src="../../../../static/client_logo.png">
 				</div>
 				<div class="caption">
-					<span class="caption-subject font-green bold uppercase">User Attributes</span>
+					<span class="caption-subject font-default bold uppercase">User Attributes</span>
 					<div class="caption-desc font-grey-cascade">
 						<span v-show="searchTerm.length < 3">All User Attributes</span>
 						<span v-show="searchTerm.length > 2">Search results</span>

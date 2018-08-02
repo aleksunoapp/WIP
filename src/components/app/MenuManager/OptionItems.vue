@@ -79,7 +79,7 @@
 	        		<img src="../../../../static/client_logo.png">
 	        	</div>
 	            <div class="caption">
-	                <span class="caption-subject font-green bold uppercase">{{ optionDetails.name }}</span>
+	                <span class="caption-subject font-default bold uppercase">{{ optionDetails.name }}</span>
                     <div class="caption-desc font-grey-cascade">{{ optionDetails.description }}</div>
 	            </div>
 	        </div>

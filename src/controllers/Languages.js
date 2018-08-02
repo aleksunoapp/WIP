@@ -2,7 +2,7 @@
 import GlobalFunctions from '@/global.js'
 
 /**
- * Call to pitapit API to get all available languages.
+ * Call to API to get all available languages.
  * @function
  * @returns {object} A promise with response shaped
  *	[
@@ -20,7 +20,7 @@ export const listLanguages = () => {
 		GlobalFunctions.$ajax({
 			method: 'GET',
 			dataType: 'json',
-			url: '/app/locale',
+			url: '/app/locale/all',
 			data: {},
 			success: function (response) {
 				resolve(response)
@@ -33,14 +33,16 @@ export const listLanguages = () => {
 }
 
 /**
- * Call to pitapit API to get all available languages.
+ * Call to API to create a language
  * @function
  * @returns {object} A promise with response shaped ...
  */
 export const createLanguage = ({
+	name = '',
 	language_code = '',
 	country_id = null,
-	isDefault = 0
+	isDefault = 0,
+	status = 0
 }) => {
 	return new Promise(function (resolve, reject) {
 		if (!language_code) {
@@ -54,9 +56,11 @@ export const createLanguage = ({
 			dataType: 'json',
 			url: '/app/locale/create',
 			data: {
+				name,
 				language_code,
 				country_id,
-				default: isDefault
+				default: isDefault,
+				status
 			},
 			success: function (response) {
 				resolve(response)
@@ -69,15 +73,17 @@ export const createLanguage = ({
 }
 
 /**
- * Call to pitapit API to get all available languages.
+ * Call to API to update a language
  * @function
  * @returns {object} A promise with response shaped ...
  */
 export const updateLanguage = ({
+	name = '',
 	id = null,
 	language_code = '',
 	country_id = null,
-	isDefault = 0
+	isDefault = 0,
+	status = 0
 }) => {
 	return new Promise(function (resolve, reject) {
 		GlobalFunctions.$ajax({
@@ -85,9 +91,11 @@ export const updateLanguage = ({
 			dataType: 'json',
 			url: `/app/locale/${id}/update`,
 			data: {
+				name,
 				language_code,
 				country_id,
-				default: isDefault
+				default: isDefault,
+				status
 			},
 			success: function (response) {
 				resolve(response)

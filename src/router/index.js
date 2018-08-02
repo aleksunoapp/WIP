@@ -75,9 +75,11 @@ import Promocodes from '@/components/app/Promocodes'
 import Promotions from '@/components/app/Promotions'
 import Geolocations from '@/components/app/Promotions/Geolocations'
 // Localization
-import Localization from '@/components/app/Localization/Localization'
 import Countries from '@/components/app/Localization/Countries'
 import Languages from '@/components/app/Localization/Languages'
+import Terms from '@/components/app/Localization/Terms'
+import EcommTranslations from '@/components/app/Localization/EcommTranslations'
+import CustomTranslations from '@/components/app/Localization/CustomTranslations'
 // list of permissions
 import {App} from '@/main.js'
 
@@ -753,9 +755,27 @@ export const routes = [
 				}
 			},
 			{
-				path: 'localization/admin',
-				name: 'Localization',
-				component: Localization,
+				path: 'localization/terms',
+				name: 'Terms',
+				component: Terms,
+				meta: {
+					adminOnly: true,
+					permissions: ['localization terms read']
+				}
+			},
+			{
+				path: 'localization/ecomm',
+				name: 'eComm Translations',
+				component: EcommTranslations,
+				meta: {
+					adminOnly: true,
+					permissions: ['localization read']
+				}
+			},
+			{
+				path: 'localization/custom',
+				name: 'Custom Translations',
+				component: CustomTranslations,
 				meta: {
 					adminOnly: true,
 					permissions: ['localization read']

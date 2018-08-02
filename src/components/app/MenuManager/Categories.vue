@@ -89,7 +89,7 @@
 		        		<img :src="menuDetails.image_url">
 		        	</div>
 		            <div class="caption">
-		                <span class="caption-subject font-green bold uppercase">{{ menuDetails.name }}</span>
+		                <span class="caption-subject font-default bold uppercase">{{ menuDetails.name }}</span>
                         <div class="caption-desc font-grey-cascade">{{ menuDetails.desc }}</div>
 		            </div>
 		        </div>

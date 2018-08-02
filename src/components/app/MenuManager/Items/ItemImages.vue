@@ -105,6 +105,7 @@
 							</div>
 						</div>
 						<div class="col-md-6">
+							<div class="row">
 								<label>Default</label><br>
 								<el-switch
 									v-model="imageToCreate.default"
@@ -115,6 +116,19 @@
 									active-text="Yes"
 									inactive-text="No">
 								</el-switch>
+							</div>
+							<div class="row margin-top-10">
+								<label>Update in all stores</label><br>
+								<el-switch
+									v-model="imageToCreate.update_all_locations"
+									active-color="#0c6"
+									inactive-color="#ff4949"
+									:active-value="1"
+									:inactive-value="0"
+									active-text="Yes"
+									inactive-text="No">
+								</el-switch>
+							</div>
 						</div>
 						<resource-picker 
 							:noButton="true"
@@ -136,6 +150,7 @@
 							</div>
 						</div>
 						<div class="col-md-6">
+							<div class="row">
 								<label>Default</label><br>
 								<el-switch
 									v-model="imageToEdit.default"
@@ -146,6 +161,19 @@
 									active-text="Yes"
 									inactive-text="No">
 								</el-switch>
+							</div>
+							<div class="row margin-top-10">
+								<label>Update in all stores</label><br>
+								<el-switch
+									v-model="imageToEdit.update_all_locations"
+									active-color="#0c6"
+									inactive-color="#ff4949"
+									:active-value="1"
+									:inactive-value="0"
+									active-text="Yes"
+									inactive-text="No">
+								</el-switch>
+							</div>
 						</div>
 						<resource-picker 
 							:noButton="true"
@@ -205,7 +233,8 @@ export default {
 				url: '',
 				order: '',
 				type: 'image',
-				default: 0
+				default: 0,
+				update_all_locations: 0
 			},
 			imageToEdit: {},
 			imageToDelete: {}
@@ -358,7 +387,8 @@ export default {
 				url: '',
 				order: '',
 				type: 'image',
-				default: 0
+				default: 0,
+				update_all_locations: 0
 			}
 		},
 		/**
