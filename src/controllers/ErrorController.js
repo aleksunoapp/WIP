@@ -7,7 +7,13 @@
  * @param {object} vue - The vue instance
  * @returns {undefined}
  */
-export default function ajaxErrorHandler ({reason, errorText = 'Something went wrong ...', errorName, vue}) {
+export default function ajaxErrorHandler ({
+	reason,
+	errorText = 'Something went wrong ...',
+	errorName,
+	vue,
+	containerRef
+}) {
 	try {
 		// Expired ecomm token
 		if (reason.responseJSON && reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
@@ -28,8 +34,12 @@ export default function ajaxErrorHandler ({reason, errorText = 'Something went w
 			console.log(err)
 		}
 	} finally {
+		const options = {
+			offset: -50,
+			container: containerRef !== undefined ? vue.$refs[containerRef].$el : undefined
+		}
 		try {
-			vue.$scrollTo(vue.$refs[errorName.toString()], 1000, { offset: -50 })
+			vue.$scrollTo(vue.$refs[errorName.toString()], 1000, options)
 		} catch (err) {
 			console.log(err)
 		}
