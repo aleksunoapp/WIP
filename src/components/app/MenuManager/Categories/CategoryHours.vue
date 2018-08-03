@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showModal" :width="1100" effect="fade" @closeOnEscape="closeModal">
+	<modal :show="showModal" :width="1100" effect="fade" @closeOnEscape="closeModal" ref="modal">
 		<div slot="modal-header" class="modal-header center">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -559,18 +559,18 @@
 					</table>
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-xs-12">
-					<button 
-						@click="useStoreHours()"
-						type="button" 
-						class="btn blue btn-outline">
-						Use store hours
-					</button>
-				</div>
-			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
+			<button 
+				@click="useMenuHours()"
+				type="button" 
+				class="btn"
+				:class="{
+					'btn-primary' : view === 'existing',
+					'blue btn-outline' : view === 'new'
+				}">
+				Use menu hours
+			</button>
 			<button 
 				:disabled="!$root.permissions['menu_manager menus categories hours create']"
 				v-show="view === 'new'" 
@@ -693,16 +693,22 @@ export default {
 		 * @function
 		 * @returns {undefined}
 		 */
-		useStoreHours () {
-			this.$root.activeLocation.location_hours.forEach(storeDay => {
-				let match
-				if (this.view === 'new') {
-					match = this.newHours.category_hours.filter(menuDay => menuDay.day === storeDay.day)[0]
-				} else {
-					match = this.existingHours.filter(menuDay => menuDay.day === storeDay.day)[0]
+		useMenuHours () {
+			const _this = this
+			CategoriesFunctions.copyMenuHoursToCategoryHours(this.category.id)
+			.then(response => {
+				if (response.code === 200 && response.status === 'ok') {
+					_this.closeModal()
+					_this.showCreateSuccess(response.message)
 				}
-				match.open_time = storeDay.open_time
-				match.close_time = storeDay.close_time
+			}).catch(reason => {
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not save the update',
+					errorName: 'errorMessage',
+					vue: _this,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**
@@ -733,7 +739,15 @@ export default {
 			CategoriesFunctions.getCategoryHours(_this.category.id, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
 					if (response.payload.length !== undefined) {
-						_this.existingHours = response.payload
+						if (response.payload.length) {
+							_this.view = 'existing'
+						}
+
+						const sundayIndex = response.payload.findIndex(day => day.day === 0)
+						let weekStartingMonday = response.payload
+						weekStartingMonday.push(response.payload[sundayIndex])
+						weekStartingMonday.splice(sundayIndex, 1)
+						_this.existingHours = weekStartingMonday
 					}
 				}
 			}).catch(reason => {
@@ -803,7 +817,7 @@ export default {
 			let partial = !!message.startsWith('Category hours saved except for')
 			this.$swal({
 				title: 'Success',
-				text: partial ? message : 'Hours successfully added',
+				text: partial ? message : 'Hours successfully saved',
 				type: partial ? 'info' : 'success',
 				confirmButtonText: 'OK'
 			})
