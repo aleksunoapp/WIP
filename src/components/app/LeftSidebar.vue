@@ -721,6 +721,7 @@
 <script>
 import $ from 'jquery'
 import { mapGetters } from 'vuex'
+import ApprovalsFunctions from '@/controllers/Approvals'
 
 export default {
 	name: 'left-sidebar',
@@ -746,8 +747,35 @@ export default {
 	},
 	created () {
 		this.setCurrentRoute()
+		this.getRequests()
 	},
 	methods: {
+		/**
+		 * To get a list of pending requests.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getRequests () {
+			var appVue = this
+			let pagination = {
+				page: 1,
+				records_per_page: 1,
+				status: 0
+			}
+			return ApprovalsFunctions.getRequests(pagination)
+			.then(response => {
+				if (response.payload.docs.length) {
+					appVue.$root.requestsPending = true
+				} else {
+					appVue.$root.requestsPending = false
+				}
+			}).catch(reason => {
+				console.log(`
+					Requests are not currently available.
+					${reason.responseJSON && reason.responseJSON.message ? reason.responseJSON.message : ''}
+				`)
+			})
+		},
         /**
 		 * To set the name of the current route and sub route for selecting active navigation.
 		 * @function
