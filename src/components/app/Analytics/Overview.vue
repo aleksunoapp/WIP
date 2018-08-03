@@ -13,7 +13,13 @@
 						</div>
 					</div>
 					<div class="portlet-body">
-						<div style="font-size: 2vw;color:rgb(26,188,156);text-align: center;"> <span v-if="formatUSD(globalRevenueSummary.today_revenue) !== 'n/a'">{{ formatUSD(globalRevenueSummary.today_revenue) }} in </span>{{ formatNumber(top10globalItems.daily_order) }} orders</div>
+						<div 
+							style="font-size: 2vw;color:rgb(26,188,156);text-align: center;"> 
+							<span v-if="formatUSD(globalRevenueSummary.today_revenue) !== 'n/a'">
+								{{ formatUSD(globalRevenueSummary.today_revenue) }} in 
+							</span>
+								{{ formatNumber(top10globalItems.daily_order) }} order<span v-show="top10globalItems.daily_order !== 1">s</span>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -29,7 +35,13 @@
 						</div>
 					</div>
 					<div class="portlet-body">
-						<div style="font-size: 2vw;color:#3498db;text-align: center;"> <span v-if="formatUSD(globalRevenueSummary.week_revenue) !== 'n/a'">{{ formatUSD(globalRevenueSummary.week_revenue) }} in </span>{{ formatNumber(top10globalItems.weekly_order) }} orders</div>
+						<div 
+							style="font-size: 2vw;color:#3498db;text-align: center;"> 
+							<span v-if="formatUSD(globalRevenueSummary.week_revenue) !== 'n/a'">
+								{{ formatUSD(globalRevenueSummary.week_revenue) }} in 
+							</span>
+								{{ formatNumber(top10globalItems.weekly_order) }} order<span v-show="top10globalItems.weekly_order !== 1">s</span>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -45,7 +57,13 @@
 						</div>
 					</div>
 					<div class="portlet-body">
-						<div style="font-size: 2vw;color:#e67e22;text-align: center;"> <span v-if="formatUSD(globalRevenueSummary.month_revenue) !== 'n/a'">{{ formatUSD(globalRevenueSummary.month_revenue) }} in </span>{{ formatNumber(top10globalItems.monthly_order) }} orders</div>
+						<div 
+							style="font-size: 2vw;color:#e67e22;text-align: center;"> 
+							<span v-if="formatUSD(globalRevenueSummary.month_revenue) !== 'n/a'">
+								{{ formatUSD(globalRevenueSummary.month_revenue) }} in 
+							</span>
+								{{ formatNumber(top10globalItems.monthly_order) }} order<span v-show="top10globalItems.monthly_order !== 1">s</span>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -61,7 +79,13 @@
 						</div>
 					</div>
 					<div class="portlet-body">
-						<div style="font-size: 2vw;color:#9b59b6;text-align: center;"> <span v-if="formatUSD(globalRevenueSummary.year_revenue) !== 'n/a'">{{ formatUSD(globalRevenueSummary.year_revenue) }} in </span>{{ formatNumber(top10globalItems.yearly_order) }} orders</div>
+						<div 
+							style="font-size: 2vw;color:#9b59b6;text-align: center;"> 
+							<span v-if="formatUSD(globalRevenueSummary.year_revenue) !== 'n/a'">
+								{{ formatUSD(globalRevenueSummary.year_revenue) }} in 
+							</span>
+								{{ formatNumber(top10globalItems.yearly_order) }} order<span v-show="top10globalItems.yearly_order !== 1">s</span>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -77,7 +101,13 @@
 						</div>
 					</div>
 					<div class="portlet-body">
-						<div style="font-size: 2vw;color:#F2B230;text-align: center;"> <span v-if="formatUSD(globalRevenueSummary.total_revenue) !== 'n/a'">{{ formatUSD(globalRevenueSummary.total_revenue) }} in </span>{{ formatNumber(top10globalItems.total_order) }} orders</div>
+						<div 
+							style="font-size: 2vw;color:#F2B230;text-align: center;"> 
+							<span v-if="formatUSD(globalRevenueSummary.total_revenue) !== 'n/a'">
+								{{ formatUSD(globalRevenueSummary.total_revenue) }} in 
+							</span>
+								{{ formatNumber(top10globalItems.total_order) }} order<span v-show="top10globalItems.total_order !== 1">s</span>
+						</div>
 					</div>
 				</div>
 			</div>
