@@ -345,7 +345,7 @@
 		<!-- PERMISSIONS MODAL END -->
 
 		<!-- DELETE MODAL START -->
-		<modal :show="showDeleteModuleModal" effect="fade" @closeOnEscape="closeDeleteModal">
+		<modal :show="showDeleteModuleModal" effect="fade" @closeOnEscape="closeDeleteModal" ref="modal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closeDeleteModal()">
 					<span>&times;</span>
@@ -518,7 +518,8 @@ export default {
 					reason,
 					errorText: 'Could not delete module',
 					errorName: 'deleteErrorMessage',
-					vue: modulesVue
+					vue: modulesVue,
+					containerRef: 'modal'
 				})
 			})
 		},
