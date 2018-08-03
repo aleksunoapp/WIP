@@ -32,129 +32,131 @@
 					></loading-screen>
 
 					<no-results 
-						:show="noResults" 
+						:show="noResults"
 						:custom="true" 
 						text="There are no changes to review"
 					>
 					</no-results>
 
-					<div
-						v-show="view === 'list'">
-						<div class="row bold padding-y-20">
-							<div class="col-xs-3">
-								<p>Type</p>
+					<div v-show="! loading && !noResults">
+						<div
+							v-show="view === 'list'">
+							<div class="row bold padding-y-20">
+								<div class="col-xs-3">
+									<p>Type</p>
+								</div>
+								<div class="col-xs-3">
+									<p>Submitted by</p>
+								</div>
+								<div class="col-xs-3">
+									<p>Created</p>
+								</div>
 							</div>
-							<div class="col-xs-3">
-								<p>Submitted by</p>
+
+							<div 
+								class="row padding-y-10 border-bottom-light clickable hover-highlight v-center"
+								:class="{'transparent' : loading}"
+								v-for="(request, index) in requests" 
+								:key="index"
+								@click="viewRequest(request)">
+									<div class="col-xs-3">
+										{{request.action}}	
+									</div>
+									<div class="col-xs-3 break-long">
+										<p>{{request.created_by_name}}</p>
+									</div>
+									<div class="col-xs-3">
+										{{request.formattedDate}}
+									</div>
+									<div class="col-xs-4">
+										<button 
+											class="btn btn-danger btn-sm third-width"
+											@click.stop="rejectRequest(request)"
+										>
+											Reject
+										</button>
+										<button 
+											@click.stop="approveRequest(request)"
+											class="btn blue btn-sm third-width"
+										>
+											Approve
+										</button>
+										<button 
+											class="btn blue btn-outline btn-sm third-width"
+										>
+											Details
+										</button>
+									</div>
 							</div>
-							<div class="col-xs-3">
-								<p>Created</p>
+							<div class="row margin-top-20">
+								<div class="col-xs-12">
+									<pagination 
+										:passedPage="activePage" 
+										:numPages="total" 
+										@activePageChange="activePageUpdate">
+									</pagination>
+								</div>
 							</div>
 						</div>
 
 						<div 
-							class="row padding-y-10 border-bottom-light clickable hover-highlight v-center"
-							:class="{'transparent' : loading}"
-							v-for="(request, index) in requests" 
-							:key="index"
-							@click="viewRequest(request)">
-								<div class="col-xs-3">
-									{{request.action}}	
+							v-show="view === 'single'"
+							ref="request">
+
+							<div class="row bold padding-y-20">
+								<div class="col-xs-2">
+									<p>Field</p>
 								</div>
-								<div class="col-xs-3 break-long">
-									<p>{{request.created_by_name}}</p>
+								<div class="col-xs-5">
+									<p>Current</p>
 								</div>
-								<div class="col-xs-3">
-									{{request.formattedDate}}
+								<div class="col-xs-5">
+									<p>After approval</p>
 								</div>
-								<div class="col-xs-4">
+							</div>
+
+							<div 
+								class="row padding-y-10 border-bottom-light"
+								v-for="(field, index) in request" 
+								:key="index"
+								:class="{'changed' : field.existing !== field.modified}">
+									<div class="col-xs-2">
+										<p>{{field.label}}</p>
+									</div>
+									<div class="col-xs-5 break-long">
+										<span v-if="field.label === 'Location'">{{field.existing.display_name}}</span>
+										<span v-else>{{field.existing}}</span>
+									</div>
+									<div class="col-xs-5">
+										<span v-if="field.label === 'Location'">{{field.modified.display_name}}</span>
+										<span v-else>{{field.modified}}</span>
+									</div>
+							</div>
+
+							<div 
+								class="row margin-top-20"
+								v-if="$root.permissions['approvals update']">
+								<div class="col-xs-4 col-xs-offset-8">
 									<button 
-										class="btn btn-danger btn-sm third-width"
-										@click.stop="rejectRequest(request)"
+										class="btn btn-danger third-width"
+										@click="rejectRequest(selectedRequest)"
 									>
 										Reject
 									</button>
 									<button 
-										@click.stop="approveRequest(request)"
-										class="btn blue btn-sm third-width"
+										@click="approveRequest(selectedRequest)"
+										class="btn blue third-width"
 									>
 										Approve
 									</button>
 									<button 
-										class="btn blue btn-outline btn-sm third-width"
+										v-show="total !== activePage"
+										class="btn blue btn-outline third-width"
+										@click="viewList()"
 									>
-										Details
+										List
 									</button>
 								</div>
-						</div>
-						<div class="row margin-top-20">
-							<div class="col-xs-12">
-								<pagination 
-									:passedPage="activePage" 
-									:numPages="total" 
-									@activePageChange="activePageUpdate">
-								</pagination>
-							</div>
-						</div>
-					</div>
-
-					<div 
-						v-show="view === 'single'"
-						ref="request">
-
-						<div class="row bold padding-y-20">
-							<div class="col-xs-2">
-								<p>Field</p>
-							</div>
-							<div class="col-xs-5">
-								<p>Current</p>
-							</div>
-							<div class="col-xs-5">
-								<p>After approval</p>
-							</div>
-						</div>
-
-						<div 
-							class="row padding-y-10 border-bottom-light"
-							v-for="(field, index) in request" 
-							:key="index"
-							:class="{'changed' : field.existing !== field.modified}">
-								<div class="col-xs-2">
-									<p>{{field.label}}</p>
-								</div>
-								<div class="col-xs-5 break-long">
-									<span v-if="field.label === 'Location'">{{field.existing.display_name}}</span>
-									<span v-else>{{field.existing}}</span>
-								</div>
-								<div class="col-xs-5">
-									<span v-if="field.label === 'Location'">{{field.modified.display_name}}</span>
-									<span v-else>{{field.modified}}</span>
-								</div>
-						</div>
-
-						<div 
-							class="row margin-top-20"
-							v-if="$root.permissions['approvals update']">
-							<div class="col-xs-4 col-xs-offset-8">
-								<button 
-									class="btn btn-danger third-width"
-									@click="rejectRequest(selectedRequest)"
-								>
-									Reject
-								</button>
-								<button 
-									@click="approveRequest(selectedRequest)"
-									class="btn blue third-width"
-								>
-									Approve
-								</button>
-								<button 
-									v-show="total !== activePage"
-									class="btn blue btn-outline third-width"
-									@click="viewList()"
-								>
-									List
-								</button>
 							</div>
 						</div>
 					</div>
