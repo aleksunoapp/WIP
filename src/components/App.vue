@@ -180,7 +180,6 @@ import Modal from './modules/Modal'
 import Dropdown from './modules/Dropdown'
 import LoadingScreen from './modules/LoadingScreen'
 import { findIndex } from 'lodash'
-import ApprovalsFunctions from '../controllers/Approvals'
 import LeftSidebar from '@/components/app/LeftSidebar'
 
 /**
@@ -231,15 +230,6 @@ export default {
 			return searchResult.slice(begin, end)
 		}
 	},
-
-	/**
-	 * Run on `created` to check whether or not the user is supposed to be logged in.
-	 * @function
-	 * @returns {undefined}
-	 */
-	created () {
-		this.getRequests()
-	},
 	/**
 	 * Run on `mounted` to initialize the app defaults.
 	 * @function
@@ -260,31 +250,6 @@ export default {
 		}
 	},
 	methods: {
-		/**
-		 * To get a list of pending requests.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		getRequests () {
-			var appVue = this
-			let pagination = {
-				page: 1,
-				records_per_page: 1
-			}
-			return ApprovalsFunctions.getRequests(pagination)
-			.then(response => {
-				if (response.payload.docs.length) {
-					appVue.$root.requestsPending = true
-				} else {
-					appVue.$root.requestsPending = false
-				}
-			}).catch(reason => {
-				console.log(`
-					Requests are not currently available.
-					${reason.responseJSON && reason.responseJSON.message ? reason.responseJSON.message : ''}
-				`)
-			})
-		},
 		/**
 		 * To move to the next page of stores.
 		 * @function

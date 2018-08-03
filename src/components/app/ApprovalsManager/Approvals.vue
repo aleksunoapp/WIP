@@ -312,7 +312,6 @@ export default {
 							formattedDate
 						}
 					} catch (e) {
-						console.log(e)
 						return request
 					}
 				})
