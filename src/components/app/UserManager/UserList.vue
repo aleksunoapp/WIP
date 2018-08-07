@@ -13,7 +13,7 @@
         </div>
 
         <!-- SEARCH START -->
-        <div class="margin-top-20" v-if="users.length">
+        <div class="margin-top-20">
 			<div class="portlet box blue-hoki">
 				<div class="portlet-title" @click="toggleSearchPanel()">
 					<div class="caption">
@@ -29,8 +29,8 @@
 						<div class="form-body">
 							<div class="row">
 								<div class="col-md-12">
-									<div class="alert alert-danger" v-if="searchError.length">
-		                                <button class="close" data-close="alert" @click="clearSearchError()"></button>
+									<div class="alert alert-danger" v-show="searchError.length">
+		                                <button class="close" @click.stop="clearSearchError()"></button>
 		                                <span>{{searchError}}</span>
 		                            </div>
 								</div>
@@ -64,7 +64,7 @@
 						</div>
 						<div class="form-actions right margin-top-20">
 							<button type="button" class="btn btn-default" @click="resetSearch()"> Reset Search</button>
-							<button type="button" class="btn blue" @click="searchUsers($event)">Search</button>
+							<button type="button" class="btn blue" @click="searchUsers(1)">Search</button>
 						</div>
 					</form>
       			</div>
@@ -72,28 +72,35 @@
         </div>
         <!-- SEARCH END -->
 
-	    <loading-screen :show="displayUserData" :color="'#2C3E50'" :display="'inline'"></loading-screen>
-        <div class="margin-top-20" v-if="users.length && !searchResults.length">
+        <div class="margin-top-20" v-show="view === 'all'">
 	        <div class="relative-block">
-				<div class="clearfix margin-bottom-10">
-					<el-dropdown trigger="click" @command="updateSortByOrder" size="mini" :show-timeout="50" :hide-timeout="50">
-						<el-button size="mini">
-							Sort by
-							<span>
-								<i class="fa fa-sort-alpha-asc" v-if="sortBy.order === 'ASC'"></i>
-								<i class="fa fa-sort-alpha-desc" v-if="sortBy.order === 'DESC'"></i>
-							</span>
-							<i class="el-icon-arrow-down el-icon--right"></i>
-						</el-button>
-						<el-dropdown-menu slot="dropdown">
-							<el-dropdown-item command="ASC"><i class="fa fa-sort-alpha-asc"></i></el-dropdown-item>
-							<el-dropdown-item command="DESC"><i class="fa fa-sort-alpha-desc"></i></el-dropdown-item>
-						</el-dropdown-menu>
-					</el-dropdown>
-	  				<page-results class="pull-right" :totalResults="totalResults" :activePage="activePage" @pageResults="resultsPerPageUpdate"></page-results>
-				</div>
+
 	  			<div class="margin-top-30 search-content-4">
-      				<div class="search-table table-responsive">
+
+					<loading-screen :show="loadingUserData" :color="'#2C3E50'" :display="'inline'"></loading-screen>
+
+					<no-results :show="!loadingUserData && !users.length" :type="'users'"></no-results>
+
+      				<div class="search-table table-responsive" v-show="!loadingUserData && users.length">
+
+						<div class="clearfix margin-bottom-10">
+							<el-dropdown trigger="click" @command="updateSortByOrder" size="mini" :show-timeout="50" :hide-timeout="50">
+								<el-button size="mini">
+									Sort by
+									<span>
+										<i class="fa fa-sort-alpha-asc" v-if="sortBy.order === 'ASC'"></i>
+										<i class="fa fa-sort-alpha-desc" v-if="sortBy.order === 'DESC'"></i>
+									</span>
+									<i class="el-icon-arrow-down el-icon--right"></i>
+								</el-button>
+								<el-dropdown-menu slot="dropdown">
+									<el-dropdown-item command="ASC"><i class="fa fa-sort-alpha-asc"></i></el-dropdown-item>
+									<el-dropdown-item command="DESC"><i class="fa fa-sort-alpha-desc"></i></el-dropdown-item>
+								</el-dropdown-menu>
+							</el-dropdown>
+							<page-results class="pull-right" :totalResults="totalResults" :activePage="activePage" @pageResults="resultsPerPageUpdate"></page-results>
+						</div>
+
       					<table class="table table-bordered table-striped table-condensed table-hover">
       						<thead class="bg-blue-chambray">
       							<tr>
@@ -109,7 +116,11 @@
       							</tr>
       						</thead>
       						<tbody>
-      							<tr v-for="user in users" @click="openUserProfile(user)" class="clickable">
+      							<tr 
+								  	v-for="user in users" 
+									@click="openUserProfile(user)" 
+									class="clickable"
+									:key="user.id">
       								<td class="profile-image-table-row">
       									<div class="missing-profile-image">
 		      								<span v-if="user.first_name || user.last_name">{{ user.first_name.toUpperCase().substring(0, 1) }}{{ user.last_name.toUpperCase().substring(0, 1) }}</span>
@@ -129,34 +140,42 @@
       							</tr>
       						</tbody>
       					</table>
-      				</div>
-      				<div class="clearfix" v-if="users.length && numPages > 1">
-      					<pagination :passedPage="activePage" :numPages="numPages" @activePageChange="activePageUpdate"></pagination>
+
+						<div class="clearfix" v-if="users.length && numPages > 1">
+							<pagination :passedPage="activePage" :numPages="numPages" @activePageChange="activePageUpdate"></pagination>
+						</div>
       				</div>
       			</div>
 	        </div>
 	    </div>
 
-        <div class="margin-top-20" v-if="users.length && searchResults.length">
+        <div class="margin-top-20" v-show="view === 'search'">
 	        <div class="relative-block">
-				<div class="clearfix margin-bottom-10" v-if="users.length">
-					<el-dropdown trigger="click" @command="updateSortByOrder" size="mini" :show-timeout="50" :hide-timeout="50">
-						<el-button size="mini">
-							Sort by
-							<span>
-								<i class="fa fa-sort-alpha-asc" v-if="sortBy.order === 'ASC'"></i>
-								<i class="fa fa-sort-alpha-desc" v-if="sortBy.order === 'DESC'"></i>
-							</span>
-							<i class="el-icon-arrow-down el-icon--right"></i>
-						</el-button>
-						<el-dropdown-menu slot="dropdown">
-							<el-dropdown-item command="ASC"><i class="fa fa-sort-alpha-asc"></i></el-dropdown-item>
-							<el-dropdown-item command="DESC"><i class="fa fa-sort-alpha-desc"></i></el-dropdown-item>
-						</el-dropdown-menu>
-					</el-dropdown>
-	  				<page-results class="pull-right" :totalResults="totalResults" :activePage="searchActivePage" @pageResults="resultsPerPageUpdate"></page-results>
-				</div>
-	  			<div class="margin-top-30 search-content-4">
+
+				<loading-screen :show="searching" :color="'#2C3E50'" :display="'inline'"></loading-screen>
+
+				<no-results :show="!searching && !searchResults.length" :type="'users'"></no-results>
+
+	  			<div class="margin-top-30 search-content-4" v-if="!searching && searchResults.length">
+
+					<div class="clearfix margin-bottom-10">
+						<el-dropdown trigger="click" @command="updateSortByOrder" size="mini" :show-timeout="50" :hide-timeout="50">
+							<el-button size="mini">
+								Sort by
+								<span>
+									<i class="fa fa-sort-alpha-asc" v-if="sortBy.order === 'ASC'"></i>
+									<i class="fa fa-sort-alpha-desc" v-if="sortBy.order === 'DESC'"></i>
+								</span>
+								<i class="el-icon-arrow-down el-icon--right"></i>
+							</el-button>
+							<el-dropdown-menu slot="dropdown">
+								<el-dropdown-item command="ASC"><i class="fa fa-sort-alpha-asc"></i></el-dropdown-item>
+								<el-dropdown-item command="DESC"><i class="fa fa-sort-alpha-desc"></i></el-dropdown-item>
+							</el-dropdown-menu>
+						</el-dropdown>
+						<page-results class="pull-right" :totalResults="totalResults" :activePage="searchActivePage" @pageResults="resultsPerPageUpdate"></page-results>
+					</div>
+
       				<div class="search-table table-responsive">
       					<table class="table table-bordered table-striped table-condensed">
       						<thead class="bg-blue-chambray">
@@ -173,7 +192,7 @@
       							</tr>
       						</thead>
       						<tbody>
-      							<tr v-for="user in searchResults">
+      							<tr v-for="user in searchResults" :key="user.id">
       								<td class="profile-image-table-row">
       									<div class="missing-profile-image">
 		      								<span v-if="user.first_name || user.last_name">{{ user.first_name.toUpperCase().substring(0, 1) }}{{ user.last_name.toUpperCase().substring(0, 1) }}</span>
@@ -193,16 +212,14 @@
       							</tr>
       						</tbody>
       					</table>
-      				</div>
-      				<div class="clearfix" v-if="searchResults.length && searchNumPages > 1">
-      					<pagination :passedPage="searchActivePage" :numPages="searchNumPages" @activePageChange="activeSearchPageUpdate"></pagination>
+
+						<div class="clearfix" v-if="searchResults.length && searchNumPages > 1">
+							<pagination :passedPage="searchActivePage" :numPages="searchNumPages" @activePageChange="activeSearchPageUpdate"></pagination>
+						</div>
       				</div>
       			</div>
 	        </div>
 	    </div>
-		<div>
-			<no-results :show="!users.length && !displayUserData" :type="'users'"></no-results>
-		</div>
 	</div>
 </template>
 
@@ -223,8 +240,8 @@ export default {
 				{name: 'Users Manager', link: false},
 				{name: 'Users', link: false}
 			],
-			displayUserData: false,
-			userSearchCollapse: true,
+			view: 'all',
+			loadingUserData: false,
 			users: [],
 			searchCollapse: true,
 			search: {
@@ -243,7 +260,8 @@ export default {
 			activePage: 1,
 			numPages: 1,
 			searchActivePage: 1,
-			searchNumPages: 1
+			searchNumPages: 1,
+			searching: false
 		}
 	},
 	watch: {
@@ -342,23 +360,20 @@ export default {
 		 * @returns {undefined}
 		 */
 		resetSearch () {
-			this.search = {
-				'first_name': '',
-				'last_name': '',
-				'email': '',
-				'phone': ''
+			this.toggleSearchPanel()
+
+			if (this.view !== 'all') {
+				this.view = 'all'
+				this.getUsers()
+				this.search = {
+					'first_name': '',
+					'last_name': '',
+					'email': '',
+					'phone': ''
+				}
+				this.searchResults = []
+				this.searchActivePage = 1
 			}
-			this.searchResults = []
-			this.searchActivePage = 1
-			this.getUsers()
-		},
-		/**
-		 * To toggle the search panel, initially set to closed
-		 * @function
-		 * @returns {undefined}
-		 */
-		toggleUserSearchPanel () {
-			this.userSearchCollapse = !this.userSearchCollapse
 		},
 		/**
 		 * To navigate to the profile page of a user.
@@ -375,7 +390,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		getUsers () {
-			this.displayUserData = true
+			this.loadingUserData = true
 			var usersVue = this
 			let paginationPreferences = {
 				page: this.activePage,
@@ -388,12 +403,12 @@ export default {
 					usersVue.totalResults = response.payload.total
 					usersVue.users = response.payload.data
 					window.scrollTo(0, 0)
-					usersVue.displayUserData = false
+					usersVue.loadingUserData = false
 				} else {
-					usersVue.displayUserData = false
+					usersVue.loadingUserData = false
 				}
 			}).catch(reason => {
-				usersVue.displayUserData = false
+				usersVue.loadingUserData = false
 				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
 					usersVue.$router.push('/login/expired')
 					return
@@ -421,13 +436,16 @@ export default {
 		/**
 		 * To call the endpoint to create a new location group.
 		 * @function
+		 * @param {integer} page - Integer for search page
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		searchUsers () {
+		searchUsers (page) {
 			var userListVue = this
 			userListVue.clearSearchError()
 			return userListVue.validateSearchData()
 			.then(response => {
+				userListVue.view = 'search'
+				userListVue.searching = true
 				let searchParams = {}
 				searchParams.first_name = this.search.first_name
 				searchParams.last_name = this.search.last_name
@@ -435,14 +453,20 @@ export default {
 				searchParams.phone = this.search.phone
 				searchParams.order = this.sortBy.order
 				searchParams.per_page = this.resultsPerPage
-				searchParams.page = this.searchActivePage
+				searchParams.page = page === undefined ? this.searchActivePage : page
 
 				UsersFunctions.searchUsers(userListVue.$root.appId, userListVue.$root.appSecret, userListVue.$root.userToken, searchParams).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						userListVue.searchNumPages = response.payload.last_page
-						userListVue.totalResults = response.payload.total
 						if (response.payload.data.length === 0) {
 							userListVue.searchError = 'No results found'
+							userListVue.searchNumPages = 1
+							userListVue.totalResults = 0
+						} else {
+							if (page !== undefined) {
+								userListVue.searchActivePage = page
+							}
+							userListVue.searchNumPages = response.payload.last_page
+							userListVue.totalResults = response.payload.total
 						}
 						userListVue.searchResults = response.payload.data
 						window.scrollTo(0, 0)
@@ -456,6 +480,8 @@ export default {
 					}
 					userListVue.errorMessage = reason
 					window.scrollTo(0, 0)
+				}).finally(() => {
+					userListVue.searching = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message
