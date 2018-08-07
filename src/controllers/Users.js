@@ -194,7 +194,6 @@ export default ({
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
 	refundOrder: function (appId, appSecret, userToken, orderId) {
-		console.log('refund', orderId)
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'GET',
@@ -206,6 +205,28 @@ export default ({
 					xhr.setRequestHeader('app-secret', appSecret)
 					xhr.setRequestHeader('auth-token', userToken)
 				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
+	 * Call to API to add points.
+	 * @function
+	 * @param {string} data - An object containing an array of user IDs and the number of points to add.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	addPoints: function (data) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'POST',
+				dataType: 'json',
+				url: '/application/admin/addPoints',
+				data,
 				success: function (response) {
 					resolve(response)
 				},

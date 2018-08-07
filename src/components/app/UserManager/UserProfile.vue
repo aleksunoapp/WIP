@@ -61,6 +61,38 @@
 								</div>
 							</li>
 							<li>
+								<div class="portlet light">
+									<div class="alert alert-danger" v-show="addErrorMessage" ref="addErrorMessage">
+										<button class="close" @click.prevent="clearError('addErrorMessage')"></button>
+										<span>{{addErrorMessage}}</span>
+									</div>
+									<div class="add-points__container">
+										<div class="add-points__input form-group form-md-line-input form-md-floating-label">
+											<input 
+												type="text" 
+												class="form-control input-sm" 
+												:class="{'edited': points.length}"
+												id="form_control_name" 
+												v-model="points">
+											<label for="form_control_name">Add points</label>
+										</div>
+										<div class="add-points__button">
+											<button 
+												@click="addPoints()"
+												type="button" 
+												class="btn blue pull-right"
+												:disabled="adding">
+												<i 
+													v-show="adding"
+													class="fa fa-spinner fa-pulse fa-fw">
+												</i>
+												Add
+											</button>
+										</div>
+									</div>
+								</div>
+							</li>
+							<li>
 								<div class="portlet light " v-show="userAttributes.length">
 									<div class="uppercase profile-stat-text margin-bottom-20"> Attributes </div>
 									<span class="badge badge-info margin-bottom-10 margin-right-10" v-for="attribute in userAttributes" :key="attribute.id">
@@ -202,6 +234,8 @@ import Checkbox from '../../modules/Checkbox'
 import Dropdown from '../../modules/Dropdown'
 import Pagination from '../../modules/Pagination'
 import PageResults from '../../modules/PageResults'
+import ajaxErrorHandler from '../../../controllers/ErrorController'
+import $ from 'jquery'
 
 export default {
 	data () {
@@ -226,7 +260,10 @@ export default {
 			},
 			userAttributes: [],
 			userItems: [],
-			errorMessage: ''
+			errorMessage: '',
+			points: '',
+			adding: false,
+			addErrorMessage: ''
 		}
 	},
 	computed: {
@@ -541,6 +578,80 @@ export default {
 				if (reason.responseJSON) {}
 				throw reason
 			})
+		},
+		/**
+		 * To validate data before submitting to the backend
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		validatePoints () {
+			var usersVue = this
+			return new Promise(function (resolve, reject) {
+				if (!usersVue.points.length) {
+					reject('Enter points')
+				} else if (!$.isNumeric(usersVue.points)) {
+					reject('Points must be a number')
+				}
+				resolve('Hurray')
+			})
+		},
+		/**
+		 * To get a list of user's social media posts.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		addPoints () {
+			var usersVue = this
+			return this.validatePoints()
+			.then(response => {
+				this.adding = true
+
+				let payload = {
+					user_ids: [this.user.id],
+					points: this.points
+				}
+				UsersFunctions.addPoints(payload).then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						usersVue.showAddSuccess()
+						usersVue.resetPoints()
+					} else {
+						throw Error('Something went wrong')
+					}
+				}).catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'Could not add points',
+						errorName: 'addErrorMessage',
+						vue: usersVue
+					})
+				}).finally(() => {
+					usersVue.adding = false
+				})
+			}).catch(reason => {
+				usersVue.addErrorMessage = reason
+			})
+		},
+		/**
+		 * To notify user that the operation succeeded.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		showAddSuccess () {
+			this.$swal({
+				title: 'Success',
+				text: 'Points added',
+				type: 'success',
+				confirmButtonText: 'OK'
+			})
+		},
+		/**
+		 * To reset the point adding box.
+		 * @function
+		 * @returns {undefined}
+		 */
+		resetPoints () {
+			this.clearError('addErrorMessage')
+			this.points = ''
 		}
 	},
 	components: {
@@ -687,5 +798,17 @@ img.small-image {
 .item--image {
 	max-height: 100%;
 	max-width: 100%;
+}
+.add-points__container {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-end;
+}
+.add-points__input {
+	width: 50%;
+}
+.add-points__button {
+	width: 30%;
+	margin-bottom: 15px;
 }
 </style>
