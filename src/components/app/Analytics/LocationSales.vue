@@ -622,7 +622,7 @@ export default {
 				if (response.code === 200 && response.status === 'ok') {
 					let payload = [['Day', 'Revenue', 'Orders']]
 					response.payload.forEach((day) => {
-						payload.push([day.date, day.sales_per_day, day.total])
+						payload.push([day.date, Number(day.sales_per_day), day.total])
 					})
 					if (payload.length === 1) {
 						payload.push([`No orders at ${analyticsVue.selectedLocations.length > 1 ? 'this' : 'these'} location${analyticsVue.selectedLocations.length > 1 ? 's' : ''} during this period`, 0, 0])
