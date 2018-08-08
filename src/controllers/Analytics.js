@@ -388,5 +388,27 @@ export default ({
 				}
 			})
 		})
+	},
+	/**
+	 * Call to API to get a list of orders to match the search parameters.
+	 * @function
+ 	 * @param {object} params - An object containing the search criteria.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	searchOrders: function (params) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'GET',
+				dataType: 'json',
+				url: '/app/order/search',
+				data: params,
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
 	}
 })

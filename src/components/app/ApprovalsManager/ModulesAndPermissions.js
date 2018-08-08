@@ -1,7 +1,3 @@
-// - render only links to available routes in sidebar
-// - put v-if on every list, create, edit, delete
-// - save {permissions} after login call
-
 export const role = {
 	'create role': true,
 	'update role': true,
@@ -85,6 +81,10 @@ export const role = {
 		'user analytics': {
 			'analytics user read': false,
 			'analytics user approve': false
+		},
+		'order analytics': {
+			'analytics order read': false,
+			'analytics order approve': false
 		}
 	},
 	'approvals': {
