@@ -1,11 +1,15 @@
 <template>
 	<div>
 		<small v-if="totalResults && activePage"><b>{{pageStart}}</b> - <b>{{pageEnd}}</b> of <b>{{ totalResults }}</b> results</small>
-		<b class="margin-left-5 margin-right-5">|</b>
-		<small>Show</small>
+		<b 
+			v-show="totalResults"
+			class="margin-left-5 margin-right-5">
+			|
+		</b>
+
 		<el-dropdown trigger="click" @command="updateResultsPerPage" size="mini" :show-timeout="50" :hide-timeout="50">
 			<el-button size="mini">
-				{{ resultsPerPage }}
+				Show {{ resultsPerPage }}
 				<i class="el-icon-arrow-down el-icon--right"></i>
 			</el-button>
 			<el-dropdown-menu slot="dropdown">

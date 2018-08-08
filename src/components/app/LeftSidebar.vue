@@ -63,6 +63,17 @@
                                 <span class="title">User Analytics</span>
                             </router-link>
                         </li>
+                        <li 
+                            v-if="can('analytics order read')"
+                            class="nav-item" 
+                            :class="{'active': currentRoute === 'analytics' && currentSubRoute === 'orders'}" 
+                            id="order_history_link"
+                        >
+                            <router-link to="/app/analytics/orders" class="nav-link">
+                                <i class="fa fa-list-alt"></i>
+                                <span class="title">Order History</span>
+                            </router-link>
+                        </li>
                     </ul>
                 </li>
                 <li 

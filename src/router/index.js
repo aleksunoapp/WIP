@@ -13,6 +13,7 @@ import Overview from '@/components/app/Analytics/Overview'
 import LocationSales from '@/components/app/Analytics/LocationSales'
 import ItemSales from '@/components/app/Analytics/ItemSales'
 import UserAnalytics from '@/components/app/Analytics/UserAnalytics'
+import OrderHistory from '@/components/app/Analytics/OrderHistory'
 // Approvals
 import Roles from '@/components/app/ApprovalsManager/Roles'
 import Permissions from '@/components/app/ApprovalsManager/Permissions'
@@ -162,6 +163,15 @@ export const routes = [
 				meta: {
 					adminOnly: true,
 					permissions: ['analytics user read']
+				}
+			},
+			{
+				path: 'analytics/orders',
+				name: 'OrderHistory',
+				component: OrderHistory,
+				meta: {
+					adminOnly: true,
+					permissions: ['analytics order read']
 				}
 			},
 			// Approvals Manager

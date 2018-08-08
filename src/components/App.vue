@@ -1,12 +1,5 @@
 <template>
 	<div class="page-wrapper">
-		<loading-screen 
-			:show="displayLoadingScreen" 
-			:appBackground="true" 
-			:autoStop="true" 
-			@stopLoadingScreen="displayLoadingScreen = false">
-		</loading-screen>
-
 		<!-- BEGIN HEADER -->
 		<div class="page-header navbar navbar-fixed-top">
 			<!-- BEGIN HEADER INNER -->
@@ -127,18 +120,15 @@
 										</li>
 									</ul>
 									<div class="padding-box">
-										<div class="alert alert-danger" v-if="noRecordsError.length">
-											<span>{{ noRecordsError }}</span>
-										</div>
 										<div class="form-group form-md-line-input form-md-floating-label">
 											<input 
 												type="text" 
 												class="form-control input-sm padding-right-20" 
 												id="location_search" 
-												v-model="locationSearch.search" 
-												:class="{'edited': locationSearch.search.length}">
+												v-model="searchQuery" 
+												:class="{'edited': searchQuery.length}">
 											<i 
-												v-if="locationSearch.search.length" 
+												v-if="searchQuery.length" 
 												class="fa fa-times clear-icon" 
 												@click="clearSearch()">
 											</i>
@@ -176,9 +166,6 @@
 <script>
 import $ from 'jquery'
 import App from '../controllers/App'
-import Modal from './modules/Modal'
-import Dropdown from './modules/Dropdown'
-import LoadingScreen from './modules/LoadingScreen'
 import { findIndex } from 'lodash'
 import LeftSidebar from '@/components/app/LeftSidebar'
 
@@ -191,25 +178,17 @@ export default {
 	data () {
 		return {
 			routeMessage: '',
-			displayImStillHere: false,
-			displayLoadingScreen: false,
-			waitingForData: true,
 			activeTab: 0,
-			locationSearch: {
-				search: ''
-			},
-			filteredLocations: [],
+			searchQuery: '',
 			activeLocation: {},
 			searchError: '',
-			noRecordsError: '',
-			currentPage: 1,
-			currentPageFiltered: 1
+			currentPage: 1
 		}
 	},
 	computed: {
 		lastPage () {
 			this.currentPage = 1
-			if (this.locationSearch.search) {
+			if (this.searchQuery) {
 				return Math.ceil(this.searchResult.length / 5)
 			} else {
 				return Math.ceil(this.$root.storeLocations.length / 5)
@@ -220,7 +199,7 @@ export default {
 
 			const searchResult = searchArray.filter(store => {
 				let searchArea = store.display_name + store.address_line_1 + store.internal_id
-				return searchArea.toLowerCase().indexOf(this.locationSearch.search.toLowerCase()) > -1
+				return searchArea.toLowerCase().indexOf(this.searchQuery.toLowerCase()) > -1
 			})
 			searchResult.sort((a, b) => a.display_name > b.display_name)
 
@@ -236,8 +215,6 @@ export default {
 	 * @returns {undefined}
 	 */
 	mounted () {
-		this.displayLoadingScreen = true
-
 		// This will add all of the necessary classes to the body that aren't required outside of the app
 		$('body').addClass('page-header-fixed').addClass('page-sidebar-closed-hide-logo').addClass('page-content-white').addClass('page-md').addClass('app-body')
 
@@ -276,7 +253,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		clearSearch () {
-			this.locationSearch.search = ''
+			this.searchQuery = ''
 		},
 		/**
 		 * To toggle whether or not the sidebar should be toggled open.
@@ -350,15 +327,6 @@ export default {
 			this.activeLocation = {}
 		},
 		/**
-		 * To clear the current search error.
-		 * @function
-		 * @returns {undefined}
-		 */
-		clearSearchError () {
-			this.searchError = ''
-			this.noRecordsError = ''
-		},
-		/**
 		 * To log the user out of their current session and clear global variables and local storage.
 		 * @function
 		 * @returns {undefined}
@@ -374,9 +342,6 @@ export default {
 		}
 	},
 	components: {
-		Modal,
-		Dropdown,
-		LoadingScreen,
 		LeftSidebar
 	}
 }

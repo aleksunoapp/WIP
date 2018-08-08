@@ -57,9 +57,9 @@ export default {
 	 */
 	created () {
 		if (!this.custom) {
-			this.display = this.show
+			this.display = Boolean(this.show)
 		} else {
-			this.customDisplay = this.show
+			this.customDisplay = Boolean(this.show)
 		}
 	},
 	watch: {
