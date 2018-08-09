@@ -44,6 +44,11 @@
 					placeholder="Order ID" 
 					v-model="orderId">
 				</el-input>
+				<el-input 
+					class="input-width"
+					placeholder="Reference no" 
+					v-model="externalId">
+				</el-input>
 				<el-button
 					type="primary"
 					:loading="loading"
@@ -276,6 +281,7 @@ export default {
 			fromDate: '',
 			toDate: '',
 			orderId: '',
+			externalId: '',
 			// results contents
 			orderItems: 0,
 			orderItemModifier: 0,
@@ -290,7 +296,8 @@ export default {
 				locationId: '',
 				fromDate: '',
 				toDate: '',
-				orderId: ''
+				orderId: '',
+				externalId: ''
 			},
 			// API data
 			payload: {},
@@ -303,6 +310,37 @@ export default {
 			perPage: 25,
 			sortBy: 'DESC'
 		}
+	},
+	mounted () {
+		let today = new Date()
+		let yesterday = new Date()
+		yesterday.setDate(today.getDate() - 1)
+
+		let yearFrom = yesterday.getFullYear()
+		let monthFrom = yesterday.getMonth() + 1
+		if (monthFrom < 10) {
+			monthFrom = '0' + monthFrom
+		}
+		let dayFrom = yesterday.getDate()
+		if (dayFrom < 10) {
+			dayFrom = '0' + dayFrom
+		}
+
+		this.fromDate = `${yearFrom}-${monthFrom}-${dayFrom}`
+
+		let yearTo = today.getFullYear()
+		let monthTo = today.getMonth() + 1
+		if (monthTo < 10) {
+			monthTo = '0' + monthTo
+		}
+		let dayTo = today.getDate()
+		if (dayTo < 10) {
+			dayTo = '0' + dayTo
+		}
+
+		this.toDate = `${yearTo}-${monthTo}-${dayTo}`
+
+		this.searchOrders()
 	},
 	methods: {
 		/**
@@ -375,7 +413,8 @@ export default {
 				!this.fromDate &&
 				!this.toDate &&
 				!this.locationId &&
-				!this.orderId
+				!this.orderId &&
+				!this.externalId
 			) return
 			this.searchOrders()
 		},
@@ -393,6 +432,7 @@ export default {
 				from_date: this.fromDate,
 				to_date: this.toDate,
 				order_id: this.orderId,
+				external_id: this.externalId,
 
 				order_items: this.orderItems,
 				order_item_modifier: this.orderItemModifier,
@@ -410,6 +450,9 @@ export default {
 					throw Error('Something went wrong')
 				} else if (response.payload.total === 0) {
 					_this.noResults = 'There are no matching orders'
+					_this.orders = response.payload.data
+					_this.total = response.payload.total
+					_this.lastPage = response.payload.last_page
 				} else {
 					_this.orders = response.payload.data
 					_this.total = response.payload.total
@@ -437,7 +480,7 @@ export default {
 
 <style scoped>
 .input-width {
-	width: 220px;
+	width: 150px;
 }
 </style>
 

@@ -73,9 +73,17 @@ export default {
 		 */
 		show (val) {
 			if (val) {
-				this.display = true
+				if (!this.custom) {
+					this.display = true
+				} else {
+					this.customDisplay = true
+				}
 			} else {
-				this.display = false
+				if (!this.custom) {
+					this.display = false
+				} else {
+					this.customDisplay = false
+				}
 			}
 		}
 	}
