@@ -319,12 +319,24 @@ export default {
 				return 'n/a'
 			}
 		},
+		/**
+		 * To change the current page
+		 * @function
+		 * @param {number} page - The new page number
+		 * @returns {undefined}
+		 */
 		changePage (page) {
 			if (this.page !== page) {
 				this.page = page
 				this.searchOrders()
 			}
 		},
+		/**
+		 * To change the number of results displayed on a page
+		 * @function
+		 * @param {number} perPage - The new number of results per page
+		 * @returns {undefined}
+		 */
 		changePerPage (perPage) {
 			if (this.perPage !== perPage) {
 				this.page = 1
@@ -344,9 +356,20 @@ export default {
 				this.searchOrders()
 			}
 		},
+		/**
+		 * To clear an error
+		 * @function
+		 * @param {string} name - The name of the error variable
+		 * @returns {undefined}
+		 */
 		clearError (name) {
 			this[name] = ''
 		},
+		/**
+		 * To validate data before making a call
+		 * @function
+		 * @returns {undefined}
+		 */
 		validateData () {
 			if (
 				!this.fromDate &&
@@ -356,6 +379,11 @@ export default {
 			) return
 			this.searchOrders()
 		},
+		/**
+		 * To make a search orders call
+		 * @function
+		 * @returns {object} A network promise call
+		 */
 		searchOrders () {
 			window.scrollTo(0, 0)
 			this.loading = true
