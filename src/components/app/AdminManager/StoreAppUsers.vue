@@ -80,7 +80,16 @@
 						</div>
 						<div class="row">
 							<div class="col-md-12">
-								<button type="submit" class="btn blue pull-right">Create</button>
+								<button 
+									type="submit" 
+									class="btn blue pull-right"
+									:disabled="creating">
+									Create
+									<i 
+										v-show="creating"
+										class="fa fa-spinner fa-pulse fa-fw">
+									</i>
+								</button>
 							</div>
 						</div>
 					</form>
@@ -512,8 +521,13 @@
 					v-if="!editLocationMode && $root.permissions['admin store_app_users update']"
 					type="button" 
 					class="btn btn-primary" 
-					@click="updateStoreAppUser()">
+					@click="updateStoreAppUser()"
+					:disabled="updating">
 					Save
+					<i 
+						v-show="updating"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
 				</button>
 			</div>
 		</modal>
@@ -549,6 +563,7 @@ export default {
 			],
 			createStoreAppUserCollapse: true,
 			createErrorMessage: '',
+			creating: false,
 			newStoreAppUser: {
 				name: '',
 				email: '',
@@ -556,6 +571,7 @@ export default {
 				location_id: null
 			},
 			editErrorMessage: '',
+			updating: false,
 			storeAppUserToBeEdited: {
 				name: '',
 				password: '',
@@ -918,6 +934,7 @@ export default {
 
 			return this.validateNewStoreAppUserData()
 			.then((response) => {
+				storeAppUsersVue.creating = true
 				storeAppUsersVue.clearCreateError()
 				return AdminManagerFunctions.createPOCUser(storeAppUsersVue.newStoreAppUser, storeAppUsersVue.$root.appId, storeAppUsersVue.$root.appSecret, storeAppUsersVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
@@ -946,6 +963,8 @@ export default {
 					storeAppUsersVue.createErrorMessage = reason
 					window.scrollTo(0, 0)
 				}
+			}).finally(() => {
+				storeAppUsersVue.creating = false
 			})
 		},
 		/**
@@ -1112,6 +1131,7 @@ export default {
 
 			return this.validateEditedStoreAppUserData()
 			.then((response) => {
+				storeAppUsersVue.updating = true
 				storeAppUsersVue.clearCreateError()
 				return AdminManagerFunctions.updatePOCUser(storeAppUsersVue.storeAppUserToBeEdited, storeAppUsersVue.$root.appId, storeAppUsersVue.$root.appSecret, storeAppUsersVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
@@ -1151,6 +1171,8 @@ export default {
 					storeAppUsersVue.editErrorMessage = reason
 					window.scrollTo(0, 0)
 				}
+			}).finally(() => {
+				storeAppUsersVue.updating = false
 			})
 		},
 		/**

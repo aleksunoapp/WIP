@@ -34,7 +34,16 @@
 									<input ref="newPermissionName" type="text" class="form-control input-sm" id="form_control_name" v-model="newPermission.name" :class="{'edited': newPermission.name.length}">
 									<label for="form_control_name">Name</label>
 								</div>
-								<button type="submit" class="btn blue pull-right">Create</button>	
+								<button 
+									type="submit" 
+									class="btn blue pull-right"
+									:disabled="creating">
+									Create
+									<i 
+										v-show="creating"
+										class="fa fa-spinner fa-pulse fa-fw">
+									</i>
+								</button>	
 							</div>
 						</div>
 					</form>
@@ -279,8 +288,13 @@
 					v-else
 					type="button" 
 					class="btn btn-primary" 
-					@click="updatePermission()">
+					@click="updatePermission()"
+					:disabled="updating">
 					Save
+					<i 
+						v-show="updating"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
 				</button>
 			</div>
 		</modal>
@@ -302,7 +316,17 @@
 				<p>Are you sure you want to delete this permission?</p>
 			</div>
 			<div slot="modal-footer" class="modal-footer">
-				<button type="button" class="btn btn-primary" @click="deletePermission()">Delete</button>
+				<button 
+					type="button" 
+					class="btn btn-primary" 
+					@click="deletePermission()"
+					:disabled="deleting">
+					Delete
+					<i 
+						v-show="deleting"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
 			</div>
 		</modal>
 		<!-- DELETE MODAL END -->
@@ -329,12 +353,14 @@ export default {
 			],
 			createCollapse: true,
 			createErrorMessage: '',
+			creating: false,
 			newPermission: {
 				name: '',
 				guard_name: 'admin',
 				permissions: []
 			},
 			editErrorMessage: '',
+			updating: false,
 			permissionToEdit: {
 				name: '',
 				guard_name: 'admin',
@@ -358,8 +384,9 @@ export default {
 			permissionToDelete: {
 				name: ''
 			},
-			listErrorMessage: '',
-			deleteErrorMessage: ''
+			deleting: false,
+			deleteErrorMessage: '',
+			listErrorMessage: ''
 		}
 	},
 	computed: {
@@ -376,7 +403,7 @@ export default {
 			return this.userSort(this.filteredResults).slice(this.resultsPerPage * (this.searchActivePage - 1), this.resultsPerPage * (this.searchActivePage - 1) + this.resultsPerPage)
 		}
 	},
-	created () {
+	mounted () {
 		this.getAllPermissions()
 	},
 	methods: {
@@ -579,7 +606,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		deletePermission () {
-			this.loading = true
+			this.deleting = true
 			this.clearDeleteError()
 			var permissionsVue = this
 			return PermissionsFunctions.deletePermission(permissionsVue.permissionToDelete)
@@ -589,13 +616,14 @@ export default {
 				permissionsVue.showDeleteSuccess()
 				permissionsVue.resetDeleteForm()
 			}).catch(reason => {
-				permissionsVue.loading = false
 				ajaxErrorHandler({
 					reason,
 					errorText: 'Could not delete permission',
 					errorName: 'deleteErrorMessage',
 					vue: permissionsVue
 				})
+			}).finally(() => {
+				permissionsVue.deleting = false
 			})
 		},
 		/**
@@ -644,6 +672,7 @@ export default {
 
 			return this.validateNewPermissionData()
 			.then((response) => {
+				permissionsVue.creating = true
 				permissionsVue.clearCreateError()
 				return PermissionsFunctions.createPermission(permissionsVue.newPermission)
 				.then(response => {
@@ -661,6 +690,8 @@ export default {
 			}).catch(reason => {
 				permissionsVue.createErrorMessage = reason
 				permissionsVue.$scrollTo(permissionsVue.$refs.createErrorMessage, 1000, { offset: -50 })
+			}).finally(() => {
+				permissionsVue.creating = false
 			})
 		},
 		/**
@@ -788,6 +819,7 @@ export default {
 
 			return this.validateEditedPermissionData()
 			.then((response) => {
+				permissionsVue.updating = true
 				permissionsVue.clearEditError()
 				return PermissionsFunctions.updatePermission(permissionsVue.permissionToEdit)
 				.then(response => {
@@ -805,7 +837,6 @@ export default {
 							permissionsVue.animated = ''
 						}, 3000)
 					} else {
-						console.log('threw me')
 						let me = new Error(response)
 						throw me
 					}
@@ -816,6 +847,8 @@ export default {
 						errorName: 'editErrorMessage',
 						vue: permissionsVue
 					})
+				}).finally(() => {
+					permissionsVue.updating = false
 				})
 			}).catch(reason => {
 				permissionsVue.editErrorMessage = reason

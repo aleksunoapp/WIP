@@ -451,7 +451,16 @@
 		                    </div>
 		                    <div class="form-actions noborder clear">
 		                    	<div class="col-md-12">
-		                        	<button type="submit" class="btn blue" :disabled="createStoreMode !== 'meta'">Save And Next</button>
+		                        	<button 
+										type="submit" 
+										class="btn blue" 
+										:disabled="createStoreMode !== 'meta' || savingStoreMeta">
+										Save And Next
+										<i 
+											v-show="savingStoreMeta"
+											class="fa fa-spinner fa-pulse fa-fw">
+										</i>
+									</button>
 		                    	</div>
 		                    </div>
 		                </form>
@@ -512,7 +521,17 @@
     				        </table>
 	                    </div>
 	                    <div class="form-actions noborder clear">
-	                        <button type="button" class="btn blue" :disabled="createStoreMode !== 'hours'" @click="createStoreHours()">Save</button>
+	                        <button 
+								type="button" 
+								class="btn blue" 
+								:disabled="createStoreMode !== 'hours' || savingStoreHours" 
+								@click="createStoreHours()">
+								Save
+								<i 
+									v-show="savingStoreHours"
+									class="fa fa-spinner fa-pulse fa-fw">
+								</i>
+							</button>
 	                    </div>
                 		<modal :show="showHoursAlertModal" effect="fade" @closeOnEscape="closeHoursAlert">
 							<div slot="modal-header" class="modal-header">
@@ -539,6 +558,7 @@
 		            <div class="portlet-body form">
 		            	<add-holiday-hours 
 							:selectedLocationId="newStoreId" 
+							:savingHolidayHours="savingHolidayHours"
 							@addHolidayHours="addHolidayHours">
 						</add-holiday-hours>
 		            </div>
@@ -617,6 +637,7 @@ export default {
 			activeTab: 0,
 			createStoreMode: 'info',
 			newStoreId: null,
+			savingStoreMeta: false,
 			newStoreMeta: {
 				gst_number: '',
 				opening_soon: 0,
@@ -635,6 +656,7 @@ export default {
 				external_online_ordering_enabled: 0,
 				external_online_ordering_url: ''
 			},
+			savingStoreHours: false,
 			newStoreHours: [
 				{
 					created_by: this.$root.createdBy,
@@ -693,6 +715,7 @@ export default {
 					status: 1
 				}
 			],
+			savingHolidayHours: false,
 			newHolidayHours: [],
 			storeGroups: [],
 			menuTiers: [],
@@ -1070,7 +1093,6 @@ export default {
 				}
 				StoresFunctions.createNewStore(createStoreVue.newStore, createStoreVue.$root.appId, createStoreVue.$root.appSecret, createStoreVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						createStoreVue.loadingCreateNewStore = false
 						createStoreVue.$root.storeLocations.push(response.payload)
 						createStoreVue.newStoreId = response.payload.id
 						createStoreVue.activeTab = 1
@@ -1081,11 +1103,9 @@ export default {
 							createStoreVue.$refs.openingSoon.focus()
 						})
 					} else {
-						createStoreVue.loadingCreateNewStore = false
 						createStoreVue.storeInformationError = response.message
 					}
 				}).catch(reason => {
-					createStoreVue.loadingCreateNewStore = false
 					ajaxErrorHandler({
 						reason,
 						errorText: 'We could not create the store',
@@ -1094,11 +1114,12 @@ export default {
 					})
 				})
 			}).catch(reason => {
-				createStoreVue.loadingCreateNewStore = false
 				// If validation fails then display the error message
 				createStoreVue.storeInformationError = reason
 				window.scrollTo(0, 0)
 				throw reason
+			}).finally(() => {
+				createStoreVue.loadingCreateNewStore = false
 			})
 		},
 		/**
@@ -1132,6 +1153,7 @@ export default {
 
 			return createStoreVue.validateStoreMetaData()
 			.then(response => {
+				createStoreVue.savingStoreMeta = true
 				if (createStoreVue.newStoreMeta.opening_soon === 1) {
 					if (!createStoreVue.newStoreMeta.merchant_id) {
 						createStoreVue.newStoreMeta.merchant_id = 0
@@ -1157,6 +1179,8 @@ export default {
 						errorName: 'storeMetaError',
 						vue: createStoreVue
 					})
+				}).finally(() => {
+					createStoreVue.savingStoreMeta = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message
@@ -1198,6 +1222,7 @@ export default {
 
 			return createStoreVue.validateStoreHours()
 			.then(response => {
+				createStoreVue.savingStoreHours = true
 				StoresFunctions.createStoreHours(createStoreVue.newStoreId, createStoreVue.newStoreHours, createStoreVue.$root.appId, createStoreVue.$root.appSecret, createStoreVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						createStoreVue.showHoursAlert()
@@ -1211,6 +1236,8 @@ export default {
 						errorName: 'storeHoursError',
 						vue: createStoreVue
 					})
+				}).finally(() => {
+					createStoreVue.savingStoreHours = false
 				})
 			}).catch(reason => {
 				createStoreVue.storeHoursError = reason
@@ -1383,6 +1410,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		createHolidayHours (val) {
+			this.savingHolidayHours = true
 			var createStoreVue = this
 
 			StoresFunctions.createHolidayHours(val, createStoreVue.$root.appId, createStoreVue.$root.appSecret, createStoreVue.$root.userToken).then(response => {
@@ -1397,6 +1425,8 @@ export default {
 				}
 				if (reason.responseJSON) {}
 				throw reason
+			}).finally(() => {
+				createStoreVue.savingHolidayHours = false
 			})
 		},
 		/**

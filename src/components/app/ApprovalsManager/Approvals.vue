@@ -140,12 +140,14 @@
 									<button 
 										class="btn btn-danger third-width"
 										@click="rejectRequest(selectedRequest)"
+										:disabled="rejecting"
 									>
 										Reject
 									</button>
 									<button 
 										@click="approveRequest(selectedRequest)"
 										class="btn blue third-width"
+										:disabled="approving"
 									>
 										Approve
 									</button>
@@ -189,6 +191,8 @@ export default {
 			selectedRequest: {},
 			errorMessage: '',
 			loading: false,
+			approving: false,
+			rejecting: false,
 			noResults: false,
 			activePage: 1,
 			total: 0,
@@ -233,6 +237,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		approveRequest (request) {
+			this.approving = true
 			this.selectedRequest = request
 			this.submitApproval(true)
 		},
@@ -243,6 +248,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		rejectRequest (request) {
+			this.rejecting = false
 			this.selectedRequest = request
 			this.submitApproval(false)
 		},
@@ -350,8 +356,11 @@ export default {
 				approvalsVue.view = 'list'
 				approvalsVue.getRequests()
 				approvalsVue.showApproveSuccess(approved)
+				approvalsVue.approving = false
+				approvalsVue.rejecting = false
 			}).catch(reason => {
-				console.log(reason)
+				approvalsVue.approving = false
+				approvalsVue.rejecting = false
 				ajaxErrorHandler({
 					reason,
 					errorText: 'Could not fetch changes to approve',

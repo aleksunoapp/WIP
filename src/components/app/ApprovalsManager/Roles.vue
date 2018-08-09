@@ -61,7 +61,16 @@
 						</div>
 						<div class="row">
 							<div class="col-xs-12">
-								<button type="submit" class="btn blue pull-right">Create</button>	
+								<button 
+									type="submit" 
+									class="btn blue pull-right"
+									:disabled="creating">
+										Create
+										<i 
+											v-show="creating"
+											class="fa fa-spinner fa-pulse fa-fw">
+										</i>
+								</button>	
 							</div>
 						</div>
 					</form>
@@ -110,6 +119,7 @@
 
 			<!-- LIST START -->
 			<loading-screen :show="loading" :color="'#2C3E50'" :display="'inline'"></loading-screen>
+
 			<div v-if="roles.length && !loading && !filteredResults.length">
 				<div class="portlet light portlet-fit bordered margin-top-20">
 					<div class="portlet-title bg-blue-chambray">
@@ -323,9 +333,14 @@
 				<button 
 					v-else
 					type="button" 
-					class="btn btn-primary" 
+					class="btn btn-primary"
+					:disabled="updating"
 					@click="updateRole()">
 					Save
+					<i 
+						v-show="updating"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
 				</button>
 			</div>
 		</modal>
@@ -347,7 +362,17 @@
 				<p>Do you want to delete <strong>{{roleToDelete.name}}</strong>?</p>
 			</div>
 			<div slot="modal-footer" class="modal-footer">
-				<button type="button" class="btn btn-primary" @click="deleteRole()">Delete</button>
+				<button 
+					type="button" 
+					class="btn btn-primary" 
+					@click="deleteRole()"
+					:disabled="deleting">
+					Delete
+					<i 
+						v-show="deleting"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
 			</div>
 		</modal>
 		<!-- DELETE MODAL END -->
@@ -375,6 +400,7 @@ export default {
 				{name: 'Roles', link: false}
 			],
 			createCollapse: true,
+			creating: false,
 			createErrorMessage: '',
 			newRole: {
 				name: '',
@@ -382,6 +408,7 @@ export default {
 				permissions: []
 			},
 			editErrorMessage: '',
+			updating: false,
 			roleToEdit: {
 				name: '',
 				guard_name: 'admin',
@@ -392,6 +419,7 @@ export default {
 			showEditRoleModal: false,
 			showDeleteModal: false,
 			deleteErrorMessage: '',
+			deleting: false,
 			roleToDelete: {},
 			animated: '',
 			searchCollapse: true,
@@ -423,7 +451,7 @@ export default {
 			return this.userSort(this.filteredResults).slice(this.resultsPerPage * (this.searchActivePage - 1), this.resultsPerPage * (this.searchActivePage - 1) + this.resultsPerPage)
 		}
 	},
-	created () {
+	mounted () {
 		this.getRoles()
 		this.getModules()
 	},
@@ -815,6 +843,7 @@ export default {
 
 			return this.validateNewRoleData()
 			.then((response) => {
+				rolesVue.creating = true
 				rolesVue.clearCreateError()
 				return RolesFunctions.createRole(rolesVue.newRole)
 				.then(response => {
@@ -822,13 +851,14 @@ export default {
 					rolesVue.resetCreateForm()
 					rolesVue.showCreateSuccess()
 				}).catch(reason => {
-					console.log(reason)
 					ajaxErrorHandler({
 						reason,
 						errorText: 'Could not create role',
 						errorName: 'createErrorMessage',
 						vue: rolesVue
 					})
+				}).finally(() => {
+					rolesVue.creating = false
 				})
 			}).catch(reason => {
 				rolesVue.createErrorMessage = reason
@@ -932,6 +962,7 @@ export default {
 
 			return this.validateEditedRoleData()
 			.then((response) => {
+				rolesVue.updating = true
 				rolesVue.clearEditError()
 				return RolesFunctions.updateRole(rolesVue.roleToEdit)
 				.then(response => {
@@ -955,6 +986,8 @@ export default {
 						errorName: 'editErrorMessage',
 						vue: rolesVue
 					})
+				}).finally(() => {
+					rolesVue.updating = false
 				})
 			}).catch(reason => {
 				rolesVue.editErrorMessage = reason
@@ -1045,6 +1078,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		deleteRole () {
+			this.deleting = true
 			this.clearDeleteError()
 			var rolesVue = this
 			return RolesFunctions.deleteRole(rolesVue.roleToDelete)
@@ -1060,6 +1094,8 @@ export default {
 					errorName: 'deleteErrorMessage',
 					vue: rolesVue
 				})
+			}).finally(() => {
+				rolesVue.deleting = false
 			})
 		}
 	},

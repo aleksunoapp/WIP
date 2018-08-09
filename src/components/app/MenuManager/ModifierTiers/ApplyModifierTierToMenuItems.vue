@@ -35,8 +35,13 @@
             <button 
 				@click="applyModifierToMenuItems()"
 				type="button" 
-				class="btn btn-primary">
+				class="btn btn-primary"
+				:disabled="saving">
 				Save
+				<i 
+					v-show="saving"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
 			</button>
         </div>
 
@@ -52,6 +57,7 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 export default {
 	name: 'AssignModifiersToModifierTier',
 	data: () => ({
+		saving: false,
 		showModal: false,
 		errorMessage: '',
 		assignedModifiers: null,
@@ -125,6 +131,7 @@ export default {
 				modifier_tier_id: this.tier.id
 			}
 			this.validate().then(response => {
+				assignTiersVue.saving = true
 				return ModifierTiersFunctions.applyModifierTierToMenuItems(payload).then(response => {
 					assignTiersVue.$emit('assigned')
 				}).catch(reason => {
@@ -135,6 +142,8 @@ export default {
 						errorText: 'We couldn\'t assign modifiers',
 						vue: assignTiersVue
 					})
+				}).finally(() => {
+					assignTiersVue.saving = false
 				})
 			}).catch(reason => {
 				assignTiersVue.errorMessage = reason

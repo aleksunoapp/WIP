@@ -29,7 +29,7 @@
     					value-format="yyyy-MM-dd"
     					:clearable="false"
     					placeholder="Pick a start date"
-              :disabled="!$root.permissions['stores holiday_hours update']? true : false"
+		            	:disabled="!$root.permissions['stores holiday_hours update']? true : false"
             >
             </el-date-picker>
     			</div>
@@ -42,7 +42,7 @@
     					value-format="yyyy-MM-dd"
     					:clearable="false"
     					placeholder="Pick an end date"
-              :disabled="!$root.permissions['stores holiday_hours update']? true : false"
+			            :disabled="!$root.permissions['stores holiday_hours update']? true : false"
             >
             </el-date-picker>
     			</div>
@@ -116,7 +116,7 @@
                 		:inactive-value="0"
                 		active-text="Open"
                 		inactive-text="Closed"
-                    :disabled="!$root.permissions['stores holiday_hours update']? true : false"
+	                    :disabled="!$root.permissions['stores holiday_hours update']? true : false"
                   >
                 	</el-switch>
                 </td>
@@ -126,13 +126,16 @@
 				</div>
 			</div>
 			<button
-        type="button"
-        class="btn btn-primary"
-        @click="addHolidayHours()"
-        :disabled="!$root.permissions['stores holiday_hours update']? true : false"
-      >
-        Add
-      </button>
+				type="button"
+				class="btn btn-primary"
+				@click="addHolidayHours()"
+				:disabled="!$root.permissions['stores holiday_hours update'] || savingHolidayHours">
+				Add
+				<i 
+					v-show="savingHolidayHours"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
+			</button>
 		</div>
 	</div>
 </template>
@@ -208,6 +211,10 @@ export default {
 		selectedLocationId: {
 			type: Number,
 			default: 0
+		},
+		savingHolidayHours: {
+			type: Boolean,
+			default: () => false
 		}
 	},
 	mounted () {

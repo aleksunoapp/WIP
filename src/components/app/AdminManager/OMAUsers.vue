@@ -87,7 +87,17 @@
 	      				</div>
 	      				<div class="row">
 	      					<div class="col-md-12">
-	      						<button type="button" @click="createOMAUser()" class="btn blue pull-right">Create</button>
+	      						<button 
+								  	type="button" 
+									@click="createOMAUser()" 
+									class="btn blue pull-right"
+									:disabled="creating">
+									Create
+									<i 
+										v-show="creating"
+										class="fa fa-spinner fa-pulse fa-fw">
+									</i>
+								</button>
 	      					</div>
 	      				</div>
 	      			</form>
@@ -116,7 +126,12 @@
 					</select-locations-popup>
   				</div>
   				<div slot="modal-footer" class="modal-footer">
-  					<button type="button" class="btn blue" @click="assignStores($event)">Select</button>
+  					<button 
+					  	type="button" 
+						class="btn blue" 
+						@click="assignStores($event)">
+						Select
+					</button>
   				</div>
   			</modal>
   			<!-- ASSIGN STORES MODAL START -->
@@ -444,8 +459,13 @@
 					v-if="!editLocationMode && $root.permissions['admin oma_users update']"
 					type="button" 
 					class="btn btn-primary" 
-					@click="updateOMAUser()">
+					@click="updateOMAUser()"
+					:disabled="updating">
 					Save
+					<i 
+						v-show="updating"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
 				</button>
 				<button 
 					v-if="!editLocationMode && !$root.permissions['admin oma_users update']"
@@ -470,7 +490,17 @@
 				<p>Delete this user?</p>
 			</div>
 			<div slot="modal-footer" class="modal-footer">
-				<button type="button" class="btn btn-primary" @click="deleteOMAUser()">Delete</button>
+				<button 
+					type="button" 
+					class="btn btn-primary" 
+					@click="deleteOMAUser()"
+					:disabled="deleting">
+					Delete
+					<i 
+						v-show="deleting"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
 			</div>
 		</modal>
 		<!-- DELETE MODAL END -->
@@ -513,6 +543,7 @@ export default {
 				{name: 'OMA Users', link: false}
 			],
 			createOMAUserCollapse: true,
+			creating: false,
 			createErrorMessage: '',
 			newOMAUser: {
 				email: '',
@@ -522,6 +553,7 @@ export default {
 				locations: []
 			},
 			editErrorMessage: '',
+			updating: false,
 			OMAUserToBeEdited: {
 				email: '',
 				password: '',
@@ -544,6 +576,7 @@ export default {
 			animated: '',
 			editLocationMode: false,
 			showDeleteOMAUserModal: false,
+			deleting: false,
 			searchCollapse: true,
 			searchError: '',
 			filteredResults: [],
@@ -888,6 +921,7 @@ export default {
 
 			return this.validateNewOMAUserData()
 			.then((response) => {
+				OMAUsersVue.creating = true
 				OMAUsersVue.clearCreateError()
 				return AdminManagerFunctions.createOMAUser(OMAUsersVue.newOMAUser, OMAUsersVue.$root.appId, OMAUsersVue.$root.appSecret, OMAUsersVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
@@ -906,6 +940,8 @@ export default {
 						OMAUsersVue.createErrorMessage = reason.responseJSON.message
 						window.scrollTo(0, 0)
 					}
+				}).finally(() => {
+					OMAUsersVue.creating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message
@@ -1108,6 +1144,7 @@ export default {
 
 			return this.validateEditedOMAUserData()
 			.then((response) => {
+				OMAUsersVue.updating = true
 				OMAUsersVue.clearCreateError()
 				let payload = {
 					email: OMAUsersVue.OMAUserToBeEdited.email,
@@ -1139,6 +1176,8 @@ export default {
 						OMAUsersVue.editErrorMessage = reason.responseJSON.message
 						window.scrollTo(0, 0)
 					}
+				}).finally(() => {
+					OMAUsersVue.updating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message
@@ -1181,7 +1220,7 @@ export default {
 		 */
 		deleteOMAUser () {
 			var OMAUsersVue = this
-
+			this.deleting = true
 			return AdminManagerFunctions.deleteOMAUser(OMAUsersVue.selectedOMAUser.id, OMAUsersVue.$root.appId, OMAUsersVue.$root.appSecret, OMAUsersVue.$root.userToken).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
 					OMAUsersVue.closeDeleteOMAUserModal()
@@ -1200,6 +1239,8 @@ export default {
 					OMAUsersVue.editErrorMessage = reason.responseJSON.message
 					window.scrollTo(0, 0)
 				}
+			}).finally(() => {
+				OMAUsersVue.deleting = false
 			})
 		},
 		/**

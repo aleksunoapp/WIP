@@ -47,7 +47,16 @@
 									@node-click="setParentModule"
 								>
 								</el-tree>
-								<button type="submit" class="btn blue pull-right">Create</button>	
+								<button 
+									type="submit" 
+									class="btn blue pull-right"
+									:disabled="creating">
+									Create
+									<i 
+										v-show="creating"
+										class="fa fa-spinner fa-pulse fa-fw">
+									</i>
+								</button>	
 							</div>
 						</div>
 					</form>
@@ -311,8 +320,13 @@
 					v-else
 					type="button" 
 					class="btn btn-primary" 
-					@click="updateModule()">
+					@click="updateModule()"
+					:disabled="updating">
 					Save
+					<i 
+						v-show="updating"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
 				</button>
 			</div>
 		</modal>
@@ -339,7 +353,17 @@
 				</permissions-picker>
 			</div>
 			<div slot="modal-footer" class="modal-footer">
-				<button type="button" class="btn btn-primary" @click="updateModulePermissions()">Save</button>
+				<button 
+					type="button" 
+					class="btn btn-primary" 
+					@click="updateModulePermissions()"
+					:disabled="applying">
+					Save
+					<i 
+						v-show="applying"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
 			</div>
 		</modal>
 		<!-- PERMISSIONS MODAL END -->
@@ -360,7 +384,17 @@
 				<p>Are you sure you want to delete this module?</p>
 			</div>
 			<div slot="modal-footer" class="modal-footer">
-				<button type="button" class="btn btn-primary" @click="deleteModule()">Delete</button>
+				<button 
+					type="button" 
+					class="btn btn-primary" 
+					@click="deleteModule()"
+					:disabled="deleting">
+					Delete
+					<i 
+						v-show="deleting"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
 			</div>
 		</modal>
 		<!-- DELETE MODAL END -->
@@ -387,6 +421,7 @@ export default {
 				{name: 'Modules', link: false}
 			],
 			createCollapse: true,
+			creating: false,
 			createErrorMessage: '',
 			newModule: {
 				name: '',
@@ -394,6 +429,7 @@ export default {
 				sort_order: '1'
 			},
 			editErrorMessage: '',
+			updating: false,
 			moduleToEdit: {
 				id: null,
 				name: '',
@@ -417,12 +453,14 @@ export default {
 			},
 			searchActivePage: 1,
 			moduleTree: [],
+			applying: false,
 			moduleToEditApplyPermissionsTo: {
 				name: ''
 			},
 			showEditModulePermissionsModal: false,
 			editPermissionsErrorMessage: '',
 			showDeleteModuleModal: false,
+			deleting: false,
 			moduleToDelete: {
 				name: ''
 			},
@@ -503,6 +541,7 @@ export default {
 		 * @returns {object} - A promise
 		 */
 		deleteModule () {
+			this.deleting = true
 			this.clearDeleteError()
 			var modulesVue = this
 			return ModulesFunctions.deleteModule(modulesVue.moduleToDelete)
@@ -521,6 +560,8 @@ export default {
 					vue: modulesVue,
 					containerRef: 'modal'
 				})
+			}).finally(() => {
+				modulesVue.deleting = false
 			})
 		},
 		/**
@@ -840,6 +881,7 @@ export default {
 
 			return this.validateNewModuleData()
 			.then((response) => {
+				modulesVue.creating = true
 				modulesVue.clearCreateError()
 				return ModulesFunctions.createModule(modulesVue.newModule)
 				.then(response => {
@@ -853,6 +895,8 @@ export default {
 						errorName: 'createErrorMessage',
 						vue: modulesVue
 					})
+				}).finally(() => {
+					modulesVue.creating = false
 				})
 			}).catch(reason => {
 				modulesVue.createErrorMessage = reason
@@ -969,6 +1013,7 @@ export default {
 
 			return this.validateEditedModuleData()
 			.then((response) => {
+				modulesVue.updating = true
 				modulesVue.clearEditError()
 				return ModulesFunctions.updateModule(modulesVue.moduleToEdit)
 				.then(response => {
@@ -991,6 +1036,8 @@ export default {
 						errorName: 'editErrorMessage',
 						vue: modulesVue
 					})
+				}).finally(() => {
+					modulesVue.updating = false
 				})
 			}).catch(reason => {
 				modulesVue.editErrorMessage = reason
@@ -1026,6 +1073,7 @@ export default {
 
 			return this.validateModulePermissions()
 			.then((response) => {
+				modulesVue.applying = true
 				modulesVue.clearPermissionsEditError()
 				return ModulesFunctions.assignPermissionsToModule(modulesVue.moduleToEditApplyPermissionsTo)
 				.then(response => {
@@ -1039,6 +1087,8 @@ export default {
 						errorName: 'editPermissionsErrorMessage',
 						vue: modulesVue
 					})
+				}).finally(() => {
+					modulesVue.applying = false
 				})
 			}).catch(reason => {
 				modulesVue.editPermissionsErrorMessage = reason

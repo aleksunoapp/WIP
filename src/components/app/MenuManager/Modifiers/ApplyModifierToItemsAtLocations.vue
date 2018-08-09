@@ -118,8 +118,12 @@
 				type="button" 
 				class="btn btn-primary" 
 				@click="applyModifierToItemsAtLocations()"
-			>
+				:disabled="saving">
 				Save
+				<i 
+					v-show="saving"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
 			</button>
 		</div>
 	</modal>
@@ -138,6 +142,7 @@ export default {
 	name: 'apply-modifier-to-items-at-locations',
 	data () {
 		return {
+			saving: false,
 			errorMessage: '',
 			showComponent: false,
 			itemSelection: true,
@@ -359,6 +364,7 @@ export default {
 				return
 			}
 
+			this.saving = true
 			var menuTreeVue = this
 			let payload = {
 				modifier_id: this.modifier.id,
@@ -377,6 +383,8 @@ export default {
 					errorName: 'errorMessage',
 					vue: menuTreeVue
 				})
+			}).finally(() => {
+				menuTreeVue.saving = false
 			})
 		},
 		/**
