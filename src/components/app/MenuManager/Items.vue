@@ -550,7 +550,17 @@
 			<div slot="modal-footer" class="modal-footer clear">
 				<div class="row">
 					<div class="col-md-12">
-						<button @click="applyItemToLocations()" type="button" class="btn blue pull-right">Apply</button>
+						<button 
+							@click="applyItemToLocations()" 
+							type="button" 
+							class="btn blue pull-right"
+							:disabled="applyingItemToLocations">
+							Apply
+							<i 
+								v-show="applyingItemToLocations"
+								class="fa fa-spinner fa-pulse fa-fw">
+							</i>
+						</button>
 					</div>
 				</div>
 			</div>
@@ -672,6 +682,7 @@ export default {
 			applyToLocationsModalActive: false,
 			applyToLocationsErrorMessage: '',
 			passedItemId: null,
+			applyingItemToLocations: false,
 			locationsToApplyItemTo: [],
 			imageMode: {
 				newMenu: false
@@ -858,6 +869,7 @@ export default {
 				return
 			}
 
+			this.applyingItemToLocations = true
 			let payload = {
 				item_id: this.passedItemId,
 				locations: this.locationsToApplyItemTo
@@ -881,6 +893,8 @@ export default {
 					errorName: 'applyToLocationsErrorMessage',
 					vue: itemsVue
 				})
+			}).finally(() => {
+				itemsVue.applyingItemToLocations = false
 			})
 		},
 		/**
@@ -908,6 +922,7 @@ export default {
 		closeApplyToLocationsModal () {
 			this.applyToLocationsModalActive = false
 			this.passedItemId = null
+			this.clearLocationsError()
 		},
 		/**
 		 * To display the modal to copy an item to multiple locations

@@ -45,8 +45,12 @@
 				type="button" 
 				class="btn btn-primary" 
 				@click="copyModifierToLocations()"
-			>
+				:disabled="saving">
 				Save
+				<i 
+					v-show="saving"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
 			</button>
 		</div>
 	</modal>
@@ -62,6 +66,7 @@ export default {
 	name: 'copy-modifier-to-locations',
 	data () {
 		return {
+			saving: false,
 			errorMessage: '',
 			showComponent: false,
 			create_duplicate: 0,
@@ -108,6 +113,7 @@ export default {
 				return
 			}
 
+			this.saving = true
 			var copyModifierVue = this
 			let payload = {
 				modifier_id: this.modifier.id,
@@ -128,6 +134,8 @@ export default {
 					errorName: 'errorMessage',
 					vue: copyModifierVue
 				})
+			}).finally(() => {
+				copyModifierVue.saving = false
 			})
 		},
 		/**

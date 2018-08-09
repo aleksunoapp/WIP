@@ -86,7 +86,16 @@
 	      				</div>
 	      				<div class="row">
 	      					<div class="col-md-12">
-	      						<button type="submit" class="btn blue pull-right">Create</button>
+	      						<button 
+									type="submit" 
+									class="btn blue pull-right"
+									:disabled="creating">
+									Create
+									<i 
+										v-show="creating"
+										class="fa fa-spinner fa-pulse fa-fw">
+									</i>
+								</button>
 	      					</div>
 	      				</div>
 	      			</form>
@@ -354,7 +363,17 @@
 				</select-locations-popup>
 			</div>
 			<div slot="modal-footer" class="modal-footer">
-				<button type="button" class="btn blue" @click="assignStores()">Assign</button>
+				<button 
+					type="button" 
+					class="btn blue" 
+					@click="assignStores()"
+					:disabled="assigningStores">
+					Assign
+					<i 
+						v-show="assigningStores"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
 			</div>
 		</modal>
 
@@ -409,8 +428,13 @@
 					v-else
 					type="button" 
 					class="btn btn-primary" 
-					@click="updateLocationManager()">
+					@click="updateLocationManager()"
+					:disabled="updating">
 					Save
+					<i 
+						v-show="updating"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
 				</button>
 			</div>
 		</modal>
@@ -436,7 +460,17 @@
 				></roles-picker>
 			</div>
 			<div slot="modal-footer" class="modal-footer">
-				<button type="button" class="btn btn-primary" @click="assignRoles()">Save</button>
+				<button 
+					type="button" 
+					class="btn btn-primary" 
+					@click="assignRoles()"
+					:disabled="assigningRoles">
+					Save
+					<i 
+						v-show="assigningRoles"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
 			</div>
 		</modal>
 		<!-- ROLES MODAL END -->
@@ -473,6 +507,7 @@ export default {
 			],
 			createLocationManagerCollapse: true,
 			createErrorMessage: '',
+			creating: false,
 			newLocationManager: {
 				name: '',
 				phone: '',
@@ -483,6 +518,7 @@ export default {
 				created_by: this.$root.createdBy
 			},
 			editErrorMessage: '',
+			updating: false,
 			locationManagerToBeEdited: {
 				name: '',
 				phone: '',
@@ -492,6 +528,7 @@ export default {
 			selectedLocationManager: {
 				locations: []
 			},
+			assigningStores: false,
 			loadingLocationManagersData: false,
 			assignErrorMessage: '',
 			locationManagers: [],
@@ -511,6 +548,7 @@ export default {
 			passwordMasked: true,
 			passwordCheck: '',
 			locationManagerToAssignRolesTo: {},
+			assigningRoles: false,
 			showAssignRolesModal: false,
 			assignRolesErrorMessage: ''
 		}
@@ -591,6 +629,7 @@ export default {
 
 			return this.validateRoles()
 			.then((response) => {
+				locationManagersVue.assigningRoles = true
 				locationManagersVue.clearRolesError()
 				return AdminManagerFunctions.assignRoles(locationManagersVue.locationManagerToAssignRolesTo, locationManagersVue.$root.appId, locationManagersVue.$root.appSecret, locationManagersVue.$root.userToken)
 				.then(response => {
@@ -608,6 +647,8 @@ export default {
 						errorName: 'assignRolesErrorMessage',
 						vue: locationManagersVue
 					})
+				}).finally(() => {
+					locationManagersVue.assigningRoles = false
 				})
 			}).catch(reason => {
 				console.log(reason)
@@ -859,6 +900,7 @@ export default {
 				this.$el.scrollTop = 0
 				return
 			}
+			this.assigningStores = true
 			let payload = {
 				locations: assignStoresVue.selectedLocationManager.selectedLocations,
 				admin: assignStoresVue.selectedLocationManager.id
@@ -885,6 +927,8 @@ export default {
 					assignStoresVue.assignErrorMessage = reason.responseJSON.message
 					window.scrollTo(0, 0)
 				}
+			}).finally(() => {
+				assignStoresVue.assigningStores = false
 			})
 		},
 		/**
@@ -951,6 +995,7 @@ export default {
 
 			return this.validateNewLocationManagerData()
 			.then((response) => {
+				locationManagersVue.creating = true
 				locationManagersVue.clearCreateError()
 				return AdminManagerFunctions.createAdmin(locationManagersVue.newLocationManager, locationManagersVue.$root.appId, locationManagersVue.$root.appSecret, locationManagersVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
@@ -969,6 +1014,8 @@ export default {
 						locationManagersVue.createErrorMessage = reason.responseJSON.message
 						window.scrollTo(0, 0)
 					}
+				}).finally(() => {
+					locationManagersVue.creating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message
@@ -1139,6 +1186,7 @@ export default {
 
 			return this.validateEditedLocationManagerData()
 			.then((response) => {
+				locationManagersVue.updating = true
 				locationManagersVue.clearEditError()
 				return AdminManagerFunctions.updateAdmin(locationManagersVue.locationManagerToBeEdited, locationManagersVue.$root.appId, locationManagersVue.$root.appSecret, locationManagersVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
@@ -1168,6 +1216,8 @@ export default {
 						locationManagersVue.editErrorMessage = reason.responseJSON.message
 						window.scrollTo(0, 0)
 					}
+				}).finally(() => {
+					locationManagersVue.updating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

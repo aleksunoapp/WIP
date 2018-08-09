@@ -86,7 +86,16 @@
 	      				</div>
 	      				<div class="row">
 	      					<div class="col-md-12">
-	      						<button type="submit" class="btn blue pull-right">Create</button>	
+	      						<button 
+								  	type="submit" 
+									class="btn blue pull-right"
+									:disabled="creating">
+									Create
+									<i 
+										v-show="creating"
+										class="fa fa-spinner fa-pulse fa-fw">
+									</i>
+								</button>	
 	      					</div>
 	      				</div>
 	      			</form>
@@ -364,8 +373,13 @@
 					v-else
 					type="button" 
 					class="btn btn-primary" 
-					@click="updateBrandAdmin()">
+					@click="updateBrandAdmin()"
+					:disabled="updating">
 					Save
+					<i 
+						v-show="updating"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
 				</button>
 			</div>
 		</modal>
@@ -391,7 +405,17 @@
 				></roles-picker>
 			</div>
 			<div slot="modal-footer" class="modal-footer">
-				<button type="button" class="btn btn-primary" @click="assignRoles()">Save</button>
+				<button 
+					type="button" 
+					class="btn btn-primary" 
+					@click="assignRoles()"
+					:disabled="assigning">
+					Save
+					<i 
+						v-show="assigning"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
 			</div>
 		</modal>
 		<!-- ROLES MODAL END -->
@@ -427,6 +451,7 @@ export default {
 			],
 			createBrandAdminCollapse: true,
 			createErrorMessage: '',
+			creating: false,
 			newBrandAdmin: {
 				name: '',
 				phone: '',
@@ -437,6 +462,7 @@ export default {
 				created_by: this.$root.createdBy
 			},
 			editErrorMessage: '',
+			updating: false,
 			brandAdminToBeEdited: {
 				name: '',
 				phone: '',
@@ -460,6 +486,7 @@ export default {
 			passwordMasked: true,
 			passwordCheck: '',
 			brandAdminToAssignRolesTo: {},
+			assigning: false,
 			showAssignRolesModal: false,
 			assignRolesErrorMessage: ''
 		}
@@ -697,6 +724,7 @@ export default {
 
 			return this.validateRoles()
 			.then((response) => {
+				brandAdminsVue.assigning = true
 				brandAdminsVue.clearRolesError()
 				return AdminManagerFunctions.assignRoles(brandAdminsVue.brandAdminToAssignRolesTo, brandAdminsVue.$root.appId, brandAdminsVue.$root.appSecret, brandAdminsVue.$root.userToken)
 				.then(response => {
@@ -714,6 +742,8 @@ export default {
 						errorName: 'assignRolesErrorMessage',
 						vue: brandAdminsVue
 					})
+				}).finally(() => {
+					brandAdminsVue.assigning = false
 				})
 			}).catch(reason => {
 				brandAdminsVue.assignRolesErrorMessage = reason
@@ -838,6 +868,7 @@ export default {
 
 			return this.validateNewBrandAdminData()
 			.then((response) => {
+				brandAdminsVue.creating = true
 				brandAdminsVue.clearCreateError()
 				return AdminManagerFunctions.createAdmin(brandAdminsVue.newBrandAdmin, brandAdminsVue.$root.appId, brandAdminsVue.$root.appSecret, brandAdminsVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
@@ -856,6 +887,8 @@ export default {
 						brandAdminsVue.createErrorMessage = reason.responseJSON.message
 						window.scrollTo(0, 0)
 					}
+				}).finally(() => {
+					brandAdminsVue.creating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message
@@ -978,6 +1011,7 @@ export default {
 
 			return this.validateEditedBrandAdminData()
 			.then((response) => {
+				brandAdminsVue.updating = true
 				brandAdminsVue.clearEditError()
 				return AdminManagerFunctions.updateAdmin(brandAdminsVue.brandAdminToBeEdited, brandAdminsVue.$root.appId, brandAdminsVue.$root.appSecret, brandAdminsVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
@@ -1007,6 +1041,8 @@ export default {
 						brandAdminsVue.editErrorMessage = reason.responseJSON.message
 						window.scrollTo(0, 0)
 					}
+				}).finally(() => {
+					brandAdminsVue.updating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

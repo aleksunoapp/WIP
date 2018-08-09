@@ -326,7 +326,17 @@
 				</select-locations-popup>
 			</div>
 			<div slot="modal-footer" class="modal-footer">
-				<button type="button" class="btn blue" @click="applyModifierToLocations()">Assign</button>
+				<button 
+					type="button" 
+					class="btn blue" 
+					@click="applyModifierToLocations()"
+					:disabled="assigningModifierToLocations">
+					Assign
+					<i 
+						v-show="assigningModifierToLocations"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
 			</div>
 		</modal>
 		<!-- ASSIGN TO STORES MODAL END -->
@@ -401,6 +411,7 @@ export default {
 				newMenu: false
 			},
 			showApplyToLocationsModal: false,
+			assigningModifierToLocations: false,
 			modifierToApplyToLocations: {},
 			applyErrorMessage: ''
 		}
@@ -468,6 +479,7 @@ export default {
 
 			this.validateApplyToLocations()
 			.then(response => {
+				modifierItemsVue.assigningModifierToLocations = true
 				let payload = {
 					'modifier_item_id': modifierItemsVue.modifierToApplyToLocations.id,
 					'locations': modifierItemsVue.modifierToApplyToLocations.locations
@@ -482,6 +494,8 @@ export default {
 						errorName: 'applyErrorMessage',
 						vue: modifierItemsVue
 					})
+				}).finally(() => {
+					modifierItemsVue.assigningModifierToLocations = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message
