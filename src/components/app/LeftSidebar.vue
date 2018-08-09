@@ -8,7 +8,8 @@
                         'analytics overview read', 
                         'analytics store read', 
                         'analytics item read', 
-                        'analytics user read'
+                        'analytics user read',
+                        'analytics order read'
                     ])"
                     class="nav-item" 
                     :class="{'active': currentRoute === 'analytics'}" 
