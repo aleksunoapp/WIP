@@ -9,7 +9,7 @@
 								<i class="fa fa-circle fa-stack-2x" aria-hidden="true" style="color:rgb(26,188,156);line-height: inherit"></i>
 								<i class="fa fa-usd fa-stack-1x" aria-hidden="true" style="color:rgb(255,255,255);line-height:inherit"></i>
 							</span>
-							Today
+							Revenue Today
 						</div>
 					</div>
 					<div class="portlet-body">
@@ -31,7 +31,7 @@
 								<i class="fa fa-circle fa-stack-2x" aria-hidden="true" style="color:#3498db;line-height: inherit"></i>
 								<i class="fa fa-usd fa-stack-1x" aria-hidden="true" style="color:rgb(255,255,255);line-height:inherit"></i>
 							</span>
-							Week
+							Revenue This Week
 						</div>
 					</div>
 					<div class="portlet-body">
@@ -53,7 +53,7 @@
 								<i class="fa fa-circle fa-stack-2x" aria-hidden="true" style="color:#e67e22;line-height: inherit"></i>
 								<i class="fa fa-usd fa-stack-1x" aria-hidden="true" style="color:rgb(255,255,255);line-height:inherit"></i>
 							</span>
-							Month
+							Revenue This Month
 						</div>
 					</div>
 					<div class="portlet-body">
@@ -75,7 +75,7 @@
 								<i class="fa fa-circle fa-stack-2x" aria-hidden="true" style="color:#9b59b6;line-height: inherit"></i>
 								<i class="fa fa-usd fa-stack-1x" aria-hidden="true" style="color:rgb(255,255,255);line-height:inherit"></i>
 							</span>
-							Year
+							Revenue This Year
 						</div>
 					</div>
 					<div class="portlet-body">
@@ -97,7 +97,7 @@
 								<i class="fa fa-circle fa-stack-2x" aria-hidden="true" style="color:#F2B230;line-height: inherit"></i>
 								<i class="fa fa-usd fa-stack-1x" aria-hidden="true" style="color:rgb(255,255,255);line-height:inherit"></i>
 							</span>
-							Total
+							Total Revenue To Date
 						</div>
 					</div>
 					<div class="portlet-body">

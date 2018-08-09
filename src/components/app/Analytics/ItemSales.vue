@@ -9,7 +9,7 @@
 								<i class="fa fa-circle fa-stack-2x" aria-hidden="true" style="color:rgb(26,188,156);line-height: inherit"></i>
 								<i class="fa fa-trophy fa-stack-1x" aria-hidden="true" style="color:rgb(255,255,255);line-height:inherit"></i>
 							</span>
-							Top 10 Items
+							Top 10 Selling Items
 						</div>
 						<div class="tools clickable" @click="downloadCSV(itemSummary)">
 							<i class="fa fa-download" aria-hidden="true"></i>
