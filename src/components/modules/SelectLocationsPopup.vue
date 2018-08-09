@@ -127,7 +127,7 @@ export default {
 			if (this.searchTerm.length) {
 				return this.locations.filter((location) => {
 					let searchIn = location.display_name + location.address_line_1 + location.city + location.province + location.country
-					return searchIn.toLowerCase().includes(this.searchTerm)
+					return searchIn.toLowerCase().includes(this.searchTerm.toLowerCase())
 				})
 			} else {
 				return this.locations
