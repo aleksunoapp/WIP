@@ -10,7 +10,7 @@ export default {
 	urls: {
 		approvals: (function () {
 			if (production) {
-				return 'http://approval.api.unoapp.io'
+				return 'https://approval.api.unoapp.io'
 			} else if (staging) {
 				return 'https://approval.beta.api.unoapp.io'
 			} else {
