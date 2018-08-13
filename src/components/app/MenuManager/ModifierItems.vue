@@ -28,7 +28,7 @@
 					<div class="form-body row">
 						<div class="col-md-12">
 							<div class="alert alert-danger" v-if="errorMessage.length">
-								<button class="close" data-close="alert" @click="clearError('errorMessage')"></button>
+								<button class="close" data-close="alert" @click.prevent="clearError('errorMessage')"></button>
 								<span>{{errorMessage}}</span>
 							</div>
 						</div>
@@ -577,6 +577,8 @@ export default {
 					reject('Modifier Item min should be a number')
 				} else if (!$.isNumeric(modifierItemsVue.newModifierItem.max)) {
 					reject('Modifier Item max should be a number')
+				} else if (Number(modifierItemsVue.newModifierItem.min) > Number(modifierItemsVue.newModifierItem.max)) {
+					reject('Modifier Item max cannot be larger than min')
 				} else if (!$.isNumeric(modifierItemsVue.newModifierItem.order)) {
 					reject('Modifier Item order should be a number')
 				}

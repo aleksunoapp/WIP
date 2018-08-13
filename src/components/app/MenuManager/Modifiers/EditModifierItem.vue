@@ -184,12 +184,14 @@ export default {
 					reject('Item image URL cannot be blank')
 				} else if (!$.isNumeric(editModifierItemVue.itemToBeEdited.status)) {
 					reject('Item status cannot be blank')
-				} else if (!$.isNumeric(editModifierItemVue.itemToBeEdited.max)) {
-					reject('Modifier Category max should be a number')
 				} else if (!$.isNumeric(editModifierItemVue.itemToBeEdited.min)) {
-					reject('Modifier Category min should be a number')
+					reject('Modifier Item min should be a number')
+				} else if (!$.isNumeric(editModifierItemVue.itemToBeEdited.max)) {
+					reject('Modifier Item max should be a number')
+				} else if (Number(editModifierItemVue.itemToBeEdited.min) > Number(editModifierItemVue.itemToBeEdited.max)) {
+					reject('Modifier Item max cannot be larger than min')
 				} else if (!$.isNumeric(editModifierItemVue.itemToBeEdited.order)) {
-					reject('Modifier Category order should be a number')
+					reject('Modifier Item order should be a number')
 				}
 				resolve('Hurray')
 			})
