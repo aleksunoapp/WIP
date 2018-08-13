@@ -227,7 +227,7 @@
 						<h4>No Tax Classes</h4>
 						<p>No tax classes for this location yet. <router-link to="/app/tax_manager/tax_classes">Create the first one here.</router-link></p>
 					</div>
-					<table class="table">
+					<table class="table" v-show="taxClasses.length">
 						<thead>
 							<tr>
 								<th class="table-column--checkboxes">
@@ -263,7 +263,7 @@
 			</div>
 			<div slot="modal-footer" class="modal-footer clear">
 				<button 
-					v-if="activeLocationId === undefined" 
+					v-if="activeLocationId === undefined || !taxClasses.length" 
 					@click="closeApplyModal()" 
 					type="submit" 
 					class="btn btn-outline"

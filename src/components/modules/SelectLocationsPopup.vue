@@ -62,7 +62,7 @@
 			        	<th> City, Province, Country </th>
 			        </tr>
 			    </thead>
-			    <tbody>
+			    <tbody v-show="!loading">
 			        <tr v-for="store in searchResults" :key="store.id">
 			        	<td>
 			        		<div class="md-checkbox has-success">
@@ -81,6 +81,8 @@
 			    </tbody>
 			</table>
 
+			<loading-screen :show="loading" />
+
 		</div>
 		<div class="clear" v-show="withButton">
 			<button type="button" class="pull-right margin-top-15 btn btn-primary" @click="selectLocations()">Select</button>
@@ -92,11 +94,13 @@
 import Dropdown from './Dropdown'
 import StoreGroupsFunctions from '../../controllers/StoreGroups'
 import App from '../../controllers/App'
+import LoadingScreen from '@/components/modules/LoadingScreen'
 
 export default {
 	data () {
 		return {
 			locations: [],
+			loading: false,
 			groups: [],
 			selectedGroup: {},
 			selectAllSelected: false,
@@ -228,6 +232,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		getPaginatedStoreLocations () {
+			this.loading = true
 			var selectLocationsVue = this
 
 			App.getPaginatedStoreLocations(selectLocationsVue.$root.appId, selectLocationsVue.$root.appSecret, selectLocationsVue.$root.userToken).then(response => {
@@ -255,6 +260,8 @@ export default {
 				}
 				if (reason.responseJSON) {}
 				throw reason
+			}).finally(() => {
+				selectLocationsVue.loading = false
 			})
 		},
 		/**
@@ -315,7 +322,8 @@ export default {
 		}
 	},
 	components: {
-		Dropdown
+		Dropdown,
+		LoadingScreen
 	}
 }
 </script>
