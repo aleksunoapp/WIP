@@ -837,3 +837,10 @@ export default {
 
 }
 </script>
+
+<style>
+.page-sidebar-menu-closed .fa-chevron-down:before {
+    display: none;
+}
+</style>
+
