@@ -494,13 +494,13 @@
     				                	<td  class="align-middle" v-if="hour.day === 5"> Friday </td>
     				                	<td  class="align-middle" v-if="hour.day === 6"> Saturday </td>
     				                    <td class="align-middle">
-    				                    	<el-time-select v-model="hour.open_time" :picker-options="{ start: '00:00', step: '00:15', end: '23:45' }" placeholder="Opening time" class="narrow-picker"></el-time-select>
+    				                    	<el-time-select v-model="hour.open_time" :picker-options="{ start: '00:00', step: '00:01', end: '23:59' }" placeholder="Opening time" class="narrow-picker"></el-time-select>
     				                    	<button data-toggle="tooltip" title="Copy to all" class="btn btn-icon-only btn-outline blue" @click="applyOpeningTimeToAll(hour.open_time, $event)">
     				                    		<i class="fa fa-clone" aria-hidden="true"></i>
     				                    	</button>
     				                    </td>
     				                    <td class="align-middle">
-    				                    	<el-time-select v-model="hour.close_time" :picker-options="{ start: '00:00', step: '00:15', end: '23:45' }" placeholder="Closing time" class="narrow-picker"></el-time-select>
+    				                    	<el-time-select v-model="hour.close_time" :picker-options="{ start: '00:00', step: '00:01', end: '23:59' }" placeholder="Closing time" class="narrow-picker"></el-time-select>
     				                    	<button data-toggle="tooltip" title="Copy to all" class="btn btn-icon-only btn-outline blue" @click="applyClosingTimeToAll(hour.close_time, $event)">
     				                    		<i class="fa fa-clone" aria-hidden="true"></i>
     				                    	</button>

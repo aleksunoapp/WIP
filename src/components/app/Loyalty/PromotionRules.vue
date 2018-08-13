@@ -98,8 +98,8 @@
 								<label class="grey-label"><span v-show="newRule.sku === 'all'">All</span><span v-show="newRule.sku !== 'all'">{{numberOfItemsNew}}</span> item<span v-show="numberOfItemsNew !== 1 || newRule.sku === 'all'">s</span> selected</label>
 							</div>
 							<div class="col-xs-12 no-gutter margin-top-20" v-show="newRule.parameter === 'time' || newRule.parameter === 'sku-combination'">
-								<el-time-select v-model="newRule.start" :picker-options="{ start: '00:00', step: '00:15', end: '23:59' }" placeholder="Set start time"></el-time-select>
-								<el-time-select v-model="newRule.end" :picker-options="{ start: '00:00', step: '00:15', end: '23:59' }" placeholder="Set end time"></el-time-select>
+								<el-time-select v-model="newRule.start" :picker-options="{ start: '00:00', step: '00:01', end: '23:59' }" placeholder="Set start time"></el-time-select>
+								<el-time-select v-model="newRule.end" :picker-options="{ start: '00:00', step: '00:01', end: '23:59' }" placeholder="Set end time"></el-time-select>
 							</div>
 
 						</div>
@@ -353,13 +353,13 @@
 							<el-time-select 
 								:disabled="!$root.permissions['loyalty promotion_rules update']"
 								v-model="ruleToEdit.start" 
-								:picker-options="{ start: '00:00', step: '00:15', end: '23:59' }" 
+								:picker-options="{ start: '00:00', end: '23:59', step: '00:01' }" 
 								placeholder="Set start time">
 							</el-time-select>
 							<el-time-select 
 								:disabled="!$root.permissions['loyalty promotion_rules update']"
 								v-model="ruleToEdit.end" 
-								:picker-options="{ start: '00:00', step: '00:15', end: '23:59' }" 
+								:picker-options="{ start: '00:00', end: '23:59', step: '00:01' }"
 								placeholder="Set end time">
 							</el-time-select>
 						</div>

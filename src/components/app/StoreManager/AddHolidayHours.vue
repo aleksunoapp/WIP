@@ -70,7 +70,7 @@
                 <td class="align-middle">
                 	<el-time-select
                     v-model="hour.open_time"
-                    :picker-options="{ start: '00:00', step: '00:15', end: '23:45' }"
+                    :picker-options="{ start: '00:00', end: '23:59', step: '00:01' }"
                     :clearable="false"
                     placeholder="Opening time"
                     class="narrow-picker"
@@ -90,7 +90,7 @@
                 <td class="align-middle">
                 	<el-time-select
                     v-model="hour.close_time"
-                    :picker-options="{ start: '00:00', step: '00:15', end: '23:45' }"
+                    :picker-options="{ start: '00:00', end: '23:59', step: '00:01' }"
                     :clearable="false"
                     placeholder="Closing time"
                     class="narrow-picker"

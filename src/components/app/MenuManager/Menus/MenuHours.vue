@@ -46,7 +46,7 @@
 										placeholder="Start"
 										:picker-options="{
 											start: '00:00',
-											step: '00:15',
+											step: '00:01',
 											end: '23:59'
 										}">
 									</el-time-select>
@@ -65,7 +65,7 @@
 										placeholder="End"
 										:picker-options="{
 											start: '00:00',
-											step: '00:15',
+											step: '00:01',
 											end: '23:59'
 										}">
 									</el-time-select>
@@ -87,7 +87,7 @@
 										placeholder="Start"
 										:picker-options="{
 											start: '00:00',
-											step: '00:15',
+											step: '00:01',
 											end: '23:59'
 										}">
 									</el-time-select>
@@ -106,7 +106,7 @@
 										placeholder="End"
 										:picker-options="{
 											start: '00:00',
-											step: '00:15',
+											step: '00:01',
 											end: '23:59'
 										}">
 									</el-time-select>
@@ -128,7 +128,7 @@
 										placeholder="Start"
 										:picker-options="{
 											start: '00:00',
-											step: '00:15',
+											step: '00:01',
 											end: '23:59'
 										}">
 									</el-time-select>
@@ -147,7 +147,7 @@
 										placeholder="End"
 										:picker-options="{
 											start: '00:00',
-											step: '00:15',
+											step: '00:01',
 											end: '23:59'
 										}">
 									</el-time-select>
@@ -169,7 +169,7 @@
 										placeholder="Start"
 										:picker-options="{
 											start: '00:00',
-											step: '00:15',
+											step: '00:01',
 											end: '23:59'
 										}">
 									</el-time-select>
@@ -188,7 +188,7 @@
 										placeholder="End"
 										:picker-options="{
 											start: '00:00',
-											step: '00:15',
+											step: '00:01',
 											end: '23:59'
 										}">
 									</el-time-select>
@@ -210,7 +210,7 @@
 										placeholder="Start"
 										:picker-options="{
 											start: '00:00',
-											step: '00:15',
+											step: '00:01',
 											end: '23:59'
 										}">
 									</el-time-select>
@@ -229,7 +229,7 @@
 										placeholder="End"
 										:picker-options="{
 											start: '00:00',
-											step: '00:15',
+											step: '00:01',
 											end: '23:59'
 										}">
 									</el-time-select>
@@ -251,7 +251,7 @@
 										placeholder="Start"
 										:picker-options="{
 											start: '00:00',
-											step: '00:15',
+											step: '00:01',
 											end: '23:59'
 										}">
 									</el-time-select>
@@ -270,7 +270,7 @@
 										placeholder="End"
 										:picker-options="{
 											start: '00:00',
-											step: '00:15',
+											step: '00:01',
 											end: '23:59'
 										}">
 									</el-time-select>
@@ -292,7 +292,7 @@
 										placeholder="Start"
 										:picker-options="{
 											start: '00:00',
-											step: '00:15',
+											step: '00:01',
 											end: '23:59'
 										}">
 									</el-time-select>
@@ -311,7 +311,7 @@
 										placeholder="End"
 										:picker-options="{
 											start: '00:00',
-											step: '00:15',
+											step: '00:01',
 											end: '23:59'
 										}">
 									</el-time-select>
@@ -353,7 +353,7 @@
 										placeholder="Start"
 										:picker-options="{
 											start: '00:00',
-											step: '00:15',
+											step: '00:01',
 											end: '23:59'
 										}">
 									</el-time-select>
@@ -373,7 +373,7 @@
 										placeholder="End"
 										:picker-options="{
 											start: '00:00',
-											step: '00:15',
+											step: '00:01',
 											end: '23:59'
 										}">
 									</el-time-select>
