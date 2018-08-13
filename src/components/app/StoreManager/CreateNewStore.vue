@@ -91,7 +91,7 @@
 		                    	</div>
     	                        <div class="form-group form-md-line-input form-md-floating-label" v-if="storeGroups.length">
 		                    		<label>Select Store Group:</label><br>
-		                    		<el-select v-model="newStore.locationsgroup_id" placeholder="Select a group" size="mini">
+		                    		<el-select v-model="newStore.locationsgroup_id" filterable placeholder="Select a group" size="mini">
 										<el-option
 											v-for="group in storeGroups"
 											:key="group.id"
@@ -102,7 +102,7 @@
 		                    	</div>
 		                    	<div class="form-group form-md-line-input form-md-floating-label">
 		                        	<label>Store Timezone:</label><br>
-		                        	<el-select v-model="newStore.timezone" placeholder="Select a timezone" size="mini">
+		                        	<el-select v-model="newStore.timezone" filterable placeholder="Select a timezone" size="mini">
 		                        		<el-option
 		                        			v-for="(zone, i) in timezones"
 		                        			:label="zone.label"
@@ -114,14 +114,14 @@
 		                        </div>
 		                        <div class="form-group form-md-line-input form-md-floating-label">
 		                    		<label>Store Currency:</label><br>
-    	                        	<el-select v-model="newStore.currency" placeholder="Select a currency" size="mini">
+    	                        	<el-select v-model="newStore.currency" filterable placeholder="Select a currency" size="mini">
 										<el-option label="CAD" value="CAD"></el-option>
 										<el-option label="USD" value="USD"></el-option>
     	                        	</el-select>
 		                    	</div>
 		                    	<div class="form-group form-md-line-input form-md-floating-label">
 		                    		<label>Menu Tier:</label><br>
-		                    		<el-select v-model="newStore.menu_tier_id" placeholder="Select a tier" size="mini">
+		                    		<el-select v-model="newStore.menu_tier_id" filterable placeholder="Select a tier" size="mini">
 		                    			<el-option
 		                    				key="default"
 		                    				label="none"

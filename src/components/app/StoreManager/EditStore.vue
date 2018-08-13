@@ -101,33 +101,25 @@
 											</div>
 											<div class="form-group form-md-line-input form-md-floating-label">
 												<label>Store Group:</label><br>
-												<el-dropdown
-													trigger="click"
-													@command="updateStoreGroupId"
+												<el-select 
+													v-model="storeToBeEdited.locationsgroup_id" 
+													filterable 
+													placeholder="Select a group" 
 													size="mini"
-													:show-timeout="50"
-													:hide-timeout="50"
-												>
-													<el-button size="mini">
-														{{ selectedGroupName || 'Select a group' }}
-														<i class="el-icon-arrow-down el-icon--right"></i>
-													</el-button>
-													<el-dropdown-menu slot="dropdown">
-														<el-dropdown-item
-															v-for="group in storeGroups"
-															:command="group"
-															:key="group.id"
-															:disabled="!$root.permissions['stores info update']? true : false"
-														>
-															{{ group.name }}
-														</el-dropdown-item>
-													</el-dropdown-menu>
-												</el-dropdown>
+													:disabled="!$root.permissions['stores info update']">
+													<el-option
+														v-for="group in storeGroups"
+														:key="group.id"
+														:label="group.name"
+														:value="group.id">
+													</el-option>
+												</el-select>
 											</div>
 											<div class="form-group form-md-line-input form-md-floating-label">
 												<label>Store Timezone:</label><br>
 												<el-select
 													v-model="storeToBeEdited.timezone"
+													filterable
 													placeholder="Select a timezone"
 													size="mini"
 													:disabled="!$root.permissions['stores info update']? true : false"
@@ -143,26 +135,10 @@
 											</div>
 											<div class="form-group form-md-line-input form-md-floating-label">
 												<label>Store Currency:</label><br>
-												<el-dropdown
-													trigger="click"
-													@command="updateStoreCurrency"
-													size="mini"
-													:show-timeout="50"
-													:hide-timeout="50"
-												>
-													<el-button size="mini">
-														{{ storeToBeEdited.currency || 'Select a currency' }}
-														<i class="el-icon-arrow-down el-icon--right"></i>
-													</el-button>
-													<el-dropdown-menu slot="dropdown">
-														<el-dropdown-item command="CAD" :disabled="!$root.permissions['stores info update']? true : false">
-															CAD
-														</el-dropdown-item>
-														<el-dropdown-item command="USD" :disabled="!$root.permissions['stores info update']? true : false">
-															USD
-														</el-dropdown-item>
-													</el-dropdown-menu>
-												</el-dropdown>
+												<el-select v-model="storeToBeEdited.currency" filterable placeholder="Select a currency" size="mini">
+													<el-option label="CAD" value="CAD"></el-option>
+													<el-option label="USD" value="USD"></el-option>
+												</el-select>
 											</div>
 										</div>
 										<div class="col-md-6">
@@ -941,7 +917,6 @@ export default {
 			noHoursData: '',
 			newHolidayHours: [],
 			storeGroups: [],
-			selectedGroupName: '',
 			nullPOSsettingsReceived: true,
 			storePOSsettingsError: '',
 			isCorporateUpdated: false,
@@ -1027,16 +1002,6 @@ export default {
 			}
 		},
 		/**
-		 * To update the store group on the store being edited.
-		 * @function
-		 * @param {object} group - The new group object.
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		updateStoreGroupId (group) {
-			this.selectedGroupName = group.name
-			this.storeToBeEdited.locationsgroup_id = group.id
-		},
-		/**
 		 * To get a list of store groups.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
@@ -1047,7 +1012,6 @@ export default {
 			return StoreGroupsFunctions.getGroups(storeGroupsVue.$root.appId, storeGroupsVue.$root.appSecret, storeGroupsVue.$root.userToken).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
 					storeGroupsVue.storeGroups = response.payload
-					storeGroupsVue.storeGroups.forEach((group) => { if (group.id === storeGroupsVue.storeToBeEdited.locationsgroup_id) { storeGroupsVue.selectedGroupName = group.name } })
 				}
 			}).catch(reason => {
 				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
@@ -1292,15 +1256,6 @@ export default {
 		 */
 		clearError (val) {
 			this[val] = ''
-		},
-		/**
-		 * To update the value of the store 'currency' field.
-		 * @function
-		 * @param {integer} value - The new value.
-		 * @returns {undefined}
-		 */
-		updateStoreCurrency (value) {
-			this.storeToBeEdited.currency = value
 		},
 		/**
 		 * To sync the menu.
