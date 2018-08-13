@@ -16,8 +16,22 @@
 						</div>
 					</div>
 					<div class="portlet-body">
+
+						<div class="row">
+							<div class="col-xs-12">
+		      					<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+		      					    <button class="close" @click.prevent="clearError('errorMessage')"></button>
+		      					    <span>{{errorMessage}}</span>
+		      					</div>
+							</div>
+						</div>
+
 						<el-table
 							:data="itemSummary">
+							<div slot="empty">
+								<loading-screen :show="loadingItemSummary" />
+								<p v-show="!loadingItemSummary">No orders yet</p>
+							</div>
 							<el-table-column
 								prop="name"
 								label="Name"
@@ -61,19 +75,33 @@
 
 <script>
 import AnalyticsFunctions from '../../../controllers/Analytics'
+import ajaxErrorHandler from '@/controllers/ErrorController'
+import LoadingScreen from '@/components/modules/LoadingScreen'
 
 export default {
+	components: {
+		LoadingScreen
+	},
 	data () {
 		return {
 			loadingItemSummary: false,
 			itemSummary: [],
-			isErrorMessage: ''
+			errorMessage: ''
 		}
 	},
 	created () {
 		this.getItemSummary()
 	},
 	methods: {
+		/**
+		 * To clear an error.
+		 * @function
+		 * @param {string} name - Name of the error variable to clear
+		 * @returns {undefined}
+		 */
+		clearError (name) {
+			this[name] = ''
+		},
 		/**
 		 * To save data as a CSV
 		 * @function
@@ -188,14 +216,13 @@ export default {
 					analyticsVue.loadingItemSummary = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					analyticsVue.$router.push('/login/expired')
-					return
-				}
 				analyticsVue.loadingItemSummary = false
-				if (reason.responseJSON) {
-					analyticsVue.isErrorMessage = reason.responseJSON.message
-				}
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch data',
+					errorName: 'errorMessage',
+					vue: analyticsVue
+				})
 			})
 		}
 	}

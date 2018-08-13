@@ -441,7 +441,7 @@ import Dropdown from '../../modules/Dropdown'
 import Pagination from '../../modules/Pagination'
 import PageResults from '../../modules/PageResults'
 import RolesPicker from '@/components/app/ApprovalsManager/RolesPicker'
-import ajaxErrorHandler from '../../../controllers/ErrorController'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 /**
  * Define the email pattern to check for valid emails.

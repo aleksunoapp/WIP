@@ -95,6 +95,10 @@
     		            </div>
     		        </div>
                     <div class="portlet-body">
+						<div class="alert alert-danger" v-show="!faqs.length && errorMessage" ref="errorMessage">
+							<button class="close" @click="clearError()"></button>
+							<span>{{errorMessage}}</span>
+						</div>
                         <div class="timeline" v-if="faqs.length">
                             <div 
 								class="timeline-item" 
@@ -134,10 +138,6 @@
                         	<no-results :show="!faqs.length" :type="'user FAQs'"></no-results>
                         </div>
                     </div>
-                    <div class="alert alert-danger" v-if="!faqs.length && errorMessage.length">
-                        <button class="close" data-close="alert" @click="clearError()"></button>
-                        <span>{{errorMessage}}</span>
-                    </div>
                 </div>
 	        </div>
 	    </div>
@@ -151,6 +151,7 @@ import NoResults from '../../modules/NoResults'
 import GlobalFunctions from '../../../global'
 import FAQFunctions from '../../../controllers/FAQ'
 import EditUserFaq from './EditUserFaq'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -196,12 +197,12 @@ export default {
 					usersFAQVue.errorMessage = response.message
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					usersFAQVue.$router.push('/login/expired')
-					return
-				}
-				usersFAQVue.errorMessage = reason
-				window.scrollTo(0, 0)
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch FAQs',
+					errorName: 'errorMessage',
+					vue: usersFAQVue
+				})
 			})
 		},
 		/**
@@ -283,12 +284,12 @@ export default {
 						disabledButton.cancel()
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						usersFAQVue.$router.push('/login/expired')
-						return
-					}
-					disabledButton.cancel()
-					throw reason
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not create the FAQ',
+						errorName: 'createFAQError',
+						vue: usersFAQVue
+					})
 				}).finally(() => {
 					usersFAQVue.creating = false
 				})

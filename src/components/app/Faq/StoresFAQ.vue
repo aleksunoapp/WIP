@@ -76,6 +76,10 @@
     		            </div>
     		        </div>
                     <div class="portlet-body">
+						<div class="alert alert-danger" v-show="!faqs.length && errorMessage" ref="errorMessage">
+							<button class="close" @click="clearError()"></button>
+							<span>{{errorMessage}}</span>
+						</div>
                         <div class="timeline" v-if="faqs.length">
                             <div 
 								class="timeline-item" 
@@ -121,10 +125,6 @@
                         	<no-results :show="!faqs.length" :type="'store FAQs'"></no-results>
                         </div>
                     </div>
-                    <div class="alert alert-danger" v-if="!faqs.length && errorMessage.length">
-                        <button class="close" data-close="alert" @click="clearError()"></button>
-                        <span>{{errorMessage}}</span>
-                    </div>
                 </div>
 	        </div>
 	    </div>
@@ -136,9 +136,9 @@
 import $ from 'jquery'
 import Breadcrumb from '../../modules/Breadcrumb'
 import NoResults from '../../modules/NoResults'
-import GlobalFunctions from '../../../global'
 import FAQFunctions from '../../../controllers/FAQ'
 import EditStoreFaq from './EditStoreFaq'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -182,12 +182,12 @@ export default {
 					storesFAQVue.errorMessage = response.message
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					storesFAQVue.$router.push('/login/expired')
-					return
-				}
-				storesFAQVue.errorMessage = reason
-				window.scrollTo(0, 0)
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch FAQs',
+					errorName: 'errorMessage',
+					vue: storesFAQVue
+				})
 			})
 		},
 		/**
@@ -246,7 +246,6 @@ export default {
 		 * @returns {object} A promise that will either return an error message or display the success screen
 		 */
 		createStoreFAQ (event) {
-			var disabledButton = GlobalFunctions.disableButton(event)
 			var storesFAQVue = this
 
 			this.clearCreateFAQError()
@@ -259,18 +258,16 @@ export default {
 						storesFAQVue.faqs.push(storesFAQVue.newFAQ)
 						storesFAQVue.showAlert()
 						storesFAQVue.resetForm()
-						disabledButton.complete()
 					} else {
 						storesFAQVue.createFAQError = response.message
-						disabledButton.cancel()
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						storesFAQVue.$router.push('/login/expired')
-						return
-					}
-					disabledButton.cancel()
-					throw reason
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not create the FAQ',
+						errorName: 'createFAQError',
+						vue: storesFAQVue
+					})
 				}).finally(() => {
 					storesFAQVue.creating = false
 				})
@@ -278,7 +275,6 @@ export default {
 				// If validation fails then display the error message
 				storesFAQVue.createFAQError = reason
 				window.scrollTo(0, 0)
-				disabledButton.cancel()
 				throw reason
 			})
 		},
