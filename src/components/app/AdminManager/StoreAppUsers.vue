@@ -24,8 +24,8 @@
 					<form role="form" @submit.prevent="createStoreAppUser()">
 						<div class="row">
 							<div class="col-md-12">
-								<div class="alert alert-danger" v-if="createErrorMessage.length">
-									<button class="close" data-close="alert" @click.prevent="clearCreateError()"></button>
+								<div class="alert alert-danger" v-show="createErrorMessage" ref="createErrorMessage">
+									<button class="close" @click.prevent="clearError('createErrorMessage')"></button>
 									<span>{{createErrorMessage}}</span>
 								</div>
 							</div>
@@ -113,8 +113,8 @@
 						<form role="form" @submit.prevent="advancedSearch()">
 							<div class="form-body row">
 								<div class="col-md-12">
-									<div class="alert alert-danger" v-if="searchError.length">
-										<button class="close" data-close="alert" @click.prevent="clearSearchError()"></button>
+									<div class="alert alert-danger" v-show="searchError" ref="searchError">
+										<button class="close" @click.prevent="clearError('searchError')"></button>
 										<span>{{searchError}}</span>
 									</div>
 								</div>
@@ -150,6 +150,14 @@
 						</div>
 					</div>
 					<div class="portlet-body">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
+									<button class="close" @click="clearError('listErrorMessage')"></button>
+									<span>{{listErrorMessage}}</span>
+								</div>
+							</div>
+						</div>
 						<div class="clearfix margin-bottom-10" v-if="storeAppUsers.length">
 							<el-dropdown trigger="click" @command="updateSortByOrder" size="mini" :show-timeout="50" :hide-timeout="50">
 								<el-button size="mini">
@@ -308,7 +316,7 @@
 		<!-- LIST END -->
 
 		<!-- ASSIGN STORES MODAL START -->
-		<modal :show="showAssignStoresModal" effect="fade" @closeOnEscape="closeAssignStoresModal">
+		<modal :show="showAssignStoresModal" effect="fade" @closeOnEscape="closeAssignStoresModal" ref="storesModal">
 			<div slot="modal-header" class="modal-header center">
 				<button type="button" class="close" @click="closeAssignStoresModal()">
 					<span>&times;</span>
@@ -317,8 +325,8 @@
 			</div>
 			<div slot="modal-body" class="modal-body">
 				<form role="form" novalidate>
-					<div class="alert alert-danger" v-if="assignErrorMessage.length">
-						<button class="close" data-close="alert" @click.prevent="clearAssignError()"></button>
+					<div class="alert alert-danger" v-show="assignErrorMessage" ref="assignErrorMessage">
+						<button class="close" @click.prevent="clearError('assignErrorMessage')"></button>
 						<span>{{ assignErrorMessage }}</span>
 					</div>
 					<div class="invite-user-form height-mod">
@@ -378,7 +386,7 @@
 		<!-- ASSIGN STORES MODAL START -->
 
 		<!-- EDIT MODAL START -->
-		<modal :show="showEditStoreAppUserModal" effect="fade" @closeOnEscape="closeEditStoreAppUserModal">
+		<modal :show="showEditStoreAppUserModal" effect="fade" @closeOnEscape="closeEditStoreAppUserModal" ref="editModal">
 			<div slot="modal-header" class="modal-header" mode="out-in">
 				<transition name="fade" mode="out-in">
 					<div v-if="!editLocationMode" key="mainEditMode">
@@ -401,8 +409,8 @@
 			<div slot="modal-body" class="modal-body">
 				<transition name="fade" mode="out-in">
 					<div v-if="!editLocationMode" key="mainEditMode">
-						<div class="alert alert-danger" v-if="editErrorMessage.length">
-							<button class="close" data-close="alert" @click="clearEditError()"></button>
+						<div class="alert alert-danger" v-show="editErrorMessage" ref="editErrorMessage">
+							<button class="close" @click="clearError('editErrorMessage')"></button>
 							<span>{{editErrorMessage}}</span>
 						</div>
 						<fieldset :disabled="$root.permissions['admin store_app_users read'] && !$root.permissions['admin store_app_users update']">
@@ -434,8 +442,8 @@
 						</div>
 					</div>
 					<form v-if="editLocationMode" role="form" novalidate key="selectLocationMode">
-						<div class="alert alert-danger" v-if="assignErrorMessage.length">
-							<button class="close" data-close="alert" @click.prevent="clearAssignError()"></button>
+						<div class="alert alert-danger" v-show="assignErrorMessage" ref="assignErrorMessage">
+							<button class="close" @click.prevent="clearError('assignErrorMessage')"></button>
 							<span>{{ assignErrorMessage }}</span>
 						</div>
 						<div class="invite-user-form height-mod">
@@ -546,6 +554,7 @@ import App from '../../../controllers/App'
 import Dropdown from '../../modules/Dropdown'
 import Pagination from '../../modules/Pagination'
 import PageResults from '../../modules/PageResults'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 /**
  * Define the email pattern to check for valid emails.
@@ -589,6 +598,7 @@ export default {
 			selectedStoreAppUserType: '',
 			loadingStoreAppUsersData: false,
 			assignErrorMessage: '',
+			listErrorMessage: '',
 			storeAppUsers: [],
 			showAssignStoresModal: false,
 			showEditStoreAppUserModal: false,
@@ -784,7 +794,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		advancedSearch () {
-			this.clearSearchError()
+			this.clearError('searchError')
 			this.filteredResults = []
 			if (this.searchTerm.length) {
 				if (this.searchTerm.length < 3) {
@@ -804,14 +814,6 @@ export default {
 			}
 		},
 		/**
-		 * To clear the current search error.
-		 * @function
-		 * @returns {undefined}
-		 */
-		clearSearchError () {
-			this.searchError = ''
-		},
-		/**
 		 * To clear the current search criteria.
 		 * @function
 		 * @returns {undefined}
@@ -821,7 +823,7 @@ export default {
 			this.filteredResults = []
 			this.activePage = 1
 			this.searchActivePage = 1
-			this.clearSearchError()
+			this.clearError('searchError')
 		},
 		/**
 		 * To assign the selected stores to the current group.
@@ -856,13 +858,13 @@ export default {
 					assignStoresVue.stores = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					assignStoresVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-					console.log(reason.responseJSON.message)
-				}
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch stores',
+					errorName: 'assignErrorMessage',
+					vue: assignStoresVue,
+					containerRef: 'storesModal'
+				})
 			})
 		},
 		/**
@@ -913,15 +915,13 @@ export default {
 					storeAppUsersVue.loadingStoreAppUsersData = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					storeAppUsersVue.$router.push('/login/expired')
-					return
-				}
 				storeAppUsersVue.loadingStoreAppUsersData = false
-				if (reason.responseJSON) {
-					storeAppUsersVue.assignErrorMessage = reason.responseJSON.message
-					window.scrollTo(0, 0)
-				}
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch Store App Users',
+					errorName: 'listErrorMessage',
+					vue: storeAppUsersVue
+				})
 			})
 		},
 		/**
@@ -935,7 +935,7 @@ export default {
 			return this.validateNewStoreAppUserData()
 			.then((response) => {
 				storeAppUsersVue.creating = true
-				storeAppUsersVue.clearCreateError()
+				storeAppUsersVue.clearError('createErrorMessage')
 				return AdminManagerFunctions.createPOCUser(storeAppUsersVue.newStoreAppUser, storeAppUsersVue.$root.appId, storeAppUsersVue.$root.appSecret, storeAppUsersVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						storeAppUsersVue.getAllStoreAppUsers()
@@ -945,14 +945,12 @@ export default {
 						storeAppUsersVue.createErrorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						storeAppUsersVue.$router.push('/login/expired')
-						return
-					}
-					if (reason.responseJSON) {
-						storeAppUsersVue.createErrorMessage = reason.responseJSON.message
-						window.scrollTo(0, 0)
-					}
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not create the Store App User',
+						errorName: 'createErrorMessage',
+						vue: storeAppUsersVue
+					})
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message
@@ -1073,28 +1071,13 @@ export default {
 			})
 		},
 		/**
-		 * To clear the current error.
+		 * To clear an error.
 		 * @function
+		 * @param {string} name - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearCreateError () {
-			this.createErrorMessage = ''
-		},
-		/**
-		 * To clear the current error.
-		 * @function
-		 * @returns {undefined}
-		 */
-		clearAssignError () {
-			this.assignErrorMessage = ''
-		},
-		/**
-		 * To clear the current error.
-		 * @function
-		 * @returns {undefined}
-		 */
-		clearEditError () {
-			this.editErrorMessage = ''
+		clearError (name) {
+			this[name] = ''
 		},
 		/**
 		 * To activate the right half panel which lists the store locations.
@@ -1132,7 +1115,7 @@ export default {
 			return this.validateEditedStoreAppUserData()
 			.then((response) => {
 				storeAppUsersVue.updating = true
-				storeAppUsersVue.clearCreateError()
+				storeAppUsersVue.clearError('createErrorMessage')
 				return AdminManagerFunctions.updatePOCUser(storeAppUsersVue.storeAppUserToBeEdited, storeAppUsersVue.$root.appId, storeAppUsersVue.$root.appSecret, storeAppUsersVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						storeAppUsersVue.closeEditStoreAppUserModal()
@@ -1153,14 +1136,13 @@ export default {
 						storeAppUsersVue.editErrorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						storeAppUsersVue.$router.push('/login/expired')
-						return
-					}
-					if (reason.responseJSON) {
-						storeAppUsersVue.editErrorMessage = reason.responseJSON.message
-						window.scrollTo(0, 0)
-					}
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not update the Store App User',
+						errorName: 'editErrorMessage',
+						vue: storeAppUsersVue,
+						containerRef: 'editModal'
+					})
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

@@ -24,8 +24,8 @@
 	      			<form role="form" @submit.prevent="createBrandAdmin()">
 	      				<div class="row">
 	      					<div class="col-md-12">
-		      					<div class="alert alert-danger" v-if="createErrorMessage.length">
-		      					    <button class="close" data-close="alert" @click.prevent="clearCreateError()"></button>
+		      					<div class="alert alert-danger" v-show="createErrorMessage" ref="createErrorMessage">
+		      					    <button class="close" @click.prevent="clearError('createErrorMessage')"></button>
 		      					    <span>{{createErrorMessage}}</span>
 		      					</div>
 	      					</div>
@@ -119,8 +119,8 @@
     					<form role="form" @submit.prevent="advancedSearch()">
     						<div class="form-body row">
     							<div class="col-md-12">
-    								<div class="alert alert-danger" v-if="searchError.length">
-    	                                <button class="close" data-close="alert" @click="clearSearchError()"></button>
+    								<div class="alert alert-danger" v-show="searchError" ref="searchError">
+    	                                <button class="close" @click="clearError('searchError')"></button>
     	                                <span>{{searchError}}</span>
     	                            </div>
     							</div>
@@ -156,6 +156,14 @@
 			            </div>
 			        </div>
 			        <div class="portlet-body">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
+									<button class="close" @click="clearError('listErrorMessage')"></button>
+									<span>{{listErrorMessage}}</span>
+								</div>
+							</div>
+						</div>
         				<div class="clearfix margin-bottom-10" v-if="brandAdmins.length">
 							<el-dropdown trigger="click" @command="updateSortByOrder" size="mini" :show-timeout="50" :hide-timeout="50">
 								<el-button size="mini">
@@ -325,7 +333,7 @@
 		<!-- LIST END -->
 
 		<!-- EDIT MODAL START -->
-		<modal :show="showEditBrandAdminModal" effect="fade" @closeOnEscape="closeEditBrandAdminModal">
+		<modal :show="showEditBrandAdminModal" effect="fade" @closeOnEscape="closeEditBrandAdminModal" ref="editModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closeEditBrandAdminModal()">
 					<span>&times;</span>
@@ -333,8 +341,8 @@
 				<h4 class="modal-title center">Edit Brand Admin</h4>
 			</div>
 			<div slot="modal-body" class="modal-body">
-				<div class="alert alert-danger" v-if="editErrorMessage.length">
-				    <button class="close" data-close="alert" @click="clearEditError()"></button>
+				<div class="alert alert-danger" v-show="editErrorMessage" ref="editErrorMessage">
+				    <button class="close" @click="clearError('editErrorMessage')"></button>
 				    <span>{{editErrorMessage}}</span>
 				</div>
 				<fieldset :disabled="$root.permissions['admin brand_admins read'] && !$root.permissions['admin brand_admins update']">
@@ -386,7 +394,7 @@
 		<!-- EDIT MODAL END -->
 
 		<!-- ROLES MODAL START -->
-		<modal :show="showAssignRolesModal" effect="fade" @closeOnEscape="closeRolesModal">
+		<modal :show="showAssignRolesModal" effect="fade" @closeOnEscape="closeRolesModal" ref="rolesModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closeRolesModal()">
 					<span>&times;</span>
@@ -394,8 +402,8 @@
 				<h4 class="modal-title center">Assign Roles</h4>
 			</div>
 			<div slot="modal-body" class="modal-body">
-				<div class="alert alert-danger" v-show="assignRolesErrorMessage.length" ref="assignRolesErrorMessage">
-				    <button class="close" data-close="alert" @click="clearRolesError()"></button>
+				<div class="alert alert-danger" v-show="assignRolesErrorMessage" ref="assignRolesErrorMessage">
+				    <button class="close" @click="clearError('assignRolesErrorMessage')"></button>
 				    <span>{{assignRolesErrorMessage}}</span>
 				</div>
 				<roles-picker
@@ -461,6 +469,7 @@ export default {
 				active: 1,
 				created_by: this.$root.createdBy
 			},
+			listErrorMessage: '',
 			editErrorMessage: '',
 			updating: false,
 			brandAdminToBeEdited: {
@@ -638,7 +647,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		advancedSearch () {
-			this.clearSearchError()
+			this.clearError('searchError')
 			this.filteredResults = []
 			if (this.searchTerm.length) {
 				if (this.searchTerm.length < 3) {
@@ -658,12 +667,13 @@ export default {
 			}
 		},
 		/**
-		 * To clear the current search error.
+		 * To clear an error.
 		 * @function
+		 * @param {string} name - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearSearchError () {
-			this.searchError = ''
+		clearError (name) {
+			this[name] = ''
 		},
 		/**
 		 * To clear the current search criteria.
@@ -675,7 +685,7 @@ export default {
 			this.filteredResults = []
 			this.activePage = 1
 			this.searchActivePage = 1
-			this.clearSearchError()
+			this.clearError('searchError')
 		},
 		/**
 		 * To get roles already assigned to the user
@@ -725,7 +735,7 @@ export default {
 			return this.validateRoles()
 			.then((response) => {
 				brandAdminsVue.assigning = true
-				brandAdminsVue.clearRolesError()
+				brandAdminsVue.clearError('assignRolesErrorMessage')
 				return AdminManagerFunctions.assignRoles(brandAdminsVue.brandAdminToAssignRolesTo, brandAdminsVue.$root.appId, brandAdminsVue.$root.appSecret, brandAdminsVue.$root.userToken)
 				.then(response => {
 					brandAdminsVue.closeRolesModal()
@@ -740,7 +750,8 @@ export default {
 						reason,
 						errorText: 'Could not assign roles',
 						errorName: 'assignRolesErrorMessage',
-						vue: brandAdminsVue
+						vue: brandAdminsVue,
+						containerRef: 'rolesModal'
 					})
 				}).finally(() => {
 					brandAdminsVue.assigning = false
@@ -793,7 +804,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		closeRolesModal () {
-			this.clearRolesError()
+			this.clearError('assignRolesErrorMessage')
 			this.showAssignRolesModal = false
 		},
 		/**
@@ -823,7 +834,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		closeEditBrandAdminModal () {
-			this.clearEditError()
+			this.clearError('editErrorMessage')
 			this.showEditBrandAdminModal = false
 		},
 		/**
@@ -848,14 +859,13 @@ export default {
 					brandAdminsVue.loadingBrandAdminsData = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					brandAdminsVue.$router.push('/login/expired')
-					return
-				}
 				brandAdminsVue.loadingBrandAdminsData = false
-				if (reason.responseJSON) {
-					console.log(reason.responseJSON.message)
-				}
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch Brand Admins',
+					errorName: 'listErrorMessage',
+					vue: brandAdminsVue
+				})
 			})
 		},
 		/**
@@ -869,7 +879,7 @@ export default {
 			return this.validateNewBrandAdminData()
 			.then((response) => {
 				brandAdminsVue.creating = true
-				brandAdminsVue.clearCreateError()
+				brandAdminsVue.clearError('createErrorMessage')
 				return AdminManagerFunctions.createAdmin(brandAdminsVue.newBrandAdmin, brandAdminsVue.$root.appId, brandAdminsVue.$root.appSecret, brandAdminsVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						brandAdminsVue.getAllBrandAdmins()
@@ -879,14 +889,12 @@ export default {
 						brandAdminsVue.createErrorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						brandAdminsVue.$router.push('/login/expired')
-						return
-					}
-					if (reason.responseJSON) {
-						brandAdminsVue.createErrorMessage = reason.responseJSON.message
-						window.scrollTo(0, 0)
-					}
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not create the Brand Admin',
+						errorName: 'createErrorMessage',
+						vue: brandAdminsVue
+					})
 				}).finally(() => {
 					brandAdminsVue.creating = false
 				})
@@ -978,30 +986,6 @@ export default {
 			})
 		},
 		/**
-		 * To clear the current error.
-		 * @function
-		 * @returns {undefined}
-		 */
-		clearCreateError () {
-			this.createErrorMessage = ''
-		},
-		/**
-		 * To clear the current error.
-		 * @function
-		 * @returns {undefined}
-		 */
-		clearEditError () {
-			this.editErrorMessage = ''
-		},
-		/**
-		 * To clear the current error.
-		 * @function
-		 * @returns {undefined}
-		 */
-		clearRolesError () {
-			this.assignRolesErrorMessage = ''
-		},
-		/**
 		 * To update the brand admin object.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
@@ -1012,7 +996,7 @@ export default {
 			return this.validateEditedBrandAdminData()
 			.then((response) => {
 				brandAdminsVue.updating = true
-				brandAdminsVue.clearEditError()
+				brandAdminsVue.clearError('editErrorMessage')
 				return AdminManagerFunctions.updateAdmin(brandAdminsVue.brandAdminToBeEdited, brandAdminsVue.$root.appId, brandAdminsVue.$root.appSecret, brandAdminsVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						brandAdminsVue.closeEditBrandAdminModal()
@@ -1033,14 +1017,13 @@ export default {
 						brandAdminsVue.editErrorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						brandAdminsVue.$router.push('/login/expired')
-						return
-					}
-					if (reason.responseJSON) {
-						brandAdminsVue.editErrorMessage = reason.responseJSON.message
-						window.scrollTo(0, 0)
-					}
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not update the Brand Admin',
+						errorName: 'editErrorMessage',
+						vue: brandAdminsVue,
+						containerRef: 'editModal'
+					})
 				}).finally(() => {
 					brandAdminsVue.updating = false
 				})

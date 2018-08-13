@@ -24,8 +24,8 @@
 	      			<form role="form" @submit.prevent="createLocationManager()">
 	      				<div class="row">
 	      					<div class="col-md-12">
-		      					<div class="alert alert-danger" v-if="createErrorMessage.length">
-		      					    <button class="close" data-close="alert" @click.prevent="clearCreateError()"></button>
+		      					<div class="alert alert-danger" v-show="createErrorMessage" ref="createErrorMessage">
+		      					    <button class="close" @click.prevent="clearError('createErrorMessage')"></button>
 		      					    <span>{{createErrorMessage}}</span>
 		      					</div>
 	      					</div>
@@ -119,8 +119,8 @@
     					<form role="form" @submit.prevent="advancedSearch()">
     						<div class="form-body row">
     							<div class="col-md-12">
-    								<div class="alert alert-danger" v-if="searchError.length">
-    	                                <button class="close" data-close="alert" @click.prevent="clearSearchError()"></button>
+    								<div class="alert alert-danger" v-show="searchError" ref="searchError">
+    	                                <button class="close" @click.prevent="clearError('searchError')"></button>
     	                                <span>{{searchError}}</span>
     	                            </div>
     							</div>
@@ -156,6 +156,14 @@
 			            </div>
 			        </div>
 			        <div class="portlet-body">
+						<div class="row">
+	      					<div class="col-md-12">
+		      					<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
+		      					    <button class="close" @click.prevent="clearError('listErrorMessage')"></button>
+		      					    <span>{{listErrorMessage}}</span>
+		      					</div>
+	      					</div>
+						</div>
         				<div class="clearfix margin-bottom-10" v-if="locationManagers.length">
         					<el-dropdown trigger="click" @command="updateSortByOrder" size="mini" :show-timeout="50" :hide-timeout="50">
         						<el-button size="mini">
@@ -343,7 +351,7 @@
 		<!-- LIST END -->
 
 		<!-- ASSIGN STORES MODAL START -->
-		<modal :show="showAssignStoresModal" effect="fade" @closeOnEscape="closeAssignStoresModal">
+		<modal :show="showAssignStoresModal" effect="fade" @closeOnEscape="closeAssignStoresModal" ref="assignModal">
 			<div slot="modal-header" class="modal-header center">
 				<button type="button" class="close" @click="closeAssignStoresModal()">
 					<span>&times;</span>
@@ -351,8 +359,8 @@
 				<h4 class="modal-title center">Assign Stores To {{selectedLocationManager.name}}</h4>
 			</div>
 			<div slot="modal-body" class="modal-body relative-block">
-				<div class="alert alert-danger" v-if="assignErrorMessage.length">
-				    <button class="close" data-close="alert" @click="clearAssignError()"></button>
+				<div class="alert alert-danger" v-show="assignErrorMessage" ref="assignErrorMessage">
+				    <button class="close" @click="clearError('assignErrorMessage')"></button>
                     <span>{{ assignErrorMessage }}</span>
 				</div>
 				<select-locations-popup 
@@ -380,7 +388,7 @@
 		<!-- ASSIGN STORES MODAL START -->
 
 		<!-- EDIT MODAL START -->
-		<modal :show="showEditLocationManagerModal" effect="fade" @closeOnEscape="closeEditLocationManagerModal">
+		<modal :show="showEditLocationManagerModal" effect="fade" @closeOnEscape="closeEditLocationManagerModal" ref="editModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closeEditLocationManagerModal()">
 					<span>&times;</span>
@@ -388,8 +396,8 @@
 				<h4 class="modal-title center">Edit Location Manager</h4>
 			</div>
 			<div slot="modal-body" class="modal-body">
-				<div class="alert alert-danger" v-if="editErrorMessage.length">
-				    <button class="close" data-close="alert" @click="clearEditError()"></button>
+				<div class="alert alert-danger" v-show="editErrorMessage" ref="editErrorMessage">
+				    <button class="close" @click="clearError('editErrorMessage')"></button>
 				    <span>{{editErrorMessage}}</span>
 				</div>
 				<fieldset :disabled="$root.permissions['admin location_managers read'] && !$root.permissions['admin location_managers update']">
@@ -441,7 +449,7 @@
 		<!-- EDIT MODAL END -->
 
 		<!-- ROLES MODAL START -->
-		<modal :show="showAssignRolesModal" effect="fade" @closeOnEscape="closeRolesModal">
+		<modal :show="showAssignRolesModal" effect="fade" @closeOnEscape="closeRolesModal" ref="rolesModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closeRolesModal()">
 					<span>&times;</span>
@@ -449,8 +457,8 @@
 				<h4 class="modal-title center">Assign Roles</h4>
 			</div>
 			<div slot="modal-body" class="modal-body">
-				<div class="alert alert-danger" v-show="assignRolesErrorMessage.length" ref="assignRolesErrorMessage">
-				    <button class="close" data-close="alert" @click="clearRolesError()"></button>
+				<div class="alert alert-danger" v-show="assignRolesErrorMessage" ref="assignRolesErrorMessage">
+				    <button class="close" @click="clearError('assignRolesErrorMessage')"></button>
 				    <span>{{assignRolesErrorMessage}}</span>
 				</div>
 				<roles-picker
@@ -531,6 +539,7 @@ export default {
 			assigningStores: false,
 			loadingLocationManagersData: false,
 			assignErrorMessage: '',
+			listErrorMessage: '',
 			locationManagers: [],
 			showAssignStoresModal: false,
 			showEditLocationManagerModal: false,
@@ -612,14 +621,6 @@ export default {
 			})
 		},
 		/**
-		 * To clear the current error.
-		 * @function
-		 * @returns {undefined}
-		 */
-		clearRolesError () {
-			this.assignRolesErrorMessage = ''
-		},
-		/**
 		 * To assign roles to a user
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
@@ -630,7 +631,7 @@ export default {
 			return this.validateRoles()
 			.then((response) => {
 				locationManagersVue.assigningRoles = true
-				locationManagersVue.clearRolesError()
+				locationManagersVue.clearError('assignRolesErrorMessage')
 				return AdminManagerFunctions.assignRoles(locationManagersVue.locationManagerToAssignRolesTo, locationManagersVue.$root.appId, locationManagersVue.$root.appSecret, locationManagersVue.$root.userToken)
 				.then(response => {
 					locationManagersVue.closeRolesModal()
@@ -645,7 +646,8 @@ export default {
 						reason,
 						errorText: 'Could not assign roles',
 						errorName: 'assignRolesErrorMessage',
-						vue: locationManagersVue
+						vue: locationManagersVue,
+						containerRef: 'rolesModal'
 					})
 				}).finally(() => {
 					locationManagersVue.assigningRoles = false
@@ -699,7 +701,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		closeRolesModal () {
-			this.clearRolesError()
+			this.clearError('assignRolesErrorMessage')
 			this.showAssignRolesModal = false
 		},
 		/**
@@ -839,7 +841,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		advancedSearch () {
-			this.clearSearchError()
+			this.clearError('searchError')
 			this.filteredResults = []
 			if (this.searchTerm.length) {
 				if (this.searchTerm.length < 3) {
@@ -859,14 +861,6 @@ export default {
 			}
 		},
 		/**
-		 * To clear the current search error.
-		 * @function
-		 * @returns {undefined}
-		 */
-		clearSearchError () {
-			this.searchError = ''
-		},
-		/**
 		 * To clear the current search criteria.
 		 * @function
 		 * @returns {undefined}
@@ -876,7 +870,7 @@ export default {
 			this.filteredResults = []
 			this.activePage = 1
 			this.searchActivePage = 1
-			this.clearSearchError()
+			this.clearError('searchError')
 		},
 		/**
 		 * To update the locations selected in the child component
@@ -905,7 +899,7 @@ export default {
 				locations: assignStoresVue.selectedLocationManager.selectedLocations,
 				admin: assignStoresVue.selectedLocationManager.id
 			}
-			this.clearAssignError()
+			this.clearError('assignErrorMessage')
 			AdminManagerFunctions.assignStores(payload, assignStoresVue.$root.appId, assignStoresVue.$root.appSecret, assignStoresVue.$root.userToken).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
 					assignStoresVue.getAllLocationManagers()
@@ -919,14 +913,13 @@ export default {
 					}, 3000)
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					assignStoresVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-					assignStoresVue.assignErrorMessage = reason.responseJSON.message
-					window.scrollTo(0, 0)
-				}
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not assign the stores',
+					errorName: 'assignErrorMessage',
+					vue: assignStoresVue,
+					containerRef: 'assignModal'
+				})
 			}).finally(() => {
 				assignStoresVue.assigningStores = false
 			})
@@ -950,7 +943,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		closeEditLocationManagerModal () {
-			this.clearEditError()
+			this.clearError('editErrorMessage')
 			this.showEditLocationManagerModal = false
 		},
 		/**
@@ -975,14 +968,13 @@ export default {
 					locationManagersVue.loadingLocationManagersData = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					locationManagersVue.$router.push('/login/expired')
-					return
-				}
 				locationManagersVue.loadingLocationManagersData = false
-				if (reason.responseJSON) {
-					console.log(reason.responseJSON.message)
-				}
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch Location Managers',
+					errorName: 'listErrorMessage',
+					vue: locationManagersVue
+				})
 			})
 		},
 		/**
@@ -996,7 +988,7 @@ export default {
 			return this.validateNewLocationManagerData()
 			.then((response) => {
 				locationManagersVue.creating = true
-				locationManagersVue.clearCreateError()
+				locationManagersVue.clearError('createErrorMessage')
 				return AdminManagerFunctions.createAdmin(locationManagersVue.newLocationManager, locationManagersVue.$root.appId, locationManagersVue.$root.appSecret, locationManagersVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						locationManagersVue.getAllLocationManagers()
@@ -1006,14 +998,12 @@ export default {
 						locationManagersVue.createErrorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						locationManagersVue.$router.push('/login/expired')
-						return
-					}
-					if (reason.responseJSON) {
-						locationManagersVue.createErrorMessage = reason.responseJSON.message
-						window.scrollTo(0, 0)
-					}
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not create the Location Manager',
+						errorName: 'createErrorMessage',
+						vue: locationManagersVue
+					})
 				}).finally(() => {
 					locationManagersVue.creating = false
 				})
@@ -1135,26 +1125,11 @@ export default {
 		/**
 		 * To clear the current error.
 		 * @function
+		 * @param {string} name - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearCreateError () {
-			this.createErrorMessage = ''
-		},
-		/**
-		 * To clear the current error.
-		 * @function
-		 * @returns {undefined}
-		 */
-		clearEditError () {
-			this.editErrorMessage = ''
-		},
-		/**
-		 * To clear the current error.
-		 * @function
-		 * @returns {undefined}
-		 */
-		clearAssignError () {
-			this.assignErrorMessage = ''
+		clearError (name) {
+			this[name] = ''
 		},
 		/**
 		 * To activate the right half panel which lists the store locations.
@@ -1173,7 +1148,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		closeAssignStoresModal () {
-			this.clearAssignError()
+			this.clearError('assignErrorMessage')
 			this.showAssignStoresModal = false
 		},
 		/**
@@ -1187,7 +1162,7 @@ export default {
 			return this.validateEditedLocationManagerData()
 			.then((response) => {
 				locationManagersVue.updating = true
-				locationManagersVue.clearEditError()
+				locationManagersVue.clearError('editErrorMessage')
 				return AdminManagerFunctions.updateAdmin(locationManagersVue.locationManagerToBeEdited, locationManagersVue.$root.appId, locationManagersVue.$root.appSecret, locationManagersVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						locationManagersVue.closeEditLocationManagerModal()
@@ -1208,26 +1183,20 @@ export default {
 						locationManagersVue.editErrorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						locationManagersVue.$router.push('/login/expired')
-						return
-					}
-					if (reason.responseJSON) {
-						locationManagersVue.editErrorMessage = reason.responseJSON.message
-						window.scrollTo(0, 0)
-					}
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not update the Location Manager',
+						errorName: 'editErrorMessage',
+						vue: locationManagersVue,
+						containerRef: 'editModal'
+					})
 				}).finally(() => {
 					locationManagersVue.updating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message
-				if (reason.responseJSON) {
-					locationManagersVue.editErrorMessage = reason.responseJSON.message
-					window.scrollTo(0, 0)
-				} else {
-					locationManagersVue.editErrorMessage = reason
-					window.scrollTo(0, 0)
-				}
+				locationManagersVue.editErrorMessage = reason
+				window.scrollTo(0, 0)
 			})
 		},
 		/**
