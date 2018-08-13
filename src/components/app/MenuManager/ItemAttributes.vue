@@ -26,9 +26,9 @@
 			</div>
 			<div class="portlet-body" v-show="expandCreateForm">
 				<form role="form" @submit="createItemAttribute()">
-					<div class="row" v-show="createErrorMessage.length">
+					<div class="row" v-show="createErrorMessage" ref="createErrorMessage">
 						<div class="col-md-6">
-							<div class="alert alert-danger">
+							<div class="alert alert-danger" >
 								<button class="close" @click.prevent="clearError('createErrorMessage')"></button>
 								<span>{{createErrorMessage}}</span>
 							</div>
@@ -116,6 +116,14 @@
 				</div>
 			</div>
 			<div class="portlet-body">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
+							<button class="close" @click="clearError('listErrorMessage')"></button>
+							<span>{{listErrorMessage}}</span>
+						</div>
+					</div>
+				</div>
 				<div class="clearfix margin-bottom-10" v-show="searchResults.length">
 					<el-dropdown trigger="click" @command="updateSortByOrder" size="mini" :show-timeout="50" :hide-timeout="50">
 						<el-button size="mini">
@@ -210,7 +218,7 @@
 		<!-- LIST END -->
 
 		<!-- EDIT START -->
-		<modal :show="showEditModal" effect="fade" @closeOnEscape="closeEditModal">
+		<modal :show="showEditModal" effect="fade" @closeOnEscape="closeEditModal" ref="editModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closeEditModal()">
 					<span>&times;</span>
@@ -218,7 +226,7 @@
 				<h4 class="modal-title center">Edit Item Attribute</h4>
 			</div>
 			<div slot="modal-body" class="modal-body">
-				<div class="row" v-show="updateErrorMessage.length">
+				<div class="row" v-show="updateErrorMessage" ref="updateErrorMessage">
 					<div class="col-md-6">
 						<div class="alert alert-danger">
 							<button class="close" @click.prevent="clearError('updateErrorMessage')"></button>
@@ -276,12 +284,13 @@
 			@clearError="clearError('assignItemsErrorMessage')"
 			@selectedItems="assignItemsToItemAttribute"
 			@closeMenuTreeModal="closeAssignItemsModal"
+			ref="menuTree"
 		>
 		</menu-tree>
 		<!-- ASSIGN ITEMS END -->
 
 		<!-- ASSIGN USER ATTRIBUTES START -->
-		<modal :show="showAssignUserAttributesModal" effect="fade" @closeOnEscape="closeAssignUserAttributesModal">
+		<modal :show="showAssignUserAttributesModal" effect="fade" @closeOnEscape="closeAssignUserAttributesModal" ref="assignModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closeAssignUserAttributesModal()">
 					<span>&times;</span>
@@ -289,7 +298,7 @@
 				<h4 class="modal-title center">Apply <i>{{itemAttributeToAssignUserAttributesTo.name}}</i> to Multiple User Attributes</h4>
 			</div>
 			<div slot="modal-body" class="modal-body">
-				<div class="row" v-show="assignUserAttributesErrorMessage.length">
+				<div class="row" v-show="assignUserAttributesErrorMessage" ref="assignUserAttributesErrorMessage">
 					<div class="col-md-12">
 						<div class="alert alert-danger">
 							<button class="close" @click.prevent="clearError('assignUserAttributesErrorMessage')"></button>
@@ -345,7 +354,7 @@
 		<!-- ASSIGN USER ATTRIBUTES END -->
 
 		<!-- DELETE START -->
-		<modal :show="showDeleteModal" effect="fade" @closeOnEscape="closeDeleteModal">
+		<modal :show="showDeleteModal" effect="fade" @closeOnEscape="closeDeleteModal" ref="deleteModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closeDeleteModal()">
 					<span>&times;</span>
@@ -353,6 +362,14 @@
 				<h4 class="modal-title center">Confirm Delete</h4>
 			</div>
 			<div slot="modal-body" class="modal-body">
+				<div class="row" v-show="deleteErrorMessage" ref="deleteErrorMessage">
+					<div class="col-md-12">
+						<div class="alert alert-danger">
+							<button class="close" @click.prevent="clearError('deleteErrorMessage')"></button>
+							<span>{{deleteErrorMessage}}</span>
+						</div>
+					</div>
+				</div>
 				<div class="row">
 					<div class="col-md-12">
 						Are you sure you want to delete <i>{{itemAttributeToDelete.name}}</i>?
@@ -380,6 +397,7 @@ import Pagination from '../../modules/Pagination'
 import PageResults from '../../modules/PageResults'
 import ItemAttributesFunctions from '../../../controllers/ItemAttributes'
 import UserAttributesFunctions from '../../../controllers/UserAttributes'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -389,6 +407,7 @@ export default {
 				{name: 'Item Attributes', link: false}
 			],
 			loadingItemAttributes: false,
+			listErrorMessage: '',
 			createErrorMessage: '',
 			updateErrorMessage: '',
 			deleteErrorMessage: '',
@@ -499,16 +518,12 @@ export default {
 						attributesVue.createErrorMessage = response.message || 'Something went wrong ...'
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						attributesVue.$router.push('/login/expired')
-						return
-					}
-					if (reason.responseJSON) {
-						attributesVue.createErrorMessage = reason.responseJSON.message || 'Something went wrong ...'
-						window.scrollTo(0, 0)
-					} else {
-						attributesVue.createErrorMessage = reason.message || 'Something went wrong ...'
-					}
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not create the attribute',
+						errorName: 'createErrorMessage',
+						vue: attributesVue
+					})
 				})
 			}).catch(reason => {
 				// Catch validation error
@@ -581,11 +596,13 @@ export default {
 					attributesVue.loadingItemAttributes = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					attributesVue.$router.push('/login/expired')
-					return
-				}
 				attributesVue.loadingItemAttributes = false
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch attributes',
+					errorName: 'listErrorMessage',
+					vue: attributesVue
+				})
 			})
 		},
 		/**
@@ -723,16 +740,13 @@ export default {
 						attributesVue.updateErrorMessage = response.message || 'Something went wrong ...'
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						attributesVue.$router.push('/login/expired')
-						return
-					}
-					if (reason.responseJSON) {
-						attributesVue.updateErrorMessage = reason.responseJSON.message || 'Something went wrong ...'
-						window.scrollTo(0, 0)
-					} else {
-						attributesVue.updateErrorMessage = reason.message || 'Something went wrong ...'
-					}
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not update the attribute',
+						errorName: 'updateErrorMessage',
+						vue: attributesVue,
+						containerRef: 'editModal'
+					})
 				})
 			}).catch(reason => {
 				// Catch validation error
@@ -808,17 +822,14 @@ export default {
 					attributesVue.showAssignItemsModal = true
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					attributesVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-					attributesVue.assignItemsErrorMessage = reason.responseJSON.message || 'Something went wrong ...'
-					attributesVue.showAssignItemsModal = true
-				} else {
-					attributesVue.assignItemsErrorMessage = 'Something went wrong ...'
-					attributesVue.showAssignItemsModal = true
-				}
+				attributesVue.showAssignItemsModal = true
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch attribute info',
+					errorName: 'assignItemsErrorMessage',
+					vue: attributesVue,
+					containerRef: 'menuTree'
+				})
 			})
 		},
 		/**
@@ -843,16 +854,13 @@ export default {
 					attributesVue.assignItemsErrorMessage = 'Something went wrong ...'
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					attributesVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-					attributesVue.assignItemsErrorMessage = reason.responseJSON.message || 'Something went wrong ...'
-				} else {
-					window.scrollTo(0, 0)
-					attributesVue.assignItemsErrorMessage = 'Something went wrong ...'
-				}
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not assign the items',
+					errorName: 'assignItemsErrorMessage',
+					vue: attributesVue,
+					containerRef: 'menuTree'
+				})
 			})
 		},
 		/**
@@ -926,15 +934,13 @@ export default {
 					attributesVue.assignUserAttributesErrorMessage = 'Something went wrong ...'
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					attributesVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-					attributesVue.assignUserAttributesErrorMessage = reason.responseJSON.message || 'Something went wrong ...'
-				} else {
-					attributesVue.assignUserAttributesErrorMessage = reason.message || 'Something went wrong ...'
-				}
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch attribute info',
+					errorName: 'assignUserAttributesErrorMessage',
+					vue: attributesVue,
+					containerRef: 'assignModal'
+				})
 			})
 		},
 		/**
@@ -970,17 +976,14 @@ export default {
 					attributesVue.showAssignUserAttributesModal = true
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					attributesVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-					attributesVue.assignUserAttributesErrorMessage = reason.responseJSON.message
-					attributesVue.showAssignUserAttributesModal = true
-				} else {
-					attributesVue.assignUserAttributesErrorMessage = reason.message || 'Something went wrong ...'
-					attributesVue.showAssignUserAttributesModal = true
-				}
+				attributesVue.showAssignUserAttributesModal = true
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch attribute info',
+					errorName: 'assignUserAttributesErrorMessage',
+					vue: attributesVue,
+					containerRef: 'assignModal'
+				})
 			})
 		},
 		/**
@@ -1036,16 +1039,13 @@ export default {
 					attributesVue.assignUserAttributesErrorMessage = 'Something went wrong ...'
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					attributesVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-					attributesVue.assignUserAttributesErrorMessage = reason.responseJSON.message || 'Something went wrong ...'
-				} else {
-					window.scrollTo(0, 0)
-					attributesVue.assignUserAttributesErrorMessage = reason.message || 'Something went wrong ...'
-				}
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch attribute info',
+					errorName: 'assignUserAttributesErrorMessage',
+					vue: attributesVue,
+					containerRef: 'assignModal'
+				})
 			})
 		},
 		/**
@@ -1119,16 +1119,13 @@ export default {
 					attributesVue.deleteErrorMessage = response.message || 'Something went wrong ...'
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					attributesVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-					attributesVue.deleteErrorMessage = reason.responseJSON.message || 'Something went wrong ...'
-					window.scrollTo(0, 0)
-				} else {
-					attributesVue.deleteErrorMessage = reason.message || 'Something went wrong ...'
-				}
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not delete the attribute',
+					errorName: 'deleteErrorMessage',
+					vue: attributesVue,
+					containerRef: 'deleteModal'
+				})
 			})
 		},
 		/**
