@@ -54,7 +54,18 @@
 			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button v-if="!imageMode" type="button" class="btn btn-primary" @click="addNewMenuCategory()">Add</button>
+			<button 
+				v-if="!imageMode" 
+				type="button" 
+				class="btn btn-primary" 
+				@click="addNewMenuCategory()"
+				:disabled="creating">
+				Add
+				<i 
+					v-show="creating"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
+			</button>
 		</div>
 	</modal>
 </template>
@@ -69,6 +80,7 @@ export default {
 	data () {
 		return {
 			showAddCategoryModal: false,
+			creating: false,
 			newSubCategory: {
 				menu_id: this.$route.params.menu_id,
 				name: '',
@@ -145,6 +157,7 @@ export default {
 
 			return addSubCategoryVue.validateCategoryData()
 			.then(response => {
+				addSubCategoryVue.creating = true
 				CategoriesFunctions.addNewMenuCategory(addSubCategoryVue.newSubCategory, addSubCategoryVue.$root.appId, addSubCategoryVue.$root.appSecret, addSubCategoryVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						addSubCategoryVue.newSubCategory.id = response.payload.new_category_id
@@ -159,6 +172,8 @@ export default {
 					}
 					addSubCategoryVue.errorMessage = reason
 					window.scrollTo(0, 0)
+				}).finally(() => {
+					addSubCategoryVue.creating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

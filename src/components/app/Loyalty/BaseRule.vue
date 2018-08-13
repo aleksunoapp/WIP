@@ -59,7 +59,16 @@
 							</div>
 						</div>
 						<div class="form-actions right">
-							<button type="submit" class="btn blue">Create</button>
+							<button 
+								type="submit" 
+								class="btn blue"
+								:disabled="creating">
+								Create
+								<i 
+									v-show="creating"
+									class="fa fa-spinner fa-pulse fa-fw">
+								</i>
+							</button>
 						</div>
 					</form>
 				</div>
@@ -219,8 +228,14 @@
 					v-else
 					type="button" 
 					class="btn btn-primary" 
-					@click="updateRule()">
+					@click="updateRule()"
+					:disabled="updating">
 					Save
+					<i 
+						v-show="updating"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+
 				</button>
 			</div>
 		</modal>
@@ -242,7 +257,17 @@
 				<p>Are you sure you want to delete {{ruleToDelete.name}}?</p>
 			</div>
 			<div slot="modal-footer" class="modal-footer">
-				<button type="button" class="btn btn-primary" @click="deleteRule()">Delete</button>
+				<button 
+					type="button" 
+					class="btn btn-primary" 
+					@click="deleteRule()"
+					:disabled="deleting">
+					Delete
+					<i 
+						v-show="deleting"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
 			</div>
 		</modal>
 		<!-- DELETE MODAL END -->
@@ -267,6 +292,7 @@ export default {
 				{name: 'Base Rule', link: false}
 			],
 			createNewCollapse: true,
+			creating: false,
 			createErrorMessage: '',
 			newRule: {
 				name: '',
@@ -280,6 +306,7 @@ export default {
 			rules: [],
 			animated: '',
 			showEditModal: false,
+			updating: false,
 			ruleToEdit: {
 				id: null,
 				name: '',
@@ -290,6 +317,7 @@ export default {
 			},
 			editErrorMessage: '',
 			showDeleteModal: false,
+			deleting: false,
 			ruleToDelete: {
 				name: ''
 			},
@@ -357,6 +385,7 @@ export default {
 
 			return this.validateNewRule()
 			.then((response) => {
+				rulesVue.creating = true
 				rulesVue.clearError('createErrorMessage')
 				return LoyaltyFunctions.createRule(globalFunctions.loyaltyAppId, globalFunctions.loyaltyAppSecret, rulesVue.newRule)
 				.then(response => {
@@ -374,6 +403,8 @@ export default {
 						errorName: 'createErrorMessage',
 						vue: rulesVue
 					})
+				}).finally(() => {
+					rulesVue.creating = false
 				})
 			}).catch(reason => {
 				rulesVue.createErrorMessage = reason
@@ -485,6 +516,7 @@ export default {
 
 			return this.validateEditedRule()
 			.then((response) => {
+				rulesVue.updating = true
 				rulesVue.clearError('editErrorMessage')
 				return LoyaltyFunctions.updateRule(globalFunctions.loyaltyAppId, globalFunctions.loyaltyAppSecret, rulesVue.ruleToEdit)
 				.then(response => {
@@ -503,6 +535,8 @@ export default {
 						errorName: 'editErrorMessage',
 						vue: rulesVue
 					})
+				}).finally(() => {
+					rulesVue.updating = false
 				})
 			}).catch(reason => {
 				rulesVue.editErrorMessage = reason
@@ -547,6 +581,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		deleteRule () {
+			this.deleting = true
 			const rulesVue = this
 			rulesVue.clearError('deleteErrorMessage')
 			return LoyaltyFunctions.deleteRule(globalFunctions.loyaltyAppId, globalFunctions.loyaltyAppSecret, rulesVue.ruleToDelete.id)
@@ -566,6 +601,8 @@ export default {
 					errorName: 'deleteErrorMessage',
 					vue: rulesVue
 				})
+			}).finally(() => {
+				rulesVue.deleting = false
 			})
 		},
 		/**

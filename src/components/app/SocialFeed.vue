@@ -72,16 +72,26 @@
 											v-if="feed.status === 1" 
 											type="button" 
 											class="btn btn-danger custom-button full-width" 
-											@click="updateFeedStatus(feed, 0)">
-												Off
-											</button>
+											@click="updateFeedStatus(feed, 0)"
+											:disabled="updating">
+											Off
+											<i 
+												v-show="updating"
+												class="fa fa-spinner fa-pulse fa-fw">
+											</i>
+										</button>
 	    			                	<button 
 											v-if="feed.status === 0" 
 											type="button" 
 											class="btn btn-success custom-button full-width" 
-											@click="updateFeedStatus(feed, 1)">
-												On
-											</button>
+											@click="updateFeedStatus(feed, 1)"
+											:disabled="updating">
+											On
+											<i 
+												v-show="updating"
+												class="fa fa-spinner fa-pulse fa-fw">
+											</i>
+										</button>
 			    			        </div>
 			    			    </div>
 			    			</div>
@@ -126,7 +136,8 @@ export default {
 				order: 'ASC'
 			},
 			totalResults: 0,
-			loadingFilteredData: false
+			loadingFilteredData: false,
+			updating: false
 		}
 	},
 	mounted () {
@@ -253,6 +264,7 @@ export default {
 		updateFeedStatus (feed, val) {
 			if (!this.$root.permissions['social_feed update']) return
 
+			this.updating = true
 			var socialFeedVue = this
 			SocialFeedFunctions.updateFeedStatus(feed.id, val, socialFeedVue.$root.appId, socialFeedVue.$root.appSecret, socialFeedVue.$root.userToken).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
@@ -269,6 +281,8 @@ export default {
 				if (reason.responseJSON) {
 				}
 				throw reason
+			}).finally(() => {
+				socialFeedVue.updating = false
 			})
 		},
 		/**

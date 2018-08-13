@@ -128,8 +128,13 @@
 						v-else
 						type="button" 
 						class="btn btn-primary pull-right" 
-						@click="updateMenu()">
+						@click="updateMenu()"
+						:disabled="updating">
 						Save
+						<i 
+							v-show="updating"
+							class="fa fa-spinner fa-pulse fa-fw">
+						</i>
 					</button>
 				</div>
 			</div>
@@ -153,6 +158,7 @@ export default {
 			menuToBeEdited: {
 				image_url: ''
 			},
+			updating: false,
 			errorMessage: '',
 			selectImageMode: false,
 			customWidth: 90,
@@ -286,6 +292,7 @@ export default {
 
 			return editMenuVue.validateCategoryData()
 			.then(response => {
+				editMenuVue.updating = true
 				MenusFunctions.updateMenu(editMenuVue.menuToBeEdited, editMenuVue.$root.appId, editMenuVue.$root.appSecret, editMenuVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						this.closeModalAndUpdate()
@@ -299,6 +306,8 @@ export default {
 						errorName: 'errorMessage',
 						vue: editMenuVue
 					})
+				}).finally(() => {
+					editMenuVue.updating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

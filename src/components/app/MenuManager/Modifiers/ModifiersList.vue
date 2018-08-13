@@ -60,7 +60,17 @@
     	    </div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button type="button" class="btn btn-primary" :disabled="!storeModifiers.length" @click="applyModifiersToItem()">Apply Modifiers</button>
+			<button 
+				type="button" 
+				class="btn btn-primary" 
+				:disabled="!storeModifiers.length || applying" 
+				@click="applyModifiersToItem()">
+				Apply Modifiers
+				<i 
+					v-show="applying"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
+			</button>
 		</div>
 	</modal>
 </template>
@@ -73,6 +83,7 @@ export default {
 	data () {
 		return {
 			showModifierModal: false,
+			applying: false,
 			errorMessage: '',
 			storeModifiers: [],
 			allSelected: false
@@ -151,6 +162,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		applyModifiersToItem () {
+			this.applying = true
 			var modifiersListVue = this
 			var modifiersToBeApplied = []
 			for (var k = 0; k < modifiersListVue.storeModifiers.length; k++) {
@@ -170,6 +182,8 @@ export default {
 				if (reason.responseJSON) {
 				}
 				throw reason
+			}).finally(() => {
+				modifiersListVue.applying = false
 			})
 		},
 		/**

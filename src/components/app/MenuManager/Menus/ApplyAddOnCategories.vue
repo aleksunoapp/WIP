@@ -55,7 +55,17 @@
         	<no-results v-if="!categories.length && !displaySpinner" :type="'categories'" :custom="true" :text="'There are no add-on categories for this location.'"></no-results>
 		</div>
 		<div slot="modal-footer" class="modal-footer clear">
-			<button type="button" @click="updateAddOnCategories" class="btn btn-primary">Save</button>
+			<button 
+				type="button" 
+				@click="updateAddOnCategories" 
+				class="btn btn-primary"
+				:disabled="applying">
+				Save
+				<i 
+					v-show="applying"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
+			</button>
 		</div>
 	</modal>
 </template>
@@ -73,6 +83,7 @@ export default {
 			menuToBeEdited: {
 				image_url: ''
 			},
+			applying: false,
 			errorMessage: '',
 			selectImageMode: false,
 			customWidth: 90,
@@ -180,6 +191,7 @@ export default {
 			if (this.passedMenu.id === 'new') {
 				this.closeModalAndUpdate()
 			} else {
+				this.applying = true
 				let payload = {
 					category_to_add: [],
 					category_to_remove: []
@@ -202,6 +214,8 @@ export default {
 					}
 					addOnCategoriesVue.errorMessage = reason
 					window.scrollTo(0, 0)
+				}).finally(() => {
+					addOnCategoriesVue.applying = false
 				})
 			}
 		},

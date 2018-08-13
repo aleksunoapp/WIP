@@ -65,7 +65,16 @@
 							</div>
 						</div>
 						<div class="col-md-12">
-							<button type="submit" class="btn blue pull-right">Save</button>
+							<button 
+								type="submit" 
+								class="btn blue pull-right"
+								:disabled="creating">
+								Save
+								<i 
+									v-show="creating"
+									class="fa fa-spinner fa-pulse fa-fw">
+								</i>
+							</button>
 						</div>
 					</div>
 				</form>
@@ -151,6 +160,7 @@ export default {
 				{name: 'Users FAQ', link: false}
 			],
 			createFAQCollapse: true,
+			creating: false,
 			createFAQError: '',
 			newFAQ: {
 				question: '',
@@ -260,6 +270,7 @@ export default {
 			this.clearCreateFAQError()
 			return usersFAQVue.validateFAQData()
 			.then(response => {
+				usersFAQVue.creating = true
 				FAQFunctions.createUserFAQ(usersFAQVue.newFAQ, usersFAQVue.$root.appId, usersFAQVue.$root.appSecret, usersFAQVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						usersFAQVue.newFAQ.id = response.payload.new_faq_id
@@ -278,6 +289,8 @@ export default {
 					}
 					disabledButton.cancel()
 					throw reason
+				}).finally(() => {
+					usersFAQVue.creating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

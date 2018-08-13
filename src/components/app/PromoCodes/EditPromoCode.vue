@@ -200,8 +200,25 @@
 		</div>
 		<div slot="modal-footer" class="modal-footer">
 			<button type="button" class="btn btn-primary" @click="applySelectedItems()" v-if="selectItemsMode && $root.permissions['promocodes update']">Save</button>
-			<button type="button" class="btn btn-primary" @click="updatePromoCode()" v-if="!selectLocationsMode && !selectItemsMode && $root.permissions['promocodes update']">Update</button>
-			<button type="button" class="btn btn-primary" @click="updatePromoCode()" v-if="!selectLocationsMode && !selectItemsMode && !$root.permissions['promocodes update']">Close</button>
+			<button 
+				type="button" 
+				class="btn btn-primary" 
+				@click="updatePromoCode()" 
+				v-if="!selectLocationsMode && !selectItemsMode && $root.permissions['promocodes update']"
+				:disabled="updating">
+				Update
+				<i 
+					v-show="updating"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
+			</button>
+			<button 
+				type="button" 
+				class="btn btn-primary" 
+				@click="closeModal()" 
+				v-if="!selectLocationsMode && !selectItemsMode && !$root.permissions['promocodes update']">
+				Close
+			</button>
 		</div>
 	</modal>
 </template>
@@ -235,6 +252,7 @@ export default {
 			isCategorySelected: false,
 			activeMenu: {},
 			activeCategory: {},
+			updating: false,
 			promoCode: {
 				'apply_on': '',
 				'codes': '',
@@ -712,6 +730,7 @@ export default {
 
 			return editPromoCodeVue.validatePromoCodeData()
 			.then(response => {
+				editPromoCodeVue.updating = true
 				let promoCode = editPromoCodeVue.promoCode
 				promoCode.start_from = editPromoCodeVue.formatDateTimeForApi(promoCode.start_from)
 				promoCode.end_on = editPromoCodeVue.formatDateTimeForApi(promoCode.end_on)
@@ -734,6 +753,8 @@ export default {
 					}
 					editPromoCodeVue.errorMessage = reason
 					window.scrollTo(0, 0)
+				}).finally(() => {
+					editPromoCodeVue.updating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

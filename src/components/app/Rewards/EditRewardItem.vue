@@ -86,6 +86,10 @@
 				class="btn btn-primary" 
 				@click="updateRewardItemDetails()">
 				Save
+				<i 
+					v-show="updating"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
 			</button>
 		</div>
 	</modal>
@@ -101,6 +105,7 @@ export default {
 	data () {
 		return {
 			showRewardItemModal: false,
+			updating: false,
 			rewardItemToBeEdited: {
 				id: null,
 				sku: [],
@@ -215,6 +220,7 @@ export default {
 
 			return editRewardItemVue.validateRewardItemData()
 			.then(response => {
+				editRewardItemVue.updating = true
 				RewardsFunctions.updateRewardItemDetails(editRewardItemVue.rewardItemToBeEdited, editRewardItemVue.$root.appId, editRewardItemVue.$root.appSecret, editRewardItemVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						this.closeModalAndUpdate()
@@ -228,6 +234,8 @@ export default {
 						errorName: 'errorMessage',
 						vue: editRewardItemVue
 					})
+				}).finally(() => {
+					editRewardItemVue.updating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

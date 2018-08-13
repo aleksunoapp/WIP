@@ -93,8 +93,13 @@
 				v-else
 				type="button" 
 				class="btn btn-primary" 
-				@click="updateGroup()">
+				@click="updateGroup()"
+				:disabled="updating">
 				Save
+				<i 
+					v-show="updating"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
 			</button>
 		</div>
 	</modal>
@@ -110,6 +115,7 @@ export default {
 		return {
 			showEditGroupModal: false,
 			errorMessage: '',
+			updating: false,
 			city: '',
 			province: '',
 			groupToBeEdited: {
@@ -289,6 +295,7 @@ export default {
 
 			return editGroupVue.validateGroupData()
 			.then(response => {
+				editGroupVue.updating = true
 				UserGroupsFunctions.updateGroup(editGroupVue.groupToBeEdited, editGroupVue.$root.appId, editGroupVue.$root.appSecret, editGroupVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						this.closeModalAndUpdate()
@@ -302,6 +309,8 @@ export default {
 					}
 					editGroupVue.errorMessage = reason
 					window.scrollTo(0, 0)
+				}).finally(() => {
+					editGroupVue.updating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

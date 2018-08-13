@@ -219,7 +219,17 @@
 		</div>
 
 		<div slot="modal-footer" class="modal-footer">
-			<button type="button" class="btn btn-primary" :disabled="!item.modifiers.length" @click="savePresetSettings()">Save</button>
+			<button 
+				type="button" 
+				class="btn btn-primary" 
+				:disabled="!item.modifiers.length || saving" 
+				@click="savePresetSettings()">
+				Save
+				<i 
+					v-show="saving"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
+			</button>
 		</div>
 
 	</modal>
@@ -237,6 +247,7 @@ export default {
 		return {
 			showModal: false,
 			errorMessage: '',
+			saving: false,
 			preset_item_modifier_item: [
 				{
 					preset_item_modifier_item_option_item: []
@@ -590,6 +601,7 @@ export default {
 		 * @returns {object} A promise that will resolve or return an error
 		 */
 		savePresetSettings () {
+			this.saving = true
 			var presetsVue = this
 
 			let payload = {modifier_items: []}
@@ -624,6 +636,8 @@ export default {
 					errorName: 'errorMessage',
 					vue: presetsVue
 				})
+			}).finally(() => {
+				presetsVue.saving = false
 			})
 		},
 		/**

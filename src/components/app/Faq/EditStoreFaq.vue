@@ -25,7 +25,17 @@
 			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button type="button" class="btn btn-primary" @click="saveEditedStoreFAQ()">Save</button>
+			<button 
+				type="button" 
+				class="btn btn-primary" 
+				@click="saveEditedStoreFAQ()"
+				:disabled="updating">
+				Save
+				<i 
+					v-show="updating"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
+			</button>
 		</div>
 	</modal>
 </template>
@@ -38,6 +48,7 @@ export default {
 	data () {
 		return {
 			showEditFAQModal: false,
+			updating: false,
 			faqToBeEdited: {},
 			errorMessage: ''
 		}
@@ -112,6 +123,7 @@ export default {
 
 			return editFAQVue.validateFAQData()
 			.then(response => {
+				editFAQVue.updating = true
 				editFAQVue.faqToBeEdited.user_id = editFAQVue.$root.createdBy
 				FAQFunctions.saveEditedStoreFAQ(editFAQVue.faqToBeEdited, editFAQVue.$root.appId, editFAQVue.$root.appSecret, editFAQVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
@@ -126,6 +138,8 @@ export default {
 					}
 					editFAQVue.errorMessage = reason
 					window.scrollTo(0, 0)
+				}).finally(() => {
+					editFAQVue.updating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

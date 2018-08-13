@@ -35,7 +35,16 @@
 			<div class="row">
 				<div class="col-xs-12">
 					<div class="pull-right">
-						<button class="btn blue" @click="duplicateMenu()">Duplicate</button>
+						<button 
+							class="btn blue" 
+							@click="duplicateMenu()"
+							:disabled="duplicating">
+							Duplicate
+							<i 
+								v-show="duplicating"
+								class="fa fa-spinner fa-pulse fa-fw">
+							</i>
+						</button>
 					</div>
 				</div>
 			</div>
@@ -54,6 +63,7 @@ export default {
 	data () {
 		return {
 			showDuplicateMenuModal: false,
+			duplicating: false,
 			errorMessage: '',
 			idPrefix: 'cpm',
 			replaceExisting: 0
@@ -85,6 +95,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		duplicateMenu () {
+			this.duplicating = true
 			var editMenuVue = this
 			editMenuVue.clearError()
 			let payload = {
@@ -102,6 +113,8 @@ export default {
 					errorName: 'errorMessage',
 					vue: editMenuVue
 				})
+			}).finally(() => {
+				editMenuVue.duplicating = false
 			})
 		},
 		/**

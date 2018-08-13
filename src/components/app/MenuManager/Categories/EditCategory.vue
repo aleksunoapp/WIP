@@ -87,8 +87,13 @@
 				v-if="!selectImageMode && !selectLocationMode && $root.permissions['menu_manager menus categories update']"
 				type="button" 
 				class="btn btn-primary" 
-				@click="updateMenuCategory()">
+				@click="updateMenuCategory()"
+				:disabled="updating">
 				Save
+				<i 
+					v-show="updating"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
 			</button>
 		</div>
 	</modal>
@@ -105,6 +110,7 @@ export default {
 	data () {
 		return {
 			showEditCategoryModal: false,
+			updating: false,
 			categoryToBeEdited: {
 				image_url: ''
 			},
@@ -218,6 +224,7 @@ export default {
 
 			return editCategoryVue.validateCategoryData()
 			.then(response => {
+				editCategoryVue.updating = true
 				CategoriesFunctions.updateMenuCategory(editCategoryVue.categoryToBeEdited, editCategoryVue.$root.appId, editCategoryVue.$root.appSecret, editCategoryVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						this.closeModalAndUpdate()
@@ -231,6 +238,8 @@ export default {
 					}
 					editCategoryVue.errorMessage = reason
 					window.scrollTo(0, 0)
+				}).finally(() => {
+					editCategoryVue.updating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

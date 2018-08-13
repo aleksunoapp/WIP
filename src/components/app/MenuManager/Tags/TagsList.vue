@@ -22,7 +22,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="tag in containTags">
+						<tr v-for="tag in containTags" :key="tag.id">
 							<td>
 								<div class="md-checkbox has-success">
 									<input type="checkbox" :id="'tag_checkbox_' + tag.id" class="md-check" v-model="tag.selected">
@@ -51,7 +51,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="tag in mayContainTags">
+						<tr v-for="tag in mayContainTags" :key="tag.id">
 							<td>
 								<div class="md-checkbox has-success">
 									<input type="checkbox" :id="'tag_checkbox_' + tag.id" class="md-check" v-model="tag.selected">
@@ -72,7 +72,17 @@
 			<div style="clear: both;"></div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button type="button" class="btn btn-primary" @click="applyTagsToItem()">Apply Tags</button>
+			<button 
+				type="button" 
+				class="btn btn-primary" 
+				@click="applyTagsToItem()"
+				:disabled="applying">
+				Apply Tags
+				<i 
+					v-show="applying"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
+			</button>
 		</div>
 	</modal>
 </template>
@@ -85,6 +95,7 @@ export default {
 	data () {
 		return {
 			showTagsModal: false,
+			applying: false,
 			errorMessage: '',
 			containTags: [],
 			mayContainTags: []
@@ -177,6 +188,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		applyTagsToItem () {
+			this.applying = true
 			var tagsListVue = this
 			var tagsToBeApplied = []
 			for (let k = 0; k < tagsListVue.containTags.length; k++) {
@@ -202,6 +214,8 @@ export default {
 					if (reason.responseJSON) {
 					}
 					throw reason
+				}).finally(() => {
+					tagsListVue.applying = false
 				})
 			} else if (tagsListVue.itemType === 'modifier-item') {
 				TagsFunctions.applyTagsToModifierItem(tagsListVue.selectedItemId, tagsToBeApplied, tagsListVue.$root.appId, tagsListVue.$root.appSecret, tagsListVue.$root.userToken).then(response => {
@@ -216,6 +230,8 @@ export default {
 					if (reason.responseJSON) {
 					}
 					throw reason
+				}).finally(() => {
+					tagsListVue.applying = false
 				})
 			}
 		},

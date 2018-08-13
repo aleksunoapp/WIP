@@ -568,16 +568,25 @@
 				:class="{
 					'btn-primary' : view === 'existing',
 					'blue btn-outline' : view === 'new'
-				}">
+				}"
+				:disabled="copying">
 				Use menu hours
+				<i 
+					v-show="copying"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
 			</button>
 			<button 
-				:disabled="!$root.permissions['menu_manager menus categories hours create']"
+				:disabled="!$root.permissions['menu_manager menus categories hours create'] || creating"
 				v-show="view === 'new'" 
 				@click="createCategoryHours()" 
 				type="button" 
 				class="btn btn-primary">
 				Save
+				<i 
+					v-show="creating"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
 			</button>
 		</div>
 	</modal>
@@ -596,6 +605,7 @@ export default {
 			errorMessage: '',
 			saveMessage: '',
 			view: 'new',
+			creating: false,
 			newHours: {
 				category_id: null,
 				start_from: '',
@@ -645,6 +655,7 @@ export default {
 					}
 				]
 			},
+			copying: false,
 			existingHours: [],
 			dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 		}
@@ -694,6 +705,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		useMenuHours () {
+			this.copying = true
 			const _this = this
 			CategoriesFunctions.copyMenuHoursToCategoryHours(this.category.id)
 			.then(response => {
@@ -709,6 +721,8 @@ export default {
 					vue: _this,
 					containerRef: 'modal'
 				})
+			}).finally(() => {
+				_this.copying = false
 			})
 		},
 		/**
@@ -786,6 +800,7 @@ export default {
 			let _this = this
 			this.validateNewHours()
 			.then(response => {
+				_this.creating = true
 				_this.clearError('errorMessage')
 				CategoriesFunctions.createCategoryHours(_this.newHours, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
 				.then(response => {
@@ -800,6 +815,8 @@ export default {
 						errorName: 'errorMessage',
 						vue: _this
 					})
+				}).finally(() => {
+					_this.creating = false
 				})
 			})
 			.catch(reason => {

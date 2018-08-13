@@ -174,15 +174,25 @@
 				type="button" 
 				class="btn btn-primary" 
 				v-if="editingNutritionInfo && !creatingNutritionInfo && !selectLocationMode" 
-				@click="updateItemNutritionInfo()">
+				@click="updateItemNutritionInfo()"
+				:disabled="updating">
 				Save
+				<i 
+					v-show="updating"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
 			</button>
 			<button 
 				type="button"
 				class="btn btn-primary"
 				v-if="!editingNutritionInfo && creatingNutritionInfo && !selectLocationMode" 
-				@click="createItemNutritionInfo()">
+				@click="createItemNutritionInfo()"
+				:disabled="creating">
 				Create
+				<i 
+					v-show="creating"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
 			</button>
 			<button 
 				type="button" 
@@ -207,7 +217,9 @@ export default {
 			showNutritionModal: false,
 			itemNutritionInfo: {},
 			editingNutritionInfo: false,
+			updating: false,
 			creatingNutritionInfo: false,
+			creating: false,
 			createNutritionError: '',
 			editNutritionError: '',
 			errorMessage: '',
@@ -380,6 +392,7 @@ export default {
 
 			return nutritionInfoVue.validateNutritionData(updatedNutritionInfo)
 			.then(response => {
+				nutritionInfoVue.updating = true
 				nutritionInfoVue.editingNutritionInfo = false
 				ItemsFunctions.updateItemNutritionInfo(updatedNutritionInfo, nutritionInfoVue.$root.appId, nutritionInfoVue.$root.appSecret, nutritionInfoVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
@@ -399,6 +412,8 @@ export default {
 						nutritionInfoVue.editNutritionError = reason.message || 'Something went wrong ...'
 						window.scrollTo(0, 0)
 					}
+				}).finally(() => {
+					nutritionInfoVue.updating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message
@@ -417,6 +432,7 @@ export default {
 
 			return nutritionInfoVue.validateNutritionData(nutritionInfoVue.newNutritionInfo)
 			.then(response => {
+				nutritionInfoVue.creating = true
 				nutritionInfoVue.createNutritionError = false
 				ItemsFunctions.createItemNutritionInfo(nutritionInfoVue.newNutritionInfo, nutritionInfoVue.$root.appId, nutritionInfoVue.$root.appSecret, nutritionInfoVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
@@ -434,6 +450,8 @@ export default {
 						nutritionInfoVue.createNutritionError = reason.message || 'Something went wrong ...'
 						window.scrollTo(0, 0)
 					}
+				}).finally(() => {
+					nutritionInfoVue.creating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

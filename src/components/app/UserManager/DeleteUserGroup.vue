@@ -30,7 +30,18 @@
 			</transition>
 		</div>
 		<div slot="modal-footer" class="modal-footer clear">
-			<button v-show="!deleted" type="button" class="btn btn-primary" @click="deleteGroup()">Delete</button>
+			<button 
+				v-show="!deleted" 
+				type="button" 
+				class="btn btn-primary" 
+				@click="deleteGroup()"
+				:disabled="deleting">
+				Delete
+				<i 
+					v-show="deleting"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
+			</button>
 			<button v-show="deleted" type="button" class="btn btn-default" @click="deleteGroupAndCloseModal()">Close</button>
 		</div>
 	</modal>
@@ -44,6 +55,7 @@ export default {
 	data () {
 		return {
 			showDeletePromotionModal: false,
+			deleting: false,
 			errorMessage: '',
 			customWidth: 90,
 			deleted: false
@@ -72,6 +84,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		deleteGroup () {
+			this.deleting = true
 			var deleteGroupVue = this
 			deleteGroupVue.clearError()
 
@@ -91,6 +104,8 @@ export default {
 				}
 				deleteGroupVue.errorMessage = reason
 				window.scrollTo(0, 0)
+			}).finally(() => {
+				deleteGroupVue.deleting = false
 			})
 		},
 		/**

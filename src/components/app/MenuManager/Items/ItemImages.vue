@@ -29,7 +29,11 @@
 
 					<!-- LIST START -->
 					<div v-if="mode === 'list'">
-						<div v-for="image in images" class="col-md-4 margin-bottom-15" :id="'image-' + image.id">
+						<div 
+							v-for="image in images" 
+							class="col-md-4 margin-bottom-15" 
+							:id="'image-' + image.id"
+							:key="image.id">
 							<div class="tile image">
 								<div class="tile-body custom-tile-body">
 									<img class="custom-tile-body-img clickable"  @click="previewMode(image)" :src="image.url">
@@ -203,7 +207,18 @@
 			<div class="row">
 				<div class="col-md-12">
 					<button v-show="mode === 'list'" @click="closeModal()" type="button" class="btn">Close</button>
-					<button v-show="mode === 'delete'" @click="deleteImage()" type="button" class="btn blue">Delete</button>
+					<button 
+						v-show="mode === 'delete'" 
+						@click="deleteImage()" 
+						type="button" 
+						class="btn blue"
+						:disabled="deleting">
+						Delete
+						<i 
+							v-show="deleting"
+							class="fa fa-spinner fa-pulse fa-fw">
+						</i>
+					</button>
 				</div>
 			</div>
 		</div>
@@ -237,6 +252,7 @@ export default {
 				update_all_locations: 0
 			},
 			imageToEdit: {},
+			deleting: false,
 			imageToDelete: {}
 		}
 	},
@@ -514,6 +530,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		deleteImage () {
+			this.deleting = true
 			var imagesVue = this
 
 			return ItemsFunctions.deleteItemImage(imagesVue.$root.appId, imagesVue.$root.appSecret, imagesVue.$root.userToken, imagesVue.item.id, imagesVue.imageToDelete.id)
@@ -532,6 +549,8 @@ export default {
 					errorName: 'errorMessage',
 					vue: imagesVue
 				})
+			}).finally(() => {
+				imagesVue.deleting = false
 			})
 		},
 		/**

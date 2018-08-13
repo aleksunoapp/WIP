@@ -53,7 +53,16 @@
 		        		</div>
 		        	</div>
       				<div class="form-actions right margin-top-20">
-						<button type="submit" class="btn blue">Create</button>
+						<button 
+							type="submit" 
+							class="btn blue"
+							:disabled="creating">
+							Create
+							<i 
+								v-show="creating"
+								class="fa fa-spinner fa-pulse fa-fw">
+							</i>
+						</button>
 					</div>
       			</form>
   			</div>
@@ -157,7 +166,17 @@
 				</div>
 			</div>
 			<div slot="modal-footer" class="modal-footer">
-				<button type="submit" class="btn blue" @click.stop="deleteTier()">Delete</button>
+				<button 
+					type="submit" 
+					class="btn blue" 
+					@click.stop="deleteTier()"
+					:disabled="deleting">
+					Delete
+					<i 
+						v-show="deleting"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
 			</div>
 		</modal>
 		<!-- DELETE MODAL END -->
@@ -185,6 +204,7 @@ export default {
 			displayEditTierModal: false,
 			passedRewardTier: {},
 			createTierCollapse: true,
+			creating: false,
 			newRewardsTier: {
 				name: '',
 				points: null,
@@ -193,6 +213,7 @@ export default {
 				created_by: this.$root.createdBy
 			},
 			displayDeleteModal: false,
+			deleting: false,
 			tierToBeDeleted: {
 				id: null,
 				name: ''
@@ -295,6 +316,7 @@ export default {
 
 			return rewardsVue.validateTierData()
 			.then(response => {
+				rewardsVue.creating = true
 				RewardsFunctions.createRewardsTier(rewardsVue.newRewardsTier, rewardsVue.$root.appId, rewardsVue.$root.appSecret, rewardsVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						rewardsVue.newRewardsTier.id = response.payload.id
@@ -309,6 +331,8 @@ export default {
 					}
 					rewardsVue.errorMessage = reason
 					window.scrollTo(0, 0)
+				}).finally(() => {
+					rewardsVue.creating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message
@@ -406,6 +430,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		deleteTier () {
+			this.deleting = true
 			var rewardsVue = this
 			RewardsFunctions.deleteRewardTier(rewardsVue.tierToBeDeleted.id, rewardsVue.$root.appId, rewardsVue.$root.appSecret, rewardsVue.$root.userToken).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
@@ -428,6 +453,8 @@ export default {
 					rewardsVue.deleteErrorMessage = reason.message || 'Something went wrong ...'
 					window.scrollTo(0, 0)
 				}
+			}).finally(() => {
+				rewardsVue.deleting = false
 			})
 		},
 		/**

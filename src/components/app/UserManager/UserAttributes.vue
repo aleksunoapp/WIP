@@ -44,7 +44,16 @@
 					</div>
 					<div class="row">
 						<div class="col-md-6">
-							<button type="submit" class="btn blue pull-right">Create</button>
+							<button 
+								type="submit" 
+								class="btn blue pull-right"
+								:disabled="creating">
+								Create
+								<i 
+									v-show="creating"
+									class="fa fa-spinner fa-pulse fa-fw">
+								</i>
+							</button>
 						</div>
 					</div>
 				</form>
@@ -246,8 +255,13 @@
 							v-else
 							@click="updateUserAttribute()" 
 							type="button" 
-							class="btn blue pull-right">
+							class="btn blue pull-right"
+							:disabled="updating">
 							Save
+							<i 
+								v-show="updating"
+								class="fa fa-spinner fa-pulse fa-fw">
+							</i>
 						</button>
 					</div>
 				</div>
@@ -312,7 +326,17 @@
 			<div slot="modal-footer" class="modal-footer clear">
 				<div class="row">
 					<div class="col-md-12">
-						<button @click="assignItemAttributesToUserAttributes()" type="button" class="btn blue pull-right">Save</button>
+						<button 
+							@click="assignItemAttributesToUserAttributes()" 
+							type="button" 
+							class="btn blue pull-right"
+							:disabled="assigning">
+							Save
+							<i 
+								v-show="assigning"
+								class="fa fa-spinner fa-pulse fa-fw">
+							</i>
+						</button>
 					</div>
 				</div>
 			</div>
@@ -337,7 +361,17 @@
 			<div slot="modal-footer" class="modal-footer clear">
 				<div class="row">
 					<div class="col-md-12">
-						<button @click="deleteUserAttribute()" type="button" class="btn blue pull-right">Delete</button>
+						<button 
+							@click="deleteUserAttribute()" 
+							type="button" 
+							class="btn blue pull-right"
+							:disabled="deleting">
+							Delete
+							<i 
+								v-show="deleting"
+								class="fa fa-spinner fa-pulse fa-fw">
+							</i>
+						</button>
 					</div>
 				</div>
 			</div>
@@ -363,6 +397,10 @@ export default {
 				{name: 'User Attributes', link: false}
 			],
 			loadingUserAttributes: false,
+			creating: false,
+			updating: false,
+			assigning: false,
+			deleting: false,
 			createErrorMessage: '',
 			updateErrorMessage: '',
 			deleteErrorMessage: '',
@@ -458,6 +496,7 @@ export default {
 
 			return this.validateNewUserAttribute()
 			.then((response) => {
+				attributesVue.creating = true
 				attributesVue.clearError('createErrorMessage')
 				return UserAttributesFunctions.createUserAttribute(attributesVue.$root.appId, attributesVue.$root.appSecret, attributesVue.$root.userToken, attributesVue.newUserAttribute)
 				.then(response => {
@@ -477,6 +516,8 @@ export default {
 					} else {
 						attributesVue.createErrorMessage = reason.message || 'Something went wrong ...'
 					}
+				}).finally(() => {
+					attributesVue.creating = false
 				})
 			}).catch(reason => {
 				// Catch validation error
@@ -677,6 +718,7 @@ export default {
 
 			return this.validateUserAttributeToEdit()
 			.then((response) => {
+				attributesVue.updating = true
 				attributesVue.clearError('updateErrorMessage')
 				return UserAttributesFunctions.updateUserAttribute(attributesVue.$root.appId, attributesVue.$root.appSecret, attributesVue.$root.userToken, attributesVue.userAttributeToEdit)
 				.then(response => {
@@ -701,6 +743,8 @@ export default {
 					} else {
 						attributesVue.updateErrorMessage = reason.message || 'Something went wrong ...'
 					}
+				}).finally(() => {
+					attributesVue.updating = false
 				})
 			}).catch(reason => {
 				// Catch validation error
@@ -867,6 +911,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		assignItemAttributesToUserAttributes () {
+			this.assigning = true
 			let payload = {
 				attribute: []
 			}
@@ -899,6 +944,8 @@ export default {
 					window.scrollTo(0, 0)
 					attributesVue.assignItemAttributesErrorMessage = reason.message || 'Something went wrong ...'
 				}
+			}).finally(() => {
+				attributesVue.assigning = false
 			})
 		},
 		/**
@@ -958,6 +1005,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		deleteUserAttribute () {
+			this.deleting = true
 			const attributesVue = this
 
 			return UserAttributesFunctions.deleteUserAttribute(attributesVue.$root.appId, attributesVue.$root.appSecret, attributesVue.$root.userToken, attributesVue.userAttributeToDelete)
@@ -982,6 +1030,8 @@ export default {
 				} else {
 					attributesVue.deleteErrorMessage = reason.message || 'Something went wrong ...'
 				}
+			}).finally(() => {
+				attributesVue.deleting = false
 			})
 		},
 		/**

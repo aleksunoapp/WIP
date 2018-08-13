@@ -105,7 +105,16 @@
 						</div>
 					</div>
 					<div class="form-actions right">
-						<button type="submit" class="btn blue">Create</button>
+						<button 
+							type="submit" 
+							class="btn blue"
+							:disabled="creating">
+							Create
+							<i 
+								v-show="creating"
+								class="fa fa-spinner fa-pulse fa-fw">
+							</i>
+						</button>
 					</div>
 				</form>
 			</div>
@@ -369,8 +378,13 @@
 					v-else
 					type="button" 
 					class="btn btn-primary" 
-					@click="updateRule()">
+					@click="updateRule()"
+					:disabled="updating">
 					Save
+					<i 
+						v-show="updating"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
 				</button>
 			</div>
 		</modal>
@@ -392,7 +406,17 @@
 				<p>Are you sure you want to delete {{ruleToDelete.name}}?</p>
 			</div>
 			<div slot="modal-footer" class="modal-footer">
-				<button type="button" class="btn btn-primary" @click="deleteRule()">Delete</button>
+				<button 
+					type="button" 
+					class="btn btn-primary" 
+					@click="deleteRule()"
+					:disabled="deleting">
+					Delete
+					<i 
+						v-show="deleting"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
 			</div>
 		</modal>
 		<!-- DELETE MODAL END -->
@@ -427,6 +451,7 @@ export default {
 				{name: 'Promotion Rules', link: false}
 			],
 			createNewCollapse: true,
+			creating: false,
 			createErrorMessage: '',
 			newRule: {
 				name: '',		// name
@@ -451,6 +476,7 @@ export default {
 			rules: [],
 			animated: '',
 			showEditModal: false,
+			updating: false,
 			ruleToEdit: {
 				id: null,
 				name: '',
@@ -466,6 +492,7 @@ export default {
 			},
 			editErrorMessage: '',
 			showDeleteModal: false,
+			deleting: false,
 			ruleToDelete: {
 				name: ''
 			},
@@ -624,6 +651,7 @@ export default {
 
 			return this.validateNewRule()
 			.then((response) => {
+				rulesVue.creating = true
 				let payload = {...this.newRule}
 				if (payload.parameter !== 'sku' && payload.parameter !== 'sku-combination') {
 					payload.sku = 'all'
@@ -652,6 +680,8 @@ export default {
 						errorName: 'createErrorMessage',
 						vue: rulesVue
 					})
+				}).finally(() => {
+					rulesVue.creating = false
 				})
 			}).catch(reason => {
 				rulesVue.createErrorMessage = reason
@@ -794,6 +824,7 @@ export default {
 
 			return this.validateEditedRule()
 			.then((response) => {
+				rulesVue.updating = true
 				let payload = {...this.ruleToEdit}
 				if (payload.parameter !== 'sku' && payload.parameter !== 'sku-combination') {
 					payload.sku = 'all'
@@ -823,6 +854,8 @@ export default {
 						errorName: 'editErrorMessage',
 						vue: rulesVue
 					})
+				}).finally(() => {
+					rulesVue.updating = false
 				})
 			}).catch(reason => {
 				rulesVue.editErrorMessage = reason
@@ -871,6 +904,7 @@ export default {
 			rulesVue.clearError('deleteErrorMessage')
 			return LoyaltyFunctions.deletePromotionRule(globalFunctions.loyaltyAppId, globalFunctions.loyaltyAppSecret, rulesVue.ruleToDelete.id)
 			.then(response => {
+				rulesVue.deleting = true
 				if (response.code === 200 && response.status === 'ok') {
 					rulesVue.getRules()
 					rulesVue.closeDeleteModal()
@@ -886,6 +920,8 @@ export default {
 					errorName: 'deleteErrorMessage',
 					vue: rulesVue
 				})
+			}).finally(() => {
+				rulesVue.deleting = false
 			})
 		},
 		/**

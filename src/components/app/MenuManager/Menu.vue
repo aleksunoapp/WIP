@@ -131,7 +131,16 @@
 		        		</div>
 		        	</div>
       				<div class="form-actions right margin-top-20" v-show="!imageMode.newMenu">
-						<button type="submit" class="btn blue">Create</button>
+						<button 
+							type="submit" 
+							class="btn blue"
+							:disabled="creating">
+							Create
+							<i 
+								v-show="creating"
+								class="fa fa-spinner fa-pulse fa-fw">
+							</i>
+						</button>
 					</div>
       			</form>
   			</div>
@@ -321,8 +330,19 @@
         </div>
         <!-- END MENUS LIST-->
 
-        <apply-add-on-categories v-if="addOnCategoriesModalActive" :passedMenu="passedMenu" @closeAddOnCategoriesModal="closeAddOnCategoriesModal" @updateAddOnCategories="updateAddOnCategories"></apply-add-on-categories>
-        <edit-menu v-if="editMenuModalActive" :passedMenuId="passedMenuId" @closeEditMenuModal="closeEditMenuModal" @updateMenu="updateMenu"></edit-menu>
+        <apply-add-on-categories 
+			v-if="addOnCategoriesModalActive" 
+			:passedMenu="passedMenu" 
+			@closeAddOnCategoriesModal="closeAddOnCategoriesModal" 
+			@updateAddOnCategories="updateAddOnCategories">
+		</apply-add-on-categories>
+
+        <edit-menu 
+			v-if="editMenuModalActive" 
+			:passedMenuId="passedMenuId" 
+			@closeEditMenuModal="closeEditMenuModal" 
+			@updateMenu="updateMenu">
+		</edit-menu>
 
 		<menu-hours 
 			v-if="menuHoursModalActive" 
@@ -331,9 +351,26 @@
 		>
 		</menu-hours>
 
-		<duplicate-menu v-if="duplicateMenuModalActive" :passedMenuId="passedMenuId" @closeDuplicateMenuModal="closeDuplicateMenuModal" @duplicateSuccess="confirmDuplicateSuccess"></duplicate-menu>
-		<copy-menu v-if="copyMenuModalActive" :passedMenuId="passedMenuId" @closeCopyMenuModal="closeCopyMenuModal" @copySuccess="confirmCopySuccess"></copy-menu>
-        <delete-menu v-if="deleteMenuModalActive" :passedMenuId="passedMenuId" @closeDeleteMenuModal="closeDeleteMenuModal" @deleteMenuAndCloseModal="deleteMenuAndCloseModal"></delete-menu>
+		<duplicate-menu 
+			v-if="duplicateMenuModalActive" 
+			:passedMenuId="passedMenuId" 
+			@closeDuplicateMenuModal="closeDuplicateMenuModal" 
+			@duplicateSuccess="confirmDuplicateSuccess">
+		</duplicate-menu>
+
+		<copy-menu 
+			v-if="copyMenuModalActive" 
+			:passedMenuId="passedMenuId" 
+			@closeCopyMenuModal="closeCopyMenuModal" 
+			@copySuccess="confirmCopySuccess">
+		</copy-menu>
+
+        <delete-menu 
+			v-if="deleteMenuModalActive" 
+			:passedMenuId="passedMenuId" 
+			@closeDeleteMenuModal="closeDeleteMenuModal" 
+			@deleteMenuAndCloseModal="deleteMenuAndCloseModal">
+		</delete-menu>
   	</div>
 </template>
 
@@ -370,6 +407,7 @@ export default {
 			addOnCategoriesModalActive: false,
 			passedMenuId: 0,
 			passedMenu: {},
+			creating: false,
 			newMenu: {
 				id: 'new',
 				name: '',
@@ -849,6 +887,7 @@ export default {
 
 			return createMenuVue.validateMenuData()
 			.then(response => {
+				createMenuVue.creating = true
 				createMenuVue.newMenu.location_id = createMenuVue.$root.activeLocation.id
 				MenusFunctions.createNewMenu(createMenuVue.newMenu, createMenuVue.$root.appId, createMenuVue.$root.appSecret, createMenuVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
@@ -865,6 +904,8 @@ export default {
 					}
 					createMenuVue.errorMessage = reason
 					window.scrollTo(0, 0)
+				}).finally(() => {
+					createMenuVue.creating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

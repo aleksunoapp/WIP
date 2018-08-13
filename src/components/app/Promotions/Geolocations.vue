@@ -51,7 +51,16 @@
 			        			<el-tooltip content="Delete area" effect="light" placement="right">
 			        				<button type="submit" class="btn btn-circle btn-icon-only btn-default clickable margin-top-20" @click.prevent="reloadMap()"><i class="fa fa-trash" aria-hidden="true"></i></button>
 			        			</el-tooltip>
-			        			<button type="submit" class="btn blue pull-right margin-top-20">Create</button>
+			        			<button 
+									type="submit" 
+									class="btn blue pull-right margin-top-20"
+									:disabled="creating">
+									Create
+									<i 
+										v-show="creating"
+										class="fa fa-spinner fa-pulse fa-fw">
+									</i>
+								</button>
 			        		</div>
 			        	</div>
 	      			</form>
@@ -174,8 +183,13 @@
 						v-else
 						type="button" 
 						class="btn btn-primary" 
-						@click="updateGeolocation()">
+						@click="updateGeolocation()"
+						:disabled="updating">
 						Save
+						<i 
+							v-show="updating"
+							class="fa fa-spinner fa-pulse fa-fw">
+						</i>
 					</button>
 			</div>
 		</modal>
@@ -199,7 +213,17 @@
 				</div>
 			</div>
 			<div slot="modal-footer" class="modal-footer">
-				<button type="button" class="btn btn-primary" @click="deleteGeolocation()">Delete</button>
+				<button 
+					type="button" 
+					class="btn btn-primary" 
+					@click="deleteGeolocation()"
+					:disabled="deleting">
+					Delete
+					<i 
+						v-show="deleting"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
 			</div>
 		</modal>
 		<!-- DELETE MODAL END -->
@@ -222,6 +246,7 @@ export default {
 				{name: 'Geolocations', link: false}
 			],
 			newCollapse: true,
+			creating: false,
 			newGeolocation: {
 				name: '',
 				polygon: []
@@ -230,6 +255,7 @@ export default {
 			loadingGeolocations: false,
 			geolocations: [],
 			showEditModal: false,
+			updating: false,
 			editErrorMessage: '',
 			editedGeolocation: {
 				name: '',
@@ -241,6 +267,7 @@ export default {
 				name: '',
 				id: 0
 			},
+			deleting: false,
 			deleteErrorMessage: '',
 			mapComponentKey: 1
 		}
@@ -347,6 +374,7 @@ export default {
 			var geolocationsVue = this
 			return this.validateGeolocationData()
 			.then(response => {
+				geolocationsVue.creating = true
 				PromotionsFunctions.createGeolocation(geolocationsVue.$root.appId, geolocationsVue.$root.appSecret, geolocationsVue.$root.userToken, geolocationsVue.newGeolocation).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						geolocationsVue.geolocations.push(response.payload)
@@ -360,6 +388,8 @@ export default {
 						geolocationsVue.$router.push('/login/expired')
 						return
 					}
+				}).finally(() => {
+					geolocationsVue.creating = false
 				})
 			})
 			.catch(reason => {
@@ -441,7 +471,8 @@ export default {
 		updateGeolocation () {
 			var geolocationsVue = this
 			return this.validateEditedData()
-			.then(
+			.then(response => {
+				geolocationsVue.updating = true
 				PromotionsFunctions.updateGeolocation(geolocationsVue.$root.appId, geolocationsVue.$root.appSecret, geolocationsVue.$root.userToken, geolocationsVue.editedGeolocation).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						geolocationsVue.geolocations.forEach((gl) => {
@@ -464,9 +495,10 @@ export default {
 						geolocationsVue.$router.push('/login/expired')
 						return
 					}
+				}).finally(() => {
+					geolocationsVue.updating = false
 				})
-			)
-			.catch(reason => {
+			}).catch(reason => {
 				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
 					geolocationsVue.$router.push('/login/expired')
 					return
@@ -531,6 +563,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		deleteGeolocation () {
+			this.deleting = true
 			let geolocationsVue = this
 			PromotionsFunctions.deleteGeolocation(geolocationsVue.$root.appId, geolocationsVue.$root.appSecret, geolocationsVue.$root.userToken, geolocationsVue.selectedGeolocation).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
@@ -555,6 +588,8 @@ export default {
 				if (reason.responseJSON) {
 					geolocationsVue.deleteErrorMessage = reason.responseJSON.message
 				}
+			}).finally(() => {
+				geolocationsVue.deleting = false
 			})
 		},
 		/**

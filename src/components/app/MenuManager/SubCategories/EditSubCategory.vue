@@ -58,7 +58,18 @@
 			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button v-if="!selectImageMode" type="button" class="btn btn-primary" @click="updateMenuCategory()">Save</button>
+			<button 
+				v-if="!selectImageMode" 
+				type="button" 
+				class="btn btn-primary" 
+				@click="updateMenuCategory()"
+				:disabled="updating">
+				Save
+				<i 
+					v-show="updating"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
+			</button>
 		</div>
 	</modal>
 </template>
@@ -73,6 +84,7 @@ export default {
 	data () {
 		return {
 			showEditCategoryModal: false,
+			updating: false,
 			categoryToBeEdited: {
 				image_url: ''
 			},
@@ -153,6 +165,7 @@ export default {
 
 			return editSubCategoryVue.validateCategoryData()
 			.then(response => {
+				editSubCategoryVue.updating = true
 				CategoriesFunctions.updateMenuCategory(editSubCategoryVue.categoryToBeEdited, editSubCategoryVue.$root.appId, editSubCategoryVue.$root.appSecret, editSubCategoryVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						this.closeModalAndUpdate()
@@ -166,6 +179,8 @@ export default {
 					}
 					editSubCategoryVue.errorMessage = reason
 					window.scrollTo(0, 0)
+				}).finally(() => {
+					editSubCategoryVue.updating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

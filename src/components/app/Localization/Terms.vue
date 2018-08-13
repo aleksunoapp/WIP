@@ -44,7 +44,16 @@
 								<input type="text" class="form-control input-sm" :class="{'edited': newTerm.term.length}" id="form_control_1" v-model="newTerm.term">
 								<label for="form_control_1">Term</label>
 							</div>
-							<button type="submit" class="btn blue pull-right">Create</button>
+							<button 
+								type="submit" 
+								class="btn blue pull-right"
+								:disabled="creating">
+								Create
+								<i 
+									v-show="creating"
+									class="fa fa-spinner fa-pulse fa-fw">
+								</i>
+							</button>
 						</div>
 					</div>
 				</form>
@@ -226,8 +235,13 @@
 					v-else
 					@click="updateTerm()" 
 					type="submit" 
-					class="btn blue">
+					class="btn blue"
+					:disabled="updating">
 					Save
+					<i 
+						v-show="updating"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
 				</button>
 			</div>
 		</modal>
@@ -245,7 +259,17 @@
 				<p>Are you sure you want to delete {{termToDelete.term}}?</p>
 			</div>
 			<div slot="modal-footer" class="modal-footer clear">
-				<button type="button" class="btn blue" @click="deleteTerm()">Delete</button>
+				<button 
+					type="button" 
+					class="btn blue" 
+					@click="deleteTerm()"
+					:disabled="deleting">
+					Delete
+					<i 
+						v-show="deleting"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
 			</div>
 		</modal>
 		<!-- START DELETE -->
@@ -269,6 +293,7 @@ export default {
 			],
 
 			createNewCollapse: true,
+			creating: false,
 			createErrorMessage: '',
 			newTerm: {
 				term: ''
@@ -285,12 +310,14 @@ export default {
 			allTerms: [],
 
 			showEditModal: false,
+			updating: false,
 			editErrorMessage: '',
 			termToEdit: {
 				term: ''
 			},
 
 			showDeleteModal: false,
+			deleting: false,
 			deleteErrorMessage: '',
 			termToDelete: {
 				term: ''
@@ -370,6 +397,7 @@ export default {
 
 			return _this.validateNewTermData()
 			.then(response => {
+				_this.creating = true
 				TermsFunctions.createTerm(_this.newTerm)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
@@ -387,6 +415,8 @@ export default {
 						errorName: 'createErrorMessage',
 						vue: _this
 					})
+				}).finally(() => {
+					_this.creating = false
 				})
 			}).catch(reason => {
 				_this.createErrorMessage = reason
@@ -518,6 +548,7 @@ export default {
 
 			return _this.validateEditedTermData()
 			.then(response => {
+				_this.updating = true
 				TermsFunctions.updateTerm(payload).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						_this.getTerms()
@@ -535,6 +566,8 @@ export default {
 						errorName: 'editErrorMessage',
 						vue: _this
 					})
+				}).finally(() => {
+					_this.updating = false
 				})
 			}).catch(reason => {
 				_this.editErrorMessage = reason
@@ -591,6 +624,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		deleteTerm () {
+			this.deleting = true
 			var _this = this
 			return TermsFunctions.deleteTerm(_this.termToDelete)
 			.then(response => {
@@ -607,6 +641,8 @@ export default {
 					errorName: 'deleteErrorMessage',
 					vue: _this
 				})
+			}).finally(() => {
+				_this.deleting = false
 			})
 		},
 		/**

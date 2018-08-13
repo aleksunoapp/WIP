@@ -39,7 +39,16 @@
 			<div class="row">
 				<div class="col-xs-12">
 					<div class="pull-right">
-						<button class="btn blue" @click="copyMenu()">Copy</button>
+						<button 
+							class="btn blue" 
+							@click="copyMenu()"
+							:disabled="copying">
+							Copy
+							<i 
+								v-show="copying"
+								class="fa fa-spinner fa-pulse fa-fw">
+							</i>
+						</button>
 					</div>
 				</div>
 			</div>
@@ -59,6 +68,7 @@ export default {
 	data () {
 		return {
 			showCopyMenuModal: false,
+			copying: false,
 			errorMessage: '',
 			selectedLocations: [],
 			locations: [],
@@ -140,6 +150,7 @@ export default {
 
 			return editMenuVue.validateCategoryData()
 			.then(response => {
+				editMenuVue.copying = true
 				MenusFunctions.copyMenu(payload, editMenuVue.$root.appId, editMenuVue.$root.appSecret, editMenuVue.$root.userToken).then(response => {
 					this.emitCopySuccess()
 				}).catch(reason => {
@@ -154,6 +165,8 @@ export default {
 				// If validation fails then display the error message
 				editMenuVue.errorMessage = reason
 				window.scrollTo(0, 0)
+			}).finally(() => {
+				editMenuVue.copying = false
 			})
 		},
 		/**

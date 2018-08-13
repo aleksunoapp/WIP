@@ -68,8 +68,13 @@
 				v-else
 				type="button" 
 				class="btn btn-primary" 
-				@click="updatePrinter()">
+				@click="updatePrinter()"
+				:disabled="updating">
 				Save
+				<i 
+					v-show="updating"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
 			</button>
 		</div>
 	</modal>
@@ -84,6 +89,7 @@ export default {
 	data () {
 		return {
 			showEditPrinterModal: false,
+			updating: false,
 			printerToBeEdited: {
 				location_id: '',
 				printer_serialno: '',
@@ -181,6 +187,7 @@ export default {
 
 			return editPrinterVue.validatePrinterData()
 			.then(response => {
+				editPrinterVue.updating = true
 				PrintersFunctions.updatePrinter(editPrinterVue.printerToBeEdited, editPrinterVue.$root.appId, editPrinterVue.$root.appSecret, editPrinterVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						this.closeModalAndUpdate()
@@ -194,6 +201,8 @@ export default {
 					}
 					editPrinterVue.errorMessage = reason
 					window.scrollTo(0, 0)
+				}).finally(() => {
+					editPrinterVue.updating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

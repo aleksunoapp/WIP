@@ -40,7 +40,16 @@
   						</div>
   					</div>
   					<div class="form-actions right">
-  						<button type="submit" class="btn blue">Create</button>
+  						<button 
+						  	type="submit" 
+							class="btn blue"
+							:disabled="creating">
+							Create
+							<i 
+								v-show="creating"
+								class="fa fa-spinner fa-pulse fa-fw">
+							</i>
+						</button>
   					</div>
   				</form>
         </div>
@@ -65,11 +74,10 @@
                   <li class="mt-list-item actions-at-left margin-top-15" v-for="group in groups" :id="'group-' + group.id" :key="group.id">
                   	<div class="list-item-actions">
                       <el-tooltip
-                        v-if="!$root.permissions['stores groups update'] && $root.permissions['stores groups read']"
-    				            content="View"
-                        effect="light"
-    				            placement="right"
-                      >
+	                        v-if="!$root.permissions['stores groups update'] && $root.permissions['stores groups read']"
+							content="View"
+                        	effect="light"
+							placement="right">
                         <a class="btn btn-circle btn-icon-only btn-default" @click="displayEditGroupModal(group, $event)">
                           <i class="fa fa-lg fa-eye"></i>
                         </a>
@@ -157,7 +165,17 @@
   			</div>
   		</div>
   		<div slot="modal-footer" class="modal-footer clear">
-  			<button type="button" class="btn btn-primary" @click="assignMenuTiers()">Save</button>
+  			<button 
+				type="button" 
+				class="btn btn-primary" 
+				@click="assignMenuTiers()"
+				:disabled="assigning">
+				Save
+				<i 
+					v-show="assigning"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
+			</button>
   		</div>
   	</modal>
   </div>
@@ -190,6 +208,7 @@ export default {
 			selectedGroupId: 0,
 			showEditGroupModal: false,
 			passedGroupId: 0,
+			creating: false,
 			newGroup: {
 				name: '',
 				description: '',
@@ -197,6 +216,7 @@ export default {
 				created_by: this.$root.createdBy
 			},
 			showAssignStoresModal: false,
+			assigning: false,
 			groupToAssignMenuTiersTo: {},
 			showTiersModal: false,
 			tiersErrorMessage: ''
@@ -276,6 +296,7 @@ export default {
 		 */
 		assignMenuTiers () {
 			let storeGroupsVue = this
+			this.assigning = true
 			let payload = {
 				tier: this.groupToAssignMenuTiersTo.tier,
 				replace_existing: this.groupToAssignMenuTiersTo.replaceExisting,
@@ -298,6 +319,9 @@ export default {
 						errorName: 'tiersErrorMessage',
 						vue: storeGroupsVue
 					})
+				})
+				.finally(() => {
+					storeGroupsVue.assigning = false
 				})
 		},
 		/**
@@ -484,6 +508,7 @@ export default {
 			return storeGroupsVue
 				.validateGroupData()
 				.then(response => {
+					storeGroupsVue.creating = true
 					StoreGroupsFunctions.createNewGroup(
 						storeGroupsVue.newGroup,
 						storeGroupsVue.$root.appId,
@@ -512,6 +537,8 @@ export default {
 							}
 							storeGroupsVue.errorMessage = reason
 							window.scrollTo(0, 0)
+						}).finally(() => {
+							storeGroupsVue.creating = false
 						})
 				})
 				.catch(reason => {

@@ -89,16 +89,23 @@
 							<th> Updated at </th>
 							<td> {{ order.updated_at }} </td>
 						</tr>
-<!-- 						<tr>
-							<th> Response time </th>
-							<td> {{ order.response_time }} minute<span v-if="responseTime > 1">s</span></td>
-						</tr> -->
 					</tbody>
 				</table>
 			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button type="button" v-if="order.status !== 'refunded'" class="btn btn-primary pull-left" @click="refund()">Refund</button>
+			<button 
+				type="button" 
+				v-if="order.status !== 'refunded'" 
+				class="btn btn-primary pull-left" 
+				@click="refund()"
+				:disabled="refunding">
+				Refund
+				<i 
+					v-show="refunding"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
+			</button>
 			<button type="button" class="btn btn-default" @click="closeModal()">Close</button>
 		</div>
 	</modal>
@@ -112,6 +119,7 @@ export default {
 	data () {
 		return {
 			viewOrderModalDisplayed: false,
+			refunding: false,
 			errorMessage: ''
 		}
 	},
@@ -162,6 +170,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		refund () {
+			this.refunding = true
 			var viewOrderVue = this
 
 			UsersFunctions.refundOrder(viewOrderVue.$root.appId, viewOrderVue.$root.appSecret, viewOrderVue.$root.userToken, viewOrderVue.order.id).then(response => {
@@ -180,6 +189,8 @@ export default {
 					viewOrderVue.errorMessage = reason.responseJSON.message
 				}
 				throw reason
+			}).finally(() => {
+				viewOrderVue.refunding = false
 			})
 		}
 	},

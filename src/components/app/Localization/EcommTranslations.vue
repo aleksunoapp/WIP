@@ -102,9 +102,12 @@
 							v-if="!loadingTerms && terms.length"
 							@click="translateTerms()"
 							class="btn blue"
-							:disabled="!$root.permissions['localization update']"
-						>
+							:disabled="!$root.permissions['localization update'] || saving">
 							Save
+							<i 
+								v-show="saving"
+								class="fa fa-spinner fa-pulse fa-fw">
+							</i>
 						</button>
 					</div>
 					<div v-show="!loadingTerms">
@@ -418,7 +421,8 @@ export default {
 			galleryPopupShown: false,
 			imagePreviewShown: false,
 			imagePreviewUrl: '',
-			termRegex: new RegExp('_([a-zA-Z_])+$')
+			termRegex: new RegExp('_([a-zA-Z_])+$'),
+			saving: false
 		}
 	},
 	watch: {
@@ -506,6 +510,8 @@ export default {
 			var localizationVue = this
 			return localizationVue.validateTranslationTermsData()
 			.then(response => {
+				localizationVue.saving = true
+
 				let field
 				switch (localizationVue.activeTranslationGroup.term) {
 				case 'faq_users_question':
@@ -558,6 +564,8 @@ export default {
 						errorName: 'translationsTableErrorMessage',
 						vue: localizationVue
 					})
+				}).finally(() => {
+					localizationVue.saving = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

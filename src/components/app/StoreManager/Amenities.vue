@@ -55,7 +55,16 @@
 								<input type="text" class="form-control input-sm" :class="{'edited': newAmenity.order.length}" id="form_control_3" v-model="newAmenity.order">
 								<label for="form_control_3">Amenity Order</label>
 							</div>
-							<button type="submit" class="btn blue pull-right">Create</button>
+							<button 
+								type="submit" 
+								class="btn blue pull-right"
+								:disabled="creating">
+								Create
+								<i 
+									v-show="creating"
+									class="fa fa-spinner fa-pulse fa-fw">
+								</i>
+							</button>
 						</div>
 					</div>
 				</form>
@@ -139,21 +148,21 @@
 				                        	<div class="">
 				                        		<div v-if="amenity.selected">
 					                        		<button
-																				@click="toggleChecked(amenity, $event)"
-																				class="btn btn-success custom-button full-width"
-																				:disabled="!$root.permissions['stores amenities update']"
-																			>
-																				<i class="fa fa-2x fa-check"></i>
-																			</button>
+														@click="toggleChecked(amenity, $event)"
+														class="btn btn-success custom-button full-width"
+														:disabled="!$root.permissions['stores amenities update']"
+													>
+														<i class="fa fa-2x fa-check"></i>
+													</button>
 				                        		</div>
 				                        		<div v-if="!amenity.selected">
 					                        		<button
-																				@click="toggleChecked(amenity, $event)"
-																				class="btn btn-danger custom-button full-width"
-																				:disabled="!$root.permissions['stores amenities update']"
-																			>
-																				<i class="fa fa-2x fa-times"></i>
-																			</button>
+														@click="toggleChecked(amenity, $event)"
+														class="btn btn-danger custom-button full-width"
+														:disabled="!$root.permissions['stores amenities update']"
+													>
+														<i class="fa fa-2x fa-times"></i>
+													</button>
 				                        		</div>
 				                        	</div>
 										</div>
@@ -164,9 +173,12 @@
 										type="button"
 										class="btn blue"
 										@click="assignAmenitiesToLocation()"
-										:disabled="!$root.permissions['stores amenities update']"
-									>
+										:disabled="!$root.permissions['stores amenities update'] || assigning">
 										Save
+										<i 
+											v-show="assigning"
+											class="fa fa-spinner fa-pulse fa-fw">
+										</i>
 									</button>
 								</div>
 							</div>
@@ -250,7 +262,19 @@
 				</form>
 			</div>
 			<div slot="modal-footer" class="modal-footer clear">
-				<button @click="updateAmenity()" v-show="!selectImageMode" v-if="$root.permissions['stores amenities update']" type="submit" class="btn blue">Save</button>
+				<button 
+					@click="updateAmenity()" 
+					v-show="!selectImageMode" 
+					v-if="$root.permissions['stores amenities update']" 
+					type="submit" 
+					class="btn blue"
+					:disabled="updating">
+					Save
+					<i 
+						v-show="updating"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
 				<button @click="closeEditModal()" v-show="!selectImageMode" v-if="!$root.permissions['stores amenities update']" type="submit" class="btn blue">Close</button>
 			</div>
 		</modal>
@@ -268,7 +292,17 @@
 				<p>Are you sure you want to delete {{amenityToDelete.name}}?</p>
 			</div>
 			<div slot="modal-footer" class="modal-footer clear">
-				<button type="button" class="btn blue" @click="deleteAmenity()">Delete</button>
+				<button 
+					type="button" 
+					class="btn blue" 
+					@click="deleteAmenity()"
+					:disabled="deleting">
+					Delete
+					<i 
+						v-show="deleting"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
 			</div>
 		</modal>
 		<!-- START DELETE -->
@@ -295,6 +329,7 @@ export default {
 
 			createNewCollapse: true,
 			createErrorMessage: '',
+			creating: false,
 			newAmenity: {
 				name: '',
 				image_url: '',
@@ -308,6 +343,7 @@ export default {
 
 			showEditModal: false,
 			editErrorMessage: '',
+			updating: false,
 			selectImageMode: false,
 			amenityToEdit: {
 				name: '',
@@ -317,6 +353,7 @@ export default {
 
 			showDeleteModal: false,
 			deleteErrorMessage: '',
+			deleting: false,
 			amenityToDelete: {
 				name: ''
 			}
@@ -402,6 +439,7 @@ export default {
 			amenitiesVue.clearError('createErrorMessage')
 
 			return amenitiesVue.validateNewAmenityData().then(response => {
+				amenitiesVue.creating = true
 				AmenitiesFunctions.createAmenity(
 					amenitiesVue.$root.appId,
 					amenitiesVue.$root.appSecret,
@@ -427,6 +465,8 @@ export default {
 						errorName: 'createErrorMessage',
 						vue: amenitiesVue
 					})
+				}).finally(() => {
+					amenitiesVue.creating = false
 				})
 			}).catch(reason => {
 				amenitiesVue.createErrorMessage = reason
@@ -615,6 +655,7 @@ export default {
 			amenitiesVue.clearError('editErrorMessage')
 
 			return amenitiesVue.validateEditedAmenityData().then(response => {
+				amenitiesVue.updating = true
 				AmenitiesFunctions.updateAmenity(
 					amenitiesVue.$root.appId,
 					amenitiesVue.$root.appSecret,
@@ -642,6 +683,8 @@ export default {
 						errorName: 'editErrorMessage',
 						vue: amenitiesVue
 					})
+				}).finally(() => {
+					amenitiesVue.updating = false
 				})
 			}).catch(reason => {
 				amenitiesVue.editErrorMessage = reason
@@ -690,6 +733,7 @@ export default {
          */
 		assignAmenitiesToLocation () {
 			var amenitiesVue = this
+			this.assigning = true
 			let payload = {
 				amenities: [
 					...this.amenities.filter(amenity => amenity.selected).map(amenity => amenity.id)
@@ -714,6 +758,8 @@ export default {
 					errorName: 'listErrorMessage',
 					vue: amenitiesVue
 				})
+			}).finally(() => {
+				amenitiesVue.assigning = false
 			})
 		},
         /**
@@ -747,6 +793,7 @@ export default {
          * @returns {undefined}
          */
 		deleteAmenity () {
+			this.deleting = true
 			var amenitiesVue = this
 			return AmenitiesFunctions.deleteAmenity(
 				amenitiesVue.$root.appId,
@@ -766,6 +813,8 @@ export default {
 					errorName: 'deleteErrorMessage',
 					vue: amenitiesVue
 				})
+			}).finally(() => {
+				amenitiesVue.deleting = false
 			})
 		},
         /**

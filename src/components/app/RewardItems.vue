@@ -79,7 +79,16 @@
 		        		</div>
 		        	</div>
       				<div class="form-actions right">
-						<button type="submit" class="btn blue">Create</button>
+						<button 
+							type="submit" 
+							class="btn blue"
+							:disabled="creating">
+							Create
+							<i 
+								v-show="creating"
+								class="fa fa-spinner fa-pulse fa-fw">
+							</i>
+						</button>
 					</div>
       			</form>
   			</div>
@@ -214,7 +223,17 @@
         		</div>
         	</div>
         	<div slot="modal-footer" class="modal-footer">
-        		<button type="submit" class="btn blue" @click.stop="deleteItem()">Delete</button>
+        		<button 
+					type="submit" 
+					class="btn blue" 
+					@click.stop="deleteItem()"
+					:disabled="deleting">
+					Delete
+					<i 
+						v-show="deleting"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
         	</div>
         </modal>
         <!-- DELETE MODAL END -->
@@ -247,6 +266,7 @@ export default {
 			passedRewardItem: 0,
 			passedRewardTierId: this.$route.params.folder_id,
 			createItemCollapse: true,
+			creating: false,
 			newRewardItem: {
 				sku: [],
 				points: '',
@@ -264,6 +284,7 @@ export default {
 			showModifierTreeModal: false,
 			selectedItem: {},
 			displayDeleteModal: false,
+			deleting: false,
 			itemToBeDeleted: {
 				reward_id: null,
 				reward_item_id: null,
@@ -419,6 +440,7 @@ export default {
 
 			return rewardItemsVue.validateRewardItemData()
 			.then(response => {
+				rewardItemsVue.creating = true
 				RewardFunctions.createNewRewardItem(rewardItemsVue.$router.passedTier.id, rewardItemsVue.newRewardItem, rewardItemsVue.$root.appId, rewardItemsVue.$root.appSecret, rewardItemsVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						rewardItemsVue.newRewardItem.id = response.payload.id
@@ -435,6 +457,8 @@ export default {
 						errorName: 'errorMessage',
 						vue: rewardItemsVue
 					})
+				}).finally(() => {
+					rewardItemsVue.creating = false
 				})
 			}).catch(reason => {
 				rewardItemsVue.errorMessage = reason
@@ -602,6 +626,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		deleteItem () {
+			this.deleting = true
 			var rewardsVue = this
 			RewardFunctions.deleteRewardItem(rewardsVue.itemToBeDeleted, rewardsVue.$root.appId, rewardsVue.$root.appSecret, rewardsVue.$root.userToken).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
@@ -624,6 +649,8 @@ export default {
 					rewardsVue.deleteErrorMessage = reason.message || 'Something went wrong ...'
 					window.scrollTo(0, 0)
 				}
+			}).finally(() => {
+				rewardsVue.deleting = false
 			})
 		},
 		/**

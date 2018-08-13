@@ -44,7 +44,16 @@
 								<input type="text" class="form-control input-sm" :class="{'edited': newItemType.name.length}" id="form_control_1" v-model="newItemType.name">
 								<label for="form_control_1">Name</label>
 							</div>
-							<button type="submit" class="btn blue pull-right">Create</button>
+							<button 
+								type="submit" 
+								class="btn blue pull-right"
+								:disabled="creating">
+								Create
+								<i 
+									v-show="creating"
+									class="fa fa-spinner fa-pulse fa-fw">
+								</i>
+							</button>
 						</div>
 					</div>
 				</form>
@@ -182,8 +191,13 @@
 					v-else
 					@click="updateItemType()" 
 					type="submit" 
-					class="btn blue">
+					class="btn blue"
+					:disabled="updating">
 					Save
+					<i 
+						v-show="updating"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
 				</button>
 			</div>
 		</modal>
@@ -261,8 +275,12 @@
 					@click="applyTaxClassesToItemType()"
 					type="submit"
 					class="btn blue"
-				>
+					:disabled="applying">
 					Apply
+					<i 
+						v-show="applying"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
 				</button>
 			</div>
 		</modal>
@@ -280,7 +298,17 @@
 				<p>Are you sure you want to delete {{itemTypeToDelete.name}}?</p>
 			</div>
 			<div slot="modal-footer" class="modal-footer clear">
-				<button type="button" class="btn blue" @click="deleteItemType()">Delete</button>
+				<button 
+					type="button" 
+					class="btn blue" 
+					@click="deleteItemType()"
+					:disabled="deleting">
+					Delete
+					<i 
+						v-show="deleting"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
 			</div>
 		</modal>
 		<!-- START DELETE -->
@@ -304,6 +332,7 @@ export default {
 			],
 
 			createNewCollapse: true,
+			creating: false,
 			createErrorMessage: '',
 			newItemType: {
 				name: ''
@@ -314,12 +343,14 @@ export default {
 			itemTypes: [],
 
 			showEditModal: false,
+			updating: false,
 			editErrorMessage: '',
 			itemTypeToEdit: {
 				name: ''
 			},
 
 			showDeleteModal: false,
+			deleting: false,
 			deleteErrorMessage: '',
 			itemTypeToDelete: {
 				name: ''
@@ -327,6 +358,7 @@ export default {
 
 			loadingTaxClasses: false,
 			taxClasses: [],
+			applying: false,
 			applyErrorMessage: '',
 			itemTypeToAssignTo: {},
 			showApplyModal: false
@@ -397,6 +429,7 @@ export default {
 
 			return _this.validateNewItemTypeData()
 			.then(response => {
+				_this.creating = true
 				ItemTypesFunctions.createItemType(_this.newItemType, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
@@ -414,6 +447,8 @@ export default {
 						errorName: 'createErrorMessage',
 						vue: _this
 					})
+				}).finally(() => {
+					_this.creating = false
 				})
 			}).catch(reason => {
 				_this.createErrorMessage = reason
@@ -514,6 +549,7 @@ export default {
 
 			return _this.validateEditedItemTypeData()
 			.then(response => {
+				_this.updating = true
 				ItemTypesFunctions.updateItemType(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						_this.getItemTypes()
@@ -531,6 +567,8 @@ export default {
 						errorName: 'editErrorMessage',
 						vue: _this
 					})
+				}).finally(() => {
+					_this.updating = false
 				})
 			}).catch(reason => {
 				_this.editErrorMessage = reason
@@ -587,6 +625,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		deleteItemType () {
+			this.deleting = true
 			var _this = this
 			return ItemTypesFunctions.deleteItemType(_this.itemTypeToDelete.id, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
 			.then(response => {
@@ -603,6 +642,8 @@ export default {
 					errorName: 'deleteErrorMessage',
 					vue: _this
 				})
+			}).finally(() => {
+				_this.deleting = false
 			})
 		},
 		/**
@@ -726,6 +767,7 @@ export default {
 			this.clearError('applyErrorMessage')
 			var _this = this
 			return this.validateTaxClassesToApply().then(response => {
+				_this.applying = true
 				let payload = {
 					tax_classes: this.taxClasses.filter(taxClass => taxClass.selected).map(taxClass => taxClass.id)
 				}
@@ -746,6 +788,8 @@ export default {
 						errorName: 'applyErrorMessage',
 						vue: _this
 					})
+				}).finally(() => {
+					_this.applying = false
 				})
 			}).catch(reason => {
 				_this.applyErrorMessage = reason

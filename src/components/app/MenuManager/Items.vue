@@ -192,7 +192,16 @@
 		        		</div>
 		        	</div>
       				<div class="form-actions right margin-top-20" v-show="!showCorporateItems && !imageMode.newMenu">
-						<button type="submit" class="btn blue" :disabled="noItemTypes">Create</button>
+						<button 
+							type="submit" 
+							class="btn blue" 
+							:disabled="noItemTypes || creating">
+							Create
+							<i 
+								v-show="creating"
+								class="fa fa-spinner fa-pulse fa-fw">
+							</i>
+						</button>
 					</div>
       			</form>
   			</div>
@@ -452,10 +461,34 @@
 		>
 		</edit-item>
 
-        <delete-item v-if="deleteItemModalActive" :passedItemId="passedItemId" @closeDeleteItemModal="closeDeleteItemModal" @deleteItemAndCloseModal="deleteItemAndCloseModal"></delete-item>
-        <nutrition-info v-if="displayNutritionModal" :item="selectedItem" @nutritionInfoSaved="nutritionInfoSaved" @deactivateNutritionInfoModal="displayNutritionModal = false"></nutrition-info>
-        <modifiers-list v-if="displayModifierModal" :appliedModifiers="appliedModifiers" :selectedItemId="selectedItemId" @deactivateModifierModal="closeModifierModal"></modifiers-list>
-        <tags-list v-if="displayTagsListModal" :appliedTags="appliedTags" :selectedItemId="selectedItemId" @deactivateTagsListModal="closeTagsListModal"></tags-list>
+        <delete-item 
+			v-if="deleteItemModalActive" 
+			:passedItemId="passedItemId" 
+			@closeDeleteItemModal="closeDeleteItemModal" 
+			@deleteItemAndCloseModal="deleteItemAndCloseModal">
+		</delete-item>
+
+        <nutrition-info 
+			v-if="displayNutritionModal" 
+			:item="selectedItem" 
+			@nutritionInfoSaved="nutritionInfoSaved" 
+			@deactivateNutritionInfoModal="displayNutritionModal = false">
+		</nutrition-info>
+
+        <modifiers-list 
+			v-if="displayModifierModal" 
+			:appliedModifiers="appliedModifiers" 
+			:selectedItemId="selectedItemId" 
+			@deactivateModifierModal="closeModifierModal">
+		</modifiers-list>
+
+        <tags-list 
+			v-if="displayTagsListModal" 
+			:appliedTags="appliedTags" 
+			:selectedItemId="selectedItemId" 
+			@deactivateTagsListModal="closeTagsListModal">
+		</tags-list>
+
     	<!-- ASSIGN ITEM ATTRIBUTES START -->
 		<modal :show="showAssignItemAttributesModal" effect="fade" @closeOnEscape="closeAssignItemAttributesModal">
 			<div slot="modal-header" class="modal-header">
@@ -513,7 +546,17 @@
 			<div slot="modal-footer" class="modal-footer clear">
 				<div class="row">
 					<div class="col-md-12">
-						<button @click="assignItemAttributesToItem()" type="button" class="btn blue pull-right">Save</button>
+						<button 
+							@click="assignItemAttributesToItem()" 
+							type="button" 
+							class="btn blue pull-right"
+							:disabled="assigningAttributes">
+							Save
+							<i 
+								v-show="assigningAttributes"
+								class="fa fa-spinner fa-pulse fa-fw">
+							</i>
+						</button>
 					</div>
 				</div>
 			</div>
@@ -635,6 +678,7 @@ export default {
 			customText: 'There are no items in this category. Click on the button above to add one.',
 			errorMessage: '',
 			createItemCollapse: true,
+			creating: false,
 			newItem: {
 				category_id: this.$route.params.category_id,
 				name: '',
@@ -664,6 +708,7 @@ export default {
 			expanded: null,
 			loadingItemAttributes: false,
 			itemAttributes: [],
+			assigningAttributes: false,
 			itemToAssignItemAttributesTo: {
 				id: null,
 				name: ''
@@ -1184,6 +1229,7 @@ export default {
 
 			return addItemVue.validateItemData()
 			.then(response => {
+				addItemVue.creating = true
 				ItemsFunctions.addNewCategoryItem(addItemVue.newItem, addItemVue.$root.appId, addItemVue.$root.appSecret, addItemVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						addItemVue.newItem.id = response.payload.new_item_id
@@ -1198,6 +1244,8 @@ export default {
 					}
 					addItemVue.errorMessage = reason
 					window.scrollTo(0, 0)
+				}).finally(() => {
+					addItemVue.creating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message
@@ -1404,6 +1452,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		assignItemAttributesToItem () {
+			this.assigningAttributes = true
 			let payload = {
 				attribute: []
 			}
@@ -1443,6 +1492,8 @@ export default {
 					window.scrollTo(0, 0)
 					attributesVue.assignItemAttributesErrorMessage = reason.message || 'Something went wrong ...'
 				}
+			}).finally(() => {
+				attributesVue.assigningAttributes = false
 			})
 		},
 		/**

@@ -48,7 +48,16 @@
 								<input type="text" class="form-control input-sm" :class="{'edited': newCountry.code.length}" id="form_control_code" v-model="newCountry.code">
 								<label for="form_control_code">Code</label>
 							</div>
-							<button type="submit" class="btn blue pull-right">Create</button>
+							<button 
+								type="submit" 
+								class="btn blue pull-right"
+								:disabled="creating">
+								Create
+								<i 
+									v-show="creating"
+									class="fa fa-spinner fa-pulse fa-fw">
+								</i>
+							</button>
 						</div>
 					</div>
 				</form>
@@ -187,8 +196,13 @@
 					v-else
 					@click="updateCountry()" 
 					type="submit" 
-					class="btn blue">
+					class="btn blue"
+					:disabled="updating">
 					Save
+					<i 
+						v-show="updating"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
 				</button>
 			</div>
 		</modal>
@@ -206,7 +220,17 @@
 				<p>Are you sure you want to delete {{countryToDelete.name}}?</p>
 			</div>
 			<div slot="modal-footer" class="modal-footer clear">
-				<button type="button" class="btn blue" @click="deleteCountry()">Delete</button>
+				<button 
+					type="button" 
+					class="btn blue" 
+					@click="deleteCountry()"
+					:disabled="deleting">
+					Delete
+					<i 
+						v-show="deleting"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
 			</div>
 		</modal>
 		<!-- START DELETE -->
@@ -229,6 +253,7 @@ export default {
 			],
 
 			createNewCollapse: true,
+			creating: false,
 			createErrorMessage: '',
 			newCountry: {
 				name: '',
@@ -240,6 +265,7 @@ export default {
 			countries: [],
 
 			showEditModal: false,
+			updating: false,
 			editErrorMessage: '',
 			countryToEdit: {
 				name: '',
@@ -247,6 +273,7 @@ export default {
 			},
 
 			showDeleteModal: false,
+			deleting: false,
 			deleteErrorMessage: '',
 			countryToDelete: {
 				name: '',
@@ -315,6 +342,7 @@ export default {
 
 			return _this.validateNewCountryData()
 			.then(response => {
+				_this.creating = true
 				CountriesFunctions.createCountry(_this.newCountry)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
@@ -332,6 +360,8 @@ export default {
 						errorName: 'createErrorMessage',
 						vue: _this
 					})
+				}).finally(() => {
+					_this.creating = false
 				})
 			}).catch(reason => {
 				_this.createErrorMessage = reason
@@ -434,6 +464,7 @@ export default {
 
 			return _this.validateEditedCountryData()
 			.then(response => {
+				_this.updating = true
 				CountriesFunctions.updateCountry(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						_this.getCountries()
@@ -450,6 +481,8 @@ export default {
 						errorName: 'editErrorMessage',
 						vue: _this
 					})
+				}).finally(() => {
+					_this.updating = false
 				})
 			}).catch(reason => {
 				console.log(reason)
@@ -510,6 +543,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		deleteCountry () {
+			this.deleting = true
 			var _this = this
 			return CountriesFunctions.deleteCountry(_this.countryToDelete)
 			.then(response => {
@@ -526,6 +560,8 @@ export default {
 					errorName: 'deleteErrorMessage',
 					vue: _this
 				})
+			}).finally(() => {
+				_this.deleting = false
 			})
 		},
 		/**

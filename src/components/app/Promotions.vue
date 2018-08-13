@@ -155,7 +155,16 @@
 		        	</div>
 
       				<div class="form-actions right margin-top-20" v-show="!imageMode.newMenu">
-						<button type="submit" class="btn blue">Create</button>
+						<button 
+							type="submit" 
+							class="btn blue"
+							:disabled="creating">
+							Create
+							<i 
+								v-show="creating"
+								class="fa fa-spinner fa-pulse fa-fw">
+							</i>
+						</button>
 					</div>
       			</form>
   			</div>
@@ -278,7 +287,17 @@
 		                        </li>
 		                    </ul>
               				<div class="form-actions right margin-top-20">
-			                    <button type="button" class="btn blue" @click="checkForLocation()">Save</button>
+			                    <button 
+									type="button" 
+									class="btn blue" 
+									@click="checkForLocation()"
+									:disabled="updating">
+									Save
+									<i 
+										v-show="updating"
+										class="fa fa-spinner fa-pulse fa-fw">
+									</i>
+								</button>
         					</div>
 		                </div>
 		            </div>
@@ -289,8 +308,11 @@
 		    </div>
         </div>
         <!-- END DISPLAY PROMOTIONS -->
+
         <edit-promotion v-if="showEditPromotionModal" :selectedPromotionId="selectedPromotionId" @updatePromotion="updatePromotion" @closeEditPromotionModal="closeEditPromotionModal"></edit-promotion>
+
         <delete-promotion v-if="deletePromotionModalActive" :selectedPromotionId="selectedPromotionId" @closeDeletePromotionModal="closeDeletePromotionModal" @deletePromotionAndCloseModal="deletePromotionAndCloseModal"></delete-promotion>
+
 		<modal :show="showStoreGroupsModal" effect="fade" @closeOnEscape="closeStoreGroupsModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closeStoreGroupsModal()">
@@ -307,6 +329,7 @@
 				<button type="button" class="btn blue btn-outline" @click="closeStoreGroupsModal()">Done</button>
 			</div>
 		</modal>
+
 		<modal :show="showApplyPromotionModal" effect="fade" @closeOnEscape="closeApplyModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closeApplyModal()">
@@ -361,9 +384,42 @@
 				
 			</div>
 			<div slot="modal-footer" class="modal-footer center">
-				<button v-if="applyMode === 'all'" type="button" class="btn blue" @click="applyToAllStores()">Apply</button>
-				<button v-if="applyMode === 'group'" type="button" class="btn blue" @click="applyToGroup()">Apply</button>
-				<button v-if="applyMode === 'geolocation'" type="button" class="btn blue" @click="applyToGeolocation()">Apply</button>
+				<button 
+					v-if="applyMode === 'all'" 
+					type="button" 
+					class="btn blue" 
+					@click="applyToAllStores()"
+					:disabled="applyingToAllStores">
+					Apply
+					<i 
+						v-show="applyingToAllStores"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
+				<button 
+					v-if="applyMode === 'group'" 
+					type="button" 
+					class="btn blue" 
+					@click="applyToGroup()"
+					:disabled="applyingToGroup">
+					Apply
+					<i 
+						v-show="applyingToGroup"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
+				<button 
+					v-if="applyMode === 'geolocation'" 
+					type="button" 
+					class="btn blue" 
+					@click="applyToGeolocation()"
+					:disabled="applyingToGeolocation">
+					Apply
+					<i 
+						v-show="applyingToGeolocation"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
 				<div class="footer-wrapper" v-if="applyMode === 'userGroup'">
 					<el-pagination
 						class="inline-block pagination-center"
@@ -372,10 +428,21 @@
 						:page-count="pageCount"
 						@current-change="changeCurrentPage">
 					</el-pagination>
-					<button type="button" class="btn blue" @click="applyToUserGroup()">Apply</button>
+					<button 
+						type="button" 
+						class="btn blue" 
+						@click="applyToUserGroup()"
+						:disabled="applyingToUserGroup">
+						Apply
+						<i 
+							v-show="applyingToUserGroup"
+							class="fa fa-spinner fa-pulse fa-fw">
+						</i>
+					</button>
 				</div>
 			</div>
 		</modal>
+
 		<modal :show="showQrCodeModal" effect="fade" @closeOnEscape="closeQrCodeModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closeQrCodeModal()">
@@ -469,11 +536,34 @@
 				</div>
 			</div>
 			<div slot="modal-footer" class="modal-footer clear">
-				<button v-if="!promotionForQrCode.qr_code.length && !promotionForQrCode.showStoreSelector" @click="generateQrCode()" type="button" class="btn blue">Generate</button>
+				<button 
+					v-if="!promotionForQrCode.qr_code.length && !promotionForQrCode.showStoreSelector" 
+					@click="generateQrCode()" 
+					type="button" 
+					class="btn blue"
+					:disabled="generating">
+					Generate
+					<i 
+						v-show="generating"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
 				<button v-if="!promotionForQrCode.qr_code.length && promotionForQrCode.showStoreSelector" @click="selectQrLocations()" type="button" class="btn blue">Select</button>
-				<button v-if="promotionForQrCode.qr_code.length" @click="deleteQrCode()" type="button" class="btn blue">Delete</button>
+				<button 
+					v-if="promotionForQrCode.qr_code.length" 
+					@click="deleteQrCode()" 
+					type="button" 
+					class="btn blue"
+					:disabled="deleting">
+					Delete
+					<i 
+						v-show="deleting"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
 			</div>
 		</modal>
+
 		<modal :show="showPromoCodesModal" effect="fade" @closeOnEscape="closePromoCodesCodeModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closePromoCodesCodeModal()">
@@ -526,6 +616,7 @@
 				<button @click="selectPromoCodes()" type="button" class="btn blue">Select</button>
 			</div>
 		</modal>
+
 		<menu-modifier-tree
 			v-if="showMenuModifierTreeModal" 
 			:selectedObject="newPromotion" 
@@ -567,6 +658,7 @@ export default {
 			createErrorMessage: '',
 			assignErrorMessage: '',
 			createNewPromotionCollapse: true,
+			creating: false,
 			newPromotion: {
 				name: '',
 				description: '',
@@ -632,7 +724,14 @@ export default {
 			freshiiLogo: freshiiLogo,
 			imageMode: {
 				newMenu: false
-			}
+			},
+			applyingToUserGroup: false,
+			applyingToAllStores: false,
+			applyingToGroup: false,
+			applyingToGeolocation: false,
+			updating: false,
+			generating: false,
+			deleting: false
 		}
 	},
 	computed: {
@@ -893,6 +992,7 @@ export default {
 		 * @returns {object} - A promise
 		 */
 		generateQrCode () {
+			this.generating = true
 			var promotionsVue = this
 			PromotionsFunctions.generateQrcode(promotionsVue.$root.appId, promotionsVue.$root.appSecret, promotionsVue.$root.userToken, promotionsVue.promotionForQrCode).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
@@ -906,6 +1006,8 @@ export default {
 					errorName: 'qrErrorMessage',
 					vue: promotionsVue
 				})
+			}).finally(() => {
+				promotionsVue.generating = false
 			})
 		},
 		/**
@@ -914,6 +1016,7 @@ export default {
 		 * @returns {object} - A promise
 		 */
 		deleteQrCode () {
+			this.deleting = true
 			var promotionsVue = this
 			PromotionsFunctions.deleteQrCode(promotionsVue.$root.appId, promotionsVue.$root.appSecret, promotionsVue.$root.userToken, promotionsVue.promotionForQrCode.qr_code_id).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
@@ -927,6 +1030,8 @@ export default {
 					errorName: 'qrErrorMessage',
 					vue: promotionsVue
 				})
+			}).finally(() => {
+				promotionsVue.deleting = false
 			})
 		},
 		/**
@@ -1066,6 +1171,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		applyToUserGroup () {
+			this.applyingToUserGroup = true
 			var promotionsVue = this
 			let payload = {
 				promotions: [this.selectedPromotion.id]
@@ -1088,6 +1194,8 @@ export default {
 					promotionsVue.applyErrorMessage = 'Something went wrong ...'
 					window.scrollTo(0, 0)
 				}
+			}).finally(() => {
+				promotionsVue.applyingToUserGroup = false
 			})
 		},
 		/**
@@ -1097,6 +1205,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		applyToAllStores () {
+			this.applyingToAllStores = true
 			var promotionsVue = this
 			let payload = {
 				promotions: [this.selectedPromotion.id]
@@ -1119,6 +1228,8 @@ export default {
 					promotionsVue.applyErrorMessage = 'Something went wrong ...'
 					window.scrollTo(0, 0)
 				}
+			}).finally(() => {
+				promotionsVue.applyingToAllStores = false
 			})
 		},
 		/**
@@ -1128,6 +1239,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		applyToGroup () {
+			this.applyingToGroup = true
 			var promotionsVue = this
 			let payload = {
 				promotions: [this.selectedPromotion.id]
@@ -1150,6 +1262,8 @@ export default {
 					promotionsVue.applyErrorMessage = 'Something went wrong ...'
 					window.scrollTo(0, 0)
 				}
+			}).finally(() => {
+				promotionsVue.applyingToGroup = false
 			})
 		},
 		/**
@@ -1159,6 +1273,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		applyToGeolocation () {
+			this.applyingToGeolocation = true
 			var promotionsVue = this
 			let payload = {
 				promotions: [this.selectedPromotion.id]
@@ -1181,6 +1296,8 @@ export default {
 					promotionsVue.applyErrorMessage = 'Something went wrong ...'
 					window.scrollTo(0, 0)
 				}
+			}).finally(() => {
+				promotionsVue.applyingToGeolocation = false
 			})
 		},
 		/**
@@ -1275,6 +1392,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		applySelectedPromotions () {
+			this.updating = true
 			var promotionsVue = this
 			var selectedItems = []
 			var unselectedItems = []
@@ -1294,6 +1412,8 @@ export default {
 					}
 				}).catch(error => {
 					this.assignErrorMessage = error.message
+				}).finally(() => {
+					promotionsVue.updating = false
 				})
 			} else {
 				this.assignErrorMessage = 'Please select at least one promotion.'
@@ -1538,6 +1658,7 @@ export default {
 
 			return promotionsVue.validatePromotionData()
 			.then(response => {
+				promotionsVue.creating = true
 				let payload = {...promotionsVue.newPromotion}
 				if (payload.cta_type === 'menu_item') {
 					payload.cta_value = payload.skuArray.toString()
@@ -1557,6 +1678,8 @@ export default {
 					}
 					promotionsVue.createErrorMessage = reason
 					window.scrollTo(0, 0)
+				}).finally(() => {
+					promotionsVue.creating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

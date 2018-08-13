@@ -32,7 +32,16 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-md-6">
-						<button type="submit" class="btn blue pull-right">Create</button>	
+						<button 
+							type="submit" 
+							class="btn blue pull-right"
+							:disabled="creating">
+							Create
+							<i 
+								v-show="creating"
+								class="fa fa-spinner fa-pulse fa-fw">
+							</i>
+						</button>	
 					</div>
 				</div>
 			</form>
@@ -48,6 +57,7 @@ export default {
 	data () {
 		return {
 			errorMessage: '',
+			creating: false,
 			newFolder: {
 				name: '',
 				is_shared: 1
@@ -92,6 +102,7 @@ export default {
 			let _this = this
 
 			return _this.validateFormData().then(response => {
+				_this.creating = true
 				_this.clearError('errorMessage')
 				const businessId = GlobalVariables.businessId
 
@@ -100,6 +111,8 @@ export default {
 					_this.showCreateSuccess()
 				}).catch(err => {
 					console.log(err)
+				}).finally(() => {
+					_this.creating = false
 				})
 			}).catch(reason => {
 				console.log(reason)

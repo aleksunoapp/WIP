@@ -58,8 +58,13 @@
 				v-if="!selectImageMode && $root.permissions['news_feed update']" 
 				type="button" 
 				class="btn btn-primary" 
-				@click="saveEditedFeed()">
+				@click="saveEditedFeed()"
+				:disabled="updating">
 				Save
+				<i 
+					v-show="updating"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
 			</button>
 		</div>
 	</modal>
@@ -77,6 +82,7 @@ export default {
 			newsToBeEdited: {
 				image: ''
 			},
+			updating: false,
 			errorMessage: '',
 			selectImageMode: false
 		}
@@ -154,6 +160,7 @@ export default {
 
 			return editNewsFeedVue.validateFeedData()
 			.then(response => {
+				editNewsFeedVue.updating = true
 				NewsFeedFunctions.saveEditedFeed(editNewsFeedVue.newsToBeEdited, editNewsFeedVue.$root.userToken, editNewsFeedVue.$root.appId, editNewsFeedVue.$root.appSecret).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						editNewsFeedVue.closeModalAndUpdate()
@@ -167,6 +174,8 @@ export default {
 					}
 					editNewsFeedVue.errorMessage = reason
 					window.scrollTo(0, 0)
+				}).finally(() => {
+					editNewsFeedVue.updating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

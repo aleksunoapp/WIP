@@ -64,7 +64,17 @@
 						</div>
 						<div class="form-actions right margin-top-20">
 							<button type="button" class="btn btn-default" @click="resetSearch()"> Reset Search</button>
-							<button type="button" class="btn blue" @click="searchUsers(1)">Search</button>
+							<button 
+								type="button" 
+								class="btn blue" 
+								@click="searchUsers(1)"
+								:disabled="searching">
+								Search
+								<i 
+									v-show="searching"
+									class="fa fa-spinner fa-pulse fa-fw">
+								</i>
+							</button>
 						</div>
 					</form>
       			</div>
@@ -77,11 +87,11 @@
 
 	  			<div class="margin-top-30 search-content-4">
 
-					<loading-screen :show="loadingUserData" :color="'#2C3E50'" :display="'inline'"></loading-screen>
+					<loading-screen :show="loadingAll" :color="'#2C3E50'" :display="'inline'"></loading-screen>
 
-					<no-results :show="!loadingUserData && !users.length" :type="'users'"></no-results>
+					<no-results :show="!loadingAll && !users.length" :type="'users'"></no-results>
 
-      				<div class="search-table table-responsive" v-show="!loadingUserData && users.length">
+      				<div class="search-table table-responsive" v-show="!loadingAll && users.length">
 
 						<div class="clearfix margin-bottom-10">
 							<el-dropdown trigger="click" @command="updateSortByOrder" size="mini" :show-timeout="50" :hide-timeout="50">
@@ -152,11 +162,11 @@
         <div class="margin-top-20" v-show="view === 'search'">
 	        <div class="relative-block">
 
-				<loading-screen :show="searching" :color="'#2C3E50'" :display="'inline'"></loading-screen>
+				<loading-screen :show="loadingSearch" :color="'#2C3E50'" :display="'inline'"></loading-screen>
 
-				<no-results :show="!searching && !searchResults.length" :type="'users'"></no-results>
+				<no-results :show="!loadingSearch && !searchResults.length" :type="'users'"></no-results>
 
-	  			<div class="margin-top-30 search-content-4" v-if="!searching && searchResults.length">
+	  			<div class="margin-top-30 search-content-4" v-if="!loadingSearch && searchResults.length">
 
 					<div class="clearfix margin-bottom-10">
 						<el-dropdown trigger="click" @command="updateSortByOrder" size="mini" :show-timeout="50" :hide-timeout="50">
@@ -241,7 +251,7 @@ export default {
 				{name: 'Users', link: false}
 			],
 			view: 'all',
-			loadingUserData: false,
+			loadingAll: false,
 			users: [],
 			searchCollapse: true,
 			search: {
@@ -261,7 +271,7 @@ export default {
 			numPages: 1,
 			searchActivePage: 1,
 			searchNumPages: 1,
-			searching: false
+			loadingSearch: false
 		}
 	},
 	watch: {
@@ -390,7 +400,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		getUsers () {
-			this.loadingUserData = true
+			this.loadingAll = true
 			var usersVue = this
 			let paginationPreferences = {
 				page: this.activePage,
@@ -403,12 +413,12 @@ export default {
 					usersVue.totalResults = response.payload.total
 					usersVue.users = response.payload.data
 					window.scrollTo(0, 0)
-					usersVue.loadingUserData = false
+					usersVue.loadingAll = false
 				} else {
-					usersVue.loadingUserData = false
+					usersVue.loadingAll = false
 				}
 			}).catch(reason => {
-				usersVue.loadingUserData = false
+				usersVue.loadingAll = false
 				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
 					usersVue.$router.push('/login/expired')
 					return
@@ -440,12 +450,15 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		searchUsers (page) {
+			if (page !== undefined) {
+				this.searching = true
+			}
 			var userListVue = this
 			userListVue.clearSearchError()
 			return userListVue.validateSearchData()
 			.then(response => {
 				userListVue.view = 'search'
-				userListVue.searching = true
+				userListVue.loadingSearch = true
 				let searchParams = {}
 				searchParams.first_name = this.search.first_name
 				searchParams.last_name = this.search.last_name
@@ -481,6 +494,7 @@ export default {
 					userListVue.errorMessage = reason
 					window.scrollTo(0, 0)
 				}).finally(() => {
+					userListVue.loadingSearch = false
 					userListVue.searching = false
 				})
 			}).catch(reason => {

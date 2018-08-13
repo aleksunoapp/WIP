@@ -92,7 +92,16 @@
 							</div>
 						</div>
 						<div class="form-actions right">
-							<button type="submit" class="btn blue">Create</button>
+							<button 
+								type="submit" 
+								class="btn blue"
+								:disabled="creating">
+								Create
+								<i 
+									v-show="creating"
+									class="fa fa-spinner fa-pulse fa-fw">
+								</i>
+							</button>
 						</div>
 					</form>
 				</div>
@@ -196,10 +205,32 @@
 		</div>
 
 		<!-- PANEL COMPONENTS END -->
-		<select-users v-if="showSelectUsersModal" :passedGroupId="selectedGroupId" :passedGroupName="passedGroupName" @closeSelectUsersModal="closeSelectUsersModal"></select-users>
-		<message v-if="messageModalDisplayed" :userId="selectedUsers" @closeMessageModal="closeMessageModal"></message>
-		<delete-user-group v-if="deleteGroupModalActive" :selectedPromotionId="groupToBeDeletedId" @closeDeleteGroupModal="closeDeleteGroupModal" @deleteGroupAndCloseModal="deleteGroupAndCloseModal"></delete-user-group>
-		<edit-user-group v-if="showEditGroupModal" :passedGroup="groupToBeEdited" @closeEditGroupModal="closeEditGroupModal" @updateGroup="updateGroup"></edit-user-group>
+		<select-users 
+			v-if="showSelectUsersModal" 
+			:passedGroupId="selectedGroupId" 
+			:passedGroupName="passedGroupName" 
+			@closeSelectUsersModal="closeSelectUsersModal">
+		</select-users>
+
+		<message 
+			v-if="messageModalDisplayed" 
+			:userId="selectedUsers" 
+			@closeMessageModal="closeMessageModal">
+		</message>
+
+		<delete-user-group 
+			v-if="deleteGroupModalActive" 
+			:selectedPromotionId="groupToBeDeletedId" 
+			@closeDeleteGroupModal="closeDeleteGroupModal" 
+			@deleteGroupAndCloseModal="deleteGroupAndCloseModal">
+		</delete-user-group>
+
+		<edit-user-group 
+			v-if="showEditGroupModal" 
+			:passedGroup="groupToBeEdited" 
+			@closeEditGroupModal="closeEditGroupModal" 
+			@updateGroup="updateGroup">
+		</edit-user-group>
 	</div>
 </template>
 
@@ -238,6 +269,7 @@ export default {
 			passedGroupName: '',
 			city: '',
 			province: '',
+			creating: false,
 			newGroup: {
 				id: '',
 				name: '',
@@ -675,6 +707,7 @@ export default {
 
 			return userGroupsVue.validateGroupData()
 			.then(response => {
+				userGroupsVue.creating = true
 				UserGroupsFunctions.createNewGroup(userGroupsVue.newGroup, userGroupsVue.$root.appId, userGroupsVue.$root.appSecret, userGroupsVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						userGroupsVue.showAlert()
@@ -689,6 +722,8 @@ export default {
 					}
 					userGroupsVue.errorMessage = reason
 					window.scrollTo(0, 0)
+				}).finally(() => {
+					userGroupsVue.creating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

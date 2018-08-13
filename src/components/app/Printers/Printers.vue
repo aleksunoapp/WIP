@@ -83,7 +83,16 @@
 						</div>
 		        	</div>
       				<div class="form-actions right margin-top-20">
-						<button type="submit" class="btn blue">Create</button>
+						<button 
+							type="submit" 
+							class="btn blue"
+							:disabled="creating">
+							Create
+							<i 
+								v-show="creating"
+								class="fa fa-spinner fa-pulse fa-fw">
+							</i>
+						</button>
 					</div>
       			</form>
   			</div>
@@ -191,6 +200,7 @@ export default {
 			storePrinters: [],
 			showEditPrinterModal: false,
 			selectedPrinterId: 0,
+			creating: false,
 			newPrinter: {
 				printer_serialno: '',
 				printer_key: '',
@@ -355,6 +365,7 @@ export default {
 
 			return addPrinterVue.validatePrinterData()
 			.then(response => {
+				addPrinterVue.creating = true
 				addPrinterVue.newPrinter.location_id = this.$root.activeLocation.id
 				PrintersFunctions.createNewPrinter(addPrinterVue.newPrinter, addPrinterVue.$root.appId, addPrinterVue.$root.appSecret, addPrinterVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
@@ -373,6 +384,8 @@ export default {
 					}
 					addPrinterVue.errorMessage = reason.responseJSON.message
 					window.scrollTo(0, 0)
+				}).finally(() => {
+					addPrinterVue.creating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

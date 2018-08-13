@@ -16,7 +16,17 @@
 			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer clear">
-			<button type="button" class="btn btn-primary" @click="deleteMenu()">Delete</button>
+			<button 
+				type="button" 
+				class="btn btn-primary" 
+				@click="deleteMenu()"
+				:disabled="deleting">
+				Delete
+				<i 
+					v-show="deleting"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
+			</button>
 		</div>
 	</modal>
 </template>
@@ -29,6 +39,7 @@ export default {
 	data () {
 		return {
 			showDeleteMenuModal: false,
+			deleting: false,
 			errorMessage: '',
 			customWidth: 90
 		}
@@ -56,6 +67,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		deleteMenu () {
+			this.deleting = true
 			var deleteMenuVue = this
 			deleteMenuVue.clearError()
 
@@ -72,6 +84,8 @@ export default {
 				}
 				deleteMenuVue.errorMessage = reason
 				window.scrollTo(0, 0)
+			}).finally(() => {
+				deleteMenuVue.deleting = false
 			})
 		},
 		/**

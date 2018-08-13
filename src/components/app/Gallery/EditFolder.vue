@@ -33,7 +33,16 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-md-6">
-						<button type="submit" class="btn blue pull-right">Save</button>	
+						<button 
+							type="submit" 
+							class="btn blue pull-right"
+							:disabled="updating">
+							Save
+							<i 
+								v-show="updating"
+								class="fa fa-spinner fa-pulse fa-fw">
+							</i>
+						</button>	
 					</div>
 				</div>
 			</form>
@@ -49,6 +58,7 @@ export default {
 	data () {
 		return {
 			errorMessage: '',
+			updating: false,
 			newFolder: {
 				name: '',
 				is_shared: 1
@@ -97,6 +107,7 @@ export default {
 			let _this = this
 
 			return _this.validateFormData().then(response => {
+				_this.updating = true
 				_this.clearError('errorMessage')
 				const businessId = GlobalVariables.businessId
 				let folderName = _this.folder.name
@@ -106,6 +117,8 @@ export default {
 					_this.showUpdateSuccess()
 				}).catch(err => {
 					console.log(err)
+				}).finally(() => {
+					_this.updating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

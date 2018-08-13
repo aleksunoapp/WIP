@@ -84,7 +84,16 @@
 					</div>
 					<div class="row">
 						<div class="col-md-6">
-							<button type="submit" class="btn blue pull-right">Create</button>
+							<button 
+								type="submit" 
+								class="btn blue pull-right"
+								:disabled="creating">
+								Create
+								<i 
+									v-show="creating"
+									class="fa fa-spinner fa-pulse fa-fw">
+								</i>
+							</button>
 						</div>
 					</div>
 				</form>
@@ -260,8 +269,13 @@
 					v-else
 					@click="updateTaxClass()" 
 					type="submit" 
-					class="btn blue">
+					class="btn blue"
+					:disabled="updating">
 					Save
+					<i 
+						v-show="updating"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
 				</button>
 			</div>
 		</modal>
@@ -279,7 +293,17 @@
 				<p>Are you sure you want to delete {{taxClassToDelete.name}}?</p>
 			</div>
 			<div slot="modal-footer" class="modal-footer clear">
-				<button type="button" class="btn blue" @click="deleteTaxClass()">Delete</button>
+				<button 
+					type="button" 
+					class="btn blue" 
+					@click="deleteTaxClass()"
+					:disabled="deleting">
+					Delete
+					<i 
+						v-show="deleting"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
 			</div>
 		</modal>
 		<!-- START DELETE -->
@@ -304,6 +328,7 @@ export default {
 			],
 
 			createNewCollapse: true,
+			creating: false,
 			createErrorMessage: '',
 			newTaxClass: {
 				location_id: '',
@@ -321,6 +346,7 @@ export default {
 
 			showEditModal: false,
 			editErrorMessage: '',
+			updating: false,
 			taxClassToEdit: {
 				location_id: '',
 				name: '',
@@ -332,6 +358,7 @@ export default {
 			},
 
 			showDeleteModal: false,
+			deleting: false,
 			deleteErrorMessage: '',
 			taxClassToDelete: {
 				name: ''
@@ -438,6 +465,7 @@ export default {
 
 			return _this.validateNewTaxClassData()
 			.then(response => {
+				this.creating = true
 				let payload = this.newTaxClass
 
 				TaxClassesFunctions.createTaxClass(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
@@ -457,6 +485,8 @@ export default {
 						errorName: 'createErrorMessage',
 						vue: _this
 					})
+				}).finally(() => {
+					_this.creating = false
 				})
 			}).catch(reason => {
 				_this.createErrorMessage = reason
@@ -571,6 +601,7 @@ export default {
 
 			return _this.validateEditedTaxClassData()
 			.then(response => {
+				this.updating = true
 				let payload = this.taxClassToEdit
 
 				TaxClassesFunctions.updateTaxClass(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken).then(response => {
@@ -590,6 +621,8 @@ export default {
 						errorName: 'editErrorMessage',
 						vue: _this
 					})
+				}).finally(() => {
+					_this.updating = true
 				})
 			}).catch(reason => {
 				_this.editErrorMessage = reason
@@ -651,6 +684,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		deleteTaxClass () {
+			this.deleting = true
 			var _this = this
 			return TaxClassesFunctions.deleteTaxClass(_this.taxClassToDelete.id, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
 			.then(response => {
@@ -667,6 +701,8 @@ export default {
 					errorName: 'deleteErrorMessage',
 					vue: _this
 				})
+			}).finally(() => {
+				_this.deleting = false
 			})
 		},
 		/**

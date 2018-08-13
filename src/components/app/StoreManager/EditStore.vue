@@ -245,9 +245,13 @@
 										<button
 											type="submit"
 											class="btn blue"
-											:disabled="!$root.permissions['stores info update']? true : false"
+											:disabled="!$root.permissions['stores info update'] || updatingStoreInfo"
 										>
 											Save
+											<i 
+												v-show="updatingStoreInfo"
+												class="fa fa-spinner fa-pulse fa-fw">
+											</i>
 										</button>
 									</div>
 								</fieldset>
@@ -522,9 +526,12 @@
 											<button
 												type="submit"
 												class="btn blue"
-												:disabled="!$root.permissions['stores meta update']? true : false"
-											>
+												:disabled="!$root.permissions['stores meta update'] || updatingStoreMeta">
 												Save
+												<i 
+													v-show="updatingStoreMeta"
+													class="fa fa-spinner fa-pulse fa-fw">
+												</i>
 											</button>
 										</div>
 									</div>
@@ -618,9 +625,13 @@
 										<button
 											type="submit"
 											class="btn blue"
-											:disabled="!$root.permissions['stores hours update']? true : false"
+											:disabled="!$root.permissions['stores hours update'] || updatingStoreHours"
 											>
-												Save
+											Save
+											<i 
+												v-show="updatingStoreHours"
+												class="fa fa-spinner fa-pulse fa-fw">
+											</i>
 										</button>
 									</div>
 								</fieldset>
@@ -857,8 +868,11 @@ export default {
 			storeMetaError: '',
 			storeHourError: '',
 			updateHolidayHoursError: '',
+			updatingStoreInfo: false,
 			storeToBeEdited: {},
+			updatingStoreMeta: false,
 			metaToBeEdited: {},
+			updatingStoreHours: false,
 			hoursToBeEdited: [
 				{
 					created_by: this.$root.createdBy,
@@ -1478,6 +1492,7 @@ export default {
 
 			return editStoreVue.validateStoreInformation()
 			.then(response => {
+				editStoreVue.updatingStoreInfo = true
 				editStoreVue.storeToBeEdited.phone = editStoreVue.storeToBeEdited.phone.replace(/[^\d]/g, '')
 				editStoreVue.storeToBeEdited.fax = editStoreVue.storeToBeEdited.fax.replace(/[^\d]/g, '')
 				if (!editStoreVue.storeToBeEdited.fax) {
@@ -1496,6 +1511,8 @@ export default {
 						errorName: 'storeInformationError',
 						vue: editStoreVue
 					})
+				}).finally(() => {
+					editStoreVue.updatingStoreInfo = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message
@@ -1557,6 +1574,7 @@ export default {
 			editStoreVue.metaToBeEdited.updated_by = editStoreVue.$root.createdBy
 			return editStoreVue.validateStoreMeta()
 			.then(response => {
+				editStoreVue.updatingStoreMeta = true
 				if (editStoreVue.metaToBeEdited.opening_soon === 1) {
 					if (!editStoreVue.metaToBeEdited.merchant_id) {
 						editStoreVue.metaToBeEdited.merchant_id = 0
@@ -1578,6 +1596,8 @@ export default {
 							errorName: 'storeMetaError',
 							vue: editStoreVue
 						})
+					}).finally(() => {
+						editStoreVue.updatingStoreMeta = false
 					})
 				} else {
 					StoresFunctions.updateStoreMeta(editStoreVue.metaToBeEdited, editStoreVue.$route.params.store_id, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
@@ -1639,6 +1659,7 @@ export default {
 
 			if (editStoreVue.noHoursData === 'No hours to display') {
 				return editStoreVue.validateStoreHours().then(response => {
+					editStoreVue.updatingStoreHours = true
 					StoresFunctions.createStoreHours(editStoreVue.$route.params.store_id, editStoreVue.hoursToBeEdited, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
 						if (response.code === 200 && response.status === 'ok') {
 							editStoreVue.getStoreHours()
@@ -1653,6 +1674,8 @@ export default {
 						}
 						if (reason.responseJSON) {}
 						throw reason
+					}).finally(() => {
+						editStoreVue.updatingStoreHours = false
 					})
 				}).catch(reason => {
 					editStoreVue.storeHourError = reason

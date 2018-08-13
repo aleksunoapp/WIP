@@ -63,7 +63,16 @@
 						</div>
 						<div class="col-xs-12" v-show="!imageMode.newMenu">
 							<div class="pull-right">
-								<button type="submit" class="btn blue">Save</button>
+								<button 
+									type="submit" 
+									class="btn blue"
+									:disabled="creating">
+									Save
+									<i 
+										v-show="creating"
+										class="fa fa-spinner fa-pulse fa-fw">
+									</i>
+								</button>
 							</div>
 						</div>
 					</div>
@@ -164,7 +173,17 @@
 				<p>Are you sure you want to delete the news feed?</p>
 			</div>
 			<div slot="modal-footer" class="modal-footer clear">
-				<button type="button" class="btn blue" @click="deleteNewsFeed()">Delete</button>
+				<button 
+					type="button" 
+					class="btn blue" 
+					@click="deleteNewsFeed()"
+					:disabled="deleting">
+					Delete
+					<i 
+						v-show="deleting"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
 			</div>
 		</modal>
 		<!-- START DELETE -->
@@ -208,6 +227,7 @@ export default {
 				external_url: ''
 			},
 			createFeedError: '',
+			creating: false,
 			showEditFeedModal: false,
 			updateFeedError: '',
 			selectedFeedId: 0,
@@ -216,6 +236,7 @@ export default {
 			},
 			showDeleteModal: false,
 			newsToDelete: {},
+			deleting: false,
 			deleteErrorMessage: ''
 		}
 	},
@@ -229,6 +250,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		deleteNewsFeed () {
+			this.deleting = true
 			var _this = this
 			return NewsFeedFunctions.deleteNewsFeed(_this.newsToDelete.id)
 			.then(response => {
@@ -245,6 +267,8 @@ export default {
 					errorName: 'deleteErrorMessage',
 					vue: _this
 				})
+			}).finally(() => {
+				_this.deleting = false
 			})
 		},
 		/**
@@ -440,6 +464,7 @@ export default {
 			this.clearCreateFeedError()
 			return newsFeedVue.validateNewsFeedData()
 			.then(response => {
+				newsFeedVue.creating = true
 				NewsFeedFunctions.createNewsFeed(newsFeedVue.newNewsFeed, newsFeedVue.$root.userToken, newsFeedVue.$root.appId, newsFeedVue.$root.appSecret).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						newsFeedVue.newsFeed.push(response.payload)
@@ -454,6 +479,8 @@ export default {
 						errorName: 'createFeedError',
 						vue: newsFeedVue
 					})
+				}).finally(() => {
+					newsFeedVue.creating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

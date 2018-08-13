@@ -11,7 +11,17 @@
 			<select-locations-popup v-if="!displaySpinner" @selectedLocations="selectStores" :previouslySelected="groupLocations" :withButton="false"></select-locations-popup>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button type="button" class="btn blue" @click="assignStoresToGroup()">Assign</button>
+			<button 
+				type="button" 
+				class="btn blue" 
+				@click="assignStoresToGroup()"
+				:disabled="assigning">
+				Assign
+				<i 
+					v-show="assigning"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
+			</button>
 		</div>
 	</modal>
 </template>
@@ -26,6 +36,7 @@ export default {
 	data () {
 		return {
 			errorMessage: '',
+			assigning: false,
 			groupDetails: {},
 			stores: [],
 			groupLocations: [],
@@ -183,6 +194,7 @@ export default {
 				this.$el.scrollTop = 0
 				return
 			}
+			this.assigning = true
 			StoreGroupsFunctions.assignStoresToGroup(assignStoresVue.passedGroupId, assignStoresVue.groupLocations, assignStoresVue.$root.appId, assignStoresVue.$root.appSecret, assignStoresVue.$root.userToken).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
 					assignStoresVue.closeModal()
@@ -196,6 +208,8 @@ export default {
 				if (reason.responseJSON) {
 				}
 				throw reason
+			}).finally(() => {
+				assignStoresVue.assigning = false
 			})
 		},
 		/**

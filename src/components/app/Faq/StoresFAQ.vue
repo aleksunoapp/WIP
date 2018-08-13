@@ -47,7 +47,16 @@
 					</div>
 					<div class="clear form-actions right">
 						<button type="button" class="btn btn-default" @click="resetForm()"> Reset Form</button>
-						<button type="submit" class="btn blue">Save</button>
+						<button 
+							type="submit" 
+							class="btn blue"
+							:disabled="creating">
+							Save
+							<i 
+								v-show="creating"
+								class="fa fa-spinner fa-pulse fa-fw">
+							</i>
+						</button>
 					</div>
 				</form>
 			</div>
@@ -139,6 +148,7 @@ export default {
 				{name: 'Stores FAQ', link: false}
 			],
 			createFAQCollapse: true,
+			creating: false,
 			createFAQError: '',
 			newFAQ: {
 				question: '',
@@ -242,6 +252,7 @@ export default {
 			this.clearCreateFAQError()
 			return storesFAQVue.validateFAQData()
 			.then(response => {
+				storesFAQVue.creating = true
 				FAQFunctions.createStoreFAQ(storesFAQVue.newFAQ, storesFAQVue.$root.appId, storesFAQVue.$root.appSecret, storesFAQVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						storesFAQVue.newFAQ.id = response.payload.new_faq_id
@@ -260,6 +271,8 @@ export default {
 					}
 					disabledButton.cancel()
 					throw reason
+				}).finally(() => {
+					storesFAQVue.creating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

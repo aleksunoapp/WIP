@@ -42,8 +42,13 @@
 				v-else
 				type="button" 
 				class="btn btn-primary" 
-				@click="updateRewardTier()">
+				@click="updateRewardTier()"
+				:disabled="updating">
 				Save
+				<i 
+					v-show="updating"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
 			</button>
 		</div>
 	</modal>
@@ -58,6 +63,7 @@ export default {
 	data () {
 		return {
 			showEditTierModal: false,
+			updating: false,
 			rewardTierToBeEdited: {},
 			errorMessage: ''
 		}
@@ -114,6 +120,7 @@ export default {
 			editRewardsTierVue.rewardTierToBeEdited.updated_by = editRewardsTierVue.$root.createdBy
 			return editRewardsTierVue.validateTierData()
 			.then(response => {
+				editRewardsTierVue.updating = true
 				RewardsFunctions.updateRewardTier(editRewardsTierVue.rewardTierToBeEdited, editRewardsTierVue.$root.appId, editRewardsTierVue.$root.appSecret, editRewardsTierVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						this.closeModalAndUpdate()
@@ -127,6 +134,8 @@ export default {
 					}
 					editRewardsTierVue.errorMessage = reason
 					window.scrollTo(0, 0)
+				}).finally(() => {
+					editRewardsTierVue.updating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

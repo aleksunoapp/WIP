@@ -75,7 +75,16 @@
 		        		</div>
 		        	</div>
       				<div class="form-actions right margin-top-20" v-show="!imageMode.newMenu"> 
-						<button type="submit" class="btn blue">Create</button>
+						<button 
+							type="submit" 
+							class="btn blue"
+							:disabled="creating">
+							Create
+							<i 
+								v-show="creating"
+								class="fa fa-spinner fa-pulse fa-fw">
+							</i>
+						</button>
 					</div>
       			</form>
   			</div>
@@ -261,12 +270,45 @@
         <div v-if="!displayCategoryData">
             <no-results :show="!$root.activeLocation || !$root.activeLocation.id" :type="'categories'"></no-results>
         </div>
-        <edit-category v-if="editCategoryModalActive" @updateCategory="updateCategory" @deactivateEditCategoryModal="closeEditCategoryModal"></edit-category>
-        <add-sub-category v-if="addSubCategoryModalActive" @addSubCategory="addSubCategory" @deactivateAddSubCategoryModal="closeAddSubCategoryModal" :parentCategoryId="selectedCategoryId"></add-sub-category>
-        <edit-sub-category v-if="editSubCategoryModalActive" @updateSubCategory="updateSubCategory" @deactivateEditSubCategoryModal="closeEditSubCategoryModal"></edit-sub-category>
-        <delete-category v-if="deleteCategoryModalActive" :passedCategoryId="passedCategoryId" @closeDeleteCategoryModal="closeDeleteCategoryModal" @deleteCategoryAndCloseModal="deleteCategoryAndCloseModal"></delete-category>
-        <delete-sub-category v-if="deleteSubCategoryModalActive" :passedSubCategoryId="passedSubCategoryId" @closeDeleteSubCategoryModal="closeDeleteSubCategoryModal" @deleteSubCategoryAndCloseModal="deleteSubCategoryAndCloseModal"></delete-sub-category>
-        <category-hours v-if="hoursModalActive" @closeHoursModal="closeHoursModal" :category="categoryToAssignHoursTo"></category-hours>
+
+        <edit-category 
+			v-if="editCategoryModalActive" 
+			@updateCategory="updateCategory" 
+			@deactivateEditCategoryModal="closeEditCategoryModal">
+		</edit-category>
+
+        <add-sub-category 
+			v-if="addSubCategoryModalActive" 
+			@addSubCategory="addSubCategory" 
+			@deactivateAddSubCategoryModal="closeAddSubCategoryModal" 
+			:parentCategoryId="selectedCategoryId">
+		</add-sub-category>
+
+        <edit-sub-category 
+			v-if="editSubCategoryModalActive" 
+			@updateSubCategory="updateSubCategory" 
+			@deactivateEditSubCategoryModal="closeEditSubCategoryModal">
+		</edit-sub-category>
+
+        <delete-category 
+			v-if="deleteCategoryModalActive" 
+			:passedCategoryId="passedCategoryId" 
+			@closeDeleteCategoryModal="closeDeleteCategoryModal" 
+			@deleteCategoryAndCloseModal="deleteCategoryAndCloseModal">
+		</delete-category>
+
+        <delete-sub-category 
+			v-if="deleteSubCategoryModalActive" 
+			:passedSubCategoryId="passedSubCategoryId" 
+			@closeDeleteSubCategoryModal="closeDeleteSubCategoryModal" 
+			@deleteSubCategoryAndCloseModal="deleteSubCategoryAndCloseModal">
+		</delete-sub-category>
+
+        <category-hours 
+			v-if="hoursModalActive" 
+			@closeHoursModal="closeHoursModal" 
+			:category="categoryToAssignHoursTo">
+		</category-hours>
 	</div>
 </template>
 
@@ -306,6 +348,7 @@ export default {
 			selectedCategoryId: 0,
 			customText: 'There are no categories in this menu. Click on the button above to add one.',
 			createCategoryCollapse: true,
+			creating: false,
 			newCategory: {
 				menu_id: this.$route.params.menu_id,
 				name: '',
@@ -426,6 +469,7 @@ export default {
 
 			return addCategoryVue.validateCategoryData()
 			.then(response => {
+				addCategoryVue.creating = true
 				CategoriesFunctions.addNewMenuCategory(addCategoryVue.newCategory, addCategoryVue.$root.appId, addCategoryVue.$root.appSecret, addCategoryVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						addCategoryVue.newCategory.id = response.payload.new_category_id
@@ -440,6 +484,8 @@ export default {
 					}
 					addCategoryVue.errorMessage = reason
 					window.scrollTo(0, 0)
+				}).finally(() => {
+					addCategoryVue.creating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

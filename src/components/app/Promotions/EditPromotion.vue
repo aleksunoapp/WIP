@@ -183,8 +183,13 @@
 				v-if="!selectImageMode && !selectPromoCodesMode && $root.permissions['promotions update']" 
 				type="button" 
 				class="btn btn-primary" 
-				@click="updatePromotion()">
+				@click="updatePromotion()"
+				:disabled="updating">
 				Save
+				<i 
+					v-show="updating"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
 			</button>
 		</div>
 	</modal>
@@ -203,6 +208,7 @@ export default {
 	data () {
 		return {
 			showEditPromotionModal: false,
+			updating: false,
 			promotionToBeEdited: {
 				name: '',
 				description: '',
@@ -450,6 +456,7 @@ export default {
 
 			return editPromotionVue.validatePromotionData()
 			.then(response => {
+				editPromotionVue.updating = true
 				let payload = {...editPromotionVue.promotionToBeEdited}
 				payload.start_date = editPromotionVue.formatDateTimeForApi(payload.start_date)
 				payload.end_date = editPromotionVue.formatDateTimeForApi(payload.end_date)
@@ -471,6 +478,8 @@ export default {
 					}
 					editPromotionVue.errorMessage = reason
 					window.scrollTo(0, 0)
+				}).finally(() => {
+					editPromotionVue.updating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

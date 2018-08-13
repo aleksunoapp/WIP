@@ -87,9 +87,12 @@
 							v-if="!loadingTerms && terms.length"
 							@click="translateTerms()"
 							class="btn blue"
-							:disabled="!$root.permissions['localization update']"
-						>
+							:disabled="!$root.permissions['localization update'] || saving">
 							Save
+							<i 
+								v-show="saving"
+								class="fa fa-spinner fa-pulse fa-fw">
+							</i>
 						</button>
 					</div>
 					<div>
@@ -129,7 +132,8 @@ export default {
 
 			loadingTerms: false,
 			terms: [],
-			translationsTableErrorMessage: ''
+			translationsTableErrorMessage: '',
+			saving: false
 		}
 	},
 	created () {
@@ -217,6 +221,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		translateTerms () {
+			this.saving = true
 			this.clearError('translationsTableErrorMessage')
 			var localizationVue = this
 			const payload = {
@@ -240,6 +245,8 @@ export default {
 					errorName: 'translationsTableErrorMessage',
 					vue: localizationVue
 				})
+			}).finally(() => {
+				localizationVue.saving = false
 			})
 		},
 		/**

@@ -89,7 +89,16 @@
 									inactive-text="Disabled">
 								</el-switch>
 							</div>
-							<button type="submit" class="btn blue pull-right">Create</button>
+							<button 
+								type="submit" 
+								class="btn blue pull-right"
+								:disabled="creating">
+								Create
+								<i 
+									v-show="creating"
+									class="fa fa-spinner fa-pulse fa-fw">
+								</i>
+							</button>
 						</div>
 					</div>
 				</form>
@@ -263,8 +272,13 @@
 					v-else
 					@click="updateLanguage()" 
 					type="submit" 
-					class="btn blue">
+					class="btn blue"
+					:disabled="updating">
 					Save
+					<i 
+						v-show="updating"
+						class="fa fa-spinner fa-pulse fa-fw">
+					</i>
 				</button>
 			</div>
 		</modal>
@@ -289,6 +303,7 @@ export default {
 			],
 
 			createNewCollapse: true,
+			creating: false,
 			createErrorMessage: '',
 			newLanguage: {
 				name: '',
@@ -303,6 +318,7 @@ export default {
 			languages: [],
 
 			showEditModal: false,
+			updating: false,
 			editErrorMessage: '',
 			languageToEdit: {
 				name: '',
@@ -414,6 +430,7 @@ export default {
 
 			return _this.validateNewLanguageData()
 			.then(response => {
+				_this.creating = true
 				LanguagesFunctions.createLanguage(_this.newLanguage)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
@@ -431,6 +448,8 @@ export default {
 						errorName: 'createErrorMessage',
 						vue: _this
 					})
+				}).finally(() => {
+					_this.creating = false
 				})
 			}).catch(reason => {
 				_this.createErrorMessage = reason
@@ -542,6 +561,7 @@ export default {
 
 			return _this.validateEditedLanguageData()
 			.then(response => {
+				_this.updating = true
 				LanguagesFunctions.updateLanguage(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						_this.getLanguages()
@@ -558,6 +578,8 @@ export default {
 						errorName: 'editErrorMessage',
 						vue: _this
 					})
+				}).finally(() => {
+					_this.updating = false
 				})
 			}).catch(reason => {
 				console.log(reason)

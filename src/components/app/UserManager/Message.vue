@@ -100,7 +100,18 @@
 			</div>
 		</div>
 		<div slot="modal-footer" class="modal-footer">
-			<button v-if="!selectImageMode && message.notification_type.length" type="button" class="btn btn-primary" @click="sendMessage()">Send</button>
+			<button 
+				v-if="!selectImageMode && message.notification_type.length" 
+				type="button" 
+				class="btn btn-primary" 
+				@click="sendMessage()"
+				:disabled="sending">
+				Send
+				<i 
+					v-show="sending"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
+			</button>
 		</div>
 	</modal>
 </template>
@@ -251,7 +262,6 @@ export default {
 				messageVue.sending = true
 				MessageFunctions.sendMessage(messageVue.message, GlobalFunctions.messageAppToken)
 				.then(response => {
-					messageVue.sending = false
 					if (response.code === 200 && response.status === 'ok') {
 						messageVue.closeModal()
 						messageVue.showAlert(response.payload.warnings)
@@ -263,11 +273,11 @@ export default {
 						messageVue.$router.push('/login/expired')
 						return
 					}
-					messageVue.sending = false
 					messageVue.errorMessage = 'Sorry, we could not send the notification'
+				}).finally(() => {
+					messageVue.sending = false
 				})
 			}).catch(reason => {
-				messageVue.sending = false
 				// If validation fails then display the error message
 				messageVue.errorMessage = reason
 				window.scrollTo(0, 0)

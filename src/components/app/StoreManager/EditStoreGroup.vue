@@ -39,8 +39,12 @@
 				type="button"
 				class="btn btn-primary"
 				@click="updateGroup()"
-			>
+				:disabled="updating">
 				Save
+				<i 
+					v-show="updating"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
 			</button>
 			<button
 				v-if="!$root.permissions['stores groups update'] && $root.permissions['stores groups read']"
@@ -62,6 +66,7 @@ export default {
 	data () {
 		return {
 			showEditGroupModal: false,
+			updating: false,
 			groupToBeEdited: {},
 			errorMessage: ''
 		}
@@ -136,6 +141,7 @@ export default {
 
 			return editStoreGroupVue.validateGroupData()
 			.then(response => {
+				editStoreGroupVue.updating = true
 				StoreGroupsFunctions.updateGroup(editStoreGroupVue.groupToBeEdited, editStoreGroupVue.$root.appId, editStoreGroupVue.$root.appSecret, editStoreGroupVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						this.closeModalAndUpdate()
@@ -149,6 +155,8 @@ export default {
 					}
 					editStoreGroupVue.errorMessage = reason
 					window.scrollTo(0, 0)
+				}).finally(() => {
+					editStoreGroupVue.updating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message
