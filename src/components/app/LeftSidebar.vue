@@ -109,17 +109,6 @@
                             </router-link>
                         </li>
                         <li 
-                            v-if="can('list role')"
-                            class="nav-item" 
-                            :class="{'active': currentRoute === 'approvals' && currentSubRoute === 'roles'}" 
-                            id="admin_manager_roles_link"
-                        >
-                            <router-link to="/app/approvals/roles" class="nav-link">
-                                <i class="fa fa-id-badge"></i>
-                                <span class="title">Roles</span>
-                            </router-link>
-                        </li>
-                        <li 
                             v-if="can('list permission')"
                             class="nav-item" 
                             :class="{'active': currentRoute === 'approvals' && currentSubRoute === 'permissions'}" 
@@ -139,6 +128,17 @@
                             <router-link to="/app/approvals/modules" class="nav-link">
                                 <i class="fa fa-circle-o"></i>
                                 <span class="title">Modules</span>
+                            </router-link>
+                        </li>
+                        <li 
+                            v-if="can('list role')"
+                            class="nav-item" 
+                            :class="{'active': currentRoute === 'approvals' && currentSubRoute === 'roles'}" 
+                            id="admin_manager_roles_link"
+                        >
+                            <router-link to="/app/approvals/roles" class="nav-link">
+                                <i class="fa fa-id-badge"></i>
+                                <span class="title">Roles</span>
                             </router-link>
                         </li>
                     </ul>
