@@ -39,8 +39,8 @@
 	      			<form role="form" @submit.prevent="createNewMenuTier($event)">
 	      				<div class="form-body row">
 	      					<div class="col-md-12">
-	      						<div class="alert alert-danger" v-if="errorMessage.length">
-	      						    <button class="close" data-close="alert" @click="clearError()"></button>
+	      						<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+	      						    <button class="close" @click="clearError()"></button>
 	      						    <span>{{errorMessage}}</span>
 	      						</div>
 	      					</div>
@@ -76,6 +76,14 @@
 			            </div>
 			        </div>
 			        <div class="portlet-body">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
+									<button class="close" @click="clearError('listErrorMessage')"></button>
+									<span>{{listErrorMessage}}</span>
+								</div>
+							</div>
+						</div>
 			        	<no-results :show="!menuTiers.length" :type="'menu tiers'"></no-results>
 			            <div class="mt-element-list margin-top-15">
 			                <div class="mt-list-container list-news">
@@ -141,6 +149,7 @@ import LoadingScreen from '../../modules/LoadingScreen'
 import MenuTiersFunctions from '../../../controllers/MenuTiers'
 import EditMenuTier from './MenuTiers/EditMenuTier'
 import AssignMenus from './MenuTiers/AssignMenus'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -161,7 +170,8 @@ export default {
 				description: '',
 				location_id: this.$root.corporateStoreId
 			},
-			noCorporateStore: false
+			noCorporateStore: false,
+			listErrorMessage: ''
 		}
 	},
 	created () {
@@ -208,13 +218,12 @@ export default {
 					menuTiersVue.displayMenuTiersData = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					menuTiersVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch menu tiers',
+					errorName: 'listErrorMessage',
+					vue: menuTiersVue
+				})
 			})
 		},
 		/**
@@ -331,12 +340,12 @@ export default {
 						menuTiersVue.errorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						menuTiersVue.$router.push('/login/expired')
-						return
-					}
-					menuTiersVue.errorMessage = reason
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not create the tier',
+						errorName: 'errorMessage',
+						vue: menuTiersVue
+					})
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

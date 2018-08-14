@@ -1,5 +1,5 @@
 <template>
-	<modal v-bind:show="showNutritionModal" effect="fade" @closeOnEscape="closeModal">
+	<modal v-bind:show="showNutritionModal" effect="fade" @closeOnEscape="closeModal" ref="nutritionModal">
 		<div slot="modal-header" class="modal-header">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -10,14 +10,15 @@
 			</transition>
 		</div>
 		<div slot="modal-body" class="modal-body" v-if="!creatingNutritionInfo">
-	        <div class="margin-top-20" v-if="errorMessage.length">
+	        <div class="margin-top-20" v-show="errorMessage" ref="errorMessage">
 				<div class="alert alert-danger">
+					<button class="close" @click="clearError('errorMessage')"></button>
 	                <span>{{ errorMessage }}</span>
-	                <div class="margin-top-15">
-	                	<button type="button" class="btn blue" @click="enableCreate()">Add Nutrition Info</button>
-	                </div>
 	            </div>
 	        </div>
+			<div class="margin-top-15">
+				<button type="button" class="btn blue" @click="enableCreate()">Add Nutrition Info</button>
+			</div>
     	    <div class="portlet light bg-inverse clear" v-if="!errorMessage.length && !selectLocationMode">
                 <div class="portlet-title">
                     <div class="caption">Click on the button on the right to edit</div>
@@ -28,8 +29,9 @@
                     </div>
                 </div>
                 <div class="portlet-body">
-        	        <div v-if="editNutritionError.length">
+        	        <div v-show="editNutritionError" ref="editNutritionError">
         				<div class="alert alert-danger">
+							<button class="close" @click="clearError('editNutritionError')"></button>
         	                <span>{{ editNutritionError }}</span>
         	            </div>
         	        </div>
@@ -87,8 +89,9 @@
                     <div class="caption">Add nutrition info for '{{ item.name }}'</div>
                 </div>
                 <div class="portlet-body">
-        	        <div class="margin-top-20" v-if="createNutritionError.length">
+        	        <div class="margin-top-20" v-show="createNutritionError" ref="createNutritionError">
         				<div class="alert alert-danger">
+							<button class="close" @click="clearError('createNutritionError')"></button>
         	                <span>{{ createNutritionError }}</span>
         	            </div>
         	        </div>
@@ -210,6 +213,7 @@ import $ from 'jquery'
 import Modal from '../../../modules/Modal'
 import ItemsFunctions from '../../../../controllers/Items'
 import SelectLocationsPopup from '../../../modules/SelectLocationsPopup'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -294,10 +298,11 @@ export default {
 		/**
 		 * To clear the current error.
 		 * @function
+		 * @param {string} name - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
+		clearError (name) {
+			this[name] = ''
 		},
 		/**
 		 * To get the nutrition info for the item.
@@ -315,17 +320,13 @@ export default {
 					nutritionInfoVue.errorMessage = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					nutritionInfoVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-					nutritionInfoVue.errorMessage = reason.responseJSON.message || 'Something went wrong ...'
-					window.scrollTo(0, 0)
-				} else {
-					nutritionInfoVue.errorMessage = reason.message || 'Something went wrong ...'
-					window.scrollTo(0, 0)
-				}
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch nutrition info',
+					errorName: 'errorMessage',
+					vue: nutritionInfoVue,
+					containerRef: 'nutritionModal'
+				})
 			})
 		},
 		/**
@@ -401,17 +402,13 @@ export default {
 						nutritionInfoVue.editNutritionError = 'Something'
 					}
 				}).catch(reason => {
-					if (reason.responseJSON && reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						nutritionInfoVue.$router.push('/login/expired')
-						return
-					}
-					if (reason.responseJSON) {
-						nutritionInfoVue.editNutritionError = reason.responseJSON.message || 'Something went wrong ...'
-						window.scrollTo(0, 0)
-					} else {
-						nutritionInfoVue.editNutritionError = reason.message || 'Something went wrong ...'
-						window.scrollTo(0, 0)
-					}
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not update nutrition info',
+						errorName: 'editNutritionError',
+						vue: nutritionInfoVue,
+						containerRef: 'nutritionModal'
+					})
 				}).finally(() => {
 					nutritionInfoVue.updating = false
 				})
@@ -439,17 +436,13 @@ export default {
 						this.closeModalAndUpdate()
 					}
 				}).catch(reason => {
-					if (reason.responseJSON && reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						nutritionInfoVue.$router.push('/login/expired')
-						return
-					}
-					if (reason.responseJSON) {
-						nutritionInfoVue.createNutritionError = reason.responseJSON.message || 'Something went wrong ...'
-						window.scrollTo(0, 0)
-					} else {
-						nutritionInfoVue.createNutritionError = reason.message || 'Something went wrong ...'
-						window.scrollTo(0, 0)
-					}
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not add nutrition info',
+						errorName: 'createNutritionError',
+						vue: nutritionInfoVue,
+						containerRef: 'nutritionModal'
+					})
 				}).finally(() => {
 					nutritionInfoVue.creating = false
 				})

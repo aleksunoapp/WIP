@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showEditMenuModal" effect="fade" @closeOnEscape="closeModal">
+	<modal :show="showEditMenuModal" effect="fade" @closeOnEscape="closeModal" ref="editModal">
 		<div slot="modal-header" class="modal-header center">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -269,13 +269,13 @@ export default {
 					}
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editMenuVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch menu info',
+					errorName: 'errorMessage',
+					vue: editMenuVue,
+					containerRef: 'editModal'
+				})
 			})
 		},
 		/**
@@ -304,7 +304,8 @@ export default {
 						reason,
 						errorText: 'We could not update the item',
 						errorName: 'errorMessage',
-						vue: editMenuVue
+						vue: editMenuVue,
+						containerRef: 'editModal'
 					})
 				}).finally(() => {
 					editMenuVue.updating = false

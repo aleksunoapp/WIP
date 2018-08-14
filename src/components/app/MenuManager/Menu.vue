@@ -27,8 +27,8 @@
       			<form role="form" @submit.prevent="createNewMenu($event)">
       				<div class="form-body row">
       					<div class="col-md-12">
-      						<div class="alert alert-danger" v-if="errorMessage.length">
-      						    <button class="close" data-close="alert" @click="clearError()"></button>
+      						<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+      						    <button class="close" @click="clearError()"></button>
       						    <span>{{errorMessage}}</span>
       						</div>
       					</div>
@@ -647,13 +647,12 @@ export default {
 					menusVue.displayMenuData = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					menusVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorName: 'listErrorMessage',
+					errorText: 'We could not fetch menus',
+					vue: menusVue
+				})
 			})
 		},
 		/**
@@ -898,12 +897,12 @@ export default {
 						createMenuVue.errorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						createMenuVue.$router.push('/login/expired')
-						return
-					}
-					createMenuVue.errorMessage = reason
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorName: 'errorMessage',
+						errorText: 'We could not create the menu',
+						vue: createMenuVue
+					})
 				}).finally(() => {
 					createMenuVue.creating = false
 				})

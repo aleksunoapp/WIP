@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showEditItemModal" effect="fade" @closeOnEscape="closeModal">
+	<modal :show="showEditItemModal" effect="fade" @closeOnEscape="closeModal" ref="editModal">
 		<div slot="modal-header" class="modal-header center">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -12,8 +12,8 @@
 		</div>
 		<div slot="modal-body" class="modal-body">
 			<div class="page-one" v-if="!selectImageMode && !selectLocationMode" :class="{'active': !selectImageMode, 'disabled': selectImageMode}">
-				<div class="alert alert-danger" v-show="errorMessage.length" ref="errorMessage">
-				    <button class="close" data-close="alert" @click="clearError()"></button>
+				<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+				    <button class="close" @click="clearError()"></button>
 				    <span>{{errorMessage}}</span>
 				</div>
 				<div class="alert alert-info" v-show="noItemTypes" ref="noItemTypes">
@@ -348,13 +348,13 @@ export default {
 					editItemVue.itemToBeEdited = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editItemVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not get item info',
+					errorName: 'errorMessage',
+					vue: editItemVue,
+					containerRef: 'editModal'
+				})
 			})
 		},
 		/**
@@ -379,12 +379,13 @@ export default {
 						editItemVue.errorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						editItemVue.$router.push('/login/expired')
-						return
-					}
-					editItemVue.errorMessage = reason
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not update the item',
+						errorName: 'errorMessage',
+						vue: editItemVue,
+						containerRef: 'editModal'
+					})
 				}).finally(() => {
 					editItemVue.updating = false
 				})
@@ -457,7 +458,8 @@ export default {
 					reason,
 					errorText: 'We could not fetch the list of item types',
 					errorName: 'errorMessage',
-					vue: _this
+					vue: _this,
+					containerRef: 'editModal'
 				})
 			})
 		},

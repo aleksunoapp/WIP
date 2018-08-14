@@ -25,8 +25,8 @@
       			<form role="form" @submit.prevent="addNewCategoryItem()" :disabled="noItemTypes">
       				<div class="form-body row">
       					<div class="col-md-12">
-			        		<div class="alert alert-danger" v-show="errorMessage.length" ref="errorMessage">
-			        		    <button class="close" data-close="alert" @click.prevent="clearError()"></button>
+			        		<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+			        		    <button class="close" data-close="alert" @click.prevent="clearError('errorMessage')"></button>
 			        		    <span>{{errorMessage}}</span>
 			        		</div>
 			        		<div class="alert alert-info" v-show="noItemTypes" ref="noItemTypes">
@@ -220,6 +220,14 @@
 		            </div>
 		        </div>
 		        <div class="portlet-body">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
+								<button class="close" @click="clearError('listErrorMessage')"></button>
+								<span>{{listErrorMessage}}</span>
+							</div>
+						</div>
+					</div>
 		            <div class="mt-element-list margin-top-15" v-if="categoryItems.length">
 		                <div class="mt-list-container list-news ext-1 no-border">
 		                    <ul>
@@ -490,7 +498,7 @@
 		</tags-list>
 
     	<!-- ASSIGN ITEM ATTRIBUTES START -->
-		<modal :show="showAssignItemAttributesModal" effect="fade" @closeOnEscape="closeAssignItemAttributesModal">
+		<modal :show="showAssignItemAttributesModal" effect="fade" @closeOnEscape="closeAssignItemAttributesModal" ref="assignItemAttributesModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closeAssignItemAttributesModal()">
 					<span>&times;</span>
@@ -498,7 +506,7 @@
 				<h4 class="modal-title center">Apply Attributes</h4>
 			</div>
 			<div slot="modal-body" class="modal-body">
-				<div class="row" v-show="assignItemAttributesErrorMessage.length">
+				<div class="row" v-show="assignItemAttributesErrorMessage" ref="assignItemAttributesErrorMessage">
 					<div class="col-md-12">
 						<div class="alert alert-danger">
 							<button class="close" @click="clearAttributesError()"></button>
@@ -564,7 +572,7 @@
 		<!-- ASSIGN ITEM ATTRIBUTES END -->
 
 		<!-- APPLY TO LOCATIONS START -->
-		<modal :show="applyToLocationsModalActive" effect="fade" @closeOnEscape="closeApplyToLocationsModal">
+		<modal :show="applyToLocationsModalActive" effect="fade" @closeOnEscape="closeApplyToLocationsModal" ref="applyToLocationsModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closeApplyToLocationsModal()">
 					<span>&times;</span>
@@ -572,7 +580,7 @@
 				<h4 class="modal-title center">Apply Item To Locations</h4>
 			</div>
 			<div slot="modal-body" class="modal-body">
-				<div class="row" v-show="applyToLocationsErrorMessage.length" ref="applyToLocationsErrorMessage">
+				<div class="row" v-show="applyToLocationsErrorMessage" ref="applyToLocationsErrorMessage">
 					<div class="col-md-12">
 						<div class="alert alert-danger">
 							<button class="close" @click="clearLocationsError()"></button>
@@ -649,7 +657,7 @@ import TagsList from './Tags/TagsList'
 import ResourcePicker from '../../modules/ResourcePicker'
 import MenusFunctions from '../../../controllers/Menus'
 import ItemTypesFunctions from '../../../controllers/ItemTypes'
-import ajaxErrorHandler from '../../../controllers/ErrorController'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 import SelectLocationsPopup from '../../modules/SelectLocationsPopup'
 import PresetSettings from '@/components/app/MenuManager/Items/PresetSettings'
 
@@ -738,7 +746,8 @@ export default {
 				id: null,
 				name: '',
 				preset_item_modifier_item: []
-			}
+			},
+			listErrorMessage: ''
 		}
 	},
 	computed: {
@@ -805,10 +814,12 @@ export default {
 					}
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					itemsVue.$router.push('/login/expired')
-					return
-				}
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not get preset info',
+					errorName: 'listErrorMessage',
+					vue: itemsVue
+				})
 			})
 		},
 		/**
@@ -936,7 +947,8 @@ export default {
 					reason,
 					errorText: 'We could not apply the item',
 					errorName: 'applyToLocationsErrorMessage',
-					vue: itemsVue
+					vue: itemsVue,
+					containerRef: 'applyToLocationsModal'
 				})
 			}).finally(() => {
 				itemsVue.applyingItemToLocations = false
@@ -1045,19 +1057,18 @@ export default {
 		 */
 		getCorporateMenus () {
 			this.menus = []
-			var menuTreeVue = this
-			return MenusFunctions.getStoreMenus(menuTreeVue.$root.appId, menuTreeVue.$root.appSecret, menuTreeVue.$root.corporateStoreId).then(response => {
+			var itemsVue = this
+			return MenusFunctions.getStoreMenus(itemsVue.$root.appId, itemsVue.$root.appSecret, itemsVue.$root.corporateStoreId).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
-					menuTreeVue.menus = response.payload
+					itemsVue.menus = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					menuTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch menus',
+					errorName: 'listErrorMessage',
+					vue: itemsVue
+				})
 			})
 		},
 		/**
@@ -1089,21 +1100,21 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		getCategoriesForActiveMenu () {
-			var menuTreeVue = this
-			menuTreeVue.categories = []
-			return CategoriesFunctions.getMenuCategories(menuTreeVue.activeMenu.id, menuTreeVue.$root.appId, menuTreeVue.$root.appSecret, menuTreeVue.$root.userToken).then(response => {
+			var itemsVue = this
+			itemsVue.categories = []
+			return CategoriesFunctions.getMenuCategories(itemsVue.activeMenu.id, itemsVue.$root.appId, itemsVue.$root.appSecret, itemsVue.$root.userToken).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
-					menuTreeVue.categories = response.payload
-					menuTreeVue.isMenuSelected = true
+					itemsVue.categories = response.payload
+					itemsVue.isMenuSelected = true
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					menuTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could fetch categories',
+					errorName: 'applyToLocationsErrorMessage',
+					vue: itemsVue,
+					containerRef: 'applyToLocationsModal'
+				})
 			})
 		},
 		/**
@@ -1123,21 +1134,21 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		getItemsForActiveCategory () {
-			var menuTreeVue = this
-			menuTreeVue.items = []
-			return ItemsFunctions.getCategoryItemsFull(menuTreeVue.activeCategory.id, menuTreeVue.$root.appId, menuTreeVue.$root.appSecret).then(response => {
+			var itemsVue = this
+			itemsVue.items = []
+			return ItemsFunctions.getCategoryItemsFull(itemsVue.activeCategory.id, itemsVue.$root.appId, itemsVue.$root.appSecret).then(response => {
 				if (response.code === 200 && response.status === 'ok') {
-					menuTreeVue.items = response.payload
-					menuTreeVue.isCategorySelected = true
+					itemsVue.items = response.payload
+					itemsVue.isCategorySelected = true
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					menuTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could fetch items',
+					errorName: 'applyToLocationsErrorMessage',
+					vue: itemsVue,
+					containerRef: 'applyToLocationsModal'
+				})
 			})
 		},
 		/**
@@ -1192,27 +1203,27 @@ export default {
 		 * @returns {object} A promise that will validate the input form
 		 */
 		validateItemData () {
-			var addItemVue = this
+			var itemsVue = this
 			return new Promise(function (resolve, reject) {
-				if (!addItemVue.newItem.name.length) {
+				if (!itemsVue.newItem.name.length) {
 					reject('Item name cannot be blank')
-				} else if (!addItemVue.newItem.desc.length) {
+				} else if (!itemsVue.newItem.desc.length) {
 					reject('Item description cannot be blank')
-				} else if (!addItemVue.newItem.short_description.length) {
+				} else if (!itemsVue.newItem.short_description.length) {
 					reject('Item short description cannot be blank')
-				} else if (!addItemVue.newItem.price.length) {
+				} else if (!itemsVue.newItem.price.length) {
 					reject('Item price cannot be blank')
-				} else if (!addItemVue.newItem.nutrition_summary.length) {
+				} else if (!itemsVue.newItem.nutrition_summary.length) {
 					reject('Nutrition summary cannot be blank')
-				} else if (!$.isNumeric(addItemVue.newItem.order)) {
+				} else if (!$.isNumeric(itemsVue.newItem.order)) {
 					reject('Item order should be a number')
-				} else if (!addItemVue.newItem.sku.length) {
+				} else if (!itemsVue.newItem.sku.length) {
 					reject('Item SKU cannot be blank')
-				} else if (!addItemVue.newItem.item_type_id) {
+				} else if (!itemsVue.newItem.item_type_id) {
 					reject('Select an item type')
-				} else if (!addItemVue.newItem.image_url.length) {
+				} else if (!itemsVue.newItem.image_url.length) {
 					reject('Item image URL cannot be blank')
-				} else if (!$.isNumeric(addItemVue.newItem.status)) {
+				} else if (!$.isNumeric(itemsVue.newItem.status)) {
 					reject('Item status cannot be blank')
 				}
 				resolve('Hurray')
@@ -1224,32 +1235,32 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		addNewCategoryItem () {
-			var addItemVue = this
-			addItemVue.clearError()
+			var itemsVue = this
+			itemsVue.clearError('errorMessage')
 
-			return addItemVue.validateItemData()
+			return itemsVue.validateItemData()
 			.then(response => {
-				addItemVue.creating = true
-				ItemsFunctions.addNewCategoryItem(addItemVue.newItem, addItemVue.$root.appId, addItemVue.$root.appSecret, addItemVue.$root.userToken).then(response => {
+				itemsVue.creating = true
+				ItemsFunctions.addNewCategoryItem(itemsVue.newItem, itemsVue.$root.appId, itemsVue.$root.appSecret, itemsVue.$root.userToken).then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						addItemVue.newItem.id = response.payload.new_item_id
-						addItemVue.addItem(addItemVue.newItem)
+						itemsVue.newItem.id = response.payload.new_item_id
+						itemsVue.addItem(itemsVue.newItem)
 					} else {
-						addItemVue.errorMessage = response.message
+						itemsVue.errorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						addItemVue.$router.push('/login/expired')
-						return
-					}
-					addItemVue.errorMessage = reason
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could fetch categories',
+						errorName: 'errorMessage',
+						vue: itemsVue
+					})
 				}).finally(() => {
-					addItemVue.creating = false
+					itemsVue.creating = false
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message
-				addItemVue.errorMessage = reason
+				itemsVue.errorMessage = reason
 				window.scrollTo(0, 0)
 				throw reason
 			})
@@ -1266,13 +1277,12 @@ export default {
 					itemsVue.categoryDetails = response.payload[0]
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					itemsVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch category info',
+					errorName: 'listErrorMessage',
+					vue: itemsVue
+				})
 			})
 		},
 		/**
@@ -1292,14 +1302,13 @@ export default {
 					itemsVue.displayItemData = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					itemsVue.$router.push('/login/expired')
-					return
-				}
 				itemsVue.displayItemData = false
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch items',
+					errorName: 'listErrorMessage',
+					vue: itemsVue
+				})
 			})
 		},
 		/**
@@ -1339,13 +1348,12 @@ export default {
 					}
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					itemsVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch item info',
+					errorName: 'listErrorMessage',
+					vue: itemsVue
+				})
 			})
 		},
 		/**
@@ -1376,11 +1384,13 @@ export default {
 					itemsVue.loadingItemAttributes = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					itemsVue.$router.push('/login/expired')
-					return
-				}
 				itemsVue.loadingItemAttributes = false
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch attributes',
+					errorName: 'errorMessage',
+					vue: itemsVue
+				})
 			})
 		},
 		/**
@@ -1415,10 +1425,12 @@ export default {
 					itemsVue.selectedItemAttributes = response.payload.itemattributes
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					itemsVue.$router.push('/login/expired')
-					return
-				}
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch attributes',
+					errorName: 'listErrorMessage',
+					vue: itemsVue
+				})
 			})
 		},
 		/**
@@ -1464,8 +1476,8 @@ export default {
 					})
 				}
 			})
-			const attributesVue = this
-			return ItemAttributesFunctions.assignItemAttributesToItem(attributesVue.$root.appId, attributesVue.$root.appSecret, attributesVue.$root.userToken, attributesVue.itemToAssignItemAttributesTo.id, payload)
+			const itemsVue = this
+			return ItemAttributesFunctions.assignItemAttributesToItem(itemsVue.$root.appId, itemsVue.$root.appSecret, itemsVue.$root.userToken, itemsVue.itemToAssignItemAttributesTo.id, payload)
 			.then(response => {
 				if (response.code === 200 && response.status === 'ok') {
 					let newAttributesArray = []
@@ -1475,25 +1487,22 @@ export default {
 						}
 					})
 					this.selectedItemAttributes = newAttributesArray
-					attributesVue.closeAssignItemAttributesModal()
-					attributesVue.confirmAssignItemAttributes()
+					itemsVue.closeAssignItemAttributesModal()
+					itemsVue.confirmAssignItemAttributes()
 				} else {
 					window.scrollTo(0, 0)
-					attributesVue.assignItemAttributesErrorMessage = 'Something went wrong ...'
+					itemsVue.assignItemAttributesErrorMessage = 'Something went wrong ...'
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					attributesVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-					attributesVue.assignItemAttributesErrorMessage = reason.responseJSON.message || 'Something went wrong ...'
-				} else {
-					window.scrollTo(0, 0)
-					attributesVue.assignItemAttributesErrorMessage = reason.message || 'Something went wrong ...'
-				}
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not apply the item',
+					errorName: 'assignItemAttributesErrorMessage',
+					vue: itemsVue,
+					containerRef: 'assignItemAttributesModal'
+				})
 			}).finally(() => {
-				attributesVue.assigningAttributes = false
+				itemsVue.assigningAttributes = false
 			})
 		},
 		/**

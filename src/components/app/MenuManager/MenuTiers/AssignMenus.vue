@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showAssignMenusModal" effect="fade" @closeOnEscape="closeModal">
+	<modal :show="showAssignMenusModal" effect="fade" @closeOnEscape="closeModal" ref="assignModal">
 		<div slot="modal-header" class="modal-header center">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -9,8 +9,8 @@
 		<div slot="modal-body" class="modal-body">
 			<loading-screen :show="displaySpinner" :color="'#2C3E50'" :display="'inline'"></loading-screen>
 			<form role="form" novalidate v-show="!displaySpinner">
-				<div class="alert alert-danger" v-if="errorMessage.length">
-				    <button class="close" data-close="alert" @click="clearError()"></button>
+				<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+				    <button class="close" @click="clearError()"></button>
                     <span>{{ errorMessage }}</span>
 				</div>
 				<div class="form-body invite-user-form height-mod">
@@ -88,6 +88,7 @@ import MenusFunctions from '../../../../controllers/Menus'
 import MenuTiersFunctions from '../../../../controllers/MenuTiers'
 import Modal from '../../../modules/Modal'
 import LoadingScreen from '../../../modules/LoadingScreen'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -136,14 +137,14 @@ export default {
 				}
 				assignMenusVue.getTierMenus()
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					assignMenusVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
 				assignMenusVue.displaySpinner = false
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch tier info',
+					errorName: 'errorMessage',
+					vue: assignMenusVue,
+					containerRef: 'assignModal'
+				})
 			})
 		},
 		/**
@@ -160,13 +161,14 @@ export default {
 				}
 				assignMenusVue.getCorporateStoreMenus()
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					assignMenusVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
 				assignMenusVue.displaySpinner = false
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch tier menus',
+					errorName: 'errorMessage',
+					vue: assignMenusVue,
+					containerRef: 'assignModal'
+				})
 			})
 		},
 		/**
@@ -191,14 +193,14 @@ export default {
 				}
 				assignMenusVue.displaySpinner = false
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					assignMenusVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
 				assignMenusVue.displaySpinner = false
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch menus',
+					errorName: 'errorMessage',
+					vue: assignMenusVue,
+					containerRef: 'assignModal'
+				})
 			})
 		},
 		/**
@@ -223,13 +225,13 @@ export default {
 					assignMenusVue.showAlert()
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					assignMenusVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not assign the menus',
+					errorName: 'errorMessage',
+					vue: assignMenusVue,
+					containerRef: 'assignModal'
+				})
 			})
 		},
 		/**

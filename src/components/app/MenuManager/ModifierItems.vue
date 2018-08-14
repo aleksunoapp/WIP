@@ -27,8 +27,8 @@
 				<form role="form" @submit.prevent="addNewModifierItem()">
 					<div class="form-body row">
 						<div class="col-md-12">
-							<div class="alert alert-danger" v-if="errorMessage.length">
-								<button class="close" data-close="alert" @click.prevent="clearError('errorMessage')"></button>
+							<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+								<button class="close" @click.prevent="clearError('errorMessage')"></button>
 								<span>{{errorMessage}}</span>
 							</div>
 						</div>
@@ -108,6 +108,14 @@
 					</div>
 				</div>
 				<div class="portlet-body">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
+								<button class="close" @click="clearError('listErrorMessage')"></button>
+								<span>{{listErrorMessage}}</span>
+							</div>
+						</div>
+					</div>
 					<div class="mt-element-list margin-top-15" v-if="modifierCategoryItems.length">
 						<div class="mt-list-container list-news ext-1 no-border">
 							<ul>
@@ -307,7 +315,7 @@
 		</div>
 
 		<!-- ASSIGN TO STORES MODAL START -->
-		<modal :show="showApplyToLocationsModal" effect="fade" @closeOnEscape="closeApplyToLocationsModal">
+		<modal :show="showApplyToLocationsModal" effect="fade" @closeOnEscape="closeApplyToLocationsModal" ref="applyToLocationsModal">
 			<div slot="modal-header" class="modal-header center">
 				<button type="button" class="close" @click="closeApplyToLocationsModal()">
 					<span>&times;</span>
@@ -413,7 +421,8 @@ export default {
 			showApplyToLocationsModal: false,
 			assigningModifierToLocations: false,
 			modifierToApplyToLocations: {},
-			applyErrorMessage: ''
+			applyErrorMessage: '',
+			listErrorMessage: ''
 		}
 	},
 	mounted () {
@@ -490,9 +499,10 @@ export default {
 				}).catch(reason => {
 					ajaxErrorHandler({
 						reason,
-						errorText: 'Could apply modifier to stores',
+						errorText: 'Could not apply modifier to stores',
 						errorName: 'applyErrorMessage',
-						vue: modifierItemsVue
+						vue: modifierItemsVue,
+						containterRef: 'applyToLocationsModal'
 					})
 				}).finally(() => {
 					modifierItemsVue.assigningModifierToLocations = false
@@ -604,12 +614,12 @@ export default {
 						modifierItemsVue.errorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						modifierItemsVue.$router.push('/login/expired')
-						return
-					}
-					modifierItemsVue.errorMessage = reason.responseJSON.message
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'Could not create the item',
+						errorName: 'errorMessage',
+						vue: modifierItemsVue
+					})
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message
@@ -630,13 +640,12 @@ export default {
 					modifierItemsVue.modifierCategoryDetails = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					modifierItemsVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'Could not get category info',
+					errorName: 'listErrorMessage',
+					vue: modifierItemsVue
+				})
 			})
 		},
 		/**
@@ -656,14 +665,13 @@ export default {
 					modifierItemsVue.displayModifierItemData = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					modifierItemsVue.$router.push('/login/expired')
-					return
-				}
 				modifierItemsVue.displayModifierItemData = false
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'Could not fetch items',
+					errorName: 'listErrorMessage',
+					vue: modifierItemsVue
+				})
 			})
 		},
 		/**
@@ -685,13 +693,12 @@ export default {
 					}
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					modifierItemsVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'Could not fetch item info',
+					errorName: 'listErrorMessage',
+					vue: modifierItemsVue
+				})
 			})
 		},
 		/**

@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showEditTierModal" effect="fade" @closeOnEscape="closeModal">
+	<modal :show="showEditTierModal" effect="fade" @closeOnEscape="closeModal" ref="editModal">
 		<div slot="modal-header" class="modal-header center">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -7,8 +7,8 @@
 			<h4 class="modal-title center">Edit Menu Tier</h4>
 		</div>
 		<div slot="modal-body" class="modal-body height-mod">
-			<div class="alert alert-danger" v-if="errorMessage.length">
-			    <button class="close" data-close="alert" @click="clearError()"></button>
+			<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+			    <button class="close" @click="clearError()"></button>
 			    <span>{{errorMessage}}</span>
 			</div>
 			<div class="col-md-12">
@@ -44,9 +44,9 @@
 </template>
 
 <script>
-// import $ from 'jquery'
 import Modal from '../../../modules/Modal'
 import MenuTiersFunctions from '../../../../controllers/MenuTiers'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -108,13 +108,13 @@ export default {
 					editMenuTierVue.menuTierToBeEdited = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editMenuTierVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch tier info',
+					errorName: 'errorMessage',
+					vue: editMenuTierVue,
+					containerRef: 'editModal'
+				})
 			})
 		},
 		/**
@@ -134,12 +134,13 @@ export default {
 						editMenuTierVue.errorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						editMenuTierVue.$router.push('/login/expired')
-						return
-					}
-					editMenuTierVue.errorMessage = reason
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not update the tier',
+						errorName: 'errorMessage',
+						vue: editMenuTierVue,
+						containerRef: 'editModal'
+					})
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

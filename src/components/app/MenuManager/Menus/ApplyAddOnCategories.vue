@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showApplyCategoriesModal" effect="fade" @closeOnEscape="closeModal">
+	<modal :show="showApplyCategoriesModal" effect="fade" @closeOnEscape="closeModal" ref="applyModal">
 		<div slot="modal-header" class="modal-header center">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -7,8 +7,8 @@
 			<h4 class="modal-title center">Apply Add-on Category</h4>
 		</div>
 		<div slot="modal-body" class="modal-body">
-			<div class="alert alert-danger" v-if="errorMessage.length">
-			    <button class="close" data-close="alert" @click="clearError()"></button>
+			<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+			    <button class="close" @click="clearError()"></button>
                 <span>{{ errorMessage }}</span>
 			</div>
 			<loading-screen :show="displaySpinner" :color="'#2C3E50'" :display="'inline'"></loading-screen>
@@ -75,6 +75,7 @@ import Modal from '../../../modules/Modal'
 import MenusFunctions from '../../../../controllers/Menus'
 import NoResults from '../../../modules/NoResults'
 import LoadingScreen from '../../../modules/LoadingScreen'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -172,14 +173,14 @@ export default {
 					addOnCategoriesVue.displaySpinner = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					addOnCategoriesVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-					addOnCategoriesVue.errorMessage = reason.responseJSON.message
-				}
 				addOnCategoriesVue.displaySpinner = false
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch add-on categories',
+					errorName: 'errorMessage',
+					vue: addOnCategoriesVue,
+					containerRef: 'applyModal'
+				})
 			})
 		},
 		/**
@@ -208,12 +209,13 @@ export default {
 						addOnCategoriesVue.errorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						addOnCategoriesVue.$router.push('/login/expired')
-						return
-					}
-					addOnCategoriesVue.errorMessage = reason
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not apply the categories',
+						errorName: 'errorMessage',
+						vue: addOnCategoriesVue,
+						containerRef: 'applyModal'
+					})
 				}).finally(() => {
 					addOnCategoriesVue.applying = false
 				})
