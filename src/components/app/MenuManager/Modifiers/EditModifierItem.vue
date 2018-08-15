@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showEditItemModal" effect="fade" @closeOnEscape="closeModal">
+	<modal :show="showEditItemModal" effect="fade" @closeOnEscape="closeModal" ref="modal">
 		<div slot="modal-header" class="modal-header center">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -12,8 +12,8 @@
 		</div>
 		<div slot="modal-body" class="modal-body">
 			<div class="col-xs-12">
-				<div class="alert alert-danger" v-if="errorMessage.length">
-				    <button class="close" data-close="alert" @click="clearError()"></button>
+				<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+				    <button class="close" @click="clearError()"></button>
 				    <span>{{errorMessage}}</span>
 				</div>
         		<div v-if="!selectLocationMode" :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
@@ -112,6 +112,7 @@ import Modal from '../../../modules/Modal'
 import ModifiersFunctions from '../../../../controllers/Modifiers'
 import ResourcePicker from '../../../modules/ResourcePicker'
 import SelectLocationsPopup from '../../../modules/SelectLocationsPopup'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -216,13 +217,13 @@ export default {
 					editModifierItemVue.itemToBeEdited = response.payload[0]
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editModifierItemVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not get modifier info',
+					errorName: 'errorMessage',
+					vue: editModifierItemVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**
@@ -245,18 +246,17 @@ export default {
 						editModifierItemVue.errorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						editModifierItemVue.$router.push('/login/expired')
-						return
-					}
-					editModifierItemVue.errorMessage = reason
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not get modifier info',
+						errorName: 'errorMessage',
+						vue: editModifierItemVue,
+						containerRef: 'modal'
+					})
 				})
 			}).catch(reason => {
-				// If validation fails then display the error message
 				editModifierItemVue.errorMessage = reason
 				window.scrollTo(0, 0)
-				throw reason
 			})
 		},
 		/**

@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showDeleteModifierItemModal" effect="fade" @closeOnEscape="closeModal">
+	<modal :show="showDeleteModifierItemModal" effect="fade" @closeOnEscape="closeModal" ref="deleteModal">
 		<div slot="modal-header" class="modal-header center">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -7,8 +7,8 @@
 			<h4 class="modal-title center">Delete Modifier Item</h4>
 		</div>
 		<div slot="modal-body" class="modal-body">
-			<div class="alert alert-danger" v-if="errorMessage.length">
-			    <button class="close" data-close="alert" @click="clearError()"></button>
+			<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+			    <button class="close" @click="clearError()"></button>
 			    <span>{{errorMessage}}</span>
 			</div>
 			<div class="col-md-12">
@@ -24,6 +24,7 @@
 <script>
 import Modal from '../../../modules/Modal'
 import ModifiersFunctions from '../../../../controllers/Modifiers'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -66,12 +67,13 @@ export default {
 					deleteModifierItemVue.errorMessage = response.message
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					deleteModifierItemVue.$router.push('/login/expired')
-					return
-				}
-				deleteModifierItemVue.errorMessage = reason
-				window.scrollTo(0, 0)
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not delete the modifier item',
+					errorName: 'errorMessage',
+					vue: deleteModifierItemVue,
+					containerRef: 'deleteModal'
+				})
 			})
 		},
 		/**
