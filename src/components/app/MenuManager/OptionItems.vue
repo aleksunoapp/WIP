@@ -272,7 +272,7 @@ export default {
 					reason,
 					errorText: 'We could not fetch option items',
 					errorName: 'listErrorMessage',
-					vue: itemsVue
+					vue: optionItemsVue
 				})
 			})
 		},

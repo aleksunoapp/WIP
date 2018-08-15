@@ -15,13 +15,15 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 export default {
 	listErrorMessage: ''
 
-
 	ajaxErrorHandler({
 		reason,
 		errorText: 'We could not delete the modifier',
 		errorName: 'errorMessage',
 		vue: deleteModifierCategoryVue,
 		containerRef: 'modal'
-	})	
+	})
+
+	clearError (name) {
+	clearError ('
 }
 </script>

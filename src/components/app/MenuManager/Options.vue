@@ -24,8 +24,8 @@
       			<form role="form" @submit.prevent="createOption()">
       				<div class="form-body row">
       					<div class="col-md-12">
-			        		<div class="alert alert-danger" v-if="errorMessage.length">
-			        		    <button class="close" data-close="alert" @click="clearError()"></button>
+			        		<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+			        		    <button class="close" @click="clearError('errorMessage')"></button>
 			        		    <span>{{errorMessage}}</span>
 			        		</div>
 			        	</div>
@@ -75,6 +75,14 @@
 	            </div>
 	        </div>
 	        <div class="portlet-body">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
+							<button class="close" @click="clearError('listErrorMessage')"></button>
+							<span>{{listErrorMessage}}</span>
+						</div>
+					</div>
+				</div>
 	            <div class="mt-element-list margin-top-15" v-if="options.length">
 	                <div class="mt-list-container list-news ext-1 no-border">
 	                    <ul>
@@ -156,6 +164,7 @@ import OptionsFunctions from '../../../controllers/Options'
 import EditOption from './Options/EditOption'
 import ModifierTree from '../../modules/ModifierTree'
 import ResourcePicker from '../../modules/ResourcePicker'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -167,6 +176,7 @@ export default {
 			createOptionCollapse: true,
 			errorMessage: '',
 			loadingOptionsData: false,
+			listErrorMessage: '',
 			newOption: {
 				name: '',
 				description: '',
@@ -254,13 +264,13 @@ export default {
 					optionsVue.loadingOptionsData = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					optionsVue.$router.push('/login/expired')
-					return
-				}
 				optionsVue.loadingOptionsData = false
-				if (reason.responseJSON) {}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch option categories',
+					errorName: 'listErrorMessage',
+					vue: optionsVue
+				})
 			})
 		},
 		/**
@@ -299,7 +309,7 @@ export default {
 		 */
 		createOption () {
 			var optionsVue = this
-			optionsVue.clearError()
+			optionsVue.clearError('errorMessage')
 
 			return optionsVue.validateOptionData()
 			.then(response => {
@@ -311,12 +321,12 @@ export default {
 						optionsVue.errorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						optionsVue.$router.push('/login/expired')
-						return
-					}
-					optionsVue.errorMessage = reason
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not add the option category',
+						errorName: 'errorMessage',
+						vue: optionsVue
+					})
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message
@@ -384,10 +394,11 @@ export default {
 		/**
 		 * To clear the current error.
 		 * @function
+		 * @param {string} name - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
+		clearError (name) {
+			this[name] = ''
 		},
 		/**
 		 * To show the modal to edit option details.
