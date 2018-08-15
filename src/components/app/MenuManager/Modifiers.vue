@@ -27,8 +27,8 @@
       			<form role="form" @submit.prevent="addNewModifierCategory()">
       				<div class="form-body row">
       					<div class="col-md-12">
-			        		<div class="alert alert-danger" v-if="errorMessage.length">
-			        		    <button class="close" data-close="alert" @click.prevent="clearError()"></button>
+			        		<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+			        		    <button class="close" @click.prevent="clearError()"></button>
 			        		    <span>{{errorMessage}}</span>
 			        		</div>
 			        	</div>
@@ -521,11 +521,13 @@ export default {
 					menusVue.displayModifierData = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					menusVue.$router.push('/login/expired')
-					return
-				}
 				menusVue.displayModifierData = false
+				ajaxErrorHandler({
+					reason,
+					errorName: 'listErrorMessage',
+					errorText: 'We could not fetch modifiers',
+					vue: menusVue
+				})
 			})
 		},
 		/**
@@ -639,12 +641,12 @@ export default {
 						addModifierCategoryVue.errorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						addModifierCategoryVue.$router.push('/login/expired')
-						return
-					}
-					addModifierCategoryVue.errorMessage = reason
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorName: 'errorMessage',
+						errorText: 'We could not create the modifier category',
+						vue: addModifierCategoryVue
+					})
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

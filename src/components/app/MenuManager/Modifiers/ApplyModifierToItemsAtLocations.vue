@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showComponent" :width="900" effect="fade" @closeOnEscape="closeModal">
+	<modal :show="showComponent" :width="900" effect="fade" @closeOnEscape="closeModal" ref="applyModal">
 		<div slot="modal-header" class="modal-header center">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -7,7 +7,7 @@
 			<h4 class="modal-title center">Apply Modifier</h4>
 		</div>
 		<div slot="modal-body" class="modal-body">
-			<div class="row" v-show="errorMessage.length" ref="errorMessage">
+			<div class="row" v-show="errorMessage" ref="errorMessage">
 				<div class="col-md-12">
 					<div class="alert alert-danger">
 						<button class="close" @click="clearError('errorMessage')"></button>
@@ -230,13 +230,13 @@ export default {
 					menuTreeVue.menus = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					menuTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch menus',
+					errorName: 'errorMessage',
+					vue: menuTreeVue,
+					containerRef: 'applyModal'
+				})
 			})
 		},
 		/**
@@ -252,13 +252,13 @@ export default {
 					menuTreeVue.menus = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					menuTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch menus',
+					errorName: 'errorMessage',
+					vue: menuTreeVue,
+					containerRef: 'applyModal'
+				})
 			})
 		},
 		/**
@@ -274,13 +274,13 @@ export default {
 					menuTreeVue.categories = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					menuTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch categories',
+					errorName: 'errorMessage',
+					vue: menuTreeVue,
+					containerRef: 'applyModal'
+				})
 			})
 		},
 		/**
@@ -296,13 +296,13 @@ export default {
 					menuTreeVue.items = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					menuTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch items',
+					errorName: 'errorMessage',
+					vue: menuTreeVue,
+					containerRef: 'applyModal'
+				})
 			})
 		},
 		/**
@@ -379,9 +379,10 @@ export default {
 			}).catch(reason => {
 				ajaxErrorHandler({
 					reason,
-					errorText: 'Could apply modifier items to stores',
+					errorText: 'We could apply the modifier',
 					errorName: 'errorMessage',
-					vue: menuTreeVue
+					vue: menuTreeVue,
+					containerRef: 'applyModal'
 				})
 			}).finally(() => {
 				menuTreeVue.saving = false
