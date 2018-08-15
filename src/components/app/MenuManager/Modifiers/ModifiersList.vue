@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showModifierModal" :width="700" effect="fade" @closeOnEscape="closeModal">
+	<modal :show="showModifierModal" :width="700" effect="fade" @closeOnEscape="closeModal" ref="modal">
 		<div slot="modal-header" class="modal-header">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -7,8 +7,8 @@
 			<h4 class="modal-title center">Select Modifiers</h4>
 		</div>
 		<div slot="modal-body" class="modal-body">
-			<div class="alert alert-danger" v-if="errorMessage.length">
-			    <button class="close" data-close="alert" @click="clearError()"></button>
+			<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+			    <button class="close" @click="clearError()"></button>
 			    <span>{{errorMessage}}</span>
 			</div>
 			<div v-if="storeModifiers.length" class="table-scrollable table-fixed-height">
@@ -78,6 +78,7 @@
 <script>
 import Modal from '../../../modules/Modal'
 import ModifiersFunctions from '../../../../controllers/Modifiers'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -149,11 +150,13 @@ export default {
 					modifiersListVue.errorMessage = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					modifiersListVue.$router.push('/login/expired')
-					return
-				}
-				modifiersListVue.errorMessage = reason.responseJSON.payload
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch modifiers',
+					errorName: 'errorMessage',
+					vue: modifiersListVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**
@@ -175,13 +178,13 @@ export default {
 					modifiersListVue.closeModal()
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					modifiersListVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch modifiers',
+					errorName: 'errorMessage',
+					vue: modifiersListVue,
+					containerRef: 'modal'
+				})
 			}).finally(() => {
 				modifiersListVue.applying = false
 			})

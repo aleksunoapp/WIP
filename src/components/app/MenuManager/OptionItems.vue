@@ -21,14 +21,14 @@
 				</div>
 			</div>
 			<div class="portlet-body" :class="{'display-hide': createItemCollapse}">
-      			<form role="form" @submit.prevent="createOptionItem()">
-      				<div class="form-body row">
-      					<div class="col-md-12">
-			        		<div class="alert alert-danger" v-if="errorMessage.length">
-			        		    <button class="close" data-close="alert" @click="clearError()"></button>
-			        		    <span>{{errorMessage}}</span>
-			        		</div>
-			        	</div>
+				<form role="form" @submit.prevent="createOptionItem()">
+					<div class="form-body row">
+						<div class="col-md-12">
+							<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+								<button class="close" @click="clearError('errorMessage')"></button>
+								<span>{{errorMessage}}</span>
+							</div>
+						</div>
 						<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
 							<resource-picker 
 								@open="toggleImageMode('newMenu', true)"
@@ -39,116 +39,123 @@
 								class="margin-top-15"
 							>
 							</resource-picker>
-		        		</div>
-		        		<div class="col-md-5">
+						</div>
+						<div class="col-md-5">
 							<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-							    <input type="text" class="form-control input-sm" :class="{'edited': newOptionItem.name.length}" id="form_control_1" v-model="newOptionItem.name">
-							    <label for="form_control_1">Option Name</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-							    <input type="text" class="form-control input-sm" :class="{'edited': newOptionItem.description.length}" id="form_control_2" v-model="newOptionItem.description">
-							    <label for="form_control_2">Option Description</label>
+								<input type="text" class="form-control input-sm" :class="{'edited': newOptionItem.name.length}" id="form_control_1" v-model="newOptionItem.name">
+								<label for="form_control_1">Option Name</label>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-							    <input type="type" class="form-control input-sm" :class="{'edited': newOptionItem.sku.length}" id="form_control_3" v-model="newOptionItem.sku">
-							    <label for="form_control_3">Option SKU</label>
+								<input type="text" class="form-control input-sm" :class="{'edited': newOptionItem.description.length}" id="form_control_2" v-model="newOptionItem.description">
+								<label for="form_control_2">Option Description</label>
 							</div>
-		        		</div>
-		        		<div class="col-md-5">
-		        			<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-							    <input type="text" class="form-control input-sm" :class="{'edited': newOptionItem.price.length}" id="form_control_4" v-model="newOptionItem.price">
-							    <label for="form_control_4">Option Price</label>
+							<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
+								<input type="type" class="form-control input-sm" :class="{'edited': newOptionItem.sku.length}" id="form_control_3" v-model="newOptionItem.sku">
+								<label for="form_control_3">Option SKU</label>
 							</div>
-		        			<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-							    <input type="number" class="form-control input-sm" :class="{'edited': newOptionItem.order}" id="form_control_5" v-model="newOptionItem.order">
-							    <label for="form_control_5">Option Order</label>
+						</div>
+						<div class="col-md-5">
+							<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
+								<input type="text" class="form-control input-sm" :class="{'edited': newOptionItem.price.length}" id="form_control_4" v-model="newOptionItem.price">
+								<label for="form_control_4">Option Price</label>
 							</div>
-		        		</div>
-		        	</div>
-      				<div class="form-actions right margin-top-20">
+							<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
+								<input type="number" class="form-control input-sm" :class="{'edited': newOptionItem.order}" id="form_control_5" v-model="newOptionItem.order">
+								<label for="form_control_5">Option Order</label>
+							</div>
+						</div>
+					</div>
+					<div class="form-actions right margin-top-20">
 						<button type="submit" class="btn blue">Create</button>
 					</div>
-      			</form>
-  			</div>
-        </div>
-        <!-- END CREATE NEW MENU-->
-        <loading-screen :show="loadingOptionItemsData" :color="'#2C3E50'" :display="'inline'"></loading-screen>
-	    <div class="portlet light portlet-fit bordered margin-top-20" v-if="!loadingOptionItemsData">
-	        <div class="portlet-title bg-blue-chambray">
-	        	<div class="menu-image-main">
-	        		<img src="../../../../static/client_logo.png">
-	        	</div>
-	            <div class="caption">
-	                <span class="caption-subject font-default bold uppercase">{{ optionDetails.name }}</span>
-                    <div class="caption-desc font-grey-cascade">{{ optionDetails.description }}</div>
-	            </div>
-	        </div>
-	        <div class="portlet-body">
-	            <div class="mt-element-list margin-top-15" v-if="optionItems.length">
-	                <div class="mt-list-container list-news ext-1 no-border">
-	                    <ul>
-	                        <li 
+				</form>
+			</div>
+		</div>
+		<!-- END CREATE NEW MENU-->
+		<loading-screen :show="loadingOptionItemsData" :color="'#2C3E50'" :display="'inline'"></loading-screen>
+		<div class="portlet light portlet-fit bordered margin-top-20" v-if="!loadingOptionItemsData">
+			<div class="portlet-title bg-blue-chambray">
+				<div class="menu-image-main">
+					<img src="../../../../static/client_logo.png">
+				</div>
+				<div class="caption">
+					<span class="caption-subject font-default bold uppercase">{{ optionDetails.name }}</span>
+					<div class="caption-desc font-grey-cascade">{{ optionDetails.description }}</div>
+				</div>
+			</div>
+			<div class="portlet-body">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
+							<button class="close" @click="clearError('listErrorMessage')"></button>
+							<span>{{listErrorMessage}}</span>
+						</div>
+					</div>
+				</div>
+				<div class="mt-element-list margin-top-15" v-if="optionItems.length">
+					<div class="mt-list-container list-news ext-1 no-border">
+						<ul>
+							<li 
 								class="mt-list-item actions-at-left margin-top-15" 
 								v-for="optionItem in optionItems" 
 								:id="'optionItem-' + optionItem.id"
 								:key="optionItem.id">
-	                        	<div class="list-item-actions">
-	                        		<el-tooltip 
+								<div class="list-item-actions">
+									<el-tooltip 
 										v-if="$root.permissions['menu_manager options items update']"
 										content="Edit" 
 										effect="light" 
 										placement="right">
-		                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editOptionItem(optionItem, $event)">
-	                                        <i class="fa fa-lg fa-pencil"></i>
-	                                    </a>
-	                        		</el-tooltip>
-	                        		<el-tooltip 
+										<a class="btn btn-circle btn-icon-only btn-default" @click="editOptionItem(optionItem, $event)">
+											<i class="fa fa-lg fa-pencil"></i>
+										</a>
+									</el-tooltip>
+									<el-tooltip 
 										v-if="$root.permissions['menu_manager options items read'] && !$root.permissions['menu_manager options items update']"
 										content="View" 
 										effect="light" 
 										placement="right">
-		                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editOptionItem(optionItem, $event)">
-	                                        <i class="fa fa-lg fa-eye"></i>
-	                                    </a>
-	                        		</el-tooltip>
-	                        	</div>
-	                            <div class="list-thumb">
-	                                <a v-if="optionItem.image_url">
-	                                    <img alt="" :src="optionItem.image_url" />
-	                                </a>
-	                                <a v-else>
-	                                	<img src="../../../assets/img/app/image-placeholder.png">
-	                                </a>
-	                            </div>
-	                            <div class="list-datetime bold uppercase font-red">
-	                            	<span>{{ optionItem.name }}</span>
-	                            </div>
-	                            <div class="list-item-content height-mod">
-                        			<div class="col-md-4">
-                            			<strong>Status:</strong>
-	                            		<span v-if="optionItem.status == 1">Available</span>
-	                            		<span v-if="optionItem.status == 0">Sold Out</span>
-                            		</div>
-                            		<div class="col-md-4">
-                            			<strong>SKU:</strong>
-                            			<span>{{ optionItem.sku }}</span>
-                            		</div>
-	                            	<div class="col-md-12">
-	                            		<strong>Description:</strong>
-	                            		<span>{{ optionItem.description }}</span>
-	                            	</div>
-
-	                            </div>
-	                        </li>
-	                    </ul>
-	                </div>
-	            </div>
-	            <div class="margin-top-20" v-else>
-		            <no-results :show="!optionItems.length" :type="'option items'"></no-results>
-		        </div>
-	        </div>
-	    </div>
-	    <edit-option-item v-if="showEditOptionItemModal" :selectedOptionItemId="selectedOptionItemId" @updateOptionItem="updateOptionItem" @closeEditOptionItemModal="closeEditOptionItemModal"></edit-option-item>
+										<a class="btn btn-circle btn-icon-only btn-default" @click="editOptionItem(optionItem, $event)">
+											<i class="fa fa-lg fa-eye"></i>
+										</a>
+									</el-tooltip>
+								</div>
+								<div class="list-thumb">
+									<a v-if="optionItem.image_url">
+										<img alt="" :src="optionItem.image_url" />
+									</a>
+									<a v-else>
+										<img src="../../../assets/img/app/image-placeholder.png">
+									</a>
+								</div>
+								<div class="list-datetime bold uppercase font-red">
+									<span>{{ optionItem.name }}</span>
+								</div>
+								<div class="list-item-content height-mod">
+									<div class="col-md-4">
+										<strong>Status:</strong>
+										<span v-if="optionItem.status == 1">Available</span>
+										<span v-if="optionItem.status == 0">Sold Out</span>
+									</div>
+									<div class="col-md-4">
+										<strong>SKU:</strong>
+										<span>{{ optionItem.sku }}</span>
+									</div>
+									<div class="col-md-12">
+										<strong>Description:</strong>
+										<span>{{ optionItem.description }}</span>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="margin-top-20" v-else>
+					<no-results :show="!optionItems.length" :type="'option items'"></no-results>
+				</div>
+			</div>
+		</div>
+		<edit-option-item v-if="showEditOptionItemModal" :selectedOptionItemId="selectedOptionItemId" @updateOptionItem="updateOptionItem" @closeEditOptionItemModal="closeEditOptionItemModal"></edit-option-item>
 	  </div>
 </template>
 
@@ -162,6 +169,7 @@ import LoadingScreen from '../../modules/LoadingScreen'
 import ResourcePicker from '../../modules/ResourcePicker'
 import OptionsFunctions from '../../../controllers/Options'
 import EditOptionItem from './Options/EditOptionItem'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -174,6 +182,7 @@ export default {
 			createItemCollapse: true,
 			errorMessage: '',
 			loadingOptionItemsData: false,
+			listErrorMessage: '',
 			newOptionItem: {
 				option_id: this.$route.params.option_id,
 				name: '',
@@ -233,13 +242,12 @@ export default {
 					itemsVue.optionDetails = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					itemsVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch option info',
+					errorName: 'listErrorMessage',
+					vue: itemsVue
+				})
 			})
 		},
 		/**
@@ -259,13 +267,13 @@ export default {
 					optionItemsVue.loadingOptionItemsData = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					optionItemsVue.$router.push('/login/expired')
-					return
-				}
 				optionItemsVue.loadingOptionItemsData = false
-				if (reason.responseJSON) {}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch option items',
+					errorName: 'listErrorMessage',
+					vue: itemsVue
+				})
 			})
 		},
 		/**
@@ -299,7 +307,7 @@ export default {
 		 */
 		createOptionItem () {
 			var optionItemsVue = this
-			optionItemsVue.clearError()
+			optionItemsVue.clearError('errorMessage')
 
 			return optionItemsVue.validateOptionItemData()
 			.then(response => {
@@ -311,12 +319,12 @@ export default {
 						optionItemsVue.errorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						optionItemsVue.$router.push('/login/expired')
-						return
-					}
-					optionItemsVue.errorMessage = reason
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not add the option item',
+						errorName: 'errorMessage',
+						vue: optionItemsVue
+					})
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message
@@ -382,10 +390,11 @@ export default {
 		/**
 		 * To clear the current error.
 		 * @function
+		 * @param {string} name - Name of the error to clear
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
+		clearError (name) {
+			this[name] = ''
 		},
 		/**
 		 * To show the modal to edit optionItem details.
@@ -439,6 +448,6 @@ export default {
 </script>
 <style scoped>
 .mt-element-list .list-news.ext-1.mt-list-container ul>.mt-list-item:hover, .mt-element-list .list-news.ext-2.mt-list-container ul>.mt-list-item:hover {
-    background-color: #fff;
+	background-color: #fff;
 }
 </style>
