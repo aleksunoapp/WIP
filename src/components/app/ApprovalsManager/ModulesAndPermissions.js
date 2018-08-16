@@ -303,7 +303,9 @@ export const role = {
 	'user_manager': {
 		'users': {
 			'user_manager users read': false,
-			'user_manager users approve': false
+			'user_manager users approve': false,
+			'user_manager users add_points create': false,
+			'user_manager users add_points approve': false
 		},
 		'user_groups': {
 			'user_manager user_groups read': false,

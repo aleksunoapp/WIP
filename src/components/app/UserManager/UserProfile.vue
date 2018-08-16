@@ -60,7 +60,7 @@
 									</div>
 								</div>
 							</li>
-							<li>
+							<li v-if="can('user_manager users add_points create')">
 								<div class="portlet light">
 									<div class="alert alert-danger" v-show="addErrorMessage" ref="addErrorMessage">
 										<button class="close" @click.prevent="clearError('addErrorMessage')"></button>
@@ -248,6 +248,7 @@ import Pagination from '../../modules/Pagination'
 import PageResults from '../../modules/PageResults'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
 import $ from 'jquery'
+import { mapGetters } from 'vuex'
 
 export default {
 	data () {
@@ -284,7 +285,10 @@ export default {
 		},
 		currentActivePageOrders () {
 			return this.userSort(this.orders).slice(this.resultsPerPage * (this.activePage - 1), this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage)
-		}
+		},
+		...mapGetters([
+			'can'
+		])
 	},
 	mounted () {
 		this.getUserDetails()
