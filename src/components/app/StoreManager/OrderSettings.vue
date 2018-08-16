@@ -82,7 +82,7 @@
 	            			</div>
 	            			<div class="form-group form-md-line-input form-md-floating-label">
 	            				<input type="text" class="form-control input-sm" :class="{'edited': newOrderSettings.group_order_order_time_cut_off.length}" id="form_control_3" v-model="newOrderSettings.group_order_order_time_cut_off">
-	            				<label for="form_control_3">Group Order Order Time Cut Off</label>
+	            				<label for="form_control_3">Group Order Time Cut Off</label>
 	            			</div>
 	            			<div class="form-group form-md-line-input form-md-floating-label">
 	            				<input type="text" class="form-control input-sm" :class="{'edited': newOrderSettings.group_order_cancellation_time_cut_off.length}" id="form_control_3" v-model="newOrderSettings.group_order_cancellation_time_cut_off">
@@ -242,7 +242,7 @@
 									</div>
 									<div class="form-group form-md-line-input form-md-floating-label">
 										<input type="text" class="form-control input-sm" :class="{'edited': orderSettingsToEdit.group_order_order_time_cut_off.length}" id="form_control_3" v-model="orderSettingsToEdit.group_order_order_time_cut_off">
-										<label for="form_control_3">Group Order Order Time Cut Off</label>
+										<label for="form_control_3">Group Order Time Cut Off</label>
 									</div>
 									<div class="form-group form-md-line-input form-md-floating-label">
 										<input type="text" class="form-control input-sm" :class="{'edited': orderSettingsToEdit.group_order_cancellation_time_cut_off.length}" id="form_control_3" v-model="orderSettingsToEdit.group_order_cancellation_time_cut_off">
@@ -525,7 +525,7 @@ export default {
 				} else if (!orderSettingsVue.newOrderSettings.group_order_time_slot) {
 					reject('Group Order Time  cannot be blank')
 				} else if (!orderSettingsVue.newOrderSettings.group_order_order_time_cut_off) {
-					reject('Group Order Order Time Cut cannot be blank')
+					reject('Group Order Time Cut cannot be blank')
 				} else if (!orderSettingsVue.newOrderSettings.group_order_cancellation_time_cut_off) {
 					reject('Group Order Cancellation Time Cut cannot be blank')
 				} else if (!orderSettingsVue.newOrderSettings.group_order_cancellation_enabled) {
@@ -735,7 +735,7 @@ export default {
 				} else if (!orderSettingsVue.orderSettingsToEdit.group_order_time_slot) {
 					reject('Group Order Time  cannot be blank')
 				} else if (!orderSettingsVue.orderSettingsToEdit.group_order_order_time_cut_off) {
-					reject('Group Order Order Time Cut cannot be blank')
+					reject('Group Order Time Cut cannot be blank')
 				} else if (!orderSettingsVue.orderSettingsToEdit.group_order_cancellation_time_cut_off) {
 					reject('Group Order Cancellation Time Cut cannot be blank')
 				} else if (!orderSettingsVue.orderSettingsToEdit.group_order_cancellation_enabled) {
