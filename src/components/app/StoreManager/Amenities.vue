@@ -93,10 +93,12 @@
 						</div>
 					</div>
 					<div v-else>
-						<div class="col-md-12">
-							<div class="alert alert-danger" v-show="listErrorMessage.length" ref="listErrorMessage">
-								<button class="close" data-close="alert" @click="clearError('listErrorMessage')"></button>
-								<span>{{ listErrorMessage }}</span>
+						<div class="row">
+							<div class="col-md-12">
+								<div class="alert alert-danger" v-show="listErrorMessage.length" ref="listErrorMessage">
+									<button class="close" data-close="alert" @click="clearError('listErrorMessage')"></button>
+									<span>{{ listErrorMessage }}</span>
+								</div>
 							</div>
 						</div>
 						<loading-screen :show="loadingAmenities" :color="'#2C3E50'" :display="'inline'"></loading-screen>
