@@ -325,8 +325,8 @@ export default {
 	data () {
 		return {
 			breadcrumbArray: [
-        { name: 'Menu Manager', link: false },
-        { name: 'Amenities', link: false }
+				{ name: 'Menu Manager', link: false },
+				{ name: 'Amenities', link: false }
 			],
 
 			createNewCollapse: true,
@@ -342,6 +342,7 @@ export default {
 			loadingAmenities: false,
 			listErrorMessage: '',
 			amenities: [],
+			assigning: false,
 
 			showEditModal: false,
 			editErrorMessage: '',
