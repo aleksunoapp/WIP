@@ -60,8 +60,10 @@
 								label="Category">
 								<template slot-scope="scope">
 									<div class="tbl-category-column-wrapper">
-										<img class="tbl-category-image" :src="scope.row.category_image"></img>
-										<p class="tbl-category-name">{{scope.row.category}}</p>
+										<div class="tbl-category-caption-wrapper">
+											<img class="tbl-category-image" :src="scope.row.category_image"></img>
+											<p class="tbl-category-name">{{scope.row.category}}</p>
+										</div>
 									</div>
 								</template>
 							</el-table-column>
@@ -171,11 +173,7 @@ export default {
 			if (val !== null && val !== undefined) {
 				let local = Number(val)
 				local = local.toLocaleString('en-US', {style: 'currency', currency: 'USD'})
-				if (local.indexOf('.') !== -1) {
-					return local.slice(0, -3)
-				} else {
-					return local
-				}
+				return local
 			} else {
 				return 'n/a'
 			}
@@ -234,8 +232,14 @@ export default {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
+	align-items: flex-start;
+	height: 100px;
+}
+.tbl-category-caption-wrapper {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 	align-items: center;
-	width: 100%;
 	height: 100px;
 }
 .tbl-category-name {
