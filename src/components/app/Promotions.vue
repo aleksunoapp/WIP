@@ -26,8 +26,8 @@
       			<form role="form" @submit.prevent="createNewPromotion()">
       				<div class="form-body row">
       					<div class="col-md-12">
-			        		<div class="alert alert-danger" v-if="createErrorMessage.length">
-			        		    <button class="close" data-close="alert" @click.prevent="clearError('createErrorMessage')"></button>
+			        		<div class="alert alert-danger" v-show="createErrorMessage" ref="createErrorMessage">
+			        		    <button class="close" @click.prevent="clearError('createErrorMessage')"></button>
 			        		    <span>{{ createErrorMessage }}</span>
 			        		</div>
 			        	</div>
@@ -184,13 +184,15 @@
                         <div class="caption-desc font-grey-cascade">Select promotions to assign to a store.</div>
 		            </div>
 		        </div>
-				<div class="col-md-12">
-	        		<div class="alert alert-danger" v-if="assignErrorMessage.length">
-	        		    <button class="close" data-close="alert" @click="clearError('assignErrorMessage')"></button>
-	        		    <span>{{ assignErrorMessage }}</span>
-	        		</div>
-	        	</div>
 		        <div class="portlet-body">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
+								<button class="close" @click="clearError('listErrorMessage')"></button>
+								<span>{{listErrorMessage}}</span>
+							</div>
+						</div>
+					</div>
 		            <div class="mt-element-list margin-top-15" v-if="promotions.length">
 		                <div class="mt-list-container list-news ext-1 no-border">
 		                    <ul>
@@ -313,7 +315,7 @@
 
         <delete-promotion v-if="deletePromotionModalActive" :selectedPromotionId="selectedPromotionId" @closeDeletePromotionModal="closeDeletePromotionModal" @deletePromotionAndCloseModal="deletePromotionAndCloseModal"></delete-promotion>
 
-		<modal :show="showStoreGroupsModal" effect="fade" @closeOnEscape="closeStoreGroupsModal">
+		<modal :show="showStoreGroupsModal" effect="fade" @closeOnEscape="closeStoreGroupsModal" ref="storesModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closeStoreGroupsModal()">
 					<span>&times;</span>
@@ -321,6 +323,14 @@
 				<h4 class="modal-title center">Select A Store Group</h4>
 			</div>
 			<div slot="modal-body" class="modal-body">
+				<div class="row">
+					<div class="col-md-12" v-show="storeGroupsError" ref="storeGroupsError">
+						<div class="alert alert-danger">
+						    <button class="close" @click="clearError('storeGroupsError')"></button>
+						    <span>{{ storeGroupsError }}</span>
+						</div>
+					</div>
+				</div>
 				<el-radio-group v-model="newPromotion.location_group_id" @change="saveGroupName">
 					<el-radio v-for="group in storeGroups" :label="group.id" class="group-radio margin-top-15" :key="group.id">{{group.name}}</el-radio>
 				</el-radio-group>
@@ -330,7 +340,7 @@
 			</div>
 		</modal>
 
-		<modal :show="showApplyPromotionModal" effect="fade" @closeOnEscape="closeApplyModal">
+		<modal :show="showApplyPromotionModal" effect="fade" @closeOnEscape="closeApplyModal" ref="applyModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closeApplyModal()">
 					<span>&times;</span>
@@ -339,9 +349,9 @@
 			</div>
 			<div slot="modal-body" class="modal-body">
 				<div class="row">
-					<div class="col-md-12" v-if="applyErrorMessage.length">
+					<div class="col-md-12" v-show="applyErrorMessage" ref="applyErrorMessage">
 						<div class="alert alert-danger">
-						    <button class="close" data-close="alert" @click="clearError('applyErrorMessage')"></button>
+						    <button class="close" @click="clearError('applyErrorMessage')"></button>
 						    <span>{{ applyErrorMessage }}</span>
 						</div>
 					</div>
@@ -443,7 +453,7 @@
 			</div>
 		</modal>
 
-		<modal :show="showQrCodeModal" effect="fade" @closeOnEscape="closeQrCodeModal">
+		<modal :show="showQrCodeModal" effect="fade" @closeOnEscape="closeQrCodeModal" ref="qrModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closeQrCodeModal()">
 					<span>&times;</span>
@@ -454,7 +464,7 @@
 				<div class="row">
 					<div class="col-md-12" v-show="qrErrorMessage.length" ref="qrErrorMessage">
 						<div class="alert alert-danger">
-						    <button class="close" data-close="alert" @click="clearError('qrErrorMessage')"></button>
+						    <button class="close" @click="clearError('qrErrorMessage')"></button>
 						    <span>{{ qrErrorMessage }}</span>
 						</div>
 					</div>
@@ -564,7 +574,7 @@
 			</div>
 		</modal>
 
-		<modal :show="showPromoCodesModal" effect="fade" @closeOnEscape="closePromoCodesCodeModal">
+		<modal :show="showPromoCodesModal" effect="fade" @closeOnEscape="closePromoCodesCodeModal" ref="codeModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closePromoCodesCodeModal()">
 					<span>&times;</span>
@@ -573,9 +583,9 @@
 			</div>
 			<div slot="modal-body" class="modal-body">
 				<div class="row">
-					<div class="col-md-12" v-show="promoCodesErrorMessage.length" ref="promoCodesErrorMessage">
+					<div class="col-md-12" v-show="promoCodesErrorMessage" ref="promoCodesErrorMessage">
 						<div class="alert alert-danger">
-						    <button class="close" data-close="alert" @click="clearError('promoCodesErrorMessage')"></button>
+						    <button class="close" @click="clearError('promoCodesErrorMessage')"></button>
 						    <span>{{ promoCodesErrorMessage }}</span>
 						</div>
 					</div>
@@ -656,7 +666,7 @@ export default {
 			displayPromotionsData: false,
 			promotions: [],
 			createErrorMessage: '',
-			assignErrorMessage: '',
+			listErrorMessage: '',
 			createNewPromotionCollapse: true,
 			creating: false,
 			newPromotion: {
@@ -1126,10 +1136,12 @@ export default {
 					}
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					promotionsVue.$router.push('/login/expired')
-					return
-				}
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch geolocations',
+					errorName: 'listErrorMessage',
+					vue: promotionsVue
+				})
 			})
 		},
 		/**
@@ -1152,17 +1164,14 @@ export default {
 					promotionsVue.loadingUserGroupsData = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					promotionsVue.$router.push('/login/expired')
-					return
-				}
 				promotionsVue.loadingUserGroupsData = false
-				if (reason.responseJSON) {
-					promotionsVue.applyErrorMessage = reason.responseJSON.message || 'Something went wrong ...'
-					window.scrollTo(0, 0)
-				} else {
-					promotionsVue.applyErrorMessage = reason.message || 'Something went wrong ...'
-				}
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch user groups',
+					errorName: 'applyErrorMessage',
+					vue: promotionsVue,
+					containerRef: 'applyModal'
+				})
 			})
 		},
 		/**
@@ -1183,17 +1192,13 @@ export default {
 					promotionsVue.resetApply()
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					promotionsVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-					promotionsVue.applyErrorMessage = reason.responseJSON.message
-					window.scrollTo(0, 0)
-				} else {
-					promotionsVue.applyErrorMessage = 'Something went wrong ...'
-					window.scrollTo(0, 0)
-				}
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch user groups',
+					errorName: 'applyErrorMessage',
+					vue: promotionsVue,
+					containerRef: 'applyModal'
+				})
 			}).finally(() => {
 				promotionsVue.applyingToUserGroup = false
 			})
@@ -1217,17 +1222,13 @@ export default {
 					promotionsVue.resetApply()
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					promotionsVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-					promotionsVue.applyErrorMessage = reason.responseJSON.message
-					window.scrollTo(0, 0)
-				} else {
-					promotionsVue.applyErrorMessage = 'Something went wrong ...'
-					window.scrollTo(0, 0)
-				}
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch user groups',
+					errorName: 'applyErrorMessage',
+					vue: promotionsVue,
+					containerRef: 'applyModal'
+				})
 			}).finally(() => {
 				promotionsVue.applyingToAllStores = false
 			})
@@ -1251,17 +1252,13 @@ export default {
 					promotionsVue.resetApply()
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					promotionsVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-					promotionsVue.applyErrorMessage = reason.responseJSON.message
-					window.scrollTo(0, 0)
-				} else {
-					promotionsVue.applyErrorMessage = 'Something went wrong ...'
-					window.scrollTo(0, 0)
-				}
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch user groups',
+					errorName: 'applyErrorMessage',
+					vue: promotionsVue,
+					containerRef: 'applyModal'
+				})
 			}).finally(() => {
 				promotionsVue.applyingToGroup = false
 			})
@@ -1285,17 +1282,13 @@ export default {
 					promotionsVue.resetApply()
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					promotionsVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-					promotionsVue.applyErrorMessage = reason.responseJSON.message
-					window.scrollTo(0, 0)
-				} else {
-					promotionsVue.applyErrorMessage = 'Something went wrong ...'
-					window.scrollTo(0, 0)
-				}
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch user groups',
+					errorName: 'applyErrorMessage',
+					vue: promotionsVue,
+					containerRef: 'applyModal'
+				})
 			}).finally(() => {
 				promotionsVue.applyingToGeolocation = false
 			})
@@ -1331,14 +1324,14 @@ export default {
 					promotionsVue.loadingGroupsData = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					promotionsVue.$router.push('/login/expired')
-					return
-				}
 				promotionsVue.loadingGroupsData = false
-				if (reason.responseJSON) {
-					promotionsVue.storeGroupsError = reason.responseJSON.message
-				}
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch store groups',
+					errorName: 'storeGroupsError',
+					vue: promotionsVue,
+					containerRef: 'storesModal'
+				})
 			})
 		},
 		/**
@@ -1411,12 +1404,12 @@ export default {
 						throw new Error(response.message)
 					}
 				}).catch(error => {
-					this.assignErrorMessage = error.message
+					this.listErrorMessage = error.message
 				}).finally(() => {
 					promotionsVue.updating = false
 				})
 			} else {
-				this.assignErrorMessage = 'Please select at least one promotion.'
+				this.listErrorMessage = 'Please select at least one promotion.'
 			}
 		},
 		/**
@@ -1528,14 +1521,13 @@ export default {
 					promotionsVue.displayPromotionsData = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					promotionsVue.$router.push('/login/expired')
-					return
-				}
 				promotionsVue.displayPromotionsData = false
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch promotions',
+					errorName: 'listErrorMessage',
+					vue: promotionsVue
+				})
 			})
 		},
 		/**
@@ -1562,14 +1554,14 @@ export default {
 					promotionsVue.displayPromotionsData = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					promotionsVue.$router.push('/login/expired')
-					return
-				}
 				promotionsVue.displayPromotionsData = false
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch user groups',
+					errorName: 'applyErrorMessage',
+					vue: promotionsVue,
+					containerRef: 'applyModal'
+				})
 			})
 		},
 		/**
@@ -1672,12 +1664,12 @@ export default {
 						promotionsVue.createErrorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						promotionsVue.$router.push('/login/expired')
-						return
-					}
-					promotionsVue.createErrorMessage = reason
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not add the promotion',
+						errorName: 'createErrorMessage',
+						vue: promotionsVue
+					})
 				}).finally(() => {
 					promotionsVue.creating = false
 				})

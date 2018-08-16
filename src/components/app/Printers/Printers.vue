@@ -389,12 +389,12 @@ export default {
 						addPrinterVue.errorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						addPrinterVue.$router.push('/login/expired')
-						return
-					}
-					addPrinterVue.errorMessage = reason.responseJSON.message
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not add the printer',
+						errorName: 'errorMessage',
+						vue: addPrinterVue
+					})
 				}).finally(() => {
 					addPrinterVue.creating = false
 				})

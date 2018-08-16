@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showEditPromotionModal" effect="fade" @closeOnEscape="closeModal" :width="modalWidth">
+	<modal :show="showEditPromotionModal" effect="fade" @closeOnEscape="closeModal" :width="modalWidth" ref="modal">
 		<div slot="modal-header" class="modal-header center">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -8,8 +8,8 @@
 		</div>
 		<div slot="modal-body" class="modal-body">
 			<div class="col-xs-12">
-				<div class="alert alert-danger" v-if="errorMessage.length">
-				    <button class="close" data-close="alert" @click="clearError()"></button>
+				<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+				    <button class="close" @click="clearError()"></button>
 				    <span>{{errorMessage}}</span>
 				</div>
         		<div :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
@@ -200,9 +200,9 @@ import $ from 'jquery'
 import Modal from '../../modules/Modal'
 import PromotionsFunctions from '../../../controllers/Promotions'
 import PromoCodesFunctions from '../../../controllers/PromoCodes'
-import ajaxErrorHandler from '../../../controllers/ErrorController'
 import ResourcePicker from '../../modules/ResourcePicker'
 import MenuModifierTree from '../../modules/MenuModifierTree'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -437,12 +437,13 @@ export default {
 					editPromotionVue.promotionToBeEdited.end_date = new Date(response.payload.end_date)
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editPromotionVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch promotion info',
+					errorName: 'errorMessage',
+					vue: editPromotionVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**
@@ -472,12 +473,13 @@ export default {
 						editPromotionVue.errorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						editPromotionVue.$router.push('/login/expired')
-						return
-					}
-					editPromotionVue.errorMessage = reason
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not update the promotion',
+						errorName: 'errorMessage',
+						vue: editPromotionVue,
+						containerRef: 'modal'
+					})
 				}).finally(() => {
 					editPromotionVue.updating = false
 				})

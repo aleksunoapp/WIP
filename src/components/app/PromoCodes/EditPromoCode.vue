@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showEditPromoCodeModal" effect="fade" @closeOnEscape="closeModal" :width="modalWidth">
+	<modal :show="showEditPromoCodeModal" effect="fade" @closeOnEscape="closeModal" :width="modalWidth" ref="modal">
 		<div slot="modal-header" class="modal-header center">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -17,8 +17,8 @@
 					<fieldset :disabled="!$root.permissions['promocodes update']">
 	  				<div class="form-body row">
 	  					<div class="col-md-12">
-		        		<div class="alert alert-danger" v-if="errorMessage.length">
-	        		    <button class="close" data-close="alert" @click="clearError('errorMessage')"></button>
+		        		<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+	        		    <button class="close" @click="clearError('errorMessage')"></button>
 	        		    <span>{{ errorMessage }}</span>
 		        		</div>
 		        	</div>
@@ -233,6 +233,7 @@ import CategoriesFunctions from '../../../controllers/Categories'
 import ItemsFunctions from '../../../controllers/Items'
 import LoadingScreen from '../../modules/LoadingScreen'
 import SelectLocationsPopup from '../../modules/SelectLocationsPopup'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -390,14 +391,14 @@ export default {
 					})
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editPromoCodeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
 				editPromoCodeVue.displaySpinner = false
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch promocode info',
+					errorName: 'errorMessage',
+					vue: editPromoCodeVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**
@@ -413,13 +414,13 @@ export default {
 					menuTreeVue.categories = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					menuTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch categories',
+					errorName: 'errorMessage',
+					vue: menuTreeVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**
@@ -442,13 +443,13 @@ export default {
 					menuTreeVue.items = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					menuTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch items',
+					errorName: 'errorMessage',
+					vue: menuTreeVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**
@@ -529,13 +530,13 @@ export default {
 					editPromoCodeVue.menus = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editPromoCodeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch menus',
+					errorName: 'errorMessage',
+					vue: editPromoCodeVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**
@@ -632,12 +633,13 @@ export default {
 					editPromoCodeVue.locations = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editPromoCodeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch stores',
+					errorName: 'errorMessage',
+					vue: editPromoCodeVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**
@@ -747,12 +749,13 @@ export default {
 						editPromoCodeVue.errorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						editPromoCodeVue.$router.push('/login/expired')
-						return
-					}
-					editPromoCodeVue.errorMessage = reason
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not update the promocode',
+						errorName: 'errorMessage',
+						vue: editPromoCodeVue,
+						containerRef: 'modal'
+					})
 				}).finally(() => {
 					editPromoCodeVue.updating = false
 				})

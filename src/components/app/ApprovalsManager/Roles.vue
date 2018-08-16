@@ -1019,7 +1019,6 @@ export default {
 		validateEditedRoleData () {
 			var rolesVue = this
 			return new Promise(function (resolve, reject) {
-				resolve('Hurray')
 				if (!rolesVue.roleToEdit.name.length) {
 					reject('Name cannot be blank')
 				}

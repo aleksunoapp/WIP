@@ -8,8 +8,8 @@
 		</div>
 		<div slot="modal-body" class="modal-body">
 			<form role="form" novalidate>
-				<div class="alert alert-danger" v-if="errorMessage.length">
-				    <button class="close" data-close="alert" @click="clearError()"></button>
+				<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+				    <button class="close" @click="clearError()"></button>
                     <span>{{ errorMessage }}</span>
 				</div>
 				<div class="invite-user-form height-mod">
@@ -80,6 +80,7 @@
 <script>
 import Modal from '../../modules/Modal'
 import App from '../../../controllers/App'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -187,12 +188,13 @@ export default {
 					editPromoCodeVue.locations = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editPromoCodeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch stores',
+					errorName: 'errorMessage',
+					vue: editPromoCodeVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**

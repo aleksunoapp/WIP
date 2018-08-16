@@ -34,9 +34,9 @@
 						<div class="form-body row">
 							<div class="col-md-12">
 								<div class="alert alert-danger"
-								     v-if="createErrorMessage.length">
+								     v-show="createErrorMessage"
+									 ref="createErrorMessage">
 									<button class="close"
-									        data-close="alert"
 									        @click.prevent="clearError('createErrorMessage')"></button>
 									<span>{{ createErrorMessage }}</span>
 								</div>
@@ -210,14 +210,22 @@
 					</div>
 					<div class="col-md-12">
 						<div class="alert alert-danger"
-						     v-if="assignErrorMessage.length">
+						     v-show="assignErrorMessage"
+							 ref="assignErrorMessage">
 							<button class="close"
-							        data-close="alert"
 							        @click="clearError('assignErrorMessage')"></button>
 							<span>{{ assignErrorMessage }}</span>
 						</div>
 					</div>
 					<div class="portlet-body">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
+									<button class="close" @click="clearError('listErrorMessage')"></button>
+									<span>{{listErrorMessage}}</span>
+								</div>
+							</div>
+						</div>
 						<div class="mt-element-list margin-top-15"
 						     v-if="promoCodes.length">
 							<div class="mt-list-container list-news ext-1 no-border">
@@ -349,6 +357,7 @@ import SelectLocation from './PromoCodes/SelectLocation'
 import $ from 'jquery'
 import { debounce } from 'lodash'
 import MenuTree from '../modules/MenuTree'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -359,6 +368,7 @@ export default {
 			displayPromoCodesData: false,
 			promoCodes: [],
 			createErrorMessage: '',
+			listErrorMessage: '',
 			assignErrorMessage: '',
 			createNewPromoCodeCollapse: true,
 			creating: false,
@@ -614,14 +624,13 @@ export default {
 					promoCodesVue.displayPromoCodesData = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					promoCodesVue.$router.push('/login/expired')
-					return
-				}
 				promoCodesVue.displayPromoCodesData = false
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch promocodes',
+					errorName: 'listErrorMessage',
+					vue: promoCodesVue
+				})
 			})
 		},
 		/**
@@ -749,12 +758,12 @@ export default {
 						promoCodesVue.createErrorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						promoCodesVue.$router.push('/login/expired')
-						return
-					}
-					promoCodesVue.createErrorMessage = reason.responseJSON.message
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not add the promocode',
+						errorName: 'createErrorMessage',
+						vue: promoCodesVue
+					})
 				}).finally(() => {
 					promoCodesVue.creating = false
 				})
