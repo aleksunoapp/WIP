@@ -1571,6 +1571,8 @@ export default {
 							window.scrollTo(0, 0)
 						}
 						throw reason
+					}).finally(() => {
+						editStoreVue.updatingStoreMeta = false
 					})
 				}
 			}).catch(reason => {
