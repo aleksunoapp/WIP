@@ -42,11 +42,6 @@
 				<el-input 
 					class="input-width"
 					placeholder="Order ID" 
-					v-model="orderId">
-				</el-input>
-				<el-input 
-					class="input-width"
-					placeholder="Reference no" 
 					v-model="externalId">
 				</el-input>
 				<el-button
@@ -143,7 +138,7 @@
 							:key="order.id">
 
 							<td class="align-middle"> 
-								{{order.id}}
+								{{order.external_id}}
 							</td>
 							<td class="align-middle">
 								{{order.created_at.substring(0, 10)}}
@@ -280,7 +275,6 @@ export default {
 			locationId: '',
 			fromDate: '',
 			toDate: '',
-			orderId: '',
 			externalId: '',
 			// results contents
 			orderItems: 0,
@@ -296,7 +290,6 @@ export default {
 				locationId: '',
 				fromDate: '',
 				toDate: '',
-				orderId: '',
 				externalId: ''
 			},
 			// API data
@@ -413,7 +406,6 @@ export default {
 				!this.fromDate &&
 				!this.toDate &&
 				!this.locationId &&
-				!this.orderId &&
 				!this.externalId
 			) return
 			this.searchOrders()
@@ -431,7 +423,6 @@ export default {
 				location_id: this.locationId,
 				from_date: this.fromDate,
 				to_date: this.toDate,
-				order_id: this.orderId,
 				external_id: this.externalId,
 
 				order_items: this.orderItems,
