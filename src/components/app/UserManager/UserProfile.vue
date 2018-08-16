@@ -158,13 +158,25 @@
 												</tr>
 											</thead>
 											<tbody>
-												<tr v-for="order in currentActivePageOrders">
+												<tr v-for="order in currentActivePageOrders" :key="order.id">
 													<td class="align-middle"> 
 														<span v-if="order.location_name !=='NULL'"> {{ order.location_name }} </span>
 													</td>
 													<td class="align-middle"> ${{ order.total }} </td>
 													<td class="align-middle"> {{ order.created_at.substring(0, 10) }} </td>
-													<td class="align-middle"><span class="label label-sm" :class="{ 'label-warning' : order.status === 'pending', 'label-success' : order.status === 'completed', 'label-danger' : order.status === 'overdue','label-danger' : order.status === 'cancelled', 'label-info' : order.status === 'refunded' }"> {{ order.status }} </span></td>
+													<td class="align-middle">
+														<span 
+															class="label label-sm" 
+															:class="{ 
+																'label-info' : order.status === 'pending',
+																'label-warning' : order.status === 'submitted', 
+																'label-success' : order.status === 'completed', 
+																'label-danger' : order.status === 'overdue',
+																'label-danger' : order.status === 'cancelled' || order.status === 'refunded'
+															}"> 
+																{{ order.status }} 
+														</span>
+													</td>
 													<td class="align-middle">
 														<a class="btn btn-sm grey-salsa btn-outline" @click="showViewOrderModal(order)"> View </a>
 													</td>

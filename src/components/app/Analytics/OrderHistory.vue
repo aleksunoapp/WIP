@@ -152,11 +152,11 @@
 								<span 
 									class="label label-sm" 
 									:class="{ 
-										'label-warning' : order.status === 'pending', 
+										'label-info' : order.status === 'pending',
+										'label-warning' : order.status === 'submitted', 
 										'label-success' : order.status === 'completed', 
 										'label-danger' : order.status === 'overdue',
-										'label-danger' : order.status === 'cancelled',
-										'label-info' : order.status === 'refunded'
+										'label-danger' : order.status === 'cancelled' || order.status === 'refunded'
 									}">
 									{{ order.status }}
 								</span>
