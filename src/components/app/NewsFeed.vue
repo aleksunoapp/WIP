@@ -142,8 +142,8 @@
 						</div>
 						<!-- END TIMELINE ITEM -->
 					</div>
-					<div class="alert alert-danger" v-if="!newsFeed.length && errorMessage.length">
-						<button class="close" data-close="alert" @click="clearError('errorMessage')"></button>
+					<div class="alert alert-danger" v-show="!newsFeed && errorMessage" ref="errorMessage">
+						<button class="close" @click="clearError('errorMessage')"></button>
 						<span>{{errorMessage}}</span>
 					</div>
 				</div>
@@ -157,7 +157,7 @@
 		<edit-news-feed v-if="showEditFeedModal" :selectedFeedId="selectedFeedId" @closeEditFeedModal="closeEditFeedModal" @updateNewsFeed="updateNewsFeed"></edit-news-feed>
 
 		<!-- START DELETE -->
-		<modal :show="showDeleteModal" effect="fade" @closeOnEscape="closeDeleteModal">
+		<modal :show="showDeleteModal" effect="fade" @closeOnEscape="closeDeleteModal" ref="deleteModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closeDeleteModal()">
 					<span>&times;</span>
@@ -265,7 +265,8 @@ export default {
 					reason,
 					errorText: `We could not delete the news feed`,
 					errorName: 'deleteErrorMessage',
-					vue: _this
+					vue: _this,
+					containerRef: 'deleteModal'
 				})
 			}).finally(() => {
 				_this.deleting = false
@@ -387,12 +388,12 @@ export default {
 					newsFeedVue.errorMessage = response.message
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					newsFeedVue.$router.push('/login/expired')
-					return
-				}
-				newsFeedVue.errorMessage = reason
-				window.scrollTo(0, 0)
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch news feeds',
+					errorName: 'errorMessage',
+					vue: newsFeedVue
+				})
 			})
 		},
 		/**

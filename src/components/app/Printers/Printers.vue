@@ -25,8 +25,8 @@
       			<form role="form" @submit.prevent="createNewPrinter()">
       				<div class="form-body row">
       					<div class="col-md-12">
-      						<div class="alert alert-danger" v-if="errorMessage.length">
-	    					    <button class="close" data-close="alert" @click="clearError()"></button>
+      						<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+	    					    <button class="close" @click="clearError('errorMessage')"></button>
 	    					    <span>{{errorMessage}}</span>
 	    					</div>
       					</div>
@@ -116,6 +116,14 @@
 					</div>
 				</div>
 				<div class="portlet-body">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
+								<button class="close" @click="clearError('listErrorMessage')"></button>
+								<span>{{listErrorMessage}}</span>
+							</div>
+						</div>
+					</div>
 					<div class="mt-element-list">
 						<div class="mt-list-container list-news">
 							<ul>
@@ -189,6 +197,7 @@ import PrintersFunctions from '../../../controllers/Printers'
 import LoadingScreen from '../../modules/LoadingScreen'
 import EditPrinter from './EditPrinter'
 import Dropdown from '../../modules/Dropdown'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -197,6 +206,7 @@ export default {
 				{name: 'Printers', link: false}
 			],
 			displayPrinters: false,
+			listErrorMessage: '',
 			storePrinters: [],
 			showEditPrinterModal: false,
 			selectedPrinterId: 0,
@@ -270,13 +280,13 @@ export default {
 					printersVue.displayPrinters = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					printersVue.$router.push('/login/expired')
-					return
-				}
 				printersVue.displayPrinters = false
-				if (reason.responseJSON) {}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not delete the modifier',
+					errorName: 'listErrorMessage',
+					vue: printersVue
+				})
 			})
 		},
 		/**
@@ -327,10 +337,11 @@ export default {
 		/**
 		 * To clear the current error.
 		 * @function
+		 * @param {string} name - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
+		clearError (name) {
+			this[name] = ''
 		},
 		/**
 		 * To check if the category data is valid before submitting to the backend.
@@ -361,7 +372,7 @@ export default {
 		 */
 		createNewPrinter () {
 			var addPrinterVue = this
-			addPrinterVue.clearError()
+			addPrinterVue.clearError('errorMessage')
 
 			return addPrinterVue.validatePrinterData()
 			.then(response => {

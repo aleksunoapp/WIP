@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showEditPortionModal" effect="fade" @closeOnEscape="closeModal">
+	<modal :show="showEditPortionModal" effect="fade" @closeOnEscape="closeModal" ref="modal">
 		<div slot="modal-header" class="modal-header center">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -9,8 +9,8 @@
 		</div>
 		<div slot="modal-body" class="modal-body">
 			<div class="col-xs-12">
-				<div class="alert alert-danger" v-if="errorMessage.length">
-				    <button class="close" data-close="alert" @click="clearError()"></button>
+				<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+				    <button class="close" @click="clearError()"></button>
 				    <span>{{errorMessage}}</span>
 				</div>
         		<div :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
@@ -67,6 +67,7 @@ import Modal from '../../../modules/Modal'
 import Dropdown from '../../../modules/Dropdown'
 import PortionsFunctions from '../../../../controllers/Portions'
 import ResourcePicker from '../../../modules/ResourcePicker'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -129,12 +130,13 @@ export default {
 					editPortionVue.portionToBeEdited = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editPortionVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch portion info',
+					errorName: 'errorMessage',
+					vue: editPortionVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**
@@ -155,12 +157,13 @@ export default {
 						editPortionVue.errorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						editPortionVue.$router.push('/login/expired')
-						return
-					}
-					editPortionVue.errorMessage = reason
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not update the portion',
+						errorName: 'errorMessage',
+						vue: editPortionVue,
+						containerRef: 'modal'
+					})
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message

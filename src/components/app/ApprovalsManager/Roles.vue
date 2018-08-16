@@ -984,7 +984,8 @@ export default {
 						reason,
 						errorText: 'Could not save role',
 						errorName: 'editErrorMessage',
-						vue: rolesVue
+						vue: rolesVue,
+						containerRef: 'editModal'
 					})
 				}).finally(() => {
 					rolesVue.updating = false
@@ -1018,6 +1019,7 @@ export default {
 		validateEditedRoleData () {
 			var rolesVue = this
 			return new Promise(function (resolve, reject) {
+				resolve('Hurray')
 				if (!rolesVue.roleToEdit.name.length) {
 					reject('Name cannot be blank')
 				}

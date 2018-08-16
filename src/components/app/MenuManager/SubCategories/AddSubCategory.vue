@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showAddCategoryModal" effect="fade" @closeOnEscape="closeModal">
+	<modal :show="showAddCategoryModal" effect="fade" @closeOnEscape="closeModal" ref="modal">
 		<div slot="modal-header" class="modal-header center">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -8,8 +8,8 @@
 			<h4 class="modal-title center" v-else>Select An Image</h4>
 		</div>
 		<div slot="modal-body" class="modal-body">
-			<div class="alert alert-danger" v-if="errorMessage.length">
-				<button class="close" data-close="alert" @click="clearError()"></button>
+			<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+				<button class="close" @click="clearError()"></button>
 				<span>{{errorMessage}}</span>
 			</div>
 			<div :class="{'col-md-2' : !imageMode, 'col-md-12' : imageMode}">
@@ -75,6 +75,7 @@ import $ from 'jquery'
 import Modal from '../../../modules/Modal'
 import CategoriesFunctions from '../../../../controllers/Categories'
 import ResourcePicker from '../../../modules/ResourcePicker'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -166,12 +167,13 @@ export default {
 						addSubCategoryVue.errorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						addSubCategoryVue.$router.push('/login/expired')
-						return
-					}
-					addSubCategoryVue.errorMessage = reason
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not add the subcategory',
+						errorName: 'errorMessage',
+						vue: addSubCategoryVue,
+						containerRef: 'modal'
+					})
 				}).finally(() => {
 					addSubCategoryVue.creating = false
 				})

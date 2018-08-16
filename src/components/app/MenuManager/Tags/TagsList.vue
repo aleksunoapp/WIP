@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showTagsModal" :width="900" effect="fade" @closeOnEscape="closeModal">
+	<modal :show="showTagsModal" :width="900" effect="fade" @closeOnEscape="closeModal" ref="modal">
 		<div slot="modal-header" class="modal-header">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -7,8 +7,8 @@
 			<h4 class="modal-title center">Select a Tag</h4>
 		</div>
 		<div slot="modal-body" class="modal-body">
-			<div class="alert alert-danger" v-if="errorMessage.length">
-				<button class="close" data-close="alert" @click="clearError()"></button>
+			<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+				<button class="close" @click="clearError()"></button>
 				<span>{{errorMessage}}</span>
 			</div>
 			<div class="table-scrollable table-fixed-height" style="float: left; width: 50%;">
@@ -90,6 +90,7 @@
 <script>
 import Modal from '../../../modules/Modal'
 import TagsFunctions from '../../../../controllers/Tags'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -175,11 +176,13 @@ export default {
 					tagsListVue.errorMessage = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					tagsListVue.$router.push('/login/expired')
-					return
-				}
-				tagsListVue.errorMessage = reason.responseJSON.payload
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch tags',
+					errorName: 'errorMessage',
+					vue: tagsListVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**
@@ -207,13 +210,13 @@ export default {
 						tagsListVue.closeModal()
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						tagsListVue.$router.push('/login/expired')
-						return
-					}
-					if (reason.responseJSON) {
-					}
-					throw reason
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not apply the tags',
+						errorName: 'errorMessage',
+						vue: tagsListVue,
+						containerRef: 'modal'
+					})
 				}).finally(() => {
 					tagsListVue.applying = false
 				})
@@ -223,13 +226,13 @@ export default {
 						tagsListVue.closeModal()
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						tagsListVue.$router.push('/login/expired')
-						return
-					}
-					if (reason.responseJSON) {
-					}
-					throw reason
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not apply the tags',
+						errorName: 'errorMessage',
+						vue: tagsListVue,
+						containerRef: 'modal'
+					})
 				}).finally(() => {
 					tagsListVue.applying = false
 				})

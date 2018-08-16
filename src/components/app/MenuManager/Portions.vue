@@ -24,8 +24,8 @@
       			<form role="form" @submit.prevent="createPortion()">
       				<div class="form-body row">
       					<div class="col-md-12">
-			        		<div class="alert alert-danger" v-if="errorMessage.length">
-			        		    <button class="close" data-close="alert" @click="clearError()"></button>
+			        		<div class="alert alert-danger" v-show="errorMessage">
+			        		    <button class="close" @click="clearError('errorMessage')"></button>
 			        		    <span>{{errorMessage}}</span>
 			        		</div>
 			        	</div>
@@ -75,6 +75,14 @@
 	            </div>
 	        </div>
 	        <div class="portlet-body">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
+							<button class="close" @click="clearError('listErrorMessage')"></button>
+							<span>{{listErrorMessage}}</span>
+						</div>
+					</div>
+				</div>
 	            <div class="mt-element-list margin-top-15" v-if="portions.length">
 	                <div class="mt-list-container list-news ext-1 no-border">
 	                    <ul>
@@ -153,6 +161,7 @@ import PortionsFunctions from '../../../controllers/Portions'
 import EditPortion from './Portions/EditPortion'
 import ModifierTree from '../../modules/ModifierTree'
 import ResourcePicker from '../../modules/ResourcePicker'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -164,6 +173,7 @@ export default {
 			createPortionCollapse: true,
 			errorMessage: '',
 			loadingPortionsData: false,
+			listErrorMessage: '',
 			newPortion: {
 				name: '',
 				multiplier: '',
@@ -249,13 +259,13 @@ export default {
 					portionsVue.loadingPortionsData = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					portionsVue.$router.push('/login/expired')
-					return
-				}
 				portionsVue.loadingPortionsData = false
-				if (reason.responseJSON) {}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch portions',
+					errorName: 'listErrorMessage',
+					vue: portionsVue
+				})
 			})
 		},
 		/**
@@ -285,7 +295,7 @@ export default {
 		 */
 		createPortion () {
 			var portionsVue = this
-			portionsVue.clearError()
+			portionsVue.clearError('errorMessage')
 
 			return portionsVue.validatePortionData()
 			.then(response => {
@@ -297,12 +307,12 @@ export default {
 						portionsVue.errorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						portionsVue.$router.push('/login/expired')
-						return
-					}
-					portionsVue.errorMessage = reason
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not add the portion',
+						errorName: 'errorMessage',
+						vue: portionsVue
+					})
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message
@@ -369,10 +379,11 @@ export default {
 		/**
 		 * To clear the current error.
 		 * @function
+		 * @param {string} name - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
+		clearError (name) {
+			this[name] = ''
 		},
 		/**
 		 * To show the modal to edit portion details.

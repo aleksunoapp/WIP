@@ -24,8 +24,8 @@
       			<form role="form" @submit.prevent="createTag()">
       				<div class="form-body row">
       					<div class="col-md-12">
-			        		<div class="alert alert-danger" v-if="errorMessage.length">
-			        		    <button class="close" data-close="alert" @click="clearError()"></button>
+			        		<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+			        		    <button class="close" @click="clearError('errorMessage')"></button>
 			        		    <span>{{errorMessage}}</span>
 			        		</div>
 			        	</div>
@@ -75,6 +75,14 @@
 	            </div>
 	        </div>
 	        <div class="portlet-body">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
+							<button class="close" @click="clearError('listErrorMessage')"></button>
+							<span>{{listErrorMessage}}</span>
+						</div>
+					</div>
+				</div>
 	            <div class="mt-element-list margin-top-15" v-if="tags.length">
 	                <div class="mt-list-container list-news ext-1 no-border">
 	                    <ul>
@@ -152,6 +160,7 @@ import EditTag from './Tags/EditTag'
 import Dropdown from '../../modules/Dropdown'
 import MenuTree from '../../modules/MenuTree'
 import ResourcePicker from '../../modules/ResourcePicker'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -161,6 +170,7 @@ export default {
 				{name: 'Tags', link: false}
 			],
 			displayTagsData: false,
+			listErrorMessage: '',
 			displayEditTagModal: false,
 			tags: [],
 			createTagCollapse: true,
@@ -266,13 +276,13 @@ export default {
 					tagsVue.displayTagsData = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					tagsVue.$router.push('/login/expired')
-					return
-				}
 				tagsVue.displayTagsData = false
-				if (reason.responseJSON) {}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch tags',
+					errorName: 'listErrorMessage',
+					vue: tagsVue
+				})
 			})
 		},
 		/**
@@ -314,7 +324,7 @@ export default {
 		createTag () {
 			console.log('create Tag')
 			var createTagVue = this
-			createTagVue.clearError()
+			createTagVue.clearError('errorMessage')
 
 			return createTagVue.validateTagData()
 			.then(response => {
@@ -326,12 +336,12 @@ export default {
 						createTagVue.errorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						createTagVue.$router.push('/login/expired')
-						return
-					}
-					createTagVue.errorMessage = reason
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not add the tag',
+						errorName: 'errorMessage',
+						vue: createTagVue
+					})
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message
@@ -408,10 +418,11 @@ export default {
 		/**
 		 * To clear the current error.
 		 * @function
+		 * @param {string} name - Name of the variable to clear
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
+		clearError (name) {
+			this[name] = ''
 		},
 		/**
 		 * To set the image to be same as the one emitted by the gallery modal.

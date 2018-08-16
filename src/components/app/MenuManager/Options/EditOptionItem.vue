@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showEditOptionItemModal" effect="fade" @closeOnEscape="closeModal">
+	<modal :show="showEditOptionItemModal" effect="fade" @closeOnEscape="closeModal" ref="modal">
 		<div slot="modal-header" class="modal-header center">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -8,8 +8,8 @@
 		</div>
 		<div slot="modal-body" class="modal-body">
 			<div class="col-xs-12">
-				<div class="alert alert-danger" v-if="errorMessage.length">
-				    <button class="close" data-close="alert" @click="clearError()"></button>
+				<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+				    <button class="close" @click="clearError()"></button>
 				    <span>{{errorMessage}}</span>
 				</div>
         		<div :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
@@ -74,6 +74,7 @@ import Modal from '../../../modules/Modal'
 import Dropdown from '../../../modules/Dropdown'
 import OptionsFunctions from '../../../../controllers/Options'
 import ResourcePicker from '../../../modules/ResourcePicker'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -140,12 +141,13 @@ export default {
 					editOptionVue.optionItemToBeEdited = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editOptionVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch option item info',
+					errorName: 'errorMessage',
+					vue: editOptionVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**
@@ -166,12 +168,13 @@ export default {
 						editOptionVue.errorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						editOptionVue.$router.push('/login/expired')
-						return
-					}
-					editOptionVue.errorMessage = reason
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not update the option item',
+						errorName: 'errorMessage',
+						vue: editOptionVue,
+						containerRef: 'modal'
+					})
 				})
 			}).catch(reason => {
 				// If validation fails then display the error message
