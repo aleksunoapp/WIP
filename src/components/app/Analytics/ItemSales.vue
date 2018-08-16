@@ -48,6 +48,7 @@
 								prop="total_sale"
 								label="Total sales"
 								width="150"
+								:formatter="tableFormatNumber"
 								sortable>
 							</el-table-column>
 							<el-table-column
@@ -186,7 +187,7 @@ export default {
 		 * @returns {string} The formatted currency amount
 		 */
 		tableFormatNumber (row, column) {
-			return this.formatNumber(row.value)
+			return this.formatNumber(row.total_sale)
 		},
 		/**
 		 * el-table compliant cell data formatting function

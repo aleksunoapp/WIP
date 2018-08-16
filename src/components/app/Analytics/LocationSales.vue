@@ -12,7 +12,7 @@
 		</div>
 		<div v-else>
 			<div class="row">
-	  	      	<div class="col-xs-3">  	      		
+	  	      	<div class="col-xs-4">  	      		
 	      			<div class="portlet box blue-hoki">
 	      				<div class="portlet-title bg-blue-chambray">
 	      					<div class="caption" style="font-size:14px">
@@ -28,7 +28,7 @@
 	      	      		</div>
 	      	      	</div>
 	  	      	</div>
-		      	<div class="col-xs-3">  	      		
+		      	<div class="col-xs-4">  	      		
 	    			<div class="portlet box blue-hoki">
 	    				<div class="portlet-title bg-blue-chambray">
 	    					<div class="caption" style="font-size:14px">
@@ -44,7 +44,7 @@
 	    	      		</div>
 	    	      	</div>
 		      	</div>
-		      	<div class="col-xs-3">  	      		
+		      	<div class="col-xs-4">  	      		
 	    			<div class="portlet box blue-hoki">
 	    				<div class="portlet-title bg-blue-chambray">
 	    					<div class="caption" style="font-size:14px">
@@ -60,7 +60,7 @@
 	     	      		</div>
 	    	      	</div>
 		      	</div>
-  		      	<div class="col-xs-3">  	      		
+  		      	<div class="col-xs-6">  	      		
   	    			<div class="portlet box blue-hoki">
   	    				<div class="portlet-title bg-blue-chambray">
   	    					<div class="caption" style="font-size:14px">
@@ -76,7 +76,7 @@
   	    	      		</div>
   	    	      	</div>
   		      	</div>
-		      	<div class="col-md-12">  	      		
+		      	<div class="col-xs-6">  	      		
 	    			<div class="portlet box blue-hoki">
 	    				<div class="portlet-title bg-blue-chambray">
 	    					<div class="caption" style="font-size:14px">
@@ -171,6 +171,7 @@
 								<el-table-column
 									prop="total_sale"
 									label="Total sales"
+									:formatter="tableFormatNumber"
 									width="150"
 									sortable>
 								</el-table-column>
@@ -489,7 +490,7 @@ export default {
 		 * @returns {string} The formatted currency amount
 		 */
 		tableFormatNumber (row, column) {
-			return this.formatNumber(row.value)
+			return this.formatNumber(row.total_sale)
 		},
 		/**
 		 * el-table compliant cell data formatting function

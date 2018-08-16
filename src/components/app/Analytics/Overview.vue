@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="row">
-			<div class="col-xs-3">  	      		
+			<div class="col-xs-4">  	      		
 				<div class="portlet box blue-hoki">
 					<div class="portlet-title bg-blue-chambray">
 						<div class="caption" style="font-size:14px">
@@ -23,7 +23,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-xs-3">  	      		
+			<div class="col-xs-4">  	      		
 				<div class="portlet box blue-hoki">
 					<div class="portlet-title bg-blue-chambray">
 						<div class="caption" style="font-size:14px">
@@ -45,7 +45,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-xs-3">  	      		
+			<div class="col-xs-4">  	      		
 				<div class="portlet box blue-hoki">
 					<div class="portlet-title bg-blue-chambray">
 						<div class="caption" style="font-size:14px">
@@ -67,7 +67,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-xs-3">  	      		
+			<div class="col-xs-6">  	      		
 				<div class="portlet box blue-hoki">
 					<div class="portlet-title bg-blue-chambray">
 						<div class="caption" style="font-size:14px">
@@ -89,7 +89,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-md-12">
+			<div class="col-xs-6">
 				<div class="portlet box blue-hoki">
 					<div class="portlet-title bg-blue-chambray">
 						<div class="caption" style="font-size:14px">
