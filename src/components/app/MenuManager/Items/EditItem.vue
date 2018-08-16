@@ -107,7 +107,7 @@
 						</el-dropdown>
 					</div>
 					<div class="form-group form-md-line-input form-md-floating-label">
-						<label>Item type:</label><br>
+						<label>Type:</label><br>
 						<el-dropdown 
 							trigger="click" 
 							@command="updateItemType" 

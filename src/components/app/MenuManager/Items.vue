@@ -165,7 +165,7 @@
 	                    		</el-dropdown>
 	                    	</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<label>Item type:</label><br>
+								<label>Type:</label><br>
 								<el-dropdown trigger="click" @command="updateItemType" size="mini" :show-timeout="50" :hide-timeout="50">
 									<el-button size="mini">
 										{{ newItemTypeLabel }} <i class="el-icon-arrow-down el-icon--right"></i>
