@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showMenuTreeModal" :width="900" effect="fade" @closeOnEscape="closeModal">
+	<modal :show="showMenuTreeModal" :width="900" effect="fade" @closeOnEscape="closeModal" ref="modal">
 		<div slot="modal-header" class="modal-header center">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -16,7 +16,7 @@
                     </div>
 				</div>
 				<div class="portlet-body">
-					<div class="row" v-show="errorMessage.length">
+					<div class="row" v-show="errorMessage" ref="errorMessage">
 						<div class="col-md-12">
 							<div class="alert alert-danger">
 								<button class="close" @click="clearError()"></button>
@@ -98,6 +98,7 @@ import CategoriesFunctions from '../../controllers/Categories'
 import ItemsFunctions from '../../controllers/Items'
 import ModifiersFunctions from '../../controllers/Modifiers'
 import TagsFunctions from '../../controllers/Tags'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -177,13 +178,13 @@ export default {
 					menuTreeVue.menus = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					menuTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch menus',
+					errorName: 'errorMessage',
+					vue: menuTreeVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**
@@ -199,13 +200,13 @@ export default {
 					menuTreeVue.menus = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					menuTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch menus',
+					errorName: 'errorMessage',
+					vue: menuTreeVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**
@@ -221,13 +222,13 @@ export default {
 					menuTreeVue.categories = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					menuTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch categories',
+					errorName: 'errorMessage',
+					vue: menuTreeVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**
@@ -301,13 +302,13 @@ export default {
 					}
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					menuTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch items',
+					errorName: 'errorMessage',
+					vue: menuTreeVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**
@@ -379,13 +380,13 @@ export default {
 					menuTreeVue.closeModal()
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					menuTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not apply the modifier',
+					errorName: 'errorMessage',
+					vue: menuTreeVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**
@@ -409,13 +410,13 @@ export default {
 					menuTreeVue.closeModal()
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					menuTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not apply the tag',
+					errorName: 'errorMessage',
+					vue: menuTreeVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		applyItemSKUToRewardItem () {

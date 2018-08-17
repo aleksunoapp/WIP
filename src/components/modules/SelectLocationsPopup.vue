@@ -2,8 +2,8 @@
 	<div class="select-locations-popup-container">
 		<div class="row">
 			<div class="col-xs-12">
-				<div class="alert alert-danger" v-if="errorMessage.length">
-				    <button class="close" data-close="alert" @click="clearError()"></button>
+				<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+				    <button class="close" @click="clearError()"></button>
 				    <span>{{errorMessage}}</span>
 				</div>
 			</div>
@@ -95,6 +95,7 @@ import Dropdown from './Dropdown'
 import StoreGroupsFunctions from '../../controllers/StoreGroups'
 import App from '../../controllers/App'
 import LoadingScreen from '@/components/modules/LoadingScreen'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -254,12 +255,12 @@ export default {
 					selectLocationsVue.locations = response.payload.filter(location => !selectLocationsVue.exclude.includes(location.id))
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					selectLocationsVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch stores',
+					errorName: 'errorMessage',
+					vue: selectLocationsVue
+				})
 			}).finally(() => {
 				selectLocationsVue.loading = false
 			})
@@ -291,12 +292,12 @@ export default {
 					selectLocationsVue.locations = response.payload.locations.filter(location => !selectLocationsVue.exclude.includes(location.id))
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					selectLocationsVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch group info',
+					errorName: 'errorMessage',
+					vue: selectLocationsVue
+				})
 			})
 		},
 		/**
@@ -312,12 +313,12 @@ export default {
 					selectLocationsVue.groups = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					selectLocationsVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch store groups',
+					errorName: 'errorMessage',
+					vue: selectLocationsVue
+				})
 			})
 		}
 	},

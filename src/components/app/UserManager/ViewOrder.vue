@@ -1,5 +1,5 @@
 <template>
-	<modal v-bind:show="viewOrderModalDisplayed" effect="fade" @closeOnEscape="closeModal" okText="Refund">
+	<modal v-bind:show="viewOrderModalDisplayed" effect="fade" @closeOnEscape="closeModal" okText="Refund" ref="modal">
 		<div slot="modal-header" class="modal-header">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -10,8 +10,8 @@
 			<div class="portlet-body">
 				<div class="row">
 					<div class="col-md-12">
-						<div class="alert alert-danger" v-if="errorMessage.length">
-	                        <button class="close" data-close="alert" @click="clearError()"></button>
+						<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+	                        <button class="close" @click="clearError()"></button>
 	                        <span>{{errorMessage}}</span>
 	                    </div>
 					</div>
@@ -114,6 +114,7 @@
 <script>
 import Modal from '../../modules/Modal'
 import UsersFunctions from '../../../controllers/Users'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -181,14 +182,13 @@ export default {
 					window.scrollTo(0, 0)
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					viewOrderVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-					viewOrderVue.errorMessage = reason.responseJSON.message
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not refund the order',
+					errorName: 'errorMessage',
+					vue: viewOrderVue,
+					containerRef: 'modal'
+				})
 			}).finally(() => {
 				viewOrderVue.refunding = false
 			})

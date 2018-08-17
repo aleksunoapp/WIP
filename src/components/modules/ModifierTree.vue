@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showModifierTreeModal" effect="fade" @closeOnEscape="closeModal">
+	<modal :show="showModifierTreeModal" effect="fade" @closeOnEscape="closeModal" ref="modal">
 		<div slot="modal-header" class="modal-header center">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -15,6 +15,14 @@
                     </div>
 				</div>
 				<div class="portlet-body">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+								<button class="close" @click="clearError('errorMessage')"></button>
+								<span>{{errorMessage}}</span>
+							</div>
+						</div>
+					</div>
 					<div class="row">
 						<div class="col-md-6">
 							<h4>Modifier Categories</h4>
@@ -68,6 +76,7 @@ import ModifiersFunctions from '../../controllers/Modifiers'
 import PortionsFunctions from '../../controllers/Portions'
 import TagsFunctions from '../../controllers/Tags'
 import OptionsFunctions from '../../controllers/Options'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -98,6 +107,15 @@ export default {
 	},
 	methods: {
 		/**
+		 * To clear an error.
+		 * @function
+		 * @param {string} name - Name of the error variable to clear
+		 * @returns {undefined}
+		 */
+		clearError (name) {
+			this[name] = ''
+		},
+		/**
 		 * To close the modal.
 		 * @function
 		 * @returns {undefined}
@@ -118,13 +136,13 @@ export default {
 					modifierTreeVue.modifiers = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					modifierTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch modifiers',
+					errorName: 'errorMessage',
+					vue: modifierTreeVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**
@@ -170,13 +188,13 @@ export default {
 					}
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					modifierTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch items',
+					errorName: 'errorMessage',
+					vue: modifierTreeVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**
@@ -220,13 +238,13 @@ export default {
 					modifierTreeVue.closeModal()
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					modifierTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not apply the portion',
+					errorName: 'errorMessage',
+					vue: modifierTreeVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**
@@ -250,13 +268,13 @@ export default {
 					modifierTreeVue.closeModal()
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					modifierTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not apply the tag',
+					errorName: 'errorMessage',
+					vue: modifierTreeVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**
@@ -284,13 +302,13 @@ export default {
 					modifierTreeVue.closeModal()
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					modifierTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not apply the option',
+					errorName: 'errorMessage',
+					vue: modifierTreeVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**
