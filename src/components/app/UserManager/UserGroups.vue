@@ -24,7 +24,7 @@
 					<form role="form" @submit.prevent="createNewGroup()">
 						<div class="row">
 							<div class="col-md-12">
-								<div class="alert alert-danger" v-if="errorMessage.length">
+								<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
 									<button class="close" data-close="alert" @click="clearError()"></button>
 									<span>{{errorMessage}}</span>
 								</div>
@@ -140,6 +140,14 @@
 					  				<page-results class="pull-right" :totalResults="totalResults" :activePage="activePage" @pageResults="resultsPerPageUpdate"></page-results>
 								</div>
 							<div class="mt-list-container list-news">
+								<div class="row">
+									<div class="col-md-12">
+										<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
+											<button class="close" @click="clearError('listErrorMessage')"></button>
+											<span>{{listErrorMessage}}</span>
+										</div>
+									</div>
+								</div>
 								<loading-screen :show="loadingGroupsData" :color="'#2C3E50'" :display="'inline'"></loading-screen>
 								<ul v-show="groups.length && !loadingGroupsData">
 									<li 
@@ -248,6 +256,7 @@ import UserGroupsFunctions from '../../../controllers/UserGroups'
 import Dropdown from '../../modules/Dropdown'
 import PageResults from '../../modules/PageResults'
 import Pagination from '../../modules/Pagination'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -259,6 +268,7 @@ export default {
 			createGroupCollapse: true,
 			errorMessage: '',
 			loadingGroupsData: false,
+			listErrorMessage: '',
 			groups: [],
 			computedHeight: 0,
 			selectedGroupId: 0,
@@ -526,14 +536,13 @@ export default {
 					userGroupsVue.loadingGroupsData = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					userGroupsVue.$router.push('/login/expired')
-					return
-				}
 				userGroupsVue.loadingGroupsData = false
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch user groups',
+					errorName: 'listErrorMessage',
+					vue: userGroupsVue
+				})
 			})
 		},
 		/**
@@ -558,10 +567,11 @@ export default {
 		/**
 		 * To clear the current error.
 		 * @function
+		 * @param {string} name - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
+		clearError (name) {
+			this[name] = ''
 		},
 		/**
 		 * To activate the right half panel which lists the users in the group.
@@ -716,12 +726,12 @@ export default {
 						userGroupsVue.errorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						userGroupsVue.$router.push('/login/expired')
-						return
-					}
-					userGroupsVue.errorMessage = reason
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not add the group',
+						errorName: 'errorMessage',
+						vue: userGroupsVue
+					})
 				}).finally(() => {
 					userGroupsVue.creating = false
 				})

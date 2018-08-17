@@ -118,9 +118,9 @@
 							</li>
 						</ul>
 					</div>
-					<div class="col-md-9" v-show="errorMessage.length">
+					<div class="col-md-9" v-show="errorMessage" ref="errorMessage">
 						<div class="alert alert-danger">
-						    <button class="close" data-close="alert" @click.prevent="clearError('errorMessage')"></button>
+						    <button class="close" @click.prevent="clearError('errorMessage')"></button>
 						    <span>{{errorMessage}}</span>
 						</div>
 					</div>
@@ -411,17 +411,12 @@ export default {
 				usersVue.viewOrderModalDisplayed = true
 			})
 			.catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					usersVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-					usersVue.errorMessage = reason.responseJSON.message || 'Could not retrieve order items'
-					window.scrollTo(0, 0)
-				} else {
-					usersVue.errorMessage = reason.message || 'Could not retrieve order items'
-					window.scrollTo(0, 0)
-				}
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch order info',
+					errorName: 'errorMessage',
+					vue: usersVue
+				})
 			})
 		},
 		/**
@@ -494,13 +489,13 @@ export default {
 					usersVue.displayUserData = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					usersVue.$router.push('/login/expired')
-					return
-				}
 				usersVue.displayUserData = false
-				if (reason.responseJSON) {}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch user info',
+					errorName: 'errorMessage',
+					vue: usersVue
+				})
 			})
 		},
 		/**
@@ -516,11 +511,12 @@ export default {
 					usersVue.userAttributes = response.payload.userattributes
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					usersVue.$router.push('/login/expired')
-					return
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch user attributes',
+					errorName: 'errorMessage',
+					vue: usersVue
+				})
 			})
 		},
 		/**
@@ -536,11 +532,12 @@ export default {
 					usersVue.userItems = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					usersVue.$router.push('/login/expired')
-					return
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch user items',
+					errorName: 'errorMessage',
+					vue: usersVue
+				})
 			})
 		},
 		/**
@@ -560,13 +557,13 @@ export default {
 					usersVue.displayUserData = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					usersVue.$router.push('/login/expired')
-					return
-				}
 				usersVue.displayUserData = false
-				if (reason.responseJSON) {}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch user orders',
+					errorName: 'errorMessage',
+					vue: usersVue
+				})
 			})
 		},
 		/**
@@ -586,13 +583,13 @@ export default {
 					usersVue.displayUserData = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					usersVue.$router.push('/login/expired')
-					return
-				}
 				usersVue.displayUserData = false
-				if (reason.responseJSON) {}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch the social feed',
+					errorName: 'errorMessage',
+					vue: usersVue
+				})
 			})
 		},
 		/**
@@ -636,7 +633,7 @@ export default {
 				}).catch(reason => {
 					ajaxErrorHandler({
 						reason,
-						errorText: 'Could not add points',
+						errorText: 'We could not add points',
 						errorName: 'addErrorMessage',
 						vue: usersVue
 					})

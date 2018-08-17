@@ -29,7 +29,7 @@
 						<div class="form-body">
 							<div class="row">
 								<div class="col-md-12">
-									<div class="alert alert-danger" v-show="searchError.length">
+									<div class="alert alert-danger" v-show="searchError" ref="searchError">
 		                                <button class="close" @click.stop="clearSearchError()"></button>
 		                                <span>{{searchError}}</span>
 		                            </div>
@@ -86,6 +86,14 @@
 	        <div class="relative-block">
 
 	  			<div class="margin-top-30 search-content-4">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
+								<button class="close" @click="clearError('listErrorMessage')"></button>
+								<span>{{listErrorMessage}}</span>
+							</div>
+						</div>
+					</div>
 
 					<loading-screen :show="loadingAll" :color="'#2C3E50'" :display="'inline'"></loading-screen>
 
@@ -242,6 +250,7 @@ import Dropdown from '../../modules/Dropdown'
 import Modal from '../../modules/Modal'
 import UsersFunctions from '../../../controllers/Users'
 import LoadingScreen from '../../modules/LoadingScreen'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -252,6 +261,7 @@ export default {
 			],
 			view: 'all',
 			loadingAll: false,
+			listErrorMessage: '',
 			users: [],
 			searchCollapse: true,
 			search: {
@@ -283,6 +293,15 @@ export default {
 		this.getUsers()
 	},
 	methods: {
+		/**
+		 * To clear an error.
+		 * @function
+		 * @param {string} name - Name of the error variable to clear
+		 * @returns {undefined}
+		 */
+		clearError (name) {
+			this[name] = ''
+		},
 		/**
 		 * To format a phone number
 		 * @function
@@ -419,12 +438,12 @@ export default {
 				}
 			}).catch(reason => {
 				usersVue.loadingAll = false
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					usersVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch users',
+					errorName: 'listErrorMessage',
+					vue: usersVue
+				})
 			})
 		},
 		/**
@@ -484,15 +503,15 @@ export default {
 						userListVue.searchResults = response.payload.data
 						window.scrollTo(0, 0)
 					} else {
-						userListVue.errorMessage = response.message
+						userListVue.searchError = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						userListVue.$router.push('/login/expired')
-						return
-					}
-					userListVue.errorMessage = reason
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch users',
+						errorName: 'searchError',
+						vue: userListVue
+					})
 				}).finally(() => {
 					userListVue.loadingSearch = false
 					userListVue.searching = false
