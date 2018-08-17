@@ -662,7 +662,7 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (!promoCodesVue.promoCode.codes.length) {
 					reject('Code cannot be blank')
-				} else if (!(/^\+?(0|[1-9]\d*)$/.test(promoCodesVue.promoCode.value))) {
+				} else if (!(/^(?=.+)(?:[1-9]\d*|0)?(?:\.\d+)?$/.test(promoCodesVue.promoCode.value))) {
 					reject('Value Of Promo Code cannot be blank and must be a number')
 				} else if (!promoCodesVue.promoCode.value_type.length) {
 					reject('Value Type cannot be blank')
