@@ -288,7 +288,12 @@
 		                        	</div>
 		                        </li>
 		                    </ul>
-              				<div class="form-actions right margin-top-20">
+              				<div 
+							  	class="form-actions right margin-top-20"
+								v-if="canAny([
+									'stores promotions create',
+									'stores promotions update'
+								])">
 			                    <button 
 									type="button" 
 									class="btn blue" 
@@ -656,6 +661,7 @@ import EditPromotion from './Promotions/EditPromotion'
 import DeletePromotion from './Promotions/DeletePromotion'
 import $ from 'jquery'
 import freshiiLogo from '../../../static/client_logo.png'
+import { mapGetters } from 'vuex'
 
 export default {
 	data () {
@@ -747,7 +753,11 @@ export default {
 	computed: {
 		activeLocationId: function () {
 			return this.$root.activeLocation.id
-		}
+		},
+		...mapGetters([
+			'can',
+			'canAny'
+		])
 	},
 	watch: {
 		activeLocationId: function () {

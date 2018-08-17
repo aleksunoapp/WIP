@@ -44,6 +44,10 @@ export const role = {
 		'stores images update': false,
 		'stores images delete': false,
 		'stores images approve': false,
+		'stores promotions read': false,
+		'stores promotions create': false,
+		'stores promotions update': false,
+		'stores promotions approve': false,
 		'groups': {
 			'stores groups read': false,
 			'stores groups create': false,
