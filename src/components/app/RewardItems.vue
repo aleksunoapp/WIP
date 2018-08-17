@@ -103,7 +103,17 @@
 		            </div>
 		        </div>
 		        <div class="portlet-body relative-block">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
+								<button class="close" @click="clearError('listErrorMessage')"></button>
+								<span>{{listErrorMessage}}</span>
+							</div>
+						</div>
+					</div>
+
 		        	<loading-screen :show="loadingRewardItems" :color="'#2C3E50'" :display="'inline'"></loading-screen>
+
 		            <div class="mt-element-list margin-top-15" v-if="rewardItems.length && !loadingRewardItems">
 		                <div class="mt-list-container list-news ext-1 no-border">
 		                    <ul>
@@ -200,7 +210,7 @@
         </menu-modifier-tree>
 
         <!-- DELETE MODAL START -->
-        <modal :show="displayDeleteModal" effect="fade" @closeOnEscape="closeDeleteModal">
+        <modal :show="displayDeleteModal" effect="fade" @closeOnEscape="closeDeleteModal" ref="deleteModal">
         	<div slot="modal-header" class="modal-header">
         		<button type="button" class="close" @click="closeDeleteModal()">
         			<span>&times;</span>
@@ -208,7 +218,7 @@
         		<h4 class="modal-title center">Delete Reward Item</h4>
         	</div>
         	<div slot="modal-body" class="modal-body">
-        		<div class="row" v-show="deleteErrorMessage.length">
+        		<div class="row" v-show="deleteErrorMessage" ref="deleteErrorMessage">
         			<div class="col-md-12">
         				<div class="alert alert-danger">
         					<button class="close" @click.stop="clearDeleteError()"></button>
@@ -250,7 +260,7 @@ import LoadingScreen from '../modules/LoadingScreen'
 import Modal from '../modules/Modal'
 import RewardFunctions from '../../controllers/Rewards'
 import EditRewardItem from './Rewards/EditRewardItem'
-import ajaxErrorHandler from '../../controllers/ErrorController'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -260,6 +270,7 @@ export default {
 				{name: 'Reward Items', link: false}
 			],
 			loadingRewardItems: false,
+			listErrorMessage: '',
 			rewardItems: [],
 			errorMessage: '',
 			displayEditRewardItemModal: false,
@@ -389,14 +400,13 @@ export default {
 					rewardItemsVue.loadingRewardItems = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					rewardItemsVue.$router.push('/login/expired')
-					return
-				}
 				rewardItemsVue.loadingRewardItems = false
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch reward items',
+					errorName: 'listErrorMessage',
+					vue: rewardItemsVue
+				})
 			})
 		},
 		/**
@@ -638,17 +648,13 @@ export default {
 					rewardsVue.deleteErrorMessage = response.message
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					rewardsVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-					rewardsVue.deleteErrorMessage = reason.responseJSON.message || 'Something went wrong ...'
-					window.scrollTo(0, 0)
-				} else {
-					rewardsVue.deleteErrorMessage = reason.message || 'Something went wrong ...'
-					window.scrollTo(0, 0)
-				}
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not delete the reward item',
+					errorName: 'deleteErrorMessage',
+					vue: rewardsVue,
+					containerRef: 'deleteModal'
+				})
 			}).finally(() => {
 				rewardsVue.deleting = false
 			})

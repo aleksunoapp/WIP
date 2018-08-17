@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showEditTierModal" effect="fade" @closeOnEscape="closeModal">
+	<modal :show="showEditTierModal" effect="fade" @closeOnEscape="closeModal" ref="modal">
 		<div slot="modal-header" class="modal-header">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -7,8 +7,8 @@
 			<h4 class="modal-title center">Edit Reward Tier - {{ passedRewardTier.name }}</h4>
 		</div>
 		<div slot="modal-body" class="modal-body">
-			<div class="alert alert-danger" v-if="errorMessage.length">
-			    <button class="close" data-close="alert" @click="clearError()"></button>
+			<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+			    <button class="close" @click="clearError()"></button>
 			    <span>{{errorMessage}}</span>
 			</div>
 			<fieldset :disabled="!$root.permissions['reward_tiers update']">
@@ -58,6 +58,7 @@
 import $ from 'jquery'
 import Modal from '../../modules/Modal'
 import RewardsFunctions from '../../../controllers/Rewards'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -128,12 +129,13 @@ export default {
 						editRewardsTierVue.errorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						editRewardsTierVue.$router.push('/login/expired')
-						return
-					}
-					editRewardsTierVue.errorMessage = reason
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not update the reward tier',
+						errorName: 'errorMessage',
+						vue: editRewardsTierVue,
+						containerRef: 'modal'
+					})
 				}).finally(() => {
 					editRewardsTierVue.updating = false
 				})

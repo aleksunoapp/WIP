@@ -20,6 +20,14 @@
         	</button-group>
         </div>
         <div class="margin-top-20">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
+						<button class="close" @click="clearError('listErrorMessage')"></button>
+						<span>{{listErrorMessage}}</span>
+					</div>
+				</div>
+			</div>
         	<div class="relative-block">
 	        	<div v-if="filteredSocialFeed.length" class="clearfix">
 	        		<el-dropdown trigger="click" @command="updateSortByOrder" size="mini" :show-timeout="50" :hide-timeout="50">
@@ -119,6 +127,7 @@ import Checkbox from '../modules/Checkbox'
 import NoResults from '../modules/NoResults'
 import SocialFeedFunctions from '../../controllers/SocialFeed'
 import { findIndex } from 'lodash'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -126,6 +135,7 @@ export default {
 			breadcrumbArray: [
 				{name: 'Social Feed', link: false}
 			],
+			listErrorMessage: '',
 			filterBy: ['facebook', 'twitter', 'instagram'],
 			filteredSocialFeed: [],
 			socialFeed: [],
@@ -155,6 +165,15 @@ export default {
 			this.sortBy.order = value
 		},
 		/**
+		 * To clear an error.
+		 * @function
+		 * @param {string} name - Name of the error variable to clear
+		 * @returns {undefined}
+		 */
+		clearError (name) {
+			this[name] = ''
+		},
+		/**
 		 * To get the social feed for the current page.
 		 * @function
 		 * @param {integer} pageNumber - The current page that we are retrieving results for.
@@ -175,14 +194,13 @@ export default {
 					socialFeedVue.loadingFilteredData = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					socialFeedVue.$router.push('/login/expired')
-					return
-				}
 				socialFeedVue.loadingFilteredData = false
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch social feeds',
+					errorName: 'listErrorMessage',
+					vue: socialFeedVue
+				})
 			})
 		},
 		/**
@@ -274,13 +292,12 @@ export default {
 					socialFeedVue.showFailureAlert()
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					socialFeedVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not update the feed',
+					errorName: 'listErrorMessage',
+					vue: socialFeedVue
+				})
 			}).finally(() => {
 				socialFeedVue.updating = false
 			})

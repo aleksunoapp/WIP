@@ -24,8 +24,8 @@
 	      			<form role="form" @submit.prevent="createNewGeolocation()">
 	      				<div class="row">
 	      					<div class="col-md-12">
-	      						<div class="alert alert-danger" v-if="createErrorMessage.length">
-		    					    <button class="close" data-close="alert" @click.prevent="clearError('createErrorMessage')"></button>
+	      						<div class="alert alert-danger" v-show="createErrorMessage" ref="createErrorMessage">
+		    					    <button class="close" @click.prevent="clearError('createErrorMessage')"></button>
 		    					    <span>{{createErrorMessage}}</span>
 		    					</div>
 	      					</div>
@@ -81,7 +81,17 @@
 				</div>
 			</div>
 			<div class="portlet-body relative-block">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
+							<button class="close" @click="clearError('listErrorMessage')"></button>
+							<span>{{listErrorMessage}}</span>
+						</div>
+					</div>
+				</div>
+
 				<loading-screen :show="loadingGeolocations" :color="'#2C3E50'" :display="'inline'"></loading-screen>
+
 				<div class="mt-element-list">
 					<div class="mt-list-container list-news">
 						<ul>
@@ -132,7 +142,7 @@
 		<!-- LIST END -->
 
 		<!-- EDIT MODAL START -->
-		<modal :show="showEditModal" effect="fade" @closeOnEscape="closeEditModal">
+		<modal :show="showEditModal" effect="fade" @closeOnEscape="closeEditModal" ref="editModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closeEditModal()">
 					<span>&times;</span>
@@ -140,8 +150,8 @@
 				<h4 class="modal-title center">Edit Geolocation</h4>
 			</div>
 			<div slot="modal-body" class="modal-body">
-				<div class="alert alert-danger" v-if="editErrorMessage.length">
-				    <button class="close" data-close="alert" @click="clearError('editErrorMessage')"></button>
+				<div class="alert alert-danger" v-show="editErrorMessage" ref="editErrorMessage">
+				    <button class="close" @click="clearError('editErrorMessage')"></button>
 				    <span>{{editErrorMessage}}</span>
 				</div>
 				<div class="row">
@@ -196,7 +206,7 @@
 		<!-- EDIT MODAL END -->
 
 		<!-- DELETE MODAL START -->
-		<modal :show="showDeleteModal" effect="fade" @closeOnEscape="closeDeleteModal">
+		<modal :show="showDeleteModal" effect="fade" @closeOnEscape="closeDeleteModal" ref="deleteModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closeDeleteModal()">
 					<span>&times;</span>
@@ -204,8 +214,8 @@
 				<h4 class="modal-title center">Delete Geolocation</h4>
 			</div>
 			<div slot="modal-body" class="modal-body">
-				<div class="alert alert-danger" v-if="deleteErrorMessage.length">
-				    <button class="close" data-close="alert" @click="clearError('deleteErrorMessage')"></button>
+				<div class="alert alert-danger" v-show="deleteErrorMessage" ref="deleteErrorMessage">
+				    <button class="close" @click="clearError('deleteErrorMessage')"></button>
 				    <span>{{deleteErrorMessage}}</span>
 				</div>
 				<div class="col-md-12">
@@ -238,6 +248,7 @@ import NoResults from '../../modules/NoResults'
 import PromotionsFunctions from '../../../controllers/Promotions'
 import Modal from '../../modules/Modal'
 import MapArea from '../../modules/MapArea'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -253,6 +264,7 @@ export default {
 			},
 			createErrorMessage: '',
 			loadingGeolocations: false,
+			listErrorMessage: '',
 			geolocations: [],
 			showEditModal: false,
 			updating: false,
@@ -342,11 +354,13 @@ export default {
 					geolocationsVue.loadingGeolocations = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					geolocationsVue.$router.push('/login/expired')
-					return
-				}
 				geolocationsVue.loadingGeolocations = false
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch geolocations',
+					errorName: 'listErrorMessage',
+					vue: geolocationsVue
+				})
 			})
 		},
 		/**
@@ -384,24 +398,18 @@ export default {
 						geolocationsVue.createErrorMessage = 'Something went wrong ...'
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						geolocationsVue.$router.push('/login/expired')
-						return
-					}
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not add the geolocations',
+						errorName: 'createErrorMessage',
+						vue: geolocationsVue
+					})
 				}).finally(() => {
 					geolocationsVue.creating = false
 				})
 			})
 			.catch(reason => {
-				if (reason.responseJSON) {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						geolocationsVue.$router.push('/login/expired')
-						return
-					}
-					geolocationsVue.createErrorMessage = reason.responseJSON.message
-				} else {
-					geolocationsVue.createErrorMessage = reason
-				}
+				geolocationsVue.createErrorMessage = reason
 			})
 		},
 		/**
@@ -488,24 +496,21 @@ export default {
 							geolocationsVue.animated = null
 						}, 3000)
 					} else {
-						geolocationsVue.createErrorMessage = 'Something went wrong ...'
+						throw response
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						geolocationsVue.$router.push('/login/expired')
-						return
-					}
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not update the geolocation',
+						errorName: 'editErrorMessage',
+						vue: geolocationsVue,
+						containerRef: 'editModal'
+					})
 				}).finally(() => {
 					geolocationsVue.updating = false
 				})
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					geolocationsVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-					geolocationsVue.createErrorMessage = reason.responseJSON.message
-				}
+				geolocationsVue.createErrorMessage = reason.responseJSON.message
 			})
 		},
 		/**
@@ -581,13 +586,13 @@ export default {
 					geolocationsVue.deleteErrorMessage = 'Something went wrong ...'
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					geolocationsVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-					geolocationsVue.deleteErrorMessage = reason.responseJSON.message
-				}
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not delete the geolocation',
+					errorName: 'deleteErrorMessage',
+					vue: geolocationsVue,
+					containerRef: 'deleteModal'
+				})
 			}).finally(() => {
 				geolocationsVue.deleting = false
 			})

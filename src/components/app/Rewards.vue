@@ -26,8 +26,8 @@
       			<form role="form" @submit.prevent="createRewardsTier()">
       				<div class="form-body row">
       					<div class="col-md-12">
-			        		<div class="alert alert-danger" v-if="errorMessage.length">
-			        		    <button class="close" data-close="alert" @click.prevent="clearError()"></button>
+			        		<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+			        		    <button class="close" @click.prevent="clearError('errorMessage')"></button>
 			        		    <span>{{errorMessage}}</span>
 			        		</div>
 			        	</div>
@@ -82,6 +82,14 @@
 		            </div>
 		        </div>
 		        <div class="portlet-body">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
+								<button class="close" @click="clearError('listErrorMessage')"></button>
+								<span>{{listErrorMessage}}</span>
+							</div>
+						</div>
+					</div>
 		            <div class="mt-element-list margin-top-15" v-if="rewardTiers.length">
 		                <div class="mt-list-container list-news ext-1 no-border">
 		                    <ul>
@@ -143,7 +151,7 @@
         <edit-rewards-tier v-if="displayEditTierModal" :passedRewardTier="passedRewardTier" @closeEditTierModal="closeEditTierModal" @updateRewardTier="updateRewardTier"></edit-rewards-tier>
 
 		<!-- DELETE MODAL START -->
-		<modal :show="displayDeleteModal" effect="fade" @closeOnEscape="closeDeleteModal">
+		<modal :show="displayDeleteModal" effect="fade" @closeOnEscape="closeDeleteModal" ref="deleteModal">
 			<div slot="modal-header" class="modal-header">
 				<button type="button" class="close" @click="closeDeleteModal()">
 					<span>&times;</span>
@@ -151,7 +159,7 @@
 				<h4 class="modal-title center">Delete Tier</h4>
 			</div>
 			<div slot="modal-body" class="modal-body">
-				<div class="row" v-show="deleteErrorMessage.length">
+				<div class="row" v-show="deleteErrorMessage" ref="deleteErrorMessage">
 					<div class="col-md-12">
 						<div class="alert alert-danger">
 							<button class="close" @click.stop="clearDeleteError()"></button>
@@ -191,6 +199,7 @@ import LoadingScreen from '../modules/LoadingScreen'
 import Modal from '../modules/Modal'
 import RewardsFunctions from '../../controllers/Rewards'
 import EditRewardsTier from './Rewards/EditRewardsTier'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -202,6 +211,7 @@ export default {
 			rewardTiers: [],
 			errorMessage: '',
 			displayEditTierModal: false,
+			listErrorMessage: false,
 			passedRewardTier: {},
 			createTierCollapse: true,
 			creating: false,
@@ -242,14 +252,13 @@ export default {
 					rewardsVue.displayRewardsData = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					rewardsVue.$router.push('/login/expired')
-					return
-				}
 				rewardsVue.displayRewardsData = false
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch reward tiers',
+					errorName: 'listErrorMessage',
+					vue: rewardsVue
+				})
 			})
 		},
 		/**
@@ -312,7 +321,7 @@ export default {
 		 */
 		createRewardsTier () {
 			var rewardsVue = this
-			rewardsVue.clearError()
+			rewardsVue.clearError('errorMessage')
 
 			return rewardsVue.validateTierData()
 			.then(response => {
@@ -325,12 +334,12 @@ export default {
 						rewardsVue.errorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						rewardsVue.$router.push('/login/expired')
-						return
-					}
-					rewardsVue.errorMessage = reason
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not add the rewards tier',
+						errorName: 'errorMessage',
+						vue: rewardsVue
+					})
 				}).finally(() => {
 					rewardsVue.creating = false
 				})
@@ -389,12 +398,13 @@ export default {
 			this.$router.push({path: '/app/loyalty/rewards/' + tier.id + '/items', props: {passedTier: tier}})
 		},
 		/**
-		 * To clear the current error.
+		 * To clear an error.
 		 * @function
+		 * @param {string} name - The error variable name
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
+		clearError (name) {
+			this[name] = ''
 		},
 		/**
 		 * To toggle the create tier panel, initially set to closed
@@ -442,17 +452,13 @@ export default {
 					rewardsVue.deleteErrorMessage = response.message
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					rewardsVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-					rewardsVue.deleteErrorMessage = reason.responseJSON.message || 'Something went wrong ...'
-					window.scrollTo(0, 0)
-				} else {
-					rewardsVue.deleteErrorMessage = reason.message || 'Something went wrong ...'
-					window.scrollTo(0, 0)
-				}
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not delete the rewards tier',
+					errorName: 'deleteErrorMessage',
+					vue: rewardsVue,
+					containerRef: 'deleteModal'
+				})
 			}).finally(() => {
 				rewardsVue.deleting = false
 			})
