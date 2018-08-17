@@ -243,8 +243,8 @@
 							<form role="form" @submit.prevent="updateStoreMeta()" novalidate>
 								<fieldset :disabled="!$root.permissions['stores meta update']? true : false">
 									<div class="form-body">
-										<div class="alert alert-danger" v-show="storeMetaError.length" ref="storeMetaError">
-											<button class="close" data-close="alert" @click.prevent="clearError('storeMetaError')"></button>
+										<div class="alert alert-danger" v-show="storeMetaError" ref="storeMetaError">
+											<button class="close" @click.prevent="clearError('storeMetaError')"></button>
 											<span>{{storeMetaError}}</span>
 										</div>
 										<div class="col-md-6">
@@ -524,8 +524,8 @@
 							<form role="form" @submit.prevent="updateStoreHours()" novalidate>
 								<fieldset :disabled="!$root.permissions['stores hours update']? true : false">
 									<div class="form-body">
-										<div class="alert alert-danger" v-if="storeHourError.length">
-											<button class="close" data-close="alert" @click="clearError('storeHourError')"></button>
+										<div class="alert alert-danger" v-show="storeHourError" ref="storeHourError">
+											<button class="close" @click="clearError('storeHourError')"></button>
 											<span>{{storeHourError}}</span>
 										</div>
 										<table class="table">
@@ -638,6 +638,14 @@
 									Edit a holiday
 								</button>
 							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<div class="alert alert-danger" v-show="holidayHoursError" ref="holidayHoursError">
+										<button class="close" @click="clearError('holidayHoursError')"></button>
+										<span>{{holidayHoursError}}</span>
+									</div>
+								</div>
+							</div>
 							<add-holiday-hours
 								v-if="addAHoliday"
 								:selectedLocationId="parseInt($route.params.store_id)"
@@ -646,10 +654,6 @@
 							>
 							</add-holiday-hours>
 							<div v-else class="margin-top-20">
-								<div class="alert alert-danger" v-if="updateHolidayHoursError.length">
-									<button class="close" data-close="alert" @click="clearError('updateHolidayHoursError')"></button>
-									<span>{{updateHolidayHoursError}}</span>
-								</div>
 								<div v-if="holidayHoursToBeEdited.length">
 									<table class="table">
 										<thead>
@@ -843,7 +847,7 @@ export default {
 			storeInformationError: '',
 			storeMetaError: '',
 			storeHourError: '',
-			updateHolidayHoursError: '',
+			holidayHoursError: '',
 			updatingStoreInfo: false,
 			storeToBeEdited: {},
 			updatingStoreMeta: false,
@@ -917,8 +921,6 @@ export default {
 			noHoursData: '',
 			newHolidayHours: [],
 			storeGroups: [],
-			nullPOSsettingsReceived: true,
-			storePOSsettingsError: '',
 			isCorporateUpdated: false,
 			addAHoliday: true,
 			mode: 'list',
@@ -1014,13 +1016,12 @@ export default {
 					storeGroupsVue.storeGroups = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					storeGroupsVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch store groups',
+					errorName: 'storeInformationError',
+					vue: storeGroupsVue
+				})
 			})
 		},
 		/**
@@ -1079,12 +1080,12 @@ export default {
 					editStoreVue.showAlert()
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editStoreVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not add the holiday hours',
+					errorName: 'holidayHoursError',
+					vue: editStoreVue
+				})
 			})
 		},
 		/**
@@ -1122,15 +1123,12 @@ export default {
 					val.loading = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editStoreVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-					editStoreVue.updateHolidayHoursError = reason
-					window.scrollTo(0, 0)
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not update the holiday hours',
+					errorName: 'holidayHoursError',
+					vue: editStoreVue
+				})
 			})
 		},
 		/**
@@ -1258,27 +1256,6 @@ export default {
 			this[val] = ''
 		},
 		/**
-		 * To sync the menu.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		syncMenu () {
-			var editStoreVue = this
-			return StoresFunctions.syncMenu(editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken, editStoreVue.storeToBeEdited.id).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					editStoreVue.showSyncSuccessful()
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editStoreVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
-			})
-		},
-		/**
 		 * To alert the user that the menu has been synced.
 		 * @function
 		 * @returns {undefined}
@@ -1302,15 +1279,17 @@ export default {
 				if (response.code === 200 && response.status === 'ok') {
 					editStoreVue.storeToBeEdited = response.payload
 					editStoreVue.getStoreMeta()
+					editStoreVue.getStoreGroups()
+				} else {
+					throw response
 				}
-				editStoreVue.getStoreGroups()
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editStoreVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch store information',
+					errorName: 'storeInformationError',
+					vue: editStoreVue
+				})
 			})
 		},
 		/**
@@ -1330,12 +1309,12 @@ export default {
 					editStoreVue.getStoreHours()
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editStoreVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch store meta info',
+					errorName: 'storeMetaError',
+					vue: editStoreVue
+				})
 			})
 		},
 		/**
@@ -1358,13 +1337,12 @@ export default {
 					}
 				}
 			}).catch(reason => {
-				console.log(reason)
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editStoreVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch store hours',
+					errorName: 'storeHourError',
+					vue: editStoreVue
+				})
 			})
 		},
 		/**
@@ -1386,14 +1364,14 @@ export default {
 					weekStartingMonday.push(response.payload.location_holiday_hours[sunday])
 					weekStartingMonday.splice(sunday, 1)
 					editStoreVue.holidayHoursToBeEdited = weekStartingMonday
-				}
+				} else throw response
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editStoreVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch holiday hours',
+					errorName: 'holidayHoursError',
+					vue: editStoreVue
+				})
 			})
 		},
 		/**
@@ -1543,11 +1521,11 @@ export default {
 					editStoreVue.metaToBeEdited.created_by = editStoreVue.$root.createdBy
 					StoresFunctions.createStoreMeta(editStoreVue.storeToBeEdited.id, editStoreVue.metaToBeEdited, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
 						editStoreVue.noProfileData = ''
-						editStoreVue.showSuccessAlert('Store metas')
+						editStoreVue.showSuccessAlert('Store meta details')
 					}).catch(reason => {
 						ajaxErrorHandler({
 							reason,
-							errorText: 'We could not save the store information',
+							errorText: 'We could not update the store',
 							errorName: 'storeMetaError',
 							vue: editStoreVue
 						})
@@ -1562,15 +1540,12 @@ export default {
 							editStoreVue.storeMetaError = response.message
 						}
 					}).catch(reason => {
-						if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-							editStoreVue.$router.push('/login/expired')
-							return
-						}
-						if (reason.responseJSON) {
-							editStoreVue.storeMetaError = reason
-							window.scrollTo(0, 0)
-						}
-						throw reason
+						ajaxErrorHandler({
+							reason,
+							errorText: 'We could not update the store',
+							errorName: 'storeMetaError',
+							vue: editStoreVue
+						})
 					}).finally(() => {
 						editStoreVue.updatingStoreMeta = false
 					})
@@ -1625,12 +1600,12 @@ export default {
 							editStoreVue.storeHourError = response.message
 						}
 					}).catch(reason => {
-						if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-							editStoreVue.$router.push('/login/expired')
-							return
-						}
-						if (reason.responseJSON) {}
-						throw reason
+						ajaxErrorHandler({
+							reason,
+							errorText: 'We could not add the hours',
+							errorName: 'storeHourError',
+							vue: editStoreVue
+						})
 					}).finally(() => {
 						editStoreVue.updatingStoreHours = false
 					})
@@ -1647,12 +1622,12 @@ export default {
 							editStoreVue.storeHourError = response.message
 						}
 					}).catch(reason => {
-						if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-							editStoreVue.$router.push('/login/expired')
-							return
-						}
-						if (reason.responseJSON) {}
-						throw reason
+						ajaxErrorHandler({
+							reason,
+							errorText: 'We could not update the hours',
+							errorName: 'storeHourError',
+							vue: editStoreVue
+						})
 					})
 				}).catch(reason => {
 					editStoreVue.storeHourError = reason
@@ -1678,75 +1653,6 @@ export default {
 					reject('Key cannot be blank.')
 				}
 				resolve('Hurray')
-			})
-		},
-		/**
-		 * To set hours of operation for the newly created store.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		createOrUpdatePOSsettings () {
-			this.clearError('storePOSsettingsError')
-			var editStoreVue = this
-
-			return editStoreVue.validatePOSsettings()
-			.then(response => {
-				if (this.nullPOSsettingsReceived) {
-					StoresFunctions.createPOSsettings(editStoreVue.storeToBeEdited.id, editStoreVue.storeToBeEdited.pos_partner, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
-						if (response.code === 200 && response.status === 'ok') {
-							editStoreVue.showPOSsettingsAlert()
-						} else {
-							editStoreVue.storePOSsettingsError = response.message
-						}
-					}).catch(reason => {
-						if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-							editStoreVue.$router.push('/login/expired')
-							return
-						}
-						editStoreVue.storePOSsettingsError = reason
-						window.scrollTo(0, 0)
-						throw reason
-					})
-				} else {
-					StoresFunctions.updatePOSsettings(editStoreVue.storeToBeEdited.id, editStoreVue.storeToBeEdited.pos_partner, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
-						if (response.code === 200 && response.status === 'ok') {
-							editStoreVue.showPOSsettingsAlert()
-						} else {
-							editStoreVue.storePOSsettingsError = response.message
-						}
-					}).catch(reason => {
-						if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-							editStoreVue.$router.push('/login/expired')
-							return
-						}
-						// editStoreVue.storePOSsettingsError = reason
-						window.scrollTo(0, 0)
-						throw reason
-					})
-				}
-			}).catch(reason => {
-				// If validation fails then display the error message
-				editStoreVue.storePOSsettingsError = reason
-				window.scrollTo(0, 0)
-				throw reason
-			})
-		},
-		/**
-		 * To ask the user if they want to set up store holiday hours next or exit the setup.
-		 * @function
-		 * @returns {undefined}
-		 */
-		showPOSsettingsAlert () {
-			this.$swal({
-				title: 'Success!',
-				html: 'POS settings saved',
-				type: 'success',
-				showCancelButton: false,
-				confirmButtonText: 'OK'
-			}).then(() => {
-				// do nothing
-			}, dismiss => {
-				// do nothing
 			})
 		},
 		/**
@@ -1808,12 +1714,7 @@ export default {
 					}
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editStoreVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
-				throw reason
+				console.log('Autocomplete error:', reason)
 			})
 		},
 		/**

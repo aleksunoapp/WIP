@@ -23,8 +23,8 @@
   				<form role="form" @submit.prevent="createNewGroup()">
   					<div class="row">
   						<div class="col-md-12">
-  							<div class="alert alert-danger" v-if="errorMessage.length">
-  								<button class="close" data-close="alert" @click="clearError('errorMessage')"></button>
+  							<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+  								<button class="close" @click="clearError('errorMessage')"></button>
   								<span>{{errorMessage}}</span>
   							</div>
   						</div>
@@ -68,6 +68,14 @@
             </div>
           </div>
           <div class="portlet-body">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
+						<button class="close" @click="clearError('listErrorMessage')"></button>
+						<span>{{listErrorMessage}}</span>
+					</div>
+				</div>
+			</div>
             <div class="mt-element-list">
               <div class="mt-list-container list-news">
                 <ul>
@@ -203,6 +211,7 @@ export default {
 			createGroupCollapse: true,
 			errorMessage: '',
 			loadingGroupsData: false,
+			listErrorMessage: '',
 			groups: [],
 			computedHeight: 0,
 			selectedGroupId: 0,
@@ -360,17 +369,13 @@ export default {
 					}
 				})
 				.catch(reason => {
-					if (
-						reason.responseJSON.code === 401 &&
-						reason.responseJSON.status === 'unauthorized'
-					) {
-						storeGroupsVue.$router.push('/login/expired')
-						return
-					}
 					storeGroupsVue.loadingGroupsData = false
-					if (reason.responseJSON) {
-					}
-					throw reason
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch store groups',
+						errorName: 'listErrorMessage',
+						vue: storeGroupsVue
+					})
 				})
 		},
 		/**
@@ -528,15 +533,12 @@ export default {
 							}
 						})
 						.catch(reason => {
-							if (
-								reason.responseJSON.code === 401 &&
-								reason.responseJSON.status === 'unauthorized'
-							) {
-								storeGroupsVue.$router.push('/login/expired')
-								return
-							}
-							storeGroupsVue.errorMessage = reason
-							window.scrollTo(0, 0)
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not add the group',
+								errorName: 'errorMessage',
+								vue: storeGroupsVue
+							})
 						}).finally(() => {
 							storeGroupsVue.creating = false
 						})

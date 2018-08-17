@@ -799,13 +799,12 @@ export default {
 					storeGroupsVue.storeGroups = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					storeGroupsVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch store groups',
+					errorName: 'storeInformationError',
+					vue: storeGroupsVue
+				})
 			})
 		},
 		/**
@@ -820,13 +819,12 @@ export default {
 					storeGroupsVue.menuTiers = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					storeGroupsVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch menu tiers',
+					errorName: 'storeInformationError',
+					vue: storeGroupsVue
+				})
 			})
 		},
 		/**
@@ -1385,12 +1383,7 @@ export default {
 				createStoreVue.newStore.city ? createStoreVue.placesApi.city = true : createStoreVue.placesApi.city = false
 				createStoreVue.newStore.province ? createStoreVue.placesApi.province = true : createStoreVue.placesApi.province = false
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					createStoreVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
-				throw reason
+				console.log('Autocomplete error:', reason)
 			})
 		},
 		/**
@@ -1419,12 +1412,12 @@ export default {
 					createStoreVue.showHolidayHoursAlert()
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					createStoreVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not add the hours',
+					errorName: 'storeHoursError',
+					vue: createStoreVue
+				})
 			}).finally(() => {
 				createStoreVue.savingHolidayHours = false
 			})

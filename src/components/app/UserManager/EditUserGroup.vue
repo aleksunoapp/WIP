@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showEditGroupModal" effect="fade" @closeOnEscape="closeModal">
+	<modal :show="showEditGroupModal" effect="fade" @closeOnEscape="closeModal" ref="modal">
 		<div slot="modal-header" class="modal-header">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -10,8 +10,8 @@
 			<form role="form">
 				<div class="row">
 					<div class="col-md-12">
-						<div class="alert alert-danger" v-if="errorMessage.length">
-							<button class="close" data-close="alert" @click="clearError()"></button>
+						<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+							<button class="close" @click="clearError()"></button>
 							<span>{{errorMessage}}</span>
 						</div>
 					</div>
@@ -109,6 +109,7 @@
 import Modal from '../../modules/Modal'
 import Dropdown from '../../modules/Dropdown'
 import UserGroupsFunctions from '../../../controllers/UserGroups'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -303,12 +304,13 @@ export default {
 						editGroupVue.errorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						editGroupVue.$router.push('/login/expired')
-						return
-					}
-					editGroupVue.errorMessage = reason
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not update the group',
+						errorName: 'errorMessage',
+						vue: editGroupVue,
+						containerRef: 'modal'
+					})
 				}).finally(() => {
 					editGroupVue.updating = false
 				})

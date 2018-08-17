@@ -61,6 +61,14 @@
 		            </div>
 		        </div>
 		        <div class="portlet-body">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
+								<button class="close" @click="clearError('listErrorMessage')"></button>
+								<span>{{listErrorMessage}}</span>
+							</div>
+						</div>
+					</div>
     				<div class="clearfix margin-bottom-10">
     					<el-dropdown trigger="click" @command="updateSortByOrder" size="mini" :show-timeout="50" :hide-timeout="50">
     						<el-button size="mini">
@@ -269,6 +277,7 @@ export default {
 			searchError: '',
 			searchTerm: '',
 			loadingSearchResults: false,
+			listErrorMessage: '',
 			activePage: 1,
 			resultsPerPage: 25,
 			sortBy: {
@@ -527,13 +536,13 @@ export default {
 					storeListVue.displayStoreData = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					storeListVue.$router.push('/login/expired')
-					return
-				}
 				storeListVue.displayStoreData = false
-				if (reason.responseJSON) {}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch stores',
+					errorName: 'listErrorMessage',
+					vue: storeListVue
+				})
 			})
 		},
 		/**

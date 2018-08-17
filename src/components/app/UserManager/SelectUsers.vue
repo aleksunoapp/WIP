@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showSelectUsersModal" effect="fade" @closeOnEscape="closeModal">
+	<modal :show="showSelectUsersModal" effect="fade" @closeOnEscape="closeModal" ref="modal">
 		<div slot="modal-header" class="modal-header center">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -8,8 +8,8 @@
 		</div>
 		<div slot="modal-body" class="modal-body">
 			<form role="form" novalidate>
-				<div class="alert alert-danger" v-if="errorMessage.length">
-				    <button class="close" data-close="alert" @click="clearError()"></button>
+				<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+				    <button class="close" @click="clearError()"></button>
                     <span>{{ errorMessage }}</span>
 				</div>
 				<div class="form-body invite-user-form height-mod">
@@ -71,6 +71,7 @@
 <script>
 import Modal from '../../modules/Modal'
 import UserGroupsFunctions from '../../../controllers/UserGroups'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -192,12 +193,13 @@ export default {
 					selectUsersVue.users = allUsers
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					selectUsersVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch group info',
+					errorName: 'errorMessage',
+					vue: selectUsersVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**

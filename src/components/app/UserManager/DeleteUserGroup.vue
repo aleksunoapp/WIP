@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showDeletePromotionModal" effect="fade" @closeOnEscape="closeModal">
+	<modal :show="showDeletePromotionModal" effect="fade" @closeOnEscape="closeModal" ref="modal">
 		<div slot="modal-header" class="modal-header center">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -9,8 +9,8 @@
 		<div slot="modal-body" class="modal-body">
 			<transition name="fade" mode="out-in">
 				<div v-if="!deleted" key="a">
-					<div class="alert alert-danger" v-if="errorMessage.length">
-					    <button class="close" data-close="alert" @click="clearError()"></button>
+					<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+					    <button class="close" @click="clearError()"></button>
 					    <span>{{errorMessage}}</span>
 					</div>
 					<div class="col-md-12">
@@ -50,6 +50,7 @@
 <script>
 import Modal from '../../modules/Modal'
 import UserGroupFunctions from '../../../controllers/UserGroups'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -98,12 +99,13 @@ export default {
 					deleteGroupVue.errorMessage = response.message
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					deleteGroupVue.$router.push('/login/expired')
-					return
-				}
-				deleteGroupVue.errorMessage = reason
-				window.scrollTo(0, 0)
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not delete the group',
+					errorName: 'errorMessage',
+					vue: deleteGroupVue,
+					containerRef: 'modal'
+				})
 			}).finally(() => {
 				deleteGroupVue.deleting = false
 			})

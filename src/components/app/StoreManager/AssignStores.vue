@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showAssignStoresModal" effect="fade" @closeOnEscape="closeModal">
+	<modal :show="showAssignStoresModal" effect="fade" @closeOnEscape="closeModal" ref="modal">
 		<div slot="modal-header" class="modal-header center">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -7,6 +7,14 @@
 			<h4 class="modal-title center">Assign Stores To Group '{{ groupDetails.name }}'</h4>
 		</div>
 		<div slot="modal-body" class="modal-body relative-block">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+						<button class="close" @click="clearError('errorMessage')"></button>
+						<span>{{errorMessage}}</span>
+					</div>
+				</div>
+			</div>
 			<loading-screen :show="displaySpinner" :color="'#2C3E50'" :display="'inline'"></loading-screen>
 			<select-locations-popup v-if="!displaySpinner" @selectedLocations="selectStores" :previouslySelected="groupLocations" :withButton="false"></select-locations-popup>
 		</div>
@@ -31,6 +39,7 @@ import StoreGroupsFunctions from '../../../controllers/StoreGroups'
 import Modal from '../../modules/Modal'
 import LoadingScreen from '../../modules/LoadingScreen'
 import SelectLocationsPopup from '../../modules/SelectLocationsPopup'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -114,13 +123,14 @@ export default {
 				}
 				assignStoresVue.getGroupLocations()
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					assignStoresVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
 				assignStoresVue.displaySpinner = false
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not assign the stores',
+					errorName: 'errorMessage',
+					vue: assignStoresVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**
@@ -137,13 +147,14 @@ export default {
 				}
 				assignStoresVue.getStores()
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					assignStoresVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
 				assignStoresVue.displaySpinner = false
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch group info',
+					errorName: 'errorMessage',
+					vue: assignStoresVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**
@@ -172,13 +183,14 @@ export default {
 					assignStoresVue.displaySpinner = false
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					assignStoresVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
 				assignStoresVue.displaySpinner = false
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch stores',
+					errorName: 'errorMessage',
+					vue: assignStoresVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**
@@ -201,13 +213,13 @@ export default {
 					assignStoresVue.showAlert()
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					assignStoresVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not assign the stores',
+					errorName: 'errorMessage',
+					vue: assignStoresVue,
+					containerRef: 'modal'
+				})
 			}).finally(() => {
 				assignStoresVue.assigning = false
 			})

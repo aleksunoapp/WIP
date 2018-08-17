@@ -1,5 +1,5 @@
 <template>
-	<modal :show="showEditGroupModal" effect="fade" @closeOnEscape="closeModal">
+	<modal :show="showEditGroupModal" effect="fade" @closeOnEscape="closeModal" ref="modal">
 		<div slot="modal-header" class="modal-header">
 			<button type="button" class="close" @click="closeModal()">
 				<span>&times;</span>
@@ -8,8 +8,8 @@
 			<h4 class="modal-title center" v-if="!$root.permissions['stores groups update'] && $root.permissions['stores groups read']">View Store Group</h4>
 		</div>
 		<div slot="modal-body" class="modal-body">
-			<div class="alert alert-danger" v-if="errorMessage.length">
-			    <button class="close" data-close="alert" @click="clearError()"></button>
+			<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+			    <button class="close" @click="clearError()"></button>
 			    <span>{{errorMessage}}</span>
 			</div>
 			<div class="form-group form-md-line-input form-md-floating-label">
@@ -61,6 +61,7 @@
 <script>
 import Modal from '../../modules/Modal'
 import StoreGroupsFunctions from '../../../controllers/StoreGroups'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -120,13 +121,13 @@ export default {
 					editStoreGroupVue.groupToBeEdited = response.payload
 				}
 			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editStoreGroupVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
+				ajaxErrorHandler({
+					reason,
+					errorText: 'We could not fetch group info',
+					errorName: 'errorMessage',
+					vue: editStoreGroupVue,
+					containerRef: 'modal'
+				})
 			})
 		},
 		/**
@@ -149,12 +150,13 @@ export default {
 						editStoreGroupVue.errorMessage = response.message
 					}
 				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						editStoreGroupVue.$router.push('/login/expired')
-						return
-					}
-					editStoreGroupVue.errorMessage = reason
-					window.scrollTo(0, 0)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not update the group',
+						errorName: 'errorMessage',
+						vue: editStoreGroupVue,
+						containerRef: 'modal'
+					})
 				}).finally(() => {
 					editStoreGroupVue.updating = false
 				})
