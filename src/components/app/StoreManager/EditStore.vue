@@ -236,12 +236,12 @@
 					</div>
 				</div>
 			</tab>
-			<tab header="Store Meta" v-if="$root.permissions['stores meta read']">
+			<tab header="Store Profile" v-if="$root.permissions['stores profile read']">
 				<div class="tab-content">
 					<div class="portlet light bordered">
 						<div class="portlet-body form">
 							<form role="form" @submit.prevent="updateStoreMeta()" novalidate>
-								<fieldset :disabled="!$root.permissions['stores meta update']? true : false">
+								<fieldset :disabled="!$root.permissions['stores profile update']? true : false">
 									<div class="form-body">
 										<div class="alert alert-danger" v-show="storeMetaError" ref="storeMetaError">
 											<button class="close" @click.prevent="clearError('storeMetaError')"></button>
@@ -264,7 +264,7 @@
 															<el-switch
 																ref="openingSoon"
 																v-model="metaToBeEdited.opening_soon"
-																:disabled="!$root.permissions['stores meta update']? true : false"
+																:disabled="!$root.permissions['stores profile update']? true : false"
 																active-color="#0c6"
 																inactive-color="#ff4949"
 																:active-value="1"
@@ -281,7 +281,7 @@
 														<td>
 															<el-switch
 																v-model="metaToBeEdited.online_ordering"
-																:disabled="metaToBeEdited.opening_soon === 1 || !$root.permissions['stores meta update']? true : false"
+																:disabled="metaToBeEdited.opening_soon === 1 || !$root.permissions['stores profile update']? true : false"
 																active-color="#0c6"
 																inactive-color="#ff4949"
 																:active-value="1"
@@ -298,7 +298,7 @@
 														<td>
 															<el-switch
 																v-model="metaToBeEdited.current_online_ordering_status"
-																:disabled="metaToBeEdited.online_ordering === 0 || metaToBeEdited.opening_soon === 1 || !$root.permissions['stores meta update']? true : false"
+																:disabled="metaToBeEdited.online_ordering === 0 || metaToBeEdited.opening_soon === 1 || !$root.permissions['stores profile update']? true : false"
 																active-color="#0c6"
 																inactive-color="#ff4949"
 																:active-value="1"
@@ -316,7 +316,7 @@
 															<el-switch
 																ref="delivery"
 																v-model="metaToBeEdited.delivery"
-																:disabled="metaToBeEdited.opening_soon === 1 || !$root.permissions['stores meta update']? true : false"
+																:disabled="metaToBeEdited.opening_soon === 1 || !$root.permissions['stores profile update']? true : false"
 																active-color="#0c6"
 																inactive-color="#ff4949"
 																:active-value="1"
@@ -333,7 +333,7 @@
 														<td>
 															<el-switch
 																v-model="metaToBeEdited.current_delivery_status"
-																:disabled="metaToBeEdited.delivery === 0 || metaToBeEdited.opening_soon === 1 || !$root.permissions['stores meta update']? true : false"
+																:disabled="metaToBeEdited.delivery === 0 || metaToBeEdited.opening_soon === 1 || !$root.permissions['stores profile update']? true : false"
 																active-color="#0c6"
 																inactive-color="#ff4949"
 																:active-value="1"
@@ -352,7 +352,7 @@
 																v-model="metaToBeEdited.enable_pickup_later"
 																active-color="#0c6"
 																inactive-color="#ff4949"
-																:disabled="!$root.permissions['stores meta update']? true : false"
+																:disabled="!$root.permissions['stores profile update']? true : false"
 																:active-value="1"
 																:inactive-value="0"
 																active-text="Yes"
@@ -367,7 +367,7 @@
 														<td>
 															<el-switch
 																v-model="metaToBeEdited.catering"
-																:disabled="metaToBeEdited.opening_soon === 1 || !$root.permissions['stores meta update']? true : false"
+																:disabled="metaToBeEdited.opening_soon === 1 || !$root.permissions['stores profile update']? true : false"
 																active-color="#0c6"
 																inactive-color="#ff4949"
 																:active-value="1"
@@ -384,7 +384,7 @@
 														<td>
 															<el-switch
 																v-model="metaToBeEdited.current_catering_status"
-																:disabled="metaToBeEdited.catering === 0 || metaToBeEdited.opening_soon === 1 || !$root.permissions['stores meta update']? true : false"
+																:disabled="metaToBeEdited.catering === 0 || metaToBeEdited.opening_soon === 1 || !$root.permissions['stores profile update']? true : false"
 																active-color="#0c6"
 																inactive-color="#ff4949"
 																:active-value="1"
@@ -401,7 +401,7 @@
 														<td>
 															<el-switch
 																v-model="metaToBeEdited.gift_card"
-																:disabled="metaToBeEdited.opening_soon === 1 || !$root.permissions['stores meta update']? true : false"
+																:disabled="metaToBeEdited.opening_soon === 1 || !$root.permissions['stores profile update']? true : false"
 																active-color="#0c6"
 																inactive-color="#ff4949"
 																:active-value="1"
@@ -418,7 +418,7 @@
 														<td>
 															<el-switch
 																v-model="metaToBeEdited.digital_reward"
-																:disabled="metaToBeEdited.opening_soon === 1 || !$root.permissions['stores meta update']? true : false"
+																:disabled="metaToBeEdited.opening_soon === 1 || !$root.permissions['stores profile update']? true : false"
 																active-color="#0c6"
 																inactive-color="#ff4949"
 																:active-value="1"
@@ -435,7 +435,7 @@
 														<td>
 															<el-switch
 																v-model="metaToBeEdited.external_online_ordering_enabled"
-																:disabled="metaToBeEdited.opening_soon === 1 || !$root.permissions['stores meta update']? true : false"
+																:disabled="metaToBeEdited.opening_soon === 1 || !$root.permissions['stores profile update']? true : false"
 																active-color="#0c6"
 																inactive-color="#ff4949"
 																:active-value="1"
@@ -502,7 +502,7 @@
 											<button
 												type="submit"
 												class="btn blue"
-												:disabled="!$root.permissions['stores meta update'] || updatingStoreMeta">
+												:disabled="!$root.permissions['stores profile update'] || updatingStoreMeta">
 												Save
 												<i 
 													v-show="updatingStoreMeta"
@@ -1311,7 +1311,7 @@ export default {
 			}).catch(reason => {
 				ajaxErrorHandler({
 					reason,
-					errorText: 'We could not fetch store meta info',
+					errorText: 'We could not fetch store profile info',
 					errorName: 'storeMetaError',
 					vue: editStoreVue
 				})
@@ -1525,7 +1525,7 @@ export default {
 					}).catch(reason => {
 						ajaxErrorHandler({
 							reason,
-							errorText: 'We could not update the store',
+							errorText: 'We could not update the store profile',
 							errorName: 'storeMetaError',
 							vue: editStoreVue
 						})
@@ -1542,7 +1542,7 @@ export default {
 					}).catch(reason => {
 						ajaxErrorHandler({
 							reason,
-							errorText: 'We could not update the store',
+							errorText: 'We could not update the store profile',
 							errorName: 'storeMetaError',
 							vue: editStoreVue
 						})

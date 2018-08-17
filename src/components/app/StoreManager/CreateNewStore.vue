@@ -20,7 +20,7 @@
 				description="Enter address and basic info"
 				></el-step>
 			<el-step 
-				title="Store Meta"
+				title="Store Profile"
 				:status="steps.step1_status"
 				description="Enter delivery info"></el-step>
 			<el-step 
