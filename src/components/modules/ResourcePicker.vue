@@ -266,7 +266,7 @@ export default {
 				{ name: 'other', icon: 'fa fa-file-o', active: false }
 			],
 			selectedResource: {},
-			activeBusinessId: 2,
+			activeBusinessId: global.resourcesBusinessId,
 			activeBusinessName: null,
 			activeLocationId: null,
 			activeLocationName: null,
