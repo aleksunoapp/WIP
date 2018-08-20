@@ -3,14 +3,14 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to pitapit API to create a new store FAQ.
 	 * @function
 	 * @param {object} faqInfo - The new FAQ information.
 	 * @param {string} appId - The appId of the current application.
 	 * @param {string} appSecret - The appSecret of the current application.
- 	 * @param {string} userToken - The auth token of the logged in user.
+	 * @param {string} userToken - The auth token of the logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
 	createStoreFAQ: function (faqInfo, appId, appSecret, userToken) {
@@ -234,4 +234,4 @@ export default ({
 			})
 		})
 	}
-})
+}

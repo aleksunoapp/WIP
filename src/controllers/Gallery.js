@@ -3,7 +3,7 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to pitapit API to get all the galleries.
 	 * @function
@@ -37,7 +37,7 @@ export default ({
 	 * @param {object} newFolder - The new folder object.
 	 * @param {string} appId - The appId of the current application.
 	 * @param {string} appSecret - The appSecret of the current application.
- 	 * @param {string} userToken - The token of the current logged in user.
+	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
 	createNewFolder (newFolder, appId, appSecret, userToken) {
@@ -262,4 +262,4 @@ export default ({
 			})
 		})
 	}
-})
+}

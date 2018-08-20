@@ -12,10 +12,12 @@
 			<p>Create, view, edit and delete User Attributes. View or edit what Item Attributes the User Attribute is associated with.</p>
 		</div>
 		<!-- HEADER END -->
-		
+
 		<!-- CREATE START -->
-		<div class="portlet box blue-hoki" v-if="$root.permissions['user_manager attributes create']">
-			<div class="portlet-title bg-blue-chambray" @click="toggleCreatePanel()">
+		<div class="portlet box blue-hoki"
+		     v-if="$root.permissions['user_manager attributes create']">
+			<div class="portlet-title bg-blue-chambray"
+			     @click="toggleCreatePanel()">
 				<div class="caption">
 					<i class="fa fa-plus-circle"></i>
 					Create A New User Attribute
@@ -24,12 +26,17 @@
 					<a :class="{'expand': expandCreateForm, 'collapse': !expandCreateForm}"></a>
 				</div>
 			</div>
-			<div class="portlet-body" v-show="expandCreateForm">
-				<form role="form" @submit="createUserAttribute()">
-					<div class="row" v-show="createErrorMessage" ref="createErrorMessage">
+			<div class="portlet-body"
+			     v-show="expandCreateForm">
+				<form role="form"
+				      @submit="createUserAttribute()">
+					<div class="row"
+					     v-show="createErrorMessage"
+					     ref="createErrorMessage">
 						<div class="col-md-6">
 							<div class="alert alert-danger">
-								<button class="close" @click.prevent="clearError('createErrorMessage')"></button>
+								<button class="close"
+								        @click.prevent="clearError('createErrorMessage')"></button>
 								<span>{{createErrorMessage}}</span>
 							</div>
 						</div>
@@ -37,21 +44,24 @@
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" id="form_control_2" :class="{'edited': newUserAttribute.name.length}" v-model="newUserAttribute.name" @keyup.enter.stop="createUserAttribute()">
+								<input type="text"
+								       class="form-control input-sm"
+								       id="form_control_2"
+								       :class="{'edited': newUserAttribute.name.length}"
+								       v-model="newUserAttribute.name"
+								       @keyup.enter.stop="createUserAttribute()">
 								<label for="form_control_2">User Attribute Name</label>
 							</div>
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-md-6">
-							<button 
-								type="submit" 
-								class="btn blue pull-right"
-								:disabled="creating">
+							<button type="submit"
+							        class="btn blue pull-right"
+							        :disabled="creating">
 								Create
-								<i 
-									v-show="creating"
-									class="fa fa-spinner fa-pulse fa-fw">
+								<i v-show="creating"
+								   class="fa fa-spinner fa-pulse fa-fw">
 								</i>
 							</button>
 						</div>
@@ -62,9 +72,11 @@
 		<!-- CREATE END -->
 
 		<!-- SEARCH START -->
-		<div class="margin-top-20" v-show="userAttributes.length">
+		<div class="margin-top-20"
+		     v-show="userAttributes.length">
 			<div class="portlet box blue-hoki">
-				<div class="portlet-title" @click="toggleSearchPanel()">
+				<div class="portlet-title"
+				     @click="toggleSearchPanel()">
 					<div class="caption">
 						<i class="fa fa-search"></i>
 						Search
@@ -73,12 +85,16 @@
 						<a :class="{'expand': expandSearchPanel, 'collapse': !expandSearchPanel}"></a>
 					</div>
 				</div>
-				<div class="portlet-body" v-show="expandSearchPanel">
+				<div class="portlet-body"
+				     v-show="expandSearchPanel">
 					<form role="form">
 						<div class="row">
 							<div class="col-md-6">
-								<div class="alert alert-danger" v-show="searchErrorMessage" ref="searchErrorMessage">
-									<button class="close" @click="clearError('searchErrorMessage')"></button>
+								<div class="alert alert-danger"
+								     v-show="searchErrorMessage"
+								     ref="searchErrorMessage">
+									<button class="close"
+									        @click="clearError('searchErrorMessage')"></button>
 									<span>{{searchErrorMessage}}</span>
 								</div>
 							</div>
@@ -87,16 +103,16 @@
 							<div class="col-md-6 margin-bottom-20">
 								<div class="form-group form-md-line-input form-md-floating-label">
 									<div class="input-icon right">
-										<input 
-											ref="search" 
-											type="text" 
-											placeholder="Search by name" 
-											class="form-control input-sm" 
-											:class="{'edited': searchTerm.length}" 
-											v-model="searchTerm" 
-											id="search_options_search"
-										>
-										<i class="fa fa-times-circle-o clickable" @click.prevent="resetSearch()" aria-hidden="true"></i>
+										<input ref="search"
+										       type="text"
+										       placeholder="Search by name"
+										       class="form-control input-sm"
+										       :class="{'edited': searchTerm.length}"
+										       v-model="searchTerm"
+										       id="search_options_search">
+										<i class="fa fa-times-circle-o clickable"
+										   @click.prevent="resetSearch()"
+										   aria-hidden="true"></i>
 										<span class="help-block persist">
 											At least 3 characters.
 										</span>
@@ -127,77 +143,94 @@
 			<div class="portlet-body">
 				<div class="row">
 					<div class="col-md-12">
-						<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
-							<button class="close" @click="clearError('listErrorMessage')"></button>
+						<div class="alert alert-danger"
+						     v-show="listErrorMessage"
+						     ref="listErrorMessage">
+							<button class="close"
+							        @click="clearError('listErrorMessage')"></button>
 							<span>{{listErrorMessage}}</span>
 						</div>
 					</div>
 				</div>
-				<div class="clearfix margin-bottom-10" v-show="searchResults.length">
-					<el-dropdown trigger="click" @command="updateSortByOrder" size="mini" :show-timeout="50" :hide-timeout="50">
+				<div class="clearfix margin-bottom-10"
+				     v-show="searchResults.length">
+					<el-dropdown trigger="click"
+					             @command="updateSortByOrder"
+					             size="mini"
+					             :show-timeout="50"
+					             :hide-timeout="50">
 						<el-button size="mini">
 							Sort by
 							<span>
-								<i class="fa fa-sort-alpha-asc" v-show="sortBy.order === 'ASC'"></i>
-								<i class="fa fa-sort-alpha-desc" v-show="sortBy.order === 'DESC'"></i>
+								<i class="fa fa-sort-alpha-asc"
+								   v-show="sortBy.order === 'ASC'"></i>
+								<i class="fa fa-sort-alpha-desc"
+								   v-show="sortBy.order === 'DESC'"></i>
 							</span>
 							<i class="el-icon-arrow-down el-icon--right"></i>
 						</el-button>
 						<el-dropdown-menu slot="dropdown">
-							<el-dropdown-item command="ASC"><i class="fa fa-sort-alpha-asc"></i></el-dropdown-item>
-							<el-dropdown-item command="DESC"><i class="fa fa-sort-alpha-desc"></i></el-dropdown-item>
+							<el-dropdown-item command="ASC">
+								<i class="fa fa-sort-alpha-asc"></i>
+							</el-dropdown-item>
+							<el-dropdown-item command="DESC">
+								<i class="fa fa-sort-alpha-desc"></i>
+							</el-dropdown-item>
 						</el-dropdown-menu>
 					</el-dropdown>
-					<page-results class="pull-right" :totalResults="userAttributes.length" :activePage="activePage" @pageResults="pageResultsUpdate"></page-results>
+					<page-results class="pull-right"
+					              :totalResults="userAttributes.length"
+					              :activePage="activePage"
+					              @pageResults="pageResultsUpdate"></page-results>
 				</div>
-				<div class="spinner" v-show="!searchResults.length && loadingUserAttributes">
+				<div class="spinner"
+				     v-show="!searchResults.length && loadingUserAttributes">
 					<div>
 						<i class="fa fa-spinner fa-spin"></i>
 					</div>
 				</div>
-				<div class="mt-element-list margin-top-15" :show="searchResults.length && !loadingUserAttributes">
+				<div class="mt-element-list margin-top-15"
+				     :show="searchResults.length && !loadingUserAttributes">
 					<div class="mt-list-container list-news ext-1 no-border">
 						<ul>
-							<li 
-								v-for="userAttribute in searchResults"
-								:key="userAttribute.id"
-								class="mt-list-item margin-top-15" 
-								:class="{'animated' : animatedId === userAttribute.id}"
-							>
+							<li v-for="userAttribute in searchResults"
+							    :key="userAttribute.id"
+							    class="mt-list-item margin-top-15"
+							    :class="{'animated' : animatedId === userAttribute.id}">
 								<div class="margin-bottom-15 actions-on-top">
-									<el-tooltip 
-										v-if="$root.permissions['user_manager attributes update']"
-										content="Edit" 
-										effect="light" 
-										placement="top">
-										<a class="btn btn-circle btn-icon-only btn-default" @click="openEditModal(userAttribute)">
+									<el-tooltip v-if="$root.permissions['user_manager attributes update']"
+									            content="Edit"
+									            effect="light"
+									            placement="top">
+										<a class="btn btn-circle btn-icon-only btn-default"
+										   @click="openEditModal(userAttribute)">
 											<i class="fa fa-lg fa-pencil"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip 
-										v-if="$root.permissions['user_manager attributes read'] && !$root.permissions['user_manager attributes update']"
-										content="View" 
-										effect="light" 
-										placement="top">
-										<a class="btn btn-circle btn-icon-only btn-default" @click="openEditModal(userAttribute)">
+									<el-tooltip v-if="$root.permissions['user_manager attributes read'] && !$root.permissions['user_manager attributes update']"
+									            content="View"
+									            effect="light"
+									            placement="top">
+										<a class="btn btn-circle btn-icon-only btn-default"
+										   @click="openEditModal(userAttribute)">
 											<i class="fa fa-lg fa-eye"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip 
-										v-if="$root.permissions['user_manager attributes update']"
-										content="Apply to Item Attributes" 
-										effect="light" 
-										placement="top">
-										<a class="btn btn-circle btn-icon-only btn-default" @click="openAssignItemAttributesModal(userAttribute)">
+									<el-tooltip v-if="$root.permissions['user_manager attributes update']"
+									            content="Apply to Item Attributes"
+									            effect="light"
+									            placement="top">
+										<a class="btn btn-circle btn-icon-only btn-default"
+										   @click="openAssignItemAttributesModal(userAttribute)">
 											<i class="icon-layers"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip 
-										v-if="$root.permissions['user_manager attributes delete']"
-										content="Delete" 
-										effect="light" 
-										placement="top">
-										<a class="btn btn-circle btn-icon-only btn-default" @click="openDeleteModal(userAttribute)">
+									<el-tooltip v-if="$root.permissions['user_manager attributes delete']"
+									            content="Delete"
+									            effect="light"
+									            placement="top">
+										<a class="btn btn-circle btn-icon-only btn-default"
+										   @click="openDeleteModal(userAttribute)">
 											<i class="fa fa-lg fa-trash"></i>
 										</a>
 									</el-tooltip>
@@ -209,27 +242,41 @@
 						</ul>
 					</div>
 				</div>
-				<div class="clearfix margin-top-20" v-show="searchResults.length && numPages > 1">
-					<pagination :passedPage="activePage" :numPages="numPages" @activePageChange="activePageUpdate"></pagination>
+				<div class="clearfix margin-top-20"
+				     v-show="searchResults.length && numPages > 1">
+					<pagination :passedPage="activePage"
+					            :numPages="numPages"
+					            @activePageChange="activePageUpdate"></pagination>
 				</div>
-				<no-results :show="!searchResults.length && !loadingUserAttributes" :type="'User Attributes'"></no-results>
+				<no-results :show="!searchResults.length && !loadingUserAttributes"
+				            :type="'User Attributes'"></no-results>
 			</div>
 		</div>
 		<!-- LIST END -->
 
 		<!-- EDIT START -->
-		<modal :show="showEditModal" effect="fade" @closeOnEscape="closeEditModal" ref="editModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeEditModal()">
+		<modal :show="showEditModal"
+		       effect="fade"
+		       @closeOnEscape="closeEditModal"
+		       ref="editModal">
+			<div slot="modal-header"
+			     class="modal-header">
+				<button type="button"
+				        class="close"
+				        @click="closeEditModal()">
 					<span>&times;</span>
 				</button>
 				<h4 class="modal-title center">Edit User Attribute</h4>
 			</div>
-			<div slot="modal-body" class="modal-body">
-				<div class="row" v-show="updateErrorMessage" ref="updateErrorMessage">
+			<div slot="modal-body"
+			     class="modal-body">
+				<div class="row"
+				     v-show="updateErrorMessage"
+				     ref="updateErrorMessage">
 					<div class="col-md-6">
 						<div class="alert alert-danger">
-							<button class="close" @click.prevent="clearError('updateErrorMessage')"></button>
+							<button class="close"
+							        @click.prevent="clearError('updateErrorMessage')"></button>
 							<span>{{updateErrorMessage}}</span>
 						</div>
 					</div>
@@ -237,38 +284,35 @@
 				<div class="row">
 					<div class="col-md-12">
 						<div class="form-group form-md-line-input form-md-floating-label">
-							<input 
-								:disabled="!$root.permissions['user_manager attributes update']"
-								type="text" 
-								class="form-control input-sm" 
-								id="form_control_2" 
-								:class="{'edited': userAttributeToEdit.name.length}" 
-								v-model="userAttributeToEdit.name">
+							<input :disabled="!$root.permissions['user_manager attributes update']"
+							       type="text"
+							       class="form-control input-sm"
+							       id="form_control_2"
+							       :class="{'edited': userAttributeToEdit.name.length}"
+							       v-model="userAttributeToEdit.name">
 							<label for="form_control_2">User Attribute Name</label>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div slot="modal-footer" class="modal-footer clear">
+			<div slot="modal-footer"
+			     class="modal-footer clear">
 				<div class="row">
 					<div class="col-md-12">
-						<button 
-							v-if="!$root.permissions['user_manager attributes update']"
-							@click="closeEditModal()" 
-							type="button" 
-							class="btn blue pull-right">
+						<button v-if="!$root.permissions['user_manager attributes update']"
+						        @click="closeEditModal()"
+						        type="button"
+						        class="btn blue pull-right">
 							Close
 						</button>
-						<button 
-							v-else
-							@click="updateUserAttribute()" 
-							type="button" 
-							class="btn blue pull-right"
-							:disabled="updating">
+						<button v-else
+						        @click="updateUserAttribute()"
+						        type="button"
+						        class="btn blue pull-right"
+						        :disabled="updating">
 							Save
-							<i 
-								v-show="updating"
-								class="fa fa-spinner fa-pulse fa-fw">
+							<i v-show="updating"
+							   class="fa fa-spinner fa-pulse fa-fw">
 							</i>
 						</button>
 					</div>
@@ -278,18 +322,29 @@
 		<!-- EDIT END -->
 
 		<!-- ASSIGN ITEM ATTRIBUTES START -->
-		<modal :show="showAssignItemAttributesModal" effect="fade" @closeOnEscape="closeAssignItemAttributesModal" ref="assignItemsModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeAssignItemAttributesModal()">
+		<modal :show="showAssignItemAttributesModal"
+		       effect="fade"
+		       @closeOnEscape="closeAssignItemAttributesModal"
+		       ref="assignItemsModal">
+			<div slot="modal-header"
+			     class="modal-header">
+				<button type="button"
+				        class="close"
+				        @click="closeAssignItemAttributesModal()">
 					<span>&times;</span>
 				</button>
-				<h4 class="modal-title center">Apply <i>{{userAttributeToAssignItemAttributesTo.name}}</i> to Multiple Item Attributes</h4>
+				<h4 class="modal-title center">Apply
+					<i>{{userAttributeToAssignItemAttributesTo.name}}</i> to Multiple Item Attributes</h4>
 			</div>
-			<div slot="modal-body" class="modal-body">
-				<div class="row" v-show="assignItemAttributesErrorMessage" ref="assignItemAttributesErrorMessage">
+			<div slot="modal-body"
+			     class="modal-body">
+				<div class="row"
+				     v-show="assignItemAttributesErrorMessage"
+				     ref="assignItemAttributesErrorMessage">
 					<div class="col-md-12">
 						<div class="alert alert-danger">
-							<button class="close" @click.prevent="clearError('assignItemAttributesErrorMessage')"></button>
+							<button class="close"
+							        @click.prevent="clearError('assignItemAttributesErrorMessage')"></button>
 							<span>{{assignItemAttributesErrorMessage}}</span>
 						</div>
 					</div>
@@ -300,8 +355,12 @@
 							<thead>
 								<tr>
 									<th class="table-column--checkboxes">
-										<div class="md-checkbox has-success" @change="selectAll()">
-											<input type="checkbox" id="locations-promocodes" class="md-check" v-model="selectAllSelected">
+										<div class="md-checkbox has-success"
+										     @change="selectAll()">
+											<input type="checkbox"
+											       id="locations-promocodes"
+											       class="md-check"
+											       v-model="selectAllSelected">
 											<label for="locations-promocodes">
 												<span class="inc"></span>
 												<span class="check"></span>
@@ -313,10 +372,15 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr v-for="itemAttribute in itemAttributes" :key="itemAttribute.id" >
-									<td  class="table-column--names">
+								<tr v-for="itemAttribute in itemAttributes"
+								    :key="itemAttribute.id">
+									<td class="table-column--names">
 										<div class="md-checkbox has-success">
-											<input type="checkbox" class="md-check" v-model="itemAttribute.selected" @change="syncSelectAll(itemAttribute.selected)" :id="`ia-${itemAttribute.id}`">
+											<input type="checkbox"
+											       class="md-check"
+											       v-model="itemAttribute.selected"
+											       @change="syncSelectAll(itemAttribute.selected)"
+											       :id="`ia-${itemAttribute.id}`">
 											<label :for="`ia-${itemAttribute.id}`">
 												<span class="inc"></span>
 												<span class="check"></span>
@@ -331,18 +395,17 @@
 					</div>
 				</div>
 			</div>
-			<div slot="modal-footer" class="modal-footer clear">
+			<div slot="modal-footer"
+			     class="modal-footer clear">
 				<div class="row">
 					<div class="col-md-12">
-						<button 
-							@click="assignItemAttributesToUserAttributes()" 
-							type="button" 
-							class="btn blue pull-right"
-							:disabled="assigning">
+						<button @click="assignItemAttributesToUserAttributes()"
+						        type="button"
+						        class="btn blue pull-right"
+						        :disabled="assigning">
 							Save
-							<i 
-								v-show="assigning"
-								class="fa fa-spinner fa-pulse fa-fw">
+							<i v-show="assigning"
+							   class="fa fa-spinner fa-pulse fa-fw">
 							</i>
 						</button>
 					</div>
@@ -352,32 +415,39 @@
 		<!-- ASSIGN ITEM ATTRIBUTES END -->
 
 		<!-- DELETE START -->
-		<modal :show="showDeleteModal" effect="fade" @closeOnEscape="closeDeleteModal" ref="deleteModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeDeleteModal()">
+		<modal :show="showDeleteModal"
+		       effect="fade"
+		       @closeOnEscape="closeDeleteModal"
+		       ref="deleteModal">
+			<div slot="modal-header"
+			     class="modal-header">
+				<button type="button"
+				        class="close"
+				        @click="closeDeleteModal()">
 					<span>&times;</span>
 				</button>
 				<h4 class="modal-title center">Confirm Delete</h4>
 			</div>
-			<div slot="modal-body" class="modal-body">
+			<div slot="modal-body"
+			     class="modal-body">
 				<div class="row">
 					<div class="col-md-12">
-						Are you sure you want to delete <i>{{userAttributeToDelete.name}}</i>?
+						Are you sure you want to delete
+						<i>{{userAttributeToDelete.name}}</i>?
 					</div>
 				</div>
 			</div>
-			<div slot="modal-footer" class="modal-footer clear">
+			<div slot="modal-footer"
+			     class="modal-footer clear">
 				<div class="row">
 					<div class="col-md-12">
-						<button 
-							@click="deleteUserAttribute()" 
-							type="button" 
-							class="btn blue pull-right"
-							:disabled="deleting">
+						<button @click="deleteUserAttribute()"
+						        type="button"
+						        class="btn blue pull-right"
+						        :disabled="deleting">
 							Delete
-							<i 
-								v-show="deleting"
-								class="fa fa-spinner fa-pulse fa-fw">
+							<i v-show="deleting"
+							   class="fa fa-spinner fa-pulse fa-fw">
 							</i>
 						</button>
 					</div>
@@ -402,8 +472,8 @@ export default {
 	data () {
 		return {
 			breadcrumbArray: [
-				{name: 'User Manager', link: false},
-				{name: 'User Attributes', link: false}
+				{ name: 'User Manager', link: false },
+				{ name: 'User Attributes', link: false }
 			],
 			loadingUserAttributes: false,
 			creating: false,
@@ -456,10 +526,18 @@ export default {
 			if (this.searchTerm.length > 2) {
 				let filtered = this.searchUserAttributes()
 				this.numPages = Math.ceil(this.filtered.length / this.resultsPerPage)
-				return this.sortUserAttributes(filtered).slice(this.resultsPerPage * (this.activePage - 1), this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage)
+				return this.sortUserAttributes(filtered).slice(
+					this.resultsPerPage * (this.activePage - 1),
+					this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
+				)
 			} else {
-				this.numPages = Math.ceil(this.userAttributes.length / this.resultsPerPage)
-				return this.sortUserAttributes(this.userAttributes).slice(this.resultsPerPage * (this.activePage - 1), this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage)
+				this.numPages = Math.ceil(
+					this.userAttributes.length / this.resultsPerPage
+				)
+				return this.sortUserAttributes(this.userAttributes).slice(
+					this.resultsPerPage * (this.activePage - 1),
+					this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
+				)
 			}
 		}
 	},
@@ -505,31 +583,40 @@ export default {
 			const attributesVue = this
 
 			return this.validateNewUserAttribute()
-			.then((response) => {
-				attributesVue.creating = true
-				attributesVue.clearError('createErrorMessage')
-				return UserAttributesFunctions.createUserAttribute(attributesVue.$root.appId, attributesVue.$root.appSecret, attributesVue.$root.userToken, attributesVue.newUserAttribute)
 				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						attributesVue.confirmCreated(response.payload)
-					} else {
-						attributesVue.createErrorMessage = response.message || 'Something went wrong ...'
-					}
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not delete the modifier',
-						errorName: 'createErrorMessage',
-						vue: attributesVue
-					})
-				}).finally(() => {
-					attributesVue.creating = false
+					attributesVue.creating = true
+					attributesVue.clearError('createErrorMessage')
+					return UserAttributesFunctions.createUserAttribute(
+						attributesVue.$root.appId,
+						attributesVue.$root.appSecret,
+						attributesVue.$root.userToken,
+						attributesVue.newUserAttribute
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								attributesVue.confirmCreated(response.payload)
+							} else {
+								attributesVue.createErrorMessage =
+									response.message || 'Something went wrong ...'
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not delete the modifier',
+								errorName: 'createErrorMessage',
+								vue: attributesVue
+							})
+						})
+						.finally(() => {
+							attributesVue.creating = false
+						})
 				})
-			}).catch(reason => {
-				// Catch validation error
-				attributesVue.createErrorMessage = reason
-				window.scrollTo(0, 0)
-			})
+				.catch(reason => {
+					// Catch validation error
+					attributesVue.createErrorMessage = reason
+					window.scrollTo(0, 0)
+				})
 		},
 		/**
 		 * To confirm User Attribute was created
@@ -587,23 +674,28 @@ export default {
 			this.loadingUserAttributes = true
 			const attributesVue = this
 
-			return UserAttributesFunctions.listUserAttributes(attributesVue.$root.appId, attributesVue.$root.appSecret, attributesVue.$root.userToken)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					attributesVue.userAttributes = response.payload
-					attributesVue.loadingUserAttributes = false
-				} else {
-					attributesVue.loadingUserAttributes = false
-				}
-			}).catch(reason => {
-				attributesVue.loadingUserAttributes = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch user attributes',
-					errorName: 'listErrorMessage',
-					vue: attributesVue
+			return UserAttributesFunctions.listUserAttributes(
+				attributesVue.$root.appId,
+				attributesVue.$root.appSecret,
+				attributesVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						attributesVue.userAttributes = response.payload
+						attributesVue.loadingUserAttributes = false
+					} else {
+						attributesVue.loadingUserAttributes = false
+					}
 				})
-			})
+				.catch(reason => {
+					attributesVue.loadingUserAttributes = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch user attributes',
+						errorName: 'listErrorMessage',
+						vue: attributesVue
+					})
+				})
 		},
 		/**
 		 * To filter the display list
@@ -611,8 +703,10 @@ export default {
 		 * @returns {array} An array of User Attributes
 		 */
 		searchUserAttributes () {
-			return this.userAttributes.filter((userAttribute) => {
-				return userAttribute.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+			return this.userAttributes.filter(userAttribute => {
+				return userAttribute.name
+					.toLowerCase()
+					.includes(this.searchTerm.toLowerCase())
 			})
 		},
 		/**
@@ -653,7 +747,9 @@ export default {
 				}
 			}
 
-			return this.sortBy.order === 'ASC' ? attributes.sort(asc) : attributes.sort(desc)
+			return this.sortBy.order === 'ASC'
+				? attributes.sort(asc)
+				: attributes.sort(desc)
 		},
 		/**
 		 * To update the order property of sortBy.
@@ -725,37 +821,51 @@ export default {
 			const attributesVue = this
 
 			return this.validateUserAttributeToEdit()
-			.then((response) => {
-				attributesVue.updating = true
-				attributesVue.clearError('updateErrorMessage')
-				return UserAttributesFunctions.updateUserAttribute(attributesVue.$root.appId, attributesVue.$root.appSecret, attributesVue.$root.userToken, attributesVue.userAttributeToEdit)
 				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						let edited = attributesVue.userAttributes.findIndex((userAttribute) => {
-							return userAttribute.id === attributesVue.userAttributeToEdit.id
+					attributesVue.updating = true
+					attributesVue.clearError('updateErrorMessage')
+					return UserAttributesFunctions.updateUserAttribute(
+						attributesVue.$root.appId,
+						attributesVue.$root.appSecret,
+						attributesVue.$root.userToken,
+						attributesVue.userAttributeToEdit
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								let edited = attributesVue.userAttributes.findIndex(
+									userAttribute => {
+										return (
+											userAttribute.id === attributesVue.userAttributeToEdit.id
+										)
+									}
+								)
+								attributesVue.userAttributes[edited].name =
+									attributesVue.userAttributeToEdit.name
+								attributesVue.closeEditModal()
+								attributesVue.confirmUpdated()
+							} else {
+								attributesVue.updateErrorMessage =
+									response.message || 'Something went wrong ...'
+							}
 						})
-						attributesVue.userAttributes[edited].name = attributesVue.userAttributeToEdit.name
-						attributesVue.closeEditModal()
-						attributesVue.confirmUpdated()
-					} else {
-						attributesVue.updateErrorMessage = response.message || 'Something went wrong ...'
-					}
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not update the attribute',
-						errorName: 'updateErrorMessage',
-						vue: attributesVue,
-						containerRef: 'editModal'
-					})
-				}).finally(() => {
-					attributesVue.updating = false
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not update the attribute',
+								errorName: 'updateErrorMessage',
+								vue: attributesVue,
+								containerRef: 'editModal'
+							})
+						})
+						.finally(() => {
+							attributesVue.updating = false
+						})
 				})
-			}).catch(reason => {
-				// Catch validation error
-				attributesVue.createErrorMessage = reason
-				window.scrollTo(0, 0)
-			})
+				.catch(reason => {
+					// Catch validation error
+					attributesVue.createErrorMessage = reason
+					window.scrollTo(0, 0)
+				})
 		},
 		/**
 		 * To close the edit modal
@@ -816,26 +926,34 @@ export default {
 		listItemAttributes () {
 			const attributesVue = this
 
-			return ItemAttributesFunctions.listItemAttributes(attributesVue.$root.appId, attributesVue.$root.appSecret, attributesVue.$root.userToken)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					attributesVue.itemAttributes = response.payload.map((itemAttribute) => {
-						itemAttribute.selected = false
-						return itemAttribute
-					})
-					attributesVue.listItemAttributesofUserAttribute()
-				} else {
-					attributesVue.assignItemAttributesErrorMessage = 'Something went wrong ...'
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch attribute info',
-					errorName: 'assignItemAttributesErrorMessage',
-					vue: attributesVue,
-					containerRef: 'assignItemsModal'
+			return ItemAttributesFunctions.listItemAttributes(
+				attributesVue.$root.appId,
+				attributesVue.$root.appSecret,
+				attributesVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						attributesVue.itemAttributes = response.payload.map(
+							itemAttribute => {
+								itemAttribute.selected = false
+								return itemAttribute
+							}
+						)
+						attributesVue.listItemAttributesofUserAttribute()
+					} else {
+						attributesVue.assignItemAttributesErrorMessage =
+							'Something went wrong ...'
+					}
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch attribute info',
+						errorName: 'assignItemAttributesErrorMessage',
+						vue: attributesVue,
+						containerRef: 'assignItemsModal'
+					})
+				})
 		},
 		/**
 		 * To get a list of Item Attributes assigned to a User Attribute
@@ -844,40 +962,56 @@ export default {
 		 */
 		listItemAttributesofUserAttribute () {
 			const attributesVue = this
-			return UserAttributesFunctions.listItemAttributesofUserAttribute(attributesVue.$root.appId, attributesVue.$root.appSecret, attributesVue.$root.userToken, attributesVue.userAttributeToAssignItemAttributesTo.id)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					for (let r = 0; r < attributesVue.itemAttributes.length; r++) {
-						if (response.payload.attributes_userattributes.length) {
-							for (let s = 0; s < response.payload.attributes_userattributes.length; s++) {
-								let itemAttribute = attributesVue.itemAttributes[r]
-								if (itemAttribute.id === response.payload.attributes_userattributes[s].id) {
-									itemAttribute.selected = true
-									break
-								} else {
-									itemAttribute.selected = false
+			return UserAttributesFunctions.listItemAttributesofUserAttribute(
+				attributesVue.$root.appId,
+				attributesVue.$root.appSecret,
+				attributesVue.$root.userToken,
+				attributesVue.userAttributeToAssignItemAttributesTo.id
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						for (let r = 0; r < attributesVue.itemAttributes.length; r++) {
+							if (response.payload.attributes_userattributes.length) {
+								for (
+									let s = 0;
+									s < response.payload.attributes_userattributes.length;
+									s++
+								) {
+									let itemAttribute = attributesVue.itemAttributes[r]
+									if (
+										itemAttribute.id ===
+										response.payload.attributes_userattributes[s].id
+									) {
+										itemAttribute.selected = true
+										break
+									} else {
+										itemAttribute.selected = false
+									}
 								}
 							}
 						}
+						let notAll = attributesVue.itemAttributes.some(itemAttribute => {
+							return itemAttribute.selected === false
+						})
+						notAll
+							? (attributesVue.selectAllSelected = false)
+							: (attributesVue.selectAllSelected = true)
+						attributesVue.showAssignItemAttributesModal = true
+					} else {
+						attributesVue.assignItemAttributesErrorMessage =
+							'Something went wrong ...'
+						attributesVue.showAssignItemAttributesModal = true
 					}
-					let notAll = attributesVue.itemAttributes.some((itemAttribute) => {
-						return itemAttribute.selected === false
-					})
-					notAll ? attributesVue.selectAllSelected = false : attributesVue.selectAllSelected = true
-					attributesVue.showAssignItemAttributesModal = true
-				} else {
-					attributesVue.assignItemAttributesErrorMessage = 'Something went wrong ...'
-					attributesVue.showAssignItemAttributesModal = true
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch attribute info',
-					errorName: 'assignItemAttributesErrorMessage',
-					vue: attributesVue,
-					containerRef: 'assignItemsModal'
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch attribute info',
+						errorName: 'assignItemAttributesErrorMessage',
+						vue: attributesVue,
+						containerRef: 'assignItemsModal'
+					})
+				})
 		},
 		/**
 		 * To select all or deselect all
@@ -899,7 +1033,7 @@ export default {
 			if (!value) {
 				this.selectAllSelected = false
 			} else {
-				this.selectAllSelected = this.itemAttributes.every((itemAttribute) => {
+				this.selectAllSelected = this.itemAttributes.every(itemAttribute => {
 					return itemAttribute.selected === true
 				})
 			}
@@ -914,7 +1048,7 @@ export default {
 			let payload = {
 				attribute: []
 			}
-			this.itemAttributes.forEach((itemAttribute) => {
+			this.itemAttributes.forEach(itemAttribute => {
 				if (itemAttribute.selected) {
 					payload.attribute.push({
 						id: itemAttribute.id,
@@ -923,26 +1057,35 @@ export default {
 				}
 			})
 			const attributesVue = this
-			return UserAttributesFunctions.assignItemAttributesToUserAttributes(attributesVue.$root.appId, attributesVue.$root.appSecret, attributesVue.$root.userToken, attributesVue.userAttributeToAssignItemAttributesTo.id, payload)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					attributesVue.closeAssignItemAttributesModal()
-					attributesVue.confirmAssignItemAttributes()
-				} else {
-					window.scrollTo(0, 0)
-					attributesVue.assignItemAttributesErrorMessage = 'Something went wrong ...'
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not assign the attributes',
-					errorName: 'assignItemAttributesErrorMessage',
-					vue: attributesVue,
-					containerRef: 'assignItemsModal'
+			return UserAttributesFunctions.assignItemAttributesToUserAttributes(
+				attributesVue.$root.appId,
+				attributesVue.$root.appSecret,
+				attributesVue.$root.userToken,
+				attributesVue.userAttributeToAssignItemAttributesTo.id,
+				payload
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						attributesVue.closeAssignItemAttributesModal()
+						attributesVue.confirmAssignItemAttributes()
+					} else {
+						window.scrollTo(0, 0)
+						attributesVue.assignItemAttributesErrorMessage =
+							'Something went wrong ...'
+					}
 				})
-			}).finally(() => {
-				attributesVue.assigning = false
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not assign the attributes',
+						errorName: 'assignItemAttributesErrorMessage',
+						vue: attributesVue,
+						containerRef: 'assignItemsModal'
+					})
+				})
+				.finally(() => {
+					attributesVue.assigning = false
+				})
 		},
 		/**
 		 * To close the assign Item Attributes modal
@@ -961,7 +1104,9 @@ export default {
 		confirmAssignItemAttributes () {
 			this.$swal({
 				title: 'Success',
-				html: `<div>Item Attributes assigned to <i>${this.userAttributeToAssignItemAttributesTo.name}</i></div>`,
+				html: `<div>Item Attributes assigned to <i>${
+					this.userAttributeToAssignItemAttributesTo.name
+				}</i></div>`,
 				type: 'success',
 				confirmButtonText: 'OK'
 			}).then(() => {
@@ -1004,26 +1149,37 @@ export default {
 			this.deleting = true
 			const attributesVue = this
 
-			return UserAttributesFunctions.deleteUserAttribute(attributesVue.$root.appId, attributesVue.$root.appSecret, attributesVue.$root.userToken, attributesVue.userAttributeToDelete)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					attributesVue.userAttributes = attributesVue.userAttributes.filter((userAttribute) => {
-						return userAttribute.id !== attributesVue.userAttributeToDelete.id
-					})
-					attributesVue.closeDeleteModal()
-					attributesVue.confirmDelete()
-				} else throw response
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not delete the attribute',
-					errorName: 'deleteErrorMessage',
-					vue: attributesVue,
-					containerRef: 'deleteModal'
+			return UserAttributesFunctions.deleteUserAttribute(
+				attributesVue.$root.appId,
+				attributesVue.$root.appSecret,
+				attributesVue.$root.userToken,
+				attributesVue.userAttributeToDelete
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						attributesVue.userAttributes = attributesVue.userAttributes.filter(
+							userAttribute => {
+								return (
+									userAttribute.id !== attributesVue.userAttributeToDelete.id
+								)
+							}
+						)
+						attributesVue.closeDeleteModal()
+						attributesVue.confirmDelete()
+					} else throw response
 				})
-			}).finally(() => {
-				attributesVue.deleting = false
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not delete the attribute',
+						errorName: 'deleteErrorMessage',
+						vue: attributesVue,
+						containerRef: 'deleteModal'
+					})
+				})
+				.finally(() => {
+					attributesVue.deleting = false
+				})
 		},
 		/**
 		 * To close the delete modal
@@ -1063,23 +1219,23 @@ export default {
 
 <style scoped>
 .spinner {
-	display: flex;
-	justify-content: center;
-	align-content: center;
-	width: 100%;
-	height: 100px;
-	font-size: 400%;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  width: 100%;
+  height: 100px;
+  font-size: 400%;
 }
 .actions-on-top {
-	margin-top: -5px;
+  margin-top: -5px;
 }
-.mt-list-container.list-news.ext-1.no-border ul>.mt-list-item:hover {
-	background-color: white;
+.mt-list-container.list-news.ext-1.no-border ul > .mt-list-item:hover {
+  background-color: white;
 }
 .animated {
-	animation: listItemHighlight 1s 2 ease-in-out both;
+  animation: listItemHighlight 1s 2 ease-in-out both;
 }
 .table-column--checkboxes {
-	width: 50px;
+  width: 50px;
 }
 </style>

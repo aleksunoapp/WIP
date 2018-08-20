@@ -1,62 +1,71 @@
 <template>
 	<div>
-        <div class="page-bar">
-            <breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-        </div>
-        <h1 class="page-title">Modifier Tiers</h1>
-        <div class="note note-info">
-            <p>Manage a store's modifier tiers.</p>
-        </div>
+		<div class="page-bar">
+			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
+		</div>
+		<h1 class="page-title">Modifier Tiers</h1>
+		<div class="note note-info">
+			<p>Manage a store's modifier tiers.</p>
+		</div>
 
-        <div class="row" v-if="!corporate">
-            <div class="col-xs-12">
-                <div class="alert alert-info">
-                    Select a Corporate Store from the panel on the right to use Modifier Tiers.
-                </div>
-            </div>
-        </div>
+		<div class="row"
+		     v-if="!corporate">
+			<div class="col-xs-12">
+				<div class="alert alert-info">
+					Select a Corporate Store from the panel on the right to use Modifier Tiers.
+				</div>
+			</div>
+		</div>
 
-        <!-- BEGIN CREATE NEW TIER-->
-        <div class="portlet box blue-hoki" v-if="corporate">
-            <div class="portlet-title bg-blue-chambray" @click="toggleCreateModifierTierPanel()">
-                <div class="custom tools">
-                    <a :class="{'expand': !createModifierTierCollapse, 'collapse': createModifierTierCollapse}"></a>
-                </div>
-                <div class="caption">
-                    &emsp;Create A New Modifier Tier
-                </div>
-            </div>
-            <div class="portlet-body" :class="{'display-hide': createModifierTierCollapse}">
-                <form role="form" @submit.prevent="createNewModifierTier($event)">
-                    <div class="form-body row">
-                        <div class="col-md-12">
-                            <div class="alert alert-danger" v-show="createErrorMessage.length" ref="createErrorMessage">
-                                <button class="close" @click.prevent="clearError('createErrorMessage')"></button>
-                                <span>{{createErrorMessage}}</span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group form-md-line-input form-md-floating-label">
-                                <input 
-									type="text" 
-									class="form-control input-sm" 
-									id="form_control_1" 
-									:class="{'edited': newModifierTier.name.length}" 
-									v-model="newModifierTier.name">
-                                <label for="form_control_1">Modifier Tier Name</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-actions right margin-top-20">
-                        <button type="submit" class="btn blue">Create</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <!-- END CREATE NEW TIER-->
+		<!-- BEGIN CREATE NEW TIER-->
+		<div class="portlet box blue-hoki"
+		     v-if="corporate">
+			<div class="portlet-title bg-blue-chambray"
+			     @click="toggleCreateModifierTierPanel()">
+				<div class="custom tools">
+					<a :class="{'expand': !createModifierTierCollapse, 'collapse': createModifierTierCollapse}"></a>
+				</div>
+				<div class="caption">
+					&emsp;Create A New Modifier Tier
+				</div>
+			</div>
+			<div class="portlet-body"
+			     :class="{'display-hide': createModifierTierCollapse}">
+				<form role="form"
+				      @submit.prevent="createNewModifierTier($event)">
+					<div class="form-body row">
+						<div class="col-md-12">
+							<div class="alert alert-danger"
+							     v-show="createErrorMessage.length"
+							     ref="createErrorMessage">
+								<button class="close"
+								        @click.prevent="clearError('createErrorMessage')"></button>
+								<span>{{createErrorMessage}}</span>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<input type="text"
+								       class="form-control input-sm"
+								       id="form_control_1"
+								       :class="{'edited': newModifierTier.name.length}"
+								       v-model="newModifierTier.name">
+								<label for="form_control_1">Modifier Tier Name</label>
+							</div>
+						</div>
+					</div>
+					<div class="form-actions right margin-top-20">
+						<button type="submit"
+						        class="btn blue">Create</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!-- END CREATE NEW TIER-->
 
-        <!-- BEGIN LIST-->
-		<div class="portlet light portlet-fit bordered margin-top-20" v-if="corporate">
+		<!-- BEGIN LIST-->
+		<div class="portlet light portlet-fit bordered margin-top-20"
+		     v-if="corporate">
 			<div class="portlet-title bg-blue-chambray">
 				<div class="menu-image-main">
 					<img src="../../../../../static/client_logo.png">
@@ -69,43 +78,61 @@
 			<div class="portlet-body">
 
 				<div class="col-xs-12">
-					<div class="alert alert-danger" v-show="listErrorMessage.length" ref="listErrorMessage">
-						<button class="close" data-close="alert" @click="clearError('listErrorMessage')"></button>
+					<div class="alert alert-danger"
+					     v-show="listErrorMessage.length"
+					     ref="listErrorMessage">
+						<button class="close"
+						        data-close="alert"
+						        @click="clearError('listErrorMessage')"></button>
 						<span>{{listErrorMessage}}</span>
 					</div>
 				</div>
 
-				<loading-screen :show="loadingModifierTiers" :color="'#2C3E50'" :display="'inline'"></loading-screen>
+				<loading-screen :show="loadingModifierTiers"
+				                :color="'#2C3E50'"
+				                :display="'inline'"></loading-screen>
 
-				<no-results :show="!modifierTiers.length" :type="'menu tiers'"></no-results>
+				<no-results :show="!modifierTiers.length"
+				            :type="'menu tiers'"></no-results>
 
 				<div class="mt-element-list margin-top-15">
 					<div class="mt-list-container list-news">
 						<ul>
-							<li 
-								class="mt-list-item margin-top-15" 
-								:class="{'highlight' : animated === `tier-${tier.id}`}" 
-								v-for="tier in modifierTiers" 
-								:id="'tier-' + tier.id" 
-								:key="tier.id">
+							<li class="mt-list-item margin-top-15"
+							    :class="{'highlight' : animated === `tier-${tier.id}`}"
+							    v-for="tier in modifierTiers"
+							    :id="'tier-' + tier.id"
+							    :key="tier.id">
 								<div class="margin-bottom-15 actions-on-top">
-									<el-tooltip content="Edit" effect="light" placement="top">
-										<a class="btn btn-circle btn-icon-only btn-default" @click="openEditModal(tier)">
+									<el-tooltip content="Edit"
+									            effect="light"
+									            placement="top">
+										<a class="btn btn-circle btn-icon-only btn-default"
+										   @click="openEditModal(tier)">
 											<i class="fa fa-lg fa-pencil"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip content="Assign modifiers" effect="light" placement="top">
-										<a class="btn btn-circle btn-icon-only btn-default" @click="openAssignModal(tier)" >
+									<el-tooltip content="Assign modifiers"
+									            effect="light"
+									            placement="top">
+										<a class="btn btn-circle btn-icon-only btn-default"
+										   @click="openAssignModal(tier)">
 											<i class="icon-layers"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip content="Apply to items" effect="light" placement="top">
-										<a class="btn btn-circle btn-icon-only btn-default" @click="openApplyToMenuItemsModal(tier)" >
+									<el-tooltip content="Apply to items"
+									            effect="light"
+									            placement="top">
+										<a class="btn btn-circle btn-icon-only btn-default"
+										   @click="openApplyToMenuItemsModal(tier)">
 											<i class="fa fa-lg fa-plus"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip content="Delete tier" effect="light" placement="top">
-										<a class="btn btn-circle btn-icon-only btn-default" @click="openDeleteModal(tier)" >
+									<el-tooltip content="Delete tier"
+									            effect="light"
+									            placement="top">
+										<a class="btn btn-circle btn-icon-only btn-default"
+										   @click="openDeleteModal(tier)">
 											<i class="fa fa-lg fa-trash"></i>
 										</a>
 									</el-tooltip>
@@ -119,34 +146,30 @@
 				</div>
 			</div>
 		</div>
-        <!-- END LIST-->
+		<!-- END LIST-->
 
-	    <edit-modifier-tier 
-			v-if="showEditTierModal" 
-			:tier="tierToEdit" 
-			@close="closeEditModal" 
-			@updated="updateTier">
+		<edit-modifier-tier v-if="showEditTierModal"
+		                    :tier="tierToEdit"
+		                    @close="closeEditModal"
+		                    @updated="updateTier">
 		</edit-modifier-tier>
 
-    	<assign-modifiers 
-			v-if="showAssignModifiersModal"
-			:tier="tierToAssignTo" 
-			@applied="confirmAssigned"
-			@close="closeAssignModal">
+		<assign-modifiers v-if="showAssignModifiersModal"
+		                  :tier="tierToAssignTo"
+		                  @applied="confirmAssigned"
+		                  @close="closeAssignModal">
 		</assign-modifiers>
 
-		<apply-modifier-tier-to-menu-items 
-			v-if="showApplyToMenuItemsModal"
-			:tier="tierToApplyToMenuItems" 
-			@assigned="confirmAppliedToMenuItems"
-			@close="closeApplyToMenuItemsModal">
+		<apply-modifier-tier-to-menu-items v-if="showApplyToMenuItemsModal"
+		                                   :tier="tierToApplyToMenuItems"
+		                                   @assigned="confirmAppliedToMenuItems"
+		                                   @close="closeApplyToMenuItemsModal">
 		</apply-modifier-tier-to-menu-items>
 
-		<delete-modifier-tier 
-			v-if="showDeleteTierModal" 
-			:tier="tierToDelete" 
-			@close="closeDeleteModal" 
-			@deleted="removeTier">
+		<delete-modifier-tier v-if="showDeleteTierModal"
+		                      :tier="tierToDelete"
+		                      @close="closeDeleteModal"
+		                      @deleted="removeTier">
 		</delete-modifier-tier>
 	</div>
 </template>
@@ -166,8 +189,8 @@ export default {
 	data () {
 		return {
 			breadcrumbArray: [
-				{name: 'Menu Manager', link: false},
-				{name: 'Modifier Tiers', link: false}
+				{ name: 'Menu Manager', link: false },
+				{ name: 'Modifier Tiers', link: false }
 			],
 			createModifierTierCollapse: true,
 			createErrorMessage: '',
@@ -205,18 +228,22 @@ export default {
 		getModifierTiers () {
 			this.loadingModifierTiers = true
 			var modifierTiersVue = this
-			return ModifierTiersFunctions.getModifierTiers().then(response => {
-				modifierTiersVue.modifierTiers = response.payload.sort((a, b) => a.name > b.name)
-				modifierTiersVue.loadingModifierTiers = false
-			}).catch(reason => {
-				modifierTiersVue.loadingModifierTiers = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We couldn\'t fetch Modifier Tiers',
-					errorName: 'listErrorMessage',
-					vue: modifierTiersVue
+			return ModifierTiersFunctions.getModifierTiers()
+				.then(response => {
+					modifierTiersVue.modifierTiers = response.payload.sort(
+						(a, b) => a.name > b.name
+					)
+					modifierTiersVue.loadingModifierTiers = false
 				})
-			})
+				.catch(reason => {
+					modifierTiersVue.loadingModifierTiers = false
+					ajaxErrorHandler({
+						reason,
+						errorText: "We couldn't fetch Modifier Tiers",
+						errorName: 'listErrorMessage',
+						vue: modifierTiersVue
+					})
+				})
 		},
 		/**
 		 * To clear an error.
@@ -273,22 +300,31 @@ export default {
 				location_id: this.$root.activeLocation.id
 			}
 
-			return modifierTiersVue.validateModifierTierData().then(response => {
-				ModifierTiersFunctions.createModifierTier(payload).then(response => {
-					modifierTiersVue.confirmCreated()
-					modifierTiersVue.addMenuTier(response.payload)
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We couldn\'t create the tier',
-						errorName: 'createErrorMessage',
-						vue: modifierTiersVue
-					})
+			return modifierTiersVue
+				.validateModifierTierData()
+				.then(response => {
+					ModifierTiersFunctions.createModifierTier(payload)
+						.then(response => {
+							modifierTiersVue.confirmCreated()
+							modifierTiersVue.addMenuTier(response.payload)
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: "We couldn't create the tier",
+								errorName: 'createErrorMessage',
+								vue: modifierTiersVue
+							})
+						})
 				})
-			}).catch(reason => {
-				modifierTiersVue.createErrorMessage = reason
-				modifierTiersVue.$scrollTo(modifierTiersVue.$refs.createErrorMessage, 1000, { offset: -50 })
-			})
+				.catch(reason => {
+					modifierTiersVue.createErrorMessage = reason
+					modifierTiersVue.$scrollTo(
+						modifierTiersVue.$refs.createErrorMessage,
+						1000,
+						{ offset: -50 }
+					)
+				})
 		},
 		/**
 		 * To alert the user that the tier has been successfully created.
@@ -442,7 +478,9 @@ export default {
 		 * @returns {undefined}
 		 */
 		removeTier () {
-			this.modifierTiers = this.modifierTiers.filter(t => t.id !== this.tierToDelete.id)
+			this.modifierTiers = this.modifierTiers.filter(
+				t => t.id !== this.tierToDelete.id
+			)
 			this.closeDeleteModal()
 			this.$swal({
 				title: 'Success!',
@@ -466,15 +504,15 @@ export default {
 
 <style scoped>
 .mt-element-list .list-news.mt-list-container {
-	padding-top: 0;
+  padding-top: 0;
 }
 .mt-list-item {
-	min-height: 124px;
+  min-height: 124px;
 }
-.mt-element-list .list-news.mt-list-container ul>.mt-list-item:hover {
-	background-color: #fff;
+.mt-element-list .list-news.mt-list-container ul > .mt-list-item:hover {
+  background-color: #fff;
 }
 .actions-on-top {
-	margin-top: -5px;
+  margin-top: -5px;
 }
 </style>

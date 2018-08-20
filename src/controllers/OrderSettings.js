@@ -3,7 +3,7 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to create a new OrderSettings.
 	 * @function
@@ -94,4 +94,4 @@ export default ({
 			})
 		})
 	}
-})
+}

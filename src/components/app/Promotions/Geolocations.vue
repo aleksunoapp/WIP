@@ -9,8 +9,10 @@
 		</div>
 
 		<!-- BEGIN CREATE NEW -->
-        <div class="portlet box blue-hoki" v-if="$root.permissions['promotions geolocations create']">
-			<div class="portlet-title bg-blue-chambray" @click="toggleNewPanel()">
+		<div class="portlet box blue-hoki"
+		     v-if="$root.permissions['promotions geolocations create']">
+			<div class="portlet-title bg-blue-chambray"
+			     @click="toggleNewPanel()">
 				<div class="caption">
 					<i class="fa fa-2x fa-plus-circle"></i>
 					Create New Geolocation
@@ -19,56 +21,68 @@
 					<a :class="{'expand': !newCollapse, 'collapse': newCollapse}"></a>
 				</div>
 			</div>
-			<div class="portlet-body" :class="{'display-hide': newCollapse}">
+			<div class="portlet-body"
+			     :class="{'display-hide': newCollapse}">
 				<div class="form-group form-md-line-input form-md-floating-label">
-	      			<form role="form" @submit.prevent="createNewGeolocation()">
-	      				<div class="row">
-	      					<div class="col-md-12">
-	      						<div class="alert alert-danger" v-show="createErrorMessage" ref="createErrorMessage">
-		    					    <button class="close" @click.prevent="clearError('createErrorMessage')"></button>
-		    					    <span>{{createErrorMessage}}</span>
-		    					</div>
-	      					</div>
-			        		<div class="col-md-6">
-		    					<div class="form-group form-md-line-input form-md-floating-label">
-		    					    <input type="text" class="form-control input-sm" :class="{'edited': newGeolocation.name.length}" id="form_control_1" v-model="newGeolocation.name">
-		    					    <label for="form_control_1">Name</label>
-		    					</div>
-								<map-area
-									v-if="!newCollapse"
-									:lat="latitude"
-									:lng="longitude"
-									:key="this.mapComponentKey"
-									width="100%"
-									height="500px"
-									@polygonEmitted="updateNewPolygon"
-								>
+					<form role="form"
+					      @submit.prevent="createNewGeolocation()">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="alert alert-danger"
+								     v-show="createErrorMessage"
+								     ref="createErrorMessage">
+									<button class="close"
+									        @click.prevent="clearError('createErrorMessage')"></button>
+									<span>{{createErrorMessage}}</span>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<input type="text"
+									       class="form-control input-sm"
+									       :class="{'edited': newGeolocation.name.length}"
+									       id="form_control_1"
+									       v-model="newGeolocation.name">
+									<label for="form_control_1">Name</label>
+								</div>
+								<map-area v-if="!newCollapse"
+								          :lat="latitude"
+								          :lng="longitude"
+								          :key="this.mapComponentKey"
+								          width="100%"
+								          height="500px"
+								          @polygonEmitted="updateNewPolygon">
 								</map-area>
-			        		</div>
-			        	</div>
-			        	<div class="row">
-			        		<div class="col-md-6">
-			        			<el-tooltip content="Delete area" effect="light" placement="right">
-			        				<button type="submit" class="btn btn-circle btn-icon-only btn-default clickable margin-top-20" @click.prevent="reloadMap()"><i class="fa fa-trash" aria-hidden="true"></i></button>
-			        			</el-tooltip>
-			        			<button 
-									type="submit" 
-									class="btn blue pull-right margin-top-20"
-									:disabled="creating">
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<el-tooltip content="Delete area"
+								            effect="light"
+								            placement="right">
+									<button type="submit"
+									        class="btn btn-circle btn-icon-only btn-default clickable margin-top-20"
+									        @click.prevent="reloadMap()">
+										<i class="fa fa-trash"
+										   aria-hidden="true"></i>
+									</button>
+								</el-tooltip>
+								<button type="submit"
+								        class="btn blue pull-right margin-top-20"
+								        :disabled="creating">
 									Create
-									<i 
-										v-show="creating"
-										class="fa fa-spinner fa-pulse fa-fw">
+									<i v-show="creating"
+									   class="fa fa-spinner fa-pulse fa-fw">
 									</i>
 								</button>
-			        		</div>
-			        	</div>
-	      			</form>
+							</div>
+						</div>
+					</form>
 				</div>
-  			</div>
-        </div>
-        <!-- END CREATE NEW -->
-	
+			</div>
+		</div>
+		<!-- END CREATE NEW -->
+
 		<!-- LIST START -->
 		<div class="portlet light portlet-fit bordered margin-top-20">
 			<div class="portlet-title bg-blue-chambray">
@@ -83,155 +97,178 @@
 			<div class="portlet-body relative-block">
 				<div class="row">
 					<div class="col-md-12">
-						<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
-							<button class="close" @click="clearError('listErrorMessage')"></button>
+						<div class="alert alert-danger"
+						     v-show="listErrorMessage"
+						     ref="listErrorMessage">
+							<button class="close"
+							        @click="clearError('listErrorMessage')"></button>
 							<span>{{listErrorMessage}}</span>
 						</div>
 					</div>
 				</div>
 
-				<loading-screen :show="loadingGeolocations" :color="'#2C3E50'" :display="'inline'"></loading-screen>
+				<loading-screen :show="loadingGeolocations"
+				                :color="'#2C3E50'"
+				                :display="'inline'"></loading-screen>
 
 				<div class="mt-element-list">
 					<div class="mt-list-container list-news">
 						<ul>
-							<li class="mt-list-item actions-at-left margin-top-15" :class="{'animated' : animated === gl.id}" v-for="gl in geolocations" :key="gl.id">
+							<li class="mt-list-item actions-at-left margin-top-15"
+							    :class="{'animated' : animated === gl.id}"
+							    v-for="gl in geolocations"
+							    :key="gl.id">
 								<div class="list-item-actions">
-									<el-tooltip 
-										v-if="$root.permissions['promotions geolocations update']"
-										content="Edit" 
-										effect="light" 
-										placement="right">
-		                        		<a class="btn btn-circle btn-icon-only btn-default clickable" @click="editGeolocation(gl)">
-	                                        <i class="fa fa-lg fa-pencil"></i>
-	                                    </a>
-	                                </el-tooltip>
-									<el-tooltip 
-										v-if="$root.permissions['promotions geolocations read'] && !$root.permissions['promotions geolocations update']"
-										content="View" 
-										effect="light" 
-										placement="right">
-		                        		<a class="btn btn-circle btn-icon-only btn-default clickable" @click="editGeolocation(gl)">
-	                                        <i class="fa fa-lg fa-eye"></i>
-	                                    </a>
-	                                </el-tooltip>
-									<el-tooltip 
-										v-if="$root.permissions['promotions geolocations delete']"
-										content="Delete" 
-										effect="light" 
-										placement="right">
-		                        		<a class="btn btn-circle btn-icon-only btn-default clickable" @click="openDelete(gl)">
-	                                        <i class="fa fa-lg fa-trash"></i>
-	                                    </a>
-	                                </el-tooltip>
-	                        	</div>
-	                            <div class="list-datetime bold uppercase font-red">
-	                            	<span>{{ gl.name }}</span>
-	                            </div>
-	                            <div class="list-item-content height-mod">
-	                            </div>
+									<el-tooltip v-if="$root.permissions['promotions geolocations update']"
+									            content="Edit"
+									            effect="light"
+									            placement="right">
+										<a class="btn btn-circle btn-icon-only btn-default clickable"
+										   @click="editGeolocation(gl)">
+											<i class="fa fa-lg fa-pencil"></i>
+										</a>
+									</el-tooltip>
+									<el-tooltip v-if="$root.permissions['promotions geolocations read'] && !$root.permissions['promotions geolocations update']"
+									            content="View"
+									            effect="light"
+									            placement="right">
+										<a class="btn btn-circle btn-icon-only btn-default clickable"
+										   @click="editGeolocation(gl)">
+											<i class="fa fa-lg fa-eye"></i>
+										</a>
+									</el-tooltip>
+									<el-tooltip v-if="$root.permissions['promotions geolocations delete']"
+									            content="Delete"
+									            effect="light"
+									            placement="right">
+										<a class="btn btn-circle btn-icon-only btn-default clickable"
+										   @click="openDelete(gl)">
+											<i class="fa fa-lg fa-trash"></i>
+										</a>
+									</el-tooltip>
+								</div>
+								<div class="list-datetime bold uppercase font-red">
+									<span>{{ gl.name }}</span>
+								</div>
+								<div class="list-item-content height-mod">
+								</div>
 							</li>
 						</ul>
 					</div>
 				</div>
 				<div v-if="!loadingGeolocations && !geolocations.length">
-		        	<no-results :show="true" :type="'printers'"></no-results>
-		        </div>
+					<no-results :show="true"
+					            :type="'printers'"></no-results>
+				</div>
 			</div>
 		</div>
 		<!-- LIST END -->
 
 		<!-- EDIT MODAL START -->
-		<modal :show="showEditModal" effect="fade" @closeOnEscape="closeEditModal" ref="editModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeEditModal()">
+		<modal :show="showEditModal"
+		       effect="fade"
+		       @closeOnEscape="closeEditModal"
+		       ref="editModal">
+			<div slot="modal-header"
+			     class="modal-header">
+				<button type="button"
+				        class="close"
+				        @click="closeEditModal()">
 					<span>&times;</span>
 				</button>
 				<h4 class="modal-title center">Edit Geolocation</h4>
 			</div>
-			<div slot="modal-body" class="modal-body">
-				<div class="alert alert-danger" v-show="editErrorMessage" ref="editErrorMessage">
-				    <button class="close" @click="clearError('editErrorMessage')"></button>
-				    <span>{{editErrorMessage}}</span>
+			<div slot="modal-body"
+			     class="modal-body">
+				<div class="alert alert-danger"
+				     v-show="editErrorMessage"
+				     ref="editErrorMessage">
+					<button class="close"
+					        @click="clearError('editErrorMessage')"></button>
+					<span>{{editErrorMessage}}</span>
 				</div>
 				<div class="row">
 					<div class="col-md-6">
 						<div class="form-group form-md-line-input form-md-floating-label">
-						    <input 
-								:disabled="!$root.permissions['promotions geolocations update']"
-								type="text" 
-								class="form-control input-sm" 
-								:class="{'edited': editedGeolocation.name.length}" 
-								id="form_control_1" 
-								v-model="editedGeolocation.name">
-						    <label for="form_control_1">Geolocation Name</label>
+							<input :disabled="!$root.permissions['promotions geolocations update']"
+							       type="text"
+							       class="form-control input-sm"
+							       :class="{'edited': editedGeolocation.name.length}"
+							       id="form_control_1"
+							       v-model="editedGeolocation.name">
+							<label for="form_control_1">Geolocation Name</label>
 						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-12">
-						<map-area
-							v-if="showEditModal"
-							:polygonToEdit="editedGeolocation.polygon"
-							width="100%"
-							height="500px"
-							@polygonEmitted="updateEditedPolygon"
-						>
+						<map-area v-if="showEditModal"
+						          :polygonToEdit="editedGeolocation.polygon"
+						          width="100%"
+						          height="500px"
+						          @polygonEmitted="updateEditedPolygon">
 						</map-area>
 					</div>
 				</div>
 			</div>
-			<div slot="modal-footer" class="modal-footer">
-					<button 
-						v-if="!$root.permissions['promotions geolocations update']"
-						type="button" 
-						class="btn btn-primary" 
-						@click="closeEditModal()">
-						Close
-					</button>
-					<button 
-						v-else
-						type="button" 
-						class="btn btn-primary" 
-						@click="updateGeolocation()"
-						:disabled="updating">
-						Save
-						<i 
-							v-show="updating"
-							class="fa fa-spinner fa-pulse fa-fw">
-						</i>
-					</button>
+			<div slot="modal-footer"
+			     class="modal-footer">
+				<button v-if="!$root.permissions['promotions geolocations update']"
+				        type="button"
+				        class="btn btn-primary"
+				        @click="closeEditModal()">
+					Close
+				</button>
+				<button v-else
+				        type="button"
+				        class="btn btn-primary"
+				        @click="updateGeolocation()"
+				        :disabled="updating">
+					Save
+					<i v-show="updating"
+					   class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
 			</div>
 		</modal>
 		<!-- EDIT MODAL END -->
 
 		<!-- DELETE MODAL START -->
-		<modal :show="showDeleteModal" effect="fade" @closeOnEscape="closeDeleteModal" ref="deleteModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeDeleteModal()">
+		<modal :show="showDeleteModal"
+		       effect="fade"
+		       @closeOnEscape="closeDeleteModal"
+		       ref="deleteModal">
+			<div slot="modal-header"
+			     class="modal-header">
+				<button type="button"
+				        class="close"
+				        @click="closeDeleteModal()">
 					<span>&times;</span>
 				</button>
 				<h4 class="modal-title center">Delete Geolocation</h4>
 			</div>
-			<div slot="modal-body" class="modal-body">
-				<div class="alert alert-danger" v-show="deleteErrorMessage" ref="deleteErrorMessage">
-				    <button class="close" @click="clearError('deleteErrorMessage')"></button>
-				    <span>{{deleteErrorMessage}}</span>
+			<div slot="modal-body"
+			     class="modal-body">
+				<div class="alert alert-danger"
+				     v-show="deleteErrorMessage"
+				     ref="deleteErrorMessage">
+					<button class="close"
+					        @click="clearError('deleteErrorMessage')"></button>
+					<span>{{deleteErrorMessage}}</span>
 				</div>
 				<div class="col-md-12">
 					Are you sure you want to delete '{{selectedGeolocation.name}}'?
 				</div>
 			</div>
-			<div slot="modal-footer" class="modal-footer">
-				<button 
-					type="button" 
-					class="btn btn-primary" 
-					@click="deleteGeolocation()"
-					:disabled="deleting">
+			<div slot="modal-footer"
+			     class="modal-footer">
+				<button type="button"
+				        class="btn btn-primary"
+				        @click="deleteGeolocation()"
+				        :disabled="deleting">
 					Delete
-					<i 
-						v-show="deleting"
-						class="fa fa-spinner fa-pulse fa-fw">
+					<i v-show="deleting"
+					   class="fa fa-spinner fa-pulse fa-fw">
 					</i>
 				</button>
 			</div>
@@ -253,9 +290,7 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 export default {
 	data () {
 		return {
-			breadcrumbArray: [
-				{name: 'Geolocations', link: false}
-			],
+			breadcrumbArray: [{ name: 'Geolocations', link: false }],
 			newCollapse: true,
 			creating: false,
 			newGeolocation: {
@@ -286,14 +321,20 @@ export default {
 	},
 	computed: {
 		latitude () {
-			if (this.$root.activeLocation.latitude !== null && this.$root.activeLocation.latitude !== undefined) {
+			if (
+				this.$root.activeLocation.latitude !== null &&
+				this.$root.activeLocation.latitude !== undefined
+			) {
 				return Number(this.$root.activeLocation.latitude)
 			} else {
 				return 43.6532
 			}
 		},
 		longitude () {
-			if (this.$root.activeLocation.longitude !== null && this.$root.activeLocation.longitude !== undefined) {
+			if (
+				this.$root.activeLocation.longitude !== null &&
+				this.$root.activeLocation.longitude !== undefined
+			) {
 				return Number(this.$root.activeLocation.longitude)
 			} else {
 				return -79.3832
@@ -346,22 +387,28 @@ export default {
 		getGeolocations () {
 			this.loadingGeolocations = true
 			var geolocationsVue = this
-			PromotionsFunctions.getGeolocations(geolocationsVue.$root.appId, geolocationsVue.$root.appSecret, geolocationsVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					geolocationsVue.geolocations = response.payload
-					geolocationsVue.loadingGeolocations = false
-				} else {
-					geolocationsVue.loadingGeolocations = false
-				}
-			}).catch(reason => {
-				geolocationsVue.loadingGeolocations = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch geolocations',
-					errorName: 'listErrorMessage',
-					vue: geolocationsVue
+			PromotionsFunctions.getGeolocations(
+				geolocationsVue.$root.appId,
+				geolocationsVue.$root.appSecret,
+				geolocationsVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						geolocationsVue.geolocations = response.payload
+						geolocationsVue.loadingGeolocations = false
+					} else {
+						geolocationsVue.loadingGeolocations = false
+					}
 				})
-			})
+				.catch(reason => {
+					geolocationsVue.loadingGeolocations = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch geolocations',
+						errorName: 'listErrorMessage',
+						vue: geolocationsVue
+					})
+				})
 		},
 		/**
 		 * To check if the data is valid before submitting to the backend.
@@ -387,30 +434,38 @@ export default {
 		createNewGeolocation () {
 			var geolocationsVue = this
 			return this.validateGeolocationData()
-			.then(response => {
-				geolocationsVue.creating = true
-				PromotionsFunctions.createGeolocation(geolocationsVue.$root.appId, geolocationsVue.$root.appSecret, geolocationsVue.$root.userToken, geolocationsVue.newGeolocation).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						geolocationsVue.geolocations.push(response.payload)
-						geolocationsVue.resetForm()
-						geolocationsVue.confirmCreated()
-					} else {
-						geolocationsVue.createErrorMessage = 'Something went wrong ...'
-					}
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not add the geolocations',
-						errorName: 'createErrorMessage',
-						vue: geolocationsVue
-					})
-				}).finally(() => {
-					geolocationsVue.creating = false
+				.then(response => {
+					geolocationsVue.creating = true
+					PromotionsFunctions.createGeolocation(
+						geolocationsVue.$root.appId,
+						geolocationsVue.$root.appSecret,
+						geolocationsVue.$root.userToken,
+						geolocationsVue.newGeolocation
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								geolocationsVue.geolocations.push(response.payload)
+								geolocationsVue.resetForm()
+								geolocationsVue.confirmCreated()
+							} else {
+								geolocationsVue.createErrorMessage = 'Something went wrong ...'
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not add the geolocations',
+								errorName: 'createErrorMessage',
+								vue: geolocationsVue
+							})
+						})
+						.finally(() => {
+							geolocationsVue.creating = false
+						})
 				})
-			})
-			.catch(reason => {
-				geolocationsVue.createErrorMessage = reason
-			})
+				.catch(reason => {
+					geolocationsVue.createErrorMessage = reason
+				})
 		},
 		/**
 		 * To alert the user whether the printer was successfully added.
@@ -479,39 +534,48 @@ export default {
 		updateGeolocation () {
 			var geolocationsVue = this
 			return this.validateEditedData()
-			.then(response => {
-				geolocationsVue.updating = true
-				PromotionsFunctions.updateGeolocation(geolocationsVue.$root.appId, geolocationsVue.$root.appSecret, geolocationsVue.$root.userToken, geolocationsVue.editedGeolocation).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						geolocationsVue.geolocations.forEach((gl) => {
-							if (gl.id === response.payload.id) {
-								gl.name = response.payload.name
-								gl.polygon = response.payload.polygon
+				.then(response => {
+					geolocationsVue.updating = true
+					PromotionsFunctions.updateGeolocation(
+						geolocationsVue.$root.appId,
+						geolocationsVue.$root.appSecret,
+						geolocationsVue.$root.userToken,
+						geolocationsVue.editedGeolocation
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								geolocationsVue.geolocations.forEach(gl => {
+									if (gl.id === response.payload.id) {
+										gl.name = response.payload.name
+										gl.polygon = response.payload.polygon
+									}
+								})
+								geolocationsVue.resetEdited()
+								geolocationsVue.closeEditModal()
+								geolocationsVue.animated = response.payload.id
+								window.setTimeout(() => {
+									geolocationsVue.animated = null
+								}, 3000)
+							} else {
+								throw response
 							}
 						})
-						geolocationsVue.resetEdited()
-						geolocationsVue.closeEditModal()
-						geolocationsVue.animated = response.payload.id
-						window.setTimeout(() => {
-							geolocationsVue.animated = null
-						}, 3000)
-					} else {
-						throw response
-					}
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not update the geolocation',
-						errorName: 'editErrorMessage',
-						vue: geolocationsVue,
-						containerRef: 'editModal'
-					})
-				}).finally(() => {
-					geolocationsVue.updating = false
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not update the geolocation',
+								errorName: 'editErrorMessage',
+								vue: geolocationsVue,
+								containerRef: 'editModal'
+							})
+						})
+						.finally(() => {
+							geolocationsVue.updating = false
+						})
 				})
-			}).catch(reason => {
-				geolocationsVue.createErrorMessage = reason.responseJSON.message
-			})
+				.catch(reason => {
+					geolocationsVue.createErrorMessage = reason.responseJSON.message
+				})
 		},
 		/**
 		 * To open the edit modal
@@ -570,32 +634,48 @@ export default {
 		deleteGeolocation () {
 			this.deleting = true
 			let geolocationsVue = this
-			PromotionsFunctions.deleteGeolocation(geolocationsVue.$root.appId, geolocationsVue.$root.appSecret, geolocationsVue.$root.userToken, geolocationsVue.selectedGeolocation).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					console.log('selected', geolocationsVue.selectedGeolocation.id, typeof geolocationsVue.selectedGeolocation.id)
-					console.log('deleted', response.payload.id, typeof response.payload.id)
-					let index = geolocationsVue.geolocations.findIndex((gl) => {
-						return gl.id === geolocationsVue.selectedGeolocation.id
-					})
-					console.log('index', index)
-					geolocationsVue.geolocations.splice(index, 1)
-					geolocationsVue.resetSelected()
-					geolocationsVue.closeDeleteModal()
-					geolocationsVue.confirmDeleted()
-				} else {
-					geolocationsVue.deleteErrorMessage = 'Something went wrong ...'
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not delete the geolocation',
-					errorName: 'deleteErrorMessage',
-					vue: geolocationsVue,
-					containerRef: 'deleteModal'
+			PromotionsFunctions.deleteGeolocation(
+				geolocationsVue.$root.appId,
+				geolocationsVue.$root.appSecret,
+				geolocationsVue.$root.userToken,
+				geolocationsVue.selectedGeolocation
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						console.log(
+							'selected',
+							geolocationsVue.selectedGeolocation.id,
+							typeof geolocationsVue.selectedGeolocation.id
+						)
+						console.log(
+							'deleted',
+							response.payload.id,
+							typeof response.payload.id
+						)
+						let index = geolocationsVue.geolocations.findIndex(gl => {
+							return gl.id === geolocationsVue.selectedGeolocation.id
+						})
+						console.log('index', index)
+						geolocationsVue.geolocations.splice(index, 1)
+						geolocationsVue.resetSelected()
+						geolocationsVue.closeDeleteModal()
+						geolocationsVue.confirmDeleted()
+					} else {
+						geolocationsVue.deleteErrorMessage = 'Something went wrong ...'
+					}
 				})
-			}).finally(() => {
-				geolocationsVue.deleting = false
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not delete the geolocation',
+						errorName: 'deleteErrorMessage',
+						vue: geolocationsVue,
+						containerRef: 'deleteModal'
+					})
+				})
+				.finally(() => {
+					geolocationsVue.deleting = false
+				})
 		},
 		/**
 		 * To alert the user whether the printer was successfully added.
@@ -624,9 +704,9 @@ export default {
 
 <style scoped>
 .animated {
-	animation: listItemHighlight 1s 2 ease-in-out both;
+  animation: listItemHighlight 1s 2 ease-in-out both;
 }
-.mt-element-list .list-news.mt-list-container ul>.mt-list-item:hover {
-	background-color: rgb(255, 255, 255);
+.mt-element-list .list-news.mt-list-container ul > .mt-list-item:hover {
+  background-color: rgb(255, 255, 255);
 }
 </style>

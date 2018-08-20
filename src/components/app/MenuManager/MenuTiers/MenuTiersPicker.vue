@@ -8,18 +8,17 @@
 			</th>
 		</thead>
 		<tbody>
-			<tr v-for="tier in displayTiers" :key="tier.id">
+			<tr v-for="tier in displayTiers"
+			    :key="tier.id">
 				<td>
 					<div class="md-radio">
-						<input 
-							type="radio"
-							:id="`${idPrefix}-${tier.id}`"
-							:name="tier.name"
-							class="md-radiobtn" 
-							v-model="radioValue"
-							:value="tier.id"
-							@change="tiersSelected"
-						>
+						<input type="radio"
+						       :id="`${idPrefix}-${tier.id}`"
+						       :name="tier.name"
+						       class="md-radiobtn"
+						       v-model="radioValue"
+						       :value="tier.id"
+						       @change="tiersSelected">
 						<label :for="`${idPrefix}-${tier.id}`">
 							<span></span>
 							<span class="check"></span>
@@ -101,6 +100,6 @@ export default {
 
 <style scoped>
 .padding-left-35 {
-	padding-left: 35px;
+  padding-left: 35px;
 }
 </style>

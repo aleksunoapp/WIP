@@ -2,44 +2,57 @@
 	<ul class="pagination-list">
 
 		<a @click="setActivePage(activePage - 1)">
-			<li class="page-number" :class="{'disabled': activePage === 1}">
-				<i class="fa fa-angle-left" aria-hidden="true"></i>
+			<li class="page-number"
+			    :class="{'disabled': activePage === 1}">
+				<i class="fa fa-angle-left"
+				   aria-hidden="true"></i>
 			</li>
 		</a>
 
 		<a @click="setActivePage(1)">
-			<li class="page-number" :class="{'active': activePage === 1}">
+			<li class="page-number"
+			    :class="{'active': activePage === 1}">
 				1
 			</li>
 		</a>
 
 		<a>
-			<li v-if="activePage !== 1 && activePage !== 2 && activePage !== 3" class="page-number elipsis">
+			<li v-if="activePage !== 1 && activePage !== 2 && activePage !== 3"
+			    class="page-number elipsis">
 				...
 			</li>
 		</a>
 
-		<a v-for="(page, index) in pagesArray" @click="setActivePage(page)">
-			<li class="page-number" :class="{'active': activePage === page}" v-if="showPageIndex(index)">
+		<a v-for="(page, index) in pagesArray"
+		   @click="setActivePage(page)"
+		   :key="index">
+			<li class="page-number"
+			    :class="{'active': activePage === page}"
+			    v-if="showPageIndex(index)">
 				{{ page }}
 			</li>
 		</a>
-		
+
 		<a>
-			<li v-if="activePage !== pagesArray.length && activePage !== pagesArray.length - 1 && activePage !== pagesArray.length - 2" class="page-number elipsis">
+			<li v-if="activePage !== pagesArray.length && activePage !== pagesArray.length - 1 && activePage !== pagesArray.length - 2"
+			    class="page-number elipsis">
 				...
 			</li>
 		</a>
 
 		<a @click="setActivePage(pagesArray.length)">
-			<li class="page-number" :class="{'active': activePage === pagesArray.length}" v-if="numPages !== 1">
+			<li class="page-number"
+			    :class="{'active': activePage === pagesArray.length}"
+			    v-if="numPages !== 1">
 				{{ pagesArray.length }}
 			</li>
 		</a>
 
 		<a @click="setActivePage(activePage + 1)">
-			<li class="page-number" :class="{'disabled': activePage === numPages}">
-				<i class="fa fa-angle-right" aria-hidden="true"></i>
+			<li class="page-number"
+			    :class="{'disabled': activePage === numPages}">
+				<i class="fa fa-angle-right"
+				   aria-hidden="true"></i>
 			</li>
 		</a>
 	</ul>
@@ -158,49 +171,47 @@ export default {
 }
 </script>
 <style scoped>
-.pagination-wrapper {
-
-}
 .pagination-list {
-	width: 100%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	list-style-type: none;
-	padding: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style-type: none;
+  padding: 0;
 }
-.pagination-list a, .pagination-list a:hover {
-	text-decoration: none;
-	color: inherit;
+.pagination-list a,
+.pagination-list a:hover {
+  text-decoration: none;
+  color: inherit;
 }
 .page-number {
-	width: 3rem;
-	height: 3rem;
-	border-radius: 50%;
-	background-color: rgb(221, 221, 221);
-	font-size: 1.5rem;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin: 0 2px;
-	cursor: pointer;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background-color: rgb(221, 221, 221);
+  font-size: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 2px;
+  cursor: pointer;
 }
 .page-number:hover:not(.disabled) {
-	color: #fff;
- 	background-color: #67809F;
-	text-decoration: none;
+  color: #fff;
+  background-color: #67809f;
+  text-decoration: none;
 }
 .page-number.disabled {
-	cursor: not-allowed;
+  cursor: not-allowed;
 }
 .page-number.active {
-	color: #fff;
-	background-color: #67809F;
+  color: #fff;
+  background-color: #67809f;
 }
 .page-number {
-	color: inherit;
+  color: inherit;
 }
 .elipsis {
-	background-color: transparent;
+  background-color: transparent;
 }
 </style>

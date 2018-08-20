@@ -1,20 +1,36 @@
 <template>
 	<div>
 		<!-- Nav tabs -->
-		<ul class="nav" :class="'nav-' + navStyle" role="tablist">
-		  	<template v-for="t in headers">
-				<li v-if="!t._tabgroup" :class="{active:t.active, disabled:t.disabled}" @click.prevent="select(t)">
-			  		<a href="#"><slot name="header">{{t.header}}</slot></a>
+		<ul class="nav"
+		    :class="'nav-' + navStyle"
+		    role="tablist">
+			<template v-for="(t, index) in headers">
+				<li v-if="!t._tabgroup"
+				    :class="{active:t.active, disabled:t.disabled}"
+				    @click.prevent="select(t)"
+					:key="index">
+					<a href="#">
+						<slot name="header">{{t.header}}</slot>
+					</a>
 				</li>
-				<dropdown v-else :text="t.header" :class="{active:t.active}" :disabled="t.disabled">
-			  		<li v-for="tab in t.tabs" :class="{disabled:tab.disabled}"><a href="#" @click.prevent="select(tab)">{{tab.header}}</a></li>
+				<dropdown v-else
+				          :text="t.header"
+				          :class="{active:t.active}"
+				          :disabled="t.disabled"
+						  :key="index">
+					<li v-for="(tab, tabIndex) in t.tabs"
+					    :class="{disabled:tab.disabled}"
+						:key="tabIndex">
+						<a href="#"
+						   @click.prevent="select(tab)">{{tab.header}}</a>
+					</li>
 				</dropdown>
-		  	</template>
+			</template>
 		</ul>
 		<div class="tab-content">
-		  	<slot></slot>
+			<slot></slot>
 		</div>
-  	</div>
+	</div>
 </template>
 
 <script>

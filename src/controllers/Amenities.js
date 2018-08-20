@@ -3,7 +3,7 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to create a new amenity.
 	 * @function
@@ -163,7 +163,13 @@ export default ({
 	 * @param {object} amenities - The amenities to assign.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	assignAmenitiesToLocation (appId, appSecret, userToken, locationId, amenities) {
+	assignAmenitiesToLocation (
+		appId,
+		appSecret,
+		userToken,
+		locationId,
+		amenities
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
@@ -184,4 +190,4 @@ export default ({
 			})
 		})
 	}
-})
+}

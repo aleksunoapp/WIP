@@ -6,16 +6,16 @@
 		</div>
 		<!-- END PAGE BAR -->
 		<!-- BEGIN PAGE TITLE-->
-	    <h1 class="page-title">Menus</h1>
-	    <!-- END PAGE TITLE-->
+		<h1 class="page-title">Menus</h1>
+		<!-- END PAGE TITLE-->
 		<div class="note note-info">
-            <p>Manage a store's menus.</p>
-        </div>
-        <!-- BEGIN CREATE NEW MENU-->
-        <div 
-			class="portlet box blue-hoki" 
-			v-if="$root.activeLocation && $root.activeLocation.id && $root.permissions['menu_manager menus create']">
-			<div class="portlet-title bg-blue-chambray" @click="toggleCreateMenuPanel()">
+			<p>Manage a store's menus.</p>
+		</div>
+		<!-- BEGIN CREATE NEW MENU-->
+		<div class="portlet box blue-hoki"
+		     v-if="$root.activeLocation && $root.activeLocation.id && $root.permissions['menu_manager menus create']">
+			<div class="portlet-title bg-blue-chambray"
+			     @click="toggleCreateMenuPanel()">
 				<div class="custom tools">
 					<a :class="{'expand': !createMenuCollapse, 'collapse': createMenuCollapse}"></a>
 				</div>
@@ -23,355 +23,399 @@
 					&emsp;Create A New Menu
 				</div>
 			</div>
-			<div class="portlet-body" :class="{'display-hide': createMenuCollapse}">
-      			<form role="form" @submit.prevent="createNewMenu($event)">
-      				<div class="form-body row">
-      					<div class="col-md-12">
-      						<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
-      						    <button class="close" @click="clearError()"></button>
-      						    <span>{{errorMessage}}</span>
-      						</div>
-      					</div>
-		        		<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
-							<resource-picker 
-								@open="toggleImageMode('newMenu', true)"
-								@close="toggleImageMode('newMenu', false)"
-								@selected="updateImage" 
-								:imageButton="true"
-								:imageUrl="newMenu.image_url"
-								class="margin-top-15"
-							>
+			<div class="portlet-body"
+			     :class="{'display-hide': createMenuCollapse}">
+				<form role="form"
+				      @submit.prevent="createNewMenu($event)">
+					<div class="form-body row">
+						<div class="col-md-12">
+							<div class="alert alert-danger"
+							     v-show="errorMessage"
+							     ref="errorMessage">
+								<button class="close"
+								        @click="clearError()"></button>
+								<span>{{errorMessage}}</span>
+							</div>
+						</div>
+						<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
+							<resource-picker @open="toggleImageMode('newMenu', true)"
+							                 @close="toggleImageMode('newMenu', false)"
+							                 @selected="updateImage"
+							                 :imageButton="true"
+							                 :imageUrl="newMenu.image_url"
+							                 class="margin-top-15">
 							</resource-picker>
-		        		</div>
-		        		<div class="col-md-5" v-show="!imageMode.newMenu">
+						</div>
+						<div class="col-md-5"
+						     v-show="!imageMode.newMenu">
 							<div class="form-group form-md-line-input form-md-floating-label">
-							    <input type="text" class="form-control input-sm" id="form_control_2" :class="{'edited': newMenu.name.length}" v-model="newMenu.name">
-							    <label for="form_control_2">Menu Name</label>
+								<input type="text"
+								       class="form-control input-sm"
+								       id="form_control_2"
+								       :class="{'edited': newMenu.name.length}"
+								       v-model="newMenu.name">
+								<label for="form_control_2">Menu Name</label>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
-							    <input type="number" class="form-control input-sm" id="form_control_3" :class="{'edited': newMenu.order !== null}" v-model="newMenu.order">
-							    <label for="form_control_3">Menu Order</label>
+								<input type="number"
+								       class="form-control input-sm"
+								       id="form_control_3"
+								       :class="{'edited': newMenu.order !== null}"
+								       v-model="newMenu.order">
+								<label for="form_control_3">Menu Order</label>
 							</div>
-		        			<div class="form-group form-md-line-input form-md-floating-label">
-							    <input type="text" class="form-control input-sm" id="form_control_4" :class="{'edited': newMenu.desc.length}" v-model="newMenu.desc">
-							    <label for="form_control_4">Menu Description</label>
-							</div>
-		        			<div class="form-group form-md-line-input form-md-floating-label">
-							    <input type="text" class="form-control input-sm" id="form_control_5" :class="{'edited': newMenu.sku.length}" v-model="newMenu.sku">
-							    <label for="form_control_5">Menu SKU</label>
-							</div>
-		        		</div>
-		        		<div class="col-md-5" v-show="!imageMode.newMenu">
 							<div class="form-group form-md-line-input form-md-floating-label">
-				                <label>Menu Status:</label><br>
-				                <el-switch
-				                	v-model="newMenu.status"
-				                	active-color="#0c6"
-				                	inactive-color="#ff4949"
-				                	:active-value="1"
-				                	:inactive-value="0"
-				                	active-text="Active"
-				                	inactive-text="Sold Out">
-				                </el-switch>
-				            </div>
-	            			<div class="form-group form-md-line-input form-md-floating-label">
-	                            <label>Menu Type:</label><br>
-	                            <el-switch
-	                            	v-model="newMenu.catering"
-	                            	active-color="#0c6"
-	                            	inactive-color="#ff4949"
-	                            	:active-value="1"
-	                            	:inactive-value="0"
-	                            	active-text="Catering"
-	                            	inactive-text="Regular">
-	                            </el-switch>
-	                        </div>
-                			<div v-if="newMenu.catering" class="form-group form-md-line-input form-md-floating-label">
-        					    <input type="text" class="form-control input-sm" id="form_control_6" :class="{'edited': newMenu.min.length}" v-model="newMenu.min">
-        					    <label for="form_control_6">Minimum order value</label>
-        					</div>
-		        			<div v-if="newMenu.catering" class="form-group form-md-line-input form-md-floating-label">
-							    <input type="text" class="form-control input-sm" id="form_control_7" :class="{'edited': newMenu.max.length}" v-model="newMenu.max">
-							    <label for="form_control_7">Maximum order value</label>
+								<input type="text"
+								       class="form-control input-sm"
+								       id="form_control_4"
+								       :class="{'edited': newMenu.desc.length}"
+								       v-model="newMenu.desc">
+								<label for="form_control_4">Menu Description</label>
+							</div>
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<input type="text"
+								       class="form-control input-sm"
+								       id="form_control_5"
+								       :class="{'edited': newMenu.sku.length}"
+								       v-model="newMenu.sku">
+								<label for="form_control_5">Menu SKU</label>
+							</div>
+						</div>
+						<div class="col-md-5"
+						     v-show="!imageMode.newMenu">
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<label>Menu Status:</label><br>
+								<el-switch v-model="newMenu.status"
+								           active-color="#0c6"
+								           inactive-color="#ff4949"
+								           :active-value="1"
+								           :inactive-value="0"
+								           active-text="Active"
+								           inactive-text="Sold Out">
+								</el-switch>
+							</div>
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<label>Menu Type:</label><br>
+								<el-switch v-model="newMenu.catering"
+								           active-color="#0c6"
+								           inactive-color="#ff4949"
+								           :active-value="1"
+								           :inactive-value="0"
+								           active-text="Catering"
+								           inactive-text="Regular">
+								</el-switch>
+							</div>
+							<div v-if="newMenu.catering"
+							     class="form-group form-md-line-input form-md-floating-label">
+								<input type="text"
+								       class="form-control input-sm"
+								       id="form_control_6"
+								       :class="{'edited': newMenu.min.length}"
+								       v-model="newMenu.min">
+								<label for="form_control_6">Minimum order value</label>
+							</div>
+							<div v-if="newMenu.catering"
+							     class="form-group form-md-line-input form-md-floating-label">
+								<input type="text"
+								       class="form-control input-sm"
+								       id="form_control_7"
+								       :class="{'edited': newMenu.max.length}"
+								       v-model="newMenu.max">
+								<label for="form_control_7">Maximum order value</label>
 							</div>
 
-	            			<div class="form-group form-md-line-input form-md-floating-label margin-bottom-20">
-	                            <label>Is an Add-on Menu:</label><br>
-	                            <el-switch
-	                            	v-model="newMenu.addon"
-	                            	active-color="#0c6"
-	                            	inactive-color="#ff4949"
-	                            	:active-value="1"
-	                            	:inactive-value="0"
-	                            	active-text="Yes"
-	                            	inactive-text="No"
-	                            	class="margin-right-10"
-	                            >
-	                            </el-switch>
-		                        <button v-if="newMenu.addon === 1" type="submit" class="btn btn-xs blue btn-outline" @click="selectAddOnCategories(newMenu, $event)">Select add-on categories</button>
-		                        <p class="grey-label margin-top-10" v-if="newMenu.add_on.length">Selected {{newMenu.add_on.length}} <span v-if="newMenu.add_on.length === 1">category</span><span v-else>categories</span></p>
-	                        </div>
+							<div class="form-group form-md-line-input form-md-floating-label margin-bottom-20">
+								<label>Is an Add-on Menu:</label><br>
+								<el-switch v-model="newMenu.addon"
+								           active-color="#0c6"
+								           inactive-color="#ff4949"
+								           :active-value="1"
+								           :inactive-value="0"
+								           active-text="Yes"
+								           inactive-text="No"
+								           class="margin-right-10">
+								</el-switch>
+								<button v-if="newMenu.addon === 1"
+								        type="submit"
+								        class="btn btn-xs blue btn-outline"
+								        @click="selectAddOnCategories(newMenu, $event)">Select add-on categories</button>
+								<p class="grey-label margin-top-10"
+								   v-if="newMenu.add_on.length">Selected {{newMenu.add_on.length}}
+									<span v-if="newMenu.add_on.length === 1">category</span>
+									<span v-else>categories</span>
+								</p>
+							</div>
 
-							<el-date-picker 
-								v-model="newMenu.start_from" 
-								:editable="false"
-								type="date" 
-								format="yyyy-MM-dd" 
-								value-format="yyyy-MM-dd" 
-								placeholder="From"></el-date-picker>
+							<el-date-picker v-model="newMenu.start_from"
+							                :editable="false"
+							                type="date"
+							                format="yyyy-MM-dd"
+							                value-format="yyyy-MM-dd"
+							                placeholder="From"></el-date-picker>
 							-
-							<el-date-picker 
-								v-model="newMenu.stop_on" 
-								:editable="false"
-								type="date" 
-								format="yyyy-MM-dd" 
-								value-format="yyyy-MM-dd" 
-								placeholder="To"></el-date-picker>
+							<el-date-picker v-model="newMenu.stop_on"
+							                :editable="false"
+							                type="date"
+							                format="yyyy-MM-dd"
+							                value-format="yyyy-MM-dd"
+							                placeholder="To"></el-date-picker>
 
-		        		</div>
-		        	</div>
-      				<div class="form-actions right margin-top-20" v-show="!imageMode.newMenu">
-						<button 
-							type="submit" 
-							class="btn blue"
-							:disabled="creating">
+						</div>
+					</div>
+					<div class="form-actions right margin-top-20"
+					     v-show="!imageMode.newMenu">
+						<button type="submit"
+						        class="btn blue"
+						        :disabled="creating">
 							Create
-							<i 
-								v-show="creating"
-								class="fa fa-spinner fa-pulse fa-fw">
+							<i v-show="creating"
+							   class="fa fa-spinner fa-pulse fa-fw">
 							</i>
 						</button>
 					</div>
-      			</form>
-  			</div>
-        </div>
-        <!-- END CREATE NEW MENU-->
+				</form>
+			</div>
+		</div>
+		<!-- END CREATE NEW MENU-->
 
-        <div class="alert alert-info center margin-top-20" v-if="!$root.activeLocation.id">
-            <h4>No Store Selected</h4>
-            <p>Please select a store from the stores panel on the right to view its menus</p>
-        </div>
+		<div class="alert alert-info center margin-top-20"
+		     v-if="!$root.activeLocation.id">
+			<h4>No Store Selected</h4>
+			<p>Please select a store from the stores panel on the right to view its menus</p>
+		</div>
 
-        <!-- BEGIN MENUS LIST-->
-        <div v-if="$root.activeLocation && $root.activeLocation.id">
-		    <div class="portlet light portlet-fit bordered margin-top-20">
-		        <div class="portlet-title bg-blue-chambray">
-		        	<div class="menu-image-main">
-		        		<img src="../../../../static/client_logo.png">
-		        	</div>
-		            <div class="caption">
-		                <span class="caption-subject font-default bold uppercase">Menus</span>
-                        <div class="caption-desc font-grey-cascade">Click on a menu to view its categories.</div>
-		            </div>
-					<div class="btn-group-vertical pull-right" data-toggle="buttons">
-						<label class="btn blue btn-xs" :class="{'active': menuFilter === '0', 'btn-outline': menuFilter !== '0'}">
-						<input type="radio" class="toggle" v-model="menuFilter" value="0"> Regular Menus </label>
-						<label class="btn blue btn-xs" :class="{'active': menuFilter === '1', 'btn-outline': menuFilter !== '1'}">
-						<input type="radio" class="toggle" v-model="menuFilter" value="1"> Catering Menus </label>
-						<label class="btn blue btn-xs" :class="{'active': menuFilter === '2', 'btn-outline': menuFilter !== '2'}">
-						<input type="radio" class="toggle" v-model="menuFilter" value="2"> Add-on Menus </label>
+		<!-- BEGIN MENUS LIST-->
+		<div v-if="$root.activeLocation && $root.activeLocation.id">
+			<div class="portlet light portlet-fit bordered margin-top-20">
+				<div class="portlet-title bg-blue-chambray">
+					<div class="menu-image-main">
+						<img src="../../../../static/client_logo.png">
 					</div>
-		        </div>
+					<div class="caption">
+						<span class="caption-subject font-default bold uppercase">Menus</span>
+						<div class="caption-desc font-grey-cascade">Click on a menu to view its categories.</div>
+					</div>
+					<div class="btn-group-vertical pull-right"
+					     data-toggle="buttons">
+						<label class="btn blue btn-xs"
+						       :class="{'active': menuFilter === '0', 'btn-outline': menuFilter !== '0'}">
+							<input type="radio"
+							       class="toggle"
+							       v-model="menuFilter"
+							       value="0"> Regular Menus </label>
+						<label class="btn blue btn-xs"
+						       :class="{'active': menuFilter === '1', 'btn-outline': menuFilter !== '1'}">
+							<input type="radio"
+							       class="toggle"
+							       v-model="menuFilter"
+							       value="1"> Catering Menus </label>
+						<label class="btn blue btn-xs"
+						       :class="{'active': menuFilter === '2', 'btn-outline': menuFilter !== '2'}">
+							<input type="radio"
+							       class="toggle"
+							       v-model="menuFilter"
+							       value="2"> Add-on Menus </label>
+					</div>
+				</div>
 
-		        <div class="portlet-body" v-if="$root.activeLocation && $root.activeLocation.id && !displayMenuData">
+				<div class="portlet-body"
+				     v-if="$root.activeLocation && $root.activeLocation.id && !displayMenuData">
 					<div class="row">
 						<div class="col-md-12">
-							<div class="alert alert-danger" v-show="listErrorMessage.length" ref="listErrorMessage">
-								<button class="close" @click.prevent="clearError('listErrorMessage')"></button>
+							<div class="alert alert-danger"
+							     v-show="listErrorMessage.length"
+							     ref="listErrorMessage">
+								<button class="close"
+								        @click.prevent="clearError('listErrorMessage')"></button>
 								<span>{{listErrorMessage}}</span>
 							</div>
 						</div>
 					</div>
 
-					<div class="row" v-show="$root.activeLocation.is_corporate">
+					<div class="row"
+					     v-show="$root.activeLocation.is_corporate">
 						<div class="col-xs-12">
-							<el-select
-								v-if="menuTiers !== null"
-								size="small"
-								v-model="indexOfTierToDisplay"
-								placeholder="Select Tier"
-								@change="updateList()"
-								:clearable="true">
-								<el-option
-									v-for="(tier, index) in menuTiers"
-									:label="tier.name"
-									:value="index"
-									:key="tier.id">
+							<el-select v-if="menuTiers !== null"
+							           size="small"
+							           v-model="indexOfTierToDisplay"
+							           placeholder="Select Tier"
+							           @change="updateList()"
+							           :clearable="true">
+								<el-option v-for="(tier, index) in menuTiers"
+								           :label="tier.name"
+								           :value="index"
+								           :key="tier.id">
 								</el-option>
 							</el-select>
 						</div>
 					</div>
 
-			        <loading-screen :show="displayMenuData" :color="'#2C3E50'" :display="'inline'"></loading-screen>
+					<loading-screen :show="displayMenuData"
+					                :color="'#2C3E50'"
+					                :display="'inline'"></loading-screen>
 
 					<div v-if="!storeMenus.length && !displayMenuData">
-						<no-results 
-							:show="!storeMenus.length" 
-							:type="'menus'" 
-							:custom="true" 
-							:text="customText">
+						<no-results :show="!storeMenus.length"
+						            :type="'menus'"
+						            :custom="true"
+						            :text="customText">
 						</no-results>
 					</div>
 
-		            <div class="mt-element-list margin-top-15">
-		                <div class="mt-list-container list-news ext-1 no-border">
-		                    <ul>
-		                        <li 
-									class="mt-list-item margin-top-15 clickable" 
-									:class="{'animated' : animated === `menu-${menu.id}`}" 
-									v-for="menu in storeMenus" 
-									:id="'menu-' + menu.id" @click="viewMenuCategories(menu)" 
-									:key="menu.id"
-								>
-		                        	<div class="margin-bottom-15 actions-on-top">
-		                        		<el-tooltip 
-											v-if="$root.permissions['menu_manager menus update']"
-											content="Edit" 
-											effect="light" 
-											placement="top">
-			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editMenu(menu, $event)">
-		                                        <i class="fa fa-lg fa-pencil"></i>
-		                                    </a>
-	                                    </el-tooltip>
-		                        		<el-tooltip 
-											v-if="$root.permissions['menu_manager menus read'] && !$root.permissions['menu_manager menus update']"
-											content="View" 
-											effect="light" 
-											placement="top">
-			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="editMenu(menu, $event)">
-		                                        <i class="fa fa-lg fa-eye"></i>
-		                                    </a>
-	                                    </el-tooltip>
-	                                    <el-tooltip 
-											v-if="
+					<div class="mt-element-list margin-top-15">
+						<div class="mt-list-container list-news ext-1 no-border">
+							<ul>
+								<li class="mt-list-item margin-top-15 clickable"
+								    :class="{'animated' : animated === `menu-${menu.id}`}"
+								    v-for="menu in storeMenus"
+								    :id="'menu-' + menu.id"
+								    @click="viewMenuCategories(menu)"
+								    :key="menu.id">
+									<div class="margin-bottom-15 actions-on-top">
+										<el-tooltip v-if="$root.permissions['menu_manager menus update']"
+										            content="Edit"
+										            effect="light"
+										            placement="top">
+											<a class="btn btn-circle btn-icon-only btn-default"
+											   @click="editMenu(menu, $event)">
+												<i class="fa fa-lg fa-pencil"></i>
+											</a>
+										</el-tooltip>
+										<el-tooltip v-if="$root.permissions['menu_manager menus read'] && !$root.permissions['menu_manager menus update']"
+										            content="View"
+										            effect="light"
+										            placement="top">
+											<a class="btn btn-circle btn-icon-only btn-default"
+											   @click="editMenu(menu, $event)">
+												<i class="fa fa-lg fa-eye"></i>
+											</a>
+										</el-tooltip>
+										<el-tooltip v-if="
 												$root.permissions['menu_manager menus menu_hours read'] ||
 												$root.permissions['menu_manager menus menu_hours create'] ||
 												$root.permissions['menu_manager menus menu_hours update']
 											"
-											content="Menu Hours" 
-											effect="light" 
-											placement="top">
-		                                    <a class="btn btn-circle btn-icon-only btn-default" @click="showMenuHours(menu, $event)">
-		                                        <i class="fa fa-lg fa-clock-o"></i>
-		                                    </a>
-	                                    </el-tooltip>
-	                                    <el-tooltip 
-											v-if="$root.permissions['add category addons']"
-											content="Apply Add-on Category" 
-											effect="light" 
-											placement="top">
-		                                    <a class="btn btn-circle btn-icon-only btn-default" @click="applyAddOnCategories(menu, $event)" v-if="menuFilter !== '2'">
-		                                        <i class="icon-layers"></i>
-		                                    </a>
-	                                    </el-tooltip>
-										<el-tooltip 
-											v-if="$root.permissions['menu_manager menus update'] && $root.activeLocation.is_corporate"
-											content="Duplicate" 
-											effect="light" 
-											placement="top">
-			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="duplicateMenu(menu, $event)">
-		                                        <i class="fa fa-lg fa-clone"></i>
-		                                    </a>
-	                                    </el-tooltip>
-										<el-tooltip 
-											v-if="$root.activeLocation.is_corporate && $root.permissions['menu_manager menus update']"
-											content="Copy" 
-											effect="light" 
-											placement="top">
-			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="copyMenu(menu, $event)">
-		                                        <i class="fa fa-lg fa-files-o"></i>
-		                                    </a>
-	                                    </el-tooltip>
-	                                    <el-tooltip 
-											v-if="$root.permissions['menu_manager menus delete']"
-											content="Delete" 
-											effect="light" 
-											placement="top">
-			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="deleteMenu(menu, $event)">
-		                                        <i class="fa fa-lg fa-trash"></i>
-		                                    </a>
-	                                    </el-tooltip>
-		                        	</div>
-		                        	<div class="list-icon-container">
-                                        <i class="fa fa-angle-right"></i>
-                                    </div>
-		                            <div class="list-thumb">
-		                                <a v-if="menu.image_url.length">
-		                                    <img alt="" :src="menu.image_url" />
-		                                </a>
-		                                <a v-else>
-		                                	<img src="../../../assets/img/app/image-placeholder.png">
-		                                </a>
-		                            </div>
-		                            <div class="list-datetime bold uppercase font-red">
-		                            	<span>{{ menu.name }}</span>
-		                            </div>
-		                            <div class="list-item-content row">
-		                            	<div class="col-md-4">
-		                            		<strong>Description:</strong>
-		                            		<span>{{ menu.desc }}</span><br>
-		                            		<strong>Status:</strong>
-		                            		<span v-if="menu.status == 1">Available</span>
-		                            		<span v-if="menu.status == 0">Sold Out</span>
-		                            	</div>
-		                            	<div class="col-md-4" v-show="menu.start_from || menu.stop_on">
-		                            		<strong>From:</strong>
-		                            		<span>{{ menu.start_from }}</span><br>
-		                            		<strong>To:</strong>
-		                            		<span>{{ menu.stop_on }}</span><br>
-		                            	</div>
-		                            </div>
-		                        </li>
-		                    </ul>
-		                </div>
-		            </div>
-		        </div>
-		    </div>
-        </div>
-        <!-- END MENUS LIST-->
+										            content="Menu Hours"
+										            effect="light"
+										            placement="top">
+											<a class="btn btn-circle btn-icon-only btn-default"
+											   @click="showMenuHours(menu, $event)">
+												<i class="fa fa-lg fa-clock-o"></i>
+											</a>
+										</el-tooltip>
+										<el-tooltip v-if="$root.permissions['add category addons']"
+										            content="Apply Add-on Category"
+										            effect="light"
+										            placement="top">
+											<a class="btn btn-circle btn-icon-only btn-default"
+											   @click="applyAddOnCategories(menu, $event)"
+											   v-if="menuFilter !== '2'">
+												<i class="icon-layers"></i>
+											</a>
+										</el-tooltip>
+										<el-tooltip v-if="$root.permissions['menu_manager menus update'] && $root.activeLocation.is_corporate"
+										            content="Duplicate"
+										            effect="light"
+										            placement="top">
+											<a class="btn btn-circle btn-icon-only btn-default"
+											   @click="duplicateMenu(menu, $event)">
+												<i class="fa fa-lg fa-clone"></i>
+											</a>
+										</el-tooltip>
+										<el-tooltip v-if="$root.activeLocation.is_corporate && $root.permissions['menu_manager menus update']"
+										            content="Copy"
+										            effect="light"
+										            placement="top">
+											<a class="btn btn-circle btn-icon-only btn-default"
+											   @click="copyMenu(menu, $event)">
+												<i class="fa fa-lg fa-files-o"></i>
+											</a>
+										</el-tooltip>
+										<el-tooltip v-if="$root.permissions['menu_manager menus delete']"
+										            content="Delete"
+										            effect="light"
+										            placement="top">
+											<a class="btn btn-circle btn-icon-only btn-default"
+											   @click="deleteMenu(menu, $event)">
+												<i class="fa fa-lg fa-trash"></i>
+											</a>
+										</el-tooltip>
+									</div>
+									<div class="list-icon-container">
+										<i class="fa fa-angle-right"></i>
+									</div>
+									<div class="list-thumb">
+										<a v-if="menu.image_url.length">
+											<img alt=""
+											     :src="menu.image_url" />
+										</a>
+										<a v-else>
+											<img src="../../../assets/img/app/image-placeholder.png">
+										</a>
+									</div>
+									<div class="list-datetime bold uppercase font-red">
+										<span>{{ menu.name }}</span>
+									</div>
+									<div class="list-item-content row">
+										<div class="col-md-4">
+											<strong>Description:</strong>
+											<span>{{ menu.desc }}</span><br>
+											<strong>Status:</strong>
+											<span v-if="menu.status == 1">Available</span>
+											<span v-if="menu.status == 0">Sold Out</span>
+										</div>
+										<div class="col-md-4"
+										     v-show="menu.start_from || menu.stop_on">
+											<strong>From:</strong>
+											<span>{{ menu.start_from }}</span><br>
+											<strong>To:</strong>
+											<span>{{ menu.stop_on }}</span><br>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- END MENUS LIST-->
 
-        <apply-add-on-categories 
-			v-if="addOnCategoriesModalActive" 
-			:passedMenu="passedMenu" 
-			@closeAddOnCategoriesModal="closeAddOnCategoriesModal" 
-			@updateAddOnCategories="updateAddOnCategories">
+		<apply-add-on-categories v-if="addOnCategoriesModalActive"
+		                         :passedMenu="passedMenu"
+		                         @closeAddOnCategoriesModal="closeAddOnCategoriesModal"
+		                         @updateAddOnCategories="updateAddOnCategories">
 		</apply-add-on-categories>
 
-        <edit-menu 
-			v-if="editMenuModalActive" 
-			:passedMenuId="passedMenuId" 
-			@closeEditMenuModal="closeEditMenuModal" 
-			@updateMenu="updateMenu">
+		<edit-menu v-if="editMenuModalActive"
+		           :passedMenuId="passedMenuId"
+		           @closeEditMenuModal="closeEditMenuModal"
+		           @updateMenu="updateMenu">
 		</edit-menu>
 
-		<menu-hours 
-			v-if="menuHoursModalActive" 
-			@closeHoursModal="closeMenuHoursModal" 
-			:menu="menuToAssignHoursTo"
-		>
+		<menu-hours v-if="menuHoursModalActive"
+		            @closeHoursModal="closeMenuHoursModal"
+		            :menu="menuToAssignHoursTo">
 		</menu-hours>
 
-		<duplicate-menu 
-			v-if="duplicateMenuModalActive" 
-			:passedMenuId="passedMenuId" 
-			@closeDuplicateMenuModal="closeDuplicateMenuModal" 
-			@duplicateSuccess="confirmDuplicateSuccess">
+		<duplicate-menu v-if="duplicateMenuModalActive"
+		                :passedMenuId="passedMenuId"
+		                @closeDuplicateMenuModal="closeDuplicateMenuModal"
+		                @duplicateSuccess="confirmDuplicateSuccess">
 		</duplicate-menu>
 
-		<copy-menu 
-			v-if="copyMenuModalActive" 
-			:passedMenuId="passedMenuId" 
-			@closeCopyMenuModal="closeCopyMenuModal" 
-			@copySuccess="confirmCopySuccess">
+		<copy-menu v-if="copyMenuModalActive"
+		           :passedMenuId="passedMenuId"
+		           @closeCopyMenuModal="closeCopyMenuModal"
+		           @copySuccess="confirmCopySuccess">
 		</copy-menu>
 
-        <delete-menu 
-			v-if="deleteMenuModalActive" 
-			:passedMenuId="passedMenuId" 
-			@closeDeleteMenuModal="closeDeleteMenuModal" 
-			@deleteMenuAndCloseModal="deleteMenuAndCloseModal">
+		<delete-menu v-if="deleteMenuModalActive"
+		             :passedMenuId="passedMenuId"
+		             @closeDeleteMenuModal="closeDeleteMenuModal"
+		             @deleteMenuAndCloseModal="deleteMenuAndCloseModal">
 		</delete-menu>
-  	</div>
+	</div>
 </template>
 
 <script>
@@ -396,8 +440,8 @@ export default {
 	data () {
 		return {
 			breadcrumbArray: [
-				{name: 'Menu Manager', link: false},
-				{name: 'Menus', link: false}
+				{ name: 'Menu Manager', link: false },
+				{ name: 'Menus', link: false }
 			],
 			storeMenus: [],
 			displayMenuData: false,
@@ -467,7 +511,7 @@ export default {
 		this.getMenuTiers()
 	},
 	methods: {
-        /**
+		/**
 		 * To update the modifiers shown in the list based on user's filter selection
 		 * @function
 		 * @returns {undefined}
@@ -479,7 +523,7 @@ export default {
 				this.getStoreMenus()
 			}
 		},
-        /**
+		/**
 		 * To fetch a list of modifiers for a tier
 		 * @function
 		 * @returns {object} - A network call promise
@@ -487,16 +531,18 @@ export default {
 		getMenuTierDetails () {
 			let menusVue = this
 			const tier = menusVue.menuTiers[menusVue.indexOfTierToDisplay]
-			return MenuTiersFunctions.getTierMenus(tier.id).then(response => {
-				menusVue.storeMenus = response.payload
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorName: 'listErrorMessage',
-					errorText: 'We couldn\'t fetch modifiers for this tier',
-					vue: menusVue
+			return MenuTiersFunctions.getTierMenus(tier.id)
+				.then(response => {
+					menusVue.storeMenus = response.payload
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorName: 'listErrorMessage',
+						errorText: "We couldn't fetch modifiers for this tier",
+						vue: menusVue
+					})
+				})
 		},
 		/**
 		 * To fetch a list of Menu Tiers
@@ -505,16 +551,18 @@ export default {
 		 */
 		getMenuTiers () {
 			let menusVue = this
-			return MenuTiersFunctions.getMenuTiers().then(response => {
-				menusVue.menuTiers = response.payload
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorName: 'listErrorMessage',
-					errorText: 'We couldn\'t fetch modifier tiers',
-					vue: menusVue
+			return MenuTiersFunctions.getMenuTiers()
+				.then(response => {
+					menusVue.menuTiers = response.payload
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorName: 'listErrorMessage',
+						errorText: "We couldn't fetch modifier tiers",
+						vue: menusVue
+					})
+				})
 		},
 		/**
 		 * To display the modal for copying menus.
@@ -639,21 +687,28 @@ export default {
 				catering: this.menuFilter === '1' ? 1 : 0,
 				addon: this.menuFilter === '2' ? 1 : 0
 			}
-			return MenusFunctions.getStoreMenus(menusVue.$root.appId, menusVue.$root.appSecret, menusVue.$root.activeLocation.id, params).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					menusVue.displayMenuData = false
-					menusVue.storeMenus = response.payload
-				} else {
-					menusVue.displayMenuData = false
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorName: 'listErrorMessage',
-					errorText: 'We could not fetch menus',
-					vue: menusVue
+			return MenusFunctions.getStoreMenus(
+				menusVue.$root.appId,
+				menusVue.$root.appSecret,
+				menusVue.$root.activeLocation.id,
+				params
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						menusVue.displayMenuData = false
+						menusVue.storeMenus = response.payload
+					} else {
+						menusVue.displayMenuData = false
+					}
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorName: 'listErrorMessage',
+						errorText: 'We could not fetch menus',
+						vue: menusVue
+					})
+				})
 		},
 		/**
 		 * To route to the categories page for the selected menu.
@@ -782,11 +837,14 @@ export default {
 				text: 'Menu has been successfully created!',
 				type: 'success',
 				confirmButtonText: 'OK'
-			}).then(() => {
-				// do nothing
-			}, dismiss => {
-				// do nothing
-			})
+			}).then(
+				() => {
+					// do nothing
+				},
+				dismiss => {
+					// do nothing
+				}
+			)
 		},
 		/**
 		 * To update the menu object emitted by the child.
@@ -804,7 +862,11 @@ export default {
 			}
 			var done = false
 			for (let i = 0; i < this.storeMenus.length; i++) {
-				if (parseInt(this.storeMenus[i].order) < parseInt(val.order) || (parseInt(this.storeMenus[i].order) === parseInt(val.order) && parseInt(this.storeMenus[i].id) > parseInt(val.id))) {
+				if (
+					parseInt(this.storeMenus[i].order) < parseInt(val.order) ||
+					(parseInt(this.storeMenus[i].order) === parseInt(val.order) &&
+						parseInt(this.storeMenus[i].id) > parseInt(val.id))
+				) {
 					this.storeMenus.splice(i, 0, val)
 					done = true
 					break
@@ -828,9 +890,9 @@ export default {
 		 */
 		updateAddOnCategories (val) {
 			if (this.passedMenu.id === 'new') {
-				val.forEach((item) => this.newMenu.addon.push(item.addon_category_id))
+				val.forEach(item => this.newMenu.addon.push(item.addon_category_id))
 			} else {
-				this.storeMenus.forEach((menu) => {
+				this.storeMenus.forEach(menu => {
 					if (menu.id === this.passedMenu.id) {
 						menu.add_on = val
 					}
@@ -862,13 +924,25 @@ export default {
 					reject('Menu description cannot be blank')
 				} else if (!createMenuVue.newMenu.sku.length) {
 					reject('Menu SKU cannot be blank')
-				} else if (createMenuVue.newMenu.start_from.length && !createMenuVue.newMenu.stop_on.length) {
+				} else if (
+					createMenuVue.newMenu.start_from.length &&
+					!createMenuVue.newMenu.stop_on.length
+				) {
 					reject('Please provide an end date')
-				} else if (!createMenuVue.newMenu.start_from.length && createMenuVue.newMenu.stop_on.length) {
+				} else if (
+					!createMenuVue.newMenu.start_from.length &&
+					createMenuVue.newMenu.stop_on.length
+				) {
 					reject('Please provide a start date')
-				} else if (createMenuVue.newMenu.catering && !createMenuVue.newMenu.min) {
+				} else if (
+					createMenuVue.newMenu.catering &&
+					!createMenuVue.newMenu.min
+				) {
 					reject('Minimum order value cannot be blank')
-				} else if (createMenuVue.newMenu.catering && !createMenuVue.newMenu.max) {
+				} else if (
+					createMenuVue.newMenu.catering &&
+					!createMenuVue.newMenu.max
+				) {
 					reject('Maximum order value cannot be blank')
 				}
 				resolve('Hurray')
@@ -884,34 +958,45 @@ export default {
 			var createMenuVue = this
 			createMenuVue.clearError()
 
-			return createMenuVue.validateMenuData()
-			.then(response => {
-				createMenuVue.creating = true
-				createMenuVue.newMenu.location_id = createMenuVue.$root.activeLocation.id
-				MenusFunctions.createNewMenu(createMenuVue.newMenu, createMenuVue.$root.appId, createMenuVue.$root.appSecret, createMenuVue.$root.userToken).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						createMenuVue.getStoreMenus()
-						createMenuVue.clearNewMenu()
-						createMenuVue.showAlert()
-					} else {
-						createMenuVue.errorMessage = response.message
-					}
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorName: 'errorMessage',
-						errorText: 'We could not create the menu',
-						vue: createMenuVue
-					})
-				}).finally(() => {
-					createMenuVue.creating = false
+			return createMenuVue
+				.validateMenuData()
+				.then(response => {
+					createMenuVue.creating = true
+					createMenuVue.newMenu.location_id =
+						createMenuVue.$root.activeLocation.id
+					MenusFunctions.createNewMenu(
+						createMenuVue.newMenu,
+						createMenuVue.$root.appId,
+						createMenuVue.$root.appSecret,
+						createMenuVue.$root.userToken
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								createMenuVue.getStoreMenus()
+								createMenuVue.clearNewMenu()
+								createMenuVue.showAlert()
+							} else {
+								createMenuVue.errorMessage = response.message
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorName: 'errorMessage',
+								errorText: 'We could not create the menu',
+								vue: createMenuVue
+							})
+						})
+						.finally(() => {
+							createMenuVue.creating = false
+						})
 				})
-			}).catch(reason => {
-				// If validation fails then display the error message
-				createMenuVue.errorMessage = reason
-				window.scrollTo(0, 0)
-				throw reason
-			})
+				.catch(reason => {
+					// If validation fails then display the error message
+					createMenuVue.errorMessage = reason
+					window.scrollTo(0, 0)
+					throw reason
+				})
 		},
 		/**
 		 * To clear the current error.
@@ -958,28 +1043,28 @@ export default {
 
 <style scoped>
 .height-mod {
-	min-height: 60px;
+  min-height: 60px;
 }
 .mt-element-list .list-news.mt-list-container.no-border {
-	border: none;
+  border: none;
 }
 .clickable {
-	cursor: pointer;
+  cursor: pointer;
 }
 .green {
-	color: rgba(46, 204, 64, .8);
+  color: rgba(46, 204, 64, 0.8);
 }
-.portlet>.portlet-title>.tools.custom {
-	float: left;
+.portlet > .portlet-title > .tools.custom {
+  float: left;
 }
 .actions-on-top {
-	margin-top: -5px;
+  margin-top: -5px;
 }
 .animated {
-	animation: listItemHighlight 1s 2 ease-in-out both;
+  animation: listItemHighlight 1s 2 ease-in-out both;
 }
 .grey-label {
-	margin-top: 5px;
-	color: rgb(153, 153, 153);
+  margin-top: 5px;
+  color: rgb(153, 153, 153);
 }
 </style>

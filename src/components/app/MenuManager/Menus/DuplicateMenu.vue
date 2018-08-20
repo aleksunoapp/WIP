@@ -1,18 +1,28 @@
 <template>
-	<modal :show="showDuplicateMenuModal" effect="fade" @closeOnEscape="closeModal">
-		<div slot="modal-header" class="modal-header center">
-			<button type="button" class="close" @click="closeModal()">
+	<modal :show="showDuplicateMenuModal"
+	       effect="fade"
+	       @closeOnEscape="closeModal">
+		<div slot="modal-header"
+		     class="modal-header center">
+			<button type="button"
+			        class="close"
+			        @click="closeModal()">
 				<span>&times;</span>
 			</button>
-            <h4 class="modal-title center">Duplicate Menu</h4>
+			<h4 class="modal-title center">Duplicate Menu</h4>
 		</div>
-		<div slot="modal-body" class="modal-body">
+		<div slot="modal-body"
+		     class="modal-body">
 			<div class="row">
 				<div class="col-xs-12">
-					<div class="alert alert-danger" v-show="errorMessage.length" ref="errorMessage">
-					    <button class="close" data-close="alert" @click="clearError()"></button>
-					    <span>{{errorMessage}}</span>
-					</div>					
+					<div class="alert alert-danger"
+					     v-show="errorMessage.length"
+					     ref="errorMessage">
+						<button class="close"
+						        data-close="alert"
+						        @click="clearError()"></button>
+						<span>{{errorMessage}}</span>
+					</div>
 				</div>
 			</div>
 			<div class="row">
@@ -20,14 +30,13 @@
 					<p>Do you want to duplicate this menu?</p>
 					<div class="form-group form-md-line-input form-md-floating-label">
 						<label>Replace existing?</label><br>
-						<el-switch
-							v-model="replaceExisting"
-							active-color="#0c6"
-							inactive-color="#ff4949"
-							:active-value="1"
-							:inactive-value="0"
-							active-text="Yes"
-							inactive-text="No">
+						<el-switch v-model="replaceExisting"
+						           active-color="#0c6"
+						           inactive-color="#ff4949"
+						           :active-value="1"
+						           :inactive-value="0"
+						           active-text="Yes"
+						           inactive-text="No">
 						</el-switch>
 					</div>
 				</div>
@@ -35,14 +44,12 @@
 			<div class="row">
 				<div class="col-xs-12">
 					<div class="pull-right">
-						<button 
-							class="btn blue" 
-							@click="duplicateMenu()"
-							:disabled="duplicating">
+						<button class="btn blue"
+						        @click="duplicateMenu()"
+						        :disabled="duplicating">
 							Duplicate
-							<i 
-								v-show="duplicating"
-								class="fa fa-spinner fa-pulse fa-fw">
+							<i v-show="duplicating"
+							   class="fa fa-spinner fa-pulse fa-fw">
 							</i>
 						</button>
 					</div>
@@ -104,18 +111,26 @@ export default {
 				replace_existing: this.replaceExisting
 			}
 
-			MenusFunctions.duplicateMenu(payload, editMenuVue.$root.appId, editMenuVue.$root.appSecret, editMenuVue.$root.userToken).then(response => {
-				this.emitDuplicateSuccess()
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not duplicate the menu',
-					errorName: 'errorMessage',
-					vue: editMenuVue
+			MenusFunctions.duplicateMenu(
+				payload,
+				editMenuVue.$root.appId,
+				editMenuVue.$root.appSecret,
+				editMenuVue.$root.userToken
+			)
+				.then(response => {
+					this.emitDuplicateSuccess()
 				})
-			}).finally(() => {
-				editMenuVue.duplicating = false
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not duplicate the menu',
+						errorName: 'errorMessage',
+						vue: editMenuVue
+					})
+				})
+				.finally(() => {
+					editMenuVue.duplicating = false
+				})
 		},
 		/**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
@@ -141,24 +156,24 @@ export default {
 </script>
 <style scoped>
 .select-locations-popup-container {
-	min-height: 200px;
-	max-height: calc(100vh - 60px);
-    overflow-x: hidden;
-    overflow-y: auto;
+  min-height: 200px;
+  max-height: calc(100vh - 60px);
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 .dropdown-menu {
-	max-height: 300px;
-	overflow-y: auto;
+  max-height: 300px;
+  overflow-y: auto;
 }
 .locations-container {
-	min-height: 200px;
-	max-height: calc(100vh - 400px);
-    overflow-x: hidden;
-    overflow-y: auto;
+  min-height: 200px;
+  max-height: calc(100vh - 400px);
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 .form-md-line-input-trimmed {
-	padding-top:0 !important;
-	margin-bottom:0 !important;
+  padding-top: 0 !important;
+  margin-bottom: 0 !important;
 }
 </style>
 

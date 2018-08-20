@@ -97,7 +97,7 @@
 									</button>
 								</div>
 								<p class="grey-label margin-left-5"
-									v-if="newPromoCode.sku.length">Selected
+								   v-if="newPromoCode.sku.length">Selected
 									<span>{{ newPromoCode.sku.length }}</span> item
 									<span v-if="newPromoCode.sku.length !== 1">s</span>
 								</p>
@@ -469,7 +469,9 @@ export default {
 		 */
 		randomString (length, chars) {
 			var result = ''
-			for (var i = length; i > 0; --i)				{ result += chars[Math.floor(Math.random() * chars.length)] }
+			for (var i = length; i > 0; --i) {
+				result += chars[Math.floor(Math.random() * chars.length)]
+			}
 			return result
 		},
 		/**

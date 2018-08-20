@@ -1,10 +1,21 @@
 <template>
-  <label :class="[isButton?'btn btn-'+typeColor:'open checkbox '+typeColor,{active:checked,disabled:disabled,readonly:readonly}]" @click.prevent="toggle">
-	<input type="checkbox" autocomplete="off" ref='input' :checked="active" :value="value" :name="name" :readonly="readonly" :disabled="disabled"/>
-	<span v-if="!isButton" class="icon dropdown-toggle" :class="[active?'btn-'+typeColor:'',{bg:typeColor==='default'}]"></span>
-	<span v-if="!isButton&active&&typeColor==='default'" class="icon"></span>
-	<slot></slot>
-  </label>
+	<label :class="[isButton?'btn btn-'+typeColor:'open checkbox '+typeColor,{active:checked,disabled:disabled,readonly:readonly}]"
+	       @click.prevent="toggle">
+		<input type="checkbox"
+		       autocomplete="off"
+		       ref='input'
+		       :checked="active"
+		       :value="value"
+		       :name="name"
+		       :readonly="readonly"
+		       :disabled="disabled" />
+		<span v-if="!isButton"
+		      class="icon dropdown-toggle"
+		      :class="[active?'btn-'+typeColor:'',{bg:typeColor==='default'}]"></span>
+		<span v-if="!isButton&active&&typeColor==='default'"
+		      class="icon"></span>
+		<slot></slot>
+	</label>
 </template>
 
 <script>
@@ -41,7 +52,9 @@ export default {
 	},
 	computed: {
 		active () {
-			return typeof this.value !== 'boolean' && this.group ? ~this.$parent.value.indexOf(this.value) : this.checked === this.value
+			return typeof this.value !== 'boolean' && this.group
+				? ~this.$parent.value.indexOf(this.value)
+				: this.checked === this.value
 		},
 		isButton () {
 			return this.button || (this.group && this.$parent.buttons)
@@ -50,7 +63,7 @@ export default {
 			return this.$parent && this.$parent._checkboxGroup
 		},
 		typeColor () {
-			return (this.type || (this.$parent && this.$parent.type)) || 'default'
+			return this.type || (this.$parent && this.$parent.type) || 'default'
 		}
 	},
 	watch: {
@@ -132,15 +145,15 @@ label.checkbox > input {
 }
 label.checkbox > .icon {
   position: absolute;
-  top: .2rem;
+  top: 0.2rem;
   left: 0;
   display: block;
   width: 1.4rem;
   height: 1.4rem;
-  line-height:1rem;
+  line-height: 1rem;
   text-align: center;
   user-select: none;
-  border-radius: .35rem;
+  border-radius: 0.35rem;
   background-repeat: no-repeat;
   background-position: center center;
   background-size: 50% 50%;
@@ -152,23 +165,26 @@ label.checkbox:not(.active) > .icon {
 label.checkbox > input:focus ~ .icon {
   outline: 0;
   border: 1px solid #66afe9;
-  box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+    0 0 8px rgba(102, 175, 233, 0.6);
 }
 label.checkbox.active > .icon {
   background-size: 1rem 1rem;
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNyIgaGVpZ2h0PSI3Ij48cGF0aCBmaWxsPSIjZmZmIiBkPSJtNS43MywwLjUybC0zLjEyNDIyLDMuMzQxNjFsLTEuMzM4OTUsLTEuNDMyMTJsLTEuMjQ5NjksMS4zMzY2NWwyLjU4ODYzLDIuNzY4NzZsNC4zNzM5LC00LjY3ODI2bC0xLjI0OTY5LC0xLjMzNjY1bDAsMGwwLjAwMDAyLDAuMDAwMDF6Ii8+PC9zdmc+);
 }
-label.checkbox.active .btn-default { filter: brightness(75%); }
+label.checkbox.active .btn-default {
+  filter: brightness(75%);
+}
 label.checkbox.disabled,
 label.checkbox.readonly,
 .btn.readonly {
   filter: alpha(opacity=65);
   box-shadow: none;
-  opacity: .65;
+  opacity: 0.65;
 }
-label.btn > input[type=checkbox] {
+label.btn > input[type="checkbox"] {
   position: absolute;
-  clip: rect(0,0,0,0);
+  clip: rect(0, 0, 0, 0);
   pointer-events: none;
 }
 </style>

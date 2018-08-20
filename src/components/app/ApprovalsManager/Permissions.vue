@@ -10,8 +10,10 @@
 			</div>
 
 			<!-- CREATE NEW START -->
-			<div class="portlet box blue-hoki margin-top-20" v-if="$root.permissions['create permission']">
-				<div class="portlet-title bg-blue-chambray" @click="toggleCreatePermissionPanel()">
+			<div class="portlet box blue-hoki margin-top-20"
+			     v-if="$root.permissions['create permission']">
+				<div class="portlet-title bg-blue-chambray"
+				     @click="toggleCreatePermissionPanel()">
 					<div class="caption">
 						<i class="fa fa-plus-circle"></i>
 						Create New Permission
@@ -20,30 +22,39 @@
 						<a :class="{'expand': !createCollapse, 'collapse': createCollapse}"></a>
 					</div>
 				</div>
-				<div class="portlet-body" v-show="!createCollapse">
-					<form role="form" @submit.prevent="createPermission()">
+				<div class="portlet-body"
+				     v-show="!createCollapse">
+					<form role="form"
+					      @submit.prevent="createPermission()">
 						<div class="row">
 							<div class="col-md-12">
-								<div class="alert alert-danger" v-show="createErrorMessage.length" ref="createErrorMessage">
-									<button class="close" data-close="alert" @click.prevent="clearCreateError()"></button>
+								<div class="alert alert-danger"
+								     v-show="createErrorMessage.length"
+								     ref="createErrorMessage">
+									<button class="close"
+									        data-close="alert"
+									        @click.prevent="clearCreateError()"></button>
 									<span>{{createErrorMessage}}</span>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group form-md-line-input form-md-floating-label">
-									<input ref="newPermissionName" type="text" class="form-control input-sm" id="form_control_name" v-model="newPermission.name" :class="{'edited': newPermission.name.length}">
+									<input ref="newPermissionName"
+									       type="text"
+									       class="form-control input-sm"
+									       id="form_control_name"
+									       v-model="newPermission.name"
+									       :class="{'edited': newPermission.name.length}">
 									<label for="form_control_name">Name</label>
 								</div>
-								<button 
-									type="submit" 
-									class="btn blue pull-right"
-									:disabled="creating">
+								<button type="submit"
+								        class="btn blue pull-right"
+								        :disabled="creating">
 									Create
-									<i 
-										v-show="creating"
-										class="fa fa-spinner fa-pulse fa-fw">
+									<i v-show="creating"
+									   class="fa fa-spinner fa-pulse fa-fw">
 									</i>
-								</button>	
+								</button>
 							</div>
 						</div>
 					</form>
@@ -52,9 +63,11 @@
 			<!-- CREATE NEW END -->
 
 			<!-- SEARCH START -->
-			<div class="margin-top-20" v-if="permissions.length">
+			<div class="margin-top-20"
+			     v-if="permissions.length">
 				<div class="portlet box blue-hoki">
-					<div class="portlet-title" @click="toggleSearchPanel()">
+					<div class="portlet-title"
+					     @click="toggleSearchPanel()">
 						<div class="caption">
 							<i class="fa fa-search"></i>
 							Search Panel
@@ -63,26 +76,38 @@
 							<a :class="{'expand': !searchCollapse, 'collapse': searchCollapse}"></a>
 						</div>
 					</div>
-					<div class="portlet-body" v-show="!searchCollapse">
-						<form role="form" @submit.prevent="advancedSearch()">
+					<div class="portlet-body"
+					     v-show="!searchCollapse">
+						<form role="form"
+						      @submit.prevent="advancedSearch()">
 							<div class="form-body row">
 								<div class="col-md-12">
-									<div class="alert alert-danger" v-if="searchError.length">
-										<button class="close" data-close="alert" @click.prevent="clearSearchError()"></button>
+									<div class="alert alert-danger"
+									     v-if="searchError.length">
+										<button class="close"
+										        data-close="alert"
+										        @click.prevent="clearSearchError()"></button>
 										<span>{{searchError}}</span>
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="form-group form-md-line-input form-md-floating-label">
-										<input ref="search" type="text" class="form-control input-sm" :class="{'edited': searchTerm.length}" v-model="searchTerm">
+										<input ref="search"
+										       type="text"
+										       class="form-control input-sm"
+										       :class="{'edited': searchTerm.length}"
+										       v-model="searchTerm">
 										<label for="search_options_search">Search</label>
 										<span class="help-block persist">Search by name.</span>
 									</div>
 								</div>
 							</div>
 							<div class="form-actions right margin-top-20">
-								<button type="button" class="btn btn-default" @click.prevent="resetSearch()"> Reset Search</button>
-								<button type="submit" class="btn blue">Search</button>
+								<button type="button"
+								        class="btn btn-default"
+								        @click.prevent="resetSearch()"> Reset Search</button>
+								<button type="submit"
+								        class="btn blue">Search</button>
 							</div>
 						</form>
 					</div>
@@ -91,7 +116,9 @@
 			<!-- SEARCH END -->
 
 			<!-- LIST START -->
-			<loading-screen :show="loading" :color="'#2C3E50'" :display="'inline'"></loading-screen>
+			<loading-screen :show="loading"
+			                :color="'#2C3E50'"
+			                :display="'inline'"></loading-screen>
 			<div v-if="permissions.length && !loading && !filteredResults.length">
 				<div class="portlet light portlet-fit bordered margin-top-20">
 					<div class="portlet-title bg-blue-chambray">
@@ -104,53 +131,74 @@
 						</div>
 					</div>
 					<div class="portlet-body">
-						<div class="clearfix margin-bottom-10" v-if="permissions.length">
-							<el-dropdown trigger="click" @command="updateSortByOrder" size="mini" :show-timeout="50" :hide-timeout="50">
+						<div class="clearfix margin-bottom-10"
+						     v-if="permissions.length">
+							<el-dropdown trigger="click"
+							             @command="updateSortByOrder"
+							             size="mini"
+							             :show-timeout="50"
+							             :hide-timeout="50">
 								<el-button size="mini">
 									Sort by
 									<span>
-										<i class="fa fa-sort-alpha-asc" v-if="sortBy.order === 'ASC'"></i>
-										<i class="fa fa-sort-alpha-desc" v-if="sortBy.order === 'DESC'"></i>
+										<i class="fa fa-sort-alpha-asc"
+										   v-if="sortBy.order === 'ASC'"></i>
+										<i class="fa fa-sort-alpha-desc"
+										   v-if="sortBy.order === 'DESC'"></i>
 									</span>
 									<i class="el-icon-arrow-down el-icon--right"></i>
 								</el-button>
 								<el-dropdown-menu slot="dropdown">
-									<el-dropdown-item command="ASC"><i class="fa fa-sort-alpha-asc"></i></el-dropdown-item>
-									<el-dropdown-item command="DESC"><i class="fa fa-sort-alpha-desc"></i></el-dropdown-item>
+									<el-dropdown-item command="ASC">
+										<i class="fa fa-sort-alpha-asc"></i>
+									</el-dropdown-item>
+									<el-dropdown-item command="DESC">
+										<i class="fa fa-sort-alpha-desc"></i>
+									</el-dropdown-item>
 								</el-dropdown-menu>
 							</el-dropdown>
-							<page-results class="pull-right" :totalResults="permissions.length" :activePage="activePage" @pageResults="pageResultsUpdate"></page-results>
+							<page-results class="pull-right"
+							              :totalResults="permissions.length"
+							              :activePage="activePage"
+							              @pageResults="pageResultsUpdate"></page-results>
 						</div>
 						<div class="mt-element-list">
 							<div class="mt-list-container list-news">
 								<ul>
-									<li class="mt-list-item actions-at-left margin-top-15" v-for="permission in currentActivePageItems" :id="'permission-' + permission.id" :class="{'animated' : animated === `permission-${permission.id}`}" :key="permission.id">
+									<li class="mt-list-item actions-at-left margin-top-15"
+									    v-for="permission in currentActivePageItems"
+									    :id="'permission-' + permission.id"
+									    :class="{'animated' : animated === `permission-${permission.id}`}"
+									    :key="permission.id">
 										<div class="list-item-actions">
-											<el-tooltip 
-												v-if="$root.permissions['update permission']"
-												content="Edit" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="editPermission(permission)">
-													<i class="fa fa-pencil" aria-hidden="true"></i>
+											<el-tooltip v-if="$root.permissions['update permission']"
+											            content="Edit"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="editPermission(permission)">
+													<i class="fa fa-pencil"
+													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip 
-												v-if="$root.permissions['list permission'] && !$root.permissions['update permission']"
-												content="View" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="editPermission(permission)">
-													<i class="fa fa-eye" aria-hidden="true"></i>
+											<el-tooltip v-if="$root.permissions['list permission'] && !$root.permissions['update permission']"
+											            content="View"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="editPermission(permission)">
+													<i class="fa fa-eye"
+													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip 
-												v-if="$root.permissions['delete permission']"
-												content="Delete" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="showDeleteModal(permission)">
-													<i class="fa fa-trash" aria-hidden="true"></i>
+											<el-tooltip v-if="$root.permissions['delete permission']"
+											            content="Delete"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="showDeleteModal(permission)">
+													<i class="fa fa-trash"
+													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
 										</div>
@@ -160,12 +208,19 @@
 									</li>
 								</ul>
 							</div>
-							<div class="clearfix" v-if="permissions.length && numPages > 1">
-								<pagination :passedPage="activePage" :numPages="numPages" @activePageChange="activePageUpdate"></pagination>
+							<div class="clearfix"
+							     v-if="permissions.length && numPages > 1">
+								<pagination :passedPage="activePage"
+								            :numPages="numPages"
+								            @activePageChange="activePageUpdate"></pagination>
 							</div>
 						</div>
-						<div class="alert alert-danger" v-show="listErrorMessage.length" ref="listErrorMessage">
-							<button class="close" data-close="alert" @click="clearListError()"></button>
+						<div class="alert alert-danger"
+						     v-show="listErrorMessage.length"
+						     ref="listErrorMessage">
+							<button class="close"
+							        data-close="alert"
+							        @click="clearListError()"></button>
 							<span>{{listErrorMessage}}</span>
 						</div>
 					</div>
@@ -183,53 +238,74 @@
 						</div>
 					</div>
 					<div class="portlet-body">
-						<div class="clearfix margin-bottom-10" v-if="filteredResults.length">
-							<el-dropdown trigger="click" @command="updateSortByOrder" size="mini" :show-timeout="50" :hide-timeout="50">
+						<div class="clearfix margin-bottom-10"
+						     v-if="filteredResults.length">
+							<el-dropdown trigger="click"
+							             @command="updateSortByOrder"
+							             size="mini"
+							             :show-timeout="50"
+							             :hide-timeout="50">
 								<el-button size="mini">
 									Sort by
 									<span>
-										<i class="fa fa-sort-alpha-asc" v-if="sortBy.order === 'ASC'"></i>
-										<i class="fa fa-sort-alpha-desc" v-if="sortBy.order === 'DESC'"></i>
+										<i class="fa fa-sort-alpha-asc"
+										   v-if="sortBy.order === 'ASC'"></i>
+										<i class="fa fa-sort-alpha-desc"
+										   v-if="sortBy.order === 'DESC'"></i>
 									</span>
 									<i class="el-icon-arrow-down el-icon--right"></i>
 								</el-button>
 								<el-dropdown-menu slot="dropdown">
-									<el-dropdown-item command="ASC"><i class="fa fa-sort-alpha-asc"></i></el-dropdown-item>
-									<el-dropdown-item command="DESC"><i class="fa fa-sort-alpha-desc"></i></el-dropdown-item>
+									<el-dropdown-item command="ASC">
+										<i class="fa fa-sort-alpha-asc"></i>
+									</el-dropdown-item>
+									<el-dropdown-item command="DESC">
+										<i class="fa fa-sort-alpha-desc"></i>
+									</el-dropdown-item>
 								</el-dropdown-menu>
 							</el-dropdown>
-							<page-results class="pull-right" :totalResults="filteredResults.length" :activePage="searchActivePage" @pageResults="pageResultsUpdate"></page-results>
+							<page-results class="pull-right"
+							              :totalResults="filteredResults.length"
+							              :activePage="searchActivePage"
+							              @pageResults="pageResultsUpdate"></page-results>
 						</div>
 						<div class="mt-element-list">
 							<div class="mt-list-container list-news">
 								<ul>
-									<li class="mt-list-item actions-at-left margin-top-15" v-for="permission in currentActiveSearchPageItems" :id="'permission-' + permission.id" :class="{'animated' : animated === `permission-${permission.id}`}" :key="permission.id">
+									<li class="mt-list-item actions-at-left margin-top-15"
+									    v-for="permission in currentActiveSearchPageItems"
+									    :id="'permission-' + permission.id"
+									    :class="{'animated' : animated === `permission-${permission.id}`}"
+									    :key="permission.id">
 										<div class="list-item-actions">
-											<el-tooltip 
-												v-if="$root.permissions['update permission']"
-												content="Edit" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="editPermission(permission)">
-													<i class="fa fa-pencil" aria-hidden="true"></i>
+											<el-tooltip v-if="$root.permissions['update permission']"
+											            content="Edit"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="editPermission(permission)">
+													<i class="fa fa-pencil"
+													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip 
-												v-if="$root.permissions['list permission'] && !$root.permissions['update permission']"
-												content="View" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="editPermission(permission)">
-													<i class="fa fa-eye" aria-hidden="true"></i>
+											<el-tooltip v-if="$root.permissions['list permission'] && !$root.permissions['update permission']"
+											            content="View"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="editPermission(permission)">
+													<i class="fa fa-eye"
+													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip 
-												v-if="$root.permissions['delete permission']"
-												content="Delete" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="showDeleteModal(permission)">
-													<i class="fa fa-trash" aria-hidden="true"></i>
+											<el-tooltip v-if="$root.permissions['delete permission']"
+											            content="Delete"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="showDeleteModal(permission)">
+													<i class="fa fa-trash"
+													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
 										</div>
@@ -239,61 +315,72 @@
 									</li>
 								</ul>
 							</div>
-							<div class="clearfix" v-if="filteredResults.length && searchNumPages > 1">
-								<pagination :passedPage="searchActivePage" :numPages="searchNumPages" @activePageChange="activeSearchPageUpdate"></pagination>
+							<div class="clearfix"
+							     v-if="filteredResults.length && searchNumPages > 1">
+								<pagination :passedPage="searchActivePage"
+								            :numPages="searchNumPages"
+								            @activePageChange="activeSearchPageUpdate"></pagination>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div v-if="!permissions.length && !loading">
-				<no-results :show="!permissions.length" :type="'permissions'"></no-results>
+				<no-results :show="!permissions.length"
+				            :type="'permissions'"></no-results>
 			</div>
 		</div>
 		<!-- LIST END -->
 
 		<!-- EDIT MODAL START -->
-		<modal :show="showEditPermissionModal" effect="fade" @closeOnEscape="closeEditPermissionModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeEditPermissionModal()">
+		<modal :show="showEditPermissionModal"
+		       effect="fade"
+		       @closeOnEscape="closeEditPermissionModal">
+			<div slot="modal-header"
+			     class="modal-header">
+				<button type="button"
+				        class="close"
+				        @click="closeEditPermissionModal()">
 					<span>&times;</span>
 				</button>
 				<h4 class="modal-title center">Edit Permission</h4>
 			</div>
-			<div slot="modal-body" class="modal-body">
-				<div class="alert alert-danger" v-show="editErrorMessage.length" ref="editErrorMessage">
-					<button class="close" data-close="alert" @click="clearEditError()"></button>
+			<div slot="modal-body"
+			     class="modal-body">
+				<div class="alert alert-danger"
+				     v-show="editErrorMessage.length"
+				     ref="editErrorMessage">
+					<button class="close"
+					        data-close="alert"
+					        @click="clearEditError()"></button>
 					<span>{{editErrorMessage}}</span>
 				</div>
 				<div class="form-group form-md-line-input form-md-floating-label">
-					<input 
-						:disabled="$root.permissions['list permission'] && !$root.permissions['update permission']"
-						type="text" 
-						class="form-control input-sm" 
-						id="form_control_edited_name" 
-						v-model="permissionToEdit.name" 
-						:class="{'edited': permissionToEdit.name.length}">
+					<input :disabled="$root.permissions['list permission'] && !$root.permissions['update permission']"
+					       type="text"
+					       class="form-control input-sm"
+					       id="form_control_edited_name"
+					       v-model="permissionToEdit.name"
+					       :class="{'edited': permissionToEdit.name.length}">
 					<label for="form_control_edited_name">Name</label>
 				</div>
 			</div>
-			<div slot="modal-footer" class="modal-footer">
-				<button 
-					v-if="$root.permissions['list permission'] && !$root.permissions['update permission']"
-					type="button" 
-					class="btn btn-primary" 
-					@click="closeEditPermissionModal()">
+			<div slot="modal-footer"
+			     class="modal-footer">
+				<button v-if="$root.permissions['list permission'] && !$root.permissions['update permission']"
+				        type="button"
+				        class="btn btn-primary"
+				        @click="closeEditPermissionModal()">
 					Close
 				</button>
-				<button 
-					v-else
-					type="button" 
-					class="btn btn-primary" 
-					@click="updatePermission()"
-					:disabled="updating">
+				<button v-else
+				        type="button"
+				        class="btn btn-primary"
+				        @click="updatePermission()"
+				        :disabled="updating">
 					Save
-					<i 
-						v-show="updating"
-						class="fa fa-spinner fa-pulse fa-fw">
+					<i v-show="updating"
+					   class="fa fa-spinner fa-pulse fa-fw">
 					</i>
 				</button>
 			</div>
@@ -301,30 +388,39 @@
 		<!-- EDIT MODAL END -->
 
 		<!-- DELETE MODAL START -->
-		<modal :show="showDeletePermissionModal" effect="fade" @closeOnEscape="closeDeletePermissionModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeDeletePermissionModal()">
+		<modal :show="showDeletePermissionModal"
+		       effect="fade"
+		       @closeOnEscape="closeDeletePermissionModal">
+			<div slot="modal-header"
+			     class="modal-header">
+				<button type="button"
+				        class="close"
+				        @click="closeDeletePermissionModal()">
 					<span>&times;</span>
 				</button>
 				<h4 class="modal-title center">Delete Permission</h4>
 			</div>
-			<div slot="modal-body" class="modal-body">
-				<div class="alert alert-danger" v-show="deleteErrorMessage.length" ref="deleteErrorMessage">
-					<button class="close" data-close="alert" @click="clearDeleteError()"></button>
+			<div slot="modal-body"
+			     class="modal-body">
+				<div class="alert alert-danger"
+				     v-show="deleteErrorMessage.length"
+				     ref="deleteErrorMessage">
+					<button class="close"
+					        data-close="alert"
+					        @click="clearDeleteError()"></button>
 					<span>{{deleteErrorMessage}}</span>
 				</div>
 				<p>Are you sure you want to delete this permission?</p>
 			</div>
-			<div slot="modal-footer" class="modal-footer">
-				<button 
-					type="button" 
-					class="btn btn-primary" 
-					@click="deletePermission()"
-					:disabled="deleting">
+			<div slot="modal-footer"
+			     class="modal-footer">
+				<button type="button"
+				        class="btn btn-primary"
+				        @click="deletePermission()"
+				        :disabled="deleting">
 					Delete
-					<i 
-						v-show="deleting"
-						class="fa fa-spinner fa-pulse fa-fw">
+					<i v-show="deleting"
+					   class="fa fa-spinner fa-pulse fa-fw">
 					</i>
 				</button>
 			</div>
@@ -348,8 +444,8 @@ export default {
 	data () {
 		return {
 			breadcrumbArray: [
-				{name: 'Admin Manager', link: false},
-				{name: 'Permissions', link: false}
+				{ name: 'Admin Manager', link: false },
+				{ name: 'Permissions', link: false }
 			],
 			createCollapse: true,
 			createErrorMessage: '',
@@ -394,13 +490,19 @@ export default {
 			return Math.ceil(this.permissions.length / this.resultsPerPage)
 		},
 		currentActivePageItems () {
-			return this.userSort(this.permissions).slice(this.resultsPerPage * (this.activePage - 1), this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage)
+			return this.userSort(this.permissions).slice(
+				this.resultsPerPage * (this.activePage - 1),
+				this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
+			)
 		},
 		searchNumPages () {
 			return Math.ceil(this.filteredResults.length / this.resultsPerPage)
 		},
 		currentActiveSearchPageItems () {
-			return this.userSort(this.filteredResults).slice(this.resultsPerPage * (this.searchActivePage - 1), this.resultsPerPage * (this.searchActivePage - 1) + this.resultsPerPage)
+			return this.userSort(this.filteredResults).slice(
+				this.resultsPerPage * (this.searchActivePage - 1),
+				this.resultsPerPage * (this.searchActivePage - 1) + this.resultsPerPage
+			)
 		}
 	},
 	mounted () {
@@ -416,7 +518,9 @@ export default {
 		formatPhone (phone) {
 			try {
 				let digits = phone.replace(/\D/g, '')
-				return digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
+				return (
+					digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
+				)
 			} catch (err) {
 				return ''
 			}
@@ -429,7 +533,9 @@ export default {
 		 */
 		updateSortByOrder (value) {
 			this.sortBy.order = value
-			this.filteredResults.length ? this.activeSearchPageUpdate(1) : this.activePageUpdate(1)
+			this.filteredResults.length
+				? this.activeSearchPageUpdate(1)
+				: this.activePageUpdate(1)
 		},
 		/**
 		 * To sort the orders list.
@@ -486,7 +592,9 @@ export default {
 		pageResultsUpdate (val) {
 			if (parseInt(this.resultsPerPage) !== parseInt(val)) {
 				this.resultsPerPage = val
-				this.filteredResults.length ? this.activeSearchPageUpdate(1) : this.activePageUpdate(1)
+				this.filteredResults.length
+					? this.activeSearchPageUpdate(1)
+					: this.activePageUpdate(1)
 			}
 		},
 		/**
@@ -539,12 +647,17 @@ export default {
 					this.searchError = 'Search term must be at least 3 characters.'
 				} else {
 					for (var i = 0; i < this.permissions.length; i++) {
-						if (this.permissions[i].name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) > -1) {
+						if (
+							this.permissions[i].name
+								.toLowerCase()
+								.indexOf(this.searchTerm.toLowerCase()) > -1
+						) {
 							this.filteredResults.push(this.permissions[i])
 						}
 					}
 					if (!this.filteredResults.length) {
-						this.searchError = 'There are no matching records. Please try again.'
+						this.searchError =
+							'There are no matching records. Please try again.'
 					}
 				}
 			} else {
@@ -578,7 +691,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		editPermission (permission) {
-			this.permissionToEdit = {...permission}
+			this.permissionToEdit = { ...permission }
 			this.showEditPermissionModal = true
 		},
 		/**
@@ -588,7 +701,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		showDeleteModal (permission) {
-			this.permissionToDelete = {...permission}
+			this.permissionToDelete = { ...permission }
 			this.showDeletePermissionModal = true
 		},
 		/**
@@ -609,22 +722,26 @@ export default {
 			this.deleting = true
 			this.clearDeleteError()
 			var permissionsVue = this
-			return PermissionsFunctions.deletePermission(permissionsVue.permissionToDelete)
-			.then(response => {
-				permissionsVue.getAllPermissions()
-				permissionsVue.closeDeletePermissionModal()
-				permissionsVue.showDeleteSuccess()
-				permissionsVue.resetDeleteForm()
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'Could not delete permission',
-					errorName: 'deleteErrorMessage',
-					vue: permissionsVue
+			return PermissionsFunctions.deletePermission(
+				permissionsVue.permissionToDelete
+			)
+				.then(response => {
+					permissionsVue.getAllPermissions()
+					permissionsVue.closeDeletePermissionModal()
+					permissionsVue.showDeleteSuccess()
+					permissionsVue.resetDeleteForm()
 				})
-			}).finally(() => {
-				permissionsVue.deleting = false
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'Could not delete permission',
+						errorName: 'deleteErrorMessage',
+						vue: permissionsVue
+					})
+				})
+				.finally(() => {
+					permissionsVue.deleting = false
+				})
 		},
 		/**
 		 * To close the edit modal
@@ -645,22 +762,23 @@ export default {
 			this.clearListError()
 			var permissionsVue = this
 			return PermissionsFunctions.getAllPermissions()
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					permissionsVue.loading = false
-					permissionsVue.permissions = response.payload
-				} else {
-					permissionsVue.loading = false
-				}
-			}).catch(reason => {
-				permissionsVue.loading = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'Could not get permissions',
-					errorName: 'listErrorMessage',
-					vue: permissionsVue
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						permissionsVue.loading = false
+						permissionsVue.permissions = response.payload
+					} else {
+						permissionsVue.loading = false
+					}
 				})
-			})
+				.catch(reason => {
+					permissionsVue.loading = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'Could not get permissions',
+						errorName: 'listErrorMessage',
+						vue: permissionsVue
+					})
+				})
 		},
 		/**
 		 * To get a list of brand admins.
@@ -671,28 +789,37 @@ export default {
 			var permissionsVue = this
 
 			return this.validateNewPermissionData()
-			.then((response) => {
-				permissionsVue.creating = true
-				permissionsVue.clearCreateError()
-				return PermissionsFunctions.createPermission(permissionsVue.newPermission)
 				.then(response => {
-					permissionsVue.getAllPermissions()
-					permissionsVue.resetCreateForm()
-					permissionsVue.showCreateSuccess()
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Could not get create permission',
-						errorName: 'createErrorMessage',
-						vue: permissionsVue
-					})
+					permissionsVue.creating = true
+					permissionsVue.clearCreateError()
+					return PermissionsFunctions.createPermission(
+						permissionsVue.newPermission
+					)
+						.then(response => {
+							permissionsVue.getAllPermissions()
+							permissionsVue.resetCreateForm()
+							permissionsVue.showCreateSuccess()
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'Could not get create permission',
+								errorName: 'createErrorMessage',
+								vue: permissionsVue
+							})
+						})
 				})
-			}).catch(reason => {
-				permissionsVue.createErrorMessage = reason
-				permissionsVue.$scrollTo(permissionsVue.$refs.createErrorMessage, 1000, { offset: -50 })
-			}).finally(() => {
-				permissionsVue.creating = false
-			})
+				.catch(reason => {
+					permissionsVue.createErrorMessage = reason
+					permissionsVue.$scrollTo(
+						permissionsVue.$refs.createErrorMessage,
+						1000,
+						{ offset: -50 }
+					)
+				})
+				.finally(() => {
+					permissionsVue.creating = false
+				})
 		},
 		/**
 		 * To reset the create new form.
@@ -818,42 +945,53 @@ export default {
 			var permissionsVue = this
 
 			return this.validateEditedPermissionData()
-			.then((response) => {
-				permissionsVue.updating = true
-				permissionsVue.clearEditError()
-				return PermissionsFunctions.updatePermission(permissionsVue.permissionToEdit)
 				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						permissionsVue.closeEditPermissionModal()
-						permissionsVue.showEditSuccess()
-						for (var i = 0; i < permissionsVue.permissions.length; i++) {
-							if (permissionsVue.permissions[i].id === response.payload.id) {
-								permissionsVue.permissions[i].name = response.payload.name
+					permissionsVue.updating = true
+					permissionsVue.clearEditError()
+					return PermissionsFunctions.updatePermission(
+						permissionsVue.permissionToEdit
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								permissionsVue.closeEditPermissionModal()
+								permissionsVue.showEditSuccess()
+								for (var i = 0; i < permissionsVue.permissions.length; i++) {
+									if (
+										permissionsVue.permissions[i].id === response.payload.id
+									) {
+										permissionsVue.permissions[i].name = response.payload.name
+									}
+								}
+								permissionsVue.animated = `permission-${response.payload.id}`
+								permissionsVue.resetEditForm()
+								window.setTimeout(() => {
+									permissionsVue.animated = ''
+								}, 3000)
+							} else {
+								let me = new Error(response)
+								throw me
 							}
-						}
-						permissionsVue.animated = `permission-${response.payload.id}`
-						permissionsVue.resetEditForm()
-						window.setTimeout(() => {
-							permissionsVue.animated = ''
-						}, 3000)
-					} else {
-						let me = new Error(response)
-						throw me
-					}
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Could not get save permission',
-						errorName: 'editErrorMessage',
-						vue: permissionsVue
-					})
-				}).finally(() => {
-					permissionsVue.updating = false
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'Could not get save permission',
+								errorName: 'editErrorMessage',
+								vue: permissionsVue
+							})
+						})
+						.finally(() => {
+							permissionsVue.updating = false
+						})
 				})
-			}).catch(reason => {
-				permissionsVue.editErrorMessage = reason
-				permissionsVue.$scrollTo(permissionsVue.$refs.editErrorMessage, 1000, { offset: -50 })
-			})
+				.catch(reason => {
+					permissionsVue.editErrorMessage = reason
+					permissionsVue.$scrollTo(
+						permissionsVue.$refs.editErrorMessage,
+						1000,
+						{ offset: -50 }
+					)
+				})
 		},
 		/**
 		 * To check if the item data is valid before submitting to the backend.
@@ -897,12 +1035,12 @@ export default {
 
 <style scoped>
 .animated {
-	animation: listItemHighlight 1s 2 ease-in-out both;
+  animation: listItemHighlight 1s 2 ease-in-out both;
 }
-.mt-element-list .list-news.mt-list-container ul>.mt-list-item:hover {
-	background-color: white;
+.mt-element-list .list-news.mt-list-container ul > .mt-list-item:hover {
+  background-color: white;
 }
-.mt-element-list .list-news.mt-list-container ul>.mt-list-item {
-	min-height: 80px;
+.mt-element-list .list-news.mt-list-container ul > .mt-list-item {
+  min-height: 80px;
 }
 </style>

@@ -3,7 +3,7 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to pitapit API to get a list of the tags for a store.
 	 * @function
@@ -78,7 +78,7 @@ export default ({
 				method: 'POST',
 				dataType: 'json',
 				url: '/app/items/updatetags/' + itemId,
-				data: {tags: tags},
+				data: { tags: tags },
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
 					xhr.setRequestHeader('app-id', appId)
@@ -103,13 +103,19 @@ export default ({
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	applyTagsToModifierItem: function (modifierItemId, tags, appId, appSecret, userToken) {
+	applyTagsToModifierItem: function (
+		modifierItemId,
+		tags,
+		appId,
+		appSecret,
+		userToken
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
 				dataType: 'json',
 				url: '/app/moditems/updatetags/' + modifierItemId,
-				data: {tags: tags},
+				data: { tags: tags },
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
 					xhr.setRequestHeader('app-id', appId)
@@ -194,13 +200,19 @@ export default ({
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	applyTagToMultipleModItems (tagId, modifierItems, appId, appSecret, userToken) {
+	applyTagToMultipleModItems (
+		tagId,
+		modifierItems,
+		appId,
+		appSecret,
+		userToken
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
 				dataType: 'json',
 				url: '/app/tags/addModifierItems/' + tagId,
-				data: {modifier_items_id: modifierItems},
+				data: { modifier_items_id: modifierItems },
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
 					xhr.setRequestHeader('app-id', appId)
@@ -226,7 +238,14 @@ export default ({
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	applyTagToMultipleItems (tagId, itemsToAdd, itemsToRemove, appId, appSecret, userToken) {
+	applyTagToMultipleItems (
+		tagId,
+		itemsToAdd,
+		itemsToRemove,
+		appId,
+		appSecret,
+		userToken
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
@@ -250,4 +269,4 @@ export default ({
 			})
 		})
 	}
-})
+}

@@ -15,7 +15,8 @@ module.exports = {
 		// We will assume that any password longer than 50 characters is strong enough
 		var result = zxcvbn(password.substring(0, 50), ['unoapp', 'street'])
 
-		var crackTime = result.crack_times_seconds.offline_slow_hashing_1e4_per_second
+		var crackTime =
+			result.crack_times_seconds.offline_slow_hashing_1e4_per_second
 
 		if (password.length < 8) {
 			return 'Password must be 8 characters minimum'
@@ -45,7 +46,7 @@ module.exports = {
 				method: 'POST',
 				dataType: 'json',
 				url: '/auth/set_password',
-				data: {token: invitationToken, password: password},
+				data: { token: invitationToken, password: password },
 				success: function (response) {
 					resolve(response)
 				},
@@ -67,7 +68,7 @@ module.exports = {
 				method: 'POST',
 				dataType: 'json',
 				url: '/auth/validate_request',
-				data: {token: invitationToken},
+				data: { token: invitationToken },
 				success: function (response) {
 					resolve(response)
 				},

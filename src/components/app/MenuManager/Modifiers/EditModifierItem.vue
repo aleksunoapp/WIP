@@ -1,105 +1,146 @@
 <template>
-	<modal :show="showEditItemModal" effect="fade" @closeOnEscape="closeModal" ref="modal">
-		<div slot="modal-header" class="modal-header center">
-			<button type="button" class="close" @click="closeModal()">
+	<modal :show="showEditItemModal"
+	       effect="fade"
+	       @closeOnEscape="closeModal"
+	       ref="modal">
+		<div slot="modal-header"
+		     class="modal-header center">
+			<button type="button"
+			        class="close"
+			        @click="closeModal()">
 				<span>&times;</span>
 			</button>
-			<transition name="fade" mode="out-in">
-				<h4 class="modal-title center" v-if="!selectImageMode && !selectLocationMode" key="mainEditMode">Edit Modifier Item</h4>
-				<h4 class="modal-title center" v-if="selectImageMode && !selectLocationMode" key="imageMode">Select an Image</h4>
-				<h4 class="modal-title center" v-if="!selectImageMode && selectLocationMode" key="selectLocationMode"><i class="fa fa-chevron-left clickable pull-left back-button" @click="closeSelectLocationsPopup()"></i>Select Stores</h4>
+			<transition name="fade"
+			            mode="out-in">
+				<h4 class="modal-title center"
+				    v-if="!selectImageMode && !selectLocationMode"
+				    key="mainEditMode">Edit Modifier Item</h4>
+				<h4 class="modal-title center"
+				    v-if="selectImageMode && !selectLocationMode"
+				    key="imageMode">Select an Image</h4>
+				<h4 class="modal-title center"
+				    v-if="!selectImageMode && selectLocationMode"
+				    key="selectLocationMode">
+					<i class="fa fa-chevron-left clickable pull-left back-button"
+					   @click="closeSelectLocationsPopup()"></i>Select Stores</h4>
 			</transition>
 		</div>
-		<div slot="modal-body" class="modal-body">
+		<div slot="modal-body"
+		     class="modal-body">
 			<div class="col-xs-12">
-				<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
-				    <button class="close" @click="clearError()"></button>
-				    <span>{{errorMessage}}</span>
+				<div class="alert alert-danger"
+				     v-show="errorMessage"
+				     ref="errorMessage">
+					<button class="close"
+					        @click="clearError()"></button>
+					<span>{{errorMessage}}</span>
 				</div>
-        		<div v-if="!selectLocationMode" :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
-					<resource-picker 
-						@open="goToPageTwo()"
-						@close="goToPageOne()"
-						@selected="updateImage" 
-						:imageButton="true"
-						:imageUrl="itemToBeEdited.image_url"
-						class="margin-top-15"
-					>
+				<div v-if="!selectLocationMode"
+				     :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
+					<resource-picker @open="goToPageTwo()"
+					                 @close="goToPageOne()"
+					                 @selected="updateImage"
+					                 :imageButton="true"
+					                 :imageUrl="itemToBeEdited.image_url"
+					                 class="margin-top-15">
 					</resource-picker>
-        		</div>
-        		<div class="col-xs-12">        			
-	    			<select-locations-popup 
-	    				v-if="selectLocationMode" 
-	    				@closeSelectLocationsPopup='updateSelectedLocations' 
-	    				:previouslySelected="selectedLocations"
-	    			>
+				</div>
+				<div class="col-xs-12">
+					<select-locations-popup v-if="selectLocationMode"
+					                        @closeSelectLocationsPopup='updateSelectedLocations'
+					                        :previouslySelected="selectedLocations">
 					</select-locations-popup>
-        		</div>
-				<div class="col-xs-12" v-show="!selectImageMode && !selectLocationMode">
+				</div>
+				<div class="col-xs-12"
+				     v-show="!selectImageMode && !selectLocationMode">
 					<fieldset :disabled="!$root.permissions['menu_manager modifiers items update']">
 						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm edited" id="form_control_1" v-model="itemToBeEdited.name">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_1"
+							       v-model="itemToBeEdited.name">
 							<label for="form_control_1">Modifier Item Name</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm edited" id="form_control_2" v-model="itemToBeEdited.desc">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_2"
+							       v-model="itemToBeEdited.desc">
 							<label for="form_control_2">Modifier Item Description</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm edited" id="form_control_3" v-model="itemToBeEdited.price">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_3"
+							       v-model="itemToBeEdited.price">
 							<label for="form_control_3">Modifier Item Price</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm edited" id="form_control_4" v-model="itemToBeEdited.sku">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_4"
+							       v-model="itemToBeEdited.sku">
 							<label for="form_control_4">Modifier Item SKU</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm edited" id="form_control_5" v-model="itemToBeEdited.min">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_5"
+							       v-model="itemToBeEdited.min">
 							<label for="form_control_5">Modifier Item Min</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm edited" id="form_control_6" v-model="itemToBeEdited.max">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_6"
+							       v-model="itemToBeEdited.max">
 							<label for="form_control_6">Modifier Item Max</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm edited" id="form_control_7" v-model="itemToBeEdited.order">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_7"
+							       v-model="itemToBeEdited.order">
 							<label for="form_control_7">Modifier Item Order</label>
 						</div>
 					</fieldset>
 					<div class="form-group form-md-line-input form-md-floating-label">
-		                <label>Modifier Item Status:</label><br>
-		                <el-switch
-		                	:disabled="!$root.permissions['menu_manager modifiers items update']"
-							v-model="itemToBeEdited.status"
-		                	active-color="#0c6"
-		                	inactive-color="#ff4949"
-		                	:active-value="1"
-		                	:inactive-value="0"
-		                	active-text="Available"
-		                	inactive-text="Sold Out">
-		                </el-switch>
-		            </div>
-        			<div>
+						<label>Modifier Item Status:</label><br>
+						<el-switch :disabled="!$root.permissions['menu_manager modifiers items update']"
+						           v-model="itemToBeEdited.status"
+						           active-color="#0c6"
+						           inactive-color="#ff4949"
+						           :active-value="1"
+						           :inactive-value="0"
+						           active-text="Available"
+						           inactive-text="Sold Out">
+						</el-switch>
+					</div>
+					<div>
 						<p class="margin-bottom-10 margin-top-30 margin-right-10">Select locations to apply the changes to:</p>
-        				<button type="submit" class="btn blue btn-outline" @click="selectLocations($event)">Select locations</button>
-        				<p class="grey-label margin-top-10" v-if="selectedLocations.length">Selected {{ selectedLocations.length }} location<span v-if="selectedLocations.length !== 1">s</span></p>
-        			</div>
-		        </div>
-	        </div>
+						<button type="submit"
+						        class="btn blue btn-outline"
+						        @click="selectLocations($event)">Select locations</button>
+						<p class="grey-label margin-top-10"
+						   v-if="selectedLocations.length">Selected {{ selectedLocations.length }} location
+							<span v-if="selectedLocations.length !== 1">s</span>
+						</p>
+					</div>
+				</div>
+			</div>
 		</div>
-		<div slot="modal-footer" class="modal-footer">
-			<button 
-				v-if="!selectImageMode && !selectLocationMode && !$root.permissions['menu_manager modifiers items update']" 
-				type="button" 
-				class="btn btn-primary" 
-				@click="closeModal()">
+		<div slot="modal-footer"
+		     class="modal-footer">
+			<button v-if="!selectImageMode && !selectLocationMode && !$root.permissions['menu_manager modifiers items update']"
+			        type="button"
+			        class="btn btn-primary"
+			        @click="closeModal()">
 				Close
 			</button>
-			<button 
-				v-if="!selectImageMode && !selectLocationMode && $root.permissions['menu_manager modifiers items update']" 
-				type="button" 
-				class="btn btn-primary" 
-				@click="updateModifierItem()">
+			<button v-if="!selectImageMode && !selectLocationMode && $root.permissions['menu_manager modifiers items update']"
+			        type="button"
+			        class="btn btn-primary"
+			        @click="updateModifierItem()">
 				Save
 			</button>
 		</div>
@@ -189,7 +230,10 @@ export default {
 					reject('Modifier Item min should be a number')
 				} else if (!$.isNumeric(editModifierItemVue.itemToBeEdited.max)) {
 					reject('Modifier Item max should be a number')
-				} else if (Number(editModifierItemVue.itemToBeEdited.min) > Number(editModifierItemVue.itemToBeEdited.max)) {
+				} else if (
+					Number(editModifierItemVue.itemToBeEdited.min) >
+					Number(editModifierItemVue.itemToBeEdited.max)
+				) {
 					reject('Modifier Item max cannot be larger than min')
 				} else if (!$.isNumeric(editModifierItemVue.itemToBeEdited.order)) {
 					reject('Modifier Item order should be a number')
@@ -212,40 +256,18 @@ export default {
 		 */
 		getModifierItemDetails () {
 			var editModifierItemVue = this
-			ModifiersFunctions.getModifierItemDetails(editModifierItemVue.$route.params.modifier_item_id, editModifierItemVue.$root.appId, editModifierItemVue.$root.appSecret, editModifierItemVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					editModifierItemVue.itemToBeEdited = response.payload[0]
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not get modifier info',
-					errorName: 'errorMessage',
-					vue: editModifierItemVue,
-					containerRef: 'modal'
-				})
-			})
-		},
-		/**
-		 * To update the modifier item and close the modal.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		updateModifierItem () {
-			var editModifierItemVue = this
-			editModifierItemVue.itemToBeEdited.user_id = editModifierItemVue.$root.createdBy
-			editModifierItemVue.itemToBeEdited.update_locations = editModifierItemVue.selectedLocations
-			editModifierItemVue.clearError()
-
-			return editModifierItemVue.validateModifierItemData()
-			.then(response => {
-				ModifiersFunctions.updateModifierItem(editModifierItemVue.itemToBeEdited, editModifierItemVue.$root.appId, editModifierItemVue.$root.appSecret, editModifierItemVue.$root.userToken).then(response => {
+			ModifiersFunctions.getModifierItemDetails(
+				editModifierItemVue.$route.params.modifier_item_id,
+				editModifierItemVue.$root.appId,
+				editModifierItemVue.$root.appSecret,
+				editModifierItemVue.$root.userToken
+			)
+				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						this.closeModalAndUpdate()
-					} else {
-						editModifierItemVue.errorMessage = response.message
+						editModifierItemVue.itemToBeEdited = response.payload[0]
 					}
-				}).catch(reason => {
+				})
+				.catch(reason => {
 					ajaxErrorHandler({
 						reason,
 						errorText: 'We could not get modifier info',
@@ -254,10 +276,50 @@ export default {
 						containerRef: 'modal'
 					})
 				})
-			}).catch(reason => {
-				editModifierItemVue.errorMessage = reason
-				window.scrollTo(0, 0)
-			})
+		},
+		/**
+		 * To update the modifier item and close the modal.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		updateModifierItem () {
+			var editModifierItemVue = this
+			editModifierItemVue.itemToBeEdited.user_id =
+				editModifierItemVue.$root.createdBy
+			editModifierItemVue.itemToBeEdited.update_locations =
+				editModifierItemVue.selectedLocations
+			editModifierItemVue.clearError()
+
+			return editModifierItemVue
+				.validateModifierItemData()
+				.then(response => {
+					ModifiersFunctions.updateModifierItem(
+						editModifierItemVue.itemToBeEdited,
+						editModifierItemVue.$root.appId,
+						editModifierItemVue.$root.appSecret,
+						editModifierItemVue.$root.userToken
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								this.closeModalAndUpdate()
+							} else {
+								editModifierItemVue.errorMessage = response.message
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not get modifier info',
+								errorName: 'errorMessage',
+								vue: editModifierItemVue,
+								containerRef: 'modal'
+							})
+						})
+				})
+				.catch(reason => {
+					editModifierItemVue.errorMessage = reason
+					window.scrollTo(0, 0)
+				})
 		},
 		/**
 		 * To close the modal and emit the updated modifier item object to the parent.
@@ -266,7 +328,9 @@ export default {
 		 */
 		closeModalAndUpdate () {
 			this.$emit('editModifierItem', this.itemToBeEdited)
-			this.$router.push('/app/menu_manager/modifier_items/' + this.$route.params.modifier_id)
+			this.$router.push(
+				'/app/menu_manager/modifier_items/' + this.$route.params.modifier_id
+			)
 		},
 		/**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
@@ -275,7 +339,9 @@ export default {
 		 */
 		closeModal () {
 			this.$emit('deactivateEditItemModal')
-			this.$router.push('/app/menu_manager/modifier_items/' + this.$route.params.modifier_id)
+			this.$router.push(
+				'/app/menu_manager/modifier_items/' + this.$route.params.modifier_id
+			)
 		},
 		/**
 		 * To change the page to the gallery view on the modal.

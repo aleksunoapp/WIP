@@ -6,14 +6,16 @@
 		</div>
 		<!-- END PAGE BAR -->
 		<!-- BEGIN PAGE TITLE-->
-	    <h1 class="page-title">Items</h1>
-	    <!-- END PAGE TITLE-->
+		<h1 class="page-title">Items</h1>
+		<!-- END PAGE TITLE-->
 		<div class="note note-info">
-            <p>View items for category '{{ categoryDetails.name }}'.</p>
-        </div>
-        <!-- BEGIN CREATE NEW MENU-->
-        <div class="portlet box blue-hoki" v-if="$root.permissions['menu_manager menus categories subcategories items create']">
-			<div class="portlet-title bg-blue-chambray" @click="toggleCreateItemPanel()">
+			<p>View items for category '{{ categoryDetails.name }}'.</p>
+		</div>
+		<!-- BEGIN CREATE NEW MENU-->
+		<div class="portlet box blue-hoki"
+		     v-if="$root.permissions['menu_manager menus categories subcategories items create']">
+			<div class="portlet-title bg-blue-chambray"
+			     @click="toggleCreateItemPaÍnel()">
 				<div class="custom tools">
 					<a :class="{'expand': !createItemCollapse, 'collapse': createItemCollapse}"></a>
 				</div>
@@ -21,154 +23,221 @@
 					&emsp;Create A New Item
 				</div>
 			</div>
-			<div class="portlet-body" :class="{'display-hide': createItemCollapse}">
-      			<form role="form" @submit.prevent="addNewCategoryItem()" :disabled="noItemTypes">
-      				<div class="form-body row">
-      					<div class="col-md-12">
-			        		<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
-			        		    <button class="close" data-close="alert" @click.prevent="clearError('errorMessage')"></button>
-			        		    <span>{{errorMessage}}</span>
-			        		</div>
-			        		<div class="alert alert-info" v-show="noItemTypes" ref="noItemTypes">
-			        		    Menu Items require a tax classification. <router-link to="/app/tax_manager/item_types">Create an Item Type in Tax Manager</router-link> before creating a Menu Item.
-			        		</div>
-		        		</div>
-		        		<div class="col-md-12 margin-bottom-20" v-if="$root.activeLocation.is_corporate !== undefined && $root.activeLocation.is_corporate !== 1">
-		        			<button class="btn create-or-edit" @click.prevent="flipCopyCreate" :class="{'blue-chambray' : copyMode, 'blue btn-outline' : !copyMode}">Copy existing</button>
-		        			<button class="btn" @click.prevent="flipCopyCreate" :class="{'blue-chambray' : !copyMode, 'blue btn-outline' : copyMode}">Create new</button>
-		        		</div>
-						<div class="col-md-12 margin-bottom-20" v-if="showCorporateItems">
-							<div class="col-md-4">
-								<h4>Select Menu</h4>
-								<div class="dd" id="nestable_list_1" v-if="menus.length">
-	                            	<ol class="dd-list">
-	                                	<li 
-											class="dd-item clickable" 
-											v-for="menu in menus" 
-											:data-id="menu.id" 
-											@click="selectMenu(menu)"
-											:key="menu.id"
-										>
-	                                    	<div class="dd-handle clickable" :class="{'active': menu.id === activeMenu.id}"> {{ menu.name }}
-	                                    	<span class="pull-right"><i class="fa fa-chevron-right"></i></span>
-	                                    	</div>
-	                                	</li>
-	                            	</ol>
-	                        	</div>
-	                        	<div v-else>
-	                        		<div class="alert alert-warning">
-	       	   							<span>There are no menus to display.</span>
-	       							</div>
-	                        	</div>
+			<div class="portlet-body"
+			     :class="{'display-hide': createItemCollapse}">
+				<form role="form"
+				      @submit.prevent="addNewCategoryItem()"
+				      :disabled="noItemTypes">
+					<div class="form-body row">
+						<div class="col-md-12">
+							<div class="alert alert-danger"
+							     v-show="errorMessage"
+							     ref="errorMessage">
+								<button class="close"
+								        data-close="alert"
+								        @click.prevent="clearError('errorMessage')"></button>
+								<span>{{errorMessage}}</span>
 							</div>
-							<div class="col-md-4" v-if="isMenuSelected">
-								<h4>Select Category</h4>
-								<div class="dd" id="nestable_list_2" v-if="categories.length">
-						            <ol class="dd-list">
-						                <li 
-											class="dd-item clickable" 
-											v-for="category in categories" 
-											:data-id="category.id" 
-											@click="selectCategory(category)"
-											:key="category.id"
-										>
-						                    <div class="dd-handle clickable" :class="{'active': category.id === activeCategory.id}"> {{ category.name }}
-						                        <span class="pull-right"><i class="fa fa-chevron-right"></i></span>
-						                    </div>
-						                </li>
-						            </ol>
-							    </div>
-							    <div v-else>
-							    	<div class="alert alert-warning">
-							           	<span>There are no categories in the menu '{{ activeMenu.name }}'.</span>
-							        </div>
-							    </div>
-							</div>
-							<div class="col-md-4" v-if="isCategorySelected">
-								<h4>Select Item</h4>
-								<div class="dd" id="nestable_list_3" v-if="items.length">
-							        <ol class="dd-list clickable">
-							            <li 
-											class="dd-item clickable" 
-											v-for="item in items" 
-											:data-id="item.id" 
-											@click="copyItem(item)"
-											:key="item.id"
-										>
-							                <div class="dd-handle clickable">
-							                    <span class="pull-left">
-							                    	<label class="clickable">{{ item.name }}
-							                    	</label>
-							                    </span>
-							                </div>
-							            </li>
-							        </ol>
-							    </div>
-							    <div v-else>
-							        <div class="alert alert-warning">
-							           	<span>There are no items in the category '{{ activeCategory.name }}'.</span>
-							        </div>
-							    </div>
+							<div class="alert alert-info"
+							     v-show="noItemTypes"
+							     ref="noItemTypes">
+								Menu Items require a tax classification.
+								<router-link to="/app/tax_manager/item_types">Create an Item Type in Tax Manager</router-link> before creating a Menu Item.
 							</div>
 						</div>
-                        <div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}"  v-show="!showCorporateItems" >
-							<resource-picker 
-								@open="toggleImageMode('newMenu', true)"
-								@close="toggleImageMode('newMenu', false)"
-								@selected="updateImage" 
-								:imageButton="true"
-								:imageUrl="newItem.image_url"
-								class="margin-top-15"
-							>
+						<div class="col-md-12 margin-bottom-20"
+						     v-if="$root.activeLocation.is_corporate !== undefined && $root.activeLocation.is_corporate !== 1">
+							<button class="btn create-or-edit"
+							        @click.prevent="flipCopyCreate"
+							        :class="{'blue-chambray' : copyMode, 'blue btn-outline' : !copyMode}">Copy existing</button>
+							<button class="btn"
+							        @click.prevent="flipCopyCreate"
+							        :class="{'blue-chambray' : !copyMode, 'blue btn-outline' : copyMode}">Create new</button>
+						</div>
+						<div class="col-md-12 margin-bottom-20"
+						     v-if="showCorporateItems">
+							<div class="col-md-4">
+								<h4>Select Menu</h4>
+								<div class="dd"
+								     id="nestable_list_1"
+								     v-if="menus.length">
+									<ol class="dd-list">
+										<li class="dd-item clickable"
+										    v-for="menu in menus"
+										    :data-id="menu.id"
+										    @click="selectMenu(menu)"
+										    :key="menu.id">
+											<div class="dd-handle clickable"
+											     :class="{'active': menu.id === activeMenu.id}"> {{ menu.name }}
+												<span class="pull-right">
+													<i class="fa fa-chevron-right"></i>
+												</span>
+											</div>
+										</li>
+									</ol>
+								</div>
+								<div v-else>
+									<div class="alert alert-warning">
+										<span>There are no menus to display.</span>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-4"
+							     v-if="isMenuSelected">
+								<h4>Select Category</h4>
+								<div class="dd"
+								     id="nestable_list_2"
+								     v-if="categories.length">
+									<ol class="dd-list">
+										<li class="dd-item clickable"
+										    v-for="category in categories"
+										    :data-id="category.id"
+										    @click="selectCategory(category)"
+										    :key="category.id">
+											<div class="dd-handle clickable"
+											     :class="{'active': category.id === activeCategory.id}"> {{ category.name }}
+												<span class="pull-right">
+													<i class="fa fa-chevron-right"></i>
+												</span>
+											</div>
+										</li>
+									</ol>
+								</div>
+								<div v-else>
+									<div class="alert alert-warning">
+										<span>There are no categories in the menu '{{ activeMenu.name }}'.</span>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-4"
+							     v-if="isCategorySelected">
+								<h4>Select Item</h4>
+								<div class="dd"
+								     id="nestable_list_3"
+								     v-if="items.length">
+									<ol class="dd-list clickable">
+										<li class="dd-item clickable"
+										    v-for="item in items"
+										    :data-id="item.id"
+										    @click="copyItem(item)"
+										    :key="item.id">
+											<div class="dd-handle clickable">
+												<span class="pull-left">
+													<label class="clickable">{{ item.name }}
+													</label>
+												</span>
+											</div>
+										</li>
+									</ol>
+								</div>
+								<div v-else>
+									<div class="alert alert-warning">
+										<span>There are no items in the category '{{ activeCategory.name }}'.</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}"
+						     v-show="!showCorporateItems">
+							<resource-picker @open="toggleImageMode('newMenu', true)"
+							                 @close="toggleImageMode('newMenu', false)"
+							                 @selected="updateImage"
+							                 :imageButton="true"
+							                 :imageUrl="newItem.image_url"
+							                 class="margin-top-15">
 							</resource-picker>
-		        		</div>
-		        		<div class="col-md-5" v-show="!showCorporateItems && !imageMode.newMenu">
+						</div>
+						<div class="col-md-5"
+						     v-show="!showCorporateItems && !imageMode.newMenu">
 							<div class="form-group form-md-line-input form-md-floating-label">
-							    <input type="text" class="form-control input-sm" :class="{'edited': newItem.name.length}" id="form_control_2" v-model="newItem.name">
-							    <label for="form_control_2">Item Name</label>
+								<input type="text"
+								       class="form-control input-sm"
+								       :class="{'edited': newItem.name.length}"
+								       id="form_control_2"
+								       v-model="newItem.name">
+								<label for="form_control_2">Item Name</label>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
-							    <input type="text" class="form-control input-sm" :class="{'edited': newItem.desc.length}" id="form_control_2" v-model="newItem.desc">
-							    <label for="form_control_2">Item Description</label>
+								<input type="text"
+								       class="form-control input-sm"
+								       :class="{'edited': newItem.desc.length}"
+								       id="form_control_2"
+								       v-model="newItem.desc">
+								<label for="form_control_2">Item Description</label>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
-							    <input type="text" class="form-control input-sm" :class="{'edited': newItem.short_description.length}" id="form_control_2" v-model="newItem.short_description">
-							    <label for="form_control_2">Item Short Description</label>
+								<input type="text"
+								       class="form-control input-sm"
+								       :class="{'edited': newItem.short_description.length}"
+								       id="form_control_2"
+								       v-model="newItem.short_description">
+								<label for="form_control_2">Item Short Description</label>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
-							    <input type="text" class="form-control input-sm" :class="{'edited': newItem.price.length}" id="form_control_3" v-model="newItem.price">
-							    <label for="form_control_3">Item Price</label>
+								<input type="text"
+								       class="form-control input-sm"
+								       :class="{'edited': newItem.price.length}"
+								       id="form_control_3"
+								       v-model="newItem.price">
+								<label for="form_control_3">Item Price</label>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
-							    <input type="text" class="form-control input-sm" :class="{'edited': newItem.nutrition_summary.length}" id="form_control_3" v-model="newItem.nutrition_summary">
-							    <label for="form_control_3">Nutrition Summary</label>
+								<input type="text"
+								       class="form-control input-sm"
+								       :class="{'edited': newItem.nutrition_summary.length}"
+								       id="form_control_3"
+								       v-model="newItem.nutrition_summary">
+								<label for="form_control_3">Nutrition Summary</label>
 							</div>
-		        		</div>
-		        		<div class="col-md-5" v-show="!showCorporateItems && !imageMode.newMenu">
-    						<div class="form-group form-md-line-input form-md-floating-label">
-    						    <input type="number" class="form-control input-sm" :class="{'edited': newItem.order}" id="form_control_4" v-model="newItem.order">
-    						    <label for="form_control_4">Item Order</label>
-    						</div>
-		        			<div class="form-group form-md-line-input form-md-floating-label">
-		        			    <input type="text" :readonly="SKUreadonly" class="form-control input-sm" :class="{'edited': newItem.sku.length}" id="form_control_5" v-model="newItem.sku">
-		        			    <label for="form_control_5">Item SKU</label>
-		        			</div>
-	                        <div class="form-group form-md-line-input form-md-floating-label" v-if="itemTypes.length">
-	                    		<label>Tax class:</label><br>
-	                    		<el-dropdown trigger="click" @command="updateTaxClass" size="mini" :show-timeout="50" :hide-timeout="50">
-	                    			<el-button size="mini">
-	                    				{{ newTaxClassLabel }} <i class="el-icon-arrow-down el-icon--right"></i>
-	                    			</el-button>
-	                    			<el-dropdown-menu slot="dropdown">
-	                    				<el-dropdown-item v-for="type in itemTypes" :command="type.id" :key="type.id">{{type.name}}</el-dropdown-item>
-	                    			</el-dropdown-menu>
-	                    		</el-dropdown>
-	                    	</div>
+						</div>
+						<div class="col-md-5"
+						     v-show="!showCorporateItems && !imageMode.newMenu">
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<input type="number"
+								       class="form-control input-sm"
+								       :class="{'edited': newItem.order}"
+								       id="form_control_4"
+								       v-model="newItem.order">
+								<label for="form_control_4">Item Order</label>
+							</div>
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<input type="text"
+								       :readonly="SKUreadonly"
+								       class="form-control input-sm"
+								       :class="{'edited': newItem.sku.length}"
+								       id="form_control_5"
+								       v-model="newItem.sku">
+								<label for="form_control_5">Item SKU</label>
+							</div>
+							<div class="form-group form-md-line-input form-md-floating-label"
+							     v-if="itemTypes.length">
+								<label>Tax class:</label><br>
+								<el-dropdown trigger="click"
+								             @command="updateTaxClass"
+								             size="mini"
+								             :show-timeout="50"
+								             :hide-timeout="50">
+									<el-button size="mini">
+										{{ newTaxClassLabel }}
+										<i class="el-icon-arrow-down el-icon--right"></i>
+									</el-button>
+									<el-dropdown-menu slot="dropdown">
+										<el-dropdown-item v-for="type in itemTypes"
+										                  :command="type.id"
+										                  :key="type.id">{{type.name}}</el-dropdown-item>
+									</el-dropdown-menu>
+								</el-dropdown>
+							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
 								<label>Type:</label><br>
-								<el-dropdown trigger="click" @command="updateItemType" size="mini" :show-timeout="50" :hide-timeout="50">
+								<el-dropdown trigger="click"
+								             @command="updateItemType"
+								             size="mini"
+								             :show-timeout="50"
+								             :hide-timeout="50">
 									<el-button size="mini">
-										{{ newItemTypeLabel }} <i class="el-icon-arrow-down el-icon--right"></i>
+										{{ newItemTypeLabel }}
+										<i class="el-icon-arrow-down el-icon--right"></i>
 									</el-button>
 									<el-dropdown-menu slot="dropdown">
 										<el-dropdown-item command="regular">regular</el-dropdown-item>
@@ -177,339 +246,354 @@
 									</el-dropdown-menu>
 								</el-dropdown>
 							</div>
-    						<div class="form-group form-md-line-input form-md-floating-label">
-    			                <label>Item Status:</label><br>
-    			                <el-switch
-    			                	v-model="newItem.status"
-    			                	active-color="#0c6"
-    			                	inactive-color="#ff4949"
-    			                	:active-value="1"
-    			                	:inactive-value="0"
-    			                	active-text="Active"
-    			                	inactive-text="Sold Out">
-    			                </el-switch>
-    			            </div>
-		        		</div>
-		        	</div>
-      				<div class="form-actions right margin-top-20" v-show="!showCorporateItems && !imageMode.newMenu">
-						<button 
-							type="submit" 
-							class="btn blue" 
-							:disabled="noItemTypes || creating">
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<label>Item Status:</label><br>
+								<el-switch v-model="newItem.status"
+								           active-color="#0c6"
+								           inactive-color="#ff4949"
+								           :active-value="1"
+								           :inactive-value="0"
+								           active-text="Active"
+								           inactive-text="Sold Out">
+								</el-switch>
+							</div>
+						</div>
+					</div>
+					<div class="form-actions right margin-top-20"
+					     v-show="!showCorporateItems && !imageMode.newMenu">
+						<button type="submit"
+						        class="btn blue"
+						        :disabled="noItemTypes || creating">
 							Create
-							<i 
-								v-show="creating"
-								class="fa fa-spinner fa-pulse fa-fw">
+							<i v-show="creating"
+							   class="fa fa-spinner fa-pulse fa-fw">
 							</i>
 						</button>
 					</div>
-      			</form>
-  			</div>
-        </div>
-        <!-- END CREATE NEW MENU-->
-        <loading-screen :show="displayItemData" :color="'#2C3E50'" :display="'inline'"></loading-screen>
-        <div v-if="$root.activeLocation && $root.activeLocation.id && !displayItemData">
-		    <div class="portlet light portlet-fit bordered margin-top-20">
-		        <div class="portlet-title bg-blue-chambray">
-		        	<div class="menu-image">
-		        		<img :src="categoryDetails.image_url">
-		        	</div>
-		            <div class="caption">
-		                <span class="caption-subject font-default bold uppercase">{{ categoryDetails.name }}</span>
-                        <div class="caption-desc font-grey-cascade">{{ categoryDetails.desc }}</div>
-		            </div>
-		        </div>
-		        <div class="portlet-body">
+				</form>
+			</div>
+		</div>
+		<!-- END CREATE NEW MENU-->
+		<loading-screen :show="displayItemData"
+		                :color="'#2C3E50'"
+		                :display="'inline'"></loading-screen>
+		<div v-if="$root.activeLocation && $root.activeLocation.id && !displayItemData">
+			<div class="portlet light portlet-fit bordered margin-top-20">
+				<div class="portlet-title bg-blue-chambray">
+					<div class="menu-image">
+						<img :src="categoryDetails.image_url">
+					</div>
+					<div class="caption">
+						<span class="caption-subject font-default bold uppercase">{{ categoryDetails.name }}</span>
+						<div class="caption-desc font-grey-cascade">{{ categoryDetails.desc }}</div>
+					</div>
+				</div>
+				<div class="portlet-body">
 					<div class="row">
 						<div class="col-md-12">
-							<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
-								<button class="close" @click="clearError('listErrorMessage')"></button>
+							<div class="alert alert-danger"
+							     v-show="listErrorMessage"
+							     ref="listErrorMessage">
+								<button class="close"
+								        @click="clearError('listErrorMessage')"></button>
 								<span>{{listErrorMessage}}</span>
 							</div>
 						</div>
 					</div>
-		            <div class="mt-element-list margin-top-15" v-if="categoryItems.length">
-		                <div class="mt-list-container list-news ext-1 no-border">
-		                    <ul>
-		                        <li 
-									v-for="item in categoryItems" 
-									class="mt-list-item margin-top-15" 
-									:class="{'no-hover-highlight' : expanded === item.id, 'clickable' : expanded !== item.id, 'animated' : animated === `item-${item.id}`}" :id="'item-' + item.id" 
-									@click="expandDetails(item)"
-									:key="item.id"
-								>
-		                        	<div class="margin-bottom-15 actions-on-top">
-		                        		<el-tooltip 
-											v-if="$root.permissions['menu_manager menus categories subcategories items update']"
-											content="Edit" 
-											effect="light" 
-											placement="bottom">
-			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="displayEditItemModal(item, $event)">
-	                                            <i class="fa fa-lg fa-pencil"></i>
-	                                        </a>
-		                        		</el-tooltip>
-		                        		<el-tooltip 
-											v-if="$root.permissions['menu_manager menus categories subcategories items read'] && !$root.permissions['menu_manager menus categories subcategories items update']"
-											content="View" 
-											effect="light" 
-											placement="bottom">
-			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="displayEditItemModal(item, $event)">
-	                                            <i class="fa fa-lg fa-eye"></i>
-	                                        </a>
-		                        		</el-tooltip>
-		                        		<el-tooltip 
-											v-if="$root.permissions['menu_manager menus categories subcategories items update']"
-											content="Images" 
-											effect="light" 
-											placement="bottom">
-	                                        <a class="btn btn-circle btn-icon-only btn-default" @click="openImagesModal(item, $event)">
-	                                            <i class="fa fa-lg fa-image"></i>
-	                                        </a>
-		                        		</el-tooltip>
-		                        		<el-tooltip 
-											v-if="
+					<div class="mt-element-list margin-top-15"
+					     v-if="categoryItems.length">
+						<div class="mt-list-container list-news ext-1 no-border">
+							<ul>
+								<li v-for="item in categoryItems"
+								    class="mt-list-item margin-top-15"
+								    :class="{'no-hover-highlight' : expanded === item.id, 'clickable' : expanded !== item.id, 'animated' : animated === `item-${item.id}`}"
+								    :id="'item-' + item.id"
+								    @click="expandDetails(item)"
+								    :key="item.id">
+									<div class="margin-bottom-15 actions-on-top">
+										<el-tooltip v-if="$root.permissions['menu_manager menus categories subcategories items update']"
+										            content="Edit"
+										            effect="light"
+										            placement="bottom">
+											<a class="btn btn-circle btn-icon-only btn-default"
+											   @click="displayEditItemModal(item, $event)">
+												<i class="fa fa-lg fa-pencil"></i>
+											</a>
+										</el-tooltip>
+										<el-tooltip v-if="$root.permissions['menu_manager menus categories subcategories items read'] && !$root.permissions['menu_manager menus categories subcategories items update']"
+										            content="View"
+										            effect="light"
+										            placement="bottom">
+											<a class="btn btn-circle btn-icon-only btn-default"
+											   @click="displayEditItemModal(item, $event)">
+												<i class="fa fa-lg fa-eye"></i>
+											</a>
+										</el-tooltip>
+										<el-tooltip v-if="$root.permissions['menu_manager menus categories subcategories items update']"
+										            content="Images"
+										            effect="light"
+										            placement="bottom">
+											<a class="btn btn-circle btn-icon-only btn-default"
+											   @click="openImagesModal(item, $event)">
+												<i class="fa fa-lg fa-image"></i>
+											</a>
+										</el-tooltip>
+										<el-tooltip v-if="
 												$root.permissions['menu_manager menus categories subcategories items nutrition read'] ||
 												$root.permissions['menu_manager menus categories subcategories items nutrition create'] ||
 												$root.permissions['menu_manager menus categories subcategories items nutrition update']
 											"
-											content="Nutrition Info" 
-											effect="light" 
-											placement="bottom">
-	                                        <a class="btn btn-circle btn-icon-only btn-default" @click="viewNutritionInfo(item, $event)">
-	                                            <i class="fa fa-lg fa-heartbeat"></i>
-	                                        </a>
-		                        		</el-tooltip>
-		                        		<el-tooltip 
-											v-if="$root.permissions['menu_manager menus categories subcategories items update']"
-											content="Apply To Locations" 
-											effect="light" 
-											placement="bottom">
-			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="displayApplyToLocationsModal(item, $event)">
-	                                            <i class="icon-layers"></i>
-	                                        </a>
-		                        		</el-tooltip>
-		                        		<el-tooltip 
-											v-if="$root.permissions['menu_manager menus categories subcategories items delete']"
-											content="Delete" 
-											effect="light" 
-											placement="bottom">
-			                        		<a class="btn btn-circle btn-icon-only btn-default" @click="displayDeleteItemModal(item, $event)">
-	                                            <i class="fa fa-lg fa-trash"></i>
-	                                        </a>
-		                        		</el-tooltip>
-		                        	</div>
-		                        	<div class="list-icon-container" v-show="expanded !== item.id">
-                                        <i :id="'icon-' + item.id" class="fa fa-angle-right"></i>
-                                    </div>
-		                            <div class="list-thumb">
-		                                <a v-if="item.image_url.length">
-		                                    <img alt="" :src="item.image_url" />
-		                                </a>
-		                                <a v-else>
-		                                	<img src="../../../assets/img/app/image-placeholder.png">
-		                                </a>
-		                            </div>
-		                            <div class="list-datetime bold uppercase font-red">
-		                            	<span>{{ item.name }}</span>
-		                            </div>
-		                            <div class="row height-mod">
-		                            	<div class="col-md-4">
-		                                	<strong>Price:</strong>
-		                                	<span>{{ item.price }}</span><br>
-		                                	<strong>SKU:</strong>
-		                                	<span>{{ item.sku }}</span><br>
-		                                	<strong>Status:</strong>
-		                                	<span v-if="item.status == 1">Available</span>
-		                                	<span v-if="item.status == 0">Sold Out</span><br>
-		                                	<strong>Nutrition summary:</strong>
-		                                	<span>{{ item.nutrition_summary }}</span><br>
-		                                	<strong>Item type:</strong>
-		                                	<span>{{ getItemTypeName(item.item_type_id) }}</span>
-		                                </div>
-	                                	<div class="col-md-4">
-                                        	<strong>Description:</strong>
-                                        	<span>{{ item.desc }}</span><br>
-                                        	<strong>Short description:</strong>
-                                        	<span>{{ item.short_description }}</span>
-	                                    </div>
-		                            </div>
-                                    <div class="row" :class="{'mt-list-item-expanded' : expanded === item.id, 'mt-list-item-collapsed' : expanded !== item.id}">
-    			                        <div :class="{'col-md-3' : item.type === 'preset', 'col-md-4' : item.type !== 'preset'}">
-    			                        	<div class="col-md-12">
-    				                        	<h5 class="inline-block">Modifiers</h5>
-    			                        	</div>
-    			                        	<div class="col-md-12">
-    			                        		<div v-if="item.modifiers && item.modifiers.length">
-                    				        	    <ul class="item-modifier-list">
-                    				        	    	<li 
-															v-for="modifier in item.modifiers"
-															:key="modifier.id"
-														>
-                    				        	    		<router-link :to="'/app/menu_manager/modifier_items/' + modifier.id">{{modifier.name}}</router-link>
-                    				        	    	</li>
-                    				        	    </ul>
-    			                        		</div>
-    			                        		<div class="col-md-12" v-if="!item.modifiers || !item.modifiers.length">
-    			                        			<p class="grey-text">No modifiers have been applied to this item.</p>
-    			                        		</div>
-    			                        		<div class="col-md-12">
-				                        			<button 
-														v-if="$root.permissions['menu_manager menus categories subcategories items assign modifier']"
-														type="button" 
-														class="btn btn-outline btn-xs blue margin-top-10" 
-														@click.stop="showModifierModal(item.id, item.modifiers)">
+										            content="Nutrition Info"
+										            effect="light"
+										            placement="bottom">
+											<a class="btn btn-circle btn-icon-only btn-default"
+											   @click="viewNutritionInfo(item, $event)">
+												<i class="fa fa-lg fa-heartbeat"></i>
+											</a>
+										</el-tooltip>
+										<el-tooltip v-if="$root.permissions['menu_manager menus categories subcategories items update']"
+										            content="Apply To Locations"
+										            effect="light"
+										            placement="bottom">
+											<a class="btn btn-circle btn-icon-only btn-default"
+											   @click="displayApplyToLocationsModal(item, $event)">
+												<i class="icon-layers"></i>
+											</a>
+										</el-tooltip>
+										<el-tooltip v-if="$root.permissions['menu_manager menus categories subcategories items delete']"
+										            content="Delete"
+										            effect="light"
+										            placement="bottom">
+											<a class="btn btn-circle btn-icon-only btn-default"
+											   @click="displayDeleteItemModal(item, $event)">
+												<i class="fa fa-lg fa-trash"></i>
+											</a>
+										</el-tooltip>
+									</div>
+									<div class="list-icon-container"
+									     v-show="expanded !== item.id">
+										<i :id="'icon-' + item.id"
+										   class="fa fa-angle-right"></i>
+									</div>
+									<div class="list-thumb">
+										<a v-if="item.image_url.length">
+											<img alt=""
+											     :src="item.image_url" />
+										</a>
+										<a v-else>
+											<img src="../../../assets/img/app/image-placeholder.png">
+										</a>
+									</div>
+									<div class="list-datetime bold uppercase font-red">
+										<span>{{ item.name }}</span>
+									</div>
+									<div class="row height-mod">
+										<div class="col-md-4">
+											<strong>Price:</strong>
+											<span>{{ item.price }}</span><br>
+											<strong>SKU:</strong>
+											<span>{{ item.sku }}</span><br>
+											<strong>Status:</strong>
+											<span v-if="item.status == 1">Available</span>
+											<span v-if="item.status == 0">Sold Out</span><br>
+											<strong>Nutrition summary:</strong>
+											<span>{{ item.nutrition_summary }}</span><br>
+											<strong>Item type:</strong>
+											<span>{{ getItemTypeName(item.item_type_id) }}</span>
+										</div>
+										<div class="col-md-4">
+											<strong>Description:</strong>
+											<span>{{ item.desc }}</span><br>
+											<strong>Short description:</strong>
+											<span>{{ item.short_description }}</span>
+										</div>
+									</div>
+									<div class="row"
+									     :class="{'mt-list-item-expanded' : expanded === item.id, 'mt-list-item-collapsed' : expanded !== item.id}">
+										<div :class="{'col-md-3' : item.type === 'preset', 'col-md-4' : item.type !== 'preset'}">
+											<div class="col-md-12">
+												<h5 class="inline-block">Modifiers</h5>
+											</div>
+											<div class="col-md-12">
+												<div v-if="item.modifiers && item.modifiers.length">
+													<ul class="item-modifier-list">
+														<li v-for="modifier in item.modifiers"
+														    :key="modifier.id">
+															<router-link :to="'/app/menu_manager/modifier_items/' + modifier.id">{{modifier.name}}</router-link>
+														</li>
+													</ul>
+												</div>
+												<div class="col-md-12"
+												     v-if="!item.modifiers || !item.modifiers.length">
+													<p class="grey-text">No modifiers have been applied to this item.</p>
+												</div>
+												<div class="col-md-12">
+													<button v-if="$root.permissions['menu_manager menus categories subcategories items assign modifier']"
+													        type="button"
+													        class="btn btn-outline btn-xs blue margin-top-10"
+													        @click.stop="showModifierModal(item.id, item.modifiers)">
 														Add Modifiers
 													</button>
-    			                        		</div>
-    			                        	</div>
-    			                        </div>
-    			                        <div :class="{'col-md-3' : item.type === 'preset', 'col-md-4' : item.type !== 'preset'}">
-    			                        	<div class="col-md-12">
-    				                        	<h5 class="inline-block">Tags</h5>
-    			                        	</div>
-    			                        	<div class="col-md-12">
-    			                        		<div v-if="item.tags && item.tags.length">
-                    				        	    <ul class="item-modifier-list">
-                    				        	    	<li  
-															v-for="tag in item.tags"
-															:key="tag.id"
-														> 
+												</div>
+											</div>
+										</div>
+										<div :class="{'col-md-3' : item.type === 'preset', 'col-md-4' : item.type !== 'preset'}">
+											<div class="col-md-12">
+												<h5 class="inline-block">Tags</h5>
+											</div>
+											<div class="col-md-12">
+												<div v-if="item.tags && item.tags.length">
+													<ul class="item-modifier-list">
+														<li v-for="tag in item.tags"
+														    :key="tag.id">
 															<span v-show="tag.type === 'may_contain'">may contain</span>
 															<span v-show="tag.type === 'contains'">contains</span>
-															 {{tag.name}} 
+															{{tag.name}}
 														</li>
-                    				        	    </ul>
-    			                        		</div>
-    			                        		<div class="col-md-12" v-if="!item.tags || !item.tags.length">
-    			                        			<p class="grey-text">No tags have been applied to this item.</p>
-    			                        		</div>
-    			                        		<div class="col-md-12">
-				                        			<button 
-														v-if="$root.permissions['menu_manager menus categories subcategories items tags update']"
-														type="button" 
-														class="btn btn-outline btn-xs blue margin-top-10" 
-														@click.stop="showTagsModal(item.id, item.tags)">
+													</ul>
+												</div>
+												<div class="col-md-12"
+												     v-if="!item.tags || !item.tags.length">
+													<p class="grey-text">No tags have been applied to this item.</p>
+												</div>
+												<div class="col-md-12">
+													<button v-if="$root.permissions['menu_manager menus categories subcategories items tags update']"
+													        type="button"
+													        class="btn btn-outline btn-xs blue margin-top-10"
+													        @click.stop="showTagsModal(item.id, item.tags)">
 														Add Tags
 													</button>
-    			                        		</div>
-    			                        	</div>
-    			                        </div>
-    			                        <div :class="{'col-md-3' : item.type === 'preset', 'col-md-4' : item.type !== 'preset'}">
-    			                        	<div class="col-md-12">
-    				                        	<h5 class="inline-block">Attributes</h5>
-    			                        	</div>
-    			                        	<div class="col-md-12">
-    			                        		<div v-show="selectedItemAttributes.length">
-                    				        	    <ul class="item-modifier-list">
-                    				        	    	<li 
-															class="col-md-6" 
-															v-for="attribute in selectedItemAttributes"
-															:key="attribute.id"
-														>
-														 {{attribute.name}} 
+												</div>
+											</div>
+										</div>
+										<div :class="{'col-md-3' : item.type === 'preset', 'col-md-4' : item.type !== 'preset'}">
+											<div class="col-md-12">
+												<h5 class="inline-block">Attributes</h5>
+											</div>
+											<div class="col-md-12">
+												<div v-show="selectedItemAttributes.length">
+													<ul class="item-modifier-list">
+														<li class="col-md-6"
+														    v-for="attribute in selectedItemAttributes"
+														    :key="attribute.id">
+															{{attribute.name}}
 														</li>
-                    				        	    </ul>
-    			                        		</div>
-    			                        		<div class="col-md-12" v-show="!selectedItemAttributes.length">
-    			                        			<p class="grey-text">No attributes have been applied to this item.</p>
-    			                        		</div>
-    			                        		<div class="col-md-12">
-				                        			<button 
-														v-if="$root.permissions['menu_manager menus categories subcategories items update']"
-														type="button" 
-														class="btn btn-outline btn-xs blue margin-top-10" 
-														@click.stop="showAttributesModal(item)">
+													</ul>
+												</div>
+												<div class="col-md-12"
+												     v-show="!selectedItemAttributes.length">
+													<p class="grey-text">No attributes have been applied to this item.</p>
+												</div>
+												<div class="col-md-12">
+													<button v-if="$root.permissions['menu_manager menus categories subcategories items update']"
+													        type="button"
+													        class="btn btn-outline btn-xs blue margin-top-10"
+													        @click.stop="showAttributesModal(item)">
 														Add Attributes
 													</button>
-    			                        		</div>
-    			                        	</div>
-    			                        </div>
-										<div class="col-md-3" v-show="item.type === 'preset'">
+												</div>
+											</div>
+										</div>
+										<div class="col-md-3"
+										     v-show="item.type === 'preset'">
 											<h5>Preset Settings</h5>
-											<ul class="item-modifier-list" v-show="item.preset_item_modifier_item">
-												<li 
-													v-for="(modifier, index) in item.preset_item_modifier_item"
-													:key="index"
-												>
+											<ul class="item-modifier-list"
+											    v-show="item.preset_item_modifier_item">
+												<li v-for="(modifier, index) in item.preset_item_modifier_item"
+												    :key="index">
 													{{modifier.modifier_item_name}}
 													<span v-if="modifier.preset_item_modifier_item_option_item.length > 0">
-														(<span v-for="(option, index) in modifier.preset_item_modifier_item_option_item" :key="index">{{option.option_item_name}}<span v-show="modifier.preset_item_modifier_item_option_item.length - 1 !== index"> | </span></span>)
+														(
+														<span v-for="(option, index) in modifier.preset_item_modifier_item_option_item"
+														      :key="index">{{option.option_item_name}}
+															<span v-show="modifier.preset_item_modifier_item_option_item.length - 1 !== index"> | </span>
+														</span>)
 													</span>
 												</li>
 											</ul>
-											<p class="grey-text" v-show="item.preset_item_modifier_item && !item.preset_item_modifier_item.length">No preset settings yet.</p>
-											<button 
-												v-if="$root.permissions['menu_manager menus categories subcategories items update']"
-												type="button" 
-												class="btn btn-outline btn-xs blue margin-top-10" 
-												@click.stop="showPresetModal(item)">
+											<p class="grey-text"
+											   v-show="item.preset_item_modifier_item && !item.preset_item_modifier_item.length">No preset settings yet.</p>
+											<button v-if="$root.permissions['menu_manager menus categories subcategories items update']"
+											        type="button"
+											        class="btn btn-outline btn-xs blue margin-top-10"
+											        @click.stop="showPresetModal(item)">
 												<span v-if="item.preset_item_modifier_item && !item.preset_item_modifier_item.length">Add</span>
 												<span v-else>Edit</span> Preset Settings
 											</button>
 										</div>
-    			                    </div>
-		                        </li>
-		                    </ul>
-		                </div>
-		            </div>
-			        <div class="margin-top-20" v-else>
-			            <no-results :show="!categoryItems.length" :type="'items'" :custom="true" :text="customText"></no-results>
-			        </div>
-		        </div>
-		    </div>
-        </div>
-        <div class="margin-top-20" v-if="!displayItemData">
-            <no-results :show="!$root.activeLocation || !$root.activeLocation.id" :type="'items'"></no-results>
-        </div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="margin-top-20"
+					     v-else>
+						<no-results :show="!categoryItems.length"
+						            :type="'items'"
+						            :custom="true"
+						            :text="customText"></no-results>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="margin-top-20"
+		     v-if="!displayItemData">
+			<no-results :show="!$root.activeLocation || !$root.activeLocation.id"
+			            :type="'items'"></no-results>
+		</div>
 
-        <edit-item 
-			v-if="editItemModalActive" 
-			@editItem="editItem" 
-			@deactivateEditItemModal="closeEditItemModal"
-		>
+		<edit-item v-if="editItemModalActive"
+		           @editItem="editItem"
+		           @deactivateEditItemModal="closeEditItemModal">
 		</edit-item>
 
-        <delete-item 
-			v-if="deleteItemModalActive" 
-			:passedItemId="passedItemId" 
-			@closeDeleteItemModal="closeDeleteItemModal" 
-			@deleteItemAndCloseModal="deleteItemAndCloseModal">
+		<delete-item v-if="deleteItemModalActive"
+		             :passedItemId="passedItemId"
+		             @closeDeleteItemModal="closeDeleteItemModal"
+		             @deleteItemAndCloseModal="deleteItemAndCloseModal">
 		</delete-item>
 
-        <nutrition-info 
-			v-if="displayNutritionModal" 
-			:item="selectedItem" 
-			@nutritionInfoSaved="nutritionInfoSaved" 
-			@deactivateNutritionInfoModal="displayNutritionModal = false">
+		<nutrition-info v-if="displayNutritionModal"
+		                :item="selectedItem"
+		                @nutritionInfoSaved="nutritionInfoSaved"
+		                @deactivateNutritionInfoModal="displayNutritionModal = false">
 		</nutrition-info>
 
-        <modifiers-list 
-			v-if="displayModifierModal" 
-			:appliedModifiers="appliedModifiers" 
-			:selectedItemId="selectedItemId" 
-			@deactivateModifierModal="closeModifierModal">
+		<modifiers-list v-if="displayModifierModal"
+		                :appliedModifiers="appliedModifiers"
+		                :selectedItemId="selectedItemId"
+		                @deactivateModifierModal="closeModifierModal">
 		</modifiers-list>
 
-        <tags-list 
-			v-if="displayTagsListModal" 
-			:appliedTags="appliedTags" 
-			:selectedItemId="selectedItemId" 
-			@deactivateTagsListModal="closeTagsListModal">
+		<tags-list v-if="displayTagsListModal"
+		           :appliedTags="appliedTags"
+		           :selectedItemId="selectedItemId"
+		           @deactivateTagsListModal="closeTagsListModal">
 		</tags-list>
 
-    	<!-- ASSIGN ITEM ATTRIBUTES START -->
-		<modal :show="showAssignItemAttributesModal" effect="fade" @closeOnEscape="closeAssignItemAttributesModal" ref="assignItemAttributesModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeAssignItemAttributesModal()">
+		<!-- ASSIGN ITEM ATTRIBUTES START -->
+		<modal :show="showAssignItemAttributesModal"
+		       effect="fade"
+		       @closeOnEscape="closeAssignItemAttributesModal"
+		       ref="assignItemAttributesModal">
+			<div slot="modal-header"
+			     class="modal-header">
+				<button type="button"
+				        class="close"
+				        @click="closeAssignItemAttributesModal()">
 					<span>&times;</span>
 				</button>
 				<h4 class="modal-title center">Apply Attributes</h4>
 			</div>
-			<div slot="modal-body" class="modal-body">
-				<div class="row" v-show="assignItemAttributesErrorMessage" ref="assignItemAttributesErrorMessage">
+			<div slot="modal-body"
+			     class="modal-body">
+				<div class="row"
+				     v-show="assignItemAttributesErrorMessage"
+				     ref="assignItemAttributesErrorMessage">
 					<div class="col-md-12">
 						<div class="alert alert-danger">
-							<button class="close" @click="clearAttributesError()"></button>
+							<button class="close"
+							        @click="clearAttributesError()"></button>
 							<span>{{assignItemAttributesErrorMessage}}</span>
 						</div>
 					</div>
@@ -520,8 +604,12 @@
 							<thead>
 								<tr>
 									<th class="table-column--checkboxes">
-										<div class="md-checkbox has-success" @change="selectAllAttributes()">
-											<input type="checkbox" id="locations-promocodes" class="md-check" v-model="selectAllAttributesSelected">
+										<div class="md-checkbox has-success"
+										     @change="selectAllAttributes()">
+											<input type="checkbox"
+											       id="locations-promocodes"
+											       class="md-check"
+											       v-model="selectAllAttributesSelected">
 											<label for="locations-promocodes">
 												<span class="inc"></span>
 												<span class="check"></span>
@@ -533,10 +621,15 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr v-for="itemAttribute in itemAttributes" :key="itemAttribute.id" >
-									<td  class="table-column--names">
+								<tr v-for="itemAttribute in itemAttributes"
+								    :key="itemAttribute.id">
+									<td class="table-column--names">
 										<div class="md-checkbox has-success">
-											<input type="checkbox" class="md-check" v-model="itemAttribute.selected" @change="syncSelectAllAttributes(itemAttribute.selected)" :id="`ia-${itemAttribute.id}`">
+											<input type="checkbox"
+											       class="md-check"
+											       v-model="itemAttribute.selected"
+											       @change="syncSelectAllAttributes(itemAttribute.selected)"
+											       :id="`ia-${itemAttribute.id}`">
 											<label :for="`ia-${itemAttribute.id}`">
 												<span class="inc"></span>
 												<span class="check"></span>
@@ -551,18 +644,17 @@
 					</div>
 				</div>
 			</div>
-			<div slot="modal-footer" class="modal-footer clear">
+			<div slot="modal-footer"
+			     class="modal-footer clear">
 				<div class="row">
 					<div class="col-md-12">
-						<button 
-							@click="assignItemAttributesToItem()" 
-							type="button" 
-							class="btn blue pull-right"
-							:disabled="assigningAttributes">
+						<button @click="assignItemAttributesToItem()"
+						        type="button"
+						        class="btn blue pull-right"
+						        :disabled="assigningAttributes">
 							Save
-							<i 
-								v-show="assigningAttributes"
-								class="fa fa-spinner fa-pulse fa-fw">
+							<i v-show="assigningAttributes"
+							   class="fa fa-spinner fa-pulse fa-fw">
 							</i>
 						</button>
 					</div>
@@ -572,44 +664,52 @@
 		<!-- ASSIGN ITEM ATTRIBUTES END -->
 
 		<!-- APPLY TO LOCATIONS START -->
-		<modal :show="applyToLocationsModalActive" effect="fade" @closeOnEscape="closeApplyToLocationsModal" ref="applyToLocationsModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeApplyToLocationsModal()">
+		<modal :show="applyToLocationsModalActive"
+		       effect="fade"
+		       @closeOnEscape="closeApplyToLocationsModal"
+		       ref="applyToLocationsModal">
+			<div slot="modal-header"
+			     class="modal-header">
+				<button type="button"
+				        class="close"
+				        @click="closeApplyToLocationsModal()">
 					<span>&times;</span>
 				</button>
 				<h4 class="modal-title center">Apply Item To Locations</h4>
 			</div>
-			<div slot="modal-body" class="modal-body">
-				<div class="row" v-show="applyToLocationsErrorMessage" ref="applyToLocationsErrorMessage">
+			<div slot="modal-body"
+			     class="modal-body">
+				<div class="row"
+				     v-show="applyToLocationsErrorMessage"
+				     ref="applyToLocationsErrorMessage">
 					<div class="col-md-12">
 						<div class="alert alert-danger">
-							<button class="close" @click="clearLocationsError()"></button>
+							<button class="close"
+							        @click="clearLocationsError()"></button>
 							<span>{{applyToLocationsErrorMessage}}</span>
 						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-12">
-						<select-locations-popup 
-							@selectedLocations="selectedLocations"
-							:previouslySelected="locationsToApplyItemTo"
-							:withButton="false">
+						<select-locations-popup @selectedLocations="selectedLocations"
+						                        :previouslySelected="locationsToApplyItemTo"
+						                        :withButton="false">
 						</select-locations-popup>
 					</div>
 				</div>
 			</div>
-			<div slot="modal-footer" class="modal-footer clear">
+			<div slot="modal-footer"
+			     class="modal-footer clear">
 				<div class="row">
 					<div class="col-md-12">
-						<button 
-							@click="applyItemToLocations()" 
-							type="button" 
-							class="btn blue pull-right"
-							:disabled="applyingItemToLocations">
+						<button @click="applyItemToLocations()"
+						        type="button"
+						        class="btn blue pull-right"
+						        :disabled="applyingItemToLocations">
 							Apply
-							<i 
-								v-show="applyingItemToLocations"
-								class="fa fa-spinner fa-pulse fa-fw">
+							<i v-show="applyingItemToLocations"
+							   class="fa fa-spinner fa-pulse fa-fw">
 							</i>
 						</button>
 					</div>
@@ -619,21 +719,18 @@
 		<!-- APPLY TO LOCATIONS END -->
 
 		<!-- ITEM IMAGES START -->
-		<item-images
-			v-if="displayImagesModal"
-			:item="selectedItem"
-			@closeImagesModal="closeImagesModal"
-			@closeImagesModalAndUpdate="closeImagesModalAndUpdate"
-		>
+		<item-images v-if="displayImagesModal"
+		             :item="selectedItem"
+		             @closeImagesModal="closeImagesModal"
+		             @closeImagesModalAndUpdate="closeImagesModalAndUpdate">
 		</item-images>
 		<!-- ITEM IMAGES END -->
 
 		<!-- PRESET SETTINGS START -->
-		<preset-settings 
-			v-if="displayPresetModal" 
-			:item="itemToSetPresetSettingsFor"
-			@closePresetModal="closePresetModal"
-			@closeAndUpdate="closePresetModalAndUpdate">
+		<preset-settings v-if="displayPresetModal"
+		                 :item="itemToSetPresetSettingsFor"
+		                 @closePresetModal="closePresetModal"
+		                 @closeAndUpdate="closePresetModalAndUpdate">
 		</preset-settings>
 		<!-- PRESET SETTINGS START -->
 	</div>
@@ -665,10 +762,13 @@ export default {
 	data () {
 		return {
 			breadcrumbArray: [
-				{name: 'Menu Manager', link: false},
-				{name: 'Menus', link: '/app/menu_manager/menus'},
-				{name: 'Categories', link: '/app/menu_manager/categories/' + this.$root.activeMenuId},
-				{name: 'Items', link: false}
+				{ name: 'Menu Manager', link: false },
+				{ name: 'Menus', link: '/app/menu_manager/menus' },
+				{
+					name: 'Categories',
+					link: '/app/menu_manager/categories/' + this.$root.activeMenuId
+				},
+				{ name: 'Items', link: false }
 			],
 			editItemModalActive: false,
 			deleteItemModalActive: false,
@@ -683,7 +783,8 @@ export default {
 			selectedItemId: 0,
 			displayTagsListModal: false,
 			displayCreateTagModal: false,
-			customText: 'There are no items in this category. Click on the button above to add one.',
+			customText:
+				'There are no items in this category. Click on the button above to add one.',
 			errorMessage: '',
 			createItemCollapse: true,
 			creating: false,
@@ -752,18 +853,34 @@ export default {
 	},
 	computed: {
 		showCorporateItems () {
-			if (this.$root.activeLocation.is_corporate !== undefined && this.$root.activeLocation.is_corporate !== 1 && !this.itemCopied && this.copyMode) {
+			if (
+				this.$root.activeLocation.is_corporate !== undefined &&
+				this.$root.activeLocation.is_corporate !== 1 &&
+				!this.itemCopied &&
+				this.copyMode
+			) {
 				return true
 			} else {
 				return false
 			}
 		},
 		SKUreadonly () {
-			if (this.$root.activeLocation.is_corporate !== undefined && this.$root.activeLocation.is_corporate === 1) {
+			if (
+				this.$root.activeLocation.is_corporate !== undefined &&
+				this.$root.activeLocation.is_corporate === 1
+			) {
 				return false
-			} else if (this.$root.activeLocation.is_corporate !== undefined && this.$root.activeLocation.is_corporate !== 1 && !this.copyMode) {
+			} else if (
+				this.$root.activeLocation.is_corporate !== undefined &&
+				this.$root.activeLocation.is_corporate !== 1 &&
+				!this.copyMode
+			) {
 				return false
-			} else if (this.$root.activeLocation.is_corporate !== undefined && this.$root.activeLocation.is_corporate !== 1 && this.copyMode) {
+			} else if (
+				this.$root.activeLocation.is_corporate !== undefined &&
+				this.$root.activeLocation.is_corporate !== 1 &&
+				this.copyMode
+			) {
 				return true
 			}
 		},
@@ -771,7 +888,9 @@ export default {
 			if (this.newItem.item_type_id === null) {
 				return 'Select'
 			} else {
-				return this.itemTypes.filter(type => type.id === this.newItem.item_type_id).map(type => type.name)[0]
+				return this.itemTypes
+					.filter(type => type.id === this.newItem.item_type_id)
+					.map(type => type.name)[0]
 			}
 		},
 		newItemTypeLabel () {
@@ -788,7 +907,11 @@ export default {
 		}
 	},
 	mounted () {
-		if (this.$root.activeLocation && this.$root.activeLocation.id && this.$route.params.category_id) {
+		if (
+			this.$root.activeLocation &&
+			this.$root.activeLocation.id &&
+			this.$route.params.category_id
+		) {
 			this.getCategoryDetails()
 			this.getCategoryItems()
 		}
@@ -798,29 +921,40 @@ export default {
 	},
 	methods: {
 		/**
-	 	 * To get the preset settings of an item.
+		 * To get the preset settings of an item.
 		 * @function
 		 * @param {integer} itemId - The selected item id
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		getPresetDetails (itemId) {
 			var itemsVue = this
-			return ItemsFunctions.getPresetDetails(itemId, itemsVue.$root.appId, itemsVue.$root.appSecret, itemsVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					for (var i = 0; i < itemsVue.categoryItems.length; i++) {
-						if (itemsVue.categoryItems[i].id === itemId) {
-							itemsVue.$set(itemsVue.categoryItems[i], 'preset_item_modifier_item', response.payload.preset_item_modifier_item)
+			return ItemsFunctions.getPresetDetails(
+				itemId,
+				itemsVue.$root.appId,
+				itemsVue.$root.appSecret,
+				itemsVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						for (var i = 0; i < itemsVue.categoryItems.length; i++) {
+							if (itemsVue.categoryItems[i].id === itemId) {
+								itemsVue.$set(
+									itemsVue.categoryItems[i],
+									'preset_item_modifier_item',
+									response.payload.preset_item_modifier_item
+								)
+							}
 						}
 					}
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not get preset info',
-					errorName: 'listErrorMessage',
-					vue: itemsVue
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not get preset info',
+						errorName: 'listErrorMessage',
+						vue: itemsVue
+					})
+				})
 		},
 		/**
 		 * To alert the user that the menu has been successfully created.
@@ -832,13 +966,18 @@ export default {
 			this.$swal({
 				type: 'success',
 				title: 'Success!',
-				html: `<div>${item.name} created<br/><br/><strong>Do you want to add preset settings now?</strong></div>`,
+				html: `<div>${
+					item.name
+				} created<br/><br/><strong>Do you want to add preset settings now?</strong></div>`,
 				showCancelButton: true,
 				confirmButtonText: 'Yes',
 				cancelButtonText: 'No'
-			}).then(() => {
-				this.showPresetModal(item)
-			}, dismiss => {})
+			}).then(
+				() => {
+					this.showPresetModal(item)
+				},
+				dismiss => {}
+			)
 		},
 
 		/**
@@ -851,7 +990,8 @@ export default {
 			this.itemToSetPresetSettingsFor.id = item.id
 			this.itemToSetPresetSettingsFor.name = item.name
 			this.itemToSetPresetSettingsFor.modifiers = item.modifiers
-			this.itemToSetPresetSettingsFor.preset_item_modifier_item = item.preset_item_modifier_item
+			this.itemToSetPresetSettingsFor.preset_item_modifier_item =
+				item.preset_item_modifier_item
 			this.displayPresetModal = true
 		},
 		/**
@@ -862,14 +1002,14 @@ export default {
 		closePresetModal () {
 			this.displayPresetModal = false
 		},
-				/**
+		/**
 		 * To close the Preset settings modal and update Preset settins
 		 * @function
 		 * @param {array} updatedSettings - The updated settings
 		 * @returns {undefined}
 		 */
 		closePresetModalAndUpdate (updatedSettings) {
-			this.categoryItems.forEach((item) => {
+			this.categoryItems.forEach(item => {
 				if (item.id === this.itemToSetPresetSettingsFor.id) {
 					item.preset_item_modifier_item = updatedSettings
 				}
@@ -921,7 +1061,8 @@ export default {
 		applyItemToLocations () {
 			var itemsVue = this
 			if (!this.locationsToApplyItemTo.length) {
-				this.applyToLocationsErrorMessage = 'Please select at least one location'
+				this.applyToLocationsErrorMessage =
+					'Please select at least one location'
 				return
 			}
 
@@ -930,29 +1071,36 @@ export default {
 				item_id: this.passedItemId,
 				locations: this.locationsToApplyItemTo
 			}
-			return ItemsFunctions.applyItemToLocations(payload, itemsVue.$root.appId, itemsVue.$root.appSecret, itemsVue.$root.userToken)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					itemsVue.passedItemId = null
-					itemsVue.closeApplyToLocationsModal()
-					itemsVue.$swal({
-						title: 'Success',
-						text: 'Item successfully applied',
-						type: 'success',
-						confirmButtonText: 'OK'
-					})
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not apply the item',
-					errorName: 'applyToLocationsErrorMessage',
-					vue: itemsVue,
-					containerRef: 'applyToLocationsModal'
+			return ItemsFunctions.applyItemToLocations(
+				payload,
+				itemsVue.$root.appId,
+				itemsVue.$root.appSecret,
+				itemsVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						itemsVue.passedItemId = null
+						itemsVue.closeApplyToLocationsModal()
+						itemsVue.$swal({
+							title: 'Success',
+							text: 'Item successfully applied',
+							type: 'success',
+							confirmButtonText: 'OK'
+						})
+					}
 				})
-			}).finally(() => {
-				itemsVue.applyingItemToLocations = false
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not apply the item',
+						errorName: 'applyToLocationsErrorMessage',
+						vue: itemsVue,
+						containerRef: 'applyToLocationsModal'
+					})
+				})
+				.finally(() => {
+					itemsVue.applyingItemToLocations = false
+				})
 		},
 		/**
 		 * To record the selected locations
@@ -1058,18 +1206,24 @@ export default {
 		getCorporateMenus () {
 			this.menus = []
 			var itemsVue = this
-			return MenusFunctions.getStoreMenus(itemsVue.$root.appId, itemsVue.$root.appSecret, itemsVue.$root.corporateStoreId).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					itemsVue.menus = response.payload
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch menus',
-					errorName: 'listErrorMessage',
-					vue: itemsVue
+			return MenusFunctions.getStoreMenus(
+				itemsVue.$root.appId,
+				itemsVue.$root.appSecret,
+				itemsVue.$root.corporateStoreId
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						itemsVue.menus = response.payload
+					}
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch menus',
+						errorName: 'listErrorMessage',
+						vue: itemsVue
+					})
+				})
 		},
 		/**
 		 * To set the value of the variable 'activeMenu' as the selected menu object.
@@ -1102,20 +1256,27 @@ export default {
 		getCategoriesForActiveMenu () {
 			var itemsVue = this
 			itemsVue.categories = []
-			return CategoriesFunctions.getMenuCategories(itemsVue.activeMenu.id, itemsVue.$root.appId, itemsVue.$root.appSecret, itemsVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					itemsVue.categories = response.payload
-					itemsVue.isMenuSelected = true
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could fetch categories',
-					errorName: 'applyToLocationsErrorMessage',
-					vue: itemsVue,
-					containerRef: 'applyToLocationsModal'
+			return CategoriesFunctions.getMenuCategories(
+				itemsVue.activeMenu.id,
+				itemsVue.$root.appId,
+				itemsVue.$root.appSecret,
+				itemsVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						itemsVue.categories = response.payload
+						itemsVue.isMenuSelected = true
+					}
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could fetch categories',
+						errorName: 'applyToLocationsErrorMessage',
+						vue: itemsVue,
+						containerRef: 'applyToLocationsModal'
+					})
+				})
 		},
 		/**
 		 * To set the value of the variable 'activeCategory' as the selected category object.
@@ -1136,20 +1297,26 @@ export default {
 		getItemsForActiveCategory () {
 			var itemsVue = this
 			itemsVue.items = []
-			return ItemsFunctions.getCategoryItemsFull(itemsVue.activeCategory.id, itemsVue.$root.appId, itemsVue.$root.appSecret).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					itemsVue.items = response.payload
-					itemsVue.isCategorySelected = true
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could fetch items',
-					errorName: 'applyToLocationsErrorMessage',
-					vue: itemsVue,
-					containerRef: 'applyToLocationsModal'
+			return ItemsFunctions.getCategoryItemsFull(
+				itemsVue.activeCategory.id,
+				itemsVue.$root.appId,
+				itemsVue.$root.appSecret
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						itemsVue.items = response.payload
+						itemsVue.isCategorySelected = true
+					}
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could fetch items',
+						errorName: 'applyToLocationsErrorMessage',
+						vue: itemsVue,
+						containerRef: 'applyToLocationsModal'
+					})
+				})
 		},
 		/**
 		 * To copy item data into the newItem object.
@@ -1170,7 +1337,8 @@ export default {
 			this.newItem.item_type_id = item.item_type_id
 			this.newItem.type = item.type || 'custom'
 			this.itemCopied = true
-			this.newItem.preset_item_modifier_item = item.preset_item_modifier_item || []
+			this.newItem.preset_item_modifier_item =
+				item.preset_item_modifier_item || []
 		},
 		/**
 		 * To clear the current error.
@@ -1238,32 +1406,42 @@ export default {
 			var itemsVue = this
 			itemsVue.clearError('errorMessage')
 
-			return itemsVue.validateItemData()
-			.then(response => {
-				itemsVue.creating = true
-				ItemsFunctions.addNewCategoryItem(itemsVue.newItem, itemsVue.$root.appId, itemsVue.$root.appSecret, itemsVue.$root.userToken).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						itemsVue.newItem.id = response.payload.new_item_id
-						itemsVue.addItem(itemsVue.newItem)
-					} else {
-						itemsVue.errorMessage = response.message
-					}
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could fetch categories',
-						errorName: 'errorMessage',
-						vue: itemsVue
-					})
-				}).finally(() => {
-					itemsVue.creating = false
+			return itemsVue
+				.validateItemData()
+				.then(response => {
+					itemsVue.creating = true
+					ItemsFunctions.addNewCategoryItem(
+						itemsVue.newItem,
+						itemsVue.$root.appId,
+						itemsVue.$root.appSecret,
+						itemsVue.$root.userToken
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								itemsVue.newItem.id = response.payload.new_item_id
+								itemsVue.addItem(itemsVue.newItem)
+							} else {
+								itemsVue.errorMessage = response.message
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could fetch categories',
+								errorName: 'errorMessage',
+								vue: itemsVue
+							})
+						})
+						.finally(() => {
+							itemsVue.creating = false
+						})
 				})
-			}).catch(reason => {
-				// If validation fails then display the error message
-				itemsVue.errorMessage = reason
-				window.scrollTo(0, 0)
-				throw reason
-			})
+				.catch(reason => {
+					// If validation fails then display the error message
+					itemsVue.errorMessage = reason
+					window.scrollTo(0, 0)
+					throw reason
+				})
 		},
 		/**
 		 * To get the deatils of the category to show the items for.
@@ -1272,18 +1450,25 @@ export default {
 		 */
 		getCategoryDetails () {
 			var itemsVue = this
-			CategoriesFunctions.getCategoryDetails(itemsVue.$route.params.category_id, itemsVue.$root.appId, itemsVue.$root.appSecret, itemsVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					itemsVue.categoryDetails = response.payload[0]
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch category info',
-					errorName: 'listErrorMessage',
-					vue: itemsVue
+			CategoriesFunctions.getCategoryDetails(
+				itemsVue.$route.params.category_id,
+				itemsVue.$root.appId,
+				itemsVue.$root.appSecret,
+				itemsVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						itemsVue.categoryDetails = response.payload[0]
+					}
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch category info',
+						errorName: 'listErrorMessage',
+						vue: itemsVue
+					})
+				})
 		},
 		/**
 		 * To get a list of items for the current category.
@@ -1294,22 +1479,30 @@ export default {
 			this.displayItemData = true
 			var itemsVue = this
 			itemsVue.categoryItems = []
-			return ItemsFunctions.getCategoryItems(itemsVue.$route.params.category_id, itemsVue.$root.appId, itemsVue.$root.appSecret).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					itemsVue.displayItemData = false
-					itemsVue.categoryItems = response.payload.sort((a, b) => a.name > b.name)
-				} else {
-					itemsVue.displayItemData = false
-				}
-			}).catch(reason => {
-				itemsVue.displayItemData = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch items',
-					errorName: 'listErrorMessage',
-					vue: itemsVue
+			return ItemsFunctions.getCategoryItems(
+				itemsVue.$route.params.category_id,
+				itemsVue.$root.appId,
+				itemsVue.$root.appSecret
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						itemsVue.displayItemData = false
+						itemsVue.categoryItems = response.payload.sort(
+							(a, b) => a.name > b.name
+						)
+					} else {
+						itemsVue.displayItemData = false
+					}
 				})
-			})
+				.catch(reason => {
+					itemsVue.displayItemData = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch items',
+						errorName: 'listErrorMessage',
+						vue: itemsVue
+					})
+				})
 		},
 		/**
 		 * To expand/collapse the dropdown div under an item.
@@ -1328,7 +1521,9 @@ export default {
 			]).then(() => {
 				itemsVue.expanded = item.id
 			})
-			this.itemAttributes.forEach((itemAttribute) => { itemAttribute.selected = false })
+			this.itemAttributes.forEach(itemAttribute => {
+				itemAttribute.selected = false
+			})
 		},
 		/**
 		 * To get the complete details of an item.
@@ -1338,23 +1533,37 @@ export default {
 		 */
 		getItemDetailsFull (itemId) {
 			var itemsVue = this
-			return ItemsFunctions.getItemDetailsFull(itemId, itemsVue.$root.appId, itemsVue.$root.appSecret).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					for (var i = 0; i < itemsVue.categoryItems.length; i++) {
-						if (itemsVue.categoryItems[i].id === itemId) {
-							itemsVue.$set(itemsVue.categoryItems[i], 'modifiers', response.payload.modifiers)
-							itemsVue.$set(itemsVue.categoryItems[i], 'tags', response.payload.tags)
+			return ItemsFunctions.getItemDetailsFull(
+				itemId,
+				itemsVue.$root.appId,
+				itemsVue.$root.appSecret
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						for (var i = 0; i < itemsVue.categoryItems.length; i++) {
+							if (itemsVue.categoryItems[i].id === itemId) {
+								itemsVue.$set(
+									itemsVue.categoryItems[i],
+									'modifiers',
+									response.payload.modifiers
+								)
+								itemsVue.$set(
+									itemsVue.categoryItems[i],
+									'tags',
+									response.payload.tags
+								)
+							}
 						}
 					}
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch item info',
-					errorName: 'listErrorMessage',
-					vue: itemsVue
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch item info',
+						errorName: 'listErrorMessage',
+						vue: itemsVue
+					})
+				})
 		},
 		/**
 		 * To show the modal to add attributes.
@@ -1376,22 +1585,27 @@ export default {
 			this.loadingItemAttributes = true
 			const itemsVue = this
 
-			return ItemAttributesFunctions.listItemAttributes(itemsVue.$root.appId, itemsVue.$root.appSecret, itemsVue.$root.userToken)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					itemsVue.itemAttributes = response.payload
-				} else {
-					itemsVue.loadingItemAttributes = false
-				}
-			}).catch(reason => {
-				itemsVue.loadingItemAttributes = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch attributes',
-					errorName: 'errorMessage',
-					vue: itemsVue
+			return ItemAttributesFunctions.listItemAttributes(
+				itemsVue.$root.appId,
+				itemsVue.$root.appSecret,
+				itemsVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						itemsVue.itemAttributes = response.payload
+					} else {
+						itemsVue.loadingItemAttributes = false
+					}
 				})
-			})
+				.catch(reason => {
+					itemsVue.loadingItemAttributes = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch attributes',
+						errorName: 'errorMessage',
+						vue: itemsVue
+					})
+				})
 		},
 		/**
 		 * To get the attributes of an item.
@@ -1402,36 +1616,50 @@ export default {
 		getItemAttributesOfItem (itemId) {
 			this.selectedItemAttributes = []
 			var itemsVue = this
-			return ItemAttributesFunctions.getItemAttributesOfItem(itemsVue.$root.appId, itemsVue.$root.appSecret, itemsVue.$root.userToken, itemId)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					for (let r = 0; r < itemsVue.itemAttributes.length; r++) {
-						if (response.payload.itemattributes.length) {
-							for (let s = 0; s < response.payload.itemattributes.length; s++) {
-								let itemAttribute = itemsVue.itemAttributes[r]
-								if (itemAttribute.id === response.payload.itemattributes[s].id) {
-									itemAttribute.selected = true
-									break
-								} else {
-									itemAttribute.selected = false
+			return ItemAttributesFunctions.getItemAttributesOfItem(
+				itemsVue.$root.appId,
+				itemsVue.$root.appSecret,
+				itemsVue.$root.userToken,
+				itemId
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						for (let r = 0; r < itemsVue.itemAttributes.length; r++) {
+							if (response.payload.itemattributes.length) {
+								for (
+									let s = 0;
+									s < response.payload.itemattributes.length;
+									s++
+								) {
+									let itemAttribute = itemsVue.itemAttributes[r]
+									if (
+										itemAttribute.id === response.payload.itemattributes[s].id
+									) {
+										itemAttribute.selected = true
+										break
+									} else {
+										itemAttribute.selected = false
+									}
 								}
 							}
 						}
+						let notAll = itemsVue.itemAttributes.some(itemAttribute => {
+							return itemAttribute.selected === false
+						})
+						notAll
+							? (itemsVue.selectAllAttributesSelected = false)
+							: (itemsVue.selectAllAttributesSelected = true)
+						itemsVue.selectedItemAttributes = response.payload.itemattributes
 					}
-					let notAll = itemsVue.itemAttributes.some((itemAttribute) => {
-						return itemAttribute.selected === false
-					})
-					notAll ? itemsVue.selectAllAttributesSelected = false : itemsVue.selectAllAttributesSelected = true
-					itemsVue.selectedItemAttributes = response.payload.itemattributes
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch attributes',
-					errorName: 'listErrorMessage',
-					vue: itemsVue
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch attributes',
+						errorName: 'listErrorMessage',
+						vue: itemsVue
+					})
+				})
 		},
 		/**
 		 * To select all or deselect all
@@ -1453,9 +1681,11 @@ export default {
 			if (!value) {
 				this.selectAllAttributesSelected = false
 			} else {
-				this.selectAllAttributesSelected = this.itemAttributes.every((itemAttribute) => {
-					return itemAttribute.selected === true
-				})
+				this.selectAllAttributesSelected = this.itemAttributes.every(
+					itemAttribute => {
+						return itemAttribute.selected === true
+					}
+				)
 			}
 		},
 		/**
@@ -1468,7 +1698,7 @@ export default {
 			let payload = {
 				attribute: []
 			}
-			this.itemAttributes.forEach((itemAttribute) => {
+			this.itemAttributes.forEach(itemAttribute => {
 				if (itemAttribute.selected) {
 					payload.attribute.push({
 						id: itemAttribute.id,
@@ -1477,33 +1707,42 @@ export default {
 				}
 			})
 			const itemsVue = this
-			return ItemAttributesFunctions.assignItemAttributesToItem(itemsVue.$root.appId, itemsVue.$root.appSecret, itemsVue.$root.userToken, itemsVue.itemToAssignItemAttributesTo.id, payload)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					let newAttributesArray = []
-					this.itemAttributes.forEach((itemAttribute) => {
-						if (itemAttribute.selected) {
-							newAttributesArray.push(itemAttribute)
-						}
-					})
-					this.selectedItemAttributes = newAttributesArray
-					itemsVue.closeAssignItemAttributesModal()
-					itemsVue.confirmAssignItemAttributes()
-				} else {
-					window.scrollTo(0, 0)
-					itemsVue.assignItemAttributesErrorMessage = 'Something went wrong ...'
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not apply the item',
-					errorName: 'assignItemAttributesErrorMessage',
-					vue: itemsVue,
-					containerRef: 'assignItemAttributesModal'
+			return ItemAttributesFunctions.assignItemAttributesToItem(
+				itemsVue.$root.appId,
+				itemsVue.$root.appSecret,
+				itemsVue.$root.userToken,
+				itemsVue.itemToAssignItemAttributesTo.id,
+				payload
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						let newAttributesArray = []
+						this.itemAttributes.forEach(itemAttribute => {
+							if (itemAttribute.selected) {
+								newAttributesArray.push(itemAttribute)
+							}
+						})
+						this.selectedItemAttributes = newAttributesArray
+						itemsVue.closeAssignItemAttributesModal()
+						itemsVue.confirmAssignItemAttributes()
+					} else {
+						window.scrollTo(0, 0)
+						itemsVue.assignItemAttributesErrorMessage =
+							'Something went wrong ...'
+					}
 				})
-			}).finally(() => {
-				itemsVue.assigningAttributes = false
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not apply the item',
+						errorName: 'assignItemAttributesErrorMessage',
+						vue: itemsVue,
+						containerRef: 'assignItemAttributesModal'
+					})
+				})
+				.finally(() => {
+					itemsVue.assigningAttributes = false
+				})
 		},
 		/**
 		 * To clear the error.
@@ -1531,7 +1770,9 @@ export default {
 		confirmAssignItemAttributes () {
 			this.$swal({
 				title: 'Success',
-				html: `<div>Item Attributes assigned to <i>${this.itemToAssignItemAttributesTo.name}</i></div>`,
+				html: `<div>Item Attributes assigned to <i>${
+					this.itemToAssignItemAttributesTo.name
+				}</i></div>`,
 				type: 'success',
 				confirmButtonText: 'OK'
 			}).then(() => {
@@ -1554,7 +1795,11 @@ export default {
 		 */
 		displayAddItemModal () {
 			this.addItemModalActive = true
-			this.$router.push('/app/menu_manager/items/' + this.$route.params.category_id + '/add_item')
+			this.$router.push(
+				'/app/menu_manager/items/' +
+					this.$route.params.category_id +
+					'/add_item'
+			)
 		},
 		/**
 		 * To display the modal to edit items.
@@ -1566,7 +1811,12 @@ export default {
 		displayEditItemModal (item, event) {
 			event.stopPropagation()
 			this.editItemModalActive = true
-			this.$router.push('/app/menu_manager/items/' + this.$route.params.category_id + '/edit_item/' + item.id)
+			this.$router.push(
+				'/app/menu_manager/items/' +
+					this.$route.params.category_id +
+					'/edit_item/' +
+					item.id
+			)
 		},
 		/**
 		 * To display the modal to delete item.
@@ -1637,14 +1887,17 @@ export default {
 		showAlert () {
 			this.$swal({
 				title: 'Success!',
-				text: 'Item \'' + this.newItem.name + '\' has been successfully created!',
+				text: "Item '" + this.newItem.name + "' has been successfully created!",
 				type: 'success',
 				confirmButtonText: 'OK'
-			}).then(() => {
-				// do nothing
-			}, dismiss => {
-				// do nothing
-			})
+			}).then(
+				() => {
+					// do nothing
+				},
+				dismiss => {
+					// do nothing
+				}
+			)
 		},
 		/**
 		 * To update the item emitted by the child and highlist it on the items list.
@@ -1654,7 +1907,9 @@ export default {
 		 */
 		editItem (val) {
 			this.getItemDetailsFull(val.id)
-			if (val.type === 'preset') { this.getPresetDetails(val.id) }
+			if (val.type === 'preset') {
+				this.getPresetDetails(val.id)
+			}
 			this.editItemModalActive = false
 			for (let i = 0; i < this.categoryItems.length; i++) {
 				if (this.categoryItems[i].id === val.id) {
@@ -1664,7 +1919,11 @@ export default {
 			}
 			var done = false
 			for (let i = 0; i < this.categoryItems.length; i++) {
-				if (parseInt(this.categoryItems[i].order) < parseInt(val.order) || (parseInt(this.categoryItems[i].order) === parseInt(val.order) && parseInt(this.categoryItems[i].id) > parseInt(val.id))) {
+				if (
+					parseInt(this.categoryItems[i].order) < parseInt(val.order) ||
+					(parseInt(this.categoryItems[i].order) === parseInt(val.order) &&
+						parseInt(this.categoryItems[i].id) > parseInt(val.id))
+				) {
 					this.categoryItems.splice(i, 0, val)
 					done = true
 					break
@@ -1705,7 +1964,9 @@ export default {
 		deleteItemAndCloseModal () {
 			this.deleteItemModalActive = false
 			for (var i = 0; i < this.categoryItems.length; i++) {
-				if (parseInt(this.categoryItems[i].id) === parseInt(this.passedItemId)) {
+				if (
+					parseInt(this.categoryItems[i].id) === parseInt(this.passedItemId)
+				) {
 					this.categoryItems.splice(i, 1)
 					break
 				}
@@ -1774,20 +2035,28 @@ export default {
 		 */
 		getItemTypes () {
 			var _this = this
-			let payload = {location_id: this.$root.activeLocation.id}
-			return ItemTypesFunctions.getItemTypes(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
-			.then(response => {
-				_this.itemTypes = response.payload
-				if (response.payload.length === 0) { this.noItemTypes = true }
-			}).catch(reason => {
-				_this.loadingItemTypes = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch the list of item types',
-					errorName: 'errorMessage',
-					vue: _this
+			let payload = { location_id: this.$root.activeLocation.id }
+			return ItemTypesFunctions.getItemTypes(
+				payload,
+				_this.$root.appId,
+				_this.$root.appSecret,
+				_this.$root.userToken
+			)
+				.then(response => {
+					_this.itemTypes = response.payload
+					if (response.payload.length === 0) {
+						this.noItemTypes = true
+					}
 				})
-			})
+				.catch(reason => {
+					_this.loadingItemTypes = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch the list of item types',
+						errorName: 'errorMessage',
+						vue: _this
+					})
+				})
 		},
 		/**
 		 * To update the item_type_id field of the new item
@@ -1799,7 +2068,9 @@ export default {
 			if (!id || !this.itemTypes.length) {
 				return 'n/a'
 			} else {
-				return this.itemTypes.filter(type => type.id === id).map(type => type.name)[0]
+				return this.itemTypes
+					.filter(type => type.id === id)
+					.map(type => type.name)[0]
 			}
 		},
 		/**
@@ -1831,29 +2102,35 @@ export default {
 </script>
 <style scoped>
 .actions-on-top {
-	margin-top: -5px;
+  margin-top: -5px;
 }
 .grey-text {
-	color: rgb(128, 128, 128);
-	font-weight: 200;
-	margin-bottom: 0;
+  color: rgb(128, 128, 128);
+  font-weight: 200;
+  margin-bottom: 0;
 }
 .mt-list-item-collapsed {
-	overflow: hidden;
-	max-height: 0;
-	opacity: 0;
-	transition: max-height 0.2s ease-out, opacity 0.1s ease-out;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.2s ease-out, opacity 0.1s ease-out;
 }
 .mt-list-item-expanded {
-	max-height: 100%;
-	opacity: 1;
-	transition: max-height 0.2s ease-in, opacity 0.5s ease-in;
+  max-height: 100%;
+  opacity: 1;
+  transition: max-height 0.2s ease-in, opacity 0.5s ease-in;
 }
-.mt-element-list .list-news.ext-1.mt-list-container ul>.mt-list-item.no-hover-highlight:hover, 
-.mt-element-list .list-news.ext-2.mt-list-container ul>.mt-list-item.no-hover-highlight:hover {
-	background-color: rgb(255, 255, 255);
+.mt-element-list
+  .list-news.ext-1.mt-list-container
+  ul
+  > .mt-list-item.no-hover-highlight:hover,
+.mt-element-list
+  .list-news.ext-2.mt-list-container
+  ul
+  > .mt-list-item.no-hover-highlight:hover {
+  background-color: rgb(255, 255, 255);
 }
 .animated {
-	animation: listItemHighlight 1s 3 ease-in-out both;
+  animation: listItemHighlight 1s 3 ease-in-out both;
 }
 </style>

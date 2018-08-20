@@ -9,10 +9,10 @@
 		</div>
 
 		<!-- BEGIN CREATE NEW PRINTER-->
-        <div 
-			class="portlet box blue-hoki" 
-			v-if="$root.activeLocation && $root.activeLocation.id && $root.permissions['printers create']">
-			<div class="portlet-title bg-blue-chambray" @click="toggleNewPrinterPanel()">
+		<div class="portlet box blue-hoki"
+		     v-if="$root.activeLocation && $root.activeLocation.id && $root.permissions['printers create']">
+			<div class="portlet-title bg-blue-chambray"
+			     @click="toggleNewPrinterPanel()">
 				<div class="caption">
 					<i class="fa fa-2x fa-plus-circle"></i>
 					Set Up a New Printer
@@ -21,43 +21,69 @@
 					<a :class="{'expand': !newPrinterCollapse, 'collapse': newPrinterCollapse}"></a>
 				</div>
 			</div>
-			<div class="portlet-body" :class="{'display-hide': newPrinterCollapse}">
-      			<form role="form" @submit.prevent="createNewPrinter()">
-      				<div class="form-body row">
-      					<div class="col-md-12">
-      						<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
-	    					    <button class="close" @click="clearError('errorMessage')"></button>
-	    					    <span>{{errorMessage}}</span>
-	    					</div>
-      					</div>
-		        		<div class="col-md-6">
-	    					<div class="form-group form-md-line-input form-md-floating-label">
-	    					    <input type="text" class="form-control input-sm" :class="{'edited': newPrinter.printer_name.length}" id="form_control_1" v-model="newPrinter.printer_name">
-	    					    <label for="form_control_1">Printer Name</label>
-	    					</div>
-	    					<div class="form-group form-md-line-input form-md-floating-label">
-	    					    <input type="text" class="form-control input-sm" :class="{'edited': newPrinter.printer_key.length}" id="form_control_2" v-model="newPrinter.printer_key">
-	    					    <label for="form_control_2">Printer Key</label>
-	    					</div>
-		        		</div>
-		        		<div class="col-md-6">
-		        			<div class="form-group form-md-line-input form-md-floating-label">
-		        			    <input type="text" class="form-control input-sm" :class="{'edited': newPrinter.printer_serialno.length}" id="form_control_3" v-model="newPrinter.printer_serialno">
-		        			    <label for="form_control_3">Printer Serial Number</label>
-		        			</div>
-		        		</div>
+			<div class="portlet-body"
+			     :class="{'display-hide': newPrinterCollapse}">
+				<form role="form"
+				      @submit.prevent="createNewPrinter()">
+					<div class="form-body row">
+						<div class="col-md-12">
+							<div class="alert alert-danger"
+							     v-show="errorMessage"
+							     ref="errorMessage">
+								<button class="close"
+								        @click="clearError('errorMessage')"></button>
+								<span>{{errorMessage}}</span>
+							</div>
+						</div>
 						<div class="col-md-6">
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': newPrinter.copies.length}" id="form_control_4" v-model="newPrinter.copies">
+								<input type="text"
+								       class="form-control input-sm"
+								       :class="{'edited': newPrinter.printer_name.length}"
+								       id="form_control_1"
+								       v-model="newPrinter.printer_name">
+								<label for="form_control_1">Printer Name</label>
+							</div>
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<input type="text"
+								       class="form-control input-sm"
+								       :class="{'edited': newPrinter.printer_key.length}"
+								       id="form_control_2"
+								       v-model="newPrinter.printer_key">
+								<label for="form_control_2">Printer Key</label>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<input type="text"
+								       class="form-control input-sm"
+								       :class="{'edited': newPrinter.printer_serialno.length}"
+								       id="form_control_3"
+								       v-model="newPrinter.printer_serialno">
+								<label for="form_control_3">Printer Serial Number</label>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<input type="text"
+								       class="form-control input-sm"
+								       :class="{'edited': newPrinter.copies.length}"
+								       id="form_control_4"
+								       v-model="newPrinter.copies">
 								<label for="form_control_4">Copies</label>
 							</div>
 						</div>
-		        		<div class="col-md-6">
+						<div class="col-md-6">
 							<div class="side-by-side-wrapper">
 								<p class="paper-width-label">Paper width:</p>
-								<el-dropdown trigger="click" @command="updateNewPrinterPaperWidth" size="mini" :show-timeout="50" :hide-timeout="50">
+								<el-dropdown trigger="click"
+								             @command="updateNewPrinterPaperWidth"
+								             size="mini"
+								             :show-timeout="50"
+								             :hide-timeout="50">
 									<el-button size="mini">
-										{{ newPrinter.paper_width }}<span v-if="newPrinter.paper_width !== 'Select'">mm</span>
+										{{ newPrinter.paper_width }}
+										<span v-if="newPrinter.paper_width !== 'Select'">mm</span>
 										<i class="el-icon-arrow-down el-icon--right"></i>
 									</el-button>
 									<el-dropdown-menu slot="dropdown">
@@ -66,43 +92,43 @@
 									</el-dropdown-menu>
 								</el-dropdown>
 							</div>
-		        		</div>
+						</div>
 						<div class="col-md-6">
 							<div class="side-by-side-wrapper">
 								<p class="side-by-side-item status-label">Status:</p>
-								<el-switch
-									v-model="newPrinter.status"
-									active-color="#0c6"
-									inactive-color="#ff4949"
-									:active-value="1"
-									:inactive-value="0"
-									active-text="Enabled"
-									inactive-text="Disabled">
+								<el-switch v-model="newPrinter.status"
+								           active-color="#0c6"
+								           inactive-color="#ff4949"
+								           :active-value="1"
+								           :inactive-value="0"
+								           active-text="Enabled"
+								           inactive-text="Disabled">
 								</el-switch>
 							</div>
 						</div>
-		        	</div>
-      				<div class="form-actions right margin-top-20">
-						<button 
-							type="submit" 
-							class="btn blue"
-							:disabled="creating">
+					</div>
+					<div class="form-actions right margin-top-20">
+						<button type="submit"
+						        class="btn blue"
+						        :disabled="creating">
 							Create
-							<i 
-								v-show="creating"
-								class="fa fa-spinner fa-pulse fa-fw">
+							<i v-show="creating"
+							   class="fa fa-spinner fa-pulse fa-fw">
 							</i>
 						</button>
 					</div>
-      			</form>
-  			</div>
-        </div>
-        <!-- END CREATE NEW PRINTER-->
+				</form>
+			</div>
+		</div>
+		<!-- END CREATE NEW PRINTER-->
 
-		<loading-screen :show="displayPrinters" :color="'#2C3E50'" :display="'inline'"></loading-screen>
-		<div class="alert alert-info center margin-top-20" v-if="!$root.activeLocation.id">
-		    <h4>No Store Selected</h4>
-		    <p>Please select a store from the location panel on the right to view its printers</p>
+		<loading-screen :show="displayPrinters"
+		                :color="'#2C3E50'"
+		                :display="'inline'"></loading-screen>
+		<div class="alert alert-info center margin-top-20"
+		     v-if="!$root.activeLocation.id">
+			<h4>No Store Selected</h4>
+			<p>Please select a store from the location panel on the right to view its printers</p>
 		</div>
 		<div v-if="$root.activeLocation && $root.activeLocation.id && storePrinters.length && !displayPrinters">
 			<div class="portlet light portlet-fit bordered margin-top-20">
@@ -118,8 +144,11 @@
 				<div class="portlet-body">
 					<div class="row">
 						<div class="col-md-12">
-							<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
-								<button class="close" @click="clearError('listErrorMessage')"></button>
+							<div class="alert alert-danger"
+							     v-show="listErrorMessage"
+							     ref="listErrorMessage">
+								<button class="close"
+								        @click="clearError('listErrorMessage')"></button>
 								<span>{{listErrorMessage}}</span>
 							</div>
 						</div>
@@ -127,54 +156,53 @@
 					<div class="mt-element-list">
 						<div class="mt-list-container list-news">
 							<ul>
-								<li 
-									class="mt-list-item actions-at-left margin-top-15" 
-									v-for="printer in storePrinters" 
-									:id="'printer-' + printer.id" 
-									:key="printer.id">
+								<li class="mt-list-item actions-at-left margin-top-15"
+								    v-for="printer in storePrinters"
+								    :id="'printer-' + printer.id"
+								    :key="printer.id">
 									<div class="list-item-actions">
-										<el-tooltip 
-											v-if="$root.permissions['printers update']"
-											content="Edit" 
-											effect="light" 
-											placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default" @click="editPrinter(printer)">
+										<el-tooltip v-if="$root.permissions['printers update']"
+										            content="Edit"
+										            effect="light"
+										            placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default"
+											   @click="editPrinter(printer)">
 												<i class="fa fa-lg fa-pencil"></i>
 											</a>
 										</el-tooltip>
-										<el-tooltip 
-											v-if="$root.permissions['printers read'] && !$root.permissions['printers update']"
-											content="View" 
-											effect="light" 
-											placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default" @click="editPrinter(printer)">
+										<el-tooltip v-if="$root.permissions['printers read'] && !$root.permissions['printers update']"
+										            content="View"
+										            effect="light"
+										            placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default"
+											   @click="editPrinter(printer)">
 												<i class="fa fa-lg fa-eye"></i>
 											</a>
 										</el-tooltip>
-		                        	</div>
-		                            <div class="list-datetime bold uppercase font-red">
-		                            	<span>{{ printer.printer_name }}</span>
-		                            </div>
-		                            <div class="list-item-content height-mod">
-		                            	<div class="col-md-5">
-		                            		<span>
-		                            			<strong>Printer Serial Number: </strong>{{ printer.printer_serialno }}
-		                            		</span><br>
-		                            		<span>
-		                            			<strong>Paper Width: </strong>{{ printer.paper_width }}mm
-		                            		</span><br>
-		                            	</div>
+									</div>
+									<div class="list-datetime bold uppercase font-red">
+										<span>{{ printer.printer_name }}</span>
+									</div>
+									<div class="list-item-content height-mod">
 										<div class="col-md-5">
 											<span>
-		                            			<strong>Status: </strong>
+												<strong>Printer Serial Number: </strong>{{ printer.printer_serialno }}
+											</span><br>
+											<span>
+												<strong>Paper Width: </strong>{{ printer.paper_width }}mm
+											</span><br>
+										</div>
+										<div class="col-md-5">
+											<span>
+												<strong>Status: </strong>
 												<span v-if="printer.status === 1">ON</span>
 												<span v-else>OFF</span>
-		                            		</span><br>
+											</span><br>
 											<span>
-		                            			<strong>Copies: </strong>{{ printer.copies }}
-		                            		</span><br>
-		                            	</div>
-		                            </div>
+												<strong>Copies: </strong>{{ printer.copies }}
+											</span><br>
+										</div>
+									</div>
 								</li>
 							</ul>
 						</div>
@@ -183,9 +211,13 @@
 			</div>
 		</div>
 		<div v-if="$root.activeLocation.id && !storePrinters.length && !displayPrinters">
-        	<no-results :show="true" :type="'printers'"></no-results>
-        </div>
-		<edit-printer v-if="showEditPrinterModal" @closeEditPrinterModal="closeEditPrinterModal" @updatePrinter="updatePrinter" :printerId="selectedPrinterId"></edit-printer>
+			<no-results :show="true"
+			            :type="'printers'"></no-results>
+		</div>
+		<edit-printer v-if="showEditPrinterModal"
+		              @closeEditPrinterModal="closeEditPrinterModal"
+		              @updatePrinter="updatePrinter"
+		              :printerId="selectedPrinterId"></edit-printer>
 	</div>
 </template>
 
@@ -202,9 +234,7 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 export default {
 	data () {
 		return {
-			breadcrumbArray: [
-				{name: 'Printers', link: false}
-			],
+			breadcrumbArray: [{ name: 'Printers', link: false }],
 			displayPrinters: false,
 			listErrorMessage: '',
 			storePrinters: [],
@@ -252,10 +282,10 @@ export default {
 			this.newPrinter.paper_width = value
 		},
 		/**
-		* To reset the create form.
-		* @function
-		* @returns {undefined}
-		*/
+		 * To reset the create form.
+		 * @function
+		 * @returns {undefined}
+		 */
 		resetForm () {
 			this.newPrinter.printer_serialno = ''
 			this.newPrinter.printer_key = ''
@@ -272,22 +302,29 @@ export default {
 		getStorePrinters () {
 			this.displayPrinters = true
 			var printersVue = this
-			PrintersFunctions.getStorePrinters(printersVue.$root.activeLocation.id, printersVue.$root.appId, printersVue.$root.appSecret, printersVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					printersVue.storePrinters = response.payload
-					printersVue.displayPrinters = false
-				} else {
-					printersVue.displayPrinters = false
-				}
-			}).catch(reason => {
-				printersVue.displayPrinters = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not delete the modifier',
-					errorName: 'listErrorMessage',
-					vue: printersVue
+			PrintersFunctions.getStorePrinters(
+				printersVue.$root.activeLocation.id,
+				printersVue.$root.appId,
+				printersVue.$root.appSecret,
+				printersVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						printersVue.storePrinters = response.payload
+						printersVue.displayPrinters = false
+					} else {
+						printersVue.displayPrinters = false
+					}
 				})
-			})
+				.catch(reason => {
+					printersVue.displayPrinters = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not delete the modifier',
+						errorName: 'listErrorMessage',
+						vue: printersVue
+					})
+				})
 		},
 		/**
 		 * To show the modal to edit printer details.
@@ -357,9 +394,12 @@ export default {
 					reject('Printer key cannot be blank')
 				} else if (!addPrinterVue.newPrinter.printer_serialno.length) {
 					reject('Printer serial number cannot be blank')
-				} else if (!addPrinterVue.newPrinter.paper_width.length || addPrinterVue.newPrinter.paper_width === 'Select') {
+				} else if (
+					!addPrinterVue.newPrinter.paper_width.length ||
+					addPrinterVue.newPrinter.paper_width === 'Select'
+				) {
 					reject('Select paper width')
-				} else if (!(/^\+?(0|[1-9]\d*)$/.test(addPrinterVue.newPrinter.copies))) {
+				} else if (!/^\+?(0|[1-9]\d*)$/.test(addPrinterVue.newPrinter.copies)) {
 					reject('Select number of copies')
 				}
 				resolve('Hurray')
@@ -374,36 +414,46 @@ export default {
 			var addPrinterVue = this
 			addPrinterVue.clearError('errorMessage')
 
-			return addPrinterVue.validatePrinterData()
-			.then(response => {
-				addPrinterVue.creating = true
-				addPrinterVue.newPrinter.location_id = this.$root.activeLocation.id
-				PrintersFunctions.createNewPrinter(addPrinterVue.newPrinter, addPrinterVue.$root.appId, addPrinterVue.$root.appSecret, addPrinterVue.$root.userToken).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						addPrinterVue.newPrinter.id = response.payload.new_printer_id
-						addPrinterVue.addPrinter({...addPrinterVue.newPrinter})
-						addPrinterVue.resetForm()
-						// show alert
-						addPrinterVue.showAlert(response.message)
-					} else {
-						addPrinterVue.errorMessage = response.message
-					}
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not add the printer',
-						errorName: 'errorMessage',
-						vue: addPrinterVue
-					})
-				}).finally(() => {
-					addPrinterVue.creating = false
+			return addPrinterVue
+				.validatePrinterData()
+				.then(response => {
+					addPrinterVue.creating = true
+					addPrinterVue.newPrinter.location_id = this.$root.activeLocation.id
+					PrintersFunctions.createNewPrinter(
+						addPrinterVue.newPrinter,
+						addPrinterVue.$root.appId,
+						addPrinterVue.$root.appSecret,
+						addPrinterVue.$root.userToken
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								addPrinterVue.newPrinter.id = response.payload.new_printer_id
+								addPrinterVue.addPrinter({ ...addPrinterVue.newPrinter })
+								addPrinterVue.resetForm()
+								// show alert
+								addPrinterVue.showAlert(response.message)
+							} else {
+								addPrinterVue.errorMessage = response.message
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not add the printer',
+								errorName: 'errorMessage',
+								vue: addPrinterVue
+							})
+						})
+						.finally(() => {
+							addPrinterVue.creating = false
+						})
 				})
-			}).catch(reason => {
-				// If validation fails then display the error message
-				addPrinterVue.errorMessage = reason
-				window.scrollTo(0, 0)
-				throw reason
-			})
+				.catch(reason => {
+					// If validation fails then display the error message
+					addPrinterVue.errorMessage = reason
+					window.scrollTo(0, 0)
+					throw reason
+				})
 		},
 		/**
 		 * To toggle the create printer panel, initially set to closed
@@ -440,39 +490,39 @@ export default {
 
 <style scoped>
 .side-by-side-wrapper {
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-start;
-	align-items: flex-end;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-end;
 }
 .side-by-side-item {
-	max-width: 45%;
+  max-width: 45%;
 }
 .paper-width-label {
-	margin-bottom: 0.5rem;
-	margin-right: 0.5rem;
-	color: rgb(153, 153, 153);
+  margin-bottom: 0.5rem;
+  margin-right: 0.5rem;
+  color: rgb(153, 153, 153);
 }
 .dropdown.side-by-side-item {
-	margin-left: 10px;
+  margin-left: 10px;
 }
 @media (max-width: 1150px) {
-	.side-by-side-wrapper {
-		flex-direction: column;
-		align-items: center;
-	}
-	.side-by-side-item {
-		max-width: 100%;
-	}
-	.dropdown.side-by-side-item {
-		margin-left: 0px;
-	}
+  .side-by-side-wrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+  .side-by-side-item {
+    max-width: 100%;
+  }
+  .dropdown.side-by-side-item {
+    margin-left: 0px;
+  }
 }
 .status-label {
-	margin: 0 5px 0 0;
-	color: rgb(153, 153, 153);
+  margin: 0 5px 0 0;
+  color: rgb(153, 153, 153);
 }
-.mt-element-list .list-news.mt-list-container ul>.mt-list-item:hover {
-	background-color: rgb(255, 255, 255);
+.mt-element-list .list-news.mt-list-container ul > .mt-list-item:hover {
+  background-color: rgb(255, 255, 255);
 }
 </style>

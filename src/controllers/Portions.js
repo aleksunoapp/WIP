@@ -3,7 +3,7 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to pitapit API to get a list of the portions for a store.
 	 * @function
@@ -134,13 +134,24 @@ export default ({
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	applyPortionsToModifierItem (modifierItemId, createdBy, portions, appId, appSecret, userToken) {
+	applyPortionsToModifierItem (
+		modifierItemId,
+		createdBy,
+		portions,
+		appId,
+		appSecret,
+		userToken
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
 				dataType: 'json',
 				url: '/app/moditems/addportions',
-				data: {modifier_item_id: modifierItemId, created_by: createdBy, portions: portions},
+				data: {
+					modifier_item_id: modifierItemId,
+					created_by: createdBy,
+					portions: portions
+				},
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
 					xhr.setRequestHeader('app-id', appId)
@@ -166,7 +177,14 @@ export default ({
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	applyPortionToMultipleModItems (portionId, modifierItemsToAdd, modifierItemsToRemove, appId, appSecret, userToken) {
+	applyPortionToMultipleModItems (
+		portionId,
+		modifierItemsToAdd,
+		modifierItemsToRemove,
+		appId,
+		appSecret,
+		userToken
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
@@ -190,4 +208,4 @@ export default ({
 			})
 		})
 	}
-})
+}

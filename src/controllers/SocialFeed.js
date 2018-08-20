@@ -3,7 +3,7 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to pitapit API to get the news feed.
 	 * @function
@@ -15,13 +15,24 @@ export default ({
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	getSocialFeed: function (pageNumber, pageResults, sortOrder, appId, appSecret, userToken) {
+	getSocialFeed: function (
+		pageNumber,
+		pageResults,
+		sortOrder,
+		appId,
+		appSecret,
+		userToken
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
 				dataType: 'json',
 				url: '/application/socialmedia',
-				data: {offset: pageNumber, limit: pageResults, orderBy: sortOrder},
+				data: {
+					offset: pageNumber,
+					limit: pageResults,
+					orderBy: sortOrder
+				},
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
 					xhr.setRequestHeader('app-id', appId)
@@ -52,7 +63,7 @@ export default ({
 				method: 'POST',
 				dataType: 'json',
 				url: '/application/socialmedia/changestatus',
-				data: {id: feedId, status: newStatus},
+				data: { id: feedId, status: newStatus },
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
 					xhr.setRequestHeader('app-id', appId)
@@ -67,4 +78,4 @@ export default ({
 			})
 		})
 	}
-})
+}

@@ -8,16 +8,15 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr v-for="permission in currentActivePermissions" :key="permission.id">
+				<tr v-for="permission in currentActivePermissions"
+				    :key="permission.id">
 					<td>
 						<div class="md-checkbox has-success">
-							<input 
-								type="checkbox" 
-								:id="`${instanceId}-${permission.id}`"
-								 class="md-check" 
-								 v-model="permission.selected"
-								 @change="permissionsSelected()"
-							>
+							<input type="checkbox"
+							       :id="`${instanceId}-${permission.id}`"
+							       class="md-check"
+							       v-model="permission.selected"
+							       @change="permissionsSelected()">
 							<label :for="`${instanceId}-${permission.id}`">
 								<span class="inc"></span>
 								<span class="check"></span>
@@ -32,16 +31,20 @@
 		<div class="row__wrapper">
 			<div class="half-width">
 				<div class="form-group form-md-line-input form-md-floating-label">
-					<input ref="newRoleName" type="text" class="form-control input-sm" id="form_control_permissions_search" v-model="permissionsSearchQuery" :class="{'edited': permissionsSearchQuery.length}">
+					<input ref="newRoleName"
+					       type="text"
+					       class="form-control input-sm"
+					       id="form_control_permissions_search"
+					       v-model="permissionsSearchQuery"
+					       :class="{'edited': permissionsSearchQuery.length}">
 					<label for="form_control_permissions_search">Search permissions</label>
 				</div>
 			</div>
 			<div class="half-width">
-				<pagination 
-					class="pull-left"
-					:passedPage="permissionsPage" 
-					:numPages="Math.ceil(permissionsSearchResults.length / 10)" 
-					@activePageChange="changePermissionsPage">
+				<pagination class="pull-left"
+				            :passedPage="permissionsPage"
+				            :numPages="Math.ceil(permissionsSearchResults.length / 10)"
+				            @activePageChange="changePermissionsPage">
 				</pagination>
 			</div>
 		</div>
@@ -87,7 +90,10 @@ export default {
 			}
 		},
 		currentActivePermissions () {
-			return this.permissionsSearchResults.slice((this.permissionsPage - 1) * 10, this.permissionsPage * 10)
+			return this.permissionsSearchResults.slice(
+				(this.permissionsPage - 1) * 10,
+				this.permissionsPage * 10
+			)
 		}
 	},
 	created () {
@@ -103,7 +109,9 @@ export default {
 		 * @returns {undefined}
 		 */
 		permissionsSelected () {
-			let selected = this.permissions.filter(permission => permission.selected).map(permission => permission.id)
+			let selected = this.permissions
+				.filter(permission => permission.selected)
+				.map(permission => permission.id)
 			this.$emit('permissionsSelected', selected)
 		},
 		/**
@@ -124,40 +132,43 @@ export default {
 			this.loadingPermissions = true
 			var permissionsVue = this
 			return PermissionsFunctions.getAllPermissions()
-			.then(response => {
-				permissionsVue.permissions = response.payload.map(permission => {
-					return {
-						...permission,
-						selected: permissionsVue.previouslySelected.includes(permission.id)
-					}
+				.then(response => {
+					permissionsVue.permissions = response.payload.map(permission => {
+						return {
+							...permission,
+							selected: permissionsVue.previouslySelected.includes(
+								permission.id
+							)
+						}
+					})
+					permissionsVue.loadingPermissions = false
 				})
-				permissionsVue.loadingPermissions = false
-			}).catch(reason => {
-				permissionsVue.loadingPermissions = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'Could not get permissions',
-					errorName: 'createErrorMessage',
-					vue: permissionsVue
+				.catch(reason => {
+					permissionsVue.loadingPermissions = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'Could not get permissions',
+						errorName: 'createErrorMessage',
+						vue: permissionsVue
+					})
 				})
-			})
 		}
 	}
 }
 </script>
 <style scoped>
 .permissions-picker {
-	width: 100%;
-	display: flex;
-	flex-direction: column;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 .row__wrapper {
-	width: 100%;
-	display: flex;
-	align-items: center;
+  width: 100%;
+  display: flex;
+  align-items: center;
 }
 .half-width {
-	display: inline-block;
-	width: 50%;
+  display: inline-block;
+  width: 50%;
 }
 </style>

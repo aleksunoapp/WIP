@@ -281,21 +281,28 @@ export default {
 			this.loadingImages = true
 			var imagesVue = this
 			imagesVue.images = []
-			return StoresFunctions.getStoreImages(imagesVue.$root.appId, imagesVue.$root.appSecret, imagesVue.$root.userToken, imagesVue.storeId)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					imagesVue.images = response.payload.images
-					imagesVue.loadingImages = false
-				}
-			})
-			.catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: `We could not fetch images for ${imagesVue.storeToBeEdited.name}`,
-					errorName: 'imagesErrorMessage',
-					vue: imagesVue
+			return StoresFunctions.getStoreImages(
+				imagesVue.$root.appId,
+				imagesVue.$root.appSecret,
+				imagesVue.$root.userToken,
+				imagesVue.storeId
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						imagesVue.images = response.payload.images
+						imagesVue.loadingImages = false
+					}
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: `We could not fetch images for ${
+							imagesVue.storeToBeEdited.name
+						}`,
+						errorName: 'imagesErrorMessage',
+						vue: imagesVue
+					})
+				})
 		},
 		/**
 		 * To clear an error
@@ -373,28 +380,37 @@ export default {
 		createImage () {
 			const imagesVue = this
 			this.clearError('imagesErrorMessage')
-			return imagesVue.validateImageToCreate()
-			.then(response => {
-				return StoresFunctions.createStoreImage(imagesVue.$root.appId, imagesVue.$root.appSecret, imagesVue.$root.userToken, imagesVue.storeId, imagesVue.imageToCreate)
+			return imagesVue
+				.validateImageToCreate()
 				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						imagesVue.images = response.payload.images
-						imagesVue.mode = 'list'
-					}
+					return StoresFunctions.createStoreImage(
+						imagesVue.$root.appId,
+						imagesVue.$root.appSecret,
+						imagesVue.$root.userToken,
+						imagesVue.storeId,
+						imagesVue.imageToCreate
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								imagesVue.images = response.payload.images
+								imagesVue.mode = 'list'
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: `We could not set the image as default`,
+								errorName: 'imagesErrorMessage',
+								vue: imagesVue
+							})
+						})
 				})
 				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: `We could not set the image as default`,
-						errorName: 'imagesErrorMessage',
-						vue: imagesVue
+					imagesVue.imagesErrorMessage = reason
+					imagesVue.$scrollTo(imagesVue.$refs.imagesErrorMessage, 1000, {
+						offset: -50
 					})
 				})
-			})
-			.catch(reason => {
-				imagesVue.imagesErrorMessage = reason
-				imagesVue.$scrollTo(imagesVue.$refs.imagesErrorMessage, 1000, { offset: -50 })
-			})
 		},
 		/**
 		 * To reset the create form
@@ -486,26 +502,37 @@ export default {
 		editImage () {
 			var imagesVue = this
 			this.clearError('imagesErrorMessage')
-			return imagesVue.validateImageToEdit().then(response => {
-				return StoresFunctions.updateStoreImage(imagesVue.$root.appId, imagesVue.$root.appSecret, imagesVue.$root.userToken, imagesVue.storeId, imagesVue.imageToEdit)
+			return imagesVue
+				.validateImageToEdit()
 				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						imagesVue.images = response.payload.images
-						imagesVue.mode = 'list'
-					}
+					return StoresFunctions.updateStoreImage(
+						imagesVue.$root.appId,
+						imagesVue.$root.appSecret,
+						imagesVue.$root.userToken,
+						imagesVue.storeId,
+						imagesVue.imageToEdit
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								imagesVue.images = response.payload.images
+								imagesVue.mode = 'list'
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: `We could not update the image`,
+								errorName: 'imagesErrorMessage',
+								vue: imagesVue
+							})
+						})
 				})
 				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: `We could not update the image`,
-						errorName: 'imagesErrorMessage',
-						vue: imagesVue
+					imagesVue.imagesErrorMessage = reason
+					imagesVue.$scrollTo(imagesVue.$refs.imagesErrorMessage, 1000, {
+						offset: -50
 					})
 				})
-			}).catch(reason => {
-				imagesVue.imagesErrorMessage = reason
-				imagesVue.$scrollTo(imagesVue.$refs.imagesErrorMessage, 1000, { offset: -50 })
-			})
 		},
 		/**
 		 * To reset the edit form
@@ -534,23 +561,29 @@ export default {
 		deleteImage () {
 			var imagesVue = this
 			this.clearError('imagesErrorMessage')
-			return StoresFunctions.deleteStoreImage(imagesVue.$root.appId, imagesVue.$root.appSecret, imagesVue.$root.userToken, imagesVue.storeId, imagesVue.imageToDelete.id)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					imagesVue.images = imagesVue.images.filter(image => {
-						return image.id !== imagesVue.imageToDelete.id
-					})
-					imagesVue.mode = 'list'
-				}
-			})
-			.catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: `We could not delete the image`,
-					errorName: 'imagesErrorMessage',
-					vue: imagesVue
+			return StoresFunctions.deleteStoreImage(
+				imagesVue.$root.appId,
+				imagesVue.$root.appSecret,
+				imagesVue.$root.userToken,
+				imagesVue.storeId,
+				imagesVue.imageToDelete.id
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						imagesVue.images = imagesVue.images.filter(image => {
+							return image.id !== imagesVue.imageToDelete.id
+						})
+						imagesVue.mode = 'list'
+					}
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: `We could not delete the image`,
+						errorName: 'imagesErrorMessage',
+						vue: imagesVue
+					})
+				})
 		}
 	},
 	components: {

@@ -82,7 +82,7 @@ import Terms from '@/components/app/Localization/Terms'
 import EcommTranslations from '@/components/app/Localization/EcommTranslations'
 import CustomTranslations from '@/components/app/Localization/CustomTranslations'
 // list of permissions
-import {App} from '@/main.js'
+import { App } from '@/main.js'
 
 Vue.use(Router)
 
@@ -424,14 +424,18 @@ export const routes = [
 						name: 'Add Sub Category',
 						meta: {
 							adminOnly: false,
-							permissions: ['menu_manager menus categories subcategories create']
+							permissions: [
+								'menu_manager menus categories subcategories create'
+							]
 						}
 					},
 					{
 						path: 'edit_sub_category/:sub_category_id',
 						name: 'Edit Sub Category',
 						meta: {
-							permissions: ['menu_manager menus categories subcategories update']
+							permissions: [
+								'menu_manager menus categories subcategories update'
+							]
 						}
 					}
 				]
@@ -442,14 +446,18 @@ export const routes = [
 				component: Items,
 				meta: {
 					adminOnly: false,
-					permissions: ['menu_manager menus categories subcategories items read']
+					permissions: [
+						'menu_manager menus categories subcategories items read'
+					]
 				},
 				children: [
 					{
 						path: 'edit_item/:item_id',
 						name: 'Edit Item',
 						meta: {
-							permissions: ['menu_manager menus categories subcategories items read']
+							permissions: [
+								'menu_manager menus categories subcategories items read'
+							]
 						}
 					}
 				]
@@ -835,7 +843,12 @@ router.beforeEach((to, from, next) => {
 		try {
 			if (App === undefined) {
 				next()
-			} else if (to.meta && to.meta.permissions.some(permission => App.permissions[permission])) {
+			} else if (
+				to.meta &&
+				to.meta.permissions.some(
+					permission => App.permissions[permission]
+				)
+			) {
 				next()
 			} else {
 				next({

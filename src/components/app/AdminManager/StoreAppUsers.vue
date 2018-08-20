@@ -10,8 +10,10 @@
 			</div>
 
 			<!-- CREATE NEW START -->
-			<div class="portlet box blue-hoki margin-top-20" v-if="$root.permissions['admin store_app_users create']">
-				<div class="portlet-title bg-blue-chambray" @click="toggleCreateStoreAppUserPanel()">
+			<div class="portlet box blue-hoki margin-top-20"
+			     v-if="$root.permissions['admin store_app_users create']">
+				<div class="portlet-title bg-blue-chambray"
+				     @click="toggleCreateStoreAppUserPanel()">
 					<div class="caption">
 						<i class="fa fa-plus-circle"></i>
 						Create New Store App User
@@ -20,58 +22,99 @@
 						<a :class="{'expand': !createStoreAppUserCollapse, 'collapse': createStoreAppUserCollapse}"></a>
 					</div>
 				</div>
-				<div class="portlet-body" :class="{'display-hide': createStoreAppUserCollapse}">
-					<form role="form" @submit.prevent="createStoreAppUser()">
+				<div class="portlet-body"
+				     :class="{'display-hide': createStoreAppUserCollapse}">
+					<form role="form"
+					      @submit.prevent="createStoreAppUser()">
 						<div class="row">
 							<div class="col-md-12">
-								<div class="alert alert-danger" v-show="createErrorMessage" ref="createErrorMessage">
-									<button class="close" @click.prevent="clearError('createErrorMessage')"></button>
+								<div class="alert alert-danger"
+								     v-show="createErrorMessage"
+								     ref="createErrorMessage">
+									<button class="close"
+									        @click.prevent="clearError('createErrorMessage')"></button>
 									<span>{{createErrorMessage}}</span>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group form-md-line-input form-md-floating-label">
-									<input ref="newStoreAppUserName" type="text" class="form-control input-sm" id="form_control_name" v-model="newStoreAppUser.name" :class="{'edited': newStoreAppUser.name.length}">
+									<input ref="newStoreAppUserName"
+									       type="text"
+									       class="form-control input-sm"
+									       id="form_control_name"
+									       v-model="newStoreAppUser.name"
+									       :class="{'edited': newStoreAppUser.name.length}">
 									<label for="form_control_name">Name</label>
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text" class="form-control input-sm" id="form_control_email" v-model="newStoreAppUser.email" :class="{'edited': newStoreAppUser.email.length}">
+									<input type="text"
+									       class="form-control input-sm"
+									       id="form_control_email"
+									       v-model="newStoreAppUser.email"
+									       :class="{'edited': newStoreAppUser.email.length}">
 									<label for="form_control_email">Email</label>
 								</div>
 								<div>
-									<button type="button" class="btn blue btn-outline" @click="assignStoreToStoreAppUser(newStoreAppUser, 'new')">Select a location</button>
-									<span class="grey-inline-label" v-if="newStoreAppUser.location_id">Selected {{selectedNewLocationName}}</span>
+									<button type="button"
+									        class="btn blue btn-outline"
+									        @click="assignStoreToStoreAppUser(newStoreAppUser, 'new')">Select a location</button>
+									<span class="grey-inline-label"
+									      v-if="newStoreAppUser.location_id">Selected {{selectedNewLocationName}}</span>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group form-md-line-input form-md-floating-label">
-									<div class="input-group" v-show="passwordMasked">
-										<input type="password" class="form-control input-sm" id="form_control_password_masked" v-model="newStoreAppUser.password" :class="{'edited': newStoreAppUser.password.length}">
+									<div class="input-group"
+									     v-show="passwordMasked">
+										<input type="password"
+										       class="form-control input-sm"
+										       id="form_control_password_masked"
+										       v-model="newStoreAppUser.password"
+										       :class="{'edited': newStoreAppUser.password.length}">
 										<label for="form_control_password_masked">Password</label>
-										<span class="input-group-addon clickable" @click="flipPasswordMask()">
+										<span class="input-group-addon clickable"
+										      @click="flipPasswordMask()">
 											<i class="fa fa-eye"></i>
 										</span>
 									</div>
-									<div class="input-group" v-show="!passwordMasked">
-										<input type="text" class="form-control input-sm" id="form_control_password" v-model="newStoreAppUser.password" :class="{'edited': newStoreAppUser.password.length}">
+									<div class="input-group"
+									     v-show="!passwordMasked">
+										<input type="text"
+										       class="form-control input-sm"
+										       id="form_control_password"
+										       v-model="newStoreAppUser.password"
+										       :class="{'edited': newStoreAppUser.password.length}">
 										<label for="form_control_password">Password</label>
-										<span class="input-group-addon clickable" @click="flipPasswordMask()">
+										<span class="input-group-addon clickable"
+										      @click="flipPasswordMask()">
 											<i class="fa fa-eye-slash"></i>
 										</span>
 									</div>
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
-									<div class="input-group" v-show="passwordMasked">
-										<input type="password" class="form-control input-sm" id="form_control_confirm_masked" v-model="passwordCheck" :class="{'edited': passwordCheck}">
+									<div class="input-group"
+									     v-show="passwordMasked">
+										<input type="password"
+										       class="form-control input-sm"
+										       id="form_control_confirm_masked"
+										       v-model="passwordCheck"
+										       :class="{'edited': passwordCheck}">
 										<label for="form_control_confirm_masked">Confirm password</label>
-										<span class="input-group-addon clickable" @click="flipPasswordMask()">
+										<span class="input-group-addon clickable"
+										      @click="flipPasswordMask()">
 											<i class="fa fa-eye"></i>
 										</span>
 									</div>
-									<div class="input-group" v-show="!passwordMasked">
-										<input type="text" class="form-control input-sm" id="form_control_confirm" v-model="passwordCheck" :class="{'edited': passwordCheck}">
+									<div class="input-group"
+									     v-show="!passwordMasked">
+										<input type="text"
+										       class="form-control input-sm"
+										       id="form_control_confirm"
+										       v-model="passwordCheck"
+										       :class="{'edited': passwordCheck}">
 										<label for="form_control_confirm">Confirm password</label>
-										<span class="input-group-addon clickable" @click="flipPasswordMask()">
+										<span class="input-group-addon clickable"
+										      @click="flipPasswordMask()">
 											<i class="fa fa-eye-slash"></i>
 										</span>
 									</div>
@@ -80,14 +123,12 @@
 						</div>
 						<div class="row">
 							<div class="col-md-12">
-								<button 
-									type="submit" 
-									class="btn blue pull-right"
-									:disabled="creating">
+								<button type="submit"
+								        class="btn blue pull-right"
+								        :disabled="creating">
 									Create
-									<i 
-										v-show="creating"
-										class="fa fa-spinner fa-pulse fa-fw">
+									<i v-show="creating"
+									   class="fa fa-spinner fa-pulse fa-fw">
 									</i>
 								</button>
 							</div>
@@ -96,11 +137,13 @@
 				</div>
 			</div>
 			<!-- CREATE NEW END -->
-			
+
 			<!-- SEARCH START -->
-			<div class="margin-top-20" v-if="storeAppUsers.length">
+			<div class="margin-top-20"
+			     v-if="storeAppUsers.length">
 				<div class="portlet box blue-hoki">
-					<div class="portlet-title" @click="toggleSearchPanel()">
+					<div class="portlet-title"
+					     @click="toggleSearchPanel()">
 						<div class="caption">
 							<i class="fa fa-search"></i>
 							Search Panel
@@ -109,26 +152,38 @@
 							<a :class="{'expand': !searchCollapse, 'collapse': searchCollapse}"></a>
 						</div>
 					</div>
-					<div class="portlet-body" :class="{'display-hide': searchCollapse}">
-						<form role="form" @submit.prevent="advancedSearch()">
+					<div class="portlet-body"
+					     :class="{'display-hide': searchCollapse}">
+						<form role="form"
+						      @submit.prevent="advancedSearch()">
 							<div class="form-body row">
 								<div class="col-md-12">
-									<div class="alert alert-danger" v-show="searchError" ref="searchError">
-										<button class="close" @click.prevent="clearError('searchError')"></button>
+									<div class="alert alert-danger"
+									     v-show="searchError"
+									     ref="searchError">
+										<button class="close"
+										        @click.prevent="clearError('searchError')"></button>
 										<span>{{searchError}}</span>
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="form-group form-md-line-input form-md-floating-label">
-										<input ref="search" type="text" class="form-control input-sm" :class="{'edited': searchTerm.length}" v-model="searchTerm">
+										<input ref="search"
+										       type="text"
+										       class="form-control input-sm"
+										       :class="{'edited': searchTerm.length}"
+										       v-model="searchTerm">
 										<label for="search_options_search">Search</label>
 										<span class="help-block persist">Search by Name or Email.</span>
 									</div>
 								</div>
 							</div>
 							<div class="form-actions right margin-top-20">
-								<button type="button" class="btn btn-default" @click="resetSearch()"> Reset Search</button>
-								<button type="submit" class="btn blue">Search</button>
+								<button type="button"
+								        class="btn btn-default"
+								        @click="resetSearch()"> Reset Search</button>
+								<button type="submit"
+								        class="btn blue">Search</button>
 							</div>
 						</form>
 					</div>
@@ -137,7 +192,9 @@
 			<!-- SEARCH END -->
 
 			<!-- LIST START -->
-			<loading-screen :show="loadingStoreAppUsersData" :color="'#2C3E50'" :display="'inline'"></loading-screen>
+			<loading-screen :show="loadingStoreAppUsersData"
+			                :color="'#2C3E50'"
+			                :display="'inline'"></loading-screen>
 			<div v-if="storeAppUsers.length && !loadingStoreAppUsersData && !filteredResults.length">
 				<div class="portlet light portlet-fit bordered margin-top-20">
 					<div class="portlet-title bg-blue-chambray">
@@ -152,55 +209,73 @@
 					<div class="portlet-body">
 						<div class="row">
 							<div class="col-md-12">
-								<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
-									<button class="close" @click="clearError('listErrorMessage')"></button>
+								<div class="alert alert-danger"
+								     v-show="listErrorMessage"
+								     ref="listErrorMessage">
+									<button class="close"
+									        @click="clearError('listErrorMessage')"></button>
 									<span>{{listErrorMessage}}</span>
 								</div>
 							</div>
 						</div>
-						<div class="clearfix margin-bottom-10" v-if="storeAppUsers.length">
-							<el-dropdown trigger="click" @command="updateSortByOrder" size="mini" :show-timeout="50" :hide-timeout="50">
+						<div class="clearfix margin-bottom-10"
+						     v-if="storeAppUsers.length">
+							<el-dropdown trigger="click"
+							             @command="updateSortByOrder"
+							             size="mini"
+							             :show-timeout="50"
+							             :hide-timeout="50">
 								<el-button size="mini">
 									Sort by
 									<span>
-										<i class="fa fa-sort-alpha-asc" v-if="sortBy.order === 'ASC'"></i>
-										<i class="fa fa-sort-alpha-desc" v-if="sortBy.order === 'DESC'"></i>
+										<i class="fa fa-sort-alpha-asc"
+										   v-if="sortBy.order === 'ASC'"></i>
+										<i class="fa fa-sort-alpha-desc"
+										   v-if="sortBy.order === 'DESC'"></i>
 									</span>
 									<i class="el-icon-arrow-down el-icon--right"></i>
 								</el-button>
 								<el-dropdown-menu slot="dropdown">
-									<el-dropdown-item command="ASC"><i class="fa fa-sort-alpha-asc"></i></el-dropdown-item>
-									<el-dropdown-item command="DESC"><i class="fa fa-sort-alpha-desc"></i></el-dropdown-item>
+									<el-dropdown-item command="ASC">
+										<i class="fa fa-sort-alpha-asc"></i>
+									</el-dropdown-item>
+									<el-dropdown-item command="DESC">
+										<i class="fa fa-sort-alpha-desc"></i>
+									</el-dropdown-item>
 								</el-dropdown-menu>
 							</el-dropdown>
-							<page-results class="pull-right" :totalResults="storeAppUsers.length" :activePage="activePage" @pageResults="pageResultsUpdate"></page-results>
+							<page-results class="pull-right"
+							              :totalResults="storeAppUsers.length"
+							              :activePage="activePage"
+							              @pageResults="pageResultsUpdate"></page-results>
 						</div>
 						<div class="mt-element-list">
 							<div class="mt-list-container list-news">
 								<ul>
-									<li 
-										class="mt-list-item actions-at-left margin-top-15" 
-										v-for="storeAppUser in currentActivePageItems" 
-										:id="'storeAppUser-' + storeAppUser.id" 
-										:class="{'animated' : animated === `storeAppUser-${storeAppUser.id}`}"
-										:key="storeAppUser.id">
+									<li class="mt-list-item actions-at-left margin-top-15"
+									    v-for="storeAppUser in currentActivePageItems"
+									    :id="'storeAppUser-' + storeAppUser.id"
+									    :class="{'animated' : animated === `storeAppUser-${storeAppUser.id}`}"
+									    :key="storeAppUser.id">
 										<div class="list-item-actions">
-											<el-tooltip 
-												v-if="$root.permissions['admin store_app_users update']"
-												content="Edit" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="editStoreAppUser(storeAppUser)">
-													<i class="fa fa-pencil" aria-hidden="true"></i>
+											<el-tooltip v-if="$root.permissions['admin store_app_users update']"
+											            content="Edit"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="editStoreAppUser(storeAppUser)">
+													<i class="fa fa-pencil"
+													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip 
-												v-if="$root.permissions['admin store_app_users read'] && !$root.permissions['admin store_app_users update']"
-												content="View" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="editStoreAppUser(storeAppUser)">
-													<i class="fa fa-eye" aria-hidden="true"></i>
+											<el-tooltip v-if="$root.permissions['admin store_app_users read'] && !$root.permissions['admin store_app_users update']"
+											            content="View"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="editStoreAppUser(storeAppUser)">
+													<i class="fa fa-eye"
+													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
 										</div>
@@ -219,8 +294,11 @@
 									</li>
 								</ul>
 							</div>
-							<div class="clearfix" v-if="storeAppUsers.length && numPages > 1">
-								<pagination :passedPage="activePage" :numPages="numPages" @activePageChange="activePageUpdate"></pagination>
+							<div class="clearfix"
+							     v-if="storeAppUsers.length && numPages > 1">
+								<pagination :passedPage="activePage"
+								            :numPages="numPages"
+								            @activePageChange="activePageUpdate"></pagination>
 							</div>
 						</div>
 					</div>
@@ -238,49 +316,64 @@
 						</div>
 					</div>
 					<div class="portlet-body">
-						<div class="clearfix margin-bottom-10" v-if="filteredResults.length">
-							<el-dropdown trigger="click" @command="updateSortByOrder" size="mini" :show-timeout="50" :hide-timeout="50">
+						<div class="clearfix margin-bottom-10"
+						     v-if="filteredResults.length">
+							<el-dropdown trigger="click"
+							             @command="updateSortByOrder"
+							             size="mini"
+							             :show-timeout="50"
+							             :hide-timeout="50">
 								<el-button size="mini">
 									Sort by
 									<span>
-										<i class="fa fa-sort-alpha-asc" v-if="sortBy.order === 'ASC'"></i>
-										<i class="fa fa-sort-alpha-desc" v-if="sortBy.order === 'DESC'"></i>
+										<i class="fa fa-sort-alpha-asc"
+										   v-if="sortBy.order === 'ASC'"></i>
+										<i class="fa fa-sort-alpha-desc"
+										   v-if="sortBy.order === 'DESC'"></i>
 									</span>
 									<i class="el-icon-arrow-down el-icon--right"></i>
 								</el-button>
 								<el-dropdown-menu slot="dropdown">
-									<el-dropdown-item command="ASC"><i class="fa fa-sort-alpha-asc"></i></el-dropdown-item>
-									<el-dropdown-item command="DESC"><i class="fa fa-sort-alpha-desc"></i></el-dropdown-item>
+									<el-dropdown-item command="ASC">
+										<i class="fa fa-sort-alpha-asc"></i>
+									</el-dropdown-item>
+									<el-dropdown-item command="DESC">
+										<i class="fa fa-sort-alpha-desc"></i>
+									</el-dropdown-item>
 								</el-dropdown-menu>
 							</el-dropdown>
-							<page-results class="pull-right" :totalResults="filteredResults.length" :activePage="searchActivePage" @pageResults="pageResultsUpdate"></page-results>
+							<page-results class="pull-right"
+							              :totalResults="filteredResults.length"
+							              :activePage="searchActivePage"
+							              @pageResults="pageResultsUpdate"></page-results>
 						</div>
 						<div class="mt-element-list">
 							<div class="mt-list-container list-news">
 								<ul>
-									<li 
-										class="mt-list-item actions-at-left margin-top-15" 
-										v-for="storeAppUser in currentActiveSearchPageItems" 
-										:id="'storeAppUser-' + storeAppUser.id" 
-										:class="{'animated' : animated === `storeAppUser-${storeAppUser.id}`}"
-										:key="storeAppUser.id">
+									<li class="mt-list-item actions-at-left margin-top-15"
+									    v-for="storeAppUser in currentActiveSearchPageItems"
+									    :id="'storeAppUser-' + storeAppUser.id"
+									    :class="{'animated' : animated === `storeAppUser-${storeAppUser.id}`}"
+									    :key="storeAppUser.id">
 										<div class="list-item-actions">
-											<el-tooltip 
-												v-if="$root.permissions['admin store_app_users update']"
-												content="Edit" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="editStoreAppUser(storeAppUser)">
-													<i class="fa fa-pencil" aria-hidden="true"></i>
+											<el-tooltip v-if="$root.permissions['admin store_app_users update']"
+											            content="Edit"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="editStoreAppUser(storeAppUser)">
+													<i class="fa fa-pencil"
+													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip 
-												v-if="$root.permissions['admin store_app_users read'] && !$root.permissions['admin store_app_users update']"
-												content="View" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="editStoreAppUser(storeAppUser)">
-													<i class="fa fa-eye" aria-hidden="true"></i>
+											<el-tooltip v-if="$root.permissions['admin store_app_users read'] && !$root.permissions['admin store_app_users update']"
+											            content="View"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="editStoreAppUser(storeAppUser)">
+													<i class="fa fa-eye"
+													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
 										</div>
@@ -302,31 +395,47 @@
 									</li>
 								</ul>
 							</div>
-							<div class="clearfix" v-if="filteredResults.length && searchNumPages > 1">
-								<pagination :passedPage="searchActivePage" :numPages="searchNumPages" @activePageChange="activeSearchPageUpdate"></pagination>
+							<div class="clearfix"
+							     v-if="filteredResults.length && searchNumPages > 1">
+								<pagination :passedPage="searchActivePage"
+								            :numPages="searchNumPages"
+								            @activePageChange="activeSearchPageUpdate"></pagination>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div v-if="!storeAppUsers.length && !loadingStoreAppUsersData">
-				<no-results :show="!storeAppUsers.length" :type="'store app users'"></no-results>
+				<no-results :show="!storeAppUsers.length"
+				            :type="'store app users'"></no-results>
 			</div>
 		</div>
 		<!-- LIST END -->
 
 		<!-- ASSIGN STORES MODAL START -->
-		<modal :show="showAssignStoresModal" effect="fade" @closeOnEscape="closeAssignStoresModal" ref="storesModal">
-			<div slot="modal-header" class="modal-header center">
-				<button type="button" class="close" @click="closeAssignStoresModal()">
+		<modal :show="showAssignStoresModal"
+		       effect="fade"
+		       @closeOnEscape="closeAssignStoresModal"
+		       ref="storesModal">
+			<div slot="modal-header"
+			     class="modal-header center">
+				<button type="button"
+				        class="close"
+				        @click="closeAssignStoresModal()">
 					<span>&times;</span>
 				</button>
-				<h4 class="modal-title center">Select A Store <span v-if="selectedStoreAppUser.name.length"> For </span>{{selectedStoreAppUser.name}}</h4>
+				<h4 class="modal-title center">Select A Store
+					<span v-if="selectedStoreAppUser.name.length"> For </span>{{selectedStoreAppUser.name}}</h4>
 			</div>
-			<div slot="modal-body" class="modal-body">
-				<form role="form" novalidate>
-					<div class="alert alert-danger" v-show="assignErrorMessage" ref="assignErrorMessage">
-						<button class="close" @click.prevent="clearError('assignErrorMessage')"></button>
+			<div slot="modal-body"
+			     class="modal-body">
+				<form role="form"
+				      novalidate>
+					<div class="alert alert-danger"
+					     v-show="assignErrorMessage"
+					     ref="assignErrorMessage">
+						<button class="close"
+						        @click.prevent="clearError('assignErrorMessage')"></button>
 						<span>{{ assignErrorMessage }}</span>
 					</div>
 					<div class="invite-user-form height-mod">
@@ -340,10 +449,15 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr v-for="store in filteredStores" :key="store.id">
+								<tr v-for="store in filteredStores"
+								    :key="store.id">
 									<td>
 										<div class="md-radio">
-											<input type="radio" v-model="selectedLocationId" :id="`store-${store.id}`" class="md-radiobtn" :value="store.id">
+											<input type="radio"
+											       v-model="selectedLocationId"
+											       :id="`store-${store.id}`"
+											       class="md-radiobtn"
+											       :value="store.id">
 											<label :for="`store-${store.id}`">
 												<span class="inc"></span>
 												<span class="check"></span>
@@ -360,25 +474,28 @@
 					</div>
 				</form>
 			</div>
-			<div slot="modal-footer" class="modal-footer">
+			<div slot="modal-footer"
+			     class="modal-footer">
 				<div class="row">
 					<div class="col-xs-6">
 						<div class="form-group form-md-line-input form-md-floating-label form-md-line-input-trimmed">
 							<div class="input-icon right">
-								<input  
-									type="text" 
-									placeholder="Search Stores" 
-									class="form-control input-sm" 
-									:class="{'edited': storeSearchTerm.length}" 
-									v-model="storeSearchTerm" 
-									id="search_locations"
-								>
-								<i class="fa fa-times-circle-o clickable" @click.prevent="resetStoreSearch()" aria-hidden="true"></i>
+								<input type="text"
+								       placeholder="Search Stores"
+								       class="form-control input-sm"
+								       :class="{'edited': storeSearchTerm.length}"
+								       v-model="storeSearchTerm"
+								       id="search_locations">
+								<i class="fa fa-times-circle-o clickable"
+								   @click.prevent="resetStoreSearch()"
+								   aria-hidden="true"></i>
 							</div>
 						</div>
 					</div>
 					<div class="col-xs-6">
-						<button type="button" class="btn blue" @click="assignStores($event)">Select</button>
+						<button type="button"
+						        class="btn blue"
+						        @click="assignStores($event)">Select</button>
 					</div>
 				</div>
 			</div>
@@ -386,64 +503,100 @@
 		<!-- ASSIGN STORES MODAL START -->
 
 		<!-- EDIT MODAL START -->
-		<modal :show="showEditStoreAppUserModal" effect="fade" @closeOnEscape="closeEditStoreAppUserModal" ref="editModal">
-			<div slot="modal-header" class="modal-header" mode="out-in">
-				<transition name="fade" mode="out-in">
-					<div v-if="!editLocationMode" key="mainEditMode">
-						<button type="button" class="close" @click="closeEditStoreAppUserModal()">
+		<modal :show="showEditStoreAppUserModal"
+		       effect="fade"
+		       @closeOnEscape="closeEditStoreAppUserModal"
+		       ref="editModal">
+			<div slot="modal-header"
+			     class="modal-header"
+			     mode="out-in">
+				<transition name="fade"
+				            mode="out-in">
+					<div v-if="!editLocationMode"
+					     key="mainEditMode">
+						<button type="button"
+						        class="close"
+						        @click="closeEditStoreAppUserModal()">
 							<span>&times;</span>
 						</button>
 						<h4 class="modal-title center">Edit Store App User</h4>
 					</div>
-					<div v-if="editLocationMode" key="selectLocationMode">
-						<button type="button" class="close" @click="closeEditStoreAppUserModal()">
+					<div v-if="editLocationMode"
+					     key="selectLocationMode">
+						<button type="button"
+						        class="close"
+						        @click="closeEditStoreAppUserModal()">
 							<span>&times;</span>
 						</button>
 						<h4 class="modal-title center">
-							<i class="fa fa-chevron-left clickable pull-left back-button" @click="closeEditLocationMode()"></i>
-							Select A Store <span v-if="selectedStoreAppUser.name.length"> For </span>{{selectedStoreAppUser.name}}
+							<i class="fa fa-chevron-left clickable pull-left back-button"
+							   @click="closeEditLocationMode()"></i>
+							Select A Store
+							<span v-if="selectedStoreAppUser.name.length"> For </span>{{selectedStoreAppUser.name}}
 						</h4>
 					</div>
 				</transition>
 			</div>
-			<div slot="modal-body" class="modal-body">
-				<transition name="fade" mode="out-in">
-					<div v-if="!editLocationMode" key="mainEditMode">
-						<div class="alert alert-danger" v-show="editErrorMessage" ref="editErrorMessage">
-							<button class="close" @click="clearError('editErrorMessage')"></button>
+			<div slot="modal-body"
+			     class="modal-body">
+				<transition name="fade"
+				            mode="out-in">
+					<div v-if="!editLocationMode"
+					     key="mainEditMode">
+						<div class="alert alert-danger"
+						     v-show="editErrorMessage"
+						     ref="editErrorMessage">
+							<button class="close"
+							        @click="clearError('editErrorMessage')"></button>
 							<span>{{editErrorMessage}}</span>
 						</div>
 						<fieldset :disabled="$root.permissions['admin store_app_users read'] && !$root.permissions['admin store_app_users update']">
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" id="form_control_edited_name" v-model="storeAppUserToBeEdited.name" :class="{'edited': storeAppUserToBeEdited.name.length}">
+								<input type="text"
+								       class="form-control input-sm"
+								       id="form_control_edited_name"
+								       v-model="storeAppUserToBeEdited.name"
+								       :class="{'edited': storeAppUserToBeEdited.name.length}">
 								<label for="form_control_edited_name">Name </label>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" id="form_control_edited_password" v-model="storeAppUserToBeEdited.password" :class="{'edited': storeAppUserToBeEdited.password.length}">
+								<input type="text"
+								       class="form-control input-sm"
+								       id="form_control_edited_password"
+								       v-model="storeAppUserToBeEdited.password"
+								       :class="{'edited': storeAppUserToBeEdited.password.length}">
 								<label for="form_control_edited_password">Password </label>
 							</div>
 						</fieldset>
-						<div>		        				
-							<button type="button" class="btn blue btn-outline" @click="assignStoreToStoreAppUser(storeAppUserToBeEdited, 'existing')">Select a location</button>
-							<p class="grey-label margin-top-10" v-if="storeAppUserToBeEdited.location_id">Selected {{selectedEditedLocationName}}</p>
+						<div>
+							<button type="button"
+							        class="btn blue btn-outline"
+							        @click="assignStoreToStoreAppUser(storeAppUserToBeEdited, 'existing')">Select a location</button>
+							<p class="grey-label margin-top-10"
+							   v-if="storeAppUserToBeEdited.location_id">Selected {{selectedEditedLocationName}}</p>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label">
 							<label>Status</label><br>
-							<el-switch
-								:disabled="$root.permissions['admin store_app_users read'] && !$root.permissions['admin store_app_users update']"
-								v-model="storeAppUserToBeEdited.is_active"
-								active-color="#0c6"
-								inactive-color="#ff4949"
-								:active-value="1"
-								:inactive-value="0"
-								active-text="Active"
-								inactive-text="Disabled">
+							<el-switch :disabled="$root.permissions['admin store_app_users read'] && !$root.permissions['admin store_app_users update']"
+							           v-model="storeAppUserToBeEdited.is_active"
+							           active-color="#0c6"
+							           inactive-color="#ff4949"
+							           :active-value="1"
+							           :inactive-value="0"
+							           active-text="Active"
+							           inactive-text="Disabled">
 							</el-switch>
 						</div>
 					</div>
-					<form v-if="editLocationMode" role="form" novalidate key="selectLocationMode">
-						<div class="alert alert-danger" v-show="assignErrorMessage" ref="assignErrorMessage">
-							<button class="close" @click.prevent="clearError('assignErrorMessage')"></button>
+					<form v-if="editLocationMode"
+					      role="form"
+					      novalidate
+					      key="selectLocationMode">
+						<div class="alert alert-danger"
+						     v-show="assignErrorMessage"
+						     ref="assignErrorMessage">
+							<button class="close"
+							        @click.prevent="clearError('assignErrorMessage')"></button>
 							<span>{{ assignErrorMessage }}</span>
 						</div>
 						<div class="invite-user-form height-mod">
@@ -457,16 +610,16 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr v-for="store in filteredStores" :key="store.id">
+									<tr v-for="store in filteredStores"
+									    :key="store.id">
 										<td>
 											<div class="md-radio">
-												<input 
-													:disabled="$root.permissions['admin store_app_users read'] && !$root.permissions['admin store_app_users update']"
-													type="radio" 
-													v-model="selectedLocationId" 
-													:id="`store-${store.id}`" 
-													class="md-radiobtn" 
-													:value="store.id">
+												<input :disabled="$root.permissions['admin store_app_users read'] && !$root.permissions['admin store_app_users update']"
+												       type="radio"
+												       v-model="selectedLocationId"
+												       :id="`store-${store.id}`"
+												       class="md-radiobtn"
+												       :value="store.id">
 												<label :for="`store-${store.id}`">
 													<span class="inc"></span>
 													<span class="check"></span>
@@ -484,57 +637,54 @@
 					</form>
 				</transition>
 			</div>
-			<div slot="modal-footer" class="modal-footer">
-				<div class="row" v-if="editLocationMode" >
+			<div slot="modal-footer"
+			     class="modal-footer">
+				<div class="row"
+				     v-if="editLocationMode">
 					<div class="col-xs-6">
 						<div class="form-group form-md-line-input form-md-floating-label form-md-line-input-trimmed">
 							<div class="input-icon right">
-								<input  
-									type="text" 
-									placeholder="Search Stores" 
-									class="form-control input-sm" 
-									:class="{'edited': storeSearchTerm.length}" 
-									v-model="storeSearchTerm" 
-									id="search_locations"
-								>
-								<i class="fa fa-times-circle-o clickable" @click.prevent="resetStoreSearch()" aria-hidden="true"></i>
+								<input type="text"
+								       placeholder="Search Stores"
+								       class="form-control input-sm"
+								       :class="{'edited': storeSearchTerm.length}"
+								       v-model="storeSearchTerm"
+								       id="search_locations">
+								<i class="fa fa-times-circle-o clickable"
+								   @click.prevent="resetStoreSearch()"
+								   aria-hidden="true"></i>
 							</div>
 						</div>
 					</div>
 					<div class="col-xs-6">
-						<button 
-							v-if="$root.permissions['admin store_app_users read'] && !$root.permissions['admin store_app_users update']"
-							type="button" 
-							class="btn btn-primary" 
-							@click="closeEditLocationMode()">
+						<button v-if="$root.permissions['admin store_app_users read'] && !$root.permissions['admin store_app_users update']"
+						        type="button"
+						        class="btn btn-primary"
+						        @click="closeEditLocationMode()">
 							Back
 						</button>
-						<button 
-							v-else
-							type="button" 
-							class="btn btn-primary" 
-							@click="assignStores($event)">
+						<button v-else
+						        type="button"
+						        class="btn btn-primary"
+						        @click="assignStores($event)">
 							Select
 						</button>
 					</div>
 				</div>
-				<button 
-					v-if="!editLocationMode && $root.permissions['admin store_app_users read'] && !$root.permissions['admin store_app_users update']"
-					type="button" 
-					class="btn btn-primary" 
-					@click="closeEditStoreAppUserModal()">
+				<button v-if="!editLocationMode && $root.permissions['admin store_app_users read'] && !$root.permissions['admin store_app_users update']"
+				        type="button"
+				        class="btn btn-primary"
+				        @click="closeEditStoreAppUserModal()">
 					Close
 				</button>
-				<button 
-					v-if="!editLocationMode && $root.permissions['admin store_app_users update']"
-					type="button" 
-					class="btn btn-primary" 
-					@click="updateStoreAppUser()"
-					:disabled="updating">
+				<button v-if="!editLocationMode && $root.permissions['admin store_app_users update']"
+				        type="button"
+				        class="btn btn-primary"
+				        @click="updateStoreAppUser()"
+				        :disabled="updating">
 					Save
-					<i 
-						v-show="updating"
-						class="fa fa-spinner fa-pulse fa-fw">
+					<i v-show="updating"
+					   class="fa fa-spinner fa-pulse fa-fw">
 					</i>
 				</button>
 			</div>
@@ -567,8 +717,8 @@ export default {
 	data () {
 		return {
 			breadcrumbArray: [
-				{name: 'Admin Manager', link: false},
-				{name: 'Store App Users', link: false}
+				{ name: 'Admin Manager', link: false },
+				{ name: 'Store App Users', link: false }
 			],
 			createStoreAppUserCollapse: true,
 			createErrorMessage: '',
@@ -624,7 +774,7 @@ export default {
 	computed: {
 		selectedNewLocationName () {
 			let name = ''
-			this.stores.forEach((store) => {
+			this.stores.forEach(store => {
 				if (store.id === this.newStoreAppUser.location_id) {
 					name = store.display_name
 				}
@@ -633,7 +783,7 @@ export default {
 		},
 		selectedEditedLocationName () {
 			let name = ''
-			this.stores.forEach((store) => {
+			this.stores.forEach(store => {
 				if (store.id === this.storeAppUserToBeEdited.location_id) {
 					name = store.display_name
 				}
@@ -644,18 +794,32 @@ export default {
 			return Math.ceil(this.storeAppUsers.length / this.resultsPerPage)
 		},
 		currentActivePageItems () {
-			return this.userSort(this.storeAppUsers).slice(this.resultsPerPage * (this.activePage - 1), this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage)
+			return this.userSort(this.storeAppUsers).slice(
+				this.resultsPerPage * (this.activePage - 1),
+				this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
+			)
 		},
 		searchNumPages () {
 			return Math.ceil(this.filteredResults.length / this.resultsPerPage)
 		},
 		currentActiveSearchPageItems () {
-			return this.userSort(this.filteredResults).slice(this.resultsPerPage * (this.searchActivePage - 1), this.resultsPerPage * (this.searchActivePage - 1) + this.resultsPerPage)
+			return this.userSort(this.filteredResults).slice(
+				this.resultsPerPage * (this.searchActivePage - 1),
+				this.resultsPerPage * (this.searchActivePage - 1) + this.resultsPerPage
+			)
 		},
 		filteredStores () {
 			if (this.storeSearchTerm.length) {
-				return this.stores.filter((location) => {
-					return (location.display_name + location.address_line_1 + location.city + location.province + location.country).toLowerCase().includes(this.storeSearchTerm)
+				return this.stores.filter(location => {
+					return (
+						location.display_name +
+						location.address_line_1 +
+						location.city +
+						location.province +
+						location.country
+					)
+						.toLowerCase()
+						.includes(this.storeSearchTerm)
 				})
 			} else {
 				return this.stores
@@ -691,7 +855,9 @@ export default {
 		 */
 		updateSortByOrder (value) {
 			this.sortBy.order = value
-			this.filteredResults.length ? this.activeSearchPageUpdate(1) : this.activePageUpdate(1)
+			this.filteredResults.length
+				? this.activeSearchPageUpdate(1)
+				: this.activePageUpdate(1)
 		},
 		/**
 		 * To sort the orders list.
@@ -748,7 +914,9 @@ export default {
 		pageResultsUpdate (val) {
 			if (parseInt(this.resultsPerPage) !== parseInt(val)) {
 				this.resultsPerPage = val
-				this.filteredResults.length ? this.activeSearchPageUpdate(1) : this.activePageUpdate(1)
+				this.filteredResults.length
+					? this.activeSearchPageUpdate(1)
+					: this.activePageUpdate(1)
 			}
 		},
 		/**
@@ -801,12 +969,20 @@ export default {
 					this.searchError = 'Search term must be at least 3 characters.'
 				} else {
 					for (var i = 0; i < this.storeAppUsers.length; i++) {
-						if ((this.storeAppUsers[i].name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) > -1) || (this.storeAppUsers[i].email.toLowerCase().indexOf(this.searchTerm.toLowerCase()) > -1)) {
+						if (
+							this.storeAppUsers[i].name
+								.toLowerCase()
+								.indexOf(this.searchTerm.toLowerCase()) > -1 ||
+							this.storeAppUsers[i].email
+								.toLowerCase()
+								.indexOf(this.searchTerm.toLowerCase()) > -1
+						) {
 							this.filteredResults.push(this.storeAppUsers[i])
 						}
 					}
 					if (!this.filteredResults.length) {
-						this.searchError = 'There are no matching records. Please try again.'
+						this.searchError =
+							'There are no matching records. Please try again.'
 					}
 				}
 			} else {
@@ -853,19 +1029,25 @@ export default {
 		getStores () {
 			var assignStoresVue = this
 
-			App.getPaginatedStoreLocations(assignStoresVue.$root.appId, assignStoresVue.$root.appSecret, assignStoresVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					assignStoresVue.stores = response.payload
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch stores',
-					errorName: 'assignErrorMessage',
-					vue: assignStoresVue,
-					containerRef: 'storesModal'
+			App.getPaginatedStoreLocations(
+				assignStoresVue.$root.appId,
+				assignStoresVue.$root.appSecret,
+				assignStoresVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						assignStoresVue.stores = response.payload
+					}
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch stores',
+						errorName: 'assignErrorMessage',
+						vue: assignStoresVue,
+						containerRef: 'storesModal'
+					})
+				})
 		},
 		/**
 		 * To display the edit modal
@@ -907,22 +1089,28 @@ export default {
 		getAllStoreAppUsers () {
 			this.loadingStoreAppUsersData = true
 			var storeAppUsersVue = this
-			return AdminManagerFunctions.getAllPOCUsers(storeAppUsersVue.$root.appId, storeAppUsersVue.$root.appSecret, storeAppUsersVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					storeAppUsersVue.loadingStoreAppUsersData = false
-					storeAppUsersVue.storeAppUsers = response.payload
-				} else {
-					storeAppUsersVue.loadingStoreAppUsersData = false
-				}
-			}).catch(reason => {
-				storeAppUsersVue.loadingStoreAppUsersData = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch Store App Users',
-					errorName: 'listErrorMessage',
-					vue: storeAppUsersVue
+			return AdminManagerFunctions.getAllPOCUsers(
+				storeAppUsersVue.$root.appId,
+				storeAppUsersVue.$root.appSecret,
+				storeAppUsersVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						storeAppUsersVue.loadingStoreAppUsersData = false
+						storeAppUsersVue.storeAppUsers = response.payload
+					} else {
+						storeAppUsersVue.loadingStoreAppUsersData = false
+					}
 				})
-			})
+				.catch(reason => {
+					storeAppUsersVue.loadingStoreAppUsersData = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch Store App Users',
+						errorName: 'listErrorMessage',
+						vue: storeAppUsersVue
+					})
+				})
 		},
 		/**
 		 * To get a list of store app users.
@@ -933,37 +1121,46 @@ export default {
 			var storeAppUsersVue = this
 
 			return this.validateNewStoreAppUserData()
-			.then((response) => {
-				storeAppUsersVue.creating = true
-				storeAppUsersVue.clearError('createErrorMessage')
-				return AdminManagerFunctions.createPOCUser(storeAppUsersVue.newStoreAppUser, storeAppUsersVue.$root.appId, storeAppUsersVue.$root.appSecret, storeAppUsersVue.$root.userToken).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						storeAppUsersVue.getAllStoreAppUsers()
-						storeAppUsersVue.resetCreateForm()
-						storeAppUsersVue.showCreateSuccess()
-					} else {
-						storeAppUsersVue.createErrorMessage = response.message
-					}
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not create the Store App User',
-						errorName: 'createErrorMessage',
-						vue: storeAppUsersVue
-					})
+				.then(response => {
+					storeAppUsersVue.creating = true
+					storeAppUsersVue.clearError('createErrorMessage')
+					return AdminManagerFunctions.createPOCUser(
+						storeAppUsersVue.newStoreAppUser,
+						storeAppUsersVue.$root.appId,
+						storeAppUsersVue.$root.appSecret,
+						storeAppUsersVue.$root.userToken
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								storeAppUsersVue.getAllStoreAppUsers()
+								storeAppUsersVue.resetCreateForm()
+								storeAppUsersVue.showCreateSuccess()
+							} else {
+								storeAppUsersVue.createErrorMessage = response.message
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not create the Store App User',
+								errorName: 'createErrorMessage',
+								vue: storeAppUsersVue
+							})
+						})
 				})
-			}).catch(reason => {
-				// If validation fails then display the error message
-				if (reason.responseJSON) {
-					storeAppUsersVue.createErrorMessage = reason.responseJSON.message
-					window.scrollTo(0, 0)
-				} else {
-					storeAppUsersVue.createErrorMessage = reason
-					window.scrollTo(0, 0)
-				}
-			}).finally(() => {
-				storeAppUsersVue.creating = false
-			})
+				.catch(reason => {
+					// If validation fails then display the error message
+					if (reason.responseJSON) {
+						storeAppUsersVue.createErrorMessage = reason.responseJSON.message
+						window.scrollTo(0, 0)
+					} else {
+						storeAppUsersVue.createErrorMessage = reason
+						window.scrollTo(0, 0)
+					}
+				})
+				.finally(() => {
+					storeAppUsersVue.creating = false
+				})
 		},
 		/**
 		 * To reset the create new form.
@@ -1017,11 +1214,14 @@ export default {
 				text: 'Stores successfully assigned',
 				type: 'success',
 				confirmButtonText: 'OK'
-			}).then(() => {
-				// do nothing
-			}, dismiss => {
-				// do nothing
-			})
+			}).then(
+				() => {
+					// do nothing
+				},
+				dismiss => {
+					// do nothing
+				}
+			)
 		},
 		/**
 		 * To notify user that the operation succeeded.
@@ -1034,11 +1234,14 @@ export default {
 				text: 'Store App User successfully created',
 				type: 'success',
 				confirmButtonText: 'OK'
-			}).then(() => {
-				// do nothing
-			}, dismiss => {
-				// do nothing
-			})
+			}).then(
+				() => {
+					// do nothing
+				},
+				dismiss => {
+					// do nothing
+				}
+			)
 		},
 		/**
 		 * To notify user that the operation succeeded.
@@ -1051,11 +1254,14 @@ export default {
 				text: 'Store App User successfully updated',
 				type: 'success',
 				confirmButtonText: 'OK'
-			}).then(() => {
-				// do nothing
-			}, dismiss => {
-				// do nothing
-			})
+			}).then(
+				() => {
+					// do nothing
+				},
+				dismiss => {
+					// do nothing
+				}
+			)
 		},
 		/**
 		 * To toggle the create new panel.
@@ -1093,7 +1299,9 @@ export default {
 			this.getStores()
 			if (type === 'existing') {
 				this.editLocationMode = true
-			} else { this.showAssignStoresModal = true }
+			} else {
+				this.showAssignStoresModal = true
+			}
 		},
 		/**
 		 * To close anything active in the side panel
@@ -1113,49 +1321,66 @@ export default {
 			var storeAppUsersVue = this
 
 			return this.validateEditedStoreAppUserData()
-			.then((response) => {
-				storeAppUsersVue.updating = true
-				storeAppUsersVue.clearError('createErrorMessage')
-				return AdminManagerFunctions.updatePOCUser(storeAppUsersVue.storeAppUserToBeEdited, storeAppUsersVue.$root.appId, storeAppUsersVue.$root.appSecret, storeAppUsersVue.$root.userToken).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						storeAppUsersVue.closeEditStoreAppUserModal()
-						storeAppUsersVue.showEditSuccess()
-						for (var i = 0; i < this.storeAppUsers.length; i++) {
-							if (this.storeAppUsers[i].id === storeAppUsersVue.storeAppUserToBeEdited.id) {
-								this.storeAppUsers[i].name = storeAppUsersVue.storeAppUserToBeEdited.name
-								this.storeAppUsers[i].location_id = storeAppUsersVue.storeAppUserToBeEdited.location_id
-								this.storeAppUsers[i].is_active = storeAppUsersVue.storeAppUserToBeEdited.is_active
+				.then(response => {
+					storeAppUsersVue.updating = true
+					storeAppUsersVue.clearError('createErrorMessage')
+					return AdminManagerFunctions.updatePOCUser(
+						storeAppUsersVue.storeAppUserToBeEdited,
+						storeAppUsersVue.$root.appId,
+						storeAppUsersVue.$root.appSecret,
+						storeAppUsersVue.$root.userToken
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								storeAppUsersVue.closeEditStoreAppUserModal()
+								storeAppUsersVue.showEditSuccess()
+								for (var i = 0; i < this.storeAppUsers.length; i++) {
+									if (
+										this.storeAppUsers[i].id ===
+										storeAppUsersVue.storeAppUserToBeEdited.id
+									) {
+										this.storeAppUsers[i].name =
+											storeAppUsersVue.storeAppUserToBeEdited.name
+										this.storeAppUsers[i].location_id =
+											storeAppUsersVue.storeAppUserToBeEdited.location_id
+										this.storeAppUsers[i].is_active =
+											storeAppUsersVue.storeAppUserToBeEdited.is_active
+									}
+								}
+								storeAppUsersVue.resetEditForm()
+								this.animated = `storeAppUser-${
+									storeAppUsersVue.storeAppUserToBeEdited.id
+								}`
+								window.setTimeout(() => {
+									storeAppUsersVue.animated = ''
+								}, 3000)
+							} else {
+								storeAppUsersVue.editErrorMessage = response.message
 							}
-						}
-						storeAppUsersVue.resetEditForm()
-						this.animated = `storeAppUser-${storeAppUsersVue.storeAppUserToBeEdited.id}`
-						window.setTimeout(() => {
-							storeAppUsersVue.animated = ''
-						}, 3000)
-					} else {
-						storeAppUsersVue.editErrorMessage = response.message
-					}
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not update the Store App User',
-						errorName: 'editErrorMessage',
-						vue: storeAppUsersVue,
-						containerRef: 'editModal'
-					})
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not update the Store App User',
+								errorName: 'editErrorMessage',
+								vue: storeAppUsersVue,
+								containerRef: 'editModal'
+							})
+						})
 				})
-			}).catch(reason => {
-				// If validation fails then display the error message
-				if (reason.responseJSON) {
-					storeAppUsersVue.editErrorMessage = reason.responseJSON.message
-					window.scrollTo(0, 0)
-				} else {
-					storeAppUsersVue.editErrorMessage = reason
-					window.scrollTo(0, 0)
-				}
-			}).finally(() => {
-				storeAppUsersVue.updating = false
-			})
+				.catch(reason => {
+					// If validation fails then display the error message
+					if (reason.responseJSON) {
+						storeAppUsersVue.editErrorMessage = reason.responseJSON.message
+						window.scrollTo(0, 0)
+					} else {
+						storeAppUsersVue.editErrorMessage = reason
+						window.scrollTo(0, 0)
+					}
+				})
+				.finally(() => {
+					storeAppUsersVue.updating = false
+				})
 		},
 		/**
 		 * To check if the item data is valid before submitting to the backend.
@@ -1173,7 +1398,10 @@ export default {
 					reject('Please enter a valid email')
 				} else if (storeAppUsersVue.newStoreAppUser.password.length < 6) {
 					reject('Defaul password should be at least 6 characters')
-				} else if (storeAppUsersVue.newStoreAppUser.password !== storeAppUsersVue.passwordCheck) {
+				} else if (
+					storeAppUsersVue.newStoreAppUser.password !==
+					storeAppUsersVue.passwordCheck
+				) {
 					reject('Passwords do not match')
 				} else if (!storeAppUsersVue.newStoreAppUser.location_id) {
 					reject('Please select a location')
@@ -1210,30 +1438,32 @@ export default {
 
 <style scoped>
 .animated {
-	animation: listItemHighlight 1s 2 ease-in-out both;
+  animation: listItemHighlight 1s 2 ease-in-out both;
 }
 .modal-content {
-	max-height: calc(100vh - 60px);
+  max-height: calc(100vh - 60px);
 }
 .modal-body {
-	overflow-y: auto;
-	max-height: calc(100vh - 180px);
+  overflow-y: auto;
+  max-height: calc(100vh - 180px);
 }
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .1s
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.1s;
 }
-.fade-enter, .fade-leave-to {
-  opacity: 0
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
 }
-.mt-element-list .list-news.mt-list-container ul>.mt-list-item:hover {
-	background-color: white;
+.mt-element-list .list-news.mt-list-container ul > .mt-list-item:hover {
+  background-color: white;
 }
 .form-md-line-input-trimmed {
-	padding-top:0 !important;
-	margin-bottom:0 !important;
+  padding-top: 0 !important;
+  margin-bottom: 0 !important;
 }
 .grey-inline-label {
-	color: #555;
-	margin: 0 0 0 10px;
+  color: #555;
+  margin: 0 0 0 10px;
 }
 </style>

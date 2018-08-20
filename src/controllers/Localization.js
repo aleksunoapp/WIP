@@ -3,7 +3,7 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to pitapit API to get all available languages.
 	 * @function
@@ -146,4 +146,4 @@ export default ({
 			})
 		})
 	}
-})
+}

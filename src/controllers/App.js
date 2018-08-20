@@ -14,10 +14,10 @@ var resizeHandlers = []
  */
 var getResponsiveBreakpoint = function (size) {
 	var sizes = {
-		'xs': 480,
-		'sm': 768,
-		'md': 992,
-		'lg': 1200
+		xs: 480,
+		sm: 768,
+		md: 992,
+		lg: 1200
 	}
 
 	return sizes[size] ? sizes[size] : 0
@@ -35,7 +35,9 @@ var handleInit = function () {
 	isIE10 = !!navigator.userAgent.match(/MSIE 10.0/)
 
 	if (isIE10) {
-		$('html').addClass('ie10').addClass('ie')
+		$('html')
+			.addClass('ie10')
+			.addClass('ie')
 	}
 }
 
@@ -62,7 +64,10 @@ var handleOnResize = function () {
 	var resize
 
 	$(window).resize(function () {
-		if ($(window).width() !== windowWidth || $(window).height() !== windowHeight) {
+		if (
+			$(window).width() !== windowWidth ||
+			$(window).height() !== windowHeight
+		) {
 			windowWidth = $(window).width()
 			windowHeight = $(window).height()
 			if (resize) {
@@ -92,23 +97,27 @@ var addResizeHandler = function (func) {
  */
 var handleMaterialDesign = function () {
 	// Material design ckeckbox and radio effects
-	$('body').on('click', '.md-checkbox > label, .md-radio > label', function () {
-		var the = $(this)
-		// find the first span which is our circle/bubble
-		var el = $(this).children('span:first-child')
+	$('body').on(
+		'click',
+		'.md-checkbox > label, .md-radio > label',
+		function () {
+			var the = $(this)
+			// find the first span which is our circle/bubble
+			var el = $(this).children('span:first-child')
 
-		// add the bubble class (we do this so it doesnt show on page load)
-		el.addClass('inc')
+			// add the bubble class (we do this so it doesnt show on page load)
+			el.addClass('inc')
 
-		// clone it
-		var newone = el.clone(true)
+			// clone it
+			var newone = el.clone(true)
 
-		// add the cloned version before our original
-		el.before(newone)
+			// add the cloned version before our original
+			el.before(newone)
 
-		// remove the original so that it is ready to run on next click
-		$('.' + el.attr('class') + ':last', the).remove()
-	})
+			// remove the original so that it is ready to run on next click
+			$('.' + el.attr('class') + ':last', the).remove()
+		}
+	)
 
 	if ($('body').hasClass('page-md')) {
 		// Material design click effect
@@ -118,30 +127,36 @@ var handleMaterialDesign = function () {
 		var x
 		var y
 
-		$('body').on('click', 'a.btn, button.btn, input.btn, label.btn', function (e) {
-			element = $(this)
+		$('body').on(
+			'click',
+			'a.btn, button.btn, input.btn, label.btn',
+			function (e) {
+				element = $(this)
 
-			if (element.find('.md-click-circle').length === 0) {
-				element.prepend('<span class="md-click-circle"></span>')
+				if (element.find('.md-click-circle').length === 0) {
+					element.prepend('<span class="md-click-circle"></span>')
+				}
+
+				circle = element.find('.md-click-circle')
+				circle.removeClass('md-click-animate')
+
+				if (!circle.height() && !circle.width()) {
+					d = Math.max(element.outerWidth(), element.outerHeight())
+					circle.css({ height: d, width: d })
+				}
+
+				x = e.pageX - element.offset().left - circle.width() / 2
+				y = e.pageY - element.offset().top - circle.height() / 2
+
+				circle
+					.css({ top: y + 'px', left: x + 'px' })
+					.addClass('md-click-animate')
+
+				setTimeout(function () {
+					circle.remove()
+				}, 1000)
 			}
-
-			circle = element.find('.md-click-circle')
-			circle.removeClass('md-click-animate')
-
-			if (!circle.height() && !circle.width()) {
-				d = Math.max(element.outerWidth(), element.outerHeight())
-				circle.css({height: d, width: d})
-			}
-
-			x = e.pageX - element.offset().left - circle.width() / 2
-			y = e.pageY - element.offset().top - circle.height() / 2
-
-			circle.css({top: y + 'px', left: x + 'px'}).addClass('md-click-animate')
-
-			setTimeout(function () {
-				circle.remove()
-			}, 1000)
-		})
+		)
 	}
 
 	// Floating labels
@@ -153,7 +168,9 @@ var handleMaterialDesign = function () {
 		}
 	}
 
-	$('body').on('keydown', '.form-md-floating-label .form-control', function (e) {
+	$('body').on('keydown', '.form-md-floating-label .form-control', function (
+		e
+	) {
 		handleInput($(this))
 	})
 	$('body').on('blur', '.form-md-floating-label .form-control', function (e) {
@@ -174,7 +191,7 @@ var handleMaterialDesign = function () {
  */
 var getViewPort = function () {
 	var e = window
-	var	a = 'inner'
+	var a = 'inner'
 	if (!('innerWidth' in window)) {
 		a = 'client'
 		e = document.documentElement || document.body
@@ -200,7 +217,12 @@ var handle100HeightContent = function () {
 		var target = $(this)
 		var height
 
-		height = getViewPort().height - $('.page-header').outerHeight(true) - $('.page-footer').outerHeight(true) - $('.page-title').outerHeight(true) - $('.page-bar').outerHeight(true)
+		height =
+			getViewPort().height -
+			$('.page-header').outerHeight(true) -
+			$('.page-footer').outerHeight(true) -
+			$('.page-title').outerHeight(true) -
+			$('.page-bar').outerHeight(true)
 
 		// NOTE: have not added all logic from Metronic yet
 		target.css('min-height', height)
@@ -234,7 +256,7 @@ var handleSidebarAndContentHeight = function () {
 		height = sidebar.height() + 20
 	}
 
-	if ((height + headerHeight + footerHeight) <= getViewPort().height) {
+	if (height + headerHeight + footerHeight <= getViewPort().height) {
 		height = getViewPort().height - headerHeight - footerHeight
 	}
 
@@ -247,7 +269,8 @@ var handleSidebarAndContentHeight = function () {
  * @returns {integer} - The height of the sidebar
  */
 var calculateFixedSidebarViewportHeight = function () {
-	var sidebarHeight = getViewPort().height - $('.page-header').outerHeight(true)
+	var sidebarHeight =
+		getViewPort().height - $('.page-header').outerHeight(true)
 
 	return sidebarHeight
 }
@@ -261,7 +284,10 @@ var handleFixedSidebar = function () {
 	var menu = $('.page-sidebar-menu')
 	handleSidebarAndContentHeight()
 
-	if (getViewPort().width >= resBreakpointMd && !$('body').hasClass('page-sidebar-menu-not-fixed')) {
+	if (
+		getViewPort().width >= resBreakpointMd &&
+		!$('body').hasClass('page-sidebar-menu-not-fixed')
+	) {
 		menu.attr('data-height', calculateFixedSidebarViewportHeight())
 		// NOTE: need to add slimscroll first
 		// destroySlimScroll(menu);
@@ -325,7 +351,7 @@ var handleTabs = function () {
 	})
 }
 
-export default ({
+export default {
 	/**
 	 * List of functions to run to initialize the Metronic portion of the app
 	 * @function
@@ -428,7 +454,12 @@ export default ({
 	 * @param {string} paginationPreferences - The paginationPreferences object containing pagination preferences.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	getPaginatedStoreLocations: function (appId, appSecret, userToken, paginationPreferences = {}) {
+	getPaginatedStoreLocations: function (
+		appId,
+		appSecret,
+		userToken,
+		paginationPreferences = {}
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
@@ -561,4 +592,4 @@ export default ({
 			})
 		})
 	}
-})
+}

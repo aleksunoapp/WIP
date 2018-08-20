@@ -1,29 +1,43 @@
 <template>
-	<li class="jstree-node" :class="{'jstree-last': last, 'jstree-open': folder.expanded, 'jstree-closed': !folder.expanded}">
-		<i class="jstree-icon jstree-ocl" @click="expandNode()"></i>
-		<a class="jstree-anchor" @click="getResources(1, folder)" :class="{'jstree-clicked': folder.id === activeFolder}">
-			{{ folder.name }} 
-			<i 
-				class="fa" 
-				:class="{'fa-eye': folder.is_shared, 'fa-eye-slash': !folder.is_shared}" 
-				v-if="!activeLocationId && !selectOnly">
+	<li class="jstree-node"
+	    :class="{'jstree-last': last, 'jstree-open': folder.expanded, 'jstree-closed': !folder.expanded}">
+		<i class="jstree-icon jstree-ocl"
+		   @click="expandNode()"></i>
+		<a class="jstree-anchor"
+		   @click="getResources(1, folder)"
+		   :class="{'jstree-clicked': folder.id === activeFolder}">
+			{{ folder.name }}
+			<i class="fa"
+			   :class="{'fa-eye': folder.is_shared, 'fa-eye-slash': !folder.is_shared}"
+			   v-if="!activeLocationId && !selectOnly">
 			</i>
-			<i class="fa fa-pencil" @click.stop="manageFolder()" v-if="!selectOnly"></i>
+			<i class="fa fa-pencil"
+			   @click.stop="manageFolder()"
+			   v-if="!selectOnly"></i>
 		</a>
-		<ul class="jstree-children" v-if="folder.expanded">
-			<li 
-				class="jstree-node jstree-leaf" 
-				:class="{'jstree-last': !folder.children || !folder.children.length}" 
-				v-if="!selectOnly && $root.permissions['gallery create']">
+		<ul class="jstree-children"
+		    v-if="folder.expanded">
+			<li class="jstree-node jstree-leaf"
+			    :class="{'jstree-last': !folder.children || !folder.children.length}"
+			    v-if="!selectOnly && $root.permissions['gallery create']">
 				<i class="jstree-icon jstree-ocl"></i>
-				<a class="jstree-anchor" @click="createFolder()">
+				<a class="jstree-anchor"
+				   @click="createFolder()">
 					<button class="btn blue btn-outline btn-xs">
 						Create Folder
 					</button>
 				</a>
 			</li>
 			<template v-for="(subfolder, subindex) in folder.children">
-				<resource-folder :folder="subfolder" :activeFolder="activeFolder" :last="subindex === folder.children.length - 1" @expandNode="expandNode" @createFolder="createFolder" @manageFolder="manageFolder" @getResources="getResources" :selectOnly="selectOnly"></resource-folder>
+				<resource-folder :folder="subfolder"
+				                 :activeFolder="activeFolder"
+				                 :last="subindex === folder.children.length - 1"
+				                 @expandNode="expandNode"
+				                 @createFolder="createFolder"
+				                 @manageFolder="manageFolder"
+				                 @getResources="getResources"
+				                 :selectOnly="selectOnly"
+								 :key="subindex"></resource-folder>
 			</template>
 		</ul>
 	</li>
@@ -50,7 +64,9 @@ export default {
 		folder: {
 			type: Object,
 			required: true,
-			default: () => { return {} }
+			default: () => {
+				return {}
+			}
 		},
 		last: {
 			type: Boolean,

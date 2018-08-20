@@ -2,89 +2,87 @@
 	<div>
 		<div class="row">
 			<div class="col-xs-12">
-				<div class="alert alert-danger" v-show="alert">
-				    <button class="close" @click="clearError('alert')"></button>
-				    <span>{{alert}}</span>
+				<div class="alert alert-danger"
+				     v-show="alert">
+					<button class="close"
+					        @click="clearError('alert')"></button>
+					<span>{{alert}}</span>
 				</div>
 			</div>
 		</div>
 
 		<div class="row">
 			<div class="col-xs-12">
-				<el-date-picker 
-					v-model="fromDate" 
-					type="date" 
-					format="yyyy-MM-dd" 
-					value-format="yyyy-MM-dd" 
-					:clearable="true" 
-					placeholder="From">
+				<el-date-picker v-model="fromDate"
+				                type="date"
+				                format="yyyy-MM-dd"
+				                value-format="yyyy-MM-dd"
+				                :clearable="true"
+				                placeholder="From">
 				</el-date-picker>
-				<el-date-picker 
-					v-model="toDate" 
-					type="date" 
-					format="yyyy-MM-dd" 
-					value-format="yyyy-MM-dd" 
-					:clearable="true" 
-					placeholder="To">
+				<el-date-picker v-model="toDate"
+				                type="date"
+				                format="yyyy-MM-dd"
+				                value-format="yyyy-MM-dd"
+				                :clearable="true"
+				                placeholder="To">
 				</el-date-picker>
-				<el-select 
-					v-model="locationId" 
-					filterable 
-					clearable
-					placeholder="Select store">
-					<el-option
-						v-for="store in stores"
-						:key="store.id"
-						:label="store.display_name"
-						:value="store.id">
+				<el-select v-model="locationId"
+				           filterable
+				           clearable
+				           placeholder="Select store">
+					<el-option v-for="store in stores"
+					           :key="store.id"
+					           :label="store.display_name"
+					           :value="store.id">
 					</el-option>
 				</el-select>
-				<el-input 
-					class="input-width"
-					placeholder="Order ID" 
-					v-model="externalId">
+				<el-input class="input-width"
+				          placeholder="Order ID"
+				          v-model="externalId">
 				</el-input>
-				<el-button
-					type="primary"
-					:loading="loading"
-					@click="validateData()">
+				<el-button type="primary"
+				           :loading="loading"
+				           @click="validateData()">
 					Search
 				</el-button>
 			</div>
 		</div>
 
-		<div 
-			class="row"
-			v-show="!loading && orders.length">
+		<div class="row"
+		     v-show="!loading && orders.length">
 
-			<div 
-				class="
+			<div class="
 					col-xs-12
 					margin-top-20
 					margin-bottom-20
 				">
-				<el-dropdown 
-					trigger="click" 
-					@command="changeSortBy" 
-					size="mini">
+				<el-dropdown trigger="click"
+				             @command="changeSortBy"
+				             size="mini">
 					<el-button size="mini">
 						Sort by
 						<span>
-							<i class="fa fa-sort-alpha-asc" v-if="sortBy === 'ASC'"></i>
-							<i class="fa fa-sort-alpha-desc" v-if="sortBy === 'DESC'"></i>
+							<i class="fa fa-sort-alpha-asc"
+							   v-if="sortBy === 'ASC'"></i>
+							<i class="fa fa-sort-alpha-desc"
+							   v-if="sortBy === 'DESC'"></i>
 						</span>
 						<i class="el-icon-arrow-down el-icon--right"></i>
 					</el-button>
 					<el-dropdown-menu slot="dropdown">
-						<el-dropdown-item command="ASC"><i class="fa fa-sort-alpha-asc"></i></el-dropdown-item>
-						<el-dropdown-item command="DESC"><i class="fa fa-sort-alpha-desc"></i></el-dropdown-item>
+						<el-dropdown-item command="ASC">
+							<i class="fa fa-sort-alpha-asc"></i>
+						</el-dropdown-item>
+						<el-dropdown-item command="DESC">
+							<i class="fa fa-sort-alpha-desc"></i>
+						</el-dropdown-item>
 					</el-dropdown-menu>
 				</el-dropdown>
-				<page-results 
-					class="pull-right" 
-					:totalResults="total" 
-					:activePage="page" 
-					@pageResults="changePerPage">
+				<page-results class="pull-right"
+				              :totalResults="total"
+				              :activePage="page"
+				              @pageResults="changePerPage">
 				</page-results>
 			</div>
 
@@ -133,20 +131,18 @@
 					</thead>
 
 					<tbody>
-						<tr 
-							v-for="order in orders"
-							:key="order.id">
+						<tr v-for="order in orders"
+						    :key="order.id">
 
-							<td class="align-middle"> 
+							<td class="align-middle">
 								{{order.external_id}}
 							</td>
 							<td class="align-middle">
 								{{order.created_at.substring(0, 10)}}
 							</td>
 							<td class="align-middle">
-								<span 
-									class="label label-sm" 
-									:class="{ 
+								<span class="label label-sm"
+								      :class="{ 
 										'label-info' : order.status === 'pending',
 										'label-warning' : order.status === 'submitted', 
 										'label-success' : order.status === 'completed', 
@@ -160,57 +156,47 @@
 								{{order.total}}
 							</td>
 
-							<td 
-								v-if="location"
-								class="align-middle">
+							<td v-if="location"
+							    class="align-middle">
 								{{order.location_name}}
 							</td>
-							<td 
-								v-if="orderItems"
-								class="align-middle">
+							<td v-if="orderItems"
+							    class="align-middle">
 								<ul class="list-unstyled">
-									<li 
-										v-for="item in order.order_items"
-										:key="item.id">
+									<li v-for="item in order.order_items"
+									    :key="item.id">
 										{{item.name}}
 									</li>
 								</ul>
 							</td>
-							<td 
-								v-if="orderItemModifier"
-								class="align-middle">
+							<td v-if="orderItemModifier"
+							    class="align-middle">
 								<ul class="list-unstyled">
-									<li 
-										v-for="modifier in order.order_modifiers"
-										:key="modifier.id">
+									<li v-for="modifier in order.order_modifiers"
+									    :key="modifier.id">
 										{{modifier.name}}
 									</li>
 								</ul>
 							</td>
-							<td 
-								v-if="orderModifierOption"
-								class="align-middle">
+							<td v-if="orderModifierOption"
+							    class="align-middle">
 								<ul class="list-unstyled">
-									<li 
-										v-for="option in order.order_options"
-										:key="option.id">
+									<li v-for="option in order.order_options"
+									    :key="option.id">
 										{{option.name}}
 									</li>
 								</ul>
 							</td>
-							<td 
-								v-if="user"
-								class="align-middle">
+							<td v-if="user"
+							    class="align-middle">
 								{{order.user.first_name}} {{order.user.last_name}}
 							</td>
-							<td 
-								v-if="user"
-								class="align-middle">
+							<td v-if="user"
+							    class="align-middle">
 								{{order.user.email}}
 							</td>
-							<td 
-								v-if="user"
-								class="align-middle">
+							<td v-if="user"
+							    class="align-middle">
 								{{formatPhone(order.user.phone)}}
 							</td>
 						</tr>
@@ -218,35 +204,29 @@
 				</table>
 			</div>
 
-			<div 
-				class="col-xs-12"
-				v-show="lastPage > 1">
-				<pagination 
-					:passedPage="page" 
-					:numPages="lastPage" 
-					@activePageChange="changePage">
+			<div class="col-xs-12"
+			     v-show="lastPage > 1">
+				<pagination :passedPage="page"
+				            :numPages="lastPage"
+				            @activePageChange="changePage">
 				</pagination>
 			</div>
 		</div>
 
-		<div 
-			class="row"
-			v-show="loading">
+		<div class="row"
+		     v-show="loading">
 			<div class="col-xs-12 relative-block">
-				<loading-screen 
-					:show="loading">
+				<loading-screen :show="loading">
 				</loading-screen>
 			</div>
 		</div>
 
-		<div 
-			class="row"
-			v-show="!loading && !orders.length">
+		<div class="row"
+		     v-show="!loading && !orders.length">
 			<div class="col-xs-12">
-				<no-results 
-					:custom="noResults"
-					:show="noResults" 
-					:text="noResults">
+				<no-results :custom="noResults"
+				            :show="noResults"
+				            :text="noResults">
 				</no-results>
 			</div>
 		</div>
@@ -267,7 +247,7 @@ export default {
 		'no-results': NoResults,
 		'page-results': PageResults,
 		'loading-screen': LoadingScreen,
-		'pagination': Pagination
+		pagination: Pagination
 	},
 	data: function () {
 		return {
@@ -345,7 +325,9 @@ export default {
 		formatPhone (phone) {
 			try {
 				let digits = phone.replace(/\D/g, '')
-				return digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
+				return (
+					digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
+				)
 			} catch (err) {
 				return 'n/a'
 			}
@@ -407,7 +389,7 @@ export default {
 				!this.toDate &&
 				!this.locationId &&
 				!this.externalId
-			) return
+			)				{ return }
 			this.searchOrders()
 		},
 		/**
@@ -436,34 +418,37 @@ export default {
 				per_page: this.perPage
 			}
 
-			return AnalyticsFunctions.searchOrders(this.payload).then(response => {
-				if (response.code !== 200) {
-					throw Error('Something went wrong')
-				} else if (response.payload.total === 0) {
-					_this.noResults = 'There are no matching orders'
-					_this.orders = response.payload.data
-					_this.total = response.payload.total
-					_this.lastPage = response.payload.last_page
-				} else {
-					_this.orders = response.payload.data
-					_this.total = response.payload.total
-					_this.lastPage = response.payload.last_page
-				}
-			}).catch(reason => {
-				if (reason.message === 'The selected order id is invalid.') {
-					_this.orders = []
-					_this.total = 0
-					return
-				}
-				ajaxErrorHandler({
-					reason,
-					errorText: 'Something went wrong',
-					errorName: 'alert',
-					vue: _this
+			return AnalyticsFunctions.searchOrders(this.payload)
+				.then(response => {
+					if (response.code !== 200) {
+						throw Error('Something went wrong')
+					} else if (response.payload.total === 0) {
+						_this.noResults = 'There are no matching orders'
+						_this.orders = response.payload.data
+						_this.total = response.payload.total
+						_this.lastPage = response.payload.last_page
+					} else {
+						_this.orders = response.payload.data
+						_this.total = response.payload.total
+						_this.lastPage = response.payload.last_page
+					}
 				})
-			}).finally(() => {
-				_this.loading = false
-			})
+				.catch(reason => {
+					if (reason.message === 'The selected order id is invalid.') {
+						_this.orders = []
+						_this.total = 0
+						return
+					}
+					ajaxErrorHandler({
+						reason,
+						errorText: 'Something went wrong',
+						errorName: 'alert',
+						vue: _this
+					})
+				})
+				.finally(() => {
+					_this.loading = false
+				})
 		}
 	}
 }
@@ -471,7 +456,7 @@ export default {
 
 <style scoped>
 .input-width {
-	width: 150px;
+  width: 150px;
 }
 </style>
 

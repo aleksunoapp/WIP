@@ -22,7 +22,7 @@ let $ajax = function (options, noRetry) {
 	$.ajax(options)
 }
 
-export default ({
+export default {
 	/**
 	 * Call to message API to send a new message.
 	 * @function
@@ -49,4 +49,4 @@ export default ({
 			})
 		})
 	}
-})
+}

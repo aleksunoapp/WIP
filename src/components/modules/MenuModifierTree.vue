@@ -1,137 +1,214 @@
 <template>
-	<modal :show="showMenuModifierTreeModal" :width="900" effect="fade" @closeOnEscape="closeModal">
-		<div slot="modal-header" class="modal-header center">
-			<button type="button" class="close" @click="closeModal()">
+	<modal :show="showMenuModifierTreeModal"
+	       :width="900"
+	       effect="fade"
+	       @closeOnEscape="closeModal">
+		<div slot="modal-header"
+		     class="modal-header center">
+			<button type="button"
+			        class="close"
+			        @click="closeModal()">
 				<span>&times;</span>
 			</button>
-			<h4 class="modal-title center">Select Items<span v-if="selectedObject.name"> for {{ selectedObject.name }}</span></h4>
+			<h4 class="modal-title center">Select Items
+				<span v-if="selectedObject.name"> for {{ selectedObject.name }}</span>
+			</h4>
 		</div>
-		<div slot="modal-body" class="modal-body">
+		<div slot="modal-body"
+		     class="modal-body">
 			<div class="portlet light bordered height-mod">
 				<div class="portlet-body">
-  					<div class="col-md-12">
-  						<div class="alert alert-danger" v-show="errorMessage.length" ref="errorMessage">
-  						    <button class="close" @click="clearError('errorMessage')"></button>
-  						    <span>{{errorMessage}}</span>
-  						</div>
-		        		<div class="alert alert-danger" v-show="internalErrorMessage.length" ref="internalErrorMessage">
-		        		    <button class="close" @click="clearError('internalErrorMessage')"></button>
-		        		    <span>{{internalErrorMessage}}</span>
-		        		</div>
-		        		<div class="alert alert-info center margin-top-20" v-if="$root.activeLocation.id === undefined">
-		        		    <h4>No Store Selected</h4>
-		        		    <p>Please select a store from the stores panel on the right to view Menus and Modifiers.</p>
-		        		</div>
-		        	</div>
-					<tabset :active="activeTab" v-show="$root.activeLocation.id !== undefined">
+					<div class="col-md-12">
+						<div class="alert alert-danger"
+						     v-show="errorMessage.length"
+						     ref="errorMessage">
+							<button class="close"
+							        @click="clearError('errorMessage')"></button>
+							<span>{{errorMessage}}</span>
+						</div>
+						<div class="alert alert-danger"
+						     v-show="internalErrorMessage.length"
+						     ref="internalErrorMessage">
+							<button class="close"
+							        @click="clearError('internalErrorMessage')"></button>
+							<span>{{internalErrorMessage}}</span>
+						</div>
+						<div class="alert alert-info center margin-top-20"
+						     v-if="$root.activeLocation.id === undefined">
+							<h4>No Store Selected</h4>
+							<p>Please select a store from the stores panel on the right to view Menus and Modifiers.</p>
+						</div>
+					</div>
+					<tabset :active="activeTab"
+					        v-show="$root.activeLocation.id !== undefined">
 						<tab header="Menu Items">
 							<div class="col-md-4">
 								<h4>Menus</h4>
-								<div class="dd" id="nestable_list_1" v-if="menus.length">
-	                            	<ol class="dd-list">
-	                                	<li class="dd-item" v-for="menu in menus" :data-id="menu.id" @click.stop.prevent="selectMenu(menu)" :key="menu.id">
-	                                    	<div class="dd-handle" :class="{'active': menu.id === activeMenu.id}"> {{ menu.name }}
-	                                    	<span class="pull-right"><i class="fa fa-chevron-right"></i></span>
-	                                    	</div>
-	                                	</li>
-	                            	</ol>
-	                        	</div>
-	                        	<div v-else>
-	                        		<div class="alert alert-warning">
-	       	   							<span>There are no menus to display.</span>
-	       							</div>
-	                        	</div>
+								<div class="dd"
+								     id="nestable_list_1"
+								     v-if="menus.length">
+									<ol class="dd-list">
+										<li class="dd-item"
+										    v-for="menu in menus"
+										    :data-id="menu.id"
+										    @click.stop.prevent="selectMenu(menu)"
+										    :key="menu.id">
+											<div class="dd-handle"
+											     :class="{'active': menu.id === activeMenu.id}"> {{ menu.name }}
+												<span class="pull-right">
+													<i class="fa fa-chevron-right"></i>
+												</span>
+											</div>
+										</li>
+									</ol>
+								</div>
+								<div v-else>
+									<div class="alert alert-warning">
+										<span>There are no menus to display.</span>
+									</div>
+								</div>
 							</div>
-							<div class="col-md-4" v-if="isMenuSelected">
+							<div class="col-md-4"
+							     v-if="isMenuSelected">
 								<h4>{{ activeMenu.name }} - Categories</h4>
-								<div class="dd" id="nestable_list_2" v-if="categories.length">
-						            <ol class="dd-list">
-						                <li class="dd-item" v-for="category in categories" :data-id="category.id" @click="selectCategory(category)">
-						                    <div class="dd-handle" :class="{'active': category.id === activeCategory.id}"> {{ category.name }}
-						                        <span class="pull-right"><i class="fa fa-chevron-right"></i></span>
-						                    </div>
-						                </li>
-						            </ol>
-							    </div>
-							    <div v-else>
-							    	<div class="alert alert-warning">
-							           	<span>There are no categories in the menu '{{ activeMenu.name }}'.</span>
-							        </div>
-							    </div>
+								<div class="dd"
+								     id="nestable_list_2"
+								     v-if="categories.length">
+									<ol class="dd-list">
+										<li class="dd-item"
+										    v-for="category in categories"
+										    :data-id="category.id"
+										    @click="selectCategory(category)"
+											:key="category.id">
+											<div class="dd-handle"
+											     :class="{'active': category.id === activeCategory.id}"> {{ category.name }}
+												<span class="pull-right">
+													<i class="fa fa-chevron-right"></i>
+												</span>
+											</div>
+										</li>
+									</ol>
+								</div>
+								<div v-else>
+									<div class="alert alert-warning">
+										<span>There are no categories in the menu '{{ activeMenu.name }}'.</span>
+									</div>
+								</div>
 							</div>
-							<div class="col-md-4" v-if="isCategorySelected">
+							<div class="col-md-4"
+							     v-if="isCategorySelected">
 								<h4>
-									<i class="fa check clickable" @click="selectAllMenuItems()" :class="{'fa-check-square checked': selectAllMenuItemsSelected, 'fa-square-o unchecked': !selectAllMenuItemsSelected}" aria-hidden="true"></i>
+									<i class="fa check clickable"
+									   @click="selectAllMenuItems()"
+									   :class="{'fa-check-square checked': selectAllMenuItemsSelected, 'fa-square-o unchecked': !selectAllMenuItemsSelected}"
+									   aria-hidden="true"></i>
 									{{ activeCategory.name }} - Items</h4>
-								<div class="dd" id="nestable_list_3" v-if="items.length">
-							        <ol class="dd-list">
-							            <li class="dd-item" v-for="item in items" :data-id="item.id">
-							                <div class="dd-handle" @click.stop="toggleSKUSelected(item)">
-							                    <span class="pull-left">
-							                    	<i class="fa check" :class="{'fa-check-square checked': item.selected, 'fa-square-o unchecked': !item.selected}" aria-hidden="true"></i>
-							                    	<label :for="'item_checkbox_' + item.id">{{ item.name }}
-							                    	</label>
-							                    </span>
-							                </div>
-							            </li>
-							        </ol>
-							    </div>
-							    <div v-else>
-							        <div class="alert alert-warning">
-							           	<span>There are no items in the category '{{ activeCategory.name }}'.</span>
-							        </div>
-							    </div>
+								<div class="dd"
+								     id="nestable_list_3"
+								     v-if="items.length">
+									<ol class="dd-list">
+										<li class="dd-item"
+										    v-for="item in items"
+										    :data-id="item.id"
+											:key="item.id">
+											<div class="dd-handle"
+											     @click.stop="toggleSKUSelected(item)">
+												<span class="pull-left">
+													<i class="fa check"
+													   :class="{'fa-check-square checked': item.selected, 'fa-square-o unchecked': !item.selected}"
+													   aria-hidden="true"></i>
+													<label :for="'item_checkbox_' + item.id">{{ item.name }}
+													</label>
+												</span>
+											</div>
+										</li>
+									</ol>
+								</div>
+								<div v-else>
+									<div class="alert alert-warning">
+										<span>There are no items in the category '{{ activeCategory.name }}'.</span>
+									</div>
+								</div>
 							</div>
 						</tab>
-						<tab header="Modifier Items" v-if="showModifierItems">
+						<tab header="Modifier Items"
+						     v-if="showModifierItems">
 							<div class="col-md-6">
 								<h4>Modifier Categories</h4>
-								<div class="dd" id="nestable_list_1" v-if="modifiers.length">
-	                                <ol class="dd-list">
-	                                    <li class="dd-item" v-for="modifier in modifiers" :data-id="modifier.id" @click="selectModifier(modifier, $event)">
-	                                        <div class="dd-handle" :class="{'active': modifier.id === activeModifier.id}"> {{ modifier.name }}
-	                                        	<span class="pull-right"><i class="fa fa-chevron-right"></i></span>
-	                                        </div>
-	                                    </li>
-	                                </ol>
-	                            </div>
-	                            <div v-else>
-	                            	<div class="alert alert-warning">
-	    			        		    <span>There are no modifier categories to display.</span>
-	    			        		</div>
-	                            </div>
+								<div class="dd"
+								     id="nestable_list_1"
+								     v-if="modifiers.length">
+									<ol class="dd-list">
+										<li class="dd-item"
+										    v-for="modifier in modifiers"
+										    :data-id="modifier.id"
+										    @click="selectModifier(modifier, $event)"
+											:key="modifier.id">
+											<div class="dd-handle"
+											     :class="{'active': modifier.id === activeModifier.id}"> {{ modifier.name }}
+												<span class="pull-right">
+													<i class="fa fa-chevron-right"></i>
+												</span>
+											</div>
+										</li>
+									</ol>
+								</div>
+								<div v-else>
+									<div class="alert alert-warning">
+										<span>There are no modifier categories to display.</span>
+									</div>
+								</div>
 							</div>
-							<div class="col-md-6" v-if="isModifierCategorySelected">
+							<div class="col-md-6"
+							     v-if="isModifierCategorySelected">
 								<h4>
-									<i class="fa check clickable" @click="selectAllModifierItems()" :class="{'fa-check-square checked': selectAllModifierItemsSelected, 'fa-square-o unchecked': !selectAllMenuItemsSelected}" aria-hidden="true"></i>
+									<i class="fa check clickable"
+									   @click="selectAllModifierItems()"
+									   :class="{'fa-check-square checked': selectAllModifierItemsSelected, 'fa-square-o unchecked': !selectAllMenuItemsSelected}"
+									   aria-hidden="true"></i>
 									{{ activeModifier.name }} - Items</h4>
-								<div class="dd" id="nestable_list_3" v-if="modifierItems.length">
-	                                <ol class="dd-list">
-	                                    <li class="dd-item" v-for="item in modifierItems" :data-id="item.id">
-	                                        <div class="dd-handle">
-	                                        	<span class="pull-left" @click.prevent="toggleSKUSelected(item)">
-	                                        		<i class="fa check" :class="{'fa-check-square checked': item.selected, 'fa-square-o unchecked': !item.selected}" aria-hidden="true"></i>
-	                                        		<label :for="'item_checkbox_' + item.id">{{ item.name }}
-	                                        		</label>
-	                                        	</span>
-	                                        </div>
-	                                    </li>
-	                                </ol>
-	                            </div>
-	                            <div v-else>
-	                            	<div class="alert alert-warning">
-	    			        		    <span>There are no items in the category '{{ activeModifier.name }}'.</span>
-	    			        		</div>
-	                            </div>
+								<div class="dd"
+								     id="nestable_list_3"
+								     v-if="modifierItems.length">
+									<ol class="dd-list">
+										<li class="dd-item"
+										    v-for="item in modifierItems"
+										    :data-id="item.id"
+											:key="item.id">
+											<div class="dd-handle">
+												<span class="pull-left"
+												      @click.prevent="toggleSKUSelected(item)">
+													<i class="fa check"
+													   :class="{'fa-check-square checked': item.selected, 'fa-square-o unchecked': !item.selected}"
+													   aria-hidden="true"></i>
+													<label :for="'item_checkbox_' + item.id">{{ item.name }}
+													</label>
+												</span>
+											</div>
+										</li>
+									</ol>
+								</div>
+								<div v-else>
+									<div class="alert alert-warning">
+										<span>There are no items in the category '{{ activeModifier.name }}'.</span>
+									</div>
+								</div>
 							</div>
 						</tab>
 					</tabset>
 				</div>
 			</div>
 		</div>
-		<div slot="modal-footer" class="modal-footer">
-			<button type="button" class="btn btn-primary" @click="applySelectedItems()" v-show="$root.activeLocation.id !== undefined">Save</button>
-			<button type="button" class="btn btn-default" @click="closeModal()" v-show="$root.activeLocation.id === undefined">Close</button>
+		<div slot="modal-footer"
+		     class="modal-footer">
+			<button type="button"
+			        class="btn btn-primary"
+			        @click="applySelectedItems()"
+			        v-show="$root.activeLocation.id !== undefined">Save</button>
+			<button type="button"
+			        class="btn btn-default"
+			        @click="closeModal()"
+			        v-show="$root.activeLocation.id === undefined">Close</button>
 		</div>
 	</modal>
 </template>
@@ -172,7 +249,7 @@ export default {
 	props: {
 		selectedObject: {
 			type: Object,
-			default: () => ({skuArray: []})
+			default: () => ({ skuArray: [] })
 		},
 		errorMessage: {
 			type: String,
@@ -255,28 +332,36 @@ export default {
 		getItemsForActiveModifier () {
 			var modifierTreeVue = this
 			modifierTreeVue.modifierItems = []
-			return ModifiersFunctions.getModifierCategoryItems(modifierTreeVue.activeModifier.id, modifierTreeVue.$root.appId, modifierTreeVue.$root.appSecret).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					response.payload.forEach(item => {
-						modifierTreeVue.selectedSKUs.forEach(previous => {
-							if (item.sku === previous) {
-								item.selected = true
-							} else if (item.selected !== true) {
-								item.selected = false
-							}
+			return ModifiersFunctions.getModifierCategoryItems(
+				modifierTreeVue.activeModifier.id,
+				modifierTreeVue.$root.appId,
+				modifierTreeVue.$root.appSecret
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						response.payload.forEach(item => {
+							modifierTreeVue.selectedSKUs.forEach(previous => {
+								if (item.sku === previous) {
+									item.selected = true
+								} else if (item.selected !== true) {
+									item.selected = false
+								}
+							})
 						})
-					})
-					modifierTreeVue.modifierItems = response.payload
-					modifierTreeVue.modifierAll = Boolean(modifierTreeVue.selectAllModifierItemsSelected)
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch modifier items',
-					errorName: 'internalErrorMessage',
-					vue: modifierTreeVue
+						modifierTreeVue.modifierItems = response.payload
+						modifierTreeVue.modifierAll = Boolean(
+							modifierTreeVue.selectAllModifierItemsSelected
+						)
+					}
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch modifier items',
+						errorName: 'internalErrorMessage',
+						vue: modifierTreeVue
+					})
+				})
 		},
 		/**
 		 * To get a list of all modifiers for the current active location.
@@ -286,18 +371,22 @@ export default {
 		getModifiers () {
 			this.modifiers = []
 			var modifierTreeVue = this
-			return ModifiersFunctions.getStoreModifiers(modifierTreeVue.$root.activeLocation.id).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					modifierTreeVue.modifiers = response.payload
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch modifier categories',
-					errorName: 'internalErrorMessage',
-					vue: modifierTreeVue
+			return ModifiersFunctions.getStoreModifiers(
+				modifierTreeVue.$root.activeLocation.id
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						modifierTreeVue.modifiers = response.payload
+					}
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch modifier categories',
+						errorName: 'internalErrorMessage',
+						vue: modifierTreeVue
+					})
+				})
 		},
 		/**
 		 * To close the modal.
@@ -315,18 +404,24 @@ export default {
 		getMenus () {
 			this.menus = []
 			var menuTreeVue = this
-			return MenusFunctions.getStoreMenus(menuTreeVue.$root.appId, menuTreeVue.$root.appSecret, menuTreeVue.$root.activeLocation.id).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					menuTreeVue.menus = response.payload
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch menus',
-					errorName: 'internalErrorMessage',
-					vue: menuTreeVue
+			return MenusFunctions.getStoreMenus(
+				menuTreeVue.$root.appId,
+				menuTreeVue.$root.appSecret,
+				menuTreeVue.$root.activeLocation.id
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						menuTreeVue.menus = response.payload
+					}
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch menus',
+						errorName: 'internalErrorMessage',
+						vue: menuTreeVue
+					})
+				})
 		},
 		/**
 		 * To get a list of all categories for the current active menu.
@@ -336,18 +431,25 @@ export default {
 		getCategoriesForActiveMenu () {
 			var menuTreeVue = this
 			menuTreeVue.categories = []
-			return CategoriesFunctions.getMenuCategories(menuTreeVue.activeMenu.id, menuTreeVue.$root.appId, menuTreeVue.$root.appSecret, menuTreeVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					menuTreeVue.categories = response.payload
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch menu categories',
-					errorName: 'internalErrorMessage',
-					vue: menuTreeVue
+			return CategoriesFunctions.getMenuCategories(
+				menuTreeVue.activeMenu.id,
+				menuTreeVue.$root.appId,
+				menuTreeVue.$root.appSecret,
+				menuTreeVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						menuTreeVue.categories = response.payload
+					}
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch menu categories',
+						errorName: 'internalErrorMessage',
+						vue: menuTreeVue
+					})
+				})
 		},
 		/**
 		 * To get a list of all item for the current active category.
@@ -357,28 +459,36 @@ export default {
 		getItemsForActiveCategory () {
 			var menuTreeVue = this
 			menuTreeVue.items = []
-			return ItemsFunctions.getCategoryItemsFull(menuTreeVue.activeCategory.id, menuTreeVue.$root.appId, menuTreeVue.$root.appSecret).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					response.payload.forEach(item => {
-						menuTreeVue.selectedSKUs.forEach(previous => {
-							if (item.sku === previous) {
-								item.selected = true
-							} else if (item.selected !== true) {
-								item.selected = false
-							}
+			return ItemsFunctions.getCategoryItemsFull(
+				menuTreeVue.activeCategory.id,
+				menuTreeVue.$root.appId,
+				menuTreeVue.$root.appSecret
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						response.payload.forEach(item => {
+							menuTreeVue.selectedSKUs.forEach(previous => {
+								if (item.sku === previous) {
+									item.selected = true
+								} else if (item.selected !== true) {
+									item.selected = false
+								}
+							})
 						})
-					})
-					menuTreeVue.items = response.payload
-					menuTreeVue.menuAll = Boolean(menuTreeVue.selectAllMenuItemsSelected)
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch menu items',
-					errorName: 'internalErrorMessage',
-					vue: menuTreeVue
+						menuTreeVue.items = response.payload
+						menuTreeVue.menuAll = Boolean(
+							menuTreeVue.selectAllMenuItemsSelected
+						)
+					}
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch menu items',
+						errorName: 'internalErrorMessage',
+						vue: menuTreeVue
+					})
+				})
 		},
 		/**
 		 * To clear the categories array and also the active category.
@@ -458,7 +568,9 @@ export default {
 		 * @returns {undefined}
 		 */
 		applySelectedItems () {
-			this.$emit('closeMenuModifierTreeModalAndUpdate', {selectedSKUs: this.selectedSKUs})
+			this.$emit('closeMenuModifierTreeModalAndUpdate', {
+				selectedSKUs: this.selectedSKUs
+			})
 		},
 		/**
 		 * To clear the current error.
@@ -479,25 +591,25 @@ export default {
 </script>
 <style scoped>
 .height-mod {
-	max-height: 500px;
-    overflow: auto;
+  max-height: 500px;
+  overflow: auto;
 }
 .dd-handle {
-	cursor: pointer;
-	overflow: hidden;
-    text-overflow: ellipsis;
-    word-break: break-word;
-    white-space: nowrap;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+  white-space: nowrap;
 }
 .dd-handle * {
-	cursor: pointer;
+  cursor: pointer;
 }
 .active {
-	color: #2ea8e5;
-    background: #fff;
+  color: #2ea8e5;
+  background: #fff;
 }
 .check {
-	color: rgb(46, 168, 229); 
-	margin-right: 2px;
+  color: rgb(46, 168, 229);
+  margin-right: 2px;
 }
 </style>

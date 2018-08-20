@@ -1,76 +1,97 @@
 <template>
-	<modal :show="showSelectLocationModal" effect="fade" @closeOnEscape="closeModal">
-		<div slot="modal-header" class="modal-header center">
-			<button type="button" class="close" @click="closeModal()">
+	<modal :show="showSelectLocationModal"
+	       effect="fade"
+	       @closeOnEscape="closeModal">
+		<div slot="modal-header"
+		     class="modal-header center">
+			<button type="button"
+			        class="close"
+			        @click="closeModal()">
 				<span>&times;</span>
 			</button>
 			<h4 class="modal-title center">Select Store</h4>
 		</div>
-		<div slot="modal-body" class="modal-body">
-			<form role="form" novalidate>
-				<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
-				    <button class="close" @click="clearError()"></button>
-                    <span>{{ errorMessage }}</span>
+		<div slot="modal-body"
+		     class="modal-body">
+			<form role="form"
+			      novalidate>
+				<div class="alert alert-danger"
+				     v-show="errorMessage"
+				     ref="errorMessage">
+					<button class="close"
+					        @click="clearError()"></button>
+					<span>{{ errorMessage }}</span>
 				</div>
 				<div class="invite-user-form height-mod">
-			        <table class="table">
-			            <thead>
-			                <tr>
-			                	<th> 
-			                		<div class="md-checkbox has-success" @click.prevent="selectAll()">
-		                                <input type="checkbox" id="locations-promocodes" class="md-check" v-model="selectAllSelected">
-		                                <label for="locations-promocodes">
-		                                    <span class="inc"></span>
-		                                    <span class="check"></span>
-		                                    <span class="box"></span>
-		                                </label>
-		                            </div>
-			                	</th>
-			                	<th> Store Name </th>
-			                	<th> Street Address </th>
-			                	<th> City, Province, Country </th>
-			                </tr>
-			            </thead>
-			            <tbody>
-			                <tr v-for="location in searchResults">
-			                	<td>
-			                		<div class="md-checkbox has-success">
-		                                <input type="checkbox" :id="`location-${location.id}`" class="md-check" v-model="location.selected" @click="syncSelectAll(location.selected)">
-		                                <label :for="`location-${location.id}`">
-		                                    <span class="inc"></span>
-		                                    <span class="check"></span>
-		                                    <span class="box"></span>
-		                                </label>
-		                            </div>
-			                	</td>
-			                    <td> {{ location.display_name }} </td>
-			                    <td> {{ location.address_line_1 }} </td>
-			                    <td> {{ location.city }}, {{ location.province }}, {{ location.country }} </td>
-			                </tr>
-			            </tbody>
-			        </table>
+					<table class="table">
+						<thead>
+							<tr>
+								<th>
+									<div class="md-checkbox has-success"
+									     @click.prevent="selectAll()">
+										<input type="checkbox"
+										       id="locations-promocodes"
+										       class="md-check"
+										       v-model="selectAllSelected">
+										<label for="locations-promocodes">
+											<span class="inc"></span>
+											<span class="check"></span>
+											<span class="box"></span>
+										</label>
+									</div>
+								</th>
+								<th> Store Name </th>
+								<th> Street Address </th>
+								<th> City, Province, Country </th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="location in searchResults" :key="location.id">
+								<td>
+									<div class="md-checkbox has-success">
+										<input type="checkbox"
+										       :id="`location-${location.id}`"
+										       class="md-check"
+										       v-model="location.selected"
+										       @click="syncSelectAll(location.selected)">
+										<label :for="`location-${location.id}`">
+											<span class="inc"></span>
+											<span class="check"></span>
+											<span class="box"></span>
+										</label>
+									</div>
+								</td>
+								<td> {{ location.display_name }} </td>
+								<td> {{ location.address_line_1 }} </td>
+								<td> {{ location.city }}, {{ location.province }}, {{ location.country }} </td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 			</form>
 		</div>
-		<div slot="modal-footer" class="modal-footer">
+		<div slot="modal-footer"
+		     class="modal-footer">
 			<div class="row">
 				<div class="col-xs-6">
 					<div class="form-group form-md-line-input form-md-floating-label form-md-line-input-trimmed">
 						<div class="input-icon right">
-							<input  
-								type="text" 
-								placeholder="Search Stores" 
-								class="form-control input-sm" 
-								:class="{'edited': searchTerm.length}" 
-								v-model="searchTerm" 
-								id="search_locations"
-							>
-							<i class="fa fa-times-circle-o clickable" @click.prevent="resetSearch()" aria-hidden="true"></i>
+							<input type="text"
+							       placeholder="Search Stores"
+							       class="form-control input-sm"
+							       :class="{'edited': searchTerm.length}"
+							       v-model="searchTerm"
+							       id="search_locations">
+							<i class="fa fa-times-circle-o clickable"
+							   @click.prevent="resetSearch()"
+							   aria-hidden="true"></i>
 						</div>
 					</div>
 				</div>
 				<div class="col-xs-6">
-					<button type="button" class="btn blue" @click="selectStores()">Select</button>
+					<button type="button"
+					        class="btn blue"
+					        @click="selectStores()">Select</button>
 				</div>
 			</div>
 		</div>
@@ -100,8 +121,16 @@ export default {
 	computed: {
 		searchResults () {
 			if (this.searchTerm.length) {
-				return this.locations.filter((location) => {
-					return (location.display_name + location.address_line_1 + location.city + location.province + location.country).toLowerCase().includes(this.searchTerm)
+				return this.locations.filter(location => {
+					return (
+						location.display_name +
+						location.address_line_1 +
+						location.city +
+						location.province +
+						location.country
+					)
+						.toLowerCase()
+						.includes(this.searchTerm)
 				})
 			} else {
 				return this.locations
@@ -109,7 +138,9 @@ export default {
 		}
 	},
 	mounted () {
-		this.promoCode.locations === 'all' ? this.selectAllSelected = true : this.selectAllSelected = false
+		this.promoCode.locations === 'all'
+			? (this.selectAllSelected = true)
+			: (this.selectAllSelected = false)
 		this.getPaginatedStoreLocations()
 		this.showSelectLocationModal = true
 	},
@@ -176,26 +207,34 @@ export default {
 		getPaginatedStoreLocations () {
 			var editPromoCodeVue = this
 
-			App.getPaginatedStoreLocations(editPromoCodeVue.$root.appId, editPromoCodeVue.$root.appSecret, editPromoCodeVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					response.payload.forEach((location) => {
-						if (editPromoCodeVue.promoCode.locations === 'all') {
-							location.selected = true
-						} else {
-							location.selected = editPromoCodeVue.promoCode.locations.includes(parseInt(location.id))
-						}
-					})
-					editPromoCodeVue.locations = response.payload
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch stores',
-					errorName: 'errorMessage',
-					vue: editPromoCodeVue,
-					containerRef: 'modal'
+			App.getPaginatedStoreLocations(
+				editPromoCodeVue.$root.appId,
+				editPromoCodeVue.$root.appSecret,
+				editPromoCodeVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						response.payload.forEach(location => {
+							if (editPromoCodeVue.promoCode.locations === 'all') {
+								location.selected = true
+							} else {
+								location.selected = editPromoCodeVue.promoCode.locations.includes(
+									parseInt(location.id)
+								)
+							}
+						})
+						editPromoCodeVue.locations = response.payload
+					}
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch stores',
+						errorName: 'errorMessage',
+						vue: editPromoCodeVue,
+						containerRef: 'modal'
+					})
+				})
 		},
 		/**
 		 * To clear the current error.
@@ -218,19 +257,18 @@ export default {
 		Modal
 	}
 }
-
 </script>
 
 <style scoped>
-	.modal-body {
-		min-height: 200px;
-	    max-height: calc(100vh - 200px);
-	    overflow-x: hidden;
-	    overflow-y: auto;
-	    margin-bottom: 20px;
-	}
-	.form-md-line-input-trimmed {
-		padding-top:0 !important;
-		margin-bottom:0 !important;
-	}
+.modal-body {
+  min-height: 200px;
+  max-height: calc(100vh - 200px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin-bottom: 20px;
+}
+.form-md-line-input-trimmed {
+  padding-top: 0 !important;
+  margin-bottom: 0 !important;
+}
 </style>

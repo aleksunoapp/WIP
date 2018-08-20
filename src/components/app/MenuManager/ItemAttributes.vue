@@ -12,10 +12,12 @@
 			<p>Create, view, edit and delete Item Attributes. View or edit Items the Item Attribute is assigned to. View or edit what User Attributes the Item Attribute is associated with.</p>
 		</div>
 		<!-- HEADER END -->
-		
+
 		<!-- CREATE START -->
-		<div class="portlet box blue-hoki" v-if="$root.permissions['menu_manager attributes create']">
-			<div class="portlet-title bg-blue-chambray" @click="toggleCreatePanel()">
+		<div class="portlet box blue-hoki"
+		     v-if="$root.permissions['menu_manager attributes create']">
+			<div class="portlet-title bg-blue-chambray"
+			     @click="toggleCreatePanel()">
 				<div class="caption">
 					<i class="fa fa-plus-circle"></i>
 					Create A New Item Attribute
@@ -24,12 +26,17 @@
 					<a :class="{'expand': expandCreateForm, 'collapse': !expandCreateForm}"></a>
 				</div>
 			</div>
-			<div class="portlet-body" v-show="expandCreateForm">
-				<form role="form" @submit="createItemAttribute()">
-					<div class="row" v-show="createErrorMessage" ref="createErrorMessage">
+			<div class="portlet-body"
+			     v-show="expandCreateForm">
+				<form role="form"
+				      @submit="createItemAttribute()">
+					<div class="row"
+					     v-show="createErrorMessage"
+					     ref="createErrorMessage">
 						<div class="col-md-6">
-							<div class="alert alert-danger" >
-								<button class="close" @click.prevent="clearError('createErrorMessage')"></button>
+							<div class="alert alert-danger">
+								<button class="close"
+								        @click.prevent="clearError('createErrorMessage')"></button>
 								<span>{{createErrorMessage}}</span>
 							</div>
 						</div>
@@ -37,14 +44,20 @@
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" id="form_control_2" :class="{'edited': newItemAttribute.name.length}" v-model="newItemAttribute.name" @keyup.enter.stop="createItemAttribute()">
+								<input type="text"
+								       class="form-control input-sm"
+								       id="form_control_2"
+								       :class="{'edited': newItemAttribute.name.length}"
+								       v-model="newItemAttribute.name"
+								       @keyup.enter.stop="createItemAttribute()">
 								<label for="form_control_2">Item Attribute Name</label>
 							</div>
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-md-6">
-							<button type="submit" class="btn blue pull-right">Create</button>
+							<button type="submit"
+							        class="btn blue pull-right">Create</button>
 						</div>
 					</div>
 				</form>
@@ -53,9 +66,11 @@
 		<!-- CREATE END -->
 
 		<!-- SEARCH START -->
-		<div class="margin-top-20" v-show="itemAttributes.length">
+		<div class="margin-top-20"
+		     v-show="itemAttributes.length">
 			<div class="portlet box blue-hoki">
-				<div class="portlet-title" @click="toggleSearchPanel()">
+				<div class="portlet-title"
+				     @click="toggleSearchPanel()">
 					<div class="caption">
 						<i class="fa fa-search"></i>
 						Search
@@ -64,12 +79,15 @@
 						<a :class="{'expand': expandSearchPanel, 'collapse': !expandSearchPanel}"></a>
 					</div>
 				</div>
-				<div class="portlet-body" v-show="expandSearchPanel">
+				<div class="portlet-body"
+				     v-show="expandSearchPanel">
 					<form role="form">
 						<div class="row">
 							<div class="col-md-6">
-								<div class="alert alert-danger" v-show="searchErrorMessage.length">
-									<button class="close" @click="clearError('searchErrorMessage')"></button>
+								<div class="alert alert-danger"
+								     v-show="searchErrorMessage.length">
+									<button class="close"
+									        @click="clearError('searchErrorMessage')"></button>
 									<span>{{searchErrorMessage}}</span>
 								</div>
 							</div>
@@ -78,16 +96,16 @@
 							<div class="col-md-6 margin-bottom-20">
 								<div class="form-group form-md-line-input form-md-floating-label">
 									<div class="input-icon right">
-										<input 
-											ref="search" 
-											type="text" 
-											placeholder="Search by name" 
-											class="form-control input-sm" 
-											:class="{'edited': searchTerm.length}" 
-											v-model="searchTerm" 
-											id="search_options_search"
-										>
-										<i class="fa fa-times-circle-o clickable" @click.prevent="resetSearch()" aria-hidden="true"></i>
+										<input ref="search"
+										       type="text"
+										       placeholder="Search by name"
+										       class="form-control input-sm"
+										       :class="{'edited': searchTerm.length}"
+										       v-model="searchTerm"
+										       id="search_options_search">
+										<i class="fa fa-times-circle-o clickable"
+										   @click.prevent="resetSearch()"
+										   aria-hidden="true"></i>
 										<span class="help-block persist">
 											At least 3 characters.
 										</span>
@@ -118,86 +136,103 @@
 			<div class="portlet-body">
 				<div class="row">
 					<div class="col-md-12">
-						<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
-							<button class="close" @click="clearError('listErrorMessage')"></button>
+						<div class="alert alert-danger"
+						     v-show="listErrorMessage"
+						     ref="listErrorMessage">
+							<button class="close"
+							        @click="clearError('listErrorMessage')"></button>
 							<span>{{listErrorMessage}}</span>
 						</div>
 					</div>
 				</div>
-				<div class="clearfix margin-bottom-10" v-show="searchResults.length">
-					<el-dropdown trigger="click" @command="updateSortByOrder" size="mini" :show-timeout="50" :hide-timeout="50">
+				<div class="clearfix margin-bottom-10"
+				     v-show="searchResults.length">
+					<el-dropdown trigger="click"
+					             @command="updateSortByOrder"
+					             size="mini"
+					             :show-timeout="50"
+					             :hide-timeout="50">
 						<el-button size="mini">
 							Sort by
 							<span>
-								<i class="fa fa-sort-alpha-asc" v-show="sortBy.order === 'ASC'"></i>
-								<i class="fa fa-sort-alpha-desc" v-show="sortBy.order === 'DESC'"></i>
+								<i class="fa fa-sort-alpha-asc"
+								   v-show="sortBy.order === 'ASC'"></i>
+								<i class="fa fa-sort-alpha-desc"
+								   v-show="sortBy.order === 'DESC'"></i>
 							</span>
 							<i class="el-icon-arrow-down el-icon--right"></i>
 						</el-button>
 						<el-dropdown-menu slot="dropdown">
-							<el-dropdown-item command="ASC"><i class="fa fa-sort-alpha-asc"></i></el-dropdown-item>
-							<el-dropdown-item command="DESC"><i class="fa fa-sort-alpha-desc"></i></el-dropdown-item>
+							<el-dropdown-item command="ASC">
+								<i class="fa fa-sort-alpha-asc"></i>
+							</el-dropdown-item>
+							<el-dropdown-item command="DESC">
+								<i class="fa fa-sort-alpha-desc"></i>
+							</el-dropdown-item>
 						</el-dropdown-menu>
 					</el-dropdown>
-					<page-results class="pull-right" :totalResults="itemAttributes.length" :activePage="activePage" @pageResults="pageResultsUpdate"></page-results>
+					<page-results class="pull-right"
+					              :totalResults="itemAttributes.length"
+					              :activePage="activePage"
+					              @pageResults="pageResultsUpdate"></page-results>
 				</div>
-				<div class="spinner" v-show="!searchResults.length && loadingItemAttributes">
+				<div class="spinner"
+				     v-show="!searchResults.length && loadingItemAttributes">
 					<div>
 						<i class="fa fa-spinner fa-spin"></i>
 					</div>
 				</div>
-				<div class="mt-element-list margin-top-15" :show="searchResults.length && !loadingItemAttributes">
+				<div class="mt-element-list margin-top-15"
+				     :show="searchResults.length && !loadingItemAttributes">
 					<div class="mt-list-container list-news ext-1 no-border">
 						<ul>
-							<li 
-								v-for="itemAttribute in searchResults"
-								:key="itemAttribute.id"
-								class="mt-list-item margin-top-15" 
-								:class="{'animated' : animatedId === itemAttribute.id}"
-							>
+							<li v-for="itemAttribute in searchResults"
+							    :key="itemAttribute.id"
+							    class="mt-list-item margin-top-15"
+							    :class="{'animated' : animatedId === itemAttribute.id}">
 								<div class="margin-bottom-15 actions-on-top">
-									<el-tooltip 
-										v-if="$root.permissions['menu_manager attributes update']"
-										content="Edit" 
-										effect="light" 
-										placement="top">
-										<a class="btn btn-circle btn-icon-only btn-default" @click="openEditModal(itemAttribute)">
+									<el-tooltip v-if="$root.permissions['menu_manager attributes update']"
+									            content="Edit"
+									            effect="light"
+									            placement="top">
+										<a class="btn btn-circle btn-icon-only btn-default"
+										   @click="openEditModal(itemAttribute)">
 											<i class="fa fa-lg fa-pencil"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip 
-										v-if="$root.permissions['menu_manager attributes read'] && !$root.permissions['menu_manager attributes update']"
-										content="View" 
-										effect="light" 
-										placement="top">
-										<a class="btn btn-circle btn-icon-only btn-default" @click="openEditModal(itemAttribute)">
+									<el-tooltip v-if="$root.permissions['menu_manager attributes read'] && !$root.permissions['menu_manager attributes update']"
+									            content="View"
+									            effect="light"
+									            placement="top">
+										<a class="btn btn-circle btn-icon-only btn-default"
+										   @click="openEditModal(itemAttribute)">
 											<i class="fa fa-lg fa-eye"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip 
-										v-if="$root.permissions['menu_manager attributes update']"
-										content="Apply to Items" 
-										effect="light" 
-										placement="top">
-										<a class="btn btn-circle btn-icon-only btn-default" @click="openAssignItemsModal(itemAttribute)">
+									<el-tooltip v-if="$root.permissions['menu_manager attributes update']"
+									            content="Apply to Items"
+									            effect="light"
+									            placement="top">
+										<a class="btn btn-circle btn-icon-only btn-default"
+										   @click="openAssignItemsModal(itemAttribute)">
 											<i class="icon-layers"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip 
-										v-if="$root.permissions['menu_manager attributes update']"
-										content="Apply to User Attributes" 
-										effect="light" 
-										placement="top">
-										<a class="btn btn-circle btn-icon-only btn-default" @click="openAssignUserAttributesModal(itemAttribute)">
+									<el-tooltip v-if="$root.permissions['menu_manager attributes update']"
+									            content="Apply to User Attributes"
+									            effect="light"
+									            placement="top">
+										<a class="btn btn-circle btn-icon-only btn-default"
+										   @click="openAssignUserAttributesModal(itemAttribute)">
 											<i class="fa fa-lg fa-user"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip 
-										v-if="$root.permissions['menu_manager attributes delete']"
-										content="Delete" 
-										effect="light" 
-										placement="top">
-										<a class="btn btn-circle btn-icon-only btn-default" @click="openDeleteModal(itemAttribute)">
+									<el-tooltip v-if="$root.permissions['menu_manager attributes delete']"
+									            content="Delete"
+									            effect="light"
+									            placement="top">
+										<a class="btn btn-circle btn-icon-only btn-default"
+										   @click="openDeleteModal(itemAttribute)">
 											<i class="fa fa-lg fa-trash"></i>
 										</a>
 									</el-tooltip>
@@ -209,27 +244,41 @@
 						</ul>
 					</div>
 				</div>
-				<div class="clearfix margin-top-20" v-show="searchResults.length && numPages > 1">
-					<pagination :passedPage="activePage" :numPages="numPages" @activePageChange="activePageUpdate"></pagination>
+				<div class="clearfix margin-top-20"
+				     v-show="searchResults.length && numPages > 1">
+					<pagination :passedPage="activePage"
+					            :numPages="numPages"
+					            @activePageChange="activePageUpdate"></pagination>
 				</div>
-				<no-results :show="!searchResults.length && !loadingItemAttributes" :type="'Item Attributes'"></no-results>
+				<no-results :show="!searchResults.length && !loadingItemAttributes"
+				            :type="'Item Attributes'"></no-results>
 			</div>
 		</div>
 		<!-- LIST END -->
 
 		<!-- EDIT START -->
-		<modal :show="showEditModal" effect="fade" @closeOnEscape="closeEditModal" ref="editModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeEditModal()">
+		<modal :show="showEditModal"
+		       effect="fade"
+		       @closeOnEscape="closeEditModal"
+		       ref="editModal">
+			<div slot="modal-header"
+			     class="modal-header">
+				<button type="button"
+				        class="close"
+				        @click="closeEditModal()">
 					<span>&times;</span>
 				</button>
 				<h4 class="modal-title center">Edit Item Attribute</h4>
 			</div>
-			<div slot="modal-body" class="modal-body">
-				<div class="row" v-show="updateErrorMessage" ref="updateErrorMessage">
+			<div slot="modal-body"
+			     class="modal-body">
+				<div class="row"
+				     v-show="updateErrorMessage"
+				     ref="updateErrorMessage">
 					<div class="col-md-6">
 						<div class="alert alert-danger">
-							<button class="close" @click.prevent="clearError('updateErrorMessage')"></button>
+							<button class="close"
+							        @click.prevent="clearError('updateErrorMessage')"></button>
 							<span>{{updateErrorMessage}}</span>
 						</div>
 					</div>
@@ -237,33 +286,31 @@
 				<div class="row">
 					<div class="col-md-12">
 						<div class="form-group form-md-line-input form-md-floating-label">
-							<input 
-								:disabled="!$root.permissions['menu_manager attributes update']"
-								type="text" 
-								class="form-control input-sm" 
-								id="form_control_2" 
-								:class="{'edited': itemAttributeToEdit.name.length}" 
-								v-model="itemAttributeToEdit.name">
+							<input :disabled="!$root.permissions['menu_manager attributes update']"
+							       type="text"
+							       class="form-control input-sm"
+							       id="form_control_2"
+							       :class="{'edited': itemAttributeToEdit.name.length}"
+							       v-model="itemAttributeToEdit.name">
 							<label for="form_control_2">Item Attribute Name</label>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div slot="modal-footer" class="modal-footer clear">
+			<div slot="modal-footer"
+			     class="modal-footer clear">
 				<div class="row">
 					<div class="col-md-12">
-						<button 
-							v-if="!$root.permissions['menu_manager attributes update']"
-							@click="closeEditModal()" 
-							type="button" 
-							class="btn blue pull-right">
+						<button v-if="!$root.permissions['menu_manager attributes update']"
+						        @click="closeEditModal()"
+						        type="button"
+						        class="btn blue pull-right">
 							Close
 						</button>
-						<button 
-							v-else
-							@click="updateItemAttribute()" 
-							type="button" 
-							class="btn blue pull-right">
+						<button v-else
+						        @click="updateItemAttribute()"
+						        type="button"
+						        class="btn blue pull-right">
 							Save
 						</button>
 					</div>
@@ -273,35 +320,44 @@
 		<!-- EDIT END -->
 
 		<!-- ASSIGN ITEMS START -->
-		<menu-tree 
-			v-if="showAssignItemsModal" 
-			updateType="attribute" 
-			:headerText="itemAttributeToAssignItemsTo.name" 
-			:showCorporateMenus="true"
-			:selectedObject="itemAttributeToAssignItemsTo" 
-			:selectedSKUs="itemsOfItemAttribute"
-			:errorMessage="assignItemsErrorMessage"
-			@clearError="clearError('assignItemsErrorMessage')"
-			@selectedItems="assignItemsToItemAttribute"
-			@closeMenuTreeModal="closeAssignItemsModal"
-			ref="menuTree"
-		>
+		<menu-tree v-if="showAssignItemsModal"
+		           updateType="attribute"
+		           :headerText="itemAttributeToAssignItemsTo.name"
+		           :showCorporateMenus="true"
+		           :selectedObject="itemAttributeToAssignItemsTo"
+		           :selectedSKUs="itemsOfItemAttribute"
+		           :errorMessage="assignItemsErrorMessage"
+		           @clearError="clearError('assignItemsErrorMessage')"
+		           @selectedItems="assignItemsToItemAttribute"
+		           @closeMenuTreeModal="closeAssignItemsModal"
+		           ref="menuTree">
 		</menu-tree>
 		<!-- ASSIGN ITEMS END -->
 
 		<!-- ASSIGN USER ATTRIBUTES START -->
-		<modal :show="showAssignUserAttributesModal" effect="fade" @closeOnEscape="closeAssignUserAttributesModal" ref="assignModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeAssignUserAttributesModal()">
+		<modal :show="showAssignUserAttributesModal"
+		       effect="fade"
+		       @closeOnEscape="closeAssignUserAttributesModal"
+		       ref="assignModal">
+			<div slot="modal-header"
+			     class="modal-header">
+				<button type="button"
+				        class="close"
+				        @click="closeAssignUserAttributesModal()">
 					<span>&times;</span>
 				</button>
-				<h4 class="modal-title center">Apply <i>{{itemAttributeToAssignUserAttributesTo.name}}</i> to Multiple User Attributes</h4>
+				<h4 class="modal-title center">Apply
+					<i>{{itemAttributeToAssignUserAttributesTo.name}}</i> to Multiple User Attributes</h4>
 			</div>
-			<div slot="modal-body" class="modal-body">
-				<div class="row" v-show="assignUserAttributesErrorMessage" ref="assignUserAttributesErrorMessage">
+			<div slot="modal-body"
+			     class="modal-body">
+				<div class="row"
+				     v-show="assignUserAttributesErrorMessage"
+				     ref="assignUserAttributesErrorMessage">
 					<div class="col-md-12">
 						<div class="alert alert-danger">
-							<button class="close" @click.prevent="clearError('assignUserAttributesErrorMessage')"></button>
+							<button class="close"
+							        @click.prevent="clearError('assignUserAttributesErrorMessage')"></button>
 							<span>{{assignUserAttributesErrorMessage}}</span>
 						</div>
 					</div>
@@ -312,8 +368,12 @@
 							<thead>
 								<tr>
 									<th class="table-column--checkboxes">
-										<div class="md-checkbox has-success" @change="selectAll()">
-											<input type="checkbox" id="locations-promocodes" class="md-check" v-model="selectAllSelected">
+										<div class="md-checkbox has-success"
+										     @change="selectAll()">
+											<input type="checkbox"
+											       id="locations-promocodes"
+											       class="md-check"
+											       v-model="selectAllSelected">
 											<label for="locations-promocodes">
 												<span class="inc"></span>
 												<span class="check"></span>
@@ -325,10 +385,15 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr v-for="userAttribute in userAttributes" :key="userAttribute.id" >
-									<td  class="table-column--names">
+								<tr v-for="userAttribute in userAttributes"
+								    :key="userAttribute.id">
+									<td class="table-column--names">
 										<div class="md-checkbox has-success">
-											<input type="checkbox" class="md-check" v-model="userAttribute.selected" @change="syncSelectAll(userAttribute.selected)" :id="`ua-${userAttribute.id}`">
+											<input type="checkbox"
+											       class="md-check"
+											       v-model="userAttribute.selected"
+											       @change="syncSelectAll(userAttribute.selected)"
+											       :id="`ua-${userAttribute.id}`">
 											<label :for="`ua-${userAttribute.id}`">
 												<span class="inc"></span>
 												<span class="check"></span>
@@ -343,10 +408,13 @@
 					</div>
 				</div>
 			</div>
-			<div slot="modal-footer" class="modal-footer clear">
+			<div slot="modal-footer"
+			     class="modal-footer clear">
 				<div class="row">
 					<div class="col-md-12">
-						<button @click="assignUserAttributesToItemAttributes()" type="button" class="btn blue pull-right">Save</button>
+						<button @click="assignUserAttributesToItemAttributes()"
+						        type="button"
+						        class="btn blue pull-right">Save</button>
 					</div>
 				</div>
 			</div>
@@ -354,32 +422,46 @@
 		<!-- ASSIGN USER ATTRIBUTES END -->
 
 		<!-- DELETE START -->
-		<modal :show="showDeleteModal" effect="fade" @closeOnEscape="closeDeleteModal" ref="deleteModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeDeleteModal()">
+		<modal :show="showDeleteModal"
+		       effect="fade"
+		       @closeOnEscape="closeDeleteModal"
+		       ref="deleteModal">
+			<div slot="modal-header"
+			     class="modal-header">
+				<button type="button"
+				        class="close"
+				        @click="closeDeleteModal()">
 					<span>&times;</span>
 				</button>
 				<h4 class="modal-title center">Confirm Delete</h4>
 			</div>
-			<div slot="modal-body" class="modal-body">
-				<div class="row" v-show="deleteErrorMessage" ref="deleteErrorMessage">
+			<div slot="modal-body"
+			     class="modal-body">
+				<div class="row"
+				     v-show="deleteErrorMessage"
+				     ref="deleteErrorMessage">
 					<div class="col-md-12">
 						<div class="alert alert-danger">
-							<button class="close" @click.prevent="clearError('deleteErrorMessage')"></button>
+							<button class="close"
+							        @click.prevent="clearError('deleteErrorMessage')"></button>
 							<span>{{deleteErrorMessage}}</span>
 						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-12">
-						Are you sure you want to delete <i>{{itemAttributeToDelete.name}}</i>?
+						Are you sure you want to delete
+						<i>{{itemAttributeToDelete.name}}</i>?
 					</div>
 				</div>
 			</div>
-			<div slot="modal-footer" class="modal-footer clear">
+			<div slot="modal-footer"
+			     class="modal-footer clear">
 				<div class="row">
 					<div class="col-md-12">
-						<button @click="deleteItemAttribute()" type="button" class="btn blue pull-right">Delete</button>
+						<button @click="deleteItemAttribute()"
+						        type="button"
+						        class="btn blue pull-right">Delete</button>
 					</div>
 				</div>
 			</div>
@@ -403,8 +485,8 @@ export default {
 	data () {
 		return {
 			breadcrumbArray: [
-				{name: 'Menu Manager', link: false},
-				{name: 'Item Attributes', link: false}
+				{ name: 'Menu Manager', link: false },
+				{ name: 'Item Attributes', link: false }
 			],
 			loadingItemAttributes: false,
 			listErrorMessage: '',
@@ -459,10 +541,18 @@ export default {
 			if (this.searchTerm.length > 2) {
 				let filtered = this.searchItemAttributes()
 				this.numPages = Math.ceil(this.filtered.length / this.resultsPerPage)
-				return this.sortItemAttributes(filtered).slice(this.resultsPerPage * (this.activePage - 1), this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage)
+				return this.sortItemAttributes(filtered).slice(
+					this.resultsPerPage * (this.activePage - 1),
+					this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
+				)
 			} else {
-				this.numPages = Math.ceil(this.itemAttributes.length / this.resultsPerPage)
-				return this.sortItemAttributes(this.itemAttributes).slice(this.resultsPerPage * (this.activePage - 1), this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage)
+				this.numPages = Math.ceil(
+					this.itemAttributes.length / this.resultsPerPage
+				)
+				return this.sortItemAttributes(this.itemAttributes).slice(
+					this.resultsPerPage * (this.activePage - 1),
+					this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
+				)
 			}
 		}
 	},
@@ -508,28 +598,36 @@ export default {
 			const attributesVue = this
 
 			return this.validateNewItemAttribute()
-			.then((response) => {
-				attributesVue.clearError('createErrorMessage')
-				return ItemAttributesFunctions.createItemAttribute(attributesVue.$root.appId, attributesVue.$root.appSecret, attributesVue.$root.userToken, attributesVue.newItemAttribute)
 				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						attributesVue.confirmCreated(response.payload)
-					} else {
-						attributesVue.createErrorMessage = response.message || 'Something went wrong ...'
-					}
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not create the attribute',
-						errorName: 'createErrorMessage',
-						vue: attributesVue
-					})
+					attributesVue.clearError('createErrorMessage')
+					return ItemAttributesFunctions.createItemAttribute(
+						attributesVue.$root.appId,
+						attributesVue.$root.appSecret,
+						attributesVue.$root.userToken,
+						attributesVue.newItemAttribute
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								attributesVue.confirmCreated(response.payload)
+							} else {
+								attributesVue.createErrorMessage =
+									response.message || 'Something went wrong ...'
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not create the attribute',
+								errorName: 'createErrorMessage',
+								vue: attributesVue
+							})
+						})
 				})
-			}).catch(reason => {
-				// Catch validation error
-				attributesVue.createErrorMessage = reason
-				window.scrollTo(0, 0)
-			})
+				.catch(reason => {
+					// Catch validation error
+					attributesVue.createErrorMessage = reason
+					window.scrollTo(0, 0)
+				})
 		},
 		/**
 		 * To confirm Item Attribute was created
@@ -587,23 +685,28 @@ export default {
 			this.loadingItemAttributes = true
 			const attributesVue = this
 
-			return ItemAttributesFunctions.listItemAttributes(attributesVue.$root.appId, attributesVue.$root.appSecret, attributesVue.$root.userToken)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					attributesVue.itemAttributes = response.payload
-					attributesVue.loadingItemAttributes = false
-				} else {
-					attributesVue.loadingItemAttributes = false
-				}
-			}).catch(reason => {
-				attributesVue.loadingItemAttributes = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch attributes',
-					errorName: 'listErrorMessage',
-					vue: attributesVue
+			return ItemAttributesFunctions.listItemAttributes(
+				attributesVue.$root.appId,
+				attributesVue.$root.appSecret,
+				attributesVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						attributesVue.itemAttributes = response.payload
+						attributesVue.loadingItemAttributes = false
+					} else {
+						attributesVue.loadingItemAttributes = false
+					}
 				})
-			})
+				.catch(reason => {
+					attributesVue.loadingItemAttributes = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch attributes',
+						errorName: 'listErrorMessage',
+						vue: attributesVue
+					})
+				})
 		},
 		/**
 		 * To filter the display list
@@ -611,8 +714,10 @@ export default {
 		 * @returns {array} An array of Item Attributes
 		 */
 		searchItemAttributes () {
-			return this.itemAttributes.filter((itemAttribute) => {
-				return itemAttribute.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+			return this.itemAttributes.filter(itemAttribute => {
+				return itemAttribute.name
+					.toLowerCase()
+					.includes(this.searchTerm.toLowerCase())
 			})
 		},
 		/**
@@ -653,7 +758,9 @@ export default {
 				}
 			}
 
-			return this.sortBy.order === 'ASC' ? attributes.sort(asc) : attributes.sort(desc)
+			return this.sortBy.order === 'ASC'
+				? attributes.sort(asc)
+				: attributes.sort(desc)
 		},
 		/**
 		 * To update the order property of sortBy.
@@ -725,34 +832,47 @@ export default {
 			const attributesVue = this
 
 			return this.validateItemAttributeToEdit()
-			.then((response) => {
-				attributesVue.clearError('updateErrorMessage')
-				return ItemAttributesFunctions.updateItemAttribute(attributesVue.$root.appId, attributesVue.$root.appSecret, attributesVue.$root.userToken, attributesVue.itemAttributeToEdit)
 				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						let edited = attributesVue.itemAttributes.findIndex((itemAttribute) => {
-							return itemAttribute.id === attributesVue.itemAttributeToEdit.id
+					attributesVue.clearError('updateErrorMessage')
+					return ItemAttributesFunctions.updateItemAttribute(
+						attributesVue.$root.appId,
+						attributesVue.$root.appSecret,
+						attributesVue.$root.userToken,
+						attributesVue.itemAttributeToEdit
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								let edited = attributesVue.itemAttributes.findIndex(
+									itemAttribute => {
+										return (
+											itemAttribute.id === attributesVue.itemAttributeToEdit.id
+										)
+									}
+								)
+								attributesVue.itemAttributes[edited].name =
+									attributesVue.itemAttributeToEdit.name
+								attributesVue.closeEditModal()
+								attributesVue.confirmUpdated()
+							} else {
+								attributesVue.updateErrorMessage =
+									response.message || 'Something went wrong ...'
+							}
 						})
-						attributesVue.itemAttributes[edited].name = attributesVue.itemAttributeToEdit.name
-						attributesVue.closeEditModal()
-						attributesVue.confirmUpdated()
-					} else {
-						attributesVue.updateErrorMessage = response.message || 'Something went wrong ...'
-					}
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not update the attribute',
-						errorName: 'updateErrorMessage',
-						vue: attributesVue,
-						containerRef: 'editModal'
-					})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not update the attribute',
+								errorName: 'updateErrorMessage',
+								vue: attributesVue,
+								containerRef: 'editModal'
+							})
+						})
 				})
-			}).catch(reason => {
-				// Catch validation error
-				attributesVue.createErrorMessage = reason
-				window.scrollTo(0, 0)
-			})
+				.catch(reason => {
+					// Catch validation error
+					attributesVue.createErrorMessage = reason
+					window.scrollTo(0, 0)
+				})
 		},
 		/**
 		 * To close the edit modal
@@ -812,25 +932,33 @@ export default {
 		 */
 		listItemsOfItemAttribute () {
 			const attributesVue = this
-			return ItemAttributesFunctions.listItemsOfItemAttribute(attributesVue.$root.appId, attributesVue.$root.appSecret, attributesVue.$root.userToken, attributesVue.itemAttributeToAssignItemsTo.id)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					attributesVue.itemsOfItemAttribute = response.payload.map((item) => { return item.id })
-					attributesVue.showAssignItemsModal = true
-				} else {
-					attributesVue.assignItemsErrorMessage = 'Something went wrong ...'
-					attributesVue.showAssignItemsModal = true
-				}
-			}).catch(reason => {
-				attributesVue.showAssignItemsModal = true
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch attribute info',
-					errorName: 'assignItemsErrorMessage',
-					vue: attributesVue,
-					containerRef: 'menuTree'
+			return ItemAttributesFunctions.listItemsOfItemAttribute(
+				attributesVue.$root.appId,
+				attributesVue.$root.appSecret,
+				attributesVue.$root.userToken,
+				attributesVue.itemAttributeToAssignItemsTo.id
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						attributesVue.itemsOfItemAttribute = response.payload.map(item => {
+							return item.id
+						})
+						attributesVue.showAssignItemsModal = true
+					} else {
+						attributesVue.assignItemsErrorMessage = 'Something went wrong ...'
+						attributesVue.showAssignItemsModal = true
+					}
 				})
-			})
+				.catch(reason => {
+					attributesVue.showAssignItemsModal = true
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch attribute info',
+						errorName: 'assignItemsErrorMessage',
+						vue: attributesVue,
+						containerRef: 'menuTree'
+					})
+				})
 		},
 		/**
 		 * To assign Items to an Item Attribute
@@ -844,24 +972,31 @@ export default {
 				items_to_remove: items.unselectedItems
 			}
 			const attributesVue = this
-			return ItemAttributesFunctions.assignItemsToItemAttribute(attributesVue.$root.appId, attributesVue.$root.appSecret, attributesVue.$root.userToken, attributesVue.itemAttributeToAssignItemsTo.id, payload)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					attributesVue.closeAssignItemsModal()
-					attributesVue.confirmAssignItems()
-				} else {
-					window.scrollTo(0, 0)
-					attributesVue.assignItemsErrorMessage = 'Something went wrong ...'
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not assign the items',
-					errorName: 'assignItemsErrorMessage',
-					vue: attributesVue,
-					containerRef: 'menuTree'
+			return ItemAttributesFunctions.assignItemsToItemAttribute(
+				attributesVue.$root.appId,
+				attributesVue.$root.appSecret,
+				attributesVue.$root.userToken,
+				attributesVue.itemAttributeToAssignItemsTo.id,
+				payload
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						attributesVue.closeAssignItemsModal()
+						attributesVue.confirmAssignItems()
+					} else {
+						window.scrollTo(0, 0)
+						attributesVue.assignItemsErrorMessage = 'Something went wrong ...'
+					}
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not assign the items',
+						errorName: 'assignItemsErrorMessage',
+						vue: attributesVue,
+						containerRef: 'menuTree'
+					})
+				})
 		},
 		/**
 		 * To close the assign Items modal
@@ -880,7 +1015,9 @@ export default {
 		confirmAssignItems () {
 			this.$swal({
 				title: 'Success',
-				html: `<div>Items assigned to <i>${this.itemAttributeToAssignItemsTo.name}</i></div>`,
+				html: `<div>Items assigned to <i>${
+					this.itemAttributeToAssignItemsTo.name
+				}</i></div>`,
 				type: 'success',
 				confirmButtonText: 'OK'
 			}).then(() => {
@@ -922,26 +1059,34 @@ export default {
 		listUserAttributes () {
 			const attributesVue = this
 
-			return UserAttributesFunctions.listUserAttributes(attributesVue.$root.appId, attributesVue.$root.appSecret, attributesVue.$root.userToken)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					attributesVue.userAttributes = response.payload.map((userAttribute) => {
-						userAttribute.selected = false
-						return userAttribute
-					})
-					attributesVue.listUserAttributesofItemAttribute()
-				} else {
-					attributesVue.assignUserAttributesErrorMessage = 'Something went wrong ...'
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch attribute info',
-					errorName: 'assignUserAttributesErrorMessage',
-					vue: attributesVue,
-					containerRef: 'assignModal'
+			return UserAttributesFunctions.listUserAttributes(
+				attributesVue.$root.appId,
+				attributesVue.$root.appSecret,
+				attributesVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						attributesVue.userAttributes = response.payload.map(
+							userAttribute => {
+								userAttribute.selected = false
+								return userAttribute
+							}
+						)
+						attributesVue.listUserAttributesofItemAttribute()
+					} else {
+						attributesVue.assignUserAttributesErrorMessage =
+							'Something went wrong ...'
+					}
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch attribute info',
+						errorName: 'assignUserAttributesErrorMessage',
+						vue: attributesVue,
+						containerRef: 'assignModal'
+					})
+				})
 		},
 		/**
 		 * To get a list of User Attributes assigned to an Item Attribute
@@ -950,41 +1095,57 @@ export default {
 		 */
 		listUserAttributesofItemAttribute () {
 			const attributesVue = this
-			return ItemAttributesFunctions.listUserAttributesofItemAttribute(attributesVue.$root.appId, attributesVue.$root.appSecret, attributesVue.$root.userToken, attributesVue.itemAttributeToAssignUserAttributesTo.id)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					for (let r = 0; r < attributesVue.userAttributes.length; r++) {
-						if (response.payload.attributes_userattributes.length) {
-							for (let s = 0; s < response.payload.attributes_userattributes.length; s++) {
-								let userAttribute = attributesVue.userAttributes[r]
-								if (userAttribute.id === response.payload.attributes_userattributes[s].id) {
-									userAttribute.selected = true
-									break
-								} else {
-									userAttribute.selected = false
+			return ItemAttributesFunctions.listUserAttributesofItemAttribute(
+				attributesVue.$root.appId,
+				attributesVue.$root.appSecret,
+				attributesVue.$root.userToken,
+				attributesVue.itemAttributeToAssignUserAttributesTo.id
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						for (let r = 0; r < attributesVue.userAttributes.length; r++) {
+							if (response.payload.attributes_userattributes.length) {
+								for (
+									let s = 0;
+									s < response.payload.attributes_userattributes.length;
+									s++
+								) {
+									let userAttribute = attributesVue.userAttributes[r]
+									if (
+										userAttribute.id ===
+										response.payload.attributes_userattributes[s].id
+									) {
+										userAttribute.selected = true
+										break
+									} else {
+										userAttribute.selected = false
+									}
 								}
 							}
 						}
+						let notAll = attributesVue.userAttributes.some(userAttribute => {
+							return userAttribute.selected === false
+						})
+						notAll
+							? (attributesVue.selectAllSelected = false)
+							: (attributesVue.selectAllSelected = true)
+						attributesVue.showAssignUserAttributesModal = true
+					} else {
+						attributesVue.assignUserAttributesErrorMessage =
+							'Something went wrong ...'
+						attributesVue.showAssignUserAttributesModal = true
 					}
-					let notAll = attributesVue.userAttributes.some((userAttribute) => {
-						return userAttribute.selected === false
-					})
-					notAll ? attributesVue.selectAllSelected = false : attributesVue.selectAllSelected = true
-					attributesVue.showAssignUserAttributesModal = true
-				} else {
-					attributesVue.assignUserAttributesErrorMessage = 'Something went wrong ...'
-					attributesVue.showAssignUserAttributesModal = true
-				}
-			}).catch(reason => {
-				attributesVue.showAssignUserAttributesModal = true
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch attribute info',
-					errorName: 'assignUserAttributesErrorMessage',
-					vue: attributesVue,
-					containerRef: 'assignModal'
 				})
-			})
+				.catch(reason => {
+					attributesVue.showAssignUserAttributesModal = true
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch attribute info',
+						errorName: 'assignUserAttributesErrorMessage',
+						vue: attributesVue,
+						containerRef: 'assignModal'
+					})
+				})
 		},
 		/**
 		 * To select all or deselect all
@@ -1006,7 +1167,7 @@ export default {
 			if (!value) {
 				this.selectAllSelected = false
 			} else {
-				this.selectAllSelected = this.userAttributes.every((userAttribute) => {
+				this.selectAllSelected = this.userAttributes.every(userAttribute => {
 					return userAttribute.selected === true
 				})
 			}
@@ -1020,7 +1181,7 @@ export default {
 			let payload = {
 				attribute: []
 			}
-			this.userAttributes.forEach((userAttribute) => {
+			this.userAttributes.forEach(userAttribute => {
 				if (userAttribute.selected) {
 					payload.attribute.push({
 						id: userAttribute.id,
@@ -1029,24 +1190,32 @@ export default {
 				}
 			})
 			const attributesVue = this
-			return ItemAttributesFunctions.assignUserAttributesToItemAttributes(attributesVue.$root.appId, attributesVue.$root.appSecret, attributesVue.$root.userToken, attributesVue.itemAttributeToAssignUserAttributesTo.id, payload)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					attributesVue.closeAssignUserAttributesModal()
-					attributesVue.confirmAssignUserAttributes()
-				} else {
-					window.scrollTo(0, 0)
-					attributesVue.assignUserAttributesErrorMessage = 'Something went wrong ...'
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch attribute info',
-					errorName: 'assignUserAttributesErrorMessage',
-					vue: attributesVue,
-					containerRef: 'assignModal'
+			return ItemAttributesFunctions.assignUserAttributesToItemAttributes(
+				attributesVue.$root.appId,
+				attributesVue.$root.appSecret,
+				attributesVue.$root.userToken,
+				attributesVue.itemAttributeToAssignUserAttributesTo.id,
+				payload
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						attributesVue.closeAssignUserAttributesModal()
+						attributesVue.confirmAssignUserAttributes()
+					} else {
+						window.scrollTo(0, 0)
+						attributesVue.assignUserAttributesErrorMessage =
+							'Something went wrong ...'
+					}
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch attribute info',
+						errorName: 'assignUserAttributesErrorMessage',
+						vue: attributesVue,
+						containerRef: 'assignModal'
+					})
+				})
 		},
 		/**
 		 * To close the assign User Attributes modal
@@ -1065,7 +1234,9 @@ export default {
 		confirmAssignUserAttributes () {
 			this.$swal({
 				title: 'Success',
-				html: `<div>User Attributes assigned to <i>${this.itemAttributeToAssignUserAttributesTo.name}</i></div>`,
+				html: `<div>User Attributes assigned to <i>${
+					this.itemAttributeToAssignUserAttributesTo.name
+				}</i></div>`,
 				type: 'success',
 				confirmButtonText: 'OK'
 			}).then(() => {
@@ -1107,26 +1278,37 @@ export default {
 		deleteItemAttribute () {
 			const attributesVue = this
 
-			return ItemAttributesFunctions.deleteItemAttribute(attributesVue.$root.appId, attributesVue.$root.appSecret, attributesVue.$root.userToken, attributesVue.itemAttributeToDelete)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					attributesVue.itemAttributes = attributesVue.itemAttributes.filter((itemAttribute) => {
-						return itemAttribute.id !== attributesVue.itemAttributeToDelete.id
-					})
-					attributesVue.closeDeleteModal()
-					attributesVue.confirmDelete()
-				} else {
-					attributesVue.deleteErrorMessage = response.message || 'Something went wrong ...'
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not delete the attribute',
-					errorName: 'deleteErrorMessage',
-					vue: attributesVue,
-					containerRef: 'deleteModal'
+			return ItemAttributesFunctions.deleteItemAttribute(
+				attributesVue.$root.appId,
+				attributesVue.$root.appSecret,
+				attributesVue.$root.userToken,
+				attributesVue.itemAttributeToDelete
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						attributesVue.itemAttributes = attributesVue.itemAttributes.filter(
+							itemAttribute => {
+								return (
+									itemAttribute.id !== attributesVue.itemAttributeToDelete.id
+								)
+							}
+						)
+						attributesVue.closeDeleteModal()
+						attributesVue.confirmDelete()
+					} else {
+						attributesVue.deleteErrorMessage =
+							response.message || 'Something went wrong ...'
+					}
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not delete the attribute',
+						errorName: 'deleteErrorMessage',
+						vue: attributesVue,
+						containerRef: 'deleteModal'
+					})
+				})
 		},
 		/**
 		 * To close the delete modal
@@ -1167,23 +1349,23 @@ export default {
 
 <style scoped>
 .spinner {
-	display: flex;
-	justify-content: center;
-	align-content: center;
-	width: 100%;
-	height: 100px;
-	font-size: 400%;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  width: 100%;
+  height: 100px;
+  font-size: 400%;
 }
 .actions-on-top {
-	margin-top: -5px;
+  margin-top: -5px;
 }
-.mt-list-container.list-news.ext-1.no-border ul>.mt-list-item:hover {
-	background-color: white;
+.mt-list-container.list-news.ext-1.no-border ul > .mt-list-item:hover {
+  background-color: white;
 }
 .animated {
-	animation: listItemHighlight 1s 2 ease-in-out both;
+  animation: listItemHighlight 1s 2 ease-in-out both;
 }
 .table-column--checkboxes {
-	width: 50px;
+  width: 50px;
 }
 </style>

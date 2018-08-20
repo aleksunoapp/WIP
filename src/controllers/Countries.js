@@ -32,10 +32,7 @@ export const listCountries = () => {
  * @function
  * @returns {object} A promise with response shaped ...
  */
-export const createCountry = ({
-	name = '',
-	code = ''
-}) => {
+export const createCountry = ({ name = '', code = '' }) => {
 	if (!name) {
 		return Error('Please provide a name')
 	}
@@ -63,11 +60,7 @@ export const createCountry = ({
  * @function
  * @returns {object} A promise with response shaped ...
  */
-export const updateCountry = ({
-	name = '',
-	code = '',
-	id = null
-}) => {
+export const updateCountry = ({ name = '', code = '', id = null }) => {
 	if (!name) {
 		return Error('Please provide a name')
 	}
@@ -98,9 +91,7 @@ export const updateCountry = ({
  * @function
  * @returns {object} A promise with response shaped ...
  */
-export const deleteCountry = ({
-	id = null
-}) => {
+export const deleteCountry = ({ id = null }) => {
 	return new Promise(function (resolve, reject) {
 		if (id !== 0 && !id) {
 			reject('Country ID is missing.')
@@ -122,10 +113,9 @@ export const deleteCountry = ({
 	})
 }
 
-export default ({
+export default {
 	listCountries,
 	createCountry,
 	updateCountry,
 	deleteCountry
-})
-
+}

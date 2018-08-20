@@ -10,8 +10,10 @@
 			</div>
 
 			<!-- CREATE NEW START -->
-			<div class="portlet box blue-hoki margin-top-20" v-if="$root.permissions['create role']">
-				<div class="portlet-title bg-blue-chambray" @click="toggleCreateRolePanel()">
+			<div class="portlet box blue-hoki margin-top-20"
+			     v-if="$root.permissions['create role']">
+				<div class="portlet-title bg-blue-chambray"
+				     @click="toggleCreateRolePanel()">
 					<div class="caption">
 						<i class="fa fa-plus-circle"></i>
 						Create New Role
@@ -20,40 +22,44 @@
 						<a :class="{'expand': !createCollapse, 'collapse': createCollapse}"></a>
 					</div>
 				</div>
-				<div class="portlet-body" v-show="!createCollapse">
-					<form role="form" @submit.prevent="createRole()">
+				<div class="portlet-body"
+				     v-show="!createCollapse">
+					<form role="form"
+					      @submit.prevent="createRole()">
 						<div class="row">
 							<div class="col-md-12">
-								<div class="alert alert-danger" v-show="createErrorMessage.length" ref="createErrorMessage">
-									<button 
-										class="close" 
-										data-close="alert" 
-										@click.prevent="clearCreateError()"></button>
+								<div class="alert alert-danger"
+								     v-show="createErrorMessage.length"
+								     ref="createErrorMessage">
+									<button class="close"
+									        data-close="alert"
+									        @click.prevent="clearCreateError()"></button>
 									<span>{{createErrorMessage}}</span>
 								</div>
 							</div>
 							<div class="col-xs-12">
 								<div class="form-group form-md-line-input form-md-floating-label">
-									<input ref="newRoleName" type="text" class="form-control input-sm" id="form_control_name" v-model="newRole.name" :class="{'edited': newRole.name.length}">
+									<input ref="newRoleName"
+									       type="text"
+									       class="form-control input-sm"
+									       id="form_control_name"
+									       v-model="newRole.name"
+									       :class="{'edited': newRole.name.length}">
 									<label for="form_control_name">Name</label>
 								</div>
-								<el-tree 
-									:data="roleTree" 
-									:highlight-current="true"
-									:props="{
+								<el-tree :data="roleTree"
+								         :highlight-current="true"
+								         :props="{
 										'label': 'name', 
 										'children': 'combined',
 										'disabled': 'disabled'
 									}"
-									:expand-on-click-node="true"
-									@check-change="setNewRolePermission"
-									ref="newRoleTree"
-									show-checkbox
-								>
-									<span 
-										slot-scope="{ node, data }"
-										:class="{'module': data.module_id === undefined}"
-									>
+								         :expand-on-click-node="true"
+								         @check-change="setNewRolePermission"
+								         ref="newRoleTree"
+								         show-checkbox>
+									<span slot-scope="{ node, data }"
+									      :class="{'module': data.module_id === undefined}">
 										{{data.name}}
 									</span>
 								</el-tree>
@@ -61,16 +67,14 @@
 						</div>
 						<div class="row">
 							<div class="col-xs-12">
-								<button 
-									type="submit" 
-									class="btn blue pull-right"
-									:disabled="creating">
-										Create
-										<i 
-											v-show="creating"
-											class="fa fa-spinner fa-pulse fa-fw">
-										</i>
-								</button>	
+								<button type="submit"
+								        class="btn blue pull-right"
+								        :disabled="creating">
+									Create
+									<i v-show="creating"
+									   class="fa fa-spinner fa-pulse fa-fw">
+									</i>
+								</button>
 							</div>
 						</div>
 					</form>
@@ -79,9 +83,11 @@
 			<!-- CREATE NEW END -->
 
 			<!-- SEARCH START -->
-			<div class="margin-top-20" v-if="roles.length">
+			<div class="margin-top-20"
+			     v-if="roles.length">
 				<div class="portlet box blue-hoki">
-					<div class="portlet-title" @click="toggleSearchPanel()">
+					<div class="portlet-title"
+					     @click="toggleSearchPanel()">
 						<div class="caption">
 							<i class="fa fa-search"></i>
 							Search Panel
@@ -90,26 +96,38 @@
 							<a :class="{'expand': !searchCollapse, 'collapse': searchCollapse}"></a>
 						</div>
 					</div>
-					<div class="portlet-body" v-show="!searchCollapse">
-						<form role="form" @submit.prevent="advancedSearch()">
+					<div class="portlet-body"
+					     v-show="!searchCollapse">
+						<form role="form"
+						      @submit.prevent="advancedSearch()">
 							<div class="form-body row">
 								<div class="col-md-12">
-									<div class="alert alert-danger" v-if="searchError.length">
-										<button class="close" data-close="alert" @click="clearSearchError()"></button>
+									<div class="alert alert-danger"
+									     v-if="searchError.length">
+										<button class="close"
+										        data-close="alert"
+										        @click="clearSearchError()"></button>
 										<span>{{searchError}}</span>
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="form-group form-md-line-input form-md-floating-label">
-										<input ref="search" type="text" class="form-control input-sm" :class="{'edited': searchTerm.length}" v-model="searchTerm">
+										<input ref="search"
+										       type="text"
+										       class="form-control input-sm"
+										       :class="{'edited': searchTerm.length}"
+										       v-model="searchTerm">
 										<label for="search_options_search">Search</label>
 										<span class="help-block persist">Search by name.</span>
 									</div>
 								</div>
 							</div>
 							<div class="form-actions right margin-top-20">
-								<button type="button" class="btn btn-default" @click.prevent="resetSearch()"> Reset Search</button>
-								<button type="submit" class="btn blue">Search</button>
+								<button type="button"
+								        class="btn btn-default"
+								        @click.prevent="resetSearch()"> Reset Search</button>
+								<button type="submit"
+								        class="btn blue">Search</button>
 							</div>
 						</form>
 					</div>
@@ -118,7 +136,9 @@
 			<!-- SEARCH END -->
 
 			<!-- LIST START -->
-			<loading-screen :show="loading" :color="'#2C3E50'" :display="'inline'"></loading-screen>
+			<loading-screen :show="loading"
+			                :color="'#2C3E50'"
+			                :display="'inline'"></loading-screen>
 
 			<div v-if="roles.length && !loading && !filteredResults.length">
 				<div class="portlet light portlet-fit bordered margin-top-20">
@@ -132,53 +152,74 @@
 						</div>
 					</div>
 					<div class="portlet-body">
-						<div class="clearfix margin-bottom-10" v-if="roles.length">
-							<el-dropdown trigger="click" @command="updateSortByOrder" size="mini" :show-timeout="50" :hide-timeout="50">
+						<div class="clearfix margin-bottom-10"
+						     v-if="roles.length">
+							<el-dropdown trigger="click"
+							             @command="updateSortByOrder"
+							             size="mini"
+							             :show-timeout="50"
+							             :hide-timeout="50">
 								<el-button size="mini">
 									Sort by
 									<span>
-										<i class="fa fa-sort-alpha-asc" v-if="sortBy.order === 'ASC'"></i>
-										<i class="fa fa-sort-alpha-desc" v-if="sortBy.order === 'DESC'"></i>
+										<i class="fa fa-sort-alpha-asc"
+										   v-if="sortBy.order === 'ASC'"></i>
+										<i class="fa fa-sort-alpha-desc"
+										   v-if="sortBy.order === 'DESC'"></i>
 									</span>
 									<i class="el-icon-arrow-down el-icon--right"></i>
 								</el-button>
 								<el-dropdown-menu slot="dropdown">
-									<el-dropdown-item command="ASC"><i class="fa fa-sort-alpha-asc"></i></el-dropdown-item>
-									<el-dropdown-item command="DESC"><i class="fa fa-sort-alpha-desc"></i></el-dropdown-item>
+									<el-dropdown-item command="ASC">
+										<i class="fa fa-sort-alpha-asc"></i>
+									</el-dropdown-item>
+									<el-dropdown-item command="DESC">
+										<i class="fa fa-sort-alpha-desc"></i>
+									</el-dropdown-item>
 								</el-dropdown-menu>
 							</el-dropdown>
-							<page-results class="pull-right" :totalResults="roles.length" :activePage="activePage" @pageResults="pageResultsUpdate"></page-results>
+							<page-results class="pull-right"
+							              :totalResults="roles.length"
+							              :activePage="activePage"
+							              @pageResults="pageResultsUpdate"></page-results>
 						</div>
 						<div class="mt-element-list">
 							<div class="mt-list-container list-news">
 								<ul>
-									<li class="mt-list-item actions-at-left margin-top-15" v-for="role in currentActivePageItems" :id="'role-' + role.id" :class="{'animated' : animated === `role-${role.id}`}" :key="role.id">
+									<li class="mt-list-item actions-at-left margin-top-15"
+									    v-for="role in currentActivePageItems"
+									    :id="'role-' + role.id"
+									    :class="{'animated' : animated === `role-${role.id}`}"
+									    :key="role.id">
 										<div class="list-item-actions">
-											<el-tooltip 
-												v-if="$root.permissions['update role']"
-												content="Edit" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="editRole(role)">
-													<i class="fa fa-pencil" aria-hidden="true"></i>
+											<el-tooltip v-if="$root.permissions['update role']"
+											            content="Edit"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="editRole(role)">
+													<i class="fa fa-pencil"
+													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip 
-												v-if="$root.permissions['create role'] && !$root.permissions['update role']"
-												content="View" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="editRole(role)">
-													<i class="fa fa-eye" aria-hidden="true"></i>
+											<el-tooltip v-if="$root.permissions['create role'] && !$root.permissions['update role']"
+											            content="View"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="editRole(role)">
+													<i class="fa fa-eye"
+													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip 
-												v-if="$root.permissions['delete role']"
-												content="Delete" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="openDeleteModal(role)">
-													<i class="fa fa-trash" aria-hidden="true"></i>
+											<el-tooltip v-if="$root.permissions['delete role']"
+											            content="Delete"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="openDeleteModal(role)">
+													<i class="fa fa-trash"
+													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
 										</div>
@@ -188,12 +229,19 @@
 									</li>
 								</ul>
 							</div>
-							<div class="clearfix" v-if="roles.length && numPages > 1">
-								<pagination :passedPage="activePage" :numPages="numPages" @activePageChange="activePageUpdate"></pagination>
+							<div class="clearfix"
+							     v-if="roles.length && numPages > 1">
+								<pagination :passedPage="activePage"
+								            :numPages="numPages"
+								            @activePageChange="activePageUpdate"></pagination>
 							</div>
 						</div>
-						<div class="alert alert-danger" v-show="listErrorMessage.length" ref="listErrorMessage">
-							<button class="close" data-close="alert" @click="clearListError()"></button>
+						<div class="alert alert-danger"
+						     v-show="listErrorMessage.length"
+						     ref="listErrorMessage">
+							<button class="close"
+							        data-close="alert"
+							        @click="clearListError()"></button>
 							<span>{{listErrorMessage}}</span>
 						</div>
 					</div>
@@ -211,53 +259,74 @@
 						</div>
 					</div>
 					<div class="portlet-body">
-						<div class="clearfix margin-bottom-10" v-if="filteredResults.length">
-							<el-dropdown trigger="click" @command="updateSortByOrder" size="mini" :show-timeout="50" :hide-timeout="50">
+						<div class="clearfix margin-bottom-10"
+						     v-if="filteredResults.length">
+							<el-dropdown trigger="click"
+							             @command="updateSortByOrder"
+							             size="mini"
+							             :show-timeout="50"
+							             :hide-timeout="50">
 								<el-button size="mini">
 									Sort by
 									<span>
-										<i class="fa fa-sort-alpha-asc" v-if="sortBy.order === 'ASC'"></i>
-										<i class="fa fa-sort-alpha-desc" v-if="sortBy.order === 'DESC'"></i>
+										<i class="fa fa-sort-alpha-asc"
+										   v-if="sortBy.order === 'ASC'"></i>
+										<i class="fa fa-sort-alpha-desc"
+										   v-if="sortBy.order === 'DESC'"></i>
 									</span>
 									<i class="el-icon-arrow-down el-icon--right"></i>
 								</el-button>
 								<el-dropdown-menu slot="dropdown">
-									<el-dropdown-item command="ASC"><i class="fa fa-sort-alpha-asc"></i></el-dropdown-item>
-									<el-dropdown-item command="DESC"><i class="fa fa-sort-alpha-desc"></i></el-dropdown-item>
+									<el-dropdown-item command="ASC">
+										<i class="fa fa-sort-alpha-asc"></i>
+									</el-dropdown-item>
+									<el-dropdown-item command="DESC">
+										<i class="fa fa-sort-alpha-desc"></i>
+									</el-dropdown-item>
 								</el-dropdown-menu>
 							</el-dropdown>
-							<page-results class="pull-right" :totalResults="filteredResults.length" :activePage="searchActivePage" @pageResults="pageResultsUpdate"></page-results>
+							<page-results class="pull-right"
+							              :totalResults="filteredResults.length"
+							              :activePage="searchActivePage"
+							              @pageResults="pageResultsUpdate"></page-results>
 						</div>
 						<div class="mt-element-list">
 							<div class="mt-list-container list-news">
 								<ul>
-									<li class="mt-list-item actions-at-left margin-top-15" v-for="role in currentActiveSearchPageItems" :id="'role-' + role.id" :class="{'animated' : animated === `role-${role.id}`}" :key="role.id">
+									<li class="mt-list-item actions-at-left margin-top-15"
+									    v-for="role in currentActiveSearchPageItems"
+									    :id="'role-' + role.id"
+									    :class="{'animated' : animated === `role-${role.id}`}"
+									    :key="role.id">
 										<div class="list-item-actions">
-											<el-tooltip 
-												v-if="$root.permissions['update role']"
-												content="Edit" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="editRole(role)">
-													<i class="fa fa-pencil" aria-hidden="true"></i>
+											<el-tooltip v-if="$root.permissions['update role']"
+											            content="Edit"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="editRole(role)">
+													<i class="fa fa-pencil"
+													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip 
-												v-if="$root.permissions['create role'] && !$root.permissions['update role']"
-												content="View" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="editRole(role)">
-													<i class="fa fa-eye" aria-hidden="true"></i>
+											<el-tooltip v-if="$root.permissions['create role'] && !$root.permissions['update role']"
+											            content="View"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="editRole(role)">
+													<i class="fa fa-eye"
+													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip 
-												v-if="$root.permissions['delete role']"
-												content="Delete" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="openDeleteModal(role)">
-													<i class="fa fa-trash" aria-hidden="true"></i>
+											<el-tooltip v-if="$root.permissions['delete role']"
+											            content="Delete"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="openDeleteModal(role)">
+													<i class="fa fa-trash"
+													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
 										</div>
@@ -267,79 +336,88 @@
 									</li>
 								</ul>
 							</div>
-							<div class="clearfix" v-if="filteredResults.length && searchNumPages > 1">
-								<pagination :passedPage="searchActivePage" :numPages="searchNumPages" @activePageChange="activeSearchPageUpdate"></pagination>
+							<div class="clearfix"
+							     v-if="filteredResults.length && searchNumPages > 1">
+								<pagination :passedPage="searchActivePage"
+								            :numPages="searchNumPages"
+								            @activePageChange="activeSearchPageUpdate"></pagination>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div v-if="!roles.length && !loading">
-				<no-results :show="!roles.length" :type="'roles'"></no-results>
+				<no-results :show="!roles.length"
+				            :type="'roles'"></no-results>
 			</div>
 		</div>
 		<!-- LIST END -->
 
 		<!-- EDIT MODAL START -->
-		<modal 
-			:width="900"
-			:show="showEditRoleModal" 
-			effect="fade" 
-			@closeOnEscape="closeEditRoleModal" 
-			ref="editModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeEditRoleModal()">
+		<modal :width="900"
+		       :show="showEditRoleModal"
+		       effect="fade"
+		       @closeOnEscape="closeEditRoleModal"
+		       ref="editModal">
+			<div slot="modal-header"
+			     class="modal-header">
+				<button type="button"
+				        class="close"
+				        @click="closeEditRoleModal()">
 					<span>&times;</span>
 				</button>
 				<h4 class="modal-title center">Edit Role</h4>
 			</div>
-			<div slot="modal-body" class="modal-body">
-				<div class="alert alert-danger" v-show="editErrorMessage.length" ref="editErrorMessage">
-					<button class="close" data-close="alert" @click="clearEditError()"></button>
+			<div slot="modal-body"
+			     class="modal-body">
+				<div class="alert alert-danger"
+				     v-show="editErrorMessage.length"
+				     ref="editErrorMessage">
+					<button class="close"
+					        data-close="alert"
+					        @click="clearEditError()"></button>
 					<span>{{editErrorMessage}}</span>
 				</div>
 				<div class="form-group form-md-line-input form-md-floating-label">
-					<input type="text" class="form-control input-sm" id="form_control_edited_name" v-model="roleToEdit.name" :class="{'edited': roleToEdit.name.length}">
+					<input type="text"
+					       class="form-control input-sm"
+					       id="form_control_edited_name"
+					       v-model="roleToEdit.name"
+					       :class="{'edited': roleToEdit.name.length}">
 					<label for="form_control_edited_name">Name</label>
 				</div>
-				<el-tree 
-					v-if="showEditRoleModal"
-					:data="roleTree" 
-					:highlight-current="true"
-					:props="{'label': 'name', 'children': 'combined', 'disabled': 'disabled'}"
-					:expand-on-click-node="true"
-					@check-change="setEditedRolePermission"
-					show-checkbox
-					node-key="nodeId"
-					ref="editedRoleTree"
-					:default-checked-keys="roleToEdit.previouslySelected"
-				>
-					<span 
-						slot-scope="{ node, data }"
-						:class="{'module': data.module_id === undefined}"
-					>
+				<el-tree v-if="showEditRoleModal"
+				         :data="roleTree"
+				         :highlight-current="true"
+				         :props="{'label': 'name', 'children': 'combined', 'disabled': 'disabled'}"
+				         :expand-on-click-node="true"
+				         @check-change="setEditedRolePermission"
+				         show-checkbox
+				         node-key="nodeId"
+				         ref="editedRoleTree"
+				         :default-checked-keys="roleToEdit.previouslySelected">
+					<span slot-scope="{ node, data }"
+					      :class="{'module': data.module_id === undefined}">
 						{{data.name}}
 					</span>
 				</el-tree>
 			</div>
-			<div slot="modal-footer" class="modal-footer">
-				<button 
-					v-if="$root.permissions['create role'] && !$root.permissions['update role']"
-					type="button" 
-					class="btn btn-primary" 
-					@click="closeEditRoleModal()">
+			<div slot="modal-footer"
+			     class="modal-footer">
+				<button v-if="$root.permissions['create role'] && !$root.permissions['update role']"
+				        type="button"
+				        class="btn btn-primary"
+				        @click="closeEditRoleModal()">
 					Close
 				</button>
-				<button 
-					v-else
-					type="button" 
-					class="btn btn-primary"
-					:disabled="updating"
-					@click="updateRole()">
+				<button v-else
+				        type="button"
+				        class="btn btn-primary"
+				        :disabled="updating"
+				        @click="updateRole()">
 					Save
-					<i 
-						v-show="updating"
-						class="fa fa-spinner fa-pulse fa-fw">
+					<i v-show="updating"
+					   class="fa fa-spinner fa-pulse fa-fw">
 					</i>
 				</button>
 			</div>
@@ -347,30 +425,40 @@
 		<!-- EDIT MODAL END -->
 
 		<!-- DELETE MODAL START -->
-		<modal :show="showDeleteModal" effect="fade" @closeOnEscape="closeDeleteModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeDeleteModal()">
+		<modal :show="showDeleteModal"
+		       effect="fade"
+		       @closeOnEscape="closeDeleteModal">
+			<div slot="modal-header"
+			     class="modal-header">
+				<button type="button"
+				        class="close"
+				        @click="closeDeleteModal()">
 					<span>&times;</span>
 				</button>
 				<h4 class="modal-title center">Delete Role</h4>
 			</div>
-			<div slot="modal-body" class="modal-body">
-				<div class="alert alert-danger" v-show="deleteErrorMessage.length" ref="deleteErrorMessage">
-					<button class="close" data-close="alert" @click="clearDeleteError()"></button>
+			<div slot="modal-body"
+			     class="modal-body">
+				<div class="alert alert-danger"
+				     v-show="deleteErrorMessage.length"
+				     ref="deleteErrorMessage">
+					<button class="close"
+					        data-close="alert"
+					        @click="clearDeleteError()"></button>
 					<span>{{deleteErrorMessage}}</span>
 				</div>
-				<p>Do you want to delete <strong>{{roleToDelete.name}}</strong>?</p>
+				<p>Do you want to delete
+					<strong>{{roleToDelete.name}}</strong>?</p>
 			</div>
-			<div slot="modal-footer" class="modal-footer">
-				<button 
-					type="button" 
-					class="btn btn-primary" 
-					@click="deleteRole()"
-					:disabled="deleting">
+			<div slot="modal-footer"
+			     class="modal-footer">
+				<button type="button"
+				        class="btn btn-primary"
+				        @click="deleteRole()"
+				        :disabled="deleting">
 					Delete
-					<i 
-						v-show="deleting"
-						class="fa fa-spinner fa-pulse fa-fw">
+					<i v-show="deleting"
+					   class="fa fa-spinner fa-pulse fa-fw">
 					</i>
 				</button>
 			</div>
@@ -396,8 +484,8 @@ export default {
 	data () {
 		return {
 			breadcrumbArray: [
-				{name: 'Admin Manager', link: false},
-				{name: 'Roles', link: false}
+				{ name: 'Admin Manager', link: false },
+				{ name: 'Roles', link: false }
 			],
 			createCollapse: true,
 			creating: false,
@@ -442,13 +530,19 @@ export default {
 			return Math.ceil(this.roles.length / this.resultsPerPage)
 		},
 		currentActivePageItems () {
-			return this.userSort(this.roles).slice(this.resultsPerPage * (this.activePage - 1), this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage)
+			return this.userSort(this.roles).slice(
+				this.resultsPerPage * (this.activePage - 1),
+				this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
+			)
 		},
 		searchNumPages () {
 			return Math.ceil(this.filteredResults.length / this.resultsPerPage)
 		},
 		currentActiveSearchPageItems () {
-			return this.userSort(this.filteredResults).slice(this.resultsPerPage * (this.searchActivePage - 1), this.resultsPerPage * (this.searchActivePage - 1) + this.resultsPerPage)
+			return this.userSort(this.filteredResults).slice(
+				this.resultsPerPage * (this.searchActivePage - 1),
+				this.resultsPerPage * (this.searchActivePage - 1) + this.resultsPerPage
+			)
 		}
 	},
 	mounted () {
@@ -466,32 +560,36 @@ export default {
 			this.clearListError()
 			var rolesVue = this
 			return ModulesFunctions.getFullModules()
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					rolesVue.loading = false
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						rolesVue.loading = false
 
-					let role = rolesVue.listToTree(response.payload, response.payload.filter(mod => mod.parent_module === 0)[0])
+						let role = rolesVue.listToTree(
+							response.payload,
+							response.payload.filter(mod => mod.parent_module === 0)[0]
+						)
 
-					for (let mod of role) {
-						rolesVue.combinePermissionsAndModules(mod)
+						for (let mod of role) {
+							rolesVue.combinePermissionsAndModules(mod)
+						}
+
+						rolesVue.cleanRoleTree = role
+						rolesVue.roleTree = role
+
+						rolesVue.modules = response.payload
+					} else {
+						rolesVue.loading = false
 					}
-
-					rolesVue.cleanRoleTree = role
-					rolesVue.roleTree = role
-
-					rolesVue.modules = response.payload
-				} else {
-					rolesVue.loading = false
-				}
-			}).catch(reason => {
-				rolesVue.loading = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'Could not get modules',
-					errorName: 'listErrorMessage',
-					vue: rolesVue
 				})
-			})
+				.catch(reason => {
+					rolesVue.loading = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'Could not get modules',
+						errorName: 'listErrorMessage',
+						vue: rolesVue
+					})
+				})
 		},
 		/**
 		 * To convert a flat list of nodes into a tree.
@@ -518,10 +616,13 @@ export default {
 						mappedElem = mappedArr[id]
 						// If the element is not at the root level, add it to its parent array of children.
 						if (mappedElem.parent_module) {
-							mappedArr[mappedElem['parent_module']]['sub_modules'].push(mappedElem)
-						// If the element is at the root level, add it to first level elements array.
+							mappedArr[mappedElem['parent_module']]['sub_modules'].push(
+								mappedElem
+							)
+							// If the element is at the root level, add it to first level elements array.
 						} else {
-							mappedElem.disabled = this.$root.permissions['update role'] === undefined
+							mappedElem.disabled =
+								this.$root.permissions['update role'] === undefined
 							tree.push(mappedElem)
 						}
 					}
@@ -540,10 +641,13 @@ export default {
 		combinePermissionsAndModules (current) {
 			try {
 				const _this = this
-				let ownPermissions = current.permissions.filter(permission => this.$root.permissions[permission.name])
+				let ownPermissions = current.permissions.filter(
+					permission => this.$root.permissions[permission.name]
+				)
 				current.combined = [...ownPermissions, ...current.sub_modules]
 				current.combined = current.combined.map(item => {
-					item.nodeId = item.module_id === undefined ? `m${item.id}` : `p${item.id}`
+					item.nodeId =
+						item.module_id === undefined ? `m${item.id}` : `p${item.id}`
 					item.disabled = _this.$root.permissions['update role'] === undefined
 					return item
 				})
@@ -563,7 +667,10 @@ export default {
 		 * @returns {undefined}
 		 */
 		setEditedRolePermission () {
-			this.roleToEdit.permissions = this.$refs.editedRoleTree.getCheckedNodes().filter(node => node.module_id !== undefined).map(node => node.id)
+			this.roleToEdit.permissions = this.$refs.editedRoleTree
+				.getCheckedNodes()
+				.filter(node => node.module_id !== undefined)
+				.map(node => node.id)
 		},
 		/**
 		 * To update the permissions selection when creating a role
@@ -571,7 +678,10 @@ export default {
 		 * @returns {undefined}
 		 */
 		setNewRolePermission () {
-			this.newRole.permissions = this.$refs.newRoleTree.getCheckedNodes().filter(node => node.module_id !== undefined).map(node => node.id)
+			this.newRole.permissions = this.$refs.newRoleTree
+				.getCheckedNodes()
+				.filter(node => node.module_id !== undefined)
+				.map(node => node.id)
 		},
 		/**
 		 * To update permissions based on user's selection
@@ -600,7 +710,9 @@ export default {
 		formatPhone (phone) {
 			try {
 				let digits = phone.replace(/\D/g, '')
-				return digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
+				return (
+					digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
+				)
 			} catch (err) {
 				return ''
 			}
@@ -613,7 +725,9 @@ export default {
 		 */
 		updateSortByOrder (value) {
 			this.sortBy.order = value
-			this.filteredResults.length ? this.activeSearchPageUpdate(1) : this.activePageUpdate(1)
+			this.filteredResults.length
+				? this.activeSearchPageUpdate(1)
+				: this.activePageUpdate(1)
 		},
 		/**
 		 * To sort the orders list.
@@ -670,7 +784,9 @@ export default {
 		pageResultsUpdate (val) {
 			if (parseInt(this.resultsPerPage) !== parseInt(val)) {
 				this.resultsPerPage = val
-				this.filteredResults.length ? this.activeSearchPageUpdate(1) : this.activePageUpdate(1)
+				this.filteredResults.length
+					? this.activeSearchPageUpdate(1)
+					: this.activePageUpdate(1)
 			}
 		},
 		/**
@@ -723,12 +839,17 @@ export default {
 					this.searchError = 'Search term must be at least 3 characters.'
 				} else {
 					for (var i = 0; i < this.roles.length; i++) {
-						if (this.roles[i].name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) > -1) {
+						if (
+							this.roles[i].name
+								.toLowerCase()
+								.indexOf(this.searchTerm.toLowerCase()) > -1
+						) {
 							this.filteredResults.push(this.roles[i])
 						}
 					}
 					if (!this.filteredResults.length) {
-						this.searchError = 'There are no matching records. Please try again.'
+						this.searchError =
+							'There are no matching records. Please try again.'
 					}
 				}
 			} else {
@@ -764,21 +885,23 @@ export default {
 		editRole (role) {
 			let rolesVue = this
 			this.listRolePermissions(role)
-			.then(permissions => {
-				rolesVue.roleToEdit = {
-					...role,
-					permissions,
-					previouslySelected: permissions.map(id => `p${id}`)
-				}
-			}).catch(err => {
-				rolesVue.roleToEdit = {
-					...role,
-					permissions: []
-				}
-				console.log(err)
-			}).finally(() => {
-				rolesVue.showEditRoleModal = true
-			})
+				.then(permissions => {
+					rolesVue.roleToEdit = {
+						...role,
+						permissions,
+						previouslySelected: permissions.map(id => `p${id}`)
+					}
+				})
+				.catch(err => {
+					rolesVue.roleToEdit = {
+						...role,
+						permissions: []
+					}
+					console.log(err)
+				})
+				.finally(() => {
+					rolesVue.showEditRoleModal = true
+				})
 		},
 		/**
 		 * To fetch permissions for a role
@@ -788,11 +911,12 @@ export default {
 		 */
 		listRolePermissions (role) {
 			return RolesFunctions.listRolePermissions(role)
-			.then(response => {
-				return response.payload.permissions.map(permission => permission.id)
-			}).catch(reason => {
-				return []
-			})
+				.then(response => {
+					return response.payload.permissions.map(permission => permission.id)
+				})
+				.catch(reason => {
+					return []
+				})
 		},
 		/**
 		 * To close the edit modal
@@ -812,26 +936,29 @@ export default {
 			this.clearListError()
 			var rolesVue = this
 			return RolesFunctions.getRoles()
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					rolesVue.loading = false
-					if (this.$root.roles.includes('super admin')) {
-						rolesVue.roles = response.payload
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						rolesVue.loading = false
+						if (this.$root.roles.includes('super admin')) {
+							rolesVue.roles = response.payload
+						} else {
+							rolesVue.roles = response.payload.filter(
+								role => role.name !== 'super admin'
+							)
+						}
 					} else {
-						rolesVue.roles = response.payload.filter(role => role.name !== 'super admin')
+						rolesVue.loading = false
 					}
-				} else {
-					rolesVue.loading = false
-				}
-			}).catch(reason => {
-				rolesVue.loading = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'Could not get roles',
-					errorName: 'listErrorMessage',
-					vue: rolesVue
 				})
-			})
+				.catch(reason => {
+					rolesVue.loading = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'Could not get roles',
+						errorName: 'listErrorMessage',
+						vue: rolesVue
+					})
+				})
 		},
 		/**
 		 * To get a list of brand admins.
@@ -842,28 +969,33 @@ export default {
 			var rolesVue = this
 
 			return this.validateNewRoleData()
-			.then((response) => {
-				rolesVue.creating = true
-				rolesVue.clearCreateError()
-				return RolesFunctions.createRole(rolesVue.newRole)
 				.then(response => {
-					rolesVue.getRoles()
-					rolesVue.resetCreateForm()
-					rolesVue.showCreateSuccess()
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Could not create role',
-						errorName: 'createErrorMessage',
-						vue: rolesVue
-					})
-				}).finally(() => {
-					rolesVue.creating = false
+					rolesVue.creating = true
+					rolesVue.clearCreateError()
+					return RolesFunctions.createRole(rolesVue.newRole)
+						.then(response => {
+							rolesVue.getRoles()
+							rolesVue.resetCreateForm()
+							rolesVue.showCreateSuccess()
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'Could not create role',
+								errorName: 'createErrorMessage',
+								vue: rolesVue
+							})
+						})
+						.finally(() => {
+							rolesVue.creating = false
+						})
 				})
-			}).catch(reason => {
-				rolesVue.createErrorMessage = reason
-				rolesVue.$scrollTo(rolesVue.$refs.createErrorMessage, 1000, { offset: -50 })
-			})
+				.catch(reason => {
+					rolesVue.createErrorMessage = reason
+					rolesVue.$scrollTo(rolesVue.$refs.createErrorMessage, 1000, {
+						offset: -50
+					})
+				})
 		},
 		/**
 		 * To reset the create new form.
@@ -961,39 +1093,42 @@ export default {
 			var rolesVue = this
 
 			return this.validateEditedRoleData()
-			.then((response) => {
-				rolesVue.updating = true
-				rolesVue.clearEditError()
-				return RolesFunctions.updateRole(rolesVue.roleToEdit)
 				.then(response => {
-					rolesVue.closeEditRoleModal()
-					rolesVue.showEditSuccess()
-					for (var i = 0; i < rolesVue.roles.length; i++) {
-						if (rolesVue.roles[i].id === rolesVue.roleToEdit.id) {
-							rolesVue.roles[i].name = response.payload.name
-						}
-					}
-					rolesVue.animated = `role-${rolesVue.roleToEdit.id}`
-					rolesVue.resetEditForm()
-					window.setTimeout(() => {
-						rolesVue.animated = ''
-					}, 3000)
-				}).catch(reason => {
-					rolesVue.$refs.editModal.$el.scrollTop = 0
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Could not save role',
-						errorName: 'editErrorMessage',
-						vue: rolesVue,
-						containerRef: 'editModal'
-					})
-				}).finally(() => {
-					rolesVue.updating = false
+					rolesVue.updating = true
+					rolesVue.clearEditError()
+					return RolesFunctions.updateRole(rolesVue.roleToEdit)
+						.then(response => {
+							rolesVue.closeEditRoleModal()
+							rolesVue.showEditSuccess()
+							for (var i = 0; i < rolesVue.roles.length; i++) {
+								if (rolesVue.roles[i].id === rolesVue.roleToEdit.id) {
+									rolesVue.roles[i].name = response.payload.name
+								}
+							}
+							rolesVue.animated = `role-${rolesVue.roleToEdit.id}`
+							rolesVue.resetEditForm()
+							window.setTimeout(() => {
+								rolesVue.animated = ''
+							}, 3000)
+						})
+						.catch(reason => {
+							rolesVue.$refs.editModal.$el.scrollTop = 0
+							ajaxErrorHandler({
+								reason,
+								errorText: 'Could not save role',
+								errorName: 'editErrorMessage',
+								vue: rolesVue,
+								containerRef: 'editModal'
+							})
+						})
+						.finally(() => {
+							rolesVue.updating = false
+						})
 				})
-			}).catch(reason => {
-				rolesVue.editErrorMessage = reason
-				rolesVue.$refs.editModal.$el.scrollTop = 0
-			})
+				.catch(reason => {
+					rolesVue.editErrorMessage = reason
+					rolesVue.$refs.editModal.$el.scrollTop = 0
+				})
 		},
 		/**
 		 * To check if the item data is valid before submitting to the backend.
@@ -1032,7 +1167,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		openDeleteModal (role) {
-			this.roleToDelete = {...role}
+			this.roleToDelete = { ...role }
 			this.showDeleteModal = true
 		},
 		/**
@@ -1083,21 +1218,23 @@ export default {
 			this.clearDeleteError()
 			var rolesVue = this
 			return RolesFunctions.deleteRole(rolesVue.roleToDelete)
-			.then(response => {
-				rolesVue.getRoles()
-				rolesVue.closeDeleteModal()
-				rolesVue.showDeleteSuccess()
-				rolesVue.resetDeleteForm()
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'Could not delete role',
-					errorName: 'deleteErrorMessage',
-					vue: rolesVue
+				.then(response => {
+					rolesVue.getRoles()
+					rolesVue.closeDeleteModal()
+					rolesVue.showDeleteSuccess()
+					rolesVue.resetDeleteForm()
 				})
-			}).finally(() => {
-				rolesVue.deleting = false
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'Could not delete role',
+						errorName: 'deleteErrorMessage',
+						vue: rolesVue
+					})
+				})
+				.finally(() => {
+					rolesVue.deleting = false
+				})
 		}
 	},
 	components: {
@@ -1114,15 +1251,15 @@ export default {
 
 <style scoped>
 .animated {
-	animation: listItemHighlight 1s 2 ease-in-out both;
+  animation: listItemHighlight 1s 2 ease-in-out both;
 }
-.mt-element-list .list-news.mt-list-container ul>.mt-list-item {
-	min-height: 80px;
+.mt-element-list .list-news.mt-list-container ul > .mt-list-item {
+  min-height: 80px;
 }
-.mt-element-list .list-news.mt-list-container ul>.mt-list-item:hover {
-	background-color: white;
+.mt-element-list .list-news.mt-list-container ul > .mt-list-item:hover {
+  background-color: white;
 }
 .module {
-	font-weight: bold;
+  font-weight: bold;
 }
 </style>

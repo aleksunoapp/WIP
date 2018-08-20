@@ -40,9 +40,7 @@ export const listTerms = () => {
  * ]
  */
 
-export const listTermsForLanguage = (
-	locale = ''
-) => {
+export const listTermsForLanguage = (locale = '') => {
 	if (!locale) {
 		return Error('Please provide a locale')
 	}
@@ -51,7 +49,7 @@ export const listTermsForLanguage = (
 			method: 'GET',
 			dataType: 'json',
 			url: '/app/term_translation/allTermswithTranslationsByLanguage',
-			data: {locale},
+			data: { locale },
 			success: function (response) {
 				resolve(response)
 			},
@@ -77,10 +75,7 @@ export const listTermsForLanguage = (
  * ]
  */
 
-export const translateTerms = ({
-	localeId = null,
-	translations = null
-}) => {
+export const translateTerms = ({ localeId = null, translations = null }) => {
 	if (localeId === null) {
 		return Error('Please provide a locale ID')
 	}
@@ -116,9 +111,7 @@ export const translateTerms = ({
  *      "id": 201
  *  }
  */
-export const createTerm = ({
-	term = ''
-}) => {
+export const createTerm = ({ term = '' }) => {
 	if (!term) {
 		return Error('Please provide a term')
 	}
@@ -127,7 +120,7 @@ export const createTerm = ({
 			method: 'POST',
 			dataType: 'json',
 			url: '/app/term/create',
-			data: {term},
+			data: { term },
 			success: function (response) {
 				resolve(response)
 			},
@@ -149,10 +142,7 @@ export const createTerm = ({
  *     "updated_by": 18
  * }
  */
-export const updateTerm = ({
-	term = '',
-	id = null
-}) => {
+export const updateTerm = ({ term = '', id = null }) => {
 	if (!term) {
 		return Error('Please provide a term')
 	}
@@ -164,7 +154,7 @@ export const updateTerm = ({
 			method: 'POST',
 			dataType: 'json',
 			url: `/app/term/${id}/update`,
-			data: {term},
+			data: { term },
 			success: function (response) {
 				resolve(response)
 			},
@@ -180,9 +170,7 @@ export const updateTerm = ({
  * @function
  * @returns {object} A promise with response shaped ...
  */
-export const deleteTerm = ({
-	id = null
-}) => {
+export const deleteTerm = ({ id = null }) => {
 	return new Promise(function (resolve, reject) {
 		if (id !== 0 && !id) {
 			reject('Term ID is missing.')
@@ -204,12 +192,11 @@ export const deleteTerm = ({
 	})
 }
 
-export default ({
+export default {
 	listTerms,
 	listTermsForLanguage,
 	translateTerms,
 	createTerm,
 	updateTerm,
 	deleteTerm
-})
-
+}

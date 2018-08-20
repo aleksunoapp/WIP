@@ -1,30 +1,39 @@
 <template>
-	<modal :show="showDeleteCategoryModal" effect="fade" @closeOnEscape="closeModal" ref="deleteModal">
-		<div slot="modal-header" class="modal-header center">
-			<button type="button" class="close" @click="closeModal()">
+	<modal :show="showDeleteCategoryModal"
+	       effect="fade"
+	       @closeOnEscape="closeModal"
+	       ref="deleteModal">
+		<div slot="modal-header"
+		     class="modal-header center">
+			<button type="button"
+			        class="close"
+			        @click="closeModal()">
 				<span>&times;</span>
 			</button>
 			<h4 class="modal-title center">Delete Category</h4>
 		</div>
-		<div slot="modal-body" class="modal-body">
-			<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
-			    <button class="close" @click="clearError()"></button>
-			    <span>{{errorMessage}}</span>
+		<div slot="modal-body"
+		     class="modal-body">
+			<div class="alert alert-danger"
+			     v-show="errorMessage"
+			     ref="errorMessage">
+				<button class="close"
+				        @click="clearError()"></button>
+				<span>{{errorMessage}}</span>
 			</div>
 			<div class="col-md-12">
 				Are you sure you want to delete this category?
 			</div>
 		</div>
-		<div slot="modal-footer" class="modal-footer clear">
-			<button 
-				type="button" 
-				class="btn btn-primary" 
-				@click="deleteCategory()"
-				:disabled="deleting">
+		<div slot="modal-footer"
+		     class="modal-footer clear">
+			<button type="button"
+			        class="btn btn-primary"
+			        @click="deleteCategory()"
+			        :disabled="deleting">
 				Delete
-				<i 
-					v-show="deleting"
-					class="fa fa-spinner fa-pulse fa-fw">
+				<i v-show="deleting"
+				   class="fa fa-spinner fa-pulse fa-fw">
 				</i>
 			</button>
 		</div>
@@ -72,23 +81,31 @@ export default {
 			var deleteCategoryVue = this
 			deleteCategoryVue.clearError()
 
-			CategoriesFunctions.deleteCategory(deleteCategoryVue.passedCategoryId, deleteCategoryVue.$root.appId, deleteCategoryVue.$root.appSecret, deleteCategoryVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					this.deleteCategoryAndCloseModal()
-				} else {
-					deleteCategoryVue.errorMessage = response.message
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not delete the category',
-					errorName: 'errorMessage',
-					vue: deleteCategoryVue,
-					containerRef: 'deleteModal'
+			CategoriesFunctions.deleteCategory(
+				deleteCategoryVue.passedCategoryId,
+				deleteCategoryVue.$root.appId,
+				deleteCategoryVue.$root.appSecret,
+				deleteCategoryVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						this.deleteCategoryAndCloseModal()
+					} else {
+						deleteCategoryVue.errorMessage = response.message
+					}
 				})
-			}).finally(() => {
-				deleteCategoryVue.deleting = false
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not delete the category',
+						errorName: 'errorMessage',
+						vue: deleteCategoryVue,
+						containerRef: 'deleteModal'
+					})
+				})
+				.finally(() => {
+					deleteCategoryVue.deleting = false
+				})
 		},
 		/**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
@@ -114,7 +131,7 @@ export default {
 </script>
 <style>
 .image-container {
-	border: 1px dotted #c2cad8;
-	text-align: center;
+  border: 1px dotted #c2cad8;
+  text-align: center;
 }
 </style>

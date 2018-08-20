@@ -1,155 +1,187 @@
 <template>
-	<modal :show="showEditPromoCodeModal" effect="fade" @closeOnEscape="closeModal" :width="modalWidth">
-		<div slot="modal-header" class="modal-header center">
-			<button type="button" class="close" @click="closeModal()">
+	<modal :show="showEditPromoCodeModal"
+	       effect="fade"
+	       @closeOnEscape="closeModal"
+	       :width="modalWidth">
+		<div slot="modal-header"
+		     class="modal-header center">
+			<button type="button"
+			        class="close"
+			        @click="closeModal()">
 				<span>&times;</span>
 			</button>
 			<h4 class="modal-title">
 				<span v-if="!selectLocationsMode">Update Promo Code</span>
-				<h4 v-else-if="selectLocationsMode" class="modal-title center"><i class="fa fa-chevron-left clickable pull-left back-button" @click="closeModal()"></i> Select Stores</h4>
+				<h4 v-else-if="selectLocationsMode"
+				    class="modal-title center">
+					<i class="fa fa-chevron-left clickable pull-left back-button"
+					   @click="closeModal()"></i> Select Stores</h4>
 			</h4>
 		</div>
-		<div slot="modal-body" class="modal-body">
-			<loading-screen 
-				:show="displaySpinner" 
-				:color="'#2C3E50'" 
-				:display="'inline'"
-			>
+		<div slot="modal-body"
+		     class="modal-body">
+			<loading-screen :show="displaySpinner"
+			                :color="'#2C3E50'"
+			                :display="'inline'">
 			</loading-screen>
-  			
-			<form 
-				v-show="!selectItemsMode && !selectLocationsMode && !displaySpinner"
-				role="form" 
-				@submit.prevent="createNewpromoCode()" 
-			>
-  				<div class="form-body row">
-  					<div class="col-md-12">
-		        		<div class="alert alert-danger" v-if="errorMessage.length">
-		        		    <button class="close" data-close="alert" @click="clearError('errorMessage')"></button>
-		        		    <span>{{ errorMessage }}</span>
-		        		</div>
-		        	</div>
-	        		<div class="col-xs-7">
-	        			<div class="form-group form-md-line-input form-md-floating-label">
-	        			    <input ref="codes" type="text" class="form-control input-sm  text-uppercase" :class="{'edited': promoCode.codes.length}" id="form_control_1" v-model="promoCode.codes">
-	        			    <label for="form_control_1">Enter a Code</label>
-	        			</div>
-	        			<div class="side-by-side-wrapper">
+
+			<form v-show="!selectItemsMode && !selectLocationsMode && !displaySpinner"
+			      role="form"
+			      @submit.prevent="createNewpromoCode()">
+				<div class="form-body row">
+					<div class="col-md-12">
+						<div class="alert alert-danger"
+						     v-if="errorMessage.length">
+							<button class="close"
+							        data-close="alert"
+							        @click="clearError('errorMessage')"></button>
+							<span>{{ errorMessage }}</span>
+						</div>
+					</div>
+					<div class="col-xs-7">
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input ref="codes"
+							       type="text"
+							       class="form-control input-sm  text-uppercase"
+							       :class="{'edited': promoCode.codes.length}"
+							       id="form_control_1"
+							       v-model="promoCode.codes">
+							<label for="form_control_1">Enter a Code</label>
+						</div>
+						<div class="side-by-side-wrapper">
 							<div class="form-group form-md-line-input form-md-floating-label side-by-side-item">
-							    <input type="text" class="form-control input-sm" :class="{'edited': promoCode.value}" id="form_control_2" v-model="promoCode.value">
-							    <label for="form_control_2">Value of Promo Code</label>
+								<input type="text"
+								       class="form-control input-sm"
+								       :class="{'edited': promoCode.value}"
+								       id="form_control_2"
+								       v-model="promoCode.value">
+								<label for="form_control_2">Value of Promo Code</label>
 							</div>
-                    		<el-select v-model="promoCode.value_type" placeholder="Select type" size="mini" class="margin-bottom-15">
-								<el-option
-									label="%"
-									value="percentage">
+							<el-select v-model="promoCode.value_type"
+							           placeholder="Select type"
+							           size="mini"
+							           class="margin-bottom-15">
+								<el-option label="%"
+								           value="percentage">
 								</el-option>
-								<el-option
-									label="$"
-									value="dollar">
+								<el-option label="$"
+								           value="dollar">
 								</el-option>
-                    		</el-select>
-	        			</div>
-	        			<div>
-                    		<el-select v-model="promoCode.apply_on" placeholder="Discount is applied to" size="mini" class="margin-bottom-15">
-								<el-option
-									label="Menu Items"
-									value="items">
+							</el-select>
+						</div>
+						<div>
+							<el-select v-model="promoCode.apply_on"
+							           placeholder="Discount is applied to"
+							           size="mini"
+							           class="margin-bottom-15">
+								<el-option label="Menu Items"
+								           value="items">
 								</el-option>
-								<el-option
-									label="Delivery Fee"
-									value="delivery">
+								<el-option label="Delivery Fee"
+								           value="delivery">
 								</el-option>
-								<el-option
-									label="Cart"
-									value="cart">
+								<el-option label="Cart"
+								           value="cart">
 								</el-option>
-                    		</el-select>
-							<button v-if="promoCode.apply_on === 'items'" type="submit" class="btn blue btn-outline select-items-button" @click="displayMenuTreeModal($event)">
+							</el-select>
+							<button v-if="promoCode.apply_on === 'items'"
+							        type="submit"
+							        class="btn blue btn-outline select-items-button"
+							        @click="displayMenuTreeModal($event)">
 								Select items
 							</button>
-							<p class="grey-label" v-if="promoCode.sku_array.length">Selected {{ promoCode.sku_array.length }} item<span v-if="promoCode.sku_array.length !== 1">s</span></p>
-	        			</div>
+							<p class="grey-label"
+							   v-if="promoCode.sku_array.length">Selected {{ promoCode.sku_array.length }} item
+								<span v-if="promoCode.sku_array.length !== 1">s</span>
+							</p>
+						</div>
 						<div>
-                    		<el-select v-model="promoCode.type" placeholder="Single or Multi Use?" size="mini" class="margin-bottom-15">
-								<el-option
-									label="Single Use"
-									value="single_use">
+							<el-select v-model="promoCode.type"
+							           placeholder="Single or Multi Use?"
+							           size="mini"
+							           class="margin-bottom-15">
+								<el-option label="Single Use"
+								           value="single_use">
 								</el-option>
-								<el-option
-									label="Multi Use"
-									value="multi_use">
+								<el-option label="Multi Use"
+								           value="multi_use">
 								</el-option>
-                    		</el-select>
+							</el-select>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label">
-						    <input type="text" class="form-control input-sm" :class="{'edited': promoCode.max_use_per_person !== ''}" id="form_control_3" v-model="promoCode.max_use_per_person">
-						    <label for="form_control_3">Maximum Redemptions Per User</label>
+							<input type="text"
+							       class="form-control input-sm"
+							       :class="{'edited': promoCode.max_use_per_person !== ''}"
+							       id="form_control_3"
+							       v-model="promoCode.max_use_per_person">
+							<label for="form_control_3">Maximum Redemptions Per User</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label narrow-input">
-						    <input type="text" class="form-control input-sm" :class="{'edited': promoCode.max_use  !== ''}" id="form_control_4" v-model="promoCode.max_use">
-						    <label for="form_control_4">Total Redemptions Permitted</label>
+							<input type="text"
+							       class="form-control input-sm"
+							       :class="{'edited': promoCode.max_use  !== ''}"
+							       id="form_control_4"
+							       v-model="promoCode.max_use">
+							<label for="form_control_4">Total Redemptions Permitted</label>
 						</div>
-	        			<div class="form-group">
-	        				<p class="date-label">Start Date</p>
-	        				<el-date-picker 
-	        					v-model="promoCode.start_from" 
-	        					format="yyyy-MM-dd" 
-	        					value-format="yyyy-MM-dd" 
-	        					:clearable="false" 
-	        					placeholder="Select start date">
-        					</el-date-picker>
-	        			</div>
-	        			<div class="form-group">
-	        				<p class="date-label">End Date</p>
-		        			<el-date-picker 
-		        				v-model="promoCode.end_on" 
-		        				format="yyyy-MM-dd" 
-		        				value-format="yyyy-MM-dd" 
-		        				:clearable="false" 
-		        				placeholder="Select end date">
-	        				</el-date-picker>
-	        			</div>
-	        			<div>
-							<p class="inline margin-right-10">Availability</p>			        				
-	        				<button type="submit" class="btn blue btn-outline" @click="selectLocations($event, 'new')">Select Stores</button>
-	        				<p class="grey-label margin-top-10" v-if="promoCode.locations.length">Selected <span v-if="promoCode.locations === 'all'">all</span><span v-else>{{ promoCode.locations.length }}</span> location<span v-if="promoCode.locations.length !== 1">s</span></p>
-	        			</div>
-	        		</div>
-	        	</div>
-  				<div class="form-actions right margin-top-20">
+						<div class="form-group">
+							<p class="date-label">Start Date</p>
+							<el-date-picker v-model="promoCode.start_from"
+							                format="yyyy-MM-dd"
+							                value-format="yyyy-MM-dd"
+							                :clearable="false"
+							                placeholder="Select start date">
+							</el-date-picker>
+						</div>
+						<div class="form-group">
+							<p class="date-label">End Date</p>
+							<el-date-picker v-model="promoCode.end_on"
+							                format="yyyy-MM-dd"
+							                value-format="yyyy-MM-dd"
+							                :clearable="false"
+							                placeholder="Select end date">
+							</el-date-picker>
+						</div>
+						<div>
+							<p class="inline margin-right-10">Availability</p>
+							<button type="submit"
+							        class="btn blue btn-outline"
+							        @click="selectLocations($event, 'new')">Select Stores</button>
+							<p class="grey-label margin-top-10"
+							   v-if="promoCode.locations.length">Selected
+								<span v-if="promoCode.locations === 'all'">all</span>
+								<span v-else>{{ promoCode.locations.length }}</span> location
+								<span v-if="promoCode.locations.length !== 1">s</span>
+							</p>
+						</div>
+					</div>
 				</div>
-  			</form>
+				<div class="form-actions right margin-top-20">
+				</div>
+			</form>
 
-			<menu-item-picker 
-				v-if="selectItemsMode"
-				:previouslySelected="promoCode.sku_array"
-				@update="itemsSelected"
-			>
+			<menu-item-picker v-if="selectItemsMode"
+			                  :previouslySelected="promoCode.sku_array"
+			                  @update="itemsSelected">
 			</menu-item-picker>
 
-			<select-locations-popup 
-				v-if="!displaySpinner && !selectItemsMode && selectLocationsMode" 
-				@closeSelectLocationsPopup='selectStores' 
-				:previouslySelected="promoCode.locations"
-			>
+			<select-locations-popup v-if="!displaySpinner && !selectItemsMode && selectLocationsMode"
+			                        @closeSelectLocationsPopup='selectStores'
+			                        :previouslySelected="promoCode.locations">
 			</select-locations-popup>
 		</div>
-		<div slot="modal-footer" class="modal-footer">
-			<button 
-				v-if="selectItemsMode"
-				type="button" 
-				class="btn btn-primary" 
-				@click="closeItemSelector()" 
-			>
+		<div slot="modal-footer"
+		     class="modal-footer">
+			<button v-if="selectItemsMode"
+			        type="button"
+			        class="btn btn-primary"
+			        @click="closeItemSelector()">
 				Done
 			</button>
-			<button 
-				v-if="!selectItemsMode && !selectLocationsMode && !selectItemsMode"
-				type="button" 
-				class="btn btn-primary" 
-				@click="updatePromoCode()" 
-			>
+			<button v-if="!selectItemsMode && !selectLocationsMode && !selectItemsMode"
+			        type="button"
+			        class="btn btn-primary"
+			        @click="updatePromoCode()">
 				Update
 			</button>
 		</div>
@@ -184,18 +216,18 @@ export default {
 			activeMenu: {},
 			activeCategory: {},
 			promoCode: {
-				'apply_on': '',
-				'codes': '',
-				'end_on': '',
-				'locations': [],
-				'max_use': '',
-				'max_use_per_person': '',
-				'sku': [],
-				'sku_array': [],
-				'start_from': '',
-				'type': '',
-				'value': '',
-				'value_type': ''
+				apply_on: '',
+				codes: '',
+				end_on: '',
+				locations: [],
+				max_use: '',
+				max_use_per_person: '',
+				sku: [],
+				sku_array: [],
+				start_from: '',
+				type: '',
+				value: '',
+				value_type: ''
 			},
 			displaySpinner: false
 		}
@@ -216,7 +248,9 @@ export default {
 	},
 	mounted () {
 		this.getAllPromoCodeDetails()
-		this.promoCode.locations === 'all' ? this.selectAllLocationsSelected = true : this.selectAllLocationsSelected = false
+		this.promoCode.locations === 'all'
+			? (this.selectAllLocationsSelected = true)
+			: (this.selectAllLocationsSelected = false)
 		this.getPaginatedStoreLocations()
 	},
 	methods: {
@@ -236,7 +270,9 @@ export default {
 		 * @returns {undefined}
 		 */
 		syncSelectAll (selected) {
-			if (!selected) { this.selectAllSelected = false }
+			if (!selected) {
+				this.selectAllSelected = false
+			}
 			this.selectAllSelected = !this.items.some(item => !item.selected)
 		},
 		/**
@@ -247,31 +283,43 @@ export default {
 		getAllPromoCodeDetails () {
 			this.displaySpinner = true
 			var editPromoCodeVue = this
-			return PromoCodesFunctions.getAllPromoCodeDetails(editPromoCodeVue.$root.appId, editPromoCodeVue.$root.appSecret, editPromoCodeVue.$root.activeLocation.id, editPromoCodeVue.promoCodeId).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					if (!response.payload.hasOwnProperty('sku_array')) {
-						response.payload.sku_array = response.payload.sku.split(',')
-					}
-					response.payload.locations = response.payload.locations.split(',').map(id => parseInt(id))
+			return PromoCodesFunctions.getAllPromoCodeDetails(
+				editPromoCodeVue.$root.appId,
+				editPromoCodeVue.$root.appSecret,
+				editPromoCodeVue.$root.activeLocation.id,
+				editPromoCodeVue.promoCodeId
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						if (!response.payload.hasOwnProperty('sku_array')) {
+							response.payload.sku_array = response.payload.sku.split(',')
+						}
+						response.payload.locations = response.payload.locations
+							.split(',')
+							.map(id => parseInt(id))
 
-					editPromoCodeVue.promoCode = response.payload
-					editPromoCodeVue.displaySpinner = false
-					editPromoCodeVue.$nextTick(function () {
-						editPromoCodeVue.$refs.codes.focus()
-					})
+						editPromoCodeVue.promoCode = response.payload
+						editPromoCodeVue.displaySpinner = false
+						editPromoCodeVue.$nextTick(function () {
+							editPromoCodeVue.$refs.codes.focus()
+						})
+						editPromoCodeVue.showEditPromoCodeModal = true
+					}
+				})
+				.catch(reason => {
 					editPromoCodeVue.showEditPromoCodeModal = true
-				}
-			}).catch(reason => {
-				editPromoCodeVue.showEditPromoCodeModal = true
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editPromoCodeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				editPromoCodeVue.displaySpinner = false
-				throw reason
-			})
+					if (
+						reason.responseJSON.code === 401 &&
+						reason.responseJSON.status === 'unauthorized'
+					) {
+						editPromoCodeVue.$router.push('/login/expired')
+						return
+					}
+					if (reason.responseJSON) {
+					}
+					editPromoCodeVue.displaySpinner = false
+					throw reason
+				})
 		},
 		/**
 		 * To select all or deselect all items
@@ -332,7 +380,10 @@ export default {
 			}
 			let todayYear = today.getFullYear()
 
-			return `${todayYear}-${todayMonth}-${todayDay}` > `${inputYear}-${inputMonth}-${inputDay}`
+			return (
+				`${todayYear}-${todayMonth}-${todayDay}` >
+				`${inputYear}-${inputMonth}-${inputDay}`
+			)
 		},
 		/**
 		 * To record the selected locations in the new or edited promo code object.
@@ -363,27 +414,40 @@ export default {
 		getPaginatedStoreLocations () {
 			var editPromoCodeVue = this
 			let paginationPreferences = {
-				'brand_id': this.$root.brandId
+				brand_id: this.$root.brandId
 			}
-			App.getPaginatedStoreLocations(editPromoCodeVue.$root.appId, editPromoCodeVue.$root.appSecret, editPromoCodeVue.$root.userToken, paginationPreferences).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					response.payload.forEach((location) => {
-						if (editPromoCodeVue.promoCode.locations === 'all') {
-							location.selected = true
-						} else {
-							location.selected = editPromoCodeVue.promoCode.locations.includes(parseInt(location.id))
-						}
-					})
-					editPromoCodeVue.locations = response.payload
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editPromoCodeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
-				throw reason
-			})
+			App.getPaginatedStoreLocations(
+				editPromoCodeVue.$root.appId,
+				editPromoCodeVue.$root.appSecret,
+				editPromoCodeVue.$root.userToken,
+				paginationPreferences
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						response.payload.forEach(location => {
+							if (editPromoCodeVue.promoCode.locations === 'all') {
+								location.selected = true
+							} else {
+								location.selected = editPromoCodeVue.promoCode.locations.includes(
+									parseInt(location.id)
+								)
+							}
+						})
+						editPromoCodeVue.locations = response.payload
+					}
+				})
+				.catch(reason => {
+					if (
+						reason.responseJSON.code === 401 &&
+						reason.responseJSON.status === 'unauthorized'
+					) {
+						editPromoCodeVue.$router.push('/login/expired')
+						return
+					}
+					if (reason.responseJSON) {
+					}
+					throw reason
+				})
 		},
 		/**
 		 * To toggle select location mode on.
@@ -405,29 +469,51 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (!promoCodesVue.promoCode.codes.length) {
 					reject('Code cannot be blank')
-				} else if (!(/^(?=.+)(?:[1-9]\d*|0)?(?:\.\d+)?$/.test(promoCodesVue.promoCode.value))) {
+				} else if (
+					!/^(?=.+)(?:[1-9]\d*|0)?(?:\.\d+)?$/.test(
+						promoCodesVue.promoCode.value
+					)
+				) {
 					reject('Value Of Promo Code cannot be blank and must be a number')
 				} else if (!promoCodesVue.promoCode.value_type.length) {
 					reject('Value Type cannot be blank')
 				} else if (!promoCodesVue.promoCode.apply_on.length) {
 					reject('Discount Is Applied To cannot be blank')
-				} else if (promoCodesVue.promoCode.apply_on === 'items' && !promoCodesVue.promoCode.sku_array.length) {
+				} else if (
+					promoCodesVue.promoCode.apply_on === 'items' &&
+					!promoCodesVue.promoCode.sku_array.length
+				) {
 					reject('Select at least one item')
 				} else if (!promoCodesVue.promoCode.type.length) {
 					reject('Single or Multi Use cannot be blank')
-				} else if (!(/^\+?(0|[1-9]\d*)$/.test(promoCodesVue.promoCode.max_use_per_person))) {
-					reject('Maximum Redemptions Per User cannot be blank and must be a number')
-				} else if (!(/^\+?(0|[1-9]\d*)$/.test(promoCodesVue.promoCode.max_use))) {
-					reject('Total Redemptions Permitted cannot be blank and must be a number')
+				} else if (
+					!/^\+?(0|[1-9]\d*)$/.test(promoCodesVue.promoCode.max_use_per_person)
+				) {
+					reject(
+						'Maximum Redemptions Per User cannot be blank and must be a number'
+					)
+				} else if (!/^\+?(0|[1-9]\d*)$/.test(promoCodesVue.promoCode.max_use)) {
+					reject(
+						'Total Redemptions Permitted cannot be blank and must be a number'
+					)
 				} else if (!promoCodesVue.promoCode.apply_on.length) {
 					reject('Applies to cannot be blank')
-				} else if (typeof new Date(promoCodesVue.promoCode.start_from).getMonth !== 'function') {
+				} else if (
+					typeof new Date(promoCodesVue.promoCode.start_from).getMonth !==
+					'function'
+				) {
 					reject('Please select Start Date and Time')
-				} else if (typeof new Date(promoCodesVue.promoCode.end_on).getMonth !== 'function') {
+				} else if (
+					typeof new Date(promoCodesVue.promoCode.end_on).getMonth !==
+					'function'
+				) {
 					reject('Please select End Date and Time')
 				} else if (promoCodesVue.isPast(promoCodesVue.promoCode.end_on)) {
 					reject('End Date cannot be in the past')
-				} else if (new Date(promoCodesVue.promoCode.end_on) < new Date(promoCodesVue.promoCode.start_from)) {
+				} else if (
+					new Date(promoCodesVue.promoCode.end_on) <
+					new Date(promoCodesVue.promoCode.start_from)
+				) {
 					reject('End Date cannot be before Start Date')
 				} else if (!promoCodesVue.promoCode.locations.length) {
 					reject('Select at least one location')
@@ -473,35 +559,47 @@ export default {
 			var editPromoCodeVue = this
 			editPromoCodeVue.clearError()
 
-			return editPromoCodeVue.validatePromoCodeData()
-			.then(response => {
-				let promoCode = editPromoCodeVue.promoCode
-				promoCode.sku = editPromoCodeVue.promoCode.sku_array.toString()
-				promoCode.locations = editPromoCodeVue.promoCode.locations.toString()
-				if (editPromoCodeVue.promoCode.locations.length === 1) {
-					editPromoCodeVue.promoCode.locations = editPromoCodeVue.promoCode.locations[0].toString()
-				}
+			return editPromoCodeVue
+				.validatePromoCodeData()
+				.then(response => {
+					let promoCode = editPromoCodeVue.promoCode
+					promoCode.sku = editPromoCodeVue.promoCode.sku_array.toString()
+					promoCode.locations = editPromoCodeVue.promoCode.locations.toString()
+					if (editPromoCodeVue.promoCode.locations.length === 1) {
+						editPromoCodeVue.promoCode.locations = editPromoCodeVue.promoCode.locations[0].toString()
+					}
 
-				PromoCodesFunctions.updatePromoCode(promoCode, editPromoCodeVue.$root.appId, editPromoCodeVue.$root.appSecret, editPromoCodeVue.$root.userToken).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						this.closeModalAndUpdate()
-					} else {
-						editPromoCodeVue.errorMessage = response.message
-					}
-				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						editPromoCodeVue.$router.push('/login/expired')
-						return
-					}
+					PromoCodesFunctions.updatePromoCode(
+						promoCode,
+						editPromoCodeVue.$root.appId,
+						editPromoCodeVue.$root.appSecret,
+						editPromoCodeVue.$root.userToken
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								this.closeModalAndUpdate()
+							} else {
+								editPromoCodeVue.errorMessage = response.message
+							}
+						})
+						.catch(reason => {
+							if (
+								reason.responseJSON.code === 401 &&
+								reason.responseJSON.status === 'unauthorized'
+							) {
+								editPromoCodeVue.$router.push('/login/expired')
+								return
+							}
+							editPromoCodeVue.errorMessage = reason
+							window.scrollTo(0, 0)
+						})
+				})
+				.catch(reason => {
+					// If validation fails then display the error message
 					editPromoCodeVue.errorMessage = reason
 					window.scrollTo(0, 0)
+					throw reason
 				})
-			}).catch(reason => {
-				// If validation fails then display the error message
-				editPromoCodeVue.errorMessage = reason
-				window.scrollTo(0, 0)
-				throw reason
-			})
 		},
 		/**
 		 * To close the modal and emit the updated promoCode object to the parent.
@@ -539,68 +637,77 @@ export default {
 
 <style scoped>
 .dropdown {
-	margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 .side-by-side-wrapper {
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-start;
-	align-items: flex-end;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-end;
 }
 .side-by-side-item {
-	max-width: 45%;
+  max-width: 45%;
 }
 .dropdown.side-by-side-item {
-	margin-left: 10px;
+  margin-left: 10px;
 }
 @media (max-width: 1150px) {
-	.side-by-side-wrapper {
-		flex-direction: column;
-		align-items: flex-start;
-	}
-	.side-by-side-item {
-		max-width: 100%;
-	}
-	.dropdown.side-by-side-item {
-		margin-left: 0px;
-	}
+  .side-by-side-wrapper {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .side-by-side-item {
+    max-width: 100%;
+  }
+  .dropdown.side-by-side-item {
+    margin-left: 0px;
+  }
 }
 .date-label {
-	color: rgb(136, 136, 136);
-	font-size: 13px;
-	margin: 0 0 5px 0;
+  color: rgb(136, 136, 136);
+  font-size: 13px;
+  margin: 0 0 5px 0;
 }
 .grey-label {
-	margin-top: 5px;
-	color: rgb(153, 153, 153);
+  margin-top: 5px;
+  color: rgb(153, 153, 153);
 }
-.mt-element-list .list-news.ext-1.mt-list-container ul>.mt-list-item>.list-datetime, .mt-element-list .list-news.ext-1.mt-list-container ul>.mt-list-item>.list-item-content {
-	padding-left: 20px;
+.mt-element-list
+  .list-news.ext-1.mt-list-container
+  ul
+  > .mt-list-item
+  > .list-datetime,
+.mt-element-list
+  .list-news.ext-1.mt-list-container
+  ul
+  > .mt-list-item
+  > .list-item-content {
+  padding-left: 20px;
 }
 .dd-handle {
-	cursor: pointer;
-	overflow: hidden;
-    text-overflow: ellipsis;
-    word-break: break-word;
-    white-space: nowrap;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+  white-space: nowrap;
 }
 .active {
-	color: #2ea8e5;
-    background: #fff;
+  color: #2ea8e5;
+  background: #fff;
 }
 .select-items-button {
-	margin: 0 0 10px 10px;
+  margin: 0 0 10px 10px;
 }
 .modal-body {
-	min-height: 200px;
-    max-height: calc(100vh - 200px);
-    overflow-x: hidden;
-    overflow-y: auto;
-    margin-bottom: 20px;
+  min-height: 200px;
+  max-height: calc(100vh - 200px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin-bottom: 20px;
 }
 </style>
 <style>
 .el-select-dropdown.el-popper {
-	z-index: 10501!important;
+  z-index: 10501 !important;
 }
 </style>

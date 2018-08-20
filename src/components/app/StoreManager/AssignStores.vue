@@ -1,33 +1,47 @@
 <template>
-	<modal :show="showAssignStoresModal" effect="fade" @closeOnEscape="closeModal" ref="modal">
-		<div slot="modal-header" class="modal-header center">
-			<button type="button" class="close" @click="closeModal()">
+	<modal :show="showAssignStoresModal"
+	       effect="fade"
+	       @closeOnEscape="closeModal"
+	       ref="modal">
+		<div slot="modal-header"
+		     class="modal-header center">
+			<button type="button"
+			        class="close"
+			        @click="closeModal()">
 				<span>&times;</span>
 			</button>
 			<h4 class="modal-title center">Assign Stores To Group '{{ groupDetails.name }}'</h4>
 		</div>
-		<div slot="modal-body" class="modal-body relative-block">
+		<div slot="modal-body"
+		     class="modal-body relative-block">
 			<div class="row">
 				<div class="col-md-12">
-					<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
-						<button class="close" @click="clearError('errorMessage')"></button>
+					<div class="alert alert-danger"
+					     v-show="errorMessage"
+					     ref="errorMessage">
+						<button class="close"
+						        @click="clearError('errorMessage')"></button>
 						<span>{{errorMessage}}</span>
 					</div>
 				</div>
 			</div>
-			<loading-screen :show="displaySpinner" :color="'#2C3E50'" :display="'inline'"></loading-screen>
-			<select-locations-popup v-if="!displaySpinner" @selectedLocations="selectStores" :previouslySelected="groupLocations" :withButton="false"></select-locations-popup>
+			<loading-screen :show="displaySpinner"
+			                :color="'#2C3E50'"
+			                :display="'inline'"></loading-screen>
+			<select-locations-popup v-if="!displaySpinner"
+			                        @selectedLocations="selectStores"
+			                        :previouslySelected="groupLocations"
+			                        :withButton="false"></select-locations-popup>
 		</div>
-		<div slot="modal-footer" class="modal-footer">
-			<button 
-				type="button" 
-				class="btn blue" 
-				@click="assignStoresToGroup()"
-				:disabled="assigning">
+		<div slot="modal-footer"
+		     class="modal-footer">
+			<button type="button"
+			        class="btn blue"
+			        @click="assignStoresToGroup()"
+			        :disabled="assigning">
 				Assign
-				<i 
-					v-show="assigning"
-					class="fa fa-spinner fa-pulse fa-fw">
+				<i v-show="assigning"
+				   class="fa fa-spinner fa-pulse fa-fw">
 				</i>
 			</button>
 		</div>
@@ -65,7 +79,7 @@ export default {
 		this.getGroupDetails()
 	},
 	watch: {
-		'passedGroupId' () {
+		passedGroupId () {
 			if (this.passedGroupId > 0) {
 				this.groupDetails = {}
 				this.stores = []
@@ -117,21 +131,28 @@ export default {
 			this.displaySpinner = true
 			var assignStoresVue = this
 
-			StoreGroupsFunctions.getGroupDetails(assignStoresVue.passedGroupId, assignStoresVue.$root.appId, assignStoresVue.$root.appSecret, assignStoresVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					assignStoresVue.groupDetails = response.payload
-				}
-				assignStoresVue.getGroupLocations()
-			}).catch(reason => {
-				assignStoresVue.displaySpinner = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not assign the stores',
-					errorName: 'errorMessage',
-					vue: assignStoresVue,
-					containerRef: 'modal'
+			StoreGroupsFunctions.getGroupDetails(
+				assignStoresVue.passedGroupId,
+				assignStoresVue.$root.appId,
+				assignStoresVue.$root.appSecret,
+				assignStoresVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						assignStoresVue.groupDetails = response.payload
+					}
+					assignStoresVue.getGroupLocations()
 				})
-			})
+				.catch(reason => {
+					assignStoresVue.displaySpinner = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not assign the stores',
+						errorName: 'errorMessage',
+						vue: assignStoresVue,
+						containerRef: 'modal'
+					})
+				})
 		},
 		/**
 		 * To get the list of locations that belong to the current group.
@@ -141,21 +162,30 @@ export default {
 		getGroupLocations () {
 			var assignStoresVue = this
 
-			StoreGroupsFunctions.getGroupLocations(assignStoresVue.passedGroupId, assignStoresVue.$root.appId, assignStoresVue.$root.appSecret, assignStoresVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					assignStoresVue.groupLocations = response.payload.locations.map(location => location.id)
-				}
-				assignStoresVue.getStores()
-			}).catch(reason => {
-				assignStoresVue.displaySpinner = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch group info',
-					errorName: 'errorMessage',
-					vue: assignStoresVue,
-					containerRef: 'modal'
+			StoreGroupsFunctions.getGroupLocations(
+				assignStoresVue.passedGroupId,
+				assignStoresVue.$root.appId,
+				assignStoresVue.$root.appSecret,
+				assignStoresVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						assignStoresVue.groupLocations = response.payload.locations.map(
+							location => location.id
+						)
+					}
+					assignStoresVue.getStores()
 				})
-			})
+				.catch(reason => {
+					assignStoresVue.displaySpinner = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch group info',
+						errorName: 'errorMessage',
+						vue: assignStoresVue,
+						containerRef: 'modal'
+					})
+				})
 		},
 		/**
 		 * To get a list of store for the current application/business.
@@ -165,33 +195,41 @@ export default {
 		getStores () {
 			var assignStoresVue = this
 
-			App.getStoreLocations(assignStoresVue.$root.appId, assignStoresVue.$root.appSecret, assignStoresVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					let allStores = response.payload
-					let groupStores = assignStoresVue.groupLocations
-					for (var i = 0; i < groupStores.length; i++) {
-						for (var j = 0; j < allStores.length; j++) {
-							if (groupStores[i].id === allStores[j].id) {
-								allStores[j].selected = true
-							} else if (allStores[j].selected !== true) {
-								allStores[j].selected = false
+			App.getStoreLocations(
+				assignStoresVue.$root.appId,
+				assignStoresVue.$root.appSecret,
+				assignStoresVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						let allStores = response.payload
+						let groupStores = assignStoresVue.groupLocations
+						for (var i = 0; i < groupStores.length; i++) {
+							for (var j = 0; j < allStores.length; j++) {
+								if (groupStores[i].id === allStores[j].id) {
+									allStores[j].selected = true
+								} else if (allStores[j].selected !== true) {
+									allStores[j].selected = false
+								}
 							}
 						}
+						assignStoresVue.selectAllSelected = !allStores.some(
+							menu => menu.selected === false
+						)
+						assignStoresVue.stores = allStores
+						assignStoresVue.displaySpinner = false
 					}
-					assignStoresVue.selectAllSelected = !(allStores.some(menu => menu.selected === false))
-					assignStoresVue.stores = allStores
-					assignStoresVue.displaySpinner = false
-				}
-			}).catch(reason => {
-				assignStoresVue.displaySpinner = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch stores',
-					errorName: 'errorMessage',
-					vue: assignStoresVue,
-					containerRef: 'modal'
 				})
-			})
+				.catch(reason => {
+					assignStoresVue.displaySpinner = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch stores',
+						errorName: 'errorMessage',
+						vue: assignStoresVue,
+						containerRef: 'modal'
+					})
+				})
 		},
 		/**
 		 * To assign the selected stores to the current group.
@@ -207,22 +245,31 @@ export default {
 				return
 			}
 			this.assigning = true
-			StoreGroupsFunctions.assignStoresToGroup(assignStoresVue.passedGroupId, assignStoresVue.groupLocations, assignStoresVue.$root.appId, assignStoresVue.$root.appSecret, assignStoresVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					assignStoresVue.closeModal()
-					assignStoresVue.showAlert()
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not assign the stores',
-					errorName: 'errorMessage',
-					vue: assignStoresVue,
-					containerRef: 'modal'
+			StoreGroupsFunctions.assignStoresToGroup(
+				assignStoresVue.passedGroupId,
+				assignStoresVue.groupLocations,
+				assignStoresVue.$root.appId,
+				assignStoresVue.$root.appSecret,
+				assignStoresVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						assignStoresVue.closeModal()
+						assignStoresVue.showAlert()
+					}
 				})
-			}).finally(() => {
-				assignStoresVue.assigning = false
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not assign the stores',
+						errorName: 'errorMessage',
+						vue: assignStoresVue,
+						containerRef: 'modal'
+					})
+				})
+				.finally(() => {
+					assignStoresVue.assigning = false
+				})
 		},
 		/**
 		 * To notify the parent to close the sideways page.
@@ -243,11 +290,14 @@ export default {
 				text: 'Locations have been successfully assigned!',
 				type: 'success',
 				confirmButtonText: 'OK'
-			}).then(() => {
-				this.closeSidewaysPage()
-			}, dismiss => {
-				// do nothing
-			})
+			}).then(
+				() => {
+					this.closeSidewaysPage()
+				},
+				dismiss => {
+					// do nothing
+				}
+			)
 		}
 	},
 	components: {
@@ -259,7 +309,7 @@ export default {
 </script>
 <style scoped>
 .height-mod {
-	max-height: 550px;
-    overflow: auto;
+  max-height: 550px;
+  overflow: auto;
 }
 </style>

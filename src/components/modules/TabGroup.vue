@@ -1,7 +1,11 @@
-<template><slot></slot></template>
+<template>
+	<div>
+		<slot></slot>
+	</div>
+</template>
 
 <script>
-import {coerce} from './utils/utils.js'
+import { coerce } from './utils/utils.js'
 
 export default {
 	props: {
@@ -14,22 +18,23 @@ export default {
 			type: String
 		}
 	},
-	data () {
+	data() {
 		return {
 			tabs: [],
 			show: false
 		}
 	},
 	computed: {
-		active () {
+		active() {
 			return ~this.tabs.indexOf(this._tabset.show)
 		}
 	},
-	created () {
+	created() {
 		this._tabgroup = true
-		let tabset = (this.$parent && this.$parent._tabset === true) ? this.$parent : {}
+		let tabset =
+			this.$parent && this.$parent._tabset === true ? this.$parent : {}
 		if (this.$parent && this.$parent._tabgroup) {
-			console.error('Can\'t nest tabgroups.')
+			console.error("Can't nest tabgroups.")
 		}
 		while (tabset && !tabset._tabset && tabset.$parent) {
 			tabset = tabset.$parent
@@ -43,10 +48,10 @@ export default {
 		}
 	},
 	methods: {
-		blur () {
+		blur() {
 			this.show = false
 		},
-		toggle () {
+		toggle() {
 			this.show = !this.show
 		}
 	}

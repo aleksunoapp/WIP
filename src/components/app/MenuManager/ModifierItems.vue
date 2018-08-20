@@ -12,10 +12,10 @@
 			<p>View items for modifier category '{{ modifierCategoryDetails.name }}'.</p>
 		</div>
 		<!-- BEGIN CREATE NEW MODIFIER ITEM -->
-		<div 
-			class="portlet box blue-hoki" 
-			v-if="$root.activeLocation && $root.activeLocation.id && $root.permissions['menu_manager modifiers items create']">
-			<div class="portlet-title bg-blue-chambray" @click="toggleCreateModifierItemPanel()">
+		<div class="portlet box blue-hoki"
+		     v-if="$root.activeLocation && $root.activeLocation.id && $root.permissions['menu_manager modifiers items create']">
+			<div class="portlet-title bg-blue-chambray"
+			     @click="toggleCreateModifierItemPanel()">
 				<div class="custom tools">
 					<a :class="{'expand': !createModifierItemCollapse, 'collapse': createModifierItemCollapse}"></a>
 				</div>
@@ -23,79 +23,115 @@
 					&emsp;Create A New Modifier Item
 				</div>
 			</div>
-			<div class="portlet-body" :class="{'display-hide': createModifierItemCollapse}">
-				<form role="form" @submit.prevent="addNewModifierItem()">
+			<div class="portlet-body"
+			     :class="{'display-hide': createModifierItemCollapse}">
+				<form role="form"
+				      @submit.prevent="addNewModifierItem()">
 					<div class="form-body row">
 						<div class="col-md-12">
-							<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
-								<button class="close" @click.prevent="clearError('errorMessage')"></button>
+							<div class="alert alert-danger"
+							     v-show="errorMessage"
+							     ref="errorMessage">
+								<button class="close"
+								        @click.prevent="clearError('errorMessage')"></button>
 								<span>{{errorMessage}}</span>
 							</div>
 						</div>
 						<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
-							<resource-picker 
-								@open="toggleImageMode('newMenu', true)"
-								@close="toggleImageMode('newMenu', false)"
-								@selected="updateImage" 
-								:imageButton="true"
-								:imageUrl="newModifierItem.image_url"
-								class="margin-top-15"
-							>
+							<resource-picker @open="toggleImageMode('newMenu', true)"
+							                 @close="toggleImageMode('newMenu', false)"
+							                 @selected="updateImage"
+							                 :imageButton="true"
+							                 :imageUrl="newModifierItem.image_url"
+							                 class="margin-top-15">
 							</resource-picker>
 						</div>
-						<div class="col-md-5" v-show="!imageMode.newMenu">
+						<div class="col-md-5"
+						     v-show="!imageMode.newMenu">
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': newModifierItem.name.length}" id="form_control_1" v-model="newModifierItem.name">
+								<input type="text"
+								       class="form-control input-sm"
+								       :class="{'edited': newModifierItem.name.length}"
+								       id="form_control_1"
+								       v-model="newModifierItem.name">
 								<label for="form_control_1">Modifier Item Name</label>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': newModifierItem.desc.length}" id="form_control_2" v-model="newModifierItem.desc">
+								<input type="text"
+								       class="form-control input-sm"
+								       :class="{'edited': newModifierItem.desc.length}"
+								       id="form_control_2"
+								       v-model="newModifierItem.desc">
 								<label for="form_control_2">Modifier Item Description</label>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': newModifierItem.price.length}" id="form_control_3" v-model="newModifierItem.price">
+								<input type="text"
+								       class="form-control input-sm"
+								       :class="{'edited': newModifierItem.price.length}"
+								       id="form_control_3"
+								       v-model="newModifierItem.price">
 								<label for="form_control_3">Modifier Item Price</label>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': newModifierItem.sku.length}" id="form_control_4" v-model="newModifierItem.sku">
+								<input type="text"
+								       class="form-control input-sm"
+								       :class="{'edited': newModifierItem.sku.length}"
+								       id="form_control_4"
+								       v-model="newModifierItem.sku">
 								<label for="form_control_4">Modifier Item SKU</label>
 							</div>
 						</div>
-						<div class="col-md-5" v-show="!imageMode.newMenu">
+						<div class="col-md-5"
+						     v-show="!imageMode.newMenu">
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="number" class="form-control input-sm" :class="{'edited': newModifierItem.min}" id="form_control_5" v-model="newModifierItem.min">
+								<input type="number"
+								       class="form-control input-sm"
+								       :class="{'edited': newModifierItem.min}"
+								       id="form_control_5"
+								       v-model="newModifierItem.min">
 								<label for="form_control_5">Modifier Item Min</label>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="number" class="form-control input-sm" :class="{'edited': newModifierItem.max}" id="form_control_6" v-model="newModifierItem.max">
+								<input type="number"
+								       class="form-control input-sm"
+								       :class="{'edited': newModifierItem.max}"
+								       id="form_control_6"
+								       v-model="newModifierItem.max">
 								<label for="form_control_6">Modifier Item Max</label>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="number" class="form-control input-sm" :class="{'edited': newModifierItem.order}" id="form_control_7" v-model="newModifierItem.order">
+								<input type="number"
+								       class="form-control input-sm"
+								       :class="{'edited': newModifierItem.order}"
+								       id="form_control_7"
+								       v-model="newModifierItem.order">
 								<label for="form_control_7">Modifier Item Order</label>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
 								<label>Modifier Item Status:</label><br>
-								<el-switch
-									v-model="newModifierItem.status"
-									active-color="#0c6"
-									inactive-color="#ff4949"
-									:active-value="1"
-									:inactive-value="0"
-									active-text="Available"
-									inactive-text="Sold Out">
+								<el-switch v-model="newModifierItem.status"
+								           active-color="#0c6"
+								           inactive-color="#ff4949"
+								           :active-value="1"
+								           :inactive-value="0"
+								           active-text="Available"
+								           inactive-text="Sold Out">
 								</el-switch>
 							</div>
 						</div>
 					</div>
-					<div class="form-actions right margin-top-20" v-show="!imageMode.newMenu">
-						<button type="submit" class="btn blue">Create</button>
+					<div class="form-actions right margin-top-20"
+					     v-show="!imageMode.newMenu">
+						<button type="submit"
+						        class="btn blue">Create</button>
 					</div>
 				</form>
 			</div>
 		</div>
 		<!-- END CREATE NEW MODIFIER ITEM -->
-		<loading-screen :show="displayModifierItemData" :color="'#2C3E50'" :display="'inline'"></loading-screen>
+		<loading-screen :show="displayModifierItemData"
+		                :color="'#2C3E50'"
+		                :display="'inline'"></loading-screen>
 		<div v-if="$root.activeLocation && $root.activeLocation.id && !displayModifierItemData">
 			<div class="portlet light portlet-fit bordered margin-top-20">
 				<div class="portlet-title bg-blue-chambray">
@@ -110,251 +146,288 @@
 				<div class="portlet-body">
 					<div class="row">
 						<div class="col-md-12">
-							<div class="alert alert-danger" v-show="listErrorMessage" ref="listErrorMessage">
-								<button class="close" @click="clearError('listErrorMessage')"></button>
+							<div class="alert alert-danger"
+							     v-show="listErrorMessage"
+							     ref="listErrorMessage">
+								<button class="close"
+								        @click="clearError('listErrorMessage')"></button>
 								<span>{{listErrorMessage}}</span>
 							</div>
 						</div>
 					</div>
-					<div class="mt-element-list margin-top-15" v-if="modifierCategoryItems.length">
+					<div class="mt-element-list margin-top-15"
+					     v-if="modifierCategoryItems.length">
 						<div class="mt-list-container list-news ext-1 no-border">
 							<ul>
-							<li 
-								v-for="modifierItem in modifierCategoryItems" 
-								class="mt-list-item margin-top-15"  
-								:class="{'no-hover-highlight' : expanded === modifierItem.id, 'clickable' : expanded !== modifierItem.id}" 
-								:id="'modifierItem-' + modifierItem.id" 
-								@click="expandDetails(modifierItem.id)"
-								:key="modifierItem.id"
-							>
-								<div class="margin-bottom-15 actions-on-top">
-									<el-tooltip 
-										v-if="$root.permissions['menu_manager modifiers items update']"
-										content="Edit" 
-										effect="light" 
-										placement="right">
-										<a class="btn btn-circle btn-icon-only btn-default" @click="displayEditItemModal(modifierItem, $event)">
-											<i class="fa fa-lg fa-pencil"></i>
+								<li v-for="modifierItem in modifierCategoryItems"
+								    class="mt-list-item margin-top-15"
+								    :class="{'no-hover-highlight' : expanded === modifierItem.id, 'clickable' : expanded !== modifierItem.id}"
+								    :id="'modifierItem-' + modifierItem.id"
+								    @click="expandDetails(modifierItem.id)"
+								    :key="modifierItem.id">
+									<div class="margin-bottom-15 actions-on-top">
+										<el-tooltip v-if="$root.permissions['menu_manager modifiers items update']"
+										            content="Edit"
+										            effect="light"
+										            placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default"
+											   @click="displayEditItemModal(modifierItem, $event)">
+												<i class="fa fa-lg fa-pencil"></i>
+											</a>
+										</el-tooltip>
+										<el-tooltip v-if="$root.permissions['menu_manager modifiers items read'] && !$root.permissions['menu_manager modifiers items update']"
+										            content="View"
+										            effect="light"
+										            placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default"
+											   @click="displayEditItemModal(modifierItem, $event)">
+												<i class="fa fa-lg fa-eye"></i>
+											</a>
+										</el-tooltip>
+										<el-tooltip v-if="$root.permissions['menu_manager modifiers items update']"
+										            content="Nutrition info"
+										            effect="light"
+										            placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default"
+											   @click="viewModifierNutritionInfo(modifierItem, $event)">
+												<i class="fa fa-lg fa-heartbeat"></i>
+											</a>
+										</el-tooltip>
+										<el-tooltip v-if="$root.permissions['menu_manager modifiers items update']"
+										            content="Apply To Locations"
+										            effect="light"
+										            placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default"
+											   @click="openApplyToLocationsModal(modifierItem)">
+												<i class="icon-layers"></i>
+											</a>
+										</el-tooltip>
+										<el-tooltip v-if="$root.permissions['menu_manager modifiers items delete']"
+										            content="Delete"
+										            effect="light"
+										            placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default"
+											   @click="displayDeleteItemModal(modifierItem, $event)">
+												<i class="fa fa-lg fa-trash"></i>
+											</a>
+										</el-tooltip>
+									</div>
+									<div class="list-icon-container"
+									     v-show="expanded !== modifierItem.id">
+										<a>
+											<i :id="'icon-' + modifierItem.id"
+											   class="fa fa-angle-right"></i>
 										</a>
-									</el-tooltip>
-									<el-tooltip 
-										v-if="$root.permissions['menu_manager modifiers items read'] && !$root.permissions['menu_manager modifiers items update']"
-										content="View" 
-										effect="light" 
-										placement="right">
-										<a class="btn btn-circle btn-icon-only btn-default" @click="displayEditItemModal(modifierItem, $event)">
-											<i class="fa fa-lg fa-eye"></i>
+									</div>
+									<div class="list-thumb">
+										<a v-if="modifierItem.image_url.length">
+											<img alt=""
+											     :src="modifierItem.image_url" />
 										</a>
-									</el-tooltip>
-									<el-tooltip 
-										v-if="$root.permissions['menu_manager modifiers items update']"
-										content="Nutrition info" 
-										effect="light" 
-										placement="right">
-										<a class="btn btn-circle btn-icon-only btn-default" @click="viewModifierNutritionInfo(modifierItem, $event)">
-											<i class="fa fa-lg fa-heartbeat"></i>
+										<a v-else>
+											<img src="../../../assets/img/app/login/bg1.jpg">
 										</a>
-									</el-tooltip>
-									<el-tooltip 
-										v-if="$root.permissions['menu_manager modifiers items update']"
-										content="Apply To Locations" 
-										effect="light" 
-										placement="right">
-										<a class="btn btn-circle btn-icon-only btn-default" @click="openApplyToLocationsModal(modifierItem)">
-											<i class="icon-layers"></i>
-										</a>
-									</el-tooltip>
-									<el-tooltip 
-										v-if="$root.permissions['menu_manager modifiers items delete']"
-										content="Delete" 
-										effect="light" 
-										placement="right">
-										<a class="btn btn-circle btn-icon-only btn-default" @click="displayDeleteItemModal(modifierItem, $event)">
-											<i class="fa fa-lg fa-trash"></i>
-										</a>
-									</el-tooltip>
-								</div>
-								<div class="list-icon-container" v-show="expanded !== modifierItem.id">
-									<a>
-										<i :id="'icon-' + modifierItem.id" class="fa fa-angle-right"></i>
-									</a>
-								</div>
-								<div class="list-thumb">
-									<a v-if="modifierItem.image_url.length">
-										<img alt="" :src="modifierItem.image_url" />
-									</a>
-									<a v-else>
-										<img src="../../../assets/img/app/login/bg1.jpg">
-									</a>
-								</div>
-								<div class="list-datetime bold uppercase font-red">
-									<span>{{ modifierItem.name }}</span>
-								</div>
-	                            <div class="row">
-	                            	<div class="col-md-4">
-	                                	<strong>Price:</strong>
-	                                	<span>{{ modifierItem.price }}</span><br>
-	                                	<strong>SKU:</strong>
-	                                	<span>{{ modifierItem.sku }}</span><br>
-	                                </div>
-                                	<div class="col-md-4">
-                                    	<strong>Min:</strong>
-                                    	<span>{{ modifierItem.min }}</span><br>
-                                    	<strong>Max:</strong>
-                                    	<span>{{ modifierItem.max }}</span>
-                                    </div>
-                                	<div class="col-md-4">
-                                		<strong>Status:</strong>
-                                		<span v-if="modifierItem.status == 1">Available</span>
-                                		<span v-if="modifierItem.status == 0">Sold Out</span>
-                                		<strong>Description:</strong>
-                                		<span>{{ modifierItem.desc }}</span>
-                                    </div>
-	                            </div>
-                                <div class="row" :class="{'mt-list-item-expanded' : expanded === modifierItem.id, 'mt-list-item-collapsed' : expanded !== modifierItem.id}">
-			                        <div class="col-md-4">
-			                        	<div class="col-md-12">
-				                        	<h5 class="inline-block">Tags</h5>
-			                        	</div>
-			                        	<div class="col-md-12">
-			                        		<div v-if="modifierItem.tags && modifierItem.tags.length">
-                				        	    <ul class="item-modifier-list">
-                				        	    	<li 
-														class="col-md-6" 
-														v-for="tag in modifierItem.tags"
-														:key="tag.id">
-                				        	    		{{tag.name}}
-                				        	    	</li>
-                				        	    </ul>
-			                        		</div>
-			                        		<div class="col-md-12" v-if="!modifierItem.tags || !modifierItem.tags.length">
-			                        			<p class="grey-text">No tags have been applied to this modifier item.</p>
-			                        		</div>
-			                        		<div class="col-md-12">
-			                        			<button 
-													v-if="$root.permissions['menu_manager modifiers items update tags']"
-													type="button" 
-													class="btn btn-outline btn-xs blue margin-top-10" 
-													@click="showTagsModal(modifierItem.id, modifierItem.tags)">
-													Add Tags
-												</button>
-			                        		</div>
-			                        	</div>
-			                        </div>
-			                        <div class="col-md-4">
-			                        	<div class="col-md-12">
-				                        	<h5 class="inline-block">Portions</h5>
-			                        	</div>
-			                        	<div class="col-md-12">
-			                        		<div v-if="modifierItem.modifier_item_portions && modifierItem.modifier_item_portions.length">
-                				        	    <ul class="item-modifier-list">
-                				        	    	<li 
-														class="col-md-6" 
-														v-for="portion in modifierItem.modifier_item_portions"
-														:key="portion.id">
-                				        	    		{{portion.name}}
-                				        	    	</li>
-                				        	    </ul>
-			                        		</div>
-			                        		<div class="col-md-12" v-if="!modifierItem.modifier_item_portions || !modifierItem.modifier_item_portions.length">
-			                        			<p class="grey-text">No portions have been applied to this modifier item.</p>
-			                        		</div>
-			                        		<div class="col-md-12">
-			                        			<button 
-													v-if="$root.permissions['menu_manager modifiers items update portions']"
-													type="button" 
-													class="btn btn-outline btn-xs blue margin-top-10" 
-													@click="showPortionsModal(modifierItem.id, modifierItem.modifier_item_portions)">
-													Add Portions
-												</button>
-			                        		</div>
-			                        	</div>
-			                        </div>
-			                        <div class="col-md-4">
-			                        	<div class="col-md-12">
-				                        	<h5 class="inline-block">Options</h5>
-			                        	</div>
-			                        	<div class="col-md-12">
-			                        		<div v-if="modifierItem.options && modifierItem.options.length">
-                				        	    <ul class="item-modifier-list">
-                				        	    	<li 
-														class="col-md-6" 
-														v-for="option in modifierItem.options"
-														:key="option.id">
-                				        	    		{{option.name}}
-                				        	    	</li>
-                				        	    </ul>
-			                        		</div>
-			                        		<div class="col-md-12" v-if="!modifierItem.options || !modifierItem.options.length">
-			                        			<p class="grey-text">No options have been applied to this modifier item.</p>
-			                        		</div>
-			                        		<div class="col-md-12">
-			                        			<button 
-													v-if="$root.permissions['menu_manager modifiers items update options']"
-													type="button" 
-													class="btn btn-outline btn-xs blue margin-top-10" 
-													@click="showOptionsModal(modifierItem.id, modifierItem.options)">
-													Add Options
-												</button>
-			                        		</div>
-			                        	</div>
-			                        </div>
-			                    </div>
-							</li>
+									</div>
+									<div class="list-datetime bold uppercase font-red">
+										<span>{{ modifierItem.name }}</span>
+									</div>
+									<div class="row">
+										<div class="col-md-4">
+											<strong>Price:</strong>
+											<span>{{ modifierItem.price }}</span><br>
+											<strong>SKU:</strong>
+											<span>{{ modifierItem.sku }}</span><br>
+										</div>
+										<div class="col-md-4">
+											<strong>Min:</strong>
+											<span>{{ modifierItem.min }}</span><br>
+											<strong>Max:</strong>
+											<span>{{ modifierItem.max }}</span>
+										</div>
+										<div class="col-md-4">
+											<strong>Status:</strong>
+											<span v-if="modifierItem.status == 1">Available</span>
+											<span v-if="modifierItem.status == 0">Sold Out</span>
+											<strong>Description:</strong>
+											<span>{{ modifierItem.desc }}</span>
+										</div>
+									</div>
+									<div class="row"
+									     :class="{'mt-list-item-expanded' : expanded === modifierItem.id, 'mt-list-item-collapsed' : expanded !== modifierItem.id}">
+										<div class="col-md-4">
+											<div class="col-md-12">
+												<h5 class="inline-block">Tags</h5>
+											</div>
+											<div class="col-md-12">
+												<div v-if="modifierItem.tags && modifierItem.tags.length">
+													<ul class="item-modifier-list">
+														<li class="col-md-6"
+														    v-for="tag in modifierItem.tags"
+														    :key="tag.id">
+															{{tag.name}}
+														</li>
+													</ul>
+												</div>
+												<div class="col-md-12"
+												     v-if="!modifierItem.tags || !modifierItem.tags.length">
+													<p class="grey-text">No tags have been applied to this modifier item.</p>
+												</div>
+												<div class="col-md-12">
+													<button v-if="$root.permissions['menu_manager modifiers items update tags']"
+													        type="button"
+													        class="btn btn-outline btn-xs blue margin-top-10"
+													        @click="showTagsModal(modifierItem.id, modifierItem.tags)">
+														Add Tags
+													</button>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-4">
+											<div class="col-md-12">
+												<h5 class="inline-block">Portions</h5>
+											</div>
+											<div class="col-md-12">
+												<div v-if="modifierItem.modifier_item_portions && modifierItem.modifier_item_portions.length">
+													<ul class="item-modifier-list">
+														<li class="col-md-6"
+														    v-for="portion in modifierItem.modifier_item_portions"
+														    :key="portion.id">
+															{{portion.name}}
+														</li>
+													</ul>
+												</div>
+												<div class="col-md-12"
+												     v-if="!modifierItem.modifier_item_portions || !modifierItem.modifier_item_portions.length">
+													<p class="grey-text">No portions have been applied to this modifier item.</p>
+												</div>
+												<div class="col-md-12">
+													<button v-if="$root.permissions['menu_manager modifiers items update portions']"
+													        type="button"
+													        class="btn btn-outline btn-xs blue margin-top-10"
+													        @click="showPortionsModal(modifierItem.id, modifierItem.modifier_item_portions)">
+														Add Portions
+													</button>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-4">
+											<div class="col-md-12">
+												<h5 class="inline-block">Options</h5>
+											</div>
+											<div class="col-md-12">
+												<div v-if="modifierItem.options && modifierItem.options.length">
+													<ul class="item-modifier-list">
+														<li class="col-md-6"
+														    v-for="option in modifierItem.options"
+														    :key="option.id">
+															{{option.name}}
+														</li>
+													</ul>
+												</div>
+												<div class="col-md-12"
+												     v-if="!modifierItem.options || !modifierItem.options.length">
+													<p class="grey-text">No options have been applied to this modifier item.</p>
+												</div>
+												<div class="col-md-12">
+													<button v-if="$root.permissions['menu_manager modifiers items update options']"
+													        type="button"
+													        class="btn btn-outline btn-xs blue margin-top-10"
+													        @click="showOptionsModal(modifierItem.id, modifierItem.options)">
+														Add Options
+													</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</li>
 							</ul>
 						</div>
 					</div>
-					<div class="margin-top-20" v-else>
-						<no-results :show="!modifierCategoryItems.length" :type="'categories'" :custom="true" :text="customText"></no-results>
+					<div class="margin-top-20"
+					     v-else>
+						<no-results :show="!modifierCategoryItems.length"
+						            :type="'categories'"
+						            :custom="true"
+						            :text="customText"></no-results>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="margin-top-20" v-if="!displayModifierItemData">
-			<no-results :show="!$root.activeLocation || !$root.activeLocation.id" :type="'modifier items'"></no-results>
+		<div class="margin-top-20"
+		     v-if="!displayModifierItemData">
+			<no-results :show="!$root.activeLocation || !$root.activeLocation.id"
+			            :type="'modifier items'"></no-results>
 		</div>
 
 		<!-- ASSIGN TO STORES MODAL START -->
-		<modal :show="showApplyToLocationsModal" effect="fade" @closeOnEscape="closeApplyToLocationsModal" ref="applyToLocationsModal">
-			<div slot="modal-header" class="modal-header center">
-				<button type="button" class="close" @click="closeApplyToLocationsModal()">
+		<modal :show="showApplyToLocationsModal"
+		       effect="fade"
+		       @closeOnEscape="closeApplyToLocationsModal"
+		       ref="applyToLocationsModal">
+			<div slot="modal-header"
+			     class="modal-header center">
+				<button type="button"
+				        class="close"
+				        @click="closeApplyToLocationsModal()">
 					<span>&times;</span>
 				</button>
 				<h4 class="modal-title center">Assign {{modifierToApplyToLocations.name}} To Stores</h4>
 			</div>
-			<div slot="modal-body" class="modal-body relative-block">
-				<div class="alert alert-danger" v-show="applyErrorMessage.length" ref="applyErrorMessage">
-				    <button class="close" data-close="alert" @click="clearError('applyErrorMessage')"></button>
-                    <span>{{ applyErrorMessage }}</span>
+			<div slot="modal-body"
+			     class="modal-body relative-block">
+				<div class="alert alert-danger"
+				     v-show="applyErrorMessage.length"
+				     ref="applyErrorMessage">
+					<button class="close"
+					        data-close="alert"
+					        @click="clearError('applyErrorMessage')"></button>
+					<span>{{ applyErrorMessage }}</span>
 				</div>
-				<select-locations-popup 
-					v-if="showApplyToLocationsModal"
-					@selectedLocations="selectedLocations" 
-					:withButton="false">
+				<select-locations-popup v-if="showApplyToLocationsModal"
+				                        @selectedLocations="selectedLocations"
+				                        :withButton="false">
 				</select-locations-popup>
 			</div>
-			<div slot="modal-footer" class="modal-footer">
-				<button 
-					type="button" 
-					class="btn blue" 
-					@click="applyModifierToLocations()"
-					:disabled="assigningModifierToLocations">
+			<div slot="modal-footer"
+			     class="modal-footer">
+				<button type="button"
+				        class="btn blue"
+				        @click="applyModifierToLocations()"
+				        :disabled="assigningModifierToLocations">
 					Assign
-					<i 
-						v-show="assigningModifierToLocations"
-						class="fa fa-spinner fa-pulse fa-fw">
+					<i v-show="assigningModifierToLocations"
+					   class="fa fa-spinner fa-pulse fa-fw">
 					</i>
 				</button>
 			</div>
 		</modal>
 		<!-- ASSIGN TO STORES MODAL END -->
 
-		<edit-modifier-item v-if="editItemModalActive" @editModifierItem="editModifierItem" @deactivateEditItemModal="closeEditItemModal"></edit-modifier-item>
-		<delete-modifier-item v-if="deleteItemModalActive" :itemId="selectedItemId" @closeDeleteModifierItemModal="closeDeleteItemModal" @deleteModifierItemAndCloseModal="deleteModifierItemAndCloseModal"></delete-modifier-item>
-		<modifier-nutrition-info v-if="displayNutritionModal" :modifierItem="selectedItem" @deactivateNutritionInfoModal="displayNutritionModal = false"></modifier-nutrition-info>
-		<tags-list v-if="displayTagsListModal" :itemType="'modifier-item'" :appliedTags="appliedTags" :selectedItemId="selectedItemId" @deactivateTagsListModal="closeTagsListModal"></tags-list>
-		<portions-list v-if="displayPortionsListModal" :itemType="'modifier-item'" :appliedPortions="appliedPortions" :selectedItemId="selectedItemId" @closePortionsListModal="closePortionsListModal"></portions-list>
-		<options-list v-if="displayOptionsListModal" :itemType="'modifier-item'" :appliedOptions="appliedOptions" :selectedItemId="selectedItemId" @closeOptionsListModal="closeOptionsListModal"></options-list>
+		<edit-modifier-item v-if="editItemModalActive"
+		                    @editModifierItem="editModifierItem"
+		                    @deactivateEditItemModal="closeEditItemModal"></edit-modifier-item>
+		<delete-modifier-item v-if="deleteItemModalActive"
+		                      :itemId="selectedItemId"
+		                      @closeDeleteModifierItemModal="closeDeleteItemModal"
+		                      @deleteModifierItemAndCloseModal="deleteModifierItemAndCloseModal"></delete-modifier-item>
+		<modifier-nutrition-info v-if="displayNutritionModal"
+		                         :modifierItem="selectedItem"
+		                         @deactivateNutritionInfoModal="displayNutritionModal = false"></modifier-nutrition-info>
+		<tags-list v-if="displayTagsListModal"
+		           :itemType="'modifier-item'"
+		           :appliedTags="appliedTags"
+		           :selectedItemId="selectedItemId"
+		           @deactivateTagsListModal="closeTagsListModal"></tags-list>
+		<portions-list v-if="displayPortionsListModal"
+		               :itemType="'modifier-item'"
+		               :appliedPortions="appliedPortions"
+		               :selectedItemId="selectedItemId"
+		               @closePortionsListModal="closePortionsListModal"></portions-list>
+		<options-list v-if="displayOptionsListModal"
+		              :itemType="'modifier-item'"
+		              :appliedOptions="appliedOptions"
+		              :selectedItemId="selectedItemId"
+		              @closeOptionsListModal="closeOptionsListModal"></options-list>
 	</div>
 </template>
 
@@ -379,9 +452,9 @@ export default {
 	data () {
 		return {
 			breadcrumbArray: [
-				{name: 'Menu Manager', link: false},
-				{name: 'Modifiers', link: '/app/menu_manager/modifiers'},
-				{name: 'Modifier Items', link: false}
+				{ name: 'Menu Manager', link: false },
+				{ name: 'Modifiers', link: '/app/menu_manager/modifiers' },
+				{ name: 'Modifier Items', link: false }
 			],
 			editItemModalActive: false,
 			deleteItemModalActive: false,
@@ -395,7 +468,8 @@ export default {
 			appliedOptions: [],
 			selectedItemId: 0,
 			displayTagsListModal: false,
-			customText: 'There are no items in this category. Click on the button above to add one.',
+			customText:
+				'There are no items in this category. Click on the button above to add one.',
 			createModifierItemCollapse: true,
 			newModifierItem: {
 				modifier_id: this.$route.params.modifier_id,
@@ -426,7 +500,11 @@ export default {
 		}
 	},
 	mounted () {
-		if (this.$root.activeLocation && this.$root.activeLocation.id && this.$route.params.modifier_id) {
+		if (
+			this.$root.activeLocation &&
+			this.$root.activeLocation.id &&
+			this.$route.params.modifier_id
+		) {
 			this.getModifierCategoryDetails()
 			this.getModifierCategoryItems()
 		}
@@ -487,31 +565,35 @@ export default {
 			modifierItemsVue.clearError('applyErrorMessage')
 
 			this.validateApplyToLocations()
-			.then(response => {
-				modifierItemsVue.assigningModifierToLocations = true
-				let payload = {
-					'modifier_item_id': modifierItemsVue.modifierToApplyToLocations.id,
-					'locations': modifierItemsVue.modifierToApplyToLocations.locations
-				}
-				ModifiersFunctions.applyModifierToLocations(payload).then(response => {
-					modifierItemsVue.closeApplyToLocationsModal()
-					modifierItemsVue.showApplySuccess()
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Could not apply modifier to stores',
-						errorName: 'applyErrorMessage',
-						vue: modifierItemsVue,
-						containterRef: 'applyToLocationsModal'
-					})
-				}).finally(() => {
-					modifierItemsVue.assigningModifierToLocations = false
+				.then(response => {
+					modifierItemsVue.assigningModifierToLocations = true
+					let payload = {
+						modifier_item_id: modifierItemsVue.modifierToApplyToLocations.id,
+						locations: modifierItemsVue.modifierToApplyToLocations.locations
+					}
+					ModifiersFunctions.applyModifierToLocations(payload)
+						.then(response => {
+							modifierItemsVue.closeApplyToLocationsModal()
+							modifierItemsVue.showApplySuccess()
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'Could not apply modifier to stores',
+								errorName: 'applyErrorMessage',
+								vue: modifierItemsVue,
+								containterRef: 'applyToLocationsModal'
+							})
+						})
+						.finally(() => {
+							modifierItemsVue.assigningModifierToLocations = false
+						})
 				})
-			}).catch(reason => {
-				// If validation fails then display the error message
-				modifierItemsVue.applyErrorMessage = reason
-				window.scrollTo(0, 0)
-			})
+				.catch(reason => {
+					// If validation fails then display the error message
+					modifierItemsVue.applyErrorMessage = reason
+					window.scrollTo(0, 0)
+				})
 		},
 		/**
 		 * To confirm operation succeeded
@@ -587,7 +669,10 @@ export default {
 					reject('Modifier Item min should be a number')
 				} else if (!$.isNumeric(modifierItemsVue.newModifierItem.max)) {
 					reject('Modifier Item max should be a number')
-				} else if (Number(modifierItemsVue.newModifierItem.min) > Number(modifierItemsVue.newModifierItem.max)) {
+				} else if (
+					Number(modifierItemsVue.newModifierItem.min) >
+					Number(modifierItemsVue.newModifierItem.max)
+				) {
 					reject('Modifier Item max cannot be larger than min')
 				} else if (!$.isNumeric(modifierItemsVue.newModifierItem.order)) {
 					reject('Modifier Item order should be a number')
@@ -604,29 +689,41 @@ export default {
 			var modifierItemsVue = this
 			modifierItemsVue.clearError('errorMessage')
 
-			return modifierItemsVue.validateModifierItemData()
-			.then(response => {
-				ModifiersFunctions.addNewModifierItem(modifierItemsVue.newModifierItem, modifierItemsVue.$root.appId, modifierItemsVue.$root.appSecret, modifierItemsVue.$root.userToken).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						modifierItemsVue.newModifierItem.id = response.payload.new_modifier_item_id
-						modifierItemsVue.addModifierItem(modifierItemsVue.newModifierItem)
-					} else {
-						modifierItemsVue.errorMessage = response.message
-					}
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Could not create the item',
-						errorName: 'errorMessage',
-						vue: modifierItemsVue
-					})
+			return modifierItemsVue
+				.validateModifierItemData()
+				.then(response => {
+					ModifiersFunctions.addNewModifierItem(
+						modifierItemsVue.newModifierItem,
+						modifierItemsVue.$root.appId,
+						modifierItemsVue.$root.appSecret,
+						modifierItemsVue.$root.userToken
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								modifierItemsVue.newModifierItem.id =
+									response.payload.new_modifier_item_id
+								modifierItemsVue.addModifierItem(
+									modifierItemsVue.newModifierItem
+								)
+							} else {
+								modifierItemsVue.errorMessage = response.message
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'Could not create the item',
+								errorName: 'errorMessage',
+								vue: modifierItemsVue
+							})
+						})
 				})
-			}).catch(reason => {
-				// If validation fails then display the error message
-				modifierItemsVue.errorMessage = reason
-				window.scrollTo(0, 0)
-				throw reason
-			})
+				.catch(reason => {
+					// If validation fails then display the error message
+					modifierItemsVue.errorMessage = reason
+					window.scrollTo(0, 0)
+					throw reason
+				})
 		},
 		/**
 		 * To get the details of the selected modifier category.
@@ -635,18 +732,24 @@ export default {
 		 */
 		getModifierCategoryDetails () {
 			var modifierItemsVue = this
-			ModifiersFunctions.getModifierCategoryDetails(modifierItemsVue.$route.params.modifier_id, modifierItemsVue.$root.appId, modifierItemsVue.$root.appSecret).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					modifierItemsVue.modifierCategoryDetails = response.payload
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'Could not get category info',
-					errorName: 'listErrorMessage',
-					vue: modifierItemsVue
+			ModifiersFunctions.getModifierCategoryDetails(
+				modifierItemsVue.$route.params.modifier_id,
+				modifierItemsVue.$root.appId,
+				modifierItemsVue.$root.appSecret
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						modifierItemsVue.modifierCategoryDetails = response.payload
+					}
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'Could not get category info',
+						errorName: 'listErrorMessage',
+						vue: modifierItemsVue
+					})
+				})
 		},
 		/**
 		 * To get the list of modifier items for the selected modifier category.
@@ -657,22 +760,28 @@ export default {
 			this.displayModifierItemData = true
 			var modifierItemsVue = this
 			modifierItemsVue.modifierCategoryItems = []
-			return ModifiersFunctions.getModifierCategoryItems(modifierItemsVue.$route.params.modifier_id, modifierItemsVue.$root.appId, modifierItemsVue.$root.appSecret).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					modifierItemsVue.displayModifierItemData = false
-					modifierItemsVue.modifierCategoryItems = response.payload
-				} else {
-					modifierItemsVue.displayModifierItemData = false
-				}
-			}).catch(reason => {
-				modifierItemsVue.displayModifierItemData = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'Could not fetch items',
-					errorName: 'listErrorMessage',
-					vue: modifierItemsVue
+			return ModifiersFunctions.getModifierCategoryItems(
+				modifierItemsVue.$route.params.modifier_id,
+				modifierItemsVue.$root.appId,
+				modifierItemsVue.$root.appSecret
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						modifierItemsVue.displayModifierItemData = false
+						modifierItemsVue.modifierCategoryItems = response.payload
+					} else {
+						modifierItemsVue.displayModifierItemData = false
+					}
 				})
-			})
+				.catch(reason => {
+					modifierItemsVue.displayModifierItemData = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'Could not fetch items',
+						errorName: 'listErrorMessage',
+						vue: modifierItemsVue
+					})
+				})
 		},
 		/**
 		 * To get the complete details of a modifier item.
@@ -682,24 +791,48 @@ export default {
 		 */
 		getModifierItemDetails (modifierItemId) {
 			var modifierItemsVue = this
-			ModifiersFunctions.getModifierItemDetails(modifierItemId, modifierItemsVue.$root.appId, modifierItemsVue.$root.appSecret).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					for (var i = 0; i < modifierItemsVue.modifierCategoryItems.length; i++) {
-						if (modifierItemsVue.modifierCategoryItems[i].id === modifierItemId) {
-							modifierItemsVue.$set(modifierItemsVue.modifierCategoryItems[i], 'tags', response.payload[0].tags)
-							modifierItemsVue.$set(modifierItemsVue.modifierCategoryItems[i], 'modifier_item_portions', response.payload[0].modifier_item_portions)
-							modifierItemsVue.$set(modifierItemsVue.modifierCategoryItems[i], 'options', response.payload[0].options)
+			ModifiersFunctions.getModifierItemDetails(
+				modifierItemId,
+				modifierItemsVue.$root.appId,
+				modifierItemsVue.$root.appSecret
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						for (
+							var i = 0;
+							i < modifierItemsVue.modifierCategoryItems.length;
+							i++
+						) {
+							if (
+								modifierItemsVue.modifierCategoryItems[i].id === modifierItemId
+							) {
+								modifierItemsVue.$set(
+									modifierItemsVue.modifierCategoryItems[i],
+									'tags',
+									response.payload[0].tags
+								)
+								modifierItemsVue.$set(
+									modifierItemsVue.modifierCategoryItems[i],
+									'modifier_item_portions',
+									response.payload[0].modifier_item_portions
+								)
+								modifierItemsVue.$set(
+									modifierItemsVue.modifierCategoryItems[i],
+									'options',
+									response.payload[0].options
+								)
+							}
 						}
 					}
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'Could not fetch item info',
-					errorName: 'listErrorMessage',
-					vue: modifierItemsVue
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'Could not fetch item info',
+						errorName: 'listErrorMessage',
+						vue: modifierItemsVue
+					})
+				})
 		},
 		/**
 		 * To expand/collapse the dropdown div under a modifier item.
@@ -720,7 +853,12 @@ export default {
 		displayEditItemModal (modifierItem, event) {
 			event.stopPropagation()
 			this.editItemModalActive = true
-			this.$router.push('/app/menu_manager/modifier_items/' + this.$route.params.modifier_id + '/edit_modifier_item/' + modifierItem.id)
+			this.$router.push(
+				'/app/menu_manager/modifier_items/' +
+					this.$route.params.modifier_id +
+					'/edit_modifier_item/' +
+					modifierItem.id
+			)
 		},
 		/**
 		 * To display the modal to delete modifier item.
@@ -765,7 +903,9 @@ export default {
 			if (parseInt(val.order) > 0) {
 				var done = false
 				for (var i = 0; i < this.modifierCategoryItems.length; i++) {
-					if (parseInt(this.modifierCategoryItems[i].order) < parseInt(val.order)) {
+					if (
+						parseInt(this.modifierCategoryItems[i].order) < parseInt(val.order)
+					) {
 						this.modifierCategoryItems.splice(i, 0, val)
 						done = true
 						break
@@ -788,14 +928,20 @@ export default {
 		showAlert () {
 			this.$swal({
 				title: 'Success!',
-				text: 'Modifier Item \'' + this.newModifierItem.name + '\' has been successfully created!',
+				text:
+					"Modifier Item '" +
+					this.newModifierItem.name +
+					"' has been successfully created!",
 				type: 'success',
 				confirmButtonText: 'OK'
-			}).then(() => {
-				// do nothing
-			}, dismiss => {
-				// do nothing
-			})
+			}).then(
+				() => {
+					// do nothing
+				},
+				dismiss => {
+					// do nothing
+				}
+			)
 		},
 		/**
 		 * To update the modifier item emitted by the child and highlist it on the items list.
@@ -839,7 +985,10 @@ export default {
 		deleteModifierItemAndCloseModal () {
 			this.deleteItemModalActive = false
 			for (var i = 0; i < this.modifierCategoryItems.length; i++) {
-				if (parseInt(this.modifierCategoryItems[i].id) === parseInt(this.selectedItemId)) {
+				if (
+					parseInt(this.modifierCategoryItems[i].id) ===
+					parseInt(this.selectedItemId)
+				) {
 					this.modifierCategoryItems.splice(i, 1)
 				}
 			}
@@ -941,21 +1090,27 @@ export default {
 </script>
 <style scoped>
 .mt-list-item-collapsed {
-	overflow: hidden;
-	max-height: 0;
-	opacity: 0;
-	transition: max-height 0.2s ease-out, opacity 0.1s ease-out;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.2s ease-out, opacity 0.1s ease-out;
 }
 .mt-list-item-expanded {
-	max-height: 100%;
-	opacity: 1;
-	transition: max-height 0.2s ease-in, opacity 0.5s ease-in;
+  max-height: 100%;
+  opacity: 1;
+  transition: max-height 0.2s ease-in, opacity 0.5s ease-in;
 }
-.mt-element-list .list-news.ext-1.mt-list-container ul>.mt-list-item.no-hover-highlight:hover, 
-.mt-element-list .list-news.ext-2.mt-list-container ul>.mt-list-item.no-hover-highlight:hover {
-	background-color: rgb(255, 255, 255);
+.mt-element-list
+  .list-news.ext-1.mt-list-container
+  ul
+  > .mt-list-item.no-hover-highlight:hover,
+.mt-element-list
+  .list-news.ext-2.mt-list-container
+  ul
+  > .mt-list-item.no-hover-highlight:hover {
+  background-color: rgb(255, 255, 255);
 }
 .actions-on-top {
-	margin-top: -5px;
+  margin-top: -5px;
 }
 </style>

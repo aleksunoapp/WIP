@@ -3,7 +3,7 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to pitapit API to create a new user group.
 	 * @function
@@ -40,7 +40,7 @@ export default ({
 	 * @param {string} appId - The appId of the current application.
 	 * @param {string} appSecret - The appSecret of the current application.
 	 * @param {string} userToken - The auth token of the logged in user.
- 	 * @param {object} paginationPreferences - An object containing the pagination preferences.
+	 * @param {object} paginationPreferences - An object containing the pagination preferences.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
 	getGroups (appId, appSecret, userToken, paginationPreferences) {
@@ -127,14 +127,20 @@ export default ({
 	/**
 	 * Call to pitapit API to get the details of a specific group.
 	 * @function
- 	 * @param {object} paginationPreferences - An object containing the pagination preferences.
+	 * @param {object} paginationPreferences - An object containing the pagination preferences.
 	 * @param {integer} groupId - The id of the selected group.
 	 * @param {string} appId - The appId of the current application.
 	 * @param {string} appSecret - The appSecret of the current application.
 	 * @param {string} userToken - The auth token of the logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	getGroupDetails (paginationPreferences, groupId, appId, appSecret, userToken) {
+	getGroupDetails (
+		paginationPreferences,
+		groupId,
+		appId,
+		appSecret,
+		userToken
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'GET',
@@ -155,4 +161,4 @@ export default ({
 			})
 		})
 	}
-})
+}

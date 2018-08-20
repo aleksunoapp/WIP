@@ -8,16 +8,15 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr v-for="role in currentActiveRoles" :key="role.id">
+				<tr v-for="role in currentActiveRoles"
+				    :key="role.id">
 					<td>
 						<div class="md-checkbox has-success">
-							<input 
-								type="checkbox" 
-								:id="`${instanceId}-${role.id}`"
-								 class="md-check" 
-								 v-model="role.selected"
-								 @change="rolesSelected()"
-							>
+							<input type="checkbox"
+							       :id="`${instanceId}-${role.id}`"
+							       class="md-check"
+							       v-model="role.selected"
+							       @change="rolesSelected()">
 							<label :for="`${instanceId}-${role.id}`">
 								<span class="inc"></span>
 								<span class="check"></span>
@@ -32,16 +31,20 @@
 		<div class="row__wrapper">
 			<div class="half-width">
 				<div class="form-group form-md-line-input form-md-floating-label">
-					<input ref="newRoleName" type="text" class="form-control input-sm" id="form_control_roles_search" v-model="rolesSearchQuery" :class="{'edited': rolesSearchQuery.length}">
+					<input ref="newRoleName"
+					       type="text"
+					       class="form-control input-sm"
+					       id="form_control_roles_search"
+					       v-model="rolesSearchQuery"
+					       :class="{'edited': rolesSearchQuery.length}">
 					<label for="form_control_roles_search">Search roles</label>
 				</div>
 			</div>
 			<div class="half-width">
-				<pagination 
-					class="pull-left"
-					:passedPage="rolesPage" 
-					:numPages="Math.ceil(roles.length / 10)" 
-					@activePageChange="changeRolesPage">
+				<pagination class="pull-left"
+				            :passedPage="rolesPage"
+				            :numPages="Math.ceil(roles.length / 10)"
+				            @activePageChange="changeRolesPage">
 				</pagination>
 			</div>
 		</div>
@@ -87,7 +90,10 @@ export default {
 			}
 		},
 		currentActiveRoles () {
-			return this.rolesSearchResults.slice((this.rolesPage - 1) * 10, this.rolesPage * 10)
+			return this.rolesSearchResults.slice(
+				(this.rolesPage - 1) * 10,
+				this.rolesPage * 10
+			)
 		}
 	},
 	created () {
@@ -103,7 +109,9 @@ export default {
 		 * @returns {undefined}
 		 */
 		rolesSelected () {
-			let selected = this.roles.filter(role => role.selected).map(role => role.id)
+			let selected = this.roles
+				.filter(role => role.selected)
+				.map(role => role.id)
 			this.$emit('rolesSelected', selected)
 		},
 		/**
@@ -124,47 +132,50 @@ export default {
 			this.loadingRoles = true
 			var rolesVue = this
 			return RolesFunctions.getRoles()
-			.then(response => {
-				let rolesArray = []
-				if (this.$root.roles.includes('super admin')) {
-					rolesArray = response.payload
-				} else {
-					rolesArray = response.payload.filter(role => role.name !== 'super admin')
-				}
-
-				rolesVue.roles = rolesArray.map(role => {
-					return {
-						...role,
-						selected: rolesVue.previouslySelected.includes(role.id)
+				.then(response => {
+					let rolesArray = []
+					if (this.$root.roles.includes('super admin')) {
+						rolesArray = response.payload
+					} else {
+						rolesArray = response.payload.filter(
+							role => role.name !== 'super admin'
+						)
 					}
+
+					rolesVue.roles = rolesArray.map(role => {
+						return {
+							...role,
+							selected: rolesVue.previouslySelected.includes(role.id)
+						}
+					})
+					rolesVue.loadingRoles = false
 				})
-				rolesVue.loadingRoles = false
-			}).catch(reason => {
-				rolesVue.loadingRoles = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'Could not get roles',
-					errorName: 'createErrorMessage',
-					vue: rolesVue
+				.catch(reason => {
+					rolesVue.loadingRoles = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'Could not get roles',
+						errorName: 'createErrorMessage',
+						vue: rolesVue
+					})
 				})
-			})
 		}
 	}
 }
 </script>
 <style scoped>
 .roles-picker {
-	width: 100%;
-	display: flex;
-	flex-direction: column;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 .row__wrapper {
-	width: 100%;
-	display: flex;
-	align-items: center;
+  width: 100%;
+  display: flex;
+  align-items: center;
 }
 .half-width {
-	display: inline-block;
-	width: 50%;
+  display: inline-block;
+  width: 50%;
 }
 </style>

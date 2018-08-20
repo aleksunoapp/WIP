@@ -23,7 +23,7 @@ const $ajax = function (options, noRetry) {
 	$.ajax(options)
 }
 
-export default ({
+export default {
 	/**
 	 * Call to pitapit API to get a list of admins.
 	 * @function
@@ -217,7 +217,12 @@ export default ({
 	 * @param {object} paginationPreferences - The order, results per page and page number requested.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	getAllPOCUsers: function (appId, appSecret, userToken, paginationPreferences) {
+	getAllPOCUsers: function (
+		appId,
+		appSecret,
+		userToken,
+		paginationPreferences
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'GET',
@@ -417,4 +422,4 @@ export default ({
 			})
 		})
 	}
-})
+}

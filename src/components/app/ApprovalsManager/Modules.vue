@@ -10,8 +10,10 @@
 			</div>
 
 			<!-- CREATE NEW START -->
-			<div class="portlet box blue-hoki margin-top-20" v-if="$root.permissions['approvals modules create']">
-				<div class="portlet-title bg-blue-chambray" @click="toggleCreateModulePanel()">
+			<div class="portlet box blue-hoki margin-top-20"
+			     v-if="$root.permissions['approvals modules create']">
+				<div class="portlet-title bg-blue-chambray"
+				     @click="toggleCreateModulePanel()">
 					<div class="caption">
 						<i class="fa fa-plus-circle"></i>
 						Create New Module
@@ -20,43 +22,54 @@
 						<a :class="{'expand': !createCollapse, 'collapse': createCollapse}"></a>
 					</div>
 				</div>
-				<div class="portlet-body" v-show="!createCollapse">
-					<form role="form" @submit.prevent="createModule()">
+				<div class="portlet-body"
+				     v-show="!createCollapse">
+					<form role="form"
+					      @submit.prevent="createModule()">
 						<div class="row">
 							<div class="col-md-12">
-								<div class="alert alert-danger" v-show="createErrorMessage.length" ref="createErrorMessage">
-									<button class="close" data-close="alert" @click.prevent="clearCreateError()"></button>
+								<div class="alert alert-danger"
+								     v-show="createErrorMessage.length"
+								     ref="createErrorMessage">
+									<button class="close"
+									        data-close="alert"
+									        @click.prevent="clearCreateError()"></button>
 									<span>{{createErrorMessage}}</span>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group form-md-line-input form-md-floating-label">
-									<input ref="newModuleName" type="text" class="form-control input-sm" id="form_control_name" v-model="newModule.name" :class="{'edited': newModule.name.length}">
+									<input ref="newModuleName"
+									       type="text"
+									       class="form-control input-sm"
+									       id="form_control_name"
+									       v-model="newModule.name"
+									       :class="{'edited': newModule.name.length}">
 									<label for="form_control_name">Name</label>
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text" class="form-control input-sm" id="form_control_sort_order" v-model="newModule.sort_order" :class="{'edited': newModule.sort_order.length}">
+									<input type="text"
+									       class="form-control input-sm"
+									       id="form_control_sort_order"
+									       v-model="newModule.sort_order"
+									       :class="{'edited': newModule.sort_order.length}">
 									<label for="form_control_sort_order">Sort order</label>
 								</div>
 								<p v-show="modules.length">Place inside:</p>
-								<el-tree 
-									:data="moduleTree" 
-									:highlight-current="true"
-									:expand-on-click-node="true"
-									:props="{'label': 'name', 'children': 'sub_modules'}" 
-									@node-click="setParentModule"
-								>
+								<el-tree :data="moduleTree"
+								         :highlight-current="true"
+								         :expand-on-click-node="true"
+								         :props="{'label': 'name', 'children': 'sub_modules'}"
+								         @node-click="setParentModule">
 								</el-tree>
-								<button 
-									type="submit" 
-									class="btn blue pull-right"
-									:disabled="creating">
+								<button type="submit"
+								        class="btn blue pull-right"
+								        :disabled="creating">
 									Create
-									<i 
-										v-show="creating"
-										class="fa fa-spinner fa-pulse fa-fw">
+									<i v-show="creating"
+									   class="fa fa-spinner fa-pulse fa-fw">
 									</i>
-								</button>	
+								</button>
 							</div>
 						</div>
 					</form>
@@ -65,9 +78,11 @@
 			<!-- CREATE NEW END -->
 
 			<!-- SEARCH START -->
-			<div class="margin-top-20" v-if="modules.length">
+			<div class="margin-top-20"
+			     v-if="modules.length">
 				<div class="portlet box blue-hoki">
-					<div class="portlet-title" @click="toggleSearchPanel()">
+					<div class="portlet-title"
+					     @click="toggleSearchPanel()">
 						<div class="caption">
 							<i class="fa fa-search"></i>
 							Search Panel
@@ -76,26 +91,37 @@
 							<a :class="{'expand': !searchCollapse, 'collapse': searchCollapse}"></a>
 						</div>
 					</div>
-					<div class="portlet-body" v-show="!searchCollapse">
-						<form role="form" @submit.prevent="advancedSearch()">
+					<div class="portlet-body"
+					     v-show="!searchCollapse">
+						<form role="form"
+						      @submit.prevent="advancedSearch()">
 							<div class="form-body row">
 								<div class="col-md-12">
-									<div class="alert alert-danger" v-if="searchError.length">
-										<button class="close" @click.prevent="clearSearchError()"></button>
+									<div class="alert alert-danger"
+									     v-if="searchError.length">
+										<button class="close"
+										        @click.prevent="clearSearchError()"></button>
 										<span>{{searchError}}</span>
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="form-group form-md-line-input form-md-floating-label">
-										<input ref="search" type="text" class="form-control input-sm" :class="{'edited': searchTerm.length}" v-model="searchTerm">
+										<input ref="search"
+										       type="text"
+										       class="form-control input-sm"
+										       :class="{'edited': searchTerm.length}"
+										       v-model="searchTerm">
 										<label for="search_options_search">Search</label>
 										<span class="help-block persist">Search by name.</span>
 									</div>
 								</div>
 							</div>
 							<div class="form-actions right margin-top-20">
-								<button type="button" class="btn btn-default" @click.prevent="resetSearch()"> Reset Search</button>
-								<button type="submit" class="btn blue">Search</button>
+								<button type="button"
+								        class="btn btn-default"
+								        @click.prevent="resetSearch()"> Reset Search</button>
+								<button type="submit"
+								        class="btn blue">Search</button>
 							</div>
 						</form>
 					</div>
@@ -104,7 +130,9 @@
 			<!-- SEARCH END -->
 
 			<!-- LIST START -->
-			<loading-screen :show="loading" :color="'#2C3E50'" :display="'inline'"></loading-screen>
+			<loading-screen :show="loading"
+			                :color="'#2C3E50'"
+			                :display="'inline'"></loading-screen>
 			<div v-if="modules.length && !loading && !filteredResults.length">
 				<div class="portlet light portlet-fit bordered margin-top-20">
 					<div class="portlet-title bg-blue-chambray">
@@ -117,66 +145,92 @@
 						</div>
 					</div>
 					<div class="portlet-body">
-						<div class="clearfix margin-bottom-10" v-if="modules.length">
-							<el-dropdown trigger="click" @command="updateSortByOrder" size="mini" :show-timeout="50" :hide-timeout="50">
+						<div class="clearfix margin-bottom-10"
+						     v-if="modules.length">
+							<el-dropdown trigger="click"
+							             @command="updateSortByOrder"
+							             size="mini"
+							             :show-timeout="50"
+							             :hide-timeout="50">
 								<el-button size="mini">
 									Sort by
 									<span>
-										<i class="fa fa-sort-alpha-asc" v-if="sortBy.order === 'ASC'"></i>
-										<i class="fa fa-sort-alpha-desc" v-if="sortBy.order === 'DESC'"></i>
+										<i class="fa fa-sort-alpha-asc"
+										   v-if="sortBy.order === 'ASC'"></i>
+										<i class="fa fa-sort-alpha-desc"
+										   v-if="sortBy.order === 'DESC'"></i>
 									</span>
 									<i class="el-icon-arrow-down el-icon--right"></i>
 								</el-button>
 								<el-dropdown-menu slot="dropdown">
-									<el-dropdown-item command="ASC"><i class="fa fa-sort-alpha-asc"></i></el-dropdown-item>
-									<el-dropdown-item command="DESC"><i class="fa fa-sort-alpha-desc"></i></el-dropdown-item>
+									<el-dropdown-item command="ASC">
+										<i class="fa fa-sort-alpha-asc"></i>
+									</el-dropdown-item>
+									<el-dropdown-item command="DESC">
+										<i class="fa fa-sort-alpha-desc"></i>
+									</el-dropdown-item>
 								</el-dropdown-menu>
 							</el-dropdown>
-							<page-results class="pull-right" :totalResults="modules.length" :activePage="activePage" @pageResults="pageResultsUpdate"></page-results>
+							<page-results class="pull-right"
+							              :totalResults="modules.length"
+							              :activePage="activePage"
+							              @pageResults="pageResultsUpdate"></page-results>
 						</div>
-						<div class="alert alert-danger" v-show="listErrorMessage.length" ref="listErrorMessage">
-							<button class="close" data-close="alert" @click="clearListError()"></button>
+						<div class="alert alert-danger"
+						     v-show="listErrorMessage.length"
+						     ref="listErrorMessage">
+							<button class="close"
+							        data-close="alert"
+							        @click="clearListError()"></button>
 							<span>{{listErrorMessage}}</span>
 						</div>
 						<div class="mt-element-list">
 							<div class="mt-list-container list-news">
 								<ul>
-									<li class="mt-list-item actions-at-left margin-top-15" v-for="mod in currentActivePageItems" :id="'module-' + mod.id" :class="{'animated' : animated === `module-${mod.id}`}" :key="mod.id">
+									<li class="mt-list-item actions-at-left margin-top-15"
+									    v-for="mod in currentActivePageItems"
+									    :id="'module-' + mod.id"
+									    :class="{'animated' : animated === `module-${mod.id}`}"
+									    :key="mod.id">
 										<div class="list-item-actions">
-											<el-tooltip 
-												v-if="$root.permissions['approvals modules update']"
-												content="Edit" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="editModule(mod)">
-													<i class="fa fa-pencil" aria-hidden="true"></i>
+											<el-tooltip v-if="$root.permissions['approvals modules update']"
+											            content="Edit"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="editModule(mod)">
+													<i class="fa fa-pencil"
+													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip 
-												v-if="$root.permissions['approvals modules read'] && !$root.permissions['approvals modules update']"
-												content="View" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="editModule(mod)">
-													<i class="fa fa-eye" aria-hidden="true"></i>
+											<el-tooltip v-if="$root.permissions['approvals modules read'] && !$root.permissions['approvals modules update']"
+											            content="View"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="editModule(mod)">
+													<i class="fa fa-eye"
+													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip 
-												v-if="$root.permissions['approvals modules update']"
-												content="Permissions" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="editModulePermissions(mod)">
-													<i class="fa fa-ban" aria-hidden="true"></i>
+											<el-tooltip v-if="$root.permissions['approvals modules update']"
+											            content="Permissions"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="editModulePermissions(mod)">
+													<i class="fa fa-ban"
+													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip 
-												v-if="$root.permissions['approvals modules delete']"
-												content="Delete" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="showDeleteModal(mod)">
-													<i class="fa fa-trash" aria-hidden="true"></i>
+											<el-tooltip v-if="$root.permissions['approvals modules delete']"
+											            content="Delete"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="showDeleteModal(mod)">
+													<i class="fa fa-trash"
+													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
 										</div>
@@ -186,8 +240,11 @@
 									</li>
 								</ul>
 							</div>
-							<div class="clearfix" v-if="modules.length && numPages > 1">
-								<pagination :passedPage="activePage" :numPages="numPages" @activePageChange="activePageUpdate"></pagination>
+							<div class="clearfix"
+							     v-if="modules.length && numPages > 1">
+								<pagination :passedPage="activePage"
+								            :numPages="numPages"
+								            @activePageChange="activePageUpdate"></pagination>
 							</div>
 						</div>
 					</div>
@@ -205,62 +262,84 @@
 						</div>
 					</div>
 					<div class="portlet-body">
-						<div class="clearfix margin-bottom-10" v-if="filteredResults.length">
-							<el-dropdown trigger="click" @command="updateSortByOrder" size="mini" :show-timeout="50" :hide-timeout="50">
+						<div class="clearfix margin-bottom-10"
+						     v-if="filteredResults.length">
+							<el-dropdown trigger="click"
+							             @command="updateSortByOrder"
+							             size="mini"
+							             :show-timeout="50"
+							             :hide-timeout="50">
 								<el-button size="mini">
 									Sort by
 									<span>
-										<i class="fa fa-sort-alpha-asc" v-if="sortBy.order === 'ASC'"></i>
-										<i class="fa fa-sort-alpha-desc" v-if="sortBy.order === 'DESC'"></i>
+										<i class="fa fa-sort-alpha-asc"
+										   v-if="sortBy.order === 'ASC'"></i>
+										<i class="fa fa-sort-alpha-desc"
+										   v-if="sortBy.order === 'DESC'"></i>
 									</span>
 									<i class="el-icon-arrow-down el-icon--right"></i>
 								</el-button>
 								<el-dropdown-menu slot="dropdown">
-									<el-dropdown-item command="ASC"><i class="fa fa-sort-alpha-asc"></i></el-dropdown-item>
-									<el-dropdown-item command="DESC"><i class="fa fa-sort-alpha-desc"></i></el-dropdown-item>
+									<el-dropdown-item command="ASC">
+										<i class="fa fa-sort-alpha-asc"></i>
+									</el-dropdown-item>
+									<el-dropdown-item command="DESC">
+										<i class="fa fa-sort-alpha-desc"></i>
+									</el-dropdown-item>
 								</el-dropdown-menu>
 							</el-dropdown>
-							<page-results class="pull-right" :totalResults="filteredResults.length" :activePage="searchActivePage" @pageResults="pageResultsUpdate"></page-results>
+							<page-results class="pull-right"
+							              :totalResults="filteredResults.length"
+							              :activePage="searchActivePage"
+							              @pageResults="pageResultsUpdate"></page-results>
 						</div>
 						<div class="mt-element-list">
 							<div class="mt-list-container list-news">
 								<ul>
-									<li class="mt-list-item actions-at-left margin-top-15" v-for="mod in currentActiveSearchPageItems" :id="'module-' + mod.id" :class="{'animated' : animated === `module-${mod.id}`}" :key="mod.id">
+									<li class="mt-list-item actions-at-left margin-top-15"
+									    v-for="mod in currentActiveSearchPageItems"
+									    :id="'module-' + mod.id"
+									    :class="{'animated' : animated === `module-${mod.id}`}"
+									    :key="mod.id">
 										<div class="list-item-actions">
-											<el-tooltip 
-												v-if="$root.permissions['approvals modules update']"
-												content="Edit" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="editModule(mod)">
-													<i class="fa fa-pencil" aria-hidden="true"></i>
+											<el-tooltip v-if="$root.permissions['approvals modules update']"
+											            content="Edit"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="editModule(mod)">
+													<i class="fa fa-pencil"
+													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip 
-												v-if="$root.permissions['approvals modules read'] && !$root.permissions['approvals modules update']"
-												content="View" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="editModule(mod)">
-													<i class="fa fa-eye" aria-hidden="true"></i>
+											<el-tooltip v-if="$root.permissions['approvals modules read'] && !$root.permissions['approvals modules update']"
+											            content="View"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="editModule(mod)">
+													<i class="fa fa-eye"
+													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip 
-												v-if="$root.permissions['approvals modules update']"
-												content="Permissions" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="editModulePermissions(mod)">
-													<i class="fa fa-ban" aria-hidden="true"></i>
+											<el-tooltip v-if="$root.permissions['approvals modules update']"
+											            content="Permissions"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="editModulePermissions(mod)">
+													<i class="fa fa-ban"
+													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip 
-												v-if="$root.permissions['approvals modules delete']"
-												content="Delete" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="showDeleteModal(mod)">
-													<i class="fa fa-trash" aria-hidden="true"></i>
+											<el-tooltip v-if="$root.permissions['approvals modules delete']"
+											            content="Delete"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="showDeleteModal(mod)">
+													<i class="fa fa-trash"
+													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
 										</div>
@@ -270,62 +349,73 @@
 									</li>
 								</ul>
 							</div>
-							<div class="clearfix" v-if="filteredResults.length && searchNumPages > 1">
-								<pagination :passedPage="searchActivePage" :numPages="searchNumPages" @activePageChange="activeSearchPageUpdate"></pagination>
+							<div class="clearfix"
+							     v-if="filteredResults.length && searchNumPages > 1">
+								<pagination :passedPage="searchActivePage"
+								            :numPages="searchNumPages"
+								            @activePageChange="activeSearchPageUpdate"></pagination>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div v-if="!modules.length && !loading">
-				<no-results :show="!modules.length" :type="'modules'"></no-results>
+				<no-results :show="!modules.length"
+				            :type="'modules'"></no-results>
 			</div>
 		</div>
 		<!-- LIST END -->
 
 		<!-- EDIT MODAL START -->
-		<modal :show="showEditModuleModal" effect="fade" @closeOnEscape="closeEditModuleModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeEditModuleModal()">
+		<modal :show="showEditModuleModal"
+		       effect="fade"
+		       @closeOnEscape="closeEditModuleModal">
+			<div slot="modal-header"
+			     class="modal-header">
+				<button type="button"
+				        class="close"
+				        @click="closeEditModuleModal()">
 					<span>&times;</span>
 				</button>
 				<h4 class="modal-title center">Edit Module</h4>
 			</div>
-			<div slot="modal-body" class="modal-body">
-				<div class="alert alert-danger" v-show="editErrorMessage.length" ref="editErrorMessage">
-					<button class="close" data-close="alert" @click="clearEditError()"></button>
+			<div slot="modal-body"
+			     class="modal-body">
+				<div class="alert alert-danger"
+				     v-show="editErrorMessage.length"
+				     ref="editErrorMessage">
+					<button class="close"
+					        data-close="alert"
+					        @click="clearEditError()"></button>
 					<span>{{editErrorMessage}}</span>
 				</div>
 				<div class="form-group form-md-line-input form-md-floating-label">
-					<input 
-						:disabled="$root.permissions['approvals modules read'] && !$root.permissions['approvals modules update']"
-						type="text" 
-						class="form-control input-sm" 
-						id="form_control_edited_name" 
-						v-model="moduleToEdit.name" 
-						:class="{'edited': moduleToEdit.name.length}">
+					<input :disabled="$root.permissions['approvals modules read'] && !$root.permissions['approvals modules update']"
+					       type="text"
+					       class="form-control input-sm"
+					       id="form_control_edited_name"
+					       v-model="moduleToEdit.name"
+					       :class="{'edited': moduleToEdit.name.length}">
 					<label for="form_control_edited_name">Name</label>
 				</div>
 			</div>
-			<div slot="modal-footer" class="modal-footer">
-				
-				<button 
-					v-if="$root.permissions['approvals modules read'] && !$root.permissions['approvals modules update']"
-					type="button" 
-					class="btn btn-primary" 
-					@click="closeEditModuleModal()">
+			<div slot="modal-footer"
+			     class="modal-footer">
+
+				<button v-if="$root.permissions['approvals modules read'] && !$root.permissions['approvals modules update']"
+				        type="button"
+				        class="btn btn-primary"
+				        @click="closeEditModuleModal()">
 					Close
 				</button>
-				<button 
-					v-else
-					type="button" 
-					class="btn btn-primary" 
-					@click="updateModule()"
-					:disabled="updating">
+				<button v-else
+				        type="button"
+				        class="btn btn-primary"
+				        @click="updateModule()"
+				        :disabled="updating">
 					Save
-					<i 
-						v-show="updating"
-						class="fa fa-spinner fa-pulse fa-fw">
+					<i v-show="updating"
+					   class="fa fa-spinner fa-pulse fa-fw">
 					</i>
 				</button>
 			</div>
@@ -333,35 +423,42 @@
 		<!-- EDIT MODAL END -->
 
 		<!-- PERMISSIONS MODAL START -->
-		<modal :show="showEditModulePermissionsModal" effect="fade" @closeOnEscape="closeEditModulePermissionsModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeEditModulePermissionsModal()">
+		<modal :show="showEditModulePermissionsModal"
+		       effect="fade"
+		       @closeOnEscape="closeEditModulePermissionsModal">
+			<div slot="modal-header"
+			     class="modal-header">
+				<button type="button"
+				        class="close"
+				        @click="closeEditModulePermissionsModal()">
 					<span>&times;</span>
 				</button>
 				<h4 class="modal-title center">Permissions for {{moduleToEditApplyPermissionsTo.name}} Module</h4>
 			</div>
-			<div slot="modal-body" class="modal-body">
-				<div class="alert alert-danger" v-show="editPermissionsErrorMessage.length" ref="editPermissionsErrorMessage">
-					<button class="close" data-close="alert" @click="clearPermissionsEditError()"></button>
+			<div slot="modal-body"
+			     class="modal-body">
+				<div class="alert alert-danger"
+				     v-show="editPermissionsErrorMessage.length"
+				     ref="editPermissionsErrorMessage">
+					<button class="close"
+					        data-close="alert"
+					        @click="clearPermissionsEditError()"></button>
 					<span>{{editPermissionsErrorMessage}}</span>
 				</div>
-				<permissions-picker
-					v-if="showEditModulePermissionsModal"
-					:previouslySelected="moduleToEditApplyPermissionsTo.permissions.map(p => p.id)"
-					@permissionsSelected="updateNewRolePermissions"
-				>
+				<permissions-picker v-if="showEditModulePermissionsModal"
+				                    :previouslySelected="moduleToEditApplyPermissionsTo.permissions.map(p => p.id)"
+				                    @permissionsSelected="updateNewRolePermissions">
 				</permissions-picker>
 			</div>
-			<div slot="modal-footer" class="modal-footer">
-				<button 
-					type="button" 
-					class="btn btn-primary" 
-					@click="updateModulePermissions()"
-					:disabled="applying">
+			<div slot="modal-footer"
+			     class="modal-footer">
+				<button type="button"
+				        class="btn btn-primary"
+				        @click="updateModulePermissions()"
+				        :disabled="applying">
 					Save
-					<i 
-						v-show="applying"
-						class="fa fa-spinner fa-pulse fa-fw">
+					<i v-show="applying"
+					   class="fa fa-spinner fa-pulse fa-fw">
 					</i>
 				</button>
 			</div>
@@ -369,30 +466,40 @@
 		<!-- PERMISSIONS MODAL END -->
 
 		<!-- DELETE MODAL START -->
-		<modal :show="showDeleteModuleModal" effect="fade" @closeOnEscape="closeDeleteModal" ref="modal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeDeleteModal()">
+		<modal :show="showDeleteModuleModal"
+		       effect="fade"
+		       @closeOnEscape="closeDeleteModal"
+		       ref="modal">
+			<div slot="modal-header"
+			     class="modal-header">
+				<button type="button"
+				        class="close"
+				        @click="closeDeleteModal()">
 					<span>&times;</span>
 				</button>
 				<h4 class="modal-title center">Delete Module</h4>
 			</div>
-			<div slot="modal-body" class="modal-body">
-				<div class="alert alert-danger" v-show="deleteErrorMessage.length" ref="deleteErrorMessage">
-					<button class="close" data-close="alert" @click="clearDeleteError()"></button>
+			<div slot="modal-body"
+			     class="modal-body">
+				<div class="alert alert-danger"
+				     v-show="deleteErrorMessage.length"
+				     ref="deleteErrorMessage">
+					<button class="close"
+					        data-close="alert"
+					        @click="clearDeleteError()"></button>
 					<span>{{deleteErrorMessage}}</span>
 				</div>
 				<p>Are you sure you want to delete this module?</p>
 			</div>
-			<div slot="modal-footer" class="modal-footer">
-				<button 
-					type="button" 
-					class="btn btn-primary" 
-					@click="deleteModule()"
-					:disabled="deleting">
+			<div slot="modal-footer"
+			     class="modal-footer">
+				<button type="button"
+				        class="btn btn-primary"
+				        @click="deleteModule()"
+				        :disabled="deleting">
 					Delete
-					<i 
-						v-show="deleting"
-						class="fa fa-spinner fa-pulse fa-fw">
+					<i v-show="deleting"
+					   class="fa fa-spinner fa-pulse fa-fw">
 					</i>
 				</button>
 			</div>
@@ -417,8 +524,8 @@ export default {
 	data () {
 		return {
 			breadcrumbArray: [
-				{name: 'Admin Manager', link: false},
-				{name: 'Modules', link: false}
+				{ name: 'Admin Manager', link: false },
+				{ name: 'Modules', link: false }
 			],
 			createCollapse: true,
 			creating: false,
@@ -472,13 +579,19 @@ export default {
 			return Math.ceil(this.modules.length / this.resultsPerPage)
 		},
 		currentActivePageItems () {
-			return this.userSort(this.modules).slice(this.resultsPerPage * (this.activePage - 1), this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage)
+			return this.userSort(this.modules).slice(
+				this.resultsPerPage * (this.activePage - 1),
+				this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
+			)
 		},
 		searchNumPages () {
 			return Math.ceil(this.filteredResults.length / this.resultsPerPage)
 		},
 		currentActiveSearchPageItems () {
-			return this.userSort(this.filteredResults).slice(this.resultsPerPage * (this.searchActivePage - 1), this.resultsPerPage * (this.searchActivePage - 1) + this.resultsPerPage)
+			return this.userSort(this.filteredResults).slice(
+				this.resultsPerPage * (this.searchActivePage - 1),
+				this.resultsPerPage * (this.searchActivePage - 1) + this.resultsPerPage
+			)
 		}
 	},
 	created () {
@@ -492,7 +605,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		showDeleteModal (mod) {
-			this.moduleToDelete = {...mod}
+			this.moduleToDelete = { ...mod }
 			this.showDeleteModuleModal = true
 		},
 		/**
@@ -545,24 +658,30 @@ export default {
 			this.clearDeleteError()
 			var modulesVue = this
 			return ModulesFunctions.deleteModule(modulesVue.moduleToDelete)
-			.then(response => {
-				modulesVue.filteredResults = modulesVue.filteredResults.filter(module => module.id !== !modulesVue.moduleToDelete.id)
-				modulesVue.modules = modulesVue.modules.filter(module => module.id !== modulesVue.moduleToDelete.id)
-				modulesVue.advancedSearch()
-				modulesVue.closeDeleteModal()
-				modulesVue.showDeleteSuccess()
-				modulesVue.resetDeleteForm()
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'Could not delete module',
-					errorName: 'deleteErrorMessage',
-					vue: modulesVue,
-					containerRef: 'modal'
+				.then(response => {
+					modulesVue.filteredResults = modulesVue.filteredResults.filter(
+						module => module.id !== !modulesVue.moduleToDelete.id
+					)
+					modulesVue.modules = modulesVue.modules.filter(
+						module => module.id !== modulesVue.moduleToDelete.id
+					)
+					modulesVue.advancedSearch()
+					modulesVue.closeDeleteModal()
+					modulesVue.showDeleteSuccess()
+					modulesVue.resetDeleteForm()
 				})
-			}).finally(() => {
-				modulesVue.deleting = false
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'Could not delete module',
+						errorName: 'deleteErrorMessage',
+						vue: modulesVue,
+						containerRef: 'modal'
+					})
+				})
+				.finally(() => {
+					modulesVue.deleting = false
+				})
 		},
 		/**
 		 * To update permissions based on user's selection
@@ -591,7 +710,9 @@ export default {
 		formatPhone (phone) {
 			try {
 				let digits = phone.replace(/\D/g, '')
-				return digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
+				return (
+					digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
+				)
 			} catch (err) {
 				return ''
 			}
@@ -604,7 +725,9 @@ export default {
 		 */
 		updateSortByOrder (value) {
 			this.sortBy.order = value
-			this.filteredResults.length ? this.activeSearchPageUpdate(1) : this.activePageUpdate(1)
+			this.filteredResults.length
+				? this.activeSearchPageUpdate(1)
+				: this.activePageUpdate(1)
 		},
 		/**
 		 * To sort the orders list.
@@ -661,7 +784,9 @@ export default {
 		pageResultsUpdate (val) {
 			if (parseInt(this.resultsPerPage) !== parseInt(val)) {
 				this.resultsPerPage = val
-				this.filteredResults.length ? this.activeSearchPageUpdate(1) : this.activePageUpdate(1)
+				this.filteredResults.length
+					? this.activeSearchPageUpdate(1)
+					: this.activePageUpdate(1)
 			}
 		},
 		/**
@@ -714,12 +839,17 @@ export default {
 					this.searchError = 'Search term must be at least 3 characters.'
 				} else {
 					for (var i = 0; i < this.modules.length; i++) {
-						if (this.modules[i].name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) > -1) {
+						if (
+							this.modules[i].name
+								.toLowerCase()
+								.indexOf(this.searchTerm.toLowerCase()) > -1
+						) {
 							this.filteredResults.push(this.modules[i])
 						}
 					}
 					if (!this.filteredResults.length) {
-						this.searchError = 'There are no matching records. Please try again.'
+						this.searchError =
+							'There are no matching records. Please try again.'
 					}
 				}
 			} else {
@@ -753,7 +883,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		editModule (module) {
-			this.moduleToEdit = {...module}
+			this.moduleToEdit = { ...module }
 			this.showEditModuleModal = true
 		},
 		/**
@@ -764,20 +894,22 @@ export default {
 		 */
 		editModulePermissions (module) {
 			let _this = this
-			ModulesFunctions.getPermissionsForModule(module).then(response => {
-				this.moduleToEditApplyPermissionsTo = {
-					...module,
-					permissions: response.payload.permissions
-				}
-				this.showEditModulePermissionsModal = true
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not find permissions for this module',
-					errorName: 'editPermissionsErrorMessage',
-					vue: _this
+			ModulesFunctions.getPermissionsForModule(module)
+				.then(response => {
+					this.moduleToEditApplyPermissionsTo = {
+						...module,
+						permissions: response.payload.permissions
+					}
+					this.showEditModulePermissionsModal = true
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not find permissions for this module',
+						errorName: 'editPermissionsErrorMessage',
+						vue: _this
+					})
+				})
 		},
 		/**
 		 * To close the edit modal
@@ -806,27 +938,31 @@ export default {
 			this.clearListError()
 			var modulesVue = this
 			return ModulesFunctions.getModules()
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					modulesVue.loading = false
-					if (!response.payload.length) {
-						modulesVue.newModule.parent_module = 0
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						modulesVue.loading = false
+						if (!response.payload.length) {
+							modulesVue.newModule.parent_module = 0
+						} else {
+							modulesVue.moduleTree = modulesVue.listToTree(
+								response.payload,
+								response.payload.filter(mod => mod.parent_module === 0)[0]
+							)
+							modulesVue.modules = response.payload
+						}
 					} else {
-						modulesVue.moduleTree = modulesVue.listToTree(response.payload, response.payload.filter(mod => mod.parent_module === 0)[0])
-						modulesVue.modules = response.payload
+						modulesVue.loading = false
 					}
-				} else {
-					modulesVue.loading = false
-				}
-			}).catch(reason => {
-				modulesVue.loading = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'Could not get modules',
-					errorName: 'listErrorMessage',
-					vue: modulesVue
 				})
-			})
+				.catch(reason => {
+					modulesVue.loading = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'Could not get modules',
+						errorName: 'listErrorMessage',
+						vue: modulesVue
+					})
+				})
 		},
 		/**
 		 * To convert a flat list of nodes into a tree.
@@ -854,19 +990,23 @@ export default {
 						mappedElem = mappedArr[id]
 						// If the element is not at the root level, add it to its parent array of children.
 						if (mappedElem.parent_module) {
-							mappedArr[mappedElem['parent_module']]['sub_modules'].push(mappedElem)
-						// If the element is at the root level, add it to first level elements array.
+							mappedArr[mappedElem['parent_module']]['sub_modules'].push(
+								mappedElem
+							)
+							// If the element is at the root level, add it to first level elements array.
 						} else {
 							tree.push(mappedElem)
 						}
 					}
 				}
-				return [{
-					name: 'module container',
-					id: 0,
-					parent_module: 0,
-					sub_modules: tree
-				}]
+				return [
+					{
+						name: 'module container',
+						id: 0,
+						parent_module: 0,
+						sub_modules: tree
+					}
+				]
 			} catch (e) {
 				console.log(e)
 			}
@@ -880,28 +1020,33 @@ export default {
 			var modulesVue = this
 
 			return this.validateNewModuleData()
-			.then((response) => {
-				modulesVue.creating = true
-				modulesVue.clearCreateError()
-				return ModulesFunctions.createModule(modulesVue.newModule)
 				.then(response => {
-					modulesVue.getModules()
-					modulesVue.resetCreateForm()
-					modulesVue.showCreateSuccess()
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Could not get create module',
-						errorName: 'createErrorMessage',
-						vue: modulesVue
-					})
-				}).finally(() => {
-					modulesVue.creating = false
+					modulesVue.creating = true
+					modulesVue.clearCreateError()
+					return ModulesFunctions.createModule(modulesVue.newModule)
+						.then(response => {
+							modulesVue.getModules()
+							modulesVue.resetCreateForm()
+							modulesVue.showCreateSuccess()
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'Could not get create module',
+								errorName: 'createErrorMessage',
+								vue: modulesVue
+							})
+						})
+						.finally(() => {
+							modulesVue.creating = false
+						})
 				})
-			}).catch(reason => {
-				modulesVue.createErrorMessage = reason
-				modulesVue.$scrollTo(modulesVue.$refs.createErrorMessage, 1000, { offset: -50 })
-			})
+				.catch(reason => {
+					modulesVue.createErrorMessage = reason
+					modulesVue.$scrollTo(modulesVue.$refs.createErrorMessage, 1000, {
+						offset: -50
+					})
+				})
 		},
 		/**
 		 * To reset the create new form.
@@ -1012,37 +1157,42 @@ export default {
 			var modulesVue = this
 
 			return this.validateEditedModuleData()
-			.then((response) => {
-				modulesVue.updating = true
-				modulesVue.clearEditError()
-				return ModulesFunctions.updateModule(modulesVue.moduleToEdit)
 				.then(response => {
-					modulesVue.closeEditModuleModal()
-					modulesVue.showEditSuccess()
-					for (var i = 0; i < modulesVue.modules.length; i++) {
-						if (modulesVue.modules[i].id === modulesVue.moduleToEdit.id) {
-							modulesVue.modules[i] = {...modulesVue.moduleToEdit}
-						}
-					}
-					modulesVue.resetEditForm()
-					modulesVue.animated = `module-${modulesVue.moduleToEdit.id}`
-					window.setTimeout(() => {
-						modulesVue.animated = ''
-					}, 3000)
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Could not get save module',
-						errorName: 'editErrorMessage',
-						vue: modulesVue
-					})
-				}).finally(() => {
-					modulesVue.updating = false
+					modulesVue.updating = true
+					modulesVue.clearEditError()
+					return ModulesFunctions.updateModule(modulesVue.moduleToEdit)
+						.then(response => {
+							modulesVue.closeEditModuleModal()
+							modulesVue.showEditSuccess()
+							for (var i = 0; i < modulesVue.modules.length; i++) {
+								if (modulesVue.modules[i].id === modulesVue.moduleToEdit.id) {
+									modulesVue.modules[i] = { ...modulesVue.moduleToEdit }
+								}
+							}
+							modulesVue.resetEditForm()
+							modulesVue.animated = `module-${modulesVue.moduleToEdit.id}`
+							window.setTimeout(() => {
+								modulesVue.animated = ''
+							}, 3000)
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'Could not get save module',
+								errorName: 'editErrorMessage',
+								vue: modulesVue
+							})
+						})
+						.finally(() => {
+							modulesVue.updating = false
+						})
 				})
-			}).catch(reason => {
-				modulesVue.editErrorMessage = reason
-				modulesVue.$scrollTo(modulesVue.$refs.editErrorMessage, 1000, { offset: -50 })
-			})
+				.catch(reason => {
+					modulesVue.editErrorMessage = reason
+					modulesVue.$scrollTo(modulesVue.$refs.editErrorMessage, 1000, {
+						offset: -50
+					})
+				})
 		},
 		/**
 		 * To clear the error
@@ -1072,28 +1222,37 @@ export default {
 			var modulesVue = this
 
 			return this.validateModulePermissions()
-			.then((response) => {
-				modulesVue.applying = true
-				modulesVue.clearPermissionsEditError()
-				return ModulesFunctions.assignPermissionsToModule(modulesVue.moduleToEditApplyPermissionsTo)
 				.then(response => {
-					modulesVue.getModules()
-					modulesVue.closeEditModulePermissionsModal()
-					modulesVue.showAssignSuccess()
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Could not assign permissions',
-						errorName: 'editPermissionsErrorMessage',
-						vue: modulesVue
-					})
-				}).finally(() => {
-					modulesVue.applying = false
+					modulesVue.applying = true
+					modulesVue.clearPermissionsEditError()
+					return ModulesFunctions.assignPermissionsToModule(
+						modulesVue.moduleToEditApplyPermissionsTo
+					)
+						.then(response => {
+							modulesVue.getModules()
+							modulesVue.closeEditModulePermissionsModal()
+							modulesVue.showAssignSuccess()
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'Could not assign permissions',
+								errorName: 'editPermissionsErrorMessage',
+								vue: modulesVue
+							})
+						})
+						.finally(() => {
+							modulesVue.applying = false
+						})
 				})
-			}).catch(reason => {
-				modulesVue.editPermissionsErrorMessage = reason
-				modulesVue.$scrollTo(modulesVue.$refs.editPermissionsErrorMessage, 1000, { offset: -50 })
-			})
+				.catch(reason => {
+					modulesVue.editPermissionsErrorMessage = reason
+					modulesVue.$scrollTo(
+						modulesVue.$refs.editPermissionsErrorMessage,
+						1000,
+						{ offset: -50 }
+					)
+				})
 		},
 		/**
 		 * To check if the item data is valid before submitting to the backend.
@@ -1146,12 +1305,12 @@ export default {
 
 <style scoped>
 .animated {
-	animation: listItemHighlight 1s 2 ease-in-out both;
+  animation: listItemHighlight 1s 2 ease-in-out both;
 }
-.mt-element-list .list-news.mt-list-container ul>.mt-list-item:hover {
-	background-color: white;
+.mt-element-list .list-news.mt-list-container ul > .mt-list-item:hover {
+  background-color: white;
 }
-.mt-element-list .list-news.mt-list-container ul>.mt-list-item {
-	min-height: 120px;
+.mt-element-list .list-news.mt-list-container ul > .mt-list-item {
+  min-height: 120px;
 }
 </style>

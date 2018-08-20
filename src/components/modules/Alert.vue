@@ -1,6 +1,14 @@
 <template>
-	<div v-show="show" v-bind:class="{'alert': true, 'alert-success': type === 'success', 'alert-warning':type === 'warning', 'alert-info': type === 'info', 'alert-danger': type === 'danger', 'top': placement === 'top', 'top-right': placement === 'top-right'}" transition="fade" v-bind:style="{width: width}" role="alert">
-		<button v-show="dismissable" type="button" class="close" @click="show = false"><span>&times;</span>
+	<div v-show="show"
+	     v-bind:class="{'alert': true, 'alert-success': type === 'success', 'alert-warning':type === 'warning', 'alert-info': type === 'info', 'alert-danger': type === 'danger', 'top': placement === 'top', 'top-right': placement === 'top-right'}"
+	     transition="fade"
+	     v-bind:style="{width: width}"
+	     role="alert">
+		<button v-show="dismissable"
+		        type="button"
+		        class="close"
+		        @click="show = false">
+			<span>&times;</span>
 		</button>
 		<slot></slot>
 	</div>
@@ -32,10 +40,12 @@ export default {
 		}
 	},
 	watch: {
-		show (val) {
+		show(val) {
 			if (this._timeout) clearTimeout(this._timeout)
 			if (val && Boolean(this.duration)) {
-				this._timeout = setTimeout(() => { this.show = false }, this.duration)
+				this._timeout = setTimeout(() => {
+					this.show = false
+				}, this.duration)
 			}
 		}
 	}
@@ -43,25 +53,25 @@ export default {
 </script>
 <style>
 .fade-transition {
-	transition: opacity .3s ease;
+  transition: opacity 0.3s ease;
 }
 .fade-enter,
 .fade-leave {
-	height: 0;
-	opacity: 0;
+  height: 0;
+  opacity: 0;
 }
 .alert.top {
-	position: fixed;
-	top: 30px;
-	margin: 0 auto;
-	left: 0;
-	right: 0;
-	z-index: 10050;
+  position: fixed;
+  top: 30px;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  z-index: 10050;
 }
 .alert.top-right {
-	position: fixed;
-	top: 30px;
-	right: 50px;
-	z-index: 10050;
+  position: fixed;
+  top: 30px;
+  right: 50px;
+  z-index: 10050;
 }
 </style>

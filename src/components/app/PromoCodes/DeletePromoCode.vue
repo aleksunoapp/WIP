@@ -1,30 +1,40 @@
 <template>
-	<modal :show="showDeletePromoCodeModal" effect="fade" @closeOnEscape="closeModal" ref="modal">
-		<div slot="modal-header" class="modal-header center">
-			<button type="button" class="close" @click="closeModal()">
+	<modal :show="showDeletePromoCodeModal"
+	       effect="fade"
+	       @closeOnEscape="closeModal"
+	       ref="modal">
+		<div slot="modal-header"
+		     class="modal-header center">
+			<button type="button"
+			        class="close"
+			        @click="closeModal()">
 				<span>&times;</span>
 			</button>
 			<h4 class="modal-title center">Delete Promo Code</h4>
 		</div>
-		<div slot="modal-body" class="modal-body">
-			<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
-			    <button class="close" data-close="alert" @click="clearError()"></button>
-			    <span>{{errorMessage}}</span>
+		<div slot="modal-body"
+		     class="modal-body">
+			<div class="alert alert-danger"
+			     v-show="errorMessage"
+			     ref="errorMessage">
+				<button class="close"
+				        data-close="alert"
+				        @click="clearError()"></button>
+				<span>{{errorMessage}}</span>
 			</div>
 			<div class="col-md-12">
 				Are you sure you want to delete this promo code?
 			</div>
 		</div>
-		<div slot="modal-footer" class="modal-footer clear">
-			<button 
-				type="button" 
-				class="btn btn-primary" 
-				@click="deletePromoCode()"
-				:disabled="deleting">
+		<div slot="modal-footer"
+		     class="modal-footer clear">
+			<button type="button"
+			        class="btn btn-primary"
+			        @click="deletePromoCode()"
+			        :disabled="deleting">
 				Delete
-				<i 
-					v-show="deleting"
-					class="fa fa-spinner fa-pulse fa-fw">
+				<i v-show="deleting"
+				   class="fa fa-spinner fa-pulse fa-fw">
 				</i>
 			</button>
 		</div>
@@ -72,23 +82,31 @@ export default {
 			var deletePromoCodeVue = this
 			deletePromoCodeVue.clearError()
 
-			PromoCodesFunctions.deletePromoCode(deletePromoCodeVue.selectedPromoCodeId, deletePromoCodeVue.$root.appId, deletePromoCodeVue.$root.appSecret, deletePromoCodeVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					this.deletePromoCodeAndCloseModal()
-				} else {
-					deletePromoCodeVue.errorMessage = response.message
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not delete the promocode',
-					errorName: 'errorMessage',
-					vue: deletePromoCodeVue,
-					containerRef: 'modal'
+			PromoCodesFunctions.deletePromoCode(
+				deletePromoCodeVue.selectedPromoCodeId,
+				deletePromoCodeVue.$root.appId,
+				deletePromoCodeVue.$root.appSecret,
+				deletePromoCodeVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						this.deletePromoCodeAndCloseModal()
+					} else {
+						deletePromoCodeVue.errorMessage = response.message
+					}
 				})
-			}).finally(() => {
-				deletePromoCodeVue.deleting = false
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not delete the promocode',
+						errorName: 'errorMessage',
+						vue: deletePromoCodeVue,
+						containerRef: 'modal'
+					})
+				})
+				.finally(() => {
+					deletePromoCodeVue.deleting = false
+				})
 		},
 		/**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
@@ -114,7 +132,7 @@ export default {
 </script>
 <style>
 .image-container {
-	border: 1px dotted #c2cad8;
-	text-align: center;
+  border: 1px dotted #c2cad8;
+  text-align: center;
 }
 </style>

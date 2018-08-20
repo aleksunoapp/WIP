@@ -1,18 +1,44 @@
 <template>
-	<div class="unoapp-typeahead" :class="{'open': showDropdown}">
+	<div class="unoapp-typeahead"
+	     :class="{'open': showDropdown}">
 
 		<!-- Predictive Input (Readonly) -->
-		<input type="text" class="form-control prediction-input" readonly autocomplete="off" spellcheck="false" tabindex="-1" v-model="predictiveValue"/>
+		<input type="text"
+		       class="form-control prediction-input"
+		       readonly
+		       autocomplete="off"
+		       spellcheck="false"
+		       tabindex="-1"
+		       v-model="predictiveValue" />
 
 		<!-- Typeahead Input -->
-		<input type="text" class="form-control input-sm prediction-output-input" :class="{'edited': value.length}" :placeholder="placeholder" autocomplete="off" v-model="value" @input="update" @keydown.up="up" @keydown.down="down" @keydown.enter= "hit" @keydown.esc="reset" @keydown.tab="selectPredictiveOption" @blur="showDropdown = false; hidePredictiveValue()" @focus="onFocus()" :tabindex="tabindex"/>
+		<input type="text"
+		       class="form-control input-sm prediction-output-input"
+		       :class="{'edited': value.length}"
+		       :placeholder="placeholder"
+		       autocomplete="off"
+		       v-model="value"
+		       @input="update"
+		       @keydown.up="up"
+		       @keydown.down="down"
+		       @keydown.enter="hit"
+		       @keydown.esc="reset"
+		       @keydown.tab="selectPredictiveOption"
+		       @blur="showDropdown = false; hidePredictiveValue()"
+		       @focus="onFocus()"
+		       :tabindex="tabindex" />
 
 		<!-- DROPDOWN START -->
 		<ul class="dropdown-menu">
-			<li v-for="(item, index) in items" v-bind:class="{'active': isActive(index)}">
-				<a @mousedown.prevent="hit" @mousemove="setActive(index)">
-					<span v-if="!objectKey" v-html="highlight(item)"></span>
-					<span v-if="objectKey" v-html="highlight(item[objectKey])"></span>
+			<li v-for="(item, index) in items"
+			    v-bind:class="{'active': isActive(index)}"
+				:key="index">
+				<a @mousedown.prevent="hit"
+				   @mousemove="setActive(index)">
+					<span v-if="!objectKey"
+					      v-html="highlight(item)"></span>
+					<span v-if="objectKey"
+					      v-html="highlight(item[objectKey])"></span>
 				</a>
 			</li>
 			<li v-if="!items.length">
@@ -22,7 +48,7 @@
 			</li>
 		</ul>
 		<!-- DROPDOWN END -->
-		
+
 		<label>{{ label }}</label>
 	</div>
 </template>
@@ -36,7 +62,7 @@ export default {
 	 * @function
 	 * @returns {undefined}
 	 */
-	created () {
+	created() {
 		this.items = this.primitiveData
 		if (this.passedValue) {
 			if (this.objectKey) {
@@ -75,7 +101,7 @@ export default {
 			default: 0
 		}
 	},
-	data () {
+	data() {
 		return {
 			showDropdown: false,
 			noResult: true,
@@ -91,17 +117,19 @@ export default {
 		 * @function
 		 * @returns {array} - An array of objects that meet the search criteria.
 		 */
-		primitiveData () {
+		primitiveData() {
 			if (this.data) {
-				return this.data.filter(value => {
-					var query = this.value.toLowerCase()
-					if (this.objectKey) {
-						value = value[this.objectKey].toLowerCase()
-					} else {
-						value = value.toLowerCase()
-					}
-					return value.indexOf(query) !== -1
-				}).slice(0, this.limit)
+				return this.data
+					.filter(value => {
+						var query = this.value.toLowerCase()
+						if (this.objectKey) {
+							value = value[this.objectKey].toLowerCase()
+						} else {
+							value = value.toLowerCase()
+						}
+						return value.indexOf(query) !== -1
+					})
+					.slice(0, this.limit)
 			}
 		},
 		/**
@@ -109,7 +137,7 @@ export default {
 		 * @function
 		 * @returns {array} - A sorted version of the items array.
 		 */
-		sortedPredictionList () {
+		sortedPredictionList() {
 			return this.items.sort((a, b) => {
 				if (this.objectKey) {
 					if (a[this.objectKey] < b[this.objectKey]) return -1
@@ -128,7 +156,7 @@ export default {
 		 * @function
 		 * @returns {boolean} - Returns only if there is no value set.
 		 */
-		update () {
+		update() {
 			if (!this.value) {
 				this.reset()
 				return false
@@ -145,7 +173,7 @@ export default {
 		 * @function
 		 * @returns {undefined}
 		 */
-		reset () {
+		reset() {
 			this.items = []
 			this.value = ''
 			this.showDropdown = false
@@ -156,7 +184,7 @@ export default {
 		 * @param {integer} index - the index within the items array that is to be set as current.
 		 * @returns {undefined}
 		 */
-		setActive (index) {
+		setActive(index) {
 			this.current = index
 		},
 		/**
@@ -165,7 +193,7 @@ export default {
 		 * @param {integer} index - the index within the items array that is to be checked.
 		 * @returns {boolean} - Returns whether the item passed in is the current active item.
 		 */
-		isActive (index) {
+		isActive(index) {
 			return this.current === index
 		},
 		/**
@@ -175,7 +203,7 @@ export default {
 		 * @param {integer} override - the index that is to be set to override the current index.
 		 * @returns {undefined}
 		 */
-		hit (e, override) {
+		hit(e, override) {
 			this.predictiveValue = ''
 			if (e) {
 				e.preventDefault()
@@ -202,7 +230,7 @@ export default {
 		 * @function
 		 * @returns {undefined}
 		 */
-		up () {
+		up() {
 			if (this.current > 0) {
 				this.current--
 			}
@@ -212,7 +240,7 @@ export default {
 		 * @function
 		 * @returns {undefined}
 		 */
-		down () {
+		down() {
 			if (this.current < this.items.length - 1) {
 				this.current++
 			}
@@ -222,9 +250,11 @@ export default {
 		 * @function
 		 * @returns {undefined}
 		 */
-		onFocus () {
+		onFocus() {
 			this.$emit('onFocus')
-			$(this.$el).find('.prediction-output-input').select()
+			$(this.$el)
+				.find('.prediction-output-input')
+				.select()
 		},
 		/**
 		 * To highlight the characters in the passed in phrase that match the input value.
@@ -232,15 +262,18 @@ export default {
 		 * @param {string} phrase - The item in the dropdown that we are applying the highlight to.
 		 * @returns {undefined}
 		 */
-		highlight (phrase) {
-			return phrase.replace(new RegExp('(' + this.value + ')', 'gi'), '<strong>$1</strong>')
+		highlight(phrase) {
+			return phrase.replace(
+				new RegExp('(' + this.value + ')', 'gi'),
+				'<strong>$1</strong>'
+			)
 		},
 		/**
 		 * To determine which word is being used as the current prediction. A word can only be used if the input value matches starting at index 0 (case insensitive).
 		 * @function
 		 * @returns {undefined}
 		 */
-		calculatePredictiveValue () {
+		calculatePredictiveValue() {
 			if (!this.value.length) {
 				this.predictiveValue = ''
 				return
@@ -254,15 +287,20 @@ export default {
 			var currentElement
 
 			while (minIndex <= maxIndex) {
-				currentIndex = (minIndex + maxIndex) / 2 | 0
+				currentIndex = ((minIndex + maxIndex) / 2) | 0
 				if (this.objectKey) {
-					currentElement = this.sortedPredictionList[currentIndex][this.objectKey]
+					currentElement = this.sortedPredictionList[currentIndex][
+						this.objectKey
+					]
 				} else {
 					currentElement = this.sortedPredictionList[currentIndex]
 				}
-				if (currentElement.toLowerCase().indexOf(this.value.toLowerCase()) === 0) {
+				if (
+					currentElement.toLowerCase().indexOf(this.value.toLowerCase()) === 0
+				) {
 					// Creating this element to handle upper-vs-lower case differences between the predictive name and the typed value
-					var frankensteinElement = this.value + currentElement.substring(this.value.length)
+					var frankensteinElement =
+						this.value + currentElement.substring(this.value.length)
 					this.predictiveValue = frankensteinElement
 					updated = true
 					break
@@ -283,7 +321,7 @@ export default {
 		 * @function
 		 * @returns {undefined}
 		 */
-		hidePredictiveValue () {
+		hidePredictiveValue() {
 			this.predictiveValue = ''
 		},
 		/**
@@ -291,14 +329,17 @@ export default {
 		 * @function
 		 * @returns {undefined}
 		 */
-		selectPredictiveOption () {
+		selectPredictiveOption() {
 			this.value = this.predictiveValue
 
 			// This value is used in case the user is hovering over an option which is not the predictive option
 			var currentOverride
 			for (var i = 0, x = this.items.length; i < x; i++) {
 				if (this.objectKey) {
-					if (this.items[i][this.objectKey].toLowerCase() === this.value.toLowerCase()) {
+					if (
+						this.items[i][this.objectKey].toLowerCase() ===
+						this.value.toLowerCase()
+					) {
 						currentOverride = i
 					}
 				} else {
@@ -318,7 +359,7 @@ export default {
 	 * @returns {undefined}
 	 */
 	watch: {
-		'passedValue' () {
+		passedValue() {
 			if (this.objectKey) {
 				if (this.passedValue[this.objectKey] !== this.value) {
 					this.value = this.passedValue[this.objectKey]
@@ -333,15 +374,19 @@ export default {
 }
 </script>
 <style>
-.form-group.form-md-line-input .unoapp-typeahead .form-control.prediction-input {
-	position: absolute; 
-	top: 17px; 
-	border-bottom: none; 
-	z-index: 0; 
-	opacity: 0.5;
+.form-group.form-md-line-input
+  .unoapp-typeahead
+  .form-control.prediction-input {
+  position: absolute;
+  top: 17px;
+  border-bottom: none;
+  z-index: 0;
+  opacity: 0.5;
 }
-.form-group.form-md-line-input .unoapp-typeahead .form-control.prediction-output-input {
-	z-index: 1; 
-	position: relative;
+.form-group.form-md-line-input
+  .unoapp-typeahead
+  .form-control.prediction-output-input {
+  z-index: 1;
+  position: relative;
 }
 </style>

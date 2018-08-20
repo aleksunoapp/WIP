@@ -10,39 +10,39 @@
 			</div>
 		</div>
 		<div class="portlet-body">
-			<form role="form" @submit.prevent="updateFolder()">
+			<form role="form"
+			      @submit.prevent="updateFolder()">
 				<div class="row">
 					<div class="col-md-12">
-						<div class="alert alert-danger" v-if="errorMessage.length">
-							<button class="close" data-close="alert" @click.prevent="clearError('errorMessage')"></button>
+						<div class="alert alert-danger"
+						     v-if="errorMessage.length">
+							<button class="close"
+							        data-close="alert"
+							        @click.prevent="clearError('errorMessage')"></button>
 							<span>{{errorMessage}}</span>
 						</div>
 					</div>
 					<div class="col-xs-12 col-md-6">
 						<div class="form-group form-md-line-input form-md-floating-label">
-							<input 
-								type="text" 
-								class="form-control input-sm" 
-								:class="{'edited' : folder.name}" 
-								id="form_control_name" 
-								v-model="folder.name"
-							>
+							<input type="text"
+							       class="form-control input-sm"
+							       :class="{'edited' : folder.name}"
+							       id="form_control_name"
+							       v-model="folder.name">
 							<label for="form_control_name">Name</label>
 						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-md-6">
-						<button 
-							type="submit" 
-							class="btn blue pull-right"
-							:disabled="updating">
+						<button type="submit"
+						        class="btn blue pull-right"
+						        :disabled="updating">
 							Save
-							<i 
-								v-show="updating"
-								class="fa fa-spinner fa-pulse fa-fw">
+							<i v-show="updating"
+							   class="fa fa-spinner fa-pulse fa-fw">
 							</i>
-						</button>	
+						</button>
 					</div>
 				</div>
 			</form>
@@ -106,24 +106,35 @@ export default {
 		updateFolder () {
 			let _this = this
 
-			return _this.validateFormData().then(response => {
-				_this.updating = true
-				_this.clearError('errorMessage')
-				const businessId = GlobalVariables.businessId
-				let folderName = _this.folder.name
-
-				ResourcesFunctions.updateFolder(businessId, undefined, _this.folder.id, folderName, _this.folder.is_shared)
+			return _this
+				.validateFormData()
 				.then(response => {
-					_this.showUpdateSuccess()
-				}).catch(err => {
-					console.log(err)
-				}).finally(() => {
-					_this.updating = false
+					_this.updating = true
+					_this.clearError('errorMessage')
+					const businessId = GlobalVariables.businessId
+					let folderName = _this.folder.name
+
+					ResourcesFunctions.updateFolder(
+						businessId,
+						undefined,
+						_this.folder.id,
+						folderName,
+						_this.folder.is_shared
+					)
+						.then(response => {
+							_this.showUpdateSuccess()
+						})
+						.catch(err => {
+							console.log(err)
+						})
+						.finally(() => {
+							_this.updating = false
+						})
 				})
-			}).catch(reason => {
-				// If validation fails then display the error message
-				_this.errorMessage = reason
-			})
+				.catch(reason => {
+					// If validation fails then display the error message
+					_this.errorMessage = reason
+				})
 		},
 		/**
 		 * To notify user that the operation succeeded.
@@ -136,11 +147,14 @@ export default {
 				text: 'Folder saved',
 				type: 'success',
 				confirmButtonText: 'OK'
-			}).then(() => {
-				this.$router.push({name: 'Gallery'})
-			}, dismiss => {
-				this.$router.push({name: 'Gallery'})
-			})
+			}).then(
+				() => {
+					this.$router.push({ name: 'Gallery' })
+				},
+				dismiss => {
+					this.$router.push({ name: 'Gallery' })
+				}
+			)
 		}
 	}
 }

@@ -107,8 +107,8 @@ export const updateLanguage = ({
 	})
 }
 
-export default ({
+export default {
 	listLanguages,
 	createLanguage,
 	updateLanguage
-})
+}

@@ -3,17 +3,22 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to pitapit API to create a new User Attribute.
 	 * @function
 	 * @param {string} appId - The appId of the current application.
 	 * @param {string} appSecret - The appSecret of the current application.
- 	 * @param {string} userToken - The auth token of the logged in user.
+	 * @param {string} userToken - The auth token of the logged in user.
 	 * @param {object} newUserAttribute - The new User Attribute.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	createUserAttribute: function (appId, appSecret, userToken, newUserAttribute) {
+	createUserAttribute: function (
+		appId,
+		appSecret,
+		userToken,
+		newUserAttribute
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
@@ -39,7 +44,7 @@ export default ({
 	 * @function
 	 * @param {string} appId - The appId of the current application.
 	 * @param {string} appSecret - The appSecret of the current application.
- 	 * @param {string} userToken - The auth token of the logged in user.
+	 * @param {string} userToken - The auth token of the logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
 	listUserAttributes: function (appId, appSecret, userToken) {
@@ -68,11 +73,16 @@ export default ({
 	 * @function
 	 * @param {string} appId - The appId of the current application.
 	 * @param {string} appSecret - The appSecret of the current application.
- 	 * @param {string} userToken - The auth token of the logged in user.
+	 * @param {string} userToken - The auth token of the logged in user.
 	 * @param {object} userAttributeToEdit - The User Attribute to edit.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	updateUserAttribute: function (appId, appSecret, userToken, userAttributeToEdit) {
+	updateUserAttribute: function (
+		appId,
+		appSecret,
+		userToken,
+		userAttributeToEdit
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
@@ -98,11 +108,16 @@ export default ({
 	 * @function
 	 * @param {string} appId - The appId of the current application.
 	 * @param {string} appSecret - The appSecret of the current application.
- 	 * @param {string} userToken - The auth token of the logged in user.
+	 * @param {string} userToken - The auth token of the logged in user.
 	 * @param {object} userAttributeToDelete - The User Attribute to delete.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	deleteUserAttribute: function (appId, appSecret, userToken, userAttributeToDelete) {
+	deleteUserAttribute: function (
+		appId,
+		appSecret,
+		userToken,
+		userAttributeToDelete
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
@@ -128,16 +143,23 @@ export default ({
 	 * @function
 	 * @param {string} appId - The appId of the current application.
 	 * @param {string} appSecret - The appSecret of the current application.
- 	 * @param {string} userToken - The auth token of the logged in user.
+	 * @param {string} userToken - The auth token of the logged in user.
 	 * @param {integer} userAttributeId - The id of the User Attribute to list Item Attributes for.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	listItemAttributesofUserAttribute: function (appId, appSecret, userToken, userAttributeId) {
+	listItemAttributesofUserAttribute: function (
+		appId,
+		appSecret,
+		userToken,
+		userAttributeId
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'GET',
 				dataType: 'json',
-				url: '/user_attributes/getAttributesOfUserAttributes/' + userAttributeId,
+				url:
+					'/user_attributes/getAttributesOfUserAttributes/' +
+					userAttributeId,
 				data: {},
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('app-id', appId)
@@ -158,17 +180,25 @@ export default ({
 	 * @function
 	 * @param {string} appId - The appId of the current application.
 	 * @param {string} appSecret - The appSecret of the current application.
- 	 * @param {string} userToken - The auth token of the logged in user.
+	 * @param {string} userToken - The auth token of the logged in user.
 	 * @param {integer} userAttributeId - The id of the User Attribute to assign to.
 	 * @param {object} userAttributesToAssign - The Item Attributes to assign to the User Attribute.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	assignItemAttributesToUserAttributes: function (appId, appSecret, userToken, userAttributeId, userAttributesToAssign) {
+	assignItemAttributesToUserAttributes: function (
+		appId,
+		appSecret,
+		userToken,
+		userAttributeId,
+		userAttributesToAssign
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
 				dataType: 'json',
-				url: '/user_attributes/setAttributestoUserAttributes/' + userAttributeId,
+				url:
+					'/user_attributes/setAttributestoUserAttributes/' +
+					userAttributeId,
 				data: userAttributesToAssign,
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('app-id', appId)
@@ -189,7 +219,7 @@ export default ({
 	 * @function
 	 * @param {string} appId - The appId of the current application.
 	 * @param {string} appSecret - The appSecret of the current application.
- 	 * @param {string} userToken - The auth token of the logged in user.
+	 * @param {string} userToken - The auth token of the logged in user.
 	 * @param {integer} userId - The id of the User.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
@@ -219,7 +249,7 @@ export default ({
 	 * @function
 	 * @param {string} appId - The appId of the current application.
 	 * @param {string} appSecret - The appSecret of the current application.
- 	 * @param {string} userToken - The auth token of the logged in user.
+	 * @param {string} userToken - The auth token of the logged in user.
 	 * @param {integer} userId - The id of the User.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
@@ -244,4 +274,4 @@ export default ({
 			})
 		})
 	}
-})
+}

@@ -1,67 +1,91 @@
 <template>
-	<modal :show="showEditOptionItemModal" effect="fade" @closeOnEscape="closeModal" ref="modal">
-		<div slot="modal-header" class="modal-header center">
-			<button type="button" class="close" @click="closeModal()">
+	<modal :show="showEditOptionItemModal"
+	       effect="fade"
+	       @closeOnEscape="closeModal"
+	       ref="modal">
+		<div slot="modal-header"
+		     class="modal-header center">
+			<button type="button"
+			        class="close"
+			        @click="closeModal()">
 				<span>&times;</span>
 			</button>
-			<h4 class="modal-title center" v-if="!selectImageMode">Update Option Item</h4>
+			<h4 class="modal-title center"
+			    v-if="!selectImageMode">Update Option Item</h4>
 		</div>
-		<div slot="modal-body" class="modal-body">
+		<div slot="modal-body"
+		     class="modal-body">
 			<div class="col-xs-12">
-				<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
-				    <button class="close" @click="clearError()"></button>
-				    <span>{{errorMessage}}</span>
+				<div class="alert alert-danger"
+				     v-show="errorMessage"
+				     ref="errorMessage">
+					<button class="close"
+					        @click="clearError()"></button>
+					<span>{{errorMessage}}</span>
 				</div>
-        		<div :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
-					<resource-picker 
-						@open="goToPageTwo()"
-						@close="goToPageOne()"
-						@selected="updateImage" 
-						:imageButton="true"
-						:imageUrl="optionItemToBeEdited.image_url"
-						class="margin-top-15"
-					>
+				<div :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
+					<resource-picker @open="goToPageTwo()"
+					                 @close="goToPageOne()"
+					                 @selected="updateImage"
+					                 :imageButton="true"
+					                 :imageUrl="optionItemToBeEdited.image_url"
+					                 class="margin-top-15">
 					</resource-picker>
-        		</div>
-				<div class="col-md-12" v-show="!selectImageMode">
+				</div>
+				<div class="col-md-12"
+				     v-show="!selectImageMode">
 					<fieldset :disabled="!$root.permissions['menu_manager options items update']">
 						<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-							<input type="text" class="form-control input-sm edited" id="form_control_1" v-model="optionItemToBeEdited.name">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_1"
+							       v-model="optionItemToBeEdited.name">
 							<label for="form_control_1">Option Item Name</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-							<input type="text" class="form-control input-sm edited" id="form_control_2" v-model="optionItemToBeEdited.description">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_2"
+							       v-model="optionItemToBeEdited.description">
 							<label for="form_control_2">Option Item Description</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-							<input type="number" class="form-control input-sm edited" id="form_control_3" v-model="optionItemToBeEdited.order">
+							<input type="number"
+							       class="form-control input-sm edited"
+							       id="form_control_3"
+							       v-model="optionItemToBeEdited.order">
 							<label for="form_control_3">Option Item Order</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-							<input type="text" class="form-control input-sm edited" id="form_control_4" v-model="optionItemToBeEdited.sku">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_4"
+							       v-model="optionItemToBeEdited.sku">
 							<label for="form_control_4">Option Item SKU</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-							<input type="text" class="form-control input-sm edited" id="form_control_5" v-model="optionItemToBeEdited.price">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_5"
+							       v-model="optionItemToBeEdited.price">
 							<label for="form_control_5">Option Item Price</label>
 						</div>
 					</fieldset>
 				</div>
 			</div>
 		</div>
-		<div slot="modal-footer" class="modal-footer">
-			<button 
-				v-if="!selectImageMode && !$root.permissions['menu_manager options items update']" 
-				type="button" 
-				class="btn btn-primary" 
-				@click="closeModal()">
+		<div slot="modal-footer"
+		     class="modal-footer">
+			<button v-if="!selectImageMode && !$root.permissions['menu_manager options items update']"
+			        type="button"
+			        class="btn btn-primary"
+			        @click="closeModal()">
 				Close
 			</button>
-			<button 
-				v-if="!selectImageMode && $root.permissions['menu_manager options items update']" 
-				type="button" 
-				class="btn btn-primary" 
-				@click="updateOptionItem()">
+			<button v-if="!selectImageMode && $root.permissions['menu_manager options items update']"
+			        type="button"
+			        class="btn btn-primary"
+			        @click="updateOptionItem()">
 				Save
 			</button>
 		</div>
@@ -136,19 +160,26 @@ export default {
 		 */
 		getOptionItemDetails () {
 			var editOptionVue = this
-			OptionsFunctions.getOptionItemDetails(editOptionVue.selectedOptionItemId, editOptionVue.$root.appId, editOptionVue.$root.appSecret, editOptionVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					editOptionVue.optionItemToBeEdited = response.payload
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch option item info',
-					errorName: 'errorMessage',
-					vue: editOptionVue,
-					containerRef: 'modal'
+			OptionsFunctions.getOptionItemDetails(
+				editOptionVue.selectedOptionItemId,
+				editOptionVue.$root.appId,
+				editOptionVue.$root.appSecret,
+				editOptionVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						editOptionVue.optionItemToBeEdited = response.payload
+					}
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch option item info',
+						errorName: 'errorMessage',
+						vue: editOptionVue,
+						containerRef: 'modal'
+					})
+				})
 		},
 		/**
 		 * To update an existing portion.
@@ -159,29 +190,38 @@ export default {
 			var editOptionVue = this
 			editOptionVue.clearError()
 
-			return editOptionVue.validateOptionData()
-			.then(response => {
-				OptionsFunctions.updateOptionItem(editOptionVue.optionItemToBeEdited, editOptionVue.$root.appId, editOptionVue.$root.appSecret, editOptionVue.$root.userToken).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						this.closeModalAndUpdate()
-					} else {
-						editOptionVue.errorMessage = response.message
-					}
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not update the option item',
-						errorName: 'errorMessage',
-						vue: editOptionVue,
-						containerRef: 'modal'
-					})
+			return editOptionVue
+				.validateOptionData()
+				.then(response => {
+					OptionsFunctions.updateOptionItem(
+						editOptionVue.optionItemToBeEdited,
+						editOptionVue.$root.appId,
+						editOptionVue.$root.appSecret,
+						editOptionVue.$root.userToken
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								this.closeModalAndUpdate()
+							} else {
+								editOptionVue.errorMessage = response.message
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not update the option item',
+								errorName: 'errorMessage',
+								vue: editOptionVue,
+								containerRef: 'modal'
+							})
+						})
 				})
-			}).catch(reason => {
-				// If validation fails then display the error message
-				editOptionVue.errorMessage = reason
-				window.scrollTo(0, 0)
-				throw reason
-			})
+				.catch(reason => {
+					// If validation fails then display the error message
+					editOptionVue.errorMessage = reason
+					window.scrollTo(0, 0)
+					throw reason
+				})
 		},
 		/**
 		 * To close the modal and emit the newly created tag object to the parent.

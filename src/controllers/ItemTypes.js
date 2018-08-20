@@ -3,7 +3,7 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to API to get a list of existing item types.
 	 * @function
@@ -164,7 +164,13 @@ export default ({
 	 * @param {string} userToken - The auth token of the logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	applyTaxClassesToItemType: function (id, taxClasses, appId, appSecret, userToken) {
+	applyTaxClassesToItemType: function (
+		id,
+		taxClasses,
+		appId,
+		appSecret,
+		userToken
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
@@ -185,4 +191,4 @@ export default ({
 			})
 		})
 	}
-})
+}

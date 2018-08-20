@@ -1,48 +1,66 @@
 <template>
-	<modal :show="showPortionsModal" effect="fade" @closeOnEscape="closeModal" ref="modal">
-		<div slot="modal-header" class="modal-header">
-			<button type="button" class="close" @click="closeModal()">
+	<modal :show="showPortionsModal"
+	       effect="fade"
+	       @closeOnEscape="closeModal"
+	       ref="modal">
+		<div slot="modal-header"
+		     class="modal-header">
+			<button type="button"
+			        class="close"
+			        @click="closeModal()">
 				<span>&times;</span>
 			</button>
 			<h4 class="modal-title center">Select a Portion</h4>
 		</div>
-		<div slot="modal-body" class="modal-body">
-			<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
-			    <button class="close" @click="clearError()"></button>
-			    <span>{{errorMessage}}</span>
+		<div slot="modal-body"
+		     class="modal-body">
+			<div class="alert alert-danger"
+			     v-show="errorMessage"
+			     ref="errorMessage">
+				<button class="close"
+				        @click="clearError()"></button>
+				<span>{{errorMessage}}</span>
 			</div>
 			<div class="table-scrollable table-fixed-height">
-    	        <table class="table">
-    	            <thead>
-    	                <tr>
-    	                	<th>  </th>
-    	                	<th> Icon </th>
-    	                    <th> Name </th>
-    	                    <th> Multiplier </th>
-    	                </tr>
-    	            </thead>
-    	            <tbody>
-    	                <tr v-for="portion in portions">
-    	                	<td>
-    	                		<div class="md-checkbox has-success">
-                                    <input type="checkbox" :id="'portion_checkbox_' + portion.id" class="md-check" v-model="portion.selected">
-                                    <label :for="'portion_checkbox_' + portion.id">
-                                        <span class="inc"></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                    </label>
-                                </div>
-    	                	</td>
-    	                	<td> <img :src="portion.icon_url" width="30" height="30"> </td>
-    	                    <td> {{portion.name}} </td>
-    	                    <td> {{portion.multiplier}} </td>
-    	                </tr>
-    	            </tbody>
-    	        </table>
-    	    </div>
+				<table class="table">
+					<thead>
+						<tr>
+							<th> </th>
+							<th> Icon </th>
+							<th> Name </th>
+							<th> Multiplier </th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="portion in portions" :key="portion.id">
+							<td>
+								<div class="md-checkbox has-success">
+									<input type="checkbox"
+									       :id="'portion_checkbox_' + portion.id"
+									       class="md-check"
+									       v-model="portion.selected">
+									<label :for="'portion_checkbox_' + portion.id">
+										<span class="inc"></span>
+										<span class="check"></span>
+										<span class="box"></span>
+									</label>
+								</div>
+							</td>
+							<td> <img :src="portion.icon_url"
+								     width="30"
+								     height="30"> </td>
+							<td> {{portion.name}} </td>
+							<td> {{portion.multiplier}} </td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
-		<div slot="modal-footer" class="modal-footer">
-			<button type="button" class="btn btn-primary" @click="applyPortionsToItem()">Apply Portions</button>
+		<div slot="modal-footer"
+		     class="modal-footer">
+			<button type="button"
+			        class="btn btn-primary"
+			        @click="applyPortionsToItem()">Apply Portions</button>
 		</div>
 	</modal>
 </template>
@@ -97,36 +115,65 @@ export default {
 		getPortions () {
 			var portionsListVue = this
 			portionsListVue.portions = []
-			PortionsFunctions.getPortions(portionsListVue.$root.appId, portionsListVue.$root.appSecret, portionsListVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					portionsListVue.portions = response.payload
-					if (portionsListVue.appliedPortions.length) {
-						for (var i = 0; i < portionsListVue.portions.length; i++) {
-							for (var j = 0; j < portionsListVue.appliedPortions.length; j++) {
-								if (portionsListVue.portions[i].id === portionsListVue.appliedPortions[j].id) {
-									portionsListVue.$set(portionsListVue.portions[i], 'selected', true)
-									break
-								} else {
-									portionsListVue.$set(portionsListVue.portions[i], 'selected', false)
+			PortionsFunctions.getPortions(
+				portionsListVue.$root.appId,
+				portionsListVue.$root.appSecret,
+				portionsListVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						portionsListVue.portions = response.payload
+						if (portionsListVue.appliedPortions.length) {
+							for (var i = 0; i < portionsListVue.portions.length; i++) {
+								for (
+									var j = 0;
+									j < portionsListVue.appliedPortions.length;
+									j++
+								) {
+									if (
+										portionsListVue.portions[i].id ===
+										portionsListVue.appliedPortions[j].id
+									) {
+										portionsListVue.$set(
+											portionsListVue.portions[i],
+											'selected',
+											true
+										)
+										break
+									} else {
+										portionsListVue.$set(
+											portionsListVue.portions[i],
+											'selected',
+											false
+										)
+									}
 								}
+								portionsListVue.$set(
+									portionsListVue.portions[i],
+									'created_by',
+									portionsListVue.$root.createdBy
+								)
 							}
-							portionsListVue.$set(portionsListVue.portions[i], 'created_by', portionsListVue.$root.createdBy)
-						}
-					} else {
-						for (var k = 0; k < portionsListVue.portions.length; k++) {
-							portionsListVue.$set(portionsListVue.portions[k], 'created_by', portionsListVue.$root.createdBy)
+						} else {
+							for (var k = 0; k < portionsListVue.portions.length; k++) {
+								portionsListVue.$set(
+									portionsListVue.portions[k],
+									'created_by',
+									portionsListVue.$root.createdBy
+								)
+							}
 						}
 					}
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch portions',
-					errorName: 'errorMessage',
-					vue: portionsListVue,
-					containerRef: 'modal'
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch portions',
+						errorName: 'errorMessage',
+						vue: portionsListVue,
+						containerRef: 'modal'
+					})
+				})
 		},
 		/**
 		 * To apply some of the existing modifiers to an item.
@@ -142,19 +189,28 @@ export default {
 				}
 			}
 			if (portionsListVue.itemType === 'modifier-item') {
-				PortionsFunctions.applyPortionsToModifierItem(portionsListVue.selectedItemId, this.$root.createdBy, portionsToBeApplied, portionsListVue.$root.appId, portionsListVue.$root.appSecret, portionsListVue.$root.userToken).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						portionsListVue.closeModal()
-					}
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not apply the portion',
-						errorName: 'errorMessage',
-						vue: portionsListVue,
-						containerRef: 'modal'
+				PortionsFunctions.applyPortionsToModifierItem(
+					portionsListVue.selectedItemId,
+					this.$root.createdBy,
+					portionsToBeApplied,
+					portionsListVue.$root.appId,
+					portionsListVue.$root.appSecret,
+					portionsListVue.$root.userToken
+				)
+					.then(response => {
+						if (response.code === 200 && response.status === 'ok') {
+							portionsListVue.closeModal()
+						}
 					})
-				})
+					.catch(reason => {
+						ajaxErrorHandler({
+							reason,
+							errorText: 'We could not apply the portion',
+							errorName: 'errorMessage',
+							vue: portionsListVue,
+							containerRef: 'modal'
+						})
+					})
 			}
 		},
 		/**

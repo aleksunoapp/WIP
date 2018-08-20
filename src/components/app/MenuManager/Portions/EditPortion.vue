@@ -1,60 +1,79 @@
 <template>
-	<modal :show="showEditPortionModal" effect="fade" @closeOnEscape="closeModal" ref="modal">
-		<div slot="modal-header" class="modal-header center">
-			<button type="button" class="close" @click="closeModal()">
+	<modal :show="showEditPortionModal"
+	       effect="fade"
+	       @closeOnEscape="closeModal"
+	       ref="modal">
+		<div slot="modal-header"
+		     class="modal-header center">
+			<button type="button"
+			        class="close"
+			        @click="closeModal()">
 				<span>&times;</span>
 			</button>
-			<h4 class="modal-title center" v-if="!selectImageMode">Update Portion</h4>
-			<h4 class="modal-title center" v-if="selectImageMode">Select an Image</h4>
+			<h4 class="modal-title center"
+			    v-if="!selectImageMode">Update Portion</h4>
+			<h4 class="modal-title center"
+			    v-if="selectImageMode">Select an Image</h4>
 		</div>
-		<div slot="modal-body" class="modal-body">
+		<div slot="modal-body"
+		     class="modal-body">
 			<div class="col-xs-12">
-				<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
-				    <button class="close" @click="clearError()"></button>
-				    <span>{{errorMessage}}</span>
+				<div class="alert alert-danger"
+				     v-show="errorMessage"
+				     ref="errorMessage">
+					<button class="close"
+					        @click="clearError()"></button>
+					<span>{{errorMessage}}</span>
 				</div>
-        		<div :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
-					<resource-picker 
-						@open="goToPageTwo()"
-						@close="goToPageOne()"
-						@selected="updateIcon" 
-						:imageButton="true"
-						:imageUrl="portionToBeEdited.icon_url"
-						class="margin-top-15"
-					>
+				<div :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
+					<resource-picker @open="goToPageTwo()"
+					                 @close="goToPageOne()"
+					                 @selected="updateIcon"
+					                 :imageButton="true"
+					                 :imageUrl="portionToBeEdited.icon_url"
+					                 class="margin-top-15">
 					</resource-picker>
-        		</div>
-				<div class="col-md-12" v-show="!selectImageMode">
+				</div>
+				<div class="col-md-12"
+				     v-show="!selectImageMode">
 					<fieldset :disabled="!$root.permissions['menu_manager portions update']">
 						<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-							<input type="text" class="form-control input-sm edited" id="form_control_1" v-model="portionToBeEdited.name">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_1"
+							       v-model="portionToBeEdited.name">
 							<label for="form_control_1">Portion Name</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-							<input type="text" class="form-control input-sm edited" id="form_control_2" v-model="portionToBeEdited.multiplier">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_2"
+							       v-model="portionToBeEdited.multiplier">
 							<label for="form_control_2">Portion Multipler</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-							<input type="text" class="form-control input-sm edited" id="form_control_3" v-model="portionToBeEdited.order">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_3"
+							       v-model="portionToBeEdited.order">
 							<label for="form_control_3">Portion Order</label>
 						</div>
 					</fieldset>
 				</div>
 			</div>
 		</div>
-		<div slot="modal-footer" class="modal-footer">
-			<button 
-				v-if="!selectImageMode && !$root.permissions['menu_manager portions update']" 
-				type="button" 
-				class="btn btn-primary" 
-				@click="closeModal()">
+		<div slot="modal-footer"
+		     class="modal-footer">
+			<button v-if="!selectImageMode && !$root.permissions['menu_manager portions update']"
+			        type="button"
+			        class="btn btn-primary"
+			        @click="closeModal()">
 				Close
 			</button>
-			<button 
-				v-if="!selectImageMode && $root.permissions['menu_manager portions update']" 
-				type="button" 
-				class="btn btn-primary" 
-				@click="updatePortion()">
+			<button v-if="!selectImageMode && $root.permissions['menu_manager portions update']"
+			        type="button"
+			        class="btn btn-primary"
+			        @click="updatePortion()">
 				Save
 			</button>
 		</div>
@@ -125,19 +144,26 @@ export default {
 		 */
 		getPortionDetails () {
 			var editPortionVue = this
-			PortionsFunctions.getPortionDetails(editPortionVue.selectedPortionId, editPortionVue.$root.appId, editPortionVue.$root.appSecret, editPortionVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					editPortionVue.portionToBeEdited = response.payload
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch portion info',
-					errorName: 'errorMessage',
-					vue: editPortionVue,
-					containerRef: 'modal'
+			PortionsFunctions.getPortionDetails(
+				editPortionVue.selectedPortionId,
+				editPortionVue.$root.appId,
+				editPortionVue.$root.appSecret,
+				editPortionVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						editPortionVue.portionToBeEdited = response.payload
+					}
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch portion info',
+						errorName: 'errorMessage',
+						vue: editPortionVue,
+						containerRef: 'modal'
+					})
+				})
 		},
 		/**
 		 * To update an existing portion.
@@ -148,29 +174,38 @@ export default {
 			var editPortionVue = this
 			editPortionVue.clearError()
 
-			return editPortionVue.validateTagData()
-			.then(response => {
-				PortionsFunctions.updatePortion(editPortionVue.portionToBeEdited, editPortionVue.$root.appId, editPortionVue.$root.appSecret, editPortionVue.$root.userToken).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						this.closeModalAndUpdate()
-					} else {
-						editPortionVue.errorMessage = response.message
-					}
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not update the portion',
-						errorName: 'errorMessage',
-						vue: editPortionVue,
-						containerRef: 'modal'
-					})
+			return editPortionVue
+				.validateTagData()
+				.then(response => {
+					PortionsFunctions.updatePortion(
+						editPortionVue.portionToBeEdited,
+						editPortionVue.$root.appId,
+						editPortionVue.$root.appSecret,
+						editPortionVue.$root.userToken
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								this.closeModalAndUpdate()
+							} else {
+								editPortionVue.errorMessage = response.message
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not update the portion',
+								errorName: 'errorMessage',
+								vue: editPortionVue,
+								containerRef: 'modal'
+							})
+						})
 				})
-			}).catch(reason => {
-				// If validation fails then display the error message
-				editPortionVue.errorMessage = reason
-				window.scrollTo(0, 0)
-				throw reason
-			})
+				.catch(reason => {
+					// If validation fails then display the error message
+					editPortionVue.errorMessage = reason
+					window.scrollTo(0, 0)
+					throw reason
+				})
 		},
 		/**
 		 * To close the modal and emit the newly created tag object to the parent.

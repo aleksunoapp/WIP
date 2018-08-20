@@ -3,7 +3,7 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to pitapit API to get store menus for a given store id.
 	 * @function
@@ -275,7 +275,7 @@ export default ({
 	 * Call to pitapit API to get add-on categories.
 	 * @function
 	 * @param {integer} menuId - The id of the menu to apply categories to.
- 	 * @param {object} categories - Object containing arrays of categories to add and to remove.
+	 * @param {object} categories - Object containing arrays of categories to add and to remove.
 	 * @param {string} appId - The appId of the current application.
 	 * @param {string} appSecret - The appSecret of the current application.
 	 * @param {string} userToken - The token of the current logged in user.
@@ -414,4 +414,4 @@ export default ({
 			})
 		})
 	}
-})
+}
