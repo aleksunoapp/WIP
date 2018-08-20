@@ -209,9 +209,16 @@ export default {
 			return this.activeItems.length && !this.activeItems.some(item => !item.selected)
 		}
 	},
+	watch: {
+		'$root.activeLocation': function () {
+			this.getMenus()
+		}
+	},
 	created () {
 		this.previous = [...this.previouslySelected]
-		this.getMenus()
+		if (this.$root.activeLocation.id !== undefined) {
+			this.getMenus()
+		}
 	},
 	methods: {
 		/**
