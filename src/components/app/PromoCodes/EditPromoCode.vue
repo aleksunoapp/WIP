@@ -476,8 +476,6 @@ export default {
 			return editPromoCodeVue.validatePromoCodeData()
 			.then(response => {
 				let promoCode = editPromoCodeVue.promoCode
-				promoCode.start_from = editPromoCodeVue.formatDateTimeForApi(promoCode.start_from)
-				promoCode.end_on = editPromoCodeVue.formatDateTimeForApi(promoCode.end_on)
 				promoCode.sku = editPromoCodeVue.promoCode.sku_array.toString()
 				promoCode.locations = editPromoCodeVue.promoCode.locations.toString()
 				if (editPromoCodeVue.promoCode.locations.length === 1) {
