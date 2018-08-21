@@ -130,7 +130,7 @@ export default {
 						location.country
 					)
 						.toLowerCase()
-						.includes(this.searchTerm)
+						.includes(this.searchTerm.toLowerCase())
 				})
 			} else {
 				return this.locations
