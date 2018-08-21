@@ -725,7 +725,7 @@ export default {
 							})
 						})
 						.finally(() => {
-							_this.updating = true
+							_this.updating = false
 						})
 				})
 				.catch(reason => {
