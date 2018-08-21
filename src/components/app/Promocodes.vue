@@ -98,8 +98,7 @@
 								</div>
 								<p class="grey-label margin-left-5"
 								   v-if="newPromoCode.sku.length">Selected
-									<span>{{ newPromoCode.sku.length }}</span> item
-									<span v-if="newPromoCode.sku.length !== 1">s</span>
+									<span>{{ newPromoCode.sku.length }}</span> item<span v-if="newPromoCode.sku.length !== 1">s</span>
 								</p>
 								<div class="margin-top-15">
 									<el-dropdown trigger="click"
@@ -161,8 +160,7 @@
 									<p class="grey-label"
 									   v-if="newPromoCode.locations.length">Selected
 										<span v-if="newPromoCode.locations === 'all'">all</span>
-										<span v-else>{{ newPromoCode.locations.length }}</span> store
-										<span v-if="newPromoCode.locations.length !== 1">s</span>
+										<span v-else>{{ newPromoCode.locations.length }}</span> store<span v-if="newPromoCode.locations.length !== 1">s</span>
 									</p>
 								</div>
 							</div>

@@ -91,8 +91,7 @@
 								Select items
 							</button>
 							<p class="grey-label"
-							   v-if="promoCode.sku_array.length">Selected {{ promoCode.sku_array.length }} item
-								<span v-if="promoCode.sku_array.length !== 1">s</span>
+							   v-if="promoCode.sku_array.length">Selected {{ promoCode.sku_array.length }} item<span v-if="promoCode.sku_array.length !== 1">s</span>
 							</p>
 						</div>
 						<div>
@@ -150,8 +149,7 @@
 							<p class="grey-label margin-top-10"
 							   v-if="promoCode.locations.length">Selected
 								<span v-if="promoCode.locations === 'all'">all</span>
-								<span v-else>{{ promoCode.locations.length }}</span> location
-								<span v-if="promoCode.locations.length !== 1">s</span>
+								<span v-else>{{ promoCode.locations.length }}</span> location<span v-if="promoCode.locations.length !== 1">s</span>
 							</p>
 						</div>
 					</div>
