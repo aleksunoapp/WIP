@@ -46,7 +46,7 @@
 								</div>
 							</a>
 						</li>
-						<!-- END QUICK SIDEBAR TOGGLER -->
+						<!-- END QUICK SIDEBAR TOGGLER -->	
 					</ul>
 				</div>
 				<!-- END TOP NAVIGATION MENU -->
@@ -88,12 +88,8 @@
 								     data-rail-color="#ddd"
 								     data-wrapper-class="page-quick-sidebar-list">
 									<ul class="media-list list-items">
-										<router-link tag="li"
-										             to="/app/profile"
-										             class="media selected-location current-location">
-											<img class="media-object"
-											     src="../assets/img/app/logo-refresh.png"
-											     alt="...">
+										<router-link tag="li" to="/app/profile" class="media selected-location current-location padding-sidebar-user">
+											<img class="media-object" src="../assets/img/app/logo-refresh.png" alt="...">
 											<div class="media-status">
 												<i class="fa fa-gear"></i>
 											</div>
@@ -115,11 +111,9 @@
 									    class="list-heading location-panel-heading blue font-default">
 										Active Store
 									</h3>
-									<ul class="media-list list-items"
-									    v-if="activeLocation.id !== undefined">
-										<li class="media">
-											<div class="media-status"
-											     @click="unselectLocation($event)">
+									<ul class="media-list list-items" v-if="activeLocation.id !== undefined">
+										<li class="media padding-sidebar-search">
+											<div class="media-status" @click="unselectLocation($event)">
 												<div class="active-location-dots">
 													<div class="active-location-dot">
 														<i class="fa fa-circle blue"></i>
@@ -135,7 +129,7 @@
 											</div>
 										</li>
 									</ul>
-									<div class="padding-box">
+									<div class="padding-box padding-sidebar-search">
 										<div class="form-group form-md-line-input form-md-floating-label">
 											<input type="text"
 											       class="form-control input-sm padding-right-20"
@@ -155,10 +149,7 @@
 									</div>
 									<h3 class="list-heading location-panel-heading blue font-default">Stores</h3>
 									<ul class="media-list list-items scrollable">
-										<li class="media"
-										    v-for="location in searchResult"
-										    @click="selectLocation(location)"
-										    :key="location.id">
+										<li class="media padding-sidebar-store" v-for="location in searchResult" @click="selectLocation(location)" :key="location.id">
 											<div class="media-body">
 												<h4 class="media-heading">{{ location.display_name }}</h4>
 												<div class="media-heading-sub">{{ location.address_line_1 }}</div>
@@ -401,275 +392,262 @@ export default {
 </script>
 
 <style>
-body .modal {
-  z-index: 10501;
-}
-.app-bg {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-color: #292e33;
-  z-index: 10000;
-}
-.page-header.navbar .page-logo .logo-default.logo-unoapp {
-  width: auto;
-  max-width: 125px;
-  height: auto;
-  display: block;
-  margin: 9px 0px 0px;
-}
-.page-sidebar .page-sidebar-menu li.open > .sub-menu {
-  display: block;
-}
-.center {
-  text-align: center;
-}
-.form-body {
-  margin-top: 20px;
-}
-body .swal2-container {
-  z-index: 10050;
-}
-.swal2-modal .swal2-confirm:focus {
-  outline: none;
-}
-.location-panel .logo-container {
-  width: 48px;
-  height: 100%;
-  display: inline-block;
-}
-.location-panel .location-name-container {
-  display: inline-block;
-  margin-right: 8px;
-}
-.location-panel .logo-container .business-logo {
-  height: 38px;
-  border-radius: 50%;
-  position: absolute;
-  top: 6px;
-  left: 0;
-  margin: 0px 8px;
-}
-.location-panel .location-name-container .business-name,
-.location-panel .location-name-container .business-location-name {
-  color: #c6cfda;
-  width: auto;
-  max-width: 155px;
-  display: block;
-  font-size: 11px;
-  font-weight: 300;
-  word-break: break-word;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-}
-.location-panel .location-name-container .business-name.big {
-  font-size: 13px;
-  line-height: 41px;
-}
-.location-panel .location-name-container .business-location-name {
-  font-size: 13px;
-}
-.page-quick-sidebar {
-  margin-top: 50px;
-  height: calc(100%-50px);
-}
-.page-quick-sidebar-wrapper
-  .page-quick-sidebar
-  .page-quick-sidebar-chat
-  .page-quick-sidebar-chat-users
-  .media-list
-  .media.selected-location {
-  background-color: rgba(55, 183, 217, 0.3);
-}
-.page-quick-sidebar-wrapper
-  .page-quick-sidebar
-  .page-quick-sidebar-chat
-  .page-quick-sidebar-chat-users
-  .media-list
-  .media.selected-location:hover {
-  background-color: rgba(55, 183, 217, 0.5);
-}
-.deactivate-location-dot-top {
-  transition: opacity 0.2s ease-in;
-  opacity: 0;
-}
-.page-quick-sidebar-wrapper
-  .page-quick-sidebar
-  .list-heading.location-panel-heading {
-  color: rgba(55, 183, 217, 0.5);
-  font-size: 18px;
-  text-transform: uppercase;
-}
-.page-header
-  .top-menu
-  .dropdown-quick-sidebar-toggler
-  > .dropdown-toggle.location-panel {
-  padding: 5px 0px !important;
-  height: 50px;
-  width: 120px;
-}
-.page-header
-  .top-menu
-  .dropdown-quick-sidebar-toggler
-  > .dropdown-toggle.location-panel.width-auto {
-  width: auto;
-  max-width: 220px;
-}
-.page-quick-sidebar-wrapper .page-quick-sidebar-toggler {
-  position: absolute;
-}
-.page-quick-sidebar-open .page-quick-sidebar-toggler > span {
-  color: #99a8b5;
-  font-size: 20px;
-}
-.page-quick-sidebar-toggler > span:hover {
-  color: #fff !important;
-}
-a.panel-link {
-  color: #99a8b5;
-  text-decoration: underline;
-}
-a.panel-link:hover {
-  color: #fff !important;
-}
-.scrollable {
-  max-height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-div.tab-pane::-webkit-scrollbar {
-  background-color: transparent;
-  width: 7px;
-}
-div.tab-pane::-webkit-scrollbar-thumb {
-  background-color: #99a8b5;
-  border-radius: 10px;
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
-}
-div.tab-pane::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
-}
-.col-sm-3.no-padding,
-.col-sm-8.no-padding {
-  padding: 0;
-  margin-left: 5px;
-}
-.page-quick-sidebar-wrapper
-  .page-quick-sidebar
-  .page-quick-sidebar-chat
-  .page-quick-sidebar-chat-users.active-business {
-  padding-top: 0px;
-}
-.page-quick-sidebar-wrapper
-  .page-quick-sidebar
-  .page-quick-sidebar-chat
-  .page-quick-sidebar-chat-users
-  .media-list
-  .media
-  .media-body
-  .media-heading-sub {
-  margin-top: 5px;
-}
-.padding-box {
-  padding: 10px;
-}
-#location_search {
-  color: #99a8b5;
-}
-.blue {
-  color: rgba(55, 183, 217, 0.5);
-}
-.form-group.form-md-line-input .form-control.input-sm.padding-right-20 {
-  padding-right: 20px;
-}
-.clear-icon {
-  position: absolute;
-  right: 0;
-  top: 30px;
-  color: #32c5d2;
-  cursor: pointer;
-}
-.page-header.navbar .top-menu .navbar-nav > li.dropdown.width-auto {
-  width: auto;
-  max-width: 220px;
-}
-.pagination-wrapper {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-}
-.pagination-arrow {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 2.5em;
-  width: 2.5em;
-  border-radius: 50%;
-  background-color: #ddd;
-  color: #666;
-  font-size: 1em;
-  cursor: pointer;
-}
-.pagination-arrow:hover {
-  background-color: #67809f;
-  color: #fff;
-}
-.pagination-arrow.disabled {
-  cursor: not-allowed;
-}
-.pagination-arrow.disabled:hover {
-  background-color: #ddd;
-  color: #666;
-}
-.active-location-dots {
-  position: relative;
-}
-.active-location-dot {
-  position: absolute;
-  top: 0;
-  left: -20px;
-}
-.deactivate-location-dot {
-  position: absolute;
-  top: 0;
-  left: -20px;
-  transition: opacity 0.3s ease-in;
-  opacity: 0;
-}
-.deactivate-location-dot:hover {
-  opacity: 1;
-}
-@media (min-width: 992px) {
-  .page-sidebar-wrapper {
-    position: fixed;
-    height: calc(100vh - 35px);
-    overflow: scroll;
-  }
-}
-.page-header.navbar
-  .top-menu
-  .navbar-nav
-  > li.dropdown
-  > .dropdown-toggle.log-out-button:last-child {
-  padding-right: 8px;
-}
-.fa.danger {
-  color: rgba(201, 0, 0, 0.8);
-}
+	body .modal {
+		z-index: 10501;
+	}
+	.app-bg {
+		position: absolute;
+	    width: 100%;
+	    height: 100%;
+	    background-color: #292E33;
+	    z-index: 10000;
+	}
+	.page-header.navbar .page-logo .logo-default.logo-unoapp {
+		width: auto;
+		max-width: 125px;
+		height: auto;
+		display: block;
+		margin: 9px 0px 0px;
+	}
+	.page-sidebar .page-sidebar-menu li.open>.sub-menu {
+		display: block;
+	}
+	.center {
+		text-align: center;
+	}
+	.form-body {
+		margin-top: 20px;
+	}
+	body .swal2-container {
+		z-index: 10050;
+	}
+	.swal2-modal .swal2-confirm:focus {
+		outline: none;
+	}
+	.location-panel .logo-container {
+		width: 48px;
+		height: 100%;
+		display: inline-block;
+	}
+	.location-panel .location-name-container {
+		display: inline-block;
+		margin-right: 8px;
+	}
+	.location-panel .logo-container .business-logo {
+		height: 38px;
+	    border-radius: 50%;
+	    position: absolute;
+	    top: 6px;
+	    left: 0;
+	    margin: 0px 8px;
+	}
+	.location-panel .location-name-container .business-name, .location-panel .location-name-container .business-location-name {
+		color: #c6cfda;
+		width: auto;
+		max-width: 155px;
+		display: block;
+	    font-size: 11px;
+	    font-weight: 300;
+	    word-break: break-word;
+	    text-overflow: ellipsis;
+	    white-space: nowrap;
+	    overflow: hidden;
+	}
+	.location-panel .location-name-container .business-name.big {
+		font-size: 13px;
+		line-height: 41px;
+	}
+	.location-panel .location-name-container .business-location-name {
+		font-size: 13px;
+	}
+	.page-quick-sidebar {
+		margin-top: 50px;
+		height: calc(100vh - 35px);
+		overflow: scroll;
+	}
+	::-webkit-scrollbar {
+    width: 0px; 
+    background: transparent;
+	}
+	.page-quick-sidebar-wrapper .page-quick-sidebar .page-quick-sidebar-chat .page-quick-sidebar-chat-users .media-list .media.selected-location {
+		background-color: rgba(55, 183, 217, .3);
+	}
+	.page-quick-sidebar-wrapper .page-quick-sidebar .page-quick-sidebar-chat .page-quick-sidebar-chat-users .media-list .media.selected-location:hover {
+		background-color: rgba(55, 183, 217, .5);
+	}
+	.deactivate-location-dot-top {
+		transition: opacity 0.2s ease-in;
+		opacity: 0;
+	}
+	.page-quick-sidebar-wrapper .page-quick-sidebar .list-heading.location-panel-heading {
+		color: rgba(55, 183, 217, .5);
+		font-size: 18px;
+		text-transform: uppercase;
+	}
+	.page-header .top-menu .dropdown-quick-sidebar-toggler>.dropdown-toggle.location-panel {
+		padding: 5px 0px!important;
+		height: 50px;
+		width: 120px;
+	}
+	.page-header .top-menu .dropdown-quick-sidebar-toggler>.dropdown-toggle.location-panel.width-auto {
+		width: auto;
+		max-width: 220px;
+	}
+	.page-quick-sidebar-wrapper .page-quick-sidebar-toggler {
+		position: absolute;
+	}
+	.page-quick-sidebar-open .page-quick-sidebar-toggler > span {
+		color: #99a8b5;
+		font-size: 20px;
+	}
+	.page-quick-sidebar-toggler > span:hover {
+	    color: #fff!important;
+	}
+	a.panel-link {
+		color: #99a8b5;
+		text-decoration: underline;
+	}
+	a.panel-link:hover {
+		color: #fff!important;
+	}
+	.scrollable {
+		max-height: 100%;
+	    overflow-y: auto;
+	    overflow-x: hidden;
+	}
+	div.tab-pane::-webkit-scrollbar {
+		background-color: transparent;
+		width: 7px;
+	}
+	div.tab-pane::-webkit-scrollbar-thumb {
+		background-color: #99a8b5;
+		border-radius: 10px;
+		-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+	}
+	div.tab-pane::-webkit-scrollbar-track {
+	    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	    border-radius: 10px;
+	}
+	.col-sm-3.no-padding, .col-sm-8.no-padding {
+		padding: 0;
+		margin-left: 5px;
+	}
+	.page-quick-sidebar-wrapper .page-quick-sidebar .page-quick-sidebar-chat .page-quick-sidebar-chat-users.active-business {
+		padding-top: 0px;
+	}
+	.page-quick-sidebar-wrapper .page-quick-sidebar .page-quick-sidebar-chat .page-quick-sidebar-chat-users .media-list .media .media-body .media-heading-sub {
+		margin-top: 5px;
+	}
+	.padding-box {
+		padding: 10px;
+	}
+	#location_search {
+		color: #99a8b5;
+	}
+	.blue {
+		color: rgba(55, 183, 217, .5);
+	}
+	.form-group.form-md-line-input .form-control.input-sm.padding-right-20 {
+		padding-right: 20px;
+	}
+	.clear-icon {
+		position: absolute;
+	    right: 0;
+	    top: 30px;
+	    color: #32c5d2;
+	    cursor: pointer;
+	}
+	.page-header.navbar .top-menu .navbar-nav>li.dropdown.width-auto {
+		width: auto;
+		max-width: 220px;
+	}
+	.pagination-wrapper {
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-around;
+		align-items: center;
+	}
+	.pagination-arrow {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 2.5em;
+		width: 2.5em;
+		border-radius: 50%;
+		background-color: #ddd;
+		color: #666;
+		font-size: 1em;
+		cursor: pointer;
+	}
+	.pagination-arrow:hover {
+		background-color: #67809F;
+		color: #fff;
+	}
+	.pagination-arrow.disabled {
+		cursor: not-allowed;
+	}
+	.pagination-arrow.disabled:hover {
+		background-color: #ddd;
+		color: #666;
+	}
+	.active-location-dots {
+		position: relative;
+	}
+	.active-location-dot {
+		position: absolute;
+		top: 0;
+		left: -20px;
+	}
+	.deactivate-location-dot {
+		position: absolute;
+		top: 0;
+		left: -20px;
+		transition: opacity 0.3s ease-in;
+		opacity: 0;
+	}
+	.deactivate-location-dot:hover {
+		opacity: 1;
+	}
+	@media(min-width: 992px) {
+		.page-sidebar-wrapper {
+			position: fixed;
+			height: calc(100vh - 35px);
+			overflow: scroll; 
+		}
+	}
+	.page-header.navbar .top-menu .navbar-nav>li.dropdown>.dropdown-toggle.log-out-button:last-child {
+		padding-right: 8px;
+	}
+	.fa.danger {
+		color: rgba(201, 0, 0, .8)
+	}
 
-/* Transition */
-.fade-enter {
-  opacity: 0;
-}
-.fade-enter-active {
-  transition: opacity 0.4s;
-}
-.fade-leave-active {
-  transition: opacity 0.4s;
-  opacity: 0;
-}
+	/* Transition */
+	.fade-enter {
+		opacity: 0;
+	}
+	.fade-enter-active {
+		transition: opacity 0.4s;
+	}
+	.fade-leave{
+		/*opacity:1;*/
+	}
+	.fade-leave-active{
+		transition: opacity 0.4s;
+		opacity: 0;
+	}
+	/* Select location sidebar */
+	.padding-sidebar-user{
+		padding-bottom: 0px !important; 
+		padding-top: 0px !important;
+	}
+	.padding-sidebar-search{
+		padding-top: 0px !important;
+	}
+	.padding-sidebar-store
+	{
+		padding-top: 0px !important;
+		padding-bottom: 14px !important;
+	}
 </style>
