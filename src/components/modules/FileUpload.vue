@@ -45,6 +45,7 @@
 
 import LoadingScreen from './LoadingScreen'
 import Resources from '../../controllers/Resources'
+import global from '@/global.js'
 
 const STATUS_INITIAL = 0
 const STATUS_SAVING = 1
@@ -64,7 +65,6 @@ export default {
 			uploadError: null,
 			currentStatus: null,
 			uploadFieldName: 'file',
-			activeBusinessId: 2,
 			activeLocationId: null
 		}
 	},
@@ -140,7 +140,7 @@ export default {
 		 */
 		upload (form) {
 			let _this = this
-			const businessId = this.activeBusinessId
+			const businessId = global.resourcesBusinessId
 			const locationId = this.activeLocationId
 			this.currentStatus = STATUS_SAVING
 			this.$emit('savingUpdate', true)
