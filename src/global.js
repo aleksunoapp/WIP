@@ -70,7 +70,7 @@ export default {
 		} else if (staging) {
 			return 'https://freshii.beta.api.unoapp.io'
 		} else {
-			return 'https://freshii.dev.api.unoapp.io'
+			return 'http://dev.api.unoapp.io/freshii'
 		}
 	})(),
 	/**
