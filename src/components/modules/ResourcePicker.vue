@@ -261,6 +261,7 @@ import FileUpload from './FileUpload'
 import Resources from '../../controllers/Resources'
 import '../../assets/css/jstree/style.min.css'
 import ImagePlaceholder from '@/assets/img/app/image-placeholder.png'
+import global from '@/global.js'
 
 /**
  * Resource Modal module is a modal for selecting resources for general use.
@@ -337,7 +338,6 @@ export default {
 				{ name: 'other', icon: 'fa fa-file-o', active: false }
 			],
 			selectedResource: {},
-			activeBusinessId: global.resourcesBusinessId,
 			activeBusinessName: null,
 			activeLocationId: null,
 			activeLocationName: null,
@@ -429,7 +429,7 @@ export default {
 		 */
 		getFolders (parentId, folder) {
 			let _this = this
-			const businessId = this.activeBusinessId
+			const businessId = global.resourcesBusinessId
 			const locationId = this.activeLocationId
 			const pageNumber = 1
 			const recordsPerPage = this.recordsPerPage
@@ -587,7 +587,7 @@ export default {
 			this.currentResources = []
 
 			let _this = this
-			const businessId = this.activeBusinessId
+			const businessId = global.resourcesBusinessId
 			const locationId = this.activeLocationId
 			const recordsPerPage = this.recordsPerPage
 			const searchCriteria = this.formatSearchCriteria()
@@ -682,7 +682,7 @@ export default {
 		 */
 		getTags () {
 			let _this = this
-			const businessId = this.activeBusinessId
+			const businessId = global.resourcesBusinessId
 			const locationId = this.activeLocationId
 			const pageNumber = 1
 			const recordsPerPage = this.recordsPerPage
