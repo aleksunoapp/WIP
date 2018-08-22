@@ -48,6 +48,10 @@ export const role = {
 		'stores promotions create': false,
 		'stores promotions update': false,
 		'stores promotions approve': false,
+		'stores delivery_hours read': false,
+		'stores delivery_hours update': false,
+		'stores delivery_hours delete': false,
+		'stores delivery_hours approve': false,
 		'groups': {
 			'stores groups read': false,
 			'stores groups create': false,
