@@ -111,12 +111,10 @@
 									<p>{{field.label}}</p>
 								</div>
 								<div class="col-xs-5 break-long">
-									<span v-if="field.label === 'Location'">{{field.existing.display_name}}</span>
-									<span v-else>{{field.existing}}</span>
+									{{field.existing}}
 								</div>
 								<div class="col-xs-5">
-									<span v-if="field.label === 'Location'">{{field.modified.display_name}}</span>
-									<span v-else>{{field.modified}}</span>
+									{{field.modified}}
 								</div>
 							</div>
 
@@ -200,7 +198,7 @@ export default {
 						modified: this.selectedRequest.new_values[key],
 						display
 					}
-				})
+				}).filter(key => key.display)
 			} else {
 				return []
 			}
