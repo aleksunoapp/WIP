@@ -136,7 +136,7 @@
 									<button v-show="total !== activePage"
 									        class="btn blue btn-outline third-width"
 									        @click="viewList()">
-										List
+										Back
 									</button>
 								</div>
 							</div>
