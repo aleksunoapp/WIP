@@ -155,7 +155,8 @@
 									</div>
 									<div class="margin-top-30">
 										<h3 class="list-heading location-panel-heading blue font-default">Stores</h3>
-										<div class="tab-content">
+										<loading-screen :show="loading"></loading-screen>
+										<div class="tab-content" v-show="! loading">
 											<div :class="{'tab-pane active page-quick-sidebar-chat scrollable' : activeLocation.id !== undefined, 'tab-pane active page-quick-sidebar-chat scrollable-select-location' : activeLocation.id == undefined}">
 												<div class="page-quick-sidebar-chat-users"
 												     data-rail-color="#ddd"
@@ -206,6 +207,7 @@ import $ from 'jquery'
 import App from '../controllers/App'
 import { findIndex } from 'lodash'
 import LeftSidebar from '@/components/app/LeftSidebar'
+import LoadingScreen from '@/components/modules/LoadingScreen'
 
 /**
  * App module is the main component which holds the navigation, page header, and side panel.
@@ -220,7 +222,8 @@ export default {
 			searchQuery: '',
 			activeLocation: {},
 			searchError: '',
-			currentPage: 1
+			currentPage: 1,
+			loading: false
 		}
 	},
 	computed: {
@@ -321,6 +324,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		getStoreLocations () {
+			this.loading = true
 			var appVue = this
 			App.getPaginatedStoreLocations(
 				appVue.$root.appId,
@@ -351,6 +355,7 @@ export default {
 						if (activeLocation) {
 							appVue.selectLocation(JSON.parse(activeLocation))
 						}
+						appVue.loading = false
 					}
 				})
 				.catch(reason => {
@@ -420,7 +425,8 @@ export default {
 		}
 	},
 	components: {
-		LeftSidebar
+		LeftSidebar,
+		LoadingScreen
 	}
 }
 </script>

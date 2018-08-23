@@ -13,7 +13,11 @@
 		</div>
 		<div slot="modal-body"
 		     class="modal-body">
-			<form role="form"
+			<loading-screen :show="displaySpinner"
+			                :color="'#2C3E50'"
+			                :display="'inline'">
+			</loading-screen>
+			<form v-show="!displaySpinner" role="form"
 			      novalidate>
 				<div class="alert alert-danger"
 				     v-show="errorMessage"
@@ -102,6 +106,7 @@
 import Modal from '../../modules/Modal'
 import App from '../../../controllers/App'
 import ajaxErrorHandler from '@/controllers/ErrorController'
+import LoadingScreen from '@/components/modules/LoadingScreen'
 
 export default {
 	data () {
@@ -110,7 +115,8 @@ export default {
 			errorMessage: '',
 			locations: [],
 			selectAllSelected: false,
-			searchTerm: ''
+			searchTerm: '',
+			displaySpinner: false
 		}
 	},
 	props: {
@@ -205,6 +211,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		getPaginatedStoreLocations () {
+			this.displaySpinner = true
 			var editPromoCodeVue = this
 
 			App.getPaginatedStoreLocations(
@@ -234,6 +241,8 @@ export default {
 						vue: editPromoCodeVue,
 						containerRef: 'modal'
 					})
+				}).finally(() => {
+					editPromoCodeVue.displaySpinner = false
 				})
 		},
 		/**
@@ -254,7 +263,8 @@ export default {
 		}
 	},
 	components: {
-		Modal
+		Modal,
+		LoadingScreen
 	}
 }
 </script>
