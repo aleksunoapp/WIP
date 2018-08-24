@@ -283,7 +283,7 @@
 								                 filter-placement="bottom-end"
 								                 sortable>
 									<template slot-scope="scope">
-										<p :class="{'status-pending': scope.row.status === 'pending', 'status-completed': scope.row.status === 'completed', 'status-overdue': scope.row.status === 'overdue', 'status-cancelled': scope.row.status === 'cancelled', 'status-refunded': scope.row.status === 'refunded'}">{{scope.row.status}}</p>
+										<p :class="{'status-submitted': scope.row.status === 'submitted', 'status-pending': scope.row.status === 'pending', 'status-completed': scope.row.status === 'completed', 'status-overdue': scope.row.status === 'overdue', 'status-cancelled': scope.row.status === 'cancelled', 'status-refunded': scope.row.status === 'refunded'}">{{scope.row.status}}</p>
 									</template>
 								</el-table-column>
 							</el-table>
@@ -946,7 +946,15 @@ export default {
   max-width: 100%;
   max-height: 80%;
 }
-
+.status-submitted {
+  display: inline-block;
+  margin: 0;
+  padding: 3px;
+  background-color: rgb(218, 218, 218);
+  color: rgb(70, 74, 78);
+  border: 1px rgb(173, 173, 173) solid;
+  border-radius: 4px;
+}
 .status-pending {
   display: inline-block;
   margin: 0;
