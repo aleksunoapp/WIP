@@ -202,7 +202,8 @@
 								                :color="'#2C3E50'"
 								                :display="'inline'"></loading-screen>
 								<ul v-show="groups.length && !loadingGroupsData">
-									<li class="mt-list-item actions-at-left margin-top-15 clickable"
+									<li class="mt-list-item actions-at-left margin-top-15"
+									    :class="{'clickable' : can('user_manager user_groups message')}"
 									    v-for="group in groups"
 									    @click="sendMessageToGroup(group)"
 									    :id="'group-' + group.id"
@@ -236,7 +237,8 @@
 												</a>
 											</el-tooltip>
 										</div>
-										<div class="list-icon-container">
+										<div class="list-icon-container"
+										     v-if="can('user_manager user_groups message')">
 											<i class="fa fa-angle-right"></i>
 										</div>
 										<div class="list-datetime bold uppercase font-red">
@@ -308,6 +310,7 @@ import Dropdown from '../../modules/Dropdown'
 import PageResults from '../../modules/PageResults'
 import Pagination from '../../modules/Pagination'
 import ajaxErrorHandler from '@/controllers/ErrorController'
+import { mapGetters } from 'vuex'
 
 export default {
 	data () {
@@ -374,7 +377,8 @@ export default {
 				}
 			}
 			return text
-		}
+		},
+		...mapGetters(['can'])
 	},
 	created () {
 		let usersVue = this
@@ -432,7 +436,10 @@ export default {
 		showAlert () {
 			this.$swal({
 				title: 'Success!',
-				text: "Group '" + this.newGroup.name + "' has been successfully added!",
+				text:
+					"Group '" +
+					this.newGroup.name +
+					"' has been successfully added!",
 				type: 'success',
 				confirmButtonText: 'OK'
 			}).then(
@@ -646,6 +653,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		sendMessageToGroup (group) {
+			if (!this.can('user_manager user_groups message')) return
 			this.showSelectUsersModal = true
 			this.selectedGroupId = group.id
 			this.passedGroupName = group.name
@@ -792,7 +800,10 @@ export default {
 						userGroupsVue.$root.userToken
 					)
 						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
 								userGroupsVue.showAlert()
 								userGroupsVue.getGroups()
 							} else {
@@ -836,7 +847,7 @@ export default {
 
 <style scoped>
 .inlined {
-  display: inline-block;
-  padding-right: 5px;
+	display: inline-block;
+	padding-right: 5px;
 }
 </style>

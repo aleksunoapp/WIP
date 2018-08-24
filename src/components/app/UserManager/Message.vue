@@ -348,7 +348,10 @@ export default {
 						GlobalFunctions.messageAppToken
 					)
 						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
 								messageVue.closeModal()
 								messageVue.showAlert(response.payload.warnings)
 							} else {
@@ -479,9 +482,9 @@ export default {
 
 <style>
 .form-md-floating-label .active {
-  background-color: white;
+	background-color: white;
 }
 .el-dropdown-menu.el-popper.el-dropdown-menu--mini {
-  z-index: 10501 !important;
+	z-index: 10501 !important;
 }
 </style>

@@ -31,7 +31,8 @@
 									</div>
 									<!-- END SIDEBAR USER TITLE -->
 									<!-- SIDEBAR BUTTONS -->
-									<div class="profile-userbuttons">
+									<div class="profile-userbuttons"
+									v-if="can('user_manager users message')">
 										<button type="button"
 										        class="btn btn-circle red btn-sm"
 										        @click="showMessageModal()">Message</button>

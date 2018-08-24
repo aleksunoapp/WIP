@@ -314,14 +314,16 @@ export const role = {
 			'user_manager users read': false,
 			'user_manager users approve': false,
 			'user_manager users add_points create': false,
-			'user_manager users add_points approve': false
+			'user_manager users add_points approve': false,
+			'user_manager users message': false
 		},
 		'user_groups': {
 			'user_manager user_groups read': false,
 			'user_manager user_groups create': false,
 			'user_manager user_groups update': false,
 			'user_manager user_groups delete': false,
-			'user_manager user_groups approve': false
+			'user_manager user_groups approve': false,
+			'user_manager user_groups message': false
 		},
 		'attributes': {
 			'user_manager attributes read': false,
