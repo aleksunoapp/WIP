@@ -214,7 +214,7 @@
 										type="submit"
 											class="btn blue pull-right">
 										Save
-										<i v-show="updating"
+										<i v-show="day.updating"
 										class="fa fa-spinner fa-pulse fa-fw"></i>
 									</button>
 								</td>
@@ -224,7 +224,7 @@
 										type="submit"
 											class="btn blue pull-right">
 										Delete
-										<i v-show="deleting"
+										<i v-show="day.deleting"
 										class="fa fa-spinner fa-pulse fa-fw"></i>
 									</button>
 								</td>
@@ -235,51 +235,10 @@
 
 			</div>
 		</div>
-
-		<modal :show="showDeleteModal"
-		       effect="fade"
-		       @closeOnEscape="closeDeleteModal"
-		       ref="deleteModal">
-			<div slot="modal-header"
-			     class="modal-header center">
-				<button type="button"
-				        class="close"
-				        @click="closeDeleteModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Delete Delivery Hours</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<div class="alert alert-danger"
-				     v-show="deleteErrorMessage">
-					<button class="close"
-					        ref="deleteErrorMessage"
-					        @click="clearError('deleteErrorMessage')"></button>
-					<span>{{deleteErrorMessage}}</span>
-				</div>
-				<div class="col-md-12">
-					Are you sure you want to delete these delivery hours?
-				</div>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer clear">
-				<button type="button"
-				        class="btn btn-primary"
-				        @click="deleteDeliveryHours()"
-				        :disabled="deleting">
-					Delete
-					<i v-show="deleting"
-					   class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-			</div>
-		</modal>
 	</div>
 </template>
 <script>
 import DeliveryHoursFunctions from '@/controllers/DeliveryHours'
-import Modal from '@/components/modules/Modal'
 import LoadingScreen from '@/components/modules/LoadingScreen'
 import NoResults from '@/components/modules/NoResults'
 import { mapGetters } from 'vuex'
@@ -287,7 +246,6 @@ import ajaxErrorHandler from '../../../controllers/ErrorController'
 
 export default {
 	components: {
-		Modal,
 		LoadingScreen,
 		NoResults
 	},
@@ -363,10 +321,7 @@ export default {
 
 			deliveryHours: [],
 
-			updating: false,
-
 			showDeleteModal: false,
-			deleting: false,
 			deleteErrorMessage: ''
 		}
 	},
@@ -393,22 +348,12 @@ export default {
 	},
 	methods: {
 		/**
-		 * To toggle the create tier panel, initially set to closed
+		 * To toggle the create panel
 		 * @function
 		 * @returns {undefined}
 		 */
 		toggleCreatePanel () {
 			this.createNewCollapse = !this.createNewCollapse
-		},
-		reorderDays (days) {
-			days.sort((a, b) => a.day > b.day)
-			const sundayIndex = days.findIndex(day => day.day === 0)
-			if (sundayIndex !== -1) {
-				const sunday = days[sundayIndex]
-				days.splice(sundayIndex, 1)
-				days.push(sunday)
-			}
-			return days
 		},
 		/**
 		 * To copy the time to other days.
@@ -434,6 +379,11 @@ export default {
 				day.close_time = time
 			})
 		},
+		/**
+		 * To fetch delivery hours
+		 * @function
+		 * @returns {undefined}
+		 */
 		getDeliveryHours () {
 			this.loading = true
 			const _this = this
@@ -443,15 +393,10 @@ export default {
 			)
 				.then(response => {
 					if (response.payload.length) {
-						const days = _this.reorderDays(response.payload)
-
-						_this.deliveryHours = days.map(day => {
-							return {
-								...day,
-								open_time: day.open_time.slice(0, 5),
-								close_time: day.close_time.slice(0, 5)
-							}
-						})
+						let days = _this.reorderDays(response.payload)
+						days = _this.reorderDays(response.payload)
+						days = _this.reformatDays(days)
+						_this.deliveryHours = days
 					}
 				})
 				.catch(reason => {
@@ -466,6 +411,42 @@ export default {
 					_this.loading = false
 				})
 		},
+		/**
+		 * To order weekdays from Monday to Sunday
+		 * @function
+		 * @returns {undefined}
+		 */
+		reorderDays (days) {
+			days.sort((a, b) => a.day > b.day)
+			const sundayIndex = days.findIndex(day => day.day === 0)
+			if (sundayIndex !== -1) {
+				const sunday = days[sundayIndex]
+				days.splice(sundayIndex, 1)
+				days.push(sunday)
+			}
+			return days
+		},
+		/**
+		 * To trim time strings and add loading booleans
+		 * @function
+		 * @returns {undefined}
+		 */
+		reformatDays (days) {
+			return days.map(day => {
+				return {
+					...day,
+					open_time: day.open_time.slice(0, 5),
+					close_time: day.close_time.slice(0, 5),
+					updating: false,
+					deleting: false
+				}
+			})
+		},
+		/**
+		 * To validate hours before submitting to API
+		 * @function
+		 * @returns {undefined}
+		 */
 		validateNew () {
 			const _this = this
 			return new Promise(function (resolve, reject) {
@@ -479,6 +460,11 @@ export default {
 				resolve('Hurray')
 			})
 		},
+		/**
+		 * To create delivery hours
+		 * @function
+		 * @returns {undefined}
+		 */
 		createDeliveryHours () {
 			const _this = this
 			this.validateNew()
@@ -489,14 +475,9 @@ export default {
 						deliveryhour: this.newDeliveryHours
 					})
 						.then(response => {
-							const days = _this.reorderDays(response.payload)
-							_this.deliveryHours = days.map(day => {
-								return {
-									...day,
-									open_time: day.open_time.slice(0, 5),
-									close_time: day.close_time.slice(0, 5)
-								}
-							})
+							let days = _this.reorderDays(response.payload)
+							days = _this.reformatDays(days)
+							_this.deliveryHours = days
 						})
 						.catch(reason => {
 							ajaxErrorHandler({
@@ -515,6 +496,12 @@ export default {
 					this.createErrorMessage = reason
 				})
 		},
+		/**
+		 * To validate hours before submitting to API
+		 * @function
+		 * @param {object} day - The day to validate
+		 * @returns {undefined}
+		 */
 		validateEdited (day) {
 			return new Promise(function (resolve, reject) {
 				if (!day.open_time.length) {
@@ -527,11 +514,16 @@ export default {
 				resolve('Hurray')
 			})
 		},
+		/**
+		 * To update delivery hours
+		 * @function
+		 * @returns {undefined}
+		 */
 		updateDeliveryHours (day) {
 			const _this = this
 			this.validateEdited(day)
 				.then(response => {
-					_this.updating = true
+					day.updating = true
 					DeliveryHoursFunctions.updateDeliveryHours({
 						location_id: this.activeLocationId,
 						id: day.id,
@@ -540,7 +532,9 @@ export default {
 						close_time: day.close_time
 					})
 						.then(response => {
-
+							let days = _this.reorderDays(response.payload)
+							days = _this.reformatDays(days)
+							_this.deliveryHours = days
 						})
 						.catch(reason => {
 							ajaxErrorHandler({
@@ -569,23 +563,13 @@ export default {
 			this[errorMessageName] = ''
 		},
 		/**
-		 * To display the delete modal.
+		 * To delete delivery hours
 		 * @function
 		 * @returns {undefined}
 		 */
-		openDeleteModal () {
-			this.showDeleteModal = true
-		},
-		/**
-		 * To close the delete modal.
-		 * @function
-		 * @returns {undefined}
-		 */
-		closeDeleteModal () {
-			this.showDeleteModal = false
-		},
 		deleteDeliveryHours (day) {
 			const _this = this
+			day.deleting = true
 			DeliveryHoursFunctions.deleteDeliveryHours({
 				location_id: this.activeLocationId,
 				id: day.id
@@ -593,6 +577,7 @@ export default {
 				let index = this.deliveryHours.findIndex(candidate => candidate.id === day.id)
 				this.deliveryHours.splice(index, 1)
 			}).catch(reason => {
+				day.deleting = false
 				ajaxErrorHandler({
 					reason,
 					errorText: 'We could not delete the delivery hours',
