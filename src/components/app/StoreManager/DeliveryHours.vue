@@ -50,7 +50,6 @@
 							<th>Open</th>
 							<th>From</th>
 							<th>To</th>
-							<th>Status</th>
 						</thead>
 						<tbody>
 							<tr v-for="day in availableDays"
@@ -97,16 +96,6 @@
 										<i class="fa fa-clone"
 										   aria-hidden="true"></i>
 									</button>
-								</td>
-								<td class="align-middle">
-									<el-switch v-model="day.status"
-									           active-color="#0c6"
-									           inactive-color="#ff4949"
-									           :active-value="1"
-									           :inactive-value="0"
-									           active-text="On"
-									           inactive-text="Off">
-									</el-switch>
 								</td>
 							</tr>
 						</tbody>
@@ -163,7 +152,6 @@
 							<th>Open</th>
 							<th>From</th>
 							<th>To</th>
-							<th>Status</th>
 							<th></th>
 						</thead>
 						<tbody>
@@ -173,7 +161,14 @@
 									{{dayNames[day.day]}}
 								</td>
 								<td class="align-middle">
-									{{day.open ? 'Yes' : 'No'}}
+									<el-switch v-model="day.open"
+									           active-color="#0c6"
+									           inactive-color="#ff4949"
+									           :active-value="1"
+									           :inactive-value="0"
+									           active-text="Yes"
+									           inactive-text="No">
+									</el-switch>
 								</td>
 								<td class="align-middle">
 									<el-time-select v-model="day.open_time"
@@ -204,9 +199,6 @@
 										<i class="fa fa-clone"
 										   aria-hidden="true"></i>
 									</button>
-								</td>
-								<td class="align-middle">
-									{{day.status ? 'On' : 'Off'}}
 								</td>
 								<td>
 									<button 
@@ -270,50 +262,43 @@ export default {
 					day: 1,
 					open: 1,
 					open_time: '00:00',
-					close_time: '00:00',
-					status: 1
+					close_time: '00:00'
 				},
 				{
 					day: 2,
 					open: 1,
 					open_time: '00:00',
-					close_time: '00:00',
-					status: 1
+					close_time: '00:00'
 				},
 				{
 					day: 3,
 					open: 1,
 					open_time: '00:00',
-					close_time: '00:00',
-					status: 1
+					close_time: '00:00'
 				},
 				{
 					day: 4,
 					open: 1,
 					open_time: '00:00',
-					close_time: '00:00',
-					status: 1
+					close_time: '00:00'
 				},
 				{
 					day: 5,
 					open: 1,
 					open_time: '00:00',
-					close_time: '00:00',
-					status: 1
+					close_time: '00:00'
 				},
 				{
 					day: 6,
 					open: 1,
 					open_time: '00:00',
-					close_time: '00:00',
-					status: 1
+					close_time: '00:00'
 				},
 				{
 					day: 0,
 					open: 1,
 					open_time: '00:00',
-					close_time: '00:00',
-					status: 1
+					close_time: '00:00'
 				}
 			],
 			creating: false,
@@ -454,9 +439,9 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (_this.newDeliveryHours.some(day => !day.open_time.length)) {
 					reject('From cannot be blank')
-				} else if (_this.newDeliveryHours.some(day => !day.close_time.length)) {
+				} else if (_this.availableDays.some(day => !day.close_time.length)) {
 					reject('To cannot be blank')
-				} else if (_this.newDeliveryHours.some(day => day.open_time >= day.close_time)) {
+				} else if (_this.availableDays.some(day => day.open_time >= day.close_time)) {
 					reject('Time To must be after time From')
 				}
 				resolve('Hurray')
@@ -532,7 +517,8 @@ export default {
 						id: day.id,
 						day: day.day,
 						open_time: day.open_time,
-						close_time: day.close_time
+						close_time: day.close_time,
+						open: day.open
 					})
 						.then(response => {
 							let days = _this.reorderDays(response.payload)
