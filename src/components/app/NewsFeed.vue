@@ -102,6 +102,9 @@
 			</div>
 		</div>
 		<!-- CREATE END -->
+		<loading-screen :show="displayNewsFeedData"
+		                :color="'#2C3E50'"
+		                :display="'inline'"></loading-screen>
 		<div class="margin-top-20">
 			<div class="relative-block">
 				<div class="clearfix"
@@ -204,7 +207,7 @@
 					</div>
 				</div>
 				<div v-else>
-					<no-results :show="!newsFeed.length"
+					<no-results :show="!newsFeed.length && !displayNewsFeedData"
 					            :type="'news feed'"></no-results>
 				</div>
 				<pagination v-if="newsFeed.length && numPages > 1"
@@ -274,6 +277,7 @@ import NewsFeedFunctions from '../../controllers/NewsFeed'
 import EditNewsFeed from './NewsFeed/EditNewsFeed'
 import ResourcePicker from '../modules/ResourcePicker'
 import ajaxErrorHandler from '@/controllers/ErrorController'
+import LoadingScreen from '@/components/modules/LoadingScreen'
 
 export default {
 	data () {
@@ -307,7 +311,8 @@ export default {
 			showDeleteModal: false,
 			newsToDelete: {},
 			deleting: false,
-			deleteErrorMessage: ''
+			deleteErrorMessage: '',
+			displayNewsFeedData: false
 		}
 	},
 	created () {
@@ -439,6 +444,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		getNewsFeed (pageNumber) {
+			this.displayNewsFeedData = true
 			this.newsFeed = []
 			var newsFeedVue = this
 			return NewsFeedFunctions.getNewsFeed(
@@ -482,6 +488,8 @@ export default {
 						errorName: 'errorMessage',
 						vue: newsFeedVue
 					})
+				}).finally(() => {
+					newsFeedVue.displayNewsFeedData = false
 				})
 		},
 		/**
@@ -635,7 +643,8 @@ export default {
 		EditNewsFeed,
 		NoResults,
 		ResourcePicker,
-		Modal
+		Modal,
+		LoadingScreen
 	}
 }
 </script>
