@@ -414,6 +414,7 @@ export default {
 		/**
 		 * To order weekdays from Monday to Sunday
 		 * @function
+		 * @param {array} days - Array of days to reorder
 		 * @returns {undefined}
 		 */
 		reorderDays (days) {
@@ -429,6 +430,7 @@ export default {
 		/**
 		 * To trim time strings and add loading booleans
 		 * @function
+		 * @param {array} days - Array of days to reformat
 		 * @returns {undefined}
 		 */
 		reformatDays (days) {
@@ -517,6 +519,7 @@ export default {
 		/**
 		 * To update delivery hours
 		 * @function
+		 * @param {object} day - Day to update
 		 * @returns {undefined}
 		 */
 		updateDeliveryHours (day) {
@@ -565,6 +568,7 @@ export default {
 		/**
 		 * To delete delivery hours
 		 * @function
+		 * @param {object} day - Day to delete
 		 * @returns {undefined}
 		 */
 		deleteDeliveryHours (day) {
