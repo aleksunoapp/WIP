@@ -117,7 +117,6 @@
 			</div>
 		</div>
 		<!-- CREATE END -->
-
 		<div class="margin-top-20">
 			<div class="relative-block">
 				<div class="portlet light portlet-fit bordered">
@@ -130,6 +129,9 @@
 							<div class="caption-desc font-grey-cascade">Click on the edit button to edit the questions and answers.</div>
 						</div>
 					</div>
+					<loading-screen :show="displayUserFAQData"
+		                :color="'#2C3E50'"
+		                :display="'inline'"></loading-screen>
 					<div class="portlet-body">
 						<div class="alert alert-danger"
 						     v-show="!faqs.length && errorMessage"
@@ -173,7 +175,7 @@
 							</div>
 						</div>
 						<div v-else>
-							<no-results :show="!faqs.length"
+							<no-results :show="!faqs.length && !displayUserFAQData"
 							            :type="'user FAQs'"></no-results>
 						</div>
 					</div>
@@ -194,6 +196,7 @@ import GlobalFunctions from '../../../global'
 import FAQFunctions from '../../../controllers/FAQ'
 import EditUserFaq from './EditUserFaq'
 import ajaxErrorHandler from '@/controllers/ErrorController'
+import LoadingScreen from '@/components/modules/LoadingScreen'
 
 export default {
 	data () {
@@ -217,7 +220,8 @@ export default {
 			faqs: [],
 			errorMessage: '',
 			showEditFAQModal: false,
-			selectedFAQId: 0
+			selectedFAQId: 0,
+			displayUserFAQData: false
 		}
 	},
 	created () {
@@ -230,6 +234,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		getUserFAQs () {
+			this.displayUserFAQData = true
 			this.faqs = []
 			var usersFAQVue = this
 			return FAQFunctions.getUserFAQs(
@@ -250,6 +255,8 @@ export default {
 						errorName: 'errorMessage',
 						vue: usersFAQVue
 					})
+				}).finally(() => {
+					usersFAQVue.displayUserFAQData = false
 				})
 		},
 		/**
@@ -418,7 +425,8 @@ export default {
 	components: {
 		Breadcrumb,
 		EditUserFaq,
-		NoResults
+		NoResults,
+		LoadingScreen
 	}
 }
 </script>

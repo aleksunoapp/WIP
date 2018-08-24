@@ -94,6 +94,9 @@
 							<div class="caption-desc font-grey-cascade">Click on the edit button to edit the questions and answers.</div>
 						</div>
 					</div>
+					<loading-screen :show="displayStoresFAQData"
+		                :color="'#2C3E50'"
+		                :display="'inline'"></loading-screen>
 					<div class="portlet-body">
 						<div class="alert alert-danger"
 						     v-show="!faqs.length && errorMessage"
@@ -143,7 +146,7 @@
 							</div>
 						</div>
 						<div v-else>
-							<no-results :show="!faqs.length"
+							<no-results :show="!faqs.length && !displayStoresFAQData"
 							            :type="'store FAQs'"></no-results>
 						</div>
 					</div>
@@ -164,6 +167,7 @@ import NoResults from '../../modules/NoResults'
 import FAQFunctions from '../../../controllers/FAQ'
 import EditStoreFaq from './EditStoreFaq'
 import ajaxErrorHandler from '@/controllers/ErrorController'
+import LoadingScreen from '@/components/modules/LoadingScreen'
 
 export default {
 	data () {
@@ -185,7 +189,8 @@ export default {
 			faqs: [],
 			errorMessage: '',
 			showEditFAQModal: false,
-			selectedFAQId: 0
+			selectedFAQId: 0,
+			displayStoresFAQData: false
 		}
 	},
 	created () {
@@ -198,6 +203,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		getStoreFAQs () {
+			this.displayStoresFAQData = true
 			this.faqs = []
 			var storesFAQVue = this
 			return FAQFunctions.getStoreFAQs(
@@ -218,6 +224,8 @@ export default {
 						errorName: 'errorMessage',
 						vue: storesFAQVue
 					})
+				}).finally(() => {
+					storesFAQVue.displayStoresFAQData = false
 				})
 		},
 		/**
@@ -378,7 +386,8 @@ export default {
 	components: {
 		Breadcrumb,
 		EditStoreFaq,
-		NoResults
+		NoResults,
+		LoadingScreen
 	}
 }
 </script>

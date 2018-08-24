@@ -80,9 +80,7 @@
 				</div>
 			</div>
 			<!-- END CREATE NEW TIER-->
-			<loading-screen :show="displayMenuTiersData"
-			                :color="'#2C3E50'"
-			                :display="'inline'"></loading-screen>
+
 			<!-- BEGIN MENUS LIST-->
 			<div v-if="!noCorporateStore">
 				<div class="portlet light portlet-fit bordered margin-top-20">
@@ -95,6 +93,9 @@
 							<div class="caption-desc font-grey-cascade">Click on a menu tier to edit it.</div>
 						</div>
 					</div>
+					<loading-screen :show="displayMenuTiersData"
+			                :color="'#2C3E50'"
+			                :display="'inline'"></loading-screen>
 					<div class="portlet-body">
 						<div class="row">
 							<div class="col-md-12">
@@ -107,7 +108,7 @@
 								</div>
 							</div>
 						</div>
-						<no-results :show="!menuTiers.length"
+						<no-results :show="!menuTiers.length  && !displayMenuTiersData"
 						            :type="'menu tiers'"></no-results>
 						<div class="mt-element-list margin-top-15">
 							<div class="mt-list-container list-news">
