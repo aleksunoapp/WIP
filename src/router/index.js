@@ -30,6 +30,7 @@ import StoreList from '@/components/app/StoreManager/StoreList'
 import EditStore from '@/components/app/StoreManager/EditStore'
 import Amenities from '@/components/app/StoreManager/Amenities'
 import OrderSettings from '@/components/app/StoreManager/OrderSettings'
+import DeliveryHours from '@/components/app/StoreManager/DeliveryHours'
 import StoreGroups from '@/components/app/StoreManager/StoreGroups'
 // News Feed
 import NewsFeed from '@/components/app/NewsFeed'
@@ -317,6 +318,14 @@ export const routes = [
 				meta: {
 					adminOnly: false,
 					permissions: ['stores order_settings read']
+				}
+			},
+			{
+				path: 'store_manager/delivery_hours',
+				name: 'DeliveryHours',
+				component: DeliveryHours,
+				meta: {
+					permissions: ['stores delivery_hours read']
 				}
 			},
 			// News Feed

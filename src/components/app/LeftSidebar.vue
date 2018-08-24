@@ -264,6 +264,16 @@
 								<span class="title">Order Settings</span>
 							</router-link>
 						</li>
+						<li v-if="can('stores delivery_hours read')"
+						    class="nav-item"
+						    :class="{'active': currentRoute === 'store_manager' && currentSubRoute === 'delivery_hours'}"
+						    id="store_manager_delivery_hours_link">
+							<router-link to="/app/store_manager/delivery_hours"
+							             class="nav-link">
+								<i class="fa fa-truck"></i>
+								<span class="title">Delivery Hours</span>
+							</router-link>
+						</li>
 					</ul>
 				</li>
 				<li v-if="can('news_feed read')"
