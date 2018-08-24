@@ -65,10 +65,6 @@
 									{{request.formattedDate}}
 								</div>
 								<div class="col-xs-4">
-									<button class="btn btn-danger btn-sm third-width"
-									        @click.stop="rejectRequest(request)">
-										Reject
-									</button>
 									<button @click.stop="approveRequest(request)"
 									        class="btn blue btn-sm third-width">
 										Approve
@@ -118,15 +114,27 @@
 								</div>
 							</div>
 
+							<div class="row margin-top-20">
+								<div class="col-xs-12 col-md-6">
+									<div class="form-group form-md-line-input form-md-floating-label">
+										<textarea rows="4"
+												class="form-control edited"
+												id="approvals_message"
+												v-model="selectedRequest.message"></textarea>
+										<label for="approvals_message">Message</label>
+									</div>
+								</div>
+							</div>
+
 							<div class="row margin-top-20"
 							     v-if="$root.permissions['approvals update']">
 								<div class="col-xs-4 col-xs-offset-8">
 									<button class="btn btn-danger third-width"
-									        @click="rejectRequest(selectedRequest)"
+									        @click="submitApproval(false)"
 									        :disabled="rejecting">
 										Reject
 									</button>
-									<button @click="approveRequest(selectedRequest)"
+									<button @click="submitApproval(true)"
 									        class="btn blue third-width"
 									        :disabled="approving">
 										Approve
@@ -167,6 +175,7 @@ export default {
 			view: 'list',
 			requests: [],
 			selectedRequest: {},
+			message: '',
 			errorMessage: '',
 			loading: false,
 			approving: false,
@@ -246,7 +255,10 @@ export default {
 		 * @returns {undefined}
 		 */
 		viewRequest (request) {
-			this.selectedRequest = request
+			this.selectedRequest = {
+				...request,
+				message: ''
+			}
 			this.view = 'single'
 		},
 		/**
@@ -335,6 +347,13 @@ export default {
 				approved_by: this.$root.activeUser.id,
 				approved_by_name: this.$root.activeUser.name
 			}
+			if (!approved) {
+				if (!this.selectedRequest.message) {
+					this.errorMessage = 'Please provide a reason in the message field'
+					return
+				}
+				review.message = this.selectedRequest.message
+			}
 			return ApprovalsFunctions.approveRequest(
 				approvalsVue.selectedRequest,
 				review
@@ -343,18 +362,17 @@ export default {
 					approvalsVue.view = 'list'
 					approvalsVue.getRequests()
 					approvalsVue.showApproveSuccess(approved)
-					approvalsVue.approving = false
-					approvalsVue.rejecting = false
 				})
 				.catch(reason => {
-					approvalsVue.approving = false
-					approvalsVue.rejecting = false
 					ajaxErrorHandler({
 						reason,
-						errorText: 'Could not fetch changes to approve',
+						errorText: `Could not ${approved ? 'approve' : 'reject'} the request`,
 						errorName: 'errorMessage',
 						vue: approvalsVue
 					})
+				}).finally(() => {
+					approvalsVue.approving = false
+					approvalsVue.rejecting = false
 				})
 		},
 		/**
