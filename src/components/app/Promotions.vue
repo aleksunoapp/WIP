@@ -143,8 +143,9 @@
 								        class="btn blue btn-outline"
 								        @click="openMenuModifierTree()">Select</button>
 								<p class="grey-label margin-top-10"
-								   v-show="newPromotion.skuArray.length">Selected {{newPromotion.skuArray.length}} item
-									<span v-show="newPromotion.skuArray.length !== 1">s</span>
+								   v-show="newPromotion.skuArray.length">Selected {{newPromotion.skuArray.length}}
+									<span v-if="newPromotion.skuArray.length !== 1">items</span>
+									<span v-else>item</span>
 								</p>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label"
@@ -153,8 +154,9 @@
 								        class="btn blue btn-outline"
 								        @click="openPromoCodesCodeModal()">Select</button>
 								<p class="grey-label margin-top-10"
-								   v-show="newPromotion.cta_value.length">Selected {{newPromotion.cta_value.split(',').length}} code
-									<span v-show="newPromotion.cta_value.split(',').length !== 1">s</span>
+								   v-show="newPromotion.cta_value.length">Selected {{newPromotion.cta_value.split(',').length}}
+									<span v-if="newPromotion.cta_value.split(',').length !== 1">codes</span>
+									<span v-else>code</span>
 								</p>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
@@ -662,8 +664,11 @@
 						        :class="{'blue-chambray' : !promotionForQrCode.allLocations, 'blue btn-outline' : promotionForQrCode.allLocations}">Select stores</button>
 						<p class="grey-label">
 							<span v-show="promotionForQrCode.allLocations">All</span>
-							<span v-show="!promotionForQrCode.allLocations">{{promotionForQrCode.locations.length}}</span> store
-							<span v-show="promotionForQrCode.allLocations || (!promotionForQrCode.allLocations && promotionForQrCode.locations.length !== 1)">s</span> selected</p>
+							<span v-show="!promotionForQrCode.allLocations">{{promotionForQrCode.locations.length}}</span>
+							<span v-if="promotionForQrCode.allLocations || (!promotionForQrCode.allLocations && promotionForQrCode.locations.length !== 1)">stores</span>
+							<span v-else>store</span>
+							selected
+						</p>
 					</div>
 				</div>
 				<div v-if="!promotionForQrCode.qr_code.length && promotionForQrCode.showStoreSelector">
@@ -1046,12 +1051,16 @@ export default {
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						promotionsVue.promoCodes = response.payload.map(code => {
-							code.selected = false
-							return code
-						})
+						promotionsVue.promoCodes = response.payload.map(
+							code => {
+								code.selected = false
+								return code
+							}
+						)
 					} else {
-						throw new Error('We could not fetch a list of promo codes')
+						throw new Error(
+							'We could not fetch a list of promo codes'
+						)
 					}
 				})
 				.catch(reason => {
@@ -1214,7 +1223,8 @@ export default {
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						promotionsVue.promotionForQrCode.qr_code = response.payload.qr_code
+						promotionsVue.promotionForQrCode.qr_code =
+							response.payload.qr_code
 						promotionsVue.getQrCodes()
 					}
 				})
@@ -1357,7 +1367,8 @@ export default {
 					if (response.code === 200 && response.status === 'ok') {
 						promotionsVue.geolocations = response.payload
 						if (response.payload.length) {
-							promotionsVue.selectedGeolocationId = response.payload[0].id
+							promotionsVue.selectedGeolocationId =
+								response.payload[0].id
 						}
 					}
 				})
@@ -1591,7 +1602,8 @@ export default {
 						promotionsVue.loadingGroupsData = false
 						promotionsVue.storeGroups = response.payload
 						if (response.payload.length) {
-							promotionsVue.selectedGroupId = response.payload[0].id
+							promotionsVue.selectedGroupId =
+								response.payload[0].id
 						}
 					} else {
 						promotionsVue.loadingGroupsData = false
@@ -1742,7 +1754,8 @@ export default {
 			this.deletePromotionModalActive = false
 			for (var i = 0; i < this.promotions.length; i++) {
 				if (
-					parseInt(this.promotions[i].id) === parseInt(this.selectedPromotionId)
+					parseInt(this.promotions[i].id) ===
+					parseInt(this.selectedPromotionId)
 				) {
 					this.promotions.splice(i, 1)
 					break
@@ -1808,8 +1821,16 @@ export default {
 					if (response.code === 200 && response.status === 'ok') {
 						promotionsVue.displayPromotionsData = false
 						promotionsVue.promotions = response.payload
-						for (var i = 0; i < promotionsVue.promotions.length; i++) {
-							promotionsVue.$set(promotionsVue.promotions[i], 'selected', false)
+						for (
+							var i = 0;
+							i < promotionsVue.promotions.length;
+							i++
+						) {
+							promotionsVue.$set(
+								promotionsVue.promotions[i],
+								'selected',
+								false
+							)
 						}
 						if (promotionsVue.$root.activeLocation.id) {
 							promotionsVue.getPromotionsForAStore()
@@ -1843,11 +1864,15 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						response.payload.promotions.forEach(storePromotion => {
-							promotionsVue.promotions.forEach(globalPromotion => {
-								if (globalPromotion.id === storePromotion.id) {
-									globalPromotion.selected = true
+							promotionsVue.promotions.forEach(
+								globalPromotion => {
+									if (
+										globalPromotion.id === storePromotion.id
+									) {
+										globalPromotion.selected = true
+									}
 								}
-							})
+							)
 						})
 					} else {
 						promotionsVue.displayPromotionsData = false
@@ -1915,9 +1940,13 @@ export default {
 					reject('Promotion name cannot be blank')
 				} else if (!promotionsVue.newPromotion.description.length) {
 					reject('Promotion description cannot be blank')
-				} else if (!promotionsVue.newPromotion.short_description.length) {
+				} else if (
+					!promotionsVue.newPromotion.short_description.length
+				) {
 					reject('Promotion short description cannot be blank')
-				} else if (!$.isNumeric(promotionsVue.newPromotion.sort_order)) {
+				} else if (
+					!$.isNumeric(promotionsVue.newPromotion.sort_order)
+				) {
 					reject('Sort order must be a number')
 				} else if (!promotionsVue.newPromotion.start_date) {
 					reject('Please provide Start Date and Time')
@@ -1982,11 +2011,15 @@ export default {
 						promotionsVue.$root.userToken
 					)
 						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
 								promotionsVue.showAlert()
 								promotionsVue.getAllPromotions()
 							} else {
-								promotionsVue.createErrorMessage = response.message
+								promotionsVue.createErrorMessage =
+									response.message
 							}
 						})
 						.catch(reason => {
@@ -2093,77 +2126,77 @@ export default {
 
 <style scoped>
 .btn.custom-button:not(.md-skip):not(.bs-select-all):not(.bs-deselect-all) {
-  position: absolute;
-  bottom: 0;
-  height: 100%;
-  width: 5em;
-  border-radius: 0;
+	position: absolute;
+	bottom: 0;
+	height: 100%;
+	width: 5em;
+	border-radius: 0;
 }
 .custom-button.full-width {
-  right: 0;
+	right: 0;
 }
 .mt-element-list .list-news.ext-1.mt-list-container ul > .mt-list-item:hover {
-  background-color: white;
+	background-color: white;
 }
 .tiles .tile .tile-body > div {
-  height: 80px;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-size: 100%;
+	height: 80px;
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-size: 100%;
 }
 .tile-width {
-  width: 127px;
-  text-align: center;
+	width: 127px;
+	text-align: center;
 }
 .tile-width > span {
-  max-width: 90%;
-  height: 20px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  display: inline-block;
-  font-size: 13px;
+	max-width: 90%;
+	height: 20px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	display: inline-block;
+	font-size: 13px;
 }
 .tiles .tile.image .corner:after {
-  z-index: 1;
+	z-index: 1;
 }
 .tiles .tile.image.selected .check:after {
-  z-index: 1;
-  content: "\f040";
-  color: #000;
+	z-index: 1;
+	content: "\f040";
+	color: #000;
 }
 .tiles .tile.image.selected.active .check:after {
-  content: "\F00C";
+	content: "\F00C";
 }
 .tiles .tile.image.selected.active .corner:after {
-  border-right: 40px solid rgba(55, 183, 217, 1);
+	border-right: 40px solid rgba(55, 183, 217, 1);
 }
 .grey-label {
-  color: rgb(136, 136, 136);
-  font-size: 13px;
-  margin-bottom: 5px;
+	color: rgb(136, 136, 136);
+	font-size: 13px;
+	margin-bottom: 5px;
 }
 .group-radio {
-  display: block;
+	display: block;
 }
 .group-radio.el-radio + .group-radio.el-radio {
-  margin-left: 0;
+	margin-left: 0;
 }
 .container__flex-row--center {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 }
 .footer-wrapper {
-  display: flex;
-  justify-content: space-between;
+	display: flex;
+	justify-content: space-between;
 }
 .actions-on-top {
-  margin-top: -5px;
+	margin-top: -5px;
 }
 .limited-height {
-  height: 250px;
+	height: 250px;
 }
 </style>

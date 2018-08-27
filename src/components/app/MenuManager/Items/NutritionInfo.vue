@@ -87,8 +87,9 @@
 						        class="btn blue btn-outline"
 						        @click="selectLocations($event)">Select locations</button>
 						<p class="grey-label margin-top-10"
-						   v-if="selectedLocations.length">Selected {{ selectedLocations.length }} location
-							<span v-if="selectedLocations.length !== 1">s</span>
+						   v-if="selectedLocations.length">Selected {{ selectedLocations.length }}
+							<span v-if="selectedLocations.length !== 1">locations</span>
+							<span v-else>location</span>
 						</p>
 						<div class="form-group form-md-line-input form-md-floating-label">
 							<label>Update all items?</label><br>
@@ -315,7 +316,11 @@ export default {
 		 * @returns {undefined}
 		 */
 		enableCreate () {
-			if (this.can('menu_manager menus categories subcategories items nutrition create')) {
+			if (
+				this.can(
+					'menu_manager menus categories subcategories items nutrition create'
+				)
+			) {
 				this.creatingNutritionInfo = true
 			}
 		},
@@ -325,7 +330,11 @@ export default {
 		 * @returns {undefined}
 		 */
 		enableEdit () {
-			if (this.can('menu_manager menus categories subcategories items nutrition update')) {
+			if (
+				this.can(
+					'menu_manager menus categories subcategories items nutrition update'
+				)
+			) {
 				this.editingNutritionInfo = true
 			}
 		},
@@ -447,8 +456,15 @@ export default {
 		updateItemNutritionInfo () {
 			var nutritionInfoVue = this
 			var updatedNutritionInfo = {}
-			for (var i = 0; i < nutritionInfoVue.itemNutritionInfo.length; i++) {
-				if (nutritionInfoVue.itemNutritionInfo[i].key !== 'modifier_item_id') {
+			for (
+				var i = 0;
+				i < nutritionInfoVue.itemNutritionInfo.length;
+				i++
+			) {
+				if (
+					nutritionInfoVue.itemNutritionInfo[i].key !==
+					'modifier_item_id'
+				) {
 					var tempKey = nutritionInfoVue.itemNutritionInfo[i].key
 					updatedNutritionInfo[tempKey] =
 						nutritionInfoVue.itemNutritionInfo[i].value
@@ -456,8 +472,10 @@ export default {
 			}
 			updatedNutritionInfo.item_id = nutritionInfoVue.item.id
 			updatedNutritionInfo.user_id = nutritionInfoVue.$root.createdBy
-			updatedNutritionInfo.update_locations = nutritionInfoVue.selectedLocations
-			updatedNutritionInfo.update_all_items = nutritionInfoVue.update_all_items
+			updatedNutritionInfo.update_locations =
+				nutritionInfoVue.selectedLocations
+			updatedNutritionInfo.update_all_items =
+				nutritionInfoVue.update_all_items
 			nutritionInfoVue.editNutritionError = ''
 
 			return nutritionInfoVue
@@ -472,10 +490,14 @@ export default {
 						nutritionInfoVue.$root.userToken
 					)
 						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
 								this.closeModalAndUpdate()
 							} else {
-								nutritionInfoVue.editNutritionError = 'Something'
+								nutritionInfoVue.editNutritionError =
+									'Something'
 							}
 						})
 						.catch(reason => {
@@ -518,7 +540,10 @@ export default {
 						nutritionInfoVue.$root.userToken
 					)
 						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
 								this.closeModalAndUpdate()
 							}
 						})

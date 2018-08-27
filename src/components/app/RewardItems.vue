@@ -102,8 +102,9 @@
 							        @click.prevent="displayMenuModifierTreeModal(newRewardItem, $event)">Select Items</button>
 							<p v-if="newRewardItem.sku.length"
 							   class="margin-top-10 margin-left-10 inline">Selected
-								<span>{{newRewardItem.sku.length}}</span> item
-								<span v-if="newRewardItem.sku.length > 1">s</span>
+								<span>{{newRewardItem.sku.length}}</span>
+								<span v-if="newRewardItem.sku.length > 1">items</span>
+								<span v-else>item</span>
 							</p>
 						</div>
 					</div>
@@ -216,8 +217,9 @@
 										<div class="col-sm-4">
 											<div>
 												<strong>Applied to:</strong>
-												<span>{{ item.sku_array.length }} item
-													<span v-if="item.sku_array.length !== 1">s</span>
+												<span>{{ item.sku_array.length }}
+													<span v-if="item.sku_array.length !== 1">items</span>
+													<span v-else>item</span>
 												</span>
 											</div>
 										</div>
@@ -392,7 +394,8 @@ export default {
 						rewardItemsVue.getRewardItems()
 						rewardItemsVue.showApplySuccess()
 					} else {
-						rewardItemsVue.menuModifierTreeErrorMessage = response.message
+						rewardItemsVue.menuModifierTreeErrorMessage =
+							response.message
 					}
 				})
 				.catch(reason => {
@@ -457,7 +460,8 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						rewardItemsVue.loadingRewardItems = false
-						rewardItemsVue.rewardItems = response.payload.reward_item_all
+						rewardItemsVue.rewardItems =
+							response.payload.reward_item_all
 					} else {
 						rewardItemsVue.loadingRewardItems = false
 					}
@@ -523,11 +527,17 @@ export default {
 						rewardItemsVue.$root.userToken
 					)
 						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								rewardItemsVue.newRewardItem.id = response.payload.id
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
+								rewardItemsVue.newRewardItem.id =
+									response.payload.id
 								rewardItemsVue.newRewardItem.sku_array =
 									response.payload.sku_array
-								rewardItemsVue.addRewardItem(rewardItemsVue.newRewardItem)
+								rewardItemsVue.addRewardItem(
+									rewardItemsVue.newRewardItem
+								)
 							} else {
 								rewardItemsVue.errorMessage = response.message
 								rewardItemsVue.$scrollTo(
@@ -540,7 +550,8 @@ export default {
 						.catch(reason => {
 							ajaxErrorHandler({
 								reason,
-								errorText: 'We could not create the reward item',
+								errorText:
+									'We could not create the reward item',
 								errorName: 'errorMessage',
 								vue: rewardItemsVue
 							})
@@ -551,9 +562,13 @@ export default {
 				})
 				.catch(reason => {
 					rewardItemsVue.errorMessage = reason
-					rewardItemsVue.$scrollTo(rewardItemsVue.$refs.errorMessage, 1000, {
-						offset: -50
-					})
+					rewardItemsVue.$scrollTo(
+						rewardItemsVue.$refs.errorMessage,
+						1000,
+						{
+							offset: -50
+						}
+					)
 				})
 		},
 		/**
@@ -804,14 +819,14 @@ export default {
 
 <style scoped>
 .grey-label {
-  color: rgb(153, 153, 153);
+	color: rgb(153, 153, 153);
 }
 .side-by-side-item {
-  display: inline-block;
-  width: 49%;
+	display: inline-block;
+	width: 49%;
 }
 .mt-element-list .list-news.ext-1.mt-list-container ul > .mt-list-item:hover,
 .mt-element-list .list-news.ext-2.mt-list-container ul > .mt-list-item:hover {
-  background-color: white;
+	background-color: white;
 }
 </style>

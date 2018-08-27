@@ -129,8 +129,11 @@
 								        :class="{'blue-chambray' : newRule.sku !== 'all', 'blue btn-outline' : newRule.sku === 'all'}">Select items</button>
 								<label class="grey-label">
 									<span v-show="newRule.sku === 'all'">All</span>
-									<span v-show="newRule.sku !== 'all'">{{numberOfItemsNew}}</span> item
-									<span v-show="numberOfItemsNew !== 1 || newRule.sku === 'all'">s</span> selected</label>
+									<span v-show="newRule.sku !== 'all'">{{numberOfItemsNew}}</span>
+									<span v-if="numberOfItemsNew !== 1 || newRule.sku === 'all'">items</span>
+									<span v-else>item</span>
+									selected
+								</label>
 							</div>
 							<div class="col-xs-12 no-gutter margin-top-20"
 							     v-show="newRule.parameter === 'time' || newRule.parameter === 'sku-combination'">
@@ -256,8 +259,8 @@
 											<strong>Applies to: </strong>
 											<span v-show="rule.sku === 'all'">all </span>
 											<span v-show="rule.sku !== 'all'">{{rule.sku.length}} </span>
-											<span>item</span>
-											<span v-show="rule.sku.length > 1">s</span>
+											<span v-if="rule.sku.length > 1">items</span>
+											<span v-else>item</span>
 										</div>
 										<div class="col-md-4"
 										     v-show="rule.parameter === 'time' || rule.parameter === 'sku-combination'">
@@ -407,8 +410,10 @@
 							</button>
 							<label class="grey-label">
 								<span v-show="ruleToEdit.sku === 'all'">All</span>
-								<span v-show="ruleToEdit.sku !== 'all'">{{numberOfItemsEdited}}</span> item
-								<span v-show="numberOfItemsEdited !== 1 || ruleToEdit.sku === 'all'">s</span> selected</label>
+								<span v-show="ruleToEdit.sku !== 'all'">{{numberOfItemsEdited}}</span>
+								<span v-if="numberOfItemsEdited !== 1 || ruleToEdit.sku === 'all'">items</span>
+								<span v-else>item</span>
+								selected</label>
 						</div>
 						<div class="col-xs-12 no-gutter margin-top-20"
 						     v-show="ruleToEdit.parameter === 'time' || ruleToEdit.parameter === 'sku-combination'">
@@ -568,7 +573,9 @@ export default {
 	},
 	computed: {
 		numberOfItemsNew () {
-			return this.newRule.sku === '' ? 0 : this.newRule.sku.split(',').length
+			return this.newRule.sku === ''
+				? 0
+				: this.newRule.sku.split(',').length
 		},
 		numberOfItemsEdited () {
 			return this.ruleToEdit.sku === ''
@@ -767,14 +774,21 @@ export default {
 						payload
 					)
 						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
 								rulesVue.getRules()
 								rulesVue.showCreateSuccess()
 							} else {
 								rulesVue.createErrorMessage = response.message
-								rulesVue.$scrollTo(rulesVue.$refs.createErrorMessage, 1000, {
-									offset: -50
-								})
+								rulesVue.$scrollTo(
+									rulesVue.$refs.createErrorMessage,
+									1000,
+									{
+										offset: -50
+									}
+								)
 							}
 						})
 						.catch(reason => {
@@ -791,9 +805,13 @@ export default {
 				})
 				.catch(reason => {
 					rulesVue.createErrorMessage = reason
-					rulesVue.$scrollTo(rulesVue.$refs.createErrorMessage, 1000, {
-						offset: -50
-					})
+					rulesVue.$scrollTo(
+						rulesVue.$refs.createErrorMessage,
+						1000,
+						{
+							offset: -50
+						}
+					)
 				})
 		},
 		/**
@@ -849,9 +867,13 @@ export default {
 					} else {
 						rulesVue.loading = false
 						rulesVue.listErrorMessage = response.message
-						rulesVue.$scrollTo(rulesVue.$refs.listErrorMessage, 1000, {
-							offset: -50
-						})
+						rulesVue.$scrollTo(
+							rulesVue.$refs.listErrorMessage,
+							1000,
+							{
+								offset: -50
+							}
+						)
 					}
 				})
 				.catch(reason => {
@@ -984,15 +1006,22 @@ export default {
 						payload
 					)
 						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
 								rulesVue.getRules()
 								rulesVue.closeEditModal()
 								rulesVue.showEditSuccess()
 							} else {
 								rulesVue.editErrorMessage = response.message
-								rulesVue.$scrollTo(rulesVue.$refs.editErrorMessage, 1000, {
-									offset: -50
-								})
+								rulesVue.$scrollTo(
+									rulesVue.$refs.editErrorMessage,
+									1000,
+									{
+										offset: -50
+									}
+								)
 							}
 						})
 						.catch(reason => {
@@ -1009,9 +1038,13 @@ export default {
 				})
 				.catch(reason => {
 					rulesVue.editErrorMessage = reason
-					rulesVue.$scrollTo(rulesVue.$refs.createErrorMessage, 1000, {
-						offset: -50
-					})
+					rulesVue.$scrollTo(
+						rulesVue.$refs.createErrorMessage,
+						1000,
+						{
+							offset: -50
+						}
+					)
 				})
 		},
 		/**
@@ -1067,9 +1100,13 @@ export default {
 						rulesVue.showDeleteSuccess()
 					} else {
 						rulesVue.editErrorMessage = response.message
-						rulesVue.$scrollTo(rulesVue.$refs.deleteErrorMessage, 1000, {
-							offset: -50
-						})
+						rulesVue.$scrollTo(
+							rulesVue.$refs.deleteErrorMessage,
+							1000,
+							{
+								offset: -50
+							}
+						)
 					}
 				})
 				.catch(reason => {
@@ -1119,22 +1156,22 @@ export default {
 
 <style scoped>
 .grey-label {
-  padding: 0 5px 0 5px;
-  margin-top: 5px;
-  color: rgb(153, 153, 153);
+	padding: 0 5px 0 5px;
+	margin-top: 5px;
+	color: rgb(153, 153, 153);
 }
 [class*="col-"] .no-gutter {
-  padding-right: 0;
-  padding-left: 0;
+	padding-right: 0;
+	padding-left: 0;
 }
 .wide-select {
-  width: 100%;
+	width: 100%;
 }
 .side-by-side {
-  display: inline-block;
-  width: 49%;
+	display: inline-block;
+	width: 49%;
 }
 .mt-element-list .list-news.mt-list-container ul > .mt-list-item:hover {
-  background-color: white;
+	background-color: white;
 }
 </style>

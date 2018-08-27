@@ -22,7 +22,9 @@
 							<span v-if="formatUSD(globalRevenueSummary.today_revenue) !== 'n/a'">
 								{{ formatUSD(globalRevenueSummary.today_revenue) }} in
 							</span>
-							{{ formatNumber(top10globalItems.daily_order) }} order<span v-show="top10globalItems.daily_order !== 1">s</span>
+							{{ formatNumber(top10globalItems.daily_order) }}
+							<span v-show="top10globalItems.daily_order !== 1">orders</span>
+							<span v-show="top10globalItems.daily_order === 1">order</span>
 						</div>
 					</div>
 				</div>
@@ -48,7 +50,9 @@
 							<span v-if="formatUSD(globalRevenueSummary.week_revenue) !== 'n/a'">
 								{{ formatUSD(globalRevenueSummary.week_revenue) }} in
 							</span>
-							{{ formatNumber(top10globalItems.weekly_order) }} order<span v-show="top10globalItems.weekly_order !== 1">s</span>
+							{{ formatNumber(top10globalItems.weekly_order) }}
+							<span v-show="top10globalItems.weekly_order !== 1">orders</span>
+							<span v-show="top10globalItems.weekly_order === 1">order</span>
 						</div>
 					</div>
 				</div>
@@ -74,7 +78,9 @@
 							<span v-if="formatUSD(globalRevenueSummary.month_revenue) !== 'n/a'">
 								{{ formatUSD(globalRevenueSummary.month_revenue) }} in
 							</span>
-							{{ formatNumber(top10globalItems.monthly_order) }} order<span v-show="top10globalItems.monthly_order !== 1">s</span>
+							{{ formatNumber(top10globalItems.monthly_order) }}
+							<span v-show="top10globalItems.monthly_order !== 1">orders</span>
+							<span v-show="top10globalItems.monthly_order === 1">order</span>
 						</div>
 					</div>
 				</div>
@@ -100,7 +106,9 @@
 							<span v-if="formatUSD(globalRevenueSummary.year_revenue) !== 'n/a'">
 								{{ formatUSD(globalRevenueSummary.year_revenue) }} in
 							</span>
-							{{ formatNumber(top10globalItems.yearly_order) }} order<span v-show="top10globalItems.yearly_order !== 1">s</span>
+							{{ formatNumber(top10globalItems.yearly_order) }}
+							<span v-show="top10globalItems.yearly_order !== 1">orders</span>
+							<span v-show="top10globalItems.yearly_order === 1">order</span>
 						</div>
 					</div>
 				</div>
@@ -126,7 +134,9 @@
 							<span v-if="formatUSD(globalRevenueSummary.total_revenue) !== 'n/a'">
 								{{ formatUSD(globalRevenueSummary.total_revenue) }} in
 							</span>
-							{{ formatNumber(top10globalItems.total_order) }} order<span v-show="top10globalItems.total_order !== 1">s</span>
+							{{ formatNumber(top10globalItems.total_order) }}
+							<span v-show="top10globalItems.total_order !== 1">orders</span>
+							<span v-show="top10globalItems.total_order === 1">order</span>
 						</div>
 					</div>
 				</div>
@@ -482,7 +492,8 @@ export default {
 					}
 					analyticsVue.loadingGlobalRevenueSummary = false
 					if (reason.responseJSON) {
-						analyticsVue.grsErrorMessage = reason.responseJSON.message
+						analyticsVue.grsErrorMessage =
+							reason.responseJSON.message
 					}
 				})
 		},
@@ -517,7 +528,8 @@ export default {
 					}
 					analyticsVue.loadingMostRecentOrders = false
 					if (reason.responseJSON) {
-						analyticsVue.gosErrorMessage = reason.responseJSON.message
+						analyticsVue.gosErrorMessage =
+							reason.responseJSON.message
 					}
 				})
 		},
@@ -561,7 +573,8 @@ export default {
 					}
 					analyticsVue.loadingTop10GlobalOrders = false
 					if (reason.responseJSON) {
-						analyticsVue.t10giErrorMessage = reason.responseJSON.message
+						analyticsVue.t10giErrorMessage =
+							reason.responseJSON.message
 					}
 				})
 		},
@@ -594,14 +607,22 @@ export default {
 					if (response.code === 200 && response.status === 'ok') {
 						let payload = [['Day', 'Revenue', 'Orders']]
 						response.payload.forEach(day => {
-							payload.push([day.date, Number(day.sales_per_day), day.total])
+							payload.push([
+								day.date,
+								Number(day.sales_per_day),
+								day.total
+							])
 						})
 						if (payload.length === 1) {
 							payload.push([
 								`No orders at ${
-									analyticsVue.selectedLocations.length > 1 ? 'this' : 'these'
+									analyticsVue.selectedLocations.length > 1
+										? 'this'
+										: 'these'
 								} location${
-									analyticsVue.selectedLocations.length > 1 ? 's' : ''
+									analyticsVue.selectedLocations.length > 1
+										? 's'
+										: ''
 								} during this period`,
 								0,
 								0
@@ -625,7 +646,8 @@ export default {
 					}
 					analyticsVue.loadingGlobalRevenueByDay = false
 					if (reason.responseJSON) {
-						analyticsVue.grbdErrorMessage = reason.responseJSON.message
+						analyticsVue.grbdErrorMessage =
+							reason.responseJSON.message
 					}
 				})
 		},
@@ -645,11 +667,18 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						analyticsVue.stores = response.payload.map(store => {
-							return { value: store.id, label: store.display_name }
+							return {
+								value: store.id,
+								label: store.display_name
+							}
 						})
 						if (analyticsVue.stores.length) {
-							analyticsVue.selectedLocations.push(analyticsVue.stores[0])
-							analyticsVue.updateLocations(analyticsVue.selectedLocations)
+							analyticsVue.selectedLocations.push(
+								analyticsVue.stores[0]
+							)
+							analyticsVue.updateLocations(
+								analyticsVue.selectedLocations
+							)
 						}
 						analyticsVue.displaySpinner = false
 					}
@@ -742,71 +771,71 @@ export default {
 
 <style scoped>
 .row-expansion {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
+	height: 100%;
+	width: 100%;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
 }
 .row-expansion-data {
-  margin: 0 80px 0 0;
-  display: inline-block;
+	margin: 0 80px 0 0;
+	display: inline-block;
 }
 .status-submitted {
-  display: inline-block;
-  margin: 0;
-  padding: 3px;
-  background-color: rgb(218, 218, 218);
-  color: rgb(70, 74, 78);
-  border: 1px rgb(173, 173, 173) solid;
-  border-radius: 4px;
+	display: inline-block;
+	margin: 0;
+	padding: 3px;
+	background-color: rgb(218, 218, 218);
+	color: rgb(70, 74, 78);
+	border: 1px rgb(173, 173, 173) solid;
+	border-radius: 4px;
 }
 .status-pending {
-  display: inline-block;
-  margin: 0;
-  padding: 3px;
-  background-color: rgb(209, 236, 241);
-  color: rgb(70, 74, 78);
-  border: 1px rgb(190, 229, 235) solid;
-  border-radius: 4px;
+	display: inline-block;
+	margin: 0;
+	padding: 3px;
+	background-color: rgb(209, 236, 241);
+	color: rgb(70, 74, 78);
+	border: 1px rgb(190, 229, 235) solid;
+	border-radius: 4px;
 }
 .status-completed {
-  display: inline-block;
-  margin: 0;
-  padding: 3px;
-  background-color: rgb(212, 237, 218);
-  color: rgb(21, 87, 36);
-  border: 1px rgb(195, 230, 203) solid;
-  border-radius: 4px;
+	display: inline-block;
+	margin: 0;
+	padding: 3px;
+	background-color: rgb(212, 237, 218);
+	color: rgb(21, 87, 36);
+	border: 1px rgb(195, 230, 203) solid;
+	border-radius: 4px;
 }
 .status-overdue {
-  display: inline-block;
-  margin: 0;
-  padding: 3px;
-  background-color: rgb(255, 243, 205);
-  color: rgb(133, 100, 4);
-  border: 1px rgb(255, 238, 186) solid;
-  border-radius: 4px;
+	display: inline-block;
+	margin: 0;
+	padding: 3px;
+	background-color: rgb(255, 243, 205);
+	color: rgb(133, 100, 4);
+	border: 1px rgb(255, 238, 186) solid;
+	border-radius: 4px;
 }
 .status-cancelled {
-  display: inline-block;
-  margin: 0;
-  padding: 3px;
-  background-color: rgb(248, 215, 218);
-  color: rgb(114, 28, 36);
-  border: 1px rgb(245, 198, 203) solid;
-  border-radius: 4px;
+	display: inline-block;
+	margin: 0;
+	padding: 3px;
+	background-color: rgb(248, 215, 218);
+	color: rgb(114, 28, 36);
+	border: 1px rgb(245, 198, 203) solid;
+	border-radius: 4px;
 }
 .status-refunded {
-  display: inline-block;
-  margin: 0;
-  padding: 3px;
-  background-color: rgb(214, 216, 217);
-  color: rgb(27, 30, 33);
-  border: 1px rgb(198, 200, 202) solid;
-  border-radius: 4px;
+	display: inline-block;
+	margin: 0;
+	padding: 3px;
+	background-color: rgb(214, 216, 217);
+	color: rgb(27, 30, 33);
+	border: 1px rgb(198, 200, 202) solid;
+	border-radius: 4px;
 }
 .full-width {
-  width: 100%;
+	width: 100%;
 }
 </style>

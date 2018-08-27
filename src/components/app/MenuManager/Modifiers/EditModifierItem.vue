@@ -122,8 +122,9 @@
 						        class="btn blue btn-outline"
 						        @click="selectLocations($event)">Select locations</button>
 						<p class="grey-label margin-top-10"
-						   v-if="selectedLocations.length">Selected {{ selectedLocations.length }} location
-							<span v-if="selectedLocations.length !== 1">s</span>
+						   v-if="selectedLocations.length">Selected {{ selectedLocations.length }}
+							<span v-if="selectedLocations.length !== 1">locations</span>
+							<span v-else>locations</span>
 						</p>
 					</div>
 				</div>
@@ -222,20 +223,30 @@ export default {
 					reject('Item price cannot be blank')
 				} else if (!editModifierItemVue.itemToBeEdited.sku.length) {
 					reject('Item SKU cannot be blank')
-				} else if (!editModifierItemVue.itemToBeEdited.image_url.length) {
+				} else if (
+					!editModifierItemVue.itemToBeEdited.image_url.length
+				) {
 					reject('Item image URL cannot be blank')
-				} else if (!$.isNumeric(editModifierItemVue.itemToBeEdited.status)) {
+				} else if (
+					!$.isNumeric(editModifierItemVue.itemToBeEdited.status)
+				) {
 					reject('Item status cannot be blank')
-				} else if (!$.isNumeric(editModifierItemVue.itemToBeEdited.min)) {
+				} else if (
+					!$.isNumeric(editModifierItemVue.itemToBeEdited.min)
+				) {
 					reject('Modifier Item min should be a number')
-				} else if (!$.isNumeric(editModifierItemVue.itemToBeEdited.max)) {
+				} else if (
+					!$.isNumeric(editModifierItemVue.itemToBeEdited.max)
+				) {
 					reject('Modifier Item max should be a number')
 				} else if (
 					Number(editModifierItemVue.itemToBeEdited.min) >
 					Number(editModifierItemVue.itemToBeEdited.max)
 				) {
 					reject('Modifier Item max cannot be larger than min')
-				} else if (!$.isNumeric(editModifierItemVue.itemToBeEdited.order)) {
+				} else if (
+					!$.isNumeric(editModifierItemVue.itemToBeEdited.order)
+				) {
 					reject('Modifier Item order should be a number')
 				}
 				resolve('Hurray')
@@ -300,10 +311,14 @@ export default {
 						editModifierItemVue.$root.userToken
 					)
 						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
 								this.closeModalAndUpdate()
 							} else {
-								editModifierItemVue.errorMessage = response.message
+								editModifierItemVue.errorMessage =
+									response.message
 							}
 						})
 						.catch(reason => {
@@ -329,7 +344,8 @@ export default {
 		closeModalAndUpdate () {
 			this.$emit('editModifierItem', this.itemToBeEdited)
 			this.$router.push(
-				'/app/menu_manager/modifier_items/' + this.$route.params.modifier_id
+				'/app/menu_manager/modifier_items/' +
+					this.$route.params.modifier_id
 			)
 		},
 		/**
@@ -340,7 +356,8 @@ export default {
 		closeModal () {
 			this.$emit('deactivateEditItemModal')
 			this.$router.push(
-				'/app/menu_manager/modifier_items/' + this.$route.params.modifier_id
+				'/app/menu_manager/modifier_items/' +
+					this.$route.params.modifier_id
 			)
 		},
 		/**

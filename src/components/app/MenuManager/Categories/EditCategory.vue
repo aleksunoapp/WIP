@@ -101,8 +101,9 @@
 						        class="btn blue btn-outline"
 						        @click="selectLocations($event)">Select locations</button>
 						<p class="grey-label margin-top-10"
-						   v-if="selectedLocations.length">Selected {{ selectedLocations.length }} location
-							<span v-if="selectedLocations.length !== 1">s</span>
+						   v-if="selectedLocations.length">Selected {{ selectedLocations.length }}
+							<span v-if="selectedLocations.length !== 1">locations</span>
+							<span v-else>location</span>
 						</p>
 					</div>
 				</div>
@@ -177,7 +178,9 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateSelectedLocations (locations) {
-			if (this.$root.permissions['menu_manager menus categories update']) {
+			if (
+				this.$root.permissions['menu_manager menus categories update']
+			) {
 				this.selectedLocations = locations
 			}
 			this.closeSelectLocationsPopup()
@@ -204,11 +207,17 @@ export default {
 					reject('Category description cannot be blank')
 				} else if (!editCategoryVue.categoryToBeEdited.sku.length) {
 					reject('Category SKU cannot be blank')
-				} else if (!editCategoryVue.categoryToBeEdited.image_url.length) {
+				} else if (
+					!editCategoryVue.categoryToBeEdited.image_url.length
+				) {
 					reject('Category image cannot be blank')
-				} else if (!$.isNumeric(editCategoryVue.categoryToBeEdited.status)) {
+				} else if (
+					!$.isNumeric(editCategoryVue.categoryToBeEdited.status)
+				) {
 					reject('Category status cannot be blank')
-				} else if (!$.isNumeric(editCategoryVue.categoryToBeEdited.order)) {
+				} else if (
+					!$.isNumeric(editCategoryVue.categoryToBeEdited.order)
+				) {
 					reject('Category order should be a number')
 				}
 				resolve('Hurray')
@@ -274,7 +283,10 @@ export default {
 						editCategoryVue.$root.userToken
 					)
 						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
 								this.closeModalAndUpdate()
 							} else {
 								editCategoryVue.errorMessage = response.message
@@ -345,7 +357,9 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateImage (val) {
-			if (this.$root.permissions['menu_manager menus categories update']) {
+			if (
+				this.$root.permissions['menu_manager menus categories update']
+			) {
 				this.categoryToBeEdited.image_url = val.image_url
 			}
 			this.goToPageOne()

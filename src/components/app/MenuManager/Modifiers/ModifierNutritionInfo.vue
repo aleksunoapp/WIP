@@ -64,7 +64,8 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr v-for="info in itemNutritionInfo" :key="info.id">
+								<tr v-for="info in itemNutritionInfo"
+								    :key="info.id">
 									<td v-if="info.key !== 'id' && info.key !== 'modifier_item_id'"> {{ info.name }} </td>
 									<td v-if="info.key !== 'id' && info.key !== 'modifier_item_id'">
 										<input type="text"
@@ -82,8 +83,9 @@
 						        class="btn blue btn-outline"
 						        @click="selectLocations($event)">Select locations</button>
 						<p class="grey-label margin-top-10"
-						   v-if="selectedLocations.length">Selected {{ selectedLocations.length }} location
-							<span v-if="selectedLocations.length !== 1">s</span>
+						   v-if="selectedLocations.length">Selected {{ selectedLocations.length }}
+							<span v-if="selectedLocations.length !== 1">locations</span>
+							<span v-else>location</span>
 						</p>
 						<div class="form-group form-md-line-input form-md-floating-label">
 							<label>Update all items?</label><br>
@@ -394,8 +396,15 @@ export default {
 		updateModifierNutritionInfo () {
 			var nutritionInfoVue = this
 			var updatedNutritionInfo = {}
-			for (var i = 0; i < nutritionInfoVue.itemNutritionInfo.length; i++) {
-				if (nutritionInfoVue.itemNutritionInfo[i].key !== 'modifier_item_id') {
+			for (
+				var i = 0;
+				i < nutritionInfoVue.itemNutritionInfo.length;
+				i++
+			) {
+				if (
+					nutritionInfoVue.itemNutritionInfo[i].key !==
+					'modifier_item_id'
+				) {
 					if (nutritionInfoVue.itemNutritionInfo[i].key === 'id') {
 						updatedNutritionInfo.id =
 							nutritionInfoVue.itemNutritionInfo[i].value
@@ -405,10 +414,13 @@ export default {
 						nutritionInfoVue.itemNutritionInfo[i].value
 				}
 			}
-			updatedNutritionInfo.modifier_item_id = nutritionInfoVue.modifierItem.id
+			updatedNutritionInfo.modifier_item_id =
+				nutritionInfoVue.modifierItem.id
 			updatedNutritionInfo.user_id = nutritionInfoVue.$root.createdBy
-			updatedNutritionInfo.update_locations = nutritionInfoVue.selectedLocations
-			updatedNutritionInfo.update_all_items = nutritionInfoVue.update_all_items
+			updatedNutritionInfo.update_locations =
+				nutritionInfoVue.selectedLocations
+			updatedNutritionInfo.update_all_items =
+				nutritionInfoVue.update_all_items
 			nutritionInfoVue.editNutritionError = ''
 
 			return nutritionInfoVue
@@ -422,14 +434,18 @@ export default {
 						nutritionInfoVue.$root.userToken
 					)
 						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
 								this.closeModal()
 							}
 						})
 						.catch(reason => {
 							ajaxErrorHandler({
 								reason,
-								errorText: 'We could not update the nutrition info',
+								errorText:
+									'We could not update the nutrition info',
 								errorName: 'errorMessage',
 								vue: 'editNutritionError',
 								containerRef: 'modal'
@@ -452,7 +468,9 @@ export default {
 			var nutritionInfoVue = this
 
 			return nutritionInfoVue
-				.validateNutritionData(nutritionInfoVue.newModifierNutritionInfo)
+				.validateNutritionData(
+					nutritionInfoVue.newModifierNutritionInfo
+				)
 				.then(response => {
 					ModifiersFunctions.createModifierNutritionInfo(
 						nutritionInfoVue.newModifierNutritionInfo,
@@ -461,14 +479,18 @@ export default {
 						nutritionInfoVue.$root.userToken
 					)
 						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
 								this.closeModal()
 							}
 						})
 						.catch(reason => {
 							ajaxErrorHandler({
 								reason,
-								errorText: 'We could not add the nutrition info',
+								errorText:
+									'We could not add the nutrition info',
 								errorName: 'createModifierNutritionError',
 								vue: nutritionInfoVue,
 								containerRef: 'modal'

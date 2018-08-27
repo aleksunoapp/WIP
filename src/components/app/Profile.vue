@@ -10,8 +10,9 @@
 				<div class="col-xs-12">
 					<p>Name: {{$root.activeUser.name}}</p>
 					<p>Email: {{$root.activeUser.email}}</p>
-					<p>Assigned: {{userLocationCount}} store
-						<span v-if="userLocationCount !== 0">s</span>
+					<p>Assigned: {{userLocationCount}}
+						<span v-if="userLocationCount !== 0">stores</span>
+						<span v-else>store</span>
 					</p>
 					<p>Roles: </p>
 					<ul>

@@ -116,8 +116,9 @@
 							        class="btn blue btn-outline"
 							        @click="openPromoCodesCodeModal()">Select</button>
 							<p class="grey-label margin-top-10"
-							   v-show="promotionToBeEdited.cta_value.length">Selected {{promotionToBeEdited.cta_value.split(',').length}} code
-								<span v-show="promotionToBeEdited.cta_value.split(',').length !== 1">s</span>
+							   v-show="promotionToBeEdited.cta_value.length">Selected {{promotionToBeEdited.cta_value.split(',').length}}
+								<span v-if="promotionToBeEdited.cta_value.split(',').length !== 1">codes</span>
+								<span v-else>code</span>
 							</p>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label"
@@ -126,8 +127,9 @@
 							        class="btn blue btn-outline"
 							        @click="openMenuModifierTree()">Select</button>
 							<p class="grey-label margin-top-10"
-							   v-show="promotionToBeEdited.skuArray.length">Selected {{promotionToBeEdited.skuArray.length}} item
-								<span v-show="promotionToBeEdited.skuArray.length !== 1">s</span>
+							   v-show="promotionToBeEdited.skuArray.length">Selected {{promotionToBeEdited.skuArray.length}}
+								<span v-if="promotionToBeEdited.skuArray.length !== 1">items</span>
+								<span v-else>item</span>
 							</p>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label">
@@ -381,12 +383,16 @@ export default {
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						editPromotionVue.promoCodes = response.payload.map(code => {
-							code.selected = false
-							return code
-						})
+						editPromotionVue.promoCodes = response.payload.map(
+							code => {
+								code.selected = false
+								return code
+							}
+						)
 					} else {
-						throw new Error('We could not fetch a list of promo codes')
+						throw new Error(
+							'We could not fetch a list of promo codes'
+						)
 					}
 				})
 				.catch(reason => {
@@ -410,14 +416,19 @@ export default {
 					reject('Promotion image cannot be blank')
 				} else if (!editPromotionVue.promotionToBeEdited.name.length) {
 					reject('Promotion name cannot be blank')
-				} else if (!editPromotionVue.promotionToBeEdited.description.length) {
+				} else if (
+					!editPromotionVue.promotionToBeEdited.description.length
+				) {
 					reject('Promotion description cannot be blank')
 				} else if (
-					!editPromotionVue.promotionToBeEdited.short_description.length
+					!editPromotionVue.promotionToBeEdited.short_description
+						.length
 				) {
 					reject('Promotion short description cannot be blank')
 				} else if (
-					!$.isNumeric(editPromotionVue.promotionToBeEdited.sort_order)
+					!$.isNumeric(
+						editPromotionVue.promotionToBeEdited.sort_order
+					)
 				) {
 					reject('Sort order must be a number')
 				} else if (!editPromotionVue.promotionToBeEdited.start_date) {
@@ -427,18 +438,22 @@ export default {
 				} else if (!editPromotionVue.promotionToBeEdited.cta_type) {
 					reject('Please select type of call to action')
 				} else if (
-					editPromotionVue.promotionToBeEdited.cta_type === 'menu_item' &&
+					editPromotionVue.promotionToBeEdited.cta_type ===
+						'menu_item' &&
 					!editPromotionVue.promotionToBeEdited.skuArray.length
 				) {
 					reject('Select at least one menu item')
 				} else if (
-					editPromotionVue.promotionToBeEdited.cta_type === 'promo_code' &&
+					editPromotionVue.promotionToBeEdited.cta_type ===
+						'promo_code' &&
 					!editPromotionVue.promotionToBeEdited.cta_value.length
 				) {
 					reject('Select at least one promo code')
 				} else if (
-					editPromotionVue.promotionToBeEdited.cta_type !== 'menu_item' &&
-					editPromotionVue.promotionToBeEdited.cta_type !== 'promo_code' &&
+					editPromotionVue.promotionToBeEdited.cta_type !==
+						'menu_item' &&
+					editPromotionVue.promotionToBeEdited.cta_type !==
+						'promo_code' &&
 					!editPromotionVue.promotionToBeEdited.cta_value
 				) {
 					reject('Call to action value cannot be blank')
@@ -561,7 +576,10 @@ export default {
 						editPromotionVue.$root.userToken
 					)
 						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
 								this.closeModalAndUpdate()
 							} else {
 								editPromotionVue.errorMessage = response.message
@@ -643,8 +661,8 @@ export default {
 
 <style scoped>
 .grey-label {
-  color: rgb(136, 136, 136);
-  font-size: 13px;
-  margin-bottom: 5px;
+	color: rgb(136, 136, 136);
+	font-size: 13px;
+	margin-bottom: 5px;
 }
 </style>

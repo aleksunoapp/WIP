@@ -182,8 +182,9 @@
 						        class="btn blue btn-outline"
 						        @click="selectLocations($event)">Select locations</button>
 						<p class="grey-label margin-top-10"
-						   v-if="selectedLocations.length">Selected {{ selectedLocations.length }} location
-							<span v-if="selectedLocations.length !== 1">s</span>
+						   v-if="selectedLocations.length">Selected {{ selectedLocations.length }}
+							<span v-if="selectedLocations.length !== 1">locations</span>
+							<span v-else>location</span>
 						</p>
 					</div>
 				</div>
@@ -256,7 +257,9 @@ export default {
 				return 'Select'
 			} else {
 				return this.itemTypes
-					.filter(type => type.id === this.itemToBeEdited.item_type_id)
+					.filter(
+						type => type.id === this.itemToBeEdited.item_type_id
+					)
 					.map(type => type.name)[0]
 			}
 		},
@@ -310,7 +313,11 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateItemType (type) {
-			if (this.can('menu_manager menus categories subcategories items update')) {
+			if (
+				this.can(
+					'menu_manager menus categories subcategories items update'
+				)
+			) {
 				this.itemToBeEdited.type = type
 			}
 		},
@@ -331,7 +338,11 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateSelectedLocations (locations) {
-			if (this.can('menu_manager menus categories subcategories items update')) {
+			if (
+				this.can(
+					'menu_manager menus categories subcategories items update'
+				)
+			) {
 				this.selectedLocations = locations
 			}
 			this.closeSelectLocationsPopup()
@@ -356,11 +367,15 @@ export default {
 					reject('Item name cannot be blank')
 				} else if (!editItemVue.itemToBeEdited.desc.length) {
 					reject('Item description cannot be blank')
-				} else if (!editItemVue.itemToBeEdited.short_description.length) {
+				} else if (
+					!editItemVue.itemToBeEdited.short_description.length
+				) {
 					reject('Item short description cannot be blank')
 				} else if (!editItemVue.itemToBeEdited.price.length) {
 					reject('Item price cannot be blank')
-				} else if (!editItemVue.itemToBeEdited.nutrition_summary.length) {
+				} else if (
+					!editItemVue.itemToBeEdited.nutrition_summary.length
+				) {
 					reject('Nutrition summary cannot be blank')
 				} else if (!editItemVue.itemToBeEdited.sku.length) {
 					reject('Item SKU cannot be blank')
@@ -438,7 +453,10 @@ export default {
 						editItemVue.$root.userToken
 					)
 						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
 								this.closeModalAndUpdate()
 							} else {
 								editItemVue.errorMessage = response.message
@@ -565,7 +583,11 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateTaxClass (id) {
-			if (this.can('menu_manager menus categories subcategories items update')) {
+			if (
+				this.can(
+					'menu_manager menus categories subcategories items update'
+				)
+			) {
 				this.itemToBeEdited.item_type_id = id
 			}
 		}

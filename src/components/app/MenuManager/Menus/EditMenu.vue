@@ -153,8 +153,9 @@
 						        class="btn blue btn-outline"
 						        @click="selectLocations($event)">Select locations</button>
 						<p class="grey-label margin-top-10"
-						   v-if="selectedLocations.length">Selected {{ selectedLocations.length }} location
-							<span v-if="selectedLocations.length !== 1">s</span>
+						   v-if="selectedLocations.length">Selected {{ selectedLocations.length }}
+							<span v-if="selectedLocations.length !== 1">locations</span>
+							<span v-else>location</span>
 						</p>
 					</div>
 					<button v-if="!$root.permissions['menu_manager menus update']"
@@ -364,7 +365,10 @@ export default {
 						editMenuVue.$root.userToken
 					)
 						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
 								this.closeModalAndUpdate()
 							} else {
 								editMenuVue.errorMessage = response.message
@@ -444,10 +448,10 @@ export default {
 </script>
 <style scoped>
 .image-container {
-  border: 1px dotted #c2cad8;
-  text-align: center;
+	border: 1px dotted #c2cad8;
+	text-align: center;
 }
 .narrow-datepicker {
-  max-width: 40%;
+	max-width: 40%;
 }
 </style>

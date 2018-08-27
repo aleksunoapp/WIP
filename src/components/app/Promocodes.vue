@@ -98,7 +98,9 @@
 								</div>
 								<p class="grey-label margin-left-5"
 								   v-if="newPromoCode.sku.length">Selected
-									<span>{{ newPromoCode.sku.length }}</span> item<span v-if="newPromoCode.sku.length !== 1">s</span>
+									<span>{{ newPromoCode.sku.length }}</span>
+									<span v-if="newPromoCode.sku.length !== 1">items</span>
+									<span v-else>item</span>
 								</p>
 								<div class="margin-top-15">
 									<el-dropdown trigger="click"
@@ -160,7 +162,9 @@
 									<p class="grey-label"
 									   v-if="newPromoCode.locations.length">Selected
 										<span v-if="newPromoCode.locations === 'all'">all</span>
-										<span v-else>{{ newPromoCode.locations.length }}</span> store<span v-if="newPromoCode.locations.length !== 1">s</span>
+										<span v-else>{{ newPromoCode.locations.length }}</span>
+										<span v-if="newPromoCode.locations.length !== 1">stores</span>
+										<span v-else>store</span>
 									</p>
 								</div>
 							</div>
@@ -479,7 +483,10 @@ export default {
 		 * @returns {undefined}
 		 */
 		setRandomCode (code) {
-			code.codes = this.randomString(6, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+			code.codes = this.randomString(
+				6,
+				'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+			)
 		},
 		/**
 		 * To update the value_type property of newPromoCode.
@@ -595,7 +602,8 @@ export default {
 			this.deletePromoCodeModalActive = false
 			for (var i = 0; i < this.promoCodes.length; i++) {
 				if (
-					parseInt(this.promoCodes[i].id) === parseInt(this.selectedPromoCodeId)
+					parseInt(this.promoCodes[i].id) ===
+					parseInt(this.selectedPromoCodeId)
 				) {
 					this.promoCodes.splice(i, 1)
 					break
@@ -636,8 +644,16 @@ export default {
 					if (response.code === 200 && response.status === 'ok') {
 						promoCodesVue.displayPromoCodesData = false
 						promoCodesVue.promoCodes = response.payload
-						for (var i = 0; i < promoCodesVue.promoCodes.length; i++) {
-							promoCodesVue.$set(promoCodesVue.promoCodes[i], 'selected', false)
+						for (
+							var i = 0;
+							i < promoCodesVue.promoCodes.length;
+							i++
+						) {
+							promoCodesVue.$set(
+								promoCodesVue.promoCodes[i],
+								'selected',
+								false
+							)
 						}
 					} else {
 						promoCodesVue.displayPromoCodesData = false
@@ -730,7 +746,9 @@ export default {
 						promoCodesVue.newPromoCode.value
 					)
 				) {
-					reject('Value Of Promo Code cannot be blank and must be a number')
+					reject(
+						'Value Of Promo Code cannot be blank and must be a number'
+					)
 				} else if (!promoCodesVue.newPromoCode.value_type.length) {
 					reject('Value Type cannot be blank')
 				} else if (!promoCodesVue.newPromoCode.apply_on.length) {
@@ -751,7 +769,9 @@ export default {
 						'Maximum Redemptions Per User cannot be blank and must be a number'
 					)
 				} else if (
-					!/^\+?(0|[1-9]\d*)$/.test(promoCodesVue.newPromoCode.max_use)
+					!/^\+?(0|[1-9]\d*)$/.test(
+						promoCodesVue.newPromoCode.max_use
+					)
 				) {
 					reject(
 						'Total Redemptions Permitted cannot be blank and must be a number'
@@ -766,7 +786,9 @@ export default {
 					reject('Start Date cannot be in the past')
 				} else if (!promoCodesVue.newPromoCode.end_on.length) {
 					reject('Please select End Date')
-				} else if (promoCodesVue.isPast(promoCodesVue.newPromoCode.end_on)) {
+				} else if (
+					promoCodesVue.isPast(promoCodesVue.newPromoCode.end_on)
+				) {
 					reject('End Date cannot be in the past')
 				} else if (
 					new Date(promoCodesVue.newPromoCode.end_on) <
@@ -803,11 +825,15 @@ export default {
 						promoCodesVue.$root.userToken
 					)
 						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
 								promoCodesVue.getAllPromoCodes()
 								promoCodesVue.showAlert()
 							} else {
-								promoCodesVue.createErrorMessage = response.message
+								promoCodesVue.createErrorMessage =
+									response.message
 							}
 						})
 						.catch(reason => {
@@ -931,58 +957,58 @@ export default {
 
 <style scoped>
 .sideways-page-one.disabled {
-  overflow: hidden;
+	overflow: hidden;
 }
 .sideways-page-two {
-  overflow-y: scroll;
+	overflow-y: scroll;
 }
 .dropdown {
-  margin-bottom: 10px;
+	margin-bottom: 10px;
 }
 .side-by-side-wrapper {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
 }
 .side-by-side-wrapper.start {
-  align-items: flex-start;
+	align-items: flex-start;
 }
 .side-by-side-wrapper.center {
-  align-items: center;
+	align-items: center;
 }
 .side-by-side-item {
-  max-width: 45%;
+	max-width: 45%;
 }
 .dropdown.side-by-side-item {
-  margin-left: 10px;
+	margin-left: 10px;
 }
 .date-label {
-  color: rgb(136, 136, 136);
-  font-size: 13px;
-  margin-bottom: 5px;
+	color: rgb(136, 136, 136);
+	font-size: 13px;
+	margin-bottom: 5px;
 }
 .grey-label {
-  color: rgb(153, 153, 153);
+	color: rgb(153, 153, 153);
 }
 .mb-0 {
-  margin-bottom: 0;
+	margin-bottom: 0;
 }
 .mt-element-list
-  .list-news.ext-1.mt-list-container
-  ul
-  > .mt-list-item
-  > .list-datetime,
+	.list-news.ext-1.mt-list-container
+	ul
+	> .mt-list-item
+	> .list-datetime,
 .mt-element-list
-  .list-news.ext-1.mt-list-container
-  ul
-  > .mt-list-item
-  > .list-item-content {
-  padding-left: 20px;
+	.list-news.ext-1.mt-list-container
+	ul
+	> .mt-list-item
+	> .list-item-content {
+	padding-left: 20px;
 }
 .animated {
-  animation: listItemHighlight 1s 2 ease-in-out both;
+	animation: listItemHighlight 1s 2 ease-in-out both;
 }
 .mt-element-list .list-news.ext-1.mt-list-container ul > .mt-list-item:hover {
-  background-color: white;
+	background-color: white;
 }
 </style>

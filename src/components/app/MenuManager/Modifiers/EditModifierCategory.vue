@@ -122,8 +122,9 @@
 						        class="btn blue btn-outline"
 						        @click="selectLocations($event)">Select locations</button>
 						<p class="grey-label margin-top-10"
-						   v-if="selectedLocations.length">Selected {{ selectedLocations.length }} location
-							<span v-if="selectedLocations.length !== 1">s</span>
+						   v-if="selectedLocations.length">Selected {{ selectedLocations.length }}
+							<span v-if="selectedLocations.length !== 1">locations</span>
+							<span v-else>location</span>
 						</p>
 					</div>
 					<button v-if="!$root.permissions['menu_manager modifiers update']"
@@ -217,20 +218,28 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (!editModifierCategoryVue.categoryToBeEdited.name.length) {
 					reject('Modifier Category name cannot be blank')
-				} else if (!editModifierCategoryVue.categoryToBeEdited.desc.length) {
+				} else if (
+					!editModifierCategoryVue.categoryToBeEdited.desc.length
+				) {
 					reject('Modifier Category description cannot be blank')
-				} else if (!editModifierCategoryVue.categoryToBeEdited.sku.length) {
+				} else if (
+					!editModifierCategoryVue.categoryToBeEdited.sku.length
+				) {
 					reject('Modifier Category SKU cannot be blank')
 				} else if (
 					!editModifierCategoryVue.categoryToBeEdited.image_url.length
 				) {
 					reject('Modifier Category image cannot be blank')
 				} else if (
-					!$.isNumeric(editModifierCategoryVue.categoryToBeEdited.status)
+					!$.isNumeric(
+						editModifierCategoryVue.categoryToBeEdited.status
+					)
 				) {
 					reject('Modifier Category status cannot be blank')
 				} else if (
-					!$.isNumeric(editModifierCategoryVue.categoryToBeEdited.included)
+					!$.isNumeric(
+						editModifierCategoryVue.categoryToBeEdited.included
+					)
 				) {
 					reject('Modifier Category included should be a number')
 				} else if (
@@ -242,7 +251,9 @@ export default {
 				) {
 					reject('Modifier Category min should be a number')
 				} else if (
-					!$.isNumeric(editModifierCategoryVue.categoryToBeEdited.order)
+					!$.isNumeric(
+						editModifierCategoryVue.categoryToBeEdited.order
+					)
 				) {
 					reject('Modifier Category order should be a number')
 				}
@@ -271,7 +282,8 @@ export default {
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						editModifierCategoryVue.categoryToBeEdited = response.payload
+						editModifierCategoryVue.categoryToBeEdited =
+							response.payload
 					}
 				})
 				.catch(reason => {
@@ -307,10 +319,14 @@ export default {
 						editModifierCategoryVue.$root.userToken
 					)
 						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
 								this.closeModalAndUpdate()
 							} else {
-								editModifierCategoryVue.errorMessage = response.message
+								editModifierCategoryVue.errorMessage =
+									response.message
 							}
 						})
 						.catch(reason => {
@@ -387,10 +403,10 @@ export default {
 </script>
 <style scoped>
 .image-container {
-  border: 1px dotted #c2cad8;
-  text-align: center;
+	border: 1px dotted #c2cad8;
+	text-align: center;
 }
 .narrow-datepicker {
-  max-width: 40%;
+	max-width: 40%;
 }
 </style>

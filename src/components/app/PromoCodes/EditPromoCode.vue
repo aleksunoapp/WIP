@@ -1,4 +1,4 @@
-<template>
+Í<template>
 	<modal :show="showEditPromoCodeModal"
 	       effect="fade"
 	       @closeOnEscape="closeModal"
@@ -91,7 +91,9 @@
 								Select items
 							</button>
 							<p class="grey-label"
-							   v-if="promoCode.sku_array.length">Selected {{ promoCode.sku_array.length }} item<span v-if="promoCode.sku_array.length !== 1">s</span>
+							   v-if="promoCode.sku_array.length">Selected {{ promoCode.sku_array.length }}
+								<span v-if="promoCode.sku_array.length !== 1">items</span>
+								<span v-else>item</span>
 							</p>
 						</div>
 						<div>
@@ -149,7 +151,9 @@
 							<p class="grey-label margin-top-10"
 							   v-if="promoCode.locations.length">Selected
 								<span v-if="promoCode.locations === 'all'">all</span>
-								<span v-else>{{ promoCode.locations.length }}</span> location<span v-if="promoCode.locations.length !== 1">s</span>
+								<span v-else>{{ promoCode.locations.length }}</span>
+								<span v-if="promoCode.locations.length !== 1">locations</span>
+								<span v-else>location</span>
 							</p>
 						</div>
 					</div>
@@ -290,7 +294,9 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						if (!response.payload.hasOwnProperty('sku_array')) {
-							response.payload.sku_array = response.payload.sku.split(',')
+							response.payload.sku_array = response.payload.sku.split(
+								','
+							)
 						}
 						response.payload.locations = response.payload.locations
 							.split(',')
@@ -328,7 +334,11 @@ export default {
 			var menuTreeVue = this
 			for (var i = 0; i < menuTreeVue.items.length; i++) {
 				var item = menuTreeVue.items[i]
-				menuTreeVue.$set(item, 'selected', this.selectAllLocationsSelected)
+				menuTreeVue.$set(
+					item,
+					'selected',
+					this.selectAllLocationsSelected
+				)
 			}
 		},
 		/**
@@ -423,7 +433,9 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						response.payload.forEach(location => {
-							if (editPromoCodeVue.promoCode.locations === 'all') {
+							if (
+								editPromoCodeVue.promoCode.locations === 'all'
+							) {
 								location.selected = true
 							} else {
 								location.selected = editPromoCodeVue.promoCode.locations.includes(
@@ -472,7 +484,9 @@ export default {
 						promoCodesVue.promoCode.value
 					)
 				) {
-					reject('Value Of Promo Code cannot be blank and must be a number')
+					reject(
+						'Value Of Promo Code cannot be blank and must be a number'
+					)
 				} else if (!promoCodesVue.promoCode.value_type.length) {
 					reject('Value Type cannot be blank')
 				} else if (!promoCodesVue.promoCode.apply_on.length) {
@@ -485,20 +499,24 @@ export default {
 				} else if (!promoCodesVue.promoCode.type.length) {
 					reject('Single or Multi Use cannot be blank')
 				} else if (
-					!/^\+?(0|[1-9]\d*)$/.test(promoCodesVue.promoCode.max_use_per_person)
+					!/^\+?(0|[1-9]\d*)$/.test(
+						promoCodesVue.promoCode.max_use_per_person
+					)
 				) {
 					reject(
 						'Maximum Redemptions Per User cannot be blank and must be a number'
 					)
-				} else if (!/^\+?(0|[1-9]\d*)$/.test(promoCodesVue.promoCode.max_use)) {
+				} else if (
+					!/^\+?(0|[1-9]\d*)$/.test(promoCodesVue.promoCode.max_use)
+				) {
 					reject(
 						'Total Redemptions Permitted cannot be blank and must be a number'
 					)
 				} else if (!promoCodesVue.promoCode.apply_on.length) {
 					reject('Applies to cannot be blank')
 				} else if (
-					typeof new Date(promoCodesVue.promoCode.start_from).getMonth !==
-					'function'
+					typeof new Date(promoCodesVue.promoCode.start_from)
+						.getMonth !== 'function'
 				) {
 					reject('Please select Start Date and Time')
 				} else if (
@@ -506,7 +524,9 @@ export default {
 					'function'
 				) {
 					reject('Please select End Date and Time')
-				} else if (promoCodesVue.isPast(promoCodesVue.promoCode.end_on)) {
+				} else if (
+					promoCodesVue.isPast(promoCodesVue.promoCode.end_on)
+				) {
 					reject('End Date cannot be in the past')
 				} else if (
 					new Date(promoCodesVue.promoCode.end_on) <
@@ -574,7 +594,10 @@ export default {
 						editPromoCodeVue.$root.userToken
 					)
 						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
 								this.closeModalAndUpdate()
 							} else {
 								editPromoCodeVue.errorMessage = response.message
@@ -635,77 +658,77 @@ export default {
 
 <style scoped>
 .dropdown {
-  margin-bottom: 10px;
+	margin-bottom: 10px;
 }
 .side-by-side-wrapper {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: flex-end;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: flex-end;
 }
 .side-by-side-item {
-  max-width: 45%;
+	max-width: 45%;
 }
 .dropdown.side-by-side-item {
-  margin-left: 10px;
+	margin-left: 10px;
 }
 @media (max-width: 1150px) {
-  .side-by-side-wrapper {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .side-by-side-item {
-    max-width: 100%;
-  }
-  .dropdown.side-by-side-item {
-    margin-left: 0px;
-  }
+	.side-by-side-wrapper {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+	.side-by-side-item {
+		max-width: 100%;
+	}
+	.dropdown.side-by-side-item {
+		margin-left: 0px;
+	}
 }
 .date-label {
-  color: rgb(136, 136, 136);
-  font-size: 13px;
-  margin: 0 0 5px 0;
+	color: rgb(136, 136, 136);
+	font-size: 13px;
+	margin: 0 0 5px 0;
 }
 .grey-label {
-  margin-top: 5px;
-  color: rgb(153, 153, 153);
+	margin-top: 5px;
+	color: rgb(153, 153, 153);
 }
 .mt-element-list
-  .list-news.ext-1.mt-list-container
-  ul
-  > .mt-list-item
-  > .list-datetime,
+	.list-news.ext-1.mt-list-container
+	ul
+	> .mt-list-item
+	> .list-datetime,
 .mt-element-list
-  .list-news.ext-1.mt-list-container
-  ul
-  > .mt-list-item
-  > .list-item-content {
-  padding-left: 20px;
+	.list-news.ext-1.mt-list-container
+	ul
+	> .mt-list-item
+	> .list-item-content {
+	padding-left: 20px;
 }
 .dd-handle {
-  cursor: pointer;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  word-break: break-word;
-  white-space: nowrap;
+	cursor: pointer;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	word-break: break-word;
+	white-space: nowrap;
 }
 .active {
-  color: #2ea8e5;
-  background: #fff;
+	color: #2ea8e5;
+	background: #fff;
 }
 .select-items-button {
-  margin: 0 0 10px 10px;
+	margin: 0 0 10px 10px;
 }
 .modal-body {
-  min-height: 200px;
-  max-height: calc(100vh - 200px);
-  overflow-x: hidden;
-  overflow-y: auto;
-  margin-bottom: 20px;
+	min-height: 200px;
+	max-height: calc(100vh - 200px);
+	overflow-x: hidden;
+	overflow-y: auto;
+	margin-bottom: 20px;
 }
 </style>
 <style>
 .el-select-dropdown.el-popper {
-  z-index: 10501 !important;
+	z-index: 10501 !important;
 }
 </style>
