@@ -162,7 +162,7 @@
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
 									<div class="input-group"
-									     v-show="passwordMasked">
+									     v-show="passwordConfirmMasked">
 										<input type="password"
 										       class="form-control input-sm"
 										       id="form_control_confirm_masked"
@@ -170,12 +170,12 @@
 										       :class="{'edited': passwordCheck}">
 										<label for="form_control_confirm_masked">Confirm password</label>
 										<span class="input-group-addon clickable"
-										      @click="flipPasswordMask()">
+										      @click="flipPasswordConfirmMask()">
 											<i class="fa fa-eye"></i>
 										</span>
 									</div>
 									<div class="input-group"
-									     v-show="!passwordMasked">
+									     v-show="!passwordConfirmMasked">
 										<input type="text"
 										       class="form-control input-sm"
 										       id="form_control_confirm"
@@ -183,7 +183,7 @@
 										       :class="{'edited': passwordCheck}">
 										<label for="form_control_confirm">Confirm password</label>
 										<span class="input-group-addon clickable"
-										      @click="flipPasswordMask()">
+										      @click="flipPasswordConfirmMask()">
 											<i class="fa fa-eye-slash"></i>
 										</span>
 									</div>
@@ -242,6 +242,7 @@ export default {
 			forgotMessage: '',
 			resetPassword: false,
 			passwordMasked: true,
+			passwordConfirmMasked: true,
 			passwordCheck: '',
 			newPassword: '',
 			test: false,
@@ -277,6 +278,14 @@ export default {
 		 */
 		flipPasswordMask () {
 			this.passwordMasked = !this.passwordMasked
+		},
+		/**
+		 * To switch bewteen masked and unmasked password fields.
+		 * @function
+		 * @returns {undefined}
+		 */
+		flipPasswordConfirmMask () {
+			this.passwordConfirmMasked = !this.passwordConfirmMasked
 		},
 		/**
 		 * To focus the password field
@@ -393,7 +402,10 @@ export default {
 				.validateLoginData()
 				.then(response => {
 					/* eslint-disable no-undef */
-					LoginFunctions.login(loginVue.user.email, loginVue.user.password)
+					LoginFunctions.login(
+						loginVue.user.email,
+						loginVue.user.password
+					)
 						.then(response => {
 							if (response.payload.show_password_reset === 1) {
 								loginVue.token = response.payload.password
@@ -411,19 +423,36 @@ export default {
 									JSON.stringify(loginVue.$root.activeUser)
 								)
 								// set userToken
-								loginVue.$root.userToken = response.session.token
-								localStorage.setItem('userToken', loginVue.$root.userToken)
+								loginVue.$root.userToken =
+									response.session.token
+								localStorage.setItem(
+									'userToken',
+									loginVue.$root.userToken
+								)
 								// set appId
 								loginVue.$root.appId = response.App.app_id
-								localStorage.setItem('appId', loginVue.$root.appId)
+								localStorage.setItem(
+									'appId',
+									loginVue.$root.appId
+								)
 								// set appSecret
-								loginVue.$root.appSecret = response.App.app_secret
-								localStorage.setItem('appSecret', loginVue.$root.appSecret)
+								loginVue.$root.appSecret =
+									response.App.app_secret
+								localStorage.setItem(
+									'appSecret',
+									loginVue.$root.appSecret
+								)
 								// set createdBy
-								loginVue.$root.createdBy = response.session.admin_id
-								localStorage.setItem('createdBy', loginVue.$root.createdBy)
+								loginVue.$root.createdBy =
+									response.session.admin_id
+								localStorage.setItem(
+									'createdBy',
+									loginVue.$root.createdBy
+								)
 								// set roles
-								let userRoles = response.payload.roles.map(role => role.name)
+								let userRoles = response.payload.roles.map(
+									role => role.name
+								)
 								loginVue.$root.roles = userRoles
 								localStorage.setItem(
 									'roles',
@@ -431,9 +460,11 @@ export default {
 								)
 								// set permissions
 								let userPermissions = {}
-								response.payload.assigned_permissions.forEach(permission => {
-									userPermissions[permission.name] = true
-								})
+								response.payload.assigned_permissions.forEach(
+									permission => {
+										userPermissions[permission.name] = true
+									}
+								)
 								loginVue.setPermissions(userPermissions)
 								loginVue.$root.permissions = userPermissions
 								localStorage.setItem(
@@ -443,14 +474,18 @@ export default {
 
 								// set account type && locations for Location Managers
 								if (response.payload.type === 'admin') {
-									loginVue.$root.accountType = 'application_admin'
+									loginVue.$root.accountType =
+										'application_admin'
 									localStorage.setItem(
 										'accountType',
 										loginVue.$root.accountType
 									)
-								} else if (response.payload.type === 'restricted') {
+								} else if (
+									response.payload.type === 'restricted'
+								) {
 									loginVue.$root.accountType = 'store_admin'
-									loginVue.$root.storeLocations = response.payload.locations
+									loginVue.$root.storeLocations =
+										response.payload.locations
 									localStorage.setItem(
 										'accountType',
 										loginVue.$root.accountType
@@ -458,16 +493,20 @@ export default {
 								}
 
 								// redirect
-								let appRoutes = routes.filter(route => route.path === '/app')[0]
-									.children
+								let appRoutes = routes.filter(
+									route => route.path === '/app'
+								)[0].children
 								let accessible = false
 								for (let i = 0; i < appRoutes.length; i++) {
 									const route = appRoutes[i]
 									accessible = route.meta.permissions.some(
-										permission => this.$root.permissions[permission]
+										permission =>
+											this.$root.permissions[permission]
 									)
 									if (accessible) {
-										this.$router.push({ path: `/app/${route.path}` })
+										this.$router.push({
+											path: `/app/${route.path}`
+										})
 										break
 									}
 								}
@@ -591,33 +630,33 @@ export default {
 
 <style>
 .login-content {
-  margin-bottom: 60px;
+	margin-bottom: 60px;
 }
 .reset-form {
-  margin-top: 80px;
+	margin-top: 80px;
 }
 .forgot-link-text {
-  display: block;
-  margin-top: 10px;
+	display: block;
+	margin-top: 10px;
 }
 .forgot-link {
-  cursor: pointer;
+	cursor: pointer;
 }
 .forgot-link:hover {
-  color: #2499a3;
+	color: #2499a3;
 }
 .col-sm-6-wide {
-  width: 100%;
-  padding: 0 15px;
+	width: 100%;
+	padding: 0 15px;
 }
 .col-md-6-wide {
-  width: 100%;
-  padding: 0 15px;
+	width: 100%;
+	padding: 0 15px;
 }
 .user-login-5 .alert-email-error {
-  margin-top: 0px;
+	margin-top: 0px;
 }
 .user-login-5 .forget-form .alert {
-  margin-top: 0px;
+	margin-top: 0px;
 }
 </style>

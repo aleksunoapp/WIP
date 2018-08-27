@@ -102,7 +102,7 @@
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
 									<div class="input-group"
-									     v-show="passwordMasked">
+									     v-show="passwordConfirmMasked">
 										<input type="password"
 										       class="form-control input-sm"
 										       id="form_control_confirm_masked"
@@ -110,12 +110,12 @@
 										       :class="{'edited': passwordCheck}">
 										<label for="form_control_confirm_masked">Confirm password</label>
 										<span class="input-group-addon clickable"
-										      @click="flipPasswordMask()">
+										      @click="flipPasswordConfirmMask()">
 											<i class="fa fa-eye"></i>
 										</span>
 									</div>
 									<div class="input-group"
-									     v-show="!passwordMasked">
+									     v-show="!passwordConfirmMasked">
 										<input type="text"
 										       class="form-control input-sm"
 										       id="form_control_confirm"
@@ -123,7 +123,7 @@
 										       :class="{'edited': passwordCheck}">
 										<label for="form_control_confirm">Confirm password</label>
 										<span class="input-group-addon clickable"
-										      @click="flipPasswordMask()">
+										      @click="flipPasswordConfirmMask()">
 											<i class="fa fa-eye-slash"></i>
 										</span>
 									</div>
@@ -627,6 +627,7 @@ export default {
 			},
 			searchActivePage: 1,
 			passwordMasked: true,
+			passwordConfirmMasked: true,
 			passwordCheck: '',
 			brandAdminToAssignRolesTo: {},
 			assigning: false,
@@ -641,7 +642,8 @@ export default {
 		currentActivePageItems () {
 			return this.userSort(this.brandAdmins).slice(
 				this.resultsPerPage * (this.activePage - 1),
-				this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
+				this.resultsPerPage * (this.activePage - 1) +
+					this.resultsPerPage
 			)
 		},
 		searchNumPages () {
@@ -650,7 +652,8 @@ export default {
 		currentActiveSearchPageItems () {
 			return this.userSort(this.filteredResults).slice(
 				this.resultsPerPage * (this.searchActivePage - 1),
-				this.resultsPerPage * (this.searchActivePage - 1) + this.resultsPerPage
+				this.resultsPerPage * (this.searchActivePage - 1) +
+					this.resultsPerPage
 			)
 		}
 	},
@@ -667,7 +670,11 @@ export default {
 		formatPhone (phone) {
 			let digits = phone.replace(/\D/g, '')
 			return (
-				digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
+				digits.slice(0, 3) +
+				'-' +
+				digits.slice(3, 6) +
+				'-' +
+				digits.slice(6)
 			)
 		},
 		/**
@@ -677,6 +684,14 @@ export default {
 		 */
 		flipPasswordMask () {
 			this.passwordMasked = !this.passwordMasked
+		},
+		/**
+		 * To switch bewteen masked and unmasked password confirm fields.
+		 * @function
+		 * @returns {undefined}
+		 */
+		flipPasswordConfirmMask () {
+			this.passwordConfirmMasked = !this.passwordConfirmMasked
 		},
 		/**
 		 * To update the order property of sortBy.
@@ -797,7 +812,8 @@ export default {
 			this.filteredResults = []
 			if (this.searchTerm.length) {
 				if (this.searchTerm.length < 3) {
-					this.searchError = 'Search term must be at least 3 characters.'
+					this.searchError =
+						'Search term must be at least 3 characters.'
 				} else {
 					for (var i = 0; i < this.brandAdmins.length; i++) {
 						if (
@@ -1064,18 +1080,23 @@ export default {
 						brandAdminsVue.$root.userToken
 					)
 						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
 								brandAdminsVue.getAllBrandAdmins()
 								brandAdminsVue.resetCreateForm()
 								brandAdminsVue.showCreateSuccess()
 							} else {
-								brandAdminsVue.createErrorMessage = response.message
+								brandAdminsVue.createErrorMessage =
+									response.message
 							}
 						})
 						.catch(reason => {
 							ajaxErrorHandler({
 								reason,
-								errorText: 'We could not create the Brand Admin',
+								errorText:
+									'We could not create the Brand Admin',
 								errorName: 'createErrorMessage',
 								vue: brandAdminsVue
 							})
@@ -1087,7 +1108,8 @@ export default {
 				.catch(reason => {
 					// If validation fails then display the error message
 					if (reason.responseJSON) {
-						brandAdminsVue.createErrorMessage = reason.responseJSON.message
+						brandAdminsVue.createErrorMessage =
+							reason.responseJSON.message
 						window.scrollTo(0, 0)
 					} else {
 						brandAdminsVue.createErrorMessage = reason
@@ -1193,10 +1215,17 @@ export default {
 						brandAdminsVue.$root.userToken
 					)
 						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
 								brandAdminsVue.closeEditBrandAdminModal()
 								brandAdminsVue.showEditSuccess()
-								for (var i = 0; i < this.brandAdmins.length; i++) {
+								for (
+									var i = 0;
+									i < this.brandAdmins.length;
+									i++
+								) {
 									if (
 										this.brandAdmins[i].id ===
 										brandAdminsVue.brandAdminToBeEdited.id
@@ -1217,13 +1246,15 @@ export default {
 									brandAdminsVue.animated = ''
 								}, 3000)
 							} else {
-								brandAdminsVue.editErrorMessage = response.message
+								brandAdminsVue.editErrorMessage =
+									response.message
 							}
 						})
 						.catch(reason => {
 							ajaxErrorHandler({
 								reason,
-								errorText: 'We could not update the Brand Admin',
+								errorText:
+									'We could not update the Brand Admin',
 								errorName: 'editErrorMessage',
 								vue: brandAdminsVue,
 								containerRef: 'editModal'
@@ -1236,7 +1267,8 @@ export default {
 				.catch(reason => {
 					// If validation fails then display the error message
 					if (reason.responseJSON) {
-						brandAdminsVue.editErrorMessage = reason.responseJSON.message
+						brandAdminsVue.editErrorMessage =
+							reason.responseJSON.message
 						window.scrollTo(0, 0)
 					} else {
 						brandAdminsVue.editErrorMessage = reason
@@ -1251,24 +1283,32 @@ export default {
 		 */
 		validateNewBrandAdminData () {
 			var brandAdminsVue = this
-			const passwordRegex = new RegExp(/^((?=\S*?[A-Z])(?=\S*?[0-9]).{7,})\S$/)
+			const passwordRegex = new RegExp(
+				/^((?=\S*?[A-Z])(?=\S*?[0-9]).{7,})\S$/
+			)
 			return new Promise(function (resolve, reject) {
 				if (!brandAdminsVue.newBrandAdmin.name.length) {
 					reject('Name cannot be blank')
 				} else if (
-					brandAdminsVue.newBrandAdmin.phone.replace(/\D/g, '').length < 10
+					brandAdminsVue.newBrandAdmin.phone.replace(/\D/g, '')
+						.length < 10
 				) {
 					reject('Phone number should have at least 10 digits')
 				} else if (!brandAdminsVue.newBrandAdmin.email.length) {
 					reject('Email cannot be blank')
-				} else if (!emailPattern.test(brandAdminsVue.newBrandAdmin.email)) {
+				} else if (
+					!emailPattern.test(brandAdminsVue.newBrandAdmin.email)
+				) {
 					reject('Please enter a valid email')
-				} else if (!passwordRegex.test(brandAdminsVue.newBrandAdmin.password)) {
+				} else if (
+					!passwordRegex.test(brandAdminsVue.newBrandAdmin.password)
+				) {
 					reject(
 						'Password should: be at least 8 characters long, contain only English letters and numbers, contain at least one uppercase letter and one number'
 					)
 				} else if (
-					brandAdminsVue.newBrandAdmin.password !== brandAdminsVue.passwordCheck
+					brandAdminsVue.newBrandAdmin.password !==
+					brandAdminsVue.passwordCheck
 				) {
 					reject('Passwords do not match')
 				}
@@ -1286,8 +1326,8 @@ export default {
 				if (!brandAdminsVue.brandAdminToBeEdited.name.length) {
 					reject('Name cannot be blank')
 				} else if (
-					brandAdminsVue.brandAdminToBeEdited.phone.replace(/\D/g, '').length <
-					10
+					brandAdminsVue.brandAdminToBeEdited.phone.replace(/\D/g, '')
+						.length < 10
 				) {
 					reject('Phone number should have at least 10 digits')
 				}
@@ -1310,9 +1350,9 @@ export default {
 
 <style scoped>
 .animated {
-  animation: listItemHighlight 1s 2 ease-in-out both;
+	animation: listItemHighlight 1s 2 ease-in-out both;
 }
 .mt-element-list .list-news.mt-list-container ul > .mt-list-item:hover {
-  background-color: white;
+	background-color: white;
 }
 </style>

@@ -93,7 +93,7 @@
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
 									<div class="input-group"
-									     v-show="passwordMasked">
+									     v-show="passwordConfirmMasked">
 										<input type="password"
 										       class="form-control input-sm"
 										       id="form_control_confirm_masked"
@@ -101,12 +101,12 @@
 										       :class="{'edited': passwordCheck}">
 										<label for="form_control_confirm_masked">Confirm password</label>
 										<span class="input-group-addon clickable"
-										      @click="flipPasswordMask()">
+										      @click="flipPasswordConfirmMask()">
 											<i class="fa fa-eye"></i>
 										</span>
 									</div>
 									<div class="input-group"
-									     v-show="!passwordMasked">
+									     v-show="!passwordConfirmMasked">
 										<input type="text"
 										       class="form-control input-sm"
 										       id="form_control_confirm"
@@ -114,7 +114,7 @@
 										       :class="{'edited': passwordCheck}">
 										<label for="form_control_confirm">Confirm password</label>
 										<span class="input-group-addon clickable"
-										      @click="flipPasswordMask()">
+										      @click="flipPasswordConfirmMask()">
 											<i class="fa fa-eye-slash"></i>
 										</span>
 									</div>
@@ -767,6 +767,7 @@ export default {
 			filteredResults: [],
 			searchTerm: '',
 			passwordMasked: true,
+			passwordConfirmMasked: true,
 			passwordCheck: '',
 			storeSearchTerm: ''
 		}
@@ -796,7 +797,8 @@ export default {
 		currentActivePageItems () {
 			return this.userSort(this.storeAppUsers).slice(
 				this.resultsPerPage * (this.activePage - 1),
-				this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
+				this.resultsPerPage * (this.activePage - 1) +
+					this.resultsPerPage
 			)
 		},
 		searchNumPages () {
@@ -805,7 +807,8 @@ export default {
 		currentActiveSearchPageItems () {
 			return this.userSort(this.filteredResults).slice(
 				this.resultsPerPage * (this.searchActivePage - 1),
-				this.resultsPerPage * (this.searchActivePage - 1) + this.resultsPerPage
+				this.resultsPerPage * (this.searchActivePage - 1) +
+					this.resultsPerPage
 			)
 		},
 		filteredStores () {
@@ -846,6 +849,14 @@ export default {
 		 */
 		flipPasswordMask () {
 			this.passwordMasked = !this.passwordMasked
+		},
+		/**
+		 * To switch bewteen masked and unmasked password confirm fields.
+		 * @function
+		 * @returns {undefined}
+		 */
+		flipPasswordConfirmMask () {
+			this.passwordConfirmMasked = !this.passwordConfirmMasked
 		},
 		/**
 		 * To update the order property of sortBy.
@@ -966,7 +977,8 @@ export default {
 			this.filteredResults = []
 			if (this.searchTerm.length) {
 				if (this.searchTerm.length < 3) {
-					this.searchError = 'Search term must be at least 3 characters.'
+					this.searchError =
+						'Search term must be at least 3 characters.'
 				} else {
 					for (var i = 0; i < this.storeAppUsers.length; i++) {
 						if (
@@ -1131,18 +1143,23 @@ export default {
 						storeAppUsersVue.$root.userToken
 					)
 						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
 								storeAppUsersVue.getAllStoreAppUsers()
 								storeAppUsersVue.resetCreateForm()
 								storeAppUsersVue.showCreateSuccess()
 							} else {
-								storeAppUsersVue.createErrorMessage = response.message
+								storeAppUsersVue.createErrorMessage =
+									response.message
 							}
 						})
 						.catch(reason => {
 							ajaxErrorHandler({
 								reason,
-								errorText: 'We could not create the Store App User',
+								errorText:
+									'We could not create the Store App User',
 								errorName: 'createErrorMessage',
 								vue: storeAppUsersVue
 							})
@@ -1151,7 +1168,8 @@ export default {
 				.catch(reason => {
 					// If validation fails then display the error message
 					if (reason.responseJSON) {
-						storeAppUsersVue.createErrorMessage = reason.responseJSON.message
+						storeAppUsersVue.createErrorMessage =
+							reason.responseJSON.message
 						window.scrollTo(0, 0)
 					} else {
 						storeAppUsersVue.createErrorMessage = reason
@@ -1331,13 +1349,21 @@ export default {
 						storeAppUsersVue.$root.userToken
 					)
 						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
 								storeAppUsersVue.closeEditStoreAppUserModal()
 								storeAppUsersVue.showEditSuccess()
-								for (var i = 0; i < this.storeAppUsers.length; i++) {
+								for (
+									var i = 0;
+									i < this.storeAppUsers.length;
+									i++
+								) {
 									if (
 										this.storeAppUsers[i].id ===
-										storeAppUsersVue.storeAppUserToBeEdited.id
+										storeAppUsersVue.storeAppUserToBeEdited
+											.id
 									) {
 										this.storeAppUsers[i].name =
 											storeAppUsersVue.storeAppUserToBeEdited.name
@@ -1355,13 +1381,15 @@ export default {
 									storeAppUsersVue.animated = ''
 								}, 3000)
 							} else {
-								storeAppUsersVue.editErrorMessage = response.message
+								storeAppUsersVue.editErrorMessage =
+									response.message
 							}
 						})
 						.catch(reason => {
 							ajaxErrorHandler({
 								reason,
-								errorText: 'We could not update the Store App User',
+								errorText:
+									'We could not update the Store App User',
 								errorName: 'editErrorMessage',
 								vue: storeAppUsersVue,
 								containerRef: 'editModal'
@@ -1371,7 +1399,8 @@ export default {
 				.catch(reason => {
 					// If validation fails then display the error message
 					if (reason.responseJSON) {
-						storeAppUsersVue.editErrorMessage = reason.responseJSON.message
+						storeAppUsersVue.editErrorMessage =
+							reason.responseJSON.message
 						window.scrollTo(0, 0)
 					} else {
 						storeAppUsersVue.editErrorMessage = reason
@@ -1394,9 +1423,13 @@ export default {
 					reject('Name cannot be blank')
 				} else if (!storeAppUsersVue.newStoreAppUser.email.length) {
 					reject('Email cannot be blank')
-				} else if (!emailPattern.test(storeAppUsersVue.newStoreAppUser.email)) {
+				} else if (
+					!emailPattern.test(storeAppUsersVue.newStoreAppUser.email)
+				) {
 					reject('Please enter a valid email')
-				} else if (storeAppUsersVue.newStoreAppUser.password.length < 6) {
+				} else if (
+					storeAppUsersVue.newStoreAppUser.password.length < 6
+				) {
 					reject('Defaul password should be at least 6 characters')
 				} else if (
 					storeAppUsersVue.newStoreAppUser.password !==
@@ -1438,32 +1471,32 @@ export default {
 
 <style scoped>
 .animated {
-  animation: listItemHighlight 1s 2 ease-in-out both;
+	animation: listItemHighlight 1s 2 ease-in-out both;
 }
 .modal-content {
-  max-height: calc(100vh - 60px);
+	max-height: calc(100vh - 60px);
 }
 .modal-body {
-  overflow-y: auto;
-  max-height: calc(100vh - 180px);
+	overflow-y: auto;
+	max-height: calc(100vh - 180px);
 }
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.1s;
+	transition: opacity 0.1s;
 }
 .fade-enter,
 .fade-leave-to {
-  opacity: 0;
+	opacity: 0;
 }
 .mt-element-list .list-news.mt-list-container ul > .mt-list-item:hover {
-  background-color: white;
+	background-color: white;
 }
 .form-md-line-input-trimmed {
-  padding-top: 0 !important;
-  margin-bottom: 0 !important;
+	padding-top: 0 !important;
+	margin-bottom: 0 !important;
 }
 .grey-inline-label {
-  color: #555;
-  margin: 0 0 0 10px;
+	color: #555;
+	margin: 0 0 0 10px;
 }
 </style>

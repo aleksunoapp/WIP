@@ -102,7 +102,7 @@
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
 									<div class="input-group"
-									     v-show="passwordMasked">
+									     v-show="passwordConfirmMasked">
 										<input type="password"
 										       class="form-control input-sm"
 										       id="form_control_confirm"
@@ -110,12 +110,12 @@
 										       :class="{'edited': passwordCheck}">
 										<label for="form_control_confirm">Confirm password</label>
 										<span class="input-group-addon clickable"
-										      @click="flipPasswordMask()">
+										      @click="flipPasswordConfirmMask()">
 											<i class="fa fa-eye"></i>
 										</span>
 									</div>
 									<div class="input-group"
-									     v-show="!passwordMasked">
+									     v-show="!passwordConfirmMasked">
 										<input type="text"
 										       class="form-control input-sm"
 										       id="form_control_confirm_masked"
@@ -123,7 +123,7 @@
 										       :class="{'edited': passwordCheck}">
 										<label for="form_control_confirm_masked">Confirm password</label>
 										<span class="input-group-addon clickable"
-										      @click="flipPasswordMask()">
+										      @click="flipPasswordConfirmMask()">
 											<i class="fa fa-eye-slash"></i>
 										</span>
 									</div>
@@ -697,6 +697,7 @@ export default {
 			},
 			searchActivePage: 1,
 			passwordMasked: true,
+			passwordConfirmMasked: true,
 			passwordCheck: '',
 			locationManagerToAssignRolesTo: {},
 			assigningRoles: false,
@@ -711,7 +712,8 @@ export default {
 		currentActivePageItems () {
 			return this.userSort(this.locationManagers).slice(
 				this.resultsPerPage * (this.activePage - 1),
-				this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
+				this.resultsPerPage * (this.activePage - 1) +
+					this.resultsPerPage
 			)
 		},
 		searchNumPages () {
@@ -720,7 +722,8 @@ export default {
 		currentActiveSearchPageItems () {
 			return this.userSort(this.filteredResults).slice(
 				this.resultsPerPage * (this.searchActivePage - 1),
-				this.resultsPerPage * (this.searchActivePage - 1) + this.resultsPerPage
+				this.resultsPerPage * (this.searchActivePage - 1) +
+					this.resultsPerPage
 			)
 		},
 		previouslySelected () {
@@ -763,7 +766,10 @@ export default {
 		validateRoles () {
 			var locationManagersVue = this
 			return new Promise(function (resolve, reject) {
-				if (!locationManagersVue.locationManagerToAssignRolesTo.roles.length) {
+				if (
+					!locationManagersVue.locationManagerToAssignRolesTo.roles
+						.length
+				) {
 					reject('Select at least one role')
 				}
 				resolve('Hurray')
@@ -886,7 +892,11 @@ export default {
 		formatPhone (phone) {
 			let digits = phone.replace(/\D/g, '')
 			return (
-				digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
+				digits.slice(0, 3) +
+				'-' +
+				digits.slice(3, 6) +
+				'-' +
+				digits.slice(6)
 			)
 		},
 		/**
@@ -896,6 +906,14 @@ export default {
 		 */
 		flipPasswordMask () {
 			this.passwordMasked = !this.passwordMasked
+		},
+		/**
+		 * To switch bewteen masked and unmasked password fields.
+		 * @function
+		 * @returns {undefined}
+		 */
+		flipPasswordConfirmMask () {
+			this.passwordConfirmMasked = !this.passwordConfirmMasked
 		},
 		/**
 		 * To update the order property of sortBy.
@@ -1016,7 +1034,8 @@ export default {
 			this.filteredResults = []
 			if (this.searchTerm.length) {
 				if (this.searchTerm.length < 3) {
-					this.searchError = 'Search term must be at least 3 characters.'
+					this.searchError =
+						'Search term must be at least 3 characters.'
 				} else {
 					for (var i = 0; i < this.locationManagers.length; i++) {
 						if (
@@ -1075,7 +1094,8 @@ export default {
 			}
 			this.assigningStores = true
 			let payload = {
-				locations: assignStoresVue.selectedLocationManager.selectedLocations,
+				locations:
+					assignStoresVue.selectedLocationManager.selectedLocations,
 				admin: assignStoresVue.selectedLocationManager.id
 			}
 			this.clearError('assignErrorMessage')
@@ -1191,18 +1211,23 @@ export default {
 						locationManagersVue.$root.userToken
 					)
 						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
 								locationManagersVue.getAllLocationManagers()
 								locationManagersVue.resetCreateForm()
 								locationManagersVue.showCreateSuccess()
 							} else {
-								locationManagersVue.createErrorMessage = response.message
+								locationManagersVue.createErrorMessage =
+									response.message
 							}
 						})
 						.catch(reason => {
 							ajaxErrorHandler({
 								reason,
-								errorText: 'We could not create the Location Manager',
+								errorText:
+									'We could not create the Location Manager',
 								errorName: 'createErrorMessage',
 								vue: locationManagersVue
 							})
@@ -1214,7 +1239,8 @@ export default {
 				.catch(reason => {
 					// If validation fails then display the error message
 					if (reason.responseJSON) {
-						locationManagersVue.createErrorMessage = reason.responseJSON.message
+						locationManagersVue.createErrorMessage =
+							reason.responseJSON.message
 						window.scrollTo(0, 0)
 					} else {
 						locationManagersVue.createErrorMessage = reason
@@ -1328,7 +1354,8 @@ export default {
 		 * @returns {undefined}
 		 */
 		toggleCreateLocationManagerPanel () {
-			this.createLocationManagerCollapse = !this.createLocationManagerCollapse
+			this.createLocationManagerCollapse = !this
+				.createLocationManagerCollapse
 			this.$nextTick(function () {
 				if (!this.createLocationManagerCollapse) {
 					this.$refs.newLocationManagerName.focus()
@@ -1383,13 +1410,21 @@ export default {
 						locationManagersVue.$root.userToken
 					)
 						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
 								locationManagersVue.closeEditLocationManagerModal()
 								locationManagersVue.showEditSuccess()
-								for (var i = 0; i < this.locationManagers.length; i++) {
+								for (
+									var i = 0;
+									i < this.locationManagers.length;
+									i++
+								) {
 									if (
 										this.locationManagers[i].id ===
-										locationManagersVue.locationManagerToBeEdited.id
+										locationManagersVue
+											.locationManagerToBeEdited.id
 									) {
 										this.locationManagers[i].name =
 											locationManagersVue.locationManagerToBeEdited.name
@@ -1401,19 +1436,22 @@ export default {
 								}
 								locationManagersVue.resetEditForm()
 								this.animated = `locationManager-${
-									locationManagersVue.locationManagerToBeEdited.id
+									locationManagersVue
+										.locationManagerToBeEdited.id
 								}`
 								window.setTimeout(() => {
 									locationManagersVue.animated = ''
 								}, 3000)
 							} else {
-								locationManagersVue.editErrorMessage = response.message
+								locationManagersVue.editErrorMessage =
+									response.message
 							}
 						})
 						.catch(reason => {
 							ajaxErrorHandler({
 								reason,
-								errorText: 'We could not update the Location Manager',
+								errorText:
+									'We could not update the Location Manager',
 								errorName: 'editErrorMessage',
 								vue: locationManagersVue,
 								containerRef: 'editModal'
@@ -1436,23 +1474,33 @@ export default {
 		 */
 		validateNewLocationManagerData () {
 			var locationManagersVue = this
-			const passwordRegex = new RegExp(/^((?=\S*?[A-Z])(?=\S*?[0-9]).{7,})\S$/)
+			const passwordRegex = new RegExp(
+				/^((?=\S*?[A-Z])(?=\S*?[0-9]).{7,})\S$/
+			)
 			return new Promise(function (resolve, reject) {
 				if (!locationManagersVue.newLocationManager.name.length) {
 					reject('Name cannot be blank')
 				} else if (
-					locationManagersVue.newLocationManager.phone.replace(/\D/g, '')
-						.length < 10
+					locationManagersVue.newLocationManager.phone.replace(
+						/\D/g,
+						''
+					).length < 10
 				) {
 					reject('Phone number should have at least 10 digits')
-				} else if (!locationManagersVue.newLocationManager.email.length) {
+				} else if (
+					!locationManagersVue.newLocationManager.email.length
+				) {
 					reject('Email cannot be blank')
 				} else if (
-					!emailPattern.test(locationManagersVue.newLocationManager.email)
+					!emailPattern.test(
+						locationManagersVue.newLocationManager.email
+					)
 				) {
 					reject('Please enter a valid email')
 				} else if (
-					!passwordRegex.test(locationManagersVue.newLocationManager.password)
+					!passwordRegex.test(
+						locationManagersVue.newLocationManager.password
+					)
 				) {
 					reject(
 						'Password should: be at least 8 characters long, contain only English letters and numbers, contain at least one uppercase letter and one number'
@@ -1474,11 +1522,15 @@ export default {
 		validateEditedLocationManagerData () {
 			var locationManagersVue = this
 			return new Promise(function (resolve, reject) {
-				if (!locationManagersVue.locationManagerToBeEdited.name.length) {
+				if (
+					!locationManagersVue.locationManagerToBeEdited.name.length
+				) {
 					reject('Name cannot be blank')
 				} else if (
-					locationManagersVue.locationManagerToBeEdited.phone.replace(/\D/g, '')
-						.length < 10
+					locationManagersVue.locationManagerToBeEdited.phone.replace(
+						/\D/g,
+						''
+					).length < 10
 				) {
 					reject('Phone number should have at least 10 digits')
 				}
@@ -1502,16 +1554,16 @@ export default {
 
 <style scoped>
 .animated {
-  animation: listItemHighlight 1s 2 ease-in-out both;
+	animation: listItemHighlight 1s 2 ease-in-out both;
 }
 .modal-content {
-  max-height: calc(100vh - 60px);
+	max-height: calc(100vh - 60px);
 }
 .modal-body {
-  overflow-y: auto;
-  max-height: calc(100vh - 180px);
+	overflow-y: auto;
+	max-height: calc(100vh - 180px);
 }
 .mt-element-list .list-news.mt-list-container ul > .mt-list-item:hover {
-  background-color: white;
+	background-color: white;
 }
 </style>

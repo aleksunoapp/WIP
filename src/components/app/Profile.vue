@@ -39,9 +39,9 @@
 									<span>{{errorMessage}}</span>
 								</div>
 
-								<div class="form-group form-md-line-input form-md-floating-label"
-								     v-show="passwordMasked">
-									<div class="input-group">
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<div class="input-group"
+									     v-show="currentPasswordMasked">
 										<input type="password"
 										       class="form-control input-sm"
 										       id="current_masked"
@@ -49,39 +49,12 @@
 										       :class="{'edited': currentPassword.length}">
 										<label for="current_masked">Current password</label>
 										<span class="input-group-addon clickable"
-										      @click="flipPasswordMask()">
+										      @click="flipCurrentPasswordMask()">
 											<i class="fa fa-eye"></i>
 										</span>
 									</div>
-									<div class="input-group">
-										<input type="password"
-										       class="form-control input-sm"
-										       id="new_masked"
-										       v-model="newPassword"
-										       :class="{'edited': newPassword.length}">
-										<label for="new_masked">New password</label>
-										<span class="input-group-addon clickable"
-										      @click="flipPasswordMask()">
-											<i class="fa fa-eye"></i>
-										</span>
-									</div>
-									<div class="input-group">
-										<input type="password"
-										       class="form-control input-sm"
-										       id="confirm_masked"
-										       v-model="newPasswordConfirmation"
-										       :class="{'edited': newPasswordConfirmation.length}">
-										<label for="confirm_masked">Confirm password</label>
-										<span class="input-group-addon clickable"
-										      @click="flipPasswordMask()">
-											<i class="fa fa-eye"></i>
-										</span>
-									</div>
-								</div>
-
-								<div class="form-group form-md-line-input form-md-floating-label"
-								     v-show="!passwordMasked">
-									<div class="input-group">
+									<div class="input-group"
+									     v-show="!currentPasswordMasked">
 										<input type="text"
 										       class="form-control input-sm"
 										       id="current_unmasked"
@@ -89,11 +62,26 @@
 										       :class="{'edited': currentPassword}">
 										<label for="current_unmasked">Current password</label>
 										<span class="input-group-addon clickable"
-										      @click="flipPasswordMask()">
+										      @click="flipCurrentPasswordMask()">
 											<i class="fa fa-eye-slash"></i>
 										</span>
 									</div>
-									<div class="input-group ">
+
+									<div class="input-group"
+									     v-show="newPasswordMasked">
+										<input type="password"
+										       class="form-control input-sm"
+										       id="new_masked"
+										       v-model="newPassword"
+										       :class="{'edited': newPassword.length}">
+										<label for="new_masked">New password</label>
+										<span class="input-group-addon clickable"
+										      @click="flipNewPasswordMask()">
+											<i class="fa fa-eye"></i>
+										</span>
+									</div>
+									<div class="input-group"
+									     v-show="!newPasswordMasked">
 										<input type="text"
 										       class="form-control input-sm"
 										       id="new_unmasked"
@@ -101,11 +89,26 @@
 										       :class="{'edited': newPassword}">
 										<label for="new_unmasked">New password</label>
 										<span class="input-group-addon clickable"
-										      @click="flipPasswordMask()">
+										      @click="flipNewPasswordMask()">
 											<i class="fa fa-eye-slash"></i>
 										</span>
 									</div>
-									<div class="input-group">
+
+									<div class="input-group"
+									     v-show="confirmPasswordMasked">
+										<input type="password"
+										       class="form-control input-sm"
+										       id="confirm_masked"
+										       v-model="newPasswordConfirmation"
+										       :class="{'edited': newPasswordConfirmation.length}">
+										<label for="confirm_masked">Confirm password</label>
+										<span class="input-group-addon clickable"
+										      @click="flipConfirmPasswordMask()">
+											<i class="fa fa-eye"></i>
+										</span>
+									</div>
+									<div class="input-group"
+									     v-show="!confirmPasswordMasked">
 										<input type="text"
 										       class="form-control input-sm"
 										       id="confirm_unmasked"
@@ -113,7 +116,7 @@
 										       :class="{'edited': newPasswordConfirmation}">
 										<label for="confirm_unmasked">Confirm password</label>
 										<span class="input-group-addon clickable"
-										      @click="flipPasswordMask()">
+										      @click="flipConfirmPasswordMask()">
 											<i class="fa fa-eye-slash"></i>
 										</span>
 									</div>
@@ -142,7 +145,9 @@ export default {
 	data () {
 		return {
 			errorMessage: '',
-			passwordMasked: true,
+			currentPasswordMasked: true,
+			newPasswordMasked: true,
+			confirmPasswordMasked: true,
 			currentPassword: '',
 			newPassword: '',
 			newPasswordConfirmation: ''
@@ -164,8 +169,24 @@ export default {
 		 * @function
 		 * @returns {undefined}
 		 */
-		flipPasswordMask () {
-			this.passwordMasked = !this.passwordMasked
+		flipCurrentPasswordMask () {
+			this.currentPasswordMasked = !this.currentPasswordMasked
+		},
+		/**
+		 * To switch bewteen masked and unmasked new password fields.
+		 * @function
+		 * @returns {undefined}
+		 */
+		flipNewPasswordMask () {
+			this.newPasswordMasked = !this.newPasswordMasked
+		},
+		/**
+		 * To switch bewteen masked and unmasked password confirm fields.
+		 * @function
+		 * @returns {undefined}
+		 */
+		flipConfirmPasswordMask () {
+			this.confirmPasswordMasked = !this.confirmPasswordMasked
 		},
 		/**
 		 * To check if the item data is valid before submitting to the backend.
@@ -174,7 +195,9 @@ export default {
 		 */
 		validateResetData () {
 			var profileVue = this
-			const passwordRegex = new RegExp(/^((?=\S*?[A-Z])(?=\S*?[0-9]).{7,})\S$/)
+			const passwordRegex = new RegExp(
+				/^((?=\S*?[A-Z])(?=\S*?[0-9]).{7,})\S$/
+			)
 			return new Promise(function (resolve, reject) {
 				if (!profileVue.currentPassword) {
 					reject('Please enter your current password')
@@ -183,7 +206,8 @@ export default {
 						'Password should: be at least 8 characters long, contain only English letters and numbers, contain at least one uppercase letter and one number'
 					)
 				} else if (
-					profileVue.newPassword !== profileVue.newPasswordConfirmation
+					profileVue.newPassword !==
+					profileVue.newPasswordConfirmation
 				) {
 					reject('Passwords do not match')
 				}
@@ -222,7 +246,9 @@ export default {
 				})
 				.catch(reason => {
 					loginVue.errorMessage = reason
-					loginVue.$scrollTo(loginVue.$refs.errorMessage, 1000, { offset: -50 })
+					loginVue.$scrollTo(loginVue.$refs.errorMessage, 1000, {
+						offset: -50
+					})
 				})
 		},
 		/**
@@ -271,7 +297,7 @@ export default {
 
 <style scoped>
 .input-group {
-  margin-top: 30px;
+	margin-top: 30px;
 }
 </style>
 
