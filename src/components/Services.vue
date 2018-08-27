@@ -86,7 +86,9 @@
 								<template v-for="subService in service.subServices">
 									<div class="summary-table-row summary-item">
 										<div class="summary-table-cell">
-											<span class="information-icon no-icon-bg"></span>
+											<span class="information-icon no-icon-bg">
+												<span v-show="subService.isHighlighted" class="highlighted-asterisk">*</span>
+											</span>
 											<span class="service-name">{{ subService.name }}</span>
 										</div>
 										<div class="summary-table-cell">
@@ -99,7 +101,9 @@
 							<template v-else>
 								<div class="summary-table-row summary-item">
 									<div class="summary-table-cell">
-										<span class="information-icon no-icon-bg"></span>
+										<span class="information-icon no-icon-bg">
+											<span v-show="service.isHighlighted" class="highlighted-asterisk">*</span>
+										</span>
 										<span class="service-name">{{ service.name }}</span>
 									</div>
 									<div class="summary-table-cell">
@@ -116,6 +120,11 @@
 						</div>
 						<div class="summary-table-cell">
 							<span class="price">{{ formatCurrency(this.$root.totals.serviceTotal.total) }}</span>
+						</div>
+					</div>
+					<div v-show="highlightedServices" class="summary-table-row">
+						<div class="summary-table-cell highlighted-legend-cell">
+							<span class="service-name">* {{langTerms.updated_service[$root.meta.local.toLowerCase()]}}</span>
 						</div>
 					</div>
 				</div>
@@ -414,6 +423,11 @@ export default {
 					'en-ca': 'I hereby authorize the repair work herein set forth to be done along with the necessary material and agree that you are not responsible for loss or damage to vehicle or articles left in vehicle in case of fire, theft, or any cause beyond your control or for any delays caused by unavailability of parts or delays in parts shipments by the supplier or transporter. I hereby grant you and/or your employees permission to operate the behicle herein described on streets, highways, or elsewhere for the purpose of testing and/or inspection. An express mechanical lien is hereby acknowledged on above vehicle to secure the amount of repairs thereto. The dealership is not responsible for damages from freezing due to lack of antifreeze.',
 					'en-us': 'I hereby authorize the repair work herein set forth to be done along with the necessary material and agree that you are not responsible for loss or damage to vehicle or articles left in vehicle in case of fire, theft, or any cause beyond your control or for any delays caused by unavailability of parts or delays in parts shipments by the supplier or transporter. I hereby grant you and/or your employees permission to operate the behicle herein described on streets, highways, or elsewhere for the purpose of testing and/or inspection. An express mechanical lien is hereby acknowledged on above vehicle to secure the amount of repairs thereto. The dealership is not responsible for damages from freezing due to lack of antifreeze.',
 					'fr-ca': 'J’autorise, par la présente, la réalisation du travail de réparation décrit par la présente et l’utilisation de tout matériel nécessaire. J’accepte également que la concession n’assume aucune responsabilité pour la perte ou les dommages causés au véhicule ou aux articles laissés dans le véhicule en cas d’incendie, de vol ou de toute autre raison en dehors du contrôle de la concession, et que la concession ne saurait être tenue pour responsable des retards causés par l’indisponibilité des pièces ou les retards d’expédition des pièces par le fournisseur ou le transporteur. Je donne, par la présente, l’autorisation à la concession et/ou à ses employés de conduire le véhicule décrit dans la présente sur les routes, les autoroutes et ailleurs, dans le but de réaliser des tests et/ou une inspection. La présente reconnaît expressément un droit de rétention mécanique pour le véhicule ci-dessus, dans le but de réaliser la quantité des réparations décrites. La concession ne saurait être tenue comme responsable des dommages causés par le gel résultant d’une quantité insuffisante d’antigel.'
+				},
+				updated_service: {
+					'en-ca': 'indicates updates to the services',
+					'en-us': 'indicates updates to the services',
+					'fr-ca': 'indique des mises à jour aux services'
 				}
 			}
 		}
@@ -529,6 +543,27 @@ export default {
 				formattedTime += ' ' + preposition + ` ${allMonths[fullDate.getMonth()]} ${fullDate.getDate()}, ${fullDate.getFullYear()}`
 			}
 			return formattedTime
+		},
+		highlightedServices () {
+			let highlighted = false
+			const cat4 = this.$root.services.filter(service => service.category === '4')
+			cat4.forEach(service => {
+				if (service.isHighlighted) {
+					highlighted = true
+					console.log({service})
+					return
+				}
+				if (service.subServices !== undefined && service.subServices.length) {
+					service.subServices.forEach(subService => {
+						if (subService.isHighlighted) {
+							highlighted = true
+							console.log({subService})
+							return
+						}
+					})
+				}
+			})
+			return highlighted
 		}
 	},
 	methods: {
@@ -893,5 +928,14 @@ export default {
 	color: -webkit-link;
     cursor: pointer;
     text-decoration: underline;
+}
+.highlighted-asterisk {
+	float: right;
+}
+.highlighted-legend-cell {
+	text-align: left;
+	border: none;
+	font-size: 13px;
+	font-weight: bold;
 }
 </style>
