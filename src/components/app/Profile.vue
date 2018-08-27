@@ -17,7 +17,7 @@
 					<p>Roles: </p>
 					<ul>
 						<li v-for="(role, index) in $root.roles"
-						    :key="index">{{role}}</li>
+						    :key="index">{{role.name}}</li>
 					</ul>
 				</div>
 			</div>

@@ -450,9 +450,7 @@ export default {
 									loginVue.$root.createdBy
 								)
 								// set roles
-								let userRoles = response.payload.roles.map(
-									role => role.name
-								)
+								let userRoles = response.payload.roles
 								loginVue.$root.roles = userRoles
 								localStorage.setItem(
 									'roles',

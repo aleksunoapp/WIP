@@ -532,7 +532,8 @@ export default {
 		currentActivePageItems () {
 			return this.userSort(this.roles).slice(
 				this.resultsPerPage * (this.activePage - 1),
-				this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
+				this.resultsPerPage * (this.activePage - 1) +
+					this.resultsPerPage
 			)
 		},
 		searchNumPages () {
@@ -541,7 +542,8 @@ export default {
 		currentActiveSearchPageItems () {
 			return this.userSort(this.filteredResults).slice(
 				this.resultsPerPage * (this.searchActivePage - 1),
-				this.resultsPerPage * (this.searchActivePage - 1) + this.resultsPerPage
+				this.resultsPerPage * (this.searchActivePage - 1) +
+					this.resultsPerPage
 			)
 		}
 	},
@@ -566,7 +568,9 @@ export default {
 
 						let role = rolesVue.listToTree(
 							response.payload,
-							response.payload.filter(mod => mod.parent_module === 0)[0]
+							response.payload.filter(
+								mod => mod.parent_module === 0
+							)[0]
 						)
 
 						for (let mod of role) {
@@ -616,13 +620,12 @@ export default {
 						mappedElem = mappedArr[id]
 						// If the element is not at the root level, add it to its parent array of children.
 						if (mappedElem.parent_module) {
-							mappedArr[mappedElem['parent_module']]['sub_modules'].push(
-								mappedElem
-							)
+							mappedArr[mappedElem['parent_module']]['sub_modules'].push(mappedElem)
 							// If the element is at the root level, add it to first level elements array.
 						} else {
 							mappedElem.disabled =
-								this.$root.permissions['update role'] === undefined
+								this.$root.permissions['update role'] ===
+								undefined
 							tree.push(mappedElem)
 						}
 					}
@@ -647,8 +650,11 @@ export default {
 				current.combined = [...ownPermissions, ...current.sub_modules]
 				current.combined = current.combined.map(item => {
 					item.nodeId =
-						item.module_id === undefined ? `m${item.id}` : `p${item.id}`
-					item.disabled = _this.$root.permissions['update role'] === undefined
+						item.module_id === undefined
+							? `m${item.id}`
+							: `p${item.id}`
+					item.disabled =
+						_this.$root.permissions['update role'] === undefined
 					return item
 				})
 				current.disabled = current.combined.length === 0
@@ -711,7 +717,11 @@ export default {
 			try {
 				let digits = phone.replace(/\D/g, '')
 				return (
-					digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
+					digits.slice(0, 3) +
+					'-' +
+					digits.slice(3, 6) +
+					'-' +
+					digits.slice(6)
 				)
 			} catch (err) {
 				return ''
@@ -836,7 +846,8 @@ export default {
 			this.filteredResults = []
 			if (this.searchTerm.length) {
 				if (this.searchTerm.length < 3) {
-					this.searchError = 'Search term must be at least 3 characters.'
+					this.searchError =
+						'Search term must be at least 3 characters.'
 				} else {
 					for (var i = 0; i < this.roles.length; i++) {
 						if (
@@ -912,7 +923,9 @@ export default {
 		listRolePermissions (role) {
 			return RolesFunctions.listRolePermissions(role)
 				.then(response => {
-					return response.payload.permissions.map(permission => permission.id)
+					return response.payload.permissions.map(
+						permission => permission.id
+					)
 				})
 				.catch(reason => {
 					return []
@@ -992,9 +1005,13 @@ export default {
 				})
 				.catch(reason => {
 					rolesVue.createErrorMessage = reason
-					rolesVue.$scrollTo(rolesVue.$refs.createErrorMessage, 1000, {
-						offset: -50
-					})
+					rolesVue.$scrollTo(
+						rolesVue.$refs.createErrorMessage,
+						1000,
+						{
+							offset: -50
+						}
+					)
 				})
 		},
 		/**
@@ -1099,10 +1116,15 @@ export default {
 					return RolesFunctions.updateRole(rolesVue.roleToEdit)
 						.then(response => {
 							rolesVue.closeEditRoleModal()
+							rolesVue.refreshUserPermissions(response.payload)
 							rolesVue.showEditSuccess()
 							for (var i = 0; i < rolesVue.roles.length; i++) {
-								if (rolesVue.roles[i].id === rolesVue.roleToEdit.id) {
-									rolesVue.roles[i].name = response.payload.name
+								if (
+									rolesVue.roles[i].id ===
+									rolesVue.roleToEdit.id
+								) {
+									rolesVue.roles[i].name =
+										response.payload.name
 								}
 							}
 							rolesVue.animated = `role-${rolesVue.roleToEdit.id}`
@@ -1129,6 +1151,33 @@ export default {
 					rolesVue.editErrorMessage = reason
 					rolesVue.$refs.editModal.$el.scrollTop = 0
 				})
+		},
+		/**
+		 * To current user roles and permissions.
+		 * @function
+		 * @param {object} updatedRole - The updated role
+		 * @returns {undefined}
+		 */
+		refreshUserPermissions (updatedRole) {
+			let index = this.$root.roles.findIndex(
+				role => role.id === this.roleToEdit.id
+			)
+			console.log({ updatedRole, index })
+			if (index !== -1) {
+				this.$root.roles[index] = updatedRole
+				let newPermissions = {}
+				this.$root.roles.forEach(role => {
+					role.permissions.forEach(permission => {
+						;[permission.name] = true
+					})
+				})
+				this.$root.permissions = newPermissions
+				// eslint-disable-next-line
+				localStorage.setItem(
+					'permissions',
+					JSON.stringify(this.$root.permissions)
+				)
+			}
 		},
 		/**
 		 * To check if the item data is valid before submitting to the backend.
@@ -1251,15 +1300,15 @@ export default {
 
 <style scoped>
 .animated {
-  animation: listItemHighlight 1s 2 ease-in-out both;
+	animation: listItemHighlight 1s 2 ease-in-out both;
 }
 .mt-element-list .list-news.mt-list-container ul > .mt-list-item {
-  min-height: 80px;
+	min-height: 80px;
 }
 .mt-element-list .list-news.mt-list-container ul > .mt-list-item:hover {
-  background-color: white;
+	background-color: white;
 }
 .module {
-  font-weight: bold;
+	font-weight: bold;
 }
 </style>
