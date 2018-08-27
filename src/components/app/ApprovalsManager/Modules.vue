@@ -1166,11 +1166,11 @@ export default {
 							modulesVue.showEditSuccess()
 							for (var i = 0; i < modulesVue.modules.length; i++) {
 								if (modulesVue.modules[i].id === modulesVue.moduleToEdit.id) {
-									modulesVue.modules[i] = { ...modulesVue.moduleToEdit }
+									modulesVue.modules[i].name = modulesVue.moduleToEdit.name
 								}
 							}
-							modulesVue.resetEditForm()
 							modulesVue.animated = `module-${modulesVue.moduleToEdit.id}`
+							modulesVue.resetEditForm()
 							window.setTimeout(() => {
 								modulesVue.animated = ''
 							}, 3000)
