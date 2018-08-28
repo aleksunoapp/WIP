@@ -29,9 +29,10 @@
 									<input ref="email"
 									       class="form-control form-control-solid placeholder-no-fix form-group"
 									       type="email"
-									       placeholder="Email"
+									       placeholder="jo@email.com"
 									       name="email"
 									       v-model="user.email"
+										   autocomplete="email"
 									       @keyup.enter="focusPassword" />
 								</div>
 								<div class="col-sm-6">
@@ -40,6 +41,7 @@
 									       type="password"
 									       placeholder="Password"
 									       name="password"
+										   autocomplete="password"
 									       v-model="user.password"
 									       @keyup.enter="login" />
 								</div>
