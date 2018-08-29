@@ -218,7 +218,7 @@
 						<page-results class="pull-right"
 						              :totalResults="filteredResults.length"
 						              :activePage="searchActivePage"
-						              @pageResults="activeSearchPageUpdate"></page-results>
+						              @pageResults="pageResultsUpdate"></page-results>
 					</div>
 					<div class="mt-element-list">
 						<div class="mt-list-container list-news">
@@ -365,9 +365,12 @@ export default {
 			return Math.ceil(this.filteredResults.length / this.resultsPerPage)
 		},
 		currentActiveSearchPageItems () {
+			let begin = this.resultsPerPage * (this.searchActivePage - 1)
+			let end = this.resultsPerPage * (this.searchActivePage - 1) + this.resultsPerPage
+			console.log({begin, end})
 			return this.userSort(this.filteredResults).slice(
-				this.resultsPerPage * (this.searchActivePage - 1),
-				this.resultsPerPage * (this.searchActivePage - 1) + this.resultsPerPage
+				begin,
+				end
 			)
 		}
 	},
