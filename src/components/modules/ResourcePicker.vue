@@ -9,6 +9,10 @@
 		        @click.stop.prevent="openResourceModal()">{{ buttonText }}</button>
 		<section v-show="showResourceModal">
 			<div class="col-sm-4 margin-top-10">
+				<div class="panel panel-default">
+				<div class="panel-heading">Select a Folder</div>
+					<div class="panel-body">
+					</div>
 				<div class="jstree-default">
 					<ul class="jstree-container-ul jstree-children">
 						<li class="jstree-node jstree-last"
@@ -47,19 +51,24 @@
 						</li>
 					</ul>
 				</div>
-			</div>
-			<div class="col-sm-8  margin-top-10">
+				</div>
+			</div>			
+			<div class="col-sm-8  margin-top-10" v-show="activeFolder.id && !allFoldersView">
+				<div class="panel panel-default ">
+				<div class="panel-heading">Select a Image</div>
+					<div class="panel-body">
+					</div>	
 				<div v-if="!activeFolder.id && !allFoldersView"
-				     class="center margin-top-20">Select a folder to view resources.</div>
+				     class="center margin-top-20 font-red bold">Select a folder to view resources.</div>
 				<div v-if="activeFolder.id || allFoldersView">
 					<loading-screen :show="loadingResourceData || isSaving"
 					                :color="'#3598dc'"
 					                :display="'inline'"></loading-screen>
 					<div class="relative cbp cbp-caption-active cbp-caption-overlayBottomReveal cbp-ready">
 						<div class="cbp-wrapper-outer">
-							<div class="cbp-wrapper">
+							<div class="cbp-wrapper center">
 								<div v-show="!loadingResourceData && !isSaving">
-									<div>
+									<div v-show="currentResources.length">
 										<dropdown>
 											<button slot="button"
 											        type="button"
@@ -198,7 +207,7 @@
 											</form>
 										</div>
 									</div>
-									<page-results class="margin-top-10 margin-bottom-10"
+									<page-results v-show="currentResources.length" class="margin-top-10 margin-bottom-10"
 									              :totalResults="totalResults"
 									              :activePage="activePage"
 									              @pageResults="updatePerPage"></page-results>
@@ -231,6 +240,7 @@
 							</div>
 						</div>
 					</div>
+				</div>
 				</div>
 			</div>
 			<div class="col-sm-12 margin-top-10">
@@ -453,6 +463,8 @@ export default {
 						)
 						_this.$set(_this.folders, 'expanded', false)
 						_this.$set(_this.folders, 'children_fetched', false)
+						_this.activePageUpdate(1, _this.folders, true)
+						_this.expandNode(_this.folders)
 					} else {
 						_this.$set(folder, 'children_fetched', true)
 						_this.$set(folder, 'children', response.payload.folders)
