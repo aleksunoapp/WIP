@@ -479,6 +479,7 @@ import Pagination from '../../modules/Pagination'
 import PageResults from '../../modules/PageResults'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
 import ModulesFunctions from '../../../controllers/Modules'
+import { mapMutations } from 'vuex'
 
 export default {
 	data () {
@@ -1184,20 +1185,20 @@ export default {
 			let index = this.$root.roles.findIndex(
 				role => role.id === this.roleToEdit.id
 			)
-			console.log({ updatedRole, index })
+
 			if (index !== -1) {
 				this.$root.roles[index] = updatedRole
 				let newPermissions = {}
 				this.$root.roles.forEach(role => {
 					role.permissions.forEach(permission => {
-						;[permission.name] = true
+						newPermissions[permission.name] = true
 					})
 				})
-				this.$root.permissions = newPermissions
+				this.setPermissions(newPermissions)
 				// eslint-disable-next-line
 				localStorage.setItem(
 					'permissions',
-					JSON.stringify(this.$root.permissions)
+					JSON.stringify(newPermissions)
 				)
 			}
 		},
@@ -1316,7 +1317,10 @@ export default {
 				.finally(() => {
 					rolesVue.deleting = false
 				})
-		}
+		},
+		...mapMutations({
+			setPermissions: 'SET_PERMISSIONS'
+		})
 	},
 	components: {
 		Breadcrumb,
