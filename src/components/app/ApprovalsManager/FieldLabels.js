@@ -3,6 +3,36 @@
  */
 
 export default {
+	'id': {
+		display: false,
+		label: 'ID',
+		values: {}
+	},
+	'category_id': {
+		display: false,
+		label: 'Category ID',
+		values: {}
+	},
+	'item_type_id': {
+		display: false,
+		label: 'Item Type ID',
+		values: {}
+	},
+	'location_id': {
+		display: false,
+		label: 'Location ID',
+		values: {}
+	},
+	'created_by': {
+		display: false,
+		label: 'Created by',
+		values: {}
+	},
+	'updated_by': {
+		display: false,
+		label: 'Updated by',
+		values: {}
+	},
 	'name': {
 		display: true,
 		label: 'Store Name',
@@ -39,7 +69,7 @@ export default {
 		values: {}
 	},
 	'display_name': {
-		display: false,
+		display: true,
 		label: 'Store Display Name',
 		values: {}
 	},
@@ -67,7 +97,7 @@ export default {
 		}
 	},
 	'is_open': {
-		display: false,
+		display: true,
 		label: 'Is Open',
 		values: {}
 	},
@@ -92,7 +122,7 @@ export default {
 		values: {}
 	},
 	'postal_code': {
-		display: false,
+		display: true,
 		label: 'Postal Code',
 		values: {}
 	},
@@ -104,7 +134,7 @@ export default {
 		}
 	},
 	'slug': {
-		display: false,
+		display: true,
 		label: 'Slug',
 		values: {}
 	},
@@ -117,12 +147,12 @@ export default {
 		}
 	},
 	'vendor_id': {
-		display: false,
+		display: true,
 		label: 'Vendor ID',
 		values: {}
 	},
 	'status': {
-		display: false,
+		display: true,
 		label: 'Status',
 		values: {}
 	},
@@ -269,11 +299,6 @@ export default {
 	'type': {
 		display: true,
 		label: 'Type',
-		values: {}
-	},
-	'created_by': {
-		display: true,
-		label: 'Created By',
 		values: {}
 	},
 	'day': {

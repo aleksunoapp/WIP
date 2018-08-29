@@ -3,7 +3,7 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to pitapit API to get a list of the options for a store.
 	 * @function
@@ -217,12 +217,21 @@ export default ({
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	applyOptionToMultipleModItems (optionId, modifierItems, appId, appSecret, userToken) {
+	applyOptionToMultipleModItems (
+		optionId,
+		modifierItems,
+		appId,
+		appSecret,
+		userToken
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
 				dataType: 'json',
-				url: '/app/modifier_item_options/' + optionId + '/add_modifier_items',
+				url:
+					'/app/modifier_item_options/' +
+					optionId +
+					'/add_modifier_items',
 				data: modifierItems,
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
@@ -249,13 +258,20 @@ export default ({
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	applyOptionsToModifierItem (modifierItemId, createdBy, options, appId, appSecret, userToken) {
+	applyOptionsToModifierItem (
+		modifierItemId,
+		createdBy,
+		options,
+		appId,
+		appSecret,
+		userToken
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
 				dataType: 'json',
 				url: '/app/moditems/' + modifierItemId + '/addoptions',
-				data: {options: options},
+				data: { options: options },
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
 					xhr.setRequestHeader('app-id', appId)
@@ -270,4 +286,4 @@ export default ({
 			})
 		})
 	}
-})
+}

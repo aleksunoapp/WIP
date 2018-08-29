@@ -5,7 +5,7 @@
  */
 import $ from 'jquery'
 import GlobalFunctions from '../global'
-import {App} from '../main.js'
+import { App } from '../main.js'
 
 export default {
 	/**
@@ -20,15 +20,25 @@ export default {
 	 * @version 0.0.8
 	 */
 	getFolders (businessId, locationId, parentId, pageNumber, recordsPerPage) {
-		let httpParams = {parent_folder_id: parentId, sort_by: 'name', sort_order: 'asc', page_number: pageNumber, records_per_page: recordsPerPage}
+		let httpParams = {
+			parent_folder_id: parentId,
+			sort_by: 'name',
+			sort_order: 'asc',
+			page_number: pageNumber,
+			records_per_page: recordsPerPage
+		}
 		let url
 
 		if (locationId) {
 			httpParams.location_id = locationId
-			url = GlobalFunctions.resourcesBaseUrl + '/resources/search/location_folders'
+			url =
+				GlobalFunctions.resourcesBaseUrl +
+				'/resources/search/location_folders'
 		} else {
 			httpParams.business_id = businessId
-			url = GlobalFunctions.resourcesBaseUrl + '/resources/search/business_folders'
+			url =
+				GlobalFunctions.resourcesBaseUrl +
+				'/resources/search/business_folders'
 		}
 
 		return new Promise((resolve, reject) => {
@@ -60,7 +70,7 @@ export default {
 	 * @version 0.0.8
 	 */
 	getFolder (businessId, locationId, folderId) {
-		let httpParams = {folder_id: folderId}
+		let httpParams = { folder_id: folderId }
 		let url
 
 		if (locationId) {
@@ -101,16 +111,18 @@ export default {
 	 * @version 0.0.8
 	 */
 	createFolder (businessId, locationId, folder, parentFolderId) {
-		let httpParams = {name: folder.name, parent_id: parentFolderId}
+		let httpParams = { name: folder.name, parent_id: parentFolderId }
 		let url
 
 		if (locationId) {
 			httpParams.location_id = locationId
-			url = GlobalFunctions.resourcesBaseUrl + '/resources/location_folders'
+			url =
+				GlobalFunctions.resourcesBaseUrl + '/resources/location_folders'
 		} else {
 			httpParams.business_id = businessId
 			httpParams.is_shared = folder.is_shared
-			url = GlobalFunctions.resourcesBaseUrl + '/resources/business_folders'
+			url =
+				GlobalFunctions.resourcesBaseUrl + '/resources/business_folders'
 		}
 		return new Promise((resolve, reject) => {
 			$.ajax({
@@ -142,16 +154,18 @@ export default {
 	 * @version 0.0.8
 	 */
 	updateFolder (businessId, locationId, folderId, folderName, folderPrivacy) {
-		let httpParams = {folder_id: folderId, name: folderName}
+		let httpParams = { folder_id: folderId, name: folderName }
 		let url
 
 		if (locationId) {
 			httpParams.location_id = locationId
-			url = GlobalFunctions.resourcesBaseUrl + '/resources/location_folders'
+			url =
+				GlobalFunctions.resourcesBaseUrl + '/resources/location_folders'
 		} else {
 			httpParams.business_id = businessId
 			httpParams.is_shared = folderPrivacy
-			url = GlobalFunctions.resourcesBaseUrl + '/resources/business_folders'
+			url =
+				GlobalFunctions.resourcesBaseUrl + '/resources/business_folders'
 		}
 
 		return new Promise((resolve, reject) => {
@@ -185,16 +199,31 @@ export default {
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 * @version 0.0.9
 	 */
-	getResources (businessId, locationId, folderId, pageNumber, recordsPerPage, searchCriteria, sortCriteria) {
-		let httpParams = {page_number: pageNumber, records_per_page: recordsPerPage}
+	getResources (
+		businessId,
+		locationId,
+		folderId,
+		pageNumber,
+		recordsPerPage,
+		searchCriteria,
+		sortCriteria
+	) {
+		let httpParams = {
+			page_number: pageNumber,
+			records_per_page: recordsPerPage
+		}
 		let url
 
 		if (locationId) {
 			httpParams.location_id = locationId
-			url = GlobalFunctions.resourcesBaseUrl + '/resources/search/location_files'
+			url =
+				GlobalFunctions.resourcesBaseUrl +
+				'/resources/search/location_files'
 		} else {
 			httpParams.business_id = businessId
-			url = GlobalFunctions.resourcesBaseUrl + '/resources/search/business_files'
+			url =
+				GlobalFunctions.resourcesBaseUrl +
+				'/resources/search/business_files'
 		}
 
 		if (folderId) {
@@ -242,7 +271,7 @@ export default {
 	 * @version 0.0.9
 	 */
 	getResource (businessId, locationId, resourceId) {
-		let httpParams = {file_id: resourceId}
+		let httpParams = { file_id: resourceId }
 		let url
 
 		if (locationId) {
@@ -283,7 +312,7 @@ export default {
 	 * @version 0.0.8
 	 */
 	updateResource (businessId, locationId, resourceId, resourceName) {
-		let httpParams = {file_id: resourceId, name: resourceName}
+		let httpParams = { file_id: resourceId, name: resourceName }
 		let url
 
 		if (locationId) {
@@ -320,7 +349,7 @@ export default {
 	 * @version 0.0.8
 	 */
 	updateResourceTags (businessId, locationId, resourceId, tags) {
-		let httpParams = {file_id: resourceId, tags}
+		let httpParams = { file_id: resourceId, tags }
 		let url
 
 		if (locationId) {
@@ -359,9 +388,19 @@ export default {
 	upload (businessId, locationId, folderId, file) {
 		let url
 		if (locationId) {
-			url = GlobalFunctions.resourcesBaseUrl + '/resources/location_file/' + locationId + '/' + folderId
+			url =
+				GlobalFunctions.resourcesBaseUrl +
+				'/resources/location_file/' +
+				locationId +
+				'/' +
+				folderId
 		} else {
-			url = GlobalFunctions.resourcesBaseUrl + '/resources/business_file/' + businessId + '/' + folderId
+			url =
+				GlobalFunctions.resourcesBaseUrl +
+				'/resources/business_file/' +
+				businessId +
+				'/' +
+				folderId
 		}
 
 		return new Promise((resolve, reject) => {
@@ -395,7 +434,12 @@ export default {
 	 * @version 0.0.8
 	 */
 	getTags (businessId, locationId, pageNumber, recordsPerPage) {
-		let httpParams = {sort_by: 'name', sort_order: 'asc', page_number: pageNumber, records_per_page: recordsPerPage}
+		let httpParams = {
+			sort_by: 'name',
+			sort_order: 'asc',
+			page_number: pageNumber,
+			records_per_page: recordsPerPage
+		}
 		let url
 
 		if (locationId) {
@@ -434,13 +478,15 @@ export default {
 	 * @version 0.0.8
 	 */
 	deleteResource (businessId, resourceId) {
-		let httpParams = {file_id: resourceId, business_id: businessId}
+		let httpParams = { file_id: resourceId, business_id: businessId }
 
 		return new Promise((resolve, reject) => {
 			$.ajax({
 				method: 'DELETE',
 				dataType: 'json',
-				url: GlobalFunctions.resourcesBaseUrl + '/resources/business_file',
+				url:
+					GlobalFunctions.resourcesBaseUrl +
+					'/resources/business_file',
 				data: JSON.stringify(httpParams),
 				contentType: 'application/json',
 				processData: false,

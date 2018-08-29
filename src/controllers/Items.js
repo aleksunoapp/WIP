@@ -3,7 +3,7 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to pitapit API to get a list of items for a given category id.
 	 * @function
@@ -245,7 +245,12 @@ export default ({
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	updateItemNutritionInfo: function (nutritionInfo, appId, appSecret, userToken) {
+	updateItemNutritionInfo: function (
+		nutritionInfo,
+		appId,
+		appSecret,
+		userToken
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
@@ -275,7 +280,12 @@ export default ({
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	createItemNutritionInfo: function (nutritionInfo, appId, appSecret, userToken) {
+	createItemNutritionInfo: function (
+		nutritionInfo,
+		appId,
+		appSecret,
+		userToken
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
@@ -449,7 +459,7 @@ export default ({
 			})
 		})
 	},
-		/**
+	/**
 	 * Call to pitapit API to fetch details of a Preset Item's settings.
 	 * @function
 	 * @param {integer} itemId - The id of the item to fetch the details of.
@@ -489,7 +499,13 @@ export default ({
 	 * @param {object} presetSettings - The settings to save.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	updatePresetItem: function (appId, appSecret, userToken, itemId, presetSettings) {
+	updatePresetItem: function (
+		appId,
+		appSecret,
+		userToken,
+		itemId,
+		presetSettings
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'PUT',
@@ -534,4 +550,4 @@ export default ({
 			})
 		})
 	}
-})
+}

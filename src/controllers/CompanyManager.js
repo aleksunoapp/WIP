@@ -3,7 +3,7 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to unoapp API to create a new company.
 	 * @function
@@ -17,7 +17,7 @@ export default ({
 				method: 'POST',
 				dataType: 'json',
 				url: '/application/create',
-				data: {company: company},
+				data: { company: company },
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
 				},
@@ -43,7 +43,7 @@ export default ({
 				method: 'POST',
 				dataType: 'json',
 				url: '/application/update',
-				data: {company: company},
+				data: { company: company },
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
 				},
@@ -94,7 +94,12 @@ export default ({
 				method: 'POST',
 				dataType: 'json',
 				url: '/application/users/create',
-				data: {z_companyid_fk: companyId, name: manager.name, email: manager.email, password: manager.password},
+				data: {
+					z_companyid_fk: companyId,
+					name: manager.name,
+					email: manager.email,
+					password: manager.password
+				},
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
 				},
@@ -107,4 +112,4 @@ export default ({
 			})
 		})
 	}
-})
+}

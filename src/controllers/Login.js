@@ -3,7 +3,7 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to unoapp API to log the application admin in.
 	 * @function
@@ -17,7 +17,7 @@ export default ({
 				method: 'POST',
 				dataType: 'json',
 				url: '/application/admin/login',
-				data: {user_name: email, password: password},
+				data: { user_name: email, password: password },
 				success: function (response) {
 					resolve(response)
 				},
@@ -39,7 +39,7 @@ export default ({
 				method: 'POST',
 				dataType: 'json',
 				url: '/application/admin/forgotPassword',
-				data: {email: email},
+				data: { email: email },
 				success: function (response) {
 					resolve(response)
 				},
@@ -107,4 +107,4 @@ export default ({
 			})
 		})
 	}
-})
+}

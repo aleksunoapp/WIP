@@ -8,246 +8,199 @@
 			<p>Update the general details, customs and hours of operation for a store.</p>
 		</div>
 		<tabset class="margin-top-20">
-			<tab header="Store Information" v-if="$root.permissions['stores info read']">
+			<tab header="Store Information"
+			     v-if="$root.permissions['stores info read']">
 				<div class="tab-content">
 					<div class="portlet light bordered">
 						<div class="portlet-body form">
-							<form role="form" @submit.prevent="updateStoreInformation()" novalidate>
-								<fieldset
-									:disabled="!$root.permissions['stores info update']? true : false"
-								>
+							<form role="form"
+							      @submit.prevent="updateStoreInformation()"
+							      novalidate>
+								<fieldset :disabled="!$root.permissions['stores info update']? true : false">
 									<div class="row">
-										<div class="alert alert-danger" v-show="storeInformationError.length" ref="storeInformationError">
-											<button class="close" data-close="alert" @click.prevent="clearError('storeInformationError')"></button>
+										<div class="alert alert-danger"
+										     v-show="storeInformationError.length"
+										     ref="storeInformationError">
+											<button class="close"
+											        data-close="alert"
+											        @click.prevent="clearError('storeInformationError')"></button>
 											<span>{{storeInformationError}}</span>
 										</div>
 										<div class="col-md-6">
 											<div class="form-group form-md-line-input form-md-floating-label">
-												<input
-													type="text"
-													class="form-control input-sm edited"
-													id="form_control_1"
-													v-model="storeToBeEdited.name"
-												>
+												<input type="text"
+												       class="form-control input-sm edited"
+												       id="form_control_1"
+												       v-model="storeToBeEdited.name">
 												<label for="form_control_1">Store Name</label>
 											</div>
 											<div class="form-group form-md-line-input form-md-floating-label">
-												<input
-													type="text"
-													class="form-control input-sm edited"
-													id="form_control_2"
-													v-model="storeToBeEdited.address_line_1"
-													@focus="locationFocus(true)"
-													@blur="locationFocus(false)"
-													autocomplete="off"
-												>
+												<input type="text"
+												       class="form-control input-sm edited"
+												       id="form_control_2"
+												       v-model="storeToBeEdited.address_line_1"
+												       @focus="locationFocus(true)"
+												       @blur="locationFocus(false)"
+												       autocomplete="off">
 												<label for="form_control_2">Address Line 1</label>
 											</div>
-											<div v-if="displayLocationsDropdown" class="new-location-search-dropdown">
+											<div v-if="displayLocationsDropdown"
+											     class="new-location-search-dropdown">
 												<div v-if="!googleSearchResults.length">There are no locations that match your search.</div>
-												<div
-													v-for="(location, index) in googleSearchResults"
-													@mousedown.prevent="selectLocation(location)"
-													:class="{'active': storeToBeEdited.address_line_1 == location.description}"
-													:key="index"
-												>
+												<div v-for="(location, index) in googleSearchResults"
+												     @mousedown.prevent="selectLocation(location)"
+												     :class="{'active': storeToBeEdited.address_line_1 == location.description}"
+												     :key="index">
 													{{location.description}}
 												</div>
 											</div>
 											<div class="form-group form-md-line-input form-md-floating-label">
-												<input
-													type="text"
-													class="form-control input-sm edited"
-													id="form_control_3"
-													v-model="storeToBeEdited.address_line_2"
-												>
+												<input type="text"
+												       class="form-control input-sm edited"
+												       id="form_control_3"
+												       v-model="storeToBeEdited.address_line_2">
 												<label for="form_control_3">Address Line 2</label>
 											</div>
 											<div class="form-group form-md-line-input form-md-floating-label">
-												<input
-													type="text"
-													class="form-control input-sm edited"
-													id="form_control_4"
-													v-model="storeToBeEdited.city"
-												>
+												<input type="text"
+												       class="form-control input-sm edited"
+												       id="form_control_4"
+												       v-model="storeToBeEdited.city">
 												<label for="form_control_4">Store City</label>
 											</div>
 											<div class="form-group form-md-line-input form-md-floating-label">
-												<input
-													type="text"
-													class="form-control input-sm edited"
-													id="form_control_5"
-													v-model="storeToBeEdited.province"
-												>
+												<input type="text"
+												       class="form-control input-sm edited"
+												       id="form_control_5"
+												       v-model="storeToBeEdited.province">
 												<label for="form_control_5">Store Province</label>
 											</div>
 											<div class="form-group form-md-line-input form-md-floating-label">
-												<input
-													type="text"
-													class="form-control input-sm edited"
-													id="form_control_6"
-													v-model="storeToBeEdited.country"
-												>
+												<input type="text"
+												       class="form-control input-sm edited"
+												       id="form_control_6"
+												       v-model="storeToBeEdited.country">
 												<label for="form_control_6">Store Country</label>
 											</div>
 											<div class="form-group form-md-line-input form-md-floating-label">
-												<input
-													type="text"
-													class="form-control input-sm edited"
-													id="form_control_7"
-													v-model="storeToBeEdited.postal_code"
-												>
+												<input type="text"
+												       class="form-control input-sm edited"
+												       id="form_control_7"
+												       v-model="storeToBeEdited.postal_code">
 												<label for="form_control_7">Store Postal Code</label>
 											</div>
 											<div class="form-group form-md-line-input form-md-floating-label">
 												<label>Store Group:</label><br>
-												<el-dropdown
-													trigger="click"
-													@command="updateStoreGroupId"
-													size="mini"
-													:show-timeout="50"
-													:hide-timeout="50"
-												>
-													<el-button size="mini">
-														{{ selectedGroupName || 'Select a group' }}
-														<i class="el-icon-arrow-down el-icon--right"></i>
-													</el-button>
-													<el-dropdown-menu slot="dropdown">
-														<el-dropdown-item
-															v-for="group in storeGroups"
-															:command="group"
-															:key="group.id"
-															:disabled="!$root.permissions['stores info update']? true : false"
-														>
-															{{ group.name }}
-														</el-dropdown-item>
-													</el-dropdown-menu>
-												</el-dropdown>
+												<el-select v-model="storeToBeEdited.locationsgroup_id"
+												           filterable
+												           placeholder="Select a group"
+												           size="mini"
+												           :disabled="!$root.permissions['stores info update']">
+													<el-option v-for="group in storeGroups"
+													           :key="group.id"
+													           :label="group.name"
+													           :value="group.id">
+													</el-option>
+												</el-select>
 											</div>
 											<div class="form-group form-md-line-input form-md-floating-label">
 												<label>Store Timezone:</label><br>
-												<el-select
-													v-model="storeToBeEdited.timezone"
-													placeholder="Select a timezone"
-													size="mini"
-													:disabled="!$root.permissions['stores info update']? true : false"
-												>
-													<el-option
-														v-for="(zone, i) in timezones"
-														:label="zone.label"
-														:value="zone.value"
-														:key="i"
-													>
+												<el-select v-model="storeToBeEdited.timezone"
+												           filterable
+												           placeholder="Select a timezone"
+												           size="mini"
+												           :disabled="!$root.permissions['stores info update']? true : false">
+													<el-option v-for="(zone, i) in timezones"
+													           :label="zone.label"
+													           :value="zone.value"
+													           :key="i">
 													</el-option>
 												</el-select>
 											</div>
 											<div class="form-group form-md-line-input form-md-floating-label">
 												<label>Store Currency:</label><br>
-												<el-dropdown
-													trigger="click"
-													@command="updateStoreCurrency"
-													size="mini"
-													:show-timeout="50"
-													:hide-timeout="50"
-												>
-													<el-button size="mini">
-														{{ storeToBeEdited.currency || 'Select a currency' }}
-														<i class="el-icon-arrow-down el-icon--right"></i>
-													</el-button>
-													<el-dropdown-menu slot="dropdown">
-														<el-dropdown-item command="CAD" :disabled="!$root.permissions['stores info update']? true : false">
-															CAD
-														</el-dropdown-item>
-														<el-dropdown-item command="USD" :disabled="!$root.permissions['stores info update']? true : false">
-															USD
-														</el-dropdown-item>
-													</el-dropdown-menu>
-												</el-dropdown>
+												<el-select v-model="storeToBeEdited.currency"
+												           filterable
+												           placeholder="Select a currency"
+												           size="mini">
+													<el-option label="CAD"
+													           value="CAD"></el-option>
+													<el-option label="USD"
+													           value="USD"></el-option>
+												</el-select>
 											</div>
 										</div>
 										<div class="col-md-6">
 											<div class="form-group form-md-line-input form-md-floating-label">
-												<input
-													type="text"
-													class="form-control input-sm edited"
-													id="form_control_8"
-													v-model="storeToBeEdited.display_name"
-												>
+												<input type="text"
+												       class="form-control input-sm edited"
+												       id="form_control_8"
+												       v-model="storeToBeEdited.display_name">
 												<label for="form_control_8">Store Display Name</label>
 											</div>
 											<div class="form-group form-md-line-input form-md-floating-label">
-												<input
-													type="text"
-													class="form-control input-sm edited"
-													id="form_control_9"
-													v-model="storeToBeEdited.internal_id"
-												>
+												<input type="text"
+												       class="form-control input-sm edited"
+												       id="form_control_9"
+												       v-model="storeToBeEdited.internal_id">
 												<label for="form_control_9">Store Internal ID</label>
 											</div>
 											<div class="form-group form-md-line-input form-md-floating-label">
-												<input
-													type="text"
-													:readonly="$root.accountType === 'store_admin'"
-													class="form-control input-sm edited"
-													id="form_control_10"
-													v-model="storeToBeEdited.api_key"
-												>
+												<input type="text"
+												       :readonly="$root.accountType === 'store_admin'"
+												       class="form-control input-sm edited"
+												       id="form_control_10"
+												       v-model="storeToBeEdited.api_key">
 												<label for="form_control_10">External API Key (optional)</label>
 											</div>
 											<div class="form-group form-md-line-input form-md-floating-label">
-												<input
-													type="text"
-													class="form-control input-sm edited"
-													id="form_control_11"
-													v-model="storeToBeEdited.phone"
-													v-mask="'(###) ###-####'"
-												>
+												<input type="text"
+												       class="form-control input-sm edited"
+												       id="form_control_11"
+												       v-model="storeToBeEdited.phone"
+												       v-mask="'(###) ###-####'">
 												<label for="form_control_11">Store Phone Number</label>
 											</div>
 											<div class="form-group form-md-line-input form-md-floating-label">
-												<input
-													type="text"
-													class="form-control input-sm"
-													:class="{'edited': storeToBeEdited.fax.length}"
-													id="form_control_12"
-													v-model="storeToBeEdited.fax"
-													v-mask="'(###) ###-####'"
-												>
+												<input type="text"
+												       class="form-control input-sm"
+												       :class="{'edited': storeToBeEdited.fax.length}"
+												       id="form_control_12"
+												       v-model="storeToBeEdited.fax"
+												       v-mask="'(###) ###-####'">
 												<label for="form_control_12">Store Fax Number (optional)</label>
 											</div>
 											<div class="form-group form-md-line-input form-md-floating-label">
-												<input
-													type="text"
-													class="form-control input-sm edited"
-													id="form_control_13"
-													v-model="storeToBeEdited.email"
-												>
+												<input type="text"
+												       class="form-control input-sm edited"
+												       id="form_control_13"
+												       v-model="storeToBeEdited.email">
 												<label for="form_control_13">Store Email</label>
 											</div>
 											<div class="form-group form-md-line-input form-md-floating-label">
 												<label>Store Is Corporate:</label><br>
-												<el-switch
-													v-model="storeToBeEdited.is_corporate"
-													@change="updateStoreIsCorporate"
-													:disabled="!$root.permissions['stores info update']? true : false"
-													active-color="#0c6"
-													inactive-color="#ff4949"
-													:active-value="1"
-													:inactive-value="0"
-													active-text="Yes"
-													inactive-text="No">
+												<el-switch v-model="storeToBeEdited.is_corporate"
+												           @change="updateStoreIsCorporate"
+												           :disabled="!$root.permissions['stores info update']? true : false"
+												           active-color="#0c6"
+												           inactive-color="#ff4949"
+												           :active-value="1"
+												           :inactive-value="0"
+												           active-text="Yes"
+												           inactive-text="No">
 												</el-switch>
 												<p v-if="isCorporateUpdated">Corporate Store updates will take effect next time you log in.</p>
 											</div>
 										</div>
 									</div>
 									<div class="form-actions noborder clear">
-										<button
-											type="submit"
-											class="btn blue"
-											:disabled="!$root.permissions['stores info update']? true : false"
-										>
+										<button type="submit"
+										        class="btn blue"
+										        :disabled="!$root.permissions['stores info update'] || updatingStoreInfo">
 											Save
+											<i v-show="updatingStoreInfo"
+											   class="fa fa-spinner fa-pulse fa-fw">
+											</i>
 										</button>
 									</div>
 								</fieldset>
@@ -256,15 +209,21 @@
 					</div>
 				</div>
 			</tab>
-			<tab header="Store Meta" v-if="$root.permissions['stores meta read']">
+			<tab header="Store Profile"
+			     v-if="$root.permissions['stores profile read']">
 				<div class="tab-content">
 					<div class="portlet light bordered">
 						<div class="portlet-body form">
-							<form role="form" @submit.prevent="updateStoreMeta()" novalidate>
-								<fieldset :disabled="!$root.permissions['stores meta update']? true : false">
+							<form role="form"
+							      @submit.prevent="updateStoreMeta()"
+							      novalidate>
+								<fieldset :disabled="!$root.permissions['stores profile update']? true : false">
 									<div class="form-body">
-										<div class="alert alert-danger" v-show="storeMetaError.length" ref="storeMetaError">
-											<button class="close" data-close="alert" @click.prevent="clearError('storeMetaError')"></button>
+										<div class="alert alert-danger"
+										     v-show="storeMetaError"
+										     ref="storeMetaError">
+											<button class="close"
+											        @click.prevent="clearError('storeMetaError')"></button>
 											<span>{{storeMetaError}}</span>
 										</div>
 										<div class="col-md-6">
@@ -281,16 +240,15 @@
 															Opening Soon
 														</td>
 														<td>
-															<el-switch
-																ref="openingSoon"
-																v-model="metaToBeEdited.opening_soon"
-																:disabled="!$root.permissions['stores meta update']? true : false"
-																active-color="#0c6"
-																inactive-color="#ff4949"
-																:active-value="1"
-																:inactive-value="0"
-																active-text="Yes"
-																inactive-text="No">
+															<el-switch ref="openingSoon"
+															           v-model="metaToBeEdited.opening_soon"
+															           :disabled="!$root.permissions['stores profile update']? true : false"
+															           active-color="#0c6"
+															           inactive-color="#ff4949"
+															           :active-value="1"
+															           :inactive-value="0"
+															           active-text="Yes"
+															           inactive-text="No">
 															</el-switch>
 														</td>
 													</tr>
@@ -299,15 +257,14 @@
 															Store Has Online Ordering
 														</td>
 														<td>
-															<el-switch
-																v-model="metaToBeEdited.online_ordering"
-																:disabled="metaToBeEdited.opening_soon === 1 || !$root.permissions['stores meta update']? true : false"
-																active-color="#0c6"
-																inactive-color="#ff4949"
-																:active-value="1"
-																:inactive-value="0"
-																active-text="Yes"
-																inactive-text="No">
+															<el-switch v-model="metaToBeEdited.online_ordering"
+															           :disabled="metaToBeEdited.opening_soon === 1 || !$root.permissions['stores profile update']? true : false"
+															           active-color="#0c6"
+															           inactive-color="#ff4949"
+															           :active-value="1"
+															           :inactive-value="0"
+															           active-text="Yes"
+															           inactive-text="No">
 															</el-switch>
 														</td>
 													</tr>
@@ -316,15 +273,14 @@
 															Store Has Online Ordering Enabled
 														</td>
 														<td>
-															<el-switch
-																v-model="metaToBeEdited.current_online_ordering_status"
-																:disabled="metaToBeEdited.online_ordering === 0 || metaToBeEdited.opening_soon === 1 || !$root.permissions['stores meta update']? true : false"
-																active-color="#0c6"
-																inactive-color="#ff4949"
-																:active-value="1"
-																:inactive-value="0"
-																active-text="Yes"
-																inactive-text="No">
+															<el-switch v-model="metaToBeEdited.current_online_ordering_status"
+															           :disabled="metaToBeEdited.online_ordering === 0 || metaToBeEdited.opening_soon === 1 || !$root.permissions['stores profile update']? true : false"
+															           active-color="#0c6"
+															           inactive-color="#ff4949"
+															           :active-value="1"
+															           :inactive-value="0"
+															           active-text="Yes"
+															           inactive-text="No">
 															</el-switch>
 														</td>
 													</tr>
@@ -333,16 +289,15 @@
 															Store Has Delivery
 														</td>
 														<td>
-															<el-switch
-																ref="delivery"
-																v-model="metaToBeEdited.delivery"
-																:disabled="metaToBeEdited.opening_soon === 1 || !$root.permissions['stores meta update']? true : false"
-																active-color="#0c6"
-																inactive-color="#ff4949"
-																:active-value="1"
-																:inactive-value="0"
-																active-text="Yes"
-																inactive-text="No">
+															<el-switch ref="delivery"
+															           v-model="metaToBeEdited.delivery"
+															           :disabled="metaToBeEdited.opening_soon === 1 || !$root.permissions['stores profile update']? true : false"
+															           active-color="#0c6"
+															           inactive-color="#ff4949"
+															           :active-value="1"
+															           :inactive-value="0"
+															           active-text="Yes"
+															           inactive-text="No">
 															</el-switch>
 														</td>
 													</tr>
@@ -351,15 +306,14 @@
 															Store Has Delivery Enabled
 														</td>
 														<td>
-															<el-switch
-																v-model="metaToBeEdited.current_delivery_status"
-																:disabled="metaToBeEdited.delivery === 0 || metaToBeEdited.opening_soon === 1 || !$root.permissions['stores meta update']? true : false"
-																active-color="#0c6"
-																inactive-color="#ff4949"
-																:active-value="1"
-																:inactive-value="0"
-																active-text="Yes"
-																inactive-text="No">
+															<el-switch v-model="metaToBeEdited.current_delivery_status"
+															           :disabled="metaToBeEdited.delivery === 0 || metaToBeEdited.opening_soon === 1 || !$root.permissions['stores profile update']? true : false"
+															           active-color="#0c6"
+															           inactive-color="#ff4949"
+															           :active-value="1"
+															           :inactive-value="0"
+															           active-text="Yes"
+															           inactive-text="No">
 															</el-switch>
 														</td>
 													</tr>
@@ -368,15 +322,14 @@
 															Pickup Later
 														</td>
 														<td>
-															<el-switch
-																v-model="metaToBeEdited.enable_pickup_later"
-																active-color="#0c6"
-																inactive-color="#ff4949"
-																:disabled="!$root.permissions['stores meta update']? true : false"
-																:active-value="1"
-																:inactive-value="0"
-																active-text="Yes"
-																inactive-text="No">
+															<el-switch v-model="metaToBeEdited.enable_pickup_later"
+															           active-color="#0c6"
+															           inactive-color="#ff4949"
+															           :disabled="!$root.permissions['stores profile update']? true : false"
+															           :active-value="1"
+															           :inactive-value="0"
+															           active-text="Yes"
+															           inactive-text="No">
 															</el-switch>
 														</td>
 													</tr>
@@ -385,15 +338,14 @@
 															Catering
 														</td>
 														<td>
-															<el-switch
-																v-model="metaToBeEdited.catering"
-																:disabled="metaToBeEdited.opening_soon === 1 || !$root.permissions['stores meta update']? true : false"
-																active-color="#0c6"
-																inactive-color="#ff4949"
-																:active-value="1"
-																:inactive-value="0"
-																active-text="Yes"
-																inactive-text="No">
+															<el-switch v-model="metaToBeEdited.catering"
+															           :disabled="metaToBeEdited.opening_soon === 1 || !$root.permissions['stores profile update']? true : false"
+															           active-color="#0c6"
+															           inactive-color="#ff4949"
+															           :active-value="1"
+															           :inactive-value="0"
+															           active-text="Yes"
+															           inactive-text="No">
 															</el-switch>
 														</td>
 													</tr>
@@ -402,15 +354,14 @@
 															Catering Enabled
 														</td>
 														<td>
-															<el-switch
-																v-model="metaToBeEdited.current_catering_status"
-																:disabled="metaToBeEdited.catering === 0 || metaToBeEdited.opening_soon === 1 || !$root.permissions['stores meta update']? true : false"
-																active-color="#0c6"
-																inactive-color="#ff4949"
-																:active-value="1"
-																:inactive-value="0"
-																active-text="Yes"
-																inactive-text="No">
+															<el-switch v-model="metaToBeEdited.current_catering_status"
+															           :disabled="metaToBeEdited.catering === 0 || metaToBeEdited.opening_soon === 1 || !$root.permissions['stores profile update']? true : false"
+															           active-color="#0c6"
+															           inactive-color="#ff4949"
+															           :active-value="1"
+															           :inactive-value="0"
+															           active-text="Yes"
+															           inactive-text="No">
 															</el-switch>
 														</td>
 													</tr>
@@ -419,15 +370,14 @@
 															Gift Cards
 														</td>
 														<td>
-															<el-switch
-																v-model="metaToBeEdited.gift_card"
-																:disabled="metaToBeEdited.opening_soon === 1 || !$root.permissions['stores meta update']? true : false"
-																active-color="#0c6"
-																inactive-color="#ff4949"
-																:active-value="1"
-																:inactive-value="0"
-																active-text="Yes"
-																inactive-text="No">
+															<el-switch v-model="metaToBeEdited.gift_card"
+															           :disabled="metaToBeEdited.opening_soon === 1 || !$root.permissions['stores profile update']? true : false"
+															           active-color="#0c6"
+															           inactive-color="#ff4949"
+															           :active-value="1"
+															           :inactive-value="0"
+															           active-text="Yes"
+															           inactive-text="No">
 															</el-switch>
 														</td>
 													</tr>
@@ -436,15 +386,14 @@
 															Digital Rewards
 														</td>
 														<td>
-															<el-switch
-																v-model="metaToBeEdited.digital_reward"
-																:disabled="metaToBeEdited.opening_soon === 1 || !$root.permissions['stores meta update']? true : false"
-																active-color="#0c6"
-																inactive-color="#ff4949"
-																:active-value="1"
-																:inactive-value="0"
-																active-text="Yes"
-																inactive-text="No">
+															<el-switch v-model="metaToBeEdited.digital_reward"
+															           :disabled="metaToBeEdited.opening_soon === 1 || !$root.permissions['stores profile update']? true : false"
+															           active-color="#0c6"
+															           inactive-color="#ff4949"
+															           :active-value="1"
+															           :inactive-value="0"
+															           active-text="Yes"
+															           inactive-text="No">
 															</el-switch>
 														</td>
 													</tr>
@@ -453,15 +402,14 @@
 															External online ordering enabled
 														</td>
 														<td>
-															<el-switch
-																v-model="metaToBeEdited.external_online_ordering_enabled"
-																:disabled="metaToBeEdited.opening_soon === 1 || !$root.permissions['stores meta update']? true : false"
-																active-color="#0c6"
-																inactive-color="#ff4949"
-																:active-value="1"
-																:inactive-value="0"
-																active-text="Yes"
-																inactive-text="No">
+															<el-switch v-model="metaToBeEdited.external_online_ordering_enabled"
+															           :disabled="metaToBeEdited.opening_soon === 1 || !$root.permissions['stores profile update']? true : false"
+															           active-color="#0c6"
+															           inactive-color="#ff4949"
+															           :active-value="1"
+															           :inactive-value="0"
+															           active-text="Yes"
+															           inactive-text="No">
 															</el-switch>
 														</td>
 													</tr>
@@ -470,11 +418,10 @@
 															External order link
 														</td>
 														<td>
-															<input
-																type="text"
-																class="form-control input-sm"
-																v-model="metaToBeEdited.external_online_ordering_url"
-																:disabled="metaToBeEdited.opening_soon === 1">
+															<input type="text"
+															       class="form-control input-sm"
+															       v-model="metaToBeEdited.external_online_ordering_url"
+															       :disabled="metaToBeEdited.opening_soon === 1">
 														</td>
 													</tr>
 													<tr>
@@ -482,11 +429,10 @@
 															GST Number
 														</td>
 														<td>
-															<input
-																type="text"
-																class="form-control input-sm"
-																v-model="metaToBeEdited.gst_number"
-																:disabled="metaToBeEdited.opening_soon === 1">
+															<input type="text"
+															       class="form-control input-sm"
+															       v-model="metaToBeEdited.gst_number"
+															       :disabled="metaToBeEdited.opening_soon === 1">
 														</td>
 													</tr>
 													<tr>
@@ -494,11 +440,10 @@
 															Payment Processor Merchant ID (MID)
 														</td>
 														<td>
-															<input
-																type="text"
-																class="form-control input-sm"
-																:disabled="metaToBeEdited.opening_soon === 1"
-																v-model="metaToBeEdited.merchant_id">
+															<input type="text"
+															       class="form-control input-sm"
+															       :disabled="metaToBeEdited.opening_soon === 1"
+															       v-model="metaToBeEdited.merchant_id">
 														</td>
 													</tr>
 													<tr>
@@ -506,11 +451,10 @@
 															Payment Processor Merchant Key
 														</td>
 														<td>
-															<input
-																type="text"
-																class="form-control input-sm"
-																:disabled="metaToBeEdited.opening_soon === 1"
-																v-model="metaToBeEdited.merchant_key">
+															<input type="text"
+															       class="form-control input-sm"
+															       :disabled="metaToBeEdited.opening_soon === 1"
+															       v-model="metaToBeEdited.merchant_key">
 														</td>
 													</tr>
 												</tbody>
@@ -519,12 +463,13 @@
 									</div>
 									<div class="form-actions noborder clear">
 										<div class="col-md-12">
-											<button
-												type="submit"
-												class="btn blue"
-												:disabled="!$root.permissions['stores meta update']? true : false"
-											>
+											<button type="submit"
+											        class="btn blue"
+											        :disabled="!$root.permissions['stores profile update'] || updatingStoreMeta">
 												Save
+												<i v-show="updatingStoreMeta"
+												   class="fa fa-spinner fa-pulse fa-fw">
+												</i>
 											</button>
 										</div>
 									</div>
@@ -534,15 +479,21 @@
 					</div>
 				</div>
 			</tab>
-			<tab header="Store Hours" v-if="$root.permissions['stores hours read']">
+			<tab header="Store Hours"
+			     v-if="$root.permissions['stores hours read']">
 				<div class="tab-content">
 					<div class="portlet light bordered">
 						<div class="portlet-body form">
-							<form role="form" @submit.prevent="updateStoreHours()" novalidate>
+							<form role="form"
+							      @submit.prevent="updateStoreHours()"
+							      novalidate>
 								<fieldset :disabled="!$root.permissions['stores hours update']? true : false">
 									<div class="form-body">
-										<div class="alert alert-danger" v-if="storeHourError.length">
-											<button class="close" data-close="alert" @click="clearError('storeHourError')"></button>
+										<div class="alert alert-danger"
+										     v-show="storeHourError"
+										     ref="storeHourError">
+											<button class="close"
+											        @click="clearError('storeHourError')"></button>
 											<span>{{storeHourError}}</span>
 										</div>
 										<table class="table">
@@ -555,59 +506,62 @@
 												</tr>
 											</thead>
 											<tbody>
-												<tr v-for="hour in hoursToBeEdited" :key="hour.id">
-													<td  class="align-middle" v-if="hour.day === 0"> Sunday </td>
-													<td  class="align-middle" v-if="hour.day === 1"> Monday </td>
-													<td  class="align-middle" v-if="hour.day === 2"> Tuesday </td>
-													<td  class="align-middle" v-if="hour.day === 3"> Wednesday </td>
-													<td  class="align-middle" v-if="hour.day === 4"> Thursday </td>
-													<td  class="align-middle" v-if="hour.day === 5"> Friday </td>
-													<td  class="align-middle" v-if="hour.day === 6"> Saturday </td>
+												<tr v-for="hour in hoursToBeEdited"
+												    :key="hour.id">
+													<td class="align-middle"
+													    v-if="hour.day === 0"> Sunday </td>
+													<td class="align-middle"
+													    v-if="hour.day === 1"> Monday </td>
+													<td class="align-middle"
+													    v-if="hour.day === 2"> Tuesday </td>
+													<td class="align-middle"
+													    v-if="hour.day === 3"> Wednesday </td>
+													<td class="align-middle"
+													    v-if="hour.day === 4"> Thursday </td>
+													<td class="align-middle"
+													    v-if="hour.day === 5"> Friday </td>
+													<td class="align-middle"
+													    v-if="hour.day === 6"> Saturday </td>
 													<td class="align-middle">
-														<el-time-select
-															v-model="hour.open_time"
-															:picker-options="{ start: '00:00', step: '00:15', end: '23:45' }"
-															placeholder="Opening time" class="narrow-picker"
-															:disabled="!$root.permissions['stores hours update']? true : false"
-														>
+														<el-time-select v-model="hour.open_time"
+														                :picker-options="{ start: '00:00', step: '00:01', end: '23:59' }"
+														                placeholder="Opening time"
+														                class="narrow-picker"
+														                :disabled="!$root.permissions['stores hours update']? true : false">
 														</el-time-select>
-														<button
-															data-toggle="tooltip"
-															title="Copy to all"
-															class="btn btn-icon-only btn-outline blue"
-															@click="applyOpeningTimeToAll(hour.open_time, $event)"
-															:disabled="!$root.permissions['stores hours update']? true : false"
-														>
-															<i class="fa fa-clone" aria-hidden="true"></i>
+														<button data-toggle="tooltip"
+														        title="Copy to all"
+														        class="btn btn-icon-only btn-outline blue"
+														        @click="applyOpeningTimeToAll(hour.open_time, $event)"
+														        :disabled="!$root.permissions['stores hours update']? true : false">
+															<i class="fa fa-clone"
+															   aria-hidden="true"></i>
 														</button>
 													</td>
 													<td class="align-middle">
-														<el-time-select
-															v-model="hour.close_time"
-															:picker-options="{ start: '00:00', step: '00:15', end: '23:45' }"
-															placeholder="Closing time"
-															class="narrow-picker"
-															:disabled="!$root.permissions['stores hours update']? true : false">
+														<el-time-select v-model="hour.close_time"
+														                :picker-options="{ start: '00:00', step: '00:01', end: '23:59' }"
+														                placeholder="Closing time"
+														                class="narrow-picker"
+														                :disabled="!$root.permissions['stores hours update']? true : false">
 														</el-time-select>
-														<button
-															data-toggle="tooltip"
-															title="Copy to all"
-															class="btn btn-icon-only btn-outline blue"
-															@click="applyClosingTimeToAll(hour.close_time, $event)"
-														>
-															<i class="fa fa-clone" aria-hidden="true"></i>
+														<button data-toggle="tooltip"
+														        title="Copy to all"
+														        class="btn btn-icon-only btn-outline blue"
+														        @click="applyClosingTimeToAll(hour.close_time, $event)">
+															<i class="fa fa-clone"
+															   aria-hidden="true"></i>
 														</button>
 													</td>
 													<td class="align-middle">
-														<el-switch
-															v-model="hour.open"
-															active-color="#0c6"
-															inactive-color="#ff4949"
-															:disabled="!$root.permissions['stores hours update']? true : false"
-															:active-value="1"
-															:inactive-value="0"
-															active-text="Open"
-															inactive-text="Closed">
+														<el-switch v-model="hour.open"
+														           active-color="#0c6"
+														           inactive-color="#ff4949"
+														           :disabled="!$root.permissions['stores hours update']? true : false"
+														           :active-value="1"
+														           :inactive-value="0"
+														           active-text="Open"
+														           inactive-text="Closed">
 														</el-switch>
 													</td>
 												</tr>
@@ -615,12 +569,13 @@
 										</table>
 									</div>
 									<div class="form-actions noborder clear">
-										<button
-											type="submit"
-											class="btn blue"
-											:disabled="!$root.permissions['stores hours update']? true : false"
-											>
-												Save
+										<button type="submit"
+										        class="btn blue"
+										        :disabled="!$root.permissions['stores hours update'] || updatingStoreHours">
+											Save
+											<i v-show="updatingStoreHours"
+											   class="fa fa-spinner fa-pulse fa-fw">
+											</i>
 										</button>
 									</div>
 								</fieldset>
@@ -629,40 +584,43 @@
 					</div>
 				</div>
 			</tab>
-			<tab header="Store Holiday Hours" v-if="$root.permissions['stores holiday_hours read']">
+			<tab header="Store Holiday Hours"
+			     v-if="$root.permissions['stores holiday_hours read']">
 				<div class="tab-content">
 					<div class="portlet light bordered">
 						<div class="portlet-body form">
 							<div class="margin-bottom-20">
-								<button
-									class="btn create-or-edit"
-									@click="flipAddCreateHoliday"
-									:class="{'blue' : addAHoliday, 'blue btn-outline' : !addAHoliday}"
-									:disabled="!$root.permissions['stores holiday_hours update']? true : false"
-								>
+								<button class="btn create-or-edit"
+								        @click="flipAddCreateHoliday"
+								        :class="{'blue' : addAHoliday, 'blue btn-outline' : !addAHoliday}"
+								        :disabled="!$root.permissions['stores holiday_hours update']? true : false">
 									Add a holiday
 								</button>
-								<button
-									class="btn"
-									@click="flipAddCreateHoliday"
-									:class="{'blue' : !addAHoliday, 'blue btn-outline' : addAHoliday}"
-									:disabled="!$root.permissions['stores holiday_hours update']? true : false"
-								>
+								<button class="btn"
+								        @click="flipAddCreateHoliday"
+								        :class="{'blue' : !addAHoliday, 'blue btn-outline' : addAHoliday}"
+								        :disabled="!$root.permissions['stores holiday_hours update']? true : false">
 									Edit a holiday
 								</button>
 							</div>
-							<add-holiday-hours
-								v-if="addAHoliday"
-								:selectedLocationId="parseInt($route.params.store_id)"
-								@closeHolidayHoursModal="showHolidayHoursModal = false"
-								@addHolidayHours="addHolidayHours"
-							>
-							</add-holiday-hours>
-							<div v-else class="margin-top-20">
-								<div class="alert alert-danger" v-if="updateHolidayHoursError.length">
-									<button class="close" data-close="alert" @click="clearError('updateHolidayHoursError')"></button>
-									<span>{{updateHolidayHoursError}}</span>
+							<div class="row">
+								<div class="col-md-12">
+									<div class="alert alert-danger"
+									     v-show="holidayHoursError"
+									     ref="holidayHoursError">
+										<button class="close"
+										        @click="clearError('holidayHoursError')"></button>
+										<span>{{holidayHoursError}}</span>
+									</div>
 								</div>
+							</div>
+							<add-holiday-hours v-if="addAHoliday"
+							                   :selectedLocationId="parseInt($route.params.store_id)"
+							                   @closeHolidayHoursModal="showHolidayHoursModal = false"
+							                   @addHolidayHours="addHolidayHours">
+							</add-holiday-hours>
+							<div v-else
+							     class="margin-top-20">
 								<div v-if="holidayHoursToBeEdited.length">
 									<table class="table">
 										<thead>
@@ -679,100 +637,96 @@
 											</tr>
 										</thead>
 										<tbody>
-											<tr v-for="hour in holidayHoursToBeEdited" :key="hour.id">
-												<td class="align-middle"> <input type="text" class="form-control input-sm" v-model="hour.name"> </td>
-												<td class="align-middle" v-if="hour.day === 0"> Sun </td>
-												<td class="align-middle" v-if="hour.day === 1"> Mon </td>
-												<td class="align-middle" v-if="hour.day === 2"> Tue </td>
-												<td class="align-middle" v-if="hour.day === 3"> Wed </td>
-												<td class="align-middle" v-if="hour.day === 4"> Thu </td>
-												<td class="align-middle" v-if="hour.day === 5"> Fri </td>
-												<td class="align-middle" v-if="hour.day === 6"> Sat </td>
-												<td class="align-middle" >
-													<el-date-picker
-														class="narrow-date-picker"
-														v-model="hour.start_date"
-														type="date"
-														placeholder="Start date"
-														format="yyyy-MM-dd"
-														value-format="yyyy-MM-dd"
-														:clearable="false"
-														size="small"
-														:disabled="!$root.permissions['stores holiday_hours update']? true : false"
-													>
+											<tr v-for="hour in holidayHoursToBeEdited"
+											    :key="hour.id">
+												<td class="align-middle"> <input type="text"
+													       class="form-control input-sm"
+													       v-model="hour.name"> </td>
+												<td class="align-middle"
+												    v-if="hour.day === 0"> Sun </td>
+												<td class="align-middle"
+												    v-if="hour.day === 1"> Mon </td>
+												<td class="align-middle"
+												    v-if="hour.day === 2"> Tue </td>
+												<td class="align-middle"
+												    v-if="hour.day === 3"> Wed </td>
+												<td class="align-middle"
+												    v-if="hour.day === 4"> Thu </td>
+												<td class="align-middle"
+												    v-if="hour.day === 5"> Fri </td>
+												<td class="align-middle"
+												    v-if="hour.day === 6"> Sat </td>
+												<td class="align-middle">
+													<el-date-picker class="narrow-date-picker"
+													                v-model="hour.start_date"
+													                type="date"
+													                placeholder="Start date"
+													                format="yyyy-MM-dd"
+													                value-format="yyyy-MM-dd"
+													                :clearable="false"
+													                size="small"
+													                :disabled="!$root.permissions['stores holiday_hours update']? true : false">
 													</el-date-picker>
 												</td>
 												<td class="align-middle">
-													<el-date-picker
-														class="narrow-date-picker"
-														v-model="hour.end_date"
-														type="date"
-														placeholder="End date"
-														format="yyyy-MM-dd"
-														value-format="yyyy-MM-dd"
-														:clearable="false"
-														size="small"
-														:disabled="!$root.permissions['stores holiday_hours update']? true : false"
-													>
+													<el-date-picker class="narrow-date-picker"
+													                v-model="hour.end_date"
+													                type="date"
+													                placeholder="End date"
+													                format="yyyy-MM-dd"
+													                value-format="yyyy-MM-dd"
+													                :clearable="false"
+													                size="small"
+													                :disabled="!$root.permissions['stores holiday_hours update']? true : false">
 													</el-date-picker>
 												</td>
 												<td class="align-middle">
-													<el-time-select
-														class="narrow-time-picker"
-														:disabled="!$root.permissions['stores holiday_hours update']? true : false"
-														v-model="hour.open_time"
-														:picker-options="{ start: '00:00', step: '00:15', end: '23:45' }"
-														:clearable="false"
-														placeholder="Set store opening time"
-														size="small"
-													>
+													<el-time-select class="narrow-time-picker"
+													                :disabled="!$root.permissions['stores holiday_hours update']? true : false"
+													                v-model="hour.open_time"
+													                :picker-options="{ start: '00:00', step: '00:01', end: '23:59' }"
+													                :clearable="false"
+													                placeholder="Set store opening time"
+													                size="small">
 													</el-time-select>
 												</td>
 												<td class="align-middle">
-													<el-time-select
-														class="narrow-time-picker"
-														v-model="hour.close_time"
-														:picker-options="{ start: '00:00', step: '00:15', end: '23:45' }"
-														:clearable="false"
-														placeholder="Set store closing time"
-														size="small"
-														:disabled="!$root.permissions['stores holiday_hours update']? true : false"
-													>
+													<el-time-select class="narrow-time-picker"
+													                v-model="hour.close_time"
+													                :picker-options="{ start: '00:00', step: '00:01', end: '23:59' }"
+													                :clearable="false"
+													                placeholder="Set store closing time"
+													                size="small"
+													                :disabled="!$root.permissions['stores holiday_hours update']? true : false">
 													</el-time-select>
 												</td>
 												<td class="align-middle">
-													<el-switch
-														v-model="hour.open"
-														active-color="#0c6"
-														inactive-color="#ff4949"
-														:active-value="1"
-														:inactive-value="0"
-														active-text="Open"
-														inactive-text="Closed"
-														:disabled="!$root.permissions['stores holiday_hours update']? true : false"
-													>
+													<el-switch v-model="hour.open"
+													           active-color="#0c6"
+													           inactive-color="#ff4949"
+													           :active-value="1"
+													           :inactive-value="0"
+													           active-text="Open"
+													           inactive-text="Closed"
+													           :disabled="!$root.permissions['stores holiday_hours update']? true : false">
 													</el-switch>
 												</td>
 												<td class="align-middle">
-													<el-button
-														type="primary"
-														:loading="hour.loading"
-														:disabled="hour.loading || !$root.permissions['stores holiday_hours update']? true : false"
-														size="small"
-														@click="updateHolidayHours(hour, $event)"
-													>
+													<el-button type="primary"
+													           :loading="hour.loading"
+													           :disabled="hour.loading || !$root.permissions['stores holiday_hours update']? true : false"
+													           size="small"
+													           @click="updateHolidayHours(hour, $event)">
 														<span v-show="!hour.loading">Save</span>
 													</el-button>
 												</td>
 												<td class="align-middle">
-													<el-button
-														type="primary"
-														:loading="hour.loading"
-														:disabled="hour.loading || !$root.permissions['stores holiday_hours update']? true : false"
-														size="small"
-														plain
-														@click="openDeleteHolidayHoursModal(hour)"
-													>
+													<el-button type="primary"
+													           :loading="hour.loading"
+													           :disabled="hour.loading || !$root.permissions['stores holiday_hours update']? true : false"
+													           size="small"
+													           plain
+													           @click="openDeleteHolidayHoursModal(hour)">
 														<span v-show="!hour.loading">Delete</span>
 													</el-button>
 												</td>
@@ -781,39 +735,54 @@
 									</table>
 								</div>
 								<div v-else>
-									<no-results :show="!holidayHoursToBeEdited.length" :type="'holiday hours'" :custom="true" :text="customText"></no-results>
+									<no-results :show="!holidayHoursToBeEdited.length"
+									            :type="'holiday hours'"
+									            :custom="true"
+									            :text="customText"></no-results>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</tab>
-			<tab header="Store Images" v-if="$root.permissions['stores images read']">
+			<tab header="Store Images"
+			     v-if="$root.permissions['stores images read']">
 				<div class="tab-content">
-					<store-images
-						v-if="storeToBeEdited.id !== undefined"
-						:storeId="storeToBeEdited.id"
-					/>
+					<store-images v-if="storeToBeEdited.id !== undefined"
+					              :storeId="storeToBeEdited.id" />
 				</div>
 			</tab>
 		</tabset>
 		<!-- DELETE HOLIDAY HOURS MODAL START -->
-		<modal :show="showDeleteHolidayHoursModal" effect="fade" @closeOnEscape="closeDeleteHolidayHoursModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeDeleteHolidayHoursModal()">
+		<modal :show="showDeleteHolidayHoursModal"
+		       effect="fade"
+		       @closeOnEscape="closeDeleteHolidayHoursModal">
+			<div slot="modal-header"
+			     class="modal-header">
+				<button type="button"
+				        class="close"
+				        @click="closeDeleteHolidayHoursModal()">
 					<span>&times;</span>
 				</button>
 				<h4 class="modal-title center">Delete Holiday Hours</h4>
 			</div>
-			<div slot="modal-body" class="modal-body">
-				<div class="alert alert-danger" v-show="deleteHolidayHoursErrorMessage.length" ref="deleteHolidayHoursErrorMessage">
-					<button class="close" data-close="alert" @click="clearDeleteHolidayHoursError()"></button>
+			<div slot="modal-body"
+			     class="modal-body">
+				<div class="alert alert-danger"
+				     v-show="deleteHolidayHoursErrorMessage.length"
+				     ref="deleteHolidayHoursErrorMessage">
+					<button class="close"
+					        data-close="alert"
+					        @click="clearDeleteHolidayHoursError()"></button>
 					<span>{{deleteHolidayHoursErrorMessage}}</span>
 				</div>
 				<p>Are you sure you want to delete these holiday hours?</p>
 			</div>
-			<div slot="modal-footer" class="modal-footer">
-				<button type="button" class="btn btn-primary" @click="deleteHolidayHours()">Delete</button>
+			<div slot="modal-footer"
+			     class="modal-footer">
+				<button type="button"
+				        class="btn btn-primary"
+				        @click="deleteHolidayHours()">Delete</button>
 			</div>
 		</modal>
 		<!-- DELETE HOLIDAY HOURS MODAL END -->
@@ -833,7 +802,7 @@ import StoreGroupsFunctions from '../../../controllers/StoreGroups'
 import NoResults from '../../modules/NoResults'
 import AddHolidayHours from './AddHolidayHours'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
-import {mask} from 'vue-the-mask'
+import { mask } from 'vue-the-mask'
 import { debounce } from 'lodash'
 import TimezonesArray from './TimezonesArray'
 import StoreImages from '@/components/app/StoreManager/StoreImages'
@@ -849,16 +818,19 @@ export default {
 	data () {
 		return {
 			breadcrumbArray: [
-				{name: 'Store Manager', link: false},
-				{name: 'Stores', link: '/app/store_manager/stores'},
-				{name: 'Edit Store', link: false}
+				{ name: 'Store Manager', link: false },
+				{ name: 'Stores', link: '/app/store_manager/stores' },
+				{ name: 'Edit Store', link: false }
 			],
 			storeInformationError: '',
 			storeMetaError: '',
 			storeHourError: '',
-			updateHolidayHoursError: '',
+			holidayHoursError: '',
+			updatingStoreInfo: false,
 			storeToBeEdited: {},
+			updatingStoreMeta: false,
 			metaToBeEdited: {},
+			updatingStoreHours: false,
 			hoursToBeEdited: [
 				{
 					created_by: this.$root.createdBy,
@@ -921,15 +893,13 @@ export default {
 			displayLocationsDropdown: false,
 			googleSearchResults: [],
 			locationDetails: {},
-			customText: 'Click on the button above to add holiday hours for this location.',
+			customText:
+				'Click on the button above to add holiday hours for this location.',
 			showHolidayHoursModal: false,
 			noProfileData: '',
 			noHoursData: '',
 			newHolidayHours: [],
 			storeGroups: [],
-			selectedGroupName: '',
-			nullPOSsettingsReceived: true,
-			storePOSsettingsError: '',
 			isCorporateUpdated: false,
 			addAHoliday: true,
 			mode: 'list',
@@ -1004,23 +974,13 @@ export default {
 		 */
 		displayPOSsettingsForm () {
 			this.storeToBeEdited.pos_partner = {
-				'pos_provider': '',
-				'domain': '',
-				'user': '',
-				'key': '',
-				'company_id': '',
-				'note': ''
+				pos_provider: '',
+				domain: '',
+				user: '',
+				key: '',
+				company_id: '',
+				note: ''
 			}
-		},
-		/**
-		 * To update the store group on the store being edited.
-		 * @function
-		 * @param {object} group - The new group object.
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		updateStoreGroupId (group) {
-			this.selectedGroupName = group.name
-			this.storeToBeEdited.locationsgroup_id = group.id
 		},
 		/**
 		 * To get a list of store groups.
@@ -1030,20 +990,24 @@ export default {
 		getStoreGroups () {
 			var storeGroupsVue = this
 			storeGroupsVue.storeGroups = []
-			return StoreGroupsFunctions.getGroups(storeGroupsVue.$root.appId, storeGroupsVue.$root.appSecret, storeGroupsVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					storeGroupsVue.storeGroups = response.payload
-					storeGroupsVue.storeGroups.forEach((group) => { if (group.id === storeGroupsVue.storeToBeEdited.locationsgroup_id) { storeGroupsVue.selectedGroupName = group.name } })
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					storeGroupsVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
-			})
+			return StoreGroupsFunctions.getGroups(
+				storeGroupsVue.$root.appId,
+				storeGroupsVue.$root.appSecret,
+				storeGroupsVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						storeGroupsVue.storeGroups = response.payload
+					}
+				})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch store groups',
+						errorName: 'storeInformationError',
+						vue: storeGroupsVue
+					})
+				})
 		},
 		/**
 		 * To add holiday hours emitted by the child modal, to the list of holiday hours and submits the same to the backend.
@@ -1091,23 +1055,30 @@ export default {
 		createHolidayHours (val) {
 			var editStoreVue = this
 
-			StoresFunctions.createHolidayHours(val, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					const sunday = response.payload.findIndex(day => day.day === 0)
-					let weekStartingMonday = response.payload
-					weekStartingMonday.push(response.payload[sunday])
-					weekStartingMonday.splice(sunday, 1)
-					editStoreVue.holidayHoursToBeEdited = weekStartingMonday
-					editStoreVue.showAlert()
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editStoreVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
-				throw reason
-			})
+			StoresFunctions.createHolidayHours(
+				val,
+				editStoreVue.$root.appId,
+				editStoreVue.$root.appSecret,
+				editStoreVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						const sunday = response.payload.findIndex(day => day.day === 0)
+						let weekStartingMonday = response.payload
+						weekStartingMonday.push(response.payload[sunday])
+						weekStartingMonday.splice(sunday, 1)
+						editStoreVue.holidayHoursToBeEdited = weekStartingMonday
+						editStoreVue.showAlert(response.payload)
+					}
+				})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not add the holiday hours',
+						errorName: 'holidayHoursError',
+						vue: editStoreVue
+					})
+				})
 		},
 		/**
 		 * To submit the holiday hours (that are oassed in a parameter) to the backend.
@@ -1123,37 +1094,41 @@ export default {
 			val.loading = true
 
 			let payload = {
-				'close_time': val.close_time,
-				'created_at': val.created_at,
-				'created_by': val.created_by,
-				'day': val.day,
-				'end_date': val.end_date,
-				'id': val.id,
-				'location_id': val.location_id,
-				'name': val.name,
-				'open': val.open,
-				'open_time': val.open_time,
-				'start_date': val.start_date,
-				'status': val.status,
-				'updated_at': val.updated_at,
-				'updated_by': val.updated_by
+				close_time: val.close_time,
+				created_at: val.created_at,
+				created_by: val.created_by,
+				day: val.day,
+				end_date: val.end_date,
+				id: val.id,
+				location_id: val.location_id,
+				name: val.name,
+				open: val.open,
+				open_time: val.open_time,
+				start_date: val.start_date,
+				status: val.status,
+				updated_at: val.updated_at,
+				updated_by: val.updated_by
 			}
 
-			StoresFunctions.updateHolidayHours(payload, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					val.loading = false
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editStoreVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-					editStoreVue.updateHolidayHoursError = reason
-					window.scrollTo(0, 0)
-				}
-				throw reason
-			})
+			StoresFunctions.updateHolidayHours(
+				payload,
+				editStoreVue.$root.appId,
+				editStoreVue.$root.appSecret,
+				editStoreVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						val.loading = false
+					}
+				})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not update the holiday hours',
+						errorName: 'holidayHoursError',
+						vue: editStoreVue
+					})
+				})
 		},
 		/**
 		 * To open the delete holiday hours modal
@@ -1190,47 +1165,74 @@ export default {
 			var editStoreVue = this
 
 			let payload = {
-				'id': this.holidayHourToDelete.id,
-				'location_id': this.holidayHourToDelete.location_id
+				id: this.holidayHourToDelete.id,
+				location_id: this.holidayHourToDelete.location_id
 			}
 
-			StoresFunctions.deleteStoreHolidayHours(payload, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
-				this.getStoreHolidayHours()
-				this.closeDeleteHolidayHoursModal()
-				this.confirmHolidayHoursDeleted()
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not delete the holiday hours',
-					errorName: 'deleteHolidayHoursErrorMessage',
-					vue: editStoreVue
+			StoresFunctions.deleteStoreHolidayHours(
+				payload,
+				editStoreVue.$root.appId,
+				editStoreVue.$root.appSecret,
+				editStoreVue.$root.userToken
+			)
+				.then(response => {
+					this.getStoreHolidayHours()
+					this.closeDeleteHolidayHoursModal()
+					this.confirmHolidayHoursDeleted(response.payload)
 				})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not delete the holiday hours',
+						errorName: 'deleteHolidayHoursErrorMessage',
+						vue: editStoreVue
+					})
+				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		confirmHolidayHoursDeleted (payload = {}) {
+			let title = 'Success'
+			let text = 'The Holiday Hours have been deleted'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The removal has been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
 			})
 		},
 		/**
-		 * To confirm that the hours were deleted
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmHolidayHoursDeleted () {
+		showAlert (payload = {}) {
+			let title = 'Success'
+			let text = 'The Holiday Hours have been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Holiday Hours have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'Holiday hours deleted',
-				type: 'success',
-				confirmButtonText: 'OK'
-			})
-		},
-		/**
-		 * To alert the user that the store has been successfully created and provide them an option for creating another one.
-		 * @function
-		 * @returns {undefined}
-		 */
-		showAlert () {
-			this.$swal({
-				title: 'Success!',
-				text: 'Holiday hours successfully added.',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			}).then(() => {
 				window.scrollTo(0, 0)
 			})
@@ -1264,7 +1266,11 @@ export default {
 			var index = val.indexOf(' ')
 
 			if (index !== -1) {
-				output = val.substring(0, 1).toUpperCase() + val.substring(1, index + 1) + val.substring(index + 1, index + 2).toUpperCase() + val.substring(index + 2)
+				output =
+					val.substring(0, 1).toUpperCase() +
+					val.substring(1, index + 1) +
+					val.substring(index + 1, index + 2).toUpperCase() +
+					val.substring(index + 2)
 			} else {
 				output = val.substring(0, 1).toUpperCase() + val.substring(1)
 			}
@@ -1278,36 +1284,6 @@ export default {
 		 */
 		clearError (val) {
 			this[val] = ''
-		},
-		/**
-		 * To update the value of the store 'currency' field.
-		 * @function
-		 * @param {integer} value - The new value.
-		 * @returns {undefined}
-		 */
-		updateStoreCurrency (value) {
-			this.storeToBeEdited.currency = value
-		},
-		/**
-		 * To sync the menu.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		syncMenu () {
-			var editStoreVue = this
-			return StoresFunctions.syncMenu(editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken, editStoreVue.storeToBeEdited.id).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					editStoreVue.showSyncSuccessful()
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editStoreVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
-			})
 		},
 		/**
 		 * To alert the user that the menu has been synced.
@@ -1329,20 +1305,28 @@ export default {
 		 */
 		getStoreDetails () {
 			var editStoreVue = this
-			StoresFunctions.getStoreDetails(editStoreVue.$route.params.store_id, editStoreVue.$root.appId, editStoreVue.$root.appSecret).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					editStoreVue.storeToBeEdited = response.payload
-					editStoreVue.getStoreMeta()
-				}
-				editStoreVue.getStoreGroups()
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editStoreVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
-				throw reason
-			})
+			StoresFunctions.getStoreDetails(
+				editStoreVue.$route.params.store_id,
+				editStoreVue.$root.appId,
+				editStoreVue.$root.appSecret
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						editStoreVue.storeToBeEdited = response.payload
+						editStoreVue.getStoreMeta()
+						editStoreVue.getStoreGroups()
+					} else {
+						throw response
+					}
+				})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch store information',
+						errorName: 'storeInformationError',
+						vue: editStoreVue
+					})
+				})
 		},
 		/**
 		 * To get the meta/profile of the current store.
@@ -1351,23 +1335,30 @@ export default {
 		 */
 		getStoreMeta () {
 			var editStoreVue = this
-			StoresFunctions.getStoreMeta(editStoreVue.$route.params.store_id, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					if (response.message === 'No profile to display') {
-						editStoreVue.noProfileData = response.message
-					} else {
-						editStoreVue.metaToBeEdited = response.payload
+			StoresFunctions.getStoreMeta(
+				editStoreVue.$route.params.store_id,
+				editStoreVue.$root.appId,
+				editStoreVue.$root.appSecret,
+				editStoreVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						if (response.message === 'No profile to display') {
+							editStoreVue.noProfileData = response.message
+						} else {
+							editStoreVue.metaToBeEdited = response.payload
+						}
+						editStoreVue.getStoreHours()
 					}
-					editStoreVue.getStoreHours()
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editStoreVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
-				throw reason
-			})
+				})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch store profile info',
+						errorName: 'storeMetaError',
+						vue: editStoreVue
+					})
+				})
 		},
 		/**
 		 * To get the hours of the current store.
@@ -1376,27 +1367,33 @@ export default {
 		 */
 		getStoreHours () {
 			var editStoreVue = this
-			StoresFunctions.getStoreHours(editStoreVue.$route.params.store_id, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					if (response.message === 'No hours to display') {
-						editStoreVue.noHoursData = response.message
-					} else {
-						const sunday = response.payload.findIndex(day => day.day === 0)
-						let weekStartingMonday = response.payload
-						weekStartingMonday.push(response.payload[sunday])
-						weekStartingMonday.splice(sunday, 1)
-						editStoreVue.hoursToBeEdited = weekStartingMonday
+			StoresFunctions.getStoreHours(
+				editStoreVue.$route.params.store_id,
+				editStoreVue.$root.appId,
+				editStoreVue.$root.appSecret,
+				editStoreVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						if (response.message === 'No hours to display') {
+							editStoreVue.noHoursData = response.message
+						} else {
+							const sunday = response.payload.findIndex(day => day.day === 0)
+							let weekStartingMonday = response.payload
+							weekStartingMonday.push(response.payload[sunday])
+							weekStartingMonday.splice(sunday, 1)
+							editStoreVue.hoursToBeEdited = weekStartingMonday
+						}
 					}
-				}
-			}).catch(reason => {
-				console.log(reason)
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editStoreVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
-				throw reason
-			})
+				})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch store hours',
+						errorName: 'storeHourError',
+						vue: editStoreVue
+					})
+				})
 		},
 		/**
 		 * To get the holiday hours of the current store.
@@ -1405,27 +1402,38 @@ export default {
 		 */
 		getStoreHolidayHours () {
 			var editStoreVue = this
-			StoresFunctions.getStoreHolidayHours(editStoreVue.$route.params.store_id, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					response.payload.location_holiday_hours.forEach(day => {
-						day.open_time = day.open_time.slice(0, -3)
-						day.close_time = day.close_time.slice(0, -3)
-						day.loading = false
+			StoresFunctions.getStoreHolidayHours(
+				editStoreVue.$route.params.store_id,
+				editStoreVue.$root.appId,
+				editStoreVue.$root.appSecret,
+				editStoreVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						response.payload.location_holiday_hours.forEach(day => {
+							day.open_time = day.open_time.slice(0, -3)
+							day.close_time = day.close_time.slice(0, -3)
+							day.loading = false
+						})
+						const sunday = response.payload.location_holiday_hours.findIndex(
+							day => day.day === 0
+						)
+						let weekStartingMonday = response.payload.location_holiday_hours
+						weekStartingMonday.push(
+							response.payload.location_holiday_hours[sunday]
+						)
+						weekStartingMonday.splice(sunday, 1)
+						editStoreVue.holidayHoursToBeEdited = weekStartingMonday
+					} else throw response
+				})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch holiday hours',
+						errorName: 'holidayHoursError',
+						vue: editStoreVue
 					})
-					const sunday = response.payload.location_holiday_hours.findIndex(day => day.day === 0)
-					let weekStartingMonday = response.payload.location_holiday_hours
-					weekStartingMonday.push(response.payload.location_holiday_hours[sunday])
-					weekStartingMonday.splice(sunday, 1)
-					editStoreVue.holidayHoursToBeEdited = weekStartingMonday
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editStoreVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
-				throw reason
-			})
+				})
 		},
 		/**
 		 * To check if the menu data is valid before submitting to the backend.
@@ -1449,7 +1457,10 @@ export default {
 					reject('Store postal code cannot be blank')
 				} else if (editStoreVue.storeToBeEdited.phone.length < 14) {
 					reject('Store phone should have at least 10 digits')
-				} else if (editStoreVue.storeToBeEdited.fax && editStoreVue.storeToBeEdited.fax.length < 14) {
+				} else if (
+					editStoreVue.storeToBeEdited.fax &&
+					editStoreVue.storeToBeEdited.fax.length < 14
+				) {
 					reject('Store fax number should have at least 10 digits')
 				} else if (!editStoreVue.storeToBeEdited.email.length) {
 					reject('Store email cannot be blank')
@@ -1476,50 +1487,166 @@ export default {
 			var editStoreVue = this
 			editStoreVue.storeInformationError = ''
 
-			return editStoreVue.validateStoreInformation()
-			.then(response => {
-				editStoreVue.storeToBeEdited.phone = editStoreVue.storeToBeEdited.phone.replace(/[^\d]/g, '')
-				editStoreVue.storeToBeEdited.fax = editStoreVue.storeToBeEdited.fax.replace(/[^\d]/g, '')
-				if (!editStoreVue.storeToBeEdited.fax) {
-					editStoreVue.storeToBeEdited.fax = '0000000000'
-				}
-				StoresFunctions.updateStoreInformation(editStoreVue.storeToBeEdited, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						editStoreVue.showSuccessAlert('Store details')
-					} else {
-						editStoreVue.storeInformationError = response.message
+			return editStoreVue
+				.validateStoreInformation()
+				.then(response => {
+					editStoreVue.updatingStoreInfo = true
+					editStoreVue.storeToBeEdited.phone = editStoreVue.storeToBeEdited.phone.replace(
+						/[^\d]/g,
+						''
+					)
+					editStoreVue.storeToBeEdited.fax = editStoreVue.storeToBeEdited.fax.replace(
+						/[^\d]/g,
+						''
+					)
+					if (!editStoreVue.storeToBeEdited.fax) {
+						editStoreVue.storeToBeEdited.fax = '0000000000'
 					}
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not update the store',
-						errorName: 'storeInformationError',
-						vue: editStoreVue
-					})
+					StoresFunctions.updateStoreInformation(
+						editStoreVue.storeToBeEdited,
+						editStoreVue.$root.appId,
+						editStoreVue.$root.appSecret,
+						editStoreVue.$root.userToken
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								editStoreVue.showSuccessAlert(response.payload)
+							} else {
+								editStoreVue.storeInformationError = response.message
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not update the store',
+								errorName: 'storeInformationError',
+								vue: editStoreVue
+							})
+						})
+						.finally(() => {
+							editStoreVue.updatingStoreInfo = false
+						})
 				})
-			}).catch(reason => {
-				// If validation fails then display the error message
-				editStoreVue.storeInformationError = reason
-				window.scrollTo(0, 0)
-				throw reason
+				.catch(reason => {
+					// If validation fails then display the error message
+					editStoreVue.storeInformationError = reason
+					window.scrollTo(0, 0)
+					throw reason
+				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showSuccessAlert (payload = {}) {
+			let title = 'Success'
+			let text = 'The Store Information has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Store Information has been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
 			})
 		},
 		/**
-		 * To alert the user that the store information was successfully updated.
+		 * To notify user of the outcome of the call
 		 * @function
-		 * @param {string} input - The input string.
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showSuccessAlert (input) {
+		showMetaUpdateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Store Profile has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: input + ' have been successfully updated!',
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(() => {
-				// Do nothing
-			}, dismiss => {
-				// Do nothing on dismiss
+				title,
+				text,
+				type
+			})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showMetaCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Store Profile has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Store Profile has been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showHoursUpdateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Store Hours have been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showHoursCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Store Hours have been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -1532,7 +1659,10 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (editStoreVue.metaToBeEdited.opening_soon === 1) {
 					resolve('Hurray')
-				} else if (editStoreVue.metaToBeEdited.external_online_ordering_enabled && !editStoreVue.metaToBeEdited.external_online_ordering_url) {
+				} else if (
+					editStoreVue.metaToBeEdited.external_online_ordering_enabled &&
+					!editStoreVue.metaToBeEdited.external_online_ordering_url
+				) {
 					reject('The external online ordering enabled field is required')
 				} else if (editStoreVue.metaToBeEdited.gateway_name === null) {
 					reject('Gateway Name cannot be blank')
@@ -1555,55 +1685,78 @@ export default {
 			editStoreVue.storeMetaError = ''
 
 			editStoreVue.metaToBeEdited.updated_by = editStoreVue.$root.createdBy
-			return editStoreVue.validateStoreMeta()
-			.then(response => {
-				if (editStoreVue.metaToBeEdited.opening_soon === 1) {
-					if (!editStoreVue.metaToBeEdited.merchant_id) {
-						editStoreVue.metaToBeEdited.merchant_id = 0
+			return editStoreVue
+				.validateStoreMeta()
+				.then(response => {
+					editStoreVue.updatingStoreMeta = true
+					if (editStoreVue.metaToBeEdited.opening_soon === 1) {
+						if (!editStoreVue.metaToBeEdited.merchant_id) {
+							editStoreVue.metaToBeEdited.merchant_id = 0
+						}
+						if (!editStoreVue.metaToBeEdited.merchant_key) {
+							editStoreVue.metaToBeEdited.merchant_key = 0
+						}
 					}
-					if (!editStoreVue.metaToBeEdited.merchant_key) {
-						editStoreVue.metaToBeEdited.merchant_key = 0
-					}
-				}
 
-				if (editStoreVue.noProfileData === 'No profile to display') {
-					editStoreVue.metaToBeEdited.created_by = editStoreVue.$root.createdBy
-					StoresFunctions.createStoreMeta(editStoreVue.storeToBeEdited.id, editStoreVue.metaToBeEdited, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
-						editStoreVue.noProfileData = ''
-						editStoreVue.showSuccessAlert('Store metas')
-					}).catch(reason => {
-						ajaxErrorHandler({
-							reason,
-							errorText: 'We could not save the store information',
-							errorName: 'storeMetaError',
-							vue: editStoreVue
-						})
-					})
-				} else {
-					StoresFunctions.updateStoreMeta(editStoreVue.metaToBeEdited, editStoreVue.$route.params.store_id, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
-						if (response.code === 200 && response.status === 'ok') {
-							editStoreVue.showSuccessAlert('Store metas')
-						} else {
-							editStoreVue.storeMetaError = response.message
-						}
-					}).catch(reason => {
-						if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-							editStoreVue.$router.push('/login/expired')
-							return
-						}
-						if (reason.responseJSON) {
-							editStoreVue.storeMetaError = reason
-							window.scrollTo(0, 0)
-						}
-						throw reason
-					})
-				}
-			}).catch(reason => {
-				// If validation fails then display the error message
-				editStoreVue.storeInformationError = reason
-				window.scrollTo(0, 0)
-				throw reason
-			})
+					if (editStoreVue.noProfileData === 'No profile to display') {
+						editStoreVue.metaToBeEdited.created_by =
+							editStoreVue.$root.createdBy
+						StoresFunctions.createStoreMeta(
+							editStoreVue.storeToBeEdited.id,
+							editStoreVue.metaToBeEdited,
+							editStoreVue.$root.appId,
+							editStoreVue.$root.appSecret,
+							editStoreVue.$root.userToken
+						)
+							.then(response => {
+								editStoreVue.noProfileData = ''
+								editStoreVue.showMetaCreateSuccess(response.payload)
+							})
+							.catch(reason => {
+								ajaxErrorHandler({
+									reason,
+									errorText: 'We could not update the store profile',
+									errorName: 'storeMetaError',
+									vue: editStoreVue
+								})
+							})
+							.finally(() => {
+								editStoreVue.updatingStoreMeta = false
+							})
+					} else {
+						StoresFunctions.updateStoreMeta(
+							editStoreVue.metaToBeEdited,
+							editStoreVue.$route.params.store_id,
+							editStoreVue.$root.appId,
+							editStoreVue.$root.appSecret,
+							editStoreVue.$root.userToken
+						)
+							.then(response => {
+								if (response.code === 200 && response.status === 'ok') {
+									editStoreVue.showMetaUpdateSuccess(response.payload)
+								} else {
+									editStoreVue.storeMetaError = response.message
+								}
+							})
+							.catch(reason => {
+								ajaxErrorHandler({
+									reason,
+									errorText: 'We could not update the store profile',
+									errorName: 'storeMetaError',
+									vue: editStoreVue
+								})
+							})
+							.finally(() => {
+								editStoreVue.updatingStoreMeta = false
+							})
+					}
+				})
+				.catch(reason => {
+					// If validation fails then display the error message
+					editStoreVue.storeInformationError = reason
+					window.scrollTo(0, 0)
+					throw reason
+				})
 		},
 		/**
 		 * To check if the store data is valid before submitting to the backend.
@@ -1615,14 +1768,16 @@ export default {
 			return new Promise(function (resolve, reject) {
 				let hoursMissing = false
 				let regex = new RegExp('[0-2][0-9]:[0-5][0-9]')
-				editStoreVue.hoursToBeEdited.forEach((day) => {
+				editStoreVue.hoursToBeEdited.forEach(day => {
 					if (!regex.test(day.open_time) || !regex.test(day.close_time)) {
 						hoursMissing = true
 						return
 					}
 				})
 				if (hoursMissing) {
-					reject('Opening and Closing Times cannot be empty. Enter 00:00 for days when the Store is closed.')
+					reject(
+						'Opening and Closing Times cannot be empty. Enter 00:00 for days when the Store is closed.'
+					)
 				}
 				resolve('Hurray')
 			})
@@ -1638,46 +1793,72 @@ export default {
 			var editStoreVue = this
 
 			if (editStoreVue.noHoursData === 'No hours to display') {
-				return editStoreVue.validateStoreHours().then(response => {
-					StoresFunctions.createStoreHours(editStoreVue.$route.params.store_id, editStoreVue.hoursToBeEdited, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
-						if (response.code === 200 && response.status === 'ok') {
-							editStoreVue.getStoreHours()
-							editStoreVue.showSuccessAlert('Store hours')
-						} else {
-							editStoreVue.storeHourError = response.message
-						}
-					}).catch(reason => {
-						if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-							editStoreVue.$router.push('/login/expired')
-							return
-						}
-						if (reason.responseJSON) {}
-						throw reason
+				return editStoreVue
+					.validateStoreHours()
+					.then(response => {
+						editStoreVue.updatingStoreHours = true
+						StoresFunctions.createStoreHours(
+							editStoreVue.$route.params.store_id,
+							editStoreVue.hoursToBeEdited,
+							editStoreVue.$root.appId,
+							editStoreVue.$root.appSecret,
+							editStoreVue.$root.userToken
+						)
+							.then(response => {
+								if (response.code === 200 && response.status === 'ok') {
+									editStoreVue.getStoreHours()
+									editStoreVue.showHoursCreateSuccess(response.payload)
+								} else {
+									editStoreVue.storeHourError = response.message
+								}
+							})
+							.catch(reason => {
+								ajaxErrorHandler({
+									reason,
+									errorText: 'We could not add the hours',
+									errorName: 'storeHourError',
+									vue: editStoreVue
+								})
+							})
+							.finally(() => {
+								editStoreVue.updatingStoreHours = false
+							})
 					})
-				}).catch(reason => {
-					editStoreVue.storeHourError = reason
-					window.scrollTo(0, 0)
-				})
+					.catch(reason => {
+						editStoreVue.storeHourError = reason
+						window.scrollTo(0, 0)
+					})
 			} else {
-				return editStoreVue.validateStoreHours().then(response => {
-					StoresFunctions.updateStoreHours(editStoreVue.$route.params.store_id, editStoreVue.hoursToBeEdited, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
-						if (response.code === 200 && response.status === 'ok') {
-							editStoreVue.showSuccessAlert('Store hours')
-						} else {
-							editStoreVue.storeHourError = response.message
-						}
-					}).catch(reason => {
-						if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-							editStoreVue.$router.push('/login/expired')
-							return
-						}
-						if (reason.responseJSON) {}
-						throw reason
+				return editStoreVue
+					.validateStoreHours()
+					.then(response => {
+						StoresFunctions.updateStoreHours(
+							editStoreVue.$route.params.store_id,
+							editStoreVue.hoursToBeEdited,
+							editStoreVue.$root.appId,
+							editStoreVue.$root.appSecret,
+							editStoreVue.$root.userToken
+						)
+							.then(response => {
+								if (response.code === 200 && response.status === 'ok') {
+									editStoreVue.showHoursUpdateSuccess(response.payload)
+								} else {
+									editStoreVue.storeHourError = response.message
+								}
+							})
+							.catch(reason => {
+								ajaxErrorHandler({
+									reason,
+									errorText: 'We could not update the hours',
+									errorName: 'storeHourError',
+									vue: editStoreVue
+								})
+							})
 					})
-				}).catch(reason => {
-					editStoreVue.storeHourError = reason
-					window.scrollTo(0, 0)
-				})
+					.catch(reason => {
+						editStoreVue.storeHourError = reason
+						window.scrollTo(0, 0)
+					})
 			}
 		},
 		/**
@@ -1698,75 +1879,6 @@ export default {
 					reject('Key cannot be blank.')
 				}
 				resolve('Hurray')
-			})
-		},
-		/**
-		 * To set hours of operation for the newly created store.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		createOrUpdatePOSsettings () {
-			this.clearError('storePOSsettingsError')
-			var editStoreVue = this
-
-			return editStoreVue.validatePOSsettings()
-			.then(response => {
-				if (this.nullPOSsettingsReceived) {
-					StoresFunctions.createPOSsettings(editStoreVue.storeToBeEdited.id, editStoreVue.storeToBeEdited.pos_partner, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
-						if (response.code === 200 && response.status === 'ok') {
-							editStoreVue.showPOSsettingsAlert()
-						} else {
-							editStoreVue.storePOSsettingsError = response.message
-						}
-					}).catch(reason => {
-						if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-							editStoreVue.$router.push('/login/expired')
-							return
-						}
-						editStoreVue.storePOSsettingsError = reason
-						window.scrollTo(0, 0)
-						throw reason
-					})
-				} else {
-					StoresFunctions.updatePOSsettings(editStoreVue.storeToBeEdited.id, editStoreVue.storeToBeEdited.pos_partner, editStoreVue.$root.appId, editStoreVue.$root.appSecret, editStoreVue.$root.userToken).then(response => {
-						if (response.code === 200 && response.status === 'ok') {
-							editStoreVue.showPOSsettingsAlert()
-						} else {
-							editStoreVue.storePOSsettingsError = response.message
-						}
-					}).catch(reason => {
-						if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-							editStoreVue.$router.push('/login/expired')
-							return
-						}
-						// editStoreVue.storePOSsettingsError = reason
-						window.scrollTo(0, 0)
-						throw reason
-					})
-				}
-			}).catch(reason => {
-				// If validation fails then display the error message
-				editStoreVue.storePOSsettingsError = reason
-				window.scrollTo(0, 0)
-				throw reason
-			})
-		},
-		/**
-		 * To ask the user if they want to set up store holiday hours next or exit the setup.
-		 * @function
-		 * @returns {undefined}
-		 */
-		showPOSsettingsAlert () {
-			this.$swal({
-				title: 'Success!',
-				html: 'POS settings saved',
-				type: 'success',
-				showCancelButton: false,
-				confirmButtonText: 'OK'
-			}).then(() => {
-				// do nothing
-			}, dismiss => {
-				// do nothing
 			})
 		},
 		/**
@@ -1801,40 +1913,50 @@ export default {
 		 */
 		getGoogleLocationDetails (placeId) {
 			var editStoreVue = this
-			AppFunctions.getGoogleLocationDetails(placeId, editStoreVue.$root.appId, editStoreVue.$root.appSecret).then(response => {
-				editStoreVue.locationDetails = response
-				editStoreVue.storeToBeEdited.latitude = editStoreVue.locationDetails.geometry.location.lat
-				editStoreVue.storeToBeEdited.longitude = editStoreVue.locationDetails.geometry.location.lng
+			AppFunctions.getGoogleLocationDetails(
+				placeId,
+				editStoreVue.$root.appId,
+				editStoreVue.$root.appSecret
+			)
+				.then(response => {
+					editStoreVue.locationDetails = response
+					editStoreVue.storeToBeEdited.latitude =
+						editStoreVue.locationDetails.geometry.location.lat
+					editStoreVue.storeToBeEdited.longitude =
+						editStoreVue.locationDetails.geometry.location.lng
 
-				// empty all fields initially
-				editStoreVue.storeToBeEdited.country = ''
-				editStoreVue.storeToBeEdited.province = ''
-				editStoreVue.storeToBeEdited.city = ''
+					// empty all fields initially
+					editStoreVue.storeToBeEdited.country = ''
+					editStoreVue.storeToBeEdited.province = ''
+					editStoreVue.storeToBeEdited.city = ''
 
-				// save new search location details
-				for (var i = 0; i < editStoreVue.locationDetails.address_components.length; i++) {
-					var item = editStoreVue.locationDetails.address_components[i]
-					for (var j = 0; j < item.types.length; j++) {
-						var subItem = item.types[j]
-						if (subItem === 'postal_code' || subItem === 'postal_code_prefix') {
-							editStoreVue.storeToBeEdited.postal = item.long_name
-						} else if (subItem === 'country') {
-							editStoreVue.storeToBeEdited.country = item.long_name
-						} else if (subItem === 'administrative_area_level_1') {
-							editStoreVue.storeToBeEdited.province = item.long_name
-						} else if (subItem === 'locality') {
-							editStoreVue.storeToBeEdited.city = item.long_name
+					// save new search location details
+					for (
+						var i = 0;
+						i < editStoreVue.locationDetails.address_components.length;
+						i++
+					) {
+						var item = editStoreVue.locationDetails.address_components[i]
+						for (var j = 0; j < item.types.length; j++) {
+							var subItem = item.types[j]
+							if (
+								subItem === 'postal_code' ||
+								subItem === 'postal_code_prefix'
+							) {
+								editStoreVue.storeToBeEdited.postal = item.long_name
+							} else if (subItem === 'country') {
+								editStoreVue.storeToBeEdited.country = item.long_name
+							} else if (subItem === 'administrative_area_level_1') {
+								editStoreVue.storeToBeEdited.province = item.long_name
+							} else if (subItem === 'locality') {
+								editStoreVue.storeToBeEdited.city = item.long_name
+							}
 						}
 					}
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editStoreVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
-				throw reason
-			})
+				})
+				.catch(reason => {
+					console.log('Autocomplete error:', reason)
+				})
 		},
 		/**
 		 * To clear the location details set using google search.
@@ -1858,12 +1980,19 @@ export default {
 		getGooglePlaces: debounce(function () {
 			var editStoreVue = this
 			if (editStoreVue.storeToBeEdited.address_line_1.length >= 3) {
-				AppFunctions.getGoogleLocationSearchResults(editStoreVue.storeToBeEdited.address_line_1, editStoreVue.$root.appId, editStoreVue.$root.appSecret).then(response => {
-					editStoreVue.googleSearchResults = response
-				}).catch(reason => {
-					if (reason.responseJSON) {}
-					throw reason
-				})
+				AppFunctions.getGoogleLocationSearchResults(
+					editStoreVue.storeToBeEdited.address_line_1,
+					editStoreVue.$root.appId,
+					editStoreVue.$root.appSecret
+				)
+					.then(response => {
+						editStoreVue.googleSearchResults = response
+					})
+					.catch(reason => {
+						if (reason.responseJSON) {
+						}
+						throw reason
+					})
 			} else {
 				editStoreVue.googleSearchResults = []
 			}
@@ -1880,7 +2009,6 @@ export default {
 		},
 		'metaToBeEdited.opening_soon' (val) {
 			if (val === 0) {
-
 			}
 		}
 	},
@@ -1902,16 +2030,16 @@ export default {
 </script>
 <style scoped>
 .dropdown-menu {
-	max-height: 145px;
-	overflow: auto;
+  max-height: 145px;
+  overflow: auto;
 }
 .el-date-editor.narrow-date-picker.el-input.el-input--small.el-input--prefix.el-input--suffix.el-date-editor--date {
-	width: 130px;
+  width: 130px;
 }
 .el-date-editor.narrow-time-picker.el-input.el-input--small.el-input--prefix.el-input--suffix.el-date-editor--time-select {
-	width: 95px;
+  width: 95px;
 }
 .align-middle {
-	vertical-align: middle;
+  vertical-align: middle;
 }
 </style>

@@ -1,78 +1,135 @@
 <template>
-	<modal :show="messageModalDisplayed" effect="fade" @closeOnEscape="closeModal">
-		<div slot="modal-header" class="modal-header center">
-			<button type="button" class="close" @click="closeModal()">
+	<modal :show="messageModalDisplayed"
+	       effect="fade"
+	       @closeOnEscape="closeModal"
+	       ref="modal">
+		<div slot="modal-header"
+		     class="modal-header center">
+			<button type="button"
+			        class="close"
+			        @click="closeModal()">
 				<span>&times;</span>
 			</button>
-			<h4 class="modal-title center" v-if="!selectImageMode">New Notification</h4>
+			<h4 class="modal-title center"
+			    v-if="!selectImageMode">New Notification</h4>
 		</div>
-		<div slot="modal-body" class="modal-body">
+		<div slot="modal-body"
+		     class="modal-body">
 			<div class="row">
 				<div class="col-xs-12">
-					<div class="alert alert-danger" v-if="errorMessage.length">
-						<button class="close" data-close="alert" @click="clearError()"></button>
+					<div class="alert alert-danger"
+					     v-show="errorMessage"
+					     ref="errorMessage">
+						<button class="close"
+						        @click="clearError()"></button>
 						<span>{{errorMessage}}</span>
 					</div>
 				</div>
-				<div class="col-xs-12" v-show="!selectImageMode">
+				<div class="col-xs-12"
+				     v-show="!selectImageMode">
 					<div class="form-group form-md-line-input form-md-floating-label">
-						<label class="btn blue btn-outline" for="push_notification" :class="{'active': message.notification_type === 'push'}">
-							<input type="radio" class="toggle" id="push_notification" value="push" v-model="message.notification_type">
-							Push Notification
+						<label class="btn blue btn-outline"
+						       for="push_notification"
+						       :class="{'active': message.notification_type === 'push'}">
+							<input type="radio"
+							       class="toggle"
+							       id="push_notification"
+							       value="push"
+							       v-model="message.notification_type"> Push Notification
 						</label>
-						<label class="btn blue btn-outline" for="inapp_notification" :class="{'active': message.notification_type === 'inapp'}">
-							<input type="radio" class="toggle" id="inapp_notification" value="inapp" v-model="message.notification_type">
-							In App Notification
+						<label class="btn blue btn-outline"
+						       for="inapp_notification"
+						       :class="{'active': message.notification_type === 'inapp'}">
+							<input type="radio"
+							       class="toggle"
+							       id="inapp_notification"
+							       value="inapp"
+							       v-model="message.notification_type"> In App Notification
 						</label>
-						<label class="btn blue btn-outline" for="sms_notification" :class="{'active': message.notification_type === 'sms'}">
-							<input type="radio" class="toggle" id="sms_notification" value="sms" v-model="message.notification_type">
-							SMS
+						<label class="btn blue btn-outline"
+						       for="sms_notification"
+						       :class="{'active': message.notification_type === 'sms'}">
+							<input type="radio"
+							       class="toggle"
+							       id="sms_notification"
+							       value="sms"
+							       v-model="message.notification_type"> SMS
 						</label>
 					</div>
 				</div>
-				<div v-if="message.notification_type === 'inapp'" :class="{'col-xs-4 col-xs-offset-4' : !selectImageMode, 'col-xs-12' : selectImageMode}">
-		                    <resource-picker 
-								@open="toggleImageMode('newMenu', true)"
-								@close="toggleImageMode('newMenu', false)"
-								@selected="updateImage" 
-								:imageButton="true"
-								:imageUrl="message.media_path"
-								class="margin-top-15"
-							>
-							</resource-picker>
+				<div v-if="message.notification_type === 'inapp'"
+				     :class="{'col-xs-4 col-xs-offset-4' : !selectImageMode, 'col-xs-12' : selectImageMode}">
+					<resource-picker @open="toggleImageMode('newMenu', true)"
+					                 @close="toggleImageMode('newMenu', false)"
+					                 @selected="updateImage"
+					                 :imageButton="true"
+					                 :imageUrl="message.media_path"
+					                 class="margin-top-15">
+					</resource-picker>
 				</div>
-				<div class="col-xs-12" v-show="!selectImageMode">
-					<div v-if="message.notification_type === 'push'" class="form-group form-md-line-input form-md-floating-label">
-						<input type="text" class="form-control input-sm" :class="{'edited': message.title.length}" id="form_control_1" v-model="message.title">
+				<div class="col-xs-12"
+				     v-show="!selectImageMode">
+					<div v-if="message.notification_type === 'push'"
+					     class="form-group form-md-line-input form-md-floating-label">
+						<input type="text"
+						       class="form-control input-sm"
+						       :class="{'edited': message.title.length}"
+						       id="form_control_1"
+						       v-model="message.title">
 						<label for="form_control_1">Title</label>
 					</div>
-					<div v-if="message.notification_type === 'push'" class="form-group form-md-line-input form-md-floating-label">
-						<input type="text" class="form-control input-sm" :class="{'edited': message.message.length}" id="form_control_2" v-model="message.message">
+					<div v-if="message.notification_type === 'push'"
+					     class="form-group form-md-line-input form-md-floating-label">
+						<input type="text"
+						       class="form-control input-sm"
+						       :class="{'edited': message.message.length}"
+						       id="form_control_2"
+						       v-model="message.message">
 						<label for="form_control_2">Message</label>
 					</div>
-					<div v-if="message.notification_type === 'inapp'" class="form-group form-md-line-input form-md-floating-label">
-						<input type="text" class="form-control input-sm" :class="{'edited': message.title.length}" id="form_control_3" v-model="message.title">
+					<div v-if="message.notification_type === 'inapp'"
+					     class="form-group form-md-line-input form-md-floating-label">
+						<input type="text"
+						       class="form-control input-sm"
+						       :class="{'edited': message.title.length}"
+						       id="form_control_3"
+						       v-model="message.title">
 						<label for="form_control_3">Title</label>
 					</div>
-					<div v-if="message.notification_type === 'inapp'" class="form-group form-md-line-input form-md-floating-label">
-						<input type="text" class="form-control input-sm" :class="{'edited': message.push_message.length}" id="form_control_4" v-model="message.push_message">
+					<div v-if="message.notification_type === 'inapp'"
+					     class="form-group form-md-line-input form-md-floating-label">
+						<input type="text"
+						       class="form-control input-sm"
+						       :class="{'edited': message.push_message.length}"
+						       id="form_control_4"
+						       v-model="message.push_message">
 						<label for="form_control_4">Push message</label>
 					</div>
-					<div v-if="message.notification_type === 'inapp'" class="form-group form-md-line-input form-md-floating-label">
-						<input type="text" class="form-control input-sm" :class="{'edited': message.message.length}" id="form_control_5" v-model="message.message">
+					<div v-if="message.notification_type === 'inapp'"
+					     class="form-group form-md-line-input form-md-floating-label">
+						<input type="text"
+						       class="form-control input-sm"
+						       :class="{'edited': message.message.length}"
+						       id="form_control_5"
+						       v-model="message.message">
 						<label for="form_control_5">Body</label>
 					</div>
-					<div v-if="message.notification_type === 'push'" class="form-group form-md-line-input form-md-floating-label">
-						<el-date-picker 
-							v-model="message.expire_at" 
-							type="date" 
-							format="yyyy-MM-dd" 
-							value-format="yyyy-MM-dd" 
-							:clearable="false" 
-							placeholder="Expires on">
+					<div v-if="message.notification_type === 'push'"
+					     class="form-group form-md-line-input form-md-floating-label">
+						<el-date-picker v-model="message.expire_at"
+						                type="date"
+						                format="yyyy-MM-dd"
+						                value-format="yyyy-MM-dd"
+						                :clearable="false"
+						                placeholder="Expires on">
 						</el-date-picker>
 					</div>
-					<el-dropdown v-if="message.notification_type === 'inapp'" @command="updateCallToAction" size="mini" :show-timeout="50" :hide-timeout="50"  class="margin-top-15">
+					<el-dropdown v-if="message.notification_type === 'inapp'"
+					             @command="updateCallToAction"
+					             size="mini"
+					             :show-timeout="50"
+					             :hide-timeout="50"
+					             class="margin-top-15">
 						<el-button size="mini">
 							{{ selectedCallLabel }}
 							<i class="el-icon-arrow-down el-icon--right"></i>
@@ -92,15 +149,29 @@
 							</el-dropdown-item>
 						</el-dropdown-menu>
 					</el-dropdown>
-	    			<div v-if="message.call_to_action === 'CALL' || message.call_to_action === 'GOTO_LINK'" class="form-group form-md-line-input form-md-floating-label margin-top-10">
-	    				<input type="text" class="form-control input-sm edited" id="form_control_6" v-model="message.action_value">
-	    				<label for="form_control_6">{{ numberOrUrl }}</label>
-	    			</div>
+					<div v-if="message.call_to_action === 'CALL' || message.call_to_action === 'GOTO_LINK'"
+					     class="form-group form-md-line-input form-md-floating-label margin-top-10">
+						<input type="text"
+						       class="form-control input-sm edited"
+						       id="form_control_6"
+						       v-model="message.action_value">
+						<label for="form_control_6">{{ numberOrUrl }}</label>
+					</div>
 				</div>
 			</div>
 		</div>
-		<div slot="modal-footer" class="modal-footer">
-			<button v-if="!selectImageMode && message.notification_type.length" type="button" class="btn btn-primary" @click="sendMessage()">Send</button>
+		<div slot="modal-footer"
+		     class="modal-footer">
+			<button v-if="!selectImageMode && message.notification_type.length"
+			        type="button"
+			        class="btn btn-primary"
+			        @click="sendMessage()"
+			        :disabled="sending">
+				Send
+				<i v-show="sending"
+				   class="fa fa-spinner fa-pulse fa-fw">
+				</i>
+			</button>
 		</div>
 	</modal>
 </template>
@@ -114,6 +185,7 @@ import Checkbox from '../../modules/Checkbox'
 import Dropdown from '../../modules/Dropdown'
 import ResourcePicker from '../../modules/ResourcePicker'
 import GlobalFunctions from '../../../global.js'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -215,19 +287,40 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (!messageVue.message.notification_type) {
 					reject('Please choose notification type')
-				} else if (messageVue.message.notification_type === 'push' && !messageVue.message.title) {
+				} else if (
+					messageVue.message.notification_type === 'push' &&
+					!messageVue.message.title
+				) {
 					reject('Title cannot be blank')
-				} else if (messageVue.message.notification_type === 'push' && !messageVue.message.message) {
+				} else if (
+					messageVue.message.notification_type === 'push' &&
+					!messageVue.message.message
+				) {
 					reject('Message cannot be blank')
-				} else if (messageVue.message.notification_type === 'inapp' && !messageVue.message.title) {
+				} else if (
+					messageVue.message.notification_type === 'inapp' &&
+					!messageVue.message.title
+				) {
 					reject('Title cannot be blank')
-				} else if (messageVue.message.notification_type === 'inapp' && !messageVue.message.push_message) {
+				} else if (
+					messageVue.message.notification_type === 'inapp' &&
+					!messageVue.message.push_message
+				) {
 					reject('Message cannot be blank')
-				} else if (messageVue.message.notification_type === 'inapp' && !messageVue.message.message) {
+				} else if (
+					messageVue.message.notification_type === 'inapp' &&
+					!messageVue.message.message
+				) {
 					reject('Body cannot be blank')
-				} else if (!messageVue.userId.length && !messageVue.userId.toString().length) {
+				} else if (
+					!messageVue.userId.length &&
+					!messageVue.userId.toString().length
+				) {
 					reject('Please select at least one user')
-				} else if (messageVue.message.notification_type === 'inapp' && !messageVue.message.call_to_action) {
+				} else if (
+					messageVue.message.notification_type === 'inapp' &&
+					!messageVue.message.call_to_action
+				) {
 					reject('Please select a call to action')
 				}
 				resolve('Hurray')
@@ -242,36 +335,47 @@ export default {
 		sendMessage (event) {
 			var messageVue = this
 			this.errorMessage = ''
-			return messageVue.validateMessageData()
+			return messageVue
+				.validateMessageData()
 
-			.then(response => {
-				if (messageVue.sending) {
-					return
-				}
-				messageVue.sending = true
-				MessageFunctions.sendMessage(messageVue.message, GlobalFunctions.messageAppToken)
 				.then(response => {
-					messageVue.sending = false
-					if (response.code === 200 && response.status === 'ok') {
-						messageVue.closeModal()
-						messageVue.showAlert(response.payload.warnings)
-					} else {
-						messageVue.createFAQError = response.message
-					}
-				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						messageVue.$router.push('/login/expired')
+					if (messageVue.sending) {
 						return
 					}
-					messageVue.sending = false
-					messageVue.errorMessage = 'Sorry, we could not send the notification'
+					messageVue.sending = true
+					MessageFunctions.sendMessage(
+						messageVue.message,
+						GlobalFunctions.messageAppToken
+					)
+						.then(response => {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
+								messageVue.closeModal()
+								messageVue.showAlert(response.payload.warnings)
+							} else {
+								messageVue.createFAQError = response.message
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not send the notification',
+								errorName: 'errorMessage',
+								vue: messageVue,
+								containerRef: 'modal'
+							})
+						})
+						.finally(() => {
+							messageVue.sending = false
+						})
 				})
-			}).catch(reason => {
-				messageVue.sending = false
-				// If validation fails then display the error message
-				messageVue.errorMessage = reason
-				window.scrollTo(0, 0)
-			})
+				.catch(reason => {
+					// If validation fails then display the error message
+					messageVue.errorMessage = reason
+					window.scrollTo(0, 0)
+				})
 		},
 		updateCallToAction (id) {
 			let type
@@ -356,11 +460,14 @@ export default {
 				text: alertText,
 				type: alertType,
 				confirmButtonText: 'OK'
-			}).then(() => {
-				// do nothing
-			}, dismiss => {
-				// do nothing
-			})
+			}).then(
+				() => {
+					// do nothing
+				},
+				dismiss => {
+					// do nothing
+				}
+			)
 		}
 	},
 	components: {
@@ -378,6 +485,6 @@ export default {
 	background-color: white;
 }
 .el-dropdown-menu.el-popper.el-dropdown-menu--mini {
-	z-index: 10501!important;
+	z-index: 10501 !important;
 }
 </style>

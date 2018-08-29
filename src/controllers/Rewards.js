@@ -3,7 +3,7 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to pitapit API to get all the reward tiers.
 	 * @function
@@ -198,7 +198,10 @@ export default ({
 			GlobalFunctions.$ajax({
 				method: 'POST',
 				dataType: 'json',
-				url: '/app/rewards/' + updatedRewardItem.reward_id + '/updateitem',
+				url:
+					'/app/rewards/' +
+					updatedRewardItem.reward_id +
+					'/updateitem',
 				data: updatedRewardItem,
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
@@ -244,4 +247,4 @@ export default ({
 			})
 		})
 	}
-})
+}

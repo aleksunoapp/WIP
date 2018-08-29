@@ -3,7 +3,7 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to pitapit API to create a new store.
 	 * @function
@@ -101,7 +101,12 @@ export default ({
 	 * @param {string} userToken - The auth token of the logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	updateStoreInformation: function (updatedStoreInfo, appId, appSecret, userToken) {
+	updateStoreInformation: function (
+		updatedStoreInfo,
+		appId,
+		appSecret,
+		userToken
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
@@ -260,7 +265,7 @@ export default ({
 				method: 'POST',
 				dataType: 'json',
 				url: '/app/hours/create',
-				data: {location_id: storeId, hours: storeHours},
+				data: { location_id: storeId, hours: storeHours },
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
 					xhr.setRequestHeader('app-id', appId)
@@ -291,7 +296,7 @@ export default ({
 				method: 'POST',
 				dataType: 'json',
 				url: '/app/hours/create',
-				data: {location_id: storeId, hours: updatedStoreHours},
+				data: { location_id: storeId, hours: updatedStoreHours },
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
 					xhr.setRequestHeader('app-id', appId)
@@ -609,4 +614,4 @@ export default ({
 			})
 		})
 	}
-})
+}

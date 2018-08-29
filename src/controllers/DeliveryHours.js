@@ -1,45 +1,22 @@
 /**
- * @module Admin Manager
+ * @module DeliveryHours
  */
 import GlobalFunctions from '../global'
 
 export default {
 	/**
-	 * Call to API to get a list of permissions.
+	 * Call to create delivery hours.
 	 * @function
+	 * @param {object} data - The location ID and delivery hours
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	getAllPermissions: function () {
-		return new Promise(function (resolve, reject) {
-			GlobalFunctions.$ajax({
-				method: 'GET',
-				dataType: 'json',
-				url: '/app/admin/permissions',
-				data: {
-					guard_name: 'admin'
-				},
-				success: function (response) {
-					resolve(response)
-				},
-				error: function (error) {
-					reject(error)
-				}
-			})
-		})
-	},
-	/**
-	 * Call to API to create a new permission.
-	 * @function
-	 * @param {object} permission - The permission to create
-	 * @returns {object} A promise that will return either a success object or an error object.
-	 */
-	createPermission: function (permission) {
+	createDeliveryHours (data) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
 				dataType: 'json',
-				url: '/app/admin/permissions',
-				data: permission,
+				url: '/app/delivery_hours/create',
+				data,
 				success: function (response) {
 					resolve(response)
 				},
@@ -50,39 +27,17 @@ export default {
 		})
 	},
 	/**
-	 * Call to API to update a permission.
+	 * Call to get delivery hours for a location.
 	 * @function
-	 * @param {object} permission - The permission to update
+	 * @param {integer} locationId - The id of the location to get delivery hours for.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	updatePermission: function (permission) {
+	getDeliveryHoursForStore (locationId) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
-				method: 'PUT',
+				method: 'GET',
 				dataType: 'json',
-				url: '/app/admin/permissions/' + permission.id,
-				data: permission,
-				success: function (response) {
-					resolve(response)
-				},
-				error: function (error) {
-					reject(error)
-				}
-			})
-		})
-	},
-	/**
-	 * Call to API to delete a permission.
-	 * @function
-	 * @param {object} permission - The permission to delete
-	 * @returns {object} A promise that will return either a success object or an error object.
-	 */
-	deletePermission: function (permission) {
-		return new Promise(function (resolve, reject) {
-			GlobalFunctions.$ajax({
-				method: 'DELETE',
-				dataType: 'json',
-				url: '/app/admin/permissions/' + permission.id,
+				url: '/app/delivery_hours/' + locationId,
 				data: {},
 				success: function (response) {
 					resolve(response)
@@ -94,20 +49,40 @@ export default {
 		})
 	},
 	/**
-	 * Call to API to get a list of permissions of a user.
+	 * Call to update delivery hours.
 	 * @function
-	 * @param {integer} id - ID of the user
+	 * @param {object} data - The edited delivery hours.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	getPermissionsOfUser: function (id) {
+	updateDeliveryHours (data) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
-				method: 'GET',
+				method: 'POST',
 				dataType: 'json',
-				url: `/app/admin/users/${id}/all_permissions`,
-				data: {
-					guard_name: 'admin'
+				url: '/app/delivery_hours/update',
+				data,
+				success: function (response) {
+					resolve(response)
 				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
+	 * Call to delete delivery hours.
+	 * @function
+	 * @param {integer} data - IDs of the location and hours
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	deleteDeliveryHours (data) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'DELETE',
+				dataType: 'json',
+				url: '/app/delivery_hours/delete',
+				data,
 				success: function (response) {
 					resolve(response)
 				},

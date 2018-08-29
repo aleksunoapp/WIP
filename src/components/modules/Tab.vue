@@ -1,5 +1,9 @@
 <template>
-	<div role="tabpanel" class="tab-pane active" v-show="show" :class="{hide:!show}" :transition="transition">
+	<div role="tabpanel"
+	     class="tab-pane active"
+	     v-show="show"
+	     :class="{hide:!show}"
+	     :transition="transition">
 		<slot></slot>
 	</div>
 </template>

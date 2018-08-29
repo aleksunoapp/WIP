@@ -14,8 +14,10 @@
 		</div>
 
 		<!-- BEGIN CREATE -->
-		<div class="portlet box blue-hoki" v-if="$root.permissions['localization languages create']">
-			<div class="portlet-title bg-blue-chambray" @click="toggleCreatePanel()">
+		<div class="portlet box blue-hoki"
+		     v-if="$root.permissions['localization languages create']">
+			<div class="portlet-title bg-blue-chambray"
+			     @click="toggleCreatePanel()">
 				<div class="caption">
 					<i class="fa fa-2x fa-plus-circle"></i>
 					Create a New Language
@@ -24,72 +26,91 @@
 					<a :class="{'expand': !createNewCollapse, 'collapse': createNewCollapse}"></a>
 				</div>
 			</div>
-			<div class="portlet-body relative-block" :class="{'display-hide': createNewCollapse}">
-				<div class="col-md-12" v-show="activeLocationId === undefined">
+			<div class="portlet-body relative-block"
+			     :class="{'display-hide': createNewCollapse}">
+				<div class="col-md-12"
+				     v-show="activeLocationId === undefined">
 					<div class="alert center alert-info">
 						<h4>No Store Selected</h4>
 						<p>Please select a store from the stores panel on the right to create a language.</p>
 					</div>
 				</div>
-				<form role="form" @submit.prevent="createLanguage()" v-show="activeLocationId !== undefined">
+				<form role="form"
+				      @submit.prevent="createLanguage()"
+				      v-show="activeLocationId !== undefined">
 					<div class="row">
 						<div class="col-md-12">
-							<div class="alert alert-danger" v-show="createErrorMessage.length" ref="createErrorMessage">
-								<button class="close" data-close="alert" @click.prevent="clearError('createErrorMessage')"></button>
+							<div class="alert alert-danger"
+							     v-show="createErrorMessage.length"
+							     ref="createErrorMessage">
+								<button class="close"
+								        data-close="alert"
+								        @click.prevent="clearError('createErrorMessage')"></button>
 								<span>{{ createErrorMessage }}</span>
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': newLanguage.name.length}" id="form_control_create_name" v-model="newLanguage.name">
+								<input type="text"
+								       class="form-control input-sm"
+								       :class="{'edited': newLanguage.name.length}"
+								       id="form_control_create_name"
+								       v-model="newLanguage.name">
 								<label for="form_control_create_name">Name</label>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': newLanguage.language_code.length}" id="form_control_1" v-model="newLanguage.language_code">
+								<input type="text"
+								       class="form-control input-sm"
+								       :class="{'edited': newLanguage.language_code.length}"
+								       id="form_control_1"
+								       v-model="newLanguage.language_code">
 								<label for="form_control_1">Language code</label>
 							</div>
 							<label>
 								Country:
-								<el-select 
-									v-model="newLanguage.country_id" 
-									placeholder="Select a country" 
-									size="small"
-									no-data-text="No countries"
-									remote
-									:loading="loadingCountries">
-									<el-option 
-										v-for="country in countries"
-										:label="country.name"
-										:value="country.id"
-										:key="country.id">
+								<el-select v-model="newLanguage.country_id"
+								           placeholder="Select a country"
+								           size="small"
+								           no-data-text="No countries"
+								           remote
+								           :loading="loadingCountries">
+									<el-option v-for="country in countries"
+									           :label="country.name"
+									           :value="country.id"
+									           :key="country.id">
 									</el-option>
 								</el-select>
 							</label>
 							<div class="form-group form-md-line-input form-md-floating-label">
 								<label>Default language</label><br>
-								<el-switch
-									v-model="newLanguage.isDefault"
-									active-color="#0c6"
-									inactive-color="#ff4949"
-									:active-value="1"
-									:inactive-value="0"
-									active-text="Yes"
-									inactive-text="No">
+								<el-switch v-model="newLanguage.isDefault"
+								           active-color="#0c6"
+								           inactive-color="#ff4949"
+								           :active-value="1"
+								           :inactive-value="0"
+								           active-text="Yes"
+								           inactive-text="No">
 								</el-switch>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
 								<label>Status</label><br>
-								<el-switch
-									v-model="newLanguage.status"
-									active-color="#0c6"
-									inactive-color="#ff4949"
-									:active-value="1"
-									:inactive-value="0"
-									active-text="Enabled"
-									inactive-text="Disabled">
+								<el-switch v-model="newLanguage.status"
+								           active-color="#0c6"
+								           inactive-color="#ff4949"
+								           :active-value="1"
+								           :inactive-value="0"
+								           active-text="Enabled"
+								           inactive-text="Disabled">
 								</el-switch>
 							</div>
-							<button type="submit" class="btn blue pull-right">Create</button>
+							<button type="submit"
+							        class="btn blue pull-right"
+							        :disabled="creating">
+								Create
+								<i v-show="creating"
+								   class="fa fa-spinner fa-pulse fa-fw">
+								</i>
+							</button>
 						</div>
 					</div>
 				</form>
@@ -105,7 +126,8 @@
 			</div>
 		</div>
 		<div v-else>
-			<div class="portlet light portlet-fit bordered margin-top-20" id="languages-container">
+			<div class="portlet light portlet-fit bordered margin-top-20"
+			     id="languages-container">
 				<div class="portlet-title bg-blue-chambray">
 					<div class="menu-image-main">
 						<img src="../../../../static/client_logo.png">
@@ -116,33 +138,43 @@
 					</div>
 				</div>
 				<div class="col-md-12">
-					<div class="alert alert-danger" v-show="listErrorMessage.length" ref="listErrorMessage">
-						<button class="close" data-close="alert" @click="clearError('listErrorMessage')"></button>
+					<div class="alert alert-danger"
+					     v-show="listErrorMessage.length"
+					     ref="listErrorMessage">
+						<button class="close"
+						        data-close="alert"
+						        @click="clearError('listErrorMessage')"></button>
 						<span>{{ listErrorMessage }}</span>
 					</div>
 				</div>
 				<div class="portlet-body relative-block">
-					<loading-screen :show="loadingLanguages && activeLocationId !== undefined" :color="'#2C3E50'" :display="'inline'"></loading-screen>
-					<div class="mt-element-list margin-top-15" v-if="languages.length && !loadingLanguages">
+					<loading-screen :show="loadingLanguages && activeLocationId !== undefined"
+					                :color="'#2C3E50'"
+					                :display="'inline'"></loading-screen>
+					<div class="mt-element-list margin-top-15"
+					     v-if="languages.length && !loadingLanguages">
 						<div class="mt-list-container list-news ext-1 no-border">
 							<ul>
-								<li class="mt-list-item actions-at-left margin-top-15 three-vertical-actions" v-for="language in languages" :id="'language-' + language.id" :key="language.id">
+								<li class="mt-list-item actions-at-left margin-top-15 three-vertical-actions"
+								    v-for="language in languages"
+								    :id="'language-' + language.id"
+								    :key="language.id">
 									<div class="list-item-actions">
-										<el-tooltip 
-											v-if="$root.permissions['localization languages update']"
-											content="Edit" 
-											effect="light" 
-											placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default" @click="editLanguage(language, $event)">
+										<el-tooltip v-if="$root.permissions['localization languages update']"
+										            content="Edit"
+										            effect="light"
+										            placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default"
+											   @click="editLanguage(language, $event)">
 												<i class="fa fa-lg fa-pencil"></i>
 											</a>
 										</el-tooltip>
-										<el-tooltip 
-											v-if="$root.permissions['localization languages read'] && !$root.permissions['localization languages update']"
-											content="View" 
-											effect="light" 
-											placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default" @click="editLanguage(language, $event)">
+										<el-tooltip v-if="$root.permissions['localization languages read'] && !$root.permissions['localization languages update']"
+										            content="View"
+										            effect="light"
+										            placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default"
+											   @click="editLanguage(language, $event)">
 												<i class="fa fa-lg fa-eye"></i>
 											</a>
 										</el-tooltip>
@@ -158,7 +190,8 @@
 						</div>
 					</div>
 					<div class="margin-top-20">
-						<no-results :show="!languages.length && !loadingLanguages" :type="'languages'"></no-results>
+						<no-results :show="!languages.length && !loadingLanguages"
+						            :type="'languages'"></no-results>
 					</div>
 				</div>
 			</div>
@@ -166,105 +199,112 @@
 		<!-- END LIST -->
 
 		<!-- START EDIT -->
-		<modal :show="showEditModal" effect="fade" @closeOnEscape="closeEditModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeEditModal()">
+		<modal :show="showEditModal"
+		       effect="fade"
+		       @closeOnEscape="closeEditModal">
+			<div slot="modal-header"
+			     class="modal-header">
+				<button type="button"
+				        class="close"
+				        @click="closeEditModal()">
 					<span>&times;</span>
 				</button>
 				<h4 class="modal-title center">Edit Language</h4>
 			</div>
-			<div slot="modal-body" class="modal-body">
+			<div slot="modal-body"
+			     class="modal-body">
 				<form role="form">
 					<div class="row">
 						<div class="col-md-12">
-							<div class="alert alert-danger" v-show="editErrorMessage.length" ref="editErrorMessage">
-								<button class="close" data-close="alert" @click.prevent="clearError('editErrorMessage')"></button>
+							<div class="alert alert-danger"
+							     v-show="editErrorMessage.length"
+							     ref="editErrorMessage">
+								<button class="close"
+								        data-close="alert"
+								        @click.prevent="clearError('editErrorMessage')"></button>
 								<span>{{ editErrorMessage }}</span>
 							</div>
 						</div>
 						<div class="col-md-12">
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input 
-									:disabled="!$root.permissions['localization languages update']"
-									type="text" 
-									class="form-control input-sm" 
-									:class="{'edited': languageToEdit.name.length}" 
-									id="form_control_edit_name" 
-									v-model="languageToEdit.name">
+								<input :disabled="!$root.permissions['localization languages update']"
+								       type="text"
+								       class="form-control input-sm"
+								       :class="{'edited': languageToEdit.name.length}"
+								       id="form_control_edit_name"
+								       v-model="languageToEdit.name">
 								<label for="form_control_edit_name">Name</label>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input 
-									:disabled="!$root.permissions['localization languages update']"
-									type="text" 
-									class="form-control input-sm" 
-									:class="{'edited': languageToEdit.language_code.length}" 
-									id="form_control_1" 
-									v-model="languageToEdit.language_code">
+								<input :disabled="!$root.permissions['localization languages update']"
+								       type="text"
+								       class="form-control input-sm"
+								       :class="{'edited': languageToEdit.language_code.length}"
+								       id="form_control_1"
+								       v-model="languageToEdit.language_code">
 								<label for="form_control_1">Language code</label>
 							</div>
 							<label>
 								Country:
-								<el-select 
-									:disabled="!$root.permissions['localization languages update']"
-									v-model="languageToEdit.country_id" 
-									placeholder="Select a country" 
-									size="small"
-									no-data-text="No countries"
-									remote
-									:loading="loadingCountries">
-									<el-option 
-										v-for="country in countries"
-										:label="country.name"
-										:value="country.id"
-										:key="country.id">
+								<el-select :disabled="!$root.permissions['localization languages update']"
+								           v-model="languageToEdit.country_id"
+								           placeholder="Select a country"
+								           size="small"
+								           no-data-text="No countries"
+								           remote
+								           :loading="loadingCountries">
+									<el-option v-for="country in countries"
+									           :label="country.name"
+									           :value="country.id"
+									           :key="country.id">
 									</el-option>
 								</el-select>
 							</label>
 							<div class="form-group form-md-line-input form-md-floating-label">
 								<label>Default language</label><br>
-								<el-switch
-									:disabled="!$root.permissions['localization languages update']"
-									v-model="languageToEdit.isDefault"
-									active-color="#0c6"
-									inactive-color="#ff4949"
-									:active-value="1"
-									:inactive-value="0"
-									active-text="Yes"
-									inactive-text="No">
+								<el-switch :disabled="!$root.permissions['localization languages update']"
+								           v-model="languageToEdit.isDefault"
+								           active-color="#0c6"
+								           inactive-color="#ff4949"
+								           :active-value="1"
+								           :inactive-value="0"
+								           active-text="Yes"
+								           inactive-text="No">
 								</el-switch>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
 								<label>Status</label><br>
-								<el-switch
-									:disabled="!$root.permissions['localization languages update']"
-									v-model="languageToEdit.status"
-									active-color="#0c6"
-									inactive-color="#ff4949"
-									:active-value="1"
-									:inactive-value="0"
-									active-text="Enabled"
-									inactive-text="Disabled">
+								<el-switch :disabled="!$root.permissions['localization languages update']"
+								           v-model="languageToEdit.status"
+								           active-color="#0c6"
+								           inactive-color="#ff4949"
+								           :active-value="1"
+								           :inactive-value="0"
+								           active-text="Enabled"
+								           inactive-text="Disabled">
 								</el-switch>
 							</div>
 						</div>
 					</div>
 				</form>
 			</div>
-			<div slot="modal-footer" class="modal-footer clear">
-				<button 
-					v-if="!$root.permissions['localization languages update']"
-					@click="closeEditModal()" 
-					type="button" 
-					class="btn blue">
+			<div slot="modal-footer"
+			     class="modal-footer clear">
+				<button v-if="!$root.permissions['localization languages update']"
+				        @click="closeEditModal()"
+				        type="button"
+				        class="btn blue">
 					Close
-				</button>				
-				<button 
-					v-else
-					@click="updateLanguage()" 
-					type="submit" 
-					class="btn blue">
+				</button>
+				<button v-else
+				        @click="updateLanguage()"
+				        type="submit"
+				        class="btn blue"
+				        :disabled="updating">
 					Save
+					<i v-show="updating"
+					   class="fa fa-spinner fa-pulse fa-fw">
+					</i>
 				</button>
 			</div>
 		</modal>
@@ -284,11 +324,10 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 export default {
 	data () {
 		return {
-			breadcrumbArray: [
-				{name: 'Languages', link: false}
-			],
+			breadcrumbArray: [{ name: 'Languages', link: false }],
 
 			createNewCollapse: true,
+			creating: false,
 			createErrorMessage: '',
 			newLanguage: {
 				name: '',
@@ -303,6 +342,7 @@ export default {
 			languages: [],
 
 			showEditModal: false,
+			updating: false,
 			editErrorMessage: '',
 			languageToEdit: {
 				name: '',
@@ -352,22 +392,23 @@ export default {
 			this.countries = []
 			var _this = this
 			return CountriesFunctions.listCountries()
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					_this.loadingCountries = false
-					_this.countries = response.payload
-				} else {
-					_this.loadingCountries = false
-				}
-			}).catch(reason => {
-				_this.loadingCountries = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch the list of countries',
-					errorName: 'createErrorMessage',
-					vue: _this
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						_this.loadingCountries = false
+						_this.countries = response.payload
+					} else {
+						_this.loadingCountries = false
+					}
 				})
-			})
+				.catch(reason => {
+					_this.loadingCountries = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch the list of countries',
+						errorName: 'createErrorMessage',
+						vue: _this
+					})
+				})
 		},
 		/**
 		 * To toggle the create tier panel, initially set to closed
@@ -412,44 +453,61 @@ export default {
 			_this.clearError('createErrorMessage')
 			this.newLanguage.location_id = this.activeLocationId
 
-			return _this.validateNewLanguageData()
-			.then(response => {
-				LanguagesFunctions.createLanguage(_this.newLanguage)
+			return _this
+				.validateNewLanguageData()
 				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						_this.showCreateSuccess()
-						_this.getLanguages()
-					} else {
-						_this.createErrorMessage = response.message
-						_this.$scrollTo(_this.$refs.createErrorMessage, 1000, { offset: -50 })
-					}
+					_this.creating = true
+					LanguagesFunctions.createLanguage(_this.newLanguage)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								_this.showCreateSuccess(response.payload)
+								_this.clearNewLanguage()
+								_this.getLanguages()
+							} else {
+								_this.createErrorMessage = response.message
+								_this.$scrollTo(_this.$refs.createErrorMessage, 1000, {
+									offset: -50
+								})
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not create the language',
+								errorName: 'createErrorMessage',
+								vue: _this
+							})
+						})
+						.finally(() => {
+							_this.creating = false
+						})
 				})
 				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not create the language',
-						errorName: 'createErrorMessage',
-						vue: _this
-					})
+					_this.createErrorMessage = reason
+					_this.$scrollTo(_this.$refs.createErrorMessage, 1000, { offset: -50 })
 				})
-			}).catch(reason => {
-				_this.createErrorMessage = reason
-				_this.$scrollTo(_this.$refs.createErrorMessage, 1000, { offset: -50 })
-			})
 		},
 		/**
-		 * To alert the user that the language has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showCreateSuccess () {
+		showCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Language has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Language has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'Language \'' + this.newLanguage.name + '\' has been successfully added!',
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(() => {
-				this.clearNewLanguage()
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -477,22 +535,23 @@ export default {
 			this.languages = []
 			var _this = this
 			return LanguagesFunctions.listLanguages()
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					_this.loadingLanguages = false
-					_this.languages = response.payload
-				} else {
-					_this.loadingLanguages = false
-				}
-			}).catch(reason => {
-				_this.loadingLanguages = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch the list of languages',
-					errorName: 'listErrorMessage',
-					vue: _this
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						_this.loadingLanguages = false
+						_this.languages = response.payload
+					} else {
+						_this.loadingLanguages = false
+					}
 				})
-			})
+				.catch(reason => {
+					_this.loadingLanguages = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch the list of languages',
+						errorName: 'listErrorMessage',
+						vue: _this
+					})
+				})
 		},
 		/**
 		 * To show the modal to edit an language details.
@@ -537,47 +596,71 @@ export default {
 		updateLanguage () {
 			var _this = this
 			_this.clearError('editErrorMessage')
-			let payload = {...this.languageToEdit}
+			let payload = { ...this.languageToEdit }
 			payload.location_id = this.activeLocationId
 
-			return _this.validateEditedLanguageData()
-			.then(response => {
-				LanguagesFunctions.updateLanguage(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						_this.getLanguages()
-						_this.closeEditModal()
-						_this.showEditSuccess()
-					} else {
-						_this.editErrorMessage = response.message
-						_this.$scrollTo(_this.$refs.editErrorMessage, 1000, { offset: -50 })
-					}
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not update the language',
-						errorName: 'editErrorMessage',
-						vue: _this
-					})
+			return _this
+				.validateEditedLanguageData()
+				.then(response => {
+					_this.updating = true
+					LanguagesFunctions.updateLanguage(
+						payload,
+						_this.$root.appId,
+						_this.$root.appSecret,
+						_this.$root.userToken
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								_this.getLanguages()
+								_this.closeEditModal()
+								_this.showEditSuccess(response.payload)
+								_this.resetEdit()
+							} else {
+								_this.editErrorMessage = response.message
+								_this.$scrollTo(_this.$refs.editErrorMessage, 1000, {
+									offset: -50
+								})
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not update the language',
+								errorName: 'editErrorMessage',
+								vue: _this
+							})
+						})
+						.finally(() => {
+							_this.updating = false
+						})
 				})
-			}).catch(reason => {
-				console.log(reason)
-				_this.editErrorMessage = reason
-				_this.$scrollTo(_this.$refs.editErrorMessage, 1000, { offset: -50 })
-			})
+				.catch(reason => {
+					console.log(reason)
+					_this.editErrorMessage = reason
+					_this.$scrollTo(_this.$refs.editErrorMessage, 1000, { offset: -50 })
+				})
 		},
 		/**
-		 * To display notification that languages were successfully saved.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess () {
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Language has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Language has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: `${this.languageToEdit.name} updated`,
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(() => {
-				this.resetEdit()
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -614,10 +697,10 @@ export default {
 </script>
 
 <style scoped>
-.mt-element-list .list-news.ext-1.mt-list-container ul>.mt-list-item:hover {
-	background-color: white;
+.mt-element-list .list-news.ext-1.mt-list-container ul > .mt-list-item:hover {
+  background-color: white;
 }
 .three-vertical-actions {
-	min-height: 124px;
+  min-height: 124px;
 }
 </style>

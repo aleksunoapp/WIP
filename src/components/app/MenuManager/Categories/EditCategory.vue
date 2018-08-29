@@ -1,94 +1,131 @@
 <template>
-	<modal :show="showEditCategoryModal" effect="fade" @closeOnEscape="closeModal">
-		<div slot="modal-header" class="modal-header center">
-			<button type="button" class="close" @click="closeModal()">
+	<modal :show="showEditCategoryModal"
+	       effect="fade"
+	       @closeOnEscape="closeModal"
+	       ref="editModal">
+		<div slot="modal-header"
+		     class="modal-header center">
+			<button type="button"
+			        class="close"
+			        @click="closeModal()">
 				<span>&times;</span>
 			</button>
-			<transition name="fade" mode="out-in">
-				<h4 class="modal-title center" v-if="!selectImageMode && !selectLocationMode" key="mainEditMode">Edit Category</h4>
-				<h4 class="modal-title center" v-if="!selectImageMode && selectLocationMode" key="selectLocationMode"><i class="fa fa-chevron-left clickable pull-left back-button" @click="closeSelectLocationsPopup()"></i>Select Stores</h4>
-				<h4 class="modal-title center" v-if="selectImageMode && !selectLocationMode" key="selectImageMode">Select An Image</h4>
+			<transition name="fade"
+			            mode="out-in">
+				<h4 class="modal-title center"
+				    v-if="!selectImageMode && !selectLocationMode"
+				    key="mainEditMode">Edit Category</h4>
+				<h4 class="modal-title center"
+				    v-if="!selectImageMode && selectLocationMode"
+				    key="selectLocationMode">
+					<i class="fa fa-chevron-left clickable pull-left back-button"
+					   @click="closeSelectLocationsPopup()"></i>Select Stores</h4>
+				<h4 class="modal-title center"
+				    v-if="selectImageMode && !selectLocationMode"
+				    key="selectImageMode">Select An Image</h4>
 			</transition>
 		</div>
-		<div slot="modal-body" class="modal-body">
+		<div slot="modal-body"
+		     class="modal-body">
 			<div class="col-xs-12">
-				<div class="alert alert-danger" v-if="errorMessage.length">
-				    <button class="close" data-close="alert" @click="clearError()"></button>
-				    <span>{{errorMessage}}</span>
+				<div class="alert alert-danger"
+				     v-show="errorMessage"
+				     ref="errorMessage">
+					<button class="close"
+					        @click="clearError()"></button>
+					<span>{{errorMessage}}</span>
 				</div>
-        		<div v-if="!selectLocationMode" :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
-					<resource-picker 
-						@open="goToPageTwo()"
-						@close="goToPageOne()"
-						@selected="updateImage" 
-						:imageButton="true"
-						:imageUrl="categoryToBeEdited.image_url"
-						class="margin-top-15"
-					>
+				<div v-if="!selectLocationMode"
+				     :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
+					<resource-picker @open="goToPageTwo()"
+					                 @close="goToPageOne()"
+					                 @selected="updateImage"
+					                 :imageButton="true"
+					                 :imageUrl="categoryToBeEdited.image_url"
+					                 class="margin-top-15">
 					</resource-picker>
-        		</div>
-        		<div class="col-xs-12">        			
-	    			<select-locations-popup 
-	    				v-if="selectLocationMode" 
-	    				@closeSelectLocationsPopup='updateSelectedLocations' 
-	    				:previouslySelected="selectedLocations"
-	    			>
+				</div>
+				<div class="col-xs-12">
+					<select-locations-popup v-if="selectLocationMode"
+					                        @closeSelectLocationsPopup='updateSelectedLocations'
+					                        :previouslySelected="selectedLocations">
 					</select-locations-popup>
-        		</div>
-				<div class="col-md-12" v-if="!selectLocationMode && !selectImageMode">
+				</div>
+				<div class="col-md-12"
+				     v-if="!selectLocationMode && !selectImageMode">
 					<fieldset :disabled="!$root.permissions['menu_manager menus categories update']">
 						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm edited" id="form_control_2" v-model="categoryToBeEdited.name">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_2"
+							       v-model="categoryToBeEdited.name">
 							<label for="form_control_2">Category Name</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm edited" id="form_control_3" v-model="categoryToBeEdited.desc">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_3"
+							       v-model="categoryToBeEdited.desc">
 							<label for="form_control_3">Category Description</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm edited" id="form_control_4" v-model="categoryToBeEdited.sku">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_4"
+							       v-model="categoryToBeEdited.sku">
 							<label for="form_control_4">Category SKU</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm edited" id="form_control_5" v-model="categoryToBeEdited.order">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_5"
+							       v-model="categoryToBeEdited.order">
 							<label for="form_control_5">Category Order</label>
 						</div>
 					</fieldset>
 					<div class="form-group form-md-line-input form-md-floating-label">
-		                <label>Category Status:</label><br>
-		                <el-switch
-		                	:disabled="!$root.permissions['menu_manager menus categories update']"
-							v-model="categoryToBeEdited.status"
-		                	active-color="#0c6"
-		                	inactive-color="#ff4949"
-		                	:active-value="1"
-		                	:inactive-value="0"
-		                	active-text="Active"
-		                	inactive-text="Sold Out">
-		                </el-switch>
-		            </div>
-        			<div>
+						<label>Category Status:</label><br>
+						<el-switch :disabled="!$root.permissions['menu_manager menus categories update']"
+						           v-model="categoryToBeEdited.status"
+						           active-color="#0c6"
+						           inactive-color="#ff4949"
+						           :active-value="1"
+						           :inactive-value="0"
+						           active-text="Active"
+						           inactive-text="Sold Out">
+						</el-switch>
+					</div>
+					<div>
 						<p class="margin-bottom-10 margin-top-30 margin-right-10">Select locations to apply the changes to:</p>
-        				<button type="submit" class="btn blue btn-outline" @click="selectLocations($event)">Select locations</button>
-        				<p class="grey-label margin-top-10" v-if="selectedLocations.length">Selected {{ selectedLocations.length }} location<span v-if="selectedLocations.length !== 1">s</span></p>
-        			</div>
-				</div>	
+						<button type="submit"
+						        class="btn blue btn-outline"
+						        @click="selectLocations($event)">Select locations</button>
+						<p class="grey-label margin-top-10"
+						   v-if="selectedLocations.length">Selected {{ selectedLocations.length }}
+							<span v-if="selectedLocations.length !== 1">locations</span>
+							<span v-else>location</span>
+						</p>
+					</div>
+				</div>
 			</div>
 		</div>
-		<div slot="modal-footer" class="modal-footer">
-			<button 
-				v-if="!selectImageMode && !selectLocationMode && !$root.permissions['menu_manager menus categories update']"
-				type="button" 
-				class="btn btn-primary" 
-				@click="closeModal()">
+		<div slot="modal-footer"
+		     class="modal-footer">
+			<button v-if="!selectImageMode && !selectLocationMode && !$root.permissions['menu_manager menus categories update']"
+			        type="button"
+			        class="btn btn-primary"
+			        @click="closeModal()">
 				Close
 			</button>
-			<button 
-				v-if="!selectImageMode && !selectLocationMode && $root.permissions['menu_manager menus categories update']"
-				type="button" 
-				class="btn btn-primary" 
-				@click="updateMenuCategory()">
+			<button v-if="!selectImageMode && !selectLocationMode && $root.permissions['menu_manager menus categories update']"
+			        type="button"
+			        class="btn btn-primary"
+			        @click="updateMenuCategory()"
+			        :disabled="updating">
 				Save
+				<i v-show="updating"
+				   class="fa fa-spinner fa-pulse fa-fw">
+				</i>
 			</button>
 		</div>
 	</modal>
@@ -100,11 +137,13 @@ import Modal from '../../../modules/Modal'
 import CategoriesFunctions from '../../../../controllers/Categories'
 import ResourcePicker from '../../../modules/ResourcePicker'
 import SelectLocationsPopup from '../../../modules/SelectLocationsPopup'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
 		return {
 			showEditCategoryModal: false,
+			updating: false,
 			categoryToBeEdited: {
 				image_url: ''
 			},
@@ -139,7 +178,9 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateSelectedLocations (locations) {
-			if (this.$root.permissions['menu_manager menus categories update']) {
+			if (
+				this.$root.permissions['menu_manager menus categories update']
+			) {
 				this.selectedLocations = locations
 			}
 			this.closeSelectLocationsPopup()
@@ -166,11 +207,17 @@ export default {
 					reject('Category description cannot be blank')
 				} else if (!editCategoryVue.categoryToBeEdited.sku.length) {
 					reject('Category SKU cannot be blank')
-				} else if (!editCategoryVue.categoryToBeEdited.image_url.length) {
+				} else if (
+					!editCategoryVue.categoryToBeEdited.image_url.length
+				) {
 					reject('Category image cannot be blank')
-				} else if (!$.isNumeric(editCategoryVue.categoryToBeEdited.status)) {
+				} else if (
+					!$.isNumeric(editCategoryVue.categoryToBeEdited.status)
+				) {
 					reject('Category status cannot be blank')
-				} else if (!$.isNumeric(editCategoryVue.categoryToBeEdited.order)) {
+				} else if (
+					!$.isNumeric(editCategoryVue.categoryToBeEdited.order)
+				) {
 					reject('Category order should be a number')
 				}
 				resolve('Hurray')
@@ -191,19 +238,26 @@ export default {
 		 */
 		getCategoryDetails () {
 			var editCategoryVue = this
-			CategoriesFunctions.getCategoryDetails(editCategoryVue.$route.params.category_id, editCategoryVue.$root.appId, editCategoryVue.$root.appSecret, editCategoryVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					editCategoryVue.categoryToBeEdited = response.payload[0]
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editCategoryVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
-			})
+			CategoriesFunctions.getCategoryDetails(
+				editCategoryVue.$route.params.category_id,
+				editCategoryVue.$root.appId,
+				editCategoryVue.$root.appSecret,
+				editCategoryVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						editCategoryVue.categoryToBeEdited = response.payload[0]
+					}
+				})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch category info',
+						errorName: 'errorMessage',
+						vue: editCategoryVue,
+						containerRef: 'editModal'
+					})
+				})
 		},
 		/**
 		 * To update the category and close the modal.
@@ -213,31 +267,50 @@ export default {
 		updateMenuCategory () {
 			var editCategoryVue = this
 			editCategoryVue.clearError()
-			editCategoryVue.categoryToBeEdited.user_id = editCategoryVue.$root.createdBy
-			editCategoryVue.categoryToBeEdited.update_locations = editCategoryVue.selectedLocations
+			editCategoryVue.categoryToBeEdited.user_id =
+				editCategoryVue.$root.createdBy
+			editCategoryVue.categoryToBeEdited.update_locations =
+				editCategoryVue.selectedLocations
 
-			return editCategoryVue.validateCategoryData()
-			.then(response => {
-				CategoriesFunctions.updateMenuCategory(editCategoryVue.categoryToBeEdited, editCategoryVue.$root.appId, editCategoryVue.$root.appSecret, editCategoryVue.$root.userToken).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						this.closeModalAndUpdate()
-					} else {
-						editCategoryVue.errorMessage = response.message
-					}
-				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						editCategoryVue.$router.push('/login/expired')
-						return
-					}
+			return editCategoryVue
+				.validateCategoryData()
+				.then(response => {
+					editCategoryVue.updating = true
+					CategoriesFunctions.updateMenuCategory(
+						editCategoryVue.categoryToBeEdited,
+						editCategoryVue.$root.appId,
+						editCategoryVue.$root.appSecret,
+						editCategoryVue.$root.userToken
+					)
+						.then(response => {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
+								this.closeModalAndUpdate()
+							} else {
+								editCategoryVue.errorMessage = response.message
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not update the category',
+								errorName: 'errorMessage',
+								vue: editCategoryVue,
+								containerRef: 'editModal'
+							})
+						})
+						.finally(() => {
+							editCategoryVue.updating = false
+						})
+				})
+				.catch(reason => {
+					// If validation fails then display the error message
 					editCategoryVue.errorMessage = reason
 					window.scrollTo(0, 0)
+					throw reason
 				})
-			}).catch(reason => {
-				// If validation fails then display the error message
-				editCategoryVue.errorMessage = reason
-				window.scrollTo(0, 0)
-				throw reason
-			})
 		},
 		/**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
@@ -246,7 +319,9 @@ export default {
 		 */
 		closeModal () {
 			this.$emit('deactivateEditCategoryModal')
-			this.$router.push('/app/menu_manager/categories/' + this.$route.params.menu_id)
+			this.$router.push(
+				'/app/menu_manager/categories/' + this.$route.params.menu_id
+			)
 		},
 		/**
 		 * To close the modal and emit the updated category object to the parent.
@@ -255,7 +330,9 @@ export default {
 		 */
 		closeModalAndUpdate () {
 			this.$emit('updateCategory', this.categoryToBeEdited)
-			this.$router.push('/app/menu_manager/categories/' + this.$route.params.menu_id)
+			this.$router.push(
+				'/app/menu_manager/categories/' + this.$route.params.menu_id
+			)
 		},
 		/**
 		 * To change the page to the gallery view on the modal.
@@ -280,7 +357,9 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateImage (val) {
-			if (this.$root.permissions['menu_manager menus categories update']) {
+			if (
+				this.$root.permissions['menu_manager menus categories update']
+			) {
 				this.categoryToBeEdited.image_url = val.image_url
 			}
 			this.goToPageOne()

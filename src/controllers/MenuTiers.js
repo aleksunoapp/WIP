@@ -3,7 +3,7 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to pitapit API to get a list of menu tiers.
 	 * @function
@@ -145,7 +145,14 @@ export default ({
 			})
 		})
 	},
-	assignMenusToTier (tierId, menusToAdd, menusToRemove, appId, appSecret, userToken) {
+	assignMenusToTier (
+		tierId,
+		menusToAdd,
+		menusToRemove,
+		appId,
+		appSecret,
+		userToken
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
@@ -169,4 +176,4 @@ export default ({
 			})
 		})
 	}
-})
+}

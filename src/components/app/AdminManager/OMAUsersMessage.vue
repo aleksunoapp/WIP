@@ -1,23 +1,30 @@
 <template>
-	<modal :show="isOpen" effect="fade" @closeOnEscape="closeModal">
-		<div slot="modal-header" class="modal-header center">
-			<button type="button" class="close" @click="closeModal()">
+	<modal :show="isOpen"
+	       effect="fade"
+	       @closeOnEscape="closeModal">
+		<div slot="modal-header"
+		     class="modal-header center">
+			<button type="button"
+			        class="close"
+			        @click="closeModal()">
 				<span>&times;</span>
 			</button>
-			<h4 class="modal-title center" v-if="!selectImageMode">New Notification</h4>
+			<h4 class="modal-title center"
+			    v-if="!selectImageMode">New Notification</h4>
 		</div>
-		<div slot="modal-body" class="modal-body">
+		<div slot="modal-body"
+		     class="modal-body">
 			<div v-if="selectUsersMode">
 				<div class="form-group form-md-line-input form-md-floating-label">
 					<div class="input-icon right">
-						<input 
-							v-model="searchString"
-							type="text" 
-							class="form-control input-sm" 
-							:class="{'edited': searchString.length}" 
-							id="form_control_search" 
-						>
-						<i class="fa fa-times-circle-o clickable" @click.stop.prevent="clearSearch()" aria-hidden="true"></i>
+						<input v-model="searchString"
+						       type="text"
+						       class="form-control input-sm"
+						       :class="{'edited': searchString.length}"
+						       id="form_control_search">
+						<i class="fa fa-times-circle-o clickable"
+						   @click.stop.prevent="clearSearch()"
+						   aria-hidden="true"></i>
 						<label for="form_control_search">Search</label>
 					</div>
 				</div>
@@ -26,13 +33,11 @@
 						<tr>
 							<th class="th-checkboxes">
 								<div class="md-checkbox">
-									<input 
-										type="checkbox" 
-										v-model="allUsersSelected" 
-										:id="`user-all`" 
-										class="md-check"
-										@change="toggleSelectAll(allUsersSelected)"
-									>
+									<input type="checkbox"
+									       v-model="allUsersSelected"
+									       :id="`user-all`"
+									       class="md-check"
+									       @change="toggleSelectAll(allUsersSelected)">
 									<label :for="`user-all`">
 										<span class="inc"></span>
 										<span class="check"></span>
@@ -45,16 +50,16 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="user in usersOnCurrentPage" :key="user.id">
+						<tr v-for="user in usersOnCurrentPage"
+						    :key="user.id">
 							<td class="td-checkboxes">
 								<div class="md-checkbox">
-									<input 
-										type="checkbox" 
-										v-model="user.selected" 
-										:id="`user-${user.id}`" 
-										class="md-check" 
-										:value="user.id"
-										@change="syncSelectAll(user.selected)">
+									<input type="checkbox"
+									       v-model="user.selected"
+									       :id="`user-${user.id}`"
+									       class="md-check"
+									       :value="user.id"
+									       @change="syncSelectAll(user.selected)">
 									<label :for="`user-${user.id}`">
 										<span class="inc"></span>
 										<span class="check"></span>
@@ -68,71 +73,122 @@
 					</tbody>
 				</table>
 			</div>
-			<div class="page-one" v-if="!selectUsersMode">
-				<div class="alert alert-danger" v-if="errorMessage.length">
-					<button class="close" data-close="alert" @click="clearError()"></button>
+			<div class="page-one"
+			     v-if="!selectUsersMode">
+				<div class="alert alert-danger"
+				     v-if="errorMessage.length">
+					<button class="close"
+					        data-close="alert"
+					        @click="clearError()"></button>
 					<span>{{errorMessage}}</span>
 				</div>
-				<p>Message will be sent to <a @click="showUserSelect()">{{message.user_alias.length}} user<span v-show="message.user_alias.length !== 1">s</span></a>.</p>
+				<p>Message will be sent to
+					<a @click="showUserSelect()">{{message.user_alias.length}} user
+						<span v-show="message.user_alias.length !== 1">s</span>
+					</a>.</p>
 				<div class="form-group form-md-line-input form-md-floating-label">
-					<label class="btn blue btn-outline" for="push_notification" :class="{'active': message.notification_type === 'push'}">
-						<input type="radio" class="toggle" id="push_notification" value="push" v-model="message.notification_type">
-						Push Notification
+					<label class="btn blue btn-outline"
+					       for="push_notification"
+					       :class="{'active': message.notification_type === 'push'}">
+						<input type="radio"
+						       class="toggle"
+						       id="push_notification"
+						       value="push"
+						       v-model="message.notification_type"> Push Notification
 					</label>
-					<label class="btn blue btn-outline" for="inapp_notification" :class="{'active': message.notification_type === 'inapp'}">
-						<input type="radio" class="toggle" id="inapp_notification" value="inapp" v-model="message.notification_type">
-						In App Notification
+					<label class="btn blue btn-outline"
+					       for="inapp_notification"
+					       :class="{'active': message.notification_type === 'inapp'}">
+						<input type="radio"
+						       class="toggle"
+						       id="inapp_notification"
+						       value="inapp"
+						       v-model="message.notification_type"> In App Notification
 					</label>
-					<label class="btn blue btn-outline" for="sms_notification" :class="{'active': message.notification_type === 'sms'}">
-						<input type="radio" class="toggle" id="sms_notification" value="sms" v-model="message.notification_type">
-						SMS
+					<label class="btn blue btn-outline"
+					       for="sms_notification"
+					       :class="{'active': message.notification_type === 'sms'}">
+						<input type="radio"
+						       class="toggle"
+						       id="sms_notification"
+						       value="sms"
+						       v-model="message.notification_type"> SMS
 					</label>
 				</div>
-				<div class="row" v-if="message.notification_type === 'inapp'">
+				<div class="row"
+				     v-if="message.notification_type === 'inapp'">
 					<div :class="{'col-xs-4 col-xs-offset-4' : !selectImageMode, 'col-xs-12' : selectImageMode}">
-	                    <resource-picker 
-							@open="toggleImageMode('selectImageMode', true)"
-							@close="toggleImageMode('selectImageMode', false)"
-							@selected="updateIcon" 
-							:imageButton="true"
-							:imageUrl="message.media_path"
-							class="margin-top-15"
-						>
+						<resource-picker @open="toggleImageMode('selectImageMode', true)"
+						                 @close="toggleImageMode('selectImageMode', false)"
+						                 @selected="updateIcon"
+						                 :imageButton="true"
+						                 :imageUrl="message.media_path"
+						                 class="margin-top-15">
 						</resource-picker>
-					</div>			
+					</div>
 				</div>
 				<div v-show="!selectImageMode">
-					<div v-if="message.notification_type === 'push'" class="form-group form-md-line-input form-md-floating-label">
-						<input type="text" class="form-control input-sm" :class="{'edited': message.title.length}" id="form_control_1" v-model="message.title">
+					<div v-if="message.notification_type === 'push'"
+					     class="form-group form-md-line-input form-md-floating-label">
+						<input type="text"
+						       class="form-control input-sm"
+						       :class="{'edited': message.title.length}"
+						       id="form_control_1"
+						       v-model="message.title">
 						<label for="form_control_1">Title</label>
 					</div>
-					<div v-if="message.notification_type === 'push'" class="form-group form-md-line-input form-md-floating-label">
-						<input type="text" class="form-control input-sm" :class="{'edited': message.message.length}" id="form_control_2" v-model="message.message">
+					<div v-if="message.notification_type === 'push'"
+					     class="form-group form-md-line-input form-md-floating-label">
+						<input type="text"
+						       class="form-control input-sm"
+						       :class="{'edited': message.message.length}"
+						       id="form_control_2"
+						       v-model="message.message">
 						<label for="form_control_2">Message</label>
 					</div>
-					<div v-if="message.notification_type === 'inapp'" class="form-group form-md-line-input form-md-floating-label">
-						<input type="text" class="form-control input-sm" :class="{'edited': message.title.length}" id="form_control_3" v-model="message.title">
+					<div v-if="message.notification_type === 'inapp'"
+					     class="form-group form-md-line-input form-md-floating-label">
+						<input type="text"
+						       class="form-control input-sm"
+						       :class="{'edited': message.title.length}"
+						       id="form_control_3"
+						       v-model="message.title">
 						<label for="form_control_3">Title</label>
 					</div>
-					<div v-if="message.notification_type === 'inapp'" class="form-group form-md-line-input form-md-floating-label">
-						<input type="text" class="form-control input-sm" :class="{'edited': message.push_message.length}" id="form_control_4" v-model="message.push_message">
+					<div v-if="message.notification_type === 'inapp'"
+					     class="form-group form-md-line-input form-md-floating-label">
+						<input type="text"
+						       class="form-control input-sm"
+						       :class="{'edited': message.push_message.length}"
+						       id="form_control_4"
+						       v-model="message.push_message">
 						<label for="form_control_4">Push message</label>
 					</div>
-					<div v-if="message.notification_type === 'inapp'" class="form-group form-md-line-input form-md-floating-label">
-						<input type="text" class="form-control input-sm" :class="{'edited': message.message.length}" id="form_control_5" v-model="message.message">
+					<div v-if="message.notification_type === 'inapp'"
+					     class="form-group form-md-line-input form-md-floating-label">
+						<input type="text"
+						       class="form-control input-sm"
+						       :class="{'edited': message.message.length}"
+						       id="form_control_5"
+						       v-model="message.message">
 						<label for="form_control_5">Body</label>
 					</div>
-	    			<div v-if="message.notification_type === 'push'" class="form-group form-md-line-input form-md-floating-label">
-		    			<el-date-picker 
-		    				v-model="message.expire_at" 
-		    				type="date" 
-		    				format="yyyy-MM-dd" 
-		    				value-format="yyyy-MM-dd" 
-		    				:clearable="false" 
-		    				placeholder="Expires on">
+					<div v-if="message.notification_type === 'push'"
+					     class="form-group form-md-line-input form-md-floating-label">
+						<el-date-picker v-model="message.expire_at"
+						                type="date"
+						                format="yyyy-MM-dd"
+						                value-format="yyyy-MM-dd"
+						                :clearable="false"
+						                placeholder="Expires on">
 						</el-date-picker>
-	    			</div>
-					<el-dropdown v-if="message.notification_type === 'inapp'" @command="updateCallToAction" size="mini" :show-timeout="50" :hide-timeout="50"  class="margin-top-15">
+					</div>
+					<el-dropdown v-if="message.notification_type === 'inapp'"
+					             @command="updateCallToAction"
+					             size="mini"
+					             :show-timeout="50"
+					             :hide-timeout="50"
+					             class="margin-top-15">
 						<el-button size="mini">
 							{{ selectedCallLabel }}
 							<i class="el-icon-arrow-down el-icon--right"></i>
@@ -149,25 +205,35 @@
 							</el-dropdown-item>
 						</el-dropdown-menu>
 					</el-dropdown>
-	    			<div v-if="message.call_to_action === 'CALL' || message.call_to_action === 'GOTO_LINK'" class="form-group form-md-line-input form-md-floating-label margin-top-10">
-	    				<input type="text" class="form-control input-sm edited" id="form_control_6" v-model="message.action_value">
-	    				<label for="form_control_6">{{ numberOrUrl }}</label>
-	    			</div>
+					<div v-if="message.call_to_action === 'CALL' || message.call_to_action === 'GOTO_LINK'"
+					     class="form-group form-md-line-input form-md-floating-label margin-top-10">
+						<input type="text"
+						       class="form-control input-sm edited"
+						       id="form_control_6"
+						       v-model="message.action_value">
+						<label for="form_control_6">{{ numberOrUrl }}</label>
+					</div>
 				</div>
 			</div>
 		</div>
-		<div slot="modal-footer" class="modal-footer">
-			<div class="footer-wrapper" v-if="selectUsersMode">
-				<el-pagination
-					class="inline-block pagination-center"
-					small
-					layout="prev, pager, next"
-					:page-count="Math.ceil(users.length / 10)"
-					@current-change="changeCurrentPage">
+		<div slot="modal-footer"
+		     class="modal-footer">
+			<div class="footer-wrapper"
+			     v-if="selectUsersMode">
+				<el-pagination class="inline-block pagination-center"
+				               small
+				               layout="prev, pager, next"
+				               :page-count="Math.ceil(users.length / 10)"
+				               @current-change="changeCurrentPage">
 				</el-pagination>
-				<button type="button" class="btn blue" @click="selectUsers()">Select</button>
+				<button type="button"
+				        class="btn blue"
+				        @click="selectUsers()">Select</button>
 			</div>
-			<button v-if="!selectUsersMode && !selectImageMode && message.notification_type.length" type="button" class="btn btn-primary" @click="sendMessage()">Send</button>
+			<button v-if="!selectUsersMode && !selectImageMode && message.notification_type.length"
+			        type="button"
+			        class="btn btn-primary"
+			        @click="sendMessage()">Send</button>
 		</div>
 	</modal>
 </template>
@@ -233,15 +299,18 @@ export default {
 		searchedUsers () {
 			if (this.searchString) {
 				return this.users.filter(user => {
-					return user.email.includes(this.searchString) || user.phone.replace(/\D/g, '').includes(this.searchString)
+					return (
+						user.email.includes(this.searchString) ||
+						user.phone.replace(/\D/g, '').includes(this.searchString)
+					)
 				})
 			} else {
 				return this.users
 			}
 		},
 		usersOnCurrentPage () {
-			let begin = ((this.currentPage - 1) * 10)
-			let end = (this.currentPage * 10)
+			let begin = (this.currentPage - 1) * 10
+			let end = this.currentPage * 10
 			return this.searchedUsers.slice(begin, end)
 		}
 	},
@@ -292,7 +361,9 @@ export default {
 		 */
 		selectUsers () {
 			this.selectUsersMode = false
-			this.message.user_alias = [...this.users.filter(user => user.selected).map(user => user.id)]
+			this.message.user_alias = [
+				...this.users.filter(user => user.selected).map(user => user.id)
+			]
 		},
 		/**
 		 * To de/select all items
@@ -339,7 +410,9 @@ export default {
 		formatPhone (phone) {
 			try {
 				let digits = phone.replace(/\D/g, '')
-				return digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
+				return (
+					digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
+				)
 			} catch (err) {
 				return 'n/a'
 			}
@@ -373,19 +446,37 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (!messageVue.message.notification_type) {
 					reject('Please choose notification type')
-				} else if (messageVue.message.notification_type === 'push' && !messageVue.message.title) {
+				} else if (
+					messageVue.message.notification_type === 'push' &&
+					!messageVue.message.title
+				) {
 					reject('Title cannot be blank')
-				} else if (messageVue.message.notification_type === 'push' && !messageVue.message.message) {
+				} else if (
+					messageVue.message.notification_type === 'push' &&
+					!messageVue.message.message
+				) {
 					reject('Message cannot be blank')
-				} else if (messageVue.message.notification_type === 'inapp' && !messageVue.message.title) {
+				} else if (
+					messageVue.message.notification_type === 'inapp' &&
+					!messageVue.message.title
+				) {
 					reject('Title cannot be blank')
-				} else if (messageVue.message.notification_type === 'inapp' && !messageVue.message.push_message) {
+				} else if (
+					messageVue.message.notification_type === 'inapp' &&
+					!messageVue.message.push_message
+				) {
 					reject('Message cannot be blank')
-				} else if (messageVue.message.notification_type === 'inapp' && !messageVue.message.message) {
+				} else if (
+					messageVue.message.notification_type === 'inapp' &&
+					!messageVue.message.message
+				) {
 					reject('Body cannot be blank')
 				} else if (!messageVue.message.user_alias.length) {
 					reject('Please select at least one user')
-				} else if (messageVue.message.notification_type === 'inapp' && !messageVue.message.call_to_action) {
+				} else if (
+					messageVue.message.notification_type === 'inapp' &&
+					!messageVue.message.call_to_action
+				) {
 					reject('Please select a call to action')
 				}
 				resolve('Hurray')
@@ -400,36 +491,43 @@ export default {
 		sendMessage (event) {
 			var messageVue = this
 			this.errorMessage = ''
-			return messageVue.validateMessageData()
+			return messageVue
+				.validateMessageData()
 
-			.then(response => {
-				if (messageVue.sending) {
-					return
-				}
-				messageVue.sending = true
-				let payload = {...this.message}
-				if (Array.isArray(payload.user_alias)) {
-					payload.user_alias = payload.user_alias.toString()
-				}
-				MessageFunctions.sendMessage(payload, GlobalFunctions.OMAUsersMessageAppToken)
 				.then(response => {
-					messageVue.sending = false
-					if (response.code === 200 && response.status === 'ok') {
-						messageVue.closeModal()
-						messageVue.showAlert(response.payload.warnings)
-					} else {
-						messageVue.createFAQError = response.message
+					if (messageVue.sending) {
+						return
 					}
-				}).catch(reason => {
+					messageVue.sending = true
+					let payload = { ...this.message }
+					if (Array.isArray(payload.user_alias)) {
+						payload.user_alias = payload.user_alias.toString()
+					}
+					MessageFunctions.sendMessage(
+						payload,
+						GlobalFunctions.OMAUsersMessageAppToken
+					)
+						.then(response => {
+							messageVue.sending = false
+							if (response.code === 200 && response.status === 'ok') {
+								messageVue.closeModal()
+								messageVue.showAlert(response.payload.warnings)
+							} else {
+								messageVue.createFAQError = response.message
+							}
+						})
+						.catch(reason => {
+							messageVue.sending = false
+							messageVue.errorMessage =
+								'Sorry, we could not send the notification'
+							window.scrollTo(0, 0)
+						})
+				})
+				.catch(reason => {
 					messageVue.sending = false
-					messageVue.errorMessage = 'Sorry, we could not send the notification'
+					messageVue.errorMessage = reason
 					window.scrollTo(0, 0)
 				})
-			}).catch(reason => {
-				messageVue.sending = false
-				messageVue.errorMessage = reason
-				window.scrollTo(0, 0)
-			})
 		},
 		/**
 		 * To update the call to action
@@ -526,22 +624,25 @@ export default {
 
 <style scoped>
 .form-md-floating-label .active {
-	background-color: white;
+  background-color: white;
 }
 .el-dropdown-menu.el-popper.el-dropdown-menu--mini {
-	z-index: 10501!important;
+  z-index: 10501 !important;
 }
 .footer-wrapper {
-	display: flex;
-	justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
-.th-checkboxes, .td-checkboxes {
-	max-width: 25px;
+.th-checkboxes,
+.td-checkboxes {
+  max-width: 25px;
 }
-.th-email, .td-email {
-	width: 300px;
+.th-email,
+.td-email {
+  width: 300px;
 }
-.th-phone, .td-phone {
-	max-width: 150px;
+.th-phone,
+.td-phone {
+  max-width: 150px;
 }
 </style>

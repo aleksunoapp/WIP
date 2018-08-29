@@ -3,7 +3,7 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to pitapit API to get the news feed.
 	 * @function
@@ -15,13 +15,24 @@ export default ({
 	 * @param {string} appSecret - The appSecret of the current application.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	getNewsFeed: function (pageNumber, pageResults, sortOrder, userToken, appId, appSecret) {
+	getNewsFeed: function (
+		pageNumber,
+		pageResults,
+		sortOrder,
+		userToken,
+		appId,
+		appSecret
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'GET',
 				dataType: 'json',
 				url: '/application/news',
-				data: {offset: pageNumber, limit: pageResults, orderBy: sortOrder},
+				data: {
+					offset: pageNumber,
+					limit: pageResults,
+					orderBy: sortOrder
+				},
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
 					xhr.setRequestHeader('app-id', appId)
@@ -51,7 +62,7 @@ export default ({
 				method: 'POST',
 				dataType: 'json',
 				url: '/application/news/create',
-				data: {news: newsFeed},
+				data: { news: newsFeed },
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
 					xhr.setRequestHeader('app-id', appId)
@@ -81,7 +92,7 @@ export default ({
 				method: 'POST',
 				dataType: 'json',
 				url: '/application/news/update/' + newsFeed.id,
-				data: {news: newsFeed},
+				data: { news: newsFeed },
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
 					xhr.setRequestHeader('app-id', appId)
@@ -148,4 +159,4 @@ export default ({
 			})
 		})
 	}
-})
+}

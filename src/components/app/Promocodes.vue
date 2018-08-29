@@ -7,14 +7,18 @@
 			</div>
 			<!-- END PAGE BAR -->
 			<!-- BEGIN PAGE TITLE-->
-	    <h1 class="page-title">Promo codes</h1>
-    	<!-- END PAGE TITLE -->
+			<h1 class="page-title">Promo codes</h1>
+			<!-- END PAGE TITLE -->
+
 			<div class="note note-info">
-        <p>Add and manage an application's promo codes.</p>
+				<p>Add and manage an application's promo codes.</p>
 			</div>
-      <!-- BEGIN CREATE NEW PROMO CODE -->
-      <div class="portlet box blue-hoki" v-if="$root.permissions['promocodes create']">
-				<div class="portlet-title bg-blue-chambray" @click="toggleCreatePromoCodePanel()">
+
+			<!-- BEGIN CREATE NEW PROMO CODE -->
+			<div class="portlet box blue-hoki"
+			     v-if="$root.permissions['promocodes create']">
+				<div class="portlet-title bg-blue-chambray"
+				     @click="toggleCreatePromoCodePanel()">
 					<div class="caption">
 						<i class="fa fa-2x fa-plus-circle"></i>
 						Create a New Promo Code
@@ -23,63 +27,90 @@
 						<a :class="{'expand': !createNewPromoCodeCollapse, 'collapse': createNewPromoCodeCollapse}"></a>
 					</div>
 				</div>
-				<div class="portlet-body" :class="{'display-hide': createNewPromoCodeCollapse}">
-	  			<form role="form" @submit.prevent="createNewPromoCode()">
-	  				<div class="form-body row">
-	  					<div class="col-md-12">
-		        		<div class="alert alert-danger" v-if="createErrorMessage.length">
-	        		    <button class="close" data-close="alert" @click.prevent="clearError('createErrorMessage')"></button>
-	        		    <span>{{ createErrorMessage }}</span>
-		        		</div>
-		        	</div>
-	        		<div class="col-xs-9 col-md-5">
-	        			<div class="form-group form-md-line-input form-md-floating-label">
-	                <div class="input-icon right">
-	                  <input type="text" class="form-control input-sm  text-uppercase" :class="{'edited': newPromoCode.codes.length}" id="form_control_1" v-model="newPromoCode.codes">
-	                  <i class="fa fa-magic clickable" @click.prevent="setRandomCode(newPromoCode)" aria-hidden="true"></i>
-	                </div>
-	                <label for="form_control_1">Enter a Code</label>
-          			</div>
-	        			<div class="side-by-side-wrapper center">
-									<div class="form-group form-md-line-input form-md-floating-label side-by-side-item margin-right-10">
-								    <input type="text" class="form-control input-sm" :class="{'edited': newPromoCode.value}" id="form_control_2" v-model="newPromoCode.value">
-								    <label for="form_control_2">Value of Promo Code</label>
+				<div class="portlet-body"
+				     :class="{'display-hide': createNewPromoCodeCollapse}">
+					<form role="form"
+					      @submit.prevent="createNewPromoCode()">
+						<div class="form-body row">
+							<div class="col-md-12">
+								<div class="alert alert-danger"
+								     v-show="createErrorMessage"
+								     ref="createErrorMessage">
+									<button class="close"
+									        @click.prevent="clearError('createErrorMessage')"></button>
+									<span>{{ createErrorMessage }}</span>
+								</div>
+							</div>
+							<div class="col-xs-9 col-md-5">
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<div class="input-icon right">
+										<input type="text"
+										       class="form-control input-sm  text-uppercase"
+										       :class="{'edited': newPromoCode.codes.length}"
+										       id="form_control_1"
+										       v-model="newPromoCode.codes">
+										<i class="fa fa-magic clickable"
+										   @click.prevent="setRandomCode(newPromoCode)"
+										   aria-hidden="true"></i>
 									</div>
-									<el-dropdown
-										trigger="click"
-										@command="updateNewPromoCodeValueType"
-										size="small"
-										:show-timeout="50"
-										:hide-timeout="50"
-									>
+									<label for="form_control_1">Enter a Code</label>
+								</div>
+								<div class="side-by-side-wrapper center">
+									<div class="form-group form-md-line-input form-md-floating-label side-by-side-item margin-right-10">
+										<input type="text"
+										       class="form-control input-sm"
+										       :class="{'edited': newPromoCode.value}"
+										       id="form_control_2"
+										       v-model="newPromoCode.value">
+										<label for="form_control_2">Value of Promo Code</label>
+									</div>
+									<el-dropdown trigger="click"
+									             @command="updateNewPromoCodeValueType"
+									             size="small"
+									             :show-timeout="50"
+									             :hide-timeout="50">
 										<el-button size="small">
-											{{ newPromoCodeValueTypeLabel }}<i class="el-icon-arrow-down el-icon--right"></i>
+											{{ newPromoCodeValueTypeLabel }}
+											<i class="el-icon-arrow-down el-icon--right"></i>
 										</el-button>
 										<el-dropdown-menu slot="dropdown">
 											<el-dropdown-item command="percentage">%</el-dropdown-item>
 											<el-dropdown-item command="dollar">$</el-dropdown-item>
 										</el-dropdown-menu>
 									</el-dropdown>
-	        			</div>
-	        			<div class="side-by-side-wrapper start">
-									<el-dropdown trigger="click" @command="updateNewPromoCodeApplyOn" size="small" :show-timeout="50" :hide-timeout="50" class="margin-bottom-10">
-	        					<el-button size="small">
-	        						{{ newPromoCodeAppliesToLabel }}<i class="el-icon-arrow-down el-icon--right"></i>
-	        					</el-button>
-	        					<el-dropdown-menu slot="dropdown">
-	        						<el-dropdown-item command="items">Menu Items</el-dropdown-item>
-	        						<el-dropdown-item command="delivery">Delivery Fee</el-dropdown-item>
-	        					</el-dropdown-menu>
-        					</el-dropdown>
-	        				<button v-if="newPromoCode.apply_on === 'items'" type="submit" class="btn blue btn-outline select-items-button" @click="displayMenuTreeModal($event)">
-	        					<span v-if="!newPromoCode.sku.length">Select</span><span v-else>Add</span> items
-	        				</button>
-	        				<p class="grey-label" v-if="newPromoCode.sku.length">Selected <span>{{ newPromoCode.sku.length }}</span> item<span v-if="newPromoCode.sku.length !== 1">s</span></p>
-	        			</div>
+								</div>
+								<div class="side-by-side-wrapper center">
+									<el-select v-model="newPromoCode.apply_on"
+									           placeholder="Discount is applied to"
+									           size="small">
+										<el-option label="Menu Items"
+										           value="items"></el-option>
+										<el-option label="Delivery Fee"
+										           value="delivery"></el-option>
+									</el-select>
+									<button v-if="newPromoCode.apply_on === 'items'"
+									        type="submit"
+									        class="btn blue btn-outline margin-left-5 mb-0"
+									        @click="displayMenuTreeModal($event)">
+										<span v-if="!newPromoCode.sku.length">Select</span>
+										<span v-else>Add</span> items
+									</button>
+								</div>
+								<p class="grey-label margin-left-5"
+								   v-if="newPromoCode.sku.length">Selected
+									<span>{{ newPromoCode.sku.length }}</span>
+									<span v-if="newPromoCode.sku.length !== 1">items</span>
+									<span v-else>item</span>
+								</p>
 								<div class="margin-top-15">
-									<el-dropdown trigger="click" @command="updateNewPromoCodeType" size="small" :show-timeout="50" :hide-timeout="50">
+									<el-dropdown trigger="click"
+									             @command="updateNewPromoCodeType"
+									             size="small"
+									             :show-timeout="50"
+									             :hide-timeout="50">
 										<el-button size="small">
-											{{ newPromoCodeTypeLabel }}<i class="el-icon-arrow-down el-icon--right"></i>
+											{{ newPromoCodeTypeLabel }}
+											<i class="el-icon-arrow-down el-icon--right"></i>
 										</el-button>
 										<el-dropdown-menu slot="dropdown">
 											<el-dropdown-item command="single_use">Single</el-dropdown-item>
@@ -88,161 +119,250 @@
 									</el-dropdown>
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
-							    <input type="text" class="form-control input-sm" :class="{'edited': newPromoCode.max_use_per_person.length}" id="form_control_3" v-model="newPromoCode.max_use_per_person">
-							    <label for="form_control_3">Maximum Redemptions Per User</label>
+									<input type="text"
+									       class="form-control input-sm"
+									       :class="{'edited': newPromoCode.max_use_per_person.length}"
+									       id="form_control_3"
+									       v-model="newPromoCode.max_use_per_person">
+									<label for="form_control_3">Maximum Redemptions Per User</label>
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label narrow-input">
-							    <input type="text" class="form-control input-sm" :class="{'edited': newPromoCode.max_use.length}" id="form_control_4" v-model="newPromoCode.max_use">
-							    <label for="form_control_4">Total Redemptions Permitted</label>
+									<input type="text"
+									       class="form-control input-sm"
+									       :class="{'edited': newPromoCode.max_use.length}"
+									       id="form_control_4"
+									       v-model="newPromoCode.max_use">
+									<label for="form_control_4">Total Redemptions Permitted</label>
 								</div>
-	        		</div>
-	        		<div class="col-xs-9 col-md-5">
-	        			<div class="form-group form-md-line-input form-md-floating-label">
-	        				<p class="date-label">Start Date</p>
-	        				<el-date-picker
-	        					v-model="newPromoCode.start_from"
-	        					format="yyyy-MM-dd"
-	        					value-format="yyyy-MM-dd"
-	        					:clearable="false"
-	        					placeholder="Select start date">
-	      					</el-date-picker>
-	        			</div>
-	        			<div class="form-group form-md-line-input form-md-floating-label">
-	        				<p class="date-label">End Date</p>
-		        			<el-date-picker
-		        				v-model="newPromoCode.end_on"
-		        				format="yyyy-MM-dd"
-		        				value-format="yyyy-MM-dd"
-		        				:clearable="false"
-		        				placeholder="Select end date">
-	        				</el-date-picker>
-	        			</div>
-	        			<div>
+							</div>
+							<div class="col-xs-9 col-md-5">
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<p class="date-label">Start Date</p>
+									<el-date-picker v-model="newPromoCode.start_from"
+									                format="yyyy-MM-dd"
+									                value-format="yyyy-MM-dd"
+									                :clearable="false"
+									                placeholder="Select start date">
+									</el-date-picker>
+								</div>
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<p class="date-label">End Date</p>
+									<el-date-picker v-model="newPromoCode.end_on"
+									                format="yyyy-MM-dd"
+									                value-format="yyyy-MM-dd"
+									                :clearable="false"
+									                placeholder="Select end date">
+									</el-date-picker>
+								</div>
+								<div>
 									<p class="inline margin-right-10">Availability</p>
-	        				<button type="submit" class="btn blue btn-outline" @click="selectLocations(newPromoCode, $event, 'new')">Select stores</button>
-	        				<p class="grey-label margin-top-10" v-if="newPromoCode.locations.length">Selected <span v-if="newPromoCode.locations === 'all'">all</span><span v-else>{{ newPromoCode.locations.length }}</span> store<span v-if="newPromoCode.locations.length !== 1">s</span></p>
-	        			</div>
-	        		</div>
-	        	</div>
-	  				<div class="form-actions right margin-top-20">
-							<button type="submit" class="btn blue">Create</button>
+									<button type="submit"
+									        class="btn blue btn-outline"
+									        @click="selectLocations(newPromoCode, $event, 'new')">Select stores</button>
+									<p class="grey-label"
+									   v-if="newPromoCode.locations.length">Selected
+										<span v-if="newPromoCode.locations === 'all'">all</span>
+										<span v-else>{{ newPromoCode.locations.length }}</span>
+										<span v-if="newPromoCode.locations.length !== 1">stores</span>
+										<span v-else>store</span>
+									</p>
+								</div>
+							</div>
 						</div>
-	  			</form>
-  			</div>
-    	</div>
-	    <!-- END CREATE NEW PROMO CODE -->
-      <!-- BEGIN DISPLAY PROMO CODES -->
-      <loading-screen :show="displayPromoCodesData" :color="'#2C3E50'" :display="'inline'"></loading-screen>
-      <div v-if="!displayPromoCodesData">
-		    <div class="portlet light portlet-fit bordered margin-top-20" id="promoCodes-container">
-		      <div class="portlet-title bg-blue-chambray">
-		      	<div class="menu-image-main">
-		      		<img src="../../../static/client_logo.png">
-		      	</div>
-	          <div class="caption">
-		          <span class="caption-subject font-default bold uppercase">Promo Codes</span>
-		          <div v-if="$root.permissions['promocodes update'] || $root.permissions['promocodes delete']" class="caption-desc font-grey-cascade">Click on a promo code to edit or delete it.</div>
-							<div v-if="$root.permissions['promocodes read'] && !$root.permissions['promocodes update']" class="caption-desc font-grey-cascade">Click on a promo code to view it.</div>
-	          </div>
-		      </div>
+						<div class="form-actions right margin-top-20">
+							<button type="submit"
+							        class="btn blue"
+							        :disabled="creating">
+								Create
+								<i v-show="creating"
+								   class="fa fa-spinner fa-pulse fa-fw">
+								</i>
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+			<!-- END CREATE NEW PROMO CODE -->
+
+			<!-- BEGIN DISPLAY PROMO CODES -->
+			<loading-screen :show="displayPromoCodesData"
+			                :color="'#2C3E50'"
+			                :display="'inline'"></loading-screen>
+			<div v-if="!displayPromoCodesData">
+				<div class="portlet light portlet-fit bordered margin-top-20"
+				     id="promoCodes-container">
+					<div class="portlet-title bg-blue-chambray">
+						<div class="menu-image-main">
+							<img src="../../../static/client_logo.png">
+						</div>
+						<div class="caption">
+							<span class="caption-subject font-default bold uppercase">Promo Codes</span>
+							<div v-if="$root.permissions['promocodes update'] || $root.permissions['promocodes delete']"
+							     class="caption-desc font-grey-cascade">Click on a promo code to edit or delete it.</div>
+							<div v-if="$root.permissions['promocodes read'] && !$root.permissions['promocodes update']"
+							     class="caption-desc font-grey-cascade">Click on a promo code to view it.</div>
+						</div>
+					</div>
 					<div class="col-md-12">
-			  		<div class="alert alert-danger" v-if="assignErrorMessage.length">
-		  		    <button class="close" data-close="alert" @click="clearError('assignErrorMessage')"></button>
-		  		    <span>{{ assignErrorMessage }}</span>
-			  		</div>
-			  	</div>
+						<div class="alert alert-danger"
+						     v-show="assignErrorMessage"
+						     ref="assignErrorMessage">
+							<button class="close"
+							        @click="clearError('assignErrorMessage')"></button>
+							<span>{{ assignErrorMessage }}</span>
+						</div>
+					</div>
 					<div class="portlet-body">
-		      	<div class="mt-element-list margin-top-15" v-if="promoCodes.length">
-		        	<div class="mt-list-container list-news ext-1 no-border">
-			          <ul>
-			            <li class="mt-list-item actions-at-left margin-top-15" :class="{'animated' : animated === `promoCode-${promoCode.id}`}" v-for="promoCode in promoCodes" :id="'promoCode-' + promoCode.id" :key="`promoCode-${promoCode.id}`">
-			            	<div class="list-item-actions">
-											<el-tooltip
-												v-if="$root.permissions['promocodes read'] && !$root.permissions['promocodes update']"
-												content="View"
-												effect="light"
-												placement="right"
-											>
-												<a class="btn btn-circle btn-icon-only btn-default" @click="editPromoCode(promoCode, $event)">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="alert alert-danger"
+								     v-show="listErrorMessage"
+								     ref="listErrorMessage">
+									<button class="close"
+									        @click="clearError('listErrorMessage')"></button>
+									<span>{{listErrorMessage}}</span>
+								</div>
+							</div>
+						</div>
+						<div class="mt-element-list margin-top-15"
+						     v-if="promoCodes.length">
+							<div class="mt-list-container list-news ext-1 no-border">
+								<ul>
+									<li class="mt-list-item actions-at-left margin-top-15"
+									    :class="{'animated' : animated === `promoCode-${promoCode.id}`}"
+									    v-for="promoCode in promoCodes"
+									    :id="'promoCode-' + promoCode.id"
+									    :key="`promoCode-${promoCode.id}`">
+										<div class="list-item-actions">
+											<el-tooltip v-if="$root.permissions['promocodes read'] && !$root.permissions['promocodes update']"
+											            content="View"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="editPromoCode(promoCode, $event)">
 													<i class="fa fa-lg fa-eye"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip
-												v-if="$root.permissions['promocodes update']"
-												content="Edit"
-												effect="light"
-												placement="right"
-											>
-		              			<a class="btn btn-circle btn-icon-only btn-default" @click="editPromoCode(promoCode, $event)">
-			                    <i class="fa fa-lg fa-pencil"></i>
-			                	</a>
-			            		</el-tooltip>
-			            		<el-tooltip
-												v-if="$root.permissions['promocodes delete']"
-												content="Delete"
-												effect="light"
-												placement="right"
-											>
-			              		<a class="btn btn-circle btn-icon-only btn-default" @click="deletePromoCode(promoCode, $event)">
-			                    <i class="fa fa-lg fa-trash"></i>
-			                	</a>
-			            		</el-tooltip>
-		          			</div>
-		                <div class="list-item-content height-mod">
-		                	<div class="col-sm-4">
-		                  	<div class="bold uppercase font-red">
-		                  		<span>{{ promoCode.codes }}</span>
-		                  	</div>
-		                		<div>
-		                			<strong>Value:</strong>
-		                			<span v-if="promoCode.value_type === 'dollar'">$</span><span>{{ promoCode.value }}</span><span v-if="promoCode.value_type === 'percentage'">%</span>
-		                		</div>
-		                		<div>
-		                			<strong>Applies to:</strong>
-		                			<span>{{ promoCode.apply_on }}</span>
-		                		</div>
-		                	</div>
-		                	<div class="col-sm-4">
-		                		<div class="">
-		                			<strong>Type:</strong>
-		                			<span>{{ promoCode.type }}</span>
-		                		</div>
-		                  	<div>
-		                			<strong>Total Redemptions:</strong>
-		                			<span>{{ promoCode.max_use }}</span>
-		                		</div>
-		                  	<div>
-		                			<strong>Max Per User:</strong>
-		                			<span>{{ promoCode.max_use_per_person }}</span>
-		                		</div>
-		                	</div>
-		                	<div class="col-sm-4">
-		                		<div>
-		                			<strong>Start:</strong>
-		                			<span>{{ promoCode.start_from }}</span>
-		                		</div>
-		                		<div>
-		                			<strong>End:</strong>
-		                			<span>{{ promoCode.end_on }}</span>
-		                		</div>
-		                	</div>
-		                </div>
-			            </li>
-			          </ul>
-		          </div>
-		        </div>
-						<div class="margin-top-20" v-if="!promoCodes.length && !displayPromoCodesData">
-			      	<no-results :show="!promoCodes.length" :type="'promo codes'"></no-results>
-			      </div>
+											<el-tooltip v-if="$root.permissions['promocodes update']"
+											            content="Edit"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="editPromoCode(promoCode, $event)">
+													<i class="fa fa-lg fa-pencil"></i>
+												</a>
+											</el-tooltip>
+											<el-tooltip v-if="$root.permissions['promocodes delete']"
+											            content="Delete"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="deletePromoCode(promoCode, $event)">
+													<i class="fa fa-lg fa-trash"></i>
+												</a>
+											</el-tooltip>
+										</div>
+										<div class="list-item-content height-mod">
+											<div class="col-sm-4">
+												<div class="bold uppercase font-red">
+													<span>{{ promoCode.codes }}</span>
+												</div>
+												<div>
+													<strong>Value:</strong>
+													<span v-if="promoCode.value_type === 'dollar'">$</span>
+													<span>{{ promoCode.value }}</span>
+													<span v-if="promoCode.value_type === 'percentage'">%</span>
+												</div>
+												<div>
+													<strong>Applies to:</strong>
+													<span>{{ promoCode.apply_on }}</span>
+												</div>
+											</div>
+											<div class="col-sm-4">
+												<div class="">
+													<strong>Type:</strong>
+													<span>{{ promoCode.type }}</span>
+												</div>
+												<div>
+													<strong>Total Redemptions:</strong>
+													<span>{{ promoCode.max_use }}</span>
+												</div>
+												<div>
+													<strong>Max Per User:</strong>
+													<span>{{ promoCode.max_use_per_person }}</span>
+												</div>
+											</div>
+											<div class="col-sm-4">
+												<div>
+													<strong>Start:</strong>
+													<span>{{ promoCode.start_from }}</span>
+												</div>
+												<div>
+													<strong>End:</strong>
+													<span>{{ promoCode.end_on }}</span>
+												</div>
+											</div>
+										</div>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div class="margin-top-20"
+						     v-if="!promoCodes.length && !displayPromoCodesData">
+							<no-results :show="!promoCodes.length"
+							            :type="'promo codes'"></no-results>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	  <!-- END DISPLAY PROMO CODES -->
-	  <menu-tree v-if="showMenuTreeModal" :updateType="'promocode'" @closeMenuTreeModal="closeMenuTreeModal"></menu-tree>
-		<select-location v-if="showSelectLocationModal" :promoCode="passedPromoCode" @closeSelectLocationModal="closeSelectLocationModal"></select-location>
-	  <edit-promoCode v-if="showEditPromoCodeModal" :promoCodeId="passedPromoCode.id" @updatePromoCode="updatePromoCode" @closeEditPromoCodeModal="closeEditPromoCodeModal"></edit-promoCode>
-	  <delete-promoCode v-if="deletePromoCodeModalActive" :selectedPromoCodeId="selectedPromoCodeId" @closeDeletePromoCodeModal="closeDeletePromoCodeModal" @deletePromoCodeAndCloseModal="deletePromoCodeAndCloseModal"></delete-promoCode>
+		<!-- END DISPLAY PROMO CODES -->
+
+		<!-- MENU ITEM PICKER MODAL START -->
+		<modal :show="showMenuTreeModal"
+		       effect="fade"
+		       @closeOnEscape="closeMenuTreeModal"
+		       :width="900">
+			<div slot="modal-header"
+			     class="modal-header">
+				<button type="button"
+				        class="close"
+				        @click="closeMenuTreeModal()">
+					<span>&times;</span>
+				</button>
+				<h4 class="modal-title center">Select Items</h4>
+			</div>
+			<div slot="modal-body"
+			     class="modal-body">
+				<menu-item-picker :previouslySelected="newPromoCode.sku"
+				                  @update="itemsSelected">
+				</menu-item-picker>
+			</div>
+			<div slot="modal-footer"
+			     class="modal-footer">
+				<button type="button"
+				        class="btn btn-primary"
+				        @click="closeMenuTreeModal()">Save</button>
+			</div>
+		</modal>
+		<!-- MENU ITEM PICKER MODAL END -->
+
+		<select-location v-if="showSelectLocationModal"
+		                 :promoCode="passedPromoCode"
+		                 @closeSelectLocationModal="closeSelectLocationModal">
+		</select-location>
+
+		<edit-promoCode v-if="showEditPromoCodeModal"
+		                :promoCodeId="passedPromoCode.id"
+		                @updatePromoCode="updatePromoCode"
+		                @closeEditPromoCodeModal="closeEditPromoCodeModal">
+		</edit-promoCode>
+
+		<delete-promoCode v-if="deletePromoCodeModalActive"
+		                  :selectedPromoCodeId="selectedPromoCodeId"
+		                  @closeDeletePromoCodeModal="closeDeletePromoCodeModal"
+		                  @deletePromoCodeAndCloseModal="deletePromoCodeAndCloseModal">
+		</delete-promoCode>
 	</div>
 </template>
 
@@ -258,31 +378,32 @@ import DeletePromoCode from './PromoCodes/DeletePromoCode'
 import SelectLocation from './PromoCodes/SelectLocation'
 import $ from 'jquery'
 import { debounce } from 'lodash'
-import MenuTree from '../modules/MenuTree'
+import MenuItemPicker from '@/components/modules/MenuItemPicker'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
 		return {
-			breadcrumbArray: [
-				{name: 'Promo codes', link: false}
-			],
+			breadcrumbArray: [{ name: 'Promo codes', link: false }],
 			displayPromoCodesData: false,
 			promoCodes: [],
 			createErrorMessage: '',
+			listErrorMessage: '',
 			assignErrorMessage: '',
 			createNewPromoCodeCollapse: true,
+			creating: false,
 			newPromoCode: {
-				'apply_on': '',
-				'codes': '',
-				'end_on': '',
-				'locations': [],
-				'max_use': '',
-				'max_use_per_person': '',
-				'sku': [],
-				'start_from': '',
-				'type': '',
-				'value': '',
-				'value_type': ''
+				apply_on: '',
+				codes: '',
+				end_on: '',
+				locations: [],
+				max_use: '',
+				max_use_per_person: '',
+				sku: [],
+				start_from: '',
+				type: '',
+				value: '',
+				value_type: ''
 			},
 			editedPromoCode: {},
 			showGalleryModal: false,
@@ -314,30 +435,33 @@ export default {
 			} else {
 				return 'Single or Multi Use?'
 			}
-		},
-		newPromoCodeAppliesToLabel () {
-			if (this.newPromoCode.apply_on === 'items') {
-				return 'Menu Items'
-			} else if (this.newPromoCode.apply_on === 'delivery') {
-				return 'Delivery Fee'
-			} else {
-				return 'Discount is applied to'
-			}
 		}
 	},
 	created () {
 		let selectLocationVue = this
 
-		$(window).on('resize', debounce(() => {
-			if (selectLocationVue.showSidewaysPageTwo) {
-				selectLocationVue.computeHeight()
-			}
-		}, 200))
+		$(window).on(
+			'resize',
+			debounce(() => {
+				if (selectLocationVue.showSidewaysPageTwo) {
+					selectLocationVue.computeHeight()
+				}
+			}, 200)
+		)
 	},
 	mounted () {
 		this.getAllPromoCodes()
 	},
 	methods: {
+		/**
+		 * To update selection of items
+		 * @function
+		 * @param {array} items - Array of items selected by user
+		 * @returns {undefined}
+		 */
+		itemsSelected (items) {
+			this.newPromoCode.sku = items.map(item => item.sku)
+		},
 		/**
 		 * To generate a random string from the characters provided
 		 * @function
@@ -347,7 +471,9 @@ export default {
 		 */
 		randomString (length, chars) {
 			var result = ''
-			for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)]
+			for (var i = length; i > 0; --i) {
+				result += chars[Math.floor(Math.random() * chars.length)]
+			}
 			return result
 		},
 		/**
@@ -357,7 +483,10 @@ export default {
 		 * @returns {undefined}
 		 */
 		setRandomCode (code) {
-			code.codes = this.randomString(6, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+			code.codes = this.randomString(
+				6,
+				'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+			)
 		},
 		/**
 		 * To update the value_type property of newPromoCode.
@@ -367,15 +496,6 @@ export default {
 		 */
 		updateNewPromoCodeValueType (value) {
 			this.newPromoCode.value_type = value
-		},
-		/**
-		 * To update the apply_on property of newPromoCode.
-		 * @function
-		 * @param {object} value - The new value to assign.
-		 * @returns {undefined}
-		 */
-		updateNewPromoCodeApplyOn (value) {
-			this.newPromoCode.apply_on = value
 		},
 		/**
 		 * To update the type property of newPromoCode.
@@ -411,10 +531,6 @@ export default {
 				text: 'Please select a store from the stores panel first.',
 				type: 'warning',
 				confirmButtonText: 'OK'
-			}).then(() => {
-				// do nothing
-			}, dismiss => {
-				// do nothing
 			})
 		},
 		/**
@@ -424,9 +540,6 @@ export default {
 		 * @returns {undefined}
 		 */
 		closeMenuTreeModal (items) {
-			if (items) {
-				items.selectedItems.forEach((item) => { this.newPromoCode.sku.push(item) })
-			}
 			this.showMenuTreeModal = false
 		},
 		/**
@@ -481,7 +594,10 @@ export default {
 		deletePromoCodeAndCloseModal () {
 			this.deletePromoCodeModalActive = false
 			for (var i = 0; i < this.promoCodes.length; i++) {
-				if (parseInt(this.promoCodes[i].id) === parseInt(this.selectedPromoCodeId)) {
+				if (
+					parseInt(this.promoCodes[i].id) ===
+					parseInt(this.selectedPromoCodeId)
+				) {
 					this.promoCodes.splice(i, 1)
 					break
 				}
@@ -512,26 +628,39 @@ export default {
 			this.displayPromoCodesData = true
 			this.promoCodes = []
 			var promoCodesVue = this
-			return PromoCodesFunctions.getAllPromoCodes(promoCodesVue.$root.appId, promoCodesVue.$root.appSecret, promoCodesVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					promoCodesVue.displayPromoCodesData = false
-					promoCodesVue.promoCodes = response.payload
-					for (var i = 0; i < promoCodesVue.promoCodes.length; i++) {
-						promoCodesVue.$set(promoCodesVue.promoCodes[i], 'selected', false)
+			return PromoCodesFunctions.getAllPromoCodes(
+				promoCodesVue.$root.appId,
+				promoCodesVue.$root.appSecret,
+				promoCodesVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						promoCodesVue.displayPromoCodesData = false
+						promoCodesVue.promoCodes = response.payload
+						for (
+							var i = 0;
+							i < promoCodesVue.promoCodes.length;
+							i++
+						) {
+							promoCodesVue.$set(
+								promoCodesVue.promoCodes[i],
+								'selected',
+								false
+							)
+						}
+					} else {
+						promoCodesVue.displayPromoCodesData = false
 					}
-				} else {
+				})
+				.catch(reason => {
 					promoCodesVue.displayPromoCodesData = false
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					promoCodesVue.$router.push('/login/expired')
-					return
-				}
-				promoCodesVue.displayPromoCodesData = false
-				if (reason.responseJSON) {
-				}
-				throw reason
-			})
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch promocodes',
+						errorName: 'listErrorMessage',
+						vue: promoCodesVue
+					})
+				})
 		},
 		/**
 		 * To close the modal for editing a promoCode.
@@ -548,17 +677,17 @@ export default {
 		 */
 		clearNewPromoCode () {
 			this.newPromoCode = {
-				'apply_on': '',
-				'codes': '',
-				'end_on': '',
-				'locations': [],
-				'max_use': '',
-				'max_use_per_person': '',
-				'sku': [],
-				'start_from': '',
-				'type': '',
-				'value': '',
-				'value_type': ''
+				apply_on: '',
+				codes: '',
+				end_on: '',
+				locations: [],
+				max_use: '',
+				max_use_per_person: '',
+				sku: [],
+				start_from: '',
+				type: '',
+				value: '',
+				value_type: ''
 			}
 		},
 		/**
@@ -590,7 +719,10 @@ export default {
 			}
 			let todayYear = today.getFullYear()
 
-			return `${todayYear}-${todayMonth}-${todayDay}` > `${inputYear}-${inputMonth}-${inputDay}`
+			return (
+				`${todayYear}-${todayMonth}-${todayDay}` >
+				`${inputYear}-${inputMonth}-${inputDay}`
+			)
 		},
 		/**
 		 * To check if the promo code data is valid before submitting to the backend.
@@ -602,31 +734,59 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (!promoCodesVue.newPromoCode.codes.length) {
 					reject('Code cannot be blank')
-				} else if (!(/^(?=.+)(?:[1-9]\d*|0)?(?:\.\d+)?$/.test(promoCodesVue.newPromoCode.value))) {
-					reject('Value Of Promo Code cannot be blank and must be a number')
+				} else if (
+					!/^(?=.+)(?:[1-9]\d*|0)?(?:\.\d+)?$/.test(
+						promoCodesVue.newPromoCode.value
+					)
+				) {
+					reject(
+						'Value Of Promo Code cannot be blank and must be a number'
+					)
 				} else if (!promoCodesVue.newPromoCode.value_type.length) {
 					reject('Value Type cannot be blank')
 				} else if (!promoCodesVue.newPromoCode.apply_on.length) {
 					reject('Discount Is Applied To cannot be blank')
-				} else if (promoCodesVue.newPromoCode.apply_on === 'items' && promoCodesVue.newPromoCode.sku.length === 0) {
+				} else if (
+					promoCodesVue.newPromoCode.apply_on === 'items' &&
+					promoCodesVue.newPromoCode.sku.length === 0
+				) {
 					reject('Select at least one item')
 				} else if (!promoCodesVue.newPromoCode.type.length) {
 					reject('Single or Multi Use cannot be blank')
-				} else if (!(/^\+?(0|[1-9]\d*)$/.test(promoCodesVue.newPromoCode.max_use_per_person))) {
-					reject('Maximum Redemptions Per User cannot be blank and must be a number')
-				} else if (!(/^\+?(0|[1-9]\d*)$/.test(promoCodesVue.newPromoCode.max_use))) {
-					reject('Total Redemptions Permitted cannot be blank and must be a number')
+				} else if (
+					!/^\+?(0|[1-9]\d*)$/.test(
+						promoCodesVue.newPromoCode.max_use_per_person
+					)
+				) {
+					reject(
+						'Maximum Redemptions Per User cannot be blank and must be a number'
+					)
+				} else if (
+					!/^\+?(0|[1-9]\d*)$/.test(
+						promoCodesVue.newPromoCode.max_use
+					)
+				) {
+					reject(
+						'Total Redemptions Permitted cannot be blank and must be a number'
+					)
 				} else if (!promoCodesVue.newPromoCode.apply_on.length) {
 					reject('Applies to cannot be blank')
 				} else if (!promoCodesVue.newPromoCode.start_from.length) {
 					reject('Please select Start Date')
-				} else if (promoCodesVue.isPast(promoCodesVue.newPromoCode.start_from)) {
+				} else if (
+					promoCodesVue.isPast(promoCodesVue.newPromoCode.start_from)
+				) {
 					reject('Start Date cannot be in the past')
 				} else if (!promoCodesVue.newPromoCode.end_on.length) {
 					reject('Please select End Date')
-				} else if (promoCodesVue.isPast(promoCodesVue.newPromoCode.end_on)) {
+				} else if (
+					promoCodesVue.isPast(promoCodesVue.newPromoCode.end_on)
+				) {
 					reject('End Date cannot be in the past')
-				} else if (new Date(promoCodesVue.newPromoCode.end_on) < new Date(promoCodesVue.newPromoCode.start_from)) {
+				} else if (
+					new Date(promoCodesVue.newPromoCode.end_on) <
+					new Date(promoCodesVue.newPromoCode.start_from)
+				) {
 					reject('End Date cannot be before Start Date')
 				} else if (!promoCodesVue.newPromoCode.locations.length) {
 					reject('Select at least one location')
@@ -643,49 +803,73 @@ export default {
 			var promoCodesVue = this
 			promoCodesVue.clearError('createErrorMessage')
 
-			return promoCodesVue.validatePromoCodeData()
-			.then(response => {
-				let newPromoCode = promoCodesVue.newPromoCode
-				newPromoCode.codes = newPromoCode.codes.toUpperCase()
-				newPromoCode.locations = newPromoCode.locations.toString()
-				newPromoCode.sku = newPromoCode.sku.toString()
-				PromoCodesFunctions.createNewPromoCode(promoCodesVue.newPromoCode, promoCodesVue.$root.appId, promoCodesVue.$root.appSecret, promoCodesVue.$root.userToken).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						promoCodesVue.getAllPromoCodes()
-						promoCodesVue.showAlert()
-					} else {
-						promoCodesVue.createErrorMessage = response.message
-					}
-				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						promoCodesVue.$router.push('/login/expired')
-						return
-					}
-					promoCodesVue.createErrorMessage = reason.responseJSON.message
-					window.scrollTo(0, 0)
+			return promoCodesVue
+				.validatePromoCodeData()
+				.then(response => {
+					promoCodesVue.creating = true
+					let newPromoCode = promoCodesVue.newPromoCode
+					newPromoCode.codes = newPromoCode.codes.toUpperCase()
+					newPromoCode.locations = newPromoCode.locations.toString()
+					newPromoCode.sku = newPromoCode.sku.toString()
+					PromoCodesFunctions.createNewPromoCode(
+						promoCodesVue.newPromoCode,
+						promoCodesVue.$root.appId,
+						promoCodesVue.$root.appSecret,
+						promoCodesVue.$root.userToken
+					)
+						.then(response => {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
+								promoCodesVue.getAllPromoCodes()
+								promoCodesVue.showAlert(response.payload)
+								promoCodesVue.clearNewPromoCode()
+							} else {
+								promoCodesVue.createErrorMessage =
+									response.message
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not add the promocode',
+								errorName: 'createErrorMessage',
+								vue: promoCodesVue
+							})
+						})
+						.finally(() => {
+							promoCodesVue.creating = false
+						})
 				})
-			}).catch(reason => {
-				// If validation fails then display the error message
-				promoCodesVue.createErrorMessage = reason
-				window.scrollTo(0, 0)
-				throw reason
-			})
+				.catch(reason => {
+					// If validation fails then display the error message
+					promoCodesVue.createErrorMessage = reason
+					window.scrollTo(0, 0)
+					throw reason
+				})
 		},
 		/**
-		 * To alert the user that the promoCode has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert () {
+		showAlert (payload = {}) {
+			let title = 'Success'
+			let text = 'The Promocode has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Promocode has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'PromoCode \'' + this.newPromoCode.codes + '\' has been successfully added!',
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(() => {
-				this.clearNewPromoCode()
-			}, dismiss => {
-				// do nothing
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -760,10 +944,9 @@ export default {
 		DeletePromoCode,
 		Dropdown,
 		SelectLocation,
-		MenuTree
+		MenuItemPicker
 	}
 }
-
 </script>
 
 <style scoped>
@@ -801,16 +984,25 @@ export default {
 .grey-label {
 	color: rgb(153, 153, 153);
 }
-.mt-element-list .list-news.ext-1.mt-list-container ul>.mt-list-item>.list-datetime, .mt-element-list .list-news.ext-1.mt-list-container ul>.mt-list-item>.list-item-content  {
+.mb-0 {
+	margin-bottom: 0;
+}
+.mt-element-list
+	.list-news.ext-1.mt-list-container
+	ul
+	> .mt-list-item
+	> .list-datetime,
+.mt-element-list
+	.list-news.ext-1.mt-list-container
+	ul
+	> .mt-list-item
+	> .list-item-content {
 	padding-left: 20px;
 }
 .animated {
 	animation: listItemHighlight 1s 2 ease-in-out both;
 }
-.select-items-button {
-	margin: 0 0 10px 10px;
-}
-.mt-element-list .list-news.ext-1.mt-list-container ul>.mt-list-item:hover {
+.mt-element-list .list-news.ext-1.mt-list-container ul > .mt-list-item:hover {
 	background-color: white;
 }
 </style>

@@ -1,6 +1,6 @@
 import GlobalFunctions from '@/global.js'
 
-export default ({
+export default {
 	/**
 	 * Call to API to get a list of modifier tiers.
 	 * @function
@@ -13,8 +13,8 @@ export default ({
 				dataType: 'json',
 				url: '/app/modifier_tiers',
 				data: {},
-				success: (response) => resolve(response),
-				error: (error) => reject(error)
+				success: response => resolve(response),
+				error: error => reject(error)
 			})
 		})
 	},
@@ -31,8 +31,8 @@ export default ({
 				dataType: 'json',
 				url: '/app/modifier_tiers/create',
 				data: tier,
-				success: (response) => resolve(response),
-				error: (error) => reject(error)
+				success: response => resolve(response),
+				error: error => reject(error)
 			})
 		})
 	},
@@ -49,8 +49,8 @@ export default ({
 				dataType: 'json',
 				url: '/app/modifier_tiers/' + tier.id + '/update',
 				data: tier,
-				success: (response) => resolve(response),
-				error: (error) => reject(error)
+				success: response => resolve(response),
+				error: error => reject(error)
 			})
 		})
 	},
@@ -67,8 +67,8 @@ export default ({
 				dataType: 'json',
 				url: '/app/modifier_tiers/' + tier.id + '/modifiers',
 				data: tier,
-				success: (response) => resolve(response),
-				error: (error) => reject(error)
+				success: response => resolve(response),
+				error: error => reject(error)
 			})
 		})
 	},
@@ -85,8 +85,8 @@ export default ({
 				dataType: 'json',
 				url: '/app/modifier_tiers/' + tier.id + '/delete',
 				data: tier.id,
-				success: (response) => resolve(response),
-				error: (error) => reject(error)
+				success: response => resolve(response),
+				error: error => reject(error)
 			})
 		})
 	},
@@ -103,8 +103,8 @@ export default ({
 				dataType: 'json',
 				url: '/app/modifier_tiers/' + data.id + '/add_modifiers',
 				data,
-				success: (response) => resolve(response),
-				error: (error) => reject(error)
+				success: response => resolve(response),
+				error: error => reject(error)
 			})
 		})
 	},
@@ -121,9 +121,9 @@ export default ({
 				dataType: 'json',
 				url: '/app/modifier_tiers/items',
 				data,
-				success: (response) => resolve(response),
-				error: (error) => reject(error)
+				success: response => resolve(response),
+				error: error => reject(error)
 			})
 		})
 	}
-})
+}

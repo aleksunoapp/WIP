@@ -3,7 +3,7 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to pitapit API to get a list of categories for a given menu id.
 	 * @function
@@ -255,7 +255,9 @@ export default ({
 			GlobalFunctions.$ajax({
 				method: 'GET',
 				dataType: 'json',
-				url: '/app/categoryHours/copyMenuHoursToCategoryHours/' + categoryId,
+				url:
+					'/app/categoryHours/copyMenuHoursToCategoryHours/' +
+					categoryId,
 				data: {},
 				success: function (response) {
 					resolve(response)
@@ -266,4 +268,4 @@ export default ({
 			})
 		})
 	}
-})
+}

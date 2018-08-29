@@ -1,107 +1,149 @@
 <template>
-	<modal :show="showEditCategoryModal" effect="fade" @closeOnEscape="closeModal">
-		<div slot="modal-header" class="modal-header center">
-			<button type="button" class="close" @click="closeModal()">
+	<modal :show="showEditCategoryModal"
+	       effect="fade"
+	       @closeOnEscape="closeModal"
+	       ref="modal">
+		<div slot="modal-header"
+		     class="modal-header center">
+			<button type="button"
+			        class="close"
+			        @click="closeModal()">
 				<span>&times;</span>
 			</button>
-			<transition name="fade" mode="out-in">
-				<h4 class="modal-title center" v-if="!selectImageMode && !selectLocationMode" key="mainEditMode">Edit Modifier Category</h4>
-				<h4 class="modal-title center" v-if="!selectImageMode && selectLocationMode" key="selectLocationMode"><i class="fa fa-chevron-left clickable pull-left back-button" @click="closeSelectLocationsPopup()"></i>Select Stores</h4>
-			    <h4 class="modal-title center" v-if="selectImageMode && !selectLocationMode" key="selectImageMode">Select An Image</h4>
+			<transition name="fade"
+			            mode="out-in">
+				<h4 class="modal-title center"
+				    v-if="!selectImageMode && !selectLocationMode"
+				    key="mainEditMode">Edit Modifier Category</h4>
+				<h4 class="modal-title center"
+				    v-if="!selectImageMode && selectLocationMode"
+				    key="selectLocationMode">
+					<i class="fa fa-chevron-left clickable pull-left back-button"
+					   @click="closeSelectLocationsPopup()"></i>Select Stores</h4>
+				<h4 class="modal-title center"
+				    v-if="selectImageMode && !selectLocationMode"
+				    key="selectImageMode">Select An Image</h4>
 			</transition>
 		</div>
-		<div slot="modal-body" class="modal-body">
+		<div slot="modal-body"
+		     class="modal-body">
 			<div class="col-xs-12">
-				<div class="alert alert-danger" v-if="errorMessage.length">
-				    <button class="close" data-close="alert" @click="clearError()"></button>
-				    <span>{{errorMessage}}</span>
+				<div class="alert alert-danger"
+				     v-show="errorMessage"
+				     ref="errorMessage">
+					<button class="close"
+					        @click="clearError()"></button>
+					<span>{{errorMessage}}</span>
 				</div>
-			    <div v-if="!selectLocationMode" :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
-					<resource-picker 
-						@open="goToPageTwo()"
-						@close="goToPageOne()"
-						@selected="updateImage" 
-						:imageButton="true"
-						:imageUrl="categoryToBeEdited.image_url"
-						class="margin-top-15"
-					>
+				<div v-if="!selectLocationMode"
+				     :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
+					<resource-picker @open="goToPageTwo()"
+					                 @close="goToPageOne()"
+					                 @selected="updateImage"
+					                 :imageButton="true"
+					                 :imageUrl="categoryToBeEdited.image_url"
+					                 class="margin-top-15">
 					</resource-picker>
-        		</div>
-				    <div class="col-xs-12">        			
-	    			 <select-locations-popup 
-	    				v-if="selectLocationMode" 
-	    				@closeSelectLocationsPopup='updateSelectedLocations' 
-	    				:previouslySelected="selectedLocations"
-	    			 >
-					 </select-locations-popup>
-        		</div>
-				<div class="col-md-12" v-show="!selectImageMode && !selectLocationMode">
+				</div>
+				<div class="col-xs-12">
+					<select-locations-popup v-if="selectLocationMode"
+					                        @closeSelectLocationsPopup='updateSelectedLocations'
+					                        :previouslySelected="selectedLocations">
+					</select-locations-popup>
+				</div>
+				<div class="col-md-12"
+				     v-show="!selectImageMode && !selectLocationMode">
 					<fieldset :disabled="!$root.permissions['menu_manager modifiers update']">
 						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm edited" id="form_control_1" v-model="categoryToBeEdited.name">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_1"
+							       v-model="categoryToBeEdited.name">
 							<label for="form_control_1">Modifier Category Name</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm edited" id="form_control_2" v-model="categoryToBeEdited.desc">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_2"
+							       v-model="categoryToBeEdited.desc">
 							<label for="form_control_2">Modifier Category Description</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm edited" id="form_control_3" v-model="categoryToBeEdited.sku">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_3"
+							       v-model="categoryToBeEdited.sku">
 							<label for="form_control_3">Modifier Category SKU</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm edited" id="form_control_4" v-model="categoryToBeEdited.min">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_4"
+							       v-model="categoryToBeEdited.min">
 							<label for="form_control_4">Modifier Category Min</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm edited" id="form_control_5" v-model="categoryToBeEdited.max">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_5"
+							       v-model="categoryToBeEdited.max">
 							<label for="form_control_5">Modifier Category Max</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm edited" id="form_control_6" v-model="categoryToBeEdited.included">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_6"
+							       v-model="categoryToBeEdited.included">
 							<label for="form_control_6">Modifier Category Number Free</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm edited" id="form_control_7" v-model="categoryToBeEdited.order">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_7"
+							       v-model="categoryToBeEdited.order">
 							<label for="form_control_7">Modifier Category Order</label>
 						</div>
 					</fieldset>
 					<div class="form-group form-md-line-input form-md-floating-label">
-		                <label>Modifier Category Status:</label><br>
-		                <el-switch
-		                	:disabled="!$root.permissions['menu_manager modifiers update']"
-							v-model="categoryToBeEdited.status"
-		                	active-color="#0c6"
-		                	inactive-color="#ff4949"
-		                	:active-value="1"
-		                	:inactive-value="0"
-		                	active-text="Available"
-		                	inactive-text="Sold Out">
-		                </el-switch>
-		            </div>
-        			<div>
+						<label>Modifier Category Status:</label><br>
+						<el-switch :disabled="!$root.permissions['menu_manager modifiers update']"
+						           v-model="categoryToBeEdited.status"
+						           active-color="#0c6"
+						           inactive-color="#ff4949"
+						           :active-value="1"
+						           :inactive-value="0"
+						           active-text="Available"
+						           inactive-text="Sold Out">
+						</el-switch>
+					</div>
+					<div>
 						<p class="margin-bottom-10 margin-top-30 margin-right-10">Select locations to apply the changes to:</p>
-        				<button type="submit" class="btn blue btn-outline" @click="selectLocations($event)">Select locations</button>
-        				<p class="grey-label margin-top-10" v-if="selectedLocations.length">Selected {{ selectedLocations.length }} location<span v-if="selectedLocations.length !== 1">s</span></p>
-        			</div>
-					<button 
-						v-if="!$root.permissions['menu_manager modifiers update']"
-						type="button" 
-						class="btn btn-primary pull-right" 
-						@click="closeModal()">
+						<button type="submit"
+						        class="btn blue btn-outline"
+						        @click="selectLocations($event)">Select locations</button>
+						<p class="grey-label margin-top-10"
+						   v-if="selectedLocations.length">Selected {{ selectedLocations.length }}
+							<span v-if="selectedLocations.length !== 1">locations</span>
+							<span v-else>location</span>
+						</p>
+					</div>
+					<button v-if="!$root.permissions['menu_manager modifiers update']"
+					        type="button"
+					        class="btn btn-primary pull-right"
+					        @click="closeModal()">
 						Close
 					</button>
-					<button 
-						v-else
-						type="button" 
-						class="btn btn-primary pull-right" 
-						@click="updateModifierCategory()">
+					<button v-else
+					        type="button"
+					        class="btn btn-primary pull-right"
+					        @click="updateModifierCategory()">
 						Save
 					</button>
-	         	</div>
+				</div>
 			</div>
 		</div>
-		<div slot="modal-footer" class="modal-footer">
+		<div slot="modal-footer"
+		     class="modal-footer">
 		</div>
 	</modal>
 </template>
@@ -112,6 +154,7 @@ import Modal from '../../../modules/Modal'
 import ModifiersFunctions from '../../../../controllers/Modifiers'
 import SelectLocationsPopup from '../../../modules/SelectLocationsPopup'
 import ResourcePicker from '../../../modules/ResourcePicker'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -175,21 +218,43 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (!editModifierCategoryVue.categoryToBeEdited.name.length) {
 					reject('Modifier Category name cannot be blank')
-				} else if (!editModifierCategoryVue.categoryToBeEdited.desc.length) {
+				} else if (
+					!editModifierCategoryVue.categoryToBeEdited.desc.length
+				) {
 					reject('Modifier Category description cannot be blank')
-				} else if (!editModifierCategoryVue.categoryToBeEdited.sku.length) {
+				} else if (
+					!editModifierCategoryVue.categoryToBeEdited.sku.length
+				) {
 					reject('Modifier Category SKU cannot be blank')
-				} else if (!editModifierCategoryVue.categoryToBeEdited.image_url.length) {
+				} else if (
+					!editModifierCategoryVue.categoryToBeEdited.image_url.length
+				) {
 					reject('Modifier Category image cannot be blank')
-				} else if (!$.isNumeric(editModifierCategoryVue.categoryToBeEdited.status)) {
+				} else if (
+					!$.isNumeric(
+						editModifierCategoryVue.categoryToBeEdited.status
+					)
+				) {
 					reject('Modifier Category status cannot be blank')
-				} else if (!$.isNumeric(editModifierCategoryVue.categoryToBeEdited.included)) {
+				} else if (
+					!$.isNumeric(
+						editModifierCategoryVue.categoryToBeEdited.included
+					)
+				) {
 					reject('Modifier Category included should be a number')
-				} else if (!$.isNumeric(editModifierCategoryVue.categoryToBeEdited.max)) {
+				} else if (
+					!$.isNumeric(editModifierCategoryVue.categoryToBeEdited.max)
+				) {
 					reject('Modifier Category max should be a number')
-				} else if (!$.isNumeric(editModifierCategoryVue.categoryToBeEdited.min)) {
+				} else if (
+					!$.isNumeric(editModifierCategoryVue.categoryToBeEdited.min)
+				) {
 					reject('Modifier Category min should be a number')
-				} else if (!$.isNumeric(editModifierCategoryVue.categoryToBeEdited.order)) {
+				} else if (
+					!$.isNumeric(
+						editModifierCategoryVue.categoryToBeEdited.order
+					)
+				) {
 					reject('Modifier Category order should be a number')
 				}
 				resolve('Hurray')
@@ -210,19 +275,26 @@ export default {
 		 */
 		getModifierCategoryDetails () {
 			var editModifierCategoryVue = this
-			ModifiersFunctions.getModifierCategoryDetails(editModifierCategoryVue.$route.params.modifier_category_id, editModifierCategoryVue.$root.appId, editModifierCategoryVue.$root.appSecret).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					editModifierCategoryVue.categoryToBeEdited = response.payload
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editModifierCategoryVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
-			})
+			ModifiersFunctions.getModifierCategoryDetails(
+				editModifierCategoryVue.$route.params.modifier_category_id,
+				editModifierCategoryVue.$root.appId,
+				editModifierCategoryVue.$root.appSecret
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						editModifierCategoryVue.categoryToBeEdited =
+							response.payload
+					}
+				})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch modifier info',
+						errorName: 'errorMessage',
+						vue: editModifierCategoryVue,
+						containerRef: 'modal'
+					})
+				})
 		},
 		/**
 		 * To update the modifier category and close the modal.
@@ -231,32 +303,48 @@ export default {
 		 */
 		updateModifierCategory () {
 			var editModifierCategoryVue = this
-			editModifierCategoryVue.categoryToBeEdited.user_id = editModifierCategoryVue.$root.createdBy
-			editModifierCategoryVue.categoryToBeEdited.update_locations = editModifierCategoryVue.selectedLocations
+			editModifierCategoryVue.categoryToBeEdited.user_id =
+				editModifierCategoryVue.$root.createdBy
+			editModifierCategoryVue.categoryToBeEdited.update_locations =
+				editModifierCategoryVue.selectedLocations
 			editModifierCategoryVue.clearError()
 
-			return editModifierCategoryVue.validateModifierCategoryData()
-			.then(response => {
-				ModifiersFunctions.updateModifierCategory(editModifierCategoryVue.categoryToBeEdited, editModifierCategoryVue.$root.appId, editModifierCategoryVue.$root.appSecret, editModifierCategoryVue.$root.userToken).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						this.closeModalAndUpdate()
-					} else {
-						editModifierCategoryVue.errorMessage = response.message
-					}
-				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						editModifierCategoryVue.$router.push('/login/expired')
-						return
-					}
+			return editModifierCategoryVue
+				.validateModifierCategoryData()
+				.then(response => {
+					ModifiersFunctions.updateModifierCategory(
+						editModifierCategoryVue.categoryToBeEdited,
+						editModifierCategoryVue.$root.appId,
+						editModifierCategoryVue.$root.appSecret,
+						editModifierCategoryVue.$root.userToken
+					)
+						.then(response => {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
+								this.closeModalAndUpdate()
+							} else {
+								editModifierCategoryVue.errorMessage =
+									response.message
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not update the modifier',
+								errorName: 'errorMessage',
+								vue: editModifierCategoryVue,
+								containerRef: 'modal'
+							})
+						})
+				})
+				.catch(reason => {
+					// If validation fails then display the error message
 					editModifierCategoryVue.errorMessage = reason
 					window.scrollTo(0, 0)
+					throw reason
 				})
-			}).catch(reason => {
-				// If validation fails then display the error message
-				editModifierCategoryVue.errorMessage = reason
-				window.scrollTo(0, 0)
-				throw reason
-			})
 		},
 		/**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
@@ -309,7 +397,6 @@ export default {
 		Modal,
 		ResourcePicker,
 		SelectLocationsPopup
-
 	}
 }
 </script>

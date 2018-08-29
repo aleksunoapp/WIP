@@ -10,37 +10,58 @@
 			</div>
 
 			<!-- CREATE GROUP PANEL START -->
-			<div class="portlet box blue-hoki margin-top-20" v-if="$root.permissions['user_manager user_groups create']">
-					<div class="portlet-title bg-blue-chambray" @click="toggleCreateGroupPanel()">
-						<div class="caption">
-							<i class="fa fa-plus-circle"></i>
-							Create New Group
-						</div>
-						<div class="tools">
-							<a :class="{'expand': !createGroupCollapse, 'collapse': createGroupCollapse}"></a>
-						</div>
+			<div class="portlet box blue-hoki margin-top-20"
+			     v-if="$root.permissions['user_manager user_groups create']">
+				<div class="portlet-title bg-blue-chambray"
+				     @click="toggleCreateGroupPanel()">
+					<div class="caption">
+						<i class="fa fa-plus-circle"></i>
+						Create New Group
 					</div>
-					<div class="portlet-body" :class="{'display-hide': createGroupCollapse}">
-					<form role="form" @submit.prevent="createNewGroup()">
+					<div class="tools">
+						<a :class="{'expand': !createGroupCollapse, 'collapse': createGroupCollapse}"></a>
+					</div>
+				</div>
+				<div class="portlet-body"
+				     :class="{'display-hide': createGroupCollapse}">
+					<form role="form"
+					      @submit.prevent="createNewGroup()">
 						<div class="row">
 							<div class="col-md-12">
-								<div class="alert alert-danger" v-if="errorMessage.length">
-									<button class="close" data-close="alert" @click="clearError()"></button>
+								<div class="alert alert-danger"
+								     v-show="errorMessage"
+								     ref="errorMessage">
+									<button class="close"
+									        data-close="alert"
+									        @click="clearError()"></button>
 									<span>{{errorMessage}}</span>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text" class="form-control input-sm" id="form_control_1" v-model="newGroup.name" :class="{'edited': newGroup.name.length}">
+									<input type="text"
+									       class="form-control input-sm"
+									       id="form_control_1"
+									       v-model="newGroup.name"
+									       :class="{'edited': newGroup.name.length}">
 									<label for="form_control_1">Group Name</label>
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text" class="form-control input-sm" id="form_control_2" v-model="newGroup.description" :class="{'edited': newGroup.description.length}">
+									<input type="text"
+									       class="form-control input-sm"
+									       id="form_control_2"
+									       v-model="newGroup.description"
+									       :class="{'edited': newGroup.description.length}">
 									<label for="form_control_2">Group Description</label>
 								</div>
 								<h4 class="margin-top-20">All users with:</h4>
 								<div>
-									<el-dropdown trigger="click" @command="updateSignUpDate" size="mini" :show-timeout="50" :hide-timeout="50"  class="margin-top-15">
+									<el-dropdown trigger="click"
+									             @command="updateSignUpDate"
+									             size="mini"
+									             :show-timeout="50"
+									             :hide-timeout="50"
+									             class="margin-top-15">
 										<el-button size="mini">
 											{{ selectedSignUpDate }}
 											<i class="el-icon-arrow-down el-icon--right"></i>
@@ -59,7 +80,12 @@
 									</el-dropdown>
 								</div>
 								<div>
-									<el-dropdown trigger="click" @command="updateTotalOrders" size="mini" :show-timeout="50" :hide-timeout="50"  class="margin-top-15">
+									<el-dropdown trigger="click"
+									             @command="updateTotalOrders"
+									             size="mini"
+									             :show-timeout="50"
+									             :hide-timeout="50"
+									             class="margin-top-15">
 										<el-button size="mini">
 											{{ selectedTotalOrders }}
 											<i class="el-icon-arrow-down el-icon--right"></i>
@@ -79,20 +105,37 @@
 								</div>
 								<div>
 									<div class="form-group form-md-line-input form-md-floating-label">
-										<input type="text" class="form-control input-sm" id="form_control_3" v-model="city" :class="{'edited': city.length}" v-on:change="addRule('city')">
+										<input type="text"
+										       class="form-control input-sm"
+										       id="form_control_3"
+										       v-model="city"
+										       :class="{'edited': city.length}"
+										       v-on:change="addRule('city')">
 										<label for="form_control_3">City</label>
 									</div>
 								</div>
 								<div>
 									<div class="form-group form-md-line-input form-md-floating-label">
-										<input type="text" class="form-control input-sm" id="form_control_4" v-model="province" :class="{'edited': province.length}" v-on:change="addRule('province')">
+										<input type="text"
+										       class="form-control input-sm"
+										       id="form_control_4"
+										       v-model="province"
+										       :class="{'edited': province.length}"
+										       v-on:change="addRule('province')">
 										<label for="form_control_4">Province</label>
 									</div>
 								</div>
 							</div>
 						</div>
 						<div class="form-actions right">
-							<button type="submit" class="btn blue">Create</button>
+							<button type="submit"
+							        class="btn blue"
+							        :disabled="creating">
+								Create
+								<i v-show="creating"
+								   class="fa fa-spinner fa-pulse fa-fw">
+								</i>
+							</button>
 						</div>
 					</form>
 				</div>
@@ -113,62 +156,89 @@
 					</div>
 					<div class="portlet-body relative-block">
 						<div class="mt-element-list">
-								<div class="clearfix margin-bottom-10">
-									<el-dropdown trigger="click" @command="updateSortByOrder" size="mini" :show-timeout="50" :hide-timeout="50">
-										<el-button size="mini">
-											Sort by
-											<span>
-												<i class="fa fa-sort-alpha-asc" v-if="sortBy.order === 'ASC'"></i>
-												<i class="fa fa-sort-alpha-desc" v-if="sortBy.order === 'DESC'"></i>
-											</span>
-											<i class="el-icon-arrow-down el-icon--right"></i>
-										</el-button>
-										<el-dropdown-menu slot="dropdown">
-											<el-dropdown-item command="ASC"><i class="fa fa-sort-alpha-asc"></i></el-dropdown-item>
-											<el-dropdown-item command="DESC"><i class="fa fa-sort-alpha-desc"></i></el-dropdown-item>
-										</el-dropdown-menu>
-									</el-dropdown>
-					  				<page-results class="pull-right" :totalResults="totalResults" :activePage="activePage" @pageResults="resultsPerPageUpdate"></page-results>
-								</div>
+							<div class="clearfix margin-bottom-10">
+								<el-dropdown trigger="click"
+								             @command="updateSortByOrder"
+								             size="mini"
+								             :show-timeout="50"
+								             :hide-timeout="50">
+									<el-button size="mini">
+										Sort by
+										<span>
+											<i class="fa fa-sort-alpha-asc"
+											   v-if="sortBy.order === 'ASC'"></i>
+											<i class="fa fa-sort-alpha-desc"
+											   v-if="sortBy.order === 'DESC'"></i>
+										</span>
+										<i class="el-icon-arrow-down el-icon--right"></i>
+									</el-button>
+									<el-dropdown-menu slot="dropdown">
+										<el-dropdown-item command="ASC">
+											<i class="fa fa-sort-alpha-asc"></i>
+										</el-dropdown-item>
+										<el-dropdown-item command="DESC">
+											<i class="fa fa-sort-alpha-desc"></i>
+										</el-dropdown-item>
+									</el-dropdown-menu>
+								</el-dropdown>
+								<page-results class="pull-right"
+								              :totalResults="totalResults"
+								              :activePage="activePage"
+								              @pageResults="resultsPerPageUpdate"></page-results>
+							</div>
 							<div class="mt-list-container list-news">
-								<loading-screen :show="loadingGroupsData" :color="'#2C3E50'" :display="'inline'"></loading-screen>
+								<div class="row">
+									<div class="col-md-12">
+										<div class="alert alert-danger"
+										     v-show="listErrorMessage"
+										     ref="listErrorMessage">
+											<button class="close"
+											        @click="clearError('listErrorMessage')"></button>
+											<span>{{listErrorMessage}}</span>
+										</div>
+									</div>
+								</div>
+								<loading-screen :show="loadingGroupsData"
+								                :color="'#2C3E50'"
+								                :display="'inline'"></loading-screen>
 								<ul v-show="groups.length && !loadingGroupsData">
-									<li 
-										class="mt-list-item actions-at-left margin-top-15 clickable" 
-										v-for="group in groups" 
-										@click="sendMessageToGroup(group)" 
-										:id="'group-' + group.id"
-										:key="group.id">
+									<li class="mt-list-item actions-at-left margin-top-15"
+									    :class="{'clickable' : can('user_manager user_groups message')}"
+									    v-for="group in groups"
+									    @click="sendMessageToGroup(group)"
+									    :id="'group-' + group.id"
+									    :key="group.id">
 										<div class="list-item-actions">
-											<el-tooltip 
-												v-if="$root.permissions['user_manager user_groups update']"
-												content="Edit" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="displayEditGroupModal(group, $event)">
+											<el-tooltip v-if="$root.permissions['user_manager user_groups update']"
+											            content="Edit"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="displayEditGroupModal(group, $event)">
 													<i class="fa fa-lg fa-pencil"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip 
-												v-if="$root.permissions['user_manager user_groups read'] && !$root.permissions['user_manager user_groups update']"
-												content="View" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="displayEditGroupModal(group, $event)">
+											<el-tooltip v-if="$root.permissions['user_manager user_groups read'] && !$root.permissions['user_manager user_groups update']"
+											            content="View"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="displayEditGroupModal(group, $event)">
 													<i class="fa fa-lg fa-eye"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip 
-												v-if="$root.permissions['user_manager user_groups delete']"
-												content="Delete" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="deleteGroup(group, $event)">
+											<el-tooltip v-if="$root.permissions['user_manager user_groups delete']"
+											            content="Delete"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="deleteGroup(group, $event)">
 													<i class="fa fa-lg fa-trash"></i>
 												</a>
 											</el-tooltip>
 										</div>
-										<div class="list-icon-container">
+										<div class="list-icon-container"
+										     v-if="can('user_manager user_groups message')">
 											<i class="fa fa-angle-right"></i>
 										</div>
 										<div class="list-datetime bold uppercase font-red">
@@ -182,12 +252,16 @@
 									</li>
 								</ul>
 							</div>
-							<div class="clearfix" v-show="numPages > 1">
-								<pagination :passedPage="activePage" :numPages="numPages" @activePageChange="activePageUpdate"></pagination>
+							<div class="clearfix"
+							     v-show="numPages > 1">
+								<pagination :passedPage="activePage"
+								            :numPages="numPages"
+								            @activePageChange="activePageUpdate"></pagination>
 							</div>
 						</div>
 						<div v-if="!groups.length && !loadingGroupsData">
-							<no-results :show="!groups.length" :type="'store groups'"></no-results>
+							<no-results :show="!groups.length"
+							            :type="'store groups'"></no-results>
 						</div>
 					</div>
 				</div>
@@ -196,10 +270,28 @@
 		</div>
 
 		<!-- PANEL COMPONENTS END -->
-		<select-users v-if="showSelectUsersModal" :passedGroupId="selectedGroupId" :passedGroupName="passedGroupName" @closeSelectUsersModal="closeSelectUsersModal"></select-users>
-		<message v-if="messageModalDisplayed" :userId="selectedUsers" @closeMessageModal="closeMessageModal"></message>
-		<delete-user-group v-if="deleteGroupModalActive" :selectedPromotionId="groupToBeDeletedId" @closeDeleteGroupModal="closeDeleteGroupModal" @deleteGroupAndCloseModal="deleteGroupAndCloseModal"></delete-user-group>
-		<edit-user-group v-if="showEditGroupModal" :passedGroup="groupToBeEdited" @closeEditGroupModal="closeEditGroupModal" @updateGroup="updateGroup"></edit-user-group>
+		<select-users v-if="showSelectUsersModal"
+		              :passedGroupId="selectedGroupId"
+		              :passedGroupName="passedGroupName"
+		              @closeSelectUsersModal="closeSelectUsersModal">
+		</select-users>
+
+		<message v-if="messageModalDisplayed"
+		         :userId="selectedUsers"
+		         @closeMessageModal="closeMessageModal">
+		</message>
+
+		<delete-user-group v-if="deleteGroupModalActive"
+		                   :selectedPromotionId="groupToBeDeletedId"
+		                   @closeDeleteGroupModal="closeDeleteGroupModal"
+		                   @deleteGroupAndCloseModal="deleteGroupAndCloseModal">
+		</delete-user-group>
+
+		<edit-user-group v-if="showEditGroupModal"
+		                 :passedGroup="groupToBeEdited"
+		                 @closeEditGroupModal="closeEditGroupModal"
+		                 @updateGroup="updateGroup">
+		</edit-user-group>
 	</div>
 </template>
 
@@ -217,17 +309,20 @@ import UserGroupsFunctions from '../../../controllers/UserGroups'
 import Dropdown from '../../modules/Dropdown'
 import PageResults from '../../modules/PageResults'
 import Pagination from '../../modules/Pagination'
+import ajaxErrorHandler from '@/controllers/ErrorController'
+import { mapGetters } from 'vuex'
 
 export default {
 	data () {
 		return {
 			breadcrumbArray: [
-				{name: 'Users Manager', link: false},
-				{name: 'Users', link: false}
+				{ name: 'Users Manager', link: false },
+				{ name: 'Users', link: false }
 			],
 			createGroupCollapse: true,
 			errorMessage: '',
 			loadingGroupsData: false,
+			listErrorMessage: '',
 			groups: [],
 			computedHeight: 0,
 			selectedGroupId: 0,
@@ -238,6 +333,7 @@ export default {
 			passedGroupName: '',
 			city: '',
 			province: '',
+			creating: false,
 			newGroup: {
 				id: '',
 				name: '',
@@ -281,16 +377,20 @@ export default {
 				}
 			}
 			return text
-		}
+		},
+		...mapGetters(['can'])
 	},
 	created () {
 		let usersVue = this
 
 		this.computeHeight()
 
-		$(window).on('resize', debounce(() => {
-			usersVue.computeHeight()
-		}, 200))
+		$(window).on(
+			'resize',
+			debounce(() => {
+				usersVue.computeHeight()
+			}, 200)
+		)
 	},
 	mounted () {
 		this.getGroups()
@@ -329,20 +429,26 @@ export default {
 			this.getGroups()
 		},
 		/**
-		 * To alert the user that the group has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert () {
+		showAlert (payload = {}) {
+			let title = 'Success'
+			let text = 'The User Group has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The User Group has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'Group \'' + this.newGroup.name + '\' has been successfully added!',
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(() => {
-				this.clearNewGroup()
-			}, dismiss => {
-				// do nothing
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -366,9 +472,9 @@ export default {
 		addRule (type) {
 			if (type === 'city' && this.city.length) {
 				let rule = {
-					'parameter': 'city',
-					'value': this.city,
-					'operator': '='
+					parameter: 'city',
+					value: this.city,
+					operator: '='
 				}
 
 				for (let i = 0; i < this.newGroup.rules.length; i++) {
@@ -379,9 +485,9 @@ export default {
 				this.newGroup.rules.push(rule)
 			} else if (type === 'province' && this.province.length) {
 				let rule = {
-					'parameter': 'province',
-					'value': this.province,
-					'operator': '='
+					parameter: 'province',
+					value: this.province,
+					operator: '='
 				}
 				for (let i = 0; i < this.newGroup.rules.length; i++) {
 					if (this.newGroup.rules[i].parameter === 'province') {
@@ -415,10 +521,10 @@ export default {
 		 */
 		updateSignUpDate (days) {
 			let rule = {
-				'parameter': 'sign-up-date',
-				'value': this.daysBeforeToday(days),
-				'operator': '>',
-				'text': `Signed up in the last ${days} days`
+				parameter: 'sign-up-date',
+				value: this.daysBeforeToday(days),
+				operator: '>',
+				text: `Signed up in the last ${days} days`
 			}
 
 			for (let i = 0; i < this.newGroup.rules.length; i++) {
@@ -437,10 +543,12 @@ export default {
 		 */
 		updateTotalOrders (argsArray) {
 			let rule = {
-				'parameter': 'total-orders',
-				'value': argsArray[0],
-				'operator': argsArray[1],
-				'text': `${(argsArray[1] === '<' ? 'Less' : 'More')} than ${argsArray[0]} orders`
+				parameter: 'total-orders',
+				value: argsArray[0],
+				operator: argsArray[1],
+				text: `${argsArray[1] === '<' ? 'Less' : 'More'} than ${
+					argsArray[0]
+				} orders`
 			}
 
 			for (let i = 0; i < this.newGroup.rules.length; i++) {
@@ -484,25 +592,31 @@ export default {
 				per_page: this.resultsPerPage
 			}
 			userGroupsVue.groups = []
-			return UserGroupsFunctions.getGroups(userGroupsVue.$root.appId, userGroupsVue.$root.appSecret, userGroupsVue.$root.userToken, paginationPreferences).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					userGroupsVue.totalResults = response.payload.total
-					userGroupsVue.numPages = response.payload.last_page
-					userGroupsVue.groups = response.payload.data
+			return UserGroupsFunctions.getGroups(
+				userGroupsVue.$root.appId,
+				userGroupsVue.$root.appSecret,
+				userGroupsVue.$root.userToken,
+				paginationPreferences
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						userGroupsVue.totalResults = response.payload.total
+						userGroupsVue.numPages = response.payload.last_page
+						userGroupsVue.groups = response.payload.data
+						userGroupsVue.loadingGroupsData = false
+					} else {
+						userGroupsVue.loadingGroupsData = false
+					}
+				})
+				.catch(reason => {
 					userGroupsVue.loadingGroupsData = false
-				} else {
-					userGroupsVue.loadingGroupsData = false
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					userGroupsVue.$router.push('/login/expired')
-					return
-				}
-				userGroupsVue.loadingGroupsData = false
-				if (reason.responseJSON) {
-				}
-				throw reason
-			})
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch user groups',
+						errorName: 'listErrorMessage',
+						vue: userGroupsVue
+					})
+				})
 		},
 		/**
 		 * To compute height to display based on window height and navbar.
@@ -526,10 +640,11 @@ export default {
 		/**
 		 * To clear the current error.
 		 * @function
+		 * @param {string} name - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
+		clearError (name) {
+			this[name] = ''
 		},
 		/**
 		 * To activate the right half panel which lists the users in the group.
@@ -538,6 +653,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		sendMessageToGroup (group) {
+			if (!this.can('user_manager user_groups message')) return
 			this.showSelectUsersModal = true
 			this.selectedGroupId = group.id
 			this.passedGroupName = group.name
@@ -637,16 +753,6 @@ export default {
 			this.createGroupCollapse = true
 		},
 		/**
-		 * To append the new group to the groups list.
-		 * @function
-		 * @param {object} newGroup - The new group object
-		 * @returns {undefined}
-		 */
-		addGroup (newGroup) {
-			this.groups.push(newGroup)
-			this.showAlert()
-		},
-		/**
 		 * To check if the item data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
@@ -673,29 +779,46 @@ export default {
 			var userGroupsVue = this
 			userGroupsVue.clearError()
 
-			return userGroupsVue.validateGroupData()
-			.then(response => {
-				UserGroupsFunctions.createNewGroup(userGroupsVue.newGroup, userGroupsVue.$root.appId, userGroupsVue.$root.appSecret, userGroupsVue.$root.userToken).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						userGroupsVue.showAlert()
-						userGroupsVue.getGroups()
-					} else {
-						userGroupsVue.errorMessage = response.message
-					}
-				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						userGroupsVue.$router.push('/login/expired')
-						return
-					}
+			return userGroupsVue
+				.validateGroupData()
+				.then(response => {
+					userGroupsVue.creating = true
+					UserGroupsFunctions.createNewGroup(
+						userGroupsVue.newGroup,
+						userGroupsVue.$root.appId,
+						userGroupsVue.$root.appSecret,
+						userGroupsVue.$root.userToken
+					)
+						.then(response => {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
+								userGroupsVue.showAlert(response.payload)
+								userGroupsVue.clearNewGroup()
+								userGroupsVue.getGroups()
+							} else {
+								userGroupsVue.errorMessage = response.message
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not add the group',
+								errorName: 'errorMessage',
+								vue: userGroupsVue
+							})
+						})
+						.finally(() => {
+							userGroupsVue.creating = false
+						})
+				})
+				.catch(reason => {
+					// If validation fails then display the error message
 					userGroupsVue.errorMessage = reason
 					window.scrollTo(0, 0)
+					throw reason
 				})
-			}).catch(reason => {
-				// If validation fails then display the error message
-				userGroupsVue.errorMessage = reason
-				window.scrollTo(0, 0)
-				throw reason
-			})
 		}
 	},
 	components: {

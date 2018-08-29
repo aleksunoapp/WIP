@@ -3,7 +3,7 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to pitapit API to get a list of the modifiers for a store.
 	 * @function
@@ -36,13 +36,19 @@ export default ({
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	applyModifiersToItem: function (itemId, modifiers, appId, appSecret, userToken) {
+	applyModifiersToItem: function (
+		itemId,
+		modifiers,
+		appId,
+		appSecret,
+		userToken
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
 				dataType: 'json',
 				url: '/app/items/updatemodifier/' + itemId,
-				data: {modifiers: modifiers},
+				data: { modifiers: modifiers },
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
 					xhr.setRequestHeader('app-id', appId)
@@ -94,7 +100,12 @@ export default ({
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	updateModifierCategory: function (modifierCategory, appId, appSecret, userToken) {
+	updateModifierCategory: function (
+		modifierCategory,
+		appId,
+		appSecret,
+		userToken
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
@@ -124,7 +135,12 @@ export default ({
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	addNewModifierCategory: function (modifierCategory, appId, appSecret, userToken) {
+	addNewModifierCategory: function (
+		modifierCategory,
+		appId,
+		appSecret,
+		userToken
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
@@ -270,7 +286,12 @@ export default ({
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	deleteModifierCategory: function (modifierCategoryId, appId, appSecret, userToken) {
+	deleteModifierCategory: function (
+		modifierCategoryId,
+		appId,
+		appSecret,
+		userToken
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'DELETE',
@@ -358,7 +379,12 @@ export default ({
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	updateModifierNutritionInfo: function (updatedNutritionInfo, appId, appSecret, userToken) {
+	updateModifierNutritionInfo: function (
+		updatedNutritionInfo,
+		appId,
+		appSecret,
+		userToken
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
@@ -388,7 +414,12 @@ export default ({
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	createModifierNutritionInfo: function (newNutritionInfo, appId, appSecret, userToken) {
+	createModifierNutritionInfo: function (
+		newNutritionInfo,
+		appId,
+		appSecret,
+		userToken
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
@@ -420,7 +451,14 @@ export default ({
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	applyModifierToMultipleItems (modifierId, itemsToAdd, itemsToRemove, appId, appSecret, userToken) {
+	applyModifierToMultipleItems (
+		modifierId,
+		itemsToAdd,
+		itemsToRemove,
+		appId,
+		appSecret,
+		userToken
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
@@ -518,4 +556,4 @@ export default ({
 			})
 		})
 	}
-})
+}

@@ -1,125 +1,160 @@
 <template>
 	<div>
 		<div class="row">
-			<div class="col-xs-3">  	      		
+			<div class="col-xs-4">
 				<div class="portlet box blue-hoki">
 					<div class="portlet-title bg-blue-chambray">
-						<div class="caption" style="font-size:14px">
+						<div class="caption"
+						     style="font-size:14px">
 							<span class="fa-stack fa-sm">
-								<i class="fa fa-circle fa-stack-2x" aria-hidden="true" style="color:rgb(26,188,156);line-height: inherit"></i>
-								<i class="fa fa-usd fa-stack-1x" aria-hidden="true" style="color:rgb(255,255,255);line-height:inherit"></i>
+								<i class="fa fa-circle fa-stack-2x"
+								   aria-hidden="true"
+								   style="color:rgb(26,188,156);line-height: inherit"></i>
+								<i class="fa fa-usd fa-stack-1x"
+								   aria-hidden="true"
+								   style="color:rgb(255,255,255);line-height:inherit"></i>
 							</span>
 							Revenue Today
 						</div>
 					</div>
 					<div class="portlet-body">
-						<div 
-							style="font-size: 20px;color:rgb(26,188,156);text-align: center;"> 
+						<div style="font-size: 20px;color:rgb(26,188,156);text-align: center;">
 							<span v-if="formatUSD(globalRevenueSummary.today_revenue) !== 'n/a'">
-								{{ formatUSD(globalRevenueSummary.today_revenue) }} in 
+								{{ formatUSD(globalRevenueSummary.today_revenue) }} in
 							</span>
-								{{ formatNumber(top10globalItems.daily_order) }} order<span v-show="top10globalItems.daily_order !== 1">s</span>
+							{{ formatNumber(top10globalItems.daily_order) }}
+							<span v-show="top10globalItems.daily_order !== 1">orders</span>
+							<span v-show="top10globalItems.daily_order === 1">order</span>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="col-xs-3">  	      		
+			<div class="col-xs-4">
 				<div class="portlet box blue-hoki">
 					<div class="portlet-title bg-blue-chambray">
-						<div class="caption" style="font-size:14px">
+						<div class="caption"
+						     style="font-size:14px">
 							<span class="fa-stack fa-sm">
-								<i class="fa fa-circle fa-stack-2x" aria-hidden="true" style="color:#3498db;line-height: inherit"></i>
-								<i class="fa fa-usd fa-stack-1x" aria-hidden="true" style="color:rgb(255,255,255);line-height:inherit"></i>
+								<i class="fa fa-circle fa-stack-2x"
+								   aria-hidden="true"
+								   style="color:#3498db;line-height: inherit"></i>
+								<i class="fa fa-usd fa-stack-1x"
+								   aria-hidden="true"
+								   style="color:rgb(255,255,255);line-height:inherit"></i>
 							</span>
 							Revenue This Week
 						</div>
 					</div>
 					<div class="portlet-body">
-						<div 
-							style="font-size: 20px;color:#3498db;text-align: center;"> 
+						<div style="font-size: 20px;color:#3498db;text-align: center;">
 							<span v-if="formatUSD(globalRevenueSummary.week_revenue) !== 'n/a'">
-								{{ formatUSD(globalRevenueSummary.week_revenue) }} in 
+								{{ formatUSD(globalRevenueSummary.week_revenue) }} in
 							</span>
-								{{ formatNumber(top10globalItems.weekly_order) }} order<span v-show="top10globalItems.weekly_order !== 1">s</span>
+							{{ formatNumber(top10globalItems.weekly_order) }}
+							<span v-show="top10globalItems.weekly_order !== 1">orders</span>
+							<span v-show="top10globalItems.weekly_order === 1">order</span>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="col-xs-3">  	      		
+			<div class="col-xs-4">
 				<div class="portlet box blue-hoki">
 					<div class="portlet-title bg-blue-chambray">
-						<div class="caption" style="font-size:14px">
+						<div class="caption"
+						     style="font-size:14px">
 							<span class="fa-stack fa-sm">
-								<i class="fa fa-circle fa-stack-2x" aria-hidden="true" style="color:#e67e22;line-height: inherit"></i>
-								<i class="fa fa-usd fa-stack-1x" aria-hidden="true" style="color:rgb(255,255,255);line-height:inherit"></i>
+								<i class="fa fa-circle fa-stack-2x"
+								   aria-hidden="true"
+								   style="color:#e67e22;line-height: inherit"></i>
+								<i class="fa fa-usd fa-stack-1x"
+								   aria-hidden="true"
+								   style="color:rgb(255,255,255);line-height:inherit"></i>
 							</span>
 							Revenue This Month
 						</div>
 					</div>
 					<div class="portlet-body">
-						<div 
-							style="font-size: 20px;color:#e67e22;text-align: center;"> 
+						<div style="font-size: 20px;color:#e67e22;text-align: center;">
 							<span v-if="formatUSD(globalRevenueSummary.month_revenue) !== 'n/a'">
-								{{ formatUSD(globalRevenueSummary.month_revenue) }} in 
+								{{ formatUSD(globalRevenueSummary.month_revenue) }} in
 							</span>
-								{{ formatNumber(top10globalItems.monthly_order) }} order<span v-show="top10globalItems.monthly_order !== 1">s</span>
+							{{ formatNumber(top10globalItems.monthly_order) }}
+							<span v-show="top10globalItems.monthly_order !== 1">orders</span>
+							<span v-show="top10globalItems.monthly_order === 1">order</span>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="col-xs-3">  	      		
+			<div class="col-xs-6">
 				<div class="portlet box blue-hoki">
 					<div class="portlet-title bg-blue-chambray">
-						<div class="caption" style="font-size:14px">
+						<div class="caption"
+						     style="font-size:14px">
 							<span class="fa-stack fa-sm">
-								<i class="fa fa-circle fa-stack-2x" aria-hidden="true" style="color:#9b59b6;line-height: inherit"></i>
-								<i class="fa fa-usd fa-stack-1x" aria-hidden="true" style="color:rgb(255,255,255);line-height:inherit"></i>
+								<i class="fa fa-circle fa-stack-2x"
+								   aria-hidden="true"
+								   style="color:#9b59b6;line-height: inherit"></i>
+								<i class="fa fa-usd fa-stack-1x"
+								   aria-hidden="true"
+								   style="color:rgb(255,255,255);line-height:inherit"></i>
 							</span>
 							Revenue This Year
 						</div>
 					</div>
 					<div class="portlet-body">
-						<div 
-							style="font-size: 20px;color:#9b59b6;text-align: center;"> 
+						<div style="font-size: 20px;color:#9b59b6;text-align: center;">
 							<span v-if="formatUSD(globalRevenueSummary.year_revenue) !== 'n/a'">
-								{{ formatUSD(globalRevenueSummary.year_revenue) }} in 
+								{{ formatUSD(globalRevenueSummary.year_revenue) }} in
 							</span>
-								{{ formatNumber(top10globalItems.yearly_order) }} order<span v-show="top10globalItems.yearly_order !== 1">s</span>
+							{{ formatNumber(top10globalItems.yearly_order) }}
+							<span v-show="top10globalItems.yearly_order !== 1">orders</span>
+							<span v-show="top10globalItems.yearly_order === 1">order</span>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="col-md-12">
+			<div class="col-xs-6">
 				<div class="portlet box blue-hoki">
 					<div class="portlet-title bg-blue-chambray">
-						<div class="caption" style="font-size:14px">
+						<div class="caption"
+						     style="font-size:14px">
 							<span class="fa-stack fa-sm">
-								<i class="fa fa-circle fa-stack-2x" aria-hidden="true" style="color:#F2B230;line-height: inherit"></i>
-								<i class="fa fa-usd fa-stack-1x" aria-hidden="true" style="color:rgb(255,255,255);line-height:inherit"></i>
+								<i class="fa fa-circle fa-stack-2x"
+								   aria-hidden="true"
+								   style="color:#F2B230;line-height: inherit"></i>
+								<i class="fa fa-usd fa-stack-1x"
+								   aria-hidden="true"
+								   style="color:rgb(255,255,255);line-height:inherit"></i>
 							</span>
 							Total Revenue To Date
 						</div>
 					</div>
 					<div class="portlet-body">
-						<div 
-							style="font-size: 20px;color:#F2B230;text-align: center;"> 
+						<div style="font-size: 20px;color:#F2B230;text-align: center;">
 							<span v-if="formatUSD(globalRevenueSummary.total_revenue) !== 'n/a'">
-								{{ formatUSD(globalRevenueSummary.total_revenue) }} in 
+								{{ formatUSD(globalRevenueSummary.total_revenue) }} in
 							</span>
-								{{ formatNumber(top10globalItems.total_order) }} order<span v-show="top10globalItems.total_order !== 1">s</span>
+							{{ formatNumber(top10globalItems.total_order) }}
+							<span v-show="top10globalItems.total_order !== 1">orders</span>
+							<span v-show="top10globalItems.total_order === 1">order</span>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-12">  	      		
+			<div class="col-md-12">
 				<div class="portlet box blue-hoki">
 					<div class="portlet-title bg-blue-chambray">
-						<div class="caption" style="font-size:14px">
+						<div class="caption"
+						     style="font-size:14px">
 							<span class="fa-stack fa-sm">
-								<i class="fa fa-circle fa-stack-2x" aria-hidden="true" style="color:#409EFF;line-height: inherit"></i>
-								<i class="fa fa-line-chart fa-stack-1x" aria-hidden="true" style="color:rgb(255,255,255);line-height:inherit"></i>
+								<i class="fa fa-circle fa-stack-2x"
+								   aria-hidden="true"
+								   style="color:#409EFF;line-height: inherit"></i>
+								<i class="fa fa-line-chart fa-stack-1x"
+								   aria-hidden="true"
+								   style="color:rgb(255,255,255);line-height:inherit"></i>
 							</span>
 							Revenue Tracker
 						</div>
@@ -127,67 +162,70 @@
 					<div class="portlet-body">
 						<div class="row">
 							<div class="col-md-10 col-md-offset-1">
-								<el-select 
-									class="pull-right full-width"
-									v-model="selectedLocations" 
-									filterable 
-									multiple 
-									@change="updateLocations" 
-									placeholder="Select store">
-									<el-option
-										v-for="store in stores"
-										:key="store.value"
-										:label="store.label"
-										:value="store">
-										</el-option>
+								<el-select class="pull-right full-width"
+								           v-model="selectedLocations"
+								           filterable
+								           multiple
+								           @change="updateLocations"
+								           placeholder="Select store">
+									<el-option v-for="store in stores"
+									           :key="store.value"
+									           :label="store.label"
+									           :value="store">
+									</el-option>
 								</el-select>
 							</div>
 							<div class="col-md-10 col-md-offset-1 margin-top-10 center">
-								<el-radio-group v-model="searchPeriod"  @change="weekSelected()">
+								<el-radio-group v-model="searchPeriod"
+								                @change="weekSelected()">
 									<el-radio-button label="week">week</el-radio-button>
 									<el-radio-button label="custom">custom</el-radio-button>
 								</el-radio-group>
-								<el-date-picker 
-									v-show="searchPeriod === 'custom'"
-									v-model="from_date" 
-									@change="dateFromSelected()"
-									:editable="false"
-									type="date" 
-									format="yyyy-MM-dd" 
-									value-format="yyyy-MM-dd" 
-									:clearable="false" 
-									placeholder="From"></el-date-picker>
-								<el-date-picker 
-									v-show="searchPeriod === 'custom'"
-									v-model="to_date" 
-									@change="dateToSelected()"
-									type="date" 
-									format="yyyy-MM-dd" 
-									value-format="yyyy-MM-dd" 
-									:clearable="false" 
-									placeholder="To"></el-date-picker>
+								<el-date-picker v-show="searchPeriod === 'custom'"
+								                v-model="from_date"
+								                @change="dateFromSelected()"
+								                :editable="false"
+								                type="date"
+								                format="yyyy-MM-dd"
+								                value-format="yyyy-MM-dd"
+								                :clearable="false"
+								                placeholder="From"></el-date-picker>
+								<el-date-picker v-show="searchPeriod === 'custom'"
+								                v-model="to_date"
+								                @change="dateToSelected()"
+								                type="date"
+								                format="yyyy-MM-dd"
+								                value-format="yyyy-MM-dd"
+								                :clearable="false"
+								                placeholder="To"></el-date-picker>
 							</div>
-							<div class="col-md-12" id="chart_div" style="height:350px"></div>
+							<div class="col-md-12"
+							     id="chart_div"
+							     style="height:350px"></div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-12">  	      		
+			<div class="col-md-12">
 				<div class="portlet box blue-hoki">
 					<div class="portlet-title bg-blue-chambray">
-						<div class="caption" style="font-size:14px">
+						<div class="caption"
+						     style="font-size:14px">
 							<span class="fa-stack fa-sm">
-								<i class="fa fa-circle fa-stack-2x" aria-hidden="true" style="color:#95a5a6;line-height: inherit"></i>
-								<i class="fa fa-list-ol fa-stack-1x" aria-hidden="true" style="color:rgb(255,255,255);line-height:inherit"></i>
+								<i class="fa fa-circle fa-stack-2x"
+								   aria-hidden="true"
+								   style="color:#95a5a6;line-height: inherit"></i>
+								<i class="fa fa-list-ol fa-stack-1x"
+								   aria-hidden="true"
+								   style="color:rgb(255,255,255);line-height:inherit"></i>
 							</span>
 							Most Recent Orders
 						</div>
 					</div>
 					<div class="portlet-body">
-						<el-table
-							:data="mostRecentOrders">
+						<el-table :data="mostRecentOrders">
 							<el-table-column type="expand">
 								<template slot-scope="props">
 									<div class="row-expansion">
@@ -196,31 +234,27 @@
 									</div>
 								</template>
 							</el-table-column>
-							<el-table-column
-								prop="user.email"
-								label="User"
-								sortable>
+							<el-table-column prop="user.email"
+							                 label="User"
+							                 sortable>
 							</el-table-column>
-							<el-table-column
-								prop="total"
-								label="Amount"
-								:formatter="tableFormatUSD"
-								sortable>
+							<el-table-column prop="total"
+							                 label="Amount"
+							                 :formatter="tableFormatUSD"
+							                 sortable>
 							</el-table-column>
-							<el-table-column
-								prop="location_name"
-								label="Store"
-								sortable>
+							<el-table-column prop="location_name"
+							                 label="Store"
+							                 sortable>
 							</el-table-column>
-							<el-table-column
-								prop="status"
-								label="Status"
-								:filters="[{ text: 'pending', value: 'pending' }, { text: 'completed', value: 'completed' }, { text: 'overdue', value: 'overdue' }, { text: 'cancelled', value: 'cancelled' }, { text: 'refunded', value: 'refunded' }]"
-								:filter-method="filterTag"
-								filter-placement="bottom-end"
-								sortable>
+							<el-table-column prop="status"
+							                 label="Status"
+							                 :filters="[{ text: 'submitted', value: 'submitted' }, { text: 'pending', value: 'pending' }, { text: 'completed', value: 'completed' }, { text: 'overdue', value: 'overdue' }, { text: 'cancelled', value: 'cancelled' }, { text: 'refunded', value: 'refunded' }]"
+							                 :filter-method="filterTag"
+							                 filter-placement="bottom-end"
+							                 sortable>
 								<template slot-scope="scope">
-									<p :class="{'status-pending': scope.row.status === 'pending', 'status-completed': scope.row.status === 'completed', 'status-overdue': scope.row.status === 'overdue', 'status-cancelled': scope.row.status === 'cancelled', 'status-refunded': scope.row.status === 'refunded'}">{{scope.row.status}}</p>
+									<p :class="{'status-submitted': scope.row.status === 'submitted', 'status-pending': scope.row.status === 'pending', 'status-completed': scope.row.status === 'completed', 'status-overdue': scope.row.status === 'overdue', 'status-cancelled': scope.row.status === 'cancelled', 'status-refunded': scope.row.status === 'refunded'}">{{scope.row.status}}</p>
 								</template>
 							</el-table-column>
 						</el-table>
@@ -234,7 +268,7 @@
 <script>
 import AnalyticsFunctions from '../../../controllers/Analytics'
 import AppFunctions from '../../../controllers/App'
-import {GoogleCharts} from 'google-charts'
+import { GoogleCharts } from 'google-charts'
 
 export default {
 	data () {
@@ -259,10 +293,7 @@ export default {
 				monthly_order: 0
 			},
 			t10giErrorMessage: '',
-			globalRevenueByDay: [
-				['Day', 'Revenue', 'Orders'],
-				[0, 0, 0]
-			],
+			globalRevenueByDay: [['Day', 'Revenue', 'Orders'], [0, 0, 0]],
 			grbdErrorMessage: '',
 			stores: [],
 			selectedLocations: [],
@@ -273,7 +304,9 @@ export default {
 		}
 	},
 	created () {
-		window.addEventListener('resize', x => { this.drawChart() })
+		window.addEventListener('resize', x => {
+			this.drawChart()
+		})
 
 		this.getGlobalRevenueSummary()
 		this.getMostRecentOrders()
@@ -334,7 +367,12 @@ export default {
 			} else if (this.selectedLocations.length === 1) {
 				this.chartTitle = this.selectedLocations[0].label
 			} else {
-				this.chartTitle = `${this.selectedLocations[0].label} and ${this.selectedLocations.length - 1} ${this.selectedLocations.length - 1 === 1 ? 'other store' : 'other stores'}`
+				this.chartTitle = `${this.selectedLocations[0].label} and ${this
+					.selectedLocations.length - 1} ${
+					this.selectedLocations.length - 1 === 1
+						? 'other store'
+						: 'other stores'
+				}`
 			}
 		},
 		/**
@@ -355,7 +393,7 @@ export default {
 		 */
 		formatNumber (val) {
 			if (val !== null && val !== undefined) {
-				return val.toLocaleString('en-US', {style: 'decimal'})
+				return val.toLocaleString('en-US', { style: 'decimal' })
 			} else {
 				return 'n/a'
 			}
@@ -369,12 +407,11 @@ export default {
 		formatUSD (val) {
 			if (val !== null && val !== undefined) {
 				let local = Number(val)
-				local = local.toLocaleString('en-US', {style: 'currency', currency: 'USD'})
-				if (local.indexOf('.') !== -1) {
-					return local.slice(0, -3)
-				} else {
-					return local
-				}
+				local = local.toLocaleString('en-US', {
+					style: 'currency',
+					currency: 'USD'
+				})
+				return local
 			} else {
 				return 'n/a'
 			}
@@ -387,7 +424,13 @@ export default {
 		 * @returns {string} The formatted currency amount
 		 */
 		formatUSDlabel (dataTable, rowIndex) {
-			return '$' + dataTable.hc[rowIndex][1].Cf.toLocaleString('en-US', {style: 'currency', currency: 'USD'})
+			return (
+				'$' +
+				dataTable.hc[rowIndex][1].Cf.toLocaleString('en-US', {
+					style: 'currency',
+					currency: 'USD'
+				})
+			)
 		},
 		/**
 		 * el-table compliant cell data formatting function
@@ -417,27 +460,42 @@ export default {
 		getGlobalRevenueSummary () {
 			this.loadingGlobalRevenueSummary = true
 			var analyticsVue = this
-			return AnalyticsFunctions.globalRevenueSummary(analyticsVue.$root.appId, analyticsVue.$root.appSecret, analyticsVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					analyticsVue.globalRevenueSummary.total_revenue = response.payload.total_revenue
-					analyticsVue.globalRevenueSummary.today_revenue = response.payload.today_revenue
-					analyticsVue.globalRevenueSummary.week_revenue = response.payload.week_revenue
-					analyticsVue.globalRevenueSummary.month_revenue = response.payload.month_revenue
-					analyticsVue.globalRevenueSummary.year_revenue = response.payload.year_revenue
+			return AnalyticsFunctions.globalRevenueSummary(
+				analyticsVue.$root.appId,
+				analyticsVue.$root.appSecret,
+				analyticsVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						analyticsVue.globalRevenueSummary.total_revenue =
+							response.payload.total_revenue
+						analyticsVue.globalRevenueSummary.today_revenue =
+							response.payload.today_revenue
+						analyticsVue.globalRevenueSummary.week_revenue =
+							response.payload.week_revenue
+						analyticsVue.globalRevenueSummary.month_revenue =
+							response.payload.month_revenue
+						analyticsVue.globalRevenueSummary.year_revenue =
+							response.payload.year_revenue
+						analyticsVue.loadingGlobalRevenueSummary = false
+					} else {
+						analyticsVue.loadingGlobalRevenueSummary = false
+					}
+				})
+				.catch(reason => {
+					if (
+						reason.responseJSON.code === 401 &&
+						reason.responseJSON.status === 'unauthorized'
+					) {
+						analyticsVue.$router.push('/login/expired')
+						return
+					}
 					analyticsVue.loadingGlobalRevenueSummary = false
-				} else {
-					analyticsVue.loadingGlobalRevenueSummary = false
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					analyticsVue.$router.push('/login/expired')
-					return
-				}
-				analyticsVue.loadingGlobalRevenueSummary = false
-				if (reason.responseJSON) {
-					analyticsVue.grsErrorMessage = reason.responseJSON.message
-				}
-			})
+					if (reason.responseJSON) {
+						analyticsVue.grsErrorMessage =
+							reason.responseJSON.message
+					}
+				})
 		},
 		/**
 		 * To get global orders summary data
@@ -447,23 +505,33 @@ export default {
 		getMostRecentOrders () {
 			this.loadingMostRecentOrders = true
 			var analyticsVue = this
-			return AnalyticsFunctions.globalMostRecentOrders(analyticsVue.$root.appId, analyticsVue.$root.appSecret, analyticsVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					analyticsVue.mostRecentOrders = response.payload
+			return AnalyticsFunctions.globalMostRecentOrders(
+				analyticsVue.$root.appId,
+				analyticsVue.$root.appSecret,
+				analyticsVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						analyticsVue.mostRecentOrders = response.payload
+						analyticsVue.loadingMostRecentOrders = false
+					} else {
+						analyticsVue.loadingMostRecentOrders = false
+					}
+				})
+				.catch(reason => {
+					if (
+						reason.responseJSON.code === 401 &&
+						reason.responseJSON.status === 'unauthorized'
+					) {
+						analyticsVue.$router.push('/login/expired')
+						return
+					}
 					analyticsVue.loadingMostRecentOrders = false
-				} else {
-					analyticsVue.loadingMostRecentOrders = false
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					analyticsVue.$router.push('/login/expired')
-					return
-				}
-				analyticsVue.loadingMostRecentOrders = false
-				if (reason.responseJSON) {
-					analyticsVue.gosErrorMessage = reason.responseJSON.message
-				}
-			})
+					if (reason.responseJSON) {
+						analyticsVue.gosErrorMessage =
+							reason.responseJSON.message
+					}
+				})
 		},
 		/**
 		 * To get global revenue summary data
@@ -473,27 +541,42 @@ export default {
 		getTop10globalItems () {
 			this.loadingTop10GlobalOrders = true
 			var analyticsVue = this
-			return AnalyticsFunctions.globalTop10Items(analyticsVue.$root.appId, analyticsVue.$root.appSecret, analyticsVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					analyticsVue.top10globalItems.total_order = response.payload.total_order
-					analyticsVue.top10globalItems.daily_order = response.payload.daily_order
-					analyticsVue.top10globalItems.weekly_order = response.payload.weekly_order
-					analyticsVue.top10globalItems.monthly_order = response.payload.monthly_order
-					analyticsVue.top10globalItems.yearly_order = response.payload.yearly_order
+			return AnalyticsFunctions.globalTop10Items(
+				analyticsVue.$root.appId,
+				analyticsVue.$root.appSecret,
+				analyticsVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						analyticsVue.top10globalItems.total_order =
+							response.payload.total_order
+						analyticsVue.top10globalItems.daily_order =
+							response.payload.daily_order
+						analyticsVue.top10globalItems.weekly_order =
+							response.payload.weekly_order
+						analyticsVue.top10globalItems.monthly_order =
+							response.payload.monthly_order
+						analyticsVue.top10globalItems.yearly_order =
+							response.payload.yearly_order
+						analyticsVue.loadingTop10GlobalOrders = false
+					} else {
+						analyticsVue.loadingTop10GlobalOrders = false
+					}
+				})
+				.catch(reason => {
+					if (
+						reason.responseJSON.code === 401 &&
+						reason.responseJSON.status === 'unauthorized'
+					) {
+						analyticsVue.$router.push('/login/expired')
+						return
+					}
 					analyticsVue.loadingTop10GlobalOrders = false
-				} else {
-					analyticsVue.loadingTop10GlobalOrders = false
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					analyticsVue.$router.push('/login/expired')
-					return
-				}
-				analyticsVue.loadingTop10GlobalOrders = false
-				if (reason.responseJSON) {
-					analyticsVue.t10giErrorMessage = reason.responseJSON.message
-				}
-			})
+					if (reason.responseJSON) {
+						analyticsVue.t10giErrorMessage =
+							reason.responseJSON.message
+					}
+				})
 		},
 		/**
 		 * To get global revenue summary data
@@ -514,32 +597,59 @@ export default {
 				requestParams.to_date = this.to_date
 			}
 
-			return AnalyticsFunctions.globalRevenueByDay(analyticsVue.$root.appId, analyticsVue.$root.appSecret, analyticsVue.$root.userToken, requestParams).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					let payload = [['Day', 'Revenue', 'Orders']]
-					response.payload.forEach((day) => {
-						payload.push([day.date, Number(day.sales_per_day), day.total])
-					})
-					if (payload.length === 1) {
-						payload.push([`No orders at ${analyticsVue.selectedLocations.length > 1 ? 'this' : 'these'} location${analyticsVue.selectedLocations.length > 1 ? 's' : ''} during this period`, 0, 0])
-					}
-					analyticsVue.globalRevenueByDay = payload
+			return AnalyticsFunctions.globalRevenueByDay(
+				analyticsVue.$root.appId,
+				analyticsVue.$root.appSecret,
+				analyticsVue.$root.userToken,
+				requestParams
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						let payload = [['Day', 'Revenue', 'Orders']]
+						response.payload.forEach(day => {
+							payload.push([
+								day.date,
+								Number(day.sales_per_day),
+								day.total
+							])
+						})
+						if (payload.length === 1) {
+							payload.push([
+								`No orders at ${
+									analyticsVue.selectedLocations.length > 1
+										? 'this'
+										: 'these'
+								} location${
+									analyticsVue.selectedLocations.length > 1
+										? 's'
+										: ''
+								} during this period`,
+								0,
+								0
+							])
+						}
+						analyticsVue.globalRevenueByDay = payload
 
-					analyticsVue.drawChart()
+						analyticsVue.drawChart()
+						analyticsVue.loadingGlobalRevenueByDay = false
+					} else {
+						analyticsVue.loadingGlobalRevenueByDay = false
+					}
+				})
+				.catch(reason => {
+					if (
+						reason.responseJSON.code === 401 &&
+						reason.responseJSON.status === 'unauthorized'
+					) {
+						analyticsVue.$router.push('/login/expired')
+						return
+					}
 					analyticsVue.loadingGlobalRevenueByDay = false
-				} else {
-					analyticsVue.loadingGlobalRevenueByDay = false
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					analyticsVue.$router.push('/login/expired')
-					return
-				}
-				analyticsVue.loadingGlobalRevenueByDay = false
-				if (reason.responseJSON) {
-					analyticsVue.grbdErrorMessage = reason.responseJSON.message
-				}
-			})
+					if (reason.responseJSON) {
+						analyticsVue.grbdErrorMessage =
+							reason.responseJSON.message
+					}
+				})
 		},
 		/**
 		 * To get a list of store for the current application/business.
@@ -549,26 +659,43 @@ export default {
 		getStores () {
 			var analyticsVue = this
 
-			AppFunctions.getStoreLocations(analyticsVue.$root.appId, analyticsVue.$root.appSecret, analyticsVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					analyticsVue.stores = response.payload.map(store => {
-						return { value: store.id, label: store.display_name }
-					})
-					if (analyticsVue.stores.length) {
-						analyticsVue.selectedLocations.push(analyticsVue.stores[0])
-						analyticsVue.updateLocations(analyticsVue.selectedLocations)
+			AppFunctions.getStoreLocations(
+				analyticsVue.$root.appId,
+				analyticsVue.$root.appSecret,
+				analyticsVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						analyticsVue.stores = response.payload.map(store => {
+							return {
+								value: store.id,
+								label: store.display_name
+							}
+						})
+						if (analyticsVue.stores.length) {
+							analyticsVue.selectedLocations.push(
+								analyticsVue.stores[0]
+							)
+							analyticsVue.updateLocations(
+								analyticsVue.selectedLocations
+							)
+						}
+						analyticsVue.displaySpinner = false
+					}
+				})
+				.catch(reason => {
+					if (
+						reason.responseJSON.code === 401 &&
+						reason.responseJSON.status === 'unauthorized'
+					) {
+						analyticsVue.$router.push('/login/expired')
+						return
+					}
+					if (reason.responseJSON) {
 					}
 					analyticsVue.displaySpinner = false
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					analyticsVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {}
-				analyticsVue.displaySpinner = false
-				throw reason
-			})
+					throw reason
+				})
 		},
 
 		/**
@@ -581,20 +708,28 @@ export default {
 
 			// load library and call back the actual draw function
 			GoogleCharts.load(function () {
-				var data = GoogleCharts.api.visualization.arrayToDataTable(analyticsVue.globalRevenueByDay)
+				var data = GoogleCharts.api.visualization.arrayToDataTable(
+					analyticsVue.globalRevenueByDay
+				)
 
 				var view = new GoogleCharts.api.visualization.DataView(data)
-				view.setColumns([0, 1, {
-					calc: analyticsVue.formatUSDlabel,
-					sourceColumn: 1,
-					type: 'string',
-					role: 'annotation'
-				}, 2, {
-					calc: 'stringify',
-					sourceColumn: 2,
-					type: 'string',
-					role: 'annotation'
-				}])
+				view.setColumns([
+					0,
+					1,
+					{
+						calc: analyticsVue.formatUSDlabel,
+						sourceColumn: 1,
+						type: 'string',
+						role: 'annotation'
+					},
+					2,
+					{
+						calc: 'stringify',
+						sourceColumn: 2,
+						type: 'string',
+						role: 'annotation'
+					}
+				])
 
 				var options = {
 					title: analyticsVue.chartTitle,
@@ -624,7 +759,9 @@ export default {
 						1: { color: '#e67e22' }
 					}
 				}
-				var chart = new GoogleCharts.api.visualization.BarChart(document.getElementById('chart_div'))
+				var chart = new GoogleCharts.api.visualization.BarChart(
+					document.getElementById('chart_div')
+				)
 				chart.draw(view, options)
 			})
 		}
@@ -643,6 +780,15 @@ export default {
 .row-expansion-data {
 	margin: 0 80px 0 0;
 	display: inline-block;
+}
+.status-submitted {
+	display: inline-block;
+	margin: 0;
+	padding: 3px;
+	background-color: rgb(218, 218, 218);
+	color: rgb(70, 74, 78);
+	border: 1px rgb(173, 173, 173) solid;
+	border-radius: 4px;
 }
 .status-pending {
 	display: inline-block;

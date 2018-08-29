@@ -4,7 +4,7 @@
 import GlobalFunctions from '../global'
 // import {App} from '@/main.js'
 
-export default ({
+export default {
 	/**
 	 * Call to API to approve a request.
 	 * @function
@@ -52,4 +52,4 @@ export default ({
 			GlobalFunctions.$ajax(options, 'approvals')
 		})
 	}
-})
+}

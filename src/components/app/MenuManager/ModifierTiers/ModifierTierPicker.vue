@@ -1,57 +1,58 @@
 <template>
-    <div>
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="alert alert-danger" v-show="errorMessage.length" ref="errorMessage">
-                    <button class="close" @click.prevent="clearError('errorMessage')"></button>
-                    <span>{{errorMessage}}</span>
-                </div>
-            </div>
-        </div>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th class="th-checkboxes">
-                        <div class="md-checkbox">
-                            <input 
-                                type="checkbox" 
-                                v-model="selectAllSelected" 
-                                :id="`select-all`" 
-                                class="md-check"
-                                @change="toggleAll()"
-                            >
-                            <label :for="`select-all`">
-                                <span class="inc"></span>
-                                <span class="check"></span>
-                                <span class="box"></span>
-                            </label>
-                        </div>
-                    </th>
-                    <th class="th-email"> Name </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="tier in modifierTiers" :key="tier.id">
-                    <td>
-                        <div class="md-checkbox">
-                            <input 
-                                type="checkbox" 
-                                v-model="tier.selected" 
-                                :id="`modifierTier-${tier.id}`" 
-                                class="md-check"
-                                @change="emit()">
-                            <label :for="`modifierTier-${tier.id}`">
-                                <span class="inc"></span>
-                                <span class="check"></span>
-                                <span class="box"></span>
-                            </label>
-                        </div>
-                    </td>
-                    <td class="td-email"> {{tier.name}}  </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+	<div>
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="alert alert-danger"
+				     v-show="errorMessage.length"
+				     ref="errorMessage">
+					<button class="close"
+					        @click.prevent="clearError('errorMessage')"></button>
+					<span>{{errorMessage}}</span>
+				</div>
+			</div>
+		</div>
+		<table class="table">
+			<thead>
+				<tr>
+					<th class="th-checkboxes">
+						<div class="md-checkbox">
+							<input type="checkbox"
+							       v-model="selectAllSelected"
+							       :id="`select-all`"
+							       class="md-check"
+							       @change="toggleAll()">
+							<label :for="`select-all`">
+								<span class="inc"></span>
+								<span class="check"></span>
+								<span class="box"></span>
+							</label>
+						</div>
+					</th>
+					<th class="th-email"> Name </th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-for="tier in modifierTiers"
+				    :key="tier.id">
+					<td>
+						<div class="md-checkbox">
+							<input type="checkbox"
+							       v-model="tier.selected"
+							       :id="`modifierTier-${tier.id}`"
+							       class="md-check"
+							       @change="emit()">
+							<label :for="`modifierTier-${tier.id}`">
+								<span class="inc"></span>
+								<span class="check"></span>
+								<span class="box"></span>
+							</label>
+						</div>
+					</td>
+					<td class="td-email"> {{tier.name}} </td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </template>
 
 <script>
@@ -65,8 +66,11 @@ export default {
 		modifierTiers: []
 	}),
 	computed: {
-		selectAllSelected () {
-			return this.modifierTiers.length && !this.modifierTiers.some(tier => !tier.selected)
+		selectAllSelected() {
+			return (
+				this.modifierTiers.length &&
+				!this.modifierTiers.some(tier => !tier.selected)
+			)
 		}
 	},
 	props: {
@@ -76,41 +80,43 @@ export default {
 			default: () => []
 		}
 	},
-	created () {
+	created() {
 		this.getModifierTiers()
 	},
 	methods: {
-		toggleAll () {
+		toggleAll() {
 			const selected = this.selectAllSelected
 			this.modifierTiers.forEach(tier => {
 				tier.selected = !selected
 			})
 			this.emit()
 		},
-		clearError (name) {
+		clearError(name) {
 			this[name] = ''
 		},
-		getModifierTiers () {
+		getModifierTiers() {
 			let pickerVue = this
-			return ModifierTiersFunctions.getModifierTiers().then(response => {
-				pickerVue.modifierTiers = response.payload.map(tier => {
-					return {
-						...tier,
-						selected: pickerVue.previouslySelected.includes(tier.id)
-					}
+			return ModifierTiersFunctions.getModifierTiers()
+				.then(response => {
+					pickerVue.modifierTiers = response.payload.map(tier => {
+						return {
+							...tier,
+							selected: pickerVue.previouslySelected.includes(tier.id)
+						}
+					})
+					pickerVue.loading = false
 				})
-				pickerVue.loading = false
-			}).catch(reason => {
-				pickerVue.loading = false
-				ajaxErrorHandler({
-					reason,
-					errorName: 'errorMessage',
-					errorText: 'We couldn\'t fetch modifier tiers',
-					vue: pickerVue
+				.catch(reason => {
+					pickerVue.loading = false
+					ajaxErrorHandler({
+						reason,
+						errorName: 'errorMessage',
+						errorText: "We couldn't fetch modifier tiers",
+						vue: pickerVue
+					})
 				})
-			})
 		},
-		emit () {
+		emit() {
 			this.$emit('selected', this.modifierTiers)
 		}
 	}

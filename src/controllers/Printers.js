@@ -3,7 +3,7 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to pitapit API to get a store's printers.
 	 * @function
@@ -124,4 +124,4 @@ export default ({
 			})
 		})
 	}
-})
+}

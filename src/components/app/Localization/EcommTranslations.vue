@@ -18,33 +18,55 @@
 			<div class="portlet-body">
 				<div class="row">
 					<div class="col-md-12">
-						<div ref="translationsTableErrorMessage" class="alert alert-danger" v-show="translationsTableErrorMessage.length">
-						<button class="close" data-close="alert" @click="clearError('translationsTableErrorMessage')"></button>
-						<span>{{translationsTableErrorMessage}}</span>
+						<div ref="translationsTableErrorMessage"
+						     class="alert alert-danger"
+						     v-show="translationsTableErrorMessage.length">
+							<button class="close"
+							        data-close="alert"
+							        @click="clearError('translationsTableErrorMessage')"></button>
+							<span>{{translationsTableErrorMessage}}</span>
 						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-3">
-						<el-collapse class="accordion margin-bottom-20" v-model="languageAccordionOpen" accordion>
-						<el-collapse-item title="Language" name="1">
-							<div v-for="language in allLocales" class="clickable" :class="{'active-term' : language.language_code === localeForTranslation.language_code}" @click="selectLocaleForTranslation(language)" :key="language.id">
+						<el-collapse class="accordion margin-bottom-20"
+						             v-model="languageAccordionOpen"
+						             accordion>
+							<el-collapse-item title="Language"
+							                  name="1">
+								<div v-for="language in allLocales"
+								     class="clickable"
+								     :class="{'active-term' : language.language_code === localeForTranslation.language_code}"
+								     @click="selectLocaleForTranslation(language)"
+								     :key="language.id">
 									{{language.country.name}} ({{language.language_code}})
 								</div>
-							<div class="helper-text" v-if="!allLocales.length">
-								No languages yet. 
-								<router-link to="/app/localization/languages">Create one.</router-link>
-							</div>
-						</el-collapse-item>
+								<div class="helper-text"
+								     v-if="!allLocales.length">
+									No languages yet.
+									<router-link to="/app/localization/languages">Create one.</router-link>
+								</div>
+							</el-collapse-item>
 						</el-collapse>
 					</div>
-					<div class="col-md-6" v-show="localeForTranslation.id">
-						<el-collapse class="accordion margin-bottom-20" v-model="activeAccordionSection" accordion>
-						<el-collapse-item v-for="(group, index) in translationTermGroups" :title="group.group" :name="index + 1" :key="group.group">
-							<div v-for="term in group.terms" class="clickable" :class="{'active-term' : term.term === activeTranslationGroup.term}" @click="getTerm(group.groupUrl, term.term)" :key="term.id">
-								{{term.label}}
-							</div>
-						</el-collapse-item>
+					<div class="col-md-6"
+					     v-show="localeForTranslation.id">
+						<el-collapse class="accordion margin-bottom-20"
+						             v-model="activeAccordionSection"
+						             accordion>
+							<el-collapse-item v-for="(group, index) in translationTermGroups"
+							                  :title="group.group"
+							                  :name="index + 1"
+							                  :key="group.group">
+								<div v-for="term in group.terms"
+								     class="clickable"
+								     :class="{'active-term' : term.term === activeTranslationGroup.term}"
+								     @click="getTerm(group.groupUrl, term.term)"
+								     :key="term.id">
+									{{term.label}}
+								</div>
+							</el-collapse-item>
 						</el-collapse>
 					</div>
 				</div>
@@ -54,101 +76,123 @@
 						<div class="translations-table-header-cell">{{localeForTranslation.country.name}} Translation</div>
 					</div>
 
-					<loading-screen 
-						class="margin-top-20"
-						:show="loadingTerms" 
-						:color="'#2C3E50'">
+					<loading-screen class="margin-top-20"
+					                :show="loadingTerms"
+					                :color="'#2C3E50'">
 					</loading-screen>
 
-					<div 
-						v-show="!loadingTerms"
-						v-for="(term, index) in terms" 
-						class="translations-table-body" 
-						label="Field" 
-						:key="index">
+					<div v-show="!loadingTerms"
+					     v-for="(term, index) in terms"
+					     class="translations-table-body"
+					     label="Field"
+					     :key="index">
 						<div class="translations-table-body-row">
-								<div v-if="activeTranslationGroup.term.substr(activeTranslationGroup.term.length - 3) !== 'url'" class="translations-table-body-cell">{{term.term}}</div>
-								<div v-else class="translations-table-body-cell">
-									<img class="image-thumb clickable" :src="term.term" @click="openImagePreview(term.term)">
-								</div>
-								<div class="translations-table-body-cell">
-									<div v-if="activeTranslationGroup.term.substr(activeTranslationGroup.term.length - 3) !== 'url'" class="form-group form-md-line-input form-md-floating-label">
-									<input
-										type="text"
-										class="form-control input-sm"
-										:class="{'edited': term.translation.length}"
-										:id="`term${term.id}`"
-										v-model="term.translation"
-										:disabled="!$root.permissions['localization update']">
+							<div v-if="activeTranslationGroup.term.substr(activeTranslationGroup.term.length - 3) !== 'url'"
+							     class="translations-table-body-cell">{{term.term}}</div>
+							<div v-else
+							     class="translations-table-body-cell">
+								<img class="image-thumb clickable"
+								     :src="term.term"
+								     @click="openImagePreview(term.term)">
+							</div>
+							<div class="translations-table-body-cell">
+								<div v-if="activeTranslationGroup.term.substr(activeTranslationGroup.term.length - 3) !== 'url'"
+								     class="form-group form-md-line-input form-md-floating-label">
+									<input type="text"
+									       class="form-control input-sm"
+									       :class="{'edited': term.translation.length}"
+									       :id="`term${term.id}`"
+									       v-model="term.translation"
+									       :disabled="!$root.permissions['localization update']">
 									<label :for="`term${term.id}`">Translation</label>
-									</div>
-									<div v-else>
-										<button
-											v-if="!term.translation.length"
-											@click="openGallery(term.id)"
-											class="btn blue btn-outline"
-											:disabled="!$root.permissions['localization update']"
-										>
-											Select image
-										</button>
-										<img v-if="!$root.permissions['localization update'] && $root.permissions['localization read']" class="image-thumb clickable" :src="term.translation">
-										<img v-if="$root.permissions['localization update']" class="image-thumb clickable" :src="term.translation" @click="openGallery(term.id)">
-									</div>
 								</div>
+								<div v-else>
+									<button v-if="!term.translation.length"
+									        @click="openGallery(term.id)"
+									        class="btn blue btn-outline"
+									        :disabled="!$root.permissions['localization update']">
+										Select image
+									</button>
+									<img v-if="!$root.permissions['localization update'] && $root.permissions['localization read']"
+									     class="image-thumb clickable"
+									     :src="term.translation">
+									<img v-if="$root.permissions['localization update']"
+									     class="image-thumb clickable"
+									     :src="term.translation"
+									     @click="openGallery(term.id)">
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="left margin-top-20">
-						<button
-							v-if="!loadingTerms && terms.length"
-							@click="translateTerms()"
-							class="btn blue"
-							:disabled="!$root.permissions['localization update']"
-						>
+						<button v-if="!loadingTerms && terms.length"
+						        @click="translateTerms()"
+						        class="btn blue"
+						        :disabled="!$root.permissions['localization update'] || saving">
 							Save
+							<i v-show="saving"
+							   class="fa fa-spinner fa-pulse fa-fw">
+							</i>
 						</button>
 					</div>
 					<div v-show="!loadingTerms">
-						<p v-if="!activeTranslationGroup.term" class="no-data center">Select a language and a term to begin translating.</p>
-						<p v-if="activeTranslationGroup.term && !terms.length" class="no-data center">There are no items to translate.</p>
+						<p v-if="!activeTranslationGroup.term"
+						   class="no-data center">Select a language and a term to begin translating.</p>
+						<p v-if="activeTranslationGroup.term && !terms.length"
+						   class="no-data center">There are no items to translate.</p>
 					</div>
 				</div>
 			</div>
 		</div>
 		<!-- END TRANSLATE-->
-		<modal :show="imagePreviewShown" effect="fade" @closeOnEscape="closeImagePreview()">
-			<div slot="modal-header" class="modal-header center">
-				<button type="button" class="close" @click="closeImagePreview()">
+		<modal :show="imagePreviewShown"
+		       effect="fade"
+		       @closeOnEscape="closeImagePreview()">
+			<div slot="modal-header"
+			     class="modal-header center">
+				<button type="button"
+				        class="close"
+				        @click="closeImagePreview()">
 					<span>&times;</span>
 				</button>
 				<h4 class="modal-title center">Preview</h4>
 			</div>
-			<div slot="modal-body" class="modal-body">
-					<img class="image-preview" :src="imagePreviewUrl">
+			<div slot="modal-body"
+			     class="modal-body">
+				<img class="image-preview"
+				     :src="imagePreviewUrl">
 			</div>
-			<div slot="modal-footer" class="modal-footer clear">
-				<button @click="closeImagePreview()" class="btn blue">Close</button>
+			<div slot="modal-footer"
+			     class="modal-footer clear">
+				<button @click="closeImagePreview()"
+				        class="btn blue">Close</button>
 			</div>
 		</modal>
-		<modal :show="galleryPopupShown" effect="fade" @closeOnEscape="closeGallery">
-			<div slot="modal-header" class="modal-header center">
-				<button type="button" class="close" @click="closeGallery">
+		<modal :show="galleryPopupShown"
+		       effect="fade"
+		       @closeOnEscape="closeGallery">
+			<div slot="modal-header"
+			     class="modal-header center">
+				<button type="button"
+				        class="close"
+				        @click="closeGallery">
 					<span>&times;</span>
 				</button>
 				<h4 class="modal-title center">Select Image To Use in {{localeForTranslation.country.name}}</h4>
 			</div>
-			<div slot="modal-body" class="modal-body">
-				<resource-picker
-					:noButton="true"
-					@selected="updateImage"
-					:showDoneButton="false"
-					:imageButton="false"
-					:selectOnly="true"
-				>
+			<div slot="modal-body"
+			     class="modal-body">
+				<resource-picker :noButton="true"
+				                 @selected="updateImage"
+				                 :showDoneButton="false"
+				                 :imageButton="false"
+				                 :selectOnly="true">
 				</resource-picker>
 			</div>
-			<div slot="modal-footer" class="modal-footer clear"></div>
+			<div slot="modal-footer"
+			     class="modal-footer clear"></div>
 		</modal>
-		</div>
+	</div>
 </template>
 
 <script>
@@ -163,9 +207,7 @@ import LoadingScreen from '@/components/modules/LoadingScreen'
 export default {
 	data () {
 		return {
-			breadcrumbArray: [
-				{name: 'eComm Translations', link: false}
-			],
+			breadcrumbArray: [{ name: 'eComm Translations', link: false }],
 			allLocales: [],
 
 			localeForTranslation: {
@@ -418,13 +460,17 @@ export default {
 			galleryPopupShown: false,
 			imagePreviewShown: false,
 			imagePreviewUrl: '',
-			termRegex: new RegExp('_([a-zA-Z_])+$')
+			termRegex: new RegExp('_([a-zA-Z_])+$'),
+			saving: false
 		}
 	},
 	watch: {
 		'localeForTranslation.language_code' () {
 			if (this.activeTranslationGroup.term) {
-				this.getTerm(this.activeTranslationGroup.groupUrl, this.activeTranslationGroup.term)
+				this.getTerm(
+					this.activeTranslationGroup.groupUrl,
+					this.activeTranslationGroup.term
+				)
 			}
 		}
 	},
@@ -468,7 +514,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateImage (val) {
-			this.terms.forEach((term) => {
+			this.terms.forEach(term => {
 				if (term.id === this.imageOwnerId) {
 					term.translation = val.image_url
 				}
@@ -504,67 +550,84 @@ export default {
 		translateTerms (term) {
 			this.clearError('translationsTable')
 			var localizationVue = this
-			return localizationVue.validateTranslationTermsData()
-			.then(response => {
-				let field
-				switch (localizationVue.activeTranslationGroup.term) {
-				case 'faq_users_question':
-					field = 'question'
-					break
-				case 'faq_stores_question':
-					field = 'question'
-					break
-				case 'faq_users_answer':
-					field = 'answer'
-					break
-				case 'faq_stores_answer':
-					field = 'answer'
-					break
-				case 'promotions_name':
-					field = 'name'
-					break
-				case 'promotions_description':
-					field = 'description'
-					break
-				case 'promotions_short_description':
-					field = 'short_description'
-					break
-				case 'promotions_image':
-					field = 'image'
-					break
-				case 'promotions_cta_text':
-					field = 'cta_text'
-					break
-				default:
-					field = localizationVue.termRegex.exec(localizationVue.activeTranslationGroup.term)[0].slice(1)
-				}
+			return localizationVue
+				.validateTranslationTermsData()
+				.then(response => {
+					localizationVue.saving = true
 
-				let payload = {
-					'field': field,
-					'language': localizationVue.localeForTranslation.language_code,
-					'translations': localizationVue.terms
-				}
-				LocalizationFunctions.translateTerms(localizationVue.activeTranslationGroup.groupUrl, payload, localizationVue.$root.appId, localizationVue.$root.appSecret, localizationVue.$root.userToken).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						localizationVue.terms = response.payload
-						localizationVue.showSaveSuccess()
-					} else {
-						localizationVue.translationsTableErrorMessage = response.message
+					let field
+					switch (localizationVue.activeTranslationGroup.term) {
+					case 'faq_users_question':
+						field = 'question'
+						break
+					case 'faq_stores_question':
+						field = 'question'
+						break
+					case 'faq_users_answer':
+						field = 'answer'
+						break
+					case 'faq_stores_answer':
+						field = 'answer'
+						break
+					case 'promotions_name':
+						field = 'name'
+						break
+					case 'promotions_description':
+						field = 'description'
+						break
+					case 'promotions_short_description':
+						field = 'short_description'
+						break
+					case 'promotions_image':
+						field = 'image'
+						break
+					case 'promotions_cta_text':
+						field = 'cta_text'
+						break
+					default:
+						field = localizationVue.termRegex
+								.exec(localizationVue.activeTranslationGroup.term)[0]
+								.slice(1)
 					}
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not save this translation',
-						errorName: 'translationsTableErrorMessage',
-						vue: localizationVue
-					})
+
+					let payload = {
+						field: field,
+						language: localizationVue.localeForTranslation.language_code,
+						translations: localizationVue.terms
+					}
+					LocalizationFunctions.translateTerms(
+						localizationVue.activeTranslationGroup.groupUrl,
+						payload,
+						localizationVue.$root.appId,
+						localizationVue.$root.appSecret,
+						localizationVue.$root.userToken
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								localizationVue.terms = response.payload
+								localizationVue.showSaveSuccess(response.payload)
+							} else {
+								localizationVue.translationsTableErrorMessage = response.message
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not save this translation',
+								errorName: 'translationsTableErrorMessage',
+								vue: localizationVue
+							})
+						})
+						.finally(() => {
+							localizationVue.saving = false
+						})
 				})
-			}).catch(reason => {
-				// If validation fails then display the error message
-				localizationVue.translationsTableErrorMessage = reason
-				window.scrollTo(0, 0)
-				throw reason
-			})
+				.catch(reason => {
+					// If validation fails then display the error message
+					localizationVue.translationsTableErrorMessage = reason
+					window.scrollTo(0, 0)
+					throw reason
+				})
 		},
 		/**
 		 * To check if the translation data is valid before submitting to the backend.
@@ -576,27 +639,37 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (!localizationVue.localeForTranslation.language_code) {
 					reject('Select the language to translate to')
-				} else if (localizationVue.terms.forEach((term) => { !term.translation })) {
+				} else if (
+					localizationVue.terms.forEach(term => {
+						!term.translation
+					})
+				) {
 					reject('Provide at least one translation')
 				}
 				resolve('Hurray')
 			})
 		},
 		/**
-		 * To alert the user that the translations have been successfully saved.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showSaveSuccess () {
+		showSaveSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Translations have been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Translations have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Saved',
-				text: 'The translations have been saved',
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(() => {
-				// do nothing
-			}, dismiss => {
-				// do nothing
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -608,18 +681,13 @@ export default {
 			this.$swal({
 				title: 'Select language',
 				text: 'Select the language you want to translate to first',
-				type: 'warning',
-				confirmButtonText: 'OK'
-			}).then(() => {
-				// do nothing
-			}, dismiss => {
-				// do nothing
+				type: 'warning'
 			})
 		},
 		/**
 		 * To fetch instances of the selected term for translation.
 		 * @function
-		* @param {string} groupUrl - The name of the group containing the term
+		 * @param {string} groupUrl - The name of the group containing the term
 		 * @param {string} term - The name of the field containing the term
 		 * @returns {undefined}
 		 */
@@ -633,22 +701,32 @@ export default {
 			this.terms = []
 			this.loadingTerms = true
 			var localizationVue = this
-			LocalizationFunctions.getTerm({'field': term, 'language': localizationVue.localeForTranslation.language_code}, localizationVue.$root.appId, localizationVue.$root.appSecret, localizationVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					localizationVue.terms = response.payload
-					localizationVue.loadingTerms = false
-				} else {
-					localizationVue.createOrEditErrorMessage = response.message
-				}
-			}).catch(reason => {
-				localizationVue.loadingTerms = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch translation terms for this entry',
-					errorName: 'translationsTableErrorMessage',
-					vue: localizationVue
+			LocalizationFunctions.getTerm(
+				{
+					field: term,
+					language: localizationVue.localeForTranslation.language_code
+				},
+				localizationVue.$root.appId,
+				localizationVue.$root.appSecret,
+				localizationVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						localizationVue.terms = response.payload
+						localizationVue.loadingTerms = false
+					} else {
+						localizationVue.createOrEditErrorMessage = response.message
+					}
 				})
-			})
+				.catch(reason => {
+					localizationVue.loadingTerms = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch translation terms for this entry',
+						errorName: 'translationsTableErrorMessage',
+						vue: localizationVue
+					})
+				})
 		},
 		/**
 		 * To update the status of the locale selected for translation.
@@ -668,30 +746,36 @@ export default {
 		 */
 		getLocales () {
 			var localizationVue = this
-			LocalizationFunctions.getLocales().then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					if (response.payload.length) {
-						localizationVue.allLocales = response.payload.sort((a, b) => {
-							if (a.language_code.toLowerCase() > b.language_code.toLowerCase()) {
-								return 1
-							} else if (a.language_code.toLowerCase() < b.language_code.toLowerCase()) {
-								return -1
-							} else {
-								return 0
-							}
-						})
+			LocalizationFunctions.getLocales()
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						if (response.payload.length) {
+							localizationVue.allLocales = response.payload.sort((a, b) => {
+								if (
+									a.language_code.toLowerCase() > b.language_code.toLowerCase()
+								) {
+									return 1
+								} else if (
+									a.language_code.toLowerCase() < b.language_code.toLowerCase()
+								) {
+									return -1
+								} else {
+									return 0
+								}
+							})
+						}
+					} else {
+						localizationVue.translationsTableErrorMessage = response.message
 					}
-				} else {
-					localizationVue.translationsTableErrorMessage = response.message
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch available languages',
-					errorName: 'translationsTableErrorMessage',
-					vue: localizationVue
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch available languages',
+						errorName: 'translationsTableErrorMessage',
+						vue: localizationVue
+					})
+				})
 		},
 		/**
 		 * To clear the current error.
@@ -715,65 +799,65 @@ export default {
 
 <style scoped>
 .accordion {
-	max-width: 300px;
+  max-width: 300px;
 }
 .accordion .helper-text {
-	color: rgb(128, 128, 128);
+  color: rgb(128, 128, 128);
 }
 .active-term {
-	color: rgb(81, 148, 202);
-	font-weight: 600;
+  color: rgb(81, 148, 202);
+  font-weight: 600;
 }
 .translations-table {
-	position: relative;
-	min-height: 100px;
-	color: rgb(63, 68, 74);
+  position: relative;
+  min-height: 100px;
+  color: rgb(63, 68, 74);
 }
 .translations-table-header {
-	display: flex;
-	align-items: center;
-	font-weight: 600;
-	background-color: rgb(240, 246, 250);
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  background-color: rgb(240, 246, 250);
 }
 .translations-table-header-cell {
-	width: 50%;
-	padding: 10px 5px 10px 5px;
+  width: 50%;
+  padding: 10px 5px 10px 5px;
 }
 .translations-table-body {
-	display: flex;
-	align-items: center;
+  display: flex;
+  align-items: center;
 }
 .translations-table-body:nth-child(odd) {
-	background-color: rgb(249, 249, 249);
+  background-color: rgb(249, 249, 249);
 }
 .translations-table-body-row {
-	width: 100%;
-	display: flex;
-	align-items: center;
+  width: 100%;
+  display: flex;
+  align-items: center;
 }
 .translations-table-body-row:hover {
-	background-color: rgb(243, 244, 246);
+  background-color: rgb(243, 244, 246);
 }
 .translations-table-body-cell {
-	width: 50%;
-	padding: 0 5px 0 5px;
-	overflow-wrap: break-word;
+  width: 50%;
+  padding: 0 5px 0 5px;
+  overflow-wrap: break-word;
 }
 .translations-table .no-data {
-	margin-top: 20px;
+  margin-top: 20px;
 }
 .image-thumb {
-	max-width: 100%;
-	max-height: 50px;
-	margin: 5px;
+  max-width: 100%;
+  max-height: 50px;
+  margin: 5px;
 }
 .image-preview {
-	max-height: 100%;
-	max-width: 100%;
+  max-height: 100%;
+  max-width: 100%;
 }
 </style>
 <style>
 .accordion .el-collapse-item__header {
-	font-weight: 600;
+  font-weight: 600;
 }
 </style>

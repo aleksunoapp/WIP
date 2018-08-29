@@ -16,7 +16,11 @@ export default function ajaxErrorHandler ({
 }) {
 	try {
 		// Expired ecomm token
-		if (reason.responseJSON && reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
+		if (
+			reason.responseJSON &&
+			reason.responseJSON.code === 401 &&
+			reason.responseJSON.status === 'unauthorized'
+		) {
 			vue.$router.push('/login/expired')
 			return
 		}
@@ -36,7 +40,10 @@ export default function ajaxErrorHandler ({
 	} finally {
 		const options = {
 			offset: -50,
-			container: containerRef !== undefined ? vue.$refs[containerRef].$el : undefined
+			container:
+				containerRef !== undefined
+					? vue.$refs[containerRef].$el
+					: undefined
 		}
 		try {
 			vue.$scrollTo(vue.$refs[errorName.toString()], 1000, options)

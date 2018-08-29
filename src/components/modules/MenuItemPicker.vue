@@ -1,26 +1,27 @@
 <template>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="alert alert-danger" v-show="errorMessage.length" ref="errorMessage">
-                <button class="close" @click="clearError('errorMessage')"></button>
-                <span>{{errorMessage}}</span>
-            </div>
-        </div>
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="alert alert-danger"
+			     v-show="errorMessage.length"
+			     ref="errorMessage">
+				<button class="close"
+				        @click="clearError('errorMessage')"></button>
+				<span>{{errorMessage}}</span>
+			</div>
+		</div>
 		<div class="col-xs-4">
-            <h4>Menus</h4>
+			<h4>Menus</h4>
 		</div>
 		<div class="col-xs-4">
 			<div class="header">
-				<i 
-					class="fa check" 
-					:class="{
+				<i class="fa check"
+				   :class="{
 						'transparent': !menuSelectable(activeMenu),
 						'fa-check-square checked': allCategoriesSelected, 
 						'fa-square-o unchecked': !allCategoriesSelected
-					}" 
-					aria-hidden="true"
-					@click="toggleAllCategories()"
-				>
+					}"
+				   aria-hidden="true"
+				   @click="toggleAllCategories()">
 				</i>
 				<h4 class="inline-block">
 					Categories
@@ -29,136 +30,115 @@
 		</div>
 		<div class="col-xs-4">
 			<div class="header">
-				<i 
-					class="fa check" 
-					:class="{
+				<i class="fa check"
+				   :class="{
 						'transparent' : !activeItems.length,
 						'fa-check-square checked': allItemsSelected, 
 						'fa-square-o unchecked': !allItemsSelected
-					}" 
-					aria-hidden="true"
-					@click="toggleAllItems"
-				>
+					}"
+				   aria-hidden="true"
+				   @click="toggleAllItems">
 				</i>
 				<h4 class="inline-block">
 					Items
 				</h4>
 			</div>
 		</div>
-        <div class="col-xs-4">
-            <div class="dd">
-                <ol class="dd-list">                    
-                    <li 
-                        class="dd-item" 
-                        v-for="menu in menus" 
-                        :key="menu.id"
-                    >
-                        <div 
-                            @click="toggleMenu(menu)"
-                            class="dd-handle pointer" 
-                            :class="{'active': menu.id === activeMenu.id}"
-                        >
-                            <span class="pull-left">
-								<i 
-									class="fa check" 
-									:class="{
+		<div class="col-xs-4">
+			<div class="dd">
+				<ol class="dd-list">
+					<li class="dd-item"
+					    v-for="menu in menus"
+					    :key="menu.id">
+						<div @click="toggleMenu(menu)"
+						     class="dd-handle pointer"
+						     :class="{'active': menu.id === activeMenu.id}">
+							<span class="pull-left">
+								<i class="fa check"
+								   :class="{
 										'transparent' : !menuSelectable(menu),
 										'fa-check-square checked': menuSelected(menu), 
 										'fa-minus-square checked': menuPartiallySelected(menu),
 										'fa-square-o unchecked': !menuSelected(menu)
-									}" 
-									aria-hidden="true"
-									@click.stop="toggleAllInMenu(menu)"
-								>
+									}"
+								   aria-hidden="true"
+								   @click.stop="toggleAllInMenu(menu)">
 								</i>
-                                    {{ menu.name }}
-                            </span>
-                            <span 
-								class="pull-right transparent" 
-								:class="{'permanent' : menu.id === activeMenu.id}"
-							>
-                                <i class="fa fa-chevron-right"></i>
-                            </span>
-                        </div>
-                    </li>
-                </ol>
-            </div>
-        </div>
-        <div class="col-xs-4">
-            <div class="dd" id="nestable_list_2">
-                <ol class="dd-list">
-                    <li 
-                        class="dd-item" 
-                        v-for="category in activeMenu.categories" 
-                        :data-id="category.id" 
-                        :key="category.id"
-                    >
-                        <div 
-                            class="dd-handle pointer" 
-                            :class="{'active': category.id === activeCategory.id}"
-                             @click="toggleCategory(category)"
-                        >
-                            <span class="pull-left">
-								<i 
-									class="fa check" 
-									:class="{
+								{{ menu.name }}
+							</span>
+							<span class="pull-right transparent"
+							      :class="{'permanent' : menu.id === activeMenu.id}">
+								<i class="fa fa-chevron-right"></i>
+							</span>
+						</div>
+					</li>
+				</ol>
+			</div>
+		</div>
+		<div class="col-xs-4">
+			<div class="dd"
+			     id="nestable_list_2">
+				<ol class="dd-list">
+					<li class="dd-item"
+					    v-for="category in activeMenu.categories"
+					    :data-id="category.id"
+					    :key="category.id">
+						<div class="dd-handle pointer"
+						     :class="{'active': category.id === activeCategory.id}"
+						     @click="toggleCategory(category)">
+							<span class="pull-left">
+								<i class="fa check"
+								   :class="{
 										'transparent' : !categorySelectable(category),
 										'fa-check-square checked': categorySelected(category), 
 										'fa-minus-square checked': categoryPartiallySelected(category),
 										'fa-square-o unchecked': !categorySelected(category)
-									}" 
-									aria-hidden="true"
-									@click.stop="toggleAllInCategory(category)"
-								>
+									}"
+								   aria-hidden="true"
+								   @click.stop="toggleAllInCategory(category)">
 								</i>
-                                    {{ category.name }}
-                            </span>
-                            <span 
-								class="pull-right transparent" 
-								:class="{'permanent' : category.id === activeCategory.id}"
-							>
-                                <i class="fa fa-chevron-right"></i>
-                            </span>
-                        </div>
-                    </li>
-                </ol>
-            </div>
-        </div>
-        <div class="col-xs-4" v-show="activeCategory.id !== undefined">
-            <div class="dd" id="nestable_list_3">
-                <ol class="dd-list">
-                    <li 
-                        class="dd-item" 
-                        v-for="item in activeItems" 
-                        :key="item.id"
-						@click="toggleItem(item)"
-                    >
-                        <div class="dd-handle pointer">
-                            <span class="pull-left">
-								<i 
-									class="fa check" 
-									:class="{
+								{{ category.name }}
+							</span>
+							<span class="pull-right transparent"
+							      :class="{'permanent' : category.id === activeCategory.id}">
+								<i class="fa fa-chevron-right"></i>
+							</span>
+						</div>
+					</li>
+				</ol>
+			</div>
+		</div>
+		<div class="col-xs-4"
+		     v-show="activeCategory.id !== undefined">
+			<div class="dd"
+			     id="nestable_list_3">
+				<ol class="dd-list">
+					<li class="dd-item"
+					    v-for="item in activeItems"
+					    :key="item.id"
+					    @click="toggleItem(item)">
+						<div class="dd-handle pointer">
+							<span class="pull-left">
+								<i class="fa check"
+								   :class="{
 										'fa-check-square checked': item.selected, 
 										'fa-square-o unchecked': !item.selected
-									}" 
-									aria-hidden="true"
-								>
+									}"
+								   aria-hidden="true">
 								</i>
-                                    {{ item.name }}
-                                    <span v-show="item.category_name">({{item.category_name}})</span>
-                            </span>
-                        </div>
-                    </li>
-					<p 
-						class="no-items"
-						v-show="!activeItems.length"
-					>
+								{{ item.name }}
+								<span v-show="item.category_name">({{item.category_name}})</span>
+							</span>
+						</div>
+					</li>
+					<p class="no-items"
+					   v-show="!activeItems.length">
 						This category is empty
 					</p>
-                </ol>
-            </div>
-        </div>
-    </div>
+				</ol>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -199,19 +179,31 @@ export default {
 		},
 		allCategoriesSelected () {
 			if (this.activeMenu.categories) {
-				return this.activeMenu.items.length &&
+				return (
+					this.activeMenu.items.length &&
 					!this.activeMenu.items.some(item => !item.selected)
+				)
 			} else {
 				return false
 			}
 		},
 		allItemsSelected () {
-			return this.activeItems.length && !this.activeItems.some(item => !item.selected)
+			return (
+				this.activeItems.length &&
+				!this.activeItems.some(item => !item.selected)
+			)
+		}
+	},
+	watch: {
+		'$root.activeLocation': function () {
+			this.getMenus()
 		}
 	},
 	created () {
 		this.previous = [...this.previouslySelected]
-		this.getMenus()
+		if (this.$root.activeLocation.id !== undefined) {
+			this.getMenus()
+		}
 	},
 	methods: {
 		/**
@@ -318,7 +310,7 @@ export default {
 		/**
 		 * To clear an error variable
 		 * @function
-         * @param {string} name - Name of the variable to clear
+		 * @param {string} name - Name of the variable to clear
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		clearError (name) {
@@ -362,33 +354,41 @@ export default {
 		 */
 		getAllItemsInMenu () {
 			var pickerVue = this
-			return MenusFunctions.getAllItemsInMenu(pickerVue.activeMenu.id).then(response => {
-				let menu = pickerVue.menus.filter(menu => menu.id === pickerVue.activeMenu.id)[0]
-				let items = response.payload.map(item => {
-					return {
-						...item,
-						selected: pickerVue.previous.includes(item.sku)
-					}
+			return MenusFunctions.getAllItemsInMenu(pickerVue.activeMenu.id)
+				.then(response => {
+					let menu = pickerVue.menus.filter(
+						menu => menu.id === pickerVue.activeMenu.id
+					)[0]
+					let items = response.payload.map(item => {
+						return {
+							...item,
+							selected: pickerVue.previous.includes(item.sku)
+						}
+					})
+					let categories = []
+					response.payload.forEach(item => {
+						if (
+							categories.findIndex(
+								included => item.category.id === included.id
+							) === -1
+						) {
+							categories.push({
+								...item.category,
+								selected: false
+							})
+						}
+					})
+					pickerVue.$set(menu, 'items', items)
+					pickerVue.$set(menu, 'categories', categories)
 				})
-				let categories = []
-				response.payload.forEach(item => {
-					if (categories.findIndex(included => item.category.id === included.id) === -1) {
-						categories.push({
-							...item.category,
-							selected: false
-						})
-					}
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not get menu items',
+						errorName: 'errorMessage',
+						vue: pickerVue
+					})
 				})
-				pickerVue.$set(menu, 'items', items)
-				pickerVue.$set(menu, 'categories', categories)
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not get menu items',
-					errorName: 'errorMessage',
-					vue: pickerVue
-				})
-			})
 		},
 		/**
 		 * To determine if a menu contains items to select
@@ -490,30 +490,31 @@ export default {
 </script>
 <style scoped>
 .pointer {
-	cursor: default;
+  cursor: default;
 }
-.active, i {
-	color: #2ea8e5;
+.active,
+i {
+  color: #2ea8e5;
 }
 .transparent {
-	transition: opacity 0.3s;
-	opacity: 0;
+  transition: opacity 0.3s;
+  opacity: 0;
 }
 .dd-item:hover .pull-right {
-	opacity: 1;
+  opacity: 1;
 }
 .permanent {
-	opacity: 1;
+  opacity: 1;
 }
 .header {
-	padding-left: 13px;
+  padding-left: 13px;
 }
 .no-items {
-	margin: 0;
-	padding-left: 20px;
-	height: 30px;
-	display: flex;
-	align-items: center;
-	color: #ccc;
+  margin: 0;
+  padding-left: 20px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  color: #ccc;
 }
 </style>

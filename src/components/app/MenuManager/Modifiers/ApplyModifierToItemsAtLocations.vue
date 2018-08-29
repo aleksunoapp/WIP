@@ -1,34 +1,49 @@
 <template>
-	<modal :show="showComponent" :width="900" effect="fade" @closeOnEscape="closeModal">
-		<div slot="modal-header" class="modal-header center">
-			<button type="button" class="close" @click="closeModal()">
+	<modal :show="showComponent"
+	       :width="900"
+	       effect="fade"
+	       @closeOnEscape="closeModal"
+	       ref="applyModal">
+		<div slot="modal-header"
+		     class="modal-header center">
+			<button type="button"
+			        class="close"
+			        @click="closeModal()">
 				<span>&times;</span>
 			</button>
 			<h4 class="modal-title center">Apply Modifier</h4>
 		</div>
-		<div slot="modal-body" class="modal-body">
-			<div class="row" v-show="errorMessage.length" ref="errorMessage">
+		<div slot="modal-body"
+		     class="modal-body">
+			<div class="row"
+			     v-show="errorMessage"
+			     ref="errorMessage">
 				<div class="col-md-12">
 					<div class="alert alert-danger">
-						<button class="close" @click="clearError('errorMessage')"></button>
+						<button class="close"
+						        @click="clearError('errorMessage')"></button>
 						<span>{{errorMessage}}</span>
 					</div>
 				</div>
 			</div>
-			<div class="row" v-show="itemSelection">
+			<div class="row"
+			     v-show="itemSelection">
 				<div class="col-md-4">
 					<h4>Menus</h4>
-					<div class="dd" id="nestable_list_1" v-if="menus.length">
+					<div class="dd"
+					     id="nestable_list_1"
+					     v-if="menus.length">
 						<ol class="dd-list">
-							<li 
-								class="dd-item" 
-								v-for="menu in menus" 
-								:data-id="menu.id" 
-								@click="selectMenu(menu)"
-								:key="menu.id"
-							>
-								<div class="dd-handle" :class="{'active': menu.id === activeMenu.id}"> {{ menu.name }}
-								<span class="pull-right"><i class="fa fa-chevron-right"></i></span>
+							<li class="dd-item"
+							    v-for="menu in menus"
+							    :data-id="menu.id"
+							    @click="selectMenu(menu)"
+							    :key="menu.id">
+								<div class="dd-handle"
+								     :class="{'active': menu.id === activeMenu.id}"> {{ menu.name }}
+									<span class="pull-right">
+										<i class="fa fa-chevron-right"></i>
+									</span>
 								</div>
 							</li>
 						</ol>
@@ -39,19 +54,23 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-md-4" v-if="isMenuSelected">
+				<div class="col-md-4"
+				     v-if="isMenuSelected">
 					<h4>{{ activeMenu.name }} - Categories</h4>
-					<div class="dd" id="nestable_list_2" v-if="categories.length">
+					<div class="dd"
+					     id="nestable_list_2"
+					     v-if="categories.length">
 						<ol class="dd-list">
-							<li 
-								class="dd-item" 
-								v-for="category in categories" 
-								:data-id="category.id" 
-								@click="selectCategory(category)"
-								:key="category.id"
-							>
-								<div class="dd-handle" :class="{'active': category.id === activeCategory.id}"> {{ category.name }}
-									<span class="pull-right"><i class="fa fa-chevron-right"></i></span>
+							<li class="dd-item"
+							    v-for="category in categories"
+							    :data-id="category.id"
+							    @click="selectCategory(category)"
+							    :key="category.id">
+								<div class="dd-handle"
+								     :class="{'active': category.id === activeCategory.id}"> {{ category.name }}
+									<span class="pull-right">
+										<i class="fa fa-chevron-right"></i>
+									</span>
 								</div>
 							</li>
 						</ol>
@@ -62,19 +81,26 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-md-4" v-if="isCategorySelected">
-					<h4><input type="checkbox" @change="selectAll()" class="md-check" v-model="selectAllSelected"> {{ activeCategory.name }} - Items</h4>
-					<div class="dd" id="nestable_list_3" v-if="items.length">
+				<div class="col-md-4"
+				     v-if="isCategorySelected">
+					<h4><input type="checkbox"
+						       @change="selectAll()"
+						       class="md-check"
+						       v-model="selectAllSelected"> {{ activeCategory.name }} - Items</h4>
+					<div class="dd"
+					     id="nestable_list_3"
+					     v-if="items.length">
 						<ol class="dd-list">
-							<li 
-								class="dd-item" 
-								v-for="item in items" 
-								:data-id="item.id"
-								:key="item.id"
-							>
+							<li class="dd-item"
+							    v-for="item in items"
+							    :data-id="item.id"
+							    :key="item.id">
 								<div class="dd-handle">
 									<span class="pull-left">
-										<input type="checkbox" :id="'item_checkbox_' + item.id" class="md-check" v-model="item.selected">&emsp;
+										<input type="checkbox"
+										       :id="'item_checkbox_' + item.id"
+										       class="md-check"
+										       v-model="item.selected">&emsp;
 										<label :for="'item_checkbox_' + item.id">{{ item.name }}
 										</label>
 									</span>
@@ -89,40 +115,37 @@
 					</div>
 				</div>
 			</div>
-			<div class="row" v-show="locationSelection">
+			<div class="row"
+			     v-show="locationSelection">
 				<div class="col-xs-12">
-					<select-locations-popup
-						@selectedLocations="updateLocations" 
-						:withButton="false">
+					<select-locations-popup @selectedLocations="updateLocations"
+					                        :withButton="false">
 					</select-locations-popup>
 				</div>
 			</div>
 		</div>
-		<div slot="modal-footer" class="modal-footer">
-			<button 
-				v-show="itemSelection"
-				type="button" 
-				class="btn btn-primary" 
-				@click="showLocationSelection()">
-					Next
+		<div slot="modal-footer"
+		     class="modal-footer">
+			<button v-show="itemSelection"
+			        type="button"
+			        class="btn btn-primary"
+			        @click="showLocationSelection()">
+				Next
 			</button>
-			<button 
-				v-show="locationSelection"
-				type="button" 
-				class="btn btn-outline" 
-				@click="showItemSelection()">
-					Back
+			<button v-show="locationSelection"
+			        type="button"
+			        class="btn btn-outline"
+			        @click="showItemSelection()">
+				Back
 			</button>
-			<button 
-				v-show="locationSelection"
-				type="button" 
-				class="btn btn-primary" 
-				@click="applyModifierToItemsAtLocations()"
-				:disabled="saving">
+			<button v-show="locationSelection"
+			        type="button"
+			        class="btn btn-primary"
+			        @click="applyModifierToItemsAtLocations()"
+			        :disabled="saving">
 				Save
-				<i 
-					v-show="saving"
-					class="fa fa-spinner fa-pulse fa-fw">
+				<i v-show="saving"
+				   class="fa fa-spinner fa-pulse fa-fw">
 				</i>
 			</button>
 		</div>
@@ -225,19 +248,25 @@ export default {
 		getMenus () {
 			this.menus = []
 			var menuTreeVue = this
-			return MenusFunctions.getStoreMenus(menuTreeVue.$root.appId, menuTreeVue.$root.appSecret, menuTreeVue.$root.activeLocation.id).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					menuTreeVue.menus = response.payload
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					menuTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
-			})
+			return MenusFunctions.getStoreMenus(
+				menuTreeVue.$root.appId,
+				menuTreeVue.$root.appSecret,
+				menuTreeVue.$root.activeLocation.id
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						menuTreeVue.menus = response.payload
+					}
+				})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch menus',
+						errorName: 'errorMessage',
+						vue: menuTreeVue,
+						containerRef: 'applyModal'
+					})
+				})
 		},
 		/**
 		 * To get a list of all menus for the corporate location.
@@ -247,19 +276,25 @@ export default {
 		getCorporateMenus () {
 			this.menus = []
 			var menuTreeVue = this
-			return MenusFunctions.getStoreMenus(menuTreeVue.$root.appId, menuTreeVue.$root.appSecret, menuTreeVue.$root.corporateStoreId).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					menuTreeVue.menus = response.payload
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					menuTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
-			})
+			return MenusFunctions.getStoreMenus(
+				menuTreeVue.$root.appId,
+				menuTreeVue.$root.appSecret,
+				menuTreeVue.$root.corporateStoreId
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						menuTreeVue.menus = response.payload
+					}
+				})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch menus',
+						errorName: 'errorMessage',
+						vue: menuTreeVue,
+						containerRef: 'applyModal'
+					})
+				})
 		},
 		/**
 		 * To get a list of all categories for the current active menu.
@@ -269,19 +304,26 @@ export default {
 		getCategoriesForActiveMenu () {
 			var menuTreeVue = this
 			menuTreeVue.categories = []
-			return CategoriesFunctions.getMenuCategories(menuTreeVue.activeMenu.id, menuTreeVue.$root.appId, menuTreeVue.$root.appSecret, menuTreeVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					menuTreeVue.categories = response.payload
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					menuTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
-			})
+			return CategoriesFunctions.getMenuCategories(
+				menuTreeVue.activeMenu.id,
+				menuTreeVue.$root.appId,
+				menuTreeVue.$root.appSecret,
+				menuTreeVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						menuTreeVue.categories = response.payload
+					}
+				})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch categories',
+						errorName: 'errorMessage',
+						vue: menuTreeVue,
+						containerRef: 'applyModal'
+					})
+				})
 		},
 		/**
 		 * To get a list of all item for the current active category.
@@ -291,19 +333,25 @@ export default {
 		getItemsForActiveCategory () {
 			var menuTreeVue = this
 			menuTreeVue.items = []
-			return ItemsFunctions.getCategoryItemsFull(menuTreeVue.activeCategory.id, menuTreeVue.$root.appId, menuTreeVue.$root.appSecret).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					menuTreeVue.items = response.payload
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					menuTreeVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
-			})
+			return ItemsFunctions.getCategoryItemsFull(
+				menuTreeVue.activeCategory.id,
+				menuTreeVue.$root.appId,
+				menuTreeVue.$root.appSecret
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						menuTreeVue.items = response.payload
+					}
+				})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch items',
+						errorName: 'errorMessage',
+						vue: menuTreeVue,
+						containerRef: 'applyModal'
+					})
+				})
 		},
 		/**
 		 * To clear the categories array and also the active category.
@@ -368,24 +416,35 @@ export default {
 			var menuTreeVue = this
 			let payload = {
 				modifier_id: this.modifier.id,
-				item_sku: this.items.filter(item => item.selected).map(item => item.sku),
+				item_sku: this.items
+					.filter(item => item.selected)
+					.map(item => item.sku),
 				locations: this.selectedLocations
 			}
-			ModifiersFunctions.applyModifierToItemsAtLocations(payload, menuTreeVue.$root.appId, menuTreeVue.$root.appSecret, menuTreeVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					menuTreeVue.closeModal()
-					menuTreeVue.emitSuccess()
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'Could apply modifier items to stores',
-					errorName: 'errorMessage',
-					vue: menuTreeVue
+			ModifiersFunctions.applyModifierToItemsAtLocations(
+				payload,
+				menuTreeVue.$root.appId,
+				menuTreeVue.$root.appSecret,
+				menuTreeVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						menuTreeVue.closeModal()
+						menuTreeVue.emitSuccess(response.payload)
+					}
 				})
-			}).finally(() => {
-				menuTreeVue.saving = false
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could apply the modifier',
+						errorName: 'errorMessage',
+						vue: menuTreeVue,
+						containerRef: 'applyModal'
+					})
+				})
+				.finally(() => {
+					menuTreeVue.saving = false
+				})
 		},
 		/**
 		 * To close the modal.
@@ -398,10 +457,11 @@ export default {
 		/**
 		 * To close the modal.
 		 * @function
+		 * @param {object} payload - The payload property of the response
 		 * @returns {undefined}
 		 */
-		emitSuccess () {
-			this.$emit('applyModifierToItemsAtLocationsSuccess')
+		emitSuccess (payload = {}) {
+			this.$emit('applyModifierToItemsAtLocationsSuccess', payload)
 		}
 	},
 	components: {
@@ -412,21 +472,21 @@ export default {
 </script>
 <style scoped>
 .height-mod {
-	max-height: 500px;
-    overflow: auto;
+  max-height: 500px;
+  overflow: auto;
 }
 .dd-handle {
-	cursor: pointer;
-	overflow: hidden;
-    text-overflow: ellipsis;
-    word-break: break-word;
-    white-space: nowrap;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+  white-space: nowrap;
 }
 .dd-handle * {
-	cursor: pointer;
+  cursor: pointer;
 }
 .active {
-	color: #2ea8e5;
-    background: #fff;
+  color: #2ea8e5;
+  background: #fff;
 }
 </style>

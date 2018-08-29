@@ -14,8 +14,10 @@
 		</div>
 
 		<!-- BEGIN CREATE -->
-		<div class="portlet box blue-hoki" v-if="$root.permissions['tax item_types create']">
-			<div class="portlet-title bg-blue-chambray" @click="toggleCreatePanel()">
+		<div class="portlet box blue-hoki"
+		     v-if="$root.permissions['tax item_types create']">
+			<div class="portlet-title bg-blue-chambray"
+			     @click="toggleCreatePanel()">
 				<div class="caption">
 					<i class="fa fa-2x fa-plus-circle"></i>
 					Create a New Item Type
@@ -24,27 +26,46 @@
 					<a :class="{'expand': !createNewCollapse, 'collapse': createNewCollapse}"></a>
 				</div>
 			</div>
-			<div class="portlet-body relative-block" :class="{'display-hide': createNewCollapse}">
-				<div class="col-md-12" v-show="activeLocationId === undefined">
+			<div class="portlet-body relative-block"
+			     :class="{'display-hide': createNewCollapse}">
+				<div class="col-md-12"
+				     v-show="activeLocationId === undefined">
 					<div class="alert center alert-info">
 						<h4>No Store Selected</h4>
 						<p>Please select a store from the stores panel on the right to create an item type.</p>
 					</div>
 				</div>
-				<form role="form" @submit.prevent="createItemType()" v-show="activeLocationId !== undefined">
+				<form role="form"
+				      @submit.prevent="createItemType()"
+				      v-show="activeLocationId !== undefined">
 					<div class="row">
 						<div class="col-md-12">
-							<div class="alert alert-danger" v-show="createErrorMessage.length" ref="createErrorMessage">
-								<button class="close" data-close="alert" @click.prevent="clearError('createErrorMessage')"></button>
+							<div class="alert alert-danger"
+							     v-show="createErrorMessage.length"
+							     ref="createErrorMessage">
+								<button class="close"
+								        data-close="alert"
+								        @click.prevent="clearError('createErrorMessage')"></button>
 								<span>{{ createErrorMessage }}</span>
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" :class="{'edited': newItemType.name.length}" id="form_control_1" v-model="newItemType.name">
+								<input type="text"
+								       class="form-control input-sm"
+								       :class="{'edited': newItemType.name.length}"
+								       id="form_control_1"
+								       v-model="newItemType.name">
 								<label for="form_control_1">Name</label>
 							</div>
-							<button type="submit" class="btn blue pull-right">Create</button>
+							<button type="submit"
+							        class="btn blue pull-right"
+							        :disabled="creating">
+								Create
+								<i v-show="creating"
+								   class="fa fa-spinner fa-pulse fa-fw">
+								</i>
+							</button>
 						</div>
 					</div>
 				</form>
@@ -60,7 +81,8 @@
 			</div>
 		</div>
 		<div v-else>
-			<div class="portlet light portlet-fit bordered margin-top-20" id="itemTypes-container">
+			<div class="portlet light portlet-fit bordered margin-top-20"
+			     id="itemTypes-container">
 				<div class="portlet-title bg-blue-chambray">
 					<div class="menu-image-main">
 						<img src="../../../../static/client_logo.png">
@@ -71,51 +93,61 @@
 					</div>
 				</div>
 				<div class="col-md-12">
-					<div class="alert alert-danger" v-show="listErrorMessage.length" ref="listErrorMessage">
-						<button class="close" data-close="alert" @click="clearError('listErrorMessage')"></button>
+					<div class="alert alert-danger"
+					     v-show="listErrorMessage.length"
+					     ref="listErrorMessage">
+						<button class="close"
+						        data-close="alert"
+						        @click="clearError('listErrorMessage')"></button>
 						<span>{{ listErrorMessage }}</span>
 					</div>
 				</div>
 				<div class="portlet-body relative-block">
-					<loading-screen :show="loadingItemTypes && activeLocationId !== undefined" :color="'#2C3E50'" :display="'inline'"></loading-screen>
-					<div class="mt-element-list margin-top-15" v-if="itemTypes.length && !loadingItemTypes">
+					<loading-screen :show="loadingItemTypes && activeLocationId !== undefined"
+					                :color="'#2C3E50'"
+					                :display="'inline'"></loading-screen>
+					<div class="mt-element-list margin-top-15"
+					     v-if="itemTypes.length && !loadingItemTypes">
 						<div class="mt-list-container list-news ext-1 no-border">
 							<ul>
-								<li class="mt-list-item actions-at-left margin-top-15 three-vertical-actions" v-for="itemType in itemTypes" :id="'itemType-' + itemType.id" :key="itemType.id">
+								<li class="mt-list-item actions-at-left margin-top-15 three-vertical-actions"
+								    v-for="itemType in itemTypes"
+								    :id="'itemType-' + itemType.id"
+								    :key="itemType.id">
 									<div class="list-item-actions">
-										<el-tooltip 
-											v-if="$root.permissions['tax item_types update']"
-											content="Edit" 
-											effect="light" 
-											placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default" @click="editItemType(itemType, $event)">
+										<el-tooltip v-if="$root.permissions['tax item_types update']"
+										            content="Edit"
+										            effect="light"
+										            placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default"
+											   @click="editItemType(itemType, $event)">
 												<i class="fa fa-lg fa-pencil"></i>
 											</a>
 										</el-tooltip>
-										<el-tooltip 
-											v-if="$root.permissions['tax item_types read'] && !$root.permissions['tax item_types update']"
-											content="View" 
-											effect="light" 
-											placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default" @click="editItemType(itemType, $event)">
+										<el-tooltip v-if="$root.permissions['tax item_types read'] && !$root.permissions['tax item_types update']"
+										            content="View"
+										            effect="light"
+										            placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default"
+											   @click="editItemType(itemType, $event)">
 												<i class="fa fa-lg fa-eye"></i>
 											</a>
 										</el-tooltip>
-										<el-tooltip 
-											v-if="$root.permissions['tax item_types update']"
-											content="Apply Tax Classes" 
-											effect="light" 
-											placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default" @click="openApplyModal(itemType, $event)">
+										<el-tooltip v-if="$root.permissions['tax item_types update']"
+										            content="Apply Tax Classes"
+										            effect="light"
+										            placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default"
+											   @click="openApplyModal(itemType, $event)">
 												<i class="icon-layers"></i>
 											</a>
 										</el-tooltip>
-										<el-tooltip 
-											v-if="$root.permissions['tax item_types delete']"
-											content="Delete" 
-											effect="light" 
-											placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default" @click="confirmDelete(itemType, $event)">
+										<el-tooltip v-if="$root.permissions['tax item_types delete']"
+										            content="Delete"
+										            effect="light"
+										            placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default"
+											   @click="confirmDelete(itemType, $event)">
 												<i class="fa fa-lg fa-trash"></i>
 											</a>
 										</el-tooltip>
@@ -131,7 +163,8 @@
 						</div>
 					</div>
 					<div class="margin-top-20">
-						<no-results :show="!itemTypes.length && !loadingItemTypes" :type="'item types'"></no-results>
+						<no-results :show="!itemTypes.length && !loadingItemTypes"
+						            :type="'item types'"></no-results>
 					</div>
 				</div>
 			</div>
@@ -139,65 +172,83 @@
 		<!-- END LIST -->
 
 		<!-- START EDIT -->
-		<modal :show="showEditModal" effect="fade" @closeOnEscape="closeEditModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeEditModal()">
+		<modal :show="showEditModal"
+		       effect="fade"
+		       @closeOnEscape="closeEditModal">
+			<div slot="modal-header"
+			     class="modal-header">
+				<button type="button"
+				        class="close"
+				        @click="closeEditModal()">
 					<span>&times;</span>
 				</button>
 				<h4 class="modal-title center">Edit Item Type</h4>
 			</div>
-			<div slot="modal-body" class="modal-body">
+			<div slot="modal-body"
+			     class="modal-body">
 				<form role="form">
 					<div class="row">
 						<div class="col-md-12">
-							<div class="alert alert-danger" v-show="editErrorMessage.length" ref="editErrorMessage">
-								<button class="close" data-close="alert" @click.prevent="clearError('editErrorMessage')"></button>
+							<div class="alert alert-danger"
+							     v-show="editErrorMessage.length"
+							     ref="editErrorMessage">
+								<button class="close"
+								        data-close="alert"
+								        @click.prevent="clearError('editErrorMessage')"></button>
 								<span>{{ editErrorMessage }}</span>
 							</div>
 						</div>
 						<div class="col-md-12">
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input 
-									:disabled="!$root.permissions['tax item_types update']"
-									type="text" 
-									class="form-control input-sm" 
-									:class="{'edited': itemTypeToEdit.name.length}" 
-									id="form_control_1" 
-									v-model="itemTypeToEdit.name">
+								<input :disabled="!$root.permissions['tax item_types update']"
+								       type="text"
+								       class="form-control input-sm"
+								       :class="{'edited': itemTypeToEdit.name.length}"
+								       id="form_control_1"
+								       v-model="itemTypeToEdit.name">
 								<label for="form_control_1">Name</label>
 							</div>
 						</div>
 					</div>
 				</form>
 			</div>
-			<div slot="modal-footer" class="modal-footer clear">
-				<button 
-					v-if="!$root.permissions['tax item_types update']"
-					@click="closeEditModal()" 
-					type="button" 
-					class="btn blue">
+			<div slot="modal-footer"
+			     class="modal-footer clear">
+				<button v-if="!$root.permissions['tax item_types update']"
+				        @click="closeEditModal()"
+				        type="button"
+				        class="btn blue">
 					Close
-				</button>				
-				<button 
-					v-else
-					@click="updateItemType()" 
-					type="submit" 
-					class="btn blue">
+				</button>
+				<button v-else
+				        @click="updateItemType()"
+				        type="submit"
+				        class="btn blue"
+				        :disabled="updating">
 					Save
+					<i v-show="updating"
+					   class="fa fa-spinner fa-pulse fa-fw">
+					</i>
 				</button>
 			</div>
 		</modal>
 		<!-- END EDIT -->
 
 		<!-- START APPLY -->
-		<modal :show="showApplyModal" effect="fade" @closeOnEscape="closeApplyModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeApplyModal()">
+		<modal :show="showApplyModal"
+		       effect="fade"
+		       @closeOnEscape="closeApplyModal">
+			<div slot="modal-header"
+			     class="modal-header">
+				<button type="button"
+				        class="close"
+				        @click="closeApplyModal()">
 					<span>&times;</span>
 				</button>
 				<h4 class="modal-title center">Apply Tax Classes</h4>
 			</div>
-			<div slot="modal-body" class="modal-body">
+			<div slot="modal-body"
+			     class="modal-body">
 				<div v-if="activeLocationId === undefined">
 					<div class="alert center alert-info">
 						<h4>No Store Selected</h4>
@@ -205,20 +256,31 @@
 					</div>
 				</div>
 				<div v-else>
-					<div class="alert alert-danger" v-show="applyErrorMessage.length" ref="applyErrorMessage">
-						<button class="close" @click.prevent="clearError('applyErrorMessage')"></button>
+					<div class="alert alert-danger"
+					     v-show="applyErrorMessage.length"
+					     ref="applyErrorMessage">
+						<button class="close"
+						        @click.prevent="clearError('applyErrorMessage')"></button>
 						<span>{{ applyErrorMessage }}</span>
 					</div>
-					<div class="alert alert-info center margin-top-20" v-show="!loadingTaxClasses && !taxClasses.length && !applyErrorMessage.length">
+					<div class="alert alert-info center margin-top-20"
+					     v-show="!loadingTaxClasses && !taxClasses.length && !applyErrorMessage.length">
 						<h4>No Tax Classes</h4>
-						<p>No tax classes for this location yet. <router-link to="/app/tax_manager/tax_classes">Create the first one here.</router-link></p>
+						<p>No tax classes for this location yet.
+							<router-link to="/app/tax_manager/tax_classes">Create the first one here.</router-link>
+						</p>
 					</div>
-					<table class="table">
+					<table class="table"
+					       v-show="taxClasses.length">
 						<thead>
 							<tr>
 								<th class="table-column--checkboxes">
-									<div class="md-checkbox has-success" @change="selectAll()">
-										<input type="checkbox" id="locations-promocodes" class="md-check" :checked="selectAllSelected">
+									<div class="md-checkbox has-success"
+									     @change="selectAll()">
+										<input type="checkbox"
+										       id="locations-promocodes"
+										       class="md-check"
+										       :checked="selectAllSelected">
 										<label for="locations-promocodes">
 											<span class="inc"></span>
 											<span class="check"></span>
@@ -230,10 +292,14 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr v-for="(taxClass, index) in taxClasses" :key="index">
+							<tr v-for="(taxClass, index) in taxClasses"
+							    :key="index">
 								<td>
 									<div class="md-checkbox has-success">
-										<input type="checkbox" :id="'checkbox_' + taxClass.id" class="md-check" v-model="taxClass.selected">
+										<input type="checkbox"
+										       :id="'checkbox_' + taxClass.id"
+										       class="md-check"
+										       v-model="taxClass.selected">
 										<label :for="'checkbox_' + taxClass.id">
 											<span class="inc"></span>
 											<span class="check"></span>
@@ -247,40 +313,56 @@
 					</table>
 				</div>
 			</div>
-			<div slot="modal-footer" class="modal-footer clear">
-				<button 
-					v-if="activeLocationId === undefined" 
-					@click="closeApplyModal()" 
-					type="submit" 
-					class="btn btn-outline"
-				>
+			<div slot="modal-footer"
+			     class="modal-footer clear">
+				<button v-if="activeLocationId === undefined || !taxClasses.length"
+				        @click="closeApplyModal()"
+				        type="submit"
+				        class="btn btn-outline">
 					Close
 				</button>
-				<button 
-					v-else 
-					@click="applyTaxClassesToItemType()"
-					type="submit"
-					class="btn blue"
-				>
+				<button v-else
+				        @click="applyTaxClassesToItemType()"
+				        type="submit"
+				        class="btn blue"
+				        :disabled="applying">
 					Apply
+					<i v-show="applying"
+					   class="fa fa-spinner fa-pulse fa-fw">
+					</i>
 				</button>
 			</div>
 		</modal>
 		<!-- END APPLY -->
 
 		<!-- START DELETE -->
-		<modal :show="showDeleteModal" effect="fade" @closeOnEscape="closeDeleteModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeDeleteModal()">
+		<modal :show="showDeleteModal"
+		       effect="fade"
+		       @closeOnEscape="closeDeleteModal">
+			<div slot="modal-header"
+			     class="modal-header">
+				<button type="button"
+				        class="close"
+				        @click="closeDeleteModal()">
 					<span>&times;</span>
 				</button>
 				<h4 class="modal-title center">Confirm Delete</h4>
 			</div>
-			<div slot="modal-body" class="modal-body">
+			<div slot="modal-body"
+			     class="modal-body">
 				<p>Are you sure you want to delete {{itemTypeToDelete.name}}?</p>
 			</div>
-			<div slot="modal-footer" class="modal-footer clear">
-				<button type="button" class="btn blue" @click="deleteItemType()">Delete</button>
+			<div slot="modal-footer"
+			     class="modal-footer clear">
+				<button type="button"
+				        class="btn blue"
+				        @click="deleteItemType()"
+				        :disabled="deleting">
+					Delete
+					<i v-show="deleting"
+					   class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
 			</div>
 		</modal>
 		<!-- START DELETE -->
@@ -299,11 +381,10 @@ import ajaxErrorHandler from '../../../controllers/ErrorController'
 export default {
 	data () {
 		return {
-			breadcrumbArray: [
-				{name: 'Item Types', link: false}
-			],
+			breadcrumbArray: [{ name: 'Item Types', link: false }],
 
 			createNewCollapse: true,
+			creating: false,
 			createErrorMessage: '',
 			newItemType: {
 				name: ''
@@ -314,12 +395,14 @@ export default {
 			itemTypes: [],
 
 			showEditModal: false,
+			updating: false,
 			editErrorMessage: '',
 			itemTypeToEdit: {
 				name: ''
 			},
 
 			showDeleteModal: false,
+			deleting: false,
 			deleteErrorMessage: '',
 			itemTypeToDelete: {
 				name: ''
@@ -327,6 +410,7 @@ export default {
 
 			loadingTaxClasses: false,
 			taxClasses: [],
+			applying: false,
 			applyErrorMessage: '',
 			itemTypeToAssignTo: {},
 			showApplyModal: false
@@ -338,7 +422,9 @@ export default {
 		},
 		selectAllSelected () {
 			if (this.taxClasses.length) {
-				return !this.taxClasses.filter(taxClass => !taxClass.selected).length > 0
+				return (
+					!this.taxClasses.filter(taxClass => !taxClass.selected).length > 0
+				)
 			}
 			return false
 		}
@@ -395,44 +481,66 @@ export default {
 			_this.clearError('createErrorMessage')
 			this.newItemType.location_id = this.activeLocationId
 
-			return _this.validateNewItemTypeData()
-			.then(response => {
-				ItemTypesFunctions.createItemType(_this.newItemType, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
+			return _this
+				.validateNewItemTypeData()
 				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						_this.showCreateSuccess()
-						_this.getItemTypes()
-					} else {
-						_this.createErrorMessage = response.message
-						_this.$scrollTo(_this.$refs.createErrorMessage, 1000, { offset: -50 })
-					}
+					_this.creating = true
+					ItemTypesFunctions.createItemType(
+						_this.newItemType,
+						_this.$root.appId,
+						_this.$root.appSecret,
+						_this.$root.userToken
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								_this.showCreateSuccess(response.payload)
+								_this.clearNewItemType()
+								_this.getItemTypes()
+							} else {
+								_this.createErrorMessage = response.message
+								_this.$scrollTo(_this.$refs.createErrorMessage, 1000, {
+									offset: -50
+								})
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not create the item type',
+								errorName: 'createErrorMessage',
+								vue: _this
+							})
+						})
+						.finally(() => {
+							_this.creating = false
+						})
 				})
 				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not create the item type',
-						errorName: 'createErrorMessage',
-						vue: _this
-					})
+					_this.createErrorMessage = reason
+					_this.$scrollTo(_this.$refs.createErrorMessage, 1000, { offset: -50 })
 				})
-			}).catch(reason => {
-				_this.createErrorMessage = reason
-				_this.$scrollTo(_this.$refs.createErrorMessage, 1000, { offset: -50 })
-			})
 		},
 		/**
-		 * To alert the user that the item type has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showCreateSuccess () {
+		showCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Item Type has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Item Type has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'Item Type \'' + this.newItemType.name + '\' has been successfully added!',
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(() => {
-				this.clearNewItemType()
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -456,24 +564,30 @@ export default {
 			this.loadingItemTypes = true
 			this.itemTypes = []
 			var _this = this
-			let payload = {location_id: _this.activeLocationId}
-			return ItemTypesFunctions.getItemTypes(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					_this.loadingItemTypes = false
-					_this.itemTypes = response.payload
-				} else {
-					_this.loadingItemTypes = false
-				}
-			}).catch(reason => {
-				_this.loadingItemTypes = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch the list of item types',
-					errorName: 'listErrorMessage',
-					vue: _this
+			let payload = { location_id: _this.activeLocationId }
+			return ItemTypesFunctions.getItemTypes(
+				payload,
+				_this.$root.appId,
+				_this.$root.appSecret,
+				_this.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						_this.loadingItemTypes = false
+						_this.itemTypes = response.payload
+					} else {
+						_this.loadingItemTypes = false
+					}
 				})
-			})
+				.catch(reason => {
+					_this.loadingItemTypes = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch the list of item types',
+						errorName: 'listErrorMessage',
+						vue: _this
+					})
+				})
 		},
 		/**
 		 * To show the modal to edit an item type details.
@@ -484,7 +598,7 @@ export default {
 		 */
 		editItemType (itemType, event) {
 			event.stopPropagation()
-			this.itemTypeToEdit = {...itemType}
+			this.itemTypeToEdit = { ...itemType }
 			this.showEditModal = true
 		},
 		/**
@@ -509,45 +623,70 @@ export default {
 		updateItemType () {
 			var _this = this
 			_this.clearError('editErrorMessage')
-			let payload = {...this.itemTypeToEdit}
+			let payload = { ...this.itemTypeToEdit }
 			payload.location_id = this.activeLocationId
 
-			return _this.validateEditedItemTypeData()
-			.then(response => {
-				ItemTypesFunctions.updateItemType(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						_this.getItemTypes()
-						_this.closeEditModal()
-						_this.showEditSuccess()
-						_this.resetEdit()
-					} else {
-						_this.editErrorMessage = response.message
-						_this.$scrollTo(_this.$refs.editErrorMessage, 1000, { offset: -50 })
-					}
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not update the item type',
-						errorName: 'editErrorMessage',
-						vue: _this
-					})
+			return _this
+				.validateEditedItemTypeData()
+				.then(response => {
+					_this.updating = true
+					ItemTypesFunctions.updateItemType(
+						payload,
+						_this.$root.appId,
+						_this.$root.appSecret,
+						_this.$root.userToken
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								_this.getItemTypes()
+								_this.closeEditModal()
+								_this.showEditSuccess(response.payload)
+								_this.resetEdit()
+							} else {
+								_this.editErrorMessage = response.message
+								_this.$scrollTo(_this.$refs.editErrorMessage, 1000, {
+									offset: -50
+								})
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not update the item type',
+								errorName: 'editErrorMessage',
+								vue: _this
+							})
+						})
+						.finally(() => {
+							_this.updating = false
+						})
 				})
-			}).catch(reason => {
-				_this.editErrorMessage = reason
-				_this.$scrollTo(_this.$refs.editErrorMessage, 1000, { offset: -50 })
-			})
+				.catch(reason => {
+					_this.editErrorMessage = reason
+					_this.$scrollTo(_this.$refs.editErrorMessage, 1000, { offset: -50 })
+				})
 		},
 		/**
-		 * To display notification that item types were successfully saved.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess () {
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Item Type has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: `${this.itemTypeToEdit.name} updated`,
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -578,7 +717,7 @@ export default {
 		 */
 		confirmDelete (itemType, event) {
 			event.stopPropagation()
-			this.itemTypeToDelete = {...itemType}
+			this.itemTypeToDelete = { ...itemType }
 			this.showDeleteModal = true
 		},
 		/**
@@ -587,35 +726,54 @@ export default {
 		 * @returns {undefined}
 		 */
 		deleteItemType () {
+			this.deleting = true
 			var _this = this
-			return ItemTypesFunctions.deleteItemType(_this.itemTypeToDelete.id, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					_this.getItemTypes()
-					_this.closeDeleteModal()
-					_this.showDeleteSuccess()
-				}
-			})
-			.catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: `We could not delete ${this.itemTypeToDelete.name}`,
-					errorName: 'deleteErrorMessage',
-					vue: _this
+			return ItemTypesFunctions.deleteItemType(
+				_this.itemTypeToDelete.id,
+				_this.$root.appId,
+				_this.$root.appSecret,
+				_this.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						_this.getItemTypes()
+						_this.closeDeleteModal()
+						_this.showDeleteSuccess(response.payload)
+					}
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: `We could not delete ${this.itemTypeToDelete.name}`,
+						errorName: 'deleteErrorMessage',
+						vue: _this
+					})
+				})
+				.finally(() => {
+					_this.deleting = false
+				})
 		},
 		/**
-		 * To display notification that item types were successfully saved.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess () {
+		showDeleteSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Item Type has been deleted'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The removal has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: `${this.itemTypeToDelete.name} deleted`,
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -635,21 +793,24 @@ export default {
 		 */
 		openApplyModal (itemType, event) {
 			event.stopPropagation()
-			this.itemTypeToAssignTo = {...itemType}
+			this.itemTypeToAssignTo = { ...itemType }
 			let _this = this
-			Promise.all([_this.getTaxClasses(), _this.getTaxClassesForItemType()]).then(response => {
-				if (_this.itemTypeToAssignTo.taxclasses) {
-					_this.taxClasses.forEach(taxClass => {
-						let included = _this.itemTypeToAssignTo.taxclasses.filter(globalTaxClass =>
-							globalTaxClass.id === taxClass.id)
-						if (included.length) {
-							taxClass.selected = true
-						}
-					})
-				}
-			}).catch(reason => {
-				_this.applyErrorMessage = 'Something went wrong ...'
-			})
+			Promise.all([_this.getTaxClasses(), _this.getTaxClassesForItemType()])
+				.then(response => {
+					if (_this.itemTypeToAssignTo.taxclasses) {
+						_this.taxClasses.forEach(taxClass => {
+							let included = _this.itemTypeToAssignTo.taxclasses.filter(
+								globalTaxClass => globalTaxClass.id === taxClass.id
+							)
+							if (included.length) {
+								taxClass.selected = true
+							}
+						})
+					}
+				})
+				.catch(reason => {
+					_this.applyErrorMessage = 'Something went wrong ...'
+				})
 			this.showApplyModal = true
 		},
 		/**
@@ -661,27 +822,33 @@ export default {
 			this.loadingTaxClasses = true
 			this.taxClasses = []
 			var _this = this
-			let payload = {location_id: _this.activeLocationId}
-			return TaxClassesFunctions.getTaxClasses(payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					_this.loadingTaxClasses = false
-					_this.taxClasses = response.payload.map(taxClass => {
-						taxClass.selected = false
-						return taxClass
-					})
-				} else {
-					_this.loadingTaxClasses = false
-				}
-			}).catch(reason => {
-				_this.loadingTaxClasses = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch the list of tax classes',
-					errorName: 'applyErrorMessage',
-					vue: _this
+			let payload = { location_id: _this.activeLocationId }
+			return TaxClassesFunctions.getTaxClasses(
+				payload,
+				_this.$root.appId,
+				_this.$root.appSecret,
+				_this.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						_this.loadingTaxClasses = false
+						_this.taxClasses = response.payload.map(taxClass => {
+							taxClass.selected = false
+							return taxClass
+						})
+					} else {
+						_this.loadingTaxClasses = false
+					}
 				})
-			})
+				.catch(reason => {
+					_this.loadingTaxClasses = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch the list of tax classes',
+						errorName: 'applyErrorMessage',
+						vue: _this
+					})
+				})
 		},
 		/**
 		 * To get a list of all item types.
@@ -690,23 +857,31 @@ export default {
 		 */
 		getTaxClassesForItemType () {
 			var _this = this
-			return ItemTypesFunctions.getTaxClassesForItemType(_this.itemTypeToAssignTo.id, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					_this.itemTypeToAssignTo = response.payload
-				} else {
-					_this.applyErrorMessage = response.message
-					_this.$scrollTo(_this.$refs.applyErrorMessage, 1000, { offset: -50 })
-				}
-			}).catch(reason => {
-				_this.loadingItemTypes = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch the list of item types',
-					errorName: 'listErrorMessage',
-					vue: _this
+			return ItemTypesFunctions.getTaxClassesForItemType(
+				_this.itemTypeToAssignTo.id,
+				_this.$root.appId,
+				_this.$root.appSecret,
+				_this.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						_this.itemTypeToAssignTo = response.payload
+					} else {
+						_this.applyErrorMessage = response.message
+						_this.$scrollTo(_this.$refs.applyErrorMessage, 1000, {
+							offset: -50
+						})
+					}
 				})
-			})
+				.catch(reason => {
+					_this.loadingItemTypes = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch the list of item types',
+						errorName: 'listErrorMessage',
+						vue: _this
+					})
+				})
 		},
 		validateTaxClassesToApply () {
 			var _this = this
@@ -725,32 +900,49 @@ export default {
 		applyTaxClassesToItemType () {
 			this.clearError('applyErrorMessage')
 			var _this = this
-			return this.validateTaxClassesToApply().then(response => {
-				let payload = {
-					tax_classes: this.taxClasses.filter(taxClass => taxClass.selected).map(taxClass => taxClass.id)
-				}
-				return ItemTypesFunctions.applyTaxClassesToItemType(_this.itemTypeToAssignTo.id, payload, _this.$root.appId, _this.$root.appSecret, _this.$root.userToken)
+			return this.validateTaxClassesToApply()
 				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						_this.closeApplyModal()
-						_this.showApplySuccess()
-					} else {
-						_this.applyErrorMessage = response.message
-						_this.$scrollTo(_this.$refs.applyErrorMessage, 1000, { offset: -50 })
+					_this.applying = true
+					let payload = {
+						tax_classes: this.taxClasses
+							.filter(taxClass => taxClass.selected)
+							.map(taxClass => taxClass.id)
 					}
-				}).catch(reason => {
-					_this.loadingItemTypes = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not apply tax classes to this item type',
-						errorName: 'applyErrorMessage',
-						vue: _this
-					})
+					return ItemTypesFunctions.applyTaxClassesToItemType(
+						_this.itemTypeToAssignTo.id,
+						payload,
+						_this.$root.appId,
+						_this.$root.appSecret,
+						_this.$root.userToken
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								_this.closeApplyModal()
+								_this.showApplySuccess(response.payload)
+							} else {
+								_this.applyErrorMessage = response.message
+								_this.$scrollTo(_this.$refs.applyErrorMessage, 1000, {
+									offset: -50
+								})
+							}
+						})
+						.catch(reason => {
+							_this.loadingItemTypes = false
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not apply tax classes to this item type',
+								errorName: 'applyErrorMessage',
+								vue: _this
+							})
+						})
+						.finally(() => {
+							_this.applying = false
+						})
 				})
-			}).catch(reason => {
-				_this.applyErrorMessage = reason
-				_this.$scrollTo(_this.$refs.applyErrorMessage, 1000, { offset: -50 })
-			})
+				.catch(reason => {
+					_this.applyErrorMessage = reason
+					_this.$scrollTo(_this.$refs.applyErrorMessage, 1000, { offset: -50 })
+				})
 		},
 		/**
 		 * To close the apply modal.
@@ -773,16 +965,26 @@ export default {
 			})
 		},
 		/**
-		 * To confirm tax classes have been successfully assigned.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showApplySuccess () {
+		showApplySuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Tax Classes have been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Tax classes have been assigned',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		}
 	},
@@ -796,10 +998,10 @@ export default {
 </script>
 
 <style scoped>
-.mt-element-list .list-news.ext-1.mt-list-container ul>.mt-list-item:hover {
-	background-color: white;
+.mt-element-list .list-news.ext-1.mt-list-container ul > .mt-list-item:hover {
+  background-color: white;
 }
 .three-vertical-actions {
-	min-height: 124px;
+  min-height: 124px;
 }
 </style>

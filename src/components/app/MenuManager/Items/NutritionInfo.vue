@@ -1,99 +1,135 @@
 <template>
-	<modal v-bind:show="showNutritionModal" effect="fade" @closeOnEscape="closeModal">
-		<div slot="modal-header" class="modal-header">
-			<button type="button" class="close" @click="closeModal()">
+	<modal v-bind:show="showNutritionModal"
+	       effect="fade"
+	       @closeOnEscape="closeModal"
+	       ref="nutritionModal">
+		<div slot="modal-header"
+		     class="modal-header">
+			<button type="button"
+			        class="close"
+			        @click="closeModal()">
 				<span>&times;</span>
 			</button>
-			<transition name="fade" mode="out-in">
-				<h4 class="modal-title center" v-if="!selectLocationMode" key="mainEditMode">Item Nutrition Info</h4>
-				<h4 class="modal-title center" v-if="selectLocationMode" key="selectLocationMode"><i class="fa fa-chevron-left clickable pull-left back-button" @click="closeSelectLocationsPopup()"></i>Select Stores</h4>
+			<transition name="fade"
+			            mode="out-in">
+				<h4 class="modal-title center"
+				    v-if="!selectLocationMode"
+				    key="mainEditMode">Item Nutrition Info</h4>
+				<h4 class="modal-title center"
+				    v-if="selectLocationMode"
+				    key="selectLocationMode">
+					<i class="fa fa-chevron-left clickable pull-left back-button"
+					   @click="closeSelectLocationsPopup()"></i>Select Stores</h4>
 			</transition>
 		</div>
-		<div slot="modal-body" class="modal-body" v-if="!creatingNutritionInfo">
-	        <div class="margin-top-20" v-if="errorMessage.length">
+		<div slot="modal-body"
+		     class="modal-body"
+		     v-if="!creatingNutritionInfo">
+			<div class="margin-top-20"
+			     v-show="errorMessage"
+			     ref="errorMessage">
 				<div class="alert alert-danger">
-	                <span>{{ errorMessage }}</span>
-	                <div class="margin-top-15">
-	                	<button type="button" class="btn blue" @click="enableCreate()">Add Nutrition Info</button>
-	                </div>
-	            </div>
-	        </div>
-    	    <div class="portlet light bg-inverse clear" v-if="!errorMessage.length && !selectLocationMode">
-                <div class="portlet-title">
-                    <div class="caption">Click on the button on the right to edit</div>
-                    <div class="actions">
-                    	<a class="btn btn-circle btn-icon-only btn-default" @click="enableEdit()">
-		                    <i class="fa fa-lg fa-pencil"></i>
-		                </a>
-                    </div>
-                </div>
-                <div class="portlet-body">
-        	        <div v-if="editNutritionError.length">
-        				<div class="alert alert-danger">
-        	                <span>{{ editNutritionError }}</span>
-        	            </div>
-        	        </div>
-            		<div class='table-scrollable table-fixed-height'>
-	        	        <table class='table'>
-	        	            <thead>
-	        	                <tr>
-	        	                	<th> Category </th>
-	        	                    <th> Value </th>
-	        	                </tr>
-	        	            </thead>
-	        	            <tbody>
-	        	                <tr v-for="info in itemNutritionInfo" :key="info.id">
-	        	                    <td v-if="info.key !== 'id' && info.key !== 'item_id'"> {{ info.name }} </td>
-	        	                    <td v-if="info.key !== 'id' && info.key !== 'item_id'">
-	        	                    	<input 
-											:disabled="!editingNutritionInfo && !$root.permissions['menu_manager menus categories subcategories items nutrition update']"
-											type="text" 
-											class="form-control input-sm" 
-											v-model="info.value">
-	        	                    </td>
-	        	                </tr>
-	        	            </tbody>
-	        	        </table>
-	        	    </div>
-        			<div>
+					<button class="close"
+					        @click="clearError('errorMessage')"></button>
+					<span>{{ errorMessage }}</span>
+				</div>
+			</div>
+			<div class="margin-top-15">
+				<button type="button"
+				        class="btn blue"
+				        @click="enableCreate()">Add Nutrition Info</button>
+			</div>
+			<div class="portlet light bg-inverse clear"
+			     v-if="!errorMessage.length && !selectLocationMode">
+				<div class="portlet-title">
+					<div class="caption">Click on the button on the right to edit</div>
+					<div class="actions">
+						<a class="btn btn-circle btn-icon-only btn-default"
+						   @click="enableEdit()">
+							<i class="fa fa-lg fa-pencil"></i>
+						</a>
+					</div>
+				</div>
+				<div class="portlet-body">
+					<div v-show="editNutritionError"
+					     ref="editNutritionError">
+						<div class="alert alert-danger">
+							<button class="close"
+							        @click="clearError('editNutritionError')"></button>
+							<span>{{ editNutritionError }}</span>
+						</div>
+					</div>
+					<div class='table-scrollable table-fixed-height'>
+						<table class='table'>
+							<thead>
+								<tr>
+									<th> Category </th>
+									<th> Value </th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="info in itemNutritionInfo"
+								    :key="info.id">
+									<td v-if="info.key !== 'id' && info.key !== 'item_id'"> {{ info.name }} </td>
+									<td v-if="info.key !== 'id' && info.key !== 'item_id'">
+										<input :disabled="!editingNutritionInfo && !can('menu_manager menus categories subcategories items nutrition update')"
+										       type="text"
+										       class="form-control input-sm"
+										       v-model="info.value">
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div>
 						<p class="margin-bottom-10 margin-top-30 margin-right-10">Select locations to apply the changes to:</p>
-        				<button type="submit" class="btn blue btn-outline" @click="selectLocations($event)">Select locations</button>
-        				<p class="grey-label margin-top-10" v-if="selectedLocations.length">Selected {{ selectedLocations.length }} location<span v-if="selectedLocations.length !== 1">s</span></p>
-        				<div class="form-group form-md-line-input form-md-floating-label">
-        					<label>Update all items?</label><br>
-        					<el-switch
-        						:disabled="!$root.permissions['menu_manager menus categories subcategories items nutrition update']"
-								v-model="update_all_items"
-        						active-color="#0c6"
-        						inactive-color="#ff4949"
-        						:active-value="1"
-        						:inactive-value="0"
-        						active-text="Yes"
-        						inactive-text="No">
-        					</el-switch>
-        				</div>
-        			</div>
-                </div>
-            </div>
-			<select-locations-popup 
-				v-if="selectLocationMode" 
-				@closeSelectLocationsPopup='updateSelectedLocations' 
-				:previouslySelected="selectedLocations">
+						<button type="submit"
+						        class="btn blue btn-outline"
+						        @click="selectLocations($event)">Select locations</button>
+						<p class="grey-label margin-top-10"
+						   v-if="selectedLocations.length">Selected {{ selectedLocations.length }}
+							<span v-if="selectedLocations.length !== 1">locations</span>
+							<span v-else>location</span>
+						</p>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<label>Update all items?</label><br>
+							<el-switch :disabled="!can('menu_manager menus categories subcategories items nutrition update')"
+							           v-model="update_all_items"
+							           active-color="#0c6"
+							           inactive-color="#ff4949"
+							           :active-value="1"
+							           :inactive-value="0"
+							           active-text="Yes"
+							           inactive-text="No">
+							</el-switch>
+						</div>
+					</div>
+				</div>
+			</div>
+			<select-locations-popup v-if="selectLocationMode"
+			                        @closeSelectLocationsPopup='updateSelectedLocations'
+			                        :previouslySelected="selectedLocations">
 			</select-locations-popup>
 		</div>
-		<div slot="modal-body" class="modal-body" v-if="creatingNutritionInfo">
-    	    <div class="portlet light bg-inverse clear">
-                <div class="portlet-title">
-                    <div class="caption">Add nutrition info for '{{ item.name }}'</div>
-                </div>
-                <div class="portlet-body">
-        	        <div class="margin-top-20" v-if="createNutritionError.length">
-        				<div class="alert alert-danger">
-        	                <span>{{ createNutritionError }}</span>
-        	            </div>
-        	        </div>
-            		<div class='table-scrollable table-fixed-height'>
-						<fieldset :disabled="!$root.permissions['menu_manager menus categories subcategories items nutrition create']">
+		<div slot="modal-body"
+		     class="modal-body"
+		     v-if="creatingNutritionInfo">
+			<div class="portlet light bg-inverse clear">
+				<div class="portlet-title">
+					<div class="caption">Add nutrition info for '{{ item.name }}'</div>
+				</div>
+				<div class="portlet-body">
+					<div class="margin-top-20"
+					     v-show="createNutritionError"
+					     ref="createNutritionError">
+						<div class="alert alert-danger">
+							<button class="close"
+							        @click="clearError('createNutritionError')"></button>
+							<span>{{ createNutritionError }}</span>
+						</div>
+					</div>
+					<div class='table-scrollable table-fixed-height'>
+						<fieldset :disabled="!can('menu_manager menus categories subcategories items nutrition create')">
 							<table class='table'>
 								<thead>
 									<tr>
@@ -104,91 +140,127 @@
 								<tbody>
 									<tr>
 										<td> Calories </td>
-										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.calories"> </td>
+										<td> <input type="text"
+											       class="form-control input-sm"
+											       v-model="newNutritionInfo.calories"> </td>
 									</tr>
 									<tr>
 										<td> Minimum Calories </td>
-										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.min_cal"> </td>
+										<td> <input type="text"
+											       class="form-control input-sm"
+											       v-model="newNutritionInfo.min_cal"> </td>
 									</tr>
 									<tr>
 										<td> Total Fat </td>
-										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.total_fat"> </td>
+										<td> <input type="text"
+											       class="form-control input-sm"
+											       v-model="newNutritionInfo.total_fat"> </td>
 									</tr>
 									<tr>
 										<td> Saturated Fat </td>
-										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.saturated_fat"> </td>
+										<td> <input type="text"
+											       class="form-control input-sm"
+											       v-model="newNutritionInfo.saturated_fat"> </td>
 									</tr>
 									<tr>
 										<td> Trans Fat </td>
-										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.trans_fat"> </td>
+										<td> <input type="text"
+											       class="form-control input-sm"
+											       v-model="newNutritionInfo.trans_fat"> </td>
 									</tr>
 									<tr>
 										<td> Cholesterol </td>
-										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.cholesterol"> </td>
+										<td> <input type="text"
+											       class="form-control input-sm"
+											       v-model="newNutritionInfo.cholesterol"> </td>
 									</tr>
 									<tr>
 										<td> Sodium </td>
-										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.sodium"> </td>
+										<td> <input type="text"
+											       class="form-control input-sm"
+											       v-model="newNutritionInfo.sodium"> </td>
 									</tr>
 									<tr>
 										<td> Carbohydrates </td>
-										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.carbs"> </td>
+										<td> <input type="text"
+											       class="form-control input-sm"
+											       v-model="newNutritionInfo.carbs"> </td>
 									</tr>
 									<tr>
 										<td> Fibre </td>
-										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.fibre"> </td>
+										<td> <input type="text"
+											       class="form-control input-sm"
+											       v-model="newNutritionInfo.fibre"> </td>
 									</tr>
 									<tr>
 										<td> Sugar </td>
-										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.sugar"> </td>
+										<td> <input type="text"
+											       class="form-control input-sm"
+											       v-model="newNutritionInfo.sugar"> </td>
 									</tr>
 									<tr>
 										<td> Protein </td>
-										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.protein"> </td>
+										<td> <input type="text"
+											       class="form-control input-sm"
+											       v-model="newNutritionInfo.protein"> </td>
 									</tr>
 									<tr>
 										<td> Vitamin A </td>
-										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.vit_a"> </td>
+										<td> <input type="text"
+											       class="form-control input-sm"
+											       v-model="newNutritionInfo.vit_a"> </td>
 									</tr>
 									<tr>
 										<td> Vitamin C </td>
-										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.vit_c"> </td>
+										<td> <input type="text"
+											       class="form-control input-sm"
+											       v-model="newNutritionInfo.vit_c"> </td>
 									</tr>
 									<tr>
 										<td> Calcium </td>
-										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.calcium"> </td>
+										<td> <input type="text"
+											       class="form-control input-sm"
+											       v-model="newNutritionInfo.calcium"> </td>
 									</tr>
 									<tr>
 										<td> Iron </td>
-										<td> <input type="text" class="form-control input-sm" v-model="newNutritionInfo.iron"> </td>
+										<td> <input type="text"
+											       class="form-control input-sm"
+											       v-model="newNutritionInfo.iron"> </td>
 									</tr>
 								</tbody>
 							</table>
 						</fieldset>
-	        	    </div>
-                </div>
-            </div>
+					</div>
+				</div>
+			</div>
 		</div>
-		<div slot="modal-footer" class="modal-footer">
-			<button 
-				type="button" 
-				class="btn btn-primary" 
-				v-if="editingNutritionInfo && !creatingNutritionInfo && !selectLocationMode" 
-				@click="updateItemNutritionInfo()">
+		<div slot="modal-footer"
+		     class="modal-footer">
+			<button type="button"
+			        class="btn btn-primary"
+			        v-if="editingNutritionInfo && !creatingNutritionInfo && !selectLocationMode"
+			        @click="updateItemNutritionInfo()"
+			        :disabled="updating">
 				Save
+				<i v-show="updating"
+				   class="fa fa-spinner fa-pulse fa-fw">
+				</i>
 			</button>
-			<button 
-				type="button"
-				class="btn btn-primary"
-				v-if="!editingNutritionInfo && creatingNutritionInfo && !selectLocationMode" 
-				@click="createItemNutritionInfo()">
+			<button type="button"
+			        class="btn btn-primary"
+			        v-if="!editingNutritionInfo && creatingNutritionInfo && !selectLocationMode"
+			        @click="createItemNutritionInfo()"
+			        :disabled="creating">
 				Create
+				<i v-show="creating"
+				   class="fa fa-spinner fa-pulse fa-fw">
+				</i>
 			</button>
-			<button 
-				type="button" 
-				class="btn btn-primary" 
-				v-if="!editingNutritionInfo && !creatingNutritionInfo && !selectLocationMode"
-				@click="closeModal()">
+			<button type="button"
+			        class="btn btn-primary"
+			        v-if="!editingNutritionInfo && !creatingNutritionInfo && !selectLocationMode"
+			        @click="closeModal()">
 				Close
 			</button>
 		</div>
@@ -200,6 +272,8 @@ import $ from 'jquery'
 import Modal from '../../../modules/Modal'
 import ItemsFunctions from '../../../../controllers/Items'
 import SelectLocationsPopup from '../../../modules/SelectLocationsPopup'
+import ajaxErrorHandler from '@/controllers/ErrorController'
+import { mapGetters } from 'vuex'
 
 export default {
 	data () {
@@ -207,7 +281,9 @@ export default {
 			showNutritionModal: false,
 			itemNutritionInfo: {},
 			editingNutritionInfo: false,
+			updating: false,
 			creatingNutritionInfo: false,
+			creating: false,
 			createNutritionError: '',
 			editNutritionError: '',
 			errorMessage: '',
@@ -219,6 +295,9 @@ export default {
 			selectedLocations: [],
 			update_all_items: false
 		}
+	},
+	computed: {
+		...mapGetters(['can', 'canAny'])
 	},
 	props: {
 		item: {
@@ -237,7 +316,11 @@ export default {
 		 * @returns {undefined}
 		 */
 		enableCreate () {
-			if (this.$root.permissions['menu_manager menus categories subcategories items nutrition create']) {
+			if (
+				this.can(
+					'menu_manager menus categories subcategories items nutrition create'
+				)
+			) {
 				this.creatingNutritionInfo = true
 			}
 		},
@@ -247,7 +330,11 @@ export default {
 		 * @returns {undefined}
 		 */
 		enableEdit () {
-			if (this.$root.permissions['menu_manager menus categories subcategories items nutrition update']) {
+			if (
+				this.can(
+					'menu_manager menus categories subcategories items nutrition update'
+				)
+			) {
 				this.editingNutritionInfo = true
 			}
 		},
@@ -282,10 +369,11 @@ export default {
 		/**
 		 * To clear the current error.
 		 * @function
+		 * @param {string} name - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
+		clearError (name) {
+			this[name] = ''
 		},
 		/**
 		 * To get the nutrition info for the item.
@@ -296,25 +384,27 @@ export default {
 			var nutritionInfoVue = this
 			nutritionInfoVue.itemNutritionInfo = {}
 			nutritionInfoVue.errorMessage = ''
-			ItemsFunctions.getItemNutritionInfo(nutritionInfoVue.item.id, nutritionInfoVue.$root.appId, nutritionInfoVue.$root.appSecret).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					nutritionInfoVue.itemNutritionInfo = response.payload[0]
-				} else {
-					nutritionInfoVue.errorMessage = response.payload
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					nutritionInfoVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-					nutritionInfoVue.errorMessage = reason.responseJSON.message || 'Something went wrong ...'
-					window.scrollTo(0, 0)
-				} else {
-					nutritionInfoVue.errorMessage = reason.message || 'Something went wrong ...'
-					window.scrollTo(0, 0)
-				}
-			})
+			ItemsFunctions.getItemNutritionInfo(
+				nutritionInfoVue.item.id,
+				nutritionInfoVue.$root.appId,
+				nutritionInfoVue.$root.appSecret
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						nutritionInfoVue.itemNutritionInfo = response.payload[0]
+					} else {
+						nutritionInfoVue.errorMessage = response.payload
+					}
+				})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch nutrition info',
+						errorName: 'errorMessage',
+						vue: nutritionInfoVue,
+						containerRef: 'nutritionModal'
+					})
+				})
 		},
 		/**
 		 * To check if the nutrition data is valid before submitting to the backend.
@@ -326,8 +416,8 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (!$.isNumeric(inputObject.calories)) {
 					reject('Calories should be a number')
-				// } else if (!$.isNumeric(inputObject.min_cal)) {
-				// 	reject('Minimum Calories should be a number')
+					// } else if (!$.isNumeric(inputObject.min_cal)) {
+					// 	reject('Minimum Calories should be a number')
 				} else if (!$.isNumeric(inputObject.total_fat)) {
 					reject('Total Fat should be a number')
 				} else if (!$.isNumeric(inputObject.saturated_fat)) {
@@ -366,46 +456,69 @@ export default {
 		updateItemNutritionInfo () {
 			var nutritionInfoVue = this
 			var updatedNutritionInfo = {}
-			for (var i = 0; i < nutritionInfoVue.itemNutritionInfo.length; i++) {
-				if (nutritionInfoVue.itemNutritionInfo[i].key !== 'modifier_item_id') {
+			for (
+				var i = 0;
+				i < nutritionInfoVue.itemNutritionInfo.length;
+				i++
+			) {
+				if (
+					nutritionInfoVue.itemNutritionInfo[i].key !==
+					'modifier_item_id'
+				) {
 					var tempKey = nutritionInfoVue.itemNutritionInfo[i].key
-					updatedNutritionInfo[tempKey] = nutritionInfoVue.itemNutritionInfo[i].value
+					updatedNutritionInfo[tempKey] =
+						nutritionInfoVue.itemNutritionInfo[i].value
 				}
 			}
 			updatedNutritionInfo.item_id = nutritionInfoVue.item.id
 			updatedNutritionInfo.user_id = nutritionInfoVue.$root.createdBy
-			updatedNutritionInfo.update_locations = nutritionInfoVue.selectedLocations
-			updatedNutritionInfo.update_all_items = nutritionInfoVue.update_all_items
+			updatedNutritionInfo.update_locations =
+				nutritionInfoVue.selectedLocations
+			updatedNutritionInfo.update_all_items =
+				nutritionInfoVue.update_all_items
 			nutritionInfoVue.editNutritionError = ''
 
-			return nutritionInfoVue.validateNutritionData(updatedNutritionInfo)
-			.then(response => {
-				nutritionInfoVue.editingNutritionInfo = false
-				ItemsFunctions.updateItemNutritionInfo(updatedNutritionInfo, nutritionInfoVue.$root.appId, nutritionInfoVue.$root.appSecret, nutritionInfoVue.$root.userToken).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						this.closeModalAndUpdate()
-					} else {
-						nutritionInfoVue.editNutritionError = 'Something'
-					}
-				}).catch(reason => {
-					if (reason.responseJSON && reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						nutritionInfoVue.$router.push('/login/expired')
-						return
-					}
-					if (reason.responseJSON) {
-						nutritionInfoVue.editNutritionError = reason.responseJSON.message || 'Something went wrong ...'
-						window.scrollTo(0, 0)
-					} else {
-						nutritionInfoVue.editNutritionError = reason.message || 'Something went wrong ...'
-						window.scrollTo(0, 0)
-					}
+			return nutritionInfoVue
+				.validateNutritionData(updatedNutritionInfo)
+				.then(response => {
+					nutritionInfoVue.updating = true
+					nutritionInfoVue.editingNutritionInfo = false
+					ItemsFunctions.updateItemNutritionInfo(
+						updatedNutritionInfo,
+						nutritionInfoVue.$root.appId,
+						nutritionInfoVue.$root.appSecret,
+						nutritionInfoVue.$root.userToken
+					)
+						.then(response => {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
+								this.closeModalAndUpdate()
+							} else {
+								nutritionInfoVue.editNutritionError =
+									'Something'
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not update nutrition info',
+								errorName: 'editNutritionError',
+								vue: nutritionInfoVue,
+								containerRef: 'nutritionModal'
+							})
+						})
+						.finally(() => {
+							nutritionInfoVue.updating = false
+						})
 				})
-			}).catch(reason => {
-				// If validation fails then display the error message
-				nutritionInfoVue.editNutritionError = reason
-				window.scrollTo(0, 0)
-				throw reason
-			})
+				.catch(reason => {
+					// If validation fails then display the error message
+					nutritionInfoVue.editNutritionError = reason
+					window.scrollTo(0, 0)
+					throw reason
+				})
 		},
 		/**
 		 * To create new nutrition info for the item (if it doesn't exist) and send it to the backend and close the modal.
@@ -415,32 +528,44 @@ export default {
 		createItemNutritionInfo () {
 			var nutritionInfoVue = this
 
-			return nutritionInfoVue.validateNutritionData(nutritionInfoVue.newNutritionInfo)
-			.then(response => {
-				nutritionInfoVue.createNutritionError = false
-				ItemsFunctions.createItemNutritionInfo(nutritionInfoVue.newNutritionInfo, nutritionInfoVue.$root.appId, nutritionInfoVue.$root.appSecret, nutritionInfoVue.$root.userToken).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						this.closeModalAndUpdate()
-					}
-				}).catch(reason => {
-					if (reason.responseJSON && reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						nutritionInfoVue.$router.push('/login/expired')
-						return
-					}
-					if (reason.responseJSON) {
-						nutritionInfoVue.createNutritionError = reason.responseJSON.message || 'Something went wrong ...'
-						window.scrollTo(0, 0)
-					} else {
-						nutritionInfoVue.createNutritionError = reason.message || 'Something went wrong ...'
-						window.scrollTo(0, 0)
-					}
+			return nutritionInfoVue
+				.validateNutritionData(nutritionInfoVue.newNutritionInfo)
+				.then(response => {
+					nutritionInfoVue.creating = true
+					nutritionInfoVue.createNutritionError = false
+					ItemsFunctions.createItemNutritionInfo(
+						nutritionInfoVue.newNutritionInfo,
+						nutritionInfoVue.$root.appId,
+						nutritionInfoVue.$root.appSecret,
+						nutritionInfoVue.$root.userToken
+					)
+						.then(response => {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
+								this.closeModalAndUpdate()
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not add nutrition info',
+								errorName: 'createNutritionError',
+								vue: nutritionInfoVue,
+								containerRef: 'nutritionModal'
+							})
+						})
+						.finally(() => {
+							nutritionInfoVue.creating = false
+						})
 				})
-			}).catch(reason => {
-				// If validation fails then display the error message
-				nutritionInfoVue.createNutritionError = reason
-				window.scrollTo(0, 0)
-				throw reason
-			})
+				.catch(reason => {
+					// If validation fails then display the error message
+					nutritionInfoVue.createNutritionError = reason
+					window.scrollTo(0, 0)
+					throw reason
+				})
 		},
 		/**
 		 * To notify that changes were saved

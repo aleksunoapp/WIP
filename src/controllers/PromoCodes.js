@@ -3,7 +3,7 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to API to get all promo codes.
 	 * @function
@@ -154,4 +154,4 @@ export default ({
 			})
 		})
 	}
-})
+}

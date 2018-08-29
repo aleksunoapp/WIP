@@ -1,33 +1,56 @@
 <template>
-	<modal :show="showEditGroupModal" effect="fade" @closeOnEscape="closeModal">
-		<div slot="modal-header" class="modal-header">
-			<button type="button" class="close" @click="closeModal()">
+	<modal :show="showEditGroupModal"
+	       effect="fade"
+	       @closeOnEscape="closeModal"
+	       ref="modal">
+		<div slot="modal-header"
+		     class="modal-header">
+			<button type="button"
+			        class="close"
+			        @click="closeModal()">
 				<span>&times;</span>
 			</button>
 			<h4 class="modal-title center">Edit User Group</h4>
 		</div>
-		<div slot="modal-body" class="modal-body">
+		<div slot="modal-body"
+		     class="modal-body">
 			<form role="form">
 				<div class="row">
 					<div class="col-md-12">
-						<div class="alert alert-danger" v-if="errorMessage.length">
-							<button class="close" data-close="alert" @click="clearError()"></button>
+						<div class="alert alert-danger"
+						     v-show="errorMessage"
+						     ref="errorMessage">
+							<button class="close"
+							        @click="clearError()"></button>
 							<span>{{errorMessage}}</span>
 						</div>
 					</div>
 					<div class="col-md-12">
 						<fieldset :disabled="!$root.permissions['user_manager user_groups update']">
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" id="form_control_1" v-model="groupToBeEdited.name" :class="{'edited': groupToBeEdited.name.length}">
+								<input type="text"
+								       class="form-control input-sm"
+								       id="form_control_1"
+								       v-model="groupToBeEdited.name"
+								       :class="{'edited': groupToBeEdited.name.length}">
 								<label for="form_control_1">Group Name</label>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" id="form_control_2" v-model="groupToBeEdited.description" :class="{'edited': groupToBeEdited.description.length}">
+								<input type="text"
+								       class="form-control input-sm"
+								       id="form_control_2"
+								       v-model="groupToBeEdited.description"
+								       :class="{'edited': groupToBeEdited.description.length}">
 								<label for="form_control_2">Group Description</label>
 							</div>
 							<h4 class="margin-top-20">All users with:</h4>
 							<div>
-								<el-dropdown trigger="click" @command="updateSignUpDate" size="mini" :show-timeout="50" :hide-timeout="50"  class="margin-top-15">
+								<el-dropdown trigger="click"
+								             @command="updateSignUpDate"
+								             size="mini"
+								             :show-timeout="50"
+								             :hide-timeout="50"
+								             class="margin-top-15">
 									<el-button size="mini">
 										{{ selectedSignUpDate }}
 										<i class="el-icon-arrow-down el-icon--right"></i>
@@ -46,7 +69,12 @@
 								</el-dropdown>
 							</div>
 							<div>
-								<el-dropdown trigger="click" @command="updateTotalOrders" size="mini" :show-timeout="50" :hide-timeout="50"  class="margin-top-15">
+								<el-dropdown trigger="click"
+								             @command="updateTotalOrders"
+								             size="mini"
+								             :show-timeout="50"
+								             :hide-timeout="50"
+								             class="margin-top-15">
 									<el-button size="mini">
 										{{ selectedTotalOrders }}
 										<i class="el-icon-arrow-down el-icon--right"></i>
@@ -66,13 +94,23 @@
 							</div>
 							<div>
 								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text" class="form-control input-sm" id="form_control_3" v-model="city" :class="{'edited': city.length}" v-on:change="addRule('city')">
+									<input type="text"
+									       class="form-control input-sm"
+									       id="form_control_3"
+									       v-model="city"
+									       :class="{'edited': city.length}"
+									       v-on:change="addRule('city')">
 									<label for="form_control_3">City</label>
 								</div>
 							</div>
 							<div>
 								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text" class="form-control input-sm" id="form_control_4" v-model="province" :class="{'edited': province.length}" v-on:change="addRule('province')">
+									<input type="text"
+									       class="form-control input-sm"
+									       id="form_control_4"
+									       v-model="province"
+									       :class="{'edited': province.length}"
+									       v-on:change="addRule('province')">
 									<label for="form_control_4">Province</label>
 								</div>
 							</div>
@@ -81,20 +119,23 @@
 				</div>
 			</form>
 		</div>
-		<div slot="modal-footer" class="modal-footer">
-			<button 
-				v-if="!$root.permissions['user_manager user_groups update']"
-				type="button" 
-				class="btn btn-primary" 
-				@click="closeModal()">
+		<div slot="modal-footer"
+		     class="modal-footer">
+			<button v-if="!$root.permissions['user_manager user_groups update']"
+			        type="button"
+			        class="btn btn-primary"
+			        @click="closeModal()">
 				Close
 			</button>
-			<button 
-				v-else
-				type="button" 
-				class="btn btn-primary" 
-				@click="updateGroup()">
+			<button v-else
+			        type="button"
+			        class="btn btn-primary"
+			        @click="updateGroup()"
+			        :disabled="updating">
 				Save
+				<i v-show="updating"
+				   class="fa fa-spinner fa-pulse fa-fw">
+				</i>
 			</button>
 		</div>
 	</modal>
@@ -104,12 +145,14 @@
 import Modal from '../../modules/Modal'
 import Dropdown from '../../modules/Dropdown'
 import UserGroupsFunctions from '../../../controllers/UserGroups'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
 		return {
 			showEditGroupModal: false,
 			errorMessage: '',
+			updating: false,
 			city: '',
 			province: '',
 			groupToBeEdited: {
@@ -178,10 +221,10 @@ export default {
 		updateSignUpDate (days) {
 			if (!this.$root.permissions['user_manager user_groups update']) {
 				let rule = {
-					'parameter': 'sign-up-date',
-					'value': this.daysBeforeToday(days),
-					'operator': '>',
-					'text': `Signed up in the last ${days} days`
+					parameter: 'sign-up-date',
+					value: this.daysBeforeToday(days),
+					operator: '>',
+					text: `Signed up in the last ${days} days`
 				}
 
 				for (let i = 0; i < this.groupToBeEdited.rules.length; i++) {
@@ -202,10 +245,12 @@ export default {
 		updateTotalOrders (argsArray) {
 			if (!this.$root.permissions['user_manager user_groups update']) {
 				let rule = {
-					'parameter': 'total-orders',
-					'value': argsArray[0],
-					'operator': argsArray[1],
-					'text': `${(argsArray[1] === '<' ? 'Less' : 'More')} than ${argsArray[0]} orders`
+					parameter: 'total-orders',
+					value: argsArray[0],
+					operator: argsArray[1],
+					text: `${argsArray[1] === '<' ? 'Less' : 'More'} than ${
+						argsArray[0]
+					} orders`
 				}
 
 				for (let i = 0; i < this.groupToBeEdited.rules.length; i++) {
@@ -238,10 +283,10 @@ export default {
 				val = value
 			}
 			let rule = {
-				'parameter': parameter,
-				'value': val,
-				'operator': operator,
-				'text': text
+				parameter: parameter,
+				value: val,
+				operator: operator,
+				text: text
 			}
 
 			for (let i = 0; i < this.groupToBeEdited.rules.length; i++) {
@@ -287,28 +332,42 @@ export default {
 			var editGroupVue = this
 			editGroupVue.clearError()
 
-			return editGroupVue.validateGroupData()
-			.then(response => {
-				UserGroupsFunctions.updateGroup(editGroupVue.groupToBeEdited, editGroupVue.$root.appId, editGroupVue.$root.appSecret, editGroupVue.$root.userToken).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						this.closeModalAndUpdate()
-					} else {
-						editGroupVue.errorMessage = response.message
-					}
-				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						editGroupVue.$router.push('/login/expired')
-						return
-					}
+			return editGroupVue
+				.validateGroupData()
+				.then(response => {
+					editGroupVue.updating = true
+					UserGroupsFunctions.updateGroup(
+						editGroupVue.groupToBeEdited,
+						editGroupVue.$root.appId,
+						editGroupVue.$root.appSecret,
+						editGroupVue.$root.userToken
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								this.closeModalAndUpdate()
+							} else {
+								editGroupVue.errorMessage = response.message
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not update the group',
+								errorName: 'errorMessage',
+								vue: editGroupVue,
+								containerRef: 'modal'
+							})
+						})
+						.finally(() => {
+							editGroupVue.updating = false
+						})
+				})
+				.catch(reason => {
+					// If validation fails then display the error message
 					editGroupVue.errorMessage = reason
 					window.scrollTo(0, 0)
+					throw reason
 				})
-			}).catch(reason => {
-				// If validation fails then display the error message
-				editGroupVue.errorMessage = reason
-				window.scrollTo(0, 0)
-				throw reason
-			})
 		},
 		/**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.

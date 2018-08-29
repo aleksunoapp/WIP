@@ -1,41 +1,46 @@
 <template>
 	<div class="resource-picker">
-		<img v-show="imageButton && !showResourceModal" @click.stop.prevent="openResourceModal()" :src="placeholderUrl" alt="A greyed out outline of a mountain and the sun">
-		<button v-show="!showResourceModal && !noButton" class="btn blue btn-outline" @click.stop.prevent="openResourceModal()">{{ buttonText }}</button>
+		<img v-show="imageButton && !showResourceModal"
+		     @click.stop.prevent="openResourceModal()"
+		     :src="placeholderUrl"
+		     alt="A greyed out outline of a mountain and the sun">
+		<button v-show="!showResourceModal && !noButton"
+		        class="btn blue btn-outline"
+		        @click.stop.prevent="openResourceModal()">{{ buttonText }}</button>
 		<section v-show="showResourceModal">
 			<div class="col-sm-4 margin-top-10">
 				<div class="jstree-default">
 					<ul class="jstree-container-ul jstree-children">
-						<li class="jstree-node jstree-last" :class="{'jstree-open': folders.expanded, 'jstree-closed': !folders.expanded}">
-							<i class="jstree-icon jstree-ocl" @click="expandNode(folders)"></i>
-							<a class="jstree-anchor" @click="activePageUpdate(1, folders, true)" :class="{'jstree-clicked': folders.id === activeFolder.id}">
+						<li class="jstree-node jstree-last"
+						    :class="{'jstree-open': folders.expanded, 'jstree-closed': !folders.expanded}">
+							<i class="jstree-icon jstree-ocl"
+							   @click="expandNode(folders)"></i>
+							<a class="jstree-anchor"
+							   @click="activePageUpdate(1, folders, true)"
+							   :class="{'jstree-clicked': folders.id === activeFolder.id}">
 								{{ activeLocationId ? activeLocationName : activeBusinessName }} Resources
 							</a>
-							<ul class="jstree-children" v-if="folders.expanded">
-								<li 
-									v-if="!selectOnly && $root.permissions['gallery create']"
-									class="jstree-node jstree-leaf" 
-									:class="{'jstree-last': !folders.children || !folders.children.length}">
+							<ul class="jstree-children"
+							    v-if="folders.expanded">
+								<li v-if="!selectOnly && $root.permissions['gallery create']"
+								    class="jstree-node jstree-leaf"
+								    :class="{'jstree-last': !folders.children || !folders.children.length}">
 									<i class="jstree-icon jstree-ocl"></i>
-									<a 
-										class="jstree-anchor" 
-										@click="createFolder(folders)"
-									>
+									<a class="jstree-anchor"
+									   @click="createFolder(folders)">
 										<button class="btn blue btn-xs btn-outline">Create Folder</button>
 									</a>
 								</li>
 								<template v-for="(folder, index) in folders.children">
-									<resource-folder 
-										:folder="folder" 
-										:activeFolder="activeFolder.id" 
-										:last="index === folders.children.length - 1" 
-										@expandNode="expandNode" 
-										@createFolder="createFolder" 
-										@manageFolder="manageFolder" 
-										@getResources="activePageUpdate" 
-										:selectOnly="selectOnly"
-										:key="index"
-									>
+									<resource-folder :folder="folder"
+									                 :activeFolder="activeFolder.id"
+									                 :last="index === folders.children.length - 1"
+									                 @expandNode="expandNode"
+									                 @createFolder="createFolder"
+									                 @manageFolder="manageFolder"
+									                 @getResources="activePageUpdate"
+									                 :selectOnly="selectOnly"
+									                 :key="index">
 									</resource-folder>
 								</template>
 							</ul>
@@ -44,28 +49,55 @@
 				</div>
 			</div>
 			<div class="col-sm-8  margin-top-10">
-				<div v-if="!activeFolder.id && !allFoldersView" class="center margin-top-20">Select a folder to view resources.</div>
+				<div v-if="!activeFolder.id && !allFoldersView"
+				     class="center margin-top-20">Select a folder to view resources.</div>
 				<div v-if="activeFolder.id || allFoldersView">
-					<loading-screen :show="loadingResourceData || isSaving" :color="'#3598dc'" :display="'inline'"></loading-screen>
+					<loading-screen :show="loadingResourceData || isSaving"
+					                :color="'#3598dc'"
+					                :display="'inline'"></loading-screen>
 					<div class="relative cbp cbp-caption-active cbp-caption-overlayBottomReveal cbp-ready">
 						<div class="cbp-wrapper-outer">
 							<div class="cbp-wrapper">
 								<div v-show="!loadingResourceData && !isSaving">
 									<div>
 										<dropdown>
-											<button slot="button" type="button" class="btn btn-sm btn-outline dropdown-toggle btn-default" data-toggle="dropdown">
-												<span v-if="sortBy.field"><b>{{ sortOptions[sortBy.field] }} <i class="fa fa-sort-alpha-asc" v-if="sortBy.order === 'asc'"></i><i class="fa fa-sort-alpha-desc" v-if="sortBy.order === 'desc'"></i></b></span>
+											<button slot="button"
+											        type="button"
+											        class="btn btn-sm btn-outline dropdown-toggle btn-default"
+											        data-toggle="dropdown">
+												<span v-if="sortBy.field">
+													<b>{{ sortOptions[sortBy.field] }}
+														<i class="fa fa-sort-alpha-asc"
+														   v-if="sortBy.order === 'asc'"></i>
+														<i class="fa fa-sort-alpha-desc"
+														   v-if="sortBy.order === 'desc'"></i>
+													</b>
+												</span>
 												<i class="fa fa-angle-down"></i>
 											</button>
-											<ul slot="dropdown-menu" class="dropdown-menu">
+											<ul slot="dropdown-menu"
+											    class="dropdown-menu">
 												<li class="rounded-button-group-block">
-													<div class="btn-group" data-toggle="buttons">
-														<label class="btn blue btn-outline" for="sort_asc" :class="{'active': sortBy.order === 'asc'}">
-															<input type="radio" class="toggle" id="sort_asc" value="asc" v-model="sortBy.order">
+													<div class="btn-group"
+													     data-toggle="buttons">
+														<label class="btn blue btn-outline"
+														       for="sort_asc"
+														       :class="{'active': sortBy.order === 'asc'}">
+															<input type="radio"
+															       class="toggle"
+															       id="sort_asc"
+															       value="asc"
+															       v-model="sortBy.order">
 															<i class="fa fa-sort-alpha-asc"></i>
 														</label>
-														<label class="btn blue btn-outline" for="sort_desc" :class="{'active': sortBy.order === 'desc'}">
-															<input type="radio" class="toggle" id="sort_desc" value="desc" v-model="sortBy.order">
+														<label class="btn blue btn-outline"
+														       for="sort_desc"
+														       :class="{'active': sortBy.order === 'desc'}">
+															<input type="radio"
+															       class="toggle"
+															       id="sort_desc"
+															       value="desc"
+															       v-model="sortBy.order">
 															<i class="fa fa-sort-alpha-desc"></i>
 														</label>
 													</div>
@@ -81,44 +113,72 @@
 												</li>
 											</ul>
 										</dropdown>
-										<button type="button" class="btn btn-sm btn-outline btn-default" @click="toggleFilterPanel()">
-											<i v-if="filterCollapse" class="fa fa-filter" aria-hidden="true"></i>
-											<i v-else class="fa fa-times-circle" aria-hidden="true"></i>
+										<button type="button"
+										        class="btn btn-sm btn-outline btn-default"
+										        @click="toggleFilterPanel()">
+											<i v-if="filterCollapse"
+											   class="fa fa-filter"
+											   aria-hidden="true"></i>
+											<i v-else
+											   class="fa fa-times-circle"
+											   aria-hidden="true"></i>
 										</button>
-										<div class="portlet-body" :class="{'display-hide': filterCollapse}">
-											<form role="form" @submit.prevent="advancedResourceSearch()">
-												<div class="alert alert-danger" v-if="searchError.length">
-													<button class="close" data-close="alert" @click="clearSearchError()"></button>
+										<div class="portlet-body"
+										     :class="{'display-hide': filterCollapse}">
+											<form role="form"
+											      @submit.prevent="advancedResourceSearch()">
+												<div class="alert alert-danger"
+												     v-if="searchError.length">
+													<button class="close"
+													        data-close="alert"
+													        @click="clearSearchError()"></button>
 													<span>{{ searchError }}</span>
 												</div>
-												<div class="filter-tags margin-top-10" v-if="tags.length">
-													<label>Resource Tags <small>(Toggle the tags you want to filter by.)</small></label>
+												<div class="filter-tags margin-top-10"
+												     v-if="tags.length">
+													<label>Resource Tags
+														<small>(Toggle the tags you want to filter by.)</small>
+													</label>
 													<div>
 														<template v-for="(tag, index) in tags">
-															<button
-																type="button"
-																class="btn btn-default btn-xs"
-																:class="{'blue': tag.active}"
-																@click="toggleTag(tag)"
-																:key="index"
-															>
-																	{{ tag.name }}
+															<button type="button"
+															        class="btn btn-default btn-xs"
+															        :class="{'blue': tag.active}"
+															        @click="toggleTag(tag)"
+															        :key="index">
+																{{ tag.name }}
 															</button>
 														</template>
 													</div>
 												</div>
 												<div class="filter-tags margin-top-10">
 													<template v-for="(type, index) in fileTypes">
-														<button type="button" :key="index" class="btn btn-default btn-xs" :class="{'blue': type.active}" @click="toggleFileType(type)"><i :class="type.icon"></i> {{ type.name }}</button>
+														<button type="button"
+														        :key="index"
+														        class="btn btn-default btn-xs"
+														        :class="{'blue': type.active}"
+														        @click="toggleFileType(type)">
+															<i :class="type.icon"></i> {{ type.name }}</button>
 													</template>
 												</div>
 												<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-													<input type="text" class="form-control input-sm" id="search_options_search" :class="{'edited': advancedSearch.search.length}" v-model="advancedSearch.search">
+													<input type="text"
+													       class="form-control input-sm"
+													       id="search_options_search"
+													       :class="{'edited': advancedSearch.search.length}"
+													       v-model="advancedSearch.search">
 													<label for="search_options_search">Search</label>
 												</div>
 												<div class="md-radio-inline">
-													<div class="md-radio" v-for="option in advancedSearch.searchOptions" :key="option.id">
-														<input type="radio" :id="`advanced_search_radio_${option.value}`" :name="`advanced_search_radio_${option.value}`" class="md-radiobtn" v-model="advancedSearch.range" :value="option.value">
+													<div class="md-radio"
+													     v-for="option in advancedSearch.searchOptions"
+													     :key="option.id">
+														<input type="radio"
+														       :id="`advanced_search_radio_${option.value}`"
+														       :name="`advanced_search_radio_${option.value}`"
+														       class="md-radiobtn"
+														       v-model="advancedSearch.range"
+														       :value="option.value">
 														<label :for="`advanced_search_radio_${option.value}`">
 															<span></span>
 															<span class="check"></span>
@@ -128,29 +188,44 @@
 													</div>
 												</div>
 												<div class="form-actions right">
-													<button type="button" class="btn btn-default" @click="resetResourceSearch()"> Reset Search </button>
-													<button type="submit" class="btn blue"><i class="fa fa-search"></i> Search </button>
+													<button type="button"
+													        class="btn btn-default"
+													        @click="resetResourceSearch()"> Reset Search </button>
+													<button type="submit"
+													        class="btn blue">
+														<i class="fa fa-search"></i> Search </button>
 												</div>
 											</form>
 										</div>
 									</div>
-									<page-results class="margin-top-10 margin-bottom-10" :totalResults="totalResults" :activePage="activePage" @pageResults="updatePerPage"></page-results>
-									<div class="cbp-no-files text-center margin-top-20" v-if="!currentResources.length">There are currently no resources in this folder.</div>
+									<page-results class="margin-top-10 margin-bottom-10"
+									              :totalResults="totalResults"
+									              :activePage="activePage"
+									              @pageResults="updatePerPage"></page-results>
+									<div class="cbp-no-files text-center margin-top-20"
+									     v-if="!currentResources.length">There are currently no resources in this folder.</div>
 									<template v-for="resource in currentResources">
-										<div class="col-xs-6 margin-bottom-10" :ref="resource.id" :key="resource.id">
-											<div @click="setResource(resource)" @dblclick="selectAndComplete(resource)" class="resource-wrapper clickable" :class="{'selected': selectedResource.id === resource.id}">
-												<img class="resource-image" :src="resource.url">
+										<div class="col-xs-6 margin-bottom-10"
+										     :ref="resource.id"
+										     :key="resource.id">
+											<div @click="setResource(resource)"
+											     @dblclick="selectAndComplete(resource)"
+											     class="resource-wrapper clickable"
+											     :class="{'selected': selectedResource.id === resource.id}">
+												<img class="resource-image"
+												     :src="resource.url">
 											</div>
 										</div>
 									</template>
 									<div v-if="currentResources.length">
-										<pagination :passedPage="activePage" :numPages="numPages" @activePageChange="activePageUpdate"></pagination>
+										<pagination :passedPage="activePage"
+										            :numPages="numPages"
+										            @activePageChange="activePageUpdate"></pagination>
 									</div>
-									<file-upload 
-										v-show="!allFoldersView && $root.permissions['gallery create']" 
-										:folderId="activeFolder.id" 
-										@savingUpdate="checkSaving" 
-										@uploadSuccess="imageUploaded()">
+									<file-upload v-show="!allFoldersView && $root.permissions['gallery create']"
+									             :folderId="activeFolder.id"
+									             @savingUpdate="checkSaving"
+									             @uploadSuccess="imageUploaded()">
 									</file-upload>
 								</div>
 							</div>
@@ -159,20 +234,16 @@
 				</div>
 			</div>
 			<div class="col-sm-12 margin-top-10">
-				<button 
-					v-if="showDoneButton"
-					type="button" 
-					class="btn btn-default pull-right" 
-					@click="closeResourceModal()"
-				>
+				<button v-if="showDoneButton"
+				        type="button"
+				        class="btn btn-default pull-right"
+				        @click="closeResourceModal()">
 					Done
 				</button>
-				<button
-					v-show="selectedResource.id"
-					type="button" 
-					class="btn btn-primary pull-right margin-right-10" 
-					@click="resourceSelectionComplete()" 
-				>
+				<button v-show="selectedResource.id"
+				        type="button"
+				        class="btn btn-primary pull-right margin-right-10"
+				        @click="resourceSelectionComplete()">
 					Select
 				</button>
 			</div>
@@ -190,6 +261,7 @@ import FileUpload from './FileUpload'
 import Resources from '../../controllers/Resources'
 import '../../assets/css/jstree/style.min.css'
 import ImagePlaceholder from '@/assets/img/app/image-placeholder.png'
+import global from '@/global.js'
 
 /**
  * Resource Modal module is a modal for selecting resources for general use.
@@ -266,7 +338,6 @@ export default {
 				{ name: 'other', icon: 'fa fa-file-o', active: false }
 			],
 			selectedResource: {},
-			activeBusinessId: 2,
 			activeBusinessName: null,
 			activeLocationId: null,
 			activeLocationName: null,
@@ -283,7 +354,9 @@ export default {
 		}
 	},
 	mounted () {
-		if (!this.imageButton && this.noButton) { this.openResourceModal() }
+		if (!this.imageButton && this.noButton) {
+			this.openResourceModal()
+		}
 	},
 	methods: {
 		/**
@@ -295,7 +368,9 @@ export default {
 		 * @version 0.0.9
 		 */
 		manageFolder (folder) {
-			this.$router.push({path: `/app/gallery/edit_folder/${JSON.stringify(folder)}`})
+			this.$router.push({
+				path: `/app/gallery/edit_folder/${JSON.stringify(folder)}`
+			})
 		},
 		/**
 		 * To initialize the create folder process by redirecting to the create folder route
@@ -306,7 +381,7 @@ export default {
 		 * @version 0.0.9
 		 */
 		createFolder (folder) {
-			this.$router.push({path: `/app/gallery/create_folder/${folder.id}`})
+			this.$router.push({ path: `/app/gallery/create_folder/${folder.id}` })
 		},
 		/**
 		 * To update the number of images shown on a page
@@ -354,7 +429,7 @@ export default {
 		 */
 		getFolders (parentId, folder) {
 			let _this = this
-			const businessId = this.activeBusinessId
+			const businessId = global.resourcesBusinessId
 			const locationId = this.activeLocationId
 			const pageNumber = 1
 			const recordsPerPage = this.recordsPerPage
@@ -369,37 +444,41 @@ export default {
 				pageNumber,
 				recordsPerPage
 			)
-			.then(response => {
-				if (parentId === 0) {
-					_this.folders = Object.assign({}, _this.folders, response.payload.folders[0])
-					_this.$set(_this.folders, 'expanded', false)
-					_this.$set(_this.folders, 'children_fetched', false)
-				} else {
-					_this.$set(folder, 'children_fetched', true)
-					_this.$set(folder, 'children', response.payload.folders)
-				}
-			})
-			.catch(
-				_this.$root.errorWrapper(e => {
-					if (e.responseJSON) {
-						switch (e.responseJSON.declaration) {
-						case 'folder_not_found':
-							_this.$set(folder, 'children_fetched', true)
-							_this.$set(folder, 'children', [])
-							break
-
-						case 'business_not_found':
-							break
-
-						case 'invalid_page_number':
-							break
-
-						default:
-							// No default
-						}
+				.then(response => {
+					if (parentId === 0) {
+						_this.folders = Object.assign(
+							{},
+							_this.folders,
+							response.payload.folders[0]
+						)
+						_this.$set(_this.folders, 'expanded', false)
+						_this.$set(_this.folders, 'children_fetched', false)
+					} else {
+						_this.$set(folder, 'children_fetched', true)
+						_this.$set(folder, 'children', response.payload.folders)
 					}
 				})
-			)
+				.catch(
+					_this.$root.errorWrapper(e => {
+						if (e.responseJSON) {
+							switch (e.responseJSON.declaration) {
+							case 'folder_not_found':
+								_this.$set(folder, 'children_fetched', true)
+								_this.$set(folder, 'children', [])
+								break
+
+							case 'business_not_found':
+								break
+
+							case 'invalid_page_number':
+								break
+
+							default:
+								// No default
+							}
+						}
+					})
+				)
 		},
 		/**
 		 * To expand or collapse the selected folder and to pull in all child folders.
@@ -508,7 +587,7 @@ export default {
 			this.currentResources = []
 
 			let _this = this
-			const businessId = this.activeBusinessId
+			const businessId = global.resourcesBusinessId
 			const locationId = this.activeLocationId
 			const recordsPerPage = this.recordsPerPage
 			const searchCriteria = this.formatSearchCriteria()
@@ -540,55 +619,59 @@ export default {
 				searchCriteria,
 				sortCriteria
 			)
-			.then(response => {
-				_this.currentResources = response.payload.files
-				_this.numPages = response.payload.number_of_pages
-				_this.totalResults = response.payload.number_of_records
-				_this.loadingResourceData = false
-
-				// _this.preloadImages()
-				// .then(response => {
-				// 	setTimeout(() => {
-				// 	}, 500)
-				// })
-				// .catch(error => {
-				// 	console.log(error)
-				// })
-			})
-			.catch(
-				_this.$root.errorWrapper(e => {
-					if (e.responseJSON) {
-						switch (e.responseJSON.declaration) {
-						case 'file_not_found':
-							_this.numPages = 0
-							_this.totalResults = 0
-							break
-
-						case 'business_not_found':
-							_this.numPages = 0
-							_this.totalResults = 0
-							_this.$swal({
-								title: 'Error',
-								html: 'There is an issue with your business account. Please contact your admin.',
-								type: 'warning'
-							})
-							break
-
-						case 'invalid_page_number':
-							_this.numPages = e.responseJSON.payload.number_of_pages
-							_this.totalResults = e.responseJSON.payload.number_of_records
-							if (_this.numPages !== 0) {
-								_this.getResources(this.activeFolder, e.responseJSON.payload.number_of_pages)
-							}
-							break
-
-						default:
-							// No default
-						}
-					}
+				.then(response => {
+					_this.currentResources = response.payload.files
+					_this.numPages = response.payload.number_of_pages
+					_this.totalResults = response.payload.number_of_records
 					_this.loadingResourceData = false
+
+					// _this.preloadImages()
+					// .then(response => {
+					// 	setTimeout(() => {
+					// 	}, 500)
+					// })
+					// .catch(error => {
+					// 	console.log(error)
+					// })
 				})
-			)
+				.catch(
+					_this.$root.errorWrapper(e => {
+						if (e.responseJSON) {
+							switch (e.responseJSON.declaration) {
+							case 'file_not_found':
+								_this.numPages = 0
+								_this.totalResults = 0
+								break
+
+							case 'business_not_found':
+								_this.numPages = 0
+								_this.totalResults = 0
+								_this.$swal({
+									title: 'Error',
+									html:
+											'There is an issue with your business account. Please contact your admin.',
+									type: 'warning'
+								})
+								break
+
+							case 'invalid_page_number':
+								_this.numPages = e.responseJSON.payload.number_of_pages
+								_this.totalResults = e.responseJSON.payload.number_of_records
+								if (_this.numPages !== 0) {
+									_this.getResources(
+											this.activeFolder,
+											e.responseJSON.payload.number_of_pages
+										)
+								}
+								break
+
+							default:
+								// No default
+							}
+						}
+						_this.loadingResourceData = false
+					})
+				)
 		},
 		/**
 		 * To pull in all tags belonging to the business or location
@@ -599,7 +682,7 @@ export default {
 		 */
 		getTags () {
 			let _this = this
-			const businessId = this.activeBusinessId
+			const businessId = global.resourcesBusinessId
 			const locationId = this.activeLocationId
 			const pageNumber = 1
 			const recordsPerPage = this.recordsPerPage
@@ -610,26 +693,26 @@ export default {
 				pageNumber,
 				recordsPerPage
 			)
-			.then(response => {
-				_this.tags = response.payload.tags.map(tag => {
-					tag.active = false
-					return tag
+				.then(response => {
+					_this.tags = response.payload.tags.map(tag => {
+						tag.active = false
+						return tag
+					})
 				})
-			})
-			.catch(
-				_this.$root.errorWrapper(e => {
-					if (e.responseJSON) {
-						switch (e.responseJSON.declaration) {
-						case 'tags_not_found':
-							_this.tags = []
-							return
+				.catch(
+					_this.$root.errorWrapper(e => {
+						if (e.responseJSON) {
+							switch (e.responseJSON.declaration) {
+							case 'tags_not_found':
+								_this.tags = []
+								return
 
-						default:
-							_this.errorMessage = "We couldn't fetch file types"
+							default:
+								_this.errorMessage = "We couldn't fetch file types"
+							}
 						}
-					}
-				})
-			)
+					})
+				)
 		},
 		/**
 		 * To check whether or not a file is currently being uploaded.
@@ -722,8 +805,12 @@ export default {
 		 */
 		advancedResourceSearch () {
 			this.clearSearchError()
-			if (this.advancedSearch.search.length && this.advancedSearch.search.length < 3) {
-				this.searchError = 'In order to use the search field your term must be at least 3 characters.'
+			if (
+				this.advancedSearch.search.length &&
+				this.advancedSearch.search.length < 3
+			) {
+				this.searchError =
+					'In order to use the search field your term must be at least 3 characters.'
 			} else {
 				if (parseInt(this.activePage) === 1) {
 					this.getResources(this.activeFolder, 1)
@@ -780,7 +867,9 @@ export default {
 			let payload = { ...this.selectedResource }
 			payload.image_url = payload.url
 			this.$emit('selected', payload)
-			if (this.showDoneButton) { this.closeResourceModal() }
+			if (this.showDoneButton) {
+				this.closeResourceModal()
+			}
 		},
 		/**
 		 * To select the resource and complete the selection process
@@ -842,7 +931,7 @@ export default {
   align-items: center;
   height: 10000px;
   max-height: 150px;
-  border: 2px solid rgba(0,0,0,0);
+  border: 2px solid rgba(0, 0, 0, 0);
 }
 .resource-image {
   max-width: 100%;
@@ -870,6 +959,6 @@ export default {
   max-width: 100%;
 }
 section {
-	width: 100%;
+  width: 100%;
 }
 </style>

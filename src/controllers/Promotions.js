@@ -3,7 +3,7 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to pitapit API to get all promotions.
 	 * @function
@@ -189,7 +189,13 @@ export default ({
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	assignPromotionsToLocation (locationId, itemsToAdd, appId, appSecret, userToken) {
+	assignPromotionsToLocation (
+		locationId,
+		itemsToAdd,
+		appId,
+		appSecret,
+		userToken
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
@@ -438,7 +444,8 @@ export default ({
 			GlobalFunctions.$ajax({
 				method: 'POST',
 				dataType: 'json',
-				url: '/app/geolocations/' + geolocationId + '/assign_promotions',
+				url:
+					'/app/geolocations/' + geolocationId + '/assign_promotions',
 				data: promotions,
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
@@ -543,4 +550,4 @@ export default ({
 			})
 		})
 	}
-})
+}

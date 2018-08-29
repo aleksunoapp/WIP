@@ -20,27 +20,24 @@
 					</div>
 				</div>
 
-				<div 
-					class="portlet-body relative-block">
-					<div class="alert alert-danger" v-show="errorMessage" ref="errorMessage">
+				<div class="portlet-body relative-block">
+					<div class="alert alert-danger"
+					     v-show="errorMessage"
+					     ref="errorMessage">
 						<span>{{errorMessage}}</span>
-						<button class="close" @click="clearError('errorMessage')"></button>
+						<button class="close"
+						        @click="clearError('errorMessage')"></button>
 					</div>
 
-					<loading-screen 
-						:show="loading" 
-					></loading-screen>
+					<loading-screen :show="loading"></loading-screen>
 
-					<no-results 
-						:show="noResults"
-						:custom="true" 
-						text="There are no changes to review"
-					>
+					<no-results :show="noResults"
+					            :custom="true"
+					            text="There are no changes to review">
 					</no-results>
 
 					<div v-show="! loading && !noResults">
-						<div
-							v-show="view === 'list'">
+						<div v-show="view === 'list'">
 							<div class="row bold padding-y-20">
 								<div class="col-xs-3">
 									<p>Type</p>
@@ -53,55 +50,42 @@
 								</div>
 							</div>
 
-							<div 
-								class="row padding-y-10 border-bottom-light clickable hover-highlight v-center"
-								:class="{'transparent' : loading}"
-								v-for="(request, index) in requests" 
-								:key="index"
-								@click="viewRequest(request)">
-									<div class="col-xs-3">
-										{{request.action}}	
-									</div>
-									<div class="col-xs-3 break-long">
-										<p>{{request.created_by_name}}</p>
-									</div>
-									<div class="col-xs-3">
-										{{request.formattedDate}}
-									</div>
-									<div class="col-xs-4">
-										<button 
-											class="btn btn-danger btn-sm third-width"
-											@click.stop="rejectRequest(request)"
-										>
-											Reject
-										</button>
-										<button 
-											@click.stop="approveRequest(request)"
-											class="btn blue btn-sm third-width"
-										>
-											Approve
-										</button>
-										<button 
-											class="btn blue btn-outline btn-sm third-width"
-										>
-											Details
-										</button>
-									</div>
+							<div class="row padding-y-10 border-bottom-light clickable hover-highlight v-center"
+							     :class="{'transparent' : loading}"
+							     v-for="(request, index) in requests"
+							     :key="index"
+							     @click="viewRequest(request)">
+								<div class="col-xs-3">
+									{{request.action}}
+								</div>
+								<div class="col-xs-3 break-long">
+									<p>{{request.created_by_name}}</p>
+								</div>
+								<div class="col-xs-3">
+									{{request.formattedDate}}
+								</div>
+								<div class="col-xs-4">
+									<button @click.stop="approveRequest(request)"
+									        class="btn blue btn-sm third-width">
+										Approve
+									</button>
+									<button class="btn blue btn-outline btn-sm third-width">
+										Details
+									</button>
+								</div>
 							</div>
 							<div class="row margin-top-20">
 								<div class="col-xs-12">
-									<pagination 
-										:passedPage="activePage" 
-										:numPages="total" 
-										@activePageChange="activePageUpdate">
+									<pagination :passedPage="activePage"
+									            :numPages="total"
+									            @activePageChange="activePageUpdate">
 									</pagination>
 								</div>
 							</div>
 						</div>
 
-						<div 
-							v-show="view === 'single'"
-							ref="request">
+						<div v-show="view === 'single'"
+						     ref="request">
 
 							<div class="row bold padding-y-20">
 								<div class="col-xs-2">
@@ -115,48 +99,50 @@
 								</div>
 							</div>
 
-							<div 
-								class="row padding-y-10 border-bottom-light"
-								v-for="(field, index) in request" 
-								:key="index"
-								:class="{'changed' : field.existing !== field.modified}">
-									<div class="col-xs-2">
-										<p>{{field.label}}</p>
-									</div>
-									<div class="col-xs-5 break-long">
-										<span v-if="field.label === 'Location'">{{field.existing.display_name}}</span>
-										<span v-else>{{field.existing}}</span>
-									</div>
-									<div class="col-xs-5">
-										<span v-if="field.label === 'Location'">{{field.modified.display_name}}</span>
-										<span v-else>{{field.modified}}</span>
-									</div>
+							<div class="row padding-y-10 border-bottom-light"
+							     v-for="(field, index) in request"
+							     :key="index"
+							     :class="{'changed' : field.existing !== field.modified}">
+								<div class="col-xs-2">
+									<p>{{field.label}}</p>
+								</div>
+								<div class="col-xs-5 break-long">
+									{{field.existing}}
+								</div>
+								<div class="col-xs-5">
+									{{field.modified}}
+								</div>
 							</div>
 
-							<div 
-								class="row margin-top-20"
-								v-if="$root.permissions['approvals update']">
+							<div class="row margin-top-20">
+								<div class="col-xs-12 col-md-6">
+									<div class="form-group form-md-line-input form-md-floating-label">
+										<textarea rows="4"
+												class="form-control edited"
+												id="approvals_message"
+												v-model="selectedRequest.message"></textarea>
+										<label for="approvals_message">Message</label>
+									</div>
+								</div>
+							</div>
+
+							<div class="row margin-top-20"
+							     v-if="$root.permissions['approvals update']">
 								<div class="col-xs-4 col-xs-offset-8">
-									<button 
-										class="btn btn-danger third-width"
-										@click="rejectRequest(selectedRequest)"
-										:disabled="rejecting"
-									>
+									<button class="btn btn-danger third-width"
+									        @click="submitApproval(false)"
+									        :disabled="rejecting">
 										Reject
 									</button>
-									<button 
-										@click="approveRequest(selectedRequest)"
-										class="btn blue third-width"
-										:disabled="approving"
-									>
+									<button @click="submitApproval(true)"
+									        class="btn blue third-width"
+									        :disabled="approving">
 										Approve
 									</button>
-									<button 
-										v-show="total !== activePage"
-										class="btn blue btn-outline third-width"
-										@click="viewList()"
-									>
-										List
+									<button v-show="total !== activePage"
+									        class="btn blue btn-outline third-width"
+									        @click="viewList()">
+										Back
 									</button>
 								</div>
 							</div>
@@ -183,12 +169,13 @@ export default {
 	data () {
 		return {
 			breadcrumbArray: [
-				{name: 'Admin Manager', link: false},
-				{name: 'Approvals', link: false}
+				{ name: 'Admin Manager', link: false },
+				{ name: 'Approvals', link: false }
 			],
 			view: 'list',
 			requests: [],
 			selectedRequest: {},
+			message: '',
 			errorMessage: '',
 			loading: false,
 			approving: false,
@@ -220,7 +207,7 @@ export default {
 						modified: this.selectedRequest.new_values[key],
 						display
 					}
-				})
+				}).filter(key => key.display)
 			} else {
 				return []
 			}
@@ -268,7 +255,10 @@ export default {
 		 * @returns {undefined}
 		 */
 		viewRequest (request) {
-			this.selectedRequest = request
+			this.selectedRequest = {
+				...request,
+				message: ''
+			}
 			this.view = 'single'
 		},
 		/**
@@ -306,37 +296,43 @@ export default {
 				status: 0 // only show requests that have not yet been approved
 			}
 			return ApprovalsFunctions.getRequests(pagination)
-			.then(response => {
-				approvalsVue.requests = response.payload.docs.map(request => {
-					try {
-						let date = new Date(request.createdAt)
-						let formattedDate = date.toLocaleDateString('en-US') + ' ' + date.toLocaleTimeString('en-US')
-						return {
-							...request,
-							action: request.action ? request.action : '(unavailable)',
-							date,
-							formattedDate
+				.then(response => {
+					approvalsVue.requests = response.payload.docs.map(request => {
+						try {
+							let date = new Date(request.createdAt)
+							let formattedDate =
+								date.toLocaleDateString('en-US') +
+								' ' +
+								date.toLocaleTimeString('en-US')
+							return {
+								...request,
+								action: request.action ? request.action : '(unavailable)',
+								date,
+								formattedDate
+							}
+						} catch (e) {
+							return request
 						}
-					} catch (e) {
-						return request
+					})
+					approvalsVue.total = Math.ceil(
+						response.payload.total / approvalsVue.recordsPerPage
+					)
+					if (!response.payload.docs.length) {
+						approvalsVue.noResults = true
+						approvalsVue.$root.requestsPending = false
 					}
+					approvalsVue.loading = false
 				})
-				approvalsVue.total = Math.ceil(response.payload.total / approvalsVue.recordsPerPage)
-				if (!response.payload.docs.length) {
-					approvalsVue.noResults = true
-					approvalsVue.$root.requestsPending = false
-				}
-				approvalsVue.loading = false
-			}).catch(reason => {
-				approvalsVue.loading = false
-				console.log(reason)
-				ajaxErrorHandler({
-					reason,
-					errorText: 'Could not fetch changes to approve',
-					errorName: 'errorMessage',
-					vue: approvalsVue
+				.catch(reason => {
+					approvalsVue.loading = false
+					console.log(reason)
+					ajaxErrorHandler({
+						reason,
+						errorText: 'Could not fetch changes to approve',
+						errorName: 'errorMessage',
+						vue: approvalsVue
+					})
 				})
-			})
 		},
 		/**
 		 * To approve or reject a request
@@ -351,23 +347,33 @@ export default {
 				approved_by: this.$root.activeUser.id,
 				approved_by_name: this.$root.activeUser.name
 			}
-			return ApprovalsFunctions.approveRequest(approvalsVue.selectedRequest, review)
-			.then(response => {
-				approvalsVue.view = 'list'
-				approvalsVue.getRequests()
-				approvalsVue.showApproveSuccess(approved)
-				approvalsVue.approving = false
-				approvalsVue.rejecting = false
-			}).catch(reason => {
-				approvalsVue.approving = false
-				approvalsVue.rejecting = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'Could not fetch changes to approve',
-					errorName: 'errorMessage',
-					vue: approvalsVue
+			if (!approved) {
+				if (!this.selectedRequest.message) {
+					this.errorMessage = 'Please provide a reason in the message field'
+					return
+				}
+				review.message = this.selectedRequest.message
+			}
+			return ApprovalsFunctions.approveRequest(
+				approvalsVue.selectedRequest,
+				review
+			)
+				.then(response => {
+					approvalsVue.view = 'list'
+					approvalsVue.getRequests()
+					approvalsVue.showApproveSuccess(approved)
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: `Could not ${approved ? 'approve' : 'reject'} the request`,
+						errorName: 'errorMessage',
+						vue: approvalsVue
+					})
+				}).finally(() => {
+					approvalsVue.approving = false
+					approvalsVue.rejecting = false
+				})
 		},
 		/**
 		 * To notify user that the operation succeeded.
@@ -394,41 +400,41 @@ export default {
 </script>
 <style scoped>
 .min-height-200 {
-	min-height: 300px;
+  min-height: 300px;
 }
 .break-long {
-	overflow-wrap: break-word;
-	word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 .changed {
-	background-color: #fcf8e3;
+  background-color: #fcf8e3;
 }
 .padding-y-20 {
-	padding-top: 20px;
-	padding-bottom: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 .padding-y-10 {
-	padding-top: 10px;
-	padding-bottom: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 p {
-	margin: 0;
+  margin: 0;
 }
 .border-bottom-light {
-	border-bottom: 1px solid #f2f2f2;
+  border-bottom: 1px solid #f2f2f2;
 }
 .third-width {
-	width: 30%;
+  width: 30%;
 }
 .transparent {
-	opacity: 0;
+  opacity: 0;
 }
 .hover-highlight:hover {
-	background-color: #e5e5e5;
-	transition: background-color .5s;
+  background-color: #e5e5e5;
+  transition: background-color 0.5s;
 }
 .v-center {
-	display: flex;
-	align-items: center;
+  display: flex;
+  align-items: center;
 }
 </style>

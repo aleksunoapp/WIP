@@ -1,14 +1,33 @@
 <template>
 	<div class="file-upload">
-		<form enctype="multipart/form-data" novalidate v-if="isInitial || isSaving">
-			<div class="file-input-container" :class="{'uploading': isSaving}">
-				<input id="file-input" class="file-input" type="file" multiple :name="uploadFieldName" :disabled="isSaving" @change="filesChange($event.target.name, $event.target.files); fileCount = $event.target.files.length">
+		<form enctype="multipart/form-data"
+		      novalidate
+		      v-if="isInitial || isSaving">
+			<div class="file-input-container"
+			     :class="{'uploading': isSaving}">
+				<input id="file-input"
+				       class="file-input"
+				       type="file"
+				       multiple
+				       :name="uploadFieldName"
+				       :disabled="isSaving"
+				       @change="filesChange($event.target.name, $event.target.files); fileCount = $event.target.files.length">
 				<label for="file-input">
-					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg>
+					<svg xmlns="http://www.w3.org/2000/svg"
+					     width="20"
+					     height="17"
+					     viewBox="0 0 20 17">
+						<path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
+					</svg>
 					<span>Upload</span>
 				</label>
-				<p class="file-upload-loader" v-if="isSaving">
-					<loading-screen :show="true" :color="'#3598dc'" :display="'inline'" :position="'left'" :size="'small'"></loading-screen>
+				<p class="file-upload-loader"
+				   v-if="isSaving">
+					<loading-screen :show="true"
+					                :color="'#3598dc'"
+					                :display="'inline'"
+					                :position="'left'"
+					                :size="'small'"></loading-screen>
 					Uploading {{ fileCount }} file{{ fileCount > 1 ? 's' : '' }}...
 				</p>
 			</div>
@@ -26,6 +45,7 @@
 
 import LoadingScreen from './LoadingScreen'
 import Resources from '../../controllers/Resources'
+import global from '@/global.js'
 
 const STATUS_INITIAL = 0
 const STATUS_SAVING = 1
@@ -45,17 +65,16 @@ export default {
 			uploadError: null,
 			currentStatus: null,
 			uploadFieldName: 'file',
-			activeBusinessId: 2,
 			activeLocationId: null
 		}
 	},
 	/**
-	* Run on `created` to run the reset function to initialize data.
-	* @function
-	* @returns {undefined}
-	* @memberof FileUpload
-	* @version 0.0.9
-	*/
+	 * Run on `created` to run the reset function to initialize data.
+	 * @function
+	 * @returns {undefined}
+	 * @memberof FileUpload
+	 * @version 0.0.9
+	 */
 	created () {
 		this.reset()
 	},
@@ -121,25 +140,25 @@ export default {
 		 */
 		upload (form) {
 			let _this = this
-			const businessId = this.activeBusinessId
+			const businessId = global.resourcesBusinessId
 			const locationId = this.activeLocationId
 			this.currentStatus = STATUS_SAVING
 			this.$emit('savingUpdate', true)
 
 			return Resources.upload(businessId, locationId, _this.folderId, form)
-			.then(response => {
-				_this.currentStatus = STATUS_INITIAL
-				_this.$emit('savingUpdate', false)
-				_this.$emit('uploadSuccess', response.payload.file_id)
-			})
-			.catch(
-				_this.$root.errorWrapper(e => {
-					setTimeout(() => {
-						_this.currentStatus = STATUS_INITIAL
-						_this.$emit('savingUpdate', false)
-					}, 200)
+				.then(response => {
+					_this.currentStatus = STATUS_INITIAL
+					_this.$emit('savingUpdate', false)
+					_this.$emit('uploadSuccess', response.payload.file_id)
 				})
-			)
+				.catch(
+					_this.$root.errorWrapper(e => {
+						setTimeout(() => {
+							_this.currentStatus = STATUS_INITIAL
+							_this.$emit('savingUpdate', false)
+						}, 200)
+					})
+				)
 		}
 	},
 	components: {

@@ -3,7 +3,7 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to pitapit API to create a new location group.
 	 * @function
@@ -194,13 +194,19 @@ export default ({
 	 * @param {string} userToken - The auth token of the logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	assignStoresToGroup (groupId, storesToBeAssigned, appId, appSecret, userToken) {
+	assignStoresToGroup (
+		groupId,
+		storesToBeAssigned,
+		appId,
+		appSecret,
+		userToken
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'POST',
 				dataType: 'json',
 				url: '/app/location_groups/' + groupId + '/addstores',
-				data: {stores: storesToBeAssigned},
+				data: { stores: storesToBeAssigned },
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
 					xhr.setRequestHeader('app-id', appId)
@@ -237,4 +243,4 @@ export default ({
 			})
 		})
 	}
-})
+}

@@ -22,13 +22,13 @@ let $ajax = function (options, noRetry) {
 	$.ajax(options)
 }
 
-export default ({
+export default {
 	/**
 	 * Call to API to create a rule.
 	 * @function
 	 * @param {string} appId - The appId of the current application.
 	 * @param {string} appSecret - The appSecret of the current application.
- 	 * @param {object} rule - An object containing the rule to create.
+	 * @param {object} rule - An object containing the rule to create.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
 	createRule: function (appId, appSecret, rule) {
@@ -56,7 +56,7 @@ export default ({
 	 * @function
 	 * @param {string} appId - The appId of the current application.
 	 * @param {string} appSecret - The appSecret of the current application.
- 	 * @param {object} rule - An object containing the rule to update.
+	 * @param {object} rule - An object containing the rule to update.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
 	updateRule: function (appId, appSecret, rule) {
@@ -139,7 +139,7 @@ export default ({
 	 * @function
 	 * @param {string} appId - The appId of the current application.
 	 * @param {string} appSecret - The appSecret of the current application.
- 	 * @param {object} rule - An object containing the rule to create.
+	 * @param {object} rule - An object containing the rule to create.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
 	createPromotionRule: function (appId, appSecret, rule) {
@@ -167,7 +167,7 @@ export default ({
 	 * @function
 	 * @param {string} appId - The appId of the current application.
 	 * @param {string} appSecret - The appSecret of the current application.
- 	 * @param {object} rule - An object containing the rule to update.
+	 * @param {object} rule - An object containing the rule to update.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
 	updatePromotionRule: function (appId, appSecret, rule) {
@@ -245,4 +245,4 @@ export default ({
 			})
 		})
 	}
-})
+}

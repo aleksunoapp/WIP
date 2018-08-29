@@ -3,7 +3,7 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to API to get a list of modules.
 	 * @function
@@ -124,7 +124,7 @@ export default ({
 				method: 'PUT',
 				dataType: 'json',
 				url: '/app/admin/modules/' + mod.id + '/permissions',
-				data: {permissions: mod.permissions},
+				data: { permissions: mod.permissions },
 				success: function (response) {
 					resolve(response)
 				},
@@ -156,5 +156,4 @@ export default ({
 			})
 		})
 	}
-
-})
+}

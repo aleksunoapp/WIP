@@ -1,42 +1,57 @@
 <template>
-	<modal :show="showEditTierModal" effect="fade" @closeOnEscape="closeModal">
-		<div slot="modal-header" class="modal-header center">
-			<button type="button" class="close" @click="closeModal()">
+	<modal :show="showEditTierModal"
+	       effect="fade"
+	       @closeOnEscape="closeModal"
+	       ref="editModal">
+		<div slot="modal-header"
+		     class="modal-header center">
+			<button type="button"
+			        class="close"
+			        @click="closeModal()">
 				<span>&times;</span>
 			</button>
 			<h4 class="modal-title center">Edit Menu Tier</h4>
 		</div>
-		<div slot="modal-body" class="modal-body height-mod">
-			<div class="alert alert-danger" v-if="errorMessage.length">
-			    <button class="close" data-close="alert" @click="clearError()"></button>
-			    <span>{{errorMessage}}</span>
+		<div slot="modal-body"
+		     class="modal-body height-mod">
+			<div class="alert alert-danger"
+			     v-show="errorMessage"
+			     ref="errorMessage">
+				<button class="close"
+				        @click="clearError()"></button>
+				<span>{{errorMessage}}</span>
 			</div>
 			<div class="col-md-12">
 				<fieldset :disabled="!$root.permissions['menu_manager tiers update']">
 					<div class="form-group form-md-line-input form-md-floating-label">
-						<input type="text" class="form-control input-sm edited" id="form_control_1" v-model="menuTierToBeEdited.name">
+						<input type="text"
+						       class="form-control input-sm edited"
+						       id="form_control_1"
+						       v-model="menuTierToBeEdited.name">
 						<label for="form_control_1">Menu Tier Name</label>
 					</div>
 					<div class="form-group form-md-line-input form-md-floating-label">
-						<input type="text" class="form-control input-sm edited" id="form_control_2" v-model="menuTierToBeEdited.description">
+						<input type="text"
+						       class="form-control input-sm edited"
+						       id="form_control_2"
+						       v-model="menuTierToBeEdited.description">
 						<label for="form_control_2">Menu Tier Description</label>
 					</div>
 				</fieldset>
 			</div>
 		</div>
-		<div slot="modal-footer" class="modal-footer clear">
-			<button 
-				v-if="!$root.permissions['menu_manager tiers update']"
-				type="button" 
-				class="btn btn-primary" 
-				@click="closeModal()">
+		<div slot="modal-footer"
+		     class="modal-footer clear">
+			<button v-if="!$root.permissions['menu_manager tiers update']"
+			        type="button"
+			        class="btn btn-primary"
+			        @click="closeModal()">
 				Close
 			</button>
-			<button 
-				v-else
-				type="button" 
-				class="btn btn-primary" 
-				@click="updateMenuTier()">
+			<button v-else
+			        type="button"
+			        class="btn btn-primary"
+			        @click="updateMenuTier()">
 				Save
 			</button>
 		</div>
@@ -44,9 +59,9 @@
 </template>
 
 <script>
-// import $ from 'jquery'
 import Modal from '../../../modules/Modal'
 import MenuTiersFunctions from '../../../../controllers/MenuTiers'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -103,19 +118,26 @@ export default {
 		 */
 		getMenuTierDetails () {
 			var editMenuTierVue = this
-			MenuTiersFunctions.getMenuTierDetails(editMenuTierVue.passedTierId, editMenuTierVue.$root.appId, editMenuTierVue.$root.appSecret, editMenuTierVue.$root.userToken).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					editMenuTierVue.menuTierToBeEdited = response.payload
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editMenuTierVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
-			})
+			MenuTiersFunctions.getMenuTierDetails(
+				editMenuTierVue.passedTierId,
+				editMenuTierVue.$root.appId,
+				editMenuTierVue.$root.appSecret,
+				editMenuTierVue.$root.userToken
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						editMenuTierVue.menuTierToBeEdited = response.payload
+					}
+				})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch tier info',
+						errorName: 'errorMessage',
+						vue: editMenuTierVue,
+						containerRef: 'editModal'
+					})
+				})
 		},
 		/**
 		 * To update the menu and close the modal.
@@ -125,28 +147,38 @@ export default {
 		updateMenuTier () {
 			var editMenuTierVue = this
 
-			return editMenuTierVue.validateTierData()
-			.then(response => {
-				MenuTiersFunctions.updateMenuTier(editMenuTierVue.menuTierToBeEdited, editMenuTierVue.$root.appId, editMenuTierVue.$root.appSecret, editMenuTierVue.$root.userToken).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						this.closeModalAndUpdate()
-					} else {
-						editMenuTierVue.errorMessage = response.message
-					}
-				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						editMenuTierVue.$router.push('/login/expired')
-						return
-					}
+			return editMenuTierVue
+				.validateTierData()
+				.then(response => {
+					MenuTiersFunctions.updateMenuTier(
+						editMenuTierVue.menuTierToBeEdited,
+						editMenuTierVue.$root.appId,
+						editMenuTierVue.$root.appSecret,
+						editMenuTierVue.$root.userToken
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								this.closeModalAndUpdate()
+							} else {
+								editMenuTierVue.errorMessage = response.message
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not update the tier',
+								errorName: 'errorMessage',
+								vue: editMenuTierVue,
+								containerRef: 'editModal'
+							})
+						})
+				})
+				.catch(reason => {
+					// If validation fails then display the error message
 					editMenuTierVue.errorMessage = reason
 					window.scrollTo(0, 0)
+					throw reason
 				})
-			}).catch(reason => {
-				// If validation fails then display the error message
-				editMenuTierVue.errorMessage = reason
-				window.scrollTo(0, 0)
-				throw reason
-			})
 		},
 		/**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
@@ -172,6 +204,6 @@ export default {
 </script>
 <style scoped>
 .height-mod {
-	height: 160px;
+  height: 160px;
 }
 </style>

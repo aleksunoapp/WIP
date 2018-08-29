@@ -2,7 +2,7 @@
  * @module Global
  */
 import $ from 'jquery'
-import {App} from './main.js'
+import { App } from './main.js'
 import environment from './environment'
 const { production, staging, development } = environment
 
@@ -16,7 +16,7 @@ export default {
 			} else {
 				return 'https://approval.dev.api.unoapp.io'
 			}
-		}())
+		})()
 	},
 	headers: {
 		approvals: (function () {
@@ -36,7 +36,7 @@ export default {
 					appSecret: '0276a6fd79282e1b73cdd209540cdfcd'
 				}
 			}
-		}())
+		})()
 	},
 	/**
 	 * app_id for the Approvals API
@@ -49,7 +49,7 @@ export default {
 		} else {
 			return '5b291f11dc35e663e8847981'
 		}
-	}()),
+	})(),
 	/**
 	 * business id to identify the business aka brand aka customer (2 is Freshii)
 	 */
@@ -58,7 +58,9 @@ export default {
 	 * base url for UNOapp accounts frontend, with # if accounts router is in hash mode
 	 */
 	// development
-	accountsUrl: development ? 'http://localhost:8002/#' : 'http://accounts.beta.unoapp.io/#',
+	accountsUrl: development
+		? 'http://localhost:8002/#'
+		: 'http://accounts.beta.unoapp.io/#',
 	/**
 	 * base url for API calls, other than Message calls
 	 */
@@ -68,9 +70,9 @@ export default {
 		} else if (staging) {
 			return 'https://freshii.beta.api.unoapp.io'
 		} else {
-			return 'https://freshii.dev.api.unoapp.io'
+			return 'http://dev.api.unoapp.io/freshii'
 		}
-	}()),
+	})(),
 	/**
 	 * base url for Resources API calls
 	 */
@@ -82,7 +84,7 @@ export default {
 		} else {
 			return 'https://resources.dev.api.unoapp.io'
 		}
-	}()),
+	})(),
 	/**
 	 * business ID to use for the Resources API
 	 */
@@ -98,7 +100,7 @@ export default {
 		} else {
 			return 'https://notifications.dev.api.unoapp.io'
 		}
-	}()),
+	})(),
 	/**
 	 * app token for API calls to send Messages
 	 */
@@ -110,7 +112,7 @@ export default {
 		} else {
 			return 'bearer bed62ee5c3cc97a2d5297f973af1c15e'
 		}
-	}()),
+	})(),
 	/**
 	 * app token for API calls to send Messages to OMA users
 	 */
@@ -122,7 +124,7 @@ export default {
 		} else {
 			return 'bearer 6b1642515315f527604919b430fe79de'
 		}
-	}()),
+	})(),
 	/**
 	 * base url for API calls to Loyalty endpoints
 	 */
@@ -134,7 +136,7 @@ export default {
 		} else {
 			return 'https://loyalty.dev.api.unoapp.io'
 		}
-	}()),
+	})(),
 	/**
 	 * app id for API calls to Loyalty endpoints
 	 */
@@ -146,7 +148,7 @@ export default {
 		} else {
 			return '0CA0D7Lk9D6jZvgeklHiBTX99PYbTDIs'
 		}
-	}()),
+	})(),
 	/**
 	 * app secret for API calls to Loyalty endpoints
 	 */
@@ -158,7 +160,7 @@ export default {
 		} else {
 			return 'JnJqjxCKnVpvgO5cWGWSkfesTQWaiP46'
 		}
-	}()),
+	})(),
 	/**
 	 * API key for Google Maps Javascript API
 	 */
@@ -191,7 +193,10 @@ export default {
 			}
 		}
 
-		if (options.method.toLowerCase() === 'post' || options.method.toLowerCase() === 'put') {
+		if (
+			options.method.toLowerCase() === 'post' ||
+			options.method.toLowerCase() === 'put'
+		) {
 			options.contentType = 'application/json'
 			options.data = JSON.stringify(options.data)
 		}
@@ -243,18 +248,21 @@ export default {
 				setTimeout(function () {
 					if (complete) {
 						button.text(complete)
-						button.css({'background-color': '#5cb85c'})
+						button.css({ 'background-color': '#5cb85c' })
 					}
 					button.prop('disabled', false)
 
 					setTimeout(function () {
-						button.css({'background-color': originalColor})
+						button.css({ 'background-color': originalColor })
 						button.text(originalText)
 					}, 1000)
 				}, 100)
 			},
 			cancel: function () {
-				setTimeout(function () { button.text(originalText); button.prop('disabled', false) }, 100)
+				setTimeout(function () {
+					button.text(originalText)
+					button.prop('disabled', false)
+				}, 100)
 			}
 		}
 	}

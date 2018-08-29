@@ -1,10 +1,16 @@
 <template>
-	<div role="dialog" class="modal" v-bind:class="{'fade': effect === 'fade' || effect === 'custom', 'zoom': effect === 'zoom', 'custom': effect === 'custom'}">
-		<div class="modal-dialog" role="document" v-bind:style="{width: computedWidth}">
+	<div role="dialog"
+	     class="modal"
+	     v-bind:class="{'fade': effect === 'fade' || effect === 'custom', 'zoom': effect === 'zoom', 'custom': effect === 'custom'}">
+		<div class="modal-dialog"
+		     role="document"
+		     v-bind:style="{width: computedWidth}">
 			<div class="modal-content">
 				<slot name="modal-header">
 					<div class="modal-header">
-						<button type="button" class="close" @click="close">
+						<button type="button"
+						        class="close"
+						        @click="close">
 							<span>&times;</span>
 						</button>
 						<h4 class="modal-title center">
@@ -19,8 +25,12 @@
 				</slot>
 				<slot name="modal-footer">
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default" @click="close">{{cancelText}}</button>
-						<button type="button" class="btn btn-primary" @click="callback()">{{okText}}</button>
+						<button type="button"
+						        class="btn btn-default"
+						        @click="close">{{cancelText}}</button>
+						<button type="button"
+						        class="btn btn-primary"
+						        @click="callback()">{{okText}}</button>
 					</div>
 				</slot>
 			</div>
@@ -37,7 +47,10 @@ import $ from 'jquery'
  * @returns {interget} - A number that represents the width of the scroll bar
  */
 var getScrollBarWidth = function () {
-	if (document.documentElement.scrollHeight <= document.documentElement.clientHeight) {
+	if (
+		document.documentElement.scrollHeight <=
+		document.documentElement.clientHeight
+	) {
 		return 0
 	}
 	let inner = document.createElement('p')
@@ -62,7 +75,7 @@ var getScrollBarWidth = function () {
 
 	document.body.removeChild(outer)
 
-	return (w1 - w2)
+	return w1 - w2
 }
 
 export default {
@@ -122,7 +135,9 @@ export default {
 			const body = document.body
 			const scrollBarWidth = getScrollBarWidth()
 			if (val) {
-				$(el).find('.modal-content').focus()
+				$(el)
+					.find('.modal-content')
+					.focus()
 				el.style.display = 'block'
 				setTimeout(() => $(el).addClass('in'), 0)
 				$(body).addClass('modal-open-noscroll')
@@ -142,10 +157,12 @@ export default {
 			} else {
 				body.style.paddingRight = null
 				$(body).removeClass('modal-open-noscroll')
-				$(el).removeClass('in').on('transitionend', () => {
-					$(el).off('click transitionend')
-					el.style.display = 'none'
-				})
+				$(el)
+					.removeClass('in')
+					.on('transitionend', () => {
+						$(el).off('click transitionend')
+						el.style.display = 'none'
+					})
 			}
 		}
 	},
@@ -177,6 +194,6 @@ export default {
   background-color: rgba(0, 0, 0, 0.5);
 }
 .custom.in {
-	background-color: #292E33;
+  background-color: #292e33;
 }
 </style>

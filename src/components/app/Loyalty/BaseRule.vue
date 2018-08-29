@@ -12,8 +12,10 @@
 			<!-- HEADER END -->
 
 			<!-- CREATE NEW START -->
-			<div class="portlet box blue-hoki margin-top-20" v-if="$root.permissions['loyalty base_rule create']">
-				<div class="portlet-title bg-blue-chambray" @click="toggleCreateNew()">
+			<div class="portlet box blue-hoki margin-top-20"
+			     v-if="$root.permissions['loyalty base_rule create']">
+				<div class="portlet-title bg-blue-chambray"
+				     @click="toggleCreateNew()">
 					<div class="caption">
 						<i class="fa fa-plus-circle"></i>
 						Create Base Rule
@@ -22,44 +24,78 @@
 						<a :class="{'expand': !createNewCollapse, 'collapse': createNewCollapse}"></a>
 					</div>
 				</div>
-				<div class="portlet-body" v-show="!createNewCollapse">
-					<div class="alert alert-info center margin-top-20" v-show="rules.length && !loading">
-					    <h4>Base Rule exists</h4>
-					    <p>Only one base rule can be created. You can edit the existing rule below or delete it and create a new rule.</p>
+				<div class="portlet-body"
+				     v-show="!createNewCollapse">
+					<div class="alert alert-info center margin-top-20"
+					     v-show="rules.length && !loading">
+						<h4>Base Rule exists</h4>
+						<p>Only one base rule can be created. You can edit the existing rule below or delete it and create a new rule.</p>
 					</div>
-					<form role="form" @submit.prevent="createRule()" v-show="!rules.length && !loading">
+					<form role="form"
+					      @submit.prevent="createRule()"
+					      v-show="!rules.length && !loading">
 						<div class="row">
 							<div class="col-md-12">
-								<div class="alert alert-danger" v-show="createErrorMessage.length" ref="createErrorMessage">
-									<button class="close" data-close="alert" @click.prevent="clearError('createErrorMessage')"></button>
+								<div class="alert alert-danger"
+								     v-show="createErrorMessage.length"
+								     ref="createErrorMessage">
+									<button class="close"
+									        data-close="alert"
+									        @click.prevent="clearError('createErrorMessage')"></button>
 									<span>{{createErrorMessage}}</span>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group form-md-line-input form-md-floating-label">
-									<input ref="newName" type="text" class="form-control input-sm" v-model="newRule.name" :class="{'edited': newRule.name.length}">
+									<input ref="newName"
+									       type="text"
+									       class="form-control input-sm"
+									       v-model="newRule.name"
+									       :class="{'edited': newRule.name.length}">
 									<label for="form_control_name">Name</label>
 								</div>
-								<el-select v-model="newRule.type" placeholder="Select type" size="small" class="margin-bottom-15">
-									<el-option label="points per dollars spent" value="dollar-to-points"></el-option>
-									<el-option label="points per transaction" value="transactions-to-points"></el-option>
+								<el-select v-model="newRule.type"
+								           placeholder="Select type"
+								           size="small"
+								           class="margin-bottom-15">
+									<el-option label="points per dollars spent"
+									           value="dollar-to-points"></el-option>
+									<el-option label="points per transaction"
+									           value="transactions-to-points"></el-option>
 								</el-select>
-								<div class="form-group form-md-line-input form-md-floating-label" v-show="newRule.type === 'dollar-to-points'">
-									<input type="text" class="form-control input-sm" v-model="newRule.base_counter" :class="{'edited': newRule.base_counter.length}">
+								<div class="form-group form-md-line-input form-md-floating-label"
+								     v-show="newRule.type === 'dollar-to-points'">
+									<input type="text"
+									       class="form-control input-sm"
+									       v-model="newRule.base_counter"
+									       :class="{'edited': newRule.base_counter.length}">
 									<label for="form_control_name">Amount to award points for</label>
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text" class="form-control input-sm" v-model="newRule.min_amount" :class="{'edited': newRule.min_amount.length}">
+									<input type="text"
+									       class="form-control input-sm"
+									       v-model="newRule.min_amount"
+									       :class="{'edited': newRule.min_amount.length}">
 									<label for="form_control_name">Minimum purchase amount</label>
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text" class="form-control input-sm" v-model="newRule.points" :class="{'edited': newRule.points.length}">
+									<input type="text"
+									       class="form-control input-sm"
+									       v-model="newRule.points"
+									       :class="{'edited': newRule.points.length}">
 									<label for="form_control_name">Points to award</label>
 								</div>
 							</div>
 						</div>
 						<div class="form-actions right">
-							<button type="submit" class="btn blue">Create</button>
+							<button type="submit"
+							        class="btn blue"
+							        :disabled="creating">
+								Create
+								<i v-show="creating"
+								   class="fa fa-spinner fa-pulse fa-fw">
+								</i>
+							</button>
 						</div>
 					</form>
 				</div>
@@ -79,46 +115,54 @@
 						</div>
 					</div>
 					<div class="portlet-body relative-block">
-						<loading-screen :show="loading" color="#2C3E50" display="inline"></loading-screen>
-						<div class="alert alert-danger" v-show="listErrorMessage.length" ref="listErrorMessage">
-							<button class="close" @click.prevent="clearError('listErrorMessage')"></button>
+						<loading-screen :show="loading"
+						                color="#2C3E50"
+						                display="inline"></loading-screen>
+						<div class="alert alert-danger"
+						     v-show="listErrorMessage.length"
+						     ref="listErrorMessage">
+							<button class="close"
+							        @click.prevent="clearError('listErrorMessage')"></button>
 							<span>{{listErrorMessage}}</span>
 						</div>
-						<div class="mt-element-list" v-if="rules.length && !loading">
+						<div class="mt-element-list"
+						     v-if="rules.length && !loading">
 							<div class="mt-list-container list-news">
 								<ul>
-									<li 
-										v-for="rule in rules"
-										:id="`rule-${rule.id}`"
-										class="mt-list-item actions-at-left margin-top-15"
-										:class="{'animated' : animated === `rule-${rule.id}`}"
-										:key="rule.id">
+									<li v-for="rule in rules"
+									    :id="`rule-${rule.id}`"
+									    class="mt-list-item actions-at-left margin-top-15"
+									    :class="{'animated' : animated === `rule-${rule.id}`}"
+									    :key="rule.id">
 										<div class="list-item-actions">
-											<el-tooltip 
-												v-if="$root.permissions['loyalty base_rule update']"
-												content="Edit" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="openEditModal(rule)">
-													<i class="fa fa-pencil" aria-hidden="true"></i>
+											<el-tooltip v-if="$root.permissions['loyalty base_rule update']"
+											            content="Edit"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="openEditModal(rule)">
+													<i class="fa fa-pencil"
+													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip 
-												v-if="$root.permissions['loyalty base_rule read'] && !$root.permissions['loyalty base_rule update']"
-												content="View" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="openEditModal(rule)">
-													<i class="fa fa-eye" aria-hidden="true"></i>
+											<el-tooltip v-if="$root.permissions['loyalty base_rule read'] && !$root.permissions['loyalty base_rule update']"
+											            content="View"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="openEditModal(rule)">
+													<i class="fa fa-eye"
+													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip 
-												v-if="$root.permissions['loyalty base_rule delete']"
-												content="Delete" 
-												effect="light" 
-												placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default" @click="openDeleteModal(rule)">
-													<i class="fa fa-trash" aria-hidden="true"></i>
+											<el-tooltip v-if="$root.permissions['loyalty base_rule delete']"
+											            content="Delete"
+											            effect="light"
+											            placement="right">
+												<a class="btn btn-circle btn-icon-only btn-default"
+												   @click="openDeleteModal(rule)">
+													<i class="fa fa-trash"
+													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
 										</div>
@@ -131,7 +175,8 @@
 												<span v-if="rule.type === 'dollar-to-points'">per dollar spent</span>
 												<span v-if="rule.type === 'transactions-to-points'">per transaction</span>
 											</div>
-											<div class="col-md-4" v-if="rule.type === 'dollar-to-points'">
+											<div class="col-md-4"
+											     v-if="rule.type === 'dollar-to-points'">
 												<strong>Points for every: </strong>
 												<span>${{rule.base_counter}}</span>
 											</div>
@@ -148,7 +193,8 @@
 								</ul>
 							</div>
 						</div>
-						<no-results :show="!rules.length && !loading" type="rules"></no-results>
+						<no-results :show="!rules.length && !loading"
+						            type="rules"></no-results>
 					</div>
 				</div>
 			</div>
@@ -156,93 +202,135 @@
 		<!-- LIST END -->
 
 		<!-- EDIT MODAL START -->
-		<modal :show="showEditModal" effect="fade" @closeOnEscape="closeEditModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeEditModal()">
+		<modal :show="showEditModal"
+		       effect="fade"
+		       @closeOnEscape="closeEditModal">
+			<div slot="modal-header"
+			     class="modal-header">
+				<button type="button"
+				        class="close"
+				        @click="closeEditModal()">
 					<span>&times;</span>
 				</button>
 				<h4 class="modal-title center">Edit Rule</h4>
 			</div>
-			<div slot="modal-body" class="modal-body">
+			<div slot="modal-body"
+			     class="modal-body">
 				<div class="row">
 					<div class="col-xs-12">
-						<div class="alert alert-danger" v-show="editErrorMessage.length" ref="editErrorMessage">
-							<button class="close" data-close="alert" @click="clearError('editErrorMessage')"></button>
+						<div class="alert alert-danger"
+						     v-show="editErrorMessage.length"
+						     ref="editErrorMessage">
+							<button class="close"
+							        data-close="alert"
+							        @click="clearError('editErrorMessage')"></button>
 							<span>{{editErrorMessage}}</span>
-						</div>						
+						</div>
 					</div>
 					<div class="col-xs-6">
 						<fieldset :disabled="!$root.permissions['loyalty base_rule update']">
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input 
-									ref="editedName" 
-									type="text" 
-									class="form-control input-sm" 
-									v-model="ruleToEdit.name" 
-									:class="{'edited': ruleToEdit.name.length}">
+								<input ref="editedName"
+								       type="text"
+								       class="form-control input-sm"
+								       v-model="ruleToEdit.name"
+								       :class="{'edited': ruleToEdit.name.length}">
 								<label for="form_control_name">Name</label>
 							</div>
-							<el-select 
-								v-model="ruleToEdit.type" 
-								:disabled="true" 
-								placeholder="Select type" 
-								size="small" 
-								class="margin-bottom-15">
-								<el-option label="points per dollars spent" value="dollar-to-points"></el-option>
-								<el-option label="points per transaction" value="transactions-to-points"></el-option>
+							<el-select v-model="ruleToEdit.type"
+							           :disabled="true"
+							           placeholder="Select type"
+							           size="small"
+							           class="margin-bottom-15">
+								<el-option label="points per dollars spent"
+								           value="dollar-to-points"></el-option>
+								<el-option label="points per transaction"
+								           value="transactions-to-points"></el-option>
 							</el-select>
-							<div class="form-group form-md-line-input form-md-floating-label" v-show="ruleToEdit.type === 'dollar-to-points'">
-								<input type="text" class="form-control input-sm" v-model="ruleToEdit.base_counter" :class="{'edited': ruleToEdit.base_counter.length}">
+							<div class="form-group form-md-line-input form-md-floating-label"
+							     v-show="ruleToEdit.type === 'dollar-to-points'">
+								<input type="text"
+								       class="form-control input-sm"
+								       v-model="ruleToEdit.base_counter"
+								       :class="{'edited': ruleToEdit.base_counter.length}">
 								<label for="form_control_name">Amount to award points for</label>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" v-model="ruleToEdit.min_amount" :class="{'edited': ruleToEdit.min_amount.length}">
+								<input type="text"
+								       class="form-control input-sm"
+								       v-model="ruleToEdit.min_amount"
+								       :class="{'edited': ruleToEdit.min_amount.length}">
 								<label for="form_control_name">Minimum purchase amount</label>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text" class="form-control input-sm" v-model="ruleToEdit.points" :class="{'edited': ruleToEdit.points.length}">
+								<input type="text"
+								       class="form-control input-sm"
+								       v-model="ruleToEdit.points"
+								       :class="{'edited': ruleToEdit.points.length}">
 								<label for="form_control_name">Points to award</label>
 							</div>
 						</fieldset>
-					</div>				
+					</div>
 				</div>
 			</div>
-			<div slot="modal-footer" class="modal-footer">
-				<button 
-					v-if="!$root.permissions['loyalty base_rule update']"
-					type="button" 
-					class="btn btn-primary" 
-					@click="closeEditModal()">
+			<div slot="modal-footer"
+			     class="modal-footer">
+				<button v-if="!$root.permissions['loyalty base_rule update']"
+				        type="button"
+				        class="btn btn-primary"
+				        @click="closeEditModal()">
 					Close
 				</button>
-				<button 
-					v-else
-					type="button" 
-					class="btn btn-primary" 
-					@click="updateRule()">
+				<button v-else
+				        type="button"
+				        class="btn btn-primary"
+				        @click="updateRule()"
+				        :disabled="updating">
 					Save
+					<i v-show="updating"
+					   class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+
 				</button>
 			</div>
 		</modal>
 		<!-- EDIT MODAL END -->
 
 		<!-- DELETE MODAL START -->
-		<modal :show="showDeleteModal" effect="fade" @closeOnEscape="closeDeleteModal">
-			<div slot="modal-header" class="modal-header">
-				<button type="button" class="close" @click="closeDeleteModal()">
+		<modal :show="showDeleteModal"
+		       effect="fade"
+		       @closeOnEscape="closeDeleteModal">
+			<div slot="modal-header"
+			     class="modal-header">
+				<button type="button"
+				        class="close"
+				        @click="closeDeleteModal()">
 					<span>&times;</span>
 				</button>
 				<h4 class="modal-title center">Delete Rule</h4>
 			</div>
-			<div slot="modal-body" class="modal-body">
-				<div class="alert alert-danger" v-show="deleteErrorMessage.length" ref="deleteErrorMessage">
-					<button class="close" @click="clearError('deleteErrorMessage')"></button>
+			<div slot="modal-body"
+			     class="modal-body">
+				<div class="alert alert-danger"
+				     v-show="deleteErrorMessage.length"
+				     ref="deleteErrorMessage">
+					<button class="close"
+					        @click="clearError('deleteErrorMessage')"></button>
 					<span>{{deleteErrorMessage}}</span>
 				</div>
 				<p>Are you sure you want to delete {{ruleToDelete.name}}?</p>
 			</div>
-			<div slot="modal-footer" class="modal-footer">
-				<button type="button" class="btn btn-primary" @click="deleteRule()">Delete</button>
+			<div slot="modal-footer"
+			     class="modal-footer">
+				<button type="button"
+				        class="btn btn-primary"
+				        @click="deleteRule()"
+				        :disabled="deleting">
+					Delete
+					<i v-show="deleting"
+					   class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
 			</div>
 		</modal>
 		<!-- DELETE MODAL END -->
@@ -263,10 +351,11 @@ export default {
 	data () {
 		return {
 			breadcrumbArray: [
-				{name: 'Loyalty', link: false},
-				{name: 'Base Rule', link: false}
+				{ name: 'Loyalty', link: false },
+				{ name: 'Base Rule', link: false }
 			],
 			createNewCollapse: true,
+			creating: false,
 			createErrorMessage: '',
 			newRule: {
 				name: '',
@@ -280,6 +369,7 @@ export default {
 			rules: [],
 			animated: '',
 			showEditModal: false,
+			updating: false,
 			ruleToEdit: {
 				id: null,
 				name: '',
@@ -290,6 +380,7 @@ export default {
 			},
 			editErrorMessage: '',
 			showDeleteModal: false,
+			deleting: false,
 			ruleToDelete: {
 				name: ''
 			},
@@ -334,7 +425,10 @@ export default {
 					reject('Name cannot be blank')
 				} else if (rulesVue.newRule.type === '') {
 					reject('Select type')
-				} else if (rulesVue.newRule.type === 'dollar-to-points' && !$.isNumeric(rulesVue.newRule.base_counter)) {
+				} else if (
+					rulesVue.newRule.type === 'dollar-to-points' &&
+					!$.isNumeric(rulesVue.newRule.base_counter)
+				) {
 					reject('Amount to award points for must be a number')
 				} else if (!$.isNumeric(rulesVue.newRule.min_amount)) {
 					reject('Minimum purchase amount must be a number')
@@ -356,43 +450,66 @@ export default {
 			const rulesVue = this
 
 			return this.validateNewRule()
-			.then((response) => {
-				rulesVue.clearError('createErrorMessage')
-				return LoyaltyFunctions.createRule(globalFunctions.loyaltyAppId, globalFunctions.loyaltyAppSecret, rulesVue.newRule)
 				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						rulesVue.getRules()
-						rulesVue.showCreateSuccess()
-					} else {
-						rulesVue.createErrorMessage = response.message
-						rulesVue.$scrollTo(rulesVue.$refs.createErrorMessage, 1000, { offset: -50 })
-					}
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not create the rule',
-						errorName: 'createErrorMessage',
-						vue: rulesVue
+					rulesVue.creating = true
+					rulesVue.clearError('createErrorMessage')
+					return LoyaltyFunctions.createRule(
+						globalFunctions.loyaltyAppId,
+						globalFunctions.loyaltyAppSecret,
+						rulesVue.newRule
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								rulesVue.getRules()
+								rulesVue.resetCreateForm()
+								rulesVue.showCreateSuccess(response.payload)
+							} else {
+								rulesVue.createErrorMessage = response.message
+								rulesVue.$scrollTo(rulesVue.$refs.createErrorMessage, 1000, {
+									offset: -50
+								})
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not create the rule',
+								errorName: 'createErrorMessage',
+								vue: rulesVue
+							})
+						})
+						.finally(() => {
+							rulesVue.creating = false
+						})
+				})
+				.catch(reason => {
+					rulesVue.createErrorMessage = reason
+					rulesVue.$scrollTo(rulesVue.$refs.createErrorMessage, 1000, {
+						offset: -50
 					})
 				})
-			}).catch(reason => {
-				rulesVue.createErrorMessage = reason
-				rulesVue.$scrollTo(rulesVue.$refs.createErrorMessage, 1000, { offset: -50 })
-			})
 		},
 		/**
-		 * To notify that create succeeded
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showCreateSuccess () {
+		showCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Base Rule has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Base Rule has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: `${this.newRule.name} successfully created`,
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(() => {
-				this.resetCreateForm()
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -417,25 +534,31 @@ export default {
 		getRules () {
 			this.loading = true
 			const rulesVue = this
-			return LoyaltyFunctions.getRules(globalFunctions.loyaltyAppId, globalFunctions.loyaltyAppSecret)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					rulesVue.rules = response.payload
-					rulesVue.loading = false
-				} else {
-					rulesVue.loading = false
-					rulesVue.listErrorMessage = response.message
-					rulesVue.$scrollTo(rulesVue.$refs.listErrorMessage, 1000, { offset: -50 })
-				}
-			}).catch(reason => {
-				rulesVue.loading = false
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not fetch the base rule',
-					errorName: 'listErrorMessage',
-					vue: rulesVue
+			return LoyaltyFunctions.getRules(
+				globalFunctions.loyaltyAppId,
+				globalFunctions.loyaltyAppSecret
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						rulesVue.rules = response.payload
+						rulesVue.loading = false
+					} else {
+						rulesVue.loading = false
+						rulesVue.listErrorMessage = response.message
+						rulesVue.$scrollTo(rulesVue.$refs.listErrorMessage, 1000, {
+							offset: -50
+						})
+					}
 				})
-			})
+				.catch(reason => {
+					rulesVue.loading = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch the base rule',
+						errorName: 'listErrorMessage',
+						vue: rulesVue
+					})
+				})
 		},
 		/**
 		 * To open the edit modal
@@ -462,7 +585,10 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (!rulesVue.ruleToEdit.name.length) {
 					reject('Name cannot be blank')
-				} else if (rulesVue.ruleToEdit.type === 'dollar-to-points' && !$.isNumeric(rulesVue.ruleToEdit.base_counter)) {
+				} else if (
+					rulesVue.ruleToEdit.type === 'dollar-to-points' &&
+					!$.isNumeric(rulesVue.ruleToEdit.base_counter)
+				) {
 					reject('Amount to award points for must be a number')
 				} else if (!$.isNumeric(rulesVue.ruleToEdit.min_amount)) {
 					reject('Minimum purchase amount must be a number')
@@ -484,42 +610,66 @@ export default {
 			const rulesVue = this
 
 			return this.validateEditedRule()
-			.then((response) => {
-				rulesVue.clearError('editErrorMessage')
-				return LoyaltyFunctions.updateRule(globalFunctions.loyaltyAppId, globalFunctions.loyaltyAppSecret, rulesVue.ruleToEdit)
 				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						rulesVue.getRules()
-						rulesVue.closeEditModal()
-						rulesVue.showEditSuccess()
-					} else {
-						rulesVue.editErrorMessage = response.message
-						rulesVue.$scrollTo(rulesVue.$refs.editErrorMessage, 1000, { offset: -50 })
-					}
-				}).catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not update the rule',
-						errorName: 'editErrorMessage',
-						vue: rulesVue
+					rulesVue.updating = true
+					rulesVue.clearError('editErrorMessage')
+					return LoyaltyFunctions.updateRule(
+						globalFunctions.loyaltyAppId,
+						globalFunctions.loyaltyAppSecret,
+						rulesVue.ruleToEdit
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								rulesVue.getRules()
+								rulesVue.closeEditModal()
+								rulesVue.showEditSuccess(response.payload)
+							} else {
+								rulesVue.editErrorMessage = response.message
+								rulesVue.$scrollTo(rulesVue.$refs.editErrorMessage, 1000, {
+									offset: -50
+								})
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not update the rule',
+								errorName: 'editErrorMessage',
+								vue: rulesVue
+							})
+						})
+						.finally(() => {
+							rulesVue.updating = false
+						})
+				})
+				.catch(reason => {
+					rulesVue.editErrorMessage = reason
+					rulesVue.$scrollTo(rulesVue.$refs.createErrorMessage, 1000, {
+						offset: -50
 					})
 				})
-			}).catch(reason => {
-				rulesVue.editErrorMessage = reason
-				rulesVue.$scrollTo(rulesVue.$refs.createErrorMessage, 1000, { offset: -50 })
-			})
 		},
 		/**
-		 * To notify that edit succeeded
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess () {
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Base Rule has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: `${this.ruleToEdit.name} successfully updated`,
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -538,7 +688,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		openDeleteModal (rule) {
-			this.ruleToDelete = {...rule}
+			this.ruleToDelete = { ...rule }
 			this.showDeleteModal = true
 		},
 		/**
@@ -547,38 +697,59 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		deleteRule () {
+			this.deleting = true
 			const rulesVue = this
 			rulesVue.clearError('deleteErrorMessage')
-			return LoyaltyFunctions.deleteRule(globalFunctions.loyaltyAppId, globalFunctions.loyaltyAppSecret, rulesVue.ruleToDelete.id)
-			.then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					rulesVue.getRules()
-					rulesVue.closeDeleteModal()
-					rulesVue.showDeleteSuccess()
-				} else {
-					rulesVue.editErrorMessage = response.message
-					rulesVue.$scrollTo(rulesVue.$refs.deleteErrorMessage, 1000, { offset: -50 })
-				}
-			}).catch(reason => {
-				ajaxErrorHandler({
-					reason,
-					errorText: 'We could not delete the rule',
-					errorName: 'deleteErrorMessage',
-					vue: rulesVue
+			return LoyaltyFunctions.deleteRule(
+				globalFunctions.loyaltyAppId,
+				globalFunctions.loyaltyAppSecret,
+				rulesVue.ruleToDelete.id
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						rulesVue.getRules()
+						rulesVue.closeDeleteModal()
+						rulesVue.showDeleteSuccess(response.payload)
+					} else {
+						rulesVue.editErrorMessage = response.message
+						rulesVue.$scrollTo(rulesVue.$refs.deleteErrorMessage, 1000, {
+							offset: -50
+						})
+					}
 				})
-			})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not delete the rule',
+						errorName: 'deleteErrorMessage',
+						vue: rulesVue
+					})
+				})
+				.finally(() => {
+					rulesVue.deleting = false
+				})
 		},
 		/**
-		 * To notify that delete succeeded
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess () {
+		showDeleteSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Base Rule has been deleted'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The removal has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: `${this.ruleToDelete.name} deleted`,
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -601,7 +772,7 @@ export default {
 </script>
 
 <style scoped>
-.mt-element-list .list-news.mt-list-container ul>.mt-list-item:hover {
-	background-color: white;
+.mt-element-list .list-news.mt-list-container ul > .mt-list-item:hover {
+  background-color: white;
 }
 </style>

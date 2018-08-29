@@ -10,8 +10,10 @@
 
  -->
 <template>
-	<div class="map-polygon-container" :style="`width:${this.width};height:${this.height};`">
-		<div :id="`map-polygon${this._uid}`" class="map-polygon"></div>
+	<div class="map-polygon-container"
+	     :style="`width:${this.width};height:${this.height};`">
+		<div :id="`map-polygon${this._uid}`"
+		     class="map-polygon"></div>
 	</div>
 </template>
 
@@ -76,12 +78,14 @@ export default {
 		GoogleMapsApiLoader({
 			libraries: ['drawing'],
 			apiKey: GlobalFunctions.googleMapsJavascriptApiKey
-		})
-		.then(function () {
-			_this.mountMap()
-		}, function (err) {
-			console.error(err)
-		})
+		}).then(
+			function () {
+				_this.mountMap()
+			},
+			function (err) {
+				console.error(err)
+			}
+		)
 	},
 	methods: {
 		/**
@@ -91,10 +95,13 @@ export default {
 		 */
 		mountMap () {
 			let _this = this
-			this.map = new google.maps.Map(document.getElementById(`map-polygon${_this._uid}`), {
-				zoom: this.zoom,
-				center: {lat: this.lat, lng: this.lng}
-			})
+			this.map = new google.maps.Map(
+				document.getElementById(`map-polygon${_this._uid}`),
+				{
+					zoom: this.zoom,
+					center: { lat: this.lat, lng: this.lng }
+				}
+			)
 
 			if (this.polygonToEdit.length) {
 				this.resizeToPolygon()
@@ -117,7 +124,10 @@ export default {
 			let bounds = new google.maps.LatLngBounds()
 
 			for (let i = 0; i < this.polygonToEdit.length; i++) {
-				bounds.extend({lat: this.polygonToEdit[i][0], lng: this.polygonToEdit[i][1]})
+				bounds.extend({
+					lat: this.polygonToEdit[i][0],
+					lng: this.polygonToEdit[i][1]
+				})
 			}
 			this.map.fitBounds(bounds)
 		},
@@ -128,7 +138,10 @@ export default {
 		 */
 		displayPolygon () {
 			this.polygon = new google.maps.Polygon({
-				paths: this.polygonToEdit.map(vertex => ({lat: vertex[0], lng: vertex[1]})),
+				paths: this.polygonToEdit.map(vertex => ({
+					lat: vertex[0],
+					lng: vertex[1]
+				})),
 				editable: true,
 				draggable: true,
 				strokeColor: '#2C3E50',
@@ -164,12 +177,16 @@ export default {
 			this.drawingManager.setMap(this.map)
 
 			let _this = this
-			google.maps.event.addListener(this.drawingManager, 'polygoncomplete', function (polygon) {
-				_this.disableDrawingManager()
-				_this.polygon = polygon
-				_this.emitPolygon()
-				_this.addEditListeners()
-			})
+			google.maps.event.addListener(
+				this.drawingManager,
+				'polygoncomplete',
+				function (polygon) {
+					_this.disableDrawingManager()
+					_this.polygon = polygon
+					_this.emitPolygon()
+					_this.addEditListeners()
+				}
+			)
 		},
 		/**
 		 * To disable the ability to add polygons
@@ -224,8 +241,13 @@ export default {
 		 */
 		emitPolygon () {
 			var coordinates = this.polygon.getPath().getArray()
-			this.paths = coordinates.map(vertex => ([vertex.lat(), vertex.lng()]))
-			if (!(this.paths[0][0] === this.paths[this.paths.length - 1][0] && this.paths[0][1] === this.paths[this.paths.length - 1][1])) {
+			this.paths = coordinates.map(vertex => [vertex.lat(), vertex.lng()])
+			if (
+				!(
+					this.paths[0][0] === this.paths[this.paths.length - 1][0] &&
+					this.paths[0][1] === this.paths[this.paths.length - 1][1]
+				)
+			) {
 				this.paths.push(this.paths[0])
 			}
 			this.$emit('polygonEmitted', this.paths)
@@ -237,14 +259,14 @@ export default {
 
 <style scoped>
 .map-polygon-container {
-	position: relative;
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	align-items: center;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 }
 .map-polygon {
-	height: 100%;
-	width: 100%;
+  height: 100%;
+  width: 100%;
 }
 </style>

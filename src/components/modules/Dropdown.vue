@@ -1,7 +1,11 @@
 <template>
-	<li v-if="isLi" :class="classes" @keyup.esc="open = false">
+	<li v-if="isLi"
+	    :class="classes"
+	    @keyup.esc="open = false">
 		<slot name="button">
-			<a class="dropdown-toggle" role="button" :class="{disabled: disabled}">
+			<a class="dropdown-toggle"
+			   role="button"
+			   :class="{disabled: disabled}">
 				{{ text }}
 				<span class="caret"></span>
 			</a>
@@ -12,10 +16,14 @@
 			</ul>
 		</slot>
 	</li>
-	<div v-else :class="classes">
+	<div v-else
+	     :class="classes">
 		<slot name="before"></slot>
 		<slot name="button">
-			<button type="button" class="btn dropdown-toggle" :disabled="disabled" :class="type">
+			<button type="button"
+			        class="btn dropdown-toggle"
+			        :disabled="disabled"
+			        :class="type">
 				{{ text }}
 				<span class="caret"></span>
 			</button>
@@ -56,7 +64,7 @@ export default {
 		show: {
 			default: false
 		},
-		'passedClass': null,
+		passedClass: null,
 		disabled: {
 			default: false
 		},
@@ -82,7 +90,14 @@ export default {
 		 * @version 0.0.4
 		 */
 		classes () {
-			return [{open: this.open, disabled: this.disabled}, this.passedClass, this.isLi ? 'dropdown dropdown-user' : this.inInput ? 'input-group-btn' : 'btn-group', this.displayLeft ? 'left' : '']
+			return [
+				{ open: this.open, disabled: this.disabled },
+				this.passedClass,
+				this.isLi
+					? 'dropdown dropdown-user'
+					: this.inInput ? 'input-group-btn' : 'btn-group',
+				this.displayLeft ? 'left' : ''
+			]
 		},
 		/**
 		 * Find the elements parent that could restrict the display of the dropdown
@@ -99,7 +114,11 @@ export default {
 
 			while (!tempEl.parent().is('body')) {
 				tempEl = tempEl.parent()
-				if (tempEl.css('overflow') === 'hidden' || tempEl.css('overflow') === 'scroll' || tempEl.css('overflow') === 'auto') {
+				if (
+					tempEl.css('overflow') === 'hidden' ||
+					tempEl.css('overflow') === 'scroll' ||
+					tempEl.css('overflow') === 'auto'
+				) {
 					return tempEl
 				}
 			}
@@ -123,7 +142,7 @@ export default {
 		var dropdownVue = this
 
 		// When the dropdown loses focus we want to close it
-		$(document).bind('click', (e) => {
+		$(document).bind('click', e => {
 			if (dropdownVue.open) {
 				dropdownVue.open = false
 			}
@@ -132,7 +151,9 @@ export default {
 		$el.find('a, button.dropdown-toggle').on('click', e => {
 			// If the dropdown button is clicked, perform opening logic
 			e.preventDefault()
-			if (this.disabled) { return false }
+			if (this.disabled) {
+				return false
+			}
 			this.open = !this.open
 			return false
 		})
@@ -181,7 +202,9 @@ export default {
 			const $el = $(this.$el)
 
 			// The distance from the top of the page to the bottom of the restricting element
-			var bottomDistance = $(this.getElementsRestrictiveParent).offset().top + $(this.getElementsRestrictiveParent).height()
+			var bottomDistance =
+				$(this.getElementsRestrictiveParent).offset().top +
+				$(this.getElementsRestrictiveParent).height()
 			// The height of the dropdown element
 			var ulHeight = $el.find('ul').height()
 			// The height of the dropdown button
@@ -226,7 +249,7 @@ export default {
   border: 0;
 }
 .btn-group.left ul.dropdown-menu {
-	right: 0;
-	left: inherit;
+  right: 0;
+  left: inherit;
 }
 </style>

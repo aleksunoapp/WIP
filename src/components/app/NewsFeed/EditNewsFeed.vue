@@ -1,65 +1,91 @@
 <template>
-	<modal v-bind:show="showEditFeedModal" effect="fade" @closeOnEscape="closeModal">
-		<div slot="modal-header" class="modal-header center">
-			<button type="button" class="close" @click="closeModal()">
+	<modal v-bind:show="showEditFeedModal"
+	       effect="fade"
+	       @closeOnEscape="closeModal"
+	       ref="modal">
+		<div slot="modal-header"
+		     class="modal-header center">
+			<button type="button"
+			        class="close"
+			        @click="closeModal()">
 				<span>&times;</span>
 			</button>
-			<h4 class="modal-title center" v-if="!selectImageMode">Edit News Feed</h4>
-			<h4 class="modal-title center" v-else>Select An Image</h4>
+			<h4 class="modal-title center"
+			    v-if="!selectImageMode">Edit News Feed</h4>
+			<h4 class="modal-title center"
+			    v-else>Select An Image</h4>
 		</div>
-		<div slot="modal-body" class="modal-body">
-				<div class="col-xs-12">
-				<div class="alert alert-danger" v-if="errorMessage.length">
-					<button class="close" data-close="alert" @click="clearError()"></button>
+		<div slot="modal-body"
+		     class="modal-body">
+			<div class="col-xs-12">
+				<div class="alert alert-danger"
+				     v-show="errorMessage"
+				     ref="errorMessage">
+					<button class="close"
+					        @click="clearError()"></button>
 					<span>{{errorMessage}}</span>
 				</div>
-			    <div :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
-					<resource-picker 
-						@open="goToPageTwo()"
-						@close="goToPageOne()"
-						@selected="updateImage" 
-						:imageButton="true"
-						:imageUrl="newsToBeEdited.image"
-						class="margin-top-15"
-					>
+				<div :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
+					<resource-picker @open="goToPageTwo()"
+					                 @close="goToPageOne()"
+					                 @selected="updateImage"
+					                 :imageButton="true"
+					                 :imageUrl="newsToBeEdited.image"
+					                 class="margin-top-15">
 					</resource-picker>
-        		</div>
-				<div class="col-md-12" v-show="!selectImageMode">
+				</div>
+				<div class="col-md-12"
+				     v-show="!selectImageMode">
 					<fieldset :disabled="$root.permissions['news_feed read'] && !$root.permissions['news_feed update']">
 						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm edited" id="form_control_1" v-model="newsToBeEdited.title">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_1"
+							       v-model="newsToBeEdited.title">
 							<label for="form_control_1">News Feed Title</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm edited" id="form_control_2" v-model="newsToBeEdited.short_description">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_2"
+							       v-model="newsToBeEdited.short_description">
 							<label for="form_control_2">Short Description</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text" class="form-control input-sm edited" id="form_control_external_url_edit" v-model="newsToBeEdited.external_url">
+							<input type="text"
+							       class="form-control input-sm edited"
+							       id="form_control_external_url_edit"
+							       v-model="newsToBeEdited.external_url">
 							<label for="form_control_external_url_edit">Link</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label">
-							<textarea rows="5" class="form-control edited" id="form_control_3" v-model="newsToBeEdited.body"></textarea>
+							<textarea rows="5"
+							          class="form-control edited"
+							          id="form_control_3"
+							          v-model="newsToBeEdited.body"></textarea>
 							<label for="form_control_3">News Feed Body</label>
 						</div>
 					</fieldset>
-		      	</div>
+				</div>
 			</div>
 		</div>
-		<div slot="modal-footer" class="modal-footer">
-			<button 
-				v-if="!selectImageMode && $root.permissions['news_feed read'] && !$root.permissions['news_feed update']"
-				type="button" 
-				class="btn btn-primary" 
-				@click="closeModal()">
+		<div slot="modal-footer"
+		     class="modal-footer">
+			<button v-if="!selectImageMode && $root.permissions['news_feed read'] && !$root.permissions['news_feed update']"
+			        type="button"
+			        class="btn btn-primary"
+			        @click="closeModal()">
 				Close
 			</button>
-			<button 
-				v-if="!selectImageMode && $root.permissions['news_feed update']" 
-				type="button" 
-				class="btn btn-primary" 
-				@click="saveEditedFeed()">
+			<button v-if="!selectImageMode && $root.permissions['news_feed update']"
+			        type="button"
+			        class="btn btn-primary"
+			        @click="saveEditedFeed()"
+			        :disabled="updating">
 				Save
+				<i v-show="updating"
+				   class="fa fa-spinner fa-pulse fa-fw">
+				</i>
 			</button>
 		</div>
 	</modal>
@@ -69,6 +95,7 @@
 import Modal from '../../modules/Modal'
 import NewsFeedFunctions from '../../../controllers/NewsFeed'
 import ResourcePicker from '../../modules/ResourcePicker'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -77,6 +104,7 @@ export default {
 			newsToBeEdited: {
 				image: ''
 			},
+			updating: false,
 			errorMessage: '',
 			selectImageMode: false
 		}
@@ -129,19 +157,26 @@ export default {
 		 */
 		getNewsFeedDetails () {
 			var editNewsFeedVue = this
-			NewsFeedFunctions.getNewsFeedDetails(editNewsFeedVue.selectedFeedId, editNewsFeedVue.$root.userToken, editNewsFeedVue.$root.appId, editNewsFeedVue.$root.appSecret).then(response => {
-				if (response.code === 200 && response.status === 'ok') {
-					editNewsFeedVue.newsToBeEdited = response.payload
-				}
-			}).catch(reason => {
-				if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-					editNewsFeedVue.$router.push('/login/expired')
-					return
-				}
-				if (reason.responseJSON) {
-				}
-				throw reason
-			})
+			NewsFeedFunctions.getNewsFeedDetails(
+				editNewsFeedVue.selectedFeedId,
+				editNewsFeedVue.$root.userToken,
+				editNewsFeedVue.$root.appId,
+				editNewsFeedVue.$root.appSecret
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						editNewsFeedVue.newsToBeEdited = response.payload
+					}
+				})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch feed info',
+						errorName: 'errorMessage',
+						vue: editNewsFeedVue,
+						containerRef: 'modal'
+					})
+				})
 		},
 		/**
 		 * To prompt the backend call that updates a news feed.
@@ -152,28 +187,42 @@ export default {
 			var editNewsFeedVue = this
 			editNewsFeedVue.clearError()
 
-			return editNewsFeedVue.validateFeedData()
-			.then(response => {
-				NewsFeedFunctions.saveEditedFeed(editNewsFeedVue.newsToBeEdited, editNewsFeedVue.$root.userToken, editNewsFeedVue.$root.appId, editNewsFeedVue.$root.appSecret).then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						editNewsFeedVue.closeModalAndUpdate()
-					} else {
-						editNewsFeedVue.errorMessage = response.message
-					}
-				}).catch(reason => {
-					if (reason.responseJSON.code === 401 && reason.responseJSON.status === 'unauthorized') {
-						editNewsFeedVue.$router.push('/login/expired')
-						return
-					}
+			return editNewsFeedVue
+				.validateFeedData()
+				.then(response => {
+					editNewsFeedVue.updating = true
+					NewsFeedFunctions.saveEditedFeed(
+						editNewsFeedVue.newsToBeEdited,
+						editNewsFeedVue.$root.userToken,
+						editNewsFeedVue.$root.appId,
+						editNewsFeedVue.$root.appSecret
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								editNewsFeedVue.closeModalAndUpdate()
+							} else {
+								editNewsFeedVue.errorMessage = response.message
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not update the news feed',
+								errorName: 'errorMessage',
+								vue: editNewsFeedVue,
+								containerRef: 'modal'
+							})
+						})
+						.finally(() => {
+							editNewsFeedVue.updating = false
+						})
+				})
+				.catch(reason => {
+					// If validation fails then display the error message
 					editNewsFeedVue.errorMessage = reason
 					window.scrollTo(0, 0)
+					throw reason
 				})
-			}).catch(reason => {
-				// If validation fails then display the error message
-				editNewsFeedVue.errorMessage = reason
-				window.scrollTo(0, 0)
-				throw reason
-			})
 		},
 		/**
 		 * To close the modal.

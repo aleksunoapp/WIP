@@ -1,25 +1,20 @@
 <template>
 	<div class="qr-code-container">
 		<div class="qr-image-container">
-			<a 
-				@click="downloadAsImage()"
-				title="Click to download the QR code" 
-				alt="Click to download the QR code"
-			>
-				<img
-					class="qr-image"
-					crossOrigin="Anonymous"
-					ref="imageTag"
-				>
+			<a @click="downloadAsImage()"
+			   title="Click to download the QR code"
+			   alt="Click to download the QR code">
+				<img class="qr-image"
+				     crossOrigin="Anonymous"
+				     ref="imageTag">
 			</a>
 		</div>
 		<div>
-			<button 
-				@click="downloadAsImage()" 
-				type="button" 
-				class="btn btn-circle btn-icon-only btn-default clickable"
-			>
-				<i class="fa fa-download" aria-hidden="true"></i>
+			<button @click="downloadAsImage()"
+			        type="button"
+			        class="btn btn-circle btn-icon-only btn-default clickable">
+				<i class="fa fa-download"
+				   aria-hidden="true"></i>
 			</button>
 		</div>
 	</div>
@@ -124,23 +119,23 @@ export default {
 </script>
 <style scoped>
 .qr-code-container {
-	max-width: 100%;
-	max-height: 100%;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
+  max-width: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 .qr-image-container {
-	max-width: 100%;
-	max-height: 100%;
-	height: calc(100% - 35px);
+  max-width: 100%;
+  max-height: 100%;
+  height: calc(100% - 35px);
 }
 .qr-image {
-	max-height: 100%;
-	max-width: 100%;
+  max-height: 100%;
+  max-width: 100%;
 }
 .download-button-container {
-	height: 35px;
+  height: 35px;
 }
 </style>

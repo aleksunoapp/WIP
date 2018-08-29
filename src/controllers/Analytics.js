@@ -3,7 +3,7 @@
  */
 import GlobalFunctions from '../global'
 
-export default ({
+export default {
 	/**
 	 * Call to API to get global revenue summary data.
 	 * @function
@@ -97,7 +97,7 @@ export default ({
 	 * @param {string} appId - The appId of the current application.
 	 * @param {string} appSecret - The appSecret of the current application.
 	 * @param {string} userToken - The auth token of the logged in user.
- 	 * @param {object} params - An object containing the location id and time period requested.
+	 * @param {object} params - An object containing the location id and time period requested.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
 	globalRevenueByDay: function (appId, appSecret, userToken, params) {
@@ -160,7 +160,12 @@ export default ({
 	 * @param {integer} locationId - ID of the location selected
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	locationMostRecentOrders: function (appId, appSecret, userToken, locationId) {
+	locationMostRecentOrders: function (
+		appId,
+		appSecret,
+		userToken,
+		locationId
+	) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'GET',
@@ -217,7 +222,7 @@ export default ({
 	 * @param {string} appId - The appId of the current application.
 	 * @param {string} appSecret - The appSecret of the current application.
 	 * @param {string} userToken - The auth token of the logged in user.
- 	 * @param {object} params - An object containing the location id and time period requested.
+	 * @param {object} params - An object containing the location id and time period requested.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
 	locationRevenueByDay: function (appId, appSecret, userToken, params) {
@@ -365,7 +370,7 @@ export default ({
 	 * @param {string} appId - The appId of the current application.
 	 * @param {string} appSecret - The appSecret of the current application.
 	 * @param {string} userToken - The auth token of the logged in user.
- 	 * @param {object} params - An object containing the dates requested.
+	 * @param {object} params - An object containing the dates requested.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
 	getUsersByOrderCount: function (appId, appSecret, userToken, params) {
@@ -392,7 +397,7 @@ export default ({
 	/**
 	 * Call to API to get a list of orders to match the search parameters.
 	 * @function
- 	 * @param {object} params - An object containing the search criteria.
+	 * @param {object} params - An object containing the search criteria.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
 	searchOrders: function (params) {
@@ -411,4 +416,4 @@ export default ({
 			})
 		})
 	}
-})
+}
