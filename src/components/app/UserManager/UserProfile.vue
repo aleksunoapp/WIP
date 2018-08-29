@@ -736,7 +736,7 @@ export default {
 					UsersFunctions.addPoints(payload)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
-								usersVue.showAddSuccess()
+								usersVue.showAddSuccess(response.payload)
 								usersVue.resetPoints()
 							} else {
 								throw Error('Something went wrong')
@@ -759,16 +759,26 @@ export default {
 				})
 		},
 		/**
-		 * To notify user that the operation succeeded.
+		 * To notify user of the outcome of the call
 		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
 		 */
-		showAddSuccess () {
+		showAddSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Points have been added'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Points added',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**

@@ -384,7 +384,8 @@ export default {
 					CountriesFunctions.createCountry(_this.newCountry)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
-								_this.showCreateSuccess()
+								_this.showCreateSuccess(response.payload)
+								_this.clearNewCountry()
 								_this.getCountries()
 							} else {
 								_this.createErrorMessage = response.message
@@ -411,19 +412,26 @@ export default {
 				})
 		},
 		/**
-		 * To alert the user that the country has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showCreateSuccess () {
+		showCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Country has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Country has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text:
-					"Country '" + this.newCountry.name + "' has been successfully added!",
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(() => {
-				this.clearNewCountry()
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -520,7 +528,8 @@ export default {
 							if (response.code === 200 && response.status === 'ok') {
 								_this.getCountries()
 								_this.closeEditModal()
-								_this.showEditSuccess()
+								_this.resetEdit()
+								_this.showEditSuccess(response.payload)
 							} else {
 								_this.editErrorMessage = response.message
 								_this.$scrollTo(_this.$refs.editErrorMessage, 1000, {
@@ -547,18 +556,26 @@ export default {
 				})
 		},
 		/**
-		 * To display notification that countries were successfully saved.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess () {
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Country has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Country has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: `${this.countryToEdit.name} updated`,
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(() => {
-				this.resetEdit()
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -606,7 +623,7 @@ export default {
 					if (response.code === 200 && response.status === 'ok') {
 						_this.getCountries()
 						_this.closeDeleteModal()
-						_this.showDeleteSuccess()
+						_this.showDeleteSuccess(response.payload)
 					}
 				})
 				.catch(reason => {
@@ -622,16 +639,26 @@ export default {
 				})
 		},
 		/**
-		 * To display notification that countries were successfully saved.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess () {
+		showDeleteSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Country has been deleted'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The removal has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: `${this.countryToDelete.name} was deleted`,
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**

@@ -357,9 +357,9 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						feed.status = val
-						// socialFeedVue.showSuccessAlert()
+						socialFeedVue.showSuccessAlert(response.payload)
 					} else {
-						socialFeedVue.showFailureAlert()
+						throw new Error()
 					}
 				})
 				.catch(reason => {
@@ -375,44 +375,27 @@ export default {
 				})
 		},
 		/**
-		 * To alert the user that the feed status was successfully updated.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showSuccessAlert () {
+		showSuccessAlert (payload = {}) {
+			let title = 'Success'
+			let text = 'The Social Feed has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'Status has been updated successfully!',
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// Do nothing
-				},
-				dismiss => {
-					// Do nothing on dismiss
-				}
-			)
-		},
-		/**
-		 * To alert the user that the feed status wasn't updated.
-		 * @function
-		 * @returns {undefined}
-		 */
-		showFailureAlert () {
-			this.$swal({
-				title: 'Error!',
-				text: 'Something went wrong.',
-				type: 'error',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// Do nothing
-				},
-				dismiss => {
-					// Do nothing on dismiss
-				}
-			)
+				title,
+				text,
+				type
+			})
 		}
 	},
 	watch: {

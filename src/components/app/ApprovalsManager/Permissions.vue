@@ -729,7 +729,7 @@ export default {
 					permissionsVue.getAllPermissions()
 					permissionsVue.closeDeletePermissionModal()
 					permissionsVue.showDeleteSuccess()
-					permissionsVue.resetDeleteForm()
+					permissionsVue.resetDeleteForm(response.payload)
 				})
 				.catch(reason => {
 					ajaxErrorHandler({
@@ -798,7 +798,7 @@ export default {
 						.then(response => {
 							permissionsVue.getAllPermissions()
 							permissionsVue.resetCreateForm()
-							permissionsVue.showCreateSuccess()
+							permissionsVue.showCreateSuccess(response.payload)
 						})
 						.catch(reason => {
 							ajaxErrorHandler({
@@ -856,39 +856,72 @@ export default {
 			}
 		},
 		/**
-		 * To notify user that the operation succeeded.
+		 * To notify user of the outcome of the call
 		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
 		 */
-		showCreateSuccess () {
+		showCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Permission has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Permission has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Permission successfully created',
-				type: 'success'
+				title,
+				text,
+				type
 			})
 		},
 		/**
-		 * To notify user that the operation succeeded.
+		 * To notify user of the outcome of the call
 		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
 		 */
-		showEditSuccess () {
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Permission has been updated'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Permission has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Permission saved',
-				type: 'success'
+				title,
+				text,
+				type
 			})
 		},
 		/**
-		 * To notify user that the operation succeeded.
+		 * To notify user of the outcome of the call
 		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
 		 */
-		showDeleteSuccess () {
+		showDeleteSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Permission has been deleted'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The removal has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Permission deleted',
-				type: 'success'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -954,7 +987,7 @@ export default {
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
 								permissionsVue.closeEditPermissionModal()
-								permissionsVue.showEditSuccess()
+								permissionsVue.showEditSuccess(response.payload)
 								for (var i = 0; i < permissionsVue.permissions.length; i++) {
 									if (
 										permissionsVue.permissions[i].id === response.payload.id

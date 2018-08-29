@@ -392,7 +392,7 @@ export default {
 					if (response.code === 200 && response.status === 'ok') {
 						rewardItemsVue.closeMenuModifierTreeModal()
 						rewardItemsVue.getRewardItems()
-						rewardItemsVue.showApplySuccess()
+						rewardItemsVue.showApplySuccess(response.payload)
 					} else {
 						rewardItemsVue.menuModifierTreeErrorMessage =
 							response.message
@@ -408,16 +408,26 @@ export default {
 				})
 		},
 		/**
-		 * To alert the user that the menu has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showApplySuccess () {
+		showApplySuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Items have been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Items have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'Items successfully applied',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -538,6 +548,8 @@ export default {
 								rewardItemsVue.addRewardItem(
 									rewardItemsVue.newRewardItem
 								)
+								rewardItemsVue.showAlert(response.payload)
+								rewardItemsVue.clearNewRewardForm()
 							} else {
 								rewardItemsVue.errorMessage = response.message
 								rewardItemsVue.$scrollTo(
@@ -596,8 +608,7 @@ export default {
 				title: 'No store',
 				text:
 					'Please select a store from the stores panel on the right before selecting items',
-				type: 'warning',
-				confirmButtonText: 'OK'
+				type: 'warning'
 			})
 		},
 		/**
@@ -637,54 +648,63 @@ export default {
 		 */
 		addRewardItem (val) {
 			this.rewardItems.push(val)
-			this.showAlert()
-			this.clearNewRewardForm()
 		},
 		/**
-		 * To alert the user that the menu has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert () {
+		showAlert (payload = {}) {
+			let title = 'Success'
+			let text = 'The Reward Item has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Reward Item has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text:
-					"Reward item '" +
-					this.newRewardItem.name +
-					"' has been successfully added!",
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// do nothing
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To update the image according to the emitted value.
 		 * @function
 		 * @param {object} val - The emitted image object.
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		updateRewardItemDetails (val) {
+		updateRewardItemDetails ({val, payload}) {
 			this.getRewardItems()
 			this.displayEditRewardItemModal = false
-			this.showEditSuccess()
+			this.showEditSuccess(payload)
 		},
 		/**
-		 * To confirm the item was updated
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess () {
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Reward Item has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Reward Item updated',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -751,7 +771,7 @@ export default {
 					if (response.code === 200 && response.status === 'ok') {
 						rewardsVue.getRewardItems()
 						rewardsVue.closeDeleteModal()
-						rewardsVue.confirmDelete()
+						rewardsVue.confirmDelete(response.payload)
 						rewardsVue.resetItemToBeDeleted()
 					} else {
 						rewardsVue.deleteErrorMessage = response.message
@@ -771,16 +791,26 @@ export default {
 				})
 		},
 		/**
-		 * To confirm the item was deleted
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmDelete () {
+		confirmDelete (payload = {}) {
+			let title = 'Success'
+			let text = 'The Reward Item has been deleted'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The removal has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Reward Item deleted',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**

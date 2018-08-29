@@ -305,7 +305,7 @@ export default {
 				.then(response => {
 					ModifierTiersFunctions.createModifierTier(payload)
 						.then(response => {
-							modifierTiersVue.confirmCreated()
+							modifierTiersVue.confirmCreated(response.payload)
 							modifierTiersVue.addMenuTier(response.payload)
 						})
 						.catch(reason => {
@@ -327,16 +327,26 @@ export default {
 				})
 		},
 		/**
-		 * To alert the user that the tier has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmCreated () {
+		confirmCreated (payload = {}) {
+			let title = 'Success'
+			let text = 'The Modifier Tier has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Modifier Tier has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'Modifier tier created',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -371,24 +381,37 @@ export default {
 		/**
 		 * To update a tier.
 		 * @function
-		 * @param {object} tier - The updated modifier tier.
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		updateTier (tier) {
-			this.tierToEdit = tier
+		updateTier (payload = {}) {
+			this.tierToEdit = payload
 			this.modifierTiers.forEach(t => {
-				if (t.id === tier.id) {
-					t.name = tier.name
+				if (t.id === payload.id) {
+					t.name = payload.name
 				}
 			})
 			this.closeEditModal()
+
+			let title = 'Success'
+			let text = 'The Modifier Tier has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'Modifier tier updated',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
-			this.animated = `tier-${tier.id}`
+
+			if (!payload.pending_approval) {
+				this.animated = `tier-${payload.id}`
+			}
 		},
 		/**
 		 * To display the modal for assigning modifiers to a menu tier.
@@ -401,17 +424,28 @@ export default {
 			this.showAssignModifiersModal = true
 		},
 		/**
-		 * To close the modal for assigning modifiers to a menu tier.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmAssigned () {
+		confirmAssigned (payload = {}) {
 			this.closeAssignModal()
+
+			let title = 'Success'
+			let text = 'The Modifiers have been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'Modifiers assigned',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -433,17 +467,28 @@ export default {
 			this.showApplyToMenuItemsModal = true
 		},
 		/**
-		 * To confirm tier was assigned to menu items
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmAppliedToMenuItems () {
+		confirmAppliedToMenuItems (payload = {}) {
 			this.closeApplyToMenuItemsModal()
+
+			let title = 'Success'
+			let text = 'The Modifier Tiers have been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'Modifier tier applied to items',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -473,21 +518,35 @@ export default {
 			this.showDeleteTierModal = false
 		},
 		/**
-		 * To remove a tier.
+		 * To remove a tier and notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		removeTier () {
-			this.modifierTiers = this.modifierTiers.filter(
-				t => t.id !== this.tierToDelete.id
-			)
+		removeTier (payload = {}) {
 			this.closeDeleteModal()
+
+			let title = 'Success'
+			let text = 'The Modifier has been deleted'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The removal has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'Modifier tier deleted',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
+
+			if (!payload.pending_approval) {
+				this.modifierTiers = this.modifierTiers.filter(
+					t => t.id !== this.tierToDelete.id
+				)
+			}
 		}
 	},
 	components: {

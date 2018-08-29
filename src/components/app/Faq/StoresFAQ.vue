@@ -301,7 +301,7 @@ export default {
 							if (response.code === 200 && response.status === 'ok') {
 								storesFAQVue.newFAQ.id = response.payload.new_faq_id
 								storesFAQVue.faqs.push(storesFAQVue.newFAQ)
-								storesFAQVue.showAlert()
+								storesFAQVue.showAlert(response.payload)
 								storesFAQVue.resetForm()
 							} else {
 								storesFAQVue.createFAQError = response.message
@@ -327,24 +327,27 @@ export default {
 				})
 		},
 		/**
-		 * To alert the user that the menu has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert () {
+		showAlert (payload = {}) {
+			let title = 'Success'
+			let text = 'The Store FAQ has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Store FAQ has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'Store FAQ has been successfully added!',
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// do nothing
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To prompt the backend call that updates a store FAQ.

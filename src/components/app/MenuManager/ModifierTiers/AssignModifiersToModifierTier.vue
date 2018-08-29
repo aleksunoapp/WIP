@@ -142,7 +142,7 @@ export default {
 				.then(response => {
 					return ModifierTiersFunctions.addModifiersToTier(payload)
 						.then(response => {
-							assignTiersVue.$emit('assigned')
+							assignTiersVue.$emit('applied', response.payload)
 						})
 						.catch(reason => {
 							assignTiersVue.showModal = true

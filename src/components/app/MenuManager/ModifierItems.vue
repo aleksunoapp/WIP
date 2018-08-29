@@ -574,7 +574,7 @@ export default {
 					ModifiersFunctions.applyModifierToLocations(payload)
 						.then(response => {
 							modifierItemsVue.closeApplyToLocationsModal()
-							modifierItemsVue.showApplySuccess()
+							modifierItemsVue.showApplySuccess(response.payload)
 						})
 						.catch(reason => {
 							ajaxErrorHandler({
@@ -596,16 +596,26 @@ export default {
 				})
 		},
 		/**
-		 * To confirm operation succeeded
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showApplySuccess () {
+		showApplySuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Modifier Items have been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'Modifier applied to selected stores',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -705,6 +715,8 @@ export default {
 								modifierItemsVue.addModifierItem(
 									modifierItemsVue.newModifierItem
 								)
+								modifierItemsVue.showAlert(response.payload)
+								modifierItemsVue.clearNewModifierItem()
 							} else {
 								modifierItemsVue.errorMessage = response.message
 							}
@@ -917,31 +929,29 @@ export default {
 			} else {
 				this.modifierCategoryItems.push(val)
 			}
-			this.showAlert()
-			this.clearNewModifierItem()
 		},
 		/**
-		 * To alert the user that the menu has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert () {
+		showAlert (payload = {}) {
+			let title = 'Success'
+			let text = 'The Modifier Item has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Modifier Item has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text:
-					"Modifier Item '" +
-					this.newModifierItem.name +
-					"' has been successfully created!",
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// do nothing
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To update the modifier item emitted by the child and highlist it on the items list.

@@ -430,8 +430,7 @@ export default {
 								addPrinterVue.newPrinter.id = response.payload.new_printer_id
 								addPrinterVue.addPrinter({ ...addPrinterVue.newPrinter })
 								addPrinterVue.resetForm()
-								// show alert
-								addPrinterVue.showAlert(response.message)
+								addPrinterVue.showAlert(response.payload)
 							} else {
 								addPrinterVue.errorMessage = response.message
 							}
@@ -464,17 +463,26 @@ export default {
 			this.newPrinterCollapse = !this.newPrinterCollapse
 		},
 		/**
-		 * To alert the user whether the printer was successfully added.
+		 * To notify user of the outcome of the call
 		 * @function
-		 * @param {string} input - The input string.
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert (input) {
+		showAlert (payload = {}) {
+			let title = 'Success'
+			let text = 'The Printer has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Printer has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: input,
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		}
 	},

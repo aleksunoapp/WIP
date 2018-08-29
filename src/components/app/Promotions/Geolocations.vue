@@ -446,7 +446,7 @@ export default {
 							if (response.code === 200 && response.status === 'ok') {
 								geolocationsVue.geolocations.push(response.payload)
 								geolocationsVue.resetForm()
-								geolocationsVue.confirmCreated()
+								geolocationsVue.confirmCreated(response.payload)
 							} else {
 								geolocationsVue.createErrorMessage = 'Something went wrong ...'
 							}
@@ -468,17 +468,26 @@ export default {
 				})
 		},
 		/**
-		 * To alert the user whether the printer was successfully added.
+		 * To notify user of the outcome of the call
 		 * @function
-		 * @param {string} input - The input string.
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmCreated () {
+		confirmCreated (payload = {}) {
+			let title = 'Success'
+			let text = 'The Geolocation has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Geolocation has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'Geolocation created',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -659,7 +668,7 @@ export default {
 						geolocationsVue.geolocations.splice(index, 1)
 						geolocationsVue.resetSelected()
 						geolocationsVue.closeDeleteModal()
-						geolocationsVue.confirmDeleted()
+						geolocationsVue.confirmDeleted(response.payload)
 					} else {
 						geolocationsVue.deleteErrorMessage = 'Something went wrong ...'
 					}
@@ -678,17 +687,26 @@ export default {
 				})
 		},
 		/**
-		 * To alert the user whether the printer was successfully added.
+		 * To notify user of the outcome of the call
 		 * @function
-		 * @param {string} input - The input string.
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmDeleted () {
+		confirmDeleted (payload = {}) {
+			let title = 'Success'
+			let text = 'The Geolocation has been deleted'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The removal has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'Geolocation deleted',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		}
 	},

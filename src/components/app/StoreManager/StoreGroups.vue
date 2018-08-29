@@ -350,8 +350,8 @@ export default {
 				storeGroupsVue.$root.userToken
 			)
 				.then(response => {
-					this.closeTiersModal()
-					this.showAssignTiersSuccess()
+					storeGroupsVue.closeTiersModal()
+					storeGroupsVue.showAssignTiersSuccess(response.payload)
 				})
 				.catch(reason => {
 					ajaxErrorHandler({
@@ -366,16 +366,26 @@ export default {
 				})
 		},
 		/**
-		 * To confirm success
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAssignTiersSuccess () {
+		showAssignTiersSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Menu Tiers have been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'Menu Tiers assigned',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -556,7 +566,7 @@ export default {
 							if (response.code === 200 && response.status === 'ok') {
 								storeGroupsVue.newGroup.id = response.payload.id
 								storeGroupsVue.addGroup(storeGroupsVue.newGroup)
-								storeGroupsVue.confirmCreated()
+								storeGroupsVue.confirmCreated(response.payload)
 							} else {
 								storeGroupsVue.errorMessage = response.message
 							}
@@ -581,16 +591,26 @@ export default {
 				})
 		},
 		/**
-		 * To confirm creation.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmCreated () {
+		confirmCreated (payload = {}) {
+			let title = 'Success'
+			let text = 'The Store Group has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Store Group has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'Group created',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		}
 	},

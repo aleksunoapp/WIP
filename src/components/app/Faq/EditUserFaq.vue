@@ -211,7 +211,7 @@ export default {
 					)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
-								editFAQVue.closeModalAndUpdate()
+								editFAQVue.closeModalAndUpdate(response.payload)
 							} else {
 								editFAQVue.errorMessage = response.message
 							}
@@ -247,10 +247,11 @@ export default {
 		/**
 		 * To close the modal and update the edited faq.
 		 * @function
+		 * @param {object} payload - Payload of the update response
 		 * @returns {undefined}
 		 */
-		closeModalAndUpdate () {
-			this.$emit('highlightFAQ', this.faqToBeEdited)
+		closeModalAndUpdate (payload = {}) {
+			this.$emit('highlightFAQ', payload)
 		}
 	},
 	components: {

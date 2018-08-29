@@ -255,7 +255,8 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						assignStoresVue.closeModal()
-						assignStoresVue.showAlert()
+						assignStoresVue.showAlert(response.payload)
+						assignStoresVue.closeSidewaysPage()
 					}
 				})
 				.catch(reason => {
@@ -280,24 +281,27 @@ export default {
 			this.$emit('closeSidewaysPage')
 		},
 		/**
-		 * To alert the user that the selected locations have been assigned to the current group.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert () {
+		showAlert (payload = {}) {
+			let title = 'Success'
+			let text = 'The Stores have been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'Locations have been successfully assigned!',
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					this.closeSidewaysPage()
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
+				title,
+				text,
+				type
+			})
 		}
 	},
 	components: {

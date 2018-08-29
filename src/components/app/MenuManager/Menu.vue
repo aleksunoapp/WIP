@@ -577,21 +577,32 @@ export default {
 			this.copyMenuModalActive = true
 		},
 		/**
-		 * To confirm the copy succeeded
+		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {integer} ids - Array of location IDs menu was copied to
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmCopySuccess (ids) {
+		confirmCopySuccess ({ids, payload}) {
 			if (ids.includes(this.$root.activeLocation.id)) {
 				this.getStoreMenus()
 			}
 			this.closeCopyMenuModal()
+
+			let title = 'Success'
+			let text = 'The Menu has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Menu has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Menu copied',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -617,17 +628,27 @@ export default {
 		/**
 		 * To confirm the duplication succeeded
 		 * @function
-		 * @param {integer} id - ID of the location menu was copied to
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmDuplicateSuccess (id) {
+		confirmDuplicateSuccess (payload = {}) {
 			this.getStoreMenus()
 			this.closeDuplicateMenuModal()
+
+			let title = 'Success'
+			let text = 'The Menu has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Menu has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Menu duplicated',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -827,24 +848,27 @@ export default {
 			}
 		},
 		/**
-		 * To alert the user that the menu has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert () {
+		showAlert (payload = {}) {
+			let title = 'Success'
+			let text = 'The Menu has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Menu has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'Menu has been successfully created!',
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// do nothing
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To update the menu object emitted by the child.
@@ -974,7 +998,7 @@ export default {
 							if (response.code === 200 && response.status === 'ok') {
 								createMenuVue.getStoreMenus()
 								createMenuVue.clearNewMenu()
-								createMenuVue.showAlert()
+								createMenuVue.showAlert(response.payload)
 							} else {
 								createMenuVue.errorMessage = response.message
 							}

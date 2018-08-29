@@ -702,7 +702,7 @@ export default {
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						presetsVue.closeModalAndUpdate()
+						presetsVue.closeModalAndUpdate(response.payload)
 					} else {
 						presetsVue.errorMessage = response.message
 					}
@@ -723,10 +723,14 @@ export default {
 		/**
 		 * To close the modal and emit settings
 		 * @function
+		 * @param {object} payload - The payload property of the response
 		 * @returns {undefined}
 		 */
-		closeModalAndUpdate () {
-			this.$emit('closeAndUpdate', this.preset_item_modifier_item)
+		closeModalAndUpdate (payload = {}) {
+			this.$emit('closeAndUpdate', {
+				updatedSettings: this.preset_item_modifier_item,
+				payload
+			})
 		}
 	},
 	components: {

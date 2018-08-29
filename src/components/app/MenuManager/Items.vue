@@ -957,24 +957,50 @@ export default {
 				})
 		},
 		/**
-		 * To alert the user that the menu has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
-		 * @param {object} item - The recently created item
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showPresetItemAlert (item) {
+		showPresetItemAlert (payload = {}) {
+			let title = 'Success'
+			let html = `
+				<div>
+					The Item has been created
+					<br/>
+					<br/>
+					<strong>
+						Do you want to add preset settings now?
+					</strong>
+				</div>`
+			let type = 'success'
+			let showCancelButton = true
+			let confirmButtonText = 'Yes'
+			let cancelButtonText = 'No'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				html = `
+					<div>
+						The Item has been sent for approval
+					</div>`
+				type = 'info'
+				showCancelButton = false
+				confirmButtonText = 'OK'
+			}
+
 			this.$swal({
-				type: 'success',
-				title: 'Success!',
-				html: `<div>${
-					item.name
-				} created<br/><br/><strong>Do you want to add preset settings now?</strong></div>`,
-				showCancelButton: true,
-				confirmButtonText: 'Yes',
-				cancelButtonText: 'No'
+				title,
+				html,
+				type,
+				showCancelButton,
+				confirmButtonText,
+				cancelButtonText
 			}).then(
 				() => {
-					this.showPresetModal(item)
+					if (!payload.pending_approval) {
+						this.showPresetModal(payload)
+					}
 				},
 				dismiss => {}
 			)
@@ -1008,30 +1034,39 @@ export default {
 		 * @param {array} updatedSettings - The updated settings
 		 * @returns {undefined}
 		 */
-		closePresetModalAndUpdate (updatedSettings) {
+		closePresetModalAndUpdate ({updatedSettings, payload}) {
 			this.categoryItems.forEach(item => {
 				if (item.id === this.itemToSetPresetSettingsFor.id) {
 					item.preset_item_modifier_item = updatedSettings
 				}
 			})
-			this.confirmPresetSettings()
-
 			this.displayPresetModal = false
+			this.confirmPresetSettings(payload)
 			this.itemToSetPresetSettingsFor.id = null
 			this.itemToSetPresetSettingsFor.name = ''
 			this.itemToSetPresetSettingsFor.preset_item_modifier_item = []
 		},
 		/**
-		 * To confirm the Item Attributes were assigned
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmPresetSettings () {
+		confirmPresetSettings (payload = {}) {
+			let title = 'Success'
+			let text = 'The Preset Settings have been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Preset Settings have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: `Preset settings saved`,
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -1081,12 +1116,7 @@ export default {
 					if (response.code === 200 && response.status === 'ok') {
 						itemsVue.passedItemId = null
 						itemsVue.closeApplyToLocationsModal()
-						itemsVue.$swal({
-							title: 'Success',
-							text: 'Item successfully applied',
-							type: 'success',
-							confirmButtonText: 'OK'
-						})
+						itemsVue.confirmItemsAppliedToLocaions(response.payload)
 					}
 				})
 				.catch(reason => {
@@ -1101,6 +1131,29 @@ export default {
 				.finally(() => {
 					itemsVue.applyingItemToLocations = false
 				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		confirmItemsAppliedToLocaions (payload = {}) {
+			let title = 'Success'
+			let text = 'The Items have been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To record the selected locations
@@ -1420,6 +1473,12 @@ export default {
 							if (response.code === 200 && response.status === 'ok') {
 								itemsVue.newItem.id = response.payload.new_item_id
 								itemsVue.addItem(itemsVue.newItem)
+								if (itemsVue.newItem.type === 'preset') {
+									itemsVue.showPresetItemAlert(response.payload)
+								} else {
+									itemsVue.showAlert(response.payload)
+								}
+								itemsVue.clearNewItem()
 							} else {
 								itemsVue.errorMessage = response.message
 							}
@@ -1724,7 +1783,8 @@ export default {
 						})
 						this.selectedItemAttributes = newAttributesArray
 						itemsVue.closeAssignItemAttributesModal()
-						itemsVue.confirmAssignItemAttributes()
+						itemsVue.confirmAssignItemAttributes(response.payload)
+						itemsVue.resetAssignItemAttributes()
 					} else {
 						window.scrollTo(0, 0)
 						itemsVue.assignItemAttributesErrorMessage =
@@ -1763,20 +1823,26 @@ export default {
 			this.itemToAssignItemAttributesTo.name = ''
 		},
 		/**
-		 * To confirm the Item Attributes were assigned
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmAssignItemAttributes () {
+		confirmAssignItemAttributes (payload = {}) {
+			let title = 'Success'
+			let text = 'The Item Attributes have been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				html: `<div>Item Attributes assigned to <i>${
-					this.itemToAssignItemAttributesTo.name
-				}</i></div>`,
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(() => {
-				this.resetAssignItemAttributes()
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -1876,28 +1942,29 @@ export default {
 			} else {
 				this.categoryItems.push(val)
 			}
-			val.type === 'preset' ? this.showPresetItemAlert(val) : this.showAlert()
-			this.clearNewItem()
 		},
 		/**
-		 * To alert the user that the menu has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert () {
+		showAlert (payload = {}) {
+			let title = 'Success'
+			let text = 'The Item has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Item has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: "Item '" + this.newItem.name + "' has been successfully created!",
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// do nothing
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To update the item emitted by the child and highlist it on the items list.

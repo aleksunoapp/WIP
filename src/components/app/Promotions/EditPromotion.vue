@@ -580,7 +580,7 @@ export default {
 								response.code === 200 &&
 								response.status === 'ok'
 							) {
-								this.closeModalAndUpdate()
+								this.closeModalAndUpdate(response.payload)
 							} else {
 								editPromotionVue.errorMessage = response.message
 							}
@@ -608,11 +608,14 @@ export default {
 		/**
 		 * To close the modal and emit the updated promotion object to the parent.
 		 * @function
+		 * @param {object} payload - The payload property of the response
 		 * @returns {undefined}
 		 */
-		closeModalAndUpdate () {
-			this.$emit('updatePromotion', this.promotionToBeEdited)
-			this.$emit('closeEditPromotionModal')
+		closeModalAndUpdate (payload = {}) {
+			this.$emit('updatePromotion', {
+				promotion: this.promotionToBeEdited,
+				payload
+			})
 		},
 		/**
 		 * To just close the modal when the user clicks on the 'x' to close the modal without creating a new tag.

@@ -683,7 +683,7 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						_this.closeModal()
-						_this.showCreateSuccess(response.message)
+						_this.showCreateSuccess(response.payload)
 					}
 				})
 				.catch(reason => {
@@ -798,7 +798,7 @@ export default {
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
 								_this.closeModal()
-								_this.showCreateSuccess(response.message)
+								_this.showCreateSuccess(response.payload)
 							}
 						})
 						.catch(reason => {
@@ -819,18 +819,27 @@ export default {
 				})
 		},
 		/**
-		 * To notify user that the operation succeeded.
+		 * To notify user of the outcome of the call
 		 * @function
-		 * @param {string} message - Message returned by the server
-		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
 		 */
-		showCreateSuccess (message) {
-			let partial = !!message.startsWith('Category hours saved except for')
+		showCreateSuccess (payload = {message: ''}) {
+			let partial = !!payload.message.startsWith('Category hours saved except for')
+			let title = 'Success'
+			let text = partial ? payload.message : 'The Category Hours have been saved'
+			let type = partial ? 'info' : 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Category Hours have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: partial ? message : 'Hours successfully saved',
-				type: partial ? 'info' : 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**

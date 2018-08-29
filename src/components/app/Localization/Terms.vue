@@ -442,7 +442,8 @@ export default {
 					TermsFunctions.createTerm(_this.newTerm)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
-								_this.showCreateSuccess()
+								_this.showCreateSuccess(response.payload)
+								_this.clearNewTerm()
 								_this.getTerms()
 							} else {
 								_this.createErrorMessage = response.message
@@ -469,18 +470,26 @@ export default {
 				})
 		},
 		/**
-		 * To alert the user that the term has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showCreateSuccess () {
+		showCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Term has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Term has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: "Term '" + this.newTerm.term + "' has been successfully added!",
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(() => {
-				this.clearNewTerm()
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -601,7 +610,7 @@ export default {
 							if (response.code === 200 && response.status === 'ok') {
 								_this.getTerms()
 								_this.closeEditModal()
-								_this.showEditSuccess()
+								_this.showEditSuccess(response.payload)
 								_this.resetEdit()
 							} else {
 								_this.editErrorMessage = response.message
@@ -628,16 +637,26 @@ export default {
 				})
 		},
 		/**
-		 * To display notification that terms were successfully saved.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess () {
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Term has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Term has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: `${this.termToEdit.term} updated`,
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -684,7 +703,7 @@ export default {
 					if (response.code === 200 && response.status === 'ok') {
 						_this.getTerms()
 						_this.closeDeleteModal()
-						_this.showDeleteSuccess()
+						_this.showDeleteSuccess(response.payload)
 					}
 				})
 				.catch(reason => {
@@ -700,16 +719,26 @@ export default {
 				})
 		},
 		/**
-		 * To display notification that terms were successfully saved.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess () {
+		showDeleteSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Term has been deleted'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The removal has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: `${this.termToDelete.term} was deleted`,
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**

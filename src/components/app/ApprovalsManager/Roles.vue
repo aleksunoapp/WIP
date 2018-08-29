@@ -1041,27 +1041,49 @@ export default {
 			}
 		},
 		/**
-		 * To notify user that the operation succeeded.
+		 * To notify user of the outcome of the call
 		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
 		 */
-		showCreateSuccess () {
+		showCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Role has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Role has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Role successfully created',
-				type: 'success'
+				title,
+				text,
+				type
 			})
 		},
 		/**
-		 * To notify user that the operation succeeded.
+		 * To notify user of the outcome of the call
 		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
 		 */
-		showEditSuccess () {
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Role has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Role saved',
-				type: 'success'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -1117,7 +1139,7 @@ export default {
 						.then(response => {
 							rolesVue.closeEditRoleModal()
 							rolesVue.refreshUserPermissions(response.payload)
-							rolesVue.showEditSuccess()
+							rolesVue.showEditSuccess(response.payload)
 							for (var i = 0; i < rolesVue.roles.length; i++) {
 								if (
 									rolesVue.roles[i].id ===
@@ -1128,7 +1150,7 @@ export default {
 								}
 							}
 							rolesVue.animated = `role-${rolesVue.roleToEdit.id}`
-							rolesVue.resetEditForm()
+							rolesVue.resetEditForm(response.payload)
 							window.setTimeout(() => {
 								rolesVue.animated = ''
 							}, 3000)
@@ -1245,16 +1267,26 @@ export default {
 			this.deleteErrorMessage = ''
 		},
 		/**
-		 * To confirm deletion
+		 * To notify user of the outcome of the call
 		 * @function
-		 * @param {array} permissions - An array of permission ids
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess () {
+		showDeleteSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Role has been deleted'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The removal has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Role deleted',
-				type: 'success'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -1270,7 +1302,7 @@ export default {
 				.then(response => {
 					rolesVue.getRoles()
 					rolesVue.closeDeleteModal()
-					rolesVue.showDeleteSuccess()
+					rolesVue.showDeleteSuccess(response.payload)
 					rolesVue.resetDeleteForm()
 				})
 				.catch(reason => {

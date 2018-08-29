@@ -340,7 +340,7 @@ export default {
 							if (response.code === 200 && response.status === 'ok') {
 								usersFAQVue.newFAQ.id = response.payload.new_faq_id
 								usersFAQVue.faqs.push(usersFAQVue.newFAQ)
-								usersFAQVue.showAlert()
+								usersFAQVue.showAlert(response.payload)
 								usersFAQVue.resetForm()
 								disabledButton.complete()
 							} else {
@@ -369,24 +369,27 @@ export default {
 				})
 		},
 		/**
-		 * To alert the user that the menu has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert () {
+		showAlert (payload = {}) {
+			let title = 'Success'
+			let text = 'The User FAQ has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The User FAQ has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'User FAQ has been successfully added!',
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// do nothing
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To prompt the backend call that updates a user FAQ.
@@ -409,16 +412,35 @@ export default {
 		/**
 		 * To close the modal and highlight the recently updated user faq.
 		 * @function
+		 * @param {object} payload - response.payload from the edit call
 		 * @returns {undefined}
 		 */
-		highlightFAQ () {
+		highlightFAQ (payload) {
 			this.getUserFAQs()
 			this.showEditFAQModal = false
+			this.showEditSuccess(payload)
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The User FAQ has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The User FAQ has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Question saved',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		}
 	},

@@ -1068,7 +1068,7 @@ export default {
 						weekStartingMonday.push(response.payload[sunday])
 						weekStartingMonday.splice(sunday, 1)
 						editStoreVue.holidayHoursToBeEdited = weekStartingMonday
-						editStoreVue.showAlert()
+						editStoreVue.showAlert(response.payload)
 					}
 				})
 				.catch(reason => {
@@ -1178,7 +1178,7 @@ export default {
 				.then(response => {
 					this.getStoreHolidayHours()
 					this.closeDeleteHolidayHoursModal()
-					this.confirmHolidayHoursDeleted()
+					this.confirmHolidayHoursDeleted(response.payload)
 				})
 				.catch(reason => {
 					ajaxErrorHandler({
@@ -1190,29 +1190,49 @@ export default {
 				})
 		},
 		/**
-		 * To confirm that the hours were deleted
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmHolidayHoursDeleted () {
+		confirmHolidayHoursDeleted (payload = {}) {
+			let title = 'Success'
+			let text = 'The Holiday Hours have been deleted'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The removal has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'Holiday hours deleted',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
-		 * To alert the user that the store has been successfully created and provide them an option for creating another one.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert () {
+		showAlert (payload = {}) {
+			let title = 'Success'
+			let text = 'The Holiday Hours have been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Holiday Hours have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'Holiday hours successfully added.',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			}).then(() => {
 				window.scrollTo(0, 0)
 			})
@@ -1490,7 +1510,7 @@ export default {
 					)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
-								editStoreVue.showSuccessAlert('Store details')
+								editStoreVue.showSuccessAlert(response.payload)
 							} else {
 								editStoreVue.storeInformationError = response.message
 							}
@@ -1515,25 +1535,119 @@ export default {
 				})
 		},
 		/**
-		 * To alert the user that the store information was successfully updated.
+		 * To notify user of the outcome of the call
 		 * @function
-		 * @param {string} input - The input string.
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showSuccessAlert (input) {
+		showSuccessAlert (payload = {}) {
+			let title = 'Success'
+			let text = 'The Store Information has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Store Information has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: input + ' have been successfully updated!',
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// Do nothing
-				},
-				dismiss => {
-					// Do nothing on dismiss
-				}
-			)
+				title,
+				text,
+				type
+			})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showMetaUpdateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Store Profile has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showMetaCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Store Profile has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Store Profile has been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showHoursUpdateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Store Hours have been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showHoursCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Store Hours have been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To check if the store meta data is valid before submitting to the backend.
@@ -1596,7 +1710,7 @@ export default {
 						)
 							.then(response => {
 								editStoreVue.noProfileData = ''
-								editStoreVue.showSuccessAlert('Store meta details')
+								editStoreVue.showMetaCreateSuccess(response.payload)
 							})
 							.catch(reason => {
 								ajaxErrorHandler({
@@ -1619,7 +1733,7 @@ export default {
 						)
 							.then(response => {
 								if (response.code === 200 && response.status === 'ok') {
-									editStoreVue.showSuccessAlert('Store metas')
+									editStoreVue.showMetaUpdateSuccess(response.payload)
 								} else {
 									editStoreVue.storeMetaError = response.message
 								}
@@ -1693,7 +1807,7 @@ export default {
 							.then(response => {
 								if (response.code === 200 && response.status === 'ok') {
 									editStoreVue.getStoreHours()
-									editStoreVue.showSuccessAlert('Store hours')
+									editStoreVue.showHoursCreateSuccess(response.payload)
 								} else {
 									editStoreVue.storeHourError = response.message
 								}
@@ -1727,7 +1841,7 @@ export default {
 						)
 							.then(response => {
 								if (response.code === 200 && response.status === 'ok') {
-									editStoreVue.showSuccessAlert('Store hours')
+									editStoreVue.showHoursUpdateSuccess(response.payload)
 								} else {
 									editStoreVue.storeHourError = response.message
 								}

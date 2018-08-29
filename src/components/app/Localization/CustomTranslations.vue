@@ -244,7 +244,7 @@ export default {
 			TermsFunctions.translateTerms(payload)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						localizationVue.showSaveSuccess()
+						localizationVue.showSaveSuccess(response.payload)
 					} else {
 						localizationVue.translationsTableErrorMessage = response.message
 					}
@@ -263,24 +263,27 @@ export default {
 				})
 		},
 		/**
-		 * To alert the user that the translations have been successfully saved.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showSaveSuccess () {
+		showSaveSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Translations have been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Translations have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Saved',
-				text: 'The translations have been saved',
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// do nothing
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To clear the current error.

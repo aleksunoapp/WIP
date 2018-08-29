@@ -401,16 +401,26 @@ export default {
 			this.showDeleteModal = false
 		},
 		/**
-		 * To confirm the change was saved
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess () {
+		showDeleteSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Store has been deleted'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The removal has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Store deleted',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -424,7 +434,7 @@ export default {
 				.then(response => {
 					storesVue.getStores()
 					storesVue.closeDeleteModal()
-					storesVue.showDeleteSuccess()
+					storesVue.showDeleteSuccess(response.payload)
 				})
 				.catch(reason => {
 					ajaxErrorHandler({

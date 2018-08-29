@@ -266,7 +266,7 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						assignMenusVue.closeModal()
-						assignMenusVue.showAlert()
+						assignMenusVue.showAlert(response.payload)
 					}
 				})
 				.catch(reason => {
@@ -309,24 +309,27 @@ export default {
 			this.$emit('closeAssignMenusModal')
 		},
 		/**
-		 * To alert the user that the selected locations have been assigned to the current group.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert () {
+		showAlert (payload = {}) {
+			let title = 'Success'
+			let text = 'The Menus have been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'Menus have been successfully assigned!',
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// do nothing
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
+				title,
+				text,
+				type
+			})
 		}
 	},
 	components: {

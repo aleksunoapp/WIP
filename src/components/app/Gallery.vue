@@ -151,7 +151,7 @@ export default {
 			)
 				.then(response => {
 					galleryVue.closeDeleteModal()
-					galleryVue.confirmDelete()
+					galleryVue.confirmDelete(response.payload)
 					galleryVue.pickerKey++
 					galleryVue.previewMode = false
 					galleryVue.image = { image_url: '' }
@@ -166,16 +166,26 @@ export default {
 				})
 		},
 		/**
-		 * To notify user that the operation succeeded.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmDelete () {
+		confirmDelete (payload = {}) {
+			let title = 'Success'
+			let text = 'The Resource has been deleted'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The removal has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Image deleted',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		}
 	},

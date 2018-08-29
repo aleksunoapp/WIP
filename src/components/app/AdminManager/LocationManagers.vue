@@ -795,7 +795,7 @@ export default {
 					)
 						.then(response => {
 							locationManagersVue.closeRolesModal()
-							locationManagersVue.showRolesSuccess()
+							locationManagersVue.showRolesSuccess(response.payload)
 							this.animated = `locationManager-${
 								locationManagersVue.locationManagerToBeEdited.id
 							}`
@@ -854,16 +854,26 @@ export default {
 				})
 		},
 		/**
-		 * To notify user that the operation succeeded.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showRolesSuccess () {
+		showRolesSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Roles have been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Roles have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Roles saved',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -1110,7 +1120,7 @@ export default {
 						assignStoresVue.getAllLocationManagers()
 						assignStoresVue.closeAssignStoresModal()
 						assignStoresVue.resetAssignForm()
-						assignStoresVue.showAssignSuccess()
+						assignStoresVue.showAssignSuccess(response.payload)
 						assignStoresVue.showAssignStoresModal = false
 						assignStoresVue.animated = `locationManager-${
 							assignStoresVue.selectedLocationManager.id
@@ -1217,7 +1227,7 @@ export default {
 							) {
 								locationManagersVue.getAllLocationManagers()
 								locationManagersVue.resetCreateForm()
-								locationManagersVue.showCreateSuccess()
+								locationManagersVue.showCreateSuccess(response.payload)
 							} else {
 								locationManagersVue.createErrorMessage =
 									response.message
@@ -1289,44 +1299,50 @@ export default {
 			}
 		},
 		/**
-		 * To notify user that the operation succeeded.
+		 * To notify user of the outcome of the call
 		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
 		 */
-		showAssignSuccess () {
+		showAssignSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Stores have been assigned'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Stores successfully assigned',
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// do nothing
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
+				title,
+				text,
+				type
+			})
 		},
 		/**
-		 * To notify user that the operation succeeded.
+		 * To notify user of the outcome of the call
 		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
 		 */
-		showCreateSuccess () {
+		showCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Location Manager has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Location Manager has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Location Manager successfully created',
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// do nothing
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To notify user that the operation succeeded.
@@ -1415,7 +1431,7 @@ export default {
 								response.status === 'ok'
 							) {
 								locationManagersVue.closeEditLocationManagerModal()
-								locationManagersVue.showEditSuccess()
+								locationManagersVue.showEditSuccess(response.payload)
 								for (
 									var i = 0;
 									i < this.locationManagers.length;

@@ -1460,16 +1460,36 @@ export default {
 				: (this.steps.step4_status = this.steps.step4_status)
 		},
 		/**
-		 * To alert the user that the store has been successfully created and provide them an option for creating another one.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showHolidayHoursAlert () {
+		showHolidayHoursAlert (payload = {}) {
+			let title = 'Success'
+			let html = `
+				<div>
+					The Holiday Hours have been created
+					<br/><br/>
+					<strong>
+						Do you want to add store images?
+					</strong>
+				</div>`
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				html = `
+					<div>
+						The Holiday Hours have been sent for approval
+					</div>`
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				html:
-					'<div>Holiday hours successfully added<br/><br/><strong>Do you want to add store images?</strong></div>',
-				type: 'success',
+				title,
+				html,
+				type,
 				showCancelButton: true,
 				confirmButtonText: 'Yes',
 				cancelButtonText: 'No'
@@ -1601,7 +1621,7 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						createStoreVue.steps.step3_status = 'success'
-						createStoreVue.showHolidayHoursAlert()
+						createStoreVue.showHolidayHoursAlert(response.payload)
 					}
 				})
 				.catch(reason => {

@@ -493,7 +493,8 @@ export default {
 					)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
-								_this.showCreateSuccess()
+								_this.showCreateSuccess(response.payload)
+								_this.clearNewItemType()
 								_this.getItemTypes()
 							} else {
 								_this.createErrorMessage = response.message
@@ -520,21 +521,26 @@ export default {
 				})
 		},
 		/**
-		 * To alert the user that the item type has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showCreateSuccess () {
+		showCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Item Type has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Item Type has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text:
-					"Item Type '" +
-					this.newItemType.name +
-					"' has been successfully added!",
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(() => {
-				this.clearNewItemType()
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -634,7 +640,7 @@ export default {
 							if (response.code === 200 && response.status === 'ok') {
 								_this.getItemTypes()
 								_this.closeEditModal()
-								_this.showEditSuccess()
+								_this.showEditSuccess(response.payload)
 								_this.resetEdit()
 							} else {
 								_this.editErrorMessage = response.message
@@ -661,16 +667,26 @@ export default {
 				})
 		},
 		/**
-		 * To display notification that item types were successfully saved.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess () {
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Item Type has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: `${this.itemTypeToEdit.name} updated`,
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -722,7 +738,7 @@ export default {
 					if (response.code === 200 && response.status === 'ok') {
 						_this.getItemTypes()
 						_this.closeDeleteModal()
-						_this.showDeleteSuccess()
+						_this.showDeleteSuccess(response.payload)
 					}
 				})
 				.catch(reason => {
@@ -738,16 +754,26 @@ export default {
 				})
 		},
 		/**
-		 * To display notification that item types were successfully saved.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess () {
+		showDeleteSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Item Type has been deleted'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The removal has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: `${this.itemTypeToDelete.name} deleted`,
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -892,7 +918,7 @@ export default {
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
 								_this.closeApplyModal()
-								_this.showApplySuccess()
+								_this.showApplySuccess(response.payload)
 							} else {
 								_this.applyErrorMessage = response.message
 								_this.$scrollTo(_this.$refs.applyErrorMessage, 1000, {
@@ -939,16 +965,26 @@ export default {
 			})
 		},
 		/**
-		 * To confirm tax classes have been successfully assigned.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showApplySuccess () {
+		showApplySuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Tax Classes have been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Tax classes have been assigned',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		}
 	},

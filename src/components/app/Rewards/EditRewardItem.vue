@@ -252,7 +252,7 @@ export default {
 					)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
-								this.closeModalAndUpdate()
+								this.closeModalAndUpdate(response.payload)
 							} else {
 								editRewardItemVue.errorMessage = response.message
 							}
@@ -287,10 +287,14 @@ export default {
 		/**
 		 * To close the modal and emit the updated folder object to the parent.
 		 * @function
+		 * @param {object} payload - The payload property of the response
 		 * @returns {undefined}
 		 */
-		closeModalAndUpdate () {
-			this.$emit('updateRewardItemDetails', this.rewardItemToBeEdited)
+		closeModalAndUpdate (payload = {}) {
+			this.$emit('updateRewardItemDetails', {
+				val: this.rewardItemToBeEdited,
+				payload
+			})
 		}
 	},
 	components: {

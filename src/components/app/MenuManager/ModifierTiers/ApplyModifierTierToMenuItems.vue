@@ -142,7 +142,7 @@ export default {
 					assignTiersVue.saving = true
 					return ModifierTiersFunctions.applyModifierTierToMenuItems(payload)
 						.then(response => {
-							assignTiersVue.$emit('assigned')
+							assignTiersVue.$emit('assigned', response.payload)
 						})
 						.catch(reason => {
 							assignTiersVue.showModal = true

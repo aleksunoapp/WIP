@@ -1149,7 +1149,7 @@ export default {
 							) {
 								storeAppUsersVue.getAllStoreAppUsers()
 								storeAppUsersVue.resetCreateForm()
-								storeAppUsersVue.showCreateSuccess()
+								storeAppUsersVue.showCreateSuccess(response.payload)
 							} else {
 								storeAppUsersVue.createErrorMessage =
 									response.message
@@ -1222,64 +1222,50 @@ export default {
 			}
 		},
 		/**
-		 * To notify user that the operation succeeded.
+		 * To notify user of the outcome of the call
 		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
 		 */
-		showAssignSuccess () {
+		showCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Store App User has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Store App User has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Stores successfully assigned',
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// do nothing
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
+				title,
+				text,
+				type
+			})
 		},
 		/**
-		 * To notify user that the operation succeeded.
+		 * To notify user of the outcome of the call
 		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
 		 */
-		showCreateSuccess () {
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Store App User has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Store App User successfully created',
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// do nothing
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
-		},
-		/**
-		 * To notify user that the operation succeeded.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		showEditSuccess () {
-			this.$swal({
-				title: 'Success',
-				text: 'Store App User successfully updated',
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// do nothing
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To toggle the create new panel.
@@ -1354,7 +1340,7 @@ export default {
 								response.status === 'ok'
 							) {
 								storeAppUsersVue.closeEditStoreAppUserModal()
-								storeAppUsersVue.showEditSuccess()
+								storeAppUsersVue.showEditSuccess(response.payload)
 								for (
 									var i = 0;
 									i < this.storeAppUsers.length;

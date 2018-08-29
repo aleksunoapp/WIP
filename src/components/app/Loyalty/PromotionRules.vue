@@ -779,7 +779,8 @@ export default {
 								response.status === 'ok'
 							) {
 								rulesVue.getRules()
-								rulesVue.showCreateSuccess()
+								rulesVue.showCreateSuccess(response.payload)
+								rulesVue.resetCreateForm()
 							} else {
 								rulesVue.createErrorMessage = response.message
 								rulesVue.$scrollTo(
@@ -815,18 +816,26 @@ export default {
 				})
 		},
 		/**
-		 * To notify that create succeeded
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showCreateSuccess () {
+		showCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Promotion Rule has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Promotion Rule has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: `${this.newRule.name} successfully created`,
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(() => {
-				this.resetCreateForm()
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -1012,7 +1021,7 @@ export default {
 							) {
 								rulesVue.getRules()
 								rulesVue.closeEditModal()
-								rulesVue.showEditSuccess()
+								rulesVue.showEditSuccess(response.payload)
 							} else {
 								rulesVue.editErrorMessage = response.message
 								rulesVue.$scrollTo(
@@ -1048,16 +1057,26 @@ export default {
 				})
 		},
 		/**
-		 * To notify that edit succeeded
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess () {
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Promotion Rule has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: `${this.ruleToEdit.name} successfully updated`,
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -1097,7 +1116,7 @@ export default {
 					if (response.code === 200 && response.status === 'ok') {
 						rulesVue.getRules()
 						rulesVue.closeDeleteModal()
-						rulesVue.showDeleteSuccess()
+						rulesVue.showDeleteSuccess(response.payload)
 					} else {
 						rulesVue.editErrorMessage = response.message
 						rulesVue.$scrollTo(
@@ -1122,16 +1141,26 @@ export default {
 				})
 		},
 		/**
-		 * To notify that delete succeeded
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess () {
+		showDeleteSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Promotion Rule has been deleted'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The removal has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: `${this.ruleToDelete.name} deleted`,
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**

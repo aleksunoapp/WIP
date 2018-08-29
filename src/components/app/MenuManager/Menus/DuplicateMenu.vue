@@ -118,7 +118,7 @@ export default {
 				editMenuVue.$root.userToken
 			)
 				.then(response => {
-					this.emitDuplicateSuccess()
+					this.emitDuplicateSuccess(response.payload)
 				})
 				.catch(reason => {
 					ajaxErrorHandler({
@@ -143,10 +143,11 @@ export default {
 		/**
 		 * To notify parent the duplication succeeded
 		 * @function
+		 * @param {object} payload - The payload property of the response
 		 * @returns {undefined}
 		 */
-		emitDuplicateSuccess () {
-			this.$emit('duplicateSuccess')
+		emitDuplicateSuccess (payload = {}) {
+			this.$emit('duplicateSuccess', payload)
 		}
 	},
 	components: {

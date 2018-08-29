@@ -531,14 +531,7 @@ export default {
 				text: 'Please select a store from the stores panel first.',
 				type: 'warning',
 				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// do nothing
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
+			})
 		},
 		/**
 		 * To close the menu tree modal.
@@ -830,7 +823,8 @@ export default {
 								response.status === 'ok'
 							) {
 								promoCodesVue.getAllPromoCodes()
-								promoCodesVue.showAlert()
+								promoCodesVue.showAlert(response.payload)
+								promoCodesVue.clearNewPromoCode()
 							} else {
 								promoCodesVue.createErrorMessage =
 									response.message
@@ -856,27 +850,27 @@ export default {
 				})
 		},
 		/**
-		 * To alert the user that the promoCode has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert () {
+		showAlert (payload = {}) {
+			let title = 'Success'
+			let text = 'The Promocode has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Promocode has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text:
-					"PromoCode '" +
-					this.newPromoCode.codes +
-					"' has been successfully added!",
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					this.clearNewPromoCode()
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To update the promoCode info.

@@ -530,6 +530,8 @@ export default {
 							if (response.code === 200 && response.status === 'ok') {
 								addCategoryVue.newCategory.id = response.payload.new_category_id
 								addCategoryVue.addCategory(addCategoryVue.newCategory)
+								addCategoryVue.showAlert(response.payload)
+								addCategoryVue.clearNewCategory()
 							} else {
 								addCategoryVue.errorMessage = response.message
 							}
@@ -737,31 +739,29 @@ export default {
 			} else {
 				this.menuCategories.push(val)
 			}
-			this.showAlert()
-			this.clearNewCategory()
 		},
 		/**
-		 * To alert the user that the menu has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert () {
+		showAlert (payload = {}) {
+			let title = 'Success'
+			let text = 'The Category has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Category has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text:
-					"Category '" +
-					this.newCategory.name +
-					"' has been successfully created!",
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// do nothing
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To add the sub category emitted by the child to the sub categories list.

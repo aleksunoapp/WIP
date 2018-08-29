@@ -386,6 +386,8 @@ export default {
 							if (response.code === 200 && response.status === 'ok') {
 								rewardsVue.newRewardsTier.id = response.payload.id
 								rewardsVue.addTier(rewardsVue.newRewardsTier)
+								rewardsVue.showAlert(response.payload)
+								rewardsVue.clearNewRewardTier()
 							} else {
 								rewardsVue.errorMessage = response.message
 							}
@@ -417,30 +419,29 @@ export default {
 		 */
 		addTier (tier) {
 			this.rewardTiers.push(tier)
-			this.showAlert()
 		},
 		/**
-		 * To alert the user that the tier has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert () {
+		showAlert (payload = {}) {
+			let title = 'Success'
+			let text = 'The Reward Tier has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Reward Tier has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text:
-					"Reward Tier '" +
-					this.newRewardsTier.name +
-					"' has been successfully added!",
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					this.clearNewRewardTier()
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To update the rewards tier info.
@@ -520,7 +521,7 @@ export default {
 					if (response.code === 200 && response.status === 'ok') {
 						rewardsVue.getRewardTiers()
 						rewardsVue.closeDeleteModal()
-						rewardsVue.confirmDelete()
+						rewardsVue.confirmDelete(response.payload)
 						rewardsVue.resetTierToBeDeleted()
 					} else {
 						rewardsVue.deleteErrorMessage = response.message
@@ -540,16 +541,26 @@ export default {
 				})
 		},
 		/**
-		 * To confirm the tier was deleted
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmDelete () {
+		confirmDelete (payload = {}) {
+			let title = 'Success'
+			let text = 'The Reward Tier has been deleted'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The removal has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Tier deleted',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**

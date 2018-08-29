@@ -234,7 +234,7 @@ export default {
 					)
 						.then(response => {
 							loginVue.resetForm()
-							loginVue.showCreateSuccess()
+							loginVue.showCreateSuccess(response.payload)
 						})
 						.catch(reason => {
 							ajaxErrorHandler({
@@ -264,23 +264,35 @@ export default {
 			this.passwordMasked = true
 		},
 		/**
-		 * To notify user that the operation succeeded.
+		 * To notify user of the outcome of the call
 		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
 		 */
-		showCreateSuccess () {
+		showCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'Password changed. Please log in again.'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Password changed. Please log in again.',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			}).then(() => {
-				// eslint-disable-next-line
-				localStorage.clear()
-				// eslint-disable-next-line
-				sessionStorage.clear()
-				this.$root.clearGlobalVariables()
-				this.$router.push('/')
+				if (!payload.pending_approval) {
+					// eslint-disable-next-line
+					localStorage.clear()
+					// eslint-disable-next-line
+					sessionStorage.clear()
+					this.$root.clearGlobalVariables()
+					this.$router.push('/')
+				}
 			})
 		},
 		/**

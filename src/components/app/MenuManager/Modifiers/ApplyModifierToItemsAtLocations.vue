@@ -430,7 +430,7 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						menuTreeVue.closeModal()
-						menuTreeVue.emitSuccess()
+						menuTreeVue.emitSuccess(response.payload)
 					}
 				})
 				.catch(reason => {
@@ -457,10 +457,11 @@ export default {
 		/**
 		 * To close the modal.
 		 * @function
+		 * @param {object} payload - The payload property of the response
 		 * @returns {undefined}
 		 */
-		emitSuccess () {
-			this.$emit('applyModifierToItemsAtLocationsSuccess')
+		emitSuccess (payload = {}) {
+			this.$emit('applyModifierToItemsAtLocationsSuccess', payload)
 		}
 	},
 	components: {

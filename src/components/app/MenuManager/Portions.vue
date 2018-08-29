@@ -352,6 +352,8 @@ export default {
 							if (response.code === 200 && response.status === 'ok') {
 								portionsVue.newPortion.id = response.payload.new_portion_id
 								portionsVue.addPortion(portionsVue.newPortion)
+								portionsVue.showAlert(response.payload)
+								portionsVue.clearNewPortion()
 							} else {
 								portionsVue.errorMessage = response.message
 							}
@@ -407,31 +409,29 @@ export default {
 			} else {
 				this.portions.push(val)
 			}
-			this.showAlert()
-			this.clearNewPortion()
 		},
 		/**
-		 * To alert the user that the menu has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert () {
+		showAlert (payload = {}) {
+			let title = 'Success'
+			let text = 'The Portion has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Portion has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text:
-					"Portion '" +
-					this.newPortion.name +
-					"' has been successfully created!",
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// do nothing
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To clear the current error.

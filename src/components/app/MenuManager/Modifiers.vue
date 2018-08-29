@@ -493,29 +493,49 @@ export default {
 			this.showModifierToApplyToItemsAtLocationsModal = false
 		},
 		/**
-		 * To confirm operation succeeded
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showApplyModifierToItemsAtLocationsSuccess () {
+		showApplyModifierToItemsAtLocationsSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Modifiers have been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Modifiers have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Modifier applied',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
-		 * To confirm operation succeeded
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showCopyModifierToLocationsSuccess () {
+		showCopyModifierToLocationsSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Modifier has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Modifier has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Modifier copied',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -707,6 +727,8 @@ export default {
 								addModifierCategoryVue.addModifierCategory(
 									addModifierCategoryVue.newCategory
 								)
+								addModifierCategoryVue.showAlert(response.payload)
+								addModifierCategoryVue.clearNewCategory()
 							} else {
 								addModifierCategoryVue.errorMessage = response.message
 							}
@@ -749,31 +771,29 @@ export default {
 			} else {
 				this.storeModifiers.push(val)
 			}
-			this.showAlert()
-			this.clearNewCategory()
 		},
 		/**
-		 * To alert the user that the menu has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert () {
+		showAlert (payload = {}) {
+			let title = 'Success'
+			let text = 'The Modifier Category has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Modifier Category has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text:
-					"Modifier category '" +
-					this.newCategory.name +
-					"' has been successfully created!",
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// do nothing
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To close the modal to edit a modifier category.

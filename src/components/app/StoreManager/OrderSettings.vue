@@ -695,7 +695,7 @@ export default {
 						payload
 					)
 						.then(response => {
-							orderSettingsVue.showCreateSuccess()
+							orderSettingsVue.showCreateSuccess(response.payload)
 							orderSettingsVue.newOrderSettings = orderSettingsVue.blankOrderSettings()
 							orderSettingsVue.getOrderSettingsForStore()
 						})
@@ -742,7 +742,7 @@ export default {
 						orderSettingsVue.orderSettingsToEdit
 					)
 						.then(response => {
-							orderSettingsVue.showEditSuccess()
+							orderSettingsVue.showEditSuccess(response.payload)
 							orderSettingsVue.getOrderSettingsForStore()
 						})
 						.catch(reason => {
@@ -769,16 +769,26 @@ export default {
 				})
 		},
 		/**
-		 * To alert the user that the OrderSetting has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showCreateSuccess () {
+		showCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Order Settings have been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Order Settings have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'Order settings saved',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -931,16 +941,26 @@ export default {
 			})
 		},
 		/**
-		 * To display notification that OrderSettings were successfully saved.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess () {
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Order Settings have been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: `Order settings updated`,
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -977,7 +997,7 @@ export default {
 					if (response.code === 200 && response.status === 'ok') {
 						orderSettingsVue.getOrderSettingsForStore()
 						orderSettingsVue.closeDeleteModal()
-						orderSettingsVue.showDeleteSuccess()
+						orderSettingsVue.showDeleteSuccess(response.payload)
 					}
 				})
 				.catch(reason => {
@@ -993,16 +1013,26 @@ export default {
 				})
 		},
 		/**
-		 * To display notification that OrderSettings were successfully saved.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess () {
+		showDeleteSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Order Settings have been deleted'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The removal has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: `Settings deleted`,
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**

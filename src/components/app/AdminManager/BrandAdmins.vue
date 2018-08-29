@@ -915,7 +915,7 @@ export default {
 					)
 						.then(response => {
 							brandAdminsVue.closeRolesModal()
-							brandAdminsVue.showRolesSuccess()
+							brandAdminsVue.showRolesSuccess(response.payload)
 							this.animated = `brandAdmin-${
 								brandAdminsVue.brandAdminToBeEdited.id
 							}`
@@ -973,16 +973,26 @@ export default {
 				})
 		},
 		/**
-		 * To notify user that the operation succeeded.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showRolesSuccess () {
+		showRolesSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Roles have been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Roles saved',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -1086,7 +1096,7 @@ export default {
 							) {
 								brandAdminsVue.getAllBrandAdmins()
 								brandAdminsVue.resetCreateForm()
-								brandAdminsVue.showCreateSuccess()
+								brandAdminsVue.showCreateSuccess(response.payload)
 							} else {
 								brandAdminsVue.createErrorMessage =
 									response.message
@@ -1148,40 +1158,50 @@ export default {
 			}
 		},
 		/**
-		 * To notify user that the operation succeeded.
+		 * To notify user of the outcome of the call
 		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
 		 */
-		showCreateSuccess () {
+		showCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Brand Admin has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Brand Admin has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Brand Admin successfully created',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
-		 * To notify user that the operation succeeded.
+		 * To notify user of the outcome of the call
 		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
 		 */
-		showEditSuccess () {
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Brand Admin has been updated'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Brand Admin has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Brand Admin successfully updated',
-				type: 'success',
-				confirmButtonText: 'OK',
-				allowEnterKey: true,
-				allowOutsideClick: true,
-				allowEscapeKey: true
-			}).then(
-				() => {
-					// do nothing
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To toggle the create new panel.
@@ -1220,7 +1240,7 @@ export default {
 								response.status === 'ok'
 							) {
 								brandAdminsVue.closeEditBrandAdminModal()
-								brandAdminsVue.showEditSuccess()
+								brandAdminsVue.showEditSuccess(response.payload)
 								for (
 									var i = 0;
 									i < this.brandAdmins.length;

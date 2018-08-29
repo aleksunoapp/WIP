@@ -305,24 +305,27 @@ export default {
 			this.clearNewMenuTier()
 		},
 		/**
-		 * To alert the user that the menu has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert () {
+		showAlert (payload = {}) {
+			let title = 'Success'
+			let text = 'The Menu Tier has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Menu Tier has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'Menu tier has been successfully created!',
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// do nothing
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To update the menu object emitted by the child.
@@ -379,7 +382,7 @@ export default {
 					)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
-								menuTiersVue.showAlert()
+								menuTiersVue.showAlert(response.payload)
 								menuTiersVue.newMenuTier.id = response.payload.id
 								menuTiersVue.addMenuTier(menuTiersVue.newMenuTier)
 							} else {

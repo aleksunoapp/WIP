@@ -460,7 +460,8 @@ export default {
 					LanguagesFunctions.createLanguage(_this.newLanguage)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
-								_this.showCreateSuccess()
+								_this.showCreateSuccess(response.payload)
+								_this.clearNewLanguage()
 								_this.getLanguages()
 							} else {
 								_this.createErrorMessage = response.message
@@ -487,21 +488,26 @@ export default {
 				})
 		},
 		/**
-		 * To alert the user that the language has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showCreateSuccess () {
+		showCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Language has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Language has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text:
-					"Language '" +
-					this.newLanguage.name +
-					"' has been successfully added!",
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(() => {
-				this.clearNewLanguage()
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -607,7 +613,8 @@ export default {
 							if (response.code === 200 && response.status === 'ok') {
 								_this.getLanguages()
 								_this.closeEditModal()
-								_this.showEditSuccess()
+								_this.showEditSuccess(response.payload)
+								_this.resetEdit()
 							} else {
 								_this.editErrorMessage = response.message
 								_this.$scrollTo(_this.$refs.editErrorMessage, 1000, {
@@ -634,18 +641,26 @@ export default {
 				})
 		},
 		/**
-		 * To display notification that languages were successfully saved.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess () {
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Language has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Language has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: `${this.languageToEdit.name} updated`,
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(() => {
-				this.resetEdit()
+				title,
+				text,
+				type
 			})
 		},
 		/**

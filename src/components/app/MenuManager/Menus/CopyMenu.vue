@@ -169,7 +169,7 @@ export default {
 						editMenuVue.$root.userToken
 					)
 						.then(response => {
-							this.emitCopySuccess()
+							this.emitCopySuccess(response.payload)
 						})
 						.catch(reason => {
 							ajaxErrorHandler({
@@ -200,10 +200,14 @@ export default {
 		/**
 		 * To notify parent the copy succeeded
 		 * @function
+		 * @param {object} payload - The payload property of the response
 		 * @returns {undefined}
 		 */
-		emitCopySuccess () {
-			this.$emit('copySuccess', this.selectedLocations)
+		emitCopySuccess (payload = {}) {
+			this.$emit('copySuccess', {
+				ids: this.selectedLocations,
+				payload
+			})
 		}
 	},
 	components: {

@@ -332,7 +332,7 @@ export default {
 					if (response.code === 200 && response.status === 'ok') {
 						_this.getNewsFeed()
 						_this.closeDeleteModal()
-						_this.showDeleteSuccess()
+						_this.showDeleteSuccess(response.payload)
 					}
 				})
 				.catch(reason => {
@@ -349,16 +349,26 @@ export default {
 				})
 		},
 		/**
-		 * To confirm the operaion succeeded
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess () {
+		showDeleteSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The News Feed has been deleted'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The removal has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: `News feed deleted`,
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**

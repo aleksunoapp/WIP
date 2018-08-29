@@ -489,7 +489,8 @@ export default {
 					)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
-								amenitiesVue.showCreateSuccess()
+								amenitiesVue.showCreateSuccess(response.payload)
+								amenitiesVue.clearNewAmenity()
 								amenitiesVue.getAllAmenities()
 							} else {
 								amenitiesVue.createErrorMessage = response.message
@@ -522,19 +523,26 @@ export default {
 				})
 		},
 		/**
-		 * To alert the user that the amenity has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showCreateSuccess () {
+		showCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Amenity has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Amenity has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text:
-					"Amenity '" + this.newAmenity.name + "' has been successfully added!",
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(() => {
-				this.clearNewAmenity()
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -719,7 +727,7 @@ export default {
 							if (response.code === 200 && response.status === 'ok') {
 								amenitiesVue.getAllAmenities()
 								amenitiesVue.closeEditModal()
-								amenitiesVue.showEditSuccess()
+								amenitiesVue.showEditSuccess(response.payload)
 								amenitiesVue.resetEdit()
 							} else {
 								amenitiesVue.editErrorMessage = response.message
@@ -752,16 +760,26 @@ export default {
 				})
 		},
 		/**
-		 * To display notification that amenities were successfully saved.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess () {
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Amenity has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: `${this.amenityToEdit.name} updated`,
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -808,7 +826,7 @@ export default {
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						amenitiesVue.showAssignSuccess()
+						amenitiesVue.showAssignSuccess(response.payload)
 					}
 				})
 				.catch(reason => {
@@ -826,16 +844,26 @@ export default {
 				})
 		},
 		/**
-		 * To display notification that amenities were successfully saved.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAssignSuccess () {
+		showAssignSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Amenities have been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: `Amenities for ${this.$root.activeLocation.display_name} saved`,
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -868,7 +896,7 @@ export default {
 					if (response.code === 200 && response.status === 'ok') {
 						amenitiesVue.getAllAmenities()
 						amenitiesVue.closeDeleteModal()
-						amenitiesVue.showDeleteSuccess()
+						amenitiesVue.showDeleteSuccess(response.payload)
 					}
 				})
 				.catch(reason => {
@@ -884,16 +912,26 @@ export default {
 				})
 		},
 		/**
-		 * To display notification that amenities were successfully saved.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess () {
+		showDeleteSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Amenity has been deleted'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The removal has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: `${this.amenityToDelete.name} deleted`,
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**

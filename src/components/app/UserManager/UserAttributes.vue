@@ -619,24 +619,35 @@ export default {
 				})
 		},
 		/**
-		 * To confirm User Attribute was created
+		 * To notify user of the outcome of the call
 		 * @function
-		 * @param {object} userAttribute - ID of the User Attribute created
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmCreated (userAttribute) {
+		confirmCreated (payload = {}) {
+			let title = 'Success'
+			let text = 'The User Attribute has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The User Attribute has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				html: `<div><i>${userAttribute.name}</i> created</div>`,
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			}).then(() => {
-				this.userAttributes.push(userAttribute)
-				this.animatedId = userAttribute.id
+				this.userAttributes.push(payload)
+				if (!payload.pending_approval) {
+					this.animatedId = payload.id
+					window.setTimeout(() => {
+						this.animatedId = null
+					}, 3000)
+				}
 				this.resetNewUserAttribute()
-				window.setTimeout(() => {
-					this.animatedId = null
-				}, 3000)
 			})
 		},
 		/**
@@ -842,7 +853,7 @@ export default {
 								attributesVue.userAttributes[edited].name =
 									attributesVue.userAttributeToEdit.name
 								attributesVue.closeEditModal()
-								attributesVue.confirmUpdated()
+								attributesVue.confirmUpdated(response.payload)
 							} else {
 								attributesVue.updateErrorMessage =
 									response.message || 'Something went wrong ...'
@@ -878,22 +889,34 @@ export default {
 			this.showEditModal = false
 		},
 		/**
-		 * To confirm User Attribute was updated
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmUpdated () {
+		confirmUpdated (payload = {}) {
+			let title = 'Success'
+			let text = 'The User Attribute has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				html: `<div><i>${this.userAttributeToEdit.name}</i> updated</div>`,
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			}).then(() => {
-				this.animatedId = this.userAttributeToEdit.id
+				if (!payload.pending_approval) {
+					this.animatedId = this.userAttributeToEdit.id
+					window.setTimeout(() => {
+						this.animatedId = null
+					}, 3000)
+				}
 				this.resetUserAttributeToEdit()
-				window.setTimeout(() => {
-					this.animatedId = null
-				}, 3000)
 			})
 		},
 		/**
@@ -1067,7 +1090,7 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						attributesVue.closeAssignItemAttributesModal()
-						attributesVue.confirmAssignItemAttributes()
+						attributesVue.confirmAssignItemAttributes(response.payload)
 					} else {
 						window.scrollTo(0, 0)
 						attributesVue.assignItemAttributesErrorMessage =
@@ -1097,24 +1120,34 @@ export default {
 			this.showAssignItemAttributesModal = false
 		},
 		/**
-		 * To confirm Item Attributes were assigned
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmAssignItemAttributes () {
+		confirmAssignItemAttributes (payload = {}) {
+			let title = 'Success'
+			let text = 'The Item Attributes has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				html: `<div>Item Attributes assigned to <i>${
-					this.userAttributeToAssignItemAttributesTo.name
-				}</i></div>`,
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			}).then(() => {
-				this.animatedId = this.userAttributeToAssignItemAttributesTo.id
+				if (!payload.pending_approval) {
+					this.animatedId = this.userAttributeToAssignItemAttributesTo.id
+					window.setTimeout(() => {
+						this.animatedId = null
+					}, 3000)
+				}
 				this.resetAssignItemAttributes()
-				window.setTimeout(() => {
-					this.animatedId = null
-				}, 3000)
 			})
 		},
 		/**
@@ -1165,7 +1198,7 @@ export default {
 							}
 						)
 						attributesVue.closeDeleteModal()
-						attributesVue.confirmDelete()
+						attributesVue.confirmDelete(response.payload)
 					} else throw response
 				})
 				.catch(reason => {
@@ -1191,16 +1224,26 @@ export default {
 			this.showDeleteModal = false
 		},
 		/**
-		 * To confirm User Attribute was deleted
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmDelete () {
+		confirmDelete (payload = {}) {
+			let title = 'Success'
+			let text = 'The User Attribute has been deleted'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The removal has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				html: `<div><i>${this.userAttributeToDelete.name}</i> deleted</div>`,
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			}).then(() => {
 				this.userAttributeToDelete.id = null
 				this.userAttributeToDelete.name = ''

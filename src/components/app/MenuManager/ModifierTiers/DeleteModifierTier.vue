@@ -83,7 +83,7 @@ export default {
 			const deleteTierVue = this
 			ModifierTierFunctions.deleteModifierTier(deleteTierVue.tier)
 				.then(response => {
-					deleteTierVue.$emit('deleted')
+					deleteTierVue.$emit('deleted', response.payload)
 				})
 				.catch(reason => {
 					ajaxErrorHandler({

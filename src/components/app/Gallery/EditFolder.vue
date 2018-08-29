@@ -122,7 +122,7 @@ export default {
 						_this.folder.is_shared
 					)
 						.then(response => {
-							_this.showUpdateSuccess()
+							_this.showUpdateSuccess(response.payload)
 						})
 						.catch(err => {
 							console.log(err)
@@ -137,21 +137,28 @@ export default {
 				})
 		},
 		/**
-		 * To notify user that the operation succeeded.
+		 * To notify user of the outcome of the call
 		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
 		 */
-		showUpdateSuccess () {
+		showUpdateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Folder has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Folder has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Folder saved',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			}).then(
 				() => {
-					this.$router.push({ name: 'Gallery' })
-				},
-				dismiss => {
 					this.$router.push({ name: 'Gallery' })
 				}
 			)

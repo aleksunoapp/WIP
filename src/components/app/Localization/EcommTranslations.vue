@@ -605,7 +605,7 @@ export default {
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
 								localizationVue.terms = response.payload
-								localizationVue.showSaveSuccess()
+								localizationVue.showSaveSuccess(response.payload)
 							} else {
 								localizationVue.translationsTableErrorMessage = response.message
 							}
@@ -650,24 +650,27 @@ export default {
 			})
 		},
 		/**
-		 * To alert the user that the translations have been successfully saved.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showSaveSuccess () {
+		showSaveSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Translations have been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Translations have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Saved',
-				text: 'The translations have been saved',
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// do nothing
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To alert the user that the menu has been successfully created.
@@ -678,16 +681,8 @@ export default {
 			this.$swal({
 				title: 'Select language',
 				text: 'Select the language you want to translate to first',
-				type: 'warning',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// do nothing
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
+				type: 'warning'
+			})
 		},
 		/**
 		 * To fetch instances of the selected term for translation.

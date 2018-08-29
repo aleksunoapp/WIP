@@ -550,7 +550,8 @@ export default {
 					)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
-								_this.showCreateSuccess()
+								_this.showCreateSuccess(response.payload)
+								_this.clearNewTaxClass()
 								_this.getTaxClasses()
 							} else {
 								_this.createErrorMessage = response.message
@@ -577,21 +578,26 @@ export default {
 				})
 		},
 		/**
-		 * To alert the user that the tax class has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showCreateSuccess () {
+		showCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Tax Class has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Tax Class has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text:
-					"Tax Class '" +
-					this.newTaxClass.name +
-					"' has been successfully added!",
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(() => {
-				this.clearNewTaxClass()
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -707,7 +713,7 @@ export default {
 							if (response.code === 200 && response.status === 'ok') {
 								_this.getTaxClasses()
 								_this.closeEditModal()
-								_this.showEditSuccess()
+								_this.showEditSuccess(response.payload)
 								_this.resetEdit()
 							} else {
 								_this.editErrorMessage = response.message
@@ -734,16 +740,26 @@ export default {
 				})
 		},
 		/**
-		 * To display notification that tax classes were successfully saved.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess () {
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Tax Class has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: `${this.taxClassToEdit.name} updated`,
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
@@ -800,7 +816,7 @@ export default {
 					if (response.code === 200 && response.status === 'ok') {
 						_this.getTaxClasses()
 						_this.closeDeleteModal()
-						_this.showDeleteSuccess()
+						_this.showDeleteSuccess(response.payload)
 					}
 				})
 				.catch(reason => {
@@ -816,16 +832,26 @@ export default {
 				})
 		},
 		/**
-		 * To display notification that tax classes were successfully saved.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess () {
+		showDeleteSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Tax Class has been deleted'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The removal has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: `${this.taxClassToDelete.name} deleted`,
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**

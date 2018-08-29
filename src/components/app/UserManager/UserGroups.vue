@@ -429,27 +429,27 @@ export default {
 			this.getGroups()
 		},
 		/**
-		 * To alert the user that the group has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert () {
+		showAlert (payload = {}) {
+			let title = 'Success'
+			let text = 'The User Group has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The User Group has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text:
-					"Group '" +
-					this.newGroup.name +
-					"' has been successfully added!",
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					this.clearNewGroup()
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To display the modal for deleting a promotion.
@@ -753,16 +753,6 @@ export default {
 			this.createGroupCollapse = true
 		},
 		/**
-		 * To append the new group to the groups list.
-		 * @function
-		 * @param {object} newGroup - The new group object
-		 * @returns {undefined}
-		 */
-		addGroup (newGroup) {
-			this.groups.push(newGroup)
-			this.showAlert()
-		},
-		/**
 		 * To check if the item data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
@@ -804,7 +794,8 @@ export default {
 								response.code === 200 &&
 								response.status === 'ok'
 							) {
-								userGroupsVue.showAlert()
+								userGroupsVue.showAlert(response.payload)
+								userGroupsVue.clearNewGroup()
 								userGroupsVue.getGroups()
 							} else {
 								userGroupsVue.errorMessage = response.message

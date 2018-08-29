@@ -135,7 +135,7 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						copyModifierVue.closeModal()
-						copyModifierVue.emitSuccess()
+						copyModifierVue.emitSuccess(response.payload)
 					} else {
 						throw Error(response.message)
 					}
@@ -163,10 +163,11 @@ export default {
 		/**
 		 * To close the modal.
 		 * @function
+		 * @param {object} payload - The payload property of the response
 		 * @returns {undefined}
 		 */
-		emitSuccess () {
-			this.$emit('copyModifierToLocationsSuccess')
+		emitSuccess (payload = {}) {
+			this.$emit('copyModifierToLocationsSuccess', payload)
 		}
 	},
 	components: {

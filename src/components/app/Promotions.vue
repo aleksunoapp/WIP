@@ -1439,7 +1439,7 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						promotionsVue.closeApplyModal()
-						promotionsVue.showAssignSuccess()
+						promotionsVue.showAssignSuccess(response.payload)
 						promotionsVue.resetApply()
 					}
 				})
@@ -1477,7 +1477,7 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						promotionsVue.closeApplyModal()
-						promotionsVue.showAssignSuccess()
+						promotionsVue.showAssignSuccess(response.payload)
 						promotionsVue.resetApply()
 					}
 				})
@@ -1516,7 +1516,7 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						promotionsVue.closeApplyModal()
-						promotionsVue.showAssignSuccess()
+						promotionsVue.showAssignSuccess(response.payload)
 						promotionsVue.resetApply()
 					}
 				})
@@ -1555,7 +1555,7 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						promotionsVue.closeApplyModal()
-						promotionsVue.showAssignSuccess()
+						promotionsVue.showAssignSuccess(response.payload)
 						promotionsVue.resetApply()
 					}
 				})
@@ -1649,24 +1649,27 @@ export default {
 			}
 		},
 		/**
-		 * To display notification that promotions were successfully assigned.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAssignSuccess () {
+		showAssignSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Promotions have been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'Successfully applied!',
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// do nothing
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To apply the selected promotion(s) to the current store.
@@ -1695,7 +1698,7 @@ export default {
 				)
 					.then(response => {
 						if (response.code === 200 && response.status === 'ok') {
-							promotionsVue.showAssignSuccess()
+							promotionsVue.showAssignSuccess(response.payload)
 						} else {
 							throw new Error(response.message)
 						}
@@ -1787,8 +1790,7 @@ export default {
 			this.$swal({
 				title: 'No location',
 				text: 'Please select a store from the stores panel first.',
-				type: 'warning',
-				confirmButtonText: 'OK'
+				type: 'warning'
 			})
 		},
 		/**
@@ -2015,7 +2017,8 @@ export default {
 								response.code === 200 &&
 								response.status === 'ok'
 							) {
-								promotionsVue.showAlert()
+								promotionsVue.showAlert(response.payload)
+								promotionsVue.clearNewPromotion()
 								promotionsVue.getAllPromotions()
 							} else {
 								promotionsVue.createErrorMessage =
@@ -2042,46 +2045,57 @@ export default {
 				})
 		},
 		/**
-		 * To alert the user that the promotion has been successfully created.
+		 * To notify user of the outcome of the call
 		 * @function
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert () {
+		showAlert (payload = {}) {
+			let title = 'Success'
+			let text = 'The Promotion has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Promotion has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text:
-					"Promotion '" +
-					this.newPromotion.name +
-					"' has been successfully added!",
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					this.clearNewPromotion()
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To update the promotion info.
 		 * @function
 		 * @param {object} promotion - The promotion object that is to be updated.
+		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		updatePromotion (promotion) {
+		updatePromotion ({promotion, payload}) {
 			this.displayEditPromotionModal = false
 			for (var i = 0; i < this.promotions.length; i++) {
 				if (this.promotions[i].id === promotion.id) {
 					this.promotions[i] = promotion
 				}
 			}
+
+			let title = 'Success'
+			let text = 'The Promotion has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success!',
-				text: 'Promotion has been successfully updated',
-				type: 'success',
-				confirmButtonText: 'OK'
+				title,
+				text,
+				type
 			})
 		},
 		/**
