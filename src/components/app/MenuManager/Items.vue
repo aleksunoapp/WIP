@@ -15,7 +15,7 @@
 		<div class="portlet box blue-hoki"
 		     v-if="$root.permissions['menu_manager menus categories subcategories items create']">
 			<div class="portlet-title bg-blue-chambray"
-			     @click="toggleCreateItemPaÍnel()">
+			     @click="toggleCreateItemPanel()">
 				<div class="custom tools">
 					<a :class="{'expand': !createItemCollapse, 'collapse': createItemCollapse}"></a>
 				</div>
@@ -211,7 +211,7 @@
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label"
 							     v-if="itemTypes.length">
-								<label>Tax class:</label><br>
+								<label>Item Type:</label><br>
 								<el-dropdown trigger="click"
 								             @command="updateTaxClass"
 								             size="mini"

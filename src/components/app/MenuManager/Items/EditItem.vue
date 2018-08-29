@@ -129,7 +129,7 @@
 					</div>
 					<div class="form-group form-md-line-input form-md-floating-label"
 					     v-if="itemTypes.length">
-						<label>Tax class:</label><br>
+						<label>Item Type:</label><br>
 						<el-dropdown trigger="click"
 						             @command="updateTaxClass"
 						             size="mini"
