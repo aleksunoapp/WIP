@@ -1,5 +1,5 @@
 <template>
-	<ul class="pagination-list">
+	<ul class="pagination-list" v-if="numPages > 1">
 
 		<a @click="setActivePage(activePage - 1)">
 			<li class="page-number"
