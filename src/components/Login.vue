@@ -29,7 +29,7 @@
 									<input ref="email"
 									       class="form-control form-control-solid placeholder-no-fix form-group"
 									       type="email"
-									       placeholder="jo@email.com"
+									       placeholder="Email"
 									       name="email"
 									       v-model="user.email"
 										   autocomplete="email"
