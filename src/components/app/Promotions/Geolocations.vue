@@ -48,7 +48,6 @@
 								<map-area v-if="!newCollapse"
 								          :lat="latitude"
 								          :lng="longitude"
-								          :key="this.mapComponentKey"
 								          width="100%"
 								          height="500px"
 								          @polygonEmitted="updateNewPolygon">
@@ -57,16 +56,6 @@
 						</div>
 						<div class="row">
 							<div class="col-md-6">
-								<el-tooltip content="Delete area"
-								            effect="light"
-								            placement="right">
-									<button type="submit"
-									        class="btn btn-circle btn-icon-only btn-default clickable margin-top-20"
-									        @click.prevent="reloadMap()">
-										<i class="fa fa-trash"
-										   aria-hidden="true"></i>
-									</button>
-								</el-tooltip>
 								<button type="submit"
 								        class="btn blue pull-right margin-top-20"
 								        :disabled="creating">
@@ -203,7 +192,7 @@
 				<div class="row">
 					<div class="col-xs-12">
 						<map-area v-if="showEditModal"
-						          :polygonToEdit="editedGeolocation.polygon"
+						          :polygons="[editedGeolocation]"
 						          width="100%"
 						          height="500px"
 						          @polygonEmitted="updateEditedPolygon">
@@ -315,8 +304,7 @@ export default {
 				id: 0
 			},
 			deleting: false,
-			deleteErrorMessage: '',
-			mapComponentKey: 1
+			deleteErrorMessage: ''
 		}
 	},
 	computed: {
@@ -341,35 +329,35 @@ export default {
 			}
 		}
 	},
-	watch: {
-		'$root.activeLocation' () {
-			this.mapComponentKey += 1
-		}
-	},
 	mounted () {
 		this.getGeolocations()
 	},
 	methods: {
-		reloadMap () {
-			this.mapComponentKey += 1
+		/**
+		 * To update map area when user creates or edits it
+		 * @function
+		 * @param {array} polygons - An array of objects containing polygon paths and color
+		 * @returns {undefined}
+		 */
+		updateEditedPolygon (polygons) {
+			if (polygons.length) {
+				this.editedGeolocation.polygon = polygons[0].paths
+			} else {
+				this.editedGeolocation.polygon = []
+			}
 		},
 		/**
 		 * To update map area when user creates or edits it
 		 * @function
-		 * @param {array} pathsArray - An array of arrays containing coordinates of vertices in the format [lat, lng]
+		 * @param {array} polygons - An array of objects containing polygon paths and color
 		 * @returns {undefined}
 		 */
-		updateEditedPolygon (pathsArray) {
-			this.editedGeolocation.polygon = pathsArray
-		},
-		/**
-		 * To update map area when user creates or edits it
-		 * @function
-		 * @param {array} pathsArray - An array of arrays containing coordinates of vertices in the format [lat, lng]
-		 * @returns {undefined}
-		 */
-		updateNewPolygon (pathsArray) {
-			this.newGeolocation.polygon = pathsArray
+		updateNewPolygon (polygons) {
+			if (polygons.length) {
+				this.newGeolocation.polygon = polygons[0].paths
+			} else {
+				this.newGeolocation.polygon = []
+			}
 		},
 		/**
 		 * To toggle the create new panel
@@ -531,6 +519,8 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (!geolocationsVue.editedGeolocation.name.length) {
 					reject('Geolocation name cannot be blank')
+				} else if (!geolocationsVue.editedGeolocation.polygon.length) {
+					reject('Please draw an area on the map.')
 				}
 				resolve('Hurray')
 			})
@@ -583,7 +573,11 @@ export default {
 						})
 				})
 				.catch(reason => {
-					geolocationsVue.createErrorMessage = reason.responseJSON.message
+					geolocationsVue.editErrorMessage = reason
+					geolocationsVue.$scrollTo(
+						geolocationsVue.$refs.editErrorMessage,
+						1000
+					)
 				})
 		},
 		/**
@@ -595,6 +589,7 @@ export default {
 		editGeolocation (geolocation) {
 			this.editedGeolocation.name = geolocation.name
 			this.editedGeolocation.polygon = geolocation.polygon
+			this.editedGeolocation.paths = geolocation.polygon
 			this.editedGeolocation.id = geolocation.id
 			this.showEditModal = true
 		},

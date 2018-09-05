@@ -32,6 +32,7 @@ import Amenities from '@/components/app/StoreManager/Amenities'
 import OrderSettings from '@/components/app/StoreManager/OrderSettings'
 import DeliveryHours from '@/components/app/StoreManager/DeliveryHours'
 import StoreGroups from '@/components/app/StoreManager/StoreGroups'
+import DeliveryZones from '@/components/app/StoreManager/DeliveryZones'
 // News Feed
 import NewsFeed from '@/components/app/NewsFeed'
 // Social Feed
@@ -79,6 +80,7 @@ import Geolocations from '@/components/app/Promotions/Geolocations'
 // Localization
 import Countries from '@/components/app/Localization/Countries'
 import Languages from '@/components/app/Localization/Languages'
+import LanguageRegions from '@/components/app/Localization/LanguageRegions'
 import Terms from '@/components/app/Localization/Terms'
 import EcommTranslations from '@/components/app/Localization/EcommTranslations'
 import CustomTranslations from '@/components/app/Localization/CustomTranslations'
@@ -294,21 +296,20 @@ export const routes = [
 				}
 			},
 			{
-				path: 'store_manager/amenities',
-				name: 'Amenities',
-				component: Amenities,
-				meta: {
-					adminOnly: false,
-					permissions: ['stores amenities read']
-				}
-			},
-			{
 				path: 'store_manager/store_groups',
 				name: 'Store Groups',
 				component: StoreGroups,
 				meta: {
 					adminOnly: true,
 					permissions: ['stores groups read']
+				}
+			},
+			{
+				path: 'store_manager/amenities',
+				name: 'Amenities',
+				component: Amenities,
+				meta: {
+					permissions: ['stores amenities read']
 				}
 			},
 			{
@@ -326,6 +327,14 @@ export const routes = [
 				component: DeliveryHours,
 				meta: {
 					permissions: ['stores delivery_hours read']
+				}
+			},
+			{
+				path: 'store_manager/delivery_zones',
+				name: 'DeliveryZones',
+				component: DeliveryZones,
+				meta: {
+					permissions: ['stores delivery_profile read']
 				}
 			},
 			// News Feed
@@ -779,6 +788,14 @@ export const routes = [
 				component: Languages,
 				meta: {
 					permissions: ['localization languages read']
+				}
+			},
+			{
+				path: 'localization/language_regions',
+				name: 'Language Regions',
+				component: LanguageRegions,
+				meta: {
+					permissions: ['localization locale_regions read']
 				}
 			},
 			{

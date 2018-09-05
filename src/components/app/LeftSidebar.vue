@@ -274,6 +274,16 @@
 								<span class="title">Delivery Hours</span>
 							</router-link>
 						</li>
+						<li v-if="can('stores delivery_profile read')"
+						    class="nav-item"
+						    :class="{'active': currentRoute === 'store_manager' && currentSubRoute === 'delivery_zones'}"
+						    id="store_manager_delivery_zones_link">
+							<router-link to="/app/store_manager/delivery_zones"
+							             class="nav-link">
+								<i class="fa fa-truck"></i>
+								<span class="title">Delivery Zones</span>
+							</router-link>
+						</li>
 					</ul>
 				</li>
 				<li v-if="can('news_feed read')"
@@ -651,6 +661,16 @@
 							             class="nav-link">
 								<i class="fa fa-language"></i>
 								<span class="title">Languages</span>
+							</router-link>
+						</li>
+						<li v-if="can('localization locale_regions read')"
+						    class="nav-item"
+						    :class="{'active': currentRoute === 'localization' && currentSubRoute === 'language_regions'}"
+						    id="localization_language_regions_link">
+							<router-link to="/app/localization/language_regions"
+							             class="nav-link">
+								<i class="fa fa-globe"></i>
+								<span class="title">Language Regions</span>
 							</router-link>
 						</li>
 						<li v-if="can('localization read')"
