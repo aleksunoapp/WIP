@@ -914,7 +914,9 @@ export default {
 				...rule,
 				bonus: String(rule.bonus),
 				min_amount: String(rule.min_amount),
-				sku
+				sku,
+				start: rule.start.substr(0, 5),
+				end: rule.end.substr(0, 5)
 			}
 			this.showEditModal = true
 		},

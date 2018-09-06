@@ -1067,7 +1067,13 @@ export default {
 						let weekStartingMonday = response.payload
 						weekStartingMonday.push(response.payload[sunday])
 						weekStartingMonday.splice(sunday, 1)
-						editStoreVue.holidayHoursToBeEdited = weekStartingMonday
+						editStoreVue.holidayHoursToBeEdited = weekStartingMonday.map(day => {
+							return {
+								...day,
+								open_time: day.open_time.substr(0, 5),
+								close_time: day.close_time.substr(0, 5)
+							}
+						})
 						editStoreVue.showAlert(response.payload)
 					}
 				})
@@ -1382,7 +1388,13 @@ export default {
 							let weekStartingMonday = response.payload
 							weekStartingMonday.push(response.payload[sunday])
 							weekStartingMonday.splice(sunday, 1)
-							editStoreVue.hoursToBeEdited = weekStartingMonday
+							editStoreVue.hoursToBeEdited = weekStartingMonday.map(day => {
+								return {
+									...day,
+									open_time: day.open_time.substr(0, 5),
+									close_time: day.close_time.substr(0, 5)
+								}
+							})
 						}
 					}
 				})
@@ -1423,7 +1435,13 @@ export default {
 							response.payload.location_holiday_hours[sunday]
 						)
 						weekStartingMonday.splice(sunday, 1)
-						editStoreVue.holidayHoursToBeEdited = weekStartingMonday
+						editStoreVue.holidayHoursToBeEdited = weekStartingMonday.map(day => {
+							return {
+								...day,
+								open_time: day.open_time.substr(0, 5),
+								close_time: day.close_time.substr(0, 5)
+							}
+						})
 					} else throw response
 				})
 				.catch(reason => {
