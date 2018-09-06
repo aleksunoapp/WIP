@@ -1,9 +1,8 @@
 <!--
 JIRA:
-showOnInspection must be true
-sortOrder must be 0 (is 99)
-iconUrl is empty
-assuming service and subService are not mutually exclusive
+need French for 'Customer concern'
+CUSTOMER COMMENTS
+ADVISOR COMMENTS
 -->
 <template>
 	<div>
@@ -81,10 +80,10 @@ assuming service and subService are not mutually exclusive
 				</div>
 			</div>
 
-			<template v-for="(category, index) in serviceCategories" v-if="category.id === '5'">
+			<template v-for="(category, index) in serviceCategories" v-if="category.id === '5' && $root.inspectionCounts.concernCount">
 				<div class="grey accordion" :key="`category-${index}`">
 					<div @click="toggleAccordion(category)" class="accordion-header">
-						<img :src="category.iconUrl"> {{ category.name }} {{ ($root.inspectionCounts[countVariables[category.serviceCategoryType]] !== 0) ? `(${$root.inspectionCounts[countVariables[category.serviceCategoryType]]})` : '' }}
+						<img :src="require('../assets/images/concern-white.png')"> {{ category.name }} {{ ($root.inspectionCounts[countVariables[category.serviceCategoryType]] !== 0) ? `(${$root.inspectionCounts[countVariables[category.serviceCategoryType]]})` : '' }}
 						<div class="accordion-status" v-if="$root.inspectionCounts[countVariables[category.serviceCategoryType]] !== 0"></div>
 						<div class="clear"></div>
 					</div>

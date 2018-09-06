@@ -1349,6 +1349,11 @@ img {
 	padding: 5px 15px;
 	background-color: rgba(69, 172, 0, 0.3);
 }
+.info-modal-info-top .grey-bg {
+	padding: 5px 15px;
+	background-color: rgba(102, 102, 102, 1);
+	color: #fff;
+}
 .info-modal-info-top h2 {
 	margin: 5px 0 0;
 	font-size: 18px;
@@ -1359,6 +1364,25 @@ img {
 .info-modal-info-top > p {
 	padding: 15px;
 }
+
+.info-modal-concerns {
+	width: 100%;
+	padding: 5px;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;	
+}
+.info-modal-concerns label {
+	text-transform: uppercase;
+}
+.info-modal-concerns input {
+	font-size: 18px;
+	border: 1px solid rgba(216, 216, 216, 1);
+	width: 100%;
+	box-sizing: border-box;
+	padding: 5px 10px;
+}
+
 .info-modal-info-bottom {
 	background-color: #f5f5f5;
 	padding: 5px;

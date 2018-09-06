@@ -8,11 +8,36 @@
 				<div class="info-modal-image" :style="`background-image: url('${viewingService.imageUrl}');`"></div>
 				<div>
 					<div class="info-modal-info-top">
-						<div class="green-bg">
-							<p>{{ langTerms.recommendation[$root.meta.local.toLowerCase()] }}</p>
+						<div 
+							:class="{
+								'green-bg' : 
+									viewingService.category !== '5' &&
+									viewingService.category !== '6',
+								'grey-bg' : 
+									viewingService.category === '5' ||
+									viewingService.category === '6'
+							}">
+							<p v-if="
+								viewingService.category !== '5' &&
+								viewingService.category !== '6'">
+								{{ langTerms.recommendation[$root.meta.local.toLowerCase()] }}</p>
+							<p v-if="
+								viewingService.category === '5' || 
+								viewingService.category === '6'
+							">{{ langTerms.customer_concern[$root.meta.local.toLowerCase()] }}</p>
 							<h2>{{ viewingService.name }}</h2>
 						</div>
 						<p>{{ viewingService.comment }}</p>
+					</div>
+					<div class="info-modal-concerns">
+						<label for="customer-comments">
+							{{ langTerms.customer_comments[$root.meta.local.toLowerCase()] }}
+						</label>
+						<input id="customer-comments" type="text">
+						<label for="advisor-comments">
+							{{ langTerms.advisor_comments[$root.meta.local.toLowerCase()] }}
+						</label>
+						<input id="advisor-comments" type="text">
 					</div>
 					<div class="info-modal-info-bottom">
 						<div class="info-modal-contact">
@@ -88,6 +113,21 @@ export default {
 					'en-ca': 'Recommendation',
 					'en-us': 'Recommendation',
 					'fr-ca': 'Recommandation'
+				},
+				customer_concern: {
+					'en-ca': 'Customer concern',
+					'en-us': 'Customer concern',
+					'fr-ca': ''
+				},
+				customer_comments: {
+					'en-ca': 'Customer comments',
+					'en-us': 'Customer comments',
+					'fr-ca': ''
+				},
+				advisor_comments: {
+					'en-ca': 'Advisor comments',
+					'en-us': 'Advisor comments',
+					'fr-ca': ''
 				},
 				inspection_summary: {
 					'en-ca': 'Inspection Summary',
