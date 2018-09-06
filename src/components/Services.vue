@@ -11,16 +11,9 @@
 				{{ langTerms.items_you_approved[$root.meta.local.toLowerCase()] }}
 			</div>
 		</div>
-		<div v-if="$root.inspectionCounts.failCount || $root.inspectionCounts.warningCount" class="summary-table">
+		<div v-if="$root.inspectionCounts.failCount || $root.inspectionCounts.warningCount || $root.inspectionCounts.concernCount" class="summary-table">
 			<template v-for="service in $root.services">
 				<template v-if="checkSubServices(service)">
-					<!-- <div class="summary-table-row summary-item">
-						<div class="summary-table-cell">
-							<span class="information-icon no-icon-bg"></span>
-							<span class="service-name"><b>{{ service.name }}</b></span>
-						</div>
-						<div class="summary-table-cell"></div>
-					</div> -->
 					<template v-for="subService in service.subServices">
 						<template v-if="subService.isSelected && service.category !== '4' && service.category !== '3'">
 							<div class="summary-table-row summary-item">
@@ -36,7 +29,7 @@
 						</template>
 					</template>
 				</template>
-				<template v-if="!service.subServices">
+				<template v-if="!service.subServices || service.category === '5' || service.category === '6'">
 					<template v-if="service.isSelected && service.category !== '4' && service.category !== '3'">
 						<div class="summary-table-row summary-item">
 							<div class="summary-table-cell">
@@ -874,6 +867,9 @@ export default {
 		 */
 		checkSubServices (service) {
 			let isSelected = false
+			if (service.category === '5' || service.category === '6' || service.category === '7') {
+				return isSelected
+			}
 			if (service.subServices) {
 				service.subServices.forEach(subService => {
 					if (subService.isSelected) {

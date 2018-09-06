@@ -79,8 +79,9 @@ export default {
 		return {
 			currentOnboarding: 'first',
 			inspectionCounts: [
-				{text: this.toTitleCase(this.$root.serviceCategories[0].name), count: this.$root.inspectionCounts.failCount, image: require('../assets/images/fail.png')},
-				{text: this.toTitleCase(this.$root.serviceCategories[1].name), count: this.$root.inspectionCounts.warningCount, image: require('../assets/images/warning.png')}
+				{text: this.toTitleCase(this.$root.serviceCategories[0].name), count: this.$root.inspectionCounts.concernCount, image: require('../assets/images/concern.png')},
+				{text: this.toTitleCase(this.$root.serviceCategories[1].name), count: this.$root.inspectionCounts.failCount, image: require('../assets/images/fail.png')},
+				{text: this.toTitleCase(this.$root.serviceCategories[2].name), count: this.$root.inspectionCounts.warningCount, image: require('../assets/images/warning.png')}
 			],
 			timer: '',
 			timeExpired: false,

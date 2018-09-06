@@ -345,6 +345,9 @@ img {
 	width: 32px;
 	vertical-align: middle;
 }
+.accordion.grey {
+	background-color: rgba(216, 216, 216, 0.3);
+}
 .accordion.red {
 	background-color: rgba(222, 0, 0, 0.3);
 }
@@ -353,6 +356,9 @@ img {
 }
 .accordion.green {
 	background-color: rgba(69, 172, 0, 0.3);
+}
+.accordion.grey > .accordion-header {
+	background-color: rgba(102, 102, 102, 1);
 }
 .accordion.red > .accordion-header {
 	background-color: rgba(222, 0, 0, 1);
@@ -435,10 +441,6 @@ img {
 	padding: 5px 10px;
 }
 
-.summary-table-cell:first-child {
-	width: 75%;
-}
-
 .summary-table-cell:last-child {
 	width: 25%;
 	text-align: right;
@@ -466,7 +468,7 @@ img {
 	cursor: pointer;
 }
 .service-name {
-	display: table-cell;
+	display: inline-block;
 }
 
 .inspection .summary-item {
@@ -598,6 +600,41 @@ img {
 }
 .information-icon.no-icon-bg {
 	background-image: none;
+}
+.dot-caption-container {
+	display: flex;
+	align-items: center;
+}
+.dot-container {
+	height: 100%;
+	padding-right: 5px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.red-dot {
+	display: inline-block;
+	width: 7px;
+	height: 7px;
+	background-image: url('../images/red-dot.png');
+	background-size: 7px 7px;
+	margin-left: 10px;
+}
+.yellow-dot {
+	display: inline-block;
+	width: 7px;
+	height: 7px;
+	background-image: url('../images/yellow-dot.png');
+	background-size: 7px 7px;
+	margin-left: 10px;
+}
+.green-dot {
+	display: inline-block;
+	width: 7px;
+	height: 7px;
+	background-image: url('../images/green-dot.png');
+	background-size: 7px 7px;
+	margin-left: 10px;
 }
 .contact-icon {
   display: inline-block;
@@ -828,7 +865,7 @@ img {
 
 .summary-icons .icon {
 	display: table-cell;
-	width: 33.3333%;
+	width: 25%;
 	font-size: 20px;
 	font-weight: 600;
 	text-align: center;

@@ -1,3 +1,10 @@
+<!--
+JIRA:
+showOnInspection must be true
+sortOrder must be 0 (is 99)
+iconUrl is empty
+assuming service and subService are not mutually exclusive
+-->
 <template>
 	<div>
 		<div class="help-screen-overlay" v-if="helpScreenShowing">
@@ -57,6 +64,10 @@
 			<div class="summary-header"> {{ langTerms.inspection_summary[$root.meta.local.toLowerCase()] }}</div>
 			<div class="summary-icons">
 				<div class="icon">
+					<img src="../assets/images/concern.png">
+					({{ this.$root.inspectionCounts.concernCount }})
+				</div>
+				<div class="icon">
 					<img src="../assets/images/fail.png">
 					({{ this.$root.inspectionCounts.failCount }})
 				</div>
@@ -69,8 +80,109 @@
 					({{ this.$root.inspectionCounts.passCount }})
 				</div>
 			</div>
-			<template v-for="(category, index) in serviceCategories" v-if="category.showOnInspection">
-				<div :class="{'accordion-open': category.defaultExpended, 'accordion-closed': !category.defaultExpended, 'red': category.serviceCategoryType === 'SAFETY', 'yellow': category.serviceCategoryType === 'ATTN', 'green': category.serviceCategoryType === 'PASS'}" class="accordion">
+
+			<template v-for="(category, index) in serviceCategories" v-if="category.id === '5'">
+				<div class="grey accordion" :key="`category-${index}`">
+					<div @click="toggleAccordion(category)" class="accordion-header">
+						<img :src="category.iconUrl"> {{ category.name }} {{ ($root.inspectionCounts[countVariables[category.serviceCategoryType]] !== 0) ? `(${$root.inspectionCounts[countVariables[category.serviceCategoryType]]})` : '' }}
+						<div class="accordion-status" v-if="$root.inspectionCounts[countVariables[category.serviceCategoryType]] !== 0"></div>
+						<div class="clear"></div>
+					</div>
+					<div class="accordion-contents">
+						<div class="summary-table">
+							<div v-if="category.serviceCategoryType !== 'PASS' && $root.inspectionCounts[countVariables[category.serviceCategoryType]] !== 0" class="summary-table-row">
+								<div class="summary-table-cell">
+									<span class="summary-legend">
+										<b>{{ langTerms.check_recommended_services[$root.meta.local.toLowerCase()] }}</b>
+									</span>
+								</div>
+
+								<div class="summary-table-cell">
+								</div>
+
+								<div class="summary-table-cell">
+									<span> {{ (category.allSelected) ? langTerms.remove_all[$root.meta.local.toLowerCase()] : langTerms.select_all[$root.meta.local.toLowerCase()] }} </span>
+									<div class="service-checkbox">
+										<input type="checkbox" :id="`select-${category.serviceCategoryType}`" v-model="category.allSelected" @change="toggleAll(category)">
+										<label :for="`select-${category.serviceCategoryType}`">
+											<span class="check"></span>
+											<span class="box"></span>
+										</label>
+									</div>
+								</div>
+							</div>
+
+							<template v-for="(service, serviceIndex) in $root.services">
+								<template v-if="
+									(
+										category.id === '5' &&
+										(service.category === '5' ||
+										service.category === '6' ||
+										service.category === '7')
+									)">
+									<div 
+										class="summary-table-row summary-item" 
+										v-if="showCategoryItems(category, service)" 
+										:key="`service-${serviceIndex}`">
+										<div class="summary-table-cell">
+											<span 
+												class="information-icon" 
+												:class="{'no-icon-bg': category.serviceCategoryType === 'PASS' || service.category === '7'}" 
+												@click="openServiceModal(service)">
+											</span>
+											<span 
+												class="service-name" 
+												v-bind:class="{'bold': (service.isHighlighted === true)}">
+												<span v-if="service.isHighlighted === true">* </span>{{ service.name }}
+											</span>
+										</div>
+										<div class="summary-table-cell">
+											<div class="dot-caption-container">
+												<div class="dot-container">
+													<span :class="{'red-dot' : service.category === '5'}"></span>
+													<span :class="{'yellow-dot' : service.category === '6'}"></span>
+													<span :class="{'green-dot' : service.category === '7'}"></span>
+												</div>
+												<span class="dot-caption" v-if="service.subServices">{{service.subServices[0].name}}</span>
+											</div>
+										</div>
+										<div class="summary-table-cell">
+											<template v-if="category.serviceCategoryType !== 'PASS' && service.category !== '7'">
+												<span class="price" v-if="service.price !== 0">{{ formatCurrency(service.price) }}</span>
+												<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
+												<div class="service-checkbox">
+													<input 
+														type="checkbox" 
+														:id="`sub-service-${service.id}`" 
+														v-model="service.isSelected" 
+														@change="toggleCheckbox(category, service)">
+													<label :for="`sub-service-${service.id}`">
+														<span class="check"></span>
+														<span class="box"></span>
+													</label>
+												</div>
+											</template>
+										</div>
+									</div>
+								</template>
+							</template>
+						</div>
+					</div>
+				</div>
+				<div v-if="showLegend(category)" :key="`legend-${index}`"><p class="newRecAst">{{ langTerms.new_recommendation[$root.meta.local.toLowerCase()] }}</p></div>
+			</template>
+
+			<template v-for="(category, index) in serviceCategories" v-if="category.showOnInspection && category.id !=='5'">
+				<div 
+					:class="{
+						'accordion-open': category.defaultExpended, 
+						'accordion-closed': !category.defaultExpended, 
+						'red': category.serviceCategoryType === 'SAFETY', 
+						'yellow': category.serviceCategoryType === 'ATTN', 
+						'green': category.serviceCategoryType === 'PASS'
+					}" 
+					class="accordion"
+					:key="`category-${index}`">
 					<div @click="toggleAccordion(category)" class="accordion-header">
 						<img :src="category.iconUrl"> {{ category.name }} {{ ($root.inspectionCounts[countVariables[category.serviceCategoryType]] !== 0) ? `(${$root.inspectionCounts[countVariables[category.serviceCategoryType]]})` : '' }}
 						<div class="accordion-status" v-if="$root.inspectionCounts[countVariables[category.serviceCategoryType]] !== 0"></div>
@@ -94,6 +206,9 @@
 								</div>
 
 								<div class="summary-table-cell">
+								</div>
+
+								<div class="summary-table-cell">
 									<span> {{ (category.allSelected) ? langTerms.remove_all[$root.meta.local.toLowerCase()] : langTerms.select_all[$root.meta.local.toLowerCase()] }} </span>
 									<div class="service-checkbox">
 										<input type="checkbox" :id="`select-${category.serviceCategoryType}`" v-model="category.allSelected" @change="toggleAll(category)">
@@ -105,20 +220,27 @@
 								</div>
 							</div>
 
-							<template v-for="service in $root.services">
-								<template v-if="service.category === category.id">
+							<template v-for="(service, serviceIndex) in $root.services">
+								<template v-if="
+									(
+										category.id === service.category
+									) || 
+									(
+										category.id === '5' &&
+										(service.category === '5' ||
+										service.category === '6' ||
+										service.category === '7')
+									)">
 									<template v-if="service.subServices">
-										<!-- <div class="summary-table-row summary-item">
-											<div class="summary-table-cell">
-												<b>{{ service.name }}</b>
-											</div>
-											<div class="summary-table-cell">
-											</div>
-										</div> -->
-										<div class="summary-table-row summary-item" v-for="subService in service.subServices">
+										<div class="summary-table-row summary-item" v-for="subService in service.subServices" :key="`subService-${subService.id}`">
 											<div class="summary-table-cell">
 												<span class="information-icon" :class="{'no-icon-bg': category.serviceCategoryType === 'PASS'}" @click="openServiceModal(subService)"></span>
 												<span class="service-name" v-bind:class="{'bold': (subService.isHighlighted ===  true)}"><span v-if="subService.isHighlighted === true">* </span>{{ subService.name }}</span>
+											</div>
+											<div class="summary-table-cell">
+												<span :class="{'red-dot' : service.category === '5'}"></span>
+												<span :class="{'yellow-dot' : service.category === '6'}"></span>
+												<span :class="{'green-dot' : service.category === '7'}"></span>
 											</div>
 											<div class="summary-table-cell">
 												<template v-if="category.serviceCategoryType !== 'PASS'">
@@ -135,10 +257,15 @@
 											</div>
 										</div>
 									</template>
-									<div class="summary-table-row summary-item" v-if="showCategoryItems(category, service)">
+									<div class="summary-table-row summary-item" v-if="showCategoryItems(category, service)" :key="`service-${serviceIndex}`">
 										<div class="summary-table-cell">
 											<span class="information-icon" :class="{'no-icon-bg': category.serviceCategoryType === 'PASS'}" @click="openServiceModal(service)"></span>
 											<span class="service-name" v-bind:class="{'bold': (service.isHighlighted === true)}"><span v-if="service.isHighlighted === true">* </span>{{ service.name }}</span>
+										</div>
+										<div class="summary-table-cell">
+											<span :class="{'red-dot' : service.category === '5'}"></span>
+											<span :class="{'yellow-dot' : service.category === '6'}"></span>
+											<span :class="{'green-dot' : service.category === '7'}"></span>
 										</div>
 										<div class="summary-table-cell">
 											<template v-if="category.serviceCategoryType !== 'PASS'">
@@ -159,7 +286,7 @@
 						</div>
 					</div>
 				</div>
-				<div v-if="showLegend(category)"><p class="newRecAst">{{ langTerms.new_recommendation[$root.meta.local.toLowerCase()] }}</p></div>
+				<div v-if="showLegend(category)" :key="`legend-${index}`"><p class="newRecAst">{{ langTerms.new_recommendation[$root.meta.local.toLowerCase()] }}</p></div>
 			</template>
 
 			<div class="proceed-component">
@@ -219,7 +346,8 @@ export default {
 			countVariables: {
 				'SAFETY': 'failCount',
 				'ATTN': 'warningCount',
-				'PASS': 'passCount'
+				'PASS': 'passCount',
+				'CCRD': 'concernCount'
 			},
 			services: this.$root.services,
 			modalOpen: false,
@@ -522,14 +650,22 @@ export default {
 			return show
 		},
 		/**
-		 * To determine if the items in categories needs to shown or not.
+		 * To determine if the items in categories need to shown or not.
 		 * @function
 		 * @param {object} category - The category to check
 		 * @param {object} service - The service price to check
 		 * @returns {Number} - True|False.
 		 */
 		showCategoryItems (category, service) {
-			return (category.serviceCategoryType !== 'PASS' && service.price !== 0) || category.serviceCategoryType === 'PASS'
+			if (category.serviceCategoryType !== 'PASS' && service.price !== 0) {
+				return true
+			} else if (category.serviceCategoryType === 'PASS') {
+				return true
+			} else if (category.serviceCategoryType === 'CCRD') {
+				return true
+			} else {
+				return false
+			}
 		},
 		/**
 		 * To open the full inspection in a separate tab
@@ -652,7 +788,16 @@ export default {
 			if (category.allSelected) {
 				this.$root.logEvent(`Selected all in ${category.name} category`)
 				this.$root.services.forEach(service => {
-					if (service.category === category.id) {
+					if (
+						(service.category === category.id) ||
+						(category.id === '5' &&
+							(
+								service.category === '5' ||
+								service.category === '6' ||
+								service.category === '7'
+							)
+						)
+					) {
 						if (service.subServices) {
 							service.subServices.forEach(subService => {
 								if (!subService.isSelected) {
@@ -660,30 +805,38 @@ export default {
 									this.inspectionTotal.total += parseFloat(subService.price)
 								}
 							})
-						} else {
-							if (!service.isSelected) {
-								service.isSelected = true
-								this.inspectionTotal.total += parseFloat(service.price)
-							}
+						}
+						if (!service.isSelected) {
+							service.isSelected = true
+							this.inspectionTotal.total += parseFloat(service.price)
 						}
 					}
 				})
 			} else {
 				this.$root.logEvent(`Removed all in ${category.name} category`)
 				this.$root.services.forEach(service => {
-					if (service.category === category.id) {
-						if (service.subServices) {
+					console.log({service, category})
+					if (
+						(service.category === category.id) ||
+						(category.id === '5' &&
+							(
+								service.category === '5' ||
+								service.category === '6' ||
+								service.category === '7'
+							)
+						)
+					) {
+						if (service.subServices && service.subServices.length) {
 							service.subServices.forEach(subService => {
 								if (subService.isSelected) {
 									subService.isSelected = false
 									this.inspectionTotal.total -= parseFloat(subService.price)
 								}
 							})
-						} else {
-							if (service.isSelected) {
-								service.isSelected = false
-								this.inspectionTotal.total -= parseFloat(service.price)
-							}
+						}
+						if (service.isSelected) {
+							service.isSelected = false
+							this.inspectionTotal.total -= parseFloat(service.price)
 						}
 
 						this.openDeferReasonModal(category, {}, true)
@@ -707,7 +860,16 @@ export default {
 				let total = 0
 
 				this.$root.services.forEach(service => {
-					if (service.category === category.id) {
+					if (
+						(service.category === category.id) ||
+						(category.id === '5' &&
+							(
+								service.category === '5' ||
+								service.category === '6' ||
+								service.category === '7'
+							)
+						)
+					) {
 						if (service.subServices) {
 							service.subServices.forEach(subService => {
 								total += 1

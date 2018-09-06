@@ -112,7 +112,8 @@ var authenticateToken = {
 							failCount: 0,
 							warningCount: 0,
 							passCount: 0,
-							approvedCount: 0
+							approvedCount: 0,
+							concernCount: 0
 						}
 						let inspectionTotal = 0
 						let serviceTotal = 0
@@ -172,6 +173,12 @@ var authenticateToken = {
 								} else {
 									inspectionCounts.approvedCount += 1
 								}
+							} else if (service.category === '5') {
+								inspectionCounts.concernCount += 1
+							} else if (service.category === '6') {
+								inspectionCounts.concernCount += 1
+							} else if (service.category === '7') {
+								inspectionCounts.concernCount += 1
 							}
 						})
 
