@@ -604,21 +604,32 @@
 						<span class="title">Promo codes</span>
 					</router-link>
 				</li>
-				<li v-if="can('promotions read')"
+				<li v-if="canAny(['promotions read', 'promotions geolocations read'])"
 				    class="nav-item"
-				    :class="{'active': currentRoute === 'promotions'}">
-					<router-link to="/app/promotions"
-					             class="nav-link">
+				    :class="{'active': currentRoute === 'promotions'}"
+				    id="promotions_manager_link">
+					<a class="nav-link nav-toggle unselectable"
+					   @click="toggleNavigation($event)">
 						<i class="fa fa-money"></i>
-						<span class="title">Promotions</span>
+						<span class="title">Promotions Manager</span>
 						<i class="fa fa-chevron-down pull-right"
 						   aria-hidden="true"></i>
-					</router-link>
+					</a>
 					<ul class="sub-menu">
+						<li v-if="can('promotions read')"
+						    class="nav-item"
+						    :class="{'active': currentRoute === 'promotions' && currentSubRoute === ''}"
+						    id="promotions_manager_promotions_link">
+							<router-link to="/app/promotions"
+							             class="nav-link">
+								<i class="fa fa-money"></i>
+								<span class="title">Promotions</span>
+							</router-link>
+						</li>
 						<li v-if="can('promotions geolocations read')"
 						    class="nav-item"
 						    :class="{'active': currentRoute === 'promotions' && currentSubRoute === 'geolocations'}"
-						    id="promotions_geolocations_link">
+						    id="promotions_manager_geolocations_link">
 							<router-link to="/app/promotions/geolocations"
 							             class="nav-link">
 								<i class="fa fa-compass"></i>
