@@ -656,7 +656,7 @@
 					<ul class="sub-menu">
 						<li v-if="can('localization countries read')"
 						    class="nav-item"
-						    :class="{'active': currentRoute === 'loyalty' && currentSubRoute === 'countries'}"
+						    :class="{'active': currentRoute === 'localization' && currentSubRoute === 'countries'}"
 						    id="localization_countries_link">
 							<router-link to="/app/localization/countries"
 							             class="nav-link">

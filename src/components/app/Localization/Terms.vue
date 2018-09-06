@@ -28,16 +28,8 @@
 			</div>
 			<div class="portlet-body relative-block"
 			     :class="{'display-hide': createNewCollapse}">
-				<div class="col-md-12"
-				     v-show="activeLocationId === undefined">
-					<div class="alert center alert-info">
-						<h4>No Store Selected</h4>
-						<p>Please select a store from the stores panel on the right to create a term.</p>
-					</div>
-				</div>
 				<form role="form"
-				      @submit.prevent="createTerm()"
-				      v-show="activeLocationId !== undefined">
+				      @submit.prevent="createTerm()">
 					<div class="row">
 						<div class="col-md-12">
 							<div class="alert alert-danger"
@@ -74,8 +66,7 @@
 		<!-- END CREATE -->
 
 		<!-- SEARCH START -->
-		<div class="margin-top-20"
-		     v-if="activeLocationId !== undefined">
+		<div class="margin-top-20">
 			<div class="portlet box blue-hoki">
 				<div class="portlet-title"
 				     @click="toggleSearchPanel()">
@@ -122,96 +113,88 @@
 		<!-- SEARCH END -->
 
 		<!-- BEGIN LIST -->
-		<div v-if="activeLocationId === undefined">
-			<div class="alert center alert-info">
-				<h4>No Store Selected</h4>
-				<p>Please select a store from the stores panel on the right to view terms for it.</p>
+		<div class="portlet light portlet-fit bordered margin-top-20"
+				id="terms-container">
+			<div class="portlet-title bg-blue-chambray">
+				<div class="menu-image-main">
+					<img src="../../../../static/client_logo.png">
+				</div>
+				<div class="caption">
+					<span class="caption-subject font-green bold uppercase">Terms</span>
+					<div class="caption-desc font-grey-cascade">Create, edit or delete terms.</div>
+				</div>
 			</div>
-		</div>
-		<div v-else>
-			<div class="portlet light portlet-fit bordered margin-top-20"
-			     id="terms-container">
-				<div class="portlet-title bg-blue-chambray">
-					<div class="menu-image-main">
-						<img src="../../../../static/client_logo.png">
-					</div>
-					<div class="caption">
-						<span class="caption-subject font-green bold uppercase">Terms</span>
-						<div class="caption-desc font-grey-cascade">Create, edit or delete terms.</div>
+			<div class="col-md-12">
+				<div class="alert alert-danger"
+						v-show="listErrorMessage.length"
+						ref="listErrorMessage">
+					<button class="close"
+							data-close="alert"
+							@click="clearError('listErrorMessage')"></button>
+					<span>{{ listErrorMessage }}</span>
+				</div>
+			</div>
+			<div class="portlet-body relative-block">
+				<loading-screen :show="loadingTerms"
+								:color="'#2C3E50'"
+								:display="'inline'">
+				</loading-screen>
+				<div class="mt-element-list margin-top-15"
+						v-if="terms.length && !loadingTerms">
+					<div class="mt-list-container list-news ext-1 no-border">
+						<ul>
+							<li class="mt-list-item actions-at-left margin-top-15 three-vertical-actions"
+								v-for="term in terms"
+								:id="'term-' + term.id"
+								:key="term.id">
+								<div class="list-item-actions">
+									<el-tooltip v-if="$root.permissions['localization terms update']"
+												content="Edit"
+												effect="light"
+												placement="right">
+										<a class="btn btn-circle btn-icon-only btn-default"
+											@click="editTerm(term, $event)">
+											<i class="fa fa-lg fa-pencil"></i>
+										</a>
+									</el-tooltip>
+									<el-tooltip v-if="$root.permissions['localization terms read'] && !$root.permissions['localization terms update']"
+												content="View"
+												effect="light"
+												placement="right">
+										<a class="btn btn-circle btn-icon-only btn-default"
+											@click="editTerm(term, $event)">
+											<i class="fa fa-lg fa-eye"></i>
+										</a>
+									</el-tooltip>
+									<el-tooltip v-if="$root.permissions['localization terms delete']"
+												content="Delete"
+												effect="light"
+												placement="right">
+										<a class="btn btn-circle btn-icon-only btn-default"
+											@click="confirmDelete(term, $event)">
+											<i class="fa fa-lg fa-trash"></i>
+										</a>
+									</el-tooltip>
+								</div>
+								<div class="col-md-12 bold uppercase font-red">
+									<span>{{ term.term }}</span>
+								</div>
+								<div class="col-md-6">
+									<strong></strong>
+								</div>
+							</li>
+						</ul>
 					</div>
 				</div>
-				<div class="col-md-12">
-					<div class="alert alert-danger"
-					     v-show="listErrorMessage.length"
-					     ref="listErrorMessage">
-						<button class="close"
-						        data-close="alert"
-						        @click="clearError('listErrorMessage')"></button>
-						<span>{{ listErrorMessage }}</span>
-					</div>
+				<div class="clearfix margin-top-20"
+						v-if="lastPage > 1">
+					<pagination :passedPage="currentPage"
+								:numPages="lastPage"
+								@activePageChange="changePage"></pagination>
 				</div>
-				<div class="portlet-body relative-block">
-					<loading-screen :show="loadingTerms && activeLocationId !== undefined"
-					                :color="'#2C3E50'"
-					                :display="'inline'">
-					</loading-screen>
-					<div class="mt-element-list margin-top-15"
-					     v-if="terms.length && !loadingTerms">
-						<div class="mt-list-container list-news ext-1 no-border">
-							<ul>
-								<li class="mt-list-item actions-at-left margin-top-15 three-vertical-actions"
-								    v-for="term in terms"
-								    :id="'term-' + term.id"
-								    :key="term.id">
-									<div class="list-item-actions">
-										<el-tooltip v-if="$root.permissions['localization terms update']"
-										            content="Edit"
-										            effect="light"
-										            placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="editTerm(term, $event)">
-												<i class="fa fa-lg fa-pencil"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['localization terms read'] && !$root.permissions['localization terms update']"
-										            content="View"
-										            effect="light"
-										            placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="editTerm(term, $event)">
-												<i class="fa fa-lg fa-eye"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['localization terms delete']"
-										            content="Delete"
-										            effect="light"
-										            placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="confirmDelete(term, $event)">
-												<i class="fa fa-lg fa-trash"></i>
-											</a>
-										</el-tooltip>
-									</div>
-									<div class="col-md-12 bold uppercase font-red">
-										<span>{{ term.term }}</span>
-									</div>
-									<div class="col-md-6">
-										<strong></strong>
-									</div>
-								</li>
-							</ul>
-						</div>
-					</div>
-					<div class="clearfix margin-top-20"
-					     v-if="lastPage > 1">
-						<pagination :passedPage="currentPage"
-						            :numPages="lastPage"
-						            @activePageChange="changePage"></pagination>
-					</div>
-					<div class="margin-top-20">
-						<no-results :show="!terms.length && !loadingTerms"
-						            :type="'terms'"></no-results>
-					</div>
+				<div class="margin-top-20">
+					<no-results :show="!terms.length && !loadingTerms"
+								:type="'terms'"></no-results>
 				</div>
 			</div>
 		</div>

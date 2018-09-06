@@ -28,16 +28,8 @@
 			</div>
 			<div class="portlet-body relative-block"
 			     :class="{'display-hide': createNewCollapse}">
-				<div class="col-md-12"
-				     v-show="activeLocationId === undefined">
-					<div class="alert center alert-info">
-						<h4>No Store Selected</h4>
-						<p>Please select a store from the stores panel on the right to create a country.</p>
-					</div>
-				</div>
 				<form role="form"
-				      @submit.prevent="createCountry()"
-				      v-show="activeLocationId !== undefined">
+				      @submit.prevent="createCountry()">
 					<div class="row">
 						<div class="col-md-12">
 							<div class="alert alert-danger"
@@ -82,89 +74,81 @@
 		<!-- END CREATE -->
 
 		<!-- BEGIN LIST -->
-		<div v-if="activeLocationId === undefined">
-			<div class="alert center alert-info">
-				<h4>No Store Selected</h4>
-				<p>Please select a store from the stores panel on the right to view countries for it.</p>
+		<div class="portlet light portlet-fit bordered margin-top-20"
+				id="countries-container">
+			<div class="portlet-title bg-blue-chambray">
+				<div class="menu-image-main">
+					<img src="../../../../static/client_logo.png">
+				</div>
+				<div class="caption">
+					<span class="caption-subject font-default bold uppercase">Countries</span>
+					<div class="caption-desc font-grey-cascade">Create, edit or delete countries and assign languages to them.</div>
+				</div>
 			</div>
-		</div>
-		<div v-else>
-			<div class="portlet light portlet-fit bordered margin-top-20"
-			     id="countries-container">
-				<div class="portlet-title bg-blue-chambray">
-					<div class="menu-image-main">
-						<img src="../../../../static/client_logo.png">
-					</div>
-					<div class="caption">
-						<span class="caption-subject font-default bold uppercase">Countries</span>
-						<div class="caption-desc font-grey-cascade">Create, edit or delete countries and assign languages to them.</div>
+			<div class="col-md-12">
+				<div class="alert alert-danger"
+						v-show="listErrorMessage.length"
+						ref="listErrorMessage">
+					<button class="close"
+							data-close="alert"
+							@click="clearError('listErrorMessage')"></button>
+					<span>{{ listErrorMessage }}</span>
+				</div>
+			</div>
+			<div class="portlet-body relative-block">
+				<loading-screen :show="loadingCountries"
+								:color="'#2C3E50'"
+								:display="'inline'"></loading-screen>
+				<div class="mt-element-list margin-top-15"
+						v-if="countries.length && !loadingCountries">
+					<div class="mt-list-container list-news ext-1 no-border">
+						<ul>
+							<li class="mt-list-item actions-at-left margin-top-15 three-vertical-actions"
+								v-for="country in countries"
+								:id="'country-' + country.id"
+								:key="country.id">
+								<div class="list-item-actions">
+									<el-tooltip v-if="$root.permissions['localization countries update']"
+												content="Edit"
+												effect="light"
+												placement="right">
+										<a class="btn btn-circle btn-icon-only btn-default"
+											@click="editCountry(country, $event)">
+											<i class="fa fa-lg fa-pencil"></i>
+										</a>
+									</el-tooltip>
+									<el-tooltip v-if="$root.permissions['localization countries read'] && !$root.permissions['localization countries update']"
+												content="View"
+												effect="light"
+												placement="right">
+										<a class="btn btn-circle btn-icon-only btn-default"
+											@click="editCountry(country, $event)">
+											<i class="fa fa-lg fa-eye"></i>
+										</a>
+									</el-tooltip>
+									<el-tooltip v-if="$root.permissions['localization countries delete']"
+												content="Delete"
+												effect="light"
+												placement="right">
+										<a class="btn btn-circle btn-icon-only btn-default"
+											@click="confirmDelete(country, $event)">
+											<i class="fa fa-lg fa-trash"></i>
+										</a>
+									</el-tooltip>
+								</div>
+								<div class="col-md-12 bold uppercase font-red">
+									<span>{{ country.name }}</span>
+								</div>
+								<div class="col-md-6">
+									<strong></strong>
+								</div>
+							</li>
+						</ul>
 					</div>
 				</div>
-				<div class="col-md-12">
-					<div class="alert alert-danger"
-					     v-show="listErrorMessage.length"
-					     ref="listErrorMessage">
-						<button class="close"
-						        data-close="alert"
-						        @click="clearError('listErrorMessage')"></button>
-						<span>{{ listErrorMessage }}</span>
-					</div>
-				</div>
-				<div class="portlet-body relative-block">
-					<loading-screen :show="loadingCountries && activeLocationId !== undefined"
-					                :color="'#2C3E50'"
-					                :display="'inline'"></loading-screen>
-					<div class="mt-element-list margin-top-15"
-					     v-if="countries.length && !loadingCountries">
-						<div class="mt-list-container list-news ext-1 no-border">
-							<ul>
-								<li class="mt-list-item actions-at-left margin-top-15 three-vertical-actions"
-								    v-for="country in countries"
-								    :id="'country-' + country.id"
-								    :key="country.id">
-									<div class="list-item-actions">
-										<el-tooltip v-if="$root.permissions['localization countries update']"
-										            content="Edit"
-										            effect="light"
-										            placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="editCountry(country, $event)">
-												<i class="fa fa-lg fa-pencil"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['localization countries read'] && !$root.permissions['localization countries update']"
-										            content="View"
-										            effect="light"
-										            placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="editCountry(country, $event)">
-												<i class="fa fa-lg fa-eye"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['localization countries delete']"
-										            content="Delete"
-										            effect="light"
-										            placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="confirmDelete(country, $event)">
-												<i class="fa fa-lg fa-trash"></i>
-											</a>
-										</el-tooltip>
-									</div>
-									<div class="col-md-12 bold uppercase font-red">
-										<span>{{ country.name }}</span>
-									</div>
-									<div class="col-md-6">
-										<strong></strong>
-									</div>
-								</li>
-							</ul>
-						</div>
-					</div>
-					<div class="margin-top-20">
-						<no-results :show="!countries.length && !loadingCountries"
-						            :type="'countries'"></no-results>
-					</div>
+				<div class="margin-top-20">
+					<no-results :show="!countries.length && !loadingCountries"
+								:type="'countries'"></no-results>
 				</div>
 			</div>
 		</div>
@@ -375,7 +359,6 @@ export default {
 		createCountry () {
 			var _this = this
 			_this.clearError('createErrorMessage')
-			this.newCountry.location_id = this.activeLocationId
 
 			return _this
 				.validateNewCountryData()
@@ -512,7 +495,6 @@ export default {
 			var _this = this
 			_this.clearError('editErrorMessage')
 			let payload = { ...this.countryToEdit }
-			payload.location_id = this.activeLocationId
 
 			return _this
 				.validateEditedCountryData()
