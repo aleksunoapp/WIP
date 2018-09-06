@@ -120,12 +120,12 @@ export default {
 				customer_concern: {
 					'en-ca': 'Customer Concern',
 					'en-us': 'Customer Concern',
-					'fr-ca': ''
+					'fr-ca': 'Préoccupations'
 				},
 				customer_comments: {
 					'en-ca': 'Customer comments',
 					'en-us': 'Customer comments',
-					'fr-ca': ''
+					'fr-ca': 'Commentaires du client'
 				},
 				advisor_comments: {
 					'en-ca': 'Advisor comments',
