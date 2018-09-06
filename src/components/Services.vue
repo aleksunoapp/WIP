@@ -29,7 +29,7 @@
 						</template>
 					</template>
 				</template>
-				<template v-if="!service.subServices || service.category === '5' || service.category === '6'">
+				<template v-if="!service.subServices || service.category === '6' || service.category === '7'">
 					<template v-if="service.isSelected && service.category !== '4' && service.category !== '3'">
 						<div class="summary-table-row summary-item">
 							<div class="summary-table-cell">
@@ -867,7 +867,7 @@ export default {
 		 */
 		checkSubServices (service) {
 			let isSelected = false
-			if (service.category === '5' || service.category === '6' || service.category === '7') {
+			if (service.category === '6' || service.category === '7' || service.category === '8') {
 				return isSelected
 			}
 			if (service.subServices) {

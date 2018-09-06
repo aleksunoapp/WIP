@@ -173,11 +173,11 @@ var authenticateToken = {
 								} else {
 									inspectionCounts.approvedCount += 1
 								}
-							} else if (service.category === '5') {
-								inspectionCounts.concernCount += 1
 							} else if (service.category === '6') {
 								inspectionCounts.concernCount += 1
 							} else if (service.category === '7') {
+								inspectionCounts.concernCount += 1
+							} else if (service.category === '8') {
 								inspectionCounts.concernCount += 1
 							}
 						})

@@ -11,19 +11,19 @@
 						<div 
 							:class="{
 								'green-bg' : 
-									viewingService.category !== '5' &&
-									viewingService.category !== '6',
+									viewingService.category !== '6' &&
+									viewingService.category !== '7',
 								'grey-bg' : 
-									viewingService.category === '5' ||
-									viewingService.category === '6'
+									viewingService.category === '6' ||
+									viewingService.category === '7'
 							}">
 							<p v-if="
-								viewingService.category !== '5' &&
-								viewingService.category !== '6'">
+								viewingService.category !== '6' &&
+								viewingService.category !== '7'">
 								{{ langTerms.recommendation[$root.meta.local.toLowerCase()] }}</p>
 							<p v-if="
-								viewingService.category === '5' || 
-								viewingService.category === '6'
+								viewingService.category === '6' || 
+								viewingService.category === '7'
 							">{{ langTerms.customer_concern[$root.meta.local.toLowerCase()] }}</p>
 							<h2>{{ viewingService.name }}</h2>
 						</div>

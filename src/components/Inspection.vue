@@ -115,9 +115,9 @@ ADVISOR COMMENTS
 								<template v-if="
 									(
 										category.id === '5' &&
-										(service.category === '5' ||
-										service.category === '6' ||
-										service.category === '7')
+										(service.category === '6' ||
+										service.category === '7' ||
+										service.category === '8')
 									)">
 									<div 
 										class="summary-table-row summary-item" 
@@ -126,7 +126,7 @@ ADVISOR COMMENTS
 										<div class="summary-table-cell">
 											<span 
 												class="information-icon" 
-												:class="{'no-icon-bg': category.serviceCategoryType === 'PASS' || service.category === '7'}" 
+												:class="{'no-icon-bg': category.serviceCategoryType === 'PASS' || service.category === '8'}" 
 												@click="openServiceModal(service)">
 											</span>
 											<span 
@@ -138,15 +138,15 @@ ADVISOR COMMENTS
 										<div class="summary-table-cell">
 											<div class="dot-caption-container">
 												<div class="dot-container">
-													<span :class="{'red-dot' : service.category === '5'}"></span>
-													<span :class="{'yellow-dot' : service.category === '6'}"></span>
-													<span :class="{'green-dot' : service.category === '7'}"></span>
+													<span :class="{'red-dot' : service.category === '6'}"></span>
+													<span :class="{'yellow-dot' : service.category === '7'}"></span>
+													<span :class="{'green-dot' : service.category === '8'}"></span>
 												</div>
 												<span class="dot-caption" v-if="service.subServices">{{service.subServices[0].name}}</span>
 											</div>
 										</div>
 										<div class="summary-table-cell">
-											<template v-if="category.serviceCategoryType !== 'PASS' && service.category !== '7'">
+											<template v-if="category.serviceCategoryType !== 'PASS' && service.category !== '8'">
 												<span class="price" v-if="service.price !== 0">{{ formatCurrency(service.price) }}</span>
 												<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 												<div class="service-checkbox">
@@ -226,9 +226,9 @@ ADVISOR COMMENTS
 									) || 
 									(
 										category.id === '5' &&
-										(service.category === '5' ||
-										service.category === '6' ||
-										service.category === '7')
+										(service.category === '6' ||
+										service.category === '7' ||
+										service.category === '8')
 									)">
 									<template v-if="service.subServices">
 										<div class="summary-table-row summary-item" v-for="subService in service.subServices" :key="`subService-${subService.id}`">
@@ -237,9 +237,9 @@ ADVISOR COMMENTS
 												<span class="service-name" v-bind:class="{'bold': (subService.isHighlighted ===  true)}"><span v-if="subService.isHighlighted === true">* </span>{{ subService.name }}</span>
 											</div>
 											<div class="summary-table-cell">
-												<span :class="{'red-dot' : service.category === '5'}"></span>
-												<span :class="{'yellow-dot' : service.category === '6'}"></span>
-												<span :class="{'green-dot' : service.category === '7'}"></span>
+												<span :class="{'red-dot' : service.category === '6'}"></span>
+												<span :class="{'yellow-dot' : service.category === '7'}"></span>
+												<span :class="{'green-dot' : service.category === '8'}"></span>
 											</div>
 											<div class="summary-table-cell">
 												<template v-if="category.serviceCategoryType !== 'PASS'">
@@ -262,9 +262,9 @@ ADVISOR COMMENTS
 											<span class="service-name" v-bind:class="{'bold': (service.isHighlighted === true)}"><span v-if="service.isHighlighted === true">* </span>{{ service.name }}</span>
 										</div>
 										<div class="summary-table-cell">
-											<span :class="{'red-dot' : service.category === '5'}"></span>
-											<span :class="{'yellow-dot' : service.category === '6'}"></span>
-											<span :class="{'green-dot' : service.category === '7'}"></span>
+											<span :class="{'red-dot' : service.category === '6'}"></span>
+											<span :class="{'yellow-dot' : service.category === '7'}"></span>
+											<span :class="{'green-dot' : service.category === '8'}"></span>
 										</div>
 										<div class="summary-table-cell">
 											<template v-if="category.serviceCategoryType !== 'PASS'">
@@ -791,9 +791,9 @@ export default {
 						(service.category === category.id) ||
 						(category.id === '5' &&
 							(
-								service.category === '5' ||
 								service.category === '6' ||
-								service.category === '7'
+								service.category === '7' ||
+								service.category === '8'
 							)
 						)
 					) {
@@ -819,9 +819,9 @@ export default {
 						(service.category === category.id) ||
 						(category.id === '5' &&
 							(
-								service.category === '5' ||
 								service.category === '6' ||
-								service.category === '7'
+								service.category === '7' ||
+								service.category === '8'
 							)
 						)
 					) {
@@ -863,9 +863,9 @@ export default {
 						(service.category === category.id) ||
 						(category.id === '5' &&
 							(
-								service.category === '5' ||
 								service.category === '6' ||
-								service.category === '7'
+								service.category === '7' ||
+								service.category === '8'
 							)
 						)
 					) {
