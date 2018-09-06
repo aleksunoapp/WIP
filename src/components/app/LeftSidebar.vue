@@ -274,6 +274,16 @@
 								<span class="title">Delivery Hours</span>
 							</router-link>
 						</li>
+						<li v-if="can('stores delivery_profile read')"
+						    class="nav-item"
+						    :class="{'active': currentRoute === 'store_manager' && currentSubRoute === 'delivery_zones'}"
+						    id="store_manager_delivery_zones_link">
+							<router-link to="/app/store_manager/delivery_zones"
+							             class="nav-link">
+								<i class="fa fa-truck"></i>
+								<span class="title">Delivery Zones</span>
+							</router-link>
+						</li>
 					</ul>
 				</li>
 				<li v-if="can('news_feed read')"
@@ -594,21 +604,32 @@
 						<span class="title">Promo codes</span>
 					</router-link>
 				</li>
-				<li v-if="can('promotions read')"
+				<li v-if="canAny(['promotions read', 'promotions geolocations read'])"
 				    class="nav-item"
-				    :class="{'active': currentRoute === 'promotions'}">
-					<router-link to="/app/promotions"
-					             class="nav-link">
+				    :class="{'active': currentRoute === 'promotions'}"
+				    id="promotions_manager_link">
+					<a class="nav-link nav-toggle unselectable"
+					   @click="toggleNavigation($event)">
 						<i class="fa fa-money"></i>
-						<span class="title">Promotions</span>
+						<span class="title">Promotions Manager</span>
 						<i class="fa fa-chevron-down pull-right"
 						   aria-hidden="true"></i>
-					</router-link>
+					</a>
 					<ul class="sub-menu">
+						<li v-if="can('promotions read')"
+						    class="nav-item"
+						    :class="{'active': currentRoute === 'promotions' && currentSubRoute === ''}"
+						    id="promotions_manager_promotions_link">
+							<router-link to="/app/promotions"
+							             class="nav-link">
+								<i class="fa fa-money"></i>
+								<span class="title">Promotions</span>
+							</router-link>
+						</li>
 						<li v-if="can('promotions geolocations read')"
 						    class="nav-item"
 						    :class="{'active': currentRoute === 'promotions' && currentSubRoute === 'geolocations'}"
-						    id="promotions_geolocations_link">
+						    id="promotions_manager_geolocations_link">
 							<router-link to="/app/promotions/geolocations"
 							             class="nav-link">
 								<i class="fa fa-compass"></i>
@@ -651,6 +672,16 @@
 							             class="nav-link">
 								<i class="fa fa-language"></i>
 								<span class="title">Languages</span>
+							</router-link>
+						</li>
+						<li v-if="can('localization locale_regions read')"
+						    class="nav-item"
+						    :class="{'active': currentRoute === 'localization' && currentSubRoute === 'language_regions'}"
+						    id="localization_language_regions_link">
+							<router-link to="/app/localization/language_regions"
+							             class="nav-link">
+								<i class="fa fa-globe"></i>
+								<span class="title">Language Regions</span>
 							</router-link>
 						</li>
 						<li v-if="can('localization read')"

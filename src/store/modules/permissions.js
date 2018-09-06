@@ -6,9 +6,15 @@ const state = {
 
 export const getters = {
 	can: (state) => (permission) => {
+		if (permission === undefined) {
+			return true
+		}
 		return state.permissions[permission]
 	},
 	canAny: (state) => (permissions) => {
+		if (permissions === undefined || permissions.length === 0) {
+			return true
+		}
 		let any = false
 		for (let i = 0; i < permissions.length; i++) {
 			if (state.permissions[permissions[i]]) {

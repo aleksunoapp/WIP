@@ -721,9 +721,6 @@ div.tab-pane::-webkit-scrollbar-track {
 .fade-enter-active {
 	transition: opacity 0.4s;
 }
-.fade-leave {
-	/*opacity:1;*/
-}
 .fade-leave-active {
 	transition: opacity 0.4s;
 	opacity: 0;

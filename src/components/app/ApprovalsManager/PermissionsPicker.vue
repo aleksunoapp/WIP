@@ -40,7 +40,7 @@
 					<label for="form_control_permissions_search">Search permissions</label>
 				</div>
 			</div>
-			<div class="half-width">
+			<div class="half-width"> 
 				<pagination class="pull-left"
 				            :passedPage="permissionsPage"
 				            :numPages="Math.ceil(permissionsSearchResults.length / 10)"
