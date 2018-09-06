@@ -1367,22 +1367,21 @@ img {
 
 .info-modal-concerns {
 	width: 100%;
-	padding: 5px;
+	padding: 10px;
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
 	font-size: 14px;
 }
-.info-modal-concerns p {
+.info-modal-concerns .customer-comments-label,
+.info-modal-concerns .advisor-comments-label {
 	margin: 5px 0;
 	text-transform: uppercase;
 }
-.info-modal-concerns input {
-	font-size: 18px;
-	border: 1px solid rgba(216, 216, 216, 1);
-	width: 100%;
-	box-sizing: border-box;
-	padding: 5px 10px;
+.info-modal-concerns .customer-comments,
+.info-modal-concerns .advisor-comments {
+	margin: 5px 0;
+	text-align: start;
 }
 
 .info-modal-info-bottom {

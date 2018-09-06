@@ -32,15 +32,26 @@
 							viewingService.category !== '7'
 						">{{ viewingService.comment }}</p>
 					</div>
-					<div class="info-modal-concerns">
-						<p for="customer-comments">
+					<div class="info-modal-concerns"
+						v-if="
+							(viewingService.comment) || 
+							(
+								viewingService.subServices && 
+								viewingService.subServices.length && 
+								viewingService.subServices[0].comment
+							)">
+						<p class="customer-comments-label" v-if="viewingService.comment">
 							{{ langTerms.customer_comments[$root.meta.local.toLowerCase()] }}
 						</p>
-						<input id="customer-comments" type="text">
-						<p for="advisor-comments">
+						<p class="customer-comments" v-if="viewingService.comment">
+							{{viewingService.comment}}
+						</p>
+						<p class="advisor-comments-label" v-if="viewingService.subServices && viewingService.subServices.length && viewingService.subServices[0].comment">
 							{{ langTerms.advisor_comments[$root.meta.local.toLowerCase()] }}
 						</p>
-						<input id="advisor-comments" type="text">
+						<p class="advisor-comments" v-if="viewingService.subServices && viewingService.subServices.length && viewingService.subServices[0].comment">
+							{{viewingService.subServices[0].comment}}
+						</p>
 					</div>
 					<div class="info-modal-info-bottom">
 						<div class="info-modal-contact">
