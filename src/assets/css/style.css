@@ -1370,9 +1370,11 @@ img {
 	padding: 5px;
 	display: flex;
 	flex-direction: column;
-	align-items: flex-start;	
+	align-items: flex-start;
+	font-size: 14px;
 }
-.info-modal-concerns label {
+.info-modal-concerns p {
+	margin: 5px 0;
 	text-transform: uppercase;
 }
 .info-modal-concerns input {

@@ -27,16 +27,19 @@
 							">{{ langTerms.customer_concern[$root.meta.local.toLowerCase()] }}</p>
 							<h2>{{ viewingService.name }}</h2>
 						</div>
-						<p>{{ viewingService.comment }}</p>
+						<p v-if="
+							viewingService.category !== '6' &&
+							viewingService.category !== '7'
+						">{{ viewingService.comment }}</p>
 					</div>
 					<div class="info-modal-concerns">
-						<label for="customer-comments">
+						<p for="customer-comments">
 							{{ langTerms.customer_comments[$root.meta.local.toLowerCase()] }}
-						</label>
+						</p>
 						<input id="customer-comments" type="text">
-						<label for="advisor-comments">
+						<p for="advisor-comments">
 							{{ langTerms.advisor_comments[$root.meta.local.toLowerCase()] }}
-						</label>
+						</p>
 						<input id="advisor-comments" type="text">
 					</div>
 					<div class="info-modal-info-bottom">
@@ -115,8 +118,8 @@ export default {
 					'fr-ca': 'Recommandation'
 				},
 				customer_concern: {
-					'en-ca': 'Customer concern',
-					'en-us': 'Customer concern',
+					'en-ca': 'Customer Concern',
+					'en-us': 'Customer Concern',
 					'fr-ca': ''
 				},
 				customer_comments: {
