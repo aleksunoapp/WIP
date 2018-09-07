@@ -518,7 +518,6 @@ export default {
 							disabledButton.complete()
 						})
 						.catch(reason => {
-							console.log(reason)
 							disabledButton.cancel()
 							ajaxErrorHandler({
 								reason,

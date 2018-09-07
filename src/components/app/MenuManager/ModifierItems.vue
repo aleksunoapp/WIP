@@ -881,7 +881,6 @@ export default {
 		 */
 		displayDeleteItemModal (modifierItem, event) {
 			event.stopPropagation()
-			console.log('displayDeleteItemModal', modifierItem.id)
 			this.selectedItemId = modifierItem.id
 			this.deleteItemModalActive = true
 		},

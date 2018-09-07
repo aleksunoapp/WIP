@@ -1575,9 +1575,7 @@ export default {
 						? (createStoreVue.placesApi.province = true)
 						: (createStoreVue.placesApi.province = false)
 				})
-				.catch(reason => {
-					console.log('Autocomplete error:', reason)
-				})
+				.catch(reason => {})
 		},
 		/**
 		 * To add holiday hours emitted by the child modal, to the list of holiday hours and submits the same to the backend.

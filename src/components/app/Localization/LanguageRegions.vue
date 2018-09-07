@@ -525,7 +525,6 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		querySearchEdit: debounce(function (string, cb) {
-			console.log('querySearch')
 			var _this = this
 			if (_this.languageRegionToEdit.name.length >= 3) {
 				AppFunctions.getGoogleLocationSearchResults(
@@ -592,12 +591,9 @@ export default {
 						]
 					]
 					const center = response.geometry.location
-					console.log({bounds, center})
 					_this.$refs[mapReference].panAndCenter(bounds, center)
 				})
-				.catch(reason => {
-					console.log('Autocomplete error:', reason)
-				})
+				.catch(reason => {})
 		},
 		/**
 		 * To raise the autocomplete label.
@@ -855,7 +851,6 @@ export default {
 						})
 				})
 				.catch(reason => {
-					console.log(reason)
 					_this.editErrorMessage = reason
 					_this.$scrollTo(_this.$refs.editErrorMessage, 1000, {
 						offset: -50

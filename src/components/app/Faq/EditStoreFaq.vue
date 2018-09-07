@@ -143,7 +143,6 @@ export default {
 					if (response.code === 200 && response.status === 'ok') {
 						_this.countries = response.payload
 						_this.$nextTick(function () {
-							console.log('tick', _this.countries.length)
 							_this.loadingCountries = false
 						})
 					} else {

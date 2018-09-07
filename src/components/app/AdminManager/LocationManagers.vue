@@ -818,7 +818,6 @@ export default {
 						})
 				})
 				.catch(reason => {
-					console.log(reason)
 					locationManagersVue.assignRolesErrorMessage = reason
 					locationManagersVue.$scrollTo(
 						locationManagersVue.$refs.assignRolesErrorMessage,
@@ -847,7 +846,7 @@ export default {
 						...locationManager,
 						roles: []
 					}
-					console.log(err)
+					err
 				})
 				.finally(() => {
 					locationManagersVue.showAssignRolesModal = true

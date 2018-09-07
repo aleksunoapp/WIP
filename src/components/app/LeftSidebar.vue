@@ -785,16 +785,7 @@ export default {
 						appVue.$root.requestsPending = false
 					}
 				})
-				.catch(reason => {
-					console.log(`
-					Requests are not currently available.
-					${
-						reason.responseJSON && reason.responseJSON.message
-							? reason.responseJSON.message
-							: ''
-					}
-				`)
-				})
+				.catch(reason => {})
 		},
 		/**
 		 * To set the name of the current route and sub route for selecting active navigation.

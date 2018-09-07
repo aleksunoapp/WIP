@@ -1972,9 +1972,7 @@ export default {
 						}
 					}
 				})
-				.catch(reason => {
-					console.log('Autocomplete error:', reason)
-				})
+				.catch(reason => {})
 		},
 		/**
 		 * To clear the location details set using google search.

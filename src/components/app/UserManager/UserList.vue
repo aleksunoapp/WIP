@@ -410,7 +410,6 @@ export default {
 					digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
 				)
 			} catch (err) {
-				console.log('formatPhone', err)
 				return '--'
 			}
 		},

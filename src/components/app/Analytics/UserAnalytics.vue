@@ -196,7 +196,6 @@ export default {
 			try {
 				return number.toLocaleString('en-US', { style: 'decimal' })
 			} catch (err) {
-				console.log(err)
 				return 'n/a'
 			}
 		},
@@ -213,7 +212,6 @@ export default {
 					style: 'decimal'
 				})
 			} catch (err) {
-				console.log(err)
 				return 'n/a'
 			}
 		},

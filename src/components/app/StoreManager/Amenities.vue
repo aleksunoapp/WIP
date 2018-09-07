@@ -665,8 +665,6 @@ export default {
 		 */
 		imageEdit () {
 			this.selectImageMode = true
-			const wide = this.selectImageMode
-			console.log('imageEdit', wide)
 		},
 		/**
 		 * To change the page to the main/form view on the modal.

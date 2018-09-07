@@ -447,7 +447,6 @@ export default {
 		 * @returns {undefined}
 		 */
 		flipDefault (image) {
-			console.log(image.default, Number(image.default))
 			this.imageToEdit = {
 				...image,
 				default: Number(image.default) === 1 ? 0 : 1

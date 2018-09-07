@@ -320,7 +320,6 @@ export default {
 					}
 				})
 				.catch(reason => {
-					console.log(reason)
 					ajaxErrorHandler({
 						reason,
 						errorText: 'We could not save the translations',

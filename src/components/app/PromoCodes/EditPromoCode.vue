@@ -357,7 +357,6 @@ export default {
 		 */
 		displayMenuTreeModal (event) {
 			event.preventDefault()
-			console.log('before v-if', this.promoCode.sku_array)
 			this.selectItemsMode = true
 		},
 		/**

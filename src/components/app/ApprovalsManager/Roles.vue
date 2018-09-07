@@ -632,9 +632,7 @@ export default {
 					}
 				}
 				return tree
-			} catch (e) {
-				console.log(e)
-			}
+			} catch (e) {}
 		},
 		/**
 		 * To combine permissions and sub_modules into a field for the tree component to display
@@ -664,9 +662,7 @@ export default {
 				for (var i = 0; i < children.length; i++) {
 					_this.combinePermissionsAndModules(children[i])
 				}
-			} catch (e) {
-				console.log(e)
-			}
+			} catch (e) {}
 		},
 		/**
 		 * To update the permissions selection when editing a role
@@ -909,7 +905,7 @@ export default {
 						...role,
 						permissions: []
 					}
-					console.log(err)
+					err
 				})
 				.finally(() => {
 					rolesVue.showEditRoleModal = true

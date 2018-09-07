@@ -646,20 +646,9 @@ export default {
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						console.log(
-							'selected',
-							geolocationsVue.selectedGeolocation.id,
-							typeof geolocationsVue.selectedGeolocation.id
-						)
-						console.log(
-							'deleted',
-							response.payload.id,
-							typeof response.payload.id
-						)
 						let index = geolocationsVue.geolocations.findIndex(gl => {
 							return gl.id === geolocationsVue.selectedGeolocation.id
 						})
-						console.log('index', index)
 						geolocationsVue.geolocations.splice(index, 1)
 						geolocationsVue.resetSelected()
 						geolocationsVue.closeDeleteModal()

@@ -636,15 +636,6 @@ export default {
 					_this.numPages = response.payload.number_of_pages
 					_this.totalResults = response.payload.number_of_records
 					_this.loadingResourceData = false
-
-					// _this.preloadImages()
-					// .then(response => {
-					// 	setTimeout(() => {
-					// 	}, 500)
-					// })
-					// .catch(error => {
-					// 	console.log(error)
-					// })
 				})
 				.catch(
 					_this.$root.errorWrapper(e => {

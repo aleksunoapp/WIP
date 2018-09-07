@@ -118,14 +118,13 @@ export default {
 							_this.showCreateSuccess(response.payload)
 						})
 						.catch(err => {
-							console.log(err)
+							err
 						})
 						.finally(() => {
 							_this.creating = false
 						})
 				})
 				.catch(reason => {
-					console.log(reason)
 					// If validation fails then display the error message
 					if (reason) {
 						_this.errorMessage = reason
