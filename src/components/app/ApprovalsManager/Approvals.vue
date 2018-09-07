@@ -325,7 +325,6 @@ export default {
 				})
 				.catch(reason => {
 					approvalsVue.loading = false
-					console.log(reason)
 					ajaxErrorHandler({
 						reason,
 						errorText: 'Could not fetch changes to approve',

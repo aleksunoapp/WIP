@@ -531,7 +531,6 @@ export default {
 		 * @returns {undefined}
 		 */
 		selectAllMenuItems () {
-			console.log('selectAllMenuItems')
 			this.menuAll = !this.menuAll
 			for (var i = 0; i < this.items.length; i++) {
 				var item = this.items[i]

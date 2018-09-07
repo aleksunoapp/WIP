@@ -356,7 +356,6 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		createTag () {
-			console.log('create Tag')
 			var createTagVue = this
 			createTagVue.clearError('errorMessage')
 

@@ -966,7 +966,7 @@ export default {
 						...brandAdmin,
 						roles: []
 					}
-					console.log(err)
+					err
 				})
 				.finally(() => {
 					brandAdminsVue.showAssignRolesModal = true

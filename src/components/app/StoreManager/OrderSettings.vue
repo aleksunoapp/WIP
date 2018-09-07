@@ -843,7 +843,6 @@ export default {
 				})
 				.catch(reason => {
 					orderSettingsVue.loading = false
-					console.log(reason)
 					if (
 						reason.responseJSON.message ===
 						'Location order configurations for selected location doesnt exist.'

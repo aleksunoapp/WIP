@@ -7,20 +7,20 @@
 		<!-- END PAGE BAR -->
 
 		<!-- BEGIN PAGE TITLE-->
-		<h1 class="page-title">Countries</h1>
+		<h1 class="page-title">Platforms</h1>
 		<!-- END PAGE TITLE -->
 		<div class="note note-info">
-			<p>Add and manage countries.</p>
+			<p>Add and manage platforms.</p>
 		</div>
 
 		<!-- BEGIN CREATE -->
 		<div class="portlet box blue-hoki"
-		     v-if="$root.permissions['localization countries create']">
+		     v-if="$root.permissions['localization platforms create']">
 			<div class="portlet-title bg-blue-chambray"
 			     @click="toggleCreatePanel()">
 				<div class="caption">
 					<i class="fa fa-2x fa-plus-circle"></i>
-					Create a New Country
+					Create a New Platform
 				</div>
 				<div class="tools">
 					<a :class="{'expand': !createNewCollapse, 'collapse': createNewCollapse}"></a>
@@ -29,7 +29,7 @@
 			<div class="portlet-body relative-block"
 			     :class="{'display-hide': createNewCollapse}">
 				<form role="form"
-				      @submit.prevent="createCountry()">
+				      @submit.prevent="createPlatform()">
 					<div class="row">
 						<div class="col-md-12">
 							<div class="alert alert-danger"
@@ -45,18 +45,10 @@
 							<div class="form-group form-md-line-input form-md-floating-label">
 								<input type="text"
 								       class="form-control input-sm"
-								       :class="{'edited': newCountry.name.length}"
+								       :class="{'edited': newPlatform.name.length}"
 								       id="form_control_1"
-								       v-model="newCountry.name">
+								       v-model="newPlatform.name">
 								<label for="form_control_1">Name</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newCountry.code.length}"
-								       id="form_control_code"
-								       v-model="newCountry.code">
-								<label for="form_control_code">Code</label>
 							</div>
 							<button type="submit"
 							        class="btn blue pull-right"
@@ -75,14 +67,14 @@
 
 		<!-- BEGIN LIST -->
 		<div class="portlet light portlet-fit bordered margin-top-20"
-				id="countries-container">
+				id="platforms-container">
 			<div class="portlet-title bg-blue-chambray">
 				<div class="menu-image-main">
 					<img src="../../../../static/client_logo.png">
 				</div>
 				<div class="caption">
-					<span class="caption-subject font-default bold uppercase">Countries</span>
-					<div class="caption-desc font-grey-cascade">Create, edit or delete countries and assign languages to them.</div>
+					<span class="caption-subject font-default bold uppercase">Platforms</span>
+					<div class="caption-desc font-grey-cascade">Create, edit or delete platforms.</div>
 				</div>
 			</div>
 			<div class="col-md-12">
@@ -96,48 +88,48 @@
 				</div>
 			</div>
 			<div class="portlet-body relative-block">
-				<loading-screen :show="loadingCountries"
+				<loading-screen :show="loadingPlatforms"
 								:color="'#2C3E50'"
 								:display="'inline'"></loading-screen>
 				<div class="mt-element-list margin-top-15"
-						v-if="countries.length && !loadingCountries">
+						v-if="platforms.length && !loadingPlatforms">
 					<div class="mt-list-container list-news ext-1 no-border">
 						<ul>
 							<li class="mt-list-item actions-at-left margin-top-15 three-vertical-actions"
-								v-for="country in countries"
-								:id="'country-' + country.id"
-								:key="country.id">
+								v-for="platform in platforms"
+								:id="'platform-' + platform.id"
+								:key="platform.id">
 								<div class="list-item-actions">
-									<el-tooltip v-if="$root.permissions['localization countries update']"
+									<el-tooltip v-if="$root.permissions['localization platforms update']"
 												content="Edit"
 												effect="light"
 												placement="right">
 										<a class="btn btn-circle btn-icon-only btn-default"
-											@click="editCountry(country, $event)">
+											@click="editPlatform(platform, $event)">
 											<i class="fa fa-lg fa-pencil"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip v-if="$root.permissions['localization countries read'] && !$root.permissions['localization countries update']"
+									<el-tooltip v-if="$root.permissions['localization platforms read'] && !$root.permissions['localization platforms update']"
 												content="View"
 												effect="light"
 												placement="right">
 										<a class="btn btn-circle btn-icon-only btn-default"
-											@click="editCountry(country, $event)">
+											@click="editPlatform(platform, $event)">
 											<i class="fa fa-lg fa-eye"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip v-if="$root.permissions['localization countries delete']"
+									<el-tooltip v-if="$root.permissions['localization platforms delete']"
 												content="Delete"
 												effect="light"
 												placement="right">
 										<a class="btn btn-circle btn-icon-only btn-default"
-											@click="confirmDelete(country, $event)">
+											@click="confirmDelete(platform, $event)">
 											<i class="fa fa-lg fa-trash"></i>
 										</a>
 									</el-tooltip>
 								</div>
 								<div class="col-md-12 bold uppercase font-red">
-									<span>{{ country.name }}</span>
+									<span>{{ platform.name }}</span>
 								</div>
 								<div class="col-md-6">
 									<strong></strong>
@@ -147,8 +139,8 @@
 					</div>
 				</div>
 				<div class="margin-top-20">
-					<no-results :show="!countries.length && !loadingCountries"
-								:type="'countries'"></no-results>
+					<no-results :show="!platforms.length && !loadingPlatforms"
+								:type="'platforms'"></no-results>
 				</div>
 			</div>
 		</div>
@@ -157,7 +149,8 @@
 		<!-- START EDIT -->
 		<modal :show="showEditModal"
 		       effect="fade"
-		       @closeOnEscape="closeEditModal">
+		       @closeOnEscape="closeEditModal"
+			   ref="editModal">
 			<div slot="modal-header"
 			     class="modal-header">
 				<button type="button"
@@ -165,7 +158,7 @@
 				        @click="closeEditModal()">
 					<span>&times;</span>
 				</button>
-				<h4 class="modal-title center">Edit Country</h4>
+				<h4 class="modal-title center">Edit Platform</h4>
 			</div>
 			<div slot="modal-body"
 			     class="modal-body">
@@ -183,22 +176,13 @@
 						</div>
 						<div class="col-md-12">
 							<div class="form-group form-md-line-input form-md-floating-label">
-								<input :disabled="!$root.permissions['localization countries update']"
+								<input :disabled="!$root.permissions['localization platforms update']"
 								       type="text"
 								       class="form-control input-sm"
-								       :class="{'edited': countryToEdit.name.length}"
+								       :class="{'edited': platformToEdit.name.length}"
 								       id="form_control_1"
-								       v-model="countryToEdit.name">
+								       v-model="platformToEdit.name">
 								<label for="form_control_1">Name</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input :disabled="!$root.permissions['localization countries update']"
-								       type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': countryToEdit.code.length}"
-								       id="form_control_code"
-								       v-model="countryToEdit.code">
-								<label for="form_control_code">Code</label>
 							</div>
 						</div>
 					</div>
@@ -206,14 +190,14 @@
 			</div>
 			<div slot="modal-footer"
 			     class="modal-footer clear">
-				<button v-if="!$root.permissions['localization countries update']"
+				<button v-if="!$root.permissions['localization platforms update']"
 				        @click="closeEditModal()"
 				        type="button"
 				        class="btn blue">
 					Close
 				</button>
 				<button v-else
-				        @click="updateCountry()"
+				        @click="updatePlatform()"
 				        type="submit"
 				        class="btn blue"
 				        :disabled="updating">
@@ -229,7 +213,8 @@
 		<!-- START DELETE -->
 		<modal :show="showDeleteModal"
 		       effect="fade"
-		       @closeOnEscape="closeDeleteModal">
+		       @closeOnEscape="closeDeleteModal"
+			   ref="deleteModal">
 			<div slot="modal-header"
 			     class="modal-header">
 				<button type="button"
@@ -241,13 +226,28 @@
 			</div>
 			<div slot="modal-body"
 			     class="modal-body">
-				<p>Are you sure you want to delete {{countryToDelete.name}}?</p>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="alert alert-danger"
+								v-show="deleteErrorMessage.length"
+								ref="deleteErrorMessage">
+							<button class="close"
+									@click.prevent="clearError('deleteErrorMessage')"></button>
+							<span>{{ deleteErrorMessage }}</span>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12">
+						<p>Are you sure you want to delete {{platformToDelete.name}}?</p>
+					</div>
+				</div>
 			</div>
 			<div slot="modal-footer"
 			     class="modal-footer clear">
 				<button type="button"
 				        class="btn blue"
-				        @click="deleteCountry()"
+				        @click="deletePlatform()"
 				        :disabled="deleting">
 					Delete
 					<i v-show="deleting"
@@ -263,7 +263,7 @@
 <script>
 import Breadcrumb from '@/components/modules/Breadcrumb'
 import LoadingScreen from '@/components/modules/LoadingScreen'
-import CountriesFunctions from '@/controllers/Countries'
+import PlatformsFunctions from '@/controllers/Platforms'
 import Modal from '@/components/modules/Modal'
 import NoResults from '@/components/modules/NoResults'
 import ajaxErrorHandler from '@/controllers/ErrorController'
@@ -271,34 +271,31 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 export default {
 	data () {
 		return {
-			breadcrumbArray: [{ name: 'Countries', link: false }],
+			breadcrumbArray: [{ name: 'Platforms', link: false }],
 
 			createNewCollapse: true,
 			creating: false,
 			createErrorMessage: '',
-			newCountry: {
-				name: '',
-				code: ''
+			newPlatform: {
+				name: ''
 			},
 
-			loadingCountries: false,
+			loadingPlatforms: false,
 			listErrorMessage: '',
-			countries: [],
+			platforms: [],
 
 			showEditModal: false,
 			updating: false,
 			editErrorMessage: '',
-			countryToEdit: {
-				name: '',
-				code: ''
+			platformToEdit: {
+				name: ''
 			},
 
 			showDeleteModal: false,
 			deleting: false,
 			deleteErrorMessage: '',
-			countryToDelete: {
-				name: '',
-				code: ''
+			platformToDelete: {
+				name: ''
 			}
 		}
 	},
@@ -310,12 +307,12 @@ export default {
 	watch: {
 		activeLocationId: function (newId) {
 			if (newId !== undefined) {
-				this.getCountries()
+				this.getPlatforms()
 			}
 		}
 	},
 	mounted () {
-		this.getCountries()
+		this.getPlatforms()
 	},
 	methods: {
 		/**
@@ -336,40 +333,38 @@ export default {
 			this[errorMessageName] = ''
 		},
 		/**
-		 * To check if the country data is valid before submitting to the backend.
+		 * To check if the platform data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateNewCountryData () {
+		validateNewPlatformData () {
 			var _this = this
 			return new Promise(function (resolve, reject) {
-				if (!_this.newCountry.name.length) {
+				if (!_this.newPlatform.name.length) {
 					reject('Name cannot be blank')
-				} else if (!_this.newCountry.code.length) {
-					reject('Code cannot be blank')
 				}
 				resolve('Hurray')
 			})
 		},
 		/**
-		 * To create a new country.
+		 * To create a new platform.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		createCountry () {
+		createPlatform () {
 			var _this = this
 			_this.clearError('createErrorMessage')
 
 			return _this
-				.validateNewCountryData()
+				.validateNewPlatformData()
 				.then(response => {
 					_this.creating = true
-					CountriesFunctions.createCountry(_this.newCountry)
+					PlatformsFunctions.createPlatform(_this.newPlatform)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
 								_this.showCreateSuccess(response.payload)
-								_this.clearNewCountry()
-								_this.getCountries()
+								_this.clearNewPlatform()
+								_this.getPlatforms()
 							} else {
 								_this.createErrorMessage = response.message
 								_this.$scrollTo(_this.$refs.createErrorMessage, 1000, {
@@ -380,7 +375,7 @@ export default {
 						.catch(reason => {
 							ajaxErrorHandler({
 								reason,
-								errorText: 'We could not create the country',
+								errorText: 'We could not create the platform',
 								errorName: 'createErrorMessage',
 								vue: _this
 							})
@@ -402,12 +397,12 @@ export default {
 		 */
 		showCreateSuccess (payload = {}) {
 			let title = 'Success'
-			let text = 'The Country has been created'
+			let text = 'The Platform has been created'
 			let type = 'success'
 
 			if (payload.pending_approval) {
 				title = 'Approval Required'
-				text = 'The Country has been sent for approval'
+				text = 'The Platform has been sent for approval'
 				type = 'info'
 			}
 
@@ -418,89 +413,85 @@ export default {
 			})
 		},
 		/**
-		 * To clear the new country form.
+		 * To clear the new platform form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearNewCountry () {
-			this.newCountry = {
-				location_id: '',
-				name: '',
-				code: ''
+		clearNewPlatform () {
+			this.newPlatform = {
+				name: ''
 			}
 		},
 		/**
-		 * To get a list of all countries.
+		 * To get a list of all platforms.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getCountries () {
+		getPlatforms () {
 			this.clearError('listErrorMessage')
-			this.loadingCountries = true
-			this.countries = []
+			this.loadingPlatforms = true
+			this.platforms = []
 			var _this = this
-			return CountriesFunctions.listCountries()
+			return PlatformsFunctions.listPlatforms()
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						_this.loadingCountries = false
-						_this.countries = response.payload
+						_this.loadingPlatforms = false
+						_this.platforms = response.payload
 					} else {
-						_this.loadingCountries = false
+						_this.loadingPlatforms = false
 					}
 				})
 				.catch(reason => {
-					_this.loadingCountries = false
+					_this.loadingPlatforms = false
 					ajaxErrorHandler({
 						reason,
-						errorText: 'We could not fetch the list of countries',
+						errorText: 'We could not fetch the list of platforms',
 						errorName: 'listErrorMessage',
 						vue: _this
 					})
 				})
 		},
 		/**
-		 * To show the modal to edit an country details.
+		 * To show the modal to edit an platform details.
 		 * @function
-		 * @param {object} country - The selected country.
+		 * @param {object} platform - The selected platform.
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		editCountry (country, event) {
+		editPlatform (platform, event) {
 			event.stopPropagation()
-			this.countryToEdit = { ...country }
+			this.platformToEdit = { ...platform }
 			this.showEditModal = true
 		},
 		/**
-		 * To check if the country data is valid before submitting to the backend.
+		 * To check if the platform data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateEditedCountryData () {
+		validateEditedPlatformData () {
 			var _this = this
 			return new Promise(function (resolve, reject) {
-				if (!_this.countryToEdit.name.length) {
+				if (!_this.platformToEdit.name.length) {
 					reject('Name cannot be blank')
-				} else if (!_this.countryToEdit.code.length) {
-					reject('Code cannot be blank')
 				}
 				resolve('Hurray')
 			})
 		},
 		/**
-		 * To update a country.
+		 * To update a platform.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		updateCountry () {
+		updatePlatform () {
 			var _this = this
 			_this.clearError('editErrorMessage')
-			let payload = { ...this.countryToEdit }
+			let payload = { ...this.platformToEdit }
 
 			return _this
-				.validateEditedCountryData()
+				.validateEditedPlatformData()
 				.then(response => {
 					_this.updating = true
-					CountriesFunctions.updateCountry(
+					PlatformsFunctions.updatePlatform(
 						payload,
 						_this.$root.appId,
 						_this.$root.appSecret,
@@ -508,7 +499,7 @@ export default {
 					)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
-								_this.getCountries()
+								_this.getPlatforms()
 								_this.closeEditModal()
 								_this.resetEdit()
 								_this.showEditSuccess(response.payload)
@@ -522,9 +513,10 @@ export default {
 						.catch(reason => {
 							ajaxErrorHandler({
 								reason,
-								errorText: 'We could not update the country',
+								errorText: 'We could not update the platform',
 								errorName: 'editErrorMessage',
-								vue: _this
+								vue: _this,
+								containerRef: 'editModal'
 							})
 						})
 						.finally(() => {
@@ -544,12 +536,12 @@ export default {
 		 */
 		showEditSuccess (payload = {}) {
 			let title = 'Success'
-			let text = 'The Country has been saved'
+			let text = 'The Platform has been saved'
 			let type = 'success'
 
 			if (payload.pending_approval) {
 				title = 'Approval Required'
-				text = 'The Country has been sent for approval'
+				text = 'The Platform has been sent for approval'
 				type = 'info'
 			}
 
@@ -573,22 +565,20 @@ export default {
 		 * @returns {undefined}
 		 */
 		resetEdit () {
-			this.countryToEdit = {
-				location_id: '',
-				name: '',
-				code: ''
+			this.platformToEdit = {
+				name: ''
 			}
 		},
 		/**
-		 * To display the modal for deleting an country.
+		 * To display the modal for deleting an platform.
 		 * @function
-		 * @param {object} country - The selected country
+		 * @param {object} platform - The selected platform
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		confirmDelete (country, event) {
+		confirmDelete (platform, event) {
 			event.stopPropagation()
-			this.countryToDelete = { ...country }
+			this.platformToDelete = { ...platform }
 			this.showDeleteModal = true
 		},
 		/**
@@ -596,13 +586,13 @@ export default {
 		 * @function
 		 * @returns {undefined}
 		 */
-		deleteCountry () {
+		deletePlatform () {
 			this.deleting = true
 			var _this = this
-			return CountriesFunctions.deleteCountry(_this.countryToDelete)
+			return PlatformsFunctions.deletePlatform(_this.platformToDelete)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						_this.getCountries()
+						_this.getPlatforms()
 						_this.closeDeleteModal()
 						_this.showDeleteSuccess(response.payload)
 					}
@@ -610,9 +600,10 @@ export default {
 				.catch(reason => {
 					ajaxErrorHandler({
 						reason,
-						errorText: `We could not delete ${this.countryToDelete.name}`,
+						errorText: `We could not delete ${this.platformToDelete.name}`,
 						errorName: 'deleteErrorMessage',
-						vue: _this
+						vue: _this,
+						containerRef: 'deleteModal'
 					})
 				})
 				.finally(() => {
@@ -627,7 +618,7 @@ export default {
 		 */
 		showDeleteSuccess (payload = {}) {
 			let title = 'Success'
-			let text = 'The Country has been deleted'
+			let text = 'The Platform has been deleted'
 			let type = 'success'
 
 			if (payload.pending_approval) {

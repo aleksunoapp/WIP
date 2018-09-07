@@ -367,7 +367,6 @@ export default {
 		currentActiveSearchPageItems () {
 			let begin = this.resultsPerPage * (this.searchActivePage - 1)
 			let end = this.resultsPerPage * (this.searchActivePage - 1) + this.resultsPerPage
-			console.log({begin, end})
 			return this.userSort(this.filteredResults).slice(
 				begin,
 				end

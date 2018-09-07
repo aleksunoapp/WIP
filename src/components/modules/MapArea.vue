@@ -225,6 +225,25 @@ export default {
 		},
 
 		/**
+		 * To zoom and center the map on a region
+		 * @function
+		 * @param {array} bounds - An array of NE and SE corner coordinate arrays
+		 * @param {object} center - A {lat, lng} coordinates object
+		 * @returns {undefined}
+		 */
+		panAndCenter (bounds, center) {
+			let mapBounds = new google.maps.LatLngBounds()
+			for (let i = 0; i < bounds.length; i++) {
+				mapBounds.extend({
+					lat: bounds[i][0],
+					lng: bounds[i][1]
+				})
+			}
+			this.map.fitBounds(mapBounds)
+			this.map.setCenter(center)
+		},
+
+		/**
 		 * To display the polygon.
 		 * @function
 		 * @returns {undefined}

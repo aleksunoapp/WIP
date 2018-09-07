@@ -743,7 +743,13 @@ export default {
 							let weekStartingMonday = response.payload
 							weekStartingMonday.push(response.payload[sundayIndex])
 							weekStartingMonday.splice(sundayIndex, 1)
-							_this.existingHours = weekStartingMonday
+							_this.existingHours = weekStartingMonday.map(day => {
+								return {
+									...day,
+									open_time: day.open_time.substr(0, 5),
+									close_time: day.close_time.substr(0, 5)
+								}
+							})
 						}
 					}
 				})

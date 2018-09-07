@@ -125,7 +125,7 @@ export default {
 							_this.showUpdateSuccess(response.payload)
 						})
 						.catch(err => {
-							console.log(err)
+							err
 						})
 						.finally(() => {
 							_this.updating = false

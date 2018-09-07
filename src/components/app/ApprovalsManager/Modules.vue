@@ -1007,9 +1007,7 @@ export default {
 						sub_modules: tree
 					}
 				]
-			} catch (e) {
-				console.log(e)
-			}
+			} catch (e) {}
 		},
 		/**
 		 * To get a list of brand admins.
