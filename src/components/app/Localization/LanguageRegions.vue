@@ -253,7 +253,8 @@
 							          width="100%"
 							          height="500px"
 							          @polygonEmitted="updateLanguageRegionToEdit"
-							          class="margin-top-20">
+							          class="margin-top-20"
+									  ref="editMap">
 							</map-area>
 						</div>
 					</div>

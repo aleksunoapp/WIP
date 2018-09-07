@@ -433,7 +433,7 @@ export default {
 
 <style>
 body .modal {
-	z-index: 10501;
+	z-index: 100;
 }
 .app-bg {
 	position: absolute;
