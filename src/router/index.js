@@ -79,6 +79,7 @@ import Promotions from '@/components/app/Promotions'
 import Geolocations from '@/components/app/Promotions/Geolocations'
 // Localization
 import Countries from '@/components/app/Localization/Countries'
+import Platforms from '@/components/app/Localization/Platforms'
 import Languages from '@/components/app/Localization/Languages'
 import LanguageRegions from '@/components/app/Localization/LanguageRegions'
 import Terms from '@/components/app/Localization/Terms'
@@ -780,6 +781,14 @@ export const routes = [
 				component: Countries,
 				meta: {
 					permissions: ['localization countries read']
+				}
+			},
+			{
+				path: 'localization/platforms',
+				name: 'Platforms',
+				component: Platforms,
+				meta: {
+					permissions: ['localization platforms read']
 				}
 			},
 			{

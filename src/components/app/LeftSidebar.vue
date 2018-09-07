@@ -660,8 +660,18 @@
 						    id="localization_countries_link">
 							<router-link to="/app/localization/countries"
 							             class="nav-link">
-								<i class="fa fa-globe"></i>
+								<i class="fa fa-flag-o"></i>
 								<span class="title">Countries</span>
+							</router-link>
+						</li>
+						<li v-if="can('localization platforms read')"
+						    class="nav-item"
+						    :class="{'active': currentRoute === 'localization' && currentSubRoute === 'platforms'}"
+						    id="localization_platforms_link">
+							<router-link to="/app/localization/platforms"
+							             class="nav-link">
+								<i class="fa fa-mobile"></i>
+								<span class="title">Platforms</span>
 							</router-link>
 						</li>
 						<li v-if="can('localization languages read')"
