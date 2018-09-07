@@ -720,7 +720,6 @@ export default {
 				api_key: null,
 				menu_tier_id: null
 			},
-			displayLocationsDropdown: false,
 			locationDetails: {},
 			activeTab: 0,
 			createStoreMode: 'info',
@@ -1509,22 +1508,10 @@ export default {
 		 * @returns {undefined}
 		 */
 		selectLocation (location) {
-			if (this.displayLocationsDropdown) {
-				this.displayLocationsDropdown = false
-			}
 			var commaIndex = location.description.indexOf(',')
 			var locationSubString = location.description.substring(0, commaIndex)
 			this.newStore.address_line_1 = locationSubString
 			this.getGoogleLocationDetails(location.place_id)
-		},
-		/**
-		 * To show/hide the location suggestions dropdown.
-		 * @function
-		 * @param {boolean} focus - To determine whether to show/hide the dropdown.
-		 * @returns {undefined}
-		 */
-		locationFocus (focus) {
-			this.displayLocationsDropdown = focus
 		},
 		/**
 		 * To get complete details of a particular location using the google places API.

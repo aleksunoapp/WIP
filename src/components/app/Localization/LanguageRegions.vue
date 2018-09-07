@@ -39,13 +39,26 @@
 							</div>
 						</div>
 						<div class="col-md-6">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newLanguageRegion.name.length}"
-								       id="form_control_create_name"
-								       v-model="newLanguageRegion.name">
-								<label for="form_control_create_name">Name</label>
+							<div class="autocomplete-wrapper">
+								<label for="form_control_create_name"
+								       class="fake-md-label"
+								       :class="{
+											'raised' : newLanguageRegion.name.length || 
+											autocompleteFocusedCreate
+										}">
+									Name
+								</label>
+								<el-autocomplete class="inline-input md-autocomplete"
+								                 :class="{'raised' : newLanguageRegion.name}"
+								                 label="Name"
+								                 v-model="newLanguageRegion.name"
+								                 :fetch-suggestions="querySearchCreate"
+								                 :trigger-on-focus="false"
+								                 @select="selectLocationCreate"
+								                 @focus="focusAutocompleteCreate"
+								                 @blur="blurAutocompleteCreate"
+								                 id="form_control_create_name">
+								</el-autocomplete>
 							</div>
 							<label>
 								Language:
@@ -63,12 +76,13 @@
 								</el-select>
 							</label>
 							<map-area v-if="!createNewCollapse"
-										:lat="latitude"
-										:lng="longitude"
-										width="100%"
-										height="500px"
-										@polygonEmitted="updateNewLanguageRegion"
-										class="margin-top-20">
+							          :lat="latitude"
+							          :lng="longitude"
+							          width="100%"
+							          height="500px"
+							          ref="createMap"
+							          @polygonEmitted="updateNewLanguageRegion"
+							          class="margin-top-20">
 							</map-area>
 							<button type="submit"
 							        class="btn blue pull-right"
@@ -87,7 +101,7 @@
 
 		<!-- BEGIN LIST -->
 		<div class="portlet light portlet-fit bordered margin-top-20"
-				id="languages-container">
+		     id="languages-container">
 			<div class="portlet-title bg-blue-chambray">
 				<div class="menu-image-main">
 					<img src="../../../../static/client_logo.png">
@@ -99,50 +113,50 @@
 			</div>
 			<div class="col-md-12">
 				<div class="alert alert-danger"
-						v-show="listErrorMessage.length"
-						ref="listErrorMessage">
+				     v-show="listErrorMessage.length"
+				     ref="listErrorMessage">
 					<button class="close"
-							data-close="alert"
-							@click="clearError('listErrorMessage')"></button>
+					        data-close="alert"
+					        @click="clearError('listErrorMessage')"></button>
 					<span>{{ listErrorMessage }}</span>
 				</div>
 			</div>
 			<div class="portlet-body relative-block">
 				<loading-screen :show="loadingLanguageRegions"
-								:color="'#2C3E50'"
-								:display="'inline'"></loading-screen>
+				                :color="'#2C3E50'"
+				                :display="'inline'"></loading-screen>
 				<div class="mt-element-list margin-top-15"
-						v-if="languageRegions.length && !loadingLanguageRegions">
+				     v-if="languageRegions.length && !loadingLanguageRegions">
 					<div class="mt-list-container list-news ext-1 no-border">
 						<ul>
 							<li class="mt-list-item actions-at-left margin-top-15 three-vertical-actions"
-								v-for="languageRegion in languageRegions"
-								:key="languageRegion.id">
+							    v-for="languageRegion in languageRegions"
+							    :key="languageRegion.id">
 								<div class="list-item-actions">
 									<el-tooltip v-if="can('localization locale_regions update')"
-												content="Edit"
-												effect="light"
-												placement="right">
+									            content="Edit"
+									            effect="light"
+									            placement="right">
 										<a class="btn btn-circle btn-icon-only btn-default"
-											@click="editLanguageRegion(languageRegion, $event)">
+										   @click="editLanguageRegion(languageRegion, $event)">
 											<i class="fa fa-lg fa-pencil"></i>
 										</a>
 									</el-tooltip>
 									<el-tooltip v-else
-												content="View"
-												effect="light"
-												placement="right">
+									            content="View"
+									            effect="light"
+									            placement="right">
 										<a class="btn btn-circle btn-icon-only btn-default"
-											@click="editLanguageRegion(languageRegion, $event)">
+										   @click="editLanguageRegion(languageRegion, $event)">
 											<i class="fa fa-lg fa-eye"></i>
 										</a>
 									</el-tooltip>
 									<el-tooltip v-if="can('localization locale_regions delete')"
-												content="Delete"
-												effect="light"
-												placement="right">
+									            content="Delete"
+									            effect="light"
+									            placement="right">
 										<a class="btn btn-circle btn-icon-only btn-default"
-											@click="openDeleteModal(languageRegion, $event)">
+										   @click="openDeleteModal(languageRegion, $event)">
 											<i class="fa fa-lg fa-trash"></i>
 										</a>
 									</el-tooltip>
@@ -159,7 +173,7 @@
 				</div>
 				<div class="margin-top-20">
 					<no-results :show="!languageRegions.length && !loadingLanguageRegions"
-								:type="'language regions'"></no-results>
+					            :type="'language regions'"></no-results>
 				</div>
 			</div>
 		</div>
@@ -169,7 +183,7 @@
 		<modal :show="showEditModal"
 		       effect="fade"
 		       @closeOnEscape="closeEditModal"
-			   ref="editModal">
+		       ref="editModal">
 			<div slot="modal-header"
 			     class="modal-header">
 				<button type="button"
@@ -194,14 +208,27 @@
 							</div>
 						</div>
 						<div class="col-md-12">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input :disabled="!can('localization locale_regions update')"
-								       type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': languageRegionToEdit.name.length}"
-								       id="form_control_edit_name"
-								       v-model="languageRegionToEdit.name">
-								<label for="form_control_edit_name">Name</label>
+							<div class="autocomplete-wrapper">
+								<label for="form_control_create_name"
+								       class="fake-md-label"
+								       :class="{
+											'raised' : languageRegionToEdit.name.length || 
+											autocompleteFocusedEdit
+										}">
+									Name
+								</label>
+								<el-autocomplete class="inline-input md-autocomplete"
+								                 :class="{'raised' : languageRegionToEdit.name}"
+								                 label="Name"
+								                 v-model="languageRegionToEdit.name"
+								                 :fetch-suggestions="querySearchEdit"
+								                 :trigger-on-focus="false"
+								                 @select="selectLocationEdit"
+								                 @focus="focusAutocompleteEdit"
+								                 @blur="blurAutocompleteEdit"
+								                 id="form_control_edit_name"
+												 ref="autocompleteEdit">
+								</el-autocomplete>
 							</div>
 							<label>
 								Language:
@@ -220,13 +247,13 @@
 								</el-select>
 							</label>
 							<map-area v-if="showEditModal"
-										:polygons="[languageRegionToEdit]"
-										:lat="latitude"
-										:lng="longitude"
-										width="100%"
-										height="500px"
-										@polygonEmitted="updateLanguageRegionToEdit"
-										class="margin-top-20">
+							          :polygons="[languageRegionToEdit]"
+							          :lat="latitude"
+							          :lng="longitude"
+							          width="100%"
+							          height="500px"
+							          @polygonEmitted="updateLanguageRegionToEdit"
+							          class="margin-top-20">
 							</map-area>
 						</div>
 					</div>
@@ -258,7 +285,7 @@
 		<modal :show="showDeleteModal"
 		       effect="fade"
 		       @closeOnEscape="closeDeleteModal"
-			   ref="deleteModal">
+		       ref="deleteModal">
 			<div slot="modal-header"
 			     class="modal-header">
 				<button type="button"
@@ -289,8 +316,7 @@
 			</div>
 			<div slot="modal-footer"
 			     class="modal-footer clear">
-				<button
-				        @click="deleteLanguageRegion()"
+				<button @click="deleteLanguageRegion()"
 				        type="submit"
 				        class="btn blue"
 				        :disabled="deleting">
@@ -310,11 +336,13 @@ import Breadcrumb from '@/components/modules/Breadcrumb'
 import LoadingScreen from '@/components/modules/LoadingScreen'
 import LanguagesFunctions from '@/controllers/Languages'
 import LanguageRegionsFunctions from '@/controllers/LanguageRegions'
+import AppFunctions from '@/controllers/App'
 import Modal from '@/components/modules/Modal'
 import NoResults from '@/components/modules/NoResults'
 import MapArea from '@/components/modules/MapArea'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 import { mapGetters } from 'vuex'
+import { debounce } from 'lodash'
 
 export default {
 	data () {
@@ -329,6 +357,7 @@ export default {
 				name: '',
 				region: []
 			},
+			autocompleteFocusedCreate: false,
 
 			loadingLanguageRegions: false,
 			listErrorMessage: '',
@@ -342,6 +371,7 @@ export default {
 				name: '',
 				region: []
 			},
+			autocompleteFocusedEdit: false,
 
 			showDeleteModal: false,
 			deleting: false,
@@ -418,11 +448,13 @@ export default {
 				.catch(reason => {
 					ajaxErrorHandler({
 						reason,
-						errorText: 'We could not fetch the list of language regions',
+						errorText:
+							'We could not fetch the list of language regions',
 						errorName: 'listErrorMessage',
 						vue: _this
 					})
-				}).finally(() => {
+				})
+				.finally(() => {
 					_this.loadingLanguageRegions = false
 				})
 		},
@@ -451,7 +483,8 @@ export default {
 						errorName: 'listErrorMessage',
 						vue: _this
 					})
-				}).finally(() => {
+				})
+				.finally(() => {
 					_this.loadingLanguages = false
 				})
 		},
@@ -463,6 +496,141 @@ export default {
 		toggleCreatePanel () {
 			this.createNewCollapse = !this.createNewCollapse
 		},
+		/**
+		 * To get results based off google's places search API.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		querySearchCreate: debounce(function (string, cb) {
+			var _this = this
+			if (_this.newLanguageRegion.name.length >= 3) {
+				AppFunctions.getGoogleLocationSearchResults(
+					_this.newLanguageRegion.name
+				)
+					.then(response => {
+						response.forEach(result => {
+							result.value = result.description
+						})
+						cb(response)
+					})
+					.catch(reason => {
+						throw reason
+					})
+			}
+		}, 500),
+		/**
+		 * To get results based off google's places search API.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		querySearchEdit: debounce(function (string, cb) {
+			console.log('querySearch')
+			var _this = this
+			if (_this.languageRegionToEdit.name.length >= 3) {
+				AppFunctions.getGoogleLocationSearchResults(
+					_this.languageRegionToEdit.name
+				)
+					.then(response => {
+						response.forEach(result => {
+							result.value = result.description
+						})
+						cb(response)
+					})
+					.catch(reason => {
+						throw reason
+					})
+			}
+		}, 500),
+		/**
+		 * To set the selected location and get its details.
+		 * @function
+		 * @param {object} location - The selected location object.
+		 * @returns {undefined}
+		 */
+		selectLocationCreate (location) {
+			this.getGoogleLocationDetails(
+				location.place_id,
+				this.newLanguageRegion,
+				'createMap'
+			)
+		},
+		/**
+		 * To set the selected location and get its details.
+		 * @function
+		 * @param {object} location - The selected location object.
+		 * @returns {undefined}
+		 */
+		selectLocationEdit (location) {
+			this.getGoogleLocationDetails(
+				location.place_id,
+				this.languageRegionToEdit,
+				'editMap'
+			)
+		},
+		/**
+		 * To get complete details of a particular location using the google places API.
+		 * @function
+		 * @param {string} placeId - To google placeId of the selected location.
+		 * @param {string} languageRegion - The language region object to update
+		 * @param {string} mapReference - Reference of the map component to use
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getGoogleLocationDetails (placeId, languageRegion, mapReference) {
+			var _this = this
+			AppFunctions.getGoogleLocationDetails(placeId)
+				.then(response => {
+					languageRegion.name = response.name
+					const bounds = [
+						[
+							response.geometry.viewport.southwest.lat,
+							response.geometry.viewport.southwest.lng
+						],
+						[
+							response.geometry.viewport.northeast.lat,
+							response.geometry.viewport.northeast.lng
+						]
+					]
+					const center = response.geometry.location
+					console.log({bounds, center})
+					_this.$refs[mapReference].panAndCenter(bounds, center)
+				})
+				.catch(reason => {
+					console.log('Autocomplete error:', reason)
+				})
+		},
+		/**
+		 * To raise the autocomplete label.
+		 * @function
+		 * @returns {undefined}
+		 */
+		focusAutocompleteCreate () {
+			this.autocompleteFocusedCreate = true
+		},
+		/**
+		 * To lower the autocomplete label.
+		 * @function
+		 * @returns {undefined}
+		 */
+		blurAutocompleteCreate () {
+			this.autocompleteFocusedCreate = false
+		},
+		/**
+		 * To raise the autocomplete label.
+		 * @function
+		 * @returns {undefined}
+		 */
+		focusAutocompleteEdit () {
+			this.autocompleteFocusedEdit = true
+		},
+		/**
+		 * To lower the autocomplete label.
+		 * @function
+		 * @returns {undefined}
+		 */
+		blurAutocompleteEdit () {
+			this.autocompleteFocusedEdit = false
+		},
+
 		/**
 		 * To update map area when user creates or edits it
 		 * @function
@@ -516,9 +684,14 @@ export default {
 				.validateNewLanguageRegionData()
 				.then(response => {
 					_this.creating = true
-					LanguageRegionsFunctions.createLocaleRegion(_this.newLanguageRegion)
+					LanguageRegionsFunctions.createLocaleRegion(
+						_this.newLanguageRegion
+					)
 						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
 								_this.showCreateSuccess(response.payload)
 								_this.clearNewLanguageRegion()
 								_this.getLanguageRegions()
@@ -529,7 +702,8 @@ export default {
 						.catch(reason => {
 							ajaxErrorHandler({
 								reason,
-								errorText: 'We could not create the Language Region',
+								errorText:
+									'We could not create the Language Region',
 								errorName: 'createErrorMessage',
 								vue: _this
 							})
@@ -540,7 +714,9 @@ export default {
 				})
 				.catch(reason => {
 					_this.createErrorMessage = reason
-					_this.$scrollTo(_this.$refs.createErrorMessage, 1000, { offset: -50 })
+					_this.$scrollTo(_this.$refs.createErrorMessage, 1000, {
+						offset: -50
+					})
 				})
 		},
 		/**
@@ -645,16 +821,23 @@ export default {
 					_this.updating = true
 					LanguageRegionsFunctions.updateLocaleRegion(payload)
 						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
 								_this.getLanguageRegions()
 								_this.closeEditModal()
 								_this.resetEdit()
 								_this.showEditSuccess(response.payload)
 							} else {
 								_this.editErrorMessage = response.message
-								_this.$scrollTo(_this.$refs.editErrorMessage, 1000, {
-									offset: -50
-								})
+								_this.$scrollTo(
+									_this.$refs.editErrorMessage,
+									1000,
+									{
+										offset: -50
+									}
+								)
 							}
 						})
 						.catch(reason => {
@@ -673,7 +856,9 @@ export default {
 				.catch(reason => {
 					console.log(reason)
 					_this.editErrorMessage = reason
-					_this.$scrollTo(_this.$refs.editErrorMessage, 1000, { offset: -50 })
+					_this.$scrollTo(_this.$refs.editErrorMessage, 1000, {
+						offset: -50
+					})
 				})
 		},
 		/**
@@ -738,7 +923,9 @@ export default {
 		deleteLanguageRegion () {
 			this.deleting = true
 			var _this = this
-			return LanguageRegionsFunctions.deleteLocaleRegion(_this.languageRegionToDelete)
+			return LanguageRegionsFunctions.deleteLocaleRegion(
+				_this.languageRegionToDelete
+			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						_this.getLanguageRegions()
@@ -804,9 +991,73 @@ export default {
 
 <style scoped>
 .mt-element-list .list-news.ext-1.mt-list-container ul > .mt-list-item:hover {
-  background-color: white;
+	background-color: white;
 }
 .three-vertical-actions {
-  min-height: 124px;
+	min-height: 124px;
+}
+.md-autocomplete {
+	width: 100%;
+	height: 100%;
+}
+div.autocomplete-wrapper {
+	margin-top: 35px;
+	height: 45px;
+	position: relative;
+	width: 100%;
+}
+.fake-md-label {
+	position: absolute;
+	top: 4px;
+	left: 0;
+	color: #999;
+	margin-bottom: 0;
+	font-size: 14px;
+	z-index: 2;
+	pointer-events: none;
+	transition-property: top, font-size, font-color, border-bottom-color;
+	transition-duration: 0.2s;
+	transition-timing-function: ease;
+}
+.fake-md-label.raised {
+	font-size: 13px;
+	top: -21px;
+}
+</style>
+<style>
+div.el-autocomplete.inline-input.md-autocomplete > div.el-input {
+	height: 100%;
+}
+div.el-autocomplete.inline-input.md-autocomplete
+	> div.el-input
+	> input.el-input__inner {
+	border-top-width: 0px;
+	border-right-width: 0px;
+	border-bottom-color: rgb(194, 202, 216);
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-left-width: 0px;
+	border-bottom: 1px solid #c2cad8;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: rgb(194, 202, 216);
+	padding: 6px 0;
+	border-radius: 0;
+	height: 30px;
+	margin-bottom: 10px;
+	transition-property: border-bottom-color, border-bottom-width;
+	transition-duration: 0.2s;
+	transition-timing-function: ease;
+}
+div.el-autocomplete.inline-input.md-autocomplete.raised
+	> div.el-input
+	> input.el-input__inner {
+	border-bottom-color: #36c6d3;
+	border-bottom-width: 2px;
+}
+div.el-autocomplete.inline-input.md-autocomplete
+	> div.el-input
+	> input.el-input__inner::placeholder {
+	color: #999;
 }
 </style>
