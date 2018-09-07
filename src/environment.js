@@ -1,4 +1,4 @@
-export default {
+module.exports = {
 	// careful, one only
 	development: true,
 	staging: false,
