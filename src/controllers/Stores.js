@@ -295,7 +295,7 @@ export default {
 			GlobalFunctions.$ajax({
 				method: 'POST',
 				dataType: 'json',
-				url: '/app/hours/create',
+				url: '/app/hours/update',
 				data: { location_id: storeId, hours: updatedStoreHours },
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
