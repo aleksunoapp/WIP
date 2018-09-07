@@ -30,10 +30,10 @@
 				<form role="form"
 				      @submit.prevent="createStoreFAQ($event)">
 					<div class="alert alert-danger"
-					     v-if="createFAQError.length">
+					     v-show="createFAQError"
+						 ref="createFAQError">
 						<button class="close"
-						        data-close="alert"
-						        @click="clearCreateFAQError()"></button>
+						        @click="clearError('createFAQError')"></button>
 						<span>{{createFAQError}}</span>
 					</div>
 					<div class="col-md-6">
@@ -62,6 +62,40 @@
 							       v-model="newFAQ.external_link"
 							       :class="{'edited': newFAQ.external_link.length}">
 							<label for="form_control_3">External Link</label>
+						</div>
+						<div class="margin-top-20">
+							<label>
+								Country:
+								<el-select v-model="newFAQ.country_id"
+											placeholder="Select a country"
+											size="small"
+											no-data-text="No countries"
+											remote
+											:loading="loadingCountries">
+									<el-option v-for="country in countries"
+												:label="country.name"
+												:value="country.id"
+												:key="country.id">
+									</el-option>
+								</el-select>
+							</label>
+						</div>
+						<div class="margin-top-20">
+							<label>
+								Platform:
+								<el-select v-model="newFAQ.platform_id"
+											placeholder="Select a platform"
+											size="small"
+											no-data-text="No platforms"
+											remote
+											:loading="loadingPlatforms">
+									<el-option v-for="platform in platforms"
+												:label="platform.name"
+												:value="platform.id"
+												:key="platform.id">
+									</el-option>
+								</el-select>
+							</label>
 						</div>
 					</div>
 					<div class="clear form-actions right">
@@ -102,7 +136,7 @@
 						     v-show="!faqs.length && errorMessage"
 						     ref="errorMessage">
 							<button class="close"
-							        @click="clearError()"></button>
+							        @click="clearError('errorMessage')"></button>
 							<span>{{errorMessage}}</span>
 						</div>
 						<div class="timeline"
@@ -168,6 +202,8 @@ import FAQFunctions from '../../../controllers/FAQ'
 import EditStoreFaq from './EditStoreFaq'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 import LoadingScreen from '@/components/modules/LoadingScreen'
+import CountriesFunctions from '@/controllers/Countries'
+import PlatformsFunctions from '@/controllers/Platforms'
 
 export default {
 	data () {
@@ -184,17 +220,25 @@ export default {
 				answer: '',
 				external_link: '',
 				status: 1,
-				user_id: this.$root.createdBy
+				user_id: this.$root.createdBy,
+				country_id: null,
+				platform_id: null
 			},
 			faqs: [],
 			errorMessage: '',
 			showEditFAQModal: false,
 			selectedFAQId: 0,
-			displayStoresFAQData: false
+			displayStoresFAQData: false,
+			loadingCountries: false,
+			countries: [],
+			loadingPlatforms: false,
+			platforms: []
 		}
 	},
 	created () {
 		this.getStoreFAQs()
+		this.getCountries()
+		this.getPlatforms()
 	},
 	methods: {
 		/**
@@ -229,6 +273,64 @@ export default {
 				})
 		},
 		/**
+		 * To get a list of all countries.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getCountries () {
+			this.clearError('errorMessage')
+			this.loadingCountries = true
+			this.countries = []
+			var _this = this
+			return CountriesFunctions.listCountries()
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						_this.loadingCountries = false
+						_this.countries = response.payload
+					} else {
+						_this.loadingCountries = false
+					}
+				})
+				.catch(reason => {
+					_this.loadingCountries = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch the list of countries',
+						errorName: 'errorMessage',
+						vue: _this
+					})
+				})
+		},
+		/**
+		 * To get a list of all platforms.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getPlatforms () {
+			this.clearError('errorMessage')
+			this.loadingPlatforms = true
+			this.platforms = []
+			var _this = this
+			return PlatformsFunctions.listPlatforms()
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						_this.loadingPlatforms = false
+						_this.platforms = response.payload
+					} else {
+						_this.loadingPlatforms = false
+					}
+				})
+				.catch(reason => {
+					_this.loadingPlatforms = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch the list of platforms',
+						errorName: 'errorMessage',
+						vue: _this
+					})
+				})
+		},
+		/**
 		 * To toggle the create faq panel, initially set to closed
 		 * @function
 		 * @returns {undefined}
@@ -237,12 +339,13 @@ export default {
 			this.createFAQCollapse = !this.createFAQCollapse
 		},
 		/**
-		 * To clear the current faq error.
+		 * To clear an error.
 		 * @function
+		 * @param {string} name - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearCreateFAQError () {
-			this.createFAQError = ''
+		clearError (name) {
+			this[name] = ''
 		},
 		/**
 		 * To clear the create faq form.
@@ -255,9 +358,11 @@ export default {
 				answer: '',
 				external_link: '',
 				status: 1,
-				user_id: this.$root.createdBy
+				user_id: this.$root.createdBy,
+				country_id: null,
+				platform_id: null
 			}
-			this.clearCreateFAQError()
+			this.clearError('createFAQError')
 		},
 		/**
 		 * To check if the faq information are valid before submitting to the backend.
@@ -273,6 +378,10 @@ export default {
 					reject('Answer cannot be blank')
 				} else if (!storesFAQVue.newFAQ.external_link.length) {
 					reject('External link cannot be blank')
+				} else if (storesFAQVue.newFAQ.country_id === null) {
+					reject('Select a country')
+				} else if (storesFAQVue.newFAQ.platform_id === null) {
+					reject('Select a platform')
 				}
 				resolve('Hurray')
 			})
@@ -286,7 +395,7 @@ export default {
 		createStoreFAQ (event) {
 			var storesFAQVue = this
 
-			this.clearCreateFAQError()
+			this.clearError('createFAQError')
 			return storesFAQVue
 				.validateFAQData()
 				.then(response => {

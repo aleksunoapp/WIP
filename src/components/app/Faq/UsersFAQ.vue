@@ -32,10 +32,10 @@
 					<div class="row">
 						<div class="col-xs-12">
 							<div class="alert alert-danger"
-							     v-if="createFAQError.length">
+							     v-show="createFAQError"
+							     ref="createFAQError">
 								<button class="close"
-								        data-close="alert"
-								        @click="clearCreateFAQError()"></button>
+								        @click="clearError('createFAQError')"></button>
 								<span>{{createFAQError}}</span>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
@@ -101,6 +101,40 @@
 								       :class="{'edited': newFAQ.cta_value.length}">
 								<label for="form_control_cta_value">Call to action value</label>
 							</div>
+							<div class="margin-top-20">
+								<label>
+									Country:
+									<el-select v-model="newFAQ.country_id"
+												placeholder="Select a country"
+												size="small"
+												no-data-text="No countries"
+												remote
+												:loading="loadingCountries">
+										<el-option v-for="country in countries"
+													:label="country.name"
+													:value="country.id"
+													:key="country.id">
+										</el-option>
+									</el-select>
+								</label>
+							</div>
+							<div class="margin-top-20">
+								<label>
+									Platform:
+									<el-select v-model="newFAQ.platform_id"
+												placeholder="Select a platform"
+												size="small"
+												no-data-text="No platforms"
+												remote
+												:loading="loadingPlatforms">
+										<el-option v-for="platform in platforms"
+													:label="platform.name"
+													:value="platform.id"
+													:key="platform.id">
+										</el-option>
+									</el-select>
+								</label>
+							</div>
 						</div>
 						<div class="col-md-12">
 							<button type="submit"
@@ -130,14 +164,14 @@
 						</div>
 					</div>
 					<loading-screen :show="displayUserFAQData"
-		                :color="'#2C3E50'"
-		                :display="'inline'"></loading-screen>
+					                :color="'#2C3E50'"
+					                :display="'inline'"></loading-screen>
 					<div class="portlet-body">
 						<div class="alert alert-danger"
 						     v-show="!faqs.length && errorMessage"
 						     ref="errorMessage">
 							<button class="close"
-							        @click="clearError()"></button>
+							        @click="clearError('errorMessage')"></button>
 							<span>{{errorMessage}}</span>
 						</div>
 						<div class="timeline"
@@ -197,6 +231,8 @@ import FAQFunctions from '../../../controllers/FAQ'
 import EditUserFaq from './EditUserFaq'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 import LoadingScreen from '@/components/modules/LoadingScreen'
+import CountriesFunctions from '@/controllers/Countries'
+import PlatformsFunctions from '@/controllers/Platforms'
 
 export default {
 	data () {
@@ -215,17 +251,22 @@ export default {
 				status: 1,
 				user_id: this.$root.createdBy,
 				cta_type: '',
-				cta_value: ''
+				cta_value: '',
+				country_id: null,
+				platform_id: null
 			},
 			faqs: [],
 			errorMessage: '',
 			showEditFAQModal: false,
 			selectedFAQId: 0,
 			displayUserFAQData: false
+
 		}
 	},
 	created () {
 		this.getUserFAQs()
+		this.getCountries()
+		this.getPlatforms()
 	},
 	methods: {
 		/**
@@ -255,8 +296,67 @@ export default {
 						errorName: 'errorMessage',
 						vue: usersFAQVue
 					})
-				}).finally(() => {
+				})
+				.finally(() => {
 					usersFAQVue.displayUserFAQData = false
+				})
+		},
+		/**
+		 * To get a list of all countries.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getCountries () {
+			this.clearError('errorMessage')
+			this.loadingCountries = true
+			this.countries = []
+			var _this = this
+			return CountriesFunctions.listCountries()
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						_this.loadingCountries = false
+						_this.countries = response.payload
+					} else {
+						_this.loadingCountries = false
+					}
+				})
+				.catch(reason => {
+					_this.loadingCountries = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch the list of countries',
+						errorName: 'errorMessage',
+						vue: _this
+					})
+				})
+		},
+		/**
+		 * To get a list of all platforms.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getPlatforms () {
+			this.clearError('errorMessage')
+			this.loadingPlatforms = true
+			this.platforms = []
+			var _this = this
+			return PlatformsFunctions.listPlatforms()
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						_this.loadingPlatforms = false
+						_this.platforms = response.payload
+					} else {
+						_this.loadingPlatforms = false
+					}
+				})
+				.catch(reason => {
+					_this.loadingPlatforms = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch the list of platforms',
+						errorName: 'errorMessage',
+						vue: _this
+					})
 				})
 		},
 		/**
@@ -268,12 +368,13 @@ export default {
 			this.createFAQCollapse = !this.createFAQCollapse
 		},
 		/**
-		 * To clear the current faq error.
+		 * To clear an error.
 		 * @function
+		 * @param {string} name - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearCreateFAQError () {
-			this.createFAQError = ''
+		clearError (name) {
+			this[name] = ''
 		},
 		/**
 		 * To clear the create faq form.
@@ -288,9 +389,11 @@ export default {
 				status: 1,
 				user_id: this.$root.createdBy,
 				cta_type: '',
-				cta_value: ''
+				cta_value: '',
+				country_id: null,
+				platform_id: null
 			}
-			this.clearCreateFAQError()
+			this.clearError('createFAQError')
 		},
 		/**
 		 * To check if the faq information are valid before submitting to the backend.
@@ -311,6 +414,10 @@ export default {
 					!usersFAQVue.newFAQ.cta_value
 				) {
 					reject('Call to action value cannot be blank')
+				} else if (usersFAQVue.newFAQ.country_id === null) {
+					reject('Select a country')
+				} else if (usersFAQVue.newFAQ.platform_id === null) {
+					reject('Select a platform')
 				}
 				resolve('Hurray')
 			})
@@ -325,7 +432,7 @@ export default {
 			var disabledButton = GlobalFunctions.disableButton(event)
 			var usersFAQVue = this
 
-			this.clearCreateFAQError()
+			this.clearError('createFAQError')
 			return usersFAQVue
 				.validateFAQData()
 				.then(response => {
@@ -337,8 +444,12 @@ export default {
 						usersFAQVue.$root.userToken
 					)
 						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								usersFAQVue.newFAQ.id = response.payload.new_faq_id
+							if (
+								response.code === 200 &&
+								response.status === 'ok'
+							) {
+								usersFAQVue.newFAQ.id =
+									response.payload.new_faq_id
 								usersFAQVue.faqs.push(usersFAQVue.newFAQ)
 								usersFAQVue.showAlert(response.payload)
 								usersFAQVue.resetForm()
@@ -454,11 +565,11 @@ export default {
 </script>
 <style scoped>
 .grey-label {
-  color: rgb(136, 136, 136);
-  font-size: 13px;
-  margin-bottom: 5px;
+	color: rgb(136, 136, 136);
+	font-size: 13px;
+	margin-bottom: 5px;
 }
 .animated {
-  animation: listItemHighlight 1s 2 ease-in-out both;
+	animation: listItemHighlight 1s 2 ease-in-out both;
 }
 </style>
