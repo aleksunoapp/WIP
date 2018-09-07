@@ -50,6 +50,23 @@
 								       v-model="newTerm.term">
 								<label for="form_control_1">Term</label>
 							</div>
+							<div class="margin-top-20">
+								<label>
+									Platform:
+									<el-select v-model="newTerm.platform_id"
+												placeholder="Select a platform"
+												size="small"
+												no-data-text="No platforms"
+												remote
+												:loading="loadingPlatforms">
+										<el-option v-for="platform in platforms"
+													:label="platform.name"
+													:value="platform.id"
+													:key="platform.id">
+										</el-option>
+									</el-select>
+								</label>
+							</div>
 							<button type="submit"
 							        class="btn blue pull-right"
 							        :disabled="creating">
@@ -203,7 +220,8 @@
 		<!-- START EDIT -->
 		<modal :show="showEditModal"
 		       effect="fade"
-		       @closeOnEscape="closeEditModal">
+		       @closeOnEscape="closeEditModal"
+			   ref="editModal">
 			<div slot="modal-header"
 			     class="modal-header">
 				<button type="button"
@@ -237,6 +255,23 @@
 								       v-model="termToEdit.term">
 								<label for="form_control_1">Term</label>
 							</div>
+							<div class="margin-top-20">
+								<label>
+									Platform:
+									<el-select v-model="termToEdit.platform_id"
+												placeholder="Select a platform"
+												size="small"
+												no-data-text="No platforms"
+												remote
+												:loading="loadingPlatforms">
+										<el-option v-for="platform in platforms"
+													:label="platform.name"
+													:value="platform.id"
+													:key="platform.id">
+										</el-option>
+									</el-select>
+								</label>
+							</div>
 						</div>
 					</div>
 				</form>
@@ -266,7 +301,8 @@
 		<!-- START DELETE -->
 		<modal :show="showDeleteModal"
 		       effect="fade"
-		       @closeOnEscape="closeDeleteModal">
+		       @closeOnEscape="closeDeleteModal"
+			   ref="deleteModal">
 			<div slot="modal-header"
 			     class="modal-header">
 				<button type="button"
@@ -305,6 +341,7 @@ import Modal from '@/components/modules/Modal'
 import Pagination from '@/components/modules/Pagination'
 import NoResults from '@/components/modules/NoResults'
 import ajaxErrorHandler from '@/controllers/ErrorController'
+import PlatformsFunctions from '@/controllers/Platforms'
 
 export default {
 	data () {
@@ -315,7 +352,8 @@ export default {
 			creating: false,
 			createErrorMessage: '',
 			newTerm: {
-				term: ''
+				term: '',
+				platform_id: null
 			},
 
 			searchCollapse: true,
@@ -340,7 +378,10 @@ export default {
 			deleteErrorMessage: '',
 			termToDelete: {
 				term: ''
-			}
+			},
+
+			loadingPlatforms: false,
+			platforms: []
 		}
 	},
 	computed: {
@@ -376,8 +417,38 @@ export default {
 	},
 	mounted () {
 		this.getTerms()
+		this.getPlatforms()
 	},
 	methods: {
+		/**
+		 * To get a list of all platforms.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getPlatforms () {
+			this.clearError('errorMessage')
+			this.loadingPlatforms = true
+			this.platforms = []
+			var _this = this
+			return PlatformsFunctions.listPlatforms()
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						_this.loadingPlatforms = false
+						_this.platforms = response.payload
+					} else {
+						_this.loadingPlatforms = false
+					}
+				})
+				.catch(reason => {
+					_this.loadingPlatforms = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch the list of platforms',
+						errorName: 'errorMessage',
+						vue: _this
+					})
+				})
+		},
 		/**
 		 * To toggle the create tier panel, initially set to closed
 		 * @function
@@ -405,6 +476,8 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (!_this.newTerm.term.length) {
 					reject('Term cannot be blank')
+				} else if (_this.newTerm.term.platform_id === null) {
+					reject('Select a platform')
 				}
 				resolve('Hurray')
 			})
@@ -482,7 +555,8 @@ export default {
 		 */
 		clearNewTerm () {
 			this.newTerm = {
-				term: ''
+				term: '',
+				platform_id: null
 			}
 		},
 		/**
@@ -607,7 +681,8 @@ export default {
 								reason,
 								errorText: 'We could not update the term',
 								errorName: 'editErrorMessage',
-								vue: _this
+								vue: _this,
+								containerRef: 'editModal'
 							})
 						})
 						.finally(() => {
@@ -616,7 +691,9 @@ export default {
 				})
 				.catch(reason => {
 					_this.editErrorMessage = reason
-					_this.$scrollTo(_this.$refs.editErrorMessage, 1000, { offset: -50 })
+					_this.$scrollTo(_this.$refs.editErrorMessage, 1000, {
+						container: _this.$refs.editModal.$el
+					})
 				})
 		},
 		/**
@@ -694,7 +771,8 @@ export default {
 						reason,
 						errorText: `We could not delete ${this.termToDelete.term}`,
 						errorName: 'deleteErrorMessage',
-						vue: _this
+						vue: _this,
+						containerRef: 'deleteModal'
 					})
 				})
 				.finally(() => {

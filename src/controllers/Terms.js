@@ -40,16 +40,16 @@ export const listTerms = () => {
  * ]
  */
 
-export const listTermsForLanguage = (locale = '') => {
-	if (!locale) {
-		return Error('Please provide a locale')
-	}
+export const listTermsForLanguage = (locale = '', platform = '') => {
 	return new Promise(function (resolve, reject) {
 		GlobalFunctions.$ajax({
 			method: 'GET',
 			dataType: 'json',
 			url: '/app/term_translation/allTermswithTranslationsByLanguage',
-			data: { locale },
+			data: {
+				locale,
+				platform
+			},
 			success: function (response) {
 				resolve(response)
 			},
@@ -76,12 +76,6 @@ export const listTermsForLanguage = (locale = '') => {
  */
 
 export const translateTerms = ({ localeId = null, translations = null }) => {
-	if (localeId === null) {
-		return Error('Please provide a locale ID')
-	}
-	if (translations === null) {
-		return Error('Please provide translations')
-	}
 	return new Promise(function (resolve, reject) {
 		GlobalFunctions.$ajax({
 			method: 'POST',
@@ -104,6 +98,7 @@ export const translateTerms = ({ localeId = null, translations = null }) => {
 /**
  * Call to API to create a term.
  * @function
+ * @param {object} term - The new term to create
  * @returns {object} A promise with response shaped
  * {
  *      "term": "My First Term",
@@ -111,16 +106,13 @@ export const translateTerms = ({ localeId = null, translations = null }) => {
  *      "id": 201
  *  }
  */
-export const createTerm = ({ term = '' }) => {
-	if (!term) {
-		return Error('Please provide a term')
-	}
+export const createTerm = (term) => {
 	return new Promise(function (resolve, reject) {
 		GlobalFunctions.$ajax({
 			method: 'POST',
 			dataType: 'json',
 			url: '/app/term/create',
-			data: { term },
+			data: term,
 			success: function (response) {
 				resolve(response)
 			},
@@ -134,6 +126,7 @@ export const createTerm = ({ term = '' }) => {
 /**
  * Call to API to update a term.
  * @function
+ * @param {object} term - The new term to create
  * @returns {object} A promise with response shaped
  * {
  *     "id": 16,
@@ -142,19 +135,13 @@ export const createTerm = ({ term = '' }) => {
  *     "updated_by": 18
  * }
  */
-export const updateTerm = ({ term = '', id = null }) => {
-	if (!term) {
-		return Error('Please provide a term')
-	}
-	if (!id && id !== 0) {
-		return Error('Term ID is missing.')
-	}
+export const updateTerm = (term) => {
 	return new Promise(function (resolve, reject) {
 		GlobalFunctions.$ajax({
 			method: 'POST',
 			dataType: 'json',
-			url: `/app/term/${id}/update`,
-			data: { term },
+			url: `/app/term/${term.id}/update`,
+			data: term,
 			success: function (response) {
 				resolve(response)
 			},
@@ -172,11 +159,6 @@ export const updateTerm = ({ term = '', id = null }) => {
  */
 export const deleteTerm = ({ id = null }) => {
 	return new Promise(function (resolve, reject) {
-		if (id !== 0 && !id) {
-			reject('Term ID is missing.')
-			return
-		}
-
 		GlobalFunctions.$ajax({
 			method: 'DELETE',
 			dataType: 'json',

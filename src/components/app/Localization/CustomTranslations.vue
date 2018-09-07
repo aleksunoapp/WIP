@@ -32,10 +32,31 @@
 				<div class="row">
 					<div class="col-md-3">
 						<el-collapse class="accordion margin-bottom-20"
+						             v-model="platformAccordionOpen"
+						             accordion>
+							<el-collapse-item title="Platform"
+							                  name="platform-accordion">
+								<div v-for="platform in platforms"
+								     class="clickable"
+								     :class="{'active-term' : platform.name === selectedPlatfrom}"
+								     @click="selectPlatformForTranslation(platform)"
+								     :key="platform.id">
+									{{platform.name}}
+								</div>
+								<div class="helper-text"
+								     v-if="!platforms.length">
+									No platforms yet.
+									<router-link to="/app/localization/platforms">Create one.</router-link>
+								</div>
+							</el-collapse-item>
+						</el-collapse>
+					</div>
+					<div class="col-md-3">
+						<el-collapse class="accordion margin-bottom-20"
 						             v-model="languageAccordionOpen"
 						             accordion>
 							<el-collapse-item title="Language"
-							                  name="accordion">
+							                  name="locale-accordion">
 								<div v-for="language in allLocales"
 								     class="clickable"
 								     :class="{'active-term' : language.language_code === localeForTranslation.language_code}"
@@ -97,7 +118,7 @@
 					</div>
 					<div>
 						<p v-if="localeForTranslation.id === undefined"
-						   class="no-data center">Select a language to begin translating.</p>
+						   class="no-data center">Select a platform and a language to begin translating.</p>
 						<p v-if="localeForTranslation.id !== undefined && !loadingTerms && !terms.length"
 						   class="no-data center">There are no items to translate.</p>
 					</div>
@@ -112,6 +133,7 @@
 import Breadcrumb from '../../modules/Breadcrumb'
 import LocalizationFunctions from '../../../controllers/Localization'
 import TermsFunctions from '@/controllers/Terms'
+import PlatformsFunctions from '@/controllers/Platforms'
 import Dropdown from '../../modules/Dropdown'
 import Modal from '../../modules/Modal'
 import ResourcePicker from '../../modules/ResourcePicker'
@@ -122,8 +144,14 @@ export default {
 	data () {
 		return {
 			breadcrumbArray: [{ name: 'Custom Translations', link: false }],
+
+			loadingPlatforms: false,
+			platforms: [],
+			selectedPlatfrom: '',
+			platformAccordionOpen: 'platform-accordion',
+
 			allLocales: [],
-			languageAccordionOpen: 'accordion',
+			languageAccordionOpen: 'locale-accordion',
 
 			localeForTranslation: {
 				country: '',
@@ -138,6 +166,7 @@ export default {
 	},
 	created () {
 		this.getLocales()
+		this.getPlatforms()
 	},
 	methods: {
 		/**
@@ -179,6 +208,45 @@ export default {
 				})
 		},
 		/**
+		 * To get a list of all platforms.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getPlatforms () {
+			this.clearError('errorMessage')
+			this.loadingPlatforms = true
+			this.platforms = []
+			var _this = this
+			return PlatformsFunctions.listPlatforms()
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						_this.loadingPlatforms = false
+						_this.platforms = response.payload
+					} else {
+						_this.loadingPlatforms = false
+					}
+				})
+				.catch(reason => {
+					_this.loadingPlatforms = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch the list of platforms',
+						errorName: 'errorMessage',
+						vue: _this
+					})
+				})
+		},
+		/**
+		 * To select a platform to translate for.
+		 * @function
+		 * @param {object} platform - An object containing the selected platform
+		 * @returns {undefined}
+		 */
+		selectPlatformForTranslation (platform) {
+			this.selectedPlatfrom = platform.name
+			this.getTermsForLanguage()
+		},
+		/**
 		 * To update the status of the locale selected for translation.
 		 * @function
 		 * @param {object} locale - An object containing the selected locale
@@ -196,11 +264,13 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		getTermsForLanguage () {
+			if (!this.selectedPlatfrom || !this.localeForTranslation.language_code) return
 			this.clearError('translationsTableErrorMessage')
 			this.loadingTerms = true
 			var localizationVue = this
 			TermsFunctions.listTermsForLanguage(
-				this.localeForTranslation.language_code
+				this.localeForTranslation.language_code,
+				this.selectedPlatfrom
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
