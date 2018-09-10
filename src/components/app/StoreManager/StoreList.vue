@@ -149,7 +149,7 @@
 										            effect="light"
 										            placement="right">
 											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="confirmDelete(store)">
+											   @click.stop.prevent="confirmDelete(store)">
 												<i class="fa fa-lg fa-trash"></i>
 											</a>
 										</el-tooltip>

@@ -165,7 +165,7 @@ export default {
 					)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
-								this.closeModalAndUpdate()
+								this.closeModalAndUpdate(response.payload)
 							} else {
 								editStoreGroupVue.errorMessage = response.message
 							}
@@ -201,10 +201,14 @@ export default {
 		/**
 		 * To close the modal and emit the updated folder object to the parent.
 		 * @function
+		 * @param {object} payload - The payload property of the server response
 		 * @returns {undefined}
 		 */
-		closeModalAndUpdate () {
-			this.$emit('updateGroup', this.groupToBeEdited)
+		closeModalAndUpdate (payload = {}) {
+			this.$emit('updateGroup', {
+				group: this.groupToBeEdited,
+				payload
+			})
 		}
 	},
 	components: {

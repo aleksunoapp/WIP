@@ -537,11 +537,12 @@ export default {
 			MenusFunctions.copyStoreHoursToMenuHours(this.menu.id)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
+						_this.showCreateSuccess(response)
 						_this.closeModal()
-						_this.showCreateSuccess(response.payload)
 					}
 				})
 				.catch(reason => {
+					console.log(reason)
 					ajaxErrorHandler({
 						reason,
 						errorText: 'We could not save the update',
@@ -645,8 +646,8 @@ export default {
 					)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
+								_this.showCreateSuccess(response)
 								_this.closeModal()
-								_this.showCreateSuccess(response.payload)
 							}
 						})
 						.catch(reason => {
@@ -669,16 +670,16 @@ export default {
 		/**
 		 * To notify user of the outcome of the call
 		 * @function
-		 * @param {object} payload - The payload object from the server response
+		 * @param {object} response - The response object from the server
 		 * @returns {undefined}
 		 */
-		showCreateSuccess (payload = {message: ''}) {
-			let partial = !!payload.message.startsWith('Menu hours saved except for')
+		showCreateSuccess (response = {message: '', payload: {}}) {
+			let partial = !!response.message.startsWith('Menu hours saved except for')
 			let title = 'Success'
-			let text = partial ? payload.message : 'The Menu Hours have been saved'
+			let text = partial ? response.message : 'The Menu Hours have been saved'
 			let type = partial ? 'info' : 'success'
 
-			if (payload.pending_approval) {
+			if (response.payload.pending_approval) {
 				title = 'Approval Required'
 				text = 'The Menu Hours have been sent for approval'
 				type = 'info'
