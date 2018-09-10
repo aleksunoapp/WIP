@@ -890,7 +890,20 @@ export default {
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
 								_this.saveMessage = 'Saved'
-								_this.existingHours = response.payload
+
+								const sundayIndex = response.payload.findIndex(
+								day => day.day === 0
+							)
+								let weekStartingMonday = response.payload
+								weekStartingMonday.push(response.payload[sundayIndex])
+								weekStartingMonday.splice(sundayIndex, 1)
+								_this.existingHours = weekStartingMonday.map(day => {
+									return {
+										...day,
+										open_time: day.open_time.substr(0, 5),
+										close_time: day.close_time.substr(0, 5)
+									}
+								})
 							}
 						})
 						.catch(reason => {
