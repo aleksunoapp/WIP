@@ -64,7 +64,7 @@
 							       class="form-control input-sm edited"
 							       id="form_control_3"
 							       v-model="itemToBeEdited.short_description">
-							<label for="form_control_3">Item Description</label>
+							<label for="form_control_3">Item Short Description</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label">
 							<input type="text"

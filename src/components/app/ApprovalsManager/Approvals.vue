@@ -50,7 +50,7 @@
 								</div>
 							</div>
 
-							<div class="row padding-y-10 border-bottom-light clickable hover-highlight v-center"
+							<div class="row padding-y-10 border-bottom-light clickable hover-highlight v-center break-long"
 							     :class="{'transparent' : loading}"
 							     v-for="(request, index) in requests"
 							     :key="index"
@@ -58,7 +58,7 @@
 								<div class="col-xs-3">
 									{{request.action}}
 								</div>
-								<div class="col-xs-3 break-long">
+								<div class="col-xs-3">
 									<p>{{request.created_by_name}}</p>
 								</div>
 								<div class="col-xs-3">
@@ -99,14 +99,14 @@
 								</div>
 							</div>
 
-							<div class="row padding-y-10 border-bottom-light"
+							<div class="row padding-y-10 border-bottom-light break-long"
 							     v-for="(field, index) in request"
 							     :key="index"
 							     :class="{'changed' : field.existing !== field.modified}">
 								<div class="col-xs-2">
 									<p>{{field.label}}</p>
 								</div>
-								<div class="col-xs-5 break-long">
+								<div class="col-xs-5">
 									{{field.existing}}
 								</div>
 								<div class="col-xs-5">
