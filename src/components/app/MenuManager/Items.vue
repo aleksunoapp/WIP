@@ -295,7 +295,7 @@
 							     v-show="listErrorMessage"
 							     ref="listErrorMessage">
 								<button class="close"
-								        @click="clearError('listErrorMessage')"></button>
+								        @click.stop.prevent="clearError('listErrorMessage')"></button>
 								<span>{{listErrorMessage}}</span>
 							</div>
 						</div>
@@ -1394,12 +1394,13 @@ export default {
 				item.preset_item_modifier_item || []
 		},
 		/**
-		 * To clear the current error.
+		 * To clear an error.
 		 * @function
+		 * @param {string} name - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
+		clearError (name) {
+			this[name] = ''
 		},
 		/**
 		 * To set the image to be same as the one emitted by the gallery modal.
