@@ -467,10 +467,6 @@ export default {
 								)
 								loginVue.setPermissions(userPermissions)
 								loginVue.$root.permissions = userPermissions
-								localStorage.setItem(
-									'permissions',
-									JSON.stringify(loginVue.$root.permissions)
-								)
 
 								// set account type && locations for Location Managers
 								if (response.payload.type === 'admin') {

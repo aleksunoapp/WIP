@@ -18,7 +18,7 @@
 					<ul class="nav navbar-nav pull-right">
 						<!-- BEGIN USER LOGIN DROPDOWN -->
 						<li class="dropdown dropdown-user left"
-						    @click="logOut()">
+						    @click="$root.logOut()">
 							<a href="javascript:;"
 							   class="dropdown-toggle log-out-button">
 								<span class="username username-hide-on-mobile">Log out</span>
@@ -406,22 +406,6 @@ export default {
 			localStorage.removeItem('activeLocation')
 			this.$root.activeLocation = {}
 			this.activeLocation = {}
-		},
-		/**
-		 * To log the user out of their current session and clear global variables and local storage.
-		 * @function
-		 * @returns {undefined}
-		 */
-		logOut () {
-			App.logOut()
-
-			this.$root.clearGlobalVariables()
-			// eslint-disable-next-line
-			localStorage.clear()
-
-			this.$router.push({
-				name: 'Login'
-			})
 		}
 	},
 	components: {
