@@ -728,7 +728,12 @@ export default {
 					)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
-								_this.saveMessage = 'Saved'
+								if (response.payload && response.payload.pending_approval) {
+									_this.saveMessage = 'The Menu Hours have been saved'
+								} else {
+									_this.saveMessage = 'The Menu Hours have been sent for approval'
+								}
+
 								_this.getMenuHours()
 							}
 						})

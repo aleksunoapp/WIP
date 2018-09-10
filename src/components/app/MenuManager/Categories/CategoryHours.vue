@@ -889,7 +889,11 @@ export default {
 					)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
-								_this.saveMessage = 'Saved'
+								if (response.payload && response.payload.pending_approval) {
+									_this.saveMessage = 'The Category Hours have been saved'
+								} else {
+									_this.saveMessage = 'The Category Hours have been sent for approval'
+								}
 
 								const sundayIndex = response.payload.findIndex(
 								day => day.day === 0

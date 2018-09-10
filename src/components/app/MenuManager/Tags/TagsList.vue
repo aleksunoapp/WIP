@@ -261,6 +261,7 @@ export default {
 				)
 					.then(response => {
 						if (response.code === 200 && response.status === 'ok') {
+							tagsListVue.showUpdateSuccess(response.payload)
 							tagsListVue.closeModal()
 						}
 					})
@@ -286,6 +287,7 @@ export default {
 				)
 					.then(response => {
 						if (response.code === 200 && response.status === 'ok') {
+							tagsListVue.showUpdateSuccess(response.payload)
 							tagsListVue.closeModal()
 						}
 					})
@@ -302,6 +304,29 @@ export default {
 						tagsListVue.applying = false
 					})
 			}
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showUpdateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Tags have been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
