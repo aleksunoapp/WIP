@@ -270,7 +270,7 @@
 						    id="store_manager_delivery_hours_link">
 							<router-link to="/app/store_manager/delivery_hours"
 							             class="nav-link">
-								<i class="fa fa-truck"></i>
+								<i class="fa fa-clock-o"></i>
 								<span class="title">Delivery Hours</span>
 							</router-link>
 						</li>
