@@ -1,9 +1,3 @@
-<!--
-JIRA:
-need French for 'Customer concern'
-CUSTOMER COMMENTS
-ADVISOR COMMENTS
--->
 <template>
 	<div>
 		<div class="help-screen-overlay" v-if="helpScreenShowing">

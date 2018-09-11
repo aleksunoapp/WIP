@@ -27,32 +27,35 @@
 							">{{ langTerms.customer_concern[$root.meta.local.toLowerCase()] }}</p>
 							<h2>{{ viewingService.name }}</h2>
 						</div>
-						<p v-if="
-							viewingService.category !== '6' &&
-							viewingService.category !== '7'
-						">{{ viewingService.comment }}</p>
 					</div>
-					<div class="info-modal-concerns"
-						v-if="
-							(viewingService.comment) || 
-							(
-								viewingService.subServices && 
-								viewingService.subServices.length && 
-								viewingService.subServices[0].comment
-							)">
-						<p class="customer-comments-label" v-if="viewingService.comment">
-							{{ langTerms.customer_comments[$root.meta.local.toLowerCase()] }}
-						</p>
-						<p class="customer-comments" v-if="viewingService.comment">
-							{{viewingService.comment}}
-						</p>
-						<p class="advisor-comments-label" v-if="viewingService.subServices && viewingService.subServices.length && viewingService.subServices[0].comment">
-							{{ langTerms.advisor_comments[$root.meta.local.toLowerCase()] }}
-						</p>
-						<p class="advisor-comments" v-if="viewingService.subServices && viewingService.subServices.length && viewingService.subServices[0].comment">
-							{{viewingService.subServices[0].comment}}
-						</p>
-					</div>
+					<template v-if="viewingService.category !== '6' && viewingService.category !== '7'">
+						<div class="info-modal-concerns">
+							<p>{{ viewingService.comment }}</p>
+						</div>
+					</template>
+					<template v-if="viewingService.category === '6' || viewingService.category === '7'">
+						<div class="info-modal-concerns"
+							v-if="
+								(viewingService.comment) || 
+								(
+									viewingService.subServices && 
+									viewingService.subServices.length && 
+									viewingService.subServices[0].comment
+								)">
+							<p class="customer-comments-label" v-if="viewingService.comment">
+								{{ langTerms.customer_comments[$root.meta.local.toLowerCase()] }}
+							</p>
+							<p class="customer-comments" v-if="viewingService.comment">
+								{{viewingService.comment}}
+							</p>
+							<p class="advisor-comments-label" v-if="viewingService.subServices && viewingService.subServices.length && viewingService.subServices[0].comment">
+								{{ langTerms.advisor_comments[$root.meta.local.toLowerCase()] }}
+							</p>
+							<p class="advisor-comments" v-if="viewingService.subServices && viewingService.subServices.length && viewingService.subServices[0].comment">
+								{{viewingService.subServices[0].comment}}
+							</p>
+						</div>
+					</template>
 					<div class="info-modal-info-bottom">
 						<div class="info-modal-contact">
 							<!-- <a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-summary-link" @click="$root.logEvent(`Opened Inspection Summary PDF`)">
