@@ -16,6 +16,15 @@ export default {
 			} else {
 				return 'https://approval.dev.api.unoapp.io'
 			}
+		})(),
+		loyalty: (function () {
+			if (production) {
+				return 'https://loyalty.api.unoapp.io'
+			} else if (staging) {
+				return 'https://loyalty.beta.api.unoapp.io'
+			} else {
+				return 'https://loyalty.dev.api.unoapp.io'
+			}
 		})()
 	},
 	headers: {
@@ -34,6 +43,24 @@ export default {
 				return {
 					appId: '46c9485f92a0f8ac29d66570893a3805',
 					appSecret: '0276a6fd79282e1b73cdd209540cdfcd'
+				}
+			}
+		})(),
+		loyalty: (function () {
+			if (production) {
+				return {
+					appId: 'KWpZuK0lscFrJ84dkUGsMQVQGDHAtAHv',
+					appSecret: 'QVDvjk0cn4jltPnNEQi2hwQlD17pU0dr'
+				}
+			} else if (staging) {
+				return {
+					appId: '0CA0D7Lk9D6jZvgeklHiBTX99PYbTDIs',
+					appSecret: 'JnJqjxCKnVpvgO5cWGWSkfesTQWaiP46'
+				}
+			} else {
+				return {
+					appId: '0CA0D7Lk9D6jZvgeklHiBTX99PYbTDIs',
+					appSecret: 'JnJqjxCKnVpvgO5cWGWSkfesTQWaiP46'
 				}
 			}
 		})()
@@ -126,42 +153,6 @@ export default {
 		}
 	})(),
 	/**
-	 * base url for API calls to Loyalty endpoints
-	 */
-	loyaltyUrl: (function () {
-		if (production) {
-			return 'https://loyalty.api.unoapp.io'
-		} else if (staging) {
-			return 'https://loyalty.beta.api.unoapp.io'
-		} else {
-			return 'https://loyalty.dev.api.unoapp.io'
-		}
-	})(),
-	/**
-	 * app id for API calls to Loyalty endpoints
-	 */
-	loyaltyAppId: (function () {
-		if (production) {
-			return 'KWpZuK0lscFrJ84dkUGsMQVQGDHAtAHv'
-		} else if (staging) {
-			return '0CA0D7Lk9D6jZvgeklHiBTX99PYbTDIs'
-		} else {
-			return '0CA0D7Lk9D6jZvgeklHiBTX99PYbTDIs'
-		}
-	})(),
-	/**
-	 * app secret for API calls to Loyalty endpoints
-	 */
-	loyaltyAppSecret: (function () {
-		if (production) {
-			return 'QVDvjk0cn4jltPnNEQi2hwQlD17pU0dr'
-		} else if (staging) {
-			return 'JnJqjxCKnVpvgO5cWGWSkfesTQWaiP46'
-		} else {
-			return 'JnJqjxCKnVpvgO5cWGWSkfesTQWaiP46'
-		}
-	})(),
-	/**
 	 * API key for Google Maps Javascript API
 	 */
 	googleMapsJavascriptApiKey: 'AIzaSyAweYWedKzekUFGNFf-Qb1Ox7ce6Pul2xQ', // aleks@unoapp.com
@@ -175,7 +166,7 @@ export default {
 	$ajax: function (options, api) {
 		var localhost = this.baseUrl + '/api'
 
-		if (api === 'approvals') {
+		if (api === 'approvals' || api === 'loyalty') {
 			options.url = this.urls[api] + options.url
 			const headers = this.headers
 
