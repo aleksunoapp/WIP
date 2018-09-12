@@ -78,7 +78,7 @@ export default {
 	 */
 	resourcesBaseUrl: (function () {
 		if (production) {
-			return ''
+			return 'https://resources.api.unoapp.io'
 		} else if (staging) {
 			return 'https://resources.dev.api.unoapp.io'
 		} else {
@@ -94,7 +94,7 @@ export default {
 	 */
 	messageBaseUrl: (function () {
 		if (production) {
-			return ''
+			return 'https://notifications.api.unoapp.io'
 		} else if (staging) {
 			return 'https://notifications.beta.api.unoapp.io'
 		} else {
@@ -130,7 +130,7 @@ export default {
 	 */
 	loyaltyUrl: (function () {
 		if (production) {
-			return ''
+			return 'https://loyalty.api.unoapp.io'
 		} else if (staging) {
 			return 'https://loyalty.beta.api.unoapp.io'
 		} else {
