@@ -13,7 +13,7 @@ export default {
 				return 'https://approval.api.unoapp.io'
 			} else if (staging) {
 				return 'https://approval.beta.api.unoapp.io'
-			} else {
+			} else if (development) {
 				return 'https://approval.dev.api.unoapp.io'
 			}
 		})(),
@@ -22,8 +22,17 @@ export default {
 				return 'https://loyalty.api.unoapp.io'
 			} else if (staging) {
 				return 'https://loyalty.beta.api.unoapp.io'
-			} else {
+			} else if (development) {
 				return 'https://loyalty.dev.api.unoapp.io'
+			}
+		})(),
+		ecomm: (function () {
+			if (production) {
+				return 'https://freshii.api.unoapp.io/api'
+			} else if (staging) {
+				return 'https://freshii.beta.api.unoapp.io/api'
+			} else if (development) {
+				return 'http://dev.api.unoapp.io/freshii/api'
 			}
 		})()
 	},
@@ -39,7 +48,7 @@ export default {
 					appId: '46c9485f92a0f8ac29d66570893a3805',
 					appSecret: '0276a6fd79282e1b73cdd209540cdfcd'
 				}
-			} else {
+			} else if (development) {
 				return {
 					appId: '46c9485f92a0f8ac29d66570893a3805',
 					appSecret: '0276a6fd79282e1b73cdd209540cdfcd'
@@ -57,10 +66,23 @@ export default {
 					appId: '0CA0D7Lk9D6jZvgeklHiBTX99PYbTDIs',
 					appSecret: 'JnJqjxCKnVpvgO5cWGWSkfesTQWaiP46'
 				}
-			} else {
+			} else if (development) {
 				return {
 					appId: '0CA0D7Lk9D6jZvgeklHiBTX99PYbTDIs',
 					appSecret: 'JnJqjxCKnVpvgO5cWGWSkfesTQWaiP46'
+				}
+			}
+		})(),
+		ecomm: (function () {
+			if (App) {
+				return {
+					appId: App.appId,
+					appSecret: App.appSecret
+				}
+			} else {
+				return {
+					appId: '',
+					appSecret: ''
 				}
 			}
 		})()
@@ -73,7 +95,7 @@ export default {
 			return '5b60a158baf2d10681b79cd1'
 		} else if (staging) {
 			return '5b291f11dc35e663e8847981'
-		} else {
+		} else if (development) {
 			return '5b291f11dc35e663e8847981'
 		}
 	})(),
@@ -82,25 +104,6 @@ export default {
 	 */
 	businessId: 2,
 	/**
-	 * base url for UNOapp accounts frontend, with # if accounts router is in hash mode
-	 */
-	// development
-	accountsUrl: development
-		? 'http://localhost:8002/#'
-		: 'http://accounts.beta.unoapp.io/#',
-	/**
-	 * base url for API calls, other than Message calls
-	 */
-	baseUrl: (function () {
-		if (production) {
-			return 'https://freshii.api.unoapp.io'
-		} else if (staging) {
-			return 'https://freshii.beta.api.unoapp.io'
-		} else {
-			return 'http://dev.api.unoapp.io/freshii'
-		}
-	})(),
-	/**
 	 * base url for Resources API calls
 	 */
 	resourcesBaseUrl: (function () {
@@ -108,7 +111,7 @@ export default {
 			return 'https://resources.api.unoapp.io'
 		} else if (staging) {
 			return 'https://resources.dev.api.unoapp.io'
-		} else {
+		} else if (development) {
 			return 'https://resources.dev.api.unoapp.io'
 		}
 	})(),
@@ -124,7 +127,7 @@ export default {
 			return 'https://notifications.api.unoapp.io'
 		} else if (staging) {
 			return 'https://notifications.beta.api.unoapp.io'
-		} else {
+		} else if (development) {
 			return 'https://notifications.dev.api.unoapp.io'
 		}
 	})(),
@@ -136,7 +139,7 @@ export default {
 			return ''
 		} else if (staging) {
 			return 'bearer e3e7f5af3c458aa04b3722dc77c4020a'
-		} else {
+		} else if (development) {
 			return 'bearer bed62ee5c3cc97a2d5297f973af1c15e'
 		}
 	})(),
@@ -148,7 +151,7 @@ export default {
 			return ''
 		} else if (staging) {
 			return 'bearer 39d270dc380d5ac331f0affc7a4ddb59'
-		} else {
+		} else if (development) {
 			return 'bearer 6b1642515315f527604919b430fe79de'
 		}
 	})(),
@@ -163,25 +166,14 @@ export default {
 	 * @param {boolean} api - The api to call
 	 * @returns {undefined}
 	 */
-	$ajax: function (options, api) {
-		var localhost = this.baseUrl + '/api'
+	$ajax: function (options, api = 'ecomm') {
+		const headers = this.headers
+		options.url = this.urls[api] + options.url
 
-		if (api === 'approvals' || api === 'loyalty') {
-			options.url = this.urls[api] + options.url
-			const headers = this.headers
-
-			options.beforeSend = function (xhr) {
-				xhr.setRequestHeader('app-id', headers[api].appId)
-				xhr.setRequestHeader('app-secret', headers[api].appSecret)
-				xhr.setRequestHeader('auth-token', App.userToken)
-			}
-		} else {
-			options.url = localhost + options.url
-			options.beforeSend = function (xhr) {
-				xhr.setRequestHeader('app-id', App.appId)
-				xhr.setRequestHeader('app-secret', App.appSecret)
-				xhr.setRequestHeader('auth-token', App.userToken)
-			}
+		options.beforeSend = function (xhr) {
+			xhr.setRequestHeader('app-id', headers[api].appId)
+			xhr.setRequestHeader('app-secret', headers[api].appSecret)
+			xhr.setRequestHeader('auth-token', App.userToken)
 		}
 
 		if (
@@ -192,6 +184,7 @@ export default {
 			options.data = JSON.stringify(options.data)
 		}
 
+		console.log({options})
 		$.ajax(options)
 	},
 	/**

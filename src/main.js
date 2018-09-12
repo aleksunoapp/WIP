@@ -220,8 +220,6 @@ var App = new Vue({
 					case 'auth_token_missing':
 					case 'auth_token_expired':
 					case 'auth_token_invalid':
-							// Redirect to the login screen and clear all variables
-						// window.location.href = `${globals.accountsUrl}/login/?redirect_to=ecomm`
 						return
 
 					default:
