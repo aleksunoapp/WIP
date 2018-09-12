@@ -142,7 +142,7 @@ export default {
 	 */
 	loyaltyAppId: (function () {
 		if (production) {
-			return ''
+			return 'KWpZuK0lscFrJ84dkUGsMQVQGDHAtAHv'
 		} else if (staging) {
 			return '0CA0D7Lk9D6jZvgeklHiBTX99PYbTDIs'
 		} else {
@@ -154,7 +154,7 @@ export default {
 	 */
 	loyaltyAppSecret: (function () {
 		if (production) {
-			return ''
+			return 'QVDvjk0cn4jltPnNEQi2hwQlD17pU0dr'
 		} else if (staging) {
 			return 'JnJqjxCKnVpvgO5cWGWSkfesTQWaiP46'
 		} else {
