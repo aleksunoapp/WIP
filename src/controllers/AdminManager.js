@@ -12,7 +12,7 @@ import $ from 'jquery'
  * @returns {undefined}
  */
 const $ajax = function (options, noRetry) {
-	var localhost = GlobalFunctions.baseUrl
+	var localhost = GlobalFunctions.urls.ecomm.substring(0, GlobalFunctions.baseUrl.length - 4)
 
 	options.url = localhost + options.url
 	if (options.method.toLowerCase() === 'post') {
