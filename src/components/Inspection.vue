@@ -340,7 +340,7 @@ export default {
 				'SAFETY': 'failCount',
 				'ATTN': 'warningCount',
 				'PASS': 'passCount',
-				'CCRD': 'concernCount'
+				'CC': 'concernCount'
 			},
 			services: this.$root.services,
 			modalOpen: false,
@@ -654,7 +654,7 @@ export default {
 				return true
 			} else if (category.serviceCategoryType === 'PASS') {
 				return true
-			} else if (category.serviceCategoryType === 'CCRD') {
+			} else if (category.serviceCategoryType === 'CC') {
 				return true
 			} else {
 				return false
