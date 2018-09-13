@@ -95,7 +95,7 @@ export default {
 	 */
 	resourcesBaseUrl: (function () {
 		if (production) {
-			return 'https://resources.api.unoapp.io'
+			return 'https://resources.beta.api.unoapp.io'
 		} else if (staging) {
 			return 'https://resources.dev.api.unoapp.io'
 		} else if (development) {
