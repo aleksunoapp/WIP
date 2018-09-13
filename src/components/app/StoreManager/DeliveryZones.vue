@@ -535,6 +535,8 @@ export default {
 
 					Promise.all([...toCreate, ...toUpdate, ...toDelete]).then(
 						response => {
+							_this.getDeliveryZones()
+
 							let pending = response.filter(
 								x => x.payload && x.payload.pending_approval
 							)
