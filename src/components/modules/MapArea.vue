@@ -490,6 +490,7 @@ export default {
 }
 .legend {
 	width: 100%;
+	height: 100%;
 	display: flex;
 	align-items: center;
 	padding: 20px 0;
@@ -501,6 +502,8 @@ export default {
 .remove-buttons-container {
 	display: inline-flex;
 	flex-wrap: wrap;
+	overflow: auto;
+	max-height: 100%;
 }
 .draw-button {
 	margin: 0 20px 0 5px;
