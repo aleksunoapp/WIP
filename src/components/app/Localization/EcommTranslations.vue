@@ -178,7 +178,7 @@
 				        @click="closeGallery">
 					<span>&times;</span>
 				</button>
-				<h4 class="modal-title center">Select Image To Use in {{localeForTranslation.country}}</h4>
+				<h4 class="modal-title center">Select Image To Use in {{localeForTranslation.country.name}}</h4>
 			</div>
 			<div slot="modal-body"
 			     class="modal-body">
