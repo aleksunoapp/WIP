@@ -43,13 +43,13 @@
 									viewingService.subServices[0].comment
 								)">
 							<p class="customer-comments-label" v-if="viewingService.comment">
-								{{ langTerms.customer_comments[$root.meta.local.toLowerCase()] }}
+								{{ $root.meta.customerConcernsLabel }}
 							</p>
 							<p class="customer-comments" v-if="viewingService.comment">
 								{{viewingService.comment}}
 							</p>
 							<p class="advisor-comments-label" v-if="viewingService.subServices && viewingService.subServices.length && viewingService.subServices[0].comment">
-								{{ langTerms.advisor_comments[$root.meta.local.toLowerCase()] }}
+								{{ $root.meta.customerCommentsLabel }}
 							</p>
 							<p class="advisor-comments" v-if="viewingService.subServices && viewingService.subServices.length && viewingService.subServices[0].comment">
 								{{viewingService.subServices[0].comment}}
@@ -135,16 +135,6 @@ export default {
 					'en-ca': 'Customer Concern',
 					'en-us': 'Customer Concern',
 					'fr-ca': 'Préoccupations'
-				},
-				customer_comments: {
-					'en-ca': 'Customer comments',
-					'en-us': 'Customer comments',
-					'fr-ca': 'Commentaires du client'
-				},
-				advisor_comments: {
-					'en-ca': 'Advisor comments',
-					'en-us': 'Advisor comments',
-					'fr-ca': ''
 				},
 				inspection_summary: {
 					'en-ca': 'Inspection Summary',
