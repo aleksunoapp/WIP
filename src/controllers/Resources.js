@@ -3,7 +3,6 @@
  * @module Resources
  * @since 0.0.9
  */
-import $ from 'jquery'
 import GlobalFunctions from '../global'
 import { App } from '../main.js'
 
@@ -31,22 +30,18 @@ export default {
 
 		if (locationId) {
 			httpParams.location_id = locationId
-			url =
-				GlobalFunctions.resourcesBaseUrl +
-				'/resources/search/location_folders'
+			url = '/resources/search/location_folders'
 		} else {
 			httpParams.business_id = businessId
-			url =
-				GlobalFunctions.resourcesBaseUrl +
-				'/resources/search/business_folders'
+			url = '/resources/search/business_folders'
 		}
 
 		return new Promise((resolve, reject) => {
-			$.ajax({
+			const options = {
 				method: 'POST',
 				dataType: 'json',
 				url,
-				data: JSON.stringify(httpParams),
+				data: httpParams,
 				contentType: 'application/json',
 				xhrFields: {
 					withCredentials: true
@@ -57,7 +52,8 @@ export default {
 				error (e) {
 					reject(e)
 				}
-			})
+			}
+			GlobalFunctions.$ajax(options, 'resources')
 		})
 	},
 	/**
@@ -82,11 +78,11 @@ export default {
 		}
 
 		return new Promise((resolve, reject) => {
-			$.ajax({
+			const options = {
 				method: 'POST',
 				dataType: 'json',
 				url,
-				data: JSON.stringify(httpParams),
+				data: httpParams,
 				contentType: 'application/json',
 				xhrFields: {
 					withCredentials: true
@@ -97,7 +93,8 @@ export default {
 				error (e) {
 					reject(e)
 				}
-			})
+			}
+			GlobalFunctions.$ajax(options, 'resources')
 		})
 	},
 	/**
@@ -116,16 +113,14 @@ export default {
 
 		if (locationId) {
 			httpParams.location_id = locationId
-			url =
-				GlobalFunctions.resourcesBaseUrl + '/resources/location_folders'
+			url = '/resources/location_folders'
 		} else {
 			httpParams.business_id = businessId
 			httpParams.is_shared = folder.is_shared
-			url =
-				GlobalFunctions.resourcesBaseUrl + '/resources/business_folders'
+			url = '/resources/business_folders'
 		}
 		return new Promise((resolve, reject) => {
-			$.ajax({
+			const options = {
 				method: 'PUT',
 				dataType: 'json',
 				url,
@@ -139,7 +134,8 @@ export default {
 				error (e) {
 					reject(e)
 				}
-			})
+			}
+			GlobalFunctions.$ajax(options, 'resources')
 		})
 	},
 	/**
@@ -159,17 +155,15 @@ export default {
 
 		if (locationId) {
 			httpParams.location_id = locationId
-			url =
-				GlobalFunctions.resourcesBaseUrl + '/resources/location_folders'
+			url = '/resources/location_folders'
 		} else {
 			httpParams.business_id = businessId
 			httpParams.is_shared = folderPrivacy
-			url =
-				GlobalFunctions.resourcesBaseUrl + '/resources/business_folders'
+			url = '/resources/business_folders'
 		}
 
 		return new Promise((resolve, reject) => {
-			$.ajax({
+			const options = {
 				method: 'PATCH',
 				dataType: 'json',
 				url,
@@ -183,7 +177,8 @@ export default {
 				error (e) {
 					reject(e)
 				}
-			})
+			}
+			GlobalFunctions.$ajax(options, 'resources')
 		})
 	},
 	/**
@@ -216,14 +211,10 @@ export default {
 
 		if (locationId) {
 			httpParams.location_id = locationId
-			url =
-				GlobalFunctions.resourcesBaseUrl +
-				'/resources/search/location_files'
+			url = '/resources/search/location_files'
 		} else {
 			httpParams.business_id = businessId
-			url =
-				GlobalFunctions.resourcesBaseUrl +
-				'/resources/search/business_files'
+			url = '/resources/search/business_files'
 		}
 
 		if (folderId) {
@@ -243,11 +234,11 @@ export default {
 		}
 
 		return new Promise((resolve, reject) => {
-			$.ajax({
+			const options = {
 				method: 'POST',
 				dataType: 'json',
 				url,
-				data: JSON.stringify(httpParams),
+				data: httpParams,
 				contentType: 'application/json',
 				xhrFields: {
 					withCredentials: true
@@ -258,7 +249,8 @@ export default {
 				error (e) {
 					reject(e)
 				}
-			})
+			}
+			GlobalFunctions.$ajax(options, 'resources')
 		})
 	},
 	/**
@@ -283,11 +275,11 @@ export default {
 		}
 
 		return new Promise((resolve, reject) => {
-			GlobalFunctions.$ajax({
+			const options = {
 				method: 'POST',
 				dataType: 'json',
 				url,
-				data: JSON.stringify(httpParams),
+				data: httpParams,
 				contentType: 'application/json',
 				xhrFields: {
 					withCredentials: true
@@ -298,7 +290,8 @@ export default {
 				error (e) {
 					reject(e)
 				}
-			})
+			}
+			GlobalFunctions.$ajax(options, 'resources')
 		})
 	},
 	/**
@@ -324,7 +317,7 @@ export default {
 		}
 
 		return new Promise((resolve, reject) => {
-			GlobalFunctions.$ajax({
+			const options = {
 				method: 'PATCH',
 				dataType: 'json',
 				url,
@@ -335,7 +328,8 @@ export default {
 				error (e) {
 					reject(e)
 				}
-			})
+			}
+			GlobalFunctions.$ajax(options, 'resources')
 		})
 	},
 	/**
@@ -361,7 +355,7 @@ export default {
 		}
 
 		return new Promise((resolve, reject) => {
-			GlobalFunctions.$ajax({
+			const options = {
 				method: 'PUT',
 				dataType: 'json',
 				url,
@@ -372,7 +366,8 @@ export default {
 				error (e) {
 					reject(e)
 				}
-			})
+			}
+			GlobalFunctions.$ajax(options, 'resources')
 		})
 	},
 	/**
@@ -388,23 +383,19 @@ export default {
 	upload (businessId, locationId, folderId, file) {
 		let url
 		if (locationId) {
-			url =
-				GlobalFunctions.resourcesBaseUrl +
-				'/resources/location_file/' +
+			url = '/resources/location_file/' +
 				locationId +
 				'/' +
 				folderId
 		} else {
-			url =
-				GlobalFunctions.resourcesBaseUrl +
-				'/resources/business_file/' +
+			url = '/resources/business_file/' +
 				businessId +
 				'/' +
 				folderId
 		}
 
 		return new Promise((resolve, reject) => {
-			$.ajax({
+			const options = {
 				method: 'POST',
 				dataType: 'json',
 				url,
@@ -420,7 +411,8 @@ export default {
 				error (e) {
 					reject(e)
 				}
-			})
+			}
+			GlobalFunctions.$ajax(options, 'resources')
 		})
 	},
 	/**
@@ -444,18 +436,18 @@ export default {
 
 		if (locationId) {
 			httpParams.location_id = locationId
-			url = GlobalFunctions.resourcesBaseUrl + '/resources/location_tags'
+			url = '/resources/location_tags'
 		} else {
 			httpParams.business_id = businessId
-			url = GlobalFunctions.resourcesBaseUrl + '/resources/business_tags'
+			url = '/resources/business_tags'
 		}
 
 		return new Promise((resolve, reject) => {
-			$.ajax({
+			const options = {
 				method: 'POST',
 				dataType: 'json',
 				url,
-				data: JSON.stringify(httpParams),
+				data: httpParams,
 				contentType: 'application/json',
 				xhrFields: {
 					withCredentials: true
@@ -466,7 +458,8 @@ export default {
 				error (e) {
 					reject(e)
 				}
-			})
+			}
+			GlobalFunctions.$ajax(options, 'resources')
 		})
 	},
 	/**
@@ -481,13 +474,11 @@ export default {
 		let httpParams = { file_id: resourceId, business_id: businessId }
 
 		return new Promise((resolve, reject) => {
-			$.ajax({
+			const options = {
 				method: 'DELETE',
 				dataType: 'json',
-				url:
-					GlobalFunctions.resourcesBaseUrl +
-					'/resources/business_file',
-				data: JSON.stringify(httpParams),
+				url: '/resources/business_file',
+				data: httpParams,
 				contentType: 'application/json',
 				processData: false,
 				success (response) {
@@ -496,7 +487,8 @@ export default {
 				error (e) {
 					reject(e)
 				}
-			})
+			}
+			GlobalFunctions.$ajax(options, 'resources')
 		})
 	}
 }

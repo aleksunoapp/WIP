@@ -34,45 +34,68 @@ export default {
 			} else if (development) {
 				return 'http://dev.api.unoapp.io/freshii/api'
 			}
+		})(),
+		resources: (function () {
+			if (production) {
+				return 'https://resources.beta.api.unoapp.io'
+			} else if (staging) {
+				return 'https://resources.dev.api.unoapp.io'
+			} else if (development) {
+				return 'https://resources.dev.api.unoapp.io'
+			}
 		})()
 	},
-	headers: {
-		approvals: (function () {
-			if (production) {
-				return {
-					appId: '3jJIMoDLAJW2qzQk0DmFCVxhbRzVIL4Qn',
-					appSecret: 'cgLb2aWAyY1k3TBmquEjjbOjWxZRc6iw2'
+	headers: function () {
+		return {
+			approvals: (function () {
+				if (production) {
+					return {
+						appId: '3jJIMoDLAJW2qzQk0DmFCVxhbRzVIL4Qn',
+						appSecret: 'cgLb2aWAyY1k3TBmquEjjbOjWxZRc6iw2'
+					}
+				} else if (staging) {
+					return {
+						appId: '46c9485f92a0f8ac29d66570893a3805',
+						appSecret: '0276a6fd79282e1b73cdd209540cdfcd'
+					}
+				} else if (development) {
+					return {
+						appId: '46c9485f92a0f8ac29d66570893a3805',
+						appSecret: '0276a6fd79282e1b73cdd209540cdfcd'
+					}
 				}
-			} else if (staging) {
-				return {
-					appId: '46c9485f92a0f8ac29d66570893a3805',
-					appSecret: '0276a6fd79282e1b73cdd209540cdfcd'
+			})(),
+			loyalty: (function () {
+				if (production) {
+					return {
+						appId: 'KWpZuK0lscFrJ84dkUGsMQVQGDHAtAHv',
+						appSecret: 'QVDvjk0cn4jltPnNEQi2hwQlD17pU0dr'
+					}
+				} else if (staging) {
+					return {
+						appId: '0CA0D7Lk9D6jZvgeklHiBTX99PYbTDIs',
+						appSecret: 'JnJqjxCKnVpvgO5cWGWSkfesTQWaiP46'
+					}
+				} else if (development) {
+					return {
+						appId: '0CA0D7Lk9D6jZvgeklHiBTX99PYbTDIs',
+						appSecret: 'JnJqjxCKnVpvgO5cWGWSkfesTQWaiP46'
+					}
 				}
-			} else if (development) {
+			})(),
+			resources: (function () {
 				return {
-					appId: '46c9485f92a0f8ac29d66570893a3805',
-					appSecret: '0276a6fd79282e1b73cdd209540cdfcd'
+					appId: store.getters.appId,
+					appSecret: store.getters.appSecret
 				}
-			}
-		})(),
-		loyalty: (function () {
-			if (production) {
+			})(),
+			ecomm: (function () {
 				return {
-					appId: 'KWpZuK0lscFrJ84dkUGsMQVQGDHAtAHv',
-					appSecret: 'QVDvjk0cn4jltPnNEQi2hwQlD17pU0dr'
+					appId: store.getters.appId,
+					appSecret: store.getters.appSecret
 				}
-			} else if (staging) {
-				return {
-					appId: '0CA0D7Lk9D6jZvgeklHiBTX99PYbTDIs',
-					appSecret: 'JnJqjxCKnVpvgO5cWGWSkfesTQWaiP46'
-				}
-			} else if (development) {
-				return {
-					appId: '0CA0D7Lk9D6jZvgeklHiBTX99PYbTDIs',
-					appSecret: 'JnJqjxCKnVpvgO5cWGWSkfesTQWaiP46'
-				}
-			}
-		})()
+			})()
+		}
 	},
 	/**
 	 * app_id for the Approvals API
@@ -84,22 +107,6 @@ export default {
 			return '5b291f11dc35e663e8847981'
 		} else if (development) {
 			return '5b291f11dc35e663e8847981'
-		}
-	})(),
-	/**
-	 * business id to identify the business aka brand aka customer (2 is Freshii)
-	 */
-	businessId: 2,
-	/**
-	 * base url for Resources API calls
-	 */
-	resourcesBaseUrl: (function () {
-		if (production) {
-			return 'https://resources.beta.api.unoapp.io'
-		} else if (staging) {
-			return 'https://resources.dev.api.unoapp.io'
-		} else if (development) {
-			return 'https://resources.dev.api.unoapp.io'
 		}
 	})(),
 	/**
@@ -154,21 +161,13 @@ export default {
 	 * @returns {undefined}
 	 */
 	$ajax: function (options, api = 'ecomm') {
-		const headers = this.headers
+		let headers = this.headers()
 		options.url = this.urls[api] + options.url
 
-		if (api !== 'ecomm') {
-			options.beforeSend = function (xhr) {
-				xhr.setRequestHeader('app-id', headers[api].appId)
-				xhr.setRequestHeader('app-secret', headers[api].appSecret)
-				xhr.setRequestHeader('auth-token', store.getters.userToken)
-			}
-		} else {
-			options.beforeSend = function (xhr) {
-				xhr.setRequestHeader('app-id', store.getters.appId)
-				xhr.setRequestHeader('app-secret', store.getters.appSecret)
-				xhr.setRequestHeader('auth-token', store.getters.userToken)
-			}
+		options.beforeSend = function (xhr) {
+			xhr.setRequestHeader('app-id', headers[api].appId)
+			xhr.setRequestHeader('app-secret', headers[api].appSecret)
+			xhr.setRequestHeader('auth-token', store.getters.userToken)
 		}
 
 		if (
