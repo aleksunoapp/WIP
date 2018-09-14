@@ -8,7 +8,7 @@ import locale from 'element-ui/lib/locale/lang/en'
 import '@/assets/css/Element-UI-variable-overrides.scss'
 import VueSweetAlert from 'vue-sweetalert'
 import VueScrollTo from 'vue-scrollto'
-import { mapMutations } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import $ from 'jquery'
 import GlobalFunctions from '@/global'
 import AppFunctions from '@/controllers/App'
@@ -47,9 +47,13 @@ var App = new Vue({
 			corporateStoreId: null,
 			storeLocations: [],
 			requestsPending: false,
-			permissions: {},
 			roles: []
 		}
+	},
+	computed: {
+		...mapState({
+			permissions: state => state.permissions
+		})
 	},
 	mounted () {
 		this.readLocalStorage()

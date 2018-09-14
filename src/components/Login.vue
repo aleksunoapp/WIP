@@ -466,7 +466,6 @@ export default {
 									}
 								)
 								loginVue.setPermissions(userPermissions)
-								loginVue.$root.permissions = userPermissions
 
 								// set account type && locations for Location Managers
 								if (response.payload.type === 'admin') {
