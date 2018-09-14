@@ -141,7 +141,7 @@
 										</div>
 										<div class="summary-table-cell">
 											<template v-if="category.serviceCategoryType !== 'PASS' && service.category !== '8'">
-												<span class="price" v-if="service.price !== 0">{{ formatCurrency(service.price) }}</span>
+												<span class="price" v-if="service.subServices[0].price !== 0">{{ formatCurrency(service.subServices[0].price) }}</span>
 												<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 												<div class="service-checkbox">
 													<input 
