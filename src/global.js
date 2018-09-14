@@ -2,8 +2,8 @@
  * @module Global
  */
 import $ from 'jquery'
-import { App } from './main.js'
 import environment from './environment'
+import store from './store'
 const { production, staging, development } = environment
 
 export default {
@@ -161,13 +161,13 @@ export default {
 			options.beforeSend = function (xhr) {
 				xhr.setRequestHeader('app-id', headers[api].appId)
 				xhr.setRequestHeader('app-secret', headers[api].appSecret)
-				xhr.setRequestHeader('auth-token', App.userToken)
+				xhr.setRequestHeader('auth-token', store.getters.userToken)
 			}
 		} else {
 			options.beforeSend = function (xhr) {
-				xhr.setRequestHeader('app-id', App.appId)
-				xhr.setRequestHeader('app-secret', App.appSecret)
-				xhr.setRequestHeader('auth-token', App.userToken)
+				xhr.setRequestHeader('app-id', store.getters.appId)
+				xhr.setRequestHeader('app-secret', store.getters.appSecret)
+				xhr.setRequestHeader('auth-token', store.getters.userToken)
 			}
 		}
 

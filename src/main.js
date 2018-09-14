@@ -38,7 +38,6 @@ var App = new Vue({
 		return {
 			activeUser: {},
 			userToken: '',
-			appId: '',
 			appSecret: '',
 			accountType: '',
 			activeLocation: {},
@@ -52,7 +51,8 @@ var App = new Vue({
 	},
 	computed: {
 		...mapState({
-			permissions: state => state.permissions
+			permissions: state => state.permissions,
+			appId: state => state.auth.appId
 		})
 	},
 	mounted () {
@@ -87,9 +87,9 @@ var App = new Vue({
 				roles !== null
 			) {
 				this.activeUser = JSON.parse(activeUser)
-				this.userToken = userToken
-				this.appId = appId
-				this.appSecret = appSecret
+				this.userToken = this.setUserToken(userToken)
+				this.appId = this.setAppId(appId)
+				this.appSecret = this.setAppSecret(appSecret)
 				this.createdBy = createdBy
 				this.accountType = accountType
 				this.roles = JSON.parse(roles)
@@ -173,9 +173,9 @@ var App = new Vue({
 		 */
 		clearGlobalVariables () {
 			this.activeUser = {}
-			this.userToken = ''
-			this.appId = ''
-			this.appSecret = ''
+			this.userToken = this.setUserToken('')
+			this.appId = this.setAppId('')
+			this.appSecret = this.setAppSecret('')
 			this.accountType = ''
 			this.activeLocation = {}
 			this.createdBy = 0
@@ -234,7 +234,10 @@ var App = new Vue({
 			}
 		},
 		...mapMutations({
-			setPermissions: 'SET_PERMISSIONS'
+			setPermissions: 'SET_PERMISSIONS',
+			setAppId: 'SET_APP_ID',
+			setAppSecret: 'SET_APP_SECRET',
+			setUserToken: 'SET_USER_TOKEN'
 		})
 	},
 	router

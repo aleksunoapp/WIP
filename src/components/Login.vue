@@ -425,21 +425,19 @@ export default {
 									JSON.stringify(loginVue.$root.activeUser)
 								)
 								// set userToken
-								loginVue.$root.userToken =
-									response.session.token
+								loginVue.$root.userToken = this.setUserToken(response.session.token)
 								localStorage.setItem(
 									'userToken',
 									loginVue.$root.userToken
 								)
 								// set appId
-								loginVue.$root.appId = response.App.app_id
+								loginVue.setAppId(response.App.app_id)
 								localStorage.setItem(
 									'appId',
 									loginVue.$root.appId
 								)
 								// set appSecret
-								loginVue.$root.appSecret =
-									response.App.app_secret
+								this.setAppSecret(response.App.app_secret)
 								localStorage.setItem(
 									'appSecret',
 									loginVue.$root.appSecret
@@ -614,7 +612,10 @@ export default {
 				})
 		},
 		...mapMutations({
-			setPermissions: 'SET_PERMISSIONS'
+			setPermissions: 'SET_PERMISSIONS',
+			setAppId: 'SET_APP_ID',
+			setAppSecret: 'SET_APP_SECRET',
+			setUserToken: 'SET_USER_TOKEN'
 		})
 	},
 	components: {
