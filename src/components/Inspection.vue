@@ -77,7 +77,7 @@
 			<template v-for="(category, index) in serviceCategories" v-if="category.id === '5' && $root.inspectionCounts.concernCount">
 				<div class="grey accordion" :key="`category-${index}`">
 					<div @click="toggleAccordion(category)" class="accordion-header">
-						<img :src="require('../assets/images/concern-white.png')"> {{ category.name }} {{ ($root.inspectionCounts[countVariables[category.serviceCategoryType]] !== 0) ? `(${$root.inspectionCounts[countVariables[category.serviceCategoryType]]})` : '' }}
+						<img :src="require('../assets/images/concern-white.png')"> {{ $root.meta.customerConcernsLabel }} {{ ($root.inspectionCounts[countVariables[category.serviceCategoryType]] !== 0) ? `(${$root.inspectionCounts[countVariables[category.serviceCategoryType]]})` : '' }}
 						<div class="accordion-status" v-if="$root.inspectionCounts[countVariables[category.serviceCategoryType]] !== 0"></div>
 						<div class="clear"></div>
 					</div>

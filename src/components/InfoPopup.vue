@@ -24,7 +24,7 @@
 							<p v-if="
 								viewingService.category === '6' || 
 								viewingService.category === '7'
-							">{{ langTerms.customer_concern[$root.meta.local.toLowerCase()] }}</p>
+							">{{ $root.meta.customerConcernsLabel }}</p>
 							<h2>{{ viewingService.name }}</h2>
 						</div>
 					</div>
@@ -43,13 +43,13 @@
 									viewingService.subServices[0].comment
 								)">
 							<p class="customer-comments-label" v-if="viewingService.comment">
-								{{ $root.meta.customerConcernsLabel }}
+								{{ $root.meta.customerCommentsLabel }}
 							</p>
 							<p class="customer-comments" v-if="viewingService.comment">
 								{{viewingService.comment}}
 							</p>
 							<p class="advisor-comments-label" v-if="viewingService.subServices && viewingService.subServices.length && viewingService.subServices[0].comment">
-								{{ $root.meta.customerCommentsLabel }}
+								{{ langTerms.advisor_comments[$root.meta.local.toLowerCase()] }}
 							</p>
 							<p class="advisor-comments" v-if="viewingService.subServices && viewingService.subServices.length && viewingService.subServices[0].comment">
 								{{viewingService.subServices[0].comment}}
@@ -145,6 +145,11 @@ export default {
 					'en-ca': 'Estimated cost of this item',
 					'en-us': 'Estimated cost of this item',
 					'fr-ca': 'Coût estimé de cet article'
+				},
+				advisor_comments: {
+					'en-ca': 'Advisor comments',
+					'en-us': 'Advisor comments',
+					'fr-ca': 'Commentaires du conseiller'
 				}
 			}
 		}
