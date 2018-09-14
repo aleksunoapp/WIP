@@ -48,8 +48,7 @@ var App = new Vue({
 			storeLocations: [],
 			requestsPending: false,
 			permissions: {},
-			roles: [],
-			loadingPermissions: false
+			roles: []
 		}
 	},
 	mounted () {
