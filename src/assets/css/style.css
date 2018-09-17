@@ -1375,6 +1375,7 @@ img {
 }
 .info-modal-concerns .customer-comments-label,
 .info-modal-concerns .advisor-comments-label {
+	font-weight: bold;
 	margin: 5px 0;
 	text-transform: uppercase;
 }

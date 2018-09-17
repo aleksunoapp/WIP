@@ -215,6 +215,14 @@ var authenticateToken = {
 									}
 								})
 							}
+
+							if (category.id === '5') {
+								_this.$root.services.forEach(service => {
+									if (service.category === '6' || service.category === '7' || service.category === '8') {
+										inspectionTotal += service.subServices[0].price
+									}
+								})
+							}
 						})
 
 						_this.$root.serviceCategories.sort((a, b) => {

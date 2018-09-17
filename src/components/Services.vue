@@ -784,7 +784,11 @@ export default {
 		  */
 		deferService () {
 			this.viewingService.isSelected = false
-			this.$root.totals.inspectionTotal.total -= parseFloat(this.viewingService.price)
+			if (this.viewingService.category === '6' || this.viewingService.category === '7' || this.viewingService.category === '8') {
+				this.$root.totals.inspectionTotal.total -= parseFloat(this.viewingService.subServices[0].price)
+			} else {
+				this.$root.totals.inspectionTotal.total -= parseFloat(this.viewingService.price)
+			}
 			this.getTaxTotals()
 			this.openDeferReasonModal(this.viewingService)
 			this.closeServiceModal()

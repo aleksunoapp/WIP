@@ -5,7 +5,7 @@
 			<div @click="closeModal()" class="modal-close"></div>
 			<div class="clear"></div>
 			<div class="modal-content info-modal">
-				<div class="info-modal-image" :style="`background-image: url('${viewingService.imageUrl}');`"></div>
+				<div v-if="viewingService.imageUrl" class="info-modal-image" :style="`background-image: url('${viewingService.imageUrl}');`"></div>
 				<div>
 					<div class="info-modal-info-top">
 						<div 
@@ -65,7 +65,13 @@
 								{{ langTerms.inspection_summary[$root.meta.local.toLowerCase()] }}
 							</a>
 						</div>
-						<div class="info-modal-estimate">{{ langTerms.estimated_cost[$root.meta.local.toLowerCase()] }} <span>{{ formatCurrency(viewingService.price) }}</span></div>
+						<div class="info-modal-estimate">{{ langTerms.estimated_cost[$root.meta.local.toLowerCase()] }} 
+							<span v-if="
+								viewingService.category !== '6' && 
+								viewingService.category !== '7' && 
+								viewingService.category !== '8'">{{ formatCurrency(viewingService.price) }}</span>
+							<span v-else>{{ formatCurrency(viewingService.subServices[0].price) }}</span>
+						</div>
 					</div>
 				</div>
 				<div class="modal-buttons">

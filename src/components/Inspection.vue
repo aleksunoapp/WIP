@@ -691,10 +691,18 @@ export default {
 				service.isSelected ? this.$root.logEvent(`Checked ${service.name} checkbox`) : this.$root.logEvent(`Unchecked ${service.name} checkbox`)
 			}
 			if (service.isSelected) {
-				this.inspectionTotal.total += parseFloat(service.price)
+				if (service.category === '6' || service.category === '7' || service.category === '8') {
+					this.inspectionTotal.total += parseFloat(service.subServices[0].price)
+				} else {
+					this.inspectionTotal.total += parseFloat(service.price)
+				}
 				this.checkSelectAll()
 			} else {
-				this.inspectionTotal.total -= parseFloat(service.price)
+				if (service.category === '6' || service.category === '7' || service.category === '8') {
+					this.inspectionTotal.total -= parseFloat(service.subServices[0].price)
+				} else {
+					this.inspectionTotal.total -= parseFloat(service.price)
+				}
 				if (category) {
 					if (category.allSelected) {
 						category.allSelected = false
@@ -795,13 +803,21 @@ export default {
 							service.subServices.forEach(subService => {
 								if (!subService.isSelected) {
 									subService.isSelected = true
-									this.inspectionTotal.total += parseFloat(subService.price)
+									if (service.category === '6' || service.category === '7' || service.category === '8') {
+										this.inspectionTotal.total += parseFloat(service.subServices[0].price)
+									} else {
+										this.inspectionTotal.total += parseFloat(service.price)
+									}
 								}
 							})
 						}
 						if (!service.isSelected) {
 							service.isSelected = true
-							this.inspectionTotal.total += parseFloat(service.price)
+							if (service.category === '6' || service.category === '7' || service.category === '8') {
+								this.inspectionTotal.total += parseFloat(service.subServices[0].price)
+							} else {
+								this.inspectionTotal.total += parseFloat(service.price)
+							}
 						}
 					}
 				})
@@ -823,13 +839,21 @@ export default {
 							service.subServices.forEach(subService => {
 								if (subService.isSelected) {
 									subService.isSelected = false
-									this.inspectionTotal.total -= parseFloat(subService.price)
+									if (service.category === '6' || service.category === '7' || service.category === '8') {
+										this.inspectionTotal.total -= parseFloat(service.subServices[0].price)
+									} else {
+										this.inspectionTotal.total -= parseFloat(service.price)
+									}
 								}
 							})
 						}
 						if (service.isSelected) {
 							service.isSelected = false
-							this.inspectionTotal.total -= parseFloat(service.price)
+							if (service.category === '6' || service.category === '7' || service.category === '8') {
+								this.inspectionTotal.total -= parseFloat(service.subServices[0].price)
+							} else {
+								this.inspectionTotal.total -= parseFloat(service.price)
+							}
 						}
 
 						this.openDeferReasonModal(category, {}, true)
