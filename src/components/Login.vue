@@ -425,7 +425,7 @@ export default {
 									JSON.stringify(loginVue.$root.activeUser)
 								)
 								// set userToken
-								loginVue.$root.userToken = this.setUserToken(response.session.token)
+								this.setUserToken(response.session.token)
 								localStorage.setItem(
 									'userToken',
 									loginVue.$root.userToken

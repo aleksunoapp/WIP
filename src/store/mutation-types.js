@@ -5,3 +5,6 @@ export const SET_APP_SECRET = 'SET_APP_SECRET'
 
 /* Permissions */
 export const SET_PERMISSIONS = 'SET_PERMISSIONS'
+
+/* Stores */
+export const SET_STORE_LOCATIONS = 'SET_STORE_LOCATIONS'

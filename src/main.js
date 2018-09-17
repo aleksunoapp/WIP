@@ -37,14 +37,11 @@ var App = new Vue({
 	data () {
 		return {
 			activeUser: {},
-			userToken: '',
-			appSecret: '',
 			accountType: '',
 			activeLocation: {},
 			createdBy: 0,
 			activeMenuId: 0,
 			corporateStoreId: null,
-			storeLocations: [],
 			requestsPending: false,
 			roles: []
 		}
@@ -52,7 +49,10 @@ var App = new Vue({
 	computed: {
 		...mapState({
 			permissions: state => state.permissions,
-			appId: state => state.auth.appId
+			appId: state => state.auth.appId,
+			appSecret: state => state.auth.appSecret,
+			userToken: state => state.auth.userToken,
+			storeLocations: state => state.stores.storeLocations
 		})
 	},
 	mounted () {
@@ -87,9 +87,9 @@ var App = new Vue({
 				roles !== null
 			) {
 				this.activeUser = JSON.parse(activeUser)
-				this.userToken = this.setUserToken(userToken)
-				this.appId = this.setAppId(appId)
-				this.appSecret = this.setAppSecret(appSecret)
+				this.setUserToken(userToken)
+				this.setAppId(appId)
+				this.setAppSecret(appSecret)
 				this.createdBy = createdBy
 				this.accountType = accountType
 				this.roles = JSON.parse(roles)
@@ -103,7 +103,6 @@ var App = new Vue({
 							userPermissions[permission.name] = true
 						}
 					)
-					this.permissions = userPermissions
 					this.setPermissions(userPermissions)
 					this.routeUser()
 				}).catch(error => {
@@ -121,11 +120,10 @@ var App = new Vue({
 		 */
 		getPermissionsOfUser (id) {
 			const _this = this
-			console.log({id})
 			return $.ajax({
 				method: 'GET',
 				dataType: 'json',
-				url: `${GlobalFunctions.baseUrl}/api/app/admin/users/${id}/all_permissions`,
+				url: `${GlobalFunctions.urls.ecomm}/app/admin/users/${id}/all_permissions`,
 				data: {
 					guard_name: 'admin'
 				},
@@ -135,11 +133,9 @@ var App = new Vue({
 					xhr.setRequestHeader('auth-token', _this.userToken)
 				},
 				success: function (response) {
-					console.log({response})
 					return response
 				},
 				error: function (error) {
-					console.log({error})
 					return error
 				}
 			})
@@ -173,16 +169,16 @@ var App = new Vue({
 		 */
 		clearGlobalVariables () {
 			this.activeUser = {}
-			this.userToken = this.setUserToken('')
-			this.appId = this.setAppId('')
-			this.appSecret = this.setAppSecret('')
+			this.setUserToken('')
+			this.setAppId('')
+			this.setAppSecret('')
 			this.accountType = ''
 			this.activeLocation = {}
 			this.createdBy = 0
 			this.activeMenuId = 0
 			this.corporateStoreId = null
-			this.storeLocations = []
-			this.permissions = {}
+			this.setStoreLocations([])
+			this.setPermissions({})
 			this.roles = []
 		},
 		/**
@@ -237,7 +233,8 @@ var App = new Vue({
 			setPermissions: 'SET_PERMISSIONS',
 			setAppId: 'SET_APP_ID',
 			setAppSecret: 'SET_APP_SECRET',
-			setUserToken: 'SET_USER_TOKEN'
+			setUserToken: 'SET_USER_TOKEN',
+			setStoreLocations: 'SET_STORE_LOCATIONS'
 		})
 	},
 	router
