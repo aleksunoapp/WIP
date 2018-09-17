@@ -92,7 +92,7 @@ export default {
 				method: 'POST',
 				dataType: 'json',
 				url: '/application/news/update/' + newsFeed.id,
-				data: { news: newsFeed },
+				data: newsFeed,
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
 					xhr.setRequestHeader('app-id', appId)
