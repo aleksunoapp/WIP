@@ -582,6 +582,7 @@ export default {
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
 								newsFeedVue.newsFeed.push(response.payload)
+								newsFeedVue.showCreateSuccess(response.payload)
 								newsFeedVue.resetForm()
 							} else {
 								newsFeedVue.createFeedError = response.message
@@ -605,6 +606,29 @@ export default {
 					window.scrollTo(0, 0)
 					throw reason
 				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The News Feed has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The News Feed has been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To show input fields instead of the plain text for news feed.
