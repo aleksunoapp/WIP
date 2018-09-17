@@ -11,7 +11,7 @@
 				{{ langTerms.items_you_approved[$root.meta.local.toLowerCase()] }}
 			</div>
 		</div>
-		<div v-if="$root.inspectionCounts.failCount || $root.inspectionCounts.warningCount || $root.inspectionCounts.concernCount" class="summary-table">
+		<div v-if="$root.inspectionCounts.failCount || $root.inspectionCounts.warningCount" class="summary-table">
 			<template v-for="service in $root.services">
 				<template v-if="checkSubServices(service)">
 					<template v-for="subService in service.subServices">
@@ -29,7 +29,7 @@
 						</template>
 					</template>
 				</template>
-				<template v-if="!service.subServices || service.category === '6' || service.category === '7'">
+				<template v-if="!service.subServices || service.category === '6' || service.category === '7' || service.category === '8'">
 					<template v-if="service.isSelected && service.category !== '4' && service.category !== '3'">
 						<div class="summary-table-row summary-item">
 							<div class="summary-table-cell">
@@ -37,7 +37,16 @@
 								<span class="service-name">{{ service.name }}</span>
 							</div>
 							<div class="summary-table-cell">
-								<span class="price" v-if="service.price !== 0">{{ formatCurrency(service.price) }}</span>
+								<span class="price" v-if="(
+									service.category !== '6' && 
+									service.category !== '7' && 
+									service.category !== '8'
+								) && service.price !== 0">{{ formatCurrency(service.price) }}</span>
+								<span class="price" v-else-if="(
+									service.category === '6' || 
+									service.category === '7' || 
+									service.category === '8'
+								) && service.subServices[0].price !== 0">{{ formatCurrency(service.subServices[0].price) }}</span>
 								<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 							</div>
 						</div>
@@ -126,7 +135,7 @@
 
 		<div class="accept-estimate-component" v-if="!open">
 			<div class="service-total">
-				<div v-if="$root.inspectionCounts.failCount || $root.inspectionCounts.warningCount" class="time-notice" :class="{'danger-flag': timeExpired}">
+				<div v-if="$root.inspectionCounts.failCount || $root.inspectionCounts.warningCount || $root.inspectionCounts.concernCount" class="time-notice" :class="{'danger-flag': timeExpired}">
 					<span v-if="!timeExpired">{{ langTerms.if_approved_by[$root.meta.local.toLowerCase()] }} {{ computedResponseTime }} {{ langTerms.your_vehicle_will_be_ready[$root.meta.local.toLowerCase()] }} {{ computedPromiseTime }}.</span>
 					<span v-else>{{ langTerms.your_service_advisor_will[$root.meta.local.toLowerCase()] }}</span>
 				</div>
@@ -866,10 +875,11 @@ export default {
 		 * @returns {boolean} - Whether the service passes or fails the test
 		 */
 		checkSubServices (service) {
-			let isSelected = false
 			if (service.category === '6' || service.category === '7' || service.category === '8') {
-				return isSelected
+				return false
 			}
+
+			let isSelected = false
 			if (service.subServices) {
 				service.subServices.forEach(subService => {
 					if (subService.isSelected) {
