@@ -320,7 +320,7 @@ export default {
 					printersVue.displayPrinters = false
 					ajaxErrorHandler({
 						reason,
-						errorText: 'We could not delete the modifier',
+						errorText: 'We could not fetch printers',
 						errorName: 'listErrorMessage',
 						vue: printersVue
 					})
