@@ -597,6 +597,7 @@ export default {
 								response.code === 200 &&
 								response.status === 'ok'
 							) {
+								this.showEditSuccess(response.payload)
 								this.closeModalAndUpdate()
 							} else {
 								editPromoCodeVue.errorMessage = response.message
@@ -620,6 +621,29 @@ export default {
 					window.scrollTo(0, 0)
 					throw reason
 				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Promocode has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To close the modal and emit the updated promoCode object to the parent.

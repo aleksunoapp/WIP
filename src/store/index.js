@@ -5,10 +5,9 @@ import createLogger from 'vuex/dist/logger'
 import permissions from './modules/permissions'
 import auth from './modules/auth'
 import stores from './modules/stores'
+const environment = require('../environment.js')
 
 Vue.use(Vuex)
-
-const debug = process.env.NODE_ENV !== 'production'
 
 const store = new Vuex.Store({
 	modules: {
@@ -17,11 +16,14 @@ const store = new Vuex.Store({
 		stores
 	},
 	actions: {},
-	strict: debug,
-	plugins: [
-		createPersistedState(),
-		debug ? createLogger() : null
-	]
+	strict: environment.development,
+	plugins: environment.development
+		? [
+			createPersistedState(),
+			createLogger()
+		] : [
+			createPersistedState()
+		]
 })
 
 export default store
