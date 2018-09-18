@@ -345,7 +345,6 @@ import NoResults from '../../modules/NoResults'
 import LoyaltyFunctions from '../../../controllers/Loyalty'
 import Modal from '../../modules/Modal'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
-import globalFunctions from '../../../global'
 
 export default {
 	data () {
@@ -453,11 +452,7 @@ export default {
 				.then(response => {
 					rulesVue.creating = true
 					rulesVue.clearError('createErrorMessage')
-					return LoyaltyFunctions.createRule(
-						globalFunctions.loyaltyAppId,
-						globalFunctions.loyaltyAppSecret,
-						rulesVue.newRule
-					)
+					return LoyaltyFunctions.createRule(rulesVue.newRule)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
 								rulesVue.getRules()
@@ -534,10 +529,7 @@ export default {
 		getRules () {
 			this.loading = true
 			const rulesVue = this
-			return LoyaltyFunctions.getRules(
-				globalFunctions.loyaltyAppId,
-				globalFunctions.loyaltyAppSecret
-			)
+			return LoyaltyFunctions.getRules()
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						rulesVue.rules = response.payload
@@ -613,11 +605,7 @@ export default {
 				.then(response => {
 					rulesVue.updating = true
 					rulesVue.clearError('editErrorMessage')
-					return LoyaltyFunctions.updateRule(
-						globalFunctions.loyaltyAppId,
-						globalFunctions.loyaltyAppSecret,
-						rulesVue.ruleToEdit
-					)
+					return LoyaltyFunctions.updateRule(rulesVue.ruleToEdit)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
 								rulesVue.getRules()
@@ -700,11 +688,7 @@ export default {
 			this.deleting = true
 			const rulesVue = this
 			rulesVue.clearError('deleteErrorMessage')
-			return LoyaltyFunctions.deleteRule(
-				globalFunctions.loyaltyAppId,
-				globalFunctions.loyaltyAppSecret,
-				rulesVue.ruleToDelete.id
-			)
+			return LoyaltyFunctions.deleteRule(rulesVue.ruleToDelete.id)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						rulesVue.getRules()

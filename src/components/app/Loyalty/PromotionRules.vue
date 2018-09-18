@@ -510,7 +510,6 @@ import NoResults from '../../modules/NoResults'
 import LoyaltyFunctions from '../../../controllers/Loyalty'
 import Modal from '../../modules/Modal'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
-import globalFunctions from '../../../global'
 import MenuModifierTree from '../../modules/MenuModifierTree'
 
 export default {
@@ -768,11 +767,7 @@ export default {
 					}
 					rulesVue.clearError('createErrorMessage')
 
-					return LoyaltyFunctions.createPromotionRule(
-						globalFunctions.loyaltyAppId,
-						globalFunctions.loyaltyAppSecret,
-						payload
-					)
+					return LoyaltyFunctions.createPromotionRule(payload)
 						.then(response => {
 							if (
 								response.code === 200 &&
@@ -865,10 +860,7 @@ export default {
 		getRules () {
 			this.loading = true
 			const rulesVue = this
-			return LoyaltyFunctions.getPromotionRules(
-				globalFunctions.loyaltyAppId,
-				globalFunctions.loyaltyAppSecret
-			)
+			return LoyaltyFunctions.getPromotionRules()
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						rulesVue.rules = response.payload
@@ -1011,11 +1003,7 @@ export default {
 					}
 					rulesVue.clearError('editErrorMessage')
 
-					return LoyaltyFunctions.updatePromotionRule(
-						globalFunctions.loyaltyAppId,
-						globalFunctions.loyaltyAppSecret,
-						payload
-					)
+					return LoyaltyFunctions.updatePromotionRule(payload)
 						.then(response => {
 							if (
 								response.code === 200 &&
@@ -1108,11 +1096,7 @@ export default {
 		deleteRule () {
 			const rulesVue = this
 			rulesVue.clearError('deleteErrorMessage')
-			return LoyaltyFunctions.deletePromotionRule(
-				globalFunctions.loyaltyAppId,
-				globalFunctions.loyaltyAppSecret,
-				rulesVue.ruleToDelete.id
-			)
+			return LoyaltyFunctions.deletePromotionRule(rulesVue.ruleToDelete.id)
 				.then(response => {
 					rulesVue.deleting = true
 					if (response.code === 200 && response.status === 'ok') {

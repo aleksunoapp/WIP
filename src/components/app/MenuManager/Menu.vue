@@ -873,13 +873,13 @@ export default {
 		/**
 		 * To update the menu object emitted by the child.
 		 * @function
-		 * @param {object} val - The updated menu object
+		 * @param {object} menu - The updated menu object
 		 * @returns {undefined}
 		 */
-		updateMenu (val) {
+		updateMenu ({menu, payload}) {
 			this.editMenuModalActive = false
 			for (let i = 0; i < this.storeMenus.length; i++) {
-				if (this.storeMenus[i].id === val.id) {
+				if (this.storeMenus[i].id === menu.id) {
 					this.storeMenus.splice(i, 1)
 					break
 				}
@@ -887,24 +887,52 @@ export default {
 			var done = false
 			for (let i = 0; i < this.storeMenus.length; i++) {
 				if (
-					parseInt(this.storeMenus[i].order) < parseInt(val.order) ||
-					(parseInt(this.storeMenus[i].order) === parseInt(val.order) &&
-						parseInt(this.storeMenus[i].id) > parseInt(val.id))
+					parseInt(this.storeMenus[i].order) < parseInt(menu.order) ||
+					(parseInt(this.storeMenus[i].order) === parseInt(menu.order) &&
+						parseInt(this.storeMenus[i].id) > parseInt(menu.id))
 				) {
-					this.storeMenus.splice(i, 0, val)
+					this.storeMenus.splice(i, 0, menu)
 					done = true
 					break
 				}
 			}
 			if (!done) {
-				this.storeMenus.push(val)
+				this.storeMenus.push(menu)
 			}
 			setTimeout(function () {
-				$('#menu-' + val.id).addClass('highlight')
+				$('#menu-' + menu.id).addClass('highlight')
 				setTimeout(function () {
-					$('#menu-' + val.id).removeClass('highlight')
+					$('#menu-' + menu.id).removeClass('highlight')
 				}, 2000)
 			}, 10)
+
+			this.showUpdateSuccess(payload)
+		},
+		/**
+		 * To confirm the duplication succeeded
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showUpdateSuccess (payload = {}) {
+			this.getStoreMenus()
+			this.closeDuplicateMenuModal()
+
+			let title = 'Success'
+			let text = 'The Menu has been updated'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To update the add on categories.

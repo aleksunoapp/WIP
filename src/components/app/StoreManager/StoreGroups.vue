@@ -167,7 +167,8 @@
 		                  @closeEditGroupModal="closeEditGroupModal"
 		                  @updateGroup="updateGroup"></edit-store-group>
 		<modal :show="showTiersModal"
-		       @closeOnEscape="closeTiersModal">
+		       @closeOnEscape="closeTiersModal"
+			   ref="applyToStoreGroupModal">
 			<div slot="modal-header"
 			     class="modal-header">
 				<button type="button"
@@ -321,6 +322,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		displayTiersModal (group) {
+			this.clearError('tiersErrorMessage')
 			this.groupToAssignMenuTiersTo = {
 				...group,
 				tier: null,
@@ -358,7 +360,8 @@ export default {
 						reason,
 						errorText: 'Could not get tier details',
 						errorName: 'tiersErrorMessage',
-						vue: storeGroupsVue
+						vue: storeGroupsVue,
+						containerRef: 'applyToStoreGroupModal'
 					})
 				})
 				.finally(() => {
@@ -489,20 +492,45 @@ export default {
 		/**
 		 * To update the group object emitted by the child.
 		 * @function
-		 * @param {object} val - The passed group object
+		 * @param {object} group - The passed group object
+		 * @param {object} payload - The payload property of the server response
 		 * @returns {undefined}
 		 */
-		updateGroup (val) {
+		updateGroup ({group, payload}) {
 			this.showEditGroupModal = false
 			for (var i = 0; i < this.groups.length; i++) {
-				if (this.groups[i].id === val.id) {
-					this.groups[i] = val
+				if (this.groups[i].id === group.id) {
+					this.groups[i] = group
 				}
 			}
-			$('#group-' + val.id).addClass('highlight')
+			this.confirmUpdated(payload)
+			$('#group-' + group.id).addClass('highlight')
 			setTimeout(function () {
-				$('#group-' + val.id).removeClass('highlight')
+				$('#group-' + group.id).removeClass('highlight')
 			}, 2000)
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		confirmUpdated (payload = {}) {
+			let title = 'Success'
+			let text = 'The Store Group has been updated'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To clear the new group form.

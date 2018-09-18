@@ -544,6 +544,7 @@ export default {
 								response.code === 200 &&
 								response.status === 'ok'
 							) {
+								this.showCreateSuccess(response.payload)
 								this.closeModalAndUpdate()
 							}
 						})
@@ -566,6 +567,29 @@ export default {
 					window.scrollTo(0, 0)
 					throw reason
 				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Nutrition Information has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Nutrition Information has been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To notify that changes were saved

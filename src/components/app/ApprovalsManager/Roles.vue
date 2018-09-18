@@ -1191,11 +1191,6 @@ export default {
 					})
 				})
 				this.setPermissions(newPermissions)
-				// eslint-disable-next-line
-				localStorage.setItem(
-					'permissions',
-					JSON.stringify(newPermissions)
-				)
 			}
 		},
 		/**

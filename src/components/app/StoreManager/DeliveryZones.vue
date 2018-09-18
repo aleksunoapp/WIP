@@ -48,7 +48,7 @@
 							</div>
 							<div class="input-container">
 								<div class="input-label-container">
-									<label for="base-fee">
+									<label :for="`base-fee-${index}`">
 										Base fee
 									</label>
 									<el-tooltip content="The base fee is applied to every delivery as the starting point."
@@ -60,14 +60,14 @@
 										</div>
 									</el-tooltip>
 								</div>
-								<el-input id="base-fee"
+								<el-input :id="`base-fee-${index}`"
 								          placeholder="Please input"
 								          v-model="profile.base_fee">
 								</el-input>
 							</div>
 							<div class="input-container">
 								<div class="input-label-container">
-									<label for="base_km">
+									<label :for="`base_km-${index}`">
 										No of base kilometers
 									</label>
 									<el-tooltip content="The number of kilometers included in the base fee."
@@ -79,14 +79,14 @@
 										</div>
 									</el-tooltip>
 								</div>
-								<el-input id="base_km"
+								<el-input :id="`base_km-${index}`"
 								          placeholder="Please input"
 								          v-model="profile.base_km">
 								</el-input>
 							</div>
 							<div class="input-container">
 								<div class="input-label-container">
-									<label for="additional_perkm">
+									<label :for="`additional_perkm-${index}`">
 										Extra per kilometer
 									</label>
 									<el-tooltip content="Per-kilometer charge for distance in excess of base kilometers."
@@ -98,7 +98,7 @@
 										</div>
 									</el-tooltip>
 								</div>
-								<el-input id="additional_perkm"
+								<el-input :id="`additional_perkm-${index}`"
 								          placeholder="Please input"
 								          v-model="profile.additional_perkm">
 								</el-input>
@@ -535,6 +535,8 @@ export default {
 
 					Promise.all([...toCreate, ...toUpdate, ...toDelete]).then(
 						response => {
+							_this.getDeliveryZones()
+
 							let pending = response.filter(
 								x => x.payload && x.payload.pending_approval
 							)

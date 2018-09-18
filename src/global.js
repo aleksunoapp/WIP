@@ -2,8 +2,8 @@
  * @module Global
  */
 import $ from 'jquery'
-import { App } from './main.js'
 import environment from './environment'
+import store from './store'
 const { production, staging, development } = environment
 
 export default {
@@ -13,30 +13,89 @@ export default {
 				return 'https://approval.api.unoapp.io'
 			} else if (staging) {
 				return 'https://approval.beta.api.unoapp.io'
-			} else {
+			} else if (development) {
 				return 'https://approval.dev.api.unoapp.io'
+			}
+		})(),
+		loyalty: (function () {
+			if (production) {
+				return 'https://loyalty.api.unoapp.io'
+			} else if (staging) {
+				return 'https://loyalty.beta.api.unoapp.io'
+			} else if (development) {
+				return 'https://loyalty.dev.api.unoapp.io'
+			}
+		})(),
+		ecomm: (function () {
+			if (production) {
+				return 'https://freshii.api.unoapp.io/api'
+			} else if (staging) {
+				return 'https://freshii.beta.api.unoapp.io/api'
+			} else if (development) {
+				return 'http://dev.api.unoapp.io/freshii/api'
+			}
+		})(),
+		resources: (function () {
+			if (production) {
+				return 'https://resources.beta.api.unoapp.io'
+			} else if (staging) {
+				return 'https://resources.dev.api.unoapp.io'
+			} else if (development) {
+				return 'https://resources.dev.api.unoapp.io'
 			}
 		})()
 	},
-	headers: {
-		approvals: (function () {
-			if (production) {
-				return {
-					appId: '3jJIMoDLAJW2qzQk0DmFCVxhbRzVIL4Qn',
-					appSecret: 'cgLb2aWAyY1k3TBmquEjjbOjWxZRc6iw2'
+	headers: function () {
+		return {
+			approvals: (function () {
+				if (production) {
+					return {
+						appId: '3jJIMoDLAJW2qzQk0DmFCVxhbRzVIL4Qn',
+						appSecret: 'cgLb2aWAyY1k3TBmquEjjbOjWxZRc6iw2'
+					}
+				} else if (staging) {
+					return {
+						appId: '46c9485f92a0f8ac29d66570893a3805',
+						appSecret: '0276a6fd79282e1b73cdd209540cdfcd'
+					}
+				} else if (development) {
+					return {
+						appId: '46c9485f92a0f8ac29d66570893a3805',
+						appSecret: '0276a6fd79282e1b73cdd209540cdfcd'
+					}
 				}
-			} else if (staging) {
-				return {
-					appId: '46c9485f92a0f8ac29d66570893a3805',
-					appSecret: '0276a6fd79282e1b73cdd209540cdfcd'
+			})(),
+			loyalty: (function () {
+				if (production) {
+					return {
+						appId: 'KWpZuK0lscFrJ84dkUGsMQVQGDHAtAHv',
+						appSecret: 'QVDvjk0cn4jltPnNEQi2hwQlD17pU0dr'
+					}
+				} else if (staging) {
+					return {
+						appId: '0CA0D7Lk9D6jZvgeklHiBTX99PYbTDIs',
+						appSecret: 'JnJqjxCKnVpvgO5cWGWSkfesTQWaiP46'
+					}
+				} else if (development) {
+					return {
+						appId: '0CA0D7Lk9D6jZvgeklHiBTX99PYbTDIs',
+						appSecret: 'JnJqjxCKnVpvgO5cWGWSkfesTQWaiP46'
+					}
 				}
-			} else {
+			})(),
+			resources: (function () {
 				return {
-					appId: '46c9485f92a0f8ac29d66570893a3805',
-					appSecret: '0276a6fd79282e1b73cdd209540cdfcd'
+					appId: store.getters.appId,
+					appSecret: store.getters.appSecret
 				}
-			}
-		})()
+			})(),
+			ecomm: (function () {
+				return {
+					appId: store.getters.appId,
+					appSecret: store.getters.appSecret
+				}
+			})()
+		}
 	},
 	/**
 	 * app_id for the Approvals API
@@ -46,43 +105,8 @@ export default {
 			return '5b60a158baf2d10681b79cd1'
 		} else if (staging) {
 			return '5b291f11dc35e663e8847981'
-		} else {
+		} else if (development) {
 			return '5b291f11dc35e663e8847981'
-		}
-	})(),
-	/**
-	 * business id to identify the business aka brand aka customer (2 is Freshii)
-	 */
-	businessId: 2,
-	/**
-	 * base url for UNOapp accounts frontend, with # if accounts router is in hash mode
-	 */
-	// development
-	accountsUrl: development
-		? 'http://localhost:8002/#'
-		: 'http://accounts.beta.unoapp.io/#',
-	/**
-	 * base url for API calls, other than Message calls
-	 */
-	baseUrl: (function () {
-		if (production) {
-			return 'https://freshii.api.unoapp.io'
-		} else if (staging) {
-			return 'https://freshii.beta.api.unoapp.io'
-		} else {
-			return 'http://dev.api.unoapp.io/freshii'
-		}
-	})(),
-	/**
-	 * base url for Resources API calls
-	 */
-	resourcesBaseUrl: (function () {
-		if (production) {
-			return 'https://resources.beta.api.unoapp.io'
-		} else if (staging) {
-			return 'https://resources.dev.api.unoapp.io'
-		} else {
-			return 'https://resources.dev.api.unoapp.io'
 		}
 	})(),
 	/**
@@ -97,7 +121,7 @@ export default {
 			return 'https://notifications.api.unoapp.io'
 		} else if (staging) {
 			return 'https://notifications.beta.api.unoapp.io'
-		} else {
+		} else if (development) {
 			return 'https://notifications.dev.api.unoapp.io'
 		}
 	})(),
@@ -109,7 +133,7 @@ export default {
 			return ''
 		} else if (staging) {
 			return 'bearer e3e7f5af3c458aa04b3722dc77c4020a'
-		} else {
+		} else if (development) {
 			return 'bearer bed62ee5c3cc97a2d5297f973af1c15e'
 		}
 	})(),
@@ -121,44 +145,8 @@ export default {
 			return ''
 		} else if (staging) {
 			return 'bearer 39d270dc380d5ac331f0affc7a4ddb59'
-		} else {
+		} else if (development) {
 			return 'bearer 6b1642515315f527604919b430fe79de'
-		}
-	})(),
-	/**
-	 * base url for API calls to Loyalty endpoints
-	 */
-	loyaltyUrl: (function () {
-		if (production) {
-			return 'https://loyalty.api.unoapp.io'
-		} else if (staging) {
-			return 'https://loyalty.beta.api.unoapp.io'
-		} else {
-			return 'https://loyalty.dev.api.unoapp.io'
-		}
-	})(),
-	/**
-	 * app id for API calls to Loyalty endpoints
-	 */
-	loyaltyAppId: (function () {
-		if (production) {
-			return 'KWpZuK0lscFrJ84dkUGsMQVQGDHAtAHv'
-		} else if (staging) {
-			return '0CA0D7Lk9D6jZvgeklHiBTX99PYbTDIs'
-		} else {
-			return '0CA0D7Lk9D6jZvgeklHiBTX99PYbTDIs'
-		}
-	})(),
-	/**
-	 * app secret for API calls to Loyalty endpoints
-	 */
-	loyaltyAppSecret: (function () {
-		if (production) {
-			return 'QVDvjk0cn4jltPnNEQi2hwQlD17pU0dr'
-		} else if (staging) {
-			return 'JnJqjxCKnVpvgO5cWGWSkfesTQWaiP46'
-		} else {
-			return 'JnJqjxCKnVpvgO5cWGWSkfesTQWaiP46'
 		}
 	})(),
 	/**
@@ -172,25 +160,14 @@ export default {
 	 * @param {boolean} api - The api to call
 	 * @returns {undefined}
 	 */
-	$ajax: function (options, api) {
-		var localhost = this.baseUrl + '/api'
+	$ajax: function (options, api = 'ecomm') {
+		let headers = this.headers()
+		options.url = this.urls[api] + options.url
 
-		if (api === 'approvals') {
-			options.url = this.urls[api] + options.url
-			const headers = this.headers
-
-			options.beforeSend = function (xhr) {
-				xhr.setRequestHeader('app-id', headers[api].appId)
-				xhr.setRequestHeader('app-secret', headers[api].appSecret)
-				xhr.setRequestHeader('auth-token', App.userToken)
-			}
-		} else {
-			options.url = localhost + options.url
-			options.beforeSend = function (xhr) {
-				xhr.setRequestHeader('app-id', App.appId)
-				xhr.setRequestHeader('app-secret', App.appSecret)
-				xhr.setRequestHeader('auth-token', App.userToken)
-			}
+		options.beforeSend = function (xhr) {
+			xhr.setRequestHeader('app-id', headers[api].appId)
+			xhr.setRequestHeader('app-secret', headers[api].appSecret)
+			xhr.setRequestHeader('auth-token', store.getters.userToken)
 		}
 
 		if (

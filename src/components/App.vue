@@ -18,7 +18,7 @@
 					<ul class="nav navbar-nav pull-right">
 						<!-- BEGIN USER LOGIN DROPDOWN -->
 						<li class="dropdown dropdown-user left"
-						    @click="logOut()">
+						    @click="$root.logOut()">
 							<a href="javascript:;"
 							   class="dropdown-toggle log-out-button">
 								<span class="username username-hide-on-mobile">Log out</span>
@@ -208,6 +208,7 @@ import App from '../controllers/App'
 import { findIndex } from 'lodash'
 import LeftSidebar from '@/components/app/LeftSidebar'
 import LoadingScreen from '@/components/modules/LoadingScreen'
+import { mapMutations } from 'vuex'
 
 /**
  * App module is the main component which holds the navigation, page header, and side panel.
@@ -333,7 +334,7 @@ export default {
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						appVue.$root.storeLocations = response.payload
+						appVue.setStoreLocations(response.payload)
 						for (
 							var i = 0;
 							i < appVue.$root.storeLocations.length;
@@ -373,16 +374,21 @@ export default {
 		selectLocation (location) {
 			// ToDo: make a call to the appropriate endpoint and update the logic once this part is scoped out
 			if (this.activeLocation && this.activeLocation.id) {
-				this.$root.storeLocations.splice(
+				let temp = [...this.$root.storeLocations]
+
+				temp.splice(
 					findIndex(this.$root.storeLocations, location),
 					1
 				)
-				this.$root.storeLocations.unshift(this.activeLocation)
+				temp.unshift(this.activeLocation)
+				this.setStoreLocations(temp)
 			} else {
-				this.$root.storeLocations.splice(
+				let temp = [...this.$root.storeLocations]
+				temp.splice(
 					findIndex(this.$root.storeLocations, location),
 					1
 				)
+				this.setStoreLocations(temp)
 			}
 			this.activeLocation = location
 			this.$root.activeLocation = location
@@ -401,28 +407,17 @@ export default {
 		 */
 		unselectLocation (event) {
 			event.stopPropagation()
-			this.$root.storeLocations.unshift(this.activeLocation)
+			let temp = [...this.$root.storeLocations]
+			temp.unshift(this.activeLocation)
+			this.setStoreLocations(temp)
 			/* eslint-disable no-undef */
 			localStorage.removeItem('activeLocation')
 			this.$root.activeLocation = {}
 			this.activeLocation = {}
 		},
-		/**
-		 * To log the user out of their current session and clear global variables and local storage.
-		 * @function
-		 * @returns {undefined}
-		 */
-		logOut () {
-			App.logOut()
-
-			this.$root.clearGlobalVariables()
-			// eslint-disable-next-line
-			localStorage.clear()
-
-			this.$router.push({
-				name: 'Login'
-			})
-		}
+		...mapMutations({
+			setStoreLocations: 'SET_STORE_LOCATIONS'
+		})
 	},
 	components: {
 		LeftSidebar,

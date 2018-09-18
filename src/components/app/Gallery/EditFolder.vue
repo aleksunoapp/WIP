@@ -111,7 +111,7 @@ export default {
 				.then(response => {
 					_this.updating = true
 					_this.clearError('errorMessage')
-					const businessId = GlobalVariables.businessId
+					const businessId = GlobalVariables.resourcesBusinessId
 					let folderName = _this.folder.name
 
 					ResourcesFunctions.updateFolder(

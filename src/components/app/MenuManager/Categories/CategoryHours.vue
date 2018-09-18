@@ -889,8 +889,25 @@ export default {
 					)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
-								_this.saveMessage = 'Saved'
-								_this.existingHours = response.payload
+								if (response.payload && response.payload.pending_approval) {
+									_this.saveMessage = 'The Category Hours have been saved'
+								} else {
+									_this.saveMessage = 'The Category Hours have been sent for approval'
+								}
+
+								const sundayIndex = response.payload.findIndex(
+								day => day.day === 0
+							)
+								let weekStartingMonday = response.payload
+								weekStartingMonday.push(response.payload[sundayIndex])
+								weekStartingMonday.splice(sundayIndex, 1)
+								_this.existingHours = weekStartingMonday.map(day => {
+									return {
+										...day,
+										open_time: day.open_time.substr(0, 5),
+										close_time: day.close_time.substr(0, 5)
+									}
+								})
 							}
 						})
 						.catch(reason => {

@@ -674,6 +674,7 @@ import { mask } from 'vue-the-mask'
 import { debounce, isEqual } from 'lodash'
 import TimezonesArray from './TimezonesArray'
 import StoreImages from '@/components/app/StoreManager/StoreImages'
+import { mapMutations } from 'vuex'
 
 /**
  * Define the email pattern to check for valid emails.
@@ -1211,7 +1212,9 @@ export default {
 					)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
-								createStoreVue.$root.storeLocations.push(response.payload)
+								let temp = [...createStoreVue.$root.storeLocations]
+								temp.push(response.payload)
+								createStoreVue.setStoreLocations(temp)
 								createStoreVue.newStoreId = response.payload.id
 								createStoreVue.activeTab = 1
 								createStoreVue.steps.step0_status = 'success'
@@ -1700,7 +1703,10 @@ export default {
 				},
 				dismiss => {}
 			)
-		}
+		},
+		...mapMutations({
+			setStoreLocations: 'SET_STORE_LOCATIONS'
+		})
 	},
 	beforeRouteLeave (to, from, next) {
 		let createStoreVue = this

@@ -454,6 +454,7 @@ export default {
 		 */
 		createDeliveryHours () {
 			const _this = this
+			this.clearError('createErrorMessage')
 			this.validateNew()
 				.then(response => {
 					_this.creating = true
@@ -465,6 +466,7 @@ export default {
 							let days = _this.reorderDays(response.payload)
 							days = _this.reformatDays(days)
 							_this.deliveryHours = days
+							this.showCreateSuccess(response.payload)
 						})
 						.catch(reason => {
 							ajaxErrorHandler({
@@ -482,6 +484,29 @@ export default {
 				.catch(reason => {
 					this.createErrorMessage = reason
 				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Delivery Hours have been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Delivery Hours have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To validate hours before submitting to API
@@ -524,6 +549,7 @@ export default {
 							let days = _this.reorderDays(response.payload)
 							days = _this.reformatDays(days)
 							_this.deliveryHours = days
+							this.showUpdateSuccess(response.payload)
 						})
 						.catch(reason => {
 							ajaxErrorHandler({
@@ -541,6 +567,29 @@ export default {
 				.catch(reason => {
 					this.errorMessage = reason
 				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showUpdateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Delivery Hours have been updated'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To clear the current error.
@@ -566,6 +615,7 @@ export default {
 			}).then(response => {
 				let index = this.deliveryHours.findIndex(candidate => candidate.id === day.id)
 				this.deliveryHours.splice(index, 1)
+				this.showDeleteSuccess(response.payload)
 			}).catch(reason => {
 				day.deleting = false
 				ajaxErrorHandler({
@@ -574,6 +624,29 @@ export default {
 					errorName: 'errorMessage',
 					vue: _this
 				})
+			})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showDeleteSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Delivery Hours have been deleted'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The removal has been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
 			})
 		}
 	}

@@ -106,7 +106,7 @@ export default {
 				.then(response => {
 					_this.creating = true
 					_this.clearError('errorMessage')
-					const businessId = GlobalVariables.businessId
+					const businessId = GlobalVariables.resourcesBusinessId
 
 					ResourcesFunctions.createFolder(
 						businessId,

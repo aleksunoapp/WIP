@@ -59,8 +59,8 @@
 				</div>
 				<div v-if="message.notification_type === 'inapp'"
 				     :class="{'col-xs-4 col-xs-offset-4' : !selectImageMode, 'col-xs-12' : selectImageMode}">
-					<resource-picker @open="toggleImageMode('newMenu', true)"
-					                 @close="toggleImageMode('newMenu', false)"
+					<resource-picker @open="toggleImageMode()"
+					                 @close="toggleImageMode()"
 					                 @selected="updateImage"
 					                 :imageButton="true"
 					                 :imageUrl="message.media_path"
@@ -251,12 +251,10 @@ export default {
 		/**
 		 * To toggle between the open and closed state of the resource picker
 		 * @function
-		 * @param {string} object - The name of the object the image is for
-		 * @param {object} value - The open / closed value of the picker
 		 * @returns {undefined}
 		 */
-		toggleImageMode (object, value) {
-			this.imageMode[object] = value
+		toggleImageMode () {
+			this.selectImageMode = !this.selectImageMode
 		},
 		/**
 		 * To reset the message form

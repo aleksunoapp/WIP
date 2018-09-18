@@ -26,71 +26,73 @@
 				        @click="clearError()"></button>
 				<span>{{errorMessage}}</span>
 			</div>
-			<div :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
-				<resource-picker @open="goToPageTwo()"
-				                 @close="goToPageOne()"
-				                 @selected="updateImage"
-				                 :imageButton="true"
-				                 :imageUrl="categoryToBeEdited.image_url"
-				                 class="margin-top-15">
-				</resource-picker>
-			</div>
-			<div class="col-md-12"
-			     v-show="!selectImageMode">
-				<fieldset :disabled="!can('menu_manager menus categories subcategories update')">
+			<div class="row">
+				<div :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
+					<resource-picker @open="goToPageTwo()"
+									@close="goToPageOne()"
+									@selected="updateImage"
+									:imageButton="true"
+									:imageUrl="categoryToBeEdited.image_url"
+									class="margin-top-15">
+					</resource-picker>
+				</div>
+				<div class="col-md-12"
+					v-show="!selectImageMode">
+					<fieldset :disabled="!can('menu_manager menus categories subcategories update')">
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text"
+								class="form-control input-sm edited"
+								id="form_control_1"
+								v-model="categoryToBeEdited.name">
+							<label for="form_control_1">Category Name</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text"
+								class="form-control input-sm edited"
+								id="form_control_2"
+								v-model="categoryToBeEdited.desc">
+							<label for="form_control_2">Category Description</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="text"
+								class="form-control input-sm edited"
+								id="form_control_3"
+								v-model="categoryToBeEdited.sku">
+							<label for="form_control_3">Category SKU</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<input type="number"
+								class="form-control input-sm edited"
+								id="form_control_4"
+								v-model="categoryToBeEdited.order">
+							<label for="form_control_4">Category Order</label>
+						</div>
+					</fieldset>
 					<div class="form-group form-md-line-input form-md-floating-label">
-						<input type="text"
-						       class="form-control input-sm edited"
-						       id="form_control_1"
-						       v-model="categoryToBeEdited.name">
-						<label for="form_control_1">Category Name</label>
+						<label>Category Status:</label><br>
+						<el-switch :disabled="!can('menu_manager menus categories subcategories update')"
+								v-model="categoryToBeEdited.status"
+								active-color="#0c6"
+								inactive-color="#ff4949"
+								:active-value="1"
+								:inactive-value="0"
+								active-text="Available"
+								inactive-text="Sold Out">
+						</el-switch>
 					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<input type="text"
-						       class="form-control input-sm edited"
-						       id="form_control_2"
-						       v-model="categoryToBeEdited.desc">
-						<label for="form_control_2">Category Description</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<input type="text"
-						       class="form-control input-sm edited"
-						       id="form_control_3"
-						       v-model="categoryToBeEdited.sku">
-						<label for="form_control_3">Category SKU</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<input type="number"
-						       class="form-control input-sm edited"
-						       id="form_control_4"
-						       v-model="categoryToBeEdited.order">
-						<label for="form_control_4">Category Order</label>
-					</div>
-				</fieldset>
-				<div class="form-group form-md-line-input form-md-floating-label">
-					<label>Category Status:</label><br>
-					<el-switch :disabled="!can('menu_manager menus categories subcategories update')"
-					           v-model="categoryToBeEdited.status"
-					           active-color="#0c6"
-					           inactive-color="#ff4949"
-					           :active-value="1"
-					           :inactive-value="0"
-					           active-text="Available"
-					           inactive-text="Sold Out">
-					</el-switch>
 				</div>
 			</div>
 		</div>
 		<div slot="modal-footer"
-		     class="modal-footer">
+			class="modal-footer">
 			<button v-if="!selectImageMode"
-			        type="button"
-			        class="btn btn-primary"
-			        @click="updateMenuCategory()"
-			        :disabled="updating">
+					type="button"
+					class="btn btn-primary"
+					@click="updateMenuCategory()"
+					:disabled="updating">
 				Save
 				<i v-show="updating"
-				   class="fa fa-spinner fa-pulse fa-fw">
+				class="fa fa-spinner fa-pulse fa-fw">
 				</i>
 			</button>
 		</div>
@@ -211,6 +213,7 @@ export default {
 					)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
+								this.showUpdateSuccess(response.payload)
 								this.closeModalAndUpdate()
 							} else {
 								editSubCategoryVue.errorMessage = response.message
@@ -235,6 +238,29 @@ export default {
 					window.scrollTo(0, 0)
 					throw reason
 				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showUpdateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Subcategory has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.

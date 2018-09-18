@@ -64,7 +64,7 @@
 							       class="form-control input-sm edited"
 							       id="form_control_3"
 							       v-model="itemToBeEdited.short_description">
-							<label for="form_control_3">Item Description</label>
+							<label for="form_control_3">Item Short Description</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label">
 							<input type="text"
@@ -457,6 +457,7 @@ export default {
 								response.code === 200 &&
 								response.status === 'ok'
 							) {
+								this.showUpdateSuccess(response.payload)
 								this.closeModalAndUpdate()
 							} else {
 								editItemVue.errorMessage = response.message
@@ -481,6 +482,29 @@ export default {
 					window.scrollTo(0, 0)
 					throw reason
 				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showUpdateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Item has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To close the modal and emit the updated item object to the parent.

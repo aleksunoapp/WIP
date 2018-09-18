@@ -369,7 +369,7 @@ export default {
 								response.code === 200 &&
 								response.status === 'ok'
 							) {
-								this.closeModalAndUpdate()
+								this.closeModalAndUpdate(response.payload)
 							} else {
 								editMenuVue.errorMessage = response.message
 							}
@@ -405,10 +405,14 @@ export default {
 		/**
 		 * To close the modal and update the menu details.
 		 * @function
+		 * @param {object} payload - The payload parameter of the server response
 		 * @returns {undefined}
 		 */
-		closeModalAndUpdate () {
-			this.$emit('updateMenu', this.menuToBeEdited)
+		closeModalAndUpdate (payload = {}) {
+			this.$emit('updateMenu', {
+				menu: this.menuToBeEdited,
+				payload
+			})
 		},
 		/**
 		 * To change the page to the gallery view on the modal.
