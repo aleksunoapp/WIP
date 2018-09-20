@@ -174,11 +174,11 @@ var authenticateToken = {
 									inspectionCounts.approvedCount += 1
 								}
 							} else if (service.category === '6') {
-								inspectionCounts.concernCount += 1
+								inspectionCounts.concernCount += service.subServices.length
 							} else if (service.category === '7') {
-								inspectionCounts.concernCount += 1
+								inspectionCounts.concernCount += service.subServices.length
 							} else if (service.category === '8') {
-								inspectionCounts.concernCount += 1
+								inspectionCounts.concernCount += service.subServices.length
 							}
 						})
 
@@ -219,7 +219,11 @@ var authenticateToken = {
 							if (category.id === '5') {
 								_this.$root.services.forEach(service => {
 									if (service.category === '6' || service.category === '7' || service.category === '8') {
-										inspectionTotal += service.subServices[0].price
+										if (service.subServices) {
+											service.subServices.forEach(subService => {
+												inspectionTotal += subService.price
+											})
+										}
 									}
 								})
 							}

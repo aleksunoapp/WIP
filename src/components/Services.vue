@@ -3,7 +3,7 @@
 		<div class="summary-header">
 			{{ langTerms.service_summary[$root.meta.local.toLowerCase()] }}
 		</div>
-		<div v-if="$root.inspectionCounts.failCount || $root.inspectionCounts.warningCount" class="service-header">
+		<div v-if="$root.inspectionCounts.failCount || $root.inspectionCounts.warningCount || $root.inspectionCounts.concernCount" class="service-header">
 			<div class="large">
 				{{ langTerms.newly_approved_services[$root.meta.local.toLowerCase()] }}
 			</div>
@@ -11,10 +11,10 @@
 				{{ langTerms.items_you_approved[$root.meta.local.toLowerCase()] }}
 			</div>
 		</div>
-		<div v-if="$root.inspectionCounts.failCount || $root.inspectionCounts.warningCount" class="summary-table">
+		<div v-if="$root.inspectionCounts.failCount || $root.inspectionCounts.warningCount || $root.inspectionCounts.concernCount" class="summary-table">
 			<template v-for="service in $root.services">
 				<template v-if="checkSubServices(service)">
-					<template v-for="subService in service.subServices">
+					<template v-for="(subService, subServiceIndex) in service.subServices">
 						<template v-if="subService.isSelected && service.category !== '4' && service.category !== '3'">
 							<div class="summary-table-row summary-item">
 								<div class="summary-table-cell">
@@ -29,7 +29,7 @@
 						</template>
 					</template>
 				</template>
-				<template v-if="!service.subServices || service.category === '6' || service.category === '7' || service.category === '8'">
+				<template v-if="!service.subServices">
 					<template v-if="service.isSelected && service.category !== '4' && service.category !== '3'">
 						<div class="summary-table-row summary-item">
 							<div class="summary-table-cell">
@@ -37,16 +37,7 @@
 								<span class="service-name">{{ service.name }}</span>
 							</div>
 							<div class="summary-table-cell">
-								<span class="price" v-if="(
-									service.category !== '6' && 
-									service.category !== '7' && 
-									service.category !== '8'
-								) && service.price !== 0">{{ formatCurrency(service.price) }}</span>
-								<span class="price" v-else-if="(
-									service.category === '6' || 
-									service.category === '7' || 
-									service.category === '8'
-								) && service.subServices[0].price !== 0">{{ formatCurrency(service.subServices[0].price) }}</span>
+								<span class="price" v-if="service.price !== 0">{{ formatCurrency(service.price) }}</span>
 								<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 							</div>
 						</div>
@@ -63,7 +54,7 @@
 			</div>
 		</div>
 
-		<div :class="{'accordion-open': this.accordion, 'accordion-closed': !this.accordion}" class="service-accordion">
+		<div :class="{'accordion-open': this.accordion, 'accordion-closed': !this.accordion}" class="service-accordion" v-if="$root.inspectionCounts.approvedCount">
 			<div @click="toggleAccordion()" class="service-accordion-header service-header">
 				<div class="service-accordion-status"></div>
 				<div class="large">
@@ -252,7 +243,13 @@
 				<div class="terms-close-btn" @click="toggleTerms(false)">{{ langTerms.close[$root.meta.local.toLowerCase()] }}</div>
 			</div>
 		</div>
-		<info-popup v-if="modalOpen" :viewingService="viewingService" @closeModal="closeServiceModal" @approve="approveService" @defer="deferService"></info-popup>
+		<info-popup 
+			v-if="modalOpen" 
+			:viewingService="viewingService" 
+			:flat="true"
+			@closeModal="closeServiceModal" 
+			@approve="approveService" 
+			@defer="deferService"></info-popup>
 		<defer-modal v-if="deferModal" @deferReason="deferServiceReason"></defer-modal>
 		<error-message v-if="showErrorMessage" @closeErrorModal="closeErrorModal()"></error-message>
 	</div>
@@ -782,11 +779,7 @@ export default {
 		  */
 		deferService () {
 			this.viewingService.isSelected = false
-			if (this.viewingService.category === '6' || this.viewingService.category === '7' || this.viewingService.category === '8') {
-				this.$root.totals.inspectionTotal.total -= parseFloat(this.viewingService.subServices[0].price)
-			} else {
-				this.$root.totals.inspectionTotal.total -= parseFloat(this.viewingService.price)
-			}
+			this.$root.totals.inspectionTotal.total -= parseFloat(this.viewingService.price)
 			this.getTaxTotals()
 			this.openDeferReasonModal(this.viewingService)
 			this.closeServiceModal()
@@ -877,19 +870,21 @@ export default {
 		 * @returns {boolean} - Whether the service passes or fails the test
 		 */
 		checkSubServices (service) {
-			if (service.category === '6' || service.category === '7' || service.category === '8') {
+			if (service.category === '5') {
 				return false
+			} else if (service.category === '6' || service.category === '7' || service.category === '8') {
+				return true
+			} else {
+				let isSelected = false
+				if (service.subServices) {
+					service.subServices.forEach(subService => {
+						if (subService.isSelected) {
+							isSelected = true
+						}
+					})
+				}
+				return isSelected
 			}
-
-			let isSelected = false
-			if (service.subServices) {
-				service.subServices.forEach(subService => {
-					if (subService.isSelected) {
-						isSelected = true
-					}
-				})
-			}
-			return isSelected
 		},
 		/**
 		 * To close the error modal

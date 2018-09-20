@@ -113,50 +113,51 @@
 										service.category === '7' ||
 										service.category === '8')
 									)">
-									<div 
-										class="summary-table-row summary-item" 
-										v-if="showCategoryItems(category, service)" 
-										:key="`service-${serviceIndex}`">
-										<div class="summary-table-cell">
-											<span 
-												class="information-icon" 
-												:class="{'no-icon-bg': category.serviceCategoryType === 'PASS' || service.category === '8'}" 
-												@click="openServiceModal(service)">
-											</span>
-											<span 
-												class="service-name" 
-												v-bind:class="{'bold': (service.isHighlighted === true)}">
-												<span v-if="service.isHighlighted === true">* </span>{{ service.name }}
-											</span>
-										</div>
-										<div class="summary-table-cell">
-											<div class="dot-caption-container">
-												<div class="dot-container">
-													<span :class="{'red-dot' : service.category === '6'}"></span>
-													<span :class="{'yellow-dot' : service.category === '7'}"></span>
-													<span :class="{'green-dot' : service.category === '8'}"></span>
+									<template v-for="(subService, subServiceIndex) in service.subServices">
+										<div 
+											class="summary-table-row summary-item" 
+											:key="`service-${subServiceIndex}`">
+											<div class="summary-table-cell">
+												<span 
+													class="information-icon" 
+													:class="{'no-icon-bg': service.category === '8'}" 
+													@click="openServiceModal(service, subServiceIndex)">
+												</span>
+												<span 
+													class="service-name" 
+													v-bind:class="{'bold': (service.isHighlighted === true)}">
+													<span v-if="service.isHighlighted === true">* </span>{{ service.name }}
+												</span>
+											</div>
+											<div class="summary-table-cell">
+												<div class="dot-caption-container">
+													<div class="dot-container">
+														<span :class="{'red-dot' : service.category === '6'}"></span>
+														<span :class="{'yellow-dot' : service.category === '7'}"></span>
+														<span :class="{'green-dot' : service.category === '8'}"></span>
+													</div>
+													<span class="dot-caption" v-if="service.subServices">{{service.subServices[subServiceIndex].name}}</span>
 												</div>
-												<span class="dot-caption" v-if="service.subServices">{{service.subServices[0].name}}</span>
+											</div>
+											<div class="summary-table-cell">
+												<template v-if="category.serviceCategoryType !== 'PASS' && service.category !== '8'">
+													<span class="price" v-if="service.subServices[subServiceIndex].price !== 0">{{ formatCurrency(service.subServices[subServiceIndex].price) }}</span>
+													<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
+													<div class="service-checkbox">
+														<input 
+															type="checkbox" 
+															:id="`sub-service-${subServiceIndex}`" 
+															v-model="service.subServices[subServiceIndex].isSelected" 
+															@change="toggleCheckbox(category, service, subServiceIndex)">
+														<label :for="`sub-service-${subServiceIndex}`">
+															<span class="check"></span>
+															<span class="box"></span>
+														</label>
+													</div>
+												</template>
 											</div>
 										</div>
-										<div class="summary-table-cell">
-											<template v-if="category.serviceCategoryType !== 'PASS' && service.category !== '8'">
-												<span class="price" v-if="service.subServices[0].price !== 0">{{ formatCurrency(service.subServices[0].price) }}</span>
-												<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
-												<div class="service-checkbox">
-													<input 
-														type="checkbox" 
-														:id="`sub-service-${service.id}`" 
-														v-model="service.isSelected" 
-														@change="toggleCheckbox(category, service)">
-													<label :for="`sub-service-${service.id}`">
-														<span class="check"></span>
-														<span class="box"></span>
-													</label>
-												</div>
-											</template>
-										</div>
-									</div>
+									</template>
 								</template>
 							</template>
 						</div>
@@ -321,7 +322,7 @@
 				</div>
 			</div>
 		</div>
-		<info-popup v-if="modalOpen" :viewingService="viewingService" @closeModal="closeServiceModal" @approve="approveService" @defer="deferService"></info-popup>
+		<info-popup v-if="modalOpen" :viewingService="viewingService" :viewingSubServiceIndex="viewingSubServiceIndex" @closeModal="closeServiceModal" @approve="approveService" @defer="deferService"></info-popup>
 		<defer-modal v-if="deferModal" @deferReason="deferServiceReason"></defer-modal>
 	</div>
 </template>
@@ -347,6 +348,7 @@ export default {
 			serviceCategories: [],
 			inspectionTotal: 0,
 			viewingService: {},
+			viewingSubServiceIndex: undefined,
 			timeExpired: false,
 			helpScreenShowing: false,
 			helpScreenVars: {
@@ -683,35 +685,33 @@ export default {
 		 * To add and subtract the selected service from the total price
 		 * @param {object} category - The parent category of the service
 		 * @param {object} service - The service being toggled
+		 * @param {integer} subServiceIndex - The index of the subservice being toggled
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCheckbox (category, service) {
+		toggleCheckbox (category, service, subServiceIndex) {
 			if (!this.$root.$data.userActivity.eventTracker.length || this.$root.$data.userActivity.eventTracker[this.$root.$data.userActivity.eventTracker.length - 1].event !== `Deferred ${service.name} service`) {
 				service.isSelected ? this.$root.logEvent(`Checked ${service.name} checkbox`) : this.$root.logEvent(`Unchecked ${service.name} checkbox`)
 			}
-			if (service.isSelected) {
-				if (service.category === '6' || service.category === '7' || service.category === '8') {
-					this.inspectionTotal.total += parseFloat(service.subServices[0].price)
-				} else {
-					this.inspectionTotal.total += parseFloat(service.price)
-				}
-				this.checkSelectAll()
-			} else {
-				if (service.category === '6' || service.category === '7' || service.category === '8') {
-					this.inspectionTotal.total -= parseFloat(service.subServices[0].price)
-				} else {
-					this.inspectionTotal.total -= parseFloat(service.price)
-				}
-				if (category) {
-					if (category.allSelected) {
-						category.allSelected = false
-					}
-				} else {
-					this.checkSelectAll()
-				}
 
-				this.openDeferReasonModal(category, service)
+			if (service.category === '6' || service.category === '7' || service.category === '8') {
+				if (service.subServices[subServiceIndex].isSelected) {
+					this.inspectionTotal.total += parseFloat(service.subServices[subServiceIndex].price)
+					this.checkSelectAll()
+				} else {
+					category.allSelected = false
+					this.inspectionTotal.total -= parseFloat(service.subServices[subServiceIndex].price)
+					this.openDeferReasonModal(category, service, false, subServiceIndex)
+				}
+			} else {
+				if (service.isSelected) {
+					this.inspectionTotal.total += parseFloat(service.price)
+					this.checkSelectAll()
+				} else {
+					category.allSelected = false
+					this.inspectionTotal.total += parseFloat(service.subServices[subServiceIndex].price)
+					this.openDeferReasonModal(category, service, false, null)
+				}
 			}
 
 			// Doing this only to prevent value of -0.00
@@ -724,10 +724,11 @@ export default {
 		 * @param {object} category - The parent category of the service
 		 * @param {object} service - The service being deferred
 		 * @param {boolean} multiple - Whether this is a category deferral or single service
+		 * @param {boolean} subServiceIndex - Index of the subservice to defer
 		 * @function
 		 * @returns {undefined}
 		 */
-		openDeferReasonModal (category, service, multiple) {
+		openDeferReasonModal (category, service, multiple, subServiceIndex) {
 			this.deferModal = true
 
 			if (multiple) {
@@ -735,7 +736,11 @@ export default {
 				this.activeDeferralCategory = Object.assign({}, category)
 			} else {
 				this.categoryDeferral = false
-				this.activeDeferralService = Object.assign({}, service)
+				if (category.id === '5') {
+					this.activeDeferralService = Object.assign({}, service.subServices[subServiceIndex])
+				} else {
+					this.activeDeferralService = Object.assign({}, service)
+				}
 			}
 		},
 		/**
@@ -790,8 +795,11 @@ export default {
 				this.$root.logEvent(`Selected all in ${category.name} category`)
 				this.$root.services.forEach(service => {
 					if (
-						(service.category === category.id) ||
-						(category.id === '5' &&
+						(
+							category.id !== '5' &&
+							service.category === category.id
+						) || (
+							category.id === '5' &&
 							(
 								service.category === '6' ||
 								service.category === '7' ||
@@ -803,21 +811,13 @@ export default {
 							service.subServices.forEach(subService => {
 								if (!subService.isSelected) {
 									subService.isSelected = true
-									if (service.category === '6' || service.category === '7' || service.category === '8') {
-										this.inspectionTotal.total += parseFloat(service.subServices[0].price)
-									} else {
-										this.inspectionTotal.total += parseFloat(service.price)
-									}
+									this.inspectionTotal.total += parseFloat(subService.price)
 								}
 							})
 						}
 						if (!service.isSelected) {
 							service.isSelected = true
-							if (service.category === '6' || service.category === '7' || service.category === '8') {
-								this.inspectionTotal.total += parseFloat(service.subServices[0].price)
-							} else {
-								this.inspectionTotal.total += parseFloat(service.price)
-							}
+							this.inspectionTotal.total += parseFloat(service.price)
 						}
 					}
 				})
@@ -825,8 +825,11 @@ export default {
 				this.$root.logEvent(`Removed all in ${category.name} category`)
 				this.$root.services.forEach(service => {
 					if (
-						(service.category === category.id) ||
-						(category.id === '5' &&
+						(
+							category.id !== '5' &&
+							service.category === category.id
+						) || (
+							category.id === '5' &&
 							(
 								service.category === '6' ||
 								service.category === '7' ||
@@ -834,28 +837,20 @@ export default {
 							)
 						)
 					) {
-						if (service.subServices && service.subServices.length) {
+						if (service.subServices) {
 							service.subServices.forEach(subService => {
 								if (subService.isSelected) {
 									subService.isSelected = false
-									if (service.category === '6' || service.category === '7' || service.category === '8') {
-										this.inspectionTotal.total -= parseFloat(service.subServices[0].price)
-									} else {
-										this.inspectionTotal.total -= parseFloat(service.price)
-									}
+									this.inspectionTotal.total -= parseFloat(subService.price)
 								}
 							})
 						}
 						if (service.isSelected) {
 							service.isSelected = false
-							if (service.category === '6' || service.category === '7' || service.category === '8') {
-								this.inspectionTotal.total -= parseFloat(service.subServices[0].price)
-							} else {
-								this.inspectionTotal.total -= parseFloat(service.price)
-							}
+							this.inspectionTotal.total -= parseFloat(service.price)
 						}
 
-						this.openDeferReasonModal(category, {}, true)
+						this.openDeferReasonModal(category, {}, true, null)
 					}
 				})
 			}
@@ -913,10 +908,12 @@ export default {
 		 * To open the detailed view modal
 		 * @function
 		 * @param {object} service - The service to be viewed in detail
+		 * @param {object} subServiceIndex - The index of the subservice to be viewed in detail
 		 * @returns {undefined}
 		 */
-		openServiceModal (service) {
+		openServiceModal (service, subServiceIndex) {
 			this.$root.logEvent(`Displayed ${service.name} info window`)
+			this.viewingSubServiceIndex = subServiceIndex
 			this.viewingService = service
 			this.modalOpen = true
 		},
