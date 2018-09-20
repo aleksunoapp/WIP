@@ -5,7 +5,7 @@
 			<div @click="closeModal()" class="modal-close"></div>
 			<div class="clear"></div>
 			<div class="modal-content info-modal">
-				<div v-if="viewingService.imageUrl" class="info-modal-image" :style="`background-image: url('${viewingService.imageUrl}');`"></div>
+				<div v-if="imageUrl" class="info-modal-image" :style="`background-image: url('${imageUrl}');`"></div>
 				<div>
 					<div class="info-modal-info-top">
 						<div 
@@ -157,6 +157,19 @@ export default {
 					'en-us': 'Advisor comments',
 					'fr-ca': 'Commentaires du conseiller'
 				}
+			}
+		}
+	},
+	computed: {
+		imageUrl () {
+			if (
+				this.viewingService.category === '6' ||
+				this.viewingService.category === '7' ||
+				this.viewingService.category === '8'
+			) {
+				return this.viewingService.subServices[0].imageUrl
+			} else {
+				return this.viewingService.imageUrl
 			}
 		}
 	},

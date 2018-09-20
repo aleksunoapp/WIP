@@ -552,14 +552,12 @@ export default {
 			cat4.forEach(service => {
 				if (service.isHighlighted) {
 					highlighted = true
-					console.log({service})
 					return
 				}
 				if (service.subServices !== undefined && service.subServices.length) {
 					service.subServices.forEach(subService => {
 						if (subService.isHighlighted) {
 							highlighted = true
-							console.log({subService})
 							return
 						}
 					})

@@ -824,7 +824,6 @@ export default {
 			} else {
 				this.$root.logEvent(`Removed all in ${category.name} category`)
 				this.$root.services.forEach(service => {
-					console.log({service, category})
 					if (
 						(service.category === category.id) ||
 						(category.id === '5' &&
