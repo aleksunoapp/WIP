@@ -584,6 +584,15 @@ export default {
 					case 'promotions_cta_text':
 						field = 'cta_text'
 						break
+					case 'modifier_item_name':
+						field = 'name'
+						break
+					case 'modifier_item_desc':
+						field = 'desc'
+						break
+					case 'modifier_item_image_url':
+						field = 'image_url'
+						break
 					default:
 						field = localizationVue.termRegex
 								.exec(localizationVue.activeTranslationGroup.term)[0]
