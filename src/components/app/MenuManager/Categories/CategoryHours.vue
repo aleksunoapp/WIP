@@ -830,8 +830,11 @@ export default {
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showCreateSuccess (payload = {message: ''}) {
-			let partial = !!payload.message.startsWith('Category hours saved except for')
+		showCreateSuccess (payload = {}) {
+			let partial = false
+			if (payload.message !== undefined) {
+				!!payload.message.startsWith('Category hours saved except for')
+			}
 			let title = 'Success'
 			let text = partial ? payload.message : 'The Category Hours have been saved'
 			let type = partial ? 'info' : 'success'
@@ -890,9 +893,9 @@ export default {
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
 								if (response.payload && response.payload.pending_approval) {
-									_this.saveMessage = 'The Category Hours have been saved'
-								} else {
 									_this.saveMessage = 'The Category Hours have been sent for approval'
+								} else {
+									_this.saveMessage = 'The Category Hours have been saved'
 								}
 
 								const sundayIndex = response.payload.findIndex(

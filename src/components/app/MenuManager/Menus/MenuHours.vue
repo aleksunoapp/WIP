@@ -674,7 +674,10 @@ export default {
 		 * @returns {undefined}
 		 */
 		showCreateSuccess (response = {message: '', payload: {}}) {
-			let partial = !!response.message.startsWith('Menu hours saved except for')
+			let partial = false
+			if (response.payload && response.message) {
+				partial = !!response.message.startsWith('Menu hours saved except for')
+			}
 			let title = 'Success'
 			let text = partial ? response.message : 'The Menu Hours have been saved'
 			let type = partial ? 'info' : 'success'
