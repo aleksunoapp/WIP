@@ -21,44 +21,44 @@
 										     style="width:150px;height:150px;"
 										     class="img-responsive"
 										     alt=""> </div>
-									<!-- END SIDEBAR USERPIC -->
-									<!-- SIDEBAR USER TITLE -->
-									<div style="text-align:center"
-									     class="profile-usertitle">
-										<div class="profile-usertitle-name">
-											<h2>{{ user.first_name }} {{ user.last_name }}</h2>
+										<!-- END SIDEBAR USERPIC -->
+										<!-- SIDEBAR USER TITLE -->
+										<div style="text-align:center"
+										     class="profile-usertitle">
+											<div class="profile-usertitle-name">
+												<h2>{{ user.first_name }} {{ user.last_name }}</h2>
+											</div>
 										</div>
+										<!-- END SIDEBAR USER TITLE -->
+										<!-- SIDEBAR BUTTONS -->
+										<div class="profile-userbuttons"
+										     v-if="can('user_manager users message')">
+											<button type="button"
+											        class="btn btn-circle red btn-sm"
+											        @click="showMessageModal()">Message</button>
+										</div>
+										<!-- END SIDEBAR BUTTONS -->
+										<!-- SIDEBAR MENU -->
+										<div class="profile-usermenu">
+											<ul class="nav">
+												<li :class="{ active: isActive(this.tab1, 0) }">
+													<a a
+													   @click="changeTab(1, 0)"
+													   aria-expanded="true">
+														<i class="fa fa-list-ol"
+														   aria-hidden="true"></i> Orders </a>
+												</li>
+												<li :class="{ active: isActive(this.tab1, 1) }">
+													<a a
+													   @click="changeTab(1, 1)"
+													   aria-expanded="true">
+														<i class="fa fa-picture-o"
+														   aria-hidden="true"></i> Gallery </a>
+												</li>
+											</ul>
+										</div>
+										<!-- END MENU -->
 									</div>
-									<!-- END SIDEBAR USER TITLE -->
-									<!-- SIDEBAR BUTTONS -->
-									<div class="profile-userbuttons"
-									v-if="can('user_manager users message')">
-										<button type="button"
-										        class="btn btn-circle red btn-sm"
-										        @click="showMessageModal()">Message</button>
-									</div>
-									<!-- END SIDEBAR BUTTONS -->
-									<!-- SIDEBAR MENU -->
-									<div class="profile-usermenu">
-										<ul class="nav">
-											<li :class="{ active: isActive(this.tab1, 0) }">
-												<a a
-												   @click="changeTab(1, 0)"
-												   aria-expanded="true">
-													<i class="fa fa-list-ol"
-													   aria-hidden="true"></i> Orders </a>
-											</li>
-											<li :class="{ active: isActive(this.tab1, 1) }">
-												<a a
-												   @click="changeTab(1, 1)"
-												   aria-expanded="true">
-													<i class="fa fa-picture-o"
-													   aria-hidden="true"></i> Gallery </a>
-											</li>
-										</ul>
-									</div>
-									<!-- END MENU -->
-								</div>
 							</li>
 							<li>
 								<div class="portlet light ">
@@ -130,12 +130,12 @@
 												<img :src="item.image_url"
 												     style="width: 40px; height: 40px;" />
 											</div>
-											<p class="font-blue-madison margin-left-10">
-												{{item.name}}
-											</p>
+												<p class="font-blue-madison margin-left-10">
+													{{item.name}}
+												</p>
+											</div>
 										</div>
 									</div>
-								</div>
 							</li>
 						</ul>
 					</div>
@@ -181,6 +181,14 @@
 													</el-dropdown-item>
 												</el-dropdown-menu>
 											</el-dropdown>
+											<a @click="downloadCsv()"
+											   :download="`${user.first_name} ${user.last_name} Orders.csv`"
+												 ref="csv"
+												 class="margin-left-5">
+												Save as CSV
+												<i class="fa fa-download"
+												   aria-hidden="true"></i>
+											</a>
 											<page-results class="pull-right"
 											              :totalResults="orders.length"
 											              :activePage="activePage"
@@ -246,7 +254,7 @@
 									     v-if="socialFeed.length">
 										<div class="col-md-3 col-sm-3 col-xs-4"
 										     v-for="feed in socialFeed"
-											 :key="feed.id">
+										     :key="feed.id">
 											<div class="blog-post-sm blog-container blog-shadow"
 											     :id="'social-feed-' + feed.id">
 												<div class="blog-top-wrap">
@@ -264,38 +272,38 @@
 													     class="small-image"
 													     src="../../../assets/img/app/image-placeholder.png">
 												</div>
-												<div class="blog-post-content">
-													<p class="blog-post-desc"> {{ feed.description }} </p>
-													<div class="blog-post-foot"
-													     v-if="feed.facebook || feed.twitter || feed.instagram">
-														<div class="socicons">
-															<a v-if="feed.facebook"
-															   class="socicon-btn socicon-btn-circle socicon-facebook"></a>
-															<a v-if="feed.twitter"
-															   class="socicon-btn socicon-btn-circle socicon-twitter"></a>
-															<a v-if="feed.instagram"
-															   class="socicon-btn socicon-btn-circle socicon-instagram"></a>
+													<div class="blog-post-content">
+														<p class="blog-post-desc"> {{ feed.description }} </p>
+														<div class="blog-post-foot"
+														     v-if="feed.facebook || feed.twitter || feed.instagram">
+															<div class="socicons">
+																<a v-if="feed.facebook"
+																   class="socicon-btn socicon-btn-circle socicon-facebook"></a>
+																<a v-if="feed.twitter"
+																   class="socicon-btn socicon-btn-circle socicon-twitter"></a>
+																<a v-if="feed.instagram"
+																   class="socicon-btn socicon-btn-circle socicon-instagram"></a>
+															</div>
 														</div>
 													</div>
 												</div>
 											</div>
 										</div>
 									</div>
+									<!--tab-pane-->
 								</div>
-								<!--tab-pane-->
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
+			<view-order v-if="viewOrderModalDisplayed"
+			            :order="orderBeingViewed"
+			            @closeViewOrderModal="closeViewOrderModal"></view-order>
+			<message v-if="messageModalDisplayed"
+			         :userId="user.id"
+			         @closeMessageModal="closeMessageModal"></message>
 		</div>
-		<view-order v-if="viewOrderModalDisplayed"
-		            :order="orderBeingViewed"
-		            @closeViewOrderModal="closeViewOrderModal"></view-order>
-		<message v-if="messageModalDisplayed"
-		         :userId="user.id"
-		         @closeMessageModal="closeMessageModal"></message>
-	</div>
 </template>
 
 <script>
@@ -315,6 +323,7 @@ import PageResults from '../../modules/PageResults'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
 import $ from 'jquery'
 import { mapGetters } from 'vuex'
+import json2csv from 'json2csv'
 
 export default {
 	data () {
@@ -342,7 +351,8 @@ export default {
 			errorMessage: '',
 			points: '',
 			adding: false,
-			addErrorMessage: ''
+			addErrorMessage: '',
+			parser: null
 		}
 	},
 	computed: {
@@ -364,8 +374,41 @@ export default {
 		this.getUserOrders()
 		this.getUserSocialFeed()
 		window.scrollTo(0, 0)
+
+		this.parser = new json2csv.Parser({
+			fields: [
+				{
+					label: 'Store',
+					value: 'location_name',
+					default: ''
+				},
+				{
+					label: 'Amount',
+					value: 'order_total',
+					default: ''
+				},
+				{
+					label: 'Order Date',
+					value: 'created_at',
+					default: ''
+				},
+				{
+					label: 'Status',
+					value: 'status',
+					default: ''
+				}
+			]
+		})
 	},
 	methods: {
+		/**
+		 * To download orders in a CSV file
+		 * @function
+		 * @returns {undefined}
+		 */
+		downloadCsv () {
+			this.$refs.csv.href = `data:text/csv,${this.parser.parse(this.orders)}`
+		},
 		/**
 		 * To clear an error
 		 * @function
