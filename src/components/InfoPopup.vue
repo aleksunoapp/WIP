@@ -36,44 +36,33 @@
 					<template v-if="(
 							viewingService.category === '6' || 
 							viewingService.category === '7'
-						) && ! flat">
-						<div class="info-modal-concerns"
-							v-if="
-								(viewingService.comment) || 
-								(
-									viewingService.subServices && 
-									viewingService.subServices.length && 
-									viewingService.subServices[viewingSubServiceIndex].comment
-								)">
+						)">
+						<div class="info-modal-concerns">
 							<p class="customer-comments-label" v-if="viewingService.comment">
 								{{ $root.meta.customerCommentsLabel }}
 							</p>
 							<p class="customer-comments" v-if="viewingService.comment">
 								{{viewingService.comment}}
 							</p>
-							<p class="advisor-comments-label" v-if="viewingService.subServices && viewingService.subServices.length && viewingService.subServices[viewingSubServiceIndex].comment">
-								{{ langTerms.advisor_comments[$root.meta.local.toLowerCase()] }}
-							</p>
-							<p class="advisor-comments" v-if="viewingService.subServices && viewingService.subServices.length && viewingService.subServices[viewingSubServiceIndex].comment">
-								{{viewingService.subServices[viewingSubServiceIndex].comment}}
-							</p>
+							<template v-if="viewingSubServiceIndex">
+								<p class="advisor-comments-label" 
+									v-if="viewingService.subServices[viewingSubServiceIndex].comment">
+									{{ langTerms.advisor_comments[$root.meta.local.toLowerCase()] }}
+								</p>
+								<p class="advisor-comments" v-if="viewingService.subServices[viewingSubServiceIndex].comment">
+									{{viewingService.subServices[viewingSubServiceIndex].comment}}
+								</p>
+							</template>
 						</div>
 					</template>
 					<div class="info-modal-info-bottom">
 						<div class="info-modal-contact">
-							<!-- <a :href="this.$root.meta.inspectionPdfUrl" target="_blank" class="inspection-summary-link" @click="$root.logEvent(`Opened Inspection Summary PDF`)">
-								{{ langTerms.inspection_summary[$root.meta.local.toLowerCase()] }}
-							</a> -->
 							<a @click.stop="openFullInspection()" class="inspection-summary-link">
 								{{ langTerms.inspection_summary[$root.meta.local.toLowerCase()] }}
 							</a>
 						</div>
 						<div class="info-modal-estimate">{{ langTerms.estimated_cost[$root.meta.local.toLowerCase()] }} 
-							<span v-if="(
-								viewingService.category !== '6' && 
-								viewingService.category !== '7' && 
-								viewingService.category !== '8'
-								) || flat">{{ formatCurrency(viewingService.price) }}</span>
+							<span v-if="!viewingSubServiceIndex">{{ formatCurrency(viewingService.price) }}</span>
 							<span v-else>{{ formatCurrency(viewingService.subServices[viewingSubServiceIndex].price) }}</span>
 						</div>
 					</div>
@@ -166,13 +155,7 @@ export default {
 	},
 	computed: {
 		imageUrl () {
-			if (
-				(
-					this.viewingService.category === '6' ||
-					this.viewingService.category === '7' ||
-					this.viewingService.category === '8'
-				) && !this.flat
-			) {
+			if (this.viewingSubServiceIndex) {
 				return this.viewingService.subServices[this.viewingSubServiceIndex].imageUrl
 			} else {
 				return this.viewingService.imageUrl
@@ -185,9 +168,6 @@ export default {
 		},
 		viewingSubServiceIndex: {
 			default: undefined
-		},
-		flat: {
-			default: false
 		}
 	},
 	methods: {

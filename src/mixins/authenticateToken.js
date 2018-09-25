@@ -124,12 +124,12 @@ var authenticateToken = {
 
 						values[0].forEach(service => {
 							if (service.parentServiceId) {
-								values[0].forEach(secondService => {
-									if (secondService.id === service.parentServiceId) {
-										if (!secondService.subServices) {
-											secondService.subServices = []
+								values[0].forEach(parentService => {
+									if (parentService.id === service.parentServiceId) {
+										if (!parentService.subServices) {
+											parentService.subServices = []
 										}
-										secondService.subServices.push(service)
+										parentService.subServices.push(service)
 									}
 								})
 							}
@@ -174,11 +174,23 @@ var authenticateToken = {
 									inspectionCounts.approvedCount += 1
 								}
 							} else if (service.category === '6') {
-								inspectionCounts.concernCount += service.subServices.length
+								if (service.subServices) {
+									inspectionCounts.concernCount += service.subServices.length
+								} else {
+									inspectionCounts.concernCount += 1
+								}
 							} else if (service.category === '7') {
-								inspectionCounts.concernCount += service.subServices.length
+								if (service.subServices) {
+									inspectionCounts.concernCount += service.subServices.length
+								} else {
+									inspectionCounts.concernCount += 1
+								}
 							} else if (service.category === '8') {
-								inspectionCounts.concernCount += service.subServices.length
+								if (service.subServices) {
+									inspectionCounts.concernCount += service.subServices.length
+								} else {
+									inspectionCounts.concernCount += 1
+								}
 							}
 						})
 
@@ -223,6 +235,8 @@ var authenticateToken = {
 											service.subServices.forEach(subService => {
 												inspectionTotal += subService.price
 											})
+										} else {
+											inspectionTotal += service.price
 										}
 									}
 								})

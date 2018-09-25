@@ -1,8 +1,10 @@
 <template>
 	<div class="wrapper">
+
 		<div class="summary-header">
 			{{ langTerms.service_summary[$root.meta.local.toLowerCase()] }}
 		</div>
+
 		<div v-if="$root.inspectionCounts.failCount || $root.inspectionCounts.warningCount || $root.inspectionCounts.concernCount" class="service-header">
 			<div class="large">
 				{{ langTerms.newly_approved_services[$root.meta.local.toLowerCase()] }}
@@ -11,6 +13,7 @@
 				{{ langTerms.items_you_approved[$root.meta.local.toLowerCase()] }}
 			</div>
 		</div>
+
 		<div v-if="$root.inspectionCounts.failCount || $root.inspectionCounts.warningCount || $root.inspectionCounts.concernCount" class="summary-table">
 			<template v-for="service in $root.services">
 				<template v-if="checkSubServices(service)">
@@ -18,12 +21,14 @@
 						<template v-if="subService.isSelected && service.category !== '4' && service.category !== '3'">
 							<div class="summary-table-row summary-item">
 								<div class="summary-table-cell">
-									<span class="information-icon" @click="openServiceModal(subService)"></span>
+									<span class="information-icon" :class="{'no-icon-bg': service.category === '8'}" @click="openServiceModal(subService)"></span>
 									<span class="service-name">{{ subService.name }}</span>
 								</div>
 								<div class="summary-table-cell">
-									<span class="price" v-if="subService.price !== 0">{{ formatCurrency(subService.price) }}</span>
-									<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
+									<template v-if="service.category !== '8'">
+										<span class="price" v-if="subService.price !== 0">{{ formatCurrency(subService.price) }}</span>
+										<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
+									</template>
 								</div>
 							</div>
 						</template>
@@ -33,12 +38,14 @@
 					<template v-if="service.isSelected && service.category !== '4' && service.category !== '3'">
 						<div class="summary-table-row summary-item">
 							<div class="summary-table-cell">
-								<span class="information-icon" @click="openServiceModal(service)"></span>
+								<span class="information-icon" :class="{'no-icon-bg': service.category === '8'}" @click="openServiceModal(service)"></span>
 								<span class="service-name">{{ service.name }}</span>
 							</div>
 							<div class="summary-table-cell">
-								<span class="price" v-if="service.price !== 0">{{ formatCurrency(service.price) }}</span>
-								<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
+								<template v-if="service.category !== '8'">
+									<span class="price" v-if="service.price !== 0">{{ formatCurrency(service.price) }}</span>
+									<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
+								</template>
 							</div>
 						</div>
 					</template>
@@ -69,13 +76,6 @@
 					<template v-for="service in $root.services">
 						<template v-if="service.category === '4'">
 							<template v-if="service.subServices">
-								<!-- <div class="summary-table-row summary-item">
-									<div class="summary-table-cell">
-										<span class="information-icon no-icon-bg"></span>
-										<span class="service-name"><b>{{ service.name }}</b></span>
-									</div>
-									<div class="summary-table-cell"></div>
-								</div> -->
 								<template v-for="subService in service.subServices">
 									<div class="summary-table-row summary-item">
 										<div class="summary-table-cell">
@@ -246,7 +246,6 @@
 		<info-popup 
 			v-if="modalOpen" 
 			:viewingService="viewingService" 
-			:flat="true"
 			@closeModal="closeServiceModal" 
 			@approve="approveService" 
 			@defer="deferService"></info-popup>
@@ -751,6 +750,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		openServiceModal (service) {
+			if (service.category === '8') return
 			this.viewingService = service
 			this.modalOpen = true
 		},

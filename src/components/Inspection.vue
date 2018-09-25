@@ -107,14 +107,13 @@
 
 							<template v-for="(service, serviceIndex) in $root.services">
 								<template v-if="
-									(
-										category.id === '5' &&
-										(service.category === '6' ||
+										service.category === '6' ||
 										service.category === '7' ||
-										service.category === '8')
-									)">
-									<template v-for="(subService, subServiceIndex) in service.subServices">
+										service.category === '8'
+									">
+									<template v-if="service.subServices">
 										<div 
+											v-for="(subService, subServiceIndex) in service.subServices"
 											class="summary-table-row summary-item" 
 											:key="`service-${subServiceIndex}`">
 											<div class="summary-table-cell">
@@ -150,6 +149,43 @@
 															v-model="service.subServices[subServiceIndex].isSelected" 
 															@change="toggleCheckbox(category, service, subServiceIndex)">
 														<label :for="`sub-service-${subServiceIndex}`">
+															<span class="check"></span>
+															<span class="box"></span>
+														</label>
+													</div>
+												</template>
+											</div>
+										</div>
+									</template>
+									<template v-else>
+										<div 
+											:key="`service-${serviceIndex}`"
+											class="summary-table-row summary-item">
+											<div class="summary-table-cell">
+												<span 
+													class="information-icon" 
+													:class="{'no-icon-bg': service.category === '8'}" 
+													@click="openServiceModal(service)">
+												</span>
+												<span 
+													class="service-name" 
+													v-bind:class="{'bold': (service.isHighlighted === true)}">
+													<span v-if="service.isHighlighted === true">* </span>{{ service.name }}
+												</span>
+											</div>
+											<div class="summary-table-cell">
+											</div>
+											<div class="summary-table-cell">
+												<template v-if="category.serviceCategoryType !== 'PASS' && service.category !== '8'">
+													<span class="price" v-if="service.price !== 0">{{ formatCurrency(service.price) }}</span>
+													<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
+													<div class="service-checkbox">
+														<input 
+															type="checkbox" 
+															:id="`service-${serviceIndex}`" 
+															v-model="service.isSelected" 
+															@change="toggleCheckbox(category, service)">
+														<label :for="`service-${serviceIndex}`">
 															<span class="check"></span>
 															<span class="box"></span>
 														</label>
@@ -694,7 +730,7 @@ export default {
 				service.isSelected ? this.$root.logEvent(`Checked ${service.name} checkbox`) : this.$root.logEvent(`Unchecked ${service.name} checkbox`)
 			}
 
-			if (service.category === '6' || service.category === '7' || service.category === '8') {
+			if (subServiceIndex !== undefined) {
 				if (service.subServices[subServiceIndex].isSelected) {
 					this.inspectionTotal.total += parseFloat(service.subServices[subServiceIndex].price)
 					this.checkSelectAll()
@@ -709,7 +745,7 @@ export default {
 					this.checkSelectAll()
 				} else {
 					category.allSelected = false
-					this.inspectionTotal.total += parseFloat(service.subServices[subServiceIndex].price)
+					this.inspectionTotal.total += parseFloat(service.price)
 					this.openDeferReasonModal(category, service, false, null)
 				}
 			}
@@ -736,7 +772,7 @@ export default {
 				this.activeDeferralCategory = Object.assign({}, category)
 			} else {
 				this.categoryDeferral = false
-				if (category.id === '5') {
+				if (category.id === '5' && service.subServices) {
 					this.activeDeferralService = Object.assign({}, service.subServices[subServiceIndex])
 				} else {
 					this.activeDeferralService = Object.assign({}, service)
@@ -912,6 +948,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		openServiceModal (service, subServiceIndex) {
+			if (service.category === '8') return
 			this.$root.logEvent(`Displayed ${service.name} info window`)
 			this.viewingSubServiceIndex = subServiceIndex
 			this.viewingService = service
@@ -923,6 +960,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		closeServiceModal () {
+			this.viewingSubServiceIndex = undefined
 			this.viewingService = {}
 			this.modalOpen = false
 		},
@@ -932,9 +970,16 @@ export default {
 		 * @returns {undefined}
 		 */
 		approveService () {
-			if (!this.viewingService.isSelected) {
-				this.viewingService.isSelected = true
-				this.toggleCheckbox(null, this.viewingService)
+			if (this.viewingSubServiceIndex !== undefined) {
+				if (!this.viewingService.subServices[this.viewingSubServiceIndex].isSelected) {
+					this.viewingService.subServices[this.viewingSubServiceIndex].isSelected = true
+					this.toggleCheckbox(null, this.viewingService, this.viewingSubServiceIndex)
+				}
+			} else {
+				if (!this.viewingService.isSelected) {
+					this.viewingService.isSelected = true
+					this.toggleCheckbox(null, this.viewingService)
+				}
 			}
 			this.closeServiceModal()
 		},
@@ -944,8 +989,24 @@ export default {
 		 * @returns {undefined}
 		 */
 		deferService () {
-			this.viewingService.isSelected = false
-			this.toggleCheckbox(null, this.viewingService)
+			const category = this.serviceCategories.find(category => {
+				if (
+					this.viewingService.category === '6' ||
+					this.viewingService.category === '7' ||
+					this.viewingService.category === '8'
+				) {
+					return category.id === '5'
+				} else {
+					return category.id === this.viewingService.category
+				}
+			})
+			if (this.viewingSubServiceIndex !== undefined) {
+				this.viewingService.subServices[this.viewingSubServiceIndex].isSelected = false
+				this.toggleCheckbox(category, this.viewingService, this.viewingSubServiceIndex)
+			} else {
+				this.viewingService.isSelected = false
+				this.toggleCheckbox(category, this.viewingService)
+			}
 			this.closeServiceModal()
 		},
 		/**
