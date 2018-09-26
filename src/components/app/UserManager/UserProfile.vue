@@ -378,18 +378,38 @@ export default {
 		this.parser = new json2csv.Parser({
 			fields: [
 				{
+					label: 'Order ID',
+					value: 'external_id',
+					default: ''
+				},
+				{
 					label: 'Store',
 					value: 'location_name',
 					default: ''
 				},
 				{
-					label: 'Amount',
-					value: 'order_total',
+					label: 'Total',
+					value: 'total',
+					default: ''
+				},
+				{
+					label: 'Rewards Claimed ($)',
+					value: 'reward_amount',
+					default: ''
+				},
+				{
+					label: 'Points Earned',
+					value: 'points_earned',
 					default: ''
 				},
 				{
 					label: 'Order Date',
 					value: 'created_at',
+					default: ''
+				},
+				{
+					label: 'Platform',
+					value: 'platform',
 					default: ''
 				},
 				{
