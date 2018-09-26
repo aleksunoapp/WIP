@@ -933,6 +933,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		closeEditRoleModal () {
+			this.clearEditError()
 			this.showEditRoleModal = false
 		},
 		/**
