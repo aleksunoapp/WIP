@@ -376,7 +376,8 @@ export default {
 			numPages: 1,
 			searchActivePage: 1,
 			searchNumPages: 1,
-			loadingSearch: false
+			loadingSearch: false,
+			searching: false
 		}
 	},
 	watch: {
