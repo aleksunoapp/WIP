@@ -15,11 +15,11 @@
 		</div>
 
 		<div v-if="$root.inspectionCounts.failCount || $root.inspectionCounts.warningCount || $root.inspectionCounts.concernCount" class="summary-table">
-			<template v-for="service in $root.services">
+			<template v-for="(service, serviceIndex) in $root.services">
 				<template v-if="checkSubServices(service)">
 					<template v-for="(subService, subServiceIndex) in service.subServices">
 						<template v-if="subService.isSelected && service.category !== '4' && service.category !== '3'">
-							<div class="summary-table-row summary-item">
+							<div class="summary-table-row summary-item" :key="`service-${serviceIndex}-${subServiceIndex}`">
 								<div class="summary-table-cell">
 									<span 
 										class="information-icon" 
@@ -39,7 +39,7 @@
 				</template>
 				<template v-if="!service.subServices">
 					<template v-if="service.isSelected && service.category !== '4' && service.category !== '3'">
-						<div class="summary-table-row summary-item">
+						<div class="summary-table-row summary-item" :key="`service-${serviceIndex}`">
 							<div class="summary-table-cell">
 								<span 
 									class="information-icon" 
@@ -83,11 +83,11 @@
 			</div>
 			<div class="accordion-contents">
 				<div class="summary-table">
-					<template v-for="service in $root.services">
+					<template v-for="(service, serviceIndex) in $root.services">
 						<template v-if="service.category === '4'">
 							<template v-if="service.subServices">
-								<template v-for="subService in service.subServices">
-									<div class="summary-table-row summary-item">
+								<template v-for="(subService, subServiceIndex) in service.subServices">
+									<div class="summary-table-row summary-item" :key="`service-${serviceIndex}-${subServiceIndex}`">
 										<div class="summary-table-cell">
 											<span class="information-icon no-icon-bg">
 												<span v-show="subService.isHighlighted" class="highlighted-asterisk">*</span>
@@ -102,7 +102,7 @@
 								</template>
 							</template>
 							<template v-else>
-								<div class="summary-table-row summary-item">
+								<div class="summary-table-row summary-item" :key="`service-${serviceIndex}`">
 									<div class="summary-table-cell">
 										<span class="information-icon no-icon-bg">
 											<span v-show="service.isHighlighted" class="highlighted-asterisk">*</span>

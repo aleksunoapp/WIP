@@ -3,8 +3,8 @@
 		<div class="wrapper" v-if="!$root.meta.expired">
 			<div class="language-selector">
 				<select v-model="selectedLanguage" @change="updateLanguage()">
-					<template v-for="lang in $root.meta.supportedLanguages">
-						<option :value="lang.culture">{{ lang.name }}</option>
+					<template v-for="(lang, i) in $root.meta.supportedLanguages">
+						<option :value="lang.culture" :key="i">{{ lang.name }}</option>
 					</template>
 				</select>
 			</div>

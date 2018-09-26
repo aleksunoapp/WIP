@@ -12,7 +12,7 @@
 				</div>
 				<img class="onboarding-first-image" :src="$root.meta.advisor.advisorImageUrl">
 				<div class="onboarding-first-break">{{ langTerms.there_are[$root.meta.local.toLowerCase()] }}:</div>
-				<div class="onboarding-first-bottom" v-for="count in inspectionCounts">
+				<div class="onboarding-first-bottom" v-for="(count, i) in inspectionCounts" :key="i">
 					<img :src="count.image">
 					<div class="onboarding-first-bottom-text"><b> {{ count.count }} {{ count.text }} </b></div>
 				</div>

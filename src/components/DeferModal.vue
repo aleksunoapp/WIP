@@ -7,8 +7,8 @@
 				</div>
 				<div class="modal-message no-padding-bottom no-padding-top">
 					<ul class="modal-list-options">
-						<template v-for="reason in $root.meta.declinedReasons">
-							<li @click="emitReason(reason)">{{ reason.name }}</li>
+						<template v-for="(reason, i) in $root.meta.declinedReasons">
+							<li @click="emitReason(reason)" :key="i">{{ reason.name }}</li>
 						</template>
 					</ul>
 				</div>
