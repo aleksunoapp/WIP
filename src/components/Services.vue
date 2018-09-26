@@ -21,7 +21,10 @@
 						<template v-if="subService.isSelected && service.category !== '4' && service.category !== '3'">
 							<div class="summary-table-row summary-item">
 								<div class="summary-table-cell">
-									<span class="information-icon" :class="{'no-icon-bg': service.category === '8'}" @click="openServiceModal(subService)"></span>
+									<span 
+										class="information-icon" 
+										:class="{'no-icon-bg': service.category === '8'}"
+										@click="openServiceModal(subService)"></span>
 									<span class="service-name">{{ subService.name }}</span>
 								</div>
 								<div class="summary-table-cell">
@@ -38,7 +41,14 @@
 					<template v-if="service.isSelected && service.category !== '4' && service.category !== '3'">
 						<div class="summary-table-row summary-item">
 							<div class="summary-table-cell">
-								<span class="information-icon" :class="{'no-icon-bg': service.category === '8'}" @click="openServiceModal(service)"></span>
+								<span 
+									class="information-icon" 
+									:class="{
+										'no-icon-bg': 
+											service.category === '8' ||
+											(service.category === '9' && !service.subServices)
+									}" 
+									@click="openServiceModal(service)"></span>
 								<span class="service-name">{{ service.name }}</span>
 							</div>
 							<div class="summary-table-cell">

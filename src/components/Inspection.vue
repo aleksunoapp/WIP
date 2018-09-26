@@ -109,13 +109,14 @@
 								<template v-if="
 										service.category === '6' ||
 										service.category === '7' ||
-										service.category === '8'
+										service.category === '8' ||
+										service.category === '9'
 									">
 									<template v-if="service.subServices">
 										<div 
 											v-for="(subService, subServiceIndex) in service.subServices"
 											class="summary-table-row summary-item" 
-											:key="`service-${subServiceIndex}`">
+											:key="`service-${serviceIndex}-${subServiceIndex}`">
 											<div class="summary-table-cell">
 												<span 
 													class="information-icon" 
@@ -133,7 +134,7 @@
 													<div class="dot-container">
 														<span :class="{'red-dot' : service.category === '6'}"></span>
 														<span :class="{'yellow-dot' : service.category === '7'}"></span>
-														<span :class="{'green-dot' : service.category === '8'}"></span>
+														<span :class="{'green-dot' : service.category === '8' || service.category === '9'}"></span>
 													</div>
 													<span class="dot-caption" v-if="service.subServices">{{service.subServices[subServiceIndex].name}}</span>
 												</div>
@@ -145,10 +146,10 @@
 													<div class="service-checkbox">
 														<input 
 															type="checkbox" 
-															:id="`sub-service-${subServiceIndex}`" 
+															:id="`sub-service-${serviceIndex}-${subServiceIndex}`" 
 															v-model="service.subServices[subServiceIndex].isSelected" 
 															@change="toggleCheckbox(category, service, subServiceIndex)">
-														<label :for="`sub-service-${subServiceIndex}`">
+														<label :for="`sub-service-${serviceIndex}-${subServiceIndex}`">
 															<span class="check"></span>
 															<span class="box"></span>
 														</label>
@@ -164,7 +165,7 @@
 											<div class="summary-table-cell">
 												<span 
 													class="information-icon" 
-													:class="{'no-icon-bg': service.category === '8'}" 
+													:class="{'no-icon-bg': service.category === '8' || service.category === '9'}" 
 													@click="openServiceModal(service)">
 												</span>
 												<span 
@@ -839,7 +840,8 @@ export default {
 							(
 								service.category === '6' ||
 								service.category === '7' ||
-								service.category === '8'
+								service.category === '8' ||
+								service.category === '9'
 							)
 						)
 					) {
@@ -869,7 +871,8 @@ export default {
 							(
 								service.category === '6' ||
 								service.category === '7' ||
-								service.category === '8'
+								service.category === '8' ||
+								service.category === '9'
 							)
 						)
 					) {
@@ -913,7 +916,8 @@ export default {
 							(
 								service.category === '6' ||
 								service.category === '7' ||
-								service.category === '8'
+								service.category === '8' ||
+								service.category === '9'
 							)
 						)
 					) {
@@ -948,7 +952,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		openServiceModal (service, subServiceIndex) {
-			if (service.category === '8') return
+			if (service.category === '8' || (service.category === '9' && !service.subServices)) return
 			this.$root.logEvent(`Displayed ${service.name} info window`)
 			this.viewingSubServiceIndex = subServiceIndex
 			this.viewingService = service
@@ -993,7 +997,8 @@ export default {
 				if (
 					this.viewingService.category === '6' ||
 					this.viewingService.category === '7' ||
-					this.viewingService.category === '8'
+					this.viewingService.category === '8' ||
+					this.viewingService.category === '9'
 				) {
 					return category.id === '5'
 				} else {

@@ -191,6 +191,12 @@ var authenticateToken = {
 								} else {
 									inspectionCounts.concernCount += 1
 								}
+							} else if (service.category === '9') {
+								if (service.subServices) {
+									inspectionCounts.concernCount += service.subServices.length
+								} else {
+									inspectionCounts.concernCount += 1
+								}
 							}
 						})
 
@@ -230,7 +236,12 @@ var authenticateToken = {
 
 							if (category.id === '5') {
 								_this.$root.services.forEach(service => {
-									if (service.category === '6' || service.category === '7' || service.category === '8') {
+									if (
+										service.category === '6' ||
+										service.category === '7' ||
+										service.category === '8' ||
+										service.category === '9'
+									) {
 										if (service.subServices) {
 											service.subServices.forEach(subService => {
 												inspectionTotal += subService.price
