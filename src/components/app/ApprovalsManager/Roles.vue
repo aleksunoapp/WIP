@@ -899,16 +899,15 @@ export default {
 						permissions,
 						previouslySelected: permissions.map(id => `p${id}`)
 					}
-				})
-				.catch(err => {
-					rolesVue.roleToEdit = {
-						...role,
-						permissions: []
-					}
-					err
-				})
-				.finally(() => {
 					rolesVue.showEditRoleModal = true
+				})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not get role details',
+						errorName: 'listErrorMessage',
+						vue: rolesVue
+					})
 				})
 		},
 		/**

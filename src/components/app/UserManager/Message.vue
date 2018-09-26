@@ -46,7 +46,7 @@
 							       value="inapp"
 							       v-model="message.notification_type"> In App Notification
 						</label>
-						<label class="btn blue btn-outline"
+						<!-- <label class="btn blue btn-outline"
 						       for="sms_notification"
 						       :class="{'active': message.notification_type === 'sms'}">
 							<input type="radio"
@@ -54,14 +54,14 @@
 							       id="sms_notification"
 							       value="sms"
 							       v-model="message.notification_type"> SMS
-						</label>
+						</label> -->
 					</div>
 				</div>
 				<div v-if="message.notification_type === 'inapp'"
 				     :class="{'col-xs-4 col-xs-offset-4' : !selectImageMode, 'col-xs-12' : selectImageMode}">
 					<resource-picker @open="toggleImageMode()"
 					                 @close="toggleImageMode()"
-					                 @selected="updateImage"
+					                 @selected="updateIcon"
 					                 :imageButton="true"
 					                 :imageUrl="message.media_path"
 					                 class="margin-top-15">
@@ -397,7 +397,6 @@ export default {
 		 */
 		updateIcon (val) {
 			this.message.media_path = val.image_url
-			this.selectImageMode = !this.selectImageMode
 		},
 		/**
 		 * To clear the current error.
