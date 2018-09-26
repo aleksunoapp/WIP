@@ -264,6 +264,10 @@ export default {
 							label: 'Item Description'
 						},
 						{
+							term: 'item_short_desc',
+							label: 'Short Description'
+						},
+						{
 							term: 'item_image_url',
 							label: 'Item Image'
 						}
@@ -592,6 +596,9 @@ export default {
 						break
 					case 'modifier_item_image_url':
 						field = 'image_url'
+						break
+					case 'item_short_desc':
+						field = 'short_description'
 						break
 					default:
 						field = localizationVue.termRegex
