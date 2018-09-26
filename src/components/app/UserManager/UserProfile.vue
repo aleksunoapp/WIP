@@ -90,6 +90,7 @@
 											       class="form-control input-sm"
 											       :class="{'edited': points.length}"
 											       id="form_control_name"
+														 name="add_points"
 											       v-model="points">
 											<label for="form_control_name">Add points</label>
 										</div>
@@ -108,7 +109,7 @@
 								</div>
 							</li>
 							<li>
-								<div class="portlet light "
+								<div class="portlet light"
 								     v-show="userAttributes.length">
 									<div class="uppercase profile-stat-text margin-bottom-20"> Attributes </div>
 									<span class="badge badge-info margin-bottom-10 margin-right-10"
@@ -119,7 +120,7 @@
 								</div>
 							</li>
 							<li>
-								<div class="portlet light ">
+								<div class="portlet light" v-if="userItems.length">
 									<!-- STAT -->
 									<div class="uppercase profile-stat-text margin-bottom-10"> Items </div>
 									<div class="container__flex--column">

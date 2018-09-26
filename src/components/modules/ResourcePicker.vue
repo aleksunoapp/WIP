@@ -55,7 +55,7 @@
 			</div>			
 			<div class="col-sm-8  margin-top-10" v-show="activeFolder.id && !allFoldersView">
 				<div class="panel panel-default ">
-				<div class="panel-heading">Select a Image</div>
+				<div class="panel-heading">Select an Image</div>
 					<div class="panel-body">
 					</div>	
 				<div v-if="!activeFolder.id && !allFoldersView"
