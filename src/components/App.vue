@@ -279,6 +279,12 @@ export default {
 		if (this.$root.accountType === 'application_admin') {
 			this.getStoreLocations()
 		}
+
+		// eslint-disable-next-line
+		const activeLocation = localStorage.getItem('activeLocation')
+		if (activeLocation !== null) {
+			this.selectLocation(JSON.parse(activeLocation))
+		}
 	},
 	methods: {
 		/**
