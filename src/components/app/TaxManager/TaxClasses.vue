@@ -95,6 +95,10 @@
 									           :label="type.name"
 									           :value="type.id"
 									           :key="type.id"></el-option>
+									<el-option 
+															label="none"
+															value="none"
+															key="none"></el-option>
 								</el-select>
 							</label>
 							<label>
@@ -304,6 +308,10 @@
 									           :label="type.name"
 									           :value="type.id"
 									           :key="type.id"></el-option>
+									<el-option 
+															label="none"
+															value="none"
+															key="none"></el-option>
 								</el-select>
 							</label>
 							<label>
