@@ -719,6 +719,7 @@ export default {
 				this.showLanguagePrompt()
 				return
 			}
+			this.clearError('translationsTableErrorMessage')
 			this.activeTranslationGroup.groupUrl = groupUrl
 			this.activeTranslationGroup.term = term
 			this.terms = []
