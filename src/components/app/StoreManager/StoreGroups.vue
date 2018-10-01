@@ -6,7 +6,7 @@
 			</div>
 			<h1 class='page-title'>Store Groups</h1>
 			<div class="note note-info">
-				<p>A list of store groups for PitaPit.</p>
+				<p>A list of store groups.</p>
 			</div>
 			<!-- CREATE START -->
 			<div class="portlet box blue-hoki margin-top-20"
