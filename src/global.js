@@ -171,8 +171,11 @@ export default {
 		}
 
 		if (
-			options.method.toLowerCase() === 'post' ||
-			options.method.toLowerCase() === 'put'
+			options.processData !== false &&
+			(
+				options.method.toLowerCase() === 'post' ||
+				options.method.toLowerCase() === 'put'
+			)
 		) {
 			options.contentType = 'application/json'
 			options.data = JSON.stringify(options.data)
