@@ -433,7 +433,7 @@
 			</div>
 			<div slot="modal-footer"
 			     class="modal-footer">
-				<button v-if="$root.permissions['loyalty promotion_rules update']"
+				<button v-if="!$root.permissions['loyalty promotion_rules update']"
 				        type="button"
 				        class="btn btn-primary"
 				        @click="closeEditModal()">
