@@ -71,8 +71,7 @@
 								       class="form-control input-sm"
 								       :class="{'edited': newTaxClass.min_amount.length}"
 								       id="form_control_3"
-								       v-model="newTaxClass.min_amount"
-									   @input="updateMax()">
+								       v-model="newTaxClass.min_amount">
 								<label for="form_control_3">Minimum Amount</label>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
@@ -80,8 +79,7 @@
 								       class="form-control input-sm"
 								       :class="{'edited': newTaxClass.max_amount.length}"
 								       id="form_control_3"
-								       v-model="newTaxClass.max_amount"
-									   @input="updateMin()">
+								       v-model="newTaxClass.max_amount">
 								<label for="form_control_3">Maximum Amount</label>
 							</div>
 							<label v-if="!loadingItemTypes"
@@ -465,15 +463,6 @@ export default {
 		}
 	},
 	methods: {
-		updateMin () {
-			this.newTaxClass.min_amount = (500000 * this.newTaxClass.max_amount).toFixed(2)
-		},
-		updateMax () {
-			this.newTaxClass.max_amount = (this.newTaxClass.min_amount * 100 / 500000).toFixed(2)
-		},
-		setNewTo444 () {
-			this.newTaxClass.max_amount = '444'
-		},
 		/**
 		 * To get a list of all item types.
 		 * @function
