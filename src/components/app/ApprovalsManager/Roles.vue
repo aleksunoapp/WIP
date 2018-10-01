@@ -1182,8 +1182,6 @@ export default {
 				role => role.id === this.roleToEdit.id
 			)
 
-			console.log({index}, {updatedRole})
-
 			if (index !== -1) {
 				this.$root.roles[index] = updatedRole
 				let newPermissions = {}
@@ -1192,7 +1190,6 @@ export default {
 						newPermissions[permission.name] = true
 					})
 				})
-				console.log({newPermissions})
 				this.setPermissions(newPermissions)
 			}
 		},
