@@ -32,7 +32,17 @@ export const actions = {
 
 export const mutations = {
 	[types.SET_PERMISSIONS] (state, permissions) {
-		Object.assign(state, permissions)
+		const oldPermissions = Object.keys(state)
+		oldPermissions.forEach(permission => {
+			if (!permissions[permission]) {
+				state[permission] = false
+			}
+		})
+
+		const newPermissions = Object.keys(permissions)
+		newPermissions.forEach(permission => {
+			state[permission] = true
+		})
 	}
 }
 
