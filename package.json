@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@google/maps": "^0.4.5",
-    "chart.js": "^2.7.2",
     "element-ui": "^2.3.9",
     "google-charts": "^1.0.0",
     "google-maps-api-loader": "^1.1.1",
