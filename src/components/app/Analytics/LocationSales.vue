@@ -167,9 +167,13 @@
 									                :clearable="false"
 									                placeholder="To"></el-date-picker>
 								</div>
-								<div class="col-md-12"
-								     id="chart_div"
-								     style="height:350px"></div>
+								<canvas
+									ref="global_revenue_tracker"
+									width="600"
+									height="200"
+									:onload="canvasReady()"
+								>
+								</canvas>
 							</div>
 						</div>
 					</div>
@@ -298,7 +302,7 @@
 <script>
 import AnalyticsFunctions from '../../../controllers/Analytics'
 import AppFunctions from '../../../controllers/App'
-import { GoogleCharts } from 'google-charts'
+import Chart from 'chart.js'
 
 export default {
 	data () {
@@ -326,7 +330,25 @@ export default {
 			locationItemSummary: [],
 			lisErrorMessage: '',
 			t10giErrorMessage: '',
-			globalRevenueByDay: [['Day', 'Revenue', 'Orders'], [0, 0, 0]],
+			globalRevenueByDay: {
+				labels: [],
+				datasets: [
+					{
+						label: 'revenue, in dollars',
+						backgroundColor: 'rgb(242, 178, 48)',
+						borderColor: 'rgb(242, 178, 48)',
+						borderWidth: 1,
+						data: []
+					},
+					{
+						label: 'no of orders',
+						backgroundColor: '#409EFF',
+						borderColor: '#409EFF',
+						borderWidth: 1,
+						data: []
+					}
+				]
+			},
 			lrbdErrorMessage: '',
 			stores: [],
 			selectedLocations: [
@@ -338,7 +360,9 @@ export default {
 			chartTitle: '',
 			searchPeriod: 'week',
 			from_date: '',
-			to_date: ''
+			to_date: '',
+			myChart: null,
+			showChartOverlay: true
 		}
 	},
 	watch: {
@@ -350,6 +374,19 @@ export default {
 		this.locationChanged(this.$root.activeLocation)
 	},
 	methods: {
+		/**
+		 * To draw the chart if data is ready
+		 * @function
+		 * @returns {undefined}
+		 */
+		canvasReady () {
+			// connect to Vue
+			this.$nextTick(function () {
+				if (this.globalRevenueByDay.labels !== 0) {
+					this.drawChart()
+				}
+			})
+		},
 		/**
 		 * To save data as a CSV
 		 * @function
@@ -412,6 +449,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		weekSelected () {
+			this.clearChart()
 			if (this.searchPeriod === 'week') {
 				this.getLocationRevenueByDay()
 			}
@@ -446,6 +484,8 @@ export default {
 			if (selectedLocations.length) {
 				this.setChartTitle()
 				this.getLocationRevenueByDay()
+			} else {
+				this.removeChartData()
 			}
 		},
 		/**
@@ -729,24 +769,22 @@ export default {
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						let payload = [['Day', 'Revenue', 'Orders']]
-						response.payload.forEach(day => {
-							payload.push([day.date, Number(day.sales_per_day), day.total])
-						})
-						if (payload.length === 1) {
-							payload.push([
-								`No orders at ${
-									analyticsVue.selectedLocations.length > 1 ? 'this' : 'these'
-								} location${
-									analyticsVue.selectedLocations.length > 1 ? 's' : ''
-								} during this period`,
-								0,
-								0
-							])
-						}
-						analyticsVue.globalRevenueByDay = payload
+						analyticsVue.removeChartData()
 
-						analyticsVue.drawChart()
+						response.payload.forEach(day => {
+							analyticsVue.globalRevenueByDay.labels.push(day.date)
+							analyticsVue.globalRevenueByDay.datasets[0].data.push(day.sales_per_day)
+							analyticsVue.globalRevenueByDay.datasets[1].data.push(day.total)
+						})
+
+						this.$nextTick(
+							function () {
+								if (this.$refs.global_revenue_tracker !== undefined) {
+									this.drawChart()
+								}
+							}
+						)
+
 						analyticsVue.loadingGlobalRevenueByDay = false
 					} else {
 						analyticsVue.loadingGlobalRevenueByDay = false
@@ -841,71 +879,96 @@ export default {
 				})
 		},
 		/**
+		 * To render an empty chart
+		 * @function
+		 * @returns {undefined}
+		 */
+		clearChart () {
+			if (this.myChart !== null) {
+				this.removeChartData()
+				this.myChart.update()
+			}
+		},
+		/**
+		 * To remove data held by the chart
+		 * @function
+		 * @returns {undefined}
+		 */
+		removeChartData () {
+			if (this.myChart !== null) {
+				while (this.myChart.data.labels.length > 0) {
+					this.myChart.data.labels.pop()
+				}
+				while (this.myChart.data.datasets[0].data.length > 0) {
+					this.myChart.data.datasets[0].data.pop()
+				}
+				while (this.myChart.data.datasets[1].data.length > 0) {
+					this.myChart.data.datasets[1].data.pop()
+				}
+			}
+		},
+		/**
 		 * To render the chart
 		 * @function
 		 * @returns {undefined}
 		 */
 		drawChart () {
-			let analyticsVue = this
+			if (this.globalRevenueByDay.labels.length === 0) return
+			if (this.$refs.global_revenue_tracker === undefined) return
 
-			// load library and call back the actual draw function
-			GoogleCharts.load(function () {
-				var data = GoogleCharts.api.visualization.arrayToDataTable(
-					analyticsVue.globalRevenueByDay
-				)
-
-				var view = new GoogleCharts.api.visualization.DataView(data)
-				view.setColumns([
-					0,
-					1,
-					{
-						calc: analyticsVue.formatUSDlabel,
-						sourceColumn: 1,
-						type: 'string',
-						role: 'annotation'
-					},
-					2,
-					{
-						calc: 'stringify',
-						sourceColumn: 2,
-						type: 'string',
-						role: 'annotation'
+			if (
+				this.myChart !== null
+			) {
+				this.$nextTick(
+					function () {
+						this.myChart.update()
 					}
-				])
+				)
+			} else {
+				let analyticsVue = this
 
-				var options = {
-					title: analyticsVue.chartTitle,
-					titleTextStyle: {
-						fontSize: 20,
-						color: '#5a5e66'
-					},
-					hAxis: {
-						titleTextStyle: {
-							color: '#333'
+				var ctx = analyticsVue.$refs.global_revenue_tracker.getContext('2d')
+				this.myChart = new Chart(ctx, {
+					type: 'bar',
+					options: {
+						responsive: true,
+						legend: {
+							fontSize: '25px',
+							position: 'top'
 						},
-						color: '#000'
+						title: {
+							display: false,
+							text: 'Store Revenue from TIME till TIME'
+						},
+						tooltips: {
+							enabled: true,
+							mode: 'single',
+							callbacks: {
+								title: function (tooltipItems, data) {
+									if (tooltipItems[0].datasetIndex === 0) return 'revenue'
+									if (tooltipItems[0].datasetIndex === 1) return 'orders'
+								},
+								label: function (tooltipItem, data) {
+									if (tooltipItem.datasetIndex === 0) {
+										return analyticsVue.formatUSD(tooltipItem.yLabel)
+									} else {
+										return tooltipItem.yLabel
+									}
+								}
+							}
+						},
+						scales: {
+							yAxes: [{
+								ticks: {
+									beginAtZero: true
+								}
+							}]
+						}
 					},
-					vAxis: {
-						minValue: 0
-					},
-					pointSize: 8,
-					animation: {
-						startup: true,
-						easing: 'inAndOut',
-						duration: 200
-					},
-					curveType: 'function',
-					legend: { position: 'bottom' },
-					series: {
-						0: { color: '#3498db' },
-						1: { color: '#e67e22' }
-					}
-				}
-				var chart = new GoogleCharts.api.visualization.BarChart(
-					document.getElementById('chart_div')
-				)
-				chart.draw(view, options)
-			})
+					data: analyticsVue.globalRevenueByDay
+				})
+				this.showChartOverlay = false
+			}
 		}
 	}
 }
