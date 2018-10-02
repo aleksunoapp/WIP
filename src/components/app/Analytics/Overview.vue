@@ -426,7 +426,7 @@ export default {
 		formatUSDlabel (dataTable, rowIndex) {
 			return (
 				'$' +
-				dataTable.hc[rowIndex][1].Cf.toLocaleString('en-US', {
+				dataTable.jc[rowIndex][1].hf.toLocaleString('en-US', {
 					style: 'currency',
 					currency: 'USD'
 				})
