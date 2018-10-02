@@ -208,7 +208,7 @@ export default {
 		 */
 		formatChartNumber (dataTable, rowIndex) {
 			try {
-				return dataTable.hc[rowIndex][1].Cf.toLocaleString('en-US', {
+				return dataTable.jc[rowIndex][1].hf.toLocaleString('en-US', {
 					style: 'decimal'
 				})
 			} catch (err) {
@@ -247,7 +247,7 @@ export default {
 		formatUSDlabel (dataTable, rowIndex) {
 			return (
 				'$' +
-				dataTable.hc[rowIndex][1].Cf.toLocaleString('en-US', {
+				dataTable.jc[rowIndex][1].hf.toLocaleString('en-US', {
 					style: 'currency',
 					currency: 'USD'
 				})
