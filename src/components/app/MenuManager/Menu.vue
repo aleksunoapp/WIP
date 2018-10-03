@@ -977,8 +977,8 @@ export default {
 				} else if (!createMenuVue.newMenu.sku.length) {
 					reject('Menu SKU cannot be blank')
 				} else if (
-					createMenuVue.newMenu.start_from.length &&
-					!createMenuVue.newMenu.stop_on.length
+					createMenuVue.newMenu.start_from &&
+					!createMenuVue.newMenu.stop_on
 				) {
 					reject('Please provide an end date')
 				} else if (
