@@ -166,13 +166,9 @@ export default {
 		 */
 		selectStores () {
 			let selectedStores = []
-			if (this.selectAllSelected === true) {
-				selectedStores = 'all'
-			} else {
-				for (let k = 0; k < this.locations.length; k++) {
-					if (this.locations[k].selected) {
-						selectedStores.push(this.locations[k].id)
-					}
+			for (let k = 0; k < this.locations.length; k++) {
+				if (this.locations[k].selected) {
+					selectedStores.push(this.locations[k].id)
 				}
 			}
 			if (selectedStores.length === 0) {
