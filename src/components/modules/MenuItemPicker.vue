@@ -327,7 +327,10 @@ export default {
 			return MenusFunctions.getStoreMenus(
 				pickerVue.$root.appId,
 				pickerVue.$root.appSecret,
-				pickerVue.$root.activeLocation.id
+				pickerVue.$root.activeLocation.id,
+				{
+					all_type: 1
+				}
 			)
 				.then(response => {
 					pickerVue.menus = response.payload.map(menu => {
