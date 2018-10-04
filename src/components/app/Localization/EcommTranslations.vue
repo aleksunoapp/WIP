@@ -774,7 +774,7 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						if (response.payload.length) {
-							localizationVue.allLocales = response.payload.sort((a, b) => {
+							const sorted = response.payload.sort((a, b) => {
 								if (
 									a.language_code.toLowerCase() > b.language_code.toLowerCase()
 								) {
@@ -787,6 +787,11 @@ export default {
 									return 0
 								}
 							})
+							const cleaned = sorted.map(language => ({
+								...language,
+								country: language.country === null ? {name: ''} : language.country
+							}))
+							localizationVue.allLocales = cleaned
 						}
 					} else {
 						localizationVue.translationsTableErrorMessage = response.message

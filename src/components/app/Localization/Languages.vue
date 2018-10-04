@@ -520,8 +520,11 @@ export default {
 			return LanguagesFunctions.listLanguages()
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
+						_this.languages = response.payload.map(language => ({
+							...language,
+							country: language.country === null ? {name: ''} : language.country
+						}))
 						_this.loadingLanguages = false
-						_this.languages = response.payload
 					} else {
 						_this.loadingLanguages = false
 					}
