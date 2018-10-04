@@ -696,6 +696,17 @@
 						                        :previouslySelected="locationsToApplyItemTo"
 						                        :withButton="false">
 						</select-locations-popup>
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<label>Replace Existing:</label><br>
+							<el-switch v-model="replaceExisting"
+													active-color="#0c6"
+													inactive-color="#ff4949"
+													:active-value="1"
+													:inactive-value="0"
+													active-text="Yes"
+													inactive-text="No">
+							</el-switch>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -838,6 +849,7 @@ export default {
 			passedItemId: null,
 			applyingItemToLocations: false,
 			locationsToApplyItemTo: [],
+			replaceExisting: 0,
 			imageMode: {
 				newMenu: false
 			},
@@ -1104,7 +1116,8 @@ export default {
 			this.applyingItemToLocations = true
 			let payload = {
 				item_id: this.passedItemId,
-				locations: this.locationsToApplyItemTo
+				locations: this.locationsToApplyItemTo,
+				replace_existing: this.replaceExisting
 			}
 			return ItemsFunctions.applyItemToLocations(
 				payload,
