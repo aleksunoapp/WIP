@@ -274,6 +274,7 @@ export default {
 			},
 			// API data
 			payload: {},
+			stores: this.$root.storeLocations,
 			orders: [],
 			// pagination
 			total: 0,
@@ -281,12 +282,6 @@ export default {
 			page: 1,
 			perPage: 25,
 			sortBy: 'DESC'
-		}
-	},
-	computed: {
-		stores: function () {
-			let combined = [...this.$root.storeLocations, this.$root.activeLocation]
-			return combined.sort((a, b) => a.display_name > b.display_name)
 		}
 	},
 	mounted () {

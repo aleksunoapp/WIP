@@ -28,11 +28,11 @@ export default {
 		})(),
 		ecomm: (function () {
 			if (production) {
-				return 'https://pitapit.api.unoapp.io/api'
+				return 'https://freshii.api.unoapp.io/api'
 			} else if (staging) {
-				return 'https://pitapit.beta.api.unoapp.io/api'
+				return 'https://freshii.beta.api.unoapp.io/api'
 			} else if (development) {
-				return 'http://pitapit.dev.api.unoapp.io/api'
+				return 'http://dev.api.unoapp.io/freshii/api'
 			}
 		})(),
 		resources: (function () {
@@ -50,18 +50,18 @@ export default {
 			approvals: (function () {
 				if (production) {
 					return {
-						appId: '',
-						appSecret: ''
+						appId: '3jJIMoDLAJW2qzQk0DmFCVxhbRzVIL4Qn',
+						appSecret: 'cgLb2aWAyY1k3TBmquEjjbOjWxZRc6iw2'
 					}
 				} else if (staging) {
 					return {
-						appId: '',
-						appSecret: ''
+						appId: '46c9485f92a0f8ac29d66570893a3805',
+						appSecret: '0276a6fd79282e1b73cdd209540cdfcd'
 					}
 				} else if (development) {
 					return {
-						appId: '8xHDsWCRGZ1wzDhPPlaVG3Rfwih7oDN3',
-						appSecret: 'otHHmhLOocu9zJIVRV5N4eCse32KmzxL'
+						appId: '46c9485f92a0f8ac29d66570893a3805',
+						appSecret: '0276a6fd79282e1b73cdd209540cdfcd'
 					}
 				}
 			})(),
@@ -102,17 +102,17 @@ export default {
 	 */
 	approvalsAppId: (function () {
 		if (production) {
-			return ''
+			return '5b60a158baf2d10681b79cd1'
 		} else if (staging) {
-			return ''
+			return '5b291f11dc35e663e8847981'
 		} else if (development) {
-			return '5b749a88db4a13057f091b12'
+			return '5b291f11dc35e663e8847981'
 		}
 	})(),
 	/**
 	 * business ID to use for the Resources API
 	 */
-	resourcesBusinessId: 6,
+	resourcesBusinessId: 2,
 	/**
 	 * base url for API calls to send Messages
 	 */
@@ -134,7 +134,7 @@ export default {
 		} else if (staging) {
 			return 'bearer e3e7f5af3c458aa04b3722dc77c4020a'
 		} else if (development) {
-			return 'bearer ef05c132e7c46e6d40bf4b93975a4b4b'
+			return 'bearer bed62ee5c3cc97a2d5297f973af1c15e'
 		}
 	})(),
 	/**
@@ -144,7 +144,7 @@ export default {
 		if (production) {
 			return ''
 		} else if (staging) {
-			return 'bearer '
+			return 'bearer 39d270dc380d5ac331f0affc7a4ddb59'
 		} else if (development) {
 			return 'bearer 6b1642515315f527604919b430fe79de'
 		}
@@ -152,7 +152,7 @@ export default {
 	/**
 	 * API key for Google Maps Javascript API
 	 */
-	googleMapsJavascriptApiKey: 'AIzaSyBJs2f0TNNui_OcRHgVRTIsJAvGQ0EB7oA',
+	googleMapsJavascriptApiKey: 'AIzaSyAweYWedKzekUFGNFf-Qb1Ox7ce6Pul2xQ', // aleks@unoapp.com
 	/**
 	 * Ajax wrapper for making backend calls.
 	 * @function
