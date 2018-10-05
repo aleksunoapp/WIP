@@ -1,11 +1,8 @@
 <template>
 	<div class="row">
 		<div class="col-xs-12">
-			<div class="alert alert-danger"
-			     v-show="errorMessage.length"
-			     ref="errorMessage">
-				<button class="close"
-				        @click="clearError('errorMessage')"></button>
+			<div class="alert alert-danger" v-show="errorMessage.length" ref="errorMessage">
+				<button class="close" @click="clearError('errorMessage')"></button>
 				<span>{{errorMessage}}</span>
 			</div>
 		</div>
@@ -14,14 +11,11 @@
 		</div>
 		<div class="col-xs-4">
 			<div class="header">
-				<i class="fa check"
-				   :class="{
+				<i class="fa check" :class="{
 						'transparent': !menuSelectable(activeMenu),
 						'fa-check-square checked': allCategoriesSelected, 
 						'fa-square-o unchecked': !allCategoriesSelected
-					}"
-				   aria-hidden="true"
-				   @click="toggleAllCategories()">
+					}" aria-hidden="true" @click="toggleAllCategories()">
 				</i>
 				<h4 class="inline-block">
 					Categories
@@ -30,14 +24,11 @@
 		</div>
 		<div class="col-xs-4">
 			<div class="header">
-				<i class="fa check"
-				   :class="{
+				<i class="fa check" :class="{
 						'transparent' : !activeItems.length,
 						'fa-check-square checked': allItemsSelected, 
 						'fa-square-o unchecked': !allItemsSelected
-					}"
-				   aria-hidden="true"
-				   @click="toggleAllItems">
+					}" aria-hidden="true" @click="toggleAllItems">
 				</i>
 				<h4 class="inline-block">
 					Items
@@ -47,27 +38,19 @@
 		<div class="col-xs-4">
 			<div class="dd">
 				<ol class="dd-list">
-					<li class="dd-item"
-					    v-for="menu in menus"
-					    :key="menu.id">
-						<div @click="toggleMenu(menu)"
-						     class="dd-handle pointer"
-						     :class="{'active': menu.id === activeMenu.id}">
-							<span class="pull-left">
-								<i class="fa check"
-								   :class="{
+					<li class="dd-item" v-for="menu in menus" :key="menu.id">
+						<div @click="toggleMenu(menu)" class="dd-handle pointer v-center" :class="{'active': menu.id === activeMenu.id}">
+							<div class="v-center">
+								<i class="fa check" :class="{
 										'transparent' : !menuSelectable(menu),
 										'fa-check-square checked': menuSelected(menu), 
 										'fa-minus-square checked': menuPartiallySelected(menu),
 										'fa-square-o unchecked': !menuSelected(menu)
-									}"
-								   aria-hidden="true"
-								   @click.stop="toggleAllInMenu(menu)">
+									}" aria-hidden="true" @click.stop="toggleAllInMenu(menu)">
 								</i>
 								{{ menu.name }}
-							</span>
-							<span class="pull-right transparent"
-							      :class="{'permanent' : menu.id === activeMenu.id}">
+							</div>
+							<span class="pull-right transparent" :class="{'permanent' : menu.id === activeMenu.id}">
 								<i class="fa fa-chevron-right"></i>
 							</span>
 						</div>
@@ -76,31 +59,21 @@
 			</div>
 		</div>
 		<div class="col-xs-4">
-			<div class="dd"
-			     id="nestable_list_2">
+			<div class="dd" id="nestable_list_2">
 				<ol class="dd-list">
-					<li class="dd-item"
-					    v-for="category in activeMenu.categories"
-					    :data-id="category.id"
-					    :key="category.id">
-						<div class="dd-handle pointer"
-						     :class="{'active': category.id === activeCategory.id}"
-						     @click="toggleCategory(category)">
-							<span class="pull-left">
-								<i class="fa check"
-								   :class="{
+					<li class="dd-item" v-for="category in activeMenu.categories" :data-id="category.id" :key="category.id">
+						<div class="dd-handle pointer v-center" :class="{'active': category.id === activeCategory.id}" @click="toggleCategory(category)">
+							<div class="v-center">
+								<i class="fa check" :class="{
 										'transparent' : !categorySelectable(category),
 										'fa-check-square checked': categorySelected(category), 
 										'fa-minus-square checked': categoryPartiallySelected(category),
 										'fa-square-o unchecked': !categorySelected(category)
-									}"
-								   aria-hidden="true"
-								   @click.stop="toggleAllInCategory(category)">
+									}" aria-hidden="true" @click.stop="toggleAllInCategory(category)">
 								</i>
 								{{ category.name }}
-							</span>
-							<span class="pull-right transparent"
-							      :class="{'permanent' : category.id === activeCategory.id}">
+							</div>
+							<span class="pull-right transparent" :class="{'permanent' : category.id === activeCategory.id}">
 								<i class="fa fa-chevron-right"></i>
 							</span>
 						</div>
@@ -108,31 +81,23 @@
 				</ol>
 			</div>
 		</div>
-		<div class="col-xs-4"
-		     v-show="activeCategory.id !== undefined">
-			<div class="dd"
-			     id="nestable_list_3">
+		<div class="col-xs-4" v-show="activeCategory.id !== undefined">
+			<div class="dd" id="nestable_list_3">
 				<ol class="dd-list">
-					<li class="dd-item"
-					    v-for="item in activeItems"
-					    :key="item.id"
-					    @click="toggleItem(item)">
-						<div class="dd-handle pointer">
-							<span class="pull-left">
-								<i class="fa check"
-								   :class="{
+					<li class="dd-item" v-for="item in activeItems" :key="item.id" @click="toggleItem(item)">
+						<div class="dd-handle pointer v-center">
+							<div class="v-center">
+								<i class="fa check" :class="{
 										'fa-check-square checked': item.selected, 
 										'fa-square-o unchecked': !item.selected
-									}"
-								   aria-hidden="true">
+									}" aria-hidden="true">
 								</i>
 								{{ item.name }}
-								<span v-show="item.category_name">({{item.category_name}})</span>
-							</span>
+								{{item.category_name ? ` (${item.category_name})` : ''}}
+							</div>
 						</div>
 					</li>
-					<p class="no-items"
-					   v-show="!activeItems.length">
+					<p class="no-items" v-show="!activeItems.length">
 						This category is empty
 					</p>
 				</ol>
@@ -519,5 +484,11 @@ i {
   display: flex;
   align-items: center;
   color: #ccc;
+}
+.v-center {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
 }
 </style>
