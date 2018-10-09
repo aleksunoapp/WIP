@@ -1,4 +1,4 @@
-Í<template>
+<template>
 	<modal :show="showEditPromoCodeModal"
 	       effect="fade"
 	       @closeOnEscape="closeModal"
@@ -298,9 +298,12 @@ export default {
 								','
 							)
 						}
-						response.payload.locations = response.payload.locations
-							.split(',')
-							.map(id => parseInt(id))
+
+						if (response.payload.locations !== 'all') {
+							response.payload.locations = response.payload.locations
+								.split(',')
+								.map(id => parseInt(id))
+						}
 
 						editPromoCodeVue.promoCode = response.payload
 						editPromoCodeVue.displaySpinner = false

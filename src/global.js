@@ -138,18 +138,6 @@ export default {
 		}
 	})(),
 	/**
-	 * app token for API calls to send Messages to OMA users
-	 */
-	OMAUsersMessageAppToken: (function () {
-		if (production) {
-			return ''
-		} else if (staging) {
-			return 'bearer 39d270dc380d5ac331f0affc7a4ddb59'
-		} else if (development) {
-			return 'bearer 6b1642515315f527604919b430fe79de'
-		}
-	})(),
-	/**
 	 * API key for Google Maps Javascript API
 	 */
 	googleMapsJavascriptApiKey: 'AIzaSyAweYWedKzekUFGNFf-Qb1Ox7ce6Pul2xQ', // aleks@unoapp.com

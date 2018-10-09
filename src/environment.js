@@ -1,6 +1,6 @@
 module.exports = {
 	// careful, one only
-	development: false,
-	staging: true,
+	development: true,
+	staging: false,
 	production: false
 }
