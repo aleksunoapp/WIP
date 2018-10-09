@@ -22,7 +22,6 @@ import Approvals from '@/components/app/ApprovalsManager/Approvals'
 // Admin Manager
 import BrandAdmins from '@/components/app/AdminManager/BrandAdmins'
 import LocationManagers from '@/components/app/AdminManager/LocationManagers'
-import OMAUsers from '@/components/app/AdminManager/OMAUsers'
 import StoreAppUsers from '@/components/app/AdminManager/StoreAppUsers'
 // Store Manager
 import CreateNewStore from '@/components/app/StoreManager/CreateNewStore'
@@ -240,15 +239,6 @@ export const routes = [
 				meta: {
 					adminOnly: true,
 					permissions: ['admin location_managers read']
-				}
-			},
-			{
-				path: 'admin/OMA_users',
-				name: 'OMA Users',
-				component: OMAUsers,
-				meta: {
-					adminOnly: true,
-					permissions: ['admin oma_users read']
 				}
 			},
 			{
