@@ -123,7 +123,13 @@
 					<div class="form-actions right margin-top-20"
 					     v-show="!imageMode.newMenu">
 						<button type="submit"
-						        class="btn blue">Create</button>
+										:disabled="creating"
+						        class="btn blue">
+							Create
+							<i v-show="creating"
+								class="fa fa-spinner fa-pulse fa-fw">
+							</i>
+						</button>
 					</div>
 				</form>
 			</div>
@@ -471,6 +477,7 @@ export default {
 			customText:
 				'There are no items in this category. Click on the button above to add one.',
 			createModifierItemCollapse: true,
+			creating: false,
 			newModifierItem: {
 				modifier_id: this.$route.params.modifier_id,
 				name: '',
@@ -698,7 +705,7 @@ export default {
 		addNewModifierItem () {
 			var modifierItemsVue = this
 			modifierItemsVue.clearError('errorMessage')
-
+			this.creating = true
 			return modifierItemsVue
 				.validateModifierItemData()
 				.then(response => {
@@ -728,6 +735,9 @@ export default {
 								errorName: 'errorMessage',
 								vue: modifierItemsVue
 							})
+						})
+						.finally(() => {
+							this.creating = false
 						})
 				})
 				.catch(reason => {
