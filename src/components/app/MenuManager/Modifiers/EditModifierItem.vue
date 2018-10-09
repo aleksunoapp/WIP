@@ -116,6 +116,17 @@
 						           inactive-text="Sold Out">
 						</el-switch>
 					</div>
+					<div class="form-group form-md-line-input form-md-floating-label">
+						<label>Override:</label><br>
+						<el-switch v-model="itemToBeEdited.override"
+												active-color="#0c6"
+												inactive-color="#ff4949"
+												:active-value="1"
+												:inactive-value="0"
+												active-text="Yes"
+												inactive-text="No">
+						</el-switch>
+					</div>
 					<div>
 						<p class="margin-bottom-10 margin-top-30 margin-right-10">Select locations to apply the changes to:</p>
 						<button type="submit"

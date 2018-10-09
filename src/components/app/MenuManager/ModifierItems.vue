@@ -118,6 +118,17 @@
 								           inactive-text="Sold Out">
 								</el-switch>
 							</div>
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<label>Override:</label><br>
+								<el-switch v-model="newModifierItem.override"
+								           active-color="#0c6"
+								           inactive-color="#ff4949"
+								           :active-value="1"
+								           :inactive-value="0"
+								           active-text="Yes"
+								           inactive-text="No">
+								</el-switch>
+							</div>
 						</div>
 					</div>
 					<div class="form-actions right margin-top-20"
@@ -489,7 +500,8 @@ export default {
 				price: '',
 				min: null,
 				max: null,
-				order: null
+				order: null,
+				override: 0
 			},
 			showGalleryModal: false,
 			errorMessage: '',
@@ -911,7 +923,8 @@ export default {
 				price: '',
 				min: null,
 				max: null,
-				order: null
+				order: null,
+				override: 0
 			}
 		},
 		/**
