@@ -1270,12 +1270,15 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		getCorporateMenus () {
+			const corporateStore = this.$root.storeLocations.find(store => store.is_corporate === 1)
+			if (corporateStore === undefined) return
+
 			this.menus = []
 			var itemsVue = this
 			return MenusFunctions.getStoreMenus(
 				itemsVue.$root.appId,
 				itemsVue.$root.appSecret,
-				itemsVue.$root.corporateStoreId
+				corporateStore.id
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
