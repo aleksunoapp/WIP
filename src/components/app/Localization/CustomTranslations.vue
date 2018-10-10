@@ -62,7 +62,7 @@
 								     :class="{'active-term' : language.language_code === localeForTranslation.language_code}"
 								     @click="selectLocaleForTranslation(language)"
 								     :key="language.id">
-									{{language.country.name}} ({{language.language_code}})
+									{{language.country_name}} ({{language.language_code}})
 								</div>
 								<div class="helper-text"
 								     v-if="!allLocales.length">
@@ -180,7 +180,14 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						if (response.payload.length) {
-							localizationVue.allLocales = response.payload.sort((a, b) => {
+							localizationVue.allLocales = response.payload
+							.map(language => {
+								return {
+									...language,
+									country_name: language.country ? language.country.name : ''
+								}
+							})
+							.sort((a, b) => {
 								if (
 									a.language_code.toLowerCase() > b.language_code.toLowerCase()
 								) {
