@@ -19,12 +19,9 @@
 				{{ langTerms.vehicle_inspection_update[$root.meta.local.toLowerCase()] }}
 			</div>
 			<form class="access-form" @submit.prevent="enterPasscode()">
-				<label class="label">
-					{{ langTerms.please_enter_your[$root.meta.local.toLowerCase()] }}
-					{{ $root.meta.authenticationHint.hintType === 1 ? langTerms.email[$root.meta.local.toLowerCase()] : '' }}{{ $root.meta.authenticationHint.hintType === 2 ? langTerms.phone_number[$root.meta.local.toLowerCase()] : '' }}{{ $root.meta.authenticationHint.hintType === 3 ? langTerms.last_name_or_company[$root.meta.local.toLowerCase()] : '' }}{{ $root.meta.local.toLowerCase() === 'en' ? ' below:' : ':' }} 
-				</label>
+				<label class="label"></label>
 				<div>
-					<input type="text" class="access-code" v-model="verificationCode" :placeholder="$root.meta.authenticationHint.hintText">
+					<input type="text" class="access-code" v-model="verificationCode">
 				</div>
 				<div>
 					<button class="enter-btn" type="submit">
