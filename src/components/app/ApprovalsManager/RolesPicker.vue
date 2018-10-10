@@ -134,7 +134,7 @@ export default {
 			return RolesFunctions.getRoles()
 				.then(response => {
 					let rolesArray = []
-					if (this.$root.roles.includes('super admin')) {
+					if (this.$root.roles.some(role => role.name === 'super admin')) {
 						rolesArray = response.payload
 					} else {
 						rolesArray = response.payload.filter(

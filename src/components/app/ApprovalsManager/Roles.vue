@@ -949,7 +949,7 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						rolesVue.loading = false
-						if (this.$root.roles.includes('super admin')) {
+						if (this.$root.roles.some(role => role.name === 'super admin')) {
 							rolesVue.roles = response.payload
 						} else {
 							rolesVue.roles = response.payload.filter(
