@@ -14,7 +14,11 @@
 			            mode="out-in">
 				<h4 class="modal-title center"
 				    v-if="!selectImageMode && !selectLocationMode"
-				    key="mainEditMode">Edit Modifier Category</h4>
+				    key="mainEditMode">
+						<div>Edit <strong>{{categoryToBeEdited.name}} </strong></div>
+						<br />
+						<small>{{categoryToBeEdited.sku ? `SKU: ${categoryToBeEdited.sku}` : ''}}</small>
+					</h4>
 				<h4 class="modal-title center"
 				    v-if="!selectImageMode && selectLocationMode"
 				    key="selectLocationMode">
@@ -67,13 +71,6 @@
 							       id="form_control_2"
 							       v-model="categoryToBeEdited.desc">
 							<label for="form_control_2">Modifier Category Description</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-							       class="form-control input-sm edited"
-							       id="form_control_3"
-							       v-model="categoryToBeEdited.sku">
-							<label for="form_control_3">Modifier Category SKU</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label">
 							<input type="text"
@@ -222,10 +219,6 @@ export default {
 					!editModifierCategoryVue.categoryToBeEdited.desc.length
 				) {
 					reject('Modifier Category description cannot be blank')
-				} else if (
-					!editModifierCategoryVue.categoryToBeEdited.sku.length
-				) {
-					reject('Modifier Category SKU cannot be blank')
 				} else if (
 					!editModifierCategoryVue.categoryToBeEdited.image_url.length
 				) {
@@ -408,5 +401,14 @@ export default {
 }
 .narrow-datepicker {
 	max-width: 40%;
+}
+.modal-title.center {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+span.modal-title {
+	display: inline-block;
 }
 </style>
