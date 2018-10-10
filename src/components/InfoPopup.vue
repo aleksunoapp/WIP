@@ -48,19 +48,19 @@
 							viewingService.category === '9'
 						)">
 						<div class="info-modal-concerns">
-							<p class="customer-comments-label" v-if="viewingService.comment">
+							<p class="customer-comments-label" v-if="viewingService.serviceAdvisorComments">
 								{{ $root.meta.customerCommentsLabel }}
 							</p>
-							<p class="customer-comments" v-if="viewingService.comment">
-								{{viewingService.comment}}
+							<p class="customer-comments" v-if="viewingService.serviceAdvisorComments">
+								{{viewingService.serviceAdvisorComments}}
 							</p>
 							<template v-if="viewingSubServiceIndex !== undefined">
 								<p class="advisor-comments-label" 
-									v-if="viewingService.subServices[viewingSubServiceIndex].comment">
+									v-if="viewingService.subServices[viewingSubServiceIndex].serviceAdvisorComments">
 									{{ langTerms.advisor_comments[$root.meta.local.toLowerCase()] }}
 								</p>
-								<p class="advisor-comments" v-if="viewingService.subServices[viewingSubServiceIndex].comment">
-									{{viewingService.subServices[viewingSubServiceIndex].comment}}
+								<p class="advisor-comments" v-if="viewingService.subServices[viewingSubServiceIndex].serviceAdvisorComments">
+									{{viewingService.subServices[viewingSubServiceIndex].serviceAdvisorComments}}
 								</p>
 							</template>
 						</div>
