@@ -126,7 +126,7 @@
 						</div>
 					</div>
 					<div v-show="highlightedServices" class="summary-table-row">
-						<div class="summary-table-cell highlighted-legend-cell">
+						<div class="highlighted-legend-cell">
 							<span class="service-name">* {{langTerms.updated_service[$root.meta.local.toLowerCase()]}}</span>
 						</div>
 					</div>
@@ -946,9 +946,10 @@ export default {
 	float: right;
 }
 .highlighted-legend-cell {
+	width: 100%;
 	text-align: left;
 	border: none;
 	font-size: 13px;
-	font-weight: bold;
+	padding: 5px 10px;
 }
 </style>

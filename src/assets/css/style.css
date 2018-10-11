@@ -878,6 +878,16 @@ img {
   width: 32px;
   vertical-align: middle;
 }
+
+@media (max-width: 500px) {
+	.summary-icons .icon {
+		font-size: 16px;
+	}
+	.summary-icons img {
+		width: 25px;
+	}
+}
+
 .proceed-btn {
 	font-size: 18px;
 	font-weight: 700;
