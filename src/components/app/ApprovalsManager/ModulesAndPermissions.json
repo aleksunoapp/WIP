@@ -363,6 +363,7 @@
 	"gallery": {
 		"gallery read": false,
 		"gallery create": false,
+		"gallery update": false,
 		"gallery approve": false
 	},
 	"loyalty": {
