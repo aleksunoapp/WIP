@@ -200,22 +200,6 @@ export default {
 			}
 		},
 		/**
-		 * GoogleCharts compliant bar chart number formatter
-		 * @function
-		 * @param {object} dataTable - The data table used in the chart
-		 * @param {integer} rowIndex - The current row
-		 * @returns {string} The formatted number
-		 */
-		formatChartNumber (dataTable, rowIndex) {
-			try {
-				return dataTable.jc[rowIndex][1].hf.toLocaleString('en-US', {
-					style: 'decimal'
-				})
-			} catch (err) {
-				return 'n/a'
-			}
-		},
-		/**
 		 * To format a number as currency
 		 * @function
 		 * @param {string} val - The number to format
@@ -236,22 +220,6 @@ export default {
 			} else {
 				return 'n/a'
 			}
-		},
-		/**
-		 * GoogleCharts compliant bar chart label formatter
-		 * @function
-		 * @param {object} dataTable - The data table used in the chart
-		 * @param {integer} rowIndex - The current row
-		 * @returns {string} The formatted currency amount
-		 */
-		formatUSDlabel (dataTable, rowIndex) {
-			return (
-				'$' +
-				dataTable.jc[rowIndex][1].hf.toLocaleString('en-US', {
-					style: 'currency',
-					currency: 'USD'
-				})
-			)
 		},
 		/**
 		 * To convert a month number to name
@@ -509,12 +477,25 @@ export default {
 					analyticsVue.usersByMonth
 				)
 
+				function formatChartNumber (column, dataTable, row) {
+					try {
+						return (
+							dataTable.getFormattedValue(row, column).toLocaleString('en-US', {
+								style: 'decimal'
+							})
+						)
+					} catch (e) {
+						console.log(e)
+						return ''
+					}
+				}
+
 				var view = new GoogleCharts.api.visualization.DataView(data)
 				view.setColumns([
 					0,
 					1,
 					{
-						calc: analyticsVue.formatChartNumber,
+						calc: formatChartNumber.bind(undefined, 1),
 						sourceColumn: 1,
 						type: 'string',
 						role: 'annotation'
@@ -563,12 +544,25 @@ export default {
 					analyticsVue.usersByPlatform
 				)
 
+				function formatChartNumber (column, dataTable, row) {
+					try {
+						return (
+							dataTable.getFormattedValue(row, column).toLocaleString('en-US', {
+								style: 'decimal'
+							})
+						)
+					} catch (e) {
+						console.log(e)
+						return ''
+					}
+				}
+
 				var view = new GoogleCharts.api.visualization.DataView(data)
 				view.setColumns([
 					0,
 					1,
 					{
-						calc: analyticsVue.formatChartNumber,
+						calc: formatChartNumber.bind(undefined, 1),
 						sourceColumn: 1,
 						type: 'string',
 						role: 'annotation'
@@ -620,12 +614,25 @@ export default {
 					analyticsVue.usersByOrderCount
 				)
 
+				function formatChartNumber (column, dataTable, row) {
+					try {
+						return (
+							dataTable.getFormattedValue(row, column).toLocaleString('en-US', {
+								style: 'decimal'
+							})
+						)
+					} catch (e) {
+						console.log(e)
+						return ''
+					}
+				}
+
 				var view = new GoogleCharts.api.visualization.DataView(data)
 				view.setColumns([
 					0,
 					1,
 					{
-						calc: analyticsVue.formatChartNumber,
+						calc: formatChartNumber.bind(undefined, 1),
 						sourceColumn: 1,
 						type: 'string',
 						role: 'annotation'
@@ -677,12 +684,25 @@ export default {
 					analyticsVue.activeUsers
 				)
 
+				function formatChartNumber (column, dataTable, row) {
+					try {
+						return (
+							dataTable.getFormattedValue(row, column).toLocaleString('en-US', {
+								style: 'decimal'
+							})
+						)
+					} catch (e) {
+						console.log(e)
+						return ''
+					}
+				}
+
 				var view = new GoogleCharts.api.visualization.DataView(data)
 				view.setColumns([
 					0,
 					1,
 					{
-						calc: analyticsVue.formatChartNumber,
+						calc: formatChartNumber.bind(undefined, 1),
 						sourceColumn: 1,
 						type: 'string',
 						role: 'annotation'

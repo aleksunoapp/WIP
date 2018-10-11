@@ -135,6 +135,13 @@
 			"admin location_managers delete": false,
 			"admin location_managers approve": false
 		},
+		"oma_users": {
+			"admin oma_users read": false,
+			"admin oma_users create": false,
+			"admin oma_users update": false,
+			"admin oma_users delete": false,
+			"admin oma_users approve": false
+		},
 		"store_app_users": {
 			"admin store_app_users read": false,
 			"admin store_app_users create": false,

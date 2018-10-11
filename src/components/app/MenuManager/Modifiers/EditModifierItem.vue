@@ -14,7 +14,11 @@
 			            mode="out-in">
 				<h4 class="modal-title center"
 				    v-if="!selectImageMode && !selectLocationMode"
-				    key="mainEditMode">Edit Modifier Item</h4>
+				    key="mainEditMode">
+						<div>Edit <strong>{{itemToBeEdited.name}} </strong></div>
+						<br />
+						<small>{{itemToBeEdited.sku ? `SKU: ${itemToBeEdited.sku}` : ''}}</small>
+					</h4>
 				<h4 class="modal-title center"
 				    v-if="selectImageMode && !selectLocationMode"
 				    key="imageMode">Select an Image</h4>
@@ -74,13 +78,6 @@
 							       id="form_control_3"
 							       v-model="itemToBeEdited.price">
 							<label for="form_control_3">Modifier Item Price</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-							       class="form-control input-sm edited"
-							       id="form_control_4"
-							       v-model="itemToBeEdited.sku">
-							<label for="form_control_4">Modifier Item SKU</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label">
 							<input type="text"
@@ -232,8 +229,6 @@ export default {
 					reject('Item description cannot be blank')
 				} else if (!editModifierItemVue.itemToBeEdited.price.length) {
 					reject('Item price cannot be blank')
-				} else if (!editModifierItemVue.itemToBeEdited.sku.length) {
-					reject('Item SKU cannot be blank')
 				} else if (
 					!editModifierItemVue.itemToBeEdited.image_url.length
 				) {
@@ -407,3 +402,14 @@ export default {
 	}
 }
 </script>
+<style scoped>
+.modal-title.center {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+span.modal-title {
+	display: inline-block;
+}
+</style>
