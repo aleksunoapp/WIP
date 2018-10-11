@@ -138,6 +138,18 @@ export default {
 		}
 	})(),
 	/**
+	 * app token for API calls to send Messages to OMA users
+	 */
+	OMAUsersMessageAppToken: (function () {
+		if (production) {
+			return ''
+		} else if (staging) {
+			return 'bearer '
+		} else if (development) {
+			return 'bearer 6b1642515315f527604919b430fe79de'
+		}
+	})(),
+	/**
 	 * API key for Google Maps Javascript API
 	 */
 	googleMapsJavascriptApiKey: 'AIzaSyBJs2f0TNNui_OcRHgVRTIsJAvGQ0EB7oA',

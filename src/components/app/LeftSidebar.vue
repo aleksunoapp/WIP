@@ -140,6 +140,7 @@
 				<li v-if="canAny([
 						'admin brand_admins read', 
 						'admin location_managers read', 
+						'admin oma_users read', 
 						'admin store_app_users read'
 					])"
 				    class="nav-item"
@@ -171,6 +172,16 @@
 							             class="nav-link">
 								<i class="fa fa-home"></i>
 								<span class="title">Location Managers</span>
+							</router-link>
+						</li>
+						<li v-if="can('admin oma_users read')"
+						    class="nav-item"
+						    :class="{'active': currentRoute === 'admin' && currentSubRoute === 'OMA_users'}"
+						    id="store_manager_applications_link">
+							<router-link to="/app/admin/OMA_users"
+							             class="nav-link">
+								<i class="fa fa-bar-chart"></i>
+								<span class="title">OMA Users</span>
 							</router-link>
 						</li>
 						<li v-if="can('admin store_app_users read')"
