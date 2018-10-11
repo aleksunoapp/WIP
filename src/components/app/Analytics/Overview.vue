@@ -417,22 +417,6 @@ export default {
 			}
 		},
 		/**
-		 * GoogleCharts compliant bar chart label formatter
-		 * @function
-		 * @param {object} dataTable - The data table used in the chart
-		 * @param {integer} rowIndex - The current row
-		 * @returns {string} The formatted currency amount
-		 */
-		formatUSDlabel (dataTable, rowIndex) {
-			return (
-				'$' +
-				dataTable.jc[rowIndex][1].hf.toLocaleString('en-US', {
-					style: 'currency',
-					currency: 'USD'
-				})
-			)
-		},
-		/**
 		 * el-table compliant cell data formatting function
 		 * @function
 		 * @param {object} row - The row to format
@@ -712,12 +696,27 @@ export default {
 					analyticsVue.globalRevenueByDay
 				)
 
+				function formatUSDlabel (column, dataTable, row) {
+					try {
+						return (
+							'$' +
+							dataTable.getFormattedValue(row, column).toLocaleString('en-US', {
+								style: 'currency',
+								currency: 'USD'
+							})
+						)
+					} catch (e) {
+						console.log(e)
+						return ''
+					}
+				}
+
 				var view = new GoogleCharts.api.visualization.DataView(data)
 				view.setColumns([
 					0,
 					1,
 					{
-						calc: analyticsVue.formatUSDlabel,
+						calc: formatUSDlabel.bind(undefined, 1),
 						sourceColumn: 1,
 						type: 'string',
 						role: 'annotation'
