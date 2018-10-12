@@ -88,7 +88,7 @@
 								                format="yyyy-MM-dd HH:mm"
 								                value-format="yyyy-MM-dd HH:mm"
 								                :clearable="false"
-								                placeholder="Select start">
+								                placeholder="YYYY-MM-DD HH:MM">
 								</el-date-picker>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
@@ -98,7 +98,7 @@
 								                format="yyyy-MM-dd HH:mm"
 								                value-format="yyyy-MM-dd HH:mm"
 								                :clearable="false"
-								                placeholder="Select end">
+								                placeholder="YYYY-MM-DD HH:MM">
 								</el-date-picker>
 							</div>
 						</div>

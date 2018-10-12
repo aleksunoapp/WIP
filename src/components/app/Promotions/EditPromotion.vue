@@ -64,7 +64,7 @@
 						<el-date-picker :disabled="!can('promotions update')"
 						                v-model="promotionToBeEdited.start_date"
 						                type="datetime"
-						                placeholder="Select end">
+						                placeholder="YYYY-MM-DD HH:MM">
 						</el-date-picker>
 					</div>
 					<div>
@@ -72,7 +72,7 @@
 						<el-date-picker :disabled="!can('promotions update')"
 						                v-model="promotionToBeEdited.end_date"
 						                type="datetime"
-						                placeholder="Select end">
+						                placeholder="YYYY-MM-DD HH:MM">
 						</el-date-picker>
 					</div>
 					<div>
