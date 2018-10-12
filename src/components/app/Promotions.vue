@@ -363,7 +363,6 @@
 							</ul>
 							<div class="form-actions right margin-top-20"
 							     v-if="canAny([
-									'stores promotions create',
 									'stores promotions update'
 								])">
 								<button type="button"
@@ -1171,6 +1170,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		openQrCodeModal (promotion, event) {
+			this.clearError('qrErrorMessage')
 			event.stopPropagation()
 			let filtered = this.qrCodes.filter(
 				code => code.promotion_id === promotion.id
