@@ -324,27 +324,29 @@
 									<div class="list-datetime bold uppercase font-red">
 										<span>{{ promotion.name }}</span>
 									</div>
-									<div class="list-item-content height-mod">
-										<div class="col-xs-5">
-											<strong>Start:</strong>
-											<span>{{ promotion.start_date }}</span>
-										</div>
-										<div class="col-xs-5">
-											<strong>End:</strong>
-											<span>{{ promotion.end_date }}</span>
-										</div>
-										<div class="col-xs-5">
-											<strong>Featured:</strong>
-											<span v-show="promotion.featured === 1">yes</span>
-											<span v-show="promotion.featured === 0">no</span>
-										</div>
-										<div class="col-xs-5">
-											<strong>CTA:</strong>
-											<span>{{ ctaLabel(promotion.cta_type) }}</span>
-										</div>
-										<div class="col-xs-10">
-											<strong>Short Description:</strong>
-											<span>{{ promotion.short_description }}</span>
+									<div class="list-item-content">
+										<div class="row">
+											<div class="col-xs-5">
+												<strong>Start:</strong>
+												<span>{{ promotion.start_date }}</span>
+											</div>
+											<div class="col-xs-5">
+												<strong>End:</strong>
+												<span>{{ promotion.end_date }}</span>
+											</div>
+											<div class="col-xs-5">
+												<strong>Featured:</strong>
+												<span v-show="promotion.featured === 1">yes</span>
+												<span v-show="promotion.featured === 0">no</span>
+											</div>
+											<div class="col-xs-5">
+												<strong>CTA:</strong>
+												<span>{{ ctaLabel(promotion.cta_type) }}</span>
+											</div>
+											<div class="col-xs-10">
+												<strong>Short Description:</strong>
+												<span>{{ promotion.short_description }}</span>
+											</div>
 										</div>
 									</div>
 									<div class="">
