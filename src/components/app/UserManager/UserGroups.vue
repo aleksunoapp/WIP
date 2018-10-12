@@ -204,7 +204,7 @@
 								<ul v-show="groups.length && !loadingGroupsData">
 									<li class="mt-list-item actions-at-left margin-top-15"
 									    :class="{'clickable' : can('user_manager user_groups message')}"
-									    v-for="group in groups"
+									    v-for="group in sortedGroups"
 									    @click="sendMessageToGroup(group)"
 									    :id="'group-' + group.id"
 									    :key="group.id">
@@ -360,6 +360,15 @@ export default {
 		}
 	},
 	computed: {
+		sortedGroups () {
+			return [...this.groups.sort((a, b) => {
+				if (this.sortBy.order.toLowerCase() === 'asc') {
+					return a.name > b.name
+				} else {
+					return a.name < b.name
+				}
+			})]
+		},
 		selectedSignUpDate () {
 			let text = 'Select sign-up date'
 			for (let i = 0; i < this.newGroup.rules.length; i++) {
@@ -404,7 +413,6 @@ export default {
 		 */
 		updateSortByOrder (value) {
 			this.sortBy.order = value
-			this.activePageUpdate(1)
 		},
 		/**
 		 * To catch updates from the PageResults component when the number of page results is updated.
