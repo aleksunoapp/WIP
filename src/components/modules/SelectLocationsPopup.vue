@@ -57,7 +57,8 @@
 								       id="locations-selectAll"
 								       class="md-check"
 								       @change="selectAll()"
-								       v-model="selectAllSelected">
+								       v-model="selectAllSelected"
+											 :disabled="!editable">
 								<label for="locations-selectAll">
 									<span class="inc"></span>
 									<span class="check"></span>
@@ -79,7 +80,8 @@
 								       :id="`store-${store.id}`"
 								       class="md-check"
 								       v-model="store.selected"
-								       @change="syncSelectAll(store.selected)">
+								       @change="syncSelectAll(store.selected)"
+											 :disabled="!editable">
 								<label :for="`store-${store.id}`">
 									<span class="inc"></span>
 									<span class="check"></span>
@@ -101,7 +103,7 @@
 		     v-show="withButton">
 			<button type="button"
 			        class="pull-right margin-top-15 btn btn-primary"
-			        @click="selectLocations()">Select</button>
+			        @click="selectLocations()">{{editable ? 'Select' : 'Close'}}</button>
 		</div>
 	</div>
 </template>
@@ -141,6 +143,11 @@ export default {
 			type: Array,
 			default: () => [],
 			required: false
+		},
+		editable: {
+			type: Boolean,
+			required: false,
+			default: () => true
 		}
 	},
 	computed: {
