@@ -1,25 +1,30 @@
 <template>
 	<div v-if="!$root.dealer">
 		<div class="wrapper" v-if="!$root.meta.expired">
-			<div class="language-selector">
-				<select v-model="selectedLanguage" @change="updateLanguage()">
-					<template v-for="(lang, i) in $root.meta.supportedLanguages">
-						<option :value="lang.culture" :key="i">{{ lang.name }}</option>
-					</template>
-				</select>
+			<div class="top-row">
+				<div class="language-selector">
+					<select v-model="selectedLanguage" @change="updateLanguage()">
+						<template v-for="(lang, i) in $root.meta.supportedLanguages">
+							<option :value="lang.culture" :key="i">{{ lang.name }}</option>
+						</template>
+					</select>
+				</div>
+				<h2 class="dealer-name">{{ $root.meta.dealerContactInfo.name }}</h2>
 			</div>
 			<div class="nissan-logo">
 				<img :src="$root.meta.topImageUrl">
-			</div>
-			<div class="regal-nissan-logo">
-				<img :src="$root.meta.dealerContactInfo.logoUrl" v-if="$root.meta.dealerContactInfo.logoUrl.length">
-				<h2 v-else>{{ $root.meta.dealerContactInfo.name }}</h2>
 			</div>
 			<div class="login-header">
 				{{ langTerms.vehicle_inspection_update[$root.meta.local.toLowerCase()] }}
 			</div>
 			<form class="access-form" @submit.prevent="enterPasscode()">
-				<label class="label"></label>
+				<label class="label">
+					{{ langTerms.please_enter_your[$root.meta.local.toLowerCase()] }} 
+					{{ $root.meta.isBusiness ?
+						langTerms.company_name[$root.meta.local.toLowerCase()] :
+						langTerms.last_name[$root.meta.local.toLowerCase()]
+					}}
+				</label>
 				<div>
 					<input type="text" class="access-code" v-model="verificationCode">
 				</div>
@@ -116,15 +121,15 @@ export default {
 					'en-us': 'Please enter your',
 					'fr-ca': 'Veuillez entrer votre'
 				},
-				last_name_or_company: {
-					'en-ca': 'last name or company',
-					'en-us': 'last name or company',
-					'fr-ca': 'surnom ou nom de d\'entreprise'
+				last_name: {
+					'en-ca': 'last name',
+					'en-us': 'last name',
+					'fr-ca': 'surnom'
 				},
-				email: {
-					'en-ca': 'email',
-					'en-us': 'email',
-					'fr-ca': 'email'
+				company_name: {
+					'en-ca': 'company name',
+					'en-us': 'company name',
+					'fr-ca': 'nom de d\'entreprise'
 				},
 				phone_number: {
 					'en-ca': 'phone_number',
@@ -293,10 +298,25 @@ export default {
 	background-size: 20px 20px;
 	cursor: pointer;
 }
+.top-row {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+}
+.dealer-name {
+	display: inline-block;
+	align-self: flex-end;
+	font-size: 10pt;
+	font-weight: normal;
+	margin-left: 10px;
+	margin-right: 10px;
+}
 .language-selector {
-	position: absolute;
-	top: 10px;
-	left: 10px;
+	display: inline-block;
+	margin-top: 10px;
+	margin-left: 10px;
 	background: url(http://i62.tinypic.com/15xvbd5.png) no-repeat 92% 0;
 	height: 31px;
 	overflow: hidden;
