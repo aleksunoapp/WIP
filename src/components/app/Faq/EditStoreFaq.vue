@@ -268,6 +268,7 @@ export default {
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
 								editFAQVue.closeModalAndUpdate()
+								editFAQVue.showEditSuccess(response.payload)
 							} else {
 								editFAQVue.errorMessage = response.message
 							}
@@ -304,6 +305,29 @@ export default {
 		 */
 		closeModal () {
 			this.$emit('closeEditStoreFAQModal')
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Store FAQ has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Store FAQ has been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To close the modal and update the edited faq.
