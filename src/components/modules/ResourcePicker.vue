@@ -185,19 +185,21 @@
 									              @pageResults="updatePerPage"></page-results>
 									<div class="cbp-no-files text-center margin-top-20"
 									     v-if="!currentResources.length">There are currently no resources in this folder.</div>
-									<template v-for="resource in currentResources">
-										<div class="col-xs-6 margin-bottom-10"
-										     :ref="resource.id"
-										     :key="resource.id">
-											<div @click="setResource(resource)"
-											     @dblclick="selectAndComplete(resource)"
-											     class="resource-wrapper clickable"
-											     :class="{'selected': selectedResource.id === resource.id}">
-												<img class="resource-image"
-												     :src="resource.url">
+									<div class="row">
+										<template v-for="resource in currentResources">
+											<div class="col-xs-6 margin-bottom-10"
+													:ref="resource.id"
+													:key="resource.id">
+												<div @click="setResource(resource)"
+														@dblclick="selectAndComplete(resource)"
+														class="resource-wrapper clickable"
+														:class="{'selected': selectedResource.id === resource.id}">
+													<img class="resource-image"
+															:src="resource.url">
+												</div>
 											</div>
-										</div>
-									</template>
+										</template>
+									</div>
 									<div v-if="currentResources.length">
 										<pagination :passedPage="activePage"
 										            :numPages="numPages"
