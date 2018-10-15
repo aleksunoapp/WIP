@@ -1227,6 +1227,8 @@ export default {
 					if (response.code === 200 && response.status === 'ok') {
 						promotionsVue.promotionForQrCode.qr_code =
 							response.payload.qr_code
+						promotionsVue.promotionForQrCode.qr_code_id =
+							response.payload.qr_code.id
 						promotionsVue.getQrCodes()
 					}
 				})
@@ -1249,6 +1251,13 @@ export default {
 		 */
 		deleteQrCode () {
 			this.deleting = true
+			if (this.promotionForQrCode.qr_code_id === undefined) {
+				const code = this.qrCodes.find(code => code.promotion_id === this.promotionForQrCode.promotion_id)
+				if (code !== undefined) {
+					this.promotionForQrCode.qr_code_id = code.id
+				}
+			}
+
 			var promotionsVue = this
 			PromotionsFunctions.deleteQrCode(
 				promotionsVue.$root.appId,
@@ -1258,7 +1267,7 @@ export default {
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						promotionsVue.resetPromotionForQrCode()
+						promotionsVue.closeQrCodeModal()
 						promotionsVue.getQrCodes()
 					}
 				})
