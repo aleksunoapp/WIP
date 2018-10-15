@@ -10,7 +10,7 @@
 			        @click="closeModal()">
 				<span>&times;</span>
 			</button>
-			<h4 class="modal-title center">Edit Reward Tier - {{ passedRewardTier.name }}</h4>
+			<h4 class="modal-title center">{{$root.permissions['reward_tiers update'] ? 'Edit' : ''}} Reward Tier - {{ passedRewardTier.name }}</h4>
 		</div>
 		<div slot="modal-body"
 		     class="modal-body">
