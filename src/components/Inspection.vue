@@ -175,6 +175,13 @@
 												</span>
 											</div>
 											<div class="summary-table-cell">
+												<div class="dot-caption-container">
+													<div class="dot-container">
+														<span :class="{'red-dot' : service.category === '6'}"></span>
+														<span :class="{'yellow-dot' : service.category === '7'}"></span>
+														<span :class="{'green-dot' : service.category === '8' || service.category === '9'}"></span>
+													</div>
+												</div>
 											</div>
 											<div class="summary-table-cell">
 												<template v-if="category.serviceCategoryType !== 'PASS' && service.category !== '8'">
