@@ -193,6 +193,7 @@
 					<div class="col-xs-12">
 						<map-area v-if="showEditModal"
 						          :polygons="[editedGeolocation]"
+											:editable="$root.permissions['promotions geolocations update']"
 						          width="100%"
 						          height="500px"
 						          @polygonEmitted="updateEditedPolygon">
