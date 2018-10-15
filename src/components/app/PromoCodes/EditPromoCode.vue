@@ -178,7 +178,7 @@
 
 			<select-locations-popup v-if="!displaySpinner && !selectItemsMode && selectLocationsMode"
 			                        @closeSelectLocationsPopup='selectStores'
-															:editable="can('update promocode')"
+															:editable="can('promocodes update')"
 			                        :previouslySelected="promoCode.locations">
 			</select-locations-popup>
 		</div>
@@ -604,12 +604,9 @@ export default {
 			return editPromoCodeVue
 				.validatePromoCodeData()
 				.then(response => {
-					let promoCode = editPromoCodeVue.promoCode
+					let promoCode = {...editPromoCodeVue.promoCode}
 					promoCode.sku = editPromoCodeVue.promoCode.sku_array.toString()
 					promoCode.locations = editPromoCodeVue.promoCode.locations.toString()
-					if (editPromoCodeVue.promoCode.locations.length === 1) {
-						editPromoCodeVue.promoCode.locations = editPromoCodeVue.promoCode.locations[0].toString()
-					}
 
 					PromoCodesFunctions.updatePromoCode(
 						promoCode,
