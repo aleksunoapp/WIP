@@ -45,7 +45,8 @@
 							       class="form-control input-sm  text-uppercase"
 							       :class="{'edited': promoCode.codes.length}"
 							       id="form_control_1"
-							       v-model="promoCode.codes">
+							       v-model="promoCode.codes"
+										 :disabled="!can('promocode update')">
 							<label for="form_control_1">Enter a Code</label>
 						</div>
 						<div class="side-by-side-wrapper">
@@ -54,13 +55,15 @@
 								       class="form-control input-sm"
 								       :class="{'edited': promoCode.value}"
 								       id="form_control_2"
-								       v-model="promoCode.value">
+								       v-model="promoCode.value"
+											 :disabled="!can('promocode update')">
 								<label for="form_control_2">Value of Promo Code</label>
 							</div>
 							<el-select v-model="promoCode.value_type"
 							           placeholder="Select type"
 							           size="mini"
-							           class="margin-bottom-15">
+							           class="margin-bottom-15"
+												 :disabled="!can('promocode update')">
 								<el-option label="%"
 								           value="percentage">
 								</el-option>
@@ -73,7 +76,8 @@
 							<el-select v-model="promoCode.apply_on"
 							           placeholder="Discount is applied to"
 							           size="mini"
-							           class="margin-bottom-15">
+							           class="margin-bottom-15"
+												 :disabled="!can('promocode update')">
 								<el-option label="Menu Items"
 								           value="items">
 								</el-option>
@@ -100,7 +104,8 @@
 							<el-select v-model="promoCode.type"
 							           placeholder="Single or Multi Use?"
 							           size="mini"
-							           class="margin-bottom-15">
+							           class="margin-bottom-15"
+												 :disabled="!can('promocode update')">
 								<el-option label="Single Use"
 								           value="single_use">
 								</el-option>
@@ -114,7 +119,8 @@
 							       class="form-control input-sm"
 							       :class="{'edited': promoCode.max_use_per_person !== ''}"
 							       id="form_control_3"
-							       v-model="promoCode.max_use_per_person">
+							       v-model="promoCode.max_use_per_person"
+										 :disabled="!can('promocode update')">
 							<label for="form_control_3">Maximum Redemptions Per User</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label narrow-input">
@@ -122,7 +128,8 @@
 							       class="form-control input-sm"
 							       :class="{'edited': promoCode.max_use  !== ''}"
 							       id="form_control_4"
-							       v-model="promoCode.max_use">
+							       v-model="promoCode.max_use"
+										 :disabled="!can('promocode update')">
 							<label for="form_control_4">Total Redemptions Permitted</label>
 						</div>
 						<div class="form-group">
@@ -131,7 +138,8 @@
 							                format="yyyy-MM-dd"
 							                value-format="yyyy-MM-dd"
 							                :clearable="false"
-							                placeholder="Select start date">
+							                placeholder="Select start date"
+															:disabled="!can('promocode update')">
 							</el-date-picker>
 						</div>
 						<div class="form-group">
@@ -140,14 +148,15 @@
 							                format="yyyy-MM-dd"
 							                value-format="yyyy-MM-dd"
 							                :clearable="false"
-							                placeholder="Select end date">
+							                placeholder="Select end date"
+															:disabled="!can('promocode update')">
 							</el-date-picker>
 						</div>
 						<div>
 							<p class="inline margin-right-10">Availability</p>
 							<button type="submit"
 							        class="btn blue btn-outline"
-							        @click="selectLocations($event, 'new')">Select Stores</button>
+							        @click="selectLocations($event, 'new')">{{can('update promocode') ? 'Select' : 'View'}} Stores</button>
 							<p class="grey-label margin-top-10"
 							   v-if="promoCode.locations.length">Selected
 								<span v-if="promoCode.locations === 'all'">all</span>
@@ -169,6 +178,7 @@
 
 			<select-locations-popup v-if="!displaySpinner && !selectItemsMode && selectLocationsMode"
 			                        @closeSelectLocationsPopup='selectStores'
+															:editable="can('update promocode')"
 			                        :previouslySelected="promoCode.locations">
 			</select-locations-popup>
 		</div>
@@ -180,11 +190,17 @@
 			        @click="closeItemSelector()">
 				Done
 			</button>
-			<button v-if="!selectItemsMode && !selectLocationsMode && !selectItemsMode"
+			<button v-if="!selectItemsMode && !selectLocationsMode && !selectItemsMode && can('promocode update')"
 			        type="button"
 			        class="btn btn-primary"
 			        @click="updatePromoCode()">
 				Update
+			</button>
+			<button v-if="!selectItemsMode && !selectLocationsMode && !selectItemsMode && !can('promocode update')"
+			        type="button"
+			        class="btn btn-primary"
+			        @click="closeEditPromoCodeModal()">
+				Close
 			</button>
 		</div>
 	</modal>
@@ -198,6 +214,7 @@ import Dropdown from '../../modules/Dropdown'
 import LoadingScreen from '../../modules/LoadingScreen'
 import SelectLocationsPopup from '../../modules/SelectLocationsPopup'
 import MenuItemPicker from '@/components/modules/MenuItemPicker'
+import { mapGetters } from 'vuex'
 
 export default {
 	data () {
@@ -241,7 +258,8 @@ export default {
 			} else {
 				return null
 			}
-		}
+		},
+		...mapGetters(['can', 'canAny'])
 	},
 	props: {
 		promoCodeId: {
@@ -263,7 +281,9 @@ export default {
 		 * @returns {undefined}
 		 */
 		itemsSelected (items) {
-			this.promoCode.sku_array = items.map(item => item.sku)
+			if (this.can('promocode update')) {
+				this.promoCode.sku_array = items.map(item => item.sku)
+			}
 		},
 		/**
 		 * To keep the select all checkbox in sync with the list
@@ -402,7 +422,9 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		selectStores (selectedStores) {
-			this.promoCode.locations = selectedStores
+			if (this.can('promocode update')) {
+				this.promoCode.locations = selectedStores
+			}
 			this.selectLocationsMode = false
 		},
 		/**
