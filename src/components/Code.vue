@@ -23,7 +23,7 @@
 					{{ $root.meta.isBusiness ?
 						langTerms.company_name[$root.meta.local.toLowerCase()] :
 						langTerms.last_name[$root.meta.local.toLowerCase()]
-					}}
+					}}:
 				</label>
 				<div>
 					<input type="text" class="access-code" v-model="verificationCode">
