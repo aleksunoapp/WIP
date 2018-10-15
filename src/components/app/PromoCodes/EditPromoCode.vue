@@ -46,7 +46,7 @@
 							       :class="{'edited': promoCode.codes.length}"
 							       id="form_control_1"
 							       v-model="promoCode.codes"
-										 :disabled="!can('promocode update')">
+										 :disabled="!can('promocodes update')">
 							<label for="form_control_1">Enter a Code</label>
 						</div>
 						<div class="side-by-side-wrapper">
@@ -56,14 +56,14 @@
 								       :class="{'edited': promoCode.value}"
 								       id="form_control_2"
 								       v-model="promoCode.value"
-											 :disabled="!can('promocode update')">
+											 :disabled="!can('promocodes update')">
 								<label for="form_control_2">Value of Promo Code</label>
 							</div>
 							<el-select v-model="promoCode.value_type"
 							           placeholder="Select type"
 							           size="mini"
 							           class="margin-bottom-15"
-												 :disabled="!can('promocode update')">
+												 :disabled="!can('promocodes update')">
 								<el-option label="%"
 								           value="percentage">
 								</el-option>
@@ -77,7 +77,7 @@
 							           placeholder="Discount is applied to"
 							           size="mini"
 							           class="margin-bottom-15"
-												 :disabled="!can('promocode update')">
+												 :disabled="!can('promocodes update')">
 								<el-option label="Menu Items"
 								           value="items">
 								</el-option>
@@ -105,7 +105,7 @@
 							           placeholder="Single or Multi Use?"
 							           size="mini"
 							           class="margin-bottom-15"
-												 :disabled="!can('promocode update')">
+												 :disabled="!can('promocodes update')">
 								<el-option label="Single Use"
 								           value="single_use">
 								</el-option>
@@ -120,7 +120,7 @@
 							       :class="{'edited': promoCode.max_use_per_person !== ''}"
 							       id="form_control_3"
 							       v-model="promoCode.max_use_per_person"
-										 :disabled="!can('promocode update')">
+										 :disabled="!can('promocodes update')">
 							<label for="form_control_3">Maximum Redemptions Per User</label>
 						</div>
 						<div class="form-group form-md-line-input form-md-floating-label narrow-input">
@@ -129,7 +129,7 @@
 							       :class="{'edited': promoCode.max_use  !== ''}"
 							       id="form_control_4"
 							       v-model="promoCode.max_use"
-										 :disabled="!can('promocode update')">
+										 :disabled="!can('promocodes update')">
 							<label for="form_control_4">Total Redemptions Permitted</label>
 						</div>
 						<div class="form-group">
@@ -139,7 +139,7 @@
 							                value-format="yyyy-MM-dd"
 							                :clearable="false"
 							                placeholder="Select start date"
-															:disabled="!can('promocode update')">
+															:disabled="!can('promocodes update')">
 							</el-date-picker>
 						</div>
 						<div class="form-group">
@@ -149,7 +149,7 @@
 							                value-format="yyyy-MM-dd"
 							                :clearable="false"
 							                placeholder="Select end date"
-															:disabled="!can('promocode update')">
+															:disabled="!can('promocodes update')">
 							</el-date-picker>
 						</div>
 						<div>
@@ -190,13 +190,13 @@
 			        @click="closeItemSelector()">
 				Done
 			</button>
-			<button v-if="!selectItemsMode && !selectLocationsMode && !selectItemsMode && can('promocode update')"
+			<button v-if="!selectItemsMode && !selectLocationsMode && !selectItemsMode && can('promocodes update')"
 			        type="button"
 			        class="btn btn-primary"
 			        @click="updatePromoCode()">
 				Update
 			</button>
-			<button v-if="!selectItemsMode && !selectLocationsMode && !selectItemsMode && !can('promocode update')"
+			<button v-if="!selectItemsMode && !selectLocationsMode && !selectItemsMode && !can('promocodes update')"
 			        type="button"
 			        class="btn btn-primary"
 			        @click="closeEditPromoCodeModal()">
@@ -281,7 +281,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		itemsSelected (items) {
-			if (this.can('promocode update')) {
+			if (this.can('promocodes update')) {
 				this.promoCode.sku_array = items.map(item => item.sku)
 			}
 		},
@@ -422,7 +422,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		selectStores (selectedStores) {
-			if (this.can('promocode update')) {
+			if (this.can('promocodes update')) {
 				this.promoCode.locations = selectedStores
 			}
 			this.selectLocationsMode = false
