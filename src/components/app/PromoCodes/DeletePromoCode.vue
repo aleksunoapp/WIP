@@ -91,6 +91,7 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						this.deletePromoCodeAndCloseModal()
+						this.showAlert(response.payload)
 					} else {
 						deletePromoCodeVue.errorMessage = response.message
 					}
@@ -107,6 +108,29 @@ export default {
 				.finally(() => {
 					deletePromoCodeVue.deleting = false
 				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showAlert (payload = {}) {
+			let title = 'Success'
+			let text = 'The Promocode has been deleted'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The removal has been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.

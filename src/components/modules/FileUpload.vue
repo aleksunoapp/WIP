@@ -8,6 +8,7 @@
 				<input id="file-input"
 				       class="file-input"
 				       type="file"
+							 accept="image/*"
 				       multiple
 				       :name="uploadFieldName"
 				       :disabled="isSaving"

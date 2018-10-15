@@ -132,7 +132,7 @@
 											   class="fa fa-times-circle"
 											   aria-hidden="true"></i>
 										</button>
-										<div class="portlet-body"
+										<div class="portlet-body margin-x-10"
 										     :class="{'display-hide': filterCollapse}">
 											<form role="form"
 											      @submit.prevent="advancedResourceSearch()">
@@ -160,16 +160,6 @@
 														</template>
 													</div>
 												</div>
-												<div class="filter-tags margin-top-10">
-													<template v-for="(type, index) in fileTypes">
-														<button type="button"
-														        :key="index"
-														        class="btn btn-default btn-xs"
-														        :class="{'blue': type.active}"
-														        @click="toggleFileType(type)">
-															<i :class="type.icon"></i> {{ type.name }}</button>
-													</template>
-												</div>
 												<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
 													<input type="text"
 													       class="form-control input-sm"
@@ -177,24 +167,6 @@
 													       :class="{'edited': advancedSearch.search.length}"
 													       v-model="advancedSearch.search">
 													<label for="search_options_search">Search</label>
-												</div>
-												<div class="md-radio-inline">
-													<div class="md-radio"
-													     v-for="option in advancedSearch.searchOptions"
-													     :key="option.id">
-														<input type="radio"
-														       :id="`advanced_search_radio_${option.value}`"
-														       :name="`advanced_search_radio_${option.value}`"
-														       class="md-radiobtn"
-														       v-model="advancedSearch.range"
-														       :value="option.value">
-														<label :for="`advanced_search_radio_${option.value}`">
-															<span></span>
-															<span class="check"></span>
-															<span class="box"></span>
-															{{ option.name }}
-														</label>
-													</div>
 												</div>
 												<div class="form-actions right">
 													<button type="button"
@@ -213,19 +185,21 @@
 									              @pageResults="updatePerPage"></page-results>
 									<div class="cbp-no-files text-center margin-top-20"
 									     v-if="!currentResources.length">There are currently no resources in this folder.</div>
-									<template v-for="resource in currentResources">
-										<div class="col-xs-6 margin-bottom-10"
-										     :ref="resource.id"
-										     :key="resource.id">
-											<div @click="setResource(resource)"
-											     @dblclick="selectAndComplete(resource)"
-											     class="resource-wrapper clickable"
-											     :class="{'selected': selectedResource.id === resource.id}">
-												<img class="resource-image"
-												     :src="resource.url">
+									<div class="row">
+										<template v-for="resource in currentResources">
+											<div class="col-xs-6 margin-bottom-10"
+													:ref="resource.id"
+													:key="resource.id">
+												<div @click="setResource(resource)"
+														@dblclick="selectAndComplete(resource)"
+														class="resource-wrapper clickable"
+														:class="{'selected': selectedResource.id === resource.id}">
+													<img class="resource-image"
+															:src="resource.url">
+												</div>
 											</div>
-										</div>
-									</template>
+										</template>
+									</div>
 									<div v-if="currentResources.length">
 										<pagination :passedPage="activePage"
 										            :numPages="numPages"
@@ -858,6 +832,7 @@ export default {
 			})
 
 			this.clearSearchError()
+			this.getResources(this.activeFolder, 1)
 		},
 		/**
 		 * To close the resource modal and emit the selected resource
@@ -963,5 +938,9 @@ export default {
 }
 section {
   width: 100%;
+}
+.margin-x-10 {
+	margin-left: 10px;
+	margin-right: 10px;
 }
 </style>

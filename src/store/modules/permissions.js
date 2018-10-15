@@ -7,6 +7,9 @@ export const getters = {
 		if (permission === undefined) {
 			return true
 		}
+		if (state[permission] === undefined) {
+			return false
+		}
 		return state[permission]
 	},
 	canAny: (state) => (permissions) => {
