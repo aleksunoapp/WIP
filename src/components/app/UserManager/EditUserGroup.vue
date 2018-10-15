@@ -50,6 +50,7 @@
 								             size="mini"
 								             :show-timeout="50"
 								             :hide-timeout="50"
+														 placement="bottom-start"
 								             class="margin-top-15">
 									<el-button size="mini">
 										{{ selectedSignUpDate }}
@@ -74,6 +75,7 @@
 								             size="mini"
 								             :show-timeout="50"
 								             :hide-timeout="50"
+														 placement="bottom-start"
 								             class="margin-top-15">
 									<el-button size="mini">
 										{{ selectedTotalOrders }}
@@ -174,7 +176,15 @@ export default {
 			if (this.groupToBeEdited.rules.length) {
 				for (let i = 0; i < this.groupToBeEdited.rules.length; i++) {
 					if (this.groupToBeEdited.rules[i].parameter === 'sign-up-date') {
-						text = this.groupToBeEdited.rules[i].text
+						let period = this.groupToBeEdited.rules[i].text.replace(/\D/g, '')
+						let fromDate = new Date(this.groupToBeEdited.rules[i].value)
+						fromDate.setMinutes(fromDate.getMinutes() + fromDate.getTimezoneOffset())
+						let toDate = new Date(this.groupToBeEdited.rules[i].value)
+						toDate.setMinutes(toDate.getMinutes() + toDate.getTimezoneOffset())
+						fromDate = `${fromDate.getMonth() + 1}/${fromDate.getDate()}/${fromDate.getFullYear()}`
+						toDate.setDate(toDate.getDate() + Number(period))
+						toDate = `${toDate.getMonth() + 1}/${toDate.getDate()}/${toDate.getFullYear()}`
+						text = `Signed up between ${fromDate} and ${toDate}`
 					}
 				}
 			}
@@ -207,8 +217,17 @@ export default {
 		this.groupToBeEdited.rules = this.passedGroup.rules
 		this.groupToBeEdited.updated_at = this.passedGroup.updated_at
 		this.groupToBeEdited.updated_by = this.passedGroup.updated_by
+		this.groupToBeEdited.rules = this.passedGroup.rules
 
-		this.groupToBeEdited.rules = []
+		const cityIndex = this.passedGroup.rules.findIndex(rule => rule.parameter === 'city')
+		const provinceIndex = this.passedGroup.rules.findIndex(rule => rule.parameter === 'province')
+		if (cityIndex !== -1) {
+			this.city = this.passedGroup.rules[cityIndex].value
+		}
+		if (provinceIndex !== -1) {
+			this.province = this.passedGroup.rules[provinceIndex].value
+		}
+
 		this.showEditGroupModal = true
 	},
 	methods: {
@@ -219,7 +238,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateSignUpDate (days) {
-			if (!this.$root.permissions['user_manager user_groups update']) {
+			if (this.$root.permissions['user_manager user_groups update']) {
 				let rule = {
 					parameter: 'sign-up-date',
 					value: this.daysBeforeToday(days),
@@ -243,7 +262,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateTotalOrders (argsArray) {
-			if (!this.$root.permissions['user_manager user_groups update']) {
+			if (this.$root.permissions['user_manager user_groups update']) {
 				let rule = {
 					parameter: 'total-orders',
 					value: argsArray[0],

@@ -88,7 +88,7 @@
 								                format="yyyy-MM-dd HH:mm"
 								                value-format="yyyy-MM-dd HH:mm"
 								                :clearable="false"
-								                placeholder="Select start">
+								                placeholder="YYYY-MM-DD HH:MM">
 								</el-date-picker>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
@@ -98,7 +98,7 @@
 								                format="yyyy-MM-dd HH:mm"
 								                value-format="yyyy-MM-dd HH:mm"
 								                :clearable="false"
-								                placeholder="Select end">
+								                placeholder="YYYY-MM-DD HH:MM">
 								</el-date-picker>
 							</div>
 						</div>
@@ -324,27 +324,29 @@
 									<div class="list-datetime bold uppercase font-red">
 										<span>{{ promotion.name }}</span>
 									</div>
-									<div class="list-item-content height-mod">
-										<div class="col-xs-5">
-											<strong>Start:</strong>
-											<span>{{ promotion.start_date }}</span>
-										</div>
-										<div class="col-xs-5">
-											<strong>End:</strong>
-											<span>{{ promotion.end_date }}</span>
-										</div>
-										<div class="col-xs-5">
-											<strong>Featured:</strong>
-											<span v-show="promotion.featured === 1">yes</span>
-											<span v-show="promotion.featured === 0">no</span>
-										</div>
-										<div class="col-xs-5">
-											<strong>CTA:</strong>
-											<span>{{ ctaLabel(promotion.cta_type) }}</span>
-										</div>
-										<div class="col-xs-10">
-											<strong>Short Description:</strong>
-											<span>{{ promotion.short_description }}</span>
+									<div class="list-item-content">
+										<div class="row">
+											<div class="col-xs-5">
+												<strong>Start:</strong>
+												<span>{{ promotion.start_date }}</span>
+											</div>
+											<div class="col-xs-5">
+												<strong>End:</strong>
+												<span>{{ promotion.end_date }}</span>
+											</div>
+											<div class="col-xs-5">
+												<strong>Featured:</strong>
+												<span v-show="promotion.featured === 1">yes</span>
+												<span v-show="promotion.featured === 0">no</span>
+											</div>
+											<div class="col-xs-5">
+												<strong>CTA:</strong>
+												<span>{{ ctaLabel(promotion.cta_type) }}</span>
+											</div>
+											<div class="col-xs-10">
+												<strong>Short Description:</strong>
+												<span>{{ promotion.short_description }}</span>
+											</div>
 										</div>
 									</div>
 									<div class="">
@@ -361,7 +363,6 @@
 							</ul>
 							<div class="form-actions right margin-top-20"
 							     v-if="canAny([
-									'stores promotions create',
 									'stores promotions update'
 								])">
 								<button type="button"
@@ -1169,6 +1170,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		openQrCodeModal (promotion, event) {
+			this.clearError('qrErrorMessage')
 			event.stopPropagation()
 			let filtered = this.qrCodes.filter(
 				code => code.promotion_id === promotion.id
@@ -1225,6 +1227,8 @@ export default {
 					if (response.code === 200 && response.status === 'ok') {
 						promotionsVue.promotionForQrCode.qr_code =
 							response.payload.qr_code
+						promotionsVue.promotionForQrCode.qr_code_id =
+							response.payload.qr_code.id
 						promotionsVue.getQrCodes()
 					}
 				})
@@ -1247,6 +1251,13 @@ export default {
 		 */
 		deleteQrCode () {
 			this.deleting = true
+			if (this.promotionForQrCode.qr_code_id === undefined) {
+				const code = this.qrCodes.find(code => code.promotion_id === this.promotionForQrCode.promotion_id)
+				if (code !== undefined) {
+					this.promotionForQrCode.qr_code_id = code.id
+				}
+			}
+
 			var promotionsVue = this
 			PromotionsFunctions.deleteQrCode(
 				promotionsVue.$root.appId,
@@ -1256,7 +1267,7 @@ export default {
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						promotionsVue.resetPromotionForQrCode()
+						promotionsVue.closeQrCodeModal()
 						promotionsVue.getQrCodes()
 					}
 				})

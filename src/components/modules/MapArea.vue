@@ -17,7 +17,7 @@
 		<div :id="`map-polygon${this._uid}`"
 		     class="map-polygon"></div>
 
-		<div class="legend">
+		<div class="legend" v-show="editable">
 			<div class="mode-buttons-container">
 				<button class="btn blue"
 						:class="{'btn-outline' : mode !== 'move'}"
@@ -130,6 +130,12 @@ export default {
 				'#a9a9a9',
 				'#000000'
 			]
+		},
+		// boolean that enables / disables editing capabilities
+		editable: {
+			required: false,
+			type: Boolean,
+			default: () => true
 		}
 	},
 	data () {
@@ -258,8 +264,8 @@ export default {
 							lat: vertex[0],
 							lng: vertex[1]
 						})),
-						editable: true,
-						draggable: true,
+						editable: this.editable,
+						draggable: this.editable,
 						strokeColor: color,
 						strokeOpacity: 1,
 						strokeWeight: 2,
@@ -331,8 +337,8 @@ export default {
 			return {
 				drawingControl: false,
 				polygonOptions: {
-					editable: true,
-					draggable: true,
+					editable: this.editable,
+					draggable: this.editable,
 					strokeColor: color,
 					strokeWeight: 2,
 					fillColor: color,
