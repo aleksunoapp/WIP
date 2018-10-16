@@ -179,23 +179,7 @@
 													</div>
 												</div>
 											</div>
-											<div class="summary-table-cell">
-												<template v-if="category.serviceCategoryType !== 'PASS' && service.category !== '8'">
-													<!-- <span class="price" v-if="service.price !== 0">{{ formatCurrency(service.price) }}</span>
-													<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span> -->
-													<div class="service-checkbox">
-														<input 
-															type="checkbox" 
-															:id="`service-${serviceIndex}`" 
-															v-model="service.isSelected" 
-															@change="toggleCheckbox(category, service)">
-														<label :for="`service-${serviceIndex}`">
-															<span class="check"></span>
-															<span class="box"></span>
-														</label>
-													</div>
-												</template>
-											</div>
+											<div class="summary-table-cell"></div>
 										</div>
 									</template>
 								</template>
