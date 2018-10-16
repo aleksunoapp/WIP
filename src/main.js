@@ -147,17 +147,46 @@ var App = new Vue({
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		routeUser () {
-			let appRoutes = routes.filter(route => route.path === '/app')[0].children
+			// redirect
+			let appRoutes = routes.filter(
+				route => route.path === '/app'
+			)[0].children
 			let accessible = false
+			// eslint-disable-next-line
+			const routePath = sessionStorage.getItem('routePath')
 			for (let i = 0; i < appRoutes.length; i++) {
 				const route = appRoutes[i]
-				accessible = route.meta.permissions.some(permission => this.permissions[permission])
+				accessible = route.meta.permissions.some(
+					permission =>
+						this.$root.permissions[permission]
+				)
 				if (accessible) {
-					this.$router.push({path: `/app/${route.path}`})
+					if (routePath !== null) {
+						const routePathAccessible = appRoutes.find(route => {
+							if (`/app/${route.path}` === routePath) {
+								return route.meta.permissions.some(
+									permission =>
+										this.$root.permissions[permission]
+								)
+							}
+						})
+						if (routePathAccessible) {
+							this.$router.push({
+								path: routePath
+							})
+						} else {
+							this.$router.push({
+								path: `/app/${route.path}`
+							})
+						}
+					} else {
+						this.$router.push({
+							path: `/app/${route.path}`
+						})
+					}
 					break
 				}
 			}
-
 			if (!accessible) {
 				this.$router.push('/app/unauthorized')
 			}
