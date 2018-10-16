@@ -132,9 +132,7 @@
 											<div class="summary-table-cell">
 												<div class="dot-caption-container">
 													<div class="dot-container">
-														<span :class="{'red-dot' : service.category === '6'}"></span>
-														<span :class="{'yellow-dot' : service.category === '7'}"></span>
-														<span :class="{'green-dot' : service.category === '8' || service.category === '9'}"></span>
+														<img :src="service.iconUrl">
 													</div>
 													<span class="dot-caption" v-if="service.subServices">{{service.subServices[subServiceIndex].name}}</span>
 												</div>
@@ -177,9 +175,7 @@
 											<div class="summary-table-cell">
 												<div class="dot-caption-container">
 													<div class="dot-container">
-														<span :class="{'red-dot' : service.category === '6'}"></span>
-														<span :class="{'yellow-dot' : service.category === '7'}"></span>
-														<span :class="{'green-dot' : service.category === '8' || service.category === '9'}"></span>
+														<img :src="service.iconUrl">
 													</div>
 												</div>
 											</div>
@@ -259,16 +255,7 @@
 							</div>
 
 							<template v-for="(service, serviceIndex) in $root.services">
-								<template v-if="
-									(
-										category.id === service.category
-									) || 
-									(
-										category.id === '5' &&
-										(service.category === '6' ||
-										service.category === '7' ||
-										service.category === '8')
-									)">
+								<template v-if="category.id === service.category">
 									<template v-if="service.subServices">
 										<div class="summary-table-row summary-item" v-for="subService in service.subServices" :key="`subService-${subService.id}`">
 											<div class="summary-table-cell">
@@ -276,9 +263,6 @@
 												<span class="service-name" v-bind:class="{'bold': (subService.isHighlighted ===  true)}"><span v-if="subService.isHighlighted === true">* </span>{{ subService.name }}</span>
 											</div>
 											<div class="summary-table-cell">
-												<span :class="{'red-dot' : service.category === '6'}"></span>
-												<span :class="{'yellow-dot' : service.category === '7'}"></span>
-												<span :class="{'green-dot' : service.category === '8'}"></span>
 											</div>
 											<div class="summary-table-cell">
 												<template v-if="category.serviceCategoryType !== 'PASS'">
@@ -301,9 +285,6 @@
 											<span class="service-name" v-bind:class="{'bold': (service.isHighlighted === true)}"><span v-if="service.isHighlighted === true">* </span>{{ service.name }}</span>
 										</div>
 										<div class="summary-table-cell">
-											<span :class="{'red-dot' : service.category === '6'}"></span>
-											<span :class="{'yellow-dot' : service.category === '7'}"></span>
-											<span :class="{'green-dot' : service.category === '8'}"></span>
 										</div>
 										<div class="summary-table-cell">
 											<template v-if="category.serviceCategoryType !== 'PASS'">
