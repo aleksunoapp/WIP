@@ -19,10 +19,9 @@
 			</div>
 			<form class="access-form" @submit.prevent="enterPasscode()">
 				<label class="label">
-					{{ langTerms.please_enter_your[$root.meta.local.toLowerCase()] }} 
 					{{ $root.meta.isBusiness ?
-						langTerms.company_name[$root.meta.local.toLowerCase()] :
-						langTerms.last_name[$root.meta.local.toLowerCase()]
+						langTerms.please_enter_your_company_name[$root.meta.local.toLowerCase()] :
+						langTerms.please_enter_your_last_name[$root.meta.local.toLowerCase()]
 					}}:
 				</label>
 				<div>
@@ -116,20 +115,15 @@ export default {
 					'en-us': 'Enter',
 					'fr-ca': 'Soumettre'
 				},
-				please_enter_your: {
-					'en-ca': 'Please enter your',
-					'en-us': 'Please enter your',
-					'fr-ca': 'Veuillez entrer votre'
+				please_enter_your_last_name: {
+					'en-ca': 'Please enter your last name',
+					'en-us': 'Please enter your last name',
+					'fr-ca': 'Veuillez inscrire votre nom de famille'
 				},
-				last_name: {
-					'en-ca': 'last name',
-					'en-us': 'last name',
-					'fr-ca': 'surnom'
-				},
-				company_name: {
-					'en-ca': 'company name',
-					'en-us': 'company name',
-					'fr-ca': 'nom de d\'entreprise'
+				please_enter_your_company_name: {
+					'en-ca': 'Please enter your company name',
+					'en-us': 'Please enter your company name',
+					'fr-ca': 'Veuillez inscrire le nom de votre compagnie'
 				},
 				phone_number: {
 					'en-ca': 'phone_number',
