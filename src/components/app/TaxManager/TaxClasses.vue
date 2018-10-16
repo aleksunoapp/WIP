@@ -95,7 +95,7 @@
 									           :key="type.id"></el-option>
 									<el-option 
 															label="none"
-															value="none"
+															:value="0"
 															key="none"></el-option>
 								</el-select>
 							</label>
@@ -308,7 +308,7 @@
 									           :key="type.id"></el-option>
 									<el-option 
 															label="none"
-															value="none"
+															:value="0"
 															key="none"></el-option>
 								</el-select>
 							</label>
