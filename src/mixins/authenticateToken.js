@@ -246,8 +246,6 @@ var authenticateToken = {
 											service.subServices.forEach(subService => {
 												inspectionTotal += subService.price
 											})
-										} else {
-											inspectionTotal += service.price
 										}
 									}
 								})

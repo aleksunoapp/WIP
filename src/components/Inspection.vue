@@ -718,7 +718,7 @@ export default {
 					this.checkSelectAll()
 				} else {
 					category.allSelected = false
-					this.inspectionTotal.total += parseFloat(service.price)
+					this.inspectionTotal.total -= parseFloat(service.price)
 					this.openDeferReasonModal(category, service, false, null)
 				}
 			}
@@ -856,7 +856,7 @@ export default {
 								}
 							})
 						}
-						if (service.isSelected) {
+						if (service.isSelected && category.id !== '5') {
 							service.isSelected = false
 							this.inspectionTotal.total -= parseFloat(service.price)
 						}
