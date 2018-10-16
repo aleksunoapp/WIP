@@ -170,6 +170,12 @@
 												        @click="editFAQ(faq)">
 													View
 												</button>
+												<button v-if="$root.permissions['faq store delete']"
+												        class="btn blue btn-sm margin-left-5"
+												        type="button"
+												        @click="confirmDelete(faq)">
+													Delete
+												</button>
 											</div>
 										</div>
 									</div>
@@ -191,6 +197,47 @@
 		                :faqId="selectedFAQId"
 		                @closeEditStoreFAQModal="closeEditStoreFAQModal"
 		                @highlightFAQ="highlightFAQ"></edit-store-faq>
+
+		<!-- START DELETE -->
+		<modal :show="showDeleteModal"
+		       effect="fade"
+		       @closeOnEscape="closeDeleteModal"
+					 ref="deleteModal">
+			<div slot="modal-header"
+			     class="modal-header">
+				<button type="button"
+				        class="close"
+				        @click="closeDeleteModal()">
+					<span>&times;</span>
+				</button>
+				<h4 class="modal-title center">Confirm Delete</h4>
+			</div>
+			<div slot="modal-body"
+			     class="modal-body">
+				<div class="alert alert-danger"
+				     v-show="deleteErrorMessage.length"
+				     ref="deleteErrorMessage">
+					<button class="close"
+					        data-close="alert"
+					        @click="clearError('deleteErrorMessage')"></button>
+					<span>{{deleteErrorMessage}}</span>
+				</div>
+				<p>Are you sure you want to delete?</p>
+			</div>
+			<div slot="modal-footer"
+			     class="modal-footer clear">
+				<button type="button"
+				        class="btn blue"
+				        @click="deleteFAQ()"
+				        :disabled="deleting">
+					Delete
+					<i v-show="deleting"
+					   class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
+			</div>
+		</modal>
+		<!-- END DELETE -->
 	</div>
 </template>
 
@@ -202,6 +249,7 @@ import FAQFunctions from '../../../controllers/FAQ'
 import EditStoreFaq from './EditStoreFaq'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 import LoadingScreen from '@/components/modules/LoadingScreen'
+import Modal from '@/components/modules/Modal'
 import CountriesFunctions from '@/controllers/Countries'
 import PlatformsFunctions from '@/controllers/Platforms'
 
@@ -232,7 +280,11 @@ export default {
 			loadingCountries: false,
 			countries: [],
 			loadingPlatforms: false,
-			platforms: []
+			platforms: [],
+			deleteErrorMessage: '',
+			faqToDelete: {},
+			showDeleteModal: false,
+			deleting: false
 		}
 	},
 	created () {
@@ -493,13 +545,87 @@ export default {
 			setTimeout(function () {
 				$('#faq-' + val.id).removeClass('highlight')
 			}, 2000)
+		},
+		/**
+		 * To open the modal to delete an FAQs.
+		 * @function
+		 * @param {object} faq - The selected FAQ
+		 * @returns {undefined}
+		 */
+		confirmDelete (faq) {
+			this.faqToDelete = faq
+			this.showDeleteModal = true
+		},
+		/**
+		 * To close the modal to delete an FAQs.
+		 * @function
+		 * @returns {undefined}
+		 */
+		closeDeleteModal () {
+			this.showDeleteModal = false
+			this.clearError('deleteErrorMessage')
+			this.faqToDelete = {}
+		},
+		/**
+		 * To prompt the backend call that deletes an FAQ.
+		 * @function
+		 * @returns {object} A promise that will either return an error message or display the success screen
+		 */
+		deleteFAQ () {
+			this.deleting = true
+			this.clearError('deleteErrorMessage')
+			var storesFAQVue = this
+			return FAQFunctions.deleteStoreFAQ(
+				storesFAQVue.faqToDelete.id
+			)
+				.then(response => {
+					storesFAQVue.getStoreFAQs()
+					storesFAQVue.closeDeleteModal()
+					storesFAQVue.showDeleteSuccess(response.payload)
+				})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not delete the FAQ',
+						errorName: 'deleteErrorMessage',
+						vue: storesFAQVue,
+						containerRef: 'deleteModal'
+					})
+				})
+				.finally(() => {
+					storesFAQVue.deleting = false
+				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showDeleteSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Store FAQ has been deleted'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The removal has been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		}
 	},
 	components: {
 		Breadcrumb,
 		EditStoreFaq,
 		NoResults,
-		LoadingScreen
+		LoadingScreen,
+		Modal
 	}
 }
 </script>
