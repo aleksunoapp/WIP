@@ -83,8 +83,7 @@
 					<span>{{errorMessage}}</span>
 				</div>
 				<p>Message will be sent to
-					<a @click="showUserSelect()">{{message.user_alias.length}} user
-						<span v-show="message.user_alias.length !== 1">s</span>
+					<a @click="showUserSelect()">{{message.user_alias.length}} user<span v-show="message.user_alias.length !== 1">s</span>
 					</a>.</p>
 				<div class="form-group form-md-line-input form-md-floating-label">
 					<label class="btn blue btn-outline"
@@ -423,6 +422,11 @@ export default {
 		 * @returns {undefined}
 		 */
 		resetForm () {
+			this.users.forEach(user => {
+				user.selected = false
+			})
+			this.selectUsersMode = true
+			this.message.user_alias = []
 			this.message.notification_type = ''
 			this.message.push_message = ''
 			this.message.title = ''
