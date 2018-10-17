@@ -116,10 +116,9 @@ export default {
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						deleteGroupVue.deleted = true
-						window.setTimeout(() => {
-							deleteGroupVue.deleteGroupAndCloseModal()
-						}, 2000)
+						deleteGroupVue.deleted = response.payload.pending_approval
+						deleteGroupVue.deleteGroupAndCloseModal()
+						deleteGroupVue.showDeleteSuccess(response.payload)
 					} else {
 						deleteGroupVue.errorMessage = response.message
 					}
@@ -136,6 +135,29 @@ export default {
 				.finally(() => {
 					deleteGroupVue.deleting = false
 				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showDeleteSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Country has been deleted'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The removal has been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.

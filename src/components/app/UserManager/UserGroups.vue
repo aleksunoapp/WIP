@@ -711,12 +711,8 @@ export default {
 			this.showEditGroupModal = false
 		},
 		deleteGroupAndCloseModal (id) {
-			for (let i = 0; i < this.groups.length; i++) {
-				if (this.groups[i].id === id) {
-					this.groups.splice(i, 1)
-				}
-			}
 			this.deleteGroupModalActive = false
+			this.getGroups()
 		},
 		/**
 		 * To close the delete group modal.
@@ -734,15 +730,7 @@ export default {
 		 */
 		updateGroup (val) {
 			this.showEditGroupModal = false
-			for (var i = 0; i < this.groups.length; i++) {
-				if (this.groups[i].id === val.id) {
-					this.groups[i] = val
-				}
-			}
-			$('#group-' + val.id).addClass('highlight')
-			setTimeout(function () {
-				$('#group-' + val.id).removeClass('highlight')
-			}, 2000)
+			this.getGroups()
 		},
 		/**
 		 * To clear the new group form.
