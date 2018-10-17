@@ -452,6 +452,20 @@ export default {
 							label: 'Promotion CTA Text'
 						}
 					]
+				},
+				{
+					group: 'Amenities',
+					groupUrl: 'amenity',
+					terms: [
+						{
+							term: 'amenities_name',
+							label: 'Amenity Name'
+						},
+						{
+							term: 'amenities_image_url',
+							label: 'Amenity Image'
+						}
+					]
 				}
 			],
 			loadingTerms: false,
@@ -606,6 +620,12 @@ export default {
 						break
 					case 'item_nutrition_summary':
 						field = 'nutrition_summary'
+						break
+					case 'amenities_name':
+						field = 'name'
+						break
+					case 'amenities_image_url':
+						field = 'image_url'
 						break
 					default:
 						field = localizationVue.termRegex
