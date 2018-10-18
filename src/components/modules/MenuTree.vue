@@ -205,10 +205,11 @@ export default {
 		/**
 		 * To close the modal.
 		 * @function
+		 * @param {object} payload - payload property of the server response
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('closeMenuTreeModal')
+		closeModal (payload) {
+			this.$emit('closeMenuTreeModal', payload)
 		},
 		/**
 		 * To notify parent error should be cleared.
@@ -469,7 +470,7 @@ export default {
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						menuTreeVue.closeModal()
+						menuTreeVue.closeModal(response.payload)
 					}
 				})
 				.catch(reason => {

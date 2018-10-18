@@ -573,10 +573,35 @@ export default {
 		/**
 		 * To close the menu tree modal.
 		 * @function
+		 * @param {object} payload - payload property of the server response
 		 * @returns {undefined}
 		 */
-		closeMenuTreeModal () {
+		closeMenuTreeModal (payload) {
 			this.showMenuTreeModal = false
+			this.showApplyToItemsSuccess(payload)
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showApplyToItemsSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Modifier has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To get a list of modifier categories for the current store.
