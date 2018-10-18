@@ -322,6 +322,7 @@ export default {
 								response.status === 'ok'
 							) {
 								this.closeModalAndUpdate()
+								this.showEditSuccess(response.payload)
 							} else {
 								editModifierItemVue.errorMessage =
 									response.message
@@ -343,12 +344,35 @@ export default {
 				})
 		},
 		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Modifier Item has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
+		},
+		/**
 		 * To close the modal and emit the updated modifier item object to the parent.
 		 * @function
 		 * @returns {undefined}
 		 */
 		closeModalAndUpdate () {
-			this.$emit('editModifierItem', this.itemToBeEdited)
+			this.$emit('editModifierItem')
 			this.$router.push(
 				'/app/menu_manager/modifier_items/' +
 					this.$route.params.modifier_id
