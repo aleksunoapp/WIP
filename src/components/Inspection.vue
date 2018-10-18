@@ -120,7 +120,6 @@
 											<div class="summary-table-cell">
 												<span 
 													class="information-icon" 
-													:class="{'no-icon-bg': service.category === '8'}" 
 													@click="openServiceModal(service, subServiceIndex)">
 												</span>
 												<span 
@@ -163,7 +162,6 @@
 											<div class="summary-table-cell">
 												<span 
 													class="information-icon" 
-													:class="{'no-icon-bg': service.category === '8' || service.category === '9'}" 
 													@click="openServiceModal(service)">
 												</span>
 												<span 
@@ -175,8 +173,9 @@
 											<div class="summary-table-cell">
 												<div class="dot-caption-container">
 													<div class="dot-container">
-														<img :src="service.iconUrl">
+														<img :src="service.iconUrl"> 
 													</div>
+													<span class="dot-caption">{{langTerms.sorry_no_recommendations[$root.meta.local.toLowerCase()]}}</span>
 												</div>
 											</div>
 											<div class="summary-table-cell"></div>
@@ -480,6 +479,11 @@ export default {
 					'en-ca': '* indicates a new/updated recommendation',
 					'en-us': '* indicates a new/updated recommendation',
 					'fr-ca': '* indique une recommandation ajoutée ou mise à jour'
+				},
+				sorry_no_recommendations: {
+					'en-ca': 'We\'re sorry but there are no recommendations',
+					'en-us': 'We\'re sorry but there are no recommendations',
+					'fr-ca': 'Désolé, mais il n\'y a aucune recommandations'
 				}
 			}
 		}
@@ -924,7 +928,6 @@ export default {
 		 * @returns {undefined}
 		 */
 		openServiceModal (service, subServiceIndex) {
-			if (service.category === '8' || (service.category === '9' && !service.subServices)) return
 			this.$root.logEvent(`Displayed ${service.name} info window`)
 			this.viewingSubServiceIndex = subServiceIndex
 			this.viewingService = service
