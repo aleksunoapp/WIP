@@ -635,22 +635,13 @@ export default {
 			this.passedModifierCategoryId = modifier.id
 		},
 		/**
-		 * To update the modifier category emitted by the child and highlist it on the categories list.
+		 * To update the modifier category list and close the edit modal
 		 * @function
-		 * @param {object} val - The updated category
 		 * @returns {undefined}
 		 */
-		updateModifierCategory (val) {
+		updateModifierCategory () {
+			this.getStoreModifiers()
 			this.editCategoryModalActive = false
-			for (var i = 0; i < this.storeModifiers.length; i++) {
-				if (this.storeModifiers[i].id === val.id) {
-					this.storeModifiers[i] = val
-				}
-			}
-			$('#modifierCategory-' + val.id).addClass('highlight')
-			setTimeout(function () {
-				$('#modifierCategory-' + val.id).removeClass('highlight')
-			}, 2000)
 		},
 		/**
 		 * To check if the modifier category data is valid before submitting to the backend.
@@ -724,9 +715,7 @@ export default {
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
 								addModifierCategoryVue.newCategory.id = response.payload.id
-								addModifierCategoryVue.addModifierCategory(
-									addModifierCategoryVue.newCategory
-								)
+								addModifierCategoryVue.getStoreModifiers()
 								addModifierCategoryVue.showAlert(response.payload)
 								addModifierCategoryVue.clearNewCategory()
 							} else {
@@ -748,29 +737,6 @@ export default {
 					window.scrollTo(0, 0)
 					throw reason
 				})
-		},
-		/**
-		 * To add the modifier category emitted by the child to the categories list.
-		 * @function
-		 * @param {object} val - The new category
-		 * @returns {undefined}
-		 */
-		addModifierCategory (val) {
-			if (parseInt(val.order) > 0) {
-				var done = false
-				for (var i = 0; i < this.storeModifiers.length; i++) {
-					if (parseInt(this.storeModifiers[i].order) < parseInt(val.order)) {
-						this.storeModifiers.splice(i, 0, val)
-						done = true
-						break
-					}
-				}
-				if (!done) {
-					this.storeModifiers.push(val)
-				}
-			} else {
-				this.storeModifiers.push(val)
-			}
 		},
 		/**
 		 * To notify user of the outcome of the call

@@ -133,8 +133,12 @@
 					<button v-else
 					        type="button"
 					        class="btn btn-primary pull-right"
-					        @click="updateModifierCategory()">
+					        @click="updateModifierCategory()"
+									:disabled="saving">
 						Save
+						<i v-show="saving"
+								class="fa fa-spinner fa-pulse fa-fw">
+						</i>
 					</button>
 				</div>
 			</div>
@@ -160,6 +164,7 @@ export default {
 			categoryToBeEdited: {
 				image_url: ''
 			},
+			saving: false,
 			errorMessage: '',
 			selectImageMode: false,
 			customWidth: 90,
@@ -295,6 +300,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		updateModifierCategory () {
+			this.saving = true
 			var editModifierCategoryVue = this
 			editModifierCategoryVue.categoryToBeEdited.user_id =
 				editModifierCategoryVue.$root.createdBy
@@ -317,6 +323,7 @@ export default {
 								response.status === 'ok'
 							) {
 								this.closeModalAndUpdate()
+								this.showEditSuccess(response.payload)
 							} else {
 								editModifierCategoryVue.errorMessage =
 									response.message
@@ -331,6 +338,9 @@ export default {
 								containerRef: 'modal'
 							})
 						})
+						.finally(() => {
+							editModifierCategoryVue.saving = false
+						})
 				})
 				.catch(reason => {
 					// If validation fails then display the error message
@@ -338,6 +348,29 @@ export default {
 					window.scrollTo(0, 0)
 					throw reason
 				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Modifier has been updated'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Modifier has been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
@@ -354,7 +387,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		closeModalAndUpdate () {
-			this.$emit('updateModifierCategory', this.categoryToBeEdited)
+			this.$emit('updateModifierCategory')
 			this.$router.push('/app/menu_manager/modifiers')
 		},
 		/**
