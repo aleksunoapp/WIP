@@ -60,7 +60,13 @@
 		     class="modal-footer">
 			<button type="button"
 			        class="btn btn-primary"
-			        @click="applyPortionsToItem()">Apply Portions</button>
+			        @click="applyPortionsToItem()"
+							:disabled="saving">
+				Apply Portions
+				<i v-show="saving"
+						class="fa fa-spinner fa-pulse fa-fw">
+				</i>
+			</button>
 		</div>
 	</modal>
 </template>
@@ -75,7 +81,8 @@ export default {
 		return {
 			showPortionsModal: false,
 			errorMessage: '',
-			portions: []
+			portions: [],
+			saving: false
 		}
 	},
 	props: {
@@ -181,6 +188,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		applyPortionsToItem () {
+			this.saving = true
 			var portionsListVue = this
 			var portionsToBeApplied = []
 			for (var k = 0; k < portionsListVue.portions.length; k++) {
@@ -200,6 +208,7 @@ export default {
 					.then(response => {
 						if (response.code === 200 && response.status === 'ok') {
 							portionsListVue.closeModal()
+							portionsListVue.showEditSuccess(response.payload)
 						}
 					})
 					.catch(reason => {
@@ -211,7 +220,33 @@ export default {
 							containerRef: 'modal'
 						})
 					})
+					.finally(() => {
+						portionsListVue.saving = false
+					})
 			}
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Modifier Item has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
