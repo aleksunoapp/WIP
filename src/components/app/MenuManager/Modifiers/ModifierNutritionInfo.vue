@@ -39,7 +39,10 @@
 			</div>
 			<div class="portlet light bg-inverse clear"
 			     v-if="!errorMessage.length && !creatingModifierNutritionInfo && !selectLocationMode">
-				<div class="portlet-title">
+				<div
+					v-if="$root.permissions['menu_manager modifiers items nutrition update']"
+					class="portlet-title"
+				>
 					<div class="caption">Click the button on the right to edit</div>
 					<div class="actions">
 						<a class="btn btn-circle btn-icon-only btn-default"
@@ -77,7 +80,7 @@
 							</tbody>
 						</table>
 					</div>
-					<div>
+					<div v-if="$root.permissions['menu_manager modifiers items nutrition update']">
 						<p class="margin-bottom-10 margin-top-30 margin-right-10">Select locations to apply the changes to:</p>
 						<button type="submit"
 						        class="btn blue btn-outline"
@@ -229,7 +232,12 @@
 		     class="modal-footer">
 			<button type="button"
 			        class="btn btn-primary"
-			        v-if="editingModifierNutritionInfo && !creatingModifierNutritionInfo && !selectLocationMode"
+			        v-if="
+								editingModifierNutritionInfo &&
+								!creatingModifierNutritionInfo &&
+								!selectLocationMode &&
+								$root.permissions['menu_manager modifiers items nutrition update']
+							"
 			        @click="updateModifierNutritionInfo()">Update</button>
 			<button type="button"
 			        class="btn btn-primary"
@@ -237,7 +245,12 @@
 			        @click="createModifierNutritionInfo()">Create</button>
 			<button type="button"
 			        class="btn btn-primary"
-			        v-if="!editingModifierNutritionInfo && !creatingModifierNutritionInfo && !selectLocationMode">Save</button>
+			        v-if="
+								!editingModifierNutritionInfo &&
+								!creatingModifierNutritionInfo &&
+								!selectLocationMode
+							"
+							@click="closeModal()">Close</button>
 		</div>
 	</modal>
 </template>
