@@ -298,6 +298,7 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						modifierTreeVue.closeModal()
+						modifierTreeVue.showApplyPortionToModifierItemsSuccess(response.payload)
 					}
 				})
 				.catch(reason => {
@@ -309,6 +310,29 @@ export default {
 						containerRef: 'modal'
 					})
 				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showApplyPortionToModifierItemsSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Portion has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To apply the selected tag to all the checked off modifier items.
