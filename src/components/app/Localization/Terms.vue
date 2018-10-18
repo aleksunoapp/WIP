@@ -263,7 +263,8 @@
 												size="small"
 												no-data-text="No platforms"
 												remote
-												:loading="loadingPlatforms">
+												:loading="loadingPlatforms"
+												:disabled="!$root.permissions['localization terms update']">
 										<el-option v-for="platform in platforms"
 													:label="platform.name"
 													:value="platform.id"
