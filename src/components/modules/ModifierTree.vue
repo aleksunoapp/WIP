@@ -403,6 +403,7 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						modifierTreeVue.closeModal()
+						modifierTreeVue.showApplyOptionToModifierItemsSuccess(response.payload)
 					}
 				})
 				.catch(reason => {
@@ -414,6 +415,29 @@ export default {
 						containerRef: 'modal'
 					})
 				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showApplyOptionToModifierItemsSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Option has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To determine which function to call based on the update type passed in by the parent as a prop.
