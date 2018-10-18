@@ -87,6 +87,9 @@
 			        class="btn btn-primary"
 			        @click="updateOptionItem()">
 				Save
+				<i v-show="saving"
+						class="fa fa-spinner fa-pulse fa-fw">
+				</i>
 			</button>
 		</div>
 	</modal>
@@ -108,7 +111,8 @@ export default {
 				image_url: ''
 			},
 			errorMessage: '',
-			selectImageMode: false
+			selectImageMode: false,
+			saving: false
 		}
 	},
 	props: {
@@ -193,6 +197,7 @@ export default {
 			return editOptionVue
 				.validateOptionData()
 				.then(response => {
+					editOptionVue.saving = true
 					OptionsFunctions.updateOptionItem(
 						editOptionVue.optionItemToBeEdited,
 						editOptionVue.$root.appId,
@@ -202,6 +207,7 @@ export default {
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
 								this.closeModalAndUpdate()
+								this.showEditSuccess(response.payload)
 							} else {
 								editOptionVue.errorMessage = response.message
 							}
@@ -215,6 +221,9 @@ export default {
 								containerRef: 'modal'
 							})
 						})
+						.finally(() => {
+							editOptionVue.saving = false
+						})
 				})
 				.catch(reason => {
 					// If validation fails then display the error message
@@ -222,6 +231,29 @@ export default {
 					window.scrollTo(0, 0)
 					throw reason
 				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Option has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To close the modal and emit the newly created tag object to the parent.
