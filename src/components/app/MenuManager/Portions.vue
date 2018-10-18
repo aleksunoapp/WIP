@@ -468,15 +468,7 @@ export default {
 		 */
 		updatePortion (val) {
 			this.showEditPortionModal = false
-			for (var i = 0; i < this.portions.length; i++) {
-				if (this.portions[i].id === val.id) {
-					this.portions[i] = val
-				}
-			}
-			$('#portion-' + val.id).addClass('highlight')
-			setTimeout(function () {
-				$('#portion-' + val.id).removeClass('highlight')
-			}, 2000)
+			this.getPortions()
 		}
 	},
 	components: {
