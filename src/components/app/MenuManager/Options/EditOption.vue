@@ -73,6 +73,9 @@
 			        class="btn btn-primary"
 			        @click="updateOption()">
 				Save
+				<i v-show="saving"
+						class="fa fa-spinner fa-pulse fa-fw">
+				</i>
 			</button>
 		</div>
 	</modal>
@@ -94,7 +97,8 @@ export default {
 				image_url: ''
 			},
 			errorMessage: '',
-			selectImageMode: false
+			selectImageMode: false,
+			saving: false
 		}
 	},
 	props: {
@@ -169,6 +173,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		updateOption () {
+			this.saving = true
 			var editOptionVue = this
 			editOptionVue.clearError()
 
@@ -184,6 +189,7 @@ export default {
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
 								this.closeModalAndUpdate()
+								this.showEditSuccess(response.payload)
 							} else {
 								editOptionVue.errorMessage = response.message
 							}
@@ -197,6 +203,9 @@ export default {
 								containerRef: 'modal'
 							})
 						})
+						.finally(() => {
+							editOptionVue.saving = false
+						})
 				})
 				.catch(reason => {
 					// If validation fails then display the error message
@@ -206,12 +215,35 @@ export default {
 				})
 		},
 		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Option has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
+		},
+		/**
 		 * To close the modal and emit the newly created tag object to the parent.
 		 * @function
 		 * @returns {undefined}
 		 */
 		closeModalAndUpdate () {
-			this.$emit('updateOption', this.optionToBeEdited)
+			this.$emit('updateOption')
 		},
 		/**
 		 * To just close the modal when the user clicks on the 'x' to close the modal without creating a new tag.
