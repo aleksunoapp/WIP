@@ -316,7 +316,7 @@ export default {
 		}
 	},
 	created () {
-		this.getNewsFeed()
+		this.getNewsFeed(0)
 	},
 	methods: {
 		/**
@@ -330,7 +330,7 @@ export default {
 			return NewsFeedFunctions.deleteNewsFeed(_this.newsToDelete.id)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						_this.getNewsFeed()
+						_this.getNewsFeed(_this.activePage)
 						_this.closeDeleteModal()
 						_this.showDeleteSuccess(response.payload)
 					}
@@ -457,18 +457,15 @@ export default {
 			this.displayNewsFeedData = true
 			this.newsFeed = []
 			var newsFeedVue = this
-			return NewsFeedFunctions.getNewsFeed(
-				pageNumber,
-				newsFeedVue.pageResultsValue,
-				newsFeedVue.sortBy.order,
-				newsFeedVue.$root.userToken,
-				newsFeedVue.$root.appId,
-				newsFeedVue.$root.appSecret
-			)
+			return NewsFeedFunctions.getNewsFeed({
+				page: pageNumber,
+				order: newsFeedVue.sortBy.order,
+				itemsPerPage: newsFeedVue.pageResultsValue
+			})
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						newsFeedVue.totalResults = response.payload.data.length
-						newsFeedVue.newsFeed = response.payload.data
+						newsFeedVue.totalResults = response.payload.length
+						newsFeedVue.newsFeed = response.payload
 						for (var i = 0; i < newsFeedVue.newsFeed.length; i++) {
 							var item = newsFeedVue.newsFeed[i].created_on.split(' ')
 							if (item[0] !== '0000-00-00') {

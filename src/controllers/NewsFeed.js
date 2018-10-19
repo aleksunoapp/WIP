@@ -7,36 +7,25 @@ export default {
 	/**
 	 * Call to pitapit API to get the news feed.
 	 * @function
-	 * @param {integer} pageNumber - The page number.
-	 * @param {integer} pageResults - The number of results to be displayed per page.
-	 * @param {string} sortOrder - The sort order.
-	 * @param {string} userToken - The auth token of the logged in user.
-	 * @param {string} appId - The appId of the current application.
-	 * @param {string} appSecret - The appSecret of the current application.
+	 * @param {number} page - The page number.
+	 * @param {string} order - The sort order.
+	 * @param {string} itemsPerPage - The number of items to show on a page.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	getNewsFeed: function (
-		pageNumber,
-		pageResults,
-		sortOrder,
-		userToken,
-		appId,
-		appSecret
-	) {
+	getNewsFeed: function ({
+		page,
+		order,
+		itemsPerPage
+	}) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'GET',
 				dataType: 'json',
 				url: '/application/news',
 				data: {
-					offset: pageNumber,
-					limit: pageResults,
-					orderBy: sortOrder
-				},
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader('auth-token', userToken)
-					xhr.setRequestHeader('app-id', appId)
-					xhr.setRequestHeader('app-secret', appSecret)
+					page,
+					item_per_page: itemsPerPage,
+					order
 				},
 				success: function (response) {
 					resolve(response)
