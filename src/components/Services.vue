@@ -674,7 +674,7 @@ export default {
 						xhr.setRequestHeader('Authorization', 'Bearer ' + _this.$root.accessToken)
 					}
 				}).done((response, textStatus, xhr) => {
-					if (xhr.status === 202) {
+					if (xhr.status === 200 || xhr.status === 202) {
 						this.$router.push({name: 'thanks'})
 					} else {
 						this.showErrorMessage = true
