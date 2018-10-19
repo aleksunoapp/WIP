@@ -209,7 +209,7 @@
 											<i class="fa fa-lg fa-eye"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip v-if="$root.permissions['menu_manager attributes update']"
+									<el-tooltip v-if="$root.permissions['menu_manager attributes assign item']"
 									            content="Apply to Items"
 									            effect="light"
 									            placement="top">
@@ -218,7 +218,7 @@
 											<i class="icon-layers"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip v-if="$root.permissions['menu_manager attributes update']"
+									<el-tooltip v-if="$root.permissions['menu_manager attributes assign user_attribute']"
 									            content="Apply to User Attributes"
 									            effect="light"
 									            placement="top">
