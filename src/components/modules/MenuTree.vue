@@ -470,7 +470,8 @@ export default {
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						menuTreeVue.closeModal(response.payload)
+						menuTreeVue.closeModal()
+						menuTreeVue.showApplyToItemsSuccess(response.payload)
 					}
 				})
 				.catch(reason => {
@@ -482,6 +483,29 @@ export default {
 						containerRef: 'modal'
 					})
 				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showApplyToItemsSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Modifier has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To apply the selected tag to all the checked off menu items.
