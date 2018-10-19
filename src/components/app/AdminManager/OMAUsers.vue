@@ -204,38 +204,6 @@
 									    :id="'OMAUser-' + OMAUser.id"
 									    :class="{'animated' : animated === `OMAUser-${OMAUser.id}`}"
 									    :key="OMAUser.id">
-										<div class="list-item-actions">
-											<el-tooltip v-if="$root.permissions['admin oma_users update']"
-											            content="Edit"
-											            effect="light"
-											            placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default"
-												   @click="editOMAUser(OMAUser)">
-													<i class="fa fa-pencil"
-													   aria-hidden="true"></i>
-												</a>
-											</el-tooltip>
-											<el-tooltip v-if="$root.permissions['admin oma_users read'] && !$root.permissions['admin oma_users update']"
-											            content="View"
-											            effect="light"
-											            placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default"
-												   @click="editOMAUser(OMAUser)">
-													<i class="fa fa-eye"
-													   aria-hidden="true"></i>
-												</a>
-											</el-tooltip>
-											<el-tooltip v-if="$root.permissions['admin oma_users delete']"
-											            content="Delete"
-											            effect="light"
-											            placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default"
-												   @click="showDeleteModal(OMAUser)">
-													<i class="fa fa-trash"
-													   aria-hidden="true"></i>
-												</a>
-											</el-tooltip>
-										</div>
 										<div class="list-item-content height-mod">
 											<div class="col-md-4">
 												<span>{{ OMAUser.email }}</span>
