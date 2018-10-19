@@ -336,7 +336,8 @@
 										           active-value="1"
 										           inactive-value="0"
 										           active-text="Active"
-										           inactive-text="Inactive">
+										           inactive-text="Inactive"
+										           :disabled="!$root.permissions['stores order_settings update']">
 										</el-switch>
 									</div>
 								</div>
