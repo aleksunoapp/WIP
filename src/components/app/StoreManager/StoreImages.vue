@@ -226,7 +226,13 @@
 					<button v-show="mode === 'delete'"
 					        @click="deleteImage()"
 					        type="button"
-					        class="btn blue pull-right">Delete</button>
+					        class="btn blue pull-right"
+									:disabled="deleting">
+						Delete
+					<i v-show="deleting"
+					   class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+					</button>
 				</div>
 			</div>
 		</div>
@@ -259,6 +265,7 @@ export default {
 		selectNew: false,
 		imageToEdit: {},
 		imageToDelete: {},
+		deleting: false,
 		selectEdited: false
 	}),
 	props: {
@@ -558,6 +565,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		deleteImage () {
+			this.deleting = true
 			var imagesVue = this
 			this.clearError('imagesErrorMessage')
 			return StoresFunctions.deleteStoreImage(
@@ -569,9 +577,12 @@ export default {
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						imagesVue.images = imagesVue.images.filter(image => {
-							return image.id !== imagesVue.imageToDelete.id
-						})
+						if (response.payload && response.payload.pending_approval !== true) {
+							imagesVue.images = imagesVue.images.filter(image => {
+								return image.id !== imagesVue.imageToDelete.id
+							})
+						}
+						imagesVue.showDeleteSuccess(response.payload)
 						imagesVue.mode = 'list'
 					}
 				})
@@ -583,6 +594,32 @@ export default {
 						vue: imagesVue
 					})
 				})
+				.finally(() => {
+					imagesVue.deleting = false
+				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showDeleteSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Image has been deleted'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The removal has been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		}
 	},
 	components: {
