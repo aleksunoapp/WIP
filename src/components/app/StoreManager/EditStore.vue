@@ -714,7 +714,7 @@
 												<td class="align-middle">
 													<el-button type="primary"
 													           :loading="hour.loading"
-													           :disabled="hour.loading || !$root.permissions['stores holiday_hours update']? true : false"
+													           :disabled="hour.loading || hour.deleting || !$root.permissions['stores holiday_hours update']? true : false"
 													           size="small"
 													           @click="updateHolidayHours(hour, $event)">
 														<span v-show="!hour.loading">Save</span>
@@ -722,12 +722,12 @@
 												</td>
 												<td class="align-middle">
 													<el-button type="primary"
-													           :loading="hour.loading"
-													           :disabled="hour.loading || !$root.permissions['stores holiday_hours update']? true : false"
+													           :loading="hour.deleting"
+													           :disabled="hour.loading || hour.deleting || !$root.permissions['stores holiday_hours update']? true : false"
 													           size="small"
 													           plain
 													           @click="openDeleteHolidayHoursModal(hour)">
-														<span v-show="!hour.loading">Delete</span>
+														<span v-show="!hour.deleting">Delete</span>
 													</el-button>
 												</td>
 											</tr>
@@ -1063,17 +1063,19 @@ export default {
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						const sunday = response.payload.findIndex(day => day.day === 0)
-						let weekStartingMonday = response.payload
-						weekStartingMonday.push(response.payload[sunday])
-						weekStartingMonday.splice(sunday, 1)
-						editStoreVue.holidayHoursToBeEdited = weekStartingMonday.map(day => {
-							return {
-								...day,
-								open_time: day.open_time.substr(0, 5),
-								close_time: day.close_time.substr(0, 5)
-							}
-						})
+						if (response.payload && response.payload.pending_approval !== true) {
+							const sunday = response.payload.findIndex(day => day.day === 0)
+							let weekStartingMonday = response.payload
+							weekStartingMonday.push(response.payload[sunday])
+							weekStartingMonday.splice(sunday, 1)
+							editStoreVue.holidayHoursToBeEdited = weekStartingMonday.map(day => {
+								return {
+									...day,
+									open_time: day.open_time.substr(0, 5),
+									close_time: day.close_time.substr(0, 5)
+								}
+							})
+						}
 						editStoreVue.showAlert(response.payload)
 					}
 				})
@@ -1124,7 +1126,7 @@ export default {
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						val.loading = false
+						editStoreVue.showHoursUpdateSuccess(response.payload)
 					}
 				})
 				.catch(reason => {
@@ -1134,6 +1136,9 @@ export default {
 						errorName: 'holidayHoursError',
 						vue: editStoreVue
 					})
+				})
+				.finally(() => {
+					val.loading = false
 				})
 		},
 		/**
@@ -1168,6 +1173,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		deleteHolidayHours () {
+			this.holidayHourToDelete.deleting = true
 			var editStoreVue = this
 
 			let payload = {
@@ -1193,6 +1199,9 @@ export default {
 						errorName: 'deleteHolidayHoursErrorMessage',
 						vue: editStoreVue
 					})
+				})
+				.finally(() => {
+					editStoreVue.holidayHourToDelete.deleting = false
 				})
 		},
 		/**
@@ -1426,6 +1435,7 @@ export default {
 							day.open_time = day.open_time.slice(0, -3)
 							day.close_time = day.close_time.slice(0, -3)
 							day.loading = false
+							day.deleting = false
 						})
 						const sunday = response.payload.location_holiday_hours.findIndex(
 							day => day.day === 0
