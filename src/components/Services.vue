@@ -863,7 +863,7 @@ export default {
 					xhr.setRequestHeader('Authorization', 'Bearer ' + _this.$root.accessToken)
 				}
 			}).done((response, textStatus, xhr) => {
-				if (xhr.status === 200 || xhr.status === 200) {
+				if (xhr.status === 200 || xhr.status === 202) {
 					_this.$root.totals.serviceTotal.tax = response.taxAndFee
 					_this.tax = response.taxAndFee
 				} else {
