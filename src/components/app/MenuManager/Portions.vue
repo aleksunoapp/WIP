@@ -136,7 +136,7 @@
 											<i class="fa fa-lg fa-eye"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip v-if="$root.permissions['menu_manager portions update']"
+									<el-tooltip v-if="$root.permissions['menu_manager portions add modifier items']"
 									            content="Apply to multiple"
 									            effect="light"
 									            placement="right">
