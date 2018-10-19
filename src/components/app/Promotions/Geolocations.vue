@@ -433,7 +433,7 @@ export default {
 					)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
-								geolocationsVue.geolocations.push(response.payload)
+								geolocationsVue.getGeolocations()
 								geolocationsVue.resetForm()
 								geolocationsVue.confirmCreated(response.payload)
 							} else {
@@ -544,18 +544,10 @@ export default {
 					)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
-								geolocationsVue.geolocations.forEach(gl => {
-									if (gl.id === response.payload.id) {
-										gl.name = response.payload.name
-										gl.polygon = response.payload.polygon
-									}
-								})
+								geolocationsVue.getGeolocations()
 								geolocationsVue.resetEdited()
 								geolocationsVue.closeEditModal()
-								geolocationsVue.animated = response.payload.id
-								window.setTimeout(() => {
-									geolocationsVue.animated = null
-								}, 3000)
+								geolocationsVue.confirmEdited(response.payload)
 							} else {
 								throw response
 							}
@@ -580,6 +572,29 @@ export default {
 						1000
 					)
 				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		confirmEdited (payload = {}) {
+			let title = 'Success'
+			let text = 'The Geolocation has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To open the edit modal
@@ -647,10 +662,7 @@ export default {
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						let index = geolocationsVue.geolocations.findIndex(gl => {
-							return gl.id === geolocationsVue.selectedGeolocation.id
-						})
-						geolocationsVue.geolocations.splice(index, 1)
+						geolocationsVue.getGeolocations()
 						geolocationsVue.resetSelected()
 						geolocationsVue.closeDeleteModal()
 						geolocationsVue.confirmDeleted(response.payload)
