@@ -104,15 +104,6 @@
 						       value="inapp"
 						       v-model="message.notification_type"> In App Notification
 					</label>
-					<label class="btn blue btn-outline"
-					       for="sms_notification"
-					       :class="{'active': message.notification_type === 'sms'}">
-						<input type="radio"
-						       class="toggle"
-						       id="sms_notification"
-						       value="sms"
-						       v-model="message.notification_type"> SMS
-					</label>
 				</div>
 				<div class="row"
 				     v-if="message.notification_type === 'inapp'">
