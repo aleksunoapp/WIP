@@ -215,7 +215,7 @@
 												<i class="icon-layers"></i>
 											</a>
 										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['menu_manager modifiers update']"
+										<el-tooltip v-if="$root.permissions['stores copy modifier modifier_to_multiple_location']"
 										            content="Copy to stores"
 										            effect="light"
 										            placement="top">
@@ -224,7 +224,7 @@
 												<i class="fa fa-lg fa-copy"></i>
 											</a>
 										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['menu_manager modifiers update']"
+										<el-tooltip v-if="$root.permissions['stores add item_to_multiple_locations']"
 										            content="Apply to items at stores"
 										            effect="light"
 										            placement="top">
