@@ -2086,12 +2086,8 @@ export default {
 		 * @returns {undefined}
 		 */
 		updatePromotion ({promotion, payload}) {
-			this.displayEditPromotionModal = false
-			for (var i = 0; i < this.promotions.length; i++) {
-				if (this.promotions[i].id === promotion.id) {
-					this.promotions[i] = promotion
-				}
-			}
+			this.showEditPromotionModal = false
+			this.getAllPromotions()
 
 			let title = 'Success'
 			let text = 'The Promotion has been saved'
