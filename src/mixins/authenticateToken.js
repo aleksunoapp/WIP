@@ -174,29 +174,13 @@ var authenticateToken = {
 									inspectionCounts.approvedCount += 1
 								}
 							} else if (service.category === '6') {
-								if (service.subServices) {
-									inspectionCounts.concernCount += service.subServices.length
-								} else {
-									inspectionCounts.concernCount += 1
-								}
+								inspectionCounts.concernCount += 1
 							} else if (service.category === '7') {
-								if (service.subServices) {
-									inspectionCounts.concernCount += service.subServices.length
-								} else {
-									inspectionCounts.concernCount += 1
-								}
+								inspectionCounts.concernCount += 1
 							} else if (service.category === '8') {
-								if (service.subServices) {
-									inspectionCounts.concernCount += service.subServices.length
-								} else {
-									inspectionCounts.concernCount += 1
-								}
+								inspectionCounts.concernCount += 1
 							} else if (service.category === '9') {
-								if (service.subServices) {
-									inspectionCounts.concernCount += service.subServices.length
-								} else {
-									inspectionCounts.concernCount += 1
-								}
+								inspectionCounts.concernCount += 1
 							}
 						})
 
