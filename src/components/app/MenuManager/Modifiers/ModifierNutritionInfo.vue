@@ -238,11 +238,23 @@
 								!selectLocationMode &&
 								$root.permissions['menu_manager modifiers items nutrition update']
 							"
-			        @click="updateModifierNutritionInfo()">Update</button>
+			        @click="updateModifierNutritionInfo()"
+							:disabled="saving">
+								Update
+								<i v-show="saving"
+										class="fa fa-spinner fa-pulse fa-fw">
+								</i>
+							</button>
 			<button type="button"
 			        class="btn btn-primary"
 			        v-if="!editingModifierNutritionInfo && creatingModifierNutritionInfo && !selectLocationMode"
-			        @click="createModifierNutritionInfo()">Create</button>
+			        @click="createModifierNutritionInfo()"
+							:disabled="creating">
+								Create
+								<i v-show="creating"
+										class="fa fa-spinner fa-pulse fa-fw">
+								</i>
+							</button>
 			<button type="button"
 			        class="btn btn-primary"
 			        v-if="
@@ -278,7 +290,9 @@ export default {
 			},
 			selectLocationMode: false,
 			selectedLocations: [],
-			update_all_items: false
+			update_all_items: false,
+			saving: false,
+			creating: false
 		}
 	},
 	props: {
@@ -439,7 +453,7 @@ export default {
 			return nutritionInfoVue
 				.validateNutritionData(updatedNutritionInfo)
 				.then(response => {
-					this.editingModifierNutritionInfo = false
+					this.saving = true
 					ModifiersFunctions.updateModifierNutritionInfo(
 						updatedNutritionInfo,
 						nutritionInfoVue.$root.appId,
@@ -452,6 +466,7 @@ export default {
 								response.status === 'ok'
 							) {
 								this.closeModal()
+								this.showEditSuccess(response.payload)
 							}
 						})
 						.catch(reason => {
@@ -464,6 +479,10 @@ export default {
 								containerRef: 'modal'
 							})
 						})
+						.finally(() => {
+							updatedNutritionInfo.saving = false
+							updatedNutritionInfo.editingModifierNutritionInfo = false
+						})
 				})
 				.catch(reason => {
 					// If validation fails then display the error message
@@ -471,6 +490,29 @@ export default {
 					window.scrollTo(0, 0)
 					throw reason
 				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Nutrition Info has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To create new nutrition info for the modifier item (if it doesn't exist) and send it to the backend and close the modal.
@@ -485,6 +527,7 @@ export default {
 					nutritionInfoVue.newModifierNutritionInfo
 				)
 				.then(response => {
+					nutritionInfoVue.creating = true
 					ModifiersFunctions.createModifierNutritionInfo(
 						nutritionInfoVue.newModifierNutritionInfo,
 						nutritionInfoVue.$root.appId,
@@ -497,6 +540,7 @@ export default {
 								response.status === 'ok'
 							) {
 								this.closeModal()
+								this.showCreateSuccess(response.payload)
 							}
 						})
 						.catch(reason => {
@@ -509,6 +553,9 @@ export default {
 								containerRef: 'modal'
 							})
 						})
+						.finally(() => {
+							nutritionInfoVue.creating = false
+						})
 				})
 				.catch(reason => {
 					// If validation fails then display the error message
@@ -516,6 +563,29 @@ export default {
 					window.scrollTo(0, 0)
 					throw reason
 				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Nutrition Info has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Nutrition Info has been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To just close the modal when the user clicks on the 'x' to close the modal without creating a new category.
