@@ -39,7 +39,19 @@
 							</div>
 						</div>
 					</div>
-					<div class="row">
+					<div
+						class="row"
+						v-show="$root.activeLocation.id === undefined">
+						<div class="col-md-12">
+							<div class="alert alert-info">
+								<h4>No Store Selected</h4>
+								<p>Please select a store from the stores panel on the right to view its menus</p>
+							</div>
+						</div>
+					</div>
+					<div
+						class="row"
+						v-show="$root.activeLocation.id !== undefined">
 						<div class="col-md-4">
 							<h4>Menus</h4>
 							<div class="dd"
@@ -134,7 +146,12 @@
 		     class="modal-footer">
 			<button type="button"
 			        class="btn btn-primary"
-			        @click="applySelectedItems()">Save</button>
+			        @click="closeModal()"
+							v-show="$root.activeLocation.id === undefined">Close</button>
+			<button type="button"
+			        class="btn btn-primary"
+			        @click="applySelectedItems()"
+							v-show="$root.activeLocation.id !== undefined">Save</button>
 		</div>
 	</modal>
 </template>
@@ -192,10 +209,12 @@ export default {
 		}
 	},
 	created () {
-		if (this.showCorporateMenus) {
-			this.getCorporateMenus()
-		} else {
-			this.getMenus()
+		if (this.$root.activeLocation.id !== undefined) {
+			if (this.showCorporateMenus) {
+				this.getCorporateMenus()
+			} else {
+				this.getMenus()
+			}
 		}
 	},
 	mounted () {
@@ -534,6 +553,7 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						menuTreeVue.closeModal()
+						menuTreeVue.showApplyToTagsSuccess(response.payload)
 					}
 				})
 				.catch(reason => {
@@ -545,6 +565,29 @@ export default {
 						containerRef: 'modal'
 					})
 				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showApplyToTagsSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Tag has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		applyItemSKUToRewardItem () {
 			var menuTreeVue = this
