@@ -13,21 +13,25 @@
 								'green-bg' : 
 									viewingService.category !== '6' &&
 									viewingService.category !== '7' &&
+									viewingService.category !== '8' &&
 									viewingService.category !== '9',
 								'grey-bg' : 
 									viewingService.category === '6' ||
 									viewingService.category === '7' ||
+									viewingService.category === '8' ||
 									viewingService.category === '9'
 							}">
 							<p v-if="
 								viewingService.category !== '6' &&
 								viewingService.category !== '7' &&
+								viewingService.category !== '8' &&
 								viewingService.category !== '9'
 							">
 								{{ langTerms.recommendation[$root.meta.local.toLowerCase()] }}</p>
 							<p v-if="
 								viewingService.category === '6' || 
 								viewingService.category === '7' ||
+								viewingService.category === '8' ||
 								viewingService.category === '9'
 							">{{ $root.meta.customerConcernsLabel }}</p>
 							<h2>{{ viewingService.name }}</h2>
@@ -36,6 +40,7 @@
 					<template v-if="
 						viewingService.category !== '6' && 
 						viewingService.category !== '7' &&
+						viewingService.category !== '8' &&
 						viewingService.category !== '9'
 					">
 						<div class="info-modal-concerns">
@@ -43,16 +48,17 @@
 						</div>
 					</template>
 					<template v-if="(
-							viewingService.category === '6' || 
+							viewingService.category === '6' ||
 							viewingService.category === '7' ||
+							viewingService.category === '8' ||
 							viewingService.category === '9'
 						)">
 						<div class="info-modal-concerns">
-							<p class="customer-comments-label" v-if="viewingService.serviceAdvisorComments">
+							<p class="customer-comments-label" v-if="viewingService.comment">
 								{{ $root.meta.customerCommentsLabel }}
 							</p>
-							<p class="customer-comments" v-if="viewingService.serviceAdvisorComments">
-								{{viewingService.serviceAdvisorComments}}
+							<p class="customer-comments" v-if="viewingService.comment">
+								{{viewingService.comment}}
 							</p>
 							<template v-if="viewingSubServiceIndex !== undefined">
 								<p class="advisor-comments-label" 
@@ -61,6 +67,15 @@
 								</p>
 								<p class="advisor-comments" v-if="viewingService.subServices[viewingSubServiceIndex].serviceAdvisorComments">
 									{{viewingService.subServices[viewingSubServiceIndex].serviceAdvisorComments}}
+								</p>
+							</template>
+							<template v-else>
+								<p class="advisor-comments-label" 
+									v-if="viewingService.serviceAdvisorComments">
+									{{ langTerms.advisor_comments[$root.meta.local.toLowerCase()] }}
+								</p>
+								<p class="advisor-comments" v-if="viewingService.serviceAdvisorComments">
+									{{viewingService.serviceAdvisorComments}}
 								</p>
 							</template>
 						</div>
