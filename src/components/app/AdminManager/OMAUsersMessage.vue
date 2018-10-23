@@ -290,7 +290,7 @@ export default {
 			if (this.searchString) {
 				return this.users.filter(user => {
 					return (
-						user.email.includes(this.searchString) ||
+						user.email.toLowerCase().includes(this.searchString.toLowerCase()) ||
 						user.phone.replace(/\D/g, '').includes(this.searchString)
 					)
 				})
