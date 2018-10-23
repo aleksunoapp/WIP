@@ -33,7 +33,7 @@
 								     ref="errorMessage">
 									<button class="close"
 									        data-close="alert"
-									        @click="clearError()"></button>
+									        @click.prevent="clearError('errorMessage')"></button>
 									<span>{{errorMessage}}</span>
 								</div>
 							</div>
