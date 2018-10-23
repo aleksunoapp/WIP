@@ -665,6 +665,7 @@ export default {
 			if (this.termsAndConditions && this.signatureSigned) {
 				$.ajax({
 					url: ENV.production_url + '/services/' + _this.$root.token,
+					contentType: 'application/json',
 					method: 'POST',
 					data: {
 						confirmedServices,
