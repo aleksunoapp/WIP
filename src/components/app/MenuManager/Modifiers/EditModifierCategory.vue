@@ -218,44 +218,25 @@ export default {
 		validateModifierCategoryData () {
 			var editModifierCategoryVue = this
 			return new Promise(function (resolve, reject) {
-				if (!editModifierCategoryVue.categoryToBeEdited.name.length) {
-					reject('Modifier Category name cannot be blank')
-				} else if (
-					!editModifierCategoryVue.categoryToBeEdited.desc.length
-				) {
-					reject('Modifier Category description cannot be blank')
-				} else if (
-					!editModifierCategoryVue.categoryToBeEdited.image_url.length
-				) {
+				if (!editModifierCategoryVue.categoryToBeEdited.image_url.length) {
 					reject('Modifier Category image cannot be blank')
-				} else if (
-					!$.isNumeric(
-						editModifierCategoryVue.categoryToBeEdited.status
-					)
-				) {
-					reject('Modifier Category status cannot be blank')
-				} else if (
-					!$.isNumeric(
-						editModifierCategoryVue.categoryToBeEdited.included
-					)
-				) {
-					reject('Modifier Category included should be a number')
-				} else if (
-					!$.isNumeric(editModifierCategoryVue.categoryToBeEdited.max)
-				) {
-					reject('Modifier Category max should be a number')
-				} else if (
-					!$.isNumeric(editModifierCategoryVue.categoryToBeEdited.min)
-				) {
+				} else if (!editModifierCategoryVue.categoryToBeEdited.name.length) {
+					reject('Modifier Category name cannot be blank')
+				} else if (!editModifierCategoryVue.categoryToBeEdited.desc.length) {
+					reject('Modifier Category description cannot be blank')
+				} else if (!$.isNumeric(editModifierCategoryVue.categoryToBeEdited.min)) {
 					reject('Modifier Category min should be a number')
-				} else if (
-					!$.isNumeric(
-						editModifierCategoryVue.categoryToBeEdited.order
-					)
-				) {
+				} else if (!$.isNumeric(editModifierCategoryVue.categoryToBeEdited.max)) {
+					reject('Modifier Category max should be a number')
+				} else if (Number(editModifierCategoryVue.categoryToBeEdited.min) > Number(editModifierCategoryVue.categoryToBeEdited.max)) {
+					reject('Modifier Category min cannot be larger than max')
+				} else if (!editModifierCategoryVue.categoryToBeEdited.sku.length) {
+					reject('Modifier Category SKU cannot be blank')
+				} else if (!$.isNumeric(editModifierCategoryVue.categoryToBeEdited.included)) {
+					reject('Modifier Category included should be a number')
+				} else if (!$.isNumeric(editModifierCategoryVue.categoryToBeEdited.order)) {
 					reject('Modifier Category order should be a number')
 				}
-				resolve('Hurray')
 			})
 		},
 		/**
