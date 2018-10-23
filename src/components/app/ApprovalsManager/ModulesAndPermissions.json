@@ -47,6 +47,8 @@
 	  "stores groups create": false,
 	  "stores groups update": false,
 	  "stores groups delete": false,
+	  "stores groups assign stores":false,
+	  "stores groups assign stores approve":false,
 	  "stores groups approve": false
 	},
 	"amenities": {
@@ -279,8 +281,8 @@
 		"menu_manager modifiers items update portions approve": false,
 		"menu_manager modifiers items update options": false,
 		"menu_manager modifiers items update options approve": false,
-		"menu_manager modifiers items update items":false,
-		"menu_manager modifiers items update items approve": false,
+		"menu_manager modifiers update items":false,
+		"menu_manager modifiers update items approve": false,
 		"modifier item nutrition": {
 		  "menu_manager modifiers items nutrition read": false,
 		  "menu_manager modifiers items nutrition create": false,

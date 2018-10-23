@@ -120,7 +120,7 @@
 													<i class="fa fa-lg fa-pencil"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip v-if="$root.permissions['stores groups update']"
+											<el-tooltip v-if="$root.permissions['stores groups assign stores']"
 											            content="Select stores"
 											            effect="light"
 											            placement="right">
