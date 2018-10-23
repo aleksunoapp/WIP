@@ -4,7 +4,7 @@
 			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
 		</div>
 		<!-- END PAGE BAR -->
-		<!-- BEGIN PAGE TITLE-->Í
+		<!-- BEGIN PAGE TITLE-->
 		<h1 class="page-title">Modifier Category Options</h1>
 		<!-- END PAGE TITLE-->
 		<div class="note note-info">
