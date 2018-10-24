@@ -41,12 +41,19 @@ var App = new Vue({
 			activeLocation: {},
 			createdBy: 0,
 			activeMenuId: 0,
-			corporateStoreId: null,
 			requestsPending: false,
 			roles: []
 		}
 	},
 	computed: {
+		corporateStoreId () {
+			const firstCorporateStore = this.storeLocations.find(store => store.is_corporate === 1)
+			if (firstCorporateStore !== undefined) {
+				return firstCorporateStore.id
+			} else {
+				return null
+			}
+		},
 		...mapState({
 			permissions: state => state.permissions,
 			appId: state => state.auth.appId,
@@ -205,7 +212,6 @@ var App = new Vue({
 			this.activeLocation = {}
 			this.createdBy = 0
 			this.activeMenuId = 0
-			this.corporateStoreId = null
 			this.setStoreLocations([])
 			this.setPermissions({})
 			this.roles = []
