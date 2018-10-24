@@ -85,7 +85,7 @@
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
 									<input type="text"
-									       :readonly="placesApi.city"
+									       :disabled="placesApi.city"
 									       class="form-control input-sm"
 									       id="form_control_3"
 									       :class="{'edited': newStore.city.length}"
@@ -94,7 +94,7 @@
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
 									<input type="text"
-									       :readonly="placesApi.province"
+									       :disabled="placesApi.province"
 									       class="form-control input-sm"
 									       id="form_control_4"
 									       :class="{'edited': newStore.province.length}"
@@ -103,7 +103,7 @@
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
 									<input type="text"
-									       :readonly="placesApi.country"
+									       :disabled="placesApi.country"
 									       class="form-control input-sm"
 									       id="form_control_5"
 									       :class="{'edited': newStore.country.length}"
@@ -112,7 +112,7 @@
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
 									<input type="text"
-									       :readonly="placesApi.postal_code"
+									       :disabled="placesApi.postal_code"
 									       class="form-control input-sm"
 									       id="form_control_6"
 									       :class="{'edited': newStore.postal_code.length}"
