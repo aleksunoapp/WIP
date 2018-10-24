@@ -89,7 +89,6 @@
 						</div>
 						<div class="caption">
 							<span class="caption-subject font-default bold uppercase">OMA Users</span>
-							<div class="caption-desc font-grey-cascade">Click on an OMA user to edit store locations assigned to them or to delete the user.</div>
 						</div>
 					</div>
 					<div class="portlet-body">
