@@ -667,10 +667,10 @@ export default {
 					url: ENV.production_url + '/services/' + _this.$root.token,
 					contentType: 'application/json',
 					method: 'POST',
-					data: {
+					data: JSON.stringify({
 						confirmedServices,
 						customerSignature: _this.signaturePadData
-					},
+					}),
 					beforeSend (xhr) {
 						xhr.setRequestHeader('Authorization', 'Bearer ' + _this.$root.accessToken)
 					}
