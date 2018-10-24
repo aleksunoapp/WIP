@@ -355,7 +355,6 @@ import ResourcePicker from '@/components/modules/ResourcePicker'
 import NoResults from '@/components/modules/NoResults'
 import AmenitiesFunctions from '@/controllers/Amenities'
 import ajaxErrorHandler from '@/controllers/ErrorController'
-import $ from 'jquery'
 
 export default {
 	data () {
@@ -451,6 +450,29 @@ export default {
 			this[errorMessageName] = ''
 		},
 		/**
+		 * To check if the input is a positive number
+		 * @function
+		 * @param {string} input - User's input
+		 * @returns {boolean} True is positive integer or float, false is not
+		 */
+		isPositiveNumber (input) {
+			try {
+				if (input.length > input.replace(/[^\d.]/g, '').length) {
+					return false
+				}
+				const value = Number(input)
+				if (value < 0) {
+					return false
+				}
+				return true
+			} catch (e) {
+				if (this.environment !== 'production') {
+					console.log({e})
+				}
+				return false
+			}
+		},
+		/**
 		 * To check if the amenity data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
@@ -462,8 +484,8 @@ export default {
 					reject('Name cannot be blank')
 				} else if (!amenitiesVue.newAmenity.image_url.length) {
 					reject('Select an image')
-				} else if (!$.isNumeric(amenitiesVue.newAmenity.order)) {
-					reject('Order must be a number')
+				} else if (!amenitiesVue.isPositiveNumber(amenitiesVue.newAmenity.order)) {
+					reject('Order must be a positive number')
 				}
 				resolve('Hurray')
 			})
@@ -696,8 +718,8 @@ export default {
 					reject('Name cannot be blank')
 				} else if (!amenitiesVue.amenityToEdit.image_url.length) {
 					reject('Select an image')
-				} else if (!$.isNumeric(amenitiesVue.amenityToEdit.order)) {
-					reject('Order must be a number')
+				} else if (!amenitiesVue.isPositiveNumber(amenitiesVue.amenityToEdit.order)) {
+					reject('Order must be a positive number')
 				}
 				resolve('Hurray')
 			})
