@@ -441,8 +441,6 @@ export default {
 					reject('From cannot be blank')
 				} else if (_this.availableDays.some(day => !day.close_time.length)) {
 					reject('To cannot be blank')
-				} else if (_this.availableDays.some(day => day.open_time >= day.close_time)) {
-					reject('Time To must be after time From')
 				}
 				resolve('Hurray')
 			})
@@ -520,8 +518,6 @@ export default {
 					reject('From cannot be blank')
 				} else if (!day.close_time.length) {
 					reject('To cannot be blank')
-				} else if (day.open_time >= day.close_time) {
-					reject('Time To must be after time From')
 				}
 				resolve('Hurray')
 			})
