@@ -28,16 +28,17 @@
 			<div class="margin-top-20"
 			     v-show="errorMessage"
 			     ref="errorMessage">
-				<div class="alert alert-danger">
-					<button class="close"
-					        @click="clearError('errorMessage')"></button>
+				<div class="alert alert-info">
 					<span>{{ errorMessage }}</span>
 				</div>
 			</div>
-			<div class="margin-top-15">
+			<div
+				class="margin-top-15"
+				v-if="itemNutritionInfo.length === 0">
 				<button type="button"
 				        class="btn blue"
-				        @click="enableCreate()">Add Nutrition Info</button>
+				        @click="enableCreate()"
+				>Add Nutrition Info</button>
 			</div>
 			<div class="portlet light bg-inverse clear"
 			     v-if="!errorMessage.length && !selectLocationMode">
@@ -279,7 +280,7 @@ export default {
 	data () {
 		return {
 			showNutritionModal: false,
-			itemNutritionInfo: {},
+			itemNutritionInfo: [],
 			editingNutritionInfo: false,
 			updating: false,
 			creatingNutritionInfo: false,
@@ -382,7 +383,7 @@ export default {
 		 */
 		getItemNutritionInfo () {
 			var nutritionInfoVue = this
-			nutritionInfoVue.itemNutritionInfo = {}
+			nutritionInfoVue.itemNutritionInfo = []
 			nutritionInfoVue.errorMessage = ''
 			ItemsFunctions.getItemNutritionInfo(
 				nutritionInfoVue.item.id,
@@ -495,6 +496,7 @@ export default {
 								response.status === 'ok'
 							) {
 								this.closeModalAndUpdate()
+								this.showEditSuccess(response.payload)
 							} else {
 								nutritionInfoVue.editNutritionError =
 									'Something'
@@ -521,6 +523,29 @@ export default {
 				})
 		},
 		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Nutrition Info has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
+		},
+		/**
 		 * To create new nutrition info for the item (if it doesn't exist) and send it to the backend and close the modal.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
@@ -544,8 +569,8 @@ export default {
 								response.code === 200 &&
 								response.status === 'ok'
 							) {
-								this.showCreateSuccess(response.payload)
 								this.closeModalAndUpdate()
+								this.showCreateSuccess(response.payload)
 							}
 						})
 						.catch(reason => {

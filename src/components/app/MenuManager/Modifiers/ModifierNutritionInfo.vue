@@ -28,14 +28,17 @@
 			<div class="margin-top-20"
 			     v-show="errorMessage"
 			     ref="errorMessage">
-				<div class="alert alert-danger">
+				<div class="alert alert-info">
 					<span>{{ errorMessage }}</span>
-					<div class="margin-top-15">
-						<button type="button"
-						        class="btn blue"
-						        @click="creatingModifierNutritionInfo = true">Add Nutrition Info</button>
-					</div>
 				</div>
+			</div>
+			<div
+				class="margin-top-15"
+				v-if="itemNutritionInfo.length === 0"
+			>
+				<button type="button"
+						class="btn blue"
+						@click="creatingModifierNutritionInfo = true">Add Nutrition Info</button>
 			</div>
 			<div class="portlet light bg-inverse clear"
 			     v-if="!errorMessage.length && !creatingModifierNutritionInfo && !selectLocationMode">
@@ -278,7 +281,7 @@ export default {
 	data () {
 		return {
 			showNutritionModal: false,
-			itemNutritionInfo: {},
+			itemNutritionInfo: [],
 			editingModifierNutritionInfo: false,
 			creatingModifierNutritionInfo: false,
 			createModifierNutritionError: '',
@@ -349,7 +352,7 @@ export default {
 		 */
 		getModifierItemNutritionInfo () {
 			var nutritionInfoVue = this
-			nutritionInfoVue.itemNutritionInfo = {}
+			nutritionInfoVue.itemNutritionInfo = []
 			nutritionInfoVue.errorMessage = ''
 			ModifiersFunctions.getModifierItemNutritionInfo(
 				nutritionInfoVue.modifierItem.id,
