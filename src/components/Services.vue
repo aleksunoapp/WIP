@@ -92,9 +92,9 @@
 											<span class="information-icon no-icon-bg">
 												<span v-show="subService.isHighlighted" class="highlighted-asterisk">*</span>
 											</span>
-											<span class="service-name">{{ subService.name }}</span>
+											<span class="service-name" v-bind:class="{'bold': (service.isHighlighted === true)}">{{ subService.name }}</span>
 										</div>
-										<div class="summary-table-cell">
+										<div class="summary-table-cell" v-bind:class="{'bold': (service.isHighlighted === true)}">
 											<span class="price" v-if="subService.price !== 0">{{ formatCurrency(subService.price) }}</span>
 											<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 										</div>
@@ -107,9 +107,9 @@
 										<span class="information-icon no-icon-bg">
 											<span v-show="service.isHighlighted" class="highlighted-asterisk">*</span>
 										</span>
-										<span class="service-name">{{ service.name }}</span>
+										<span class="service-name" v-bind:class="{'bold': (service.isHighlighted === true)}">{{ service.name }}</span>
 									</div>
-									<div class="summary-table-cell">
+									<div class="summary-table-cell" v-bind:class="{'bold': (service.isHighlighted === true)}">
 										<span class="price" v-if="service.price !== 0">{{ formatCurrency(service.price) }}</span>
 										<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 									</div>
@@ -127,7 +127,7 @@
 					</div>
 					<div v-show="highlightedServices" class="summary-table-row">
 						<div class="highlighted-legend-cell">
-							<span class="service-name">* {{langTerms.updated_service[$root.meta.local.toLowerCase()]}}</span>
+							<span class="service-name bold">* {{langTerms.updated_service[$root.meta.local.toLowerCase()]}}</span>
 						</div>
 					</div>
 				</div>
@@ -929,6 +929,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.bold{
+	font-weight: bold;
+}
 .wrapper {
 	margin-bottom:235px;
 }
