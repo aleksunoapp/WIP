@@ -35,7 +35,7 @@
 							     v-show="createFAQError"
 							     ref="createFAQError">
 								<button class="close"
-								        @click="clearError('createFAQError')"></button>
+								        @click.prevent="clearError('createFAQError')"></button>
 								<span>{{createFAQError}}</span>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">

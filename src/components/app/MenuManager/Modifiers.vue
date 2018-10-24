@@ -651,22 +651,22 @@ export default {
 		validateModifierCategoryData () {
 			var addModifierCategoryVue = this
 			return new Promise(function (resolve, reject) {
-				if (!addModifierCategoryVue.newCategory.name.length) {
+				if (!addModifierCategoryVue.newCategory.image_url.length) {
+					reject('Modifier Category image cannot be blank')
+				} else if (!addModifierCategoryVue.newCategory.name.length) {
 					reject('Modifier Category name cannot be blank')
 				} else if (!addModifierCategoryVue.newCategory.desc.length) {
 					reject('Modifier Category description cannot be blank')
-				} else if (!addModifierCategoryVue.newCategory.sku.length) {
-					reject('Modifier Category SKU cannot be blank')
-				} else if (!addModifierCategoryVue.newCategory.image_url.length) {
-					reject('Modifier Category image cannot be blank')
-				} else if (!$.isNumeric(addModifierCategoryVue.newCategory.status)) {
-					reject('Modifier Category status should be a number')
-				} else if (!$.isNumeric(addModifierCategoryVue.newCategory.included)) {
-					reject('Modifier Category included should be a number')
-				} else if (!$.isNumeric(addModifierCategoryVue.newCategory.max)) {
-					reject('Modifier Category max should be a number')
 				} else if (!$.isNumeric(addModifierCategoryVue.newCategory.min)) {
 					reject('Modifier Category min should be a number')
+				} else if (!$.isNumeric(addModifierCategoryVue.newCategory.max)) {
+					reject('Modifier Category max should be a number')
+				} else if (Number(addModifierCategoryVue.newCategory.min) > Number(addModifierCategoryVue.newCategory.max)) {
+					reject('Modifier Category min cannot be larger than max')
+				} else if (!addModifierCategoryVue.newCategory.sku.length) {
+					reject('Modifier Category SKU cannot be blank')
+				} else if (!$.isNumeric(addModifierCategoryVue.newCategory.included)) {
+					reject('Modifier Category included should be a number')
 				} else if (!$.isNumeric(addModifierCategoryVue.newCategory.order)) {
 					reject('Modifier Category order should be a number')
 				}

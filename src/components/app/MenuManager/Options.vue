@@ -4,7 +4,7 @@
 			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
 		</div>
 		<!-- END PAGE BAR -->
-		<!-- BEGIN PAGE TITLE-->Í
+		<!-- BEGIN PAGE TITLE-->
 		<h1 class="page-title">Modifier Category Options</h1>
 		<!-- END PAGE TITLE-->
 		<div class="note note-info">
@@ -32,7 +32,7 @@
 							     v-show="errorMessage"
 							     ref="errorMessage">
 								<button class="close"
-								        @click="clearError('errorMessage')"></button>
+								        @click.prevent="clearError('errorMessage')"></button>
 								<span>{{errorMessage}}</span>
 							</div>
 						</div>
