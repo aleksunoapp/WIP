@@ -150,7 +150,6 @@
 </template>
 
 <script>
-import $ from 'jquery'
 import Modal from '../../../modules/Modal'
 import ModifiersFunctions from '../../../../controllers/Modifiers'
 import SelectLocationsPopup from '../../../modules/SelectLocationsPopup'
@@ -211,6 +210,29 @@ export default {
 			this.selectLocationMode = false
 		},
 		/**
+		 * To check if the input is a positive number
+		 * @function
+		 * @param {string} input - User's input
+		 * @returns {boolean} True is positive integer or float, false is not
+		 */
+		isPositiveNumber (input) {
+			try {
+				if (input.length > input.replace(/[^\d.]/g, '').length) {
+					return false
+				}
+				const value = Number(input)
+				if (value < 0) {
+					return false
+				}
+				return true
+			} catch (e) {
+				if (this.environment !== 'production') {
+					console.log({e})
+				}
+				return false
+			}
+		},
+		/**
 		 * To check if the modifier category data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
@@ -224,17 +246,17 @@ export default {
 					reject('Modifier Category name cannot be blank')
 				} else if (!editModifierCategoryVue.categoryToBeEdited.desc.length) {
 					reject('Modifier Category description cannot be blank')
-				} else if (!$.isNumeric(editModifierCategoryVue.categoryToBeEdited.min)) {
-					reject('Modifier Category min should be a number')
-				} else if (!$.isNumeric(editModifierCategoryVue.categoryToBeEdited.max)) {
+				} else if (!editModifierCategoryVue.isPositiveNumber(editModifierCategoryVue.categoryToBeEdited.min)) {
+					reject('Modifier Category min should be a positive number')
+				} else if (!editModifierCategoryVue.isPositiveNumber(editModifierCategoryVue.categoryToBeEdited.max)) {
 					reject('Modifier Category max should be a number')
 				} else if (Number(editModifierCategoryVue.categoryToBeEdited.min) > Number(editModifierCategoryVue.categoryToBeEdited.max)) {
 					reject('Modifier Category min cannot be larger than max')
 				} else if (!editModifierCategoryVue.categoryToBeEdited.sku.length) {
 					reject('Modifier Category SKU cannot be blank')
-				} else if (!$.isNumeric(editModifierCategoryVue.categoryToBeEdited.included)) {
+				} else if (!editModifierCategoryVue.isPositiveNumber(editModifierCategoryVue.categoryToBeEdited.included)) {
 					reject('Modifier Category included should be a number')
-				} else if (!$.isNumeric(editModifierCategoryVue.categoryToBeEdited.order)) {
+				} else if (!editModifierCategoryVue.isPositiveNumber(editModifierCategoryVue.categoryToBeEdited.order)) {
 					reject('Modifier Category order should be a number')
 				}
 			})
