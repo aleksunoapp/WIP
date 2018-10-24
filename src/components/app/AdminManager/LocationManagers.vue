@@ -78,10 +78,6 @@
 											<i class="fa fa-eye"></i>
 										</span>
 									</div>
-									<span class="help-block persist"
-									      v-show="passwordMasked">
-										Minimum 8 characters. English letters only. Include at least one capital and one number.
-									</span>
 									<div class="input-group"
 									     v-show="!passwordMasked">
 										<input type="text"
@@ -95,10 +91,6 @@
 											<i class="fa fa-eye-slash"></i>
 										</span>
 									</div>
-									<span class="help-block persist"
-									      v-show="!passwordMasked">
-										Minimum 8 characters. English letters only. Include at least one capital and one number.
-									</span>
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
 									<div class="input-group"
@@ -127,6 +119,9 @@
 											<i class="fa fa-eye-slash"></i>
 										</span>
 									</div>
+								</div>
+								<div class="alert alert-info">
+									Password must be at least 8 characters long. It can contain English alphabet letters only. It must include at least one capital letter and one number.
 								</div>
 							</div>
 						</div>
