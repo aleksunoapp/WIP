@@ -282,7 +282,7 @@
 													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip v-if="$root.permissions['admin location_managers update']"
+											<el-tooltip v-if="$root.permissions['admin brand_admins assign locations']"
 											            content="Assign stores"
 											            effect="light"
 											            placement="right">
@@ -407,7 +407,7 @@
 													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip v-if="$root.permissions['admin location_managers update']"
+											<el-tooltip v-if="$root.permissions['admin brand_admins assign locations']"
 											            content="Assign stores"
 											            effect="light"
 											            placement="right">
