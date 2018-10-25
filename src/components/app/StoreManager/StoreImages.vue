@@ -87,7 +87,7 @@
 								<h4>No Images</h4>
 								<p>This store doesn't have any images yet. Add the first one by clicking the plus button below.</p>
 							</div>
-							<div class="add-container">
+							<div class="add-container" v-show="mode === 'list'">
 								<el-tooltip content="Add Image"
 								            effect="light"
 								            popper-class="tooltip-in-modal">
@@ -399,7 +399,10 @@ export default {
 					)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
-								imagesVue.images = response.payload.images
+								if (response.payload.pending_approval !== true) {
+									imagesVue.images = response.payload.images
+								}
+								this.showCreateSuccess(response.payload)
 								imagesVue.mode = 'list'
 							}
 						})
@@ -418,6 +421,29 @@ export default {
 						offset: -50
 					})
 				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Image has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Image has been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To reset the create form
@@ -520,7 +546,10 @@ export default {
 					)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
-								imagesVue.images = response.payload.images
+								if (response.payload.pending_approval !== true) {
+									imagesVue.images = response.payload.images
+								}
+								this.showEditSuccess(response.payload)
 								imagesVue.mode = 'list'
 							}
 						})
@@ -539,6 +568,29 @@ export default {
 						offset: -50
 					})
 				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Image has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To reset the edit form
