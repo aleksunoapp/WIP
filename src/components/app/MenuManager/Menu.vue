@@ -215,6 +215,12 @@
 							       class="toggle"
 							       v-model="menuFilter"
 							       value="2"> Add-on Menus </label>
+						<label class="btn blue btn-xs"
+						       :class="{'active': menuFilter === '3', 'btn-outline': menuFilter !== '3'}">
+							<input type="radio"
+							       class="toggle"
+							       v-model="menuFilter"
+							       value="3"> Add-on - Catering Menus </label>
 					</div>
 				</div>
 
@@ -704,9 +710,16 @@ export default {
 			this.displayMenuData = true
 			this.storeMenus = []
 			var menusVue = this
-			let params = {
-				catering: this.menuFilter === '1' ? 1 : 0,
-				addon: this.menuFilter === '2' ? 1 : 0
+			let params = {}
+			if (this.menuFilter === '1') {
+				params.catering = 1
+			}
+			if (this.menuFilter === '2') {
+				params.addon = 1
+			}
+			if (this.menuFilter === '3') {
+				params.catering = 1
+				params.addon = 1
 			}
 			return MenusFunctions.getStoreMenus(
 				menusVue.$root.appId,
