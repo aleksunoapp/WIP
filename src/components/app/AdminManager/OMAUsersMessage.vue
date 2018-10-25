@@ -442,6 +442,11 @@ export default {
 				if (!messageVue.message.notification_type) {
 					reject('Please choose notification type')
 				} else if (
+					messageVue.message.notification_type === 'inapp' &&
+					!messageVue.message.media_path
+				) {
+					reject('Select an image')
+				} else if (
 					messageVue.message.notification_type === 'push' &&
 					!messageVue.message.title
 				) {
