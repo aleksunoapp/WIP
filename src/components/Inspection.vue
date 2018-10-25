@@ -117,7 +117,7 @@
 											v-for="(subService, subServiceIndex) in service.subServices"
 											class="summary-table-row summary-item" 
 											:key="`service-${serviceIndex}-${subServiceIndex}`">
-											<div class="summary-table-cell">
+											<div class="summary-table-cell fit-to-content">
 												<span 
 													class="information-icon" 
 													@click="openServiceModal(service, subServiceIndex)">
@@ -159,7 +159,7 @@
 										<div 
 											:key="`service-${serviceIndex}`"
 											class="summary-table-row summary-item">
-											<div class="summary-table-cell">
+											<div class="summary-table-cell fit-to-content">
 												<span 
 													class="information-icon" 
 													@click="openServiceModal(service)">
@@ -1122,5 +1122,9 @@ export default {
 }
 .help-screen-select-all.french-width {
 	width: 130px;
+}
+.fit-to-content {
+	width: 1%;
+	white-space: nowrap;
 }
 </style>
