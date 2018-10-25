@@ -520,9 +520,10 @@ export default {
 		 * @param {string} input - User's input
 		 * @returns {boolean} True is positive integer or float, false is not
 		 */
-		isPositiveNumber (input) {
+		isNonNegativeNumber (input) {
 			try {
-				if (input.length > input.replace(/[^\d.]/g, '').length) {
+				const inputString = String(input)
+				if (inputString.length > inputString.replace(/[^\d.]/g, '').length) {
 					return false
 				}
 				const value = Number(input)
@@ -549,10 +550,10 @@ export default {
 					reject('Name cannot be blank')
 				} else if (!$.isNumeric(_this.newTaxClass.value)) {
 					reject('Value must be a number')
-				} else if (!_this.isPositiveNumber(_this.newTaxClass.min_amount)) {
-					reject('Minimum amount must be a positive number')
-				} else if (!_this.isPositiveNumber(_this.newTaxClass.max_amount)) {
-					reject('Maximum amount must be a positive number')
+				} else if (!_this.isNonNegativeNumber(_this.newTaxClass.min_amount)) {
+					reject('Minimum amount cannot be negative')
+				} else if (!_this.isNonNegativeNumber(_this.newTaxClass.max_amount)) {
+					reject('Maximum amount cannot be negative')
 				} else if (!(Number(_this.newTaxClass.max_amount) >= Number(_this.newTaxClass.min_amount))) {
 					reject('Maximum amount cannot be smaller than minimum amount')
 				}
@@ -712,10 +713,10 @@ export default {
 					reject('Name cannot be blank')
 				} else if (!$.isNumeric(_this.taxClassToEdit.value)) {
 					reject('Value must be a number')
-				} else if (!_this.isPositiveNumber(_this.taxClassToEdit.min_amount)) {
-					reject('Minimum amount must be a positive number')
-				} else if (!_this.isPositiveNumber(_this.taxClassToEdit.max_amount)) {
-					reject('Maximum amount must be a positive number')
+				} else if (!_this.isNonNegativeNumber(_this.taxClassToEdit.min_amount)) {
+					reject('Minimum amount cannot be negative')
+				} else if (!_this.isNonNegativeNumber(_this.taxClassToEdit.max_amount)) {
+					reject('Maximum amount cannot be negative')
 				} else if (!(Number(_this.taxClassToEdit.max_amount) >= Number(_this.taxClassToEdit.min_amount))) {
 					reject('Maximum amount cannot be smaller than minimum amount')
 				}

@@ -215,9 +215,10 @@ export default {
 		 * @param {string} input - User's input
 		 * @returns {boolean} True is positive integer or float, false is not
 		 */
-		isPositiveNumber (input) {
+		isNonNegativeNumber (input) {
 			try {
-				if (input.length > input.replace(/[^\d.]/g, '').length) {
+				const inputString = String(input)
+				if (inputString.length > inputString.replace(/[^\d.]/g, '').length) {
 					return false
 				}
 				const value = Number(input)
@@ -246,19 +247,20 @@ export default {
 					reject('Modifier Category name cannot be blank')
 				} else if (!editModifierCategoryVue.categoryToBeEdited.desc.length) {
 					reject('Modifier Category description cannot be blank')
-				} else if (!editModifierCategoryVue.isPositiveNumber(editModifierCategoryVue.categoryToBeEdited.min)) {
-					reject('Modifier Category min should be a positive number')
-				} else if (!editModifierCategoryVue.isPositiveNumber(editModifierCategoryVue.categoryToBeEdited.max)) {
-					reject('Modifier Category max should be a number')
+				} else if (!editModifierCategoryVue.isNonNegativeNumber(editModifierCategoryVue.categoryToBeEdited.min)) {
+					reject('Modifier Category min cannot be negative')
+				} else if (!editModifierCategoryVue.isNonNegativeNumber(editModifierCategoryVue.categoryToBeEdited.max)) {
+					reject('Modifier Category max cannot be negative')
 				} else if (Number(editModifierCategoryVue.categoryToBeEdited.min) > Number(editModifierCategoryVue.categoryToBeEdited.max)) {
 					reject('Modifier Category min cannot be larger than max')
 				} else if (!editModifierCategoryVue.categoryToBeEdited.sku.length) {
 					reject('Modifier Category SKU cannot be blank')
-				} else if (!editModifierCategoryVue.isPositiveNumber(editModifierCategoryVue.categoryToBeEdited.included)) {
-					reject('Modifier Category included should be a number')
-				} else if (!editModifierCategoryVue.isPositiveNumber(editModifierCategoryVue.categoryToBeEdited.order)) {
-					reject('Modifier Category order should be a number')
+				} else if (!editModifierCategoryVue.isNonNegativeNumber(editModifierCategoryVue.categoryToBeEdited.included)) {
+					reject('Modifier Category included cannot be negative')
+				} else if (!editModifierCategoryVue.isNonNegativeNumber(editModifierCategoryVue.categoryToBeEdited.order)) {
+					reject('Modifier Category order cannot be negative')
 				}
+				resolve('Hurray')
 			})
 		},
 		/**
@@ -303,7 +305,6 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		updateModifierCategory () {
-			this.saving = true
 			var editModifierCategoryVue = this
 			editModifierCategoryVue.categoryToBeEdited.user_id =
 				editModifierCategoryVue.$root.createdBy
@@ -314,6 +315,7 @@ export default {
 			return editModifierCategoryVue
 				.validateModifierCategoryData()
 				.then(response => {
+					editModifierCategoryVue.saving = true
 					ModifiersFunctions.updateModifierCategory(
 						editModifierCategoryVue.categoryToBeEdited,
 						editModifierCategoryVue.$root.appId,

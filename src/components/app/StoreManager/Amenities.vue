@@ -455,9 +455,10 @@ export default {
 		 * @param {string} input - User's input
 		 * @returns {boolean} True is positive integer or float, false is not
 		 */
-		isPositiveNumber (input) {
+		isNonNegativeNumber (input) {
 			try {
-				if (input.length > input.replace(/[^\d.]/g, '').length) {
+				const inputString = String(input)
+				if (inputString.length > inputString.replace(/[^\d.]/g, '').length) {
 					return false
 				}
 				const value = Number(input)
@@ -484,8 +485,8 @@ export default {
 					reject('Name cannot be blank')
 				} else if (!amenitiesVue.newAmenity.image_url.length) {
 					reject('Select an image')
-				} else if (!amenitiesVue.isPositiveNumber(amenitiesVue.newAmenity.order)) {
-					reject('Order must be a positive number')
+				} else if (!amenitiesVue.isNonNegativeNumber(amenitiesVue.newAmenity.order)) {
+					reject('Order cannot be negative')
 				}
 				resolve('Hurray')
 			})
@@ -718,8 +719,8 @@ export default {
 					reject('Name cannot be blank')
 				} else if (!amenitiesVue.amenityToEdit.image_url.length) {
 					reject('Select an image')
-				} else if (!amenitiesVue.isPositiveNumber(amenitiesVue.amenityToEdit.order)) {
-					reject('Order must be a positive number')
+				} else if (!amenitiesVue.isNonNegativeNumber(amenitiesVue.amenityToEdit.order)) {
+					reject('Order cannot be negative')
 				}
 				resolve('Hurray')
 			})
