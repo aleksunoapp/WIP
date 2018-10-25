@@ -140,7 +140,7 @@ export default {
 	/**
 	 * string to prepend to user's id as alias when messaging OMA users
 	 */
-	application_name: 'freshii',
+	application_name: 'freshii2dev',
 	/**
 	 * app token for API calls to send Messages to OMA users
 	 */
