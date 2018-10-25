@@ -291,7 +291,12 @@
 													<i class="icon-layers"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip v-if="$root.permissions['admin location_managers update']"
+											<el-tooltip v-if="canAny([
+											            'list user\'s roles',
+											            'assign roles to user',
+											            'revoke roles from user',
+											            'sync roles for user'
+											            ])"
 											            content="Roles"
 											            effect="light"
 											            placement="right">
@@ -411,7 +416,12 @@
 													<i class="icon-layers"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip v-if="$root.permissions['admin location_managers update']"
+											<el-tooltip v-if="canAny([
+											            'list user\'s roles',
+											            'assign roles to user',
+											            'revoke roles from user',
+											            'sync roles for user'
+											            ])"
 											            content="Roles"
 											            effect="light"
 											            placement="right">
@@ -602,19 +612,36 @@
 					<span>{{assignRolesErrorMessage}}</span>
 				</div>
 				<roles-picker v-if="showAssignRolesModal"
+				              :editable="canAny([
+				              'assign roles to user',
+				              'revoke roles from user',
+				              'sync roles for user'
+				              ])"
 				              @rolesSelected="updateRoles"
 				              :previouslySelected="locationManagerToAssignRolesTo.roles"></roles-picker>
 			</div>
 			<div slot="modal-footer"
 			     class="modal-footer">
-				<button type="button"
+				<button v-if="canAny([
+				        'assign roles to user',
+				        'revoke roles from user',
+				        'sync roles for user'
+				        ])"
+				        type="button"
 				        class="btn btn-primary"
 				        @click="assignRoles()"
-				        :disabled="assigningRoles">
+				        :disabled="assigning">
 					Save
-					<i v-show="assigningRoles"
+					<i v-show="assigning"
 					   class="fa fa-spinner fa-pulse fa-fw">
 					</i>
+				</button>
+				<button v-else
+				        type="button"
+				        class="btn btn-primary"
+				        @click="closeRolesModal()"
+				        :disabled="assigning">
+					Close
 				</button>
 			</div>
 		</modal>
@@ -635,6 +662,7 @@ import PageResults from '../../modules/PageResults'
 import SelectLocationsPopup from '../../modules/SelectLocationsPopup'
 import RolesPicker from '@/components/app/ApprovalsManager/RolesPicker'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
+import { mapGetters } from 'vuex'
 
 /**
  * Define the email pattern to check for valid emails.
@@ -723,7 +751,8 @@ export default {
 		},
 		previouslySelected () {
 			return this.selectedLocationManager.locations.map(x => x.id) || []
-		}
+		},
+		...mapGetters(['can', 'canAny'])
 	},
 	mounted () {
 		this.getAllLocationManagers()
