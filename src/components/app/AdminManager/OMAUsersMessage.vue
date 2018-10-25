@@ -184,13 +184,13 @@
 							<i class="el-icon-arrow-down el-icon--right"></i>
 						</el-button>
 						<el-dropdown-menu slot="dropdown">
-							<el-dropdown-item :command="29">
+							<el-dropdown-item :command="25">
 								Call
 							</el-dropdown-item>
-							<el-dropdown-item :command="26">
+							<el-dropdown-item :command="22">
 								Website
 							</el-dropdown-item>
-							<el-dropdown-item :command="25">
+							<el-dropdown-item :command="21">
 								Close
 							</el-dropdown-item>
 						</el-dropdown-menu>
@@ -430,6 +430,7 @@ export default {
 			this.message.call_to_action = ''
 			this.message.app_action_id = ''
 			this.message.action_value = ''
+			this.searchString = ''
 		},
 		/**
 		 * To check if the message information is valid before submitting to the backend.
@@ -537,11 +538,11 @@ export default {
 		 */
 		updateCallToAction (id) {
 			let type
-			if (id === 29) {
+			if (id === 25) {
 				type = 'CALL'
-			} else if (id === 26) {
+			} else if (id === 22) {
 				type = 'GOTO_LINK'
-			} else if (id === 25) {
+			} else if (id === 21) {
 				type = 'CLOSE'
 			} else if (id === 15) {
 				type = 'CAMERA'
