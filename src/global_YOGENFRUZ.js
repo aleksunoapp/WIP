@@ -138,6 +138,10 @@ export default {
 		}
 	})(),
 	/**
+	 * string to prepend to user's id as alias when messaging OMA users
+	 */
+	application_name: 'yogenfruz',
+	/**
 	 * API key for Google Maps Javascript API
 	 */
 	googleMapsJavascriptApiKey: 'AIzaSyBJs2f0TNNui_OcRHgVRTIsJAvGQ0EB7oA',

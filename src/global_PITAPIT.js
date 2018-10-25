@@ -138,6 +138,10 @@ export default {
 		}
 	})(),
 	/**
+	 * string to prepend to user's id as alias when messaging OMA users
+	 */
+	application_name: 'pitapit',
+	/**
 	 * app token for API calls to send Messages to OMA users
 	 */
 	OMAUsersMessageAppToken: (function () {

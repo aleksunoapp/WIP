@@ -352,7 +352,7 @@ export default {
 		selectUsers () {
 			this.selectUsersMode = false
 			this.message.user_alias = [
-				...this.users.filter(user => user.selected).map(user => user.id)
+				...this.users.filter(user => user.selected).map(user => `${GlobalFunctions.application_name}_${user.id}`)
 			]
 		},
 		/**
@@ -579,7 +579,7 @@ export default {
 		 */
 		alertText (warnings) {
 			if (warnings.length) {
-				if (this.message.user_alias.length < 2) {
+				if (warnings.length === 1) {
 					return 'This user has no device. The message was not delivered.'
 				} else {
 					return 'Some users in the recipient list have no device and did not receive the message.'
