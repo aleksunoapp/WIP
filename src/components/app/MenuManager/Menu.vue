@@ -942,7 +942,7 @@ export default {
 		 */
 		updateAddOnCategories (val) {
 			if (this.passedMenu.id === 'new') {
-				val.forEach(item => this.newMenu.addon.push(item.addon_category_id))
+				this.newMenu.add_on = val.map(category => category.addon_category_id)
 			} else {
 				this.storeMenus.forEach(menu => {
 					if (menu.id === this.passedMenu.id) {
