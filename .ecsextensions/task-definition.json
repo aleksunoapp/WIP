@@ -21,6 +21,10 @@
        {
           "name": "UserActivityLog",
           "value": "#{USER_ACTIVITY_LOG}#"
+        },
+       {
+          "name": "DmpiScope",
+          "value": "#{DMPI_SCOPE}#"
         }
       ],
       "dnsServers": [
