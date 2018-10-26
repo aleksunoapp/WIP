@@ -7,9 +7,11 @@ const freshii = 'freshii'
 const pitapit = 'pitapit'
 const laprep = 'laprep'
 const yogenfruz = 'yogenfruz'
+let client = window.location.hostname.split('.')[0]
 
-// change the following line
-const client = freshii
+if (client === 'localhost') {
+	client = freshii
+}
 
 const fileRouter = (function () {
 	if (client === freshii) {
