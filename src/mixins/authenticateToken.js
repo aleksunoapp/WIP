@@ -44,7 +44,8 @@ var authenticateToken = {
 				data: {
 					grant_type: 'client_credentials',
 					client_id: _this.$root.token,
-					client_secret: _this.verificationCode
+					client_secret: _this.verificationCode,
+					scope: ENV.scope
 				}
 			}).done((response, textStatus, xhr) => {
 				if (xhr.status === 200) {
