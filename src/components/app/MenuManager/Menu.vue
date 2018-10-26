@@ -197,30 +197,30 @@
 					</div>
 					<div class="btn-group-vertical pull-right"
 					     data-toggle="buttons">
-						<label class="btn blue btn-xs"
-						       :class="{'active': menuFilter === '0', 'btn-outline': menuFilter !== '0'}">
-							<input type="radio"
-							       class="toggle"
-							       v-model="menuFilter"
-							       value="0"> Regular Menus </label>
-						<label class="btn blue btn-xs"
-						       :class="{'active': menuFilter === '1', 'btn-outline': menuFilter !== '1'}">
-							<input type="radio"
-							       class="toggle"
-							       v-model="menuFilter"
-							       value="1"> Catering Menus </label>
-						<label class="btn blue btn-xs"
-						       :class="{'active': menuFilter === '2', 'btn-outline': menuFilter !== '2'}">
-							<input type="radio"
-							       class="toggle"
-							       v-model="menuFilter"
-							       value="2"> Add-on Menus </label>
-						<label class="btn blue btn-xs"
-						       :class="{'active': menuFilter === '3', 'btn-outline': menuFilter !== '3'}">
-							<input type="radio"
-							       class="toggle"
-							       v-model="menuFilter"
-							       value="3"> Add-on - Catering Menus </label>
+						<button 
+							@click="setMenuFilter('0')"
+							class="btn blue btn-xs"
+							:class="{'btn-outline no-hover-highlight' : !menuFilter.includes('0')}"
+							ref="filterButton0"
+						>
+							Regular Menus
+						</button>
+						<button 
+							@click="setMenuFilter('1')"
+							class="btn blue btn-xs"
+							:class="{'btn-outline no-hover-highlight' : !menuFilter.includes('1')}"
+							ref="filterButton1"
+						>
+							Catering Menus
+						</button>
+						<button 
+							@click="setMenuFilter('2')"
+							class="btn blue btn-xs"
+							:class="{'btn-outline no-hover-highlight' : !menuFilter.includes('2')}"
+							ref="filterButton2"
+						>
+							Add-on Menus
+						</button>
 					</div>
 				</div>
 
@@ -478,7 +478,7 @@ export default {
 			createMenuCollapse: true,
 			menuHoursModalActive: false,
 			promptForLocation: false,
-			menuFilter: '0',
+			menuFilter: ['0'],
 			animated: '',
 			menuToAssignHoursTo: {},
 			imageMode: {
@@ -517,6 +517,26 @@ export default {
 		this.getMenuTiers()
 	},
 	methods: {
+		setMenuFilter (selectedType) {
+			const indexOfSelected = this.menuFilter.indexOf(selectedType)
+			let updated = []
+
+			if (selectedType === '0') {
+				updated = ['0']
+			} else {
+				if (indexOfSelected === -1) {
+					updated = this.menuFilter.filter(type => type !== '0')
+					updated.push(selectedType)
+				} else {
+					updated = this.menuFilter.filter(type => type !== selectedType)
+				}
+			}
+			if (updated.length === 0) {
+				updated = ['0']
+			}
+			this.menuFilter = updated
+			this.$refs[`filterButton${selectedType}`].blur()
+		},
 		/**
 		 * To update the modifiers shown in the list based on user's filter selection
 		 * @function
@@ -711,14 +731,10 @@ export default {
 			this.storeMenus = []
 			var menusVue = this
 			let params = {}
-			if (this.menuFilter === '1') {
+			if (this.menuFilter.includes('1')) {
 				params.catering = 1
 			}
-			if (this.menuFilter === '2') {
-				params.addon = 1
-			}
-			if (this.menuFilter === '3') {
-				params.catering = 1
+			if (this.menuFilter.includes('2')) {
 				params.addon = 1
 			}
 			return MenusFunctions.getStoreMenus(
@@ -1131,5 +1147,11 @@ export default {
 .grey-label {
   margin-top: 5px;
   color: rgb(153, 153, 153);
+}
+.no-hover-highlight {
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.18) 0px 1px 2px 0px !important;
+  border-color: rgb(53, 152, 220) !important;
+  color: rgb(53, 152, 220) !important;
+  background-color: rgba(0, 0, 0, 0) !important;
 }
 </style>
