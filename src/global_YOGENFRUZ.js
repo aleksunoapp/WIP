@@ -28,11 +28,11 @@ export default {
 		})(),
 		ecomm: (function () {
 			if (production) {
-				return 'https://pitapit.api.unoapp.io/api'
+				return 'https://yogenfruz.api.unoapp.io/api'
 			} else if (staging) {
-				return 'https://pitapit.beta.api.unoapp.io/api'
+				return 'https://yogenfruz.beta.api.unoapp.io/api'
 			} else if (development) {
-				return 'http://pitapit.dev.api.unoapp.io/api'
+				return 'http://yogenfruz.dev.api.unoapp.io/api'
 			}
 		})(),
 		resources: (function () {
@@ -60,8 +60,8 @@ export default {
 					}
 				} else if (development) {
 					return {
-						appId: '8xHDsWCRGZ1wzDhPPlaVG3Rfwih7oDN3',
-						appSecret: 'otHHmhLOocu9zJIVRV5N4eCse32KmzxL'
+						appId: 'OtCY0ajtjh7eeiFAGAwA1yVlcpYI3fno',
+						appSecret: 'gFzaxVnpqkCFNc7I5r1ZBfFW7PUnRNdT'
 					}
 				}
 			})(),
@@ -78,8 +78,8 @@ export default {
 					}
 				} else if (development) {
 					return {
-						appId: '0CA0D7Lk9D6jZvgeklHiBTX99PYbTDIs',
-						appSecret: 'JnJqjxCKnVpvgO5cWGWSkfesTQWaiP46'
+						appId: 'wOoxggzMMrXxyzmXQCSnESBCTiOwZYCW',
+						appSecret: 'XAjNEmC1f3mF9D6C0GSzvqNxA2mt0XEL'
 					}
 				}
 			})(),
@@ -106,13 +106,13 @@ export default {
 		} else if (staging) {
 			return ''
 		} else if (development) {
-			return '5b749a88db4a13057f091b12'
+			return '5b736212db4a13057f091abb'
 		}
 	})(),
 	/**
 	 * business ID to use for the Resources API
 	 */
-	resourcesBusinessId: 6,
+	resourcesBusinessId: 5,
 	/**
 	 * base url for API calls to send Messages
 	 */
@@ -134,25 +134,13 @@ export default {
 		} else if (staging) {
 			return 'bearer e3e7f5af3c458aa04b3722dc77c4020a'
 		} else if (development) {
-			return 'bearer ef05c132e7c46e6d40bf4b93975a4b4b'
+			return 'bearer 0803af89dda6f93b4c704b388af925fa'
 		}
 	})(),
 	/**
 	 * string to prepend to user's id as alias when messaging OMA users
 	 */
-	application_name: 'pitapit',
-	/**
-	 * app token for API calls to send Messages to OMA users
-	 */
-	OMAUsersMessageAppToken: (function () {
-		if (production) {
-			return ''
-		} else if (staging) {
-			return 'bearer '
-		} else if (development) {
-			return 'bearer 6b1642515315f527604919b430fe79de'
-		}
-	})(),
+	application_name: 'yogenfruz',
 	/**
 	 * API key for Google Maps Javascript API
 	 */

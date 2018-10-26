@@ -87,7 +87,7 @@
 								<h4>No Images</h4>
 								<p>This store doesn't have any images yet. Add the first one by clicking the plus button below.</p>
 							</div>
-							<div class="add-container">
+							<div class="add-container" v-show="mode === 'list'">
 								<el-tooltip content="Add Image"
 								            effect="light"
 								            popper-class="tooltip-in-modal">
@@ -226,7 +226,13 @@
 					<button v-show="mode === 'delete'"
 					        @click="deleteImage()"
 					        type="button"
-					        class="btn blue pull-right">Delete</button>
+					        class="btn blue pull-right"
+									:disabled="deleting">
+						Delete
+					<i v-show="deleting"
+					   class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+					</button>
 				</div>
 			</div>
 		</div>
@@ -259,6 +265,7 @@ export default {
 		selectNew: false,
 		imageToEdit: {},
 		imageToDelete: {},
+		deleting: false,
 		selectEdited: false
 	}),
 	props: {
@@ -392,7 +399,10 @@ export default {
 					)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
-								imagesVue.images = response.payload.images
+								if (response.payload.pending_approval !== true) {
+									imagesVue.images = response.payload.images
+								}
+								this.showCreateSuccess(response.payload)
 								imagesVue.mode = 'list'
 							}
 						})
@@ -411,6 +421,29 @@ export default {
 						offset: -50
 					})
 				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Image has been created'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Image has been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To reset the create form
@@ -513,7 +546,10 @@ export default {
 					)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
-								imagesVue.images = response.payload.images
+								if (response.payload.pending_approval !== true) {
+									imagesVue.images = response.payload.images
+								}
+								this.showEditSuccess(response.payload)
 								imagesVue.mode = 'list'
 							}
 						})
@@ -532,6 +568,29 @@ export default {
 						offset: -50
 					})
 				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Image has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To reset the edit form
@@ -558,6 +617,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		deleteImage () {
+			this.deleting = true
 			var imagesVue = this
 			this.clearError('imagesErrorMessage')
 			return StoresFunctions.deleteStoreImage(
@@ -569,9 +629,12 @@ export default {
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						imagesVue.images = imagesVue.images.filter(image => {
-							return image.id !== imagesVue.imageToDelete.id
-						})
+						if (response.payload && response.payload.pending_approval !== true) {
+							imagesVue.images = imagesVue.images.filter(image => {
+								return image.id !== imagesVue.imageToDelete.id
+							})
+						}
+						imagesVue.showDeleteSuccess(response.payload)
 						imagesVue.mode = 'list'
 					}
 				})
@@ -583,6 +646,32 @@ export default {
 						vue: imagesVue
 					})
 				})
+				.finally(() => {
+					imagesVue.deleting = false
+				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showDeleteSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Image has been deleted'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The removal has been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		}
 	},
 	components: {

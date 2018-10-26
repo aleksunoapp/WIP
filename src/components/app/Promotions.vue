@@ -1210,38 +1210,65 @@ export default {
 			}
 		},
 		/**
+		 * To check if the category data is valid before submitting to the backend.
+		 * @function
+		 * @returns {object} A promise that will validate the input form
+		 */
+		validateQRCodeData () {
+			var promotionsVue = this
+			return new Promise(function (resolve, reject) {
+				if (!promotionsVue.promotionForQrCode.min_loyalty_points.length) {
+					reject('Minimum Loyalty Points cannot be blank')
+				} else if (!promotionsVue.promotionForQrCode.max_use.length) {
+					reject('Maximum Redemptions cannot be blank')
+				} else if (!promotionsVue.promotionForQrCode.max_use_per_person.length) {
+					reject('Maximum Redemptions Per Person cannot be blank')
+				} else if (!promotionsVue.promotionForQrCode.locations.length && !promotionsVue.promotionForQrCode.allLocations) {
+					reject('Select at least one store')
+				}
+				resolve('Hurray')
+			})
+		},
+		/**
 		 * To get a QR code from the api.
 		 * @function
 		 * @returns {object} - A promise
 		 */
 		generateQrCode () {
-			this.generating = true
+			this.clearError('qrErrorMessage')
 			var promotionsVue = this
-			PromotionsFunctions.generateQrcode(
-				promotionsVue.$root.appId,
-				promotionsVue.$root.appSecret,
-				promotionsVue.$root.userToken,
-				promotionsVue.promotionForQrCode
-			)
+			this.validateQRCodeData()
 				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						promotionsVue.promotionForQrCode.qr_code =
-							response.payload.qr_code
-						promotionsVue.promotionForQrCode.qr_code_id =
-							response.payload.qr_code.id
-						promotionsVue.getQrCodes()
-					}
+					promotionsVue.generating = true
+					PromotionsFunctions.generateQrcode(
+						promotionsVue.$root.appId,
+						promotionsVue.$root.appSecret,
+						promotionsVue.$root.userToken,
+						promotionsVue.promotionForQrCode
+					)
+						.then(response => {
+							if (response.code === 200 && response.status === 'ok') {
+								promotionsVue.promotionForQrCode.qr_code =
+									response.payload.qr_code
+								promotionsVue.promotionForQrCode.qr_code_id =
+									response.payload.qr_code.id
+								promotionsVue.getQrCodes()
+							}
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not generate the QR code',
+								errorName: 'qrErrorMessage',
+								vue: promotionsVue
+							})
+						})
+						.finally(() => {
+							promotionsVue.generating = false
+						})
 				})
 				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not generate the QR code',
-						errorName: 'qrErrorMessage',
-						vue: promotionsVue
-					})
-				})
-				.finally(() => {
-					promotionsVue.generating = false
+					promotionsVue.qrErrorMessage = reason
 				})
 		},
 		/**
@@ -2086,12 +2113,8 @@ export default {
 		 * @returns {undefined}
 		 */
 		updatePromotion ({promotion, payload}) {
-			this.displayEditPromotionModal = false
-			for (var i = 0; i < this.promotions.length; i++) {
-				if (this.promotions[i].id === promotion.id) {
-					this.promotions[i] = promotion
-				}
-			}
+			this.showEditPromotionModal = false
+			this.getAllPromotions()
 
 			let title = 'Success'
 			let text = 'The Promotion has been saved'

@@ -27,7 +27,19 @@
 				<table class="table">
 					<thead>
 						<tr>
-							<th> </th>
+							<th>
+								<div class="md-checkbox has-success">
+									<input type="checkbox"
+									       id="select_all_contains"
+									       class="md-check"
+									       v-model="allContainsTagsSelected">
+									<label for="select_all_contains">
+										<span class="inc"></span>
+										<span class="check"></span>
+										<span class="box"></span>
+									</label>
+								</div>
+							</th>
 							<th> Image </th>
 							<th> Name </th>
 							<th> Type </th>
@@ -63,7 +75,19 @@
 				<table class="table">
 					<thead>
 						<tr>
-							<th> </th>
+							<th>
+								<div class="md-checkbox has-success">
+									<input type="checkbox"
+									       id="select_all_may_contain"
+									       class="md-check"
+									       v-model="allMayContainTagsSelected">
+									<label for="select_all_may_contain">
+										<span class="inc"></span>
+										<span class="check"></span>
+										<span class="box"></span>
+									</label>
+								</div>
+							</th>
 							<th> Image </th>
 							<th> Name </th>
 							<th> Type </th>
@@ -123,7 +147,8 @@ export default {
 			applying: false,
 			errorMessage: '',
 			containTags: [],
-			mayContainTags: []
+			mayContainTags: [],
+			allSelected: false
 		}
 	},
 	props: {
@@ -138,6 +163,28 @@ export default {
 		itemType: {
 			type: String,
 			default: 'menu-item'
+		}
+	},
+	computed: {
+		allContainsTagsSelected: {
+			set: function (selected) {
+				this.containTags.forEach(tag => {
+					tag.selected = selected
+				})
+			},
+			get () {
+				return this.containTags.length > 0 && !this.containTags.some(tag => !tag.selected)
+			}
+		},
+		allMayContainTagsSelected: {
+			set: function (selected) {
+				this.mayContainTags.forEach(tag => {
+					tag.selected = selected
+				})
+			},
+			get () {
+				return this.mayContainTags.length > 0 && !this.mayContainTags.some(tag => !tag.selected)
+			}
 		}
 	},
 	created () {
@@ -170,54 +217,23 @@ export default {
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						for (let i = 0; i < response.payload.length; i++) {
-							var tag = response.payload[i]
-							if (tag.type === 'contains') {
-								tagsListVue.containTags.push(tag)
-							} else {
-								tagsListVue.mayContainTags.push(tag)
-							}
-						}
-						if (tagsListVue.appliedTags.length) {
-							for (let i = 0; i < tagsListVue.containTags.length; i++) {
-								tagsListVue.$set(tagsListVue.containTags[i], 'selected', false)
-							}
-							for (let i = 0; i < tagsListVue.mayContainTags.length; i++) {
-								tagsListVue.$set(
-									tagsListVue.mayContainTags[i],
-									'selected',
-									false
-								)
-							}
-							for (let j = 0; j < tagsListVue.appliedTags.length; j++) {
-								for (let i = 0; i < tagsListVue.containTags.length; i++) {
-									if (
-										tagsListVue.containTags[i].id ===
-										tagsListVue.appliedTags[j].id
-									) {
-										tagsListVue.$set(
-											tagsListVue.containTags[i],
-											'selected',
-											true
-										)
-										break
-									}
+						const appliedTagIds = tagsListVue.appliedTags.map(tag => tag.id)
+						tagsListVue.containTags = response.payload
+							.filter(tag => tag.type === 'contains')
+							.map(tag => {
+								return {
+									...tag,
+									selected: appliedTagIds.includes(tag.id)
 								}
-								for (let i = 0; i < tagsListVue.mayContainTags.length; i++) {
-									if (
-										tagsListVue.mayContainTags[i].id ===
-										tagsListVue.appliedTags[j].id
-									) {
-										tagsListVue.$set(
-											tagsListVue.mayContainTags[i],
-											'selected',
-											true
-										)
-										break
-									}
+							})
+						tagsListVue.mayContainTags = response.payload
+							.filter(tag => tag.type === 'may_contain')
+							.map(tag => {
+								return {
+									...tag,
+									selected: appliedTagIds.includes(tag.id)
 								}
-							}
-						}
+							})
 					} else {
 						tagsListVue.errorMessage = response.payload
 					}

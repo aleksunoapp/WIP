@@ -4,7 +4,7 @@
 			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
 		</div>
 		<!-- END PAGE BAR -->
-		<!-- BEGIN PAGE TITLE-->Í
+		<!-- BEGIN PAGE TITLE-->
 		<h1 class="page-title">Modifier Category Options</h1>
 		<!-- END PAGE TITLE-->
 		<div class="note note-info">
@@ -32,7 +32,7 @@
 							     v-show="errorMessage"
 							     ref="errorMessage">
 								<button class="close"
-								        @click="clearError('errorMessage')"></button>
+								        @click.prevent="clearError('errorMessage')"></button>
 								<span>{{errorMessage}}</span>
 							</div>
 						</div>
@@ -368,7 +368,7 @@ export default {
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
 								optionsVue.newOption.id = response.payload.id
-								optionsVue.addOption(optionsVue.newOption)
+								optionsVue.getOptions()
 								optionsVue.showAlert(response.payload)
 								optionsVue.clearNewOption()
 							} else {
@@ -403,29 +403,6 @@ export default {
 				image_url: '',
 				order: null,
 				status: 1
-			}
-		},
-		/**
-		 * To close the modal to create tags and add the newly created tag to the list.
-		 * @function
-		 * @param {object} val - The tag object to be added to the list.
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		addOption (val) {
-			if (parseInt(val.order) > 0) {
-				var done = false
-				for (var i = 0; i < this.options.length; i++) {
-					if (parseInt(this.options[i].order) < parseInt(val.order)) {
-						this.options.splice(i, 0, val)
-						done = true
-						break
-					}
-				}
-				if (!done) {
-					this.options.push(val)
-				}
-			} else {
-				this.options.push(val)
 			}
 		},
 		/**
@@ -488,15 +465,7 @@ export default {
 		 */
 		updateOption (val) {
 			this.showEditOptionModal = false
-			for (var i = 0; i < this.options.length; i++) {
-				if (this.options[i].id === val.id) {
-					this.options[i] = val
-				}
-			}
-			$('#option-' + val.id).addClass('highlight')
-			setTimeout(function () {
-				$('#option-' + val.id).removeClass('highlight')
-			}, 2000)
+			this.getOptions()
 		}
 	},
 	components: {

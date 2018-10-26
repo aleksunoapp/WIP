@@ -83,8 +83,7 @@
 					<span>{{errorMessage}}</span>
 				</div>
 				<p>Message will be sent to
-					<a @click="showUserSelect()">{{message.user_alias.length}} user
-						<span v-show="message.user_alias.length !== 1">s</span>
+					<a @click="showUserSelect()">{{message.user_alias.length}} user<span v-show="message.user_alias.length !== 1">s</span>
 					</a>.</p>
 				<div class="form-group form-md-line-input form-md-floating-label">
 					<label class="btn blue btn-outline"
@@ -104,15 +103,6 @@
 						       id="inapp_notification"
 						       value="inapp"
 						       v-model="message.notification_type"> In App Notification
-					</label>
-					<label class="btn blue btn-outline"
-					       for="sms_notification"
-					       :class="{'active': message.notification_type === 'sms'}">
-						<input type="radio"
-						       class="toggle"
-						       id="sms_notification"
-						       value="sms"
-						       v-model="message.notification_type"> SMS
 					</label>
 				</div>
 				<div class="row"
@@ -194,13 +184,13 @@
 							<i class="el-icon-arrow-down el-icon--right"></i>
 						</el-button>
 						<el-dropdown-menu slot="dropdown">
-							<el-dropdown-item :command="29">
+							<el-dropdown-item :command="25">
 								Call
 							</el-dropdown-item>
-							<el-dropdown-item :command="26">
+							<el-dropdown-item :command="22">
 								Website
 							</el-dropdown-item>
-							<el-dropdown-item :command="25">
+							<el-dropdown-item :command="21">
 								Close
 							</el-dropdown-item>
 						</el-dropdown-menu>
@@ -300,7 +290,7 @@ export default {
 			if (this.searchString) {
 				return this.users.filter(user => {
 					return (
-						user.email.includes(this.searchString) ||
+						user.email.toLowerCase().includes(this.searchString.toLowerCase()) ||
 						user.phone.replace(/\D/g, '').includes(this.searchString)
 					)
 				})
@@ -362,7 +352,7 @@ export default {
 		selectUsers () {
 			this.selectUsersMode = false
 			this.message.user_alias = [
-				...this.users.filter(user => user.selected).map(user => user.id)
+				...this.users.filter(user => user.selected).map(user => `${GlobalFunctions.application_name}_${user.id}`)
 			]
 		},
 		/**
@@ -423,6 +413,11 @@ export default {
 		 * @returns {undefined}
 		 */
 		resetForm () {
+			this.users.forEach(user => {
+				user.selected = false
+			})
+			this.selectUsersMode = true
+			this.message.user_alias = []
 			this.message.notification_type = ''
 			this.message.push_message = ''
 			this.message.title = ''
@@ -435,6 +430,7 @@ export default {
 			this.message.call_to_action = ''
 			this.message.app_action_id = ''
 			this.message.action_value = ''
+			this.searchString = ''
 		},
 		/**
 		 * To check if the message information is valid before submitting to the backend.
@@ -446,6 +442,11 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (!messageVue.message.notification_type) {
 					reject('Please choose notification type')
+				} else if (
+					messageVue.message.notification_type === 'inapp' &&
+					!messageVue.message.media_path
+				) {
+					reject('Select an image')
 				} else if (
 					messageVue.message.notification_type === 'push' &&
 					!messageVue.message.title
@@ -537,11 +538,11 @@ export default {
 		 */
 		updateCallToAction (id) {
 			let type
-			if (id === 29) {
+			if (id === 25) {
 				type = 'CALL'
-			} else if (id === 26) {
+			} else if (id === 22) {
 				type = 'GOTO_LINK'
-			} else if (id === 25) {
+			} else if (id === 21) {
 				type = 'CLOSE'
 			} else if (id === 15) {
 				type = 'CAMERA'
@@ -584,7 +585,7 @@ export default {
 		 */
 		alertText (warnings) {
 			if (warnings.length) {
-				if (this.message.user_alias.length < 2) {
+				if (warnings.length === 1) {
 					return 'This user has no device. The message was not delivered.'
 				} else {
 					return 'Some users in the recipient list have no device and did not receive the message.'

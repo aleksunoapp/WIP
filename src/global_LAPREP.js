@@ -28,11 +28,11 @@ export default {
 		})(),
 		ecomm: (function () {
 			if (production) {
-				return 'https://pitapit.api.unoapp.io/api'
+				return 'https://laprep.api.unoapp.io/api'
 			} else if (staging) {
-				return 'https://pitapit.beta.api.unoapp.io/api'
+				return 'https://laprep.beta.api.unoapp.io/api'
 			} else if (development) {
-				return 'http://pitapit.dev.api.unoapp.io/api'
+				return 'http://laprep.dev.api.unoapp.io/api'
 			}
 		})(),
 		resources: (function () {
@@ -60,8 +60,8 @@ export default {
 					}
 				} else if (development) {
 					return {
-						appId: '8xHDsWCRGZ1wzDhPPlaVG3Rfwih7oDN3',
-						appSecret: 'otHHmhLOocu9zJIVRV5N4eCse32KmzxL'
+						appId: 'qzQk0zVIL4QnDmFCVxhbR3jJIMoDLAJW2',
+						appSecret: 'TBmquk3EjjbRc6iw2cgLb2aWAyY1OjWxZ'
 					}
 				}
 			})(),
@@ -78,8 +78,8 @@ export default {
 					}
 				} else if (development) {
 					return {
-						appId: '0CA0D7Lk9D6jZvgeklHiBTX99PYbTDIs',
-						appSecret: 'JnJqjxCKnVpvgO5cWGWSkfesTQWaiP46'
+						appId: 'wOoxggzMMrXxyzmXQCSnESBCTiOwZYCW',
+						appSecret: 'Jo19PDgsBMQCwyJVxdevoJ5jJ4nCMNPN'
 					}
 				}
 			})(),
@@ -106,13 +106,13 @@ export default {
 		} else if (staging) {
 			return ''
 		} else if (development) {
-			return '5b749a88db4a13057f091b12'
+			return '5b7301ecdb4a13057f091aba'
 		}
 	})(),
 	/**
 	 * business ID to use for the Resources API
 	 */
-	resourcesBusinessId: 6,
+	resourcesBusinessId: 3,
 	/**
 	 * base url for API calls to send Messages
 	 */
@@ -134,25 +134,13 @@ export default {
 		} else if (staging) {
 			return 'bearer e3e7f5af3c458aa04b3722dc77c4020a'
 		} else if (development) {
-			return 'bearer ef05c132e7c46e6d40bf4b93975a4b4b'
+			return 'bearer 41738cd6f3aef91e9133dc757825392c'
 		}
 	})(),
 	/**
 	 * string to prepend to user's id as alias when messaging OMA users
 	 */
-	application_name: 'pitapit',
-	/**
-	 * app token for API calls to send Messages to OMA users
-	 */
-	OMAUsersMessageAppToken: (function () {
-		if (production) {
-			return ''
-		} else if (staging) {
-			return 'bearer '
-		} else if (development) {
-			return 'bearer 6b1642515315f527604919b430fe79de'
-		}
-	})(),
+	application_name: 'laprep',
 	/**
 	 * API key for Google Maps Javascript API
 	 */

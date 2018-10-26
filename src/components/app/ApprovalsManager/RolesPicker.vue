@@ -15,6 +15,7 @@
 							<input type="checkbox"
 							       :id="`${instanceId}-${role.id}`"
 							       class="md-check"
+										 :disabled="!editable"
 							       v-model="role.selected"
 							       @change="rolesSelected()">
 							<label :for="`${instanceId}-${role.id}`">
@@ -68,6 +69,11 @@ export default {
 			type: Array,
 			required: false,
 			default: () => []
+		},
+		editable: {
+			type: Boolean,
+			required: false,
+			default: () => true
 		}
 	},
 	data () {

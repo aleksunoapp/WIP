@@ -441,8 +441,6 @@ export default {
 					reject('From cannot be blank')
 				} else if (_this.availableDays.some(day => !day.close_time.length)) {
 					reject('To cannot be blank')
-				} else if (_this.availableDays.some(day => day.open_time >= day.close_time)) {
-					reject('Time To must be after time From')
 				}
 				resolve('Hurray')
 			})
@@ -520,8 +518,6 @@ export default {
 					reject('From cannot be blank')
 				} else if (!day.close_time.length) {
 					reject('To cannot be blank')
-				} else if (day.open_time >= day.close_time) {
-					reject('Time To must be after time From')
 				}
 				resolve('Hurray')
 			})
@@ -546,9 +542,13 @@ export default {
 						open: day.open
 					})
 						.then(response => {
-							let days = _this.reorderDays(response.payload)
-							days = _this.reformatDays(days)
-							_this.deliveryHours = days
+							if (response.payload && response.payload.pending_approval !== true) {
+								let days = _this.reorderDays(response.payload)
+								days = _this.reformatDays(days)
+								_this.deliveryHours = days
+							} else {
+								this.getDeliveryHours()
+							}
 							this.showUpdateSuccess(response.payload)
 						})
 						.catch(reason => {
@@ -613,8 +613,12 @@ export default {
 				location_id: this.activeLocationId,
 				id: day.id
 			}).then(response => {
-				let index = this.deliveryHours.findIndex(candidate => candidate.id === day.id)
-				this.deliveryHours.splice(index, 1)
+				if (response.payload && response.payload.pending_approval !== true) {
+					let index = this.deliveryHours.findIndex(candidate => candidate.id === day.id)
+					this.deliveryHours.splice(index, 1)
+				} else {
+					day.deleting = false
+				}
 				this.showDeleteSuccess(response.payload)
 			}).catch(reason => {
 				day.deleting = false

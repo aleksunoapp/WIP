@@ -133,8 +133,12 @@
 					<button v-else
 					        type="button"
 					        class="btn btn-primary pull-right"
-					        @click="updateModifierCategory()">
+					        @click="updateModifierCategory()"
+									:disabled="saving">
 						Save
+						<i v-show="saving"
+								class="fa fa-spinner fa-pulse fa-fw">
+						</i>
 					</button>
 				</div>
 			</div>
@@ -146,7 +150,6 @@
 </template>
 
 <script>
-import $ from 'jquery'
 import Modal from '../../../modules/Modal'
 import ModifiersFunctions from '../../../../controllers/Modifiers'
 import SelectLocationsPopup from '../../../modules/SelectLocationsPopup'
@@ -160,6 +163,7 @@ export default {
 			categoryToBeEdited: {
 				image_url: ''
 			},
+			saving: false,
 			errorMessage: '',
 			selectImageMode: false,
 			customWidth: 90,
@@ -206,6 +210,30 @@ export default {
 			this.selectLocationMode = false
 		},
 		/**
+		 * To check if the input is a positive number
+		 * @function
+		 * @param {string} input - User's input
+		 * @returns {boolean} True is positive integer or float, false is not
+		 */
+		isNonNegativeNumber (input) {
+			try {
+				const inputString = String(input)
+				if (inputString.length > inputString.replace(/[^\d.]/g, '').length) {
+					return false
+				}
+				const value = Number(input)
+				if (value < 0) {
+					return false
+				}
+				return true
+			} catch (e) {
+				if (this.environment !== 'production') {
+					console.log({e})
+				}
+				return false
+			}
+		},
+		/**
 		 * To check if the modifier category data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
@@ -213,42 +241,24 @@ export default {
 		validateModifierCategoryData () {
 			var editModifierCategoryVue = this
 			return new Promise(function (resolve, reject) {
-				if (!editModifierCategoryVue.categoryToBeEdited.name.length) {
-					reject('Modifier Category name cannot be blank')
-				} else if (
-					!editModifierCategoryVue.categoryToBeEdited.desc.length
-				) {
-					reject('Modifier Category description cannot be blank')
-				} else if (
-					!editModifierCategoryVue.categoryToBeEdited.image_url.length
-				) {
+				if (!editModifierCategoryVue.categoryToBeEdited.image_url.length) {
 					reject('Modifier Category image cannot be blank')
-				} else if (
-					!$.isNumeric(
-						editModifierCategoryVue.categoryToBeEdited.status
-					)
-				) {
-					reject('Modifier Category status cannot be blank')
-				} else if (
-					!$.isNumeric(
-						editModifierCategoryVue.categoryToBeEdited.included
-					)
-				) {
-					reject('Modifier Category included should be a number')
-				} else if (
-					!$.isNumeric(editModifierCategoryVue.categoryToBeEdited.max)
-				) {
-					reject('Modifier Category max should be a number')
-				} else if (
-					!$.isNumeric(editModifierCategoryVue.categoryToBeEdited.min)
-				) {
-					reject('Modifier Category min should be a number')
-				} else if (
-					!$.isNumeric(
-						editModifierCategoryVue.categoryToBeEdited.order
-					)
-				) {
-					reject('Modifier Category order should be a number')
+				} else if (!editModifierCategoryVue.categoryToBeEdited.name.length) {
+					reject('Modifier Category name cannot be blank')
+				} else if (!editModifierCategoryVue.categoryToBeEdited.desc.length) {
+					reject('Modifier Category description cannot be blank')
+				} else if (!editModifierCategoryVue.isNonNegativeNumber(editModifierCategoryVue.categoryToBeEdited.min)) {
+					reject('Modifier Category min cannot be negative')
+				} else if (!editModifierCategoryVue.isNonNegativeNumber(editModifierCategoryVue.categoryToBeEdited.max)) {
+					reject('Modifier Category max cannot be negative')
+				} else if (Number(editModifierCategoryVue.categoryToBeEdited.min) > Number(editModifierCategoryVue.categoryToBeEdited.max)) {
+					reject('Modifier Category min cannot be larger than max')
+				} else if (!editModifierCategoryVue.categoryToBeEdited.sku.length) {
+					reject('Modifier Category SKU cannot be blank')
+				} else if (!editModifierCategoryVue.isNonNegativeNumber(editModifierCategoryVue.categoryToBeEdited.included)) {
+					reject('Modifier Category included cannot be negative')
+				} else if (!editModifierCategoryVue.isNonNegativeNumber(editModifierCategoryVue.categoryToBeEdited.order)) {
+					reject('Modifier Category order cannot be negative')
 				}
 				resolve('Hurray')
 			})
@@ -305,6 +315,7 @@ export default {
 			return editModifierCategoryVue
 				.validateModifierCategoryData()
 				.then(response => {
+					editModifierCategoryVue.saving = true
 					ModifiersFunctions.updateModifierCategory(
 						editModifierCategoryVue.categoryToBeEdited,
 						editModifierCategoryVue.$root.appId,
@@ -317,6 +328,7 @@ export default {
 								response.status === 'ok'
 							) {
 								this.closeModalAndUpdate()
+								this.showEditSuccess(response.payload)
 							} else {
 								editModifierCategoryVue.errorMessage =
 									response.message
@@ -331,6 +343,9 @@ export default {
 								containerRef: 'modal'
 							})
 						})
+						.finally(() => {
+							editModifierCategoryVue.saving = false
+						})
 				})
 				.catch(reason => {
 					// If validation fails then display the error message
@@ -338,6 +353,29 @@ export default {
 					window.scrollTo(0, 0)
 					throw reason
 				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Modifier has been updated'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Modifier has been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
@@ -354,7 +392,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		closeModalAndUpdate () {
-			this.$emit('updateModifierCategory', this.categoryToBeEdited)
+			this.$emit('updateModifierCategory')
 			this.$router.push('/app/menu_manager/modifiers')
 		},
 		/**

@@ -252,6 +252,7 @@
 							          :lng="longitude"
 							          width="100%"
 							          height="500px"
+												:editable="can('localization locale_regions update')"
 							          @polygonEmitted="updateLanguageRegionToEdit"
 							          class="margin-top-20"
 									  ref="editMap">

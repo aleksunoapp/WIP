@@ -95,7 +95,7 @@
 									           :key="type.id"></el-option>
 									<el-option 
 															label="none"
-															value="none"
+															:value="0"
 															key="none"></el-option>
 								</el-select>
 							</label>
@@ -308,7 +308,7 @@
 									           :key="type.id"></el-option>
 									<el-option 
 															label="none"
-															value="none"
+															:value="0"
 															key="none"></el-option>
 								</el-select>
 							</label>
@@ -515,6 +515,30 @@ export default {
 			this[errorMessageName] = ''
 		},
 		/**
+		 * To check if the input is a positive number
+		 * @function
+		 * @param {string} input - User's input
+		 * @returns {boolean} True is positive integer or float, false is not
+		 */
+		isNonNegativeNumber (input) {
+			try {
+				const inputString = String(input)
+				if (inputString.length > inputString.replace(/[^\d.]/g, '').length) {
+					return false
+				}
+				const value = Number(input)
+				if (value < 0) {
+					return false
+				}
+				return true
+			} catch (e) {
+				if (this.environment !== 'production') {
+					console.log({e})
+				}
+				return false
+			}
+		},
+		/**
 		 * To check if the tax class data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
@@ -526,10 +550,12 @@ export default {
 					reject('Name cannot be blank')
 				} else if (!$.isNumeric(_this.newTaxClass.value)) {
 					reject('Value must be a number')
-				} else if (!$.isNumeric(_this.newTaxClass.min_amount)) {
-					reject('Minimum amount must be a number')
-				} else if (!$.isNumeric(_this.newTaxClass.max_amount)) {
-					reject('Maximum amount must be a number')
+				} else if (!_this.isNonNegativeNumber(_this.newTaxClass.min_amount)) {
+					reject('Minimum amount cannot be negative')
+				} else if (!_this.isNonNegativeNumber(_this.newTaxClass.max_amount)) {
+					reject('Maximum amount cannot be negative')
+				} else if (!(Number(_this.newTaxClass.max_amount) >= Number(_this.newTaxClass.min_amount))) {
+					reject('Maximum amount cannot be smaller than minimum amount')
 				}
 				resolve('Hurray')
 			})
@@ -687,10 +713,12 @@ export default {
 					reject('Name cannot be blank')
 				} else if (!$.isNumeric(_this.taxClassToEdit.value)) {
 					reject('Value must be a number')
-				} else if (!$.isNumeric(_this.taxClassToEdit.min_amount)) {
-					reject('Minimum amount must be a number')
-				} else if (!$.isNumeric(_this.taxClassToEdit.max_amount)) {
-					reject('Maximum amount must be a number')
+				} else if (!_this.isNonNegativeNumber(_this.taxClassToEdit.min_amount)) {
+					reject('Minimum amount cannot be negative')
+				} else if (!_this.isNonNegativeNumber(_this.taxClassToEdit.max_amount)) {
+					reject('Maximum amount cannot be negative')
+				} else if (!(Number(_this.taxClassToEdit.max_amount) >= Number(_this.taxClassToEdit.min_amount))) {
+					reject('Maximum amount cannot be smaller than minimum amount')
 				}
 				resolve('Hurray')
 			})

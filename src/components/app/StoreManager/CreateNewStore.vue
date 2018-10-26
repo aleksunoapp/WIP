@@ -22,17 +22,17 @@
 			         description="Enter delivery info"></el-step>
 			<el-step title="Store Hours"
 			         :status="steps.step2_status"
-			         description="Enter holiday hours"></el-step>
+			         description="Enter store hours"></el-step>
 			<el-step @click.native="goToStep(3)"
 			         :class="{'clickable' : steps.step2_status === 'success'}"
 			         title="Store Holiday Hours"
 			         :status="steps.step3_status"
-			         description="Add Holiday Hours"></el-step>
+			         description="Add holiday hours"></el-step>
 			<el-step title="Store Images"
 			         :class="{'clickable' : steps.step2_status === 'success'}"
 			         @click.native="goToStep(4)"
 			         :status="steps.step4_status"
-			         description="Add Images"></el-step>
+			         description="Add images"></el-step>
 		</el-steps>
 		<div class="panels-wrapper margin-top-15"
 		     v-show="displayStoreForm && !errorMessage.length && !successMessage.length">
@@ -85,7 +85,7 @@
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
 									<input type="text"
-									       :readonly="placesApi.city"
+									       :disabled="placesApi.city"
 									       class="form-control input-sm"
 									       id="form_control_3"
 									       :class="{'edited': newStore.city.length}"
@@ -94,7 +94,7 @@
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
 									<input type="text"
-									       :readonly="placesApi.province"
+									       :disabled="placesApi.province"
 									       class="form-control input-sm"
 									       id="form_control_4"
 									       :class="{'edited': newStore.province.length}"
@@ -103,7 +103,7 @@
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
 									<input type="text"
-									       :readonly="placesApi.country"
+									       :disabled="placesApi.country"
 									       class="form-control input-sm"
 									       id="form_control_5"
 									       :class="{'edited': newStore.country.length}"
@@ -112,7 +112,7 @@
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
 									<input type="text"
-									       :readonly="placesApi.postal_code"
+									       :disabled="placesApi.postal_code"
 									       class="form-control input-sm"
 									       id="form_control_6"
 									       :class="{'edited': newStore.postal_code.length}"

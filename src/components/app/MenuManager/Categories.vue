@@ -33,7 +33,7 @@
 							     v-show="errorMessage"
 							     ref="errorMessage">
 								<button class="close"
-								        @click="clearError()"></button>
+								        @click.prevent="clearError()"></button>
 								<span>{{errorMessage}}</span>
 							</div>
 						</div>

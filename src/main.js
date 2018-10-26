@@ -41,12 +41,19 @@ var App = new Vue({
 			activeLocation: {},
 			createdBy: 0,
 			activeMenuId: 0,
-			corporateStoreId: null,
 			requestsPending: false,
 			roles: []
 		}
 	},
 	computed: {
+		corporateStoreId () {
+			const firstCorporateStore = this.storeLocations.find(store => store.is_corporate === 1)
+			if (firstCorporateStore !== undefined) {
+				return firstCorporateStore.id
+			} else {
+				return null
+			}
+		},
 		...mapState({
 			permissions: state => state.permissions,
 			appId: state => state.auth.appId,
@@ -147,17 +154,46 @@ var App = new Vue({
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		routeUser () {
-			let appRoutes = routes.filter(route => route.path === '/app')[0].children
+			// redirect
+			let appRoutes = routes.filter(
+				route => route.path === '/app'
+			)[0].children
 			let accessible = false
+			// eslint-disable-next-line
+			const routePath = sessionStorage.getItem('routePath')
 			for (let i = 0; i < appRoutes.length; i++) {
 				const route = appRoutes[i]
-				accessible = route.meta.permissions.some(permission => this.permissions[permission])
+				accessible = route.meta.permissions.some(
+					permission =>
+						this.$root.permissions[permission]
+				)
 				if (accessible) {
-					this.$router.push({path: `/app/${route.path}`})
+					if (routePath !== null) {
+						const routePathAccessible = appRoutes.find(route => {
+							if (`/app/${route.path}` === routePath) {
+								return route.meta.permissions.some(
+									permission =>
+										this.$root.permissions[permission]
+								)
+							}
+						})
+						if (routePathAccessible) {
+							this.$router.push({
+								path: routePath
+							})
+						} else {
+							this.$router.push({
+								path: `/app/${route.path}`
+							})
+						}
+					} else {
+						this.$router.push({
+							path: `/app/${route.path}`
+						})
+					}
 					break
 				}
 			}
-
 			if (!accessible) {
 				this.$router.push('/app/unauthorized')
 			}
@@ -176,7 +212,6 @@ var App = new Vue({
 			this.activeLocation = {}
 			this.createdBy = 0
 			this.activeMenuId = 0
-			this.corporateStoreId = null
 			this.setStoreLocations([])
 			this.setPermissions({})
 			this.roles = []

@@ -28,9 +28,7 @@
 						<div class="row">
 							<div class="col-md-6">
 								<div class="alert alert-info">
-									<span>
-										Your new password must be at least 8 characters long, contain English letters only and include at least one capital and one number.
-									</span>
+									Password must be at least 8 characters long. It can contain English alphabet letters only. It must include at least one capital letter and one number.
 								</div>
 
 								<div class="alert alert-danger"

@@ -103,13 +103,17 @@
 										       :class="{'edited': searchTerm.length}"
 										       v-model="searchTerm"
 										       id="search_options_search">
-										<i class="fa fa-times-circle-o clickable"
-										   @click.prevent="resetSearch()"
-										   aria-hidden="true"></i>
 										<span class="help-block persist">
 											At least 3 characters.
 										</span>
 									</div>
+								</div>
+								<div class="pull-right">
+									<button type="button"
+											class="btn btn-default"
+											@click.prevent="resetSearch()"> Reset Search</button>
+									<button type="submit"
+											class="btn blue">Search</button>
 								</div>
 							</div>
 						</div>
@@ -209,7 +213,7 @@
 											<i class="fa fa-lg fa-eye"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip v-if="$root.permissions['menu_manager attributes update']"
+									<el-tooltip v-if="$root.permissions['menu_manager attributes assign item']"
 									            content="Apply to Items"
 									            effect="light"
 									            placement="top">
@@ -218,7 +222,7 @@
 											<i class="icon-layers"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip v-if="$root.permissions['menu_manager attributes update']"
+									<el-tooltip v-if="$root.permissions['menu_manager attributes assign user_attribute']"
 									            content="Apply to User Attributes"
 									            effect="light"
 									            placement="top">
@@ -540,7 +544,7 @@ export default {
 		searchResults () {
 			if (this.searchTerm.length > 2) {
 				let filtered = this.searchItemAttributes()
-				this.numPages = Math.ceil(this.filtered.length / this.resultsPerPage)
+				this.numPages = Math.ceil(filtered.length / this.resultsPerPage)
 				return this.sortItemAttributes(filtered).slice(
 					this.resultsPerPage * (this.activePage - 1),
 					this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage

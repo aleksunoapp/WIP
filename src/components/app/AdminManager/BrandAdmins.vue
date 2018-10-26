@@ -78,10 +78,6 @@
 											<i class="fa fa-eye"></i>
 										</span>
 									</div>
-									<span class="help-block persist"
-									      v-show="passwordMasked">
-										Minimum 8 characters. English letters only. Include at least one capital and one number.
-									</span>
 									<div class="input-group"
 									     v-show="!passwordMasked">
 										<input type="text"
@@ -95,10 +91,6 @@
 											<i class="fa fa-eye-slash"></i>
 										</span>
 									</div>
-									<span class="help-block persist"
-									      v-show="!passwordMasked">
-										Minimum 8 characters. English letters only. Include at least one capital and one number.
-									</span>
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
 									<div class="input-group"
@@ -127,6 +119,9 @@
 											<i class="fa fa-eye-slash"></i>
 										</span>
 									</div>
+								</div>
+								<div class="alert alert-info">
+									Password must be at least 8 characters long. It can contain English alphabet letters only. It must include at least one capital letter and one number.
 								</div>
 							</div>
 						</div>
@@ -287,7 +282,12 @@
 													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip v-if="$root.permissions['admin brand_admins update']"
+											<el-tooltip v-if="canAny([
+											            'list user\'s roles',
+											            'assign roles to user',
+											            'revoke roles from user',
+											            'sync roles for user'
+											            ])"
 											            content="Roles"
 											            effect="light"
 											            placement="right">
@@ -398,7 +398,12 @@
 													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip v-if="$root.permissions['admin brand_admins update']"
+											<el-tooltip v-if="canAny([
+											            'list user\'s roles',
+											            'assign roles to user',
+											            'revoke roles from user',
+											            'sync roles for user'
+											            ])"
 											            content="Roles"
 											            effect="light"
 											            placement="right">
@@ -545,11 +550,21 @@
 				</div>
 				<roles-picker v-if="showAssignRolesModal"
 				              @rolesSelected="updateRoles"
+				              :editable="canAny([
+				              'assign roles to user',
+				              'revoke roles from user',
+				              'sync roles for user'
+				              ])"
 				              :previouslySelected="brandAdminToAssignRolesTo.roles"></roles-picker>
 			</div>
 			<div slot="modal-footer"
 			     class="modal-footer">
-				<button type="button"
+				<button v-if="canAny([
+				        'assign roles to user',
+				        'revoke roles from user',
+				        'sync roles for user'
+				        ])"
+				        type="button"
 				        class="btn btn-primary"
 				        @click="assignRoles()"
 				        :disabled="assigning">
@@ -557,6 +572,13 @@
 					<i v-show="assigning"
 					   class="fa fa-spinner fa-pulse fa-fw">
 					</i>
+				</button>
+				<button v-else
+				        type="button"
+				        class="btn btn-primary"
+				        @click="closeRolesModal()"
+				        :disabled="assigning">
+					Close
 				</button>
 			</div>
 		</modal>
@@ -576,6 +598,7 @@ import Pagination from '../../modules/Pagination'
 import PageResults from '../../modules/PageResults'
 import RolesPicker from '@/components/app/ApprovalsManager/RolesPicker'
 import ajaxErrorHandler from '@/controllers/ErrorController'
+import { mapGetters } from 'vuex'
 
 /**
  * Define the email pattern to check for valid emails.
@@ -655,7 +678,8 @@ export default {
 				this.resultsPerPage * (this.searchActivePage - 1) +
 					this.resultsPerPage
 			)
-		}
+		},
+		...mapGetters(['can', 'canAny'])
 	},
 	mounted () {
 		this.getAllBrandAdmins()

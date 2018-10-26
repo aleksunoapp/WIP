@@ -313,11 +313,14 @@ export default {
 	 */
 	getAllOMAUsers: function (appId, appSecret, userToken) {
 		return new Promise(function (resolve, reject) {
-			$ajax({
+			GlobalFunctions.$ajax({
 				method: 'GET',
 				dataType: 'json',
-				url: '/oma/getUser',
-				data: {},
+				url: '/app/admin/users',
+				data: {
+					guard_name: 'admin',
+					permission: 'oma_app access'
+				},
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('auth-token', userToken)
 					xhr.setRequestHeader('app-id', appId)

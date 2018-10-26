@@ -110,13 +110,17 @@
 										       :class="{'edited': searchTerm.length}"
 										       v-model="searchTerm"
 										       id="search_options_search">
-										<i class="fa fa-times-circle-o clickable"
-										   @click.prevent="resetSearch()"
-										   aria-hidden="true"></i>
 										<span class="help-block persist">
 											At least 3 characters.
 										</span>
 									</div>
+								</div>
+								<div class="pull-right">
+									<button type="button"
+											class="btn btn-default"
+											@click.prevent="resetSearch()"> Reset Search</button>
+									<button type="submit"
+											class="btn blue">Search</button>
 								</div>
 							</div>
 						</div>
@@ -525,7 +529,7 @@ export default {
 		searchResults () {
 			if (this.searchTerm.length > 2) {
 				let filtered = this.searchUserAttributes()
-				this.numPages = Math.ceil(this.filtered.length / this.resultsPerPage)
+				this.numPages = Math.ceil(filtered.length / this.resultsPerPage)
 				return this.sortUserAttributes(filtered).slice(
 					this.resultsPerPage * (this.activePage - 1),
 					this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage

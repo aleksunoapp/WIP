@@ -233,5 +233,47 @@ export default {
 				}
 			})
 		})
+	},
+	/**
+	 * Call to API to remove a store FAQ.
+	 * @function
+	 * @param {object} id - ID of the FAQ to delete.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	deleteStoreFAQ: function (id) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'DELETE',
+				dataType: 'json',
+				url: '/app/poc/storefaq/delete/' + id,
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
+	 * Call to API to remove a user FAQ.
+	 * @function
+	 * @param {object} id - ID of the FAQ to delete.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	deleteUserFAQ: function (id) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'DELETE',
+				dataType: 'json',
+				url: '/app/userfaq/delete/' + id,
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
 	}
 }

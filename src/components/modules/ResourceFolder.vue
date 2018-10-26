@@ -6,14 +6,18 @@
 		<a class="jstree-anchor"
 		   @click="getResources(1, folder)"
 		   :class="{'jstree-clicked': folder.id === activeFolder}">
-			{{ folder.name }}
-			<i class="fa"
-			   :class="{'fa-eye': folder.is_shared, 'fa-eye-slash': !folder.is_shared}"
-			   v-if="!activeLocationId && !selectOnly">
-			</i>
-			<i class="fa fa-pencil"
-			   @click.stop="manageFolder()"
-			   v-if="!selectOnly"></i>
+			<div class="folder-name-container">
+				<div class="folder-name">
+					{{ folder.name }}
+				</div>
+				<i class="fa"
+					:class="{'fa-eye': folder.is_shared, 'fa-eye-slash': !folder.is_shared}"
+					v-if="!activeLocationId && !selectOnly">
+				</i>
+				<i class="fa fa-pencil"
+					@click.stop="manageFolder()"
+					v-if="!selectOnly"></i>
+			</div>
 		</a>
 		<ul class="jstree-children"
 		    v-if="folder.expanded">
@@ -148,3 +152,25 @@ export default {
 	}
 }
 </script>
+<style scoped>
+.jstree-anchor {
+	width: calc(100% - 30px);
+}
+.folder-name-container {
+	display: flex;
+}
+.folder-name {
+	display: inline-block;
+	width: calc(100% - 35px);
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+.folder-name:hover {
+	overflow: auto;
+	white-space: normal;
+	text-overflow: initial;
+	background-color: #ddd;
+	z-index: 2;
+}
+</style>

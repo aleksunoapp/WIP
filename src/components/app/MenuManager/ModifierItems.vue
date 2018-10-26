@@ -201,7 +201,7 @@
 												<i class="fa fa-lg fa-eye"></i>
 											</a>
 										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['menu_manager modifiers items update']"
+										<el-tooltip v-if="$root.permissions['menu_manager modifiers items nutrition read']"
 										            content="Nutrition info"
 										            effect="light"
 										            placement="right">
@@ -983,15 +983,7 @@ export default {
 		 */
 		editModifierItem (val) {
 			this.editItemModalActive = false
-			for (var i = 0; i < this.modifierCategoryItems.length; i++) {
-				if (this.modifierCategoryItems[i].id === val.id) {
-					this.modifierCategoryItems[i] = val
-				}
-			}
-			$('#modifierItem-' + val.id).addClass('highlight')
-			setTimeout(function () {
-				$('#modifierItem-' + val.id).removeClass('highlight')
-			}, 2000)
+			this.getModifierCategoryItems()
 		},
 		/**
 		 * To close the modal to edit a modifier item.

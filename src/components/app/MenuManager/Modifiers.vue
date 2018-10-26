@@ -206,7 +206,7 @@
 												<i class="fa fa-lg fa-eye"></i>
 											</a>
 										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['menu_manager modifiers update']"
+										<el-tooltip v-if="$root.permissions['menu_manager modifiers update items']"
 										            content="Apply to items"
 										            effect="light"
 										            placement="top">
@@ -215,7 +215,7 @@
 												<i class="icon-layers"></i>
 											</a>
 										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['menu_manager modifiers update']"
+										<el-tooltip v-if="$root.permissions['stores copy modifier modifier_to_multiple_location']"
 										            content="Copy to stores"
 										            effect="light"
 										            placement="top">
@@ -224,7 +224,7 @@
 												<i class="fa fa-lg fa-copy"></i>
 											</a>
 										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['menu_manager modifiers update']"
+										<el-tooltip v-if="$root.permissions['stores add item_to_multiple_locations']"
 										            content="Apply to items at stores"
 										            effect="light"
 										            placement="top">
@@ -635,22 +635,13 @@ export default {
 			this.passedModifierCategoryId = modifier.id
 		},
 		/**
-		 * To update the modifier category emitted by the child and highlist it on the categories list.
+		 * To update the modifier category list and close the edit modal
 		 * @function
-		 * @param {object} val - The updated category
 		 * @returns {undefined}
 		 */
-		updateModifierCategory (val) {
+		updateModifierCategory () {
+			this.getStoreModifiers()
 			this.editCategoryModalActive = false
-			for (var i = 0; i < this.storeModifiers.length; i++) {
-				if (this.storeModifiers[i].id === val.id) {
-					this.storeModifiers[i] = val
-				}
-			}
-			$('#modifierCategory-' + val.id).addClass('highlight')
-			setTimeout(function () {
-				$('#modifierCategory-' + val.id).removeClass('highlight')
-			}, 2000)
 		},
 		/**
 		 * To check if the modifier category data is valid before submitting to the backend.
@@ -660,22 +651,22 @@ export default {
 		validateModifierCategoryData () {
 			var addModifierCategoryVue = this
 			return new Promise(function (resolve, reject) {
-				if (!addModifierCategoryVue.newCategory.name.length) {
+				if (!addModifierCategoryVue.newCategory.image_url.length) {
+					reject('Modifier Category image cannot be blank')
+				} else if (!addModifierCategoryVue.newCategory.name.length) {
 					reject('Modifier Category name cannot be blank')
 				} else if (!addModifierCategoryVue.newCategory.desc.length) {
 					reject('Modifier Category description cannot be blank')
-				} else if (!addModifierCategoryVue.newCategory.sku.length) {
-					reject('Modifier Category SKU cannot be blank')
-				} else if (!addModifierCategoryVue.newCategory.image_url.length) {
-					reject('Modifier Category image cannot be blank')
-				} else if (!$.isNumeric(addModifierCategoryVue.newCategory.status)) {
-					reject('Modifier Category status should be a number')
-				} else if (!$.isNumeric(addModifierCategoryVue.newCategory.included)) {
-					reject('Modifier Category included should be a number')
-				} else if (!$.isNumeric(addModifierCategoryVue.newCategory.max)) {
-					reject('Modifier Category max should be a number')
 				} else if (!$.isNumeric(addModifierCategoryVue.newCategory.min)) {
 					reject('Modifier Category min should be a number')
+				} else if (!$.isNumeric(addModifierCategoryVue.newCategory.max)) {
+					reject('Modifier Category max should be a number')
+				} else if (Number(addModifierCategoryVue.newCategory.min) > Number(addModifierCategoryVue.newCategory.max)) {
+					reject('Modifier Category min cannot be larger than max')
+				} else if (!addModifierCategoryVue.newCategory.sku.length) {
+					reject('Modifier Category SKU cannot be blank')
+				} else if (!$.isNumeric(addModifierCategoryVue.newCategory.included)) {
+					reject('Modifier Category included should be a number')
 				} else if (!$.isNumeric(addModifierCategoryVue.newCategory.order)) {
 					reject('Modifier Category order should be a number')
 				}
@@ -724,9 +715,7 @@ export default {
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
 								addModifierCategoryVue.newCategory.id = response.payload.id
-								addModifierCategoryVue.addModifierCategory(
-									addModifierCategoryVue.newCategory
-								)
+								addModifierCategoryVue.getStoreModifiers()
 								addModifierCategoryVue.showAlert(response.payload)
 								addModifierCategoryVue.clearNewCategory()
 							} else {
@@ -748,29 +737,6 @@ export default {
 					window.scrollTo(0, 0)
 					throw reason
 				})
-		},
-		/**
-		 * To add the modifier category emitted by the child to the categories list.
-		 * @function
-		 * @param {object} val - The new category
-		 * @returns {undefined}
-		 */
-		addModifierCategory (val) {
-			if (parseInt(val.order) > 0) {
-				var done = false
-				for (var i = 0; i < this.storeModifiers.length; i++) {
-					if (parseInt(this.storeModifiers[i].order) < parseInt(val.order)) {
-						this.storeModifiers.splice(i, 0, val)
-						done = true
-						break
-					}
-				}
-				if (!done) {
-					this.storeModifiers.push(val)
-				}
-			} else {
-				this.storeModifiers.push(val)
-			}
 		},
 		/**
 		 * To notify user of the outcome of the call

@@ -336,7 +336,8 @@
 										           active-value="1"
 										           inactive-value="0"
 										           active-text="Active"
-										           inactive-text="Inactive">
+										           inactive-text="Inactive"
+										           :disabled="!$root.permissions['stores order_settings update']">
 										</el-switch>
 									</div>
 								</div>
@@ -598,6 +599,30 @@ export default {
 			this[errorMessageName] = ''
 		},
 		/**
+		 * To check if the input is a positive number
+		 * @function
+		 * @param {string} input - User's input
+		 * @returns {boolean} True is positive integer or float, false is not
+		 */
+		isNonNegativeNumber (input) {
+			try {
+				const inputString = String(input)
+				if (inputString.length > inputString.replace(/[^\d.]/g, '').length) {
+					return false
+				}
+				const value = Number(input)
+				if (value < 0) {
+					return false
+				}
+				return true
+			} catch (e) {
+				if (this.environment !== 'production') {
+					console.log({e})
+				}
+				return false
+			}
+		},
+		/**
 		 * To check if the OrderSettings data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
@@ -607,67 +632,79 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (!orderSettingsVue.newOrderSettings.pickup_time_slot) {
 					reject('Pickup Time Slot cannot be blank')
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.pickup_time_slot)) {
+					reject('Pickup Time Slot cannot be negative')
 				} else if (!orderSettingsVue.newOrderSettings.pickup_orders_per_slot) {
 					reject('Pickup Orders Per Slot cannot be blank')
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.pickup_orders_per_slot)) {
+					reject('Pickup Orders Per Slot cannot be negative')
 				} else if (
 					!orderSettingsVue.newOrderSettings.pickup_order_time_cut_off
 				) {
 					reject('Pickup Order Time Cut Off cannot be blank')
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.pickup_order_time_cut_off)) {
+					reject('Pickup Order Time Cut Off cannot be negative')
 				} else if (
 					!orderSettingsVue.newOrderSettings.pickup_cancellation_time_cut_off
 				) {
 					reject('Pickup Cancellation Time Cut Off cannot be blank')
-				} else if (
-					!orderSettingsVue.newOrderSettings.pickup_cancellation_enabled
-				) {
-					reject('Pickup Cancellation Enabled cannot be blank')
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.pickup_cancellation_time_cut_off)) {
+					reject('Pickup Cancellation Time Cut Off cannot be negative')
 				} else if (!orderSettingsVue.newOrderSettings.group_order_time_slot) {
-					reject('Group Order Time  cannot be blank')
+					reject('Group Order Time Slot cannot be blank')
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.group_order_time_slot)) {
+					reject('Group Order Time Slot cannot be negative')
 				} else if (
 					!orderSettingsVue.newOrderSettings.group_order_order_time_cut_off
 				) {
-					reject('Group Order Time Cut cannot be blank')
+					reject('Group Order Time Cut Off cannot be blank')
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.group_order_order_time_cut_off)) {
+					reject('Group Order Time Cut Off cannot be negative')
 				} else if (
 					!orderSettingsVue.newOrderSettings
 						.group_order_cancellation_time_cut_off
 				) {
-					reject('Group Order Cancellation Time Cut cannot be blank')
-				} else if (
-					!orderSettingsVue.newOrderSettings.group_order_cancellation_enabled
-				) {
-					reject('Group Order Cancellation Enabled cannot be blank')
+					reject('Group Order Cancellation Time Cut Off cannot be blank')
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.group_order_cancellation_time_cut_off)) {
+					reject('Group Order Cancellation Time Cut Off cannot be negative')
 				} else if (!orderSettingsVue.newOrderSettings.delivery_time_slot) {
 					reject('Delivery Time Slot cannot be blank')
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.delivery_time_slot)) {
+					reject('Delivery Time Slot cannot be negative')
 				} else if (
 					!orderSettingsVue.newOrderSettings.delivery_orders_per_slot
 				) {
 					reject('Delivery Orders Per Slot cannot be blank')
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.delivery_orders_per_slot)) {
+					reject('Delivery Orders Per Slot cannot be negative')
 				} else if (
 					!orderSettingsVue.newOrderSettings.delivery_order_time_cut_off
 				) {
 					reject('Delivery Order Time Cut Off cannot be blank')
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.delivery_order_time_cut_off)) {
+					reject('Delivery Order Time Cut Off cannot be negative')
 				} else if (
 					!orderSettingsVue.newOrderSettings.delivery_cancellation_time_cut_off
 				) {
 					reject('Delivery Cancellation Time Cut Off cannot be blank')
-				} else if (
-					!orderSettingsVue.newOrderSettings.delivery_cancellation_enabled
-				) {
-					reject('Delivery Cancellation Enabled cannot be blank')
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.delivery_cancellation_time_cut_off)) {
+					reject('Delivery Cancellation Time Cut Off cannot be negative')
 				} else if (!orderSettingsVue.newOrderSettings.catering_time_slot) {
 					reject('Catering Time Slot cannot be blank')
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.catering_time_slot)) {
+					reject('Catering Time Slot cannot be negative')
 				} else if (
 					!orderSettingsVue.newOrderSettings.catering_order_time_cut_off
 				) {
 					reject('Catering Order Time Cut Off cannot be blank')
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.catering_order_time_cut_off)) {
+					reject('Catering Order Time Cut Off cannot be negative')
 				} else if (
 					!orderSettingsVue.newOrderSettings.catering_cancellation_time_cut_off
 				) {
 					reject('Catering Cancellation Time Cut Off cannot be blank')
-				} else if (
-					!orderSettingsVue.newOrderSettings.catering_cancellation_enabled
-				) {
-					reject('Catering Cancellation Enabled cannot be blank')
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.catering_cancellation_time_cut_off)) {
+					reject('Catering Cancellation Time Cut Off cannot be negative')
 				}
 				resolve('Hurray')
 			})
@@ -715,11 +752,7 @@ export default {
 					orderSettingsVue.createErrorMessage = reason
 					orderSettingsVue.$scrollTo(
 						orderSettingsVue.$refs.createErrorMessage,
-						1000,
-						{
-							offset: -50
-						}
-					)
+						1000)
 				})
 		},
 		/**
@@ -761,11 +794,7 @@ export default {
 					orderSettingsVue.listErrorMessage = reason
 					orderSettingsVue.$scrollTo(
 						orderSettingsVue.$refs.listErrorMessage,
-						1000,
-						{
-							offset: -50
-						}
-					)
+						1000)
 				})
 		},
 		/**
@@ -868,73 +897,79 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (!orderSettingsVue.orderSettingsToEdit.pickup_time_slot) {
 					reject('Pickup Time Slot cannot be blank')
-				} else if (
-					!orderSettingsVue.orderSettingsToEdit.pickup_orders_per_slot
-				) {
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.pickup_time_slot)) {
+					reject('Pickup Time Slot cannot be negative')
+				} else if (!orderSettingsVue.orderSettingsToEdit.pickup_orders_per_slot) {
 					reject('Pickup Orders Per Slot cannot be blank')
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.pickup_orders_per_slot)) {
+					reject('Pickup Orders Per Slot cannot be negative')
 				} else if (
 					!orderSettingsVue.orderSettingsToEdit.pickup_order_time_cut_off
 				) {
 					reject('Pickup Order Time Cut Off cannot be blank')
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.pickup_order_time_cut_off)) {
+					reject('Pickup Order Time Cut Off cannot be negative')
 				} else if (
 					!orderSettingsVue.orderSettingsToEdit.pickup_cancellation_time_cut_off
 				) {
 					reject('Pickup Cancellation Time Cut Off cannot be blank')
-				} else if (
-					!orderSettingsVue.orderSettingsToEdit.pickup_cancellation_enabled
-				) {
-					reject('Pickup Cancellation Enabled cannot be blank')
-				} else if (
-					!orderSettingsVue.orderSettingsToEdit.group_order_time_slot
-				) {
-					reject('Group Order Time  cannot be blank')
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.pickup_cancellation_time_cut_off)) {
+					reject('Pickup Cancellation Time Cut Off cannot be negative')
+				} else if (!orderSettingsVue.orderSettingsToEdit.group_order_time_slot) {
+					reject('Group Order Time Slot cannot be blank')
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.group_order_time_slot)) {
+					reject('Group Order Time Slot cannot be negative')
 				} else if (
 					!orderSettingsVue.orderSettingsToEdit.group_order_order_time_cut_off
 				) {
-					reject('Group Order Time Cut cannot be blank')
+					reject('Group Order Time Cut Off cannot be blank')
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.group_order_order_time_cut_off)) {
+					reject('Group Order Time Cut Off cannot be negative')
 				} else if (
 					!orderSettingsVue.orderSettingsToEdit
 						.group_order_cancellation_time_cut_off
 				) {
-					reject('Group Order Cancellation Time Cut cannot be blank')
-				} else if (
-					!orderSettingsVue.orderSettingsToEdit.group_order_cancellation_enabled
-				) {
-					reject('Group Order Cancellation Enabled cannot be blank')
+					reject('Group Order Cancellation Time Cut Off cannot be blank')
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.group_order_cancellation_time_cut_off)) {
+					reject('Group Order Cancellation Time Cut Off cannot be negative')
 				} else if (!orderSettingsVue.orderSettingsToEdit.delivery_time_slot) {
 					reject('Delivery Time Slot cannot be blank')
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.delivery_time_slot)) {
+					reject('Delivery Time Slot cannot be negative')
 				} else if (
 					!orderSettingsVue.orderSettingsToEdit.delivery_orders_per_slot
 				) {
 					reject('Delivery Orders Per Slot cannot be blank')
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.delivery_orders_per_slot)) {
+					reject('Delivery Orders Per Slot cannot be negative')
 				} else if (
 					!orderSettingsVue.orderSettingsToEdit.delivery_order_time_cut_off
 				) {
 					reject('Delivery Order Time Cut Off cannot be blank')
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.delivery_order_time_cut_off)) {
+					reject('Delivery Order Time Cut Off cannot be negative')
 				} else if (
-					!orderSettingsVue.orderSettingsToEdit
-						.delivery_cancellation_time_cut_off
+					!orderSettingsVue.orderSettingsToEdit.delivery_cancellation_time_cut_off
 				) {
 					reject('Delivery Cancellation Time Cut Off cannot be blank')
-				} else if (
-					!orderSettingsVue.orderSettingsToEdit.delivery_cancellation_enabled
-				) {
-					reject('Delivery Cancellation Enabled cannot be blank')
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.delivery_cancellation_time_cut_off)) {
+					reject('Delivery Cancellation Time Cut Off cannot be negative')
 				} else if (!orderSettingsVue.orderSettingsToEdit.catering_time_slot) {
 					reject('Catering Time Slot cannot be blank')
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.catering_time_slot)) {
+					reject('Catering Time Slot cannot be negative')
 				} else if (
 					!orderSettingsVue.orderSettingsToEdit.catering_order_time_cut_off
 				) {
 					reject('Catering Order Time Cut Off cannot be blank')
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.catering_order_time_cut_off)) {
+					reject('Catering Order Time Cut Off cannot be negative')
 				} else if (
-					!orderSettingsVue.orderSettingsToEdit
-						.catering_cancellation_time_cut_off
+					!orderSettingsVue.orderSettingsToEdit.catering_cancellation_time_cut_off
 				) {
 					reject('Catering Cancellation Time Cut Off cannot be blank')
-				} else if (
-					!orderSettingsVue.orderSettingsToEdit.catering_cancellation_enabled
-				) {
-					reject('Catering Cancellation Enabled cannot be blank')
+				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.catering_cancellation_time_cut_off)) {
+					reject('Catering Cancellation Time Cut Off cannot be negative')
 				}
 				resolve('Hurray')
 			})

@@ -728,8 +728,8 @@ export default {
 				.then(response => {
 					permissionsVue.getAllPermissions()
 					permissionsVue.closeDeletePermissionModal()
-					permissionsVue.showDeleteSuccess()
-					permissionsVue.resetDeleteForm(response.payload)
+					permissionsVue.showDeleteSuccess(response.payload)
+					permissionsVue.resetDeleteForm()
 				})
 				.catch(reason => {
 					ajaxErrorHandler({

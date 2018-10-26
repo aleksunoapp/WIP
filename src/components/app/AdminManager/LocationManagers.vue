@@ -78,10 +78,6 @@
 											<i class="fa fa-eye"></i>
 										</span>
 									</div>
-									<span class="help-block persist"
-									      v-show="passwordMasked">
-										Minimum 8 characters. English letters only. Include at least one capital and one number.
-									</span>
 									<div class="input-group"
 									     v-show="!passwordMasked">
 										<input type="text"
@@ -95,10 +91,6 @@
 											<i class="fa fa-eye-slash"></i>
 										</span>
 									</div>
-									<span class="help-block persist"
-									      v-show="!passwordMasked">
-										Minimum 8 characters. English letters only. Include at least one capital and one number.
-									</span>
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
 									<div class="input-group"
@@ -127,6 +119,9 @@
 											<i class="fa fa-eye-slash"></i>
 										</span>
 									</div>
+								</div>
+								<div class="alert alert-info">
+									Password must be at least 8 characters long. It can contain English alphabet letters only. It must include at least one capital letter and one number.
 								</div>
 							</div>
 						</div>
@@ -287,7 +282,7 @@
 													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip v-if="$root.permissions['admin location_managers update']"
+											<el-tooltip v-if="$root.permissions['admin brand_admins assign locations']"
 											            content="Assign stores"
 											            effect="light"
 											            placement="right">
@@ -296,7 +291,12 @@
 													<i class="icon-layers"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip v-if="$root.permissions['admin location_managers update']"
+											<el-tooltip v-if="canAny([
+											            'list user\'s roles',
+											            'assign roles to user',
+											            'revoke roles from user',
+											            'sync roles for user'
+											            ])"
 											            content="Roles"
 											            effect="light"
 											            placement="right">
@@ -407,7 +407,7 @@
 													   aria-hidden="true"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip v-if="$root.permissions['admin location_managers update']"
+											<el-tooltip v-if="$root.permissions['admin brand_admins assign locations']"
 											            content="Assign stores"
 											            effect="light"
 											            placement="right">
@@ -416,7 +416,12 @@
 													<i class="icon-layers"></i>
 												</a>
 											</el-tooltip>
-											<el-tooltip v-if="$root.permissions['admin location_managers update']"
+											<el-tooltip v-if="canAny([
+											            'list user\'s roles',
+											            'assign roles to user',
+											            'revoke roles from user',
+											            'sync roles for user'
+											            ])"
 											            content="Roles"
 											            effect="light"
 											            placement="right">
@@ -607,19 +612,36 @@
 					<span>{{assignRolesErrorMessage}}</span>
 				</div>
 				<roles-picker v-if="showAssignRolesModal"
+				              :editable="canAny([
+				              'assign roles to user',
+				              'revoke roles from user',
+				              'sync roles for user'
+				              ])"
 				              @rolesSelected="updateRoles"
 				              :previouslySelected="locationManagerToAssignRolesTo.roles"></roles-picker>
 			</div>
 			<div slot="modal-footer"
 			     class="modal-footer">
-				<button type="button"
+				<button v-if="canAny([
+				        'assign roles to user',
+				        'revoke roles from user',
+				        'sync roles for user'
+				        ])"
+				        type="button"
 				        class="btn btn-primary"
 				        @click="assignRoles()"
-				        :disabled="assigningRoles">
+				        :disabled="assigning">
 					Save
-					<i v-show="assigningRoles"
+					<i v-show="assigning"
 					   class="fa fa-spinner fa-pulse fa-fw">
 					</i>
+				</button>
+				<button v-else
+				        type="button"
+				        class="btn btn-primary"
+				        @click="closeRolesModal()"
+				        :disabled="assigning">
+					Close
 				</button>
 			</div>
 		</modal>
@@ -640,6 +662,7 @@ import PageResults from '../../modules/PageResults'
 import SelectLocationsPopup from '../../modules/SelectLocationsPopup'
 import RolesPicker from '@/components/app/ApprovalsManager/RolesPicker'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
+import { mapGetters } from 'vuex'
 
 /**
  * Define the email pattern to check for valid emails.
@@ -728,7 +751,8 @@ export default {
 		},
 		previouslySelected () {
 			return this.selectedLocationManager.locations.map(x => x.id) || []
-		}
+		},
+		...mapGetters(['can', 'canAny'])
 	},
 	mounted () {
 		this.getAllLocationManagers()
@@ -1344,24 +1368,27 @@ export default {
 			})
 		},
 		/**
-		 * To notify user that the operation succeeded.
+		 * To notify user of the outcome of the call
 		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
 		 */
-		showEditSuccess () {
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Location Manager has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The Location Manager has been sent for approval'
+				type = 'info'
+			}
+
 			this.$swal({
-				title: 'Success',
-				text: 'Location Manager successfully updated',
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// do nothing
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To toggle the create new panel.

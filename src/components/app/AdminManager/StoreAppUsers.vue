@@ -822,7 +822,7 @@ export default {
 						location.country
 					)
 						.toLowerCase()
-						.includes(this.storeSearchTerm)
+						.includes(this.storeSearchTerm.toLowerCase())
 				})
 			} else {
 				return this.stores

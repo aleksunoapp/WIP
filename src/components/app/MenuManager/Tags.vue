@@ -32,7 +32,7 @@
 							     v-show="errorMessage"
 							     ref="errorMessage">
 								<button class="close"
-								        @click="clearError('errorMessage')"></button>
+								        @click.prevent="clearError('errorMessage')"></button>
 								<span>{{errorMessage}}</span>
 							</div>
 						</div>
@@ -183,7 +183,6 @@
 </template>
 
 <script>
-import $ from 'jquery'
 import Breadcrumb from '../../modules/Breadcrumb'
 import NoResults from '../../modules/NoResults'
 import Modal from '../../modules/Modal'
@@ -444,15 +443,7 @@ export default {
 		 */
 		updateTag (val) {
 			this.displayEditTagModal = false
-			for (var i = 0; i < this.tags.length; i++) {
-				if (this.tags[i].id === val.id) {
-					this.tags[i] = val
-				}
-			}
-			$('#tag-' + val.id).addClass('highlight')
-			setTimeout(function () {
-				$('#tag-' + val.id).removeClass('highlight')
-			}, 2000)
+			this.getTags()
 		},
 		/**
 		 * To close the modal to edit tag details.

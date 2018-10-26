@@ -31,7 +31,7 @@
 							<div class="alert alert-danger"
 							     v-show="errorMessage">
 								<button class="close"
-								        @click="clearError('errorMessage')"></button>
+								        @click.prevent="clearError('errorMessage')"></button>
 								<span>{{errorMessage}}</span>
 							</div>
 						</div>
@@ -136,7 +136,7 @@
 											<i class="fa fa-lg fa-eye"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip v-if="$root.permissions['menu_manager portions update']"
+									<el-tooltip v-if="$root.permissions['menu_manager portions add modifier items']"
 									            content="Apply to multiple"
 									            effect="light"
 									            placement="right">
@@ -468,15 +468,7 @@ export default {
 		 */
 		updatePortion (val) {
 			this.showEditPortionModal = false
-			for (var i = 0; i < this.portions.length; i++) {
-				if (this.portions[i].id === val.id) {
-					this.portions[i] = val
-				}
-			}
-			$('#portion-' + val.id).addClass('highlight')
-			setTimeout(function () {
-				$('#portion-' + val.id).removeClass('highlight')
-			}, 2000)
+			this.getPortions()
 		}
 	},
 	components: {

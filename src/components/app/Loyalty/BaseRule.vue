@@ -229,6 +229,12 @@
 					</div>
 					<div class="col-xs-6">
 						<fieldset :disabled="!$root.permissions['loyalty base_rule update']">
+							<div>
+								<p>Type: {{
+										ruleToEdit.type === 'dollar-to-points' ?
+											'points per dollars spent' : 'points per transaction'
+									}}</p>
+							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
 								<input ref="editedName"
 								       type="text"
@@ -237,16 +243,6 @@
 								       :class="{'edited': ruleToEdit.name.length}">
 								<label for="form_control_name">Name</label>
 							</div>
-							<el-select v-model="ruleToEdit.type"
-							           :disabled="true"
-							           placeholder="Select type"
-							           size="small"
-							           class="margin-bottom-15">
-								<el-option label="points per dollars spent"
-								           value="dollar-to-points"></el-option>
-								<el-option label="points per transaction"
-								           value="transactions-to-points"></el-option>
-							</el-select>
 							<div class="form-group form-md-line-input form-md-floating-label"
 							     v-show="ruleToEdit.type === 'dollar-to-points'">
 								<input type="text"
