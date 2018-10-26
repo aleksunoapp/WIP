@@ -1830,7 +1830,7 @@ export default {
 				})
 				.catch(reason => {
 					// If validation fails then display the error message
-					editStoreVue.storeInformationError = reason
+					editStoreVue.storeMetaError = reason
 					window.scrollTo(0, 0)
 					throw reason
 				})
