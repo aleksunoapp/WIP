@@ -157,8 +157,7 @@
 												<input type="text"
 												       class="form-control input-sm edited"
 												       id="form_control_11"
-												       v-model="storeToBeEdited.phone"
-												       v-mask="'(###) ###-####'">
+												       v-model="maskedPhone">
 												<label for="form_control_11">Store Phone Number</label>
 											</div>
 											<div class="form-group form-md-line-input form-md-floating-label">
@@ -166,8 +165,7 @@
 												       class="form-control input-sm"
 												       :class="{'edited': storeToBeEdited.fax.length}"
 												       id="form_control_12"
-												       v-model="storeToBeEdited.fax"
-												       v-mask="'(###) ###-####'">
+												       v-model="maskedFax">
 												<label for="form_control_12">Store Fax Number (optional)</label>
 											</div>
 											<div class="form-group form-md-line-input form-md-floating-label">
@@ -802,7 +800,6 @@ import StoreGroupsFunctions from '../../../controllers/StoreGroups'
 import NoResults from '../../modules/NoResults'
 import AddHolidayHours from './AddHolidayHours'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
-import { mask } from 'vue-the-mask'
 import { debounce } from 'lodash'
 import TimezonesArray from './TimezonesArray'
 import StoreImages from '@/components/app/StoreManager/StoreImages'
@@ -921,6 +918,58 @@ export default {
 			holidayHourToDelete: {},
 			showDeleteHolidayHoursModal: false,
 			deleteHolidayHoursErrorMessage: ''
+		}
+	},
+	computed: {
+		maskedPhone: {
+			set (value) {
+				this.storeToBeEdited.phone = value.replace(/\D/g, '')
+			},
+			get () {
+				if (String(this.storeToBeEdited.phone).length === 0) {
+					return ''
+				} else {
+					let formatted = String(this.storeToBeEdited.phone).split('')
+					if (formatted.length > 0) {
+						formatted.splice(0, 0, '(')
+					}
+					if (formatted.length > 4) {
+						formatted.splice(4, 0, ') ')
+					}
+					if (formatted.length > 8) {
+						formatted.splice(8, 0, '-')
+					}
+					if (formatted.length > 13) {
+						formatted.splice(13, 0, '-')
+					}
+					return formatted.join('')
+				}
+			}
+		},
+		maskedFax: {
+			set (value) {
+				this.storeToBeEdited.fax = value.replace(/\D/g, '')
+			},
+			get () {
+				if (String(this.storeToBeEdited.fax).length === 0) {
+					return ''
+				} else {
+					let formatted = String(this.storeToBeEdited.fax).split('')
+					if (formatted.length > 0) {
+						formatted.splice(0, 0, '(')
+					}
+					if (formatted.length > 4) {
+						formatted.splice(4, 0, ') ')
+					}
+					if (formatted.length > 8) {
+						formatted.splice(8, 0, '-')
+					}
+					if (formatted.length > 13) {
+						formatted.splice(13, 0, '-')
+					}
+					return formatted.join('')
+				}
+			}
 		}
 	},
 	created () {
@@ -1483,11 +1532,11 @@ export default {
 					reject('Store country cannot be blank')
 				} else if (!editStoreVue.storeToBeEdited.postal_code.length) {
 					reject('Store postal code cannot be blank')
-				} else if (editStoreVue.storeToBeEdited.phone.length < 14) {
+				} else if (editStoreVue.storeToBeEdited.phone.length < 10) {
 					reject('Store phone should have at least 10 digits')
 				} else if (
 					editStoreVue.storeToBeEdited.fax &&
-					editStoreVue.storeToBeEdited.fax.length < 14
+					editStoreVue.storeToBeEdited.fax.length < 10
 				) {
 					reject('Store fax number should have at least 10 digits')
 				} else if (!editStoreVue.storeToBeEdited.email.length) {
@@ -2048,9 +2097,6 @@ export default {
 		LoadingScreen,
 		Modal,
 		StoreImages
-	},
-	directives: {
-		mask
 	}
 }
 </script>
