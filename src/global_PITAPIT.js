@@ -55,8 +55,8 @@ export default {
 					}
 				} else if (staging) {
 					return {
-						appId: '',
-						appSecret: ''
+						appId: 'T4wIAbmYx00k7TPLJcfH6ijYgzI5kzad',
+						appSecret: 'xykfNBucsaQi9TpqiGsDYW2PqE3VYafV'
 					}
 				} else if (development) {
 					return {
@@ -104,7 +104,7 @@ export default {
 		if (production) {
 			return ''
 		} else if (staging) {
-			return ''
+			return '5bd04987e39d933feee07516'
 		} else if (development) {
 			return '5b749a88db4a13057f091b12'
 		}
@@ -132,7 +132,7 @@ export default {
 		if (production) {
 			return ''
 		} else if (staging) {
-			return 'bearer e3e7f5af3c458aa04b3722dc77c4020a'
+			return 'bearer 2be7cc6b406a09759144a468d94f5cf2'
 		} else if (development) {
 			return 'bearer ef05c132e7c46e6d40bf4b93975a4b4b'
 		}
@@ -148,9 +148,69 @@ export default {
 		if (production) {
 			return ''
 		} else if (staging) {
-			return 'bearer '
+			return 'bearer 39d270dc380d5ac331f0affc7a4ddb59'
 		} else if (development) {
 			return 'bearer 6b1642515315f527604919b430fe79de'
+		}
+	})(),
+	/**
+	 * OMA Message actions and ID's
+	 */
+	OMAMessageAction: (function () {
+		if (production) {
+			return [
+				{
+					id: 11,
+					type: 'CLOSE',
+					value: 'Close'
+				},
+				{
+					id: 15,
+					type: 'CALL',
+					value: 'Call'
+				},
+				{
+					id: 12,
+					type: 'GOTO_LINK',
+					value: 'Website'
+				}
+			]
+		} else if (staging) {
+			return [
+				{
+					id: 11,
+					type: 'CLOSE',
+					value: 'Close'
+				},
+				{
+					id: 15,
+					type: 'CALL',
+					value: 'Call'
+				},
+				{
+					id: 12,
+					type: 'GOTO_LINK',
+					value: 'Website'
+				}
+			]
+		} else if (development) {
+			return [
+				{
+					id: 21,
+					type: 'CLOSE',
+					value: 'Close'
+				},
+				{
+					id: 25,
+					type: 'CALL',
+					value: 'Call'
+				},
+				{
+					id: 22,
+					type: 'GOTO_LINK',
+					value: 'Website'
+				}
+			]
 		}
 	})(),
 	/**

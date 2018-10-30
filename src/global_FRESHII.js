@@ -154,6 +154,66 @@ export default {
 		}
 	})(),
 	/**
+	 * OMA Message actions and ID's
+	 */
+	OMAMessageAction: (function () {
+		if (production) {
+			return [
+				{
+					id: 11,
+					type: 'CLOSE',
+					value: 'Close'
+				},
+				{
+					id: 15,
+					type: 'CALL',
+					value: 'Call'
+				},
+				{
+					id: 12,
+					type: 'GOTO_LINK',
+					value: 'Website'
+				}
+			]
+		} else if (staging) {
+			return [
+				{
+					id: 11,
+					type: 'CLOSE',
+					value: 'Close'
+				},
+				{
+					id: 15,
+					type: 'CALL',
+					value: 'Call'
+				},
+				{
+					id: 12,
+					type: 'GOTO_LINK',
+					value: 'Website'
+				}
+			]
+		} else if (development) {
+			return [
+				{
+					id: 21,
+					type: 'CLOSE',
+					value: 'Close'
+				},
+				{
+					id: 25,
+					type: 'CALL',
+					value: 'Call'
+				},
+				{
+					id: 22,
+					type: 'GOTO_LINK',
+					value: 'Website'
+				}
+			]
+		}
+	})(),
+	/**
 	 * API key for Google Maps Javascript API
 	 */
 	googleMapsJavascriptApiKey: 'AIzaSyAweYWedKzekUFGNFf-Qb1Ox7ce6Pul2xQ', // aleks@unoapp.com
