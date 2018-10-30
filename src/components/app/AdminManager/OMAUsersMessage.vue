@@ -546,8 +546,6 @@ export default {
 			})
 			this.message.call_to_action = type
 			this.message.app_action_id = id
-			console.log('action: ', this.message.call_to_action)
-			console.log('id: ', this.message.app_action_id)
 		},
 		/**
 		 * To set the image to be same as the one emitted by the gallery modal.
