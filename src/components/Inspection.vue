@@ -84,7 +84,7 @@
 					<div class="accordion-contents">
 						<div class="summary-table">
 							<div v-if="category.serviceCategoryType !== 'PASS' && $root.inspectionCounts[countVariables[category.serviceCategoryType]] !== 0" class="summary-table-row">
-								<div class="summary-table-cell">
+								<div class="summary-table-cell fit-to-content">
 									<span class="summary-legend">
 										<b>{{ langTerms.check_recommended_services[$root.meta.local.toLowerCase()] }}</b>
 									</span>
@@ -93,9 +93,9 @@
 								<div class="summary-table-cell">
 								</div>
 
-								<div class="summary-table-cell">
-									<span> {{ (category.allSelected) ? langTerms.remove_all[$root.meta.local.toLowerCase()] : langTerms.select_all[$root.meta.local.toLowerCase()] }} </span>
-									<div class="service-checkbox">
+								<div class="summary-table-cell" >
+									<span v-if="showRemoveAllCheckBox(category)"> {{ (category.allSelected) ? langTerms.remove_all[$root.meta.local.toLowerCase()] : langTerms.select_all[$root.meta.local.toLowerCase()] }} </span>
+									<div class="service-checkbox" v-if="showRemoveAllCheckBox(category)">
 										<input type="checkbox" :id="`select-${category.serviceCategoryType}`" v-model="category.allSelected" @change="toggleAll(category)">
 										<label :for="`select-${category.serviceCategoryType}`">
 											<span class="check"></span>
@@ -674,6 +674,36 @@ export default {
 			} else {
 				return false
 			}
+		},
+		/**
+		 * To determine if the Remove all/select all checkbox needs to shown or not.
+		 * @function
+		 * @param {object} category - The category to check
+		 * @returns {Number} - True|False.
+		 */
+		showRemoveAllCheckBox (category) {
+			let show = 0
+			this.$root.services.forEach(service => {
+				if (service.category === '6' ||
+					service.category === '7' ||
+					service.category === '8' ||
+					service.category === '9'
+
+				) {
+					if (service.subServices) {
+						service.subServices.forEach(subService => {
+							if (subService.price !== 0) {
+								show = 1
+							}
+						})
+					} else {
+						if (service.price !== 0) {
+							show = 1
+						}
+					}
+				}
+			})
+			return show
 		},
 		/**
 		 * To open the full inspection in a separate tab
