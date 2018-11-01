@@ -1,5 +1,5 @@
 <template>
-	<div v-if="!$root.dealer">
+	<div v-if="!$root.dealer"> 
 		<div class="wrapper" v-if="!$root.meta.expired">
 			<div class="top-row">
 				<div class="language-selector">

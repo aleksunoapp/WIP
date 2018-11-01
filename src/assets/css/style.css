@@ -41,7 +41,7 @@ img {
 	.wrapper {
 		max-width: 75%;
 	}
-} 
+}
 
 .nissan-logo {
 	padding-top: 55px;
@@ -150,7 +150,7 @@ img {
 }
 @media (max-width: 410px) {
 	.modal-close{
-		transform: translateX(0px);		
+		transform: translateX(0px);
 		right: 0;
 	}
 }
@@ -224,7 +224,7 @@ img {
 	cursor: pointer;
 	color: #fff;
 	background-color: #45ac00;
-	padding: 16px 0;	
+	padding: 16px 0;
 }
 .modal-buttons .approve-btn.disabled {
 	opacity: 0.5;
@@ -246,7 +246,7 @@ img {
 	.modal-buttons .more-info-btn {
 		display: none;
 		visibility: hidden;
-	}	
+	}
 }
 
 .modal-buttons .more-info-btn:hover {
@@ -274,7 +274,7 @@ img {
 	width: 300px;
 	font-size: 16px;
 	padding: 8px 8px .1px 8px;
-	box-shadow: 0 2px 8px rgba(0,0,0,0.3);	
+	box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 @media (max-width: 410px){
 	.more-info-popup{
@@ -287,20 +287,20 @@ img {
     content: "";
 	position: absolute;
 	bottom: -7px;
-	background: 
-	linear-gradient(-135deg, rgba(255,255,255,0) 50%, 
+	background:
+	linear-gradient(-135deg, rgba(255,255,255,0) 50%,
 	rgba(255,255,255,1) 50%);
 	right: 45%;
 	width: 25px;
 	height: 25px;
-    transform: rotate(-45deg); 
+    transform: rotate(-45deg);
 	box-shadow: -4px 4px 8px -4px rgba(0, 0, 0, 0.3);
-	z-index: 0;	
+	z-index: 0;
 }
 
 .more-info-popup .info-popup-btn{
 	border: 1px solid #0064a1;
-	color: #00578e;		
+	color: #00578e;
 	margin-bottom: 8px;
 	padding: 12px;
 	z-index: 11;
@@ -427,11 +427,15 @@ img {
 }
 
 .summary-table-row {
-	display: table-row;
+	/* display: table-row; */
+	display: flex;
+	width: 100%;
+	justify-content: space-between;
+	border-bottom: 1px solid rgba(0,0,0,0.15);
 }
 
 .summary-table-row .summary-table-cell {
-	border-bottom: 1px solid rgba(0,0,0,0.15);
+	/* border-bottom: 1px solid rgba(0,0,0,0.15); */
 }
 
 .summary-table-cell {
@@ -442,7 +446,7 @@ img {
 }
 
 .summary-table-cell:last-child {
-	width: 25%;
+	width: 35%;
 	text-align: right;
 }
 
@@ -464,7 +468,8 @@ img {
 	height: 14px;
 	background-image: url('../images/information-icon.png');
 	background-size: 14px 14px;
-	margin-right: 10px;
+	padding-right: 14px;
+	/* margin-right: 10px; */
 	cursor: pointer;
 }
 .service-name {
@@ -1029,13 +1034,13 @@ img {
 .click-sign{
 	text-align: left;
 	font-size: 11px;
-	background-color: #dddddd;	
+	background-color: #dddddd;
 	width: 77px;
-	padding: 2px 8px;				
+	padding: 2px 8px;
 }
 
 .click-sign:hover{
-	background-color: #d1d1d1;	
+	background-color: #d1d1d1;
 	cursor: pointer;
 }
 

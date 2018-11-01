@@ -113,27 +113,29 @@
 										service.category === '9'
 									">
 									<template v-if="service.subServices">
-										<div 
+										<div
 											v-for="(subService, subServiceIndex) in service.subServices"
-											class="summary-table-row summary-item" 
+											class="summary-table-row summary-item"
 											:key="`service-${serviceIndex}-${subServiceIndex}`">
-											<div class="summary-table-cell fit-to-content">
-												<span 
-													class="information-icon" 
-													@click="openServiceModal(service, subServiceIndex)">
-												</span>
-												<span 
-													class="service-name" 
-													v-bind:class="{'bold': (service.isHighlighted === true)}">
-													<span v-if="service.isHighlighted === true">* </span>{{ service.name }}
-												</span>
-											</div>
-											<div class="summary-table-cell">
-												<div class="dot-caption-container">
-													<div class="dot-container">
-														<img :src="service.iconUrl">
+											<div class="summary-table-row-wrap">
+												<div class="summary-table-cell fit-to-content">
+													<span
+														class="information-icon"
+														@click="openServiceModal(service, subServiceIndex)">
+													</span>
+													<span
+														class="service-name"
+														v-bind:class="{'bold': (service.isHighlighted === true)}">
+														<span v-if="service.isHighlighted === true">* </span>{{ service.name }}
+													</span>
+												</div>
+												<div class="summary-table-cell">
+													<div class="dot-caption-container">
+														<div class="dot-container">
+															<img :src="service.iconUrl">
+														</div>
+														<span class="dot-caption" v-if="service.subServices">{{service.subServices[subServiceIndex].name}}</span>
 													</div>
-													<span class="dot-caption" v-if="service.subServices">{{service.subServices[subServiceIndex].name}}</span>
 												</div>
 											</div>
 											<div class="summary-table-cell">
@@ -141,10 +143,10 @@
 													<span class="price" v-if="service.subServices[subServiceIndex].price !== 0">{{ formatCurrency(service.subServices[subServiceIndex].price) }}</span>
 													<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 													<div class="service-checkbox">
-														<input 
-															type="checkbox" 
-															:id="`sub-service-${serviceIndex}-${subServiceIndex}`" 
-															v-model="service.subServices[subServiceIndex].isSelected" 
+														<input
+															type="checkbox"
+															:id="`sub-service-${serviceIndex}-${subServiceIndex}`"
+															v-model="service.subServices[subServiceIndex].isSelected"
 															@change="toggleCheckbox(category, service, subServiceIndex)">
 														<label :for="`sub-service-${serviceIndex}-${subServiceIndex}`">
 															<span class="check"></span>
@@ -156,26 +158,28 @@
 										</div>
 									</template>
 									<template v-else>
-										<div 
+										<div
 											:key="`service-${serviceIndex}`"
 											class="summary-table-row summary-item">
-											<div class="summary-table-cell fit-to-content">
-												<span 
-													class="information-icon" 
-													@click="openServiceModal(service)">
-												</span>
-												<span 
-													class="service-name" 
-													v-bind:class="{'bold': (service.isHighlighted === true)}">
-													<span v-if="service.isHighlighted === true">* </span>{{ service.name }}
-												</span>
-											</div>
-											<div class="summary-table-cell">
-												<div class="dot-caption-container">
-													<div class="dot-container">
-														<img :src="service.iconUrl"> 
+											<div class="summary-table-row-wrap">
+												<div class="summary-table-cell fit-to-content">
+													<span
+														class="information-icon"
+														@click="openServiceModal(service)">
+													</span>
+													<span
+														class="service-name"
+														v-bind:class="{'bold': (service.isHighlighted === true)}">
+														<span v-if="service.isHighlighted === true">* </span>{{ service.name }}
+													</span>
+												</div>
+												<div class="summary-table-cell">
+													<div class="dot-caption-container">
+														<div class="dot-container">
+															<img :src="service.iconUrl">
+														</div>
+														<span class="dot-caption">{{langTerms.sorry_no_recommendations[$root.meta.local.toLowerCase()]}}</span>
 													</div>
-													<span class="dot-caption">{{langTerms.sorry_no_recommendations[$root.meta.local.toLowerCase()]}}</span>
 												</div>
 											</div>
 											<div class="summary-table-cell"></div>
@@ -190,14 +194,14 @@
 			</template>
 
 			<template v-for="(category, index) in serviceCategories" v-if="category.showOnInspection && category.id !=='5'">
-				<div 
+				<div
 					:class="{
-						'accordion-open': category.defaultExpended, 
-						'accordion-closed': !category.defaultExpended, 
-						'red': category.serviceCategoryType === 'SAFETY', 
-						'yellow': category.serviceCategoryType === 'ATTN', 
+						'accordion-open': category.defaultExpended,
+						'accordion-closed': !category.defaultExpended,
+						'red': category.serviceCategoryType === 'SAFETY',
+						'yellow': category.serviceCategoryType === 'ATTN',
 						'green': category.serviceCategoryType === 'PASS'
-					}" 
+					}"
 					class="accordion"
 					:key="`category-${index}`">
 					<div @click="toggleAccordion(category)" class="accordion-header">
@@ -1087,6 +1091,30 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+@media (max-width: 500px) {
+	.summary-table-row-wrap{
+		flex-direction: column;
+	}
+}
+
+.summary-table-row-wrap{
+	display: flex;
+	width: 100%;
+}
+@media (max-width: 500px) {
+	.summary-table-row-wrap .summary-table-cell:last-child{
+		width: 100%;
+		padding-left: 30px;
+		text-align: left;
+	}
+}
+@media (min-width: 500px) {
+	.summary-table-row-wrap > .summary-table-cell:last-child{
+		flex-grow: 1;
+		text-align: left;
+	}
+}
 .bold{
 	font-weight: bold;
 }
@@ -1154,7 +1182,7 @@ export default {
 	width: 130px;
 }
 .fit-to-content {
-	width: 1%;
-	white-space: nowrap;
+	/* width: 1%; */
+	/* white-space: nowrap; */
 }
 </style>
