@@ -1103,17 +1103,26 @@ export default {
 	width: 100%;
 }
 @media (max-width: 500px) {
-	.summary-table-row-wrap .summary-table-cell:last-child{
+	.summary-table-row-wrap > .summary-table-cell:last-child{
 		width: 100%;
 		padding-left: 30px;
 		text-align: left;
 	}
+  .summary-table-row-wrap > .summary-table-cell:first-child{
+    display: flex;
+    flex-wrap: nowrap;
+  }
 }
 @media (min-width: 500px) {
 	.summary-table-row-wrap > .summary-table-cell:last-child{
 		flex-grow: 1;
 		text-align: left;
 	}
+  .summary-table-row-wrap > .summary-table-cell:first-child{
+    width:50%;
+    text-align: left;
+    display: flex;
+  }
 }
 .bold{
 	font-weight: bold;
@@ -1184,5 +1193,9 @@ export default {
 .fit-to-content {
 	/* width: 1%; */
 	/* white-space: nowrap; */
+}
+.service-name{
+  word-wrap: normal;
+  hyphens: auto;
 }
 </style>
