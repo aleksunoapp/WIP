@@ -477,8 +477,7 @@ export default {
 									response.payload.type === 'restricted'
 								) {
 									loginVue.$root.accountType = 'store_admin'
-									loginVue.$root.storeLocations =
-										response.payload.locations
+									loginVue.setStoreLocations(response.payload.locations)
 									localStorage.setItem(
 										'accountType',
 										loginVue.$root.accountType
@@ -634,6 +633,7 @@ export default {
 				})
 		},
 		...mapMutations({
+			setStoreLocations: 'SET_STORE_LOCATIONS',
 			setPermissions: 'SET_PERMISSIONS',
 			setAppId: 'SET_APP_ID',
 			setAppSecret: 'SET_APP_SECRET',

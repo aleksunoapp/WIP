@@ -11,7 +11,7 @@
 					<p>Name: {{$root.activeUser.name}}</p>
 					<p>Email: {{$root.activeUser.email}}</p>
 					<p>Assigned: {{userLocationCount}}
-						<span v-if="userLocationCount !== 0">stores</span>
+						<span v-if="userLocationCount !== 1">stores</span>
 						<span v-else>store</span>
 					</p>
 					<p>Roles: </p>
