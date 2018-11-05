@@ -55,8 +55,8 @@ export default {
 					}
 				} else if (staging) {
 					return {
-						appId: '',
-						appSecret: ''
+						appId: 'j1avUDF87aJlFugUSOjirtg04vhjjuss',
+						appSecret: '3hWskZHgXOFGmhrw9zAFGAziEj9fsjt1'
 					}
 				} else if (development) {
 					return {
@@ -68,13 +68,13 @@ export default {
 			loyalty: (function () {
 				if (production) {
 					return {
-						appId: 'KWpZuK0lscFrJ84dkUGsMQVQGDHAtAHv',
-						appSecret: 'QVDvjk0cn4jltPnNEQi2hwQlD17pU0dr'
+						appId: '',
+						appSecret: ''
 					}
 				} else if (staging) {
 					return {
-						appId: '0CA0D7Lk9D6jZvgeklHiBTX99PYbTDIs',
-						appSecret: 'JnJqjxCKnVpvgO5cWGWSkfesTQWaiP46'
+						appId: '',
+						appSecret: ''
 					}
 				} else if (development) {
 					return {
@@ -104,7 +104,7 @@ export default {
 		if (production) {
 			return ''
 		} else if (staging) {
-			return ''
+			return '5bd87057e39d933feee0751b'
 		} else if (development) {
 			return '5b7301ecdb4a13057f091aba'
 		}
@@ -132,7 +132,7 @@ export default {
 		if (production) {
 			return ''
 		} else if (staging) {
-			return 'bearer e3e7f5af3c458aa04b3722dc77c4020a'
+			return 'bearer 82d320a2a0a82917995ddca06860d0d5'
 		} else if (development) {
 			return 'bearer 41738cd6f3aef91e9133dc757825392c'
 		}
@@ -142,9 +142,81 @@ export default {
 	 */
 	application_name: 'laprep',
 	/**
+	 * app token for API calls to send Messages to OMA users
+	 */
+	OMAUsersMessageAppToken: (function () {
+		if (production) {
+			return ''
+		} else if (staging) {
+			return 'bearer 39d270dc380d5ac331f0affc7a4ddb59'
+		} else if (development) {
+			return 'bearer 6b1642515315f527604919b430fe79de'
+		}
+	})(),
+	/**
+	 * OMA Message actions and ID's
+	 */
+	OMAMessageAction: (function () {
+		if (production) {
+			return [
+				{
+					id: 11,
+					type: 'CLOSE',
+					value: 'Close'
+				},
+				{
+					id: 15,
+					type: 'CALL',
+					value: 'Call'
+				},
+				{
+					id: 12,
+					type: 'GOTO_LINK',
+					value: 'Website'
+				}
+			]
+		} else if (staging) {
+			return [
+				{
+					id: 11,
+					type: 'CLOSE',
+					value: 'Close'
+				},
+				{
+					id: 15,
+					type: 'CALL',
+					value: 'Call'
+				},
+				{
+					id: 12,
+					type: 'GOTO_LINK',
+					value: 'Website'
+				}
+			]
+		} else if (development) {
+			return [
+				{
+					id: 21,
+					type: 'CLOSE',
+					value: 'Close'
+				},
+				{
+					id: 25,
+					type: 'CALL',
+					value: 'Call'
+				},
+				{
+					id: 22,
+					type: 'GOTO_LINK',
+					value: 'Website'
+				}
+			]
+		}
+	})(),
+	/**
 	 * API key for Google Maps Javascript API
 	 */
-	googleMapsJavascriptApiKey: 'AIzaSyBJs2f0TNNui_OcRHgVRTIsJAvGQ0EB7oA',
+	googleMapsJavascriptApiKey: 'AIzaSyBJs2f0TNNui_OcRHgVRTIsJAvGQ0EB7oA', // aleks@unoapp.com
 	/**
 	 * Ajax wrapper for making backend calls.
 	 * @function
