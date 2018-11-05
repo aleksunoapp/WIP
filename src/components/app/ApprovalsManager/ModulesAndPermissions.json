@@ -399,6 +399,7 @@
   "gallery": {
 	"gallery read": false,
 	"gallery create": false,
+	"gallery update": true,
 	"gallery approve": false
   },
   "loyalty": {

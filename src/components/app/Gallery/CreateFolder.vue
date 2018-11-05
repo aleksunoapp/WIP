@@ -15,7 +15,8 @@
 				<div class="row">
 					<div class="col-xs-12">
 						<div class="alert alert-danger"
-						     v-if="errorMessage.length">
+						     v-show="errorMessage.length"
+								 ref="errorMessage">
 							<button class="close"
 							        data-close="alert"
 							        @click.prevent="clearError('errorMessage')"></button>
@@ -52,6 +53,7 @@
 <script>
 import ResourcesFunctions from '@/controllers/Resources'
 import GlobalVariables from '@/global.js'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -117,8 +119,17 @@ export default {
 						.then(response => {
 							_this.showCreateSuccess(response.payload)
 						})
-						.catch(err => {
-							err
+						.catch(reason => {
+							let errorText = 'Could not create folder'
+							if (reason.responseJSON && reason.responseJSON.declaration === 'already_exists') {
+								errorText = 'Folder with this name already exists'
+							}
+							ajaxErrorHandler({
+								reason,
+								errorText,
+								errorName: 'errorMessage',
+								vue: _this
+							})
 						})
 						.finally(() => {
 							_this.creating = false
