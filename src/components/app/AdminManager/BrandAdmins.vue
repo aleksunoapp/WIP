@@ -1127,6 +1127,9 @@ export default {
 							}
 						})
 						.catch(reason => {
+							if (reason.responseJSON && reason.responseJSON.message === 'The email has already been taken.') {
+								reason.responseJSON.message = 'A Brand Admin or a Location Manager with this email already exists.'
+							}
 							ajaxErrorHandler({
 								reason,
 								errorText:

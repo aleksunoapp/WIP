@@ -630,9 +630,9 @@
 				        type="button"
 				        class="btn btn-primary"
 				        @click="assignRoles()"
-				        :disabled="assigning">
+				        :disabled="assigningRoles">
 					Save
-					<i v-show="assigning"
+					<i v-show="assigningRoles"
 					   class="fa fa-spinner fa-pulse fa-fw">
 					</i>
 				</button>
@@ -640,7 +640,7 @@
 				        type="button"
 				        class="btn btn-primary"
 				        @click="closeRolesModal()"
-				        :disabled="assigning">
+				        :disabled="assigningRoles">
 					Close
 				</button>
 			</div>
@@ -1257,6 +1257,9 @@ export default {
 							}
 						})
 						.catch(reason => {
+							if (reason.responseJSON && reason.responseJSON.message === 'The email has already been taken.') {
+								reason.responseJSON.message = 'A Brand Admin or a Location Manager with this email already exists.'
+							}
 							ajaxErrorHandler({
 								reason,
 								errorText:
