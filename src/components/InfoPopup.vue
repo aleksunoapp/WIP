@@ -158,7 +158,7 @@ export default {
 				customer_concern: {
 					'en-ca': 'Customer Concern',
 					'en-us': 'Customer Concern',
-					'fr-ca': 'Préoccupations'
+					'fr-ca': 'Préoccupations du client'
 				},
 				inspection_summary: {
 					'en-ca': 'Inspection Summary',
