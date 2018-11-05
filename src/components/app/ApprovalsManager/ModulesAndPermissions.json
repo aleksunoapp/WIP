@@ -69,7 +69,14 @@
 	  "stores delivery_hours update": false,
 	  "stores delivery_hours delete": false,
 	  "stores delivery_hours approve": false
-	}
+	},
+    "payment_methods": {
+	  "stores payment methods read": false,
+	  "stores payment methods create": false,
+	  "stores payment methods update": false,
+	  "stores payment methods delete": false,
+	  "stores payment methods approve": false
+    }
   },
   "analytics": {
 	"analytics overview": {
@@ -117,7 +124,8 @@
 	  "list user's roles": true,
 	  "assign roles to user": true,
 	  "revoke roles from user": true,
-	  "sync roles for user": true
+	  "sync roles for user": true,
+	  "sync roles for user approve": true
 	}
   },
   "approvals_requests": {
@@ -139,7 +147,9 @@
 	  "admin brand_admins read": false,
 	  "admin brand_admins create": false,
 	  "admin brand_admins update": false,
-	  "admin brand_admins approve": false
+	  "admin brand_admins approve": false,
+	  "admin brand_admins assign locations": false,
+	  "admin brand_admins assign locations approve": false
 	},
 	"location_managers": {
 	  "admin location_managers read": false,
