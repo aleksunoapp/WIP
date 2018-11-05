@@ -1210,6 +1210,30 @@ export default {
 			}
 		},
 		/**
+		 * To check if the input is a positive number
+		 * @function
+		 * @param {string} input - User's input
+		 * @returns {boolean} True is positive integer or float, false is not
+		 */
+		isNonNegativeNumber (input) {
+			try {
+				const inputString = String(input)
+				if (inputString.length > inputString.replace(/[^\d.]/g, '').length) {
+					return false
+				}
+				const value = Number(input)
+				if (value < 0) {
+					return false
+				}
+				return true
+			} catch (e) {
+				if (this.environment !== 'production') {
+					console.log({e})
+				}
+				return false
+			}
+		},
+		/**
 		 * To check if the category data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
@@ -1219,10 +1243,16 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (!promotionsVue.promotionForQrCode.min_loyalty_points.length) {
 					reject('Minimum Loyalty Points cannot be blank')
+				} else if (!promotionsVue.isNonNegativeNumber(promotionsVue.promotionForQrCode.min_loyalty_points)) {
+					reject('Minimum Loyalty Points cannot be negative')
 				} else if (!promotionsVue.promotionForQrCode.max_use.length) {
 					reject('Maximum Redemptions cannot be blank')
+				} else if (!promotionsVue.isNonNegativeNumber(promotionsVue.promotionForQrCode.max_use)) {
+					reject('Maximum Redemptions cannot be negative')
 				} else if (!promotionsVue.promotionForQrCode.max_use_per_person.length) {
 					reject('Maximum Redemptions Per Person cannot be blank')
+				} else if (!promotionsVue.isNonNegativeNumber(promotionsVue.promotionForQrCode.max_use_per_person)) {
+					reject('Maximum Redemptions Per Person cannot be negative')
 				} else if (!promotionsVue.promotionForQrCode.locations.length && !promotionsVue.promotionForQrCode.allLocations) {
 					reject('Select at least one store')
 				}
