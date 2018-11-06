@@ -44,9 +44,14 @@
 						<tab header="Menu Items">
 							<div class="col-md-4">
 								<h4>Menus</h4>
+								<div v-if="loadingMenus">
+									<div class="alert alert-info">
+										<span>Loading ...</span>
+									</div>
+								</div>
 								<div class="dd"
 								     id="nestable_list_1"
-								     v-if="menus.length">
+								     v-else-if="menus.length">
 									<ol class="dd-list">
 										<li class="dd-item"
 										    v-for="menu in menus"
@@ -71,9 +76,14 @@
 							<div class="col-md-4"
 							     v-if="isMenuSelected">
 								<h4>{{ activeMenu.name }} - Categories</h4>
+								<div v-if="loadingMenuCategories">
+									<div class="alert alert-info">
+										<span>Loading ...</span>
+									</div>
+								</div>
 								<div class="dd"
 								     id="nestable_list_2"
-								     v-if="categories.length">
+								     v-else-if="categories.length">
 									<ol class="dd-list">
 										<li class="dd-item"
 										    v-for="category in categories"
@@ -103,9 +113,14 @@
 									   :class="{'fa-check-square checked': selectAllMenuItemsSelected, 'fa-square-o unchecked': !selectAllMenuItemsSelected}"
 									   aria-hidden="true"></i>
 									{{ activeCategory.name }} - Items</h4>
+								<div v-if="loadingMenuItems">
+									<div class="alert alert-info">
+										<span>Loading ...</span>
+									</div>
+								</div>
 								<div class="dd"
 								     id="nestable_list_3"
-								     v-if="items.length">
+								     v-else-if="items.length">
 									<ol class="dd-list">
 										<li class="dd-item"
 										    v-for="item in items"
@@ -135,9 +150,14 @@
 						     v-if="showModifierItems">
 							<div class="col-md-6">
 								<h4>Modifier Categories</h4>
+								<div v-if="loadingModifiers">
+									<div class="alert alert-info">
+										<span>Loading ...</span>
+									</div>
+								</div>
 								<div class="dd"
 								     id="nestable_list_1"
-								     v-if="modifiers.length">
+								     v-else-if="modifiers.length">
 									<ol class="dd-list">
 										<li class="dd-item"
 										    v-for="modifier in modifiers"
@@ -167,9 +187,14 @@
 									   :class="{'fa-check-square checked': selectAllModifierItemsSelected, 'fa-square-o unchecked': !selectAllMenuItemsSelected}"
 									   aria-hidden="true"></i>
 									{{ activeModifier.name }} - Items</h4>
+								<div v-if="loadingModifierItems">
+									<div class="alert alert-info">
+										<span>Loading ...</span>
+									</div>
+								</div>
 								<div class="dd"
 								     id="nestable_list_3"
-								     v-if="modifierItems.length">
+								     v-else-if="modifierItems.length">
 									<ol class="dd-list">
 										<li class="dd-item"
 										    v-for="item in modifierItems"
@@ -243,7 +268,12 @@ export default {
 			selectedSKUs: [],
 			internalErrorMessage: '',
 			menuAll: false,
-			modifierAll: false
+			modifierAll: false,
+			loadingMenus: false,
+			loadingMenuCategories: false,
+			loadingMenuItems: false,
+			loadingModifiers: false,
+			loadingModifierItems: false
 		}
 	},
 	props: {
@@ -330,6 +360,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		getItemsForActiveModifier () {
+			this.loadingModifierItems = true
 			var modifierTreeVue = this
 			modifierTreeVue.modifierItems = []
 			return ModifiersFunctions.getModifierCategoryItems(
@@ -362,6 +393,9 @@ export default {
 						vue: modifierTreeVue
 					})
 				})
+				.finally(() => {
+					modifierTreeVue.loadingModifierItems = false
+				})
 		},
 		/**
 		 * To get a list of all modifiers for the current active location.
@@ -369,6 +403,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		getModifiers () {
+			this.loadingModifiers = true
 			this.modifiers = []
 			var modifierTreeVue = this
 			return ModifiersFunctions.getStoreModifiers(
@@ -387,6 +422,9 @@ export default {
 						vue: modifierTreeVue
 					})
 				})
+				.finally(() => {
+					modifierTreeVue.loadingModifiers = false
+				})
 		},
 		/**
 		 * To close the modal.
@@ -402,6 +440,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		getMenus () {
+			this.loadingMenus = true
 			this.menus = []
 			var menuTreeVue = this
 			return MenusFunctions.getStoreMenus(
@@ -422,6 +461,9 @@ export default {
 						vue: menuTreeVue
 					})
 				})
+				.finally(() => {
+					menuTreeVue.loadingMenus = false
+				})
 		},
 		/**
 		 * To get a list of all categories for the current active menu.
@@ -429,6 +471,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		getCategoriesForActiveMenu () {
+			this.loadingMenuCategories = true
 			var menuTreeVue = this
 			menuTreeVue.categories = []
 			return CategoriesFunctions.getMenuCategories(
@@ -450,6 +493,9 @@ export default {
 						vue: menuTreeVue
 					})
 				})
+				.finally(() => {
+					menuTreeVue.loadingMenuCategories = false
+				})
 		},
 		/**
 		 * To get a list of all item for the current active category.
@@ -457,6 +503,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		getItemsForActiveCategory () {
+			this.loadingMenuItems = true
 			var menuTreeVue = this
 			menuTreeVue.items = []
 			return ItemsFunctions.getCategoryItemsFull(
@@ -488,6 +535,9 @@ export default {
 						errorName: 'internalErrorMessage',
 						vue: menuTreeVue
 					})
+				})
+				.finally(() => {
+					menuTreeVue.loadingMenuItems = false
 				})
 		},
 		/**
