@@ -196,7 +196,7 @@
 		<edit-store-faq v-if="showEditFAQModal"
 		                :faqId="selectedFAQId"
 		                @closeEditStoreFAQModal="closeEditStoreFAQModal"
-		                @highlightFAQ="highlightFAQ"></edit-store-faq>
+		                @updateFAQ="updateFAQ"></edit-store-faq>
 
 		<!-- START DELETE -->
 		<modal :show="showDeleteModal"
@@ -242,7 +242,6 @@
 </template>
 
 <script>
-import $ from 'jquery'
 import Breadcrumb from '../../modules/Breadcrumb'
 import NoResults from '../../modules/NoResults'
 import FAQFunctions from '../../../controllers/FAQ'
@@ -534,17 +533,9 @@ export default {
 		 * @param {object} val - The recently updated FAQ object.
 		 * @returns {undefined}
 		 */
-		highlightFAQ (val) {
+		updateFAQ (val) {
+			this.getStoreFAQs()
 			this.showEditFAQModal = false
-			for (var i = 0; i < this.faqs.length; i++) {
-				if (this.faqs[i].id === val.id) {
-					this.faqs[i] = val
-				}
-			}
-			$('#faq-' + val.id).addClass('highlight')
-			setTimeout(function () {
-				$('#faq-' + val.id).removeClass('highlight')
-			}, 2000)
 		},
 		/**
 		 * To open the modal to delete an FAQs.

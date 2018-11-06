@@ -335,7 +335,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		closeModalAndUpdate () {
-			this.$emit('highlightFAQ', this.faqToBeEdited)
+			this.$emit('updateFAQ')
 		}
 	},
 	components: {
