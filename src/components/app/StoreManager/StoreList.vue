@@ -280,7 +280,8 @@
 		<!-- DELETE MODAL START -->
 		<modal :show="showDeleteModal"
 		       effect="fade"
-		       @closeOnEscape="closeDeleteModal">
+		       @closeOnEscape="closeDeleteModal"
+					 ref="deleteModal">
 			<div slot="modal-header"
 			     class="modal-header">
 				<button type="button"
@@ -306,7 +307,13 @@
 			     class="modal-footer">
 				<button type="button"
 				        class="btn btn-primary"
-				        @click="deleteStore()">Delete</button>
+				        @click="deleteStore()"
+								:disabled="deleting">
+					Delete
+					<i v-show="deleting"
+							class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
 			</div>
 		</modal>
 		<!-- DELETE MODAL END -->
@@ -348,7 +355,8 @@ export default {
 			filteredResults: [],
 			storeToDelete: {},
 			showDeleteModal: false,
-			deleteErrorMessage: ''
+			deleteErrorMessage: '',
+			deleting: false
 		}
 	},
 	computed: {
@@ -400,6 +408,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		closeDeleteModal (store) {
+			this.clearError('deleteErrorMessage')
 			this.showDeleteModal = false
 		},
 		/**
@@ -431,6 +440,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		deleteStore () {
+			this.deleting = true
 			var storesVue = this
 			StoresFunctions.deleteStore(storesVue.storeToDelete.id)
 				.then(response => {
@@ -443,8 +453,12 @@ export default {
 						reason,
 						errorText: 'Could not delete store',
 						errorName: 'deleteErrorMessage',
-						vue: storesVue
+						vue: storesVue,
+						containerRef: 'deleteModal'
 					})
+				})
+				.finally(() => {
+					storesVue.deleting = false
 				})
 		},
 		/**
