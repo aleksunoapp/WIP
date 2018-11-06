@@ -498,16 +498,10 @@ export default {
 		 */
 		updateGroup ({group, payload}) {
 			this.showEditGroupModal = false
-			for (var i = 0; i < this.groups.length; i++) {
-				if (this.groups[i].id === group.id) {
-					this.groups[i] = group
-				}
+			if (!payload.pending_approval) {
+				this.getGroups()
 			}
 			this.confirmUpdated(payload)
-			$('#group-' + group.id).addClass('highlight')
-			setTimeout(function () {
-				$('#group-' + group.id).removeClass('highlight')
-			}, 2000)
 		},
 		/**
 		 * To notify user of the outcome of the call
@@ -544,16 +538,6 @@ export default {
 				status: 1,
 				created_by: this.$root.createdBy
 			}
-		},
-		/**
-		 * To append the new group to the groups list.
-		 * @function
-		 * @param {object} newGroup - The new group object
-		 * @returns {undefined}
-		 */
-		addGroup (newGroup) {
-			this.groups.push(newGroup)
-			this.clearNewGroup()
 		},
 		/**
 		 * To check if the item data is valid before submitting to the backend.
@@ -593,7 +577,10 @@ export default {
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
 								storeGroupsVue.newGroup.id = response.payload.id
-								storeGroupsVue.addGroup(storeGroupsVue.newGroup)
+								if (response.payload && response.payload.pending_approval !== true) {
+									storeGroupsVue.getGroups()
+								}
+								storeGroupsVue.clearNewGroup()
 								storeGroupsVue.confirmCreated(response.payload)
 							} else {
 								storeGroupsVue.errorMessage = response.message
