@@ -244,21 +244,21 @@ export default {
 				if (!editModifierCategoryVue.categoryToBeEdited.image_url.length) {
 					reject('Modifier Category image cannot be blank')
 				} else if (!editModifierCategoryVue.categoryToBeEdited.name.length) {
-					reject('Modifier Category name cannot be blank')
+					reject('Modifier Category Name cannot be blank')
 				} else if (!editModifierCategoryVue.categoryToBeEdited.desc.length) {
-					reject('Modifier Category description cannot be blank')
+					reject('Modifier Category Description cannot be blank')
 				} else if (!editModifierCategoryVue.isNonNegativeNumber(editModifierCategoryVue.categoryToBeEdited.min)) {
-					reject('Modifier Category min cannot be negative')
+					reject('Modifier Category Min must be zero or more')
 				} else if (!editModifierCategoryVue.isNonNegativeNumber(editModifierCategoryVue.categoryToBeEdited.max)) {
-					reject('Modifier Category max cannot be negative')
+					reject('Modifier Category Max must be zero or more')
 				} else if (Number(editModifierCategoryVue.categoryToBeEdited.min) > Number(editModifierCategoryVue.categoryToBeEdited.max)) {
-					reject('Modifier Category min cannot be larger than max')
+					reject('Modifier Category Min cannot be larger than Max')
 				} else if (!editModifierCategoryVue.categoryToBeEdited.sku.length) {
 					reject('Modifier Category SKU cannot be blank')
 				} else if (!editModifierCategoryVue.isNonNegativeNumber(editModifierCategoryVue.categoryToBeEdited.included)) {
-					reject('Modifier Category included cannot be negative')
+					reject('Modifier Category Number Free cannot be negative')
 				} else if (!editModifierCategoryVue.isNonNegativeNumber(editModifierCategoryVue.categoryToBeEdited.order)) {
-					reject('Modifier Category order cannot be negative')
+					reject('Modifier Category Order cannot be negative')
 				}
 				resolve('Hurray')
 			})

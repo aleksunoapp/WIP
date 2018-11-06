@@ -327,7 +327,6 @@
 </template>
 
 <script>
-import $ from 'jquery'
 import Breadcrumb from '../../modules/Breadcrumb'
 import NoResults from '../../modules/NoResults'
 import Modal from '../../modules/Modal'
@@ -644,6 +643,30 @@ export default {
 			this.editCategoryModalActive = false
 		},
 		/**
+		 * To check if the input is a positive number
+		 * @function
+		 * @param {string} input - User's input
+		 * @returns {boolean} True is positive integer or float, false is not
+		 */
+		isNonNegativeNumber (input) {
+			try {
+				const inputString = String(input)
+				if (inputString.length > inputString.replace(/[^\d.]/g, '').length) {
+					return false
+				}
+				const value = Number(input)
+				if (value < 0) {
+					return false
+				}
+				return true
+			} catch (e) {
+				if (this.environment !== 'production') {
+					console.log({e})
+				}
+				return false
+			}
+		},
+		/**
 		 * To check if the modifier category data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
@@ -654,21 +677,21 @@ export default {
 				if (!addModifierCategoryVue.newCategory.image_url.length) {
 					reject('Modifier Category image cannot be blank')
 				} else if (!addModifierCategoryVue.newCategory.name.length) {
-					reject('Modifier Category name cannot be blank')
+					reject('Modifier Category Name cannot be blank')
 				} else if (!addModifierCategoryVue.newCategory.desc.length) {
-					reject('Modifier Category description cannot be blank')
-				} else if (!$.isNumeric(addModifierCategoryVue.newCategory.min)) {
-					reject('Modifier Category min should be a number')
-				} else if (!$.isNumeric(addModifierCategoryVue.newCategory.max)) {
-					reject('Modifier Category max should be a number')
+					reject('Modifier Category Description cannot be blank')
+				} else if (!addModifierCategoryVue.isNonNegativeNumber(addModifierCategoryVue.newCategory.min)) {
+					reject('Modifier Category Min must be zero or more')
+				} else if (!addModifierCategoryVue.isNonNegativeNumber(addModifierCategoryVue.newCategory.max)) {
+					reject('Modifier Category Max must be zero or more')
 				} else if (Number(addModifierCategoryVue.newCategory.min) > Number(addModifierCategoryVue.newCategory.max)) {
-					reject('Modifier Category min cannot be larger than max')
+					reject('Modifier Category Min cannot be larger than Max')
 				} else if (!addModifierCategoryVue.newCategory.sku.length) {
 					reject('Modifier Category SKU cannot be blank')
-				} else if (!$.isNumeric(addModifierCategoryVue.newCategory.included)) {
-					reject('Modifier Category included should be a number')
-				} else if (!$.isNumeric(addModifierCategoryVue.newCategory.order)) {
-					reject('Modifier Category order should be a number')
+				} else if (!addModifierCategoryVue.isNonNegativeNumber(addModifierCategoryVue.newCategory.included)) {
+					reject('Modifier Category Number Free cannot be negative')
+				} else if (!addModifierCategoryVue.isNonNegativeNumber(addModifierCategoryVue.newCategory.order)) {
+					reject('Modifier Category Order cannot be negative')
 				}
 				resolve('Hurray')
 			})
