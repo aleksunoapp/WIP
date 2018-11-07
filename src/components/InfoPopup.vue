@@ -44,7 +44,7 @@
 						viewingService.category !== '9'
 					">
 						<div class="info-modal-concerns">
-							<p>{{ viewingService.serviceAdvisorComments }}</p>
+							<p class="customer-comments">{{ viewingService.serviceAdvisorComments }}</p>
 						</div>
 					</template>
 					<template v-if="(
