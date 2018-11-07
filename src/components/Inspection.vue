@@ -801,13 +801,30 @@ export default {
 
 			if (this.categoryDeferral) {
 				this.$root.services.forEach(service => {
-					if (service.category === this.activeDeferralCategory.id) {
-						if (service.subServices) {
-							service.subServices.forEach(subService => {
-								subService.reasonId = reason.id
-							})
-						} else {
+					if (
+						service.category === this.activeDeferralCategory.id ||
+						this.activeDeferralCategory.id === '5' && (
+							service.category === '6' ||
+							service.category === '7' ||
+							service.category === '8' ||
+							service.category === '9'
+						)
+					) {
+						if (this.activeDeferralCategory.id === '5') {
+							if (service.subServices) {
+								service.subServices.forEach(subService => {
+									subService.reasonId = reason.id
+								})
+							}
 							service.reasonId = reason.id
+						} else {
+							if (service.subServices) {
+								service.subServices.forEach(subService => {
+									subService.reasonId = reason.id
+								})
+							} else {
+								service.reasonId = reason.id
+							}
 						}
 					}
 				})
