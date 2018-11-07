@@ -20,7 +20,9 @@ new Vue({
 	components: { App },
 	data () {
 		return {
-			meta: [],
+			meta: {
+				local: ''
+			},
 			inspection: [],
 			services: [],
 			serviceDetails: [],
