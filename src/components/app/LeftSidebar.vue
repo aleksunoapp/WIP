@@ -284,6 +284,16 @@
 								<span class="title">Delivery Zones</span>
 							</router-link>
 						</li>
+						<li v-if="can('stores payment methods read')"
+						    class="nav-item"
+						    :class="{'active': currentRoute === 'store_manager' && currentSubRoute === 'payment_methods'}"
+						    id="store_manager_payment_methods_link">
+							<router-link to="/app/store_manager/payment_methods"
+							             class="nav-link">
+								<i class="fa fa-credit-card"></i>
+								<span class="title">Payment Methods</span>
+							</router-link>
+						</li>
 					</ul>
 				</li>
 				<li v-if="can('news_feed read')"

@@ -33,6 +33,7 @@ import OrderSettings from '@/components/app/StoreManager/OrderSettings'
 import DeliveryHours from '@/components/app/StoreManager/DeliveryHours'
 import StoreGroups from '@/components/app/StoreManager/StoreGroups'
 import DeliveryZones from '@/components/app/StoreManager/DeliveryZones'
+import PaymentMethods from '@/components/app/StoreManager/PaymentMethods'
 // News Feed
 import NewsFeed from '@/components/app/NewsFeed'
 // Social Feed
@@ -336,6 +337,14 @@ export const routes = [
 				component: DeliveryZones,
 				meta: {
 					permissions: ['stores delivery_profile read']
+				}
+			},
+			{
+				path: 'store_manager/payment_methods',
+				name: 'PaymentMethods',
+				component: PaymentMethods,
+				meta: {
+					permissions: ['stores payment methods read']
 				}
 			},
 			// News Feed
