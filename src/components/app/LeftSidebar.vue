@@ -274,13 +274,23 @@
 								<span class="title">Delivery Hours</span>
 							</router-link>
 						</li>
+						<li v-if="can('stores delivery_provider read')"
+						    class="nav-item"
+						    :class="{'active': currentRoute === 'store_manager' && currentSubRoute === 'delivery_providers'}"
+						    id="store_manager_delivery_providers_link">
+							<router-link to="/app/store_manager/delivery_providers"
+							             class="nav-link">
+								<i class="fa fa-truck"></i>
+								<span class="title">Delivery Providers</span>
+							</router-link>
+						</li>
 						<li v-if="can('stores delivery_profile read')"
 						    class="nav-item"
 						    :class="{'active': currentRoute === 'store_manager' && currentSubRoute === 'delivery_zones'}"
 						    id="store_manager_delivery_zones_link">
 							<router-link to="/app/store_manager/delivery_zones"
 							             class="nav-link">
-								<i class="fa fa-truck"></i>
+								<i class="fa fa-bullseye"></i>
 								<span class="title">Delivery Zones</span>
 							</router-link>
 						</li>
