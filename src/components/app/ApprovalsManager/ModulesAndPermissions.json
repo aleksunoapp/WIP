@@ -35,6 +35,11 @@
 	"stores copy modifier modifier_to_multiple_location approve":false,
 	"stores add item_to_multiple_locations":false,
 	"stores add item_to_multiple_locations approve":false,
+	"stores delivery_provider read": false,
+	"stores delivery_provider create": false,
+	"stores delivery_provider update": false,
+	"stores delivery_provider delete": false,
+	"stores delivery_provider approve": false,
 	"store_delivery_profile":{
 	  "stores delivery_profile read":true,
 	  "stores delivery_profile create":true,
@@ -67,6 +72,7 @@
 	"delivery_hours": {
 	  "stores delivery_hours read": false,
 	  "stores delivery_hours update": false,
+	  "stores delivery_hours create": false,
 	  "stores delivery_hours delete": false,
 	  "stores delivery_hours approve": false
 	},
@@ -399,7 +405,7 @@
   "gallery": {
 	"gallery read": false,
 	"gallery create": false,
-	"gallery update": true,
+	"gallery update": false,
 	"gallery approve": false
   },
   "loyalty": {
