@@ -229,7 +229,9 @@ var authenticateToken = {
 									) {
 										if (service.subServices) {
 											service.subServices.forEach(subService => {
-												inspectionTotal += subService.price
+												if (subService.isSelected) {
+													inspectionTotal += subService.price
+												}
 											})
 										}
 									}
