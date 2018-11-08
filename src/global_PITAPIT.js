@@ -112,7 +112,15 @@ export default {
 	/**
 	 * business ID to use for the Resources API
 	 */
-	resourcesBusinessId: 6,
+	resourcesBusinessId: (function () {
+		if (production) {
+			return 2
+		} else if (staging) {
+			return 6
+		} else if (development) {
+			return 6
+		}
+	})(),
 	/**
 	 * base url for API calls to send Messages
 	 */
