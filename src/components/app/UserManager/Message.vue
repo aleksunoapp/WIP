@@ -193,7 +193,6 @@ export default {
 			messageModalDisplayed: false,
 			errorMessage: '',
 			message: {
-				user_alias: this.userId,
 				notification_type: '',
 				push_message: '',
 				title: '',
@@ -342,7 +341,10 @@ export default {
 					}
 					messageVue.sending = true
 					MessageFunctions.sendMessage(
-						messageVue.message,
+						{
+							...messageVue.message,
+							user_alias: messageVue.userId
+						},
 						GlobalFunctions.messageAppToken
 					)
 						.then(response => {
