@@ -351,7 +351,9 @@ export default {
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
 								portionsVue.newPortion.id = response.payload.new_portion_id
-								portionsVue.addPortion(portionsVue.newPortion)
+								if (response.payload && response.payload.pending_approval !== true) {
+									portionsVue.addPortion(portionsVue.newPortion)
+								}
 								portionsVue.showAlert(response.payload)
 								portionsVue.clearNewPortion()
 							} else {

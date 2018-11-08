@@ -593,15 +593,7 @@ export default {
 		 */
 		deletePromoCodeAndCloseModal () {
 			this.deletePromoCodeModalActive = false
-			for (var i = 0; i < this.promoCodes.length; i++) {
-				if (
-					parseInt(this.promoCodes[i].id) ===
-					parseInt(this.selectedPromoCodeId)
-				) {
-					this.promoCodes.splice(i, 1)
-					break
-				}
-			}
+			this.getAllPromoCodes()
 		},
 		/**
 		 * To show the modal to edit a promo code's details.
@@ -880,16 +872,7 @@ export default {
 		 */
 		updatePromoCode (promoCode) {
 			this.displayEditPromoCodeModal = false
-			for (var i = 0; i < this.promoCodes.length; i++) {
-				if (this.promoCodes[i].id === promoCode.id) {
-					this.promoCodes[i] = promoCode
-				}
-			}
-			this.animated = `promoCode-${promoCode.id}`
-			let promoCodesVue = this
-			window.setTimeout(() => {
-				promoCodesVue.animated = ''
-			}, 3000)
+			this.getAllPromoCodes()
 		},
 		/**
 		 * To clear the current error.

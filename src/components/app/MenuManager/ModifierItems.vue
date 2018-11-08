@@ -731,9 +731,11 @@ export default {
 							if (response.code === 200 && response.status === 'ok') {
 								modifierItemsVue.newModifierItem.id =
 									response.payload.new_modifier_item_id
-								modifierItemsVue.addModifierItem(
-									modifierItemsVue.newModifierItem
-								)
+								if (response.payload && response.payload.pending_approval !== true) {
+									modifierItemsVue.addModifierItem(
+										modifierItemsVue.newModifierItem
+									)
+								}
 								modifierItemsVue.showAlert(response.payload)
 								modifierItemsVue.clearNewModifierItem()
 							} else {
@@ -1008,14 +1010,7 @@ export default {
 		 */
 		deleteModifierItemAndCloseModal () {
 			this.deleteItemModalActive = false
-			for (var i = 0; i < this.modifierCategoryItems.length; i++) {
-				if (
-					parseInt(this.modifierCategoryItems[i].id) ===
-					parseInt(this.selectedItemId)
-				) {
-					this.modifierCategoryItems.splice(i, 1)
-				}
-			}
+			this.getModifierCategoryItems()
 		},
 		/**
 		 * To view the nutrition info of a modifier item.

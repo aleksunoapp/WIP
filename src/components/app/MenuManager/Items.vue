@@ -1489,7 +1489,9 @@ export default {
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
 								itemsVue.newItem.id = response.payload.new_item_id
-								itemsVue.addItem(itemsVue.newItem)
+								if (response.payload && response.payload.pending_approval !== true) {
+									itemsVue.addItem(itemsVue.newItem)
+								}
 								if (itemsVue.newItem.type === 'preset') {
 									itemsVue.showPresetItemAlert(response.payload)
 								} else {
@@ -1995,34 +1997,7 @@ export default {
 				this.getPresetDetails(val.id)
 			}
 			this.editItemModalActive = false
-			for (let i = 0; i < this.categoryItems.length; i++) {
-				if (this.categoryItems[i].id === val.id) {
-					this.categoryItems.splice(i, 1)
-					break
-				}
-			}
-			var done = false
-			for (let i = 0; i < this.categoryItems.length; i++) {
-				if (
-					parseInt(this.categoryItems[i].order) < parseInt(val.order) ||
-					(parseInt(this.categoryItems[i].order) === parseInt(val.order) &&
-						parseInt(this.categoryItems[i].id) > parseInt(val.id))
-				) {
-					this.categoryItems.splice(i, 0, val)
-					done = true
-					break
-				}
-			}
-			if (!done) {
-				this.categoryItems.push(val)
-			}
-			this.categoryItems.sort((a, b) => a.name > b.name)
-			setTimeout(function () {
-				$('#item-' + val.id).addClass('highlight')
-				setTimeout(function () {
-					$('#item-' + val.id).removeClass('highlight')
-				}, 2000)
-			}, 10)
+			this.getCategoryItems()
 		},
 		/**
 		 * To close the modal to edit an item.
@@ -2047,14 +2022,7 @@ export default {
 		 */
 		deleteItemAndCloseModal () {
 			this.deleteItemModalActive = false
-			for (var i = 0; i < this.categoryItems.length; i++) {
-				if (
-					parseInt(this.categoryItems[i].id) === parseInt(this.passedItemId)
-				) {
-					this.categoryItems.splice(i, 1)
-					break
-				}
-			}
+			this.getCategoryItems()
 		},
 		/**
 		 * To view the nutrition info of an item.

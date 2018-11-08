@@ -845,12 +845,7 @@ export default {
 		 */
 		deleteMenuAndCloseModal () {
 			this.deleteMenuModalActive = false
-			for (var i = 0; i < this.storeMenus.length; i++) {
-				if (parseInt(this.storeMenus[i].id) === parseInt(this.passedMenuId)) {
-					this.storeMenus.splice(i, 1)
-					break
-				}
-			}
+			this.getStoreMenus()
 		},
 		/**
 		 * To clear the new menu form.

@@ -1823,15 +1823,7 @@ export default {
 		 */
 		deletePromotionAndCloseModal () {
 			this.deletePromotionModalActive = false
-			for (var i = 0; i < this.promotions.length; i++) {
-				if (
-					parseInt(this.promotions[i].id) ===
-					parseInt(this.selectedPromotionId)
-				) {
-					this.promotions.splice(i, 1)
-					break
-				}
-			}
+			this.getAllPromotions()
 		},
 		/**
 		 * To show the modal to apply a promotion to stores.

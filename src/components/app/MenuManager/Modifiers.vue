@@ -807,11 +807,7 @@ export default {
 		 */
 		deleteModifierCategoryAndCloseModal () {
 			this.deleteCategoryModalActive = false
-			for (var i = 0; i < this.storeModifiers.length; i++) {
-				if (this.storeModifiers[i].id === this.passedModifierCategoryId) {
-					this.storeModifiers.splice(i, 1)
-				}
-			}
+			this.getStoreModifiers()
 		},
 		/**
 		 * To route to the modifier items page.

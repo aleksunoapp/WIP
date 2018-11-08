@@ -529,7 +529,9 @@ export default {
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
 								addCategoryVue.newCategory.id = response.payload.new_category_id
-								addCategoryVue.addCategory(addCategoryVue.newCategory)
+								if (response.payload && response.payload.pending_approval !== true) {
+									addCategoryVue.addCategory(addCategoryVue.newCategory)
+								}
 								addCategoryVue.showAlert(response.payload)
 								addCategoryVue.clearNewCategory()
 							} else {
@@ -771,32 +773,7 @@ export default {
 		 */
 		addSubCategory (val) {
 			this.addSubCategoryModalActive = false
-			for (var i = 0; i < this.menuCategories.length; i++) {
-				if (this.menuCategories[i].id === val.parent_category) {
-					if (parseInt(val.order) > 0) {
-						var done = false
-						for (
-							var j = 0;
-							j < this.menuCategories[i].subcategories.length;
-							j++
-						) {
-							if (
-								parseInt(this.menuCategories[i].subcategories[j].order) <
-								parseInt(val.order)
-							) {
-								this.menuCategories[i].subcategories.splice(j, 0, val)
-								done = true
-								break
-							}
-						}
-						if (!done) {
-							this.menuCategories[i].subcategories.push(val)
-						}
-					} else {
-						this.menuCategories[i].subcategories.push(val)
-					}
-				}
-			}
+			this.getMenuCategories()
 		},
 		/**
 		 * To update the category emitted by the child and highlist it on the categories list.
@@ -806,33 +783,7 @@ export default {
 		 */
 		updateCategory (val) {
 			this.editCategoryModalActive = false
-			for (let i = 0; i < this.menuCategories.length; i++) {
-				if (this.menuCategories[i].id === val.id) {
-					this.menuCategories.splice(i, 1)
-					break
-				}
-			}
-			var done = false
-			for (let i = 0; i < this.menuCategories.length; i++) {
-				if (
-					parseInt(this.menuCategories[i].order) < parseInt(val.order) ||
-					(parseInt(this.menuCategories[i].order) === parseInt(val.order) &&
-						parseInt(this.menuCategories[i].id) > parseInt(val.id))
-				) {
-					this.menuCategories.splice(i, 0, val)
-					done = true
-					break
-				}
-			}
-			if (!done) {
-				this.menuCategories.push(val)
-			}
-			setTimeout(function () {
-				$('#category-' + val.id).addClass('highlight')
-				setTimeout(function () {
-					$('#category-' + val.id).removeClass('highlight')
-				}, 2000)
-			}, 10)
+			this.getMenuCategories()
 		},
 		/**
 		 * To update the sub category emitted by the child and highlist it on the categories list.
@@ -842,40 +793,7 @@ export default {
 		 */
 		updateSubCategory (val) {
 			this.editSubCategoryModalActive = false
-			for (let j = 0; j < this.menuCategories.length; j++) {
-				if (this.menuCategories[j].id === val.parent_category) {
-					var parentCategory = this.menuCategories[j]
-					for (let i = 0; i < parentCategory.subcategories.length; i++) {
-						if (parentCategory.subcategories[i].id === val.id) {
-							parentCategory.subcategories.splice(i, 1)
-							break
-						}
-					}
-					var done = false
-					for (let i = 0; i < parentCategory.subcategories.length; i++) {
-						if (
-							parseInt(parentCategory.subcategories[i].order) <
-								parseInt(val.order) ||
-							(parseInt(parentCategory.subcategories[i].order) ===
-								parseInt(val.order) &&
-								parseInt(parentCategory.subcategories[i].id) > parseInt(val.id))
-						) {
-							parentCategory.subcategories.splice(i, 0, val)
-							done = true
-							break
-						}
-					}
-				}
-			}
-			if (!done) {
-				this.menuCategories.push(val)
-			}
-			setTimeout(function () {
-				$('#subcategory-' + val.id).addClass('highlight')
-				setTimeout(function () {
-					$('#subcategory-' + val.id).removeClass('highlight')
-				}, 2000)
-			}, 10)
+			this.getMenuCategories()
 		},
 		/**
 		 * To close the modal to edit a category.
@@ -899,16 +817,8 @@ export default {
 		 * @returns {undefined}
 		 */
 		deleteCategoryAndCloseModal () {
+			this.getMenuCategories()
 			this.deleteCategoryModalActive = false
-			for (var i = 0; i < this.menuCategories.length; i++) {
-				if (
-					parseInt(this.menuCategories[i].id) ===
-					parseInt(this.passedCategoryId)
-				) {
-					this.menuCategories.splice(i, 1)
-					break
-				}
-			}
 		},
 		/**
 		 * To close the modal to edit a sub category.
@@ -933,19 +843,7 @@ export default {
 		 */
 		deleteSubCategoryAndCloseModal () {
 			this.deleteSubCategoryModalActive = false
-			for (var i = 0; i < this.menuCategories.length; i++) {
-				if (this.menuCategories[i].id === this.passedCategoryId) {
-					var parentCategory = this.menuCategories[i]
-					for (var j = 0; j < parentCategory.subcategories.length; j++) {
-						if (
-							parentCategory.subcategories[j].id === this.passedSubCategoryId
-						) {
-							parentCategory.subcategories.splice(i, 1)
-							return
-						}
-					}
-				}
-			}
+			this.getMenuCategories()
 		},
 		/**
 		 * To close the modal to add a sub category.

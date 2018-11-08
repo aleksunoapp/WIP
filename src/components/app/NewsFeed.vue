@@ -266,7 +266,6 @@
 </template>
 
 <script>
-import $ from 'jquery'
 import Breadcrumb from '../modules/Breadcrumb'
 import NoResults from '../modules/NoResults'
 import PageResults from '../modules/PageResults'
@@ -647,15 +646,7 @@ export default {
 		},
 		updateNewsFeed (val) {
 			this.showEditFeedModal = false
-			for (var i = 0; i < this.newsFeed.length; i++) {
-				if (this.newsFeed[i].id === val.id) {
-					this.newsFeed[i] = val
-				}
-			}
-			$('#news-' + val.id).addClass('highlight')
-			setTimeout(function () {
-				$('#news-' + val.id).removeClass('highlight')
-			}, 2000)
+			this.getNewsFeed()
 		}
 	},
 	watch: {

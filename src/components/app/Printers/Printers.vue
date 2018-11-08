@@ -222,7 +222,6 @@
 </template>
 
 <script>
-import $ from 'jquery'
 import Breadcrumb from '../../modules/Breadcrumb'
 import NoResults from '../../modules/NoResults'
 import PrintersFunctions from '../../../controllers/Printers'
@@ -353,15 +352,7 @@ export default {
 		 */
 		updatePrinter (val) {
 			this.showEditPrinterModal = false
-			for (var i = 0; i < this.storePrinters.length; i++) {
-				if (this.storePrinters[i].id === val.id) {
-					this.storePrinters[i] = val
-				}
-			}
-			$('#printer-' + val.id).addClass('highlight')
-			setTimeout(function () {
-				$('#printer-' + val.id).removeClass('highlight')
-			}, 2000)
+			this.getStorePrinters()
 		},
 		/**
 		 * To close the modal to edit printer details.

@@ -170,7 +170,6 @@
 </template>
 
 <script>
-import $ from 'jquery'
 import Breadcrumb from '../../modules/Breadcrumb'
 import Modal from '../../modules/Modal'
 import NoResults from '../../modules/NoResults'
@@ -335,15 +334,7 @@ export default {
 		 */
 		updateMenuTier (val) {
 			this.showEditTierModal = false
-			for (var i = 0; i < this.menuTiers.length; i++) {
-				if (this.menuTiers[i].id === val.id) {
-					this.menuTiers[i] = val
-				}
-			}
-			$('#tier-' + val.id).addClass('highlight')
-			setTimeout(function () {
-				$('#tier-' + val.id).removeClass('highlight')
-			}, 2000)
+			this.getMenuTiers()
 		},
 		/**
 		 * To check if the menu data is valid before submitting to the backend.
