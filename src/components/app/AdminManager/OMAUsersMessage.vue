@@ -536,12 +536,6 @@ export default {
 			this.omaActions.forEach(function (action) {
 				if (id === action.id) {
 					type = action.type
-				} else if (id === action.id) {
-					type = action.type
-				} else if (id === action.id) {
-					type = action.type
-				} else if (id === action.id) {
-					type = action.type
 				}
 			})
 			this.message.call_to_action = type
