@@ -162,7 +162,7 @@
 					</div>
 				</div>
 				<div class="margin-top-20">
-					<no-results :show="!activeLocationId === undefined  && !deliveryProviders.length && !loadingDeliveryProviders"
+					<no-results :show="!(activeLocationId === undefined) && !deliveryProviders.length && !loadingDeliveryProviders"
 											:type="'delivery providers'"></no-results>
 				</div>
 			</div>
