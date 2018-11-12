@@ -53,6 +53,9 @@
 			        class="btn btn-primary"
 			        @click="updateMenuTier()">
 				Save
+				<i v-show="saving"
+						class="fa fa-spinner fa-pulse fa-fw">
+				</i>
 			</button>
 		</div>
 	</modal>
@@ -70,7 +73,8 @@ export default {
 			menuTierToBeEdited: {
 				image_url: ''
 			},
-			errorMessage: ''
+			errorMessage: '',
+			saving: false
 		}
 	},
 	props: {
@@ -150,6 +154,7 @@ export default {
 			return editMenuTierVue
 				.validateTierData()
 				.then(response => {
+					editMenuTierVue.saving = true
 					MenuTiersFunctions.updateMenuTier(
 						editMenuTierVue.menuTierToBeEdited,
 						editMenuTierVue.$root.appId,
@@ -159,6 +164,7 @@ export default {
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
 								this.closeModalAndUpdate()
+								this.showCreateSuccess(response.payload)
 							} else {
 								editMenuTierVue.errorMessage = response.message
 							}
@@ -172,6 +178,9 @@ export default {
 								containerRef: 'editModal'
 							})
 						})
+						.finally(() => {
+							editMenuTierVue.saving = false
+						})
 				})
 				.catch(reason => {
 					// If validation fails then display the error message
@@ -179,6 +188,29 @@ export default {
 					window.scrollTo(0, 0)
 					throw reason
 				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showCreateSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Menu Tier has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
@@ -194,7 +226,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		closeModalAndUpdate () {
-			this.$emit('updateMenuTier', this.menuTierToBeEdited)
+			this.$emit('updateMenuTier')
 		}
 	},
 	components: {
