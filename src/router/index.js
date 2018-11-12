@@ -35,6 +35,7 @@ import StoreGroups from '@/components/app/StoreManager/StoreGroups'
 import DeliveryZones from '@/components/app/StoreManager/DeliveryZones'
 import PaymentMethods from '@/components/app/StoreManager/PaymentMethods'
 import DeliveryProviders from '@/components/app/StoreManager/DeliveryProviders'
+import PaymentTerminals from '@/components/app/StoreManager/PaymentTerminals'
 // News Feed
 import NewsFeed from '@/components/app/NewsFeed'
 // Social Feed
@@ -346,6 +347,14 @@ export const routes = [
 				component: PaymentMethods,
 				meta: {
 					permissions: ['stores payment methods read']
+				}
+			},
+			{
+				path: 'store_manager/payment_terminals',
+				name: 'PaymentTerminals',
+				component: PaymentTerminals,
+				meta: {
+					permissions: ['stores payment_terminals read']
 				}
 			},
 			{
