@@ -230,6 +230,7 @@ export default {
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
 								this.closeModalAndUpdate()
+								this.showEditSuccess(response.payload)
 							} else {
 								editPrinterVue.errorMessage = response.message
 							}
@@ -253,6 +254,29 @@ export default {
 					window.scrollTo(0, 0)
 					throw reason
 				})
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showEditSuccess (payload = {}) {
+			let title = 'Success'
+			let text = 'The Printer has been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
 		},
 		/**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
