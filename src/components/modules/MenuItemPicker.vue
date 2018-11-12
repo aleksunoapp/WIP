@@ -61,7 +61,7 @@
 		<div class="col-xs-4">
 			<div class="dd" id="nestable_list_2">
 				<ol class="dd-list">
-					<li class="dd-item" v-for="category in activeMenu.categories" :data-id="category.id" :key="category.id">
+					<li class="dd-item" v-for="category in activeMenu.categories" v-if="category.parent_category === 0" :data-id="category.id" :key="category.id">
 						<div class="dd-handle pointer v-center" :class="{'active': category.id === activeCategory.id}" @click="toggleCategory(category)">
 							<div class="v-center">
 								<i class="fa check" :class="{
@@ -93,7 +93,7 @@
 									}" aria-hidden="true">
 								</i>
 								{{ item.name }}
-								{{item.category_name ? ` (${item.category_name})` : ''}}
+								{{item.category.parent_category !== 0 ? ` (${item.category_name})` : ''}}
 							</div>
 						</div>
 					</li>
@@ -136,7 +136,7 @@ export default {
 		activeItems () {
 			if (this.activeMenu.items) {
 				return this.activeMenu.items.filter(item => {
-					return item.category.id === this.activeCategory.id
+					return item.category.parent_category === 0 ? item.category.id === this.activeCategory.id : item.category.parent_category === this.activeCategory.id
 				})
 			} else {
 				return []
@@ -262,7 +262,7 @@ export default {
 			const selected = this.categorySelected(category)
 			let menu = this.menus.filter(menu => menu.id === category.menu_id)[0]
 			let items = menu.items.filter(item => {
-				return item.category.id === category.id
+				return item.category.parent_category === 0 ? item.category.id === this.activeCategory.id : item.category.parent_category === this.activeCategory.id
 			})
 			items.forEach(item => {
 				item.selected = !selected
@@ -333,6 +333,10 @@ export default {
 							selected: pickerVue.previous.includes(item.sku)
 						}
 					})
+					const subCategoryItems = items.filter(item => item.category.parent_category !== 0)
+					if (subCategoryItems.length) {
+						items = subCategoryItems
+					}
 					let categories = []
 					response.payload.forEach(item => {
 						if (
@@ -419,7 +423,7 @@ export default {
 		categorySelected (category) {
 			let menu = this.menus.filter(menu => menu.id === category.menu_id)[0]
 			let items = menu.items.filter(item => {
-				return item.category.id === category.id
+				return item.category.parent_category === 0 ? item.category.id === category.id : item.category.parent_category === category.id
 			})
 			return items.length && !items.some(item => !item.selected)
 		},
@@ -432,7 +436,7 @@ export default {
 		categoryPartiallySelected (category) {
 			let menu = this.menus.filter(menu => menu.id === category.menu_id)[0]
 			let items = menu.items.filter(item => {
-				return item.category.id === category.id
+				return item.category.parent_category === 0 ? item.category.id === category.id : item.category.parent_category === category.id
 			})
 			let itemsLength = items.length
 			let selectedItems = items.filter(item => item.selected)
