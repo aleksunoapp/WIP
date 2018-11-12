@@ -138,7 +138,7 @@ export default {
 	 */
 	messageAppToken: (function () {
 		if (production) {
-			return ''
+			return 'bearer cac7cc0ab25cff18fcc86b2f139d4f7e'
 		} else if (staging) {
 			return 'bearer 2be7cc6b406a09759144a468d94f5cf2'
 		} else if (development) {
@@ -154,7 +154,7 @@ export default {
 	 */
 	OMAUsersMessageAppToken: (function () {
 		if (production) {
-			return ''
+			return 'bearer cac7cc0ab25cff18fcc86b2f139d4f7e'
 		} else if (staging) {
 			return 'bearer 39d270dc380d5ac331f0affc7a4ddb59'
 		} else if (development) {
