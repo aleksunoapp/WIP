@@ -11,7 +11,7 @@ export default [
 	{value: 'America/Denver', label: '(GMT-07:00) Mountain Time (US & Canada)'},
 	{value: 'America/Chihuahua', label: '(GMT-07:00) Chihuahua, La Paz, Mazatlan'},
 	{value: 'America/Dawson_Creek', label: '(GMT-07:00) Arizona'},
-	{value: 'America/Belize', label: '(GMT-06:00) Saskatchewan, Central America'},
+	{value: 'America/Regina', label: '(GMT-06:00) Saskatchewan, Central America'},
 	{value: 'America/Cancun', label: '(GMT-06:00) Guadalajara, Mexico City, Monterrey'},
 	{value: 'Chile/EasterIsland', label: '(GMT-06:00) Easter Island'},
 	{value: 'America/Chicago', label: '(GMT-06:00) Central Time (US & Canada)'},
