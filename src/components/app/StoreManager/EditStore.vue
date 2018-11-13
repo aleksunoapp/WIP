@@ -317,6 +317,22 @@
 													</tr>
 													<tr>
 														<td>
+															ASAP Ordering
+														</td>
+														<td>
+															<el-switch v-model="metaToBeEdited.pickup_immediate"
+															           active-color="#0c6"
+															           inactive-color="#ff4949"
+															           :disabled="!$root.permissions['stores profile update']? true : false"
+															           :active-value="1"
+															           :inactive-value="0"
+															           active-text="Yes"
+															           inactive-text="No">
+															</el-switch>
+														</td>
+													</tr>
+													<tr>
+														<td>
 															Pickup Later
 														</td>
 														<td>

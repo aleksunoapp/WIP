@@ -356,6 +356,21 @@
 											</tr>
 											<tr>
 												<td>
+													ASAP Ordering
+												</td>
+												<td>
+													<el-switch v-model="newStoreMeta.pickup_immediate"
+													           active-color="#0c6"
+													           inactive-color="#ff4949"
+													           :active-value="1"
+													           :inactive-value="0"
+													           active-text="Yes"
+													           inactive-text="No">
+													</el-switch>
+												</td>
+											</tr>
+											<tr>
+												<td>
 													Pickup Later
 												</td>
 												<td>
@@ -737,6 +752,7 @@ export default {
 				merchant_id: null,
 				merchant_key: null,
 				created_by: this.$root.createdBy,
+				pickup_immediate: 0,
 				enable_pickup_later: 0,
 				external_online_ordering_enabled: 0,
 				external_online_ordering_url: ''
@@ -1112,6 +1128,7 @@ export default {
 				merchant_id: null,
 				merchant_key: null,
 				created_by: this.$root.createdBy,
+				pickup_immediate: 0,
 				enable_pickup_later: 0,
 				external_online_ordering_enabled: 0,
 				external_online_ordering_url: ''
