@@ -485,13 +485,22 @@ export default {
 			return DeliveryProvidersFunctions.listDeliveryProviderForStore(this.activeLocationId)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						_this.loadingDeliveryProviders = false
+						response.payload.sort((a, b) => {
+							if (a.sort_order < b.sort_order) {
+								return -1
+							} else if (a.sort_order > b.sort_order) {
+								return 1
+							} else {
+								return 0
+							}
+						})
 						_this.deliveryProviders = response.payload.map(provider => {
 							return {
 								...provider,
 								sort_order: provider.sort_order.toString()
 							}
 						})
+						_this.loadingDeliveryProviders = false
 					} else {
 						_this.loadingDeliveryProviders = false
 					}
