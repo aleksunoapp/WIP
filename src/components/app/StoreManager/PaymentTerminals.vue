@@ -322,6 +322,18 @@
 			</div>
 			<div slot="modal-body"
 					 class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="alert alert-danger"
+									v-show="deleteErrorMessage.length"
+									ref="deleteErrorMessage">
+							<button class="close"
+											data-close="alert"
+											@click.prevent="clearError('deleteErrorMessage')"></button>
+							<span>{{ deleteErrorMessage }}</span>
+						</div>
+					</div>
+				</div>
 				<p>Are you sure you want to delete {{paymentTerminalToDelete.terminal_name}}?</p>
 			</div>
 			<div slot="modal-footer"
