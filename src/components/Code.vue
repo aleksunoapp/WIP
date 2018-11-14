@@ -183,6 +183,18 @@ export default {
 			}
 		}
 	},
+	watch: {
+		'$root.meta': {
+			handler: function (newVal, oldVal) {
+				if (newVal.local) {
+					this.selectedLanguage = newVal.local
+				} else if (newVal.supportedLanguages !== undefined && newVal.supportedLanguages.length) {
+					this.selectedLanguage = newVal.supportedLanguages[0].culture
+				}
+			},
+			immediate: true
+		}
+	},
 	created () {
 		$('html, body').scrollTop(0)
 
