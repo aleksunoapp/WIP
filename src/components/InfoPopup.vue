@@ -86,9 +86,22 @@
 								{{ langTerms.inspection_summary[$root.meta.local.toLowerCase()] }}
 							</a>
 						</div>
-						<div class="info-modal-estimate">{{ langTerms.estimated_cost[$root.meta.local.toLowerCase()] }} 
-							<span v-if="viewingSubServiceIndex === undefined">{{ formatCurrency(viewingService.price) }}</span>
-							<span v-else>{{ formatCurrency(viewingService.subServices[viewingSubServiceIndex].price) }}</span>
+						<div class="info-modal-estimate">{{ showEstimatedCost ? langTerms.estimated_cost[$root.meta.local.toLowerCase()] : '' }} 
+							<span v-if="viewingSubServiceIndex === undefined">
+								<span v-if="viewingService.laborMatrixType === 'Warranty'">{{ langTerms.covered_by_warranty[$root.meta.local.toLowerCase()] }}</span>
+								<span v-else-if="viewingService.laborMatrixType === 'Free'">{{ langTerms.free[$root.meta.local.toLowerCase()] }}</span>
+								<span v-else-if="viewingService.laborMatrixType === 'Included'">{{ langTerms.included[$root.meta.local.toLowerCase()] }}</span>
+								<span v-else-if="viewingService.laborMatrixType === 'Internal'">{{ langTerms.covered_by_dealership[$root.meta.local.toLowerCase()] }}</span>
+								<span v-else>{{ formatCurrency(viewingService.price) }}</span>
+							</span>
+							<span v-else>
+								<span></span>
+								<span v-if="viewingService.subServices[viewingSubServiceIndex].laborMatrixType === 'Warranty'">{{ langTerms.covered_by_warranty[$root.meta.local.toLowerCase()] }}</span>
+								<span v-else-if="viewingService.subServices[viewingSubServiceIndex].laborMatrixType === 'Free'">{{ langTerms.free[$root.meta.local.toLowerCase()] }}</span>
+								<span v-else-if="viewingService.subServices[viewingSubServiceIndex].laborMatrixType === 'Included'">{{ langTerms.included[$root.meta.local.toLowerCase()] }}</span>
+								<span v-else-if="viewingService.subServices[viewingSubServiceIndex].laborMatrixType === 'Internal'">{{ langTerms.covered_by_dealership[$root.meta.local.toLowerCase()] }}</span>
+								<span v-else>{{ formatCurrency(viewingService.subServices[viewingSubServiceIndex].price) }}</span>
+							</span>
 						</div>
 					</div>
 				</div>
@@ -174,6 +187,26 @@ export default {
 					'en-ca': 'Advisor comments',
 					'en-us': 'Advisor comments',
 					'fr-ca': 'Commentaires du conseiller'
+				},
+				free: {
+					'en-ca': 'Please note this service is free - you will NOT be charged for it',
+					'en-us': 'Please note this service is free - you will NOT be charged for it',
+					'fr-ca': 'Please note this service is free - you will NOT be charged for it'
+				},
+				covered_by_warranty: {
+					'en-ca': 'Please note this service is covered under Warranty - you will NOT be charged for it',
+					'en-us': 'Please note this service is covered under Warranty - you will NOT be charged for it',
+					'fr-ca': 'Please note this service is covered under Warranty - you will NOT be charged for it'
+				},
+				included: {
+					'en-ca': 'Please note the price of this service is included - you will NOT be charged for it',
+					'en-us': 'Please note the price of this service is included - you will NOT be charged for it',
+					'fr-ca': 'Please note the price of this service is included - you will NOT be charged for it'
+				},
+				covered_by_dealership: {
+					'en-ca': 'Please note this service is free - you will NOT be charged for it',
+					'en-us': 'Please note this service is free - you will NOT be charged for it',
+					'fr-ca': 'Please note this service is free - you will NOT be charged for it'
 				}
 			}
 		}
@@ -184,6 +217,13 @@ export default {
 				return this.viewingService.subServices[this.viewingSubServiceIndex].imageUrl
 			} else {
 				return this.viewingService.imageUrl
+			}
+		},
+		showEstimatedCost () {
+			if (this.viewingSubServiceIndex !== undefined) {
+				return this.viewingService.subServices[this.viewingSubServiceIndex].laborMatrixType === 'None'
+			} else {
+				return this.viewingService.laborMatrixType === 'None'
 			}
 		}
 	},

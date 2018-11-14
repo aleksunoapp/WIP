@@ -193,12 +193,16 @@ var authenticateToken = {
 										if (service.subServices) {
 											service.subServices.forEach(subService => {
 												if (subService.isSelected) {
-													inspectionTotal += subService.price
+													if (subService.laborMatrixType === 'None') {
+														inspectionTotal += subService.price
+													}
 												}
 											})
 										} else {
 											if (service.isSelected) {
-												inspectionTotal += service.price
+												if (service.laborMatrixType === 'None') {
+													inspectionTotal += service.price
+												}
 											}
 										}
 									}
@@ -230,7 +234,9 @@ var authenticateToken = {
 										if (service.subServices) {
 											service.subServices.forEach(subService => {
 												if (subService.isSelected) {
-													inspectionTotal += subService.price
+													if (subService.laborMatrixType === 'None') {
+														inspectionTotal += subService.price
+													}
 												}
 											})
 										}

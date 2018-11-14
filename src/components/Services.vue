@@ -29,7 +29,11 @@
 								</div>
 								<div class="summary-table-cell">
 									<template v-if="service.category !== '8'">
-										<span class="price" v-if="subService.price !== 0">{{ formatCurrency(subService.price) }}</span>
+										<span class="price" v-if="subService.laborMatrixType === 'Warranty'">{{ langTerms.covered_by_warranty[$root.meta.local.toLowerCase()] }}</span>
+										<span class="price" v-else-if="subService.laborMatrixType === 'Free'">{{ langTerms.free[$root.meta.local.toLowerCase()] }}</span>
+										<span class="price" v-else-if="subService.laborMatrixType === 'Included'">{{ langTerms.included[$root.meta.local.toLowerCase()] }}</span>
+										<span class="price" v-else-if="subService.laborMatrixType === 'Internal'">{{ langTerms.covered_by_dealership[$root.meta.local.toLowerCase()] }}</span>
+										<span class="price" v-else-if="subService.price !== 0">{{ formatCurrency(subService.price) }} </span>
 										<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 									</template>
 								</div>
@@ -53,7 +57,11 @@
 							</div>
 							<div class="summary-table-cell">
 								<template v-if="service.category !== '8'">
-									<span class="price" v-if="service.price !== 0">{{ formatCurrency(service.price) }}</span>
+									<span class="price" v-if="service.laborMatrixType === 'Warranty'">{{ langTerms.covered_by_warranty[$root.meta.local.toLowerCase()] }}</span>
+									<span class="price" v-else-if="service.laborMatrixType === 'Free'">{{ langTerms.free[$root.meta.local.toLowerCase()] }}</span>
+									<span class="price" v-else-if="service.laborMatrixType === 'Included'">{{ langTerms.included[$root.meta.local.toLowerCase()] }}</span>
+									<span class="price" v-else-if="service.laborMatrixType === 'Internal'">{{ langTerms.covered_by_dealership[$root.meta.local.toLowerCase()] }}</span>
+									<span class="price" v-else-if="service.price !== 0">{{ formatCurrency(service.price) }}</span>
 									<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 								</template>
 							</div>
@@ -95,7 +103,11 @@
 											<span class="service-name" v-bind:class="{'bold': (service.isHighlighted === true)}">{{ subService.name }}</span>
 										</div>
 										<div class="summary-table-cell" v-bind:class="{'bold': (service.isHighlighted === true)}">
-											<span class="price" v-if="subService.price !== 0">{{ formatCurrency(subService.price) }}</span>
+											<span class="price" v-if="subService.laborMatrixType === 'Warranty'">{{ langTerms.covered_by_warranty[$root.meta.local.toLowerCase()] }}</span>
+											<span class="price" v-else-if="subService.laborMatrixType === 'Free'">{{ langTerms.free[$root.meta.local.toLowerCase()] }}</span>
+											<span class="price" v-else-if="subService.laborMatrixType === 'Included'">{{ langTerms.included[$root.meta.local.toLowerCase()] }}</span>
+											<span class="price" v-else-if="subService.laborMatrixType === 'Internal'">{{ langTerms.covered_by_dealership[$root.meta.local.toLowerCase()] }}</span>
+											<span class="price" v-else-if="subService.price !== 0">{{ formatCurrency(subService.price) }} </span>
 											<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 										</div>
 									</div>
@@ -110,7 +122,11 @@
 										<span class="service-name" v-bind:class="{'bold': (service.isHighlighted === true)}">{{ service.name }}</span>
 									</div>
 									<div class="summary-table-cell" v-bind:class="{'bold': (service.isHighlighted === true)}">
-										<span class="price" v-if="service.price !== 0">{{ formatCurrency(service.price) }}</span>
+										<span class="price" v-if="service.laborMatrixType === 'Warranty'">{{ langTerms.covered_by_warranty[$root.meta.local.toLowerCase()] }}</span>
+										<span class="price" v-else-if="service.laborMatrixType === 'Free'">{{ langTerms.free[$root.meta.local.toLowerCase()] }}</span>
+										<span class="price" v-else-if="service.laborMatrixType === 'Included'">{{ langTerms.included[$root.meta.local.toLowerCase()] }}</span>
+										<span class="price" v-else-if="service.laborMatrixType === 'Internal'">{{ langTerms.covered_by_dealership[$root.meta.local.toLowerCase()] }}</span>
+										<span class="price" v-else-if="service.price !== 0">{{ formatCurrency(service.price) }}</span>
 										<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 									</div>
 								</div>
@@ -436,6 +452,21 @@ export default {
 					'en-ca': 'indicates updates to the services',
 					'en-us': 'indicates updates to the services',
 					'fr-ca': 'indique des mises à jour aux services'
+				},
+				covered_by_warranty: {
+					'en-ca': 'Covered by warranty',
+					'en-us': 'Covered by warranty',
+					'fr-ca': 'Covered by warranty'
+				},
+				included: {
+					'en-ca': 'Included',
+					'en-us': 'Included',
+					'fr-ca': 'Included'
+				},
+				covered_by_dealership: {
+					'en-ca': 'Covered by dealership',
+					'en-us': 'Covered by dealership',
+					'fr-ca': 'Covered by dealership'
 				}
 			}
 		}
@@ -790,8 +821,10 @@ export default {
 		  */
 		deferService () {
 			this.viewingService.isSelected = false
-			this.$root.totals.inspectionTotal.total -= parseFloat(this.viewingService.price)
-			this.getTaxTotals()
+			if (this.viewingService.laborMatrixType === 'None') {
+				this.$root.totals.inspectionTotal.total -= parseFloat(this.viewingService.price)
+				this.getTaxTotals()
+			}
 			this.openDeferReasonModal(this.viewingService)
 			this.closeServiceModal()
 		},
