@@ -15,7 +15,7 @@
 						<img src="../../../../static/client_logo.png">
 					</div>
 					<div class="caption">
-						<span class="caption-subject font-default bold uppercase">Approval</span>
+						<span class="caption-subject font-default bold uppercase">Approvals</span>
 						<div class="caption-desc font-grey-cascade">Review and approve or reject pending change requests.</div>
 					</div>
 				</div>
