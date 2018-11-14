@@ -28,7 +28,7 @@ export default {
 		})(),
 		ecomm: (function () {
 			if (production) {
-				return 'https://pitapit.api.unoapp.io/api'
+				return 'https://pita-pit.api.unoapp.io/api'
 			} else if (staging) {
 				return 'https://pitapit.beta.api.unoapp.io/api'
 			} else if (development) {
@@ -37,7 +37,7 @@ export default {
 		})(),
 		resources: (function () {
 			if (production) {
-				return 'https://resources.beta.api.unoapp.io'
+				return 'https://resources.dev.api.unoapp.io'
 			} else if (staging) {
 				return 'https://resources.dev.api.unoapp.io'
 			} else if (development) {
@@ -50,8 +50,8 @@ export default {
 			approvals: (function () {
 				if (production) {
 					return {
-						appId: '',
-						appSecret: ''
+						appId: 'TXqcYP6cOE1MQ2bwJEgCPnXTTJnhC7nZ',
+						appSecret: 'QJ9ckirYR624kUXQINQbEV9ShjKPjMQ4'
 					}
 				} else if (staging) {
 					return {
@@ -68,8 +68,8 @@ export default {
 			loyalty: (function () {
 				if (production) {
 					return {
-						appId: 'KWpZuK0lscFrJ84dkUGsMQVQGDHAtAHv',
-						appSecret: 'QVDvjk0cn4jltPnNEQi2hwQlD17pU0dr'
+						appId: '',
+						appSecret: ''
 					}
 				} else if (staging) {
 					return {
@@ -102,7 +102,7 @@ export default {
 	 */
 	approvalsAppId: (function () {
 		if (production) {
-			return ''
+			return '5bdb9f04fba77425779da946'
 		} else if (staging) {
 			return '5bd04987e39d933feee07516'
 		} else if (development) {
@@ -138,7 +138,7 @@ export default {
 	 */
 	messageAppToken: (function () {
 		if (production) {
-			return 'bearer cac7cc0ab25cff18fcc86b2f139d4f7e'
+			return 'bearer e0a462e38d1f21fde867a5fb4c994941'
 		} else if (staging) {
 			return 'bearer 2be7cc6b406a09759144a468d94f5cf2'
 		} else if (development) {
@@ -148,7 +148,7 @@ export default {
 	/**
 	 * string to prepend to user's id as alias when messaging OMA users
 	 */
-	application_name: 'pitapit',
+	application_name: 'pitapit_new',
 	/**
 	 * app token for API calls to send Messages to OMA users
 	 */
