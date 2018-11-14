@@ -176,7 +176,7 @@
 											<i class="fa fa-lg fa-eye"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip v-if="$root.permissions['stores payment_terminals delete']"
+									<el-tooltip v-if="$root.permissions['stores payment terminals delete']"
 															content="Delete"
 															effect="light"
 															placement="right">

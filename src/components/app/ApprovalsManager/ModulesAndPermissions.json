@@ -83,7 +83,14 @@
 	  "stores payment methods delete": false,
 	  "stores payment methods approve": false
     }
-  },
+	},
+		"payment_terminals": {
+		"stores payment_terminals read": false,
+		"stores payment_terminals create": false,
+		"stores payment_terminals update": false,
+		"stores payment terminals delete": false,
+		"stores payment_terminals approve": false
+		},
   "analytics": {
 	"analytics overview": {
 	  "analytics overview read": false,
