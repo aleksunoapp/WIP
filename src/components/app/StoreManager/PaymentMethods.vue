@@ -526,8 +526,8 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						_this.loadingPaymentMethods = false
-						if (response.payload.length) {
-							_this.paymentMethods = response.payload[0]
+						if (response.payload.id !== undefined) {
+							_this.paymentMethods = response.payload
 						}
 					} else {
 						_this.loadingPaymentMethods = false
