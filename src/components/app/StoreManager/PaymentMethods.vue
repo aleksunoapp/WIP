@@ -311,7 +311,8 @@
 		<!-- START DELETE -->
 		<modal :show="showDeleteModal"
 					 effect="fade"
-					 @closeOnEscape="closeDeleteModal">
+					 @closeOnEscape="closeDeleteModal"
+					 ref="deleteModal">
 			<div slot="modal-header"
 					 class="modal-header">
 				<button type="button"
@@ -323,6 +324,18 @@
 			</div>
 			<div slot="modal-body"
 					 class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="alert alert-danger"
+									v-show="deleteErrorMessage.length"
+									ref="deleteErrorMessage">
+							<button class="close"
+											data-close="alert"
+											@click.prevent="clearError('deleteErrorMessage')"></button>
+							<span>{{ deleteErrorMessage }}</span>
+						</div>
+					</div>
+				</div>
 				<p>Are you sure you want to delete?</p>
 			</div>
 			<div slot="modal-footer"
@@ -657,7 +670,8 @@ export default {
 						reason,
 						errorText: `We could not delete the Payment Methods`,
 						errorName: 'deleteErrorMessage',
-						vue: _this
+						vue: _this,
+						containerRef: 'deleteModal'
 					})
 				})
 				.finally(() => {
