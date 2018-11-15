@@ -1259,19 +1259,16 @@ export default {
 			return createStoreVue
 				.validateStoreData()
 				.then(response => {
-					createStoreVue.newStore.phone = createStoreVue.newStore.phone.replace(
-						/[^\d]/g,
-						''
-					)
-					createStoreVue.newStore.fax = createStoreVue.newStore.fax.replace(
-						/[^\d]/g,
-						''
-					)
-					if (!createStoreVue.newStore.fax) {
-						createStoreVue.newStore.fax = '0000000000'
+					let payload = {
+						...createStoreVue.newStore
+					}
+					payload.phone = createStoreVue.newStore.phone.replace(/[^\d]/g, '')
+					payload.fax = createStoreVue.newStore.fax.replace(/[^\d]/g, '')
+					if (!payload.fax) {
+						payload.fax = '0000000000'
 					}
 					StoresFunctions.createNewStore(
-						createStoreVue.newStore,
+						payload,
 						createStoreVue.$root.appId,
 						createStoreVue.$root.appSecret,
 						createStoreVue.$root.userToken
