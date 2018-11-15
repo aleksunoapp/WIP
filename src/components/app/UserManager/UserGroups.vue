@@ -6,7 +6,7 @@
 			</div>
 			<h1 class='page-title'>User Groups</h1>
 			<div class="note note-info">
-				<p>A list of user groups for PitaPit.</p>
+				<p>A list of user groups.</p>
 			</div>
 
 			<!-- CREATE GROUP PANEL START -->
