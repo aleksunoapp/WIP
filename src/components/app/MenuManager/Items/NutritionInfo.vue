@@ -73,7 +73,7 @@
 								    :key="info.id">
 									<td v-if="info.key !== 'id' && info.key !== 'item_id'"> {{ info.name }} </td>
 									<td v-if="info.key !== 'id' && info.key !== 'item_id'">
-										<input :disabled="!editingNutritionInfo && !can('menu_manager menus categories subcategories items nutrition update')"
+										<input :disabled="!editingNutritionInfo || !can('menu_manager menus categories subcategories items nutrition update')"
 										       type="text"
 										       class="form-control input-sm"
 										       v-model="info.value">
