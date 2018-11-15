@@ -226,7 +226,7 @@
 								<li id="parent"
 								    class="mt-list-item actions-at-left margin-top-15"
 								    v-for="store in currentActiveSearchPageItems"
-								    :key="store.id">
+								    :key="`search${store.id}`">
 									<div class="list-item-actions">
 										<el-tooltip v-if="$root.permissions['stores info update']"
 										            content="Edit"
@@ -632,6 +632,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		getStores () {
+			this.filteredResults = []
 			this.displayStoreData = true
 			var storeListVue = this
 			App.getPaginatedStoreLocations(
