@@ -196,17 +196,17 @@ export default {
 		} else if (development) {
 			return [
 				{
-					id: 21,
+					id: 11,
 					type: 'CLOSE',
 					value: 'Close'
 				},
 				{
-					id: 25,
+					id: 15,
 					type: 'CALL',
 					value: 'Call'
 				},
 				{
-					id: 22,
+					id: 12,
 					type: 'GOTO_LINK',
 					value: 'Website'
 				}
