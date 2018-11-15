@@ -88,18 +88,18 @@
 						</div>
 						<div class="info-modal-estimate">{{ showEstimatedCost ? langTerms.estimated_cost[$root.meta.local.toLowerCase()] : '' }} 
 							<span v-if="viewingSubServiceIndex === undefined">
-								<span v-if="viewingService.laborMatrixType === 'Warranty'">{{ langTerms.covered_by_warranty[$root.meta.local.toLowerCase()] }}</span>
-								<span v-else-if="viewingService.laborMatrixType === 'Free'">{{ langTerms.free[$root.meta.local.toLowerCase()] }}</span>
-								<span v-else-if="viewingService.laborMatrixType === 'Included'">{{ langTerms.included[$root.meta.local.toLowerCase()] }}</span>
-								<span v-else-if="viewingService.laborMatrixType === 'Internal'">{{ langTerms.covered_by_dealership[$root.meta.local.toLowerCase()] }}</span>
+								<span v-if="viewingService.laborMatrixPayment === 'Warranty'">{{ langTerms.covered_by_warranty[$root.meta.local.toLowerCase()] }}</span>
+								<span v-else-if="viewingService.laborMatrixPayment === 'Free'">{{ langTerms.free[$root.meta.local.toLowerCase()] }}</span>
+								<span v-else-if="viewingService.laborMatrixPayment === 'Included'">{{ langTerms.included[$root.meta.local.toLowerCase()] }}</span>
+								<span v-else-if="viewingService.laborMatrixPayment === 'Internal'">{{ langTerms.covered_by_dealership[$root.meta.local.toLowerCase()] }}</span>
 								<span v-else>{{ formatCurrency(viewingService.price) }}</span>
 							</span>
 							<span v-else>
 								<span></span>
-								<span v-if="viewingService.subServices[viewingSubServiceIndex].laborMatrixType === 'Warranty'">{{ langTerms.covered_by_warranty[$root.meta.local.toLowerCase()] }}</span>
-								<span v-else-if="viewingService.subServices[viewingSubServiceIndex].laborMatrixType === 'Free'">{{ langTerms.free[$root.meta.local.toLowerCase()] }}</span>
-								<span v-else-if="viewingService.subServices[viewingSubServiceIndex].laborMatrixType === 'Included'">{{ langTerms.included[$root.meta.local.toLowerCase()] }}</span>
-								<span v-else-if="viewingService.subServices[viewingSubServiceIndex].laborMatrixType === 'Internal'">{{ langTerms.covered_by_dealership[$root.meta.local.toLowerCase()] }}</span>
+								<span v-if="viewingService.subServices[viewingSubServiceIndex].laborMatrixPayment === 'Warranty'">{{ langTerms.covered_by_warranty[$root.meta.local.toLowerCase()] }}</span>
+								<span v-else-if="viewingService.subServices[viewingSubServiceIndex].laborMatrixPayment === 'Free'">{{ langTerms.free[$root.meta.local.toLowerCase()] }}</span>
+								<span v-else-if="viewingService.subServices[viewingSubServiceIndex].laborMatrixPayment === 'Included'">{{ langTerms.included[$root.meta.local.toLowerCase()] }}</span>
+								<span v-else-if="viewingService.subServices[viewingSubServiceIndex].laborMatrixPayment === 'Internal'">{{ langTerms.covered_by_dealership[$root.meta.local.toLowerCase()] }}</span>
 								<span v-else>{{ formatCurrency(viewingService.subServices[viewingSubServiceIndex].price) }}</span>
 							</span>
 						</div>
@@ -221,9 +221,9 @@ export default {
 		},
 		showEstimatedCost () {
 			if (this.viewingSubServiceIndex !== undefined) {
-				return this.viewingService.subServices[this.viewingSubServiceIndex].laborMatrixType === 'None'
+				return this.viewingService.subServices[this.viewingSubServiceIndex].laborMatrixPayment === 'None'
 			} else {
-				return this.viewingService.laborMatrixType === 'None'
+				return this.viewingService.laborMatrixPayment === 'None'
 			}
 		}
 	},
