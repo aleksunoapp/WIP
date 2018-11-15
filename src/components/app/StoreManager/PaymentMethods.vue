@@ -538,10 +538,13 @@ export default {
 			return PaymentMethodsFunctions.listPaymentMethodsForStore(this.activeLocationId)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						_this.loadingPaymentMethods = false
+						if (response.payload === null) {
+							response.payload = {}
+						}
 						if (response.payload.id !== undefined) {
 							_this.paymentMethods = response.payload
 						}
+						_this.loadingPaymentMethods = false
 					} else {
 						_this.loadingPaymentMethods = false
 					}
