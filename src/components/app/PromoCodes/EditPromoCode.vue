@@ -215,6 +215,7 @@ import LoadingScreen from '../../modules/LoadingScreen'
 import SelectLocationsPopup from '../../modules/SelectLocationsPopup'
 import MenuItemPicker from '@/components/modules/MenuItemPicker'
 import { mapGetters } from 'vuex'
+import { isNonNegativeNumber } from '@/controllers/utils'
 
 export default {
 	data () {
@@ -503,14 +504,8 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (!promoCodesVue.promoCode.codes.length) {
 					reject('Code cannot be blank')
-				} else if (
-					!/^(?=.+)(?:[1-9]\d*|0)?(?:\.\d+)?$/.test(
-						promoCodesVue.promoCode.value
-					)
-				) {
-					reject(
-						'Value Of Promo Code cannot be blank and must be a number'
-					)
+				} else if (!isNonNegativeNumber(promoCodesVue.promoCode.value)) {
+					reject('Value Of Promo Code must be a zero or more')
 				} else if (!promoCodesVue.promoCode.value_type.length) {
 					reject('Value Type cannot be blank')
 				} else if (!promoCodesVue.promoCode.apply_on.length) {
@@ -522,19 +517,13 @@ export default {
 					reject('Select at least one item')
 				} else if (!promoCodesVue.promoCode.type.length) {
 					reject('Single or Multi Use cannot be blank')
-				} else if (
-					!/^\+?(0|[1-9]\d*)$/.test(
-						promoCodesVue.promoCode.max_use_per_person
-					)
-				) {
+				} else if (!isNonNegativeNumber(promoCodesVue.promoCode.max_use_per_person)) {
 					reject(
-						'Maximum Redemptions Per User cannot be blank and must be a number'
+						'Maximum Redemptions Per User must be zero or more'
 					)
-				} else if (
-					!/^\+?(0|[1-9]\d*)$/.test(promoCodesVue.promoCode.max_use)
-				) {
+				} else if (!isNonNegativeNumber(promoCodesVue.promoCode.max_use)) {
 					reject(
-						'Total Redemptions Permitted cannot be blank and must be a number'
+						'Total Redemptions Permitted must be zero or more'
 					)
 				} else if (!promoCodesVue.promoCode.apply_on.length) {
 					reject('Applies to cannot be blank')

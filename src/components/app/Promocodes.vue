@@ -380,6 +380,7 @@ import $ from 'jquery'
 import { debounce } from 'lodash'
 import MenuItemPicker from '@/components/modules/MenuItemPicker'
 import ajaxErrorHandler from '@/controllers/ErrorController'
+import { isNonNegativeNumber } from '@/controllers/utils'
 
 export default {
 	data () {
@@ -716,6 +717,7 @@ export default {
 				`${inputYear}-${inputMonth}-${inputDay}`
 			)
 		},
+
 		/**
 		 * To check if the promo code data is valid before submitting to the backend.
 		 * @function
@@ -726,13 +728,9 @@ export default {
 			return new Promise(function (resolve, reject) {
 				if (!promoCodesVue.newPromoCode.codes.length) {
 					reject('Code cannot be blank')
-				} else if (
-					!/^(?=.+)(?:[1-9]\d*|0)?(?:\.\d+)?$/.test(
-						promoCodesVue.newPromoCode.value
-					)
-				) {
+				} else if (!isNonNegativeNumber(promoCodesVue.newPromoCode.value)) {
 					reject(
-						'Value Of Promo Code cannot be blank and must be a number'
+						'Value Of Promo Code must be zero or more'
 					)
 				} else if (!promoCodesVue.newPromoCode.value_type.length) {
 					reject('Value Type cannot be blank')
@@ -745,21 +743,13 @@ export default {
 					reject('Select at least one item')
 				} else if (!promoCodesVue.newPromoCode.type.length) {
 					reject('Single or Multi Use cannot be blank')
-				} else if (
-					!/^\+?(0|[1-9]\d*)$/.test(
-						promoCodesVue.newPromoCode.max_use_per_person
-					)
-				) {
+				} else if (!isNonNegativeNumber(promoCodesVue.newPromoCode.max_use_per_person)) {
 					reject(
-						'Maximum Redemptions Per User cannot be blank and must be a positive number'
+						'Maximum Redemptions Per User must be zero or more'
 					)
-				} else if (
-					!/^\+?(0|[1-9]\d*)$/.test(
-						promoCodesVue.newPromoCode.max_use
-					)
-				) {
+				} else if (!isNonNegativeNumber(promoCodesVue.newPromoCode.max_use)) {
 					reject(
-						'Total Redemptions Permitted cannot be blank and must be a positive number'
+						'Total Redemptions Permitted must be zero or more'
 					)
 				} else if (!promoCodesVue.newPromoCode.apply_on.length) {
 					reject('Applies to cannot be blank')
