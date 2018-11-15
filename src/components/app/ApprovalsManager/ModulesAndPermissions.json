@@ -85,11 +85,11 @@
     }
 	},
 		"payment_terminals": {
-		"stores payment_terminals read": false,
-		"stores payment_terminals create": false,
-		"stores payment_terminals update": false,
-		"stores payment terminals delete": false,
-		"stores payment_terminals approve": false
+      "stores payment terminals read": false,
+      "stores payment terminals create": false,
+      "stores payment terminals update": false,
+      "stores payment terminals delete": false,
+      "stores payment terminals approve": false
 		},
   "analytics": {
 	"analytics overview": {

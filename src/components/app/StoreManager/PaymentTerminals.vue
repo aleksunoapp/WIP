@@ -15,7 +15,7 @@
 
 		<!-- BEGIN CREATE -->
 		<div class="portlet box blue-hoki"
-				 v-if="$root.permissions['stores payment_terminals create']">
+				 v-if="$root.permissions['stores payment terminals create']">
 			<div class="portlet-title bg-blue-chambray"
 					 @click="toggleCreatePanel()">
 				<div class="caption">
@@ -158,7 +158,7 @@
 									:id="'paymentTerminal-' + paymentTerminal.id"
 									:key="paymentTerminal.id">
 								<div class="list-item-actions">
-									<el-tooltip v-if="$root.permissions['stores payment_terminals update']"
+									<el-tooltip v-if="$root.permissions['stores payment terminals update']"
 															content="Edit"
 															effect="light"
 															placement="right">
@@ -167,7 +167,7 @@
 											<i class="fa fa-lg fa-pencil"></i>
 										</a>
 									</el-tooltip>
-									<el-tooltip v-if="$root.permissions['stores payment_terminals read'] && !$root.permissions['stores payment_terminals update']"
+									<el-tooltip v-if="$root.permissions['stores payment terminals read'] && !$root.permissions['stores payment terminals update']"
 															content="View"
 															effect="light"
 															placement="right">
@@ -230,7 +230,7 @@
 							</div>
 						</div>
 						<div class="col-md-12">
-							<fieldset :disabled="!$root.permissions['stores payment_terminals update']">
+							<fieldset :disabled="!$root.permissions['stores payment terminals update']">
 								<div class="form-group form-md-line-input form-md-floating-label">
 									<input type="text"
 												class="form-control input-sm"
@@ -286,7 +286,7 @@
 			</div>
 			<div slot="modal-footer"
 					 class="modal-footer clear">
-				<button v-if="!$root.permissions['stores payment_terminals update']"
+				<button v-if="!$root.permissions['stores payment terminals update']"
 								@click="closeEditModal()"
 								type="button"
 								class="btn blue">

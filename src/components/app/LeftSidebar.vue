@@ -304,7 +304,7 @@
 								<span class="title">Payment Methods</span>
 							</router-link>
 						</li>
-						<li v-if="can('stores payment_terminals read')"
+						<li v-if="can('stores payment terminals read')"
 						    class="nav-item"
 						    :class="{'active': currentRoute === 'store_manager' && currentSubRoute === 'payment_terminals'}"
 						    id="store_manager_payment_terminals_link">

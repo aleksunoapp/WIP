@@ -354,7 +354,7 @@ export const routes = [
 				name: 'PaymentTerminals',
 				component: PaymentTerminals,
 				meta: {
-					permissions: ['stores payment_terminals read']
+					permissions: ['stores payment terminals read']
 				}
 			},
 			{
