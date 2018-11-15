@@ -84,20 +84,22 @@
 						           class="margin-bottom-15"
 						           id="form_control_cta_type"
 						           @change="clearCtaValue()">
-							<el-option label="hyperlink"
-							           value="hyperlink"></el-option>
-							<el-option label="menu item"
-							           value="menu_item"></el-option>
-							<el-option label="promo code"
-							           value="promo_code"></el-option>
-							<el-option label="camera"
-							           value="camera"></el-option>
 							<el-option label="call"
-							           value="call"></el-option>
+													value="call"></el-option>
+							<el-option label="camera"
+													value="camera"></el-option>
+							<el-option label="hyperlink"
+													value="hyperlink"></el-option>
+							<el-option label="in-app action"
+													value="in_app_action"></el-option>
+							<el-option label="menu item"
+													value="menu_item"></el-option>
+							<el-option label="promo code"
+													value="promo_code"></el-option>
 							<el-option label="SMS"
-							           value="sms"></el-option>
+													value="sms"></el-option>
 							<el-option label="video"
-							           value="video"></el-option>
+													value="video"></el-option>
 						</el-select>
 					</div>
 					<fieldset :disabled="!can('promotions update')">
