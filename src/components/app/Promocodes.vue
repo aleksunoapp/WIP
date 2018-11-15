@@ -751,7 +751,7 @@ export default {
 					)
 				) {
 					reject(
-						'Maximum Redemptions Per User cannot be blank and must be a number'
+						'Maximum Redemptions Per User cannot be blank and must be a positive number'
 					)
 				} else if (
 					!/^\+?(0|[1-9]\d*)$/.test(
@@ -759,7 +759,7 @@ export default {
 					)
 				) {
 					reject(
-						'Total Redemptions Permitted cannot be blank and must be a number'
+						'Total Redemptions Permitted cannot be blank and must be a positive number'
 					)
 				} else if (!promoCodesVue.newPromoCode.apply_on.length) {
 					reject('Applies to cannot be blank')
