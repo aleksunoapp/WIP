@@ -11,7 +11,7 @@
 			</div>
 		</div>
 
-		<div class="row">
+		<div class="row" ref="searchRow">
 			<div class="col-xs-12">
 				<el-date-picker v-model="fromDate"
 				                type="date"
@@ -216,7 +216,7 @@
 		<div class="row"
 		     v-show="loading">
 			<div class="col-xs-12 relative-block">
-				<loading-screen :show="loading">
+				<loading-screen :show="loading" class="margin-top-20">
 				</loading-screen>
 			</div>
 		</div>
@@ -395,6 +395,7 @@ export default {
 				!this.locationId &&
 				!this.externalId
 			)				{ return }
+			this.page = 1
 			this.searchOrders()
 		},
 		/**
@@ -403,8 +404,8 @@ export default {
 		 * @returns {object} A network promise call
 		 */
 		searchOrders () {
-			window.scrollTo(0, 0)
 			this.loading = true
+			this.$scrollTo(this.$refs.searchRow, 0, {offset: -100})
 			const _this = this
 			this.payload = {
 				location_id: this.locationId,
