@@ -135,17 +135,8 @@
 							<i class="el-icon-arrow-down el-icon--right"></i>
 						</el-button>
 						<el-dropdown-menu slot="dropdown">
-							<el-dropdown-item :command="17">
-								Call
-							</el-dropdown-item>
-							<el-dropdown-item :command="14">
-								Website
-							</el-dropdown-item>
-							<el-dropdown-item :command="13">
-								Close
-							</el-dropdown-item>
-							<el-dropdown-item :command="15">
-								Camera
+							<el-dropdown-item v-for="action in omaActions" :key="action.id" :command="action.id">
+								{{ action.value }}
 							</el-dropdown-item>
 						</el-dropdown-menu>
 					</el-dropdown>
@@ -211,7 +202,8 @@ export default {
 			sending: false,
 			imageMode: {
 				newMenu: false
-			}
+			},
+			omaActions: GlobalFunctions.OMAMessageAction
 		}
 	},
 	computed: {
@@ -379,15 +371,11 @@ export default {
 		},
 		updateCallToAction (id) {
 			let type
-			if (id === 17) {
-				type = 'CALL'
-			} else if (id === 14) {
-				type = 'GOTO_LINK'
-			} else if (id === 13) {
-				type = 'CLOSE'
-			} else if (id === 15) {
-				type = 'CAMERA'
-			}
+			this.omaActions.forEach(function (action) {
+				if (id === action.id) {
+					type = action.type
+				}
+			})
 			this.message.call_to_action = type
 			this.message.app_action_id = id
 		},
