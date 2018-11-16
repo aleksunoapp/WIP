@@ -142,8 +142,8 @@
 				     v-if="newsFeed.length">
 					<div class="portlet-title">
 						<div class="caption">
-							<i class="fa fa-newspaper-o font-default"></i>
-							<span class="caption-subject bold font-default uppercase"> News Feed</span>
+							<i class="fa fa-newspaper-o font-blue-madison"></i>
+							<span class="caption-subject bold font-blue-madison uppercase"> News Feed</span>
 						</div>
 					</div>
 					<div class="portlet-body">
