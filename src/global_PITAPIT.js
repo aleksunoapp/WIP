@@ -229,7 +229,7 @@ export default {
 	 * Ajax wrapper for making backend calls.
 	 * @function
 	 * @param {object} options - Options for the ajax call being made.
-	 * @param {boolean} api - The api to call
+	 * @param {string} api - The api to call
 	 * @returns {undefined}
 	 */
 	$ajax: function (options, api = 'ecomm') {
@@ -237,6 +237,10 @@ export default {
 		options.url = this.urls[api] + options.url
 
 		options.beforeSend = function (xhr) {
+			if (api === 'approvals') {
+				xhr.setRequestHeader('approvals-app-id', headers[api].appId)
+				xhr.setRequestHeader('approvals-app-secret', headers[api].appSecret)
+			}
 			xhr.setRequestHeader('app-id', headers[api].appId)
 			xhr.setRequestHeader('app-secret', headers[api].appSecret)
 			xhr.setRequestHeader('auth-token', store.getters.userToken)
