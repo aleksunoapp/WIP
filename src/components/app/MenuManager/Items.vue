@@ -1574,6 +1574,9 @@ export default {
 				})
 				.catch(reason => {
 					itemsVue.displayItemData = false
+					if (reason && reason.responseJSON && reason.responseJSON.payload === 'No data found for this Item.') {
+						return
+					}
 					ajaxErrorHandler({
 						reason,
 						errorText: 'We could not fetch items',
