@@ -592,9 +592,7 @@ export default {
 					)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
-								if (response.payload && response.payload.pending_approval !== true) {
-									_this.getPaymentMethods()
-								}
+								_this.getPaymentMethods()
 								_this.showEditSuccess(response.payload)
 							} else {
 								_this.editErrorMessage = response.message
