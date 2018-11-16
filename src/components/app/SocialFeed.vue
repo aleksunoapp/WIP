@@ -236,13 +236,18 @@ export default {
 					}
 				})
 				.catch(reason => {
+					console.log({reason})
 					socialFeedVue.loadingFilteredData = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch social feeds',
-						errorName: 'listErrorMessage',
-						vue: socialFeedVue
-					})
+					if (reason && reason.responseJSON && reason.responseJSON.code === 500 && reason.responseJSON.payload === 'No media found.') {
+						return
+					} else {
+						ajaxErrorHandler({
+							reason,
+							errorText: 'We could not fetch social feeds',
+							errorName: 'listErrorMessage',
+							vue: socialFeedVue
+						})
+					}
 				})
 		},
 		/**
