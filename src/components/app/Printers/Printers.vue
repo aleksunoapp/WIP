@@ -419,7 +419,7 @@ export default {
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
 								addPrinterVue.newPrinter.id = response.payload.new_printer_id
-								addPrinterVue.addPrinter({ ...addPrinterVue.newPrinter })
+								addPrinterVue.getStorePrinters()
 								addPrinterVue.resetForm()
 								addPrinterVue.showAlert(response.payload)
 							} else {
