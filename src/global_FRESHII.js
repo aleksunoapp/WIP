@@ -138,6 +138,28 @@ export default {
 		}
 	})(),
 	/**
+	 * Individual User Message actions and ID's
+	 */
+	messageAction: (function () {
+		return [
+			{
+				id: 11,
+				type: 'CLOSE',
+				value: 'Close'
+			},
+			{
+				id: 15,
+				type: 'CALL',
+				value: 'Call'
+			},
+			{
+				id: 12,
+				type: 'GOTO_LINK',
+				value: 'Website'
+			}
+		]
+	})(),
+	/**
 	 * string to prepend to user's id as alias when messaging OMA users
 	 */
 	application_name: 'freshii2dev',
@@ -145,73 +167,29 @@ export default {
 	 * app token for API calls to send Messages to OMA users
 	 */
 	OMAUsersMessageAppToken: (function () {
-		if (production) {
-			return 'bearer cac7cc0ab25cff18fcc86b2f139d4f7e'
-		} else if (staging) {
-			return 'bearer 39d270dc380d5ac331f0affc7a4ddb59'
-		} else if (development) {
-			return 'bearer 6b1642515315f527604919b430fe79de'
-		}
+		return 'bearer cac7cc0ab25cff18fcc86b2f139d4f7e'
 	})(),
 	/**
 	 * OMA Message actions and ID's
 	 */
 	OMAMessageAction: (function () {
-		if (production) {
-			return [
-				{
-					id: 11,
-					type: 'CLOSE',
-					value: 'Close'
-				},
-				{
-					id: 15,
-					type: 'CALL',
-					value: 'Call'
-				},
-				{
-					id: 12,
-					type: 'GOTO_LINK',
-					value: 'Website'
-				}
-			]
-		} else if (staging) {
-			return [
-				{
-					id: 11,
-					type: 'CLOSE',
-					value: 'Close'
-				},
-				{
-					id: 15,
-					type: 'CALL',
-					value: 'Call'
-				},
-				{
-					id: 12,
-					type: 'GOTO_LINK',
-					value: 'Website'
-				}
-			]
-		} else if (development) {
-			return [
-				{
-					id: 11,
-					type: 'CLOSE',
-					value: 'Close'
-				},
-				{
-					id: 15,
-					type: 'CALL',
-					value: 'Call'
-				},
-				{
-					id: 12,
-					type: 'GOTO_LINK',
-					value: 'Website'
-				}
-			]
-		}
+		return [
+			{
+				id: 11,
+				type: 'CLOSE',
+				value: 'Close'
+			},
+			{
+				id: 15,
+				type: 'CALL',
+				value: 'Call'
+			},
+			{
+				id: 12,
+				type: 'GOTO_LINK',
+				value: 'Website'
+			}
+		]
 	})(),
 	/**
 	 * API key for Google Maps Javascript API

@@ -203,7 +203,7 @@ export default {
 			imageMode: {
 				newMenu: false
 			},
-			omaActions: GlobalFunctions.OMAMessageAction
+			omaActions: GlobalFunctions.messageAction
 		}
 	},
 	computed: {
