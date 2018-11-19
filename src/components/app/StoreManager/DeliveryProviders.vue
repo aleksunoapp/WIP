@@ -503,7 +503,13 @@ export default {
 							} else if (a.sort_order > b.sort_order) {
 								return 1
 							} else {
-								return 0
+								if (a.provider_name.toLowerCase() < b.provider_name.toLowerCase()) {
+									return -1
+								} else if (a.provider_name.toLowerCase() > b.provider_name.toLowerCase()) {
+									return 1
+								} else {
+									return 0
+								}
 							}
 						})
 						_this.deliveryProviders = response.payload.map(provider => {
