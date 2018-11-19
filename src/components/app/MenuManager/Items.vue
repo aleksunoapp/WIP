@@ -2156,6 +2156,11 @@ export default {
 }
 </script>
 <style scoped>
+.dd-handle {
+	white-space: nowrap; 
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
 .actions-on-top {
   margin-top: -5px;
 }
