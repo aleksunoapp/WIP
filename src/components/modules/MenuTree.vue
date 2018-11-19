@@ -406,6 +406,7 @@ export default {
 					}
 				})
 				.catch(reason => {
+					if (reason.responseJSON && reason.responseJSON.payload === 'No data found for this Item.') return
 					ajaxErrorHandler({
 						reason,
 						errorText: 'We could not fetch items',
@@ -510,6 +511,9 @@ export default {
 		 * @returns {undefined}
 		 */
 		showApplyToItemsSuccess (payload = {}) {
+			if (payload === null) {
+				payload = {}
+			}
 			let title = 'Success'
 			let text = 'The Modifier has been saved'
 			let type = 'success'
