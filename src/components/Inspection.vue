@@ -140,10 +140,10 @@
 											</div>
 											<div class="summary-table-cell">
 												<template v-if="category.serviceCategoryType !== 'PASS' && service.category !== '8'">
-													<span class="price" v-if="service.subServices[subServiceIndex].laborMatrixPayment === 'Warranty'">{{ langTerms.covered_by_warranty[$root.meta.local.toLowerCase()] }}</span>
-													<span class="price" v-else-if="service.subServices[subServiceIndex].laborMatrixPayment === 'Free'">{{ langTerms.free[$root.meta.local.toLowerCase()] }}</span>
-													<span class="price" v-else-if="service.subServices[subServiceIndex].laborMatrixPayment === 'Included'">{{ langTerms.included[$root.meta.local.toLowerCase()] }}</span>
-													<span class="price" v-else-if="service.subServices[subServiceIndex].laborMatrixPayment === 'Internal'">{{ langTerms.covered_by_dealership[$root.meta.local.toLowerCase()] }}</span>
+													<span class="price" v-if="service.subServices[subServiceIndex].laborMatrixType === 'Warranty'">{{ langTerms.covered_by_warranty[$root.meta.local.toLowerCase()] }}</span>
+													<span class="price" v-else-if="service.subServices[subServiceIndex].laborMatrixType === 'Free'">{{ langTerms.free[$root.meta.local.toLowerCase()] }}</span>
+													<span class="price" v-else-if="service.subServices[subServiceIndex].laborMatrixType === 'Included'">{{ langTerms.included[$root.meta.local.toLowerCase()] }}</span>
+													<span class="price" v-else-if="service.subServices[subServiceIndex].laborMatrixType === 'Internal'">{{ langTerms.covered_by_dealership[$root.meta.local.toLowerCase()] }}</span>
 													<span class="price" v-else-if="service.subServices[subServiceIndex].price !== 0">{{ formatCurrency(service.subServices[subServiceIndex].price) }}</span>
 													<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 													<div class="service-checkbox">
@@ -258,10 +258,10 @@
 											<div class="summary-table-cell">
 												<template v-if="category.serviceCategoryType !== 'PASS'">
 													<div class="flex justify-center align-center">
-														<span class="price" v-if="subService.laborMatrixPayment === 'Warranty'">{{ langTerms.covered_by_warranty[$root.meta.local.toLowerCase()] }}</span>
-														<span class="price" v-else-if="subService.laborMatrixPayment === 'Free'">{{ langTerms.free[$root.meta.local.toLowerCase()] }}</span>
-														<span class="price" v-else-if="subService.laborMatrixPayment === 'Included'">{{ langTerms.included[$root.meta.local.toLowerCase()] }}</span>
-														<span class="price" v-else-if="subService.laborMatrixPayment === 'Internal'">{{ langTerms.covered_by_dealership[$root.meta.local.toLowerCase()] }}</span>
+														<span class="price" v-if="subService.laborMatrixType === 'Warranty'">{{ langTerms.covered_by_warranty[$root.meta.local.toLowerCase()] }}</span>
+														<span class="price" v-else-if="subService.laborMatrixType === 'Free'">{{ langTerms.free[$root.meta.local.toLowerCase()] }}</span>
+														<span class="price" v-else-if="subService.laborMatrixType === 'Included'">{{ langTerms.included[$root.meta.local.toLowerCase()] }}</span>
+														<span class="price" v-else-if="subService.laborMatrixType === 'Internal'">{{ langTerms.covered_by_dealership[$root.meta.local.toLowerCase()] }}</span>
 														<span class="price" v-else-if="subService.price !== 0">{{ formatCurrency(subService.price) }} </span>
 														<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 														<div class="service-checkbox">
@@ -285,10 +285,10 @@
 										</div>
 										<div class="summary-table-cell">
 											<template v-if="category.serviceCategoryType !== 'PASS'">
-												<span class="price" v-if="service.laborMatrixPayment === 'Warranty'">{{ langTerms.covered_by_warranty[$root.meta.local.toLowerCase()] }}</span>
-												<span class="price" v-else-if="service.laborMatrixPayment === 'Free'">{{ langTerms.free[$root.meta.local.toLowerCase()] }}</span>
-												<span class="price" v-else-if="service.laborMatrixPayment === 'Included'">{{ langTerms.included[$root.meta.local.toLowerCase()] }}</span>
-												<span class="price" v-else-if="service.laborMatrixPayment === 'Internal'">{{ langTerms.covered_by_dealership[$root.meta.local.toLowerCase()] }}</span>
+												<span class="price" v-if="service.laborMatrixType === 'Warranty'">{{ langTerms.covered_by_warranty[$root.meta.local.toLowerCase()] }}</span>
+												<span class="price" v-else-if="service.laborMatrixType === 'Free'">{{ langTerms.free[$root.meta.local.toLowerCase()] }}</span>
+												<span class="price" v-else-if="service.laborMatrixType === 'Included'">{{ langTerms.included[$root.meta.local.toLowerCase()] }}</span>
+												<span class="price" v-else-if="service.laborMatrixType === 'Internal'">{{ langTerms.covered_by_dealership[$root.meta.local.toLowerCase()] }}</span>
 												<span class="price" v-else-if="service.price !== 0">{{ formatCurrency(service.price) }}</span>
 												<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 												<div class="service-checkbox">
@@ -772,26 +772,26 @@ export default {
 
 			if (subServiceIndex !== undefined) {
 				if (service.subServices[subServiceIndex].isSelected) {
-					if (service.subServices[subServiceIndex].laborMatrixPayment === 'None') {
+					if (service.subServices[subServiceIndex].laborMatrixType === 'None') {
 						this.inspectionTotal.total += parseFloat(service.subServices[subServiceIndex].price)
 					}
 					this.checkSelectAll()
 				} else {
 					category.allSelected = false
-					if (service.subServices[subServiceIndex].laborMatrixPayment === 'None') {
+					if (service.subServices[subServiceIndex].laborMatrixType === 'None') {
 						this.inspectionTotal.total -= parseFloat(service.subServices[subServiceIndex].price)
 					}
 					this.openDeferReasonModal(category, service, false, subServiceIndex)
 				}
 			} else {
 				if (service.isSelected) {
-					if (service.laborMatrixPayment === 'None') {
+					if (service.laborMatrixType === 'None') {
 						this.inspectionTotal.total += parseFloat(service.price)
 					}
 					this.checkSelectAll()
 				} else {
 					category.allSelected = false
-					if (service.laborMatrixPayment === 'None') {
+					if (service.laborMatrixType === 'None') {
 						this.inspectionTotal.total -= parseFloat(service.price)
 					}
 					this.openDeferReasonModal(category, service, false, null)
@@ -913,7 +913,7 @@ export default {
 							service.subServices.forEach(subService => {
 								if (!subService.isSelected) {
 									subService.isSelected = true
-									if (subService.laborMatrixPayment === 'None') {
+									if (subService.laborMatrixType === 'None') {
 										this.inspectionTotal.total += parseFloat(subService.price)
 									}
 								}
@@ -921,7 +921,7 @@ export default {
 						}
 						if (!service.isSelected) {
 							service.isSelected = true
-							if (service.laborMatrixPayment === 'None') {
+							if (service.laborMatrixType === 'None') {
 								this.inspectionTotal.total += parseFloat(service.price)
 							}
 						}
@@ -948,7 +948,7 @@ export default {
 							service.subServices.forEach(subService => {
 								if (subService.isSelected) {
 									subService.isSelected = false
-									if (subService.laborMatrixPayment === 'None') {
+									if (subService.laborMatrixType === 'None') {
 										this.inspectionTotal.total -= parseFloat(subService.price)
 									}
 								}
@@ -956,7 +956,7 @@ export default {
 						}
 						if (service.isSelected && category.id !== '5') {
 							service.isSelected = false
-							if (service.laborMatrixPayment === 'None') {
+							if (service.laborMatrixType === 'None') {
 								this.inspectionTotal.total -= parseFloat(service.price)
 							}
 						}
