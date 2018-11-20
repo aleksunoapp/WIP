@@ -1401,7 +1401,8 @@ img {
 .info-modal-concerns .advisor-comments {
 	margin: 5px 0;
 	text-align: start;
-	word-break: break-word;
+	width: 100%;
+	overflow-wrap: break-word;
 }
 
 .info-modal-info-bottom {
