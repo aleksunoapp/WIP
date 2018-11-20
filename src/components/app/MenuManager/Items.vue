@@ -351,7 +351,7 @@
 												<i class="fa fa-lg fa-heartbeat"></i>
 											</a>
 										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['menu_manager menus categories subcategories items update']"
+										<el-tooltip v-if="$root.permissions['stores add item_to_multiple_locations']"
 										            content="Apply To Locations"
 										            effect="light"
 										            placement="bottom">
