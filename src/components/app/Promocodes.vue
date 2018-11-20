@@ -97,7 +97,7 @@
 									</button>
 								</div>
 								<p class="grey-label margin-left-5"
-								   v-if="newPromoCode.sku.length">Selected
+								   v-if="newPromoCode.sku.length && newPromoCode.apply_on === 'items'">Selected
 									<span>{{ newPromoCode.sku.length }}</span>
 									<span v-if="newPromoCode.sku.length !== 1">items</span>
 									<span v-else>item</span>

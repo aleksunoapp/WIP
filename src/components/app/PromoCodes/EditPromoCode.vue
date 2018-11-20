@@ -95,7 +95,8 @@
 								Select items
 							</button>
 							<p class="grey-label"
-							   v-if="promoCode.sku_array.length">Selected {{ promoCode.sku_array.length }}
+							   v-if="promoCode.sku_array.length && promoCode.apply_on === 'items'">
+							   Selected {{ promoCode.sku_array.length }}
 								<span v-if="promoCode.sku_array.length !== 1">items</span>
 								<span v-else>item</span>
 							</p>
