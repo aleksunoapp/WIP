@@ -21,7 +21,8 @@ new Vue({
 	data () {
 		return {
 			meta: {
-				local: ''
+				local: '',
+				dealerContactInfo: {}
 			},
 			inspection: [],
 			services: [],
