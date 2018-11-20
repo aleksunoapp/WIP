@@ -42,108 +42,9 @@
 					<tabset :active="activeTab"
 					        v-show="$root.activeLocation.id !== undefined">
 						<tab header="Menu Items">
-							<div class="col-md-4">
-								<h4>Menus</h4>
-								<div v-if="loadingMenus">
-									<div class="alert alert-info">
-										<span>Loading ...</span>
-									</div>
-								</div>
-								<div class="dd"
-								     id="nestable_list_1"
-								     v-else-if="menus.length">
-									<ol class="dd-list">
-										<li class="dd-item"
-										    v-for="menu in menus"
-										    :data-id="menu.id"
-										    @click.stop.prevent="selectMenu(menu)"
-										    :key="menu.id">
-											<div class="dd-handle"
-											     :class="{'active': menu.id === activeMenu.id}"> {{ menu.name }}
-												<span class="pull-right">
-													<i class="fa fa-chevron-right"></i>
-												</span>
-											</div>
-										</li>
-									</ol>
-								</div>
-								<div v-else>
-									<div class="alert alert-warning">
-										<span>There are no menus to display.</span>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-4"
-							     v-if="isMenuSelected">
-								<h4>{{ activeMenu.name }} - Categories</h4>
-								<div v-if="loadingMenuCategories">
-									<div class="alert alert-info">
-										<span>Loading ...</span>
-									</div>
-								</div>
-								<div class="dd"
-								     id="nestable_list_2"
-								     v-else-if="categories.length">
-									<ol class="dd-list">
-										<li class="dd-item"
-										    v-for="category in categories"
-										    :data-id="category.id"
-										    @click="selectCategory(category)"
-											:key="category.id">
-											<div class="dd-handle"
-											     :class="{'active': category.id === activeCategory.id}"> {{ category.name }}
-												<span class="pull-right">
-													<i class="fa fa-chevron-right"></i>
-												</span>
-											</div>
-										</li>
-									</ol>
-								</div>
-								<div v-else>
-									<div class="alert alert-warning">
-										<span>There are no categories in the menu '{{ activeMenu.name }}'.</span>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-4"
-							     v-if="isCategorySelected">
-								<h4>
-									<i class="fa check clickable"
-									   @click="selectAllMenuItems()"
-									   :class="{'fa-check-square checked': selectAllMenuItemsSelected, 'fa-square-o unchecked': !selectAllMenuItemsSelected}"
-									   aria-hidden="true"></i>
-									{{ activeCategory.name }} - Items</h4>
-								<div v-if="loadingMenuItems">
-									<div class="alert alert-info">
-										<span>Loading ...</span>
-									</div>
-								</div>
-								<div class="dd"
-								     id="nestable_list_3"
-								     v-else-if="items.length">
-									<ol class="dd-list">
-										<li class="dd-item"
-										    v-for="item in items"
-										    :data-id="item.id"
-											:key="item.id">
-											<div class="dd-handle"
-											     @click.stop="toggleSKUSelected(item)">
-												<span class="pull-left">
-													<i class="fa check"
-													   :class="{'fa-check-square checked': item.selected, 'fa-square-o unchecked': !item.selected}"
-													   aria-hidden="true"></i>
-													<label :for="'item_checkbox_' + item.id">{{ item.name }}
-													</label>
-												</span>
-											</div>
-										</li>
-									</ol>
-								</div>
-								<div v-else>
-									<div class="alert alert-warning">
-										<span>There are no items in the category '{{ activeCategory.name }}'.</span>
-									</div>
-								</div>
+							<div class="col-xs-12">
+								<menu-item-picker @update="itemsSelected">
+								</menu-item-picker>
 							</div>
 						</tab>
 						<tab header="Modifier Items"
@@ -184,7 +85,7 @@
 								<h4>
 									<i class="fa check clickable"
 									   @click="selectAllModifierItems()"
-									   :class="{'fa-check-square checked': selectAllModifierItemsSelected, 'fa-square-o unchecked': !selectAllMenuItemsSelected}"
+									   :class="{'fa-check-square checked': selectAllModifierItemsSelected, 'fa-square-o unchecked': !selectAllModifierItemsSelected}"
 									   aria-hidden="true"></i>
 									{{ activeModifier.name }} - Items</h4>
 								<div v-if="loadingModifierItems">
@@ -239,33 +140,24 @@
 </template>
 
 <script>
-// import $ from 'jquery'
 import Modal from './Modal'
-import MenusFunctions from '../../controllers/Menus'
-import CategoriesFunctions from '../../controllers/Categories'
-import ItemsFunctions from '../../controllers/Items'
 import ModifiersFunctions from '../../controllers/Modifiers'
 import Tab from '../modules/Tab'
 import Tabset from '../modules/Tabset'
 import ajaxErrorHandler from '../../controllers/ErrorController'
+import MenuItemPicker from '@/components/modules/MenuItemPicker'
 
 export default {
 	data () {
 		return {
 			showMenuModifierTreeModal: false,
-			menus: [],
-			categories: [],
-			items: [],
 			modifiers: [],
 			modifierItems: [],
-			isMenuSelected: false,
-			isCategorySelected: false,
-			activeMenu: {},
-			activeCategory: {},
 			isModifierCategorySelected: false,
 			activeModifier: {},
 			activeTab: 0,
 			selectedSKUs: [],
+			selectedItems: [],
 			internalErrorMessage: '',
 			menuAll: false,
 			modifierAll: false,
@@ -305,7 +197,6 @@ export default {
 		}
 	},
 	created () {
-		this.getMenus()
 		this.getModifiers()
 	},
 	mounted () {
@@ -315,6 +206,15 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * To update selection of items
+		 * @function
+		 * @param {array} items - Array of selected items
+		 * @returns {undefined}
+		 */
+		itemsSelected (items) {
+			this.selectedItems = items.map(item => item.sku)
+		},
 		/**
 		 * To select or unselect the SKU.
 		 * @param {object} item - The item to toggle.
@@ -435,165 +335,6 @@ export default {
 			this.$emit('closeMenuModifierTreeModal')
 		},
 		/**
-		 * To get a list of all menus for the current active location.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		getMenus () {
-			this.loadingMenus = true
-			this.menus = []
-			var menuTreeVue = this
-			return MenusFunctions.getStoreMenus(
-				menuTreeVue.$root.appId,
-				menuTreeVue.$root.appSecret,
-				menuTreeVue.$root.activeLocation.id
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						menuTreeVue.menus = response.payload
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch menus',
-						errorName: 'internalErrorMessage',
-						vue: menuTreeVue
-					})
-				})
-				.finally(() => {
-					menuTreeVue.loadingMenus = false
-				})
-		},
-		/**
-		 * To get a list of all categories for the current active menu.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		getCategoriesForActiveMenu () {
-			this.loadingMenuCategories = true
-			var menuTreeVue = this
-			menuTreeVue.categories = []
-			return CategoriesFunctions.getMenuCategories(
-				menuTreeVue.activeMenu.id,
-				menuTreeVue.$root.appId,
-				menuTreeVue.$root.appSecret,
-				menuTreeVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						menuTreeVue.categories = response.payload
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch menu categories',
-						errorName: 'internalErrorMessage',
-						vue: menuTreeVue
-					})
-				})
-				.finally(() => {
-					menuTreeVue.loadingMenuCategories = false
-				})
-		},
-		/**
-		 * To get a list of all item for the current active category.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		getItemsForActiveCategory () {
-			this.loadingMenuItems = true
-			var menuTreeVue = this
-			menuTreeVue.items = []
-			return ItemsFunctions.getCategoryItemsFull(
-				menuTreeVue.activeCategory.id,
-				menuTreeVue.$root.appId,
-				menuTreeVue.$root.appSecret
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						response.payload.forEach(item => {
-							menuTreeVue.selectedSKUs.forEach(previous => {
-								if (item.sku === previous) {
-									item.selected = true
-								} else if (item.selected !== true) {
-									item.selected = false
-								}
-							})
-						})
-						menuTreeVue.items = response.payload
-						menuTreeVue.menuAll = Boolean(
-							menuTreeVue.selectAllMenuItemsSelected
-						)
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch menu items',
-						errorName: 'internalErrorMessage',
-						vue: menuTreeVue
-					})
-				})
-				.finally(() => {
-					menuTreeVue.loadingMenuItems = false
-				})
-		},
-		/**
-		 * To clear the categories array and also the active category.
-		 * @function
-		 * @returns {undefined}
-		 */
-		clearActiveCategory () {
-			this.activeCategory = {}
-			this.categories = []
-		},
-		/**
-		 * To set the value of the variable 'activeMenu' as the selected menu object.
-		 * @function
-		 * @param {object} menu - The selected menu.
-		 * @returns {undefined}
-		 */
-		selectMenu (menu) {
-			this.activeMenu = menu
-			this.isMenuSelected = true
-			if (this.isCategorySelected) {
-				this.isCategorySelected = false
-			}
-			this.clearActiveCategory()
-			this.getCategoriesForActiveMenu()
-		},
-		/**
-		 * To set the value of the variable 'activeCategory' as the selected category object.
-		 * @function
-		 * @param {object} category - The selected category.
-		 * @returns {undefined}
-		 */
-		selectCategory (category) {
-			this.activeCategory = category
-			this.isCategorySelected = true
-			this.getItemsForActiveCategory()
-		},
-		/**
-		 * To select all or deselect all items
-		 * @function
-		 * @returns {undefined}
-		 */
-		selectAllMenuItems () {
-			this.menuAll = !this.menuAll
-			for (var i = 0; i < this.items.length; i++) {
-				var item = this.items[i]
-				this.$set(item, 'selected', this.menuAll)
-				const index = this.selectedSKUs.indexOf(item.sku)
-				if (index !== -1) {
-					this.selectedSKUs.splice(index, 1)
-				} else {
-					this.selectedSKUs.push(item.sku)
-				}
-			}
-		},
-		/**
 		 * To select all or deselect all items
 		 * @function
 		 * @returns {undefined}
@@ -618,7 +359,11 @@ export default {
 		 */
 		applySelectedItems () {
 			this.$emit('closeMenuModifierTreeModalAndUpdate', {
-				selectedSKUs: this.selectedSKUs
+				selectedSKUs:
+				[
+					...this.selectedSKUs,
+					...this.selectedItems
+				]
 			})
 		},
 		/**
@@ -634,7 +379,8 @@ export default {
 	components: {
 		Modal,
 		Tab,
-		Tabset
+		Tabset,
+		MenuItemPicker
 	}
 }
 </script>

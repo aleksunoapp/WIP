@@ -54,89 +54,12 @@
 							        @click.prevent="flipCopyCreate"
 							        :class="{'blue-chambray' : !copyMode, 'blue btn-outline' : copyMode}">Create new</button>
 						</div>
-						<div class="col-md-12 margin-bottom-20"
-						     v-if="showCorporateItems">
-							<div class="col-md-4">
-								<h4>Select Menu</h4>
-								<div class="dd"
-								     id="nestable_list_1"
-								     v-if="menus.length">
-									<ol class="dd-list">
-										<li class="dd-item clickable"
-										    v-for="menu in menus"
-										    :data-id="menu.id"
-										    @click="selectMenu(menu)"
-										    :key="menu.id">
-											<div class="dd-handle clickable"
-											     :class="{'active': menu.id === activeMenu.id}"> {{ menu.name }}
-												<span class="pull-right">
-													<i class="fa fa-chevron-right"></i>
-												</span>
-											</div>
-										</li>
-									</ol>
-								</div>
-								<div v-else>
-									<div class="alert alert-warning">
-										<span>There are no menus to display.</span>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-4"
-							     v-if="isMenuSelected">
-								<h4>Select Category</h4>
-								<div class="dd"
-								     id="nestable_list_2"
-								     v-if="categories.length">
-									<ol class="dd-list">
-										<li class="dd-item clickable"
-										    v-for="category in categories"
-										    :data-id="category.id"
-										    @click="selectCategory(category)"
-										    :key="category.id">
-											<div class="dd-handle clickable"
-											     :class="{'active': category.id === activeCategory.id}"> {{ category.name }}
-												<span class="pull-right">
-													<i class="fa fa-chevron-right"></i>
-												</span>
-											</div>
-										</li>
-									</ol>
-								</div>
-								<div v-else>
-									<div class="alert alert-warning">
-										<span>There are no categories in the menu '{{ activeMenu.name }}'.</span>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-4"
-							     v-if="isCategorySelected">
-								<h4>Select Item</h4>
-								<div class="dd"
-								     id="nestable_list_3"
-								     v-if="items.length">
-									<ol class="dd-list clickable">
-										<li class="dd-item clickable"
-										    v-for="item in items"
-										    :data-id="item.id"
-										    @click="copyItem(item)"
-										    :key="item.id">
-											<div class="dd-handle clickable">
-												<span class="pull-left">
-													<label class="clickable">{{ item.name }}
-													</label>
-												</span>
-											</div>
-										</li>
-									</ol>
-								</div>
-								<div v-else>
-									<div class="alert alert-warning">
-										<span>There are no items in the category '{{ activeCategory.name }}'.</span>
-									</div>
-								</div>
-							</div>
-						</div>
+						<menu-item-picker
+							class="ma-5"
+							v-if="showCorporateItems"
+							@update="itemsSelected"
+							:single="true">
+						</menu-item-picker>
 						<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}"
 						     v-show="!showCorporateItems">
 							<resource-picker @open="toggleImageMode('newMenu', true)"
@@ -763,11 +686,11 @@ import NutritionInfo from './Items/NutritionInfo'
 import ModifiersList from './Modifiers/ModifiersList'
 import TagsList from './Tags/TagsList'
 import ResourcePicker from '../../modules/ResourcePicker'
-import MenusFunctions from '../../../controllers/Menus'
 import ItemTypesFunctions from '../../../controllers/ItemTypes'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 import SelectLocationsPopup from '../../modules/SelectLocationsPopup'
 import PresetSettings from '@/components/app/MenuManager/Items/PresetSettings'
+import MenuItemPicker from '@/components/modules/MenuItemPicker'
 
 export default {
 	data () {
@@ -815,14 +738,6 @@ export default {
 				type: '',
 				preset_item_modifier_item: []
 			},
-			menus: [],
-			categories: [],
-			items: [],
-			isMenuSelected: false,
-			selectAllSelected: false,
-			isCategorySelected: false,
-			activeMenu: {},
-			activeCategory: {},
 			itemCopied: false,
 			copyMode: true,
 			expanded: null,
@@ -927,11 +842,19 @@ export default {
 			this.getCategoryDetails()
 			this.getCategoryItems()
 		}
-		this.getCorporateMenus()
 		this.listItemAttributes()
 		this.getItemTypes()
 	},
 	methods: {
+		/**
+		 * To update selection of items
+		 * @function
+		 * @param {array} items - Array of items selected by user
+		 * @returns {undefined}
+		 */
+		itemsSelected (items) {
+			this.copyItem(items[0])
+		},
 		/**
 		 * To get the preset settings of an item.
 		 * @function
@@ -1263,129 +1186,6 @@ export default {
 		flipCopyCreate () {
 			this.clearNewItem()
 			this.copyMode = !this.copyMode
-		},
-		/**
-		 * To get a list of all menus for the corporate location.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		getCorporateMenus () {
-			const corporateStore = this.$root.storeLocations.find(store => store.is_corporate === 1)
-			if (corporateStore === undefined) return
-
-			this.menus = []
-			var itemsVue = this
-			return MenusFunctions.getStoreMenus(
-				itemsVue.$root.appId,
-				itemsVue.$root.appSecret,
-				corporateStore.id
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						itemsVue.menus = response.payload
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch menus',
-						errorName: 'listErrorMessage',
-						vue: itemsVue
-					})
-				})
-		},
-		/**
-		 * To set the value of the variable 'activeMenu' as the selected menu object.
-		 * @function
-		 * @param {object} menu - The selected menu.
-		 * @returns {undefined}
-		 */
-		selectMenu (menu) {
-			this.activeMenu = menu
-			if (this.isCategorySelected) {
-				this.isCategorySelected = false
-			}
-			this.clearActiveCategory()
-			this.getCategoriesForActiveMenu()
-		},
-		/**
-		 * To clear the categories array and also the active category.
-		 * @function
-		 * @returns {undefined}
-		 */
-		clearActiveCategory () {
-			this.activeCategory = {}
-			this.categories = []
-		},
-		/**
-		 * To get a list of all categories for the current active menu.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		getCategoriesForActiveMenu () {
-			var itemsVue = this
-			itemsVue.categories = []
-			return CategoriesFunctions.getMenuCategories(
-				itemsVue.activeMenu.id,
-				itemsVue.$root.appId,
-				itemsVue.$root.appSecret,
-				itemsVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						itemsVue.categories = response.payload
-						itemsVue.isMenuSelected = true
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could fetch categories',
-						errorName: 'applyToLocationsErrorMessage',
-						vue: itemsVue,
-						containerRef: 'applyToLocationsModal'
-					})
-				})
-		},
-		/**
-		 * To set the value of the variable 'activeCategory' as the selected category object.
-		 * @function
-		 * @param {object} category - The selected category.
-		 * @returns {undefined}
-		 */
-		selectCategory (category) {
-			this.activeCategory = category
-			this.getItemsForActiveCategory()
-			this.selectAllSelected = false
-		},
-		/**
-		 * To get a list of all item for the current active category.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		getItemsForActiveCategory () {
-			var itemsVue = this
-			itemsVue.items = []
-			return ItemsFunctions.getCategoryItemsFull(
-				itemsVue.activeCategory.id,
-				itemsVue.$root.appId,
-				itemsVue.$root.appSecret
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						itemsVue.items = response.payload
-						itemsVue.isCategorySelected = true
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could fetch items',
-						errorName: 'applyToLocationsErrorMessage',
-						vue: itemsVue,
-						containerRef: 'applyToLocationsModal'
-					})
-				})
 		},
 		/**
 		 * To copy item data into the newItem object.
@@ -2151,7 +1951,8 @@ export default {
 		ResourcePicker,
 		ItemImages,
 		SelectLocationsPopup,
-		PresetSettings
+		PresetSettings,
+		MenuItemPicker
 	}
 }
 </script>
@@ -2192,5 +1993,8 @@ export default {
 }
 .animated {
   animation: listItemHighlight 1s 3 ease-in-out both;
+}
+.ma-5 {
+	margin: 5px;
 }
 </style>

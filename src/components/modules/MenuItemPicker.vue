@@ -12,7 +12,7 @@
 		<div class="col-xs-4">
 			<div class="header">
 				<i class="fa check" :class="{
-						'transparent': !menuSelectable(activeMenu),
+						'transparent': !menuSelectable(activeMenu) || single,
 						'fa-check-square checked': allCategoriesSelected, 
 						'fa-square-o unchecked': !allCategoriesSelected
 					}" aria-hidden="true" @click="toggleAllCategories()">
@@ -25,7 +25,7 @@
 		<div class="col-xs-4">
 			<div class="header">
 				<i class="fa check" :class="{
-						'transparent' : !activeItems.length,
+						'transparent' : !activeItems.length || single,
 						'fa-check-square checked': allItemsSelected, 
 						'fa-square-o unchecked': !allItemsSelected
 					}" aria-hidden="true" @click="toggleAllItems">
@@ -36,12 +36,25 @@
 			</div>
 		</div>
 		<div class="col-xs-4">
-			<div class="dd">
+			<div
+				v-if="loading.menus" 
+				class="width-100 display-flex justify-content-center">
+				<i
+					class="margin-top-20 fa fa-spinner fa-pulse fa-fw"
+				></i>
+			</div>
+			<div
+				v-else
+				class="dd">
 				<ol class="dd-list">
 					<li class="dd-item" v-for="menu in menus" :key="menu.id">
 						<div @click="toggleMenu(menu)" class="dd-handle pointer v-center" :class="{'active': menu.id === activeMenu.id}">
-							<div class="v-center">
-								<i class="fa check" :class="{
+							<div
+								class="v-center"
+								:class="{'grey' : menu.items === undefined}"
+							>
+								<i
+									class="fa check" :class="{
 										'transparent' : !menuSelectable(menu),
 										'fa-check-square checked': menuSelected(menu), 
 										'fa-minus-square checked': menuPartiallySelected(menu),
@@ -59,7 +72,17 @@
 			</div>
 		</div>
 		<div class="col-xs-4">
-			<div class="dd" id="nestable_list_2">
+			<div
+				v-if="loading.items" 
+				class="width-100 display-flex justify-content-center">
+				<i
+					class="margin-top-20 fa fa-spinner fa-pulse fa-fw"
+				></i>
+			</div>
+			<div 
+				v-else
+				class="dd"
+				id="nestable_list_2">
 				<ol class="dd-list">
 					<li class="dd-item" v-for="category in activeMenu.categories" v-if="category.parent_category === 0" :data-id="category.id" :key="category.id">
 						<div class="dd-handle pointer v-center" :class="{'active': category.id === activeCategory.id}" @click="toggleCategory(category)">
@@ -78,6 +101,9 @@
 							</span>
 						</div>
 					</li>
+					<p class="no-items" v-show="activeMenu.id !== undefined && !activeMenu.categories.length">
+						This menu is empty
+					</p>
 				</ol>
 			</div>
 		</div>
@@ -120,9 +146,21 @@ export default {
 			type: Array,
 			default: () => [],
 			required: false
+		},
+		/**
+		 * @property {boolean} single - Limits selection to one item only
+		 */
+		single: {
+			type: Boolean,
+			default: () => false,
+			required: false
 		}
 	},
 	data: () => ({
+		loading: {
+			menus: false,
+			items: false
+		},
 		previous: [],
 		errorMessage: '',
 		menus: [],
@@ -178,6 +216,20 @@ export default {
 		 * @returns {undefined}
 		 */
 		toggleItem (item) {
+			if (this.single) {
+				this.activeMenu.items.forEach(menuItem => {
+					if (item.id !== menuItem.id) {
+						menuItem.selected = false
+					}
+				})
+				this.menus.forEach(menu => {
+					if (this.menuPartiallySelected(menu) || this.menuSelected(menu)) {
+						menu.items.forEach(item => {
+							item.selected = false
+						})
+					}
+				})
+			}
 			item.selected = !item.selected
 			this.update()
 		},
@@ -187,6 +239,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		toggleAllItems () {
+			if (this.single) return
 			const selected = this.allItemsSelected
 			this.activeItems.forEach(item => {
 				item.selected = !selected
@@ -209,6 +262,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		toggleAllCategories () {
+			if (this.single) return
 			const selected = this.allCategoriesSelected
 			this.activeMenu.items.forEach(item => {
 				item.selected = !selected
@@ -237,6 +291,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		toggleAllInMenu (menu) {
+			if (this.single) return
 			const selected = this.menuSelected(menu)
 			if (menu.items) {
 				menu.items.forEach(item => {
@@ -259,6 +314,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		toggleAllInCategory (category) {
+			if (this.single) return
 			const selected = this.categorySelected(category)
 			let menu = this.menus.filter(menu => menu.id === category.menu_id)[0]
 			let items = menu.items.filter(item => {
@@ -287,6 +343,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		getMenus () {
+			this.loading.menus = true
 			this.menus = []
 			var pickerVue = this
 			return MenusFunctions.getStoreMenus(
@@ -314,6 +371,9 @@ export default {
 						vue: pickerVue
 					})
 				})
+				.finally(() => {
+					pickerVue.loading.menus = false
+				})
 		},
 		/**
 		 * To get a list of all items for a menu.
@@ -321,6 +381,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		getAllItemsInMenu () {
+			this.loading.items = true
 			var pickerVue = this
 			return MenusFunctions.getAllItemsInMenu(pickerVue.activeMenu.id)
 				.then(response => {
@@ -360,6 +421,9 @@ export default {
 						errorName: 'errorMessage',
 						vue: pickerVue
 					})
+				})
+				.finally(() => {
+					pickerVue.loading.items = false
 				})
 		},
 		/**
@@ -495,5 +559,17 @@ i {
 	justify-content: space-between;
 	align-items: center;
 	height: auto;
+}
+.width-100 {
+	width: 100%;
+}
+.display-flex {
+	display: flex;
+}
+.justify-content-center {
+	justify-content: center;
+}
+.grey {
+	color: #5f5f5f;
 }
 </style>
