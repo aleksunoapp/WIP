@@ -71,6 +71,7 @@
 							</thead>
 							<tbody>
 								<tr v-for="info in itemNutritionInfo"
+									v-if="info.key !== 'kcal'"
 								    :key="info.id">
 									<td v-if="info.key !== 'id' && info.key !== 'modifier_item_id'"> {{ info.name }} </td>
 									<td v-if="info.key !== 'id' && info.key !== 'modifier_item_id'">
@@ -82,6 +83,20 @@
 								</tr>
 							</tbody>
 						</table>
+					</div>
+					<div v-if="$root.permissions['menu_manager modifiers items nutrition update']">
+						<div class="form-group form-md-line-input form-md-floating-label">
+							<label>Display calories as kilocalories?</label><br>
+							<el-switch :disabled="!$root.permissions['menu_manager menus categories subcategories items nutrition update']"
+							           v-model="kcal"
+							           active-color="#0c6"
+							           inactive-color="#ff4949"
+							           :active-value="1"
+							           :inactive-value="0"
+							           active-text="Yes"
+							           inactive-text="No">
+							</el-switch>
+						</div>
 					</div>
 					<div v-if="$root.permissions['menu_manager modifiers items nutrition update']">
 						<p class="margin-bottom-10 margin-top-30 margin-right-10">Select locations to apply the changes to:</p>
@@ -295,7 +310,9 @@ export default {
 			selectedLocations: [],
 			update_all_items: false,
 			saving: false,
-			creating: false
+			creating: false,
+			kcal: 0
+
 		}
 	},
 	props: {
@@ -362,6 +379,8 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						nutritionInfoVue.itemNutritionInfo = response.payload[0]
+						let kcal = response.payload[0].find(field => field.key === 'kcal')
+						nutritionInfoVue.kcal = kcal === undefined ? 0 : kcal.value
 					} else {
 						nutritionInfoVue.errorMessage = response.payload
 					}
@@ -451,6 +470,7 @@ export default {
 				nutritionInfoVue.selectedLocations
 			updatedNutritionInfo.update_all_items =
 				nutritionInfoVue.update_all_items
+			updatedNutritionInfo.kcal = nutritionInfoVue.kcal
 			nutritionInfoVue.editNutritionError = ''
 
 			return nutritionInfoVue
