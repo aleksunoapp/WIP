@@ -140,7 +140,10 @@
 											</div>
 											<div class="summary-table-cell">
 												<template v-if="category.serviceCategoryType !== 'PASS' && service.category !== '8'">
-													<span class="price" v-if="service.subServices[subServiceIndex].laborMatrixPayment !== 'None'">{{ laborMatrixLabel(service.subServices[subServiceIndex].laborMatrixPaymentTranslations) }}</span>
+													<span class="price" v-if="service.subServices[subServiceIndex].laborMatrixPayment === 'Warranty'">{{ langTerms.covered_by_warranty[$root.meta.local.toLowerCase()] }}</span>
+													<span class="price" v-else-if="service.subServices[subServiceIndex].laborMatrixPayment === 'Free'">{{ langTerms.free[$root.meta.local.toLowerCase()] }}</span>
+													<span class="price" v-else-if="service.subServices[subServiceIndex].laborMatrixPayment === 'Included'">{{ langTerms.included[$root.meta.local.toLowerCase()] }}</span>
+													<span class="price" v-else-if="service.subServices[subServiceIndex].laborMatrixPayment === 'Internal'">{{ langTerms.covered_by_dealership[$root.meta.local.toLowerCase()] }}</span>
 													<span class="price" v-else-if="service.subServices[subServiceIndex].price !== 0">{{ formatCurrency(service.subServices[subServiceIndex].price) }}</span>
 													<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 													<div class="service-checkbox">
@@ -255,7 +258,10 @@
 											<div class="summary-table-cell">
 												<template v-if="category.serviceCategoryType !== 'PASS'">
 													<div class="flex justify-center align-center">
-														<span class="price" v-if="subService.laborMatrixPayment !== 'None'">{{ laborMatrixLabel(subService.laborMatrixPaymentTranslations) }}</span>
+														<span class="price" v-if="subService.laborMatrixPayment === 'Warranty'">{{ langTerms.covered_by_warranty[$root.meta.local.toLowerCase()] }}</span>
+														<span class="price" v-else-if="subService.laborMatrixPayment === 'Free'">{{ langTerms.free[$root.meta.local.toLowerCase()] }}</span>
+														<span class="price" v-else-if="subService.laborMatrixPayment === 'Included'">{{ langTerms.included[$root.meta.local.toLowerCase()] }}</span>
+														<span class="price" v-else-if="subService.laborMatrixPayment === 'Internal'">{{ langTerms.covered_by_dealership[$root.meta.local.toLowerCase()] }}</span>
 														<span class="price" v-else-if="subService.price !== 0">{{ formatCurrency(subService.price) }} </span>
 														<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 														<div class="service-checkbox">
@@ -279,7 +285,10 @@
 										</div>
 										<div class="summary-table-cell">
 											<template v-if="category.serviceCategoryType !== 'PASS'">
-												<span class="price" v-if="service.laborMatrixPayment !== 'None'">{{ laborMatrixLabel(service.laborMatrixPaymentTranslations) }}</span>
+												<span class="price" v-if="service.laborMatrixPayment === 'Warranty'">{{ langTerms.covered_by_warranty[$root.meta.local.toLowerCase()] }}</span>
+												<span class="price" v-else-if="service.laborMatrixPayment === 'Free'">{{ langTerms.free[$root.meta.local.toLowerCase()] }}</span>
+												<span class="price" v-else-if="service.laborMatrixPayment === 'Included'">{{ langTerms.included[$root.meta.local.toLowerCase()] }}</span>
+												<span class="price" v-else-if="service.laborMatrixPayment === 'Internal'">{{ langTerms.covered_by_dealership[$root.meta.local.toLowerCase()] }}</span>
 												<span class="price" v-else-if="service.price !== 0">{{ formatCurrency(service.price) }}</span>
 												<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 												<div class="service-checkbox">
@@ -493,6 +502,21 @@ export default {
 					'en-ca': 'We\'re sorry but there are no recommendations',
 					'en-us': 'We\'re sorry but there are no recommendations',
 					'fr-ca': 'Désolé, mais il n\'y a aucune recommandations'
+				},
+				covered_by_warranty: {
+					'en-ca': 'Covered by warranty',
+					'en-us': 'Covered by warranty',
+					'fr-ca': 'Covered by warranty'
+				},
+				included: {
+					'en-ca': 'Included',
+					'en-us': 'Included',
+					'fr-ca': 'Included'
+				},
+				covered_by_dealership: {
+					'en-ca': 'Covered by dealership',
+					'en-us': 'Covered by dealership',
+					'fr-ca': 'Covered by dealership'
 				}
 			}
 		}
@@ -623,21 +647,6 @@ export default {
 		}
 	},
 	methods: {
-		/**
-		 * To translate the labor matrix string
-		 * @function
-		 * @param {array} translations - Array of translations from API
-		 * @returns {String} - Translated string
-		 */
-		laborMatrixLabel (translations) {
-			let translation = ''
-			translations.forEach(culture => {
-				if (culture.culture.toLowerCase() === this.$root.meta.local.toLowerCase()) {
-					translation = culture.name
-				}
-			})
-			return translation
-		},
 		/**
 		 * To format a number by locale to two decimal digits
 		 * @function
