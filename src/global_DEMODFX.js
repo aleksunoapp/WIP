@@ -10,7 +10,7 @@ export default {
 	urls: {
 		approvals: (function () {
 			if (production) {
-				return 'https://approval.api.unoapp.io'
+				return 'https://approval.beta.api.unoapp.io'
 			} else if (staging) {
 				return 'https://approval.beta.api.unoapp.io'
 			} else if (development) {
@@ -19,7 +19,7 @@ export default {
 		})(),
 		loyalty: (function () {
 			if (production) {
-				return 'https://loyalty.api.unoapp.io'
+				return 'https://loyalty.beta.api.unoapp.io'
 			} else if (staging) {
 				return 'https://loyalty.beta.api.unoapp.io'
 			} else if (development) {
@@ -28,20 +28,20 @@ export default {
 		})(),
 		ecomm: (function () {
 			if (production) {
-				return 'https://freshii.api.unoapp.io/api'
+				return 'https://demo-dfx.api.unoapp.io/api'
 			} else if (staging) {
-				return 'https://freshii.beta.api.unoapp.io/api'
+				return 'https://demo-dfx.api.unoapp.io/api'
 			} else if (development) {
-				return 'http://dev.api.unoapp.io/freshii/api'
+				return 'http://demo-dfx.api.unoapp.io/api'
 			}
 		})(),
 		resources: (function () {
 			if (production) {
 				return 'https://resources.beta.api.unoapp.io'
 			} else if (staging) {
-				return 'https://resources.dev.api.unoapp.io'
+				return 'https://resources.beta.api.unoapp.io'
 			} else if (development) {
-				return 'https://resources.dev.api.unoapp.io'
+				return 'https://resources.beta.api.unoapp.io'
 			}
 		})()
 	},
@@ -50,36 +50,36 @@ export default {
 			approvals: (function () {
 				if (production) {
 					return {
-						appId: '3jJIMoDLAJW2qzQk0DmFCVxhbRzVIL4Qn',
-						appSecret: 'cgLb2aWAyY1k3TBmquEjjbOjWxZRc6iw2'
+						appId: 'NbtdJcO8fuLzvzLpEtRih85aadufa9mP',
+						appSecret: 'tSYZUyPAxXQkNkEnwVMWdgThncYSqx3U'
 					}
 				} else if (staging) {
 					return {
-						appId: '46c9485f92a0f8ac29d66570893a3805',
-						appSecret: '0276a6fd79282e1b73cdd209540cdfcd'
+						appId: 'NbtdJcO8fuLzvzLpEtRih85aadufa9mP',
+						appSecret: 'tSYZUyPAxXQkNkEnwVMWdgThncYSqx3U'
 					}
 				} else if (development) {
 					return {
-						appId: '46c9485f92a0f8ac29d66570893a3805',
-						appSecret: '0276a6fd79282e1b73cdd209540cdfcd'
+						appId: 'NbtdJcO8fuLzvzLpEtRih85aadufa9mP',
+						appSecret: 'tSYZUyPAxXQkNkEnwVMWdgThncYSqx3U'
 					}
 				}
 			})(),
 			loyalty: (function () {
 				if (production) {
 					return {
-						appId: 'KWpZuK0lscFrJ84dkUGsMQVQGDHAtAHv',
-						appSecret: 'QVDvjk0cn4jltPnNEQi2hwQlD17pU0dr'
+						appId: 'Z5lAHRApxlL9OxSCO8KAssgw7Dpt4YA8',
+						appSecret: 'T0Ov5EpwCEDIcg1EWjondw5ugz8di8Bq'
 					}
 				} else if (staging) {
 					return {
-						appId: '0CA0D7Lk9D6jZvgeklHiBTX99PYbTDIs',
-						appSecret: 'JnJqjxCKnVpvgO5cWGWSkfesTQWaiP46'
+						appId: 'Z5lAHRApxlL9OxSCO8KAssgw7Dpt4YA8',
+						appSecret: 'T0Ov5EpwCEDIcg1EWjondw5ugz8di8Bq'
 					}
 				} else if (development) {
 					return {
-						appId: '0CA0D7Lk9D6jZvgeklHiBTX99PYbTDIs',
-						appSecret: 'JnJqjxCKnVpvgO5cWGWSkfesTQWaiP46'
+						appId: 'Z5lAHRApxlL9OxSCO8KAssgw7Dpt4YA8',
+						appSecret: 'T0Ov5EpwCEDIcg1EWjondw5ugz8di8Bq'
 					}
 				}
 			})(),
@@ -102,27 +102,27 @@ export default {
 	 */
 	approvalsAppId: (function () {
 		if (production) {
-			return '5b60a158baf2d10681b79cd1'
+			return '5bda424ce39d933feee07575'
 		} else if (staging) {
-			return '5b291f11dc35e663e8847981'
+			return '5bda424ce39d933feee07575'
 		} else if (development) {
-			return '5b291f11dc35e663e8847981'
+			return '5bda424ce39d933feee07575'
 		}
 	})(),
 	/**
 	 * business ID to use for the Resources API
 	 */
-	resourcesBusinessId: 2,
+	resourcesBusinessId: 3,
 	/**
 	 * base url for API calls to send Messages
 	 */
 	messageBaseUrl: (function () {
 		if (production) {
-			return 'https://notifications.api.unoapp.io'
+			return 'https://notifications.beta.api.unoapp.io'
 		} else if (staging) {
 			return 'https://notifications.beta.api.unoapp.io'
 		} else if (development) {
-			return 'https://notifications.dev.api.unoapp.io'
+			return 'https://notifications.beta.api.unoapp.io'
 		}
 	})(),
 	/**
@@ -130,7 +130,7 @@ export default {
 	 */
 	messageAppToken: (function () {
 		if (production) {
-			return 'bearer 823c1e79e2e0a1ac2b8c38d391ebd913'
+			return ''
 		} else if (staging) {
 			return 'bearer e3e7f5af3c458aa04b3722dc77c4020a'
 		} else if (development) {
@@ -138,56 +138,26 @@ export default {
 		}
 	})(),
 	/**
-	 * Individual User Message actions and ID's
+	 * string to prepend to user's id as alias when messaging OMA users
 	 */
-	messageAction: (function () {
+	application_name: 'freshii2',
+	/**
+	 * app token for API calls to send Messages to OMA users
+	 */
+	OMAUsersMessageAppToken: (function () {
 		if (production) {
-			return [
-				{
-					id: 1,
-					type: 'CLOSE',
-					value: 'Close'
-				},
-				{
-					id: 5,
-					type: 'CALL',
-					value: 'Call'
-				},
-				{
-					id: 2,
-					type: 'GOTO_LINK',
-					value: 'Website'
-				},
-				{
-					id: 4,
-					type: 'RATE_US',
-					value: 'Rate Us'
-				}
-			]
+			return 'bearer 39d270dc380d5ac331f0affc7a4ddb59'
 		} else if (staging) {
-			return [
-				{
-					id: 1,
-					type: 'CLOSE',
-					value: 'Close'
-				},
-				{
-					id: 5,
-					type: 'CALL',
-					value: 'Call'
-				},
-				{
-					id: 2,
-					type: 'GOTO_LINK',
-					value: 'Website'
-				},
-				{
-					id: 4,
-					type: 'RATE_US',
-					value: 'Rate Us'
-				}
-			]
+			return 'bearer 39d270dc380d5ac331f0affc7a4ddb59'
 		} else if (development) {
+			return 'bearer 39d270dc380d5ac331f0affc7a4ddb59'
+		}
+	})(),
+	/**
+	 * OMA Message actions and ID's
+	 */
+	OMAMessageAction: (function () {
+		if (production) {
 			return [
 				{
 					id: 11,
@@ -203,64 +173,55 @@ export default {
 					id: 12,
 					type: 'GOTO_LINK',
 					value: 'Website'
+				}
+			]
+		} else if (staging) {
+			return [
+				{
+					id: 11,
+					type: 'CLOSE',
+					value: 'Close'
 				},
 				{
-					id: 14,
-					type: 'RATE_US',
-					value: 'Rate Us'
+					id: 15,
+					type: 'CALL',
+					value: 'Call'
+				},
+				{
+					id: 12,
+					type: 'GOTO_LINK',
+					value: 'Website'
+				}
+			]
+		} else if (development) {
+			return [
+				{
+					id: 21,
+					type: 'CLOSE',
+					value: 'Close'
+				},
+				{
+					id: 25,
+					type: 'CALL',
+					value: 'Call'
+				},
+				{
+					id: 22,
+					type: 'GOTO_LINK',
+					value: 'Website'
 				}
 			]
 		}
 	})(),
 	/**
-	 * string to prepend to user's id as alias when messaging OMA users
-	 */
-	application_name: (function () {
-		if (production) {
-			return 'freshii'
-		} else if (staging) {
-			return 'freshii2'
-		} else if (development) {
-			return 'freshii2dev'
-		}
-	})(),
-	/**
-	 * app token for API calls to send Messages to OMA users
-	 */
-	OMAUsersMessageAppToken: (function () {
-		return 'bearer cac7cc0ab25cff18fcc86b2f139d4f7e'
-	})(),
-	/**
-	 * OMA Message actions and ID's
-	 */
-	OMAMessageAction: (function () {
-		return [
-			{
-				id: 11,
-				type: 'CLOSE',
-				value: 'Close'
-			},
-			{
-				id: 15,
-				type: 'CALL',
-				value: 'Call'
-			},
-			{
-				id: 12,
-				type: 'GOTO_LINK',
-				value: 'Website'
-			}
-		]
-	})(),
-	/**
 	 * API key for Google Maps Javascript API
 	 */
-	googleMapsJavascriptApiKey: 'AIzaSyAweYWedKzekUFGNFf-Qb1Ox7ce6Pul2xQ', // aleks@unoapp.com
+	googleMapsJavascriptApiKey: 'AIzaSyBJs2f0TNNui_OcRHgVRTIsJAvGQ0EB7oA', // aleks@unoapp.com
 	/**
 	 * Ajax wrapper for making backend calls.
 	 * @function
 	 * @param {object} options - Options for the ajax call being made.
-	 * @param {string} api - The api to call
+	 * @param {boolean} api - The api to call
 	 * @returns {undefined}
 	 */
 	$ajax: function (options, api = 'ecomm') {
@@ -268,10 +229,6 @@ export default {
 		options.url = this.urls[api] + options.url
 
 		options.beforeSend = function (xhr) {
-			if (api === 'approvals') {
-				xhr.setRequestHeader('approvals-app-id', headers[api].appId)
-				xhr.setRequestHeader('approvals-app-secret', headers[api].appSecret)
-			}
 			xhr.setRequestHeader('app-id', headers[api].appId)
 			xhr.setRequestHeader('app-secret', headers[api].appSecret)
 			xhr.setRequestHeader('auth-token', store.getters.userToken)

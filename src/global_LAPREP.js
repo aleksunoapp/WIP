@@ -37,9 +37,9 @@ export default {
 		})(),
 		resources: (function () {
 			if (production) {
-				return 'https://resources.beta.api.unoapp.io'
+				return 'https://resources.api.unoapp.io'
 			} else if (staging) {
-				return 'https://resources.dev.api.unoapp.io'
+				return 'https://resources.beta.api.unoapp.io'
 			} else if (development) {
 				return 'https://resources.dev.api.unoapp.io'
 			}
@@ -73,8 +73,8 @@ export default {
 					}
 				} else if (staging) {
 					return {
-						appId: '',
-						appSecret: ''
+						appId: 'BKCM4XSi9ym8C9SDfJb5HJMlveGq1vrf',
+						appSecret: 'EPhJNl1KHKIxwtgf6fzkMIqYYfs4r4mT'
 					}
 				} else if (development) {
 					return {
@@ -112,7 +112,15 @@ export default {
 	/**
 	 * business ID to use for the Resources API
 	 */
-	resourcesBusinessId: 3,
+	resourcesBusinessId: (function () {
+		if (production) {
+			return
+		} else if (staging) {
+			return 4
+		} else if (development) {
+			return 3
+		}
+	})(),
 	/**
 	 * base url for API calls to send Messages
 	 */
@@ -130,7 +138,7 @@ export default {
 	 */
 	messageAppToken: (function () {
 		if (production) {
-			return 'bearer cac7cc0ab25cff18fcc86b2f139d4f7e'
+			return 'bearer '
 		} else if (staging) {
 			return 'bearer 82d320a2a0a82917995ddca06860d0d5'
 		} else if (development) {
@@ -141,60 +149,165 @@ export default {
 	 * Individual User Message actions and ID's
 	 */
 	messageAction: (function () {
-		return [
-			{
-				id: 11,
-				type: 'CLOSE',
-				value: 'Close'
-			},
-			{
-				id: 15,
-				type: 'CALL',
-				value: 'Call'
-			},
-			{
-				id: 12,
-				type: 'GOTO_LINK',
-				value: 'Website'
-			}
-		]
+		if (production) {
+			return [
+				{
+					id: 51,
+					type: 'CLOSE',
+					value: 'Close'
+				},
+				{
+					id: 55,
+					type: 'CALL',
+					value: 'Call'
+				},
+				{
+					id: 52,
+					type: 'GOTO_LINK',
+					value: 'Website'
+				},
+				{
+					id: 54,
+					type: 'RATE_US',
+					value: 'Rate Us'
+				}
+			]
+		} else if (staging) {
+			return [
+				{
+					id: 31,
+					type: 'CLOSE',
+					value: 'Close'
+				},
+				{
+					id: 35,
+					type: 'CALL',
+					value: 'Call'
+				},
+				{
+					id: 32,
+					type: 'GOTO_LINK',
+					value: 'Website'
+				},
+				{
+					id: 34,
+					type: 'RATE_US',
+					value: 'Rate Us'
+				}
+			]
+		} else if (development) {
+			return [
+				{
+					id: 41,
+					type: 'CLOSE',
+					value: 'Close'
+				},
+				{
+					id: 45,
+					type: 'CALL',
+					value: 'Call'
+				},
+				{
+					id: 42,
+					type: 'GOTO_LINK',
+					value: 'Website'
+				},
+				{
+					id: 44,
+					type: 'RATE_US',
+					value: 'Rate Us'
+				}
+			]
+		}
 	})(),
 	/**
 	 * string to prepend to user's id as alias when messaging OMA users
 	 */
-	application_name: 'laprep',
+	application_name: (function () {
+		if (production) {
+			return ''
+		} else if (staging) {
+			return 'laprep'
+		} else if (development) {
+			return 'laprep_dev'
+		}
+	})(),
 	/**
 	 * app token for API calls to send Messages to OMA users
 	 */
 	OMAUsersMessageAppToken: (function () {
-		return 'bearer cac7cc0ab25cff18fcc86b2f139d4f7e'
+		if (production) {
+			return 'bearer cac7cc0ab25cff18fcc86b2f139d4f7e'
+		} else if (staging) {
+			return 'bearer 39d270dc380d5ac331f0affc7a4ddb59'
+		} else if (development) {
+			return 'bearer 6b1642515315f527604919b430fe79de'
+		}
 	})(),
 	/**
 	 * OMA Message actions and ID's
 	 */
 	OMAMessageAction: (function () {
-		return [
-			{
-				id: 11,
-				type: 'CLOSE',
-				value: 'Close'
-			},
-			{
-				id: 15,
-				type: 'CALL',
-				value: 'Call'
-			},
-			{
-				id: 12,
-				type: 'GOTO_LINK',
-				value: 'Website'
-			}
-		]
+		if (production) {
+			return [
+				{
+					id: 11,
+					type: 'CLOSE',
+					value: 'Close'
+				},
+				{
+					id: 15,
+					type: 'CALL',
+					value: 'Call'
+				},
+				{
+					id: 12,
+					type: 'GOTO_LINK',
+					value: 'Website'
+				}
+			]
+		} else if (staging) {
+			return [
+				{
+					id: 11,
+					type: 'CLOSE',
+					value: 'Close'
+				},
+				{
+					id: 15,
+					type: 'CALL',
+					value: 'Call'
+				},
+				{
+					id: 12,
+					type: 'GOTO_LINK',
+					value: 'Website'
+				}
+			]
+		} else if (development) {
+			return [
+				{
+					id: 21,
+					type: 'CLOSE',
+					value: 'Close'
+				},
+				{
+					id: 25,
+					type: 'CALL',
+					value: 'Call'
+				},
+				{
+					id: 22,
+					type: 'GOTO_LINK',
+					value: 'Website'
+				}
+			]
+		}
 	})(),
 	/**
 	 * API key for Google Maps Javascript API
 	 */
-	googleMapsJavascriptApiKey: 'AIzaSyBJs2f0TNNui_OcRHgVRTIsJAvGQ0EB7oA', // aleks@unoapp.com
+	googleMapsJavascriptApiKey: 'AIzaSyBJs2f0TNNui_OcRHgVRTIsJAvGQ0EB7oA',
 	/**
 	 * Ajax wrapper for making backend calls.
 	 * @function

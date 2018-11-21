@@ -73,13 +73,13 @@ export default {
 					}
 				} else if (staging) {
 					return {
-						appId: '0CA0D7Lk9D6jZvgeklHiBTX99PYbTDIs',
-						appSecret: 'JnJqjxCKnVpvgO5cWGWSkfesTQWaiP46'
+						appId: '',
+						appSecret: ''
 					}
 				} else if (development) {
 					return {
-						appId: '0CA0D7Lk9D6jZvgeklHiBTX99PYbTDIs',
-						appSecret: 'JnJqjxCKnVpvgO5cWGWSkfesTQWaiP46'
+						appId: '',
+						appSecret: ''
 					}
 				}
 			})(),
@@ -149,55 +149,175 @@ export default {
 	 * Individual User Message actions and ID's
 	 */
 	messageAction: (function () {
-		return [
-			{
-				id: 11,
-				type: 'CLOSE',
-				value: 'Close'
-			},
-			{
-				id: 15,
-				type: 'CALL',
-				value: 'Call'
-			},
-			{
-				id: 12,
-				type: 'GOTO_LINK',
-				value: 'Website'
-			}
-		]
+		if (production) {
+			return [
+				{
+					id: 51,
+					type: 'CLOSE',
+					value: 'Close'
+				},
+				{
+					id: 55,
+					type: 'CALL',
+					value: 'Call'
+				},
+				{
+					id: 52,
+					type: 'GOTO_LINK',
+					value: 'Website'
+				},
+				{
+					id: 54,
+					type: 'RATE_US',
+					value: 'Rate Us'
+				},
+				{
+					id: 53,
+					type: 'CAMERA',
+					value: 'Camera'
+				}
+			]
+		} else if (staging) {
+			return [
+				{
+					id: 51,
+					type: 'CLOSE',
+					value: 'Close'
+				},
+				{
+					id: 55,
+					type: 'CALL',
+					value: 'Call'
+				},
+				{
+					id: 52,
+					type: 'GOTO_LINK',
+					value: 'Website'
+				},
+				{
+					id: 54,
+					type: 'RATE_US',
+					value: 'Rate Us'
+				},
+				{
+					id: 53,
+					type: 'CAMERA',
+					value: 'Camera'
+				}
+			]
+		} else if (development) {
+			return [
+				{
+					id: 61,
+					type: 'CLOSE',
+					value: 'Close'
+				},
+				{
+					id: 65,
+					type: 'CALL',
+					value: 'Call'
+				},
+				{
+					id: 62,
+					type: 'GOTO_LINK',
+					value: 'Website'
+				},
+				{
+					id: 64,
+					type: 'RATE_US',
+					value: 'Rate Us'
+				},
+				{
+					id: 63,
+					type: 'CAMERA',
+					value: 'Camera'
+				}
+			]
+		}
 	})(),
 	/**
 	 * string to prepend to user's id as alias when messaging OMA users
 	 */
-	application_name: 'pitapit_new',
+	application_name: (function () {
+		if (production) {
+			return 'pitapit_new'
+		} else if (staging) {
+			return 'pitapit'
+		} else if (development) {
+			return 'pitapit_dev'
+		}
+	})(),
 	/**
 	 * app token for API calls to send Messages to OMA users
 	 */
 	OMAUsersMessageAppToken: (function () {
-		return 'bearer cac7cc0ab25cff18fcc86b2f139d4f7e'
+		if (production) {
+			return 'bearer cac7cc0ab25cff18fcc86b2f139d4f7e'
+		} else if (staging) {
+			return 'bearer 39d270dc380d5ac331f0affc7a4ddb59'
+		} else if (development) {
+			return 'bearer 6b1642515315f527604919b430fe79de'
+		}
 	})(),
 	/**
 	 * OMA Message actions and ID's
 	 */
 	OMAMessageAction: (function () {
-		return [
-			{
-				id: 11,
-				type: 'CLOSE',
-				value: 'Close'
-			},
-			{
-				id: 15,
-				type: 'CALL',
-				value: 'Call'
-			},
-			{
-				id: 12,
-				type: 'GOTO_LINK',
-				value: 'Website'
-			}
-		]
+		if (production) {
+			return [
+				{
+					id: 11,
+					type: 'CLOSE',
+					value: 'Close'
+				},
+				{
+					id: 15,
+					type: 'CALL',
+					value: 'Call'
+				},
+				{
+					id: 12,
+					type: 'GOTO_LINK',
+					value: 'Website'
+				}
+			]
+		} else if (staging) {
+			return [
+				{
+					id: 11,
+					type: 'CLOSE',
+					value: 'Close'
+				},
+				{
+					id: 15,
+					type: 'CALL',
+					value: 'Call'
+				},
+				{
+					id: 12,
+					type: 'GOTO_LINK',
+					value: 'Website'
+				}
+			]
+		} else if (development) {
+			return [
+				{
+					id: 21,
+					type: 'CLOSE',
+					value: 'Close'
+				},
+				{
+					id: 25,
+					type: 'CALL',
+					value: 'Call'
+				},
+				{
+					id: 22,
+					type: 'GOTO_LINK',
+					value: 'Website'
+				}
+			]
+		}
 	})(),
 	/**
 	 * API key for Google Maps Javascript API
