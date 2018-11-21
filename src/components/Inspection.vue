@@ -125,8 +125,8 @@
 													</span>
 													<span
 														class="service-name"
-														v-bind:class="{'bold': (service.isHighlighted === true)}">
-														<span v-if="service.isHighlighted === true">* </span>{{ service.name }}
+													>
+														{{ service.name }}
 													</span>
 												</div>
 												<div class="summary-table-cell">
@@ -134,7 +134,14 @@
 														<div class="dot-container">
 															<img :src="service.iconUrl">
 														</div>
-														<span class="dot-caption" v-if="service.subServices">{{service.subServices[subServiceIndex].name}}</span>
+														<span
+															v-if="service.subServices"
+															class="dot-caption"
+															v-bind:class="{'bold': (service.subServices[subServiceIndex].isHighlighted === true)}"
+														>
+															{{service.subServices[subServiceIndex].name}}
+															<span v-if="service.subServices[subServiceIndex].isHighlighted === true">* </span>
+														</span>
 													</div>
 												</div>
 											</div>
@@ -672,7 +679,15 @@ export default {
 		showLegend (category) {
 			let show = 0
 			this.$root.services.forEach(service => {
-				if (service.category === category.id) {
+				if (
+					category.id === '5' && (
+						service.category === '6' ||
+						service.category === '7' ||
+						service.category === '8' ||
+						service.category === '9'
+					) ||
+					service.category === category.id
+				) {
 					if (service.subServices) {
 						service.subServices.forEach(subService => {
 							let condition = subService.isHighlighted
