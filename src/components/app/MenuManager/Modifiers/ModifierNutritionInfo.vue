@@ -87,7 +87,7 @@
 					<div v-if="$root.permissions['menu_manager modifiers items nutrition update']">
 						<div class="form-group form-md-line-input form-md-floating-label">
 							<label>Display calories as kilocalories?</label><br>
-							<el-switch :disabled="!$root.permissions['menu_manager menus categories subcategories items nutrition update']"
+							<el-switch :disabled="!editingModifierNutritionInfo || !$root.permissions['menu_manager menus categories subcategories items nutrition update']"
 							           v-model="kcal"
 							           active-color="#0c6"
 							           inactive-color="#ff4949"
@@ -112,6 +112,7 @@
 							<label>Update all items?</label><br>
 							<el-switch v-model="update_all_items"
 							           active-color="#0c6"
+									   :disabled="!editingModifierNutritionInfo || !$root.permissions['menu_manager menus categories subcategories items nutrition update']"
 							           inactive-color="#ff4949"
 							           :active-value="1"
 							           :inactive-value="0"
