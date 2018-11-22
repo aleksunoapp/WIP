@@ -155,6 +155,42 @@
 						           inactive-text="No">
 						</el-switch>
 					</div>
+					<div class="form-group form-md-line-input form-md-floating-label">
+						<label>Web:</label><br>
+						<el-switch :disabled="!can('promotions update')"
+						           v-model="promotionToBeEdited.web"
+						           active-color="#0c6"
+						           inactive-color="#ff4949"
+						           :active-value="1"
+						           :inactive-value="0"
+						           active-text="Yes"
+						           inactive-text="No">
+						</el-switch>
+					</div>
+					<div class="form-group form-md-line-input form-md-floating-label">
+						<label>iOS:</label><br>
+						<el-switch :disabled="!can('promotions update')"
+						           v-model="promotionToBeEdited.ios"
+						           active-color="#0c6"
+						           inactive-color="#ff4949"
+						           :active-value="1"
+						           :inactive-value="0"
+						           active-text="Yes"
+						           inactive-text="No">
+						</el-switch>
+					</div>
+					<div class="form-group form-md-line-input form-md-floating-label">
+						<label>Android:</label><br>
+						<el-switch :disabled="!can('promotions update')"
+						           v-model="promotionToBeEdited.android"
+						           active-color="#0c6"
+						           inactive-color="#ff4949"
+						           :active-value="1"
+						           :inactive-value="0"
+						           active-text="Yes"
+						           inactive-text="No">
+						</el-switch>
+					</div>
 				</div>
 			</div>
 			<div class="page-two"
@@ -274,7 +310,10 @@ export default {
 				cta_text: '',
 				featured: 0,
 				short_description: '',
-				sort_order: ''
+				sort_order: '',
+				web: 0,
+				ios: 0,
+				android: 0
 			},
 			errorMessage: '',
 			selectImageMode: false,

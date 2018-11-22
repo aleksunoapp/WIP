@@ -181,6 +181,39 @@
 								</el-switch>
 							</div>
 							<div class="form-group form-md-line-input form-md-floating-label">
+								<label>Web:</label><br>
+								<el-switch v-model="newPromotion.web"
+								           active-color="#0c6"
+								           inactive-color="#ff4949"
+								           :active-value="1"
+								           :inactive-value="0"
+								           active-text="Yes"
+								           inactive-text="No">
+								</el-switch>
+							</div>
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<label>iOS:</label><br>
+								<el-switch v-model="newPromotion.ios"
+								           active-color="#0c6"
+								           inactive-color="#ff4949"
+								           :active-value="1"
+								           :inactive-value="0"
+								           active-text="Yes"
+								           inactive-text="No">
+								</el-switch>
+							</div>
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<label>Android:</label><br>
+								<el-switch v-model="newPromotion.android"
+								           active-color="#0c6"
+								           inactive-color="#ff4949"
+								           :active-value="1"
+								           :inactive-value="0"
+								           active-text="Yes"
+								           inactive-text="No">
+								</el-switch>
+							</div>
+							<div class="form-group form-md-line-input form-md-floating-label">
 								<label>Apply to all stores:</label><br>
 								<el-switch v-model="newPromotion.apply_to_all_locations"
 								           active-color="#0c6"
@@ -866,7 +899,10 @@ export default {
 				cta_text: '',
 				featured: 0,
 				short_description: '',
-				sort_order: ''
+				sort_order: '',
+				web: 0,
+				ios: 0,
+				android: 0
 			},
 			showEditPromotionModal: false,
 			selectedPromotionId: 0,
@@ -1984,7 +2020,10 @@ export default {
 				cta_text: '',
 				featured: 0,
 				short_description: '',
-				sort_order: ''
+				sort_order: '',
+				web: 0,
+				ios: 0,
+				android: 0
 			}
 			this.promoCodes.forEach(code => {
 				code.selected = false
