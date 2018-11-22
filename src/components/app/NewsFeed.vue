@@ -463,8 +463,8 @@ export default {
 			})
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						newsFeedVue.totalResults = response.payload.length
-						newsFeedVue.newsFeed = response.payload
+						newsFeedVue.totalResults = response.payload.data.length
+						newsFeedVue.newsFeed = response.payload.data
 						for (var i = 0; i < newsFeedVue.newsFeed.length; i++) {
 							var item = newsFeedVue.newsFeed[i].created_on.split(' ')
 							if (item[0] !== '0000-00-00') {
@@ -577,7 +577,7 @@ export default {
 					)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
-								newsFeedVue.newsFeed.push(response.payload)
+								newsFeedVue.getNewsFeed()
 								newsFeedVue.showCreateSuccess(response.payload)
 								newsFeedVue.resetForm()
 							} else {
@@ -585,6 +585,7 @@ export default {
 							}
 						})
 						.catch(reason => {
+							console.log({reason})
 							ajaxErrorHandler({
 								reason,
 								errorText: 'Could not create news feed',
