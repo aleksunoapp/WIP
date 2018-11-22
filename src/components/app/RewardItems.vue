@@ -305,7 +305,6 @@
 import $ from 'jquery'
 import Breadcrumb from '../modules/Breadcrumb'
 import NoResults from '../modules/NoResults'
-import MenuTree from '../modules/MenuTree'
 import MenuModifierTree from '../modules/MenuModifierTree'
 import LoadingScreen from '../modules/LoadingScreen'
 import Modal from '../modules/Modal'
@@ -340,7 +339,6 @@ export default {
 				value_type: '', // 'dollar','percentage'
 				created_by: this.$root.createdBy
 			},
-			showMenuTreeModal: false,
 			showMenuModifierTreeModal: false,
 			headerText: '',
 			showModifierTreeModal: false,
@@ -840,7 +838,6 @@ export default {
 		NoResults,
 		LoadingScreen,
 		EditRewardItem,
-		MenuTree,
 		MenuModifierTree,
 		Modal
 	}

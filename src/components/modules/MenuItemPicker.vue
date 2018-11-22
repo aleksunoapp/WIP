@@ -183,7 +183,7 @@ export default {
 			}
 		},
 		allCategoriesSelected () {
-			if (this.activeMenu.categories) {
+			if (this.activeMenu.categories && this.activeMenu.items) {
 				return (
 					this.activeMenu.items.length &&
 					!this.activeMenu.items.some(item => !item.selected)

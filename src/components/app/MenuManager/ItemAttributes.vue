@@ -968,7 +968,7 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						attributesVue.itemsOfItemAttribute = response.payload.map(item => {
-							return item.id
+							return item.sku
 						})
 						attributesVue.showAssignItemsModal = true
 					} else {
@@ -1041,6 +1041,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		confirmAssignItems (payload = {}) {
+			if (payload === null) payload = {}
 			let title = 'Success'
 			let text = 'The Items have been saved'
 			let type = 'success'
