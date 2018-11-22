@@ -124,7 +124,7 @@
 		<div slot="modal-footer"
 		     class="modal-footer">
 			<button type="button"
-			        v-if="order.status !== 'refunded'"
+			        v-if="order.status !== 'refunded' && $root.permissions['order_refund']"
 			        class="btn btn-primary pull-left"
 			        @click="refund()"
 			        :disabled="refunding">
