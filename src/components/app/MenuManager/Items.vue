@@ -934,7 +934,10 @@ export default {
 			}).then(
 				() => {
 					if (!payload.pending_approval) {
-						this.showPresetModal(payload)
+						this.showPresetModal({
+							...this.newItem,
+							id: payload.new_item_id
+						})
 					}
 				},
 				dismiss => {}
@@ -950,7 +953,7 @@ export default {
 		showPresetModal (item) {
 			this.itemToSetPresetSettingsFor.id = item.id
 			this.itemToSetPresetSettingsFor.name = item.name
-			this.itemToSetPresetSettingsFor.modifiers = item.modifiers
+			this.itemToSetPresetSettingsFor.modifiers = item.modifiers || []
 			this.itemToSetPresetSettingsFor.preset_item_modifier_item =
 				item.preset_item_modifier_item
 			this.displayPresetModal = true
