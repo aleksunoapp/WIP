@@ -73,7 +73,7 @@
 		</div>
 		<div class="col-xs-4">
 			<div
-				v-if="loading.items" 
+				v-if="loading.items || loading.categories" 
 				class="width-100 display-flex justify-content-center">
 				<i
 					class="margin-top-20 fa fa-spinner fa-pulse fa-fw"
@@ -101,7 +101,7 @@
 							</span>
 						</div>
 					</li>
-					<p class="no-items" v-show="activeMenu.id !== undefined && !activeMenu.categories.length">
+					<p class="no-items" v-show="activeMenu.id !== undefined && activeMenu.categories !== undefined && !activeMenu.categories.length">
 						This menu is empty
 					</p>
 				</ol>
@@ -134,6 +134,7 @@
 
 <script>
 import MenusFunctions from '@/controllers/Menus'
+import CategoriesFunctions from '@/controllers/Categories'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
@@ -159,6 +160,7 @@ export default {
 	data: () => ({
 		loading: {
 			menus: false,
+			categories: false,
 			items: false
 		},
 		previous: [],
@@ -279,9 +281,10 @@ export default {
 			this.activeCategory = {}
 			this.activeMenu = menu
 			if (menu.items === undefined) {
-				return new Promise((resolve, reject) => {
-					this.getAllItemsInMenu().then(() => resolve())
-				})
+				return Promise.all([
+					this.getAllItemsInMenu(),
+					this.getMenuCategories()
+				])
 			}
 		},
 		/**
@@ -318,7 +321,7 @@ export default {
 			const selected = this.categorySelected(category)
 			let menu = this.menus.filter(menu => menu.id === category.menu_id)[0]
 			let items = menu.items.filter(item => {
-				return item.category.parent_category === 0 ? item.category.id === this.activeCategory.id : item.category.parent_category === this.activeCategory.id
+				return item.category.parent_category === 0 ? item.category.id === category.id : item.category.parent_category === category.id
 			})
 			items.forEach(item => {
 				item.selected = !selected
@@ -376,6 +379,35 @@ export default {
 				})
 		},
 		/**
+		 * To get a list of categories for a menu.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getMenuCategories () {
+			this.loading.categories = true
+			let pickerVue = this
+			return CategoriesFunctions.getMenuCategories(this.activeMenu.id)
+				.then(response => {
+					let categories = response.payload.map(category => ({
+						...category,
+						selected: false
+					}))
+
+					pickerVue.$set(pickerVue.activeMenu, 'categories', categories)
+				})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not get categories',
+						errorName: 'errorMessage',
+						vue: pickerVue
+					})
+				})
+				.finally(() => {
+					pickerVue.loading.categories = false
+				})
+		},
+		/**
 		 * To get a list of all items for a menu.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
@@ -394,25 +426,7 @@ export default {
 							selected: pickerVue.previous.includes(item.sku)
 						}
 					})
-					const subCategoryItems = items.filter(item => item.category.parent_category !== 0)
-					if (subCategoryItems.length) {
-						items = subCategoryItems
-					}
-					let categories = []
-					response.payload.forEach(item => {
-						if (
-							categories.findIndex(
-								included => item.category.id === included.id
-							) === -1
-						) {
-							categories.push({
-								...item.category,
-								selected: false
-							})
-						}
-					})
 					pickerVue.$set(menu, 'items', items)
-					pickerVue.$set(menu, 'categories', categories)
 				})
 				.catch(reason => {
 					ajaxErrorHandler({
