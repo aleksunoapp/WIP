@@ -16,7 +16,7 @@
 		</div>
 		<div slot="modal-body"
 		     class="modal-body">
-			<div class="col-xs-12">
+			<div class="col-xs-12" v-show="!selectPromoCodesMode">
 				<div class="alert alert-danger"
 				     v-show="errorMessage"
 				     ref="errorMessage">
@@ -83,7 +83,7 @@
 						           size="small"
 						           class="margin-bottom-15"
 						           id="form_control_cta_type"
-						           @change="clearCtaValue()">
+						           @change="ctaValueChanged()">
 							<el-option label="call"
 										value="call"></el-option>
 							<el-option label="camera"
@@ -124,7 +124,7 @@
 							       v-model="promotionToBeEdited.cta_value">
 							<label for="form_control_cta_value">Call to action value</label>
 						</div>
-						<div class="form-group form-md-line-input form-md-floating-label"
+						<div class="margin-bottom-20"
 						     v-show="promotionToBeEdited.cta_type === 'promo_code'">
 							<button type="button"
 							        class="btn blue btn-outline"
@@ -135,7 +135,7 @@
 								<span v-else>code</span>
 							</p>
 						</div>
-						<div class="form-group form-md-line-input form-md-floating-label"
+						<div class="margin-bottom-20"
 						     v-show="promotionToBeEdited.cta_type === 'menu_item'">
 							<button type="button"
 							        class="btn blue btn-outline"
@@ -419,7 +419,8 @@ export default {
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearCtaValue () {
+		ctaValueChanged () {
+			this.promoCodes.forEach(promoCode => { promoCode.selected = false })
 			this.promotionToBeEdited.cta_value = ''
 		},
 		/**
