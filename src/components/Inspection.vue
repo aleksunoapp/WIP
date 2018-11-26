@@ -189,7 +189,18 @@
 														<div class="dot-container">
 															<img :src="service.iconUrl">
 														</div>
-														<span class="dot-caption">{{langTerms.sorry_no_recommendations[$root.meta.local.toLowerCase()]}}</span>
+														<span 
+															v-if="service.category === '6' || service.category === '7'"
+															class="dot-caption"
+														>
+															{{langTerms.problem_identified[$root.meta.local.toLowerCase()]}}
+														</span>
+														<span 
+															v-if="service.category === '8' || service.category === '9'"
+															class="dot-caption"
+														>
+															{{langTerms.no_issue_found[$root.meta.local.toLowerCase()]}}
+														</span>
 													</div>
 												</div>
 											</div>
@@ -505,10 +516,17 @@ export default {
 					'en-us': '* indicates a new/updated recommendation',
 					'fr-ca': '* indique une recommandation ajoutée ou mise à jour'
 				},
-				sorry_no_recommendations: {
-					'en-ca': 'We\'re sorry but there are no recommendations',
-					'en-us': 'We\'re sorry but there are no recommendations',
-					'fr-ca': 'Désolé, mais il n\'y a aucune recommandations'
+				no_issue_found: {
+					'en-ca': 'No issue was found.  Please see comments for more information',
+					'en-us': 'No issue was found.  Please see comments for more information',
+					'fr-ca': 'Aucun problème trouvé. Veuillez voir les commentaires pour en savoir plus.',
+					'es-us': ''
+				},
+				problem_identified: {
+					'en-ca': 'Problem has been identified.  Please see comments for more information',
+					'en-us': 'Problem has been identified.  Please see comments for more information',
+					'fr-ca': 'Un problème a été trouvé. Veuillez voir les commentaires pour en savoir plus.',
+					'es-us': ''
 				},
 				covered_by_warranty: {
 					'en-ca': 'Covered by warranty',
