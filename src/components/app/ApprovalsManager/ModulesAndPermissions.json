@@ -40,6 +40,8 @@
 	"stores delivery_provider update": false,
 	"stores delivery_provider delete": false,
 	"stores delivery_provider approve": false,
+        "stores combo assign location" : false,
+        "stores combo assign location approve" : false,
 	"store_delivery_profile":{
 	  "stores delivery_profile read":true,
 	  "stores delivery_profile create":true,
@@ -76,21 +78,21 @@
 	  "stores delivery_hours delete": false,
 	  "stores delivery_hours approve": false
 	},
-    "payment_methods": {
+	"payment_methods": {
 	  "stores payment methods read": false,
 	  "stores payment methods create": false,
 	  "stores payment methods update": false,
 	  "stores payment methods delete": false,
 	  "stores payment methods approve": false
-    }
 	},
-		"payment_terminals": {
-      "stores payment terminals read": false,
-      "stores payment terminals create": false,
-      "stores payment terminals update": false,
-      "stores payment terminals delete": false,
-      "stores payment terminals approve": false
-		},
+	"payment_terminals": {
+	  "stores payment terminals read": false,
+	  "stores payment terminals create": false,
+	  "stores payment terminals update": false,
+	  "stores payment terminals delete": false,
+	  "stores payment terminals approve": false
+	}
+  },
   "analytics": {
 	"analytics overview": {
 	  "analytics overview read": false,
@@ -511,5 +513,31 @@
 	"oma_app show locations": false,
 	"oma_app accept orders": false,
 	"oma_app move orders": false
+  },
+  "order_refund": {
+	"order_refund": false,
+	"order_refund approve": false
+  },
+  "combo": {
+	"combo_offer read": false,
+	"combo_offer create": false,
+	"combo_offer update": false,
+	"combo_offer delete": false,
+	"combo_offer approve": false,
+	"combo_item": {
+	  "combo_item read": false,
+	  "combo_item create": false,
+	  "combo_item update": false,
+	  "combo_item delete": false,
+	  "combo_item approve": false
+	},
+        "combo_item_sku": {
+	  "combo_item_sku read": false,
+	  "combo_item_sku create": false,
+	  "combo_item_sku update": false,
+	  "combo_item_sku delete": false,
+	  "combo_item_sku approve": false
+	}
   }
+  
 }
