@@ -186,7 +186,10 @@
 
 		<!-- BEGIN MENUS LIST-->
 		<div v-if="$root.activeLocation && $root.activeLocation.id">
-			<div class="portlet light portlet-fit bordered margin-top-20">
+			<loading-screen :show="loadingMenus"
+				:color="'#2C3E50'"
+				:display="'inline'"></loading-screen>
+			<div class="portlet light portlet-fit bordered margin-top-20" v-if="!loadingMenus">
 				<div class="portlet-title bg-blue-chambray">
 					<div class="menu-image-main">
 						<img src="../../../../static/client_logo.png">
@@ -225,7 +228,7 @@
 				</div>
 
 				<div class="portlet-body"
-				     v-if="$root.activeLocation && $root.activeLocation.id && !displayMenuData">
+				     v-if="$root.activeLocation && $root.activeLocation.id">
 					<div class="row">
 						<div class="col-md-12">
 							<div class="alert alert-danger"
@@ -256,11 +259,7 @@
 						</div>
 					</div>
 
-					<loading-screen :show="displayMenuData"
-					                :color="'#2C3E50'"
-					                :display="'inline'"></loading-screen>
-
-					<div v-if="!storeMenus.length && !displayMenuData">
+					<div v-if="!storeMenus.length">
 						<no-results :show="!storeMenus.length"
 						            :type="'menus'"
 						            :custom="true"
@@ -450,7 +449,7 @@ export default {
 				{ name: 'Menus', link: false }
 			],
 			storeMenus: [],
-			displayMenuData: false,
+			loadingMenus: false,
 			errorMessage: '',
 			editMenuModalActive: false,
 			deleteMenuModalActive: false,
@@ -727,7 +726,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		getStoreMenus () {
-			this.displayMenuData = true
+			this.loadingMenus = true
 			this.storeMenus = []
 			var menusVue = this
 			let params = {}
@@ -745,10 +744,7 @@ export default {
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						menusVue.displayMenuData = false
 						menusVue.storeMenus = response.payload
-					} else {
-						menusVue.displayMenuData = false
 					}
 				})
 				.catch(reason => {
@@ -758,6 +754,9 @@ export default {
 						errorText: 'We could not fetch menus',
 						vue: menusVue
 					})
+				})
+				.finally(() => {
+					menusVue.loadingMenus = false
 				})
 		},
 		/**
