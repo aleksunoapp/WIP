@@ -533,13 +533,13 @@ export default {
 					'en-ca': 'No issue was found.  Please see comments for more information',
 					'en-us': 'No issue was found.  Please see comments for more information',
 					'fr-ca': 'Aucun problème trouvé. Veuillez voir les commentaires pour en savoir plus.',
-					'es-us': 'El problema ha sido identificado. Vea los comentarios para obtener más información.'
+					'es-us': 'No se encontró ningún problema. Vea los comentarios para obtener más información.'
 				},
 				problem_identified: {
 					'en-ca': 'Problem has been identified.  Please see comments for more information',
 					'en-us': 'Problem has been identified.  Please see comments for more information',
 					'fr-ca': 'Un problème a été trouvé. Veuillez voir les commentaires pour en savoir plus.',
-					'es-us': 'No se encontró ningún problema. Vea los comentarios para obtener más información'
+					'es-us': 'El problema ha sido identificado. Vea los comentarios para obtener más información'
 				}
 			}
 		}
