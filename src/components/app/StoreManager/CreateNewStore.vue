@@ -416,7 +416,22 @@
 													</el-switch>
 												</td>
 											</tr>
-
+											<tr>
+												<td>
+													Promocodes
+												</td>
+												<td>
+													<el-switch v-model="newStoreMeta.enable_promocode"
+													           :disabled="newStoreMeta.opening_soon === 1"
+													           active-color="#0c6"
+													           inactive-color="#ff4949"
+													           :active-value="1"
+													           :inactive-value="0"
+													           active-text="Yes"
+													           inactive-text="No">
+													</el-switch>
+												</td>
+											</tr>
 											<tr>
 												<td>
 													Gift Cards
@@ -755,7 +770,8 @@ export default {
 				pickup_immediate: 0,
 				enable_pickup_later: 0,
 				external_online_ordering_enabled: 0,
-				external_online_ordering_url: ''
+				external_online_ordering_url: '',
+				enable_promocode: 0
 			},
 			savingStoreHours: false,
 			newStoreHours: [
@@ -1131,7 +1147,8 @@ export default {
 				pickup_immediate: 0,
 				enable_pickup_later: 0,
 				external_online_ordering_enabled: 0,
-				external_online_ordering_url: ''
+				external_online_ordering_url: '',
+				enable_promocode: 0
 			}
 			this.newHolidayHours = []
 			this.newStoreHours = [

@@ -381,6 +381,22 @@
 													</tr>
 													<tr>
 														<td>
+															Promo Codes
+														</td>
+														<td>
+															<el-switch v-model="metaToBeEdited.enable_promocode"
+															           :disabled="metaToBeEdited.opening_soon === 1 || !$root.permissions['stores profile update']? true : false"
+															           active-color="#0c6"
+															           inactive-color="#ff4949"
+															           :active-value="1"
+															           :inactive-value="0"
+															           active-text="Yes"
+															           inactive-text="No">
+															</el-switch>
+														</td>
+													</tr>
+													<tr>
+														<td>
 															Gift Cards
 														</td>
 														<td>
