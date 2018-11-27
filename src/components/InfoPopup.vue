@@ -87,8 +87,15 @@
 							</a>
 						</div>
 						<div class="info-modal-estimate">{{ langTerms.estimated_cost[$root.meta.local.toLowerCase()] }} 
-							<span v-if="viewingSubServiceIndex === undefined">{{ formatCurrency(viewingService.price) }}</span>
-							<span v-else>{{ formatCurrency(viewingService.subServices[viewingSubServiceIndex].price) }}</span>
+							<span v-if="viewingSubServiceIndex === undefined">
+								<span v-if="viewingService.price === 0 && viewingService.laborMatrixPayment">{{ translateWarranty(viewingService.laborMatrixPayment) }}</span>
+								<span v-else>{{ formatCurrency(viewingService.price) }}</span>
+							</span>
+							<span v-else>
+								<span></span>
+								<span v-if="viewingService.subServices[viewingSubServiceIndex].price === 0 && viewingService.subServices[viewingSubServiceIndex].laborMatrixPayment">{{ translateWarranty(viewingService.subServices[viewingSubServiceIndex].laborMatrixPayment) }}</span>
+								<span v-else>{{ formatCurrency(viewingService.subServices[viewingSubServiceIndex].price) }}</span>
+							</span>
 						</div>
 					</div>
 				</div>
@@ -185,6 +192,7 @@ export default {
 					'fr-ca': 'Commentaires du conseiller',
 					'es-us': 'Comentarios del asesor'
 				},
+
 				free: {
 					'en-ca': 'Please note this service is free - you will NOT be charged for it',
 					'en-us': 'Please note this service is free - you will NOT be charged for it',
@@ -230,6 +238,44 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * To convert warranty price information into an explanation string
+		 * @function
+		 * @param {string} text - The short warranty description
+		 * @returns {String} - String to display
+		 */
+		translateWarranty (text) {
+			if (!text) return ''
+
+			const translations = {
+				'en-us': {
+					'covered by warranty': 'Please note this service is covered under Warranty - you will NOT be charged for it',
+					'included': 'Please note the price of this service is included - you will NOT be charged for it',
+					'covered by dealership': 'Please note this service is free - you will NOT be charged for it',
+					'free': 'Please note this service is free - you will NOT be charged for it'
+				},
+				'en-ca': {
+					'covered by warranty': 'Please note this service is covered under Warranty - you will NOT be charged for it',
+					'included': 'Please note the price of this service is included - you will NOT be charged for it',
+					'covered by dealership': 'Please note this service is free - you will NOT be charged for it',
+					'free': 'Please note this service is free - you will NOT be charged for it'
+				},
+				'fr-ca': {
+					'couvert par la garantie': 'Veuillez noter que ce service est couvert par la garantie, il ne vous sera PAS facturé',
+					'inclus': 'Veuillez noter que ce service est gratuit, il ne vous sera PAS facturé',
+					'couvert par la concession': 'Veuillez noter que le prix de ce service est inclus, il ne vous sera PAS facturé',
+					'gratuit': 'Veuillez noter que ce service est gratuit, il ne vous sera PAS facturé'
+				},
+				'es-us': {
+					'cubierto por la garantía': 'Tenga en cuenta que este servicio está cubierto por la garantía, NO se le cobrará por él',
+					'incluido': 'Tenga en cuenta que el precio de este servicio está incluido, NO se le cobrará por separado',
+					'cubierto por el concesionario': 'Tenga en cuenta que este servicio es gratuito, NO se le cobrará por él',
+					'gratis': 'Tenga en cuenta que este servicio es gratuito, NO se le cobrará por él'
+				}
+			}
+
+			return translations[this.$root.meta.local.toLowerCase()][text.trim().toLowerCase()]
+		},
 		/**
 		 * To format a number by locale to two decimal digits
 		 * @function

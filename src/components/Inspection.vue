@@ -146,8 +146,9 @@
 												</div>
 											</div>
 											<div class="summary-table-cell">
-												<template v-if="category.serviceCategoryType !== 'PASS' && service.category !== '8'">
-													<span class="price" v-if="service.subServices[subServiceIndex].price !== 0">{{ formatCurrency(service.subServices[subServiceIndex].price) }}</span>
+												<div class="flex justify-center align-center" v-if="category.serviceCategoryType !== 'PASS' && service.category !== '8'">
+													<span class="price" v-if="service.subServices[subServiceIndex].price === 0 && service.subServices[subServiceIndex].laborMatrixPayment">{{service.subServices[subServiceIndex].laborMatrixPayment}}</span>
+													<span class="price" v-else-if="service.subServices[subServiceIndex].price !== 0">{{ formatCurrency(service.subServices[subServiceIndex].price) }}</span>
 													<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 													<div class="service-checkbox">
 														<input
@@ -160,7 +161,7 @@
 															<span class="box"></span>
 														</label>
 													</div>
-												</template>
+												</div>
 											</div>
 										</div>
 									</template>
@@ -270,8 +271,10 @@
 											<div class="summary-table-cell">
 											</div>
 											<div class="summary-table-cell">
-												<template v-if="category.serviceCategoryType !== 'PASS'">
-													<span class="price" v-if="subService.price !== 0">{{ formatCurrency(subService.price) }} </span>
+												<div class="flex justify-center align-center" 
+												v-if="category.serviceCategoryType !== 'PASS'">
+													<span class="price" v-if="subService.price === 0 && subService.laborMatrixPayment">{{subService.laborMatrixPayment}} </span>
+													<span class="price" v-else-if="subService.price !== 0">{{ formatCurrency(subService.price) }} </span>
 													<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 													<div class="service-checkbox">
 														<input type="checkbox" :id="`sub-service-${subService.id}`" v-model="subService.isSelected" @change="toggleCheckbox(category, subService)">
@@ -280,7 +283,7 @@
 															<span class="box"></span>
 														</label>
 													</div>
-												</template>
+												</div>
 											</div>
 										</div>
 									</template>
@@ -292,8 +295,10 @@
 										<div class="summary-table-cell">
 										</div>
 										<div class="summary-table-cell">
-											<template v-if="category.serviceCategoryType !== 'PASS'">
-												<span class="price" v-if="service.price !== 0">{{ formatCurrency(service.price) }}</span>
+											<div class="flex justify-center align-center" 
+											v-if="category.serviceCategoryType !== 'PASS'">
+												<span class="price" v-if="service.price === 0 && service.laborMatrixPayment">{{service.laborMatrixPayment}}</span>
+												<span class="price" v-else-if="service.price !== 0">{{ formatCurrency(service.price) }}</span>
 												<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 												<div class="service-checkbox">
 													<input type="checkbox" :id="`sub-service-${service.id}`" v-model="service.isSelected" @change="toggleCheckbox(category, service)">
@@ -302,7 +307,7 @@
 														<span class="box"></span>
 													</label>
 												</div>
-											</template>
+											</div>
 										</div>
 									</div>
 								</template>
@@ -1197,6 +1202,7 @@ export default {
 	position: relative;
 	height: 15px;
 	width: 15px;
+	min-width: 15px;
 	vertical-align: middle;
 	margin-left: 5px;
 }
@@ -1238,5 +1244,14 @@ export default {
 .service-name{
   word-wrap: normal;
   hyphens: auto;
+}
+.flex {
+	display:flex;
+}
+.justify-center {
+	justify-content:flex-end;
+}
+.align-center {
+	align-items:center;
 }
 </style>
