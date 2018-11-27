@@ -113,9 +113,32 @@ export const deleteCountry = ({ id = null }) => {
 	})
 }
 
+/**
+ * Call to API to assign a promotion to a country
+ * @function
+ * @returns {object} A promise
+ */
+export const assignPromotionsToCountry = ({ id, promotions }) => {
+	return new Promise(function (resolve, reject) {
+		GlobalFunctions.$ajax({
+			method: 'POST',
+			dataType: 'json',
+			url: `/app/country/${id}/assign_promotions`,
+			data: {promotions},
+			success: function (response) {
+				resolve(response)
+			},
+			error: function (error) {
+				reject(error)
+			}
+		})
+	})
+}
+
 export default {
 	listCountries,
 	createCountry,
 	updateCountry,
+	assignPromotionsToCountry,
 	deleteCountry
 }

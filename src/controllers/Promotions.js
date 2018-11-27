@@ -7,22 +7,16 @@ export default {
 	/**
 	 * Call to pitapit API to get all promotions.
 	 * @function
-	 * @param {string} appId - The appId of the current application.
-	 * @param {string} appSecret - The appSecret of the current application.
 	 * @param {string} locationId - The id of the store.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	getPromotionsForAStore (appId, appSecret, locationId) {
+	getPromotionsForAStore (locationId) {
 		return new Promise(function (resolve, reject) {
 			GlobalFunctions.$ajax({
 				method: 'GET',
 				dataType: 'json',
 				url: '/app/locations/' + locationId + '/promotions',
 				data: {},
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader('app-id', appId)
-					xhr.setRequestHeader('app-secret', appSecret)
-				},
 				success: function (response) {
 					resolve(response)
 				},
@@ -208,6 +202,31 @@ export default {
 					xhr.setRequestHeader('auth-token', userToken)
 					xhr.setRequestHeader('app-id', appId)
 					xhr.setRequestHeader('app-secret', appSecret)
+				},
+				success: function (response) {
+					resolve(response)
+				},
+				error: function (error) {
+					reject(error)
+				}
+			})
+		})
+	},
+	/**
+	 * Call to pitapit API to apply selected countries to a promotion.
+	 * @function
+	 * @param {integer} id - The id of the promotion to assign countries to.
+	 * @param {array} countries - IDs of countries to assign to the promotion.
+	 * @returns {object} A promise that will return either a success object or an error object.
+	 */
+	assignCountriesToPromotion ({id, countries}) {
+		return new Promise(function (resolve, reject) {
+			GlobalFunctions.$ajax({
+				method: 'POST',
+				dataType: 'json',
+				url: '/app/promotions/' + id + '/assign_countries',
+				data: {
+					countries
 				},
 				success: function (response) {
 					resolve(response)

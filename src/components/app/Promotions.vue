@@ -340,12 +340,21 @@
 											</a>
 										</el-tooltip>
 										<el-tooltip v-if="$root.permissions['promotions update']"
+													content="Assign Countries"
+													effect="light"
+													placement="right">
+											<a class="btn btn-circle btn-icon-only btn-default"
+												@click.stop="openAssignCountriesModal(promotion)">
+												<i class="fa fa-lg fa-flag-o"></i>
+											</a>
+										</el-tooltip>
+										<el-tooltip v-if="$root.permissions['promotions update']"
 										            content="QR code"
 										            effect="light"
 										            placement="top">
 											<a class="btn btn-circle btn-icon-only btn-default"
 											   @click="openQrCodeModal(promotion, $event)">
-												<i class="fa fa-qrcode"
+												<i class="fa fa-lg fa-qrcode"
 												   aria-hidden="true"></i>
 											</a>
 										</el-tooltip>
@@ -443,6 +452,13 @@
 		                  :selectedPromotionId="selectedPromotionId"
 		                  @closeDeletePromotionModal="closeDeletePromotionModal"
 		                  @deletePromotionAndCloseModal="deletePromotionAndCloseModal"></delete-promotion>
+
+		<assign-countries-to-promotion
+			v-if="showAssignCountriesModal"
+			:promotion="promotionToAssignCountriesTo"
+			@close="closeAssignCountriesModal"
+		>
+		</assign-countries-to-promotion>
 
 		<modal :show="showStoreGroupsModal"
 		       effect="fade"
@@ -880,6 +896,7 @@ import NoResults from '../modules/NoResults'
 import MenuModifierTree from '../modules/MenuModifierTree'
 import EditPromotion from './Promotions/EditPromotion'
 import DeletePromotion from './Promotions/DeletePromotion'
+import AssignCountriesToPromotion from './Promotions/AssignCountriesToPromotion'
 import $ from 'jquery'
 import freshiiLogo from '../../../static/client_logo.png'
 import { mapGetters } from 'vuex'
@@ -969,7 +986,10 @@ export default {
 			applyingToGeolocation: false,
 			updating: false,
 			generating: false,
-			deleting: false
+			deleting: false,
+
+			showAssignCountriesModal: false,
+			promotionToAssignCountriesTo: {}
 		}
 	},
 	computed: {
@@ -1968,11 +1988,7 @@ export default {
 		 */
 		getPromotionsForAStore () {
 			var promotionsVue = this
-			return PromotionsFunctions.getPromotionsForAStore(
-				promotionsVue.$root.appId,
-				promotionsVue.$root.appSecret,
-				promotionsVue.$root.activeLocation.id
-			)
+			return PromotionsFunctions.getPromotionsForAStore(promotionsVue.$root.activeLocation.id)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						response.payload.promotions.forEach(storePromotion => {
@@ -2231,6 +2247,24 @@ export default {
 		 */
 		closeApplyModal () {
 			this.showApplyPromotionModal = false
+		},
+		/**
+		 * To open the assign countries modal.
+		 * @function
+		 * @param {object} promotion - Selected promotion
+		 * @returns {undefined}
+		 */
+		openAssignCountriesModal (promotion) {
+			this.promotionToAssignCountriesTo = promotion
+			this.showAssignCountriesModal = true
+		},
+		/**
+		 * To open the assign countries modal.
+		 * @function
+		 * @returns {undefined}
+		 */
+		closeAssignCountriesModal () {
+			this.showAssignCountriesModal = false
 		}
 	},
 	components: {
@@ -2242,7 +2276,8 @@ export default {
 		EditPromotion,
 		DeletePromotion,
 		Qrcode,
-		MenuModifierTree
+		MenuModifierTree,
+		AssignCountriesToPromotion
 	}
 }
 </script>

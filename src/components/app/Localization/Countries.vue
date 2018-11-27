@@ -126,6 +126,15 @@
 											<i class="fa fa-lg fa-eye"></i>
 										</a>
 									</el-tooltip>
+									<el-tooltip v-if="$root.permissions['localization countries update']"
+												content="Assign Promotions"
+												effect="light"
+												placement="right">
+										<a class="btn btn-circle btn-icon-only btn-default"
+											@click="openAssignPromotionsModal(country)">
+											<i class="fa fa-lg fa-money"></i>
+										</a>
+									</el-tooltip>
 									<el-tooltip v-if="$root.permissions['localization countries delete']"
 												content="Delete"
 												effect="light"
@@ -226,6 +235,118 @@
 		</modal>
 		<!-- END EDIT -->
 
+		<!-- START ASSIGN PROMOTIONS -->
+		<modal :show="showAssignPromotionsModal"
+		       effect="fade"
+		       @closeOnEscape="closeAssignPromotionsModal"
+			   ref="assignPromotionsModal">
+			<div slot="modal-header"
+			     class="modal-header">
+				<button type="button"
+				        class="close"
+				        @click="closeAssignPromotionsModal()">
+					<span>&times;</span>
+				</button>
+				<h4 class="modal-title center">Assign Promotions to {{countryToAssignPromotionsTo.name}}</h4>
+			</div>
+			<div slot="modal-body"
+			     class="modal-body">
+				<form role="form">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="alert alert-danger"
+							     v-show="assignPromotionsErrorMessage.length"
+							     ref="assignPromotionsErrorMessage">
+								<button class="close"
+								        data-close="alert"
+								        @click.prevent="clearError('assignPromotionsErrorMessage')"></button>
+								<span>{{ assignPromotionsErrorMessage }}</span>
+							</div>
+						</div>
+						<div class="col-md-12" v-if="activeLocationId === undefined">
+							<div class="alert alert-info center margin-top-20">
+								<h4>No Store Selected</h4>
+								<p>Please select a store from the stores panel on the right to view its promotions</p>
+							</div>
+						</div>
+						<loading-screen :show="loadingPromotions"
+										:color="'#2C3E50'"
+										:display="'inline'"></loading-screen>
+						<div class="col-md-12" v-if="!loadingPromotions && promotions.length">
+							<table class="table">
+								<thead>
+									<tr>
+										<th class="fit-to-content">
+											<div class="md-checkbox has-success">
+												<input type="checkbox"
+													:id="`promotion-all`"
+													class="md-check"
+													v-model="allPromotionsSelected">
+												<label :for="`promotion-all`">
+													<span class="inc"></span>
+													<span class="check"></span>
+													<span class="box"></span>
+												</label>
+											</div>
+										</th>
+										<th> Promotions </th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr v-for="promotion in promotions"
+										:key="promotion.id">
+										<td class="fit-to-content">
+											<div class="md-checkbox has-success">
+												<input type="checkbox"
+													:id="`promotion-${promotion.id}`"
+													class="md-check"
+													v-model="promotion.selected">
+												<label :for="`promotion-${promotion.id}`">
+													<span class="inc"></span>
+													<span class="check"></span>
+													<span class="box"></span>
+												</label>
+											</div>
+										</td>
+										<td> {{ promotion.name }} </td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="col-md-12" v-if="activeLocationId !== undefined && !loadingPromotions && !promotions.length && !assignPromotionsErrorMessage">
+							<div class="alert alert-info">
+								<span>No promotions exist for the selected store{{activeLocationId === undefined ? '' : `, ${$root.activeLocation.display_name}`}}. Select another store or <router-link to="/app/promotions">create a promotion</router-link>.</span>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div slot="modal-footer"
+			     class="modal-footer clear">
+				<button v-if="
+							!$root.permissions['localization countries update'] ||
+							activeLocationId === undefined ||
+							promotions.length === 0
+						"
+				        @click="closeAssignPromotionsModal()"
+				        type="button"
+				        class="btn blue">
+					Close
+				</button>
+				<button v-else
+				        @click="assignPromotionsToCountry()"
+				        type="submit"
+				        class="btn blue"
+				        :disabled="assigning">
+					Save
+					<i v-show="assigning"
+					   class="fa fa-spinner fa-pulse fa-fw">
+					</i>
+				</button>
+			</div>
+		</modal>
+		<!-- END EDIT -->
+
 		<!-- START DELETE -->
 		<modal :show="showDeleteModal"
 		       effect="fade"
@@ -264,6 +385,7 @@
 import Breadcrumb from '@/components/modules/Breadcrumb'
 import LoadingScreen from '@/components/modules/LoadingScreen'
 import CountriesFunctions from '@/controllers/Countries'
+import PromotionsFunctions from '@/controllers/Promotions'
 import Modal from '@/components/modules/Modal'
 import NoResults from '@/components/modules/NoResults'
 import ajaxErrorHandler from '@/controllers/ErrorController'
@@ -293,6 +415,16 @@ export default {
 				code: ''
 			},
 
+			showAssignPromotionsModal: false,
+			countryToAssignPromotionsTo: {
+				name: '',
+				code: ''
+			},
+			loadingPromotions: false,
+			promotions: [],
+			assigning: false,
+			assignPromotionsErrorMessage: '',
+
 			showDeleteModal: false,
 			deleting: false,
 			deleteErrorMessage: '',
@@ -305,12 +437,22 @@ export default {
 	computed: {
 		activeLocationId: function () {
 			return this.$root.activeLocation.id
+		},
+		allPromotionsSelected: {
+			get () {
+				return !this.promotions.some(promotion => !promotion.selected)
+			},
+			set (value) {
+				this.promotions.forEach(promotion => {
+					promotion.selected = value
+				})
+			}
 		}
 	},
 	watch: {
 		activeLocationId: function (newId) {
-			if (newId !== undefined) {
-				this.getCountries()
+			if (newId !== undefined && this.showAssignPromotionsModal) {
+				this.getPromotionsForAStore()
 			}
 		}
 	},
@@ -580,6 +722,134 @@ export default {
 			}
 		},
 		/**
+		 * To get a list of promotions for the selected store.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getPromotionsForAStore () {
+			if (this.$root.activeLocation.id === undefined) return
+			this.promotions = []
+			var _this = this
+			this.loadingPromotions = true
+			return PromotionsFunctions.getPromotionsForAStore(_this.$root.activeLocation.id)
+				.then(response => {
+					_this.promotions = response.payload.promotions.map(promotion => {
+						return {
+							...promotion,
+							selected: false
+						}
+					})
+				})
+				.catch(reason => {
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch promotions',
+						errorName: 'assignPromotionsErrorMessage',
+						vue: _this
+					})
+				})
+				.finally(() => {
+					_this.loadingPromotions = false
+				})
+		},
+		/**
+		 * To open the assign promotions modal.
+		 * @function
+		 * @param {object} country - Selected country
+		 * @returns {undefined}
+		 */
+		openAssignPromotionsModal (country) {
+			this.getPromotionsForAStore()
+			this.countryToAssignPromotionsTo = country
+			this.showAssignPromotionsModal = true
+		},
+		/**
+		 * To check if promotions have been selected
+		 * @function
+		 * @returns {object} A promise that will validate the input form
+		 */
+		validatePromotionsToAssign () {
+			var _this = this
+			return new Promise(function (resolve, reject) {
+				if (!_this.promotions.some(promotion => promotion.selected)) {
+					reject('Select at least one promotion')
+				}
+				resolve('Hurray')
+			})
+		},
+		/**
+		 * To assign selected promotions to a store.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		assignPromotionsToCountry () {
+			var _this = this
+			_this.clearError('assignPromotionsErrorMessage')
+
+			return _this
+				.validatePromotionsToAssign()
+				.then(response => {
+					_this.assigning = true
+					const payload = {
+						id: _this.countryToAssignPromotionsTo.id,
+						promotions: _this.promotions
+							.filter(promotion => promotion.selected)
+							.map(promotion => promotion.id)
+					}
+					CountriesFunctions.assignPromotionsToCountry({...payload})
+						.then(response => {
+							_this.closeAssignPromotionsModal()
+							_this.showAssignPromotionsSuccess(response.payload)
+						})
+						.catch(reason => {
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not assign the promotions',
+								errorName: 'assignPromotionsErrorMessage',
+								vue: _this,
+								containerRef: 'assignPromotionsModal'
+							})
+						})
+						.finally(() => {
+							_this.assigning = false
+						})
+				})
+				.catch(reason => {
+					_this.assignPromotionsErrorMessage = reason
+					_this.$scrollTo(_this.$refs.assignPromotionsErrorMessage, 1000, {
+						container: _this.$refs.assignPromotionsModal.$el
+					})
+				})
+		},
+		closeAssignPromotionsModal () {
+			this.showAssignPromotionsModal = false
+			this.clearError('assignPromotionsErrorMessage')
+		},
+		/**
+		 * To notify user of the outcome of the call
+		 * @function
+		 * @param {object} payload - The payload object from the server response
+		 * @returns {undefined}
+		 */
+		showAssignPromotionsSuccess (payload = {}) {
+			if (payload === null) payload = {}
+			let title = 'Success'
+			let text = 'The Promotions have been saved'
+			let type = 'success'
+
+			if (payload.pending_approval) {
+				title = 'Approval Required'
+				text = 'The changes have been sent for approval'
+				type = 'info'
+			}
+
+			this.$swal({
+				title,
+				text,
+				type
+			})
+		},
+		/**
 		 * To display the modal for deleting an country.
 		 * @function
 		 * @param {object} country - The selected country
@@ -666,5 +936,8 @@ export default {
 }
 .three-vertical-actions {
   min-height: 124px;
+}
+.fit-to-content {
+	width: 1%;
 }
 </style>
