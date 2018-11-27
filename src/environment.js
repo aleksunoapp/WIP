@@ -3,5 +3,5 @@ module.exports = {
 	// production_url: 'http://test2dynamicmpiapi.dealer-fx.com/', // old
 	production_url: '#{ApiUrl}#',
 	userActivityLogAPI: '#{UserActivityLog}#',
-	scope: 'TEST2_DynamicAPIUser'
+	scope: '#{DmpiScope}#'
 }
