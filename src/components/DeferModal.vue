@@ -25,7 +25,8 @@ export default {
 				select_reason: {
 					'en-ca': 'Select a reason for deferring this service',
 					'en-us': 'Select a reason for deferring this service',
-					'fr-ca': 'Sélectionnez une raison pour différer ce service'
+					'fr-ca': 'Sélectionnez une raison pour différer ce service',
+					'es-us': 'Seleccione un motivo para diferir este servicio'
 				}
 			}
 		}

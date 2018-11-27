@@ -39,7 +39,7 @@
 							<span class="timer-text">s</span>
 						</div>
 						<div>{{ langTerms.to_have_your_vehicle[$root.meta.local.toLowerCase()] }}</div>
-						<div class="onboarding-second-bottom">{{ computedEndTimeFormat }} {{ (checkSameDate()) ? langTerms.today[$root.meta.local.toLowerCase()] : langTerms.on[$root.meta.local.toLowerCase()] + ' ' + formatPromiseDate }}!</div>
+						<div class="onboarding-second-bottom">{{ formatTime(this.$root.meta.promise) }}!</div>
 					</div>
 				</div>
 			</div>
@@ -52,6 +52,8 @@
 
 <script>
 import $ from 'jquery'
+
+let allMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
 
 /**
  * To get the time remaining in the countdown
@@ -89,52 +91,62 @@ export default {
 				your_service_advisor: {
 					'en-ca': 'Your service advisor',
 					'en-us': 'Your service advisor',
-					'fr-ca': 'Votre conseiller au service'
+					'fr-ca': 'Votre conseiller au service',
+					'es-us': 'Su asesor de servicio'
 				},
 				has: {
 					'en-ca': 'has',
 					'en-us': 'has',
-					'fr-ca': 'a'
+					'fr-ca': 'a',
+					'es-us': 'tiene'
 				},
 				recommendations: {
 					'en-ca': 'RECOMMENDATIONS',
 					'en-us': 'RECOMMENDATIONS',
-					'fr-ca': 'RECOMMANDATIONS'
+					'fr-ca': 'RECOMMANDATIONS',
+					'es-us': 'RECOMENDACIONES'
 				},
 				for_your: {
 					'en-ca': 'for your',
 					'en-us': 'for your',
-					'fr-ca': 'pour votre'
+					'fr-ca': 'pour votre',
+					'es-us': 'para su'
 				},
 				there_are: {
 					'en-ca': 'There are',
 					'en-us': 'There are',
-					'fr-ca': 'Elles sont'
+					'fr-ca': 'Elles sont',
+					'es-us': 'Hay'
 				},
 				continue: {
 					'en-ca': 'CONTINUE',
 					'en-us': 'CONTINUE',
-					'fr-ca': 'SUIVANT'
+					'fr-ca': 'SUIVANT',
+					'es-us': 'CONTINUAR'
 				},
 				select_your_services_in: {
 					'en-ca': 'Select your services in',
 					'en-us': 'Select your services in',
-					'fr-ca': 'Sélectionnez vos services dans'
+					'fr-ca': 'Sélectionnez vos services dans',
+					'es-us': 'Seleccione sus servicios en'
 				},
 				to_have_your_vehicle: {
 					'en-ca': 'To have your vehicle ready by',
 					'en-us': 'To have your vehicle ready by',
-					'fr-ca': 'Pour que votre véhicule soit prêt pour'
+					'fr-ca': 'Pour que votre véhicule soit prêt pour',
+					'es-us': 'Para tener su vehículo listo'
 				},
 				today: {
 					'en-ca': 'today',
 					'en-us': 'today',
-					'fr-ca': 'aujourd\'hui'
+					'fr-ca': 'aujourd\'hui',
+					'es-us': 'hoy'
 				},
 				on: {
 					'en-ca': 'on',
 					'en-us': 'on',
-					'fr-ca': 'le'
+					'fr-ca': 'le',
+					'es-us': 'el'
 				}
 			}
 		}
@@ -156,18 +168,40 @@ export default {
 	destroyed () {
 		this.$root.logTutorialDuration(this.currentOnboarding)
 	},
-	computed: {
+	methods: {
 		/**
-		 * To compute the format of time the customers car will be ready
+		 * To format a time for the active locale
 		 * @function
-		 * @returns {string} - The formatted time
+		 * @param {string} time - The time to format
+		 * @returns {String} - A formatted string
 		 */
-		computedEndTimeFormat () {
+		formatTime (time) {
 			let formattedTime = ''
-			let fullDate = new Date(this.$root.meta.promise)
+			let fullDate = new Date(time)
 			let hour = fullDate.getHours()
 			let minutes = fullDate.getMinutes()
 			let meridian = 'AM'
+			let preposition = 'on'
+			if (this.$root.meta.local.toLowerCase() === 'fr-ca') {
+				preposition = 'le'
+			} else if (this.$root.meta.local.toLowerCase() === 'es-us') {
+				preposition = 'el'
+			}
+
+			if (
+				this.$root.meta.local.toLowerCase() === 'en-ca' ||
+				this.$root.meta.local.toLowerCase() === 'en-us' ||
+				this.$root.meta.local.toLowerCase() === 'es-us'
+			) {
+				if (hour === 12) {
+					meridian = 'PM'
+				} else if (hour > 12) {
+					meridian = 'PM'
+					hour -= 12
+				} else if (hour === 0) {
+					hour = 12
+				}
+			}
 
 			if (minutes === 0) {
 				minutes = '00'
@@ -175,38 +209,32 @@ export default {
 				minutes = '0' + minutes
 			}
 
-			if (this.$root.meta.local === 'fr-CA') {
-				return hour + ' h ' + minutes
+			if (this.$root.meta.local.toLowerCase() === 'fr-ca') {
+				formattedTime = hour + ' h ' + minutes
+			} else {
+				formattedTime = hour + ':' + minutes + ' ' + meridian
 			}
 
-			if (hour === 12) {
-				meridian = 'PM'
-			} else if (hour > 12) {
-				meridian = 'PM'
-				hour -= 12
-			} else if (hour === 0) {
-				hour = 12
+			if (this.$root.meta.local.toLowerCase() === 'fr-ca') {
+				allMonths = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']
+			} else if (this.$root.meta.local.toLowerCase() === 'es-us') {
+				allMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
 			}
-
-			formattedTime = hour + ':' + minutes + ' ' + meridian
+			if (this.checkSameDate(time)) {
+				if (this.$root.meta.local.toLowerCase() === 'es-us') {
+					formattedTime = ` ${this.langTerms.today[this.$root.meta.local.toLowerCase()]} a las ${formattedTime}`
+				} else {
+					formattedTime += ` ${this.langTerms.today[this.$root.meta.local.toLowerCase()]}`
+				}
+			} else {
+				if (this.$root.meta.local.toLowerCase() === 'es-us') {
+					formattedTime = ` ${preposition} ${fullDate.getDate()} de ${allMonths[fullDate.getMonth()]} de ${fullDate.getFullYear()} a las ${formattedTime}`
+				} else {
+					formattedTime += ` ${preposition} ${allMonths[fullDate.getMonth()]} ${fullDate.getDate()}, ${fullDate.getFullYear()}`
+				}
+			}
 			return formattedTime
 		},
-		/**
-		 * To compute the format of date on which customers must approve by
-		 * @function
-		 * @returns {string} - The formatted date
-		 */
-		formatPromiseDate () {
-			let promiseDate = new Date(this.$root.meta.promise)
-			let allMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
-			if (this.$root.meta.local === 'fr-CA') {
-				allMonths = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']
-			}
-			let formattedDate = `${allMonths[promiseDate.getMonth()]} ${promiseDate.getDate()}, ${promiseDate.getFullYear()}`
-			return formattedDate
-		}
-	},
-	methods: {
 		/**
 		 * To capitalize the first letter of every word in a string
 		 * @function
@@ -282,15 +310,16 @@ export default {
 			}, 1000)
 		},
 		/**
-		 * To check whether the promise date is today or a future date
+		 * To check whether a time is today or on a future date
 		 * @function
-		 * @returns {boolean} - Whether or not it is the same date
+		 * @param {string} time - The time to check
+		 * @returns {boolean} - Whether or not it's today
 		 */
-		checkSameDate () {
-			let promiseDate = new Date(this.$root.meta.promise)
+		checkSameDate (time) {
+			let checkDate = new Date(time)
 			let now = new Date()
 
-			return promiseDate.getFullYear() === now.getFullYear() && promiseDate.getMonth() === now.getMonth() && promiseDate.getDate() === now.getDate()
+			return checkDate.getFullYear() === now.getFullYear() && checkDate.getMonth() === now.getMonth() && checkDate.getDate() === now.getDate()
 		}
 	}
 }

@@ -19,7 +19,8 @@ export default {
 				clear: {
 					'en-ca': 'CLEAR',
 					'en-us': 'CLEAR',
-					'fr-ca': 'EFFACER'
+					'fr-ca': 'EFFACER',
+					'es-us': 'BORRAR'
 				}
 			}
 		}

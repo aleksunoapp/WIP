@@ -315,11 +315,11 @@
 
 			<div class="proceed-component">
 				<div v-if="$root.inspectionCounts.failCount && $root.inspectionCounts.warningCount" class="time-notice" :class="{'danger-flag': timeExpired}">
-					<span v-if="!timeExpired">{{ langTerms.if_approved_by[$root.meta.local.toLowerCase()] }} {{ computedResponseTime }} {{ langTerms.your_vehicle_will_be_ready[$root.meta.local.toLowerCase()] }} {{ computedPromiseTime }}.</span>
+					<span v-if="!timeExpired">{{ langTerms.if_approved_by[$root.meta.local.toLowerCase()] }} {{ formatTime(this.$root.meta.responseBy) }} {{ langTerms.your_vehicle_will_be_ready[$root.meta.local.toLowerCase()] }} {{ formatTime(this.$root.meta.promise) }}.</span>
 					<span v-else>{{ langTerms.your_service_advisor_will_contact[$root.meta.local.toLowerCase()] }}</span>
 				</div>
 				<div v-if="!$root.inspectionCounts.failCount && !$root.inspectionCounts.warningCount" class="time-notice">
-					<span>{{ langTerms.your_vehicle_will_be_ready[$root.meta.local.toLowerCase()] }} {{ computedPromiseTime }}.</span>
+					<span>{{ langTerms.your_vehicle_will_be_ready[$root.meta.local.toLowerCase()] }} {{ formatTime(this.$root.meta.promise) }}.</span>
 				</div>
 				<div class="total-estimate">
 					<div class="total-label">
@@ -395,124 +395,146 @@ export default {
 				close: {
 					'en-ca': 'Close',
 					'en-us': 'Close',
-					'fr-ca': 'Fermer'
+					'fr-ca': 'Fermer',
+					'es-us': 'Cerrar'
 				},
 				view_more_info: {
 					'en-ca': 'View more information about the service',
 					'en-us': 'View more information about the service',
-					'fr-ca': 'Afficher des détails additionnels concernant le service'
+					'fr-ca': 'Afficher des détails additionnels concernant le service',
+					'es-us': 'Ver más información acerca del servicio'
 				},
 				select_all_services: {
 					'en-ca': 'Select all services',
 					'en-us': 'Select all services',
-					'fr-ca': 'Sélectionner tous les services'
+					'fr-ca': 'Sélectionner tous les services',
+					'es-us': 'Seleccionar todos los servicios'
 				},
 				remove_all: {
 					'en-ca': 'Remove All',
 					'en-us': 'Remove All',
-					'fr-ca': 'Supprimer tout'
+					'fr-ca': 'Supprimer tout',
+					'es-us': 'Quitar todos'
 				},
 				select_all: {
 					'en-ca': 'Select All',
 					'en-us': 'Select All',
-					'fr-ca': 'Sélectionner tout'
+					'fr-ca': 'Sélectionner tout',
+					'es-us': 'Seleccionar todos'
 				},
 				select_services_individually: {
 					'en-ca': 'Select services individually',
 					'en-us': 'Select services individually',
-					'fr-ca': 'Sélectionner les services individuellement'
+					'fr-ca': 'Sélectionner les services individuellement',
+					'es-us': 'Seleccionar los servicios individualmente'
 				},
 				view_inspection_summary: {
 					'en-ca': 'View your inspection summary',
 					'en-us': 'View your inspection summary',
-					'fr-ca': 'Afficher votre récapitulatif de l\'inspection'
+					'fr-ca': 'Afficher votre récapitulatif de l\'inspection',
+					'es-us': 'Ver su resumen de inspección'
 				},
 				call_us: {
 					'en-ca': 'Call Us',
 					'en-us': 'Call Us',
-					'fr-ca': 'Call Us'
+					'fr-ca': 'Call Us',
+					'es-us': 'Llámenos'
 				},
 				message_us: {
 					'en-ca': 'Message Us',
 					'en-us': 'Message Us',
-					'fr-ca': 'Message Us'
+					'fr-ca': 'Message Us',
+					'es-us': 'Envíenos un mensaje'
 				},
 				inspection_summary: {
 					'en-ca': 'Inspection Summary',
 					'en-us': 'Inspection Summary',
-					'fr-ca': 'Récapitulatif de l\'Inspection'
+					'fr-ca': 'Récapitulatif de l\'Inspection',
+					'es-us': 'Resumen de inspección'
 				},
 				no: {
 					'en-ca': 'No',
 					'en-us': 'No',
-					'fr-ca': 'Aucun'
+					'fr-ca': 'Aucun',
+					'es-us': 'No'
 				},
 				were_found: {
 					'en-ca': 'were found',
 					'en-us': 'were found',
-					'fr-ca': 'découvert'
+					'fr-ca': 'découvert',
+					'es-us': 'se encontraron'
 				},
 				view_full_report: {
 					'en-ca': 'View Full Report',
 					'en-us': 'View Full Report',
-					'fr-ca': 'Afficher le rapport complet'
+					'fr-ca': 'Afficher le rapport complet',
+					'es-us': 'Ver el informe completo'
 				},
 				check_recommended_services: {
 					'en-ca': 'Check the recommended services you authorize.',
 					'en-us': 'Check the recommended services you authorize.',
-					'fr-ca': 'Sélectionnez toutes les recommandations vous autorisez.'
+					'fr-ca': 'Sélectionnez toutes les recommandations vous autorisez.',
+					'es-us': 'Verifique los servicios recomendados que autoriza.'
 				},
 				free: {
 					'en-ca': 'Free',
 					'en-us': 'Free',
-					'fr-ca': 'Gratuit'
+					'fr-ca': 'Gratuit',
+					'es-us': 'Gratis'
 				},
 				if_approved_by: {
 					'en-ca': 'If approved by',
 					'en-us': 'If approved by',
-					'fr-ca': 'Si les recommandations sont approuvées avant'
+					'fr-ca': 'Si les recommandations sont approuvées avant',
+					'es-us': 'Si aprueba antes de'
 				},
 				your_vehicle_will_be_ready: {
 					'en-ca': 'your vehicle will be ready for pickup by',
 					'en-us': 'your vehicle will be ready for pickup by',
-					'fr-ca': 'votre véhicule sera prêt pour'
+					'fr-ca': 'votre véhicule sera prêt pour',
+					'es-us': 'su vehículo estará listo para su recogida a las'
 				},
 				your_service_advisor_will_contact: {
 					'en-ca': 'Your service advisor will contact you when your services are completed',
 					'en-us': 'Your service advisor will contact you when your services are completed',
-					'fr-ca': 'Votre conseiller au service vous contactera lorsque les services seront complétés.'
+					'fr-ca': 'Votre conseiller au service vous contactera lorsque les services seront complétés.',
+					'es-us': 'Su asesor de servicio se pondrá en contacto con usted cuando sus servicios se completen'
 				},
 				estimate_for_selected_services: {
 					'en-ca': 'Estimate for Selected Services (not including taxes and fees)',
 					'en-us': 'Estimate for Selected Services (not including taxes and fees)',
-					'fr-ca': 'Coût estimatif pour les services sélectionnés (taxes et frais non inclus)'
+					'fr-ca': 'Coût estimatif pour les services sélectionnés (taxes et frais non inclus)',
+					'es-us': 'Presupuesto por servicios seleccionados (no incluye impuestos ni tasas)'
 				},
 				estimate_for_previous_services: {
 					'en-ca': 'Estimate for Previously Approved Services',
 					'en-us': 'Estimate for Previously Approved Services',
-					'fr-ca': 'Coût estimatif pour les services précédemment approuvés'
+					'fr-ca': 'Coût estimatif pour les services précédemment approuvés',
+					'es-us': 'Presupuesto por servicios aprobados previamente'
 				},
 				next: {
 					'en-ca': 'Next',
 					'en-us': 'Next',
-					'fr-ca': 'Suivant'
+					'fr-ca': 'Suivant',
+					'es-us': 'Siguiente'
 				},
 				new_recommendation: {
 					'en-ca': '* indicates a new/updated recommendation',
 					'en-us': '* indicates a new/updated recommendation',
-					'fr-ca': '* indique une recommandation ajoutée ou mise à jour'
+					'fr-ca': '* indique une recommandation ajoutée ou mise à jour',
+					'es-us': '* indica una recomendación nueva/actualizada'
 				},
 				no_issue_found: {
 					'en-ca': 'No issue was found.  Please see comments for more information',
 					'en-us': 'No issue was found.  Please see comments for more information',
 					'fr-ca': 'Aucun problème trouvé. Veuillez voir les commentaires pour en savoir plus.',
-					'es-us': ''
+					'es-us': 'El problema ha sido identificado. Vea los comentarios para obtener más información.'
 				},
 				problem_identified: {
 					'en-ca': 'Problem has been identified.  Please see comments for more information',
 					'en-us': 'Problem has been identified.  Please see comments for more information',
 					'fr-ca': 'Un problème a été trouvé. Veuillez voir les commentaires pour en savoir plus.',
-					'es-us': ''
+					'es-us': 'No se encontró ningún problema. Vea los comentarios para obtener más información'
 				}
 			}
 		}
@@ -551,22 +573,31 @@ export default {
 	destroyed () {
 		this.$root.logPageDuration('inspection')
 	},
-	computed: {
+	methods: {
 		/**
-		 * To compute the format of time the customer needs to respond by
+		 * To format a time for the active locale
 		 * @function
-		 * @returns {string} - The formatted time
+		 * @param {string} time - The time to format
+		 * @returns {String} - A formatted string
 		 */
-
-		computedResponseTime () {
+		formatTime (time) {
 			let formattedTime = ''
-			let fullDate = new Date(this.$root.meta.responseBy)
+			let fullDate = new Date(time)
 			let hour = fullDate.getHours()
 			let minutes = fullDate.getMinutes()
 			let meridian = 'AM'
-			let preposition = this.$root.meta.local === 'en-CA' || this.$root.meta.local === 'en-US' ? 'on' : 'le'
+			let preposition = 'on'
+			if (this.$root.meta.local.toLowerCase() === 'fr-ca') {
+				preposition = 'le'
+			} else if (this.$root.meta.local.toLowerCase() === 'es-us') {
+				preposition = 'el'
+			}
 
-			if (this.$root.meta.local === 'en-CA' || this.$root.meta.local === 'en-US') {
+			if (
+				this.$root.meta.local.toLowerCase() === 'en-ca' ||
+				this.$root.meta.local.toLowerCase() === 'en-us' ||
+				this.$root.meta.local.toLowerCase() === 'es-us'
+			) {
 				if (hour === 12) {
 					meridian = 'PM'
 				} else if (hour > 12) {
@@ -583,66 +614,26 @@ export default {
 				minutes = '0' + minutes
 			}
 
-			if (this.$root.meta.local === 'fr-CA') {
+			if (this.$root.meta.local.toLowerCase() === 'fr-ca') {
 				formattedTime = hour + ' h ' + minutes
 			} else {
 				formattedTime = hour + ':' + minutes + ' ' + meridian
 			}
 
-			if (this.$root.meta.local === 'fr-CA') {
+			if (this.$root.meta.local.toLowerCase() === 'fr-ca') {
 				allMonths = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']
+			} else if (this.$root.meta.local.toLowerCase() === 'es-us') {
+				allMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
 			}
-			if (!this.checkSameDate(this.$root.meta.responseBy)) {
-				formattedTime += ` ${preposition} ${allMonths[fullDate.getMonth()]} ${fullDate.getDate()}, ${fullDate.getFullYear()}`
+			if (!this.checkSameDate(time)) {
+				if (this.$root.meta.local.toLowerCase() === 'es-us') {
+					formattedTime = ` ${preposition} ${fullDate.getDate()} de ${allMonths[fullDate.getMonth()]} de ${fullDate.getFullYear()} a las ${formattedTime}`
+				} else {
+					formattedTime += ` ${preposition} ${allMonths[fullDate.getMonth()]} ${fullDate.getDate()}, ${fullDate.getFullYear()}`
+				}
 			}
 			return formattedTime
 		},
-		/**
-		 * To compute the format of time the customers car will be ready
-		 * @function
-		 * @returns {string} - The formatted time
-		 */
-		computedPromiseTime () {
-			let formattedTime = ''
-			let fullDate = new Date(this.$root.meta.promise)
-			let hour = fullDate.getHours()
-			let minutes = fullDate.getMinutes()
-			let meridian = 'AM'
-			let preposition = this.$root.meta.local === 'en-CA' || this.$root.meta.local === 'en-US' ? 'on' : 'le'
-
-			if (this.$root.meta.local === 'en-CA' || this.$root.meta.local === 'en-US') {
-				if (hour === 12) {
-					meridian = 'PM'
-				} else if (hour > 12) {
-					meridian = 'PM'
-					hour -= 12
-				} else if (hour === 0) {
-					hour = 12
-				}
-			}
-
-			if (minutes === 0) {
-				minutes = '00'
-			} else if (minutes < 10) {
-				minutes = '0' + minutes
-			}
-
-			if (this.$root.meta.local === 'fr-CA') {
-				formattedTime = hour + ' h ' + minutes
-			} else {
-				formattedTime = hour + ':' + minutes + ' ' + meridian
-			}
-
-			if (this.$root.meta.local === 'fr-CA') {
-				allMonths = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']
-			}
-			if (!this.checkSameDate(this.$root.meta.promise)) {
-				formattedTime += ` ${preposition} ${allMonths[fullDate.getMonth()]} ${fullDate.getDate()}, ${fullDate.getFullYear()}`
-			}
-			return formattedTime
-		}
-	},
-	methods: {
 		/**
 		 * To format a number by locale to two decimal digits
 		 * @function

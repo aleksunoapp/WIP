@@ -11,7 +11,7 @@
 			<div>
 				{{ langTerms.thanks_for_your_time[$root.meta.local.toLowerCase()] }}
 			</div>
-			<div class="ready-box" v-if="!timeExpired">{{ langTerms.your_vehicle_is_estimated[$root.meta.local.toLowerCase()] }} <br />{{ computedPromiseTime }}</div>
+			<div class="ready-box" v-if="!timeExpired">{{ langTerms.your_vehicle_is_estimated[$root.meta.local.toLowerCase()] }} <br />{{ formatTime(this.$root.meta.promise) }}</div>
 			<div class="thanks-confirm-text">
 				{{ langTerms.your_service_advisor_will_confirm[$root.meta.local.toLowerCase()] }}
 			</div>
@@ -33,6 +33,8 @@
 import $ from 'jquery'
 import ENV from '../environment.js'
 
+let allMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
+
 export default {
 	data () {
 		return {
@@ -41,22 +43,26 @@ export default {
 				thanks_for_your_time: {
 					'en-ca': 'Thanks for your time.',
 					'en-us': 'Thanks for your time.',
-					'fr-ca': 'Merci de votre temps.'
+					'fr-ca': 'Merci de votre temps.',
+					'es-us': 'Gracias por su tiempo.'
 				},
 				your_vehicle_is_estimated: {
 					'en-ca': 'Your vehicle is estimated to be ready',
 					'en-us': 'Your vehicle is estimated to be ready',
-					'fr-ca': 'Votre véhicule sera prêt, approximativement'
+					'fr-ca': 'Votre véhicule sera prêt, approximativement',
+					'es-us': 'Se estima que su vehículo estará listo'
 				},
 				your_service_advisor_will_confirm: {
 					'en-ca': 'Your Service Advisor will confirm with you when your vehicle is ready.',
 					'en-us': 'Your Service Advisor will confirm with you when your vehicle is ready.',
-					'fr-ca': 'Votre conseiller au service vous notifiera lorsque votre véhicule sera prêt.'
+					'fr-ca': 'Votre conseiller au service vous notifiera lorsque votre véhicule sera prêt.',
+					'es-us': 'Su Asesor de Servicio confirmará con usted cuando su vehículo esté listo.'
 				},
 				service_advisor: {
 					'en-ca': 'Service Advisor',
 					'en-us': 'Service Advisor',
-					'fr-ca': 'Conseiller au service'
+					'fr-ca': 'Conseiller au service',
+					'es-us': 'Asesor de Servicio'
 				}
 			}
 		}
@@ -77,41 +83,39 @@ export default {
 			data: JSON.stringify(this.$root.$data.userActivity)
 		})
 	},
-	computed: {
+	methods: {
 		/**
-		 * To compute the format of time the customers car will be ready
+		 * To format a time for the active locale
 		 * @function
-		 * @returns {string} - The formatted time
+		 * @param {string} time - The time to format
+		 * @returns {String} - A formatted string
 		 */
-		computedPromiseTime () {
+		formatTime (time) {
 			let formattedTime = ''
-			let fullDate = new Date(this.$root.meta.promise)
+			let fullDate = new Date(time)
 			let hour = fullDate.getHours()
 			let minutes = fullDate.getMinutes()
-			let meridian = 'am'
-			let formattedDate = ''
-			let day = fullDate.getDate()
-			let monthIndex = fullDate.getMonth()
-			let year = fullDate.getFullYear()
-			let monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-			let atTranslation = 'at'
-			let onTranslation = 'on'
-
-			if (this.$root.meta.local === 'fr-CA') {
-				atTranslation = 'à'
-				onTranslation = 'le'
-				monthNames = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']
+			let meridian = 'AM'
+			let preposition = 'on'
+			if (this.$root.meta.local.toLowerCase() === 'fr-ca') {
+				preposition = 'le'
+			} else if (this.$root.meta.local.toLowerCase() === 'es-us') {
+				preposition = 'el'
 			}
 
-			let timeTillTomorrow = new Date().setHours(24, 0, 0, 0) - new Date()
-
-			if (hour === 12) {
-				meridian = 'pm'
-			} else if (hour > 12) {
-				meridian = 'pm'
-				hour -= 12
-			} else if (hour === 0) {
-				hour = 12
+			if (
+				this.$root.meta.local.toLowerCase() === 'en-ca' ||
+				this.$root.meta.local.toLowerCase() === 'en-us' ||
+				this.$root.meta.local.toLowerCase() === 'es-us'
+			) {
+				if (hour === 12) {
+					meridian = 'PM'
+				} else if (hour > 12) {
+					meridian = 'PM'
+					hour -= 12
+				} else if (hour === 0) {
+					hour = 12
+				}
 			}
 
 			if (minutes === 0) {
@@ -120,15 +124,25 @@ export default {
 				minutes = '0' + minutes
 			}
 
-			formattedTime = hour + ':' + minutes + meridian
-
-			formattedDate = monthNames[monthIndex] + ' ' + day + ', ' + year
-
-			if (fullDate - new Date() > timeTillTomorrow) {
-				return onTranslation + ' ' + formattedDate + ' ' + atTranslation + ' ' + formattedTime
+			if (this.$root.meta.local.toLowerCase() === 'fr-ca') {
+				formattedTime = hour + ' h ' + minutes
 			} else {
-				return onTranslation + ' ' + formattedTime
+				formattedTime = hour + ':' + minutes + ' ' + meridian
 			}
+
+			if (this.$root.meta.local.toLowerCase() === 'fr-ca') {
+				allMonths = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']
+			} else if (this.$root.meta.local.toLowerCase() === 'es-us') {
+				allMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
+			}
+			if (!this.checkSameDate(time)) {
+				if (this.$root.meta.local.toLowerCase() === 'es-us') {
+					formattedTime = ` ${preposition} ${fullDate.getDate()} de ${allMonths[fullDate.getMonth()]} de ${fullDate.getFullYear()} a las ${formattedTime}`
+				} else {
+					formattedTime += ` ${preposition} ${allMonths[fullDate.getMonth()]} ${fullDate.getDate()}, ${fullDate.getFullYear()}`
+				}
+			}
+			return formattedTime
 		}
 	}
 }

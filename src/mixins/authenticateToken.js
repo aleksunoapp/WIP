@@ -5,27 +5,32 @@ var langTerms = {
 	unrecognized_email: {
 		'en-ca': 'Unrecognized email address',
 		'en-us': 'Unrecognized email address',
-		'fr-ca': 'Unrecognized email address'
+		'fr-ca': 'Unrecognized email address',
+		'es-us': 'Dirección de correo electrónico desconocida'
 	},
 	unrecognized_phone: {
 		'en-ca': 'Unrecognized phone number',
 		'en-us': 'Unrecognized phone number',
-		'fr-ca': 'Unrecognized phone number'
+		'fr-ca': 'Unrecognized phone number',
+		'es-us': 'Número de teléfono desconocido'
 	},
 	unrecognized_name: {
 		'en-ca': 'Unrecognized last name',
 		'en-us': 'Unrecognized last name',
-		'fr-ca': 'Nom de famille non reconnu'
+		'fr-ca': 'Nom de famille non reconnu',
+		'es-us': 'Apellido no reconocido'
 	},
 	were_sorry: {
 		'en-ca': 'We\'re sorry but we don\'t recognize',
 		'en-us': 'We\'re sorry but we don\'t recognize',
-		'fr-ca': 'Désolé mais le nom'
+		'fr-ca': 'Désolé mais le nom',
+		'es-us': 'Lo sentimos, pero no reconocemos'
 	},
 	database: {
 		'en-ca': 'in our database',
 		'en-us': 'in our database',
-		'fr-ca': 'est non reconnu dans notre système.'
+		'fr-ca': 'est non reconnu dans notre système.',
+		'es-us': 'en nuestra base de datos.'
 	}
 }
 
