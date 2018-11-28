@@ -92,6 +92,14 @@
 							<div class="form-group form-md-line-input form-md-floating-label">
 								<input type="text"
 								       class="form-control input-sm"
+								       id="form_control_loyalty_reward_id"
+								       :class="{'edited': newRewardItem.loyalty_reward_id.length}"
+								       v-model="newRewardItem.loyalty_reward_id">
+								<label for="form_control_loyalty_reward_id">Loyalty Reward ID</label>
+							</div>
+							<div class="form-group form-md-line-input form-md-floating-label">
+								<input type="text"
+								       class="form-control input-sm"
 								       id="form_control_3"
 								       :class="{'edited': newRewardItem.points.length}"
 								       v-model="newRewardItem.points">
@@ -331,7 +339,7 @@ export default {
 			newRewardItem: {
 				sku: [],
 				points: '',
-				loyalty_reward_id: this.$router.passedTier.loyalty_reward_id,
+				loyalty_reward_id: '',
 				name: '',
 				value: '',
 				expiry: '',
@@ -633,7 +641,7 @@ export default {
 				created_by: this.$root.createdBy,
 				expiry: '',
 				value: '',
-				loyalty_reward_id: this.$router.passedTier.loyalty_reward_id,
+				loyalty_reward_id: '',
 				points: '',
 				sku: []
 			}
