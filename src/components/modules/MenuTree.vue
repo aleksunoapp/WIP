@@ -266,6 +266,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		showApplyToTagsSuccess (payload = {}) {
+			if (payload === null) payload = {}
 			let title = 'Success'
 			let text = 'The Tag has been saved'
 			let type = 'success'
