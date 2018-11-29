@@ -14,7 +14,21 @@
 		</div>
 		<div slot="modal-body"
 		     class="modal-body">
-			<div class="portlet light bordered height-mod">
+			<div v-if="$root.activeLocation.id === undefined">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="alert alert-info center margin-top-20"
+							v-if="!$root.activeLocation.id">
+							<h4>No Store Selected</h4>
+							<p>Please select a store from the stores panel on the right to view Modifiers</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div 
+				v-else
+				class="portlet light bordered height-mod"
+			>
 				<div class="portlet-title">
 					<div class="caption">
 						<i class="fa fa-cog font-default"></i>
@@ -103,9 +117,23 @@
 		</div>
 		<div slot="modal-footer"
 		     class="modal-footer">
-			<button type="button"
-			        class="btn btn-primary"
-			        @click="applySelectedItems()">Save</button>
+			<button 
+				v-if="$root.activeLocation.id === undefined || !modifiers.length"
+				type="button"
+				class="btn btn-primary"
+				@click="closeModal()"
+			>
+				Close
+			</button>
+			<button 
+				v-else
+				type="button"
+				class="btn btn-primary"
+				@click="applySelectedItems()"
+			>
+				Save
+			</button>
+
 		</div>
 	</modal>
 </template>
@@ -122,6 +150,7 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 export default {
 	data () {
 		return {
+			errorMessage: '',
 			showModifierTreeModal: false,
 			loadingModifiers: false,
 			modifiers: [],
@@ -172,6 +201,9 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		getModifiers () {
+			if (this.$root.activeLocation.id === undefined) {
+				throw Error('Please select a store to view Modifiers.')
+			}
 			this.loadingModifiers = true
 			this.modifiers = []
 			var modifierTreeVue = this
