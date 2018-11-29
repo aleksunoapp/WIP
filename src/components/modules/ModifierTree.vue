@@ -36,9 +36,14 @@
 					<div class="row">
 						<div class="col-md-6">
 							<h4>Modifier Categories</h4>
+							<div v-if="loadingModifiers && !modifiers.length">
+								<div class="alert alert-info">
+									<span>Loading...</span>
+								</div>
+							</div>
 							<div class="dd"
 							     id="nestable_list_1"
-							     v-if="modifiers.length">
+							     v-else-if="modifiers.length && !loadingModifiers">
 								<ol class="dd-list">
 									<li class="dd-item"
 									    v-for="modifier in modifiers"
@@ -63,9 +68,14 @@
 						<div class="col-md-6"
 						     v-if="isModifierCategorySelected">
 							<h4>{{ activeModifier.name }} - Items</h4>
+							<div v-if="loadingModifierItems && !items.length">
+								<div class="alert alert-info">
+									<span>Loading...</span>
+								</div>
+							</div>
 							<div class="dd"
 							     id="nestable_list_3"
-							     v-if="items.length">
+							     v-else-if="items.length">
 								<ol class="dd-list">
 									<li class="dd-item"
 									    v-for="item in items"
@@ -113,7 +123,9 @@ export default {
 	data () {
 		return {
 			showModifierTreeModal: false,
+			loadingModifiers: false,
 			modifiers: [],
+			loadingModifierItems: false,
 			items: [],
 			isModifierCategorySelected: false,
 			activeModifier: {}
@@ -160,6 +172,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		getModifiers () {
+			this.loadingModifiers = true
 			this.modifiers = []
 			var modifierTreeVue = this
 			return ModifiersFunctions.getStoreModifiers(
@@ -179,6 +192,9 @@ export default {
 						containerRef: 'modal'
 					})
 				})
+				.finally(() => {
+					modifierTreeVue.loadingModifiers = false
+				})
 		},
 		/**
 		 * To get a list of all item for the current active modifier category.
@@ -186,6 +202,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		getItemsForActiveModifier () {
+			this.loadingModifierItems = true
 			var modifierTreeVue = this
 			modifierTreeVue.items = []
 			return ModifiersFunctions.getModifierCategoryItems(
@@ -249,6 +266,9 @@ export default {
 						vue: modifierTreeVue,
 						containerRef: 'modal'
 					})
+				})
+				.finally(() => {
+					modifierTreeVue.loadingModifierItems = false
 				})
 		},
 		/**
