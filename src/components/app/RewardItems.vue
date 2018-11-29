@@ -514,6 +514,8 @@ export default {
 					reject('Name cannot be blank')
 				} else if (!$.isNumeric(rewardItemsVue.newRewardItem.value)) {
 					reject('Value should be a number')
+				} else if (!rewardItemsVue.newRewardItem.loyalty_reward_id) {
+					reject('Loyalty Reward ID cannot be blank')
 				} else if (!$.isNumeric(rewardItemsVue.newRewardItem.points)) {
 					reject('Points should be a number')
 				} else if (!rewardItemsVue.newRewardItem.expiry.toString()) {

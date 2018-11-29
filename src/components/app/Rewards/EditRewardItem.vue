@@ -181,6 +181,10 @@ export default {
 				} else if (!$.isNumeric(editRewardItemVue.rewardItemToBeEdited.value)) {
 					reject('Value should be a number')
 				} else if (
+					!editRewardItemVue.rewardItemToBeEdited.loyalty_reward_id
+				) {
+					reject('Loyalty Reward ID cannot be blank')
+				} else if (
 					!$.isNumeric(editRewardItemVue.rewardItemToBeEdited.points)
 				) {
 					reject('Points should be a number')
