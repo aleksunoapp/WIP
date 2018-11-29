@@ -350,7 +350,7 @@ export default {
 					)
 						.then(response => {
 							if (response.code === 200 && response.status === 'ok') {
-								portionsVue.newPortion.id = response.payload.new_portion_id
+								portionsVue.newPortion.id = response.payload.new_portion
 								if (response.payload && response.payload.pending_approval !== true) {
 									portionsVue.addPortion(portionsVue.newPortion)
 								}
