@@ -112,6 +112,15 @@
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
 									<input type="text"
+									       :disabled="placesApi.country_code"
+									       class="form-control input-sm"
+									       id="form_control_country_code"
+									       :class="{'edited': newStore.country_code.length}"
+									       v-model="newStore.country_code">
+									<label for="form_control_country_code">Country Code</label>
+								</div>
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<input type="text"
 									       :disabled="placesApi.postal_code"
 									       class="form-control input-sm"
 									       id="form_control_6"
@@ -734,6 +743,7 @@ export default {
 				city: '',
 				province: '',
 				country: '',
+				country_code: '',
 				postal_code: '',
 				longitude: null,
 				latitude: null,
@@ -850,6 +860,7 @@ export default {
 				city: true,
 				province: true,
 				country: true,
+				country_code: true,
 				postal_code: true
 			},
 			timezones: []
@@ -1105,6 +1116,7 @@ export default {
 				city: '',
 				province: '',
 				country: '',
+				country_code: '',
 				postal_code: '',
 				longitude: null,
 				latitude: null,
@@ -1236,6 +1248,8 @@ export default {
 					reject('Store province cannot be blank')
 				} else if (!createStoreVue.newStore.country.length) {
 					reject('Store country cannot be blank')
+				} else if (!createStoreVue.newStore.country_code.length) {
+					reject('Country code cannot be blank')
 				} else if (!createStoreVue.newStore.postal_code.length) {
 					reject('Store postal code cannot be blank')
 				} else if (!createStoreVue.newStore.timezone.length) {
@@ -1618,6 +1632,7 @@ export default {
 
 					// empty all fields initially
 					createStoreVue.newStore.country = ''
+					createStoreVue.newStore.country_code = ''
 					createStoreVue.newStore.province = ''
 					createStoreVue.newStore.city = ''
 					createStoreVue.newStore.postal_code = ''
@@ -1637,6 +1652,7 @@ export default {
 							) {
 								createStoreVue.newStore.postal_code = item.long_name
 							} else if (subItem === 'country') {
+								createStoreVue.newStore.country_code = item.short_name
 								createStoreVue.newStore.country = item.long_name
 							} else if (subItem === 'administrative_area_level_1') {
 								createStoreVue.newStore.province = item.long_name
@@ -1651,6 +1667,9 @@ export default {
 					createStoreVue.newStore.country
 						? (createStoreVue.placesApi.country = true)
 						: (createStoreVue.placesApi.country = false)
+					createStoreVue.newStore.country_code
+						? (createStoreVue.placesApi.country_code = true)
+						: (createStoreVue.placesApi.country_code = false)
 					createStoreVue.newStore.city
 						? (createStoreVue.placesApi.city = true)
 						: (createStoreVue.placesApi.city = false)

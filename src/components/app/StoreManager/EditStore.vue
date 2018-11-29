@@ -85,6 +85,13 @@
 											<div class="form-group form-md-line-input form-md-floating-label">
 												<input type="text"
 												       class="form-control input-sm edited"
+												       id="form_control_country_code"
+												       v-model="storeToBeEdited.country_code">
+												<label for="form_control_country_code">Country Code</label>
+											</div>
+											<div class="form-group form-md-line-input form-md-floating-label">
+												<input type="text"
+												       class="form-control input-sm edited"
 												       id="form_control_7"
 												       v-model="storeToBeEdited.postal_code">
 												<label for="form_control_7">Store Postal Code</label>
@@ -163,7 +170,7 @@
 											<div class="form-group form-md-line-input form-md-floating-label">
 												<input type="text"
 												       class="form-control input-sm"
-												       :class="{'edited': storeToBeEdited.fax.length}"
+												       :class="{'edited': storeToBeEdited.fax}"
 												       id="form_control_12"
 												       v-model="maskedFax">
 												<label for="form_control_12">Store Fax Number (optional)</label>
@@ -1408,7 +1415,10 @@ export default {
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						editStoreVue.storeToBeEdited = response.payload
+						editStoreVue.storeToBeEdited = {
+							...response.payload,
+							country_code: response.payload.country_code ? response.payload.country_code : ''
+						}
 						editStoreVue.getStoreMeta()
 						editStoreVue.getStoreGroups()
 					} else {
@@ -1562,6 +1572,8 @@ export default {
 					reject('Store province cannot be blank')
 				} else if (!editStoreVue.storeToBeEdited.country.length) {
 					reject('Store country cannot be blank')
+				} else if (!editStoreVue.storeToBeEdited.country_code.length) {
+					reject('Country code cannot be blank')
 				} else if (!editStoreVue.storeToBeEdited.postal_code.length) {
 					reject('Store postal code cannot be blank')
 				} else if (editStoreVue.storeToBeEdited.phone.length < 10) {
@@ -2036,6 +2048,7 @@ export default {
 
 					// empty all fields initially
 					editStoreVue.storeToBeEdited.country = ''
+					editStoreVue.storeToBeEdited.country_code = ''
 					editStoreVue.storeToBeEdited.province = ''
 					editStoreVue.storeToBeEdited.city = ''
 
@@ -2054,6 +2067,7 @@ export default {
 							) {
 								editStoreVue.storeToBeEdited.postal = item.long_name
 							} else if (subItem === 'country') {
+								editStoreVue.storeToBeEdited.country_code = item.short_name
 								editStoreVue.storeToBeEdited.country = item.long_name
 							} else if (subItem === 'administrative_area_level_1') {
 								editStoreVue.storeToBeEdited.province = item.long_name
@@ -2075,6 +2089,7 @@ export default {
 			this.storeToBeEdited.latitude = ''
 			this.storeToBeEdited.longitude = ''
 			this.storeToBeEdited.country = ''
+			this.storeToBeEdited.country_code = ''
 			this.storeToBeEdited.province = ''
 			this.storeToBeEdited.city = ''
 			this.storeToBeEdited.postal = ''
