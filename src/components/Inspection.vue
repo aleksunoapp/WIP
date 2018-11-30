@@ -401,145 +401,145 @@ export default {
 					'en-ca': 'Close',
 					'en-us': 'Close',
 					'fr-ca': 'Fermer',
-					'es-us': 'Cerrar'
+					'es-mx': 'Cerrar'
 				},
 				view_more_info: {
 					'en-ca': 'View more information about the service',
 					'en-us': 'View more information about the service',
 					'fr-ca': 'Afficher des détails additionnels concernant le service',
-					'es-us': 'Ver más información acerca del servicio'
+					'es-mx': 'Ver más información acerca del servicio'
 				},
 				select_all_services: {
 					'en-ca': 'Select all services',
 					'en-us': 'Select all services',
 					'fr-ca': 'Sélectionner tous les services',
-					'es-us': 'Seleccionar todos los servicios'
+					'es-mx': 'Seleccionar todos los servicios'
 				},
 				remove_all: {
 					'en-ca': 'Remove All',
 					'en-us': 'Remove All',
 					'fr-ca': 'Supprimer tout',
-					'es-us': 'Quitar todos'
+					'es-mx': 'Quitar todos'
 				},
 				select_all: {
 					'en-ca': 'Select All',
 					'en-us': 'Select All',
 					'fr-ca': 'Sélectionner tout',
-					'es-us': 'Seleccionar todos'
+					'es-mx': 'Seleccionar todos'
 				},
 				select_services_individually: {
 					'en-ca': 'Select services individually',
 					'en-us': 'Select services individually',
 					'fr-ca': 'Sélectionner les services individuellement',
-					'es-us': 'Seleccionar los servicios individualmente'
+					'es-mx': 'Seleccionar los servicios individualmente'
 				},
 				view_inspection_summary: {
 					'en-ca': 'View your inspection summary',
 					'en-us': 'View your inspection summary',
 					'fr-ca': 'Afficher votre récapitulatif de l\'inspection',
-					'es-us': 'Ver su resumen de inspección'
+					'es-mx': 'Ver su resumen de inspección'
 				},
 				call_us: {
 					'en-ca': 'Call Us',
 					'en-us': 'Call Us',
 					'fr-ca': 'Call Us',
-					'es-us': 'Llámenos'
+					'es-mx': 'Llámenos'
 				},
 				message_us: {
 					'en-ca': 'Message Us',
 					'en-us': 'Message Us',
 					'fr-ca': 'Message Us',
-					'es-us': 'Envíenos un mensaje'
+					'es-mx': 'Envíenos un mensaje'
 				},
 				inspection_summary: {
 					'en-ca': 'Inspection Summary',
 					'en-us': 'Inspection Summary',
 					'fr-ca': 'Récapitulatif de l\'Inspection',
-					'es-us': 'Resumen de inspección'
+					'es-mx': 'Resumen de inspección'
 				},
 				no: {
 					'en-ca': 'No',
 					'en-us': 'No',
 					'fr-ca': 'Aucun',
-					'es-us': 'No'
+					'es-mx': 'No'
 				},
 				were_found: {
 					'en-ca': 'were found',
 					'en-us': 'were found',
 					'fr-ca': 'découvert',
-					'es-us': 'se encontraron'
+					'es-mx': 'se encontraron'
 				},
 				view_full_report: {
 					'en-ca': 'View Full Report',
 					'en-us': 'View Full Report',
 					'fr-ca': 'Afficher le rapport complet',
-					'es-us': 'Ver el informe completo'
+					'es-mx': 'Ver el informe completo'
 				},
 				check_recommended_services: {
 					'en-ca': 'Check the recommended services you authorize.',
 					'en-us': 'Check the recommended services you authorize.',
 					'fr-ca': 'Sélectionnez toutes les recommandations vous autorisez.',
-					'es-us': 'Verifique los servicios recomendados que autoriza.'
+					'es-mx': 'Verifique los servicios recomendados que autoriza.'
 				},
 				free: {
 					'en-ca': 'Free',
 					'en-us': 'Free',
 					'fr-ca': 'Gratuit',
-					'es-us': 'Gratis'
+					'es-mx': 'Gratis'
 				},
 				if_approved_by: {
 					'en-ca': 'If approved by',
 					'en-us': 'If approved by',
 					'fr-ca': 'Si les recommandations sont approuvées avant',
-					'es-us': 'Si aprueba antes de'
+					'es-mx': 'Si aprueba antes de'
 				},
 				your_vehicle_will_be_ready: {
 					'en-ca': 'your vehicle will be ready for pickup by',
 					'en-us': 'your vehicle will be ready for pickup by',
 					'fr-ca': 'votre véhicule sera prêt pour',
-					'es-us': 'su vehículo estará listo para su recogida a las'
+					'es-mx': 'su vehículo estará listo para su recogida a las'
 				},
 				your_service_advisor_will_contact: {
 					'en-ca': 'Your service advisor will contact you when your services are completed',
 					'en-us': 'Your service advisor will contact you when your services are completed',
 					'fr-ca': 'Votre conseiller au service vous contactera lorsque les services seront complétés.',
-					'es-us': 'Su asesor de servicio se pondrá en contacto con usted cuando sus servicios se completen'
+					'es-mx': 'Su asesor de servicio se pondrá en contacto con usted cuando sus servicios se completen'
 				},
 				estimate_for_selected_services: {
 					'en-ca': 'Estimate for Selected Services (not including taxes and fees)',
 					'en-us': 'Estimate for Selected Services (not including taxes and fees)',
 					'fr-ca': 'Coût estimatif pour les services sélectionnés (taxes et frais non inclus)',
-					'es-us': 'Presupuesto por servicios seleccionados (no incluye impuestos ni tasas)'
+					'es-mx': 'Presupuesto por servicios seleccionados (no incluye impuestos ni tasas)'
 				},
 				estimate_for_previous_services: {
 					'en-ca': 'Estimate for Previously Approved Services',
 					'en-us': 'Estimate for Previously Approved Services',
 					'fr-ca': 'Coût estimatif pour les services précédemment approuvés',
-					'es-us': 'Presupuesto por servicios aprobados previamente'
+					'es-mx': 'Presupuesto por servicios aprobados previamente'
 				},
 				next: {
 					'en-ca': 'Next',
 					'en-us': 'Next',
 					'fr-ca': 'Suivant',
-					'es-us': 'Siguiente'
+					'es-mx': 'Siguiente'
 				},
 				new_recommendation: {
 					'en-ca': '* indicates a new/updated recommendation',
 					'en-us': '* indicates a new/updated recommendation',
 					'fr-ca': '* indique une recommandation ajoutée ou mise à jour',
-					'es-us': '* indica una recomendación nueva/actualizada'
+					'es-mx': '* indica una recomendación nueva/actualizada'
 				},
 				no_issue_found: {
 					'en-ca': 'No issue was found.  Please see comments for more information',
 					'en-us': 'No issue was found.  Please see comments for more information',
 					'fr-ca': 'Aucun problème trouvé. Veuillez voir les commentaires pour en savoir plus.',
-					'es-us': 'No se encontró ningún problema. Vea los comentarios para obtener más información.'
+					'es-mx': 'No se encontró ningún problema. Vea los comentarios para obtener más información.'
 				},
 				problem_identified: {
 					'en-ca': 'Problem has been identified.  Please see comments for more information',
 					'en-us': 'Problem has been identified.  Please see comments for more information',
 					'fr-ca': 'Un problème a été trouvé. Veuillez voir les commentaires pour en savoir plus.',
-					'es-us': 'El problema ha sido identificado. Vea los comentarios para obtener más información'
+					'es-mx': 'El problema ha sido identificado. Vea los comentarios para obtener más información'
 				}
 			}
 		}
@@ -594,14 +594,14 @@ export default {
 			let preposition = 'on'
 			if (this.$root.meta.local.toLowerCase() === 'fr-ca') {
 				preposition = 'le'
-			} else if (this.$root.meta.local.toLowerCase() === 'es-us') {
+			} else if (this.$root.meta.local.toLowerCase() === 'es-mx') {
 				preposition = 'el'
 			}
 
 			if (
 				this.$root.meta.local.toLowerCase() === 'en-ca' ||
 				this.$root.meta.local.toLowerCase() === 'en-us' ||
-				this.$root.meta.local.toLowerCase() === 'es-us'
+				this.$root.meta.local.toLowerCase() === 'es-mx'
 			) {
 				if (hour === 12) {
 					meridian = 'PM'
@@ -627,11 +627,11 @@ export default {
 
 			if (this.$root.meta.local.toLowerCase() === 'fr-ca') {
 				allMonths = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']
-			} else if (this.$root.meta.local.toLowerCase() === 'es-us') {
+			} else if (this.$root.meta.local.toLowerCase() === 'es-mx') {
 				allMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
 			}
 			if (!this.checkSameDate(time)) {
-				if (this.$root.meta.local.toLowerCase() === 'es-us') {
+				if (this.$root.meta.local.toLowerCase() === 'es-mx') {
 					formattedTime = ` ${preposition} ${fullDate.getDate()} de ${allMonths[fullDate.getMonth()]} de ${fullDate.getFullYear()} a las ${formattedTime}`
 				} else {
 					formattedTime += ` ${preposition} ${allMonths[fullDate.getMonth()]} ${fullDate.getDate()}, ${fullDate.getFullYear()}`

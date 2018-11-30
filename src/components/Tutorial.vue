@@ -92,61 +92,61 @@ export default {
 					'en-ca': 'Your service advisor',
 					'en-us': 'Your service advisor',
 					'fr-ca': 'Votre conseiller au service',
-					'es-us': 'Su asesor de servicio'
+					'es-mx': 'Su asesor de servicio'
 				},
 				has: {
 					'en-ca': 'has',
 					'en-us': 'has',
 					'fr-ca': 'a',
-					'es-us': 'tiene'
+					'es-mx': 'tiene'
 				},
 				recommendations: {
 					'en-ca': 'RECOMMENDATIONS',
 					'en-us': 'RECOMMENDATIONS',
 					'fr-ca': 'RECOMMANDATIONS',
-					'es-us': 'RECOMENDACIONES'
+					'es-mx': 'RECOMENDACIONES'
 				},
 				for_your: {
 					'en-ca': 'for your',
 					'en-us': 'for your',
 					'fr-ca': 'pour votre',
-					'es-us': 'para su'
+					'es-mx': 'para su'
 				},
 				there_are: {
 					'en-ca': 'There are',
 					'en-us': 'There are',
 					'fr-ca': 'Elles sont',
-					'es-us': 'Hay'
+					'es-mx': 'Hay'
 				},
 				continue: {
 					'en-ca': 'CONTINUE',
 					'en-us': 'CONTINUE',
 					'fr-ca': 'SUIVANT',
-					'es-us': 'CONTINUAR'
+					'es-mx': 'CONTINUAR'
 				},
 				select_your_services_in: {
 					'en-ca': 'Select your services in',
 					'en-us': 'Select your services in',
 					'fr-ca': 'Sélectionnez vos services dans',
-					'es-us': 'Seleccione sus servicios en'
+					'es-mx': 'Seleccione sus servicios en'
 				},
 				to_have_your_vehicle: {
 					'en-ca': 'To have your vehicle ready by',
 					'en-us': 'To have your vehicle ready by',
 					'fr-ca': 'Pour que votre véhicule soit prêt pour',
-					'es-us': 'Para tener su vehículo listo'
+					'es-mx': 'Para tener su vehículo listo'
 				},
 				today: {
 					'en-ca': 'today',
 					'en-us': 'today',
 					'fr-ca': 'aujourd\'hui',
-					'es-us': 'hoy'
+					'es-mx': 'hoy'
 				},
 				on: {
 					'en-ca': 'on',
 					'en-us': 'on',
 					'fr-ca': 'le',
-					'es-us': 'el'
+					'es-mx': 'el'
 				}
 			}
 		}
@@ -184,14 +184,14 @@ export default {
 			let preposition = 'on'
 			if (this.$root.meta.local.toLowerCase() === 'fr-ca') {
 				preposition = 'le'
-			} else if (this.$root.meta.local.toLowerCase() === 'es-us') {
+			} else if (this.$root.meta.local.toLowerCase() === 'es-mx') {
 				preposition = 'el'
 			}
 
 			if (
 				this.$root.meta.local.toLowerCase() === 'en-ca' ||
 				this.$root.meta.local.toLowerCase() === 'en-us' ||
-				this.$root.meta.local.toLowerCase() === 'es-us'
+				this.$root.meta.local.toLowerCase() === 'es-mx'
 			) {
 				if (hour === 12) {
 					meridian = 'PM'
@@ -217,17 +217,17 @@ export default {
 
 			if (this.$root.meta.local.toLowerCase() === 'fr-ca') {
 				allMonths = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']
-			} else if (this.$root.meta.local.toLowerCase() === 'es-us') {
+			} else if (this.$root.meta.local.toLowerCase() === 'es-mx') {
 				allMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
 			}
 			if (this.checkSameDate(time)) {
-				if (this.$root.meta.local.toLowerCase() === 'es-us') {
+				if (this.$root.meta.local.toLowerCase() === 'es-mx') {
 					formattedTime = ` ${this.langTerms.today[this.$root.meta.local.toLowerCase()]} a las ${formattedTime}`
 				} else {
 					formattedTime += ` ${this.langTerms.today[this.$root.meta.local.toLowerCase()]}`
 				}
 			} else {
-				if (this.$root.meta.local.toLowerCase() === 'es-us') {
+				if (this.$root.meta.local.toLowerCase() === 'es-mx') {
 					formattedTime = ` ${preposition} ${fullDate.getDate()} de ${allMonths[fullDate.getMonth()]} de ${fullDate.getFullYear()} a las ${formattedTime}`
 				} else {
 					formattedTime += ` ${preposition} ${allMonths[fullDate.getMonth()]} ${fullDate.getDate()}, ${fullDate.getFullYear()}`

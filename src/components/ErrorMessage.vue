@@ -24,13 +24,13 @@ export default {
 					'en-ca': 'An error has occurred.',
 					'en-us': 'An error has occurred.',
 					'fr-ca': 'An error has occurred.',
-					'es-us': 'Se ha producido un error.'
+					'es-mx': 'Se ha producido un error.'
 				},
 				error: {
 					'en-ca': 'Error',
 					'en-us': 'Error',
 					'fr-ca': 'Error',
-					'es-us': 'Error'
+					'es-mx': 'Error'
 				}
 			}
 		}

@@ -44,25 +44,25 @@ export default {
 					'en-ca': 'Thanks for your time.',
 					'en-us': 'Thanks for your time.',
 					'fr-ca': 'Merci de votre temps.',
-					'es-us': 'Gracias por su tiempo.'
+					'es-mx': 'Gracias por su tiempo.'
 				},
 				your_vehicle_is_estimated: {
 					'en-ca': 'Your vehicle is estimated to be ready',
 					'en-us': 'Your vehicle is estimated to be ready',
 					'fr-ca': 'Votre véhicule sera prêt, approximativement',
-					'es-us': 'Se estima que su vehículo estará listo'
+					'es-mx': 'Se estima que su vehículo estará listo'
 				},
 				your_service_advisor_will_confirm: {
 					'en-ca': 'Your Service Advisor will confirm with you when your vehicle is ready.',
 					'en-us': 'Your Service Advisor will confirm with you when your vehicle is ready.',
 					'fr-ca': 'Votre conseiller au service vous notifiera lorsque votre véhicule sera prêt.',
-					'es-us': 'Su Asesor de Servicio confirmará con usted cuando su vehículo esté listo.'
+					'es-mx': 'Su Asesor de Servicio confirmará con usted cuando su vehículo esté listo.'
 				},
 				service_advisor: {
 					'en-ca': 'Service Advisor',
 					'en-us': 'Service Advisor',
 					'fr-ca': 'Conseiller au service',
-					'es-us': 'Asesor de Servicio'
+					'es-mx': 'Asesor de Servicio'
 				}
 			}
 		}
@@ -99,14 +99,14 @@ export default {
 			let preposition = 'on'
 			if (this.$root.meta.local.toLowerCase() === 'fr-ca') {
 				preposition = 'le'
-			} else if (this.$root.meta.local.toLowerCase() === 'es-us') {
+			} else if (this.$root.meta.local.toLowerCase() === 'es-mx') {
 				preposition = 'el'
 			}
 
 			if (
 				this.$root.meta.local.toLowerCase() === 'en-ca' ||
 				this.$root.meta.local.toLowerCase() === 'en-us' ||
-				this.$root.meta.local.toLowerCase() === 'es-us'
+				this.$root.meta.local.toLowerCase() === 'es-mx'
 			) {
 				if (hour === 12) {
 					meridian = 'PM'
@@ -132,11 +132,11 @@ export default {
 
 			if (this.$root.meta.local.toLowerCase() === 'fr-ca') {
 				allMonths = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']
-			} else if (this.$root.meta.local.toLowerCase() === 'es-us') {
+			} else if (this.$root.meta.local.toLowerCase() === 'es-mx') {
 				allMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
 			}
 			if (!this.checkSameDate(time)) {
-				if (this.$root.meta.local.toLowerCase() === 'es-us') {
+				if (this.$root.meta.local.toLowerCase() === 'es-mx') {
 					formattedTime = ` ${preposition} ${fullDate.getDate()} de ${allMonths[fullDate.getMonth()]} de ${fullDate.getFullYear()} a las ${formattedTime}`
 				} else {
 					formattedTime += ` ${preposition} ${allMonths[fullDate.getMonth()]} ${fullDate.getDate()}, ${fullDate.getFullYear()}`

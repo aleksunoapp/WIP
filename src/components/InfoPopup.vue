@@ -136,86 +136,86 @@ export default {
 					'en-ca': 'Approve',
 					'en-us': 'Approve',
 					'fr-ca': 'Approuver',
-					'es-us': 'Aprobar'
+					'es-mx': 'Aprobar'
 				},
 				more_info: {
 					'en-ca': 'I need more information',
 					'en-us': 'I need more information',
 					'fr-ca': 'J’ai besoin de précisions',
-					'es-us': 'Necesito más información'
+					'es-mx': 'Necesito más información'
 				},
 				more_info_call: {
 					'en-ca': 'Call Dealership',
 					'en-us': 'Call Dealership',
 					'fr-ca': 'Appeler la concession',
-					'es-us': 'Llamar al concesionario'
+					'es-mx': 'Llamar al concesionario'
 				},
 				more_info_text: {
 					'en-ca': 'Text Dealership',
 					'en-us': 'Text Dealership',
 					'fr-ca': 'Envoyer un texto à la concession',
-					'es-us': 'Enviar mensaje de texto al concesionario'
+					'es-mx': 'Enviar mensaje de texto al concesionario'
 				},
 				not_today: {
 					'en-ca': 'Not today',
 					'en-us': 'Not today',
 					'fr-ca': 'Pas aujourd’hui',
-					'es-us': 'Hoy no'
+					'es-mx': 'Hoy no'
 				},
 				recommendation: {
 					'en-ca': 'Recommendation',
 					'en-us': 'Recommendation',
 					'fr-ca': 'Recommandation',
-					'es-us': 'Recomendación'
+					'es-mx': 'Recomendación'
 				},
 				customer_concern: {
 					'en-ca': 'Customer Concern',
 					'en-us': 'Customer Concern',
 					'fr-ca': 'Préoccupations du client',
-					'es-us': 'Preocupación del cliente'
+					'es-mx': 'Preocupación del cliente'
 				},
 				inspection_summary: {
 					'en-ca': 'Inspection Summary',
 					'en-us': 'Inspection Summary',
 					'fr-ca': 'Récapitulatif de l\'inspection',
-					'es-us': 'Resumen de inspección'
+					'es-mx': 'Resumen de inspección'
 				},
 				estimated_cost: {
 					'en-ca': 'Estimated cost of this item',
 					'en-us': 'Estimated cost of this item',
 					'fr-ca': 'Coût estimé de cet article',
-					'es-us': 'Costo estimado de este ítem'
+					'es-mx': 'Costo estimado de este ítem'
 				},
 				advisor_comments: {
 					'en-ca': 'Advisor comments',
 					'en-us': 'Advisor comments',
 					'fr-ca': 'Commentaires du conseiller',
-					'es-us': 'Comentarios del asesor'
+					'es-mx': 'Comentarios del asesor'
 				},
 
 				free: {
 					'en-ca': 'Please note this service is free - you will NOT be charged for it',
 					'en-us': 'Please note this service is free - you will NOT be charged for it',
 					'fr-ca': 'Please note this service is free - you will NOT be charged for it',
-					'es-us': 'Tenga en cuenta que este servicio es gratuito, NO se le cobrará por él'
+					'es-mx': 'Tenga en cuenta que este servicio es gratuito, NO se le cobrará por él'
 				},
 				covered_by_warranty: {
 					'en-ca': 'Please note this service is covered under Warranty - you will NOT be charged for it',
 					'en-us': 'Please note this service is covered under Warranty - you will NOT be charged for it',
 					'fr-ca': 'Please note this service is covered under Warranty - you will NOT be charged for it',
-					'es-us': 'Tenga en cuenta que este servicio está cubierto por la garantía, NO se le cobrará por él'
+					'es-mx': 'Tenga en cuenta que este servicio está cubierto por la garantía, NO se le cobrará por él'
 				},
 				included: {
 					'en-ca': 'Please note the price of this service is included - you will NOT be charged for it',
 					'en-us': 'Please note the price of this service is included - you will NOT be charged for it',
 					'fr-ca': 'Please note the price of this service is included - you will NOT be charged for it',
-					'es-us': 'Tenga en cuenta que el precio de este servicio está incluido, NO se le cobrará por separado'
+					'es-mx': 'Tenga en cuenta que el precio de este servicio está incluido, NO se le cobrará por separado'
 				},
 				covered_by_dealership: {
 					'en-ca': 'Please note this service is free - you will NOT be charged for it',
 					'en-us': 'Please note this service is free - you will NOT be charged for it',
 					'fr-ca': 'Please note this service is free - you will NOT be charged for it',
-					'es-us': 'Tenga en cuenta  que este servicio es gratuito, NO se le cobrará por él'
+					'es-mx': 'Tenga en cuenta  que este servicio es gratuito, NO se le cobrará por él'
 				}
 			}
 		}
@@ -266,7 +266,7 @@ export default {
 					'couvert par la concession': 'Veuillez noter que le prix de ce service est inclus, il ne vous sera PAS facturé',
 					'gratuit': 'Veuillez noter que ce service est gratuit, il ne vous sera PAS facturé'
 				},
-				'es-us': {
+				'es-mx': {
 					'cubierto por la garantía': 'Tenga en cuenta que este servicio está cubierto por la garantía, NO se le cobrará por él',
 					'incluido': 'Tenga en cuenta que el precio de este servicio está incluido, NO se le cobrará por separado',
 					'cubierto por el concesionario': 'Tenga en cuenta que este servicio es gratuito, NO se le cobrará por él',

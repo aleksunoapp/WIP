@@ -20,7 +20,7 @@ export default {
 					'en-ca': 'CLEAR',
 					'en-us': 'CLEAR',
 					'fr-ca': 'EFFACER',
-					'es-us': 'BORRAR'
+					'es-mx': 'BORRAR'
 				}
 			}
 		}

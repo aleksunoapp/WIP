@@ -300,175 +300,175 @@ export default {
 					'en-ca': 'Service Summary',
 					'en-us': 'Service Summary',
 					'fr-ca': 'Récapitulatif de l\'entretien',
-					'es-us': 'Resumen del servicio'
+					'es-mx': 'Resumen del servicio'
 				},
 				newly_approved_services: {
 					'en-ca': 'Newly Approved Services',
 					'en-us': 'Newly Approved Services',
 					'fr-ca': 'Services approuvés',
-					'es-us': 'Servicios aprobados recientemente'
+					'es-mx': 'Servicios aprobados recientemente'
 				},
 				items_you_approved: {
 					'en-ca': 'Items you approved after the inspection',
 					'en-us': 'Items you approved after the inspection',
 					'fr-ca': 'Articles que vous avez approuvés après l\'inspection',
-					'es-us': 'Ítems aprobados después de la inspección'
+					'es-mx': 'Ítems aprobados después de la inspección'
 				},
 				free: {
 					'en-ca': 'Free',
 					'en-us': 'Free',
 					'fr-ca': 'Gratuit',
-					'es-us': 'Gratis'
+					'es-mx': 'Gratis'
 				},
 				subtotal: {
 					'en-ca': 'Subtotal',
 					'en-us': 'Subtotal',
 					'fr-ca': 'Sous-total',
-					'es-us': 'Subtotal'
+					'es-mx': 'Subtotal'
 				},
 				previously_approved_services: {
 					'en-ca': 'Previously Approved Services',
 					'en-us': 'Previously Approved Services',
 					'fr-ca': 'Services précédemment approuvés',
-					'es-us': 'Servicios aprobados previamente'
+					'es-mx': 'Servicios aprobados previamente'
 				},
 				items_you_approved_when_you_checked: {
 					'en-ca': 'Items you approved when you checked into the dealership',
 					'en-us': 'Items you approved when you checked into the dealership',
 					'fr-ca': 'Articles que vous avez approuvés lorsque vous vous êtes enregistrés(es) chez le concessionnaire',
-					'es-us': 'Ítems que usted aprobó cuando se registró en la concesionaria'
+					'es-mx': 'Ítems que usted aprobó cuando se registró en la concesionaria'
 				},
 				if_approved_by: {
 					'en-ca': 'If approved by',
 					'en-us': 'If approved by',
 					'fr-ca': 'Si les recommandations sont approuvées avant',
-					'es-us': 'Si aprueba antes de'
+					'es-mx': 'Si aprueba antes de'
 				},
 				your_vehicle_will_be_ready: {
 					'en-ca': 'your vehicle will be ready for pickup by',
 					'en-us': 'your vehicle will be ready for pickup by',
 					'fr-ca': 'votre véhicule sera prêt pour',
-					'es-us': 'su vehículo estará listo para su recogida a las'
+					'es-mx': 'su vehículo estará listo para su recogida a las'
 				},
 				your_service_advisor_will: {
 					'en-ca': 'Your service advisor will contact you when your services are completed',
 					'en-us': 'Your service advisor will contact you when your services are completed',
 					'fr-ca': 'Votre conseiller au service vous contactera lorsque les services seront complétés.',
-					'es-us': 'Su asesor de servicio se pondrá en contacto con usted cuando sus servicios se completen'
+					'es-mx': 'Su asesor de servicio se pondrá en contacto con usted cuando sus servicios se completen'
 				},
 				estimated_taxes_and_fees: {
 					'en-ca': 'Estimated Taxes & Fees (Newly Approved Services)',
 					'en-us': 'Estimated Taxes & Fees (Newly Approved Services)',
 					'fr-ca': 'Taxes et frais estimatifs (Services approuvés)',
-					'es-us': 'Impuestos y tasas estimadas (nuevos servicios aprobados)'
+					'es-mx': 'Impuestos y tasas estimadas (nuevos servicios aprobados)'
 				},
 				estimate_total: {
 					'en-ca': 'Estimate Total',
 					'en-us': 'Estimate Total',
 					'fr-ca': 'Coût estimatif',
-					'es-us': 'Total presupuesto'
+					'es-mx': 'Total presupuesto'
 				},
 				continue: {
 					'en-ca': 'Continue',
 					'en-us': 'Continue',
 					'fr-ca': 'Suivant',
-					'es-us': 'Continuar'
+					'es-mx': 'Continuar'
 				},
 				accept_estimate: {
 					'en-ca': 'Accept Estimate',
 					'en-us': 'Accept Estimate',
 					'fr-ca': 'Accepter le Devis',
-					'es-us': 'Aceptar presupuesto'
+					'es-mx': 'Aceptar presupuesto'
 				},
 				click_sign: {
 					'en-ca': 'Click to sign',
 					'en-us': 'Click to sign',
 					'fr-ca': 'Veuillez cliquer pour signer',
-					'es-us': 'Haga clic para firmar'
+					'es-mx': 'Haga clic para firmar'
 				},
 				please_sign_below: {
 					'en-ca': 'Please sign below',
 					'en-us': 'Please sign below',
 					'fr-ca': 'Signez ici',
-					'es-us': 'Firme a continuación'
+					'es-mx': 'Firme a continuación'
 				},
 				you_need_to_acknowledge: {
 					'en-ca': 'You need to acknowledge the Dealership\'s',
 					'en-us': 'You need to acknowledge the Dealership\'s',
 					'fr-ca': 'Vous devez accepter les ',
-					'es-us': 'Necesita confirmare los términos y condiciones'
+					'es-mx': 'Necesita confirmare los términos y condiciones'
 				},
 				terms_and_conditions: {
 					'en-ca': 'terms and conditions',
 					'en-us': 'terms and conditions',
 					'fr-ca': 'conditions générales du concessionnaire',
-					'es-us': 'del concesionario antes'
+					'es-mx': 'del concesionario antes'
 				},
 				before_you_can_approve: {
 					'en-ca': 'before you can approve these additional services.',
 					'en-us': 'before you can approve these additional services.',
 					'fr-ca': 'avant de pouvoir approuver ces services supplémentaires',
-					'es-us': 'de que pueda aprobar estos servicios adicionales.'
+					'es-mx': 'de que pueda aprobar estos servicios adicionales.'
 				},
 				i_agree_to: {
 					'en-ca': 'I agree to the Dealership\'s',
 					'en-us': 'I agree to the Dealership\'s',
 					'fr-ca': 'J\'accepte les',
-					'es-us': 'Acepto los términos y'
+					'es-mx': 'Acepto los términos y'
 				},
 				approve: {
 					'en-ca': 'Approve',
 					'en-us': 'Approve',
 					'fr-ca': 'Approuver',
-					'es-us': 'Aprobar'
+					'es-mx': 'Aprobar'
 				},
 				cancel: {
 					'en-ca': 'Cancel',
 					'en-us': 'Cancel',
 					'fr-ca': 'Annuler',
-					'es-us': 'Cancelar'
+					'es-mx': 'Cancelar'
 				},
 				close: {
 					'en-ca': 'CLOSE',
 					'en-us': 'CLOSE',
 					'fr-ca': 'FERMER',
-					'es-us': 'CERRAR'
+					'es-mx': 'CERRAR'
 				},
 				terms_header_1: {
 					'en-ca': 'Terms and Conditions',
 					'en-us': 'Terms and Conditions',
 					'fr-ca': 'Conditions Générales du Concessionnaire',
-					'es-us': 'condiciones del concesionario'
+					'es-mx': 'condiciones del concesionario'
 				},
 				terms_header_2: {
 					'en-ca': 'Exclusion of warranties',
 					'en-us': 'Exclusion of warranties',
 					'fr-ca': 'EXCLUSION DES GARANTIES',
-					'es-us': 'Exclusión de garantías'
+					'es-mx': 'Exclusión de garantías'
 				},
 				terms_header_3: {
 					'en-ca': 'Authorization for repairs',
 					'en-us': 'Authorization for repairs',
 					'fr-ca': 'AUTORISATION DES RÉPARATIONS',
-					'es-us': 'Autorización para reparaciones'
+					'es-mx': 'Autorización para reparaciones'
 				},
 				terms_body_1: {
 					'en-ca': 'All warranties on the parts and accessories sold hereby are made by the manufacturer. The undersigned purchaser understand and agrees that dealer makes no warranties of any kind, express or implied, and disclaims all warranties, including warranties of merchantability or fitness for a particular purpose; and that in no event shall dealer be liable for incidental or consequential damages or commercial losses arising out of such purchase. The undersighed purchaser further agrees that the warranties excluded by the dealer, include, but are not limited to any warranties that such parts and/or accessories are of merchantable quality or that they will enable any vehicle or any of its systems to perform with reasonable safety, efficiency, or comfort.',
 					'en-us': 'All warranties on the parts and accessories sold hereby are made by the manufacturer. The undersigned purchaser understand and agrees that dealer makes no warranties of any kind, express or implied, and disclaims all warranties, including warranties of merchantability or fitness for a particular purpose; and that in no event shall dealer be liable for incidental or consequential damages or commercial losses arising out of such purchase. The undersighed purchaser further agrees that the warranties excluded by the dealer, include, but are not limited to any warranties that such parts and/or accessories are of merchantable quality or that they will enable any vehicle or any of its systems to perform with reasonable safety, efficiency, or comfort.',
 					'fr-ca': 'Toutes les garanties sur les pièces et accessoires vendus par la présente sont faites par le constructeur. L’acheteur soussigné comprend et accepte que la concession ne fait aucune garantie d’aucune sorte, explicite ou implicite, et se dégage de toute responsabilité quant à toute garantie, y compris la garantie de qualité marchande ou la garantie de capacité du produit à accomplir un but précis; et que la concession ne saurait, en aucun cas, être tenue pour responsable de tout dommage accessoire ou immatériel, ou de toute perte commerciale résultant de cet achat. L’acheteur soussigné accepte également que les garanties exclues par la concession incluent, sans s’y limiter, toute garantie que lesdites pièces et/ou lesdits accessoires auront une quelconque qualité marchande ou qu’ils permettront à un quelconque véhicule ou système de fonctionner avec une sécurité, une efficacité ou un confort raisonnable.',
-					'es-us': 'Todas las garantías sobre las piezas y accesorios vendidos aquí son ofrecidas por el fabricante. El comprador abajo firmante entiende y acepta que el concesionario no ofrece garantías de ningún tipo, expresas o implícitas, y rechaza todas las garantías, incluidas las garantías de comerciabilidad o idoneidad para un propósito en particular, y que en ningún caso el concesionario será responsable por daños incidentales o consecuentes o pérdidas comerciales derivadas de dicha compra. El comprador abajo firmante acepta además que las garantías excluidas por el concesionario, incluyen, pero no se limitan a ninguna garantía de que dichas piezas y/o accesorios son de calidad comercializable o que permitirán que cualquier vehículo o cualquiera de sus sistemas funcionen con seguridad, eficiencia y comodidad razonables.'
+					'es-mx': 'Todas las garantías sobre las piezas y accesorios vendidos aquí son ofrecidas por el fabricante. El comprador abajo firmante entiende y acepta que el concesionario no ofrece garantías de ningún tipo, expresas o implícitas, y rechaza todas las garantías, incluidas las garantías de comerciabilidad o idoneidad para un propósito en particular, y que en ningún caso el concesionario será responsable por daños incidentales o consecuentes o pérdidas comerciales derivadas de dicha compra. El comprador abajo firmante acepta además que las garantías excluidas por el concesionario, incluyen, pero no se limitan a ninguna garantía de que dichas piezas y/o accesorios son de calidad comercializable o que permitirán que cualquier vehículo o cualquiera de sus sistemas funcionen con seguridad, eficiencia y comodidad razonables.'
 				},
 				terms_body_2: {
 					'en-ca': 'I hereby authorize the repair work herein set forth to be done along with the necessary material and agree that you are not responsible for loss or damage to vehicle or articles left in vehicle in case of fire, theft, or any cause beyond your control or for any delays caused by unavailability of parts or delays in parts shipments by the supplier or transporter. I hereby grant you and/or your employees permission to operate the behicle herein described on streets, highways, or elsewhere for the purpose of testing and/or inspection. An express mechanical lien is hereby acknowledged on above vehicle to secure the amount of repairs thereto. The dealership is not responsible for damages from freezing due to lack of antifreeze.',
 					'en-us': 'I hereby authorize the repair work herein set forth to be done along with the necessary material and agree that you are not responsible for loss or damage to vehicle or articles left in vehicle in case of fire, theft, or any cause beyond your control or for any delays caused by unavailability of parts or delays in parts shipments by the supplier or transporter. I hereby grant you and/or your employees permission to operate the behicle herein described on streets, highways, or elsewhere for the purpose of testing and/or inspection. An express mechanical lien is hereby acknowledged on above vehicle to secure the amount of repairs thereto. The dealership is not responsible for damages from freezing due to lack of antifreeze.',
 					'fr-ca': 'J’autorise, par la présente, la réalisation du travail de réparation décrit par la présente et l’utilisation de tout matériel nécessaire. J’accepte également que la concession n’assume aucune responsabilité pour la perte ou les dommages causés au véhicule ou aux articles laissés dans le véhicule en cas d’incendie, de vol ou de toute autre raison en dehors du contrôle de la concession, et que la concession ne saurait être tenue pour responsable des retards causés par l’indisponibilité des pièces ou les retards d’expédition des pièces par le fournisseur ou le transporteur. Je donne, par la présente, l’autorisation à la concession et/ou à ses employés de conduire le véhicule décrit dans la présente sur les routes, les autoroutes et ailleurs, dans le but de réaliser des tests et/ou une inspection. La présente reconnaît expressément un droit de rétention mécanique pour le véhicule ci-dessus, dans le but de réaliser la quantité des réparations décrites. La concession ne saurait être tenue comme responsable des dommages causés par le gel résultant d’une quantité insuffisante d’antigel.',
-					'es-us': 'Autorizo los trabajos de reparación establecidos aquí para que se realicen junto con el material necesario y acepta que ustedes no son responsables por la pérdida o daños al vehículo o artículos dejados en el vehículo en caso de incendio, robo o cualquier otra causa fuera de su control o por cualquier retraso causado por la no disponibilidad de piezas o demoras en los envíos de piezas por parte del proveedor o el transportista. Por el presente documento autorizo a usted y/o sus empleados para que conduzcan el vehículo aquí descrito en calles, carreteras, o en otros lugares con el fin de realizar pruebas y/o inspección. Se confirma aquí que se constituye prenda mecánica explícita sobre el vehículo para asegurar la cantidad de reparaciones correspondientes. El concesionario no se hace responsable de los daños por congelación debido a la falta de anticongelante.'
+					'es-mx': 'Autorizo los trabajos de reparación establecidos aquí para que se realicen junto con el material necesario y acepta que ustedes no son responsables por la pérdida o daños al vehículo o artículos dejados en el vehículo en caso de incendio, robo o cualquier otra causa fuera de su control o por cualquier retraso causado por la no disponibilidad de piezas o demoras en los envíos de piezas por parte del proveedor o el transportista. Por el presente documento autorizo a usted y/o sus empleados para que conduzcan el vehículo aquí descrito en calles, carreteras, o en otros lugares con el fin de realizar pruebas y/o inspección. Se confirma aquí que se constituye prenda mecánica explícita sobre el vehículo para asegurar la cantidad de reparaciones correspondientes. El concesionario no se hace responsable de los daños por congelación debido a la falta de anticongelante.'
 				},
 				updated_service: {
 					'en-ca': 'indicates updates to the services',
 					'en-us': 'indicates updates to the services',
 					'fr-ca': 'indique des mises à jour aux services',
-					'es-us': 'indica actualizaciones de los servicios'
+					'es-mx': 'indica actualizaciones de los servicios'
 				}
 			}
 		}
@@ -547,14 +547,14 @@ export default {
 			let preposition = 'on'
 			if (this.$root.meta.local.toLowerCase() === 'fr-ca') {
 				preposition = 'le'
-			} else if (this.$root.meta.local.toLowerCase() === 'es-us') {
+			} else if (this.$root.meta.local.toLowerCase() === 'es-mx') {
 				preposition = 'el'
 			}
 
 			if (
 				this.$root.meta.local.toLowerCase() === 'en-ca' ||
 				this.$root.meta.local.toLowerCase() === 'en-us' ||
-				this.$root.meta.local.toLowerCase() === 'es-us'
+				this.$root.meta.local.toLowerCase() === 'es-mx'
 			) {
 				if (hour === 12) {
 					meridian = 'PM'
@@ -580,11 +580,11 @@ export default {
 
 			if (this.$root.meta.local.toLowerCase() === 'fr-ca') {
 				allMonths = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juill.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']
-			} else if (this.$root.meta.local.toLowerCase() === 'es-us') {
+			} else if (this.$root.meta.local.toLowerCase() === 'es-mx') {
 				allMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
 			}
 			if (!this.checkSameDate(time)) {
-				if (this.$root.meta.local.toLowerCase() === 'es-us') {
+				if (this.$root.meta.local.toLowerCase() === 'es-mx') {
 					formattedTime = ` ${preposition} ${fullDate.getDate()} de ${allMonths[fullDate.getMonth()]} de ${fullDate.getFullYear()} a las ${formattedTime}`
 				} else {
 					formattedTime += ` ${preposition} ${allMonths[fullDate.getMonth()]} ${fullDate.getDate()}, ${fullDate.getFullYear()}`

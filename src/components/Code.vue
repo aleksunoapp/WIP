@@ -109,91 +109,91 @@ export default {
 					'en-ca': 'Vehicle Inspection Update',
 					'en-us': 'Vehicle Inspection Update',
 					'fr-ca': 'Résultats d\'inspection',
-					'es-us': 'Actualización de inspección del vehículo'
+					'es-mx': 'Actualización de inspección del vehículo'
 				},
 				enter: {
 					'en-ca': 'Enter',
 					'en-us': 'Enter',
 					'fr-ca': 'Soumettre',
-					'es-us': 'Introducir'
+					'es-mx': 'Introducir'
 				},
 				please_enter_your_last_name: {
 					'en-ca': 'Please enter your last name',
 					'en-us': 'Please enter your last name',
 					'fr-ca': 'Veuillez inscrire votre nom de famille',
-					'es-us': 'Introduzca su apellido o empresa a continuación'
+					'es-mx': 'Introduzca su apellido o empresa a continuación'
 				},
 				please_enter_your_company_name: {
 					'en-ca': 'Please enter your company name',
 					'en-us': 'Please enter your company name',
 					'fr-ca': 'Veuillez inscrire le nom de votre compagnie',
-					'es-us': 'Introduzca su empresa'
+					'es-mx': 'Introduzca su empresa'
 				},
 				phone_number: {
 					'en-ca': 'phone_number',
 					'en-us': 'phone_number',
 					'fr-ca': 'phone_number',
-					'es-us': 'número de teléfono'
+					'es-mx': 'número de teléfono'
 				},
 				expired_link: {
 					'en-ca': 'We are sorry but this link has expired.',
 					'en-us': 'We are sorry but this link has expired.',
 					'fr-ca': 'We are sorry but this link has expired.',
-					'es-us': 'Lo sentimos, pero este vínculo ha caducado.'
+					'es-mx': 'Lo sentimos, pero este vínculo ha caducado.'
 				},
 				please_contact_dealership: {
 					'en-ca': 'Please contact the dealership for the status of your vehicle.',
 					'en-us': 'Please contact the dealership for the status of your vehicle.',
 					'fr-ca': 'Please contact the dealership for the status of your vehicle.',
-					'es-us': 'Póngase en contacto con el concesionario para conocer el estado de su vehículo.'
+					'es-mx': 'Póngase en contacto con el concesionario para conocer el estado de su vehículo.'
 				},
 				text_dealership: {
 					'en-ca': 'Text Dealership',
 					'en-us': 'Text Dealership',
 					'fr-ca': 'Text Dealership',
-					'es-us': 'Enviar mensaje de texto al concesionario'
+					'es-mx': 'Enviar mensaje de texto al concesionario'
 				},
 				phone_dealership: {
 					'en-ca': 'Phone Dealership',
 					'en-us': 'Phone Dealership',
 					'fr-ca': 'Phone Dealership',
-					'es-us': 'Llamar por teléfono al concesionario'
+					'es-mx': 'Llamar por teléfono al concesionario'
 				},
 				call_dealership: {
 					'en-ca': 'Call Dealership',
 					'en-us': 'Call Dealership',
 					'fr-ca': 'Call Dealership',
-					'es-us': 'Llamar al concesionario'
+					'es-mx': 'Llamar al concesionario'
 				},
 				call_us_at: {
 					'en-ca': 'Call us at',
 					'en-us': 'Call us at',
 					'fr-ca': 'Veuillez nous contacter au',
-					'es-us': 'Llámenos al'
+					'es-mx': 'Llámenos al'
 				},
 				you_can_call_us_at: {
 					'en-ca': 'You can call us at',
 					'en-us': 'You can call us at',
 					'fr-ca': 'Veuillez nous contacter au',
-					'es-us': 'Nos puede llamar al'
+					'es-mx': 'Nos puede llamar al'
 				},
 				try_again: {
 					'en-ca': 'Try again',
 					'en-us': 'Try again',
 					'fr-ca': 'Réessayer',
-					'es-us': 'Vuelva a intentarlo'
+					'es-mx': 'Vuelva a intentarlo'
 				},
 				error: {
 					'en-ca': 'Error',
 					'en-us': 'Error',
 					'fr-ca': 'Erreur',
-					'es-us': 'Error'
+					'es-mx': 'Error'
 				},
 				enter_access_code: {
 					'en-ca': 'Please enter your access code.',
 					'en-us': 'Please enter your access code.',
 					'fr-ca': 'Veuillez entrer votre code d\'accès.',
-					'es-us': 'Su código de acceso.'
+					'es-mx': 'Su código de acceso.'
 				}
 			}
 		}
