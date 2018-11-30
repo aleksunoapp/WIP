@@ -28,7 +28,7 @@
 
 			<form v-show="!selectItemsMode && !selectLocationsMode && !displaySpinner"
 			      role="form"
-			      @submit.prevent="createNewpromoCode()">
+			>
 				<div class="form-body row">
 					<div class="col-md-12">
 						<div class="alert alert-danger"
@@ -268,6 +268,13 @@ export default {
 			}
 		},
 		...mapGetters(['can', 'canAny'])
+	},
+	watch: {
+		'promoCode.type' (value) {
+			if (value === 'single_use') {
+				this.promoCode.max_use_per_person = '1'
+			}
+		}
 	},
 	props: {
 		promoCodeId: {

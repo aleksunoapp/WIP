@@ -505,6 +505,9 @@ export default {
 		 * @returns {undefined}
 		 */
 		updateNewPromoCodeType (value) {
+			if (value === 'single_use') {
+				this.newPromoCode.max_use_per_person = '1'
+			}
 			this.newPromoCode.type = value
 		},
 		/**
