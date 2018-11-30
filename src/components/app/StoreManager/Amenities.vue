@@ -41,7 +41,7 @@
 								<span>{{ createErrorMessage }}</span>
 							</div>
 						</div>
-						<div :class="{'col-md-2 col-md-offset-2' : !newAmenity.selectImageMode, 'col-md-12' : !newAmenity.selectImageMode}">
+						<div :class="{'col-md-2 col-md-offset-2' : !newAmenity.selectImageMode, 'col-md-12' : newAmenity.selectImageMode}">
 							<resource-picker @open="toggleImageMode(newAmenity, true)"
 							                 @close="toggleImageMode(newAmenity, false)"
 							                 @selected="updateNewImage"
@@ -577,7 +577,8 @@ export default {
 			this.newAmenity = {
 				name: '',
 				image_url: '',
-				order: ''
+				order: '',
+				selectImageMode: false
 			}
 		},
 		/**
