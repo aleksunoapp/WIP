@@ -43,7 +43,10 @@
 					        v-show="$root.activeLocation.id !== undefined">
 						<tab header="Menu Items">
 							<div class="col-xs-12">
-								<menu-item-picker @update="itemsSelected">
+								<menu-item-picker
+									@update="itemsSelected"
+									:previouslySelected="selectedObject.sku_array"
+								>
 								</menu-item-picker>
 							</div>
 						</tab>
