@@ -751,6 +751,10 @@ export default {
 					reject(
 						'Total Redemptions Permitted must be zero or more'
 					)
+				} else if (promoCodesVue.newPromoCode.max_use < promoCodesVue.newPromoCode.max_use_per_person) {
+					reject(
+						'Total Redemptions Permitted cannot be smaller than Maximum Redemptions Per User'
+					)
 				} else if (!promoCodesVue.newPromoCode.apply_on.length) {
 					reject('Applies to cannot be blank')
 				} else if (!promoCodesVue.newPromoCode.start_from.length) {

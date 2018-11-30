@@ -2,7 +2,8 @@
 	<modal :show="showEditPromoCodeModal"
 	       effect="fade"
 	       @closeOnEscape="closeModal"
-	       :width="modalWidth">
+	       :width="modalWidth"
+		   ref="modal">
 		<div slot="modal-header"
 		     class="modal-header center">
 			<button type="button"
@@ -194,8 +195,12 @@
 			<button v-if="!selectItemsMode && !selectLocationsMode && !selectItemsMode && can('promocodes update')"
 			        type="button"
 			        class="btn btn-primary"
-			        @click="updatePromoCode()">
+			        @click="updatePromoCode()"
+					:disabled="updating">
 				Update
+				<i v-show="updating"
+					class="fa fa-spinner fa-pulse fa-fw">
+				</i>
 			</button>
 			<button v-if="!selectItemsMode && !selectLocationsMode && !selectItemsMode && !can('promocodes update')"
 			        type="button"
@@ -250,7 +255,8 @@ export default {
 				value: '',
 				value_type: ''
 			},
-			displaySpinner: false
+			displaySpinner: false,
+			updating: false
 		}
 	},
 	computed: {
@@ -526,6 +532,10 @@ export default {
 					reject(
 						'Total Redemptions Permitted must be zero or more'
 					)
+				} else if (Number(promoCodesVue.promoCode.max_use) < Number(promoCodesVue.promoCode.max_use_per_person)) {
+					reject(
+						'Total Redemptions Permitted cannot be smaller than Maximum Redemptions Per User'
+					)
 				} else if (!promoCodesVue.promoCode.apply_on.length) {
 					reject('Applies to cannot be blank')
 				} else if (
@@ -594,6 +604,7 @@ export default {
 			return editPromoCodeVue
 				.validatePromoCodeData()
 				.then(response => {
+					editPromoCodeVue.updating = true
 					let promoCode = {...editPromoCodeVue.promoCode}
 					promoCode.sku = editPromoCodeVue.promoCode.sku_array.toString()
 					promoCode.locations = editPromoCodeVue.promoCode.locations.toString()
@@ -626,12 +637,16 @@ export default {
 							editPromoCodeVue.errorMessage = reason
 							window.scrollTo(0, 0)
 						})
+						.finally(() => {
+							editPromoCodeVue.updating = false
+						})
 				})
 				.catch(reason => {
 					// If validation fails then display the error message
 					editPromoCodeVue.errorMessage = reason
-					window.scrollTo(0, 0)
-					throw reason
+					editPromoCodeVue.$scrollTo(editPromoCodeVue.$refs.errorMessage, 1000, {
+						container: editPromoCodeVue.$refs.modal.$el
+					})
 				})
 		},
 		/**
