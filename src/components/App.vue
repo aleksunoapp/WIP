@@ -1,7 +1,10 @@
 <template>
 	<div class="page-wrapper">
 		<!-- BEGIN HEADER -->
-		<div class="page-header navbar navbar-fixed-top">
+		<div 
+			class="page-header navbar navbar-fixed-top"
+			:class="{'master' : $root.master, 'staging' : $root.staging}"
+		>
 			<!-- BEGIN HEADER INNER -->
 			<div class="page-header-inner">
 				<div class="page-logo">
@@ -712,5 +715,11 @@ div.tab-pane::-webkit-scrollbar-track {
 .fade-leave-active {
 	transition: opacity 0.4s;
 	opacity: 0;
+}
+.page-header.navbar.master {
+	background-color: palevioletred;
+}
+.page-header.navbar.staging {
+	background-color: paleturquoise;
 }
 </style>

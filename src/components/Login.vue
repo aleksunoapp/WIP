@@ -13,6 +13,8 @@
 					<div class="login-content"
 					     v-if="(this.$route.name === 'Login' || this.$route.name === 'LoginExpired') && forgotPassword === false">
 						<h1>UNOapp Commerce Login</h1>
+						<h1 v-if="$root.master" class="alert-danger text-center">MASTER</h1>
+						<h1 v-if="$root.staging" class="alert-info text-center">STAGING</h1>
 						<form class="login-form"
 						      @submit.prevent="login($event)"
 						      novalidate>

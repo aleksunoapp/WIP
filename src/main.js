@@ -12,6 +12,7 @@ import { mapState, mapMutations } from 'vuex'
 import $ from 'jquery'
 import GlobalFunctions from '@/global'
 import AppFunctions from '@/controllers/App'
+import environment from '@/environment.js'
 
 require('./assets/css/font-awesome/css/font-awesome.min.css')
 require('./assets/css/simple-line-icons/simple-line-icons.min.css')
@@ -53,6 +54,14 @@ var App = new Vue({
 			} else {
 				return null
 			}
+		},
+		staging () {
+			const { staging } = environment
+			return window.location.hostname.split('.')[0] === 'localhost' && staging
+		},
+		master () {
+			const { production } = environment
+			return window.location.hostname.split('.')[0] === 'localhost' && production
 		},
 		...mapState({
 			permissions: state => state.permissions,
