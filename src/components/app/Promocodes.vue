@@ -334,9 +334,20 @@
 			</div>
 			<div slot="modal-body"
 			     class="modal-body">
-				<menu-item-picker :previouslySelected="newPromoCode.sku"
-				                  @update="itemsSelected">
-				</menu-item-picker>
+				<tabset :active="activeTab">
+					<tab header="Menu Items">
+						<menu-item-picker :previouslySelected="newPromoCode.sku"
+										@update="menuItemsSelected">
+						</menu-item-picker>
+					</tab>
+					<tab header="Modifier Items">
+						<modifier-item-picker
+							:previouslySelected="newPromoCode.sku"
+							@update="modifierItemsSelected"
+						>
+						</modifier-item-picker>
+					</tab>
+				</tabset>
 			</div>
 			<div slot="modal-footer"
 			     class="modal-footer">
@@ -376,11 +387,12 @@ import NoResults from '../modules/NoResults'
 import EditPromoCode from './PromoCodes/EditPromoCode'
 import DeletePromoCode from './PromoCodes/DeletePromoCode'
 import SelectLocation from './PromoCodes/SelectLocation'
-import $ from 'jquery'
-import { debounce } from 'lodash'
 import MenuItemPicker from '@/components/modules/MenuItemPicker'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 import { isNonNegativeNumber } from '@/controllers/utils'
+import Tab from '@/components/modules/Tab'
+import Tabset from '@/components/modules/Tabset'
+import ModifierItemPicker from '@/components/modules/ModifierItemPicker'
 
 export default {
 	data () {
@@ -415,7 +427,12 @@ export default {
 			passedPromoCode: {},
 			animated: '',
 			showSelectLocationModal: false,
-			showMenuTreeModal: false
+			showMenuTreeModal: false,
+			activeTab: 0,
+			selected: {
+				menuItems: [],
+				modifierItems: []
+			}
 		}
 	},
 	computed: {
@@ -438,18 +455,6 @@ export default {
 			}
 		}
 	},
-	created () {
-		let selectLocationVue = this
-
-		$(window).on(
-			'resize',
-			debounce(() => {
-				if (selectLocationVue.showSidewaysPageTwo) {
-					selectLocationVue.computeHeight()
-				}
-			}, 200)
-		)
-	},
 	mounted () {
 		this.getAllPromoCodes()
 	},
@@ -460,8 +465,19 @@ export default {
 		 * @param {array} items - Array of items selected by user
 		 * @returns {undefined}
 		 */
-		itemsSelected (items) {
-			this.newPromoCode.sku = items.map(item => item.sku)
+		menuItemsSelected (items) {
+			this.selected.menuItems = items.map(item => item.sku)
+			this.newPromoCode.sku = [...this.selected.menuItems, ...this.selected.modifierItems]
+		},
+		/**
+		 * To update selection of items
+		 * @function
+		 * @param {array} items - Array of items selected by user
+		 * @returns {undefined}
+		 */
+		modifierItemsSelected (items) {
+			this.selected.modifierItems = items.map(item => item.sku)
+			this.newPromoCode.sku = [...this.selected.menuItems, ...this.selected.modifierItems]
 		},
 		/**
 		 * To generate a random string from the characters provided
@@ -924,7 +940,10 @@ export default {
 		DeletePromoCode,
 		Dropdown,
 		SelectLocation,
-		MenuItemPicker
+		MenuItemPicker,
+		ModifierItemPicker,
+		Tab,
+		Tabset
 	}
 }
 </script>

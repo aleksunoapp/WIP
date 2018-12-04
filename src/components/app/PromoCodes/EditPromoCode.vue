@@ -173,10 +173,24 @@
 				</div>
 			</form>
 
-			<menu-item-picker v-if="selectItemsMode"
-			                  :previouslySelected="promoCode.sku_array"
-			                  @update="itemsSelected">
-			</menu-item-picker>
+			<tabset 
+				v-if="selectItemsMode"
+				:active="activeTab"
+			>
+				<tab header="Menu Items">
+					<menu-item-picker 
+						:previouslySelected="promoCode.sku_array"
+						@update="menuItemsSelected">
+					</menu-item-picker>
+				</tab>
+				<tab header="Modifier Items">
+					<modifier-item-picker
+						:previouslySelected="promoCode.sku_array"
+						@update="modifierItemsSelected"
+					>
+					</modifier-item-picker>
+				</tab>
+			</tabset>
 
 			<select-locations-popup v-if="!displaySpinner && !selectItemsMode && selectLocationsMode"
 			                        @closeSelectLocationsPopup='selectStores'
@@ -222,6 +236,9 @@ import SelectLocationsPopup from '../../modules/SelectLocationsPopup'
 import MenuItemPicker from '@/components/modules/MenuItemPicker'
 import { mapGetters } from 'vuex'
 import { isNonNegativeNumber } from '@/controllers/utils'
+import Tab from '@/components/modules/Tab'
+import Tabset from '@/components/modules/Tabset'
+import ModifierItemPicker from '@/components/modules/ModifierItemPicker'
 
 export default {
 	data () {
@@ -256,7 +273,12 @@ export default {
 				value_type: ''
 			},
 			displaySpinner: false,
-			updating: false
+			updating: false,
+			activeTab: 0,
+			selected: {
+				menuItems: [],
+				modifierItems: []
+			}
 		}
 	},
 	computed: {
@@ -295,9 +317,22 @@ export default {
 		 * @param {array} items - Array of items selected by user
 		 * @returns {undefined}
 		 */
-		itemsSelected (items) {
+		menuItemsSelected (items) {
 			if (this.can('promocodes update')) {
-				this.promoCode.sku_array = items.map(item => item.sku)
+				this.selected.menuItems = items.map(item => item.sku)
+				this.promoCode.sku_array = [...this.selected.menuItems, ...this.selected.modifierItems]
+			}
+		},
+		/**
+		 * To update selection of items
+		 * @function
+		 * @param {array} items - Array of items selected by user
+		 * @returns {undefined}
+		 */
+		modifierItemsSelected (items) {
+			if (this.can('promocodes update')) {
+				this.selected.modifierItems = items.map(item => item.sku)
+				this.promoCode.sku_array = [...this.selected.menuItems, ...this.selected.modifierItems]
 			}
 		},
 		/**
@@ -708,7 +743,10 @@ export default {
 		Dropdown,
 		LoadingScreen,
 		SelectLocationsPopup,
-		MenuItemPicker
+		MenuItemPicker,
+		Tab,
+		Tabset,
+		ModifierItemPicker
 	}
 }
 </script>
