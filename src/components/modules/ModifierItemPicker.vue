@@ -81,7 +81,7 @@
 													:id="'item_checkbox_' + item.id"
 													class="md-check"
 													v-model="item.selected"
-                                                    @change="itemsSelected">&emsp;</span>
+                                                    @change="itemsSelected(item)">&emsp;</span>
                                         <label :for="'item_checkbox_' + item.id">{{ item.name }}</label>
 									</div>
 								</li>
@@ -165,10 +165,18 @@ export default {
 		/**
 		 * To close the modal.
 		 * @function
+		 * @param {object} item - The item toggled by the user
 		 * @returns {undefined}
 		 */
-		itemsSelected () {
-			this.$emit('update', this.selectedItems)
+		itemsSelected (item) {
+			if (!item.selected) {
+				const previousIndex = this.previous.indexOf(item.sku)
+				if (previousIndex !== -1) {
+					this.previous.splice(previousIndex, 1)
+				}
+			}
+			const selected = [...this.previous, ...this.selectedItems.filter(item => !this.previous.includes(item.sku)).map(item => item.sku)]
+			this.$emit('update', selected)
 		},
 		/**
 		 * To get a list of all modifiers for the current active location.
@@ -177,7 +185,8 @@ export default {
 		 */
 		getModifiers () {
 			if (this.$root.activeLocation.id === undefined) {
-				throw Error('Please select a store to view Modifiers.')
+				this.errorMessage = 'Please select a store to view Modifiers.'
+				return
 			}
 			this.loadingModifiers = true
 			this.modifiers = []

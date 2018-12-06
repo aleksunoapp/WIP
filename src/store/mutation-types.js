@@ -8,3 +8,7 @@ export const SET_PERMISSIONS = 'SET_PERMISSIONS'
 
 /* Stores */
 export const SET_STORE_LOCATIONS = 'SET_STORE_LOCATIONS'
+
+/* Combos */
+export const SET_COMBO_OFFER = 'SET_COMBO_OFFER'
+export const CLEAR_COMBO_OFFER = 'CLEAR_COMBO_OFFER'

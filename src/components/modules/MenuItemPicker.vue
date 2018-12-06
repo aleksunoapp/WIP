@@ -6,6 +6,11 @@
 				<span>{{errorMessage}}</span>
 			</div>
 		</div>
+		<div class="col-xs-12">
+			<div class="alert alert-info" v-show="infoMessage.length" ref="infoMessage">
+				<span>{{infoMessage}}</span>
+			</div>
+		</div>
 		<div class="col-xs-4">
 			<h4>Menus</h4>
 		</div>
@@ -165,6 +170,7 @@ export default {
 		},
 		previous: [],
 		errorMessage: '',
+		infoMessage: '',
 		menus: [],
 		activeMenu: {
 			categories: [],
@@ -208,6 +214,8 @@ export default {
 		this.previous = [...this.previouslySelected]
 		if (this.$root.activeLocation.id !== undefined) {
 			this.getMenus()
+		} else {
+			this.infoMessage = 'Please select a store to view its Menus.'
 		}
 	},
 	methods: {
@@ -232,6 +240,12 @@ export default {
 					}
 				})
 			}
+			if (item.selected) {
+				const previousIndex = this.previous.indexOf(item.sku)
+				if (previousIndex !== -1) {
+					this.previous.splice(previousIndex, 1)
+				}
+			}
 			item.selected = !item.selected
 			this.update()
 		},
@@ -246,6 +260,14 @@ export default {
 			this.activeItems.forEach(item => {
 				item.selected = !selected
 			})
+			if (selected) {
+				this.activeItems.forEach(item => {
+					const previousIndex = this.previous.indexOf(item.sku)
+					if (previousIndex !== -1) {
+						this.previous.splice(previousIndex, 1)
+					}
+				})
+			}
 			this.update()
 		},
 		/**
@@ -269,6 +291,14 @@ export default {
 			this.activeMenu.items.forEach(item => {
 				item.selected = !selected
 			})
+			if (selected) {
+				this.activeMenu.items.forEach(item => {
+					const previousIndex = this.previous.indexOf(item.sku)
+					if (previousIndex !== -1) {
+						this.previous.splice(previousIndex, 1)
+					}
+				})
+			}
 			this.update()
 		},
 		/**
@@ -298,12 +328,24 @@ export default {
 			const selected = this.menuSelected(menu)
 			if (menu.items) {
 				menu.items.forEach(item => {
+					if (selected) {
+						const previousIndex = this.previous.indexOf(item.sku)
+						if (previousIndex !== -1) {
+							this.previous.splice(previousIndex, 1)
+						}
+					}
 					item.selected = !selected
 				})
 				this.update()
 			} else {
 				this.toggleMenu(menu).then(() => {
 					this.activeMenu.items.forEach(item => {
+						if (selected) {
+							const previousIndex = this.previous.indexOf(item.sku)
+							if (previousIndex !== -1) {
+								this.previous.splice(previousIndex, 1)
+							}
+						}
 						item.selected = !selected
 					})
 					this.update()
@@ -533,6 +575,10 @@ export default {
 				let selectedMenuItems = menu.items.filter(item => item.selected)
 				selected = selected.concat(selectedMenuItems)
 			})
+			selected = [
+				...this.previous.map(sku => ({previous: true, sku, name: ''})),
+				...selected.filter(item => !this.previous.includes(item.sku))
+			]
 			this.$emit('update', selected)
 		}
 	}

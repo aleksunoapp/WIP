@@ -5,6 +5,7 @@ import createLogger from 'vuex/dist/logger'
 import permissions from './modules/permissions'
 import auth from './modules/auth'
 import stores from './modules/stores'
+import combos from './modules/combos'
 const environment = require('../environment.js')
 
 Vue.use(Vuex)
@@ -13,7 +14,8 @@ const store = new Vuex.Store({
 	modules: {
 		permissions,
 		auth,
-		stores
+		stores,
+		combos
 	},
 	actions: {},
 	strict: environment.development,

@@ -625,6 +625,15 @@
 						</li>
 					</ul>
 				</li>
+				<li v-if="can('combo_offer read')"
+				    class="nav-item"
+				    :class="{'active': currentRoute === 'combos'}">
+					<router-link to="/app/combos/offers"
+					             class="nav-link nav-toggle">
+						<i class="fa fa-cubes"></i>
+						<span class="title">Combos</span>
+					</router-link>
+				</li>
 				<li v-if="can('promocodes read')"
 				    class="nav-item"
 				    :class="{'active': currentRoute === 'promocodes'}">

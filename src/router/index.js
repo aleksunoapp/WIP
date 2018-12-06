@@ -75,6 +75,9 @@ import BaseRule from '@/components/app/Loyalty/BaseRule'
 import PromotionRules from '@/components/app/Loyalty/PromotionRules'
 import Rewards from '@/components/app/Rewards'
 import RewardItems from '@/components/app/RewardItems'
+// Combos
+import ComboOffers from '@/components/app/Combos/ComboOffers'
+import ComboOfferItems from '@/components/app/Combos/ComboOfferItems'
 // Promocodes
 import Promocodes from '@/components/app/Promocodes'
 // Promotions
@@ -770,6 +773,25 @@ export const routes = [
 				meta: {
 					adminOnly: true,
 					permissions: ['reward_tiers items read']
+				}
+			},
+			// Combos
+			{
+				path: 'combos/offers',
+				component: ComboOffers,
+				name: 'ComboOffers',
+				meta: {
+					adminOnly: true,
+					permissions: ['combo_offer read']
+				}
+			},
+			{
+				path: 'combos/offer/:offer_id/items',
+				component: ComboOfferItems,
+				name: 'ComboOfferItems',
+				meta: {
+					adminOnly: true,
+					permissions: ['combo_item read']
 				}
 			},
 			// Promo Codes

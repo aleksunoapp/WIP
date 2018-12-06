@@ -705,7 +705,7 @@ div.tab-pane::-webkit-scrollbar-track {
 	color: rgba(201, 0, 0, 0.8);
 }
 
-/* Transition */
+/* Transitions */
 .fade-enter {
 	opacity: 0;
 }
@@ -716,10 +716,120 @@ div.tab-pane::-webkit-scrollbar-track {
 	transition: opacity 0.4s;
 	opacity: 0;
 }
+.quick-fade-enter {
+	opacity: 0;
+}
+.quick-fade-enter-active {
+	transition: all 0.1s;
+}
+.quick-fade-leave-active {
+	transition: all 0.1s;
+	opacity: 0;
+}
 .page-header.navbar.master {
 	background-color: palevioletred;
 }
 .page-header.navbar.staging {
 	background-color: paleturquoise;
+}
+
+
+/* Atomic classes */
+.three-vertical-actions {
+  min-height: 124px;
+}
+.width-100 {
+	width: 100%;
+}
+.max-height-100 {
+	max-height: 100%;
+}
+.min-height-100 {
+	min-height: 100%;
+}
+.min-height-100px {
+	min-height: 100px;
+}
+
+
+.display-flex {
+	display: flex;
+}
+.flex-wrap-wrap {
+	flex-wrap: wrap;
+}
+.flex-direction-column {
+	flex-direction: column;
+}
+.flex-basis-48 {
+	flex-basis: 48%;
+}
+.justify-content-center {
+	justify-content: center;
+}
+.justify-content-space-between {
+	justify-content: space-between;
+}
+.justify-content-flex-end {
+	justify-content: flex-end;
+}
+.align-items-center {
+	align-items: center;
+}
+.align-items-flex-end {
+	align-items: flex-end;
+}
+.align-self-flex-end {
+	align-self: flex-end;
+}
+
+.pa-1em {
+	padding: 1em;
+}
+.pt-1em {
+	padding-top: 1em;
+}
+.px-1em {
+	padding-left: 1em;
+	padding-right: 1em;
+}
+.py-1em {
+	padding-left: 1em;
+	padding-right: 1em;
+}
+.py-2em {
+	padding-left: 2em;
+	padding-right: 2em;
+}
+
+.my-0em {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+.ma-1em {
+	margin: 1em;
+}
+.mx-1em {
+	margin-left: 1em;
+	margin-right: 1em;
+}
+.mb-5px {
+	margin-bottom: 5px;
+}
+.mb-1em {
+	margin-bottom: 1em;
+}
+.mb-2em {
+	margin-bottom: 2em;
+}
+.mb-3em {
+	margin-bottom: 3em;
+}
+.ml-1em {
+	margin-left: 1em;
+}
+
+.position-relative {
+	position: relative;
 }
 </style>
