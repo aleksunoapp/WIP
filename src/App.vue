@@ -82,7 +82,10 @@ export default {
 						response.local = tempLocal
 					}
 
-					_this.$root.meta = Object.assign({}, response)
+					_this.$root.meta = {
+						...response,
+						local: response.local ? response.local : 'en-CA'
+					}
 					delete _this.$root.meta.serviceCategories
 					_this.$root.serviceCategories = response.serviceCategories
 				} else {
