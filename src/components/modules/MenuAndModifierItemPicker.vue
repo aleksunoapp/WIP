@@ -2,13 +2,19 @@
 	<tabset 
 		:active="activeTab"
 	>
-		<tab header="Menu Items">
+		<tab
+			header="Menu Items"
+			:disabled="menuDisabled"
+		>
 			<menu-item-picker 
 				:previouslySelected="previouslySelected"
 				@update="itemsSelected">
 			</menu-item-picker>
 		</tab>
-		<tab header="Modifier Items">
+		<tab
+			header="Modifier Items"
+			:disabled="modifierDisabled"
+		>
 			<modifier-item-picker
 				:previouslySelected="previouslySelected"
 				@update="itemsSelected"
@@ -36,6 +42,16 @@ export default {
 			type: Array,
 			default: () => [],
 			required: false
+		},
+		menuDisabled: {
+			type: Boolean,
+			default: () => false,
+			required: false
+		},
+		modifierDisabled: {
+			type: Boolean,
+			default: () => false,
+			required: false
 		}
 	},
 	data: () => ({
@@ -48,6 +64,9 @@ export default {
 		if (this.previouslySelected.length) {
 			this.original = new Set(this.previouslySelected)
 		}
+		if (this.menuDisabled && !this.modifierDisabled) {
+			this.activeTab = 1
+		}
 	},
 	methods: {
 		/**
@@ -57,18 +76,24 @@ export default {
 		 * @returns {undefined}
 		 */
 		itemsSelected (items) {
+			console.log({items})
 			const emitted = new Set(items.map(item => item.sku))
+			console.log({emitted})
 
-			const added = this.difference(this.original, emitted)
-			this.added = this.union(added, this.added)
+			this.added = this.difference(emitted, this.original)
+			console.log(this.added)
 
 			const previous = this.difference(emitted, this.added)
+			console.log({previous})
 
 			const removed = this.difference(this.original, previous)
+			console.log({removed})
 			this.removed = this.union(removed, this.removed)
+			console.log(this.removed)
 
 			const current = this.difference(this.union(this.original, this.added), this.removed)
 
+			console.log({current})
 			this.$emit('update', [...current])
 		},
 		/**

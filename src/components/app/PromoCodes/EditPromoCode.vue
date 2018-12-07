@@ -176,6 +176,7 @@
 			<menu-and-modifier-item-picker
 				v-if="selectItemsMode"
 				:previouslySelected="promoCode.sku_array"
+				:modifier="false"
 				@update="itemsSelected"
 			>
 			</menu-and-modifier-item-picker>

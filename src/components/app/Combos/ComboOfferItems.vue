@@ -205,6 +205,7 @@
 				>
 					<menu-and-modifier-item-picker
 						:previouslySelected="currentSkus"
+						:modifierDisabled="true"
 						@update="itemsSelected"
 					>
 					</menu-and-modifier-item-picker>
@@ -545,6 +546,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		itemsSelected (selected) {
+			console.log({selected})
 			this.selected = selected
 		},
 		/**

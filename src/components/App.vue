@@ -828,6 +828,9 @@ div.tab-pane::-webkit-scrollbar-track {
 .ml-1em {
 	margin-left: 1em;
 }
+.ml-5px {
+	margin-left: 1em;
+}
 
 .position-relative {
 	position: relative;
