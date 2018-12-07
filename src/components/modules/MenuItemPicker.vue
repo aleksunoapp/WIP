@@ -170,7 +170,6 @@ export default {
 		},
 		previous: [],
 		errorMessage: '',
-		infoMessage: '',
 		menus: [],
 		activeMenu: {
 			categories: [],
@@ -203,6 +202,13 @@ export default {
 				this.activeItems.length &&
 				!this.activeItems.some(item => !item.selected)
 			)
+		},
+		infoMessage () {
+			if (this.$root.activeLocation.id === undefined) {
+				return 'Please select a store to view its Menus.'
+			} else {
+				return ''
+			}
 		}
 	},
 	watch: {
@@ -214,8 +220,6 @@ export default {
 		this.previous = [...this.previouslySelected]
 		if (this.$root.activeLocation.id !== undefined) {
 			this.getMenus()
-		} else {
-			this.infoMessage = 'Please select a store to view its Menus.'
 		}
 	},
 	methods: {

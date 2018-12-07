@@ -14,7 +14,6 @@
 		</div>
 		<div 
 			v-else
-			class="portlet light bordered height-mod"
 		>
 			<div class="portlet-body">
 				<div class="row">
@@ -175,7 +174,10 @@ export default {
 					this.previous.splice(previousIndex, 1)
 				}
 			}
-			const selected = [...this.previous, ...this.selectedItems.filter(item => !this.previous.includes(item.sku)).map(item => item.sku)]
+			const selected = [
+				...this.previous.map(sku => ({previous: true, sku, name: ''})),
+				...this.selectedItems.filter(item => !this.previous.includes(item.sku))
+			]
 			this.$emit('update', selected)
 		},
 		/**

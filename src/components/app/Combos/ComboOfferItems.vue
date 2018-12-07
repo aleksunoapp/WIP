@@ -201,54 +201,42 @@
 				<!-- ADD ITEM -->
 				<div
 					v-if="view === 'add'"
-					class="width-100 display-flex flex-direction-column align-items-flex-end"
+					class="width-100 display-flex flex-direction-column"
 				>
-					<tabset
-						:activeTab="tab"
-						class="width-100"
+					<menu-and-modifier-item-picker
+						:previouslySelected="currentSkus"
+						@update="itemsSelected"
 					>
-						<tab
-							header="Menu Items"
-						>
-							<menu-item-picker
-								:previouslySelected="currentSkus"
-								@update="menuItemsSelected"
+					</menu-and-modifier-item-picker>
+					<div class="width-100 display-flex justify-content-space-between align-items-flex-end">
+						<p class="my-0em text-muted">
+							{{this.selected === null ? 
+								`${this.currentSkus.length} selected` :
+								`${this.selected.length} selected`
+							}}
+						</p>
+						<div>
+							<button
+								class="btn blue btn-sm btn-outline"
+								@click="showListView"
+								:disabled="creating"
 							>
-							</menu-item-picker>
-						</tab>
-						<tab
-							header="Modifier Items"
-							disabled
-						>
-							<modifier-item-picker
-								:previouslySelected="currentSkus"
-								@update="modifierItemsSelected"
+								Cancel
+							</button>
+							<button
+								class="btn blue btn-sm btn-outline"
+								@click="saveSkus"
+								:disabled="creating"
 							>
-							</modifier-item-picker>
-
-						</tab>
-					</tabset>
-					<div>
-						<button
-							class="btn blue btn-sm btn-outline"
-							@click="showListView"
-							:disabled="creating"
-						>
-							Cancel
-						</button>
-						<button
-							class="btn blue btn-sm btn-outline"
-							@click="saveSkus"
-							:disabled="creating"
-						>
-							Save
-							<i
-								v-if="creating"
-								class="fa fa-spinner fa-pulse fa-fw"
-								aria-hidden="true"
-							>
-							</i>
-						</button>
+								Save
+								<i
+									v-if="creating"
+									class="fa fa-spinner fa-pulse fa-fw"
+									aria-hidden="true"
+								>
+								</i>
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -259,10 +247,7 @@
 <script>
 import Breadcrumb from '@/components/modules/Breadcrumb'
 import LoadingScreen from '@/components/modules/LoadingScreen'
-import Tabset from '@/components/modules/Tabset'
-import Tab from '@/components/modules/Tab'
-import MenuItemPicker from '@/components/modules/MenuItemPicker'
-import ModifierItemPicker from '@/components/modules/ModifierItemPicker'
+import MenuAndModifierItemPicker from '@/components/modules/MenuAndModifierItemPicker'
 import ComboOffersFunctions from '@/controllers/Combos'
 import Modal from '@/components/modules/Modal'
 import ajaxErrorHandler from '@/controllers/ErrorController'
@@ -274,10 +259,7 @@ export default {
 		Breadcrumb,
 		LoadingScreen,
 		Modal,
-		MenuItemPicker,
-		ModifierItemPicker,
-		Tabset,
-		Tab
+		MenuAndModifierItemPicker
 	},
 	data () {
 		return {
@@ -301,10 +283,7 @@ export default {
 				deleting: false,
 				deleted: false
 			},
-			selected: {
-				menuSkus: [],
-				modifierSkus: []
-			},
+			selected: null,
 
 			SkuToDelete: {},
 
@@ -556,8 +535,7 @@ export default {
 				return
 			}
 			this.activeComboOfferItem = item
-			this.selected.menuSkus = [...this.currentSkus]
-			this.selected.modifierSkus = [...this.currentSkus]
+			this.selected = [...this.currentSkus]
 			this.view = 'add'
 		},
 		/**
@@ -566,17 +544,8 @@ export default {
 		 * @param {array} selected - An array of selected item Skus
 		 * @returns {undefined}
 		 */
-		menuItemsSelected (selected) {
-			this.selected.menuSkus = selected.map(item => item.sku)
-		},
-		/**
-		 * To save modifier item selection
-		 * @function
-		 * @param {array} selected - An array of selected item Skus
-		 * @returns {undefined}
-		 */
-		modifierItemsSelected (selected) {
-			this.selected.modifierSkus = selected.map(item => item.sku)
+		itemsSelected (selected) {
+			this.selected = selected
 		},
 		/**
 		 * To create an item, if necessary, and save its Skus
@@ -598,7 +567,7 @@ export default {
 			}
 			return ComboOffersFunctions.createComboOfferItemSKUs({
 				combo_item_id: _this.activeComboOfferItem.id,
-				sku: [...this.selected.menuSkus, ...this.selected.modifierSkus]
+				sku: [...this.selected]
 			})
 				.then(response => {
 					if (response.payload.pending_approval !== true) {

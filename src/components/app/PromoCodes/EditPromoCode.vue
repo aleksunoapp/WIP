@@ -173,24 +173,12 @@
 				</div>
 			</form>
 
-			<tabset 
+			<menu-and-modifier-item-picker
 				v-if="selectItemsMode"
-				:active="activeTab"
+				:previouslySelected="promoCode.sku_array"
+				@update="itemsSelected"
 			>
-				<tab header="Menu Items">
-					<menu-item-picker 
-						:previouslySelected="promoCode.sku_array"
-						@update="menuItemsSelected">
-					</menu-item-picker>
-				</tab>
-				<tab header="Modifier Items">
-					<modifier-item-picker
-						:previouslySelected="promoCode.sku_array"
-						@update="modifierItemsSelected"
-					>
-					</modifier-item-picker>
-				</tab>
-			</tabset>
+			</menu-and-modifier-item-picker>
 
 			<select-locations-popup v-if="!displaySpinner && !selectItemsMode && selectLocationsMode"
 			                        @closeSelectLocationsPopup='selectStores'
@@ -233,12 +221,9 @@ import App from '../../../controllers/App'
 import Dropdown from '../../modules/Dropdown'
 import LoadingScreen from '../../modules/LoadingScreen'
 import SelectLocationsPopup from '../../modules/SelectLocationsPopup'
-import MenuItemPicker from '@/components/modules/MenuItemPicker'
+import MenuAndModifierItemPicker from '@/components/modules/MenuAndModifierItemPicker'
 import { mapGetters } from 'vuex'
 import { isNonNegativeNumber } from '@/controllers/utils'
-import Tab from '@/components/modules/Tab'
-import Tabset from '@/components/modules/Tabset'
-import ModifierItemPicker from '@/components/modules/ModifierItemPicker'
 
 export default {
 	data () {
@@ -273,12 +258,7 @@ export default {
 				value_type: ''
 			},
 			displaySpinner: false,
-			updating: false,
-			activeTab: 0,
-			selected: {
-				menuItems: [],
-				modifierItems: []
-			}
+			updating: false
 		}
 	},
 	computed: {
@@ -314,26 +294,27 @@ export default {
 		/**
 		 * To update selection of items
 		 * @function
-		 * @param {array} items - Array of items selected by user
+		 * @param {array} items - Array of item SKUs selected by user
 		 * @returns {undefined}
 		 */
-		menuItemsSelected (items) {
+		itemsSelected (items) {
 			if (this.can('promocodes update')) {
-				this.selected.menuItems = items.map(item => item.sku)
-				this.promoCode.sku_array = [...this.selected.menuItems, ...this.selected.modifierItems]
+				this.promoCode.sku_array = items
 			}
 		},
-		/**
-		 * To update selection of items
-		 * @function
-		 * @param {array} items - Array of items selected by user
-		 * @returns {undefined}
-		 */
-		modifierItemsSelected (items) {
-			if (this.can('promocodes update')) {
-				this.selected.modifierItems = items.map(item => item.sku)
-				this.promoCode.sku_array = [...this.selected.menuItems, ...this.selected.modifierItems]
+		union (setA, setB) {
+			var _union = new Set(setA)
+			for (var elem of setB) {
+				_union.add(elem)
 			}
+			return _union
+		},
+		difference (setA, setB) {
+			var _difference = new Set(setA)
+			for (var elem of setB) {
+				_difference.delete(elem)
+			}
+			return _difference
 		},
 		/**
 		 * To keep the select all checkbox in sync with the list
@@ -743,10 +724,7 @@ export default {
 		Dropdown,
 		LoadingScreen,
 		SelectLocationsPopup,
-		MenuItemPicker,
-		Tab,
-		Tabset,
-		ModifierItemPicker
+		MenuAndModifierItemPicker
 	}
 }
 </script>
