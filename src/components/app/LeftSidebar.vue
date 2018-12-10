@@ -314,6 +314,16 @@
 								<span class="title">Payment Terminals</span>
 							</router-link>
 						</li>
+						<li v-if="can('stores discounts read')"
+						    class="nav-item"
+						    :class="{'active': currentRoute === 'store_manager' && currentSubRoute === 'discounts'}"
+						    id="store_manager_discounts_link">
+							<router-link to="/app/store_manager/discounts"
+							             class="nav-link">
+								<i class="fa fa-arrow-down"></i>
+								<span class="title">Discounts</span>
+							</router-link>
+						</li>
 					</ul>
 				</li>
 				<li v-if="can('news_feed read')"

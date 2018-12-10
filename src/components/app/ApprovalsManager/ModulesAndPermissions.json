@@ -91,6 +91,13 @@
 	  "stores payment terminals update": false,
 	  "stores payment terminals delete": false,
 	  "stores payment terminals approve": false
+	},
+	"store discounts": {
+	  "stores discounts read": false,
+	  "stores discounts create": false,
+	  "stores discounts update": false,
+	  "stores discounts delete": false,
+	  "stores discounts approve": false
 	}
   },
   "analytics": {
