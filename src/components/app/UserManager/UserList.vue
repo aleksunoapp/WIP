@@ -35,7 +35,7 @@
 									     v-show="searchError"
 									     ref="searchError">
 										<button class="close"
-										        @click.stop="clearSearchError()"></button>
+										        @click.stop.prevent="clearSearchError()"></button>
 										<span>{{searchError}}</span>
 									</div>
 								</div>
@@ -569,15 +569,6 @@ export default {
 					!userListVue.search.phone
 				) {
 					reject('Enter at least one search term')
-				} else if (
-					(userListVue.search.first_name &&
-						userListVue.search.first_name.length < 3) ||
-					(userListVue.search.last_name &&
-						userListVue.search.last_name.length < 3) ||
-					(userListVue.search.email && userListVue.search.email.length < 3) ||
-					(userListVue.search.phone && userListVue.search.phone.length < 3)
-				) {
-					reject('Search terms must be at least 3 characters long')
 				}
 				resolve('Hurray')
 			})
@@ -589,14 +580,14 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		searchUsers (page) {
-			if (page !== undefined) {
-				this.searching = true
-			}
 			var userListVue = this
 			userListVue.clearSearchError()
 			return userListVue
 				.validateSearchData()
 				.then(response => {
+					if (page !== undefined) {
+						userListVue.searching = true
+					}
 					userListVue.view = 'search'
 					userListVue.loadingSearch = true
 					let searchParams = {}
