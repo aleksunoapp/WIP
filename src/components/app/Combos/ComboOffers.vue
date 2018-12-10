@@ -729,7 +729,12 @@ export default {
 		 */
 		resetEdit () {
 			this.comboOfferToEdit = {
-				name: ''
+				name: '',
+				discount: '',
+				discount_type: '',
+				number_of_items: '',
+				start_from: '',
+				end_on: ''
 			}
 		},
 		/**
