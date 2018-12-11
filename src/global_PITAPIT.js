@@ -114,7 +114,7 @@ export default {
 	 */
 	resourcesBusinessId: (function () {
 		if (production) {
-			return 2
+			return 6
 		} else if (staging) {
 			return 6
 		} else if (development) {
