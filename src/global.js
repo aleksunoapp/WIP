@@ -9,7 +9,7 @@ const laprep = 'laprep'
 let client = window.location.hostname.split('.')[0]
 
 if (client === 'localhost') {
-	client = pitapit
+	client = freshii
 }
 
 const fileRouter = (function () {

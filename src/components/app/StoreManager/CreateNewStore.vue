@@ -513,6 +513,17 @@
 											</tr>
 											<tr>
 												<td>
+													Delivery Tax
+												</td>
+												<td>
+													<input type="text"
+													       class="form-control input-sm"
+													       v-model="newStoreMeta.location_delivery_tax"
+													       :disabled="newStoreMeta.opening_soon === 1">
+												</td>
+											</tr>
+											<tr>
+												<td>
 													Payment Processor Merchant ID (MID)
 												</td>
 												<td>
@@ -765,6 +776,7 @@ export default {
 			savingStoreMeta: false,
 			newStoreMeta: {
 				gst_number: '',
+				location_delivery_tax: '',
 				opening_soon: 0,
 				gift_card: 0,
 				digital_reward: 0,
@@ -1144,6 +1156,7 @@ export default {
 			this.storeHoursError = ''
 			this.newStoreMeta = {
 				gst_number: '',
+				location_delivery_tax: '',
 				opening_soon: 0,
 				gift_card: 0,
 				digital_reward: 0,

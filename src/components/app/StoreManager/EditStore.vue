@@ -474,6 +474,17 @@
 													</tr>
 													<tr>
 														<td>
+															Delivery Tax
+														</td>
+														<td>
+															<input type="text"
+															       class="form-control input-sm"
+															       v-model="metaToBeEdited.location_delivery_tax"
+															       :disabled="metaToBeEdited.opening_soon === 1">
+														</td>
+													</tr>
+													<tr>
+														<td>
 															Payment Processor Merchant ID (MID)
 														</td>
 														<td>
