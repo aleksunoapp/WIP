@@ -196,6 +196,18 @@
 												</el-switch>
 												<p v-if="isCorporateUpdated">Corporate Store updates will take effect next time you log in.</p>
 											</div>
+											<div class="form-group form-md-line-input form-md-floating-label">
+												<label>Status:</label><br>
+												<el-switch v-model="storeToBeEdited.status"
+												           :disabled="!$root.permissions['stores info update']? true : false"
+												           active-color="#0c6"
+												           inactive-color="#ff4949"
+												           :active-value="1"
+												           :inactive-value="0"
+												           active-text="Active"
+												           inactive-text="Inactive">
+												</el-switch>
+											</div>
 										</div>
 									</div>
 									<div class="form-actions noborder clear">

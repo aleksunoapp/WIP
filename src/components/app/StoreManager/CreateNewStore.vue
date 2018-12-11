@@ -241,6 +241,17 @@
 									           inactive-text="No">
 									</el-switch>
 								</div>
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<label>Status:</label><br>
+									<el-switch v-model="newStore.status"
+									           active-color="#0c6"
+									           inactive-color="#ff4949"
+									           :active-value="1"
+									           :inactive-value="0"
+									           active-text="Active"
+									           inactive-text="Inactive">
+									</el-switch>
+								</div>
 							</div>
 							<div class="form-actions noborder clear">
 								<div class="col-md-12">
