@@ -486,6 +486,22 @@
 											</tr>
 											<tr>
 												<td>
+													Tips
+												</td>
+												<td>
+													<el-switch v-model="newStoreMeta.enable_tip"
+													           :disabled="newStoreMeta.opening_soon === 1"
+													           active-color="#0c6"
+													           inactive-color="#ff4949"
+													           :active-value="1"
+													           :inactive-value="0"
+													           active-text="Yes"
+													           inactive-text="No">
+													</el-switch>
+												</td>
+											</tr>
+											<tr>
+												<td>
 													External online ordering enabled
 												</td>
 												<td>
@@ -791,6 +807,7 @@ export default {
 				opening_soon: 0,
 				gift_card: 0,
 				digital_reward: 0,
+				enable_tip: 0,
 				catering: 0,
 				current_catering_status: 0,
 				delivery: 0,
@@ -1171,6 +1188,7 @@ export default {
 				opening_soon: 0,
 				gift_card: 0,
 				digital_reward: 0,
+				enable_tip: 0,
 				catering: 0,
 				current_catering_status: 0,
 				delivery: 0,
