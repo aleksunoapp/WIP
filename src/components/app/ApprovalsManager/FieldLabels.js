@@ -240,7 +240,7 @@ export default {
 		label: 'Payment Processor Merchant Key',
 		value: {}
 	},
-	'enable_pickup_later': {
+	'enable_receive_later': {
 		display: true,
 		label: 'Pickup Later',
 		value: {

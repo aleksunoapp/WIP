@@ -355,7 +355,7 @@
 															Pickup Later
 														</td>
 														<td>
-															<el-switch v-model="metaToBeEdited.enable_pickup_later"
+															<el-switch v-model="metaToBeEdited.enable_receive_later"
 															           active-color="#0c6"
 															           inactive-color="#ff4949"
 															           :disabled="!$root.permissions['stores profile update']? true : false"

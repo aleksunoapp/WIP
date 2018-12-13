@@ -394,7 +394,7 @@
 													Pickup Later
 												</td>
 												<td>
-													<el-switch v-model="newStoreMeta.enable_pickup_later"
+													<el-switch v-model="newStoreMeta.enable_receive_later"
 													           active-color="#0c6"
 													           inactive-color="#ff4949"
 													           :active-value="1"
@@ -818,7 +818,7 @@ export default {
 				merchant_key: null,
 				created_by: this.$root.createdBy,
 				pickup_immediate: 0,
-				enable_pickup_later: 0,
+				enable_receive_later: 0,
 				external_online_ordering_enabled: 0,
 				external_online_ordering_url: '',
 				enable_promocode: 0
@@ -1199,7 +1199,7 @@ export default {
 				merchant_key: null,
 				created_by: this.$root.createdBy,
 				pickup_immediate: 0,
-				enable_pickup_later: 0,
+				enable_receive_later: 0,
 				external_online_ordering_enabled: 0,
 				external_online_ordering_url: '',
 				enable_promocode: 0
