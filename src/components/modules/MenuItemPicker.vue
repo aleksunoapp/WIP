@@ -372,6 +372,12 @@ export default {
 				return item.category.parent_category === 0 ? item.category.id === category.id : item.category.parent_category === category.id
 			})
 			items.forEach(item => {
+				if (selected) {
+					const previousIndex = this.previous.indexOf(item.sku)
+					if (previousIndex !== -1) {
+						this.previous.splice(previousIndex, 1)
+					}
+				}
 				item.selected = !selected
 			})
 			if (this.activeCategory.id !== category.id) {
