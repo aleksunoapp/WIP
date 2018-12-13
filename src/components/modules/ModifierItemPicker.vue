@@ -190,6 +190,7 @@ export default {
 				this.errorMessage = 'Please select a store to view Modifiers.'
 				return
 			}
+			this.clearError('errorMessage')
 			this.loadingModifiers = true
 			this.modifiers = []
 			var modifierTreeVue = this

@@ -304,6 +304,13 @@ export default {
 			parentComboOffer: 'combos/comboOffer'
 		})
 	},
+	watch: {
+		'$root.activeLocation': function (location) {
+			if (location.id !== undefined && this.infoMessage) {
+				this.infoMessage = ''
+			}
+		}
+	},
 	created () {
 		if (this.parentComboOffer.id === null) {
 			this.$router.push({name: 'ComboOffers'})

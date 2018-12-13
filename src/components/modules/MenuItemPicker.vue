@@ -11,10 +11,10 @@
 				<span>{{infoMessage}}</span>
 			</div>
 		</div>
-		<div class="col-xs-4">
+		<div class="col-xs-4" v-show="$root.activeLocation.id !== undefined">
 			<h4>Menus</h4>
 		</div>
-		<div class="col-xs-4">
+		<div class="col-xs-4" v-show="$root.activeLocation.id !== undefined">
 			<div class="header">
 				<i class="fa check" :class="{
 						'transparent': !menuSelectable(activeMenu) || single,
@@ -27,7 +27,7 @@
 				</h4>
 			</div>
 		</div>
-		<div class="col-xs-4">
+		<div class="col-xs-4" v-show="$root.activeLocation.id !== undefined">
 			<div class="header">
 				<i class="fa check" :class="{
 						'transparent' : !activeItems.length || single,
@@ -212,8 +212,10 @@ export default {
 		}
 	},
 	watch: {
-		'$root.activeLocation': function () {
-			this.getMenus()
+		'$root.activeLocation': function (location) {
+			if (location.id !== undefined) {
+				this.getMenus()
+			}
 		}
 	},
 	created () {
