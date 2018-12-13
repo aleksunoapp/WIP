@@ -166,7 +166,7 @@
 								           v-model="selectedLocations"
 								           filterable
 								           multiple
-								           @change="updateLocations"
+								           @change="locationsSelected"
 								           placeholder="Select store">
 									<el-option v-for="store in stores"
 									           :key="store.value"
@@ -350,11 +350,8 @@ export default {
 		 * @param {array} selectedLocations - The selected locations
 		 * @returns {undefined}
 		 */
-		updateLocations (selectedLocations) {
-			if (selectedLocations.length) {
-				this.setChartTitle()
-				this.getGlobalRevenueByDay()
-			}
+		locationsSelected (selectedLocations) {
+			this.getGlobalRevenueByDay()
 		},
 		/**
 		 * To set the title for the chart
@@ -363,7 +360,7 @@ export default {
 		 */
 		setChartTitle () {
 			if (this.selectedLocations.length === 0) {
-				return
+				this.chartTitle = 'All stores'
 			} else if (this.selectedLocations.length === 1) {
 				this.chartTitle = this.selectedLocations[0].label
 			} else {
@@ -571,9 +568,11 @@ export default {
 			this.loadingGlobalRevenueByDay = true
 			this.setChartTitle()
 
+			const selectedStores = this.selectedLocations.length ? this.selectedLocations.map(x => x.value) : this.stores.map(x => x.value)
+
 			var analyticsVue = this
 			let requestParams = {
-				location_id: this.selectedLocations.map(x => x.value),
+				location_id: selectedStores,
 				search_type: this.searchPeriod
 			}
 			if (this.searchPeriod === 'custom') {
@@ -657,12 +656,7 @@ export default {
 							}
 						})
 						if (analyticsVue.stores.length) {
-							analyticsVue.selectedLocations.push(
-								analyticsVue.stores[0]
-							)
-							analyticsVue.updateLocations(
-								analyticsVue.selectedLocations
-							)
+							analyticsVue.getGlobalRevenueByDay()
 						}
 						analyticsVue.displaySpinner = false
 					}
