@@ -314,9 +314,9 @@ export default {
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
 						analyticsVue.usersByPlatform.push(
-							['iOS', response.payload.total_ios_user],
-							['Android', response.payload.total_android_user],
-							['Web', response.payload.total_web_user],
+							[`iOS (${response.payload.total_ios_user.toLocaleString('en-US', {style: 'decimal'})})`, response.payload.total_ios_user],
+							[`Android (${response.payload.total_android_user.toLocaleString('en-US', {style: 'decimal'})})`, response.payload.total_android_user],
+							[`Web (${response.payload.total_web_user.toLocaleString('en-US', {style: 'decimal'})})`, response.payload.total_web_user],
 							[
 								`Total: ${analyticsVue.formatNumber(
 									response.payload.total_user
