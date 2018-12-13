@@ -1,9 +1,9 @@
 <template>
 	<div class="modal">
 		<div class="modal-window">
-			<div @click="closeModal()" class="modal-close"></div>
 			<div class="clear"></div>
 			<div class="modal-content">
+				<div @click="closeModal()" class="modal-close"></div>
 				<div class="modal-header">
 					{{ langTerms.error[$root.meta.local.toLowerCase()] }}
 				</div>

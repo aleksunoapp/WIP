@@ -279,6 +279,7 @@ var authenticateToken = {
 			}).fail(reason => {
 				this.$root.logError('Passcode failed authentication, error message displayed')
 				_this.modalOpen = true
+				_this.modal.title = langTerms.unrecognized_name[this.$root.meta.local.toLowerCase()]
 				_this.modal.content = `${langTerms.were_sorry[this.$root.meta.local.toLowerCase()]} <b>${_this.verificationCode}</b> ${langTerms.database[this.$root.meta.local.toLowerCase()]}.`
 			})
 		}

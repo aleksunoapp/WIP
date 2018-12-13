@@ -63,9 +63,9 @@
 		</div>
 		<div class="modal" v-if="modalOpen">
 			<div class="modal-window">
-				<div @click="closeModal()" class="modal-close"></div>
 				<div class="clear"></div>
 				<div class="modal-content">
+					<div @click="closeModal()" class="modal-close"></div>
 					<div class="modal-header">
 						{{ modal.title }}
 					</div>
@@ -287,38 +287,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.modal {
-	position: fixed;
-	text-align: center;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	padding: 20px;
-	box-sizing: border-box;
-	background-color: rgba(255,255,255,0.5);
-	z-index: 4;
-	overflow: auto;
-}
-.modal-window {
-	margin: auto;
-	margin-top: 40px;
-	max-width: 370px;
-	background-color: #fff;
-	z-index: 3;
-	box-sizing: border-box;
-	box-shadow: 0 0 10px rgba(0,0,0,0.5);
-	border-radius: 5px;
-}
-.modal-close {
-	float: right;
-	margin-top: -30px;
-	width: 20px;
-	height: 20px;
-	background-image: url('../assets/images/close-button.png');
-	background-size: 20px 20px;
-	cursor: pointer;
-}
 .top-row {
 	display: flex;
 	flex-direction: row;

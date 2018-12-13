@@ -2,9 +2,9 @@
 <template>
 	<div class="modal">
 		<div class="modal-window">
-			<div @click="closeModal()" class="modal-close"></div>
 			<div class="clear"></div>
 			<div class="modal-content info-modal">
+				<div @click="closeModal()" class="modal-close"></div>
 				<div v-if="imageUrl" class="info-modal-image" :style="`background-image: url('${imageUrl}');`"></div>
 				<div>
 					<div class="info-modal-info-top">

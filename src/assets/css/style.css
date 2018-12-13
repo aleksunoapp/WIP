@@ -134,11 +134,15 @@ img {
 	border-radius: 3px;
 }
 
+.modal-content {
+	position: relative;
+}
+
 .modal-close {
 	position: absolute;
 	margin-right: 20px;
-	top: 25px;
-	transform: translateX(350px);
+	top: 5px;
+	transform: translateX(345px);
 	width: 20px;
 	height: 20px;
 	background-image: url('../images/close-button.png');
@@ -148,9 +152,12 @@ img {
 	cursor: pointer;
 	z-index: 100;
 }
+.info-modal .modal-close {
+	top: -25px;
+}
 @media (max-width: 410px) {
 	.modal-close{
-		transform: translateX(0px);
+		transform: translateX(15px);
 		right: 0;
 	}
 }
