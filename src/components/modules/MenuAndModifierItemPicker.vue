@@ -8,7 +8,7 @@
 		>
 			<menu-item-picker 
 				:previouslySelected="previouslySelected"
-				@update="itemsSelected">
+				@update="menuItemsSelected">
 			</menu-item-picker>
 		</tab>
 		<tab
@@ -17,7 +17,7 @@
 		>
 			<modifier-item-picker
 				:previouslySelected="previouslySelected"
-				@update="itemsSelected"
+				@update="modifierItemsSelected"
 			>
 			</modifier-item-picker>
 		</tab>
@@ -57,8 +57,14 @@ export default {
 	data: () => ({
 		activeTab: 0,
 		original: new Set(),
-		added: new Set(),
-		removed: new Set()
+		modifierItems: {
+			added: new Set(),
+			removed: new Set()
+		},
+		menuItems: {
+			added: new Set(),
+			removed: new Set()
+		}
 	}),
 	created () {
 		if (this.previouslySelected.length) {
@@ -70,30 +76,33 @@ export default {
 	},
 	methods: {
 		/**
-		 * To update selection of items
+		 * To update selection of menu items
 		 * @function
 		 * @param {array} items - Array of items selected by user
 		 * @returns {undefined}
 		 */
-		itemsSelected (items) {
-			console.log({items})
+		menuItemsSelected (items) {
 			const emitted = new Set(items.map(item => item.sku))
-			console.log({emitted})
-
-			this.added = this.difference(emitted, this.original)
-			console.log(this.added)
-
-			const previous = this.difference(emitted, this.added)
-			console.log({previous})
-
-			const removed = this.difference(this.original, previous)
-			console.log({removed})
-			this.removed = this.union(removed, this.removed)
-			console.log(this.removed)
-
-			const current = this.difference(this.union(this.original, this.added), this.removed)
-
-			console.log({current})
+			this.menuItems.added = this.difference(emitted, this.original)
+			const added = this.union(this.menuItems.added, this.modifierItems.added)
+			this.menuItems.removed = this.difference(this.original, emitted)
+			const removed = this.union(this.menuItems.removed, this.modifierItems.removed)
+			const current = this.difference(this.union(this.original, added), removed)
+			this.$emit('update', [...current])
+		},
+		/**
+		 * To update selection of modifier items
+		 * @function
+		 * @param {array} items - Array of items selected by user
+		 * @returns {undefined}
+		 */
+		modifierItemsSelected (items) {
+			const emitted = new Set(items.map(item => item.sku))
+			this.modifierItems.added = this.difference(emitted, this.original)
+			const added = this.union(this.modifierItems.added, this.menuItems.added)
+			this.modifierItems.removed = this.difference(this.original, emitted)
+			const removed = this.union(this.modifierItems.removed, this.menuItems.removed)
+			const current = this.difference(this.union(this.original, added), removed)
 			this.$emit('update', [...current])
 		},
 		/**

@@ -449,8 +449,7 @@ export default {
 		 * @returns {undefined}
 		 */
 		itemsSelected (items) {
-			this.selected.menuItems = items
-			this.newPromoCode.sku = [...this.selected.menuItems, ...this.selected.modifierItems]
+			this.newPromoCode.sku = items
 		},
 		/**
 		 * To generate a random string from the characters provided
