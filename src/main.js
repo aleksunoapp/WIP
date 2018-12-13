@@ -52,7 +52,8 @@ new Vue({
 				services: 0,
 				inspection: 0,
 				home: 0
-			}
+			},
+			serviceCategories: []
 		}
 	},
 	methods: {
