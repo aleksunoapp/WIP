@@ -6,7 +6,7 @@
 					<div>{{ langTerms.your_service_advisor[$root.meta.local.toLowerCase()] }},</div>
 					<div><b>{{ $root.meta.advisor.advisorName }}</b>, {{ langTerms.has[$root.meta.local.toLowerCase()] }}</div>
 					<span class="onboarding-first-text-highlight blue">
-						{{ this.$root.inspectionCounts.failCount + this.$root.inspectionCounts.warningCount }} {{ langTerms.recommendations[$root.meta.local.toLowerCase()] }}
+						{{ this.$root.inspectionCounts.concernCount + this.$root.inspectionCounts.failCount + this.$root.inspectionCounts.warningCount }} {{ langTerms.recommendations[$root.meta.local.toLowerCase()] }}
 					</span>
 					<div>{{ langTerms.for_your[$root.meta.local.toLowerCase()] }} <b>{{ $root.meta.carDescription }}.</b></div>
 				</div>

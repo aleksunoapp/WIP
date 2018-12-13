@@ -260,7 +260,11 @@ var authenticateToken = {
 
 						_this.$root.inspectionCounts = inspectionCounts
 
-						if (inspectionCounts.failCount === 0 && inspectionCounts.warningCount === 0) {
+						if (
+							inspectionCounts.concernCount === 0 &&
+							inspectionCounts.failCount === 0 &&
+							inspectionCounts.warningCount === 0
+						) {
 							_this.$router.push({name: 'inspection'})
 						} else {
 							_this.$router.push({name: 'tutorial'})
