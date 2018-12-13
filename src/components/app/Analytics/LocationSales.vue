@@ -170,6 +170,14 @@
 								<div class="col-md-12"
 								     id="chart_div"
 								     style="height:350px"></div>
+								<div 
+									v-if="totals.show"
+									class="col-md-12 text-center revenue-tracker-totals"
+								>
+									<p>
+										Total: {{totals.revenue}} in {{totals.orders}} orders.
+									</p>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -326,7 +334,7 @@ export default {
 			locationItemSummary: [],
 			lisErrorMessage: '',
 			t10giErrorMessage: '',
-			globalRevenueByDay: [['Day', 'Revenue', 'Orders'], [0, 0, 0]],
+			globalRevenueByDay: null,
 			lrbdErrorMessage: '',
 			stores: [],
 			selectedLocations: [
@@ -339,6 +347,27 @@ export default {
 			searchPeriod: 'week',
 			from_date: '',
 			to_date: ''
+		}
+	},
+	computed: {
+		totals () {
+			let show = false
+			let revenue = 0
+			let orders = 0
+			if (this.globalRevenueByDay !== null) {
+				show = true
+				const values = [...this.globalRevenueByDay]
+				values.shift()
+				values.forEach(day => {
+					revenue = revenue + day[1]
+					orders = orders + day[2]
+				})
+			}
+			return {
+				show,
+				revenue: this.formatUSD(revenue),
+				orders: this.formatNumber(orders)
+			}
 		}
 	},
 	watch: {
@@ -998,5 +1027,10 @@ export default {
   color: rgb(27, 30, 33);
   border: 1px rgb(198, 200, 202) solid;
   border-radius: 4px;
+}
+.revenue-tracker-totals {
+	font-family: 'Arial', sans-serif;
+	font-size: 13px;
+	color: rgb(34, 34, 34);
 }
 </style>

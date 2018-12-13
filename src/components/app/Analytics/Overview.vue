@@ -202,6 +202,14 @@
 							<div class="col-md-12"
 							     id="chart_div"
 							     style="height:350px"></div>
+							<div 
+								v-if="totals.show"
+								class="col-md-12 text-center revenue-tracker-totals"
+							>
+								<p>
+									Total: {{totals.revenue}} in {{totals.orders}} orders.
+								</p>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -293,7 +301,7 @@ export default {
 				monthly_order: 0
 			},
 			t10giErrorMessage: '',
-			globalRevenueByDay: [['Day', 'Revenue', 'Orders'], [0, 0, 0]],
+			globalRevenueByDay: null,
 			grbdErrorMessage: '',
 			stores: [],
 			selectedLocations: [],
@@ -301,6 +309,27 @@ export default {
 			searchPeriod: 'week',
 			from_date: '',
 			to_date: ''
+		}
+	},
+	computed: {
+		totals () {
+			let show = false
+			let revenue = 0
+			let orders = 0
+			if (this.globalRevenueByDay !== null) {
+				show = true
+				const values = [...this.globalRevenueByDay]
+				values.shift()
+				values.forEach(day => {
+					revenue = revenue + day[1]
+					orders = orders + day[2]
+				})
+			}
+			return {
+				show,
+				revenue: this.formatUSD(revenue),
+				orders: this.formatNumber(orders)
+			}
 		}
 	},
 	created () {
