@@ -236,6 +236,7 @@ import SelectLocationsPopup from '../../modules/SelectLocationsPopup'
 import MenuAndModifierItemPicker from '@/components/modules/MenuAndModifierItemPicker'
 import { mapGetters } from 'vuex'
 import { isNonNegativeNumber } from '@/controllers/utils'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	data () {
@@ -662,15 +663,13 @@ export default {
 							}
 						})
 						.catch(reason => {
-							if (
-								reason.responseJSON.code === 401 &&
-								reason.responseJSON.status === 'unauthorized'
-							) {
-								editPromoCodeVue.$router.push('/login/expired')
-								return
-							}
-							editPromoCodeVue.errorMessage = reason
-							window.scrollTo(0, 0)
+							ajaxErrorHandler({
+								reason,
+								errorText: 'We could not update the promocode',
+								errorName: 'errorMessage',
+								vue: editPromoCodeVue,
+								containerRef: 'modal'
+							})
 						})
 						.finally(() => {
 							editPromoCodeVue.updating = false
