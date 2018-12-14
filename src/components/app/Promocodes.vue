@@ -83,10 +83,26 @@
 									<el-select v-model="newPromoCode.apply_on"
 									           placeholder="Discount is applied to"
 									           size="small">
-										<el-option label="Menu Items"
-										           value="items"></el-option>
-										<el-option label="Delivery Fee"
-										           value="delivery"></el-option>
+										<el-option
+											label="Menu Items"
+											value="items"
+										>
+										</el-option>
+										<el-option
+											label="Delivery Fee"
+											value="delivery"
+										>
+										</el-option>
+										<el-option
+											label="Cart"
+											value="cart"
+										>
+										</el-option>
+										<el-option
+											label="Multiple-item Purchases"
+											value="multiple_item_quantity"
+										>
+										</el-option>
 									</el-select>
 									<button v-if="newPromoCode.apply_on === 'items'"
 									        type="submit"

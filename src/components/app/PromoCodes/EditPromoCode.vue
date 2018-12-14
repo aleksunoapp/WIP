@@ -79,14 +79,25 @@
 							           size="mini"
 							           class="margin-bottom-15"
 												 :disabled="!can('promocodes update')">
-								<el-option label="Menu Items"
-								           value="items">
+								<el-option
+									label="Menu Items"
+									value="items"
+								>
 								</el-option>
-								<el-option label="Delivery Fee"
-								           value="delivery">
+								<el-option
+									label="Delivery Fee"
+									value="delivery"
+								>
 								</el-option>
-								<el-option label="Cart"
-								           value="cart">
+								<el-option
+									label="Cart"
+									value="cart"
+								>
+								</el-option>
+								<el-option
+									label="Multiple-item Purchases"
+									value="multiple_item_quantity"
+								>
 								</el-option>
 							</el-select>
 							<button v-if="promoCode.apply_on === 'items'"
