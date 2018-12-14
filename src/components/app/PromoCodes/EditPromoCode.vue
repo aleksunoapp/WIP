@@ -315,20 +315,6 @@ export default {
 				this.promoCode.sku_array = items
 			}
 		},
-		union (setA, setB) {
-			var _union = new Set(setA)
-			for (var elem of setB) {
-				_union.add(elem)
-			}
-			return _union
-		},
-		difference (setA, setB) {
-			var _difference = new Set(setA)
-			for (var elem of setB) {
-				_difference.delete(elem)
-			}
-			return _difference
-		},
 		/**
 		 * To keep the select all checkbox in sync with the list
 		 * @function
