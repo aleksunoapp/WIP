@@ -353,16 +353,16 @@ img {
 	vertical-align: middle;
 }
 .accordion.grey {
-	background-color: rgba(216, 216, 216, 0.3);
+	background-color: rgba(243, 243, 243);
 }
 .accordion.red {
-	background-color: rgba(222, 0, 0, 0.3);
+	background-color: rgba(245, 179, 179);
 }
 .accordion.yellow {
-	background-color: rgba(244, 195, 0, 0.3);
+	background-color: rgba(252, 237, 179);
 }
 .accordion.green {
-	background-color: rgba(69, 172, 0, 0.3);
+	background-color: rgba(199, 230, 179);
 }
 .accordion.grey > .accordion-header {
 	background-color: rgba(102, 102, 102, 1);
@@ -386,6 +386,10 @@ img {
 	text-align: left;
 	text-transform: uppercase;
 	cursor: pointer;
+	max-height: 34px;
+}
+.accordion-header .accordion-image {
+	max-height: 24px;
 }
 
 .accordion-fail .accordion-header {
@@ -868,6 +872,15 @@ img {
 	top: -42px;
 	right: 34px;
 	transform: rotate(-30deg);
+}
+@media (max-width: 350px) {
+	.help-screen-information .help-screen-text,
+	.help-screen-select-all .help-screen-text,
+	.help-screen-contact .help-screen-text,
+	.help-screen-chat .help-screen-text,
+	.help-screen-inspection .help-screen-text {
+		width: 100px;
+	}
 }
 
 .summary-icons {

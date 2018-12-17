@@ -1,9 +1,25 @@
 <template>
 	<div>
 		<div class="help-screen-overlay" v-if="helpScreenShowing">
-			<a @click="closeHelpScreen()" class="help-screen-close">{{ langTerms.close[$root.meta.local.toLowerCase()] }}</a>
-			<div class="help-screen-information" v-if="this.$root.inspectionCounts.failCount !== 0 || this.$root.inspectionCounts.warningCount !== 0" :style="{'top': helpScreenVars.top, 'background-color': helpScreenVars.color}">
-				<span class="help-screen-text">{{ langTerms.view_more_info[$root.meta.local.toLowerCase()] }}</span>
+			<a 
+				@click="closeHelpScreen()"
+				class="help-screen-close"
+			>
+				{{ langTerms.close[$root.meta.local.toLowerCase()] }}
+			</a>
+			<div
+				class="help-screen-information"
+				v-if="
+					this.$root.inspectionCounts.failCount !== 0 ||
+					this.$root.inspectionCounts.warningCount !== 0
+				"
+				:style="`top: ${helpScreenVars.info.top}px;`"
+			>
+				<span
+					class="help-screen-text"
+				>
+					{{ langTerms.view_more_info[$root.meta.local.toLowerCase()] }}
+				</span>
 				<span class="help-screen-block">
 					<span class="information-icon"></span>
 				</span>
@@ -19,24 +35,25 @@
 					'french-width': $root.meta.local.toLowerCase() === 'fr-ca',
 					'spanish': $root.meta.local.toLowerCase() === 'es-mx'
 				}" 
-				:style="{
-					'top': helpScreenVars.selectTop,
-					'background-color': helpScreenVars.color,
-					'height': helpScreenVars.height - 1 + 'px'}
-				">
+				:style="`
+					top: ${helpScreenVars.selectAll.top}px;
+					background-color: ${helpScreenVars.selectAll.color};
+					height: ${helpScreenVars.selectAll.height - 1}px;
+				`"
+			>
 				<span class="help-screen-text">
 					{{ langTerms.select_all_services[$root.meta.local.toLowerCase()] }}
 				</span>
 				<span
 					class="help-screen-block"
 					:class="{
-						'help-screen-height': helpScreenVars.height > 30,
-						'help-screen-selected': helpScreenVars.selectChecked,
-						'help-screen-not-selected': !helpScreenVars.selectChecked
+						'help-screen-height': helpScreenVars.selectAll.height > 30,
+						'help-screen-selected': helpScreenVars.selectAll.checked,
+						'help-screen-not-selected': !helpScreenVars.selectAll.checked
 					}">
-					<span> {{ (helpScreenVars.selectChecked) ? langTerms.remove_all[$root.meta.local.toLowerCase()] : langTerms.select_all[$root.meta.local.toLowerCase()] }} </span>
+					<span> {{ (helpScreenVars.selectAll.checked) ? langTerms.remove_all[$root.meta.local.toLowerCase()] : langTerms.select_all[$root.meta.local.toLowerCase()] }} </span>
 					<div class="service-checkbox">
-						<input type="checkbox" :checked="helpScreenVars.selectChecked">
+						<input type="checkbox" :checked="helpScreenVars.selectAll.checked">
 						<label>
 							<span class="check"></span>
 							<span class="box"></span>
@@ -45,11 +62,23 @@
 				</span>
 				<div class="help-screen-arrow"></div>
 			</div>
-			<div class="help-screen-select-individual" v-if="this.$root.inspectionCounts.failCount !== 0 || this.$root.inspectionCounts.warningCount !== 0" :style="{'top': helpScreenVars.top, 'background-color': helpScreenVars.color}">
-				<span class="help-screen-text">{{ langTerms.select_services_individually[$root.meta.local.toLowerCase()] }}</span>
+			<div
+				class="help-screen-select-individual"
+				v-if="
+					this.$root.inspectionCounts.failCount !== 0 ||
+					this.$root.inspectionCounts.warningCount !== 0
+				"
+				:style="`
+					top: ${helpScreenVars.select.top}px;
+					background-color: ${helpScreenVars.select.color};
+				`"
+			>
+				<span class="help-screen-text">
+					{{ langTerms.select_services_individually[$root.meta.local.toLowerCase()] }}
+				</span>
 				<span class="help-screen-block">
 					<div class="service-checkbox">
-						<input type="checkbox" :checked="helpScreenVars.checked">
+						<input type="checkbox" :checked="helpScreenVars.select.checked">
 						<label>
 							<span class="check"></span>
 							<span class="box"></span>
@@ -99,7 +128,10 @@
 			<template v-for="(category, index) in serviceCategories" v-if="category.id === '5'">
 				<div class="grey accordion" :key="`category-${index}`">
 					<div @click="toggleAccordion(category)" class="accordion-header">
-						<img :src="require('../assets/images/concern-white.png')"> {{ $root.meta.customerConcernsLabel }} {{ ($root.inspectionCounts[countVariables[category.serviceCategoryType]] !== 0) ? `(${$root.inspectionCounts[countVariables[category.serviceCategoryType]]})` : '' }}
+						<img
+							:src="require('../assets/images/concern-white.png')"
+							class="accordion-image"
+						> {{ $root.meta.customerConcernsLabel }} {{ ($root.inspectionCounts[countVariables[category.serviceCategoryType]] !== 0) ? `(${$root.inspectionCounts[countVariables[category.serviceCategoryType]]})` : '' }}
 						<div class="accordion-status" v-if="$root.inspectionCounts[countVariables[category.serviceCategoryType]] !== 0"></div>
 						<div class="clear"></div>
 					</div>
@@ -118,7 +150,13 @@
 								<div class="summary-table-cell" >
 									<span v-if="showRemoveAllCheckBox(category)"> {{ (category.allSelected) ? langTerms.remove_all[$root.meta.local.toLowerCase()] : langTerms.select_all[$root.meta.local.toLowerCase()] }} </span>
 									<div class="service-checkbox" v-if="showRemoveAllCheckBox(category)">
-										<input type="checkbox" :id="`select-${category.serviceCategoryType}`" v-model="category.allSelected" @change="toggleAll(category)">
+										<input
+											type="checkbox"
+											:id="`select-${category.serviceCategoryType}`"
+											v-model="category.allSelected"
+											@change="toggleAll(category)"
+											class="select-all"
+										>
 										<label :for="`select-${category.serviceCategoryType}`">
 											<span class="check"></span>
 											<span class="box"></span>
@@ -177,7 +215,9 @@
 															type="checkbox"
 															:id="`sub-service-${serviceIndex}-${subServiceIndex}`"
 															v-model="service.subServices[subServiceIndex].isSelected"
-															@change="toggleCheckbox(category, service, subServiceIndex)">
+															@change="toggleCheckbox(category, service, subServiceIndex)"
+															class="select"
+														>
 														<label :for="`sub-service-${serviceIndex}-${subServiceIndex}`">
 															<span class="check"></span>
 															<span class="box"></span>
@@ -273,7 +313,13 @@
 								<div class="summary-table-cell">
 									<span> {{ (category.allSelected) ? langTerms.remove_all[$root.meta.local.toLowerCase()] : langTerms.select_all[$root.meta.local.toLowerCase()] }} </span>
 									<div class="service-checkbox">
-										<input type="checkbox" :id="`select-${category.serviceCategoryType}`" v-model="category.allSelected" @change="toggleAll(category)">
+										<input 
+											type="checkbox"
+											:id="`select-${category.serviceCategoryType}`"
+											v-model="category.allSelected"
+											@change="toggleAll(category)"
+											class="select-all"
+										>
 										<label :for="`select-${category.serviceCategoryType}`">
 											<span class="check"></span>
 											<span class="box"></span>
@@ -299,7 +345,13 @@
 													<span class="price" v-else-if="subService.price !== 0">{{ formatCurrency(subService.price) }} </span>
 													<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 													<div class="service-checkbox">
-														<input type="checkbox" :id="`sub-service-${subService.id}`" v-model="subService.isSelected" @change="toggleCheckbox(category, subService)">
+														<input
+															type="checkbox"
+															:id="`sub-service-${subService.id}`"
+															v-model="subService.isSelected"
+															@change="toggleCheckbox(category, subService)"
+															class="select"
+														>
 														<label :for="`sub-service-${subService.id}`">
 															<span class="check"></span>
 															<span class="box"></span>
@@ -323,7 +375,13 @@
 												<span class="price" v-else-if="service.price !== 0">{{ formatCurrency(service.price) }}</span>
 												<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 												<div class="service-checkbox">
-													<input type="checkbox" :id="`sub-service-${service.id}`" v-model="service.isSelected" @change="toggleCheckbox(category, service)">
+													<input
+														type="checkbox"
+														:id="`sub-service-${service.id}`"
+														v-model="service.isSelected"
+														@change="toggleCheckbox(category, service)"
+														class="select"
+													>
 													<label :for="`sub-service-${service.id}`">
 														<span class="check"></span>
 														<span class="box"></span>
@@ -409,10 +467,21 @@ export default {
 			timeExpired: false,
 			helpScreenShowing: false,
 			helpScreenVars: {
-				top: 0,
-				color: '#fff',
-				selectTop: 0,
-				height: 0
+				info: {
+					top: 0,
+					backgroundColor: ''
+				},
+				selectAll: {
+					top: 0,
+					height: 0,
+					backgroundColor: '',
+					checked: false
+				},
+				select: {
+					top: 0,
+					backgroundColor: '',
+					checked: false
+				}
 			},
 			deferModal: false,
 			activeDeferralService: {},
@@ -1122,21 +1191,23 @@ export default {
 				category.defaultExpended = true
 			})
 			setTimeout(() => {
-				if (this.$root.inspectionCounts.failCount > 0) {
-					this.helpScreenVars.height = $('.wrapper').find('.accordion.red').find('.summary-table-row').first().height()
-					this.helpScreenVars.top = ($('.wrapper').find('.accordion.red').offset().top + this.helpScreenVars.height + 34) + 'px'
-					this.helpScreenVars.selectTop = ($('.wrapper').find('.accordion.red').offset().top + 34) + 'px'
-					this.helpScreenVars.color = '#f4b2b2'
-					this.helpScreenVars.checked = $('.accordion.red').find('.summary-item').find('input').first()[0].checked
-					this.helpScreenVars.selectChecked = $('.accordion.red').find('input').first()[0].checked
-				} else if (this.$root.inspectionCounts.warningCount > 0) {
-					this.helpScreenVars.height = $('.wrapper').find('.accordion.yellow').find('.summary-table-row').first().height()
-					this.helpScreenVars.top = ($('.wrapper').find('.accordion.yellow').offset().top + this.helpScreenVars.height + 34) + 'px'
-					this.helpScreenVars.selectTop = ($('.wrapper').find('.accordion.yellow').offset().top + 34) + 'px'
-					this.helpScreenVars.color = '#fbeab4'
-					this.helpScreenVars.checked = $('.accordion.yellow').find('.summary-item').find('input').first()[0].checked
-					this.helpScreenVars.selectChecked = $('.accordion.yellow').find('input').first()[0].checked
-				}
+				const info = document.querySelector('.information-icon:not(.no-icon-bg)')
+				this.helpScreenVars.info.top = info.closest('.summary-table-cell').offsetTop
+				this.helpScreenVars.info.color = getComputedStyle(info.closest('.accordion')).backgroundColor
+
+				const selectAll = document.querySelector('input.select-all')
+				const selectAllParent = selectAll.closest('.summary-table-cell')
+				this.helpScreenVars.selectAll.top = selectAllParent.offsetTop
+				this.helpScreenVars.selectAll.height = selectAllParent.offsetHeight
+				this.helpScreenVars.selectAll.color = getComputedStyle(selectAll.closest('.accordion')).backgroundColor
+				this.helpScreenVars.selectAll.checked = selectAll.checked
+
+				const select = document.querySelector('input.select')
+				const selectParent = select.closest('.summary-table-cell')
+				this.helpScreenVars.select.top = selectParent.offsetTop
+				this.helpScreenVars.select.height = selectParent.offsetHeight
+				this.helpScreenVars.select.color = getComputedStyle(select.closest('.accordion')).backgroundColor
+				this.helpScreenVars.select.checked = select.checked
 
 				this.helpScreenShowing = true
 			}, 0)
