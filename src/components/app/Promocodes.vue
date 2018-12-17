@@ -244,7 +244,7 @@
 						     v-if="promoCodes.length">
 							<div class="mt-list-container list-news ext-1 no-border">
 								<ul>
-									<li class="mt-list-item actions-at-left margin-top-15"
+									<li class="mt-list-item actions-at-left margin-top-15 two-vertical-actions"
 									    :class="{'animated' : animated === `promoCode-${promoCode.id}`}"
 									    v-for="promoCode in promoCodes"
 									    :id="'promoCode-' + promoCode.id"
@@ -988,5 +988,8 @@ export default {
 }
 .mt-element-list .list-news.ext-1.mt-list-container ul > .mt-list-item:hover {
 	background-color: white;
+}
+.two-vertical-actions {
+	min-height: 90px;
 }
 </style>
