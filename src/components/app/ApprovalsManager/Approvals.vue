@@ -174,7 +174,9 @@ export default {
 			],
 			view: 'list',
 			requests: [],
-			selectedRequest: {},
+			selectedRequest: {
+				action: ''
+			},
 			message: '',
 			errorMessage: '',
 			loading: false,
@@ -183,14 +185,23 @@ export default {
 			noResults: false,
 			activePage: 1,
 			total: 0,
-			recordsPerPage: 10
+			recordsPerPage: 10,
+			weekdayNames: {
+				'0': 'Sunday',
+				'1': 'Monday',
+				'2': 'Tuesday',
+				'3': 'Wednesday',
+				'4': 'Thursday',
+				'5': 'Friday',
+				'6': 'Saturday'
+			}
 		}
 	},
 	computed: {
 		request () {
 			if (this.selectedRequest._id !== undefined) {
 				const keys = Object.keys(this.selectedRequest.new_values)
-				return keys.map(key => {
+				const mappedKeys = keys.map(key => {
 					let label
 					let display
 					if (FieldLabels[key] === undefined) {
@@ -208,6 +219,39 @@ export default {
 						display
 					}
 				}).filter(key => key.display)
+
+				if (this.selectedRequest.action.startsWith('add store holiday hours')) {
+					const index = mappedKeys.findIndex(key => key.label === 'Holiday Hours')
+					const week = mappedKeys[index]
+					mappedKeys.splice(index, 1)
+					this.addHours(week.modified, mappedKeys)
+				}
+				if (this.selectedRequest.action.startsWith('add store hours')) {
+					const index = mappedKeys.findIndex(key => key.label === 'Hours')
+					const week = mappedKeys[index]
+					mappedKeys.splice(index, 1)
+					this.addHours(week.modified, mappedKeys)
+				}
+				if (this.selectedRequest.action.startsWith('add store delivery hours')) {
+					const index = mappedKeys.findIndex(key => key.label === 'Deliveryhour')
+					const week = mappedKeys[index]
+					mappedKeys.splice(index, 1)
+					this.addHours(week.modified, mappedKeys)
+				}
+				if (this.selectedRequest.action.startsWith('add menu hours')) {
+					const index = mappedKeys.findIndex(key => key.label === 'Hours')
+					const week = mappedKeys[index]
+					mappedKeys.splice(index, 1)
+					this.addHours(week.modified, mappedKeys)
+				}
+				if (this.selectedRequest.action.startsWith('add category hours')) {
+					const index = mappedKeys.findIndex(key => key.label === 'Category hours')
+					const week = mappedKeys[index]
+					mappedKeys.splice(index, 1)
+					this.addHours(week.modified, mappedKeys)
+				}
+
+				return mappedKeys
 			} else {
 				return []
 			}
@@ -217,6 +261,16 @@ export default {
 		this.getRequests()
 	},
 	methods: {
+		addHours (input, output) {
+			input.forEach(weekday => {
+				output.push({
+					label: this.weekdayNames[weekday.day],
+					existing: '',
+					modified: `${weekday.open_time} - ${weekday.close_time} (${weekday.open ? 'open' : 'closed'})`,
+					display: true
+				})
+			})
+		},
 		/**
 		 * To approve a request
 		 * @function

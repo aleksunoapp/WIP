@@ -463,9 +463,11 @@ export default {
 						deliveryhour: this.newDeliveryHours
 					})
 						.then(response => {
-							let days = _this.reorderDays(response.payload)
-							days = _this.reformatDays(days)
-							_this.deliveryHours = days
+							if (response.payload && response.payload.pending_approval !== true) {
+								let days = _this.reorderDays(response.payload)
+								days = _this.reformatDays(days)
+								_this.deliveryHours = days
+							}
 							this.showCreateSuccess(response.payload)
 						})
 						.catch(reason => {

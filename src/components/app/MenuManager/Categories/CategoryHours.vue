@@ -896,24 +896,24 @@ export default {
 									_this.saveMessage = 'The Category Hours have been sent for approval'
 								} else {
 									_this.saveMessage = 'The Category Hours have been saved'
+									const sundayIndex = response.payload.findIndex(
+										day => day.day === 0
+									)
+									let weekStartingMonday = response.payload
+									weekStartingMonday.push(response.payload[sundayIndex])
+									weekStartingMonday.splice(sundayIndex, 1)
+									_this.existingHours = weekStartingMonday.map(day => {
+										return {
+											...day,
+											open_time: day.open_time.substr(0, 5),
+											close_time: day.close_time.substr(0, 5)
+										}
+									})
 								}
-
-								const sundayIndex = response.payload.findIndex(
-								day => day.day === 0
-							)
-								let weekStartingMonday = response.payload
-								weekStartingMonday.push(response.payload[sundayIndex])
-								weekStartingMonday.splice(sundayIndex, 1)
-								_this.existingHours = weekStartingMonday.map(day => {
-									return {
-										...day,
-										open_time: day.open_time.substr(0, 5),
-										close_time: day.close_time.substr(0, 5)
-									}
-								})
 							}
 						})
 						.catch(reason => {
+							console.log(reason)
 							ajaxErrorHandler({
 								reason,
 								errorText: 'We could not save these hours',
