@@ -99,7 +99,7 @@
 											       id="form_control_name"
 														 name="add_points"
 											       v-model="points">
-											<label for="form_control_name">Add points</label>
+											<label for="form_control_name">Add Points</label>
 										</div>
 										<div class="add-points__button">
 											<button @click="addPoints()"
