@@ -182,7 +182,7 @@
 												<i class="fa fa-lg fa-eye"></i>
 											</a>
 										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['reward_tiers items update']"
+										<el-tooltip v-if="$root.permissions['reward_tiers items update'] && $root.activeLocation.is_corporate"
 										            content="Apply to items"
 										            effect="light"
 										            placement="right">
