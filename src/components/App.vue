@@ -789,6 +789,12 @@ div.tab-pane::-webkit-scrollbar-track {
 .pt-1em {
 	padding-top: 1em;
 }
+.pl-5px {
+	padding-left: 5px;
+}
+.pr-5px {
+	padding-left: 5px;
+}
 .px-1em {
 	padding-left: 1em;
 	padding-right: 1em;
@@ -830,6 +836,13 @@ div.tab-pane::-webkit-scrollbar-track {
 }
 .ml-5px {
 	margin-left: 1em;
+}
+.mr-5px {
+	margin-right: 5px;
+}
+
+.white-space-no-wrap {
+	white-space: nowrap;
 }
 
 .position-relative {

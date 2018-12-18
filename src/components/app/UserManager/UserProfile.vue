@@ -26,7 +26,7 @@
 										<div style="text-align:center"
 										     class="profile-usertitle">
 											<div class="profile-usertitle-name">
-												<h2>{{ user.first_name }} {{ user.last_name }}</h2>
+												<h2>{{ $route.params.name }}</h2>
 											</div>
 										</div>
 										<!-- END SIDEBAR USER TITLE -->
@@ -41,19 +41,26 @@
 										<!-- SIDEBAR MENU -->
 										<div class="profile-usermenu">
 											<ul class="nav">
-												<li :class="{ active: isActive(this.tab1, 0) }">
+												<li :class="{ 'active': tab === 0 }">
 													<a a
-													   @click="changeTab(1, 0)"
+													   @click="changeTab(0)"
 													   aria-expanded="true">
 														<i class="fa fa-list-ol"
 														   aria-hidden="true"></i> Orders </a>
 												</li>
-												<li :class="{ active: isActive(this.tab1, 1) }">
+												<li :class="{ 'active': this.tab === 1 }">
 													<a a
-													   @click="changeTab(1, 1)"
+													   @click="changeTab(1)"
 													   aria-expanded="true">
 														<i class="fa fa-picture-o"
 														   aria-hidden="true"></i> Gallery </a>
+												</li>
+												<li :class="{ 'active': this.tab === 2 }">
+													<a a
+													   @click="changeTab(2)"
+													   aria-expanded="true">
+														<i class="fa fa-list-alt"
+														   aria-hidden="true"></i> Transactions </a>
 												</li>
 											</ul>
 										</div>
@@ -65,11 +72,11 @@
 									<!-- STAT -->
 									<div class="row list-separated profile-stat">
 										<div>
-											<div class="uppercase profile-stat-title"> {{ user.total_orders }} </div>
+											<div class="uppercase profile-stat-title"> {{ formatInteger(user.total_orders, '&infin;') }} </div>
 											<div class="uppercase profile-stat-text"> Total Orders </div>
 										</div>
 										<div class="margin-top-20">
-											<div class="uppercase profile-stat-title"> ${{ user.total_spent }} </div>
+											<div class="uppercase profile-stat-title">{{ formatUSD(user.total_spent, '&infin;') }} </div>
 											<div class="uppercase profile-stat-text"> Total Spent </div>
 										</div>
 									</div>
@@ -153,9 +160,20 @@
 						<div class="tabbable-custom-profile">
 							<div class="tab-content">
 								<!--tab-pane-->
-								<div v-show="tab1 === 0"
+								<div v-show="tab === 0"
 								     class="tab-pane active">
-									<div class="portlet-body">
+									<div
+										v-show="loadingOrders"
+									>
+										<div class="col-xs-12 relative-block">
+											<loading-screen :show="loadingOrders" class="margin-top-20">
+											</loading-screen>
+										</div>
+									</div>
+									<div
+										v-show="!loadingOrders"
+										class="portlet-body"
+									>
 										<div class="clearfix margin-bottom-10"
 										     v-if="orders.length">
 											<el-dropdown trigger="click"
@@ -195,18 +213,31 @@
 											              :activePage="activePage"
 											              @pageResults="pageResultsUpdate"></page-results>
 										</div>
-										<table class="table table-striped table-bordered table-advance table-hover">
+										<table class="table table-striped table-advance table-hover">
 											<thead>
 												<tr>
 													<th>
-														<i class="fa fa-building"></i> Store </th>
+														<span class="white-space-no-wrap">
+															<i class="fa fa-building"></i> Store
+														</span>
+													</th>
 													<th class="hidden-xs">
-														<i class="fa fa-usd"></i> Amount </th>
+														<span class="white-space-no-wrap">
+															<i class="fa fa-usd"></i> Amount
+														</span>
+													</th>
 													<th>
-														<i class="fa fa-calendar"></i> Order Date </th>
+														<span class="white-space-no-wrap">
+															<i class="fa fa-calendar"></i> Order Date
+														</span>
+													</th>
 													<th>
-														<i class="fa fa-hourglass-start"></i> Status </th>
-													<th> </th>
+														<span class="white-space-no-wrap">
+															<i class="fa fa-hourglass-start"></i> Status
+														</span>
+													</th>
+													<th>
+													</th>
 												</tr>
 											</thead>
 											<tbody>
@@ -249,7 +280,7 @@
 									</div>
 								</div>
 								<!--tab-pane-->
-								<div v-show="tab1 === 1"
+								<div v-show="tab === 1"
 								     class="tab-pane active">
 									<div class="row"
 									     v-if="socialFeed.length">
@@ -293,6 +324,149 @@
 									</div>
 									<!--tab-pane-->
 								</div>
+								<div v-show="tab === 2"
+								     class="tab-pane active">
+									<div
+										v-show="transactions.loading"
+									>
+										<div class="col-xs-12 relative-block">
+											<loading-screen :show="transactions.loading" class="margin-top-20">
+											</loading-screen>
+										</div>
+									</div>
+									<div
+										v-show="!transactions.loading"
+										class="portlet-body"
+									>
+										<div
+											v-if="currentActivePageTransactions.length"
+											class="clearfix margin-bottom-10"
+										>
+											<el-select 
+												v-model="transactions.sortBy"
+												size="mini"
+												@change="sortTransactions"
+											>
+												<el-option
+													key="newest"
+													label="New to old ↓"
+													value="newest"
+												>
+												</el-option>
+												<el-option
+													key="oldest"
+													label="Old to new ↑"
+													value="oldest"
+												>
+												</el-option>
+											</el-select>
+											<a 
+												@click="downloadTransactionsCSV()"
+												:download="`${user.first_name} ${user.last_name} Transactions.csv`"
+												 ref="transactionsCSV"
+												 class="margin-left-5">
+												Save as CSV
+												<i class="fa fa-download" aria-hidden="true"></i>
+											</a>
+											<page-results 
+												class="pull-right"
+												:totalResults="transactions.data.length"
+												:activePage="transactions.activePage"
+												@pageResults="transactionsPageResultsUpdate"
+											>
+											</page-results>
+										</div>
+										<table class="table table-striped table-advance">
+											<thead>
+												<tr>
+													<th>
+														ID
+													</th>
+													<th>
+														<span class="white-space-no-wrap">
+															Order ID
+														</span>
+													</th>
+													<th>
+														Status
+													</th>
+													<th>
+														<span class="white-space-no-wrap">
+															<i class="fa fa-usd"></i> Amount
+														</span>
+													</th>
+													<th>
+														App
+													</th>
+													<th>
+														Transaction no
+													</th>
+													<th>
+														<span class="white-space-no-wrap">
+															<i class="fa fa-clock-o"></i> Time
+														</span>
+													</th>
+												</tr>
+											</thead>
+
+											<tbody>
+												<tr
+													v-for="transaction in currentActivePageTransactions"
+													:key="transaction.id"
+												>
+													<td class="align-middle">
+														{{transaction.external_id}}
+													</td>
+													<td class="align-middle">
+														{{transaction.order_id}}
+													</td>
+													<td class="align-middle">
+														<span
+															class="label label-sm"
+															:class="{ 
+																'label-success' : transaction.status === 'success',
+																'label-info' : transaction.status !== 'success',
+																'label-danger' : transaction.status === 'fail'
+															}"
+														>
+															{{ transaction.status }}
+														</span>
+													</td>
+													<td class="align-middle">
+														{{formatUSD(transaction.total)}}<br/>
+														<span class="text-muted">{{transaction.type}}</span>
+													</td>
+													<td class="align-middle">
+														{{transaction.app_version}}<br/>
+														<span class="text-muted">{{getPlatformName(transaction.platform)}}</span>
+													</td>
+													<td class="align-middle">
+														{{transaction.tr_number}}
+													</td>
+													<td class="align-middle">
+														{{transaction.updated_at}}
+													</td>
+												</tr>
+											</tbody>
+										</table>
+										<div
+											v-if="currentActivePageTransactions.length && transactionsNumPages > 1"
+										>
+											<pagination 
+												:passedPage="transactions.activePage"
+												:numPages="transactionsNumPages"
+												@activePageChange="transactionsActivePageUpdate"
+											>
+											</pagination>
+										</div>
+										<p
+											v-if="!transactions.data.length"
+											class="text-center"
+										>
+											There are no transactions for this user
+										</p>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -316,8 +490,10 @@ import Tab from '../../modules/Tab'
 import '../../../assets/css/profile.min.css'
 import UsersFunctions from '../../../controllers/Users'
 import UserAttributesFunctions from '../../../controllers/UserAttributes'
+import TransactionsFunctions from '@/controllers/Transactions'
 import ButtonGroup from '../../modules/ButtonGroup'
 import Checkbox from '../../modules/Checkbox'
+import LoadingScreen from '../../modules/LoadingScreen'
 import Dropdown from '../../modules/Dropdown'
 import Pagination from '../../modules/Pagination'
 import PageResults from '../../modules/PageResults'
@@ -325,18 +501,35 @@ import ajaxErrorHandler from '../../../controllers/ErrorController'
 import $ from 'jquery'
 import { mapGetters } from 'vuex'
 import json2csv from 'json2csv'
+import { formatUSD, formatInteger } from '@/controllers/utils'
 
 export default {
+	components: {
+		Breadcrumb,
+		Tabset,
+		Tab,
+		ViewOrder,
+		ButtonGroup,
+		Checkbox,
+		Message,
+		Pagination,
+		PageResults,
+		Dropdown,
+		LoadingScreen
+	},
 	data () {
 		return {
 			breadcrumbArray: [
 				{ name: 'Users', link: '/app/user_manager/users' },
 				{ name: 'User Profile', link: false }
 			],
-			tab0: 0,
-			tab1: 0,
-			tab2: 0,
-			user: {},
+			tab: 0,
+			user: {
+				total_orders: '',
+				total_spent: ''
+			},
+			loading: false,
+			loadingOrders: false,
 			orders: [],
 			orderBeingViewed: {},
 			viewOrderModalDisplayed: false,
@@ -353,7 +546,20 @@ export default {
 			points: '',
 			adding: false,
 			addErrorMessage: '',
-			parser: null
+			parser: null,
+			transactions: {
+				loading: false,
+				data: [],
+				activePage: 1,
+				resultsPerPage: 25,
+				sortBy: 'newest',
+				parser: null
+			},
+			platforms: {
+				android: 'Android',
+				ios: 'iOS',
+				web: 'web'
+			}
 		}
 	},
 	computed: {
@@ -366,6 +572,15 @@ export default {
 				this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
 			)
 		},
+		currentActivePageTransactions () {
+			return this.transactions.data.slice(
+				this.transactions.resultsPerPage * (this.transactions.activePage - 1),
+				this.transactions.resultsPerPage * (this.transactions.activePage - 1) + this.transactions.resultsPerPage
+			)
+		},
+		transactionsNumPages () {
+			return Math.ceil(this.transactions.data.length / this.transactions.resultsPerPage)
+		},
 		...mapGetters(['can'])
 	},
 	mounted () {
@@ -374,7 +589,7 @@ export default {
 		this.getItemsOfuser()
 		this.getUserOrders()
 		this.getUserSocialFeed()
-		window.scrollTo(0, 0)
+		this.getUserTransactions()
 
 		this.parser = new json2csv.Parser({
 			fields: [
@@ -422,6 +637,39 @@ export default {
 		})
 	},
 	methods: {
+		sortTransactions () {
+			this.transactions.data.sort((a, b) => {
+				if (a.created_at > b.created_at) {
+					return this.transactions.sortBy === 'newest' ? -1 : 1
+				} else if (a.created_at < b.created_at) {
+					return this.transactions.sortBy === 'newest' ? -1 : 1
+				} else {
+					if (a.id > b.id) {
+						return -1
+					} else if (a.id < b.id) {
+						return 1
+					} else {
+						return 0
+					}
+				}
+			})
+		},
+		/**
+		 * To format a number as currency
+		 * @function
+		 * @param {string} val - The number to format
+		 * @param {string} fallback - Preferred fallback return value
+		 * @returns {string} The formatted currency amount
+		 */
+		formatUSD: formatUSD,
+		/**
+		 * To format a number as currency
+		 * @function
+		 * @param {string} val - The number to format
+		 * @param {string} fallback - Preferred fallback return value
+		 * @returns {string} The formatted currency amount
+		 */
+		formatInteger: formatInteger,
 		/**
 		 * To download orders in a CSV file
 		 * @function
@@ -429,6 +677,193 @@ export default {
 		 */
 		downloadCsv () {
 			this.$refs.csv.href = `data:text/csv,${this.parser.parse(this.orders)}`
+		},
+		/**
+		 * To download transactions in a CSV file
+		 * @function
+		 * @returns {undefined}
+		 */
+		downloadTransactionsCSV () {
+			if (this.transactions.parser === null) {
+				this.transactions.parser = new json2csv.Parser({
+					fields: [
+						{
+							label: 'Id',
+							value: 'id',
+							default: ''
+						},
+						{
+							label: 'Order Id',
+							value: 'order_id',
+							default: ''
+						},
+						{
+							label: 'Tr Number',
+							value: 'tr_number',
+							default: ''
+						},
+						{
+							label: 'External Id',
+							value: 'external_id',
+							default: ''
+						},
+						{
+							label: 'Total',
+							value: 'total',
+							default: ''
+						},
+						{
+							label: 'Type',
+							value: 'type',
+							default: ''
+						},
+						{
+							label: 'Billing Id',
+							value: 'billing_id',
+							default: ''
+						},
+						{
+							label: 'Status',
+							value: 'status',
+							default: ''
+						},
+						{
+							label: 'Platform',
+							value: 'platform',
+							default: ''
+						},
+						{
+							label: 'Ip Address',
+							value: 'ip_address',
+							default: ''
+						},
+						{
+							label: 'App Version',
+							value: 'app_version',
+							default: ''
+						},
+						{
+							label: 'Created At',
+							value: 'created_at',
+							default: ''
+						},
+						{
+							label: 'Updated At',
+							value: 'updated_at',
+							default: ''
+						},
+						{
+							label: 'Request Merchid',
+							value: 'request_merchid',
+							default: ''
+						},
+						{
+							label: 'Request Amount',
+							value: 'request_amount',
+							default: ''
+						},
+						{
+							label: 'Request Orderid',
+							value: 'request_orderid',
+							default: ''
+						},
+						{
+							label: 'Request Capture',
+							value: 'request_capture',
+							default: ''
+						},
+						{
+							label: 'Request Account',
+							value: 'request_account',
+							default: ''
+						},
+						{
+							label: 'Request Expiry',
+							value: 'request_expiry',
+							default: ''
+						},
+						{
+							label: 'Request Profile',
+							value: 'request_profile',
+							default: ''
+						},
+						{
+							label: 'Request Acctid',
+							value: 'request_acctid',
+							default: ''
+						},
+						{
+							label: 'Response Respproc',
+							value: 'response_respproc',
+							default: ''
+						},
+						{
+							label: 'Response Amount',
+							value: 'response_amount',
+							default: ''
+						},
+						{
+							label: 'Response Resptext',
+							value: 'response_resptext',
+							default: ''
+						},
+						{
+							label: 'Response Cardproc',
+							value: 'response_cardproc',
+							default: ''
+						},
+						{
+							label: 'Response Acctid',
+							value: 'response_acctid',
+							default: ''
+						},
+						{
+							label: 'Response Retref',
+							value: 'response_retref',
+							default: ''
+						},
+						{
+							label: 'Response Respstat',
+							value: 'response_respstat',
+							default: ''
+						},
+						{
+							label: 'Response Respcode',
+							value: 'response_respcode',
+							default: ''
+						},
+						{
+							label: 'Response Account',
+							value: 'response_account',
+							default: ''
+						},
+						{
+							label: 'Response Merchid',
+							value: 'response_merchid',
+							default: ''
+						},
+						{
+							label: 'Response Token',
+							value: 'response_token',
+							default: ''
+						}
+					]
+				})
+			}
+			this.$refs.transactionsCSV.href = `data:text/csv,${this.transactions.parser.parse(this.transactions.data)}`
+		},
+		/**
+		 * To format a platform name
+		 * @function
+		 * @param {string} name - The name to format
+		 * @returns {string} The formatted platform name
+		 */
+		getPlatformName (name) {
+			try {
+				return this.platforms[name.toLowerCase()] || name
+			} catch (e) {
+				return ''
+			}
 		},
 		/**
 		 * To clear an error
@@ -447,9 +882,6 @@ export default {
 		 */
 		updateSortByOrder (value) {
 			this.sortBy.order = value
-			this.filteredResults.length
-				? this.activeSearchPageUpdate(1)
-				: this.activePageUpdate(1)
 		},
 		/**
 		 * To sort the orders list.
@@ -510,6 +942,18 @@ export default {
 			}
 		},
 		/**
+		 * To catch updates from the PageResults component when the number of page results is updated.
+		 * @function
+		 * @param {integer} val - The number of page results to be returned.
+		 * @returns {undefined}
+		 */
+		transactionsPageResultsUpdate (val) {
+			if (parseInt(this.transactions.resultsPerPage) !== parseInt(val)) {
+				this.transactions.resultsPerPage = val
+				this.transactions.activePage = 1
+			}
+		},
+		/**
 		 * To update the currently active pagination page.
 		 * @function
 		 * @param {integer} val - An integer representing the page number that we are updating to.
@@ -518,6 +962,17 @@ export default {
 		activePageUpdate (val) {
 			if (parseInt(this.activePage) !== parseInt(val)) {
 				this.activePage = val
+			}
+		},
+		/**
+		 * To update the currently active pagination page.
+		 * @function
+		 * @param {integer} val - An integer representing the page number that we are updating to.
+		 * @returns {undefined}
+		 */
+		transactionsActivePageUpdate (val) {
+			if (parseInt(this.transactions.activePage) !== parseInt(val)) {
+				this.transactions.activePage = val
 			}
 		},
 		/**
@@ -584,32 +1039,13 @@ export default {
 			this.messageModalDisplayed = false
 		},
 		/**
-		 * To check if the passed in tab is active or not.
-		 * @function
-		 * @param {object} menu - The passed in tab.
-		 * @param {integer} val - The value of the tab.
-		 * @returns {undefined}
-		 */
-		isActive: function (menu, val) {
-			if (val === menu) {
-				return true
-			} else return false
-		},
-		/**
 		 * To set the passed in tab as the active tab.
 		 * @function
-		 * @param {object} menu - The passed in tab.
 		 * @param {integer} val - The value of the tab.
 		 * @returns {undefined}
 		 */
-		changeTab: function (menu, val) {
-			if (menu === 1) {
-				this.tab1 = val
-			} else if (menu === 2) {
-				this.tab2 = val
-			} else if (menu === 3) {
-				this.tab3 = val
-			}
+		changeTab (val) {
+			this.tab = val
 		},
 		/**
 		 * To get the details of a user.
@@ -624,7 +1060,7 @@ export default {
 				usersVue.$root.appId,
 				usersVue.$root.appSecret,
 				usersVue.$root.userToken,
-				usersVue.$route.params.user_id
+				usersVue.$route.params.id
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
@@ -656,7 +1092,7 @@ export default {
 				usersVue.$root.appId,
 				usersVue.$root.appSecret,
 				usersVue.$root.userToken,
-				usersVue.$route.params.user_id
+				usersVue.$route.params.id
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
@@ -684,7 +1120,7 @@ export default {
 				usersVue.$root.appId,
 				usersVue.$root.appSecret,
 				usersVue.$root.userToken,
-				usersVue.$route.params.user_id
+				usersVue.$route.params.id
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
@@ -707,13 +1143,14 @@ export default {
 		 */
 		getUserOrders () {
 			this.displayUserData = true
+			this.loadingOrders = true
 			var usersVue = this
 
 			UsersFunctions.getUserOrders(
 				usersVue.$root.appId,
 				usersVue.$root.appSecret,
 				usersVue.$root.userToken,
-				usersVue.$route.params.user_id
+				usersVue.$route.params.id
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
@@ -732,6 +1169,68 @@ export default {
 						vue: usersVue
 					})
 				})
+				.finally(() => {
+					usersVue.loadingOrders = false
+				})
+		},
+		/**
+		 * To get a list of user's orders.
+		 * @function
+		 * @returns {object} - A promise that will either return an error message or perform an action.
+		 */
+		getUserTransactions () {
+			this.transactions.loading = true
+			var usersVue = this
+
+			TransactionsFunctions.getTransactionsForUser(
+				usersVue.$route.params.id
+			)
+				.then(response => {
+					if (response.code === 200 && response.status === 'ok') {
+						usersVue.transactions.data = response.payload.map(transaction => {
+							let request = {}
+							let response = {}
+							try {
+								request = JSON.parse(transaction.request)
+							} catch (e) {
+								if (this.env === 'development') console.log(e)
+							}
+							try {
+								response = JSON.parse(transaction.response)
+							} catch (e) {
+								if (this.env === 'development') console.log(e)
+							}
+
+							let flattened = {...transaction}
+							for (let key of Object.keys(request)) {
+								flattened[`request_${key}`] = request[key]
+							}
+							for (let key of Object.keys(response)) {
+								flattened[`response_${key}`] = response[key]
+							}
+							delete flattened.request
+							delete flattened.response
+
+							return flattened
+						})
+						usersVue.displayUserData = false
+					} else {
+						usersVue.displayUserData = false
+					}
+				})
+				.catch(reason => {
+					console.log({reason})
+					usersVue.displayUserData = false
+					ajaxErrorHandler({
+						reason,
+						errorText: 'We could not fetch user orders',
+						errorName: 'errorMessage',
+						vue: usersVue
+					})
+				})
+				.finally(() => {
+					usersVue.transactions.loading = false
+				})
 		},
 		/**
 		 * To get a list of user's social media posts.
@@ -746,7 +1245,7 @@ export default {
 				usersVue.$root.appId,
 				usersVue.$root.appSecret,
 				usersVue.$root.userToken,
-				usersVue.$route.params.user_id
+				usersVue.$route.params.id
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
@@ -854,18 +1353,6 @@ export default {
 			this.clearError('addErrorMessage')
 			this.points = ''
 		}
-	},
-	components: {
-		Breadcrumb,
-		Tabset,
-		Tab,
-		ViewOrder,
-		ButtonGroup,
-		Checkbox,
-		Message,
-		Pagination,
-		PageResults,
-		Dropdown
 	}
 }
 </script>

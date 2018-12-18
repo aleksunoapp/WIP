@@ -512,7 +512,13 @@ export default {
 		 * @returns {undefined}
 		 */
 		openUserProfile (user) {
-			this.$router.push('/app/user_manager/users/' + user.id)
+			this.$router.push({
+				name: 'UserProfile',
+				params: {
+					id: user.id,
+					name: `${user.first_name} ${user.last_name}`
+				}
+			})
 		},
 		/**
 		 * To get a list of users.

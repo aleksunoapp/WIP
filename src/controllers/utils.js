@@ -17,13 +17,61 @@ export const isNonNegativeNumber = function (input) {
 		}
 		return true
 	} catch (e) {
-		if (this.environment !== 'production') {
-			console.log({e})
-		}
 		return false
 	}
 }
 
+/**
+ * To format a number as currency
+ * @function
+ * @param {string} val - The number to format
+ * @param {string} fallback - Preferred fallback return value
+ * @returns {string} The formatted currency amount
+ */
+export const formatUSD = function (val, fallback = '') {
+	try {
+		if (val === '') return fallback
+		let input = Number(val)
+		if (isNaN(input)) return fallback
+
+		input = input.toLocaleString('en-US', {
+			style: 'currency',
+			currency: 'USD'
+		})
+		return input
+	} catch (e) {
+		return fallback
+	}
+}
+
+/**
+ * To format a number as currency
+ * @function
+ * @param {string} val - The number to format
+ * @param {string} fallback - Preferred fallback return value
+ * @returns {string} The formatted currency amount
+ */
+export const formatInteger = function (val, fallback = '') {
+	try {
+		if (val === '') return fallback
+		let input = Number(val)
+		if (isNaN(input)) return fallback
+
+		input = input.toLocaleString(
+			'en-US',
+			{
+				style: 'decimal',
+				maximumFractionDigits: 0
+			}
+		)
+		return input
+	} catch (e) {
+		return fallback
+	}
+}
+
 export default {
-	isNonNegativeNumber
+	isNonNegativeNumber,
+	formatUSD,
+	formatInteger
 }

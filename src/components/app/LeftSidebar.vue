@@ -539,6 +539,16 @@
 								<span class="title">Attributes</span>
 							</router-link>
 						</li>
+						<li v-if="can('user_manager transactions read')"
+						    class="nav-item"
+						    :class="{'active': currentRoute === 'user_manager' && currentSubRoute === 'transactions'}"
+						    id="user_transactions_link">
+							<router-link to="/app/user_manager/transactions"
+							             class="nav-link">
+								<i class="fa fa-list-alt"></i>
+								<span class="title">Transactions</span>
+							</router-link>
+						</li>
 					</ul>
 				</li>
 				<li v-if="canAny([
