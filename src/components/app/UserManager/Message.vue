@@ -225,6 +225,8 @@ export default {
 				return 'Call'
 			} else if (this.message.call_to_action === 'CLOSE') {
 				return 'Close'
+			} else if (this.message.call_to_action === 'RATE_US') {
+				return 'Rate Us'
 			}
 		}
 	},
