@@ -45,7 +45,7 @@
 					{{ langTerms.select_all_services[$root.meta.local.toLowerCase()] }}
 				</span>
 				<span
-					class="help-screen-block"
+					class="help-screen-block select-block"
 					:class="{
 						'help-screen-height': helpScreenVars.selectAll.height > 30,
 						'help-screen-selected': helpScreenVars.selectAll.checked,
@@ -76,7 +76,7 @@
 				<span class="help-screen-text">
 					{{ langTerms.select_services_individually[$root.meta.local.toLowerCase()] }}
 				</span>
-				<span class="help-screen-block">
+				<span class="help-screen-block select-block">
 					<div class="service-checkbox">
 						<input type="checkbox" :checked="helpScreenVars.select.checked">
 						<label>
@@ -1327,11 +1327,20 @@ export default {
 .help-screen-block.help-screen-not-selected {
 	padding-left: 16px;
 }
+.select-block {
+	padding-right: 10px;
+	padding-top: 5px;
+	display: flex;
+	justify-content: flex-end;
+}
+.select-block span {
+	margin-right: 3px;
+}
 .help-screen-select-all.french-width {
 	width: 130px;
 }
 .help-screen-select-all.spanish {
-	width: 96px;
+	width: 135px;
 }
 .fit-to-content {
 	/* width: 1%; */
