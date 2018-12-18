@@ -3,96 +3,96 @@ import Router from 'vue-router'
 // Login
 import Login from '@/components/Login'
 // App
-const Nav = () => import('@/components/App')
+import Nav from '@/components/App'
 // Unauthorized
-const Unauthorized = () => import('@/components/Unauthorized')
+import Unauthorized from '@/components/Unauthorized'
 // Profile
-const Profile = () => import('@/components/app/Profile')
+import Profile from '@/components/app/Profile'
 // Analytics
-const Overview = () => import('@/components/app/Analytics/Overview')
-const LocationSales = () => import('@/components/app/Analytics/LocationSales')
-const ItemSales = () => import('@/components/app/Analytics/ItemSales')
-const UserAnalytics = () => import('@/components/app/Analytics/UserAnalytics')
-const OrderHistory = () => import('@/components/app/Analytics/OrderHistory')
+import Overview from '@/components/app/Analytics/Overview'
+import LocationSales from '@/components/app/Analytics/LocationSales'
+import ItemSales from '@/components/app/Analytics/ItemSales'
+import UserAnalytics from '@/components/app/Analytics/UserAnalytics'
+import OrderHistory from '@/components/app/Analytics/OrderHistory'
 // Approvals
-const Roles = () => import('@/components/app/ApprovalsManager/Roles')
-const Permissions = () => import('@/components/app/ApprovalsManager/Permissions')
-const Modules = () => import('@/components/app/ApprovalsManager/Modules')
-const Approvals = () => import('@/components/app/ApprovalsManager/Approvals')
+import Roles from '@/components/app/ApprovalsManager/Roles'
+import Permissions from '@/components/app/ApprovalsManager/Permissions'
+import Modules from '@/components/app/ApprovalsManager/Modules'
+import Approvals from '@/components/app/ApprovalsManager/Approvals'
 // Admin Manager
-const BrandAdmins = () => import('@/components/app/AdminManager/BrandAdmins')
-const LocationManagers = () => import('@/components/app/AdminManager/LocationManagers')
-const OMAUsers = () => import('@/components/app/AdminManager/OMAUsers')
-const StoreAppUsers = () => import('@/components/app/AdminManager/StoreAppUsers')
+import BrandAdmins from '@/components/app/AdminManager/BrandAdmins'
+import LocationManagers from '@/components/app/AdminManager/LocationManagers'
+import OMAUsers from '@/components/app/AdminManager/OMAUsers'
+import StoreAppUsers from '@/components/app/AdminManager/StoreAppUsers'
 // Store Manager
-const CreateNewStore = () => import('@/components/app/StoreManager/CreateNewStore')
-const StoreList = () => import('@/components/app/StoreManager/StoreList')
-const EditStore = () => import('@/components/app/StoreManager/EditStore')
-const Amenities = () => import('@/components/app/StoreManager/Amenities')
-const OrderSettings = () => import('@/components/app/StoreManager/OrderSettings')
-const DeliveryHours = () => import('@/components/app/StoreManager/DeliveryHours')
-const StoreGroups = () => import('@/components/app/StoreManager/StoreGroups')
-const DeliveryZones = () => import('@/components/app/StoreManager/DeliveryZones')
-const PaymentMethods = () => import('@/components/app/StoreManager/PaymentMethods')
-const DeliveryProviders = () => import('@/components/app/StoreManager/DeliveryProviders')
-const PaymentTerminals = () => import('@/components/app/StoreManager/PaymentTerminals')
-const Discounts = () => import('@/components/app/StoreManager/Discounts')
+import CreateNewStore from '@/components/app/StoreManager/CreateNewStore'
+import StoreList from '@/components/app/StoreManager/StoreList'
+import EditStore from '@/components/app/StoreManager/EditStore'
+import Amenities from '@/components/app/StoreManager/Amenities'
+import OrderSettings from '@/components/app/StoreManager/OrderSettings'
+import DeliveryHours from '@/components/app/StoreManager/DeliveryHours'
+import StoreGroups from '@/components/app/StoreManager/StoreGroups'
+import DeliveryZones from '@/components/app/StoreManager/DeliveryZones'
+import PaymentMethods from '@/components/app/StoreManager/PaymentMethods'
+import DeliveryProviders from '@/components/app/StoreManager/DeliveryProviders'
+import PaymentTerminals from '@/components/app/StoreManager/PaymentTerminals'
+import Discounts from '@/components/app/StoreManager/Discounts'
 // News Feed
-const NewsFeed = () => import('@/components/app/NewsFeed')
+import NewsFeed from '@/components/app/NewsFeed'
 // Social Feed
-const SocialFeed = () => import('@/components/app/SocialFeed')
+import SocialFeed from '@/components/app/SocialFeed'
 // Tax Manager
-const TaxClasses = () => import('@/components/app/TaxManager/TaxClasses')
-const ItemTypes = () => import('@/components/app/TaxManager/ItemTypes')
+import TaxClasses from '@/components/app/TaxManager/TaxClasses'
+import ItemTypes from '@/components/app/TaxManager/ItemTypes'
 // Menu Manager
-const Menus = () => import('@/components/app/MenuManager/Menu')
-const Categories = () => import('@/components/app/MenuManager/Categories')
-const Items = () => import('@/components/app/MenuManager/Items')
-const Modifiers = () => import('@/components/app/MenuManager/Modifiers')
-const MenuTiers = () => import('@/components/app/MenuManager/MenuTiers')
-const Tags = () => import('@/components/app/MenuManager/Tags')
-const Portions = () => import('@/components/app/MenuManager/Portions')
-const Options = () => import('@/components/app/MenuManager/Options')
-const OptionItems = () => import('@/components/app/MenuManager/OptionItems')
-const ModifierItems = () => import('@/components/app/MenuManager/ModifierItems')
-const ModifierTiers = () => import('@/components/app/MenuManager/ModifierTiers/ModifierTiers')
-const ItemAttributes = () => import('@/components/app/MenuManager/ItemAttributes')
+import Menus from '@/components/app/MenuManager/Menu'
+import Categories from '@/components/app/MenuManager/Categories'
+import Items from '@/components/app/MenuManager/Items'
+import Modifiers from '@/components/app/MenuManager/Modifiers'
+import MenuTiers from '@/components/app/MenuManager/MenuTiers'
+import Tags from '@/components/app/MenuManager/Tags'
+import Portions from '@/components/app/MenuManager/Portions'
+import Options from '@/components/app/MenuManager/Options'
+import OptionItems from '@/components/app/MenuManager/OptionItems'
+import ModifierItems from '@/components/app/MenuManager/ModifierItems'
+import ModifierTiers from '@/components/app/MenuManager/ModifierTiers/ModifierTiers'
+import ItemAttributes from '@/components/app/MenuManager/ItemAttributes'
 // Printers
-const Printers = () => import('@/components/app/Printers/Printers')
+import Printers from '@/components/app/Printers/Printers'
 // Users Manager
-const UserList = () => import('@/components/app/UserManager/UserList')
-const UserProfile = () => import('@/components/app/UserManager/UserProfile')
-const UserGroups = () => import('@/components/app/UserManager/UserGroups')
-const UserAttributes = () => import('@/components/app/UserManager/UserAttributes')
-const Transactions = () => import('@/components/app/UserManager/Transactions')
+import UserList from '@/components/app/UserManager/UserList'
+import UserProfile from '@/components/app/UserManager/UserProfile'
+import UserGroups from '@/components/app/UserManager/UserGroups'
+import UserAttributes from '@/components/app/UserManager/UserAttributes'
+import Transactions from '@/components/app/UserManager/Transactions'
 // FAQ
-const StoresFAQ = () => import('@/components/app/Faq/StoresFAQ')
-const UsersFAQ = () => import('@/components/app/Faq/UsersFAQ')
+import StoresFAQ from '@/components/app/Faq/StoresFAQ'
+import UsersFAQ from '@/components/app/Faq/UsersFAQ'
 // Gallery
-const Gallery = () => import('@/components/app/Gallery')
-const CreateFolder = () => import('@/components/app/Gallery/CreateFolder')
-const EditFolder = () => import('@/components/app/Gallery/EditFolder')
+import Gallery from '@/components/app/Gallery'
+import CreateFolder from '@/components/app/Gallery/CreateFolder'
+import EditFolder from '@/components/app/Gallery/EditFolder'
 // Loyalty
-const BaseRule = () => import('@/components/app/Loyalty/BaseRule')
-const PromotionRules = () => import('@/components/app/Loyalty/PromotionRules')
-const Rewards = () => import('@/components/app/Rewards')
-const RewardItems = () => import('@/components/app/RewardItems')
+import BaseRule from '@/components/app/Loyalty/BaseRule'
+import PromotionRules from '@/components/app/Loyalty/PromotionRules'
+import Rewards from '@/components/app/Rewards'
+import RewardItems from '@/components/app/RewardItems'
 // Combos
-const ComboOffers = () => import('@/components/app/Combos/ComboOffers')
-const ComboOfferItems = () => import('@/components/app/Combos/ComboOfferItems')
+import ComboOffers from '@/components/app/Combos/ComboOffers'
+import ComboOfferItems from '@/components/app/Combos/ComboOfferItems'
 // Promocodes
-const Promocodes = () => import('@/components/app/Promocodes')
+import Promocodes from '@/components/app/Promocodes'
 // Promotions
-const Promotions = () => import('@/components/app/Promotions')
-const Geolocations = () => import('@/components/app/Promotions/Geolocations')
+import Promotions from '@/components/app/Promotions'
+import Geolocations from '@/components/app/Promotions/Geolocations'
 // Localization
-const Countries = () => import('@/components/app/Localization/Countries')
-const Platforms = () => import('@/components/app/Localization/Platforms')
-const Languages = () => import('@/components/app/Localization/Languages')
-const LanguageRegions = () => import('@/components/app/Localization/LanguageRegions')
-const Terms = () => import('@/components/app/Localization/Terms')
-const EcommTranslations = () => import('@/components/app/Localization/EcommTranslations')
-const CustomTranslations = () => import('@/components/app/Localization/CustomTranslations')
+import Countries from '@/components/app/Localization/Countries'
+import Platforms from '@/components/app/Localization/Platforms'
+import Languages from '@/components/app/Localization/Languages'
+import LanguageRegions from '@/components/app/Localization/LanguageRegions'
+import Terms from '@/components/app/Localization/Terms'
+import EcommTranslations from '@/components/app/Localization/EcommTranslations'
+import CustomTranslations from '@/components/app/Localization/CustomTranslations'
 // list of permissions
 import { App } from '@/main.js'
 
