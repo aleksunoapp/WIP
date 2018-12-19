@@ -65,6 +65,11 @@
 					                :color="'#3598dc'"
 					                :display="'inline'"></loading-screen>
 					<div class="relative cbp cbp-caption-active cbp-caption-overlayBottomReveal cbp-ready">
+						<file-upload v-show="!allFoldersView && $root.permissions['gallery create']"
+													:folderId="activeFolder.id"
+													@savingUpdate="checkSaving"
+													@uploadSuccess="imageUploaded()">
+						</file-upload>
 						<div class="cbp-wrapper-outer">
 							<div class="cbp-wrapper center">
 								<div v-show="!loadingResourceData && !isSaving">
@@ -205,11 +210,6 @@
 										            :numPages="numPages"
 										            @activePageChange="activePageUpdate"></pagination>
 									</div>
-									<file-upload v-show="!allFoldersView && $root.permissions['gallery create']"
-									             :folderId="activeFolder.id"
-									             @savingUpdate="checkSaving"
-									             @uploadSuccess="imageUploaded()">
-									</file-upload>
 								</div>
 							</div>
 						</div>
