@@ -135,12 +135,10 @@ export default {
 			} else if (this.$root.meta.local.toLowerCase() === 'es-mx') {
 				allMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
 			}
-			if (!this.checkSameDate(time)) {
-				if (this.$root.meta.local.toLowerCase() === 'es-mx') {
-					formattedTime = ` ${preposition} ${fullDate.getDate()} de ${allMonths[fullDate.getMonth()]} de ${fullDate.getFullYear()} a las ${formattedTime}`
-				} else {
-					formattedTime += ` ${preposition} ${allMonths[fullDate.getMonth()]} ${fullDate.getDate()}, ${fullDate.getFullYear()}`
-				}
+			if (this.$root.meta.local.toLowerCase() === 'es-mx') {
+				formattedTime = ` ${preposition} ${fullDate.getDate()} de ${allMonths[fullDate.getMonth()]} de ${fullDate.getFullYear()} a las ${formattedTime}`
+			} else {
+				formattedTime += ` ${preposition} ${allMonths[fullDate.getMonth()]} ${fullDate.getDate()}, ${fullDate.getFullYear()}`
 			}
 			return formattedTime
 		}
