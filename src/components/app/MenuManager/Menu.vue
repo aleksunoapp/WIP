@@ -80,6 +80,39 @@
 								       v-model="newMenu.sku">
 								<label for="form_control_5">Menu SKU</label>
 							</div>
+							<div class="form-group form-md-checkboxes">
+								<label>Availability</label>
+								<div class="md-checkbox-list">
+									<div class="md-checkbox">
+										<input v-model="newMenu.pos" type="checkbox" id="availability_pos" class="md-check">
+										<label for="availability_pos">
+											<span class="inc"></span>
+											<span class="check"></span>
+											<span class="box"></span> POS </label>
+									</div>
+									<div class="md-checkbox">
+										<input v-model="newMenu.kiosk" type="checkbox" id="availability_kiosk" class="md-check" checked="">
+										<label for="availability_kiosk">
+											<span></span>
+											<span class="check"></span>
+											<span class="box"></span> Kiosk </label>
+									</div>
+									<div class="md-checkbox">
+										<input v-model="newMenu.online" type="checkbox" id="availability_online" class="md-check">
+										<label for="availability_online">
+											<span></span>
+											<span class="check"></span>
+											<span class="box"></span> Online </label>
+									</div>
+									<div class="md-checkbox">
+										<input v-model="newMenu.web" type="checkbox" id="availability_web" class="md-check">
+										<label for="availability_web">
+											<span></span>
+											<span class="check"></span>
+											<span class="box"></span> Web </label>
+									</div>
+								</div>
+							</div>
 						</div>
 						<div class="col-md-5"
 						     v-show="!imageMode.newMenu">
@@ -472,7 +505,11 @@ export default {
 				order: null,
 				start_from: '',
 				stop_on: '',
-				add_on: []
+				add_on: [],
+				pos: false,
+				kiosk: false,
+				online: false,
+				web: false
 			},
 			createMenuCollapse: true,
 			menuHoursModalActive: false,
@@ -867,7 +904,11 @@ export default {
 				order: null,
 				start_from: '',
 				stop_on: '',
-				add_on: []
+				add_on: [],
+				pos: false,
+				kiosk: false,
+				online: false,
+				web: false
 			}
 		},
 		/**
@@ -1037,10 +1078,16 @@ export default {
 				.validateMenuData()
 				.then(response => {
 					createMenuVue.creating = true
-					createMenuVue.newMenu.location_id =
-						createMenuVue.$root.activeLocation.id
+					let payload = {
+						...createMenuVue.newMenu,
+						location_id: createMenuVue.$root.activeLocation.id,
+						pos: createMenuVue.newMenu.pos ? 1 : 0,
+						kiosk: createMenuVue.newMenu.kiosk ? 1 : 0,
+						online: createMenuVue.newMenu.online ? 1 : 0,
+						web: createMenuVue.newMenu.web ? 1 : 0
+					}
 					MenusFunctions.createNewMenu(
-						createMenuVue.newMenu,
+						payload,
 						createMenuVue.$root.appId,
 						createMenuVue.$root.appSecret,
 						createMenuVue.$root.userToken

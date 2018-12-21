@@ -98,6 +98,41 @@
 						           inactive-text="Sold Out">
 						</el-switch>
 					</div>
+					<fieldset :disabled="!$root.permissions['menu_manager menus update']">
+					<div class="form-group form-md-checkboxes">
+						<label>Availability</label>
+						<div class="md-checkbox-inline">
+							<div class="md-checkbox">
+								<input v-model="menuToBeEdited.pos" type="checkbox" id="availability_pos_edit" class="md-check">
+								<label for="availability_pos_edit">
+									<span></span>
+									<span class="check"></span>
+									<span class="box"></span> POS </label>
+							</div>
+							<div class="md-checkbox">
+								<input v-model="menuToBeEdited.kiosk" type="checkbox" id="availability_kiosk_edit" class="md-check" checked="">
+								<label for="availability_kiosk_edit">
+									<span></span>
+									<span class="check"></span>
+									<span class="box"></span> Kiosk </label>
+							</div>
+							<div class="md-checkbox">
+								<input v-model="menuToBeEdited.online" type="checkbox" id="availability_online_edit" class="md-check">
+								<label for="availability_online_edit">
+									<span></span>
+									<span class="check"></span>
+									<span class="box"></span> Online </label>
+							</div>
+							<div class="md-checkbox">
+								<input v-model="menuToBeEdited.web" type="checkbox" id="availability_web_edit" class="md-check">
+								<label for="availability_web_edit">
+									<span></span>
+									<span class="check"></span>
+									<span class="box"></span> Web </label>
+							</div>
+						</div>
+					</div>
+					</fieldset>
 					<el-date-picker :disabled="!$root.permissions['menu_manager menus update']"
 					                v-model="menuToBeEdited.start_from"
 					                :editable="false"
@@ -312,7 +347,13 @@ export default {
 			)
 				.then(response => {
 					if (response.code === 200 && response.status === 'ok') {
-						editMenuVue.menuToBeEdited = response.payload
+						editMenuVue.menuToBeEdited = {
+							...response.payload,
+							pos: !!editMenuVue.menuToBeEdited.pos,
+							kiosk: !!editMenuVue.menuToBeEdited.kiosk,
+							online: !!editMenuVue.menuToBeEdited.online,
+							web: !!editMenuVue.menuToBeEdited.web
+						}
 						if (
 							editMenuVue.menuToBeEdited.min === 0 ||
 							editMenuVue.menuToBeEdited.min
@@ -358,8 +399,16 @@ export default {
 				.validateCategoryData()
 				.then(response => {
 					editMenuVue.updating = true
+					let payload = {
+						...editMenuVue.menuToBeEdited,
+						pos: editMenuVue.menuToBeEdited.pos ? 1 : 0,
+						kiosk: editMenuVue.menuToBeEdited.kiosk ? 1 : 0,
+						online: editMenuVue.menuToBeEdited.online ? 1 : 0,
+						web: editMenuVue.menuToBeEdited.web ? 1 : 0
+					}
+
 					MenusFunctions.updateMenu(
-						editMenuVue.menuToBeEdited,
+						payload,
 						editMenuVue.$root.appId,
 						editMenuVue.$root.appSecret,
 						editMenuVue.$root.userToken
