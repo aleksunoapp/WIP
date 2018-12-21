@@ -104,7 +104,7 @@
 										>
 										</el-option>
 									</el-select>
-									<button v-if="newPromoCode.apply_on === 'items'"
+									<button v-if="newPromoCode.apply_on === 'items' || newPromoCode.apply_on === 'multiple_item_quantity'"
 									        type="submit"
 									        class="btn blue btn-outline margin-left-5 mb-0"
 									        @click="displayMenuTreeModal($event)">
@@ -112,8 +112,17 @@
 										<span v-else>Add</span> items
 									</button>
 								</div>
-								<p class="grey-label margin-left-5"
-								   v-if="newPromoCode.sku.length && newPromoCode.apply_on === 'items'">Selected
+								<p
+									v-if="
+										newPromoCode.sku.length &&
+										(
+											newPromoCode.apply_on === 'items' ||
+											newPromoCode.apply_on === 'multiple_item_quantity'
+										)
+									"
+									class="grey-label margin-left-5"
+								>
+									Selected
 									<span>{{ newPromoCode.sku.length }}</span>
 									<span v-if="newPromoCode.sku.length !== 1">items</span>
 									<span v-else>item</span>
@@ -744,7 +753,9 @@ export default {
 				} else if (!promoCodesVue.newPromoCode.apply_on.length) {
 					reject('Discount Is Applied To cannot be blank')
 				} else if (
-					promoCodesVue.newPromoCode.apply_on === 'items' &&
+					(
+						promoCodesVue.newPromoCode.apply_on === 'items'
+					) &&
 					promoCodesVue.newPromoCode.sku.length === 0
 				) {
 					reject('Select at least one item')
