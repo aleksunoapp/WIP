@@ -574,12 +574,12 @@ export default {
 		numberOfItemsNew () {
 			return this.newRule.sku === ''
 				? 0
-				: this.newRule.sku.split(',').length
+				: this.newRule.sku.length
 		},
 		numberOfItemsEdited () {
 			return this.ruleToEdit.sku === ''
 				? 0
-				: this.ruleToEdit.sku.split(',').length
+				: this.ruleToEdit.sku.length
 		}
 	},
 	mounted () {
@@ -897,7 +897,7 @@ export default {
 			let sku
 			if (rule.sku === 'all') {
 				sku = rule.sku
-			} else if (rule.sku.length) {
+			} else if (typeof rule.sku === 'string' && rule.sku.length) {
 				sku = rule.sku.split(',')
 			} else {
 				sku = []
