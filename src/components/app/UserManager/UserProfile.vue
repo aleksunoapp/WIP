@@ -55,7 +55,10 @@
 														<i class="fa fa-picture-o"
 														   aria-hidden="true"></i> Gallery </a>
 												</li>
-												<li :class="{ 'active': this.tab === 2 }">
+												<li
+													v-if="can('user_manager transactions read')"
+													:class="{ 'active': this.tab === 2 }"
+												>
 													<a a
 													   @click="changeTab(2)"
 													   aria-expanded="true">
