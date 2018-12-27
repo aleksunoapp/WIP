@@ -615,10 +615,11 @@
 				</div>
 				<div class="row">
 					<div class="col-md-12">
-						<select-locations-popup @selectedLocations="selectedLocations"
-						                        :previouslySelected="locationsToApplyItemTo"
-						                        :withButton="false">
-						</select-locations-popup>
+						<store-picker
+							:previouslySelected="locationsToApplyItemTo"
+							@update="selectedLocations"
+						>
+						</store-picker>
 						<div class="form-group form-md-line-input form-md-floating-label">
 							<label>Replace Existing:</label><br>
 							<el-switch v-model="replaceExisting"
@@ -688,7 +689,7 @@ import TagsList from './Tags/TagsList'
 import ResourcePicker from '../../modules/ResourcePicker'
 import ItemTypesFunctions from '../../../controllers/ItemTypes'
 import ajaxErrorHandler from '@/controllers/ErrorController'
-import SelectLocationsPopup from '../../modules/SelectLocationsPopup'
+import StorePicker from '@/components/modules/StorePicker'
 import PresetSettings from '@/components/app/MenuManager/Items/PresetSettings'
 import MenuItemPicker from '@/components/modules/MenuItemPicker'
 
@@ -1953,7 +1954,7 @@ export default {
 		NoResults,
 		ResourcePicker,
 		ItemImages,
-		SelectLocationsPopup,
+		StorePicker,
 		PresetSettings,
 		MenuItemPicker
 	}

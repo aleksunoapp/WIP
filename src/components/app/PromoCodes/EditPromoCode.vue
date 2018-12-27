@@ -192,11 +192,14 @@
 			>
 			</menu-and-modifier-item-picker>
 
-			<select-locations-popup v-if="!displaySpinner && !selectItemsMode && selectLocationsMode"
-			                        @closeSelectLocationsPopup='selectStores'
-															:editable="can('promocodes update')"
-			                        :previouslySelected="promoCode.locations">
-			</select-locations-popup>
+			<store-picker
+				v-if="!displaySpinner && !selectItemsMode && selectLocationsMode"
+				:previouslySelected="promoCode.locations"
+				@update="selectStores"
+				:editable="can('promocodes update')"
+			>
+			</store-picker>
+
 		</div>
 		<div slot="modal-footer"
 		     class="modal-footer">
@@ -204,6 +207,12 @@
 			        type="button"
 			        class="btn btn-primary"
 			        @click="closeItemSelector()">
+				Done
+			</button>
+			<button v-if="selectLocationsMode"
+			        type="button"
+			        class="btn btn-primary"
+			        @click="closeStorePicker()">
 				Done
 			</button>
 			<button v-if="!selectItemsMode && !selectLocationsMode && !selectItemsMode && can('promocodes update')"
@@ -229,10 +238,9 @@
 <script>
 import Modal from '../../modules/Modal'
 import PromoCodesFunctions from '../../../controllers/PromoCodes'
-import App from '../../../controllers/App'
 import Dropdown from '../../modules/Dropdown'
 import LoadingScreen from '../../modules/LoadingScreen'
-import SelectLocationsPopup from '../../modules/SelectLocationsPopup'
+import StorePicker from '@/components/modules/StorePicker'
 import MenuAndModifierItemPicker from '@/components/modules/MenuAndModifierItemPicker'
 import { mapGetters } from 'vuex'
 import { isNonNegativeNumber } from '@/controllers/utils'
@@ -245,17 +253,7 @@ export default {
 			errorMessage: '',
 			selectLocationsMode: false,
 			selectItemsMode: false,
-			locations: [],
-			selectAllSelected: false,
-			selectAllLocationsSelected: false,
 			showMenuTreeModal: false,
-			menus: [],
-			categories: [],
-			items: [],
-			isMenuSelected: false,
-			isCategorySelected: false,
-			activeMenu: {},
-			activeCategory: {},
 			promoCode: {
 				apply_on: '',
 				codes: '',
@@ -298,10 +296,6 @@ export default {
 	},
 	mounted () {
 		this.getAllPromoCodeDetails()
-		this.promoCode.locations === 'all'
-			? (this.selectAllLocationsSelected = true)
-			: (this.selectAllLocationsSelected = false)
-		this.getPaginatedStoreLocations()
 	},
 	methods: {
 		/**
@@ -314,18 +308,6 @@ export default {
 			if (this.can('promocodes update')) {
 				this.promoCode.sku_array = items
 			}
-		},
-		/**
-		 * To keep the select all checkbox in sync with the list
-		 * @function
-		 * @param {boolean} selected - State of the just-modified checkbox
-		 * @returns {undefined}
-		 */
-		syncSelectAll (selected) {
-			if (!selected) {
-				this.selectAllSelected = false
-			}
-			this.selectAllSelected = !this.items.some(item => !item.selected)
 		},
 		/**
 		 * To get details of the promo code being edited.
@@ -377,22 +359,6 @@ export default {
 					editPromoCodeVue.displaySpinner = false
 					throw reason
 				})
-		},
-		/**
-		 * To select all or deselect all items
-		 * @function
-		 * @returns {undefined}
-		 */
-		selectAll () {
-			var menuTreeVue = this
-			for (var i = 0; i < menuTreeVue.items.length; i++) {
-				var item = menuTreeVue.items[i]
-				menuTreeVue.$set(
-					item,
-					'selected',
-					this.selectAllLocationsSelected
-				)
-			}
 		},
 		/**
 		 * To close the item selector
@@ -455,63 +421,14 @@ export default {
 			if (this.can('promocodes update')) {
 				this.promoCode.locations = selectedStores
 			}
-			this.selectLocationsMode = false
 		},
 		/**
-		 * To select all or deselect all items
+		 * To close the store picker
 		 * @function
 		 * @returns {undefined}
 		 */
-		selectAllLocations () {
-			this.selectAllSelected = !this.selectAllSelected
-			for (var i = 0; i < this.locations.length; i++) {
-				this.locations[i].selected = this.selectAllSelected
-			}
-		},
-		/**
-		 * To get a list of location for the current application/business.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		getPaginatedStoreLocations () {
-			var editPromoCodeVue = this
-			let paginationPreferences = {
-				brand_id: this.$root.brandId
-			}
-			App.getPaginatedStoreLocations(
-				editPromoCodeVue.$root.appId,
-				editPromoCodeVue.$root.appSecret,
-				editPromoCodeVue.$root.userToken,
-				paginationPreferences
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						response.payload.forEach(location => {
-							if (
-								editPromoCodeVue.promoCode.locations === 'all'
-							) {
-								location.selected = true
-							} else {
-								location.selected = editPromoCodeVue.promoCode.locations.includes(
-									parseInt(location.id)
-								)
-							}
-						})
-						editPromoCodeVue.locations = response.payload
-					}
-				})
-				.catch(reason => {
-					if (
-						reason.responseJSON.code === 401 &&
-						reason.responseJSON.status === 'unauthorized'
-					) {
-						editPromoCodeVue.$router.push('/login/expired')
-						return
-					}
-					if (reason.responseJSON) {
-					}
-					throw reason
-				})
+		closeStorePicker () {
+			this.selectLocationsMode = false
 		},
 		/**
 		 * To toggle select location mode on.
@@ -722,7 +639,7 @@ export default {
 		Modal,
 		Dropdown,
 		LoadingScreen,
-		SelectLocationsPopup,
+		StorePicker,
 		MenuAndModifierItemPicker
 	}
 }

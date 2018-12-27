@@ -360,7 +360,7 @@
 												<i class="fa fa-lg fa-clone"></i>
 											</a>
 										</el-tooltip>
-										<el-tooltip v-if="$root.activeLocation.is_corporate && $root.permissions['menu_manager menus update']"
+										<el-tooltip 
 										            content="Copy"
 										            effect="light"
 										            placement="top">

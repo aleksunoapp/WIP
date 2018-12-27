@@ -720,9 +720,6 @@
 						<label for="form_control_max_use_per_person">Maximum Redemptions Per Person</label>
 					</div>
 					<div>
-						<button class="btn create-or-edit"
-						        @click="qrForAllLocations()"
-						        :class="{'blue-chambray' : promotionForQrCode.allLocations, 'blue btn-outline' : !promotionForQrCode.allLocations}">All stores</button>
 						<button class="btn"
 						        @click="qrForSelectLocations()"
 						        :class="{'blue-chambray' : !promotionForQrCode.allLocations, 'blue btn-outline' : promotionForQrCode.allLocations}">Select stores</button>
@@ -736,37 +733,11 @@
 					</div>
 				</div>
 				<div v-if="!promotionForQrCode.qr_code.length && promotionForQrCode.showStoreSelector">
-					<table class="table">
-						<thead>
-							<tr>
-								<th></th>
-								<th> Store Name </th>
-								<th> Street Address </th>
-								<th> City, Province, Country </th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr v-for="location in locations"
-							    :key="location.id">
-								<td>
-									<div class="md-checkbox has-success">
-										<input type="checkbox"
-										       :id="`location-${location.id}`"
-										       class="md-check"
-										       v-model="location.selected">
-										<label :for="`location-${location.id}`">
-											<span class="inc"></span>
-											<span class="check"></span>
-											<span class="box"></span>
-										</label>
-									</div>
-								</td>
-								<td> {{ location.display_name }} </td>
-								<td> {{ location.address_line_1 }} </td>
-								<td> {{ location.city }}, {{ location.province }}, {{ location.country }} </td>
-							</tr>
-						</tbody>
-					</table>
+					<store-picker
+						:previouslySelected="promotionForQrCode.locations"
+						@update="selectQrLocations"
+					>
+					</store-picker>
 				</div>
 			</div>
 			<div slot="modal-footer"
@@ -782,7 +753,7 @@
 					</i>
 				</button>
 				<button v-if="!promotionForQrCode.qr_code.length && promotionForQrCode.showStoreSelector"
-				        @click="selectQrLocations()"
+				        @click="closeStorePicker()"
 				        type="button"
 				        class="btn blue">Select</button>
 				<button v-if="promotionForQrCode.qr_code.length"
@@ -882,12 +853,12 @@
 
 <script>
 import Breadcrumb from '../modules/Breadcrumb'
+import StorePicker from '@/components/modules/StorePicker'
 import LoadingScreen from '../modules/LoadingScreen'
 import PromotionsFunctions from '../../controllers/Promotions'
 import StoreGroupsFunctions from '../../controllers/StoreGroups'
 import UserGroupsFunctions from '../../controllers/UserGroups'
 import PromoCodesFunctions from '../../controllers/PromoCodes'
-import App from '../../controllers/App'
 import ajaxErrorHandler from '../../controllers/ErrorController'
 import Modal from '../modules/Modal'
 import Qrcode from '../modules/QRCode'
@@ -956,17 +927,16 @@ export default {
 			promotionForQrCode: {
 				name: '',
 				promotion_id: null,
-				allLocations: true,
+				allLocations: false,
 				qr_code: '',
 				qr_code_id: null,
 				showStoreSelector: false,
-				locations: ['all'],
+				locations: [],
 				min_loyalty_points: '',
 				max_use: '',
 				max_use_per_person: ''
 			},
 			qrCodes: [],
-			locations: [],
 			qrErrorMessage: '',
 			showMenuModifierTreeModal: false,
 			showPromoCodesModal: false,
@@ -1022,7 +992,6 @@ export default {
 		this.getGeolocations()
 		this.getUserGroups()
 		this.getQrCodes()
-		this.getPaginatedStoreLocations()
 		this.getAllPromoCodes()
 	},
 	methods: {
@@ -1146,55 +1115,18 @@ export default {
 		/**
 		 * To to move the selected locations to the QR code settings object
 		 * @function
+		 * @param {array} locations - IDs of selected stores
 		 * @returns {undefined}
 		 */
-		selectQrLocations () {
-			this.promotionForQrCode.locations = []
-			this.locations.forEach(location => {
-				if (location.selected) {
-					this.promotionForQrCode.locations.push(location.id)
-				}
-			})
-			this.promotionForQrCode.showStoreSelector = false
+		selectQrLocations (locations) {
+			this.promotionForQrCode.locations = locations
 		},
 		/**
-		 * To get a list of location for the current application/business.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		getPaginatedStoreLocations () {
-			var promotionsVue = this
-
-			App.getPaginatedStoreLocations(
-				promotionsVue.$root.appId,
-				promotionsVue.$root.appSecret,
-				promotionsVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						response.payload.forEach(location => {
-							location.selected = false
-						})
-						promotionsVue.locations = response.payload
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not get a list of stores',
-						errorName: 'qrErrorMessage',
-						vue: promotionsVue
-					})
-				})
-		},
-		/**
-		 * To set the QR code settings to all locations.
+		 * To to move the selected locations to the QR code settings object
 		 * @function
 		 * @returns {undefined}
 		 */
-		qrForAllLocations () {
-			this.promotionForQrCode.allLocations = true
-			this.promotionForQrCode.locations = ['all']
+		closeStorePicker () {
 			this.promotionForQrCode.showStoreSelector = false
 		},
 		/**
@@ -1269,11 +1201,11 @@ export default {
 			this.promotionForQrCode = {
 				name: '',
 				promotion_id: null,
-				allLocations: true,
+				allLocations: false,
 				qr_code: '',
 				qr_code_id: null,
 				showStoreSelector: false,
-				locations: ['all'],
+				locations: [],
 				min_loyalty_points: '',
 				max_use: '',
 				max_use_per_person: ''
@@ -1416,9 +1348,6 @@ export default {
 		 * @returns {undefined}
 		 */
 		closeQrCodeModal () {
-			this.locations.forEach(location => {
-				location.selected = false
-			})
 			this.resetPromotionForQrCode()
 			this.showQrCodeModal = false
 		},
@@ -2277,7 +2206,8 @@ export default {
 		DeletePromotion,
 		Qrcode,
 		MenuModifierTree,
-		AssignCountriesToPromotion
+		AssignCountriesToPromotion,
+		StorePicker
 	}
 }
 </script>

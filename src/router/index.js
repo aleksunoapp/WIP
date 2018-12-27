@@ -93,6 +93,7 @@ import LanguageRegions from '@/components/app/Localization/LanguageRegions'
 import Terms from '@/components/app/Localization/Terms'
 import EcommTranslations from '@/components/app/Localization/EcommTranslations'
 import CustomTranslations from '@/components/app/Localization/CustomTranslations'
+import StorePicker from '@/components/modules/StorePicker'
 // list of permissions
 import { App } from '@/main.js'
 
@@ -132,6 +133,16 @@ export const routes = [
 			permissions: []
 		},
 		children: [
+			// dev
+			{
+				path: 'storepicker',
+				name: 'storepicker',
+				component: StorePicker,
+				meta: {
+					adminOnly: true,
+					permissions: []
+				}
+			},
 			// Analytics
 			{
 				path: 'analytics',

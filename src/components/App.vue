@@ -207,7 +207,7 @@
 
 <script>
 import $ from 'jquery'
-import App from '../controllers/App'
+import AppFunctions from '../controllers/App'
 import { findIndex } from 'lodash'
 import LeftSidebar from '@/components/app/LeftSidebar'
 import LoadingScreen from '@/components/modules/LoadingScreen'
@@ -275,8 +275,8 @@ export default {
 			.addClass('page-md')
 			.addClass('app-body')
 
-		App.init()
-		App.initApp()
+		AppFunctions.init()
+		AppFunctions.initApp()
 
 		// get list of stores
 		if (this.$root.accountType === 'application_admin') {
@@ -336,7 +336,7 @@ export default {
 		getStoreLocations () {
 			this.loading = true
 			var appVue = this
-			App.getPaginatedStoreLocations(
+			AppFunctions.getPaginatedStoreLocations(
 				appVue.$root.appId,
 				appVue.$root.appSecret,
 				appVue.$root.userToken
@@ -741,6 +741,9 @@ div.tab-pane::-webkit-scrollbar-track {
 .width-100 {
 	width: 100%;
 }
+.height-100 {
+	height: 100%;
+}
 .max-height-100 {
 	max-height: 100%;
 }
@@ -800,17 +803,27 @@ div.tab-pane::-webkit-scrollbar-track {
 	padding-right: 1em;
 }
 .py-1em {
-	padding-left: 1em;
-	padding-right: 1em;
+	padding-top: 1em;
+	padding-bottom: 1em;
 }
 .py-2em {
-	padding-left: 2em;
-	padding-right: 2em;
+	padding-top: 2em;
+	padding-bottom: 2em;
 }
 
+.my-0 {
+	margin-top: 0;
+	margin-bottom: 0;
+}
 .my-0em {
 	margin-top: 0;
 	margin-bottom: 0;
+}
+.ma-0 {
+	margin-top: 0;
+	margin-right: 0;
+	margin-bottom: 0;
+	margin-left: 0;
 }
 .ma-1em {
 	margin: 1em;
@@ -818,6 +831,9 @@ div.tab-pane::-webkit-scrollbar-track {
 .mx-1em {
 	margin-left: 1em;
 	margin-right: 1em;
+}
+.mb-0 {
+	margin-bottom: 0;
 }
 .mb-5px {
 	margin-bottom: 5px;
@@ -830,6 +846,9 @@ div.tab-pane::-webkit-scrollbar-track {
 }
 .mb-3em {
 	margin-bottom: 3em;
+}
+.mt-1em {
+	margin-top: 1em;
 }
 .ml-1em {
 	margin-left: 1em;

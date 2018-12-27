@@ -191,9 +191,12 @@
 			</div>
 			<div class="page-two"
 			     :class="{'active': selectImageMode, 'disabled': !selectImageMode}">
-				<select-locations-popup v-if="selectLocationMode"
-				                        @closeSelectLocationsPopup='updateSelectedLocations'
-				                        :previouslySelected="selectedLocations"></select-locations-popup>
+				<store-picker-with-button
+					v-if="selectLocationMode"
+					:previouslySelected="selectedLocations"
+					@close="updateSelectedLocations"
+				>
+				</store-picker-with-button>
 			</div>
 		</div>
 		<div slot="modal-footer"
@@ -226,7 +229,7 @@
 import $ from 'jquery'
 import Modal from '../../../modules/Modal'
 import ItemsFunctions from '../../../../controllers/Items'
-import SelectLocationsPopup from '../../../modules/SelectLocationsPopup'
+import StorePickerWithButton from '@/components/modules/StorePickerWithButton'
 import ItemTypesFunctions from '../../../../controllers/ItemTypes'
 import ajaxErrorHandler from '../../../../controllers/ErrorController'
 import { mapGetters } from 'vuex'
@@ -618,7 +621,7 @@ export default {
 	},
 	components: {
 		Modal,
-		SelectLocationsPopup
+		StorePickerWithButton
 	}
 }
 </script>

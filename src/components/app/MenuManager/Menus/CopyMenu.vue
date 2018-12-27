@@ -27,10 +27,13 @@
 			</div>
 			<div class="row">
 				<div class="col-xs-12">
-					<select-locations-popup @selectedLocations="updateLocations"
-					                        :withButton="false"
-					                        :exclude="[$root.activeLocation.id]"></select-locations-popup>
-					<div class="form-group form-md-line-input form-md-floating-label">
+					<store-picker
+						:previouslySelected="selectedLocations"
+						:exclude="[$root.activeLocation.id]"
+						@update="updateLocations"
+					>
+					</store-picker>
+					<div class="mt-1em">
 						<label>Replace existing?</label><br>
 						<el-switch v-model="replaceExisting"
 						           active-color="#0c6"
@@ -67,7 +70,7 @@
 import Modal from '../../../modules/Modal'
 import MenusFunctions from '../../../../controllers/Menus'
 import ajaxErrorHandler from '../../../../controllers/ErrorController'
-import SelectLocationsPopup from '@/components/modules/SelectLocationsPopup'
+import StorePicker from '@/components/modules/StorePicker'
 
 export default {
 	data () {
@@ -212,7 +215,7 @@ export default {
 	},
 	components: {
 		Modal,
-		SelectLocationsPopup
+		StorePicker
 	}
 }
 </script>

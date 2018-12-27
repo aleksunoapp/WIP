@@ -490,11 +490,12 @@
 					        @click="clearError('assignErrorMessage')"></button>
 					<span>{{ assignErrorMessage }}</span>
 				</div>
-				<select-locations-popup v-if="showAssignStoresModal"
-				                        @selectedLocations="selectedLocations"
-				                        :previouslySelected="previouslySelected"
-				                        :withButton="false">
-				</select-locations-popup>
+				<store-picker
+					v-if="showAssignStoresModal"
+					:previouslySelected="previouslySelected"
+					@update="selectedLocations"
+				>
+				</store-picker>
 			</div>
 			<div slot="modal-footer"
 			     class="modal-footer">
@@ -659,7 +660,7 @@ import Modal from '../../modules/Modal'
 import Dropdown from '../../modules/Dropdown'
 import Pagination from '../../modules/Pagination'
 import PageResults from '../../modules/PageResults'
-import SelectLocationsPopup from '../../modules/SelectLocationsPopup'
+import StorePicker from '@/components/modules/StorePicker'
 import RolesPicker from '@/components/app/ApprovalsManager/RolesPicker'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
 import { mapGetters } from 'vuex'
@@ -1591,7 +1592,7 @@ export default {
 		Dropdown,
 		Pagination,
 		PageResults,
-		SelectLocationsPopup,
+		StorePicker,
 		RolesPicker
 	}
 }

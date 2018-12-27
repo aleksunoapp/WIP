@@ -48,12 +48,17 @@
 					                 class="margin-top-15">
 					</resource-picker>
 				</div>
-				<div class="col-xs-12">
-					<select-locations-popup v-if="selectLocationMode"
-					                        @closeSelectLocationsPopup='updateSelectedLocations'
-					                        :previouslySelected="selectedLocations">
-					</select-locations-popup>
+
+				<div class="col-xs-12"
+					v-if="selectLocationMode"
+				>
+					<store-picker-with-button
+						:previouslySelected="selectedLocations"
+						@close="updateSelectedLocations"
+					>
+					</store-picker-with-button>
 				</div>
+
 				<div class="col-md-12"
 				     v-show="!selectImageMode && !selectLocationMode">
 					<fieldset :disabled="!$root.permissions['menu_manager menus update']">
@@ -222,7 +227,7 @@ import Modal from '../../../modules/Modal'
 import MenusFunctions from '../../../../controllers/Menus'
 import ajaxErrorHandler from '../../../../controllers/ErrorController'
 import ResourcePicker from '../../../modules/ResourcePicker'
-import SelectLocationsPopup from '../../../modules/SelectLocationsPopup'
+import StorePickerWithButton from '@/components/modules/StorePickerWithButton'
 
 export default {
 	data () {
@@ -495,7 +500,7 @@ export default {
 	components: {
 		Modal,
 		ResourcePicker,
-		SelectLocationsPopup
+		StorePickerWithButton
 	}
 }
 </script>

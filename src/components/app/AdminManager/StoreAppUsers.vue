@@ -429,70 +429,23 @@
 			</div>
 			<div slot="modal-body"
 			     class="modal-body">
-				<form role="form"
-				      novalidate>
-					<div class="alert alert-danger"
-					     v-show="assignErrorMessage"
-					     ref="assignErrorMessage">
-						<button class="close"
-						        @click.prevent="clearError('assignErrorMessage')"></button>
-						<span>{{ assignErrorMessage }}</span>
-					</div>
-					<div class="invite-user-form height-mod">
-						<table class="table">
-							<thead>
-								<tr>
-									<th></th>
-									<th> Store Name </th>
-									<th> Street Address </th>
-									<th> City, Province, Country </th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr v-for="store in filteredStores"
-								    :key="store.id">
-									<td>
-										<div class="md-radio">
-											<input type="radio"
-											       v-model="selectedLocationId"
-											       :id="`store-${store.id}`"
-											       class="md-radiobtn"
-											       :value="store.id">
-											<label :for="`store-${store.id}`">
-												<span class="inc"></span>
-												<span class="check"></span>
-												<span class="box"></span>
-											</label>
-										</div>
-									</td>
-									<td> {{ store.display_name }} </td>
-									<td> {{ store.address_line_1 }} </td>
-									<td> {{ store.city }}, {{ store.province }}, {{ store.country }} </td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</form>
+				<div class="alert alert-danger"
+							v-show="assignErrorMessage"
+							ref="assignErrorMessage">
+					<button class="close"
+									@click.prevent="clearError('assignErrorMessage')"></button>
+					<span>{{ assignErrorMessage }}</span>
+				</div>
+				<store-picker
+					:multiple="false"
+					@update="setLocationId"
+				>
+				</store-picker>
 			</div>
 			<div slot="modal-footer"
 			     class="modal-footer">
 				<div class="row">
-					<div class="col-xs-6">
-						<div class="form-group form-md-line-input form-md-floating-label form-md-line-input-trimmed">
-							<div class="input-icon right">
-								<input type="text"
-								       placeholder="Search Stores"
-								       class="form-control input-sm"
-								       :class="{'edited': storeSearchTerm.length}"
-								       v-model="storeSearchTerm"
-								       id="search_locations">
-								<i class="fa fa-times-circle-o clickable"
-								   @click.prevent="resetStoreSearch()"
-								   aria-hidden="true"></i>
-							</div>
-						</div>
-					</div>
-					<div class="col-xs-6">
+					<div class="col-xs-12">
 						<button type="button"
 						        class="btn blue"
 						        @click="assignStores($event)">Select</button>
@@ -599,41 +552,12 @@
 							        @click.prevent="clearError('assignErrorMessage')"></button>
 							<span>{{ assignErrorMessage }}</span>
 						</div>
-						<div class="invite-user-form height-mod">
-							<table class="table">
-								<thead>
-									<tr>
-										<th></th>
-										<th> Store Name </th>
-										<th> Street Address </th>
-										<th> City, Province, Country </th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr v-for="store in filteredStores"
-									    :key="store.id">
-										<td>
-											<div class="md-radio">
-												<input :disabled="$root.permissions['admin store_app_users read'] && !$root.permissions['admin store_app_users update']"
-												       type="radio"
-												       v-model="selectedLocationId"
-												       :id="`store-${store.id}`"
-												       class="md-radiobtn"
-												       :value="store.id">
-												<label :for="`store-${store.id}`">
-													<span class="inc"></span>
-													<span class="check"></span>
-													<span class="box"></span>
-												</label>
-											</div>
-										</td>
-										<td> {{ store.display_name }} </td>
-										<td> {{ store.address_line_1 }} </td>
-										<td> {{ store.city }}, {{ store.province }}, {{ store.country }} </td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
+						<store-picker
+							:multiple="false"
+							:previouslySelected="[storeAppUserToBeEdited.location_id]"
+							@update="setLocationId"
+						>
+						</store-picker>
 					</form>
 				</transition>
 			</div>
@@ -641,22 +565,7 @@
 			     class="modal-footer">
 				<div class="row"
 				     v-if="editLocationMode">
-					<div class="col-xs-6">
-						<div class="form-group form-md-line-input form-md-floating-label form-md-line-input-trimmed">
-							<div class="input-icon right">
-								<input type="text"
-								       placeholder="Search Stores"
-								       class="form-control input-sm"
-								       :class="{'edited': storeSearchTerm.length}"
-								       v-model="storeSearchTerm"
-								       id="search_locations">
-								<i class="fa fa-times-circle-o clickable"
-								   @click.prevent="resetStoreSearch()"
-								   aria-hidden="true"></i>
-							</div>
-						</div>
-					</div>
-					<div class="col-xs-6">
+					<div class="col-xs-12">
 						<button v-if="$root.permissions['admin store_app_users read'] && !$root.permissions['admin store_app_users update']"
 						        type="button"
 						        class="btn btn-primary"
@@ -700,7 +609,7 @@ import LoadingScreen from '../../modules/LoadingScreen'
 import NoResults from '../../modules/NoResults'
 import AdminManagerFunctions from '../../../controllers/AdminManager'
 import Modal from '../../modules/Modal'
-import App from '../../../controllers/App'
+import StorePicker from '@/components/modules/StorePicker'
 import Dropdown from '../../modules/Dropdown'
 import Pagination from '../../modules/Pagination'
 import PageResults from '../../modules/PageResults'
@@ -744,7 +653,7 @@ export default {
 				location_id: 0,
 				is_active: 1
 			},
-			selectedLocationId: 1,
+			selectedLocationId: null,
 			selectedStoreAppUserType: '',
 			loadingStoreAppUsersData: false,
 			assignErrorMessage: '',
@@ -754,7 +663,6 @@ export default {
 			showEditStoreAppUserModal: false,
 			animated: '',
 			selectAllSelected: false,
-			stores: [],
 			activePage: 1,
 			resultsPerPage: 25,
 			sortBy: {
@@ -768,14 +676,13 @@ export default {
 			searchTerm: '',
 			passwordMasked: true,
 			passwordConfirmMasked: true,
-			passwordCheck: '',
-			storeSearchTerm: ''
+			passwordCheck: ''
 		}
 	},
 	computed: {
 		selectedNewLocationName () {
 			let name = ''
-			this.stores.forEach(store => {
+			this.$root.storeLocations.forEach(store => {
 				if (store.id === this.newStoreAppUser.location_id) {
 					name = store.display_name
 				}
@@ -784,7 +691,7 @@ export default {
 		},
 		selectedEditedLocationName () {
 			let name = ''
-			this.stores.forEach(store => {
+			this.$root.storeLocations.forEach(store => {
 				if (store.id === this.storeAppUserToBeEdited.location_id) {
 					name = store.display_name
 				}
@@ -810,37 +717,14 @@ export default {
 				this.resultsPerPage * (this.searchActivePage - 1) +
 					this.resultsPerPage
 			)
-		},
-		filteredStores () {
-			if (this.storeSearchTerm.length) {
-				return this.stores.filter(location => {
-					return (
-						location.display_name +
-						location.address_line_1 +
-						location.city +
-						location.province +
-						location.country
-					)
-						.toLowerCase()
-						.includes(this.storeSearchTerm.toLowerCase())
-				})
-			} else {
-				return this.stores
-			}
 		}
 	},
 	mounted () {
 		this.getAllStoreAppUsers()
-		this.getStores()
 	},
 	methods: {
-		/**
-		 * To reset the search form
-		 * @function
-		 * @returns {undefined}
-		 */
-		resetStoreSearch () {
-			this.storeSearchTerm = ''
+		setLocationId (id) {
+			this.selectedLocationId = id
 		},
 		/**
 		 * To switch bewteen masked and unmasked password fields.
@@ -1034,34 +918,6 @@ export default {
 			}
 		},
 		/**
-		 * To get a list of store for the current application/business.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		getStores () {
-			var assignStoresVue = this
-
-			App.getPaginatedStoreLocations(
-				assignStoresVue.$root.appId,
-				assignStoresVue.$root.appSecret,
-				assignStoresVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						assignStoresVue.stores = response.payload
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch stores',
-						errorName: 'assignErrorMessage',
-						vue: assignStoresVue,
-						containerRef: 'storesModal'
-					})
-				})
-		},
-		/**
 		 * To display the edit modal
 		 * @function
 		 * @param {object} storeAppUser - The store app user object to be edited
@@ -1082,7 +938,6 @@ export default {
 		 * @returns {undefined}
 		 */
 		closeEditLocationMode () {
-			this.storeSearchTerm = ''
 			this.editLocationMode = false
 		},
 		/**
@@ -1091,6 +946,7 @@ export default {
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
 		closeEditStoreAppUserModal () {
+			this.editLocationMode = false
 			this.showEditStoreAppUserModal = false
 		},
 		/**
@@ -1300,7 +1156,6 @@ export default {
 			this.selectedStoreAppUser = user
 			this.selectedStoreAppUserType = type
 			this.selectedLocationId = user.location_id
-			this.getStores()
 			if (type === 'existing') {
 				this.editLocationMode = true
 			} else {
@@ -1313,7 +1168,6 @@ export default {
 		 * @returns {undefined}
 		 */
 		closeAssignStoresModal () {
-			this.storeSearchTerm = ''
 			this.showAssignStoresModal = false
 		},
 		/**
@@ -1450,7 +1304,8 @@ export default {
 		Modal,
 		Dropdown,
 		Pagination,
-		PageResults
+		PageResults,
+		StorePicker
 	}
 }
 </script>

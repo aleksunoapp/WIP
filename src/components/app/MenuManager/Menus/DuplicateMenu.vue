@@ -72,7 +72,6 @@ export default {
 			showDuplicateMenuModal: false,
 			duplicating: false,
 			errorMessage: '',
-			idPrefix: 'cpm',
 			replaceExisting: 0
 		}
 	},
@@ -80,9 +79,6 @@ export default {
 		passedMenuId: {
 			type: Number
 		}
-	},
-	created () {
-		this.idPrefix = this._uid
 	},
 	mounted () {
 		this.showDuplicateMenuModal = true

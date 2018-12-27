@@ -34,11 +34,12 @@
 				</div>
 			</div>
 			<div class="row"
-			     v-show="locationSelection">
+			     v-if="locationSelection">
 				<div class="col-xs-12">
-					<select-locations-popup @selectedLocations="updateLocations"
-					                        :withButton="false">
-					</select-locations-popup>
+					<store-picker
+						@update="updateLocations"
+					>
+					</store-picker>
 				</div>
 			</div>
 		</div>
@@ -73,7 +74,7 @@
 <script>
 import Modal from '@/components/modules/Modal'
 import ModifiersFunctions from '@/controllers/Modifiers'
-import SelectLocationsPopup from '@/components/modules/SelectLocationsPopup'
+import StorePicker from '@/components/modules/StorePicker'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 import MenuItemPicker from '@/components/modules/MenuItemPicker'
 
@@ -214,7 +215,7 @@ export default {
 	},
 	components: {
 		Modal,
-		SelectLocationsPopup,
+		StorePicker,
 		MenuItemPicker
 	}
 }

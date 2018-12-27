@@ -1,21 +1,18 @@
 <template>
-	<div>
-		<small v-if="totalResults && activePage">
-			<b>{{pageStart}}</b> -
-			<b>{{pageEnd}}</b> of
-			<b>{{ totalResults }}</b> results</small>
-		<b v-show="totalResults"
-		   class="margin-left-5 margin-right-5">
-			|
-		</b>
-
-		<el-dropdown trigger="click"
-		             @command="updateResultsPerPage"
-		             size="mini"
-		             :show-timeout="50"
-		             :hide-timeout="50">
+	<div
+		v-if="totalResults && activePage"
+		class="display-flex align-items-center"
+	>
+		<small>{{pageStart}}&nbsp;-</small>
+		<el-dropdown
+			class="pl-5px"
+			trigger="click"
+			@command="updateResultsPerPage"
+			size="mini"
+			:show-timeout="50"
+			:hide-timeout="50">
 			<el-button size="mini">
-				Show {{ resultsPerPage }}
+				{{ resultsPerPage }}
 				<i class="el-icon-arrow-down el-icon--right"></i>
 			</el-button>
 			<el-dropdown-menu slot="dropdown">
@@ -24,6 +21,11 @@
 				<el-dropdown-item :command="100">100</el-dropdown-item>
 			</el-dropdown-menu>
 		</el-dropdown>
+		<small
+			class="pl-5px"
+		>
+			of&nbsp;{{ totalResults }}
+		</small>
 	</div>
 </template>
 

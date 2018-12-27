@@ -123,9 +123,14 @@
 					</div>
 				</div>
 			</div>
-			<select-locations-popup v-if="selectLocationMode"
-			                        @closeSelectLocationsPopup='updateSelectedLocations'
-			                        :previouslySelected="selectedLocations"></select-locations-popup>
+
+			<store-picker-with-button
+				v-if="selectLocationMode"
+				:previouslySelected="selectedLocations"
+				@close="updateSelectedLocations"
+			>
+			</store-picker-with-button>
+
 		</div>
 		<div slot="modal-body"
 		     class="modal-body"
@@ -290,7 +295,7 @@
 import $ from 'jquery'
 import Modal from '../../../modules/Modal'
 import ModifiersFunctions from '../../../../controllers/Modifiers'
-import SelectLocationsPopup from '../../../modules/SelectLocationsPopup'
+import StorePickerWithButton from '@/components/modules/StorePickerWithButton'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
@@ -622,7 +627,7 @@ export default {
 	},
 	components: {
 		Modal,
-		SelectLocationsPopup
+		StorePickerWithButton
 	}
 }
 </script>

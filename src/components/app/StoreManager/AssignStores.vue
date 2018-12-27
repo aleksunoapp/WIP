@@ -28,10 +28,12 @@
 			<loading-screen :show="displaySpinner"
 			                :color="'#2C3E50'"
 			                :display="'inline'"></loading-screen>
-			<select-locations-popup v-if="!displaySpinner"
-			                        @selectedLocations="selectStores"
-			                        :previouslySelected="groupLocations"
-			                        :withButton="false"></select-locations-popup>
+			<store-picker
+				v-if="!displaySpinner"
+				:previouslySelected="groupLocations"
+				@update="selectStores"
+			>
+			</store-picker>
 		</div>
 		<div slot="modal-footer"
 		     class="modal-footer">
@@ -48,11 +50,10 @@
 	</modal>
 </template>
 <script>
-import App from '../../../controllers/App'
 import StoreGroupsFunctions from '../../../controllers/StoreGroups'
 import Modal from '../../modules/Modal'
 import LoadingScreen from '../../modules/LoadingScreen'
-import SelectLocationsPopup from '../../modules/SelectLocationsPopup'
+import StorePicker from '../../modules/StorePicker'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
@@ -89,6 +90,15 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * To clear an error
+		 * @function
+		 * @param {string} name - Name of the variable to clear
+		 * @returns {undefined}
+		 */
+		clearError (name) {
+			this[name] = ''
+		},
 		selectStores (selectedStores) {
 			this.groupLocations = selectedStores
 		},
@@ -174,10 +184,8 @@ export default {
 							location => location.id
 						)
 					}
-					assignStoresVue.getStores()
 				})
 				.catch(reason => {
-					assignStoresVue.displaySpinner = false
 					ajaxErrorHandler({
 						reason,
 						errorText: 'We could not fetch group info',
@@ -186,49 +194,8 @@ export default {
 						containerRef: 'modal'
 					})
 				})
-		},
-		/**
-		 * To get a list of store for the current application/business.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		getStores () {
-			var assignStoresVue = this
-
-			App.getStoreLocations(
-				assignStoresVue.$root.appId,
-				assignStoresVue.$root.appSecret,
-				assignStoresVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						let allStores = response.payload
-						let groupStores = assignStoresVue.groupLocations
-						for (var i = 0; i < groupStores.length; i++) {
-							for (var j = 0; j < allStores.length; j++) {
-								if (groupStores[i].id === allStores[j].id) {
-									allStores[j].selected = true
-								} else if (allStores[j].selected !== true) {
-									allStores[j].selected = false
-								}
-							}
-						}
-						assignStoresVue.selectAllSelected = !allStores.some(
-							menu => menu.selected === false
-						)
-						assignStoresVue.stores = allStores
-						assignStoresVue.displaySpinner = false
-					}
-				})
-				.catch(reason => {
+				.finally(() => {
 					assignStoresVue.displaySpinner = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch stores',
-						errorName: 'errorMessage',
-						vue: assignStoresVue,
-						containerRef: 'modal'
-					})
 				})
 		},
 		/**
@@ -307,7 +274,7 @@ export default {
 	components: {
 		Modal,
 		LoadingScreen,
-		SelectLocationsPopup
+		StorePicker
 	}
 }
 </script>

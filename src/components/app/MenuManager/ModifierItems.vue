@@ -400,10 +400,11 @@
 					        @click="clearError('applyErrorMessage')"></button>
 					<span>{{ applyErrorMessage }}</span>
 				</div>
-				<select-locations-popup v-if="showApplyToLocationsModal"
-				                        @selectedLocations="selectedLocations"
-				                        :withButton="false">
-				</select-locations-popup>
+				<store-picker
+					v-if="showApplyToLocationsModal"
+					@update="selectedLocations"
+				>
+				</store-picker>
 			</div>
 			<div slot="modal-footer"
 			     class="modal-footer">
@@ -462,7 +463,7 @@ import PortionsList from './Portions/PortionsList'
 import OptionsList from './Options/OptionsList'
 import ResourcePicker from '../../modules/ResourcePicker'
 import ajaxErrorHandler from '@/controllers/ErrorController'
-import SelectLocationsPopup from '@/components/modules/SelectLocationsPopup'
+import StorePicker from '@/components/modules/StorePicker'
 import Modal from '@/components/modules/Modal'
 
 export default {
@@ -1102,7 +1103,7 @@ export default {
 		ResourcePicker,
 		PortionsList,
 		OptionsList,
-		SelectLocationsPopup,
+		StorePicker,
 		Modal
 	}
 }
