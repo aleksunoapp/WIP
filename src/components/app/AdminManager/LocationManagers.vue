@@ -1144,6 +1144,7 @@ export default {
 						assignStoresVue.getAllLocationManagers()
 						assignStoresVue.closeAssignStoresModal()
 						assignStoresVue.resetAssignForm()
+						assignStoresVue.resetSearch()
 						assignStoresVue.showAssignSuccess(response.payload)
 						assignStoresVue.showAssignStoresModal = false
 						assignStoresVue.animated = `locationManager-${
