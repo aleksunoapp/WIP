@@ -351,7 +351,7 @@
 												<i class="icon-layers"></i>
 											</a>
 										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['menu_manager menus update'] && $root.activeLocation.is_corporate"
+										<el-tooltip v-if="$root.permissions['menu_manager menus update']"
 										            content="Duplicate"
 										            effect="light"
 										            placement="top">
@@ -360,7 +360,7 @@
 												<i class="fa fa-lg fa-clone"></i>
 											</a>
 										</el-tooltip>
-										<el-tooltip 
+										<el-tooltip v-if="$root.permissions['menu_manager menus update']"
 										            content="Copy"
 										            effect="light"
 										            placement="top">
