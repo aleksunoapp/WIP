@@ -26,7 +26,7 @@ export default {
 					'en-ca': 'Select a reason for deferring this service',
 					'en-us': 'Select a reason for deferring this service',
 					'fr-ca': 'Sélectionnez une raison pour différer ce service',
-					'es-mx': 'Seleccione un motivo para diferir este servicio'
+					'es-mx': 'Seleccione un motivo para rechazar el servicio'
 				}
 			}
 		}

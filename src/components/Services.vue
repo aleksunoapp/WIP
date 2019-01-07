@@ -312,7 +312,7 @@ export default {
 					'en-ca': 'Items you approved after the inspection',
 					'en-us': 'Items you approved after the inspection',
 					'fr-ca': 'Articles que vous avez approuvés après l\'inspection',
-					'es-mx': 'Ítems aprobados después de la inspección'
+					'es-mx': 'Servicios que aprobó después de la inspección'
 				},
 				free: {
 					'en-ca': 'Free',
@@ -324,7 +324,7 @@ export default {
 					'en-ca': 'Subtotal',
 					'en-us': 'Subtotal',
 					'fr-ca': 'Sous-total',
-					'es-mx': 'Subtotal'
+					'es-mx': 'Estimado'
 				},
 				previously_approved_services: {
 					'en-ca': 'Previously Approved Services',
@@ -336,7 +336,7 @@ export default {
 					'en-ca': 'Items you approved when you checked into the dealership',
 					'en-us': 'Items you approved when you checked into the dealership',
 					'fr-ca': 'Articles que vous avez approuvés lorsque vous vous êtes enregistrés(es) chez le concessionnaire',
-					'es-mx': 'Ítems que usted aprobó cuando se registró en la concesionaria'
+					'es-mx': 'Servicios que usted aprobó cuando se registró en el concesionario'
 				},
 				if_approved_by: {
 					'en-ca': 'If approved by',
@@ -366,7 +366,7 @@ export default {
 					'en-ca': 'Estimate Total',
 					'en-us': 'Estimate Total',
 					'fr-ca': 'Coût estimatif',
-					'es-mx': 'Total presupuesto'
+					'es-mx': 'Presupuesto total'
 				},
 				continue: {
 					'en-ca': 'Continue',
@@ -396,19 +396,19 @@ export default {
 					'en-ca': 'You need to acknowledge the Dealership\'s',
 					'en-us': 'You need to acknowledge the Dealership\'s',
 					'fr-ca': 'Vous devez accepter les ',
-					'es-mx': 'Necesita confirmare los términos y condiciones'
+					'es-mx': 'Debe aceptar los'
 				},
 				terms_and_conditions: {
 					'en-ca': 'terms and conditions',
 					'en-us': 'terms and conditions',
 					'fr-ca': 'conditions générales du concessionnaire',
-					'es-mx': 'del concesionario antes'
+					'es-mx': 'términos y condiciones'
 				},
 				before_you_can_approve: {
 					'en-ca': 'before you can approve these additional services.',
 					'en-us': 'before you can approve these additional services.',
 					'fr-ca': 'avant de pouvoir approuver ces services supplémentaires',
-					'es-mx': 'de que pueda aprobar estos servicios adicionales.'
+					'es-mx': 'del concesionario antes de que pueda aprobar estos servicios adicionales.'
 				},
 				i_agree_to: {
 					'en-ca': 'I agree to the Dealership\'s',
@@ -438,7 +438,7 @@ export default {
 					'en-ca': 'Terms and Conditions',
 					'en-us': 'Terms and Conditions',
 					'fr-ca': 'Conditions Générales du Concessionnaire',
-					'es-mx': 'condiciones del concesionario'
+					'es-mx': 'Terminos y condiciones'
 				},
 				terms_header_2: {
 					'en-ca': 'Exclusion of warranties',

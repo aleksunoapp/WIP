@@ -570,7 +570,7 @@ export default {
 					'en-ca': 'Check the recommended services you authorize.',
 					'en-us': 'Check the recommended services you authorize.',
 					'fr-ca': 'Sélectionnez toutes les recommandations vous autorisez.',
-					'es-mx': 'Verifique los servicios recomendados que autoriza.'
+					'es-mx': 'Verifique los servicios recomendados que usted autoriza.'
 				},
 				free: {
 					'en-ca': 'Free',

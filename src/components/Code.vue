@@ -121,13 +121,13 @@ export default {
 					'en-ca': 'Please enter your last name',
 					'en-us': 'Please enter your last name',
 					'fr-ca': 'Veuillez inscrire votre nom de famille',
-					'es-mx': 'Introduzca su apellido o empresa a continuación'
+					'es-mx': 'Por favor ingrese su apellido'
 				},
 				please_enter_your_company_name: {
 					'en-ca': 'Please enter your company name',
 					'en-us': 'Please enter your company name',
 					'fr-ca': 'Veuillez inscrire le nom de votre compagnie',
-					'es-mx': 'Introduzca su empresa'
+					'es-mx': 'Por favor ingrese el nombre de su compañia'
 				},
 				phone_number: {
 					'en-ca': 'phone_number',
@@ -188,12 +188,6 @@ export default {
 					'en-us': 'Error',
 					'fr-ca': 'Erreur',
 					'es-mx': 'Error'
-				},
-				enter_access_code: {
-					'en-ca': 'Please enter your access code.',
-					'en-us': 'Please enter your access code.',
-					'fr-ca': 'Veuillez entrer votre code d\'accès.',
-					'es-mx': 'Su código de acceso.'
 				}
 			}
 		}
@@ -231,7 +225,11 @@ export default {
 				this.$root.logError('Left passcode input empty')
 				this.modalOpen = true
 				this.modal.title = this.langTerms.error[this.$root.meta.local.toLowerCase()]
-				this.modal.content = this.langTerms.enter_access_code[this.$root.meta.local.toLowerCase()]
+				if (this.$root.meta.isBusiness) {
+					this.modal.content = this.langTerms.please_enter_your_company_name[this.$root.meta.local.toLowerCase()]
+				} else {
+					this.modal.content = this.langTerms.please_enter_your_last_name[this.$root.meta.local.toLowerCase()]
+				}
 			} else {
 				this.$root.logEvent('Entered a passcode')
 				this.authenticateToken()

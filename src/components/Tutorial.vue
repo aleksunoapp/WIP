@@ -116,7 +116,7 @@ export default {
 					'en-ca': 'There are',
 					'en-us': 'There are',
 					'fr-ca': 'Elles sont',
-					'es-mx': 'Hay'
+					'es-mx': 'Estas son'
 				},
 				continue: {
 					'en-ca': 'CONTINUE',
@@ -128,13 +128,13 @@ export default {
 					'en-ca': 'Select your services in',
 					'en-us': 'Select your services in',
 					'fr-ca': 'Sélectionnez vos services dans',
-					'es-mx': 'Seleccione sus servicios en'
+					'es-mx': 'Para seleccionar su servicio, tendra'
 				},
 				to_have_your_vehicle: {
 					'en-ca': 'To have your vehicle ready by',
 					'en-us': 'To have your vehicle ready by',
 					'fr-ca': 'Pour que votre véhicule soit prêt pour',
-					'es-mx': 'Para tener su vehículo listo'
+					'es-mx': 'Y tendra su vehículo listo hoy a las'
 				},
 				today: {
 					'en-ca': 'today',
