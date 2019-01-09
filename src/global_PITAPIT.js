@@ -60,8 +60,8 @@ export default {
 					}
 				} else if (development) {
 					return {
-						appId: '8xHDsWCRGZ1wzDhPPlaVG3Rfwih7oDN3',
-						appSecret: 'otHHmhLOocu9zJIVRV5N4eCse32KmzxL'
+						appId: 'TXqcYP6cOE1MQ2bwJEgCPnXTTJnhC7nZ',
+						appSecret: 'QJ9ckirYR624kUXQINQbEV9ShjKPjMQ4'
 					}
 				}
 			})(),
