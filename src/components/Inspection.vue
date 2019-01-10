@@ -284,7 +284,8 @@
 						'green': category.serviceCategoryType === 'PASS'
 					}"
 					class="accordion"
-					:key="`category-${index}`">
+					:key="`category-${index}`"
+				>
 					<div @click="toggleAccordion(category)" class="accordion-header">
 						<img :src="category.iconUrl"> {{ category.name }} {{ ($root.inspectionCounts[countVariables[category.serviceCategoryType]] !== 0) ? `(${$root.inspectionCounts[countVariables[category.serviceCategoryType]]})` : '' }}
 						<div class="accordion-status" v-if="$root.inspectionCounts[countVariables[category.serviceCategoryType]] !== 0"></div>

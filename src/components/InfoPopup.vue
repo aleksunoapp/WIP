@@ -52,7 +52,8 @@
 							viewingService.category === '7' ||
 							viewingService.category === '8' ||
 							viewingService.category === '9'
-						)">
+						)"
+					>
 						<div class="info-modal-concerns">
 							<p class="customer-comments-label" v-if="viewingService.comment">
 								{{ $root.meta.customerCommentsLabel }}
