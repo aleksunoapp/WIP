@@ -128,22 +128,28 @@ var authenticateToken = {
 						_this.$root.meta.inspectionPdfUrl = values[1].fullInspectionUrl
 						_this.$root.meta.advisor = values[2]
 
-						values[0].forEach(service => {
-							if (service.parentServiceId) {
-								values[0].forEach(parentService => {
-									if (parentService.id === service.parentServiceId) {
-										if (!parentService.subServices) {
-											parentService.subServices = []
-										}
-										parentService.subServices.push(service)
-									}
-								})
+						const parents = []
+						for (const service of values[0]) {
+							if (!service.parentServiceId) {
+								if (!parents.some(parent => parent.id === service.id)) {
+									parents.push(service)
+								}
 							}
-						})
+						}
 
-						_this.$root.services = values[0].filter(service => {
-							return !service.parentServiceId
-						})
+						for (const parent of parents) {
+							for (const childCandidate of values[0]) {
+								if (childCandidate.parentServiceId) {
+									if (childCandidate.parentServiceId === parent.id) {
+										if (!parent.subServices) {
+											parent.subServices = []
+										}
+										parent.subServices.push(childCandidate)
+									}
+								}
+							}
+						}
+						_this.$root.services = parents
 
 						// Loop through each service and sub service to get the total counts
 						_this.$root.services.forEach(service => {
