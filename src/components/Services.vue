@@ -29,7 +29,7 @@
 								</div>
 								<div class="summary-table-cell">
 									<template v-if="service.category !== '8'">
-										<span class="price" v-if="subService.price === 0 && subService.laborMatrixPayment && subService.laborMatrixPayment !== 'NA'">{{subService.laborMatrixPaymentTranslations}}</span>
+										<span class="price" v-if="subService.price === 0 && subService.laborMatrixPayment && subService.laborMatrixPayment !== 'NA' && subService.laborMatrixPayment !== 'None'">{{subService.laborMatrixPaymentTranslations}}</span>
 										<span class="price" v-else-if="subService.price !== 0">{{ formatCurrency(subService.price) }}</span>
 										<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 									</template>
@@ -54,7 +54,7 @@
 							</div>
 							<div class="summary-table-cell">
 								<template v-if="service.category !== '8'">
-									<span class="price" v-if="service.price === 0 && service.laborMatrixPayment && service.laborMatrixPayment !== 'NA'">{{service.laborMatrixPaymentTranslations}}</span>
+									<span class="price" v-if="service.price === 0 && service.laborMatrixPayment && service.laborMatrixPayment !== 'NA' && service.laborMatrixPayment !== 'None'">{{service.laborMatrixPaymentTranslations}}</span>
 									<span class="price" v-else-if="service.price !== 0">{{ formatCurrency(service.price) }}</span>
 									<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 								</template>
@@ -97,7 +97,7 @@
 											<span class="service-name" v-bind:class="{'bold': (service.isHighlighted === true)}">{{ subService.name }}</span>
 										</div>
 										<div class="summary-table-cell" v-bind:class="{'bold': (service.isHighlighted === true)}">
-											<span class="price" v-if="subService.price !== 0 && subService.laborMatrixPayment && subService.laborMatrixPayment !== 'NA'">{{subService.laborMatrixPaymentTranslations}}</span>
+											<span class="price" v-if="subService.price !== 0 && subService.laborMatrixPayment && subService.laborMatrixPayment !== 'NA' && subService.laborMatrixPayment !== 'None'">{{subService.laborMatrixPaymentTranslations}}</span>
 											<span class="price" v-else-if="subService.price !== 0">{{ formatCurrency(subService.price) }}</span>
 											<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 										</div>
@@ -113,7 +113,7 @@
 										<span class="service-name" v-bind:class="{'bold': (service.isHighlighted === true)}">{{ service.name }}</span>
 									</div>
 									<div class="summary-table-cell" v-bind:class="{'bold': (service.isHighlighted === true)}">
-										<span class="price" v-if="service.price !== 0 && service.laborMatrixPayment && service.laborMatrixPayment !== 'NA'">{{service.laborMatrixPaymentTranslations}}</span>
+										<span class="price" v-if="service.price !== 0 && service.laborMatrixPayment && service.laborMatrixPayment !== 'NA' && service.laborMatrixPayment !== 'None'">{{service.laborMatrixPaymentTranslations}}</span>
 										<span class="price" v-else-if="service.price !== 0">{{ formatCurrency(service.price) }}</span>
 										<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 									</div>

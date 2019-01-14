@@ -89,13 +89,13 @@
 						</div>
 						<div class="info-modal-estimate">
 							<template v-if="viewingSubServiceIndex === undefined">
-								<span v-if="viewingService.price === 0 && viewingService.laborMatrixPayment && viewingService.laborMatrixPayment !== 'NA'">{{ translateWarranty(viewingService.laborMatrixPayment) }}</span>
+								<span v-if="viewingService.price === 0 && viewingService.laborMatrixPayment && viewingService.laborMatrixPayment !== 'NA' && viewingService.laborMatrixPayment !== 'None'">{{ translateWarranty(viewingService.laborMatrixPayment) }}</span>
 								<template v-else>
 									{{ langTerms.estimated_cost[$root.meta.local.toLowerCase()] }} <span>{{ formatCurrency(viewingService.price) }}</span>
 								</template>
 							</template>
 							<template v-else>
-								<span v-if="viewingService.subServices[viewingSubServiceIndex].price === 0 && viewingService.subServices[viewingSubServiceIndex].laborMatrixPayment && viewingService.subServices[viewingSubServiceIndex].laborMatrixPayment !== 'NA'">{{ translateWarranty(viewingService.subServices[viewingSubServiceIndex].laborMatrixPayment) }}</span>
+								<span v-if="viewingService.subServices[viewingSubServiceIndex].price === 0 && viewingService.subServices[viewingSubServiceIndex].laborMatrixPayment && viewingService.subServices[viewingSubServiceIndex].laborMatrixPayment !== 'NA' && viewingService.subServices[viewingSubServiceIndex].laborMatrixPayment !== 'None'">{{ translateWarranty(viewingService.subServices[viewingSubServiceIndex].laborMatrixPayment) }}</span>
 								<template v-else>
 									{{ langTerms.estimated_cost[$root.meta.local.toLowerCase()] }} <span>{{ formatCurrency(viewingService.subServices[viewingSubServiceIndex].price) }}</span>
 								</template>

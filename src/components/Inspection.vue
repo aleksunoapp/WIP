@@ -207,7 +207,7 @@
 											</div>
 											<div class="summary-table-cell">
 												<div class="flex justify-center align-center" v-if="category.serviceCategoryType !== 'PASS' && service.category !== '8'">
-													<span class="price" v-if="service.subServices[subServiceIndex].price === 0 && service.subServices[subServiceIndex].laborMatrixPayment && service.subServices[subServiceIndex].laborMatrixPayment !== 'NA'">{{service.subServices[subServiceIndex].laborMatrixPaymentTranslations}}</span>
+													<span class="price" v-if="service.subServices[subServiceIndex].price === 0 && service.subServices[subServiceIndex].laborMatrixPayment && service.subServices[subServiceIndex].laborMatrixPayment !== 'NA' && service.subServices[subServiceIndex].laborMatrixPayment !== 'None'">{{service.subServices[subServiceIndex].laborMatrixPaymentTranslations}}</span>
 													<span class="price" v-else-if="service.subServices[subServiceIndex].price !== 0">{{ formatCurrency(service.subServices[subServiceIndex].price) }}</span>
 													<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 													<div class="service-checkbox">
@@ -342,7 +342,7 @@
 											<div class="summary-table-cell">
 												<div class="flex justify-center align-center" 
 												v-if="category.serviceCategoryType !== 'PASS'">
-													<span class="price" v-if="subService.price === 0 && subService.laborMatrixPayment && subService.laborMatrixPayment !== 'NA'">{{subService.laborMatrixPaymentTranslations}} </span>
+													<span class="price" v-if="subService.price === 0 && subService.laborMatrixPayment && subService.laborMatrixPayment !== 'NA' && subService.laborMatrixPayment !== 'None'">{{subService.laborMatrixPaymentTranslations}} </span>
 													<span class="price" v-else-if="subService.price !== 0">{{ formatCurrency(subService.price) }} </span>
 													<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 													<div class="service-checkbox">
@@ -372,7 +372,7 @@
 										<div class="summary-table-cell">
 											<div class="flex justify-center align-center" 
 											v-if="category.serviceCategoryType !== 'PASS'">
-												<span class="price" v-if="service.price === 0 && service.laborMatrixPayment && service.laborMatrixPayment !== 'NA'">{{service.laborMatrixPaymentTranslations}}</span>
+												<span class="price" v-if="service.price === 0 && service.laborMatrixPayment && service.laborMatrixPayment !== 'NA' && service.laborMatrixPayment !== 'None'">{{service.laborMatrixPaymentTranslations}}</span>
 												<span class="price" v-else-if="service.price !== 0">{{ formatCurrency(service.price) }}</span>
 												<span class="price" v-else> {{ langTerms.free[$root.meta.local.toLowerCase()] }} </span>
 												<div class="service-checkbox">
