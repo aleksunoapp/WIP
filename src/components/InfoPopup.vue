@@ -282,8 +282,10 @@ export default {
 					'Included': 'Tenga en cuenta que el precio de este servicio está incluido, NO se le cobrará por separado'
 				}
 			}
-
-			return translations[this.$root.meta.local.toLowerCase()][laborMatrixPayment] | ''
+			const language = translations[this.$root.meta.local.toLowerCase()]
+			if (language) {
+				return language[laborMatrixPayment]
+			} else return ''
 		},
 		/**
 		 * To format a number by locale to two decimal digits
