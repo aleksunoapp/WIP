@@ -89,13 +89,13 @@
 						</div>
 						<div class="info-modal-estimate">
 							<template v-if="viewingSubServiceIndex === undefined">
-								<span v-if="viewingService.price === 0 && viewingService.laborMatrixPayment && viewingService.laborMatrixPayment !== 'NA' && viewingService.laborMatrixPayment !== 'None'">{{ translateWarranty(viewingService.laborMatrixPayment) }}</span>
+								<span v-if="viewingService.price === 0 && viewingService.laborMatrixPayment && viewingService.laborMatrixPayment !== 'None'">{{ translateWarranty(viewingService.laborMatrixPayment) }}</span>
 								<template v-else>
 									{{ langTerms.estimated_cost[$root.meta.local.toLowerCase()] }} <span>{{ formatCurrency(viewingService.price) }}</span>
 								</template>
 							</template>
 							<template v-else>
-								<span v-if="viewingService.subServices[viewingSubServiceIndex].price === 0 && viewingService.subServices[viewingSubServiceIndex].laborMatrixPayment && viewingService.subServices[viewingSubServiceIndex].laborMatrixPayment !== 'NA' && viewingService.subServices[viewingSubServiceIndex].laborMatrixPayment !== 'None'">{{ translateWarranty(viewingService.subServices[viewingSubServiceIndex].laborMatrixPayment) }}</span>
+								<span v-if="viewingService.subServices[viewingSubServiceIndex].price === 0 && viewingService.subServices[viewingSubServiceIndex].laborMatrixPayment && viewingService.subServices[viewingSubServiceIndex].laborMatrixPayment !== 'None'">{{ translateWarranty(viewingService.subServices[viewingSubServiceIndex].laborMatrixPayment) }}</span>
 								<template v-else>
 									{{ langTerms.estimated_cost[$root.meta.local.toLowerCase()] }} <span>{{ formatCurrency(viewingService.subServices[viewingSubServiceIndex].price) }}</span>
 								</template>
@@ -256,30 +256,34 @@ export default {
 				'en-us': {
 					'Warranty': 'Please note this service is covered under Warranty - you will NOT be charged for it',
 					'Internal': 'Please note this service is free - you will NOT be charged for it',
-					'ServiceContract': 'Covered by service contract',
+					'ServiceContract': 'Please note the price of this service is covered by the service contract - you will NOT be charged for it',
 					'Free': 'Please note this service is free - you will NOT be charged for it',
-					'Included': 'Please note the price of this service is included - you will NOT be charged for it'
+					'Included': 'Please note the price of this service is included - you will NOT be charged for it',
+					'NA': 'Please note this service is free - you will NOT be charged for it'
 				},
 				'en-ca': {
 					'Warranty': 'Please note this service is covered under Warranty - you will NOT be charged for it',
 					'Internal': 'Please note this service is free - you will NOT be charged for it',
-					'ServiceContract': 'Covered by service contract',
+					'ServiceContract': 'Please note the price of this service is covered by the service contract - you will NOT be charged for it',
 					'Free': 'Please note this service is free - you will NOT be charged for it',
-					'Included': 'Please note the price of this service is included - you will NOT be charged for it'
+					'Included': 'Please note the price of this service is included - you will NOT be charged for it',
+					'NA': 'Please note this service is free - you will NOT be charged for it'
 				},
 				'fr-ca': {
 					'Warranty': 'Veuillez noter que ce service est couvert par la garantie, il ne vous sera PAS facturé',
-					'Internal': 'Veuillez noter que le prix de ce service est inclus, il ne vous sera PAS facturé',
+					'Internal': 'Veuillez noter que ce service est gratuit, il ne vous sera PAS facturé',
 					'ServiceContract': '',
 					'Free': 'Veuillez noter que ce service est gratuit, il ne vous sera PAS facturé',
-					'Included': 'Veuillez noter que ce service est gratuit, il ne vous sera PAS facturé'
+					'Included': 'Veuillez noter que le prix de ce service est inclus, il ne vous sera PAS facturé',
+					'NA': 'Veuillez noter que ce service est gratuit, il ne vous sera PAS facturé'
 				},
 				'es-mx': {
 					'Warranty': 'Tenga en cuenta que este servicio está cubierto por la garantía, NO se le cobrará por él',
 					'Internal': 'Tenga en cuenta que este servicio es gratuito, NO se le cobrará por él',
 					'ServiceContract': '',
 					'Free': 'Tenga en cuenta que este servicio es gratuito, NO se le cobrará por él',
-					'Included': 'Tenga en cuenta que el precio de este servicio está incluido, NO se le cobrará por separado'
+					'Included': 'Tenga en cuenta que el precio de este servicio está incluido, NO se le cobrará por separado',
+					'NA': 'Tenga en cuenta que este servicio es gratuito, NO se le cobrará por él'
 				}
 			}
 			const language = translations[this.$root.meta.local.toLowerCase()]
