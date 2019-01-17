@@ -272,7 +272,7 @@ export default {
 				'fr-ca': {
 					'Warranty': 'Veuillez noter que ce service est couvert par la garantie, il ne vous sera PAS facturé',
 					'Internal': 'Veuillez noter que ce service est gratuit, il ne vous sera PAS facturé',
-					'ServiceContract': '',
+					'ServiceContract': 'Veuillez noter que le coût de ce service est couvert par votre contrat de service. Il ne vous sera donc PAS facturé',
 					'Free': 'Veuillez noter que ce service est gratuit, il ne vous sera PAS facturé',
 					'Included': 'Veuillez noter que le prix de ce service est inclus, il ne vous sera PAS facturé',
 					'NA': 'Veuillez noter que ce service est gratuit, il ne vous sera PAS facturé'
@@ -280,7 +280,7 @@ export default {
 				'es-mx': {
 					'Warranty': 'Tenga en cuenta que este servicio está cubierto por la garantía, NO se le cobrará por él',
 					'Internal': 'Tenga en cuenta que este servicio es gratuito, NO se le cobrará por él',
-					'ServiceContract': '',
+					'ServiceContract': 'Tenga en cuenta que el precio de este servicio está cubierto por el contrato de servicio; a usted NO se le cobrará por él',
 					'Free': 'Tenga en cuenta que este servicio es gratuito, NO se le cobrará por él',
 					'Included': 'Tenga en cuenta que el precio de este servicio está incluido, NO se le cobrará por separado',
 					'NA': 'Tenga en cuenta que este servicio es gratuito, NO se le cobrará por él'
