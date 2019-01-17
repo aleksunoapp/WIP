@@ -134,7 +134,7 @@ export default {
 					'en-ca': 'To have your vehicle ready by',
 					'en-us': 'To have your vehicle ready by',
 					'fr-ca': 'Pour que votre véhicule soit prêt pour',
-					'es-mx': 'Y tendra su vehículo listo hoy a las'
+					'es-mx': 'Y tendra su vehículo listo'
 				},
 				today: {
 					'en-ca': 'today',
