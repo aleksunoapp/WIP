@@ -1,39 +1,50 @@
-# dmpi3
+# DMPI
 
-## Project setup
-```
-npm install
-```
+## To-do
+- a11y 2h
+- types 4h
+- scroll past Confirm button 2h
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## Project notes
 
-### Compiles and minifies for production
-```
-npm run build
-```
+### Resources
+[Designs (Dropbox)](https://www.dropbox.com/sh/dy34i2m7is072bx/AACLWvABQESnNiwCz1pkf0CFa?dl=0)
 
-### Run your tests
-```
-npm run test
-```
+### Data
+Recommended services, grouped into categories by urgency and approval status. `service`s with a `parentServiceId` are treated as `subService`s of their parent and displayed instead of the parent.
+Category `id`s:
 
-### Lints and fixes files
-```
-npm run lint
-```
+|`id`|`serviceCategoryType`||
+|---|---|---|
+|1|SAFETY|fail/safety-related|
+|2|ATTN|warning|
+|3|PASS|pass, no price|
+|4|PRE|approved|
+|5|CC|concern, used only for `name`, parent of categories 6-9|
+|6|n/a|child of `id: 5`, critical/safety-related?|
+|7|n/a|child of `id: 5`, moderate?|
+|8|n/a|child of `id: 5`, optional?|
+|9|n/a|child of `id: 5`, optional?|
 
-### Run your end-to-end tests
-```
-npm run test:e2e
-```
+### CSS
+SCSS, scoped and nested the same way as HTML, or CSS.
+Global CSS in App.vue, including variables and transitions.
+All margins and padding in rem, set on #DMPI (Vue's mount point).
+Scroll frozen down to `.container`s
+Flexbox, getComputedPropertyStyle, basic canvas.
 
-### Run your unit tests
-```
-npm run test:unit
-```
+#### z-index
+- service 1
+- reason 2
+- drawer 3
+- menu-button 4
+- help 5
+- error 6
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Errors
+Caught in App.vue, displayed in overlay.
+Form validations on login and summary pages.
+
+### vue-i18n
+Locales: `en-CA`, `en-US`, `fr-CA`, `es-mx`.
+`$t()` uses `messages`, `$d()` uses `dateTimeFormats`

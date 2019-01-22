@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<parameters >
+	<parameter name="ApiUrl" defaultValue="#{apiUrl}#" >
+		<parameterEntry kind="TextFile" scope="\\*.js$" match="#{apiUrl}#" />
+		<parameterEntry kind="TextFile" scope="\\*.js.map$" match="#{apiUrl}#" />
+	</parameter>
+	<parameter name="UserActivityLog" defaultValue="#{UserActivityLog}#" >
+		<parameterEntry kind="TextFile" scope="\\*.js$" match="#{UserActivityLog}#" />
+		<parameterEntry kind="TextFile" scope="\\*.js.map$" match="#{UserActivityLog}#" />
+	</parameter>
+</parameters>

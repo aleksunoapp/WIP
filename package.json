@@ -10,8 +10,11 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "hammerjs": "^2.0.8",
     "register-service-worker": "^1.5.2",
+    "signature_pad": "^3.0.0-beta.3",
     "vue": "^2.5.21",
+    "vue-i18n": "^8.7.0",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
   },
