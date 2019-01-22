@@ -13,7 +13,7 @@
       <template
         v-if="page === 1"
       >
-        <div 
+        <div
           class="category"
           :style="`top: ${category.style.top}px; left: ${category.style.left}px;`"
           @click.stop
@@ -24,7 +24,7 @@
               :style="`width: ${category.style.width}px; height: ${category.style.height}px;`"
             >
               <div class="border"></div>
-              <button 
+              <button
                 class="category"
               >
                 <div class="left">
@@ -108,7 +108,7 @@
       <template
         v-if="page === 2"
       >
-        <div 
+        <div
           class="approve"
           :style="`top: ${approve.style.top}px; left: ${approve.style.left}px;`"
           @click.stop
@@ -144,7 +144,7 @@
       <template
         v-if="page === 3"
       >
-        <div 
+        <div
           class="details"
           :style="`top: ${details.style.top}px; left: ${details.style.left}px; width: ${details.style.width}px;`"
           @click.stop
@@ -172,7 +172,7 @@
       <template
         v-if="page === 4"
       >
-        <div 
+        <div
           class="summary"
           :style="`top: ${summary.style.top}px; left: ${summary.style.left}px; width: ${summary.style.width}px;`"
           @click.stop
@@ -226,7 +226,7 @@
       <template
         v-if="page === 5"
       >
-        <div 
+        <div
           class="more"
           @click.stop
         >
@@ -274,9 +274,9 @@
 
 <script>
 import Vue from 'vue'
-import { mapGetters, mapMutations, mapState, mapActions } from 'vuex';
+import { mapGetters, mapMutations, mapState, mapActions } from 'vuex'
 import Pagination from '@/components/Pagination.vue'
-import {formatCurrency} from '@/mixins.js'
+import { formatCurrency } from '@/mixins.js'
 
 export default Vue.extend({
   components: {
@@ -304,7 +304,7 @@ export default Vue.extend({
         bottom: 0,
         left: 0,
         width: 0,
-        height: 0,
+        height: 0
       }
     },
     details: {
@@ -314,7 +314,7 @@ export default Vue.extend({
         bottom: 0,
         left: 0,
         width: 0,
-        height: 0,
+        height: 0
       }
     },
     summary: {
@@ -324,29 +324,29 @@ export default Vue.extend({
         bottom: 0,
         left: 0,
         width: 0,
-        height: 0,
+        height: 0
       }
     }
   }),
   computed: {
     ...mapState([
       'help',
-      'service',
+      'service'
     ]),
     ...mapGetters([
       'categoriesShownOnInspection',
       'categoryCount',
       'categoryServices',
-      'categoryContainsHiglightedServices',
+      'categoryContainsHiglightedServices'
     ]),
     buttonText () {
-      return this.page < 5 ? this.$t("next") : this.$t("got_it")
+      return this.page < 5 ? this.$t('next') : this.$t('got_it')
     },
     serviceTotal () {
       return this.formatCurrency(this.$store.getters.total.service)
     },
     inspectionTotal () {
-      return  this.formatCurrency(this.$store.getters.total.inspection)
+      return this.formatCurrency(this.$store.getters.total.inspection)
     },
     tax () {
       return this.formatCurrency(this.$store.state.tax)
@@ -362,9 +362,9 @@ export default Vue.extend({
         this.closeService()
         window.addEventListener('resize', this.exitHelp)
         const scrollContainer = document.querySelector('.view')
-        if (scrollContainer) {this.start.scrollTop = scrollContainer.scrollTop}
-        this.start.route = this.$route.name;
-        this.setPage(1);
+        if (scrollContainer) { this.start.scrollTop = scrollContainer.scrollTop }
+        this.start.route = this.$route.name
+        this.setPage(1)
       } else {
         this.exitHelp()
       }
@@ -383,102 +383,98 @@ export default Vue.extend({
       'closeHelp',
       'closeService',
       'closeDrawer',
-      'logEvent',
+      'logEvent'
     ]),
     ...mapActions({
-      viewService: 'viewService',
+      viewService: 'viewService'
     }),
     exitHelp () {
       if (this.help) {
         this.logEvent(`Finished viewing help page ${this.page}`)
-        this.closeService();
-        this.$router.replace({name: this.start.route});
-        this.closeHelp();
-        window.removeEventListener('resize', this.exitHelp);
+        this.closeService()
+        this.$router.replace({ name: this.start.route })
+        this.closeHelp()
+        window.removeEventListener('resize', this.exitHelp)
         setTimeout(() => {
           const scrollContainer = document.querySelector('.view')
-          if (scrollContainer) {scrollContainer.scrollTo(0, this.start.scrollTop)}
+          if (scrollContainer) { scrollContainer.scrollTo(0, this.start.scrollTop) }
         }, 600)
       }
     },
     setPage (page) {
       if (page === undefined) {
-        page = this.page;
+        page = this.page
       }
 
       if (this.$refs.overlay) {
-        this.$refs.overlay.scrollTo(0,0);
+        this.$refs.overlay.scrollTo(0, 0)
       }
 
       if (this.page === 1 && (page !== 1 || page !== 2)) {
-        this.$router.replace({name: 'inspection'})
+        this.$router.replace({ name: 'inspection' })
       }
       if (this.page === 2 && (page !== 1 || page !== 2)) {
-        this.$router.replace({name: 'inspection'})
+        this.$router.replace({ name: 'inspection' })
       }
       if (this.page === 3 && page !== 3) {
         this.closeService()
       }
       if (this.page === 4 && page !== 4) {
-        this.$router.replace({name: 'summary'})
+        this.$router.replace({ name: 'summary' })
       }
       if (this.page === 5 && page !== 5) {
-        this.$router.replace({name: 'summary'})
+        this.$router.replace({ name: 'summary' })
       }
 
       if (page === 1) {
-        this.$router.replace({name: 'inspection'});
+        this.$router.replace({ name: 'inspection' })
 
         if (window.innerWidth > 992) {
           const category = document.querySelector('.category__container')
 
           if (!category) {
-            this.category.show = false;
+            this.category.show = false
           } else {
-            let rem = getComputedStyle(category).fontSize;
-            rem = rem.substr(0, rem.length - 2);
-            this.category.style.top = category.offsetTop;
-            this.category.style.bottom = category.offsetTop + category.offsetHeight;
-            this.category.style.left = category.offsetLeft;
-            this.category.style.width = category.offsetWidth;
-            this.category.style.height = category.offsetHeight;
-            this.category.show = true;
+            this.category.style.top = category.offsetTop
+            this.category.style.bottom = category.offsetTop + category.offsetHeight
+            this.category.style.left = category.offsetLeft
+            this.category.style.width = category.offsetWidth
+            this.category.style.height = category.offsetHeight
+            this.category.show = true
           }
         } else {
           const scrollContainer = document.querySelector('.view')
-          if (scrollContainer) {scrollContainer.scrollTo(0,0)} 
-          // .scrollTo(0,0);
-          // document.querySelector('.category').addClass('open');
+          if (scrollContainer) { scrollContainer.scrollTo(0, 0) }
           const category = document.querySelector('.category .header')
-    
+
           if (!category) {
-            this.category.show = false;
+            this.category.show = false
           } else {
-            this.category.style.top = category.offsetTop;
-            this.category.style.bottom = category.offsetTop + category.offsetHeight;
-            this.category.style.left = category.offsetLeft;
-            this.category.style.width = category.offsetWidth;
-            this.category.style.height = category.offsetHeight;
-            this.category.show = true;
+            this.category.style.top = category.offsetTop
+            this.category.style.bottom = category.offsetTop + category.offsetHeight
+            this.category.style.left = category.offsetLeft
+            this.category.style.width = category.offsetWidth
+            this.category.style.height = category.offsetHeight
+            this.category.show = true
           }
         }
-        this.page = page;
+        this.page = page
       }
       if (page === 2) {
         const input = document.querySelector('input[type="checkbox"]')
         const label = document.querySelector('.checkbox')
 
         if (!input || !label) {
-          this.approve.show = false;
+          this.approve.show = false
         } else {
-          let unit = getComputedStyle(label).getPropertyValue('--unit');
-          unit = unit.substr(0, unit.length - 2);
-          this.approve.checked = input.checked;
-          this.approve.style.top = label.offsetTop - unit;
-          this.approve.style.left = label.offsetLeft - unit;
-          this.approve.show = true;
+          let unit = getComputedStyle(label).getPropertyValue('--unit')
+          unit = unit.substr(0, unit.length - 2)
+          this.approve.checked = input.checked
+          this.approve.style.top = label.offsetTop - unit
+          this.approve.style.left = label.offsetLeft - unit
+          this.approve.show = true
         }
-        this.page = page;
+        this.page = page
       }
 
       if (page === 3) {
@@ -487,44 +483,43 @@ export default Vue.extend({
         setTimeout(() => {
           const details = document.querySelector('.images')
           if (!details) {
-            this.details.show = false;
+            this.details.show = false
           } else {
-            this.details.style.top = details.offsetTop;
-            this.details.style.left = details.offsetLeft;
-            this.details.style.bottom = details.offsetTop + details.offsetHeight;
-            this.details.style.width = details.offsetWidth;
-            this.details.show = true;
+            this.details.style.top = details.offsetTop
+            this.details.style.left = details.offsetLeft
+            this.details.style.bottom = details.offsetTop + details.offsetHeight
+            this.details.style.width = details.offsetWidth
+            this.details.show = true
           }
-          this.page = page;
+          this.page = page
         }, 600)
       }
 
       if (page === 4) {
-        this.$router.replace({name: 'summary'})
+        this.$router.replace({ name: 'summary' })
 
         setTimeout(() => {
           const summary = document.querySelector('#summary')
           if (!summary) {
-            this.summary.show = false;
+            this.summary.show = false
           } else {
-            this.summary.style.top = summary.offsetTop;
-            this.summary.style.bottom = summary.offsetTop + summary.offsetHeight;
-            this.summary.style.left = summary.offsetLeft;
-            this.summary.style.width = summary.offsetWidth;
-            this.summary.show = true;
-            this.page = page;
+            this.summary.style.top = summary.offsetTop
+            this.summary.style.bottom = summary.offsetTop + summary.offsetHeight
+            this.summary.style.left = summary.offsetLeft
+            this.summary.style.width = summary.offsetWidth
+            this.summary.show = true
+            this.page = page
           }
         }, 600)
       }
 
       if (page === 5) {
-        this.page = page;
+        this.page = page
       }
     }
   }
 })
 </script>
-
 
 <style scoped lang="scss">
 .container {

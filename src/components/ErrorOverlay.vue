@@ -10,7 +10,7 @@
     class="overlay"
     >
       <transition name="fade">
-        <div 
+        <div
           v-if="error"
           class="body"
           @click.stop
@@ -37,13 +37,9 @@
 
 <script>
 import Vue from 'vue'
-import { mapGetters, mapMutations, mapState } from 'vuex';
-import Pagination from '@/components/Pagination'
+import { mapMutations, mapState } from 'vuex'
 
 export default Vue.extend({
-  components: {
-    Pagination
-  },
   computed: {
     ...mapState([
       'error'
@@ -56,12 +52,11 @@ export default Vue.extend({
     },
     ...mapMutations([
       'clearError',
-      'logEvent',
+      'logEvent'
     ])
   }
 })
 </script>
-
 
 <style scoped lang="scss">
 .reason__container {

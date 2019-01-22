@@ -101,17 +101,17 @@ import Vue from 'vue'
 import Pad from 'signature_pad'
 import TransitionHeight from '@/components/TransitionHeight.vue'
 import Hammer from 'hammerjs'
-import {mapState, mapMutations, mapActions} from 'vuex'
-import {formatCurrency} from '@/mixins.js'
+import { mapState, mapMutations, mapActions } from 'vuex'
+import { formatCurrency } from '@/mixins.js'
 
 export default Vue.extend({
   components: {
-    TransitionHeight,
+    TransitionHeight
   },
   data: () => ({
     pad: null,
     panned: false,
-    error: false,
+    error: false
   }),
   computed: {
     accepted: {
@@ -129,13 +129,13 @@ export default Vue.extend({
       }
     },
     ...mapState([
-      'customer',
+      'customer'
     ]),
     serviceTotal () {
       return this.formatCurrency(this.$store.getters.total.service)
     },
     inspectionTotal () {
-      return  this.formatCurrency(this.$store.getters.total.inspection)
+      return this.formatCurrency(this.$store.getters.total.inspection)
     },
     tax () {
       return this.formatCurrency(this.$store.state.tax)
@@ -146,7 +146,7 @@ export default Vue.extend({
   },
   mixins: [formatCurrency],
   mounted () {
-    this.pad = new Pad(this.$refs.canvas, {backgroundColor: "#f7f7fa"})
+    this.pad = new Pad(this.$refs.canvas, { backgroundColor: '#f7f7fa' })
     this.setCanvasResolutionAndBackground()
     window.addEventListener('resize', this.setCanvasResolutionAndBackground)
     this.logEvent('Started viewing summary page')
@@ -162,12 +162,12 @@ export default Vue.extend({
       'setSignature',
       'declineTermsAndConditions',
       'acceptTermsAndConditions',
-      'logEvent',
+      'logEvent'
     ]),
     ...mapActions({
       sendServices: 'sendServices'
     }),
-    setCanvasResolutionAndBackground() {
+    setCanvasResolutionAndBackground () {
       const canvas = this.$refs.canvas
       const context = canvas.getContext('2d')
       canvas.width = canvas.offsetWidth
@@ -177,7 +177,7 @@ export default Vue.extend({
       } else {
         context.fillStyle = getComputedStyle(canvas).getPropertyValue('--white')
       }
-      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.fillRect(0, 0, canvas.width, canvas.height)
     },
     sign () {
       const text = `${this.customer.firstName} ${this.customer.lastName}`
@@ -190,15 +190,15 @@ export default Vue.extend({
       context.font = '2rem Arial'
       const textWidth = context.measureText(text).width
       let textHeight = getComputedStyle(canvas).fontSize
-      textHeight = textHeight.substr(0, textHeight.length -2) * 2
+      textHeight = textHeight.substr(0, textHeight.length - 2) * 2
       offsetX = ((maxWidth - textWidth) / 2) > 20 ? ((maxWidth - textWidth) / 2) : offsetX
       offsetY = ((maxHeight - textHeight) / 2) > 20 ? ((maxHeight - textHeight) / 2) : offsetY
       context.fillText(text, offsetX, offsetY, maxWidth)
-      this.logEvent('Clicked to sign');
+      this.logEvent('Clicked to sign')
     },
-    signed ({distance}) {
+    signed ({ distance }) {
       if (distance) {
-        this.panned = true;
+        this.panned = true
       }
     },
     approve () {
@@ -357,4 +357,3 @@ export default Vue.extend({
   }
 }
 </style>
-

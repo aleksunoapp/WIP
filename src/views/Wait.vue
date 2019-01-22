@@ -25,7 +25,7 @@
 
 <script>
 import Vue from 'vue'
-import { mapMutations } from 'vuex';
+import { mapMutations } from 'vuex'
 export default Vue.extend({
   created () {
     this.logEvent('Started viewing wait page')
@@ -35,12 +35,11 @@ export default Vue.extend({
   },
   methods: {
     ...mapMutations([
-      'logEvent',
+      'logEvent'
     ])
   }
 })
 </script>
-
 
 <style scoped lang="scss">
 .container {

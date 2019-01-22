@@ -10,7 +10,7 @@
     class="overlay"
   >
       <transition name="fade">
-        <div 
+        <div
           v-if="reason"
           class="body"
           @click.stop
@@ -54,40 +54,35 @@
 
 <script>
 import Vue from 'vue'
-import { mapGetters, mapMutations, mapState } from 'vuex';
-import Pagination from '@/components/Pagination'
+import { mapMutations, mapState } from 'vuex'
 
 export default Vue.extend({
-  components: {
-    Pagination
-  },
   computed: {
     ...mapState([
       'reason',
       'service',
-      'reasons',
+      'reasons'
     ]),
     selected: {
-      get () {return this.service.declinedReasonId},
+      get () { return this.service.declinedReasonId },
       set (reasonId) {
         this.setReason(reasonId)
-        this.logEvent(`Selected reason ${reason.id}`)
+        this.logEvent(`Selected reason ${reasonId}`)
       }
     }
   },
   methods: {
     close () {
-      setTimeout(() => {this.closeReason()}, 300);
+      setTimeout(() => { this.closeReason() }, 300)
     },
     ...mapMutations([
       'closeReason',
       'setReason',
-      'logEvent',
+      'logEvent'
     ])
   }
 })
 </script>
-
 
 <style scoped lang="scss">
 .container {

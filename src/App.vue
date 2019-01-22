@@ -14,12 +14,12 @@
 
 <script>
 import Vue from 'vue'
-import AppHeader from '@/components/AppHeader.vue';
-import Drawer from '@/components/Drawer.vue';
-import Service from '@/components/Service.vue';
-import Reason from '@/components/Reason.vue';
-import HelpOverlay from '@/components/HelpOverlay.vue';
-import ErrorOverlay from '@/components/ErrorOverlay.vue';
+import AppHeader from '@/components/AppHeader.vue'
+import Drawer from '@/components/Drawer.vue'
+import Service from '@/components/Service.vue'
+import Reason from '@/components/Reason.vue'
+import HelpOverlay from '@/components/HelpOverlay.vue'
+import ErrorOverlay from '@/components/ErrorOverlay.vue'
 
 export const App = Vue.extend({
   components: {
@@ -28,19 +28,20 @@ export const App = Vue.extend({
     Service,
     Reason,
     HelpOverlay,
-    ErrorOverlay,
+    ErrorOverlay
   },
   errorCaptured (err, vm, info = '') {
     this.setError(err, info)
   },
   methods: {
     setError (e, i) {
-      console.log({e}, {i})
+      // eslint-disable-next-line
+      console.log({ e }, { i })
     }
   }
 })
 
-export default App;
+export default App
 </script>
 
 <style lang="scss">

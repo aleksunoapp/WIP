@@ -30,10 +30,10 @@ export default Vue.extend({
     current: {
       required: true,
       default: () => 1
-    },
+    }
   },
   methods: {
-    goTo(i) {
+    goTo (i) {
       this.$emit('page', i)
     }
   }
@@ -68,5 +68,3 @@ export default Vue.extend({
   }
 }
 </style>
-
-

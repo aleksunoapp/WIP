@@ -36,22 +36,22 @@
             <span
               class="unit"
             v-if="timer.days">
-              <span class="number">{{timer.days}}</span>d 
+              <span class="number">{{timer.days}}</span>d
             </span>
             <span
               class="unit"
             >
-              <span class="number">{{timer.hours}}</span>h 
+              <span class="number">{{timer.hours}}</span>h
             </span>
             <span
               class="unit"
             >
-              <span class="number">{{timer.minutes}}</span>m 
+              <span class="number">{{timer.minutes}}</span>m
             </span>
             <span
               class="unit"
             >
-              <span class="number">{{timer.seconds}}</span>s 
+              <span class="number">{{timer.seconds}}</span>s
             </span>
           </p>
           <p>{{$t("to_have_your_vehicle_ready_by")}}</p>
@@ -80,7 +80,7 @@
 
 <script>
 import Vue from 'vue'
-import { mapGetters, mapMutations, mapState } from 'vuex';
+import { mapGetters, mapMutations, mapState } from 'vuex'
 export default Vue.extend({
   data: () => ({
     open: false,
@@ -89,8 +89,8 @@ export default Vue.extend({
       'days': 0,
       'hours': 0,
       'minutes': 0,
-      'seconds': 0,
-    },
+      'seconds': 0
+    }
   }),
   computed: {
     ...mapState([
@@ -115,25 +115,25 @@ export default Vue.extend({
     getPickupTime () {
       const now = new Date()
       const today = this.readyBy.getFullYear() === now.getFullYear() && this.readyBy.getMonth() === now.getMonth() && this.readyBy.getDate() === now.getDate()
-      
+
       if (today) {
-        return `${this.$t('today')} ${this.$t('at')} ${this.$d(this.readyBy, 'time')}` 
+        return `${this.$t('today')} ${this.$t('at')} ${this.$d(this.readyBy, 'time')}`
       } else {
         return `${this.$d(this.readyBy, 'dateAndTime')}`
       }
     },
     getTimeRemaining () {
-      let total = this.respondBy - Date.now();
-      let days = Math.floor(total / (1000 * 60 * 60 * 24));
-      let hours = Math.floor((total / (1000 * 60 * 60)) % 24);
-      let minutes = Math.floor((total / 1000 / 60) % 60);
-      let seconds = Math.floor((total / 1000) % 60);
-      return { 
+      let total = this.respondBy - Date.now()
+      let days = Math.floor(total / (1000 * 60 * 60 * 24))
+      let hours = Math.floor((total / (1000 * 60 * 60)) % 24)
+      let minutes = Math.floor((total / 1000 / 60) % 60)
+      let seconds = Math.floor((total / 1000) % 60)
+      return {
         total,
         days,
         hours,
         minutes,
-        seconds,
+        seconds
       }
     },
     startTimer () {
@@ -150,12 +150,11 @@ export default Vue.extend({
       }, 1000)
     },
     ...mapMutations([
-      'logEvent',
+      'logEvent'
     ])
   }
 })
 </script>
-
 
 <style scoped lang="scss">
 .container {

@@ -152,7 +152,7 @@ export const actions = {
             for (const parentService of parentServices) {
               const subServices = servicesResponse.filter((subService) =>
                 subService.parentServiceId === parentService.id)
-              
+
               if (subServices.length) {
                 parentService.subServices = subServices
               }
@@ -163,11 +163,11 @@ export const actions = {
             commit('setInspectionReportUrl', inspectionReportUrlResponse.fullInspectionUrl)
             dispatch('routeAfterLogin')
           })
-        })
+      })
       .catch((error) => {
         dispatch('handleError', error)
-          commit('setLoading', { key: 'logIn', loading: false })
-        })
+        commit('setLoading', { key: 'logIn', loading: false })
+      })
   },
   viewService ({ commit, state }, service) {
     if (state.service) {

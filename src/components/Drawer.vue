@@ -11,7 +11,7 @@
       />
     </transition>
     <transition name="slide-fade">
-      <div 
+      <div
         v-if="drawer"
         class="drawer"
       >
@@ -61,7 +61,7 @@
 
 <script>
 import Vue from 'vue'
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapMutations } from 'vuex'
 export default Vue.extend({
   data: () => ({
     open: false
@@ -76,20 +76,19 @@ export default Vue.extend({
   methods: {
     ...mapMutations([
       'closeDrawer',
-      'logEvent',
+      'logEvent'
     ]),
     viewInspectionReport () {
       window.open(this.inspectionReportUrl)
-      this.logEvent('Clicked inspection link');
+      this.logEvent('Clicked inspection link')
     },
     viewTutorial () {
-      this.$router.push({name: 'tutorial'})
+      this.$router.push({ name: 'tutorial' })
       this.closeDrawer()
     }
   }
 })
 </script>
-
 
 <style scoped lang="scss">
 .drawer__container {

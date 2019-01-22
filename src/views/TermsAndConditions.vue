@@ -28,7 +28,7 @@
 
 <script>
 import Vue from 'vue'
-import {mapMutations} from 'vuex'
+import { mapMutations } from 'vuex'
 
 export default Vue.extend({
   created () {
@@ -40,22 +40,21 @@ export default Vue.extend({
   methods: {
     ...mapMutations([
       'acceptTermsAndConditions',
-      'declineTermsAndConditions',
+      'declineTermsAndConditions'
     ]),
     accept () {
       this.acceptTermsAndConditions()
-      this.$router.push({name: 'summary'})
+      this.$router.push({ name: 'summary' })
       this.logEvent('Accepted terms and conditions')
     },
     decline () {
       this.declineTermsAndConditions()
-      this.$router.push({name: 'summary'})
+      this.$router.push({ name: 'summary' })
       this.logEvent('Declined terms and conditions')
     }
   }
 })
 </script>
-
 
 <style lang="scss" scoped>
 .container {

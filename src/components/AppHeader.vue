@@ -71,7 +71,7 @@
 
 <script>
 import Vue from 'vue'
-import {mapActions, mapState, mapMutations} from 'vuex'
+import { mapActions, mapState, mapMutations } from 'vuex'
 import MenuButtons from '@/components/MenuButtons.vue'
 
 export default Vue.extend({
@@ -91,45 +91,44 @@ export default Vue.extend({
         return this.$store.state.locale
       },
       set (code) {
-        this.setLocale(code);
-        this.$i18n.locale = this.locale;
-        this.getMetadata();
+        this.setLocale(code)
+        this.$i18n.locale = this.locale
+        this.getMetadata()
       }
     }
   },
   methods: {
     toggleHelp () {
-      this.help ? this.closeHelp() : this.openHelp();
+      this.help ? this.closeHelp() : this.openHelp()
     },
     text () {
       if (this.$route.name === 'tutorial') {
-        return this.$t("how_it_works")
+        return this.$t('how_it_works')
       }
       if (
         this.$route.name === 'glance' ||
         this.$route.name === 'inspection'
       ) {
-        return this.$t("recommendations")
+        return this.$t('recommendations')
       }
       if (this.$route.name === 'summary') {
-        return this.$t("service_summary")
+        return this.$t('service_summary')
       }
       if (this.$route.name === 'thanks') {
-        return this.$t("services_approved")
+        return this.$t('services_approved')
       }
     },
     ...mapMutations({
       setLocale: 'setLocale',
       openHelp: 'openHelp',
-      closeHelp: 'closeHelp',
+      closeHelp: 'closeHelp'
     }),
     ...mapActions({
-      getMetadata: 'getMetadata',
+      getMetadata: 'getMetadata'
     })
   }
 })
 </script>
-
 
 <style lang="scss" scoped>
 .header {
@@ -165,7 +164,7 @@ export default Vue.extend({
     1px 1.5em;
   background-repeat: no-repeat;
   /* reset */
-  margin: 0;      
+  margin: 0;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -194,4 +193,3 @@ export default Vue.extend({
   }
 }
 </style>
-

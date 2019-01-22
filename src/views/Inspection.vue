@@ -19,7 +19,7 @@
             :class="{'active' : activeCategory && category.id === activeCategory.id}"
           >
             <div class="border"></div>
-            <button 
+            <button
               class="category"
               @click="scrollToCategory(category)"
             >
@@ -172,8 +172,8 @@
 </template>
 <script>
 import Vue from 'vue'
-import {formatCurrency} from '@/mixins.js'
-import {mapActions, mapGetters, mapMutations, mapState} from 'vuex';
+import { formatCurrency } from '@/mixins.js'
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 
 export default Vue.extend({
   data: () => ({
@@ -193,32 +193,30 @@ export default Vue.extend({
     ]),
     ...mapState([
       'activeCategory'
-    ]),
-    next () {},
-    previous () {}
+    ])
   },
   created () {
-    this.logEvent('Started viewing inspection page');
+    this.logEvent('Started viewing inspection page')
   },
   beforeDestroy () {
-    this.logEvent('Finished viewing inspection page');
+    this.logEvent('Finished viewing inspection page')
   },
   mixins: [formatCurrency],
   methods: {
     recommendationLabel (service) {
-      return service.category < '8' ? this.$t("problem_identified") : this.$t("no_issue_found")
+      return service.category < '8' ? this.$t('problem_identified') : this.$t('no_issue_found')
     },
     alt (service) {
       const statuses = {
         '6': 'red status light',
         '7': 'yellow status light',
         '8': 'grey status light',
-        '9': 'grey status light',
+        '9': 'grey status light'
       }
-      return statuses[service.category] || 'status indicator';
+      return statuses[service.category] || 'status indicator'
     },
     toggleCategory (category) {
-      this.setCategoryExpanded({id: category.id, expanded: !category.defaultExpended})
+      this.setCategoryExpanded({ id: category.id, expanded: !category.defaultExpended })
       this.logEvent(`${category.defaultExpended ? 'Collapsed' : 'Expanded'} category ${category.id}`)
     },
     displayPrice (service) {
@@ -232,10 +230,10 @@ export default Vue.extend({
         if (service.laborMatrixPayment === 'NA' || service.laborMatrixPayment === 'None') {
           return this.formatCurrency(service.price)
         } else {
-          return service.laborMatrixPaymentTranslation || '';
+          return service.laborMatrixPaymentTranslation || ''
         }
       } else if (service.price === 0) {
-        return this.$t("free");
+        return this.$t('free')
       } else return this.formatCurrency(service.price)
     },
     scrollToCategory (category) {
@@ -245,7 +243,7 @@ export default Vue.extend({
       this.$refs.view.scrollTo({
         left: 0,
         top: this.$refs[`category${category.id}`][0].offsetTop - rem,
-        behavior: 'smooth',
+        behavior: 'smooth'
       })
       this.logEvent(`Selected category ${category.id}`)
     },
@@ -263,18 +261,18 @@ export default Vue.extend({
       this.service = null
     },
     confirm () {
-      this.logEvent('Clicked confirm button');
+      this.logEvent('Clicked confirm button')
       if (this.count.fail || this.count.warning || this.count.concern) {
         this.getTax()
-        this.$router.push({name: 'summary'})
+        this.$router.push({ name: 'summary' })
       } else {
-        this.$router.push({name: 'thanks'})
+        this.$router.push({ name: 'thanks' })
       }
     },
     openService (service) {
       if (typeof service.serviceCategoryType === 'string') {
         if (service.serviceCategoryType.toLowerCase() === 'pass') {
-          return
+
         }
       } else {
         this.viewService(service)
@@ -285,7 +283,7 @@ export default Vue.extend({
       'setService',
       'openReason',
       'setActiveCategory',
-      'logEvent',
+      'logEvent'
     ]),
     ...mapActions({
       viewService: 'viewService',

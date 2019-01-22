@@ -6,8 +6,8 @@ export const dateTimeFormats = {
       minute: 'numeric',
       day: 'numeric',
       month: 'short',
-      year: 'numeric',
-    },
+      year: 'numeric'
+    }
   },
   'en-CA': {
     dateAndTime: {
@@ -16,8 +16,8 @@ export const dateTimeFormats = {
       minute: 'numeric',
       day: 'numeric',
       month: 'short',
-      year: 'numeric',
-    },
+      year: 'numeric'
+    }
   },
   'fr-CA': {
     dateAndTime: {
@@ -26,8 +26,8 @@ export const dateTimeFormats = {
       minute: 'numeric',
       day: 'numeric',
       month: 'short',
-      year: 'numeric',
-    },
+      year: 'numeric'
+    }
   },
   'es-MX': {
     dateAndTime: {
@@ -36,10 +36,10 @@ export const dateTimeFormats = {
       minute: 'numeric',
       day: 'numeric',
       month: 'short',
-      year: 'numeric',
-    },
-  },
-};
+      year: 'numeric'
+    }
+  }
+}
 
 export const messages = {
   'en-US': {
@@ -140,7 +140,7 @@ export const messages = {
     we_couldnt_get_tax: 'We couldn\'t get the taxes and fees',
     // wait
     wait_there_are: 'Wait, there are still',
-    pending_approval: 'pending approval',
+    pending_approval: 'pending approval'
   },
   'en-CA': {
     // expired
@@ -240,7 +240,7 @@ export const messages = {
     we_couldnt_get_tax: 'We couldn\'t get the taxes and fees',
     // wait
     wait_there_are: 'Wait, there are still',
-    pending_approval: 'pending approval',
+    pending_approval: 'pending approval'
   },
   'fr-CA': {
     // expired
@@ -340,7 +340,7 @@ export const messages = {
     we_couldnt_get_tax: '',
     // wait
     wait_there_are: '',
-    pending_approval: '',
+    pending_approval: ''
   },
   'es-MX': {
     // expired
@@ -440,6 +440,6 @@ export const messages = {
     we_couldnt_get_tax: '',
     // wait
     wait_there_are: '',
-    pending_approval: '',
-  },
-};
+    pending_approval: ''
+  }
+}

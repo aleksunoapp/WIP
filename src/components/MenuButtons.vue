@@ -14,7 +14,7 @@
       class="back"
       value="back"
     >
-      <img 
+      <img
         src="@/assets/images/chevron-right.svg"
         alt="chevron left"
         class="chevron"
@@ -25,7 +25,7 @@
 
 <script>
 import Vue from 'vue'
-import { mapMutations, mapState } from 'vuex';
+import { mapMutations, mapState } from 'vuex'
 export default Vue.extend({
   computed: {
     ...mapState([
@@ -44,12 +44,11 @@ export default Vue.extend({
     ...mapMutations([
       'openDrawer',
       'closeDrawer',
-      'logEvent',
+      'logEvent'
     ])
   }
 })
 </script>
-
 
 <style scoped lang="scss">
 .container {

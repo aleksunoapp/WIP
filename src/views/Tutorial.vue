@@ -93,7 +93,7 @@
 
 <script>
 import Vue from 'vue'
-import {mapActions, mapMutations} from 'vuex'
+import { mapMutations } from 'vuex'
 import Pagination from '@/components/Pagination.vue'
 
 export default Vue.extend({
@@ -113,13 +113,13 @@ export default Vue.extend({
     next () {
       if (this.page < 3) {
         this.logEvent(`Finished viewing tutorial page ${this.page}`)
-        this.page++;
+        this.page++
         this.logEvent(`Started viewing tutorial page ${this.page}`)
       } else {
-        this.$router.push({name: 'at-a-glance'})
+        this.$router.push({ name: 'at-a-glance' })
       }
     },
-    showPage(i) {
+    showPage (i) {
       this.page = i
     },
     ...mapMutations([
@@ -128,7 +128,6 @@ export default Vue.extend({
   }
 })
 </script>
-
 
 <style scoped lang="scss">
 .container {

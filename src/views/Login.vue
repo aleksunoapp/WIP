@@ -13,7 +13,7 @@
         <h1 class="header">
           {{$t("header")}}
         </h1>
-        <form 
+        <form
           @submit.prevent="enter()"
           class="form"
         >
@@ -46,7 +46,7 @@
 
 <script>
 import Vue from 'vue'
-import { mapActions, mapMutations, mapState } from 'vuex';
+import { mapActions, mapMutations, mapState } from 'vuex'
 import ImageContainer from '@/components/ImageContainer.vue'
 
 export default Vue.extend({
@@ -62,7 +62,7 @@ export default Vue.extend({
       'drawer',
       'customer',
       'dealer',
-      'loading',
+      'loading'
     ]),
     code: {
       get () {
@@ -71,14 +71,14 @@ export default Vue.extend({
       set (code) {
         this.setCode(code)
       }
-    },
+    }
   },
   created () {
     this.setSlug(this.$route.params.slug)
     this.getMetadata()
     if (this.$route.query.secret) {
-      this.code = this.$route.query.secret;
-      this.logIn();
+      this.code = this.$route.query.secret
+      this.logIn()
     }
     this.logEvent('Started viewing login page')
   },
@@ -87,7 +87,7 @@ export default Vue.extend({
   },
   methods: {
     enter () {
-      this.logEvent('Clicked login button');
+      this.logEvent('Clicked login button')
       if (this.loading.logIn) return
 
       if (!this.code) {
@@ -109,7 +109,6 @@ export default Vue.extend({
   }
 })
 </script>
-
 
 <style scoped lang="scss">
 @-moz-keyframes gauge-loader {

@@ -2,7 +2,7 @@
   <div class="container">
     <p>There's nothing here</p>
     <div class="buttons">
-      <button 
+      <button
         class="button"
         @click="$router.go(-1)"
       >
@@ -21,7 +21,7 @@
 
 <script>
 import Vue from 'vue'
-import {mapState} from 'vuex'
+import { mapState } from 'vuex'
 export default Vue.extend({
   computed: {
     ...mapState([
@@ -30,12 +30,11 @@ export default Vue.extend({
   },
   methods: {
     logIn () {
-      this.$router.push({name: 'login', params: { slug: this.slug } })
+      this.$router.push({ name: 'login', params: { slug: this.slug } })
     }
   }
 })
 </script>
-
 
 <style lang="scss" scoped>
 .container {

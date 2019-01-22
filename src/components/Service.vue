@@ -10,7 +10,7 @@
     class="overlay"
   >
       <transition name="fade">
-        <div 
+        <div
           v-if="modal"
           class="modal"
           @click.stop
@@ -90,8 +90,8 @@
 
 <script>
 import Vue from 'vue'
-import { mapActions, mapGetters, mapMutations, mapState } from 'vuex';
-import {formatCurrency} from '@/mixins.js'
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
+import { formatCurrency } from '@/mixins.js'
 
 export default Vue.extend({
   data: () => ({
@@ -102,30 +102,30 @@ export default Vue.extend({
     ...mapState([
       'customerConcernsLabel',
       'modal',
-      'service',
+      'service'
     ]),
     ...mapGetters([
       'serviceById',
       'categoriesShownOnInspection',
       'categoryServices',
-      'count',
+      'count'
     ]),
     services () {
       let services = []
       for (const category of this.categoriesShownOnInspection) {
         services = services.concat(this.categoryServices(category.id))
       }
-      return services;
+      return services
     },
     categoryColor () {
-      if (this.service.category === '1') return 'red';
-      if (this.service.category === '2') return 'yellow';
-      if (this.service.category === '3') return 'green';
-      if (this.service.category === '6') return 'grey';
-      if (this.service.category === '7') return 'grey';
-      if (this.service.category === '8') return 'grey';
-      if (this.service.category === '9') return 'grey';
-      return '';
+      if (this.service.category === '1') return 'red'
+      if (this.service.category === '2') return 'yellow'
+      if (this.service.category === '3') return 'green'
+      if (this.service.category === '6') return 'grey'
+      if (this.service.category === '7') return 'grey'
+      if (this.service.category === '8') return 'grey'
+      if (this.service.category === '9') return 'grey'
+      return ''
     },
     categoryName () {
       return this.$store.getters.categoryName(this.service.category)
@@ -150,7 +150,7 @@ export default Vue.extend({
     price () {
       if (this.service.price === 0 && this.service.price.laborMatrixPayment) {
         if (this.service.laborMatrixPayment !== 'NA' && this.service.laborMatrixPayment !== 'None') {
-          return this.$t(`${service.laborMatrixPayment}`)
+          return this.$t(`${this.service.laborMatrixPayment}`)
         } else {
           return this.formatCurrency(this.service.price)
         }
@@ -168,7 +168,6 @@ export default Vue.extend({
       } else {
         return this.service.serviceAdvisorComments
       }
-
     },
     advisorComment () {
       if (this.service.category > '5') {
@@ -187,7 +186,7 @@ export default Vue.extend({
       'logEvent'
     ]),
     ...mapActions([
-      'viewService',
+      'viewService'
     ]),
     approve () {
       this.selectService()
@@ -206,12 +205,12 @@ export default Vue.extend({
         this.viewService(this.services[index + 1])
       } else {
         if (this.count.fail || this.count.warining || this.count.concern) {
-          this.$router.push({name: 'summary'})
+          this.$router.push({ name: 'summary' })
         } else {
-          this.$router.push({name: 'thanks'})
+          this.$router.push({ name: 'thanks' })
         }
         this.closeService()
-        this.logEvent(`Finished viewing service ${service.id}`);
+        this.logEvent(`Finished viewing service ${this.service.id}`)
       }
     },
     back () {
@@ -220,13 +219,11 @@ export default Vue.extend({
         this.viewService(this.services[index - 1])
       } else {
         this.closeService()
-        
       }
-    },
+    }
   }
 })
 </script>
-
 
 <style scoped lang="scss">
 .modal__container {

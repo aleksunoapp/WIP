@@ -69,7 +69,7 @@
 
 <script>
 import Vue from 'vue'
-import { mapGetters, mapState, mapMutations } from 'vuex';
+import { mapGetters, mapState, mapMutations } from 'vuex'
 import ImageContainer from '@/components/ImageContainer.vue'
 
 export default Vue.extend({
@@ -86,10 +86,10 @@ export default Vue.extend({
     ]),
     ...mapGetters([
       'readyBy',
-      'respondBy',
+      'respondBy'
     ]),
     tooLate () {
-      return (this.respondBy - Date.now()) > 0;
+      return (this.respondBy - Date.now()) > 0
     }
   },
   created () {
@@ -97,11 +97,11 @@ export default Vue.extend({
   },
   methods: {
     getPickupTime () {
-			const now = new Date()
+      const now = new Date()
       const today = this.readyBy.getFullYear() === now.getFullYear() && this.readyBy.getMonth() === now.getMonth() && this.readyBy.getDate() === now.getDate()
-      
+
       if (today) {
-        return `${this.$t('today')} ${this.$t('at')} ${this.$d(this.readyBy, 'time')}` 
+        return `${this.$t('today')} ${this.$t('at')} ${this.$d(this.readyBy, 'time')}`
       } else {
         return `${this.$d(this.readyBy, 'dateAndTime')}`
       }
@@ -112,7 +112,6 @@ export default Vue.extend({
   }
 })
 </script>
-
 
 <style scoped lang="scss">
 .container {
@@ -179,9 +178,5 @@ export default Vue.extend({
     }
   }
 }
-
-
-
-
 
 </style>
