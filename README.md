@@ -1,8 +1,7 @@
 # DMPI
 
 ## To-do
-- a11y 2h
-- scroll past Confirm button 2h
+- a11y: service, reason, drawer, help, error
 
 ## Project notes
 

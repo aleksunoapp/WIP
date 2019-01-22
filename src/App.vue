@@ -1,11 +1,12 @@
 <template>
   <div id="dmpi">
-    <app-header />
-    <drawer />
     <service />
     <reason />
+    <drawer />
     <error-overlay />
     <help-overlay />
+
+    <app-header />
     <transition name="fade" mode="out-in">
       <router-view/>
     </transition>
