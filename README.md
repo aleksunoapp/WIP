@@ -1,43 +1,40 @@
-# Welcome to eComm!
+# eComm
 
-> A Vue.js project
+## To-do
 
-## Build Setup
+1. Update user info
+"user_manager users update": false,
+"user_manager users update approve": false
 
-Before installing dependencies run the following to check your npm version:
+POST api/app/user/updateUser/96047
+{
+    "first_name": "Asmi",
+    "last_name": "Mehta",
+    "phone": "1234567890",
+    "address": "Test address",
+    "address2": "Test address",
+    "city": "Surat",
+    "province": "toronto",
+    "postal_code": "395006",
+    "country": "canada",
+    "date_of_birth": "1995-05-06",
+    "ref_code": "sdf",
+    "send_notification": 1,
+    "send_email": 1
+}
 
-``` bash
-npm version
-```
+2. Assign a tag to Menu Items or to Modifier Items
+POST: api/app/tags/addTagToItems {"item_sku": ["CP3", "002"], "tag_id": 28}
+POST: api/app/tags/addTagToModifierItems {"modifier_item_sku": ["TMI7"], "tag_id": 28}
+"menu_manager tags add modifier items by sku": false,
+"menu_manager tags add modifier items by sku approve": false,
+"menu_manager tags add items by sku": false,
+"menu_manager tags add items by sku approve": false,
 
-If your version is not at least 3 or if you don't have npm installed then you need to handle that first. Use the following link as a guide: https://docs.npmjs.com/getting-started/installing-node
+3. Location discounts
+https://www.getpostman.com/collections/3f5c12447c2194af07a2
 
-Next install all dependencies with the following command:
-
-``` bash
-npm install
-```
-
-The following commands will get you up and running:
-
-``` bash
-# Start the development server with hot reload at localhost:8087
-npm run dev
-
-# Create a production build with minification
-npm run build
-
-# Run unit tests
-npm run unit
-
-# Run e2e tests
-npm run e2e
-
-# Run all tests
-npm test
-```
-
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+4. Trello eComm next-up
 
 ## Documentation
 
