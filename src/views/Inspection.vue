@@ -70,6 +70,7 @@
                 'grey' : category.serviceCategoryType === 'CC',
               }"
               @click="toggleCategory(category)"
+              @keyup.enter="toggleCategory(category)"
             >
               <div class="left">
                 <span
@@ -100,6 +101,7 @@
                 <div
                   class="contents"
                   @click="openService(service)"
+                  @keyup.enter="openService(service)"
                   tabindex="0"
                   role="button"
                 >

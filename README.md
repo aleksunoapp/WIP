@@ -2,7 +2,6 @@
 
 ## To-do
 - a11y 2h
-- types 4h
 - scroll past Confirm button 2h
 
 ## Project notes

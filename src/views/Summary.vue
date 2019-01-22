@@ -46,6 +46,7 @@
             <button
               class="sign"
               @click="sign()"
+              @keyup.enter="sign()"
             >
               {{$t("click_to_sign")}}
             </button>
@@ -188,12 +189,14 @@ export default Vue.extend({
       const maxHeight = canvas.offsetHeight - 40
       const context = canvas.getContext('2d')
       context.font = '2rem Arial'
+      context.fillStyle = '#000000'
       const textWidth = context.measureText(text).width
       let textHeight = getComputedStyle(canvas).fontSize
       textHeight = textHeight.substr(0, textHeight.length - 2) * 2
       offsetX = ((maxWidth - textWidth) / 2) > 20 ? ((maxWidth - textWidth) / 2) : offsetX
       offsetY = ((maxHeight - textHeight) / 2) > 20 ? ((maxHeight - textHeight) / 2) : offsetY
       context.fillText(text, offsetX, offsetY, maxWidth)
+      this.panned = true
       this.logEvent('Clicked to sign')
     },
     signed ({ distance }) {
@@ -202,12 +205,15 @@ export default Vue.extend({
       }
     },
     approve () {
-      if (!this.accepted || this.pad.isEmpty() || !this.panned) {
+      if (!this.accepted) {
         this.error = true
         return
-      } else {
-        this.error = false
       }
+      if (this.pad.isEmpty() && !this.panned) {
+        this.error = true
+        return
+      }
+      this.error = false
       this.setSignature(this.pad.toDataURL())
       this.sendServices()
       this.logEvent('Clicked approve button')
