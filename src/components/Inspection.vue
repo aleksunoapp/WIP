@@ -138,7 +138,7 @@
 					<div class="accordion-contents">
 						<div class="summary-table">
 							<div v-if="category.serviceCategoryType !== 'PASS' && $root.inspectionCounts[countVariables[category.serviceCategoryType]] !== 0" class="summary-table-row">
-								<div class="summary-table-cell fit-to-content">
+								<div class="summary-table-cell">
 									<span class="summary-legend">
 										<b>{{ langTerms.check_recommended_services[$root.meta.local.toLowerCase()] }}</b>
 									</span>
@@ -178,16 +178,18 @@
 											class="summary-table-row summary-item"
 											:key="`service-${serviceIndex}-${subServiceIndex}`">
 											<div class="summary-table-row-wrap">
-												<div class="summary-table-cell fit-to-content">
-													<span
-														class="information-icon"
-														@click="openServiceModal(service, subServiceIndex)">
-													</span>
-													<span
-														class="service-name"
-													>
-														{{ service.name }}
-													</span>
+												<div class="summary-table-cell">
+													<div class="flex">
+														<span
+															class="information-icon"
+															@click="openServiceModal(service, subServiceIndex)">
+														</span>
+														<span
+															class="service-name"
+														>
+															{{ service.name }}
+														</span>
+													</div>
 												</div>
 												<div class="summary-table-cell">
 													<div class="dot-caption-container">
@@ -232,16 +234,18 @@
 											:key="`service-${serviceIndex}`"
 											class="summary-table-row summary-item">
 											<div class="summary-table-row-wrap">
-												<div class="summary-table-cell fit-to-content">
-													<span
-														class="information-icon"
-														@click="openServiceModal(service)">
-													</span>
-													<span
-														class="service-name"
-														v-bind:class="{'bold': (service.isHighlighted === true)}">
-														<span v-if="service.isHighlighted === true">* </span>{{ service.name }}
-													</span>
+												<div class="summary-table-cell">
+													<div class="flex">
+														<span
+															class="information-icon"
+															@click="openServiceModal(service)">
+														</span>
+														<span
+															class="service-name"
+															v-bind:class="{'bold': (service.isHighlighted === true)}">
+															<span v-if="service.isHighlighted === true">* </span>{{ service.name }}
+														</span>
+													</div>
 												</div>
 												<div class="summary-table-cell">
 													<div class="dot-caption-container">
@@ -334,8 +338,10 @@
 									<template v-if="service.subServices">
 										<div class="summary-table-row summary-item" v-for="subService in service.subServices" :key="`subService-${subService.id}`">
 											<div class="summary-table-cell">
-												<span class="information-icon" :class="{'no-icon-bg': category.serviceCategoryType === 'PASS'}" @click="openServiceModal(subService)"></span>
-												<span class="service-name" v-bind:class="{'bold': (subService.isHighlighted ===  true)}"><span v-if="subService.isHighlighted === true">* </span>{{ subService.name }}</span>
+												<div class="flex">
+													<span class="information-icon" :class="{'no-icon-bg': category.serviceCategoryType === 'PASS'}" @click="openServiceModal(subService)"></span>
+													<span class="service-name" v-bind:class="{'bold': (subService.isHighlighted ===  true)}"><span v-if="subService.isHighlighted === true">* </span>{{ subService.name }}</span>
+												</div>
 											</div>
 											<div class="summary-table-cell">
 											</div>
@@ -364,8 +370,10 @@
 									</template>
 									<div class="summary-table-row summary-item" v-if="showCategoryItems(category, service)" :key="`service-${serviceIndex}`">
 										<div class="summary-table-cell">
-											<span class="information-icon" :class="{'no-icon-bg': category.serviceCategoryType === 'PASS'}" @click="openServiceModal(service)"></span>
-											<span class="service-name" v-bind:class="{'bold': (service.isHighlighted === true)}"><span v-if="service.isHighlighted === true">* </span>{{ service.name }}</span>
+											<div class="flex">
+												<span class="information-icon" :class="{'no-icon-bg': category.serviceCategoryType === 'PASS'}" @click="openServiceModal(service)"></span>
+												<span class="service-name" v-bind:class="{'bold': (service.isHighlighted === true)}"><span v-if="service.isHighlighted === true">* </span>{{ service.name }}</span>
+											</div>
 										</div>
 										<div class="summary-table-cell">
 										</div>
@@ -1343,10 +1351,6 @@ export default {
 .help-screen-select-all.spanish {
 	width: 135px;
 }
-.fit-to-content {
-	/* width: 1%; */
-	/* white-space: nowrap; */
-}
 .service-name{
   word-wrap: normal;
   hyphens: auto;
@@ -1359,5 +1363,8 @@ export default {
 }
 .align-center {
 	align-items:center;
+}
+.flex {
+	display: flex;
 }
 </style>
