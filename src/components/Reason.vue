@@ -17,13 +17,13 @@
         >
           <div class="header">
             <p class="text">{{$t("please_select_a_reason")}}</p>
-            <button
+            <!-- <button
               @click="closeReason"
               class="close"
             >
               <div class="top"></div>
               <div class="bottom"></div>
-            </button>
+            </button> -->
           </div>
           <div class="reasons">
             <label
@@ -114,7 +114,7 @@ export default Vue.extend({
         min-height: 6rem;
         border-bottom: 1px solid var(--grey-medium-background);
         .text {
-          margin: 0 6rem 0 2rem;
+          margin: 0 2rem;
           text-transform: uppercase;
         }
         .close {
