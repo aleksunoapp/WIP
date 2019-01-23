@@ -170,7 +170,7 @@ export const actions = {
       })
   },
   viewService ({ commit, state }, service) {
-    if (state.service) {
+    if (state.service.id !== undefined) {
       commit('logEvent', `Finished viewing service ${service.id}`)
     }
     commit('setService', service)

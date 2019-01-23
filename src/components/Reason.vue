@@ -6,7 +6,6 @@
   <transition name="fade">
     <div
     v-if="reason"
-    @click="closeReason"
     class="overlay"
   >
       <transition name="fade">
@@ -17,13 +16,6 @@
         >
           <div class="header">
             <p class="text">{{$t("please_select_a_reason")}}</p>
-            <!-- <button
-              @click="closeReason"
-              class="close"
-            >
-              <div class="top"></div>
-              <div class="bottom"></div>
-            </button> -->
           </div>
           <div class="reasons">
             <label
@@ -116,42 +108,6 @@ export default Vue.extend({
         .text {
           margin: 0 2rem;
           text-transform: uppercase;
-        }
-        .close {
-          position: absolute;
-          top: 2rem;
-          right: 2rem;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          width: 2rem;
-          height: 2rem;
-          min-height: 2rem;
-          min-width: 2rem;
-          max-height: 2rem;
-          max-width: 2rem;
-          padding: 0;
-          margin: 0;
-          background-color: var(--white);
-          border: none;
-          .top, .bottom {
-            width: 3rem;
-            height: 2px;
-            min-width: 2rem;
-            min-height: 2px;
-            max-width: 2.2rem;
-            max-height: 2px;
-            border-radius: 500px;
-            background-color: var(--blue);
-          }
-          .top {
-            transform: rotate(45deg);
-            transform-origin: -1px 4px;
-          }
-          .bottom {
-            transform: rotate(-45deg);
-            transform-origin: 0 -2px;
-          }
         }
       }
     .reasons {

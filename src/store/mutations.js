@@ -34,12 +34,12 @@ export const mutations = {
     state.service = service
   },
   selectService (state) {
-    if (state.service) {
+    if (state.service.id !== undefined) {
       state.service.isSelected = true
     }
   },
   unselectService (state) {
-    if (state.service) {
+    if (state.service.id !== undefined) {
       state.service.isSelected = false
     }
   },
@@ -56,7 +56,7 @@ export const mutations = {
     state.help = false
   },
   setReason (state, reasonId) {
-    if (state.service) {
+    if (state.service.id !== undefined) {
       state.service.declinedReasonId = reasonId
     }
   },
