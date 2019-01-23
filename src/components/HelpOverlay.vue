@@ -594,9 +594,9 @@ export default Vue.extend({
           }
         }
         &.grey {
-          border-left: 6px solid var(--grey);
+          border-left: 6px solid var(--grey-dark-background);
           .count {
-            background-color: var(--grey);
+            background-color: var(--grey-dark-background);
           }
         }
         &.green {
@@ -708,7 +708,7 @@ export default Vue.extend({
             box-shadow: var(--shadow);
           }
           .count.grey {
-            background-color: var(--grey);
+            background-color: var(--grey-dark-background);
           }
           .count.red {
             background-color: var(--red);
