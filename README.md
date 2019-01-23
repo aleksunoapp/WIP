@@ -1,7 +1,11 @@
 # DMPI
 
 ## To-do
-- a11y 2h
+- help: uncollapse, skip pages 1-2 is no recommendations, check X on each page
+- unhide headers in desktop
+- break long strings
+- a11y
+- multiple images
 - scroll past Confirm button 2h
 
 ## Project notes
@@ -29,8 +33,8 @@ Category `id`s:
 SCSS, scoped and nested the same way as HTML, or CSS.
 Global CSS in App.vue, including variables and transitions.
 All margins and padding in rem, set on #DMPI (Vue's mount point).
-Scroll frozen down to `.container`s
-Flexbox, getComputedPropertyStyle, basic canvas.
+Scroll frozen down to `.container`s.
+Flexbox, getComputedPropertyStyle, a canvas with a signature_pad and hammerjs attached to it.
 
 #### z-index
 - service 1
