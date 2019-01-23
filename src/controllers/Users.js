@@ -3,6 +3,29 @@
  */
 import GlobalFunctions from '../global'
 
+/**
+* Call to API to save a user's information.
+* @function
+* @param {string} data - An object containing user information.
+* @returns {object} A promise that will return either a success object or an error object.
+*/
+export const editUser = function (data) {
+	return new Promise(function (resolve, reject) {
+		GlobalFunctions.$ajax({
+			method: 'POST',
+			dataType: 'json',
+			url: `/app/user/updateUser/${data.id}`,
+			data,
+			success: function (response) {
+				resolve(response)
+			},
+			error: function (error) {
+				reject(error)
+			}
+		})
+	})
+}
+
 export default {
 	/**
 	 * Call to pitapit API to get a list of users.
@@ -235,5 +258,6 @@ export default {
 				}
 			})
 		})
-	}
+	},
+	editUser
 }

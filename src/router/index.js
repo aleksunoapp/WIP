@@ -678,6 +678,15 @@ export const routes = [
 				}
 			},
 			{
+				path: 'user_manager/users/:id/:name/edit',
+				name: 'EditUser',
+				component: () => import(/* webpackChunkName: "EditUser" */ '@/components/app/UserManager/EditUser.vue'),
+				meta: {
+					adminOnly: true,
+					permissions: ['user_manager users update']
+				}
+			},
+			{
 				path: 'user_manager/user_groups',
 				name: 'User Groups',
 				component: UserGroups,

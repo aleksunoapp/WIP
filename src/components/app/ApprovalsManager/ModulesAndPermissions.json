@@ -381,7 +381,9 @@
 	  "user_manager users approve": false,
 	  "user_manager users add_points create": false,
 	  "user_manager users add_points approve": false,
-	  "user_manager users message": false
+		"user_manager users message": false,
+		"user_manager users update": false,
+		"user_manager users update approve": false
 
 	},
 	"user_groups": {

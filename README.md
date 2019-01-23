@@ -3,25 +3,6 @@
 ## To-do
 
 1. Update user info
-"user_manager users update": false,
-"user_manager users update approve": false
-
-POST api/app/user/updateUser/96047
-{
-    "first_name": "Asmi",
-    "last_name": "Mehta",
-    "phone": "1234567890",
-    "address": "Test address",
-    "address2": "Test address",
-    "city": "Surat",
-    "province": "toronto",
-    "postal_code": "395006",
-    "country": "canada",
-    "date_of_birth": "1995-05-06",
-    "ref_code": "sdf",
-    "send_notification": 1,
-    "send_email": 1
-}
 
 2. Assign a tag to Menu Items or to Modifier Items
 POST: api/app/tags/addTagToItems {"item_sku": ["CP3", "002"], "tag_id": 28}

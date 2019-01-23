@@ -12,3 +12,7 @@ export const SET_STORE_LOCATIONS = 'SET_STORE_LOCATIONS'
 /* Combos */
 export const SET_COMBO_OFFER = 'SET_COMBO_OFFER'
 export const CLEAR_COMBO_OFFER = 'CLEAR_COMBO_OFFER'
+
+/* Users */
+export const SET_USER = 'SET_USER'
+export const CLEAR_USER = 'CLEAR_USER'

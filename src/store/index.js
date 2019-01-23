@@ -6,6 +6,7 @@ import permissions from './modules/permissions'
 import auth from './modules/auth'
 import stores from './modules/stores'
 import combos from './modules/combos'
+import users from './modules/users'
 const environment = require('../environment.js')
 
 Vue.use(Vuex)
@@ -15,7 +16,8 @@ const store = new Vuex.Store({
 		permissions,
 		auth,
 		stores,
-		combos
+		combos,
+		users
 	},
 	actions: {},
 	strict: environment.development,

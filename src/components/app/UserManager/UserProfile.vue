@@ -36,6 +36,15 @@
 											<button type="button"
 											        class="btn btn-circle red btn-sm"
 											        @click="showMessageModal()">Message</button>
+											<button
+												v-if="can('user_manager users update')"
+												type="button"
+												class="btn btn-circle btn-outline red btn-sm"
+												@click="editUser()"
+												:disabled="user.id === undefined"
+											>
+												Edit
+											</button>
 										</div>
 										<!-- END SIDEBAR BUTTONS -->
 										<!-- SIDEBAR MENU -->
@@ -502,7 +511,7 @@ import Pagination from '../../modules/Pagination'
 import PageResults from '../../modules/PageResults'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
 import $ from 'jquery'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 import json2csv from 'json2csv'
 import { formatUSD, formatInteger } from '@/controllers/utils'
 
@@ -640,6 +649,18 @@ export default {
 		})
 	},
 	methods: {
+		...mapMutations({
+			setUser: 'users/SET_USER'
+		}),
+		/**
+		 * Copy user to store and redirect to edit route
+		 * @function
+		 * @returns {undefined}
+		 */
+		editUser () {
+			this.setUser(this.user)
+			this.$router.push({name: 'EditUser'})
+		},
 		sortTransactions () {
 			this.transactions.data.sort((a, b) => {
 				if (a.created_at > b.created_at) {
