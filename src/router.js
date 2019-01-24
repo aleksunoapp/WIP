@@ -19,9 +19,29 @@ export const router = new Router({
       component: () => import(/* webpackChunkName: "at-a-glance" */ './views/AtAGlance.vue')
     },
     {
+      path: '/additional',
+      name: 'additional',
+      component: () => import(/* webpackChunkName: "additional" */ './views/Additional.vue')
+    },
+    {
+      path: '/additional/services',
+      name: 'additional-services',
+      component: () => import(/* webpackChunkName: "services" */ './views/Services.vue')
+    },
+    {
+      path: '/wait',
+      name: 'wait',
+      component: () => import(/* webpackChunkName: "wait" */ './views/Wait.vue')
+    },
+    {
+      path: '/wait/services',
+      name: 'wait-services',
+      component: () => import(/* webpackChunkName: "services" */ './views/Services.vue')
+    },
+    {
       path: '/services',
-      name: 'inspection',
-      component: () => import(/* webpackChunkName: "inspection" */ './views/Inspection.vue')
+      name: 'services',
+      component: () => import(/* webpackChunkName: "services" */ './views/Services.vue')
     },
     {
       path: '/terms-and-conditions',

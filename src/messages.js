@@ -72,10 +72,10 @@ export const messages = {
     // glance
     you_have: 'You have',
     your_service_consultant: 'Your Service Consultant',
-    that_need_your_attention: 'that need your attention.',
+    that_need_your_attention: 'that needs your attention. | that need your attention.',
     select_your_services_in: 'Select your services in:',
     to_have_your_vehicle_ready_by: 'to have your vehicle ready by:',
-    view_recommendations: 'View recommendations',
+    view_recommendations: 'View recommendation | View recommendations',
     today: 'Today',
     at: 'at',
     // inspection
@@ -140,7 +140,10 @@ export const messages = {
     we_couldnt_get_tax: 'We couldn\'t get the taxes and fees',
     // wait
     wait_there_are: 'Wait, there are still',
-    pending_approval: 'pending approval'
+    pending_approval: 'pending approval',
+    // additional
+    hey: 'Hey',
+    additional_recommendation: 'Additional Recommendation | Additional Recommendations'
   },
   'en-CA': {
     // expired
@@ -172,10 +175,10 @@ export const messages = {
     // glance
     you_have: 'You have',
     your_service_consultant: 'Your Service Consultant',
-    that_need_your_attention: 'that need your attention.',
+    that_need_your_attention: 'that needs your attention. | that need your attention.',
     select_your_services_in: 'Select your services in:',
     to_have_your_vehicle_ready_by: 'to have your vehicle ready by:',
-    view_recommendations: 'View recommendations',
+    view_recommendations: 'View recommendation | View recommendations',
     today: 'Today',
     at: 'at',
     // inspection
@@ -240,7 +243,10 @@ export const messages = {
     we_couldnt_get_tax: 'We couldn\'t get the taxes and fees',
     // wait
     wait_there_are: 'Wait, there are still',
-    pending_approval: 'pending approval'
+    pending_approval: 'pending approval',
+    // additional
+    hey: 'Hey',
+    additional_recommendation: 'Additional Recommendation | Additional Recommendations'
   },
   'fr-CA': {
     // expired
@@ -340,7 +346,10 @@ export const messages = {
     we_couldnt_get_tax: '',
     // wait
     wait_there_are: '',
-    pending_approval: ''
+    pending_approval: '',
+    // additional
+    hey: '',
+    additional_recommendation: ''
   },
   'es-MX': {
     // expired
@@ -440,6 +449,9 @@ export const messages = {
     we_couldnt_get_tax: '',
     // wait
     wait_there_are: '',
-    pending_approval: ''
+    pending_approval: '',
+    // additional
+    hey: '',
+    additional_recommendation: ''
   }
 }

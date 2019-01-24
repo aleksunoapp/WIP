@@ -1,9 +1,11 @@
+import router from '@/router.js'
+
 export const getters = {
   categories: (state) => {
     return state.categories
   },
-  categoriesShownOnInspection: (state, getters) => {
-    const categoriesShownOnInspection = []
+  categoriesShown: (state, getters) => {
+    let categoriesShown = []
     for (const category of state.categories) {
       if (
         category.showOnInspection &&
@@ -11,16 +13,28 @@ export const getters = {
         category.serviceCategoryType !== 'CC'
       ) {
         if (getters.categoryServices(category.id).length) {
-          categoriesShownOnInspection.push(category)
+          categoriesShown.push(category)
         }
       }
       if (category.serviceCategoryType === 'CC') {
         if (getters.categoryServices(category.id).length) {
-          categoriesShownOnInspection.push(category)
+          categoriesShown.push(category)
         }
       }
     }
-    return categoriesShownOnInspection
+
+    return categoriesShown
+  },
+  categoriesShownOnRoute: (state, getters) => {
+    if (state.route.name === 'additional-services') {
+      return getters.categoriesShown
+        .filter(category => getters.categoryContainsHiglightedServices(category.id))
+    }
+    if (state.route.name === 'wait-services') {
+      return getters.categoriesShown
+        .filter(category => getters.categoryContainsUnhiglightedUnselectedServices(category.id))
+    }
+    return getters.categoriesShown
   },
   categoryName: (state, getters) => (id) => {
     const category = state.categories.find((category) => category.id === id)
@@ -41,7 +55,18 @@ export const getters = {
     return getters.count[map[id]]
   },
   serviceById: (state) => (id) => {
-    return state.services.find((service) => service.id === id)
+    for (const service of state.services) {
+      if (service.id === id) {
+        return service
+      }
+      if (service.subServices) {
+        for (const subService of service.subServices) {
+          if (subService.id === id) {
+            return subService
+          }
+        }
+      }
+    }
   },
   categoryServices: (state, getters) => (id) => {
     let nested = []
@@ -65,10 +90,53 @@ export const getters = {
       }
     }
 
+    if (state.route.name === 'additional-services') {
+      flattened = flattened.filter(service => service.isHighlighted)
+    }
+    if (state.route.name === 'wait-services') {
+      flattened = flattened.filter(service => !service.isHighlighted && !service.isSelected)
+    }
+
     return flattened
+  },
+  highlightedServices: (state, getters) => {
+    const highlighted = []
+    for (const service of state.services) {
+      const children = []
+      if (service.subServices) {
+        for (const subService of service.subServices) {
+          if (subService.isHighlighted) {
+            children.push(subService)
+          }
+        }
+      }
+      if (children.length) {
+        highlighted.push({
+          ...service,
+          subServices: children
+        })
+      } else if (service.isHighlighted) {
+        highlighted.push(service)
+      }
+    }
+    return highlighted
+  },
+  unhighlightedUnselectedServices: (state, getters) => {
+    let count = 0
+    for (const category of getters.categoriesShown) {
+      for (const service of getters.categoryServices(category.id)) {
+        if (!service.isHighlighted && !service.isSelected) {
+          count++
+        }
+      }
+    }
+    return count
   },
   categoryContainsHiglightedServices: (state, getters) => (id) => {
     return getters.categoryServices(id).some((service) => service.isHighlighted)
+  },
+  categoryContainsUnhiglightedUnselectedServices: (state, getters) => (id) => {
+    return getters.categoryServices(id).some((service) => !service.isHighlighted && !service.isSelected)
   },
   count: (state, getters) => {
     let fail = 0

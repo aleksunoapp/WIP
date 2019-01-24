@@ -31,18 +31,18 @@
                   <span
                     class="count"
                     :class="{
-                      'red' : categoriesShownOnInspection[0].id === '1',
-                      'yellow' : categoriesShownOnInspection[0].id === '2',
-                      'green' : categoriesShownOnInspection[0].id === '3',
-                      'grey' : categoriesShownOnInspection[0].id === '5',
+                      'red' : categoriesShownOnRoute[0].id === '1',
+                      'yellow' : categoriesShownOnRoute[0].id === '2',
+                      'green' : categoriesShownOnRoute[0].id === '3',
+                      'grey' : categoriesShownOnRoute[0].id === '5',
                     }"
                   >
-                    {{categoryCount(categoriesShownOnInspection[0].id)}}
+                    {{categoryCount(categoriesShownOnRoute[0].id)}}
                   </span>
-                  <span class="name">{{categoriesShownOnInspection[0].name}}</span>
+                  <span class="name">{{categoriesShownOnRoute[0].name}}</span>
                 </div>
                 <div class="right">
-                  <span class="badge" v-if="categoryContainsHiglightedServices(categoriesShownOnInspection[0].id)">{{$t("new")}}</span>
+                  <span class="badge" v-if="categoryContainsHiglightedServices(categoriesShownOnRoute[0].id)">{{$t("new")}}</span>
                   <img
                     class="chevron"
                     src="@/assets/images/chevron-right.svg"
@@ -65,27 +65,27 @@
             <div
               class="header"
               :class="{
-                'green' : categoriesShownOnInspection[0].id === '2',
-                'yellow' : categoriesShownOnInspection[0].id === '3',
-                'red' : categoriesShownOnInspection[0].id === '4',
-                'grey' : categoriesShownOnInspection[0].id === '5',
+                'green' : categoriesShownOnRoute[0].id === '2',
+                'yellow' : categoriesShownOnRoute[0].id === '3',
+                'red' : categoriesShownOnRoute[0].id === '4',
+                'grey' : categoriesShownOnRoute[0].id === '5',
               }"
               :style="`width: ${category.style.width}px;`"
-              @click="categoriesShownOnInspection[0].defaultExpended = !categoriesShownOnInspection[0].defaultExpended"
+              @click="categoriesShownOnRoute[0].defaultExpended = !categoriesShownOnRoute[0].defaultExpended"
             >
               <div class="left">
                 <span
                   class="count"
                   :class="{
-                    'green' : categoriesShownOnInspection[0].id === '2',
-                    'yellow' : categoriesShownOnInspection[0].id === '3',
-                    'red' : categoriesShownOnInspection[0].id === '4',
-                    'grey' : categoriesShownOnInspection[0].id === '5',
+                    'green' : categoriesShownOnRoute[0].id === '2',
+                    'yellow' : categoriesShownOnRoute[0].id === '3',
+                    'red' : categoriesShownOnRoute[0].id === '4',
+                    'grey' : categoriesShownOnRoute[0].id === '5',
                   }"
                 >
-                  {{categoryCount(categoriesShownOnInspection[0].id)}}
+                  {{categoryCount(categoriesShownOnRoute[0].id)}}
                 </span>
-                <div class="name">{{categoriesShownOnInspection[0].name}}</div>
+                <div class="name">{{categoriesShownOnRoute[0].name}}</div>
               </div>
               <button
                 class="toggle"
@@ -334,7 +334,7 @@ export default Vue.extend({
       'service'
     ]),
     ...mapGetters([
-      'categoriesShownOnInspection',
+      'categoriesShownOnRoute',
       'categoryCount',
       'categoryServices',
       'categoryContainsHiglightedServices'
@@ -411,10 +411,10 @@ export default Vue.extend({
       }
 
       if (this.page === 1 && (page !== 1 || page !== 2)) {
-        this.$router.replace({ name: 'inspection' })
+        this.$router.replace({ name: 'services' })
       }
       if (this.page === 2 && (page !== 1 || page !== 2)) {
-        this.$router.replace({ name: 'inspection' })
+        this.$router.replace({ name: 'services' })
       }
       if (this.page === 3 && page !== 3) {
         this.closeService()
@@ -427,7 +427,7 @@ export default Vue.extend({
       }
 
       if (page === 1) {
-        this.$router.replace({ name: 'inspection' })
+        this.$router.replace({ name: 'services' })
 
         if (window.innerWidth > 992) {
           const category = document.querySelector('.category__container')
@@ -478,7 +478,7 @@ export default Vue.extend({
       }
 
       if (page === 3) {
-        this.viewService(this.categoryServices(this.categoriesShownOnInspection[0].id)[0])
+        this.viewService(this.categoryServices(this.categoriesShownOnRoute[0].id)[0])
 
         setTimeout(() => {
           const details = document.querySelector('.images')

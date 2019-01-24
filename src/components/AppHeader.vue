@@ -42,7 +42,7 @@
         <div class="placeholder">
           <transition name="fade">
             <button
-              v-if="$route.name === 'inspection'"
+              v-if="$route.name === 'services'"
               class="help"
               @click="toggleHelp()"
               aria-label="help"
@@ -107,7 +107,12 @@ export default Vue.extend({
       }
       if (
         this.$route.name === 'glance' ||
-        this.$route.name === 'inspection'
+        this.$route.name === 'services' ||
+        this.$route.name === 'additional' ||
+        this.$route.name === 'additional-services' ||
+        this.$route.name === 'wait' ||
+        this.$route.name === 'wait-services'
+
       ) {
         return this.$t('recommendations')
       }

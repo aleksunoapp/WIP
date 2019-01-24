@@ -7,13 +7,13 @@
         <p class="total">
           <span>
             {{$t("total_estimate")}}
-            <span class="bold">({{count.concern + count.fail + count.warning}})</span>
+            <span class="bold">({{countTotal}})</span>
           </span>
           <span class="price">{{formatCurrency(total.inspection)}}</span>
         </p>
         <nav class="categories">
           <div
-            v-for="category in categoriesShownOnInspection"
+            v-for="category in categoriesShownOnRoute"
             :key="category.id"
             class="category__container"
             :class="{'active' : activeCategory && category.id === activeCategory.id}"
@@ -53,7 +53,7 @@
         <summary v-show="approve"/>
         <div class="wrapper" v-show="!approve">
           <section
-            v-for="category in categoriesShownOnInspection"
+            v-for="category in categoriesShownOnRoute"
             :ref="`category${category.id}`"
             :key="category.id"
             class="category"
@@ -189,13 +189,21 @@ export default Vue.extend({
       'categoryServices',
       'categoryCount',
       'categoryContainsHiglightedServices',
-      'categoriesShownOnInspection',
+      'categoriesShownOnRoute',
       'total',
-      'count'
+      'count',
+      'highlightedServices'
     ]),
     ...mapState([
       'activeCategory'
-    ])
+    ]),
+    countTotal () {
+      if (this.highlightedServices.length) {
+        return this.highlightedServices.length
+      } else {
+        return this.count.concern + this.count.fail + this.count.warning
+      }
+    }
   },
   created () {
     this.logEvent('Started viewing inspection page')
@@ -264,11 +272,22 @@ export default Vue.extend({
     },
     confirm () {
       this.logEvent('Clicked confirm button')
-      if (this.count.fail || this.count.warning || this.count.concern) {
-        this.getTax()
-        this.$router.push({ name: 'summary' })
-      } else {
-        this.$router.push({ name: 'thanks' })
+      if (this.$route.name === 'additional-services') {
+        if (this.count.fail || this.count.warning || this.count.concern) {
+          this.getTax()
+          this.$router.push({ name: 'summary' })
+        } else {
+          this.$router.push({ name: 'thanks' })
+        }
+      }
+      if (this.$route.name === 'wait-services') {}
+      if (this.$route.name === 'services') {
+        if (this.count.fail || this.count.warning || this.count.concern) {
+          this.getTax()
+          this.$router.push({ name: 'summary' })
+        } else {
+          this.$router.push({ name: 'thanks' })
+        }
       }
     },
     openService (service) {

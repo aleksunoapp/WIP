@@ -15,7 +15,7 @@ export interface Language {
   name: string;
 }
 
-export type ViewName = 'login' | 'tutorial' | 'glance' | 'inspection' | 'popup' | 'summary';
+export type ViewName = 'login' | 'tutorial' | 'glance' | 'services' | 'popup' | 'summary';
 export type TutorialPage = '1' | '2' | '3';
 
 export interface EventEntry {

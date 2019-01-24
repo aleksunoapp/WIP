@@ -69,9 +69,9 @@
         </template>
         <button
           class="button cta"
-          @click="$router.push({name: 'inspection'})"
+          @click="$router.push({name: 'services'})"
         >
-          {{$t("view_recommendations")}}
+          {{$tc("view_recommendations", count.concern + count.fail + count.warning)}}
         </button>
       </main>
     </div>

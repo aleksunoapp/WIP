@@ -4,19 +4,20 @@
   >
     <div class="background">
       <main class="contents">
-        <img src="@/assets/images/approve-green.svg" alt="pencil making a check mark" class="image">
+        <img src="@/assets/images/review.svg" alt="magnifying glass over a bullet list" class="image">
         <div class="card">
             <div class="border" />
             <div class="wrapper">
-              <p class="text">{{$t('wait_there_are')}}</p>
-              <p class="text large"><span class="green">X</span> {{$t('recommendations')}}</p>
-              <p class="text">{{$t('pending_approval')}}</p>
+              <p class="text">{{$t('hey')}}, {{customer.firstName}}, {{$t('you_have').toLowerCase()}}</p>
+              <p class="text large"><span class="blue">{{highlightedServices.length}}</span> {{ $tc('additional_recommendation', highlightedServices.length) }}</p>
+              <p class="text">{{$tc('that_need_your_attention', highlightedServices.length)}}</p>
             </div>
         </div>
         <button
-          class="button cta green"
+          @click="$router.push({name: 'additional-services'})"
+          class="button cta"
         >
-          {{$t("view_recommendations", unhighlightedUnselectedServices.length)}}
+          {{$tc("view_recommendations", highlightedServices.length)}}
         </button>
       </main>
     </div>
@@ -25,16 +26,17 @@
 
 <script>
 import Vue from 'vue'
-import { mapGetters, mapMutations } from 'vuex'
+import { mapGetters, mapMutations, mapState } from 'vuex'
 export default Vue.extend({
   created () {
-    this.logEvent('Started viewing wait page')
+    this.logEvent('Started viewing additional page')
   },
   beforeDestroy () {
-    this.logEvent('Finished viewing wait page')
+    this.logEvent('Finished viewing additional page')
   },
   computed: {
-    ...mapGetters(['unhighlightedUnselectedServices'])
+    ...mapGetters(['highlightedServices']),
+    ...mapState(['customer'])
   },
   methods: {
     ...mapMutations([
@@ -88,7 +90,7 @@ export default Vue.extend({
           height: 0.5rem;
           border-top-left-radius: 3px;
           border-top-right-radius: 3px;
-          background-color: var(--green);
+          background-color: var(--blue);
         }
         .wrapper {
           width: 100%;
@@ -105,8 +107,8 @@ export default Vue.extend({
               font-weight: 700;
               font-size: 2rem;
             }
-            .green {
-              color: var(--green);
+            .blue {
+              color: var(--blue);
             }
           }
         }

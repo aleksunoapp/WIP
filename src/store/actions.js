@@ -121,10 +121,14 @@ export const actions = {
     }
   },
   routeAfterLogin ({ commit, getters }) {
-    if (getters.count.fail || getters.count.warninig || getters.count.concern) {
-      router.push({ name: 'tutorial' })
+    if (getters.highlightedServices.length) {
+      router.push({ name: 'additional' })
     } else {
-      router.push({ name: 'inspection' })
+      if (getters.count.fail || getters.count.warninig || getters.count.concern) {
+        router.push({ name: 'tutorial' })
+      } else {
+        router.push({ name: 'services' })
+      }
     }
     commit('setLoading', { key: 'logIn', loading: false })
   },

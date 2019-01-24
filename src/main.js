@@ -4,6 +4,7 @@ import router from '@/router'
 import store from '@/store'
 import VueI18n from 'vue-i18n'
 import { messages, dateTimeFormats } from '@/messages'
+import { sync } from 'vuex-router-sync'
 
 Vue.config.productionTip = false
 
@@ -22,3 +23,5 @@ new Vue({
   store,
   render: (h) => h(App)
 }).$mount('#app')
+
+sync(store, router)

@@ -1,6 +1,9 @@
 # DMPI
 
 ## To-do
+- additional
+    count and totals filted by highlighted
+- menu button z index
 - help: uncollapse, skip pages 1-2 is no recommendations, check X on each page
 - unhide headers in desktop
 - break long strings
