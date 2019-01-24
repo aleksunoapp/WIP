@@ -190,6 +190,7 @@ export default Vue.extend({
       'categoryCount',
       'categoryContainsHiglightedServices',
       'categoriesShownOnRoute',
+      'waitServices',
       'total',
       'count',
       'highlightedServices'
@@ -272,15 +273,16 @@ export default Vue.extend({
     },
     confirm () {
       this.logEvent('Clicked confirm button')
-      if (this.$route.name === 'additional-services') {
-        if (this.count.fail || this.count.warning || this.count.concern) {
-          this.getTax()
-          this.$router.push({ name: 'summary' })
-        } else {
-          this.$router.push({ name: 'thanks' })
-        }
+      if (this.waitServices.length) {
+        this.$router.push({name: 'wait'})
+      } else {
+        this.$router.push({name: 'summary'})
       }
-      if (this.$route.name === 'wait-services') {}
+
+      if (this.$route.name === 'wait-services') {
+        this.$router.push({ name: 'summary' })
+      }
+
       if (this.$route.name === 'services') {
         if (this.count.fail || this.count.warning || this.count.concern) {
           this.getTax()

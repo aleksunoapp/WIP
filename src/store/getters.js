@@ -26,15 +26,26 @@ export const getters = {
     return categoriesShown
   },
   categoriesShownOnRoute: (state, getters) => {
-    if (state.route.name === 'additional-services') {
+    if (name === 'additional-services') {
       return getters.categoriesShown
         .filter(category => getters.categoryContainsHiglightedServices(category.id))
     }
-    if (state.route.name === 'wait-services') {
+    if (name === 'wait-services') {
       return getters.categoriesShown
         .filter(category => getters.categoryContainsUnhiglightedUnselectedServices(category.id))
     }
     return getters.categoriesShown
+  },
+  waitServices: (state, getters) => {
+    const services = []
+    for (const category of getters.categoriesShown) {
+      for (const service of getters.categoryServices(category.id)) {
+        if (!service.isHighlighted && !service.isSelected) {
+          services.push(service)
+        }
+      }
+    }
+    return services
   },
   categoryName: (state, getters) => (id) => {
     const category = state.categories.find((category) => category.id === id)
