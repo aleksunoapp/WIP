@@ -509,7 +509,7 @@ export default {
 		 * @returns {boolean} - True if categories 1 and 2 are empty, false otherwise
 		 */
 		noActionRequired () {
-			return this.$root.inspectionCounts.failCount === 0 && this.$root.inspectionCounts.warningCount === 0
+			return this.$root.inspectionCounts.failCount === 0 && this.$root.inspectionCounts.warningCount === 0 && this.$root.inspectionCounts.concernCount === 0
 		},
 		highlightedServices () {
 			let highlighted = false
