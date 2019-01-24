@@ -272,20 +272,16 @@ export default Vue.extend({
       }
     },
     openService (service) {
-      if (typeof service.serviceCategoryType === 'string') {
-        if (service.serviceCategoryType.toLowerCase() === 'pass') {
-
-        }
-      } else {
+      if (!(typeof service.serviceCategoryType === 'string' && service.serviceCategoryType.toLowerCase() === 'pass')) {
         this.viewService(service)
       }
     },
     ...mapMutations([
-      'openService',
       'setService',
       'openReason',
       'setActiveCategory',
-      'logEvent'
+      'logEvent',
+      'setCategoryExpanded'
     ]),
     ...mapActions({
       viewService: 'viewService',

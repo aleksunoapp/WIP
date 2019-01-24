@@ -51,7 +51,7 @@ export const state = {
   modal: false,
   reason: false,
   reasons: [],
-  service: null,
+  service: {},
   services: [],
   signature: null,
   slug: '',
