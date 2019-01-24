@@ -107,13 +107,13 @@ export default Vue.extend({
     ...mapGetters([
       'serviceById',
       'categoriesShownOnRoute',
-      'categoryServices',
+      'categoryServicesShownOnRoute',
       'count'
     ]),
     services () {
       let services = []
       for (const category of this.categoriesShownOnRoute) {
-        services = services.concat(this.categoryServices(category.id))
+        services = services.concat(this.categoryServicesShownOnRoute(category.id))
       }
       return services
     },

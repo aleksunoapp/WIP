@@ -336,7 +336,7 @@ export default Vue.extend({
     ...mapGetters([
       'categoriesShownOnRoute',
       'categoryCount',
-      'categoryServices',
+      'categoryServicesShownOnRoute',
       'categoryContainsHiglightedServices'
     ]),
     buttonText () {
@@ -478,7 +478,7 @@ export default Vue.extend({
       }
 
       if (page === 3) {
-        this.viewService(this.categoryServices(this.categoriesShownOnRoute[0].id)[0])
+        this.viewService(this.categoryServicesShownOnRoute(this.categoriesShownOnRoute[0].id)[0])
 
         setTimeout(() => {
           const details = document.querySelector('.images')

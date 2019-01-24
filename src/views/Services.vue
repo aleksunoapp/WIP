@@ -94,7 +94,7 @@
             </div>
             <div class="cards">
               <div
-                v-for="(service) in categoryServices(category.id)"
+                v-for="(service) in categoryServicesShownOnRoute(category.id)"
                 :key="service.id"
                 class="card"
               >
@@ -186,7 +186,7 @@ export default Vue.extend({
   }),
   computed: {
     ...mapGetters([
-      'categoryServices',
+      'categoryServicesShownOnRoute',
       'categoryCount',
       'categoryContainsHiglightedServices',
       'categoriesShownOnRoute',

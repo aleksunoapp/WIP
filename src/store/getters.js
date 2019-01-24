@@ -26,11 +26,11 @@ export const getters = {
     return categoriesShown
   },
   categoriesShownOnRoute: (state, getters) => {
-    if (name === 'additional-services') {
+    if (state.route.name === 'additional-services') {
       return getters.categoriesShown
         .filter(category => getters.categoryContainsHiglightedServices(category.id))
     }
-    if (name === 'wait-services') {
+    if (state.route.name === 'wait-services') {
       return getters.categoriesShown
         .filter(category => getters.categoryContainsUnhiglightedUnselectedServices(category.id))
     }
@@ -79,6 +79,15 @@ export const getters = {
       }
     }
   },
+  categoryServicesShownOnRoute: (state, getters) => (id) => {
+    if (state.route.name === 'additional-services') {
+      return getters.categoryServices(id).filter(service => service.isHighlighted)
+    }
+    if (state.route.name === 'wait-services') {
+      return getters.categoryServices(id).filter(service => !service.isHighlighted && !service.isSelected)
+    }
+    return getters.categoryServices(id)
+  },
   categoryServices: (state, getters) => (id) => {
     let nested = []
     let flattened = []
@@ -99,13 +108,6 @@ export const getters = {
       } else {
         flattened.push(service)
       }
-    }
-
-    if (state.route.name === 'additional-services') {
-      flattened = flattened.filter(service => service.isHighlighted)
-    }
-    if (state.route.name === 'wait-services') {
-      flattened = flattened.filter(service => !service.isHighlighted && !service.isSelected)
     }
 
     return flattened
