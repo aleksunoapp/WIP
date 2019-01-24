@@ -15,7 +15,10 @@ POST: api/app/tags/addTagToModifierItems {"modifier_item_sku": ["TMI7"], "tag_id
 3. Location discounts
 https://www.getpostman.com/collections/3f5c12447c2194af07a2
 
-4. Trello eComm next-up
+4. Payment methods
+https://www.getpostman.com/collections/b42351df9e36560f8261
+
+5. Trello eComm next-up
 
 ## Documentation
 
