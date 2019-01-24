@@ -402,19 +402,19 @@ export default {
 					'en-ca': 'terms and conditions',
 					'en-us': 'terms and conditions',
 					'fr-ca': 'conditions générales du concessionnaire',
-					'es-mx': 'términos y condiciones'
+					'es-mx': 'términos y condiciones del concesionario'
 				},
 				before_you_can_approve: {
 					'en-ca': 'before you can approve these additional services.',
 					'en-us': 'before you can approve these additional services.',
 					'fr-ca': 'avant de pouvoir approuver ces services supplémentaires',
-					'es-mx': 'del concesionario antes de que pueda aprobar estos servicios adicionales.'
+					'es-mx': 'antes de que pueda aprobar estos servicios adicionales.'
 				},
 				i_agree_to: {
 					'en-ca': 'I agree to the Dealership\'s',
 					'en-us': 'I agree to the Dealership\'s',
 					'fr-ca': 'J\'accepte les',
-					'es-mx': 'Acepto los términos y'
+					'es-mx': 'Acepto los '
 				},
 				approve: {
 					'en-ca': 'Approve',
