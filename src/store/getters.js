@@ -84,7 +84,7 @@ export const getters = {
       return getters.categoryServices(id).filter(service => service.isHighlighted)
     }
     if (state.route.name === 'wait-services') {
-      return getters.categoryServices(id).filter(service => !service.isHighlighted && !service.isSelected)
+      return getters.categoryServices(id).filter(service => !service.isHighlighted && !service.wasSelected)
     }
     return getters.categoryServices(id)
   },
