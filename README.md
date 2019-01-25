@@ -4,7 +4,11 @@
 - additional
     count and totals filted by highlighted
 - menu button z index
+- no signature box if no concerns (DMPI-915)
 - help: uncollapse, skip pages 1-2 is no recommendations, check X on each page
+- i18n strings
+- service modal min height
+
 - unhide headers in desktop
 - break long strings
 - a11y: service, reason, drawer, help, error

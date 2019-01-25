@@ -189,7 +189,11 @@ export const getters = {
         service.category === '8' ||
         service.category === '9'
       ) {
-        concern++
+        if (service.subServices) {
+          concern = concern + service.subServices.length
+        } else {
+          concern++
+        }
       }
     })
     return {

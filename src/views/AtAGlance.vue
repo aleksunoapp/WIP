@@ -5,8 +5,8 @@
     <div class="background">
       <main class="contents">
         <p>{{$t("you_have")}}</p>
-        <h1>{{count.concern + count.fail + count.warning}} {{$t("recommendations")}}</h1>
-        <p>{{$t("that_need_your_attention")}}</p>
+        <h1>{{totalCount}} {{$tc("recommendations", totalCount)}}</h1>
+        <p>{{$tc("that_need_your_attention", totalCount)}}</p>
 
         <figure class="card">
           <img
@@ -71,7 +71,7 @@
           class="button cta"
           @click="$router.push({name: 'services'})"
         >
-          {{$tc("view_recommendations", count.concern + count.fail + count.warning)}}
+          {{$tc("view_recommendations", totalCount)}}
         </button>
       </main>
     </div>
@@ -101,7 +101,10 @@ export default Vue.extend({
       'readyBy',
       'respondBy',
       'count'
-    ])
+    ]),
+    totalCount () {
+      return this.count.concern + this.count.fail + this.count.warning
+    }
   },
   created () {
     this.timer = this.getTimeRemaining()
