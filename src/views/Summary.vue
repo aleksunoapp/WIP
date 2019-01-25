@@ -7,13 +7,34 @@
             v-if="count.approved"
             class="row"
           >
-            <p class="item">
-              {{$t("previous")}}
-            </p>
+            <div class="previous">
+              <p class="item">
+                {{$t("previous")}}
+              </p>
+              <button
+                @click="previousExpanded = !previousExpanded"
+                class="toggle"
+              >
+                <img
+                  class="chevron"
+                  :class="{'open' : previousExpanded}"
+                  src="@/assets/images/chevron-down.svg"
+                  aria-hidden="true"
+                >
+              </button>
+            </div>
             <p class="price">
               {{serviceTotal}}
             </p>
           </div>
+          <transition-height>
+            <div class="list" v-if="previousExpanded">
+              <div class="row" v-for="service in categoryServices('4')" :key="service.id">
+                <p class="item">{{service.name}}</p>
+                <p class="price">{{getServiceDisplayPrice(service)}}</p>
+              </div>
+            </div>
+          </transition-height>
           <div class="row bold">
             <p class="item">
               {{$t("estimate")}}
@@ -109,7 +130,7 @@ import Pad from 'signature_pad'
 import TransitionHeight from '@/components/TransitionHeight.vue'
 import Hammer from 'hammerjs'
 import { mapGetters, mapState, mapMutations, mapActions } from 'vuex'
-import { formatCurrency } from '@/mixins.js'
+import { formatCurrency, getServiceDisplayPrice } from '@/mixins.js'
 
 export default Vue.extend({
   components: {
@@ -118,7 +139,8 @@ export default Vue.extend({
   data: () => ({
     pad: null,
     panned: false,
-    error: false
+    error: false,
+    previousExpanded: false
   }),
   computed: {
     accepted: {
@@ -139,7 +161,8 @@ export default Vue.extend({
       'customer'
     ]),
     ...mapGetters([
-      'count'
+      'count',
+      'categoryServices'
     ]),
     serviceTotal () {
       return this.formatCurrency(this.$store.getters.total.service)
@@ -154,7 +177,7 @@ export default Vue.extend({
       return this.formatCurrency(this.$store.getters.total.service + this.$store.getters.total.inspection + this.$store.state.tax)
     }
   },
-  mixins: [formatCurrency],
+  mixins: [formatCurrency, getServiceDisplayPrice],
   mounted () {
     this.pad = new Pad(this.$refs.canvas, { backgroundColor: '#f7f7fa' })
     this.setCanvasResolutionAndBackground()
@@ -259,10 +282,34 @@ export default Vue.extend({
           &.total {
             color: var(--blue);
           }
+          .previous {
+            display: flex;
+            align-items: center;
+            .toggle {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              border: none;
+              padding: 1.5rem 1rem;
+              background-color: var(--white);
+              .chevron {
+                transition: transform .2s ease-in-out;
+                max-width: 2rem;
+                &.open {
+                  transform: rotate(180deg);
+                  transition: transform .2s ease-in-out;
+                }
+              }
+            }
+          }
           .price {
             min-width: 100px;
             text-align: right;
           }
+        }
+        .list {
+          background-color: var(--grey-light-background);
+          padding: 1rem;
         }
         .divider {
           width: 100%;

@@ -93,72 +93,12 @@
               </button>
             </div>
             <div class="cards">
-              <div
+              <service-card
                 v-for="(service) in categoryServicesShownOnRoute(category.id)"
+                :category="category"
+                :service="service"
                 :key="service.id"
-                class="card"
-              >
-                <div
-                  class="contents"
-                  @click="openService(service)"
-                  @keyup.enter="openService(service)"
-                  tabindex="0"
-                  role="button"
-                >
-                  <div class="left">
-                    <img :src="service.imageUrl" class="image">
-                    <!-- <p class="count">{{service.imageUrl.length}}</p> -->
-                  </div>
-                  <div class="right">
-                    <div class="top">
-                      <p class="name">
-                        <span
-                          v-if="service.isHighlighted"
-                          class="badge"
-                        >
-                          {{$t("new")}}
-                        </span>
-                        {{service.name}}
-                      </p>
-                      <div
-                        v-if="service.category > '5'"
-                        class="description"
-                      >
-                        <img :src="service.iconUrl" :aria-label="alt(service)" class="dot">
-                        <p class="text">
-                          {{recommendationLabel(service)}}
-                        </p>
-                      </div>
-                    </div>
-                    <div
-                      v-if="displayPrice(service) !== false"
-                      class="bottom"
-                    >
-                      <div class="price">{{displayPrice(service)}}</div>
-                        <input
-                          type="checkbox"
-                          :id="service.id"
-                          class="approve"
-                          v-model="service.isSelected"
-                          @change="checkboxToggled($event, service)"
-                          @click.stop
-                        >
-                        <label
-                          tabindex="0"
-                          :for="service.id"
-                          class="checkbox"
-                          @click.stop
-                        >
-                          {{$t("approve")}}
-                          <div class="box">
-                            <img src="@/assets/images/check.svg" alt="check" class="check">
-                          </div>
-                        </label>
-                    </div>
-                  </div>
-                </div>
-                <div class="divider"></div>
-              </div>
+              />
             </div>
           </section>
         </div>
@@ -174,10 +114,15 @@
 </template>
 <script>
 import Vue from 'vue'
+import ServiceCard from '@/components/ServiceCard.vue'
 import { formatCurrency } from '@/mixins.js'
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 
 export default Vue.extend({
+  name: 'ServicesList',
+  components: {
+    ServiceCard
+  },
   data: () => ({
     service: null,
     loading: false,
@@ -214,40 +159,9 @@ export default Vue.extend({
   },
   mixins: [formatCurrency],
   methods: {
-    recommendationLabel (service) {
-      return service.category < '8' ? this.$t('problem_identified') : this.$t('no_issue_found')
-    },
-    alt (service) {
-      const statuses = {
-        '6': 'red status light',
-        '7': 'yellow status light',
-        '8': 'grey status light',
-        '9': 'grey status light'
-      }
-      return statuses[service.category] || 'status indicator'
-    },
     toggleCategory (category) {
       this.setCategoryExpanded({ id: category.id, expanded: !category.defaultExpended })
       this.logEvent(`${category.defaultExpended ? 'Collapsed' : 'Expanded'} category ${category.id}`)
-    },
-    displayPrice (service) {
-      if (typeof service.serviceCategoryType === 'string') {
-        if (service.serviceCategoryType.toLowerCase() === 'pass') {
-          return false
-        }
-      } else if (service.category === '8') {
-        return false
-      } else if (service.category > '5' && !service.parentServiceId) {
-        return false
-      } else if (service.price === 0 && service.laborMatrixPayment) {
-        if (service.laborMatrixPayment === 'NA' || service.laborMatrixPayment === 'None') {
-          return this.formatCurrency(service.price)
-        } else {
-          return service.laborMatrixPaymentTranslation || ''
-        }
-      } else if (service.price === 0) {
-        return this.$t('free')
-      } else return this.formatCurrency(service.price)
     },
     scrollToCategory (category) {
       this.setActiveCategory(category)
@@ -259,16 +173,6 @@ export default Vue.extend({
         behavior: 'smooth'
       })
       this.logEvent(`Selected category ${category.id}`)
-    },
-    checkboxToggled (event, service) {
-      event.stopPropagation()
-      if (!service.isSelected) {
-        this.setService(service)
-        this.openReason()
-        this.logEvent(`Unselected service ${this.service.id}`)
-      } else {
-        this.logEvent(`Selected service ${this.service.id}`)
-      }
     },
     closeServiceView () {
       this.service = null
@@ -292,11 +196,6 @@ export default Vue.extend({
         } else {
           this.$router.push({ name: 'thanks' })
         }
-      }
-    },
-    openService (service) {
-      if (!(typeof service.serviceCategoryType === 'string' && service.serviceCategoryType.toLowerCase() === 'pass')) {
-        this.viewService(service)
       }
     },
     ...mapMutations([
@@ -561,145 +460,7 @@ export default Vue.extend({
             transition: max-height .2s ease-out;
           }
         }
-        .cards {
-          .card {
-            display: flex;
-            flex-direction: column;
-            padding: 0 1rem;
-            .contents {
-              display: flex;
-              border: none;
-              background-color: var(--white);
-              padding: 0;
-              .left {
-                position: relative;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                width: 10rem;
-                height: 10rem;
-                .image {
-                  width: 10rem;
-                  height: 10rem;
-                  object-fit: cover;
-                  border-radius: 3px;
-                }
-                .count {
-                  position: absolute;
-                  margin: 0;
-                  padding: 0.2rem 0.5rem;
-                  background-color: var(--grey-dark-background);
-                  border-radius: 500px;
-                  font-family: 'Futura Heavy';
-                  color: var(--white);
-                }
-              }
-              .right {
-                width: 100%;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                margin-left: 1rem;
-                .top {
-                  display: flex;
-                  flex-direction: column;
-                  .name, .description {
-                    margin: 0;
-                  }
-                  .name {
-                    margin-bottom: 0.5rem;
-                    .badge {
-                      float: right;
-                      margin: 0 0 1rem 2rem;
-                      padding: 0.5rem 1rem;
-                      background-color: var(--green-pastel);
-                      border-radius: 500px;
-                      font-family: 'Futura Heavy';
-                      text-transform: uppercase;
-                      color: var(--white);
-                    }
-                  }
-                  .description {
-                    display: flex;
-                    align-items: center;
-                    .dot {
-                      max-width: 1rem;
-                      max-height: 1rem;
-                      object-fit: contain;
-                    }
-                    .text {
-                      margin: 0 0 0 1rem;
-                    }
-                  }
-                }
-                .bottom {
-                  display: flex;
-                  justify-content: space-between;
-                  margin-top: 1rem;
-                  .price {
-                    color: var(--blue);
-                    font-weight: 700;
-                    letter-spacing: 0.0625rem;
-                    font-family: 'Futura Heavy';
-                    background-color: var(--grey-light-background);
-                    padding: 0.5rem 1rem;
-                    border-radius: 500px;
-                  }
-                  input {
-                    display: none;
-                  }
-                  .checkbox {
-                    display: flex;
-                    align-items: center;
-                    transition: all .2s ease-in;
-                    text-transform: uppercase;
-                    color: var(--grey-text);
-                    .box {
-                      display: inline-flex;
-                      justify-content: center;
-                      align-items: center;
-                      width: 2.5rem;
-                      height: 2.5rem;
-                      margin-left: 1rem;
-                      border-radius: 3px;
-                      background-color: var(--grey-medium-background);
-                      .check {
-                        max-height: 100%;
-                        max-width: 100%;
-                        padding: 0.3rem;
-                        opacity: 0;
-                      }
-                    }
-                  }
-                  input:checked ~ .checkbox {
-                    color: var(--green);
-                    .box {
-                      background-color: var(--green);
-                      .check {
-                        opacity: 1;
-                      }
-                    }
-                  }
-                }
-              }
-            }
-            .divider {
-              width: 100%;
-              height: 2px;
-              margin: 1rem 0;
-              background-color: var(--grey-light-background)
-            }
-          }
-          .card:first-child {
-            padding-top: 1rem;
-          }
-          .card:last-child {
-            padding-bottom: 1rem;
-            .divider {
-              display: none;
-            }
-          }
-        }
+        .cards {}
       }
       .category.open {
         .header {
