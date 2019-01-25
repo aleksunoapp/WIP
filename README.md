@@ -1,7 +1,8 @@
 # DMPI
 
 ## To-do
-- help: uncollapse, skip pages 1-2 is no recommendations, check X on each page
+- glance header
+- help: scroll to top, uncollapse 1st, skip pages 1-2 if no recommendations, check X on each page
 - unhide headers in desktop
 - break long strings
 - a11y: service, reason, drawer, help, error
