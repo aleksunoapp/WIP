@@ -247,18 +247,27 @@ export default Vue.extend({
       }
     },
     approve () {
-      if (!this.accepted) {
-        this.error = true
-        return
+      if (!this.count.actionable) {
+        this.$router.push({name: 'thanks'})
+      } else {
+        if (!this.accepted) {
+          this.error = true
+          return
+        }
+        if (this.pad.isEmpty() && !this.panned) {
+          this.error = true
+          return
+        }
+        this.error = false
+        this.setSignature(this.pad.toDataURL())
+
+
+        this.$router.push({name: 'thanks'})
+        // this.sendServices()
+
+
+        this.logEvent('Clicked approve button')
       }
-      if (this.pad.isEmpty() && !this.panned) {
-        this.error = true
-        return
-      }
-      this.error = false
-      this.setSignature(this.pad.toDataURL())
-      this.sendServices()
-      this.logEvent('Clicked approve button')
     }
   }
 })
@@ -373,56 +382,55 @@ export default Vue.extend({
             pointer-events: none;
           }
         }
-
-        input {
-          display: none;
-        }
-        .checkbox {
+      }
+      input {
+        display: none;
+      }
+      .checkbox {
+        display: inline-flex;
+        align-items: center;
+        padding: 1rem 0;
+        transition: all .2s ease-in;
+        .box {
           display: inline-flex;
+          justify-content: center;
           align-items: center;
-          padding: 1rem 0;
-          transition: all .2s ease-in;
-          .box {
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            width: 2.5rem;
-            height: 2.5rem;
-            margin-right: 1rem;
-            border-radius: 3px;
-            background-color: var(--grey-medium-background);
-            .check {
-              max-height: 100%;
-              max-width: 100%;
-              padding: 0.3rem;
-              opacity: 0;
-            }
-          }
-          .text {
-            flex-shrink: 2;
-            margin: 0;
-            .link {
-              display: inline;
-              text-decoration: none;
-              white-space: nowrap;
-              color: var(--blue);
-            }
+          width: 2.5rem;
+          height: 2.5rem;
+          margin-right: 1rem;
+          border-radius: 3px;
+          background-color: var(--grey-medium-background);
+          .check {
+            max-height: 100%;
+            max-width: 100%;
+            padding: 0.3rem;
+            opacity: 0;
           }
         }
-        input:checked ~ .checkbox {
-          .box {
-            background-color: var(--green);
-            .check {
-              opacity: 1;
-            }
+        .text {
+          flex-shrink: 2;
+          margin: 0;
+          .link {
+            display: inline;
+            text-decoration: none;
+            white-space: nowrap;
+            color: var(--blue);
           }
         }
-        .error {
-          .text {
-            margin: 0;
-            text-align: center;
-            color: var(--red);
+      }
+      input:checked ~ .checkbox {
+        .box {
+          background-color: var(--green);
+          .check {
+            opacity: 1;
           }
+        }
+      }
+      .error {
+        .text {
+          margin: 0;
+          text-align: center;
+          color: var(--red);
         }
       }
     }

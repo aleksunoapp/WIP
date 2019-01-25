@@ -41,11 +41,14 @@ export const getters = {
     return category ? category.name : ''
   },
   categoryServicesShownOnRoute: (state, getters) => (id) => {
-    if (state.route.name === 'additional-services' || state.route.name === 'additional-summary') {
+    if (state.route.name === 'additional-services') {
       return getters.categoryServices(id).filter(service => service.isHighlighted)
     }
     if (state.route.name === 'wait-services') {
       return getters.categoryServices(id).filter(service => !service.isHighlighted && !service.wasSelected)
+    }
+    if (state.route.name === 'additional-summary') {
+      return getters.categoryServices(id).filter(service => service.isHighlighted || !service.wasSelected)
     }
     return getters.categoryServices(id)
   },
@@ -236,7 +239,9 @@ export const getters = {
 
     for (const category of getters.categoriesShownOnRoute) {
       for (const service of getters.categoryServicesShownOnRoute(category.id)) {
-        additionalTotal += service.price
+        if (service.isSelected) {
+          additionalTotal += service.price
+        }
       }
     }
 

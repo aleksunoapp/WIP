@@ -145,6 +145,8 @@ export default Vue.extend({
     displayTotal () {
       if (this.$route.name === 'additional-services') {
         return this.formatCurrency(this.total.additional)
+      } else if (this.$route.name === 'wait-services') {
+        return this.formatCurrency(this.total.additional)
       } else if (this.$route.name === 'services') {
         return this.formatCurrency(this.total.inspection)
       }
