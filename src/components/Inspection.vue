@@ -408,11 +408,11 @@
 			</template>
 
 			<div class="proceed-component">
-				<div v-if="$root.inspectionCounts.failCount && $root.inspectionCounts.warningCount" class="time-notice" :class="{'danger-flag': timeExpired}">
+				<div v-if="$root.inspectionCounts.failCount || $root.inspectionCounts.warningCount || $root.inspectionCounts.concernCount" class="time-notice" :class="{'danger-flag': timeExpired}">
 					<span v-if="!timeExpired">{{ langTerms.if_approved_by[$root.meta.local.toLowerCase()] }} {{ formatTime(this.$root.meta.responseBy) }} {{ langTerms.your_vehicle_will_be_ready[$root.meta.local.toLowerCase()] }} {{ formatTime(this.$root.meta.promise) }}.</span>
 					<span v-else>{{ langTerms.your_service_advisor_will_contact[$root.meta.local.toLowerCase()] }}</span>
 				</div>
-				<div v-if="!$root.inspectionCounts.failCount && !$root.inspectionCounts.warningCount" class="time-notice">
+				<div v-if="!$root.inspectionCounts.failCount && !$root.inspectionCounts.warningCount && !$root.inspectionCounts.concernCount" class="time-notice">
 					<span>{{ langTerms.your_vehicle_will_be_ready[$root.meta.local.toLowerCase()] }} {{ formatTime(this.$root.meta.promise) }}.</span>
 				</div>
 				<div class="total-estimate">

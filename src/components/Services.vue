@@ -145,7 +145,7 @@
 					<span v-else>{{ langTerms.your_service_advisor_will[$root.meta.local.toLowerCase()] }}</span>
 				</div>
 				<div v-if="!$root.inspectionCounts.failCount && !$root.inspectionCounts.warningCount && !$root.inspectionCounts.concernCount" class="time-notice">
-					<span>{{ langTerms.your_vehicle_will_be_ready[$root.meta.local.toLowerCase()] }} {{ formatTime() }}.</span>
+					<span>{{ langTerms.your_vehicle_will_be_ready[$root.meta.local.toLowerCase()] }} {{ formatTime(this.$root.meta.promise) }}.</span>
 				</div>
 				<div class="summary-table">
 					<div class="summary-table-row service-subtotal">
