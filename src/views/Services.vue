@@ -9,7 +9,7 @@
             {{$t("total_estimate")}}
             <span class="bold">({{countTotal}})</span>
           </span>
-          <span class="price">{{formatCurrency(total.additional)}}</span>
+          <span class="price">{{displayTotal}}</span>
         </p>
         <nav class="categories">
           <div
@@ -142,6 +142,13 @@ export default Vue.extend({
     ...mapState([
       'activeCategory'
     ]),
+    displayTotal () {
+      if (this.$route.name === 'additional-services') {
+        return this.formatCurrency(this.total.additional)
+      } else if (this.$route.name === 'services') {
+        return this.formatCurrency(this.total.inspection)
+      }
+    },
     countTotal () {
       if (this.highlightedServices.length) {
         return this.highlightedServices.length
@@ -178,24 +185,29 @@ export default Vue.extend({
     },
     confirm () {
       this.logEvent('Clicked confirm button')
-      if (this.waitServices.length) {
-        this.$router.push({name: 'wait'})
-      } else {
-        this.getTax()
-        this.$router.push({name: 'additional-summary'})
-      }
-
-      if (this.$route.name === 'wait-services') {
-        this.$router.push({ name: 'summary' })
-      }
-
       if (this.$route.name === 'services') {
         if (this.count.fail || this.count.warning || this.count.concern) {
           this.getTax()
           this.$router.push({ name: 'summary' })
+          return
         } else {
           this.$router.push({ name: 'thanks' })
+          return
         }
+      }
+
+      if (this.$route.name === 'wait-services') {
+        this.$router.push({ name: 'additional-summary' })
+        return
+      }
+
+      if (this.waitServices.length) {
+        this.$router.push({name: 'wait'})
+        return
+      } else {
+        this.getTax()
+        this.$router.push({name: 'additional-summary'})
+        return
       }
     },
     ...mapMutations([

@@ -1,12 +1,6 @@
 # DMPI
 
 ## To-do
-- additional
-    filter count by highlighted
-    filter totals by highlighted
-- i18n strings
-https://docs.google.com/spreadsheets/d/1a6QSQVhfGtzpZLzV-5Zq6ygW5RRwfzixpg8O-2xxP_c/edit#gid=0
-https://docs.google.com/spreadsheets/d/1WR4XuvXy1qEKhX5jRUqqqKSWcGEiXvGwF5-t5wEwt0Y/edit#gid=0
 - help: uncollapse, skip pages 1-2 is no recommendations, check X on each page
 
 - unhide headers in desktop

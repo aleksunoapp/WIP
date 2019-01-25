@@ -12,7 +12,7 @@ import {
 
 export const actions = {
   async handleError ({ state, commit }, e) {
-    let text = 'We\'re sorry, something went wrong.'
+    let text = i18n.t('something_went_wrong')
     try {
       if (e.message) {
         text = e.message

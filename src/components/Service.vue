@@ -131,7 +131,12 @@ export default Vue.extend({
       return this.$store.getters.categoryName(this.service.category)
     },
     total () {
-      return this.formatCurrency(this.$store.getters.total.inspection + this.$store.state.tax)
+      if (this.$route.name === 'services') {
+        return this.formatCurrency(this.$store.getters.total.inspection)
+      }
+      if (this.$route.name === 'additional-services') {
+        return this.formatCurrency(this.$store.getters.total.additional)
+      }
     },
     headerText () {
       if (this.service.category > '5') {
@@ -186,7 +191,8 @@ export default Vue.extend({
       'logEvent'
     ]),
     ...mapActions([
-      'viewService'
+      'viewService',
+      'getTax'
     ]),
     approve () {
       this.selectService()
@@ -204,10 +210,29 @@ export default Vue.extend({
       if (index < this.services.length - 1) {
         this.viewService(this.services[index + 1])
       } else {
-        if (this.count.fail || this.count.warning || this.count.concern) {
-          this.$router.push({ name: 'summary' })
-        } else {
-          this.$router.push({ name: 'thanks' })
+        if (this.$route.name === 'services') {
+          if (this.count.actionable) {
+            this.getTax()
+            this.$router.push({ name: 'summary' })
+          } else {
+            this.$router.push({ name: 'thanks' })
+          }
+        }
+        if (this.$route.name === 'additional-services') {
+          if (this.count.actionable) {
+            this.getTax()
+            this.$router.push({ name: 'additional-summary' })
+          } else {
+            this.$router.push({ name: 'thanks' })
+          }
+        }
+        if (this.$route.name === 'wait-services') {
+          if (this.count.actionable) {
+            this.getTax()
+            this.$router.push({ name: 'additional-summary' })
+          } else {
+            this.$router.push({ name: 'thanks' })
+          }
         }
         this.closeService()
         this.logEvent(`Finished viewing service ${this.service.id}`)

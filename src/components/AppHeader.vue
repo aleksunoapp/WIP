@@ -116,7 +116,10 @@ export default Vue.extend({
       ) {
         return this.$t('recommendations')
       }
-      if (this.$route.name === 'summary') {
+      if (
+        this.$route.name === 'summary' ||
+        this.$route.name === 'additional-summary'
+      ) {
         return this.$t('service_summary')
       }
       if (this.$route.name === 'thanks') {
