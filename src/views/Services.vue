@@ -237,6 +237,8 @@ export default Vue.extend({
         }
       } else if (service.category === '8') {
         return false
+      } else if (service.category > '5' && !service.parentServiceId) {
+        return false
       } else if (service.price === 0 && service.laborMatrixPayment) {
         if (service.laborMatrixPayment === 'NA' || service.laborMatrixPayment === 'None') {
           return this.formatCurrency(service.price)

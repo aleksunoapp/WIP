@@ -201,7 +201,8 @@ export const getters = {
       warning,
       approved,
       pass,
-      concern
+      concern,
+      actionable: fail + warning + concern
     }
   },
   total: (state, getters) => {

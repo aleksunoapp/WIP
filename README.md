@@ -5,8 +5,11 @@
     count and totals filted by highlighted
 - menu button z index
 - no signature box if no concerns (DMPI-915)
+- list of preapproved services
 - help: uncollapse, skip pages 1-2 is no recommendations, check X on each page
 - i18n strings
+https://docs.google.com/spreadsheets/d/1a6QSQVhfGtzpZLzV-5Zq6ygW5RRwfzixpg8O-2xxP_c/edit#gid=0
+https://docs.google.com/spreadsheets/d/1WR4XuvXy1qEKhX5jRUqqqKSWcGEiXvGwF5-t5wEwt0Y/edit#gid=0
 - service modal min height
 
 - unhide headers in desktop

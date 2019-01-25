@@ -3,7 +3,10 @@
     <div class="background">
       <main class="contents">
         <div class="card" id="summary">
-          <div class="row">
+          <div
+            v-if="count.approved"
+            class="row"
+          >
             <p class="item">
               {{$t("previous")}}
             </p>
@@ -38,7 +41,10 @@
           </div>
         </div>
         <div class="divider"></div>
-        <div class="signature">
+        <div
+          v-if="count.actionable"
+          class="signature"
+        >
           <div class="row">
             <p class="prompt">
               {{$t("please_sign_below")}}
@@ -75,23 +81,23 @@
             </div>
             <p class="text">{{$t("i_acknowledge")}} <router-link :to="{name: 'terms-and-conditions'}" class="link">{{$t("terms_and_conditions")}}.</router-link></p>
           </label>
-          <div class="error">
-            <transition-height>
-              <p
-                v-if="error"
-                class="text"
-              >
-                {{$t("please_sign_in_and_accept")}}
-              </p>
-            </transition-height>
-          </div>
-          <button
-            class="button cta green"
-            @click="approve()"
-          >
-            {{$t("approve")}}
-          </button>
         </div>
+        <div class="error">
+          <transition-height>
+            <p
+              v-if="error"
+              class="text"
+            >
+              {{$t("please_sign_in_and_accept")}}
+            </p>
+          </transition-height>
+        </div>
+        <button
+          class="button cta green"
+          @click="approve()"
+        >
+          {{count.actionable ? $t("approve") : $t("next")}}
+        </button>
       </main>
     </div>
   </div>
@@ -102,7 +108,7 @@ import Vue from 'vue'
 import Pad from 'signature_pad'
 import TransitionHeight from '@/components/TransitionHeight.vue'
 import Hammer from 'hammerjs'
-import { mapState, mapMutations, mapActions } from 'vuex'
+import { mapGetters, mapState, mapMutations, mapActions } from 'vuex'
 import { formatCurrency } from '@/mixins.js'
 
 export default Vue.extend({
@@ -131,6 +137,9 @@ export default Vue.extend({
     },
     ...mapState([
       'customer'
+    ]),
+    ...mapGetters([
+      'count'
     ]),
     serviceTotal () {
       return this.formatCurrency(this.$store.getters.total.service)
