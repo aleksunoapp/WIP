@@ -26,7 +26,7 @@ export const getters = {
     return categoriesShown
   },
   categoriesShownOnRoute: (state, getters) => {
-    if (state.route.name === 'additional-services') {
+    if (state.route.name === 'additional-services' || state.route.name === 'additional-summary') {
       return getters.categoriesShown
         .filter(category => getters.categoryContainsHiglightedServices(category.id))
     }
@@ -36,51 +36,12 @@ export const getters = {
     }
     return getters.categoriesShown
   },
-  waitServices: (state, getters) => {
-    const services = []
-    for (const category of getters.categoriesShown) {
-      for (const service of getters.categoryServices(category.id)) {
-        if (!service.isHighlighted && !service.isSelected) {
-          services.push(service)
-        }
-      }
-    }
-    return services
-  },
   categoryName: (state, getters) => (id) => {
     const category = state.categories.find((category) => category.id === id)
     return category ? category.name : ''
   },
-  categoryCount: (state, getters) => (id) => {
-    const map = {
-      1: 'fail',
-      2: 'warning',
-      3: 'pass',
-      4: 'approved',
-      5: 'concern',
-      6: 'concern',
-      7: 'concern',
-      8: 'concern',
-      9: 'concern'
-    }
-    return getters.count[map[id]]
-  },
-  serviceById: (state) => (id) => {
-    for (const service of state.services) {
-      if (service.id === id) {
-        return service
-      }
-      if (service.subServices) {
-        for (const subService of service.subServices) {
-          if (subService.id === id) {
-            return subService
-          }
-        }
-      }
-    }
-  },
   categoryServicesShownOnRoute: (state, getters) => (id) => {
-    if (state.route.name === 'additional-services') {
+    if (state.route.name === 'additional-services' || state.route.name === 'additional-summary') {
       return getters.categoryServices(id).filter(service => service.isHighlighted)
     }
     if (state.route.name === 'wait-services') {
@@ -111,39 +72,6 @@ export const getters = {
     }
 
     return flattened
-  },
-  highlightedServices: (state, getters) => {
-    const highlighted = []
-    for (const service of state.services) {
-      const children = []
-      if (service.subServices) {
-        for (const subService of service.subServices) {
-          if (subService.isHighlighted) {
-            children.push(subService)
-          }
-        }
-      }
-      if (children.length) {
-        highlighted.push({
-          ...service,
-          subServices: children
-        })
-      } else if (service.isHighlighted) {
-        highlighted.push(service)
-      }
-    }
-    return highlighted
-  },
-  unhighlightedUnselectedServices: (state, getters) => {
-    let count = 0
-    for (const category of getters.categoriesShown) {
-      for (const service of getters.categoryServices(category.id)) {
-        if (!service.isHighlighted && !service.isSelected) {
-          count++
-        }
-      }
-    }
-    return count
   },
   categoryContainsHiglightedServices: (state, getters) => (id) => {
     return getters.categoryServices(id).some((service) => service.isHighlighted)
@@ -205,9 +133,52 @@ export const getters = {
       actionable: fail + warning + concern
     }
   },
+  highlightedServices: (state, getters) => {
+    const highlighted = []
+    for (const service of state.services) {
+      const children = []
+      if (service.subServices) {
+        for (const subService of service.subServices) {
+          if (subService.isHighlighted) {
+            children.push(subService)
+          }
+        }
+      }
+      if (children.length) {
+        highlighted.push({
+          ...service,
+          subServices: children
+        })
+      } else if (service.isHighlighted) {
+        highlighted.push(service)
+      }
+    }
+    return highlighted
+  },
+  respondBy: (state) => {
+    return state.deadlines.respondBy === null ? null : new Date(state.deadlines.respondBy)
+  },
+  readyBy: (state) => {
+    return state.deadlines.readyBy === null ? null : new Date(state.deadlines.readyBy)
+  },
+  serviceById: (state) => (id) => {
+    for (const service of state.services) {
+      if (service.id === id) {
+        return service
+      }
+      if (service.subServices) {
+        for (const subService of service.subServices) {
+          if (subService.id === id) {
+            return subService
+          }
+        }
+      }
+    }
+  },
   total: (state, getters) => {
     let inspectionTotal = 0
     let serviceTotal = 0
+    let additionalTotal = 0
 
     // limit to displayed and leave out the pass category
     state.categories.forEach((category) => {
@@ -263,16 +234,39 @@ export const getters = {
       }
     })
 
+    for (const category of getters.categoriesShownOnRoute) {
+      for (const service of getters.categoryServicesShownOnRoute(category.id)) {
+        additionalTotal += service.price
+      }
+    }
+
     return {
       service: serviceTotal,
-      inspection: inspectionTotal
+      inspection: inspectionTotal,
+      additional: additionalTotal
     }
   },
-  respondBy: (state) => {
-    return state.deadlines.respondBy === null ? null : new Date(state.deadlines.respondBy)
+  unhighlightedUnselectedServices: (state, getters) => {
+    let count = 0
+    for (const category of getters.categoriesShown) {
+      for (const service of getters.categoryServices(category.id)) {
+        if (!service.isHighlighted && !service.isSelected) {
+          count++
+        }
+      }
+    }
+    return count
   },
-  readyBy: (state) => {
-    return state.deadlines.readyBy === null ? null : new Date(state.deadlines.readyBy)
+  waitServices: (state, getters) => {
+    const services = []
+    for (const category of getters.categoriesShown) {
+      for (const service of getters.categoryServices(category.id)) {
+        if (!service.isHighlighted && !service.isSelected) {
+          services.push(service)
+        }
+      }
+    }
+    return services
   }
 }
 

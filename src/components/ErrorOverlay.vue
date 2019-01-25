@@ -61,6 +61,7 @@ export default Vue.extend({
 <style scoped lang="scss">
 .reason__container {
   position: absolute;
+  bottom: 0;
   z-index: 6;
   height: 100%;
   width: 100%;

@@ -1,6 +1,6 @@
 <template>
   <aside
-  class="modal__container"
+  class="container"
   :class="{'open' : modal}"
 >
   <transition name="fade">
@@ -204,7 +204,7 @@ export default Vue.extend({
       if (index < this.services.length - 1) {
         this.viewService(this.services[index + 1])
       } else {
-        if (this.count.fail || this.count.warining || this.count.concern) {
+        if (this.count.fail || this.count.warning || this.count.concern) {
           this.$router.push({ name: 'summary' })
         } else {
           this.$router.push({ name: 'thanks' })
@@ -226,8 +226,9 @@ export default Vue.extend({
 </script>
 
 <style scoped lang="scss">
-.modal__container {
+.container {
   position: absolute;
+  bottom: 0;
   z-index: 1;
   height: calc(100% - var(--header-height));
   width: 100%;

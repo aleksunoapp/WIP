@@ -37,7 +37,7 @@
                       'grey' : categoriesShownOnRoute[0].id === '5',
                     }"
                   >
-                    {{categoryCount(categoriesShownOnRoute[0].id)}}
+                    {{categoryServicesShownOnRoute(categoriesShownOnRoute[0].id).length}}
                   </span>
                   <span class="name">{{categoriesShownOnRoute[0].name}}</span>
                 </div>
@@ -83,7 +83,7 @@
                     'grey' : categoriesShownOnRoute[0].id === '5',
                   }"
                 >
-                  {{categoryCount(categoriesShownOnRoute[0].id)}}
+                  {{categoryServicesShownOnRoute(categoriesShownOnRoute[0].id).length}}
                 </span>
                 <div class="name">{{categoriesShownOnRoute[0].name}}</div>
               </div>
@@ -335,7 +335,6 @@ export default Vue.extend({
     ]),
     ...mapGetters([
       'categoriesShownOnRoute',
-      'categoryCount',
       'categoryServicesShownOnRoute',
       'categoryContainsHiglightedServices'
     ]),
@@ -524,6 +523,7 @@ export default Vue.extend({
 <style scoped lang="scss">
 .container {
   position: absolute;
+  bottom: 0;
   z-index: 5;
   height: calc(100% - var(--header-height));
   width: 100%;

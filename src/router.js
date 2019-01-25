@@ -54,6 +54,11 @@ export const router = new Router({
       component: () => import(/* webpackChunkName: "summary" */ './views/Summary.vue')
     },
     {
+      path: '/additional/summary',
+      name: 'additional-summary',
+      component: () => import(/* webpackChunkName: "summary" */ './views/Summary.vue')
+    },
+    {
       path: '/thank-you',
       name: 'thanks',
       component: () => import(/* webpackChunkName: "thanks" */ './views/Thanks.vue')

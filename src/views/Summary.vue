@@ -168,13 +168,23 @@ export default Vue.extend({
       return this.formatCurrency(this.$store.getters.total.service)
     },
     inspectionTotal () {
-      return this.formatCurrency(this.$store.getters.total.inspection)
+      if (this.$route.name === 'summary') {
+        return this.formatCurrency(this.$store.getters.total.inspection)
+      }
+      if (this.$route.name === 'additional-summary') {
+        return this.formatCurrency(this.$store.getters.total.additional)
+      }
     },
     tax () {
       return this.formatCurrency(this.$store.state.tax)
     },
     total () {
-      return this.formatCurrency(this.$store.getters.total.service + this.$store.getters.total.inspection + this.$store.state.tax)
+      if (this.$route.name === 'summary') {
+        return this.formatCurrency(this.$store.getters.total.service + this.$store.getters.total.inspection + this.$store.state.tax)
+      }
+      if (this.$route.name === 'additional-summary') {
+        return this.formatCurrency(this.$store.getters.total.service + this.$store.getters.total.additional + this.$store.state.tax)
+      }
     }
   },
   mixins: [formatCurrency, getServiceDisplayPrice],

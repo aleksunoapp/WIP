@@ -79,8 +79,9 @@ export default Vue.extend({
 <style scoped lang="scss">
 .container {
   position: absolute;
+  bottom: 0;
   z-index: 2;
-  height: 100%;
+  height: calc(100% - var(--header-height));
   width: 100%;
   overflow-y: hidden;
   pointer-events: none;

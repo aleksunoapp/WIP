@@ -9,7 +9,7 @@
             {{$t("total_estimate")}}
             <span class="bold">({{countTotal}})</span>
           </span>
-          <span class="price">{{formatCurrency(total.inspection)}}</span>
+          <span class="price">{{formatCurrency(total.additional)}}</span>
         </p>
         <nav class="categories">
           <div
@@ -33,7 +33,7 @@
                     'grey' : category.serviceCategoryType === 'CC',
                   }"
                 >
-                  {{categoryCount(category.id)}}
+                  {{categoryServicesShownOnRoute(category.id).length}}
                 </span>
                 <span class="name">{{category.name}}</span>
               </div>
@@ -82,7 +82,7 @@
                     'grey' : category.id === '5',
                   }"
                 >
-                  {{categoryCount(category.id)}}
+                  {{categoryServicesShownOnRoute(category.id).length}}
                 </span>
                 <div class="name">{{category.name}}</div>
               </div>
@@ -132,7 +132,6 @@ export default Vue.extend({
   computed: {
     ...mapGetters([
       'categoryServicesShownOnRoute',
-      'categoryCount',
       'categoryContainsHiglightedServices',
       'categoriesShownOnRoute',
       'waitServices',
@@ -182,7 +181,8 @@ export default Vue.extend({
       if (this.waitServices.length) {
         this.$router.push({name: 'wait'})
       } else {
-        this.$router.push({name: 'summary'})
+        this.getTax()
+        this.$router.push({name: 'additional-summary'})
       }
 
       if (this.$route.name === 'wait-services') {
