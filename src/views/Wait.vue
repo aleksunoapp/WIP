@@ -9,7 +9,7 @@
             <div class="border" />
             <div class="wrapper">
               <p class="text">{{$t('wait_there_are')}}</p>
-              <p class="text large"><span class="green">{{waitServices.length}}</span> {{$t('recommendations')}}</p>
+              <p class="text large"><span class="green">{{previouslyUnapprovedServices.length}}</span> {{$t('recommendations')}}</p>
               <p class="text">{{$t('pending_approval')}}</p>
             </div>
         </div>
@@ -17,7 +17,7 @@
           @click="$router.push({name: 'wait-services'})"
           class="button cta green"
         >
-          {{$tc("view_recommendations", waitServices.length)}}
+          {{$tc("view_recommendations", previouslyUnapprovedServices.length)}}
         </button>
       </main>
     </div>
@@ -35,7 +35,7 @@ export default Vue.extend({
     this.logEvent('Finished viewing wait page')
   },
   computed: {
-    ...mapGetters(['waitServices'])
+    ...mapGetters(['previouslyUnapprovedServices'])
   },
   methods: {
     ...mapMutations([

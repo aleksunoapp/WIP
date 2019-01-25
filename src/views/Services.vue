@@ -134,7 +134,7 @@ export default Vue.extend({
       'categoryServicesShownOnRoute',
       'categoryContainsHiglightedServices',
       'categoriesShownOnRoute',
-      'waitServices',
+      'previouslyUnapprovedServices',
       'total',
       'count',
       'highlightedServices'
@@ -203,7 +203,7 @@ export default Vue.extend({
         return
       }
 
-      if (this.waitServices.length) {
+      if (this.previouslyUnapprovedServices.length) {
         this.$router.push({name: 'wait'})
         return
       } else {

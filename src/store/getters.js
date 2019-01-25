@@ -1,9 +1,4 @@
-import router from '@/router.js'
-
 export const getters = {
-  categories: (state) => {
-    return state.categories
-  },
   categoriesShown: (state, getters) => {
     let categoriesShown = []
     for (const category of state.categories) {
@@ -36,7 +31,7 @@ export const getters = {
     }
     return getters.categoriesShown
   },
-  categoryName: (state, getters) => (id) => {
+  categoryName: (state) => (id) => {
     const category = state.categories.find((category) => category.id === id)
     return category ? category.name : ''
   },
@@ -251,18 +246,7 @@ export const getters = {
       additional: additionalTotal
     }
   },
-  unhighlightedUnselectedServices: (state, getters) => {
-    let count = 0
-    for (const category of getters.categoriesShown) {
-      for (const service of getters.categoryServices(category.id)) {
-        if (!service.isHighlighted && !service.isSelected) {
-          count++
-        }
-      }
-    }
-    return count
-  },
-  waitServices: (state, getters) => {
+  previouslyUnapprovedServices: (state, getters) => {
     const services = []
     for (const category of getters.categoriesShown) {
       for (const service of getters.categoryServices(category.id)) {
