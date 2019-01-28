@@ -106,7 +106,7 @@ export default Vue.extend({
         return this.$t('how_it_works')
       }
       if (
-        this.$route.name === 'glance' ||
+        this.$route.name === 'at-a-glance' ||
         this.$route.name === 'services' ||
         this.$route.name === 'additional' ||
         this.$route.name === 'additional-services' ||
