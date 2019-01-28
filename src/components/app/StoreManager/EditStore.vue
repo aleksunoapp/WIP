@@ -134,6 +134,8 @@
 													           value="CAD"></el-option>
 													<el-option label="USD"
 													           value="USD"></el-option>
+													<el-option label="NZD"
+													           value="NZD"></el-option>
 												</el-select>
 											</div>
 										</div>
