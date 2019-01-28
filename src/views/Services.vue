@@ -464,14 +464,11 @@ export default Vue.extend({
             background-color: var(--red);
           }
         }
-        @media (max-width: 991px) {
-          .cards {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height .2s ease-out;
-          }
+        .cards {
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height .2s ease-out;
         }
-        .cards {}
       }
       .category.open {
         .header {
