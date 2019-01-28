@@ -1,126 +1,124 @@
 <template>
-  <div class="container">
-    <div class="background">
-      <main class="contents">
-        <div class="card" id="summary">
-          <div
-            v-if="count.approved"
-            class="row"
-          >
-            <div class="previous">
-              <p class="item">
-                {{$t("previous")}}
-              </p>
-              <button
-                @click="previousExpanded = !previousExpanded"
-                class="toggle"
-              >
-                <img
-                  class="chevron"
-                  :class="{'open' : previousExpanded}"
-                  src="@/assets/images/chevron-down.svg"
-                  aria-hidden="true"
-                >
-              </button>
-            </div>
-            <p class="price">
-              {{serviceTotal}}
-            </p>
-          </div>
-          <transition-height>
-            <div class="list" v-if="previousExpanded">
-              <div class="row" v-for="service in categoryServices('4')" :key="service.id">
-                <p class="item">{{service.name}}</p>
-                <p class="price">{{getServiceDisplayPrice(service)}}</p>
-              </div>
-            </div>
-          </transition-height>
-          <div class="row bold">
-            <p class="item">
-              {{$t("estimate")}}
-            </p>
-            <p class="price">
-              {{inspectionTotal}}
-            </p>
-          </div>
-          <div class="row">
-            <p class="item">
-              {{$t("additional_taxes_and_fees")}}
-            </p>
-            <p class="price">
-              {{tax}}
-            </p>
-          </div>
-          <div class="divider"></div>
-          <div class="row total">
-            <p class="item">
-              {{$t("total_on_delivery")}}
-            </p>
-            <p class="price">
-              {{total}}
-            </p>
-          </div>
-        </div>
-        <div class="divider"></div>
+  <div class="background">
+    <main class="contents">
+      <div class="card" id="summary">
         <div
-          v-if="count.actionable"
-          class="signature"
+          v-if="count.approved"
+          class="row"
         >
-          <div class="row">
-            <p class="prompt">
-              {{$t("please_sign_below")}}
+          <div class="previous">
+            <p class="item">
+              {{$t("previous")}}
             </p>
             <button
-              class="sign"
-              @click="sign()"
-              @keyup.enter="sign()"
+              @click="previousExpanded = !previousExpanded"
+              class="toggle"
             >
-              {{$t("click_to_sign")}}
+              <img
+                class="chevron"
+                :class="{'open' : previousExpanded}"
+                src="@/assets/images/chevron-down.svg"
+                aria-hidden="true"
+              >
             </button>
           </div>
-          <div class="wrapper">
-            <canvas
-              class="panel"
-              ref="canvas"
-            >
-            </canvas>
-            <img src="@/assets/images/signature.svg" alt="sample signature" class="sample">
-          </div>
-          <input
-            type="checkbox"
-            id="acknowledgement"
-            v-model="accepted"
-            @click.stop
-          >
-          <label
-            for="acknowledgement"
-            class="checkbox"
-            @click.stop
-          >
-            <div class="box">
-              <img src="@/assets/images/check.svg" alt="check" class="check">
+          <p class="price">
+            {{serviceTotal}}
+          </p>
+        </div>
+        <transition-height>
+          <div class="list" v-if="previousExpanded">
+            <div class="row" v-for="service in categoryServices('4')" :key="service.id">
+              <p class="item">{{service.name}}</p>
+              <p class="price">{{getServiceDisplayPrice(service)}}</p>
             </div>
-            <p class="text">{{$t("i_acknowledge")}} <router-link :to="{name: 'terms-and-conditions'}" class="link">{{$t("terms_and_conditions")}}.</router-link></p>
-          </label>
+          </div>
+        </transition-height>
+        <div class="row bold">
+          <p class="item">
+            {{$t("estimate")}}
+          </p>
+          <p class="price">
+            {{inspectionTotal}}
+          </p>
         </div>
-        <div class="error">
-          <transition-height>
-            <p
-              v-if="error"
-              class="text"
-            >
-              {{$t("please_sign_in_and_accept")}}
-            </p>
-          </transition-height>
+        <div class="row">
+          <p class="item">
+            {{$t("additional_taxes_and_fees")}}
+          </p>
+          <p class="price">
+            {{tax}}
+          </p>
         </div>
-        <button
-          class="button cta green"
-          @click="approve()"
+        <div class="divider"></div>
+        <div class="row total">
+          <p class="item">
+            {{$t("total_on_delivery")}}
+          </p>
+          <p class="price">
+            {{total}}
+          </p>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div
+        v-if="count.actionable"
+        class="signature"
+      >
+        <div class="row">
+          <p class="prompt">
+            {{$t("please_sign_below")}}
+          </p>
+          <button
+            class="sign"
+            @click="sign()"
+            @keyup.enter="sign()"
+          >
+            {{$t("click_to_sign")}}
+          </button>
+        </div>
+        <div class="wrapper">
+          <canvas
+            class="panel"
+            ref="canvas"
+          >
+          </canvas>
+          <img src="@/assets/images/signature.svg" alt="sample signature" class="sample">
+        </div>
+        <input
+          type="checkbox"
+          id="acknowledgement"
+          v-model="accepted"
+          @click.stop
         >
-          {{count.actionable ? $t("approve") : $t("next")}}
-        </button>
-      </main>
-    </div>
+        <label
+          for="acknowledgement"
+          class="checkbox"
+          @click.stop
+        >
+          <div class="box">
+            <img src="@/assets/images/check.svg" alt="check" class="check">
+          </div>
+          <p class="text">{{$t("i_acknowledge")}} <router-link :to="{name: 'terms-and-conditions'}" class="link">{{$t("terms_and_conditions")}}.</router-link></p>
+        </label>
+      </div>
+      <div class="error">
+        <transition-height>
+          <p
+            v-if="error"
+            class="text"
+          >
+            {{$t("please_sign_in_and_accept")}}
+          </p>
+        </transition-height>
+      </div>
+      <button
+        class="button cta green"
+        @click="approve()"
+      >
+        {{count.actionable ? $t("approve") : $t("next")}}
+      </button>
+    </main>
   </div>
 </template>
 
@@ -274,68 +272,58 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.container {
+.background {
   position: relative;
-  height: calc(100% - var(--header-height));
-  overflow: auto;
-  .background {
-    min-height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: var(--white);
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--white);
+  @media (min-width: 992px) {
+    background-color: var(--grey-light-background);
+  }
+  .contents {
+    max-width: 992px;
     @media (min-width: 992px) {
-      background-color: var(--grey-light-background);
+      padding: 1rem;
     }
-    .contents {
-      max-width: 992px;
-      @media (min-width: 992px) {
-        padding: 1rem;
-      }
-      .card {
-        padding: 1rem;
-        background-color: var(--white);
-        .row {
+    .card {
+      padding: 1rem;
+      background-color: var(--white);
+      .row {
+        display: flex;
+        justify-content: space-between;
+        &.total {
+          color: var(--blue);
+        }
+        .previous {
           display: flex;
-          justify-content: space-between;
-          &.total {
-            color: var(--blue);
-          }
-          .previous {
+          align-items: center;
+          .toggle {
             display: flex;
+            justify-content: center;
             align-items: center;
-            .toggle {
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              border: none;
-              padding: 1.5rem 1rem;
-              background-color: var(--white);
-              .chevron {
+            border: none;
+            padding: 1.5rem 1rem;
+            background-color: var(--white);
+            .chevron {
+              transition: transform .2s ease-in-out;
+              max-width: 2rem;
+              &.open {
+                transform: rotate(180deg);
                 transition: transform .2s ease-in-out;
-                max-width: 2rem;
-                &.open {
-                  transform: rotate(180deg);
-                  transition: transform .2s ease-in-out;
-                }
               }
             }
           }
-          .price {
-            min-width: 100px;
-            text-align: right;
-          }
         }
-        .list {
-          background-color: var(--grey-light-background);
-          padding: 1rem;
+        .price {
+          min-width: 100px;
+          text-align: right;
         }
-        .divider {
-          width: 100%;
-          height: 2px;
-          margin: 1rem 0;
-          background-color: var(--grey-light-background)
-        }
+      }
+      .list {
+        background-color: var(--grey-light-background);
+        padding: 1rem;
       }
       .divider {
         width: 100%;
@@ -343,95 +331,101 @@ export default Vue.extend({
         margin: 1rem 0;
         background-color: var(--grey-light-background)
       }
-      .signature {
-        padding: 0 1rem;
+    }
+    .divider {
+      width: 100%;
+      height: 2px;
+      margin: 1rem 0;
+      background-color: var(--grey-light-background)
+    }
+    .signature {
+      padding: 0 1rem;
+      @media (min-width: 992px) {
+        padding: 0;
+      }
+      .row {
+        display: flex;
+        justify-content: space-between;
         @media (min-width: 992px) {
-          padding: 0;
+          background-color: var(--grey-light-background);
         }
-        .row {
-          display: flex;
-          justify-content: space-between;
+        .prompt {
+          font-size: 1.2rem;
+          text-transform: uppercase;
+        }
+        .sign {
+          border: none;
+          padding: 1rem;
+          background-color: var(--white);
+          text-transform: uppercase;
+          font-weight: 700;
           @media (min-width: 992px) {
             background-color: var(--grey-light-background);
           }
-          .prompt {
-            font-size: 1.2rem;
-            text-transform: uppercase;
-          }
-          .sign {
-            border: none;
-            padding: 1rem;
-            background-color: var(--white);
-            text-transform: uppercase;
-            font-weight: 700;
-            @media (min-width: 992px) {
-              background-color: var(--grey-light-background);
-            }
-          }
-        }
-        .wrapper {
-          position: relative;
-          .panel {
-            width: 100%;
-            height: 200px;
-          }
-          .sample {
-            position: absolute;
-            bottom: 1rem;
-            left: 1rem;
-            pointer-events: none;
-          }
         }
       }
-      input {
-        display: none;
+      .wrapper {
+        position: relative;
+        .panel {
+          width: 100%;
+          height: 200px;
+        }
+        .sample {
+          position: absolute;
+          bottom: 1rem;
+          left: 1rem;
+          pointer-events: none;
+        }
       }
-      .checkbox {
+    }
+    input {
+      display: none;
+    }
+    .checkbox {
+      display: inline-flex;
+      align-items: center;
+      padding: 1rem 0;
+      transition: all .2s ease-in;
+      .box {
         display: inline-flex;
+        justify-content: center;
         align-items: center;
-        padding: 1rem 0;
-        transition: all .2s ease-in;
-        .box {
-          display: inline-flex;
-          justify-content: center;
-          align-items: center;
-          width: 2.5rem;
-          height: 2.5rem;
-          margin-right: 1rem;
-          border-radius: 3px;
-          background-color: var(--grey-medium-background);
-          .check {
-            max-height: 100%;
-            max-width: 100%;
-            padding: 0.3rem;
-            opacity: 0;
-          }
-        }
-        .text {
-          flex-shrink: 2;
-          margin: 0;
-          .link {
-            display: inline;
-            text-decoration: none;
-            white-space: nowrap;
-            color: var(--blue);
-          }
+        width: 2.5rem;
+        height: 2.5rem;
+        margin-right: 1rem;
+        border-radius: 3px;
+        background-color: var(--grey-medium-background);
+        .check {
+          max-height: 100%;
+          max-width: 100%;
+          padding: 0.3rem;
+          opacity: 0;
         }
       }
-      input:checked ~ .checkbox {
-        .box {
-          background-color: var(--green);
-          .check {
-            opacity: 1;
-          }
+      .text {
+        flex-shrink: 2;
+        margin: 0;
+        .link {
+          display: inline;
+          text-decoration: none;
+          white-space: nowrap;
+          color: var(--blue);
         }
       }
-      .error {
-        .text {
-          margin: 0;
-          text-align: center;
-          color: var(--red);
+    }
+    input:checked ~ .checkbox {
+      .box {
+        background-color: var(--green);
+        .check {
+          opacity: 1;
         }
+      }
+    }
+    .error {
+      .text {
+        margin: 0;
+        text-align: center;
+        color: var(--red);
       }
     }
   }

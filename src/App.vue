@@ -7,9 +7,7 @@
     <help-overlay />
 
     <app-header />
-    <transition name="fade" mode="out-in">
-      <router-view ref="route" tabindex="-1"/>
-    </transition>
+    <route-container />
   </div>
 </template>
 
@@ -21,7 +19,7 @@ import Service from '@/components/Service.vue'
 import Reason from '@/components/Reason.vue'
 import HelpOverlay from '@/components/HelpOverlay.vue'
 import ErrorOverlay from '@/components/ErrorOverlay.vue'
-import {mapMutations} from 'vuex'
+import RouteContainer from '@/components/RouteContainer.vue'
 
 export const App = Vue.extend({
   components: {
@@ -30,18 +28,14 @@ export const App = Vue.extend({
     Service,
     Reason,
     HelpOverlay,
-    ErrorOverlay
+    ErrorOverlay,
+    RouteContainer
   },
-  mounted () {
-    this.setFocusable({name: 'route', node: this.$refs.route.$el})
-  },
+
   errorCaptured (err, vm, info = '') {
     this.setError(err, info)
   },
   methods: {
-    ...mapMutations([
-      'setFocusable'
-    ]),
     setError (e, i) {
       // eslint-disable-next-line
       console.log({ e }, { i })

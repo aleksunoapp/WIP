@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="container"
-  >
+  <div class="background">
     <main class="contents">
       <image-container
         class="logo"
@@ -114,9 +112,8 @@ export default Vue.extend({
 </script>
 
 <style scoped lang="scss">
-.container {
-  height: calc(100% - 6rem);
-  overflow: auto;
+.background {
+  min-height: 100%;
   background-color: var(--grey-light-background);
   .contents {
     width: 100%;

@@ -1,80 +1,76 @@
 <template>
-  <div
-    class="container"
-  >
-    <div class="background">
-      <main class="contents">
-        <p>{{$t("you_have")}}</p>
-        <h1>{{totalCount}} {{$tc("recommendations", totalCount)}}</h1>
-        <p>{{$tc("that_need_your_attention", totalCount)}}</p>
+  <div class="background">
+    <main class="contents">
+      <p>{{$t("you_have")}}</p>
+      <h1>{{totalCount}} {{$tc("recommendations", totalCount)}}</h1>
+      <p>{{$tc("that_need_your_attention", totalCount)}}</p>
 
-        <figure class="card">
-          <img
-            class="avatar"
-            :src="advisor.advisorImageUrl"
-          >
-          <figcaption>
-            <span>
-              {{$t("your_service_consultant")}}
-            </span>
-            <span
-              class="consultant__name"
-            >
-              {{advisor.advisorName}}
-            </span>
-          </figcaption>
-        </figure>
-
-        <template
-          v-if="timer.total > 0"
+      <figure class="card">
+        <img
+          class="avatar"
+          :src="advisor.advisorImageUrl"
         >
-          <p>{{$t("select_your_services_in")}}</p>
-          <p
-            class="time"
-            v-if="timer.total"
+        <figcaption>
+          <span>
+            {{$t("your_service_consultant")}}
+          </span>
+          <span
+            class="consultant__name"
           >
-            <span
-              class="unit"
-            v-if="timer.days">
-              <span class="number">{{timer.days}}</span>d
-            </span>
-            <span
-              class="unit"
-            >
-              <span class="number">{{timer.hours}}</span>h
-            </span>
-            <span
-              class="unit"
-            >
-              <span class="number">{{timer.minutes}}</span>m
-            </span>
-            <span
-              class="unit"
-            >
-              <span class="number">{{timer.seconds}}</span>s
-            </span>
-          </p>
-          <p>{{$t("to_have_your_vehicle_ready_by")}}</p>
+            {{advisor.advisorName}}
+          </span>
+        </figcaption>
+      </figure>
 
-          <div class="card wide">
-            <div class="clock__background">
-              <img class="clock" src="@/assets/images/clock.svg" aria-hidden="true">
-            </div>
-            <p
-              class="pickup__time"
-            >
-              {{getPickupTime()}}
-            </p>
+      <template
+        v-if="timer.total > 0"
+      >
+        <p>{{$t("select_your_services_in")}}</p>
+        <p
+          class="time"
+          v-if="timer.total"
+        >
+          <span
+            class="unit"
+          v-if="timer.days">
+            <span class="number">{{timer.days}}</span>d
+          </span>
+          <span
+            class="unit"
+          >
+            <span class="number">{{timer.hours}}</span>h
+          </span>
+          <span
+            class="unit"
+          >
+            <span class="number">{{timer.minutes}}</span>m
+          </span>
+          <span
+            class="unit"
+          >
+            <span class="number">{{timer.seconds}}</span>s
+          </span>
+        </p>
+        <p>{{$t("to_have_your_vehicle_ready_by")}}</p>
+
+        <div class="card wide">
+          <div class="clock__background">
+            <img class="clock" src="@/assets/images/clock.svg" aria-hidden="true">
           </div>
-        </template>
-        <button
-          class="button cta"
-          @click="$router.push({name: 'services'})"
-        >
-          {{$tc("view_recommendations", totalCount)}}
-        </button>
-      </main>
-    </div>
+          <p
+            class="pickup__time"
+          >
+            {{getPickupTime()}}
+          </p>
+        </div>
+      </template>
+      <button
+        class="button cta"
+        @click="$router.push({name: 'services'})"
+      >
+        {{$tc("view_recommendations", totalCount)}}
+      </button>
+    </main>
   </div>
 </template>
 
@@ -160,75 +156,70 @@ export default Vue.extend({
 </script>
 
 <style scoped lang="scss">
-.container {
-  height: calc(100% - var(--header-height));
-  overflow: auto;
-  .background {
+.background {
+  width: 100%;
+  min-height: 100%;
+  background-color: var(--grey-light-background);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .contents {
     width: 100%;
-    min-height: 100%;
-    background-color: var(--grey-light-background);
+    max-width: 350px;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
-    .contents {
-      width: 100%;
-      max-width: 350px;
+    margin: 2rem 0rem;
+    @media (min-width: 768px) {
+      margin: 5rem 1rem;
+    }
+    .dealer__name {
+      margin: 0 1rem;
+    }
+    .card {
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      margin: 2rem 0rem;
-      @media (min-width: 768px) {
-        margin: 5rem 1rem;
-      }
-      .dealer__name {
-        margin: 0 1rem;
-      }
-      .card {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 1rem;
-        background-color: var(--white);
-        border-radius: 3px;
-        box-shadow: var(--shadow);
-      }
-      .card.wide {
-        width: 100%;
-      }
-      .avatar {
-        max-width: 70px;
-        max-height: 70px;
-        margin-right: 1rem;
-        border-radius: 50%;
-      }
-      .consultant__name {
-        display: block;
-        font-weight: 700;
-      }
+      padding: 1rem;
+      background-color: var(--white);
+      border-radius: 3px;
+      box-shadow: var(--shadow);
+    }
+    .card.wide {
+      width: 100%;
+    }
+    .avatar {
+      max-width: 70px;
+      max-height: 70px;
+      margin-right: 1rem;
+      border-radius: 50%;
+    }
+    .consultant__name {
+      display: block;
+      font-weight: 700;
+    }
 
-      .time {
-        font-weight: 700;
-        .number {
-          color: var(--blue);
-        }
+    .time {
+      font-weight: 700;
+      .number {
+        color: var(--blue);
       }
+    }
 
-      .clock__background {
-        margin-right: 2rem;
-        padding: 1rem;
-        border-radius: 50%;
-        background-color: var(--grey-light-background);
-      }
-      .clock {
-        max-width: 2rem;
-        max-height: 2rem;
-      }
-      .pickup__time {
-        font-weight: 700;
-      }
+    .clock__background {
+      margin-right: 2rem;
+      padding: 1rem;
+      border-radius: 50%;
+      background-color: var(--grey-light-background);
+    }
+    .clock {
+      max-width: 2rem;
+      max-height: 2rem;
+    }
+    .pickup__time {
+      font-weight: 700;
     }
   }
 }
-
 </style>
