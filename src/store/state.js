@@ -29,6 +29,10 @@ export const state = {
   drawer: false,
   error: '',
   expired: false,
+  focusable: {
+    list: null,
+    route: null
+  },
   help: false,
   inspectionReportUrl: '',
   languages: [
@@ -37,7 +41,6 @@ export const state = {
       name: 'English'
     }
   ],
-  listScrollContainer: null,
   loading: {
     getMetadata: false,
     getTax: false,

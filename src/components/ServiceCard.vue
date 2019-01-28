@@ -5,9 +5,10 @@
     <div
       class="contents"
       @click="openService(service)"
-      @keyup.enter="openService(service)"
+      @keyup.enter="logger($event, service)"
       tabindex="0"
       role="button"
+      ref="card"
     >
       <div class="left">
         <img :src="service.imageUrl" class="image">
@@ -45,6 +46,7 @@
               class="approve"
               v-model="service.isSelected"
               @change="checkboxToggled($event, service)"
+              ref="input"
               @click.stop
             >
             <label
@@ -52,6 +54,7 @@
               :for="service.id"
               class="checkbox"
               @click.stop
+              @keyup.enter="$refs.input.click()"
             >
               {{$t("approve")}}
               <div class="box">
@@ -88,17 +91,22 @@ export default {
     getServiceDisplayPrice
   ],
   methods: {
+    logger(a, b) {
+      console.log({a, b})
+    },
     ...mapActions([
       'viewService'
     ]),
     ...mapMutations([
       'setService',
       'openReason',
-      'logEvent'
+      'logEvent',
+      'setFocusable'
     ]),
     openService (service) {
       if (!(typeof service.serviceCategoryType === 'string' && service.serviceCategoryType.toLowerCase() === 'pass')) {
         this.viewService(service)
+        this.setFocusable({name: 'card', node: this.$refs.card})
       }
     },
     alt (service) {

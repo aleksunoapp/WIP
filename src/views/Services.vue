@@ -161,7 +161,7 @@ export default Vue.extend({
   },
   mounted () {
     this.logEvent('Started viewing inspection page')
-    this.setListScrollContainer(this.$refs.view)
+    this.setFocusable({name: 'list', node: this.$refs.view})
   },
   beforeDestroy () {
     this.logEvent('Finished viewing inspection page')
@@ -219,7 +219,7 @@ export default Vue.extend({
       'setActiveCategory',
       'logEvent',
       'setCategoryExpanded',
-      'setListScrollContainer'
+      'setFocusable'
     ]),
     ...mapActions({
       viewService: 'viewService',

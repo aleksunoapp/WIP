@@ -105,5 +105,10 @@ router.beforeEach((to, from, next) => {
     }
   }
 })
+router.afterEach((to, from, next) => {
+  if (store.state.focusable.route) {
+    store.state.focusable.route.focus()
+  }
+})
 
 export default router

@@ -2,13 +2,13 @@
   <aside
   class="container"
   :class="{'open' : modal}"
-  ref="container"
+  ref="service"
   tabindex="0"
 >
   <transition name="fade">
     <div
     v-if="modal"
-    @click="closeService"
+    @click.stop="closeService"
     class="overlay"
   >
       <transition name="fade">
@@ -24,7 +24,8 @@
               {{headerText}}
             </p>
             <button
-              @click="closeService"
+              @click.stop="closeService"
+              @keyup.enter.prevent
               class="close"
             >
               <div class="top"></div>
@@ -183,7 +184,11 @@ export default Vue.extend({
   watch: {
     modal (open) {
       if (open) {
-        this.$refs.container.focus()
+        this.setFocusable({name: 'service', node: this.$refs.service.$el})
+        this.$refs.service.focus()
+      } else {
+        this.setFocusable({name: 'service', node: null})
+        this.$store.state.focusable.card.focus()
       }
     }
   },
@@ -194,7 +199,8 @@ export default Vue.extend({
       'openReason',
       'selectService',
       'unselectService',
-      'logEvent'
+      'logEvent',
+      'setFocusable'
     ]),
     ...mapActions([
       'viewService',
