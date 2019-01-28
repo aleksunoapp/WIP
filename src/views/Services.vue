@@ -159,8 +159,9 @@ export default Vue.extend({
       }
     }
   },
-  created () {
+  mounted () {
     this.logEvent('Started viewing inspection page')
+    this.setListScrollContainer(this.$refs.view)
   },
   beforeDestroy () {
     this.logEvent('Finished viewing inspection page')
@@ -217,7 +218,8 @@ export default Vue.extend({
       'openReason',
       'setActiveCategory',
       'logEvent',
-      'setCategoryExpanded'
+      'setCategoryExpanded',
+      'setListScrollContainer'
     ]),
     ...mapActions({
       viewService: 'viewService',
@@ -322,40 +324,40 @@ export default Vue.extend({
     .category > .left {
       display: flex;
       align-items: center;
+      .count {
+        width: 4rem;
+        height: 4rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0.5rem 0.5rem 0.5rem 1.5rem;
+        padding: 1rem;
+        border-radius: 35%;
+        font-family: 'Futura Heavy';
+        color: var(--white);
+        box-shadow: var(--shadow);
+        &.grey {
+          background-color: var(--grey-dark-background);
+        }
+        &.red {
+          background-color: var(--red);
+        }
+        &.yellow {
+          background-color: var(--yellow);
+        }
+        &.green {
+          background-color: var(--green);
+        }
+      }
+      .name {
+        margin-left: 1rem;
+        text-transform: uppercase;
+      }
     }
     .category > .right {
       display: flex;
       justify-content: flex-end;
       align-items: center;
-    }
-    .count {
-      width: 4rem;
-      height: 4rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 0.5rem 0.5rem 0.5rem 1.5rem;
-      padding: 1rem;
-      border-radius: 35%;
-      font-family: 'Futura Heavy';
-      color: var(--white);
-      box-shadow: var(--shadow);
-      &.grey {
-        background-color: var(--grey-dark-background);
-      }
-      &.red {
-        background-color: var(--red);
-      }
-      &.yellow {
-        background-color: var(--yellow);
-      }
-      &.green {
-        background-color: var(--green);
-      }
-    }
-    .name {
-      margin-left: 1rem;
-      text-transform: uppercase;
     }
     .badge {
       margin: 0.5rem 2rem 0.5rem 0.5rem;
@@ -436,11 +438,6 @@ export default Vue.extend({
               transition: transform .2s ease-in-out;
               max-width: 2rem;
             }
-          }
-        }
-        @media (min-width: 992px) {
-          .header {
-            display: none;
           }
         }
         .header.grey {

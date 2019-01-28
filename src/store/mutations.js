@@ -133,6 +133,9 @@ export const mutations = {
   },
   setReadyBy (state, deadline) {
     state.deadlines.readyBy = new Date(deadline)
+  },
+  setListScrollContainer (state, node) {
+    state.listScrollContainer = node
   }
 }
 

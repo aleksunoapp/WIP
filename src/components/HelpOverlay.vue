@@ -331,7 +331,8 @@ export default Vue.extend({
   computed: {
     ...mapState([
       'help',
-      'service'
+      'service',
+      'listScrollContainer'
     ]),
     ...mapGetters([
       'categoriesShownOnRoute',
@@ -426,6 +427,18 @@ export default Vue.extend({
       }
 
       if (page === 1) {
+        if (this.listScrollContainer) {
+          const category = this.listScrollContainer.querySelector('.category')
+          if (category) {
+            category.classList.add('open')
+          }
+          this.listScrollContainer.scrollTo({
+              left: 0,
+              top: 0,
+              behavior: 'smooth'
+            })
+        }
+
         this.$router.replace({ name: 'services' })
 
         if (window.innerWidth > 992) {
@@ -460,6 +473,18 @@ export default Vue.extend({
         this.page = page
       }
       if (page === 2) {
+        if (this.listScrollContainer) {
+          const category = this.listScrollContainer.querySelector('.category')
+          if (category) {
+            category.classList.add('open')
+          }
+          this.listScrollContainer.scrollTo({
+              left: 0,
+              top: 0,
+              behavior: 'smooth'
+            })
+        }
+
         const input = document.querySelector('input[type="checkbox"]')
         const label = document.querySelector('.checkbox')
 
@@ -578,6 +603,9 @@ export default Vue.extend({
             font-family: 'Futura Heavy';
             color: var(--white);
             box-shadow: var(--shadow);
+          }
+          .name {
+            text-transform: uppercase;
           }
         }
         .toggle {
@@ -721,6 +749,7 @@ export default Vue.extend({
           }
           .name {
             margin-left: 1rem;
+            text-transform: uppercase;
           }
           .badge {
             margin: 0.5rem 2rem 0.5rem 0.5rem;

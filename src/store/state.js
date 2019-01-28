@@ -37,6 +37,7 @@ export const state = {
       name: 'English'
     }
   ],
+  listScrollContainer: null,
   loading: {
     getMetadata: false,
     getTax: false,

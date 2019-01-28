@@ -44,23 +44,15 @@
             <button
               v-if="$route.name === 'services'"
               class="help"
-              @click="toggleHelp()"
+              @click="openHelp()"
+              :disabled="help"
               aria-label="help"
             >
-              <transition name="fade">
-                <img
-                  v-if="help"
-                  class="image"
-                  src="@/assets/images/cross.svg"
-                  aria-hidden="true"
-                >
-                <img
-                  v-else
-                  class="image"
-                  src="@/assets/images/question-mark.svg"
-                  aria-hidden="true"
-                >
-              </transition>
+              <img
+                class="image"
+                src="@/assets/images/question-mark.svg"
+                aria-hidden="true"
+              >
             </button>
           </transition>
         </div>
@@ -98,9 +90,6 @@ export default Vue.extend({
     }
   },
   methods: {
-    toggleHelp () {
-      this.help ? this.closeHelp() : this.openHelp()
-    },
     text () {
       if (this.$route.name === 'tutorial') {
         return this.$t('how_it_works')

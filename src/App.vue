@@ -60,6 +60,8 @@ export default App
 * {
   box-sizing: border-box;
   outline: none;
+  max-width: 100%;
+  overflow-wrap: break-word;
 
   font-family: 'Futura Book';
   -webkit-font-smoothing: auto;

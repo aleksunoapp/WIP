@@ -7,9 +7,6 @@
 - Additional Flow, with some previously unapproved services: services with `isHighlighted: true` are shown first, followed by services with `isHighlighted: false, isSelected: false`
 
 ## To-do
-- glance header
-- help: scroll to top, uncollapse 1st, skip pages 1-2 if no recommendations, check X on each page
-- unhide headers in desktop
 - break long strings
 - a11y: service, reason, drawer, help, error
 - multiple images
