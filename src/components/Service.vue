@@ -2,6 +2,8 @@
   <aside
   class="container"
   :class="{'open' : modal}"
+  ref="container"
+  tabindex="0"
 >
   <transition name="fade">
     <div
@@ -77,6 +79,7 @@
             <button
               @click="reject()"
               class="button skip"
+              @keyup.tab="$refs.container.focus()"
             >
               {{$t("not_today")}}
             </button>
@@ -94,10 +97,6 @@ import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import { formatCurrency } from '@/mixins.js'
 
 export default Vue.extend({
-  data: () => ({
-    open: false
-  }),
-
   computed: {
     ...mapState([
       'customerConcernsLabel',
@@ -179,6 +178,13 @@ export default Vue.extend({
         return this.service.serviceAdvisorComments
       }
       return ''
+    }
+  },
+  watch: {
+    modal (open) {
+      if (open) {
+        this.$refs.container.focus()
+      }
     }
   },
   mixins: [formatCurrency],
