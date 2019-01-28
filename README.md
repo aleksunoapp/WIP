@@ -1,11 +1,10 @@
 # DMPI
 
 ## Flows:
-- Original Flow: https://dmpi2.netlify.com/#/login/3d487dae-3bf6-4871-8857-327445bc7168
-- Original Flow, with no new recommendations: https://dmpi2.netlify.com/#/login/545ee449-c47d-4700-9842-fe9f68a8a268
-- Additional Flow, with no previously unselected services: https://dmpi2.netlify.com/#/login/fb27e730-fb55-44f1-8791-d9f41b960c95
-- Additional Flow, with some previously unselected services: https://dmpi2.netlify.com/#/login/b2c8de2c-0de5-406b-ab9b-d471577fb223
-
+- Original: no services with `isHighlighted: true`
+- Original empty: services array is empty
+- Additional with no previously unapproved services: no services with `isSelected: false`, some (or all) services with `isHighlighted: true` and only these are shown
+- Additional Flow, with some previously unapproved services: services with `isHighlighted: true` are shown first, followed by services with `isHighlighted: false, isSelected: false`
 
 ## To-do
 - glance header
