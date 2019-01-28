@@ -1,21 +1,18 @@
 # DMPI
 
-## Flows:
-- Original: no services with `isHighlighted: true`
-- Original empty: services array is empty
-- Additional with no previously unapproved services: no services with `isSelected: false`, some (or all) services with `isHighlighted: true` and only these are shown
-- Additional Flow, with some previously unapproved services: services with `isHighlighted: true` are shown first, followed by services with `isHighlighted: false, isSelected: false`
-
 ## To-do
-- break long strings
 - a11y: service, reason, drawer, help, error
-- multiple images
-- scroll past Confirm button 2h
 
 ## Project notes
 
 ### Resources
 [Designs (Dropbox)](https://www.dropbox.com/sh/dy34i2m7is072bx/AACLWvABQESnNiwCz1pkf0CFa?dl=0)
+
+### Flows:
+- Original: no services with `isHighlighted: true`
+- Original empty: services array is empty
+- Additional with no previously unapproved services: no services with `isSelected: false`, some (or all) services with `isHighlighted: true` and only these are shown
+- Additional Flow, with some previously unapproved services: services with `isHighlighted: true` are shown first, followed by services with `isHighlighted: false, isSelected: false`
 
 ### Data
 Recommended services, grouped into categories by urgency and approval status. `service`s with a `parentServiceId` are treated as `subService`s of their parent and displayed instead of the parent.
