@@ -30,11 +30,13 @@ export const getServiceDisplayPrice = {
         if (service.laborMatrixPayment === 'NA' || service.laborMatrixPayment === 'None') {
           return this.formatCurrency(service.price)
         } else {
-          return service.laborMatrixPaymentTranslation || ''
+          return service.laborMatrixPaymentTranslations || ''
         }
       } else if (service.price === 0) {
         return this.$t('free')
-      } else return this.formatCurrency(service.price)
+      } else {
+        return this.formatCurrency(service.price)
+      }
     }
   }
 }
