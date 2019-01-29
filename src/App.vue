@@ -1,10 +1,7 @@
 <template>
   <div id="dmpi">
-    <service />
-    <reason />
     <drawer />
     <error-overlay />
-    <help-overlay />
 
     <app-header />
     <route-container />
@@ -15,9 +12,6 @@
 import Vue from 'vue'
 import AppHeader from '@/components/AppHeader.vue'
 import Drawer from '@/components/Drawer.vue'
-import Service from '@/components/Service.vue'
-import Reason from '@/components/Reason.vue'
-import HelpOverlay from '@/components/HelpOverlay.vue'
 import ErrorOverlay from '@/components/ErrorOverlay.vue'
 import RouteContainer from '@/components/RouteContainer.vue'
 
@@ -25,9 +19,6 @@ export const App = Vue.extend({
   components: {
     AppHeader,
     Drawer,
-    Service,
-    Reason,
-    HelpOverlay,
     ErrorOverlay,
     RouteContainer
   },
