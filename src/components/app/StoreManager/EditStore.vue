@@ -166,7 +166,7 @@
 												<input type="text"
 												       class="form-control input-sm edited"
 												       id="form_control_11"
-												       v-model="maskedPhone">
+												       v-model="storeToBeEdited.phone">
 												<label for="form_control_11">Store Phone Number</label>
 											</div>
 											<div class="form-group form-md-line-input form-md-floating-label">
@@ -1001,31 +1001,6 @@ export default {
 		}
 	},
 	computed: {
-		maskedPhone: {
-			set (value) {
-				this.storeToBeEdited.phone = value.replace(/\D/g, '')
-			},
-			get () {
-				if (String(this.storeToBeEdited.phone).length === 0) {
-					return ''
-				} else {
-					let formatted = String(this.storeToBeEdited.phone).split('')
-					if (formatted.length > 0) {
-						formatted.splice(0, 0, '(')
-					}
-					if (formatted.length > 4) {
-						formatted.splice(4, 0, ') ')
-					}
-					if (formatted.length > 8) {
-						formatted.splice(8, 0, '-')
-					}
-					if (formatted.length > 13) {
-						formatted.splice(13, 0, '-')
-					}
-					return formatted.join('')
-				}
-			}
-		},
 		maskedFax: {
 			set (value) {
 				this.storeToBeEdited.fax = value.replace(/\D/g, '')
@@ -1617,8 +1592,8 @@ export default {
 					reject('Country code cannot be blank')
 				} else if (!editStoreVue.storeToBeEdited.postal_code.length) {
 					reject('Store postal code cannot be blank')
-				} else if (editStoreVue.storeToBeEdited.phone.length < 10) {
-					reject('Store phone should have at least 10 digits')
+				} else if (!editStoreVue.storeToBeEdited.phone) {
+					reject('Store phone cannot be blank')
 				} else if (
 					editStoreVue.storeToBeEdited.fax &&
 					editStoreVue.storeToBeEdited.fax.length < 10
@@ -1653,10 +1628,6 @@ export default {
 				.validateStoreInformation()
 				.then(response => {
 					editStoreVue.updatingStoreInfo = true
-					editStoreVue.storeToBeEdited.phone = editStoreVue.storeToBeEdited.phone.replace(
-						/[^\d]/g,
-						''
-					)
 					editStoreVue.storeToBeEdited.fax = editStoreVue.storeToBeEdited.fax.replace(
 						/[^\d]/g,
 						''

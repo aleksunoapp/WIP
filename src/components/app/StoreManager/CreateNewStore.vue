@@ -215,7 +215,7 @@
 									<input type="text"
 									       class="form-control input-sm"
 									       id="form_control_10"
-									       v-model="maskedPhone">
+									       v-model="newStore.phone">
 									<label for="form_control_10">Store Phone Number</label>
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
@@ -909,31 +909,6 @@ export default {
 		}
 	},
 	computed: {
-		maskedPhone: {
-			set (value) {
-				this.newStore.phone = value.replace(/\D/g, '')
-			},
-			get () {
-				if (String(this.newStore.phone).length === 0) {
-					return ''
-				} else {
-					let formatted = String(this.newStore.phone).split('')
-					if (formatted.length > 0) {
-						formatted.splice(0, 0, '(')
-					}
-					if (formatted.length > 4) {
-						formatted.splice(4, 0, ') ')
-					}
-					if (formatted.length > 8) {
-						formatted.splice(8, 0, '-')
-					}
-					if (formatted.length > 13) {
-						formatted.splice(13, 0, '-')
-					}
-					return formatted.join('')
-				}
-			}
-		},
 		maskedFax: {
 			set (value) {
 				this.newStore.fax = value.replace(/\D/g, '')
@@ -1306,8 +1281,8 @@ export default {
 					reject('Store display name cannot be blank')
 				} else if (createStoreVue.newStore.internal_id === null) {
 					reject('Store internal id cannot be blank')
-				} else if (createStoreVue.newStore.phone.length < 10) {
-					reject('Store phone number should have at least 10 digits')
+				} else if (!createStoreVue.newStore.phone.length) {
+					reject('Store phone number cannot be blank')
 				} else if (
 					createStoreVue.newStore.fax &&
 					createStoreVue.newStore.fax.length < 10
@@ -1337,7 +1312,6 @@ export default {
 					let payload = {
 						...createStoreVue.newStore
 					}
-					payload.phone = createStoreVue.newStore.phone.replace(/[^\d]/g, '')
 					payload.fax = createStoreVue.newStore.fax.replace(/[^\d]/g, '')
 					if (!payload.fax) {
 						payload.fax = '0000000000'
