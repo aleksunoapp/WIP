@@ -222,7 +222,7 @@
 									<input type="text"
 									       class="form-control input-sm"
 									       id="form_control_11"
-									       v-model="maskedFax">
+									       v-model="newStore.fax">
 									<label for="form_control_11">Store Fax Number (optional)</label>
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
@@ -908,33 +908,6 @@ export default {
 			timezones: []
 		}
 	},
-	computed: {
-		maskedFax: {
-			set (value) {
-				this.newStore.fax = value.replace(/\D/g, '')
-			},
-			get () {
-				if (String(this.newStore.fax).length === 0) {
-					return ''
-				} else {
-					let formatted = String(this.newStore.fax).split('')
-					if (formatted.length > 0) {
-						formatted.splice(0, 0, '(')
-					}
-					if (formatted.length > 4) {
-						formatted.splice(4, 0, ') ')
-					}
-					if (formatted.length > 8) {
-						formatted.splice(8, 0, '-')
-					}
-					if (formatted.length > 13) {
-						formatted.splice(13, 0, '-')
-					}
-					return formatted.join('')
-				}
-			}
-		}
-	},
 	created () {
 		this.timezones = TimezonesArray
 		this.displayStoreForm = true
@@ -1287,7 +1260,7 @@ export default {
 					createStoreVue.newStore.fax &&
 					createStoreVue.newStore.fax.length < 10
 				) {
-					reject('Store fax number should have at least 10 digits')
+					reject('Store fax number should be at least 10 characters')
 				} else if (!createStoreVue.newStore.email.length) {
 					reject('Store email cannot be blank')
 				} else if (!emailPattern.test(createStoreVue.newStore.email)) {
@@ -1312,7 +1285,6 @@ export default {
 					let payload = {
 						...createStoreVue.newStore
 					}
-					payload.fax = createStoreVue.newStore.fax.replace(/[^\d]/g, '')
 					if (!payload.fax) {
 						payload.fax = '0000000000'
 					}
