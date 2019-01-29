@@ -5,7 +5,7 @@
     <div
       class="contents"
       @click="openService(service)"
-      @keyup.enter="logger($event, service)"
+      @keydown.enter="openService(service)"
       tabindex="0"
       role="button"
       ref="card"
@@ -54,7 +54,7 @@
               :for="service.id"
               class="checkbox"
               @click.stop
-              @keyup.enter="$refs.input.click()"
+              @keydown.enter="$refs.input.click()"
             >
               {{$t("approve")}}
               <div class="box">
@@ -91,9 +91,6 @@ export default {
     getServiceDisplayPrice
   ],
   methods: {
-    logger(a, b) {
-      console.log({a, b})
-    },
     ...mapActions([
       'viewService'
     ]),

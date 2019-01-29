@@ -85,7 +85,7 @@
             <button
               class="toggle"
               @click.stop
-              @keyup.enter="toggleCategory(category)"
+              @keydown.enter="toggleCategory(category)"
             >
               <img class="chevron" src="@/assets/images/chevron-down.svg" aria-hidden="true">
             </button>

@@ -72,7 +72,7 @@
           <button
             class="sign"
             @click="sign()"
-            @keyup.enter="sign()"
+            @keydown.enter="sign()"
           >
             {{$t("click_to_sign")}}
           </button>

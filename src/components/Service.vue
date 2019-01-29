@@ -25,7 +25,7 @@
             </p>
             <button
               @click.stop="closeService"
-              @keyup.enter.prevent
+              @keydown.enter.prevent="closeService"
               class="close"
             >
               <div class="top"></div>
@@ -80,7 +80,7 @@
             <button
               @click="reject()"
               class="button skip"
-              @keyup.tab="$refs.container.focus()"
+              @keydown.tab="$refs.service.focus()"
             >
               {{$t("not_today")}}
             </button>

@@ -1,7 +1,8 @@
 <template>
   <aside
-  class="container"
-  :class="{'open' : reason}"
+    class="container"
+    :class="{'open' : reason}"
+    ref="reason"
   >
   <transition name="fade">
     <div
@@ -60,6 +61,21 @@ export default Vue.extend({
       set (reasonId) {
         this.setReason(reasonId)
         this.logEvent(`Selected reason ${reasonId}`)
+      }
+    }
+  },
+  watch: {
+    reason (open) {
+      if (open) {
+        this.setFocusable({name: 'reason', node: this.$refs.reason})
+        this.$refs.reason.focus()
+      } else {
+        this.setFocusable({name: 'reason', node: null})
+        if (this.$store.state.focusable.service) {
+          this.$store.state.focusable.service.focus()
+        } else if (this.$store.state.focusable.card) {
+          this.$store.state.focusable.card.focus()
+        }
       }
     }
   },
