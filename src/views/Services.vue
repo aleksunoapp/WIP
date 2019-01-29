@@ -67,7 +67,6 @@
               'grey' : category.serviceCategoryType === 'CC',
             }"
             @click="toggleCategory(category)"
-            @keyup.enter="toggleCategory(category)"
           >
             <div class="left">
               <span
@@ -85,18 +84,22 @@
             </div>
             <button
               class="toggle"
+              @click.stop
+              @keyup.enter="toggleCategory(category)"
             >
               <img class="chevron" src="@/assets/images/chevron-down.svg" aria-hidden="true">
             </button>
           </div>
-          <div class="cards">
-            <service-card
-              v-for="(service) in categoryServicesShownOnRoute(category.id)"
-              :category="category"
-              :service="service"
-              :key="service.id"
-            />
-          </div>
+          <transition-height>
+            <div v-if="category.defaultExpended">
+              <service-card
+                v-for="(service) in categoryServicesShownOnRoute(category.id)"
+                :category="category"
+                :service="service"
+                :key="service.id"
+              />
+            </div>
+          </transition-height>
         </section>
       </div>
       <button
@@ -110,14 +113,16 @@
 </template>
 <script>
 import Vue from 'vue'
-import ServiceCard from '@/components/ServiceCard.vue'
 import { formatCurrency } from '@/mixins.js'
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
+import ServiceCard from '@/components/ServiceCard.vue'
+import TransitionHeight from '@/components/TransitionHeight.vue'
 
 export default Vue.extend({
   name: 'ServicesList',
   components: {
-    ServiceCard
+    ServiceCard,
+    TransitionHeight
   },
   data: () => ({
     service: null,
@@ -164,7 +169,7 @@ export default Vue.extend({
   },
   mixins: [formatCurrency],
   methods: {
-    toggleCategory (category) {
+    toggleCategory (category, event) {
       this.setCategoryExpanded({ id: category.id, expanded: !category.defaultExpended })
       this.logEvent(`${category.defaultExpended ? 'Collapsed' : 'Expanded'} category ${category.id}`)
     },
@@ -454,11 +459,6 @@ export default Vue.extend({
           background-color: var(--red);
         }
       }
-      .cards {
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height .2s ease-out;
-      }
     }
     .category.open {
       .header {
@@ -470,11 +470,6 @@ export default Vue.extend({
             transition: transform .2s ease-in-out;
           }
         }
-      }
-      .cards {
-        max-height: 10000vh;
-        overflow: hidden;
-        transition: max-height .2s ease-in;
       }
     }
   }
