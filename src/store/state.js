@@ -30,8 +30,11 @@ export const state = {
   error: '',
   expired: false,
   focusable: {
-    list: null,
-    route: null
+    route: null,
+    card: null,
+    service: null,
+    reason: null,
+    error: null
   },
   help: false,
   inspectionReportUrl: '',

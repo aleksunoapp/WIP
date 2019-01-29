@@ -2,7 +2,7 @@
   <aside
   class="container"
   :class="{'open' : modal}"
-  ref="service"
+  id="service"
   tabindex="0"
 >
   <transition name="fade">
@@ -95,7 +95,7 @@
 <script>
 import Vue from 'vue'
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
-import { formatCurrency } from '@/mixins.js'
+import { focus, formatCurrency } from '@/mixins.js'
 
 export default Vue.extend({
   computed: {
@@ -184,15 +184,13 @@ export default Vue.extend({
   watch: {
     modal (open) {
       if (open) {
-        this.setFocusable({name: 'service', node: this.$refs.service.$el})
-        this.$refs.service.focus()
+        this.focus('#service')
       } else {
-        this.setFocusable({name: 'service', node: null})
-        this.$store.state.focusable.card.focus()
+        this.focus(`#card${this.service.id}`)
       }
     }
   },
-  mixins: [formatCurrency],
+  mixins: [focus, formatCurrency],
   methods: {
     ...mapMutations([
       'closeService',

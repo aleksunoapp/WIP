@@ -162,7 +162,6 @@ export default Vue.extend({
   },
   mounted () {
     this.logEvent('Started viewing inspection page')
-    this.setFocusable({name: 'list', node: this.$refs.view})
   },
   beforeDestroy () {
     this.logEvent('Finished viewing inspection page')

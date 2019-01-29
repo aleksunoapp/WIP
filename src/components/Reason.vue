@@ -2,7 +2,8 @@
   <aside
     class="container"
     :class="{'open' : reason}"
-    ref="reason"
+    id="reason"
+    tabindex="-1"
   >
   <transition name="fade">
     <div
@@ -24,12 +25,15 @@
               :key="reason.id"
               :for="`reason${reason.id}`"
               class="reason"
+              tabindex="0"
               @click="close()"
+              @keydown.enter="click(reason)"
             >
               <input
                 v-model="selected"
                 :value="reason.id"
                 type="radio"
+                :ref="`reason${reason.id}`"
                 :id="`reason${reason.id}`"
               >
               <div class="empty">
@@ -48,13 +52,16 @@
 <script>
 import Vue from 'vue'
 import { mapMutations, mapState } from 'vuex'
+import { focus } from '@/mixins.js'
 
 export default Vue.extend({
   computed: {
     ...mapState([
       'reason',
       'service',
-      'reasons'
+      'reasons',
+      'focusable',
+      'modal'
     ]),
     selected: {
       get () { return this.service.declinedReasonId },
@@ -67,26 +74,29 @@ export default Vue.extend({
   watch: {
     reason (open) {
       if (open) {
-        this.setFocusable({name: 'reason', node: this.$refs.reason})
-        this.$refs.reason.focus()
+        this.focus('#reason')
       } else {
-        this.setFocusable({name: 'reason', node: null})
-        if (this.$store.state.focusable.service) {
-          this.$store.state.focusable.service.focus()
-        } else if (this.$store.state.focusable.card) {
-          this.$store.state.focusable.card.focus()
+        if (this.modal) {
+          this.focus('#service')
+        } else {
+          this.focus(`#card${this.service.id}`)
         }
       }
     }
   },
+  mixins: [focus],
   methods: {
     close () {
       setTimeout(() => { this.closeReason() }, 300)
     },
+    click (reason) {
+      this.$refs[`reason${reason.id}`][0].click()
+    },
     ...mapMutations([
       'closeReason',
       'setReason',
-      'logEvent'
+      'logEvent',
+      'setFocusable'
     ])
   }
 })

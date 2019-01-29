@@ -8,7 +8,7 @@
       @keydown.enter="openService(service)"
       tabindex="0"
       role="button"
-      ref="card"
+      :id="`card${service.id}`"
     >
       <div class="left">
         <img :src="service.imageUrl" class="image">
@@ -97,13 +97,11 @@ export default {
     ...mapMutations([
       'setService',
       'openReason',
-      'logEvent',
-      'setFocusable'
+      'logEvent'
     ]),
     openService (service) {
       if (!(typeof service.serviceCategoryType === 'string' && service.serviceCategoryType.toLowerCase() === 'pass')) {
         this.viewService(service)
-        this.setFocusable({name: 'card', node: this.$refs.card})
       }
     },
     alt (service) {

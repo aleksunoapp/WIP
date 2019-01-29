@@ -40,3 +40,13 @@ export const getServiceDisplayPrice = {
     }
   }
 }
+
+export const focus = {
+  methods: {
+    focus (selector) {
+      const element = document.querySelector(selector)
+      console.log({ selector, element })
+      if (element) element.focus()
+    }
+  }
+}

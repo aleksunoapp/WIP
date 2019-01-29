@@ -1,7 +1,7 @@
 # DMPI
 
 ## To-do
-- a11y: service, reason, drawer, help, error
+- a11y: reason, drawer, help, error
 
 ## Project notes
 
