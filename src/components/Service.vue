@@ -267,7 +267,7 @@ export default Vue.extend({
   position: absolute;
   bottom: 0;
   z-index: 1;
-  height: calc(100% - var(--header-height));
+  height: 100%;
   width: 100%;
   overflow-y: hidden;
   pointer-events: none;

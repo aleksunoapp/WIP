@@ -22,7 +22,7 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  height: 100%;
+  height: calc(100% - var(--header-height));
   overflow: auto;
 }
 </style>

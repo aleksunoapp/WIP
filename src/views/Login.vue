@@ -342,7 +342,7 @@ export default Vue.extend({
   }
 }
 .container {
-  height: calc(100% - var(--header-height));
+  height: 100%;
   overflow: auto;
   display: flex;
   flex-direction: column;
