@@ -26,6 +26,7 @@
               :for="`reason${reason.id}`"
               class="reason"
               tabindex="0"
+              :ref="`reason${reason.id}`"
               @click="close()"
               @keydown.enter="click(reason)"
             >
@@ -95,8 +96,7 @@ export default Vue.extend({
     ...mapMutations([
       'closeReason',
       'setReason',
-      'logEvent',
-      'setFocusable'
+      'logEvent'
     ])
   }
 })

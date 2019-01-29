@@ -3,6 +3,7 @@
   class="container"
   :class="{'open' : modal}"
   id="service"
+  ref="service"
   tabindex="0"
 >
   <transition name="fade">
@@ -197,8 +198,7 @@ export default Vue.extend({
       'openReason',
       'selectService',
       'unselectService',
-      'logEvent',
-      'setFocusable'
+      'logEvent'
     ]),
     ...mapActions([
       'viewService',

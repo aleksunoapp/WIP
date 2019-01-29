@@ -1,7 +1,7 @@
 # DMPI
 
 ## To-do
-- a11y: reason, drawer, help, error
+- a11y: route, reason tab trap, drawer, help, error
 
 ## Project notes
 

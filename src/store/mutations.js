@@ -133,12 +133,6 @@ export const mutations = {
   },
   setReadyBy (state, deadline) {
     state.deadlines.readyBy = new Date(deadline)
-  },
-  setFocusable (state, {
-    name,
-    node
-  }) {
-    state.focusable[name] = node
   }
 }
 

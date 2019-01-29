@@ -1,7 +1,7 @@
 <template>
   <div
     class="container"
-    id="focusable-route-container"
+    id="route"
     ref="route"
     tabindex="-1"
   >

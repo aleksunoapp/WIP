@@ -218,8 +218,7 @@ export default Vue.extend({
       'openReason',
       'setActiveCategory',
       'logEvent',
-      'setCategoryExpanded',
-      'setFocusable'
+      'setCategoryExpanded'
     ]),
     ...mapActions({
       viewService: 'viewService',

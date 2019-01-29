@@ -29,13 +29,6 @@ export const state = {
   drawer: false,
   error: '',
   expired: false,
-  focusable: {
-    route: null,
-    card: null,
-    service: null,
-    reason: null,
-    error: null
-  },
   help: false,
   inspectionReportUrl: '',
   languages: [
