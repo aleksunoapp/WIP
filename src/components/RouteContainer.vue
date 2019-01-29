@@ -35,6 +35,7 @@ export default {
 .container {
   height: calc(100% - var(--header-height));
   overflow: auto;
+  outline: none;
 }
 </style>
 
