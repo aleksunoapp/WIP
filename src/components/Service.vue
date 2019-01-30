@@ -207,7 +207,7 @@ export default Vue.extend({
     approve () {
       this.selectService()
       this.logEvent(`Selected service ${this.service.id}`)
-      this.next()
+      this.closeService()
     },
     reject () {
       this.unselectService()

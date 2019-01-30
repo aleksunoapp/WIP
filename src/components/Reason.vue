@@ -88,13 +88,17 @@ export default Vue.extend({
   mixins: [focus],
   methods: {
     close () {
-      setTimeout(() => { this.closeReason() }, 300)
+      setTimeout(() => {
+        this.closeReason()
+        this.closeService()
+      }, 300)
     },
     click (reason) {
       this.$refs[`reason${reason.id}`][0].click()
     },
     ...mapMutations([
       'closeReason',
+      'closeService',
       'setReason',
       'logEvent'
     ])
