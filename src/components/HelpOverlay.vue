@@ -1,6 +1,6 @@
 <template>
   <aside
-  class="container"
+  class="help"
   :class="{'open' : help}"
   >
   <transition name="fade">
@@ -353,6 +353,9 @@ export default Vue.extend({
     },
     total () {
       return this.formatCurrency(this.$store.getters.total.service + this.$store.getters.total.inspection + this.$store.state.tax)
+    },
+    routeName () {
+      return this.$route.name
     }
   },
   watch: {
@@ -367,6 +370,13 @@ export default Vue.extend({
         this.setPage(1)
       } else {
         this.exitHelp()
+      }
+    },
+    routeName (name) {
+      if (this.help) {
+        if (!['additional-services', 'wait-services', 'services'].includes(name)) {
+          this.closeHelp()
+        }
       }
     }
   },
@@ -546,7 +556,7 @@ export default Vue.extend({
 </script>
 
 <style scoped lang="scss">
-.container {
+.help {
   position: absolute;
   bottom: 0;
   z-index: 5;

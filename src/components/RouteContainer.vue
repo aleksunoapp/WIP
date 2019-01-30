@@ -5,8 +5,6 @@
     ref="route"
     tabindex="-1"
   >
-    <service />
-    <reason />
     <help-overlay />
     <transition name="fade" mode="out-in">
       <router-view />
@@ -16,15 +14,11 @@
 
 <script>
 import {mapMutations} from 'vuex'
-import Reason from '@/components/Reason.vue'
-import Service from '@/components/Service.vue'
 import HelpOverlay from '@/components/HelpOverlay.vue'
 
 export default {
   name: 'RouteContainer',
   components: {
-    Service,
-    Reason,
     HelpOverlay
   },
 }
@@ -33,6 +27,7 @@ export default {
 
 <style lang="scss" scoped>
 .container {
+  position: relative;
   height: calc(100% - var(--header-height));
   overflow: auto;
   outline: none;

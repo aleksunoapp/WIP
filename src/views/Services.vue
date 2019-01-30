@@ -1,5 +1,7 @@
 <template>
   <div class="background">
+    <service />
+    <reason />
     <div class="navigation">
       <p class="total">
         <span>
@@ -117,10 +119,14 @@ import { formatCurrency } from '@/mixins.js'
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import ServiceCard from '@/components/ServiceCard.vue'
 import TransitionHeight from '@/components/TransitionHeight.vue'
+import Service from '@/components/Service.vue'
+import Reason from '@/components/Reason.vue'
 
 export default Vue.extend({
   name: 'ServicesList',
   components: {
+    Service,
+    Reason,
     ServiceCard,
     TransitionHeight
   },
