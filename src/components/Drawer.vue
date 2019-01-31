@@ -19,6 +19,7 @@
         <button
           class="item"
           @click="viewTutorial()"
+          ref="tutorial"
         >
           <img src="@/assets/images/question-mark.svg" alt="question mark" class="icon">
           <div class="text">
@@ -62,16 +63,23 @@
 <script>
 import Vue from 'vue'
 import { mapState, mapMutations } from 'vuex'
+
 export default Vue.extend({
-  data: () => ({
-    open: false
-  }),
   computed: {
     ...mapState([
       'drawer',
       'dealer',
       'inspectionReportUrl'
     ])
+  },
+  watch: {
+    drawer (open) {
+      if (open) {
+        this.$nextTick(function () {
+          this.$refs.tutorial.focus()
+        })
+      }
+    }
   },
   methods: {
     ...mapMutations([

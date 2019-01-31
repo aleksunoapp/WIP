@@ -26,15 +26,16 @@
               :for="`reason${reason.id}`"
               class="reason"
               tabindex="0"
-              :ref="`reason${reason.id}`"
+              :ref="`label${reason.id}`"
               @click="close()"
+              @blur="loopFocus(reason.id)"
               @keydown.enter="click(reason)"
             >
               <input
                 v-model="selected"
                 :value="reason.id"
                 type="radio"
-                :ref="`reason${reason.id}`"
+                :ref="`input${reason.id}`"
                 :id="`reason${reason.id}`"
               >
               <div class="empty">
@@ -94,7 +95,12 @@ export default Vue.extend({
       }, 300)
     },
     click (reason) {
-      this.$refs[`reason${reason.id}`][0].click()
+      this.$refs[`input${reason.id}`][0].click()
+    },
+    loopFocus (reasonId) {
+      if (this.reasons[this.reasons.length - 1].id === reasonId) {
+        this.$refs[`label${this.reasons[0].id}`][0].focus()
+      }
     },
     ...mapMutations([
       'closeReason',
