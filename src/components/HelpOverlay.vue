@@ -257,6 +257,7 @@
         <button
           class="button cta"
           @click.stop="next()"
+          ref="button"
         >
           {{buttonText}}
         </button>
@@ -368,6 +369,9 @@ export default Vue.extend({
         if (scrollContainer) { this.start.scrollTop = scrollContainer.scrollTop }
         this.start.route = this.$route.name
         this.setPage(1)
+        this.$nextTick(function () {
+          this.$refs.button.focus()
+        })
       } else {
         this.exitHelp()
       }

@@ -1,10 +1,8 @@
 # DMPI
 
 ## To-do
-- a11y: help, error
 - copy translations
 - API errors: "We cannot display ... right now. Dismiss", this.logEvent('call to _ failed')
-- test walkthrough
 - used and unused properties from payload
 
 ## Project notes

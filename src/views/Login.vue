@@ -13,32 +13,33 @@
         <h1 class="header">
           {{$t("header")}}
         </h1>
-        <form
-          @submit.prevent="enter()"
-          class="form"
-        >
-          <label
-            class="label"
-            :class="{'error' : error}"
-            for="login"
+        <fieldset :disabled="loading.logIn">
+          <form
+            @submit.prevent="enter()"
+            class="form"
           >
-            {{customer.isBusiness ? $t("please_enter_your_company_name") : $t("please_enter_your_last_name")}}
-          </label>
-          <input
-            class="input"
-            type="text"
-            id="login"
-            autofocus
-            v-model="code"
-          >
-          <button
-            class="button cta"
-            type="submit"
-            :disabled="loading.logIn"
-          >
-            {{$t("enter")}}
-          </button>
-        </form>
+            <label
+              class="label"
+              :class="{'error' : error}"
+              for="login"
+            >
+              {{customer.isBusiness ? $t("please_enter_your_company_name") : $t("please_enter_your_last_name")}}
+            </label>
+            <input
+              class="input"
+              type="text"
+              id="login"
+              autofocus
+              v-model="code"
+            >
+            <button
+              class="button cta"
+              type="submit"
+            >
+              {{$t("enter")}}
+            </button>
+          </form>
+        </fieldset>
       </main>
     </div>
   </div>

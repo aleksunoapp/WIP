@@ -19,7 +19,9 @@
             <p class="text">{{$t("error")}}</p>
             <button
               @click="clearError"
+              @keydown.enter="clearError"
               class="close"
+              ref="error"
             >
               <div class="top"></div>
               <div class="bottom"></div>
@@ -44,6 +46,15 @@ export default Vue.extend({
     ...mapState([
       'error'
     ])
+  },
+  watch: {
+    error (open) {
+      if (open) {
+        this.$nextTick(function (){
+          this.$refs.error.focus()
+        })
+      }
+    }
   },
   methods: {
     close () {
