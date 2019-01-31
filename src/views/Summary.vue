@@ -187,12 +187,14 @@ export default Vue.extend({
   },
   mixins: [formatCurrency, getServiceDisplayPrice],
   mounted () {
-    this.pad = new Pad(this.$refs.canvas, { backgroundColor: '#f7f7fa' })
-    this.setCanvasResolutionAndBackground()
-    window.addEventListener('resize', this.setCanvasResolutionAndBackground)
+    if (this.count.actionable) {
+      this.pad = new Pad(this.$refs.canvas, { backgroundColor: '#f7f7fa' })
+      this.setCanvasResolutionAndBackground()
+      window.addEventListener('resize', this.setCanvasResolutionAndBackground)
+      const hammer = new Hammer(this.$refs.canvas)
+      hammer.on('pan', this.signed)
+    }
     this.logEvent('Started viewing summary page')
-    const hammer = new Hammer(this.$refs.canvas)
-    hammer.on('pan', this.signed)
   },
   beforeDestroy () {
     this.logEvent('Finished viewing summary page')

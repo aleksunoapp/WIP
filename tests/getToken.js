@@ -4,7 +4,8 @@
 
 (function ({
     additional = false, // include isHighlighted services (route: additional-services)
-    unselected = true // include unselected services (route: wait-services)
+    unselected = true, // include unselected services (route: wait-services)
+    empty = false // zero services
 }) {
     const payload = {
         "repairOrderId": "0",
@@ -798,18 +799,20 @@
         const length = base.length
         const services = []
     
-        for (const categoryId of categoryIds) {
-            for (let i = 0; i < length; i++) {
-                const service = base[i]
-                services.push({
-                    ...service,
-                    serviceId: `${categoryId}${i}`,
-                    itemId: `${i}`,
-                    serviceCategoryId: `${categoryId}`,
-                    isHighlighted: additional ? (Math.random() < .5) : service.isHighlighted,
-                    parentServiceId: service.parentServiceId ? `${categoryId}${i-1}` : '',
-                    isSelected: unselected ? service.isSelected : true
-                })
+        if (!empty) {
+            for (const categoryId of categoryIds) {
+                for (let i = 0; i < length; i++) {
+                    const service = base[i]
+                    services.push({
+                        ...service,
+                        serviceId: `${categoryId}${i}`,
+                        itemId: `${i}`,
+                        serviceCategoryId: `${categoryId}`,
+                        isHighlighted: additional ? (Math.random() < .5) : service.isHighlighted,
+                        parentServiceId: service.parentServiceId ? `${categoryId}${i-1}` : '',
+                        isSelected: unselected ? service.isSelected : true
+                    })
+                }
             }
         }
 

@@ -120,14 +120,18 @@ export const actions = {
       router.push({ name: 'link-expired' })
     }
   },
-  routeAfterLogin ({ commit, getters }) {
+  routeAfterLogin ({ commit, getters, state }) {
     if (getters.highlightedServices.length) {
       router.push({ name: 'additional' })
     } else {
-      if (getters.count.fail || getters.count.warninig || getters.count.concern) {
+      if (getters.count.actionable) {
         router.push({ name: 'tutorial' })
       } else {
-        router.push({ name: 'services' })
+        if (state.services.length) {
+          router.push({ name: 'at-a-glance' })
+        } else {
+          router.push({ name: 'summary' })
+        }
       }
     }
     commit('setLoading', { key: 'logIn', loading: false })
