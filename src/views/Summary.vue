@@ -261,10 +261,7 @@ export default Vue.extend({
         this.error = false
         this.setSignature(this.pad.toDataURL())
 
-
-        this.$router.push({name: 'thanks'})
-        // this.sendServices()
-
+        this.sendServices()
 
         this.logEvent('Clicked approve button')
       }
