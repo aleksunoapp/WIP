@@ -10,7 +10,7 @@
       <div class="bottom"></div>
     </button>
     <button
-      @click="$router.go(-1)"
+      @click="back()"
       class="back"
       value="back"
     >
@@ -29,7 +29,10 @@ import { mapMutations, mapState } from 'vuex'
 export default Vue.extend({
   computed: {
     ...mapState([
-      'drawer'
+      'drawer',
+      'help',
+      'reason',
+      'modal'
     ])
   },
   methods: {
@@ -41,10 +44,38 @@ export default Vue.extend({
         this.openDrawer('Closed side menu')
       }
     },
+    back () {
+      if (
+        this.$route.name === 'services' ||
+        this.$route.name === 'additional-services' ||
+        this.$route.name === 'wait-services' ||
+        this.$route.name === 'summary'
+      ) {
+        if (this.help) {
+          if (this.$route.name === 'summary') {
+            this.router.go(-1)
+          }
+            this.closeHelp()
+        } else if (this.reason) {
+          this.selectService()
+          this.closeReason()
+        } else if (this.modal) {
+          this.closeService()
+        } else {
+          this.$router.go(-1)
+        }
+      } else {
+        this.$router.go(-1)
+      }
+    },
     ...mapMutations([
       'openDrawer',
       'closeDrawer',
-      'logEvent'
+      'logEvent',
+      'closeService',
+      'closeHelp',
+      'selectService',
+      'closeReason'
     ])
   }
 })
