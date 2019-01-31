@@ -23,7 +23,6 @@ require('./assets/plugins/socicon/socicon.css')
 require('./assets/plugins/jquery-nestable/jquery.nestable.css')
 require('./assets/css/blog.min.css')
 require('./assets/css/profile-2.min.css')
-require('./assets/css/login.min.css')
 require('./assets/css/search.min.css')
 require('./assets/css/layout/css/custom.css')
 require('./assets/css/layout/css/layout.min.css')
@@ -236,9 +235,13 @@ var App = new Vue({
 				AppFunctions.logOut()
 			}
 
+			this.setAccountToken('')
 			this.clearGlobalVariables()
 			this.$router.push({
-				name: 'Login'
+				name: 'LoginExpired',
+				params: {
+					expired: 'expired'
+				}
 			})
 			// eslint-disable-next-line
 			localStorage.clear()
@@ -278,7 +281,8 @@ var App = new Vue({
 			setAppId: 'SET_APP_ID',
 			setAppSecret: 'SET_APP_SECRET',
 			setUserToken: 'SET_USER_TOKEN',
-			setStoreLocations: 'SET_STORE_LOCATIONS'
+			setStoreLocations: 'SET_STORE_LOCATIONS',
+			setAccountToken: 'SET_ACCOUNT_TOKEN'
 		})
 	},
 	router

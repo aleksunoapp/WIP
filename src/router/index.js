@@ -101,7 +101,7 @@ Vue.use(Router)
 
 export const routes = [
 	{
-		path: '/',
+		path: '/login',
 		component: Login,
 		name: 'Login',
 		meta: {
@@ -112,14 +112,6 @@ export const routes = [
 		path: '/login/:expired',
 		component: Login,
 		name: 'LoginExpired',
-		meta: {
-			permissions: []
-		}
-	},
-	{
-		path: '/forgot-password',
-		name: 'ForgotPassword',
-		component: Login,
 		meta: {
 			permissions: []
 		}
@@ -987,7 +979,7 @@ router.beforeEach((to, from, next) => {
 })
 
 router.afterEach((to, from, next) => {
-	if (to.path !== '/') {
+	if (to.name !== 'Login' && to.name !== 'LoginExpired') {
 		// eslint-disable-next-line
 		sessionStorage.setItem('routePath', to.path)
 	}

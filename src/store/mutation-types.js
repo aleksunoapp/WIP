@@ -1,5 +1,7 @@
 /* Auth */
+export const SET_REDIRECT_URL = 'SET_REDIRECT_URL'
 export const SET_USER_TOKEN = 'SET_USER_TOKEN'
+export const SET_ACCOUNT_TOKEN = 'SET_ACCOUNT_TOKEN'
 export const SET_APP_ID = 'SET_APP_ID'
 export const SET_APP_SECRET = 'SET_APP_SECRET'
 
