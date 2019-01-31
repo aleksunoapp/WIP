@@ -27,7 +27,7 @@
         </button>
         <a
           class="item"
-          :href="`sms:${dealer.phone}`"
+          :href="`tel:${dealer.phone}`"
           @click="logEvent('Clicked phone link');"
         >
           <img src="@/assets/images/phone.svg" alt="phone" class="icon">
@@ -37,7 +37,7 @@
         </a>
         <a
           class="item"
-          :href="`tel:${dealer.smsPhone}`"
+          :href="`sms:${dealer.smsPhone}`"
           @click="logEvent('Clicked text link');"
         >
           <img src="@/assets/images/message-bubble.svg" alt="message" class="icon">
