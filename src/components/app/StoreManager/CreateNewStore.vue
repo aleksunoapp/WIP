@@ -233,6 +233,24 @@
 									<label for="form_control_12">Store Email</label>
 								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
+									<input type="text"
+									       class="form-control input-sm"
+									       id="form_control_tax"
+									       v-model="newStore.tax">
+									<label for="form_control_tax">Tax</label>
+								</div>
+								<div class="form-group form-md-line-input form-md-floating-label">
+									<label>Price Includes Tax:</label><br>
+									<el-switch v-model="newStore.price_includes_tax"
+									           active-color="#0c6"
+									           inactive-color="#ff4949"
+									           :active-value="1"
+									           :inactive-value="0"
+									           active-text="Yes"
+									           inactive-text="No">
+									</el-switch>
+								</div>
+								<div class="form-group form-md-line-input form-md-floating-label">
 									<label>Store Is Corporate:</label><br>
 									<el-switch v-model="newStore.is_corporate"
 									           active-color="#0c6"
@@ -790,6 +808,8 @@ export default {
 				phone: '',
 				fax: '',
 				email: '',
+				tax: '',
+				price_includes_tax: 0,
 				timezone: '',
 				currency: '',
 				status: 1,
@@ -1113,6 +1133,8 @@ export default {
 				phone: '',
 				fax: '',
 				email: '',
+				tax: '',
+				price_includes_tax: 0,
 				timezone: '',
 				currency: '',
 				status: 1,
@@ -1265,6 +1287,8 @@ export default {
 					reject('Store email cannot be blank')
 				} else if (!emailPattern.test(createStoreVue.newStore.email)) {
 					reject('Please enter a valid store email')
+				} else if (!createStoreVue.newStore.tax) {
+					reject('Tax cannot be blank')
 				}
 				resolve('Hurray')
 			})

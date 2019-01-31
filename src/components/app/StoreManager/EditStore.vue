@@ -185,6 +185,25 @@
 												<label for="form_control_13">Store Email</label>
 											</div>
 											<div class="form-group form-md-line-input form-md-floating-label">
+												<input type="text"
+												       class="form-control input-sm edited"
+												       id="form_control_tax"
+												       v-model="storeToBeEdited.tax">
+												<label for="form_control_tax">Tax</label>
+											</div>
+											<div class="form-group form-md-line-input form-md-floating-label">
+												<label>Price Includes Tax:</label><br>
+												<el-switch v-model="storeToBeEdited.price_includes_tax"
+												           :disabled="!$root.permissions['stores info update']? true : false"
+												           active-color="#0c6"
+												           inactive-color="#ff4949"
+												           :active-value="1"
+												           :inactive-value="0"
+												           active-text="Yes"
+												           inactive-text="No">
+												</el-switch>
+											</div>
+											<div class="form-group form-md-line-input form-md-floating-label">
 												<label>Store Is Corporate:</label><br>
 												<el-switch v-model="storeToBeEdited.is_corporate"
 												           @change="updateStoreIsCorporate"
