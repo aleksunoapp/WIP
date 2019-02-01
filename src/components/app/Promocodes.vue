@@ -41,7 +41,7 @@
 									<span>{{ createErrorMessage }}</span>
 								</div>
 							</div>
-							<div class="col-xs-9 col-md-5">
+							<div class="col-xs-12 col-md-6 col-lg-4">
 								<div class="form-group form-md-line-input form-md-floating-label">
 									<div class="input-icon right">
 										<input type="text"
@@ -160,7 +160,15 @@
 									<label for="form_control_4">Total Redemptions Permitted</label>
 								</div>
 							</div>
-							<div class="col-xs-9 col-md-5">
+							<div class="col-xs-12 col-md-6 col-lg-4">
+								<div class="form-group form-md-line-input form-md-floating-label narrow-input">
+									<input type="text"
+									       class="form-control input-sm"
+									       :class="{'edited': newPromoCode.description}"
+									       id="form_control_4"
+									       v-model="newPromoCode.description">
+									<label for="form_control_4">Description</label>
+								</div>
 								<div class="form-group form-md-line-input form-md-floating-label">
 									<p class="date-label">Start Date</p>
 									<el-date-picker v-model="newPromoCode.start_from"
@@ -195,14 +203,18 @@
 							</div>
 						</div>
 						<div class="form-actions right margin-top-20">
-							<button type="submit"
-							        class="btn blue"
-							        :disabled="creating">
-								Create
-								<i v-show="creating"
-								   class="fa fa-spinner fa-pulse fa-fw">
-								</i>
-							</button>
+							<div class="row">
+								<div class="col-xs-12 col-lg-8">
+									<button type="submit"
+											class="btn blue"
+											:disabled="creating">
+										Create
+										<i v-show="creating"
+										class="fa fa-spinner fa-pulse fa-fw">
+										</i>
+									</button>
+								</div>
+							</div>
 						</div>
 					</form>
 				</div>
@@ -429,7 +441,8 @@ export default {
 				start_from: '',
 				type: '',
 				value: '',
-				value_type: ''
+				value_type: '',
+				description: ''
 			},
 			editedPromoCode: {},
 			showGalleryModal: false,
@@ -696,7 +709,8 @@ export default {
 				start_from: '',
 				type: '',
 				value: '',
-				value_type: ''
+				value_type: '',
+				description: ''
 			}
 		},
 		/**
@@ -745,52 +759,35 @@ export default {
 				if (!promoCodesVue.newPromoCode.codes.length) {
 					reject('Code cannot be blank')
 				} else if (!isNonNegativeNumber(promoCodesVue.newPromoCode.value)) {
-					reject(
-						'Value Of Promo Code must be zero or more'
-					)
+					reject('Value Of Promo Code must be zero or more')
 				} else if (!promoCodesVue.newPromoCode.value_type.length) {
 					reject('Value Type cannot be blank')
 				} else if (!promoCodesVue.newPromoCode.apply_on.length) {
 					reject('Discount Is Applied To cannot be blank')
 				} else if (
-					(
-						promoCodesVue.newPromoCode.apply_on === 'items'
-					) &&
+					promoCodesVue.newPromoCode.apply_on === 'items' &&
 					promoCodesVue.newPromoCode.sku.length === 0
 				) {
 					reject('Select at least one item')
 				} else if (!promoCodesVue.newPromoCode.type.length) {
 					reject('Single or Multi Use cannot be blank')
 				} else if (!isNonNegativeNumber(promoCodesVue.newPromoCode.max_use_per_person)) {
-					reject(
-						'Maximum Redemptions Per User must be zero or more'
-					)
+					reject('Maximum Redemptions Per User must be zero or more')
 				} else if (!isNonNegativeNumber(promoCodesVue.newPromoCode.max_use)) {
-					reject(
-						'Total Redemptions Permitted must be zero or more'
-					)
+					reject('Total Redemptions Permitted must be zero or more')
 				} else if (promoCodesVue.newPromoCode.max_use < promoCodesVue.newPromoCode.max_use_per_person) {
-					reject(
-						'Total Redemptions Permitted cannot be smaller than Maximum Redemptions Per User'
-					)
-				} else if (!promoCodesVue.newPromoCode.apply_on.length) {
-					reject('Applies to cannot be blank')
+					reject('Total Redemptions Permitted cannot be smaller than Maximum Redemptions Per User')
+				} else if (!promoCodesVue.newPromoCode.description) {
+					reject('Description cannot be blank')
 				} else if (!promoCodesVue.newPromoCode.start_from.length) {
 					reject('Please select Start Date')
-				} else if (
-					promoCodesVue.isPast(promoCodesVue.newPromoCode.start_from)
-				) {
+				} else if (promoCodesVue.isPast(promoCodesVue.newPromoCode.start_from)) {
 					reject('Start Date cannot be in the past')
 				} else if (!promoCodesVue.newPromoCode.end_on.length) {
 					reject('Please select End Date')
-				} else if (
-					promoCodesVue.isPast(promoCodesVue.newPromoCode.end_on)
-				) {
+				} else if (promoCodesVue.isPast(promoCodesVue.newPromoCode.end_on)) {
 					reject('End Date cannot be in the past')
-				} else if (
-					new Date(promoCodesVue.newPromoCode.end_on) <
-					new Date(promoCodesVue.newPromoCode.start_from)
-				) {
+				} else if (new Date(promoCodesVue.newPromoCode.end_on) < new Date(promoCodesVue.newPromoCode.start_from)) {
 					reject('End Date cannot be before Start Date')
 				} else if (!promoCodesVue.newPromoCode.locations.length) {
 					reject('Select at least one location')

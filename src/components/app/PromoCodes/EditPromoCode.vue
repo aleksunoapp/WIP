@@ -39,7 +39,7 @@
 							<span>{{ errorMessage }}</span>
 						</div>
 					</div>
-					<div class="col-xs-7">
+					<div class="col-xs-12">
 						<div class="form-group form-md-line-input form-md-floating-label">
 							<input ref="codes"
 							       type="text"
@@ -144,6 +144,15 @@
 							       v-model="promoCode.max_use"
 										 :disabled="!can('promocodes update')">
 							<label for="form_control_4">Total Redemptions Permitted</label>
+						</div>
+						<div class="form-group form-md-line-input form-md-floating-label narrow-input">
+							<input type="text"
+							       class="form-control input-sm"
+							       :class="{'edited': promoCode.description !== ''}"
+							       id="form_control_edit_description"
+							       v-model="promoCode.description"
+										 :disabled="!can('promocodes update')">
+							<label for="form_control_edit_description">Description</label>
 						</div>
 						<div class="form-group">
 							<p class="date-label">Start Date</p>
@@ -266,7 +275,8 @@ export default {
 				start_from: '',
 				type: '',
 				value: '',
-				value_type: ''
+				value_type: '',
+				description: ''
 			},
 			displaySpinner: false,
 			updating: false
@@ -456,47 +466,25 @@ export default {
 					reject('Value Type cannot be blank')
 				} else if (!promoCodesVue.promoCode.apply_on.length) {
 					reject('Discount Is Applied To cannot be blank')
-				} else if (
-					(
-						promoCodesVue.promoCode.apply_on === 'items'
-					) &&
-					!promoCodesVue.promoCode.sku_array.length
-				) {
+				} else if (promoCodesVue.promoCode.apply_on === 'items' && !promoCodesVue.promoCode.sku_array.length) {
 					reject('Select at least one item')
 				} else if (!promoCodesVue.promoCode.type.length) {
 					reject('Single or Multi Use cannot be blank')
 				} else if (!isNonNegativeNumber(promoCodesVue.promoCode.max_use_per_person)) {
-					reject(
-						'Maximum Redemptions Per User must be zero or more'
-					)
+					reject('Maximum Redemptions Per User must be zero or more')
 				} else if (!isNonNegativeNumber(promoCodesVue.promoCode.max_use)) {
-					reject(
-						'Total Redemptions Permitted must be zero or more'
-					)
+					reject('Total Redemptions Permitted must be zero or more')
 				} else if (Number(promoCodesVue.promoCode.max_use) < Number(promoCodesVue.promoCode.max_use_per_person)) {
-					reject(
-						'Total Redemptions Permitted cannot be smaller than Maximum Redemptions Per User'
-					)
-				} else if (!promoCodesVue.promoCode.apply_on.length) {
-					reject('Applies to cannot be blank')
-				} else if (
-					typeof new Date(promoCodesVue.promoCode.start_from)
-						.getMonth !== 'function'
-				) {
+					reject('Total Redemptions Permitted cannot be smaller than Maximum Redemptions Per User')
+				} else if (!promoCodesVue.promoCode.description) {
+					reject('Description cannot be blank')
+				} else if (typeof new Date(promoCodesVue.promoCode.start_from).getMonth !== 'function') {
 					reject('Please select Start Date and Time')
-				} else if (
-					typeof new Date(promoCodesVue.promoCode.end_on).getMonth !==
-					'function'
-				) {
+				} else if (typeof new Date(promoCodesVue.promoCode.end_on).getMonth !== 'function') {
 					reject('Please select End Date and Time')
-				} else if (
-					promoCodesVue.isPast(promoCodesVue.promoCode.end_on)
-				) {
+				} else if (promoCodesVue.isPast(promoCodesVue.promoCode.end_on)) {
 					reject('End Date cannot be in the past')
-				} else if (
-					new Date(promoCodesVue.promoCode.end_on) <
-					new Date(promoCodesVue.promoCode.start_from)
-				) {
+				} else if (new Date(promoCodesVue.promoCode.end_on) < new Date(promoCodesVue.promoCode.start_from)) {
 					reject('End Date cannot be before Start Date')
 				} else if (!promoCodesVue.promoCode.locations.length) {
 					reject('Select at least one location')
