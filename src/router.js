@@ -69,7 +69,7 @@ export const router = new Router({
       component: () => import(/* webpackChunkName: "link-expired" */ './views/LinkExpired.vue')
     },
     {
-      path: '/login/:slug',
+      path: '/:slug([a-z,0-9]{8}-[a-z,0-9]{4}-[a-z,0-9]{4}-[a-z,0-9]{4}-[a-z,0-9]{12})',
       name: 'login',
       component: Login
     },
