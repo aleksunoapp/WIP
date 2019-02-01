@@ -74,7 +74,8 @@ export const actions = {
         commit('setCustomer', { firstName, lastName, isBusiness })
         commit('setCategories', categories)
         commit('setReasons', declinedReasons)
-        if (!state.languages.length) {
+        // if selected language isn't supported, use locale from payload
+        if (!supportedLanguages.find(locale => locale.culture === state.locale)) {
           commit('setLocale', local)
         }
         commit('setRespondBy', responseBy)
