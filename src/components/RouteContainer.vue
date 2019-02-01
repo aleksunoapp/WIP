@@ -29,7 +29,7 @@ export default {
 .container {
   position: relative;
   height: calc(100% - var(--header-height));
-  overflow: auto;
+  overflow: scroll;
   outline: none;
 }
 </style>

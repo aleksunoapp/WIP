@@ -344,7 +344,7 @@ export default Vue.extend({
 }
 .container {
   height: 100%;
-  overflow: auto;
+  overflow: scroll;
   display: flex;
   flex-direction: column;
   justify-content: center;

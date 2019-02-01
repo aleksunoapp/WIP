@@ -256,7 +256,7 @@ export default Vue.extend({
 .navigation {
   background-color: var(--white);
   min-height: 100%;
-  overflow: auto;
+  overflow: scroll;
   .total {
     display: flex;
     justify-content: space-between;
@@ -378,7 +378,7 @@ export default Vue.extend({
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: auto;
+  overflow: scroll;
   background-color: var(--grey-light-background);
   .wrapper {
     padding: 1rem 0;
