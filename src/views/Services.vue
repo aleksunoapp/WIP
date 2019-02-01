@@ -48,7 +48,7 @@
         </div>
       </nav>
     </div>
-    <div class="view" ref="view">
+    <div class="view" ref="view" id="list-scroll-container">
       <summary v-show="approve"/>
       <div class="wrapper" v-show="!approve">
         <section

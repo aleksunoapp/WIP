@@ -327,8 +327,7 @@ export default Vue.extend({
   computed: {
     ...mapState([
       'help',
-      'service',
-      'listScrollContainer'
+      'service'
     ]),
     ...mapGetters([
       'categoriesShownOnRoute',
@@ -432,13 +431,15 @@ export default Vue.extend({
         this.$router.replace({ name: 'summary' })
       }
 
+      const listScrollContainer = document.querySelector('#list-scroll-container')
+
       if (page === 1) {
-        if (this.listScrollContainer) {
-          const category = this.listScrollContainer.querySelector('.category')
+        if (listScrollContainer) {
+          const category = listScrollContainer.querySelector('.category')
           if (category) {
             category.classList.add('open')
           }
-          this.listScrollContainer.scrollTo({
+          listScrollContainer.scrollTo({
               left: 0,
               top: 0,
               behavior: 'smooth'
@@ -480,12 +481,13 @@ export default Vue.extend({
       }
 
       if (page === 2) {
-        if (this.listScrollContainer) {
-          const category = this.listScrollContainer.querySelector('.category')
+        
+        if (listScrollContainer) {
+          const category = listScrollContainer.querySelector('.category')
           if (category) {
             category.classList.add('open')
           }
-          this.listScrollContainer.scrollTo({
+          listScrollContainer.scrollTo({
               left: 0,
               top: 0,
               behavior: 'smooth'

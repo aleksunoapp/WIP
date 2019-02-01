@@ -16,14 +16,14 @@ export default {
           const { width } = getComputedStyle(element)
           /* eslint-disable no-param-reassign */
           element.style.width = width
-          element.style.position = `absolute`
+          // element.style.position = `absolute`
           element.style.visibility = `hidden`
           element.style.height = `auto`
           /* eslint-enable */
           const { height } = getComputedStyle(element)
           /* eslint-disable no-param-reassign */
           element.style.width = null
-          element.style.position = null
+          // element.style.position = null
           element.style.visibility = null
           element.style.height = 0
           /* eslint-enable */
