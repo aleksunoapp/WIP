@@ -368,7 +368,7 @@ export default Vue.extend({
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 1rem 0;
+        padding: 1rem;
       }
     }
     .service {
@@ -376,6 +376,9 @@ export default Vue.extend({
       justify-content: space-between;
       align-items: center;
       padding: 1rem;
+      .name {
+        padding: 1rem;
+      }
       .price {
         margin-right: 2rem;
         color: var(--blue);
@@ -392,6 +395,7 @@ export default Vue.extend({
       display: flex;
       justify-content: center;
       align-items: center;
+      min-height: 60px;
       max-height: 50vh;
       padding: 1rem 0;
       background-color: var(--grey-light-background);

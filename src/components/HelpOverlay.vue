@@ -152,11 +152,6 @@
           <div class="images">
             <div class="badge">{{$t("new")}}</div>
             <img :src="service.imageUrl" alt="" class="image">
-            <pagination
-              class="pagination"
-              :total="3"
-              :current="1"
-            />
           </div>
           <div class="bubble">
             <img src="@/assets/images/triangle.svg" class="triangle" />
@@ -378,7 +373,7 @@ export default Vue.extend({
     },
     routeName (name) {
       if (this.help) {
-        if (!['additional-services', 'wait-services', 'services'].includes(name)) {
+        if (!['additional-services', 'wait-services', 'services', 'summary'].includes(name)) {
           this.closeHelp()
         }
       }
@@ -429,9 +424,6 @@ export default Vue.extend({
       }
       if (this.page === 2 && (page !== 1 || page !== 2)) {
         this.$router.replace({ name: 'services' })
-      }
-      if (this.page === 3 && page !== 3) {
-        this.closeService()
       }
       if (this.page === 4 && page !== 4) {
         this.$router.replace({ name: 'summary' })
@@ -486,6 +478,7 @@ export default Vue.extend({
         }
         this.page = page
       }
+
       if (page === 2) {
         if (this.listScrollContainer) {
           const category = this.listScrollContainer.querySelector('.category')
@@ -878,6 +871,7 @@ export default Vue.extend({
       display: flex;
       justify-content: center;
       align-items: center;
+      min-height: 60px;
       max-height: 50vh;
       padding: 1rem 0;
       background-color: var(--grey-light-background);

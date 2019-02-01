@@ -117,8 +117,7 @@ export default Vue.extend({
     },
     ...mapMutations({
       setLocale: 'setLocale',
-      openHelp: 'openHelp',
-      closeHelp: 'closeHelp'
+      openHelp: 'openHelp'
     }),
     ...mapActions({
       getMetadata: 'getMetadata'
