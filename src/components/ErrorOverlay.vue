@@ -50,7 +50,7 @@ export default Vue.extend({
   watch: {
     error (open) {
       if (open) {
-        this.$nextTick(function (){
+        this.$nextTick(function () {
           this.$refs.error.focus()
         })
       }

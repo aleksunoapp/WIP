@@ -1,10 +1,5 @@
 # DMPI
 
-## To-do
-- copy translations
-- API errors: "We cannot display ... right now. Dismiss", this.logEvent('call to _ failed')
-- used and unused properties from payload
-
 ## Project notes
 
 ### Resources
