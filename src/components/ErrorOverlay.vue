@@ -1,39 +1,41 @@
 <template>
   <aside
-  class="reason__container"
-  :class="{'open' : error}"
+    class="reason__container"
+    :class="{'open' : error}"
   >
-  <transition name="fade">
-    <div
-    v-if="error"
-    @click="clearError"
-    class="overlay"
-    >
-      <transition name="fade">
-        <div
-          v-if="error"
-          class="body"
-          @click.stop
-        >
-          <div class="header">
-            <p class="text">{{$t("error")}}</p>
-            <button
-              @click="clearError"
-              @keydown.enter="clearError"
-              class="close"
-              ref="error"
-            >
-              <div class="top"></div>
-              <div class="bottom"></div>
-            </button>
+    <transition name="fade">
+      <div
+        v-if="error"
+        class="overlay"
+        @click="clearError"
+      >
+        <transition name="fade">
+          <div
+            v-if="error"
+            class="body"
+            @click.stop
+          >
+            <div class="header">
+              <p class="text">
+                {{ $t("error") }}
+              </p>
+              <button
+                ref="error"
+                class="close"
+                @click="clearError"
+                @keydown.enter="clearError"
+              >
+                <div class="top" />
+                <div class="bottom" />
+              </button>
+            </div>
+            <div class="reasons">
+              {{ error }}
+            </div>
           </div>
-          <div class="reasons">
-            {{error}}
-          </div>
-        </div>
-      </transition>
-    </div>
-  </transition>
+        </transition>
+      </div>
+    </transition>
   </aside>
 </template>
 

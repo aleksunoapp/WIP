@@ -1,20 +1,32 @@
 <template>
   <div class="background">
     <main class="contents">
-      <img src="@/assets/images/review.svg" alt="magnifying glass over a bullet list" class="image">
+      <img
+        src="@/assets/images/review.svg"
+        alt="magnifying glass over a bullet list"
+        class="image"
+      >
       <div class="card">
-          <div class="border" />
-          <div class="wrapper">
-            <p class="text">{{$t('hey')}}, {{customer.firstName}}, {{$t('you_have').toLowerCase()}}</p>
-            <p class="text large"><span class="blue">{{highlightedServices.length}}</span> {{ $tc('additional_recommendation', highlightedServices.length) }}</p>
-            <p class="text">{{$tc('that_need_your_attention', highlightedServices.length)}}</p>
-          </div>
+        <div class="border" />
+        <div class="wrapper">
+          <p class="text">
+            {{ $t('hey') }}, {{ customer.firstName }}, {{ $t('you_have').toLowerCase() }}
+          </p>
+          <p class="text large">
+            <span class="blue">
+              {{ highlightedServices.length }}
+            </span> {{ $tc('additional_recommendation', highlightedServices.length) }}
+          </p>
+          <p class="text">
+            {{ $tc('that_need_your_attention', highlightedServices.length) }}
+          </p>
+        </div>
       </div>
       <button
-        @click="$router.push({name: 'additional-services'})"
         class="button cta"
+        @click="$router.push({name: 'additional-services'})"
       >
-        {{$tc("view_recommendations", highlightedServices.length)}}
+        {{ $tc("view_recommendations", highlightedServices.length) }}
       </button>
     </main>
   </div>
@@ -24,15 +36,15 @@
 import Vue from 'vue'
 import { mapGetters, mapMutations, mapState } from 'vuex'
 export default Vue.extend({
+  computed: {
+    ...mapGetters(['highlightedServices']),
+    ...mapState(['customer'])
+  },
   created () {
     this.logEvent('Started viewing additional page')
   },
   beforeDestroy () {
     this.logEvent('Finished viewing additional page')
-  },
-  computed: {
-    ...mapGetters(['highlightedServices']),
-    ...mapState(['customer'])
   },
   methods: {
     ...mapMutations([

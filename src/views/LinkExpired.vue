@@ -1,14 +1,24 @@
 <template>
   <main class="container">
     <div class="contents">
-      <img src="@/assets/images/clock.svg" alt="a clock" class="clock">
-      <p class="text">{{$t("sorry")}}</p>
+      <img
+        src="@/assets/images/clock.svg"
+        alt="a clock"
+        class="clock"
+      >
+      <p class="text">
+        {{ $t("sorry") }}
+      </p>
       <div class="links">
         <a
           class="link"
           :href="`sms:${dealer.phone}`"
         >
-          <img src="@/assets/images/phone.svg" alt="phone" class="icon">
+          <img
+            src="@/assets/images/phone.svg"
+            alt="phone"
+            class="icon"
+          >
           <div class="text">
             {{ $t("call_service_advisor") }}
           </div>
@@ -17,7 +27,11 @@
           class="link"
           :href="`tel:${dealer.smsPhone}`"
         >
-          <img src="@/assets/images/message-bubble.svg" alt="message" class="icon">
+          <img
+            src="@/assets/images/message-bubble.svg"
+            alt="message"
+            class="icon"
+          >
           <div class="text">
             {{ $t("text_service_advisor") }}
           </div>

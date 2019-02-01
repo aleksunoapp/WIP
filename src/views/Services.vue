@@ -5,10 +5,14 @@
     <div class="navigation">
       <p class="total">
         <span>
-          {{$t("total_estimate")}}
-          <span class="bold">({{countTotal}})</span>
+          {{ $t("total_estimate") }}
+          <span class="bold">
+            ({{ countTotal }})
+          </span>
         </span>
-        <span class="price">{{displayTotal}}</span>
+        <span class="price">
+          {{ displayTotal }}
+        </span>
       </p>
       <nav class="categories">
         <div
@@ -17,7 +21,7 @@
           class="category__container"
           :class="{'active' : activeCategory && category.id === activeCategory.id}"
         >
-          <div class="border"></div>
+          <div class="border" />
           <button
             class="category"
             @click="scrollToCategory(category)"
@@ -32,12 +36,19 @@
                   'grey' : category.serviceCategoryType === 'CC',
                 }"
               >
-                {{categoryServicesShownOnRoute(category.id).length}}
+                {{ categoryServicesShownOnRoute(category.id).length }}
               </span>
-              <span class="name">{{category.name}}</span>
+              <span class="name">
+                {{ category.name }}
+              </span>
             </div>
             <div class="right">
-              <span class="badge" v-if="categoryContainsHiglightedServices(category.id)">{{$t("new")}}</span>
+              <span
+                v-if="categoryContainsHiglightedServices(category.id)"
+                class="badge"
+              >
+                {{ $t("new") }}
+              </span>
               <img
                 class="chevron"
                 src="@/assets/images/chevron-right.svg"
@@ -48,9 +59,16 @@
         </div>
       </nav>
     </div>
-    <div class="view" ref="view" id="list-scroll-container">
-      <summary v-show="approve"/>
-      <div class="wrapper" v-show="!approve">
+    <div
+      id="list-scroll-container"
+      ref="view"
+      class="view"
+    >
+      <summary v-show="approve" />
+      <div
+        v-show="!approve"
+        class="wrapper"
+      >
         <section
           v-for="category in categoriesShownOnRoute"
           :ref="`category${category.id}`"
@@ -80,25 +98,31 @@
                   'grey' : category.id === '5',
                 }"
               >
-                {{categoryServicesShownOnRoute(category.id).length}}
+                {{ categoryServicesShownOnRoute(category.id).length }}
               </span>
-              <div class="name">{{category.name}}</div>
+              <div class="name">
+                {{ category.name }}
+              </div>
             </div>
             <button
               class="toggle"
               @click.stop
               @keydown.enter="toggleCategory(category)"
             >
-              <img class="chevron" src="@/assets/images/chevron-down.svg" aria-hidden="true">
+              <img
+                class="chevron"
+                src="@/assets/images/chevron-down.svg"
+                aria-hidden="true"
+              >
             </button>
           </div>
           <transition-height>
             <div v-if="category.defaultExpended">
               <service-card
                 v-for="(service) in categoryServicesShownOnRoute(category.id)"
+                :key="service.id"
                 :category="category"
                 :service="service"
-                :key="service.id"
               />
             </div>
           </transition-height>
@@ -108,7 +132,7 @@
         class="confirm"
         @click="confirm()"
       >
-        {{$t('confirm')}}
+        {{ $t('confirm') }}
       </button>
     </div>
   </div>
@@ -130,6 +154,7 @@ export default Vue.extend({
     ServiceCard,
     TransitionHeight
   },
+  mixins: [formatCurrency],
   data: () => ({
     service: null,
     loading: false,
@@ -150,13 +175,15 @@ export default Vue.extend({
       'activeCategory'
     ]),
     displayTotal () {
+      let total = ''
       if (this.$route.name === 'additional-services') {
-        return this.formatCurrency(this.total.additional)
+        total = this.formatCurrency(this.total.additional)
       } else if (this.$route.name === 'wait-services') {
-        return this.formatCurrency(this.total.additional)
+        total = this.formatCurrency(this.total.additional)
       } else if (this.$route.name === 'services') {
-        return this.formatCurrency(this.total.inspection)
+        total = this.formatCurrency(this.total.inspection)
       }
+      return total
     },
     countTotal () {
       if (this.highlightedServices.length) {
@@ -172,7 +199,6 @@ export default Vue.extend({
   beforeDestroy () {
     this.logEvent('Finished viewing inspection page')
   },
-  mixins: [formatCurrency],
   methods: {
     toggleCategory (category, event) {
       this.setCategoryExpanded({ id: category.id, expanded: !category.defaultExpended })
@@ -211,12 +237,10 @@ export default Vue.extend({
       }
 
       if (this.previouslyUnapprovedServices.length) {
-        this.$router.push({name: 'wait'})
-        return
+        this.$router.push({ name: 'wait' })
       } else {
         this.getTax()
-        this.$router.push({name: 'additional-summary'})
-        return
+        this.$router.push({ name: 'additional-summary' })
       }
     },
     ...mapMutations([

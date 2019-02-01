@@ -1,24 +1,24 @@
 <template>
   <div class="container">
     <button
-      @click="toggleDrawer"
       class="menu__button"
       :class="{'open' : drawer}"
+      @click="toggleDrawer"
     >
-      <div class="top"></div>
-      <div class="middle"></div>
-      <div class="bottom"></div>
+      <div class="top" />
+      <div class="middle" />
+      <div class="bottom" />
     </button>
     <button
-      @click="back()"
       class="back"
       value="back"
+      @click="back()"
     >
       <img
         src="@/assets/images/chevron-right.svg"
         alt="chevron left"
         class="chevron"
-      />
+      >
     </button>
   </div>
 </template>
@@ -55,7 +55,7 @@ export default Vue.extend({
           if (this.$route.name === 'summary') {
             this.router.go(-1)
           }
-            this.closeHelp()
+          this.closeHelp()
         } else if (this.reason) {
           this.selectService()
           this.closeReason()

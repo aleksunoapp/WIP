@@ -6,14 +6,14 @@
         class="button"
         @click="$router.go(-1)"
       >
-        {{$t("go_back")}}
+        {{ $t("go_back") }}
       </button>
       <button
         v-if="slug"
-        @click="logIn()"
         class="button"
+        @click="logIn()"
       >
-        {{$t("log_in")}}
+        {{ $t("log_in") }}
       </button>
     </div>
   </div>

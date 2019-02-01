@@ -1,18 +1,21 @@
 <template>
   <div class="background">
     <main class="contents">
-      <div class="card" id="summary">
+      <div
+        id="summary"
+        class="card"
+      >
         <div
           v-if="count.approved"
           class="row"
         >
           <div class="previous">
             <p class="item">
-              {{$t("previous")}}
+              {{ $t("previous") }}
             </p>
             <button
-              @click="previousExpanded = !previousExpanded"
               class="toggle"
+              @click="previousExpanded = !previousExpanded"
             >
               <img
                 class="chevron"
@@ -23,72 +26,86 @@
             </button>
           </div>
           <p class="price">
-            {{serviceTotal}}
+            {{ serviceTotal }}
           </p>
         </div>
         <transition-height>
-          <div class="list" v-if="previousExpanded">
-            <div class="row" v-for="service in categoryServices('4')" :key="service.id">
-              <p class="item">{{service.name}}</p>
-              <p class="price">{{getServiceDisplayPrice(service)}}</p>
+          <div
+            v-if="previousExpanded"
+            class="list"
+          >
+            <div
+              v-for="service in categoryServices('4')"
+              :key="service.id"
+              class="row"
+            >
+              <p class="item">
+                {{ service.name }}
+              </p>
+              <p class="price">
+                {{ getServiceDisplayPrice(service) }}
+              </p>
             </div>
           </div>
         </transition-height>
         <div class="row bold">
           <p class="item">
-            {{$t("estimate")}}
+            {{ $t("estimate") }}
           </p>
           <p class="price">
-            {{inspectionTotal}}
+            {{ inspectionTotal }}
           </p>
         </div>
         <div class="row">
           <p class="item">
-            {{$t("additional_taxes_and_fees")}}
+            {{ $t("additional_taxes_and_fees") }}
           </p>
           <p class="price">
-            {{tax}}
+            {{ tax }}
           </p>
         </div>
-        <div class="divider"></div>
+        <div class="divider" />
         <div class="row total">
           <p class="item">
-            {{$t("total_on_delivery")}}
+            {{ $t("total_on_delivery") }}
           </p>
           <p class="price">
-            {{total}}
+            {{ total }}
           </p>
         </div>
       </div>
-      <div class="divider"></div>
+      <div class="divider" />
       <div
         v-if="count.actionable"
         class="signature"
       >
         <div class="row">
           <p class="prompt">
-            {{$t("please_sign_below")}}
+            {{ $t("please_sign_below") }}
           </p>
           <button
             class="sign"
             @click="sign()"
             @keydown.enter="sign()"
           >
-            {{$t("click_to_sign")}}
+            {{ $t("click_to_sign") }}
           </button>
         </div>
         <div class="wrapper">
           <canvas
-            class="panel"
             ref="canvas"
+            class="panel"
+          />
+          <img
+            src="@/assets/images/signature.svg"
+            alt="sample signature"
+            class="sample"
           >
-          </canvas>
-          <img src="@/assets/images/signature.svg" alt="sample signature" class="sample">
         </div>
         <input
-          type="checkbox"
           id="acknowledgement"
           v-model="accepted"
+          type="checkbox"
           @click.stop
         >
         <label
@@ -97,9 +114,20 @@
           @click.stop
         >
           <div class="box">
-            <img src="@/assets/images/check.svg" alt="check" class="check">
+            <img
+              src="@/assets/images/check.svg"
+              alt="check"
+              class="check"
+            >
           </div>
-          <p class="text">{{$t("i_acknowledge")}} <router-link :to="{name: 'terms-and-conditions'}" class="link">{{$t("terms_and_conditions")}}.</router-link></p>
+          <p class="text">
+            {{ $t("i_acknowledge") }} <router-link
+              :to="{name: 'terms-and-conditions'}"
+              class="link"
+            >
+              {{ $t("terms_and_conditions") }}.
+            </router-link>
+          </p>
         </label>
       </div>
       <div class="error">
@@ -108,7 +136,7 @@
             v-if="error"
             class="text"
           >
-            {{$t("please_sign_in_and_accept")}}
+            {{ $t("please_sign_in_and_accept") }}
           </p>
         </transition-height>
       </div>
@@ -116,7 +144,7 @@
         class="button cta green"
         @click="approve()"
       >
-        {{count.actionable ? $t("approve") : $t("next")}}
+        {{ count.actionable ? $t("approve") : $t("next") }}
       </button>
     </main>
   </div>
@@ -134,6 +162,7 @@ export default Vue.extend({
   components: {
     TransitionHeight
   },
+  mixins: [formatCurrency, getServiceDisplayPrice],
   data: () => ({
     pad: null,
     panned: false,
@@ -166,26 +195,29 @@ export default Vue.extend({
       return this.formatCurrency(this.$store.getters.total.service)
     },
     inspectionTotal () {
+      let total = ''
       if (this.$route.name === 'summary') {
-        return this.formatCurrency(this.$store.getters.total.inspection)
+        total = this.formatCurrency(this.$store.getters.total.inspection)
       }
       if (this.$route.name === 'additional-summary') {
-        return this.formatCurrency(this.$store.getters.total.additional)
+        total = this.formatCurrency(this.$store.getters.total.additional)
       }
+      return total
     },
     tax () {
       return this.formatCurrency(this.$store.state.tax)
     },
     total () {
+      let total = ''
       if (this.$route.name === 'summary') {
-        return this.formatCurrency(this.$store.getters.total.service + this.$store.getters.total.inspection + this.$store.state.tax)
+        total = this.formatCurrency(this.$store.getters.total.service + this.$store.getters.total.inspection + this.$store.state.tax)
       }
       if (this.$route.name === 'additional-summary') {
-        return this.formatCurrency(this.$store.getters.total.service + this.$store.getters.total.additional + this.$store.state.tax)
+        total = this.formatCurrency(this.$store.getters.total.service + this.$store.getters.total.additional + this.$store.state.tax)
       }
+      return total
     }
   },
-  mixins: [formatCurrency, getServiceDisplayPrice],
   mounted () {
     if (this.count.actionable) {
       this.pad = new Pad(this.$refs.canvas, { backgroundColor: '#f7f7fa' })
@@ -248,7 +280,7 @@ export default Vue.extend({
     },
     approve () {
       if (!this.count.actionable) {
-        this.$router.push({name: 'thanks'})
+        this.$router.push({ name: 'thanks' })
       } else {
         if (!this.accepted) {
           this.error = true

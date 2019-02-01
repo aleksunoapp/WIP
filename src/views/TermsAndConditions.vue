@@ -1,25 +1,25 @@
 <template>
   <div class="contents">
     <h1 class="header">
-      {{$t("terms_and_conditions")}}
+      {{ $t("terms_and_conditions") }}
     </h1>
     <p>
-      {{$t("paragraph1")}}
+      {{ $t("paragraph1") }}
     </p>
     <p>
-      {{$t("paragraph2")}}
+      {{ $t("paragraph2") }}
     </p>
     <div
       class="button cta green"
       @click="accept()"
     >
-      {{$t("accept")}}
+      {{ $t("accept") }}
     </div>
     <div
       class="button skip"
       @click="decline()"
     >
-      {{$t("decline")}}
+      {{ $t("decline") }}
     </div>
   </div>
 </template>

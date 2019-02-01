@@ -6,8 +6,8 @@
     <transition name="fade">
       <div
         v-if="drawer"
-        @click="closeDrawer"
         class="overlay"
+        @click="closeDrawer"
       />
     </transition>
     <transition name="slide-fade">
@@ -15,13 +15,19 @@
         v-if="drawer"
         class="drawer"
       >
-        <h1 class="header">{{ $t("information") }}</h1>
+        <h1 class="header">
+          {{ $t("information") }}
+        </h1>
         <button
+          ref="tutorial"
           class="item"
           @click="viewTutorial()"
-          ref="tutorial"
         >
-          <img src="@/assets/images/question-mark.svg" alt="question mark" class="icon">
+          <img
+            src="@/assets/images/question-mark.svg"
+            alt="question mark"
+            class="icon"
+          >
           <div class="text">
             {{ $t("how_it_works") }}
           </div>
@@ -31,7 +37,11 @@
           :href="`tel:${dealer.phone}`"
           @click="logEvent('Clicked phone link');"
         >
-          <img src="@/assets/images/phone.svg" alt="phone" class="icon">
+          <img
+            src="@/assets/images/phone.svg"
+            alt="phone"
+            class="icon"
+          >
           <div class="text">
             {{ $t("call_service_advisor") }}
           </div>
@@ -41,7 +51,11 @@
           :href="`sms:${dealer.smsPhone}`"
           @click="logEvent('Clicked text link');"
         >
-          <img src="@/assets/images/message-bubble.svg" alt="message" class="icon">
+          <img
+            src="@/assets/images/message-bubble.svg"
+            alt="message"
+            class="icon"
+          >
           <div class="text">
             {{ $t("text_service_advisor") }}
           </div>
@@ -50,7 +64,11 @@
           class="item"
           @click="viewInspectionReport()"
         >
-          <img src="@/assets/images/clipboard.svg" alt="clipboard" class="icon">
+          <img
+            src="@/assets/images/clipboard.svg"
+            alt="clipboard"
+            class="icon"
+          >
           <div class="text">
             {{ $t("view_inspection_report") }}
           </div>

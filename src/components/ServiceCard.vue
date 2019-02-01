@@ -3,15 +3,18 @@
     class="card"
   >
     <div
+      :id="`card${service.id}`"
       class="contents"
-      @click="openService(service)"
-      @keydown.enter="openService(service)"
       tabindex="0"
       role="button"
-      :id="`card${service.id}`"
+      @click="openService(service)"
+      @keydown.enter="openService(service)"
     >
       <div class="left">
-        <img :src="service.imageUrl" class="image">
+        <img
+          :src="service.imageUrl"
+          class="image"
+        >
         <!-- <p class="count">{{service.imageUrl.length}}</p> -->
       </div>
       <div class="right">
@@ -21,17 +24,21 @@
               v-if="service.isHighlighted"
               class="badge"
             >
-              {{$t("new")}}
+              {{ $t("new") }}
             </span>
-            {{service.name}}
+            {{ service.name }}
           </p>
           <div
             v-if="service.category > '5'"
             class="description"
           >
-            <img :src="service.iconUrl" :aria-label="alt(service)" class="dot">
+            <img
+              :src="service.iconUrl"
+              :aria-label="alt(service)"
+              class="dot"
+            >
             <p class="text">
-              {{recommendationLabel(service)}}
+              {{ recommendationLabel(service) }}
             </p>
           </div>
         </div>
@@ -39,41 +46,51 @@
           v-if="getServiceDisplayPrice(service) !== false"
           class="bottom"
         >
-          <div class="price">{{getServiceDisplayPrice(service)}}</div>
-            <input
-              type="checkbox"
-              :id="service.id"
-              class="approve"
-              v-model="service.isSelected"
-              @change="checkboxToggled($event, service)"
-              ref="input"
-              @click.stop
-            >
-            <label
-              tabindex="0"
-              :for="service.id"
-              class="checkbox"
-              @click.stop
-              @keydown.enter="$refs.input.click()"
-            >
-              {{$t("approve")}}
-              <div class="box">
-                <img src="@/assets/images/check.svg" alt="check" class="check">
-              </div>
-            </label>
+          <div class="price">
+            {{ getServiceDisplayPrice(service) }}
+          </div>
+          <input
+            :id="service.id"
+            ref="input"
+            v-model="service.isSelected"
+            type="checkbox"
+            class="approve"
+            @change="checkboxToggled($event, service)"
+            @click.stop
+          >
+          <label
+            tabindex="0"
+            :for="service.id"
+            class="checkbox"
+            @click.stop
+            @keydown.enter="$refs.input.click()"
+          >
+            {{ $t("approve") }}
+            <div class="box">
+              <img
+                src="@/assets/images/check.svg"
+                alt="check"
+                class="check"
+              >
+            </div>
+          </label>
         </div>
       </div>
     </div>
-    <div class="divider"></div>
+    <div class="divider" />
   </div>
 </template>
 
 <script>
-import { mapActions, mapGetters, mapMutations} from 'vuex'
+import { mapActions, mapMutations } from 'vuex'
 import { formatCurrency, getServiceDisplayPrice } from '@/mixins.js'
 
 export default {
   name: 'ServiceCard',
+  mixins: [
+    formatCurrency,
+    getServiceDisplayPrice
+  ],
   props: {
     category: {
       type: Object,
@@ -86,10 +103,6 @@ export default {
       default: () => {}
     }
   },
-  mixins: [
-    formatCurrency,
-    getServiceDisplayPrice
-  ],
   methods: {
     ...mapActions([
       'viewService'
@@ -126,7 +139,7 @@ export default {
         this.logEvent(`Selected service ${this.service.id}`)
       }
     }
-  },
+  }
 }
 </script>
 

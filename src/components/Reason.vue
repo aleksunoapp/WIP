@@ -1,53 +1,55 @@
 <template>
   <aside
+    id="reason"
     class="container"
     :class="{'open' : reason}"
-    id="reason"
     tabindex="-1"
   >
-  <transition name="fade">
-    <div
-    v-if="reason"
-    class="overlay"
-  >
-      <transition name="fade">
-        <div
-          v-if="reason"
-          class="body"
-          @click.stop
-        >
-          <div class="header">
-            <p class="text">{{$t("please_select_a_reason")}}</p>
-          </div>
-          <div class="reasons">
-            <label
-              v-for="reason in reasons"
-              :key="reason.id"
-              :for="`reason${reason.id}`"
-              class="reason"
-              tabindex="0"
-              :ref="`label${reason.id}`"
-              @click="close()"
-              @blur="loopFocus(reason.id)"
-              @keydown.enter="click(reason)"
-            >
-              <input
-                v-model="selected"
-                :value="reason.id"
-                type="radio"
-                :ref="`input${reason.id}`"
-                :id="`reason${reason.id}`"
+    <transition name="fade">
+      <div
+        v-if="reason"
+        class="overlay"
+      >
+        <transition name="fade">
+          <div
+            v-if="reason"
+            class="body"
+            @click.stop
+          >
+            <div class="header">
+              <p class="text">
+                {{ $t("please_select_a_reason") }}
+              </p>
+            </div>
+            <div class="reasons">
+              <label
+                v-for="reason in reasons"
+                :key="reason.id"
+                :ref="`label${reason.id}`"
+                :for="`reason${reason.id}`"
+                class="reason"
+                tabindex="0"
+                @click="close()"
+                @blur="loopFocus(reason.id)"
+                @keydown.enter="click(reason)"
               >
-              <div class="empty">
-                <div class="selected"></div>
-              </div>
-              {{reason.name}}
-            </label>
+                <input
+                  :id="`reason${reason.id}`"
+                  :ref="`input${reason.id}`"
+                  v-model="selected"
+                  :value="reason.id"
+                  type="radio"
+                >
+                <div class="empty">
+                  <div class="selected" />
+                </div>
+                {{ reason.name }}
+              </label>
+            </div>
           </div>
-        </div>
-      </transition>
-    </div>
-  </transition>
+        </transition>
+      </div>
+    </transition>
   </aside>
 </template>
 
@@ -57,6 +59,7 @@ import { mapMutations, mapState } from 'vuex'
 import { focus } from '@/mixins.js'
 
 export default Vue.extend({
+  mixins: [focus],
   computed: {
     ...mapState([
       'reason',
@@ -86,7 +89,6 @@ export default Vue.extend({
       }
     }
   },
-  mixins: [focus],
   methods: {
     close () {
       setTimeout(() => {

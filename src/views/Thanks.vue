@@ -10,12 +10,12 @@
       <h2
         class="subheader"
       >
-        {{dealer.name}}
+        {{ dealer.name }}
       </h2>
       <p
         class="description"
       >
-        {{$t("thank_you")}}
+        {{ $t("thank_you") }}
       </p>
 
       <figure class="card">
@@ -25,12 +25,12 @@
         >
         <figcaption>
           <span>
-            {{$t("your_service_consultant")}}
+            {{ $t("your_service_consultant") }}
           </span>
           <span
             class="consultant__name"
           >
-            {{advisor.advisorName}}
+            {{ advisor.advisorName }}
           </span>
         </figcaption>
       </figure>
@@ -38,20 +38,28 @@
       <template
         v-if="tooLate"
       >
-        <p class="description">{{$t("your_service_advisor_will_confirm")}}</p>
+        <p class="description">
+          {{ $t("your_service_advisor_will_confirm") }}
+        </p>
       </template>
       <template
         v-else
       >
-        <p class="description">{{$t("ready")}}</p>
+        <p class="description">
+          {{ $t("ready") }}
+        </p>
         <div class="card wide">
           <div class="clock__background">
-            <img class="clock" src="@/assets/images/clock.svg" aria-hidden="true">
+            <img
+              class="clock"
+              src="@/assets/images/clock.svg"
+              aria-hidden="true"
+            >
           </div>
           <p
             class="pickup__time"
           >
-            {{getPickupTime()}}
+            {{ getPickupTime() }}
           </p>
         </div>
       </template>
@@ -59,7 +67,7 @@
       <button
         class="button cta"
       >
-        {{dealer.name}}
+        {{ dealer.name }}
       </button>
     </main>
   </div>

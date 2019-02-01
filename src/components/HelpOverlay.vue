@@ -1,270 +1,331 @@
 <template>
   <aside
-  class="help"
-  :class="{'open' : help}"
+    class="help"
+    :class="{'open' : help}"
   >
-  <transition name="fade">
-    <div
-    v-if="help"
-    @click="exitHelp"
-    class="overlay"
-    ref="overlay"
-    >
-      <template
-        v-if="page === 1"
+    <transition name="fade">
+      <div
+        v-if="help"
+        ref="overlay"
+        class="overlay"
+        @click="exitHelp"
       >
-        <div
-          class="category"
-          :style="`top: ${category.style.top}px; left: ${category.style.left}px;`"
-          @click.stop
+        <template
+          v-if="page === 1"
         >
-          <div class="desktop">
-            <div
-              class="category__container"
-              :style="`width: ${category.style.width}px; height: ${category.style.height}px;`"
-            >
-              <div class="border"></div>
-              <button
-                class="category"
+          <div
+            class="category"
+            :style="`top: ${category.style.top}px; left: ${category.style.left}px;`"
+            @click.stop
+          >
+            <div class="desktop">
+              <div
+                class="category__container"
+                :style="`width: ${category.style.width}px; height: ${category.style.height}px;`"
+              >
+                <div class="border" />
+                <button
+                  class="category"
+                >
+                  <div class="left">
+                    <span
+                      class="count"
+                      :class="{
+                        'red' : categoriesShownOnRoute[0].id === '1',
+                        'yellow' : categoriesShownOnRoute[0].id === '2',
+                        'green' : categoriesShownOnRoute[0].id === '3',
+                        'grey' : categoriesShownOnRoute[0].id === '5',
+                      }"
+                    >
+                      {{ categoryServicesShownOnRoute(categoriesShownOnRoute[0].id).length }}
+                    </span>
+                    <span class="name">
+                      {{ categoriesShownOnRoute[0].name }}
+                    </span>
+                  </div>
+                  <div class="right">
+                    <span
+                      v-if="categoryContainsHiglightedServices(categoriesShownOnRoute[0].id)"
+                      class="badge"
+                    >
+                      {{ $t("new") }}
+                    </span>
+                    <img
+                      class="chevron"
+                      src="@/assets/images/chevron-right.svg"
+                      aria-hidden="true"
+                    >
+                  </div>
+                </button>
+              </div>
+              <div class="bubble">
+                <img
+                  src="@/assets/images/triangle.svg"
+                  class="triangle"
+                >
+                <p class="header">
+                  {{ $t("review_recommendations") }}
+                </p>
+                <p class="description">
+                  {{ $t("tap_each_category") }}
+                </p>
+              </div>
+            </div>
+            <div class="mobile">
+              <div
+                class="header"
+                :class="{
+                  'green' : categoriesShownOnRoute[0].id === '2',
+                  'yellow' : categoriesShownOnRoute[0].id === '3',
+                  'red' : categoriesShownOnRoute[0].id === '4',
+                  'grey' : categoriesShownOnRoute[0].id === '5',
+                }"
+                :style="`width: ${category.style.width}px;`"
+                @click="categoriesShownOnRoute[0].defaultExpended = !categoriesShownOnRoute[0].defaultExpended"
               >
                 <div class="left">
                   <span
                     class="count"
                     :class="{
-                      'red' : categoriesShownOnRoute[0].id === '1',
-                      'yellow' : categoriesShownOnRoute[0].id === '2',
-                      'green' : categoriesShownOnRoute[0].id === '3',
+                      'green' : categoriesShownOnRoute[0].id === '2',
+                      'yellow' : categoriesShownOnRoute[0].id === '3',
+                      'red' : categoriesShownOnRoute[0].id === '4',
                       'grey' : categoriesShownOnRoute[0].id === '5',
                     }"
                   >
-                    {{categoryServicesShownOnRoute(categoriesShownOnRoute[0].id).length}}
+                    {{ categoryServicesShownOnRoute(categoriesShownOnRoute[0].id).length }}
                   </span>
-                  <span class="name">{{categoriesShownOnRoute[0].name}}</span>
+                  <div class="name">
+                    {{ categoriesShownOnRoute[0].name }}
+                  </div>
                 </div>
-                <div class="right">
-                  <span class="badge" v-if="categoryContainsHiglightedServices(categoriesShownOnRoute[0].id)">{{$t("new")}}</span>
+                <button
+                  class="toggle"
+                >
                   <img
                     class="chevron"
-                    src="@/assets/images/chevron-right.svg"
+                    src="@/assets/images/chevron-down.svg"
                     aria-hidden="true"
                   >
-                </div>
-              </button>
-            </div>
-            <div class="bubble">
-              <img src="@/assets/images/triangle.svg" class="triangle" />
-              <p class="header">
-                {{$t("review_recommendations")}}
-              </p>
-              <p class="description">
-                {{$t("tap_each_category")}}
-              </p>
-            </div>
-          </div>
-          <div class="mobile">
-            <div
-              class="header"
-              :class="{
-                'green' : categoriesShownOnRoute[0].id === '2',
-                'yellow' : categoriesShownOnRoute[0].id === '3',
-                'red' : categoriesShownOnRoute[0].id === '4',
-                'grey' : categoriesShownOnRoute[0].id === '5',
-              }"
-              :style="`width: ${category.style.width}px;`"
-              @click="categoriesShownOnRoute[0].defaultExpended = !categoriesShownOnRoute[0].defaultExpended"
-            >
-              <div class="left">
-                <span
-                  class="count"
-                  :class="{
-                    'green' : categoriesShownOnRoute[0].id === '2',
-                    'yellow' : categoriesShownOnRoute[0].id === '3',
-                    'red' : categoriesShownOnRoute[0].id === '4',
-                    'grey' : categoriesShownOnRoute[0].id === '5',
-                  }"
-                >
-                  {{categoryServicesShownOnRoute(categoriesShownOnRoute[0].id).length}}
-                </span>
-                <div class="name">{{categoriesShownOnRoute[0].name}}</div>
+                </button>
               </div>
-              <button
-                class="toggle"
-              >
-                <img class="chevron" src="@/assets/images/chevron-down.svg" aria-hidden="true">
-              </button>
+              <div class="bubble">
+                <img
+                  src="@/assets/images/triangle.svg"
+                  class="triangle"
+                >
+                <p class="header">
+                  {{ $t("review_recommendations") }}
+                </p>
+                <p class="description">
+                  {{ $t("tap_each_category") }}
+                </p>
+              </div>
             </div>
+          </div>
+        </template>
+        <template
+          v-if="page === 2"
+        >
+          <div
+            class="approve"
+            :style="`top: ${approve.style.top}px; left: ${approve.style.left}px;`"
+            @click.stop
+          >
+            <input
+              id="help-checkbox"
+              v-model="approve.checked"
+              type="checkbox"
+              class="approve"
+              @click.stop
+            >
+            <label
+              for="help-checkbox"
+              class="checkbox"
+              @click.stop
+            >
+              {{ $t("approve") }}
+              <div class="box">
+                <img
+                  src="@/assets/images/check.svg"
+                  alt="check"
+                  class="check"
+                >
+              </div>
+            </label>
             <div class="bubble">
-              <img src="@/assets/images/triangle.svg" class="triangle" />
+              <img
+                src="@/assets/images/triangle.svg"
+                class="triangle"
+              >
               <p class="header">
-                {{$t("review_recommendations")}}
+                {{ $t("review_recommendations") }}
               </p>
               <p class="description">
-                {{$t("tap_each_category")}}
+                {{ $t("tap_each_category") }}
               </p>
             </div>
           </div>
-        </div>
-      </template>
-      <template
-        v-if="page === 2"
-      >
-        <div
-          class="approve"
-          :style="`top: ${approve.style.top}px; left: ${approve.style.left}px;`"
-          @click.stop
+        </template>
+        <template
+          v-if="page === 3"
         >
-          <input
-            type="checkbox"
-            id="help-checkbox"
-            class="approve"
-            v-model="approve.checked"
+          <div
+            class="details"
+            :style="`top: ${details.style.top}px; left: ${details.style.left}px; width: ${details.style.width}px;`"
             @click.stop
           >
-          <label
-            for="help-checkbox"
-            class="checkbox"
+            <div class="images">
+              <div class="badge">
+                {{ $t("new") }}
+              </div>
+              <img
+                :src="service.imageUrl"
+                alt=""
+                class="image"
+              >
+            </div>
+            <div class="bubble">
+              <img
+                src="@/assets/images/triangle.svg"
+                class="triangle"
+              >
+              <p class="header">
+                {{ $t("view_more_details") }}
+              </p>
+              <p class="description">
+                {{ $t("tap_on_the_images") }}
+              </p>
+            </div>
+          </div>
+        </template>
+        <template
+          v-if="page === 4"
+        >
+          <div
+            class="summary"
+            :style="`top: ${summary.style.top}px; left: ${summary.style.left}px; width: ${summary.style.width}px;`"
             @click.stop
           >
-            {{$t("approve")}}
-            <div class="box">
-              <img src="@/assets/images/check.svg" alt="check" class="check">
+            <div class="card">
+              <div class="row">
+                <p class="item">
+                  {{ $t("previous") }}
+                </p>
+                <p class="price">
+                  {{ serviceTotal }}
+                </p>
+              </div>
+              <div class="row bold">
+                <p class="item">
+                  {{ $t("estimate") }}
+                </p>
+                <p class="price">
+                  {{ inspectionTotal }}
+                </p>
+              </div>
+              <div class="row">
+                <p class="item">
+                  {{ $t("additional_taxes_and_fees") }}
+                </p>
+                <p class="price">
+                  {{ tax }}
+                </p>
+              </div>
+              <div class="divider" />
+              <div class="row total">
+                <p class="item">
+                  {{ $t("total_on_delivery") }}
+                </p>
+                <p class="price">
+                  {{ total }}
+                </p>
+              </div>
             </div>
-          </label>
-          <div class="bubble">
-            <img src="@/assets/images/triangle.svg" class="triangle" />
-            <p class="header">
-              {{$t("review_recommendations")}}
-            </p>
-            <p class="description">
-              {{$t("tap_each_category")}}
-            </p>
+            <div class="bubble">
+              <img
+                src="@/assets/images/triangle.svg"
+                class="triangle"
+              >
+              <p class="header">
+                {{ $t("approve_estimate") }}
+              </p>
+              <p class="description">
+                {{ $t("continue_to_checkout") }}
+              </p>
+            </div>
           </div>
-        </div>
-      </template>
-      <template
-        v-if="page === 3"
-      >
-        <div
-          class="details"
-          :style="`top: ${details.style.top}px; left: ${details.style.left}px; width: ${details.style.width}px;`"
-          @click.stop
+        </template>
+        <template
+          v-if="page === 5"
         >
-          <div class="images">
-            <div class="badge">{{$t("new")}}</div>
-            <img :src="service.imageUrl" alt="" class="image">
-          </div>
-          <div class="bubble">
-            <img src="@/assets/images/triangle.svg" class="triangle" />
-            <p class="header">
-              {{$t("view_more_details")}}
-            </p>
-            <p class="description">
-              {{$t("tap_on_the_images")}}
-            </p>
-          </div>
-        </div>
-      </template>
-      <template
-        v-if="page === 4"
-      >
-        <div
-          class="summary"
-          :style="`top: ${summary.style.top}px; left: ${summary.style.left}px; width: ${summary.style.width}px;`"
-          @click.stop
-        >
-          <div class="card">
-            <div class="row">
-              <p class="item">
-                {{$t("previous")}}
+          <div
+            class="more"
+            @click.stop
+          >
+            <div class="bubble">
+              <img
+                src="@/assets/images/triangle.svg"
+                class="triangle"
+              >
+              <p class="header">
+                {{ $t("more_help") }}
               </p>
-              <p class="price">
-                {{serviceTotal}}
-              </p>
-            </div>
-            <div class="row bold">
-              <p class="item">
-                {{$t("estimate")}}
-              </p>
-              <p class="price">
-                {{inspectionTotal}}
-              </p>
-            </div>
-            <div class="row">
-              <p class="item">
-                {{$t("additional_taxes_and_fees")}}
-              </p>
-              <p class="price">
-                {{tax}}
-              </p>
-            </div>
-            <div class="divider"></div>
-            <div class="row total">
-              <p class="item">
-                {{$t("total_on_delivery")}}
-              </p>
-              <p class="price">
-                {{total}}
+              <p class="description">
+                {{ $t("to_get_more_help") }}
               </p>
             </div>
           </div>
-          <div class="bubble">
-            <img src="@/assets/images/triangle.svg" class="triangle" />
-            <p class="header">
-              {{$t("approve_estimate")}}
-            </p>
-            <p class="description">
-              {{$t("continue_to_checkout")}}
-            </p>
-          </div>
-        </div>
-      </template>
-      <template
-        v-if="page === 5"
-      >
-        <div
-          class="more"
-          @click.stop
-        >
-          <div class="bubble">
-            <img src="@/assets/images/triangle.svg" class="triangle" />
-            <p class="header">
-              {{$t("more_help")}}
-            </p>
-            <p class="description">
-              {{$t("to_get_more_help")}}
-            </p>
-          </div>
-        </div>
-      </template>
+        </template>
 
-      <div v-if="page === 1" class="spacer" :style="`min-height: ${approve.style.bottom + 300}px;`"></div>
-      <div v-if="page === 2" class="spacer" :style="`min-height: ${category.style.bottom + 200}px;`"></div>
-      <div v-if="page === 3" class="spacer" :style="`min-height: ${details.style.bottom + 200}px;`"></div>
-      <div v-if="page === 4" class="spacer" :style="`min-height: ${summary.style.bottom + 300}px;`"></div>
-      <div v-if="page === 5" class="spacer" :style="`min-height: 300px;`"></div>
-      <div v-else></div>
-      <div class="bottom">
-        <pagination
-          class="pagination"
-          :total="5"
-          :current="page"
+        <div
+          v-if="page === 1"
+          class="spacer"
+          :style="`min-height: ${approve.style.bottom + 300}px;`"
         />
-        <button
-          class="button cta"
-          @click.stop="next()"
-          ref="button"
-        >
-          {{buttonText}}
-        </button>
-        <button
-          class="button skip"
-          @click.stop="exitHelp()"
-        >
-          {{$t("dismiss")}}
-        </button>
+        <div
+          v-if="page === 2"
+          class="spacer"
+          :style="`min-height: ${category.style.bottom + 200}px;`"
+        />
+        <div
+          v-if="page === 3"
+          class="spacer"
+          :style="`min-height: ${details.style.bottom + 200}px;`"
+        />
+        <div
+          v-if="page === 4"
+          class="spacer"
+          :style="`min-height: ${summary.style.bottom + 300}px;`"
+        />
+        <div
+          v-if="page === 5"
+          class="spacer"
+          :style="`min-height: 300px;`"
+        />
+        <div v-else />
+        <div class="bottom">
+          <pagination
+            class="pagination"
+            :total="5"
+            :current="page"
+          />
+          <button
+            ref="button"
+            class="button cta"
+            @click.stop="next()"
+          >
+            {{ buttonText }}
+          </button>
+          <button
+            class="button skip"
+            @click.stop="exitHelp()"
+          >
+            {{ $t("dismiss") }}
+          </button>
+        </div>
       </div>
-    </div>
-  </transition>
+    </transition>
   </aside>
 </template>
 
@@ -278,6 +339,7 @@ export default Vue.extend({
   components: {
     Pagination
   },
+  mixins: [formatCurrency],
   data: () => ({
     start: {
       route: '',
@@ -378,7 +440,6 @@ export default Vue.extend({
       }
     }
   },
-  mixins: [formatCurrency],
   methods: {
     next () {
       if (this.page < 5) {
@@ -440,10 +501,10 @@ export default Vue.extend({
             category.classList.add('open')
           }
           listScrollContainer.scrollTo({
-              left: 0,
-              top: 0,
-              behavior: 'smooth'
-            })
+            left: 0,
+            top: 0,
+            behavior: 'smooth'
+          })
         }
 
         this.$router.replace({ name: 'services' })
@@ -481,17 +542,16 @@ export default Vue.extend({
       }
 
       if (page === 2) {
-        
         if (listScrollContainer) {
           const category = listScrollContainer.querySelector('.category')
           if (category) {
             category.classList.add('open')
           }
           listScrollContainer.scrollTo({
-              left: 0,
-              top: 0,
-              behavior: 'smooth'
-            })
+            left: 0,
+            top: 0,
+            behavior: 'smooth'
+          })
         }
 
         const input = document.querySelector('input[type="checkbox"]')

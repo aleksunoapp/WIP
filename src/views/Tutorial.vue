@@ -1,7 +1,10 @@
 <template>
   <div class="background">
     <main class="contents">
-      <transition name="fade" mode="out-in">
+      <transition
+        name="fade"
+        mode="out-in"
+      >
         <span
           v-if="page === 1"
           class="transition__container"
@@ -14,12 +17,12 @@
           <h2
             class="subheader"
           >
-            {{$t("review")}}
+            {{ $t("review") }}
           </h2>
           <p
             class="description"
           >
-            {{$t(`description${page}`)}}
+            {{ $t(`description${page}`) }}
           </p>
         </span>
         <span
@@ -34,12 +37,12 @@
           <h2
             class="subheader"
           >
-            {{$t("approve")}}
+            {{ $t("approve") }}
           </h2>
           <p
             class="description"
           >
-            {{$t(`description${page}`)}}
+            {{ $t(`description${page}`) }}
           </p>
         </span>
         <span
@@ -54,12 +57,12 @@
           <h2
             class="subheader"
           >
-            {{$t("pickup")}}
+            {{ $t("pickup") }}
           </h2>
           <p
             class="description"
           >
-            {{$t(`description${page}`)}}
+            {{ $t(`description${page}`) }}
           </p>
         </span>
       </transition>
@@ -72,15 +75,18 @@
         class="button cta"
         @click="next()"
       >
-        {{$t("next")}}
+        {{ $t("next") }}
       </button>
-      <transition name="fade" mode="out-in">
+      <transition
+        name="fade"
+        mode="out-in"
+      >
         <button
           v-if="page !== 3"
           class="button skip"
           @click="$router.push({name: 'at-a-glance'})"
         >
-          {{$t("skip")}}
+          {{ $t("skip") }}
         </button>
       </transition>
     </main>

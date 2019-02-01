@@ -1,95 +1,116 @@
 <template>
   <aside
-  class="container"
-  :class="{'open' : modal}"
-  id="service"
-  ref="service"
-  tabindex="0"
->
-  <transition name="fade">
-    <div
-    v-if="modal"
-    @click.stop="closeService"
-    class="overlay"
+    id="service"
+    ref="service"
+    class="container"
+    :class="{'open' : modal}"
+    tabindex="0"
   >
-      <transition name="fade">
-        <div
-          v-if="modal"
-          class="modal"
-          @click.stop
-        >
+    <transition name="fade">
+      <div
+        v-if="modal"
+        class="overlay"
+        @click.stop="closeService"
+      >
+        <transition name="fade">
           <div
-            class="header"
+            v-if="modal"
+            class="modal"
+            @click.stop
           >
-            <p>
-              {{headerText}}
-            </p>
-            <button
-              @click.stop="closeService"
-              @keydown.enter.prevent="closeService"
-              class="close"
+            <div
+              class="header"
             >
-              <div class="top"></div>
-              <div class="bottom"></div>
-            </button>
-          </div>
-          <div
-            class="category"
-            :class="categoryColor"
-          >
-            <div class="name">{{categoryName}}</div>
-            <div class="price">
               <p>
-                <span>
-                  {{$t("total")}}:
-                </span>
-                <span class="total">{{total}}</span>
+                {{ headerText }}
               </p>
+              <button
+                class="close"
+                @click.stop="closeService"
+                @keydown.enter.prevent="closeService"
+              >
+                <div class="top" />
+                <div class="bottom" />
+              </button>
+            </div>
+            <div
+              class="category"
+              :class="categoryColor"
+            >
+              <div class="name">
+                {{ categoryName }}
+              </div>
+              <div class="price">
+                <p>
+                  <span>
+                    {{ $t("total") }}:
+                  </span>
+                  <span class="total">
+                    {{ total }}
+                  </span>
+                </p>
+              </div>
+            </div>
+            <div class="service">
+              <div class="name">
+                {{ name }}
+              </div>
+              <div class="price">
+                {{ price }}
+              </div>
+            </div>
+            <div class="images">
+              <div class="badge">
+                {{ $t("new") }}
+              </div>
+              <img
+                :src="service.imageUrl"
+                alt=""
+                class="image"
+              >
+            </div>
+            <p
+              v-if="comment"
+              class="description"
+            >
+              {{ comment }}
+            </p>
+            <p class="description">
+              {{ advisorComment }}
+            </p>
+            <nav class="navigation">
+              <button
+                class="back"
+                @click="back()"
+              >
+                {{ $t("back") }}
+              </button>
+              <button
+                class="next"
+                @click="next()"
+              >
+                {{ $t("next") }}
+              </button>
+            </nav>
+            <div class="buttons">
+              <button
+                class="button cta green"
+                @click="approve()"
+              >
+                {{ $t("approve") }}
+              </button>
+              <button
+                class="button skip"
+                @click="reject()"
+                @keydown.tab="$refs.service.focus()"
+              >
+                {{ $t("not_today") }}
+              </button>
             </div>
           </div>
-          <div class="service">
-            <div class="name">{{name}}</div>
-            <div class="price">{{price}}</div>
-          </div>
-          <div class="images">
-            <div class="badge">{{$t("new")}}</div>
-            <img :src="service.imageUrl" alt="" class="image">
-          </div>
-          <p v-if="comment" class="description">{{comment}}</p>
-          <p class="description">{{advisorComment}}</p>
-          <nav class="navigation">
-            <button
-              @click="back()"
-              class="back"
-            >
-              {{$t("back")}}
-            </button>
-            <button
-              @click="next()"
-              class="next"
-            >
-              {{$t("next")}}
-            </button>
-          </nav>
-          <div class="buttons">
-            <button
-              class="button cta green"
-              @click="approve()"
-            >
-              {{$t("approve")}}
-            </button>
-            <button
-              @click="reject()"
-              class="button skip"
-              @keydown.tab="$refs.service.focus()"
-            >
-              {{$t("not_today")}}
-            </button>
-          </div>
-        </div>
-      </transition>
-    </div>
-  </transition>
+        </transition>
+      </div>
+    </transition>
   </aside>
 </template>
 
@@ -99,6 +120,7 @@ import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import { focus, formatCurrency } from '@/mixins.js'
 
 export default Vue.extend({
+  mixins: [focus, formatCurrency],
   computed: {
     ...mapState([
       'customerConcernsLabel',
@@ -132,12 +154,14 @@ export default Vue.extend({
       return this.$store.getters.categoryName(this.service.category)
     },
     total () {
+      let formatted = ''
       if (this.$route.name === 'services') {
-        return this.formatCurrency(this.$store.getters.total.inspection)
+        formatted = this.formatCurrency(this.$store.getters.total.inspection)
       }
       if (this.$route.name === 'additional-services') {
-        return this.formatCurrency(this.$store.getters.total.additional)
+        formatted = this.formatCurrency(this.$store.getters.total.additional)
       }
+      return formatted
     },
     headerText () {
       if (this.service.category > '5') {
@@ -191,7 +215,6 @@ export default Vue.extend({
       }
     }
   },
-  mixins: [focus, formatCurrency],
   methods: {
     ...mapMutations([
       'closeService',

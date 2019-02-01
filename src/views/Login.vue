@@ -1,42 +1,50 @@
 <template>
   <div class="container">
     <div class="background">
-      <div v-if="loading.getMetadata" class="loader">
-          <div class="gauge-loader">
-          </div>
+      <div
+        v-if="loading.getMetadata"
+        class="loader"
+      >
+        <div class="gauge-loader" />
       </div>
-      <main v-else class="contents">
+      <main
+        v-else
+        class="contents"
+      >
         <image-container
           class="logo"
           :src="dealer.logoUrl"
         />
         <h1 class="header">
-          {{$t("header")}}
+          {{ $t("header") }}
         </h1>
-        <fieldset class="fieldset" :disabled="loading.logIn">
+        <fieldset
+          class="fieldset"
+          :disabled="loading.logIn"
+        >
           <form
-            @submit.prevent="enter()"
             class="form"
+            @submit.prevent="enter()"
           >
             <label
               class="label"
               :class="{'error' : error}"
               for="login"
             >
-              {{customer.isBusiness ? $t("please_enter_your_company_name") : $t("please_enter_your_last_name")}}
+              {{ customer.isBusiness ? $t("please_enter_your_company_name") : $t("please_enter_your_last_name") }}
             </label>
             <input
+              id="login"
+              v-model="code"
               class="input"
               type="text"
-              id="login"
               autofocus
-              v-model="code"
             >
             <button
               class="button cta"
               type="submit"
             >
-              {{$t("enter")}}
+              {{ $t("enter") }}
             </button>
           </form>
         </fieldset>

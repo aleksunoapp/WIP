@@ -1,9 +1,9 @@
 <template>
   <div class="background">
     <main class="contents">
-      <p>{{$t("you_have")}}</p>
-      <h1>{{totalCount}} {{$tc("recommendations", totalCount)}}</h1>
-      <p>{{$tc("that_need_your_attention", totalCount)}}</p>
+      <p>{{ $t("you_have") }}</p>
+      <h1>{{ totalCount }} {{ $tc("recommendations", totalCount) }}</h1>
+      <p>{{ $tc("that_need_your_attention", totalCount) }}</p>
 
       <figure class="card">
         <img
@@ -12,12 +12,12 @@
         >
         <figcaption>
           <span>
-            {{$t("your_service_consultant")}}
+            {{ $t("your_service_consultant") }}
           </span>
           <span
             class="consultant__name"
           >
-            {{advisor.advisorName}}
+            {{ advisor.advisorName }}
           </span>
         </figcaption>
       </figure>
@@ -25,42 +25,55 @@
       <template
         v-if="timer.total > 0"
       >
-        <p>{{$t("select_your_services_in")}}</p>
+        <p>{{ $t("select_your_services_in") }}</p>
         <p
-          class="time"
           v-if="timer.total"
+          class="time"
         >
           <span
+            v-if="timer.days"
             class="unit"
-          v-if="timer.days">
-            <span class="number">{{timer.days}}</span>d
+          >
+            <span class="number">
+              {{ timer.days }}
+            </span>d
           </span>
           <span
             class="unit"
           >
-            <span class="number">{{timer.hours}}</span>h
+            <span class="number">
+              {{ timer.hours }}
+            </span>h
           </span>
           <span
             class="unit"
           >
-            <span class="number">{{timer.minutes}}</span>m
+            <span class="number">
+              {{ timer.minutes }}
+            </span>m
           </span>
           <span
             class="unit"
           >
-            <span class="number">{{timer.seconds}}</span>s
+            <span class="number">
+              {{ timer.seconds }}
+            </span>s
           </span>
         </p>
-        <p>{{$t("to_have_your_vehicle_ready_by")}}</p>
+        <p>{{ $t("to_have_your_vehicle_ready_by") }}</p>
 
         <div class="card wide">
           <div class="clock__background">
-            <img class="clock" src="@/assets/images/clock.svg" aria-hidden="true">
+            <img
+              class="clock"
+              src="@/assets/images/clock.svg"
+              aria-hidden="true"
+            >
           </div>
           <p
             class="pickup__time"
           >
-            {{getPickupTime()}}
+            {{ getPickupTime() }}
           </p>
         </div>
       </template>
@@ -68,7 +81,7 @@
         class="button cta"
         @click="$router.push({name: 'services'})"
       >
-        {{$tc("view_recommendations", totalCount)}}
+        {{ $tc("view_recommendations", totalCount) }}
       </button>
     </main>
   </div>

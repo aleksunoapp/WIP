@@ -10,21 +10,21 @@
         class="header"
       >
         <select
-          class="select"
           v-model="locale"
+          class="select"
         >
           <option
             v-for="language in languages"
             :key="language.culture"
             :value="language.culture"
           >
-            {{language.name}}
+            {{ language.name }}
           </option>
         </select>
         <p
           class="text"
         >
-          {{dealer.name}}
+          {{ dealer.name }}
         </p>
       </div>
       <div
@@ -37,16 +37,16 @@
           class="text"
           :class="{'uppercase' : $route.name !== 'login'}"
         >
-          {{text()}}
+          {{ text() }}
         </p>
         <div class="placeholder">
           <transition name="fade">
             <button
               v-if="$route.name === 'services'"
               class="help"
-              @click="openHelp()"
               :disabled="help"
               aria-label="help"
+              @click="openHelp()"
             >
               <img
                 class="image"

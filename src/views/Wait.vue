@@ -1,20 +1,32 @@
 <template>
   <div class="background">
     <main class="contents">
-      <img src="@/assets/images/approve-green.svg" alt="pencil making a check mark" class="image">
+      <img
+        src="@/assets/images/approve-green.svg"
+        alt="pencil making a check mark"
+        class="image"
+      >
       <div class="card">
-          <div class="border" />
-          <div class="wrapper">
-            <p class="text">{{$t('wait_there_are')}}</p>
-            <p class="text large"><span class="green">{{previouslyUnapprovedServices.length}}</span> {{$t('recommendations')}}</p>
-            <p class="text">{{$t('pending_approval')}}</p>
-          </div>
+        <div class="border" />
+        <div class="wrapper">
+          <p class="text">
+            {{ $t('wait_there_are') }}
+          </p>
+          <p class="text large">
+            <span class="green">
+              {{ previouslyUnapprovedServices.length }}
+            </span> {{ $t('recommendations') }}
+          </p>
+          <p class="text">
+            {{ $t('pending_approval') }}
+          </p>
+        </div>
       </div>
       <button
-        @click="$router.push({name: 'wait-services'})"
         class="button cta green"
+        @click="$router.push({name: 'wait-services'})"
       >
-        {{$tc("view_recommendations", previouslyUnapprovedServices.length)}}
+        {{ $tc("view_recommendations", previouslyUnapprovedServices.length) }}
       </button>
     </main>
   </div>
@@ -24,14 +36,14 @@
 import Vue from 'vue'
 import { mapGetters, mapMutations } from 'vuex'
 export default Vue.extend({
+  computed: {
+    ...mapGetters(['previouslyUnapprovedServices'])
+  },
   created () {
     this.logEvent('Started viewing wait page')
   },
   beforeDestroy () {
     this.logEvent('Finished viewing wait page')
-  },
-  computed: {
-    ...mapGetters(['previouslyUnapprovedServices'])
   },
   methods: {
     ...mapMutations([

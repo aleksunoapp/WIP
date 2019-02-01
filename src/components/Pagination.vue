@@ -12,8 +12,7 @@
         <div
           class="dot"
           :class="{'active' : i === current}"
-        >
-        </div>
+        />
       </li>
     </ul>
   </nav>
@@ -24,10 +23,12 @@ export default Vue.extend({
   name: 'Pagination',
   props: {
     total: {
+      type: Number,
       required: true,
       default: () => 1
     },
     current: {
+      type: Number,
       required: true,
       default: () => 1
     }
