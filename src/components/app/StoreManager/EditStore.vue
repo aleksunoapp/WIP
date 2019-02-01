@@ -357,6 +357,22 @@
 													</tr>
 													<tr>
 														<td>
+															Store Has Immediate Delivery
+														</td>
+														<td>
+															<el-switch v-model="metaToBeEdited.delivery_immediate"
+															           :disabled="metaToBeEdited.delivery === 0 || metaToBeEdited.opening_soon === 1 || !$root.permissions['stores profile update']? true : false"
+															           active-color="#0c6"
+															           inactive-color="#ff4949"
+															           :active-value="1"
+															           :inactive-value="0"
+															           active-text="Yes"
+															           inactive-text="No">
+															</el-switch>
+														</td>
+													</tr>
+													<tr>
+														<td>
 															ASAP Ordering
 														</td>
 														<td>

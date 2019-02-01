@@ -396,6 +396,22 @@
 											</tr>
 											<tr>
 												<td>
+													Store Has Immediate Delivery
+												</td>
+												<td>
+													<el-switch v-model="newStoreMeta.delivery_immediate"
+													           :disabled="newStoreMeta.delivery === 0 || newStoreMeta.opening_soon === 1"
+													           active-color="#0c6"
+													           inactive-color="#ff4949"
+													           :active-value="1"
+													           :inactive-value="0"
+													           active-text="Yes"
+													           inactive-text="No">
+													</el-switch>
+												</td>
+											</tr>
+											<tr>
+												<td>
 													ASAP Ordering
 												</td>
 												<td>
@@ -834,6 +850,7 @@ export default {
 				current_catering_status: 0,
 				delivery: 0,
 				current_delivery_status: 0,
+				delivery_immediate: 0,
 				online_ordering: 0,
 				current_online_ordering_status: 0,
 				merchant_id: null,
@@ -1165,6 +1182,7 @@ export default {
 				current_catering_status: 0,
 				delivery: 0,
 				current_delivery_status: 0,
+				delivery_immediate: 0,
 				online_ordering: 0,
 				current_online_ordering_status: 0,
 				merchant_id: null,
