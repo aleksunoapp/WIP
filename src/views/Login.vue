@@ -13,7 +13,7 @@
         <h1 class="header">
           {{$t("header")}}
         </h1>
-        <fieldset :disabled="loading.logIn">
+        <fieldset class="fieldset" :disabled="loading.logIn">
           <form
             @submit.prevent="enter()"
             class="form"
@@ -435,17 +435,22 @@ export default Vue.extend({
           font-size: inherit;
         }
       }
-      .form {
-        .label {
-          transition: all .2s ease-out;
-          text-transform: uppercase;
-        }
-        .label.error {
-          color: var(--red);
-          transition: all .2s ease-in;
-        }
-        .input {
-          text-transform: none;
+      .fieldset {
+        margin: none;
+        padding: none;
+        border: none;
+        .form {
+          .label {
+            transition: all .2s ease-out;
+            text-transform: uppercase;
+          }
+          .label.error {
+            color: var(--red);
+            transition: all .2s ease-in;
+          }
+          .input {
+            text-transform: none;
+          }
         }
       }
     }
