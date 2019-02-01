@@ -76,21 +76,42 @@
 						<div class="col-md-6">
 							<div class="side-by-side-wrapper">
 								<p class="paper-width-label">Paper width:</p>
-								<el-dropdown trigger="click"
-								             @command="updateNewPrinterPaperWidth"
-								             size="mini"
-								             :show-timeout="50"
-								             :hide-timeout="50">
-									<el-button size="mini">
-										{{ newPrinter.paper_width }}
-										<span v-if="newPrinter.paper_width !== 'Select'">mm</span>
-										<i class="el-icon-arrow-down el-icon--right"></i>
-									</el-button>
-									<el-dropdown-menu slot="dropdown">
-										<el-dropdown-item command="58">58mm</el-dropdown-item>
-										<el-dropdown-item command="80">80mm</el-dropdown-item>
-									</el-dropdown-menu>
-								</el-dropdown>
+								<el-select
+									v-model="newPrinter.paper_width"
+									placeholder="select"
+									size="mini"
+								>
+									<el-option
+										label="58mm"
+										value="58"
+									>
+									</el-option>
+									<el-option
+										label="80mm"
+										value="80"
+									>
+									</el-option>
+								</el-select>
+							</div>
+
+							<div class="side-by-side-wrapper margin-top-20">
+								<p class="paper-width-label">Version:</p>
+								<el-select
+									v-model="newPrinter.version"
+									placeholder="select"
+									size="mini"
+								>
+									<el-option
+										label="1"
+										value="1"
+									>
+									</el-option>
+									<el-option
+										label="2"
+										value="2"
+									>
+									</el-option>
+								</el-select>
 							</div>
 						</div>
 						<div class="col-md-6">
@@ -191,6 +212,9 @@
 											<span>
 												<strong>Paper Width: </strong>{{ printer.paper_width }}mm
 											</span><br>
+											<span>
+												<strong>Version: </strong>{{ printer.version }}
+											</span>
 										</div>
 										<div class="col-md-5">
 											<span>
@@ -245,9 +269,10 @@ export default {
 				printer_key: '',
 				printer_name: '',
 				created_by: this.$root.createdBy,
-				paper_width: 'Select',
+				paper_width: '',
 				copies: '1',
-				status: 1
+				status: 1,
+				version: ''
 			},
 			errorMessage: '',
 			newPrinterCollapse: true
@@ -272,15 +297,6 @@ export default {
 	},
 	methods: {
 		/**
-		 * To update the paper_width property of newPrinter.
-		 * @function
-		 * @param {object} value - The new value to assign.
-		 * @returns {undefined}
-		 */
-		updateNewPrinterPaperWidth (value) {
-			this.newPrinter.paper_width = value
-		},
-		/**
 		 * To reset the create form.
 		 * @function
 		 * @returns {undefined}
@@ -289,9 +305,10 @@ export default {
 			this.newPrinter.printer_serialno = ''
 			this.newPrinter.printer_key = ''
 			this.newPrinter.printer_name = ''
-			this.newPrinter.paper_width = 'Select'
+			this.newPrinter.paper_width = ''
 			this.newPrinter.copies = '1'
 			this.newPrinter.status = 1
+			this.newPrinter.version = ''
 		},
 		/**
 		 * To get the printers for a store.
@@ -385,11 +402,10 @@ export default {
 					reject('Printer key cannot be blank')
 				} else if (!addPrinterVue.newPrinter.printer_serialno.length) {
 					reject('Printer serial number cannot be blank')
-				} else if (
-					!addPrinterVue.newPrinter.paper_width.length ||
-					addPrinterVue.newPrinter.paper_width === 'Select'
-				) {
+				} else if (!addPrinterVue.newPrinter.paper_width.length) {
 					reject('Select paper width')
+				} else if (!addPrinterVue.newPrinter.version) {
+					reject('Select version')
 				} else if (!/^\+?(0|[1-9]\d*)$/.test(addPrinterVue.newPrinter.copies)) {
 					reject('Select number of copies')
 				}

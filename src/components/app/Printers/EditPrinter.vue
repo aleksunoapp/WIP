@@ -53,21 +53,46 @@
 			</fieldset>
 			<div class="side-by-side-wrapper">
 				<p class="paper-width-label">Paper width:</p>
-				<el-dropdown trigger="click"
-				             @command="updatePrinterToBeEditedPaperWidth"
-				             size="mini"
-				             :show-timeout="50"
-				             :hide-timeout="50">
-					<el-button size="mini">
-						{{ printerToBeEdited.paper_width }}mm
-						<i class="el-icon-arrow-down el-icon--right"></i>
-					</el-button>
-					<el-dropdown-menu slot="dropdown">
-						<el-dropdown-item command="58">58mm</el-dropdown-item>
-						<el-dropdown-item command="80">80mm</el-dropdown-item>
-					</el-dropdown-menu>
-				</el-dropdown>
+				<el-select
+					v-model="printerToBeEdited.paper_width"
+					placeholder="select"
+					size="mini"
+					:disabled="!$root.permissions['printers update']"
+				>
+					<el-option
+						label="58mm"
+						value="58"
+					>
+					</el-option>
+					<el-option
+						label="80mm"
+						value="80"
+					>
+					</el-option>
+				</el-select>
 			</div>
+
+			<div class="side-by-side-wrapper">
+				<p class="paper-width-label">Version:</p>
+				<el-select
+					v-model="printerToBeEdited.version"
+					placeholder="select"
+					size="mini"
+					:disabled="!$root.permissions['printers update']"
+				>
+					<el-option
+						label="1"
+						value="1"
+					>
+					</el-option>
+					<el-option
+						label="2"
+						value="2"
+					>
+					</el-option>
+				</el-select>
+			</div>
+
 			<div class="side-by-side-wrapper">
 				<p class="side-by-side-item status-label">Status:</p>
 				<el-switch :disabled="!$root.permissions['printers update']"
@@ -122,7 +147,8 @@ export default {
 				created_by: '',
 				paper_width: '',
 				copies: '1',
-				status: 0
+				status: 0,
+				version: ''
 			},
 			errorMessage: ''
 		}
@@ -141,17 +167,6 @@ export default {
 		this.showEditPrinterModal = true
 	},
 	methods: {
-		/**
-		 * To update the paper_width property of printerToBeEdited.
-		 * @function
-		 * @param {object} value - The new value to assign.
-		 * @returns {undefined}
-		 */
-		updatePrinterToBeEditedPaperWidth (value) {
-			if (this.$root.permissions['printers update']) {
-				this.printerToBeEdited.paper_width = value
-			}
-		},
 		/**
 		 * To check if the category data is valid before submitting to the backend.
 		 * @function
@@ -304,34 +319,22 @@ export default {
 
 <style scoped>
 .side-by-side-wrapper {
+  margin: 10px 0;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  align-items: flex-end;
-  margin-bottom: 20px;
+  align-items: center;
 }
 .side-by-side-item {
   max-width: 45%;
 }
 .paper-width-label {
-  margin-bottom: 0.5rem;
-  margin-right: 0.5rem;
+  margin: 0;
+  padding: 0.5rem 1rem 0.5rem 0;
   color: rgb(153, 153, 153);
 }
 .dropdown.side-by-side-item {
   margin-left: 10px;
-}
-@media (max-width: 1150px) {
-  .side-by-side-wrapper {
-    flex-direction: column;
-    align-items: center;
-  }
-  .side-by-side-item {
-    max-width: 100%;
-  }
-  .dropdown.side-by-side-item {
-    margin-left: 0px;
-  }
 }
 .status-label {
   margin: 0 5px 0 0;
