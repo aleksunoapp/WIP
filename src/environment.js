@@ -2,7 +2,7 @@ function isDev () {
   return window.location.hostname.split('.')[0] === 'localhost'
 }
 function isStaging () {
-  return window.location.hostname.split('.')[0] === 'dmpi2'
+  return ['dmpi2', 'dfx-dmpi2'].includes(window.location.hostname.split('.')[0])
 }
 
 export const baseUrl = (() => {
