@@ -1,0 +1,46 @@
+{
+  "executionRoleArn": "#{EXECUTION_ROLE_ARN}#",
+  "containerDefinitions": [
+    {
+      "dnsSearchDomains": [
+        "#{DNS_SEARCH_DOMAINS}#"
+      ],
+      "portMappings": [
+        {
+          "hostPort": 0,
+          "protocol": "tcp",
+          "containerPort": 80
+        }
+      ],
+      "cpu": 0,
+      "environment": [
+        {
+          "name": "ApiUrl",
+          "value": "#{API_URL}#"
+        },
+       {
+          "name": "UserActivityLog",
+          "value": "#{USER_ACTIVITY_LOG}#"
+        },
+       {
+          "name": "DmpiScope",
+          "value": "#{DMPI_SCOPE}#"
+        }
+      ],
+      "dnsServers": [
+        #{DNS_SERVERS}#
+      ],
+      "mountPoints": [],
+      "memory": #{MEMORY}#,
+      "volumesFrom": [],
+      "image": "#{IMAGE}#:#{Build.BuildNumber}#",
+      "essential": true,
+      "name": "#{FAMILY}#"
+    }
+  ],
+  "placementConstraints": [],
+  "taskRoleArn": "#{TASK_ROLE_ARN}#",
+  "family": "#{FAMILY}#",
+  "requiresCompatibilities": [],
+  "volumes": []
+}
