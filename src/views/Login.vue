@@ -432,7 +432,7 @@ export default Vue.extend({
         letter-spacing: 1px;
         font-size: 2rem;
         @media (min-width: 768px) {
-          font-size: inherit;
+          font-size: 2.5rem;
         }
       }
       .fieldset {
