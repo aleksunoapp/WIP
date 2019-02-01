@@ -456,6 +456,6 @@ export const messages = {
     pending_approval: 'pendientes de aprobación',
     // additional
     hey: '',
-    additional_recommendation: ''
+    additional_recommendation: 'Recomendación adicional | Recomendaciones adicionales'
   }
 }

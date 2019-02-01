@@ -503,8 +503,8 @@ export default Vue.extend({
           let unit = getComputedStyle(label).getPropertyValue('--unit')
           unit = unit.substr(0, unit.length - 2)
           this.approve.checked = input.checked
-          this.approve.style.top = label.offsetTop - unit
-          this.approve.style.left = label.offsetLeft - unit
+          this.approve.style.top = label.offsetTop - unit + 60
+          this.approve.style.left = label.offsetLeft + listScrollContainer.offsetLeft
           this.approve.show = true
         }
         this.page = page
