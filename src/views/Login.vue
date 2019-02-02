@@ -350,6 +350,9 @@ export default Vue.extend({
     transform: rotate(-50deg);
   }
 }
+.form {
+  text-align: center;
+}
 .container {
   height: 100%;
   overflow: scroll;
