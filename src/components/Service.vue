@@ -314,14 +314,11 @@ export default Vue.extend({
     pointer-events: initial;
     .header {
       position: relative;
-      display: none;
+      display: flex;
       justify-content: center;
       align-items: center;
       min-height: 6rem;
       border-bottom: 1px solid var(--grey-medium-background);
-      @media (min-width: 992px) {
-        display: flex;
-      }
       .close {
         position: absolute;
         top: 2rem;
@@ -364,9 +361,6 @@ export default Vue.extend({
       justify-content: space-between;
       padding: 0 1rem;
       color: var(--white);
-      @media (min-width: 992px) {
-        display: none;
-      }
       &.red {
         background-color: var(--red);
       }
