@@ -107,6 +107,7 @@ export default Vue.extend({
         background-color: var(--white);
         .text {
           margin: 0.5rem 0;
+          text-align: center;
           &.large {
             font-family: 'Futura Heavy';
             font-weight: 700;
