@@ -130,12 +130,16 @@ export default Vue.extend({
       'serviceById',
       'categoriesShownOnRoute',
       'categoryServicesShownOnRoute',
-      'count'
+      'count',
+      'isPass',
+      'previouslyUnapprovedServices'
     ]),
     services () {
       let services = []
       for (const category of this.categoriesShownOnRoute) {
-        services = services.concat(this.categoryServicesShownOnRoute(category.id))
+        if (!this.isPass(category.id)) {
+          services = services.concat(this.categoryServicesShownOnRoute(category.id))
+        }
       }
       return services
     },
@@ -245,8 +249,12 @@ export default Vue.extend({
         }
         if (this.$route.name === 'additional-services') {
           if (this.count.actionable) {
-            this.getTax()
-            this.$router.push({ name: 'additional-summary' })
+            if (this.previouslyUnapprovedServices.length) {
+              this.$router.push({ name: 'wait' })
+            } else {
+              this.getTax()
+              this.$router.push({ name: 'additional-summary' })
+            }
           } else {
             this.$router.push({ name: 'thanks' })
           }
