@@ -126,14 +126,10 @@ export const actions = {
     if (getters.additionalServices.length) {
       router.push({ name: 'additional' })
     } else {
-      if (getters.count.actionable) {
-        router.push({ name: 'tutorial' })
+      if (state.services.length) {
+        router.push({ name: 'at-a-glance' })
       } else {
-        if (state.services.length) {
-          router.push({ name: 'at-a-glance' })
-        } else {
-          router.push({ name: 'summary' })
-        }
+        router.push({ name: 'summary' })
       }
     }
     commit('setLoading', { key: 'logIn', loading: false })
