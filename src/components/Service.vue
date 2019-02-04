@@ -22,7 +22,7 @@
               class="header"
             >
               <p>
-                {{ headerText }}
+                {{ $t('recommendation') }}
               </p>
               <button
                 class="close"
@@ -123,7 +123,6 @@ export default Vue.extend({
   mixins: [focus, formatCurrency],
   computed: {
     ...mapState([
-      'customerConcernsLabel',
       'modal',
       'service'
     ]),
@@ -162,13 +161,6 @@ export default Vue.extend({
         formatted = this.formatCurrency(this.$store.getters.total.additional)
       }
       return formatted
-    },
-    headerText () {
-      if (this.service.category > '5') {
-        return this.customerConcernsLabel
-      } else {
-        return this.$t('recommendation')
-      }
     },
     name () {
       if (!this.service.parentServiceId) {

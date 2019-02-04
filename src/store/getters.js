@@ -32,7 +32,18 @@ export const getters = {
     return getters.categoriesShown
   },
   categoryName: (state) => (id) => {
-    const category = state.categories.find((category) => category.id === id)
+    const idMap = {
+      1: '1',
+      2: '2',
+      3: '3',
+      4: '4',
+      5: '5',
+      6: '5',
+      7: '5',
+      8: '5',
+      9: '5'
+    }
+    const category = state.categories.find((category) => category.id === idMap[id])
     return category ? category.name : ''
   },
   categoryById: (state) => (id) => {
