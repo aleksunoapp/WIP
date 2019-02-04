@@ -159,10 +159,10 @@
                 class="triangle"
               >
               <p class="header">
-                {{ $t("review_recommendations") }}
+                {{ $t("approve_recommendations") }}
               </p>
               <p class="description">
-                {{ $t("tap_each_category") }}
+                {{ $t("tap_the_checkbox") }}
               </p>
             </div>
           </div>
