@@ -352,7 +352,7 @@ export const messages = {
     pending_approval: 'à approuver',
     // additional
     hey: '',
-    additional_recommendation: ''
+    additional_recommendation: 'Recommandation supplémentaire | Recommandations supplémentaires'
   },
   'es-MX': {
     // expired
