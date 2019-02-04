@@ -27,7 +27,7 @@
               v-if="service.isHighlighted"
               class="badge"
             >
-              {{ $t("new") }}
+              {{ $t("updated") }}
             </span>
             {{ service.name }}
           </p>

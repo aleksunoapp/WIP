@@ -48,7 +48,7 @@
                       v-if="categoryContainsHiglightedServices(categoriesShownOnRoute[0].id)"
                       class="badge"
                     >
-                      {{ $t("new") }}
+                      {{ $t("updated") }}
                     </span>
                     <img
                       class="chevron"
@@ -177,7 +177,7 @@
           >
             <div class="images">
               <div class="badge">
-                {{ $t("new") }}
+                {{ $t("updated") }}
               </div>
               <img
                 :src="service.imageUrl"

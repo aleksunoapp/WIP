@@ -80,7 +80,7 @@ export const messages = {
     at: 'at',
     // inspection
     total_estimate: 'Total Estimate',
-    new: 'New',
+    updated: 'Updated',
     free: 'Free',
     confirm: 'Confirm',
     no_issue_found: 'No issue was found. Please see comments for more information.',
@@ -187,7 +187,7 @@ export const messages = {
     at: 'at',
     // inspection
     total_estimate: 'Total Estimate',
-    new: 'New',
+    updated: 'Updated',
     free: 'Free',
     confirm: 'Confirm',
     no_issue_found: 'No issue was found.  Please see comments for more information.',
@@ -294,7 +294,7 @@ export const messages = {
     at: 'à',
     // inspection
     total_estimate: 'Total du devis',
-    new: 'Nouveau',
+    updated: 'mise à jour',
     free: 'Gratuit',
     confirm: 'Confirmer',
     no_issue_found: 'Aucun problème trouvé. Veuillez voir les commentaires pour en savoir plus.',
@@ -401,7 +401,7 @@ export const messages = {
     at: 'a las',
     // inspection
     total_estimate: 'Total presupuesto',
-    new: 'Nueva',
+    updated: 'Actualizada',
     free: 'Gratis',
     confirm: 'Confirmar',
     no_issue_found: 'No se encontró ningún problema. Vea los comentarios para obtener más información.',

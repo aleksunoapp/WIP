@@ -61,7 +61,7 @@
             </div>
             <div class="images">
               <div class="badge">
-                {{ $t("new") }}
+                {{ $t("updated") }}
               </div>
               <img
                 :src="service.imageUrl"

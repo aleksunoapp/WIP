@@ -47,7 +47,7 @@
                 v-if="categoryContainsHiglightedServices(category.id)"
                 class="badge"
               >
-                {{ $t("new") }}
+                {{ $t("updated") }}
               </span>
               <img
                 class="chevron"
