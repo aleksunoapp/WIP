@@ -139,6 +139,8 @@ export const messages = {
     were_sorry_we_dont_recognize: 'We\'re sorry but we don\'t recognize',
     in_our_database: 'in our database.',
     we_couldnt_get_tax: 'We couldn\'t get the taxes and fees',
+    call_us_at: 'Call us at',
+    try_again: 'Try again',
     // wait
     wait_there_are: 'Wait, there are still',
     pending_approval: 'pending approval',
@@ -243,6 +245,8 @@ export const messages = {
     were_sorry_we_dont_recognize: 'We\'re sorry but we don\'t recognize',
     in_our_database: 'in our database.',
     we_couldnt_get_tax: 'We couldn\'t get the taxes and fees',
+    call_us_at: 'Call us at',
+    try_again: 'Try again',
     // wait
     wait_there_are: 'Wait, there are still',
     pending_approval: 'pending approval',
@@ -347,6 +351,8 @@ export const messages = {
     were_sorry_we_dont_recognize: 'Désolé mais le nom',
     in_our_database: 'est non reconnu dans notre système.',
     we_couldnt_get_tax: 'Nous n’avons pas pu obtenir le montant des taxes et des frais',
+    call_us_at: 'Veuillez nous contacter au',
+    try_again: 'Réessayer',
     // wait
     wait_there_are: 'Attendez, il vous reste encore',
     pending_approval: 'à approuver',
@@ -451,6 +457,8 @@ export const messages = {
     were_sorry_we_dont_recognize: 'Lo sentimos, pero no reconocemos',
     in_our_database: 'en nuestra base de datos.',
     we_couldnt_get_tax: 'No pudimos obtener los impuestos y cargos',
+    call_us_at: 'Llámenos al',
+    try_again: 'Vuelva a intentarlo',
     // wait
     wait_there_are: 'Espere, todavía hay',
     pending_approval: 'pendientes de aprobación',

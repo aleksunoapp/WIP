@@ -12,7 +12,7 @@
         <transition name="fade">
           <div
             v-if="error"
-            class="body"
+            class="modal"
             @click.stop
           >
             <div class="header">
@@ -29,8 +29,34 @@
                 <div class="bottom" />
               </button>
             </div>
-            <div class="reasons">
-              {{ error }}
+            <div class="body">
+              <p class="text">
+                {{ error }}
+              </p>
+              <template v-if="$route.name === 'login'">
+                <button
+                  class="button cta"
+                  type="button"
+                  value="try again"
+                  @click="tryAgain()"
+                >
+                  {{ $t("try_again") }}
+                </button>
+                <a
+                  class="item"
+                  :href="`tel:${dealer.phone}`"
+                  @click="logEvent('Clicked phone link');"
+                >
+                  <img
+                    src="@/assets/images/phone.svg"
+                    alt="phone"
+                    class="icon"
+                  >
+                  <div class="text">
+                    {{ $t("call_us_at") }} {{ dealer.phone }}
+                  </div>
+                </a>
+              </template>
             </div>
           </div>
         </transition>
@@ -42,11 +68,14 @@
 <script>
 import Vue from 'vue'
 import { mapMutations, mapState } from 'vuex'
+import { focus } from '@/mixins.js'
 
 export default Vue.extend({
+  mixins: [focus],
   computed: {
     ...mapState([
-      'error'
+      'error',
+      'dealer'
     ])
   },
   watch: {
@@ -59,6 +88,11 @@ export default Vue.extend({
     }
   },
   methods: {
+    tryAgain () {
+      this.clearError()
+      this.logEvent('Closed error popup')
+      this.focus('input#login')
+    },
     close () {
       this.clearError()
       this.logEvent('Closed error popup')
@@ -90,7 +124,7 @@ export default Vue.extend({
   height: 100%;
   pointer-events: initial;
   background-color: var(--grey-transparent);
-  .body {
+  .modal {
     max-width: 768px;
     margin: 0 2rem;
     background-color: var(--white);
@@ -102,10 +136,6 @@ export default Vue.extend({
       align-items: center;
       min-height: 6rem;
       border-bottom: 1px solid var(--grey-medium-background);
-      .text {
-        margin: 0 6rem 0 2rem;
-        text-transform: uppercase;
-      }
       .close {
         position: absolute;
         top: 2rem;
@@ -142,45 +172,36 @@ export default Vue.extend({
           transform-origin: 0 -2px;
         }
       }
-    }
-  .reasons {
-    display: flex;
-    flex-direction: column;
-    padding: 1rem;
-    .reason {
-      display: flex;
-      align-items: center;
-      padding: 1rem;
-      input {
-        display: none;
+      .text {
+        margin: 0 6rem 0 2rem;
+        text-transform: uppercase;
       }
-      .empty {
-        width: 2.5rem;
-        height: 2.5rem;
-        display: inline-flex;
+    }
+    .body {
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+      .text {}
+      .item {
+        display: flex;
         justify-content: center;
         align-items: center;
-        margin-right: 2rem;
-        padding: 0.2rem;
-        background-color: var(--grey-medium-background);
-        border-radius: 50%;
-        .selected {
-          width: 100%;
-          height: 100%;
-          border-radius: 50%;
-          background-color: var(--green);
-          transform: scale(0);
-          transition: transform 0.2s ease-out;
+        padding: 1em;
+        border: none;
+        background-color: var(--white);
+        font-size: 1.5rem;
+        color: var(--text);
+        text-decoration: none;
+        .icon, .text {
+          display: inline-block;
         }
-      }
-      input:checked ~ .empty {
-        .selected {
-          transform: scale(1);
-          transition: transform 0.2s ease-in;
+        .icon {
+          margin-right: 2rem;
+          max-width: 2rem;
+          max-height: 3rem;
         }
       }
     }
-  }
   }
 }
 </style>
