@@ -421,6 +421,9 @@ export default Vue.extend({
       }
       .header {
         display: flex;
+        @media (min-width: 992px) {
+          display: none;
+        }
         justify-content: space-between;
         align-items: center;
         border-top-left-radius: 3px;
