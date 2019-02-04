@@ -1,23 +1,31 @@
 <template>
-	<div class="qr-code-container">
-		<div class="qr-image-container">
-			<a @click="downloadAsImage()"
-			   title="Click to download the QR code"
-			   alt="Click to download the QR code">
-				<img class="qr-image"
-				     crossOrigin="Anonymous"
-				     ref="imageTag">
-			</a>
-		</div>
-		<div>
-			<button @click="downloadAsImage()"
-			        type="button"
-			        class="btn btn-circle btn-icon-only btn-default clickable">
-				<i class="fa fa-download"
-				   aria-hidden="true"></i>
-			</button>
-		</div>
-	</div>
+  <div class="qr-code-container">
+    <div class="qr-image-container">
+      <a
+        title="Click to download the QR code"
+        alt="Click to download the QR code"
+        @click="downloadAsImage()"
+      >
+        <img
+          ref="imageTag"
+          class="qr-image"
+          crossOrigin="Anonymous"
+        >
+      </a>
+    </div>
+    <div>
+      <button
+        type="button"
+        class="btn btn-circle btn-icon-only btn-default clickable"
+        @click="downloadAsImage()"
+      >
+        <i
+          class="fa fa-download"
+          aria-hidden="true"
+        />
+      </button>
+    </div>
+  </div>
 </template>
 
 <script>

@@ -1,54 +1,67 @@
 <template>
-	<div class="portlet box blue-hoki margin-top-20">
-		<div class="portlet-title bg-blue-chambray">
-			<div class="caption">
-				<i class="fa fa-plus-circle"></i>
-				Create Resource Folder
-			</div>
-			<div class="tools">
-				<a class="expand"></a>
-			</div>
-		</div>
-		<div class="portlet-body">
-			<form role="form"
-			      @submit.prevent="updateFolder()">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="alert alert-danger"
-						     v-show="errorMessage.length"
-								 ref="errorMessage">
-							<button class="close"
-							        data-close="alert"
-							        @click.prevent="clearError('errorMessage')"></button>
-							<span>{{errorMessage}}</span>
-						</div>
-					</div>
-					<div class="col-xs-12 col-md-6">
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-							       class="form-control input-sm"
-							       :class="{'edited' : folder.name}"
-							       id="form_control_name"
-							       v-model="folder.name">
-							<label for="form_control_name">Name</label>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-12 col-md-6">
-						<button type="submit"
-						        class="btn blue pull-right"
-						        :disabled="updating">
-							Save
-							<i v-show="updating"
-							   class="fa fa-spinner fa-pulse fa-fw">
-							</i>
-						</button>
-					</div>
-				</div>
-			</form>
-		</div>
-	</div>
+  <div class="portlet box blue-hoki margin-top-20">
+    <div class="portlet-title bg-blue-chambray">
+      <div class="caption">
+        <i class="fa fa-plus-circle" />
+        Create Resource Folder
+      </div>
+      <div class="tools">
+        <a class="expand" />
+      </div>
+    </div>
+    <div class="portlet-body">
+      <form
+        role="form"
+        @submit.prevent="updateFolder()"
+      >
+        <div class="row">
+          <div class="col-md-12">
+            <div
+              v-show="errorMessage.length"
+              ref="errorMessage"
+              class="alert alert-danger"
+            >
+              <button
+                class="close"
+                data-close="alert"
+                @click.prevent="clearError('errorMessage')"
+              />
+              <span>{{ errorMessage }}</span>
+            </div>
+          </div>
+          <div class="col-xs-12 col-md-6">
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_name"
+                v-model="folder.name"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited' : folder.name}"
+              >
+              <label for="form_control_name">
+                Name
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 col-md-6">
+            <button
+              type="submit"
+              class="btn blue pull-right"
+              :disabled="updating"
+            >
+              Save
+              <i
+                v-show="updating"
+                class="fa fa-spinner fa-pulse fa-fw"
+              />
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 </template>
 
 <script>

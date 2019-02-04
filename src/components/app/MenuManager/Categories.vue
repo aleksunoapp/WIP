@@ -1,357 +1,478 @@
 <template>
-	<div>
-		<!-- BEGIN PAGE BAR -->
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
-		<!-- END PAGE BAR -->
-		<!-- BEGIN PAGE TITLE-->
-		<h1 class="page-title">Categories</h1>
-		<!-- END PAGE TITLE-->
-		<div class="note note-info">
-			<p>View categories for menu '{{ menuDetails.name }}'.</p>
-		</div>
-		<!-- BEGIN CREATE NEW MENU-->
-		<div class="portlet box blue-hoki"
-		     v-if="$root.permissions['menu_manager menus categories create']">
-			<div class="portlet-title bg-blue-chambray"
-			     @click="toggleCreateCategoryPanel()">
-				<div class="custom tools">
-					<a :class="{'expand': !createCategoryCollapse, 'collapse': createCategoryCollapse}"></a>
-				</div>
-				<div class="caption">
-					&emsp;Create A New Category
-				</div>
-			</div>
-			<div class="portlet-body"
-			     :class="{'display-hide': createCategoryCollapse}">
-				<form role="form"
-				      @submit.prevent="addNewMenuCategory()">
-					<div class="form-body row">
-						<div class="col-md-12">
-							<div class="alert alert-danger"
-							     v-show="errorMessage"
-							     ref="errorMessage">
-								<button class="close"
-								        @click.prevent="clearError()"></button>
-								<span>{{errorMessage}}</span>
-							</div>
-						</div>
-						<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
-							<resource-picker @open="toggleImageMode('newMenu', true)"
-							                 @close="toggleImageMode('newMenu', false)"
-							                 @selected="updateImage"
-							                 :imageButton="true"
-							                 :imageUrl="newCategory.image_url"
-							                 class="margin-top-15">
-							</resource-picker>
-						</div>
-						<div class="col-md-5"
-						     v-show="!imageMode.newMenu">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newCategory.name.length}"
-								       id="form_control_2"
-								       v-model="newCategory.name">
-								<label for="form_control_2">Category Name</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newCategory.desc.length}"
-								       id="form_control_3"
-								       v-model="newCategory.desc">
-								<label for="form_control_3">Category Description</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newCategory.sku.length}"
-								       id="form_control_4"
-								       v-model="newCategory.sku">
-								<label for="form_control_4">Category SKU</label>
-							</div>
-						</div>
-						<div class="col-md-5"
-						     v-show="!imageMode.newMenu">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="number"
-								       class="form-control input-sm"
-								       :class="{'edited': newCategory.order}"
-								       id="form_control_5"
-								       v-model="newCategory.order">
-								<label for="form_control_5">Category Order</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<label>Category Status:</label><br>
-								<el-switch v-model="newCategory.status"
-								           active-color="#0c6"
-								           inactive-color="#ff4949"
-								           :active-value="1"
-								           :inactive-value="0"
-								           active-text="Active"
-								           inactive-text="Sold Out">
-								</el-switch>
-							</div>
-						</div>
-					</div>
-					<div class="form-actions right margin-top-20"
-					     v-show="!imageMode.newMenu">
-						<button type="submit"
-						        class="btn blue"
-						        :disabled="creating">
-							Create
-							<i v-show="creating"
-							   class="fa fa-spinner fa-pulse fa-fw">
-							</i>
-						</button>
-					</div>
-				</form>
-			</div>
-		</div>
-		<!-- END CREATE NEW MENU-->
-		<loading-screen :show="displayCategoryData"
-		                :color="'#2C3E50'"
-		                :display="'inline'"></loading-screen>
-		<div v-if="$root.activeLocation && $root.activeLocation.id && !displayCategoryData">
-			<div class="portlet light portlet-fit bordered margin-top-20"
-			     id="categories-container">
-				<div class="portlet-title bg-blue-chambray">
-					<div class="menu-image">
-						<img :src="menuDetails.image_url">
-					</div>
-					<div class="caption">
-						<span class="caption-subject font-default bold uppercase">{{ menuDetails.name }}</span>
-						<div class="caption-desc font-grey-cascade">{{ menuDetails.desc }}</div>
-					</div>
-				</div>
-				<div class="portlet-body">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="alert alert-danger"
-							     v-show="listErrorMessage"
-							     ref="listErrorMessage">
-								<button class="close"
-								        @click="clearError('listErrorMessage')"></button>
-								<span>{{listErrorMessage}}</span>
-							</div>
-						</div>
-					</div>
-					<div class="mt-element-list margin-top-15"
-					     v-if="menuCategories.length">
-						<div class="mt-list-container list-news ext-1 no-border">
-							<ul v-for="category in menuCategories"
-							    :key="category.id">
-								<li class="mt-list-item margin-top-15 clickable"
-								    :id="'category-' + category.id"
-								    @click="determineNextAction(category)">
-									<div class="margin-bottom-15 actions-on-top">
-										<el-tooltip v-if="$root.permissions['menu_manager menus categories update']"
-										            content="Edit"
-										            effect="light"
-										            placement="top">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="editCategory(category, $event)">
-												<i class="fa fa-lg fa-pencil"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['menu_manager menus categories read'] && !$root.permissions['menu_manager menus categories update']"
-										            content="View"
-										            effect="light"
-										            placement="top">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="editCategory(category, $event)">
-												<i class="fa fa-lg fa-eye"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="
-												$root.permissions['menu_manager menus categories hours create'] ||
-												$root.permissions['menu_manager menus categories hours read'] ||
-												$root.permissions['menu_manager menus categories hours update']
-											"
-										            content="Category Hours"
-										            effect="light"
-										            placement="top">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="showHoursModal(category, $event)">
-												<i class="fa fa-lg fa-clock-o"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['menu_manager menus categories subcategories create']"
-										            content="Add subcategory"
-										            effect="light"
-										            placement="top">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="displayAddSubCategoryModal(category, $event)">
-												<i class="fa fa-lg fa-plus"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['menu_manager menus categories delete']"
-										            content="Delete"
-										            effect="light"
-										            placement="top">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="deleteCategory(category, $event)">
-												<i class="fa fa-lg fa-trash"></i>
-											</a>
-										</el-tooltip>
-									</div>
-									<div class="list-icon-container">
-										<i :id="'icon-' + category.id"
-										   class="fa fa-angle-right"></i>
-									</div>
-									<div class="list-thumb">
-										<a v-if="category.image_url.length">
-											<img alt=""
-											     :src="category.image_url" />
-										</a>
-										<a v-else>
-											<img src="../../../assets/img/app/image-placeholder.png">
-										</a>
-									</div>
-									<div class="list-datetime bold uppercase font-red">
-										<span>{{ category.name }}</span>
-									</div>
-									<div class="list-item-content height-mod">
-										<div class="col-md-4">
-											<strong>Status:</strong>
-											<span v-if="category.status == 1">Available</span>
-											<span v-if="category.status == 0">Sold Out</span>
-										</div>
-										<div class="col-md-4">
-											<strong>SKU:</strong>
-											<span>{{ category.sku }}</span>
-										</div>
-										<div class="col-md-12">
-											<strong>Description:</strong>
-											<span>{{ category.desc }}</span>
-										</div>
-									</div>
-								</li>
-								<li :id="'category-details-' + category.id"
-								    class="mt-list-item collapsed"
-								    v-if="category.subcategories && category.subcategories.length">
-									<h4>Sub Categories</h4>
-									<ul>
-										<li class="mt-list-item actions-at-left margin-top-15 white clickable sub-mt-list-item"
-										    v-for="subcategory in category.subcategories"
-										    :id="'subcategory-' + subcategory.id"
-										    @click="viewCategoryItems(subcategory)"
-										    :key="subcategory.id">
-											<div class="list-item-actions">
-												<el-tooltip v-if="$root.permissions['menu_manager menus categories subcategories update']"
-												            content="Edit"
-												            effect="light"
-												            placement="right">
-													<a class="btn btn-circle btn-icon-only btn-default"
-													   @click="editSubCategory(subcategory, $event)">
-														<i class="fa fa-lg fa-pencil"></i>
-													</a>
-												</el-tooltip>
-												<el-tooltip v-if="$root.permissions['menu_manager menus categories subcategories read'] && !$root.permissions['menu_manager menus categories subcategories update']"
-												            content="View"
-												            effect="light"
-												            placement="right">
-													<a class="btn btn-circle btn-icon-only btn-default"
-													   @click="editSubCategory(subcategory, $event)">
-														<i class="fa fa-lg fa-eye"></i>
-													</a>
-												</el-tooltip>
-												<el-tooltip v-if="$root.permissions['menu_manager menus categories subcategories delete']"
-												            content="Delete"
-												            effect="light"
-												            placement="right">
-													<a class="btn btn-circle btn-icon-only btn-default"
-													   @click="deleteSubCategory(subcategory, $event)">
-														<i class="fa fa-lg fa-trash"></i>
-													</a>
-												</el-tooltip>
-											</div>
-											<div class="list-icon-container">
-												<i class="fa fa-angle-right"></i>
-											</div>
-											<div class="list-thumb">
-												<a v-if="subcategory.image_url.length">
-													<img alt=""
-													     :src="subcategory.image_url" />
-												</a>
-												<a v-else>
-													<img src="../../../assets/img/app/image-placeholder.png">
-												</a>
-											</div>
-											<div class="list-datetime bold uppercase font-red">
-												<span>{{ subcategory.name }}</span>
-											</div>
-											<div class="list-item-content height-mod">
-												<div class="col-md-4">
-													<strong>Status:</strong>
-													<span v-if="subcategory.status == 1">Available</span>
-													<span v-if="subcategory.status == 0">Sold Out</span>
-												</div>
-												<div class="col-md-4">
-													<strong>SKU:</strong>
-													<span>{{ subcategory.sku }}</span>
-												</div>
-												<div class="col-md-12">
-													<strong>Description:</strong>
-													<span>{{ subcategory.desc }}</span>
-												</div>
-											</div>
-										</li>
-									</ul>
-								</li>
-							</ul>
-						</div>
-					</div>
-					<div class="margin-top-20"
-					     v-else>
-						<no-results :show="!menuCategories.length"
-						            :type="'categories'"
-						            :custom="true"
-						            :text="customText"></no-results>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div v-if="!displayCategoryData">
-			<no-results :show="!$root.activeLocation || !$root.activeLocation.id"
-			            :type="'categories'"></no-results>
-		</div>
+  <div>
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
+    <!-- END PAGE BAR -->
+    <!-- BEGIN PAGE TITLE-->
+    <h1 class="page-title">
+      Categories
+    </h1>
+    <!-- END PAGE TITLE-->
+    <div class="note note-info">
+      <p>View categories for menu '{{ menuDetails.name }}'.</p>
+    </div>
+    <!-- BEGIN CREATE NEW MENU-->
+    <div
+      v-if="$root.permissions['menu_manager menus categories create']"
+      class="portlet box blue-hoki"
+    >
+      <div
+        class="portlet-title bg-blue-chambray"
+        @click="toggleCreateCategoryPanel()"
+      >
+        <div class="custom tools">
+          <a :class="{'expand': !createCategoryCollapse, 'collapse': createCategoryCollapse}" />
+        </div>
+        <div class="caption">
+          &emsp;Create A New Category
+        </div>
+      </div>
+      <div
+        class="portlet-body"
+        :class="{'display-hide': createCategoryCollapse}"
+      >
+        <form
+          role="form"
+          @submit.prevent="addNewMenuCategory()"
+        >
+          <div class="form-body row">
+            <div class="col-md-12">
+              <div
+                v-show="errorMessage"
+                ref="errorMessage"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  @click.prevent="clearError()"
+                />
+                <span>{{ errorMessage }}</span>
+              </div>
+            </div>
+            <div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
+              <resource-picker
+                :image-button="true"
+                :image-url="newCategory.image_url"
+                class="margin-top-15"
+                @open="toggleImageMode('newMenu', true)"
+                @close="toggleImageMode('newMenu', false)"
+                @selected="updateImage"
+              />
+            </div>
+            <div
+              v-show="!imageMode.newMenu"
+              class="col-md-5"
+            >
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_2"
+                  v-model="newCategory.name"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newCategory.name.length}"
+                >
+                <label for="form_control_2">
+                  Category Name
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_3"
+                  v-model="newCategory.desc"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newCategory.desc.length}"
+                >
+                <label for="form_control_3">
+                  Category Description
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_4"
+                  v-model="newCategory.sku"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newCategory.sku.length}"
+                >
+                <label for="form_control_4">
+                  Category SKU
+                </label>
+              </div>
+            </div>
+            <div
+              v-show="!imageMode.newMenu"
+              class="col-md-5"
+            >
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_5"
+                  v-model="newCategory.order"
+                  type="number"
+                  class="form-control input-sm"
+                  :class="{'edited': newCategory.order}"
+                >
+                <label for="form_control_5">
+                  Category Order
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <label>Category Status:</label><br>
+                <el-switch
+                  v-model="newCategory.status"
+                  active-color="#0c6"
+                  inactive-color="#ff4949"
+                  :active-value="1"
+                  :inactive-value="0"
+                  active-text="Active"
+                  inactive-text="Sold Out"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            v-show="!imageMode.newMenu"
+            class="form-actions right margin-top-20"
+          >
+            <button
+              type="submit"
+              class="btn blue"
+              :disabled="creating"
+            >
+              Create
+              <i
+                v-show="creating"
+                class="fa fa-spinner fa-pulse fa-fw"
+              />
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- END CREATE NEW MENU-->
+    <loading-screen
+      :show="displayCategoryData"
+      :color="'#2C3E50'"
+      :display="'inline'"
+    />
+    <div v-if="$root.activeLocation && $root.activeLocation.id && !displayCategoryData">
+      <div
+        id="categories-container"
+        class="portlet light portlet-fit bordered margin-top-20"
+      >
+        <div class="portlet-title bg-blue-chambray">
+          <div class="menu-image">
+            <img :src="menuDetails.image_url">
+          </div>
+          <div class="caption">
+            <span class="caption-subject font-default bold uppercase">
+              {{ menuDetails.name }}
+            </span>
+            <div class="caption-desc font-grey-cascade">
+              {{ menuDetails.desc }}
+            </div>
+          </div>
+        </div>
+        <div class="portlet-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div
+                v-show="listErrorMessage"
+                ref="listErrorMessage"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  @click="clearError('listErrorMessage')"
+                />
+                <span>{{ listErrorMessage }}</span>
+              </div>
+            </div>
+          </div>
+          <div
+            v-if="menuCategories.length"
+            class="mt-element-list margin-top-15"
+          >
+            <div class="mt-list-container list-news ext-1 no-border">
+              <ul
+                v-for="category in menuCategories"
+                :key="category.id"
+              >
+                <li
+                  :id="'category-' + category.id"
+                  class="mt-list-item margin-top-15 clickable"
+                  @click="determineNextAction(category)"
+                >
+                  <div class="margin-bottom-15 actions-on-top">
+                    <el-tooltip
+                      v-if="$root.permissions['menu_manager menus categories update']"
+                      content="Edit"
+                      effect="light"
+                      placement="top"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="editCategory(category, $event)"
+                      >
+                        <i class="fa fa-lg fa-pencil" />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['menu_manager menus categories read'] && !$root.permissions['menu_manager menus categories update']"
+                      content="View"
+                      effect="light"
+                      placement="top"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="editCategory(category, $event)"
+                      >
+                        <i class="fa fa-lg fa-eye" />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="
+                        $root.permissions['menu_manager menus categories hours create'] ||
+                          $root.permissions['menu_manager menus categories hours read'] ||
+                          $root.permissions['menu_manager menus categories hours update']
+                      "
+                      content="Category Hours"
+                      effect="light"
+                      placement="top"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="showHoursModal(category, $event)"
+                      >
+                        <i class="fa fa-lg fa-clock-o" />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['menu_manager menus categories subcategories create']"
+                      content="Add subcategory"
+                      effect="light"
+                      placement="top"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="displayAddSubCategoryModal(category, $event)"
+                      >
+                        <i class="fa fa-lg fa-plus" />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['menu_manager menus categories delete']"
+                      content="Delete"
+                      effect="light"
+                      placement="top"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="deleteCategory(category, $event)"
+                      >
+                        <i class="fa fa-lg fa-trash" />
+                      </a>
+                    </el-tooltip>
+                  </div>
+                  <div class="list-icon-container">
+                    <i
+                      :id="'icon-' + category.id"
+                      class="fa fa-angle-right"
+                    />
+                  </div>
+                  <div class="list-thumb">
+                    <a v-if="category.image_url.length">
+                      <img
+                        alt=""
+                        :src="category.image_url"
+                      >
+                    </a>
+                    <a v-else>
+                      <img src="../../../assets/img/app/image-placeholder.png">
+                    </a>
+                  </div>
+                  <div class="list-datetime bold uppercase font-red">
+                    <span>{{ category.name }}</span>
+                  </div>
+                  <div class="list-item-content height-mod">
+                    <div class="col-md-4">
+                      <strong>Status:</strong>
+                      <span v-if="category.status == 1">
+                        Available
+                      </span>
+                      <span v-if="category.status == 0">
+                        Sold Out
+                      </span>
+                    </div>
+                    <div class="col-md-4">
+                      <strong>SKU:</strong>
+                      <span>{{ category.sku }}</span>
+                    </div>
+                    <div class="col-md-12">
+                      <strong>Description:</strong>
+                      <span>{{ category.desc }}</span>
+                    </div>
+                  </div>
+                </li>
+                <li
+                  v-if="category.subcategories && category.subcategories.length"
+                  :id="'category-details-' + category.id"
+                  class="mt-list-item collapsed"
+                >
+                  <h4>Sub Categories</h4>
+                  <ul>
+                    <li
+                      v-for="subcategory in category.subcategories"
+                      :id="'subcategory-' + subcategory.id"
+                      :key="subcategory.id"
+                      class="mt-list-item actions-at-left margin-top-15 white clickable sub-mt-list-item"
+                      @click="viewCategoryItems(subcategory)"
+                    >
+                      <div class="list-item-actions">
+                        <el-tooltip
+                          v-if="$root.permissions['menu_manager menus categories subcategories update']"
+                          content="Edit"
+                          effect="light"
+                          placement="right"
+                        >
+                          <a
+                            class="btn btn-circle btn-icon-only btn-default"
+                            @click="editSubCategory(subcategory, $event)"
+                          >
+                            <i class="fa fa-lg fa-pencil" />
+                          </a>
+                        </el-tooltip>
+                        <el-tooltip
+                          v-if="$root.permissions['menu_manager menus categories subcategories read'] && !$root.permissions['menu_manager menus categories subcategories update']"
+                          content="View"
+                          effect="light"
+                          placement="right"
+                        >
+                          <a
+                            class="btn btn-circle btn-icon-only btn-default"
+                            @click="editSubCategory(subcategory, $event)"
+                          >
+                            <i class="fa fa-lg fa-eye" />
+                          </a>
+                        </el-tooltip>
+                        <el-tooltip
+                          v-if="$root.permissions['menu_manager menus categories subcategories delete']"
+                          content="Delete"
+                          effect="light"
+                          placement="right"
+                        >
+                          <a
+                            class="btn btn-circle btn-icon-only btn-default"
+                            @click="deleteSubCategory(subcategory, $event)"
+                          >
+                            <i class="fa fa-lg fa-trash" />
+                          </a>
+                        </el-tooltip>
+                      </div>
+                      <div class="list-icon-container">
+                        <i class="fa fa-angle-right" />
+                      </div>
+                      <div class="list-thumb">
+                        <a v-if="subcategory.image_url.length">
+                          <img
+                            alt=""
+                            :src="subcategory.image_url"
+                          >
+                        </a>
+                        <a v-else>
+                          <img src="../../../assets/img/app/image-placeholder.png">
+                        </a>
+                      </div>
+                      <div class="list-datetime bold uppercase font-red">
+                        <span>{{ subcategory.name }}</span>
+                      </div>
+                      <div class="list-item-content height-mod">
+                        <div class="col-md-4">
+                          <strong>Status:</strong>
+                          <span v-if="subcategory.status == 1">
+                            Available
+                          </span>
+                          <span v-if="subcategory.status == 0">
+                            Sold Out
+                          </span>
+                        </div>
+                        <div class="col-md-4">
+                          <strong>SKU:</strong>
+                          <span>{{ subcategory.sku }}</span>
+                        </div>
+                        <div class="col-md-12">
+                          <strong>Description:</strong>
+                          <span>{{ subcategory.desc }}</span>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div
+            v-else
+            class="margin-top-20"
+          >
+            <no-results
+              :show="!menuCategories.length"
+              :type="'categories'"
+              :custom="true"
+              :text="customText"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="!displayCategoryData">
+      <no-results
+        :show="!$root.activeLocation || !$root.activeLocation.id"
+        :type="'categories'"
+      />
+    </div>
 
-		<edit-category v-if="editCategoryModalActive"
-		               @updateCategory="updateCategory"
-		               @deactivateEditCategoryModal="closeEditCategoryModal">
-		</edit-category>
+    <edit-category
+      v-if="editCategoryModalActive"
+      @updateCategory="updateCategory"
+      @deactivateEditCategoryModal="closeEditCategoryModal"
+    />
 
-		<add-sub-category v-if="addSubCategoryModalActive"
-		                  @addSubCategory="addSubCategory"
-		                  @deactivateAddSubCategoryModal="closeAddSubCategoryModal"
-		                  :parentCategoryId="selectedCategoryId">
-		</add-sub-category>
+    <add-sub-category
+      v-if="addSubCategoryModalActive"
+      :parent-category-id="selectedCategoryId"
+      @addSubCategory="addSubCategory"
+      @deactivateAddSubCategoryModal="closeAddSubCategoryModal"
+    />
 
-		<edit-sub-category v-if="editSubCategoryModalActive"
-		                   @updateSubCategory="updateSubCategory"
-		                   @deactivateEditSubCategoryModal="closeEditSubCategoryModal">
-		</edit-sub-category>
+    <edit-sub-category
+      v-if="editSubCategoryModalActive"
+      @updateSubCategory="updateSubCategory"
+      @deactivateEditSubCategoryModal="closeEditSubCategoryModal"
+    />
 
-		<delete-category v-if="deleteCategoryModalActive"
-		                 :passedCategoryId="passedCategoryId"
-		                 @closeDeleteCategoryModal="closeDeleteCategoryModal"
-		                 @deleteCategoryAndCloseModal="deleteCategoryAndCloseModal">
-		</delete-category>
+    <delete-category
+      v-if="deleteCategoryModalActive"
+      :passed-category-id="passedCategoryId"
+      @closeDeleteCategoryModal="closeDeleteCategoryModal"
+      @deleteCategoryAndCloseModal="deleteCategoryAndCloseModal"
+    />
 
-		<delete-sub-category v-if="deleteSubCategoryModalActive"
-		                     :passedSubCategoryId="passedSubCategoryId"
-		                     @closeDeleteSubCategoryModal="closeDeleteSubCategoryModal"
-		                     @deleteSubCategoryAndCloseModal="deleteSubCategoryAndCloseModal">
-		</delete-sub-category>
+    <delete-sub-category
+      v-if="deleteSubCategoryModalActive"
+      :passed-sub-category-id="passedSubCategoryId"
+      @closeDeleteSubCategoryModal="closeDeleteSubCategoryModal"
+      @deleteSubCategoryAndCloseModal="deleteSubCategoryAndCloseModal"
+    />
 
-		<category-hours v-if="hoursModalActive"
-		                @closeHoursModal="closeHoursModal"
-		                :category="categoryToAssignHoursTo">
-		</category-hours>
-	</div>
+    <category-hours
+      v-if="hoursModalActive"
+      :category="categoryToAssignHoursTo"
+      @closeHoursModal="closeHoursModal"
+    />
+  </div>
 </template>
 
 <script>
@@ -372,6 +493,19 @@ import ResourcePicker from '../../modules/ResourcePicker'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
+	components: {
+		Breadcrumb,
+		Modal,
+		LoadingScreen,
+		EditCategory,
+		DeleteCategory,
+		AddSubCategory,
+		EditSubCategory,
+		DeleteSubCategory,
+		NoResults,
+		ResourcePicker,
+		CategoryHours
+	},
 	data () {
 		return {
 			breadcrumbArray: [
@@ -880,19 +1014,6 @@ export default {
 				this.viewCategoryItems(category)
 			}
 		}
-	},
-	components: {
-		Breadcrumb,
-		Modal,
-		LoadingScreen,
-		EditCategory,
-		DeleteCategory,
-		AddSubCategory,
-		EditSubCategory,
-		DeleteSubCategory,
-		NoResults,
-		ResourcePicker,
-		CategoryHours
 	}
 }
 </script>

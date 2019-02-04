@@ -1,252 +1,340 @@
 <template>
-	<modal :show="displayModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal">
-		<!-- HEADER START -->
-		<div slot="modal-header"
-		     class="modal-header">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">
-				<i class="fa fa-chevron-left clickable pull-left back-button"
-				   v-show="mode !== 'list'"
-				   @click="listMode()"></i>
-				<span v-show="mode === 'list'">Images for {{item.name}}</span>
-				<span v-show="mode === 'create'">Add Image</span>
-				<span v-show="mode === 'preview'">Preview</span>
-				<span v-show="mode === 'edit'">Edit Image</span>
-				<span v-show="mode === 'delete'">Delete Image</span>
-			</h4>
-		</div>
-		<!-- HEADER END -->
+  <modal
+    :show="displayModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <!-- HEADER START -->
+    <div
+      slot="modal-header"
+      class="modal-header"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        <i
+          v-show="mode !== 'list'"
+          class="fa fa-chevron-left clickable pull-left back-button"
+          @click="listMode()"
+        />
+        <span v-show="mode === 'list'">
+          Images for {{ item.name }}
+        </span>
+        <span v-show="mode === 'create'">
+          Add Image
+        </span>
+        <span v-show="mode === 'preview'">
+          Preview
+        </span>
+        <span v-show="mode === 'edit'">
+          Edit Image
+        </span>
+        <span v-show="mode === 'delete'">
+          Delete Image
+        </span>
+      </h4>
+    </div>
+    <!-- HEADER END -->
 
-		<div slot="modal-body"
-		     class="modal-body relative-block">
-			<loading-screen :show="loadingImages"
-			                :color="'#2C3E50'"
-			                :display="'inline'"></loading-screen>
-			<div class="row">
-				<div class="col-md-12"
-				     v-show="errorMessage.length"
-				     ref="errorMessage">
-					<div class="alert alert-danger">
-						<button class="close"
-						        @click="clearError('errorMessage')"></button>
-						<span>{{errorMessage}}</span>
-					</div>
-				</div>
-				<div class="col-md-12"
-				     v-if="!loadingImages">
+    <div
+      slot="modal-body"
+      class="modal-body relative-block"
+    >
+      <loading-screen
+        :show="loadingImages"
+        :color="'#2C3E50'"
+        :display="'inline'"
+      />
+      <div class="row">
+        <div
+          v-show="errorMessage.length"
+          ref="errorMessage"
+          class="col-md-12"
+        >
+          <div class="alert alert-danger">
+            <button
+              class="close"
+              @click="clearError('errorMessage')"
+            />
+            <span>{{ errorMessage }}</span>
+          </div>
+        </div>
+        <div
+          v-if="!loadingImages"
+          class="col-md-12"
+        >
+          <!-- LIST START -->
+          <div v-if="mode === 'list'">
+            <div
+              v-for="image in images"
+              :id="'image-' + image.id"
+              :key="image.id"
+              class="col-md-4 margin-bottom-15"
+            >
+              <div class="tile image">
+                <div class="tile-body custom-tile-body">
+                  <img
+                    class="custom-tile-body-img clickable"
+                    :src="image.url"
+                    @click="previewMode(image)"
+                  >
+                </div>
+                <div class="actions-under-image">
+                  <div
+                    class="padding-x-5"
+                    @click="flipDefault(image)"
+                  >
+                    <el-tooltip
+                      :content="defaultButtonText(image.default)"
+                      effect="light"
+                      popper-class="tooltip-in-modal"
+                    >
+                      <a class="btn btn-circle btn-icon-only btn-edit">
+                        <i
+                          v-show="image.default === 0"
+                          class="fa fa-lg fa-check black-text"
+                        />
+                        <i
+                          v-show="image.default === 1"
+                          class="fa fa-lg fa-times black-text"
+                        />
+                      </a>
+                    </el-tooltip>
+                  </div>
+                  <div class="padding-x-5">
+                    <el-tooltip
+                      content="Edit"
+                      effect="light"
+                      popper-class="tooltip-in-modal"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-edit"
+                        @click="editMode(image)"
+                      >
+                        <i class="fa fa-lg fa-pencil black-text" />
+                      </a>
+                    </el-tooltip>
+                  </div>
+                  <div class="padding-x-5">
+                    <el-tooltip
+                      content="Delete Image"
+                      effect="light"
+                      popper-class="tooltip-in-modal"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="deleteMode(image)"
+                      >
+                        <i class="fa fa-lg fa-trash black-text" />
+                      </a>
+                    </el-tooltip>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="add-container">
+                <el-tooltip
+                  content="Add Image"
+                  effect="light"
+                  popper-class="tooltip-in-modal"
+                >
+                  <a
+                    class="btn btn-circle btn-icon-only btn-edit"
+                    @click="createMode()"
+                  >
+                    <i class="fa fa-lg fa-plus black-text" />
+                  </a>
+                </el-tooltip>
+              </div>
+            </div>
+          </div>
+          <!-- LIST END -->
 
-					<!-- LIST START -->
-					<div v-if="mode === 'list'">
-						<div v-for="image in images"
-						     class="col-md-4 margin-bottom-15"
-						     :id="'image-' + image.id"
-						     :key="image.id">
-							<div class="tile image">
-								<div class="tile-body custom-tile-body">
-									<img class="custom-tile-body-img clickable"
-									     @click="previewMode(image)"
-									     :src="image.url">
-								</div>
-								<div class="actions-under-image">
-									<div class="padding-x-5"
-									     @click="flipDefault(image)">
-										<el-tooltip :content="defaultButtonText(image.default)"
-										            effect="light"
-										            popper-class="tooltip-in-modal">
-											<a class="btn btn-circle btn-icon-only btn-edit">
-												<i v-show="image.default === 0"
-												   class="fa fa-lg fa-check black-text"></i>
-												<i v-show="image.default === 1"
-												   class="fa fa-lg fa-times black-text"></i>
-											</a>
-										</el-tooltip>
-									</div>
-									<div class="padding-x-5">
-										<el-tooltip content="Edit"
-										            effect="light"
-										            popper-class="tooltip-in-modal">
-											<a class="btn btn-circle btn-icon-only btn-edit"
-											   @click="editMode(image)">
-												<i class="fa fa-lg fa-pencil black-text"></i>
-											</a>
-										</el-tooltip>
-									</div>
-									<div class="padding-x-5">
-										<el-tooltip content="Delete Image"
-										            effect="light"
-										            popper-class="tooltip-in-modal">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="deleteMode(image)">
-												<i class="fa fa-lg fa-trash black-text"></i>
-											</a>
-										</el-tooltip>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="add-container">
-								<el-tooltip content="Add Image"
-								            effect="light"
-								            popper-class="tooltip-in-modal">
-									<a class="btn btn-circle btn-icon-only btn-edit"
-									   @click="createMode()">
-										<i class="fa fa-lg fa-plus black-text"></i>
-									</a>
-								</el-tooltip>
-							</div>
-						</div>
-					</div>
-					<!-- LIST END -->
+          <!-- PREVIEW START -->
+          <div
+            v-if="mode === 'preview'"
+            class="col-md-12"
+          >
+            <div class="preview-container">
+              <img
+                class="preview-image"
+                :src="imageToPreview.url"
+              >
+            </div>
+          </div>
+          <!-- PREVIEW END -->
 
-					<!-- PREVIEW START -->
-					<div class="col-md-12"
-					     v-if="mode === 'preview'">
-						<div class="preview-container">
-							<img class="preview-image"
-							     :src="imageToPreview.url">
-						</div>
-					</div>
-					<!-- PREVIEW END -->
+          <!-- CREATE START -->
+          <div
+            v-show="mode === 'create'"
+            class="col-md-12"
+          >
+            <div class="col-md-6">
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_1"
+                  ref="order"
+                  v-model="imageToCreate.order"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': imageToCreate.order.length}"
+                >
+                <label for="form_control_1">
+                  Order
+                </label>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+                <label>Default</label><br>
+                <el-switch
+                  v-model="imageToCreate.default"
+                  active-color="#0c6"
+                  inactive-color="#ff4949"
+                  :active-value="1"
+                  :inactive-value="0"
+                  active-text="Yes"
+                  inactive-text="No"
+                />
+              </div>
+              <div class="row margin-top-10">
+                <label>Update in all stores</label><br>
+                <el-switch
+                  v-model="imageToCreate.update_all_locations"
+                  active-color="#0c6"
+                  inactive-color="#ff4949"
+                  :active-value="1"
+                  :inactive-value="0"
+                  active-text="Yes"
+                  inactive-text="No"
+                />
+              </div>
+            </div>
+            <resource-picker
+              :no-button="true"
+              :show-done-button="false"
+              :image-button="false"
+              :select-only="true"
+              @selected="updateImageToCreate"
+            />
+          </div>
+          <!-- CREATE END -->
 
-					<!-- CREATE START -->
-					<div class="col-md-12"
-					     v-show="mode === 'create'">
-						<div class="col-md-6">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input ref="order"
-								       type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': imageToCreate.order.length}"
-								       id="form_control_1"
-								       v-model="imageToCreate.order">
-								<label for="form_control_1">Order</label>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="row">
-								<label>Default</label><br>
-								<el-switch v-model="imageToCreate.default"
-								           active-color="#0c6"
-								           inactive-color="#ff4949"
-								           :active-value="1"
-								           :inactive-value="0"
-								           active-text="Yes"
-								           inactive-text="No">
-								</el-switch>
-							</div>
-							<div class="row margin-top-10">
-								<label>Update in all stores</label><br>
-								<el-switch v-model="imageToCreate.update_all_locations"
-								           active-color="#0c6"
-								           inactive-color="#ff4949"
-								           :active-value="1"
-								           :inactive-value="0"
-								           active-text="Yes"
-								           inactive-text="No">
-								</el-switch>
-							</div>
-						</div>
-						<resource-picker :noButton="true"
-						                 @selected="updateImageToCreate"
-						                 :showDoneButton="false"
-						                 :imageButton="false"
-						                 :selectOnly="true">
-						</resource-picker>
-					</div>
-					<!-- CREATE END -->
+          <!-- EDIT START -->
+          <div
+            v-if="mode === 'edit'"
+            class="col-md-12"
+          >
+            <div class="col-md-6">
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_1"
+                  ref="order"
+                  v-model="imageToEdit.order"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': imageToEdit.order.length}"
+                >
+                <label for="form_control_1">
+                  Order
+                </label>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+                <label>Default</label><br>
+                <el-switch
+                  v-model="imageToEdit.default"
+                  active-color="#0c6"
+                  inactive-color="#ff4949"
+                  :active-value="1"
+                  :inactive-value="0"
+                  active-text="Yes"
+                  inactive-text="No"
+                />
+              </div>
+              <div class="row margin-top-10">
+                <label>Update in all stores</label><br>
+                <el-switch
+                  v-model="imageToEdit.update_all_locations"
+                  active-color="#0c6"
+                  inactive-color="#ff4949"
+                  :active-value="1"
+                  :inactive-value="0"
+                  active-text="Yes"
+                  inactive-text="No"
+                />
+              </div>
+            </div>
+            <resource-picker
+              :no-button="true"
+              :show-done-button="false"
+              :image-button="false"
+              :select-only="true"
+              @selected="updateImageToEdit"
+            />
+          </div>
+          <!-- EDIT END -->
 
-					<!-- EDIT START -->
-					<div class="col-md-12"
-					     v-if="mode === 'edit'">
-						<div class="col-md-6">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input ref="order"
-								       type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': imageToEdit.order.length}"
-								       id="form_control_1"
-								       v-model="imageToEdit.order">
-								<label for="form_control_1">Order</label>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="row">
-								<label>Default</label><br>
-								<el-switch v-model="imageToEdit.default"
-								           active-color="#0c6"
-								           inactive-color="#ff4949"
-								           :active-value="1"
-								           :inactive-value="0"
-								           active-text="Yes"
-								           inactive-text="No">
-								</el-switch>
-							</div>
-							<div class="row margin-top-10">
-								<label>Update in all stores</label><br>
-								<el-switch v-model="imageToEdit.update_all_locations"
-								           active-color="#0c6"
-								           inactive-color="#ff4949"
-								           :active-value="1"
-								           :inactive-value="0"
-								           active-text="Yes"
-								           inactive-text="No">
-								</el-switch>
-							</div>
-						</div>
-						<resource-picker :noButton="true"
-						                 @selected="updateImageToEdit"
-						                 :showDoneButton="false"
-						                 :imageButton="false"
-						                 :selectOnly="true">
-						</resource-picker>
-					</div>
-					<!-- EDIT END -->
-
-					<!-- DELETE START -->
-					<div class="col-md-12"
-					     v-if="mode === 'delete'">
-						<div class="col-md-12">
-							<div class="delete-preview-container">
-								<img class="preview-image"
-								     :src="imageToDelete.url">
-							</div>
-							<p class="center margin-bottom-0">Are you sure you want to delete this image?</p>
-						</div>
-					</div>
-					<!-- DELETE END -->
-				</div>
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer clear"
-		     v-show="mode !== 'create' && mode !== 'edit'">
-			<div class="row">
-				<div class="col-md-12">
-					<button v-show="mode === 'list'"
-					        @click="closeModal()"
-					        type="button"
-					        class="btn">Close</button>
-					<button v-show="mode === 'delete'"
-					        @click="deleteImage()"
-					        type="button"
-					        class="btn blue"
-					        :disabled="deleting">
-						Delete
-						<i v-show="deleting"
-						   class="fa fa-spinner fa-pulse fa-fw">
-						</i>
-					</button>
-				</div>
-			</div>
-		</div>
-	</modal>
+          <!-- DELETE START -->
+          <div
+            v-if="mode === 'delete'"
+            class="col-md-12"
+          >
+            <div class="col-md-12">
+              <div class="delete-preview-container">
+                <img
+                  class="preview-image"
+                  :src="imageToDelete.url"
+                >
+              </div>
+              <p class="center margin-bottom-0">
+                Are you sure you want to delete this image?
+              </p>
+            </div>
+          </div>
+          <!-- DELETE END -->
+        </div>
+      </div>
+    </div>
+    <div
+      v-show="mode !== 'create' && mode !== 'edit'"
+      slot="modal-footer"
+      class="modal-footer clear"
+    >
+      <div class="row">
+        <div class="col-md-12">
+          <button
+            v-show="mode === 'list'"
+            type="button"
+            class="btn"
+            @click="closeModal()"
+          >
+            Close
+          </button>
+          <button
+            v-show="mode === 'delete'"
+            type="button"
+            class="btn blue"
+            :disabled="deleting"
+            @click="deleteImage()"
+          >
+            Delete
+            <i
+              v-show="deleting"
+              class="fa fa-spinner fa-pulse fa-fw"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -258,6 +346,20 @@ import ResourcePicker from '../../../modules/ResourcePicker'
 import ajaxErrorHandler from '../../../../controllers/ErrorController'
 
 export default {
+	components: {
+		Modal,
+		LoadingScreen,
+		ResourcePicker
+	},
+	props: {
+		item: {
+			type: Object,
+			default: () => ({
+				name: ''
+			}),
+			required: true
+		}
+	},
 	data () {
 		return {
 			displayModal: false,
@@ -278,15 +380,6 @@ export default {
 			imageToEdit: {},
 			deleting: false,
 			imageToDelete: {}
-		}
-	},
-	props: {
-		item: {
-			type: Object,
-			default: () => ({
-				name: ''
-			}),
-			required: true
 		}
 	},
 	mounted () {
@@ -616,11 +709,6 @@ export default {
 		closeModal () {
 			this.$emit('closeImagesModal')
 		}
-	},
-	components: {
-		Modal,
-		LoadingScreen,
-		ResourcePicker
 	}
 }
 </script>

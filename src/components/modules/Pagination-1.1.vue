@@ -1,60 +1,76 @@
 <template>
-	<ul class="pagination-list mb-0">
+  <ul class="pagination-list mb-0">
+    <a 
+      v-if="pagesArray.length"
+      @click="setActivePage(1)"
+    >
+      <li
+        class="page-number"
+        :class="{'disabled': activePage === 1}"
+      >
+        <i
+          class="fa fa-angle-double-left"
+          aria-hidden="true"
+        />
+      </li>
+    </a>
+    <a 
+      v-if="pagesArray.length"
+      @click="setActivePage(activePage - 1)"
+    >
+      <li
+        class="page-number"
+        :class="{'disabled': activePage === 1}"
+      >
+        <i
+          class="fa fa-angle-left"
+          aria-hidden="true"
+        />
+      </li>
+    </a>
 
+    <a
+      v-for="(page, index) in pagesArray"
+      :key="index"
+      @click="setActivePage(page)"
+    >
+      <li
+        class="page-number"
+        :class="{'active': activePage === page}"
+      >
+        {{ page }}
+      </li>
+    </a>
 
-		<a 
-			v-if="pagesArray.length"
-			@click="setActivePage(1)"
-		>
-			<li class="page-number"
-			    :class="{'disabled': activePage === 1}">
-				<i class="fa fa-angle-double-left"
-				   aria-hidden="true"></i>
-			</li>
-		</a>
-		<a 
-			v-if="pagesArray.length"
-			@click="setActivePage(activePage - 1)"
-		>
-			<li class="page-number"
-			    :class="{'disabled': activePage === 1}">
-				<i class="fa fa-angle-left"
-				   aria-hidden="true"></i>
-			</li>
-		</a>
-
-		<a v-for="(page, index) in pagesArray"
-		   @click="setActivePage(page)"
-		   :key="index">
-			<li
-				class="page-number"
-				:class="{'active': activePage === page}"
-			>
-				{{ page }}
-			</li>
-		</a>
-
-		<a 
-			v-if="pagesArray.length"
-			@click="setActivePage(activePage + 1)"
-		>
-			<li class="page-number"
-			    :class="{'disabled': activePage === numPages}">
-				<i class="fa fa-angle-right"
-				   aria-hidden="true"></i>
-			</li>
-		</a>
-		<a 
-			v-if="pagesArray.length"
-			@click="setActivePage(numPages)"
-		>
-			<li class="page-number"
-			    :class="{'disabled': activePage === numPages}">
-				<i class="fa fa-angle-double-right"
-				   aria-hidden="true"></i>
-			</li>
-		</a>
-	</ul>
+    <a 
+      v-if="pagesArray.length"
+      @click="setActivePage(activePage + 1)"
+    >
+      <li
+        class="page-number"
+        :class="{'disabled': activePage === numPages}"
+      >
+        <i
+          class="fa fa-angle-right"
+          aria-hidden="true"
+        />
+      </li>
+    </a>
+    <a 
+      v-if="pagesArray.length"
+      @click="setActivePage(numPages)"
+    >
+      <li
+        class="page-number"
+        :class="{'disabled': activePage === numPages}"
+      >
+        <i
+          class="fa fa-angle-double-right"
+          aria-hidden="true"
+        />
+      </li>
+    </a>
+  </ul>
 </template>
 <script>
 /**
@@ -62,7 +78,7 @@
  */
 
 export default {
-	name: 'pagination',
+	name: 'Pagination',
 	props: {
 		// Total number of pages
 		numPages: {
@@ -73,6 +89,22 @@ export default {
 	data () {
 		return {
 			activePage: 1
+		}
+	},
+	computed: {
+		/**
+		 * Computed to create an array of numbers based on the number of pages.
+		 * @function
+		 * @returns {array} - An array of numbers counting from 1 up to the total number of pages.
+		 */
+		pagesArray () {
+			var localPagesArray = []
+			for (var i = this.activePage - 5; i <= this.numPages; i++) {
+				if (i > 0) {
+					localPagesArray.push(i)
+				}
+			}
+			return localPagesArray.splice(0, 6)
 		}
 	},
 	/**
@@ -104,22 +136,6 @@ export default {
 		} else {
 			this.activePage = this.numPages
 			this.$emit('activePageChange', this.activePage)
-		}
-	},
-	computed: {
-		/**
-		 * Computed to create an array of numbers based on the number of pages.
-		 * @function
-		 * @returns {array} - An array of numbers counting from 1 up to the total number of pages.
-		 */
-		pagesArray () {
-			var localPagesArray = []
-			for (var i = this.activePage - 5; i <= this.numPages; i++) {
-				if (i > 0) {
-					localPagesArray.push(i)
-				}
-			}
-			return localPagesArray.splice(0, 6)
 		}
 	},
 	methods: {

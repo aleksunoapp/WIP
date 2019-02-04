@@ -1,247 +1,332 @@
 <template>
-	<modal :show="showEditPromoCodeModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       :width="modalWidth"
-		   ref="modal">
-		<div slot="modal-header"
-		     class="modal-header center">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title">
-				<span v-if="!selectLocationsMode">Update Promo Code</span>
-				<h4 v-else-if="selectLocationsMode"
-				    class="modal-title center">
-					<i class="fa fa-chevron-left clickable pull-left back-button"
-					   @click="closeModal()"></i> Select Stores</h4>
-			</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<loading-screen :show="displaySpinner"
-			                :color="'#2C3E50'"
-			                :display="'inline'">
-			</loading-screen>
+  <modal
+    ref="modal"
+    :show="showEditPromoCodeModal"
+    effect="fade"
+    :width="modalWidth"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header center"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title">
+        <span v-if="!selectLocationsMode">
+          Update Promo Code
+        </span>
+        <h4
+          v-else-if="selectLocationsMode"
+          class="modal-title center"
+        >
+          <i
+            class="fa fa-chevron-left clickable pull-left back-button"
+            @click="closeModal()"
+          /> Select Stores
+        </h4>
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <loading-screen
+        :show="displaySpinner"
+        :color="'#2C3E50'"
+        :display="'inline'"
+      />
 
-			<form v-show="!selectItemsMode && !selectLocationsMode && !displaySpinner"
-			      role="form"
-			>
-				<div class="form-body row">
-					<div class="col-md-12">
-						<div class="alert alert-danger"
-						     v-if="errorMessage.length">
-							<button class="close"
-							        data-close="alert"
-							        @click="clearError('errorMessage')"></button>
-							<span>{{ errorMessage }}</span>
-						</div>
-					</div>
-					<div class="col-xs-12">
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input ref="codes"
-							       type="text"
-							       class="form-control input-sm  text-uppercase"
-							       :class="{'edited': promoCode.codes.length}"
-							       id="form_control_1"
-							       v-model="promoCode.codes"
-										 :disabled="!can('promocodes update')">
-							<label for="form_control_1">Enter a Code</label>
-						</div>
-						<div class="side-by-side-wrapper">
-							<div class="form-group form-md-line-input form-md-floating-label side-by-side-item">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': promoCode.value}"
-								       id="form_control_2"
-								       v-model="promoCode.value"
-											 :disabled="!can('promocodes update')">
-								<label for="form_control_2">Value of Promo Code</label>
-							</div>
-							<el-select v-model="promoCode.value_type"
-							           placeholder="Select type"
-							           size="mini"
-							           class="margin-bottom-15"
-												 :disabled="!can('promocodes update')">
-								<el-option label="%"
-								           value="percentage">
-								</el-option>
-								<el-option label="$"
-								           value="dollar">
-								</el-option>
-							</el-select>
-						</div>
-						<div>
-							<el-select v-model="promoCode.apply_on"
-							           placeholder="Discount is applied to"
-							           size="mini"
-							           class="margin-bottom-15"
-												 :disabled="!can('promocodes update')">
-								<el-option
-									label="Menu Items"
-									value="items"
-								>
-								</el-option>
-								<el-option
-									label="Delivery Fee"
-									value="delivery"
-								>
-								</el-option>
-								<el-option
-									label="Cart"
-									value="cart"
-								>
-								</el-option>
-								<el-option
-									label="Multiple-item Purchases"
-									value="multiple_item_quantity"
-								>
-								</el-option>
-							</el-select>
-							<button v-if="promoCode.apply_on === 'items' || promoCode.apply_on === 'multiple_item_quantity'"
-							        type="submit"
-							        class="btn blue btn-outline select-items-button"
-							        @click="displayMenuTreeModal($event)">
-								Select items
-							</button>
-							<p class="grey-label"
-							   v-if="promoCode.sku_array.length && promoCode.apply_on === 'items' || promoCode.apply_on === 'multiple_item_quantity'">
-							   Selected {{ promoCode.sku_array.length }}
-								<span v-if="promoCode.sku_array.length !== 1">items</span>
-								<span v-else>item</span>
-							</p>
-						</div>
-						<div>
-							<el-select v-model="promoCode.type"
-							           placeholder="Single or Multi Use?"
-							           size="mini"
-							           class="margin-bottom-15"
-												 :disabled="!can('promocodes update')">
-								<el-option label="Single Use"
-								           value="single_use">
-								</el-option>
-								<el-option label="Multi Use"
-								           value="multi_use">
-								</el-option>
-							</el-select>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-							       class="form-control input-sm"
-							       :class="{'edited': promoCode.max_use_per_person !== ''}"
-							       id="form_control_3"
-							       v-model="promoCode.max_use_per_person"
-										 :disabled="!can('promocodes update')">
-							<label for="form_control_3">Maximum Redemptions Per User</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label narrow-input">
-							<input type="text"
-							       class="form-control input-sm"
-							       :class="{'edited': promoCode.max_use  !== ''}"
-							       id="form_control_4"
-							       v-model="promoCode.max_use"
-										 :disabled="!can('promocodes update')">
-							<label for="form_control_4">Total Redemptions Permitted</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label narrow-input">
-							<input type="text"
-							       class="form-control input-sm"
-							       :class="{'edited': promoCode.description !== ''}"
-							       id="form_control_edit_description"
-							       v-model="promoCode.description"
-										 :disabled="!can('promocodes update')">
-							<label for="form_control_edit_description">Description</label>
-						</div>
-						<div class="form-group">
-							<p class="date-label">Start Date</p>
-							<el-date-picker v-model="promoCode.start_from"
-							                format="yyyy-MM-dd"
-							                value-format="yyyy-MM-dd"
-							                :clearable="false"
-							                placeholder="Select start date"
-															:disabled="!can('promocodes update')">
-							</el-date-picker>
-						</div>
-						<div class="form-group">
-							<p class="date-label">End Date</p>
-							<el-date-picker v-model="promoCode.end_on"
-							                format="yyyy-MM-dd"
-							                value-format="yyyy-MM-dd"
-							                :clearable="false"
-							                placeholder="Select end date"
-															:disabled="!can('promocodes update')">
-							</el-date-picker>
-						</div>
-						<div>
-							<p class="inline margin-right-10">Availability</p>
-							<button type="submit"
-							        class="btn blue btn-outline"
-							        @click="selectLocations($event, 'new')">{{can('update promocode') ? 'Select' : 'View'}} Stores</button>
-							<p class="grey-label margin-top-10"
-							   v-if="promoCode.locations.length">Selected
-								<span v-if="promoCode.locations === 'all'">all</span>
-								<span v-else>{{ promoCode.locations.length }}</span>
-								<span v-if="promoCode.locations.length !== 1">locations</span>
-								<span v-else>location</span>
-							</p>
-						</div>
-					</div>
-				</div>
-				<div class="form-actions right margin-top-20">
-				</div>
-			</form>
+      <form
+        v-show="!selectItemsMode && !selectLocationsMode && !displaySpinner"
+        role="form"
+      >
+        <div class="form-body row">
+          <div class="col-md-12">
+            <div
+              v-if="errorMessage.length"
+              class="alert alert-danger"
+            >
+              <button
+                class="close"
+                data-close="alert"
+                @click="clearError('errorMessage')"
+              />
+              <span>{{ errorMessage }}</span>
+            </div>
+          </div>
+          <div class="col-xs-12">
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_1"
+                ref="codes"
+                v-model="promoCode.codes"
+                type="text"
+                class="form-control input-sm  text-uppercase"
+                :class="{'edited': promoCode.codes.length}"
+                :disabled="!can('promocodes update')"
+              >
+              <label for="form_control_1">
+                Enter a Code
+              </label>
+            </div>
+            <div class="side-by-side-wrapper">
+              <div class="form-group form-md-line-input form-md-floating-label side-by-side-item">
+                <input
+                  id="form_control_2"
+                  v-model="promoCode.value"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': promoCode.value}"
+                  :disabled="!can('promocodes update')"
+                >
+                <label for="form_control_2">
+                  Value of Promo Code
+                </label>
+              </div>
+              <el-select
+                v-model="promoCode.value_type"
+                placeholder="Select type"
+                size="mini"
+                class="margin-bottom-15"
+                :disabled="!can('promocodes update')"
+              >
+                <el-option
+                  label="%"
+                  value="percentage"
+                />
+                <el-option
+                  label="$"
+                  value="dollar"
+                />
+              </el-select>
+            </div>
+            <div>
+              <el-select
+                v-model="promoCode.apply_on"
+                placeholder="Discount is applied to"
+                size="mini"
+                class="margin-bottom-15"
+                :disabled="!can('promocodes update')"
+              >
+                <el-option
+                  label="Menu Items"
+                  value="items"
+                />
+                <el-option
+                  label="Delivery Fee"
+                  value="delivery"
+                />
+                <el-option
+                  label="Cart"
+                  value="cart"
+                />
+                <el-option
+                  label="Multiple-item Purchases"
+                  value="multiple_item_quantity"
+                />
+              </el-select>
+              <button
+                v-if="promoCode.apply_on === 'items' || promoCode.apply_on === 'multiple_item_quantity'"
+                type="submit"
+                class="btn blue btn-outline select-items-button"
+                @click="displayMenuTreeModal($event)"
+              >
+                Select items
+              </button>
+              <p
+                v-if="promoCode.sku_array.length && promoCode.apply_on === 'items' || promoCode.apply_on === 'multiple_item_quantity'"
+                class="grey-label"
+              >
+                Selected {{ promoCode.sku_array.length }}
+                <span v-if="promoCode.sku_array.length !== 1">
+                  items
+                </span>
+                <span v-else>
+                  item
+                </span>
+              </p>
+            </div>
+            <div>
+              <el-select
+                v-model="promoCode.type"
+                placeholder="Single or Multi Use?"
+                size="mini"
+                class="margin-bottom-15"
+                :disabled="!can('promocodes update')"
+              >
+                <el-option
+                  label="Single Use"
+                  value="single_use"
+                />
+                <el-option
+                  label="Multi Use"
+                  value="multi_use"
+                />
+              </el-select>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_3"
+                v-model="promoCode.max_use_per_person"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': promoCode.max_use_per_person !== ''}"
+                :disabled="!can('promocodes update')"
+              >
+              <label for="form_control_3">
+                Maximum Redemptions Per User
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label narrow-input">
+              <input
+                id="form_control_4"
+                v-model="promoCode.max_use"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': promoCode.max_use !== ''}"
+                :disabled="!can('promocodes update')"
+              >
+              <label for="form_control_4">
+                Total Redemptions Permitted
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label narrow-input">
+              <input
+                id="form_control_edit_description"
+                v-model="promoCode.description"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': promoCode.description !== ''}"
+                :disabled="!can('promocodes update')"
+              >
+              <label for="form_control_edit_description">
+                Description
+              </label>
+            </div>
+            <div class="form-group">
+              <p class="date-label">
+                Start Date
+              </p>
+              <el-date-picker
+                v-model="promoCode.start_from"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                :clearable="false"
+                placeholder="Select start date"
+                :disabled="!can('promocodes update')"
+              />
+            </div>
+            <div class="form-group">
+              <p class="date-label">
+                End Date
+              </p>
+              <el-date-picker
+                v-model="promoCode.end_on"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                :clearable="false"
+                placeholder="Select end date"
+                :disabled="!can('promocodes update')"
+              />
+            </div>
+            <div>
+              <p class="inline margin-right-10">
+                Availability
+              </p>
+              <button
+                type="submit"
+                class="btn blue btn-outline"
+                @click="selectLocations($event, 'new')"
+              >
+                {{ can('update promocode') ? 'Select' : 'View' }} Stores
+              </button>
+              <p
+                v-if="promoCode.locations.length"
+                class="grey-label margin-top-10"
+              >
+                Selected
+                <span v-if="promoCode.locations === 'all'">
+                  all
+                </span>
+                <span v-else>
+                  {{ promoCode.locations.length }}
+                </span>
+                <span v-if="promoCode.locations.length !== 1">
+                  locations
+                </span>
+                <span v-else>
+                  location
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="form-actions right margin-top-20" />
+      </form>
 
-			<menu-and-modifier-item-picker
-				v-if="selectItemsMode"
-				:previouslySelected="promoCode.sku_array"
-				:modifier="false"
-				@update="itemsSelected"
-			>
-			</menu-and-modifier-item-picker>
+      <menu-and-modifier-item-picker
+        v-if="selectItemsMode"
+        :previously-selected="promoCode.sku_array"
+        :modifier="false"
+        @update="itemsSelected"
+      />
 
-			<store-picker
-				v-if="!displaySpinner && !selectItemsMode && selectLocationsMode"
-				:previouslySelected="promoCode.locations"
-				@update="selectStores"
-				:editable="can('promocodes update')"
-			>
-			</store-picker>
-
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button v-if="selectItemsMode"
-			        type="button"
-			        class="btn btn-primary"
-			        @click="closeItemSelector()">
-				Done
-			</button>
-			<button v-if="selectLocationsMode"
-			        type="button"
-			        class="btn btn-primary"
-			        @click="closeStorePicker()">
-				Done
-			</button>
-			<button v-if="!selectItemsMode && !selectLocationsMode && !selectItemsMode && can('promocodes update')"
-			        type="button"
-			        class="btn btn-primary"
-			        @click="updatePromoCode()"
-					:disabled="updating">
-				Update
-				<i v-show="updating"
-					class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-			<button v-if="!selectItemsMode && !selectLocationsMode && !selectItemsMode && !can('promocodes update')"
-			        type="button"
-			        class="btn btn-primary"
-			        @click="closeEditPromoCodeModal()">
-				Close
-			</button>
-		</div>
-	</modal>
+      <store-picker
+        v-if="!displaySpinner && !selectItemsMode && selectLocationsMode"
+        :previously-selected="promoCode.locations"
+        :editable="can('promocodes update')"
+        @update="selectStores"
+      />
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        v-if="selectItemsMode"
+        type="button"
+        class="btn btn-primary"
+        @click="closeItemSelector()"
+      >
+        Done
+      </button>
+      <button
+        v-if="selectLocationsMode"
+        type="button"
+        class="btn btn-primary"
+        @click="closeStorePicker()"
+      >
+        Done
+      </button>
+      <button
+        v-if="!selectItemsMode && !selectLocationsMode && !selectItemsMode && can('promocodes update')"
+        type="button"
+        class="btn btn-primary"
+        :disabled="updating"
+        @click="updatePromoCode()"
+      >
+        Update
+        <i
+          v-show="updating"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+      <button
+        v-if="!selectItemsMode && !selectLocationsMode && !selectItemsMode && !can('promocodes update')"
+        type="button"
+        class="btn btn-primary"
+        @click="closeEditPromoCodeModal()"
+      >
+        Close
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -298,6 +383,13 @@ export default {
 				this.promoCode.max_use_per_person = '1'
 			}
 		}
+	},
+	components: {
+		Modal,
+		Dropdown,
+		LoadingScreen,
+		StorePicker,
+		MenuAndModifierItemPicker
 	},
 	props: {
 		promoCodeId: {
@@ -622,13 +714,6 @@ export default {
 				this.$emit('closeEditPromoCodeModal')
 			}
 		}
-	},
-	components: {
-		Modal,
-		Dropdown,
-		LoadingScreen,
-		StorePicker,
-		MenuAndModifierItemPicker
 	}
 }
 </script>

@@ -1,69 +1,106 @@
 <template>
-	<modal :show="showDeletePromotionModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="modal">
-		<div slot="modal-header"
-		     class="modal-header center">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Delete Group</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<transition name="fade"
-			            mode="out-in">
-				<div v-if="!deleted"
-				     key="a">
-					<div class="alert alert-danger"
-					     v-show="errorMessage"
-					     ref="errorMessage">
-						<button class="close"
-						        @click="clearError()"></button>
-						<span>{{errorMessage}}</span>
-					</div>
-					<div class="col-md-12">
-						Are you sure you want to delete this group?
-					</div>
-				</div>
-				<div v-if="deleted"
-				     key="b">
-					<div class="swal2-icon swal2-success swal2-animate-success-icon"
-					     style="display: block;">
-						<div class="swal2-success-circular-line-left"
-						     style="background: rgb(255, 255, 255);"></div>
-						<span class="swal2-success-line-tip swal2-animate-success-line-tip"></span>
-						<span class="swal2-success-line-long swal2-animate-success-line-long"></span>
-						<div class="swal2-success-ring"></div>
-						<div class="swal2-success-fix"
-						     style="background: rgb(255, 255, 255);"></div>
-						<div class="swal2-success-circular-line-right"
-						     style="background: rgb(255, 255, 255);"></div>
-					</div>
-				</div>
-			</transition>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer clear">
-			<button v-show="!deleted"
-			        type="button"
-			        class="btn btn-primary"
-			        @click="deleteGroup()"
-			        :disabled="deleting">
-				Delete
-				<i v-show="deleting"
-				   class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-			<button v-show="deleted"
-			        type="button"
-			        class="btn btn-default"
-			        @click="deleteGroupAndCloseModal()">Close</button>
-		</div>
-	</modal>
+  <modal
+    ref="modal"
+    :show="showDeletePromotionModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header center"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Delete Group
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <transition
+        name="fade"
+        mode="out-in"
+      >
+        <div
+          v-if="!deleted"
+          key="a"
+        >
+          <div
+            v-show="errorMessage"
+            ref="errorMessage"
+            class="alert alert-danger"
+          >
+            <button
+              class="close"
+              @click="clearError()"
+            />
+            <span>{{ errorMessage }}</span>
+          </div>
+          <div class="col-md-12">
+            Are you sure you want to delete this group?
+          </div>
+        </div>
+        <div
+          v-if="deleted"
+          key="b"
+        >
+          <div
+            class="swal2-icon swal2-success swal2-animate-success-icon"
+            style="display: block;"
+          >
+            <div
+              class="swal2-success-circular-line-left"
+              style="background: rgb(255, 255, 255);"
+            />
+            <span class="swal2-success-line-tip swal2-animate-success-line-tip" />
+            <span class="swal2-success-line-long swal2-animate-success-line-long" />
+            <div class="swal2-success-ring" />
+            <div
+              class="swal2-success-fix"
+              style="background: rgb(255, 255, 255);"
+            />
+            <div
+              class="swal2-success-circular-line-right"
+              style="background: rgb(255, 255, 255);"
+            />
+          </div>
+        </div>
+      </transition>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer clear"
+    >
+      <button
+        v-show="!deleted"
+        type="button"
+        class="btn btn-primary"
+        :disabled="deleting"
+        @click="deleteGroup()"
+      >
+        Delete
+        <i
+          v-show="deleting"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+      <button
+        v-show="deleted"
+        type="button"
+        class="btn btn-default"
+        @click="deleteGroupAndCloseModal()"
+      >
+        Close
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -72,6 +109,14 @@ import UserGroupFunctions from '../../../controllers/UserGroups'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
+	components: {
+		Modal
+	},
+	props: {
+		selectedPromotionId: {
+			type: Number
+		}
+	},
 	data () {
 		return {
 			showDeletePromotionModal: false,
@@ -79,11 +124,6 @@ export default {
 			errorMessage: '',
 			customWidth: 90,
 			deleted: false
-		}
-	},
-	props: {
-		selectedPromotionId: {
-			type: Number
 		}
 	},
 	mounted () {
@@ -175,9 +215,6 @@ export default {
 		deleteGroupAndCloseModal () {
 			this.$emit('deleteGroupAndCloseModal', this.selectedPromotionId)
 		}
-	},
-	components: {
-		Modal
 	}
 }
 </script>

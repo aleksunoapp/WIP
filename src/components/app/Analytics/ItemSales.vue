@@ -1,84 +1,107 @@
 <template>
-	<div>
-		<div class="row">
-			<div class="col-md-12">
-				<div class="portlet box blue-hoki">
-					<div class="portlet-title bg-blue-chambray">
-						<div class="caption"
-						     style="font-size:14px">
-							<span class="fa-stack fa-sm">
-								<i class="fa fa-circle fa-stack-2x"
-								   aria-hidden="true"
-								   style="color:rgb(26,188,156);line-height: inherit"></i>
-								<i class="fa fa-trophy fa-stack-1x"
-								   aria-hidden="true"
-								   style="color:rgb(255,255,255);line-height:inherit"></i>
-							</span>
-							Top 10 Selling Items
-						</div>
-						<div class="tools clickable"
-						     @click="downloadCSV(itemSummary)">
-							<i class="fa fa-download"
-							   aria-hidden="true"></i>
-						</div>
-					</div>
-					<div class="portlet-body">
+  <div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+          <div class="portlet-title bg-blue-chambray">
+            <div
+              class="caption"
+              style="font-size:14px"
+            >
+              <span class="fa-stack fa-sm">
+                <i
+                  class="fa fa-circle fa-stack-2x"
+                  aria-hidden="true"
+                  style="color:rgb(26,188,156);line-height: inherit"
+                />
+                <i
+                  class="fa fa-trophy fa-stack-1x"
+                  aria-hidden="true"
+                  style="color:rgb(255,255,255);line-height:inherit"
+                />
+              </span>
+              Top 10 Selling Items
+            </div>
+            <div
+              class="tools clickable"
+              @click="downloadCSV(itemSummary)"
+            >
+              <i
+                class="fa fa-download"
+                aria-hidden="true"
+              />
+            </div>
+          </div>
+          <div class="portlet-body">
+            <div class="row">
+              <div class="col-xs-12">
+                <div
+                  v-show="errorMessage"
+                  ref="errorMessage"
+                  class="alert alert-danger"
+                >
+                  <button
+                    class="close"
+                    @click.prevent="clearError('errorMessage')"
+                  />
+                  <span>{{ errorMessage }}</span>
+                </div>
+              </div>
+            </div>
 
-						<div class="row">
-							<div class="col-xs-12">
-								<div class="alert alert-danger"
-								     v-show="errorMessage"
-								     ref="errorMessage">
-									<button class="close"
-									        @click.prevent="clearError('errorMessage')"></button>
-									<span>{{errorMessage}}</span>
-								</div>
-							</div>
-						</div>
-
-						<el-table :data="itemSummary">
-							<div slot="empty">
-								<loading-screen :show="loadingItemSummary" />
-								<p v-show="!loadingItemSummary">No orders yet</p>
-							</div>
-							<el-table-column prop="name"
-							                 label="Name"
-							                 sortable>
-							</el-table-column>
-							<el-table-column prop="actual_price"
-							                 label="Price"
-							                 width="150"
-							                 :formatter="tableFormatUSD"
-							                 sortable>
-							</el-table-column>
-							<el-table-column prop="total_sale"
-							                 label="Total sales"
-							                 width="150"
-							                 :formatter="tableFormatNumber"
-							                 sortable>
-							</el-table-column>
-							<el-table-column prop="item_sku"
-							                 label="SKU"
-							                 width="150"
-							                 sortable>
-							</el-table-column>
-							<el-table-column label="Category">
-								<template slot-scope="scope">
-									<div class="tbl-category-column-wrapper">
-										<div class="tbl-category-caption-wrapper">
-											<img class="tbl-category-image"
-											     :src="scope.row.category_image" />
-											<p class="tbl-category-name">{{scope.row.category}}</p>
-										</div>
-									</div>
-								</template>
-							</el-table-column>
-						</el-table>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+            <el-table :data="itemSummary">
+              <div slot="empty">
+                <loading-screen :show="loadingItemSummary" />
+                <p v-show="!loadingItemSummary">
+                  No orders yet
+                </p>
+              </div>
+              <el-table-column
+                prop="name"
+                label="Name"
+                sortable
+              />
+              <el-table-column
+                prop="actual_price"
+                label="Price"
+                width="150"
+                :formatter="tableFormatUSD"
+                sortable
+              />
+              <el-table-column
+                prop="total_sale"
+                label="Total sales"
+                width="150"
+                :formatter="tableFormatNumber"
+                sortable
+              />
+              <el-table-column
+                prop="item_sku"
+                label="SKU"
+                width="150"
+                sortable
+              />
+              <el-table-column label="Category">
+                <template slot-scope="scope">
+                  <div class="tbl-category-column-wrapper">
+                    <div class="tbl-category-caption-wrapper">
+                      <img
+                        class="tbl-category-image"
+                        :src="scope.row.category_image"
+                      >
+                      <p class="tbl-category-name">
+                        {{ scope.row.category }}
+                      </p>
+                    </div>
+                  </div>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>

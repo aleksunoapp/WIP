@@ -1,248 +1,257 @@
 <template>
-	<div>
-		<!-- PAGE BAR -->
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
+  <div>
+    <!-- PAGE BAR -->
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
 
-		<!-- PAGE TITLE-->
-		<h1 class="page-title">{{comboOffer.name}}</h1>
-		<div class="note note-info">
-			<p>Create, edit and delete items of this combo offer.</p>
-		</div>
+    <!-- PAGE TITLE-->
+    <h1 class="page-title">
+      {{ comboOffer.name }}
+    </h1>
+    <div class="note note-info">
+      <p>Create, edit and delete items of this combo offer.</p>
+    </div>
 
-		<div class="portlet light portlet-fit bordered margin-top-20"
-				id="comboOfferItems-container">
-			<div class="portlet-title bg-blue-chambray">
-				<div class="menu-image-main">
-					<img src="../../../../public/client_logo.png">
-				</div>
-				<div class="caption">
-					<span class="caption-subject font-default bold uppercase">Items</span>
-					<div class="caption-desc font-grey-cascade">This offer can have a maximum of {{comboOffer.number_of_items}} {{comboOffer.number_of_items !== 1 ? 'items' : 'item'}}.</div>
-				</div>
-			</div>
-			<div class="portlet-body">
-				<div class="alert alert-info text-center"
-						v-show="infoMessage.length"
-						ref="infoMessage">
-					<span>{{ infoMessage }}</span>
-				</div>
-				<div class="alert alert-danger"
-						v-show="errorMessage.length"
-						ref="errorMessage">
-					<button class="close"
-							data-close="alert"
-							@click="clearError('errorMessage')"></button>
-					<span>{{ errorMessage }}</span>
-				</div>
+    <div
+      id="comboOfferItems-container"
+      class="portlet light portlet-fit bordered margin-top-20"
+    >
+      <div class="portlet-title bg-blue-chambray">
+        <div class="menu-image-main">
+          <img src="../../../../public/client_logo.png">
+        </div>
+        <div class="caption">
+          <span class="caption-subject font-default bold uppercase">
+            Items
+          </span>
+          <div class="caption-desc font-grey-cascade">
+            This offer can have a maximum of {{ comboOffer.number_of_items }} {{ comboOffer.number_of_items !== 1 ? 'items' : 'item' }}.
+          </div>
+        </div>
+      </div>
+      <div class="portlet-body">
+        <div
+          v-show="infoMessage.length"
+          ref="infoMessage"
+          class="alert alert-info text-center"
+        >
+          <span>{{ infoMessage }}</span>
+        </div>
+        <div
+          v-show="errorMessage.length"
+          ref="errorMessage"
+          class="alert alert-danger"
+        >
+          <button
+            class="close"
+            data-close="alert"
+            @click="clearError('errorMessage')"
+          />
+          <span>{{ errorMessage }}</span>
+        </div>
 
-				<loading-screen 
-					:show="loading"
-					:color="'#2C3E50'"
-					:display="'inline'"
-				>
-				</loading-screen>
+        <loading-screen 
+          :show="loading"
+          :color="'#2C3E50'"
+          :display="'inline'"
+        />
 
-				<!-- LIST -->
-				<div 
-					v-show="view === 'list'"
-					class="width-100 display-flex flex-wrap-wrap justify-content-space-between pa-1em"
-				>
-					<div
-						v-show="!loading"
-						v-for="item in comboOffer.combo_item"
-						@click="setActive(item)"
-						:key="item.id" 
-						class="position-relative display-flex flex-basis-48 flex-direction-column min-height-100 mb-1em card--shadow"
-						:class="{'active' : item.id === activeComboOfferItem.id}"
-					>
-						<div class="width-100 display-flex flex-direction-column align-items-center mb-3em pa-1em card__body">
-							<!-- SKU -->
-							<div>
-								<div
-									v-for="sku in item.combo_item_sku"
-									:key="sku.id"
-									class="width-100 display-flex justify-content-space-between pt-1em px-1em"
-								>
-									<p class="my-0em">
-										{{sku.sku}}
-									</p>
-									<transition
-										name="quick-fade"
-										mode="out-in"
-									>
-										<div
-											v-if="SkuToDelete.id !== sku.id"
-											key="initial"
-										>
-											<button
-												class="btn blue btn-xs btn-outline ml-1em"
-												@click="deleteSku(sku)"
-												aria-label="delete"
-											>
-												<i
-													class="fa fa-lg fa-trash"
-													aria-hidden="true"
-												>
-												</i>
-											</button>
-										</div>
-										<!-- SKU DELETE -->
-										<div
-											v-else
-											class="display-flex align-items-center"
-											key="delete"
-										>
-											<button
-												@click="removeSku(sku)"
-												:disabled="sku.deleting"
-												aria-label="confirm"
-												class="btn blue btn-xs btn-outline ml-1em"
-											>
-												Delete
-												<i
-													v-if="sku.deleting"
-													class="fa fa-spinner fa-pulse fa-fw"
-													aria-hidden="true"
-												>
-												</i>
-											</button>
-											<button
-												@click="cancelSkuDelete()"
-												:disabled="sku.deleting"
-												aria-label="delete"
-												class="btn blue btn-xs btn-outline ml-5px"
-											>
-												Cancel
-											</button>
-										</div>
-									</transition>
-								</div>
-								<div class="width-100 display-flex justify-content-center pt-1em px-1em">
-									<button
-										class="btn blue btn-xs btn-outline"
-										@click="addSkusToItem(item)"
-									>
-										<i
-											class="fa fa-lg fa-plus"
-											aria-hidden="true"
-										>
-										</i>
-									</button>
-								</div>
-							</div>
-						</div>
+        <!-- LIST -->
+        <div 
+          v-show="view === 'list'"
+          class="width-100 display-flex flex-wrap-wrap justify-content-space-between pa-1em"
+        >
+          <div
+            v-for="item in comboOffer.combo_item"
+            v-show="!loading"
+            :key="item.id"
+            class="position-relative display-flex flex-basis-48 flex-direction-column min-height-100 mb-1em card--shadow" 
+            :class="{'active' : item.id === activeComboOfferItem.id}"
+            @click="setActive(item)"
+          >
+            <div class="width-100 display-flex flex-direction-column align-items-center mb-3em pa-1em card__body">
+              <!-- SKU -->
+              <div>
+                <div
+                  v-for="sku in item.combo_item_sku"
+                  :key="sku.id"
+                  class="width-100 display-flex justify-content-space-between pt-1em px-1em"
+                >
+                  <p class="my-0em">
+                    {{ sku.sku }}
+                  </p>
+                  <transition
+                    name="quick-fade"
+                    mode="out-in"
+                  >
+                    <div
+                      v-if="SkuToDelete.id !== sku.id"
+                      key="initial"
+                    >
+                      <button
+                        class="btn blue btn-xs btn-outline ml-1em"
+                        aria-label="delete"
+                        @click="deleteSku(sku)"
+                      >
+                        <i
+                          class="fa fa-lg fa-trash"
+                          aria-hidden="true"
+                        />
+                      </button>
+                    </div>
+                    <!-- SKU DELETE -->
+                    <div
+                      v-else
+                      key="delete"
+                      class="display-flex align-items-center"
+                    >
+                      <button
+                        :disabled="sku.deleting"
+                        aria-label="confirm"
+                        class="btn blue btn-xs btn-outline ml-1em"
+                        @click="removeSku(sku)"
+                      >
+                        Delete
+                        <i
+                          v-if="sku.deleting"
+                          class="fa fa-spinner fa-pulse fa-fw"
+                          aria-hidden="true"
+                        />
+                      </button>
+                      <button
+                        :disabled="sku.deleting"
+                        aria-label="delete"
+                        class="btn blue btn-xs btn-outline ml-5px"
+                        @click="cancelSkuDelete()"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </transition>
+                </div>
+                <div class="width-100 display-flex justify-content-center pt-1em px-1em">
+                  <button
+                    class="btn blue btn-xs btn-outline"
+                    @click="addSkusToItem(item)"
+                  >
+                    <i
+                      class="fa fa-lg fa-plus"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
 
-						<!-- CARD ACTIONS -->
-						<div class="display-flex width-100 justify-content-flex-end align-items-center py-1em mb-5px card__actions">
-							<transition
-								name="quick-fade"
-								mode="out-in"
-							>
-								<div
-									v-if="item.view === 'initial'"
-									key="initial"
-								>
-									<button
-										class="btn blue btn-xs btn-outline"
-										@click="confirmItemDelete(item)"
-									>
-										<i
-											class="fa fa-lg fa-trash"
-											aria-hidden="true"
-										>
-										</i>
-									</button>
-								</div>
-								<!-- DELETE ITEM -->
-								<div
-									v-else-if="activeComboOfferItem.view === 'delete'"
-									key="delete"
-								>
-									<button
-										class="btn blue btn-sm btn-outline"
-										@click="removeItem"
-									>
-										Delete
-										<i
-											v-if="item.deleting"
-											class="fa fa-spinner fa-pulse fa-fw"
-											aria-hidden="true"
-										>
-										</i>
-									</button>
-									<button
-										class="btn blue btn-sm btn-outline"
-										@click="cancelItemDelete"
-										:disabled="item.deleting"
-									>
-										Cancel
-									</button>
-								</div>
-							</transition>
-						</div>
-					</div>
-					<div
-						v-if="comboOffer.combo_item.length < comboOffer.number_of_items"
-						key="add"
-						class="display-flex flex-basis-48 justify-content-center align-items-center min-height-100px mb-1em pa-1em card--shadow"
-					>
-						<button
-							class="btn blue btn-outline display-flex justify-content-center align-items-center"
-							aria-label="add"
-							@click="showAddView"
-						>
-							<i class="fa fa-lg fa-plus" aria-hidden="true"></i>
-						</button>
-					</div>
-				</div>
+            <!-- CARD ACTIONS -->
+            <div class="display-flex width-100 justify-content-flex-end align-items-center py-1em mb-5px card__actions">
+              <transition
+                name="quick-fade"
+                mode="out-in"
+              >
+                <div
+                  v-if="item.view === 'initial'"
+                  key="initial"
+                >
+                  <button
+                    class="btn blue btn-xs btn-outline"
+                    @click="confirmItemDelete(item)"
+                  >
+                    <i
+                      class="fa fa-lg fa-trash"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </div>
+                <!-- DELETE ITEM -->
+                <div
+                  v-else-if="activeComboOfferItem.view === 'delete'"
+                  key="delete"
+                >
+                  <button
+                    class="btn blue btn-sm btn-outline"
+                    @click="removeItem"
+                  >
+                    Delete
+                    <i
+                      v-if="item.deleting"
+                      class="fa fa-spinner fa-pulse fa-fw"
+                      aria-hidden="true"
+                    />
+                  </button>
+                  <button
+                    class="btn blue btn-sm btn-outline"
+                    :disabled="item.deleting"
+                    @click="cancelItemDelete"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </transition>
+            </div>
+          </div>
+          <div
+            v-if="comboOffer.combo_item.length < comboOffer.number_of_items"
+            key="add"
+            class="display-flex flex-basis-48 justify-content-center align-items-center min-height-100px mb-1em pa-1em card--shadow"
+          >
+            <button
+              class="btn blue btn-outline display-flex justify-content-center align-items-center"
+              aria-label="add"
+              @click="showAddView"
+            >
+              <i
+                class="fa fa-lg fa-plus"
+                aria-hidden="true"
+              />
+            </button>
+          </div>
+        </div>
 
-				<!-- ADD ITEM -->
-				<div
-					v-if="view === 'add'"
-					class="width-100 display-flex flex-direction-column"
-				>
-					<menu-and-modifier-item-picker
-						:previouslySelected="currentSkus"
-						:modifierDisabled="true"
-						@update="itemsSelected"
-					>
-					</menu-and-modifier-item-picker>
-					<div class="width-100 display-flex justify-content-space-between align-items-flex-end">
-						<p class="my-0em text-muted">
-							{{this.selected === null ? 
-								`${this.currentSkus.length} selected` :
-								`${this.selected.length} selected`
-							}}
-						</p>
-						<div>
-							<button
-								class="btn blue btn-sm btn-outline"
-								@click="showListView"
-								:disabled="creating"
-							>
-								Cancel
-							</button>
-							<button
-								class="btn blue btn-sm btn-outline"
-								@click="saveSkus"
-								:disabled="creating"
-							>
-								Save
-								<i
-									v-if="creating"
-									class="fa fa-spinner fa-pulse fa-fw"
-									aria-hidden="true"
-								>
-								</i>
-							</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+        <!-- ADD ITEM -->
+        <div
+          v-if="view === 'add'"
+          class="width-100 display-flex flex-direction-column"
+        >
+          <menu-and-modifier-item-picker
+            :previously-selected="currentSkus"
+            :modifier-disabled="true"
+            @update="itemsSelected"
+          />
+          <div class="width-100 display-flex justify-content-space-between align-items-flex-end">
+            <p class="my-0em text-muted">
+              {{ this.selected === null ? 
+                `${this.currentSkus.length} selected` :
+                `${this.selected.length} selected`
+              }}
+            </p>
+            <div>
+              <button
+                class="btn blue btn-sm btn-outline"
+                :disabled="creating"
+                @click="showListView"
+              >
+                Cancel
+              </button>
+              <button
+                class="btn blue btn-sm btn-outline"
+                :disabled="creating"
+                @click="saveSkus"
+              >
+                Save
+                <i
+                  v-if="creating"
+                  class="fa fa-spinner fa-pulse fa-fw"
+                  aria-hidden="true"
+                />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>

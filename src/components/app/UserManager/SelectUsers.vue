@@ -1,95 +1,137 @@
 <template>
-	<modal :show="showSelectUsersModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="modal">
-		<div slot="modal-header"
-		     class="modal-header center">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Select Users To Send Notification To</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<form role="form"
-			      novalidate>
-				<div class="alert alert-danger"
-				     v-show="errorMessage"
-				     ref="errorMessage">
-					<button class="close"
-					        @click="clearError()"></button>
-					<span>{{ errorMessage }}</span>
-				</div>
-				<div class="form-body invite-user-form height-mod">
-					<table class="table">
-						<thead>
-							<tr>
-								<th>
-									<div class="md-checkbox has-success"
-									     @click="selectAll()">
-										<input type="checkbox"
-										       :id="`group-${passedGroupId}`"
-										       class="md-check"
-										       v-model="selectAllSelected">
-										<label :for="`group-${passedGroupId}`">
-											<span class="inc"></span>
-											<span class="check"></span>
-											<span class="box"></span>
-										</label>
-									</div>
-								</th>
-								<th> Name </th>
-								<th> Email </th>
-								<th> City, Province, Country </th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr v-for="user in users" :key="user.id">
-								<td>
-									<div class="md-checkbox has-success">
-										<input type="checkbox"
-										       :id="`store-${user.id}`"
-										       class="md-check"
-										       v-model="user.selected"
-										       @change="checkBox(user)">
-										<label :for="`store-${user.id}`">
-											<span class="inc"></span>
-											<span class="check"></span>
-											<span class="box"></span>
-										</label>
-									</div>
-								</td>
-								<td> {{ user.first_name }} {{ user.last_name }} </td>
-								<td> {{ user.email }} </td>
-								<td> {{ user.city }}
-									<span v-if="user.city">,</span> {{ user.province }}
-									<span v-if="user.province">,</span> {{ user.country }} </td>
-							</tr>
-						</tbody>
-					</table>
-					<p v-if="!users.length"
-					   class="text-center">There are no users in this group.</p>
-				</div>
-			</form>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer center">
-			<div class="footer-wrapper">
-				<el-pagination class="inline-block pagination-center"
-				               small
-				               layout="prev, pager, next"
-				               :page-count="pageCount"
-				               @current-change="changeCurrentPage">
-				</el-pagination>
-				<button type="button"
-				        class="btn blue"
-				        @click="selectUsers()">Select</button>
-			</div>
-		</div>
-	</modal>
+  <modal
+    ref="modal"
+    :show="showSelectUsersModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header center"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Select Users To Send Notification To
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <form
+        role="form"
+        novalidate
+      >
+        <div
+          v-show="errorMessage"
+          ref="errorMessage"
+          class="alert alert-danger"
+        >
+          <button
+            class="close"
+            @click="clearError()"
+          />
+          <span>{{ errorMessage }}</span>
+        </div>
+        <div class="form-body invite-user-form height-mod">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>
+                  <div
+                    class="md-checkbox has-success"
+                    @click="selectAll()"
+                  >
+                    <input
+                      :id="`group-${passedGroupId}`"
+                      v-model="selectAllSelected"
+                      type="checkbox"
+                      class="md-check"
+                    >
+                    <label :for="`group-${passedGroupId}`">
+                      <span class="inc" />
+                      <span class="check" />
+                      <span class="box" />
+                    </label>
+                  </div>
+                </th>
+                <th> Name </th>
+                <th> Email </th>
+                <th> City, Province, Country </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="user in users"
+                :key="user.id"
+              >
+                <td>
+                  <div class="md-checkbox has-success">
+                    <input
+                      :id="`store-${user.id}`"
+                      v-model="user.selected"
+                      type="checkbox"
+                      class="md-check"
+                      @change="checkBox(user)"
+                    >
+                    <label :for="`store-${user.id}`">
+                      <span class="inc" />
+                      <span class="check" />
+                      <span class="box" />
+                    </label>
+                  </div>
+                </td>
+                <td> {{ user.first_name }} {{ user.last_name }} </td>
+                <td> {{ user.email }} </td>
+                <td>
+                  {{ user.city }}
+                  <span v-if="user.city">
+                    ,
+                  </span> {{ user.province }}
+                  <span v-if="user.province">
+                    ,
+                  </span> {{ user.country }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p
+            v-if="!users.length"
+            class="text-center"
+          >
+            There are no users in this group.
+          </p>
+        </div>
+      </form>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer center"
+    >
+      <div class="footer-wrapper">
+        <el-pagination
+          class="inline-block pagination-center"
+          small
+          layout="prev, pager, next"
+          :page-count="pageCount"
+          @current-change="changeCurrentPage"
+        />
+        <button
+          type="button"
+          class="btn blue"
+          @click="selectUsers()"
+        >
+          Select
+        </button>
+      </div>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -98,6 +140,17 @@ import UserGroupsFunctions from '../../../controllers/UserGroups'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
+	components: {
+		Modal
+	},
+	props: {
+		passedGroupId: {
+			type: Number
+		},
+		passedGroupName: {
+			type: String
+		}
+	},
 	data () {
 		return {
 			errorMessage: '',
@@ -107,14 +160,6 @@ export default {
 			showSelectUsersModal: false,
 			pageCount: 1,
 			currentPage: 1
-		}
-	},
-	props: {
-		passedGroupId: {
-			type: Number
-		},
-		passedGroupName: {
-			type: String
 		}
 	},
 	mounted () {
@@ -254,9 +299,6 @@ export default {
 		closeModal () {
 			this.$emit('closeSelectUsersModal')
 		}
-	},
-	components: {
-		Modal
 	}
 }
 </script>

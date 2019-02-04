@@ -1,74 +1,99 @@
 <template>
-	<modal :show="showComponent"
-	       :width="900"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="applyModal">
-		<div slot="modal-header"
-		     class="modal-header center">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Apply Modifier</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="row"
-			     v-show="errorMessage"
-			     ref="errorMessage">
-				<div class="col-md-12">
-					<div class="alert alert-danger">
-						<button class="close"
-						        @click="clearError('errorMessage')"></button>
-						<span>{{errorMessage}}</span>
-					</div>
-				</div>
-			</div>
-			<div class="row"
-			     v-show="itemSelection">
-				<div class="col-xs-12">
-					<menu-item-picker @update="itemsSelected">
-					</menu-item-picker>
-				</div>
-			</div>
-			<div class="row"
-			     v-if="locationSelection">
-				<div class="col-xs-12">
-					<store-picker
-						@update="updateLocations"
-					>
-					</store-picker>
-				</div>
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button v-show="itemSelection"
-			        type="button"
-			        class="btn btn-primary"
-			        @click="showLocationSelection()">
-				Next
-			</button>
-			<button v-show="locationSelection"
-			        type="button"
-			        class="btn btn-outline"
-			        @click="showItemSelection()">
-				Back
-			</button>
-			<button v-show="locationSelection"
-			        type="button"
-			        class="btn btn-primary"
-			        @click="applyModifierToItemsAtLocations()"
-			        :disabled="saving">
-				Save
-				<i v-show="saving"
-				   class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-		</div>
-	</modal>
+  <modal
+    ref="applyModal"
+    :show="showComponent"
+    :width="900"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header center"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Apply Modifier
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div
+        v-show="errorMessage"
+        ref="errorMessage"
+        class="row"
+      >
+        <div class="col-md-12">
+          <div class="alert alert-danger">
+            <button
+              class="close"
+              @click="clearError('errorMessage')"
+            />
+            <span>{{ errorMessage }}</span>
+          </div>
+        </div>
+      </div>
+      <div
+        v-show="itemSelection"
+        class="row"
+      >
+        <div class="col-xs-12">
+          <menu-item-picker @update="itemsSelected" />
+        </div>
+      </div>
+      <div
+        v-if="locationSelection"
+        class="row"
+      >
+        <div class="col-xs-12">
+          <store-picker
+            @update="updateLocations"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        v-show="itemSelection"
+        type="button"
+        class="btn btn-primary"
+        @click="showLocationSelection()"
+      >
+        Next
+      </button>
+      <button
+        v-show="locationSelection"
+        type="button"
+        class="btn btn-outline"
+        @click="showItemSelection()"
+      >
+        Back
+      </button>
+      <button
+        v-show="locationSelection"
+        type="button"
+        class="btn btn-primary"
+        :disabled="saving"
+        @click="applyModifierToItemsAtLocations()"
+      >
+        Save
+        <i
+          v-show="saving"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -79,7 +104,18 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 import MenuItemPicker from '@/components/modules/MenuItemPicker'
 
 export default {
-	name: 'apply-modifier-to-items-at-locations',
+	name: 'ApplyModifierToItemsAtLocations',
+	components: {
+		Modal,
+		StorePicker,
+		MenuItemPicker
+	},
+	props: {
+		modifier: {
+			type: Object,
+			required: true
+		}
+	},
 	data () {
 		return {
 			saving: false,
@@ -91,12 +127,6 @@ export default {
 			selectedLocations: [],
 			showApplyToLocationsModal: false,
 			modifierToApplyToLocations: {}
-		}
-	},
-	props: {
-		modifier: {
-			type: Object,
-			required: true
 		}
 	},
 	mounted () {
@@ -212,11 +242,6 @@ export default {
 		emitSuccess (payload = {}) {
 			this.$emit('applyModifierToItemsAtLocationsSuccess', payload)
 		}
-	},
-	components: {
-		Modal,
-		StorePicker,
-		MenuItemPicker
 	}
 }
 </script>

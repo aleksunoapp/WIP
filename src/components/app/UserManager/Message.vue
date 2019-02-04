@@ -1,52 +1,78 @@
 <template>
-	<modal :show="messageModalDisplayed"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="modal">
-		<div slot="modal-header"
-		     class="modal-header center">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center"
-			    v-if="!selectImageMode">New Notification</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="row">
-				<div class="col-xs-12">
-					<div class="alert alert-danger"
-					     v-show="errorMessage"
-					     ref="errorMessage">
-						<button class="close"
-						        @click="clearError()"></button>
-						<span>{{errorMessage}}</span>
-					</div>
-				</div>
-				<div class="col-xs-12"
-				     v-show="!selectImageMode">
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<label class="btn blue btn-outline"
-						       for="push_notification"
-						       :class="{'active': message.notification_type === 'push'}">
-							<input type="radio"
-							       class="toggle"
-							       id="push_notification"
-							       value="push"
-							       v-model="message.notification_type"> Push Notification
-						</label>
-						<label class="btn blue btn-outline"
-						       for="inapp_notification"
-						       :class="{'active': message.notification_type === 'inapp'}">
-							<input type="radio"
-							       class="toggle"
-							       id="inapp_notification"
-							       value="inapp"
-							       v-model="message.notification_type"> In App Notification
-						</label>
-						<!-- <label class="btn blue btn-outline"
+  <modal
+    ref="modal"
+    :show="messageModalDisplayed"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header center"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4
+        v-if="!selectImageMode"
+        class="modal-title center"
+      >
+        New Notification
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div class="row">
+        <div class="col-xs-12">
+          <div
+            v-show="errorMessage"
+            ref="errorMessage"
+            class="alert alert-danger"
+          >
+            <button
+              class="close"
+              @click="clearError()"
+            />
+            <span>{{ errorMessage }}</span>
+          </div>
+        </div>
+        <div
+          v-show="!selectImageMode"
+          class="col-xs-12"
+        >
+          <div class="form-group form-md-line-input form-md-floating-label">
+            <label
+              class="btn blue btn-outline"
+              for="push_notification"
+              :class="{'active': message.notification_type === 'push'}"
+            >
+              <input
+                id="push_notification"
+                v-model="message.notification_type"
+                type="radio"
+                class="toggle"
+                value="push"
+              > Push Notification
+            </label>
+            <label
+              class="btn blue btn-outline"
+              for="inapp_notification"
+              :class="{'active': message.notification_type === 'inapp'}"
+            >
+              <input
+                id="inapp_notification"
+                v-model="message.notification_type"
+                type="radio"
+                class="toggle"
+                value="inapp"
+              > In App Notification
+            </label>
+            <!-- <label class="btn blue btn-outline"
 						       for="sms_notification"
 						       :class="{'active': message.notification_type === 'sms'}">
 							<input type="radio"
@@ -55,116 +81,171 @@
 							       value="sms"
 							       v-model="message.notification_type"> SMS
 						</label> -->
-					</div>
-				</div>
-				<div v-if="message.notification_type === 'inapp'"
-				     :class="{'col-xs-4 col-xs-offset-4' : !selectImageMode, 'col-xs-12' : selectImageMode}">
-					<resource-picker @open="toggleImageMode()"
-					                 @close="toggleImageMode()"
-					                 @selected="updateIcon"
-					                 :imageButton="true"
-					                 :imageUrl="message.media_path"
-					                 class="margin-top-15">
-					</resource-picker>
-				</div>
-				<div class="col-xs-12"
-				     v-show="!selectImageMode">
-					<div v-if="message.notification_type === 'push'"
-					     class="form-group form-md-line-input form-md-floating-label">
-						<input type="text"
-						       class="form-control input-sm"
-						       :class="{'edited': message.title.length}"
-						       id="form_control_1"
-						       v-model="message.title">
-						<label for="form_control_1">Title</label>
-					</div>
-					<div v-if="message.notification_type === 'push'"
-					     class="form-group form-md-line-input form-md-floating-label">
-						<input type="text"
-						       class="form-control input-sm"
-						       :class="{'edited': message.message.length}"
-						       id="form_control_2"
-						       v-model="message.message">
-						<label for="form_control_2">Message</label>
-					</div>
-					<div v-if="message.notification_type === 'inapp'"
-					     class="form-group form-md-line-input form-md-floating-label">
-						<input type="text"
-						       class="form-control input-sm"
-						       :class="{'edited': message.title.length}"
-						       id="form_control_3"
-						       v-model="message.title">
-						<label for="form_control_3">Title</label>
-					</div>
-					<div v-if="message.notification_type === 'inapp'"
-					     class="form-group form-md-line-input form-md-floating-label">
-						<input type="text"
-						       class="form-control input-sm"
-						       :class="{'edited': message.push_message.length}"
-						       id="form_control_4"
-						       v-model="message.push_message">
-						<label for="form_control_4">Push message</label>
-					</div>
-					<div v-if="message.notification_type === 'inapp'"
-					     class="form-group form-md-line-input form-md-floating-label">
-						<input type="text"
-						       class="form-control input-sm"
-						       :class="{'edited': message.message.length}"
-						       id="form_control_5"
-						       v-model="message.message">
-						<label for="form_control_5">Body</label>
-					</div>
-					<div v-if="message.notification_type === 'push'"
-					     class="form-group form-md-line-input form-md-floating-label">
-						<el-date-picker v-model="message.expire_at"
-						                type="date"
-						                format="yyyy-MM-dd"
-						                value-format="yyyy-MM-dd"
-						                :clearable="false"
-						                placeholder="Expires on">
-						</el-date-picker>
-					</div>
-					<el-dropdown v-if="message.notification_type === 'inapp'"
-					             @command="updateCallToAction"
-					             size="mini"
-					             :show-timeout="50"
-					             :hide-timeout="50"
-					             class="margin-top-15">
-						<el-button size="mini">
-							{{ selectedCallLabel }}
-							<i class="el-icon-arrow-down el-icon--right"></i>
-						</el-button>
-						<el-dropdown-menu slot="dropdown">
-							<el-dropdown-item v-for="action in omaActions" :key="action.id" :command="action.id">
-								{{ action.value }}
-							</el-dropdown-item>
-						</el-dropdown-menu>
-					</el-dropdown>
-					<div v-if="message.call_to_action === 'CALL' || message.call_to_action === 'GOTO_LINK'"
-					     class="form-group form-md-line-input form-md-floating-label margin-top-10">
-						<input type="text"
-						       class="form-control input-sm edited"
-						       id="form_control_6"
-						       v-model="message.action_value">
-						<label for="form_control_6">{{ numberOrUrl }}</label>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button v-if="!selectImageMode && message.notification_type.length"
-			        type="button"
-			        class="btn btn-primary"
-			        @click="sendMessage()"
-			        :disabled="sending">
-				Send
-				<i v-show="sending"
-				   class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-		</div>
-	</modal>
+          </div>
+        </div>
+        <div
+          v-if="message.notification_type === 'inapp'"
+          :class="{'col-xs-4 col-xs-offset-4' : !selectImageMode, 'col-xs-12' : selectImageMode}"
+        >
+          <resource-picker
+            :image-button="true"
+            :image-url="message.media_path"
+            class="margin-top-15"
+            @open="toggleImageMode()"
+            @close="toggleImageMode()"
+            @selected="updateIcon"
+          />
+        </div>
+        <div
+          v-show="!selectImageMode"
+          class="col-xs-12"
+        >
+          <div
+            v-if="message.notification_type === 'push'"
+            class="form-group form-md-line-input form-md-floating-label"
+          >
+            <input
+              id="form_control_1"
+              v-model="message.title"
+              type="text"
+              class="form-control input-sm"
+              :class="{'edited': message.title.length}"
+            >
+            <label for="form_control_1">
+              Title
+            </label>
+          </div>
+          <div
+            v-if="message.notification_type === 'push'"
+            class="form-group form-md-line-input form-md-floating-label"
+          >
+            <input
+              id="form_control_2"
+              v-model="message.message"
+              type="text"
+              class="form-control input-sm"
+              :class="{'edited': message.message.length}"
+            >
+            <label for="form_control_2">
+              Message
+            </label>
+          </div>
+          <div
+            v-if="message.notification_type === 'inapp'"
+            class="form-group form-md-line-input form-md-floating-label"
+          >
+            <input
+              id="form_control_3"
+              v-model="message.title"
+              type="text"
+              class="form-control input-sm"
+              :class="{'edited': message.title.length}"
+            >
+            <label for="form_control_3">
+              Title
+            </label>
+          </div>
+          <div
+            v-if="message.notification_type === 'inapp'"
+            class="form-group form-md-line-input form-md-floating-label"
+          >
+            <input
+              id="form_control_4"
+              v-model="message.push_message"
+              type="text"
+              class="form-control input-sm"
+              :class="{'edited': message.push_message.length}"
+            >
+            <label for="form_control_4">
+              Push message
+            </label>
+          </div>
+          <div
+            v-if="message.notification_type === 'inapp'"
+            class="form-group form-md-line-input form-md-floating-label"
+          >
+            <input
+              id="form_control_5"
+              v-model="message.message"
+              type="text"
+              class="form-control input-sm"
+              :class="{'edited': message.message.length}"
+            >
+            <label for="form_control_5">
+              Body
+            </label>
+          </div>
+          <div
+            v-if="message.notification_type === 'push'"
+            class="form-group form-md-line-input form-md-floating-label"
+          >
+            <el-date-picker
+              v-model="message.expire_at"
+              type="date"
+              format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd"
+              :clearable="false"
+              placeholder="Expires on"
+            />
+          </div>
+          <el-dropdown
+            v-if="message.notification_type === 'inapp'"
+            size="mini"
+            :show-timeout="50"
+            :hide-timeout="50"
+            class="margin-top-15"
+            @command="updateCallToAction"
+          >
+            <el-button size="mini">
+              {{ selectedCallLabel }}
+              <i class="el-icon-arrow-down el-icon--right" />
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item
+                v-for="action in omaActions"
+                :key="action.id"
+                :command="action.id"
+              >
+                {{ action.value }}
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+          <div
+            v-if="message.call_to_action === 'CALL' || message.call_to_action === 'GOTO_LINK'"
+            class="form-group form-md-line-input form-md-floating-label margin-top-10"
+          >
+            <input
+              id="form_control_6"
+              v-model="message.action_value"
+              type="text"
+              class="form-control input-sm edited"
+            >
+            <label for="form_control_6">
+              {{ numberOrUrl }}
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        v-if="!selectImageMode && message.notification_type.length"
+        type="button"
+        class="btn btn-primary"
+        :disabled="sending"
+        @click="sendMessage()"
+      >
+        Send
+        <i
+          v-show="sending"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -179,6 +260,14 @@ import GlobalFunctions from '../../../global.js'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
+	components: {
+		Modal,
+		ButtonGroup,
+		Checkbox,
+		ResourcePicker,
+		Dropdown
+	},
+	props: ['userId'],
 	data () {
 		return {
 			messageModalDisplayed: false,
@@ -230,7 +319,6 @@ export default {
 			}
 		}
 	},
-	props: ['userId'],
 	mounted () {
 		this.messageModalDisplayed = true
 		$('body').off('click', '.el-date-editor')
@@ -458,13 +546,6 @@ export default {
 				}
 			)
 		}
-	},
-	components: {
-		Modal,
-		ButtonGroup,
-		Checkbox,
-		ResourcePicker,
-		Dropdown
 	}
 }
 </script>

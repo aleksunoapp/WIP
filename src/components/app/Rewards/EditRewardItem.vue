@@ -1,120 +1,165 @@
 <template>
-	<modal :show="showRewardItemModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal">
-		<div slot="modal-header"
-		     class="modal-header">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Edit Reward Item - {{ passedRewardItem.name }}</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="alert alert-danger"
-					     v-show="errorMessage.length"
-					     ref="errorMessage">
-						<button class="close"
-						        data-close="alert"
-						        @click.prevent="clearError('errorMessage')"></button>
-						<span>{{errorMessage}}</span>
-					</div>
-				</div>
-				<div class="col-md-12">
-					<fieldset :disabled="!$root.permissions['reward_tiers items update']">
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-							       class="form-control input-sm"
-							       :class="{'edited': rewardItemToBeEdited.name.length}"
-							       id="form_control_1"
-							       v-model="rewardItemToBeEdited.name">
-							<label for="form_control_1">Reward Item Name</label>
-						</div>
-						<div class="side-by-side-item">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': rewardItemToBeEdited.value.length}"
-								       id="form_control_2"
-								       v-model="rewardItemToBeEdited.value">
-								<label for="form_control_2">Reward Item Value</label>
-							</div>
-						</div>
-						<el-select :disabled="!$root.permissions['reward_tiers items update']"
-						           class="side-by-side-item margin-top-15"
-						           v-model="rewardItemToBeEdited.value_type"
-						           placeholder="Select type"
-						           size="small">
-							<el-option label="$"
-							           value="dollar"></el-option>
-							<el-option label="%"
-							           value="percentage"></el-option>
-						</el-select>
-						<div class="side-by-side-item margin-top-15">
-							from:
-							<el-date-picker :disabled="!$root.permissions['reward_tiers items update']"
-							                v-model="rewardItemToBeEdited.start_on"
-							                type="date"
-							                format="yyyy-MM-dd"
-							                value-format="yyyy-MM-dd"
-							                :clearable="false"
-							                placeholder="Select start date">
-							</el-date-picker>
-						</div>
-						<div class="side-by-side-item margin-top-15">
-							to:
-							<el-date-picker :disabled="!$root.permissions['reward_tiers items update']"
-							                v-model="rewardItemToBeEdited.expiry"
-							                type="date"
-							                format="yyyy-MM-dd"
-							                value-format="yyyy-MM-dd"
-							                :clearable="false"
-							                placeholder="Select end date">
-							</el-date-picker>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label margin-top-15">
-							<input type="text"
-							       class="form-control input-sm"
-							       id="form_control_loyalty_reward_id"
-							       :class="{'edited': rewardItemToBeEdited.loyalty_reward_id.length}"
-							       v-model="rewardItemToBeEdited.loyalty_reward_id">
-							<label for="form_control_loyalty_reward_id">Loyalty Reward ID</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label margin-top-15">
-							<input type="text"
-							       class="form-control input-sm"
-							       id="form_control_3"
-							       :class="{'edited': rewardItemToBeEdited.points.length}"
-							       v-model="rewardItemToBeEdited.points">
-							<label for="form_control_3">Reward Item Points</label>
-						</div>
-					</fieldset>
-				</div>
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button v-if="!$root.permissions['reward_tiers items update']"
-			        type="button"
-			        class="btn btn-primary"
-			        @click="closeModal()">
-				Close
-			</button>
-			<button v-else
-			        type="button"
-			        class="btn btn-primary"
-			        @click="updateRewardItemDetails()">
-				Save
-				<i v-show="updating"
-				   class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-		</div>
-	</modal>
+  <modal
+    :show="showRewardItemModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Edit Reward Item - {{ passedRewardItem.name }}
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div class="row">
+        <div class="col-md-12">
+          <div
+            v-show="errorMessage.length"
+            ref="errorMessage"
+            class="alert alert-danger"
+          >
+            <button
+              class="close"
+              data-close="alert"
+              @click.prevent="clearError('errorMessage')"
+            />
+            <span>{{ errorMessage }}</span>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <fieldset :disabled="!$root.permissions['reward_tiers items update']">
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_1"
+                v-model="rewardItemToBeEdited.name"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': rewardItemToBeEdited.name.length}"
+              >
+              <label for="form_control_1">
+                Reward Item Name
+              </label>
+            </div>
+            <div class="side-by-side-item">
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_2"
+                  v-model="rewardItemToBeEdited.value"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': rewardItemToBeEdited.value.length}"
+                >
+                <label for="form_control_2">
+                  Reward Item Value
+                </label>
+              </div>
+            </div>
+            <el-select
+              v-model="rewardItemToBeEdited.value_type"
+              :disabled="!$root.permissions['reward_tiers items update']"
+              class="side-by-side-item margin-top-15"
+              placeholder="Select type"
+              size="small"
+            >
+              <el-option
+                label="$"
+                value="dollar"
+              />
+              <el-option
+                label="%"
+                value="percentage"
+              />
+            </el-select>
+            <div class="side-by-side-item margin-top-15">
+              from:
+              <el-date-picker
+                v-model="rewardItemToBeEdited.start_on"
+                :disabled="!$root.permissions['reward_tiers items update']"
+                type="date"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                :clearable="false"
+                placeholder="Select start date"
+              />
+            </div>
+            <div class="side-by-side-item margin-top-15">
+              to:
+              <el-date-picker
+                v-model="rewardItemToBeEdited.expiry"
+                :disabled="!$root.permissions['reward_tiers items update']"
+                type="date"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                :clearable="false"
+                placeholder="Select end date"
+              />
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label margin-top-15">
+              <input
+                id="form_control_loyalty_reward_id"
+                v-model="rewardItemToBeEdited.loyalty_reward_id"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': rewardItemToBeEdited.loyalty_reward_id.length}"
+              >
+              <label for="form_control_loyalty_reward_id">
+                Loyalty Reward ID
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label margin-top-15">
+              <input
+                id="form_control_3"
+                v-model="rewardItemToBeEdited.points"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': rewardItemToBeEdited.points.length}"
+              >
+              <label for="form_control_3">
+                Reward Item Points
+              </label>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        v-if="!$root.permissions['reward_tiers items update']"
+        type="button"
+        class="btn btn-primary"
+        @click="closeModal()"
+      >
+        Close
+      </button>
+      <button
+        v-else
+        type="button"
+        class="btn btn-primary"
+        @click="updateRewardItemDetails()"
+      >
+        Save
+        <i
+          v-show="updating"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -124,6 +169,17 @@ import RewardsFunctions from '../../../controllers/Rewards'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
 
 export default {
+	components: {
+		Modal
+	},
+	props: {
+		passedRewardItem: {
+			type: Object,
+			default: () => {
+				return {}
+			}
+		}
+	},
 	data () {
 		return {
 			showRewardItemModal: false,
@@ -142,14 +198,6 @@ export default {
 			},
 			errorMessage: '',
 			expiry: ''
-		}
-	},
-	props: {
-		passedRewardItem: {
-			type: Object,
-			default: () => {
-				return {}
-			}
 		}
 	},
 	mounted () {
@@ -308,9 +356,6 @@ export default {
 				payload
 			})
 		}
-	},
-	components: {
-		Modal
 	}
 }
 </script>

@@ -1,54 +1,63 @@
 <template>
-	<div class="permissions-picker">
-		<table class="table">
-			<thead>
-				<tr>
-					<th></th>
-					<th> Permission </th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr v-for="permission in currentActivePermissions"
-				    :key="permission.id">
-					<td>
-						<div class="md-checkbox has-success">
-							<input type="checkbox"
-							       :id="`${instanceId}-${permission.id}`"
-							       class="md-check"
-							       v-model="permission.selected"
-							       @change="permissionsSelected()">
-							<label :for="`${instanceId}-${permission.id}`">
-								<span class="inc"></span>
-								<span class="check"></span>
-								<span class="box"></span>
-							</label>
-						</div>
-					</td>
-					<td> {{ permission.name }} </td>
-				</tr>
-			</tbody>
-		</table>
-		<div class="row__wrapper">
-			<div class="half-width">
-				<div class="form-group form-md-line-input form-md-floating-label">
-					<input ref="newRoleName"
-					       type="text"
-					       class="form-control input-sm"
-					       id="form_control_permissions_search"
-					       v-model="permissionsSearchQuery"
-					       :class="{'edited': permissionsSearchQuery.length}">
-					<label for="form_control_permissions_search">Search permissions</label>
-				</div>
-			</div>
-			<div class="half-width"> 
-				<pagination class="pull-left"
-				            :passedPage="permissionsPage"
-				            :numPages="Math.ceil(permissionsSearchResults.length / 10)"
-				            @activePageChange="changePermissionsPage">
-				</pagination>
-			</div>
-		</div>
-	</div>
+  <div class="permissions-picker">
+    <table class="table">
+      <thead>
+        <tr>
+          <th />
+          <th> Permission </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="permission in currentActivePermissions"
+          :key="permission.id"
+        >
+          <td>
+            <div class="md-checkbox has-success">
+              <input
+                :id="`${instanceId}-${permission.id}`"
+                v-model="permission.selected"
+                type="checkbox"
+                class="md-check"
+                @change="permissionsSelected()"
+              >
+              <label :for="`${instanceId}-${permission.id}`">
+                <span class="inc" />
+                <span class="check" />
+                <span class="box" />
+              </label>
+            </div>
+          </td>
+          <td> {{ permission.name }} </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="row__wrapper">
+      <div class="half-width">
+        <div class="form-group form-md-line-input form-md-floating-label">
+          <input
+            id="form_control_permissions_search"
+            ref="newRoleName"
+            v-model="permissionsSearchQuery"
+            type="text"
+            class="form-control input-sm"
+            :class="{'edited': permissionsSearchQuery.length}"
+          >
+          <label for="form_control_permissions_search">
+            Search permissions
+          </label>
+        </div>
+      </div>
+      <div class="half-width"> 
+        <pagination
+          class="pull-left"
+          :passed-page="permissionsPage"
+          :num-pages="Math.ceil(permissionsSearchResults.length / 10)"
+          @activePageChange="changePermissionsPage"
+        />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -59,7 +68,7 @@ import PermissionsFunctions from '@/controllers/Permissions'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	name: 'permissions-picker',
+	name: 'PermissionsPicker',
 	components: {
 		Pagination
 	},

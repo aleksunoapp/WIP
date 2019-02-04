@@ -1,323 +1,447 @@
 <template>
-	<div>
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
-		<h1 class='page-title'>{{ $root.activeUser.name }} Stores</h1>
-		<div class="note note-info">
-			<p>A list of stores for this application.</p>
-		</div>
+  <div>
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
+    <h1 class="page-title">
+      {{ $root.activeUser.name }} Stores
+    </h1>
+    <div class="note note-info">
+      <p>A list of stores for this application.</p>
+    </div>
 
-		<!-- SEARCH START -->
-		<div class="margin-top-20">
-			<div class="portlet box blue-hoki">
-				<div class="portlet-title"
-				     @click="toggleStoreSearchPanel()">
-					<div class="caption">
-						<i class="fa fa-search"></i>
-						Search Panel
-					</div>
-					<div class="tools">
-						<a :class="{'expand': !storeSearchCollapse, 'collapse': storeSearchCollapse}"></a>
-					</div>
-				</div>
-				<div class="portlet-body"
-				     :class="{'display-hide': storeSearchCollapse}">
-					<form role="form"
-					      @submit.prevent="advancedSearch()">
-						<div class="form-body row">
-							<div class="col-md-12">
-								<div class="alert alert-danger"
-								     v-if="searchError.length">
-									<button class="close"
-									        data-close="alert"
-									        @click.prevent="clearSearchError()"></button>
-									<span>{{searchError}}</span>
-								</div>
-							</div>
-							<div class="col-md-6">
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       class="form-control input-sm"
-									       :class="{'edited': searchTerm.length}"
-									       v-model="searchTerm">
-									<label for="search_options_search">Search</label>
-									<span class="help-block persist">Search by name, address or internal ID.</span>
-								</div>
-							</div>
-						</div>
-						<div class="form-actions right margin-top-20">
-							<button type="button"
-							        class="btn btn-default"
-							        @click.prevent="resetStoreSearch()"> Reset Search</button>
-							<button type="submit"
-							        class="btn blue">Search</button>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-		<!-- SEARCH END -->
+    <!-- SEARCH START -->
+    <div class="margin-top-20">
+      <div class="portlet box blue-hoki">
+        <div
+          class="portlet-title"
+          @click="toggleStoreSearchPanel()"
+        >
+          <div class="caption">
+            <i class="fa fa-search" />
+            Search Panel
+          </div>
+          <div class="tools">
+            <a :class="{'expand': !storeSearchCollapse, 'collapse': storeSearchCollapse}" />
+          </div>
+        </div>
+        <div
+          class="portlet-body"
+          :class="{'display-hide': storeSearchCollapse}"
+        >
+          <form
+            role="form"
+            @submit.prevent="advancedSearch()"
+          >
+            <div class="form-body row">
+              <div class="col-md-12">
+                <div
+                  v-if="searchError.length"
+                  class="alert alert-danger"
+                >
+                  <button
+                    class="close"
+                    data-close="alert"
+                    @click.prevent="clearSearchError()"
+                  />
+                  <span>{{ searchError }}</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    v-model="searchTerm"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': searchTerm.length}"
+                  >
+                  <label for="search_options_search">
+                    Search
+                  </label>
+                  <span class="help-block persist">
+                    Search by name, address or internal ID.
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="form-actions right margin-top-20">
+              <button
+                type="button"
+                class="btn btn-default"
+                @click.prevent="resetStoreSearch()"
+              >
+                Reset Search
+              </button>
+              <button
+                type="submit"
+                class="btn blue"
+              >
+                Search
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- SEARCH END -->
 
-		<!-- LIST START -->
-		<loading-screen :show="displayStoreData"
-		                :color="'#2C3E50'"
-		                :display="'inline'"></loading-screen>
-		<div v-if="stores.length && !displayStoreData && !filteredResults.length">
-			<div class="portlet light portlet-fit bordered">
-				<div class="portlet-title bg-blue-chambray">
-					<div class="menu-image-main">
-						<img src="../../../../public/client_logo.png">
-					</div>
-					<div class="caption">
-						<span class="caption-subject font-default bold uppercase">Stores</span>
-						<div class="caption-desc font-grey-cascade">Click on a store to edit it.</div>
-					</div>
-				</div>
-				<div class="portlet-body">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="alert alert-danger"
-							     v-show="listErrorMessage"
-							     ref="listErrorMessage">
-								<button class="close"
-								        @click="clearError('listErrorMessage')"></button>
-								<span>{{listErrorMessage}}</span>
-							</div>
-						</div>
-					</div>
-					<div class="clearfix margin-bottom-10">
-						<el-dropdown trigger="click"
-						             @command="updateSortByOrder"
-						             size="mini"
-						             :show-timeout="50"
-						             :hide-timeout="50">
-							<el-button size="mini">
-								Sort by
-								<span>
-									<i class="fa fa-sort-alpha-asc"
-									   v-if="sortBy.order === 'ASC'"></i>
-									<i class="fa fa-sort-alpha-desc"
-									   v-if="sortBy.order === 'DESC'"></i>
-								</span>
-								<i class="el-icon-arrow-down el-icon--right"></i>
-							</el-button>
-							<el-dropdown-menu slot="dropdown">
-								<el-dropdown-item command="ASC">
-									<i class="fa fa-sort-alpha-asc"></i>
-								</el-dropdown-item>
-								<el-dropdown-item command="DESC">
-									<i class="fa fa-sort-alpha-desc"></i>
-								</el-dropdown-item>
-							</el-dropdown-menu>
-						</el-dropdown>
-						<page-results class="pull-right"
-						              :totalResults="stores.length"
-						              :activePage="activePage"
-						              @pageResults="pageResultsUpdate"></page-results>
-					</div>
-					<div class="mt-element-list">
-						<div class="mt-list-container list-news">
-							<ul>
-								<li id="parent"
-								    class="mt-list-item actions-at-left margin-top-15"
-								    v-for="store in currentActivePageItems"
-								    @click="editStore(store)"
-								    :key="store.id">
-									<div class="list-item-actions">
+    <!-- LIST START -->
+    <loading-screen
+      :show="displayStoreData"
+      :color="'#2C3E50'"
+      :display="'inline'"
+    />
+    <div v-if="stores.length && !displayStoreData && !filteredResults.length">
+      <div class="portlet light portlet-fit bordered">
+        <div class="portlet-title bg-blue-chambray">
+          <div class="menu-image-main">
+            <img src="../../../../public/client_logo.png">
+          </div>
+          <div class="caption">
+            <span class="caption-subject font-default bold uppercase">
+              Stores
+            </span>
+            <div class="caption-desc font-grey-cascade">
+              Click on a store to edit it.
+            </div>
+          </div>
+        </div>
+        <div class="portlet-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div
+                v-show="listErrorMessage"
+                ref="listErrorMessage"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  @click="clearError('listErrorMessage')"
+                />
+                <span>{{ listErrorMessage }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="clearfix margin-bottom-10">
+            <el-dropdown
+              trigger="click"
+              size="mini"
+              :show-timeout="50"
+              :hide-timeout="50"
+              @command="updateSortByOrder"
+            >
+              <el-button size="mini">
+                Sort by
+                <span>
+                  <i
+                    v-if="sortBy.order === 'ASC'"
+                    class="fa fa-sort-alpha-asc"
+                  />
+                  <i
+                    v-if="sortBy.order === 'DESC'"
+                    class="fa fa-sort-alpha-desc"
+                  />
+                </span>
+                <i class="el-icon-arrow-down el-icon--right" />
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="ASC">
+                  <i class="fa fa-sort-alpha-asc" />
+                </el-dropdown-item>
+                <el-dropdown-item command="DESC">
+                  <i class="fa fa-sort-alpha-desc" />
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+            <page-results
+              class="pull-right"
+              :total-results="stores.length"
+              :active-page="activePage"
+              @pageResults="pageResultsUpdate"
+            />
+          </div>
+          <div class="mt-element-list">
+            <div class="mt-list-container list-news">
+              <ul>
+                <li
+                  v-for="store in currentActivePageItems"
+                  id="parent"
+                  :key="store.id"
+                  class="mt-list-item actions-at-left margin-top-15"
+                  @click="editStore(store)"
+                >
+                  <div class="list-item-actions">
+                    <el-tooltip
+                      v-if="$root.permissions['stores info read'] && !$root.permissions['stores info update']"
+                      content="View"
+                      effect="light"
+                      placement="right"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="editStore(store)"
+                      >
+                        <i class="fa fa-lg fa-eye" />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['stores info update']"
+                      content="Edit"
+                      effect="light"
+                      placement="right"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="editStore(store)"
+                      >
+                        <i class="fa fa-lg fa-pencil" />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['stores info delete']"
+                      content="Delete"
+                      effect="light"
+                      placement="right"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click.stop.prevent="confirmDelete(store)"
+                      >
+                        <i class="fa fa-lg fa-trash" />
+                      </a>
+                    </el-tooltip>
+                  </div>
+                  <div class="list-datetime bold uppercase font-red">
+                    <span>{{ store.display_name }}</span>
+                  </div>
+                  <div class="list-item-content height-mod">
+                    <div class="col-md-8">
+                      <span v-if="store.address_line_1.length">
+                        {{ store.address_line_1 }} {{ store.address_line_2 }}
+                      </span><br>
+                      <span v-if="store.city.length">
+                        {{ store.city }},
+                      </span>
+                      <span v-if="store.province.length">
+                        {{ store.province }},
+                      </span>
+                      <span v-if="store.country.length">
+                        {{ store.country }}
+                      </span>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div
+              v-if="numPages > 1"
+              class="clearfix"
+            >
+              <pagination
+                :passed-page="activePage"
+                :num-pages="numPages"
+                @activePageChange="activePageUpdate"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="stores.length && !displayStoreData && filteredResults.length">
+      <div class="portlet light portlet-fit bordered">
+        <div class="portlet-title bg-blue-chambray">
+          <div class="menu-image-main">
+            <img src="../../../../public/client_logo.png">
+          </div>
+          <div class="caption">
+            <span class="caption-subject font-default bold uppercase">
+              Stores
+            </span>
+            <div class="caption-desc font-grey-cascade">
+              Click on a store to edit it.
+            </div>
+          </div>
+        </div>
+        <div class="portlet-body">
+          <div class="clearfix margin-bottom-10">
+            <el-dropdown
+              trigger="click"
+              size="mini"
+              :show-timeout="50"
+              :hide-timeout="50"
+              @command="updateSortByOrder"
+            >
+              <el-button size="mini">
+                Sort by
+                <span>
+                  <i
+                    v-if="sortBy.order === 'ASC'"
+                    class="fa fa-sort-alpha-asc"
+                  />
+                  <i
+                    v-if="sortBy.order === 'DESC'"
+                    class="fa fa-sort-alpha-desc"
+                  />
+                </span>
+                <i class="el-icon-arrow-down el-icon--right" />
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="ASC">
+                  <i class="fa fa-sort-alpha-asc" />
+                </el-dropdown-item>
+                <el-dropdown-item command="DESC">
+                  <i class="fa fa-sort-alpha-desc" />
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+            <page-results
+              class="pull-right"
+              :total-results="filteredResults.length"
+              :active-page="searchActivePage"
+              @pageResults="pageResultsUpdate"
+            />
+          </div>
+          <div class="mt-element-list">
+            <div class="mt-list-container list-news">
+              <ul>
+                <li
+                  v-for="store in currentActiveSearchPageItems"
+                  id="parent"
+                  :key="`search${store.id}`"
+                  class="mt-list-item actions-at-left margin-top-15"
+                >
+                  <div class="list-item-actions">
+                    <el-tooltip
+                      v-if="$root.permissions['stores info update']"
+                      content="Edit"
+                      effect="light"
+                      placement="right"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="editStore(store)"
+                      >
+                        <i class="fa fa-lg fa-pencil" />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['stores info delete']"
+                      content="Delete"
+                      effect="light"
+                      placement="right"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="confirmDelete(store)"
+                      >
+                        <i class="fa fa-lg fa-trash" />
+                      </a>
+                    </el-tooltip>
+                  </div>
+                  <div class="list-datetime bold uppercase font-red">
+                    <span>{{ store.display_name }}</span>
+                  </div>
+                  <div class="list-item-content height-mod">
+                    <div class="col-md-8">
+                      <span v-if="store.address_line_1.length">
+                        {{ store.address_line_1 }} {{ store.address_line_2 }}
+                      </span><br>
+                      <span v-if="store.city.length">
+                        {{ store.city }},
+                      </span>
+                      <span v-if="store.province.length">
+                        {{ store.province }},
+                      </span>
+                      <span v-if="store.country.length">
+                        {{ store.country }}
+                      </span>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div
+              v-if="searchNumPages > 1"
+              class="clearfix"
+            >
+              <pagination
+                :passed-page="searchActivePage"
+                :num-pages="searchNumPages"
+                @activePageChange="activeSearchPageUpdate"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="!stores.length && !displayStoreData">
+      <no-results
+        :show="!stores.length"
+        :type="'stores'"
+      />
+    </div>
+    <!-- LIST END -->
 
-										<el-tooltip v-if="$root.permissions['stores info read'] && !$root.permissions['stores info update']"
-										            content="View"
-										            effect="light"
-										            placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="editStore(store)">
-												<i class="fa fa-lg fa-eye"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['stores info update']"
-										            content="Edit"
-										            effect="light"
-										            placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="editStore(store)">
-												<i class="fa fa-lg fa-pencil"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['stores info delete']"
-										            content="Delete"
-										            effect="light"
-										            placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click.stop.prevent="confirmDelete(store)">
-												<i class="fa fa-lg fa-trash"></i>
-											</a>
-										</el-tooltip>
-									</div>
-									<div class="list-datetime bold uppercase font-red">
-										<span>{{ store.display_name }}</span>
-									</div>
-									<div class="list-item-content height-mod">
-										<div class="col-md-8">
-											<span v-if="store.address_line_1.length">{{ store.address_line_1 }} {{ store.address_line_2 }}</span><br>
-											<span v-if="store.city.length">{{ store.city }},</span>
-											<span v-if="store.province.length">{{ store.province }},</span>
-											<span v-if="store.country.length">{{ store.country }}</span>
-										</div>
-									</div>
-								</li>
-							</ul>
-						</div>
-						<div class="clearfix"
-						     v-if="numPages > 1">
-							<pagination :passedPage="activePage"
-							            :numPages="numPages"
-							            @activePageChange="activePageUpdate"></pagination>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div v-if="stores.length && !displayStoreData && filteredResults.length">
-			<div class="portlet light portlet-fit bordered">
-				<div class="portlet-title bg-blue-chambray">
-					<div class="menu-image-main">
-						<img src="../../../../public/client_logo.png">
-					</div>
-					<div class="caption">
-						<span class="caption-subject font-default bold uppercase">Stores</span>
-						<div class="caption-desc font-grey-cascade">Click on a store to edit it.</div>
-					</div>
-				</div>
-				<div class="portlet-body">
-					<div class="clearfix margin-bottom-10">
-						<el-dropdown trigger="click"
-						             @command="updateSortByOrder"
-						             size="mini"
-						             :show-timeout="50"
-						             :hide-timeout="50">
-							<el-button size="mini">
-								Sort by
-								<span>
-									<i class="fa fa-sort-alpha-asc"
-									   v-if="sortBy.order === 'ASC'"></i>
-									<i class="fa fa-sort-alpha-desc"
-									   v-if="sortBy.order === 'DESC'"></i>
-								</span>
-								<i class="el-icon-arrow-down el-icon--right"></i>
-							</el-button>
-							<el-dropdown-menu slot="dropdown">
-								<el-dropdown-item command="ASC">
-									<i class="fa fa-sort-alpha-asc"></i>
-								</el-dropdown-item>
-								<el-dropdown-item command="DESC">
-									<i class="fa fa-sort-alpha-desc"></i>
-								</el-dropdown-item>
-							</el-dropdown-menu>
-						</el-dropdown>
-						<page-results class="pull-right"
-						              :totalResults="filteredResults.length"
-						              :activePage="searchActivePage"
-						              @pageResults="pageResultsUpdate"></page-results>
-					</div>
-					<div class="mt-element-list">
-						<div class="mt-list-container list-news">
-							<ul>
-								<li id="parent"
-								    class="mt-list-item actions-at-left margin-top-15"
-								    v-for="store in currentActiveSearchPageItems"
-								    :key="`search${store.id}`">
-									<div class="list-item-actions">
-										<el-tooltip v-if="$root.permissions['stores info update']"
-										            content="Edit"
-										            effect="light"
-										            placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="editStore(store)">
-												<i class="fa fa-lg fa-pencil"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['stores info delete']"
-										            content="Delete"
-										            effect="light"
-										            placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="confirmDelete(store)">
-												<i class="fa fa-lg fa-trash"></i>
-											</a>
-										</el-tooltip>
-									</div>
-									<div class="list-datetime bold uppercase font-red">
-										<span>{{ store.display_name }}</span>
-									</div>
-									<div class="list-item-content height-mod">
-										<div class="col-md-8">
-											<span v-if="store.address_line_1.length">{{ store.address_line_1 }} {{ store.address_line_2 }}</span><br>
-											<span v-if="store.city.length">{{ store.city }},</span>
-											<span v-if="store.province.length">{{ store.province }},</span>
-											<span v-if="store.country.length">{{ store.country }}</span>
-										</div>
-									</div>
-								</li>
-							</ul>
-						</div>
-						<div class="clearfix"
-						     v-if="searchNumPages > 1">
-							<pagination :passedPage="searchActivePage"
-							            :numPages="searchNumPages"
-							            @activePageChange="activeSearchPageUpdate"></pagination>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div v-if="!stores.length && !displayStoreData">
-			<no-results :show="!stores.length"
-			            :type="'stores'"></no-results>
-		</div>
-		<!-- LIST END -->
-
-		<!-- DELETE MODAL START -->
-		<modal :show="showDeleteModal"
-		       effect="fade"
-		       @closeOnEscape="closeDeleteModal"
-					 ref="deleteModal">
-			<div slot="modal-header"
-			     class="modal-header">
-				<button type="button"
-				        class="close"
-				        @click="closeDeleteModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Delete Store</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<div class="alert alert-danger"
-				     v-show="deleteErrorMessage.length"
-				     ref="deleteErrorMessage">
-					<button class="close"
-					        data-close="alert"
-					        @click="clearError('deleteErrorMessage')"></button>
-					<span>{{deleteErrorMessage}}</span>
-				</div>
-				<p>Are you sure you want to delete {{storeToDelete.display_name}}</p>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer">
-				<button type="button"
-				        class="btn btn-primary"
-				        @click="deleteStore()"
-								:disabled="deleting">
-					Delete
-					<i v-show="deleting"
-							class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-			</div>
-		</modal>
-		<!-- DELETE MODAL END -->
-	</div>
+    <!-- DELETE MODAL START -->
+    <modal
+      ref="deleteModal"
+      :show="showDeleteModal"
+      effect="fade"
+      @closeOnEscape="closeDeleteModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeDeleteModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Delete Store
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <div
+          v-show="deleteErrorMessage.length"
+          ref="deleteErrorMessage"
+          class="alert alert-danger"
+        >
+          <button
+            class="close"
+            data-close="alert"
+            @click="clearError('deleteErrorMessage')"
+          />
+          <span>{{ deleteErrorMessage }}</span>
+        </div>
+        <p>Are you sure you want to delete {{ storeToDelete.display_name }}</p>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer"
+      >
+        <button
+          type="button"
+          class="btn btn-primary"
+          :disabled="deleting"
+          @click="deleteStore()"
+        >
+          Delete
+          <i
+            v-show="deleting"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+      </div>
+    </modal>
+    <!-- DELETE MODAL END -->
+  </div>
 </template>
 
 <script>
@@ -333,6 +457,15 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 import Modal from '@/components/modules/Modal'
 
 export default {
+	components: {
+		Breadcrumb,
+		LoadingScreen,
+		NoResults,
+		Dropdown,
+		Pagination,
+		PageResults,
+		Modal
+	},
 	data () {
 		return {
 			breadcrumbArray: [
@@ -379,6 +512,13 @@ export default {
 				begin,
 				end
 			)
+		}
+	},
+	watch: {
+		searchTerm () {
+			if (!this.searchTerm.length) {
+				this.filteredResults = []
+			}
 		}
 	},
 	mounted () {
@@ -668,22 +808,6 @@ export default {
 		editStore (store) {
 			this.$router.push('/app/store_manager/edit_store/' + store.id)
 		}
-	},
-	watch: {
-		searchTerm () {
-			if (!this.searchTerm.length) {
-				this.filteredResults = []
-			}
-		}
-	},
-	components: {
-		Breadcrumb,
-		LoadingScreen,
-		NoResults,
-		Dropdown,
-		Pagination,
-		PageResults,
-		Modal
 	}
 }
 </script>

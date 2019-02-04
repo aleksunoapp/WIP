@@ -1,8 +1,11 @@
 <template>
   <div class="login">
-    <transition name="fade" mode="out-in">
+    <transition
+      name="fade"
+      mode="out-in"
+    >
       <div v-if="loading">
-        <loading-screen :show="loading"></loading-screen>
+        <loading-screen :show="loading" />
       </div>
       <div
         v-show="errorMessage"
@@ -13,7 +16,9 @@
           <p>{{ errorMessage }}</p>
         </div>
         <a :href="redirectUrl">
-          <p class="btn blue">Log in</p>
+          <p class="btn blue">
+            Log in
+          </p>
         </a>
       </div>
     </transition>

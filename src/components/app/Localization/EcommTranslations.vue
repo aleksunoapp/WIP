@@ -1,198 +1,291 @@
 <template>
-	<div>
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
-		<h1 class='page-title'>eComm Translations</h1>
-		<div class="note note-info">
-			<p>Translate your store and menu terms.</p>
-		</div>
+  <div>
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
+    <h1 class="page-title">
+      eComm Translations
+    </h1>
+    <div class="note note-info">
+      <p>Translate your store and menu terms.</p>
+    </div>
 
-		<!-- BEGIN TRANSLATE-->
-		<div class="portlet box blue-hoki">
-			<div class="portlet-title bg-blue-chambray">
-				<div class="caption">
-					Translate
-				</div>
-			</div>
-			<div class="portlet-body">
-				<div class="row">
-					<div class="col-md-12">
-						<div ref="translationsTableErrorMessage"
-						     class="alert alert-danger"
-						     v-show="translationsTableErrorMessage.length">
-							<button class="close"
-							        data-close="alert"
-							        @click="clearError('translationsTableErrorMessage')"></button>
-							<span>{{translationsTableErrorMessage}}</span>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-3">
-						<el-collapse class="accordion margin-bottom-20"
-						             v-model="languageAccordionOpen"
-						             accordion>
-							<el-collapse-item title="Language"
-							                  name="1">
-								<div v-for="language in allLocales"
-								     class="clickable"
-								     :class="{'active-term' : language.language_code === localeForTranslation.language_code}"
-								     @click="selectLocaleForTranslation(language)"
-								     :key="language.id">
-									{{language.country.name}} ({{language.language_code}})
-								</div>
-								<div class="helper-text"
-								     v-if="!allLocales.length">
-									No languages yet.
-									<router-link to="/app/localization/languages">Create one.</router-link>
-								</div>
-							</el-collapse-item>
-						</el-collapse>
-					</div>
-					<div class="col-md-6"
-					     v-show="localeForTranslation.id">
-						<el-collapse class="accordion margin-bottom-20"
-						             v-model="activeAccordionSection"
-						             accordion>
-							<el-collapse-item v-for="(group, index) in translationTermGroups"
-							                  :title="group.group"
-							                  :name="index + 1"
-							                  :key="group.group">
-								<div v-for="term in group.terms"
-								     class="clickable"
-								     :class="{'active-term' : term.term === activeTranslationGroup.term}"
-								     @click="getTerm(group.groupUrl, term.term)"
-								     :key="term.id">
-									{{term.label}}
-								</div>
-							</el-collapse-item>
-						</el-collapse>
-					</div>
-				</div>
-				<div class="translations-table">
-					<div class="translations-table-header">
-						<div class="translations-table-header-cell">Term</div>
-						<div class="translations-table-header-cell">{{localeForTranslation.country.name}} Translation</div>
-					</div>
+    <!-- BEGIN TRANSLATE-->
+    <div class="portlet box blue-hoki">
+      <div class="portlet-title bg-blue-chambray">
+        <div class="caption">
+          Translate
+        </div>
+      </div>
+      <div class="portlet-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div
+              v-show="translationsTableErrorMessage.length"
+              ref="translationsTableErrorMessage"
+              class="alert alert-danger"
+            >
+              <button
+                class="close"
+                data-close="alert"
+                @click="clearError('translationsTableErrorMessage')"
+              />
+              <span>{{ translationsTableErrorMessage }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3">
+            <el-collapse
+              v-model="languageAccordionOpen"
+              class="accordion margin-bottom-20"
+              accordion
+            >
+              <el-collapse-item
+                title="Language"
+                name="1"
+              >
+                <div
+                  v-for="language in allLocales"
+                  :key="language.id"
+                  class="clickable"
+                  :class="{'active-term' : language.language_code === localeForTranslation.language_code}"
+                  @click="selectLocaleForTranslation(language)"
+                >
+                  {{ language.country.name }} ({{ language.language_code }})
+                </div>
+                <div
+                  v-if="!allLocales.length"
+                  class="helper-text"
+                >
+                  No languages yet.
+                  <router-link to="/app/localization/languages">
+                    Create one.
+                  </router-link>
+                </div>
+              </el-collapse-item>
+            </el-collapse>
+          </div>
+          <div
+            v-show="localeForTranslation.id"
+            class="col-md-6"
+          >
+            <el-collapse
+              v-model="activeAccordionSection"
+              class="accordion margin-bottom-20"
+              accordion
+            >
+              <el-collapse-item
+                v-for="(group, index) in translationTermGroups"
+                :key="group.group"
+                :title="group.group"
+                :name="index + 1"
+              >
+                <div
+                  v-for="term in group.terms"
+                  :key="term.id"
+                  class="clickable"
+                  :class="{'active-term' : term.term === activeTranslationGroup.term}"
+                  @click="getTerm(group.groupUrl, term.term)"
+                >
+                  {{ term.label }}
+                </div>
+              </el-collapse-item>
+            </el-collapse>
+          </div>
+        </div>
+        <div class="translations-table">
+          <div class="translations-table-header">
+            <div class="translations-table-header-cell">
+              Term
+            </div>
+            <div class="translations-table-header-cell">
+              {{ localeForTranslation.country.name }} Translation
+            </div>
+          </div>
 
-					<loading-screen class="margin-top-20"
-					                :show="loadingTerms"
-					                :color="'#2C3E50'">
-					</loading-screen>
+          <loading-screen
+            class="margin-top-20"
+            :show="loadingTerms"
+            :color="'#2C3E50'"
+          />
 
-					<div v-show="!loadingTerms"
-					     v-for="(term, index) in terms"
-					     class="translations-table-body"
-					     label="Field"
-					     :key="index">
-						<div class="translations-table-body-row">
-							<div v-if="activeTranslationGroup.term.substr(activeTranslationGroup.term.length - 3) !== 'url'"
-							     class="translations-table-body-cell">{{term.term}}</div>
-							<div v-else
-							     class="translations-table-body-cell">
-								<img class="image-thumb clickable"
-								     :src="term.term"
-								     @click="openImagePreview(term.term)">
-							</div>
-							<div class="translations-table-body-cell">
-								<div v-if="activeTranslationGroup.term.substr(activeTranslationGroup.term.length - 3) !== 'url'"
-								     class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       class="form-control input-sm"
-									       :class="{'edited': term.translation.length}"
-									       :id="`term${term.id}`"
-									       v-model="term.translation"
-									       :disabled="!$root.permissions['localization update']">
-									<label :for="`term${term.id}`">Translation</label>
-								</div>
-								<div v-else>
-									<button v-if="!term.translation.length"
-									        @click="openGallery(term.id)"
-									        class="btn blue btn-outline"
-									        :disabled="!$root.permissions['localization update']">
-										Select image
-									</button>
-									<img v-if="!$root.permissions['localization update'] && $root.permissions['localization read']"
-									     class="image-thumb clickable"
-									     :src="term.translation">
-									<img v-if="$root.permissions['localization update']"
-									     class="image-thumb clickable"
-									     :src="term.translation"
-									     @click="openGallery(term.id)">
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="left margin-top-20">
-						<button v-if="!loadingTerms && terms.length"
-						        @click="translateTerms()"
-						        class="btn blue"
-						        :disabled="!$root.permissions['localization update'] || saving">
-							Save
-							<i v-show="saving"
-							   class="fa fa-spinner fa-pulse fa-fw">
-							</i>
-						</button>
-					</div>
-					<div v-show="!loadingTerms">
-						<p v-if="!activeTranslationGroup.term"
-						   class="no-data center">Select a language and a term to begin translating.</p>
-						<p v-if="activeTranslationGroup.term && !terms.length"
-						   class="no-data center">There are no items to translate.</p>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- END TRANSLATE-->
-		<modal :show="imagePreviewShown"
-		       effect="fade"
-		       @closeOnEscape="closeImagePreview()">
-			<div slot="modal-header"
-			     class="modal-header center">
-				<button type="button"
-				        class="close"
-				        @click="closeImagePreview()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Preview</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<img class="image-preview"
-				     :src="imagePreviewUrl">
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer clear">
-				<button @click="closeImagePreview()"
-				        class="btn blue">Close</button>
-			</div>
-		</modal>
-		<modal :show="galleryPopupShown"
-		       effect="fade"
-		       @closeOnEscape="closeGallery">
-			<div slot="modal-header"
-			     class="modal-header center">
-				<button type="button"
-				        class="close"
-				        @click="closeGallery">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Select Image To Use in {{localeForTranslation.country.name}}</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<resource-picker :noButton="true"
-				                 @selected="updateImage"
-				                 :showDoneButton="false"
-				                 :imageButton="false"
-				                 :selectOnly="true">
-				</resource-picker>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer clear"></div>
-		</modal>
-	</div>
+          <div
+            v-for="(term, index) in terms"
+            v-show="!loadingTerms"
+            :key="index"
+            class="translations-table-body"
+            label="Field"
+          >
+            <div class="translations-table-body-row">
+              <div
+                v-if="activeTranslationGroup.term.substr(activeTranslationGroup.term.length - 3) !== 'url'"
+                class="translations-table-body-cell"
+              >
+                {{ term.term }}
+              </div>
+              <div
+                v-else
+                class="translations-table-body-cell"
+              >
+                <img
+                  class="image-thumb clickable"
+                  :src="term.term"
+                  @click="openImagePreview(term.term)"
+                >
+              </div>
+              <div class="translations-table-body-cell">
+                <div
+                  v-if="activeTranslationGroup.term.substr(activeTranslationGroup.term.length - 3) !== 'url'"
+                  class="form-group form-md-line-input form-md-floating-label"
+                >
+                  <input
+                    :id="`term${term.id}`"
+                    v-model="term.translation"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': term.translation.length}"
+                    :disabled="!$root.permissions['localization update']"
+                  >
+                  <label :for="`term${term.id}`">
+                    Translation
+                  </label>
+                </div>
+                <div v-else>
+                  <button
+                    v-if="!term.translation.length"
+                    class="btn blue btn-outline"
+                    :disabled="!$root.permissions['localization update']"
+                    @click="openGallery(term.id)"
+                  >
+                    Select image
+                  </button>
+                  <img
+                    v-if="!$root.permissions['localization update'] && $root.permissions['localization read']"
+                    class="image-thumb clickable"
+                    :src="term.translation"
+                  >
+                  <img
+                    v-if="$root.permissions['localization update']"
+                    class="image-thumb clickable"
+                    :src="term.translation"
+                    @click="openGallery(term.id)"
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="left margin-top-20">
+            <button
+              v-if="!loadingTerms && terms.length"
+              class="btn blue"
+              :disabled="!$root.permissions['localization update'] || saving"
+              @click="translateTerms()"
+            >
+              Save
+              <i
+                v-show="saving"
+                class="fa fa-spinner fa-pulse fa-fw"
+              />
+            </button>
+          </div>
+          <div v-show="!loadingTerms">
+            <p
+              v-if="!activeTranslationGroup.term"
+              class="no-data center"
+            >
+              Select a language and a term to begin translating.
+            </p>
+            <p
+              v-if="activeTranslationGroup.term && !terms.length"
+              class="no-data center"
+            >
+              There are no items to translate.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END TRANSLATE-->
+    <modal
+      :show="imagePreviewShown"
+      effect="fade"
+      @closeOnEscape="closeImagePreview()"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header center"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeImagePreview()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Preview
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <img
+          class="image-preview"
+          :src="imagePreviewUrl"
+        >
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer clear"
+      >
+        <button
+          class="btn blue"
+          @click="closeImagePreview()"
+        >
+          Close
+        </button>
+      </div>
+    </modal>
+    <modal
+      :show="galleryPopupShown"
+      effect="fade"
+      @closeOnEscape="closeGallery"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header center"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeGallery"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Select Image To Use in {{ localeForTranslation.country.name }}
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <resource-picker
+          :no-button="true"
+          :show-done-button="false"
+          :image-button="false"
+          :select-only="true"
+          @selected="updateImage"
+        />
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer clear"
+      />
+    </modal>
+  </div>
 </template>
 
 <script>
@@ -205,6 +298,13 @@ import ajaxErrorHandler from '../../../controllers/ErrorController'
 import LoadingScreen from '@/components/modules/LoadingScreen'
 
 export default {
+	components: {
+		Breadcrumb,
+		Dropdown,
+		Modal,
+		ResourcePicker,
+		LoadingScreen
+	},
 	data () {
 		return {
 			breadcrumbArray: [{ name: 'eComm Translations', link: false }],
@@ -835,13 +935,6 @@ export default {
 		clearError (type) {
 			this[type] = ''
 		}
-	},
-	components: {
-		Breadcrumb,
-		Dropdown,
-		Modal,
-		ResourcePicker,
-		LoadingScreen
 	}
 }
 </script>

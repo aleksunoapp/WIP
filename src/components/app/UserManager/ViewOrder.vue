@@ -1,143 +1,195 @@
 <template>
-	<modal v-bind:show="viewOrderModalDisplayed"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       okText="Refund"
-	       ref="modal">
-		<div slot="modal-header"
-		     class="modal-header">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Order No. {{order.external_id}}</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="portlet-body">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="alert alert-danger"
-						     v-show="errorMessage"
-						     ref="errorMessage">
-							<button class="close"
-							        @click="clearError()"></button>
-							<span>{{errorMessage}}</span>
-						</div>
-					</div>
-				</div>
-				<table class="table table-striped table-bordered table-advance table-hover">
-					<tbody>
-						<tr>
-							<th> Items </th>
-							<td>
-								<span v-if="order.order_items.length === 0">-</span>
-								<ul class="list-unstyled">
-									<li v-for="(item, index1) in order.order_items"
-									    :key="index1">{{item.name}} x {{item.item_qty}} ({{formatUSD(item.item_price)}})
-										<ul>
-											<li v-for="(modifier, index2) in item.modifier"
-											    :key="index2">
-												{{modifier.name}}
-												<span v-if="modifier.mod_qty !== 1"> x {{modifier.mod_qty}} </span>
-												<span v-if="modifier.order_modifier_option.length">(</span>
-												<span v-for="(option, optionIndex) in modifier.order_modifier_option"
-												      :key="optionIndex">{{option.option_name}}
-													<span v-if="optionIndex !== modifier.order_modifier_option.length - 1">, </span>
-												</span>
-												<span v-if="modifier.order_modifier_portion && modifier.order_modifier_portion.length">; </span>
-												<span v-for="(portion, portionIndex) in modifier.order_modifier_portion"
-												      :key="portionIndex">{{portion.portion_name}}
-													<span v-if="portionIndex !== modifier.order_modifier_portion.length - 1">, </span>
-												</span>
-												<span v-if="modifier.order_modifier_option.length">)</span>
-											</li>
-										</ul>
-									</li>
-								</ul>
-							</td>
-						</tr>
-						<tr>
-							<th> Store </th>
-							<td> {{ order.location_name }} </td>
-						</tr>
-						<tr>
-							<th> Status </th>
-							<td> {{ order.status }} </td>
-						</tr>
-						<tr>
-							<th> Type </th>
-							<td> {{ order.type }} </td>
-						</tr>
-						<tr v-if="order.type === 'pickup' && order.pickup_later === 1">
-							<th> Pickup time </th>
-							<td> {{ order.pickup_time }} </td>
-						</tr>
-						<tr>
-							<th> Tax </th>
-							<td> {{ order.tax_percentage }}% </td>
-						</tr>
-						<tr>
-							<th> Tax amount </th>
-							<td> {{ formatUSD(order.tax_amount) }} </td>
-						</tr>
-						<tr>
-							<th> Delivery fee </th>
-							<td> ${{ order.delivery_fee }} </td>
-						</tr>
-						<tr>
-							<th> Total </th>
-							<td> {{ formatUSD(order.total) }} </td>
-						</tr>
-						<tr>
-							<th> Notes </th>
-							<td> {{ order.note || '-'}} </td>
-						</tr>
-						<tr>
-							<th> Group order </th>
-							<td>
-								<span v-if="order.grouporder_id !== 0"> {{ order.grouporder_id }} </span>
-								<span v-else> no </span>
-							</td>
-						</tr>
-						<tr>
-							<th> Giftcard amount </th>
-							<td> {{ formatUSD(order.giftcard_amount) }} </td>
-						</tr>
-						<tr>
-							<th> Points earned </th>
-							<td> {{ order.points_earned }} </td>
-						</tr>
-						<tr>
-							<th> Created at </th>
-							<td> {{ order.created_at }} </td>
-						</tr>
-						<tr>
-							<th> Updated at </th>
-							<td> {{ order.updated_at }} </td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button type="button"
-			        v-if="order.status !== 'refunded' && $root.permissions['order_refund']"
-			        class="btn btn-primary pull-left"
-			        @click="refund()"
-			        :disabled="refunding">
-				Refund
-				<i v-show="refunding"
-				   class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-			<button type="button"
-			        class="btn btn-default"
-			        @click="closeModal()">Close</button>
-		</div>
-	</modal>
+  <modal
+    ref="modal"
+    :show="viewOrderModalDisplayed"
+    effect="fade"
+    ok-text="Refund"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Order No. {{ order.external_id }}
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div class="portlet-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div
+              v-show="errorMessage"
+              ref="errorMessage"
+              class="alert alert-danger"
+            >
+              <button
+                class="close"
+                @click="clearError()"
+              />
+              <span>{{ errorMessage }}</span>
+            </div>
+          </div>
+        </div>
+        <table class="table table-striped table-bordered table-advance table-hover">
+          <tbody>
+            <tr>
+              <th> Items </th>
+              <td>
+                <span v-if="order.order_items.length === 0">
+                  -
+                </span>
+                <ul class="list-unstyled">
+                  <li
+                    v-for="(item, index1) in order.order_items"
+                    :key="index1"
+                  >
+                    {{ item.name }} x {{ item.item_qty }} ({{ formatUSD(item.item_price) }})
+                    <ul>
+                      <li
+                        v-for="(modifier, index2) in item.modifier"
+                        :key="index2"
+                      >
+                        {{ modifier.name }}
+                        <span v-if="modifier.mod_qty !== 1">
+                          x {{ modifier.mod_qty }}
+                        </span>
+                        <span v-if="modifier.order_modifier_option.length">
+                          (
+                        </span>
+                        <span
+                          v-for="(option, optionIndex) in modifier.order_modifier_option"
+                          :key="optionIndex"
+                        >
+                          {{ option.option_name }}
+                          <span v-if="optionIndex !== modifier.order_modifier_option.length - 1">
+                            ,
+                          </span>
+                        </span>
+                        <span v-if="modifier.order_modifier_portion && modifier.order_modifier_portion.length">
+                          ;
+                        </span>
+                        <span
+                          v-for="(portion, portionIndex) in modifier.order_modifier_portion"
+                          :key="portionIndex"
+                        >
+                          {{ portion.portion_name }}
+                          <span v-if="portionIndex !== modifier.order_modifier_portion.length - 1">
+                            ,
+                          </span>
+                        </span>
+                        <span v-if="modifier.order_modifier_option.length">
+                          )
+                        </span>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th> Store </th>
+              <td> {{ order.location_name }} </td>
+            </tr>
+            <tr>
+              <th> Status </th>
+              <td> {{ order.status }} </td>
+            </tr>
+            <tr>
+              <th> Type </th>
+              <td> {{ order.type }} </td>
+            </tr>
+            <tr v-if="order.type === 'pickup' && order.pickup_later === 1">
+              <th> Pickup time </th>
+              <td> {{ order.pickup_time }} </td>
+            </tr>
+            <tr>
+              <th> Tax </th>
+              <td> {{ order.tax_percentage }}% </td>
+            </tr>
+            <tr>
+              <th> Tax amount </th>
+              <td> {{ formatUSD(order.tax_amount) }} </td>
+            </tr>
+            <tr>
+              <th> Delivery fee </th>
+              <td> ${{ order.delivery_fee }} </td>
+            </tr>
+            <tr>
+              <th> Total </th>
+              <td> {{ formatUSD(order.total) }} </td>
+            </tr>
+            <tr>
+              <th> Notes </th>
+              <td> {{ order.note || '-' }} </td>
+            </tr>
+            <tr>
+              <th> Group order </th>
+              <td>
+                <span v-if="order.grouporder_id !== 0">
+                  {{ order.grouporder_id }}
+                </span>
+                <span v-else>
+                  no
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th> Giftcard amount </th>
+              <td> {{ formatUSD(order.giftcard_amount) }} </td>
+            </tr>
+            <tr>
+              <th> Points earned </th>
+              <td> {{ order.points_earned }} </td>
+            </tr>
+            <tr>
+              <th> Created at </th>
+              <td> {{ order.created_at }} </td>
+            </tr>
+            <tr>
+              <th> Updated at </th>
+              <td> {{ order.updated_at }} </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        v-if="order.status !== 'refunded' && $root.permissions['order_refund']"
+        type="button"
+        class="btn btn-primary pull-left"
+        :disabled="refunding"
+        @click="refund()"
+      >
+        Refund
+        <i
+          v-show="refunding"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+      <button
+        type="button"
+        class="btn btn-default"
+        @click="closeModal()"
+      >
+        Close
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -146,17 +198,20 @@ import UsersFunctions from '../../../controllers/Users'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	data () {
-		return {
-			viewOrderModalDisplayed: false,
-			refunding: false,
-			errorMessage: ''
-		}
+	components: {
+		Modal
 	},
 	props: {
 		order: {
 			order: Object,
 			default: {}
+		}
+	},
+	data () {
+		return {
+			viewOrderModalDisplayed: false,
+			refunding: false,
+			errorMessage: ''
 		}
 	},
 	mounted () {
@@ -233,9 +288,6 @@ export default {
 					viewOrderVue.refunding = false
 				})
 		}
-	},
-	components: {
-		Modal
 	}
 }
 </script>

@@ -1,172 +1,230 @@
 <template>
-	<div>
-		<div class="sideways-page-one">
-			<!-- BEGIN PAGE BAR -->
-			<div class="page-bar">
-				<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-			</div>
-			<!-- END PAGE BAR -->
-			<!-- BEGIN PAGE TITLE-->
-			<h1 class="page-title">Menu Tiers</h1>
-			<!-- END PAGE TITLE-->
-			<div class="note note-info">
-				<p>Manage a store's menu tiers.</p>
-			</div>
-			<!-- BEGIN CREATE NEW TIER-->
-			<div class="row"
-			     v-if="$root.permissions['menu_manager tiers create']">
-				<div class="col-xs-12">
-					<div class="alert alert-info"
-					     v-if="noCorporateStore">
-						A Corporate Store is required to use Menu Tiers.
-						<span v-if="$root.accountType === 'application_admin'">
-							<router-link to="/app/store_manager/stores">Make one of your Stores the corporate store in the Stores Manager</router-link> before using Menu Tiers.
-						</span>
-						<span v-else>
-							Your Brand Admin can set a Store to be corporate.
-						</span>
-					</div>
-				</div>
-			</div>
-			<div class="portlet box blue-hoki"
-			     v-if="!noCorporateStore && $root.permissions['menu_manager tiers create']">
-				<div class="portlet-title bg-blue-chambray"
-				     @click="toggleCreateMenuTierPanel()">
-					<div class="custom tools">
-						<a :class="{'expand': !createMenuTierCollapse, 'collapse': createMenuTierCollapse}"></a>
-					</div>
-					<div class="caption">
-						&emsp;Create A New Menu Tier
-					</div>
-				</div>
-				<div class="portlet-body"
-				     :class="{'display-hide': createMenuTierCollapse}">
-					<form role="form"
-					      @submit.prevent="createNewMenuTier($event)">
-						<div class="form-body row">
-							<div class="col-md-12">
-								<div class="alert alert-danger"
-								     v-show="errorMessage"
-								     ref="errorMessage">
-									<button class="close"
-									        @click.prevent="clearError()"></button>
-									<span>{{errorMessage}}</span>
-								</div>
-							</div>
-							<div class="col-md-6">
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       class="form-control input-sm"
-									       id="form_control_1"
-									       :class="{'edited': newMenuTier.name.length}"
-									       v-model="newMenuTier.name">
-									<label for="form_control_1">Menu Tier Name</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       class="form-control input-sm"
-									       id="form_control_2"
-									       :class="{'edited': newMenuTier.description.length}"
-									       v-model="newMenuTier.description">
-									<label for="form_control_2">Menu Tier Description</label>
-								</div>
-							</div>
-						</div>
-						<div class="form-actions right margin-top-20">
-							<button type="submit"
-							        class="btn blue">Create</button>
-						</div>
-					</form>
-				</div>
-			</div>
-			<!-- END CREATE NEW TIER-->
+  <div>
+    <div class="sideways-page-one">
+      <!-- BEGIN PAGE BAR -->
+      <div class="page-bar">
+        <breadcrumb :crumbs="breadcrumbArray" />
+      </div>
+      <!-- END PAGE BAR -->
+      <!-- BEGIN PAGE TITLE-->
+      <h1 class="page-title">
+        Menu Tiers
+      </h1>
+      <!-- END PAGE TITLE-->
+      <div class="note note-info">
+        <p>Manage a store's menu tiers.</p>
+      </div>
+      <!-- BEGIN CREATE NEW TIER-->
+      <div
+        v-if="$root.permissions['menu_manager tiers create']"
+        class="row"
+      >
+        <div class="col-xs-12">
+          <div
+            v-if="noCorporateStore"
+            class="alert alert-info"
+          >
+            A Corporate Store is required to use Menu Tiers.
+            <span v-if="$root.accountType === 'application_admin'">
+              <router-link to="/app/store_manager/stores">
+                Make one of your Stores the corporate store in the Stores Manager
+              </router-link> before using Menu Tiers.
+            </span>
+            <span v-else>
+              Your Brand Admin can set a Store to be corporate.
+            </span>
+          </div>
+        </div>
+      </div>
+      <div
+        v-if="!noCorporateStore && $root.permissions['menu_manager tiers create']"
+        class="portlet box blue-hoki"
+      >
+        <div
+          class="portlet-title bg-blue-chambray"
+          @click="toggleCreateMenuTierPanel()"
+        >
+          <div class="custom tools">
+            <a :class="{'expand': !createMenuTierCollapse, 'collapse': createMenuTierCollapse}" />
+          </div>
+          <div class="caption">
+            &emsp;Create A New Menu Tier
+          </div>
+        </div>
+        <div
+          class="portlet-body"
+          :class="{'display-hide': createMenuTierCollapse}"
+        >
+          <form
+            role="form"
+            @submit.prevent="createNewMenuTier($event)"
+          >
+            <div class="form-body row">
+              <div class="col-md-12">
+                <div
+                  v-show="errorMessage"
+                  ref="errorMessage"
+                  class="alert alert-danger"
+                >
+                  <button
+                    class="close"
+                    @click.prevent="clearError()"
+                  />
+                  <span>{{ errorMessage }}</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_1"
+                    v-model="newMenuTier.name"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': newMenuTier.name.length}"
+                  >
+                  <label for="form_control_1">
+                    Menu Tier Name
+                  </label>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_2"
+                    v-model="newMenuTier.description"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': newMenuTier.description.length}"
+                  >
+                  <label for="form_control_2">
+                    Menu Tier Description
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="form-actions right margin-top-20">
+              <button
+                type="submit"
+                class="btn blue"
+              >
+                Create
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- END CREATE NEW TIER-->
 
-			<!-- BEGIN MENUS LIST-->
-			<div v-if="!noCorporateStore">
-				<div class="portlet light portlet-fit bordered margin-top-20">
-					<div class="portlet-title bg-blue-chambray">
-						<div class="menu-image-main">
-							<img src="../../../../public/client_logo.png">
-						</div>
-						<div class="caption">
-							<span class="caption-subject font-default bold uppercase">Menu Tiers</span>
-							<div class="caption-desc font-grey-cascade">Click on a menu tier to edit it.</div>
-						</div>
-					</div>
-					<loading-screen :show="displayMenuTiersData"
-			                :color="'#2C3E50'"
-			                :display="'inline'"></loading-screen>
-					<div class="portlet-body">
-						<div class="row">
-							<div class="col-md-12">
-								<div class="alert alert-danger"
-								     v-show="listErrorMessage"
-								     ref="listErrorMessage">
-									<button class="close"
-									        @click="clearError('listErrorMessage')"></button>
-									<span>{{listErrorMessage}}</span>
-								</div>
-							</div>
-						</div>
-						<no-results :show="!menuTiers.length  && !displayMenuTiersData"
-						            :type="'menu tiers'"></no-results>
-						<div class="mt-element-list margin-top-15">
-							<div class="mt-list-container list-news">
-								<ul>
-									<li class="mt-list-item actions-at-left margin-top-15 clickable"
-									    v-for="tier in menuTiers"
-									    :id="'tier-' + tier.id"
-									    @click="assignMenusToTier(tier)"
-									    :key="tier.id">
-										<div class="list-item-actions">
-											<el-tooltip v-if="$root.permissions['menu_manager tiers update']"
-											            content="Edit"
-											            effect="light"
-											            placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default"
-												   @click="editMenuTier(tier, $event)">
-													<i class="fa fa-lg fa-pencil"></i>
-												</a>
-											</el-tooltip>
-											<el-tooltip v-if="$root.permissions['menu_manager tiers read'] && !$root.permissions['menu_manager tiers update']"
-											            content="Edit"
-											            effect="light"
-											            placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default"
-												   @click="editMenuTier(tier, $event)">
-													<i class="fa fa-lg fa-eye"></i>
-												</a>
-											</el-tooltip>
-										</div>
-										<div class="list-icon-container">
-											<i class="fa fa-angle-right"></i>
-										</div>
-										<div class="list-datetime bold uppercase font-red">
-											<span>{{ tier.name }}</span>
-										</div>
-										<div class="list-item-content height-mod">
-											<div class="col-md-8">
-												<strong>Description:</strong>
-												<span>{{ tier.description }}</span>
-											</div>
-										</div>
-									</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- END MENUS LIST-->
-		</div>
-		<assign-menus v-if="showAssignMenusModal"
-		              :passedTierId="passedTierId"
-		              @closeAssignMenusModal="closeAssignMenusModal"></assign-menus>
-		<edit-menu-tier v-if="showEditTierModal"
-		                :passedTierId="passedTierId"
-		                @closeEditTierModal="closeEditTierModal"
-		                @updateMenuTier="updateMenuTier"></edit-menu-tier>
-	</div>
+      <!-- BEGIN MENUS LIST-->
+      <div v-if="!noCorporateStore">
+        <div class="portlet light portlet-fit bordered margin-top-20">
+          <div class="portlet-title bg-blue-chambray">
+            <div class="menu-image-main">
+              <img src="../../../../public/client_logo.png">
+            </div>
+            <div class="caption">
+              <span class="caption-subject font-default bold uppercase">
+                Menu Tiers
+              </span>
+              <div class="caption-desc font-grey-cascade">
+                Click on a menu tier to edit it.
+              </div>
+            </div>
+          </div>
+          <loading-screen
+            :show="displayMenuTiersData"
+            :color="'#2C3E50'"
+            :display="'inline'"
+          />
+          <div class="portlet-body">
+            <div class="row">
+              <div class="col-md-12">
+                <div
+                  v-show="listErrorMessage"
+                  ref="listErrorMessage"
+                  class="alert alert-danger"
+                >
+                  <button
+                    class="close"
+                    @click="clearError('listErrorMessage')"
+                  />
+                  <span>{{ listErrorMessage }}</span>
+                </div>
+              </div>
+            </div>
+            <no-results
+              :show="!menuTiers.length && !displayMenuTiersData"
+              :type="'menu tiers'"
+            />
+            <div class="mt-element-list margin-top-15">
+              <div class="mt-list-container list-news">
+                <ul>
+                  <li
+                    v-for="tier in menuTiers"
+                    :id="'tier-' + tier.id"
+                    :key="tier.id"
+                    class="mt-list-item actions-at-left margin-top-15 clickable"
+                    @click="assignMenusToTier(tier)"
+                  >
+                    <div class="list-item-actions">
+                      <el-tooltip
+                        v-if="$root.permissions['menu_manager tiers update']"
+                        content="Edit"
+                        effect="light"
+                        placement="right"
+                      >
+                        <a
+                          class="btn btn-circle btn-icon-only btn-default"
+                          @click="editMenuTier(tier, $event)"
+                        >
+                          <i class="fa fa-lg fa-pencil" />
+                        </a>
+                      </el-tooltip>
+                      <el-tooltip
+                        v-if="$root.permissions['menu_manager tiers read'] && !$root.permissions['menu_manager tiers update']"
+                        content="Edit"
+                        effect="light"
+                        placement="right"
+                      >
+                        <a
+                          class="btn btn-circle btn-icon-only btn-default"
+                          @click="editMenuTier(tier, $event)"
+                        >
+                          <i class="fa fa-lg fa-eye" />
+                        </a>
+                      </el-tooltip>
+                    </div>
+                    <div class="list-icon-container">
+                      <i class="fa fa-angle-right" />
+                    </div>
+                    <div class="list-datetime bold uppercase font-red">
+                      <span>{{ tier.name }}</span>
+                    </div>
+                    <div class="list-item-content height-mod">
+                      <div class="col-md-8">
+                        <strong>Description:</strong>
+                        <span>{{ tier.description }}</span>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- END MENUS LIST-->
+    </div>
+    <assign-menus
+      v-if="showAssignMenusModal"
+      :passed-tier-id="passedTierId"
+      @closeAssignMenusModal="closeAssignMenusModal"
+    />
+    <edit-menu-tier
+      v-if="showEditTierModal"
+      :passed-tier-id="passedTierId"
+      @closeEditTierModal="closeEditTierModal"
+      @updateMenuTier="updateMenuTier"
+    />
+  </div>
 </template>
 
 <script>
@@ -180,6 +238,14 @@ import AssignMenus from './MenuTiers/AssignMenus'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
+	components: {
+		Breadcrumb,
+		LoadingScreen,
+		NoResults,
+		Modal,
+		EditMenuTier,
+		AssignMenus
+	},
 	data () {
 		return {
 			breadcrumbArray: [
@@ -412,14 +478,6 @@ export default {
 		toggleCreateMenuTierPanel () {
 			this.createMenuTierCollapse = !this.createMenuTierCollapse
 		}
-	},
-	components: {
-		Breadcrumb,
-		LoadingScreen,
-		NoResults,
-		Modal,
-		EditMenuTier,
-		AssignMenus
 	}
 }
 </script>

@@ -1,99 +1,144 @@
 <template>
-	<modal :show="showAddCategoryModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="modal">
-		<div slot="modal-header"
-		     class="modal-header center">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center"
-			    v-if="!imageMode">Add New Sub Category</h4>
-			<h4 class="modal-title center"
-			    v-else>Select An Image</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="alert alert-danger"
-			     v-show="errorMessage"
-			     ref="errorMessage">
-				<button class="close"
-				        @click="clearError()"></button>
-				<span>{{errorMessage}}</span>
-			</div>
-			<div :class="{'col-md-2' : !imageMode, 'col-md-12' : imageMode}">
-				<resource-picker @open="toggleImageMode()"
-				                 @close="toggleImageMode()"
-				                 @selected="updateImage"
-				                 :imageButton="true"
-				                 :imageUrl="newSubCategory.image_url"
-				                 class="margin-top-15">
-				</resource-picker>
-			</div>
-			<div class="col-md-9"
-			     v-show="!imageMode">
-				<div class="form-group form-md-line-input form-md-floating-label">
-					<input type="text"
-					       class="form-control input-sm"
-					       :class="{'edited': newSubCategory.name.length}"
-					       id="form_control_1"
-					       v-model="newSubCategory.name">
-					<label for="form_control_1">Sub Category Name</label>
-				</div>
-				<div class="form-group form-md-line-input form-md-floating-label">
-					<input type="text"
-					       class="form-control input-sm"
-					       :class="{'edited': newSubCategory.desc.length}"
-					       id="form_control_2"
-					       v-model="newSubCategory.desc">
-					<label for="form_control_2">Sub Category Description</label>
-				</div>
-				<div class="form-group form-md-line-input form-md-floating-label">
-					<input type="text"
-					       class="form-control input-sm"
-					       :class="{'edited': newSubCategory.sku.length}"
-					       id="form_control_3"
-					       v-model="newSubCategory.sku">
-					<label for="form_control_3">Sub Category SKU</label>
-				</div>
-				<div class="form-group form-md-line-input form-md-floating-label">
-					<input type="number"
-					       class="form-control input-sm"
-					       :class="{'edited': newSubCategory.order}"
-					       id="form_control_4"
-					       v-model="newSubCategory.order">
-					<label for="form_control_4">Sub Category Order</label>
-				</div>
-				<div class="form-group form-md-line-input form-md-floating-label">
-					<label>Sub Category Status:</label><br>
-					<el-switch v-model="newSubCategory.status"
-					           active-color="#0c6"
-					           inactive-color="#ff4949"
-					           :active-value="1"
-					           :inactive-value="0"
-					           active-text="Available"
-					           inactive-text="Sold Out">
-					</el-switch>
-				</div>
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button v-if="!imageMode"
-			        type="button"
-			        class="btn btn-primary"
-			        @click="addNewMenuCategory()"
-			        :disabled="creating">
-				Add
-				<i v-show="creating"
-				   class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-		</div>
-	</modal>
+  <modal
+    ref="modal"
+    :show="showAddCategoryModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header center"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4
+        v-if="!imageMode"
+        class="modal-title center"
+      >
+        Add New Sub Category
+      </h4>
+      <h4
+        v-else
+        class="modal-title center"
+      >
+        Select An Image
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div
+        v-show="errorMessage"
+        ref="errorMessage"
+        class="alert alert-danger"
+      >
+        <button
+          class="close"
+          @click="clearError()"
+        />
+        <span>{{ errorMessage }}</span>
+      </div>
+      <div :class="{'col-md-2' : !imageMode, 'col-md-12' : imageMode}">
+        <resource-picker
+          :image-button="true"
+          :image-url="newSubCategory.image_url"
+          class="margin-top-15"
+          @open="toggleImageMode()"
+          @close="toggleImageMode()"
+          @selected="updateImage"
+        />
+      </div>
+      <div
+        v-show="!imageMode"
+        class="col-md-9"
+      >
+        <div class="form-group form-md-line-input form-md-floating-label">
+          <input
+            id="form_control_1"
+            v-model="newSubCategory.name"
+            type="text"
+            class="form-control input-sm"
+            :class="{'edited': newSubCategory.name.length}"
+          >
+          <label for="form_control_1">
+            Sub Category Name
+          </label>
+        </div>
+        <div class="form-group form-md-line-input form-md-floating-label">
+          <input
+            id="form_control_2"
+            v-model="newSubCategory.desc"
+            type="text"
+            class="form-control input-sm"
+            :class="{'edited': newSubCategory.desc.length}"
+          >
+          <label for="form_control_2">
+            Sub Category Description
+          </label>
+        </div>
+        <div class="form-group form-md-line-input form-md-floating-label">
+          <input
+            id="form_control_3"
+            v-model="newSubCategory.sku"
+            type="text"
+            class="form-control input-sm"
+            :class="{'edited': newSubCategory.sku.length}"
+          >
+          <label for="form_control_3">
+            Sub Category SKU
+          </label>
+        </div>
+        <div class="form-group form-md-line-input form-md-floating-label">
+          <input
+            id="form_control_4"
+            v-model="newSubCategory.order"
+            type="number"
+            class="form-control input-sm"
+            :class="{'edited': newSubCategory.order}"
+          >
+          <label for="form_control_4">
+            Sub Category Order
+          </label>
+        </div>
+        <div class="form-group form-md-line-input form-md-floating-label">
+          <label>Sub Category Status:</label><br>
+          <el-switch
+            v-model="newSubCategory.status"
+            active-color="#0c6"
+            inactive-color="#ff4949"
+            :active-value="1"
+            :inactive-value="0"
+            active-text="Available"
+            inactive-text="Sold Out"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        v-if="!imageMode"
+        type="button"
+        class="btn btn-primary"
+        :disabled="creating"
+        @click="addNewMenuCategory()"
+      >
+        Add
+        <i
+          v-show="creating"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -104,6 +149,16 @@ import ResourcePicker from '../../../modules/ResourcePicker'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
+	components: {
+		Modal,
+		ResourcePicker
+	},
+	props: {
+		parentCategoryId: {
+			type: Number,
+			required: true
+		}
+	},
 	data () {
 		return {
 			showAddCategoryModal: false,
@@ -121,12 +176,6 @@ export default {
 			},
 			errorMessage: '',
 			imageMode: false
-		}
-	},
-	props: {
-		parentCategoryId: {
-			type: Number,
-			required: true
 		}
 	},
 	mounted () {
@@ -273,10 +322,6 @@ export default {
 		updateImage (val) {
 			this.newSubCategory.image_url = val.image_url
 		}
-	},
-	components: {
-		Modal,
-		ResourcePicker
 	}
 }
 </script>

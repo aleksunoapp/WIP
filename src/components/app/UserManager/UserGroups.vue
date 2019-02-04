@@ -1,298 +1,381 @@
 <template>
-	<div>
-		<div class="sideways-page-one">
-			<div class="page-bar">
-				<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-			</div>
-			<h1 class='page-title'>User Groups</h1>
-			<div class="note note-info">
-				<p>A list of user groups.</p>
-			</div>
+  <div>
+    <div class="sideways-page-one">
+      <div class="page-bar">
+        <breadcrumb :crumbs="breadcrumbArray" />
+      </div>
+      <h1 class="page-title">
+        User Groups
+      </h1>
+      <div class="note note-info">
+        <p>A list of user groups.</p>
+      </div>
 
-			<!-- CREATE GROUP PANEL START -->
-			<div class="portlet box blue-hoki margin-top-20"
-			     v-if="$root.permissions['user_manager user_groups create']">
-				<div class="portlet-title bg-blue-chambray"
-				     @click="toggleCreateGroupPanel()">
-					<div class="caption">
-						<i class="fa fa-plus-circle"></i>
-						Create New Group
-					</div>
-					<div class="tools">
-						<a :class="{'expand': !createGroupCollapse, 'collapse': createGroupCollapse}"></a>
-					</div>
-				</div>
-				<div class="portlet-body"
-				     :class="{'display-hide': createGroupCollapse}">
-					<form role="form"
-					      @submit.prevent="createNewGroup()">
-						<div class="row">
-							<div class="col-md-12">
-								<div class="alert alert-danger"
-								     v-show="errorMessage"
-								     ref="errorMessage">
-									<button class="close"
-									        data-close="alert"
-									        @click.prevent="clearError('errorMessage')"></button>
-									<span>{{errorMessage}}</span>
-								</div>
-							</div>
-							<div class="col-md-6">
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       class="form-control input-sm"
-									       id="form_control_1"
-									       v-model="newGroup.name"
-									       :class="{'edited': newGroup.name.length}">
-									<label for="form_control_1">Group Name</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       class="form-control input-sm"
-									       id="form_control_2"
-									       v-model="newGroup.description"
-									       :class="{'edited': newGroup.description.length}">
-									<label for="form_control_2">Group Description</label>
-								</div>
-								<h4 class="margin-top-20">All users with:</h4>
-								<div>
-									<el-dropdown trigger="click"
-									             @command="updateSignUpDate"
-									             size="mini"
-									             :show-timeout="50"
-									             :hide-timeout="50"
-									             class="margin-top-15">
-										<el-button size="mini">
-											{{ selectedSignUpDate }}
-											<i class="el-icon-arrow-down el-icon--right"></i>
-										</el-button>
-										<el-dropdown-menu slot="dropdown">
-											<el-dropdown-item :command="7">
-												Signed up in the last 7 days
-											</el-dropdown-item>
-											<el-dropdown-item :command="14">
-												Signed up in the last 14 days
-											</el-dropdown-item>
-											<el-dropdown-item :command="30">
-												Signed up in the last 30 days
-											</el-dropdown-item>
-										</el-dropdown-menu>
-									</el-dropdown>
-								</div>
-								<div>
-									<el-dropdown trigger="click"
-									             @command="updateTotalOrders"
-									             size="mini"
-									             :show-timeout="50"
-									             :hide-timeout="50"
-									             class="margin-top-15">
-										<el-button size="mini">
-											{{ selectedTotalOrders }}
-											<i class="el-icon-arrow-down el-icon--right"></i>
-										</el-button>
-										<el-dropdown-menu slot="dropdown">
-											<el-dropdown-item :command="[10, '<']">
-												Less than 10 orders
-											</el-dropdown-item>
-											<el-dropdown-item :command="[25, '>']">
-												More than 25 orders
-											</el-dropdown-item>
-											<el-dropdown-item :command="[50, '>']">
-												More than 50 orders
-											</el-dropdown-item>
-										</el-dropdown-menu>
-									</el-dropdown>
-								</div>
-								<div>
-									<div class="form-group form-md-line-input form-md-floating-label">
-										<input type="text"
-										       class="form-control input-sm"
-										       id="form_control_3"
-										       v-model="city"
-										       :class="{'edited': city.length}"
-										       v-on:change="addRule('city')">
-										<label for="form_control_3">City</label>
-									</div>
-								</div>
-								<div>
-									<div class="form-group form-md-line-input form-md-floating-label">
-										<input type="text"
-										       class="form-control input-sm"
-										       id="form_control_4"
-										       v-model="province"
-										       :class="{'edited': province.length}"
-										       v-on:change="addRule('province')">
-										<label for="form_control_4">Province</label>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="form-actions right">
-							<button type="submit"
-							        class="btn blue"
-							        :disabled="creating">
-								Create
-								<i v-show="creating"
-								   class="fa fa-spinner fa-pulse fa-fw">
-								</i>
-							</button>
-						</div>
-					</form>
-				</div>
-			</div>
-			<!-- CREATE GROUP PANEL END -->
+      <!-- CREATE GROUP PANEL START -->
+      <div
+        v-if="$root.permissions['user_manager user_groups create']"
+        class="portlet box blue-hoki margin-top-20"
+      >
+        <div
+          class="portlet-title bg-blue-chambray"
+          @click="toggleCreateGroupPanel()"
+        >
+          <div class="caption">
+            <i class="fa fa-plus-circle" />
+            Create New Group
+          </div>
+          <div class="tools">
+            <a :class="{'expand': !createGroupCollapse, 'collapse': createGroupCollapse}" />
+          </div>
+        </div>
+        <div
+          class="portlet-body"
+          :class="{'display-hide': createGroupCollapse}"
+        >
+          <form
+            role="form"
+            @submit.prevent="createNewGroup()"
+          >
+            <div class="row">
+              <div class="col-md-12">
+                <div
+                  v-show="errorMessage"
+                  ref="errorMessage"
+                  class="alert alert-danger"
+                >
+                  <button
+                    class="close"
+                    data-close="alert"
+                    @click.prevent="clearError('errorMessage')"
+                  />
+                  <span>{{ errorMessage }}</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_1"
+                    v-model="newGroup.name"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': newGroup.name.length}"
+                  >
+                  <label for="form_control_1">
+                    Group Name
+                  </label>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_2"
+                    v-model="newGroup.description"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': newGroup.description.length}"
+                  >
+                  <label for="form_control_2">
+                    Group Description
+                  </label>
+                </div>
+                <h4 class="margin-top-20">
+                  All users with:
+                </h4>
+                <div>
+                  <el-dropdown
+                    trigger="click"
+                    size="mini"
+                    :show-timeout="50"
+                    :hide-timeout="50"
+                    class="margin-top-15"
+                    @command="updateSignUpDate"
+                  >
+                    <el-button size="mini">
+                      {{ selectedSignUpDate }}
+                      <i class="el-icon-arrow-down el-icon--right" />
+                    </el-button>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item :command="7">
+                        Signed up in the last 7 days
+                      </el-dropdown-item>
+                      <el-dropdown-item :command="14">
+                        Signed up in the last 14 days
+                      </el-dropdown-item>
+                      <el-dropdown-item :command="30">
+                        Signed up in the last 30 days
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
+                </div>
+                <div>
+                  <el-dropdown
+                    trigger="click"
+                    size="mini"
+                    :show-timeout="50"
+                    :hide-timeout="50"
+                    class="margin-top-15"
+                    @command="updateTotalOrders"
+                  >
+                    <el-button size="mini">
+                      {{ selectedTotalOrders }}
+                      <i class="el-icon-arrow-down el-icon--right" />
+                    </el-button>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item :command="[10, '<']">
+                        Less than 10 orders
+                      </el-dropdown-item>
+                      <el-dropdown-item :command="[25, '>']">
+                        More than 25 orders
+                      </el-dropdown-item>
+                      <el-dropdown-item :command="[50, '>']">
+                        More than 50 orders
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
+                </div>
+                <div>
+                  <div class="form-group form-md-line-input form-md-floating-label">
+                    <input
+                      id="form_control_3"
+                      v-model="city"
+                      type="text"
+                      class="form-control input-sm"
+                      :class="{'edited': city.length}"
+                      @change="addRule('city')"
+                    >
+                    <label for="form_control_3">
+                      City
+                    </label>
+                  </div>
+                </div>
+                <div>
+                  <div class="form-group form-md-line-input form-md-floating-label">
+                    <input
+                      id="form_control_4"
+                      v-model="province"
+                      type="text"
+                      class="form-control input-sm"
+                      :class="{'edited': province.length}"
+                      @change="addRule('province')"
+                    >
+                    <label for="form_control_4">
+                      Province
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-actions right">
+              <button
+                type="submit"
+                class="btn blue"
+                :disabled="creating"
+              >
+                Create
+                <i
+                  v-show="creating"
+                  class="fa fa-spinner fa-pulse fa-fw"
+                />
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- CREATE GROUP PANEL END -->
 
-			<!-- LIST START -->
-			<div>
-				<div class="portlet light portlet-fit bordered margin-top-20">
-					<div class="portlet-title bg-blue-chambray">
-						<div class="menu-image-main">
-							<img src="../../../../public/client_logo.png">
-						</div>
-						<div class="caption">
-							<span class="caption-subject font-default bold uppercase">User Groups</span>
-							<div class="caption-desc font-grey-cascade">Click on a group to send a message to its members.</div>
-						</div>
-					</div>
-					<div class="portlet-body relative-block">
-						<div class="mt-element-list">
-							<div class="clearfix margin-bottom-10">
-								<el-dropdown trigger="click"
-								             @command="updateSortByOrder"
-								             size="mini"
-								             :show-timeout="50"
-								             :hide-timeout="50">
-									<el-button size="mini">
-										Sort by
-										<span>
-											<i class="fa fa-sort-alpha-asc"
-											   v-if="sortBy.order === 'ASC'"></i>
-											<i class="fa fa-sort-alpha-desc"
-											   v-if="sortBy.order === 'DESC'"></i>
-										</span>
-										<i class="el-icon-arrow-down el-icon--right"></i>
-									</el-button>
-									<el-dropdown-menu slot="dropdown">
-										<el-dropdown-item command="ASC">
-											<i class="fa fa-sort-alpha-asc"></i>
-										</el-dropdown-item>
-										<el-dropdown-item command="DESC">
-											<i class="fa fa-sort-alpha-desc"></i>
-										</el-dropdown-item>
-									</el-dropdown-menu>
-								</el-dropdown>
-								<page-results class="pull-right"
-								              :totalResults="totalResults"
-								              :activePage="activePage"
-								              @pageResults="resultsPerPageUpdate"></page-results>
-							</div>
-							<div class="mt-list-container list-news">
-								<div class="row">
-									<div class="col-md-12">
-										<div class="alert alert-danger"
-										     v-show="listErrorMessage"
-										     ref="listErrorMessage">
-											<button class="close"
-											        @click="clearError('listErrorMessage')"></button>
-											<span>{{listErrorMessage}}</span>
-										</div>
-									</div>
-								</div>
-								<loading-screen :show="loadingGroupsData"
-								                :color="'#2C3E50'"
-								                :display="'inline'"></loading-screen>
-								<ul v-show="groups.length && !loadingGroupsData">
-									<li class="mt-list-item actions-at-left margin-top-15"
-									    :class="{'clickable' : can('user_manager user_groups message')}"
-									    v-for="group in sortedGroups"
-									    @click="sendMessageToGroup(group)"
-									    :id="'group-' + group.id"
-									    :key="group.id">
-										<div class="list-item-actions">
-											<el-tooltip v-if="$root.permissions['user_manager user_groups update']"
-											            content="Edit"
-											            effect="light"
-											            placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default"
-												   @click="displayEditGroupModal(group, $event)">
-													<i class="fa fa-lg fa-pencil"></i>
-												</a>
-											</el-tooltip>
-											<el-tooltip v-if="$root.permissions['user_manager user_groups read'] && !$root.permissions['user_manager user_groups update']"
-											            content="View"
-											            effect="light"
-											            placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default"
-												   @click="displayEditGroupModal(group, $event)">
-													<i class="fa fa-lg fa-eye"></i>
-												</a>
-											</el-tooltip>
-											<el-tooltip v-if="$root.permissions['user_manager user_groups delete']"
-											            content="Delete"
-											            effect="light"
-											            placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default"
-												   @click="deleteGroup(group, $event)">
-													<i class="fa fa-lg fa-trash"></i>
-												</a>
-											</el-tooltip>
-										</div>
-										<div class="list-icon-container"
-										     v-if="can('user_manager user_groups message')">
-											<i class="fa fa-angle-right"></i>
-										</div>
-										<div class="list-datetime bold uppercase font-red">
-											<span>{{ group.name }}</span>
-										</div>
-										<div class="list-item-content height-mod">
-											<div class="col-md-8">
-												<span>{{ group.description }}</span>
-											</div>
-										</div>
-									</li>
-								</ul>
-							</div>
-							<div class="clearfix"
-							     v-show="numPages > 1">
-								<pagination :passedPage="activePage"
-								            :numPages="numPages"
-								            @activePageChange="activePageUpdate"></pagination>
-							</div>
-						</div>
-						<div v-if="!groups.length && !loadingGroupsData">
-							<no-results :show="!groups.length"
-							            :type="'store groups'"></no-results>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- LIST END -->
-		</div>
+      <!-- LIST START -->
+      <div>
+        <div class="portlet light portlet-fit bordered margin-top-20">
+          <div class="portlet-title bg-blue-chambray">
+            <div class="menu-image-main">
+              <img src="../../../../public/client_logo.png">
+            </div>
+            <div class="caption">
+              <span class="caption-subject font-default bold uppercase">
+                User Groups
+              </span>
+              <div class="caption-desc font-grey-cascade">
+                Click on a group to send a message to its members.
+              </div>
+            </div>
+          </div>
+          <div class="portlet-body relative-block">
+            <div class="mt-element-list">
+              <div class="clearfix margin-bottom-10">
+                <el-dropdown
+                  trigger="click"
+                  size="mini"
+                  :show-timeout="50"
+                  :hide-timeout="50"
+                  @command="updateSortByOrder"
+                >
+                  <el-button size="mini">
+                    Sort by
+                    <span>
+                      <i
+                        v-if="sortBy.order === 'ASC'"
+                        class="fa fa-sort-alpha-asc"
+                      />
+                      <i
+                        v-if="sortBy.order === 'DESC'"
+                        class="fa fa-sort-alpha-desc"
+                      />
+                    </span>
+                    <i class="el-icon-arrow-down el-icon--right" />
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="ASC">
+                      <i class="fa fa-sort-alpha-asc" />
+                    </el-dropdown-item>
+                    <el-dropdown-item command="DESC">
+                      <i class="fa fa-sort-alpha-desc" />
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+                <page-results
+                  class="pull-right"
+                  :total-results="totalResults"
+                  :active-page="activePage"
+                  @pageResults="resultsPerPageUpdate"
+                />
+              </div>
+              <div class="mt-list-container list-news">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div
+                      v-show="listErrorMessage"
+                      ref="listErrorMessage"
+                      class="alert alert-danger"
+                    >
+                      <button
+                        class="close"
+                        @click="clearError('listErrorMessage')"
+                      />
+                      <span>{{ listErrorMessage }}</span>
+                    </div>
+                  </div>
+                </div>
+                <loading-screen
+                  :show="loadingGroupsData"
+                  :color="'#2C3E50'"
+                  :display="'inline'"
+                />
+                <ul v-show="groups.length && !loadingGroupsData">
+                  <li
+                    v-for="group in sortedGroups"
+                    :id="'group-' + group.id"
+                    :key="group.id"
+                    class="mt-list-item actions-at-left margin-top-15"
+                    :class="{'clickable' : can('user_manager user_groups message')}"
+                    @click="sendMessageToGroup(group)"
+                  >
+                    <div class="list-item-actions">
+                      <el-tooltip
+                        v-if="$root.permissions['user_manager user_groups update']"
+                        content="Edit"
+                        effect="light"
+                        placement="right"
+                      >
+                        <a
+                          class="btn btn-circle btn-icon-only btn-default"
+                          @click="displayEditGroupModal(group, $event)"
+                        >
+                          <i class="fa fa-lg fa-pencil" />
+                        </a>
+                      </el-tooltip>
+                      <el-tooltip
+                        v-if="$root.permissions['user_manager user_groups read'] && !$root.permissions['user_manager user_groups update']"
+                        content="View"
+                        effect="light"
+                        placement="right"
+                      >
+                        <a
+                          class="btn btn-circle btn-icon-only btn-default"
+                          @click="displayEditGroupModal(group, $event)"
+                        >
+                          <i class="fa fa-lg fa-eye" />
+                        </a>
+                      </el-tooltip>
+                      <el-tooltip
+                        v-if="$root.permissions['user_manager user_groups delete']"
+                        content="Delete"
+                        effect="light"
+                        placement="right"
+                      >
+                        <a
+                          class="btn btn-circle btn-icon-only btn-default"
+                          @click="deleteGroup(group, $event)"
+                        >
+                          <i class="fa fa-lg fa-trash" />
+                        </a>
+                      </el-tooltip>
+                    </div>
+                    <div
+                      v-if="can('user_manager user_groups message')"
+                      class="list-icon-container"
+                    >
+                      <i class="fa fa-angle-right" />
+                    </div>
+                    <div class="list-datetime bold uppercase font-red">
+                      <span>{{ group.name }}</span>
+                    </div>
+                    <div class="list-item-content height-mod">
+                      <div class="col-md-8">
+                        <span>{{ group.description }}</span>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div
+                v-show="numPages > 1"
+                class="clearfix"
+              >
+                <pagination
+                  :passed-page="activePage"
+                  :num-pages="numPages"
+                  @activePageChange="activePageUpdate"
+                />
+              </div>
+            </div>
+            <div v-if="!groups.length && !loadingGroupsData">
+              <no-results
+                :show="!groups.length"
+                :type="'store groups'"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- LIST END -->
+    </div>
 
-		<!-- PANEL COMPONENTS END -->
-		<select-users v-if="showSelectUsersModal"
-		              :passedGroupId="selectedGroupId"
-		              :passedGroupName="passedGroupName"
-		              @closeSelectUsersModal="closeSelectUsersModal">
-		</select-users>
+    <!-- PANEL COMPONENTS END -->
+    <select-users
+      v-if="showSelectUsersModal"
+      :passed-group-id="selectedGroupId"
+      :passed-group-name="passedGroupName"
+      @closeSelectUsersModal="closeSelectUsersModal"
+    />
 
-		<message v-if="messageModalDisplayed"
-		         :userId="selectedUsers"
-		         @closeMessageModal="closeMessageModal">
-		</message>
+    <message
+      v-if="messageModalDisplayed"
+      :user-id="selectedUsers"
+      @closeMessageModal="closeMessageModal"
+    />
 
-		<delete-user-group v-if="deleteGroupModalActive"
-		                   :selectedPromotionId="groupToBeDeletedId"
-		                   @closeDeleteGroupModal="closeDeleteGroupModal"
-		                   @deleteGroupAndCloseModal="deleteGroupAndCloseModal">
-		</delete-user-group>
+    <delete-user-group
+      v-if="deleteGroupModalActive"
+      :selected-promotion-id="groupToBeDeletedId"
+      @closeDeleteGroupModal="closeDeleteGroupModal"
+      @deleteGroupAndCloseModal="deleteGroupAndCloseModal"
+    />
 
-		<edit-user-group v-if="showEditGroupModal"
-		                 :passedGroup="groupToBeEdited"
-		                 @closeEditGroupModal="closeEditGroupModal"
-		                 @updateGroup="updateGroup">
-		</edit-user-group>
-	</div>
+    <edit-user-group
+      v-if="showEditGroupModal"
+      :passed-group="groupToBeEdited"
+      @closeEditGroupModal="closeEditGroupModal"
+      @updateGroup="updateGroup"
+    />
+  </div>
 </template>
 
 <script>

@@ -1,40 +1,44 @@
 <template>
-	<table class="table">
-		<thead>
-			<th>
-				<span class="padding-left-35">
-					Tier name
-				</span>
-			</th>
-		</thead>
-		<tbody>
-			<tr v-for="tier in displayTiers"
-			    :key="tier.id">
-				<td>
-					<div class="md-radio">
-						<input type="radio"
-						       :id="`${idPrefix}-${tier.id}`"
-						       :name="tier.name"
-						       class="md-radiobtn"
-						       v-model="radioValue"
-						       :value="tier.id"
-						       @change="tiersSelected">
-						<label :for="`${idPrefix}-${tier.id}`">
-							<span></span>
-							<span class="check"></span>
-							<span class="box"></span>
-							{{ tier.name }}
-						</label>
-					</div>
-				</td>
-			</tr>
-		</tbody>
-	</table>
+  <table class="table">
+    <thead>
+      <th>
+        <span class="padding-left-35">
+          Tier name
+        </span>
+      </th>
+    </thead>
+    <tbody>
+      <tr
+        v-for="tier in displayTiers"
+        :key="tier.id"
+      >
+        <td>
+          <div class="md-radio">
+            <input
+              :id="`${idPrefix}-${tier.id}`"
+              v-model="radioValue"
+              type="radio"
+              :name="tier.name"
+              class="md-radiobtn"
+              :value="tier.id"
+              @change="tiersSelected"
+            >
+            <label :for="`${idPrefix}-${tier.id}`">
+              <span />
+              <span class="check" />
+              <span class="box" />
+              {{ tier.name }}
+            </label>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </template>
 <script>
 import MenuTiersFunctions from '@/controllers/MenuTiers.js'
 export default {
-	name: 'menu-tiers-picker',
+	name: 'MenuTiersPicker',
 	props: {
 		radio: {
 			required: false,

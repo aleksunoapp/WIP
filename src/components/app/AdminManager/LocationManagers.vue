@@ -1,654 +1,911 @@
 <template>
-	<div>
-		<div>
-			<div class="page-bar">
-				<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-			</div>
-			<h1 class='page-title'>Location Managers</h1>
-			<div class="note note-info">
-				<p>Create and manage Location Manager accounts.</p>
-			</div>
+  <div>
+    <div>
+      <div class="page-bar">
+        <breadcrumb :crumbs="breadcrumbArray" />
+      </div>
+      <h1 class="page-title">
+        Location Managers
+      </h1>
+      <div class="note note-info">
+        <p>Create and manage Location Manager accounts.</p>
+      </div>
 
-			<!-- CREATE NEW START -->
-			<div class="portlet box blue-hoki margin-top-20"
-			     v-if="$root.permissions['admin location_managers create']">
-				<div class="portlet-title bg-blue-chambray"
-				     @click="toggleCreateLocationManagerPanel()">
-					<div class="caption">
-						<i class="fa fa-plus-circle"></i>
-						Create New Location Manager
-					</div>
-					<div class="tools">
-						<a :class="{'expand': !createLocationManagerCollapse, 'collapse': createLocationManagerCollapse}"></a>
-					</div>
-				</div>
-				<div class="portlet-body"
-				     :class="{'display-hide': createLocationManagerCollapse}">
-					<form role="form"
-					      @submit.prevent="createLocationManager()">
-						<div class="row">
-							<div class="col-md-12">
-								<div class="alert alert-danger"
-								     v-show="createErrorMessage"
-								     ref="createErrorMessage">
-									<button class="close"
-									        @click.prevent="clearError('createErrorMessage')"></button>
-									<span>{{createErrorMessage}}</span>
-								</div>
-							</div>
-							<div class="col-md-6">
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input ref="newLocationManagerName"
-									       type="text"
-									       class="form-control input-sm"
-									       id="form_control_name"
-									       v-model="newLocationManager.name"
-									       :class="{'edited': newLocationManager.name.length}">
-									<label for="form_control_name">Name</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       class="form-control input-sm"
-									       id="form_control_phone"
-									       v-model="newLocationManager.phone"
-									       :class="{'edited': newLocationManager.phone.length}">
-									<label for="form_control_phone">Phone</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       class="form-control input-sm"
-									       id="form_control_email"
-									       v-model="newLocationManager.email"
-									       :class="{'edited': newLocationManager.email.length}">
-									<label for="form_control_email">Email</label>
-								</div>
-							</div>
-							<div class="col-md-6">
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<div class="input-group"
-									     v-show="passwordMasked">
-										<input type="password"
-										       class="form-control input-sm"
-										       id="form_control_password_masked"
-										       v-model="newLocationManager.password"
-										       :class="{'edited': newLocationManager.password.length}">
-										<label for="form_control_password_masked">Password</label>
-										<span class="input-group-addon clickable"
-										      @click="flipPasswordMask()">
-											<i class="fa fa-eye"></i>
-										</span>
-									</div>
-									<div class="input-group"
-									     v-show="!passwordMasked">
-										<input type="text"
-										       class="form-control input-sm"
-										       id="form_control_password"
-										       v-model="newLocationManager.password"
-										       :class="{'edited': newLocationManager.password.length}">
-										<label for="form_control_password">Password</label>
-										<span class="input-group-addon clickable"
-										      @click="flipPasswordMask()">
-											<i class="fa fa-eye-slash"></i>
-										</span>
-									</div>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<div class="input-group"
-									     v-show="passwordConfirmMasked">
-										<input type="password"
-										       class="form-control input-sm"
-										       id="form_control_confirm"
-										       v-model="passwordCheck"
-										       :class="{'edited': passwordCheck}">
-										<label for="form_control_confirm">Confirm password</label>
-										<span class="input-group-addon clickable"
-										      @click="flipPasswordConfirmMask()">
-											<i class="fa fa-eye"></i>
-										</span>
-									</div>
-									<div class="input-group"
-									     v-show="!passwordConfirmMasked">
-										<input type="text"
-										       class="form-control input-sm"
-										       id="form_control_confirm_masked"
-										       v-model="passwordCheck"
-										       :class="{'edited': passwordCheck}">
-										<label for="form_control_confirm_masked">Confirm password</label>
-										<span class="input-group-addon clickable"
-										      @click="flipPasswordConfirmMask()">
-											<i class="fa fa-eye-slash"></i>
-										</span>
-									</div>
-								</div>
-								<div class="alert alert-info">
-									Password must be at least 8 characters long. It can contain English alphabet letters only. It must include at least one capital letter and one number.
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-12">
-								<button type="submit"
-								        class="btn blue pull-right"
-								        :disabled="creating">
-									Create
-									<i v-show="creating"
-									   class="fa fa-spinner fa-pulse fa-fw">
-									</i>
-								</button>
-							</div>
-						</div>
-					</form>
-				</div>
-			</div>
-			<!-- CREATE NEW END -->
+      <!-- CREATE NEW START -->
+      <div
+        v-if="$root.permissions['admin location_managers create']"
+        class="portlet box blue-hoki margin-top-20"
+      >
+        <div
+          class="portlet-title bg-blue-chambray"
+          @click="toggleCreateLocationManagerPanel()"
+        >
+          <div class="caption">
+            <i class="fa fa-plus-circle" />
+            Create New Location Manager
+          </div>
+          <div class="tools">
+            <a :class="{'expand': !createLocationManagerCollapse, 'collapse': createLocationManagerCollapse}" />
+          </div>
+        </div>
+        <div
+          class="portlet-body"
+          :class="{'display-hide': createLocationManagerCollapse}"
+        >
+          <form
+            role="form"
+            @submit.prevent="createLocationManager()"
+          >
+            <div class="row">
+              <div class="col-md-12">
+                <div
+                  v-show="createErrorMessage"
+                  ref="createErrorMessage"
+                  class="alert alert-danger"
+                >
+                  <button
+                    class="close"
+                    @click.prevent="clearError('createErrorMessage')"
+                  />
+                  <span>{{ createErrorMessage }}</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_name"
+                    ref="newLocationManagerName"
+                    v-model="newLocationManager.name"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': newLocationManager.name.length}"
+                  >
+                  <label for="form_control_name">
+                    Name
+                  </label>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_phone"
+                    v-model="newLocationManager.phone"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': newLocationManager.phone.length}"
+                  >
+                  <label for="form_control_phone">
+                    Phone
+                  </label>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_email"
+                    v-model="newLocationManager.email"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': newLocationManager.email.length}"
+                  >
+                  <label for="form_control_email">
+                    Email
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <div
+                    v-show="passwordMasked"
+                    class="input-group"
+                  >
+                    <input
+                      id="form_control_password_masked"
+                      v-model="newLocationManager.password"
+                      type="password"
+                      class="form-control input-sm"
+                      :class="{'edited': newLocationManager.password.length}"
+                    >
+                    <label for="form_control_password_masked">
+                      Password
+                    </label>
+                    <span
+                      class="input-group-addon clickable"
+                      @click="flipPasswordMask()"
+                    >
+                      <i class="fa fa-eye" />
+                    </span>
+                  </div>
+                  <div
+                    v-show="!passwordMasked"
+                    class="input-group"
+                  >
+                    <input
+                      id="form_control_password"
+                      v-model="newLocationManager.password"
+                      type="text"
+                      class="form-control input-sm"
+                      :class="{'edited': newLocationManager.password.length}"
+                    >
+                    <label for="form_control_password">
+                      Password
+                    </label>
+                    <span
+                      class="input-group-addon clickable"
+                      @click="flipPasswordMask()"
+                    >
+                      <i class="fa fa-eye-slash" />
+                    </span>
+                  </div>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <div
+                    v-show="passwordConfirmMasked"
+                    class="input-group"
+                  >
+                    <input
+                      id="form_control_confirm"
+                      v-model="passwordCheck"
+                      type="password"
+                      class="form-control input-sm"
+                      :class="{'edited': passwordCheck}"
+                    >
+                    <label for="form_control_confirm">
+                      Confirm password
+                    </label>
+                    <span
+                      class="input-group-addon clickable"
+                      @click="flipPasswordConfirmMask()"
+                    >
+                      <i class="fa fa-eye" />
+                    </span>
+                  </div>
+                  <div
+                    v-show="!passwordConfirmMasked"
+                    class="input-group"
+                  >
+                    <input
+                      id="form_control_confirm_masked"
+                      v-model="passwordCheck"
+                      type="text"
+                      class="form-control input-sm"
+                      :class="{'edited': passwordCheck}"
+                    >
+                    <label for="form_control_confirm_masked">
+                      Confirm password
+                    </label>
+                    <span
+                      class="input-group-addon clickable"
+                      @click="flipPasswordConfirmMask()"
+                    >
+                      <i class="fa fa-eye-slash" />
+                    </span>
+                  </div>
+                </div>
+                <div class="alert alert-info">
+                  Password must be at least 8 characters long. It can contain English alphabet letters only. It must include at least one capital letter and one number.
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <button
+                  type="submit"
+                  class="btn blue pull-right"
+                  :disabled="creating"
+                >
+                  Create
+                  <i
+                    v-show="creating"
+                    class="fa fa-spinner fa-pulse fa-fw"
+                  />
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- CREATE NEW END -->
 
-			<!-- SEARCH START -->
-			<div class="margin-top-20"
-			     v-if="locationManagers.length">
-				<div class="portlet box blue-hoki">
-					<div class="portlet-title"
-					     @click="toggleSearchPanel()">
-						<div class="caption">
-							<i class="fa fa-search"></i>
-							Search Panel
-						</div>
-						<div class="tools">
-							<a :class="{'expand': !searchCollapse, 'collapse': searchCollapse}"></a>
-						</div>
-					</div>
-					<div class="portlet-body"
-					     :class="{'display-hide': searchCollapse}">
-						<form role="form"
-						      @submit.prevent="advancedSearch()">
-							<div class="form-body row">
-								<div class="col-md-12">
-									<div class="alert alert-danger"
-									     v-show="searchError"
-									     ref="searchError">
-										<button class="close"
-										        @click.prevent="clearError('searchError')"></button>
-										<span>{{searchError}}</span>
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="form-group form-md-line-input form-md-floating-label">
-										<input ref="search"
-										       type="text"
-										       class="form-control input-sm"
-										       :class="{'edited': searchTerm.length}"
-										       v-model="searchTerm">
-										<label for="search_options_search">Search</label>
-										<span class="help-block persist">Search by Name or Email.</span>
-									</div>
-								</div>
-							</div>
-							<div class="form-actions right margin-top-20">
-								<button type="button"
-								        class="btn btn-default"
-								        @click="resetSearch()"> Reset Search</button>
-								<button type="submit"
-								        class="btn blue">Search</button>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-			<!-- SEARCH END -->
+      <!-- SEARCH START -->
+      <div
+        v-if="locationManagers.length"
+        class="margin-top-20"
+      >
+        <div class="portlet box blue-hoki">
+          <div
+            class="portlet-title"
+            @click="toggleSearchPanel()"
+          >
+            <div class="caption">
+              <i class="fa fa-search" />
+              Search Panel
+            </div>
+            <div class="tools">
+              <a :class="{'expand': !searchCollapse, 'collapse': searchCollapse}" />
+            </div>
+          </div>
+          <div
+            class="portlet-body"
+            :class="{'display-hide': searchCollapse}"
+          >
+            <form
+              role="form"
+              @submit.prevent="advancedSearch()"
+            >
+              <div class="form-body row">
+                <div class="col-md-12">
+                  <div
+                    v-show="searchError"
+                    ref="searchError"
+                    class="alert alert-danger"
+                  >
+                    <button
+                      class="close"
+                      @click.prevent="clearError('searchError')"
+                    />
+                    <span>{{ searchError }}</span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group form-md-line-input form-md-floating-label">
+                    <input
+                      ref="search"
+                      v-model="searchTerm"
+                      type="text"
+                      class="form-control input-sm"
+                      :class="{'edited': searchTerm.length}"
+                    >
+                    <label for="search_options_search">
+                      Search
+                    </label>
+                    <span class="help-block persist">
+                      Search by Name or Email.
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-actions right margin-top-20">
+                <button
+                  type="button"
+                  class="btn btn-default"
+                  @click="resetSearch()"
+                >
+                  Reset Search
+                </button>
+                <button
+                  type="submit"
+                  class="btn blue"
+                >
+                  Search
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!-- SEARCH END -->
 
-			<!-- LIST START -->
-			<loading-screen :show="loadingLocationManagersData"
-			                :color="'#2C3E50'"
-			                :display="'inline'"></loading-screen>
-			<div v-if="locationManagers.length && !loadingLocationManagersData && !filteredResults.length">
-				<div class="portlet light portlet-fit bordered margin-top-20">
-					<div class="portlet-title bg-blue-chambray">
-						<div class="menu-image-main">
-							<img src="../../../../public/client_logo.png">
-						</div>
-						<div class="caption">
-							<span class="caption-subject font-default bold uppercase">Location Managers</span>
-							<div class="caption-desc font-grey-cascade">Click on a location manager to edit their details or change store locations assigned to them.</div>
-						</div>
-					</div>
-					<div class="portlet-body">
-						<div class="row">
-							<div class="col-md-12">
-								<div class="alert alert-danger"
-								     v-show="listErrorMessage"
-								     ref="listErrorMessage">
-									<button class="close"
-									        @click.prevent="clearError('listErrorMessage')"></button>
-									<span>{{listErrorMessage}}</span>
-								</div>
-							</div>
-						</div>
-						<div class="clearfix margin-bottom-10"
-						     v-if="locationManagers.length">
-							<el-dropdown trigger="click"
-							             @command="updateSortByOrder"
-							             size="mini"
-							             :show-timeout="50"
-							             :hide-timeout="50">
-								<el-button size="mini">
-									Sort by
-									<span>
-										<i class="fa fa-sort-alpha-asc"
-										   v-if="sortBy.order === 'ASC'"></i>
-										<i class="fa fa-sort-alpha-desc"
-										   v-if="sortBy.order === 'DESC'"></i>
-									</span>
-									<i class="el-icon-arrow-down el-icon--right"></i>
-								</el-button>
-								<el-dropdown-menu slot="dropdown">
-									<el-dropdown-item command="ASC">
-										<i class="fa fa-sort-alpha-asc"></i>
-									</el-dropdown-item>
-									<el-dropdown-item command="DESC">
-										<i class="fa fa-sort-alpha-desc"></i>
-									</el-dropdown-item>
-								</el-dropdown-menu>
-							</el-dropdown>
-							<page-results class="pull-right"
-							              :totalResults="locationManagers.length"
-							              :activePage="activePage"
-							              @pageResults="pageResultsUpdate"></page-results>
-						</div>
-						<div class="mt-element-list">
-							<div class="mt-list-container list-news">
-								<ul>
-									<li class="mt-list-item actions-at-left margin-top-15"
-									    v-for="locationManager in currentActivePageItems"
-									    :id="'locationManager-' + locationManager.id"
-									    :class="{'animated' : animated === `locationManager-${locationManager.id}`}"
-									    :key="locationManager.id">
-										<div class="list-item-actions">
-											<el-tooltip v-if="$root.permissions['admin location_managers update']"
-											            content="Edit"
-											            effect="light"
-											            placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default"
-												   @click="editLocationManager(locationManager)">
-													<i class="fa fa-pencil"
-													   aria-hidden="true"></i>
-												</a>
-											</el-tooltip>
-											<el-tooltip v-if="$root.permissions['admin location_managers read'] && !$root.permissions['admin location_managers update']"
-											            content="View"
-											            effect="light"
-											            placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default"
-												   @click="editLocationManager(locationManager)">
-													<i class="fa fa-eye"
-													   aria-hidden="true"></i>
-												</a>
-											</el-tooltip>
-											<el-tooltip v-if="$root.permissions['admin brand_admins assign locations']"
-											            content="Assign stores"
-											            effect="light"
-											            placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default"
-												   @click="assignStoresToLocationManager(locationManager)">
-													<i class="icon-layers"></i>
-												</a>
-											</el-tooltip>
-											<el-tooltip v-if="canAny([
-											            'list user\'s roles',
-											            'assign roles to user',
-											            'revoke roles from user',
-											            'sync roles for user'
-											            ])"
-											            content="Roles"
-											            effect="light"
-											            placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default"
-												   @click="openRolesModal(locationManager)">
-													<i class="fa fa-id-badge"
-													   aria-hidden="true"></i>
-												</a>
-											</el-tooltip>
-										</div>
-										<div class="list-datetime bold uppercase font-red">
-											<span>{{ locationManager.name }}</span>
-										</div>
-										<div class="list-item-content height-mod">
-											<div class="col-md-4">
-												<span>{{ formatPhone(locationManager.phone) }}</span>
-											</div>
-											<div class="col-md-4">
-												<span>{{ locationManager.email }}</span>
-											</div>
-											<div class="col-md-4">
-												<span v-if="locationManager.active === 1">ACTIVE</span>
-												<span v-else>DISABLED</span>
-											</div>
-										</div>
-									</li>
-								</ul>
-							</div>
-							<div class="clearfix"
-							     v-if="locationManagers.length && numPages > 1">
-								<pagination :passedPage="activePage"
-								            :numPages="numPages"
-								            @activePageChange="activePageUpdate"></pagination>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div v-if="locationManagers.length && !loadingLocationManagersData && filteredResults.length">
-				<div class="portlet light portlet-fit bordered margin-top-20">
-					<div class="portlet-title bg-blue-chambray">
-						<div class="menu-image-main">
-							<img src="../../../../public/client_logo.png">
-						</div>
-						<div class="caption">
-							<span class="caption-subject font-default bold uppercase">Search Results</span>
-							<div class="caption-desc font-grey-cascade">Click on a location manager to edit their details or change store locations assigned to them.</div>
-						</div>
-					</div>
-					<div class="portlet-body">
-						<div class="clearfix margin-bottom-10"
-						     v-if="filteredResults.length">
-							<el-dropdown trigger="click"
-							             @command="updateSortByOrder"
-							             size="mini"
-							             :show-timeout="50"
-							             :hide-timeout="50">
-								<el-button size="mini">
-									Sort by
-									<span>
-										<i class="fa fa-sort-alpha-asc"
-										   v-if="sortBy.order === 'ASC'"></i>
-										<i class="fa fa-sort-alpha-desc"
-										   v-if="sortBy.order === 'DESC'"></i>
-									</span>
-									<i class="el-icon-arrow-down el-icon--right"></i>
-								</el-button>
-								<el-dropdown-menu slot="dropdown">
-									<el-dropdown-item command="ASC">
-										<i class="fa fa-sort-alpha-asc"></i>
-									</el-dropdown-item>
-									<el-dropdown-item command="DESC">
-										<i class="fa fa-sort-alpha-desc"></i>
-									</el-dropdown-item>
-								</el-dropdown-menu>
-							</el-dropdown>
-							<page-results class="pull-right"
-							              :totalResults="filteredResults.length"
-							              :activePage="searchActivePage"
-							              @pageResults="pageResultsUpdate"></page-results>
-						</div>
-						<div class="mt-element-list">
-							<div class="mt-list-container list-news">
-								<ul>
-									<li class="mt-list-item actions-at-left margin-top-15"
-									    v-for="locationManager in currentActiveSearchPageItems"
-									    :id="'locationManager-' + locationManager.id"
-									    :class="{'animated' : animated === `locationManager-${locationManager.id}`}"
-									    :key="locationManager.id">
-										<div class="list-item-actions">
-											<el-tooltip v-if="$root.permissions['admin location_managers update']"
-											            content="Edit"
-											            effect="light"
-											            placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default"
-												   @click="editLocationManager(locationManager)">
-													<i class="fa fa-pencil"
-													   aria-hidden="true"></i>
-												</a>
-											</el-tooltip>
-											<el-tooltip v-if="$root.permissions['admin location_managers read'] && !$root.permissions['admin location_managers update']"
-											            content="View"
-											            effect="light"
-											            placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default"
-												   @click="editLocationManager(locationManager)">
-													<i class="fa fa-eye"
-													   aria-hidden="true"></i>
-												</a>
-											</el-tooltip>
-											<el-tooltip v-if="$root.permissions['admin brand_admins assign locations']"
-											            content="Assign stores"
-											            effect="light"
-											            placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default"
-												   @click="assignStoresToLocationManager(locationManager)">
-													<i class="icon-layers"></i>
-												</a>
-											</el-tooltip>
-											<el-tooltip v-if="canAny([
-											            'list user\'s roles',
-											            'assign roles to user',
-											            'revoke roles from user',
-											            'sync roles for user'
-											            ])"
-											            content="Roles"
-											            effect="light"
-											            placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default"
-												   @click="openRolesModal(locationManager)">
-													<i class="fa fa-id-badge"
-													   aria-hidden="true"></i>
-												</a>
-											</el-tooltip>
-										</div>
-										<div class="list-datetime bold uppercase font-red">
-											<span>{{ locationManager.name }}</span>
-										</div>
-										<div class="list-item-content height-mod">
-											<div class="col-md-4">
-												<span>{{ locationManager.email }}</span>
-											</div>
-											<div class="col-md-4">
-												<span>{{ formatPhone(locationManager.phone) }}</span>
-											</div>
-											<div class="col-md-4">
-												<span v-if="locationManager.active === 1">ACTIVE</span>
-												<span v-else>DISABLED</span>
-											</div>
-										</div>
-									</li>
-								</ul>
-							</div>
-							<div class="clearfix"
-							     v-if="filteredResults.length && searchNumPages > 1">
-								<pagination :passedPage="searchActivePage"
-								            :numPages="searchNumPages"
-								            @activePageChange="activeSearchPageUpdate"></pagination>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div v-if="!locationManagers.length && !loadingLocationManagersData">
-				<no-results :show="!locationManagers.length"
-				            :type="'location managers'"></no-results>
-			</div>
-		</div>
-		<!-- LIST END -->
+      <!-- LIST START -->
+      <loading-screen
+        :show="loadingLocationManagersData"
+        :color="'#2C3E50'"
+        :display="'inline'"
+      />
+      <div v-if="locationManagers.length && !loadingLocationManagersData && !filteredResults.length">
+        <div class="portlet light portlet-fit bordered margin-top-20">
+          <div class="portlet-title bg-blue-chambray">
+            <div class="menu-image-main">
+              <img src="../../../../public/client_logo.png">
+            </div>
+            <div class="caption">
+              <span class="caption-subject font-default bold uppercase">
+                Location Managers
+              </span>
+              <div class="caption-desc font-grey-cascade">
+                Click on a location manager to edit their details or change store locations assigned to them.
+              </div>
+            </div>
+          </div>
+          <div class="portlet-body">
+            <div class="row">
+              <div class="col-md-12">
+                <div
+                  v-show="listErrorMessage"
+                  ref="listErrorMessage"
+                  class="alert alert-danger"
+                >
+                  <button
+                    class="close"
+                    @click.prevent="clearError('listErrorMessage')"
+                  />
+                  <span>{{ listErrorMessage }}</span>
+                </div>
+              </div>
+            </div>
+            <div
+              v-if="locationManagers.length"
+              class="clearfix margin-bottom-10"
+            >
+              <el-dropdown
+                trigger="click"
+                size="mini"
+                :show-timeout="50"
+                :hide-timeout="50"
+                @command="updateSortByOrder"
+              >
+                <el-button size="mini">
+                  Sort by
+                  <span>
+                    <i
+                      v-if="sortBy.order === 'ASC'"
+                      class="fa fa-sort-alpha-asc"
+                    />
+                    <i
+                      v-if="sortBy.order === 'DESC'"
+                      class="fa fa-sort-alpha-desc"
+                    />
+                  </span>
+                  <i class="el-icon-arrow-down el-icon--right" />
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="ASC">
+                    <i class="fa fa-sort-alpha-asc" />
+                  </el-dropdown-item>
+                  <el-dropdown-item command="DESC">
+                    <i class="fa fa-sort-alpha-desc" />
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+              <page-results
+                class="pull-right"
+                :total-results="locationManagers.length"
+                :active-page="activePage"
+                @pageResults="pageResultsUpdate"
+              />
+            </div>
+            <div class="mt-element-list">
+              <div class="mt-list-container list-news">
+                <ul>
+                  <li
+                    v-for="locationManager in currentActivePageItems"
+                    :id="'locationManager-' + locationManager.id"
+                    :key="locationManager.id"
+                    class="mt-list-item actions-at-left margin-top-15"
+                    :class="{'animated' : animated === `locationManager-${locationManager.id}`}"
+                  >
+                    <div class="list-item-actions">
+                      <el-tooltip
+                        v-if="$root.permissions['admin location_managers update']"
+                        content="Edit"
+                        effect="light"
+                        placement="right"
+                      >
+                        <a
+                          class="btn btn-circle btn-icon-only btn-default"
+                          @click="editLocationManager(locationManager)"
+                        >
+                          <i
+                            class="fa fa-pencil"
+                            aria-hidden="true"
+                          />
+                        </a>
+                      </el-tooltip>
+                      <el-tooltip
+                        v-if="$root.permissions['admin location_managers read'] && !$root.permissions['admin location_managers update']"
+                        content="View"
+                        effect="light"
+                        placement="right"
+                      >
+                        <a
+                          class="btn btn-circle btn-icon-only btn-default"
+                          @click="editLocationManager(locationManager)"
+                        >
+                          <i
+                            class="fa fa-eye"
+                            aria-hidden="true"
+                          />
+                        </a>
+                      </el-tooltip>
+                      <el-tooltip
+                        v-if="$root.permissions['admin brand_admins assign locations']"
+                        content="Assign stores"
+                        effect="light"
+                        placement="right"
+                      >
+                        <a
+                          class="btn btn-circle btn-icon-only btn-default"
+                          @click="assignStoresToLocationManager(locationManager)"
+                        >
+                          <i class="icon-layers" />
+                        </a>
+                      </el-tooltip>
+                      <el-tooltip
+                        v-if="canAny([
+                          'list user\'s roles',
+                          'assign roles to user',
+                          'revoke roles from user',
+                          'sync roles for user'
+                        ])"
+                        content="Roles"
+                        effect="light"
+                        placement="right"
+                      >
+                        <a
+                          class="btn btn-circle btn-icon-only btn-default"
+                          @click="openRolesModal(locationManager)"
+                        >
+                          <i
+                            class="fa fa-id-badge"
+                            aria-hidden="true"
+                          />
+                        </a>
+                      </el-tooltip>
+                    </div>
+                    <div class="list-datetime bold uppercase font-red">
+                      <span>{{ locationManager.name }}</span>
+                    </div>
+                    <div class="list-item-content height-mod">
+                      <div class="col-md-4">
+                        <span>{{ formatPhone(locationManager.phone) }}</span>
+                      </div>
+                      <div class="col-md-4">
+                        <span>{{ locationManager.email }}</span>
+                      </div>
+                      <div class="col-md-4">
+                        <span v-if="locationManager.active === 1">
+                          ACTIVE
+                        </span>
+                        <span v-else>
+                          DISABLED
+                        </span>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div
+                v-if="locationManagers.length && numPages > 1"
+                class="clearfix"
+              >
+                <pagination
+                  :passed-page="activePage"
+                  :num-pages="numPages"
+                  @activePageChange="activePageUpdate"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-if="locationManagers.length && !loadingLocationManagersData && filteredResults.length">
+        <div class="portlet light portlet-fit bordered margin-top-20">
+          <div class="portlet-title bg-blue-chambray">
+            <div class="menu-image-main">
+              <img src="../../../../public/client_logo.png">
+            </div>
+            <div class="caption">
+              <span class="caption-subject font-default bold uppercase">
+                Search Results
+              </span>
+              <div class="caption-desc font-grey-cascade">
+                Click on a location manager to edit their details or change store locations assigned to them.
+              </div>
+            </div>
+          </div>
+          <div class="portlet-body">
+            <div
+              v-if="filteredResults.length"
+              class="clearfix margin-bottom-10"
+            >
+              <el-dropdown
+                trigger="click"
+                size="mini"
+                :show-timeout="50"
+                :hide-timeout="50"
+                @command="updateSortByOrder"
+              >
+                <el-button size="mini">
+                  Sort by
+                  <span>
+                    <i
+                      v-if="sortBy.order === 'ASC'"
+                      class="fa fa-sort-alpha-asc"
+                    />
+                    <i
+                      v-if="sortBy.order === 'DESC'"
+                      class="fa fa-sort-alpha-desc"
+                    />
+                  </span>
+                  <i class="el-icon-arrow-down el-icon--right" />
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="ASC">
+                    <i class="fa fa-sort-alpha-asc" />
+                  </el-dropdown-item>
+                  <el-dropdown-item command="DESC">
+                    <i class="fa fa-sort-alpha-desc" />
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+              <page-results
+                class="pull-right"
+                :total-results="filteredResults.length"
+                :active-page="searchActivePage"
+                @pageResults="pageResultsUpdate"
+              />
+            </div>
+            <div class="mt-element-list">
+              <div class="mt-list-container list-news">
+                <ul>
+                  <li
+                    v-for="locationManager in currentActiveSearchPageItems"
+                    :id="'locationManager-' + locationManager.id"
+                    :key="locationManager.id"
+                    class="mt-list-item actions-at-left margin-top-15"
+                    :class="{'animated' : animated === `locationManager-${locationManager.id}`}"
+                  >
+                    <div class="list-item-actions">
+                      <el-tooltip
+                        v-if="$root.permissions['admin location_managers update']"
+                        content="Edit"
+                        effect="light"
+                        placement="right"
+                      >
+                        <a
+                          class="btn btn-circle btn-icon-only btn-default"
+                          @click="editLocationManager(locationManager)"
+                        >
+                          <i
+                            class="fa fa-pencil"
+                            aria-hidden="true"
+                          />
+                        </a>
+                      </el-tooltip>
+                      <el-tooltip
+                        v-if="$root.permissions['admin location_managers read'] && !$root.permissions['admin location_managers update']"
+                        content="View"
+                        effect="light"
+                        placement="right"
+                      >
+                        <a
+                          class="btn btn-circle btn-icon-only btn-default"
+                          @click="editLocationManager(locationManager)"
+                        >
+                          <i
+                            class="fa fa-eye"
+                            aria-hidden="true"
+                          />
+                        </a>
+                      </el-tooltip>
+                      <el-tooltip
+                        v-if="$root.permissions['admin brand_admins assign locations']"
+                        content="Assign stores"
+                        effect="light"
+                        placement="right"
+                      >
+                        <a
+                          class="btn btn-circle btn-icon-only btn-default"
+                          @click="assignStoresToLocationManager(locationManager)"
+                        >
+                          <i class="icon-layers" />
+                        </a>
+                      </el-tooltip>
+                      <el-tooltip
+                        v-if="canAny([
+                          'list user\'s roles',
+                          'assign roles to user',
+                          'revoke roles from user',
+                          'sync roles for user'
+                        ])"
+                        content="Roles"
+                        effect="light"
+                        placement="right"
+                      >
+                        <a
+                          class="btn btn-circle btn-icon-only btn-default"
+                          @click="openRolesModal(locationManager)"
+                        >
+                          <i
+                            class="fa fa-id-badge"
+                            aria-hidden="true"
+                          />
+                        </a>
+                      </el-tooltip>
+                    </div>
+                    <div class="list-datetime bold uppercase font-red">
+                      <span>{{ locationManager.name }}</span>
+                    </div>
+                    <div class="list-item-content height-mod">
+                      <div class="col-md-4">
+                        <span>{{ locationManager.email }}</span>
+                      </div>
+                      <div class="col-md-4">
+                        <span>{{ formatPhone(locationManager.phone) }}</span>
+                      </div>
+                      <div class="col-md-4">
+                        <span v-if="locationManager.active === 1">
+                          ACTIVE
+                        </span>
+                        <span v-else>
+                          DISABLED
+                        </span>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div
+                v-if="filteredResults.length && searchNumPages > 1"
+                class="clearfix"
+              >
+                <pagination
+                  :passed-page="searchActivePage"
+                  :num-pages="searchNumPages"
+                  @activePageChange="activeSearchPageUpdate"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-if="!locationManagers.length && !loadingLocationManagersData">
+        <no-results
+          :show="!locationManagers.length"
+          :type="'location managers'"
+        />
+      </div>
+    </div>
+    <!-- LIST END -->
 
-		<!-- ASSIGN STORES MODAL START -->
-		<modal :show="showAssignStoresModal"
-		       effect="fade"
-		       @closeOnEscape="closeAssignStoresModal"
-		       ref="assignModal">
-			<div slot="modal-header"
-			     class="modal-header center">
-				<button type="button"
-				        class="close"
-				        @click="closeAssignStoresModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Assign Stores To {{selectedLocationManager.name}}</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body relative-block">
-				<div class="alert alert-danger"
-				     v-show="assignErrorMessage"
-				     ref="assignErrorMessage">
-					<button class="close"
-					        @click="clearError('assignErrorMessage')"></button>
-					<span>{{ assignErrorMessage }}</span>
-				</div>
-				<store-picker
-					v-if="showAssignStoresModal"
-					:previouslySelected="previouslySelected"
-					@update="selectedLocations"
-				>
-				</store-picker>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer">
-				<button type="button"
-				        class="btn blue"
-				        @click="assignStores()"
-				        :disabled="assigningStores">
-					Assign
-					<i v-show="assigningStores"
-					   class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-			</div>
-		</modal>
+    <!-- ASSIGN STORES MODAL START -->
+    <modal
+      ref="assignModal"
+      :show="showAssignStoresModal"
+      effect="fade"
+      @closeOnEscape="closeAssignStoresModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header center"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeAssignStoresModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Assign Stores To {{ selectedLocationManager.name }}
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body relative-block"
+      >
+        <div
+          v-show="assignErrorMessage"
+          ref="assignErrorMessage"
+          class="alert alert-danger"
+        >
+          <button
+            class="close"
+            @click="clearError('assignErrorMessage')"
+          />
+          <span>{{ assignErrorMessage }}</span>
+        </div>
+        <store-picker
+          v-if="showAssignStoresModal"
+          :previously-selected="previouslySelected"
+          @update="selectedLocations"
+        />
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer"
+      >
+        <button
+          type="button"
+          class="btn blue"
+          :disabled="assigningStores"
+          @click="assignStores()"
+        >
+          Assign
+          <i
+            v-show="assigningStores"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+      </div>
+    </modal>
 
-		<!-- ASSIGN STORES MODAL START -->
+    <!-- ASSIGN STORES MODAL START -->
 
-		<!-- EDIT MODAL START -->
-		<modal :show="showEditLocationManagerModal"
-		       effect="fade"
-		       @closeOnEscape="closeEditLocationManagerModal"
-		       ref="editModal">
-			<div slot="modal-header"
-			     class="modal-header">
-				<button type="button"
-				        class="close"
-				        @click="closeEditLocationManagerModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Edit Location Manager</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<div class="alert alert-danger"
-				     v-show="editErrorMessage"
-				     ref="editErrorMessage">
-					<button class="close"
-					        @click="clearError('editErrorMessage')"></button>
-					<span>{{editErrorMessage}}</span>
-				</div>
-				<fieldset :disabled="$root.permissions['admin location_managers read'] && !$root.permissions['admin location_managers update']">
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<input type="text"
-						       class="form-control input-sm"
-						       id="form_control_edited_name"
-						       v-model="locationManagerToBeEdited.name"
-						       :class="{'edited': locationManagerToBeEdited.name.length}">
-						<label for="form_control_edited_name">Name</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<input type="text"
-						       class="form-control input-sm"
-						       id="form_control_edited_phone"
-						       v-model="locationManagerToBeEdited.phone"
-						       :class="{'edited': locationManagerToBeEdited.phone.length}">
-						<label for="form_control_edited_phone">Phone</label>
-					</div>
-				</fieldset>
-				<div class="form-group form-md-line-input form-md-floating-label">
-					<label>Status</label><br>
-					<el-switch :disabled="$root.permissions['admin location_managers read'] && !$root.permissions['admin location_managers update']"
-					           v-model="locationManagerToBeEdited.active"
-					           active-color="#0c6"
-					           inactive-color="#ff4949"
-					           :active-value="1"
-					           :inactive-value="0"
-					           active-text="Active"
-					           inactive-text="Disabled">
-					</el-switch>
-				</div>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer">
-				<button v-if="$root.permissions['admin location_managers read'] && !$root.permissions['admin location_managers update']"
-				        type="button"
-				        class="btn btn-primary"
-				        @click="closeEditLocationManagerModal()">
-					Close
-				</button>
-				<button v-else
-				        type="button"
-				        class="btn btn-primary"
-				        @click="updateLocationManager()"
-				        :disabled="updating">
-					Save
-					<i v-show="updating"
-					   class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-			</div>
-		</modal>
-		<!-- EDIT MODAL END -->
+    <!-- EDIT MODAL START -->
+    <modal
+      ref="editModal"
+      :show="showEditLocationManagerModal"
+      effect="fade"
+      @closeOnEscape="closeEditLocationManagerModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeEditLocationManagerModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Edit Location Manager
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <div
+          v-show="editErrorMessage"
+          ref="editErrorMessage"
+          class="alert alert-danger"
+        >
+          <button
+            class="close"
+            @click="clearError('editErrorMessage')"
+          />
+          <span>{{ editErrorMessage }}</span>
+        </div>
+        <fieldset :disabled="$root.permissions['admin location_managers read'] && !$root.permissions['admin location_managers update']">
+          <div class="form-group form-md-line-input form-md-floating-label">
+            <input
+              id="form_control_edited_name"
+              v-model="locationManagerToBeEdited.name"
+              type="text"
+              class="form-control input-sm"
+              :class="{'edited': locationManagerToBeEdited.name.length}"
+            >
+            <label for="form_control_edited_name">
+              Name
+            </label>
+          </div>
+          <div class="form-group form-md-line-input form-md-floating-label">
+            <input
+              id="form_control_edited_phone"
+              v-model="locationManagerToBeEdited.phone"
+              type="text"
+              class="form-control input-sm"
+              :class="{'edited': locationManagerToBeEdited.phone.length}"
+            >
+            <label for="form_control_edited_phone">
+              Phone
+            </label>
+          </div>
+        </fieldset>
+        <div class="form-group form-md-line-input form-md-floating-label">
+          <label>Status</label><br>
+          <el-switch
+            v-model="locationManagerToBeEdited.active"
+            :disabled="$root.permissions['admin location_managers read'] && !$root.permissions['admin location_managers update']"
+            active-color="#0c6"
+            inactive-color="#ff4949"
+            :active-value="1"
+            :inactive-value="0"
+            active-text="Active"
+            inactive-text="Disabled"
+          />
+        </div>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer"
+      >
+        <button
+          v-if="$root.permissions['admin location_managers read'] && !$root.permissions['admin location_managers update']"
+          type="button"
+          class="btn btn-primary"
+          @click="closeEditLocationManagerModal()"
+        >
+          Close
+        </button>
+        <button
+          v-else
+          type="button"
+          class="btn btn-primary"
+          :disabled="updating"
+          @click="updateLocationManager()"
+        >
+          Save
+          <i
+            v-show="updating"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+      </div>
+    </modal>
+    <!-- EDIT MODAL END -->
 
-		<!-- ROLES MODAL START -->
-		<modal :show="showAssignRolesModal"
-		       effect="fade"
-		       @closeOnEscape="closeRolesModal"
-		       ref="rolesModal">
-			<div slot="modal-header"
-			     class="modal-header">
-				<button type="button"
-				        class="close"
-				        @click="closeRolesModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Assign Roles</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<div class="alert alert-danger"
-				     v-show="assignRolesErrorMessage"
-				     ref="assignRolesErrorMessage">
-					<button class="close"
-					        @click="clearError('assignRolesErrorMessage')"></button>
-					<span>{{assignRolesErrorMessage}}</span>
-				</div>
-				<roles-picker v-if="showAssignRolesModal"
-				              :editable="canAny([
-				              'assign roles to user',
-				              'revoke roles from user',
-				              'sync roles for user'
-				              ])"
-				              @rolesSelected="updateRoles"
-				              :previouslySelected="locationManagerToAssignRolesTo.roles"></roles-picker>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer">
-				<button v-if="canAny([
-				        'assign roles to user',
-				        'revoke roles from user',
-				        'sync roles for user'
-				        ])"
-				        type="button"
-				        class="btn btn-primary"
-				        @click="assignRoles()"
-				        :disabled="assigningRoles">
-					Save
-					<i v-show="assigningRoles"
-					   class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-				<button v-else
-				        type="button"
-				        class="btn btn-primary"
-				        @click="closeRolesModal()"
-				        :disabled="assigningRoles">
-					Close
-				</button>
-			</div>
-		</modal>
-		<!-- ROLES MODAL END -->
-
-	</div>
+    <!-- ROLES MODAL START -->
+    <modal
+      ref="rolesModal"
+      :show="showAssignRolesModal"
+      effect="fade"
+      @closeOnEscape="closeRolesModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeRolesModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Assign Roles
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <div
+          v-show="assignRolesErrorMessage"
+          ref="assignRolesErrorMessage"
+          class="alert alert-danger"
+        >
+          <button
+            class="close"
+            @click="clearError('assignRolesErrorMessage')"
+          />
+          <span>{{ assignRolesErrorMessage }}</span>
+        </div>
+        <roles-picker
+          v-if="showAssignRolesModal"
+          :editable="canAny([
+            'assign roles to user',
+            'revoke roles from user',
+            'sync roles for user'
+          ])"
+          :previously-selected="locationManagerToAssignRolesTo.roles"
+          @rolesSelected="updateRoles"
+        />
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer"
+      >
+        <button
+          v-if="canAny([
+            'assign roles to user',
+            'revoke roles from user',
+            'sync roles for user'
+          ])"
+          type="button"
+          class="btn btn-primary"
+          :disabled="assigningRoles"
+          @click="assignRoles()"
+        >
+          Save
+          <i
+            v-show="assigningRoles"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+        <button
+          v-else
+          type="button"
+          class="btn btn-primary"
+          :disabled="assigningRoles"
+          @click="closeRolesModal()"
+        >
+          Close
+        </button>
+      </div>
+    </modal>
+    <!-- ROLES MODAL END -->
+  </div>
 </template>
 
 <script>

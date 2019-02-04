@@ -1,64 +1,81 @@
 <template>
-	<modal :show="showDuplicateMenuModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal">
-		<div slot="modal-header"
-		     class="modal-header center">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Duplicate Menu</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="row">
-				<div class="col-xs-12">
-					<div class="alert alert-danger"
-					     v-show="errorMessage.length"
-					     ref="errorMessage">
-						<button class="close"
-						        data-close="alert"
-						        @click="clearError()"></button>
-						<span>{{errorMessage}}</span>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-xs-12">
-					<p>Do you want to duplicate this menu?</p>
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<label>Replace existing?</label><br>
-						<el-switch v-model="replaceExisting"
-						           active-color="#0c6"
-						           inactive-color="#ff4949"
-						           :active-value="1"
-						           :inactive-value="0"
-						           active-text="Yes"
-						           inactive-text="No">
-						</el-switch>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-xs-12">
-					<div class="pull-right">
-						<button class="btn blue"
-						        @click="duplicateMenu()"
-						        :disabled="duplicating">
-							Duplicate
-							<i v-show="duplicating"
-							   class="fa fa-spinner fa-pulse fa-fw">
-							</i>
-						</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div slot="modal-footer">
-		</div>
-	</modal>
+  <modal
+    :show="showDuplicateMenuModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header center"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Duplicate Menu
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div class="row">
+        <div class="col-xs-12">
+          <div
+            v-show="errorMessage.length"
+            ref="errorMessage"
+            class="alert alert-danger"
+          >
+            <button
+              class="close"
+              data-close="alert"
+              @click="clearError()"
+            />
+            <span>{{ errorMessage }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <p>Do you want to duplicate this menu?</p>
+          <div class="form-group form-md-line-input form-md-floating-label">
+            <label>Replace existing?</label><br>
+            <el-switch
+              v-model="replaceExisting"
+              active-color="#0c6"
+              inactive-color="#ff4949"
+              :active-value="1"
+              :inactive-value="0"
+              active-text="Yes"
+              inactive-text="No"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="pull-right">
+            <button
+              class="btn blue"
+              :disabled="duplicating"
+              @click="duplicateMenu()"
+            >
+              Duplicate
+              <i
+                v-show="duplicating"
+                class="fa fa-spinner fa-pulse fa-fw"
+              />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div slot="modal-footer" />
+  </modal>
 </template>
 
 <script>
@@ -67,17 +84,20 @@ import MenusFunctions from '../../../../controllers/Menus'
 import ajaxErrorHandler from '../../../../controllers/ErrorController'
 
 export default {
+	components: {
+		Modal
+	},
+	props: {
+		passedMenuId: {
+			type: Number
+		}
+	},
 	data () {
 		return {
 			showDuplicateMenuModal: false,
 			duplicating: false,
 			errorMessage: '',
 			replaceExisting: 0
-		}
-	},
-	props: {
-		passedMenuId: {
-			type: Number
 		}
 	},
 	mounted () {
@@ -145,9 +165,6 @@ export default {
 		emitDuplicateSuccess (payload = {}) {
 			this.$emit('duplicateSuccess', payload)
 		}
-	},
-	components: {
-		Modal
 	}
 }
 </script>

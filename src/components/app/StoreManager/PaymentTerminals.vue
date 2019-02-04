@@ -1,356 +1,493 @@
 <template>
-	<div>
-		<!-- BEGIN PAGE BAR -->
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
-		<!-- END PAGE BAR -->
+  <div>
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
+    <!-- END PAGE BAR -->
 
-		<!-- BEGIN PAGE TITLE-->
-		<h1 class="page-title">Payment Terminals</h1>
-		<!-- END PAGE TITLE -->
-		<div class="note note-info">
-			<p>Add and manage payment terminals.</p>
-		</div>
+    <!-- BEGIN PAGE TITLE-->
+    <h1 class="page-title">
+      Payment Terminals
+    </h1>
+    <!-- END PAGE TITLE -->
+    <div class="note note-info">
+      <p>Add and manage payment terminals.</p>
+    </div>
 
-		<!-- BEGIN CREATE -->
-		<div class="portlet box blue-hoki"
-				 v-if="$root.permissions['stores payment terminals create']">
-			<div class="portlet-title bg-blue-chambray"
-					 @click="toggleCreatePanel()">
-				<div class="caption">
-					<i class="fa fa-2x fa-plus-circle"></i>
-					Create a New Payment Terminal
-				</div>
-				<div class="tools">
-					<a :class="{'expand': !createNewCollapse, 'collapse': createNewCollapse}"></a>
-				</div>
-			</div>
-			<div class="portlet-body relative-block"
-					 :class="{'display-hide': createNewCollapse}">
-				<div class="col-md-12"
-						 v-show="activeLocationId === undefined">
-					<div class="alert center alert-info">
-						<h4>No Store Selected</h4>
-						<p>Please select a store from the stores panel on the right to create a payment terminal for it.</p>
-					</div>
-				</div>
-				<form role="form"
-							@submit.prevent="createPaymentTerminal()"
-							v-show="activeLocationId !== undefined">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="alert alert-danger"
-									 v-show="createErrorMessage.length"
-									 ref="createErrorMessage">
-								<button class="close"
-												data-close="alert"
-												@click.prevent="clearError('createErrorMessage')"></button>
-								<span>{{ createErrorMessage }}</span>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-											 class="form-control input-sm"
-											 :class="{'edited': newPaymentTerminal.terminal_name.length}"
-											 id="form_control_1"
-											 v-model="newPaymentTerminal.terminal_name">
-								<label for="form_control_1">Terminal name</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-											 class="form-control input-sm"
-											 :class="{'edited': newPaymentTerminal.terminal_id.length}"
-											 id="form_control_1"
-											 v-model="newPaymentTerminal.terminal_id">
-								<label for="form_control_1">Terminal ID</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-											 class="form-control input-sm"
-											 :class="{'edited': newPaymentTerminal.store_id.length}"
-											 id="form_control_1"
-											 v-model="newPaymentTerminal.store_id">
-								<label for="form_control_1">Store ID</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-											 class="form-control input-sm"
-											 :class="{'edited': newPaymentTerminal.processor.length}"
-											 id="form_control_1"
-											 v-model="newPaymentTerminal.processor">
-								<label for="form_control_1">Processor</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-											 class="form-control input-sm"
-											 :class="{'edited': newPaymentTerminal.api_token.length}"
-											 id="form_control_1"
-											 v-model="newPaymentTerminal.api_token">
-								<label for="form_control_1">API Token</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-											 class="form-control input-sm"
-											 :class="{'edited': newPaymentTerminal.additional_info.length}"
-											 id="form_control_1"
-											 v-model="newPaymentTerminal.additional_info">
-								<label for="form_control_1">Additional info</label>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-6">
-							<button type="submit"
-											class="btn blue pull-right"
-											:disabled="creating">
-								Create
-								<i v-show="creating"
-									 class="fa fa-spinner fa-pulse fa-fw">
-								</i>
-							</button>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-		<!-- END CREATE -->
+    <!-- BEGIN CREATE -->
+    <div
+      v-if="$root.permissions['stores payment terminals create']"
+      class="portlet box blue-hoki"
+    >
+      <div
+        class="portlet-title bg-blue-chambray"
+        @click="toggleCreatePanel()"
+      >
+        <div class="caption">
+          <i class="fa fa-2x fa-plus-circle" />
+          Create a New Payment Terminal
+        </div>
+        <div class="tools">
+          <a :class="{'expand': !createNewCollapse, 'collapse': createNewCollapse}" />
+        </div>
+      </div>
+      <div
+        class="portlet-body relative-block"
+        :class="{'display-hide': createNewCollapse}"
+      >
+        <div
+          v-show="activeLocationId === undefined"
+          class="col-md-12"
+        >
+          <div class="alert center alert-info">
+            <h4>No Store Selected</h4>
+            <p>Please select a store from the stores panel on the right to create a payment terminal for it.</p>
+          </div>
+        </div>
+        <form
+          v-show="activeLocationId !== undefined"
+          role="form"
+          @submit.prevent="createPaymentTerminal()"
+        >
+          <div class="row">
+            <div class="col-md-12">
+              <div
+                v-show="createErrorMessage.length"
+                ref="createErrorMessage"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  data-close="alert"
+                  @click.prevent="clearError('createErrorMessage')"
+                />
+                <span>{{ createErrorMessage }}</span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_1"
+                  v-model="newPaymentTerminal.terminal_name"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newPaymentTerminal.terminal_name.length}"
+                >
+                <label for="form_control_1">
+                  Terminal name
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_1"
+                  v-model="newPaymentTerminal.terminal_id"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newPaymentTerminal.terminal_id.length}"
+                >
+                <label for="form_control_1">
+                  Terminal ID
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_1"
+                  v-model="newPaymentTerminal.store_id"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newPaymentTerminal.store_id.length}"
+                >
+                <label for="form_control_1">
+                  Store ID
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_1"
+                  v-model="newPaymentTerminal.processor"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newPaymentTerminal.processor.length}"
+                >
+                <label for="form_control_1">
+                  Processor
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_1"
+                  v-model="newPaymentTerminal.api_token"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newPaymentTerminal.api_token.length}"
+                >
+                <label for="form_control_1">
+                  API Token
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_1"
+                  v-model="newPaymentTerminal.additional_info"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newPaymentTerminal.additional_info.length}"
+                >
+                <label for="form_control_1">
+                  Additional info
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <button
+                type="submit"
+                class="btn blue pull-right"
+                :disabled="creating"
+              >
+                Create
+                <i
+                  v-show="creating"
+                  class="fa fa-spinner fa-pulse fa-fw"
+                />
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- END CREATE -->
 
-		<!-- BEGIN LIST -->
-		<div class="portlet light portlet-fit bordered margin-top-20"
-					id="paymentTerminals-container">
-			<div class="portlet-title bg-blue-chambray">
-				<div class="menu-image-main">
-					<img src="../../../../public/client_logo.png">
-				</div>
-				<div class="caption">
-					<span class="caption-subject font-default bold uppercase">Payment Terminals</span>
-					<div class="caption-desc font-grey-cascade">Create, edit or delete payment terminals.</div>
-				</div>
-			</div>
-			<div class="col-md-12">
-				<div class="alert alert-danger"
-							v-show="listErrorMessage.length"
-							ref="listErrorMessage">
-					<button class="close"
-									data-close="alert"
-									@click="clearError('listErrorMessage')"></button>
-					<span>{{ listErrorMessage }}</span>
-				</div>
-			</div>
-			<div class="portlet-body relative-block">
-				<loading-screen :show="loadingPaymentTerminals"
-												:color="'#2C3E50'"
-												:display="'inline'"></loading-screen>
-				<div v-if="activeLocationId === undefined && !loadingPaymentTerminals">
-					<div class="alert center alert-info">
-						<h4>No Store Selected</h4>
-						<p>Please select a store from the stores panel on the right to view payment terminals for it.</p>
-					</div>
-				</div>
-				<div class="mt-element-list margin-top-15"
-							v-if="paymentTerminals.length && !loadingPaymentTerminals">
-					<div class="mt-list-container list-news ext-1 no-border">
-						<ul>
-							<li class="mt-list-item actions-at-left margin-top-15 two-vertical-actions"
-									v-for="paymentTerminal in paymentTerminals"
-									:id="'paymentTerminal-' + paymentTerminal.id"
-									:key="paymentTerminal.id">
-								<div class="list-item-actions">
-									<el-tooltip v-if="$root.permissions['stores payment terminals update']"
-															content="Edit"
-															effect="light"
-															placement="right">
-										<a class="btn btn-circle btn-icon-only btn-default"
-												@click="editPaymentTerminal(paymentTerminal, $event)">
-											<i class="fa fa-lg fa-pencil"></i>
-										</a>
-									</el-tooltip>
-									<el-tooltip v-if="$root.permissions['stores payment terminals read'] && !$root.permissions['stores payment terminals update']"
-															content="View"
-															effect="light"
-															placement="right">
-										<a class="btn btn-circle btn-icon-only btn-default"
-												@click="editPaymentTerminal(paymentTerminal, $event)">
-											<i class="fa fa-lg fa-eye"></i>
-										</a>
-									</el-tooltip>
-									<el-tooltip v-if="$root.permissions['stores payment terminals delete']"
-															content="Delete"
-															effect="light"
-															placement="right">
-										<a class="btn btn-circle btn-icon-only btn-default"
-												@click="confirmDelete(paymentTerminal, $event)">
-											<i class="fa fa-lg fa-trash"></i>
-										</a>
-									</el-tooltip>
-								</div>
-								<div class="list-datetime bold uppercase font-red">
-									<span>{{ paymentTerminal.terminal_name }}</span>
-								</div>
-							</li>
-						</ul>
-					</div>
-				</div>
-				<div class="margin-top-20">
-					<no-results :show="!(activeLocationId === undefined) && !paymentTerminals.length && !loadingPaymentTerminals"
-											:type="'payment terminals'"></no-results>
-				</div>
-			</div>
-		</div>
-		<!-- END LIST -->
+    <!-- BEGIN LIST -->
+    <div
+      id="paymentTerminals-container"
+      class="portlet light portlet-fit bordered margin-top-20"
+    >
+      <div class="portlet-title bg-blue-chambray">
+        <div class="menu-image-main">
+          <img src="../../../../public/client_logo.png">
+        </div>
+        <div class="caption">
+          <span class="caption-subject font-default bold uppercase">
+            Payment Terminals
+          </span>
+          <div class="caption-desc font-grey-cascade">
+            Create, edit or delete payment terminals.
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div
+          v-show="listErrorMessage.length"
+          ref="listErrorMessage"
+          class="alert alert-danger"
+        >
+          <button
+            class="close"
+            data-close="alert"
+            @click="clearError('listErrorMessage')"
+          />
+          <span>{{ listErrorMessage }}</span>
+        </div>
+      </div>
+      <div class="portlet-body relative-block">
+        <loading-screen
+          :show="loadingPaymentTerminals"
+          :color="'#2C3E50'"
+          :display="'inline'"
+        />
+        <div v-if="activeLocationId === undefined && !loadingPaymentTerminals">
+          <div class="alert center alert-info">
+            <h4>No Store Selected</h4>
+            <p>Please select a store from the stores panel on the right to view payment terminals for it.</p>
+          </div>
+        </div>
+        <div
+          v-if="paymentTerminals.length && !loadingPaymentTerminals"
+          class="mt-element-list margin-top-15"
+        >
+          <div class="mt-list-container list-news ext-1 no-border">
+            <ul>
+              <li
+                v-for="paymentTerminal in paymentTerminals"
+                :id="'paymentTerminal-' + paymentTerminal.id"
+                :key="paymentTerminal.id"
+                class="mt-list-item actions-at-left margin-top-15 two-vertical-actions"
+              >
+                <div class="list-item-actions">
+                  <el-tooltip
+                    v-if="$root.permissions['stores payment terminals update']"
+                    content="Edit"
+                    effect="light"
+                    placement="right"
+                  >
+                    <a
+                      class="btn btn-circle btn-icon-only btn-default"
+                      @click="editPaymentTerminal(paymentTerminal, $event)"
+                    >
+                      <i class="fa fa-lg fa-pencil" />
+                    </a>
+                  </el-tooltip>
+                  <el-tooltip
+                    v-if="$root.permissions['stores payment terminals read'] && !$root.permissions['stores payment terminals update']"
+                    content="View"
+                    effect="light"
+                    placement="right"
+                  >
+                    <a
+                      class="btn btn-circle btn-icon-only btn-default"
+                      @click="editPaymentTerminal(paymentTerminal, $event)"
+                    >
+                      <i class="fa fa-lg fa-eye" />
+                    </a>
+                  </el-tooltip>
+                  <el-tooltip
+                    v-if="$root.permissions['stores payment terminals delete']"
+                    content="Delete"
+                    effect="light"
+                    placement="right"
+                  >
+                    <a
+                      class="btn btn-circle btn-icon-only btn-default"
+                      @click="confirmDelete(paymentTerminal, $event)"
+                    >
+                      <i class="fa fa-lg fa-trash" />
+                    </a>
+                  </el-tooltip>
+                </div>
+                <div class="list-datetime bold uppercase font-red">
+                  <span>{{ paymentTerminal.terminal_name }}</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="margin-top-20">
+          <no-results
+            :show="!(activeLocationId === undefined) && !paymentTerminals.length && !loadingPaymentTerminals"
+            :type="'payment terminals'"
+          />
+        </div>
+      </div>
+    </div>
+    <!-- END LIST -->
 
-		<!-- START EDIT -->
-		<modal :show="showEditModal"
-					 effect="fade"
-					 @closeOnEscape="closeEditModal"
-					 ref="editModal">
-			<div slot="modal-header"
-					 class="modal-header">
-				<button type="button"
-								class="close"
-								@click="closeEditModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Edit Payment Terminal</h4>
-			</div>
-			<div slot="modal-body"
-					 class="modal-body">
-				<form role="form">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="alert alert-danger"
-									 v-show="editErrorMessage.length"
-									 ref="editErrorMessage">
-								<button class="close"
-												data-close="alert"
-												@click.prevent="clearError('editErrorMessage')"></button>
-								<span>{{ editErrorMessage }}</span>
-							</div>
-						</div>
-						<div class="col-md-12">
-							<fieldset :disabled="!$root.permissions['stores payment terminals update']">
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-												class="form-control input-sm"
-												:class="{'edited': paymentTerminalToEdit.terminal_name.length}"
-												id="form_control_1"
-												v-model="paymentTerminalToEdit.terminal_name">
-									<label for="form_control_1">Terminal name</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-												class="form-control input-sm"
-												:class="{'edited': paymentTerminalToEdit.terminal_id.length}"
-												id="form_control_1"
-												v-model="paymentTerminalToEdit.terminal_id">
-									<label for="form_control_1">Terminal ID</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-												class="form-control input-sm"
-												:class="{'edited': paymentTerminalToEdit.store_id.length}"
-												id="form_control_1"
-												v-model="paymentTerminalToEdit.store_id">
-									<label for="form_control_1">Store ID</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-												class="form-control input-sm"
-												:class="{'edited': paymentTerminalToEdit.processor.length}"
-												id="form_control_1"
-												v-model="paymentTerminalToEdit.processor">
-									<label for="form_control_1">Processor</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-												class="form-control input-sm"
-												:class="{'edited': paymentTerminalToEdit.api_token.length}"
-												id="form_control_1"
-												v-model="paymentTerminalToEdit.api_token">
-									<label for="form_control_1">API Token</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-												class="form-control input-sm"
-												:class="{'edited': paymentTerminalToEdit.additional_info.length}"
-												id="form_control_1"
-												v-model="paymentTerminalToEdit.additional_info">
-									<label for="form_control_1">Additional info</label>
-								</div>
-							</fieldset>
-						</div>
-					</div>
-				</form>
-			</div>
-			<div slot="modal-footer"
-					 class="modal-footer clear">
-				<button v-if="!$root.permissions['stores payment terminals update']"
-								@click="closeEditModal()"
-								type="button"
-								class="btn blue">
-					Close
-				</button>
-				<button v-else
-								@click="updatePaymentTerminal()"
-								type="submit"
-								class="btn blue"
-								:disabled="updating">
-					Save
-					<i v-show="updating"
-						 class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-			</div>
-		</modal>
-		<!-- END EDIT -->
+    <!-- START EDIT -->
+    <modal
+      ref="editModal"
+      :show="showEditModal"
+      effect="fade"
+      @closeOnEscape="closeEditModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeEditModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Edit Payment Terminal
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <form role="form">
+          <div class="row">
+            <div class="col-md-12">
+              <div
+                v-show="editErrorMessage.length"
+                ref="editErrorMessage"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  data-close="alert"
+                  @click.prevent="clearError('editErrorMessage')"
+                />
+                <span>{{ editErrorMessage }}</span>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <fieldset :disabled="!$root.permissions['stores payment terminals update']">
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_1"
+                    v-model="paymentTerminalToEdit.terminal_name"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': paymentTerminalToEdit.terminal_name.length}"
+                  >
+                  <label for="form_control_1">
+                    Terminal name
+                  </label>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_1"
+                    v-model="paymentTerminalToEdit.terminal_id"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': paymentTerminalToEdit.terminal_id.length}"
+                  >
+                  <label for="form_control_1">
+                    Terminal ID
+                  </label>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_1"
+                    v-model="paymentTerminalToEdit.store_id"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': paymentTerminalToEdit.store_id.length}"
+                  >
+                  <label for="form_control_1">
+                    Store ID
+                  </label>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_1"
+                    v-model="paymentTerminalToEdit.processor"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': paymentTerminalToEdit.processor.length}"
+                  >
+                  <label for="form_control_1">
+                    Processor
+                  </label>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_1"
+                    v-model="paymentTerminalToEdit.api_token"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': paymentTerminalToEdit.api_token.length}"
+                  >
+                  <label for="form_control_1">
+                    API Token
+                  </label>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_1"
+                    v-model="paymentTerminalToEdit.additional_info"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': paymentTerminalToEdit.additional_info.length}"
+                  >
+                  <label for="form_control_1">
+                    Additional info
+                  </label>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer clear"
+      >
+        <button
+          v-if="!$root.permissions['stores payment terminals update']"
+          type="button"
+          class="btn blue"
+          @click="closeEditModal()"
+        >
+          Close
+        </button>
+        <button
+          v-else
+          type="submit"
+          class="btn blue"
+          :disabled="updating"
+          @click="updatePaymentTerminal()"
+        >
+          Save
+          <i
+            v-show="updating"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+      </div>
+    </modal>
+    <!-- END EDIT -->
 
-		<!-- START DELETE -->
-		<modal :show="showDeleteModal"
-					 effect="fade"
-					 @closeOnEscape="closeDeleteModal"
-					 ref="deleteModal">
-			<div slot="modal-header"
-					 class="modal-header">
-				<button type="button"
-								class="close"
-								@click="closeDeleteModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Confirm Delete</h4>
-			</div>
-			<div slot="modal-body"
-					 class="modal-body">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="alert alert-danger"
-									v-show="deleteErrorMessage.length"
-									ref="deleteErrorMessage">
-							<button class="close"
-											data-close="alert"
-											@click.prevent="clearError('deleteErrorMessage')"></button>
-							<span>{{ deleteErrorMessage }}</span>
-						</div>
-					</div>
-				</div>
-				<p>Are you sure you want to delete {{paymentTerminalToDelete.terminal_name}}?</p>
-			</div>
-			<div slot="modal-footer"
-					 class="modal-footer clear">
-				<button type="button"
-								class="btn blue"
-								@click="deletePaymentTerminal()"
-								:disabled="deleting">
-					Delete
-					<i v-show="deleting"
-						 class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-			</div>
-		</modal>
-		<!-- START DELETE -->
-	</div>
+    <!-- START DELETE -->
+    <modal
+      ref="deleteModal"
+      :show="showDeleteModal"
+      effect="fade"
+      @closeOnEscape="closeDeleteModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeDeleteModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Confirm Delete
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <div class="row">
+          <div class="col-md-12">
+            <div
+              v-show="deleteErrorMessage.length"
+              ref="deleteErrorMessage"
+              class="alert alert-danger"
+            >
+              <button
+                class="close"
+                data-close="alert"
+                @click.prevent="clearError('deleteErrorMessage')"
+              />
+              <span>{{ deleteErrorMessage }}</span>
+            </div>
+          </div>
+        </div>
+        <p>Are you sure you want to delete {{ paymentTerminalToDelete.terminal_name }}?</p>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer clear"
+      >
+        <button
+          type="button"
+          class="btn blue"
+          :disabled="deleting"
+          @click="deletePaymentTerminal()"
+        >
+          Delete
+          <i
+            v-show="deleting"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+      </div>
+    </modal>
+    <!-- START DELETE -->
+  </div>
 </template>
 
 <script>
@@ -362,6 +499,12 @@ import NoResults from '../../modules/NoResults'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
 
 export default {
+	components: {
+		Breadcrumb,
+		LoadingScreen,
+		Modal,
+		NoResults
+	},
 	data () {
 		return {
 			breadcrumbArray: [{ name: 'Payment Terminals', link: false }],
@@ -777,12 +920,6 @@ export default {
 		closeDeleteModal () {
 			this.showDeleteModal = false
 		}
-	},
-	components: {
-		Breadcrumb,
-		LoadingScreen,
-		Modal,
-		NoResults
 	}
 }
 </script>

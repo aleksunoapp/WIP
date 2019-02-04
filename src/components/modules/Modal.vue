@@ -1,41 +1,55 @@
 <template>
-	<div role="dialog"
-	     class="modal"
-	     v-bind:class="{'fade': effect === 'fade' || effect === 'custom', 'zoom': effect === 'zoom', 'custom': effect === 'custom'}">
-		<div class="modal-dialog"
-		     role="document"
-		     v-bind:style="{width: computedWidth}">
-			<div class="modal-content">
-				<slot name="modal-header">
-					<div class="modal-header">
-						<button type="button"
-						        class="close"
-						        @click="close">
-							<span>&times;</span>
-						</button>
-						<h4 class="modal-title center">
-							<slot name="title">
-								{{title}}
-							</slot>
-						</h4>
-					</div>
-				</slot>
-				<slot name="modal-body">
-					<div class="modal-body"></div>
-				</slot>
-				<slot name="modal-footer">
-					<div class="modal-footer">
-						<button type="button"
-						        class="btn btn-default"
-						        @click="close">{{cancelText}}</button>
-						<button type="button"
-						        class="btn btn-primary"
-						        @click="callback()">{{okText}}</button>
-					</div>
-				</slot>
-			</div>
-		</div>
-	</div>
+  <div
+    role="dialog"
+    class="modal"
+    :class="{'fade': effect === 'fade' || effect === 'custom', 'zoom': effect === 'zoom', 'custom': effect === 'custom'}"
+  >
+    <div
+      class="modal-dialog"
+      role="document"
+      :style="{width: computedWidth}"
+    >
+      <div class="modal-content">
+        <slot name="modal-header">
+          <div class="modal-header">
+            <button
+              type="button"
+              class="close"
+              @click="close"
+            >
+              <span>&times;</span>
+            </button>
+            <h4 class="modal-title center">
+              <slot name="title">
+                {{ title }}
+              </slot>
+            </h4>
+          </div>
+        </slot>
+        <slot name="modal-body">
+          <div class="modal-body" />
+        </slot>
+        <slot name="modal-footer">
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-default"
+              @click="close"
+            >
+              {{ cancelText }}
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              @click="callback()"
+            >
+              {{ okText }}
+            </button>
+          </div>
+        </slot>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -79,7 +93,7 @@ var getScrollBarWidth = function () {
 }
 
 export default {
-	name: 'modal',
+	name: 'Modal',
 	props: {
 		backdrop: {
 			default: false
@@ -118,9 +132,6 @@ export default {
 			}
 			return this.width
 		}
-	},
-	beforeDestroy () {
-		$(document.body).removeClass('modal-open-noscroll')
 	},
 	watch: {
 		/**
@@ -165,6 +176,9 @@ export default {
 					})
 			}
 		}
+	},
+	beforeDestroy () {
+		$(document.body).removeClass('modal-open-noscroll')
 	},
 	methods: {
 		/**

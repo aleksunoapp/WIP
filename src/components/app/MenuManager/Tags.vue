@@ -1,185 +1,256 @@
 <template>
-	<div>
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
-		<!-- END PAGE BAR -->
-		<!-- BEGIN PAGE TITLE-->
-		<h1 class="page-title">Tags</h1>
-		<!-- END PAGE TITLE-->
-		<div class="note note-info">
-			<p>Create and manage menu tags.</p>
-		</div>
-		<!-- BEGIN CREATE NEW -->
-		<div class="portlet box blue-hoki"
-		     v-if="$root.permissions['menu_manager tags create']">
-			<div class="portlet-title bg-blue-chambray"
-			     @click="toggleCreateTagPanel()">
-				<div class="custom tools">
-					<a :class="{'expand': !createTagCollapse, 'collapse': createTagCollapse}"></a>
-				</div>
-				<div class="caption">
-					&emsp;Create A New Tag
-				</div>
-			</div>
-			<div class="portlet-body"
-			     :class="{'display-hide': createTagCollapse}">
-				<form role="form"
-				      @submit.prevent="createTag()">
-					<div class="form-body row">
-						<div class="col-md-12">
-							<div class="alert alert-danger"
-							     v-show="errorMessage"
-							     ref="errorMessage">
-								<button class="close"
-								        @click.prevent="clearError('errorMessage')"></button>
-								<span>{{errorMessage}}</span>
-							</div>
-						</div>
-						<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
-							<resource-picker @open="toggleImageMode('newMenu', true)"
-							                 @close="toggleImageMode('newMenu', false)"
-							                 @selected="updateImage"
-							                 :imageButton="true"
-							                 :imageUrl="newTag.image_url"
-							                 class="margin-top-15">
-							</resource-picker>
-						</div>
-						<div class="col-md-5"
-						     v-show="!imageMode.newMenu">
-							<el-dropdown trigger="click"
-							             @command="updateNewTagType"
-							             size="small"
-							             :show-timeout="50"
-							             :hide-timeout="50"
-							             class='margin-bottom-20'>
-								<el-button size="small">
-									{{ tagTypeLabel }}
-									<i class="el-icon-arrow-down el-icon--right"></i>
-								</el-button>
-								<el-dropdown-menu slot="dropdown">
-									<el-dropdown-item command="contains">contains</el-dropdown-item>
-									<el-dropdown-item command="may_contain">may contain</el-dropdown-item>
-								</el-dropdown-menu>
-							</el-dropdown>
-							<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newTag.name.length}"
-								       id="form_control_1"
-								       v-model="newTag.name">
-								<label for="form_control_1">Tag Name</label>
-							</div>
-						</div>
-					</div>
-					<div class="form-actions right margin-top-20"
-					     v-show="!imageMode.newMenu">
-						<button type="submit"
-						        class="btn blue">Create</button>
-					</div>
-				</form>
-			</div>
-		</div>
-		<!-- END CREATE NEW -->
-		<loading-screen :show="displayTagsData"
-		                :color="'#2C3E50'"
-		                :display="'inline'"></loading-screen>
-		<div class="portlet light portlet-fit bordered margin-top-20"
-		     v-if="!displayTagsData">
-			<div class="portlet-title bg-blue-chambray">
-				<div class="menu-image-main">
-					<img src="../../../../public/client_logo.png">
-				</div>
-				<div class="caption">
-					<span class="caption-subject font-default bold uppercase">Tags</span>
-					<div class="caption-desc font-grey-cascade">Tags represent dietary restrictions.</div>
-				</div>
-			</div>
-			<div class="portlet-body">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="alert alert-danger"
-						     v-show="listErrorMessage"
-						     ref="listErrorMessage">
-							<button class="close"
-							        @click="clearError('listErrorMessage')"></button>
-							<span>{{listErrorMessage}}</span>
-						</div>
-					</div>
-				</div>
-				<div class="mt-element-list margin-top-15"
-				     v-if="tags.length">
-					<div class="mt-list-container list-news ext-1 no-border">
-						<ul>
-							<li class="mt-list-item actions-at-left margin-top-15"
-							    v-for="tag in tags"
-							    :id="'tag-' + tag.id"
-							    :key="tag.id">
-								<div class="list-item-actions">
-									<el-tooltip v-if="$root.permissions['menu_manager tags update']"
-									            content="Edit"
-									            effect="light"
-									            placement="right">
-										<a class="btn btn-circle btn-icon-only btn-default"
-										   @click="editTag(tag)">
-											<i class="fa fa-lg fa-pencil"></i>
-										</a>
-									</el-tooltip>
-									<el-tooltip v-if="$root.permissions['menu_manager tags read'] && !$root.permissions['menu_manager tags update']"
-									            content="View"
-									            effect="light"
-									            placement="right">
-										<a class="btn btn-circle btn-icon-only btn-default"
-										   @click="editTag(tag)">
-											<i class="fa fa-lg fa-eye"></i>
-										</a>
-									</el-tooltip>
-									<el-tooltip v-if="$root.permissions['menu_manager tags add items']"
-									            content="Apply to multiple"
-									            effect="light"
-									            placement="right">
-										<a class="btn btn-circle btn-icon-only btn-default"
-										   @click="displayMenuTreeModal(tag, $event)">
-											<i class="icon-layers"></i>
-										</a>
-									</el-tooltip>
-								</div>
-								<div class="list-thumb">
-									<a v-if="tag.image_url.length">
-										<img alt=""
-										     :src="tag.image_url" />
-									</a>
-									<a v-else>
-										<img src="../../../assets/img/app/login/bg1.jpg">
-									</a>
-								</div>
-								<div class="list-datetime bold uppercase font-red">
-									<span>{{ tag.name }}</span>
-								</div>
-								<div class="list-item-content height-mod">
-									<strong>Type:</strong>
-									<span>{{ readableTagType(tag.type) }}</span>
-								</div>
-							</li>
-						</ul>
-					</div>
-				</div>
-				<div class="margin-top-20"
-				     v-else>
-					<no-results :show="!tags.length"
-					            :type="'tags'"></no-results>
-				</div>
-			</div>
-		</div>
-		<edit-tag v-if="displayEditTagModal"
-		          @updateTag="updateTag"
-		          @closeEditTagModal="closeEditTagModal"></edit-tag>
-		<menu-tree v-if="showMenuTreeModal"
-		           :selectedObject="selectedTag"
-		           :headerText="headerText"
-		           :updateType="'tag'"
-		           @closeMenuTreeModal="closeMenuTreeModal"></menu-tree>
-	</div>
+  <div>
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
+    <!-- END PAGE BAR -->
+    <!-- BEGIN PAGE TITLE-->
+    <h1 class="page-title">
+      Tags
+    </h1>
+    <!-- END PAGE TITLE-->
+    <div class="note note-info">
+      <p>Create and manage menu tags.</p>
+    </div>
+    <!-- BEGIN CREATE NEW -->
+    <div
+      v-if="$root.permissions['menu_manager tags create']"
+      class="portlet box blue-hoki"
+    >
+      <div
+        class="portlet-title bg-blue-chambray"
+        @click="toggleCreateTagPanel()"
+      >
+        <div class="custom tools">
+          <a :class="{'expand': !createTagCollapse, 'collapse': createTagCollapse}" />
+        </div>
+        <div class="caption">
+          &emsp;Create A New Tag
+        </div>
+      </div>
+      <div
+        class="portlet-body"
+        :class="{'display-hide': createTagCollapse}"
+      >
+        <form
+          role="form"
+          @submit.prevent="createTag()"
+        >
+          <div class="form-body row">
+            <div class="col-md-12">
+              <div
+                v-show="errorMessage"
+                ref="errorMessage"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  @click.prevent="clearError('errorMessage')"
+                />
+                <span>{{ errorMessage }}</span>
+              </div>
+            </div>
+            <div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
+              <resource-picker
+                :image-button="true"
+                :image-url="newTag.image_url"
+                class="margin-top-15"
+                @open="toggleImageMode('newMenu', true)"
+                @close="toggleImageMode('newMenu', false)"
+                @selected="updateImage"
+              />
+            </div>
+            <div
+              v-show="!imageMode.newMenu"
+              class="col-md-5"
+            >
+              <el-dropdown
+                trigger="click"
+                size="small"
+                :show-timeout="50"
+                :hide-timeout="50"
+                class="margin-bottom-20"
+                @command="updateNewTagType"
+              >
+                <el-button size="small">
+                  {{ tagTypeLabel }}
+                  <i class="el-icon-arrow-down el-icon--right" />
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="contains">
+                    contains
+                  </el-dropdown-item>
+                  <el-dropdown-item command="may_contain">
+                    may contain
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+              <div class="form-group form-md-line-input form-md-floating-label margin-top-10">
+                <input
+                  id="form_control_1"
+                  v-model="newTag.name"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newTag.name.length}"
+                >
+                <label for="form_control_1">
+                  Tag Name
+                </label>
+              </div>
+            </div>
+          </div>
+          <div
+            v-show="!imageMode.newMenu"
+            class="form-actions right margin-top-20"
+          >
+            <button
+              type="submit"
+              class="btn blue"
+            >
+              Create
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- END CREATE NEW -->
+    <loading-screen
+      :show="displayTagsData"
+      :color="'#2C3E50'"
+      :display="'inline'"
+    />
+    <div
+      v-if="!displayTagsData"
+      class="portlet light portlet-fit bordered margin-top-20"
+    >
+      <div class="portlet-title bg-blue-chambray">
+        <div class="menu-image-main">
+          <img src="../../../../public/client_logo.png">
+        </div>
+        <div class="caption">
+          <span class="caption-subject font-default bold uppercase">
+            Tags
+          </span>
+          <div class="caption-desc font-grey-cascade">
+            Tags represent dietary restrictions.
+          </div>
+        </div>
+      </div>
+      <div class="portlet-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div
+              v-show="listErrorMessage"
+              ref="listErrorMessage"
+              class="alert alert-danger"
+            >
+              <button
+                class="close"
+                @click="clearError('listErrorMessage')"
+              />
+              <span>{{ listErrorMessage }}</span>
+            </div>
+          </div>
+        </div>
+        <div
+          v-if="tags.length"
+          class="mt-element-list margin-top-15"
+        >
+          <div class="mt-list-container list-news ext-1 no-border">
+            <ul>
+              <li
+                v-for="tag in tags"
+                :id="'tag-' + tag.id"
+                :key="tag.id"
+                class="mt-list-item actions-at-left margin-top-15"
+              >
+                <div class="list-item-actions">
+                  <el-tooltip
+                    v-if="$root.permissions['menu_manager tags update']"
+                    content="Edit"
+                    effect="light"
+                    placement="right"
+                  >
+                    <a
+                      class="btn btn-circle btn-icon-only btn-default"
+                      @click="editTag(tag)"
+                    >
+                      <i class="fa fa-lg fa-pencil" />
+                    </a>
+                  </el-tooltip>
+                  <el-tooltip
+                    v-if="$root.permissions['menu_manager tags read'] && !$root.permissions['menu_manager tags update']"
+                    content="View"
+                    effect="light"
+                    placement="right"
+                  >
+                    <a
+                      class="btn btn-circle btn-icon-only btn-default"
+                      @click="editTag(tag)"
+                    >
+                      <i class="fa fa-lg fa-eye" />
+                    </a>
+                  </el-tooltip>
+                  <el-tooltip
+                    v-if="$root.permissions['menu_manager tags add items']"
+                    content="Apply to multiple"
+                    effect="light"
+                    placement="right"
+                  >
+                    <a
+                      class="btn btn-circle btn-icon-only btn-default"
+                      @click="displayMenuTreeModal(tag, $event)"
+                    >
+                      <i class="icon-layers" />
+                    </a>
+                  </el-tooltip>
+                </div>
+                <div class="list-thumb">
+                  <a v-if="tag.image_url.length">
+                    <img
+                      alt=""
+                      :src="tag.image_url"
+                    >
+                  </a>
+                  <a v-else>
+                    <img src="../../../assets/img/app/login/bg1.jpg">
+                  </a>
+                </div>
+                <div class="list-datetime bold uppercase font-red">
+                  <span>{{ tag.name }}</span>
+                </div>
+                <div class="list-item-content height-mod">
+                  <strong>Type:</strong>
+                  <span>{{ readableTagType(tag.type) }}</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div
+          v-else
+          class="margin-top-20"
+        >
+          <no-results
+            :show="!tags.length"
+            :type="'tags'"
+          />
+        </div>
+      </div>
+    </div>
+    <edit-tag
+      v-if="displayEditTagModal"
+      @updateTag="updateTag"
+      @closeEditTagModal="closeEditTagModal"
+    />
+    <menu-tree
+      v-if="showMenuTreeModal"
+      :selected-object="selectedTag"
+      :header-text="headerText"
+      :update-type="'tag'"
+      @closeMenuTreeModal="closeMenuTreeModal"
+    />
+  </div>
 </template>
 
 <script>
@@ -195,6 +266,16 @@ import ResourcePicker from '../../modules/ResourcePicker'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
+	components: {
+		Breadcrumb,
+		Modal,
+		LoadingScreen,
+		EditTag,
+		NoResults,
+		Dropdown,
+		MenuTree,
+		ResourcePicker
+	},
 	data () {
 		return {
 			breadcrumbArray: [
@@ -481,16 +562,6 @@ export default {
 		toggleCreateTagPanel () {
 			this.createTagCollapse = !this.createTagCollapse
 		}
-	},
-	components: {
-		Breadcrumb,
-		Modal,
-		LoadingScreen,
-		EditTag,
-		NoResults,
-		Dropdown,
-		MenuTree,
-		ResourcePicker
 	}
 }
 </script>

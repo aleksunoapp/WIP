@@ -1,253 +1,253 @@
 <template>
-	<div class="container">
-		<div
-			class="header"
-		>
-			<div class="display-flex flex-basis-033"
-				v-show="!loading && stores.length"
-			>
-				<div class="display-flex align-items-center">
-					<div
-						v-if="multiple"
-						class="md-checkbox has-success"
-					>
-						<input
-							type="checkbox"
-							v-model="allSelected"
-							:disabled="!editable"
-							id="all"
-							class="md-check"
-						>
-						<label for="all">
-							<span class="inc"></span>
-							<span class="check"></span>
-							<span class="box"></span>
-						</label>
-					</div>
-					<p class="my-0">
-						<strong>Name</strong>
-						<i 
-							:class="{
-								'fa fa-arrow-up' : sortBy('display_name') === true,
-								'fa fa-arrow-down' : sortBy('display_name') === false
-							}"
-							@click="resort('display_name')"
-						>
-						</i>
-					</p>
-				</div>
-			</div>
-			<div class="display-flex flex-basis-033 align-items-center"
-				v-show="!loading && stores.length"
-			>
-				<p class="my-0">
-					<strong>Address</strong>
-					<i 
-						:class="{
-							'fa fa-arrow-up' : sortBy('address') === true,
-							'fa fa-arrow-down' : sortBy('address') === false
-						}"
-						@click="resort('address')"
-					>
-					</i>
-				</p>
-			</div>
-			<div class="display-flex flex-basis-033 align-items-center"
-				v-show="!loading && stores.length"
-			>
-				<p class="my-0">
-					<strong>ID</strong>
-					<i 
-						:class="{
-							'fa fa-arrow-up' : sortBy('internal_id') === true,
-							'fa fa-arrow-down' : sortBy('internal_id') === false
-						}"
-						@click="resort('internal_id')"
-					>
-					</i>
-				</p>
-			</div>
-		</div>
-		<div class="list">
-			<div
-				v-show="loading"
-				class="height-100 display-flex justify-content-center align-items-center"
-			>
-				<loading-screen :show="loading"></loading-screen>
-			</div>
-			<div
-				v-show="!loading && displayedStores.length === 0"
-				class="height-100 display-flex justify-content-center align-items-center"
-			>
-				<no-results
-					:show="displayedStores.length === 0 && !loading"
-					:custom="true"
-					:text="noResults"
-				>
-				</no-results>
-			</div>
-			<template
-				v-show="displayedStores.length"
-			>
-				<div
-					v-for="store in displayedStores"
-					:key="store.id"
-					class="store"
-				>
-					<div class="display-flex flex-basis-033">
-						<div class="display-flex align-items-center">
-							<div
-								v-if="multiple"
-								class="md-checkbox has-success">
-								<input
-									type="checkbox"
-									v-model="store.selected"
-									:disabled="!editable"
-									@change="toggle()"
-									name="id"
-									:id="`store-${store.id}${_uid}`"
-									class="md-check"
-								>
-								<label :for="`store-${store.id}${_uid}`">
-									<span class="inc"></span>
-									<span class="check"></span>
-									<span class="box"></span>
-								</label>
-							</div>
-							<div 
-								v-else
-								class="md-radio"
-							>
-								<input
-									type="radio"
-									name="id"
-									@change="toggle()"
-									:disabled="!editable"
-									v-model="single"
-									:id="`store-${store.id}${_uid}`"
-									class="md-radiobtn"
-									:value="store.id"
-								>
-								<label :for="`store-${store.id}${_uid}`">
-									<span class="inc"></span>
-									<span class="check"></span>
-									<span class="box"></span>
-								</label>
-							</div>
-							<p class="break my-0 pr-5px">{{store.display_name}} {{store.is_corporate ? '(corporate)' : ''}}</p>
-						</div>
-					</div>
-					<div class="display-flex flex-basis-033 align-items-center">
-						<p class="break my-0 pr-5px">{{`${store.city}, ${store.province}`}}</p>
-					</div>
-					<div class="display-flex flex-basis-033 align-items-center">
-						<p class="break my-0 pr-5px">{{store.internal_id}}</p>
-					</div>
-				</div>
-			</template>
-		</div>
-		<div
-			v-show="errorMessage"
-			ref="errorMessage"
-			class="alert alert-danger mt-1em"
-		>
-			<span>{{errorMessage}}</span>
-			<i 
-				class="fa fa-repeat"
-				aria-hidden="true"
-				@click="getAllStores()"
-			>
-			</i>
+  <div class="container">
+    <div
+      class="header"
+    >
+      <div
+        v-show="!loading && stores.length"
+        class="display-flex flex-basis-033"
+      >
+        <div class="display-flex align-items-center">
+          <div
+            v-if="multiple"
+            class="md-checkbox has-success"
+          >
+            <input
+              id="all"
+              v-model="allSelected"
+              type="checkbox"
+              :disabled="!editable"
+              class="md-check"
+            >
+            <label for="all">
+              <span class="inc" />
+              <span class="check" />
+              <span class="box" />
+            </label>
+          </div>
+          <p class="my-0">
+            <strong>Name</strong>
+            <i 
+              :class="{
+                'fa fa-arrow-up' : sortBy('display_name') === true,
+                'fa fa-arrow-down' : sortBy('display_name') === false
+              }"
+              @click="resort('display_name')"
+            />
+          </p>
+        </div>
+      </div>
+      <div
+        v-show="!loading && stores.length"
+        class="display-flex flex-basis-033 align-items-center"
+      >
+        <p class="my-0">
+          <strong>Address</strong>
+          <i 
+            :class="{
+              'fa fa-arrow-up' : sortBy('address') === true,
+              'fa fa-arrow-down' : sortBy('address') === false
+            }"
+            @click="resort('address')"
+          />
+        </p>
+      </div>
+      <div
+        v-show="!loading && stores.length"
+        class="display-flex flex-basis-033 align-items-center"
+      >
+        <p class="my-0">
+          <strong>ID</strong>
+          <i 
+            :class="{
+              'fa fa-arrow-up' : sortBy('internal_id') === true,
+              'fa fa-arrow-down' : sortBy('internal_id') === false
+            }"
+            @click="resort('internal_id')"
+          />
+        </p>
+      </div>
+    </div>
+    <div class="list">
+      <div
+        v-show="loading"
+        class="height-100 display-flex justify-content-center align-items-center"
+      >
+        <loading-screen :show="loading" />
+      </div>
+      <div
+        v-show="!loading && displayedStores.length === 0"
+        class="height-100 display-flex justify-content-center align-items-center"
+      >
+        <no-results
+          :show="displayedStores.length === 0 && !loading"
+          :custom="true"
+          :text="noResults"
+        />
+      </div>
+      <template
+        v-show="displayedStores.length"
+      >
+        <div
+          v-for="store in displayedStores"
+          :key="store.id"
+          class="store"
+        >
+          <div class="display-flex flex-basis-033">
+            <div class="display-flex align-items-center">
+              <div
+                v-if="multiple"
+                class="md-checkbox has-success"
+              >
+                <input
+                  :id="`store-${store.id}${_uid}`"
+                  v-model="store.selected"
+                  type="checkbox"
+                  :disabled="!editable"
+                  name="id"
+                  class="md-check"
+                  @change="toggle()"
+                >
+                <label :for="`store-${store.id}${_uid}`">
+                  <span class="inc" />
+                  <span class="check" />
+                  <span class="box" />
+                </label>
+              </div>
+              <div 
+                v-else
+                class="md-radio"
+              >
+                <input
+                  :id="`store-${store.id}${_uid}`"
+                  v-model="single"
+                  type="radio"
+                  name="id"
+                  :disabled="!editable"
+                  class="md-radiobtn"
+                  :value="store.id"
+                  @change="toggle()"
+                >
+                <label :for="`store-${store.id}${_uid}`">
+                  <span class="inc" />
+                  <span class="check" />
+                  <span class="box" />
+                </label>
+              </div>
+              <p class="break my-0 pr-5px">
+                {{ store.display_name }} {{ store.is_corporate ? '(corporate)' : '' }}
+              </p>
+            </div>
+          </div>
+          <div class="display-flex flex-basis-033 align-items-center">
+            <p class="break my-0 pr-5px">
+              {{ `${store.city}, ${store.province}` }}
+            </p>
+          </div>
+          <div class="display-flex flex-basis-033 align-items-center">
+            <p class="break my-0 pr-5px">
+              {{ store.internal_id }}
+            </p>
+          </div>
+        </div>
+      </template>
+    </div>
+    <div
+      v-show="errorMessage"
+      ref="errorMessage"
+      class="alert alert-danger mt-1em"
+    >
+      <span>{{ errorMessage }}</span>
+      <i 
+        class="fa fa-repeat"
+        aria-hidden="true"
+        @click="getAllStores()"
+      />
 
-			<button
-				class="close"
-				@click="clearError('errorMessage')"
-			>
-			</button>
-		</div>
-		<div
-			v-show="!errorMessage"
-			class="options"
-		>
-			<div 
-				v-show="stores.length"
-				class="display-flex justify-content-space-between align-items-center pt-1em"
-			>
-				<div class="display-flex align-items-center width-100">
-					<el-input
-						class="search__input"
-						size="small"
-						v-model="searchTerm"
-						clearable
-						placeholder="Search"
-					>
-					</el-input>
-					<div
-						class="display-flex align-items-center width-100"
-					>
-						<el-select
-							class="width-100 pl-5px"
-							v-model="selectedGroups"
-							multiple
-							collapse-tags
-							placeholder="Group"
-							size="small"
-						>
-							<el-option
-								v-for="group in groups"
-								:key="group.id"
-								:label="group.name"
-								:value="group.id">
-							</el-option>
-						</el-select>
-						<div class="display-flex flex-direction-column">
-							<el-checkbox
-								v-model="filter.corporate"
-								@change="page = 1"
-								class="pl-5px mb-0"
-							>
-								Corporate
-							</el-checkbox>
-							<span></span>
-							<el-checkbox
-								v-model="filter.selected"
-								@change="page = 1"
-								class="pl-5px ma-0"
-							>
-								Selected
-							</el-checkbox>
-						</div>
-					</div>
-				</div>
-
-			</div>
-			<div 
-				v-show="stores.length"
-				class="display-flex justify-content-space-between align-items-center pt-1em"
-			>
-				<page-results
-					v-show="stores.length"
-					class="pull-right"
-					:totalResults="filteredStores.length"
-					:activePage="page"
-					@pageResults="setPageSize"
-				>
-				</page-results>
-				<pagination
-					:passedPage="page"
-					:numPages="lastPage"
-					@activePageChange="setPage"
-				>
-				</pagination>
-				<p
-					v-show="stores.length"
-					class="selected__counter my-0"
-				>
-					{{this.selected.length}} selected
-				</p>
-			</div>
-		</div>
-	</div>
+      <button
+        class="close"
+        @click="clearError('errorMessage')"
+      />
+    </div>
+    <div
+      v-show="!errorMessage"
+      class="options"
+    >
+      <div 
+        v-show="stores.length"
+        class="display-flex justify-content-space-between align-items-center pt-1em"
+      >
+        <div class="display-flex align-items-center width-100">
+          <el-input
+            v-model="searchTerm"
+            class="search__input"
+            size="small"
+            clearable
+            placeholder="Search"
+          />
+          <div
+            class="display-flex align-items-center width-100"
+          >
+            <el-select
+              v-model="selectedGroups"
+              class="width-100 pl-5px"
+              multiple
+              collapse-tags
+              placeholder="Group"
+              size="small"
+            >
+              <el-option
+                v-for="group in groups"
+                :key="group.id"
+                :label="group.name"
+                :value="group.id"
+              />
+            </el-select>
+            <div class="display-flex flex-direction-column">
+              <el-checkbox
+                v-model="filter.corporate"
+                class="pl-5px mb-0"
+                @change="page = 1"
+              >
+                Corporate
+              </el-checkbox>
+              <span />
+              <el-checkbox
+                v-model="filter.selected"
+                class="pl-5px ma-0"
+                @change="page = 1"
+              >
+                Selected
+              </el-checkbox>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div 
+        v-show="stores.length"
+        class="display-flex justify-content-space-between align-items-center pt-1em"
+      >
+        <page-results
+          v-show="stores.length"
+          class="pull-right"
+          :total-results="filteredStores.length"
+          :active-page="page"
+          @pageResults="setPageSize"
+        />
+        <pagination
+          :passed-page="page"
+          :num-pages="lastPage"
+          @activePageChange="setPage"
+        />
+        <p
+          v-show="stores.length"
+          class="selected__counter my-0"
+        >
+          {{ this.selected.length }} selected
+        </p>
+      </div>
+    </div>
+  </div>
 </template>
 <script>
 import ajaxErrorHandler from '@/controllers/ErrorController'
@@ -264,6 +264,23 @@ export default {
 		NoResults,
 		PageResults,
 		Pagination
+	},
+	props: {
+		exclude: {
+			default: () => []
+		},
+		previouslySelected: {
+			default: () => []
+		},
+		locations: {
+			default: () => null
+		},
+		multiple: {
+			default: () => true
+		},
+		editable: {
+			default: () => true
+		}
 	},
 	data: () => ({
 		errorMessage: '',
@@ -395,23 +412,6 @@ export default {
 			return this.stores.filter(store => {
 				return this.multiple ? store.selected : store.id === this.single
 			})
-		}
-	},
-	props: {
-		exclude: {
-			default: () => []
-		},
-		previouslySelected: {
-			default: () => []
-		},
-		locations: {
-			default: () => null
-		},
-		multiple: {
-			default: () => true
-		},
-		editable: {
-			default: () => true
 		}
 	},
 	created () {

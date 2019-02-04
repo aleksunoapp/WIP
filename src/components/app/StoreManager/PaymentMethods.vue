@@ -1,358 +1,418 @@
 <template>
-	<div>
-		<!-- BEGIN PAGE BAR -->
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
-		<!-- END PAGE BAR -->
+  <div>
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
+    <!-- END PAGE BAR -->
 
-		<!-- BEGIN PAGE TITLE-->
-		<h1 class="page-title">Payment Methods</h1>
-		<!-- END PAGE TITLE -->
-		<div class="note note-info">
-			<p>Add and manage payment methods.</p>
-		</div>
+    <!-- BEGIN PAGE TITLE-->
+    <h1 class="page-title">
+      Payment Methods
+    </h1>
+    <!-- END PAGE TITLE -->
+    <div class="note note-info">
+      <p>Add and manage payment methods.</p>
+    </div>
 
-		<!-- BEGIN CREATE -->
-		<div class="portlet box blue-hoki"
-				 v-if="$root.permissions['stores payment methods create'] && paymentMethods.id === undefined">
-			<div class="portlet-title bg-blue-chambray"
-					 @click="toggleCreatePanel()">
-				<div class="caption">
-					<i class="fa fa-2x fa-plus-circle"></i>
-					Create Payment Methods
-				</div>
-				<div class="tools">
-					<a :class="{'expand': !createNewCollapse, 'collapse': createNewCollapse}"></a>
-				</div>
-			</div>
-			<div class="portlet-body relative-block"
-					 :class="{'display-hide': createNewCollapse}">
-				<div 
-					v-if="activeLocationId === undefined"
-					class="row"
-				>
-					<div class="col-md-12">
-						<div class="alert alert-info center margin-top-20">
-							<h4>No Store Selected</h4>
-							<p>Please select a store from the stores panel on the right to view its data</p>
-						</div>
-					</div>
-				</div>
-				<form v-else
-							role="form"
-							@submit.prevent="createPaymentMethods()">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="alert alert-danger"
-									 v-show="createErrorMessage.length"
-									 ref="createErrorMessage">
-								<button class="close"
-												data-close="alert"
-												@click.prevent="clearError('createErrorMessage')"></button>
-								<span>{{ createErrorMessage }}</span>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<table class="table">
-								<tbody>
-									<tr>
-										<td>
-											Cash
-										</td>
-										<td>
-											<el-switch
-																v-model="newPaymentMethod.cash"
-																active-color="#0c6"
-																inactive-color="#ff4949"
-																:active-value="1"
-																:inactive-value="0"
-																active-text="Yes"
-																inactive-text="No">
-											</el-switch>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											Credit
-										</td>
-										<td>
-											<el-switch
-																v-model="newPaymentMethod.credit"
-																active-color="#0c6"
-																inactive-color="#ff4949"
-																:active-value="1"
-																:inactive-value="0"
-																active-text="Yes"
-																inactive-text="No">
-											</el-switch>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											Debit
-										</td>
-										<td>
-											<el-switch
-																v-model="newPaymentMethod.debit"
-																active-color="#0c6"
-																inactive-color="#ff4949"
-																:active-value="1"
-																:inactive-value="0"
-																active-text="Yes"
-																inactive-text="No">
-											</el-switch>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											Gift Cards
-										</td>
-										<td>
-											<el-switch
-																v-model="newPaymentMethod.gift_card"
-																active-color="#0c6"
-																inactive-color="#ff4949"
-																:active-value="1"
-																:inactive-value="0"
-																active-text="Yes"
-																inactive-text="No">
-											</el-switch>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											App Payments
-										</td>
-										<td>
-											<el-switch
-																v-model="newPaymentMethod.app_payment"
-																active-color="#0c6"
-																inactive-color="#ff4949"
-																:active-value="1"
-																:inactive-value="0"
-																active-text="Yes"
-																inactive-text="No">
-											</el-switch>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-							<button type="submit"
-											class="btn blue pull-right"
-											:disabled="creating">
-								Create
-								<i v-show="creating"
-									 class="fa fa-spinner fa-pulse fa-fw">
-								</i>
-							</button>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-		<!-- END CREATE -->
+    <!-- BEGIN CREATE -->
+    <div
+      v-if="$root.permissions['stores payment methods create'] && paymentMethods.id === undefined"
+      class="portlet box blue-hoki"
+    >
+      <div
+        class="portlet-title bg-blue-chambray"
+        @click="toggleCreatePanel()"
+      >
+        <div class="caption">
+          <i class="fa fa-2x fa-plus-circle" />
+          Create Payment Methods
+        </div>
+        <div class="tools">
+          <a :class="{'expand': !createNewCollapse, 'collapse': createNewCollapse}" />
+        </div>
+      </div>
+      <div
+        class="portlet-body relative-block"
+        :class="{'display-hide': createNewCollapse}"
+      >
+        <div 
+          v-if="activeLocationId === undefined"
+          class="row"
+        >
+          <div class="col-md-12">
+            <div class="alert alert-info center margin-top-20">
+              <h4>No Store Selected</h4>
+              <p>Please select a store from the stores panel on the right to view its data</p>
+            </div>
+          </div>
+        </div>
+        <form
+          v-else
+          role="form"
+          @submit.prevent="createPaymentMethods()"
+        >
+          <div class="row">
+            <div class="col-md-12">
+              <div
+                v-show="createErrorMessage.length"
+                ref="createErrorMessage"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  data-close="alert"
+                  @click.prevent="clearError('createErrorMessage')"
+                />
+                <span>{{ createErrorMessage }}</span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <table class="table">
+                <tbody>
+                  <tr>
+                    <td>
+                      Cash
+                    </td>
+                    <td>
+                      <el-switch
+                        v-model="newPaymentMethod.cash"
+                        active-color="#0c6"
+                        inactive-color="#ff4949"
+                        :active-value="1"
+                        :inactive-value="0"
+                        active-text="Yes"
+                        inactive-text="No"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Credit
+                    </td>
+                    <td>
+                      <el-switch
+                        v-model="newPaymentMethod.credit"
+                        active-color="#0c6"
+                        inactive-color="#ff4949"
+                        :active-value="1"
+                        :inactive-value="0"
+                        active-text="Yes"
+                        inactive-text="No"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Debit
+                    </td>
+                    <td>
+                      <el-switch
+                        v-model="newPaymentMethod.debit"
+                        active-color="#0c6"
+                        inactive-color="#ff4949"
+                        :active-value="1"
+                        :inactive-value="0"
+                        active-text="Yes"
+                        inactive-text="No"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Gift Cards
+                    </td>
+                    <td>
+                      <el-switch
+                        v-model="newPaymentMethod.gift_card"
+                        active-color="#0c6"
+                        inactive-color="#ff4949"
+                        :active-value="1"
+                        :inactive-value="0"
+                        active-text="Yes"
+                        inactive-text="No"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      App Payments
+                    </td>
+                    <td>
+                      <el-switch
+                        v-model="newPaymentMethod.app_payment"
+                        active-color="#0c6"
+                        inactive-color="#ff4949"
+                        :active-value="1"
+                        :inactive-value="0"
+                        active-text="Yes"
+                        inactive-text="No"
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <button
+                type="submit"
+                class="btn blue pull-right"
+                :disabled="creating"
+              >
+                Create
+                <i
+                  v-show="creating"
+                  class="fa fa-spinner fa-pulse fa-fw"
+                />
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- END CREATE -->
 
-		<!-- BEGIN LIST -->
-		<div class="portlet light portlet-fit bordered margin-top-20"
-				id="payment-methods-container">
-			<div class="portlet-title bg-blue-chambray">
-				<div class="menu-image-main">
-					<img src="../../../../public/client_logo.png">
-				</div>
-				<div class="caption">
-					<span class="caption-subject font-default bold uppercase">Payment Methods</span>
-					<div class="caption-desc font-grey-cascade">Create, edit or delete payment methods.</div>
-				</div>
-			</div>
-			<div class="col-md-12">
-				<div class="alert alert-danger"
-						v-show="listErrorMessage.length"
-						ref="listErrorMessage">
-					<button class="close"
-							data-close="alert"
-							@click="clearError('listErrorMessage')"></button>
-					<span>{{ listErrorMessage }}</span>
-				</div>
-			</div>
-			<div class="portlet-body relative-block">
-				<loading-screen :show="loadingPaymentMethods"
-								:color="'#2C3E50'"
-								:display="'inline'"></loading-screen>
-				<div 
-					v-if="activeLocationId === undefined && !loadingPaymentMethods && paymentMethods.id === undefined"
-					class="row"
-				>
-					<div class="col-md-12">
-						<div class="alert alert-info center margin-top-20">
-							<h4>No Store Selected</h4>
-							<p>Please select a store from the stores panel on the right to view its data</p>
-						</div>
-					</div>
-				</div>
-				<div class="mt-element-list margin-top-15"
-						v-if="activeLocationId !== undefined && paymentMethods.id !== undefined && !loadingPaymentMethods">
-					<div class="row">
-						<div class="col-xs-12">
-							<table class="table">
-								<tbody>
-									<tr>
-										<td>
-											Cash
-										</td>
-										<td>
-											<el-switch :disabled="!$root.permissions['stores payment methods update']"
-																v-model="paymentMethods.cash"
-																active-color="#0c6"
-																inactive-color="#ff4949"
-																:active-value="1"
-																:inactive-value="0"
-																active-text="Yes"
-																inactive-text="No">
-											</el-switch>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											Credit
-										</td>
-										<td>
-											<el-switch :disabled="!$root.permissions['stores payment methods update']"
-																v-model="paymentMethods.credit"
-																active-color="#0c6"
-																inactive-color="#ff4949"
-																:active-value="1"
-																:inactive-value="0"
-																active-text="Yes"
-																inactive-text="No">
-											</el-switch>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											Debit
-										</td>
-										<td>
-											<el-switch :disabled="!$root.permissions['stores payment methods update']"
-																v-model="paymentMethods.debit"
-																active-color="#0c6"
-																inactive-color="#ff4949"
-																:active-value="1"
-																:inactive-value="0"
-																active-text="Yes"
-																inactive-text="No">
-											</el-switch>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											Gift Cards
-										</td>
-										<td>
-											<el-switch :disabled="!$root.permissions['stores payment methods update']"
-																v-model="paymentMethods.gift_card"
-																active-color="#0c6"
-																inactive-color="#ff4949"
-																:active-value="1"
-																:inactive-value="0"
-																active-text="Yes"
-																inactive-text="No">
-											</el-switch>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											App Payments
-										</td>
-										<td>
-											<el-switch :disabled="!$root.permissions['stores payment methods update']"
-																v-model="paymentMethods.app_payment"
-																active-color="#0c6"
-																inactive-color="#ff4949"
-																:active-value="1"
-																:inactive-value="0"
-																active-text="Yes"
-																inactive-text="No">
-											</el-switch>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-							<button 
-											v-if="$root.permissions['stores payment methods update']"
-											@click="updatePaymentMethods()"
-											type="submit"
-											class="btn blue pull-right"
-											:disabled="updating">
-								Save
-								<i v-show="updating"
-									class="fa fa-spinner fa-pulse fa-fw">
-								</i>
-							</button>
-							<button 
-											v-if="$root.permissions['stores payment methods delete']"
-											@click="confirmDelete()"
-											type="submit"
-											class="btn blue btn-outline pull-right margin-right-10"
-											:disabled="updating">
-								Delete
-							</button>
-						</div>
-					</div>
-				</div>
-				<div class="margin-top-20">
-					<no-results :show="activeLocationId !== undefined && paymentMethods.id === undefined && !loadingPaymentMethods"
-								:type="'payment methods'"></no-results>
-				</div>
-			</div>
-		</div>
-		<!-- END LIST -->
+    <!-- BEGIN LIST -->
+    <div
+      id="payment-methods-container"
+      class="portlet light portlet-fit bordered margin-top-20"
+    >
+      <div class="portlet-title bg-blue-chambray">
+        <div class="menu-image-main">
+          <img src="../../../../public/client_logo.png">
+        </div>
+        <div class="caption">
+          <span class="caption-subject font-default bold uppercase">
+            Payment Methods
+          </span>
+          <div class="caption-desc font-grey-cascade">
+            Create, edit or delete payment methods.
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div
+          v-show="listErrorMessage.length"
+          ref="listErrorMessage"
+          class="alert alert-danger"
+        >
+          <button
+            class="close"
+            data-close="alert"
+            @click="clearError('listErrorMessage')"
+          />
+          <span>{{ listErrorMessage }}</span>
+        </div>
+      </div>
+      <div class="portlet-body relative-block">
+        <loading-screen
+          :show="loadingPaymentMethods"
+          :color="'#2C3E50'"
+          :display="'inline'"
+        />
+        <div 
+          v-if="activeLocationId === undefined && !loadingPaymentMethods && paymentMethods.id === undefined"
+          class="row"
+        >
+          <div class="col-md-12">
+            <div class="alert alert-info center margin-top-20">
+              <h4>No Store Selected</h4>
+              <p>Please select a store from the stores panel on the right to view its data</p>
+            </div>
+          </div>
+        </div>
+        <div
+          v-if="activeLocationId !== undefined && paymentMethods.id !== undefined && !loadingPaymentMethods"
+          class="mt-element-list margin-top-15"
+        >
+          <div class="row">
+            <div class="col-xs-12">
+              <table class="table">
+                <tbody>
+                  <tr>
+                    <td>
+                      Cash
+                    </td>
+                    <td>
+                      <el-switch
+                        v-model="paymentMethods.cash"
+                        :disabled="!$root.permissions['stores payment methods update']"
+                        active-color="#0c6"
+                        inactive-color="#ff4949"
+                        :active-value="1"
+                        :inactive-value="0"
+                        active-text="Yes"
+                        inactive-text="No"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Credit
+                    </td>
+                    <td>
+                      <el-switch
+                        v-model="paymentMethods.credit"
+                        :disabled="!$root.permissions['stores payment methods update']"
+                        active-color="#0c6"
+                        inactive-color="#ff4949"
+                        :active-value="1"
+                        :inactive-value="0"
+                        active-text="Yes"
+                        inactive-text="No"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Debit
+                    </td>
+                    <td>
+                      <el-switch
+                        v-model="paymentMethods.debit"
+                        :disabled="!$root.permissions['stores payment methods update']"
+                        active-color="#0c6"
+                        inactive-color="#ff4949"
+                        :active-value="1"
+                        :inactive-value="0"
+                        active-text="Yes"
+                        inactive-text="No"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Gift Cards
+                    </td>
+                    <td>
+                      <el-switch
+                        v-model="paymentMethods.gift_card"
+                        :disabled="!$root.permissions['stores payment methods update']"
+                        active-color="#0c6"
+                        inactive-color="#ff4949"
+                        :active-value="1"
+                        :inactive-value="0"
+                        active-text="Yes"
+                        inactive-text="No"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      App Payments
+                    </td>
+                    <td>
+                      <el-switch
+                        v-model="paymentMethods.app_payment"
+                        :disabled="!$root.permissions['stores payment methods update']"
+                        active-color="#0c6"
+                        inactive-color="#ff4949"
+                        :active-value="1"
+                        :inactive-value="0"
+                        active-text="Yes"
+                        inactive-text="No"
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <button 
+                v-if="$root.permissions['stores payment methods update']"
+                type="submit"
+                class="btn blue pull-right"
+                :disabled="updating"
+                @click="updatePaymentMethods()"
+              >
+                Save
+                <i
+                  v-show="updating"
+                  class="fa fa-spinner fa-pulse fa-fw"
+                />
+              </button>
+              <button 
+                v-if="$root.permissions['stores payment methods delete']"
+                type="submit"
+                class="btn blue btn-outline pull-right margin-right-10"
+                :disabled="updating"
+                @click="confirmDelete()"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="margin-top-20">
+          <no-results
+            :show="activeLocationId !== undefined && paymentMethods.id === undefined && !loadingPaymentMethods"
+            :type="'payment methods'"
+          />
+        </div>
+      </div>
+    </div>
+    <!-- END LIST -->
 
-		<!-- START DELETE -->
-		<modal :show="showDeleteModal"
-					 effect="fade"
-					 @closeOnEscape="closeDeleteModal"
-					 ref="deleteModal">
-			<div slot="modal-header"
-					 class="modal-header">
-				<button type="button"
-								class="close"
-								@click="closeDeleteModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Confirm Delete</h4>
-			</div>
-			<div slot="modal-body"
-					 class="modal-body">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="alert alert-danger"
-									v-show="deleteErrorMessage.length"
-									ref="deleteErrorMessage">
-							<button class="close"
-											data-close="alert"
-											@click.prevent="clearError('deleteErrorMessage')"></button>
-							<span>{{ deleteErrorMessage }}</span>
-						</div>
-					</div>
-				</div>
-				<p>Are you sure you want to delete?</p>
-			</div>
-			<div slot="modal-footer"
-					 class="modal-footer clear">
-				<button type="button"
-								class="btn blue"
-								@click="deletePaymentMethods()"
-								:disabled="deleting">
-					Delete
-					<i v-show="deleting"
-						 class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-			</div>
-		</modal>
-		<!-- START DELETE -->
-	</div>
+    <!-- START DELETE -->
+    <modal
+      ref="deleteModal"
+      :show="showDeleteModal"
+      effect="fade"
+      @closeOnEscape="closeDeleteModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeDeleteModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Confirm Delete
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <div class="row">
+          <div class="col-md-12">
+            <div
+              v-show="deleteErrorMessage.length"
+              ref="deleteErrorMessage"
+              class="alert alert-danger"
+            >
+              <button
+                class="close"
+                data-close="alert"
+                @click.prevent="clearError('deleteErrorMessage')"
+              />
+              <span>{{ deleteErrorMessage }}</span>
+            </div>
+          </div>
+        </div>
+        <p>Are you sure you want to delete?</p>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer clear"
+      >
+        <button
+          type="button"
+          class="btn blue"
+          :disabled="deleting"
+          @click="deletePaymentMethods()"
+        >
+          Delete
+          <i
+            v-show="deleting"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+      </div>
+    </modal>
+    <!-- START DELETE -->
+  </div>
 </template>
 
 <script>
@@ -364,6 +424,12 @@ import NoResults from '@/components/modules/NoResults'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
+	components: {
+		Breadcrumb,
+		LoadingScreen,
+		Modal,
+		NoResults
+	},
 	data () {
 		return {
 			breadcrumbArray: [{ name: 'Payment Methods', link: false }],
@@ -711,12 +777,6 @@ export default {
 			this.clearError('deleteErrorMessage')
 			this.showDeleteModal = false
 		}
-	},
-	components: {
-		Breadcrumb,
-		LoadingScreen,
-		Modal,
-		NoResults
 	}
 }
 </script>

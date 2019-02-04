@@ -1,44 +1,63 @@
 <template>
-	<modal :show="showDeletePromoCodeModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="modal">
-		<div slot="modal-header"
-		     class="modal-header center">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Delete Promo Code</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="alert alert-danger"
-			     v-show="errorMessage"
-			     ref="errorMessage">
-				<button class="close"
-				        data-close="alert"
-				        @click="clearError()"></button>
-				<span>{{errorMessage}}</span>
-			</div>
-			<div class="col-md-12">
-				Are you sure you want to delete this promo code?
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer clear">
-			<button type="button"
-			        class="btn btn-primary"
-			        @click="deletePromoCode()"
-			        :disabled="deleting">
-				Delete
-				<i v-show="deleting"
-				   class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-		</div>
-	</modal>
+  <modal
+    ref="modal"
+    :show="showDeletePromoCodeModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header center"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Delete Promo Code
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div
+        v-show="errorMessage"
+        ref="errorMessage"
+        class="alert alert-danger"
+      >
+        <button
+          class="close"
+          data-close="alert"
+          @click="clearError()"
+        />
+        <span>{{ errorMessage }}</span>
+      </div>
+      <div class="col-md-12">
+        Are you sure you want to delete this promo code?
+      </div>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer clear"
+    >
+      <button
+        type="button"
+        class="btn btn-primary"
+        :disabled="deleting"
+        @click="deletePromoCode()"
+      >
+        Delete
+        <i
+          v-show="deleting"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -47,17 +66,20 @@ import PromoCodesFunctions from '../../../controllers/PromoCodes'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
+	components: {
+		Modal
+	},
+	props: {
+		selectedPromoCodeId: {
+			type: Number
+		}
+	},
 	data () {
 		return {
 			showDeletePromoCodeModal: false,
 			deleting: false,
 			errorMessage: '',
 			customWidth: 90
-		}
-	},
-	props: {
-		selectedPromoCodeId: {
-			type: Number
 		}
 	},
 	mounted () {
@@ -148,9 +170,6 @@ export default {
 		deletePromoCodeAndCloseModal () {
 			this.$emit('deletePromoCodeAndCloseModal')
 		}
-	},
-	components: {
-		Modal
 	}
 }
 </script>

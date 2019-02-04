@@ -1,193 +1,215 @@
 <template>
-	<div>
-		<div class="row">
-			<div class="col-xs-12">
-				<div 
-					class="alert alert-danger"
-					v-show="alert">
-					<button 
-						class="close"
-						@click="clearError('alert')"
-					>
-					</button>
-					<span>{{alert}}</span>
-				</div>
-			</div>
-		</div>
+  <div>
+    <div class="row">
+      <div class="col-xs-12">
+        <div 
+          v-show="alert"
+          class="alert alert-danger"
+        >
+          <button 
+            class="close"
+            @click="clearError('alert')"
+          />
+          <span>{{ alert }}</span>
+        </div>
+      </div>
+    </div>
 
-		<div class="row" ref="searchRow">
-			<div class="col-xs-12">
-				<el-date-picker 
-					v-model="fromDate"
-					type="date"
-					format="yyyy-MM-dd"
-					value-format="yyyy-MM-dd"
-					:clearable="true"
-					placeholder="From"
-					class="mb-5px"
-				>
-				</el-date-picker>
-				<el-date-picker 
-					v-model="toDate"
-					type="date"
-					format="yyyy-MM-dd"
-					value-format="yyyy-MM-dd"
-					:clearable="true"
-					placeholder="To"
-					class="mb-5px"
-				>
-				</el-date-picker>
-				<el-input 
-					class="input-width mb-5px"
-					placeholder="Order ID"
-					v-model="externalId"
-				>
-				</el-input>
-				<el-input
-					class="input-width mb-5px"
-					placeholder="Last four digits"
-					v-model="lastFourDigits"
-				>
-				</el-input>
-				<el-button
-					type="primary"
-					:loading="loading"
-					@click="validateSearchTerms()"
-				>
-					Search
-				</el-button>
-			</div>
-		</div>
+    <div
+      ref="searchRow"
+      class="row"
+    >
+      <div class="col-xs-12">
+        <el-date-picker 
+          v-model="fromDate"
+          type="date"
+          format="yyyy-MM-dd"
+          value-format="yyyy-MM-dd"
+          :clearable="true"
+          placeholder="From"
+          class="mb-5px"
+        />
+        <el-date-picker 
+          v-model="toDate"
+          type="date"
+          format="yyyy-MM-dd"
+          value-format="yyyy-MM-dd"
+          :clearable="true"
+          placeholder="To"
+          class="mb-5px"
+        />
+        <el-input 
+          v-model="externalId"
+          class="input-width mb-5px"
+          placeholder="Order ID"
+        />
+        <el-input
+          v-model="lastFourDigits"
+          class="input-width mb-5px"
+          placeholder="Last four digits"
+        />
+        <el-button
+          type="primary"
+          :loading="loading"
+          @click="validateSearchTerms()"
+        >
+          Search
+        </el-button>
+      </div>
+    </div>
 
-		<div class="row"
-		     v-show="!loading && transactions.length">
-
-			<div class="
+    <div
+      v-show="!loading && transactions.length"
+      class="row"
+    >
+      <div
+        class="
 					col-xs-12
 					margin-top-20
 					margin-bottom-20
-				">
-				<el-dropdown trigger="click"
-				             @command="changeSortBy"
-				             size="mini">
-					<el-button size="mini">
-						Sort by
-						<span>
-							<i class="fa fa-sort-alpha-asc"
-							   v-if="sortBy === 'ASC'"></i>
-							<i class="fa fa-sort-alpha-desc"
-							   v-if="sortBy === 'DESC'"></i>
-						</span>
-						<i class="el-icon-arrow-down el-icon--right"></i>
-					</el-button>
-					<el-dropdown-menu slot="dropdown">
-						<el-dropdown-item command="ASC">
-							<i class="fa fa-sort-alpha-asc"></i>
-						</el-dropdown-item>
-						<el-dropdown-item command="DESC">
-							<i class="fa fa-sort-alpha-desc"></i>
-						</el-dropdown-item>
-					</el-dropdown-menu>
-				</el-dropdown>
-				<page-results class="pull-right"
-				              :totalResults="total"
-				              :activePage="page"
-				              @pageResults="changePerPage">
-				</page-results>
-			</div>
+				"
+      >
+        <el-dropdown
+          trigger="click"
+          size="mini"
+          @command="changeSortBy"
+        >
+          <el-button size="mini">
+            Sort by
+            <span>
+              <i
+                v-if="sortBy === 'ASC'"
+                class="fa fa-sort-alpha-asc"
+              />
+              <i
+                v-if="sortBy === 'DESC'"
+                class="fa fa-sort-alpha-desc"
+              />
+            </span>
+            <i class="el-icon-arrow-down el-icon--right" />
+          </el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="ASC">
+              <i class="fa fa-sort-alpha-asc" />
+            </el-dropdown-item>
+            <el-dropdown-item command="DESC">
+              <i class="fa fa-sort-alpha-desc" />
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+        <page-results
+          class="pull-right"
+          :total-results="total"
+          :active-page="page"
+          @pageResults="changePerPage"
+        />
+      </div>
 
-			<div class="col-xs-12">
-				<table class="table table-striped table-advance">
-					<thead>
-						<tr>
-							<th>
-								ID
-							</th>
-							<th>
-								<i class="fa fa-calendar"></i>&nbsp;Order ID
-							</th>
-							<th>
-								Status
-							</th>
-							<th>
-								<i class="fa fa-usd"></i>&nbsp;Amount
-							</th>
-							<th>
-								App
-							</th>
-							<th>
-								Transaction no
-							</th>
-						</tr>
-					</thead>
+      <div class="col-xs-12">
+        <table class="table table-striped table-advance">
+          <thead>
+            <tr>
+              <th>
+                ID
+              </th>
+              <th>
+                <i class="fa fa-calendar" />&nbsp;Order ID
+              </th>
+              <th>
+                Status
+              </th>
+              <th>
+                <i class="fa fa-usd" />&nbsp;Amount
+              </th>
+              <th>
+                App
+              </th>
+              <th>
+                Transaction no
+              </th>
+            </tr>
+          </thead>
 
-					<tbody>
-						<tr
-							v-for="transaction in transactions"
-							:key="transaction.id"
-						>
-							<td class="align-middle">
-								{{transaction.external_id}}
-							</td>
-							<td class="align-middle">
-								{{transaction.order_id}}
-							</td>
-							<td class="align-middle">
-								<span
-									class="label label-sm"
-									:class="{ 
-										'label-success' : transaction.status === 'success',
-										'label-info' : transaction.status !== 'success',
-										'label-danger' : transaction.status === 'fail'
-									}"
-								>
-									{{ transaction.status }}
-								</span>
-							</td>
-							<td class="align-middle">
-								{{formatUSD(transaction.total)}}<br/>
-								<span class="text-muted">{{transaction.type}}</span>
-							</td>
-							<td class="align-middle">
-								{{transaction.app_version}}<br/>
-								<span class="text-muted">{{getPlatformName(transaction.platform)}}</span>
-							</td>
-							<td class="align-middle">
-								{{transaction.tr_number}}
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
+          <tbody>
+            <tr
+              v-for="transaction in transactions"
+              :key="transaction.id"
+            >
+              <td class="align-middle">
+                {{ transaction.external_id }}
+              </td>
+              <td class="align-middle">
+                {{ transaction.order_id }}
+              </td>
+              <td class="align-middle">
+                <span
+                  class="label label-sm"
+                  :class="{ 
+                    'label-success' : transaction.status === 'success',
+                    'label-info' : transaction.status !== 'success',
+                    'label-danger' : transaction.status === 'fail'
+                  }"
+                >
+                  {{ transaction.status }}
+                </span>
+              </td>
+              <td class="align-middle">
+                {{ formatUSD(transaction.total) }}<br>
+                <span class="text-muted">
+                  {{ transaction.type }}
+                </span>
+              </td>
+              <td class="align-middle">
+                {{ transaction.app_version }}<br>
+                <span class="text-muted">
+                  {{ getPlatformName(transaction.platform) }}
+                </span>
+              </td>
+              <td class="align-middle">
+                {{ transaction.tr_number }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-			<div class="col-xs-12"
-			     v-show="lastPage > 1">
-				<pagination :passedPage="page"
-				            :numPages="lastPage"
-				            @activePageChange="changePage">
-				</pagination>
-			</div>
-		</div>
+      <div
+        v-show="lastPage > 1"
+        class="col-xs-12"
+      >
+        <pagination
+          :passed-page="page"
+          :num-pages="lastPage"
+          @activePageChange="changePage"
+        />
+      </div>
+    </div>
 
-		<div class="row"
-		     v-show="loading">
-			<div class="col-xs-12 relative-block">
-				<loading-screen :show="loading" class="margin-top-20">
-				</loading-screen>
-			</div>
-		</div>
+    <div
+      v-show="loading"
+      class="row"
+    >
+      <div class="col-xs-12 relative-block">
+        <loading-screen
+          :show="loading"
+          class="margin-top-20"
+        />
+      </div>
+    </div>
 
-		<div class="row"
-		     v-show="!loading && !transactions.length">
-			<div class="col-xs-12">
-				<no-results :custom="noResults"
-				            :show="noResults"
-				            :text="noResults">
-				</no-results>
-			</div>
-		</div>
-
-	</div>
+    <div
+      v-show="!loading && !transactions.length"
+      class="row"
+    >
+      <div class="col-xs-12">
+        <no-results
+          :custom="noResults"
+          :show="noResults"
+          :text="noResults"
+        />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>

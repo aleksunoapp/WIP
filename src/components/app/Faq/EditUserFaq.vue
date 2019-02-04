@@ -1,134 +1,204 @@
 <template>
-	<modal v-bind:show="showEditFAQModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="editModal">
-		<div slot="modal-header"
-		     class="modal-header">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Edit FAQ</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="alert alert-danger"
-			     v-show="errorMessage"
-			     ref="errorMessage">
-				<button class="close"
-				        @click="clearError()"></button>
-				<span>{{errorMessage}}</span>
-			</div>
-			<div class="form-group form-md-line-input form-md-floating-label">
-				<input type="text"
-				       class="form-control input-sm edited"
-				       id="form_control_1"
-				       v-model="faqToBeEdited.question">
-				<label for="form_control_1">Question</label>
-			</div>
-			<div class="form-group form-md-line-input form-md-floating-label">
-				<textarea rows="4"
-				          class="form-control edited"
-				          id="form_control_2"
-				          v-model="faqToBeEdited.answer"></textarea>
-				<label for="form_control_2">Answer</label>
-			</div>
-			<div class="form-group form-md-line-input form-md-floating-label">
-				<input type="text"
-				       class="form-control input-sm edited"
-				       id="form_control_3"
-				       v-model="faqToBeEdited.external_link">
-				<label for="form_control_3">External Link</label>
-			</div>
-			<div>
-				<p class="grey-label">Call to action type</p>
-				<el-select v-model="faqToBeEdited.cta_type"
-				           placeholder="Select type"
-				           size="small"
-				           class="margin-bottom-15"
-				           id="form_control_cta_type">
-					<el-option label="none"
-					           value=""></el-option>
-					<el-option label="email"
-					           value="email"></el-option>
-					<el-option label="locations"
-					           value="locations"></el-option>
-					<el-option label="orders"
-					           value="orders"></el-option>
-					<el-option label="profile"
-					           value="profile"></el-option>
-					<el-option label="payment"
-					           value="payment"></el-option>
-					<el-option label="menus"
-					           value="menus"></el-option>
-					<el-option label="rewards"
-					           value="rewards"></el-option>
-					<el-option label="call"
-					           value="call"></el-option>
-					<el-option label="web"
-					           value="web"></el-option>
-					<el-option label="feedback"
-					           value="feedback"></el-option>
-				</el-select>
-			</div>
-			<div class="form-group form-md-line-input form-md-floating-label">
-				<input type="text"
-				       class="form-control input-sm"
-				       id="form_control_cta_value"
-				       v-model="faqToBeEdited.cta_value"
-				       :class="{'edited': faqToBeEdited.cta_value.length}">
-				<label for="form_control_cta_value">Call to action value</label>
-			</div>
-			<div class="margin-top-20" v-if="!loadingCountries">
-				<label>
-					Country:
-					<el-select v-model="faqToBeEdited.country_id"
-								placeholder="Select a country"
-								size="small"
-								no-data-text="No countries"
-								remote
-								:loading="loadingCountries">
-						<el-option v-for="country in countries"
-									:label="country.name"
-									:value="country.id"
-									:key="country.id">
-						</el-option>
-					</el-select>
-				</label>
-			</div>
-			<div class="margin-top-20">
-				<label>
-					Platform:
-					<el-select v-model="faqToBeEdited.platform_id"
-								placeholder="Select a platform"
-								size="small"
-								no-data-text="No platforms"
-								remote
-								:loading="loadingPlatforms">
-						<el-option v-for="platform in platforms"
-									:label="platform.name"
-									:value="platform.id"
-									:key="platform.id">
-						</el-option>
-					</el-select>
-				</label>
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button type="button"
-			        class="btn btn-primary"
-			        @click="saveEditedUserFAQ()"
-			        :disabled="updating">
-				Save
-				<i v-show="updating"
-				   class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-		</div>
-	</modal>
+  <modal
+    ref="editModal"
+    :show="showEditFAQModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Edit FAQ
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div
+        v-show="errorMessage"
+        ref="errorMessage"
+        class="alert alert-danger"
+      >
+        <button
+          class="close"
+          @click="clearError()"
+        />
+        <span>{{ errorMessage }}</span>
+      </div>
+      <div class="form-group form-md-line-input form-md-floating-label">
+        <input
+          id="form_control_1"
+          v-model="faqToBeEdited.question"
+          type="text"
+          class="form-control input-sm edited"
+        >
+        <label for="form_control_1">
+          Question
+        </label>
+      </div>
+      <div class="form-group form-md-line-input form-md-floating-label">
+        <textarea
+          id="form_control_2"
+          v-model="faqToBeEdited.answer"
+          rows="4"
+          class="form-control edited"
+        />
+        <label for="form_control_2">
+          Answer
+        </label>
+      </div>
+      <div class="form-group form-md-line-input form-md-floating-label">
+        <input
+          id="form_control_3"
+          v-model="faqToBeEdited.external_link"
+          type="text"
+          class="form-control input-sm edited"
+        >
+        <label for="form_control_3">
+          External Link
+        </label>
+      </div>
+      <div>
+        <p class="grey-label">
+          Call to action type
+        </p>
+        <el-select
+          id="form_control_cta_type"
+          v-model="faqToBeEdited.cta_type"
+          placeholder="Select type"
+          size="small"
+          class="margin-bottom-15"
+        >
+          <el-option
+            label="none"
+            value=""
+          />
+          <el-option
+            label="email"
+            value="email"
+          />
+          <el-option
+            label="locations"
+            value="locations"
+          />
+          <el-option
+            label="orders"
+            value="orders"
+          />
+          <el-option
+            label="profile"
+            value="profile"
+          />
+          <el-option
+            label="payment"
+            value="payment"
+          />
+          <el-option
+            label="menus"
+            value="menus"
+          />
+          <el-option
+            label="rewards"
+            value="rewards"
+          />
+          <el-option
+            label="call"
+            value="call"
+          />
+          <el-option
+            label="web"
+            value="web"
+          />
+          <el-option
+            label="feedback"
+            value="feedback"
+          />
+        </el-select>
+      </div>
+      <div class="form-group form-md-line-input form-md-floating-label">
+        <input
+          id="form_control_cta_value"
+          v-model="faqToBeEdited.cta_value"
+          type="text"
+          class="form-control input-sm"
+          :class="{'edited': faqToBeEdited.cta_value.length}"
+        >
+        <label for="form_control_cta_value">
+          Call to action value
+        </label>
+      </div>
+      <div
+        v-if="!loadingCountries"
+        class="margin-top-20"
+      >
+        <label>
+          Country:
+          <el-select
+            v-model="faqToBeEdited.country_id"
+            placeholder="Select a country"
+            size="small"
+            no-data-text="No countries"
+            remote
+            :loading="loadingCountries"
+          >
+            <el-option
+              v-for="country in countries"
+              :key="country.id"
+              :label="country.name"
+              :value="country.id"
+            />
+          </el-select>
+        </label>
+      </div>
+      <div class="margin-top-20">
+        <label>
+          Platform:
+          <el-select
+            v-model="faqToBeEdited.platform_id"
+            placeholder="Select a platform"
+            size="small"
+            no-data-text="No platforms"
+            remote
+            :loading="loadingPlatforms"
+          >
+            <el-option
+              v-for="platform in platforms"
+              :key="platform.id"
+              :label="platform.name"
+              :value="platform.id"
+            />
+          </el-select>
+        </label>
+      </div>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        type="button"
+        class="btn btn-primary"
+        :disabled="updating"
+        @click="saveEditedUserFAQ()"
+      >
+        Save
+        <i
+          v-show="updating"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -139,6 +209,15 @@ import CountriesFunctions from '@/controllers/Countries'
 import PlatformsFunctions from '@/controllers/Platforms'
 
 export default {
+	components: {
+		Modal
+	},
+	props: {
+		faqId: {
+			type: Number,
+			default: 0
+		}
+	},
 	data () {
 		return {
 			showEditFAQModal: false,
@@ -155,12 +234,6 @@ export default {
 			countries: [],
 			loadingPlatforms: false,
 			platforms: []
-		}
-	},
-	props: {
-		faqId: {
-			type: Number,
-			default: 0
 		}
 	},
 	created () {
@@ -366,9 +439,6 @@ export default {
 		closeModalAndUpdate (payload = {}) {
 			this.$emit('highlightFAQ', payload)
 		}
-	},
-	components: {
-		Modal
 	}
 }
 </script>

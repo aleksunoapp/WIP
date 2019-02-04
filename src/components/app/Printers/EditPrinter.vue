@@ -1,131 +1,171 @@
 <template>
-	<modal :show="showEditPrinterModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="modal">
-		<div slot="modal-header"
-		     class="modal-header center">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Edit Printer</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="alert alert-danger"
-			     v-show="errorMessage"
-			     ref="errorMessage">
-				<button class="close"
-				        @click="clearError()"></button>
-				<span>{{errorMessage}}</span>
-			</div>
-			<fieldset :disabled="!$root.permissions['printers update']">
-				<div class="form-group form-md-line-input form-md-floating-label">
-					<input type="text"
-					       class="form-control input-sm edited"
-					       id="form_control_1"
-					       v-model="printerToBeEdited.printer_name">
-					<label for="form_control_1">Printer Name</label>
-				</div>
-				<div class="form-group form-md-line-input form-md-floating-label">
-					<input type="text"
-					       class="form-control input-sm edited"
-					       id="form_control_2"
-					       v-model="printerToBeEdited.printer_key">
-					<label for="form_control_2">Printer Key</label>
-				</div>
-				<div class="form-group form-md-line-input form-md-floating-label">
-					<input type="text"
-					       class="form-control input-sm edited"
-					       id="form_control_3"
-					       v-model="printerToBeEdited.printer_serialno">
-					<label for="form_control_3">Printer Serial Number</label>
-				</div>
-				<div class="form-group form-md-line-input form-md-floating-label">
-					<input type="text"
-					       class="form-control input-sm edited"
-					       id="form_control_4"
-					       v-model="printerToBeEdited.copies">
-					<label for="form_control_4">Copies</label>
-				</div>
-			</fieldset>
-			<div class="side-by-side-wrapper">
-				<p class="paper-width-label">Paper width:</p>
-				<el-select
-					v-model="printerToBeEdited.paper_width"
-					placeholder="select"
-					size="mini"
-					:disabled="!$root.permissions['printers update']"
-				>
-					<el-option
-						label="58mm"
-						value="58"
-					>
-					</el-option>
-					<el-option
-						label="80mm"
-						value="80"
-					>
-					</el-option>
-				</el-select>
-			</div>
+  <modal
+    ref="modal"
+    :show="showEditPrinterModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header center"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Edit Printer
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div
+        v-show="errorMessage"
+        ref="errorMessage"
+        class="alert alert-danger"
+      >
+        <button
+          class="close"
+          @click="clearError()"
+        />
+        <span>{{ errorMessage }}</span>
+      </div>
+      <fieldset :disabled="!$root.permissions['printers update']">
+        <div class="form-group form-md-line-input form-md-floating-label">
+          <input
+            id="form_control_1"
+            v-model="printerToBeEdited.printer_name"
+            type="text"
+            class="form-control input-sm edited"
+          >
+          <label for="form_control_1">
+            Printer Name
+          </label>
+        </div>
+        <div class="form-group form-md-line-input form-md-floating-label">
+          <input
+            id="form_control_2"
+            v-model="printerToBeEdited.printer_key"
+            type="text"
+            class="form-control input-sm edited"
+          >
+          <label for="form_control_2">
+            Printer Key
+          </label>
+        </div>
+        <div class="form-group form-md-line-input form-md-floating-label">
+          <input
+            id="form_control_3"
+            v-model="printerToBeEdited.printer_serialno"
+            type="text"
+            class="form-control input-sm edited"
+          >
+          <label for="form_control_3">
+            Printer Serial Number
+          </label>
+        </div>
+        <div class="form-group form-md-line-input form-md-floating-label">
+          <input
+            id="form_control_4"
+            v-model="printerToBeEdited.copies"
+            type="text"
+            class="form-control input-sm edited"
+          >
+          <label for="form_control_4">
+            Copies
+          </label>
+        </div>
+      </fieldset>
+      <div class="side-by-side-wrapper">
+        <p class="paper-width-label">
+          Paper width:
+        </p>
+        <el-select
+          v-model="printerToBeEdited.paper_width"
+          placeholder="select"
+          size="mini"
+          :disabled="!$root.permissions['printers update']"
+        >
+          <el-option
+            label="58mm"
+            value="58"
+          />
+          <el-option
+            label="80mm"
+            value="80"
+          />
+        </el-select>
+      </div>
 
-			<div class="side-by-side-wrapper">
-				<p class="paper-width-label">Version:</p>
-				<el-select
-					v-model="printerToBeEdited.version"
-					placeholder="select"
-					size="mini"
-					:disabled="!$root.permissions['printers update']"
-				>
-					<el-option
-						label="1"
-						value="1"
-					>
-					</el-option>
-					<el-option
-						label="2"
-						value="2"
-					>
-					</el-option>
-				</el-select>
-			</div>
+      <div class="side-by-side-wrapper">
+        <p class="paper-width-label">
+          Version:
+        </p>
+        <el-select
+          v-model="printerToBeEdited.version"
+          placeholder="select"
+          size="mini"
+          :disabled="!$root.permissions['printers update']"
+        >
+          <el-option
+            label="1"
+            value="1"
+          />
+          <el-option
+            label="2"
+            value="2"
+          />
+        </el-select>
+      </div>
 
-			<div class="side-by-side-wrapper">
-				<p class="side-by-side-item status-label">Status:</p>
-				<el-switch :disabled="!$root.permissions['printers update']"
-				           v-model="printerToBeEdited.status"
-				           active-color="#0c6"
-				           inactive-color="#ff4949"
-				           :active-value="1"
-				           :inactive-value="0"
-				           active-text="Enabled"
-				           inactive-text="Disabled">
-				</el-switch>
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button v-if="!$root.permissions['printers update']"
-			        type="button"
-			        class="btn btn-primary"
-			        @click="closeModal()">
-				Close
-			</button>
-			<button v-else
-			        type="button"
-			        class="btn btn-primary"
-			        @click="updatePrinter()"
-			        :disabled="updating">
-				Save
-				<i v-show="updating"
-				   class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-		</div>
-	</modal>
+      <div class="side-by-side-wrapper">
+        <p class="side-by-side-item status-label">
+          Status:
+        </p>
+        <el-switch
+          v-model="printerToBeEdited.status"
+          :disabled="!$root.permissions['printers update']"
+          active-color="#0c6"
+          inactive-color="#ff4949"
+          :active-value="1"
+          :inactive-value="0"
+          active-text="Enabled"
+          inactive-text="Disabled"
+        />
+      </div>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        v-if="!$root.permissions['printers update']"
+        type="button"
+        class="btn btn-primary"
+        @click="closeModal()"
+      >
+        Close
+      </button>
+      <button
+        v-else
+        type="button"
+        class="btn btn-primary"
+        :disabled="updating"
+        @click="updatePrinter()"
+      >
+        Save
+        <i
+          v-show="updating"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -135,6 +175,16 @@ import Dropdown from '../../modules/Dropdown'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
+	components: {
+		Modal,
+		Dropdown
+	},
+	props: {
+		printerId: {
+			type: Number,
+			required: true
+		}
+	},
 	data () {
 		return {
 			showEditPrinterModal: false,
@@ -151,12 +201,6 @@ export default {
 				version: ''
 			},
 			errorMessage: ''
-		}
-	},
-	props: {
-		printerId: {
-			type: Number,
-			required: true
 		}
 	},
 	created () {
@@ -309,10 +353,6 @@ export default {
 		closeModalAndUpdate () {
 			this.$emit('updatePrinter', this.printerToBeEdited)
 		}
-	},
-	components: {
-		Modal,
-		Dropdown
 	}
 }
 </script>

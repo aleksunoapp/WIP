@@ -1,350 +1,481 @@
 <template>
-	<div>
-		<!-- BEGIN PAGE BAR -->
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
-		<!-- END PAGE BAR -->
+  <div>
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
+    <!-- END PAGE BAR -->
 
-		<!-- BEGIN PAGE TITLE-->
-		<h1 class="page-title">Amenities</h1>
-		<!-- END PAGE TITLE -->
-		<div class="note note-info">
-			<p>Add and manage a store amenities.</p>
-		</div>
+    <!-- BEGIN PAGE TITLE-->
+    <h1 class="page-title">
+      Amenities
+    </h1>
+    <!-- END PAGE TITLE -->
+    <div class="note note-info">
+      <p>Add and manage a store amenities.</p>
+    </div>
 
-		<!-- BEGIN CREATE -->
-		<div class="portlet box blue-hoki"
-		     v-if="$root.permissions['stores amenities create']">
-			<div class="portlet-title bg-blue-chambray"
-			     @click="toggleCreatePanel()">
-				<div class="caption">
-					<i class="fa fa-2x fa-plus-circle"></i>
-					Create a New Amenity
-				</div>
-				<div class="tools">
-					<a :class="{'expand': !createNewCollapse, 'collapse': createNewCollapse}"></a>
-				</div>
-			</div>
-			<div class="portlet-body"
-			     :class="{'display-hide': createNewCollapse}">
-				<form role="form"
-				      @submit.prevent="createAmenity()">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="alert alert-danger"
-							     v-show="createErrorMessage.length"
-							     ref="createErrorMessage">
-								<button class="close"
-								        data-close="alert"
-								        @click.prevent="clearError('createErrorMessage')"></button>
-								<span>{{ createErrorMessage }}</span>
-							</div>
-						</div>
-						<div :class="{'col-md-2 col-md-offset-2' : !newAmenity.selectImageMode, 'col-md-12' : newAmenity.selectImageMode}">
-							<resource-picker @open="toggleImageMode(newAmenity, true)"
-							                 @close="toggleImageMode(newAmenity, false)"
-							                 @selected="updateNewImage"
-							                 :imageButton="true"
-							                 :imageUrl="newAmenity.image_url"
-							                 class="margin-top-15">
-							</resource-picker>
-						</div>
-					</div>
-					<div class="row"
-					     v-show="!newAmenity.selectImageMode">
-						<div class="col-md-6">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newAmenity.name.length}"
-								       id="form_control_1"
-								       v-model="newAmenity.name">
-								<label for="form_control_1">Amenity Name</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newAmenity.order.length}"
-								       id="form_control_3"
-								       v-model="newAmenity.order">
-								<label for="form_control_3">Amenity Order</label>
-							</div>
-							<button type="submit"
-							        class="btn blue pull-right"
-							        :disabled="creating">
-								Create
-								<i v-show="creating"
-								   class="fa fa-spinner fa-pulse fa-fw">
-								</i>
-							</button>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-		<!-- END CREATE -->
+    <!-- BEGIN CREATE -->
+    <div
+      v-if="$root.permissions['stores amenities create']"
+      class="portlet box blue-hoki"
+    >
+      <div
+        class="portlet-title bg-blue-chambray"
+        @click="toggleCreatePanel()"
+      >
+        <div class="caption">
+          <i class="fa fa-2x fa-plus-circle" />
+          Create a New Amenity
+        </div>
+        <div class="tools">
+          <a :class="{'expand': !createNewCollapse, 'collapse': createNewCollapse}" />
+        </div>
+      </div>
+      <div
+        class="portlet-body"
+        :class="{'display-hide': createNewCollapse}"
+      >
+        <form
+          role="form"
+          @submit.prevent="createAmenity()"
+        >
+          <div class="row">
+            <div class="col-md-12">
+              <div
+                v-show="createErrorMessage.length"
+                ref="createErrorMessage"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  data-close="alert"
+                  @click.prevent="clearError('createErrorMessage')"
+                />
+                <span>{{ createErrorMessage }}</span>
+              </div>
+            </div>
+            <div :class="{'col-md-2 col-md-offset-2' : !newAmenity.selectImageMode, 'col-md-12' : newAmenity.selectImageMode}">
+              <resource-picker
+                :image-button="true"
+                :image-url="newAmenity.image_url"
+                class="margin-top-15"
+                @open="toggleImageMode(newAmenity, true)"
+                @close="toggleImageMode(newAmenity, false)"
+                @selected="updateNewImage"
+              />
+            </div>
+          </div>
+          <div
+            v-show="!newAmenity.selectImageMode"
+            class="row"
+          >
+            <div class="col-md-6">
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_1"
+                  v-model="newAmenity.name"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newAmenity.name.length}"
+                >
+                <label for="form_control_1">
+                  Amenity Name
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_3"
+                  v-model="newAmenity.order"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newAmenity.order.length}"
+                >
+                <label for="form_control_3">
+                  Amenity Order
+                </label>
+              </div>
+              <button
+                type="submit"
+                class="btn blue pull-right"
+                :disabled="creating"
+              >
+                Create
+                <i
+                  v-show="creating"
+                  class="fa fa-spinner fa-pulse fa-fw"
+                />
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- END CREATE -->
 
-		<!-- BEGIN LIST -->
-		<div>
-			<div class="portlet light portlet-fit bordered margin-top-20"
-			     id="amenities-container">
-				<div class="portlet-title bg-blue-chambray">
-					<div class="menu-image-main">
-						<img src="../../../../public/client_logo.png">
-					</div>
-					<div class="caption">
-						<span class="caption-subject font-default bold uppercase">Amenities</span>
-						<div class="caption-desc font-grey-cascade"
-						     v-if="$root.accountType !== 'store_admin'">Create, edit or delete amenities and assign them to the active store.</div>
-						<div class="caption-desc font-grey-cascade"
-						     v-if="$root.accountType === 'store_admin'">View amenities and assign them to the active store.</div>
-					</div>
-				</div>
-				<div class="portlet-body relative-block">
-					<div class="col-md-12"
-					     v-if="activeLocationId === undefined">
-						<div class="alert center alert-info">
-							<h4>No Store Selected</h4>
-							<p>Please select a store from the stores panel on the right to view amenities and apply them to the store.</p>
-						</div>
-					</div>
-					<div v-else>
-						<div class="row">
-							<div class="col-md-12">
-								<div class="alert alert-danger"
-								     v-show="listErrorMessage.length"
-								     ref="listErrorMessage">
-									<button class="close"
-									        data-close="alert"
-									        @click="clearError('listErrorMessage')"></button>
-									<span>{{ listErrorMessage }}</span>
-								</div>
-							</div>
-						</div>
-						<loading-screen :show="loadingAmenities"
-						                :color="'#2C3E50'"
-						                :display="'inline'"></loading-screen>
-						<div class="mt-element-list margin-top-15"
-						     v-if="amenities.length && !loadingAmenities">
-							<div class="mt-list-container list-news ext-1 no-border"
-							     v-show="activeLocationId">
-								<ul>
-									<li class="mt-list-item actions-at-left margin-top-15"
-									    v-for="amenity in amenities"
-									    :id="'amenity-' + amenity.id"
-									    :key="amenity.id">
-										<div class="list-item-actions">
-											<el-tooltip v-if="!$root.permissions['stores amenities update'] && !$root.permissions['stores amenities read']"
-											            content="View"
-											            effect="light"
-											            placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default"
-												   @click="editAmenity(amenity, $event)">
-													<i class="fa fa-lg fa-eye"></i>
-												</a>
-											</el-tooltip>
-											<el-tooltip v-if="$root.permissions['stores amenities update']"
-											            content="Edit"
-											            effect="light"
-											            placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default"
-												   @click="editAmenity(amenity, $event)">
-													<i class="fa fa-lg fa-pencil"></i>
-												</a>
-											</el-tooltip>
-											<el-tooltip v-if="$root.permissions['stores amenities delete']"
-											            content="Delete"
-											            effect="light"
-											            placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default"
-												   @click="confirmDelete(amenity, $event)">
-													<i class="fa fa-lg fa-trash"></i>
-												</a>
-											</el-tooltip>
-										</div>
-										<div class="list-thumb">
-											<img v-if="amenity.image_url.length"
-											     :src="amenity.image_url" />
-											<img v-else
-											     src="../../../assets/img/app/image-placeholder.png">
-										</div>
-										<div class="list-datetime bold uppercase font-red">
-											<span>{{ amenity.name }}</span>
-										</div>
-										<div class="list-item-content height-mod">
-											<div class="col-xs-5">
-												<strong>Order:</strong>
-												<span>{{ amenity.order }}</span>
-											</div>
-											<div class="">
-												<div v-if="amenity.selected">
-													<button @click="toggleChecked(amenity, $event)"
-													        class="btn btn-success custom-button full-width"
-													        :disabled="!$root.permissions['stores amenities update']">
-														<i class="fa fa-2x fa-check"></i>
-													</button>
-												</div>
-												<div v-if="!amenity.selected">
-													<button @click="toggleChecked(amenity, $event)"
-													        class="btn btn-danger custom-button full-width"
-													        :disabled="!$root.permissions['stores amenities update']">
-														<i class="fa fa-2x fa-times"></i>
-													</button>
-												</div>
-											</div>
-										</div>
-									</li>
-								</ul>
-								<div class="form-actions right margin-top-20"
-								     v-show="$root.activeLocation.id !== undefined">
-									<button type="button"
-									        class="btn blue"
-									        @click="assignAmenitiesToLocation()"
-									        :disabled="!$root.permissions['stores amenities update'] || assigning">
-										Save
-										<i v-show="assigning"
-										   class="fa fa-spinner fa-pulse fa-fw">
-										</i>
-									</button>
-								</div>
-							</div>
-						</div>
-						<div class="margin-top-20">
-							<no-results :show="!amenities.length && !loadingAmenities"
-							            :type="'amenities'"></no-results>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- END LIST -->
+    <!-- BEGIN LIST -->
+    <div>
+      <div
+        id="amenities-container"
+        class="portlet light portlet-fit bordered margin-top-20"
+      >
+        <div class="portlet-title bg-blue-chambray">
+          <div class="menu-image-main">
+            <img src="../../../../public/client_logo.png">
+          </div>
+          <div class="caption">
+            <span class="caption-subject font-default bold uppercase">
+              Amenities
+            </span>
+            <div
+              v-if="$root.accountType !== 'store_admin'"
+              class="caption-desc font-grey-cascade"
+            >
+              Create, edit or delete amenities and assign them to the active store.
+            </div>
+            <div
+              v-if="$root.accountType === 'store_admin'"
+              class="caption-desc font-grey-cascade"
+            >
+              View amenities and assign them to the active store.
+            </div>
+          </div>
+        </div>
+        <div class="portlet-body relative-block">
+          <div
+            v-if="activeLocationId === undefined"
+            class="col-md-12"
+          >
+            <div class="alert center alert-info">
+              <h4>No Store Selected</h4>
+              <p>Please select a store from the stores panel on the right to view amenities and apply them to the store.</p>
+            </div>
+          </div>
+          <div v-else>
+            <div class="row">
+              <div class="col-md-12">
+                <div
+                  v-show="listErrorMessage.length"
+                  ref="listErrorMessage"
+                  class="alert alert-danger"
+                >
+                  <button
+                    class="close"
+                    data-close="alert"
+                    @click="clearError('listErrorMessage')"
+                  />
+                  <span>{{ listErrorMessage }}</span>
+                </div>
+              </div>
+            </div>
+            <loading-screen
+              :show="loadingAmenities"
+              :color="'#2C3E50'"
+              :display="'inline'"
+            />
+            <div
+              v-if="amenities.length && !loadingAmenities"
+              class="mt-element-list margin-top-15"
+            >
+              <div
+                v-show="activeLocationId"
+                class="mt-list-container list-news ext-1 no-border"
+              >
+                <ul>
+                  <li
+                    v-for="amenity in amenities"
+                    :id="'amenity-' + amenity.id"
+                    :key="amenity.id"
+                    class="mt-list-item actions-at-left margin-top-15"
+                  >
+                    <div class="list-item-actions">
+                      <el-tooltip
+                        v-if="!$root.permissions['stores amenities update'] && !$root.permissions['stores amenities read']"
+                        content="View"
+                        effect="light"
+                        placement="right"
+                      >
+                        <a
+                          class="btn btn-circle btn-icon-only btn-default"
+                          @click="editAmenity(amenity, $event)"
+                        >
+                          <i class="fa fa-lg fa-eye" />
+                        </a>
+                      </el-tooltip>
+                      <el-tooltip
+                        v-if="$root.permissions['stores amenities update']"
+                        content="Edit"
+                        effect="light"
+                        placement="right"
+                      >
+                        <a
+                          class="btn btn-circle btn-icon-only btn-default"
+                          @click="editAmenity(amenity, $event)"
+                        >
+                          <i class="fa fa-lg fa-pencil" />
+                        </a>
+                      </el-tooltip>
+                      <el-tooltip
+                        v-if="$root.permissions['stores amenities delete']"
+                        content="Delete"
+                        effect="light"
+                        placement="right"
+                      >
+                        <a
+                          class="btn btn-circle btn-icon-only btn-default"
+                          @click="confirmDelete(amenity, $event)"
+                        >
+                          <i class="fa fa-lg fa-trash" />
+                        </a>
+                      </el-tooltip>
+                    </div>
+                    <div class="list-thumb">
+                      <img
+                        v-if="amenity.image_url.length"
+                        :src="amenity.image_url"
+                      >
+                      <img
+                        v-else
+                        src="../../../assets/img/app/image-placeholder.png"
+                      >
+                    </div>
+                    <div class="list-datetime bold uppercase font-red">
+                      <span>{{ amenity.name }}</span>
+                    </div>
+                    <div class="list-item-content height-mod">
+                      <div class="col-xs-5">
+                        <strong>Order:</strong>
+                        <span>{{ amenity.order }}</span>
+                      </div>
+                      <div class="">
+                        <div v-if="amenity.selected">
+                          <button
+                            class="btn btn-success custom-button full-width"
+                            :disabled="!$root.permissions['stores amenities update']"
+                            @click="toggleChecked(amenity, $event)"
+                          >
+                            <i class="fa fa-2x fa-check" />
+                          </button>
+                        </div>
+                        <div v-if="!amenity.selected">
+                          <button
+                            class="btn btn-danger custom-button full-width"
+                            :disabled="!$root.permissions['stores amenities update']"
+                            @click="toggleChecked(amenity, $event)"
+                          >
+                            <i class="fa fa-2x fa-times" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+                <div
+                  v-show="$root.activeLocation.id !== undefined"
+                  class="form-actions right margin-top-20"
+                >
+                  <button
+                    type="button"
+                    class="btn blue"
+                    :disabled="!$root.permissions['stores amenities update'] || assigning"
+                    @click="assignAmenitiesToLocation()"
+                  >
+                    Save
+                    <i
+                      v-show="assigning"
+                      class="fa fa-spinner fa-pulse fa-fw"
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="margin-top-20">
+              <no-results
+                :show="!amenities.length && !loadingAmenities"
+                :type="'amenities'"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END LIST -->
 
-		<!-- START EDIT -->
-		<modal :show="showEditModal"
-		       effect="fade"
-		       @closeOnEscape="closeEditModal">
-			<div slot="modal-header"
-			     class="modal-header">
-				<button type="button"
-				        class="close"
-				        @click="closeEditModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center"
-				    v-if="!$root.permissions['stores amenities update']">
-					View Amenity
-				</h4>
-				<h4 class="modal-title center"
-				    v-if="$root.permissions['stores amenities update']">
-					Edit Amenity
-				</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<form role="form">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="alert alert-danger"
-							     v-show="editErrorMessage.length"
-							     ref="editErrorMessage">
-								<button class="close"
-								        data-close="alert"
-								        @click.prevent="clearError('editErrorMessage')">
-								</button>
-								<span>{{ editErrorMessage }}</span>
-							</div>
-						</div>
-						<div :class="{'col-xs-4 col-xs-offset-4' : !selectImageMode, 'col-xs-12' : selectImageMode}">
-							<resource-picker @open="imageEdit()"
-							                 @close="mainEdit()"
-							                 @selected="updateEditedImage"
-							                 buttonText="Select Image"
-							                 :isModal="false"
-							                 :imageUrl="amenityToEdit.image_url"
-							                 :imageButton="true"
-							                 class="margin-top-15"
-							                 :disabled="!$root.permissions['stores amenities update']">
-							</resource-picker>
-						</div>
-						<div v-show="!selectImageMode"
-						     class="col-xs-12">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': amenityToEdit.name.length}"
-								       id="form_control_1"
-								       v-model="amenityToEdit.name"
-								       :disabled="!$root.permissions['stores amenities update']">
-								<label for="form_control_1">Amenity Name</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': amenityToEdit.order.length}"
-								       id="form_control_3"
-								       :disabled="!$root.permissions['stores amenities update']"
-								       v-model="amenityToEdit.order">
-								<label for="form_control_3">Amenity Order</label>
-							</div>
-						</div>
-					</div>
-				</form>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer clear">
-				<button @click="updateAmenity()"
-				        v-show="!selectImageMode"
-				        v-if="$root.permissions['stores amenities update']"
-				        type="submit"
-				        class="btn blue"
-				        :disabled="updating">
-					Save
-					<i v-show="updating"
-					   class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-				<button @click="closeEditModal()"
-				        v-show="!selectImageMode"
-				        v-if="!$root.permissions['stores amenities update']"
-				        type="submit"
-				        class="btn blue">Close</button>
-			</div>
-		</modal>
-		<!-- END EDIT -->
+    <!-- START EDIT -->
+    <modal
+      :show="showEditModal"
+      effect="fade"
+      @closeOnEscape="closeEditModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeEditModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4
+          v-if="!$root.permissions['stores amenities update']"
+          class="modal-title center"
+        >
+          View Amenity
+        </h4>
+        <h4
+          v-if="$root.permissions['stores amenities update']"
+          class="modal-title center"
+        >
+          Edit Amenity
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <form role="form">
+          <div class="row">
+            <div class="col-md-12">
+              <div
+                v-show="editErrorMessage.length"
+                ref="editErrorMessage"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  data-close="alert"
+                  @click.prevent="clearError('editErrorMessage')"
+                />
+                <span>{{ editErrorMessage }}</span>
+              </div>
+            </div>
+            <div :class="{'col-xs-4 col-xs-offset-4' : !selectImageMode, 'col-xs-12' : selectImageMode}">
+              <resource-picker
+                button-text="Select Image"
+                :is-modal="false"
+                :image-url="amenityToEdit.image_url"
+                :image-button="true"
+                class="margin-top-15"
+                :disabled="!$root.permissions['stores amenities update']"
+                @open="imageEdit()"
+                @close="mainEdit()"
+                @selected="updateEditedImage"
+              />
+            </div>
+            <div
+              v-show="!selectImageMode"
+              class="col-xs-12"
+            >
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_1"
+                  v-model="amenityToEdit.name"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': amenityToEdit.name.length}"
+                  :disabled="!$root.permissions['stores amenities update']"
+                >
+                <label for="form_control_1">
+                  Amenity Name
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_3"
+                  v-model="amenityToEdit.order"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': amenityToEdit.order.length}"
+                  :disabled="!$root.permissions['stores amenities update']"
+                >
+                <label for="form_control_3">
+                  Amenity Order
+                </label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer clear"
+      >
+        <button
+          v-show="!selectImageMode"
+          v-if="$root.permissions['stores amenities update']"
+          type="submit"
+          class="btn blue"
+          :disabled="updating"
+          @click="updateAmenity()"
+        >
+          Save
+          <i
+            v-show="updating"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+        <button
+          v-show="!selectImageMode"
+          v-if="!$root.permissions['stores amenities update']"
+          type="submit"
+          class="btn blue"
+          @click="closeEditModal()"
+        >
+          Close
+        </button>
+      </div>
+    </modal>
+    <!-- END EDIT -->
 
-		<!-- START DELETE -->
-		<modal :show="showDeleteModal"
-		       effect="fade"
-		       @closeOnEscape="closeDeleteModal">
-			<div slot="modal-header"
-			     class="modal-header">
-				<button type="button"
-				        class="close"
-				        @click="closeDeleteModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Confirm Delete</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<p>Are you sure you want to delete {{amenityToDelete.name}}?</p>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer clear">
-				<button type="button"
-				        class="btn blue"
-				        @click="deleteAmenity()"
-				        :disabled="deleting">
-					Delete
-					<i v-show="deleting"
-					   class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-			</div>
-		</modal>
-		<!-- START DELETE -->
-	</div>
+    <!-- START DELETE -->
+    <modal
+      :show="showDeleteModal"
+      effect="fade"
+      @closeOnEscape="closeDeleteModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeDeleteModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Confirm Delete
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <p>Are you sure you want to delete {{ amenityToDelete.name }}?</p>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer clear"
+      >
+        <button
+          type="button"
+          class="btn blue"
+          :disabled="deleting"
+          @click="deleteAmenity()"
+        >
+          Delete
+          <i
+            v-show="deleting"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+      </div>
+    </modal>
+    <!-- START DELETE -->
+  </div>
 </template>
 
 <script>
@@ -357,6 +488,13 @@ import AmenitiesFunctions from '@/controllers/Amenities'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
+	components: {
+		Breadcrumb,
+		LoadingScreen,
+		Modal,
+		NoResults,
+		ResourcePicker
+	},
 	data () {
 		return {
 			breadcrumbArray: [
@@ -964,13 +1102,6 @@ export default {
 		closeDeleteModal () {
 			this.showDeleteModal = false
 		}
-	},
-	components: {
-		Breadcrumb,
-		LoadingScreen,
-		Modal,
-		NoResults,
-		ResourcePicker
 	}
 }
 </script>

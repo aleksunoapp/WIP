@@ -1,74 +1,102 @@
 <template>
-	<modal :show="showPortionsModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="modal">
-		<div slot="modal-header"
-		     class="modal-header">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Select a Portion</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="alert alert-danger"
-			     v-show="errorMessage"
-			     ref="errorMessage">
-				<button class="close"
-				        @click="clearError()"></button>
-				<span>{{errorMessage}}</span>
-			</div>
-			<div class="table-scrollable table-fixed-height">
-				<table class="table">
-					<thead>
-						<tr>
-							<th> </th>
-							<th> Icon </th>
-							<th> Name </th>
-							<th> Multiplier </th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="portion in portions" :key="portion.id">
-							<td>
-								<div class="md-checkbox has-success">
-									<input type="checkbox"
-									       :id="'portion_checkbox_' + portion.id"
-									       class="md-check"
-									       v-model="portion.selected">
-									<label :for="'portion_checkbox_' + portion.id">
-										<span class="inc"></span>
-										<span class="check"></span>
-										<span class="box"></span>
-									</label>
-								</div>
-							</td>
-							<td> <img :src="portion.icon_url"
-								     width="30"
-								     height="30"> </td>
-							<td> {{portion.name}} </td>
-							<td> {{portion.multiplier}} </td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button type="button"
-			        class="btn btn-primary"
-			        @click="applyPortionsToItem()"
-							:disabled="saving">
-				Apply Portions
-				<i v-show="saving"
-						class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-		</div>
-	</modal>
+  <modal
+    ref="modal"
+    :show="showPortionsModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Select a Portion
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div
+        v-show="errorMessage"
+        ref="errorMessage"
+        class="alert alert-danger"
+      >
+        <button
+          class="close"
+          @click="clearError()"
+        />
+        <span>{{ errorMessage }}</span>
+      </div>
+      <div class="table-scrollable table-fixed-height">
+        <table class="table">
+          <thead>
+            <tr>
+              <th />
+              <th> Icon </th>
+              <th> Name </th>
+              <th> Multiplier </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="portion in portions"
+              :key="portion.id"
+            >
+              <td>
+                <div class="md-checkbox has-success">
+                  <input
+                    :id="'portion_checkbox_' + portion.id"
+                    v-model="portion.selected"
+                    type="checkbox"
+                    class="md-check"
+                  >
+                  <label :for="'portion_checkbox_' + portion.id">
+                    <span class="inc" />
+                    <span class="check" />
+                    <span class="box" />
+                  </label>
+                </div>
+              </td>
+              <td>
+                <img
+                  :src="portion.icon_url"
+                  width="30"
+                  height="30"
+                >
+              </td>
+              <td> {{ portion.name }} </td>
+              <td> {{ portion.multiplier }} </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        type="button"
+        class="btn btn-primary"
+        :disabled="saving"
+        @click="applyPortionsToItem()"
+      >
+        Apply Portions
+        <i
+          v-show="saving"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -77,13 +105,8 @@ import PortionsFunctions from '../../../../controllers/Portions'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	data () {
-		return {
-			showPortionsModal: false,
-			errorMessage: '',
-			portions: [],
-			saving: false
-		}
+	components: {
+		Modal
 	},
 	props: {
 		appliedPortions: {
@@ -97,6 +120,14 @@ export default {
 		itemType: {
 			type: String,
 			default: 'modifier-item'
+		}
+	},
+	data () {
+		return {
+			showPortionsModal: false,
+			errorMessage: '',
+			portions: [],
+			saving: false
 		}
 	},
 	created () {
@@ -256,9 +287,6 @@ export default {
 		closeModal () {
 			this.$emit('closePortionsListModal', this.selectedItemId)
 		}
-	},
-	components: {
-		Modal
 	}
 }
 </script>

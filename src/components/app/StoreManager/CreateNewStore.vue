@@ -1,775 +1,1012 @@
 <template>
-	<div>
-		<!-- BEGIN PAGE BAR -->
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
-		<!-- END PAGE BAR -->
-		<!-- BEGIN PAGE TITLE-->
-		<h1 class="page-title">Create New Store</h1>
-		<!-- END PAGE TITLE-->
-		<div class="alert alert-danger"
-		     v-if="errorMessage.length">
-			<span>{{errorMessage}}</span>
-		</div>
-		<el-steps :active="activeTab"
-		          align-center>
-			<el-step title="Store Information"
-			         :status="steps.step0_status"
-			         description="Enter address and basic info"></el-step>
-			<el-step title="Store Profile"
-			         :status="steps.step1_status"
-			         description="Enter delivery info"></el-step>
-			<el-step title="Store Hours"
-			         :status="steps.step2_status"
-			         description="Enter store hours"></el-step>
-			<el-step @click.native="goToStep(3)"
-			         :class="{'clickable' : steps.step2_status === 'success'}"
-			         title="Store Holiday Hours"
-			         :status="steps.step3_status"
-			         description="Add holiday hours"></el-step>
-			<el-step title="Store Images"
-			         :class="{'clickable' : steps.step2_status === 'success'}"
-			         @click.native="goToStep(4)"
-			         :status="steps.step4_status"
-			         description="Add images"></el-step>
-		</el-steps>
-		<div class="panels-wrapper margin-top-15"
-		     v-show="displayStoreForm && !errorMessage.length && !successMessage.length">
-			<div class="panel"
-			     v-show="activeTab === 0">
-				<div class="portlet light bordered">
-					<div class="portlet-body form">
-						<form role="form"
-						      novalidate>
-							<div class="alert alert-danger"
-							     v-show="storeInformationError.length"
-							     ref="storeInformationError">
-								<button class="close"
-								        data-close="alert"
-								        @click.prevent="clearError('storeInformationError')"></button>
-								<span>{{storeInformationError}}</span>
-							</div>
-							<div class="col-md-6">
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input ref="name"
-									       type="text"
-									       class="form-control input-sm"
-									       :class="{'edited' : newStore.name.length}"
-									       id="form_control_1"
-									       v-model="newStore.name">
-									<label for="form_control_1">Store Name</label>
-								</div>
-								<div class="autocomplete-wrapper">
-									<label for="address_line_1"
-									       class="fake-md-label"
-									       :class="{'raised' : newStore.address_line_1.length || autocompleteFocused}">Address Line 1</label>
-									<el-autocomplete class="inline-input md-autocomplete"
-									                 :class="{'raised' : newStore.address_line_1.length || autocompleteFocused}"
-									                 label="Address Line 1"
-									                 v-model="newStore.address_line_1"
-									                 :fetch-suggestions="querySearch"
-									                 :trigger-on-focus="false"
-									                 @select="selectLocation"
-									                 @focus="focusAutocomplete"
-									                 @blur="blurAutocomplete"
-									                 id="address_line_1">
-									</el-autocomplete>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       class="form-control input-sm"
-									       id="form_control_2"
-									       v-model="newStore.address_line_2">
-									<label for="form_control_2">Address Line 2</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       :disabled="placesApi.city"
-									       class="form-control input-sm"
-									       id="form_control_3"
-									       :class="{'edited': newStore.city.length}"
-									       v-model="newStore.city">
-									<label for="form_control_3">Store City</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       :disabled="placesApi.province"
-									       class="form-control input-sm"
-									       id="form_control_4"
-									       :class="{'edited': newStore.province.length}"
-									       v-model="newStore.province">
-									<label for="form_control_4">Store Province</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       :disabled="placesApi.country"
-									       class="form-control input-sm"
-									       id="form_control_5"
-									       :class="{'edited': newStore.country.length}"
-									       v-model="newStore.country">
-									<label for="form_control_5">Store Country</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       :disabled="placesApi.country_code"
-									       class="form-control input-sm"
-									       id="form_control_country_code"
-									       :class="{'edited': newStore.country_code.length}"
-									       v-model="newStore.country_code">
-									<label for="form_control_country_code">Country Code</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       :disabled="placesApi.postal_code"
-									       class="form-control input-sm"
-									       id="form_control_6"
-									       :class="{'edited': newStore.postal_code.length}"
-									       v-model="newStore.postal_code">
-									<label for="form_control_6">Store Postal Code</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label"
-								     v-if="storeGroups.length">
-									<label>Select Store Group:</label><br>
-									<el-select v-model="newStore.locationsgroup_id"
-									           filterable
-									           placeholder="Select a group"
-									           size="mini">
-										<el-option v-for="group in storeGroups"
-										           :key="group.id"
-										           :label="group.name"
-										           :value="group.id">
-										</el-option>
-									</el-select>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<label>Store Timezone:</label><br>
-									<el-select v-model="newStore.timezone"
-									           filterable
-									           placeholder="Select a timezone"
-									           size="mini">
-										<el-option v-for="(zone, i) in timezones"
-										           :label="zone.label"
-										           :value="zone.value"
-										           :key="i">
-										</el-option>
-									</el-select>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<label>Store Currency:</label><br>
-									<el-select v-model="newStore.currency"
-									           filterable
-									           placeholder="Select a currency"
-									           size="mini">
-										<el-option label="CAD"
-										           value="CAD"></el-option>
-										<el-option label="USD"
-										           value="USD"></el-option>
-										<el-option label="NZD"
-										           value="NZD"></el-option>
-									</el-select>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<label>Menu Tier:</label><br>
-									<el-select v-model="newStore.menu_tier_id"
-									           filterable
-									           placeholder="Select a tier"
-									           size="mini">
-										<el-option key="default"
-										           label="none"
-										           value="0">
-										</el-option>
-										<el-option v-if="menuTiers.length"
-										           v-for="tier in menuTiers"
-										           :key="tier.id"
-										           :label="tier.name"
-										           :value="tier.id">
-										</el-option>
-									</el-select>
-								</div>
-							</div>
-							<div class="col-md-6">
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input ref="displayName"
-									       type="text"
-									       class="form-control input-sm"
-									       id="form_control_7"
-									       v-model="newStore.display_name">
-									<label for="form_control_7">Store Display Name</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       class="form-control input-sm"
-									       id="form_control_8"
-									       v-model="newStore.internal_id">
-									<label for="form_control_8">Store Internal ID</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       class="form-control input-sm"
-									       id="form_control_9"
-									       v-model="newStore.api_key">
-									<label for="form_control_9">External API Key (optional)</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       class="form-control input-sm"
-									       id="form_control_10"
-									       v-model="newStore.phone">
-									<label for="form_control_10">Store Phone Number</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       class="form-control input-sm"
-									       id="form_control_11"
-									       v-model="newStore.fax">
-									<label for="form_control_11">Store Fax Number (optional)</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       class="form-control input-sm"
-									       id="form_control_12"
-									       v-model="newStore.email">
-									<label for="form_control_12">Store Email</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       class="form-control input-sm"
-									       id="form_control_tax"
-									       v-model="newStore.tax">
-									<label for="form_control_tax">Tax</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<label>Price Includes Tax:</label><br>
-									<el-switch v-model="newStore.price_includes_tax"
-									           active-color="#0c6"
-									           inactive-color="#ff4949"
-									           :active-value="1"
-									           :inactive-value="0"
-									           active-text="Yes"
-									           inactive-text="No">
-									</el-switch>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<label>Store Is Corporate:</label><br>
-									<el-switch v-model="newStore.is_corporate"
-									           active-color="#0c6"
-									           inactive-color="#ff4949"
-									           :active-value="1"
-									           :inactive-value="0"
-									           active-text="Yes"
-									           inactive-text="No">
-									</el-switch>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<label>Status:</label><br>
-									<el-switch v-model="newStore.status"
-									           active-color="#0c6"
-									           inactive-color="#ff4949"
-									           :active-value="1"
-									           :inactive-value="0"
-									           active-text="Active"
-									           inactive-text="Inactive">
-									</el-switch>
-								</div>
-							</div>
-							<div class="form-actions noborder clear">
-								<div class="col-md-12">
-									<el-button type="primary"
-									           @click="createNewStore($event)"
-									           :loading="loadingCreateNewStore"
-									           :disabled="loadingCreateNewStore && createStoreMode === 'info'"
-									           size="medium">
-										<span v-show="!loadingCreateNewStore">Save And Next</span>
-									</el-button>
-								</div>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-			<div class="panel"
-			     v-show="activeTab === 1">
-				<div class="portlet light bordered">
-					<div class="portlet-body form">
-						<form role="form"
-						      novalidate
-						      @submit.prevent="createStoreMeta()">
-							<div class="form-body">
-								<div class="alert alert-danger"
-								     v-show="storeMetaError.length"
-								     ref="storeMetaError">
-									<button class="close"
-									        data-close="alert"
-									        @click="clearError('storeMetaError')"></button>
-									<span>{{storeMetaError}}</span>
-								</div>
-								<div class="col-md-6">
-									<table class="table">
-										<thead>
-											<tr>
-												<th> Field </th>
-												<th> Value </th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td>
-													Opening Soon
-												</td>
-												<td>
-													<el-switch ref="openingSoon"
-													           v-model="newStoreMeta.opening_soon"
-													           active-color="#0c6"
-													           inactive-color="#ff4949"
-													           :active-value="1"
-													           :inactive-value="0"
-													           active-text="Yes"
-													           inactive-text="No">
-													</el-switch>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													Store Has Online Ordering
-												</td>
-												<td>
-													<el-switch v-model="newStoreMeta.online_ordering"
-													           :disabled="newStoreMeta.opening_soon === 1"
-													           active-color="#0c6"
-													           inactive-color="#ff4949"
-													           :active-value="1"
-													           :inactive-value="0"
-													           active-text="Yes"
-													           inactive-text="No">
-													</el-switch>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													Store Has Online Ordering Enabled
-												</td>
-												<td>
-													<el-switch v-model="newStoreMeta.current_online_ordering_status"
-													           :disabled="newStoreMeta.online_ordering === 0 || newStoreMeta.opening_soon === 1"
-													           active-color="#0c6"
-													           inactive-color="#ff4949"
-													           :active-value="1"
-													           :inactive-value="0"
-													           active-text="Yes"
-													           inactive-text="No">
-													</el-switch>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													Store Has Delivery
-												</td>
-												<td>
-													<el-switch ref="delivery"
-													           v-model="newStoreMeta.delivery"
-													           :disabled="newStoreMeta.opening_soon === 1"
-													           active-color="#0c6"
-													           inactive-color="#ff4949"
-													           :active-value="1"
-													           :inactive-value="0"
-													           active-text="Yes"
-													           inactive-text="No">
-													</el-switch>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													Store Has Delivery Enabled
-												</td>
-												<td>
-													<el-switch v-model="newStoreMeta.current_delivery_status"
-													           :disabled="newStoreMeta.delivery === 0 || newStoreMeta.opening_soon === 1"
-													           active-color="#0c6"
-													           inactive-color="#ff4949"
-													           :active-value="1"
-													           :inactive-value="0"
-													           active-text="Yes"
-													           inactive-text="No">
-													</el-switch>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													Store Has Immediate Delivery
-												</td>
-												<td>
-													<el-switch v-model="newStoreMeta.delivery_immediate"
-													           :disabled="newStoreMeta.delivery === 0 || newStoreMeta.opening_soon === 1"
-													           active-color="#0c6"
-													           inactive-color="#ff4949"
-													           :active-value="1"
-													           :inactive-value="0"
-													           active-text="Yes"
-													           inactive-text="No">
-													</el-switch>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													ASAP Ordering
-												</td>
-												<td>
-													<el-switch v-model="newStoreMeta.pickup_immediate"
-													           active-color="#0c6"
-													           inactive-color="#ff4949"
-													           :active-value="1"
-													           :inactive-value="0"
-													           active-text="Yes"
-													           inactive-text="No">
-													</el-switch>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													Pickup Later
-												</td>
-												<td>
-													<el-switch v-model="newStoreMeta.enable_receive_later"
-													           active-color="#0c6"
-													           inactive-color="#ff4949"
-													           :active-value="1"
-													           :inactive-value="0"
-													           active-text="Yes"
-													           inactive-text="No">
-													</el-switch>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													Catering
-												</td>
-												<td>
-													<el-switch v-model="newStoreMeta.catering"
-													           :disabled="newStoreMeta.opening_soon === 1"
-													           active-color="#0c6"
-													           inactive-color="#ff4949"
-													           :active-value="1"
-													           :inactive-value="0"
-													           active-text="Yes"
-													           inactive-text="No">
-													</el-switch>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													Catering Enabled
-												</td>
-												<td>
-													<el-switch v-model="newStoreMeta.current_catering_status"
-													           :disabled="newStoreMeta.catering === 0 || newStoreMeta.opening_soon === 1"
-													           active-color="#0c6"
-													           inactive-color="#ff4949"
-													           :active-value="1"
-													           :inactive-value="0"
-													           active-text="Yes"
-													           inactive-text="No">
-													</el-switch>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													Promocodes
-												</td>
-												<td>
-													<el-switch v-model="newStoreMeta.enable_promocode"
-													           :disabled="newStoreMeta.opening_soon === 1"
-													           active-color="#0c6"
-													           inactive-color="#ff4949"
-													           :active-value="1"
-													           :inactive-value="0"
-													           active-text="Yes"
-													           inactive-text="No">
-													</el-switch>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													Gift Cards
-												</td>
-												<td>
-													<el-switch v-model="newStoreMeta.gift_card"
-													           :disabled="newStoreMeta.opening_soon === 1"
-													           active-color="#0c6"
-													           inactive-color="#ff4949"
-													           :active-value="1"
-													           :inactive-value="0"
-													           active-text="Yes"
-													           inactive-text="No">
-													</el-switch>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													Digital Rewards
-												</td>
-												<td>
-													<el-switch v-model="newStoreMeta.digital_reward"
-													           :disabled="newStoreMeta.opening_soon === 1"
-													           active-color="#0c6"
-													           inactive-color="#ff4949"
-													           :active-value="1"
-													           :inactive-value="0"
-													           active-text="Yes"
-													           inactive-text="No">
-													</el-switch>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													Tips
-												</td>
-												<td>
-													<el-switch v-model="newStoreMeta.enable_tip"
-													           :disabled="newStoreMeta.opening_soon === 1"
-													           active-color="#0c6"
-													           inactive-color="#ff4949"
-													           :active-value="1"
-													           :inactive-value="0"
-													           active-text="Yes"
-													           inactive-text="No">
-													</el-switch>
-												</td>
-											</tr>
-											<tr>
-												<td>
-													External online ordering enabled
-												</td>
-												<td>
-													<el-switch v-model="newStoreMeta.external_online_ordering_enabled"
-													           :disabled="newStoreMeta.opening_soon === 1"
-													           active-color="#0c6"
-													           inactive-color="#ff4949"
-													           :active-value="1"
-													           :inactive-value="0"
-													           active-text="Yes"
-													           inactive-text="No">
-													</el-switch>
-												</td>
-											</tr>
-											<tr v-show="newStoreMeta.external_online_ordering_enabled">
-												<td>
-													External order link
-												</td>
-												<td>
-													<input type="text"
-													       class="form-control input-sm"
-													       v-model="newStoreMeta.external_online_ordering_url"
-													       :disabled="newStoreMeta.opening_soon === 1">
-												</td>
-											</tr>
-											<tr>
-												<td>
-													GST Number
-												</td>
-												<td>
-													<input type="text"
-													       class="form-control input-sm"
-													       v-model="newStoreMeta.gst_number"
-													       :disabled="newStoreMeta.opening_soon === 1">
-												</td>
-											</tr>
-											<tr>
-												<td>
-													Delivery Tax
-												</td>
-												<td>
-													<input type="text"
-													       class="form-control input-sm"
-													       v-model="newStoreMeta.location_delivery_tax"
-													       :disabled="newStoreMeta.opening_soon === 1">
-												</td>
-											</tr>
-											<tr>
-												<td>
-													Payment Processor Merchant ID (MID)
-												</td>
-												<td>
-													<input type="text"
-													       class="form-control input-sm"
-													       :disabled="newStoreMeta.opening_soon === 1"
-													       v-model="newStoreMeta.merchant_id">
-												</td>
-											</tr>
-											<tr>
-												<td>
-													Payment Processor Merchant Key
-												</td>
-												<td>
-													<input type="text"
-													       class="form-control input-sm"
-													       :disabled="newStoreMeta.opening_soon === 1"
-													       v-model="newStoreMeta.merchant_key">
-												</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							</div>
-							<div class="form-actions noborder clear">
-								<div class="col-md-12">
-									<button type="submit"
-									        class="btn blue"
-									        :disabled="createStoreMode !== 'meta' || savingStoreMeta">
-										Save And Next
-										<i v-show="savingStoreMeta"
-										   class="fa fa-spinner fa-pulse fa-fw">
-										</i>
-									</button>
-								</div>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-			<div class="panel"
-			     v-show="activeTab === 2">
-				<div class="portlet light bordered">
-					<div class="portlet-body form">
-						<div class="form-body">
-							<div class="alert alert-danger"
-							     v-show="storeHoursError.length"
-							     ref="storeHoursError">
-								<button class="close"
-								        data-close="alert"
-								        @click="clearError('storeHoursError')"></button>
-								<span>{{storeHoursError}}</span>
-							</div>
-							<table class="table">
-								<thead>
-									<tr>
-										<th>Day</th>
-										<th>Opening Time</th>
-										<th>Closing Time</th>
-										<th>Status</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr v-for="hour in newStoreHours"
-									    :key="hour.day">
-										<td class="align-middle"
-										    v-if="hour.day === 0"> Sunday </td>
-										<td class="align-middle"
-										    v-if="hour.day === 1"> Monday </td>
-										<td class="align-middle"
-										    v-if="hour.day === 2"> Tuesday </td>
-										<td class="align-middle"
-										    v-if="hour.day === 3"> Wednesday </td>
-										<td class="align-middle"
-										    v-if="hour.day === 4"> Thursday </td>
-										<td class="align-middle"
-										    v-if="hour.day === 5"> Friday </td>
-										<td class="align-middle"
-										    v-if="hour.day === 6"> Saturday </td>
-										<td class="align-middle">
-											<el-time-select v-model="hour.open_time"
-											                :picker-options="{ start: '00:00', step: '00:01', end: '23:59' }"
-											                placeholder="Opening time"
-											                class="narrow-picker"></el-time-select>
-											<button data-toggle="tooltip"
-											        title="Copy to all"
-											        class="btn btn-icon-only btn-outline blue"
-											        @click="applyOpeningTimeToAll(hour.open_time, $event)">
-												<i class="fa fa-clone"
-												   aria-hidden="true"></i>
-											</button>
-										</td>
-										<td class="align-middle">
-											<el-time-select v-model="hour.close_time"
-											                :picker-options="{ start: '00:00', step: '00:01', end: '23:59' }"
-											                placeholder="Closing time"
-											                class="narrow-picker"></el-time-select>
-											<button data-toggle="tooltip"
-											        title="Copy to all"
-											        class="btn btn-icon-only btn-outline blue"
-											        @click="applyClosingTimeToAll(hour.close_time, $event)">
-												<i class="fa fa-clone"
-												   aria-hidden="true"></i>
-											</button>
-										</td>
-										<td class="align-middle">
-											<el-switch v-model="hour.open"
-											           active-color="#0c6"
-											           inactive-color="#ff4949"
-											           :active-value="1"
-											           :inactive-value="0"
-											           active-text="Open"
-											           inactive-text="Closed">
-											</el-switch>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-						<div class="form-actions noborder clear">
-							<button type="button"
-							        class="btn blue"
-							        :disabled="createStoreMode !== 'hours' || savingStoreHours"
-							        @click="createStoreHours()">
-								Save
-								<i v-show="savingStoreHours"
-								   class="fa fa-spinner fa-pulse fa-fw">
-								</i>
-							</button>
-						</div>
-						<modal :show="showHoursAlertModal"
-						       effect="fade"
-						       @closeOnEscape="closeHoursAlert">
-							<div slot="modal-header"
-							     class="modal-header">
-								<button type="button"
-								        class="close"
-								        @click="closeHoursAlert()">
-									<span>&times;</span>
-								</button>
-								<h4 class="modal-title center">Success</h4>
-							</div>
-							<div slot="modal-body"
-							     class="modal-body">
-								<div>Do you want to
-									<strong>set up holiday hours</strong>,
-									<strong>add images</strong> or
-									<strong>set up amenities</strong> for this store?</div>
-							</div>
-							<div slot="modal-footer"
-							     class="modal-footer">
-								<button class="btn btn-primary"
-								        @click="setUpHolidayHours()">Set up Holiday Hours</button>
-								<button class="btn btn-primary"
-								        @click="addImages()">Add Images</button>
-								<router-link to="/app/store_manager/amenities">
-									<button class="btn btn-primary">Set up Amenities</button>
-								</router-link>
-								<button class="btn"
-								        @click="imDone()">I'm done</button>
-							</div>
-						</modal>
-					</div>
-				</div>
-			</div>
-			<div class="panel"
-			     v-show="activeTab === 3">
-				<div class="portlet light bordered">
-					<div class="portlet-body form">
-						<add-holiday-hours :selectedLocationId="newStoreId"
-						                   :savingHolidayHours="savingHolidayHours"
-						                   @addHolidayHours="addHolidayHours">
-						</add-holiday-hours>
-					</div>
-				</div>
-			</div>
-			<div class="panel"
-			     v-show="activeTab === 4">
-				<store-images v-if="newStoreId !== null"
-				              :storeId="newStoreId" />
-			</div>
-		</div>
-	</div>
+  <div>
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
+    <!-- END PAGE BAR -->
+    <!-- BEGIN PAGE TITLE-->
+    <h1 class="page-title">
+      Create New Store
+    </h1>
+    <!-- END PAGE TITLE-->
+    <div
+      v-if="errorMessage.length"
+      class="alert alert-danger"
+    >
+      <span>{{ errorMessage }}</span>
+    </div>
+    <el-steps
+      :active="activeTab"
+      align-center
+    >
+      <el-step
+        title="Store Information"
+        :status="steps.step0_status"
+        description="Enter address and basic info"
+      />
+      <el-step
+        title="Store Profile"
+        :status="steps.step1_status"
+        description="Enter delivery info"
+      />
+      <el-step
+        title="Store Hours"
+        :status="steps.step2_status"
+        description="Enter store hours"
+      />
+      <el-step
+        :class="{'clickable' : steps.step2_status === 'success'}"
+        title="Store Holiday Hours"
+        :status="steps.step3_status"
+        description="Add holiday hours"
+        @click.native="goToStep(3)"
+      />
+      <el-step
+        title="Store Images"
+        :class="{'clickable' : steps.step2_status === 'success'}"
+        :status="steps.step4_status"
+        description="Add images"
+        @click.native="goToStep(4)"
+      />
+    </el-steps>
+    <div
+      v-show="displayStoreForm && !errorMessage.length && !successMessage.length"
+      class="panels-wrapper margin-top-15"
+    >
+      <div
+        v-show="activeTab === 0"
+        class="panel"
+      >
+        <div class="portlet light bordered">
+          <div class="portlet-body form">
+            <form
+              role="form"
+              novalidate
+            >
+              <div
+                v-show="storeInformationError.length"
+                ref="storeInformationError"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  data-close="alert"
+                  @click.prevent="clearError('storeInformationError')"
+                />
+                <span>{{ storeInformationError }}</span>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_1"
+                    ref="name"
+                    v-model="newStore.name"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited' : newStore.name.length}"
+                  >
+                  <label for="form_control_1">
+                    Store Name
+                  </label>
+                </div>
+                <div class="autocomplete-wrapper">
+                  <label
+                    for="address_line_1"
+                    class="fake-md-label"
+                    :class="{'raised' : newStore.address_line_1.length || autocompleteFocused}"
+                  >
+                    Address Line 1
+                  </label>
+                  <el-autocomplete
+                    v-model="newStore.address_line_1"
+                    id="address_line_1"
+                    class="inline-input md-autocomplete"
+                    :class="{'raised' : newStore.address_line_1.length || autocompleteFocused}"
+                    label="Address Line 1"
+                    :fetch-suggestions="querySearch"
+                    :trigger-on-focus="false"
+                    @select="selectLocation"
+                    @focus="focusAutocomplete"
+                    @blur="blurAutocomplete"
+                  />
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_2"
+                    v-model="newStore.address_line_2"
+                    type="text"
+                    class="form-control input-sm"
+                  >
+                  <label for="form_control_2">
+                    Address Line 2
+                  </label>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_3"
+                    v-model="newStore.city"
+                    type="text"
+                    :disabled="placesApi.city"
+                    class="form-control input-sm"
+                    :class="{'edited': newStore.city.length}"
+                  >
+                  <label for="form_control_3">
+                    Store City
+                  </label>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_4"
+                    v-model="newStore.province"
+                    type="text"
+                    :disabled="placesApi.province"
+                    class="form-control input-sm"
+                    :class="{'edited': newStore.province.length}"
+                  >
+                  <label for="form_control_4">
+                    Store Province
+                  </label>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_5"
+                    v-model="newStore.country"
+                    type="text"
+                    :disabled="placesApi.country"
+                    class="form-control input-sm"
+                    :class="{'edited': newStore.country.length}"
+                  >
+                  <label for="form_control_5">
+                    Store Country
+                  </label>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_country_code"
+                    v-model="newStore.country_code"
+                    type="text"
+                    :disabled="placesApi.country_code"
+                    class="form-control input-sm"
+                    :class="{'edited': newStore.country_code.length}"
+                  >
+                  <label for="form_control_country_code">
+                    Country Code
+                  </label>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_6"
+                    v-model="newStore.postal_code"
+                    type="text"
+                    :disabled="placesApi.postal_code"
+                    class="form-control input-sm"
+                    :class="{'edited': newStore.postal_code.length}"
+                  >
+                  <label for="form_control_6">
+                    Store Postal Code
+                  </label>
+                </div>
+                <div
+                  v-if="storeGroups.length"
+                  class="form-group form-md-line-input form-md-floating-label"
+                >
+                  <label>Select Store Group:</label><br>
+                  <el-select
+                    v-model="newStore.locationsgroup_id"
+                    filterable
+                    placeholder="Select a group"
+                    size="mini"
+                  >
+                    <el-option
+                      v-for="group in storeGroups"
+                      :key="group.id"
+                      :label="group.name"
+                      :value="group.id"
+                    />
+                  </el-select>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <label>Store Timezone:</label><br>
+                  <el-select
+                    v-model="newStore.timezone"
+                    filterable
+                    placeholder="Select a timezone"
+                    size="mini"
+                  >
+                    <el-option
+                      v-for="(zone, i) in timezones"
+                      :key="i"
+                      :label="zone.label"
+                      :value="zone.value"
+                    />
+                  </el-select>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <label>Store Currency:</label><br>
+                  <el-select
+                    v-model="newStore.currency"
+                    filterable
+                    placeholder="Select a currency"
+                    size="mini"
+                  >
+                    <el-option
+                      label="CAD"
+                      value="CAD"
+                    />
+                    <el-option
+                      label="USD"
+                      value="USD"
+                    />
+                    <el-option
+                      label="NZD"
+                      value="NZD"
+                    />
+                  </el-select>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <label>Menu Tier:</label><br>
+                  <el-select
+                    v-model="newStore.menu_tier_id"
+                    filterable
+                    placeholder="Select a tier"
+                    size="mini"
+                  >
+                    <el-option
+                      key="default"
+                      label="none"
+                      value="0"
+                    />
+                    <el-option
+                      v-for="tier in menuTiers"
+                      v-if="menuTiers.length"
+                      :key="tier.id"
+                      :label="tier.name"
+                      :value="tier.id"
+                    />
+                  </el-select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_7"
+                    ref="displayName"
+                    v-model="newStore.display_name"
+                    type="text"
+                    class="form-control input-sm"
+                  >
+                  <label for="form_control_7">
+                    Store Display Name
+                  </label>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_8"
+                    v-model="newStore.internal_id"
+                    type="text"
+                    class="form-control input-sm"
+                  >
+                  <label for="form_control_8">
+                    Store Internal ID
+                  </label>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_9"
+                    v-model="newStore.api_key"
+                    type="text"
+                    class="form-control input-sm"
+                  >
+                  <label for="form_control_9">
+                    External API Key (optional)
+                  </label>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_10"
+                    v-model="newStore.phone"
+                    type="text"
+                    class="form-control input-sm"
+                  >
+                  <label for="form_control_10">
+                    Store Phone Number
+                  </label>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_11"
+                    v-model="newStore.fax"
+                    type="text"
+                    class="form-control input-sm"
+                  >
+                  <label for="form_control_11">
+                    Store Fax Number (optional)
+                  </label>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_12"
+                    v-model="newStore.email"
+                    type="text"
+                    class="form-control input-sm"
+                  >
+                  <label for="form_control_12">
+                    Store Email
+                  </label>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_tax"
+                    v-model="newStore.tax"
+                    type="text"
+                    class="form-control input-sm"
+                  >
+                  <label for="form_control_tax">
+                    Tax
+                  </label>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <label>Price Includes Tax:</label><br>
+                  <el-switch
+                    v-model="newStore.price_includes_tax"
+                    active-color="#0c6"
+                    inactive-color="#ff4949"
+                    :active-value="1"
+                    :inactive-value="0"
+                    active-text="Yes"
+                    inactive-text="No"
+                  />
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <label>Store Is Corporate:</label><br>
+                  <el-switch
+                    v-model="newStore.is_corporate"
+                    active-color="#0c6"
+                    inactive-color="#ff4949"
+                    :active-value="1"
+                    :inactive-value="0"
+                    active-text="Yes"
+                    inactive-text="No"
+                  />
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <label>Status:</label><br>
+                  <el-switch
+                    v-model="newStore.status"
+                    active-color="#0c6"
+                    inactive-color="#ff4949"
+                    :active-value="1"
+                    :inactive-value="0"
+                    active-text="Active"
+                    inactive-text="Inactive"
+                  />
+                </div>
+              </div>
+              <div class="form-actions noborder clear">
+                <div class="col-md-12">
+                  <el-button
+                    type="primary"
+                    :loading="loadingCreateNewStore"
+                    :disabled="loadingCreateNewStore && createStoreMode === 'info'"
+                    size="medium"
+                    @click="createNewStore($event)"
+                  >
+                    <span v-show="!loadingCreateNewStore">
+                      Save And Next
+                    </span>
+                  </el-button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div
+        v-show="activeTab === 1"
+        class="panel"
+      >
+        <div class="portlet light bordered">
+          <div class="portlet-body form">
+            <form
+              role="form"
+              novalidate
+              @submit.prevent="createStoreMeta()"
+            >
+              <div class="form-body">
+                <div
+                  v-show="storeMetaError.length"
+                  ref="storeMetaError"
+                  class="alert alert-danger"
+                >
+                  <button
+                    class="close"
+                    data-close="alert"
+                    @click="clearError('storeMetaError')"
+                  />
+                  <span>{{ storeMetaError }}</span>
+                </div>
+                <div class="col-md-6">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th> Field </th>
+                        <th> Value </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          Opening Soon
+                        </td>
+                        <td>
+                          <el-switch
+                            ref="openingSoon"
+                            v-model="newStoreMeta.opening_soon"
+                            active-color="#0c6"
+                            inactive-color="#ff4949"
+                            :active-value="1"
+                            :inactive-value="0"
+                            active-text="Yes"
+                            inactive-text="No"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          Store Has Online Ordering
+                        </td>
+                        <td>
+                          <el-switch
+                            v-model="newStoreMeta.online_ordering"
+                            :disabled="newStoreMeta.opening_soon === 1"
+                            active-color="#0c6"
+                            inactive-color="#ff4949"
+                            :active-value="1"
+                            :inactive-value="0"
+                            active-text="Yes"
+                            inactive-text="No"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          Store Has Online Ordering Enabled
+                        </td>
+                        <td>
+                          <el-switch
+                            v-model="newStoreMeta.current_online_ordering_status"
+                            :disabled="newStoreMeta.online_ordering === 0 || newStoreMeta.opening_soon === 1"
+                            active-color="#0c6"
+                            inactive-color="#ff4949"
+                            :active-value="1"
+                            :inactive-value="0"
+                            active-text="Yes"
+                            inactive-text="No"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          Store Has Delivery
+                        </td>
+                        <td>
+                          <el-switch
+                            ref="delivery"
+                            v-model="newStoreMeta.delivery"
+                            :disabled="newStoreMeta.opening_soon === 1"
+                            active-color="#0c6"
+                            inactive-color="#ff4949"
+                            :active-value="1"
+                            :inactive-value="0"
+                            active-text="Yes"
+                            inactive-text="No"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          Store Has Delivery Enabled
+                        </td>
+                        <td>
+                          <el-switch
+                            v-model="newStoreMeta.current_delivery_status"
+                            :disabled="newStoreMeta.delivery === 0 || newStoreMeta.opening_soon === 1"
+                            active-color="#0c6"
+                            inactive-color="#ff4949"
+                            :active-value="1"
+                            :inactive-value="0"
+                            active-text="Yes"
+                            inactive-text="No"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          Store Has Immediate Delivery
+                        </td>
+                        <td>
+                          <el-switch
+                            v-model="newStoreMeta.delivery_immediate"
+                            :disabled="newStoreMeta.delivery === 0 || newStoreMeta.opening_soon === 1"
+                            active-color="#0c6"
+                            inactive-color="#ff4949"
+                            :active-value="1"
+                            :inactive-value="0"
+                            active-text="Yes"
+                            inactive-text="No"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          ASAP Ordering
+                        </td>
+                        <td>
+                          <el-switch
+                            v-model="newStoreMeta.pickup_immediate"
+                            active-color="#0c6"
+                            inactive-color="#ff4949"
+                            :active-value="1"
+                            :inactive-value="0"
+                            active-text="Yes"
+                            inactive-text="No"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          Pickup Later
+                        </td>
+                        <td>
+                          <el-switch
+                            v-model="newStoreMeta.enable_receive_later"
+                            active-color="#0c6"
+                            inactive-color="#ff4949"
+                            :active-value="1"
+                            :inactive-value="0"
+                            active-text="Yes"
+                            inactive-text="No"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          Catering
+                        </td>
+                        <td>
+                          <el-switch
+                            v-model="newStoreMeta.catering"
+                            :disabled="newStoreMeta.opening_soon === 1"
+                            active-color="#0c6"
+                            inactive-color="#ff4949"
+                            :active-value="1"
+                            :inactive-value="0"
+                            active-text="Yes"
+                            inactive-text="No"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          Catering Enabled
+                        </td>
+                        <td>
+                          <el-switch
+                            v-model="newStoreMeta.current_catering_status"
+                            :disabled="newStoreMeta.catering === 0 || newStoreMeta.opening_soon === 1"
+                            active-color="#0c6"
+                            inactive-color="#ff4949"
+                            :active-value="1"
+                            :inactive-value="0"
+                            active-text="Yes"
+                            inactive-text="No"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          Promocodes
+                        </td>
+                        <td>
+                          <el-switch
+                            v-model="newStoreMeta.enable_promocode"
+                            :disabled="newStoreMeta.opening_soon === 1"
+                            active-color="#0c6"
+                            inactive-color="#ff4949"
+                            :active-value="1"
+                            :inactive-value="0"
+                            active-text="Yes"
+                            inactive-text="No"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          Gift Cards
+                        </td>
+                        <td>
+                          <el-switch
+                            v-model="newStoreMeta.gift_card"
+                            :disabled="newStoreMeta.opening_soon === 1"
+                            active-color="#0c6"
+                            inactive-color="#ff4949"
+                            :active-value="1"
+                            :inactive-value="0"
+                            active-text="Yes"
+                            inactive-text="No"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          Digital Rewards
+                        </td>
+                        <td>
+                          <el-switch
+                            v-model="newStoreMeta.digital_reward"
+                            :disabled="newStoreMeta.opening_soon === 1"
+                            active-color="#0c6"
+                            inactive-color="#ff4949"
+                            :active-value="1"
+                            :inactive-value="0"
+                            active-text="Yes"
+                            inactive-text="No"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          Tips
+                        </td>
+                        <td>
+                          <el-switch
+                            v-model="newStoreMeta.enable_tip"
+                            :disabled="newStoreMeta.opening_soon === 1"
+                            active-color="#0c6"
+                            inactive-color="#ff4949"
+                            :active-value="1"
+                            :inactive-value="0"
+                            active-text="Yes"
+                            inactive-text="No"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          External online ordering enabled
+                        </td>
+                        <td>
+                          <el-switch
+                            v-model="newStoreMeta.external_online_ordering_enabled"
+                            :disabled="newStoreMeta.opening_soon === 1"
+                            active-color="#0c6"
+                            inactive-color="#ff4949"
+                            :active-value="1"
+                            :inactive-value="0"
+                            active-text="Yes"
+                            inactive-text="No"
+                          />
+                        </td>
+                      </tr>
+                      <tr v-show="newStoreMeta.external_online_ordering_enabled">
+                        <td>
+                          External order link
+                        </td>
+                        <td>
+                          <input
+                            v-model="newStoreMeta.external_online_ordering_url"
+                            type="text"
+                            class="form-control input-sm"
+                            :disabled="newStoreMeta.opening_soon === 1"
+                          >
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          GST Number
+                        </td>
+                        <td>
+                          <input
+                            v-model="newStoreMeta.gst_number"
+                            type="text"
+                            class="form-control input-sm"
+                            :disabled="newStoreMeta.opening_soon === 1"
+                          >
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          Delivery Tax
+                        </td>
+                        <td>
+                          <input
+                            v-model="newStoreMeta.location_delivery_tax"
+                            type="text"
+                            class="form-control input-sm"
+                            :disabled="newStoreMeta.opening_soon === 1"
+                          >
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          Payment Processor Merchant ID (MID)
+                        </td>
+                        <td>
+                          <input
+                            v-model="newStoreMeta.merchant_id"
+                            type="text"
+                            class="form-control input-sm"
+                            :disabled="newStoreMeta.opening_soon === 1"
+                          >
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          Payment Processor Merchant Key
+                        </td>
+                        <td>
+                          <input
+                            v-model="newStoreMeta.merchant_key"
+                            type="text"
+                            class="form-control input-sm"
+                            :disabled="newStoreMeta.opening_soon === 1"
+                          >
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="form-actions noborder clear">
+                <div class="col-md-12">
+                  <button
+                    type="submit"
+                    class="btn blue"
+                    :disabled="createStoreMode !== 'meta' || savingStoreMeta"
+                  >
+                    Save And Next
+                    <i
+                      v-show="savingStoreMeta"
+                      class="fa fa-spinner fa-pulse fa-fw"
+                    />
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div
+        v-show="activeTab === 2"
+        class="panel"
+      >
+        <div class="portlet light bordered">
+          <div class="portlet-body form">
+            <div class="form-body">
+              <div
+                v-show="storeHoursError.length"
+                ref="storeHoursError"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  data-close="alert"
+                  @click="clearError('storeHoursError')"
+                />
+                <span>{{ storeHoursError }}</span>
+              </div>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Day</th>
+                    <th>Opening Time</th>
+                    <th>Closing Time</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="hour in newStoreHours"
+                    :key="hour.day"
+                  >
+                    <td
+                      v-if="hour.day === 0"
+                      class="align-middle"
+                    >
+                      Sunday
+                    </td>
+                    <td
+                      v-if="hour.day === 1"
+                      class="align-middle"
+                    >
+                      Monday
+                    </td>
+                    <td
+                      v-if="hour.day === 2"
+                      class="align-middle"
+                    >
+                      Tuesday
+                    </td>
+                    <td
+                      v-if="hour.day === 3"
+                      class="align-middle"
+                    >
+                      Wednesday
+                    </td>
+                    <td
+                      v-if="hour.day === 4"
+                      class="align-middle"
+                    >
+                      Thursday
+                    </td>
+                    <td
+                      v-if="hour.day === 5"
+                      class="align-middle"
+                    >
+                      Friday
+                    </td>
+                    <td
+                      v-if="hour.day === 6"
+                      class="align-middle"
+                    >
+                      Saturday
+                    </td>
+                    <td class="align-middle">
+                      <el-time-select
+                        v-model="hour.open_time"
+                        :picker-options="{ start: '00:00', step: '00:01', end: '23:59' }"
+                        placeholder="Opening time"
+                        class="narrow-picker"
+                      />
+                      <button
+                        data-toggle="tooltip"
+                        title="Copy to all"
+                        class="btn btn-icon-only btn-outline blue"
+                        @click="applyOpeningTimeToAll(hour.open_time, $event)"
+                      >
+                        <i
+                          class="fa fa-clone"
+                          aria-hidden="true"
+                        />
+                      </button>
+                    </td>
+                    <td class="align-middle">
+                      <el-time-select
+                        v-model="hour.close_time"
+                        :picker-options="{ start: '00:00', step: '00:01', end: '23:59' }"
+                        placeholder="Closing time"
+                        class="narrow-picker"
+                      />
+                      <button
+                        data-toggle="tooltip"
+                        title="Copy to all"
+                        class="btn btn-icon-only btn-outline blue"
+                        @click="applyClosingTimeToAll(hour.close_time, $event)"
+                      >
+                        <i
+                          class="fa fa-clone"
+                          aria-hidden="true"
+                        />
+                      </button>
+                    </td>
+                    <td class="align-middle">
+                      <el-switch
+                        v-model="hour.open"
+                        active-color="#0c6"
+                        inactive-color="#ff4949"
+                        :active-value="1"
+                        :inactive-value="0"
+                        active-text="Open"
+                        inactive-text="Closed"
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="form-actions noborder clear">
+              <button
+                type="button"
+                class="btn blue"
+                :disabled="createStoreMode !== 'hours' || savingStoreHours"
+                @click="createStoreHours()"
+              >
+                Save
+                <i
+                  v-show="savingStoreHours"
+                  class="fa fa-spinner fa-pulse fa-fw"
+                />
+              </button>
+            </div>
+            <modal
+              :show="showHoursAlertModal"
+              effect="fade"
+              @closeOnEscape="closeHoursAlert"
+            >
+              <div
+                slot="modal-header"
+                class="modal-header"
+              >
+                <button
+                  type="button"
+                  class="close"
+                  @click="closeHoursAlert()"
+                >
+                  <span>&times;</span>
+                </button>
+                <h4 class="modal-title center">
+                  Success
+                </h4>
+              </div>
+              <div
+                slot="modal-body"
+                class="modal-body"
+              >
+                <div>
+                  Do you want to
+                  <strong>set up holiday hours</strong>,
+                  <strong>add images</strong> or
+                  <strong>set up amenities</strong> for this store?
+                </div>
+              </div>
+              <div
+                slot="modal-footer"
+                class="modal-footer"
+              >
+                <button
+                  class="btn btn-primary"
+                  @click="setUpHolidayHours()"
+                >
+                  Set up Holiday Hours
+                </button>
+                <button
+                  class="btn btn-primary"
+                  @click="addImages()"
+                >
+                  Add Images
+                </button>
+                <router-link to="/app/store_manager/amenities">
+                  <button class="btn btn-primary">
+                    Set up Amenities
+                  </button>
+                </router-link>
+                <button
+                  class="btn"
+                  @click="imDone()"
+                >
+                  I'm done
+                </button>
+              </div>
+            </modal>
+          </div>
+        </div>
+      </div>
+      <div
+        v-show="activeTab === 3"
+        class="panel"
+      >
+        <div class="portlet light bordered">
+          <div class="portlet-body form">
+            <add-holiday-hours
+              :selected-location-id="newStoreId"
+              :saving-holiday-hours="savingHolidayHours"
+              @addHolidayHours="addHolidayHours"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        v-show="activeTab === 4"
+        class="panel"
+      >
+        <store-images
+          v-if="newStoreId !== null"
+          :store-id="newStoreId"
+        />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>

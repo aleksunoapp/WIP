@@ -1,94 +1,140 @@
 <template>
-	<modal v-bind:show="showEditFeedModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="modal">
-		<div slot="modal-header"
-		     class="modal-header center">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center"
-			    v-if="!selectImageMode">Edit News Feed</h4>
-			<h4 class="modal-title center"
-			    v-else>Select An Image</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="col-xs-12">
-				<div class="alert alert-danger"
-				     v-show="errorMessage"
-				     ref="errorMessage">
-					<button class="close"
-					        @click="clearError()"></button>
-					<span>{{errorMessage}}</span>
-				</div>
-				<div :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
-					<resource-picker @open="goToPageTwo()"
-					                 @close="goToPageOne()"
-					                 @selected="updateImage"
-					                 :imageButton="true"
-					                 :imageUrl="newsToBeEdited.image"
-					                 class="margin-top-15">
-					</resource-picker>
-				</div>
-				<div class="col-md-12"
-				     v-show="!selectImageMode">
-					<fieldset :disabled="$root.permissions['news_feed read'] && !$root.permissions['news_feed update']">
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-							       class="form-control input-sm edited"
-							       id="form_control_1"
-							       v-model="newsToBeEdited.title">
-							<label for="form_control_1">News Feed Title</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-							       class="form-control input-sm edited"
-							       id="form_control_2"
-							       v-model="newsToBeEdited.short_description">
-							<label for="form_control_2">Short Description</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-							       class="form-control input-sm edited"
-							       id="form_control_external_url_edit"
-							       v-model="newsToBeEdited.external_url">
-							<label for="form_control_external_url_edit">Link</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<textarea rows="5"
-							          class="form-control edited"
-							          id="form_control_3"
-							          v-model="newsToBeEdited.body"></textarea>
-							<label for="form_control_3">News Feed Body</label>
-						</div>
-					</fieldset>
-				</div>
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button v-if="!selectImageMode && $root.permissions['news_feed read'] && !$root.permissions['news_feed update']"
-			        type="button"
-			        class="btn btn-primary"
-			        @click="closeModal()">
-				Close
-			</button>
-			<button v-if="!selectImageMode && $root.permissions['news_feed update']"
-			        type="button"
-			        class="btn btn-primary"
-			        @click="saveEditedFeed()"
-			        :disabled="updating">
-				Save
-				<i v-show="updating"
-				   class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-		</div>
-	</modal>
+  <modal
+    ref="modal"
+    :show="showEditFeedModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header center"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4
+        v-if="!selectImageMode"
+        class="modal-title center"
+      >
+        Edit News Feed
+      </h4>
+      <h4
+        v-else
+        class="modal-title center"
+      >
+        Select An Image
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div class="col-xs-12">
+        <div
+          v-show="errorMessage"
+          ref="errorMessage"
+          class="alert alert-danger"
+        >
+          <button
+            class="close"
+            @click="clearError()"
+          />
+          <span>{{ errorMessage }}</span>
+        </div>
+        <div :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
+          <resource-picker
+            :image-button="true"
+            :image-url="newsToBeEdited.image"
+            class="margin-top-15"
+            @open="goToPageTwo()"
+            @close="goToPageOne()"
+            @selected="updateImage"
+          />
+        </div>
+        <div
+          v-show="!selectImageMode"
+          class="col-md-12"
+        >
+          <fieldset :disabled="$root.permissions['news_feed read'] && !$root.permissions['news_feed update']">
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_1"
+                v-model="newsToBeEdited.title"
+                type="text"
+                class="form-control input-sm edited"
+              >
+              <label for="form_control_1">
+                News Feed Title
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_2"
+                v-model="newsToBeEdited.short_description"
+                type="text"
+                class="form-control input-sm edited"
+              >
+              <label for="form_control_2">
+                Short Description
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_external_url_edit"
+                v-model="newsToBeEdited.external_url"
+                type="text"
+                class="form-control input-sm edited"
+              >
+              <label for="form_control_external_url_edit">
+                Link
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <textarea
+                id="form_control_3"
+                v-model="newsToBeEdited.body"
+                rows="5"
+                class="form-control edited"
+              />
+              <label for="form_control_3">
+                News Feed Body
+              </label>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        v-if="!selectImageMode && $root.permissions['news_feed read'] && !$root.permissions['news_feed update']"
+        type="button"
+        class="btn btn-primary"
+        @click="closeModal()"
+      >
+        Close
+      </button>
+      <button
+        v-if="!selectImageMode && $root.permissions['news_feed update']"
+        type="button"
+        class="btn btn-primary"
+        :disabled="updating"
+        @click="saveEditedFeed()"
+      >
+        Save
+        <i
+          v-show="updating"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -98,6 +144,15 @@ import ResourcePicker from '../../modules/ResourcePicker'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
+	components: {
+		Modal,
+		ResourcePicker
+	},
+	props: {
+		selectedFeedId: {
+			type: Number
+		}
+	},
 	data () {
 		return {
 			showEditFeedModal: false,
@@ -107,11 +162,6 @@ export default {
 			updating: false,
 			errorMessage: '',
 			selectImageMode: false
-		}
-	},
-	props: {
-		selectedFeedId: {
-			type: Number
 		}
 	},
 	created () {
@@ -285,10 +335,6 @@ export default {
 			this.goToPageOne()
 			this.newsToBeEdited.image = val.image_url
 		}
-	},
-	components: {
-		Modal,
-		ResourcePicker
 	}
 }
 </script>

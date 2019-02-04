@@ -1,95 +1,135 @@
 <template>
-	<modal v-bind:show="showEditFAQModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="editModal">
-		<div slot="modal-header"
-		     class="modal-header">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Edit FAQ</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="alert alert-danger"
-			     v-show="errorMessage"
-			     ref="errorMessage">
-				<button class="close"
-				        @click="clearError()"></button>
-				<span>{{errorMessage}}</span>
-			</div>
-			<div class="form-group form-md-line-input form-md-floating-label">
-				<input type="text"
-				       class="form-control input-sm edited"
-				       id="form_control_1"
-				       v-model="faqToBeEdited.question">
-				<label for="form_control_1">Question</label>
-			</div>
-			<div class="form-group form-md-line-input form-md-floating-label">
-				<textarea rows="4"
-				          class="form-control edited"
-				          id="form_control_2"
-				          v-model="faqToBeEdited.answer"></textarea>
-				<label for="form_control_2">Answer</label>
-			</div>
-			<div class="form-group form-md-line-input form-md-floating-label">
-				<input type="text"
-				       class="form-control input-sm edited"
-				       id="form_control_2"
-				       v-model="faqToBeEdited.external_link">
-				<label for="form_control_2">External Link</label>
-			</div>
-			<div class="margin-top-20" v-if="!loadingCountries">
-				<label>
-					Country:
-					<el-select v-model="faqToBeEdited.country_id"
-								placeholder="Select a country"
-								size="small"
-								no-data-text="No countries"
-								remote
-								:loading="loadingCountries">
-						<el-option v-for="country in countries"
-									:label="country.name"
-									:value="country.id"
-									:key="country.id">
-						</el-option>
-					</el-select>
-				</label>
-			</div>
-			<div class="margin-top-20">
-				<label>
-					Platform:
-					<el-select v-model="faqToBeEdited.platform_id"
-								placeholder="Select a platform"
-								size="small"
-								no-data-text="No platforms"
-								remote
-								:loading="loadingPlatforms">
-						<el-option v-for="platform in platforms"
-									:label="platform.name"
-									:value="platform.id"
-									:key="platform.id">
-						</el-option>
-					</el-select>
-				</label>
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button type="button"
-			        class="btn btn-primary"
-			        @click="saveEditedStoreFAQ()"
-			        :disabled="updating">
-				Save
-				<i v-show="updating"
-				   class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-		</div>
-	</modal>
+  <modal
+    ref="editModal"
+    :show="showEditFAQModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Edit FAQ
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div
+        v-show="errorMessage"
+        ref="errorMessage"
+        class="alert alert-danger"
+      >
+        <button
+          class="close"
+          @click="clearError()"
+        />
+        <span>{{ errorMessage }}</span>
+      </div>
+      <div class="form-group form-md-line-input form-md-floating-label">
+        <input
+          id="form_control_1"
+          v-model="faqToBeEdited.question"
+          type="text"
+          class="form-control input-sm edited"
+        >
+        <label for="form_control_1">
+          Question
+        </label>
+      </div>
+      <div class="form-group form-md-line-input form-md-floating-label">
+        <textarea
+          id="form_control_2"
+          v-model="faqToBeEdited.answer"
+          rows="4"
+          class="form-control edited"
+        />
+        <label for="form_control_2">
+          Answer
+        </label>
+      </div>
+      <div class="form-group form-md-line-input form-md-floating-label">
+        <input
+          id="form_control_2"
+          v-model="faqToBeEdited.external_link"
+          type="text"
+          class="form-control input-sm edited"
+        >
+        <label for="form_control_2">
+          External Link
+        </label>
+      </div>
+      <div
+        v-if="!loadingCountries"
+        class="margin-top-20"
+      >
+        <label>
+          Country:
+          <el-select
+            v-model="faqToBeEdited.country_id"
+            placeholder="Select a country"
+            size="small"
+            no-data-text="No countries"
+            remote
+            :loading="loadingCountries"
+          >
+            <el-option
+              v-for="country in countries"
+              :key="country.id"
+              :label="country.name"
+              :value="country.id"
+            />
+          </el-select>
+        </label>
+      </div>
+      <div class="margin-top-20">
+        <label>
+          Platform:
+          <el-select
+            v-model="faqToBeEdited.platform_id"
+            placeholder="Select a platform"
+            size="small"
+            no-data-text="No platforms"
+            remote
+            :loading="loadingPlatforms"
+          >
+            <el-option
+              v-for="platform in platforms"
+              :key="platform.id"
+              :label="platform.name"
+              :value="platform.id"
+            />
+          </el-select>
+        </label>
+      </div>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        type="button"
+        class="btn btn-primary"
+        :disabled="updating"
+        @click="saveEditedStoreFAQ()"
+      >
+        Save
+        <i
+          v-show="updating"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -100,6 +140,15 @@ import CountriesFunctions from '@/controllers/Countries'
 import PlatformsFunctions from '@/controllers/Platforms'
 
 export default {
+	components: {
+		Modal
+	},
+	props: {
+		faqId: {
+			type: Number,
+			default: 0
+		}
+	},
 	data () {
 		return {
 			showEditFAQModal: false,
@@ -110,12 +159,6 @@ export default {
 			countries: [],
 			loadingPlatforms: false,
 			platforms: []
-		}
-	},
-	props: {
-		faqId: {
-			type: Number,
-			default: 0
 		}
 	},
 	created () {
@@ -337,9 +380,6 @@ export default {
 		closeModalAndUpdate () {
 			this.$emit('updateFAQ')
 		}
-	},
-	components: {
-		Modal
 	}
 }
 </script>

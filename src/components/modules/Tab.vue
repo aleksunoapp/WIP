@@ -1,11 +1,13 @@
 <template>
-	<div role="tabpanel"
-	     class="tab-pane active"
-	     v-show="show"
-	     :class="{hide:!show}"
-	     :transition="transition">
-		<slot></slot>
-	</div>
+  <div
+    v-show="show"
+    role="tabpanel"
+    class="tab-pane active"
+    :class="{hide:!show}"
+    :transition="transition"
+  >
+    <slot />
+  </div>
 </template>
 
 <script>

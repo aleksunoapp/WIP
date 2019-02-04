@@ -1,36 +1,50 @@
 <template>
-	<div>
-		<!-- Nav tabs -->
-		<ul class="nav"
-		    :class="'nav-' + navStyle"
-		    role="tablist">
-			<template v-for="(t, index) in headers">
-				<li v-if="!t._tabgroup"
-				    :class="{active:t.active, disabled:t.disabled}"
-				    @click.prevent="select(t)"
-					:key="index">
-					<a href="#">
-						<slot name="header">{{t.header}}</slot>
-					</a>
-				</li>
-				<dropdown v-else
-				          :text="t.header"
-				          :class="{active:t.active}"
-				          :disabled="t.disabled"
-						  :key="index">
-					<li v-for="(tab, tabIndex) in t.tabs"
-					    :class="{disabled:tab.disabled}"
-						:key="tabIndex">
-						<a href="#"
-						   @click.prevent="select(tab)">{{tab.header}}</a>
-					</li>
-				</dropdown>
-			</template>
-		</ul>
-		<div class="tab-content">
-			<slot></slot>
-		</div>
-	</div>
+  <div>
+    <!-- Nav tabs -->
+    <ul
+      class="nav"
+      :class="'nav-' + navStyle"
+      role="tablist"
+    >
+      <template v-for="(t, index) in headers">
+        <li
+          v-if="!t._tabgroup"
+          :key="index"
+          :class="{active:t.active, disabled:t.disabled}"
+          @click.prevent="select(t)"
+        >
+          <a href="#">
+            <slot name="header">
+              {{ t.header }}
+            </slot>
+          </a>
+        </li>
+        <dropdown
+          v-else
+          :key="index"
+          :text="t.header"
+          :class="{active:t.active}"
+          :disabled="t.disabled"
+        >
+          <li
+            v-for="(tab, tabIndex) in t.tabs"
+            :key="tabIndex"
+            :class="{disabled:tab.disabled}"
+          >
+            <a
+              href="#"
+              @click.prevent="select(tab)"
+            >
+              {{ tab.header }}
+            </a>
+          </li>
+        </dropdown>
+      </template>
+    </ul>
+    <div class="tab-content">
+      <slot />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -63,6 +77,11 @@ export default {
 			activeTab: this.active
 		}
 	},
+	watch: {
+		active (val) {
+			this.show = this.tabs[val]
+		}
+	},
 	created () {
 		this._tabset = true
 	},
@@ -75,11 +94,6 @@ export default {
 				this.activeTab = tab.index
 				this.show = this.tabs[this.activeTab]
 			}
-		}
-	},
-	watch: {
-		active (val) {
-			this.show = this.tabs[val]
 		}
 	}
 }

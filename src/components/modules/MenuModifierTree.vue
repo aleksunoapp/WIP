@@ -1,145 +1,200 @@
 <template>
-	<modal :show="showMenuModifierTreeModal"
-	       :width="900"
-	       effect="fade"
-	       @closeOnEscape="closeModal">
-		<div slot="modal-header"
-		     class="modal-header center">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Select Items
-				<span v-if="selectedObject.name"> for {{ selectedObject.name }}</span>
-			</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="portlet light bordered height-mod">
-				<div class="portlet-body">
-					<div class="col-md-12">
-						<div class="alert alert-danger"
-						     v-show="errorMessage.length"
-						     ref="errorMessage">
-							<button class="close"
-							        @click="clearError('errorMessage')"></button>
-							<span>{{errorMessage}}</span>
-						</div>
-						<div class="alert alert-danger"
-						     v-show="internalErrorMessage.length"
-						     ref="internalErrorMessage">
-							<button class="close"
-							        @click="clearError('internalErrorMessage')"></button>
-							<span>{{internalErrorMessage}}</span>
-						</div>
-						<div class="alert alert-info center margin-top-20"
-						     v-if="$root.activeLocation.id === undefined">
-							<h4>No Store Selected</h4>
-							<p>Please select a store from the stores panel on the right to view Menus and Modifiers.</p>
-						</div>
-					</div>
-					<tabset :active="activeTab"
-					        v-show="$root.activeLocation.id !== undefined">
-						<tab header="Menu Items">
-							<div class="col-xs-12">
-								<menu-item-picker
-									@update="itemsSelected"
-									:previouslySelected="selectedObject.sku_array"
-								>
-								</menu-item-picker>
-							</div>
-						</tab>
-						<tab header="Modifier Items"
-						     v-if="showModifierItems">
-							<div class="col-md-6">
-								<h4>Modifier Categories</h4>
-								<div v-if="loadingModifiers">
-									<div class="alert alert-info">
-										<span>Loading ...</span>
-									</div>
-								</div>
-								<div class="dd"
-								     id="nestable_list_1"
-								     v-else-if="modifiers.length">
-									<ol class="dd-list">
-										<li class="dd-item"
-										    v-for="modifier in modifiers"
-										    :data-id="modifier.id"
-										    @click="selectModifier(modifier, $event)"
-											:key="modifier.id">
-											<div class="dd-handle"
-											     :class="{'active': modifier.id === activeModifier.id}"> {{ modifier.name }}
-												<span class="pull-right">
-													<i class="fa fa-chevron-right"></i>
-												</span>
-											</div>
-										</li>
-									</ol>
-								</div>
-								<div v-else>
-									<div class="alert alert-warning">
-										<span>There are no modifier categories to display.</span>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-6"
-							     v-if="isModifierCategorySelected">
-								<h4>
-									<i class="fa check clickable"
-									   @click="selectAllModifierItems()"
-									   :class="{'fa-check-square checked': selectAllModifierItemsSelected, 'fa-square-o unchecked': !selectAllModifierItemsSelected}"
-									   aria-hidden="true"></i>
-									{{ activeModifier.name }} - Items</h4>
-								<div v-if="loadingModifierItems">
-									<div class="alert alert-info">
-										<span>Loading ...</span>
-									</div>
-								</div>
-								<div class="dd"
-								     id="nestable_list_3"
-								     v-else-if="modifierItems.length">
-									<ol class="dd-list">
-										<li class="dd-item"
-										    v-for="item in modifierItems"
-										    :data-id="item.id"
-											:key="item.id">
-											<div class="dd-handle">
-												<span class="pull-left"
-												      @click.prevent="toggleSKUSelected(item)">
-													<i class="fa check"
-													   :class="{'fa-check-square checked': item.selected, 'fa-square-o unchecked': !item.selected}"
-													   aria-hidden="true"></i>
-													<label :for="'item_checkbox_' + item.id">{{ item.name }}
-													</label>
-												</span>
-											</div>
-										</li>
-									</ol>
-								</div>
-								<div v-else>
-									<div class="alert alert-warning">
-										<span>There are no items in the category '{{ activeModifier.name }}'.</span>
-									</div>
-								</div>
-							</div>
-						</tab>
-					</tabset>
-				</div>
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button type="button"
-			        class="btn btn-primary"
-			        @click="applySelectedItems()"
-			        v-show="$root.activeLocation.id !== undefined">Save</button>
-			<button type="button"
-			        class="btn btn-default"
-			        @click="closeModal()"
-			        v-show="$root.activeLocation.id === undefined">Close</button>
-		</div>
-	</modal>
+  <modal
+    :show="showMenuModifierTreeModal"
+    :width="900"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header center"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Select Items
+        <span v-if="selectedObject.name">
+          for {{ selectedObject.name }}
+        </span>
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div class="portlet light bordered height-mod">
+        <div class="portlet-body">
+          <div class="col-md-12">
+            <div
+              v-show="errorMessage.length"
+              ref="errorMessage"
+              class="alert alert-danger"
+            >
+              <button
+                class="close"
+                @click="clearError('errorMessage')"
+              />
+              <span>{{ errorMessage }}</span>
+            </div>
+            <div
+              v-show="internalErrorMessage.length"
+              ref="internalErrorMessage"
+              class="alert alert-danger"
+            >
+              <button
+                class="close"
+                @click="clearError('internalErrorMessage')"
+              />
+              <span>{{ internalErrorMessage }}</span>
+            </div>
+            <div
+              v-if="$root.activeLocation.id === undefined"
+              class="alert alert-info center margin-top-20"
+            >
+              <h4>No Store Selected</h4>
+              <p>Please select a store from the stores panel on the right to view Menus and Modifiers.</p>
+            </div>
+          </div>
+          <tabset
+            v-show="$root.activeLocation.id !== undefined"
+            :active="activeTab"
+          >
+            <tab header="Menu Items">
+              <div class="col-xs-12">
+                <menu-item-picker
+                  :previously-selected="selectedObject.sku_array"
+                  @update="itemsSelected"
+                />
+              </div>
+            </tab>
+            <tab
+              v-if="showModifierItems"
+              header="Modifier Items"
+            >
+              <div class="col-md-6">
+                <h4>Modifier Categories</h4>
+                <div v-if="loadingModifiers">
+                  <div class="alert alert-info">
+                    <span>Loading ...</span>
+                  </div>
+                </div>
+                <div
+                  v-else-if="modifiers.length"
+                  id="nestable_list_1"
+                  class="dd"
+                >
+                  <ol class="dd-list">
+                    <li
+                      v-for="modifier in modifiers"
+                      :key="modifier.id"
+                      class="dd-item"
+                      :data-id="modifier.id"
+                      @click="selectModifier(modifier, $event)"
+                    >
+                      <div
+                        class="dd-handle"
+                        :class="{'active': modifier.id === activeModifier.id}"
+                      >
+                        {{ modifier.name }}
+                        <span class="pull-right">
+                          <i class="fa fa-chevron-right" />
+                        </span>
+                      </div>
+                    </li>
+                  </ol>
+                </div>
+                <div v-else>
+                  <div class="alert alert-warning">
+                    <span>There are no modifier categories to display.</span>
+                  </div>
+                </div>
+              </div>
+              <div
+                v-if="isModifierCategorySelected"
+                class="col-md-6"
+              >
+                <h4>
+                  <i
+                    class="fa check clickable"
+                    :class="{'fa-check-square checked': selectAllModifierItemsSelected, 'fa-square-o unchecked': !selectAllModifierItemsSelected}"
+                    aria-hidden="true"
+                    @click="selectAllModifierItems()"
+                  />
+                  {{ activeModifier.name }} - Items
+                </h4>
+                <div v-if="loadingModifierItems">
+                  <div class="alert alert-info">
+                    <span>Loading ...</span>
+                  </div>
+                </div>
+                <div
+                  v-else-if="modifierItems.length"
+                  id="nestable_list_3"
+                  class="dd"
+                >
+                  <ol class="dd-list">
+                    <li
+                      v-for="item in modifierItems"
+                      :key="item.id"
+                      class="dd-item"
+                      :data-id="item.id"
+                    >
+                      <div class="dd-handle">
+                        <span
+                          class="pull-left"
+                          @click.prevent="toggleSKUSelected(item)"
+                        >
+                          <i
+                            class="fa check"
+                            :class="{'fa-check-square checked': item.selected, 'fa-square-o unchecked': !item.selected}"
+                            aria-hidden="true"
+                          />
+                          <label :for="'item_checkbox_' + item.id">
+                            {{ item.name }}
+                          </label>
+                        </span>
+                      </div>
+                    </li>
+                  </ol>
+                </div>
+                <div v-else>
+                  <div class="alert alert-warning">
+                    <span>There are no items in the category '{{ activeModifier.name }}'.</span>
+                  </div>
+                </div>
+              </div>
+            </tab>
+          </tabset>
+        </div>
+      </div>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        v-show="$root.activeLocation.id !== undefined"
+        type="button"
+        class="btn btn-primary"
+        @click="applySelectedItems()"
+      >
+        Save
+      </button>
+      <button
+        v-show="$root.activeLocation.id === undefined"
+        type="button"
+        class="btn btn-default"
+        @click="closeModal()"
+      >
+        Close
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -151,6 +206,26 @@ import ajaxErrorHandler from '../../controllers/ErrorController'
 import MenuItemPicker from '@/components/modules/MenuItemPicker'
 
 export default {
+	components: {
+		Modal,
+		Tab,
+		Tabset,
+		MenuItemPicker
+	},
+	props: {
+		selectedObject: {
+			type: Object,
+			default: () => ({ skuArray: [] })
+		},
+		errorMessage: {
+			type: String,
+			default: () => ''
+		},
+		showModifierItems: {
+			type: Boolean,
+			default: () => true
+		}
+	},
 	data () {
 		return {
 			showMenuModifierTreeModal: false,
@@ -169,20 +244,6 @@ export default {
 			loadingMenuItems: false,
 			loadingModifiers: false,
 			loadingModifierItems: false
-		}
-	},
-	props: {
-		selectedObject: {
-			type: Object,
-			default: () => ({ skuArray: [] })
-		},
-		errorMessage: {
-			type: String,
-			default: () => ''
-		},
-		showModifierItems: {
-			type: Boolean,
-			default: () => true
 		}
 	},
 	computed: {
@@ -378,12 +439,6 @@ export default {
 		clearError (errorName) {
 			this[errorName] = ''
 		}
-	},
-	components: {
-		Modal,
-		Tab,
-		Tabset,
-		MenuItemPicker
 	}
 }
 </script>

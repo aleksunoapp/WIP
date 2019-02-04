@@ -1,138 +1,181 @@
 <template>
-	<modal :show="showTagsModal"
-	       :width="900"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="modal">
-		<div slot="modal-header"
-		     class="modal-header">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Select a Tag</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="alert alert-danger"
-			     v-show="errorMessage"
-			     ref="errorMessage">
-				<button class="close"
-				        @click="clearError()"></button>
-				<span>{{errorMessage}}</span>
-			</div>
-			<div class="table-scrollable table-fixed-height"
-			     style="float: left; width: 50%;">
-				<table class="table">
-					<thead>
-						<tr>
-							<th>
-								<div class="md-checkbox has-success">
-									<input type="checkbox"
-									       id="select_all_contains"
-									       class="md-check"
-									       v-model="allContainsTagsSelected">
-									<label for="select_all_contains">
-										<span class="inc"></span>
-										<span class="check"></span>
-										<span class="box"></span>
-									</label>
-								</div>
-							</th>
-							<th> Image </th>
-							<th> Name </th>
-							<th> Type </th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="tag in containTags"
-						    :key="tag.id">
-							<td>
-								<div class="md-checkbox has-success">
-									<input type="checkbox"
-									       :id="'tag_checkbox_' + tag.id"
-									       class="md-check"
-									       v-model="tag.selected">
-									<label :for="'tag_checkbox_' + tag.id">
-										<span class="inc"></span>
-										<span class="check"></span>
-										<span class="box"></span>
-									</label>
-								</div>
-							</td>
-							<td> <img :src="tag.image_url"
-								     width="30"
-								     height="30"> </td>
-							<td> {{tag.name}} </td>
-							<td> {{tag.type}} </td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="table-scrollable table-fixed-height"
-			     style="float: left; width: 50%;">
-				<table class="table">
-					<thead>
-						<tr>
-							<th>
-								<div class="md-checkbox has-success">
-									<input type="checkbox"
-									       id="select_all_may_contain"
-									       class="md-check"
-									       v-model="allMayContainTagsSelected">
-									<label for="select_all_may_contain">
-										<span class="inc"></span>
-										<span class="check"></span>
-										<span class="box"></span>
-									</label>
-								</div>
-							</th>
-							<th> Image </th>
-							<th> Name </th>
-							<th> Type </th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="tag in mayContainTags"
-						    :key="tag.id">
-							<td>
-								<div class="md-checkbox has-success">
-									<input type="checkbox"
-									       :id="'tag_checkbox_' + tag.id"
-									       class="md-check"
-									       v-model="tag.selected">
-									<label :for="'tag_checkbox_' + tag.id">
-										<span class="inc"></span>
-										<span class="check"></span>
-										<span class="box"></span>
-									</label>
-								</div>
-							</td>
-							<td> <img :src="tag.image_url"
-								     width="30"
-								     height="30"> </td>
-							<td> {{tag.name}} </td>
-							<td> {{tag.type}} </td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div style="clear: both;"></div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button type="button"
-			        class="btn btn-primary"
-			        @click="applyTagsToItem()"
-			        :disabled="applying">
-				Apply Tags
-				<i v-show="applying"
-				   class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-		</div>
-	</modal>
+  <modal
+    ref="modal"
+    :show="showTagsModal"
+    :width="900"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Select a Tag
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div
+        v-show="errorMessage"
+        ref="errorMessage"
+        class="alert alert-danger"
+      >
+        <button
+          class="close"
+          @click="clearError()"
+        />
+        <span>{{ errorMessage }}</span>
+      </div>
+      <div
+        class="table-scrollable table-fixed-height"
+        style="float: left; width: 50%;"
+      >
+        <table class="table">
+          <thead>
+            <tr>
+              <th>
+                <div class="md-checkbox has-success">
+                  <input
+                    id="select_all_contains"
+                    v-model="allContainsTagsSelected"
+                    type="checkbox"
+                    class="md-check"
+                  >
+                  <label for="select_all_contains">
+                    <span class="inc" />
+                    <span class="check" />
+                    <span class="box" />
+                  </label>
+                </div>
+              </th>
+              <th> Image </th>
+              <th> Name </th>
+              <th> Type </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="tag in containTags"
+              :key="tag.id"
+            >
+              <td>
+                <div class="md-checkbox has-success">
+                  <input
+                    :id="'tag_checkbox_' + tag.id"
+                    v-model="tag.selected"
+                    type="checkbox"
+                    class="md-check"
+                  >
+                  <label :for="'tag_checkbox_' + tag.id">
+                    <span class="inc" />
+                    <span class="check" />
+                    <span class="box" />
+                  </label>
+                </div>
+              </td>
+              <td>
+                <img
+                  :src="tag.image_url"
+                  width="30"
+                  height="30"
+                >
+              </td>
+              <td> {{ tag.name }} </td>
+              <td> {{ tag.type }} </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div
+        class="table-scrollable table-fixed-height"
+        style="float: left; width: 50%;"
+      >
+        <table class="table">
+          <thead>
+            <tr>
+              <th>
+                <div class="md-checkbox has-success">
+                  <input
+                    id="select_all_may_contain"
+                    v-model="allMayContainTagsSelected"
+                    type="checkbox"
+                    class="md-check"
+                  >
+                  <label for="select_all_may_contain">
+                    <span class="inc" />
+                    <span class="check" />
+                    <span class="box" />
+                  </label>
+                </div>
+              </th>
+              <th> Image </th>
+              <th> Name </th>
+              <th> Type </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="tag in mayContainTags"
+              :key="tag.id"
+            >
+              <td>
+                <div class="md-checkbox has-success">
+                  <input
+                    :id="'tag_checkbox_' + tag.id"
+                    v-model="tag.selected"
+                    type="checkbox"
+                    class="md-check"
+                  >
+                  <label :for="'tag_checkbox_' + tag.id">
+                    <span class="inc" />
+                    <span class="check" />
+                    <span class="box" />
+                  </label>
+                </div>
+              </td>
+              <td>
+                <img
+                  :src="tag.image_url"
+                  width="30"
+                  height="30"
+                >
+              </td>
+              <td> {{ tag.name }} </td>
+              <td> {{ tag.type }} </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="clear: both;" />
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        type="button"
+        class="btn btn-primary"
+        :disabled="applying"
+        @click="applyTagsToItem()"
+      >
+        Apply Tags
+        <i
+          v-show="applying"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -141,15 +184,8 @@ import TagsFunctions from '../../../../controllers/Tags'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	data () {
-		return {
-			showTagsModal: false,
-			applying: false,
-			errorMessage: '',
-			containTags: [],
-			mayContainTags: [],
-			allSelected: false
-		}
+	components: {
+		Modal
 	},
 	props: {
 		appliedTags: {
@@ -163,6 +199,16 @@ export default {
 		itemType: {
 			type: String,
 			default: 'menu-item'
+		}
+	},
+	data () {
+		return {
+			showTagsModal: false,
+			applying: false,
+			errorMessage: '',
+			containTags: [],
+			mayContainTags: [],
+			allSelected: false
 		}
 	},
 	computed: {
@@ -352,9 +398,6 @@ export default {
 		closeModal () {
 			this.$emit('deactivateTagsListModal', this.selectedItemId)
 		}
-	},
-	components: {
-		Modal
 	}
 }
 </script>

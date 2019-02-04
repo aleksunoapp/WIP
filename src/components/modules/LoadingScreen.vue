@@ -1,10 +1,14 @@
 <template>
-	<div v-show="show"
-	     class="loading-spinner">
-		<img :src="spinner"
-		     class="spinner"
-		     alt="UNOapp logo, two half-circle arrows pointing in the same direction laid on a circle, spinning">
-	</div>
+  <div
+    v-show="show"
+    class="loading-spinner"
+  >
+    <img
+      :src="spinner"
+      class="spinner"
+      alt="UNOapp logo, two half-circle arrows pointing in the same direction laid on a circle, spinning"
+    >
+  </div>
 </template>
 
 <script>

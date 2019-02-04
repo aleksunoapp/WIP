@@ -1,21 +1,29 @@
 <template>
-	<label :class="[isButton?'btn btn-'+typeColor:'open checkbox '+typeColor,{active:checked,disabled:disabled,readonly:readonly}]"
-	       @click.prevent="toggle">
-		<input type="checkbox"
-		       autocomplete="off"
-		       ref='input'
-		       :checked="active"
-		       :value="value"
-		       :name="name"
-		       :readonly="readonly"
-		       :disabled="disabled" />
-		<span v-if="!isButton"
-		      class="icon dropdown-toggle"
-		      :class="[active?'btn-'+typeColor:'',{bg:typeColor==='default'}]"></span>
-		<span v-if="!isButton&active&&typeColor==='default'"
-		      class="icon"></span>
-		<slot></slot>
-	</label>
+  <label
+    :class="[isButton?'btn btn-'+typeColor:'open checkbox '+typeColor,{active:checked,disabled:disabled,readonly:readonly}]"
+    @click.prevent="toggle"
+  >
+    <input
+      ref="input"
+      type="checkbox"
+      autocomplete="off"
+      :checked="active"
+      :value="value"
+      :name="name"
+      :readonly="readonly"
+      :disabled="disabled"
+    >
+    <span
+      v-if="!isButton"
+      class="icon dropdown-toggle"
+      :class="[active?'btn-'+typeColor:'',{bg:typeColor==='default'}]"
+    />
+    <span
+      v-if="!isButton&active&&typeColor==='default'"
+      class="icon"
+    />
+    <slot />
+  </label>
 </template>
 
 <script>

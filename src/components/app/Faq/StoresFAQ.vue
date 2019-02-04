@@ -1,244 +1,332 @@
 <template>
-	<div>
-		<!-- BEGIN PAGE BAR -->
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
-		<!-- END PAGE BAR -->
-		<!-- BEGIN PAGE TITLE-->
-		<h1 class="page-title">Frequently Asked Questions - Stores</h1>
-		<!-- END PAGE TITLE-->
-		<div class="note note-info">
-			<p>Create and manage store FAQs.</p>
-		</div>
+  <div>
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
+    <!-- END PAGE BAR -->
+    <!-- BEGIN PAGE TITLE-->
+    <h1 class="page-title">
+      Frequently Asked Questions - Stores
+    </h1>
+    <!-- END PAGE TITLE-->
+    <div class="note note-info">
+      <p>Create and manage store FAQs.</p>
+    </div>
 
-		<!-- CREATE START -->
-		<div class="portlet box blue-hoki margin-top-20"
-		     v-if="$root.permissions['faq store create']">
-			<div class="portlet-title bg-blue-chambray"
-			     @click="toggleCreateFAQPanel()">
-				<div class="caption">
-					<i class="fa fa-plus-circle"></i>
-					Post A Question
-				</div>
-				<div class="tools">
-					<a :class="{'expand': !createFAQCollapse, 'collapse': createFAQCollapse}"></a>
-				</div>
-			</div>
-			<div class="portlet-body fixed-height"
-			     :class="{'display-hide': createFAQCollapse}">
-				<form role="form"
-				      @submit.prevent="createStoreFAQ($event)">
-					<div class="alert alert-danger"
-					     v-show="createFAQError"
-						 ref="createFAQError">
-						<button class="close"
-						        @click.prevent="clearError('createFAQError')"></button>
-						<span>{{createFAQError}}</span>
-					</div>
-					<div class="col-md-6">
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-							       class="form-control input-sm"
-							       id="form_control_1"
-							       v-model="newFAQ.question"
-							       :class="{'edited': newFAQ.question.length}">
-							<label for="form_control_1">Question</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<textarea class="form-control input-sm"
-							          rows="5"
-							          v-model="newFAQ.answer"
-							          :class="{'edited': newFAQ.answer.length}"
-							          id="form_control_2"></textarea>
-							<label for="form_control_2">Answer</label>
-						</div>
-					</div>
-					<div class="col-md-6">
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-							       class="form-control input-sm"
-							       id="form_control_3"
-							       v-model="newFAQ.external_link"
-							       :class="{'edited': newFAQ.external_link.length}">
-							<label for="form_control_3">External Link</label>
-						</div>
-						<div class="margin-top-20">
-							<label>
-								Country:
-								<el-select v-model="newFAQ.country_id"
-											placeholder="Select a country"
-											size="small"
-											no-data-text="No countries"
-											remote
-											:loading="loadingCountries">
-									<el-option v-for="country in countries"
-												:label="country.name"
-												:value="country.id"
-												:key="country.id">
-									</el-option>
-								</el-select>
-							</label>
-						</div>
-						<div class="margin-top-20">
-							<label>
-								Platform:
-								<el-select v-model="newFAQ.platform_id"
-											placeholder="Select a platform"
-											size="small"
-											no-data-text="No platforms"
-											remote
-											:loading="loadingPlatforms">
-									<el-option v-for="platform in platforms"
-												:label="platform.name"
-												:value="platform.id"
-												:key="platform.id">
-									</el-option>
-								</el-select>
-							</label>
-						</div>
-					</div>
-					<div class="clear form-actions right">
-						<button type="button"
-						        class="btn btn-default"
-						        @click="resetForm()"> Reset Form</button>
-						<button type="submit"
-						        class="btn blue"
-						        :disabled="creating">
-							Save
-							<i v-show="creating"
-							   class="fa fa-spinner fa-pulse fa-fw">
-							</i>
-						</button>
-					</div>
-				</form>
-			</div>
-		</div>
-		<!-- CREATE END -->
+    <!-- CREATE START -->
+    <div
+      v-if="$root.permissions['faq store create']"
+      class="portlet box blue-hoki margin-top-20"
+    >
+      <div
+        class="portlet-title bg-blue-chambray"
+        @click="toggleCreateFAQPanel()"
+      >
+        <div class="caption">
+          <i class="fa fa-plus-circle" />
+          Post A Question
+        </div>
+        <div class="tools">
+          <a :class="{'expand': !createFAQCollapse, 'collapse': createFAQCollapse}" />
+        </div>
+      </div>
+      <div
+        class="portlet-body fixed-height"
+        :class="{'display-hide': createFAQCollapse}"
+      >
+        <form
+          role="form"
+          @submit.prevent="createStoreFAQ($event)"
+        >
+          <div
+            v-show="createFAQError"
+            ref="createFAQError"
+            class="alert alert-danger"
+          >
+            <button
+              class="close"
+              @click.prevent="clearError('createFAQError')"
+            />
+            <span>{{ createFAQError }}</span>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_1"
+                v-model="newFAQ.question"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': newFAQ.question.length}"
+              >
+              <label for="form_control_1">
+                Question
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <textarea
+                id="form_control_2"
+                v-model="newFAQ.answer"
+                class="form-control input-sm"
+                rows="5"
+                :class="{'edited': newFAQ.answer.length}"
+              />
+              <label for="form_control_2">
+                Answer
+              </label>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_3"
+                v-model="newFAQ.external_link"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': newFAQ.external_link.length}"
+              >
+              <label for="form_control_3">
+                External Link
+              </label>
+            </div>
+            <div class="margin-top-20">
+              <label>
+                Country:
+                <el-select
+                  v-model="newFAQ.country_id"
+                  placeholder="Select a country"
+                  size="small"
+                  no-data-text="No countries"
+                  remote
+                  :loading="loadingCountries"
+                >
+                  <el-option
+                    v-for="country in countries"
+                    :key="country.id"
+                    :label="country.name"
+                    :value="country.id"
+                  />
+                </el-select>
+              </label>
+            </div>
+            <div class="margin-top-20">
+              <label>
+                Platform:
+                <el-select
+                  v-model="newFAQ.platform_id"
+                  placeholder="Select a platform"
+                  size="small"
+                  no-data-text="No platforms"
+                  remote
+                  :loading="loadingPlatforms"
+                >
+                  <el-option
+                    v-for="platform in platforms"
+                    :key="platform.id"
+                    :label="platform.name"
+                    :value="platform.id"
+                  />
+                </el-select>
+              </label>
+            </div>
+          </div>
+          <div class="clear form-actions right">
+            <button
+              type="button"
+              class="btn btn-default"
+              @click="resetForm()"
+            >
+              Reset Form
+            </button>
+            <button
+              type="submit"
+              class="btn blue"
+              :disabled="creating"
+            >
+              Save
+              <i
+                v-show="creating"
+                class="fa fa-spinner fa-pulse fa-fw"
+              />
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- CREATE END -->
 
-		<div class="margin-top-20">
-			<div class="relative-block">
-				<div class="portlet light portlet-fit bordered">
-					<div class="portlet-title bg-blue-chambray">
-						<div class="menu-image-main">
-							<img src="../../../../public/client_logo.png">
-						</div>
-						<div class="caption">
-							<span class="caption-subject font-default bold uppercase">Store FAQs</span>
-							<div class="caption-desc font-grey-cascade">Click on the edit button to edit the questions and answers.</div>
-						</div>
-					</div>
-					<loading-screen :show="displayStoresFAQData"
-		                :color="'#2C3E50'"
-		                :display="'inline'"></loading-screen>
-					<div class="portlet-body">
-						<div class="alert alert-danger"
-						     v-show="!faqs.length && errorMessage"
-						     ref="errorMessage">
-							<button class="close"
-							        @click="clearError('errorMessage')"></button>
-							<span>{{errorMessage}}</span>
-						</div>
-						<div class="timeline"
-						     v-if="faqs.length">
-							<div class="timeline-item"
-							     v-for="faq in faqs"
-							     :key="faq.id">
-								<div class="timeline-badge">
-									<div class="timeline-icon">
-										<i class="font-blue-sharp icon-bubbles"></i>
-									</div>
-								</div>
-								<div class="timeline-body"
-								     :id="'faq-' + faq.id">
-									<div class="timeline-body-arrow"> </div>
-									<div class="timeline-body-head">
-										<div class="timeline-body-head-caption">
-											<a class="timeline-body-title font-blue-madison">{{ faq.question }}</a>
-										</div>
-										<div class="timeline-body-head-actions">
-											<div class="btn-group">
-												<button v-if="$root.permissions['faq store update']"
-												        class="btn blue btn-sm"
-												        type="button"
-												        @click="editFAQ(faq)">
-													Edit
-												</button>
-												<button v-if="$root.permissions['faq store read'] && !$root.permissions['faq store update']"
-												        class="btn blue btn-sm"
-												        type="button"
-												        @click="editFAQ(faq)">
-													View
-												</button>
-												<button v-if="$root.permissions['faq store delete']"
-												        class="btn blue btn-sm margin-left-5"
-												        type="button"
-												        @click="confirmDelete(faq)">
-													Delete
-												</button>
-											</div>
-										</div>
-									</div>
-									<div class="timeline-body-content">
-										<span class="font-grey-cascade">{{ faq.answer }}</span>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div v-else>
-							<no-results :show="!faqs.length && !displayStoresFAQData"
-							            :type="'store FAQs'"></no-results>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<edit-store-faq v-if="showEditFAQModal"
-		                :faqId="selectedFAQId"
-		                @closeEditStoreFAQModal="closeEditStoreFAQModal"
-		                @updateFAQ="updateFAQ"></edit-store-faq>
+    <div class="margin-top-20">
+      <div class="relative-block">
+        <div class="portlet light portlet-fit bordered">
+          <div class="portlet-title bg-blue-chambray">
+            <div class="menu-image-main">
+              <img src="../../../../public/client_logo.png">
+            </div>
+            <div class="caption">
+              <span class="caption-subject font-default bold uppercase">
+                Store FAQs
+              </span>
+              <div class="caption-desc font-grey-cascade">
+                Click on the edit button to edit the questions and answers.
+              </div>
+            </div>
+          </div>
+          <loading-screen
+            :show="displayStoresFAQData"
+            :color="'#2C3E50'"
+            :display="'inline'"
+          />
+          <div class="portlet-body">
+            <div
+              v-show="!faqs.length && errorMessage"
+              ref="errorMessage"
+              class="alert alert-danger"
+            >
+              <button
+                class="close"
+                @click="clearError('errorMessage')"
+              />
+              <span>{{ errorMessage }}</span>
+            </div>
+            <div
+              v-if="faqs.length"
+              class="timeline"
+            >
+              <div
+                v-for="faq in faqs"
+                :key="faq.id"
+                class="timeline-item"
+              >
+                <div class="timeline-badge">
+                  <div class="timeline-icon">
+                    <i class="font-blue-sharp icon-bubbles" />
+                  </div>
+                </div>
+                <div
+                  :id="'faq-' + faq.id"
+                  class="timeline-body"
+                >
+                  <div class="timeline-body-arrow" />
+                  <div class="timeline-body-head">
+                    <div class="timeline-body-head-caption">
+                      <a class="timeline-body-title font-blue-madison">
+                        {{ faq.question }}
+                      </a>
+                    </div>
+                    <div class="timeline-body-head-actions">
+                      <div class="btn-group">
+                        <button
+                          v-if="$root.permissions['faq store update']"
+                          class="btn blue btn-sm"
+                          type="button"
+                          @click="editFAQ(faq)"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          v-if="$root.permissions['faq store read'] && !$root.permissions['faq store update']"
+                          class="btn blue btn-sm"
+                          type="button"
+                          @click="editFAQ(faq)"
+                        >
+                          View
+                        </button>
+                        <button
+                          v-if="$root.permissions['faq store delete']"
+                          class="btn blue btn-sm margin-left-5"
+                          type="button"
+                          @click="confirmDelete(faq)"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="timeline-body-content">
+                    <span class="font-grey-cascade">
+                      {{ faq.answer }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-else>
+              <no-results
+                :show="!faqs.length && !displayStoresFAQData"
+                :type="'store FAQs'"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <edit-store-faq
+      v-if="showEditFAQModal"
+      :faq-id="selectedFAQId"
+      @closeEditStoreFAQModal="closeEditStoreFAQModal"
+      @updateFAQ="updateFAQ"
+    />
 
-		<!-- START DELETE -->
-		<modal :show="showDeleteModal"
-		       effect="fade"
-		       @closeOnEscape="closeDeleteModal"
-					 ref="deleteModal">
-			<div slot="modal-header"
-			     class="modal-header">
-				<button type="button"
-				        class="close"
-				        @click="closeDeleteModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Confirm Delete</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<div class="alert alert-danger"
-				     v-show="deleteErrorMessage.length"
-				     ref="deleteErrorMessage">
-					<button class="close"
-					        data-close="alert"
-					        @click="clearError('deleteErrorMessage')"></button>
-					<span>{{deleteErrorMessage}}</span>
-				</div>
-				<p>Are you sure you want to delete?</p>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer clear">
-				<button type="button"
-				        class="btn blue"
-				        @click="deleteFAQ()"
-				        :disabled="deleting">
-					Delete
-					<i v-show="deleting"
-					   class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-			</div>
-		</modal>
-		<!-- END DELETE -->
-	</div>
+    <!-- START DELETE -->
+    <modal
+      ref="deleteModal"
+      :show="showDeleteModal"
+      effect="fade"
+      @closeOnEscape="closeDeleteModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeDeleteModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Confirm Delete
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <div
+          v-show="deleteErrorMessage.length"
+          ref="deleteErrorMessage"
+          class="alert alert-danger"
+        >
+          <button
+            class="close"
+            data-close="alert"
+            @click="clearError('deleteErrorMessage')"
+          />
+          <span>{{ deleteErrorMessage }}</span>
+        </div>
+        <p>Are you sure you want to delete?</p>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer clear"
+      >
+        <button
+          type="button"
+          class="btn blue"
+          :disabled="deleting"
+          @click="deleteFAQ()"
+        >
+          Delete
+          <i
+            v-show="deleting"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+      </div>
+    </modal>
+    <!-- END DELETE -->
+  </div>
 </template>
 
 <script>
@@ -253,6 +341,13 @@ import CountriesFunctions from '@/controllers/Countries'
 import PlatformsFunctions from '@/controllers/Platforms'
 
 export default {
+	components: {
+		Breadcrumb,
+		EditStoreFaq,
+		NoResults,
+		LoadingScreen,
+		Modal
+	},
 	data () {
 		return {
 			breadcrumbArray: [
@@ -610,13 +705,6 @@ export default {
 				type
 			})
 		}
-	},
-	components: {
-		Breadcrumb,
-		EditStoreFaq,
-		NoResults,
-		LoadingScreen,
-		Modal
 	}
 }
 </script>

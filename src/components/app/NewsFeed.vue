@@ -1,268 +1,385 @@
 <template>
-	<div>
-		<!-- BEGIN PAGE BAR -->
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
-		<!-- END PAGE BAR -->
-		<!-- BEGIN PAGE TITLE-->
-		<h1 class="page-title">News Feed</h1>
-		<!-- END PAGE TITLE-->
-		<div class="note note-info">
-			<p>Create and manage the Application News Feed.</p>
-		</div>
-		<!-- CREATE START -->
-		<div class="portlet box blue-hoki margin-top-20"
-		     v-if="$root.permissions['news_feed create']">
-			<div class="portlet-title bg-blue-chambray"
-			     @click="toggleCreateFeedPanel()">
-				<div class="custom tools">
-					<a :class="{'expand': !createFeedCollapse, 'collapse': createFeedCollapse}"></a>
-				</div>
-				<div class="caption">
-					&emsp;Create News Feed
-				</div>
-			</div>
-			<div class="portlet-body"
-			     :class="{'display-hide': createFeedCollapse}">
-				<form role="form"
-				      @submit.prevent="createNewsFeed($event)">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="alert alert-danger"
-							     v-show="createFeedError.length"
-							     ref="createFeedError">
-								<button class="close"
-								        data-close="alert"
-								        @click.prevent="clearCreateFeedError()"></button>
-								<span>{{createFeedError}}</span>
-							</div>
-						</div>
-						<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
-							<resource-picker @open="toggleImageMode('newMenu', true)"
-							                 @close="toggleImageMode('newMenu', false)"
-							                 @selected="updateImage"
-							                 :imageButton="true"
-							                 :imageUrl="newNewsFeed.image"
-							                 class="margin-top-15">
-							</resource-picker>
-						</div>
-						<div class="col-md-5"
-						     v-show="!imageMode.newMenu">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       id="form_control_1"
-								       v-model="newNewsFeed.title"
-								       :class="{'edited': newNewsFeed.title.length}">
-								<label for="form_control_1">Title</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       id="form_control_2"
-								       v-model="newNewsFeed.short_description"
-								       :class="{'edited': newNewsFeed.short_description.length}">
-								<label for="form_control_2">Short Description</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       id="form_control_external_url"
-								       v-model="newNewsFeed.external_url"
-								       :class="{'edited': newNewsFeed.external_url.length}">
-								<label for="form_control_2">Link</label>
-							</div>
-						</div>
-						<div class="col-md-5"
-						     v-show="!imageMode.newMenu">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<textarea class="form-control input-sm"
-								          rows="4"
-								          v-model="newNewsFeed.body"
-								          :class="{'edited': newNewsFeed.body.length}"></textarea>
-								<label for="form_control_1">Body</label>
-							</div>
-						</div>
-						<div class="col-xs-12"
-						     v-show="!imageMode.newMenu">
-							<div class="pull-right">
-								<button type="submit"
-								        class="btn blue"
-								        :disabled="creating">
-									Save
-									<i v-show="creating"
-									   class="fa fa-spinner fa-pulse fa-fw">
-									</i>
-								</button>
-							</div>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-		<!-- CREATE END -->
-		<loading-screen :show="displayNewsFeedData"
-		                :color="'#2C3E50'"
-		                :display="'inline'"></loading-screen>
-		<div class="margin-top-20">
-			<div class="relative-block">
-				<div class="clearfix"
-				     v-if="newsFeed.length">
-					<el-dropdown trigger="click"
-					             @command="updateSortByOrder"
-					             size="mini"
-					             :show-timeout="50"
-					             :hide-timeout="50">
-						<el-button size="mini">
-							Sort by
-							<span>
-								<i class="fa fa-sort-alpha-asc"
-								   v-if="sortBy.order === 'ASC'"></i>
-								<i class="fa fa-sort-alpha-desc"
-								   v-if="sortBy.order === 'DESC'"></i>
-							</span>
-							<i class="el-icon-arrow-down el-icon--right"></i>
-						</el-button>
-						<el-dropdown-menu slot="dropdown">
-							<el-dropdown-item command="ASC">
-								<i class="fa fa-sort-alpha-asc"></i>
-							</el-dropdown-item>
-							<el-dropdown-item command="DESC">
-								<i class="fa fa-sort-alpha-desc"></i>
-							</el-dropdown-item>
-						</el-dropdown-menu>
-					</el-dropdown>
-					<page-results class="pull-right"
-					              :totalResults="totalResults"
-					              :activePage="activePage"
-					              @pageResults="pageResultsUpdate"></page-results>
-				</div>
-				<div class="portlet light portlet-fit bordered margin-top-20"
-				     v-if="newsFeed.length">
-					<div class="portlet-title">
-						<div class="caption">
-							<i class="fa fa-newspaper-o font-blue-madison"></i>
-							<span class="caption-subject bold font-blue-madison uppercase"> News Feed</span>
-						</div>
-					</div>
-					<div class="portlet-body">
-						<div class="timeline">
-							<!-- TIMELINE ITEM -->
-							<div class="timeline-item"
-							     v-for="(news, index) in newsFeed"
-							     :key="index">
-								<div class="timeline-badge">
-									<img class="timeline-badge-userpic"
-									     v-if="news.image.length"
-									     :src="news.image">
-									<img class="timeline-badge-userpic"
-									     v-if="!news.image.length"
-									     src="../../../src/assets/img/app/image-placeholder.png">
-								</div>
-								<div class="timeline-body"
-								     :id="'news-' + news.id">
-									<div class="timeline-body-arrow"> </div>
-									<div class="timeline-body-head">
-										<div class="timeline-body-head-caption">
-											<a class="timeline-body-title font-blue-madison">{{ news.title }}</a>
-										</div>
-										<div class="timeline-body-head-actions">
-											<div class="btn-group"
-											     v-if="$root.permissions['news_feed update']">
-												<button class="btn blue btn-sm"
-												        type="button"
-												        @click="editNewsFeed(news)"> Edit</button>
-											</div>
-											<div class="btn-group"
-											     v-if="$root.permissions['news_feed read'] && !$root.permissions['news_feed update']">
-												<button class="btn blue btn-sm"
-												        type="button"
-												        @click="editNewsFeed(news)"> View</button>
-											</div>
-											<div class="btn-group"
-											     v-if="$root.permissions['news_feed delete']">
-												<button class="btn blue btn-outline btn-sm"
-												        type="button"
-												        @click="openDeleteModal(news)"> Delete</button>
-											</div>
-										</div>
-									</div>
-									<div class="timeline-body-content">
-										<h5>{{ news.formatted_date }}</h5>
-										<span class="font-grey-cascade">{{ news.short_description }}</span>
-										<span class="font-grey-cascade">{{ news.external_url }}</span>
-									</div>
-								</div>
-							</div>
-						</div>
-						<!-- END TIMELINE ITEM -->
-					</div>
-					<div class="alert alert-danger"
-					     v-show="!newsFeed && errorMessage"
-					     ref="errorMessage">
-						<button class="close"
-						        @click="clearError('errorMessage')"></button>
-						<span>{{errorMessage}}</span>
-					</div>
-				</div>
-				<div v-else>
-					<no-results :show="!newsFeed.length && !displayNewsFeedData"
-					            :type="'news feed'"></no-results>
-				</div>
-				<pagination v-if="newsFeed.length && numPages > 1"
-				            :passedPage="activePage"
-				            :numPages="numPages"
-				            @activePageChange="activePageUpdate"></pagination>
-			</div>
-		</div>
+  <div>
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
+    <!-- END PAGE BAR -->
+    <!-- BEGIN PAGE TITLE-->
+    <h1 class="page-title">
+      News Feed
+    </h1>
+    <!-- END PAGE TITLE-->
+    <div class="note note-info">
+      <p>Create and manage the Application News Feed.</p>
+    </div>
+    <!-- CREATE START -->
+    <div
+      v-if="$root.permissions['news_feed create']"
+      class="portlet box blue-hoki margin-top-20"
+    >
+      <div
+        class="portlet-title bg-blue-chambray"
+        @click="toggleCreateFeedPanel()"
+      >
+        <div class="custom tools">
+          <a :class="{'expand': !createFeedCollapse, 'collapse': createFeedCollapse}" />
+        </div>
+        <div class="caption">
+          &emsp;Create News Feed
+        </div>
+      </div>
+      <div
+        class="portlet-body"
+        :class="{'display-hide': createFeedCollapse}"
+      >
+        <form
+          role="form"
+          @submit.prevent="createNewsFeed($event)"
+        >
+          <div class="row">
+            <div class="col-md-12">
+              <div
+                v-show="createFeedError.length"
+                ref="createFeedError"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  data-close="alert"
+                  @click.prevent="clearCreateFeedError()"
+                />
+                <span>{{ createFeedError }}</span>
+              </div>
+            </div>
+            <div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
+              <resource-picker
+                :image-button="true"
+                :image-url="newNewsFeed.image"
+                class="margin-top-15"
+                @open="toggleImageMode('newMenu', true)"
+                @close="toggleImageMode('newMenu', false)"
+                @selected="updateImage"
+              />
+            </div>
+            <div
+              v-show="!imageMode.newMenu"
+              class="col-md-5"
+            >
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_1"
+                  v-model="newNewsFeed.title"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newNewsFeed.title.length}"
+                >
+                <label for="form_control_1">
+                  Title
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_2"
+                  v-model="newNewsFeed.short_description"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newNewsFeed.short_description.length}"
+                >
+                <label for="form_control_2">
+                  Short Description
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_external_url"
+                  v-model="newNewsFeed.external_url"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newNewsFeed.external_url.length}"
+                >
+                <label for="form_control_2">
+                  Link
+                </label>
+              </div>
+            </div>
+            <div
+              v-show="!imageMode.newMenu"
+              class="col-md-5"
+            >
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <textarea
+                  v-model="newNewsFeed.body"
+                  class="form-control input-sm"
+                  rows="4"
+                  :class="{'edited': newNewsFeed.body.length}"
+                />
+                <label for="form_control_1">
+                  Body
+                </label>
+              </div>
+            </div>
+            <div
+              v-show="!imageMode.newMenu"
+              class="col-xs-12"
+            >
+              <div class="pull-right">
+                <button
+                  type="submit"
+                  class="btn blue"
+                  :disabled="creating"
+                >
+                  Save
+                  <i
+                    v-show="creating"
+                    class="fa fa-spinner fa-pulse fa-fw"
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- CREATE END -->
+    <loading-screen
+      :show="displayNewsFeedData"
+      :color="'#2C3E50'"
+      :display="'inline'"
+    />
+    <div class="margin-top-20">
+      <div class="relative-block">
+        <div
+          v-if="newsFeed.length"
+          class="clearfix"
+        >
+          <el-dropdown
+            trigger="click"
+            size="mini"
+            :show-timeout="50"
+            :hide-timeout="50"
+            @command="updateSortByOrder"
+          >
+            <el-button size="mini">
+              Sort by
+              <span>
+                <i
+                  v-if="sortBy.order === 'ASC'"
+                  class="fa fa-sort-alpha-asc"
+                />
+                <i
+                  v-if="sortBy.order === 'DESC'"
+                  class="fa fa-sort-alpha-desc"
+                />
+              </span>
+              <i class="el-icon-arrow-down el-icon--right" />
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="ASC">
+                <i class="fa fa-sort-alpha-asc" />
+              </el-dropdown-item>
+              <el-dropdown-item command="DESC">
+                <i class="fa fa-sort-alpha-desc" />
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+          <page-results
+            class="pull-right"
+            :total-results="totalResults"
+            :active-page="activePage"
+            @pageResults="pageResultsUpdate"
+          />
+        </div>
+        <div
+          v-if="newsFeed.length"
+          class="portlet light portlet-fit bordered margin-top-20"
+        >
+          <div class="portlet-title">
+            <div class="caption">
+              <i class="fa fa-newspaper-o font-blue-madison" />
+              <span class="caption-subject bold font-blue-madison uppercase">
+                News Feed
+              </span>
+            </div>
+          </div>
+          <div class="portlet-body">
+            <div class="timeline">
+              <!-- TIMELINE ITEM -->
+              <div
+                v-for="(news, index) in newsFeed"
+                :key="index"
+                class="timeline-item"
+              >
+                <div class="timeline-badge">
+                  <img
+                    v-if="news.image.length"
+                    class="timeline-badge-userpic"
+                    :src="news.image"
+                  >
+                  <img
+                    v-if="!news.image.length"
+                    class="timeline-badge-userpic"
+                    src="../../../src/assets/img/app/image-placeholder.png"
+                  >
+                </div>
+                <div
+                  :id="'news-' + news.id"
+                  class="timeline-body"
+                >
+                  <div class="timeline-body-arrow" />
+                  <div class="timeline-body-head">
+                    <div class="timeline-body-head-caption">
+                      <a class="timeline-body-title font-blue-madison">
+                        {{ news.title }}
+                      </a>
+                    </div>
+                    <div class="timeline-body-head-actions">
+                      <div
+                        v-if="$root.permissions['news_feed update']"
+                        class="btn-group"
+                      >
+                        <button
+                          class="btn blue btn-sm"
+                          type="button"
+                          @click="editNewsFeed(news)"
+                        >
+                          Edit
+                        </button>
+                      </div>
+                      <div
+                        v-if="$root.permissions['news_feed read'] && !$root.permissions['news_feed update']"
+                        class="btn-group"
+                      >
+                        <button
+                          class="btn blue btn-sm"
+                          type="button"
+                          @click="editNewsFeed(news)"
+                        >
+                          View
+                        </button>
+                      </div>
+                      <div
+                        v-if="$root.permissions['news_feed delete']"
+                        class="btn-group"
+                      >
+                        <button
+                          class="btn blue btn-outline btn-sm"
+                          type="button"
+                          @click="openDeleteModal(news)"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="timeline-body-content">
+                    <h5>{{ news.formatted_date }}</h5>
+                    <span class="font-grey-cascade">
+                      {{ news.short_description }}
+                    </span>
+                    <span class="font-grey-cascade">
+                      {{ news.external_url }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- END TIMELINE ITEM -->
+          </div>
+          <div
+            v-show="!newsFeed && errorMessage"
+            ref="errorMessage"
+            class="alert alert-danger"
+          >
+            <button
+              class="close"
+              @click="clearError('errorMessage')"
+            />
+            <span>{{ errorMessage }}</span>
+          </div>
+        </div>
+        <div v-else>
+          <no-results
+            :show="!newsFeed.length && !displayNewsFeedData"
+            :type="'news feed'"
+          />
+        </div>
+        <pagination
+          v-if="newsFeed.length && numPages > 1"
+          :passed-page="activePage"
+          :num-pages="numPages"
+          @activePageChange="activePageUpdate"
+        />
+      </div>
+    </div>
 
-		<edit-news-feed v-if="showEditFeedModal"
-		                :selectedFeedId="selectedFeedId"
-		                @closeEditFeedModal="closeEditFeedModal"
-		                @updateNewsFeed="updateNewsFeed"></edit-news-feed>
+    <edit-news-feed
+      v-if="showEditFeedModal"
+      :selected-feed-id="selectedFeedId"
+      @closeEditFeedModal="closeEditFeedModal"
+      @updateNewsFeed="updateNewsFeed"
+    />
 
-		<!-- START DELETE -->
-		<modal :show="showDeleteModal"
-		       effect="fade"
-		       @closeOnEscape="closeDeleteModal"
-		       ref="deleteModal">
-			<div slot="modal-header"
-			     class="modal-header">
-				<button type="button"
-				        class="close"
-				        @click="closeDeleteModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Confirm Delete</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<div class="alert alert-danger"
-				     v-show="deleteErrorMessage"
-				     ref="deleteErrorMessage">
-					<button class="close"
-					        @click="clearError('deleteErrorMessage')"></button>
-					<span>{{deleteErrorMessage}}</span>
-				</div>
+    <!-- START DELETE -->
+    <modal
+      ref="deleteModal"
+      :show="showDeleteModal"
+      effect="fade"
+      @closeOnEscape="closeDeleteModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeDeleteModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Confirm Delete
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <div
+          v-show="deleteErrorMessage"
+          ref="deleteErrorMessage"
+          class="alert alert-danger"
+        >
+          <button
+            class="close"
+            @click="clearError('deleteErrorMessage')"
+          />
+          <span>{{ deleteErrorMessage }}</span>
+        </div>
 
-				<p>Are you sure you want to delete the news feed?</p>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer clear">
-				<button type="button"
-				        class="btn blue"
-				        @click="deleteNewsFeed()"
-				        :disabled="deleting">
-					Delete
-					<i v-show="deleting"
-					   class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-			</div>
-		</modal>
-		<!-- START DELETE -->
-	</div>
+        <p>Are you sure you want to delete the news feed?</p>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer clear"
+      >
+        <button
+          type="button"
+          class="btn blue"
+          :disabled="deleting"
+          @click="deleteNewsFeed()"
+        >
+          Delete
+          <i
+            v-show="deleting"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+      </div>
+    </modal>
+    <!-- START DELETE -->
+  </div>
 </template>
 
 <script>
@@ -279,6 +396,17 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 import LoadingScreen from '@/components/modules/LoadingScreen'
 
 export default {
+	components: {
+		Breadcrumb,
+		PageResults,
+		Pagination,
+		Dropdown,
+		EditNewsFeed,
+		NoResults,
+		ResourcePicker,
+		Modal,
+		LoadingScreen
+	},
 	data () {
 		return {
 			breadcrumbArray: [{ name: 'News Feed', link: false }],
@@ -312,6 +440,14 @@ export default {
 			deleting: false,
 			deleteErrorMessage: '',
 			displayNewsFeedData: false
+		}
+	},
+	watch: {
+		'sortBy.order' () {
+			if (this.sortBy.order) {
+				this.activePageUpdate(1)
+				this.getNewsFeed(0)
+			}
 		}
 	},
 	created () {
@@ -649,25 +785,6 @@ export default {
 			this.showEditFeedModal = false
 			this.getNewsFeed()
 		}
-	},
-	watch: {
-		'sortBy.order' () {
-			if (this.sortBy.order) {
-				this.activePageUpdate(1)
-				this.getNewsFeed(0)
-			}
-		}
-	},
-	components: {
-		Breadcrumb,
-		PageResults,
-		Pagination,
-		Dropdown,
-		EditNewsFeed,
-		NoResults,
-		ResourcePicker,
-		Modal,
-		LoadingScreen
 	}
 }
 </script>

@@ -1,242 +1,332 @@
 <template>
-	<div class="portlet light bordered">
-		<div class="portlet-body">
-			<!-- HEADER START -->
-			<h4 class="modal-title center margin-bottom-15">
-				<i class="fa fa-chevron-left clickable pull-left"
-				   v-show="mode !== 'list'"
-				   @click="listMode()"></i>
-				<span v-show="mode === 'create'">Add Image</span>
-				<span v-show="mode === 'preview'">Preview</span>
-				<span v-show="mode === 'edit'">Edit Image</span>
-				<span v-show="mode === 'delete'">Delete Image</span>
-			</h4>
-			<!-- HEADER END -->
-			<div class="relative-block">
-				<loading-screen :show="loadingImages"
-				                :color="'#2C3E50'"
-				                :display="'inline'"></loading-screen>
-				<div class="row">
-					<div class="col-md-12"
-					     v-show="imagesErrorMessage.length"
-					     ref="imagesErrorMessage">
-						<div class="alert alert-danger">
-							<button class="close"
-							        @click="clearError('imagesErrorMessage')"></button>
-							<span>{{imagesErrorMessage}}</span>
-						</div>
-					</div>
-					<div class="col-md-12"
-					     v-if="!loadingImages">
-						<!-- LIST START -->
-						<div v-if="mode === 'list'">
-							<div v-for="image in images"
-							     class="col-md-4 margin-bottom-15"
-							     :id="'image-' + image.id"
-							     :key="image.id">
-								<div class="tile image">
-									<div class="tile-body custom-tile-body">
-										<img class="custom-tile-body-img clickable"
-										     @click="previewMode(image)"
-										     :src="image.url">
-									</div>
-									<div class="actions-under-image">
-										<div class="padding-x-5"
-										     @click="flipDefault(image)">
-											<el-tooltip :content="defaultButtonText(image.default)"
-											            effect="light"
-											            popper-class="tooltip-in-modal">
-												<a class="btn btn-circle btn-icon-only btn-edit"
-												   :disabled="!$root.permissions['stores images update']? true : false">
-													<i v-show="image.default === 0"
-													   class="fa fa-lg fa-check black-text"></i>
-													<i v-show="image.default === 1"
-													   class="fa fa-lg fa-times black-text"></i>
-												</a>
-											</el-tooltip>
-										</div>
-										<div class="padding-x-5">
-											<el-tooltip content="Edit"
-											            effect="light"
-											            popper-class="tooltip-in-modal">
-												<a class="btn btn-circle btn-icon-only btn-edit"
-												   @click="editMode(image)"
-												   :disabled="!$root.permissions['stores images update']? true : false">
-													<i class="fa fa-lg fa-pencil black-text"></i>
-												</a>
-											</el-tooltip>
-										</div>
-										<div class="padding-x-5">
-											<el-tooltip content="Delete Image"
-											            effect="light"
-											            popper-class="tooltip-in-modal">
-												<a class="btn btn-circle btn-icon-only btn-default"
-												   @click="deleteMode(image)"
-												   :disabled="!$root.permissions['stores images update']? true : false">
-													<i class="fa fa-lg fa-trash black-text"></i>
-												</a>
-											</el-tooltip>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div :class="{'col-md-4': images.length, 'col-md-12': !images.length}">
-							<div v-show="!images.length"
-							     class="alert alert-info center">
-								<h4>No Images</h4>
-								<p>This store doesn't have any images yet. Add the first one by clicking the plus button below.</p>
-							</div>
-							<div class="add-container" v-show="mode === 'list'">
-								<el-tooltip content="Add Image"
-								            effect="light"
-								            popper-class="tooltip-in-modal">
-									<a class="btn btn-circle btn-icon-only btn-edit"
-									   @click="createMode()"
-									   :disabled="!$root.permissions['stores images update']? true : false">
-										<i class="fa fa-lg fa-plus black-text"></i>
-									</a>
-								</el-tooltip>
-							</div>
-						</div>
-					</div>
-					<!-- LIST END -->
-					<!-- PREVIEW START -->
-					<div class="col-md-12"
-					     v-if="mode === 'preview'">
-						<div class="preview-container">
-							<img class="preview-image"
-							     :src="imageToPreview.url">
-						</div>
-					</div>
-					<!-- PREVIEW END -->
-					<!-- CREATE START -->
-					<div class="col-md-12"
-					     v-show="mode === 'create'">
-						<div class="row"
-						     v-show="!selectNew">
-							<div class="col-md-3">
-								<div class="preview-container">
-									<img :src="imageToCreate.url"
-									     @click="selectNew = true"
-									     class="preview-image">
-								</div>
-							</div>
-							<div class="col-md-6">
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input ref="order"
-									       type="text"
-									       class="form-control input-sm"
-									       :class="{'edited': imageToCreate.order.length}"
-									       id="form_control_1"
-									       v-model="imageToCreate.order">
-									<label for="form_control_1">Order</label>
-								</div>
-								<label>Default</label><br>
-								<el-switch v-model="imageToCreate.default"
-								           active-color="#0c6"
-								           inactive-color="#ff4949"
-								           :active-value="1"
-								           :inactive-value="0"
-								           active-text="Yes"
-								           inactive-text="No">
-								</el-switch>
-							</div>
-							<div class="col-md-12">
-								<button class="btn btn-primary margin-top-15 pull-right"
-								        @click="createImage()">
-									Create
-								</button>
-							</div>
-						</div>
-						<resource-picker v-show="selectNew"
-						                 @selected="updateImageToCreate"
-						                 :noButton="true"
-						                 :showDoneButton="false"
-						                 :imageUrl="imageToCreate.url"
-						                 class="margin-top-15">
-						</resource-picker>
-					</div>
-					<!-- CREATE END -->
-					<!-- EDIT START -->
-					<div class="col-md-12"
-					     v-if="mode === 'edit'">
-						<div class="row"
-						     v-show="!selectEdited">
-							<div class="col-md-3">
-								<div class="preview-container">
-									<img :src="imageToEdit.url"
-									     @click="selectEdited = true"
-									     class="preview-image">
-								</div>
-							</div>
-							<div class="col-md-6">
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input ref="order"
-									       type="text"
-									       class="form-control input-sm"
-									       :class="{'edited': imageToEdit.order.length}"
-									       id="form_control_1"
-									       v-model="imageToEdit.order">
-									<label for="form_control_1">Order</label>
-								</div>
-								<label>Default</label><br>
-								<el-switch v-model="imageToEdit.default"
-								           active-color="#0c6"
-								           inactive-color="#ff4949"
-								           :active-value="1"
-								           :inactive-value="0"
-								           active-text="Yes"
-								           inactive-text="No">
-								</el-switch>
-							</div>
-							<div class="col-md-12">
-								<button class="btn btn-primary margin-top-15 pull-right"
-								        @click="editImage()">
-									Save
-								</button>
-							</div>
-						</div>
-						<resource-picker v-show="selectEdited"
-						                 @selected="updateImageToEdit"
-						                 :noButton="true"
-						                 :imageUrl="imageToEdit.url"
-						                 class="margin-top-15">
-						</resource-picker>
-					</div>
-					<!-- EDIT END -->
-					<!-- DELETE START -->
-					<div class="col-md-12"
-					     v-if="mode === 'delete'">
-						<div class="col-md-12">
-							<div class="delete-preview-container">
-								<img class="preview-image"
-								     :src="imageToDelete.url">
-							</div>
-							<p class="center margin-top-10 margin-bottom-0">Are you sure you want to delete this image?</p>
-						</div>
-					</div>
-					<!-- DELETE END -->
-				</div>
-			</div>
-		</div>
-		<div v-show="mode !== 'create' && mode !== 'edit'">
-			<div class="row">
-				<div class="col-md-12">
-					<button v-show="mode === 'delete'"
-					        @click="deleteImage()"
-					        type="button"
-					        class="btn blue pull-right"
-									:disabled="deleting">
-						Delete
-					<i v-show="deleting"
-					   class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-					</button>
-				</div>
-			</div>
-		</div>
-	</div>
+  <div class="portlet light bordered">
+    <div class="portlet-body">
+      <!-- HEADER START -->
+      <h4 class="modal-title center margin-bottom-15">
+        <i
+          v-show="mode !== 'list'"
+          class="fa fa-chevron-left clickable pull-left"
+          @click="listMode()"
+        />
+        <span v-show="mode === 'create'">
+          Add Image
+        </span>
+        <span v-show="mode === 'preview'">
+          Preview
+        </span>
+        <span v-show="mode === 'edit'">
+          Edit Image
+        </span>
+        <span v-show="mode === 'delete'">
+          Delete Image
+        </span>
+      </h4>
+      <!-- HEADER END -->
+      <div class="relative-block">
+        <loading-screen
+          :show="loadingImages"
+          :color="'#2C3E50'"
+          :display="'inline'"
+        />
+        <div class="row">
+          <div
+            v-show="imagesErrorMessage.length"
+            ref="imagesErrorMessage"
+            class="col-md-12"
+          >
+            <div class="alert alert-danger">
+              <button
+                class="close"
+                @click="clearError('imagesErrorMessage')"
+              />
+              <span>{{ imagesErrorMessage }}</span>
+            </div>
+          </div>
+          <div
+            v-if="!loadingImages"
+            class="col-md-12"
+          >
+            <!-- LIST START -->
+            <div v-if="mode === 'list'">
+              <div
+                v-for="image in images"
+                :id="'image-' + image.id"
+                :key="image.id"
+                class="col-md-4 margin-bottom-15"
+              >
+                <div class="tile image">
+                  <div class="tile-body custom-tile-body">
+                    <img
+                      class="custom-tile-body-img clickable"
+                      :src="image.url"
+                      @click="previewMode(image)"
+                    >
+                  </div>
+                  <div class="actions-under-image">
+                    <div
+                      class="padding-x-5"
+                      @click="flipDefault(image)"
+                    >
+                      <el-tooltip
+                        :content="defaultButtonText(image.default)"
+                        effect="light"
+                        popper-class="tooltip-in-modal"
+                      >
+                        <a
+                          class="btn btn-circle btn-icon-only btn-edit"
+                          :disabled="!$root.permissions['stores images update']? true : false"
+                        >
+                          <i
+                            v-show="image.default === 0"
+                            class="fa fa-lg fa-check black-text"
+                          />
+                          <i
+                            v-show="image.default === 1"
+                            class="fa fa-lg fa-times black-text"
+                          />
+                        </a>
+                      </el-tooltip>
+                    </div>
+                    <div class="padding-x-5">
+                      <el-tooltip
+                        content="Edit"
+                        effect="light"
+                        popper-class="tooltip-in-modal"
+                      >
+                        <a
+                          class="btn btn-circle btn-icon-only btn-edit"
+                          :disabled="!$root.permissions['stores images update']? true : false"
+                          @click="editMode(image)"
+                        >
+                          <i class="fa fa-lg fa-pencil black-text" />
+                        </a>
+                      </el-tooltip>
+                    </div>
+                    <div class="padding-x-5">
+                      <el-tooltip
+                        content="Delete Image"
+                        effect="light"
+                        popper-class="tooltip-in-modal"
+                      >
+                        <a
+                          class="btn btn-circle btn-icon-only btn-default"
+                          :disabled="!$root.permissions['stores images update']? true : false"
+                          @click="deleteMode(image)"
+                        >
+                          <i class="fa fa-lg fa-trash black-text" />
+                        </a>
+                      </el-tooltip>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div :class="{'col-md-4': images.length, 'col-md-12': !images.length}">
+              <div
+                v-show="!images.length"
+                class="alert alert-info center"
+              >
+                <h4>No Images</h4>
+                <p>This store doesn't have any images yet. Add the first one by clicking the plus button below.</p>
+              </div>
+              <div
+                v-show="mode === 'list'"
+                class="add-container"
+              >
+                <el-tooltip
+                  content="Add Image"
+                  effect="light"
+                  popper-class="tooltip-in-modal"
+                >
+                  <a
+                    class="btn btn-circle btn-icon-only btn-edit"
+                    :disabled="!$root.permissions['stores images update']? true : false"
+                    @click="createMode()"
+                  >
+                    <i class="fa fa-lg fa-plus black-text" />
+                  </a>
+                </el-tooltip>
+              </div>
+            </div>
+          </div>
+          <!-- LIST END -->
+          <!-- PREVIEW START -->
+          <div
+            v-if="mode === 'preview'"
+            class="col-md-12"
+          >
+            <div class="preview-container">
+              <img
+                class="preview-image"
+                :src="imageToPreview.url"
+              >
+            </div>
+          </div>
+          <!-- PREVIEW END -->
+          <!-- CREATE START -->
+          <div
+            v-show="mode === 'create'"
+            class="col-md-12"
+          >
+            <div
+              v-show="!selectNew"
+              class="row"
+            >
+              <div class="col-md-3">
+                <div class="preview-container">
+                  <img
+                    :src="imageToCreate.url"
+                    class="preview-image"
+                    @click="selectNew = true"
+                  >
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_1"
+                    ref="order"
+                    v-model="imageToCreate.order"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': imageToCreate.order.length}"
+                  >
+                  <label for="form_control_1">
+                    Order
+                  </label>
+                </div>
+                <label>Default</label><br>
+                <el-switch
+                  v-model="imageToCreate.default"
+                  active-color="#0c6"
+                  inactive-color="#ff4949"
+                  :active-value="1"
+                  :inactive-value="0"
+                  active-text="Yes"
+                  inactive-text="No"
+                />
+              </div>
+              <div class="col-md-12">
+                <button
+                  class="btn btn-primary margin-top-15 pull-right"
+                  @click="createImage()"
+                >
+                  Create
+                </button>
+              </div>
+            </div>
+            <resource-picker
+              v-show="selectNew"
+              :no-button="true"
+              :show-done-button="false"
+              :image-url="imageToCreate.url"
+              class="margin-top-15"
+              @selected="updateImageToCreate"
+            />
+          </div>
+          <!-- CREATE END -->
+          <!-- EDIT START -->
+          <div
+            v-if="mode === 'edit'"
+            class="col-md-12"
+          >
+            <div
+              v-show="!selectEdited"
+              class="row"
+            >
+              <div class="col-md-3">
+                <div class="preview-container">
+                  <img
+                    :src="imageToEdit.url"
+                    class="preview-image"
+                    @click="selectEdited = true"
+                  >
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_1"
+                    ref="order"
+                    v-model="imageToEdit.order"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': imageToEdit.order.length}"
+                  >
+                  <label for="form_control_1">
+                    Order
+                  </label>
+                </div>
+                <label>Default</label><br>
+                <el-switch
+                  v-model="imageToEdit.default"
+                  active-color="#0c6"
+                  inactive-color="#ff4949"
+                  :active-value="1"
+                  :inactive-value="0"
+                  active-text="Yes"
+                  inactive-text="No"
+                />
+              </div>
+              <div class="col-md-12">
+                <button
+                  class="btn btn-primary margin-top-15 pull-right"
+                  @click="editImage()"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+            <resource-picker
+              v-show="selectEdited"
+              :no-button="true"
+              :image-url="imageToEdit.url"
+              class="margin-top-15"
+              @selected="updateImageToEdit"
+            />
+          </div>
+          <!-- EDIT END -->
+          <!-- DELETE START -->
+          <div
+            v-if="mode === 'delete'"
+            class="col-md-12"
+          >
+            <div class="col-md-12">
+              <div class="delete-preview-container">
+                <img
+                  class="preview-image"
+                  :src="imageToDelete.url"
+                >
+              </div>
+              <p class="center margin-top-10 margin-bottom-0">
+                Are you sure you want to delete this image?
+              </p>
+            </div>
+          </div>
+          <!-- DELETE END -->
+        </div>
+      </div>
+    </div>
+    <div v-show="mode !== 'create' && mode !== 'edit'">
+      <div class="row">
+        <div class="col-md-12">
+          <button
+            v-show="mode === 'delete'"
+            type="button"
+            class="btn blue pull-right"
+            :disabled="deleting"
+            @click="deleteImage()"
+          >
+            Delete
+            <i
+              v-show="deleting"
+              class="fa fa-spinner fa-pulse fa-fw"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -248,6 +338,17 @@ import ResourcePicker from '@/components/modules/ResourcePicker'
 import ImagePlaceholder from '@/assets/img/app/image-placeholder.png'
 
 export default {
+	components: {
+		ResourcePicker,
+		LoadingScreen
+	},
+	props: {
+		storeId: {
+			type: Number,
+			required: true,
+			default: () => null
+		}
+	},
 	data: () => ({
 		mode: 'list',
 		imagesErrorMessage: '',
@@ -268,13 +369,6 @@ export default {
 		deleting: false,
 		selectEdited: false
 	}),
-	props: {
-		storeId: {
-			type: Number,
-			required: true,
-			default: () => null
-		}
-	},
 	created () {
 		this.getStoreImages()
 	},
@@ -673,10 +767,6 @@ export default {
 				type
 			})
 		}
-	},
-	components: {
-		ResourcePicker,
-		LoadingScreen
 	}
 }
 </script>

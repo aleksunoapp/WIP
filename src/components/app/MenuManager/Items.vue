@@ -1,674 +1,927 @@
 <template>
-	<div>
-		<!-- BEGIN PAGE BAR -->
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
-		<!-- END PAGE BAR -->
-		<!-- BEGIN PAGE TITLE-->
-		<h1 class="page-title">Items</h1>
-		<!-- END PAGE TITLE-->
-		<div class="note note-info">
-			<p>View items for category '{{ categoryDetails.name }}'.</p>
-		</div>
-		<!-- BEGIN CREATE NEW MENU-->
-		<div class="portlet box blue-hoki"
-		     v-if="$root.permissions['menu_manager menus categories subcategories items create']">
-			<div class="portlet-title bg-blue-chambray"
-			     @click="toggleCreateItemPanel()">
-				<div class="custom tools">
-					<a :class="{'expand': !createItemCollapse, 'collapse': createItemCollapse}"></a>
-				</div>
-				<div class="caption">
-					&emsp;Create A New Item
-				</div>
-			</div>
-			<div class="portlet-body"
-			     :class="{'display-hide': createItemCollapse}">
-				<form role="form"
-				      @submit.prevent="addNewCategoryItem()"
-				      :disabled="noItemTypes">
-					<div class="form-body row">
-						<div class="col-md-12">
-							<div class="alert alert-danger"
-							     v-show="errorMessage"
-							     ref="errorMessage">
-								<button class="close"
-								        data-close="alert"
-								        @click.prevent="clearError('errorMessage')"></button>
-								<span>{{errorMessage}}</span>
-							</div>
-							<div class="alert alert-info"
-							     v-show="noItemTypes"
-							     ref="noItemTypes">
-								Menu Items require a tax classification.
-								<router-link to="/app/tax_manager/item_types">Create an Item Type in Tax Manager</router-link> before creating a Menu Item.
-							</div>
-						</div>
-						<div class="col-md-12 margin-bottom-20"
-						     v-if="$root.activeLocation.is_corporate !== undefined && $root.activeLocation.is_corporate !== 1">
-							<button class="btn create-or-edit"
-							        @click.prevent="flipCopyCreate"
-							        :class="{'blue-chambray' : copyMode, 'blue btn-outline' : !copyMode}">Copy existing</button>
-							<button class="btn"
-							        @click.prevent="flipCopyCreate"
-							        :class="{'blue-chambray' : !copyMode, 'blue btn-outline' : copyMode}">Create new</button>
-						</div>
-						<menu-item-picker
-							class="ma-5"
-							v-if="showCorporateItems"
-							@update="itemsSelected"
-							:single="true">
-						</menu-item-picker>
-						<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}"
-						     v-show="!showCorporateItems">
-							<resource-picker @open="toggleImageMode('newMenu', true)"
-							                 @close="toggleImageMode('newMenu', false)"
-							                 @selected="updateImage"
-							                 :imageButton="true"
-							                 :imageUrl="newItem.image_url"
-							                 class="margin-top-15">
-							</resource-picker>
-						</div>
-						<div class="col-md-5"
-						     v-show="!showCorporateItems && !imageMode.newMenu">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newItem.name.length}"
-								       id="form_control_2"
-								       v-model="newItem.name">
-								<label for="form_control_2">Item Name</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newItem.desc.length}"
-								       id="form_control_2"
-								       v-model="newItem.desc">
-								<label for="form_control_2">Item Description</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newItem.short_description.length}"
-								       id="form_control_2"
-								       v-model="newItem.short_description">
-								<label for="form_control_2">Item Short Description</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newItem.price.length}"
-								       id="form_control_3"
-								       v-model="newItem.price">
-								<label for="form_control_3">Item Price</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newItem.nutrition_summary.length}"
-								       id="form_control_3"
-								       v-model="newItem.nutrition_summary">
-								<label for="form_control_3">Nutrition Summary</label>
-							</div>
-						</div>
-						<div class="col-md-5"
-						     v-show="!showCorporateItems && !imageMode.newMenu">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="number"
-								       class="form-control input-sm"
-								       :class="{'edited': newItem.order}"
-								       id="form_control_4"
-								       v-model="newItem.order">
-								<label for="form_control_4">Item Order</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       :readonly="SKUreadonly"
-								       class="form-control input-sm"
-								       :class="{'edited': newItem.sku.length}"
-								       id="form_control_5"
-								       v-model="newItem.sku">
-								<label for="form_control_5">Item SKU</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label"
-							     v-if="itemTypes.length">
-								<label>Item Type:</label><br>
-								<el-dropdown trigger="click"
-								             @command="updateTaxClass"
-								             size="mini"
-								             :show-timeout="50"
-								             :hide-timeout="50">
-									<el-button size="mini">
-										{{ newTaxClassLabel }}
-										<i class="el-icon-arrow-down el-icon--right"></i>
-									</el-button>
-									<el-dropdown-menu slot="dropdown">
-										<el-dropdown-item v-for="type in itemTypes"
-										                  :command="type.id"
-										                  :key="type.id">{{type.name}}</el-dropdown-item>
-									</el-dropdown-menu>
-								</el-dropdown>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<label>Type:</label><br>
-								<el-dropdown trigger="click"
-								             @command="updateItemType"
-								             size="mini"
-								             :show-timeout="50"
-								             :hide-timeout="50">
-									<el-button size="mini">
-										{{ newItemTypeLabel }}
-										<i class="el-icon-arrow-down el-icon--right"></i>
-									</el-button>
-									<el-dropdown-menu slot="dropdown">
-										<el-dropdown-item command="regular">regular</el-dropdown-item>
-										<el-dropdown-item command="custom">custom</el-dropdown-item>
-										<el-dropdown-item command="preset">preset</el-dropdown-item>
-									</el-dropdown-menu>
-								</el-dropdown>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<label>Item Status:</label><br>
-								<el-switch v-model="newItem.status"
-								           active-color="#0c6"
-								           inactive-color="#ff4949"
-								           :active-value="1"
-								           :inactive-value="0"
-								           active-text="Active"
-								           inactive-text="Sold Out">
-								</el-switch>
-							</div>
-						</div>
-					</div>
-					<div class="form-actions right margin-top-20"
-					     v-show="!showCorporateItems && !imageMode.newMenu">
-						<button type="submit"
-						        class="btn blue"
-						        :disabled="noItemTypes || creating">
-							Create
-							<i v-show="creating"
-							   class="fa fa-spinner fa-pulse fa-fw">
-							</i>
-						</button>
-					</div>
-				</form>
-			</div>
-		</div>
-		<!-- END CREATE NEW MENU-->
-		<loading-screen :show="displayItemData"
-		                :color="'#2C3E50'"
-		                :display="'inline'"></loading-screen>
-		<div v-if="$root.activeLocation && $root.activeLocation.id && !displayItemData">
-			<div class="portlet light portlet-fit bordered margin-top-20">
-				<div class="portlet-title bg-blue-chambray">
-					<div class="menu-image">
-						<img :src="categoryDetails.image_url">
-					</div>
-					<div class="caption">
-						<span class="caption-subject font-default bold uppercase">{{ categoryDetails.name }}</span>
-						<div class="caption-desc font-grey-cascade">{{ categoryDetails.desc }}</div>
-					</div>
-				</div>
-				<div class="portlet-body">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="alert alert-danger"
-							     v-show="listErrorMessage"
-							     ref="listErrorMessage">
-								<button class="close"
-								        @click.stop.prevent="clearError('listErrorMessage')"></button>
-								<span>{{listErrorMessage}}</span>
-							</div>
-						</div>
-					</div>
-					<div class="mt-element-list margin-top-15"
-					     v-if="categoryItems.length">
-						<div class="mt-list-container list-news ext-1 no-border">
-							<ul>
-								<li v-for="item in categoryItems"
-								    class="mt-list-item margin-top-15"
-								    :class="{'no-hover-highlight' : expanded === item.id, 'clickable' : expanded !== item.id, 'animated' : animated === `item-${item.id}`}"
-								    :id="'item-' + item.id"
-								    @click="expandDetails(item)"
-								    :key="item.id">
-									<div class="margin-bottom-15 actions-on-top">
-										<el-tooltip v-if="$root.permissions['menu_manager menus categories subcategories items update']"
-										            content="Edit"
-										            effect="light"
-										            placement="bottom">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="displayEditItemModal(item, $event)">
-												<i class="fa fa-lg fa-pencil"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['menu_manager menus categories subcategories items read'] && !$root.permissions['menu_manager menus categories subcategories items update']"
-										            content="View"
-										            effect="light"
-										            placement="bottom">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="displayEditItemModal(item, $event)">
-												<i class="fa fa-lg fa-eye"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['menu_manager menus categories subcategories items update']"
-										            content="Images"
-										            effect="light"
-										            placement="bottom">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="openImagesModal(item, $event)">
-												<i class="fa fa-lg fa-image"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="
-												$root.permissions['menu_manager menus categories subcategories items nutrition read'] ||
-												$root.permissions['menu_manager menus categories subcategories items nutrition create'] ||
-												$root.permissions['menu_manager menus categories subcategories items nutrition update']
-											"
-										            content="Nutrition Info"
-										            effect="light"
-										            placement="bottom">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="viewNutritionInfo(item, $event)">
-												<i class="fa fa-lg fa-heartbeat"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['stores add item_to_multiple_locations']"
-										            content="Apply To Locations"
-										            effect="light"
-										            placement="bottom">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="displayApplyToLocationsModal(item, $event)">
-												<i class="icon-layers"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['menu_manager menus categories subcategories items delete']"
-										            content="Delete"
-										            effect="light"
-										            placement="bottom">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="displayDeleteItemModal(item, $event)">
-												<i class="fa fa-lg fa-trash"></i>
-											</a>
-										</el-tooltip>
-									</div>
-									<div class="list-icon-container"
-									     v-show="expanded !== item.id">
-										<i :id="'icon-' + item.id"
-										   class="fa fa-angle-right"></i>
-									</div>
-									<div class="list-thumb">
-										<a v-if="item.image_url.length">
-											<img alt=""
-											     :src="item.image_url" />
-										</a>
-										<a v-else>
-											<img src="../../../assets/img/app/image-placeholder.png">
-										</a>
-									</div>
-									<div class="list-datetime bold uppercase font-red">
-										<span>{{ item.name }}</span>
-									</div>
-									<div class="row height-mod">
-										<div class="col-md-4">
-											<strong>Price:</strong>
-											<span>{{ item.price }}</span><br>
-											<strong>SKU:</strong>
-											<span>{{ item.sku }}</span><br>
-											<strong>Status:</strong>
-											<span v-if="item.status == 1">Available</span>
-											<span v-if="item.status == 0">Sold Out</span><br>
-											<strong>Nutrition summary:</strong>
-											<span>{{ item.nutrition_summary }}</span><br>
-											<strong>Item type:</strong>
-											<span>{{ getItemTypeName(item.item_type_id) }}</span>
-										</div>
-										<div class="col-md-4">
-											<strong>Description:</strong>
-											<span>{{ item.desc }}</span><br>
-											<strong>Short description:</strong>
-											<span>{{ item.short_description }}</span>
-										</div>
-									</div>
-									<div class="row"
-									     :class="{'mt-list-item-expanded' : expanded === item.id, 'mt-list-item-collapsed' : expanded !== item.id}">
-										<div :class="{'col-md-3' : item.type === 'preset', 'col-md-4' : item.type !== 'preset'}">
-											<div class="col-md-12">
-												<h5 class="inline-block">Modifiers</h5>
-											</div>
-											<div class="col-md-12">
-												<div v-if="item.modifiers && item.modifiers.length">
-													<ul class="item-modifier-list">
-														<li v-for="modifier in item.modifiers"
-														    :key="modifier.id">
-															<router-link :to="'/app/menu_manager/modifier_items/' + modifier.id">{{modifier.name}}</router-link>
-														</li>
-													</ul>
-												</div>
-												<div class="col-md-12"
-												     v-if="!item.modifiers || !item.modifiers.length">
-													<p class="grey-text">No modifiers have been applied to this item.</p>
-												</div>
-												<div class="col-md-12">
-													<button v-if="$root.permissions['menu_manager menus categories subcategories items assign modifier']"
-													        type="button"
-													        class="btn btn-outline btn-xs blue margin-top-10"
-													        @click.stop="showModifierModal(item.id, item.modifiers)">
-														Add Modifiers
-													</button>
-												</div>
-											</div>
-										</div>
-										<div :class="{'col-md-3' : item.type === 'preset', 'col-md-4' : item.type !== 'preset'}">
-											<div class="col-md-12">
-												<h5 class="inline-block">Tags</h5>
-											</div>
-											<div class="col-md-12">
-												<div v-if="item.tags && item.tags.length">
-													<ul class="item-modifier-list">
-														<li v-for="tag in item.tags"
-														    :key="tag.id">
-															<span v-show="tag.type === 'may_contain'">may contain</span>
-															<span v-show="tag.type === 'contains'">contains</span>
-															{{tag.name}}
-														</li>
-													</ul>
-												</div>
-												<div class="col-md-12"
-												     v-if="!item.tags || !item.tags.length">
-													<p class="grey-text">No tags have been applied to this item.</p>
-												</div>
-												<div class="col-md-12">
-													<button v-if="$root.permissions['menu_manager menus categories subcategories items tags update']"
-													        type="button"
-													        class="btn btn-outline btn-xs blue margin-top-10"
-													        @click.stop="showTagsModal(item.id, item.tags)">
-														Add Tags
-													</button>
-												</div>
-											</div>
-										</div>
-										<div :class="{'col-md-3' : item.type === 'preset', 'col-md-4' : item.type !== 'preset'}">
-											<div class="col-md-12">
-												<h5 class="inline-block">Attributes</h5>
-											</div>
-											<div class="col-md-12">
-												<div v-show="selectedItemAttributes.length">
-													<ul class="item-modifier-list">
-														<li class="col-md-6"
-														    v-for="attribute in selectedItemAttributes"
-														    :key="attribute.id">
-															{{attribute.name}}
-														</li>
-													</ul>
-												</div>
-												<div class="col-md-12"
-												     v-show="!selectedItemAttributes.length">
-													<p class="grey-text">No attributes have been applied to this item.</p>
-												</div>
-												<div class="col-md-12">
-													<button v-if="$root.permissions['menu_manager menus categories subcategories items update']"
-													        type="button"
-													        class="btn btn-outline btn-xs blue margin-top-10"
-													        @click.stop="showAttributesModal(item)">
-														Add Attributes
-													</button>
-												</div>
-											</div>
-										</div>
-										<div class="col-md-3"
-										     v-show="item.type === 'preset'">
-											<h5>Preset Settings</h5>
-											<ul class="item-modifier-list"
-											    v-show="item.preset_item_modifier_item">
-												<li v-for="(modifier, index) in item.preset_item_modifier_item"
-												    :key="index">
-													{{modifier.modifier_item_name}}
-													<span v-if="modifier.preset_item_modifier_item_option_item.length > 0">
-														(
-														<span v-for="(option, index) in modifier.preset_item_modifier_item_option_item"
-														      :key="index">{{option.option_item_name}}
-															<span v-show="modifier.preset_item_modifier_item_option_item.length - 1 !== index"> | </span>
-														</span>)
-													</span>
-												</li>
-											</ul>
-											<p class="grey-text"
-											   v-show="item.preset_item_modifier_item && !item.preset_item_modifier_item.length">No preset settings yet.</p>
-											<button v-if="$root.permissions['menu_manager menus categories subcategories items update']"
-											        type="button"
-											        class="btn btn-outline btn-xs blue margin-top-10"
-											        @click.stop="showPresetModal(item)">
-												<span v-if="item.preset_item_modifier_item && !item.preset_item_modifier_item.length">Add</span>
-												<span v-else>Edit</span> Preset Settings
-											</button>
-										</div>
-									</div>
-								</li>
-							</ul>
-						</div>
-					</div>
-					<div class="margin-top-20"
-					     v-else>
-						<no-results :show="!categoryItems.length"
-						            :type="'items'"
-						            :custom="true"
-						            :text="customText"></no-results>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="margin-top-20"
-		     v-if="!displayItemData">
-			<no-results :show="!$root.activeLocation || !$root.activeLocation.id"
-			            :type="'items'"></no-results>
-		</div>
+  <div>
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
+    <!-- END PAGE BAR -->
+    <!-- BEGIN PAGE TITLE-->
+    <h1 class="page-title">
+      Items
+    </h1>
+    <!-- END PAGE TITLE-->
+    <div class="note note-info">
+      <p>View items for category '{{ categoryDetails.name }}'.</p>
+    </div>
+    <!-- BEGIN CREATE NEW MENU-->
+    <div
+      v-if="$root.permissions['menu_manager menus categories subcategories items create']"
+      class="portlet box blue-hoki"
+    >
+      <div
+        class="portlet-title bg-blue-chambray"
+        @click="toggleCreateItemPanel()"
+      >
+        <div class="custom tools">
+          <a :class="{'expand': !createItemCollapse, 'collapse': createItemCollapse}" />
+        </div>
+        <div class="caption">
+          &emsp;Create A New Item
+        </div>
+      </div>
+      <div
+        class="portlet-body"
+        :class="{'display-hide': createItemCollapse}"
+      >
+        <form
+          role="form"
+          :disabled="noItemTypes"
+          @submit.prevent="addNewCategoryItem()"
+        >
+          <div class="form-body row">
+            <div class="col-md-12">
+              <div
+                v-show="errorMessage"
+                ref="errorMessage"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  data-close="alert"
+                  @click.prevent="clearError('errorMessage')"
+                />
+                <span>{{ errorMessage }}</span>
+              </div>
+              <div
+                v-show="noItemTypes"
+                ref="noItemTypes"
+                class="alert alert-info"
+              >
+                Menu Items require a tax classification.
+                <router-link to="/app/tax_manager/item_types">
+                  Create an Item Type in Tax Manager
+                </router-link> before creating a Menu Item.
+              </div>
+            </div>
+            <div
+              v-if="$root.activeLocation.is_corporate !== undefined && $root.activeLocation.is_corporate !== 1"
+              class="col-md-12 margin-bottom-20"
+            >
+              <button
+                class="btn create-or-edit"
+                :class="{'blue-chambray' : copyMode, 'blue btn-outline' : !copyMode}"
+                @click.prevent="flipCopyCreate"
+              >
+                Copy existing
+              </button>
+              <button
+                class="btn"
+                :class="{'blue-chambray' : !copyMode, 'blue btn-outline' : copyMode}"
+                @click.prevent="flipCopyCreate"
+              >
+                Create new
+              </button>
+            </div>
+            <menu-item-picker
+              v-if="showCorporateItems"
+              class="ma-5"
+              :single="true"
+              @update="itemsSelected"
+            />
+            <div
+              v-show="!showCorporateItems"
+              :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}"
+            >
+              <resource-picker
+                :image-button="true"
+                :image-url="newItem.image_url"
+                class="margin-top-15"
+                @open="toggleImageMode('newMenu', true)"
+                @close="toggleImageMode('newMenu', false)"
+                @selected="updateImage"
+              />
+            </div>
+            <div
+              v-show="!showCorporateItems && !imageMode.newMenu"
+              class="col-md-5"
+            >
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_2"
+                  v-model="newItem.name"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newItem.name.length}"
+                >
+                <label for="form_control_2">
+                  Item Name
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_2"
+                  v-model="newItem.desc"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newItem.desc.length}"
+                >
+                <label for="form_control_2">
+                  Item Description
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_2"
+                  v-model="newItem.short_description"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newItem.short_description.length}"
+                >
+                <label for="form_control_2">
+                  Item Short Description
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_3"
+                  v-model="newItem.price"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newItem.price.length}"
+                >
+                <label for="form_control_3">
+                  Item Price
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_3"
+                  v-model="newItem.nutrition_summary"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newItem.nutrition_summary.length}"
+                >
+                <label for="form_control_3">
+                  Nutrition Summary
+                </label>
+              </div>
+            </div>
+            <div
+              v-show="!showCorporateItems && !imageMode.newMenu"
+              class="col-md-5"
+            >
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_4"
+                  v-model="newItem.order"
+                  type="number"
+                  class="form-control input-sm"
+                  :class="{'edited': newItem.order}"
+                >
+                <label for="form_control_4">
+                  Item Order
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_5"
+                  v-model="newItem.sku"
+                  type="text"
+                  :readonly="SKUreadonly"
+                  class="form-control input-sm"
+                  :class="{'edited': newItem.sku.length}"
+                >
+                <label for="form_control_5">
+                  Item SKU
+                </label>
+              </div>
+              <div
+                v-if="itemTypes.length"
+                class="form-group form-md-line-input form-md-floating-label"
+              >
+                <label>Item Type:</label><br>
+                <el-dropdown
+                  trigger="click"
+                  size="mini"
+                  :show-timeout="50"
+                  :hide-timeout="50"
+                  @command="updateTaxClass"
+                >
+                  <el-button size="mini">
+                    {{ newTaxClassLabel }}
+                    <i class="el-icon-arrow-down el-icon--right" />
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item
+                      v-for="type in itemTypes"
+                      :key="type.id"
+                      :command="type.id"
+                    >
+                      {{ type.name }}
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <label>Type:</label><br>
+                <el-dropdown
+                  trigger="click"
+                  size="mini"
+                  :show-timeout="50"
+                  :hide-timeout="50"
+                  @command="updateItemType"
+                >
+                  <el-button size="mini">
+                    {{ newItemTypeLabel }}
+                    <i class="el-icon-arrow-down el-icon--right" />
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="regular">
+                      regular
+                    </el-dropdown-item>
+                    <el-dropdown-item command="custom">
+                      custom
+                    </el-dropdown-item>
+                    <el-dropdown-item command="preset">
+                      preset
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <label>Item Status:</label><br>
+                <el-switch
+                  v-model="newItem.status"
+                  active-color="#0c6"
+                  inactive-color="#ff4949"
+                  :active-value="1"
+                  :inactive-value="0"
+                  active-text="Active"
+                  inactive-text="Sold Out"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            v-show="!showCorporateItems && !imageMode.newMenu"
+            class="form-actions right margin-top-20"
+          >
+            <button
+              type="submit"
+              class="btn blue"
+              :disabled="noItemTypes || creating"
+            >
+              Create
+              <i
+                v-show="creating"
+                class="fa fa-spinner fa-pulse fa-fw"
+              />
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- END CREATE NEW MENU-->
+    <loading-screen
+      :show="displayItemData"
+      :color="'#2C3E50'"
+      :display="'inline'"
+    />
+    <div v-if="$root.activeLocation && $root.activeLocation.id && !displayItemData">
+      <div class="portlet light portlet-fit bordered margin-top-20">
+        <div class="portlet-title bg-blue-chambray">
+          <div class="menu-image">
+            <img :src="categoryDetails.image_url">
+          </div>
+          <div class="caption">
+            <span class="caption-subject font-default bold uppercase">
+              {{ categoryDetails.name }}
+            </span>
+            <div class="caption-desc font-grey-cascade">
+              {{ categoryDetails.desc }}
+            </div>
+          </div>
+        </div>
+        <div class="portlet-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div
+                v-show="listErrorMessage"
+                ref="listErrorMessage"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  @click.stop.prevent="clearError('listErrorMessage')"
+                />
+                <span>{{ listErrorMessage }}</span>
+              </div>
+            </div>
+          </div>
+          <div
+            v-if="categoryItems.length"
+            class="mt-element-list margin-top-15"
+          >
+            <div class="mt-list-container list-news ext-1 no-border">
+              <ul>
+                <li
+                  v-for="item in categoryItems"
+                  :id="'item-' + item.id"
+                  :key="item.id"
+                  class="mt-list-item margin-top-15"
+                  :class="{'no-hover-highlight' : expanded === item.id, 'clickable' : expanded !== item.id, 'animated' : animated === `item-${item.id}`}"
+                  @click="expandDetails(item)"
+                >
+                  <div class="margin-bottom-15 actions-on-top">
+                    <el-tooltip
+                      v-if="$root.permissions['menu_manager menus categories subcategories items update']"
+                      content="Edit"
+                      effect="light"
+                      placement="bottom"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="displayEditItemModal(item, $event)"
+                      >
+                        <i class="fa fa-lg fa-pencil" />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['menu_manager menus categories subcategories items read'] && !$root.permissions['menu_manager menus categories subcategories items update']"
+                      content="View"
+                      effect="light"
+                      placement="bottom"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="displayEditItemModal(item, $event)"
+                      >
+                        <i class="fa fa-lg fa-eye" />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['menu_manager menus categories subcategories items update']"
+                      content="Images"
+                      effect="light"
+                      placement="bottom"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="openImagesModal(item, $event)"
+                      >
+                        <i class="fa fa-lg fa-image" />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="
+                        $root.permissions['menu_manager menus categories subcategories items nutrition read'] ||
+                          $root.permissions['menu_manager menus categories subcategories items nutrition create'] ||
+                          $root.permissions['menu_manager menus categories subcategories items nutrition update']
+                      "
+                      content="Nutrition Info"
+                      effect="light"
+                      placement="bottom"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="viewNutritionInfo(item, $event)"
+                      >
+                        <i class="fa fa-lg fa-heartbeat" />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['stores add item_to_multiple_locations']"
+                      content="Apply To Locations"
+                      effect="light"
+                      placement="bottom"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="displayApplyToLocationsModal(item, $event)"
+                      >
+                        <i class="icon-layers" />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['menu_manager menus categories subcategories items delete']"
+                      content="Delete"
+                      effect="light"
+                      placement="bottom"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="displayDeleteItemModal(item, $event)"
+                      >
+                        <i class="fa fa-lg fa-trash" />
+                      </a>
+                    </el-tooltip>
+                  </div>
+                  <div
+                    v-show="expanded !== item.id"
+                    class="list-icon-container"
+                  >
+                    <i
+                      :id="'icon-' + item.id"
+                      class="fa fa-angle-right"
+                    />
+                  </div>
+                  <div class="list-thumb">
+                    <a v-if="item.image_url.length">
+                      <img
+                        alt=""
+                        :src="item.image_url"
+                      >
+                    </a>
+                    <a v-else>
+                      <img src="../../../assets/img/app/image-placeholder.png">
+                    </a>
+                  </div>
+                  <div class="list-datetime bold uppercase font-red">
+                    <span>{{ item.name }}</span>
+                  </div>
+                  <div class="row height-mod">
+                    <div class="col-md-4">
+                      <strong>Price:</strong>
+                      <span>{{ item.price }}</span><br>
+                      <strong>SKU:</strong>
+                      <span>{{ item.sku }}</span><br>
+                      <strong>Status:</strong>
+                      <span v-if="item.status == 1">
+                        Available
+                      </span>
+                      <span v-if="item.status == 0">
+                        Sold Out
+                      </span><br>
+                      <strong>Nutrition summary:</strong>
+                      <span>{{ item.nutrition_summary }}</span><br>
+                      <strong>Item type:</strong>
+                      <span>{{ getItemTypeName(item.item_type_id) }}</span>
+                    </div>
+                    <div class="col-md-4">
+                      <strong>Description:</strong>
+                      <span>{{ item.desc }}</span><br>
+                      <strong>Short description:</strong>
+                      <span>{{ item.short_description }}</span>
+                    </div>
+                  </div>
+                  <div
+                    class="row"
+                    :class="{'mt-list-item-expanded' : expanded === item.id, 'mt-list-item-collapsed' : expanded !== item.id}"
+                  >
+                    <div :class="{'col-md-3' : item.type === 'preset', 'col-md-4' : item.type !== 'preset'}">
+                      <div class="col-md-12">
+                        <h5 class="inline-block">
+                          Modifiers
+                        </h5>
+                      </div>
+                      <div class="col-md-12">
+                        <div v-if="item.modifiers && item.modifiers.length">
+                          <ul class="item-modifier-list">
+                            <li
+                              v-for="modifier in item.modifiers"
+                              :key="modifier.id"
+                            >
+                              <router-link :to="'/app/menu_manager/modifier_items/' + modifier.id">
+                                {{ modifier.name }}
+                              </router-link>
+                            </li>
+                          </ul>
+                        </div>
+                        <div
+                          v-if="!item.modifiers || !item.modifiers.length"
+                          class="col-md-12"
+                        >
+                          <p class="grey-text">
+                            No modifiers have been applied to this item.
+                          </p>
+                        </div>
+                        <div class="col-md-12">
+                          <button
+                            v-if="$root.permissions['menu_manager menus categories subcategories items assign modifier']"
+                            type="button"
+                            class="btn btn-outline btn-xs blue margin-top-10"
+                            @click.stop="showModifierModal(item.id, item.modifiers)"
+                          >
+                            Add Modifiers
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div :class="{'col-md-3' : item.type === 'preset', 'col-md-4' : item.type !== 'preset'}">
+                      <div class="col-md-12">
+                        <h5 class="inline-block">
+                          Tags
+                        </h5>
+                      </div>
+                      <div class="col-md-12">
+                        <div v-if="item.tags && item.tags.length">
+                          <ul class="item-modifier-list">
+                            <li
+                              v-for="tag in item.tags"
+                              :key="tag.id"
+                            >
+                              <span v-show="tag.type === 'may_contain'">
+                                may contain
+                              </span>
+                              <span v-show="tag.type === 'contains'">
+                                contains
+                              </span>
+                              {{ tag.name }}
+                            </li>
+                          </ul>
+                        </div>
+                        <div
+                          v-if="!item.tags || !item.tags.length"
+                          class="col-md-12"
+                        >
+                          <p class="grey-text">
+                            No tags have been applied to this item.
+                          </p>
+                        </div>
+                        <div class="col-md-12">
+                          <button
+                            v-if="$root.permissions['menu_manager menus categories subcategories items tags update']"
+                            type="button"
+                            class="btn btn-outline btn-xs blue margin-top-10"
+                            @click.stop="showTagsModal(item.id, item.tags)"
+                          >
+                            Add Tags
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div :class="{'col-md-3' : item.type === 'preset', 'col-md-4' : item.type !== 'preset'}">
+                      <div class="col-md-12">
+                        <h5 class="inline-block">
+                          Attributes
+                        </h5>
+                      </div>
+                      <div class="col-md-12">
+                        <div v-show="selectedItemAttributes.length">
+                          <ul class="item-modifier-list">
+                            <li
+                              v-for="attribute in selectedItemAttributes"
+                              :key="attribute.id"
+                              class="col-md-6"
+                            >
+                              {{ attribute.name }}
+                            </li>
+                          </ul>
+                        </div>
+                        <div
+                          v-show="!selectedItemAttributes.length"
+                          class="col-md-12"
+                        >
+                          <p class="grey-text">
+                            No attributes have been applied to this item.
+                          </p>
+                        </div>
+                        <div class="col-md-12">
+                          <button
+                            v-if="$root.permissions['menu_manager menus categories subcategories items update']"
+                            type="button"
+                            class="btn btn-outline btn-xs blue margin-top-10"
+                            @click.stop="showAttributesModal(item)"
+                          >
+                            Add Attributes
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      v-show="item.type === 'preset'"
+                      class="col-md-3"
+                    >
+                      <h5>Preset Settings</h5>
+                      <ul
+                        v-show="item.preset_item_modifier_item"
+                        class="item-modifier-list"
+                      >
+                        <li
+                          v-for="(modifier, index) in item.preset_item_modifier_item"
+                          :key="index"
+                        >
+                          {{ modifier.modifier_item_name }}
+                          <span v-if="modifier.preset_item_modifier_item_option_item.length > 0">
+                            (
+                            <span
+                              v-for="(option, index) in modifier.preset_item_modifier_item_option_item"
+                              :key="index"
+                            >
+                              {{ option.option_item_name }}
+                              <span v-show="modifier.preset_item_modifier_item_option_item.length - 1 !== index">
+                                |
+                              </span>
+                            </span>)
+                          </span>
+                        </li>
+                      </ul>
+                      <p
+                        v-show="item.preset_item_modifier_item && !item.preset_item_modifier_item.length"
+                        class="grey-text"
+                      >
+                        No preset settings yet.
+                      </p>
+                      <button
+                        v-if="$root.permissions['menu_manager menus categories subcategories items update']"
+                        type="button"
+                        class="btn btn-outline btn-xs blue margin-top-10"
+                        @click.stop="showPresetModal(item)"
+                      >
+                        <span v-if="item.preset_item_modifier_item && !item.preset_item_modifier_item.length">
+                          Add
+                        </span>
+                        <span v-else>
+                          Edit
+                        </span> Preset Settings
+                      </button>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div
+            v-else
+            class="margin-top-20"
+          >
+            <no-results
+              :show="!categoryItems.length"
+              :type="'items'"
+              :custom="true"
+              :text="customText"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      v-if="!displayItemData"
+      class="margin-top-20"
+    >
+      <no-results
+        :show="!$root.activeLocation || !$root.activeLocation.id"
+        :type="'items'"
+      />
+    </div>
 
-		<edit-item v-if="editItemModalActive"
-		           @editItem="editItem"
-		           @deactivateEditItemModal="closeEditItemModal">
-		</edit-item>
+    <edit-item
+      v-if="editItemModalActive"
+      @editItem="editItem"
+      @deactivateEditItemModal="closeEditItemModal"
+    />
 
-		<delete-item v-if="deleteItemModalActive"
-		             :passedItemId="passedItemId"
-		             @closeDeleteItemModal="closeDeleteItemModal"
-		             @deleteItemAndCloseModal="deleteItemAndCloseModal">
-		</delete-item>
+    <delete-item
+      v-if="deleteItemModalActive"
+      :passed-item-id="passedItemId"
+      @closeDeleteItemModal="closeDeleteItemModal"
+      @deleteItemAndCloseModal="deleteItemAndCloseModal"
+    />
 
-		<nutrition-info v-if="displayNutritionModal"
-		                :item="selectedItem"
-		                @nutritionInfoSaved="nutritionInfoSaved"
-		                @deactivateNutritionInfoModal="displayNutritionModal = false">
-		</nutrition-info>
+    <nutrition-info
+      v-if="displayNutritionModal"
+      :item="selectedItem"
+      @nutritionInfoSaved="nutritionInfoSaved"
+      @deactivateNutritionInfoModal="displayNutritionModal = false"
+    />
 
-		<modifiers-list v-if="displayModifierModal"
-		                :appliedModifiers="appliedModifiers"
-		                :selectedItemId="selectedItemId"
-		                @deactivateModifierModal="closeModifierModal">
-		</modifiers-list>
+    <modifiers-list
+      v-if="displayModifierModal"
+      :applied-modifiers="appliedModifiers"
+      :selected-item-id="selectedItemId"
+      @deactivateModifierModal="closeModifierModal"
+    />
 
-		<tags-list v-if="displayTagsListModal"
-		           :appliedTags="appliedTags"
-		           :selectedItemId="selectedItemId"
-		           @deactivateTagsListModal="closeTagsListModal">
-		</tags-list>
+    <tags-list
+      v-if="displayTagsListModal"
+      :applied-tags="appliedTags"
+      :selected-item-id="selectedItemId"
+      @deactivateTagsListModal="closeTagsListModal"
+    />
 
-		<!-- ASSIGN ITEM ATTRIBUTES START -->
-		<modal :show="showAssignItemAttributesModal"
-		       effect="fade"
-		       @closeOnEscape="closeAssignItemAttributesModal"
-		       ref="assignItemAttributesModal">
-			<div slot="modal-header"
-			     class="modal-header">
-				<button type="button"
-				        class="close"
-				        @click="closeAssignItemAttributesModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Apply Attributes</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<div class="row"
-				     v-show="assignItemAttributesErrorMessage"
-				     ref="assignItemAttributesErrorMessage">
-					<div class="col-md-12">
-						<div class="alert alert-danger">
-							<button class="close"
-							        @click="clearAttributesError()"></button>
-							<span>{{assignItemAttributesErrorMessage}}</span>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<table class="table">
-							<thead>
-								<tr>
-									<th class="table-column--checkboxes">
-										<div class="md-checkbox has-success"
-										     @change="selectAllAttributes()">
-											<input type="checkbox"
-											       id="locations-promocodes"
-											       class="md-check"
-											       v-model="selectAllAttributesSelected">
-											<label for="locations-promocodes">
-												<span class="inc"></span>
-												<span class="check"></span>
-												<span class="box"></span>
-											</label>
-										</div>
-									</th>
-									<th> Name </th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr v-for="itemAttribute in itemAttributes"
-								    :key="itemAttribute.id">
-									<td class="table-column--names">
-										<div class="md-checkbox has-success">
-											<input type="checkbox"
-											       class="md-check"
-											       v-model="itemAttribute.selected"
-											       @change="syncSelectAllAttributes(itemAttribute.selected)"
-											       :id="`ia-${itemAttribute.id}`">
-											<label :for="`ia-${itemAttribute.id}`">
-												<span class="inc"></span>
-												<span class="check"></span>
-												<span class="box"></span>
-											</label>
-										</div>
-									</td>
-									<td> {{ itemAttribute.name }} </td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer clear">
-				<div class="row">
-					<div class="col-md-12">
-						<button @click="assignItemAttributesToItem()"
-						        type="button"
-						        class="btn blue pull-right"
-						        :disabled="assigningAttributes">
-							Save
-							<i v-show="assigningAttributes"
-							   class="fa fa-spinner fa-pulse fa-fw">
-							</i>
-						</button>
-					</div>
-				</div>
-			</div>
-		</modal>
-		<!-- ASSIGN ITEM ATTRIBUTES END -->
+    <!-- ASSIGN ITEM ATTRIBUTES START -->
+    <modal
+      ref="assignItemAttributesModal"
+      :show="showAssignItemAttributesModal"
+      effect="fade"
+      @closeOnEscape="closeAssignItemAttributesModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeAssignItemAttributesModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Apply Attributes
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <div
+          v-show="assignItemAttributesErrorMessage"
+          ref="assignItemAttributesErrorMessage"
+          class="row"
+        >
+          <div class="col-md-12">
+            <div class="alert alert-danger">
+              <button
+                class="close"
+                @click="clearAttributesError()"
+              />
+              <span>{{ assignItemAttributesErrorMessage }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th class="table-column--checkboxes">
+                    <div
+                      class="md-checkbox has-success"
+                      @change="selectAllAttributes()"
+                    >
+                      <input
+                        id="locations-promocodes"
+                        v-model="selectAllAttributesSelected"
+                        type="checkbox"
+                        class="md-check"
+                      >
+                      <label for="locations-promocodes">
+                        <span class="inc" />
+                        <span class="check" />
+                        <span class="box" />
+                      </label>
+                    </div>
+                  </th>
+                  <th> Name </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="itemAttribute in itemAttributes"
+                  :key="itemAttribute.id"
+                >
+                  <td class="table-column--names">
+                    <div class="md-checkbox has-success">
+                      <input
+                        :id="`ia-${itemAttribute.id}`"
+                        v-model="itemAttribute.selected"
+                        type="checkbox"
+                        class="md-check"
+                        @change="syncSelectAllAttributes(itemAttribute.selected)"
+                      >
+                      <label :for="`ia-${itemAttribute.id}`">
+                        <span class="inc" />
+                        <span class="check" />
+                        <span class="box" />
+                      </label>
+                    </div>
+                  </td>
+                  <td> {{ itemAttribute.name }} </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer clear"
+      >
+        <div class="row">
+          <div class="col-md-12">
+            <button
+              type="button"
+              class="btn blue pull-right"
+              :disabled="assigningAttributes"
+              @click="assignItemAttributesToItem()"
+            >
+              Save
+              <i
+                v-show="assigningAttributes"
+                class="fa fa-spinner fa-pulse fa-fw"
+              />
+            </button>
+          </div>
+        </div>
+      </div>
+    </modal>
+    <!-- ASSIGN ITEM ATTRIBUTES END -->
 
-		<!-- APPLY TO LOCATIONS START -->
-		<modal :show="applyToLocationsModalActive"
-		       effect="fade"
-		       @closeOnEscape="closeApplyToLocationsModal"
-		       ref="applyToLocationsModal">
-			<div slot="modal-header"
-			     class="modal-header">
-				<button type="button"
-				        class="close"
-				        @click="closeApplyToLocationsModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Apply Item To Locations</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<div class="row"
-				     v-show="applyToLocationsErrorMessage"
-				     ref="applyToLocationsErrorMessage">
-					<div class="col-md-12">
-						<div class="alert alert-danger">
-							<button class="close"
-							        @click="clearLocationsError()"></button>
-							<span>{{applyToLocationsErrorMessage}}</span>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<store-picker
-							:previouslySelected="locationsToApplyItemTo"
-							@update="selectedLocations"
-						>
-						</store-picker>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<label>Replace Existing:</label><br>
-							<el-switch v-model="replaceExisting"
-													active-color="#0c6"
-													inactive-color="#ff4949"
-													:active-value="1"
-													:inactive-value="0"
-													active-text="Yes"
-													inactive-text="No">
-							</el-switch>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer clear">
-				<div class="row">
-					<div class="col-md-12">
-						<button @click="applyItemToLocations()"
-						        type="button"
-						        class="btn blue pull-right"
-						        :disabled="applyingItemToLocations">
-							Apply
-							<i v-show="applyingItemToLocations"
-							   class="fa fa-spinner fa-pulse fa-fw">
-							</i>
-						</button>
-					</div>
-				</div>
-			</div>
-		</modal>
-		<!-- APPLY TO LOCATIONS END -->
+    <!-- APPLY TO LOCATIONS START -->
+    <modal
+      ref="applyToLocationsModal"
+      :show="applyToLocationsModalActive"
+      effect="fade"
+      @closeOnEscape="closeApplyToLocationsModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeApplyToLocationsModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Apply Item To Locations
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <div
+          v-show="applyToLocationsErrorMessage"
+          ref="applyToLocationsErrorMessage"
+          class="row"
+        >
+          <div class="col-md-12">
+            <div class="alert alert-danger">
+              <button
+                class="close"
+                @click="clearLocationsError()"
+              />
+              <span>{{ applyToLocationsErrorMessage }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <store-picker
+              :previously-selected="locationsToApplyItemTo"
+              @update="selectedLocations"
+            />
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <label>Replace Existing:</label><br>
+              <el-switch
+                v-model="replaceExisting"
+                active-color="#0c6"
+                inactive-color="#ff4949"
+                :active-value="1"
+                :inactive-value="0"
+                active-text="Yes"
+                inactive-text="No"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer clear"
+      >
+        <div class="row">
+          <div class="col-md-12">
+            <button
+              type="button"
+              class="btn blue pull-right"
+              :disabled="applyingItemToLocations"
+              @click="applyItemToLocations()"
+            >
+              Apply
+              <i
+                v-show="applyingItemToLocations"
+                class="fa fa-spinner fa-pulse fa-fw"
+              />
+            </button>
+          </div>
+        </div>
+      </div>
+    </modal>
+    <!-- APPLY TO LOCATIONS END -->
 
-		<!-- ITEM IMAGES START -->
-		<item-images v-if="displayImagesModal"
-		             :item="selectedItem"
-		             @closeImagesModal="closeImagesModal"
-		             @closeImagesModalAndUpdate="closeImagesModalAndUpdate">
-		</item-images>
-		<!-- ITEM IMAGES END -->
+    <!-- ITEM IMAGES START -->
+    <item-images
+      v-if="displayImagesModal"
+      :item="selectedItem"
+      @closeImagesModal="closeImagesModal"
+      @closeImagesModalAndUpdate="closeImagesModalAndUpdate"
+    />
+    <!-- ITEM IMAGES END -->
 
-		<!-- PRESET SETTINGS START -->
-		<preset-settings v-if="displayPresetModal"
-		                 :item="itemToSetPresetSettingsFor"
-		                 @closePresetModal="closePresetModal"
-		                 @closeAndUpdate="closePresetModalAndUpdate">
-		</preset-settings>
-		<!-- PRESET SETTINGS START -->
-	</div>
+    <!-- PRESET SETTINGS START -->
+    <preset-settings
+      v-if="displayPresetModal"
+      :item="itemToSetPresetSettingsFor"
+      @closePresetModal="closePresetModal"
+      @closeAndUpdate="closePresetModalAndUpdate"
+    />
+    <!-- PRESET SETTINGS START -->
+  </div>
 </template>
 
 <script>
@@ -694,6 +947,22 @@ import PresetSettings from '@/components/app/MenuManager/Items/PresetSettings'
 import MenuItemPicker from '@/components/modules/MenuItemPicker'
 
 export default {
+	components: {
+		Breadcrumb,
+		Modal,
+		LoadingScreen,
+		EditItem,
+		DeleteItem,
+		NutritionInfo,
+		ModifiersList,
+		TagsList,
+		NoResults,
+		ResourcePicker,
+		ItemImages,
+		StorePicker,
+		PresetSettings,
+		MenuItemPicker
+	},
 	data () {
 		return {
 			breadcrumbArray: [
@@ -1941,22 +2210,6 @@ export default {
 		updateTaxClass (id) {
 			this.newItem.item_type_id = id
 		}
-	},
-	components: {
-		Breadcrumb,
-		Modal,
-		LoadingScreen,
-		EditItem,
-		DeleteItem,
-		NutritionInfo,
-		ModifiersList,
-		TagsList,
-		NoResults,
-		ResourcePicker,
-		ItemImages,
-		StorePicker,
-		PresetSettings,
-		MenuItemPicker
 	}
 }
 </script>

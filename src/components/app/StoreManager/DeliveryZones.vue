@@ -1,132 +1,169 @@
 <template>
-	<div>
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
-		<h1 class='page-title'>Delivery</h1>
+  <div>
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
+    <h1 class="page-title">
+      Delivery
+    </h1>
 
-		<!-- LIST START -->
-		<div class="portlet light portlet-fit bordered">
-			<div class="portlet-title bg-blue-chambray">
-				<div class="menu-image-main">
-					<img src="../../../../public/client_logo.png">
-				</div>
-				<div class="caption">
-					<span class="caption-subject font-green bold uppercase">Delivery</span>
-					<div class="caption-desc font-grey-cascade">Set up and edit delivery profile.</div>
-				</div>
-			</div>
-			<div class="portlet-body relative-block">
-				<div class="alert alert-danger"
-				     v-show="errorMessage.length"
-				     ref="errorMessage">
-					<button class="close"
-					        @click="clearError('errorMessage')"></button>
-					<span>{{errorMessage}}</span>
-				</div>
-				<loading-screen :show="loading" />
-				<div class="row">
-					<div class="col-xs-12">
-						<map-area v-if="!loading"
-						          :polygons="profiles"
-						          width="100%"
-						          height="500px"
-						          :lat="latitude"
-						          :lng="longitude"
-						          multi
-						          @polygonEmitted="updatePolygons">
-						</map-area>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-12">
-						<div v-for="(profile, index) in profiles"
-						     class="legend-row margin-top-20"
-						     :key="index">
-							<div class="color-box"
-							     :style="`background-color:${profile.color}`">
-							</div>
-							<div class="input-container">
-								<div class="input-label-container">
-									<label :for="`base-fee-${index}`">
-										Base fee
-									</label>
-									<el-tooltip content="The base fee is applied to every delivery as the starting point."
-									            effect="light"
-									            placement="right">
-										<div class="hint">
-											<i class="fa fa-question"
-											   aria-hidden="true"></i>
-										</div>
-									</el-tooltip>
-								</div>
-								<el-input :id="`base-fee-${index}`"
-								          placeholder="Please input"
-								          v-model="profile.base_fee">
-								</el-input>
-							</div>
-							<div class="input-container">
-								<div class="input-label-container">
-									<label :for="`base_km-${index}`">
-										No of base kilometers
-									</label>
-									<el-tooltip content="The number of kilometers included in the base fee."
-									            effect="light"
-									            placement="right">
-										<div class="hint">
-											<i class="fa fa-question"
-											   aria-hidden="true"></i>
-										</div>
-									</el-tooltip>
-								</div>
-								<el-input :id="`base_km-${index}`"
-								          placeholder="Please input"
-								          v-model="profile.base_km">
-								</el-input>
-							</div>
-							<div class="input-container">
-								<div class="input-label-container">
-									<label :for="`additional_perkm-${index}`">
-										Extra per kilometer
-									</label>
-									<el-tooltip content="Per-kilometer charge for distance in excess of base kilometers."
-									            effect="light"
-									            placement="right">
-										<div class="hint">
-											<i class="fa fa-question"
-											   aria-hidden="true"></i>
-										</div>
-									</el-tooltip>
-								</div>
-								<el-input :id="`additional_perkm-${index}`"
-								          placeholder="Please input"
-								          v-model="profile.additional_perkm">
-								</el-input>
-							</div>
-						</div>
-					</div>
-				</div>
-				<no-results :show="!profiles.length && !loading"
-				            :custom="true"
-				            text="There are no delivery zones to show. Draw the first one above."></no-results>
-				<div class="row"
-				     v-if="canAny([
-						'stores delivery_profile create', 
-						'stores delivery_profile update',
-						'stores delivery_profile delete'])">
-					<div class="col-xs-12"
-					     v-show="!loading && profiles.length">
-						<button class="btn blue pull-right"
-						        @click="saveDeliveryZones()"
-						        :disabled="!modified">
-							Save
-						</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- LIST END -->
-	</div>
+    <!-- LIST START -->
+    <div class="portlet light portlet-fit bordered">
+      <div class="portlet-title bg-blue-chambray">
+        <div class="menu-image-main">
+          <img src="../../../../public/client_logo.png">
+        </div>
+        <div class="caption">
+          <span class="caption-subject font-green bold uppercase">
+            Delivery
+          </span>
+          <div class="caption-desc font-grey-cascade">
+            Set up and edit delivery profile.
+          </div>
+        </div>
+      </div>
+      <div class="portlet-body relative-block">
+        <div
+          v-show="errorMessage.length"
+          ref="errorMessage"
+          class="alert alert-danger"
+        >
+          <button
+            class="close"
+            @click="clearError('errorMessage')"
+          />
+          <span>{{ errorMessage }}</span>
+        </div>
+        <loading-screen :show="loading" />
+        <div class="row">
+          <div class="col-xs-12">
+            <map-area
+              v-if="!loading"
+              :polygons="profiles"
+              width="100%"
+              height="500px"
+              :lat="latitude"
+              :lng="longitude"
+              multi
+              @polygonEmitted="updatePolygons"
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <div
+              v-for="(profile, index) in profiles"
+              :key="index"
+              class="legend-row margin-top-20"
+            >
+              <div
+                class="color-box"
+                :style="`background-color:${profile.color}`"
+              />
+              <div class="input-container">
+                <div class="input-label-container">
+                  <label :for="`base-fee-${index}`">
+                    Base fee
+                  </label>
+                  <el-tooltip
+                    content="The base fee is applied to every delivery as the starting point."
+                    effect="light"
+                    placement="right"
+                  >
+                    <div class="hint">
+                      <i
+                        class="fa fa-question"
+                        aria-hidden="true"
+                      />
+                    </div>
+                  </el-tooltip>
+                </div>
+                <el-input
+                  :id="`base-fee-${index}`"
+                  v-model="profile.base_fee"
+                  placeholder="Please input"
+                />
+              </div>
+              <div class="input-container">
+                <div class="input-label-container">
+                  <label :for="`base_km-${index}`">
+                    No of base kilometers
+                  </label>
+                  <el-tooltip
+                    content="The number of kilometers included in the base fee."
+                    effect="light"
+                    placement="right"
+                  >
+                    <div class="hint">
+                      <i
+                        class="fa fa-question"
+                        aria-hidden="true"
+                      />
+                    </div>
+                  </el-tooltip>
+                </div>
+                <el-input
+                  :id="`base_km-${index}`"
+                  v-model="profile.base_km"
+                  placeholder="Please input"
+                />
+              </div>
+              <div class="input-container">
+                <div class="input-label-container">
+                  <label :for="`additional_perkm-${index}`">
+                    Extra per kilometer
+                  </label>
+                  <el-tooltip
+                    content="Per-kilometer charge for distance in excess of base kilometers."
+                    effect="light"
+                    placement="right"
+                  >
+                    <div class="hint">
+                      <i
+                        class="fa fa-question"
+                        aria-hidden="true"
+                      />
+                    </div>
+                  </el-tooltip>
+                </div>
+                <el-input
+                  :id="`additional_perkm-${index}`"
+                  v-model="profile.additional_perkm"
+                  placeholder="Please input"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <no-results
+          :show="!profiles.length && !loading"
+          :custom="true"
+          text="There are no delivery zones to show. Draw the first one above."
+        />
+        <div
+          v-if="canAny([
+            'stores delivery_profile create', 
+            'stores delivery_profile update',
+            'stores delivery_profile delete'])"
+          class="row"
+        >
+          <div
+            v-show="!loading && profiles.length"
+            class="col-xs-12"
+          >
+            <button
+              class="btn blue pull-right"
+              :disabled="!modified"
+              @click="saveDeliveryZones()"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- LIST END -->
+  </div>
 </template>
 
 <script>

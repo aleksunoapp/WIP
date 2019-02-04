@@ -1,101 +1,136 @@
 <template>
-	<modal :show="showApplyCategoriesModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="applyModal">
-		<div slot="modal-header"
-		     class="modal-header center">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Apply Add-on Category</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="alert alert-danger"
-			     v-show="errorMessage"
-			     ref="errorMessage">
-				<button class="close"
-				        @click="clearError()"></button>
-				<span>{{ errorMessage }}</span>
-			</div>
-			<loading-screen :show="displaySpinner"
-			                :color="'#2C3E50'"
-			                :display="'inline'"></loading-screen>
-			<form role="form"
-			      novalidate
-			      v-if="categories.length">
-				<div class="form-body invite-user-form height-mod">
-					<table class="table">
-						<thead>
-							<tr>
-								<th>
-									<div class="md-checkbox has-success"
-									     @click.prevent="selectAll()">
-										<input type="checkbox"
-										       id="locations-promocodes"
-										       class="md-check"
-										       v-model="selectAllSelected">
-										<label for="locations-promocodes">
-											<span class="inc"></span>
-											<span class="check"></span>
-											<span class="box"></span>
-										</label>
-									</div>
-								</th>
-								<th> Category </th>
-								<th> Description </th>
-								<th> Status </th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr v-for="category in categories"
-							    :key="category.id">
-								<td>
-									<div class="md-checkbox has-success">
-										<input type="checkbox"
-										       :id="`category-${category.id}`"
-										       class="md-check"
-										       v-model="category.selected"
-										       @change="syncSelectAll(category.selected)">
-										<label :for="`category-${category.id}`">
-											<span class="inc"></span>
-											<span class="check"></span>
-											<span class="box"></span>
-										</label>
-									</div>
-								</td>
-								<td> {{ category.name }} </td>
-								<td> {{ category.desc }} </td>
-								<td>
-									<span v-if="category.status === 0">un</span>
-									<span>available</span>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</form>
-			<no-results v-if="!categories.length && !displaySpinner"
-			            :type="'categories'"
-			            :custom="true"
-			            :text="'There are no add-on categories for this location.'"></no-results>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer clear">
-			<button type="button"
-			        @click="updateAddOnCategories"
-			        class="btn btn-primary"
-			        :disabled="applying">
-				Save
-				<i v-show="applying"
-				   class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-		</div>
-	</modal>
+  <modal
+    ref="applyModal"
+    :show="showApplyCategoriesModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header center"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Apply Add-on Category
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div
+        v-show="errorMessage"
+        ref="errorMessage"
+        class="alert alert-danger"
+      >
+        <button
+          class="close"
+          @click="clearError()"
+        />
+        <span>{{ errorMessage }}</span>
+      </div>
+      <loading-screen
+        :show="displaySpinner"
+        :color="'#2C3E50'"
+        :display="'inline'"
+      />
+      <form
+        v-if="categories.length"
+        role="form"
+        novalidate
+      >
+        <div class="form-body invite-user-form height-mod">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>
+                  <div
+                    class="md-checkbox has-success"
+                    @click.prevent="selectAll()"
+                  >
+                    <input
+                      id="locations-promocodes"
+                      v-model="selectAllSelected"
+                      type="checkbox"
+                      class="md-check"
+                    >
+                    <label for="locations-promocodes">
+                      <span class="inc" />
+                      <span class="check" />
+                      <span class="box" />
+                    </label>
+                  </div>
+                </th>
+                <th> Category </th>
+                <th> Description </th>
+                <th> Status </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="category in categories"
+                :key="category.id"
+              >
+                <td>
+                  <div class="md-checkbox has-success">
+                    <input
+                      :id="`category-${category.id}`"
+                      v-model="category.selected"
+                      type="checkbox"
+                      class="md-check"
+                      @change="syncSelectAll(category.selected)"
+                    >
+                    <label :for="`category-${category.id}`">
+                      <span class="inc" />
+                      <span class="check" />
+                      <span class="box" />
+                    </label>
+                  </div>
+                </td>
+                <td> {{ category.name }} </td>
+                <td> {{ category.desc }} </td>
+                <td>
+                  <span v-if="category.status === 0">
+                    un
+                  </span>
+                  <span>available</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </form>
+      <no-results
+        v-if="!categories.length && !displaySpinner"
+        :type="'categories'"
+        :custom="true"
+        :text="'There are no add-on categories for this location.'"
+      />
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer clear"
+    >
+      <button
+        type="button"
+        class="btn btn-primary"
+        :disabled="applying"
+        @click="updateAddOnCategories"
+      >
+        Save
+        <i
+          v-show="applying"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -106,6 +141,16 @@ import LoadingScreen from '../../../modules/LoadingScreen'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
+	components: {
+		Modal,
+		NoResults,
+		LoadingScreen
+	},
+	props: {
+		passedMenu: {
+			type: Object
+		}
+	},
 	data () {
 		return {
 			showApplyCategoriesModal: false,
@@ -122,11 +167,6 @@ export default {
 			selectAllSelected: false,
 			categories: [],
 			displaySpinner: false
-		}
-	},
-	props: {
-		passedMenu: {
-			type: Object
 		}
 	},
 	mounted () {
@@ -320,11 +360,6 @@ export default {
 			})
 			this.$emit('updateAddOnCategories', payload)
 		}
-	},
-	components: {
-		Modal,
-		NoResults,
-		LoadingScreen
 	}
 }
 </script>

@@ -1,329 +1,450 @@
 <template>
-	<div>
-		<!-- BEGIN PAGE BAR -->
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
-		<!-- END PAGE BAR -->
-		<!-- BEGIN PAGE TITLE-->
-		<h1 class="page-title">Modifiers</h1>
-		<!-- END PAGE TITLE-->
-		<div class="note note-info">
-			<p>Create and manage menu modifiers.</p>
-		</div>
-		<!-- BEGIN CREATE NEW MODIFIER CATEGORY-->
-		<div class="portlet box blue-hoki"
-		     v-if="$root.activeLocation && $root.activeLocation.id && $root.permissions['menu_manager modifiers create']">
-			<div class="portlet-title bg-blue-chambray"
-			     @click="toggleCreateModifierPanel()">
-				<div class="custom tools">
-					<a :class="{'expand': !createModifierCollapse, 'collapse': createModifierCollapse}"></a>
-				</div>
-				<div class="caption">
-					&emsp;Create A New Modifier Category
-				</div>
-			</div>
-			<div class="portlet-body"
-			     :class="{'display-hide': createModifierCollapse}">
-				<form role="form"
-				      @submit.prevent="addNewModifierCategory()">
-					<div class="form-body row">
-						<div class="col-md-12">
-							<div class="alert alert-danger"
-							     v-show="errorMessage"
-							     ref="errorMessage">
-								<button class="close"
-								        @click.prevent="clearError()"></button>
-								<span>{{errorMessage}}</span>
-							</div>
-						</div>
-						<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
-							<resource-picker @open="toggleImageMode('newMenu', true)"
-							                 @close="toggleImageMode('newMenu', false)"
-							                 @selected="updateImage"
-							                 :imageButton="true"
-							                 :imageUrl="newCategory.image_url"
-							                 class="margin-top-15">
-							</resource-picker>
-						</div>
-						<div class="col-md-5"
-						     v-show="!imageMode.newMenu">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newCategory.name.length}"
-								       id="form_control_1"
-								       v-model="newCategory.name">
-								<label for="form_control_1">Modifier Category Name</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newCategory.desc.length}"
-								       id="form_control_2"
-								       v-model="newCategory.desc">
-								<label for="form_control_2">Modifier Category Description</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="number"
-								       class="form-control input-sm"
-								       :class="{'edited': newCategory.min}"
-								       id="form_control_3"
-								       v-model="newCategory.min">
-								<label for="form_control_3">Modifier Category Min</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="number"
-								       class="form-control input-sm"
-								       :class="{'edited': newCategory.max}"
-								       id="form_control_4"
-								       v-model="newCategory.max">
-								<label for="form_control_4">Modifier Category Max</label>
-							</div>
-						</div>
-						<div class="col-md-5"
-						     v-show="!imageMode.newMenu">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newCategory.sku.length}"
-								       id="form_control_5"
-								       v-model="newCategory.sku">
-								<label for="form_control_5">Modifier Category SKU</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="number"
-								       class="form-control input-sm"
-								       :class="{'edited': newCategory.included}"
-								       id="form_control_6"
-								       v-model="newCategory.included">
-								<label for="form_control_6">Modifier Category Number Free</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="number"
-								       class="form-control input-sm"
-								       :class="{'edited': newCategory.order}"
-								       id="form_control_7"
-								       v-model="newCategory.order">
-								<label for="form_control_7">Modifier Category Order</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<label>Modifier Category Status:</label><br>
-								<el-switch v-model="newCategory.status"
-								           active-color="#0c6"
-								           inactive-color="#ff4949"
-								           :active-value="1"
-								           :inactive-value="0"
-								           active-text="Available"
-								           inactive-text="Sold Out">
-								</el-switch>
-							</div>
-						</div>
-					</div>
-					<div class="form-actions right margin-top-20"
-					     v-show="!imageMode.newMenu">
-						<button type="submit"
-						        class="btn blue">Create</button>
-					</div>
-				</form>
-			</div>
-		</div>
-		<!-- END CREATE NEW MODIFIER CATEGORY-->
-		<loading-screen :show="displayModifierData"
-		                :color="'#2C3E50'"
-		                :display="'inline'"></loading-screen>
-		<div class="alert alert-info center margin-top-20"
-		     v-if="!$root.activeLocation.id">
-			<h4>No Store Selected</h4>
-			<p>Please select a store from the location panel on the right to view its modifers</p>
-		</div>
-		<div v-if="$root.activeLocation && $root.activeLocation.id && !displayModifierData">
-			<div class="portlet light portlet-fit bordered margin-top-20"
-			     id="categories-container">
-				<div class="portlet-title bg-blue-chambray">
-					<div class="menu-image-main">
-						<img src="../../../../public/client_logo.png">
-					</div>
-					<div class="caption">
-						<span class="caption-subject font-default bold uppercase">Modifiers</span>
-						<div class="caption-desc font-grey-cascade">Click on a modifer category to view its items.</div>
-					</div>
-				</div>
-				<div class="portlet-body">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="alert alert-danger"
-							     v-show="listErrorMessage.length"
-							     ref="listErrorMessage">
-								<button class="close"
-								        @click.prevent="clearError('listErrorMessage')"></button>
-								<span>{{listErrorMessage}}</span>
-							</div>
-						</div>
-					</div>
-					<div class="row"
-					     v-show="$root.activeLocation.is_corporate">
-						<div class="col-xs-12">
-							<el-select v-if="modifierTiers !== null"
-							           size="small"
-							           v-model="indexOfTierToDisplay"
-							           placeholder="Select Tier"
-							           @change="updateList()"
-							           :clearable="true">
-								<el-option v-for="(tier, index) in modifierTiers"
-								           :label="tier.name"
-								           :value="index"
-								           :key="tier.id">
-								</el-option>
-							</el-select>
-						</div>
-					</div>
-					<div class="mt-element-list margin-top-15"
-					     v-if="storeModifiers.length">
-						<div class="mt-list-container list-news ext-1 no-border">
-							<ul>
-								<li class="mt-list-item margin-top-15 clickable"
-								    @click="viewModifierCategoryItems(modifier)"
-								    v-for="modifier in storeModifiers"
-								    :id="'modifierCategory-' + modifier.id"
-								    :key="modifier.id">
-									<div class="actions-on-top margin-bottom-15">
-										<el-tooltip v-if="$root.permissions['menu_manager modifiers update']"
-										            content="Edit"
-										            effect="light"
-										            placement="top">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="editModifierCategory(modifier, $event)">
-												<i class="fa fa-lg fa-pencil"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['menu_manager modifiers read'] && !$root.permissions['menu_manager modifiers update']"
-										            content="View"
-										            effect="light"
-										            placement="top">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="editModifierCategory(modifier, $event)">
-												<i class="fa fa-lg fa-eye"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['menu_manager modifiers update items']"
-										            content="Apply to items"
-										            effect="light"
-										            placement="top">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="displayMenuTreeModal(modifier, $event)">
-												<i class="icon-layers"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['stores copy modifier modifier_to_multiple_location']"
-										            content="Copy to stores"
-										            effect="light"
-										            placement="top">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="displayCopyToLocationsModal(modifier, $event)">
-												<i class="fa fa-lg fa-copy"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['stores add item_to_multiple_locations']"
-										            content="Apply to items at stores"
-										            effect="light"
-										            placement="top">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="displayApplyToItemsAtLocationsModal(modifier, $event)">
-												<i class="fa fa-lg fa-plus"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['menu_manager modifiers delete']"
-										            content="Delete"
-										            effect="light"
-										            placement="top">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="deleteModifierCategory(modifier, $event)">
-												<i class="fa fa-lg fa-trash"></i>
-											</a>
-										</el-tooltip>
-									</div>
-									<div class="list-icon-container">
-										<a>
-											<i class="fa fa-angle-right"></i>
-										</a>
-									</div>
-									<div class="list-thumb">
-										<a v-if="modifier.image_url.length">
-											<img alt=""
-											     :src="modifier.image_url" />
-										</a>
-										<a v-else>
-											<img src="../../../assets/img/app/login/bg1.jpg">
-										</a>
-									</div>
-									<div class="list-datetime bold uppercase font-red">
-										<span>{{ modifier.name }}</span>
-									</div>
-									<div class="list-item-content height-mod">
-										<div class="col-md-2">
-											<strong>Min:</strong>
-											<span>{{ modifier.min }}</span>
-										</div>
-										<div class="col-md-2">
-											<strong>Max:</strong>
-											<span>{{ modifier.max }}</span>
-										</div>
-										<div class="col-md-4">
-											<strong>Status:</strong>
-											<span v-if="modifier.status == 1">Available</span>
-											<span v-if="modifier.status == 0">Sold Out</span>
-										</div>
-										<div class="col-md-4">
-											<strong>SKU:</strong>
-											<span>{{ modifier.sku }}</span>
-										</div>
-										<div class="col-md-12">
-											<strong>Description:</strong>
-											<span>{{ modifier.desc }}</span>
-										</div>
-									</div>
-								</li>
-							</ul>
-						</div>
-					</div>
-					<div class="margin-top-20"
-					     v-if="!storeModifiers.length && !displayModifierData">
-						<no-results :show="!storeModifiers.length"
-						            :type="'modifier categories'"
-						            :custom="true"
-						            :text="customText"></no-results>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="margin-top-20"
-		     v-if="$root.activeLocation.id && !displayModifierData">
-			<no-results :type="'modifier categories'"></no-results>
-		</div>
-		<edit-modifier-category v-if="editCategoryModalActive"
-		                        @updateModifierCategory="updateModifierCategory"
-		                        @deactivateEditCategoryModal="closeEditCategoryModal"></edit-modifier-category>
-		<delete-modifier-category v-if="deleteCategoryModalActive"
-		                          :passedModifierCategoryId="passedModifierCategoryId"
-		                          @closeDeleteModifierCategoryModal="closeDeleteModifierCategoryModal"
-		                          @deleteModifierCategoryAndCloseModal="deleteModifierCategoryAndCloseModal"></delete-modifier-category>
-		<menu-tree v-if="showMenuTreeModal"
-		           :selectedObject="selectedModifier"
-		           :headerText="headerText"
-		           :updateType="'modifier'"
-		           @closeMenuTreeModal="closeMenuTreeModal"></menu-tree>
-		<apply-modifier-to-items-at-locations v-if="showModifierToApplyToItemsAtLocationsModal"
-		                                      :modifier="modifierToApplyToItemsAtLocations"
-		                                      @closeApplyModifierToItemsAtLocations="closeApplyModifierToItemsAtLocationsModal"
-		                                      @applyModifierToItemsAtLocationsSuccess="showApplyModifierToItemsAtLocationsSuccess">
-		</apply-modifier-to-items-at-locations>
-		<copy-modifier-to-locations v-if="showCopyModifierToLocationsModal"
-		                            :modifier="modifierToCopyToLocations"
-		                            @closeCopyModifierToLocations="closeCopyModifierToLocationsModal"
-		                            @copyModifierToLocationsSuccess="showCopyModifierToLocationsSuccess">
-		</copy-modifier-to-locations>
-	</div>
+  <div>
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
+    <!-- END PAGE BAR -->
+    <!-- BEGIN PAGE TITLE-->
+    <h1 class="page-title">
+      Modifiers
+    </h1>
+    <!-- END PAGE TITLE-->
+    <div class="note note-info">
+      <p>Create and manage menu modifiers.</p>
+    </div>
+    <!-- BEGIN CREATE NEW MODIFIER CATEGORY-->
+    <div
+      v-if="$root.activeLocation && $root.activeLocation.id && $root.permissions['menu_manager modifiers create']"
+      class="portlet box blue-hoki"
+    >
+      <div
+        class="portlet-title bg-blue-chambray"
+        @click="toggleCreateModifierPanel()"
+      >
+        <div class="custom tools">
+          <a :class="{'expand': !createModifierCollapse, 'collapse': createModifierCollapse}" />
+        </div>
+        <div class="caption">
+          &emsp;Create A New Modifier Category
+        </div>
+      </div>
+      <div
+        class="portlet-body"
+        :class="{'display-hide': createModifierCollapse}"
+      >
+        <form
+          role="form"
+          @submit.prevent="addNewModifierCategory()"
+        >
+          <div class="form-body row">
+            <div class="col-md-12">
+              <div
+                v-show="errorMessage"
+                ref="errorMessage"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  @click.prevent="clearError()"
+                />
+                <span>{{ errorMessage }}</span>
+              </div>
+            </div>
+            <div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
+              <resource-picker
+                :image-button="true"
+                :image-url="newCategory.image_url"
+                class="margin-top-15"
+                @open="toggleImageMode('newMenu', true)"
+                @close="toggleImageMode('newMenu', false)"
+                @selected="updateImage"
+              />
+            </div>
+            <div
+              v-show="!imageMode.newMenu"
+              class="col-md-5"
+            >
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_1"
+                  v-model="newCategory.name"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newCategory.name.length}"
+                >
+                <label for="form_control_1">
+                  Modifier Category Name
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_2"
+                  v-model="newCategory.desc"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newCategory.desc.length}"
+                >
+                <label for="form_control_2">
+                  Modifier Category Description
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_3"
+                  v-model="newCategory.min"
+                  type="number"
+                  class="form-control input-sm"
+                  :class="{'edited': newCategory.min}"
+                >
+                <label for="form_control_3">
+                  Modifier Category Min
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_4"
+                  v-model="newCategory.max"
+                  type="number"
+                  class="form-control input-sm"
+                  :class="{'edited': newCategory.max}"
+                >
+                <label for="form_control_4">
+                  Modifier Category Max
+                </label>
+              </div>
+            </div>
+            <div
+              v-show="!imageMode.newMenu"
+              class="col-md-5"
+            >
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_5"
+                  v-model="newCategory.sku"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newCategory.sku.length}"
+                >
+                <label for="form_control_5">
+                  Modifier Category SKU
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_6"
+                  v-model="newCategory.included"
+                  type="number"
+                  class="form-control input-sm"
+                  :class="{'edited': newCategory.included}"
+                >
+                <label for="form_control_6">
+                  Modifier Category Number Free
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_7"
+                  v-model="newCategory.order"
+                  type="number"
+                  class="form-control input-sm"
+                  :class="{'edited': newCategory.order}"
+                >
+                <label for="form_control_7">
+                  Modifier Category Order
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <label>Modifier Category Status:</label><br>
+                <el-switch
+                  v-model="newCategory.status"
+                  active-color="#0c6"
+                  inactive-color="#ff4949"
+                  :active-value="1"
+                  :inactive-value="0"
+                  active-text="Available"
+                  inactive-text="Sold Out"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            v-show="!imageMode.newMenu"
+            class="form-actions right margin-top-20"
+          >
+            <button
+              type="submit"
+              class="btn blue"
+            >
+              Create
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- END CREATE NEW MODIFIER CATEGORY-->
+    <loading-screen
+      :show="displayModifierData"
+      :color="'#2C3E50'"
+      :display="'inline'"
+    />
+    <div
+      v-if="!$root.activeLocation.id"
+      class="alert alert-info center margin-top-20"
+    >
+      <h4>No Store Selected</h4>
+      <p>Please select a store from the location panel on the right to view its modifers</p>
+    </div>
+    <div v-if="$root.activeLocation && $root.activeLocation.id && !displayModifierData">
+      <div
+        id="categories-container"
+        class="portlet light portlet-fit bordered margin-top-20"
+      >
+        <div class="portlet-title bg-blue-chambray">
+          <div class="menu-image-main">
+            <img src="../../../../public/client_logo.png">
+          </div>
+          <div class="caption">
+            <span class="caption-subject font-default bold uppercase">
+              Modifiers
+            </span>
+            <div class="caption-desc font-grey-cascade">
+              Click on a modifer category to view its items.
+            </div>
+          </div>
+        </div>
+        <div class="portlet-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div
+                v-show="listErrorMessage.length"
+                ref="listErrorMessage"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  @click.prevent="clearError('listErrorMessage')"
+                />
+                <span>{{ listErrorMessage }}</span>
+              </div>
+            </div>
+          </div>
+          <div
+            v-show="$root.activeLocation.is_corporate"
+            class="row"
+          >
+            <div class="col-xs-12">
+              <el-select
+                v-if="modifierTiers !== null"
+                v-model="indexOfTierToDisplay"
+                size="small"
+                placeholder="Select Tier"
+                :clearable="true"
+                @change="updateList()"
+              >
+                <el-option
+                  v-for="(tier, index) in modifierTiers"
+                  :key="tier.id"
+                  :label="tier.name"
+                  :value="index"
+                />
+              </el-select>
+            </div>
+          </div>
+          <div
+            v-if="storeModifiers.length"
+            class="mt-element-list margin-top-15"
+          >
+            <div class="mt-list-container list-news ext-1 no-border">
+              <ul>
+                <li
+                  v-for="modifier in storeModifiers"
+                  :id="'modifierCategory-' + modifier.id"
+                  :key="modifier.id"
+                  class="mt-list-item margin-top-15 clickable"
+                  @click="viewModifierCategoryItems(modifier)"
+                >
+                  <div class="actions-on-top margin-bottom-15">
+                    <el-tooltip
+                      v-if="$root.permissions['menu_manager modifiers update']"
+                      content="Edit"
+                      effect="light"
+                      placement="top"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="editModifierCategory(modifier, $event)"
+                      >
+                        <i class="fa fa-lg fa-pencil" />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['menu_manager modifiers read'] && !$root.permissions['menu_manager modifiers update']"
+                      content="View"
+                      effect="light"
+                      placement="top"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="editModifierCategory(modifier, $event)"
+                      >
+                        <i class="fa fa-lg fa-eye" />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['menu_manager modifiers update items']"
+                      content="Apply to items"
+                      effect="light"
+                      placement="top"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="displayMenuTreeModal(modifier, $event)"
+                      >
+                        <i class="icon-layers" />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['stores copy modifier modifier_to_multiple_location']"
+                      content="Copy to stores"
+                      effect="light"
+                      placement="top"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="displayCopyToLocationsModal(modifier, $event)"
+                      >
+                        <i class="fa fa-lg fa-copy" />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['stores add item_to_multiple_locations']"
+                      content="Apply to items at stores"
+                      effect="light"
+                      placement="top"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="displayApplyToItemsAtLocationsModal(modifier, $event)"
+                      >
+                        <i class="fa fa-lg fa-plus" />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['menu_manager modifiers delete']"
+                      content="Delete"
+                      effect="light"
+                      placement="top"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="deleteModifierCategory(modifier, $event)"
+                      >
+                        <i class="fa fa-lg fa-trash" />
+                      </a>
+                    </el-tooltip>
+                  </div>
+                  <div class="list-icon-container">
+                    <a>
+                      <i class="fa fa-angle-right" />
+                    </a>
+                  </div>
+                  <div class="list-thumb">
+                    <a v-if="modifier.image_url.length">
+                      <img
+                        alt=""
+                        :src="modifier.image_url"
+                      >
+                    </a>
+                    <a v-else>
+                      <img src="../../../assets/img/app/login/bg1.jpg">
+                    </a>
+                  </div>
+                  <div class="list-datetime bold uppercase font-red">
+                    <span>{{ modifier.name }}</span>
+                  </div>
+                  <div class="list-item-content height-mod">
+                    <div class="col-md-2">
+                      <strong>Min:</strong>
+                      <span>{{ modifier.min }}</span>
+                    </div>
+                    <div class="col-md-2">
+                      <strong>Max:</strong>
+                      <span>{{ modifier.max }}</span>
+                    </div>
+                    <div class="col-md-4">
+                      <strong>Status:</strong>
+                      <span v-if="modifier.status == 1">
+                        Available
+                      </span>
+                      <span v-if="modifier.status == 0">
+                        Sold Out
+                      </span>
+                    </div>
+                    <div class="col-md-4">
+                      <strong>SKU:</strong>
+                      <span>{{ modifier.sku }}</span>
+                    </div>
+                    <div class="col-md-12">
+                      <strong>Description:</strong>
+                      <span>{{ modifier.desc }}</span>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div
+            v-if="!storeModifiers.length && !displayModifierData"
+            class="margin-top-20"
+          >
+            <no-results
+              :show="!storeModifiers.length"
+              :type="'modifier categories'"
+              :custom="true"
+              :text="customText"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      v-if="$root.activeLocation.id && !displayModifierData"
+      class="margin-top-20"
+    >
+      <no-results :type="'modifier categories'" />
+    </div>
+    <edit-modifier-category
+      v-if="editCategoryModalActive"
+      @updateModifierCategory="updateModifierCategory"
+      @deactivateEditCategoryModal="closeEditCategoryModal"
+    />
+    <delete-modifier-category
+      v-if="deleteCategoryModalActive"
+      :passed-modifier-category-id="passedModifierCategoryId"
+      @closeDeleteModifierCategoryModal="closeDeleteModifierCategoryModal"
+      @deleteModifierCategoryAndCloseModal="deleteModifierCategoryAndCloseModal"
+    />
+    <menu-tree
+      v-if="showMenuTreeModal"
+      :selected-object="selectedModifier"
+      :header-text="headerText"
+      :update-type="'modifier'"
+      @closeMenuTreeModal="closeMenuTreeModal"
+    />
+    <apply-modifier-to-items-at-locations
+      v-if="showModifierToApplyToItemsAtLocationsModal"
+      :modifier="modifierToApplyToItemsAtLocations"
+      @closeApplyModifierToItemsAtLocations="closeApplyModifierToItemsAtLocationsModal"
+      @applyModifierToItemsAtLocationsSuccess="showApplyModifierToItemsAtLocationsSuccess"
+    />
+    <copy-modifier-to-locations
+      v-if="showCopyModifierToLocationsModal"
+      :modifier="modifierToCopyToLocations"
+      @closeCopyModifierToLocations="closeCopyModifierToLocationsModal"
+      @copyModifierToLocationsSuccess="showCopyModifierToLocationsSuccess"
+    />
+  </div>
 </template>
 
 <script>
@@ -342,6 +463,18 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 import ModifierTiersFunctions from '@/controllers/ModifierTiers'
 
 export default {
+	components: {
+		Breadcrumb,
+		Modal,
+		LoadingScreen,
+		EditModifierCategory,
+		DeleteModifierCategory,
+		NoResults,
+		MenuTree,
+		ResourcePicker,
+		ApplyModifierToItemsAtLocations,
+		CopyModifierToLocations
+	},
 	data () {
 		return {
 			breadcrumbArray: [
@@ -389,6 +522,13 @@ export default {
 			} else {
 				return 'This tier does not have any Modifier Categories.'
 			}
+		}
+	},
+	watch: {
+		'$root.activeLocation' () {
+			this.getStoreModifiers()
+			this.indexOfTierToDisplay = null
+			this.getModifierTiers()
 		}
 	},
 	mounted () {
@@ -835,25 +975,6 @@ export default {
 		toggleCreateModifierPanel () {
 			this.createModifierCollapse = !this.createModifierCollapse
 		}
-	},
-	watch: {
-		'$root.activeLocation' () {
-			this.getStoreModifiers()
-			this.indexOfTierToDisplay = null
-			this.getModifierTiers()
-		}
-	},
-	components: {
-		Breadcrumb,
-		Modal,
-		LoadingScreen,
-		EditModifierCategory,
-		DeleteModifierCategory,
-		NoResults,
-		MenuTree,
-		ResourcePicker,
-		ApplyModifierToItemsAtLocations,
-		CopyModifierToLocations
 	}
 }
 </script>

@@ -1,35 +1,50 @@
 <template>
-	<modal :show="showSelectLocationModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal">
-		<div slot="modal-header"
-		     class="modal-header center">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Select Store</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<store-picker
-				:previouslySelected="promoCode.locations"
-				@update="updateSelection"
-			>
-			</store-picker>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<div class="row">
-				<div class="col-xs-12">
-					<button type="button"
-					        class="btn blue"
-					        @click="selectStores()">Select</button>
-				</div>
-			</div>
-		</div>
-	</modal>
+  <modal
+    :show="showSelectLocationModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header center"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Select Store
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <store-picker
+        :previously-selected="promoCode.locations"
+        @update="updateSelection"
+      />
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <div class="row">
+        <div class="col-xs-12">
+          <button
+            type="button"
+            class="btn blue"
+            @click="selectStores()"
+          >
+            Select
+          </button>
+        </div>
+      </div>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -37,15 +52,19 @@ import Modal from '../../modules/Modal'
 import StorePicker from '@/components/modules/StorePicker'
 
 export default {
-	data () {
-		return {
-			showSelectLocationModal: false,
-			selected: []
-		}
+	components: {
+		Modal,
+		StorePicker
 	},
 	props: {
 		promoCode: {
 			type: Object
+		}
+	},
+	data () {
+		return {
+			showSelectLocationModal: false,
+			selected: []
 		}
 	},
 	mounted () {
@@ -78,10 +97,6 @@ export default {
 		closeModal () {
 			this.$emit('closeSelectLocationModal')
 		}
-	},
-	components: {
-		Modal,
-		StorePicker
 	}
 }
 </script>

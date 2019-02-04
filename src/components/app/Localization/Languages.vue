@@ -1,299 +1,389 @@
 <template>
-	<div>
-		<!-- BEGIN PAGE BAR -->
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
-		<!-- END PAGE BAR -->
+  <div>
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
+    <!-- END PAGE BAR -->
 
-		<!-- BEGIN PAGE TITLE-->
-		<h1 class="page-title">Languages</h1>
-		<!-- END PAGE TITLE -->
-		<div class="note note-info">
-			<p>Add and manage languages.</p>
-		</div>
+    <!-- BEGIN PAGE TITLE-->
+    <h1 class="page-title">
+      Languages
+    </h1>
+    <!-- END PAGE TITLE -->
+    <div class="note note-info">
+      <p>Add and manage languages.</p>
+    </div>
 
-		<!-- BEGIN CREATE -->
-		<div class="portlet box blue-hoki"
-		     v-if="$root.permissions['localization languages create']">
-			<div class="portlet-title bg-blue-chambray"
-			     @click="toggleCreatePanel()">
-				<div class="caption">
-					<i class="fa fa-2x fa-plus-circle"></i>
-					Create a New Language
-				</div>
-				<div class="tools">
-					<a :class="{'expand': !createNewCollapse, 'collapse': createNewCollapse}"></a>
-				</div>
-			</div>
-			<div class="portlet-body relative-block"
-			     :class="{'display-hide': createNewCollapse}">
-				<form role="form"
-				      @submit.prevent="createLanguage()">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="alert alert-danger"
-							     v-show="createErrorMessage.length"
-							     ref="createErrorMessage">
-								<button class="close"
-								        data-close="alert"
-								        @click.prevent="clearError('createErrorMessage')"></button>
-								<span>{{ createErrorMessage }}</span>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newLanguage.name.length}"
-								       id="form_control_create_name"
-								       v-model="newLanguage.name">
-								<label for="form_control_create_name">Name</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newLanguage.language_code.length}"
-								       id="form_control_1"
-								       v-model="newLanguage.language_code">
-								<label for="form_control_1">Language code</label>
-							</div>
-							<label>
-								Country:
-								<el-select v-model="newLanguage.country_id"
-								           placeholder="Select a country"
-								           size="small"
-								           no-data-text="No countries"
-								           remote
-								           :loading="loadingCountries">
-									<el-option v-for="country in countries"
-									           :label="country.name"
-									           :value="country.id"
-									           :key="country.id">
-									</el-option>
-								</el-select>
-							</label>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<label>Default language</label><br>
-								<el-switch v-model="newLanguage.isDefault"
-								           active-color="#0c6"
-								           inactive-color="#ff4949"
-								           :active-value="1"
-								           :inactive-value="0"
-								           active-text="Yes"
-								           inactive-text="No">
-								</el-switch>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<label>Status</label><br>
-								<el-switch v-model="newLanguage.status"
-								           active-color="#0c6"
-								           inactive-color="#ff4949"
-								           :active-value="1"
-								           :inactive-value="0"
-								           active-text="Enabled"
-								           inactive-text="Disabled">
-								</el-switch>
-							</div>
-							<button type="submit"
-							        class="btn blue pull-right"
-							        :disabled="creating">
-								Create
-								<i v-show="creating"
-								   class="fa fa-spinner fa-pulse fa-fw">
-								</i>
-							</button>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-		<!-- END CREATE -->
+    <!-- BEGIN CREATE -->
+    <div
+      v-if="$root.permissions['localization languages create']"
+      class="portlet box blue-hoki"
+    >
+      <div
+        class="portlet-title bg-blue-chambray"
+        @click="toggleCreatePanel()"
+      >
+        <div class="caption">
+          <i class="fa fa-2x fa-plus-circle" />
+          Create a New Language
+        </div>
+        <div class="tools">
+          <a :class="{'expand': !createNewCollapse, 'collapse': createNewCollapse}" />
+        </div>
+      </div>
+      <div
+        class="portlet-body relative-block"
+        :class="{'display-hide': createNewCollapse}"
+      >
+        <form
+          role="form"
+          @submit.prevent="createLanguage()"
+        >
+          <div class="row">
+            <div class="col-md-12">
+              <div
+                v-show="createErrorMessage.length"
+                ref="createErrorMessage"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  data-close="alert"
+                  @click.prevent="clearError('createErrorMessage')"
+                />
+                <span>{{ createErrorMessage }}</span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_create_name"
+                  v-model="newLanguage.name"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newLanguage.name.length}"
+                >
+                <label for="form_control_create_name">
+                  Name
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_1"
+                  v-model="newLanguage.language_code"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newLanguage.language_code.length}"
+                >
+                <label for="form_control_1">
+                  Language code
+                </label>
+              </div>
+              <label>
+                Country:
+                <el-select
+                  v-model="newLanguage.country_id"
+                  placeholder="Select a country"
+                  size="small"
+                  no-data-text="No countries"
+                  remote
+                  :loading="loadingCountries"
+                >
+                  <el-option
+                    v-for="country in countries"
+                    :key="country.id"
+                    :label="country.name"
+                    :value="country.id"
+                  />
+                </el-select>
+              </label>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <label>Default language</label><br>
+                <el-switch
+                  v-model="newLanguage.isDefault"
+                  active-color="#0c6"
+                  inactive-color="#ff4949"
+                  :active-value="1"
+                  :inactive-value="0"
+                  active-text="Yes"
+                  inactive-text="No"
+                />
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <label>Status</label><br>
+                <el-switch
+                  v-model="newLanguage.status"
+                  active-color="#0c6"
+                  inactive-color="#ff4949"
+                  :active-value="1"
+                  :inactive-value="0"
+                  active-text="Enabled"
+                  inactive-text="Disabled"
+                />
+              </div>
+              <button
+                type="submit"
+                class="btn blue pull-right"
+                :disabled="creating"
+              >
+                Create
+                <i
+                  v-show="creating"
+                  class="fa fa-spinner fa-pulse fa-fw"
+                />
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- END CREATE -->
 
-		<!-- BEGIN LIST -->
-		<div class="portlet light portlet-fit bordered margin-top-20"
-				id="languages-container">
-			<div class="portlet-title bg-blue-chambray">
-				<div class="menu-image-main">
-					<img src="../../../../public/client_logo.png">
-				</div>
-				<div class="caption">
-					<span class="caption-subject font-default bold uppercase">Languages</span>
-					<div class="caption-desc font-grey-cascade">Create, edit or delete languages.</div>
-				</div>
-			</div>
-			<div class="col-md-12">
-				<div class="alert alert-danger"
-						v-show="listErrorMessage.length"
-						ref="listErrorMessage">
-					<button class="close"
-							data-close="alert"
-							@click="clearError('listErrorMessage')"></button>
-					<span>{{ listErrorMessage }}</span>
-				</div>
-			</div>
-			<div class="portlet-body relative-block">
-				<loading-screen :show="loadingLanguages && activeLocationId !== undefined"
-								:color="'#2C3E50'"
-								:display="'inline'"></loading-screen>
-				<div class="mt-element-list margin-top-15"
-						v-if="languages.length && !loadingLanguages">
-					<div class="mt-list-container list-news ext-1 no-border">
-						<ul>
-							<li class="mt-list-item actions-at-left margin-top-15 three-vertical-actions"
-								v-for="language in languages"
-								:id="'language-' + language.id"
-								:key="language.id">
-								<div class="list-item-actions">
-									<el-tooltip v-if="$root.permissions['localization languages update']"
-												content="Edit"
-												effect="light"
-												placement="right">
-										<a class="btn btn-circle btn-icon-only btn-default"
-											@click="editLanguage(language, $event)">
-											<i class="fa fa-lg fa-pencil"></i>
-										</a>
-									</el-tooltip>
-									<el-tooltip v-if="$root.permissions['localization languages read'] && !$root.permissions['localization languages update']"
-												content="View"
-												effect="light"
-												placement="right">
-										<a class="btn btn-circle btn-icon-only btn-default"
-											@click="editLanguage(language, $event)">
-											<i class="fa fa-lg fa-eye"></i>
-										</a>
-									</el-tooltip>
-								</div>
-								<div class="col-md-12 bold uppercase font-red">
-									<span>{{ language.name }} - {{countryNames[language.country_id]}}</span>
-								</div>
-								<div class="col-md-6">
-									<strong></strong>
-								</div>
-							</li>
-						</ul>
-					</div>
-				</div>
-				<div class="margin-top-20">
-					<no-results :show="!languages.length && !loadingLanguages"
-								:type="'languages'"></no-results>
-				</div>
-			</div>
-		</div>
-		<!-- END LIST -->
+    <!-- BEGIN LIST -->
+    <div
+      id="languages-container"
+      class="portlet light portlet-fit bordered margin-top-20"
+    >
+      <div class="portlet-title bg-blue-chambray">
+        <div class="menu-image-main">
+          <img src="../../../../public/client_logo.png">
+        </div>
+        <div class="caption">
+          <span class="caption-subject font-default bold uppercase">
+            Languages
+          </span>
+          <div class="caption-desc font-grey-cascade">
+            Create, edit or delete languages.
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div
+          v-show="listErrorMessage.length"
+          ref="listErrorMessage"
+          class="alert alert-danger"
+        >
+          <button
+            class="close"
+            data-close="alert"
+            @click="clearError('listErrorMessage')"
+          />
+          <span>{{ listErrorMessage }}</span>
+        </div>
+      </div>
+      <div class="portlet-body relative-block">
+        <loading-screen
+          :show="loadingLanguages && activeLocationId !== undefined"
+          :color="'#2C3E50'"
+          :display="'inline'"
+        />
+        <div
+          v-if="languages.length && !loadingLanguages"
+          class="mt-element-list margin-top-15"
+        >
+          <div class="mt-list-container list-news ext-1 no-border">
+            <ul>
+              <li
+                v-for="language in languages"
+                :id="'language-' + language.id"
+                :key="language.id"
+                class="mt-list-item actions-at-left margin-top-15 three-vertical-actions"
+              >
+                <div class="list-item-actions">
+                  <el-tooltip
+                    v-if="$root.permissions['localization languages update']"
+                    content="Edit"
+                    effect="light"
+                    placement="right"
+                  >
+                    <a
+                      class="btn btn-circle btn-icon-only btn-default"
+                      @click="editLanguage(language, $event)"
+                    >
+                      <i class="fa fa-lg fa-pencil" />
+                    </a>
+                  </el-tooltip>
+                  <el-tooltip
+                    v-if="$root.permissions['localization languages read'] && !$root.permissions['localization languages update']"
+                    content="View"
+                    effect="light"
+                    placement="right"
+                  >
+                    <a
+                      class="btn btn-circle btn-icon-only btn-default"
+                      @click="editLanguage(language, $event)"
+                    >
+                      <i class="fa fa-lg fa-eye" />
+                    </a>
+                  </el-tooltip>
+                </div>
+                <div class="col-md-12 bold uppercase font-red">
+                  <span>{{ language.name }} - {{ countryNames[language.country_id] }}</span>
+                </div>
+                <div class="col-md-6">
+                  <strong />
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="margin-top-20">
+          <no-results
+            :show="!languages.length && !loadingLanguages"
+            :type="'languages'"
+          />
+        </div>
+      </div>
+    </div>
+    <!-- END LIST -->
 
-		<!-- START EDIT -->
-		<modal :show="showEditModal"
-		       effect="fade"
-		       @closeOnEscape="closeEditModal">
-			<div slot="modal-header"
-			     class="modal-header">
-				<button type="button"
-				        class="close"
-				        @click="closeEditModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Edit Language</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<form role="form">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="alert alert-danger"
-							     v-show="editErrorMessage.length"
-							     ref="editErrorMessage">
-								<button class="close"
-								        data-close="alert"
-								        @click.prevent="clearError('editErrorMessage')"></button>
-								<span>{{ editErrorMessage }}</span>
-							</div>
-						</div>
-						<div class="col-md-12">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input :disabled="!$root.permissions['localization languages update']"
-								       type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': languageToEdit.name.length}"
-								       id="form_control_edit_name"
-								       v-model="languageToEdit.name">
-								<label for="form_control_edit_name">Name</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input :disabled="!$root.permissions['localization languages update']"
-								       type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': languageToEdit.language_code.length}"
-								       id="form_control_1"
-								       v-model="languageToEdit.language_code">
-								<label for="form_control_1">Language code</label>
-							</div>
-							<label>
-								Country:
-								<el-select :disabled="!$root.permissions['localization languages update']"
-								           v-model="languageToEdit.country_id"
-								           placeholder="Select a country"
-								           size="small"
-								           no-data-text="No countries"
-								           remote
-								           :loading="loadingCountries">
-									<el-option v-for="country in countries"
-									           :label="country.name"
-									           :value="country.id"
-									           :key="country.id">
-									</el-option>
-								</el-select>
-							</label>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<label>Default language</label><br>
-								<el-switch :disabled="!$root.permissions['localization languages update']"
-								           v-model="languageToEdit.isDefault"
-								           active-color="#0c6"
-								           inactive-color="#ff4949"
-								           :active-value="1"
-								           :inactive-value="0"
-								           active-text="Yes"
-								           inactive-text="No">
-								</el-switch>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<label>Status</label><br>
-								<el-switch :disabled="!$root.permissions['localization languages update']"
-								           v-model="languageToEdit.status"
-								           active-color="#0c6"
-								           inactive-color="#ff4949"
-								           :active-value="1"
-								           :inactive-value="0"
-								           active-text="Enabled"
-								           inactive-text="Disabled">
-								</el-switch>
-							</div>
-						</div>
-					</div>
-				</form>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer clear">
-				<button v-if="!$root.permissions['localization languages update']"
-				        @click="closeEditModal()"
-				        type="button"
-				        class="btn blue">
-					Close
-				</button>
-				<button v-else
-				        @click="updateLanguage()"
-				        type="submit"
-				        class="btn blue"
-				        :disabled="updating">
-					Save
-					<i v-show="updating"
-					   class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-			</div>
-		</modal>
-		<!-- END EDIT -->
-	</div>
+    <!-- START EDIT -->
+    <modal
+      :show="showEditModal"
+      effect="fade"
+      @closeOnEscape="closeEditModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeEditModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Edit Language
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <form role="form">
+          <div class="row">
+            <div class="col-md-12">
+              <div
+                v-show="editErrorMessage.length"
+                ref="editErrorMessage"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  data-close="alert"
+                  @click.prevent="clearError('editErrorMessage')"
+                />
+                <span>{{ editErrorMessage }}</span>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_edit_name"
+                  v-model="languageToEdit.name"
+                  :disabled="!$root.permissions['localization languages update']"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': languageToEdit.name.length}"
+                >
+                <label for="form_control_edit_name">
+                  Name
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_1"
+                  v-model="languageToEdit.language_code"
+                  :disabled="!$root.permissions['localization languages update']"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': languageToEdit.language_code.length}"
+                >
+                <label for="form_control_1">
+                  Language code
+                </label>
+              </div>
+              <label>
+                Country:
+                <el-select
+                  v-model="languageToEdit.country_id"
+                  :disabled="!$root.permissions['localization languages update']"
+                  placeholder="Select a country"
+                  size="small"
+                  no-data-text="No countries"
+                  remote
+                  :loading="loadingCountries"
+                >
+                  <el-option
+                    v-for="country in countries"
+                    :key="country.id"
+                    :label="country.name"
+                    :value="country.id"
+                  />
+                </el-select>
+              </label>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <label>Default language</label><br>
+                <el-switch
+                  v-model="languageToEdit.isDefault"
+                  :disabled="!$root.permissions['localization languages update']"
+                  active-color="#0c6"
+                  inactive-color="#ff4949"
+                  :active-value="1"
+                  :inactive-value="0"
+                  active-text="Yes"
+                  inactive-text="No"
+                />
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <label>Status</label><br>
+                <el-switch
+                  v-model="languageToEdit.status"
+                  :disabled="!$root.permissions['localization languages update']"
+                  active-color="#0c6"
+                  inactive-color="#ff4949"
+                  :active-value="1"
+                  :inactive-value="0"
+                  active-text="Enabled"
+                  inactive-text="Disabled"
+                />
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer clear"
+      >
+        <button
+          v-if="!$root.permissions['localization languages update']"
+          type="button"
+          class="btn blue"
+          @click="closeEditModal()"
+        >
+          Close
+        </button>
+        <button
+          v-else
+          type="submit"
+          class="btn blue"
+          :disabled="updating"
+          @click="updateLanguage()"
+        >
+          Save
+          <i
+            v-show="updating"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+      </div>
+    </modal>
+    <!-- END EDIT -->
+  </div>
 </template>
 
 <script>
@@ -306,6 +396,12 @@ import NoResults from '@/components/modules/NoResults'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
+	components: {
+		Breadcrumb,
+		LoadingScreen,
+		Modal,
+		NoResults
+	},
 	data () {
 		return {
 			breadcrumbArray: [{ name: 'Languages', link: false }],
@@ -670,12 +766,6 @@ export default {
 				status: 0
 			}
 		}
-	},
-	components: {
-		Breadcrumb,
-		LoadingScreen,
-		Modal,
-		NoResults
 	}
 }
 </script>

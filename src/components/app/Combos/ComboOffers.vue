@@ -1,366 +1,490 @@
 <template>
-	<div>
-		<!-- BEGIN PAGE BAR -->
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
-		<!-- END PAGE BAR -->
+  <div>
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
+    <!-- END PAGE BAR -->
 
-		<!-- BEGIN PAGE TITLE-->
-		<h1 class="page-title">Combo Offers</h1>
-		<!-- END PAGE TITLE -->
-		<div class="note note-info">
-			<p>Add and manage combo offers.</p>
-		</div>
+    <!-- BEGIN PAGE TITLE-->
+    <h1 class="page-title">
+      Combo Offers
+    </h1>
+    <!-- END PAGE TITLE -->
+    <div class="note note-info">
+      <p>Add and manage combo offers.</p>
+    </div>
 
-		<!-- BEGIN CREATE -->
-		<div class="portlet box blue-hoki"
-		     v-if="$root.permissions['combo_offer create']">
-			<div class="portlet-title bg-blue-chambray"
-			     @click="toggleCreatePanel()">
-				<div class="caption">
-					<i class="fa fa-2x fa-plus-circle"></i>
-					Create a New Combo Offer
-				</div>
-				<div class="tools">
-					<a :class="{'expand': !createNewCollapse, 'collapse': createNewCollapse}"></a>
-				</div>
-			</div>
-			<div class="portlet-body relative-block"
-			     :class="{'display-hide': createNewCollapse}">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="alert alert-danger"
-								v-show="createErrorMessage.length"
-								ref="createErrorMessage">
-							<button class="close"
-									@click.prevent="clearError('createErrorMessage')"></button>
-							<span>{{ createErrorMessage }}</span>
-						</div>
-					</div>
-					<div class="col-xs-12 col-md-6">
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-									class="form-control input-sm"
-									:class="{'edited': newComboOffer.name.length}"
-									id="form_control_name"
-									v-model="newComboOffer.name">
-							<label for="form_control_name">Name</label>
-						</div>
-						<el-select class="margin-top-10 margin-bottom-10"
-									v-model="newComboOffer.discount_type"
-									placeholder="Select discount type"
-									size="small">
-							<el-option label="flat"
-										value="flat"></el-option>
-							<el-option label="percentage"
-										value="percentage"></el-option>
-						</el-select>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-									class="form-control input-sm"
-									:class="{'edited': newComboOffer.discount.length}"
-									id="form_control_discount"
-									v-model="newComboOffer.discount">
-							<label for="form_control_discount">Discount value</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-									class="form-control input-sm"
-									:class="{'edited': newComboOffer.number_of_items.length}"
-									id="form_control_number_of_items"
-									v-model="newComboOffer.number_of_items">
-							<label for="form_control_number_of_items">Number of Items</label>
-						</div>
-						<div class="margin-top-20">
-							From:
-							<el-date-picker v-model="newComboOffer.start_from"
-											type="date"
-											format="yyyy-MM-dd"
-											value-format="yyyy-MM-dd"
-											:clearable="false"
-											:pickerOptions="newStartOptions"
-											placeholder="Select start date">
-							</el-date-picker>
-						</div>
-						<div class="margin-top-20">
-							To:
-							<el-date-picker v-model="newComboOffer.end_on"
-											type="date"
-											format="yyyy-MM-dd"
-											value-format="yyyy-MM-dd"
-											:clearable="false"
-											:pickerOptions="newEndOptions"
-											placeholder="Select end date">
-							</el-date-picker>
-						</div>
-						<button
-								@click="createComboOffer()"
-								class="btn blue pull-right"
-								:disabled="creating"
-						>
-							Create
-							<i v-show="creating"
-								class="fa fa-spinner fa-pulse fa-fw">
-							</i>
-						</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- END CREATE -->
+    <!-- BEGIN CREATE -->
+    <div
+      v-if="$root.permissions['combo_offer create']"
+      class="portlet box blue-hoki"
+    >
+      <div
+        class="portlet-title bg-blue-chambray"
+        @click="toggleCreatePanel()"
+      >
+        <div class="caption">
+          <i class="fa fa-2x fa-plus-circle" />
+          Create a New Combo Offer
+        </div>
+        <div class="tools">
+          <a :class="{'expand': !createNewCollapse, 'collapse': createNewCollapse}" />
+        </div>
+      </div>
+      <div
+        class="portlet-body relative-block"
+        :class="{'display-hide': createNewCollapse}"
+      >
+        <div class="row">
+          <div class="col-md-12">
+            <div
+              v-show="createErrorMessage.length"
+              ref="createErrorMessage"
+              class="alert alert-danger"
+            >
+              <button
+                class="close"
+                @click.prevent="clearError('createErrorMessage')"
+              />
+              <span>{{ createErrorMessage }}</span>
+            </div>
+          </div>
+          <div class="col-xs-12 col-md-6">
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_name"
+                v-model="newComboOffer.name"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': newComboOffer.name.length}"
+              >
+              <label for="form_control_name">
+                Name
+              </label>
+            </div>
+            <el-select
+              v-model="newComboOffer.discount_type"
+              class="margin-top-10 margin-bottom-10"
+              placeholder="Select discount type"
+              size="small"
+            >
+              <el-option
+                label="flat"
+                value="flat"
+              />
+              <el-option
+                label="percentage"
+                value="percentage"
+              />
+            </el-select>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_discount"
+                v-model="newComboOffer.discount"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': newComboOffer.discount.length}"
+              >
+              <label for="form_control_discount">
+                Discount value
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_number_of_items"
+                v-model="newComboOffer.number_of_items"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': newComboOffer.number_of_items.length}"
+              >
+              <label for="form_control_number_of_items">
+                Number of Items
+              </label>
+            </div>
+            <div class="margin-top-20">
+              From:
+              <el-date-picker
+                v-model="newComboOffer.start_from"
+                type="date"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                :clearable="false"
+                :picker-options="newStartOptions"
+                placeholder="Select start date"
+              />
+            </div>
+            <div class="margin-top-20">
+              To:
+              <el-date-picker
+                v-model="newComboOffer.end_on"
+                type="date"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                :clearable="false"
+                :picker-options="newEndOptions"
+                placeholder="Select end date"
+              />
+            </div>
+            <button
+              class="btn blue pull-right"
+              :disabled="creating"
+              @click="createComboOffer()"
+            >
+              Create
+              <i
+                v-show="creating"
+                class="fa fa-spinner fa-pulse fa-fw"
+              />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END CREATE -->
 
-		<!-- BEGIN LIST -->
-		<div class="portlet light portlet-fit bordered margin-top-20"
-				id="comboOffers-container">
-			<div class="portlet-title bg-blue-chambray">
-				<div class="menu-image-main">
-					<img src="../../../../public/client_logo.png">
-				</div>
-				<div class="caption">
-					<span class="caption-subject font-default bold uppercase">Combo Offers</span>
-					<div class="caption-desc font-grey-cascade">Create, edit or delete combo offers.</div>
-				</div>
-			</div>
-			<div class="col-md-12">
-				<div class="alert alert-danger"
-						v-show="listErrorMessage.length"
-						ref="listErrorMessage">
-					<button class="close"
-							data-close="alert"
-							@click="clearError('listErrorMessage')"></button>
-					<span>{{ listErrorMessage }}</span>
-				</div>
-			</div>
-			<div class="portlet-body relative-block">
-				<loading-screen :show="loadingComboOffers"
-								:color="'#2C3E50'"
-								:display="'inline'"></loading-screen>
-				<div class="mt-element-list margin-top-15"
-						v-if="comboOffers.length && !loadingComboOffers">
-					<div class="mt-list-container list-news ext-1 no-border">
-						<ul>
-							<li class="mt-list-item actions-at-left margin-top-15 three-vertical-actions"
-								v-for="comboOffer in comboOffers"
-								:id="'comboOffer-' + comboOffer.id"
-								:key="comboOffer.id"
-								@click="editItems(comboOffer)"
-							>
-								<div class="list-item-actions">
-									<el-tooltip v-if="$root.permissions['combo_offer update']"
-												content="Edit"
-												effect="light"
-												placement="right">
-										<a class="btn btn-circle btn-icon-only btn-default"
-											@click.stop="editComboOffer(comboOffer)">
-											<i class="fa fa-lg fa-pencil"></i>
-										</a>
-									</el-tooltip>
-									<el-tooltip v-if="$root.permissions['combo_offer read'] && !$root.permissions['combo_offer update']"
-												content="View"
-												effect="light"
-												placement="right">
-										<a class="btn btn-circle btn-icon-only btn-default"
-											@click.stop="editComboOffer(comboOffer, $event)">
-											<i class="fa fa-lg fa-eye"></i>
-										</a>
-									</el-tooltip>
-									<el-tooltip v-if="$root.permissions['combo_offer delete']"
-												content="Delete"
-												effect="light"
-												placement="right">
-										<a class="btn btn-circle btn-icon-only btn-default"
-											@click.stop="confirmDelete(comboOffer, $event)">
-											<i class="fa fa-lg fa-trash"></i>
-										</a>
-									</el-tooltip>
-								</div>
-								<div class="col-md-12 bold uppercase font-red">
-									<span>{{ comboOffer.name }}</span>
-								</div>
-								<div class="list-icon-container">
-									<i class="fa fa-angle-right"></i>
-								</div>
-								<div class="col-md-6">
-									<strong></strong>
-								</div>
-							</li>
-						</ul>
-					</div>
-				</div>
-				<no-results class="margin-top-20"
-							:show="!comboOffers.length && !loadingComboOffers"
-							:type="'comboOffers'"></no-results>
-			</div>
-		</div>
-		<!-- END LIST -->
+    <!-- BEGIN LIST -->
+    <div
+      id="comboOffers-container"
+      class="portlet light portlet-fit bordered margin-top-20"
+    >
+      <div class="portlet-title bg-blue-chambray">
+        <div class="menu-image-main">
+          <img src="../../../../public/client_logo.png">
+        </div>
+        <div class="caption">
+          <span class="caption-subject font-default bold uppercase">
+            Combo Offers
+          </span>
+          <div class="caption-desc font-grey-cascade">
+            Create, edit or delete combo offers.
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div
+          v-show="listErrorMessage.length"
+          ref="listErrorMessage"
+          class="alert alert-danger"
+        >
+          <button
+            class="close"
+            data-close="alert"
+            @click="clearError('listErrorMessage')"
+          />
+          <span>{{ listErrorMessage }}</span>
+        </div>
+      </div>
+      <div class="portlet-body relative-block">
+        <loading-screen
+          :show="loadingComboOffers"
+          :color="'#2C3E50'"
+          :display="'inline'"
+        />
+        <div
+          v-if="comboOffers.length && !loadingComboOffers"
+          class="mt-element-list margin-top-15"
+        >
+          <div class="mt-list-container list-news ext-1 no-border">
+            <ul>
+              <li
+                v-for="comboOffer in comboOffers"
+                :id="'comboOffer-' + comboOffer.id"
+                :key="comboOffer.id"
+                class="mt-list-item actions-at-left margin-top-15 three-vertical-actions"
+                @click="editItems(comboOffer)"
+              >
+                <div class="list-item-actions">
+                  <el-tooltip
+                    v-if="$root.permissions['combo_offer update']"
+                    content="Edit"
+                    effect="light"
+                    placement="right"
+                  >
+                    <a
+                      class="btn btn-circle btn-icon-only btn-default"
+                      @click.stop="editComboOffer(comboOffer)"
+                    >
+                      <i class="fa fa-lg fa-pencil" />
+                    </a>
+                  </el-tooltip>
+                  <el-tooltip
+                    v-if="$root.permissions['combo_offer read'] && !$root.permissions['combo_offer update']"
+                    content="View"
+                    effect="light"
+                    placement="right"
+                  >
+                    <a
+                      class="btn btn-circle btn-icon-only btn-default"
+                      @click.stop="editComboOffer(comboOffer, $event)"
+                    >
+                      <i class="fa fa-lg fa-eye" />
+                    </a>
+                  </el-tooltip>
+                  <el-tooltip
+                    v-if="$root.permissions['combo_offer delete']"
+                    content="Delete"
+                    effect="light"
+                    placement="right"
+                  >
+                    <a
+                      class="btn btn-circle btn-icon-only btn-default"
+                      @click.stop="confirmDelete(comboOffer, $event)"
+                    >
+                      <i class="fa fa-lg fa-trash" />
+                    </a>
+                  </el-tooltip>
+                </div>
+                <div class="col-md-12 bold uppercase font-red">
+                  <span>{{ comboOffer.name }}</span>
+                </div>
+                <div class="list-icon-container">
+                  <i class="fa fa-angle-right" />
+                </div>
+                <div class="col-md-6">
+                  <strong />
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <no-results
+          class="margin-top-20"
+          :show="!comboOffers.length && !loadingComboOffers"
+          :type="'comboOffers'"
+        />
+      </div>
+    </div>
+    <!-- END LIST -->
 
-		<!-- START EDIT -->
-		<modal :show="showEditModal"
-		       effect="fade"
-		       @closeOnEscape="closeEditModal"
-			   ref="editModal">
-			<div slot="modal-header"
-			     class="modal-header">
-				<button type="button"
-				        class="close"
-				        @click="closeEditModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Edit Combo Offer</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="alert alert-danger"
-								v-show="editErrorMessage.length"
-								ref="editErrorMessage">
-							<button class="close"
-									@click.prevent="clearError('editErrorMessage')"></button>
-							<span>{{ editErrorMessage }}</span>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-12">
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-									class="form-control input-sm"
-									:class="{'edited': comboOfferToEdit.name.length}"
-									id="form_control_name"
-									v-model="comboOfferToEdit.name">
-							<label for="form_control_name">Name</label>
-						</div>
-						<el-select class="margin-top-10 margin-bottom-10"
-									v-model="comboOfferToEdit.discount_type"
-									placeholder="Select discount type"
-									size="small">
-							<el-option label="flat"
-										value="flat"></el-option>
-							<el-option label="percentage"
-										value="percentage"></el-option>
-						</el-select>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-									class="form-control input-sm"
-									:class="{'edited': comboOfferToEdit.discount.length}"
-									id="form_control_discount"
-									v-model="comboOfferToEdit.discount">
-							<label for="form_control_discount">Discount value</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-									class="form-control input-sm"
-									:class="{'edited': comboOfferToEdit.number_of_items.length}"
-									id="form_control_number_of_items"
-									v-model="comboOfferToEdit.number_of_items">
-							<label for="form_control_number_of_items">Number of Items</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-									class="form-control input-sm"
-									:class="{'edited': comboOfferToEdit.start_from.length}"
-									id="form_control_start_from"
-									v-model="comboOfferToEdit.start_from">
-							<label for="form_control_start_from">From</label>
-						</div>
-						<div class="margin-top-20">
-							From:
-							<el-date-picker v-model="comboOfferToEdit.start_from"
-											type="date"
-											format="yyyy-MM-dd"
-											value-format="yyyy-MM-dd"
-											:clearable="false"
-											:pickerOptions="editedStartOptions"
-											placeholder="Select start date">
-							</el-date-picker>
-						</div>
-						<div class="margin-top-20">
-							To:
-							<el-date-picker v-model="comboOfferToEdit.end_on"
-											type="date"
-											format="yyyy-MM-dd"
-											value-format="yyyy-MM-dd"
-											:clearable="false"
-											:pickerOptions="editedEndOptions"
-											placeholder="Select end date">
-							</el-date-picker>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer clear">
-				<button v-if="!$root.permissions['combo_offer update']"
-				        @click="closeEditModal()"
-				        type="button"
-				        class="btn blue">
-					Close
-				</button>
-				<button
-					v-else
-					class="btn blue pull-right"
-					:disabled="updating"
-					@click="updateComboOffer()"
-				>
-					Save
-					<i v-show="updating"
-						class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-			</div>
-		</modal>
-		<!-- END EDIT -->
+    <!-- START EDIT -->
+    <modal
+      ref="editModal"
+      :show="showEditModal"
+      effect="fade"
+      @closeOnEscape="closeEditModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeEditModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Edit Combo Offer
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <div class="row">
+          <div class="col-md-12">
+            <div
+              v-show="editErrorMessage.length"
+              ref="editErrorMessage"
+              class="alert alert-danger"
+            >
+              <button
+                class="close"
+                @click.prevent="clearError('editErrorMessage')"
+              />
+              <span>{{ editErrorMessage }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_name"
+                v-model="comboOfferToEdit.name"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': comboOfferToEdit.name.length}"
+              >
+              <label for="form_control_name">
+                Name
+              </label>
+            </div>
+            <el-select
+              v-model="comboOfferToEdit.discount_type"
+              class="margin-top-10 margin-bottom-10"
+              placeholder="Select discount type"
+              size="small"
+            >
+              <el-option
+                label="flat"
+                value="flat"
+              />
+              <el-option
+                label="percentage"
+                value="percentage"
+              />
+            </el-select>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_discount"
+                v-model="comboOfferToEdit.discount"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': comboOfferToEdit.discount.length}"
+              >
+              <label for="form_control_discount">
+                Discount value
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_number_of_items"
+                v-model="comboOfferToEdit.number_of_items"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': comboOfferToEdit.number_of_items.length}"
+              >
+              <label for="form_control_number_of_items">
+                Number of Items
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_start_from"
+                v-model="comboOfferToEdit.start_from"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': comboOfferToEdit.start_from.length}"
+              >
+              <label for="form_control_start_from">
+                From
+              </label>
+            </div>
+            <div class="margin-top-20">
+              From:
+              <el-date-picker
+                v-model="comboOfferToEdit.start_from"
+                type="date"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                :clearable="false"
+                :picker-options="editedStartOptions"
+                placeholder="Select start date"
+              />
+            </div>
+            <div class="margin-top-20">
+              To:
+              <el-date-picker
+                v-model="comboOfferToEdit.end_on"
+                type="date"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                :clearable="false"
+                :picker-options="editedEndOptions"
+                placeholder="Select end date"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer clear"
+      >
+        <button
+          v-if="!$root.permissions['combo_offer update']"
+          type="button"
+          class="btn blue"
+          @click="closeEditModal()"
+        >
+          Close
+        </button>
+        <button
+          v-else
+          class="btn blue pull-right"
+          :disabled="updating"
+          @click="updateComboOffer()"
+        >
+          Save
+          <i
+            v-show="updating"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+      </div>
+    </modal>
+    <!-- END EDIT -->
 
-		<!-- START DELETE -->
-		<modal :show="showDeleteModal"
-		       effect="fade"
-		       @closeOnEscape="closeDeleteModal"
-			   ref="deleteModal">
-			<div slot="modal-header"
-			     class="modal-header">
-				<button type="button"
-				        class="close"
-				        @click="closeDeleteModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Confirm Delete</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="alert alert-danger"
-								v-show="deleteErrorMessage.length"
-								ref="deleteErrorMessage">
-							<button class="close"
-									@click.prevent="clearError('deleteErrorMessage')"></button>
-							<span>{{ deleteErrorMessage }}</span>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-12">
-						<p>Are you sure you want to delete {{comboOfferToDelete.name}}?</p>
-					</div>
-				</div>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer clear">
-				<button type="button"
-				        class="btn blue"
-				        @click="deleteComboOffer()"
-				        :disabled="deleting">
-					Delete
-					<i v-show="deleting"
-					   class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-			</div>
-		</modal>
-		<!-- START DELETE -->
-	</div>
+    <!-- START DELETE -->
+    <modal
+      ref="deleteModal"
+      :show="showDeleteModal"
+      effect="fade"
+      @closeOnEscape="closeDeleteModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeDeleteModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Confirm Delete
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <div class="row">
+          <div class="col-md-12">
+            <div
+              v-show="deleteErrorMessage.length"
+              ref="deleteErrorMessage"
+              class="alert alert-danger"
+            >
+              <button
+                class="close"
+                @click.prevent="clearError('deleteErrorMessage')"
+              />
+              <span>{{ deleteErrorMessage }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <p>Are you sure you want to delete {{ comboOfferToDelete.name }}?</p>
+          </div>
+        </div>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer clear"
+      >
+        <button
+          type="button"
+          class="btn blue"
+          :disabled="deleting"
+          @click="deleteComboOffer()"
+        >
+          Delete
+          <i
+            v-show="deleting"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+      </div>
+    </modal>
+    <!-- START DELETE -->
+  </div>
 </template>
 
 <script>

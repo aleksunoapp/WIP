@@ -1,23 +1,45 @@
 <template>
-	<div>
-		<div class="text-center margin-top-30"
-		     v-if="display">
-			<h4>No Results Found</h4>
-			<p class="no-margin-top"
-			   v-if="type !== 'news feed'">There are no {{ type }} to show.</p>
-			<p v-if="type === 'menus'">Please select another store from the location panel on the right to view its menu(s) or create new menus.</p>
-			<p v-if="type === 'items'">Please select a category first.</p>
-			<p v-if="type === 'categories'">Please select a menu from the 'Menus' page first.</p>
-			<p v-if="type === 'modifier items'">Please select a modifier category first.</p>
-			<p v-if="type === 'tags'">Click on the button above to create one.</p>
-			<p v-if="type === 'promotions'">Click on the button above to create one.</p>
-		</div>
-		<div class="text-center margin-top-30"
-		     v-if="customDisplay">
-			<h4>No Results Found</h4>
-			<p class="no-margin-top">{{ text }}</p>
-		</div>
-	</div>
+  <div>
+    <div
+      v-if="display"
+      class="text-center margin-top-30"
+    >
+      <h4>No Results Found</h4>
+      <p
+        v-if="type !== 'news feed'"
+        class="no-margin-top"
+      >
+        There are no {{ type }} to show.
+      </p>
+      <p v-if="type === 'menus'">
+        Please select another store from the location panel on the right to view its menu(s) or create new menus.
+      </p>
+      <p v-if="type === 'items'">
+        Please select a category first.
+      </p>
+      <p v-if="type === 'categories'">
+        Please select a menu from the 'Menus' page first.
+      </p>
+      <p v-if="type === 'modifier items'">
+        Please select a modifier category first.
+      </p>
+      <p v-if="type === 'tags'">
+        Click on the button above to create one.
+      </p>
+      <p v-if="type === 'promotions'">
+        Click on the button above to create one.
+      </p>
+    </div>
+    <div
+      v-if="customDisplay"
+      class="text-center margin-top-30"
+    >
+      <h4>No Results Found</h4>
+      <p class="no-margin-top">
+        {{ text }}
+      </p>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -30,7 +52,7 @@
  */
 
 export default {
-	name: 'no-results',
+	name: 'NoResults',
 	props: {
 		show: {
 			default: false
@@ -49,20 +71,6 @@ export default {
 		return {
 			display: false,
 			customDisplay: false
-		}
-	},
-	/**
-	 * Run on `created` to set the display variable equal to the show value
-	 * @function
-	 * @return {undefined}
-	 * @memberof NoResults
-	 * @version 0.0.4
-	 */
-	created () {
-		if (!this.custom) {
-			this.display = Boolean(this.show)
-		} else {
-			this.customDisplay = Boolean(this.show)
 		}
 	},
 	watch: {
@@ -88,6 +96,20 @@ export default {
 					this.customDisplay = false
 				}
 			}
+		}
+	},
+	/**
+	 * Run on `created` to set the display variable equal to the show value
+	 * @function
+	 * @return {undefined}
+	 * @memberof NoResults
+	 * @version 0.0.4
+	 */
+	created () {
+		if (!this.custom) {
+			this.display = Boolean(this.show)
+		} else {
+			this.customDisplay = Boolean(this.show)
 		}
 	}
 }

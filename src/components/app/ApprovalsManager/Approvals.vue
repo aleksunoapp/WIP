@@ -1,159 +1,189 @@
 <template>
-	<div>
-		<div>
-			<div class="page-bar">
-				<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-			</div>
-			<h1 class='page-title'>Approvals</h1>
-			<div class="note note-info">
-				<p>Approve or reject pending requests.</p>
-			</div>
+  <div>
+    <div>
+      <div class="page-bar">
+        <breadcrumb :crumbs="breadcrumbArray" />
+      </div>
+      <h1 class="page-title">
+        Approvals
+      </h1>
+      <div class="note note-info">
+        <p>Approve or reject pending requests.</p>
+      </div>
 
-			<div class="portlet light portlet-fit bordered min-height-200">
-				<div class="portlet-title bg-blue-chambray">
-					<div class="menu-image-main">
-						<img src="../../../../public/client_logo.png">
-					</div>
-					<div class="caption">
-						<span class="caption-subject font-default bold uppercase">Approvals</span>
-						<div class="caption-desc font-grey-cascade">Review and approve or reject pending change requests.</div>
-					</div>
-				</div>
+      <div class="portlet light portlet-fit bordered min-height-200">
+        <div class="portlet-title bg-blue-chambray">
+          <div class="menu-image-main">
+            <img src="../../../../public/client_logo.png">
+          </div>
+          <div class="caption">
+            <span class="caption-subject font-default bold uppercase">
+              Approvals
+            </span>
+            <div class="caption-desc font-grey-cascade">
+              Review and approve or reject pending change requests.
+            </div>
+          </div>
+        </div>
 
-				<div class="portlet-body relative-block">
-					<div class="alert alert-danger"
-					     v-show="errorMessage"
-					     ref="errorMessage">
-						<span>{{errorMessage}}</span>
-						<button class="close"
-						        @click="clearError('errorMessage')"></button>
-					</div>
+        <div class="portlet-body relative-block">
+          <div
+            v-show="errorMessage"
+            ref="errorMessage"
+            class="alert alert-danger"
+          >
+            <span>{{ errorMessage }}</span>
+            <button
+              class="close"
+              @click="clearError('errorMessage')"
+            />
+          </div>
 
-					<loading-screen :show="loading"></loading-screen>
+          <loading-screen :show="loading" />
 
-					<no-results :show="noResults"
-					            :custom="true"
-					            text="There are no changes to review">
-					</no-results>
+          <no-results
+            :show="noResults"
+            :custom="true"
+            text="There are no changes to review"
+          />
 
-					<div v-show="! loading && !noResults">
-						<div v-show="view === 'list'">
-							<div class="row bold padding-y-20">
-								<div class="col-xs-3">
-									<p>Type</p>
-								</div>
-								<div class="col-xs-3">
-									<p>Submitted by</p>
-								</div>
-								<div class="col-xs-3">
-									<p>Created</p>
-								</div>
-							</div>
+          <div v-show="! loading && !noResults">
+            <div v-show="view === 'list'">
+              <div class="row bold padding-y-20">
+                <div class="col-xs-3">
+                  <p>Type</p>
+                </div>
+                <div class="col-xs-3">
+                  <p>Submitted by</p>
+                </div>
+                <div class="col-xs-3">
+                  <p>Created</p>
+                </div>
+              </div>
 
-							<div class="row padding-y-10 border-bottom-light clickable hover-highlight v-center break-long"
-							     :class="{'transparent' : loading}"
-							     v-for="(request, index) in requests"
-							     :key="index"
-							     @click="viewRequest(request)">
-								<div class="col-xs-3">
-									{{request.action}}
-								</div>
-								<div class="col-xs-3">
-									<p>{{request.created_by_name}}</p>
-								</div>
-								<div class="col-xs-3">
-									{{request.formattedDate}}
-								</div>
-								<div class="col-xs-4">
-									<button @click.stop="approveRequest(request)"
-									        class="btn blue btn-sm third-width">
-										Approve
-									</button>
-									<button class="btn blue btn-outline btn-sm third-width">
-										Details
-									</button>
-								</div>
-							</div>
-							<div class="row margin-top-20">
-								<div class="col-xs-12">
-									<pagination :passedPage="activePage"
-									            :numPages="total"
-									            @activePageChange="activePageUpdate">
-									</pagination>
-								</div>
-							</div>
-						</div>
+              <div
+                v-for="(request, index) in requests"
+                :key="index"
+                class="row padding-y-10 border-bottom-light clickable hover-highlight v-center break-long"
+                :class="{'transparent' : loading}"
+                @click="viewRequest(request)"
+              >
+                <div class="col-xs-3">
+                  {{ request.action }}
+                </div>
+                <div class="col-xs-3">
+                  <p>{{ request.created_by_name }}</p>
+                </div>
+                <div class="col-xs-3">
+                  {{ request.formattedDate }}
+                </div>
+                <div class="col-xs-4">
+                  <button
+                    class="btn blue btn-sm third-width"
+                    @click.stop="approveRequest(request)"
+                  >
+                    Approve
+                  </button>
+                  <button class="btn blue btn-outline btn-sm third-width">
+                    Details
+                  </button>
+                </div>
+              </div>
+              <div class="row margin-top-20">
+                <div class="col-xs-12">
+                  <pagination
+                    :passed-page="activePage"
+                    :num-pages="total"
+                    @activePageChange="activePageUpdate"
+                  />
+                </div>
+              </div>
+            </div>
 
-						<div v-show="view === 'single'"
-						     ref="request">
+            <div
+              v-show="view === 'single'"
+              ref="request"
+            >
+              <div class="row bold padding-y-20">
+                <div class="col-xs-2">
+                  <p>Field</p>
+                </div>
+                <div class="col-xs-5">
+                  <p>Current</p>
+                </div>
+                <div class="col-xs-5">
+                  <p>After approval</p>
+                </div>
+              </div>
 
-							<div class="row bold padding-y-20">
-								<div class="col-xs-2">
-									<p>Field</p>
-								</div>
-								<div class="col-xs-5">
-									<p>Current</p>
-								</div>
-								<div class="col-xs-5">
-									<p>After approval</p>
-								</div>
-							</div>
+              <div
+                v-for="(field, index) in request"
+                :key="index"
+                class="row padding-y-10 border-bottom-light break-long"
+                :class="{'changed' : field.existing !== field.modified}"
+              >
+                <div class="col-xs-2">
+                  <p>{{ field.label }}</p>
+                </div>
+                <div class="col-xs-5">
+                  {{ field.existing }}
+                </div>
+                <div class="col-xs-5">
+                  {{ field.modified }}
+                </div>
+              </div>
 
-							<div class="row padding-y-10 border-bottom-light break-long"
-							     v-for="(field, index) in request"
-							     :key="index"
-							     :class="{'changed' : field.existing !== field.modified}">
-								<div class="col-xs-2">
-									<p>{{field.label}}</p>
-								</div>
-								<div class="col-xs-5">
-									{{field.existing}}
-								</div>
-								<div class="col-xs-5">
-									{{field.modified}}
-								</div>
-							</div>
+              <div class="row margin-top-20">
+                <div class="col-xs-12 col-md-6">
+                  <div class="form-group form-md-line-input form-md-floating-label">
+                    <textarea
+                      id="approvals_message"
+                      v-model="selectedRequest.message"
+                      rows="4"
+                      class="form-control edited"
+                    />
+                    <label for="approvals_message">
+                      Message
+                    </label>
+                  </div>
+                </div>
+              </div>
 
-							<div class="row margin-top-20">
-								<div class="col-xs-12 col-md-6">
-									<div class="form-group form-md-line-input form-md-floating-label">
-										<textarea rows="4"
-												class="form-control edited"
-												id="approvals_message"
-												v-model="selectedRequest.message"></textarea>
-										<label for="approvals_message">Message</label>
-									</div>
-								</div>
-							</div>
-
-							<div class="row margin-top-20"
-							     v-if="$root.permissions['approvals update']">
-								<div class="col-xs-4 col-xs-offset-8">
-									<button class="btn btn-danger third-width"
-									        @click="submitApproval(false)"
-									        :disabled="rejecting">
-										Reject
-									</button>
-									<button @click="submitApproval(true)"
-									        class="btn blue third-width"
-									        :disabled="approving">
-										Approve
-									</button>
-									<button v-show="total !== activePage"
-									        class="btn blue btn-outline third-width"
-									        @click="viewList()">
-										Back
-									</button>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- LIST END -->
-
-	</div>
+              <div
+                v-if="$root.permissions['approvals update']"
+                class="row margin-top-20"
+              >
+                <div class="col-xs-4 col-xs-offset-8">
+                  <button
+                    class="btn btn-danger third-width"
+                    :disabled="rejecting"
+                    @click="submitApproval(false)"
+                  >
+                    Reject
+                  </button>
+                  <button
+                    class="btn blue third-width"
+                    :disabled="approving"
+                    @click="submitApproval(true)"
+                  >
+                    Approve
+                  </button>
+                  <button
+                    v-show="total !== activePage"
+                    class="btn blue btn-outline third-width"
+                    @click="viewList()"
+                  >
+                    Back
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- LIST END -->
+  </div>
 </template>
 
 <script>
@@ -166,6 +196,12 @@ import ajaxErrorHandler from '../../../controllers/ErrorController'
 import FieldLabels from '@/components/app/ApprovalsManager/FieldLabels.js'
 
 export default {
+	components: {
+		Breadcrumb,
+		NoResults,
+		LoadingScreen,
+		Pagination
+	},
 	data () {
 		return {
 			breadcrumbArray: [
@@ -442,12 +478,6 @@ export default {
 				confirmButtonText: 'OK'
 			})
 		}
-	},
-	components: {
-		Breadcrumb,
-		NoResults,
-		LoadingScreen,
-		Pagination
 	}
 }
 </script>

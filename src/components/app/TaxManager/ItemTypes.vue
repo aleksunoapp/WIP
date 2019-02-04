@@ -1,372 +1,505 @@
 <template>
-	<div>
-		<!-- BEGIN PAGE BAR -->
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
-		<!-- END PAGE BAR -->
+  <div>
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
+    <!-- END PAGE BAR -->
 
-		<!-- BEGIN PAGE TITLE-->
-		<h1 class="page-title">Item Types</h1>
-		<!-- END PAGE TITLE -->
-		<div class="note note-info">
-			<p>Add and manage item types.</p>
-		</div>
+    <!-- BEGIN PAGE TITLE-->
+    <h1 class="page-title">
+      Item Types
+    </h1>
+    <!-- END PAGE TITLE -->
+    <div class="note note-info">
+      <p>Add and manage item types.</p>
+    </div>
 
-		<!-- BEGIN CREATE -->
-		<div class="portlet box blue-hoki"
-		     v-if="$root.permissions['tax item_types create']">
-			<div class="portlet-title bg-blue-chambray"
-			     @click="toggleCreatePanel()">
-				<div class="caption">
-					<i class="fa fa-2x fa-plus-circle"></i>
-					Create a New Item Type
-				</div>
-				<div class="tools">
-					<a :class="{'expand': !createNewCollapse, 'collapse': createNewCollapse}"></a>
-				</div>
-			</div>
-			<div class="portlet-body relative-block"
-			     :class="{'display-hide': createNewCollapse}">
-				<div class="col-md-12"
-				     v-show="activeLocationId === undefined">
-					<div class="alert center alert-info">
-						<h4>No Store Selected</h4>
-						<p>Please select a store from the stores panel on the right to create an item type.</p>
-					</div>
-				</div>
-				<form role="form"
-				      @submit.prevent="createItemType()"
-				      v-show="activeLocationId !== undefined">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="alert alert-danger"
-							     v-show="createErrorMessage.length"
-							     ref="createErrorMessage">
-								<button class="close"
-								        data-close="alert"
-								        @click.prevent="clearError('createErrorMessage')"></button>
-								<span>{{ createErrorMessage }}</span>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newItemType.name.length}"
-								       id="form_control_1"
-								       v-model="newItemType.name">
-								<label for="form_control_1">Name</label>
-							</div>
-							<button type="submit"
-							        class="btn blue pull-right"
-							        :disabled="creating">
-								Create
-								<i v-show="creating"
-								   class="fa fa-spinner fa-pulse fa-fw">
-								</i>
-							</button>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-		<!-- END CREATE -->
+    <!-- BEGIN CREATE -->
+    <div
+      v-if="$root.permissions['tax item_types create']"
+      class="portlet box blue-hoki"
+    >
+      <div
+        class="portlet-title bg-blue-chambray"
+        @click="toggleCreatePanel()"
+      >
+        <div class="caption">
+          <i class="fa fa-2x fa-plus-circle" />
+          Create a New Item Type
+        </div>
+        <div class="tools">
+          <a :class="{'expand': !createNewCollapse, 'collapse': createNewCollapse}" />
+        </div>
+      </div>
+      <div
+        class="portlet-body relative-block"
+        :class="{'display-hide': createNewCollapse}"
+      >
+        <div
+          v-show="activeLocationId === undefined"
+          class="col-md-12"
+        >
+          <div class="alert center alert-info">
+            <h4>No Store Selected</h4>
+            <p>Please select a store from the stores panel on the right to create an item type.</p>
+          </div>
+        </div>
+        <form
+          v-show="activeLocationId !== undefined"
+          role="form"
+          @submit.prevent="createItemType()"
+        >
+          <div class="row">
+            <div class="col-md-12">
+              <div
+                v-show="createErrorMessage.length"
+                ref="createErrorMessage"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  data-close="alert"
+                  @click.prevent="clearError('createErrorMessage')"
+                />
+                <span>{{ createErrorMessage }}</span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_1"
+                  v-model="newItemType.name"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newItemType.name.length}"
+                >
+                <label for="form_control_1">
+                  Name
+                </label>
+              </div>
+              <button
+                type="submit"
+                class="btn blue pull-right"
+                :disabled="creating"
+              >
+                Create
+                <i
+                  v-show="creating"
+                  class="fa fa-spinner fa-pulse fa-fw"
+                />
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- END CREATE -->
 
-		<!-- BEGIN LIST -->
-		<div v-if="activeLocationId === undefined">
-			<div class="alert center alert-info">
-				<h4>No Store Selected</h4>
-				<p>Please select a store from the stores panel on the right to view item types for it.</p>
-			</div>
-		</div>
-		<div v-else>
-			<div class="portlet light portlet-fit bordered margin-top-20"
-			     id="itemTypes-container">
-				<div class="portlet-title bg-blue-chambray">
-					<div class="menu-image-main">
-						<img src="../../../../public/client_logo.png">
-					</div>
-					<div class="caption">
-						<span class="caption-subject font-default bold uppercase">Item Types</span>
-						<div class="caption-desc font-grey-cascade">Create, edit or delete item types and assign them to tax classes.</div>
-					</div>
-				</div>
-				<div class="col-md-12">
-					<div class="alert alert-danger"
-					     v-show="listErrorMessage.length"
-					     ref="listErrorMessage">
-						<button class="close"
-						        data-close="alert"
-						        @click="clearError('listErrorMessage')"></button>
-						<span>{{ listErrorMessage }}</span>
-					</div>
-				</div>
-				<div class="portlet-body relative-block">
-					<loading-screen :show="loadingItemTypes && activeLocationId !== undefined"
-					                :color="'#2C3E50'"
-					                :display="'inline'"></loading-screen>
-					<div class="mt-element-list margin-top-15"
-					     v-if="itemTypes.length && !loadingItemTypes">
-						<div class="mt-list-container list-news ext-1 no-border">
-							<ul>
-								<li class="mt-list-item actions-at-left margin-top-15 three-vertical-actions"
-								    v-for="itemType in itemTypes"
-								    :id="'itemType-' + itemType.id"
-								    :key="itemType.id">
-									<div class="list-item-actions">
-										<el-tooltip v-if="$root.permissions['tax item_types update']"
-										            content="Edit"
-										            effect="light"
-										            placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="editItemType(itemType, $event)">
-												<i class="fa fa-lg fa-pencil"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['tax item_types read'] && !$root.permissions['tax item_types update']"
-										            content="View"
-										            effect="light"
-										            placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="editItemType(itemType, $event)">
-												<i class="fa fa-lg fa-eye"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['tax item_types update']"
-										            content="Apply Tax Classes"
-										            effect="light"
-										            placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="openApplyModal(itemType, $event)">
-												<i class="icon-layers"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['tax item_types delete']"
-										            content="Delete"
-										            effect="light"
-										            placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="confirmDelete(itemType, $event)">
-												<i class="fa fa-lg fa-trash"></i>
-											</a>
-										</el-tooltip>
-									</div>
-									<div class="col-md-12 bold uppercase font-red">
-										<span>{{ itemType.name }}</span>
-									</div>
-									<div class="col-md-6">
-										<strong></strong>
-									</div>
-								</li>
-							</ul>
-						</div>
-					</div>
-					<div class="margin-top-20">
-						<no-results :show="!itemTypes.length && !loadingItemTypes"
-						            :type="'item types'"></no-results>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- END LIST -->
+    <!-- BEGIN LIST -->
+    <div v-if="activeLocationId === undefined">
+      <div class="alert center alert-info">
+        <h4>No Store Selected</h4>
+        <p>Please select a store from the stores panel on the right to view item types for it.</p>
+      </div>
+    </div>
+    <div v-else>
+      <div
+        id="itemTypes-container"
+        class="portlet light portlet-fit bordered margin-top-20"
+      >
+        <div class="portlet-title bg-blue-chambray">
+          <div class="menu-image-main">
+            <img src="../../../../public/client_logo.png">
+          </div>
+          <div class="caption">
+            <span class="caption-subject font-default bold uppercase">
+              Item Types
+            </span>
+            <div class="caption-desc font-grey-cascade">
+              Create, edit or delete item types and assign them to tax classes.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div
+            v-show="listErrorMessage.length"
+            ref="listErrorMessage"
+            class="alert alert-danger"
+          >
+            <button
+              class="close"
+              data-close="alert"
+              @click="clearError('listErrorMessage')"
+            />
+            <span>{{ listErrorMessage }}</span>
+          </div>
+        </div>
+        <div class="portlet-body relative-block">
+          <loading-screen
+            :show="loadingItemTypes && activeLocationId !== undefined"
+            :color="'#2C3E50'"
+            :display="'inline'"
+          />
+          <div
+            v-if="itemTypes.length && !loadingItemTypes"
+            class="mt-element-list margin-top-15"
+          >
+            <div class="mt-list-container list-news ext-1 no-border">
+              <ul>
+                <li
+                  v-for="itemType in itemTypes"
+                  :id="'itemType-' + itemType.id"
+                  :key="itemType.id"
+                  class="mt-list-item actions-at-left margin-top-15 three-vertical-actions"
+                >
+                  <div class="list-item-actions">
+                    <el-tooltip
+                      v-if="$root.permissions['tax item_types update']"
+                      content="Edit"
+                      effect="light"
+                      placement="right"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="editItemType(itemType, $event)"
+                      >
+                        <i class="fa fa-lg fa-pencil" />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['tax item_types read'] && !$root.permissions['tax item_types update']"
+                      content="View"
+                      effect="light"
+                      placement="right"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="editItemType(itemType, $event)"
+                      >
+                        <i class="fa fa-lg fa-eye" />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['tax item_types update']"
+                      content="Apply Tax Classes"
+                      effect="light"
+                      placement="right"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="openApplyModal(itemType, $event)"
+                      >
+                        <i class="icon-layers" />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['tax item_types delete']"
+                      content="Delete"
+                      effect="light"
+                      placement="right"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="confirmDelete(itemType, $event)"
+                      >
+                        <i class="fa fa-lg fa-trash" />
+                      </a>
+                    </el-tooltip>
+                  </div>
+                  <div class="col-md-12 bold uppercase font-red">
+                    <span>{{ itemType.name }}</span>
+                  </div>
+                  <div class="col-md-6">
+                    <strong />
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="margin-top-20">
+            <no-results
+              :show="!itemTypes.length && !loadingItemTypes"
+              :type="'item types'"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END LIST -->
 
-		<!-- START EDIT -->
-		<modal :show="showEditModal"
-		       effect="fade"
-		       @closeOnEscape="closeEditModal">
-			<div slot="modal-header"
-			     class="modal-header">
-				<button type="button"
-				        class="close"
-				        @click="closeEditModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Edit Item Type</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<form role="form">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="alert alert-danger"
-							     v-show="editErrorMessage.length"
-							     ref="editErrorMessage">
-								<button class="close"
-								        data-close="alert"
-								        @click.prevent="clearError('editErrorMessage')"></button>
-								<span>{{ editErrorMessage }}</span>
-							</div>
-						</div>
-						<div class="col-md-12">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input :disabled="!$root.permissions['tax item_types update']"
-								       type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': itemTypeToEdit.name.length}"
-								       id="form_control_1"
-								       v-model="itemTypeToEdit.name">
-								<label for="form_control_1">Name</label>
-							</div>
-						</div>
-					</div>
-				</form>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer clear">
-				<button v-if="!$root.permissions['tax item_types update']"
-				        @click="closeEditModal()"
-				        type="button"
-				        class="btn blue">
-					Close
-				</button>
-				<button v-else
-				        @click="updateItemType()"
-				        type="submit"
-				        class="btn blue"
-				        :disabled="updating">
-					Save
-					<i v-show="updating"
-					   class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-			</div>
-		</modal>
-		<!-- END EDIT -->
+    <!-- START EDIT -->
+    <modal
+      :show="showEditModal"
+      effect="fade"
+      @closeOnEscape="closeEditModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeEditModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Edit Item Type
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <form role="form">
+          <div class="row">
+            <div class="col-md-12">
+              <div
+                v-show="editErrorMessage.length"
+                ref="editErrorMessage"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  data-close="alert"
+                  @click.prevent="clearError('editErrorMessage')"
+                />
+                <span>{{ editErrorMessage }}</span>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_1"
+                  v-model="itemTypeToEdit.name"
+                  :disabled="!$root.permissions['tax item_types update']"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': itemTypeToEdit.name.length}"
+                >
+                <label for="form_control_1">
+                  Name
+                </label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer clear"
+      >
+        <button
+          v-if="!$root.permissions['tax item_types update']"
+          type="button"
+          class="btn blue"
+          @click="closeEditModal()"
+        >
+          Close
+        </button>
+        <button
+          v-else
+          type="submit"
+          class="btn blue"
+          :disabled="updating"
+          @click="updateItemType()"
+        >
+          Save
+          <i
+            v-show="updating"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+      </div>
+    </modal>
+    <!-- END EDIT -->
 
-		<!-- START APPLY -->
-		<modal :show="showApplyModal"
-		       effect="fade"
-		       @closeOnEscape="closeApplyModal">
-			<div slot="modal-header"
-			     class="modal-header">
-				<button type="button"
-				        class="close"
-				        @click="closeApplyModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Apply Tax Classes</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<div v-if="activeLocationId === undefined">
-					<div class="alert center alert-info">
-						<h4>No Store Selected</h4>
-						<p>Please select a store from the stores panel.</p>
-					</div>
-				</div>
-				<div v-else>
-					<div class="alert alert-danger"
-					     v-show="applyErrorMessage.length"
-					     ref="applyErrorMessage">
-						<button class="close"
-						        @click.prevent="clearError('applyErrorMessage')"></button>
-						<span>{{ applyErrorMessage }}</span>
-					</div>
-					<div class="alert alert-info center margin-top-20"
-					     v-show="!loadingTaxClasses && !taxClasses.length && !applyErrorMessage.length">
-						<h4>No Tax Classes</h4>
-						<p>No tax classes for this location yet.
-							<router-link to="/app/tax_manager/tax_classes">Create the first one here.</router-link>
-						</p>
-					</div>
-					<table class="table"
-					       v-show="taxClasses.length">
-						<thead>
-							<tr>
-								<th class="table-column--checkboxes">
-									<div class="md-checkbox has-success"
-									     @change="selectAll()">
-										<input type="checkbox"
-										       id="locations-promocodes"
-										       class="md-check"
-										       :checked="selectAllSelected">
-										<label for="locations-promocodes">
-											<span class="inc"></span>
-											<span class="check"></span>
-											<span class="box"></span>
-										</label>
-									</div>
-								</th>
-								<th> Name </th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr v-for="(taxClass, index) in taxClasses"
-							    :key="index">
-								<td>
-									<div class="md-checkbox has-success">
-										<input type="checkbox"
-										       :id="'checkbox_' + taxClass.id"
-										       class="md-check"
-										       v-model="taxClass.selected">
-										<label :for="'checkbox_' + taxClass.id">
-											<span class="inc"></span>
-											<span class="check"></span>
-											<span class="box"></span>
-										</label>
-									</div>
-								</td>
-								<td> {{taxClass.name}} </td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer clear">
-				<button v-if="activeLocationId === undefined || !taxClasses.length"
-				        @click="closeApplyModal()"
-				        type="submit"
-				        class="btn btn-outline">
-					Close
-				</button>
-				<button v-else
-				        @click="applyTaxClassesToItemType()"
-				        type="submit"
-				        class="btn blue"
-				        :disabled="applying">
-					Apply
-					<i v-show="applying"
-					   class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-			</div>
-		</modal>
-		<!-- END APPLY -->
+    <!-- START APPLY -->
+    <modal
+      :show="showApplyModal"
+      effect="fade"
+      @closeOnEscape="closeApplyModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeApplyModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Apply Tax Classes
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <div v-if="activeLocationId === undefined">
+          <div class="alert center alert-info">
+            <h4>No Store Selected</h4>
+            <p>Please select a store from the stores panel.</p>
+          </div>
+        </div>
+        <div v-else>
+          <div
+            v-show="applyErrorMessage.length"
+            ref="applyErrorMessage"
+            class="alert alert-danger"
+          >
+            <button
+              class="close"
+              @click.prevent="clearError('applyErrorMessage')"
+            />
+            <span>{{ applyErrorMessage }}</span>
+          </div>
+          <div
+            v-show="!loadingTaxClasses && !taxClasses.length && !applyErrorMessage.length"
+            class="alert alert-info center margin-top-20"
+          >
+            <h4>No Tax Classes</h4>
+            <p>
+              No tax classes for this location yet.
+              <router-link to="/app/tax_manager/tax_classes">
+                Create the first one here.
+              </router-link>
+            </p>
+          </div>
+          <table
+            v-show="taxClasses.length"
+            class="table"
+          >
+            <thead>
+              <tr>
+                <th class="table-column--checkboxes">
+                  <div
+                    class="md-checkbox has-success"
+                    @change="selectAll()"
+                  >
+                    <input
+                      id="locations-promocodes"
+                      type="checkbox"
+                      class="md-check"
+                      :checked="selectAllSelected"
+                    >
+                    <label for="locations-promocodes">
+                      <span class="inc" />
+                      <span class="check" />
+                      <span class="box" />
+                    </label>
+                  </div>
+                </th>
+                <th> Name </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="(taxClass, index) in taxClasses"
+                :key="index"
+              >
+                <td>
+                  <div class="md-checkbox has-success">
+                    <input
+                      :id="'checkbox_' + taxClass.id"
+                      v-model="taxClass.selected"
+                      type="checkbox"
+                      class="md-check"
+                    >
+                    <label :for="'checkbox_' + taxClass.id">
+                      <span class="inc" />
+                      <span class="check" />
+                      <span class="box" />
+                    </label>
+                  </div>
+                </td>
+                <td> {{ taxClass.name }} </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer clear"
+      >
+        <button
+          v-if="activeLocationId === undefined || !taxClasses.length"
+          type="submit"
+          class="btn btn-outline"
+          @click="closeApplyModal()"
+        >
+          Close
+        </button>
+        <button
+          v-else
+          type="submit"
+          class="btn blue"
+          :disabled="applying"
+          @click="applyTaxClassesToItemType()"
+        >
+          Apply
+          <i
+            v-show="applying"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+      </div>
+    </modal>
+    <!-- END APPLY -->
 
-		<!-- START DELETE -->
-		<modal :show="showDeleteModal"
-		       effect="fade"
-		       @closeOnEscape="closeDeleteModal">
-			<div slot="modal-header"
-			     class="modal-header">
-				<button type="button"
-				        class="close"
-				        @click="closeDeleteModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Confirm Delete</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<p>Are you sure you want to delete {{itemTypeToDelete.name}}?</p>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer clear">
-				<button type="button"
-				        class="btn blue"
-				        @click="deleteItemType()"
-				        :disabled="deleting">
-					Delete
-					<i v-show="deleting"
-					   class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-			</div>
-		</modal>
-		<!-- START DELETE -->
-	</div>
+    <!-- START DELETE -->
+    <modal
+      :show="showDeleteModal"
+      effect="fade"
+      @closeOnEscape="closeDeleteModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeDeleteModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Confirm Delete
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <p>Are you sure you want to delete {{ itemTypeToDelete.name }}?</p>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer clear"
+      >
+        <button
+          type="button"
+          class="btn blue"
+          :disabled="deleting"
+          @click="deleteItemType()"
+        >
+          Delete
+          <i
+            v-show="deleting"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+      </div>
+    </modal>
+    <!-- START DELETE -->
+  </div>
 </template>
 
 <script>
@@ -379,6 +512,12 @@ import NoResults from '../../modules/NoResults'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
 
 export default {
+	components: {
+		Breadcrumb,
+		LoadingScreen,
+		Modal,
+		NoResults
+	},
 	data () {
 		return {
 			breadcrumbArray: [{ name: 'Item Types', link: false }],
@@ -987,12 +1126,6 @@ export default {
 				type
 			})
 		}
-	},
-	components: {
-		Breadcrumb,
-		LoadingScreen,
-		Modal,
-		NoResults
 	}
 }
 </script>

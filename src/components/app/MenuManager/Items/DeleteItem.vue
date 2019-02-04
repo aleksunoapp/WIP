@@ -1,44 +1,63 @@
 <template>
-	<modal :show="showDeleteItemModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="deleteModal">
-		<div slot="modal-header"
-		     class="modal-header center">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Delete Item</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="alert alert-danger"
-			     v-show="errorMessage"
-			     ref="errorMessage">
-				<button class="close"
-				        data-close="alert"
-				        @click="clearError()"></button>
-				<span>{{errorMessage}}</span>
-			</div>
-			<div class="col-md-12">
-				Are you sure you want to delete this item?
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer clear">
-			<button type="button"
-			        class="btn btn-primary"
-			        @click="deleteItem()"
-			        :disabled="deleting">
-				Delete
-				<i v-show="deleting"
-				   class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-		</div>
-	</modal>
+  <modal
+    ref="deleteModal"
+    :show="showDeleteItemModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header center"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Delete Item
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div
+        v-show="errorMessage"
+        ref="errorMessage"
+        class="alert alert-danger"
+      >
+        <button
+          class="close"
+          data-close="alert"
+          @click="clearError()"
+        />
+        <span>{{ errorMessage }}</span>
+      </div>
+      <div class="col-md-12">
+        Are you sure you want to delete this item?
+      </div>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer clear"
+    >
+      <button
+        type="button"
+        class="btn btn-primary"
+        :disabled="deleting"
+        @click="deleteItem()"
+      >
+        Delete
+        <i
+          v-show="deleting"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -47,17 +66,20 @@ import ItemsFunctions from '../../../../controllers/Items'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
+	components: {
+		Modal
+	},
+	props: {
+		passedItemId: {
+			type: Number
+		}
+	},
 	data () {
 		return {
 			showDeleteItemModal: false,
 			deleting: false,
 			errorMessage: '',
 			customWidth: 90
-		}
-	},
-	props: {
-		passedItemId: {
-			type: Number
 		}
 	},
 	mounted () {
@@ -148,9 +170,6 @@ export default {
 		deleteItemAndCloseModal () {
 			this.$emit('deleteItemAndCloseModal')
 		}
-	},
-	components: {
-		Modal
 	}
 }
 </script>

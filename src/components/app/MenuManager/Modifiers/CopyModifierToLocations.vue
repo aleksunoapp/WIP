@@ -1,66 +1,85 @@
 <template>
-	<modal :show="showComponent"
-	       effect="fade"
-	       @closeOnEscape="closeModal">
-		<div slot="modal-header"
-		     class="modal-header center">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Copy Modifier To Stores</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="row"
-			     v-show="errorMessage.length"
-			     ref="errorMessage">
-				<div class="col-md-12">
-					<div class="alert alert-danger">
-						<button class="close"
-						        @click="clearError('errorMessage')"></button>
-						<span>{{errorMessage}}</span>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-xs-12">
-					<store-picker
-						@update="updateLocations"
-					>
-					</store-picker>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-xs-12">
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<label>Create duplicate:</label><br>
-						<el-switch v-model="create_duplicate"
-						           active-color="#0c6"
-						           inactive-color="#ff4949"
-						           :active-value="1"
-						           :inactive-value="0"
-						           active-text="Yes"
-						           inactive-text="No">
-						</el-switch>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button type="button"
-			        class="btn btn-primary"
-			        @click="copyModifierToLocations()"
-			        :disabled="saving">
-				Save
-				<i v-show="saving"
-				   class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-		</div>
-	</modal>
+  <modal
+    :show="showComponent"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header center"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Copy Modifier To Stores
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div
+        v-show="errorMessage.length"
+        ref="errorMessage"
+        class="row"
+      >
+        <div class="col-md-12">
+          <div class="alert alert-danger">
+            <button
+              class="close"
+              @click="clearError('errorMessage')"
+            />
+            <span>{{ errorMessage }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <store-picker
+            @update="updateLocations"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group form-md-line-input form-md-floating-label">
+            <label>Create duplicate:</label><br>
+            <el-switch
+              v-model="create_duplicate"
+              active-color="#0c6"
+              inactive-color="#ff4949"
+              :active-value="1"
+              :inactive-value="0"
+              active-text="Yes"
+              inactive-text="No"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        type="button"
+        class="btn btn-primary"
+        :disabled="saving"
+        @click="copyModifierToLocations()"
+      >
+        Save
+        <i
+          v-show="saving"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -70,7 +89,17 @@ import StorePicker from '@/components/modules/StorePicker'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	name: 'copy-modifier-to-locations',
+	name: 'CopyModifierToLocations',
+	components: {
+		Modal,
+		StorePicker
+	},
+	props: {
+		modifier: {
+			type: Object,
+			required: true
+		}
+	},
 	data () {
 		return {
 			saving: false,
@@ -79,12 +108,6 @@ export default {
 			create_duplicate: 0,
 			selectedLocations: [],
 			modifierToCopyToLocations: {}
-		}
-	},
-	props: {
-		modifier: {
-			type: Object,
-			required: true
 		}
 	},
 	mounted () {
@@ -170,10 +193,6 @@ export default {
 		emitSuccess (payload = {}) {
 			this.$emit('copyModifierToLocationsSuccess', payload)
 		}
-	},
-	components: {
-		Modal,
-		StorePicker
 	}
 }
 </script>

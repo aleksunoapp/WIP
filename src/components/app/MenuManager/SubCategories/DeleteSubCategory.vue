@@ -1,43 +1,62 @@
 <template>
-	<modal :show="showDeleteSubCategoryModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="modal">
-		<div slot="modal-header"
-		     class="modal-header center">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Delete Sub-category</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="alert alert-danger"
-			     v-show="errorMessage"
-			     ref="errorMessage">
-				<button class="close"
-				        @click="clearError()"></button>
-				<span>{{errorMessage}}</span>
-			</div>
-			<div class="col-md-12">
-				Are you sure you want to delete this sub-category?
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer clear">
-			<button type="button"
-			        class="btn btn-primary"
-			        @click="deleteSubCategory()"
-			        :disabled="deleting">
-				Delete
-				<i v-show="deleting"
-				   class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-		</div>
-	</modal>
+  <modal
+    ref="modal"
+    :show="showDeleteSubCategoryModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header center"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Delete Sub-category
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div
+        v-show="errorMessage"
+        ref="errorMessage"
+        class="alert alert-danger"
+      >
+        <button
+          class="close"
+          @click="clearError()"
+        />
+        <span>{{ errorMessage }}</span>
+      </div>
+      <div class="col-md-12">
+        Are you sure you want to delete this sub-category?
+      </div>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer clear"
+    >
+      <button
+        type="button"
+        class="btn btn-primary"
+        :disabled="deleting"
+        @click="deleteSubCategory()"
+      >
+        Delete
+        <i
+          v-show="deleting"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -46,17 +65,20 @@ import CategoriesFunctions from '../../../../controllers/Categories'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
+	components: {
+		Modal
+	},
+	props: {
+		passedSubCategoryId: {
+			type: Number
+		}
+	},
 	data () {
 		return {
 			showDeleteSubCategoryModal: false,
 			deleting: false,
 			errorMessage: '',
 			customWidth: 90
-		}
-	},
-	props: {
-		passedSubCategoryId: {
-			type: Number
 		}
 	},
 	mounted () {
@@ -147,9 +169,6 @@ export default {
 		deleteSubCategoryAndCloseModal () {
 			this.$emit('deleteSubCategoryAndCloseModal')
 		}
-	},
-	components: {
-		Modal
 	}
 }
 </script>

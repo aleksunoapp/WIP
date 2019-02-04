@@ -1,53 +1,73 @@
 <template>
-	<modal :show="showAssignStoresModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="modal">
-		<div slot="modal-header"
-		     class="modal-header center">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Assign Stores To Group '{{ groupDetails.name }}'</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body relative-block">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="alert alert-danger"
-					     v-show="errorMessage"
-					     ref="errorMessage">
-						<button class="close"
-						        @click="clearError('errorMessage')"></button>
-						<span>{{errorMessage}}</span>
-					</div>
-				</div>
-			</div>
-			<loading-screen :show="displaySpinner"
-			                :color="'#2C3E50'"
-			                :display="'inline'"></loading-screen>
-			<store-picker
-				v-if="!displaySpinner"
-				:previouslySelected="groupLocations"
-				@update="selectStores"
-			>
-			</store-picker>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button type="button"
-			        class="btn blue"
-			        @click="assignStoresToGroup()"
-			        :disabled="assigning">
-				Assign
-				<i v-show="assigning"
-				   class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-		</div>
-	</modal>
+  <modal
+    ref="modal"
+    :show="showAssignStoresModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header center"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Assign Stores To Group '{{ groupDetails.name }}'
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body relative-block"
+    >
+      <div class="row">
+        <div class="col-md-12">
+          <div
+            v-show="errorMessage"
+            ref="errorMessage"
+            class="alert alert-danger"
+          >
+            <button
+              class="close"
+              @click="clearError('errorMessage')"
+            />
+            <span>{{ errorMessage }}</span>
+          </div>
+        </div>
+      </div>
+      <loading-screen
+        :show="displaySpinner"
+        :color="'#2C3E50'"
+        :display="'inline'"
+      />
+      <store-picker
+        v-if="!displaySpinner"
+        :previously-selected="groupLocations"
+        @update="selectStores"
+      />
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        type="button"
+        class="btn blue"
+        :disabled="assigning"
+        @click="assignStoresToGroup()"
+      >
+        Assign
+        <i
+          v-show="assigning"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+    </div>
+  </modal>
 </template>
 <script>
 import StoreGroupsFunctions from '../../../controllers/StoreGroups'
@@ -57,6 +77,16 @@ import StorePicker from '../../modules/StorePicker'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
+	components: {
+		Modal,
+		LoadingScreen,
+		StorePicker
+	},
+	props: {
+		passedGroupId: {
+			type: Number
+		}
+	},
 	data () {
 		return {
 			errorMessage: '',
@@ -69,16 +99,6 @@ export default {
 			displaySpinner: false
 		}
 	},
-	props: {
-		passedGroupId: {
-			type: Number
-		}
-	},
-	mounted () {
-		this.showAssignStoresModal = true
-		// get the details of the selected group
-		this.getGroupDetails()
-	},
 	watch: {
 		passedGroupId () {
 			if (this.passedGroupId > 0) {
@@ -88,6 +108,11 @@ export default {
 				this.getGroupDetails()
 			}
 		}
+	},
+	mounted () {
+		this.showAssignStoresModal = true
+		// get the details of the selected group
+		this.getGroupDetails()
 	},
 	methods: {
 		/**
@@ -270,11 +295,6 @@ export default {
 				type
 			})
 		}
-	},
-	components: {
-		Modal,
-		LoadingScreen,
-		StorePicker
 	}
 }
 </script>

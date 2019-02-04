@@ -1,103 +1,135 @@
 <template>
-    <!-- START ASSIGN COUNTRIES -->
-    <modal :show="show"
-            effect="fade"
-            @closeOnEscape="closeAssignCountriesModal"
-            ref="assignCountriesModal">
-        <div slot="modal-header"
-                class="modal-header">
-            <button type="button"
-                    class="close"
-                    @click="closeAssignCountriesModal()">
-                <span>&times;</span>
-            </button>
-            <h4 class="modal-title center">Assign Countries to {{promotion.name}}</h4>
-        </div>
-        <div slot="modal-body"
-                class="modal-body">
-            <form role="form">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="alert alert-danger"
-                                v-show="assignCountriesErrorMessage.length"
-                                ref="assignCountriesErrorMessage">
-                            <button class="close"
-                                    data-close="alert"
-                                    @click.prevent="clearError('assignCountriesErrorMessage')"></button>
-                            <span>{{ assignCountriesErrorMessage }}</span>
-                        </div>
+  <!-- START ASSIGN COUNTRIES -->
+  <modal
+    ref="assignCountriesModal"
+    :show="show"
+    effect="fade"
+    @closeOnEscape="closeAssignCountriesModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeAssignCountriesModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Assign Countries to {{ promotion.name }}
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <form role="form">
+        <div class="row">
+          <div class="col-md-12">
+            <div
+              v-show="assignCountriesErrorMessage.length"
+              ref="assignCountriesErrorMessage"
+              class="alert alert-danger"
+            >
+              <button
+                class="close"
+                data-close="alert"
+                @click.prevent="clearError('assignCountriesErrorMessage')"
+              />
+              <span>{{ assignCountriesErrorMessage }}</span>
+            </div>
+          </div>
+          <loading-screen
+            :show="loadingCountries"
+            :color="'#2C3E50'"
+            :display="'inline'"
+          />
+          <div
+            v-if="!loadingCountries && countries.length"
+            class="col-md-12"
+          >
+            <table class="table">
+              <thead>
+                <tr>
+                  <th class="fit-to-content">
+                    <div class="md-checkbox has-success">
+                      <input
+                        :id="`countries-all`"
+                        v-model="allCountriesSelected"
+                        type="checkbox"
+                        class="md-check"
+                      >
+                      <label :for="`countries-all`">
+                        <span class="inc" />
+                        <span class="check" />
+                        <span class="box" />
+                      </label>
                     </div>
-                    <loading-screen :show="loadingCountries"
-                                    :color="'#2C3E50'"
-                                    :display="'inline'"></loading-screen>
-                    <div class="col-md-12" v-if="!loadingCountries && countries.length">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th class="fit-to-content">
-                                        <div class="md-checkbox has-success">
-                                            <input type="checkbox"
-                                                :id="`countries-all`"
-                                                class="md-check"
-                                                v-model="allCountriesSelected">
-                                            <label :for="`countries-all`">
-                                                <span class="inc"></span>
-                                                <span class="check"></span>
-                                                <span class="box"></span>
-                                            </label>
-                                        </div>
-                                    </th>
-                                    <th> Countries </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="country in countries"
-                                    :key="country.id">
-                                    <td class="fit-to-content">
-                                        <div class="md-checkbox has-success">
-                                            <input type="checkbox"
-                                                :id="`country-${country.id}`"
-                                                class="md-check"
-                                                v-model="country.selected">
-                                            <label :for="`country-${country.id}`">
-                                                <span class="inc"></span>
-                                                <span class="check"></span>
-                                                <span class="box"></span>
-                                            </label>
-                                        </div>
-                                    </td>
-                                    <td> {{ country.name }} </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                  </th>
+                  <th> Countries </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="country in countries"
+                  :key="country.id"
+                >
+                  <td class="fit-to-content">
+                    <div class="md-checkbox has-success">
+                      <input
+                        :id="`country-${country.id}`"
+                        v-model="country.selected"
+                        type="checkbox"
+                        class="md-check"
+                      >
+                      <label :for="`country-${country.id}`">
+                        <span class="inc" />
+                        <span class="check" />
+                        <span class="box" />
+                      </label>
                     </div>
-                </div>
-            </form>
+                  </td>
+                  <td> {{ country.name }} </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div slot="modal-footer"
-                class="modal-footer clear">
-            <button v-if="
-                        !$root.permissions['promotions update'] ||
-                        countries.length === 0
-                    "
-                    @click="closeAssignCountriesModal()"
-                    type="button"
-                    class="btn blue">
-                Close
-            </button>
-            <button v-else
-                    @click="assignCountriesToPromotion()"
-                    type="submit"
-                    class="btn blue"
-                    :disabled="assigning">
-                Save
-                <i v-show="assigning"
-                    class="fa fa-spinner fa-pulse fa-fw">
-                </i>
-            </button>
-        </div>
-    </modal>
-    <!-- END EDIT -->
+      </form>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer clear"
+    >
+      <button
+        v-if="
+          !$root.permissions['promotions update'] ||
+            countries.length === 0
+        "
+        type="button"
+        class="btn blue"
+        @click="closeAssignCountriesModal()"
+      >
+        Close
+      </button>
+      <button
+        v-else
+        type="submit"
+        class="btn blue"
+        :disabled="assigning"
+        @click="assignCountriesToPromotion()"
+      >
+        Save
+        <i
+          v-show="assigning"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+    </div>
+  </modal>
+  <!-- END EDIT -->
 </template>
 
 

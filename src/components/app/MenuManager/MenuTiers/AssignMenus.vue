@@ -1,101 +1,135 @@
 <template>
-	<modal :show="showAssignMenusModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="assignModal">
-		<div slot="modal-header"
-		     class="modal-header center">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Assign Menus To Tier '{{ tierDetails.name }}'</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<loading-screen :show="displaySpinner"
-			                :color="'#2C3E50'"
-			                :display="'inline'"></loading-screen>
-			<form role="form"
-			      novalidate
-			      v-show="!displaySpinner">
-				<div class="alert alert-danger"
-				     v-show="errorMessage"
-				     ref="errorMessage">
-					<button class="close"
-					        @click="clearError()"></button>
-					<span>{{ errorMessage }}</span>
-				</div>
-				<div class="form-body invite-user-form height-mod">
-					<table class="table"
-					       v-show="menus.length">
-						<thead>
-							<tr>
-								<th>
-									<div class="md-checkbox has-success"
-									     @change="selectAll()">
-										<input :disabled="!$root.permissions['menu_manager tiers update']"
-										       type="checkbox"
-										       id="locations-promocodes"
-										       class="md-check"
-										       v-model="selectAllSelected">
-										<label for="locations-promocodes">
-											<span class="inc"></span>
-											<span class="check"></span>
-											<span class="box"></span>
-										</label>
-									</div>
-								</th>
-								<th> Menu Name </th>
-								<th> Menu Description </th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr v-for="menu in menus"
-							    :key="menu.id">
-								<td>
-									<div class="md-checkbox has-success">
-										<input :disabled="!$root.permissions['menu_manager tiers update']"
-										       type="checkbox"
-										       :id="`menu-${menu.id}`"
-										       class="md-check"
-										       v-model="menu.selected"
-										       @change="syncSelectAll(menu.selected)">
-										<label :for="`menu-${menu.id}`">
-											<span class="inc"></span>
-											<span class="check"></span>
-											<span class="box"></span>
-										</label>
-									</div>
-								</td>
-								<td> {{ menu.name }} </td>
-								<td> {{ menu.desc }} </td>
-							</tr>
-						</tbody>
-					</table>
-					<p v-show="!displaySpinner && !menus.length">
-						The corporate store does not have any Menus.
-					</p>
-				</div>
-			</form>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button v-if="!$root.permissions['menu_manager tiers update']"
-			        type="button"
-			        class="btn blue"
-			        @click="closeModal()">
-				Close
-			</button>
-			<button v-else
-			        type="button"
-			        class="btn blue"
-			        @click="assignMenusToTier()">
-				Assign
-			</button>
-		</div>
-	</modal>
+  <modal
+    ref="assignModal"
+    :show="showAssignMenusModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header center"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Assign Menus To Tier '{{ tierDetails.name }}'
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <loading-screen
+        :show="displaySpinner"
+        :color="'#2C3E50'"
+        :display="'inline'"
+      />
+      <form
+        v-show="!displaySpinner"
+        role="form"
+        novalidate
+      >
+        <div
+          v-show="errorMessage"
+          ref="errorMessage"
+          class="alert alert-danger"
+        >
+          <button
+            class="close"
+            @click="clearError()"
+          />
+          <span>{{ errorMessage }}</span>
+        </div>
+        <div class="form-body invite-user-form height-mod">
+          <table
+            v-show="menus.length"
+            class="table"
+          >
+            <thead>
+              <tr>
+                <th>
+                  <div
+                    class="md-checkbox has-success"
+                    @change="selectAll()"
+                  >
+                    <input
+                      id="locations-promocodes"
+                      v-model="selectAllSelected"
+                      :disabled="!$root.permissions['menu_manager tiers update']"
+                      type="checkbox"
+                      class="md-check"
+                    >
+                    <label for="locations-promocodes">
+                      <span class="inc" />
+                      <span class="check" />
+                      <span class="box" />
+                    </label>
+                  </div>
+                </th>
+                <th> Menu Name </th>
+                <th> Menu Description </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="menu in menus"
+                :key="menu.id"
+              >
+                <td>
+                  <div class="md-checkbox has-success">
+                    <input
+                      :id="`menu-${menu.id}`"
+                      v-model="menu.selected"
+                      :disabled="!$root.permissions['menu_manager tiers update']"
+                      type="checkbox"
+                      class="md-check"
+                      @change="syncSelectAll(menu.selected)"
+                    >
+                    <label :for="`menu-${menu.id}`">
+                      <span class="inc" />
+                      <span class="check" />
+                      <span class="box" />
+                    </label>
+                  </div>
+                </td>
+                <td> {{ menu.name }} </td>
+                <td> {{ menu.desc }} </td>
+              </tr>
+            </tbody>
+          </table>
+          <p v-show="!displaySpinner && !menus.length">
+            The corporate store does not have any Menus.
+          </p>
+        </div>
+      </form>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        v-if="!$root.permissions['menu_manager tiers update']"
+        type="button"
+        class="btn blue"
+        @click="closeModal()"
+      >
+        Close
+      </button>
+      <button
+        v-else
+        type="button"
+        class="btn blue"
+        @click="assignMenusToTier()"
+      >
+        Assign
+      </button>
+    </div>
+  </modal>
 </template>
 <script>
 import MenusFunctions from '../../../../controllers/Menus'
@@ -105,6 +139,15 @@ import LoadingScreen from '../../../modules/LoadingScreen'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
+	components: {
+		Modal,
+		LoadingScreen
+	},
+	props: {
+		passedTierId: {
+			type: Number
+		}
+	},
 	data () {
 		return {
 			errorMessage: '',
@@ -116,16 +159,6 @@ export default {
 			displaySpinner: false
 		}
 	},
-	props: {
-		passedTierId: {
-			type: Number
-		}
-	},
-	mounted () {
-		this.showAssignMenusModal = true
-		// get the details of the selected menu tier
-		this.getMenuTierDetails()
-	},
 	watch: {
 		passedTierId () {
 			if (this.passedTierId > 0) {
@@ -135,6 +168,11 @@ export default {
 				this.getMenuTierDetails()
 			}
 		}
+	},
+	mounted () {
+		this.showAssignMenusModal = true
+		// get the details of the selected menu tier
+		this.getMenuTierDetails()
 	},
 	methods: {
 		/**
@@ -331,10 +369,6 @@ export default {
 				type
 			})
 		}
-	},
-	components: {
-		Modal,
-		LoadingScreen
 	}
 }
 </script>

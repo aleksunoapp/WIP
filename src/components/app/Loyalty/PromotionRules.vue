@@ -1,505 +1,751 @@
 <template>
-	<div>
-		<!-- HEADER START -->
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
-		<h1 class="page-title">Promotion Rules</h1>
-		<div class="note note-info">
-			<p>Create and manage Promotion Rules.</p>
-		</div>
-		<!-- HEADER END -->
+  <div>
+    <!-- HEADER START -->
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
+    <h1 class="page-title">
+      Promotion Rules
+    </h1>
+    <div class="note note-info">
+      <p>Create and manage Promotion Rules.</p>
+    </div>
+    <!-- HEADER END -->
 
-		<!-- CREATE NEW START -->
-		<div class="portlet box blue-hoki margin-top-20"
-		     v-if="$root.permissions['loyalty promotion_rules create']">
-			<div class="portlet-title bg-blue-chambray"
-			     @click="toggleCreateNew()">
-				<div class="caption">
-					<i class="fa fa-plus-circle"></i>
-					Create New Promotion Rule
-				</div>
-				<div class="tools">
-					<a :class="{'expand': !createNewCollapse, 'collapse': createNewCollapse}"></a>
-				</div>
-			</div>
-			<div class="portlet-body"
-			     v-show="!createNewCollapse">
-				<form role="form"
-				      @submit.prevent="createRule()">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="alert alert-danger"
-							     v-show="createErrorMessage.length"
-							     ref="createErrorMessage">
-								<button class="close"
-								        data-close="alert"
-								        @click.prevent="clearError('createErrorMessage')"></button>
-								<span>{{createErrorMessage}}</span>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="col-xs-12 no-gutter">
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input ref="newName"
-									       type="text"
-									       class="form-control input-sm"
-									       v-model="newRule.name"
-									       :class="{'edited': newRule.name.length}">
-									<label for="form_control_name">Name</label>
-								</div>
-							</div>
-							<div class="col-xs-12 no-gutter">
-								<label class="grey-label">Start on</label>
-								<el-date-picker v-model="newRule.start_from"
-								                type="date"
-								                format="yyyy-MM-dd"
-								                value-format="yyyy-MM-dd"
-								                :editable="false"
-								                :clearable="false"
-								                placeholder="Start date"></el-date-picker>
-							</div>
-							<div class="col-xs-12 no-gutter margin-top-15">
-								<label class="grey-label">End on</label>
-								<el-date-picker v-model="newRule.end_on"
-								                type="date"
-								                format="yyyy-MM-dd"
-								                value-format="yyyy-MM-dd"
-								                :editable="false"
-								                :clearable="false"
-								                placeholder="End date"></el-date-picker>
-							</div>
-							<div class="col-xs-12 no-gutter margin-top-15">
-								<label class="grey-label">Points awarded for</label>
-								<el-select v-model="newRule.parameter"
-								           placeholder="select rule"
-								           size="small"
-								           class="margin-bottom-15 wide-select">
-									<el-option label="total amount spent"
-									           value="total-spend"></el-option>
-									<el-option label="purchasing specified items"
-									           value="sku"></el-option>
-									<el-option label="purchases made during specified times"
-									           value="time"></el-option>
-									<el-option label="purchasing specified items during specified times"
-									           value="sku-combination"></el-option>
-								</el-select>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="col-xs-12 no-gutter">
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       class="form-control input-sm"
-									       v-model="newRule.min_amount"
-									       :class="{'edited': newRule.min_amount.length}">
-									<label for="form_control_name">Minimum purchase amount</label>
-								</div>
-							</div>
-							<div class="col-xs-12 no-gutter">
-								<div class="side-by-side">
-									<label class="grey-label">Type of points reward</label>
-									<el-select v-model="newRule.bonus_type"
-									           placeholder="select type"
-									           size="small">
-										<el-option label="proportional bonus"
-										           value="multiplier"></el-option>
-										<el-option label="flat bonus"
-										           value="add-on"></el-option>
-									</el-select>
+    <!-- CREATE NEW START -->
+    <div
+      v-if="$root.permissions['loyalty promotion_rules create']"
+      class="portlet box blue-hoki margin-top-20"
+    >
+      <div
+        class="portlet-title bg-blue-chambray"
+        @click="toggleCreateNew()"
+      >
+        <div class="caption">
+          <i class="fa fa-plus-circle" />
+          Create New Promotion Rule
+        </div>
+        <div class="tools">
+          <a :class="{'expand': !createNewCollapse, 'collapse': createNewCollapse}" />
+        </div>
+      </div>
+      <div
+        v-show="!createNewCollapse"
+        class="portlet-body"
+      >
+        <form
+          role="form"
+          @submit.prevent="createRule()"
+        >
+          <div class="row">
+            <div class="col-md-12">
+              <div
+                v-show="createErrorMessage.length"
+                ref="createErrorMessage"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  data-close="alert"
+                  @click.prevent="clearError('createErrorMessage')"
+                />
+                <span>{{ createErrorMessage }}</span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="col-xs-12 no-gutter">
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    ref="newName"
+                    v-model="newRule.name"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': newRule.name.length}"
+                  >
+                  <label for="form_control_name">
+                    Name
+                  </label>
+                </div>
+              </div>
+              <div class="col-xs-12 no-gutter">
+                <label class="grey-label">
+                  Start on
+                </label>
+                <el-date-picker
+                  v-model="newRule.start_from"
+                  type="date"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  :editable="false"
+                  :clearable="false"
+                  placeholder="Start date"
+                />
+              </div>
+              <div class="col-xs-12 no-gutter margin-top-15">
+                <label class="grey-label">
+                  End on
+                </label>
+                <el-date-picker
+                  v-model="newRule.end_on"
+                  type="date"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  :editable="false"
+                  :clearable="false"
+                  placeholder="End date"
+                />
+              </div>
+              <div class="col-xs-12 no-gutter margin-top-15">
+                <label class="grey-label">
+                  Points awarded for
+                </label>
+                <el-select
+                  v-model="newRule.parameter"
+                  placeholder="select rule"
+                  size="small"
+                  class="margin-bottom-15 wide-select"
+                >
+                  <el-option
+                    label="total amount spent"
+                    value="total-spend"
+                  />
+                  <el-option
+                    label="purchasing specified items"
+                    value="sku"
+                  />
+                  <el-option
+                    label="purchases made during specified times"
+                    value="time"
+                  />
+                  <el-option
+                    label="purchasing specified items during specified times"
+                    value="sku-combination"
+                  />
+                </el-select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="col-xs-12 no-gutter">
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    v-model="newRule.min_amount"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': newRule.min_amount.length}"
+                  >
+                  <label for="form_control_name">
+                    Minimum purchase amount
+                  </label>
+                </div>
+              </div>
+              <div class="col-xs-12 no-gutter">
+                <div class="side-by-side">
+                  <label class="grey-label">
+                    Type of points reward
+                  </label>
+                  <el-select
+                    v-model="newRule.bonus_type"
+                    placeholder="select type"
+                    size="small"
+                  >
+                    <el-option
+                      label="proportional bonus"
+                      value="multiplier"
+                    />
+                    <el-option
+                      label="flat bonus"
+                      value="add-on"
+                    />
+                  </el-select>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label side-by-side">
+                  <input
+                    v-model="newRule.bonus"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': newRule.bonus.length}"
+                  >
+                  <label v-show="newRule.bonus_type === ''">
+                    Bonus type value
+                  </label>
+                  <label v-show="newRule.bonus_type === 'multiplier'">
+                    Multiplier for bonus points
+                  </label>
+                  <label v-show="newRule.bonus_type === 'add-on'">
+                    Number of bonus points
+                  </label>
+                </div>
+              </div>
+              <div
+                v-show="newRule.parameter === 'sku' || newRule.parameter === 'sku-combination'"
+                class="col-xs-12 no-gutter"
+              >
+                <button
+                  class="btn"
+                  :class="{'blue-chambray' : newRule.sku === 'all', 'blue btn-outline' : newRule.sku !== 'all'}"
+                  @click.prevent="selectAllItems(newRule)"
+                >
+                  All items
+                </button>
+                <button
+                  class="btn"
+                  :class="{'blue-chambray' : newRule.sku !== 'all', 'blue btn-outline' : newRule.sku === 'all'}"
+                  @click.prevent="selectItems(newRule)"
+                >
+                  Select items
+                </button>
+                <label class="grey-label">
+                  <span v-show="newRule.sku === 'all'">
+                    All
+                  </span>
+                  <span v-show="newRule.sku !== 'all'">
+                    {{ numberOfItemsNew }}
+                  </span>
+                  <span v-if="numberOfItemsNew !== 1 || newRule.sku === 'all'">
+                    items
+                  </span>
+                  <span v-else>
+                    item
+                  </span>
+                  selected
+                </label>
+              </div>
+              <div
+                v-show="newRule.parameter === 'time' || newRule.parameter === 'sku-combination'"
+                class="col-xs-12 no-gutter margin-top-20"
+              >
+                <el-time-select
+                  v-model="newRule.start"
+                  :picker-options="{ start: '00:00', step: '00:01', end: '23:59' }"
+                  placeholder="Set start time"
+                />
+                <el-time-select
+                  v-model="newRule.end"
+                  :picker-options="{ start: '00:00', step: '00:01', end: '23:59' }"
+                  placeholder="Set end time"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="form-actions right">
+            <button
+              type="submit"
+              class="btn blue"
+              :disabled="creating"
+            >
+              Create
+              <i
+                v-show="creating"
+                class="fa fa-spinner fa-pulse fa-fw"
+              />
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- CREATE NEW END -->
 
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label side-by-side">
-									<input type="text"
-									       class="form-control input-sm"
-									       v-model="newRule.bonus"
-									       :class="{'edited': newRule.bonus.length}">
-									<label v-show="newRule.bonus_type === ''">Bonus type value</label>
-									<label v-show="newRule.bonus_type === 'multiplier'">Multiplier for bonus points</label>
-									<label v-show="newRule.bonus_type === 'add-on'">Number of bonus points</label>
-								</div>
-							</div>
-							<div class="col-xs-12 no-gutter"
-							     v-show="newRule.parameter === 'sku' || newRule.parameter === 'sku-combination'">
-								<button class="btn"
-								        @click.prevent="selectAllItems(newRule)"
-								        :class="{'blue-chambray' : newRule.sku === 'all', 'blue btn-outline' : newRule.sku !== 'all'}">All items</button>
-								<button class="btn"
-								        @click.prevent="selectItems(newRule)"
-								        :class="{'blue-chambray' : newRule.sku !== 'all', 'blue btn-outline' : newRule.sku === 'all'}">Select items</button>
-								<label class="grey-label">
-									<span v-show="newRule.sku === 'all'">All</span>
-									<span v-show="newRule.sku !== 'all'">{{numberOfItemsNew}}</span>
-									<span v-if="numberOfItemsNew !== 1 || newRule.sku === 'all'">items</span>
-									<span v-else>item</span>
-									selected
-								</label>
-							</div>
-							<div class="col-xs-12 no-gutter margin-top-20"
-							     v-show="newRule.parameter === 'time' || newRule.parameter === 'sku-combination'">
-								<el-time-select v-model="newRule.start"
-								                :picker-options="{ start: '00:00', step: '00:01', end: '23:59' }"
-								                placeholder="Set start time"></el-time-select>
-								<el-time-select v-model="newRule.end"
-								                :picker-options="{ start: '00:00', step: '00:01', end: '23:59' }"
-								                placeholder="Set end time"></el-time-select>
-							</div>
+    <!-- LIST START -->
+    <div>
+      <div class="portlet light portlet-fit bordered margin-top-20">
+        <div class="portlet-title bg-blue-chambray">
+          <div class="menu-image-main">
+            <img src="../../../../public/client_logo.png">
+          </div>
+          <div class="caption">
+            <span class="caption-subject font-default bold uppercase">
+              Rules
+            </span>
+            <div class="caption-desc font-grey-cascade">
+              View, edit or delete promotion rules.
+            </div>
+          </div>
+        </div>
+        <div class="portlet-body relative-block">
+          <loading-screen
+            :show="loading"
+            color="#2C3E50"
+            display="inline"
+          />
+          <div
+            v-show="listErrorMessage.length"
+            ref="listErrorMessage"
+            class="alert alert-danger"
+          >
+            <button
+              class="close"
+              @click.prevent="clearError('listErrorMessage')"
+            />
+            <span>{{ listErrorMessage }}</span>
+          </div>
+          <div
+            v-if="rules.length && !loading"
+            class="mt-element-list"
+          >
+            <div class="mt-list-container list-news">
+              <ul>
+                <li
+                  v-for="rule in rules"
+                  :id="`rule-${rule.id}`"
+                  :key="rule.id"
+                  class="mt-list-item actions-at-left margin-top-15"
+                  :class="{'animated' : animated === `rule-${rule.id}`}"
+                >
+                  <div class="list-item-actions">
+                    <el-tooltip
+                      v-if="$root.permissions['loyalty promotion_rules update']"
+                      content="Edit"
+                      effect="light"
+                      placement="right"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="openEditModal(rule)"
+                      >
+                        <i
+                          class="fa fa-pencil"
+                          aria-hidden="true"
+                        />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['loyalty promotion_rules read'] && !$root.permissions['loyalty promotion_rules update']"
+                      content="View"
+                      effect="light"
+                      placement="right"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="openEditModal(rule)"
+                      >
+                        <i
+                          class="fa fa-eye"
+                          aria-hidden="true"
+                        />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['loyalty promotion_rules delete']"
+                      content="Delete"
+                      effect="light"
+                      placement="right"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="openDeleteModal(rule)"
+                      >
+                        <i
+                          class="fa fa-trash"
+                          aria-hidden="true"
+                        />
+                      </a>
+                    </el-tooltip>
+                  </div>
+                  <div class="list-datetime bold uppercase font-red">
+                    <span>{{ rule.name }}</span>
+                  </div>
+                  <div class="list-item-content height-mod">
+                    <div class="col-md-4">
+                      <strong>From: </strong>
+                      <span>{{ rule.start_from }}</span>
+                    </div>
+                    <div class="col-md-4">
+                      <strong>To: </strong>
+                      <span>{{ rule.end_on }}</span>
+                    </div>
+                    <div class="col-md-4">
+                      <strong>Minimum purchase amount: </strong>
+                      <span>${{ rule.min_amount }}</span>
+                    </div>
+                    <div class="col-md-8">
+                      <strong>Points awarded for: </strong>
+                      <span v-if="rule.parameter === 'total-spend'">
+                        total amount spent
+                      </span>
+                      <span v-if="rule.parameter === 'sku'">
+                        purchasing specified items
+                      </span>
+                      <span v-if="rule.parameter === 'time'">
+                        purchases made during specified times
+                      </span>
+                      <span v-if="rule.parameter === 'sku-combination'">
+                        purchasing specified items during specified times
+                      </span>
+                    </div>
+                    <div class="col-md-4">
+                      <strong>Bonus type: </strong>
+                      <span v-show="rule.bonus_type === 'multiplier'">
+                        proportional
+                      </span>
+                      <span v-show="rule.bonus_type === 'add-on'">
+                        flat
+                      </span>
+                    </div>
+                    <div
+                      v-show="rule.parameter === 'sku' || rule.parameter === 'sku-combination'"
+                      class="col-md-4"
+                    >
+                      <strong>Applies to: </strong>
+                      <span v-show="rule.sku === 'all'">
+                        all
+                      </span>
+                      <span v-show="rule.sku !== 'all'">
+                        {{ rule.sku.length }}
+                      </span>
+                      <span v-if="rule.sku.length > 1">
+                        items
+                      </span>
+                      <span v-else>
+                        item
+                      </span>
+                    </div>
+                    <div
+                      v-show="rule.parameter === 'time' || rule.parameter === 'sku-combination'"
+                      class="col-md-4"
+                    >
+                      <strong>Starts: </strong>
+                      <span>{{ rule.start }}</span>
+                    </div>
+                    <div
+                      v-show="rule.parameter === 'time' || rule.parameter === 'sku-combination'"
+                      class="col-md-4"
+                    >
+                      <strong>Ends: </strong>
+                      <span>{{ rule.end }}</span>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <no-results
+            :show="!rules.length && !loading"
+            type="rules"
+          />
+        </div>
+      </div>
+    </div>
+    <!-- LIST END -->
 
-						</div>
-					</div>
-					<div class="form-actions right">
-						<button type="submit"
-						        class="btn blue"
-						        :disabled="creating">
-							Create
-							<i v-show="creating"
-							   class="fa fa-spinner fa-pulse fa-fw">
-							</i>
-						</button>
-					</div>
-				</form>
-			</div>
-		</div>
-		<!-- CREATE NEW END -->
+    <!-- EDIT MODAL START -->
+    <modal
+      :show="showEditModal"
+      effect="fade"
+      @closeOnEscape="closeEditModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeEditModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Edit Rule
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <div class="row">
+          <div class="col-xs-12">
+            <div
+              v-show="editErrorMessage.length"
+              ref="editErrorMessage"
+              class="alert alert-danger"
+            >
+              <button
+                class="close"
+                data-close="alert"
+                @click="clearError('editErrorMessage')"
+              />
+              <span>{{ editErrorMessage }}</span>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="col-xs-12 no-gutter">
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  ref="newName"
+                  v-model="ruleToEdit.name"
+                  :disabled="!$root.permissions['loyalty promotion_rules update']"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': ruleToEdit.name.length}"
+                >
+                <label for="form_control_name">
+                  Name
+                </label>
+              </div>
+            </div>
+            <div class="col-xs-12 no-gutter">
+              <label class="grey-label">
+                Start on
+              </label>
+              <el-date-picker
+                v-model="ruleToEdit.start_from"
+                :disabled="!$root.permissions['loyalty promotion_rules update']"
+                type="date"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                :editable="false"
+                :clearable="false"
+                placeholder="Start date"
+              />
+            </div>
+            <div class="col-xs-12 no-gutter margin-top-15">
+              <label class="grey-label">
+                End on
+              </label>
+              <el-date-picker
+                v-model="ruleToEdit.end_on"
+                :disabled="!$root.permissions['loyalty promotion_rules update']"
+                type="date"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                :editable="false"
+                :clearable="false"
+                placeholder="End date"
+              />
+            </div>
+            <div class="col-xs-12 no-gutter margin-top-15">
+              <label class="grey-label">
+                Points awarded for
+              </label>
+              <el-select
+                v-model="ruleToEdit.parameter"
+                :disabled="!$root.permissions['loyalty promotion_rules update']"
+                placeholder="select rule"
+                size="small"
+                class="margin-bottom-15 wide-select"
+              >
+                <el-option
+                  label="total amount spent"
+                  value="total-spend"
+                />
+                <el-option
+                  label="purchasing specified items"
+                  value="sku"
+                />
+                <el-option
+                  label="purchases made during specified times"
+                  value="time"
+                />
+                <el-option
+                  label="purchasing specified items during specified times"
+                  value="sku-combination"
+                />
+              </el-select>
+            </div>
+            <div class="col-xs-12 no-gutter">
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  v-model="ruleToEdit.min_amount"
+                  :disabled="!$root.permissions['loyalty promotion_rules update']"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': ruleToEdit.min_amount.length}"
+                >
+                <label for="form_control_name">
+                  Minimum purchase amount
+                </label>
+              </div>
+            </div>
+            <div class="col-xs-12 no-gutter">
+              <div class="side-by-side">
+                <label class="grey-label">
+                  Type of points reward
+                </label>
+                <el-select
+                  v-model="ruleToEdit.bonus_type"
+                  :disabled="!$root.permissions['loyalty promotion_rules update']"
+                  placeholder="select type"
+                  size="small"
+                >
+                  <el-option
+                    label="proportional bonus"
+                    value="multiplier"
+                  />
+                  <el-option
+                    label="flat bonus"
+                    value="add-on"
+                  />
+                </el-select>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label side-by-side">
+                <input
+                  v-model="ruleToEdit.bonus"
+                  :disabled="!$root.permissions['loyalty promotion_rules update']"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': ruleToEdit.bonus.length}"
+                >
+                <label v-show="ruleToEdit.bonus_type === ''">
+                  Bonus type value
+                </label>
+                <label v-show="ruleToEdit.bonus_type === 'multiplier'">
+                  Multiplier for bonus points
+                </label>
+                <label v-show="ruleToEdit.bonus_type === 'add-on'">
+                  Number of bonus points
+                </label>
+              </div>
+            </div>
+            <div
+              v-show="ruleToEdit.parameter === 'sku' || ruleToEdit.parameter === 'sku-combination'"
+              class="col-xs-12 no-gutter"
+            >
+              <button
+                class="btn"
+                :class="{'blue-chambray' : ruleToEdit.sku === 'all', 'blue btn-outline' : ruleToEdit.sku !== 'all'}"
+                @click.prevent="selectAllItems(ruleToEdit)"
+              >
+                All items
+              </button>
+              <button
+                class="btn"
+                :class="{'blue-chambray' : ruleToEdit.sku !== 'all', 'blue btn-outline' : ruleToEdit.sku === 'all'}"
+                @click.prevent="selectItems(ruleToEdit)"
+              >
+                Select items
+              </button>
+              <label class="grey-label">
+                <span v-show="ruleToEdit.sku === 'all'">
+                  All
+                </span>
+                <span v-show="ruleToEdit.sku !== 'all'">
+                  {{ numberOfItemsEdited }}
+                </span>
+                <span v-if="numberOfItemsEdited !== 1 || ruleToEdit.sku === 'all'">
+                  items
+                </span>
+                <span v-else>
+                  item
+                </span>
+                selected
+              </label>
+            </div>
+            <div
+              v-show="ruleToEdit.parameter === 'time' || ruleToEdit.parameter === 'sku-combination'"
+              class="col-xs-12 no-gutter margin-top-20"
+            >
+              <el-time-select
+                v-model="ruleToEdit.start"
+                :disabled="!$root.permissions['loyalty promotion_rules update']"
+                :picker-options="{ start: '00:00', end: '23:59', step: '00:01' }"
+                placeholder="Set start time"
+              />
+              <el-time-select
+                v-model="ruleToEdit.end"
+                :disabled="!$root.permissions['loyalty promotion_rules update']"
+                :picker-options="{ start: '00:00', end: '23:59', step: '00:01' }"
+                placeholder="Set end time"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer"
+      >
+        <button
+          v-if="!$root.permissions['loyalty promotion_rules update']"
+          type="button"
+          class="btn btn-primary"
+          @click="closeEditModal()"
+        >
+          Close
+        </button>
+        <button
+          v-else
+          type="button"
+          class="btn btn-primary"
+          :disabled="updating"
+          @click="updateRule()"
+        >
+          Save
+          <i
+            v-show="updating"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+      </div>
+    </modal>
+    <!-- EDIT MODAL END -->
 
-		<!-- LIST START -->
-		<div>
-			<div class="portlet light portlet-fit bordered margin-top-20">
-				<div class="portlet-title bg-blue-chambray">
-					<div class="menu-image-main">
-						<img src="../../../../public/client_logo.png">
-					</div>
-					<div class="caption">
-						<span class="caption-subject font-default bold uppercase">Rules</span>
-						<div class="caption-desc font-grey-cascade">View, edit or delete promotion rules.</div>
-					</div>
-				</div>
-				<div class="portlet-body relative-block">
-					<loading-screen :show="loading"
-					                color="#2C3E50"
-					                display="inline"></loading-screen>
-					<div class="alert alert-danger"
-					     v-show="listErrorMessage.length"
-					     ref="listErrorMessage">
-						<button class="close"
-						        @click.prevent="clearError('listErrorMessage')"></button>
-						<span>{{listErrorMessage}}</span>
-					</div>
-					<div class="mt-element-list"
-					     v-if="rules.length && !loading">
-						<div class="mt-list-container list-news">
-							<ul>
-								<li v-for="rule in rules"
-								    :id="`rule-${rule.id}`"
-								    class="mt-list-item actions-at-left margin-top-15"
-								    :class="{'animated' : animated === `rule-${rule.id}`}"
-								    :key="rule.id">
-									<div class="list-item-actions">
-										<el-tooltip v-if="$root.permissions['loyalty promotion_rules update']"
-										            content="Edit"
-										            effect="light"
-										            placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="openEditModal(rule)">
-												<i class="fa fa-pencil"
-												   aria-hidden="true"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['loyalty promotion_rules read'] && !$root.permissions['loyalty promotion_rules update']"
-										            content="View"
-										            effect="light"
-										            placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="openEditModal(rule)">
-												<i class="fa fa-eye"
-												   aria-hidden="true"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['loyalty promotion_rules delete']"
-										            content="Delete"
-										            effect="light"
-										            placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="openDeleteModal(rule)">
-												<i class="fa fa-trash"
-												   aria-hidden="true"></i>
-											</a>
-										</el-tooltip>
-									</div>
-									<div class="list-datetime bold uppercase font-red">
-										<span>{{ rule.name }}</span>
-									</div>
-									<div class="list-item-content height-mod">
-										<div class="col-md-4">
-											<strong>From: </strong>
-											<span>{{rule.start_from}}</span>
-										</div>
-										<div class="col-md-4">
-											<strong>To: </strong>
-											<span>{{rule.end_on}}</span>
-										</div>
-										<div class="col-md-4">
-											<strong>Minimum purchase amount: </strong>
-											<span>${{rule.min_amount}}</span>
-										</div>
-										<div class="col-md-8">
-											<strong>Points awarded for: </strong>
-											<span v-if="rule.parameter === 'total-spend'">total amount spent</span>
-											<span v-if="rule.parameter === 'sku'">purchasing specified items</span>
-											<span v-if="rule.parameter === 'time'">purchases made during specified times</span>
-											<span v-if="rule.parameter === 'sku-combination'">purchasing specified items during specified times</span>
-										</div>
-										<div class="col-md-4">
-											<strong>Bonus type: </strong>
-											<span v-show="rule.bonus_type === 'multiplier'">proportional</span>
-											<span v-show="rule.bonus_type === 'add-on'">flat</span>
-										</div>
-										<div class="col-md-4"
-										     v-show="rule.parameter === 'sku' || rule.parameter === 'sku-combination'">
-											<strong>Applies to: </strong>
-											<span v-show="rule.sku === 'all'">all </span>
-											<span v-show="rule.sku !== 'all'">{{rule.sku.length}} </span>
-											<span v-if="rule.sku.length > 1">items</span>
-											<span v-else>item</span>
-										</div>
-										<div class="col-md-4"
-										     v-show="rule.parameter === 'time' || rule.parameter === 'sku-combination'">
-											<strong>Starts: </strong>
-											<span>{{rule.start}}</span>
-										</div>
-										<div class="col-md-4"
-										     v-show="rule.parameter === 'time' || rule.parameter === 'sku-combination'">
-											<strong>Ends: </strong>
-											<span>{{rule.end}}</span>
-										</div>
-									</div>
-								</li>
-							</ul>
-						</div>
-					</div>
-					<no-results :show="!rules.length && !loading"
-					            type="rules"></no-results>
-				</div>
-			</div>
-		</div>
-		<!-- LIST END -->
+    <!-- DELETE MODAL START -->
+    <modal
+      :show="showDeleteModal"
+      effect="fade"
+      @closeOnEscape="closeDeleteModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeDeleteModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Delete Rule
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <div
+          v-show="deleteErrorMessage.length"
+          ref="deleteErrorMessage"
+          class="alert alert-danger"
+        >
+          <button
+            class="close"
+            @click="clearError('deleteErrorMessage')"
+          />
+          <span>{{ deleteErrorMessage }}</span>
+        </div>
+        <p>Are you sure you want to delete {{ ruleToDelete.name }}?</p>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer"
+      >
+        <button
+          type="button"
+          class="btn btn-primary"
+          :disabled="deleting"
+          @click="deleteRule()"
+        >
+          Delete
+          <i
+            v-show="deleting"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+      </div>
+    </modal>
+    <!-- DELETE MODAL END -->
 
-		<!-- EDIT MODAL START -->
-		<modal :show="showEditModal"
-		       effect="fade"
-		       @closeOnEscape="closeEditModal">
-			<div slot="modal-header"
-			     class="modal-header">
-				<button type="button"
-				        class="close"
-				        @click="closeEditModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Edit Rule</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<div class="row">
-					<div class="col-xs-12">
-						<div class="alert alert-danger"
-						     v-show="editErrorMessage.length"
-						     ref="editErrorMessage">
-							<button class="close"
-							        data-close="alert"
-							        @click="clearError('editErrorMessage')"></button>
-							<span>{{editErrorMessage}}</span>
-						</div>
-					</div>
-					<div class="col-md-12">
-						<div class="col-xs-12 no-gutter">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input :disabled="!$root.permissions['loyalty promotion_rules update']"
-								       ref="newName"
-								       type="text"
-								       class="form-control input-sm"
-								       v-model="ruleToEdit.name"
-								       :class="{'edited': ruleToEdit.name.length}">
-								<label for="form_control_name">Name</label>
-							</div>
-						</div>
-						<div class="col-xs-12 no-gutter">
-							<label class="grey-label">Start on</label>
-							<el-date-picker :disabled="!$root.permissions['loyalty promotion_rules update']"
-							                v-model="ruleToEdit.start_from"
-							                type="date"
-							                format="yyyy-MM-dd"
-							                value-format="yyyy-MM-dd"
-							                :editable="false"
-							                :clearable="false"
-							                placeholder="Start date"></el-date-picker>
-						</div>
-						<div class="col-xs-12 no-gutter margin-top-15">
-							<label class="grey-label">End on</label>
-							<el-date-picker :disabled="!$root.permissions['loyalty promotion_rules update']"
-							                v-model="ruleToEdit.end_on"
-							                type="date"
-							                format="yyyy-MM-dd"
-							                value-format="yyyy-MM-dd"
-							                :editable="false"
-							                :clearable="false"
-							                placeholder="End date"></el-date-picker>
-						</div>
-						<div class="col-xs-12 no-gutter margin-top-15">
-							<label class="grey-label">Points awarded for</label>
-							<el-select :disabled="!$root.permissions['loyalty promotion_rules update']"
-							           v-model="ruleToEdit.parameter"
-							           placeholder="select rule"
-							           size="small"
-							           class="margin-bottom-15 wide-select">
-								<el-option label="total amount spent"
-								           value="total-spend"></el-option>
-								<el-option label="purchasing specified items"
-								           value="sku"></el-option>
-								<el-option label="purchases made during specified times"
-								           value="time"></el-option>
-								<el-option label="purchasing specified items during specified times"
-								           value="sku-combination"></el-option>
-							</el-select>
-						</div>
-						<div class="col-xs-12 no-gutter">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input :disabled="!$root.permissions['loyalty promotion_rules update']"
-								       type="text"
-								       class="form-control input-sm"
-								       v-model="ruleToEdit.min_amount"
-								       :class="{'edited': ruleToEdit.min_amount.length}">
-								<label for="form_control_name">Minimum purchase amount</label>
-							</div>
-						</div>
-						<div class="col-xs-12 no-gutter">
-							<div class="side-by-side">
-								<label class="grey-label">Type of points reward</label>
-								<el-select :disabled="!$root.permissions['loyalty promotion_rules update']"
-								           v-model="ruleToEdit.bonus_type"
-								           placeholder="select type"
-								           size="small">
-									<el-option label="proportional bonus"
-									           value="multiplier"></el-option>
-									<el-option label="flat bonus"
-									           value="add-on"></el-option>
-								</el-select>
-
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label side-by-side">
-								<input :disabled="!$root.permissions['loyalty promotion_rules update']"
-								       type="text"
-								       class="form-control input-sm"
-								       v-model="ruleToEdit.bonus"
-								       :class="{'edited': ruleToEdit.bonus.length}">
-								<label v-show="ruleToEdit.bonus_type === ''">Bonus type value</label>
-								<label v-show="ruleToEdit.bonus_type === 'multiplier'">Multiplier for bonus points</label>
-								<label v-show="ruleToEdit.bonus_type === 'add-on'">Number of bonus points</label>
-							</div>
-						</div>
-						<div class="col-xs-12 no-gutter"
-						     v-show="ruleToEdit.parameter === 'sku' || ruleToEdit.parameter === 'sku-combination'">
-							<button class="btn"
-							        @click.prevent="selectAllItems(ruleToEdit)"
-							        :class="{'blue-chambray' : ruleToEdit.sku === 'all', 'blue btn-outline' : ruleToEdit.sku !== 'all'}">
-								All items
-							</button>
-							<button class="btn"
-							        @click.prevent="selectItems(ruleToEdit)"
-							        :class="{'blue-chambray' : ruleToEdit.sku !== 'all', 'blue btn-outline' : ruleToEdit.sku === 'all'}">
-								Select items
-							</button>
-							<label class="grey-label">
-								<span v-show="ruleToEdit.sku === 'all'">All</span>
-								<span v-show="ruleToEdit.sku !== 'all'">{{numberOfItemsEdited}}</span>
-								<span v-if="numberOfItemsEdited !== 1 || ruleToEdit.sku === 'all'">items</span>
-								<span v-else>item</span>
-								selected</label>
-						</div>
-						<div class="col-xs-12 no-gutter margin-top-20"
-						     v-show="ruleToEdit.parameter === 'time' || ruleToEdit.parameter === 'sku-combination'">
-							<el-time-select :disabled="!$root.permissions['loyalty promotion_rules update']"
-							                v-model="ruleToEdit.start"
-							                :picker-options="{ start: '00:00', end: '23:59', step: '00:01' }"
-							                placeholder="Set start time">
-							</el-time-select>
-							<el-time-select :disabled="!$root.permissions['loyalty promotion_rules update']"
-							                v-model="ruleToEdit.end"
-							                :picker-options="{ start: '00:00', end: '23:59', step: '00:01' }"
-							                placeholder="Set end time">
-							</el-time-select>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer">
-				<button v-if="!$root.permissions['loyalty promotion_rules update']"
-				        type="button"
-				        class="btn btn-primary"
-				        @click="closeEditModal()">
-					Close
-				</button>
-				<button v-else
-				        type="button"
-				        class="btn btn-primary"
-				        @click="updateRule()"
-				        :disabled="updating">
-					Save
-					<i v-show="updating"
-					   class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-			</div>
-		</modal>
-		<!-- EDIT MODAL END -->
-
-		<!-- DELETE MODAL START -->
-		<modal :show="showDeleteModal"
-		       effect="fade"
-		       @closeOnEscape="closeDeleteModal">
-			<div slot="modal-header"
-			     class="modal-header">
-				<button type="button"
-				        class="close"
-				        @click="closeDeleteModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Delete Rule</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<div class="alert alert-danger"
-				     v-show="deleteErrorMessage.length"
-				     ref="deleteErrorMessage">
-					<button class="close"
-					        @click="clearError('deleteErrorMessage')"></button>
-					<span>{{deleteErrorMessage}}</span>
-				</div>
-				<p>Are you sure you want to delete {{ruleToDelete.name}}?</p>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer">
-				<button type="button"
-				        class="btn btn-primary"
-				        @click="deleteRule()"
-				        :disabled="deleting">
-					Delete
-					<i v-show="deleting"
-					   class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-			</div>
-		</modal>
-		<!-- DELETE MODAL END -->
-
-		<!-- ITEM SELECT START -->
-		<menu-modifier-tree v-if="showMenuModifierTreeModal"
-		                    :selectedObject="ruleToSelectSKUsFor"
-		                    @closeMenuModifierTreeModal="closeMenuModifierTree"
-		                    @closeMenuModifierTreeModalAndUpdate="setSelectedItems">
-		</menu-modifier-tree>
-		<!-- ITEM SELECT END -->
-	</div>
+    <!-- ITEM SELECT START -->
+    <menu-modifier-tree
+      v-if="showMenuModifierTreeModal"
+      :selected-object="ruleToSelectSKUsFor"
+      @closeMenuModifierTreeModal="closeMenuModifierTree"
+      @closeMenuModifierTreeModalAndUpdate="setSelectedItems"
+    />
+    <!-- ITEM SELECT END -->
+  </div>
 </template>
 
 <script>
@@ -513,6 +759,13 @@ import ajaxErrorHandler from '../../../controllers/ErrorController'
 import MenuModifierTree from '../../modules/MenuModifierTree'
 
 export default {
+	components: {
+		Breadcrumb,
+		NoResults,
+		LoadingScreen,
+		Modal,
+		MenuModifierTree
+	},
 	data () {
 		return {
 			breadcrumbArray: [
@@ -1158,13 +1411,6 @@ export default {
 			this.deleteErrorMessage = ''
 			this.showDeleteModal = false
 		}
-	},
-	components: {
-		Breadcrumb,
-		NoResults,
-		LoadingScreen,
-		Modal,
-		MenuModifierTree
 	}
 }
 </script>

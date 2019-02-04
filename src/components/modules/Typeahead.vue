@@ -1,78 +1,76 @@
 <template>
-	<div class="unoapp-typeahead"
-	     :class="{'open': showDropdown}">
+  <div
+    class="unoapp-typeahead"
+    :class="{'open': showDropdown}"
+  >
+    <!-- Predictive Input (Readonly) -->
+    <input
+      v-model="predictiveValue"
+      type="text"
+      class="form-control prediction-input"
+      readonly
+      autocomplete="off"
+      spellcheck="false"
+      tabindex="-1"
+    >
 
-		<!-- Predictive Input (Readonly) -->
-		<input type="text"
-		       class="form-control prediction-input"
-		       readonly
-		       autocomplete="off"
-		       spellcheck="false"
-		       tabindex="-1"
-		       v-model="predictiveValue" />
+    <!-- Typeahead Input -->
+    <input
+      v-model="value"
+      type="text"
+      class="form-control input-sm prediction-output-input"
+      :class="{'edited': value.length}"
+      :placeholder="placeholder"
+      autocomplete="off"
+      :tabindex="tabindex"
+      @input="update"
+      @keydown.up="up"
+      @keydown.down="down"
+      @keydown.enter="hit"
+      @keydown.esc="reset"
+      @keydown.tab="selectPredictiveOption"
+      @blur="showDropdown = false; hidePredictiveValue()"
+      @focus="onFocus()"
+    >
 
-		<!-- Typeahead Input -->
-		<input type="text"
-		       class="form-control input-sm prediction-output-input"
-		       :class="{'edited': value.length}"
-		       :placeholder="placeholder"
-		       autocomplete="off"
-		       v-model="value"
-		       @input="update"
-		       @keydown.up="up"
-		       @keydown.down="down"
-		       @keydown.enter="hit"
-		       @keydown.esc="reset"
-		       @keydown.tab="selectPredictiveOption"
-		       @blur="showDropdown = false; hidePredictiveValue()"
-		       @focus="onFocus()"
-		       :tabindex="tabindex" />
+    <!-- DROPDOWN START -->
+    <ul class="dropdown-menu">
+      <li
+        v-for="(item, index) in items"
+        :key="index"
+        :class="{'active': isActive(index)}"
+      >
+        <a
+          @mousedown.prevent="hit"
+          @mousemove="setActive(index)"
+        >
+          <span
+            v-if="!objectKey"
+            v-html="highlight(item)"
+          />
+          <span
+            v-if="objectKey"
+            v-html="highlight(item[objectKey])"
+          />
+        </a>
+      </li>
+      <li v-if="!items.length">
+        <a>
+          <span>There are no {{ label.toLowerCase() + 's' }} that match your search.</span>
+        </a>
+      </li>
+    </ul>
+    <!-- DROPDOWN END -->
 
-		<!-- DROPDOWN START -->
-		<ul class="dropdown-menu">
-			<li v-for="(item, index) in items"
-			    v-bind:class="{'active': isActive(index)}"
-				:key="index">
-				<a @mousedown.prevent="hit"
-				   @mousemove="setActive(index)">
-					<span v-if="!objectKey"
-					      v-html="highlight(item)"></span>
-					<span v-if="objectKey"
-					      v-html="highlight(item[objectKey])"></span>
-				</a>
-			</li>
-			<li v-if="!items.length">
-				<a>
-					<span>There are no {{label.toLowerCase() + 's'}} that match your search.</span>
-				</a>
-			</li>
-		</ul>
-		<!-- DROPDOWN END -->
-
-		<label>{{ label }}</label>
-	</div>
+    <label>{{ label }}</label>
+  </div>
 </template>
 
 <script>
 import $ from 'jquery'
 
 export default {
-	/**
-	 * Run on `created` to initialize the items list and to set the initial value if one was passed into the component.
-	 * @function
-	 * @returns {undefined}
-	 */
-	created() {
-		this.items = this.primitiveData
-		if (this.passedValue) {
-			if (this.objectKey) {
-				this.value = this.passedValue[this.objectKey]
-			} else {
-				this.value = this.passedValue
-			}
-		}
-	},
-	name: 'typeahead',
+	name: 'Typeahead',
 	props: {
 		data: {
 			type: Array
@@ -148,6 +146,39 @@ export default {
 				}
 				return 0
 			})
+		}
+	},
+	/**
+	 * Watch `passedValue` in case the data is changed from the parent component.
+	 * @function
+	 * @returns {undefined}
+	 */
+	watch: {
+		passedValue() {
+			if (this.objectKey) {
+				if (this.passedValue[this.objectKey] !== this.value) {
+					this.value = this.passedValue[this.objectKey]
+				}
+			} else {
+				if (this.passedValue !== this.value) {
+					this.value = this.passedValue
+				}
+			}
+		}
+	},
+	/**
+	 * Run on `created` to initialize the items list and to set the initial value if one was passed into the component.
+	 * @function
+	 * @returns {undefined}
+	 */
+	created() {
+		this.items = this.primitiveData
+		if (this.passedValue) {
+			if (this.objectKey) {
+				this.value = this.passedValue[this.objectKey]
+			} else {
+				this.value = this.passedValue
+			}
 		}
 	},
 	methods: {
@@ -351,24 +382,6 @@ export default {
 
 			this.hit(false, currentOverride)
 			this.hidePredictiveValue()
-		}
-	},
-	/**
-	 * Watch `passedValue` in case the data is changed from the parent component.
-	 * @function
-	 * @returns {undefined}
-	 */
-	watch: {
-		passedValue() {
-			if (this.objectKey) {
-				if (this.passedValue[this.objectKey] !== this.value) {
-					this.value = this.passedValue[this.objectKey]
-				}
-			} else {
-				if (this.passedValue !== this.value) {
-					this.value = this.passedValue
-				}
-			}
 		}
 	}
 }

@@ -1,348 +1,437 @@
 <template>
-	<div>
-		<!-- BEGIN PAGE BAR -->
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
-		<!-- END PAGE BAR -->
+  <div>
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
+    <!-- END PAGE BAR -->
 
-		<!-- BEGIN PAGE TITLE-->
-		<h1 class="page-title">Discounts</h1>
-		<!-- END PAGE TITLE -->
-		<div class="note note-info">
-			<p>Add and manage discounts.</p>
-		</div>
+    <!-- BEGIN PAGE TITLE-->
+    <h1 class="page-title">
+      Discounts
+    </h1>
+    <!-- END PAGE TITLE -->
+    <div class="note note-info">
+      <p>Add and manage discounts.</p>
+    </div>
 
-		<!-- BEGIN CREATE -->
-		<div class="portlet box blue-hoki"
-				 v-if="$root.permissions['stores discounts create']">
-			<div class="portlet-title bg-blue-chambray"
-					 @click="toggleCreatePanel()">
-				<div class="caption">
-					<i class="fa fa-2x fa-plus-circle"></i>
-					Create a New Discount
-				</div>
-				<div class="tools">
-					<a :class="{'expand': !createNewCollapse, 'collapse': createNewCollapse}"></a>
-				</div>
-			</div>
-			<div class="portlet-body relative-block"
-					 :class="{'display-hide': createNewCollapse}">
-				<div class="col-md-12"
-						 v-show="activeLocationId === undefined">
-					<div class="alert center alert-info">
-						<h4>No Store Selected</h4>
-						<p>Please select a store from the stores panel on the right to create discounts for it.</p>
-					</div>
-				</div>
-				<form role="form"
-							@submit.prevent="createDiscount()"
-							v-show="activeLocationId !== undefined">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="alert alert-danger"
-									 v-show="createErrorMessage.length"
-									 ref="createErrorMessage">
-								<button class="close"
-										@click.prevent="clearError('createErrorMessage')"></button>
-								<span>{{ createErrorMessage }}</span>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input
-									type="text"
-									class="form-control input-sm"
-									:class="{'edited': newDiscount.name.length}"
-									id="form_control_new_name"
-									v-model="newDiscount.name"
-								>
-								<label for="form_control_new_name">Name</label>
-							</div>
-							<div class="width-100 display-flex align-items-center">
-								<label
-									class="select-label"
-								>
-									Type:
-								</label>
-								<el-select 
-									v-model="newDiscount.type"
-									placeholder="% or $"
-									size="small"
-								>
-									<el-option label="percent"
-												value="percentage"></el-option>
-									<el-option label="dollars"
-												value="dollar"></el-option>
-								</el-select>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input
-									type="text"
-									class="form-control input-sm"
-									:class="{'edited': newDiscount.value.length}"
-									id="form_control_new_value"
-									v-model="newDiscount.value"
-								>
-								<label for="form_control_new_value">Value</label>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-6">
-							<button 
-								type="submit"
-								class="btn blue pull-right"
-								:disabled="creating"
-							>
-								Create
-								<i 
-									v-show="creating"
-									class="fa fa-spinner fa-pulse fa-fw"
-								>
-								</i>
-							</button>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-		<!-- END CREATE -->
+    <!-- BEGIN CREATE -->
+    <div
+      v-if="$root.permissions['stores discounts create']"
+      class="portlet box blue-hoki"
+    >
+      <div
+        class="portlet-title bg-blue-chambray"
+        @click="toggleCreatePanel()"
+      >
+        <div class="caption">
+          <i class="fa fa-2x fa-plus-circle" />
+          Create a New Discount
+        </div>
+        <div class="tools">
+          <a :class="{'expand': !createNewCollapse, 'collapse': createNewCollapse}" />
+        </div>
+      </div>
+      <div
+        class="portlet-body relative-block"
+        :class="{'display-hide': createNewCollapse}"
+      >
+        <div
+          v-show="activeLocationId === undefined"
+          class="col-md-12"
+        >
+          <div class="alert center alert-info">
+            <h4>No Store Selected</h4>
+            <p>Please select a store from the stores panel on the right to create discounts for it.</p>
+          </div>
+        </div>
+        <form
+          v-show="activeLocationId !== undefined"
+          role="form"
+          @submit.prevent="createDiscount()"
+        >
+          <div class="row">
+            <div class="col-md-12">
+              <div
+                v-show="createErrorMessage.length"
+                ref="createErrorMessage"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  @click.prevent="clearError('createErrorMessage')"
+                />
+                <span>{{ createErrorMessage }}</span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_new_name"
+                  v-model="newDiscount.name"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newDiscount.name.length}"
+                >
+                <label for="form_control_new_name">
+                  Name
+                </label>
+              </div>
+              <div class="width-100 display-flex align-items-center">
+                <label
+                  class="select-label"
+                >
+                  Type:
+                </label>
+                <el-select 
+                  v-model="newDiscount.type"
+                  placeholder="% or $"
+                  size="small"
+                >
+                  <el-option
+                    label="percent"
+                    value="percentage"
+                  />
+                  <el-option
+                    label="dollars"
+                    value="dollar"
+                  />
+                </el-select>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_new_value"
+                  v-model="newDiscount.value"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newDiscount.value.length}"
+                >
+                <label for="form_control_new_value">
+                  Value
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <button 
+                type="submit"
+                class="btn blue pull-right"
+                :disabled="creating"
+              >
+                Create
+                <i 
+                  v-show="creating"
+                  class="fa fa-spinner fa-pulse fa-fw"
+                />
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- END CREATE -->
 
-		<!-- BEGIN LIST -->
-		<div class="portlet light portlet-fit bordered margin-top-20"
-					id="discounts-container">
-			<div class="portlet-title bg-blue-chambray">
-				<div class="menu-image-main">
-					<img src="../../../../public/client_logo.png">
-				</div>
-				<div class="caption">
-					<span class="caption-subject font-default bold uppercase">Discounts</span>
-					<div class="caption-desc font-grey-cascade">Edit or delete store discounts.</div>
-				</div>
-			</div>
-			<div class="col-md-12">
-				<div class="alert alert-danger"
-							v-show="listErrorMessage.length"
-							ref="listErrorMessage">
-					<button class="close"
-									data-close="alert"
-									@click="clearError('listErrorMessage')"></button>
-					<span>{{ listErrorMessage }}</span>
-				</div>
-			</div>
-			<div class="portlet-body relative-block">
-				<loading-screen :show="loadingDiscounts"
-												:color="'#2C3E50'"
-												:display="'inline'"></loading-screen>
-				<div v-if="activeLocationId === undefined && !loadingDiscounts">
-					<div class="alert center alert-info">
-						<h4>No Store Selected</h4>
-						<p>Please select a store from the stores panel on the right to view discounts for it.</p>
-					</div>
-				</div>
-				<div class="mt-element-list margin-top-15"
-							v-if="discounts.length && !loadingDiscounts">
-					<div class="mt-list-container list-news ext-1 no-border">
-						<ul>
-							<li class="mt-list-item actions-at-left margin-top-15 two-vertical-actions"
-									v-for="discount in discounts"
-									:id="'discount-' + discount.id"
-									:key="discount.id">
-								<div class="list-item-actions">
-									<el-tooltip v-if="$root.permissions['stores discounts update']"
-															content="Edit"
-															effect="light"
-															placement="right">
-										<a class="btn btn-circle btn-icon-only btn-default"
-												@click="editDiscount(discount, $event)">
-											<i class="fa fa-lg fa-pencil"></i>
-										</a>
-									</el-tooltip>
-									<el-tooltip v-if="$root.permissions['stores discounts read'] && !$root.permissions['stores discounts update']"
-															content="View"
-															effect="light"
-															placement="right">
-										<a class="btn btn-circle btn-icon-only btn-default"
-												@click="editDiscount(discount, $event)">
-											<i class="fa fa-lg fa-eye"></i>
-										</a>
-									</el-tooltip>
-									<el-tooltip v-if="$root.permissions['stores discounts delete']"
-															content="Delete"
-															effect="light"
-															placement="right">
-										<a class="btn btn-circle btn-icon-only btn-default"
-												@click="confirmDelete(discount, $event)">
-											<i class="fa fa-lg fa-trash"></i>
-										</a>
-									</el-tooltip>
-								</div>
-								<div class="list-datetime bold uppercase font-red">
-									<span>{{ discount.name }}</span>
-								</div>
-							</li>
-						</ul>
-					</div>
-				</div>
-				<div class="margin-top-20">
-					<no-results
-						:show="!(activeLocationId === undefined) && !discounts.length && !loadingDiscounts"
-						:type="'discounts'"
-					>
-					</no-results>
-				</div>
-			</div>
-		</div>
-		<!-- END LIST -->
+    <!-- BEGIN LIST -->
+    <div
+      id="discounts-container"
+      class="portlet light portlet-fit bordered margin-top-20"
+    >
+      <div class="portlet-title bg-blue-chambray">
+        <div class="menu-image-main">
+          <img src="../../../../public/client_logo.png">
+        </div>
+        <div class="caption">
+          <span class="caption-subject font-default bold uppercase">
+            Discounts
+          </span>
+          <div class="caption-desc font-grey-cascade">
+            Edit or delete store discounts.
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div
+          v-show="listErrorMessage.length"
+          ref="listErrorMessage"
+          class="alert alert-danger"
+        >
+          <button
+            class="close"
+            data-close="alert"
+            @click="clearError('listErrorMessage')"
+          />
+          <span>{{ listErrorMessage }}</span>
+        </div>
+      </div>
+      <div class="portlet-body relative-block">
+        <loading-screen
+          :show="loadingDiscounts"
+          :color="'#2C3E50'"
+          :display="'inline'"
+        />
+        <div v-if="activeLocationId === undefined && !loadingDiscounts">
+          <div class="alert center alert-info">
+            <h4>No Store Selected</h4>
+            <p>Please select a store from the stores panel on the right to view discounts for it.</p>
+          </div>
+        </div>
+        <div
+          v-if="discounts.length && !loadingDiscounts"
+          class="mt-element-list margin-top-15"
+        >
+          <div class="mt-list-container list-news ext-1 no-border">
+            <ul>
+              <li
+                v-for="discount in discounts"
+                :id="'discount-' + discount.id"
+                :key="discount.id"
+                class="mt-list-item actions-at-left margin-top-15 two-vertical-actions"
+              >
+                <div class="list-item-actions">
+                  <el-tooltip
+                    v-if="$root.permissions['stores discounts update']"
+                    content="Edit"
+                    effect="light"
+                    placement="right"
+                  >
+                    <a
+                      class="btn btn-circle btn-icon-only btn-default"
+                      @click="editDiscount(discount, $event)"
+                    >
+                      <i class="fa fa-lg fa-pencil" />
+                    </a>
+                  </el-tooltip>
+                  <el-tooltip
+                    v-if="$root.permissions['stores discounts read'] && !$root.permissions['stores discounts update']"
+                    content="View"
+                    effect="light"
+                    placement="right"
+                  >
+                    <a
+                      class="btn btn-circle btn-icon-only btn-default"
+                      @click="editDiscount(discount, $event)"
+                    >
+                      <i class="fa fa-lg fa-eye" />
+                    </a>
+                  </el-tooltip>
+                  <el-tooltip
+                    v-if="$root.permissions['stores discounts delete']"
+                    content="Delete"
+                    effect="light"
+                    placement="right"
+                  >
+                    <a
+                      class="btn btn-circle btn-icon-only btn-default"
+                      @click="confirmDelete(discount, $event)"
+                    >
+                      <i class="fa fa-lg fa-trash" />
+                    </a>
+                  </el-tooltip>
+                </div>
+                <div class="list-datetime bold uppercase font-red">
+                  <span>{{ discount.name }}</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="margin-top-20">
+          <no-results
+            :show="!(activeLocationId === undefined) && !discounts.length && !loadingDiscounts"
+            :type="'discounts'"
+          />
+        </div>
+      </div>
+    </div>
+    <!-- END LIST -->
 
-		<!-- START EDIT -->
-		<modal :show="showEditModal"
-					 effect="fade"
-					 @closeOnEscape="closeEditModal"
-					 ref="editModal">
-			<div slot="modal-header"
-					 class="modal-header">
-				<button 
-					type="button"
-					class="close"
-					@click="closeEditModal()"
-				>
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Edit Discount</h4>
-			</div>
-			<div slot="modal-body"
-					 class="modal-body">
-				<form role="form">
-					<div class="row">
-						<div class="col-md-12">
-							<div 
-								class="alert alert-danger"
-								v-show="editErrorMessage.length"
-								ref="editErrorMessage"
-							>
-								<button
-									class="close"
-									@click.prevent="clearError('editErrorMessage')"
-								>
-								</button>
-								<span>{{ editErrorMessage }}</span>
-							</div>
-						</div>
-						<div class="col-md-12">
-							<fieldset :disabled="!$root.permissions['stores discounts update']">
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input
-										type="text"
-										class="form-control input-sm"
-										:class="{'edited': discountToEdit.name.length}"
-										id="form_control_edited_name"
-										v-model="discountToEdit.name"
-									>
-									<label for="form_control_edited_name">Name</label>
-								</div>
-								<div class="width-100 display-flex align-items-center">
-									<label
-										class="select-label"
-									>
-										Type:
-									</label>
-									<el-select 
-										v-model="discountToEdit.type"
-										placeholder="% or $"
-										size="small"
-									>
-										<el-option label="percent"
-													value="percentage"></el-option>
-										<el-option label="dollars"
-													value="dollar"></el-option>
-									</el-select>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input
-										type="text"
-										class="form-control input-sm"
-										:class="{'edited': discountToEdit.value.length}"
-										id="form_control_edited_value"
-										v-model="discountToEdit.value"
-									>
-									<label for="form_control_edited_value">Value</label>
-								</div>
-							</fieldset>
-						</div>
-					</div>
-				</form>
-			</div>
-			<div slot="modal-footer"
-					 class="modal-footer clear">
-				<button v-if="!$root.permissions['stores discounts update']"
-								@click="closeEditModal()"
-								type="button"
-								class="btn blue">
-					Close
-				</button>
-				<button v-else
-								@click="updateDiscount()"
-								type="submit"
-								class="btn blue"
-								:disabled="updating">
-					Save
-					<i 
-						v-show="updating"
-						class="fa fa-spinner fa-pulse fa-fw"
-					>
-					</i>
-				</button>
-			</div>
-		</modal>
-		<!-- END EDIT -->
+    <!-- START EDIT -->
+    <modal
+      ref="editModal"
+      :show="showEditModal"
+      effect="fade"
+      @closeOnEscape="closeEditModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button 
+          type="button"
+          class="close"
+          @click="closeEditModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Edit Discount
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <form role="form">
+          <div class="row">
+            <div class="col-md-12">
+              <div 
+                v-show="editErrorMessage.length"
+                ref="editErrorMessage"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  @click.prevent="clearError('editErrorMessage')"
+                />
+                <span>{{ editErrorMessage }}</span>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <fieldset :disabled="!$root.permissions['stores discounts update']">
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_edited_name"
+                    v-model="discountToEdit.name"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': discountToEdit.name.length}"
+                  >
+                  <label for="form_control_edited_name">
+                    Name
+                  </label>
+                </div>
+                <div class="width-100 display-flex align-items-center">
+                  <label
+                    class="select-label"
+                  >
+                    Type:
+                  </label>
+                  <el-select 
+                    v-model="discountToEdit.type"
+                    placeholder="% or $"
+                    size="small"
+                  >
+                    <el-option
+                      label="percent"
+                      value="percentage"
+                    />
+                    <el-option
+                      label="dollars"
+                      value="dollar"
+                    />
+                  </el-select>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_edited_value"
+                    v-model="discountToEdit.value"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': discountToEdit.value.length}"
+                  >
+                  <label for="form_control_edited_value">
+                    Value
+                  </label>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer clear"
+      >
+        <button
+          v-if="!$root.permissions['stores discounts update']"
+          type="button"
+          class="btn blue"
+          @click="closeEditModal()"
+        >
+          Close
+        </button>
+        <button
+          v-else
+          type="submit"
+          class="btn blue"
+          :disabled="updating"
+          @click="updateDiscount()"
+        >
+          Save
+          <i 
+            v-show="updating"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+      </div>
+    </modal>
+    <!-- END EDIT -->
 
-		<!-- START DELETE -->
-		<modal :show="showDeleteModal"
-					 effect="fade"
-					 @closeOnEscape="closeDeleteModal"
-					 ref="deleteModal">
-			<div slot="modal-header"
-					 class="modal-header">
-				<button type="button"
-								class="close"
-								@click="closeDeleteModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Confirm Delete</h4>
-			</div>
-			<div slot="modal-body"
-					 class="modal-body">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="alert alert-danger"
-									v-show="deleteErrorMessage.length"
-									ref="deleteErrorMessage">
-							<button class="close"
-											data-close="alert"
-											@click.prevent="clearError('deleteErrorMessage')"></button>
-							<span>{{ deleteErrorMessage }}</span>
-						</div>
-					</div>
-				</div>
-				<p>Are you sure you want to delete {{discountToDelete.name}}?</p>
-			</div>
-			<div slot="modal-footer"
-					 class="modal-footer clear">
-				<button type="button"
-								class="btn blue"
-								@click="deleteDiscount()"
-								:disabled="deleting">
-					Delete
-					<i v-show="deleting"
-						 class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-			</div>
-		</modal>
-		<!-- END DELETE -->
-	</div>
+    <!-- START DELETE -->
+    <modal
+      ref="deleteModal"
+      :show="showDeleteModal"
+      effect="fade"
+      @closeOnEscape="closeDeleteModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeDeleteModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Confirm Delete
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <div class="row">
+          <div class="col-md-12">
+            <div
+              v-show="deleteErrorMessage.length"
+              ref="deleteErrorMessage"
+              class="alert alert-danger"
+            >
+              <button
+                class="close"
+                data-close="alert"
+                @click.prevent="clearError('deleteErrorMessage')"
+              />
+              <span>{{ deleteErrorMessage }}</span>
+            </div>
+          </div>
+        </div>
+        <p>Are you sure you want to delete {{ discountToDelete.name }}?</p>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer clear"
+      >
+        <button
+          type="button"
+          class="btn blue"
+          :disabled="deleting"
+          @click="deleteDiscount()"
+        >
+          Delete
+          <i
+            v-show="deleting"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+      </div>
+    </modal>
+    <!-- END DELETE -->
+  </div>
 </template>
 
 <script>
@@ -355,6 +444,12 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 import { isNonNegativeNumber } from '@/controllers/utils'
 
 export default {
+	components: {
+		Breadcrumb,
+		LoadingScreen,
+		Modal,
+		NoResults
+	},
 	data () {
 		return {
 			breadcrumbArray: [{ name: 'Discounts', link: false }],
@@ -771,12 +866,6 @@ export default {
 		closeDeleteModal () {
 			this.showDeleteModal = false
 		}
-	},
-	components: {
-		Breadcrumb,
-		LoadingScreen,
-		Modal,
-		NoResults
 	}
 }
 </script>

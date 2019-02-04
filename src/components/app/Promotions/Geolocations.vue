@@ -1,271 +1,362 @@
 <template>
-	<div>
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
-		<h1 class='page-title'>Geolocations</h1>
-		<div class="note note-info">
-			<p>Create and manage geolocations.</p>
-		</div>
+  <div>
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
+    <h1 class="page-title">
+      Geolocations
+    </h1>
+    <div class="note note-info">
+      <p>Create and manage geolocations.</p>
+    </div>
 
-		<!-- BEGIN CREATE NEW -->
-		<div class="portlet box blue-hoki"
-		     v-if="$root.permissions['promotions geolocations create']">
-			<div class="portlet-title bg-blue-chambray"
-			     @click="toggleNewPanel()">
-				<div class="caption">
-					<i class="fa fa-2x fa-plus-circle"></i>
-					Create New Geolocation
-				</div>
-				<div class="tools">
-					<a :class="{'expand': !newCollapse, 'collapse': newCollapse}"></a>
-				</div>
-			</div>
-			<div class="portlet-body"
-			     :class="{'display-hide': newCollapse}">
-				<div class="form-group form-md-line-input form-md-floating-label">
-					<form role="form"
-					      @submit.prevent="createNewGeolocation()">
-						<div class="row">
-							<div class="col-md-12">
-								<div class="alert alert-danger"
-								     v-show="createErrorMessage"
-								     ref="createErrorMessage">
-									<button class="close"
-									        @click.prevent="clearError('createErrorMessage')"></button>
-									<span>{{createErrorMessage}}</span>
-								</div>
-							</div>
-							<div class="col-md-6">
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       class="form-control input-sm"
-									       :class="{'edited': newGeolocation.name.length}"
-									       id="form_control_1"
-									       v-model="newGeolocation.name">
-									<label for="form_control_1">Name</label>
-								</div>
-								<map-area v-if="!newCollapse"
-								          :lat="latitude"
-								          :lng="longitude"
-								          width="100%"
-								          height="500px"
-								          @polygonEmitted="updateNewPolygon">
-								</map-area>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-6">
-								<button type="submit"
-								        class="btn blue pull-right margin-top-20"
-								        :disabled="creating">
-									Create
-									<i v-show="creating"
-									   class="fa fa-spinner fa-pulse fa-fw">
-									</i>
-								</button>
-							</div>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-		<!-- END CREATE NEW -->
+    <!-- BEGIN CREATE NEW -->
+    <div
+      v-if="$root.permissions['promotions geolocations create']"
+      class="portlet box blue-hoki"
+    >
+      <div
+        class="portlet-title bg-blue-chambray"
+        @click="toggleNewPanel()"
+      >
+        <div class="caption">
+          <i class="fa fa-2x fa-plus-circle" />
+          Create New Geolocation
+        </div>
+        <div class="tools">
+          <a :class="{'expand': !newCollapse, 'collapse': newCollapse}" />
+        </div>
+      </div>
+      <div
+        class="portlet-body"
+        :class="{'display-hide': newCollapse}"
+      >
+        <div class="form-group form-md-line-input form-md-floating-label">
+          <form
+            role="form"
+            @submit.prevent="createNewGeolocation()"
+          >
+            <div class="row">
+              <div class="col-md-12">
+                <div
+                  v-show="createErrorMessage"
+                  ref="createErrorMessage"
+                  class="alert alert-danger"
+                >
+                  <button
+                    class="close"
+                    @click.prevent="clearError('createErrorMessage')"
+                  />
+                  <span>{{ createErrorMessage }}</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_1"
+                    v-model="newGeolocation.name"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': newGeolocation.name.length}"
+                  >
+                  <label for="form_control_1">
+                    Name
+                  </label>
+                </div>
+                <map-area
+                  v-if="!newCollapse"
+                  :lat="latitude"
+                  :lng="longitude"
+                  width="100%"
+                  height="500px"
+                  @polygonEmitted="updateNewPolygon"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <button
+                  type="submit"
+                  class="btn blue pull-right margin-top-20"
+                  :disabled="creating"
+                >
+                  Create
+                  <i
+                    v-show="creating"
+                    class="fa fa-spinner fa-pulse fa-fw"
+                  />
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- END CREATE NEW -->
 
-		<!-- LIST START -->
-		<div class="portlet light portlet-fit bordered margin-top-20">
-			<div class="portlet-title bg-blue-chambray">
-				<div class="menu-image-main">
-					<img src="../../../../public/client_logo.png">
-				</div>
-				<div class="caption">
-					<span class="caption-subject font-default bold uppercase">Geolocations</span>
-					<div class="caption-desc font-grey-cascade">See and edit geolocations</div>
-				</div>
-			</div>
-			<div class="portlet-body relative-block">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="alert alert-danger"
-						     v-show="listErrorMessage"
-						     ref="listErrorMessage">
-							<button class="close"
-							        @click="clearError('listErrorMessage')"></button>
-							<span>{{listErrorMessage}}</span>
-						</div>
-					</div>
-				</div>
+    <!-- LIST START -->
+    <div class="portlet light portlet-fit bordered margin-top-20">
+      <div class="portlet-title bg-blue-chambray">
+        <div class="menu-image-main">
+          <img src="../../../../public/client_logo.png">
+        </div>
+        <div class="caption">
+          <span class="caption-subject font-default bold uppercase">
+            Geolocations
+          </span>
+          <div class="caption-desc font-grey-cascade">
+            See and edit geolocations
+          </div>
+        </div>
+      </div>
+      <div class="portlet-body relative-block">
+        <div class="row">
+          <div class="col-md-12">
+            <div
+              v-show="listErrorMessage"
+              ref="listErrorMessage"
+              class="alert alert-danger"
+            >
+              <button
+                class="close"
+                @click="clearError('listErrorMessage')"
+              />
+              <span>{{ listErrorMessage }}</span>
+            </div>
+          </div>
+        </div>
 
-				<loading-screen :show="loadingGeolocations"
-				                :color="'#2C3E50'"
-				                :display="'inline'"></loading-screen>
+        <loading-screen
+          :show="loadingGeolocations"
+          :color="'#2C3E50'"
+          :display="'inline'"
+        />
 
-				<div class="mt-element-list">
-					<div class="mt-list-container list-news">
-						<ul>
-							<li class="mt-list-item actions-at-left margin-top-15"
-							    :class="{'animated' : animated === gl.id}"
-							    v-for="gl in geolocations"
-							    :key="gl.id">
-								<div class="list-item-actions">
-									<el-tooltip v-if="$root.permissions['promotions geolocations update']"
-									            content="Edit"
-									            effect="light"
-									            placement="right">
-										<a class="btn btn-circle btn-icon-only btn-default clickable"
-										   @click="editGeolocation(gl)">
-											<i class="fa fa-lg fa-pencil"></i>
-										</a>
-									</el-tooltip>
-									<el-tooltip v-if="$root.permissions['promotions geolocations read'] && !$root.permissions['promotions geolocations update']"
-									            content="View"
-									            effect="light"
-									            placement="right">
-										<a class="btn btn-circle btn-icon-only btn-default clickable"
-										   @click="editGeolocation(gl)">
-											<i class="fa fa-lg fa-eye"></i>
-										</a>
-									</el-tooltip>
-									<el-tooltip v-if="$root.permissions['promotions geolocations delete']"
-									            content="Delete"
-									            effect="light"
-									            placement="right">
-										<a class="btn btn-circle btn-icon-only btn-default clickable"
-										   @click="openDelete(gl)">
-											<i class="fa fa-lg fa-trash"></i>
-										</a>
-									</el-tooltip>
-								</div>
-								<div class="list-datetime bold uppercase font-red">
-									<span>{{ gl.name }}</span>
-								</div>
-								<div class="list-item-content height-mod">
-								</div>
-							</li>
-						</ul>
-					</div>
-				</div>
-				<div v-if="!loadingGeolocations && !geolocations.length">
-					<no-results :show="true"
-					            :type="'printers'"></no-results>
-				</div>
-			</div>
-		</div>
-		<!-- LIST END -->
+        <div class="mt-element-list">
+          <div class="mt-list-container list-news">
+            <ul>
+              <li
+                v-for="gl in geolocations"
+                :key="gl.id"
+                class="mt-list-item actions-at-left margin-top-15"
+                :class="{'animated' : animated === gl.id}"
+              >
+                <div class="list-item-actions">
+                  <el-tooltip
+                    v-if="$root.permissions['promotions geolocations update']"
+                    content="Edit"
+                    effect="light"
+                    placement="right"
+                  >
+                    <a
+                      class="btn btn-circle btn-icon-only btn-default clickable"
+                      @click="editGeolocation(gl)"
+                    >
+                      <i class="fa fa-lg fa-pencil" />
+                    </a>
+                  </el-tooltip>
+                  <el-tooltip
+                    v-if="$root.permissions['promotions geolocations read'] && !$root.permissions['promotions geolocations update']"
+                    content="View"
+                    effect="light"
+                    placement="right"
+                  >
+                    <a
+                      class="btn btn-circle btn-icon-only btn-default clickable"
+                      @click="editGeolocation(gl)"
+                    >
+                      <i class="fa fa-lg fa-eye" />
+                    </a>
+                  </el-tooltip>
+                  <el-tooltip
+                    v-if="$root.permissions['promotions geolocations delete']"
+                    content="Delete"
+                    effect="light"
+                    placement="right"
+                  >
+                    <a
+                      class="btn btn-circle btn-icon-only btn-default clickable"
+                      @click="openDelete(gl)"
+                    >
+                      <i class="fa fa-lg fa-trash" />
+                    </a>
+                  </el-tooltip>
+                </div>
+                <div class="list-datetime bold uppercase font-red">
+                  <span>{{ gl.name }}</span>
+                </div>
+                <div class="list-item-content height-mod" />
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div v-if="!loadingGeolocations && !geolocations.length">
+          <no-results
+            :show="true"
+            :type="'printers'"
+          />
+        </div>
+      </div>
+    </div>
+    <!-- LIST END -->
 
-		<!-- EDIT MODAL START -->
-		<modal :show="showEditModal"
-		       effect="fade"
-		       @closeOnEscape="closeEditModal"
-		       ref="editModal">
-			<div slot="modal-header"
-			     class="modal-header">
-				<button type="button"
-				        class="close"
-				        @click="closeEditModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Edit Geolocation</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<div class="alert alert-danger"
-				     v-show="editErrorMessage"
-				     ref="editErrorMessage">
-					<button class="close"
-					        @click="clearError('editErrorMessage')"></button>
-					<span>{{editErrorMessage}}</span>
-				</div>
-				<div class="row">
-					<div class="col-md-6">
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input :disabled="!$root.permissions['promotions geolocations update']"
-							       type="text"
-							       class="form-control input-sm"
-							       :class="{'edited': editedGeolocation.name.length}"
-							       id="form_control_1"
-							       v-model="editedGeolocation.name">
-							<label for="form_control_1">Geolocation Name</label>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-12">
-						<map-area v-if="showEditModal"
-						          :polygons="[editedGeolocation]"
-											:editable="$root.permissions['promotions geolocations update']"
-						          width="100%"
-						          height="500px"
-						          @polygonEmitted="updateEditedPolygon">
-						</map-area>
-					</div>
-				</div>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer">
-				<button v-if="!$root.permissions['promotions geolocations update']"
-				        type="button"
-				        class="btn btn-primary"
-				        @click="closeEditModal()">
-					Close
-				</button>
-				<button v-else
-				        type="button"
-				        class="btn btn-primary"
-				        @click="updateGeolocation()"
-				        :disabled="updating">
-					Save
-					<i v-show="updating"
-					   class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-			</div>
-		</modal>
-		<!-- EDIT MODAL END -->
+    <!-- EDIT MODAL START -->
+    <modal
+      ref="editModal"
+      :show="showEditModal"
+      effect="fade"
+      @closeOnEscape="closeEditModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeEditModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Edit Geolocation
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <div
+          v-show="editErrorMessage"
+          ref="editErrorMessage"
+          class="alert alert-danger"
+        >
+          <button
+            class="close"
+            @click="clearError('editErrorMessage')"
+          />
+          <span>{{ editErrorMessage }}</span>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_1"
+                v-model="editedGeolocation.name"
+                :disabled="!$root.permissions['promotions geolocations update']"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': editedGeolocation.name.length}"
+              >
+              <label for="form_control_1">
+                Geolocation Name
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <map-area
+              v-if="showEditModal"
+              :polygons="[editedGeolocation]"
+              :editable="$root.permissions['promotions geolocations update']"
+              width="100%"
+              height="500px"
+              @polygonEmitted="updateEditedPolygon"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer"
+      >
+        <button
+          v-if="!$root.permissions['promotions geolocations update']"
+          type="button"
+          class="btn btn-primary"
+          @click="closeEditModal()"
+        >
+          Close
+        </button>
+        <button
+          v-else
+          type="button"
+          class="btn btn-primary"
+          :disabled="updating"
+          @click="updateGeolocation()"
+        >
+          Save
+          <i
+            v-show="updating"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+      </div>
+    </modal>
+    <!-- EDIT MODAL END -->
 
-		<!-- DELETE MODAL START -->
-		<modal :show="showDeleteModal"
-		       effect="fade"
-		       @closeOnEscape="closeDeleteModal"
-		       ref="deleteModal">
-			<div slot="modal-header"
-			     class="modal-header">
-				<button type="button"
-				        class="close"
-				        @click="closeDeleteModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Delete Geolocation</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<div class="alert alert-danger"
-				     v-show="deleteErrorMessage"
-				     ref="deleteErrorMessage">
-					<button class="close"
-					        @click="clearError('deleteErrorMessage')"></button>
-					<span>{{deleteErrorMessage}}</span>
-				</div>
-				<div class="col-md-12">
-					Are you sure you want to delete '{{selectedGeolocation.name}}'?
-				</div>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer">
-				<button type="button"
-				        class="btn btn-primary"
-				        @click="deleteGeolocation()"
-				        :disabled="deleting">
-					Delete
-					<i v-show="deleting"
-					   class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-			</div>
-		</modal>
-		<!-- DELETE MODAL END -->
-
-	</div>
+    <!-- DELETE MODAL START -->
+    <modal
+      ref="deleteModal"
+      :show="showDeleteModal"
+      effect="fade"
+      @closeOnEscape="closeDeleteModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeDeleteModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Delete Geolocation
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <div
+          v-show="deleteErrorMessage"
+          ref="deleteErrorMessage"
+          class="alert alert-danger"
+        >
+          <button
+            class="close"
+            @click="clearError('deleteErrorMessage')"
+          />
+          <span>{{ deleteErrorMessage }}</span>
+        </div>
+        <div class="col-md-12">
+          Are you sure you want to delete '{{ selectedGeolocation.name }}'?
+        </div>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer"
+      >
+        <button
+          type="button"
+          class="btn btn-primary"
+          :disabled="deleting"
+          @click="deleteGeolocation()"
+        >
+          Delete
+          <i
+            v-show="deleting"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+      </div>
+    </modal>
+    <!-- DELETE MODAL END -->
+  </div>
 </template>
 
 <script>
@@ -278,6 +369,13 @@ import MapArea from '../../modules/MapArea'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
+	components: {
+		Breadcrumb,
+		LoadingScreen,
+		NoResults,
+		Modal,
+		MapArea
+	},
 	data () {
 		return {
 			breadcrumbArray: [{ name: 'Geolocations', link: false }],
@@ -706,13 +804,6 @@ export default {
 				type
 			})
 		}
-	},
-	components: {
-		Breadcrumb,
-		LoadingScreen,
-		NoResults,
-		Modal,
-		MapArea
 	}
 }
 </script>

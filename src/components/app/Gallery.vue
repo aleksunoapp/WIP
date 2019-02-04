@@ -1,83 +1,114 @@
 <template>
-	<div>
-		<!-- BEGIN PAGE BAR -->
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
-		<!-- END PAGE BAR -->
-		<!-- BEGIN PAGE TITLE-->
-		<h1 class="page-title">Gallery</h1>
-		<!-- END PAGE TITLE-->
-		<div class="note note-info">
-			<p>Preview and upload images.</p>
-		</div>
-		<div class="portlet-body">
-			<div class="row"
-			     v-show="!previewMode">
-				<div class="col-md-12">
-					<resource-picker :noButton="true"
-					                 @selected="updateImage"
-					                 :showDoneButton="false"
-					                 :imageButton="false"
-					                 :selectOnly="false"
-					                 :key="pickerKey">
-					</resource-picker>
-				</div>
-			</div>
-			<div class="row margin-top-20"
-			     v-show="previewMode">
-				<div class="col-xs-12 text-center">
-					<img :src="image.image_url">
-				</div>
-				<div class="col-xs-12">
-					<button type="button"
-					        class="btn btn-default pull-right"
-					        @click="closePreview()">
-						Close
-					</button>
-					<button v-if="$root.permissions['gallery delete']"
-					        type="button"
-					        class="btn btn-outline blue pull-right margin-right-10"
-					        @click="openDeleteModal()">
-						Delete
-					</button>
-				</div>
-			</div>
-		</div>
+  <div>
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
+    <!-- END PAGE BAR -->
+    <!-- BEGIN PAGE TITLE-->
+    <h1 class="page-title">
+      Gallery
+    </h1>
+    <!-- END PAGE TITLE-->
+    <div class="note note-info">
+      <p>Preview and upload images.</p>
+    </div>
+    <div class="portlet-body">
+      <div
+        v-show="!previewMode"
+        class="row"
+      >
+        <div class="col-md-12">
+          <resource-picker
+            :key="pickerKey"
+            :no-button="true"
+            :show-done-button="false"
+            :image-button="false"
+            :select-only="false"
+            @selected="updateImage"
+          />
+        </div>
+      </div>
+      <div
+        v-show="previewMode"
+        class="row margin-top-20"
+      >
+        <div class="col-xs-12 text-center">
+          <img :src="image.image_url">
+        </div>
+        <div class="col-xs-12">
+          <button
+            type="button"
+            class="btn btn-default pull-right"
+            @click="closePreview()"
+          >
+            Close
+          </button>
+          <button
+            v-if="$root.permissions['gallery delete']"
+            type="button"
+            class="btn btn-outline blue pull-right margin-right-10"
+            @click="openDeleteModal()"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
 
-		<!-- DELETE IMAGE MODAL START -->
-		<modal :show="showDeleteModal"
-		       effect="fade"
-		       @closeOnEscape="closeDeleteModal">
-			<div slot="modal-header"
-			     class="modal-header">
-				<button type="button"
-				        class="close"
-				        @click="closeDeleteModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Delete Image</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<div class="alert alert-danger"
-				     v-show="deleteErrorMessage.length"
-				     ref="deleteErrorMessage">
-					<button class="close"
-					        @click="clearDeleteErrorMessage()"></button>
-					<span>{{deleteErrorMessage}}</span>
-				</div>
-				<p>Are you sure you want to delete this image?</p>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer">
-				<button type="button"
-				        class="btn btn-primary"
-				        @click="deleteImage()">Delete</button>
-			</div>
-		</modal>
-		<!-- DELETE IMAGE MODAL END -->
-	</div>
+    <!-- DELETE IMAGE MODAL START -->
+    <modal
+      :show="showDeleteModal"
+      effect="fade"
+      @closeOnEscape="closeDeleteModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeDeleteModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Delete Image
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <div
+          v-show="deleteErrorMessage.length"
+          ref="deleteErrorMessage"
+          class="alert alert-danger"
+        >
+          <button
+            class="close"
+            @click="clearDeleteErrorMessage()"
+          />
+          <span>{{ deleteErrorMessage }}</span>
+        </div>
+        <p>Are you sure you want to delete this image?</p>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer"
+      >
+        <button
+          type="button"
+          class="btn btn-primary"
+          @click="deleteImage()"
+        >
+          Delete
+        </button>
+      </div>
+    </modal>
+    <!-- DELETE IMAGE MODAL END -->
+  </div>
 </template>
 
 <script>
@@ -91,6 +122,13 @@ import Modal from '@/components/modules/Modal'
 import global from '@/global'
 
 export default {
+	components: {
+		Breadcrumb,
+		NoResults,
+		LoadingScreen,
+		ResourcePicker,
+		Modal
+	},
 	data () {
 		return {
 			breadcrumbArray: [{ name: 'Gallery', link: false }],
@@ -103,6 +141,7 @@ export default {
 			showDeleteModal: false
 		}
 	},
+	watch: {},
 	methods: {
 		/**
 		 * To toggle between the open and closed state of the resource picker
@@ -188,14 +227,6 @@ export default {
 				type
 			})
 		}
-	},
-	watch: {},
-	components: {
-		Breadcrumb,
-		NoResults,
-		LoadingScreen,
-		ResourcePicker,
-		Modal
 	}
 }
 </script>

@@ -1,78 +1,113 @@
 <template>
-	<modal :show="showMenuTreeModal"
-	       :width="900"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="modal">
-		<div slot="modal-header"
-		     class="modal-header center">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 v-if="updateType !== 'sku'"
-			    class="modal-title center">Apply
-				<i>{{ headerText }}</i> To Multiple Items</h4>
-			<h4 v-else
-			    class="modal-title center">{{ headerText }}</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="portlet light bordered height-mod">
-				<div v-if="updateType !== 'sku' && selectedObject.name"
-				     class="portlet-title">
-					<div class="caption">
-						<i class="fa fa-cog font-blue-madison"></i>
-						<span class="caption-subject font-blue-madison sbold uppercase">{{ selectedObject.name }}</span>
-					</div>
-				</div>
-				<div class="portlet-body">
-					<div class="row"
-					     v-show="errorMessage"
-					     ref="errorMessage">
-						<div class="col-md-12">
-							<div class="alert alert-danger">
-								<button class="close"
-								        @click="clearError()"></button>
-								<span>{{errorMessage}}</span>
-							</div>
-						</div>
-					</div>
-					<div
-						class="row"
-						v-show="$root.activeLocation.id === undefined">
-						<div class="col-md-12">
-							<div class="alert alert-info">
-								<h4>No Store Selected</h4>
-								<p>Please select a store from the stores panel on the right to view its menus</p>
-							</div>
-						</div>
-					</div>
-					<div
-						class="row"
-						v-show="$root.activeLocation.id !== undefined">
-						<menu-item-picker 
-							@update="itemsSelected"
-							:previouslySelected="selectedSKUs"
-						>
-						</menu-item-picker>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button type="button"
-			        class="btn btn-primary"
-			        @click="closeModal()"
-							v-show="$root.activeLocation.id === undefined">Close</button>
-			<button type="button"
-			        class="btn btn-primary"
-			        @click="applySelectedItems()"
-							v-show="$root.activeLocation.id !== undefined">Save</button>
-		</div>
-	</modal>
+  <modal
+    ref="modal"
+    :show="showMenuTreeModal"
+    :width="900"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header center"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4
+        v-if="updateType !== 'sku'"
+        class="modal-title center"
+      >
+        Apply
+        <i>{{ headerText }}</i> To Multiple Items
+      </h4>
+      <h4
+        v-else
+        class="modal-title center"
+      >
+        {{ headerText }}
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div class="portlet light bordered height-mod">
+        <div
+          v-if="updateType !== 'sku' && selectedObject.name"
+          class="portlet-title"
+        >
+          <div class="caption">
+            <i class="fa fa-cog font-blue-madison" />
+            <span class="caption-subject font-blue-madison sbold uppercase">
+              {{ selectedObject.name }}
+            </span>
+          </div>
+        </div>
+        <div class="portlet-body">
+          <div
+            v-show="errorMessage"
+            ref="errorMessage"
+            class="row"
+          >
+            <div class="col-md-12">
+              <div class="alert alert-danger">
+                <button
+                  class="close"
+                  @click="clearError()"
+                />
+                <span>{{ errorMessage }}</span>
+              </div>
+            </div>
+          </div>
+          <div
+            v-show="$root.activeLocation.id === undefined"
+            class="row"
+          >
+            <div class="col-md-12">
+              <div class="alert alert-info">
+                <h4>No Store Selected</h4>
+                <p>Please select a store from the stores panel on the right to view its menus</p>
+              </div>
+            </div>
+          </div>
+          <div
+            v-show="$root.activeLocation.id !== undefined"
+            class="row"
+          >
+            <menu-item-picker 
+              :previously-selected="selectedSKUs"
+              @update="itemsSelected"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        v-show="$root.activeLocation.id === undefined"
+        type="button"
+        class="btn btn-primary"
+        @click="closeModal()"
+      >
+        Close
+      </button>
+      <button
+        v-show="$root.activeLocation.id !== undefined"
+        type="button"
+        class="btn btn-primary"
+        @click="applySelectedItems()"
+      >
+        Save
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -84,16 +119,9 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 import MenuItemPicker from '@/components/modules/MenuItemPicker'
 
 export default {
-	data () {
-		return {
-			showMenuTreeModal: false,
-			items: [],
-			isMenuSelected: false,
-			selectAllSelected: false,
-			isCategorySelected: false,
-			activeMenu: {},
-			activeCategory: {}
-		}
+	components: {
+		Modal,
+		MenuItemPicker
 	},
 	props: {
 		headerText: {
@@ -121,6 +149,17 @@ export default {
 		errorMessage: {
 			type: String,
 			default: ''
+		}
+	},
+	data () {
+		return {
+			showMenuTreeModal: false,
+			items: [],
+			isMenuSelected: false,
+			selectAllSelected: false,
+			isCategorySelected: false,
+			activeMenu: {},
+			activeCategory: {}
 		}
 	},
 	mounted () {
@@ -335,10 +374,6 @@ export default {
 				this.selectItemsForAttributes()
 			}
 		}
-	},
-	components: {
-		Modal,
-		MenuItemPicker
 	}
 }
 </script>

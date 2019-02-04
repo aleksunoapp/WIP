@@ -1,854 +1,1230 @@
 <template>
-	<div>
-		<!-- BEGIN PAGE BAR -->
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
-		<!-- END PAGE BAR -->
-		<!-- BEGIN PAGE TITLE-->
-		<h1 class="page-title">Promotions</h1>
-		<!-- END PAGE TITLE -->
-		<div class="note note-info">
-			<p>Add and manage an application's promotions.</p>
-		</div>
-		<!-- BEGIN CREATE NEW PROMOTION -->
-		<div class="portlet box blue-hoki"
-		     v-if="$root.permissions['promotions create']">
-			<div class="portlet-title bg-blue-chambray"
-			     @click="toggleCreatePromotionPanel()">
-				<div class="caption">
-					<i class="fa fa-2x fa-plus-circle"></i>
-					Create a New Promotion
-				</div>
-				<div class="tools">
-					<a :class="{'expand': !createNewPromotionCollapse, 'collapse': createNewPromotionCollapse}"></a>
-				</div>
-			</div>
-			<div class="portlet-body"
-			     :class="{'display-hide': createNewPromotionCollapse}">
-				<form role="form"
-				      @submit.prevent="createNewPromotion()">
-					<div class="form-body row">
-						<div class="col-md-12">
-							<div class="alert alert-danger"
-							     v-show="createErrorMessage"
-							     ref="createErrorMessage">
-								<button class="close"
-								        @click.prevent="clearError('createErrorMessage')"></button>
-								<span>{{ createErrorMessage }}</span>
-							</div>
-						</div>
-						<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
-							<resource-picker @open="toggleImageMode('newMenu', true)"
-							                 @close="toggleImageMode('newMenu', false)"
-							                 @selected="updateImage"
-							                 :imageButton="true"
-							                 :imageUrl="newPromotion.image"
-							                 class="margin-top-15">
-							</resource-picker>
-						</div>
-						<div class="col-md-5"
-						     v-show="!imageMode.newMenu">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newPromotion.name.length}"
-								       id="form_control_1"
-								       v-model="newPromotion.name">
-								<label for="form_control_1">Promotion Name</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newPromotion.description.length}"
-								       id="form_control_2"
-								       v-model="newPromotion.description">
-								<label for="form_control_2">Promotion Description</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newPromotion.short_description.length}"
-								       id="form_control_short_description"
-								       v-model="newPromotion.short_description">
-								<label for="form_control_short_description">Promotion Short Description</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newPromotion.sort_order.length}"
-								       id="form_control_sort_order"
-								       v-model="newPromotion.sort_order">
-								<label for="form_control_sort_order">Sort order</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<p class="grey-label">Promotion Start Date and Time</p>
-								<el-date-picker v-model="newPromotion.start_date"
-								                type="datetime"
-								                format="yyyy-MM-dd HH:mm"
-								                value-format="yyyy-MM-dd HH:mm"
-								                :clearable="false"
-								                placeholder="YYYY-MM-DD HH:MM">
-								</el-date-picker>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<p class="grey-label">Promotion End Date and Time</p>
-								<el-date-picker v-model="newPromotion.end_date"
-								                type="datetime"
-								                format="yyyy-MM-dd HH:mm"
-								                value-format="yyyy-MM-dd HH:mm"
-								                :clearable="false"
-								                placeholder="YYYY-MM-DD HH:MM">
-								</el-date-picker>
-							</div>
-						</div>
-						<div class="col-md-5"
-						     v-show="!imageMode.newMenu">
-							<div>
-								<p class="grey-label">Call to action type</p>
-								<el-select v-model="newPromotion.cta_type"
-								           placeholder="Select type"
-								           size="small"
-								           class="margin-bottom-15"
-								           id="form_control_cta_type"
-								           @change="clearCtaValue()">
-									<el-option label="call"
-									           value="call"></el-option>
-									<el-option label="camera"
-									           value="camera"></el-option>
-									<el-option label="gift"
-									           value="gift"></el-option>
-									<el-option label="gift cards"
-									           value="giftcards"></el-option>
-									<el-option label="hyperlink"
-									           value="hyperlink"></el-option>
-									<el-option label="in-app action"
-									           value="in_app_action"></el-option>
-									<el-option label="locations"
-									           value="locations"></el-option>
-									<el-option label="menu item"
-									           value="menu_item"></el-option>
-									<el-option label="my rewards"
-									           value="myrewards"></el-option>
-									<el-option label="nutrition"
-									           value="nutrition"></el-option>
-									<el-option label="order history"
-									           value="orderhistory"></el-option>
-									<el-option label="promo code"
-									           value="promo_code"></el-option>
-									<el-option label="SMS"
-									           value="sms"></el-option>
-									<el-option label="video"
-									           value="video"></el-option>
-								</el-select>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label"
-							     v-show="newPromotion.cta_type !== 'menu_item' && newPromotion.cta_type !== 'promo_code'">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newPromotion.cta_value.length}"
-								       id="form_control_cta_value"
-								       v-model="newPromotion.cta_value">
-								<label for="form_control_cta_value">Call to action value</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label"
-							     v-show="newPromotion.cta_type === 'menu_item'">
-								<button type="button"
-								        class="btn blue btn-outline"
-								        @click="openMenuModifierTree()">Select</button>
-								<p class="grey-label margin-top-10"
-								   v-show="newPromotion.skuArray.length">Selected {{newPromotion.skuArray.length}}
-									<span v-if="newPromotion.skuArray.length !== 1">items</span>
-									<span v-else>item</span>
-								</p>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label"
-							     v-show="newPromotion.cta_type === 'promo_code'">
-								<button type="button"
-								        class="btn blue btn-outline"
-								        @click="openPromoCodesCodeModal()">Select</button>
-								<p class="grey-label margin-top-10"
-								   v-show="newPromotion.cta_value.length">Selected {{newPromotion.cta_value.split(',').length}}
-									<span v-if="newPromotion.cta_value.split(',').length !== 1">codes</span>
-									<span v-else>code</span>
-								</p>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newPromotion.cta_text.length}"
-								       id="form_control_cta_text"
-								       v-model="newPromotion.cta_text">
-								<label for="form_control_cta_text">Call to action text</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<label>Featured:</label><br>
-								<el-switch v-model="newPromotion.featured"
-								           active-color="#0c6"
-								           inactive-color="#ff4949"
-								           :active-value="1"
-								           :inactive-value="0"
-								           active-text="Yes"
-								           inactive-text="No">
-								</el-switch>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<label>Web:</label><br>
-								<el-switch v-model="newPromotion.web"
-								           active-color="#0c6"
-								           inactive-color="#ff4949"
-								           :active-value="1"
-								           :inactive-value="0"
-								           active-text="Yes"
-								           inactive-text="No">
-								</el-switch>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<label>iOS:</label><br>
-								<el-switch v-model="newPromotion.ios"
-								           active-color="#0c6"
-								           inactive-color="#ff4949"
-								           :active-value="1"
-								           :inactive-value="0"
-								           active-text="Yes"
-								           inactive-text="No">
-								</el-switch>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<label>Android:</label><br>
-								<el-switch v-model="newPromotion.android"
-								           active-color="#0c6"
-								           inactive-color="#ff4949"
-								           :active-value="1"
-								           :inactive-value="0"
-								           active-text="Yes"
-								           inactive-text="No">
-								</el-switch>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<label>Apply to all stores:</label><br>
-								<el-switch v-model="newPromotion.apply_to_all_locations"
-								           active-color="#0c6"
-								           inactive-color="#ff4949"
-								           :active-value="1"
-								           :inactive-value="0"
-								           active-text="Yes"
-								           inactive-text="No">
-								</el-switch>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<label>Apply to a store group:</label><br>
-								<el-switch v-model="newPromotion.apply_to_a_store_group"
-								           active-color="#0c6"
-								           inactive-color="#ff4949"
-								           :active-value="1"
-								           :inactive-value="0"
-								           active-text="Yes"
-								           inactive-text="No">
-								</el-switch>
-							</div>
-							<div v-if="newPromotion.apply_to_a_store_group">
-								<button type="button"
-								        class="btn blue btn-outline"
-								        @click="openStoreGroupsModal()">
-									<span v-if="newPromotion.location_group_id === ''">Select</span>
-									<span v-else>Change</span> group</button>
-								<p class="grey-label margin-top-10"
-								   v-if="newPromotion.location_group_id !== ''">Selected {{newPromotion.location_group_name}}</p>
-							</div>
-						</div>
-					</div>
+  <div>
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
+    <!-- END PAGE BAR -->
+    <!-- BEGIN PAGE TITLE-->
+    <h1 class="page-title">
+      Promotions
+    </h1>
+    <!-- END PAGE TITLE -->
+    <div class="note note-info">
+      <p>Add and manage an application's promotions.</p>
+    </div>
+    <!-- BEGIN CREATE NEW PROMOTION -->
+    <div
+      v-if="$root.permissions['promotions create']"
+      class="portlet box blue-hoki"
+    >
+      <div
+        class="portlet-title bg-blue-chambray"
+        @click="toggleCreatePromotionPanel()"
+      >
+        <div class="caption">
+          <i class="fa fa-2x fa-plus-circle" />
+          Create a New Promotion
+        </div>
+        <div class="tools">
+          <a :class="{'expand': !createNewPromotionCollapse, 'collapse': createNewPromotionCollapse}" />
+        </div>
+      </div>
+      <div
+        class="portlet-body"
+        :class="{'display-hide': createNewPromotionCollapse}"
+      >
+        <form
+          role="form"
+          @submit.prevent="createNewPromotion()"
+        >
+          <div class="form-body row">
+            <div class="col-md-12">
+              <div
+                v-show="createErrorMessage"
+                ref="createErrorMessage"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  @click.prevent="clearError('createErrorMessage')"
+                />
+                <span>{{ createErrorMessage }}</span>
+              </div>
+            </div>
+            <div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
+              <resource-picker
+                :image-button="true"
+                :image-url="newPromotion.image"
+                class="margin-top-15"
+                @open="toggleImageMode('newMenu', true)"
+                @close="toggleImageMode('newMenu', false)"
+                @selected="updateImage"
+              />
+            </div>
+            <div
+              v-show="!imageMode.newMenu"
+              class="col-md-5"
+            >
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_1"
+                  v-model="newPromotion.name"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newPromotion.name.length}"
+                >
+                <label for="form_control_1">
+                  Promotion Name
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_2"
+                  v-model="newPromotion.description"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newPromotion.description.length}"
+                >
+                <label for="form_control_2">
+                  Promotion Description
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_short_description"
+                  v-model="newPromotion.short_description"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newPromotion.short_description.length}"
+                >
+                <label for="form_control_short_description">
+                  Promotion Short Description
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_sort_order"
+                  v-model="newPromotion.sort_order"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newPromotion.sort_order.length}"
+                >
+                <label for="form_control_sort_order">
+                  Sort order
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <p class="grey-label">
+                  Promotion Start Date and Time
+                </p>
+                <el-date-picker
+                  v-model="newPromotion.start_date"
+                  type="datetime"
+                  format="yyyy-MM-dd HH:mm"
+                  value-format="yyyy-MM-dd HH:mm"
+                  :clearable="false"
+                  placeholder="YYYY-MM-DD HH:MM"
+                />
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <p class="grey-label">
+                  Promotion End Date and Time
+                </p>
+                <el-date-picker
+                  v-model="newPromotion.end_date"
+                  type="datetime"
+                  format="yyyy-MM-dd HH:mm"
+                  value-format="yyyy-MM-dd HH:mm"
+                  :clearable="false"
+                  placeholder="YYYY-MM-DD HH:MM"
+                />
+              </div>
+            </div>
+            <div
+              v-show="!imageMode.newMenu"
+              class="col-md-5"
+            >
+              <div>
+                <p class="grey-label">
+                  Call to action type
+                </p>
+                <el-select
+                  id="form_control_cta_type"
+                  v-model="newPromotion.cta_type"
+                  placeholder="Select type"
+                  size="small"
+                  class="margin-bottom-15"
+                  @change="clearCtaValue()"
+                >
+                  <el-option
+                    label="call"
+                    value="call"
+                  />
+                  <el-option
+                    label="camera"
+                    value="camera"
+                  />
+                  <el-option
+                    label="gift"
+                    value="gift"
+                  />
+                  <el-option
+                    label="gift cards"
+                    value="giftcards"
+                  />
+                  <el-option
+                    label="hyperlink"
+                    value="hyperlink"
+                  />
+                  <el-option
+                    label="in-app action"
+                    value="in_app_action"
+                  />
+                  <el-option
+                    label="locations"
+                    value="locations"
+                  />
+                  <el-option
+                    label="menu item"
+                    value="menu_item"
+                  />
+                  <el-option
+                    label="my rewards"
+                    value="myrewards"
+                  />
+                  <el-option
+                    label="nutrition"
+                    value="nutrition"
+                  />
+                  <el-option
+                    label="order history"
+                    value="orderhistory"
+                  />
+                  <el-option
+                    label="promo code"
+                    value="promo_code"
+                  />
+                  <el-option
+                    label="SMS"
+                    value="sms"
+                  />
+                  <el-option
+                    label="video"
+                    value="video"
+                  />
+                </el-select>
+              </div>
+              <div
+                v-show="newPromotion.cta_type !== 'menu_item' && newPromotion.cta_type !== 'promo_code'"
+                class="form-group form-md-line-input form-md-floating-label"
+              >
+                <input
+                  id="form_control_cta_value"
+                  v-model="newPromotion.cta_value"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newPromotion.cta_value.length}"
+                >
+                <label for="form_control_cta_value">
+                  Call to action value
+                </label>
+              </div>
+              <div
+                v-show="newPromotion.cta_type === 'menu_item'"
+                class="form-group form-md-line-input form-md-floating-label"
+              >
+                <button
+                  type="button"
+                  class="btn blue btn-outline"
+                  @click="openMenuModifierTree()"
+                >
+                  Select
+                </button>
+                <p
+                  v-show="newPromotion.skuArray.length"
+                  class="grey-label margin-top-10"
+                >
+                  Selected {{ newPromotion.skuArray.length }}
+                  <span v-if="newPromotion.skuArray.length !== 1">
+                    items
+                  </span>
+                  <span v-else>
+                    item
+                  </span>
+                </p>
+              </div>
+              <div
+                v-show="newPromotion.cta_type === 'promo_code'"
+                class="form-group form-md-line-input form-md-floating-label"
+              >
+                <button
+                  type="button"
+                  class="btn blue btn-outline"
+                  @click="openPromoCodesCodeModal()"
+                >
+                  Select
+                </button>
+                <p
+                  v-show="newPromotion.cta_value.length"
+                  class="grey-label margin-top-10"
+                >
+                  Selected {{ newPromotion.cta_value.split(',').length }}
+                  <span v-if="newPromotion.cta_value.split(',').length !== 1">
+                    codes
+                  </span>
+                  <span v-else>
+                    code
+                  </span>
+                </p>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_cta_text"
+                  v-model="newPromotion.cta_text"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newPromotion.cta_text.length}"
+                >
+                <label for="form_control_cta_text">
+                  Call to action text
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <label>Featured:</label><br>
+                <el-switch
+                  v-model="newPromotion.featured"
+                  active-color="#0c6"
+                  inactive-color="#ff4949"
+                  :active-value="1"
+                  :inactive-value="0"
+                  active-text="Yes"
+                  inactive-text="No"
+                />
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <label>Web:</label><br>
+                <el-switch
+                  v-model="newPromotion.web"
+                  active-color="#0c6"
+                  inactive-color="#ff4949"
+                  :active-value="1"
+                  :inactive-value="0"
+                  active-text="Yes"
+                  inactive-text="No"
+                />
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <label>iOS:</label><br>
+                <el-switch
+                  v-model="newPromotion.ios"
+                  active-color="#0c6"
+                  inactive-color="#ff4949"
+                  :active-value="1"
+                  :inactive-value="0"
+                  active-text="Yes"
+                  inactive-text="No"
+                />
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <label>Android:</label><br>
+                <el-switch
+                  v-model="newPromotion.android"
+                  active-color="#0c6"
+                  inactive-color="#ff4949"
+                  :active-value="1"
+                  :inactive-value="0"
+                  active-text="Yes"
+                  inactive-text="No"
+                />
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <label>Apply to all stores:</label><br>
+                <el-switch
+                  v-model="newPromotion.apply_to_all_locations"
+                  active-color="#0c6"
+                  inactive-color="#ff4949"
+                  :active-value="1"
+                  :inactive-value="0"
+                  active-text="Yes"
+                  inactive-text="No"
+                />
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <label>Apply to a store group:</label><br>
+                <el-switch
+                  v-model="newPromotion.apply_to_a_store_group"
+                  active-color="#0c6"
+                  inactive-color="#ff4949"
+                  :active-value="1"
+                  :inactive-value="0"
+                  active-text="Yes"
+                  inactive-text="No"
+                />
+              </div>
+              <div v-if="newPromotion.apply_to_a_store_group">
+                <button
+                  type="button"
+                  class="btn blue btn-outline"
+                  @click="openStoreGroupsModal()"
+                >
+                  <span v-if="newPromotion.location_group_id === ''">
+                    Select
+                  </span>
+                  <span v-else>
+                    Change
+                  </span> group
+                </button>
+                <p
+                  v-if="newPromotion.location_group_id !== ''"
+                  class="grey-label margin-top-10"
+                >
+                  Selected {{ newPromotion.location_group_name }}
+                </p>
+              </div>
+            </div>
+          </div>
 
-					<div class="form-actions right margin-top-20"
-					     v-show="!imageMode.newMenu">
-						<button type="submit"
-						        class="btn blue"
-						        :disabled="creating">
-							Create
-							<i v-show="creating"
-							   class="fa fa-spinner fa-pulse fa-fw">
-							</i>
-						</button>
-					</div>
-				</form>
-			</div>
-		</div>
-		<!-- END CREATE NEW PROMOTION -->
+          <div
+            v-show="!imageMode.newMenu"
+            class="form-actions right margin-top-20"
+          >
+            <button
+              type="submit"
+              class="btn blue"
+              :disabled="creating"
+            >
+              Create
+              <i
+                v-show="creating"
+                class="fa fa-spinner fa-pulse fa-fw"
+              />
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- END CREATE NEW PROMOTION -->
 
-		<!-- BEGIN DISPLAY PROMOTIONS -->
-		<loading-screen :show="displayPromotionsData"
-		                :color="'#2C3E50'"
-		                :display="'inline'"></loading-screen>
-		<div v-if="!displayPromotionsData">
-			<div class="portlet light portlet-fit bordered margin-top-20"
-			     id="promotions-container">
-				<div class="portlet-title bg-blue-chambray">
-					<div class="menu-image-main">
-						<img src="../../../public/client_logo.png">
-					</div>
-					<div class="caption">
-						<span class="caption-subject font-default bold uppercase">Promotions</span>
-						<div class="caption-desc font-grey-cascade">Select promotions to assign to a store.</div>
-					</div>
-				</div>
-				<div class="portlet-body">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="alert alert-danger"
-							     v-show="listErrorMessage"
-							     ref="listErrorMessage">
-								<button class="close"
-								        @click="clearError('listErrorMessage')"></button>
-								<span>{{listErrorMessage}}</span>
-							</div>
-						</div>
-					</div>
-					<div class="mt-element-list margin-top-15"
-					     v-if="promotions.length">
-						<div class="mt-list-container list-news ext-1 no-border">
-							<ul>
-								<li class="mt-list-item margin-top-15"
-								    v-for="promotion in promotions"
-								    :id="'promotion-' + promotion.id"
-								    :key="promotion.id">
-									<div class="margin-bottom-15 actions-on-top">
-										<el-tooltip v-if="$root.permissions['promotions update']"
-										            content="Edit"
-										            effect="light"
-										            placement="top">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="editPromotion(promotion, $event)">
-												<i class="fa fa-lg fa-pencil"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['promotions read'] && !$root.permissions['promotions update']"
-										            content="View"
-										            effect="light"
-										            placement="top">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="editPromotion(promotion, $event)">
-												<i class="fa fa-lg fa-eye"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['promotions update']"
-										            content="Apply to ..."
-										            effect="light"
-										            placement="top">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="applyPromotion(promotion, $event)">
-												<i class="icon-layers"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['promotions update']"
-													content="Assign Countries"
-													effect="light"
-													placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default"
-												@click.stop="openAssignCountriesModal(promotion)">
-												<i class="fa fa-lg fa-flag-o"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['promotions update']"
-										            content="QR code"
-										            effect="light"
-										            placement="top">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="openQrCodeModal(promotion, $event)">
-												<i class="fa fa-lg fa-qrcode"
-												   aria-hidden="true"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['promotions delete']"
-										            content="Delete"
-										            effect="light"
-										            placement="top">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="deletePromotion(promotion, $event)">
-												<i class="fa fa-lg fa-trash"></i>
-											</a>
-										</el-tooltip>
-									</div>
-									<div class="list-thumb">
-										<a v-if="promotion.image.length">
-											<img alt=""
-											     :src="promotion.image" />
-										</a>
-										<a v-else>
-											<img src="../../assets/img/app/login/bg1.jpg">
-										</a>
-									</div>
-									<div class="list-datetime bold uppercase font-red">
-										<span>{{ promotion.name }}</span>
-									</div>
-									<div class="list-item-content">
-										<div class="row">
-											<div class="col-xs-5">
-												<strong>Start:</strong>
-												<span>{{ promotion.start_date }}</span>
-											</div>
-											<div class="col-xs-5">
-												<strong>End:</strong>
-												<span>{{ promotion.end_date }}</span>
-											</div>
-											<div class="col-xs-5">
-												<strong>Featured:</strong>
-												<span v-show="promotion.featured === 1">yes</span>
-												<span v-show="promotion.featured === 0">no</span>
-											</div>
-											<div class="col-xs-5">
-												<strong>CTA:</strong>
-												<span>{{ ctaLabel(promotion.cta_type) }}</span>
-											</div>
-											<div class="col-xs-10">
-												<strong>Short Description:</strong>
-												<span>{{ promotion.short_description }}</span>
-											</div>
-										</div>
-									</div>
-									<div class="">
-										<div v-if="promotion.selected">
-											<button @click="toggleChecked(promotion, $event)"
-											        class="btn btn-success custom-button full-width">ON</button>
-										</div>
-										<div v-if="!promotion.selected">
-											<button @click="toggleChecked(promotion, $event)"
-											        class="btn btn-danger custom-button full-width">OFF</button>
-										</div>
-									</div>
-								</li>
-							</ul>
-							<div class="form-actions right margin-top-20"
-							     v-if="canAny([
-									'stores promotions update'
-								])">
-								<button type="button"
-								        class="btn blue"
-								        @click="checkForLocation()"
-								        :disabled="updating">
-									Save
-									<i v-show="updating"
-									   class="fa fa-spinner fa-pulse fa-fw">
-									</i>
-								</button>
-							</div>
-						</div>
-					</div>
-					<div class="margin-top-20"
-					     v-if="!promotions.length && !displayPromotionsData">
-						<no-results :show="!promotions.length"
-						            :type="'promotions'"></no-results>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- END DISPLAY PROMOTIONS -->
+    <!-- BEGIN DISPLAY PROMOTIONS -->
+    <loading-screen
+      :show="displayPromotionsData"
+      :color="'#2C3E50'"
+      :display="'inline'"
+    />
+    <div v-if="!displayPromotionsData">
+      <div
+        id="promotions-container"
+        class="portlet light portlet-fit bordered margin-top-20"
+      >
+        <div class="portlet-title bg-blue-chambray">
+          <div class="menu-image-main">
+            <img src="../../../public/client_logo.png">
+          </div>
+          <div class="caption">
+            <span class="caption-subject font-default bold uppercase">
+              Promotions
+            </span>
+            <div class="caption-desc font-grey-cascade">
+              Select promotions to assign to a store.
+            </div>
+          </div>
+        </div>
+        <div class="portlet-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div
+                v-show="listErrorMessage"
+                ref="listErrorMessage"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  @click="clearError('listErrorMessage')"
+                />
+                <span>{{ listErrorMessage }}</span>
+              </div>
+            </div>
+          </div>
+          <div
+            v-if="promotions.length"
+            class="mt-element-list margin-top-15"
+          >
+            <div class="mt-list-container list-news ext-1 no-border">
+              <ul>
+                <li
+                  v-for="promotion in promotions"
+                  :id="'promotion-' + promotion.id"
+                  :key="promotion.id"
+                  class="mt-list-item margin-top-15"
+                >
+                  <div class="margin-bottom-15 actions-on-top">
+                    <el-tooltip
+                      v-if="$root.permissions['promotions update']"
+                      content="Edit"
+                      effect="light"
+                      placement="top"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="editPromotion(promotion, $event)"
+                      >
+                        <i class="fa fa-lg fa-pencil" />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['promotions read'] && !$root.permissions['promotions update']"
+                      content="View"
+                      effect="light"
+                      placement="top"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="editPromotion(promotion, $event)"
+                      >
+                        <i class="fa fa-lg fa-eye" />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['promotions update']"
+                      content="Apply to ..."
+                      effect="light"
+                      placement="top"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="applyPromotion(promotion, $event)"
+                      >
+                        <i class="icon-layers" />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['promotions update']"
+                      content="Assign Countries"
+                      effect="light"
+                      placement="right"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click.stop="openAssignCountriesModal(promotion)"
+                      >
+                        <i class="fa fa-lg fa-flag-o" />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['promotions update']"
+                      content="QR code"
+                      effect="light"
+                      placement="top"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="openQrCodeModal(promotion, $event)"
+                      >
+                        <i
+                          class="fa fa-lg fa-qrcode"
+                          aria-hidden="true"
+                        />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['promotions delete']"
+                      content="Delete"
+                      effect="light"
+                      placement="top"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="deletePromotion(promotion, $event)"
+                      >
+                        <i class="fa fa-lg fa-trash" />
+                      </a>
+                    </el-tooltip>
+                  </div>
+                  <div class="list-thumb">
+                    <a v-if="promotion.image.length">
+                      <img
+                        alt=""
+                        :src="promotion.image"
+                      >
+                    </a>
+                    <a v-else>
+                      <img src="../../assets/img/app/login/bg1.jpg">
+                    </a>
+                  </div>
+                  <div class="list-datetime bold uppercase font-red">
+                    <span>{{ promotion.name }}</span>
+                  </div>
+                  <div class="list-item-content">
+                    <div class="row">
+                      <div class="col-xs-5">
+                        <strong>Start:</strong>
+                        <span>{{ promotion.start_date }}</span>
+                      </div>
+                      <div class="col-xs-5">
+                        <strong>End:</strong>
+                        <span>{{ promotion.end_date }}</span>
+                      </div>
+                      <div class="col-xs-5">
+                        <strong>Featured:</strong>
+                        <span v-show="promotion.featured === 1">
+                          yes
+                        </span>
+                        <span v-show="promotion.featured === 0">
+                          no
+                        </span>
+                      </div>
+                      <div class="col-xs-5">
+                        <strong>CTA:</strong>
+                        <span>{{ ctaLabel(promotion.cta_type) }}</span>
+                      </div>
+                      <div class="col-xs-10">
+                        <strong>Short Description:</strong>
+                        <span>{{ promotion.short_description }}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="">
+                    <div v-if="promotion.selected">
+                      <button
+                        class="btn btn-success custom-button full-width"
+                        @click="toggleChecked(promotion, $event)"
+                      >
+                        ON
+                      </button>
+                    </div>
+                    <div v-if="!promotion.selected">
+                      <button
+                        class="btn btn-danger custom-button full-width"
+                        @click="toggleChecked(promotion, $event)"
+                      >
+                        OFF
+                      </button>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+              <div
+                v-if="canAny([
+                  'stores promotions update'
+                ])"
+                class="form-actions right margin-top-20"
+              >
+                <button
+                  type="button"
+                  class="btn blue"
+                  :disabled="updating"
+                  @click="checkForLocation()"
+                >
+                  Save
+                  <i
+                    v-show="updating"
+                    class="fa fa-spinner fa-pulse fa-fw"
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            v-if="!promotions.length && !displayPromotionsData"
+            class="margin-top-20"
+          >
+            <no-results
+              :show="!promotions.length"
+              :type="'promotions'"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END DISPLAY PROMOTIONS -->
 
-		<edit-promotion v-if="showEditPromotionModal"
-		                :selectedPromotionId="selectedPromotionId"
-		                @updatePromotion="updatePromotion"
-		                @closeEditPromotionModal="closeEditPromotionModal"></edit-promotion>
+    <edit-promotion
+      v-if="showEditPromotionModal"
+      :selected-promotion-id="selectedPromotionId"
+      @updatePromotion="updatePromotion"
+      @closeEditPromotionModal="closeEditPromotionModal"
+    />
 
-		<delete-promotion v-if="deletePromotionModalActive"
-		                  :selectedPromotionId="selectedPromotionId"
-		                  @closeDeletePromotionModal="closeDeletePromotionModal"
-		                  @deletePromotionAndCloseModal="deletePromotionAndCloseModal"></delete-promotion>
+    <delete-promotion
+      v-if="deletePromotionModalActive"
+      :selected-promotion-id="selectedPromotionId"
+      @closeDeletePromotionModal="closeDeletePromotionModal"
+      @deletePromotionAndCloseModal="deletePromotionAndCloseModal"
+    />
 
-		<assign-countries-to-promotion
-			v-if="showAssignCountriesModal"
-			:promotion="promotionToAssignCountriesTo"
-			@close="closeAssignCountriesModal"
-		>
-		</assign-countries-to-promotion>
+    <assign-countries-to-promotion
+      v-if="showAssignCountriesModal"
+      :promotion="promotionToAssignCountriesTo"
+      @close="closeAssignCountriesModal"
+    />
 
-		<modal :show="showStoreGroupsModal"
-		       effect="fade"
-		       @closeOnEscape="closeStoreGroupsModal"
-		       ref="storesModal">
-			<div slot="modal-header"
-			     class="modal-header">
-				<button type="button"
-				        class="close"
-				        @click="closeStoreGroupsModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Select A Store Group</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<div class="row">
-					<div class="col-md-12"
-					     v-show="storeGroupsError"
-					     ref="storeGroupsError">
-						<div class="alert alert-danger">
-							<button class="close"
-							        @click="clearError('storeGroupsError')"></button>
-							<span>{{ storeGroupsError }}</span>
-						</div>
-					</div>
-				</div>
-				<el-radio-group v-model="newPromotion.location_group_id"
-				                @change="saveGroupName">
-					<el-radio v-for="group in storeGroups"
-					          :label="group.id"
-					          class="group-radio margin-top-15"
-					          :key="group.id">{{group.name}}</el-radio>
-				</el-radio-group>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer clear">
-				<button type="button"
-				        class="btn blue btn-outline"
-				        @click="closeStoreGroupsModal()">Done</button>
-			</div>
-		</modal>
+    <modal
+      ref="storesModal"
+      :show="showStoreGroupsModal"
+      effect="fade"
+      @closeOnEscape="closeStoreGroupsModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeStoreGroupsModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Select A Store Group
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <div class="row">
+          <div
+            v-show="storeGroupsError"
+            ref="storeGroupsError"
+            class="col-md-12"
+          >
+            <div class="alert alert-danger">
+              <button
+                class="close"
+                @click="clearError('storeGroupsError')"
+              />
+              <span>{{ storeGroupsError }}</span>
+            </div>
+          </div>
+        </div>
+        <el-radio-group
+          v-model="newPromotion.location_group_id"
+          @change="saveGroupName"
+        >
+          <el-radio
+            v-for="group in storeGroups"
+            :key="group.id"
+            :label="group.id"
+            class="group-radio margin-top-15"
+          >
+            {{ group.name }}
+          </el-radio>
+        </el-radio-group>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer clear"
+      >
+        <button
+          type="button"
+          class="btn blue btn-outline"
+          @click="closeStoreGroupsModal()"
+        >
+          Done
+        </button>
+      </div>
+    </modal>
 
-		<modal :show="showApplyPromotionModal"
-		       effect="fade"
-		       @closeOnEscape="closeApplyModal"
-		       ref="applyModal">
-			<div slot="modal-header"
-			     class="modal-header">
-				<button type="button"
-				        class="close"
-				        @click="closeApplyModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Apply Promotion</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<div class="row">
-					<div class="col-md-12"
-					     v-show="applyErrorMessage"
-					     ref="applyErrorMessage">
-						<div class="alert alert-danger">
-							<button class="close"
-							        @click="clearError('applyErrorMessage')"></button>
-							<span>{{ applyErrorMessage }}</span>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-10 col-md-offset-1">
-						<div class="container__flex-row--center">
-							<h5 class="modal-title margin-bottom-10">Apply to:</h5>
-							<el-radio-group v-model="applyMode"
-							                size="small">
-								<el-radio-button label="all">All stores</el-radio-button>
-								<el-radio-button label="group">Store group</el-radio-button>
-								<el-radio-button label="geolocation">Geolocation</el-radio-button>
-								<el-radio-button label="userGroup">User group</el-radio-button>
-							</el-radio-group>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-10 col-md-offset-1"
-					     v-if="applyMode === 'all'">
-						<p>
-							This promotion will be applied to all stores.
-						</p>
-					</div>
-					<div class="col-md-10 col-md-offset-1"
-					     v-if="applyMode === 'group'">
-						<el-radio-group v-model="selectedGroupId">
-							<el-radio v-for="group in storeGroups"
-							          :label="group.id"
-							          class="group-radio margin-top-15"
-							          :key="group.id">{{group.name}}</el-radio>
-						</el-radio-group>
-					</div>
-					<div class="col-md-10 col-md-offset-1"
-					     v-if="applyMode === 'geolocation'">
-						<el-radio-group v-model="selectedGeolocationId">
-							<el-radio v-for="gl in geolocations"
-							          :label="gl.id"
-							          class="group-radio margin-top-15"
-							          :key="gl.id">{{gl.name}}</el-radio>
-						</el-radio-group>
-					</div>
-					<div class="col-md-10 col-md-offset-1"
-					     v-if="applyMode === 'userGroup'">
-						<el-radio-group v-model="selectedUserGroupId">
-							<el-radio v-for="userGroup in userGroups"
-							          :label="userGroup.id"
-							          class="group-radio margin-top-15"
-							          :key="userGroup.id">{{userGroup.name}}</el-radio>
-						</el-radio-group>
-					</div>
-				</div>
+    <modal
+      ref="applyModal"
+      :show="showApplyPromotionModal"
+      effect="fade"
+      @closeOnEscape="closeApplyModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeApplyModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Apply Promotion
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <div class="row">
+          <div
+            v-show="applyErrorMessage"
+            ref="applyErrorMessage"
+            class="col-md-12"
+          >
+            <div class="alert alert-danger">
+              <button
+                class="close"
+                @click="clearError('applyErrorMessage')"
+              />
+              <span>{{ applyErrorMessage }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-10 col-md-offset-1">
+            <div class="container__flex-row--center">
+              <h5 class="modal-title margin-bottom-10">
+                Apply to:
+              </h5>
+              <el-radio-group
+                v-model="applyMode"
+                size="small"
+              >
+                <el-radio-button label="all">
+                  All stores
+                </el-radio-button>
+                <el-radio-button label="group">
+                  Store group
+                </el-radio-button>
+                <el-radio-button label="geolocation">
+                  Geolocation
+                </el-radio-button>
+                <el-radio-button label="userGroup">
+                  User group
+                </el-radio-button>
+              </el-radio-group>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div
+            v-if="applyMode === 'all'"
+            class="col-md-10 col-md-offset-1"
+          >
+            <p>
+              This promotion will be applied to all stores.
+            </p>
+          </div>
+          <div
+            v-if="applyMode === 'group'"
+            class="col-md-10 col-md-offset-1"
+          >
+            <el-radio-group v-model="selectedGroupId">
+              <el-radio
+                v-for="group in storeGroups"
+                :key="group.id"
+                :label="group.id"
+                class="group-radio margin-top-15"
+              >
+                {{ group.name }}
+              </el-radio>
+            </el-radio-group>
+          </div>
+          <div
+            v-if="applyMode === 'geolocation'"
+            class="col-md-10 col-md-offset-1"
+          >
+            <el-radio-group v-model="selectedGeolocationId">
+              <el-radio
+                v-for="gl in geolocations"
+                :key="gl.id"
+                :label="gl.id"
+                class="group-radio margin-top-15"
+              >
+                {{ gl.name }}
+              </el-radio>
+            </el-radio-group>
+          </div>
+          <div
+            v-if="applyMode === 'userGroup'"
+            class="col-md-10 col-md-offset-1"
+          >
+            <el-radio-group v-model="selectedUserGroupId">
+              <el-radio
+                v-for="userGroup in userGroups"
+                :key="userGroup.id"
+                :label="userGroup.id"
+                class="group-radio margin-top-15"
+              >
+                {{ userGroup.name }}
+              </el-radio>
+            </el-radio-group>
+          </div>
+        </div>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer center"
+      >
+        <button
+          v-if="applyMode === 'all'"
+          type="button"
+          class="btn blue"
+          :disabled="applyingToAllStores"
+          @click="applyToAllStores()"
+        >
+          Apply
+          <i
+            v-show="applyingToAllStores"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+        <button
+          v-if="applyMode === 'group'"
+          type="button"
+          class="btn blue"
+          :disabled="applyingToGroup"
+          @click="applyToGroup()"
+        >
+          Apply
+          <i
+            v-show="applyingToGroup"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+        <button
+          v-if="applyMode === 'geolocation'"
+          type="button"
+          class="btn blue"
+          :disabled="applyingToGeolocation"
+          @click="applyToGeolocation()"
+        >
+          Apply
+          <i
+            v-show="applyingToGeolocation"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+        <div
+          v-if="applyMode === 'userGroup'"
+          class="footer-wrapper"
+        >
+          <el-pagination
+            class="inline-block pagination-center"
+            small
+            layout="prev, pager, next"
+            :page-count="pageCount"
+            @current-change="changeCurrentPage"
+          />
+          <button
+            type="button"
+            class="btn blue"
+            :disabled="applyingToUserGroup"
+            @click="applyToUserGroup()"
+          >
+            Apply
+            <i
+              v-show="applyingToUserGroup"
+              class="fa fa-spinner fa-pulse fa-fw"
+            />
+          </button>
+        </div>
+      </div>
+    </modal>
 
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer center">
-				<button v-if="applyMode === 'all'"
-				        type="button"
-				        class="btn blue"
-				        @click="applyToAllStores()"
-				        :disabled="applyingToAllStores">
-					Apply
-					<i v-show="applyingToAllStores"
-					   class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-				<button v-if="applyMode === 'group'"
-				        type="button"
-				        class="btn blue"
-				        @click="applyToGroup()"
-				        :disabled="applyingToGroup">
-					Apply
-					<i v-show="applyingToGroup"
-					   class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-				<button v-if="applyMode === 'geolocation'"
-				        type="button"
-				        class="btn blue"
-				        @click="applyToGeolocation()"
-				        :disabled="applyingToGeolocation">
-					Apply
-					<i v-show="applyingToGeolocation"
-					   class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-				<div class="footer-wrapper"
-				     v-if="applyMode === 'userGroup'">
-					<el-pagination class="inline-block pagination-center"
-					               small
-					               layout="prev, pager, next"
-					               :page-count="pageCount"
-					               @current-change="changeCurrentPage">
-					</el-pagination>
-					<button type="button"
-					        class="btn blue"
-					        @click="applyToUserGroup()"
-					        :disabled="applyingToUserGroup">
-						Apply
-						<i v-show="applyingToUserGroup"
-						   class="fa fa-spinner fa-pulse fa-fw">
-						</i>
-					</button>
-				</div>
-			</div>
-		</modal>
+    <modal
+      ref="qrModal"
+      :show="showQrCodeModal"
+      effect="fade"
+      @closeOnEscape="closeQrCodeModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeQrCodeModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          QR Code
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <div class="row">
+          <div
+            v-show="qrErrorMessage.length"
+            ref="qrErrorMessage"
+            class="col-md-12"
+          >
+            <div class="alert alert-danger">
+              <button
+                class="close"
+                @click="clearError('qrErrorMessage')"
+              />
+              <span>{{ qrErrorMessage }}</span>
+            </div>
+          </div>
+        </div>
+        <div v-if="promotionForQrCode.qr_code.length">
+          <div class="row">
+            <div class="col-xs-12 text-center">
+              <qrcode
+                id="qrcode1"
+                class="limited-height"
+                :content="promotionForQrCode.qr_code"
+                :image="freshiiLogo"
+                color="#007B3F"
+                background-color="#ffffff"
+                :width="1000"
+                :download-name="`${promotionForQrCode.name}.png`"
+              />
+            </div>
+          </div>
+          <div class="row margin-top-20">
+            <div class="col-xs-6 text-right">
+              <strong>Minimum loyalty points: </strong>
+            </div>
+            <div class="col-xs-6">
+              {{ promotionForQrCode.min_loyalty_points }}
+            </div>
+            <div class="col-xs-6 text-right">
+              <strong>Maximum redemptions: </strong>
+            </div>
+            <div class="col-xs-6">
+              {{ promotionForQrCode.max_use }}
+            </div>
+            <div class="col-xs-6 text-right">
+              <strong>Maximum redemptions per person: </strong>
+            </div>
+            <div class="col-xs-6">
+              {{ promotionForQrCode.max_use_per_person }}
+            </div>
+            <div class="col-xs-6 text-right">
+              <strong>Locations: </strong>
+            </div>
+            <div class="col-xs-6">
+              <span v-show="promotionForQrCode.locations[0] === 'all'">
+                all
+              </span>
+              <span v-show="promotionForQrCode.locations[0] !== 'all'">
+                {{ promotionForQrCode.locations.length }}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div v-if="!promotionForQrCode.qr_code.length && !promotionForQrCode.showStoreSelector">
+          <div class="form-group form-md-line-input form-md-floating-label">
+            <input
+              id="form_control_min_loyalty_points"
+              v-model="promotionForQrCode.min_loyalty_points"
+              type="text"
+              class="form-control input-sm"
+              :class="{'edited': promotionForQrCode.min_loyalty_points.length}"
+            >
+            <label for="form_control_min_loyalty_points">
+              Minimum Loyalty Points
+            </label>
+          </div>
+          <div class="form-group form-md-line-input form-md-floating-label">
+            <input
+              id="form_control_max_use"
+              v-model="promotionForQrCode.max_use"
+              type="text"
+              class="form-control input-sm"
+              :class="{'edited': promotionForQrCode.max_use.length}"
+            >
+            <label for="form_control_max_use">
+              Maximum Redemptions
+            </label>
+          </div>
+          <div class="form-group form-md-line-input form-md-floating-label">
+            <input
+              id="form_control_max_use_per_person"
+              v-model="promotionForQrCode.max_use_per_person"
+              type="text"
+              class="form-control input-sm"
+              :class="{'edited': promotionForQrCode.max_use_per_person.length}"
+            >
+            <label for="form_control_max_use_per_person">
+              Maximum Redemptions Per Person
+            </label>
+          </div>
+          <div>
+            <button
+              class="btn"
+              :class="{'blue-chambray' : !promotionForQrCode.allLocations, 'blue btn-outline' : promotionForQrCode.allLocations}"
+              @click="qrForSelectLocations()"
+            >
+              Select stores
+            </button>
+            <p class="grey-label">
+              <span v-show="promotionForQrCode.allLocations">
+                All
+              </span>
+              <span v-show="!promotionForQrCode.allLocations">
+                {{ promotionForQrCode.locations.length }}
+              </span>
+              <span v-if="promotionForQrCode.allLocations || (!promotionForQrCode.allLocations && promotionForQrCode.locations.length !== 1)">
+                stores
+              </span>
+              <span v-else>
+                store
+              </span>
+              selected
+            </p>
+          </div>
+        </div>
+        <div v-if="!promotionForQrCode.qr_code.length && promotionForQrCode.showStoreSelector">
+          <store-picker
+            :previously-selected="promotionForQrCode.locations"
+            @update="selectQrLocations"
+          />
+        </div>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer clear"
+      >
+        <button
+          v-if="!promotionForQrCode.qr_code.length && !promotionForQrCode.showStoreSelector"
+          type="button"
+          class="btn blue"
+          :disabled="generating"
+          @click="generateQrCode()"
+        >
+          Generate
+          <i
+            v-show="generating"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+        <button
+          v-if="!promotionForQrCode.qr_code.length && promotionForQrCode.showStoreSelector"
+          type="button"
+          class="btn blue"
+          @click="closeStorePicker()"
+        >
+          Select
+        </button>
+        <button
+          v-if="promotionForQrCode.qr_code.length"
+          type="button"
+          class="btn blue"
+          :disabled="deleting"
+          @click="deleteQrCode()"
+        >
+          Delete
+          <i
+            v-show="deleting"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+      </div>
+    </modal>
 
-		<modal :show="showQrCodeModal"
-		       effect="fade"
-		       @closeOnEscape="closeQrCodeModal"
-		       ref="qrModal">
-			<div slot="modal-header"
-			     class="modal-header">
-				<button type="button"
-				        class="close"
-				        @click="closeQrCodeModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">QR Code</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<div class="row">
-					<div class="col-md-12"
-					     v-show="qrErrorMessage.length"
-					     ref="qrErrorMessage">
-						<div class="alert alert-danger">
-							<button class="close"
-							        @click="clearError('qrErrorMessage')"></button>
-							<span>{{ qrErrorMessage }}</span>
-						</div>
-					</div>
-				</div>
-				<div v-if="promotionForQrCode.qr_code.length">
-					<div class="row">
-						<div class="col-xs-12 text-center">
-							<qrcode class="limited-height"
-							        :content="promotionForQrCode.qr_code"
-							        :image="freshiiLogo"
-							        color="#007B3F"
-							        backgroundColor="#ffffff"
-							        :width="1000"
-							        :downloadName="`${promotionForQrCode.name}.png`"
-							        id="qrcode1">
-							</qrcode>
-						</div>
-					</div>
-					<div class="row margin-top-20">
-						<div class="col-xs-6 text-right">
-							<strong>Minimum loyalty points: </strong>
-						</div>
-						<div class="col-xs-6">{{promotionForQrCode.min_loyalty_points}}</div>
-						<div class="col-xs-6 text-right">
-							<strong>Maximum redemptions: </strong>
-						</div>
-						<div class="col-xs-6">{{promotionForQrCode.max_use}}</div>
-						<div class="col-xs-6 text-right">
-							<strong>Maximum redemptions per person: </strong>
-						</div>
-						<div class="col-xs-6">{{promotionForQrCode.max_use_per_person}}</div>
-						<div class="col-xs-6 text-right">
-							<strong>Locations: </strong>
-						</div>
-						<div class="col-xs-6">
-							<span v-show="promotionForQrCode.locations[0] === 'all'">all</span>
-							<span v-show="promotionForQrCode.locations[0] !== 'all'">{{promotionForQrCode.locations.length}}</span>
-						</div>
-					</div>
-				</div>
-				<div v-if="!promotionForQrCode.qr_code.length && !promotionForQrCode.showStoreSelector">
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<input type="text"
-						       class="form-control input-sm"
-						       :class="{'edited': promotionForQrCode.min_loyalty_points.length}"
-						       id="form_control_min_loyalty_points"
-						       v-model="promotionForQrCode.min_loyalty_points">
-						<label for="form_control_min_loyalty_points">Minimum Loyalty Points</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<input type="text"
-						       class="form-control input-sm"
-						       :class="{'edited': promotionForQrCode.max_use.length}"
-						       id="form_control_max_use"
-						       v-model="promotionForQrCode.max_use">
-						<label for="form_control_max_use">Maximum Redemptions</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<input type="text"
-						       class="form-control input-sm"
-						       :class="{'edited': promotionForQrCode.max_use_per_person.length}"
-						       id="form_control_max_use_per_person"
-						       v-model="promotionForQrCode.max_use_per_person">
-						<label for="form_control_max_use_per_person">Maximum Redemptions Per Person</label>
-					</div>
-					<div>
-						<button class="btn"
-						        @click="qrForSelectLocations()"
-						        :class="{'blue-chambray' : !promotionForQrCode.allLocations, 'blue btn-outline' : promotionForQrCode.allLocations}">Select stores</button>
-						<p class="grey-label">
-							<span v-show="promotionForQrCode.allLocations">All</span>
-							<span v-show="!promotionForQrCode.allLocations">{{promotionForQrCode.locations.length}}</span>
-							<span v-if="promotionForQrCode.allLocations || (!promotionForQrCode.allLocations && promotionForQrCode.locations.length !== 1)">stores</span>
-							<span v-else>store</span>
-							selected
-						</p>
-					</div>
-				</div>
-				<div v-if="!promotionForQrCode.qr_code.length && promotionForQrCode.showStoreSelector">
-					<store-picker
-						:previouslySelected="promotionForQrCode.locations"
-						@update="selectQrLocations"
-					>
-					</store-picker>
-				</div>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer clear">
-				<button v-if="!promotionForQrCode.qr_code.length && !promotionForQrCode.showStoreSelector"
-				        @click="generateQrCode()"
-				        type="button"
-				        class="btn blue"
-				        :disabled="generating">
-					Generate
-					<i v-show="generating"
-					   class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-				<button v-if="!promotionForQrCode.qr_code.length && promotionForQrCode.showStoreSelector"
-				        @click="closeStorePicker()"
-				        type="button"
-				        class="btn blue">Select</button>
-				<button v-if="promotionForQrCode.qr_code.length"
-				        @click="deleteQrCode()"
-				        type="button"
-				        class="btn blue"
-				        :disabled="deleting">
-					Delete
-					<i v-show="deleting"
-					   class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-			</div>
-		</modal>
+    <modal
+      ref="codeModal"
+      :show="showPromoCodesModal"
+      effect="fade"
+      @closeOnEscape="closePromoCodesCodeModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closePromoCodesCodeModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Promo Codes
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <div class="row">
+          <div
+            v-show="promoCodesErrorMessage"
+            ref="promoCodesErrorMessage"
+            class="col-md-12"
+          >
+            <div class="alert alert-danger">
+              <button
+                class="close"
+                @click="clearError('promoCodesErrorMessage')"
+              />
+              <span>{{ promoCodesErrorMessage }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <table class="table">
+            <thead>
+              <tr>
+                <th />
+                <th> Code </th>
+                <th> Value </th>
+                <th> From </th>
+                <th> To </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="code in promoCodes"
+                :key="code.id"
+              >
+                <td>
+                  <div class="md-checkbox has-success">
+                    <input
+                      :id="`code-${code.id}`"
+                      v-model="code.selected"
+                      type="checkbox"
+                      class="md-check"
+                    >
+                    <label :for="`code-${code.id}`">
+                      <span class="inc" />
+                      <span class="check" />
+                      <span class="box" />
+                    </label>
+                  </div>
+                </td>
+                <td> {{ code.codes }} </td>
+                <td>
+                  <span v-show="code.value_type === 'dollar'">
+                    $
+                  </span>{{ code.value }}
+                  <span v-show="code.value_type === 'percentage'">
+                    %
+                  </span>
+                </td>
+                <td> {{ code.start_from }} </td>
+                <td> {{ code.end_on }} </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer clear"
+      >
+        <button
+          type="button"
+          class="btn blue"
+          @click="selectPromoCodes()"
+        >
+          Select
+        </button>
+      </div>
+    </modal>
 
-		<modal :show="showPromoCodesModal"
-		       effect="fade"
-		       @closeOnEscape="closePromoCodesCodeModal"
-		       ref="codeModal">
-			<div slot="modal-header"
-			     class="modal-header">
-				<button type="button"
-				        class="close"
-				        @click="closePromoCodesCodeModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Promo Codes</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<div class="row">
-					<div class="col-md-12"
-					     v-show="promoCodesErrorMessage"
-					     ref="promoCodesErrorMessage">
-						<div class="alert alert-danger">
-							<button class="close"
-							        @click="clearError('promoCodesErrorMessage')"></button>
-							<span>{{ promoCodesErrorMessage }}</span>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<table class="table">
-						<thead>
-							<tr>
-								<th></th>
-								<th> Code </th>
-								<th> Value </th>
-								<th> From </th>
-								<th> To </th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr v-for="code in promoCodes"
-							    :key="code.id">
-								<td>
-									<div class="md-checkbox has-success">
-										<input type="checkbox"
-										       :id="`code-${code.id}`"
-										       class="md-check"
-										       v-model="code.selected">
-										<label :for="`code-${code.id}`">
-											<span class="inc"></span>
-											<span class="check"></span>
-											<span class="box"></span>
-										</label>
-									</div>
-								</td>
-								<td> {{ code.codes }} </td>
-								<td>
-									<span v-show="code.value_type === 'dollar'">$</span>{{ code.value }}
-									<span v-show="code.value_type === 'percentage'">%</span>
-								</td>
-								<td> {{ code.start_from }} </td>
-								<td> {{ code.end_on }} </td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer clear">
-				<button @click="selectPromoCodes()"
-				        type="button"
-				        class="btn blue">Select</button>
-			</div>
-		</modal>
-
-		<menu-modifier-tree v-if="showMenuModifierTreeModal"
-		                    :selectedObject="newPromotion"
-		                    :showModifierItems="false"
-		                    @closeMenuModifierTreeModal="closeMenuModifierTree"
-		                    @closeMenuModifierTreeModalAndUpdate="setSelectedItems">
-		</menu-modifier-tree>
-	</div>
+    <menu-modifier-tree
+      v-if="showMenuModifierTreeModal"
+      :selected-object="newPromotion"
+      :show-modifier-items="false"
+      @closeMenuModifierTreeModal="closeMenuModifierTree"
+      @closeMenuModifierTreeModalAndUpdate="setSelectedItems"
+    />
+  </div>
 </template>
 
 <script>

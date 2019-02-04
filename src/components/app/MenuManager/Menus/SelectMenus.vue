@@ -1,71 +1,104 @@
 <template>
-	<modal :show="showMenuListModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="selectModal">
-		<div slot="modal-header"
-		     class="modal-header">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Select Menus</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="alert alert-danger"
-			     v-show="errorMessage"
-			     ref="errorMessage">
-				<button class="close"
-				        @click="clearError()"></button>
-				<span>{{errorMessage}}</span>
-			</div>
-			<div class="table-scrollable table-fixed-height">
-				<table class="table">
-					<thead>
-						<tr>
-							<th> Select </th>
-							<th> Image </th>
-							<th> Name </th>
-							<th> Status </th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="menu in allMenus" :key="menu.id">
-							<td>
-								<div class="md-checkbox has-success">
-									<input type="checkbox"
-									       :id="`menu-${menu.id}`"
-									       class="md-check"
-									       v-model="menu.selected">
-									<label :for="`menu-${menu.id}`">
-										<span class="inc"></span>
-										<span class="check"></span>
-										<span class="box"></span>
-									</label>
-								</div>
-							</td>
-							<td> <img :src="menu.image_url"
-								     width="30"
-								     height="30"> </td>
-							<td> {{menu.name}} </td>
-							<td>
-								<span v-if="menu.status === 1">Available</span>
-								<span v-if="menu.status === 0">Sold Out</span>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button type="button"
-			        class="btn btn-primary"
-			        @click="applyMenusToGroup()">Apply Menus</button>
-		</div>
-	</modal>
+  <modal
+    ref="selectModal"
+    :show="showMenuListModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Select Menus
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div
+        v-show="errorMessage"
+        ref="errorMessage"
+        class="alert alert-danger"
+      >
+        <button
+          class="close"
+          @click="clearError()"
+        />
+        <span>{{ errorMessage }}</span>
+      </div>
+      <div class="table-scrollable table-fixed-height">
+        <table class="table">
+          <thead>
+            <tr>
+              <th> Select </th>
+              <th> Image </th>
+              <th> Name </th>
+              <th> Status </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="menu in allMenus"
+              :key="menu.id"
+            >
+              <td>
+                <div class="md-checkbox has-success">
+                  <input
+                    :id="`menu-${menu.id}`"
+                    v-model="menu.selected"
+                    type="checkbox"
+                    class="md-check"
+                  >
+                  <label :for="`menu-${menu.id}`">
+                    <span class="inc" />
+                    <span class="check" />
+                    <span class="box" />
+                  </label>
+                </div>
+              </td>
+              <td>
+                <img
+                  :src="menu.image_url"
+                  width="30"
+                  height="30"
+                >
+              </td>
+              <td> {{ menu.name }} </td>
+              <td>
+                <span v-if="menu.status === 1">
+                  Available
+                </span>
+                <span v-if="menu.status === 0">
+                  Sold Out
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        type="button"
+        class="btn btn-primary"
+        @click="applyMenusToGroup()"
+      >
+        Apply Menus
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -74,17 +107,20 @@ import MenusFunctions from '../../../../controllers/Menus'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	data() {
-		return {
-			showMenuListModal: false,
-			errorMessage: '',
-			allMenus: []
-		}
+	components: {
+		Modal
 	},
 	props: {
 		selectedGroupId: {
 			type: Number,
 			default: 0
+		}
+	},
+	data() {
+		return {
+			showMenuListModal: false,
+			errorMessage: '',
+			allMenus: []
 		}
 	},
 	created() {
@@ -156,9 +192,6 @@ export default {
 			// 	throw reason
 			// })
 		}
-	},
-	components: {
-		Modal
 	}
 }
 </script>

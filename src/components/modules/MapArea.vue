@@ -11,48 +11,64 @@
  -->
 
 <template>
-	<div class="map-polygon-container"
-	     :style="`width:${this.width};height:${this.height};`">
+  <div
+    class="map-polygon-container"
+    :style="`width:${this.width};height:${this.height};`"
+  >
+    <div
+      :id="`map-polygon${this._uid}`"
+      class="map-polygon"
+    />
 
-		<div :id="`map-polygon${this._uid}`"
-		     class="map-polygon"></div>
+    <div
+      v-show="editable"
+      class="legend"
+    >
+      <div class="mode-buttons-container">
+        <button
+          class="btn blue"
+          :class="{'btn-outline' : mode !== 'move'}"
+          @click.stop.prevent="shapeMoveMode()"
+        >
+          Move
+          <i
+            class="fa fa-hand-pointer-o"
+            aria-hidden="true"
+          />
+        </button>
+        <button
+          class="btn blue draw-button"
+          :class="{'btn-outline' : mode !== 'polygon'}"
+          :disabled="drawButtonDisabled"
+          @click.stop.prevent="polygonDrawingMode()"
+        >
+          Draw
+          <i
+            class="fa fa-pencil"
+            aria-hidden="true"
+          />
+        </button>
+      </div>
 
-		<div class="legend" v-show="editable">
-			<div class="mode-buttons-container">
-				<button class="btn blue"
-						:class="{'btn-outline' : mode !== 'move'}"
-						@click.stop.prevent="shapeMoveMode()">
-					Move
-					<i class="fa fa-hand-pointer-o"
-					aria-hidden="true"></i>
-				</button>
-				<button class="btn blue draw-button"
-						:class="{'btn-outline' : mode !== 'polygon'}"
-						@click.stop.prevent="polygonDrawingMode()"
-						:disabled="drawButtonDisabled">
-					Draw
-					<i class="fa fa-pencil"
-					aria-hidden="true"></i>
-				</button>
-			</div>
-
-			<div class="remove-buttons-container">
-				<button 
-						v-for="(polygon, index) in mapPolygons"
-						:key="index"
-						class="btn blue btn-outline remove-button"
-						@click.stop.prevent="deletePolygon(index)">
-					<div class="remove-button-contents">
-						<span>Remove</span>
-						<i class="fa fa-lg fa-trash"
-						:style="`color:${polygon.fillColor}`"
-						aria-hidden="true">
-						</i>
-					</div>
-				</button>
-			</div>
-		</div>
-	</div>
+      <div class="remove-buttons-container">
+        <button 
+          v-for="(polygon, index) in mapPolygons"
+          :key="index"
+          class="btn blue btn-outline remove-button"
+          @click.stop.prevent="deletePolygon(index)"
+        >
+          <div class="remove-button-contents">
+            <span>Remove</span>
+            <i
+              class="fa fa-lg fa-trash"
+              :style="`color:${polygon.fillColor}`"
+              aria-hidden="true"
+            />
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>

@@ -1,244 +1,319 @@
 <template>
-	<div>
-		<div>
-			<div class="page-bar">
-				<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-			</div>
-			<h1 class='page-title'>OMA Users</h1>
-			<div class="note note-info">
-				<p>View and message OMA Users.</p>
-			</div>
+  <div>
+    <div>
+      <div class="page-bar">
+        <breadcrumb :crumbs="breadcrumbArray" />
+      </div>
+      <h1 class="page-title">
+        OMA Users
+      </h1>
+      <div class="note note-info">
+        <p>View and message OMA Users.</p>
+      </div>
 
-			<!-- SEARCH START -->
-			<div class="margin-top-20"
-			     v-if="OMAUsers.length">
-				<div class="portlet box blue-hoki">
-					<div class="portlet-title"
-					     @click="toggleSearchPanel()">
-						<div class="caption">
-							<i class="fa fa-search"></i>
-							Search Panel
-						</div>
-						<div class="tools">
-							<a :class="{'expand': !searchCollapse, 'collapse': searchCollapse}"></a>
-						</div>
-					</div>
-					<div class="portlet-body"
-					     v-show="!searchCollapse">
-						<form role="form"
-						      @submit.prevent="advancedSearch()">
-							<div class="form-body row">
-								<div class="col-md-12">
-									<div class="alert alert-danger"
-									     v-if="searchError.length">
-										<button class="close"
-										        data-close="alert"
-										        @click.prevent="clearSearchError()"></button>
-										<span>{{searchError}}</span>
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="form-group form-md-line-input form-md-floating-label">
-										<input ref="search"
-										       type="text"
-										       class="form-control input-sm"
-										       :class="{'edited': searchTerm.length}"
-										       v-model="searchTerm">
-										<label for="search_options_search">Search</label>
-										<span class="help-block persist">Search by Email.</span>
-									</div>
-								</div>
-							</div>
-							<div class="form-actions right margin-top-20">
-								<button type="button"
-								        class="btn btn-default"
-								        @click="resetSearch()"> Reset Search</button>
-								<button type="submit"
-								        class="btn blue">Search</button>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-			<!-- SEARCH END -->
+      <!-- SEARCH START -->
+      <div
+        v-if="OMAUsers.length"
+        class="margin-top-20"
+      >
+        <div class="portlet box blue-hoki">
+          <div
+            class="portlet-title"
+            @click="toggleSearchPanel()"
+          >
+            <div class="caption">
+              <i class="fa fa-search" />
+              Search Panel
+            </div>
+            <div class="tools">
+              <a :class="{'expand': !searchCollapse, 'collapse': searchCollapse}" />
+            </div>
+          </div>
+          <div
+            v-show="!searchCollapse"
+            class="portlet-body"
+          >
+            <form
+              role="form"
+              @submit.prevent="advancedSearch()"
+            >
+              <div class="form-body row">
+                <div class="col-md-12">
+                  <div
+                    v-if="searchError.length"
+                    class="alert alert-danger"
+                  >
+                    <button
+                      class="close"
+                      data-close="alert"
+                      @click.prevent="clearSearchError()"
+                    />
+                    <span>{{ searchError }}</span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group form-md-line-input form-md-floating-label">
+                    <input
+                      ref="search"
+                      v-model="searchTerm"
+                      type="text"
+                      class="form-control input-sm"
+                      :class="{'edited': searchTerm.length}"
+                    >
+                    <label for="search_options_search">
+                      Search
+                    </label>
+                    <span class="help-block persist">
+                      Search by Email.
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-actions right margin-top-20">
+                <button
+                  type="button"
+                  class="btn btn-default"
+                  @click="resetSearch()"
+                >
+                  Reset Search
+                </button>
+                <button
+                  type="submit"
+                  class="btn blue"
+                >
+                  Search
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!-- SEARCH END -->
 
-			<!-- MESSAGE START -->
-			<div class="margin-top-20"
-			     v-if="OMAUsers.length">
-				<div class="portlet box blue-hoki">
-					<div class="portlet-title clickable"
-					     @click="toggleMessageModal(true)">
-						<div class="caption">
-							<i class="fa fa-envelope-o"></i>
-							Message
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- MESSAGE END -->
+      <!-- MESSAGE START -->
+      <div
+        v-if="OMAUsers.length"
+        class="margin-top-20"
+      >
+        <div class="portlet box blue-hoki">
+          <div
+            class="portlet-title clickable"
+            @click="toggleMessageModal(true)"
+          >
+            <div class="caption">
+              <i class="fa fa-envelope-o" />
+              Message
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- MESSAGE END -->
 
-			<!-- LIST START -->
-			<loading-screen :show="loadingOMAUsersData"
-			                :color="'#2C3E50'"
-			                :display="'inline'"></loading-screen>
-			<div v-if="OMAUsers.length && !loadingOMAUsersData && ! filteredResults.length">
-				<div class="portlet light portlet-fit bordered margin-top-20">
-					<div class="portlet-title bg-blue-chambray">
-						<div class="menu-image-main">
-							<img src="../../../../public/client_logo.png">
-						</div>
-						<div class="caption">
-							<span class="caption-subject font-default bold uppercase">OMA Users</span>
-						</div>
-					</div>
-					<div class="portlet-body">
-						<div class="clearfix margin-bottom-10"
-						     v-if="OMAUsers.length">
-							<el-dropdown trigger="click"
-							             @command="updateSortByOrder"
-							             size="mini"
-							             :show-timeout="50"
-							             :hide-timeout="50">
-								<el-button size="mini">
-									Sort by
-									<span>
-										<i class="fa fa-sort-alpha-asc"
-										   v-if="sortBy.order === 'ASC'"></i>
-										<i class="fa fa-sort-alpha-desc"
-										   v-if="sortBy.order === 'DESC'"></i>
-									</span>
-									<i class="el-icon-arrow-down el-icon--right"></i>
-								</el-button>
-								<el-dropdown-menu slot="dropdown">
-									<el-dropdown-item command="ASC">
-										<i class="fa fa-sort-alpha-asc"></i>
-									</el-dropdown-item>
-									<el-dropdown-item command="DESC">
-										<i class="fa fa-sort-alpha-desc"></i>
-									</el-dropdown-item>
-								</el-dropdown-menu>
-							</el-dropdown>
-							<page-results class="pull-right"
-							              :totalResults="OMAUsers.length"
-							              :activePage="activePage"
-							              @pageResults="pageResultsUpdate"></page-results>
-						</div>
-						<div class="mt-element-list">
-							<div class="mt-list-container list-news">
-								<ul>
-									<li class="mt-list-item actions-at-left margin-top-15"
-									    v-for="OMAUser in currentActivePageItems"
-									    :id="'OMAUser-' + OMAUser.id"
-									    :class="{'animated' : animated === `OMAUser-${OMAUser.id}`}"
-									    :key="OMAUser.id">
-										<div class="list-item-content height-mod">
-											<div class="col-md-4">
-												<span>{{ OMAUser.email }}</span>
-											</div>
-											<div class="col-md-4">
-												<span>{{ formatPhone(OMAUser.phone) }}</span>
-											</div>
-										</div>
-									</li>
-								</ul>
-							</div>
-							<div class="clearfix"
-							     v-if="OMAUsers.length && numPages > 1">
-								<pagination :passedPage="activePage"
-								            :numPages="numPages"
-								            @activePageChange="activePageUpdate"></pagination>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div v-if="OMAUsers.length && !loadingOMAUsersData && filteredResults.length">
-				<div class="portlet light portlet-fit bordered margin-top-20">
-					<div class="portlet-title bg-blue-chambray">
-						<div class="menu-image-main">
-							<img src="../../../../public/client_logo.png">
-						</div>
-						<div class="caption">
-							<span class="caption-subject font-default bold uppercase">Search Results</span>
-							<div class="caption-desc font-grey-cascade">Click on an OMA user to edit store locations assigned to them or to delete the user.</div>
-						</div>
-					</div>
-					<div class="portlet-body">
-						<div class="clearfix margin-bottom-10"
-						     v-if="filteredResults.length">
-							<el-dropdown trigger="click"
-							             @command="updateSortByOrder"
-							             size="mini"
-							             :show-timeout="50"
-							             :hide-timeout="50">
-								<el-button size="mini">
-									Sort by
-									<span>
-										<i class="fa fa-sort-alpha-asc"
-										   v-if="sortBy.order === 'ASC'"></i>
-										<i class="fa fa-sort-alpha-desc"
-										   v-if="sortBy.order === 'DESC'"></i>
-									</span>
-									<i class="el-icon-arrow-down el-icon--right"></i>
-								</el-button>
-								<el-dropdown-menu slot="dropdown">
-									<el-dropdown-item command="ASC">
-										<i class="fa fa-sort-alpha-asc"></i>
-									</el-dropdown-item>
-									<el-dropdown-item command="DESC">
-										<i class="fa fa-sort-alpha-desc"></i>
-									</el-dropdown-item>
-								</el-dropdown-menu>
-							</el-dropdown>
-							<page-results class="pull-right"
-							              :totalResults="filteredResults.length"
-							              :activePage="searchActivePage"
-							              @pageResults="pageResultsUpdate"></page-results>
-						</div>
-						<div class="mt-element-list">
-							<div class="mt-list-container list-news">
-								<ul>
-									<li class="mt-list-item actions-at-left margin-top-15"
-									    v-for="OMAUser in currentActiveSearchPageItems"
-									    :id="'OMAUser-' + OMAUser.id"
-									    :class="{'animated' : animated === `OMAUser-${OMAUser.id}`}"
-									    :key="OMAUser.id">
-										<div class="list-item-content height-mod">
-											<div class="col-md-4">
-												<span>{{ OMAUser.email }}</span>
-											</div>
-											<div class="col-md-4">
-												<span>{{ formatPhone(OMAUser.phone) }}</span>
-											</div>
-										</div>
-									</li>
-								</ul>
-							</div>
-							<div class="clearfix"
-							     v-if="filteredResults.length && searchNumPages > 1">
-								<pagination :passedPage="searchActivePage"
-								            :numPages="searchNumPages"
-								            @activePageChange="activeSearchPageUpdate"></pagination>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div v-if="!OMAUsers.length && !loadingOMAUsersData">
-				<no-results :show="!OMAUsers.length"
-				            :type="'OMA users'"></no-results>
-			</div>
-		</div>
-		<!-- LIST END -->
+      <!-- LIST START -->
+      <loading-screen
+        :show="loadingOMAUsersData"
+        :color="'#2C3E50'"
+        :display="'inline'"
+      />
+      <div v-if="OMAUsers.length && !loadingOMAUsersData && ! filteredResults.length">
+        <div class="portlet light portlet-fit bordered margin-top-20">
+          <div class="portlet-title bg-blue-chambray">
+            <div class="menu-image-main">
+              <img src="../../../../public/client_logo.png">
+            </div>
+            <div class="caption">
+              <span class="caption-subject font-default bold uppercase">
+                OMA Users
+              </span>
+            </div>
+          </div>
+          <div class="portlet-body">
+            <div
+              v-if="OMAUsers.length"
+              class="clearfix margin-bottom-10"
+            >
+              <el-dropdown
+                trigger="click"
+                size="mini"
+                :show-timeout="50"
+                :hide-timeout="50"
+                @command="updateSortByOrder"
+              >
+                <el-button size="mini">
+                  Sort by
+                  <span>
+                    <i
+                      v-if="sortBy.order === 'ASC'"
+                      class="fa fa-sort-alpha-asc"
+                    />
+                    <i
+                      v-if="sortBy.order === 'DESC'"
+                      class="fa fa-sort-alpha-desc"
+                    />
+                  </span>
+                  <i class="el-icon-arrow-down el-icon--right" />
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="ASC">
+                    <i class="fa fa-sort-alpha-asc" />
+                  </el-dropdown-item>
+                  <el-dropdown-item command="DESC">
+                    <i class="fa fa-sort-alpha-desc" />
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+              <page-results
+                class="pull-right"
+                :total-results="OMAUsers.length"
+                :active-page="activePage"
+                @pageResults="pageResultsUpdate"
+              />
+            </div>
+            <div class="mt-element-list">
+              <div class="mt-list-container list-news">
+                <ul>
+                  <li
+                    v-for="OMAUser in currentActivePageItems"
+                    :id="'OMAUser-' + OMAUser.id"
+                    :key="OMAUser.id"
+                    class="mt-list-item actions-at-left margin-top-15"
+                    :class="{'animated' : animated === `OMAUser-${OMAUser.id}`}"
+                  >
+                    <div class="list-item-content height-mod">
+                      <div class="col-md-4">
+                        <span>{{ OMAUser.email }}</span>
+                      </div>
+                      <div class="col-md-4">
+                        <span>{{ formatPhone(OMAUser.phone) }}</span>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div
+                v-if="OMAUsers.length && numPages > 1"
+                class="clearfix"
+              >
+                <pagination
+                  :passed-page="activePage"
+                  :num-pages="numPages"
+                  @activePageChange="activePageUpdate"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-if="OMAUsers.length && !loadingOMAUsersData && filteredResults.length">
+        <div class="portlet light portlet-fit bordered margin-top-20">
+          <div class="portlet-title bg-blue-chambray">
+            <div class="menu-image-main">
+              <img src="../../../../public/client_logo.png">
+            </div>
+            <div class="caption">
+              <span class="caption-subject font-default bold uppercase">
+                Search Results
+              </span>
+              <div class="caption-desc font-grey-cascade">
+                Click on an OMA user to edit store locations assigned to them or to delete the user.
+              </div>
+            </div>
+          </div>
+          <div class="portlet-body">
+            <div
+              v-if="filteredResults.length"
+              class="clearfix margin-bottom-10"
+            >
+              <el-dropdown
+                trigger="click"
+                size="mini"
+                :show-timeout="50"
+                :hide-timeout="50"
+                @command="updateSortByOrder"
+              >
+                <el-button size="mini">
+                  Sort by
+                  <span>
+                    <i
+                      v-if="sortBy.order === 'ASC'"
+                      class="fa fa-sort-alpha-asc"
+                    />
+                    <i
+                      v-if="sortBy.order === 'DESC'"
+                      class="fa fa-sort-alpha-desc"
+                    />
+                  </span>
+                  <i class="el-icon-arrow-down el-icon--right" />
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="ASC">
+                    <i class="fa fa-sort-alpha-asc" />
+                  </el-dropdown-item>
+                  <el-dropdown-item command="DESC">
+                    <i class="fa fa-sort-alpha-desc" />
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+              <page-results
+                class="pull-right"
+                :total-results="filteredResults.length"
+                :active-page="searchActivePage"
+                @pageResults="pageResultsUpdate"
+              />
+            </div>
+            <div class="mt-element-list">
+              <div class="mt-list-container list-news">
+                <ul>
+                  <li
+                    v-for="OMAUser in currentActiveSearchPageItems"
+                    :id="'OMAUser-' + OMAUser.id"
+                    :key="OMAUser.id"
+                    class="mt-list-item actions-at-left margin-top-15"
+                    :class="{'animated' : animated === `OMAUser-${OMAUser.id}`}"
+                  >
+                    <div class="list-item-content height-mod">
+                      <div class="col-md-4">
+                        <span>{{ OMAUser.email }}</span>
+                      </div>
+                      <div class="col-md-4">
+                        <span>{{ formatPhone(OMAUser.phone) }}</span>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div
+                v-if="filteredResults.length && searchNumPages > 1"
+                class="clearfix"
+              >
+                <pagination
+                  :passed-page="searchActivePage"
+                  :num-pages="searchNumPages"
+                  @activePageChange="activeSearchPageUpdate"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-if="!OMAUsers.length && !loadingOMAUsersData">
+        <no-results
+          :show="!OMAUsers.length"
+          :type="'OMA users'"
+        />
+      </div>
+    </div>
+    <!-- LIST END -->
 
 
-		<!-- MESSAGE MODAL START -->
-		<OMAUsersMessage :isOpen="showMessageModal"
-		                 :users="OMAUsers"
-		                 @closeMessageModal="toggleMessageModal">
-		</OMAUsersMessage>
-		<!-- MESSAGE MODAL END -->
-	</div>
+    <!-- MESSAGE MODAL START -->
+    <OMAUsersMessage
+      :is-open="showMessageModal"
+      :users="OMAUsers"
+      @closeMessageModal="toggleMessageModal"
+    />
+    <!-- MESSAGE MODAL END -->
+  </div>
 </template>
 
 <script>
@@ -261,6 +336,17 @@ import OMAUsersMessage from './OMAUsersMessage'
 var emailPattern = /^.+@.+\..+$/
 
 export default {
+	components: {
+		Breadcrumb,
+		NoResults,
+		LoadingScreen,
+		Modal,
+		Dropdown,
+		Pagination,
+		PageResults,
+		SelectLocationsPopup,
+		OMAUsersMessage
+	},
 	data () {
 		return {
 			breadcrumbArray: [
@@ -1068,17 +1154,6 @@ export default {
 				}
 			)
 		}
-	},
-	components: {
-		Breadcrumb,
-		NoResults,
-		LoadingScreen,
-		Modal,
-		Dropdown,
-		Pagination,
-		PageResults,
-		SelectLocationsPopup,
-		OMAUsersMessage
 	}
 }
 </script>

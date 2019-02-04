@@ -1,590 +1,821 @@
 <template>
-	<div>
-		<div>
-			<div class="page-bar">
-				<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-			</div>
-			<h1 class='page-title'>Brand Admins</h1>
-			<div class="note note-info">
-				<p>Create and manage Brand Admin accounts.</p>
-			</div>
+  <div>
+    <div>
+      <div class="page-bar">
+        <breadcrumb :crumbs="breadcrumbArray" />
+      </div>
+      <h1 class="page-title">
+        Brand Admins
+      </h1>
+      <div class="note note-info">
+        <p>Create and manage Brand Admin accounts.</p>
+      </div>
 
-			<!-- CREATE NEW START -->
-			<div class="portlet box blue-hoki margin-top-20"
-			     v-if="$root.permissions['admin brand_admins create']">
-				<div class="portlet-title bg-blue-chambray"
-				     @click="toggleCreateBrandAdminPanel()">
-					<div class="caption">
-						<i class="fa fa-plus-circle"></i>
-						Create New Brand Admin
-					</div>
-					<div class="tools">
-						<a :class="{'expand': !createBrandAdminCollapse, 'collapse': createBrandAdminCollapse}"></a>
-					</div>
-				</div>
-				<div class="portlet-body"
-				     v-show="!createBrandAdminCollapse">
-					<form role="form"
-					      @submit.prevent="createBrandAdmin()">
-						<div class="row">
-							<div class="col-md-12">
-								<div class="alert alert-danger"
-								     v-show="createErrorMessage"
-								     ref="createErrorMessage">
-									<button class="close"
-									        @click.prevent="clearError('createErrorMessage')"></button>
-									<span>{{createErrorMessage}}</span>
-								</div>
-							</div>
-							<div class="col-md-6">
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input ref="newBrandAdminName"
-									       type="text"
-									       class="form-control input-sm"
-									       id="form_control_name"
-									       v-model="newBrandAdmin.name"
-									       :class="{'edited': newBrandAdmin.name.length}">
-									<label for="form_control_name">Name</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       class="form-control input-sm"
-									       id="form_control_phone"
-									       v-model="newBrandAdmin.phone"
-									       :class="{'edited': newBrandAdmin.phone.length}">
-									<label for="form_control_phone">Phone</label>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       class="form-control input-sm"
-									       id="form_control_email"
-									       v-model="newBrandAdmin.email"
-									       :class="{'edited': newBrandAdmin.email.length}">
-									<label for="form_control_email">Email</label>
-								</div>
-							</div>
-							<div class="col-md-6">
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<div class="input-group"
-									     v-show="passwordMasked">
-										<input type="password"
-										       class="form-control input-sm"
-										       id="form_control_password_masked"
-										       v-model="newBrandAdmin.password"
-										       :class="{'edited': newBrandAdmin.password.length}">
-										<label for="form_control_password_masked">Password</label>
-										<span class="input-group-addon clickable"
-										      @click="flipPasswordMask()">
-											<i class="fa fa-eye"></i>
-										</span>
-									</div>
-									<div class="input-group"
-									     v-show="!passwordMasked">
-										<input type="text"
-										       class="form-control input-sm"
-										       id="form_control_password"
-										       v-model="newBrandAdmin.password"
-										       :class="{'edited': newBrandAdmin.password.length}">
-										<label for="form_control_password">Password</label>
-										<span class="input-group-addon clickable"
-										      @click="flipPasswordMask()">
-											<i class="fa fa-eye-slash"></i>
-										</span>
-									</div>
-								</div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<div class="input-group"
-									     v-show="passwordConfirmMasked">
-										<input type="password"
-										       class="form-control input-sm"
-										       id="form_control_confirm_masked"
-										       v-model="passwordCheck"
-										       :class="{'edited': passwordCheck}">
-										<label for="form_control_confirm_masked">Confirm password</label>
-										<span class="input-group-addon clickable"
-										      @click="flipPasswordConfirmMask()">
-											<i class="fa fa-eye"></i>
-										</span>
-									</div>
-									<div class="input-group"
-									     v-show="!passwordConfirmMasked">
-										<input type="text"
-										       class="form-control input-sm"
-										       id="form_control_confirm"
-										       v-model="passwordCheck"
-										       :class="{'edited': passwordCheck}">
-										<label for="form_control_confirm">Confirm password</label>
-										<span class="input-group-addon clickable"
-										      @click="flipPasswordConfirmMask()">
-											<i class="fa fa-eye-slash"></i>
-										</span>
-									</div>
-								</div>
-								<div class="alert alert-info">
-									Password must be at least 8 characters long. It can contain English alphabet letters only. It must include at least one capital letter and one number.
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-12">
-								<button type="submit"
-								        class="btn blue pull-right"
-								        :disabled="creating">
-									Create
-									<i v-show="creating"
-									   class="fa fa-spinner fa-pulse fa-fw">
-									</i>
-								</button>
-							</div>
-						</div>
-					</form>
-				</div>
-			</div>
-			<!-- CREATE NEW END -->
+      <!-- CREATE NEW START -->
+      <div
+        v-if="$root.permissions['admin brand_admins create']"
+        class="portlet box blue-hoki margin-top-20"
+      >
+        <div
+          class="portlet-title bg-blue-chambray"
+          @click="toggleCreateBrandAdminPanel()"
+        >
+          <div class="caption">
+            <i class="fa fa-plus-circle" />
+            Create New Brand Admin
+          </div>
+          <div class="tools">
+            <a :class="{'expand': !createBrandAdminCollapse, 'collapse': createBrandAdminCollapse}" />
+          </div>
+        </div>
+        <div
+          v-show="!createBrandAdminCollapse"
+          class="portlet-body"
+        >
+          <form
+            role="form"
+            @submit.prevent="createBrandAdmin()"
+          >
+            <div class="row">
+              <div class="col-md-12">
+                <div
+                  v-show="createErrorMessage"
+                  ref="createErrorMessage"
+                  class="alert alert-danger"
+                >
+                  <button
+                    class="close"
+                    @click.prevent="clearError('createErrorMessage')"
+                  />
+                  <span>{{ createErrorMessage }}</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_name"
+                    ref="newBrandAdminName"
+                    v-model="newBrandAdmin.name"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': newBrandAdmin.name.length}"
+                  >
+                  <label for="form_control_name">
+                    Name
+                  </label>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_phone"
+                    v-model="newBrandAdmin.phone"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': newBrandAdmin.phone.length}"
+                  >
+                  <label for="form_control_phone">
+                    Phone
+                  </label>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_email"
+                    v-model="newBrandAdmin.email"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': newBrandAdmin.email.length}"
+                  >
+                  <label for="form_control_email">
+                    Email
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <div
+                    v-show="passwordMasked"
+                    class="input-group"
+                  >
+                    <input
+                      id="form_control_password_masked"
+                      v-model="newBrandAdmin.password"
+                      type="password"
+                      class="form-control input-sm"
+                      :class="{'edited': newBrandAdmin.password.length}"
+                    >
+                    <label for="form_control_password_masked">
+                      Password
+                    </label>
+                    <span
+                      class="input-group-addon clickable"
+                      @click="flipPasswordMask()"
+                    >
+                      <i class="fa fa-eye" />
+                    </span>
+                  </div>
+                  <div
+                    v-show="!passwordMasked"
+                    class="input-group"
+                  >
+                    <input
+                      id="form_control_password"
+                      v-model="newBrandAdmin.password"
+                      type="text"
+                      class="form-control input-sm"
+                      :class="{'edited': newBrandAdmin.password.length}"
+                    >
+                    <label for="form_control_password">
+                      Password
+                    </label>
+                    <span
+                      class="input-group-addon clickable"
+                      @click="flipPasswordMask()"
+                    >
+                      <i class="fa fa-eye-slash" />
+                    </span>
+                  </div>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <div
+                    v-show="passwordConfirmMasked"
+                    class="input-group"
+                  >
+                    <input
+                      id="form_control_confirm_masked"
+                      v-model="passwordCheck"
+                      type="password"
+                      class="form-control input-sm"
+                      :class="{'edited': passwordCheck}"
+                    >
+                    <label for="form_control_confirm_masked">
+                      Confirm password
+                    </label>
+                    <span
+                      class="input-group-addon clickable"
+                      @click="flipPasswordConfirmMask()"
+                    >
+                      <i class="fa fa-eye" />
+                    </span>
+                  </div>
+                  <div
+                    v-show="!passwordConfirmMasked"
+                    class="input-group"
+                  >
+                    <input
+                      id="form_control_confirm"
+                      v-model="passwordCheck"
+                      type="text"
+                      class="form-control input-sm"
+                      :class="{'edited': passwordCheck}"
+                    >
+                    <label for="form_control_confirm">
+                      Confirm password
+                    </label>
+                    <span
+                      class="input-group-addon clickable"
+                      @click="flipPasswordConfirmMask()"
+                    >
+                      <i class="fa fa-eye-slash" />
+                    </span>
+                  </div>
+                </div>
+                <div class="alert alert-info">
+                  Password must be at least 8 characters long. It can contain English alphabet letters only. It must include at least one capital letter and one number.
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <button
+                  type="submit"
+                  class="btn blue pull-right"
+                  :disabled="creating"
+                >
+                  Create
+                  <i
+                    v-show="creating"
+                    class="fa fa-spinner fa-pulse fa-fw"
+                  />
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- CREATE NEW END -->
 
-			<!-- SEARCH START -->
-			<div class="margin-top-20"
-			     v-if="brandAdmins.length">
-				<div class="portlet box blue-hoki">
-					<div class="portlet-title"
-					     @click="toggleSearchPanel()">
-						<div class="caption">
-							<i class="fa fa-search"></i>
-							Search Panel
-						</div>
-						<div class="tools">
-							<a :class="{'expand': !searchCollapse, 'collapse': searchCollapse}"></a>
-						</div>
-					</div>
-					<div class="portlet-body"
-					     v-show="!searchCollapse">
-						<form role="form"
-						      @submit.prevent="advancedSearch()">
-							<div class="form-body row">
-								<div class="col-md-12">
-									<div class="alert alert-danger"
-									     v-show="searchError"
-									     ref="searchError">
-										<button class="close"
-										        @click="clearError('searchError')"></button>
-										<span>{{searchError}}</span>
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="form-group form-md-line-input form-md-floating-label">
-										<input ref="search"
-										       type="text"
-										       class="form-control input-sm"
-										       :class="{'edited': searchTerm.length}"
-										       v-model="searchTerm">
-										<label for="search_options_search">Search</label>
-										<span class="help-block persist">Search by Name or Email.</span>
-									</div>
-								</div>
-							</div>
-							<div class="form-actions right margin-top-20">
-								<button type="button"
-								        class="btn btn-default"
-								        @click.prevent="resetSearch()"> Reset Search</button>
-								<button type="submit"
-								        class="btn blue">Search</button>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-			<!-- SEARCH END -->
+      <!-- SEARCH START -->
+      <div
+        v-if="brandAdmins.length"
+        class="margin-top-20"
+      >
+        <div class="portlet box blue-hoki">
+          <div
+            class="portlet-title"
+            @click="toggleSearchPanel()"
+          >
+            <div class="caption">
+              <i class="fa fa-search" />
+              Search Panel
+            </div>
+            <div class="tools">
+              <a :class="{'expand': !searchCollapse, 'collapse': searchCollapse}" />
+            </div>
+          </div>
+          <div
+            v-show="!searchCollapse"
+            class="portlet-body"
+          >
+            <form
+              role="form"
+              @submit.prevent="advancedSearch()"
+            >
+              <div class="form-body row">
+                <div class="col-md-12">
+                  <div
+                    v-show="searchError"
+                    ref="searchError"
+                    class="alert alert-danger"
+                  >
+                    <button
+                      class="close"
+                      @click="clearError('searchError')"
+                    />
+                    <span>{{ searchError }}</span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group form-md-line-input form-md-floating-label">
+                    <input
+                      ref="search"
+                      v-model="searchTerm"
+                      type="text"
+                      class="form-control input-sm"
+                      :class="{'edited': searchTerm.length}"
+                    >
+                    <label for="search_options_search">
+                      Search
+                    </label>
+                    <span class="help-block persist">
+                      Search by Name or Email.
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-actions right margin-top-20">
+                <button
+                  type="button"
+                  class="btn btn-default"
+                  @click.prevent="resetSearch()"
+                >
+                  Reset Search
+                </button>
+                <button
+                  type="submit"
+                  class="btn blue"
+                >
+                  Search
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!-- SEARCH END -->
 
-			<!-- LIST START -->
-			<loading-screen :show="loadingBrandAdminsData"
-			                :color="'#2C3E50'"
-			                :display="'inline'"></loading-screen>
-			<div v-if="brandAdmins.length && !loadingBrandAdminsData && !filteredResults.length">
-				<div class="portlet light portlet-fit bordered margin-top-20">
-					<div class="portlet-title bg-blue-chambray">
-						<div class="menu-image-main">
-							<img src="../../../../public/client_logo.png">
-						</div>
-						<div class="caption">
-							<span class="caption-subject font-default bold uppercase">Brand Admins</span>
-							<div class="caption-desc font-grey-cascade">Click on the edit icon to edit a brand admin.</div>
-						</div>
-					</div>
-					<div class="portlet-body">
-						<div class="row">
-							<div class="col-md-12">
-								<div class="alert alert-danger"
-								     v-show="listErrorMessage"
-								     ref="listErrorMessage">
-									<button class="close"
-									        @click="clearError('listErrorMessage')"></button>
-									<span>{{listErrorMessage}}</span>
-								</div>
-							</div>
-						</div>
-						<div class="clearfix margin-bottom-10"
-						     v-if="brandAdmins.length">
-							<el-dropdown trigger="click"
-							             @command="updateSortByOrder"
-							             size="mini"
-							             :show-timeout="50"
-							             :hide-timeout="50">
-								<el-button size="mini">
-									Sort by
-									<span>
-										<i class="fa fa-sort-alpha-asc"
-										   v-if="sortBy.order === 'ASC'"></i>
-										<i class="fa fa-sort-alpha-desc"
-										   v-if="sortBy.order === 'DESC'"></i>
-									</span>
-									<i class="el-icon-arrow-down el-icon--right"></i>
-								</el-button>
-								<el-dropdown-menu slot="dropdown">
-									<el-dropdown-item command="ASC">
-										<i class="fa fa-sort-alpha-asc"></i>
-									</el-dropdown-item>
-									<el-dropdown-item command="DESC">
-										<i class="fa fa-sort-alpha-desc"></i>
-									</el-dropdown-item>
-								</el-dropdown-menu>
-							</el-dropdown>
-							<page-results class="pull-right"
-							              :totalResults="brandAdmins.length"
-							              :activePage="activePage"
-							              @pageResults="pageResultsUpdate"></page-results>
-						</div>
-						<div class="mt-element-list">
-							<div class="mt-list-container list-news">
-								<ul>
-									<li class="mt-list-item actions-at-left margin-top-15"
-									    v-for="brandAdmin in currentActivePageItems"
-									    :id="'brandAdmin-' + brandAdmin.id"
-									    :class="{'animated' : animated === `brandAdmin-${brandAdmin.id}`}"
-									    :key="brandAdmin.id">
-										<div class="list-item-actions">
-											<el-tooltip v-if="$root.permissions['admin brand_admins update']"
-											            content="Edit"
-											            effect="light"
-											            placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default"
-												   @click="editBrandAdmin(brandAdmin)">
-													<i class="fa fa-pencil"
-													   aria-hidden="true"></i>
-												</a>
-											</el-tooltip>
-											<el-tooltip v-if="$root.permissions['admin brand_admins read'] && !$root.permissions['admin brand_admins update']"
-											            content="View"
-											            effect="light"
-											            placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default"
-												   @click="editBrandAdmin(brandAdmin)">
-													<i class="fa fa-eye"
-													   aria-hidden="true"></i>
-												</a>
-											</el-tooltip>
-											<el-tooltip v-if="canAny([
-											            'list user\'s roles',
-											            'assign roles to user',
-											            'revoke roles from user',
-											            'sync roles for user'
-											            ])"
-											            content="Roles"
-											            effect="light"
-											            placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default"
-												   @click="openRolesModal(brandAdmin)">
-													<i class="fa fa-id-badge"
-													   aria-hidden="true"></i>
-												</a>
-											</el-tooltip>
-										</div>
-										<div class="list-datetime bold uppercase font-red">
-											<span>{{ brandAdmin.name }}</span>
-										</div>
-										<div class="list-item-content height-mod">
-											<div class="col-md-4">
-												<span>{{ brandAdmin.email }}</span>
-											</div>
-											<div class="col-md-4">
-												<span>{{ formatPhone(brandAdmin.phone) }}</span>
-											</div>
-											<div class="col-md-4">
-												<span v-if="brandAdmin.active === 1">ACTIVE</span>
-												<span v-else>DISABLED</span>
-											</div>
-										</div>
-									</li>
-								</ul>
-							</div>
-							<div class="clearfix"
-							     v-if="brandAdmins.length && numPages > 1">
-								<pagination :passedPage="activePage"
-								            :numPages="numPages"
-								            @activePageChange="activePageUpdate"></pagination>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div v-if="brandAdmins.length && !loadingBrandAdminsData && filteredResults.length">
-				<div class="portlet light portlet-fit bordered margin-top-20">
-					<div class="portlet-title bg-blue-chambray">
-						<div class="menu-image-main">
-							<img src="../../../../public/client_logo.png">
-						</div>
-						<div class="caption">
-							<span class="caption-subject font-default bold uppercase">Search Results</span>
-							<div class="caption-desc font-grey-cascade">Click on the edit icon to edit a brand admin.</div>
-						</div>
-					</div>
-					<div class="portlet-body">
-						<div class="clearfix margin-bottom-10"
-						     v-if="filteredResults.length">
-							<el-dropdown trigger="click"
-							             @command="updateSortByOrder"
-							             size="mini"
-							             :show-timeout="50"
-							             :hide-timeout="50">
-								<el-button size="mini">
-									Sort by
-									<span>
-										<i class="fa fa-sort-alpha-asc"
-										   v-if="sortBy.order === 'ASC'"></i>
-										<i class="fa fa-sort-alpha-desc"
-										   v-if="sortBy.order === 'DESC'"></i>
-									</span>
-									<i class="el-icon-arrow-down el-icon--right"></i>
-								</el-button>
-								<el-dropdown-menu slot="dropdown">
-									<el-dropdown-item command="ASC">
-										<i class="fa fa-sort-alpha-asc"></i>
-									</el-dropdown-item>
-									<el-dropdown-item command="DESC">
-										<i class="fa fa-sort-alpha-desc"></i>
-									</el-dropdown-item>
-								</el-dropdown-menu>
-							</el-dropdown>
-							<page-results class="pull-right"
-							              :totalResults="filteredResults.length"
-							              :activePage="searchActivePage"
-							              @pageResults="pageResultsUpdate"></page-results>
-						</div>
-						<div class="mt-element-list">
-							<div class="mt-list-container list-news">
-								<ul>
-									<li class="mt-list-item actions-at-left margin-top-15"
-									    v-for="brandAdmin in currentActiveSearchPageItems"
-									    :id="'brandAdmin-' + brandAdmin.id"
-									    :class="{'animated' : animated === `brandAdmin-${brandAdmin.id}`}"
-									    :key="brandAdmin.id">
-										<div class="list-item-actions">
-											<el-tooltip v-if="$root.permissions['admin brand_admins update']"
-											            content="Edit"
-											            effect="light"
-											            placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default"
-												   @click="editBrandAdmin(brandAdmin)">
-													<i class="fa fa-pencil"
-													   aria-hidden="true"></i>
-												</a>
-											</el-tooltip>
-											<el-tooltip v-if="$root.permissions['admin brand_admins read'] && !$root.permissions['admin brand_admins update']"
-											            content="View"
-											            effect="light"
-											            placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default"
-												   @click="editBrandAdmin(brandAdmin)">
-													<i class="fa fa-eye"
-													   aria-hidden="true"></i>
-												</a>
-											</el-tooltip>
-											<el-tooltip v-if="canAny([
-											            'list user\'s roles',
-											            'assign roles to user',
-											            'revoke roles from user',
-											            'sync roles for user'
-											            ])"
-											            content="Roles"
-											            effect="light"
-											            placement="right">
-												<a class="btn btn-circle btn-icon-only btn-default"
-												   @click="openRolesModal(brandAdmin)">
-													<i class="fa fa-id-badge"
-													   aria-hidden="true"></i>
-												</a>
-											</el-tooltip>
-										</div>
-										<div class="list-datetime bold uppercase font-red">
-											<span>{{ brandAdmin.name }}</span>
-										</div>
-										<div class="list-item-content height-mod">
-											<div class="col-md-4">
-												<span>{{ brandAdmin.email }}</span>
-											</div>
-											<div class="col-md-4">
-												<span>{{ formatPhone(brandAdmin.phone) }}</span>
-											</div>
-											<div class="col-md-4">
-												<span v-if="brandAdmin.active === 1">ACTIVE</span>
-												<span v-else>DISABLED</span>
-											</div>
-										</div>
-									</li>
-								</ul>
-							</div>
-							<div class="clearfix"
-							     v-if="filteredResults.length && searchNumPages > 1">
-								<pagination :passedPage="searchActivePage"
-								            :numPages="searchNumPages"
-								            @activePageChange="activeSearchPageUpdate"></pagination>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div v-if="!brandAdmins.length && !loadingBrandAdminsData">
-				<no-results :show="!brandAdmins.length"
-				            :type="'brand admins'"></no-results>
-			</div>
-		</div>
-		<!-- LIST END -->
+      <!-- LIST START -->
+      <loading-screen
+        :show="loadingBrandAdminsData"
+        :color="'#2C3E50'"
+        :display="'inline'"
+      />
+      <div v-if="brandAdmins.length && !loadingBrandAdminsData && !filteredResults.length">
+        <div class="portlet light portlet-fit bordered margin-top-20">
+          <div class="portlet-title bg-blue-chambray">
+            <div class="menu-image-main">
+              <img src="../../../../public/client_logo.png">
+            </div>
+            <div class="caption">
+              <span class="caption-subject font-default bold uppercase">
+                Brand Admins
+              </span>
+              <div class="caption-desc font-grey-cascade">
+                Click on the edit icon to edit a brand admin.
+              </div>
+            </div>
+          </div>
+          <div class="portlet-body">
+            <div class="row">
+              <div class="col-md-12">
+                <div
+                  v-show="listErrorMessage"
+                  ref="listErrorMessage"
+                  class="alert alert-danger"
+                >
+                  <button
+                    class="close"
+                    @click="clearError('listErrorMessage')"
+                  />
+                  <span>{{ listErrorMessage }}</span>
+                </div>
+              </div>
+            </div>
+            <div
+              v-if="brandAdmins.length"
+              class="clearfix margin-bottom-10"
+            >
+              <el-dropdown
+                trigger="click"
+                size="mini"
+                :show-timeout="50"
+                :hide-timeout="50"
+                @command="updateSortByOrder"
+              >
+                <el-button size="mini">
+                  Sort by
+                  <span>
+                    <i
+                      v-if="sortBy.order === 'ASC'"
+                      class="fa fa-sort-alpha-asc"
+                    />
+                    <i
+                      v-if="sortBy.order === 'DESC'"
+                      class="fa fa-sort-alpha-desc"
+                    />
+                  </span>
+                  <i class="el-icon-arrow-down el-icon--right" />
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="ASC">
+                    <i class="fa fa-sort-alpha-asc" />
+                  </el-dropdown-item>
+                  <el-dropdown-item command="DESC">
+                    <i class="fa fa-sort-alpha-desc" />
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+              <page-results
+                class="pull-right"
+                :total-results="brandAdmins.length"
+                :active-page="activePage"
+                @pageResults="pageResultsUpdate"
+              />
+            </div>
+            <div class="mt-element-list">
+              <div class="mt-list-container list-news">
+                <ul>
+                  <li
+                    v-for="brandAdmin in currentActivePageItems"
+                    :id="'brandAdmin-' + brandAdmin.id"
+                    :key="brandAdmin.id"
+                    class="mt-list-item actions-at-left margin-top-15"
+                    :class="{'animated' : animated === `brandAdmin-${brandAdmin.id}`}"
+                  >
+                    <div class="list-item-actions">
+                      <el-tooltip
+                        v-if="$root.permissions['admin brand_admins update']"
+                        content="Edit"
+                        effect="light"
+                        placement="right"
+                      >
+                        <a
+                          class="btn btn-circle btn-icon-only btn-default"
+                          @click="editBrandAdmin(brandAdmin)"
+                        >
+                          <i
+                            class="fa fa-pencil"
+                            aria-hidden="true"
+                          />
+                        </a>
+                      </el-tooltip>
+                      <el-tooltip
+                        v-if="$root.permissions['admin brand_admins read'] && !$root.permissions['admin brand_admins update']"
+                        content="View"
+                        effect="light"
+                        placement="right"
+                      >
+                        <a
+                          class="btn btn-circle btn-icon-only btn-default"
+                          @click="editBrandAdmin(brandAdmin)"
+                        >
+                          <i
+                            class="fa fa-eye"
+                            aria-hidden="true"
+                          />
+                        </a>
+                      </el-tooltip>
+                      <el-tooltip
+                        v-if="canAny([
+                          'list user\'s roles',
+                          'assign roles to user',
+                          'revoke roles from user',
+                          'sync roles for user'
+                        ])"
+                        content="Roles"
+                        effect="light"
+                        placement="right"
+                      >
+                        <a
+                          class="btn btn-circle btn-icon-only btn-default"
+                          @click="openRolesModal(brandAdmin)"
+                        >
+                          <i
+                            class="fa fa-id-badge"
+                            aria-hidden="true"
+                          />
+                        </a>
+                      </el-tooltip>
+                    </div>
+                    <div class="list-datetime bold uppercase font-red">
+                      <span>{{ brandAdmin.name }}</span>
+                    </div>
+                    <div class="list-item-content height-mod">
+                      <div class="col-md-4">
+                        <span>{{ brandAdmin.email }}</span>
+                      </div>
+                      <div class="col-md-4">
+                        <span>{{ formatPhone(brandAdmin.phone) }}</span>
+                      </div>
+                      <div class="col-md-4">
+                        <span v-if="brandAdmin.active === 1">
+                          ACTIVE
+                        </span>
+                        <span v-else>
+                          DISABLED
+                        </span>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div
+                v-if="brandAdmins.length && numPages > 1"
+                class="clearfix"
+              >
+                <pagination
+                  :passed-page="activePage"
+                  :num-pages="numPages"
+                  @activePageChange="activePageUpdate"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-if="brandAdmins.length && !loadingBrandAdminsData && filteredResults.length">
+        <div class="portlet light portlet-fit bordered margin-top-20">
+          <div class="portlet-title bg-blue-chambray">
+            <div class="menu-image-main">
+              <img src="../../../../public/client_logo.png">
+            </div>
+            <div class="caption">
+              <span class="caption-subject font-default bold uppercase">
+                Search Results
+              </span>
+              <div class="caption-desc font-grey-cascade">
+                Click on the edit icon to edit a brand admin.
+              </div>
+            </div>
+          </div>
+          <div class="portlet-body">
+            <div
+              v-if="filteredResults.length"
+              class="clearfix margin-bottom-10"
+            >
+              <el-dropdown
+                trigger="click"
+                size="mini"
+                :show-timeout="50"
+                :hide-timeout="50"
+                @command="updateSortByOrder"
+              >
+                <el-button size="mini">
+                  Sort by
+                  <span>
+                    <i
+                      v-if="sortBy.order === 'ASC'"
+                      class="fa fa-sort-alpha-asc"
+                    />
+                    <i
+                      v-if="sortBy.order === 'DESC'"
+                      class="fa fa-sort-alpha-desc"
+                    />
+                  </span>
+                  <i class="el-icon-arrow-down el-icon--right" />
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="ASC">
+                    <i class="fa fa-sort-alpha-asc" />
+                  </el-dropdown-item>
+                  <el-dropdown-item command="DESC">
+                    <i class="fa fa-sort-alpha-desc" />
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+              <page-results
+                class="pull-right"
+                :total-results="filteredResults.length"
+                :active-page="searchActivePage"
+                @pageResults="pageResultsUpdate"
+              />
+            </div>
+            <div class="mt-element-list">
+              <div class="mt-list-container list-news">
+                <ul>
+                  <li
+                    v-for="brandAdmin in currentActiveSearchPageItems"
+                    :id="'brandAdmin-' + brandAdmin.id"
+                    :key="brandAdmin.id"
+                    class="mt-list-item actions-at-left margin-top-15"
+                    :class="{'animated' : animated === `brandAdmin-${brandAdmin.id}`}"
+                  >
+                    <div class="list-item-actions">
+                      <el-tooltip
+                        v-if="$root.permissions['admin brand_admins update']"
+                        content="Edit"
+                        effect="light"
+                        placement="right"
+                      >
+                        <a
+                          class="btn btn-circle btn-icon-only btn-default"
+                          @click="editBrandAdmin(brandAdmin)"
+                        >
+                          <i
+                            class="fa fa-pencil"
+                            aria-hidden="true"
+                          />
+                        </a>
+                      </el-tooltip>
+                      <el-tooltip
+                        v-if="$root.permissions['admin brand_admins read'] && !$root.permissions['admin brand_admins update']"
+                        content="View"
+                        effect="light"
+                        placement="right"
+                      >
+                        <a
+                          class="btn btn-circle btn-icon-only btn-default"
+                          @click="editBrandAdmin(brandAdmin)"
+                        >
+                          <i
+                            class="fa fa-eye"
+                            aria-hidden="true"
+                          />
+                        </a>
+                      </el-tooltip>
+                      <el-tooltip
+                        v-if="canAny([
+                          'list user\'s roles',
+                          'assign roles to user',
+                          'revoke roles from user',
+                          'sync roles for user'
+                        ])"
+                        content="Roles"
+                        effect="light"
+                        placement="right"
+                      >
+                        <a
+                          class="btn btn-circle btn-icon-only btn-default"
+                          @click="openRolesModal(brandAdmin)"
+                        >
+                          <i
+                            class="fa fa-id-badge"
+                            aria-hidden="true"
+                          />
+                        </a>
+                      </el-tooltip>
+                    </div>
+                    <div class="list-datetime bold uppercase font-red">
+                      <span>{{ brandAdmin.name }}</span>
+                    </div>
+                    <div class="list-item-content height-mod">
+                      <div class="col-md-4">
+                        <span>{{ brandAdmin.email }}</span>
+                      </div>
+                      <div class="col-md-4">
+                        <span>{{ formatPhone(brandAdmin.phone) }}</span>
+                      </div>
+                      <div class="col-md-4">
+                        <span v-if="brandAdmin.active === 1">
+                          ACTIVE
+                        </span>
+                        <span v-else>
+                          DISABLED
+                        </span>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div
+                v-if="filteredResults.length && searchNumPages > 1"
+                class="clearfix"
+              >
+                <pagination
+                  :passed-page="searchActivePage"
+                  :num-pages="searchNumPages"
+                  @activePageChange="activeSearchPageUpdate"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-if="!brandAdmins.length && !loadingBrandAdminsData">
+        <no-results
+          :show="!brandAdmins.length"
+          :type="'brand admins'"
+        />
+      </div>
+    </div>
+    <!-- LIST END -->
 
-		<!-- EDIT MODAL START -->
-		<modal :show="showEditBrandAdminModal"
-		       effect="fade"
-		       @closeOnEscape="closeEditBrandAdminModal"
-		       ref="editModal">
-			<div slot="modal-header"
-			     class="modal-header">
-				<button type="button"
-				        class="close"
-				        @click="closeEditBrandAdminModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Edit Brand Admin</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<div class="alert alert-danger"
-				     v-show="editErrorMessage"
-				     ref="editErrorMessage">
-					<button class="close"
-					        @click="clearError('editErrorMessage')"></button>
-					<span>{{editErrorMessage}}</span>
-				</div>
-				<fieldset :disabled="$root.permissions['admin brand_admins read'] && !$root.permissions['admin brand_admins update']">
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<input type="text"
-						       class="form-control input-sm"
-						       id="form_control_edited_name"
-						       v-model="brandAdminToBeEdited.name"
-						       :class="{'edited': brandAdminToBeEdited.name.length}">
-						<label for="form_control_edited_name">Name</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<input type="text"
-						       class="form-control input-sm"
-						       id="form_control_edited_phone"
-						       v-model="brandAdminToBeEdited.phone"
-						       :class="{'edited': brandAdminToBeEdited.phone.length}">
-						<label for="form_control_edited_phone">Phone</label>
-					</div>
-				</fieldset>
-				<div class="form-group form-md-line-input form-md-floating-label">
-					<label>Status</label><br>
-					<el-switch :disabled="$root.permissions['admin brand_admins read'] && !$root.permissions['admin brand_admins update']"
-					           v-model="brandAdminToBeEdited.active"
-					           active-color="#0c6"
-					           inactive-color="#ff4949"
-					           :active-value="1"
-					           :inactive-value="0"
-					           active-text="Active"
-					           inactive-text="Disabled">
-					</el-switch>
-				</div>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer">
-				<button v-if="$root.permissions['admin brand_admins read'] && !$root.permissions['admin brand_admins update']"
-				        type="button"
-				        class="btn btn-primary"
-				        @click="closeEditBrandAdminModal()">
-					Close
-				</button>
-				<button v-else
-				        type="button"
-				        class="btn btn-primary"
-				        @click="updateBrandAdmin()"
-				        :disabled="updating">
-					Save
-					<i v-show="updating"
-					   class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-			</div>
-		</modal>
-		<!-- EDIT MODAL END -->
+    <!-- EDIT MODAL START -->
+    <modal
+      ref="editModal"
+      :show="showEditBrandAdminModal"
+      effect="fade"
+      @closeOnEscape="closeEditBrandAdminModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeEditBrandAdminModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Edit Brand Admin
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <div
+          v-show="editErrorMessage"
+          ref="editErrorMessage"
+          class="alert alert-danger"
+        >
+          <button
+            class="close"
+            @click="clearError('editErrorMessage')"
+          />
+          <span>{{ editErrorMessage }}</span>
+        </div>
+        <fieldset :disabled="$root.permissions['admin brand_admins read'] && !$root.permissions['admin brand_admins update']">
+          <div class="form-group form-md-line-input form-md-floating-label">
+            <input
+              id="form_control_edited_name"
+              v-model="brandAdminToBeEdited.name"
+              type="text"
+              class="form-control input-sm"
+              :class="{'edited': brandAdminToBeEdited.name.length}"
+            >
+            <label for="form_control_edited_name">
+              Name
+            </label>
+          </div>
+          <div class="form-group form-md-line-input form-md-floating-label">
+            <input
+              id="form_control_edited_phone"
+              v-model="brandAdminToBeEdited.phone"
+              type="text"
+              class="form-control input-sm"
+              :class="{'edited': brandAdminToBeEdited.phone.length}"
+            >
+            <label for="form_control_edited_phone">
+              Phone
+            </label>
+          </div>
+        </fieldset>
+        <div class="form-group form-md-line-input form-md-floating-label">
+          <label>Status</label><br>
+          <el-switch
+            v-model="brandAdminToBeEdited.active"
+            :disabled="$root.permissions['admin brand_admins read'] && !$root.permissions['admin brand_admins update']"
+            active-color="#0c6"
+            inactive-color="#ff4949"
+            :active-value="1"
+            :inactive-value="0"
+            active-text="Active"
+            inactive-text="Disabled"
+          />
+        </div>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer"
+      >
+        <button
+          v-if="$root.permissions['admin brand_admins read'] && !$root.permissions['admin brand_admins update']"
+          type="button"
+          class="btn btn-primary"
+          @click="closeEditBrandAdminModal()"
+        >
+          Close
+        </button>
+        <button
+          v-else
+          type="button"
+          class="btn btn-primary"
+          :disabled="updating"
+          @click="updateBrandAdmin()"
+        >
+          Save
+          <i
+            v-show="updating"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+      </div>
+    </modal>
+    <!-- EDIT MODAL END -->
 
-		<!-- ROLES MODAL START -->
-		<modal :show="showAssignRolesModal"
-		       effect="fade"
-		       @closeOnEscape="closeRolesModal"
-		       ref="rolesModal">
-			<div slot="modal-header"
-			     class="modal-header">
-				<button type="button"
-				        class="close"
-				        @click="closeRolesModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Assign Roles</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<div class="alert alert-danger"
-				     v-show="assignRolesErrorMessage"
-				     ref="assignRolesErrorMessage">
-					<button class="close"
-					        @click="clearError('assignRolesErrorMessage')"></button>
-					<span>{{assignRolesErrorMessage}}</span>
-				</div>
-				<roles-picker v-if="showAssignRolesModal"
-				              @rolesSelected="updateRoles"
-				              :editable="canAny([
-				              'assign roles to user',
-				              'revoke roles from user',
-				              'sync roles for user'
-				              ])"
-				              :previouslySelected="brandAdminToAssignRolesTo.roles"></roles-picker>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer">
-				<button v-if="canAny([
-				        'assign roles to user',
-				        'revoke roles from user',
-				        'sync roles for user'
-				        ])"
-				        type="button"
-				        class="btn btn-primary"
-				        @click="assignRoles()"
-				        :disabled="assigning">
-					Save
-					<i v-show="assigning"
-					   class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-				<button v-else
-				        type="button"
-				        class="btn btn-primary"
-				        @click="closeRolesModal()"
-				        :disabled="assigning">
-					Close
-				</button>
-			</div>
-		</modal>
-		<!-- ROLES MODAL END -->
-
-	</div>
+    <!-- ROLES MODAL START -->
+    <modal
+      ref="rolesModal"
+      :show="showAssignRolesModal"
+      effect="fade"
+      @closeOnEscape="closeRolesModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeRolesModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Assign Roles
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <div
+          v-show="assignRolesErrorMessage"
+          ref="assignRolesErrorMessage"
+          class="alert alert-danger"
+        >
+          <button
+            class="close"
+            @click="clearError('assignRolesErrorMessage')"
+          />
+          <span>{{ assignRolesErrorMessage }}</span>
+        </div>
+        <roles-picker
+          v-if="showAssignRolesModal"
+          :editable="canAny([
+            'assign roles to user',
+            'revoke roles from user',
+            'sync roles for user'
+          ])"
+          :previously-selected="brandAdminToAssignRolesTo.roles"
+          @rolesSelected="updateRoles"
+        />
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer"
+      >
+        <button
+          v-if="canAny([
+            'assign roles to user',
+            'revoke roles from user',
+            'sync roles for user'
+          ])"
+          type="button"
+          class="btn btn-primary"
+          :disabled="assigning"
+          @click="assignRoles()"
+        >
+          Save
+          <i
+            v-show="assigning"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+        <button
+          v-else
+          type="button"
+          class="btn btn-primary"
+          :disabled="assigning"
+          @click="closeRolesModal()"
+        >
+          Close
+        </button>
+      </div>
+    </modal>
+    <!-- ROLES MODAL END -->
+  </div>
 </template>
 
 <script>

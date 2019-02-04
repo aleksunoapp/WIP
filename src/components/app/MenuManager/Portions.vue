@@ -1,189 +1,261 @@
 <template>
-	<div>
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
-		<!-- END PAGE BAR -->
-		<!-- BEGIN PAGE TITLE-->
-		<h1 class="page-title">Portions</h1>
-		<!-- END PAGE TITLE-->
-		<div class="note note-info">
-			<p>Create and manage portions for modifier items.</p>
-		</div>
-		<!-- BEGIN CREATE NEW MENU-->
-		<div class="portlet box blue-hoki"
-		     v-if="$root.permissions['menu_manager portions create']">
-			<div class="portlet-title bg-blue-chambray"
-			     @click="toggleCreatePortionPanel()">
-				<div class="custom tools">
-					<a :class="{'expand': !createPortionCollapse, 'collapse': createPortionCollapse}"></a>
-				</div>
-				<div class="caption">
-					&emsp;Create A New Portion
-				</div>
-			</div>
-			<div class="portlet-body"
-			     :class="{'display-hide': createPortionCollapse}">
-				<form role="form"
-				      @submit.prevent="createPortion()">
-					<div class="form-body row">
-						<div class="col-md-12">
-							<div class="alert alert-danger"
-							     v-show="errorMessage">
-								<button class="close"
-								        @click.prevent="clearError('errorMessage')"></button>
-								<span>{{errorMessage}}</span>
-							</div>
-						</div>
-						<div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
-							<resource-picker @open="toggleImageMode('newMenu', true)"
-							                 @close="toggleImageMode('newMenu', false)"
-							                 @selected="updateImage"
-							                 :imageButton="true"
-							                 :imageUrl="newPortion.icon_url"
-							                 class="margin-top-15">
-							</resource-picker>
-						</div>
-						<div class="col-md-5"
-						     v-show="!imageMode.newMenu">
-							<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newPortion.name.length}"
-								       id="form_control_1"
-								       v-model="newPortion.name">
-								<label for="form_control_1">Portion Name</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newPortion.multiplier}"
-								       id="form_control_2"
-								       v-model="newPortion.multiplier">
-								<label for="form_control_2">Portion Multiplier</label>
-							</div>
-						</div>
-						<div class="col-md-5"
-						     v-show="!imageMode.newMenu">
-							<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-								<input type="number"
-								       class="form-control input-sm"
-								       :class="{'edited': newPortion.order}"
-								       id="form_control_3"
-								       v-model="newPortion.order">
-								<label for="form_control_3">Portion Order</label>
-							</div>
-						</div>
-					</div>
-					<div class="form-actions right margin-top-20"
-					     v-show="!imageMode.newMenu">
-						<button type="submit"
-						        class="btn blue">Create</button>
-					</div>
-				</form>
-			</div>
-		</div>
-		<!-- END CREATE NEW MENU-->
-		<loading-screen :show="loadingPortionsData"
-		                :color="'#2C3E50'"
-		                :display="'inline'"></loading-screen>
-		<div class="portlet light portlet-fit bordered margin-top-20"
-		     v-if="!loadingPortionsData">
-			<div class="portlet-title bg-blue-chambray">
-				<div class="menu-image-main">
-					<img src="../../../../public/client_logo.png">
-				</div>
-				<div class="caption">
-					<span class="caption-subject font-default bold uppercase">Portions</span>
-				</div>
-			</div>
-			<div class="portlet-body">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="alert alert-danger"
-						     v-show="listErrorMessage"
-						     ref="listErrorMessage">
-							<button class="close"
-							        @click="clearError('listErrorMessage')"></button>
-							<span>{{listErrorMessage}}</span>
-						</div>
-					</div>
-				</div>
-				<div class="mt-element-list margin-top-15"
-				     v-if="portions.length">
-					<div class="mt-list-container list-news ext-1 no-border">
-						<ul>
-							<li class="mt-list-item actions-at-left margin-top-15"
-							    v-for="portion in portions"
-							    :id="'portion-' + portion.id"
-							    :key="portion.id">
-								<div class="list-item-actions">
-									<el-tooltip v-if="$root.permissions['menu_manager portions update']"
-									            content="Edit"
-									            effect="light"
-									            placement="right">
-										<a class="btn btn-circle btn-icon-only btn-default"
-										   @click="editPortion(portion)">
-											<i class="fa fa-lg fa-pencil"></i>
-										</a>
-									</el-tooltip>
-									<el-tooltip v-if="$root.permissions['menu_manager portions read'] && !$root.permissions['menu_manager portions update']"
-									            content="View"
-									            effect="light"
-									            placement="right">
-										<a class="btn btn-circle btn-icon-only btn-default"
-										   @click="editPortion(portion)">
-											<i class="fa fa-lg fa-eye"></i>
-										</a>
-									</el-tooltip>
-									<el-tooltip v-if="$root.permissions['menu_manager portions add modifier items']"
-									            content="Apply to multiple"
-									            effect="light"
-									            placement="right">
-										<a class="btn btn-circle btn-icon-only btn-default"
-										   @click="displayMenuTreeModal(portion, $event)">
-											<i class="icon-layers"></i>
-										</a>
-									</el-tooltip>
-								</div>
-								<div class="list-thumb">
-									<a v-if="portion.icon_url.length">
-										<img alt=""
-										     :src="portion.icon_url" />
-									</a>
-									<a v-else>
-										<img src="../../../assets/img/app/image-placeholder.png">
-									</a>
-								</div>
-								<div class="list-datetime bold uppercase font-red">
-									<span>{{ portion.name }}</span>
-								</div>
-								<div class="list-item-content height-mod">
-									<strong>Multipler:</strong>
-									<span>{{ portion.multiplier }}</span>
-								</div>
-
-							</li>
-						</ul>
-					</div>
-				</div>
-				<div class="margin-top-20"
-				     v-else>
-					<no-results :show="!portions.length"
-					            :type="'portions'"></no-results>
-				</div>
-			</div>
-		</div>
-		<edit-portion v-if="showEditPortionModal"
-		              :selectedPortionId="selectedPortionId"
-		              @updatePortion="updatePortion"
-		              @closeEditPortionModal="closeEditPortionModal"></edit-portion>
-		<modifier-tree v-if="showModifierTreeModal"
-		               :selectedObject="selectedPortion"
-		               :headerText="headerText"
-		               :updateType="'portion'"
-		               @closeModifierTreeModal="closeModifierTreeModal"></modifier-tree>
-	</div>
+  <div>
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
+    <!-- END PAGE BAR -->
+    <!-- BEGIN PAGE TITLE-->
+    <h1 class="page-title">
+      Portions
+    </h1>
+    <!-- END PAGE TITLE-->
+    <div class="note note-info">
+      <p>Create and manage portions for modifier items.</p>
+    </div>
+    <!-- BEGIN CREATE NEW MENU-->
+    <div
+      v-if="$root.permissions['menu_manager portions create']"
+      class="portlet box blue-hoki"
+    >
+      <div
+        class="portlet-title bg-blue-chambray"
+        @click="toggleCreatePortionPanel()"
+      >
+        <div class="custom tools">
+          <a :class="{'expand': !createPortionCollapse, 'collapse': createPortionCollapse}" />
+        </div>
+        <div class="caption">
+          &emsp;Create A New Portion
+        </div>
+      </div>
+      <div
+        class="portlet-body"
+        :class="{'display-hide': createPortionCollapse}"
+      >
+        <form
+          role="form"
+          @submit.prevent="createPortion()"
+        >
+          <div class="form-body row">
+            <div class="col-md-12">
+              <div
+                v-show="errorMessage"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  @click.prevent="clearError('errorMessage')"
+                />
+                <span>{{ errorMessage }}</span>
+              </div>
+            </div>
+            <div :class="{'col-md-2' : !imageMode.newMenu, 'col-md-12' : imageMode.newMenu}">
+              <resource-picker
+                :image-button="true"
+                :image-url="newPortion.icon_url"
+                class="margin-top-15"
+                @open="toggleImageMode('newMenu', true)"
+                @close="toggleImageMode('newMenu', false)"
+                @selected="updateImage"
+              />
+            </div>
+            <div
+              v-show="!imageMode.newMenu"
+              class="col-md-5"
+            >
+              <div class="form-group form-md-line-input form-md-floating-label margin-top-10">
+                <input
+                  id="form_control_1"
+                  v-model="newPortion.name"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newPortion.name.length}"
+                >
+                <label for="form_control_1">
+                  Portion Name
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label margin-top-10">
+                <input
+                  id="form_control_2"
+                  v-model="newPortion.multiplier"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newPortion.multiplier}"
+                >
+                <label for="form_control_2">
+                  Portion Multiplier
+                </label>
+              </div>
+            </div>
+            <div
+              v-show="!imageMode.newMenu"
+              class="col-md-5"
+            >
+              <div class="form-group form-md-line-input form-md-floating-label margin-top-10">
+                <input
+                  id="form_control_3"
+                  v-model="newPortion.order"
+                  type="number"
+                  class="form-control input-sm"
+                  :class="{'edited': newPortion.order}"
+                >
+                <label for="form_control_3">
+                  Portion Order
+                </label>
+              </div>
+            </div>
+          </div>
+          <div
+            v-show="!imageMode.newMenu"
+            class="form-actions right margin-top-20"
+          >
+            <button
+              type="submit"
+              class="btn blue"
+            >
+              Create
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- END CREATE NEW MENU-->
+    <loading-screen
+      :show="loadingPortionsData"
+      :color="'#2C3E50'"
+      :display="'inline'"
+    />
+    <div
+      v-if="!loadingPortionsData"
+      class="portlet light portlet-fit bordered margin-top-20"
+    >
+      <div class="portlet-title bg-blue-chambray">
+        <div class="menu-image-main">
+          <img src="../../../../public/client_logo.png">
+        </div>
+        <div class="caption">
+          <span class="caption-subject font-default bold uppercase">
+            Portions
+          </span>
+        </div>
+      </div>
+      <div class="portlet-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div
+              v-show="listErrorMessage"
+              ref="listErrorMessage"
+              class="alert alert-danger"
+            >
+              <button
+                class="close"
+                @click="clearError('listErrorMessage')"
+              />
+              <span>{{ listErrorMessage }}</span>
+            </div>
+          </div>
+        </div>
+        <div
+          v-if="portions.length"
+          class="mt-element-list margin-top-15"
+        >
+          <div class="mt-list-container list-news ext-1 no-border">
+            <ul>
+              <li
+                v-for="portion in portions"
+                :id="'portion-' + portion.id"
+                :key="portion.id"
+                class="mt-list-item actions-at-left margin-top-15"
+              >
+                <div class="list-item-actions">
+                  <el-tooltip
+                    v-if="$root.permissions['menu_manager portions update']"
+                    content="Edit"
+                    effect="light"
+                    placement="right"
+                  >
+                    <a
+                      class="btn btn-circle btn-icon-only btn-default"
+                      @click="editPortion(portion)"
+                    >
+                      <i class="fa fa-lg fa-pencil" />
+                    </a>
+                  </el-tooltip>
+                  <el-tooltip
+                    v-if="$root.permissions['menu_manager portions read'] && !$root.permissions['menu_manager portions update']"
+                    content="View"
+                    effect="light"
+                    placement="right"
+                  >
+                    <a
+                      class="btn btn-circle btn-icon-only btn-default"
+                      @click="editPortion(portion)"
+                    >
+                      <i class="fa fa-lg fa-eye" />
+                    </a>
+                  </el-tooltip>
+                  <el-tooltip
+                    v-if="$root.permissions['menu_manager portions add modifier items']"
+                    content="Apply to multiple"
+                    effect="light"
+                    placement="right"
+                  >
+                    <a
+                      class="btn btn-circle btn-icon-only btn-default"
+                      @click="displayMenuTreeModal(portion, $event)"
+                    >
+                      <i class="icon-layers" />
+                    </a>
+                  </el-tooltip>
+                </div>
+                <div class="list-thumb">
+                  <a v-if="portion.icon_url.length">
+                    <img
+                      alt=""
+                      :src="portion.icon_url"
+                    >
+                  </a>
+                  <a v-else>
+                    <img src="../../../assets/img/app/image-placeholder.png">
+                  </a>
+                </div>
+                <div class="list-datetime bold uppercase font-red">
+                  <span>{{ portion.name }}</span>
+                </div>
+                <div class="list-item-content height-mod">
+                  <strong>Multipler:</strong>
+                  <span>{{ portion.multiplier }}</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div
+          v-else
+          class="margin-top-20"
+        >
+          <no-results
+            :show="!portions.length"
+            :type="'portions'"
+          />
+        </div>
+      </div>
+    </div>
+    <edit-portion
+      v-if="showEditPortionModal"
+      :selected-portion-id="selectedPortionId"
+      @updatePortion="updatePortion"
+      @closeEditPortionModal="closeEditPortionModal"
+    />
+    <modifier-tree
+      v-if="showModifierTreeModal"
+      :selected-object="selectedPortion"
+      :header-text="headerText"
+      :update-type="'portion'"
+      @closeModifierTreeModal="closeModifierTreeModal"
+    />
+  </div>
 </template>
 
 <script>
@@ -200,6 +272,16 @@ import ResourcePicker from '../../modules/ResourcePicker'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
+	components: {
+		Breadcrumb,
+		Modal,
+		LoadingScreen,
+		NoResults,
+		Dropdown,
+		EditPortion,
+		ModifierTree,
+		ResourcePicker
+	},
 	data () {
 		return {
 			breadcrumbArray: [
@@ -472,16 +554,6 @@ export default {
 			this.showEditPortionModal = false
 			this.getPortions()
 		}
-	},
-	components: {
-		Breadcrumb,
-		Modal,
-		LoadingScreen,
-		NoResults,
-		Dropdown,
-		EditPortion,
-		ModifierTree,
-		ResourcePicker
 	}
 }
 </script>

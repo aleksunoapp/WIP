@@ -1,132 +1,181 @@
 <template>
-	<div>
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
-		<h1 class='page-title'>Custom Translations</h1>
-		<div class="note note-info">
-			<p>Translate your custom content.</p>
-		</div>
+  <div>
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
+    <h1 class="page-title">
+      Custom Translations
+    </h1>
+    <div class="note note-info">
+      <p>Translate your custom content.</p>
+    </div>
 
-		<!-- BEGIN TRANSLATE-->
-		<div class="portlet box blue-hoki">
-			<div class="portlet-title bg-blue-chambray">
-				<div class="caption">
-					Translate
-				</div>
-			</div>
-			<div class="portlet-body">
+    <!-- BEGIN TRANSLATE-->
+    <div class="portlet box blue-hoki">
+      <div class="portlet-title bg-blue-chambray">
+        <div class="caption">
+          Translate
+        </div>
+      </div>
+      <div class="portlet-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div
+              v-show="translationsTableErrorMessage.length"
+              ref="translationsTableErrorMessage"
+              class="alert alert-danger"
+            >
+              <button
+                class="close"
+                @click="clearError('translationsTableErrorMessage')"
+              />
+              <span>{{ translationsTableErrorMessage }}</span>
+            </div>
+          </div>
+        </div>
 
-				<div class="row">
-					<div class="col-md-12">
-						<div ref="translationsTableErrorMessage"
-						     class="alert alert-danger"
-						     v-show="translationsTableErrorMessage.length">
-							<button class="close"
-							        @click="clearError('translationsTableErrorMessage')"></button>
-							<span>{{translationsTableErrorMessage}}</span>
-						</div>
-					</div>
-				</div>
+        <div class="row">
+          <div class="col-md-3">
+            <el-collapse
+              v-model="platformAccordionOpen"
+              class="accordion margin-bottom-20"
+              accordion
+            >
+              <el-collapse-item
+                title="Platform"
+                name="platform-accordion"
+              >
+                <div
+                  v-for="platform in platforms"
+                  :key="platform.id"
+                  class="clickable"
+                  :class="{'active-term' : platform.name === selectedPlatfrom}"
+                  @click="selectPlatformForTranslation(platform)"
+                >
+                  {{ platform.name }}
+                </div>
+                <div
+                  v-if="!platforms.length"
+                  class="helper-text"
+                >
+                  No platforms yet.
+                  <router-link to="/app/localization/platforms">
+                    Create one.
+                  </router-link>
+                </div>
+              </el-collapse-item>
+            </el-collapse>
+          </div>
+          <div class="col-md-3">
+            <el-collapse
+              v-model="languageAccordionOpen"
+              class="accordion margin-bottom-20"
+              accordion
+            >
+              <el-collapse-item
+                title="Language"
+                name="locale-accordion"
+              >
+                <div
+                  v-for="language in allLocales"
+                  :key="language.id"
+                  class="clickable"
+                  :class="{'active-term' : language.language_code === localeForTranslation.language_code}"
+                  @click="selectLocaleForTranslation(language)"
+                >
+                  {{ language.country_name }} ({{ language.language_code }})
+                </div>
+                <div
+                  v-if="!allLocales.length"
+                  class="helper-text"
+                >
+                  No languages yet.
+                  <router-link to="/app/localization/languages">
+                    Create one.
+                  </router-link>
+                </div>
+              </el-collapse-item>
+            </el-collapse>
+          </div>
+        </div>
 
-				<div class="row">
-					<div class="col-md-3">
-						<el-collapse class="accordion margin-bottom-20"
-						             v-model="platformAccordionOpen"
-						             accordion>
-							<el-collapse-item title="Platform"
-							                  name="platform-accordion">
-								<div v-for="platform in platforms"
-								     class="clickable"
-								     :class="{'active-term' : platform.name === selectedPlatfrom}"
-								     @click="selectPlatformForTranslation(platform)"
-								     :key="platform.id">
-									{{platform.name}}
-								</div>
-								<div class="helper-text"
-								     v-if="!platforms.length">
-									No platforms yet.
-									<router-link to="/app/localization/platforms">Create one.</router-link>
-								</div>
-							</el-collapse-item>
-						</el-collapse>
-					</div>
-					<div class="col-md-3">
-						<el-collapse class="accordion margin-bottom-20"
-						             v-model="languageAccordionOpen"
-						             accordion>
-							<el-collapse-item title="Language"
-							                  name="locale-accordion">
-								<div v-for="language in allLocales"
-								     class="clickable"
-								     :class="{'active-term' : language.language_code === localeForTranslation.language_code}"
-								     @click="selectLocaleForTranslation(language)"
-								     :key="language.id">
-									{{language.country_name}} ({{language.language_code}})
-								</div>
-								<div class="helper-text"
-								     v-if="!allLocales.length">
-									No languages yet.
-									<router-link to="/app/localization/languages">Create one.</router-link>
-								</div>
-							</el-collapse-item>
-						</el-collapse>
-					</div>
-				</div>
+        <div class="translations-table">
+          <div class="translations-table-header">
+            <div class="translations-table-header-cell">
+              Term
+            </div>
+            <div class="translations-table-header-cell">
+              {{ localeForTranslation.country.name }} Translation
+            </div>
+          </div>
 
-				<div class="translations-table">
-					<div class="translations-table-header">
-						<div class="translations-table-header-cell">Term</div>
-						<div class="translations-table-header-cell">{{localeForTranslation.country.name}} Translation</div>
-					</div>
+          <loading-screen
+            class="margin-top-20"
+            :show="loadingTerms"
+            :color="'#2C3E50'"
+          />
 
-					<loading-screen class="margin-top-20"
-					                :show="loadingTerms"
-					                :color="'#2C3E50'">
-					</loading-screen>
-
-					<div v-show="!loadingTerms"
-					     v-for="(term, index) in terms"
-					     class="translations-table-body"
-					     label="Field"
-					     :key="index">
-						<div class="translations-table-body-row">
-							<div class="translations-table-body-cell">{{term.term}}</div>
-							<div class="translations-table-body-cell">
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       class="form-control input-sm"
-									       :class="{'edited': term.translation.length}"
-									       :id="`term${term.id}`"
-									       v-model="term.translation"
-									       :disabled="!$root.permissions['localization update']">
-									<label :for="`term${term.id}`">Translation</label>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="left margin-top-20">
-						<button v-if="!loadingTerms && terms.length"
-						        @click="translateTerms()"
-						        class="btn blue"
-						        :disabled="!$root.permissions['localization update'] || saving">
-							Save
-							<i v-show="saving"
-							   class="fa fa-spinner fa-pulse fa-fw">
-							</i>
-						</button>
-					</div>
-					<div>
-						<p v-if="localeForTranslation.id === undefined"
-						   class="no-data center">Select a platform and a language to begin translating.</p>
-						<p v-if="localeForTranslation.id !== undefined && !loadingTerms && !terms.length"
-						   class="no-data center">There are no items to translate.</p>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- END TRANSLATE-->
-	</div>
+          <div
+            v-for="(term, index) in terms"
+            v-show="!loadingTerms"
+            :key="index"
+            class="translations-table-body"
+            label="Field"
+          >
+            <div class="translations-table-body-row">
+              <div class="translations-table-body-cell">
+                {{ term.term }}
+              </div>
+              <div class="translations-table-body-cell">
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    :id="`term${term.id}`"
+                    v-model="term.translation"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': term.translation.length}"
+                    :disabled="!$root.permissions['localization update']"
+                  >
+                  <label :for="`term${term.id}`">
+                    Translation
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="left margin-top-20">
+            <button
+              v-if="!loadingTerms && terms.length"
+              class="btn blue"
+              :disabled="!$root.permissions['localization update'] || saving"
+              @click="translateTerms()"
+            >
+              Save
+              <i
+                v-show="saving"
+                class="fa fa-spinner fa-pulse fa-fw"
+              />
+            </button>
+          </div>
+          <div>
+            <p
+              v-if="localeForTranslation.id === undefined"
+              class="no-data center"
+            >
+              Select a platform and a language to begin translating.
+            </p>
+            <p
+              v-if="localeForTranslation.id !== undefined && !loadingTerms && !terms.length"
+              class="no-data center"
+            >
+              There are no items to translate.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END TRANSLATE-->
+  </div>
 </template>
 
 <script>
@@ -141,6 +190,13 @@ import ajaxErrorHandler from '../../../controllers/ErrorController'
 import LoadingScreen from '@/components/modules/LoadingScreen'
 
 export default {
+	components: {
+		Breadcrumb,
+		Dropdown,
+		Modal,
+		ResourcePicker,
+		LoadingScreen
+	},
 	data () {
 		return {
 			breadcrumbArray: [{ name: 'Custom Translations', link: false }],
@@ -370,13 +426,6 @@ export default {
 		clearError (type) {
 			this[type] = ''
 		}
-	},
-	components: {
-		Breadcrumb,
-		Dropdown,
-		Modal,
-		ResourcePicker,
-		LoadingScreen
 	}
 }
 </script>

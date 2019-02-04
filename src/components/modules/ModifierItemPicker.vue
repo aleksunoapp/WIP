@@ -1,101 +1,128 @@
 <template>
-	<div slot="modal-body"
-			class="modal-body">
-		<div v-if="$root.activeLocation.id === undefined">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="alert alert-info center margin-top-20"
-						v-if="!$root.activeLocation.id">
-						<h4>No Store Selected</h4>
-						<p>Please select a store from the stores panel on the right to view Modifiers</p>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div 
-			v-else
-		>
-			<div class="portlet-body">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="alert alert-danger"
-								v-show="errorMessage"
-								ref="errorMessage">
-							<button class="close"
-									@click="clearError('errorMessage')"></button>
-							<span>{{errorMessage}}</span>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-6">
-						<h4>Modifier Categories</h4>
-						<div v-if="loadingModifiers && !modifiers.length">
-							<div class="alert alert-info">
-								<span>Loading...</span>
-							</div>
-						</div>
-						<div class="dd"
-								id="nestable_list_1"
-								v-else-if="modifiers.length && !loadingModifiers">
-							<ol class="dd-list">
-								<li class="dd-item"
-									v-for="modifier in modifiers"
-									:data-id="modifier.id"
-									@click="selectModifier(modifier)"
-									:key="modifier.id">
-									<div class="dd-handle"
-											:class="{'active': modifier.id === activeModifier.id}"> {{ modifier.name }}
-										<span class="pull-right">
-											<i class="fa fa-chevron-right"></i>
-										</span>
-									</div>
-								</li>
-							</ol>
-						</div>
-						<div v-else>
-							<div class="alert alert-warning">
-								<span>There are no modifier categories to display.</span>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-6"
-							v-if="isModifierCategorySelected">
-						<h4>{{ activeModifier.name }} - Items</h4>
-						<div v-if="loadingModifierItems && activeModifier.items === null">
-							<div class="alert alert-info">
-								<span>Loading...</span>
-							</div>
-						</div>
-						<div class="dd"
-								id="nestable_list_3"
-								v-else-if="activeModifier.items !== null && activeModifier.items.length">
-							<ol class="dd-list">
-								<li class="dd-item"
-									v-for="item in activeModifier.items"
-									:data-id="item.id"
-									:key="item.id">
-									<div class="dd-handle">
-										<span class="pull-left"><input type="checkbox"
-													:id="'item_checkbox_' + item.id"
-													class="md-check"
-													v-model="item.selected"
-                                                    @change="itemsSelected(item)">&emsp;</span>
-                                        <label :for="'item_checkbox_' + item.id">{{ item.name }}</label>
-									</div>
-								</li>
-							</ol>
-						</div>
-						<div v-else>
-							<div class="alert alert-warning">
-								<span>There are no items in the category '{{ activeModifier.name }}'.</span>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+  <div
+    slot="modal-body"
+    class="modal-body"
+  >
+    <div v-if="$root.activeLocation.id === undefined">
+      <div class="row">
+        <div class="col-md-12">
+          <div
+            v-if="!$root.activeLocation.id"
+            class="alert alert-info center margin-top-20"
+          >
+            <h4>No Store Selected</h4>
+            <p>Please select a store from the stores panel on the right to view Modifiers</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div 
+      v-else
+    >
+      <div class="portlet-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div
+              v-show="errorMessage"
+              ref="errorMessage"
+              class="alert alert-danger"
+            >
+              <button
+                class="close"
+                @click="clearError('errorMessage')"
+              />
+              <span>{{ errorMessage }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <h4>Modifier Categories</h4>
+            <div v-if="loadingModifiers && !modifiers.length">
+              <div class="alert alert-info">
+                <span>Loading...</span>
+              </div>
+            </div>
+            <div
+              v-else-if="modifiers.length && !loadingModifiers"
+              id="nestable_list_1"
+              class="dd"
+            >
+              <ol class="dd-list">
+                <li
+                  v-for="modifier in modifiers"
+                  :key="modifier.id"
+                  class="dd-item"
+                  :data-id="modifier.id"
+                  @click="selectModifier(modifier)"
+                >
+                  <div
+                    class="dd-handle"
+                    :class="{'active': modifier.id === activeModifier.id}"
+                  >
+                    {{ modifier.name }}
+                    <span class="pull-right">
+                      <i class="fa fa-chevron-right" />
+                    </span>
+                  </div>
+                </li>
+              </ol>
+            </div>
+            <div v-else>
+              <div class="alert alert-warning">
+                <span>There are no modifier categories to display.</span>
+              </div>
+            </div>
+          </div>
+          <div
+            v-if="isModifierCategorySelected"
+            class="col-md-6"
+          >
+            <h4>{{ activeModifier.name }} - Items</h4>
+            <div v-if="loadingModifierItems && activeModifier.items === null">
+              <div class="alert alert-info">
+                <span>Loading...</span>
+              </div>
+            </div>
+            <div
+              v-else-if="activeModifier.items !== null && activeModifier.items.length"
+              id="nestable_list_3"
+              class="dd"
+            >
+              <ol class="dd-list">
+                <li
+                  v-for="item in activeModifier.items"
+                  :key="item.id"
+                  class="dd-item"
+                  :data-id="item.id"
+                >
+                  <div class="dd-handle">
+                    <span class="pull-left">
+                      <input
+                        :id="'item_checkbox_' + item.id"
+                        v-model="item.selected"
+                        type="checkbox"
+                        class="md-check"
+                        @change="itemsSelected(item)"
+                      >&emsp;
+                    </span>
+                    <label :for="'item_checkbox_' + item.id">
+                      {{ item.name }}
+                    </label>
+                  </div>
+                </li>
+              </ol>
+            </div>
+            <div v-else>
+              <div class="alert alert-warning">
+                <span>There are no items in the category '{{ activeModifier.name }}'.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>

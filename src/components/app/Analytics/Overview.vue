@@ -1,276 +1,364 @@
 <template>
-	<div>
-		<div class="row">
-			<div class="col-xs-4">
-				<div class="portlet box blue-hoki">
-					<div class="portlet-title bg-blue-chambray">
-						<div class="caption"
-						     style="font-size:14px">
-							<span class="fa-stack fa-sm">
-								<i class="fa fa-circle fa-stack-2x"
-								   aria-hidden="true"
-								   style="color:rgb(26,188,156);line-height: inherit"></i>
-								<i class="fa fa-usd fa-stack-1x"
-								   aria-hidden="true"
-								   style="color:rgb(255,255,255);line-height:inherit"></i>
-							</span>
-							Revenue Today
-						</div>
-					</div>
-					<div class="portlet-body">
-						<div style="font-size: 20px;color:rgb(26,188,156);text-align: center;">
-							<span v-if="formatUSD(globalRevenueSummary.today_revenue) !== 'n/a'">
-								{{ formatUSD(globalRevenueSummary.today_revenue) }} in
-							</span>
-							{{ formatNumber(top10globalItems.daily_order) }}
-							<span v-show="top10globalItems.daily_order !== 1">orders</span>
-							<span v-show="top10globalItems.daily_order === 1">order</span>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-xs-4">
-				<div class="portlet box blue-hoki">
-					<div class="portlet-title bg-blue-chambray">
-						<div class="caption"
-						     style="font-size:14px">
-							<span class="fa-stack fa-sm">
-								<i class="fa fa-circle fa-stack-2x"
-								   aria-hidden="true"
-								   style="color:#3498db;line-height: inherit"></i>
-								<i class="fa fa-usd fa-stack-1x"
-								   aria-hidden="true"
-								   style="color:rgb(255,255,255);line-height:inherit"></i>
-							</span>
-							Revenue This Week
-						</div>
-					</div>
-					<div class="portlet-body">
-						<div style="font-size: 20px;color:#3498db;text-align: center;">
-							<span v-if="formatUSD(globalRevenueSummary.week_revenue) !== 'n/a'">
-								{{ formatUSD(globalRevenueSummary.week_revenue) }} in
-							</span>
-							{{ formatNumber(top10globalItems.weekly_order) }}
-							<span v-show="top10globalItems.weekly_order !== 1">orders</span>
-							<span v-show="top10globalItems.weekly_order === 1">order</span>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-xs-4">
-				<div class="portlet box blue-hoki">
-					<div class="portlet-title bg-blue-chambray">
-						<div class="caption"
-						     style="font-size:14px">
-							<span class="fa-stack fa-sm">
-								<i class="fa fa-circle fa-stack-2x"
-								   aria-hidden="true"
-								   style="color:#e67e22;line-height: inherit"></i>
-								<i class="fa fa-usd fa-stack-1x"
-								   aria-hidden="true"
-								   style="color:rgb(255,255,255);line-height:inherit"></i>
-							</span>
-							Revenue This Month
-						</div>
-					</div>
-					<div class="portlet-body">
-						<div style="font-size: 20px;color:#e67e22;text-align: center;">
-							<span v-if="formatUSD(globalRevenueSummary.month_revenue) !== 'n/a'">
-								{{ formatUSD(globalRevenueSummary.month_revenue) }} in
-							</span>
-							{{ formatNumber(top10globalItems.monthly_order) }}
-							<span v-show="top10globalItems.monthly_order !== 1">orders</span>
-							<span v-show="top10globalItems.monthly_order === 1">order</span>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-xs-6">
-				<div class="portlet box blue-hoki">
-					<div class="portlet-title bg-blue-chambray">
-						<div class="caption"
-						     style="font-size:14px">
-							<span class="fa-stack fa-sm">
-								<i class="fa fa-circle fa-stack-2x"
-								   aria-hidden="true"
-								   style="color:#9b59b6;line-height: inherit"></i>
-								<i class="fa fa-usd fa-stack-1x"
-								   aria-hidden="true"
-								   style="color:rgb(255,255,255);line-height:inherit"></i>
-							</span>
-							Revenue This Year
-						</div>
-					</div>
-					<div class="portlet-body">
-						<div style="font-size: 20px;color:#9b59b6;text-align: center;">
-							<span v-if="formatUSD(globalRevenueSummary.year_revenue) !== 'n/a'">
-								{{ formatUSD(globalRevenueSummary.year_revenue) }} in
-							</span>
-							{{ formatNumber(top10globalItems.yearly_order) }}
-							<span v-show="top10globalItems.yearly_order !== 1">orders</span>
-							<span v-show="top10globalItems.yearly_order === 1">order</span>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-xs-6">
-				<div class="portlet box blue-hoki">
-					<div class="portlet-title bg-blue-chambray">
-						<div class="caption"
-						     style="font-size:14px">
-							<span class="fa-stack fa-sm">
-								<i class="fa fa-circle fa-stack-2x"
-								   aria-hidden="true"
-								   style="color:#F2B230;line-height: inherit"></i>
-								<i class="fa fa-usd fa-stack-1x"
-								   aria-hidden="true"
-								   style="color:rgb(255,255,255);line-height:inherit"></i>
-							</span>
-							Total Revenue To Date
-						</div>
-					</div>
-					<div class="portlet-body">
-						<div style="font-size: 20px;color:#F2B230;text-align: center;">
-							<span v-if="formatUSD(globalRevenueSummary.total_revenue) !== 'n/a'">
-								{{ formatUSD(globalRevenueSummary.total_revenue) }} in
-							</span>
-							{{ formatNumber(top10globalItems.total_order) }}
-							<span v-show="top10globalItems.total_order !== 1">orders</span>
-							<span v-show="top10globalItems.total_order === 1">order</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12">
-				<div class="portlet box blue-hoki">
-					<div class="portlet-title bg-blue-chambray">
-						<div class="caption"
-						     style="font-size:14px">
-							<span class="fa-stack fa-sm">
-								<i class="fa fa-circle fa-stack-2x"
-								   aria-hidden="true"
-								   style="color:#409EFF;line-height: inherit"></i>
-								<i class="fa fa-line-chart fa-stack-1x"
-								   aria-hidden="true"
-								   style="color:rgb(255,255,255);line-height:inherit"></i>
-							</span>
-							Revenue Tracker
-						</div>
-					</div>
-					<div class="portlet-body">
-						<div class="row">
-							<div class="col-md-10 col-md-offset-1">
-								<el-select class="pull-right full-width"
-								           v-model="selectedLocations"
-								           filterable
-								           multiple
-								           @change="locationsSelected"
-								           placeholder="Select store">
-									<el-option v-for="store in stores"
-									           :key="store.value"
-									           :label="store.label"
-									           :value="store">
-									</el-option>
-								</el-select>
-							</div>
-							<div class="col-md-10 col-md-offset-1 margin-top-10 center">
-								<el-radio-group v-model="searchPeriod"
-								                @change="weekSelected()">
-									<el-radio-button label="week">week</el-radio-button>
-									<el-radio-button label="custom">custom</el-radio-button>
-								</el-radio-group>
-								<el-date-picker v-show="searchPeriod === 'custom'"
-								                v-model="from_date"
-								                @change="dateFromSelected()"
-								                :editable="false"
-								                type="date"
-								                format="yyyy-MM-dd"
-								                value-format="yyyy-MM-dd"
-								                :clearable="false"
-								                placeholder="From"></el-date-picker>
-								<el-date-picker v-show="searchPeriod === 'custom'"
-								                v-model="to_date"
-								                @change="dateToSelected()"
-								                type="date"
-								                format="yyyy-MM-dd"
-								                value-format="yyyy-MM-dd"
-								                :clearable="false"
-								                placeholder="To"></el-date-picker>
-							</div>
-							<div class="col-md-12"
-							     id="chart_div"
-							     style="height:350px"></div>
-							<div 
-								v-if="totals.show"
-								class="col-md-12 text-center revenue-tracker-totals"
-							>
-								<p>
-									Total: {{totals.revenue}} in {{totals.orders}} orders.
-								</p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12">
-				<div class="portlet box blue-hoki">
-					<div class="portlet-title bg-blue-chambray">
-						<div class="caption"
-						     style="font-size:14px">
-							<span class="fa-stack fa-sm">
-								<i class="fa fa-circle fa-stack-2x"
-								   aria-hidden="true"
-								   style="color:#95a5a6;line-height: inherit"></i>
-								<i class="fa fa-list-ol fa-stack-1x"
-								   aria-hidden="true"
-								   style="color:rgb(255,255,255);line-height:inherit"></i>
-							</span>
-							Most Recent Orders
-						</div>
-					</div>
-					<div class="portlet-body">
-						<el-table :data="mostRecentOrders">
-							<el-table-column type="expand">
-								<template slot-scope="props">
-									<div class="row-expansion">
-										<p class="row-expansion-data">Total spent: {{ formatUSD(props.row.user.total_spent) }}</p>
-										<p class="row-expansion-data">No. of orders: {{ props.row.user.total_orders }}</p>
-									</div>
-								</template>
-							</el-table-column>
-							<el-table-column prop="user.email"
-							                 label="User"
-							                 sortable>
-							</el-table-column>
-							<el-table-column prop="total"
-							                 label="Amount"
-							                 :formatter="tableFormatUSD"
-							                 sortable>
-							</el-table-column>
-							<el-table-column prop="location_name"
-							                 label="Store"
-							                 sortable>
-							</el-table-column>
-							<el-table-column prop="status"
-							                 label="Status"
-							                 :filters="[{ text: 'submitted', value: 'submitted' }, { text: 'pending', value: 'pending' }, { text: 'completed', value: 'completed' }, { text: 'overdue', value: 'overdue' }, { text: 'cancelled', value: 'cancelled' }, { text: 'refunded', value: 'refunded' }]"
-							                 :filter-method="filterTag"
-							                 filter-placement="bottom-end"
-							                 sortable>
-								<template slot-scope="scope">
-									<p :class="{'status-submitted': scope.row.status === 'submitted', 'status-pending': scope.row.status === 'pending', 'status-completed': scope.row.status === 'completed', 'status-overdue': scope.row.status === 'overdue', 'status-cancelled': scope.row.status === 'cancelled', 'status-refunded': scope.row.status === 'refunded'}">{{scope.row.status}}</p>
-								</template>
-							</el-table-column>
-						</el-table>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+  <div>
+    <div class="row">
+      <div class="col-xs-4">
+        <div class="portlet box blue-hoki">
+          <div class="portlet-title bg-blue-chambray">
+            <div
+              class="caption"
+              style="font-size:14px"
+            >
+              <span class="fa-stack fa-sm">
+                <i
+                  class="fa fa-circle fa-stack-2x"
+                  aria-hidden="true"
+                  style="color:rgb(26,188,156);line-height: inherit"
+                />
+                <i
+                  class="fa fa-usd fa-stack-1x"
+                  aria-hidden="true"
+                  style="color:rgb(255,255,255);line-height:inherit"
+                />
+              </span>
+              Revenue Today
+            </div>
+          </div>
+          <div class="portlet-body">
+            <div style="font-size: 20px;color:rgb(26,188,156);text-align: center;">
+              <span v-if="formatUSD(globalRevenueSummary.today_revenue) !== 'n/a'">
+                {{ formatUSD(globalRevenueSummary.today_revenue) }} in
+              </span>
+              {{ formatNumber(top10globalItems.daily_order) }}
+              <span v-show="top10globalItems.daily_order !== 1">
+                orders
+              </span>
+              <span v-show="top10globalItems.daily_order === 1">
+                order
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-4">
+        <div class="portlet box blue-hoki">
+          <div class="portlet-title bg-blue-chambray">
+            <div
+              class="caption"
+              style="font-size:14px"
+            >
+              <span class="fa-stack fa-sm">
+                <i
+                  class="fa fa-circle fa-stack-2x"
+                  aria-hidden="true"
+                  style="color:#3498db;line-height: inherit"
+                />
+                <i
+                  class="fa fa-usd fa-stack-1x"
+                  aria-hidden="true"
+                  style="color:rgb(255,255,255);line-height:inherit"
+                />
+              </span>
+              Revenue This Week
+            </div>
+          </div>
+          <div class="portlet-body">
+            <div style="font-size: 20px;color:#3498db;text-align: center;">
+              <span v-if="formatUSD(globalRevenueSummary.week_revenue) !== 'n/a'">
+                {{ formatUSD(globalRevenueSummary.week_revenue) }} in
+              </span>
+              {{ formatNumber(top10globalItems.weekly_order) }}
+              <span v-show="top10globalItems.weekly_order !== 1">
+                orders
+              </span>
+              <span v-show="top10globalItems.weekly_order === 1">
+                order
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-4">
+        <div class="portlet box blue-hoki">
+          <div class="portlet-title bg-blue-chambray">
+            <div
+              class="caption"
+              style="font-size:14px"
+            >
+              <span class="fa-stack fa-sm">
+                <i
+                  class="fa fa-circle fa-stack-2x"
+                  aria-hidden="true"
+                  style="color:#e67e22;line-height: inherit"
+                />
+                <i
+                  class="fa fa-usd fa-stack-1x"
+                  aria-hidden="true"
+                  style="color:rgb(255,255,255);line-height:inherit"
+                />
+              </span>
+              Revenue This Month
+            </div>
+          </div>
+          <div class="portlet-body">
+            <div style="font-size: 20px;color:#e67e22;text-align: center;">
+              <span v-if="formatUSD(globalRevenueSummary.month_revenue) !== 'n/a'">
+                {{ formatUSD(globalRevenueSummary.month_revenue) }} in
+              </span>
+              {{ formatNumber(top10globalItems.monthly_order) }}
+              <span v-show="top10globalItems.monthly_order !== 1">
+                orders
+              </span>
+              <span v-show="top10globalItems.monthly_order === 1">
+                order
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-6">
+        <div class="portlet box blue-hoki">
+          <div class="portlet-title bg-blue-chambray">
+            <div
+              class="caption"
+              style="font-size:14px"
+            >
+              <span class="fa-stack fa-sm">
+                <i
+                  class="fa fa-circle fa-stack-2x"
+                  aria-hidden="true"
+                  style="color:#9b59b6;line-height: inherit"
+                />
+                <i
+                  class="fa fa-usd fa-stack-1x"
+                  aria-hidden="true"
+                  style="color:rgb(255,255,255);line-height:inherit"
+                />
+              </span>
+              Revenue This Year
+            </div>
+          </div>
+          <div class="portlet-body">
+            <div style="font-size: 20px;color:#9b59b6;text-align: center;">
+              <span v-if="formatUSD(globalRevenueSummary.year_revenue) !== 'n/a'">
+                {{ formatUSD(globalRevenueSummary.year_revenue) }} in
+              </span>
+              {{ formatNumber(top10globalItems.yearly_order) }}
+              <span v-show="top10globalItems.yearly_order !== 1">
+                orders
+              </span>
+              <span v-show="top10globalItems.yearly_order === 1">
+                order
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-6">
+        <div class="portlet box blue-hoki">
+          <div class="portlet-title bg-blue-chambray">
+            <div
+              class="caption"
+              style="font-size:14px"
+            >
+              <span class="fa-stack fa-sm">
+                <i
+                  class="fa fa-circle fa-stack-2x"
+                  aria-hidden="true"
+                  style="color:#F2B230;line-height: inherit"
+                />
+                <i
+                  class="fa fa-usd fa-stack-1x"
+                  aria-hidden="true"
+                  style="color:rgb(255,255,255);line-height:inherit"
+                />
+              </span>
+              Total Revenue To Date
+            </div>
+          </div>
+          <div class="portlet-body">
+            <div style="font-size: 20px;color:#F2B230;text-align: center;">
+              <span v-if="formatUSD(globalRevenueSummary.total_revenue) !== 'n/a'">
+                {{ formatUSD(globalRevenueSummary.total_revenue) }} in
+              </span>
+              {{ formatNumber(top10globalItems.total_order) }}
+              <span v-show="top10globalItems.total_order !== 1">
+                orders
+              </span>
+              <span v-show="top10globalItems.total_order === 1">
+                order
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+          <div class="portlet-title bg-blue-chambray">
+            <div
+              class="caption"
+              style="font-size:14px"
+            >
+              <span class="fa-stack fa-sm">
+                <i
+                  class="fa fa-circle fa-stack-2x"
+                  aria-hidden="true"
+                  style="color:#409EFF;line-height: inherit"
+                />
+                <i
+                  class="fa fa-line-chart fa-stack-1x"
+                  aria-hidden="true"
+                  style="color:rgb(255,255,255);line-height:inherit"
+                />
+              </span>
+              Revenue Tracker
+            </div>
+          </div>
+          <div class="portlet-body">
+            <div class="row">
+              <div class="col-md-10 col-md-offset-1">
+                <el-select
+                  v-model="selectedLocations"
+                  class="pull-right full-width"
+                  filterable
+                  multiple
+                  placeholder="Select store"
+                  @change="locationsSelected"
+                >
+                  <el-option
+                    v-for="store in stores"
+                    :key="store.value"
+                    :label="store.label"
+                    :value="store"
+                  />
+                </el-select>
+              </div>
+              <div class="col-md-10 col-md-offset-1 margin-top-10 center">
+                <el-radio-group
+                  v-model="searchPeriod"
+                  @change="weekSelected()"
+                >
+                  <el-radio-button label="week">
+                    week
+                  </el-radio-button>
+                  <el-radio-button label="custom">
+                    custom
+                  </el-radio-button>
+                </el-radio-group>
+                <el-date-picker
+                  v-show="searchPeriod === 'custom'"
+                  v-model="from_date"
+                  :editable="false"
+                  type="date"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  :clearable="false"
+                  placeholder="From"
+                  @change="dateFromSelected()"
+                />
+                <el-date-picker
+                  v-show="searchPeriod === 'custom'"
+                  v-model="to_date"
+                  type="date"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  :clearable="false"
+                  placeholder="To"
+                  @change="dateToSelected()"
+                />
+              </div>
+              <div
+                id="chart_div"
+                class="col-md-12"
+                style="height:350px"
+              />
+              <div 
+                v-if="totals.show"
+                class="col-md-12 text-center revenue-tracker-totals"
+              >
+                <p>
+                  Total: {{ totals.revenue }} in {{ totals.orders }} orders.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+          <div class="portlet-title bg-blue-chambray">
+            <div
+              class="caption"
+              style="font-size:14px"
+            >
+              <span class="fa-stack fa-sm">
+                <i
+                  class="fa fa-circle fa-stack-2x"
+                  aria-hidden="true"
+                  style="color:#95a5a6;line-height: inherit"
+                />
+                <i
+                  class="fa fa-list-ol fa-stack-1x"
+                  aria-hidden="true"
+                  style="color:rgb(255,255,255);line-height:inherit"
+                />
+              </span>
+              Most Recent Orders
+            </div>
+          </div>
+          <div class="portlet-body">
+            <el-table :data="mostRecentOrders">
+              <el-table-column type="expand">
+                <template slot-scope="props">
+                  <div class="row-expansion">
+                    <p class="row-expansion-data">
+                      Total spent: {{ formatUSD(props.row.user.total_spent) }}
+                    </p>
+                    <p class="row-expansion-data">
+                      No. of orders: {{ props.row.user.total_orders }}
+                    </p>
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="user.email"
+                label="User"
+                sortable
+              />
+              <el-table-column
+                prop="total"
+                label="Amount"
+                :formatter="tableFormatUSD"
+                sortable
+              />
+              <el-table-column
+                prop="location_name"
+                label="Store"
+                sortable
+              />
+              <el-table-column
+                prop="status"
+                label="Status"
+                :filters="[{ text: 'submitted', value: 'submitted' }, { text: 'pending', value: 'pending' }, { text: 'completed', value: 'completed' }, { text: 'overdue', value: 'overdue' }, { text: 'cancelled', value: 'cancelled' }, { text: 'refunded', value: 'refunded' }]"
+                :filter-method="filterTag"
+                filter-placement="bottom-end"
+                sortable
+              >
+                <template slot-scope="scope">
+                  <p :class="{'status-submitted': scope.row.status === 'submitted', 'status-pending': scope.row.status === 'pending', 'status-completed': scope.row.status === 'completed', 'status-overdue': scope.row.status === 'overdue', 'status-cancelled': scope.row.status === 'cancelled', 'status-refunded': scope.row.status === 'refunded'}">
+                    {{ scope.row.status }}
+                  </p>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>

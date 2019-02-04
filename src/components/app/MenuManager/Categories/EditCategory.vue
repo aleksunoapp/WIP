@@ -1,136 +1,204 @@
 <template>
-	<modal :show="showEditCategoryModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="editModal">
-		<div slot="modal-header"
-		     class="modal-header center">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<transition name="fade"
-			            mode="out-in">
-				<h4 class="modal-title center"
-				    v-if="!selectImageMode && !selectLocationMode"
-				    key="mainEditMode">Edit Category</h4>
-				<h4 class="modal-title center"
-				    v-if="!selectImageMode && selectLocationMode"
-				    key="selectLocationMode">
-					<i class="fa fa-chevron-left clickable pull-left back-button"
-					   @click="closeSelectLocationsPopup()"></i>Select Stores</h4>
-				<h4 class="modal-title center"
-				    v-if="selectImageMode && !selectLocationMode"
-				    key="selectImageMode">Select An Image</h4>
-			</transition>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="col-xs-12">
-				<div class="alert alert-danger"
-				     v-show="errorMessage"
-				     ref="errorMessage">
-					<button class="close"
-					        @click="clearError()"></button>
-					<span>{{errorMessage}}</span>
-				</div>
-				<div v-if="!selectLocationMode"
-				     :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
-					<resource-picker @open="goToPageTwo()"
-					                 @close="goToPageOne()"
-					                 @selected="updateImage"
-					                 :imageButton="true"
-					                 :imageUrl="categoryToBeEdited.image_url"
-					                 class="margin-top-15">
-					</resource-picker>
-				</div>
+  <modal
+    ref="editModal"
+    :show="showEditCategoryModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header center"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <transition
+        name="fade"
+        mode="out-in"
+      >
+        <h4
+          v-if="!selectImageMode && !selectLocationMode"
+          key="mainEditMode"
+          class="modal-title center"
+        >
+          Edit Category
+        </h4>
+        <h4
+          v-if="!selectImageMode && selectLocationMode"
+          key="selectLocationMode"
+          class="modal-title center"
+        >
+          <i
+            class="fa fa-chevron-left clickable pull-left back-button"
+            @click="closeSelectLocationsPopup()"
+          />Select Stores
+        </h4>
+        <h4
+          v-if="selectImageMode && !selectLocationMode"
+          key="selectImageMode"
+          class="modal-title center"
+        >
+          Select An Image
+        </h4>
+      </transition>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div class="col-xs-12">
+        <div
+          v-show="errorMessage"
+          ref="errorMessage"
+          class="alert alert-danger"
+        >
+          <button
+            class="close"
+            @click="clearError()"
+          />
+          <span>{{ errorMessage }}</span>
+        </div>
+        <div
+          v-if="!selectLocationMode"
+          :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}"
+        >
+          <resource-picker
+            :image-button="true"
+            :image-url="categoryToBeEdited.image_url"
+            class="margin-top-15"
+            @open="goToPageTwo()"
+            @close="goToPageOne()"
+            @selected="updateImage"
+          />
+        </div>
 
-				<store-picker-with-button
-					v-if="selectLocationMode"
-					:previouslySelected="selectedLocations"
-					@close="updateSelectedLocations"
-				>
-				</store-picker-with-button>
+        <store-picker-with-button
+          v-if="selectLocationMode"
+          :previously-selected="selectedLocations"
+          @close="updateSelectedLocations"
+        />
 
-				<div class="col-md-12"
-				     v-if="!selectLocationMode && !selectImageMode">
-					<fieldset :disabled="!$root.permissions['menu_manager menus categories update']">
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-							       class="form-control input-sm edited"
-							       id="form_control_2"
-							       v-model="categoryToBeEdited.name">
-							<label for="form_control_2">Category Name</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-							       class="form-control input-sm edited"
-							       id="form_control_3"
-							       v-model="categoryToBeEdited.desc">
-							<label for="form_control_3">Category Description</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-							       class="form-control input-sm edited"
-							       id="form_control_4"
-							       v-model="categoryToBeEdited.sku">
-							<label for="form_control_4">Category SKU</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-							       class="form-control input-sm edited"
-							       id="form_control_5"
-							       v-model="categoryToBeEdited.order">
-							<label for="form_control_5">Category Order</label>
-						</div>
-					</fieldset>
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<label>Category Status:</label><br>
-						<el-switch :disabled="!$root.permissions['menu_manager menus categories update']"
-						           v-model="categoryToBeEdited.status"
-						           active-color="#0c6"
-						           inactive-color="#ff4949"
-						           :active-value="1"
-						           :inactive-value="0"
-						           active-text="Active"
-						           inactive-text="Sold Out">
-						</el-switch>
-					</div>
-					<div>
-						<p class="margin-bottom-10 margin-top-30 margin-right-10">Select locations to apply the changes to:</p>
-						<button type="submit"
-						        class="btn blue btn-outline"
-						        @click="selectLocations($event)">Select locations</button>
-						<p class="grey-label margin-top-10"
-						   v-if="selectedLocations.length">Selected {{ selectedLocations.length }}
-							<span v-if="selectedLocations.length !== 1">locations</span>
-							<span v-else>location</span>
-						</p>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button v-if="!selectImageMode && !selectLocationMode && !$root.permissions['menu_manager menus categories update']"
-			        type="button"
-			        class="btn btn-primary"
-			        @click="closeModal()">
-				Close
-			</button>
-			<button v-if="!selectImageMode && !selectLocationMode && $root.permissions['menu_manager menus categories update']"
-			        type="button"
-			        class="btn btn-primary"
-			        @click="updateMenuCategory()"
-			        :disabled="updating">
-				Save
-				<i v-show="updating"
-				   class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-		</div>
-	</modal>
+        <div
+          v-if="!selectLocationMode && !selectImageMode"
+          class="col-md-12"
+        >
+          <fieldset :disabled="!$root.permissions['menu_manager menus categories update']">
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_2"
+                v-model="categoryToBeEdited.name"
+                type="text"
+                class="form-control input-sm edited"
+              >
+              <label for="form_control_2">
+                Category Name
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_3"
+                v-model="categoryToBeEdited.desc"
+                type="text"
+                class="form-control input-sm edited"
+              >
+              <label for="form_control_3">
+                Category Description
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_4"
+                v-model="categoryToBeEdited.sku"
+                type="text"
+                class="form-control input-sm edited"
+              >
+              <label for="form_control_4">
+                Category SKU
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_5"
+                v-model="categoryToBeEdited.order"
+                type="text"
+                class="form-control input-sm edited"
+              >
+              <label for="form_control_5">
+                Category Order
+              </label>
+            </div>
+          </fieldset>
+          <div class="form-group form-md-line-input form-md-floating-label">
+            <label>Category Status:</label><br>
+            <el-switch
+              v-model="categoryToBeEdited.status"
+              :disabled="!$root.permissions['menu_manager menus categories update']"
+              active-color="#0c6"
+              inactive-color="#ff4949"
+              :active-value="1"
+              :inactive-value="0"
+              active-text="Active"
+              inactive-text="Sold Out"
+            />
+          </div>
+          <div>
+            <p class="margin-bottom-10 margin-top-30 margin-right-10">
+              Select locations to apply the changes to:
+            </p>
+            <button
+              type="submit"
+              class="btn blue btn-outline"
+              @click="selectLocations($event)"
+            >
+              Select locations
+            </button>
+            <p
+              v-if="selectedLocations.length"
+              class="grey-label margin-top-10"
+            >
+              Selected {{ selectedLocations.length }}
+              <span v-if="selectedLocations.length !== 1">
+                locations
+              </span>
+              <span v-else>
+                location
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        v-if="!selectImageMode && !selectLocationMode && !$root.permissions['menu_manager menus categories update']"
+        type="button"
+        class="btn btn-primary"
+        @click="closeModal()"
+      >
+        Close
+      </button>
+      <button
+        v-if="!selectImageMode && !selectLocationMode && $root.permissions['menu_manager menus categories update']"
+        type="button"
+        class="btn btn-primary"
+        :disabled="updating"
+        @click="updateMenuCategory()"
+      >
+        Save
+        <i
+          v-show="updating"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -142,6 +210,11 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 import StorePickerWithButton from '@/components/modules/StorePickerWithButton'
 
 export default {
+	components: {
+		Modal,
+		ResourcePicker,
+		StorePickerWithButton
+	},
 	data () {
 		return {
 			showEditCategoryModal: false,
@@ -390,11 +463,6 @@ export default {
 			}
 			this.goToPageOne()
 		}
-	},
-	components: {
-		Modal,
-		ResourcePicker,
-		StorePickerWithButton
 	}
 }
 </script>

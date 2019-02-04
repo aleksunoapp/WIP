@@ -1,155 +1,219 @@
 <template>
-	<div>
-		<!-- BEGIN PAGE BAR -->
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
-		<!-- END PAGE BAR -->
-		<!-- BEGIN PAGE TITLE-->
-		<h1 class="page-title">Social Feed</h1>
-		<!-- END PAGE TITLE-->
-		<div class="note note-info">
-			<p>Create and manage the Social Feed.</p>
-		</div>
-		<div v-if="socialFeed.length">
-			<h5>Filter By:</h5>
-			<button-group :value="filterBy"
-			              type="primary">
-				<checkbox value="facebook">
-					<span v-if="filterBy.indexOf('facebook') >= 0">
-						<i class="fa fa-check green"></i>&nbsp; </span>Facebook</checkbox>
-				<checkbox value="twitter">
-					<span v-if="filterBy.indexOf('twitter') >= 0">
-						<i class="fa fa-check green"></i>&nbsp; </span>Twitter</checkbox>
-				<checkbox value="instagram">
-					<span v-if="filterBy.indexOf('instagram') >= 0">
-						<i class="fa fa-check green"></i>&nbsp; </span>Instagram</checkbox>
-			</button-group>
-		</div>
-		<div class="margin-top-20">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="alert alert-danger"
-					     v-show="listErrorMessage"
-					     ref="listErrorMessage">
-						<button class="close"
-						        @click="clearError('listErrorMessage')"></button>
-						<span>{{listErrorMessage}}</span>
-					</div>
-				</div>
-			</div>
-			<div class="relative-block">
-				<div v-if="filteredSocialFeed.length"
-				     class="clearfix">
-					<el-dropdown trigger="click"
-					             @command="updateSortByOrder"
-					             size="mini"
-					             :show-timeout="50"
-					             :hide-timeout="50">
-						<el-button size="mini">
-							Sort by
-							<span>
-								<i class="fa fa-sort-alpha-asc"
-								   v-if="sortBy.order === 'ASC'"></i>
-								<i class="fa fa-sort-alpha-desc"
-								   v-if="sortBy.order === 'DESC'"></i>
-							</span>
-							<i class="el-icon-arrow-down el-icon--right"></i>
-						</el-button>
-						<el-dropdown-menu slot="dropdown">
-							<el-dropdown-item command="ASC">
-								<i class="fa fa-sort-alpha-asc"></i>
-							</el-dropdown-item>
-							<el-dropdown-item command="DESC">
-								<i class="fa fa-sort-alpha-desc"></i>
-							</el-dropdown-item>
-						</el-dropdown-menu>
-					</el-dropdown>
-					<page-results class="pull-right"
-					              :totalResults="totalResults"
-					              :activePage="activePage"
-					              @pageResults="pageResultsUpdate"></page-results>
-				</div>
-				<div class="blog-page blog-content-1 relative-block margin-top-20">
-					<loading-screen :show="loadingFilteredData"
-					                :color="'#2C3E50'"
-					                :display="'inline'"></loading-screen>
-					<div v-if="!loadingFilteredData && socialFeed.length">
-						<div class="row"
-						     v-if="filteredSocialFeed.length">
-							<div class="col-md-3 col-sm-3 col-xs-4"
-							     v-for="(feed, index) in filteredSocialFeed"
-							     :key="index">
-								<div class="blog-post-sm blog-container blog-shadow"
-								     :id="'social-feed-' + feed.id">
-									<div class="blog-top-wrap">
-										<div class="pull-left">
-											<span v-if="feed.short_description.length">{{ feed.short_description }}</span>
-											<span v-else>NO TITLE</span>
-										</div>
-									</div>
-									<div class="blog-img-thumb small-blog-img-thumb"
-									     :class="{'blog-img-thumb-bordered': !feed.url.length}">
-										<a>
-											<img v-if="feed.url.length"
-											     :src="feed.img_full_url">
-											<img class="small-image"
-											     v-else
-											     src="../../assets/img/app/image-placeholder.png">
-										</a>
-									</div>
-									<div class="blog-post-content">
-										<p class="blog-post-desc"> {{ feed.description }} </p>
-										<div class="blog-post-foot"
-										     v-if="feed.facebook || feed.twitter || feed.instagram">
-											<div class="socicons">
-												<a v-if="feed.facebook"
-												   class="socicon-btn socicon-btn-circle socicon-facebook"></a>
-												<a v-if="feed.twitter"
-												   class="socicon-btn socicon-btn-circle socicon-twitter"></a>
-												<a v-if="feed.instagram"
-												   class="socicon-btn socicon-btn-circle socicon-instagram"></a>
-											</div>
-										</div>
-										<button v-if="feed.status === 1"
-										        type="button"
-										        class="btn btn-danger custom-button full-width"
-										        @click="updateFeedStatus(feed, 0)"
-										        :disabled="updating">
-											Off
-											<i v-show="updating"
-											   class="fa fa-spinner fa-pulse fa-fw">
-											</i>
-										</button>
-										<button v-if="feed.status === 0"
-										        type="button"
-										        class="btn btn-success custom-button full-width"
-										        @click="updateFeedStatus(feed, 1)"
-										        :disabled="updating">
-											On
-											<i v-show="updating"
-											   class="fa fa-spinner fa-pulse fa-fw">
-											</i>
-										</button>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div v-if="!loadingFilteredData && !socialFeed.length">
-						<no-results :show="true"
-						            :type="'social feeds'"></no-results>
-					</div>
-				</div>
-				<div v-if="filteredSocialFeed.length"
-				     class="margin-top-20">
-					<pagination :passedPage="activePage"
-					            :numPages="numPages"
-					            @activePageChange="activePageUpdate"></pagination>
-				</div>
-			</div>
-		</div>
-	</div>
+  <div>
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
+    <!-- END PAGE BAR -->
+    <!-- BEGIN PAGE TITLE-->
+    <h1 class="page-title">
+      Social Feed
+    </h1>
+    <!-- END PAGE TITLE-->
+    <div class="note note-info">
+      <p>Create and manage the Social Feed.</p>
+    </div>
+    <div v-if="socialFeed.length">
+      <h5>Filter By:</h5>
+      <button-group
+        :value="filterBy"
+        type="primary"
+      >
+        <checkbox value="facebook">
+          <span v-if="filterBy.indexOf('facebook') >= 0">
+            <i class="fa fa-check green" />&nbsp;
+          </span>Facebook
+        </checkbox>
+        <checkbox value="twitter">
+          <span v-if="filterBy.indexOf('twitter') >= 0">
+            <i class="fa fa-check green" />&nbsp;
+          </span>Twitter
+        </checkbox>
+        <checkbox value="instagram">
+          <span v-if="filterBy.indexOf('instagram') >= 0">
+            <i class="fa fa-check green" />&nbsp;
+          </span>Instagram
+        </checkbox>
+      </button-group>
+    </div>
+    <div class="margin-top-20">
+      <div class="row">
+        <div class="col-md-12">
+          <div
+            v-show="listErrorMessage"
+            ref="listErrorMessage"
+            class="alert alert-danger"
+          >
+            <button
+              class="close"
+              @click="clearError('listErrorMessage')"
+            />
+            <span>{{ listErrorMessage }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="relative-block">
+        <div
+          v-if="filteredSocialFeed.length"
+          class="clearfix"
+        >
+          <el-dropdown
+            trigger="click"
+            size="mini"
+            :show-timeout="50"
+            :hide-timeout="50"
+            @command="updateSortByOrder"
+          >
+            <el-button size="mini">
+              Sort by
+              <span>
+                <i
+                  v-if="sortBy.order === 'ASC'"
+                  class="fa fa-sort-alpha-asc"
+                />
+                <i
+                  v-if="sortBy.order === 'DESC'"
+                  class="fa fa-sort-alpha-desc"
+                />
+              </span>
+              <i class="el-icon-arrow-down el-icon--right" />
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="ASC">
+                <i class="fa fa-sort-alpha-asc" />
+              </el-dropdown-item>
+              <el-dropdown-item command="DESC">
+                <i class="fa fa-sort-alpha-desc" />
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+          <page-results
+            class="pull-right"
+            :total-results="totalResults"
+            :active-page="activePage"
+            @pageResults="pageResultsUpdate"
+          />
+        </div>
+        <div class="blog-page blog-content-1 relative-block margin-top-20">
+          <loading-screen
+            :show="loadingFilteredData"
+            :color="'#2C3E50'"
+            :display="'inline'"
+          />
+          <div v-if="!loadingFilteredData && socialFeed.length">
+            <div
+              v-if="filteredSocialFeed.length"
+              class="row"
+            >
+              <div
+                v-for="(feed, index) in filteredSocialFeed"
+                :key="index"
+                class="col-md-3 col-sm-3 col-xs-4"
+              >
+                <div
+                  :id="'social-feed-' + feed.id"
+                  class="blog-post-sm blog-container blog-shadow"
+                >
+                  <div class="blog-top-wrap">
+                    <div class="pull-left">
+                      <span v-if="feed.short_description.length">
+                        {{ feed.short_description }}
+                      </span>
+                      <span v-else>
+                        NO TITLE
+                      </span>
+                    </div>
+                  </div>
+                  <div
+                    class="blog-img-thumb small-blog-img-thumb"
+                    :class="{'blog-img-thumb-bordered': !feed.url.length}"
+                  >
+                    <a>
+                      <img
+                        v-if="feed.url.length"
+                        :src="feed.img_full_url"
+                      >
+                      <img
+                        v-else
+                        class="small-image"
+                        src="../../assets/img/app/image-placeholder.png"
+                      >
+                    </a>
+                  </div>
+                  <div class="blog-post-content">
+                    <p class="blog-post-desc">
+                      {{ feed.description }}
+                    </p>
+                    <div
+                      v-if="feed.facebook || feed.twitter || feed.instagram"
+                      class="blog-post-foot"
+                    >
+                      <div class="socicons">
+                        <a
+                          v-if="feed.facebook"
+                          class="socicon-btn socicon-btn-circle socicon-facebook"
+                        />
+                        <a
+                          v-if="feed.twitter"
+                          class="socicon-btn socicon-btn-circle socicon-twitter"
+                        />
+                        <a
+                          v-if="feed.instagram"
+                          class="socicon-btn socicon-btn-circle socicon-instagram"
+                        />
+                      </div>
+                    </div>
+                    <button
+                      v-if="feed.status === 1"
+                      type="button"
+                      class="btn btn-danger custom-button full-width"
+                      :disabled="updating"
+                      @click="updateFeedStatus(feed, 0)"
+                    >
+                      Off
+                      <i
+                        v-show="updating"
+                        class="fa fa-spinner fa-pulse fa-fw"
+                      />
+                    </button>
+                    <button
+                      v-if="feed.status === 0"
+                      type="button"
+                      class="btn btn-success custom-button full-width"
+                      :disabled="updating"
+                      @click="updateFeedStatus(feed, 1)"
+                    >
+                      On
+                      <i
+                        v-show="updating"
+                        class="fa fa-spinner fa-pulse fa-fw"
+                      />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div v-if="!loadingFilteredData && !socialFeed.length">
+            <no-results
+              :show="true"
+              :type="'social feeds'"
+            />
+          </div>
+        </div>
+        <div
+          v-if="filteredSocialFeed.length"
+          class="margin-top-20"
+        >
+          <pagination
+            :passed-page="activePage"
+            :num-pages="numPages"
+            @activePageChange="activePageUpdate"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 <script>
 import Breadcrumb from '../modules/Breadcrumb'
@@ -165,6 +229,16 @@ import { findIndex } from 'lodash'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
+	components: {
+		Breadcrumb,
+		ButtonGroup,
+		Checkbox,
+		NoResults,
+		Pagination,
+		Dropdown,
+		PageResults,
+		LoadingScreen
+	},
 	data () {
 		return {
 			breadcrumbArray: [{ name: 'Social Feed', link: false }],
@@ -181,6 +255,17 @@ export default {
 			totalResults: 0,
 			loadingFilteredData: false,
 			updating: false
+		}
+	},
+	watch: {
+		'sortBy.order' () {
+			if (this.sortBy.order) {
+				this.activePageUpdate(1)
+				this.getSocialFeed(0)
+			}
+		},
+		filterBy () {
+			this.getFilteredSocialFeed()
 		}
 	},
 	mounted () {
@@ -402,27 +487,6 @@ export default {
 				type
 			})
 		}
-	},
-	watch: {
-		'sortBy.order' () {
-			if (this.sortBy.order) {
-				this.activePageUpdate(1)
-				this.getSocialFeed(0)
-			}
-		},
-		filterBy () {
-			this.getFilteredSocialFeed()
-		}
-	},
-	components: {
-		Breadcrumb,
-		ButtonGroup,
-		Checkbox,
-		NoResults,
-		Pagination,
-		Dropdown,
-		PageResults,
-		LoadingScreen
 	}
 }
 </script>

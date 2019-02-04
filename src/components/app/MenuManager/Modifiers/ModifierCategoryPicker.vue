@@ -1,58 +1,72 @@
 <template>
-	<div>
-		<div class="row">
-			<div class="col-xs-12">
-				<div class="alert alert-danger"
-				     v-show="errorMessage.length"
-				     ref="errorMessage">
-					<button class="close"
-					        @click.prevent="clearError('errorMessage')"></button>
-					<span>{{errorMessage}}</span>
-				</div>
-			</div>
-		</div>
-		<table class="table">
-			<thead>
-				<tr>
-					<th class="th-checkboxes">
-						<div class="md-checkbox">
-							<input type="checkbox"
-							       :checked="selectAllSelected"
-							       :id="`select-all`"
-							       class="md-check"
-							       @change="toggleAll()">
-							<label :for="`select-all`">
-								<span class="inc"></span>
-								<span class="check"></span>
-								<span class="box"></span>
-							</label>
-						</div>
-					</th>
-					<th class="th-email"> Name </th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr v-for="category in modifierCategories"
-				    :key="category.id">
-					<td>
-						<div class="md-checkbox">
-							<input type="checkbox"
-							       v-model="category.selected"
-							       :id="`modifierTier-${category.id}`"
-							       class="md-check"
-							       @change="emit()">
-							<label :for="`modifierTier-${category.id}`">
-								<span class="inc"></span>
-								<span class="check"></span>
-								<span class="box"></span>
-							</label>
-						</div>
-					</td>
-					<td class="td-email"> {{category.name}} </td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
+  <div>
+    <div class="row">
+      <div class="col-xs-12">
+        <div
+          v-show="errorMessage.length"
+          ref="errorMessage"
+          class="alert alert-danger"
+        >
+          <button
+            class="close"
+            @click.prevent="clearError('errorMessage')"
+          />
+          <span>{{ errorMessage }}</span>
+        </div>
+      </div>
+    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th class="th-checkboxes">
+            <div class="md-checkbox">
+              <input
+                :id="`select-all`"
+                type="checkbox"
+                :checked="selectAllSelected"
+                class="md-check"
+                @change="toggleAll()"
+              >
+              <label :for="`select-all`">
+                <span class="inc" />
+                <span class="check" />
+                <span class="box" />
+              </label>
+            </div>
+          </th>
+          <th class="th-email">
+            Name
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="category in modifierCategories"
+          :key="category.id"
+        >
+          <td>
+            <div class="md-checkbox">
+              <input
+                :id="`modifierTier-${category.id}`"
+                v-model="category.selected"
+                type="checkbox"
+                class="md-check"
+                @change="emit()"
+              >
+              <label :for="`modifierTier-${category.id}`">
+                <span class="inc" />
+                <span class="check" />
+                <span class="box" />
+              </label>
+            </div>
+          </td>
+          <td class="td-email">
+            {{ category.name }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
 
 <script>
@@ -61,6 +75,13 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	name: 'ModifierCategoryPicker',
+	props: {
+		previouslySelected: {
+			type: Array,
+			required: false,
+			default: () => []
+		}
+	},
 	data: () => ({
 		errorMessage: '',
 		modifierCategories: []
@@ -71,13 +92,6 @@ export default {
 				this.modifierCategories.length &&
 				!this.modifierCategories.some(category => !category.selected)
 			)
-		}
-	},
-	props: {
-		previouslySelected: {
-			type: Array,
-			required: false,
-			default: () => []
 		}
 	},
 	created () {

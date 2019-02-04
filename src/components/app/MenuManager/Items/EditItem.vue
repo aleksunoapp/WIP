@@ -1,228 +1,337 @@
 <template>
-	<modal :show="showEditItemModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="editModal">
-		<div slot="modal-header"
-		     class="modal-header center">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<transition name="fade"
-			            mode="out-in">
-				<h4 class="modal-title center"
-				    v-if="!selectImageMode && !selectLocationMode"
-				    key="mainEditMode">Edit Item</h4>
-				<h4 class="modal-title center"
-				    v-if="!selectImageMode && selectLocationMode"
-				    key="selectLocationMode">
-					<i class="fa fa-chevron-left clickable pull-left back-button"
-					   @click="closeSelectLocationsPopup()"></i>Select Stores</h4>
-				<h4 class="modal-title center"
-				    v-if="selectImageMode && !selectLocationMode"
-				    key="selectImageMode">Select An Image</h4>
-			</transition>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="page-one"
-			     v-if="!selectImageMode && !selectLocationMode"
-			     :class="{'active': !selectImageMode, 'disabled': selectImageMode}">
-				<div class="alert alert-danger"
-				     v-show="errorMessage"
-				     ref="errorMessage">
-					<button class="close"
-					        @click="clearError()"></button>
-					<span>{{errorMessage}}</span>
-				</div>
-				<div class="alert alert-info"
-				     v-show="noItemTypes"
-				     ref="noItemTypes">
-					Menu Items require a tax type classification.
-					<router-link to="/app/tax_manager/item_types">Create an Item Type in Tax Manager</router-link> before updating this Menu Item.
-				</div>
-				<fieldset :disabled="!can('menu_manager menus categories subcategories items update')">
-					<div class="col-md-12">
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-							       class="form-control input-sm edited"
-							       id="form_control_2"
-							       v-model="itemToBeEdited.name">
-							<label for="form_control_2">Item Name</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-							       class="form-control input-sm edited"
-							       id="form_control_3"
-							       v-model="itemToBeEdited.desc">
-							<label for="form_control_3">Item Description</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-							       class="form-control input-sm edited"
-							       id="form_control_3"
-							       v-model="itemToBeEdited.short_description">
-							<label for="form_control_3">Item Short Description</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-							       class="form-control input-sm edited"
-							       id="form_control_4"
-							       v-model="itemToBeEdited.price">
-							<label for="form_control_4">Item Price</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-							       class="form-control input-sm"
-							       :class="{'edited': itemToBeEdited.nutrition_summary.length}"
-							       id="form_control_3"
-							       v-model="itemToBeEdited.nutrition_summary">
-							<label for="form_control_3">Nutrition Summary</label>
-						</div>
-					</div>
-					<div :class="{'col-xs-10' : skuDisabled, 'col-xs-12' : !skuDisabled}">
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-							       class="form-control input-sm edited"
-							       id="form_control_5"
-							       v-model="itemToBeEdited.sku"
-							       :disabled="skuDisabled">
-							<label for="form_control_5">Item SKU</label>
-						</div>
-					</div>
-					<div class="col-xs-2"
-					     v-show="skuDisabled && !confirmingSkuEdit">
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<button :disabled="!can('menu_manager menus categories subcategories items update')"
-							        type="button"
-							        class="btn btn-outline btn-xs"
-							        @click="confirmSkuEdit()">
-								Edit
-							</button>
-						</div>
-					</div>
-					<div class="col-xs-12"
-					     v-show="confirmingSkuEdit">
-						<div class="alert alert-danger">
-							<button class="close"
-							        data-close="alert"
-							        @click="cancelSkuEdit()"></button>
-							<span>Editing the SKU may cause loss of data. Are you sure?</span>
-							<button type="button"
-							        class="btn btn-outline btn-xs pull-right margin-left-5 margin-right-10"
-							        @click="enableSkuEdit()">
-								Yes, edit
-							</button>
-						</div>
-					</div>
-				</fieldset>
-				<div class="col-xs-12">
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<input :disabled="!can('menu_manager menus categories subcategories items update')"
-						       type="text"
-						       class="form-control input-sm edited"
-						       id="form_control_6"
-						       v-model="itemToBeEdited.order">
-						<label for="form_control_6">Item Order</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label"
-					     v-if="itemTypes.length">
-						<label>Item Type:</label><br>
-						<el-dropdown trigger="click"
-						             @command="updateTaxClass"
-						             size="mini"
-						             :show-timeout="50"
-						             :hide-timeout="50">
-							<el-button size="mini">
-								{{ taxClassLabel }}
-								<i class="el-icon-arrow-down el-icon--right"></i>
-							</el-button>
-							<el-dropdown-menu slot="dropdown">
-								<el-dropdown-item v-for="type in itemTypes"
-								                  :command="type.id"
-								                  :key="type.id">{{type.name}}</el-dropdown-item>
-							</el-dropdown-menu>
-						</el-dropdown>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<label>Type:</label><br>
-						<el-dropdown trigger="click"
-						             @command="updateItemType"
-						             size="mini"
-						             :show-timeout="50"
-						             :hide-timeout="50">
-							<el-button size="mini">
-								{{ itemTypeLabel }}
-								<i class="el-icon-arrow-down el-icon--right"></i>
-							</el-button>
-							<el-dropdown-menu slot="dropdown">
-								<el-dropdown-item command="regular">regular</el-dropdown-item>
-								<el-dropdown-item command="custom">custom</el-dropdown-item>
-								<el-dropdown-item command="preset">preset</el-dropdown-item>
-							</el-dropdown-menu>
-						</el-dropdown>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<label>Item Status:</label><br>
-						<el-switch :disabled="!can('menu_manager menus categories subcategories items update')"
-						           v-model="itemToBeEdited.status"
-						           active-color="#0c6"
-						           inactive-color="#ff4949"
-						           :active-value="1"
-						           :inactive-value="0"
-						           active-text="Active"
-						           inactive-text="Sold Out">
-						</el-switch>
-					</div>
-					<div>
-						<p class="margin-bottom-10 margin-top-30 margin-right-10">Select locations to apply the changes to:</p>
-						<button type="submit"
-						        class="btn blue btn-outline"
-						        @click="selectLocations($event)">Select locations</button>
-						<p class="grey-label margin-top-10"
-						   v-if="selectedLocations.length">Selected {{ selectedLocations.length }}
-							<span v-if="selectedLocations.length !== 1">locations</span>
-							<span v-else>location</span>
-						</p>
-					</div>
-				</div>
-			</div>
-			<div class="page-two"
-			     :class="{'active': selectImageMode, 'disabled': !selectImageMode}">
-				<store-picker-with-button
-					v-if="selectLocationMode"
-					:previouslySelected="selectedLocations"
-					@close="updateSelectedLocations"
-				>
-				</store-picker-with-button>
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<div class="row">
-				<div class="col-xs-12">
-					<button v-if="!selectImageMode && !selectLocationMode && !can('menu_manager menus categories subcategories items update')"
-					        type="button"
-					        class="btn btn-primary"
-					        @click="closeModal()">
-						Close
-					</button>
-					<button v-if="!selectImageMode && !selectLocationMode && can('menu_manager menus categories subcategories items update')"
-					        type="button"
-					        class="btn btn-primary"
-					        :disabled="noItemTypes || updating"
-					        @click="updateCategoryItem()">
-						Save
-						<i v-show="updating"
-						   class="fa fa-spinner fa-pulse fa-fw">
-						</i>
-					</button>
-				</div>
-			</div>
-		</div>
-	</modal>
+  <modal
+    ref="editModal"
+    :show="showEditItemModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header center"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <transition
+        name="fade"
+        mode="out-in"
+      >
+        <h4
+          v-if="!selectImageMode && !selectLocationMode"
+          key="mainEditMode"
+          class="modal-title center"
+        >
+          Edit Item
+        </h4>
+        <h4
+          v-if="!selectImageMode && selectLocationMode"
+          key="selectLocationMode"
+          class="modal-title center"
+        >
+          <i
+            class="fa fa-chevron-left clickable pull-left back-button"
+            @click="closeSelectLocationsPopup()"
+          />Select Stores
+        </h4>
+        <h4
+          v-if="selectImageMode && !selectLocationMode"
+          key="selectImageMode"
+          class="modal-title center"
+        >
+          Select An Image
+        </h4>
+      </transition>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div
+        v-if="!selectImageMode && !selectLocationMode"
+        class="page-one"
+        :class="{'active': !selectImageMode, 'disabled': selectImageMode}"
+      >
+        <div
+          v-show="errorMessage"
+          ref="errorMessage"
+          class="alert alert-danger"
+        >
+          <button
+            class="close"
+            @click="clearError()"
+          />
+          <span>{{ errorMessage }}</span>
+        </div>
+        <div
+          v-show="noItemTypes"
+          ref="noItemTypes"
+          class="alert alert-info"
+        >
+          Menu Items require a tax type classification.
+          <router-link to="/app/tax_manager/item_types">
+            Create an Item Type in Tax Manager
+          </router-link> before updating this Menu Item.
+        </div>
+        <fieldset :disabled="!can('menu_manager menus categories subcategories items update')">
+          <div class="col-md-12">
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_2"
+                v-model="itemToBeEdited.name"
+                type="text"
+                class="form-control input-sm edited"
+              >
+              <label for="form_control_2">
+                Item Name
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_3"
+                v-model="itemToBeEdited.desc"
+                type="text"
+                class="form-control input-sm edited"
+              >
+              <label for="form_control_3">
+                Item Description
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_3"
+                v-model="itemToBeEdited.short_description"
+                type="text"
+                class="form-control input-sm edited"
+              >
+              <label for="form_control_3">
+                Item Short Description
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_4"
+                v-model="itemToBeEdited.price"
+                type="text"
+                class="form-control input-sm edited"
+              >
+              <label for="form_control_4">
+                Item Price
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_3"
+                v-model="itemToBeEdited.nutrition_summary"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': itemToBeEdited.nutrition_summary.length}"
+              >
+              <label for="form_control_3">
+                Nutrition Summary
+              </label>
+            </div>
+          </div>
+          <div :class="{'col-xs-10' : skuDisabled, 'col-xs-12' : !skuDisabled}">
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_5"
+                v-model="itemToBeEdited.sku"
+                type="text"
+                class="form-control input-sm edited"
+                :disabled="skuDisabled"
+              >
+              <label for="form_control_5">
+                Item SKU
+              </label>
+            </div>
+          </div>
+          <div
+            v-show="skuDisabled && !confirmingSkuEdit"
+            class="col-xs-2"
+          >
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <button
+                :disabled="!can('menu_manager menus categories subcategories items update')"
+                type="button"
+                class="btn btn-outline btn-xs"
+                @click="confirmSkuEdit()"
+              >
+                Edit
+              </button>
+            </div>
+          </div>
+          <div
+            v-show="confirmingSkuEdit"
+            class="col-xs-12"
+          >
+            <div class="alert alert-danger">
+              <button
+                class="close"
+                data-close="alert"
+                @click="cancelSkuEdit()"
+              />
+              <span>Editing the SKU may cause loss of data. Are you sure?</span>
+              <button
+                type="button"
+                class="btn btn-outline btn-xs pull-right margin-left-5 margin-right-10"
+                @click="enableSkuEdit()"
+              >
+                Yes, edit
+              </button>
+            </div>
+          </div>
+        </fieldset>
+        <div class="col-xs-12">
+          <div class="form-group form-md-line-input form-md-floating-label">
+            <input
+              id="form_control_6"
+              v-model="itemToBeEdited.order"
+              :disabled="!can('menu_manager menus categories subcategories items update')"
+              type="text"
+              class="form-control input-sm edited"
+            >
+            <label for="form_control_6">
+              Item Order
+            </label>
+          </div>
+          <div
+            v-if="itemTypes.length"
+            class="form-group form-md-line-input form-md-floating-label"
+          >
+            <label>Item Type:</label><br>
+            <el-dropdown
+              trigger="click"
+              size="mini"
+              :show-timeout="50"
+              :hide-timeout="50"
+              @command="updateTaxClass"
+            >
+              <el-button size="mini">
+                {{ taxClassLabel }}
+                <i class="el-icon-arrow-down el-icon--right" />
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  v-for="type in itemTypes"
+                  :key="type.id"
+                  :command="type.id"
+                >
+                  {{ type.name }}
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </div>
+          <div class="form-group form-md-line-input form-md-floating-label">
+            <label>Type:</label><br>
+            <el-dropdown
+              trigger="click"
+              size="mini"
+              :show-timeout="50"
+              :hide-timeout="50"
+              @command="updateItemType"
+            >
+              <el-button size="mini">
+                {{ itemTypeLabel }}
+                <i class="el-icon-arrow-down el-icon--right" />
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="regular">
+                  regular
+                </el-dropdown-item>
+                <el-dropdown-item command="custom">
+                  custom
+                </el-dropdown-item>
+                <el-dropdown-item command="preset">
+                  preset
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </div>
+          <div class="form-group form-md-line-input form-md-floating-label">
+            <label>Item Status:</label><br>
+            <el-switch
+              v-model="itemToBeEdited.status"
+              :disabled="!can('menu_manager menus categories subcategories items update')"
+              active-color="#0c6"
+              inactive-color="#ff4949"
+              :active-value="1"
+              :inactive-value="0"
+              active-text="Active"
+              inactive-text="Sold Out"
+            />
+          </div>
+          <div>
+            <p class="margin-bottom-10 margin-top-30 margin-right-10">
+              Select locations to apply the changes to:
+            </p>
+            <button
+              type="submit"
+              class="btn blue btn-outline"
+              @click="selectLocations($event)"
+            >
+              Select locations
+            </button>
+            <p
+              v-if="selectedLocations.length"
+              class="grey-label margin-top-10"
+            >
+              Selected {{ selectedLocations.length }}
+              <span v-if="selectedLocations.length !== 1">
+                locations
+              </span>
+              <span v-else>
+                location
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="page-two"
+        :class="{'active': selectImageMode, 'disabled': !selectImageMode}"
+      >
+        <store-picker-with-button
+          v-if="selectLocationMode"
+          :previously-selected="selectedLocations"
+          @close="updateSelectedLocations"
+        />
+      </div>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <div class="row">
+        <div class="col-xs-12">
+          <button
+            v-if="!selectImageMode && !selectLocationMode && !can('menu_manager menus categories subcategories items update')"
+            type="button"
+            class="btn btn-primary"
+            @click="closeModal()"
+          >
+            Close
+          </button>
+          <button
+            v-if="!selectImageMode && !selectLocationMode && can('menu_manager menus categories subcategories items update')"
+            type="button"
+            class="btn btn-primary"
+            :disabled="noItemTypes || updating"
+            @click="updateCategoryItem()"
+          >
+            Save
+            <i
+              v-show="updating"
+              class="fa fa-spinner fa-pulse fa-fw"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+  </modal>
 </template>
 
 <script>

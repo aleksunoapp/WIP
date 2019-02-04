@@ -1,69 +1,85 @@
 <template>
-	<modal :show="showCopyMenuModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal">
-		<div slot="modal-header"
-		     class="modal-header center">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Copy Menu</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="row">
-				<div class="col-xs-12">
-					<div class="alert alert-danger"
-					     v-show="errorMessage.length"
-					     ref="errorMessage">
-						<button class="close"
-						        data-close="alert"
-						        @click="clearError()"></button>
-						<span>{{errorMessage}}</span>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-xs-12">
-					<store-picker
-						:previouslySelected="selectedLocations"
-						:exclude="[$root.activeLocation.id]"
-						@update="updateLocations"
-					>
-					</store-picker>
-					<div class="mt-1em">
-						<label>Replace existing?</label><br>
-						<el-switch v-model="replaceExisting"
-						           active-color="#0c6"
-						           inactive-color="#ff4949"
-						           :active-value="1"
-						           :inactive-value="0"
-						           active-text="Yes"
-						           inactive-text="No">
-						</el-switch>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-xs-12">
-					<div class="pull-right">
-						<button class="btn blue"
-						        @click="copyMenu()"
-						        :disabled="copying">
-							Copy
-							<i v-show="copying"
-							   class="fa fa-spinner fa-pulse fa-fw">
-							</i>
-						</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div slot="modal-footer">
-		</div>
-	</modal>
+  <modal
+    :show="showCopyMenuModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header center"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Copy Menu
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div class="row">
+        <div class="col-xs-12">
+          <div
+            v-show="errorMessage.length"
+            ref="errorMessage"
+            class="alert alert-danger"
+          >
+            <button
+              class="close"
+              data-close="alert"
+              @click="clearError()"
+            />
+            <span>{{ errorMessage }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <store-picker
+            :previously-selected="selectedLocations"
+            :exclude="[$root.activeLocation.id]"
+            @update="updateLocations"
+          />
+          <div class="mt-1em">
+            <label>Replace existing?</label><br>
+            <el-switch
+              v-model="replaceExisting"
+              active-color="#0c6"
+              inactive-color="#ff4949"
+              :active-value="1"
+              :inactive-value="0"
+              active-text="Yes"
+              inactive-text="No"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="pull-right">
+            <button
+              class="btn blue"
+              :disabled="copying"
+              @click="copyMenu()"
+            >
+              Copy
+              <i
+                v-show="copying"
+                class="fa fa-spinner fa-pulse fa-fw"
+              />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div slot="modal-footer" />
+  </modal>
 </template>
 
 <script>
@@ -73,6 +89,15 @@ import ajaxErrorHandler from '../../../../controllers/ErrorController'
 import StorePicker from '@/components/modules/StorePicker'
 
 export default {
+	components: {
+		Modal,
+		StorePicker
+	},
+	props: {
+		passedMenuId: {
+			type: Number
+		}
+	},
 	data () {
 		return {
 			showCopyMenuModal: false,
@@ -102,11 +127,6 @@ export default {
 			} else {
 				return this.locations
 			}
-		}
-	},
-	props: {
-		passedMenuId: {
-			type: Number
 		}
 	},
 	created () {
@@ -212,10 +232,6 @@ export default {
 				payload
 			})
 		}
-	},
-	components: {
-		Modal,
-		StorePicker
 	}
 }
 </script>

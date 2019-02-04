@@ -1,74 +1,102 @@
 <template>
-	<modal :show="showOptionsModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="modal">
-		<div slot="modal-header"
-		     class="modal-header">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Select an Option</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="alert alert-danger"
-			     v-show="errorMessage"
-			     ref="errorMessage">
-				<button class="close"
-				        @click="clearError()"></button>
-				<span>{{errorMessage}}</span>
-			</div>
-			<div class="table-scrollable table-fixed-height">
-				<table class="table">
-					<thead>
-						<tr>
-							<th> </th>
-							<th> Icon </th>
-							<th> Name </th>
-							<th> Description </th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="option in options" :key="option.id">
-							<td>
-								<div class="md-checkbox has-success">
-									<input type="checkbox"
-									       :id="'option_checkbox_' + option.id"
-									       class="md-check"
-									       v-model="option.selected">
-									<label :for="'option_checkbox_' + option.id">
-										<span class="inc"></span>
-										<span class="check"></span>
-										<span class="box"></span>
-									</label>
-								</div>
-							</td>
-							<td> <img :src="option.image_url"
-								     width="30"
-								     height="30"> </td>
-							<td> {{option.name}} </td>
-							<td> {{option.description}} </td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button type="button"
-			        class="btn btn-primary"
-			        @click="applyOptionsToItem()"
-							:disabled="saving">
-				Apply Options
-				<i v-show="saving"
-						class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-		</div>
-	</modal>
+  <modal
+    ref="modal"
+    :show="showOptionsModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Select an Option
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div
+        v-show="errorMessage"
+        ref="errorMessage"
+        class="alert alert-danger"
+      >
+        <button
+          class="close"
+          @click="clearError()"
+        />
+        <span>{{ errorMessage }}</span>
+      </div>
+      <div class="table-scrollable table-fixed-height">
+        <table class="table">
+          <thead>
+            <tr>
+              <th />
+              <th> Icon </th>
+              <th> Name </th>
+              <th> Description </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="option in options"
+              :key="option.id"
+            >
+              <td>
+                <div class="md-checkbox has-success">
+                  <input
+                    :id="'option_checkbox_' + option.id"
+                    v-model="option.selected"
+                    type="checkbox"
+                    class="md-check"
+                  >
+                  <label :for="'option_checkbox_' + option.id">
+                    <span class="inc" />
+                    <span class="check" />
+                    <span class="box" />
+                  </label>
+                </div>
+              </td>
+              <td>
+                <img
+                  :src="option.image_url"
+                  width="30"
+                  height="30"
+                >
+              </td>
+              <td> {{ option.name }} </td>
+              <td> {{ option.description }} </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        type="button"
+        class="btn btn-primary"
+        :disabled="saving"
+        @click="applyOptionsToItem()"
+      >
+        Apply Options
+        <i
+          v-show="saving"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -77,13 +105,8 @@ import OptionsFunctions from '../../../../controllers/Options'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	data () {
-		return {
-			showOptionsModal: false,
-			errorMessage: '',
-			options: [],
-			saving: false
-		}
+	components: {
+		Modal
 	},
 	props: {
 		appliedOptions: {
@@ -97,6 +120,14 @@ export default {
 		itemType: {
 			type: String,
 			default: 'modifier-item'
+		}
+	},
+	data () {
+		return {
+			showOptionsModal: false,
+			errorMessage: '',
+			options: [],
+			saving: false
 		}
 	},
 	created () {
@@ -252,9 +283,6 @@ export default {
 		closeModal () {
 			this.$emit('closeOptionsListModal', this.selectedItemId)
 		}
-	},
-	components: {
-		Modal
 	}
 }
 </script>

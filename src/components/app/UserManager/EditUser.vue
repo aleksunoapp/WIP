@@ -1,199 +1,216 @@
 <template>
-	<div class="portlet box blue-hoki">
-		<div class="portlet-title bg-blue-chambray">
-			<div class="caption">
-				Edit User Information
-			</div>
-		</div>
-		<div class="portlet-body">
-			<form 
-				role="form"
-				@submit.prevent="save()"
-			>
-				<div class="form-body row">
-					<div class="col-xs-12">
-						<div
-							class="alert alert-danger"
-							v-show="errorMessage"
-							ref="errorMessage"
-						>
-							<button
-								class="close"
-								@click.prevent="clearError('errorMessage')"
-							>
-							</button>
-							<span>{{ errorMessage }}</span>
-						</div>
-					</div>
-					<div class="col-xs-12 col-md-6 col-lg-4">
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input
-								type="text"
-								class="form-control input-sm"
-								:class="{'edited': first_name.length}"
-								id="first_name"
-								v-model="first_name"
-							>
-							<label for="first_name">First Name</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input
-								type="text"
-								class="form-control input-sm"
-								:class="{'edited': last_name.length}"
-								id="last_name"
-								v-model="last_name"
-							>
-							<label for="last_name">Last Name</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input
-								type="text"
-								class="form-control input-sm"
-								:class="{'edited': maskedPhone.length}"
-								id="phone"
-								v-model="maskedPhone"
-							>
-							<label for="phone">Phone</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input
-								type="text"
-								class="form-control input-sm"
-								:class="{'edited': address.length}"
-								id="address"
-								v-model="address"
-							>
-							<label for="address">Address Line 1</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input
-								type="text"
-								class="form-control input-sm"
-								:class="{'edited': address2.length}"
-								id="address2"
-								v-model="address2"
-							>
-							<label for="address2">Address Line 2</label>
-						</div>
-					</div>
-					<div class="col-xs-12 col-md-6 col-lg-4">
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input
-								type="text"
-								class="form-control input-sm"
-								:class="{'edited': city.length}"
-								id="city"
-								v-model="city"
-							>
-							<label for="city">City</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input
-								type="text"
-								class="form-control input-sm"
-								:class="{'edited': province.length}"
-								id="province"
-								v-model="province"
-							>
-							<label for="province">Province</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input
-								type="text"
-								class="form-control input-sm"
-								:class="{'edited': postal_code.length}"
-								id="postal_code"
-								v-model="postal_code"
-							>
-							<label for="postal_code">Postal Code</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input
-								type="text"
-								class="form-control input-sm"
-								:class="{'edited': country.length}"
-								id="country"
-								v-model="country"
-							>
-							<label for="country">Country</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input
-								type="text"
-								class="form-control input-sm"
-								:class="{'edited': ref_code.length}"
-								id="ref_code"
-								v-model="ref_code"
-							>
-							<label for="ref_code">Referral Code</label>
-						</div>
-					</div>
-					<div class="col-xs-12 col-md-6 col-lg-4">
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<p class="grey-label">Date Of Birth</p>
-							<el-date-picker
-								v-model="date_of_birth"
-								type="date"
-								format="yyyy-MM-dd"
-								value-format="yyyy-MM-dd"
-								:clearable="true"
-								placeholder="YYYY-MM-DD"
-							>
-							</el-date-picker>
-						</div>
-					</div>
-					<div class="col-xs-12 col-md-6 col-lg-4">
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<label>Send notifications?</label><br>
-							<el-switch
-								v-model="send_notification"
-								active-color="#0c6"
-								inactive-color="#ff4949"
-								:active-value="1"
-								:inactive-value="0"
-								active-text="Yes"
-								inactive-text="No"
-							>
-							</el-switch>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<label>Send emails?</label><br>
-							<el-switch
-								v-model="send_email"
-								active-color="#0c6"
-								inactive-color="#ff4949"
-								:active-value="1"
-								:inactive-value="0"
-								active-text="Yes"
-								inactive-text="No"
-							>
-							</el-switch>
-						</div>
-					</div>
-				</div>
+  <div class="portlet box blue-hoki">
+    <div class="portlet-title bg-blue-chambray">
+      <div class="caption">
+        Edit User Information
+      </div>
+    </div>
+    <div class="portlet-body">
+      <form 
+        role="form"
+        @submit.prevent="save()"
+      >
+        <div class="form-body row">
+          <div class="col-xs-12">
+            <div
+              v-show="errorMessage"
+              ref="errorMessage"
+              class="alert alert-danger"
+            >
+              <button
+                class="close"
+                @click.prevent="clearError('errorMessage')"
+              />
+              <span>{{ errorMessage }}</span>
+            </div>
+          </div>
+          <div class="col-xs-12 col-md-6 col-lg-4">
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="first_name"
+                v-model="first_name"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': first_name.length}"
+              >
+              <label for="first_name">
+                First Name
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="last_name"
+                v-model="last_name"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': last_name.length}"
+              >
+              <label for="last_name">
+                Last Name
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="phone"
+                v-model="maskedPhone"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': maskedPhone.length}"
+              >
+              <label for="phone">
+                Phone
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="address"
+                v-model="address"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': address.length}"
+              >
+              <label for="address">
+                Address Line 1
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="address2"
+                v-model="address2"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': address2.length}"
+              >
+              <label for="address2">
+                Address Line 2
+              </label>
+            </div>
+          </div>
+          <div class="col-xs-12 col-md-6 col-lg-4">
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="city"
+                v-model="city"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': city.length}"
+              >
+              <label for="city">
+                City
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="province"
+                v-model="province"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': province.length}"
+              >
+              <label for="province">
+                Province
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="postal_code"
+                v-model="postal_code"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': postal_code.length}"
+              >
+              <label for="postal_code">
+                Postal Code
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="country"
+                v-model="country"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': country.length}"
+              >
+              <label for="country">
+                Country
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="ref_code"
+                v-model="ref_code"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': ref_code.length}"
+              >
+              <label for="ref_code">
+                Referral Code
+              </label>
+            </div>
+          </div>
+          <div class="col-xs-12 col-md-6 col-lg-4">
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <p class="grey-label">
+                Date Of Birth
+              </p>
+              <el-date-picker
+                v-model="date_of_birth"
+                type="date"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                :clearable="true"
+                placeholder="YYYY-MM-DD"
+              />
+            </div>
+          </div>
+          <div class="col-xs-12 col-md-6 col-lg-4">
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <label>Send notifications?</label><br>
+              <el-switch
+                v-model="send_notification"
+                active-color="#0c6"
+                inactive-color="#ff4949"
+                :active-value="1"
+                :inactive-value="0"
+                active-text="Yes"
+                inactive-text="No"
+              />
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <label>Send emails?</label><br>
+              <el-switch
+                v-model="send_email"
+                active-color="#0c6"
+                inactive-color="#ff4949"
+                :active-value="1"
+                :inactive-value="0"
+                active-text="Yes"
+                inactive-text="No"
+              />
+            </div>
+          </div>
+        </div>
 
-				<div class="form-actions right margin-top-20">
-					<div class="row">
-						<div class="col-xs-12">
-							<button
-								type="submit"
-								class="btn blue"
-								:disabled="saving"
-							>
-								Save
-								<i
-									v-show="saving"
-									class="fa fa-spinner fa-pulse fa-fw"
-								>
-								</i>
-							</button>
-						</div>
-					</div>
-				</div>
-			</form>
-		</div>
-	</div>
+        <div class="form-actions right margin-top-20">
+          <div class="row">
+            <div class="col-xs-12">
+              <button
+                type="submit"
+                class="btn blue"
+                :disabled="saving"
+              >
+                Save
+                <i
+                  v-show="saving"
+                  class="fa fa-spinner fa-pulse fa-fw"
+                />
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 </template>
 
 <script>

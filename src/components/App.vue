@@ -1,208 +1,289 @@
 <template>
-	<div class="page-wrapper">
-		<!-- BEGIN HEADER -->
-		<div 
-			class="page-header navbar navbar-fixed-top"
-			:class="{'master' : $root.master, 'staging' : $root.staging}"
-		>
-			<!-- BEGIN HEADER INNER -->
-			<div class="page-header-inner">
-				<div class="page-logo">
-					<a>
-						<img src="../assets/img/app/unoapp-commerce-logo.png"
-						     alt="logo"
-						     class="logo-default logo-unoapp" />
-					</a>
-				</div>
-				<!-- END LOGO -->
+  <div class="page-wrapper">
+    <!-- BEGIN HEADER -->
+    <div 
+      class="page-header navbar navbar-fixed-top"
+      :class="{'master' : $root.master, 'staging' : $root.staging}"
+    >
+      <!-- BEGIN HEADER INNER -->
+      <div class="page-header-inner">
+        <div class="page-logo">
+          <a>
+            <img
+              src="../assets/img/app/unoapp-commerce-logo.png"
+              alt="logo"
+              class="logo-default logo-unoapp"
+            >
+          </a>
+        </div>
+        <!-- END LOGO -->
 
-				<!-- BEGIN TOP NAVIGATION MENU -->
-				<div class="top-menu">
-					<ul class="nav navbar-nav pull-right">
-						<!-- BEGIN USER LOGIN DROPDOWN -->
-						<li class="dropdown dropdown-user left"
-						    @click="$root.logOut()">
-							<a href="javascript:;"
-							   class="dropdown-toggle log-out-button">
-								<span class="username username-hide-on-mobile">Log out</span>
-							</a>
-						</li>
-						<!-- END USER LOGIN DROPDOWN -->
-						<!-- BEGIN QUICK SIDEBAR TOGGLER -->
-						<li class="dropdown dropdown-quick-sidebar-toggler width-auto"
-						    @click="toggleQuickSidebar($event)">
-							<a class="dropdown-toggle location-panel width-auto">
-								<div class="logo-container">
-									<img class="business-logo"
-									     src="../assets/img/app/logo-refresh.png"
-									     width="38"
-									     height="38">
-								</div>
-								<div class="location-name-container"
-								     v-if="activeLocation.display_name">
-									<span class="business-name">{{$root.activeUser.name}}</span>
-									<span class="business-location-name">{{activeLocation.display_name}}</span>
-								</div>
-								<div class="location-name-container"
-								     v-else>
-									<span class="business-name big">{{$root.activeUser.name}}</span>
-								</div>
-							</a>
-						</li>
-						<!-- END QUICK SIDEBAR TOGGLER -->
-					</ul>
-				</div>
-				<!-- END TOP NAVIGATION MENU -->
-			</div>
-			<!-- END HEADER INNER -->
-		</div>
-		<!-- END HEADER -->
+        <!-- BEGIN TOP NAVIGATION MENU -->
+        <div class="top-menu">
+          <ul class="nav navbar-nav pull-right">
+            <!-- BEGIN USER LOGIN DROPDOWN -->
+            <li
+              class="dropdown dropdown-user left"
+              @click="$root.logOut()"
+            >
+              <a
+                href="javascript:;"
+                class="dropdown-toggle log-out-button"
+              >
+                <span class="username username-hide-on-mobile">
+                  Log out
+                </span>
+              </a>
+            </li>
+            <!-- END USER LOGIN DROPDOWN -->
+            <!-- BEGIN QUICK SIDEBAR TOGGLER -->
+            <li
+              class="dropdown dropdown-quick-sidebar-toggler width-auto"
+              @click="toggleQuickSidebar($event)"
+            >
+              <a class="dropdown-toggle location-panel width-auto">
+                <div class="logo-container">
+                  <img
+                    class="business-logo"
+                    src="../assets/img/app/logo-refresh.png"
+                    width="38"
+                    height="38"
+                  >
+                </div>
+                <div
+                  v-if="activeLocation.display_name"
+                  class="location-name-container"
+                >
+                  <span class="business-name">
+                    {{ $root.activeUser.name }}
+                  </span>
+                  <span class="business-location-name">
+                    {{ activeLocation.display_name }}
+                  </span>
+                </div>
+                <div
+                  v-else
+                  class="location-name-container"
+                >
+                  <span class="business-name big">
+                    {{ $root.activeUser.name }}
+                  </span>
+                </div>
+              </a>
+            </li>
+            <!-- END QUICK SIDEBAR TOGGLER -->
+          </ul>
+        </div>
+        <!-- END TOP NAVIGATION MENU -->
+      </div>
+      <!-- END HEADER INNER -->
+    </div>
+    <!-- END HEADER -->
 
-		<!-- BEGIN HEADER & CONTENT DIVIDER -->
-		<div class="clearfix"> </div>
-		<!-- END HEADER & CONTENT DIVIDER -->
-		<!-- BEGIN CONTAINER -->
-		<div class="page-container">
+    <!-- BEGIN HEADER & CONTENT DIVIDER -->
+    <div class="clearfix" />
+    <!-- END HEADER & CONTENT DIVIDER -->
+    <!-- BEGIN CONTAINER -->
+    <div class="page-container">
+      <left-sidebar />
 
-			<left-sidebar></left-sidebar>
-
-			<!-- BEGIN CONTENT -->
-			<div class="page-content-wrapper">
-				<!-- BEGIN CONTENT BODY -->
-				<div class="page-content">
-					<transition name="fade"
-					            mode="out-in">
-						<router-view></router-view>
-					</transition>
-				</div>
-			</div>
-			<!-- BEGIN QUICK SIDEBAR -->
-			<div class="page-quick-sidebar-wrapper"
-			     data-close-on-body-click="false">
-				<a class="page-quick-sidebar-toggler"
-				   @click="toggleQuickSidebar($event)">
-					<span class="icon-close"></span>
-				</a>
-				<div class="page-quick-sidebar">
-					<div>
-						<div class="tab-content">
-							<div class="tab-pane active page-quick-sidebar-chat">
-								<div class="page-quick-sidebar-chat-users active-business"
-								     data-rail-color="#ddd"
-								     data-wrapper-class="page-quick-sidebar-list">
-									<ul class="media-list list-items">
-										<router-link tag="li"
-										             to="/app/profile"
-										             class="media selected-location current-location padding-sidebar-user">
-											<img class="media-object"
-											     src="../assets/img/app/logo-refresh.png"
-											     alt="...">
-											<div class="media-status">
-												<i class="fa fa-gear"></i>
-											</div>
-											<div class="media-body">
-												<h4 class="media-heading">{{ $root.activeUser.name }}</h4>
-												<div class="media-heading-sub">Account Settings</div>
-											</div>
-										</router-link>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<div class="tab-content">
-							<div class="tab-pane active page-quick-sidebar-chat">
-								<div class="page-quick-sidebar-chat-users"
-								     data-rail-color="#ddd"
-								     data-wrapper-class="page-quick-sidebar-list">
-									<h3 v-if="activeLocation.id !== undefined"
-									    class="list-heading location-panel-heading blue font-default">
-										Active Store
-									</h3>
-									<ul class="media-list list-items"
-									    v-if="activeLocation.id !== undefined">
-										<li class="media padding-sidebar-search">
-											<div class="media-status"
-											     @click="unselectLocation($event)">
-												<div class="active-location-dots">
-													<div class="active-location-dot">
-														<i class="fa fa-circle blue"></i>
-													</div>
-													<div class="deactivate-location-dot">
-														<i class="fa fa-times-circle"></i>
-													</div>
-												</div>
-											</div>
-											<div class="media-body">
-												<h4 class="media-heading">{{ activeLocation.display_name }}</h4>
-												<div class="media-heading-sub">{{ activeLocation.address_line_1 }}</div>
-											</div>
-										</li>
-									</ul>
-									<div class="padding-box padding-sidebar-search">
-										<div class="form-group form-md-line-input form-md-floating-label">
-											<input type="text"
-											       class="form-control input-sm padding-right-20"
-											       id="location_search"
-											       v-model="searchQuery"
-											       :class="{'edited': searchQuery.length}">
-											<i v-if="searchQuery.length"
-											   class="fa fa-times clear-icon"
-											   @click="clearSearch()">
-											</i>
-											<label for="location_search">Search for a store</label>
-											<span class="help-block persist">
-												<span v-if="searchError.length">{{ searchError }}</span>
-												<span v-else>Search by name, address or ID</span>
-											</span>
-										</div>
-									</div>
-									<div class="margin-top-30">
-										<h3 class="list-heading location-panel-heading blue font-default">Stores</h3>
-										<loading-screen :show="loading"></loading-screen>
-										<div class="tab-content" v-show="! loading">
-											<div :class="{'tab-pane active page-quick-sidebar-chat scrollable' : activeLocation.id !== undefined, 'tab-pane active page-quick-sidebar-chat scrollable-select-location' : activeLocation.id == undefined}">
-												<div class="page-quick-sidebar-chat-users"
-												     data-rail-color="#ddd"
-												     data-wrapper-class="page-quick-sidebar-list">
-													<ul class="media-list list-items">
-														<li class="media padding-sidebar-store"
-														    v-for="location in searchResult"
-														    @click="selectLocation(location)"
-														    :key="location.id">
-															<div class="media-body">
-																<h4 class="media-heading">{{ location.display_name }}</h4>
-																<div class="media-heading-sub">{{ location.address_line_1 }}</div>
-															</div>
-														</li>
-													</ul>
-													<div class="pagination-wrapper"
-													     v-show="lastPage > 1">
-														<div @click="goToPreviousPage()"
-														     class="pagination-arrow"
-														     :class="{ 'disabled' : currentPage === 1 }">
-															<i class="fa fa-angle-left"
-															   aria-hidden="true"></i>
-														</div>
-														<div @click="goToNextPage()"
-														     class="pagination-arrow"
-														     :class="{ 'disabled' : currentPage === lastPage }">
-															<i class="fa fa-angle-right"
-															   aria-hidden="true"></i>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- END QUICK SIDEBAR -->
-		</div>
-	</div>
+      <!-- BEGIN CONTENT -->
+      <div class="page-content-wrapper">
+        <!-- BEGIN CONTENT BODY -->
+        <div class="page-content">
+          <transition
+            name="fade"
+            mode="out-in"
+          >
+            <router-view />
+          </transition>
+        </div>
+      </div>
+      <!-- BEGIN QUICK SIDEBAR -->
+      <div
+        class="page-quick-sidebar-wrapper"
+        data-close-on-body-click="false"
+      >
+        <a
+          class="page-quick-sidebar-toggler"
+          @click="toggleQuickSidebar($event)"
+        >
+          <span class="icon-close" />
+        </a>
+        <div class="page-quick-sidebar">
+          <div>
+            <div class="tab-content">
+              <div class="tab-pane active page-quick-sidebar-chat">
+                <div
+                  class="page-quick-sidebar-chat-users active-business"
+                  data-rail-color="#ddd"
+                  data-wrapper-class="page-quick-sidebar-list"
+                >
+                  <ul class="media-list list-items">
+                    <router-link
+                      tag="li"
+                      to="/app/profile"
+                      class="media selected-location current-location padding-sidebar-user"
+                    >
+                      <img
+                        class="media-object"
+                        src="../assets/img/app/logo-refresh.png"
+                        alt="..."
+                      >
+                      <div class="media-status">
+                        <i class="fa fa-gear" />
+                      </div>
+                      <div class="media-body">
+                        <h4 class="media-heading">
+                          {{ $root.activeUser.name }}
+                        </h4>
+                        <div class="media-heading-sub">
+                          Account Settings
+                        </div>
+                      </div>
+                    </router-link>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="tab-content">
+              <div class="tab-pane active page-quick-sidebar-chat">
+                <div
+                  class="page-quick-sidebar-chat-users"
+                  data-rail-color="#ddd"
+                  data-wrapper-class="page-quick-sidebar-list"
+                >
+                  <h3
+                    v-if="activeLocation.id !== undefined"
+                    class="list-heading location-panel-heading blue font-default"
+                  >
+                    Active Store
+                  </h3>
+                  <ul
+                    v-if="activeLocation.id !== undefined"
+                    class="media-list list-items"
+                  >
+                    <li class="media padding-sidebar-search">
+                      <div
+                        class="media-status"
+                        @click="unselectLocation($event)"
+                      >
+                        <div class="active-location-dots">
+                          <div class="active-location-dot">
+                            <i class="fa fa-circle blue" />
+                          </div>
+                          <div class="deactivate-location-dot">
+                            <i class="fa fa-times-circle" />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="media-body">
+                        <h4 class="media-heading">
+                          {{ activeLocation.display_name }}
+                        </h4>
+                        <div class="media-heading-sub">
+                          {{ activeLocation.address_line_1 }}
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                  <div class="padding-box padding-sidebar-search">
+                    <div class="form-group form-md-line-input form-md-floating-label">
+                      <input
+                        id="location_search"
+                        v-model="searchQuery"
+                        type="text"
+                        class="form-control input-sm padding-right-20"
+                        :class="{'edited': searchQuery.length}"
+                      >
+                      <i
+                        v-if="searchQuery.length"
+                        class="fa fa-times clear-icon"
+                        @click="clearSearch()"
+                      />
+                      <label for="location_search">
+                        Search for a store
+                      </label>
+                      <span class="help-block persist">
+                        <span v-if="searchError.length">
+                          {{ searchError }}
+                        </span>
+                        <span v-else>
+                          Search by name, address or ID
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="margin-top-30">
+                    <h3 class="list-heading location-panel-heading blue font-default">
+                      Stores
+                    </h3>
+                    <loading-screen :show="loading" />
+                    <div
+                      v-show="! loading"
+                      class="tab-content"
+                    >
+                      <div :class="{'tab-pane active page-quick-sidebar-chat scrollable' : activeLocation.id !== undefined, 'tab-pane active page-quick-sidebar-chat scrollable-select-location' : activeLocation.id == undefined}">
+                        <div
+                          class="page-quick-sidebar-chat-users"
+                          data-rail-color="#ddd"
+                          data-wrapper-class="page-quick-sidebar-list"
+                        >
+                          <ul class="media-list list-items">
+                            <li
+                              v-for="location in searchResult"
+                              :key="location.id"
+                              class="media padding-sidebar-store"
+                              @click="selectLocation(location)"
+                            >
+                              <div class="media-body">
+                                <h4 class="media-heading">
+                                  {{ location.display_name }}
+                                </h4>
+                                <div class="media-heading-sub">
+                                  {{ location.address_line_1 }}
+                                </div>
+                              </div>
+                            </li>
+                          </ul>
+                          <div
+                            v-show="lastPage > 1"
+                            class="pagination-wrapper"
+                          >
+                            <div
+                              class="pagination-arrow"
+                              :class="{ 'disabled' : currentPage === 1 }"
+                              @click="goToPreviousPage()"
+                            >
+                              <i
+                                class="fa fa-angle-left"
+                                aria-hidden="true"
+                              />
+                            </div>
+                            <div
+                              class="pagination-arrow"
+                              :class="{ 'disabled' : currentPage === lastPage }"
+                              @click="goToNextPage()"
+                            >
+                              <i
+                                class="fa fa-angle-right"
+                                aria-hidden="true"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- END QUICK SIDEBAR -->
+    </div>
+  </div>
 </template>
 
 <script>

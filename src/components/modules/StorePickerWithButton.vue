@@ -1,25 +1,24 @@
 <template>
-	<div class="width-100">
-		<store-picker
-			:editable="editable"
-			:multiple="true"
-			:previouslySelected="previouslySelected"
-			@update="update"
-		>
-		</store-picker>
-		<div
-			class="width-100 display-flex justify-content-flex-end"
-			v-show="withButton"
-		>
-			<button
-				type="button"
-				class="pull-right margin-top-15 btn btn-primary"
-				@click="selectLocations()"
-			>
-				{{editable ? 'Select' : 'Close'}}
-			</button>
-		</div>
-	</div>
+  <div class="width-100">
+    <store-picker
+      :editable="editable"
+      :multiple="true"
+      :previously-selected="previouslySelected"
+      @update="update"
+    />
+    <div
+      v-show="withButton"
+      class="width-100 display-flex justify-content-flex-end"
+    >
+      <button
+        type="button"
+        class="pull-right margin-top-15 btn btn-primary"
+        @click="selectLocations()"
+      >
+        {{ editable ? 'Select' : 'Close' }}
+      </button>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -29,11 +28,6 @@ export default {
 	name: 'StorePickerWithButton',
 	components: {
 		StorePicker
-	},
-	data () {
-		return {
-			locations: []
-		}
 	},
 	props: {
 		previouslySelected: {
@@ -50,6 +44,11 @@ export default {
 			type: Boolean,
 			required: false,
 			default: () => true
+		}
+	},
+	data () {
+		return {
+			locations: []
 		}
 	},
 	methods: {

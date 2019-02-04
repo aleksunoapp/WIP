@@ -1,312 +1,422 @@
 <template>
-	<div>
-		<!-- BEGIN PAGE BAR -->
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
-		<!-- END PAGE BAR -->
-		<!-- BEGIN PAGE TITLE-->
-		<h1 class="page-title">Reward Items</h1>
-		<!-- END PAGE TITLE-->
-		<div class="note note-info">
-			<p>Manage items for a reward tier.</p>
-		</div>
-		<!-- BEGIN CREATE NEW -->
-		<div class="portlet box blue-hoki"
-		     v-if="$root.permissions['reward_tiers items create']">
-			<div class="portlet-title bg-blue-chambray"
-			     @click="toggleCreateItemPanel()">
-				<div class="caption">
-					<i class="fa fa-2x fa-plus-circle"></i>
-					Create a New Reward Item
-				</div>
-				<div class="tools">
-					<a :class="{'expand': !createItemCollapse, 'collapse': createItemCollapse}"></a>
-				</div>
-			</div>
-			<div class="portlet-body"
-			     :class="{'display-hide': createItemCollapse}">
-				<form role="form"
-				      @submit.prevent="createNewRewardItem()">
-					<div class="form-body row">
-						<div class="col-md-12">
-							<div class="alert alert-danger"
-							     v-show="errorMessage.length"
-							     ref="errorMessage">
-								<button class="close"
-								        data-close="alert"
-								        @click.prevent="clearError('errorMessage')"></button>
-								<span>{{errorMessage}}</span>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newRewardItem.name.length}"
-								       id="form_control_1"
-								       v-model="newRewardItem.name">
-								<label for="form_control_1">Reward Item Name</label>
-							</div>
-							<div class="side-by-side-item">
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       class="form-control input-sm"
-									       :class="{'edited': newRewardItem.value.length}"
-									       id="form_control_2"
-									       v-model="newRewardItem.value">
-									<label for="form_control_2">Reward Item Value</label>
-								</div>
-							</div>
-							<el-select class="side-by-side-item"
-							           v-model="newRewardItem.value_type"
-							           placeholder="Select type"
-							           size="small">
-								<el-option label="$"
-								           value="dollar"></el-option>
-								<el-option label="%"
-								           value="percentage"></el-option>
-							</el-select>
-							<div class="side-by-side-item">
-								from:
-								<el-date-picker v-model="newRewardItem.start_on"
-								                type="date"
-								                format="yyyy-MM-dd"
-								                value-format="yyyy-MM-dd"
-								                :clearable="false"
-								                placeholder="Select start date">
-								</el-date-picker>
-							</div>
-							<div class="side-by-side-item">
-								to:
-								<el-date-picker v-model="newRewardItem.expiry"
-								                type="date"
-								                format="yyyy-MM-dd"
-								                value-format="yyyy-MM-dd"
-								                :clearable="false"
-								                placeholder="Select end date">
-								</el-date-picker>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       id="form_control_loyalty_reward_id"
-								       :class="{'edited': newRewardItem.loyalty_reward_id.length}"
-								       v-model="newRewardItem.loyalty_reward_id">
-								<label for="form_control_loyalty_reward_id">Loyalty Reward ID</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       id="form_control_3"
-								       :class="{'edited': newRewardItem.points.length}"
-								       v-model="newRewardItem.points">
-								<label for="form_control_3">Reward Item Points</label>
-							</div>
-							<button type="submit"
-							        class="btn blue btn-outline inline"
-							        @click.prevent="displayMenuModifierTreeModal(newRewardItem, $event)">Select Items</button>
-							<p v-if="newRewardItem.sku.length"
-							   class="margin-top-10 margin-left-10 inline">Selected
-								<span>{{newRewardItem.sku.length}}</span>
-								<span v-if="newRewardItem.sku.length > 1">items</span>
-								<span v-else>item</span>
-							</p>
-						</div>
-					</div>
-					<div class="form-actions right">
-						<button type="submit"
-						        class="btn blue"
-						        :disabled="creating">
-							Create
-							<i v-show="creating"
-							   class="fa fa-spinner fa-pulse fa-fw">
-							</i>
-						</button>
-					</div>
-				</form>
-			</div>
-		</div>
-		<!-- END CREATE NEW -->
-		<div>
-			<div class="portlet light portlet-fit bordered margin-top-20">
-				<div class="portlet-title bg-blue-chambray">
-					<div class="caption">
-						<span class="caption-subject font-default bold uppercase">{{ $router.passedTier.name }}</span>
-						<div class="caption-desc font-grey-cascade">Edit a reward item or select items to apply the reward to.</div>
-					</div>
-				</div>
-				<div class="portlet-body relative-block">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="alert alert-danger"
-							     v-show="listErrorMessage"
-							     ref="listErrorMessage">
-								<button class="close"
-								        @click="clearError('listErrorMessage')"></button>
-								<span>{{listErrorMessage}}</span>
-							</div>
-						</div>
-					</div>
+  <div>
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
+    <!-- END PAGE BAR -->
+    <!-- BEGIN PAGE TITLE-->
+    <h1 class="page-title">
+      Reward Items
+    </h1>
+    <!-- END PAGE TITLE-->
+    <div class="note note-info">
+      <p>Manage items for a reward tier.</p>
+    </div>
+    <!-- BEGIN CREATE NEW -->
+    <div
+      v-if="$root.permissions['reward_tiers items create']"
+      class="portlet box blue-hoki"
+    >
+      <div
+        class="portlet-title bg-blue-chambray"
+        @click="toggleCreateItemPanel()"
+      >
+        <div class="caption">
+          <i class="fa fa-2x fa-plus-circle" />
+          Create a New Reward Item
+        </div>
+        <div class="tools">
+          <a :class="{'expand': !createItemCollapse, 'collapse': createItemCollapse}" />
+        </div>
+      </div>
+      <div
+        class="portlet-body"
+        :class="{'display-hide': createItemCollapse}"
+      >
+        <form
+          role="form"
+          @submit.prevent="createNewRewardItem()"
+        >
+          <div class="form-body row">
+            <div class="col-md-12">
+              <div
+                v-show="errorMessage.length"
+                ref="errorMessage"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  data-close="alert"
+                  @click.prevent="clearError('errorMessage')"
+                />
+                <span>{{ errorMessage }}</span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_1"
+                  v-model="newRewardItem.name"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newRewardItem.name.length}"
+                >
+                <label for="form_control_1">
+                  Reward Item Name
+                </label>
+              </div>
+              <div class="side-by-side-item">
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_2"
+                    v-model="newRewardItem.value"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': newRewardItem.value.length}"
+                  >
+                  <label for="form_control_2">
+                    Reward Item Value
+                  </label>
+                </div>
+              </div>
+              <el-select
+                v-model="newRewardItem.value_type"
+                class="side-by-side-item"
+                placeholder="Select type"
+                size="small"
+              >
+                <el-option
+                  label="$"
+                  value="dollar"
+                />
+                <el-option
+                  label="%"
+                  value="percentage"
+                />
+              </el-select>
+              <div class="side-by-side-item">
+                from:
+                <el-date-picker
+                  v-model="newRewardItem.start_on"
+                  type="date"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  :clearable="false"
+                  placeholder="Select start date"
+                />
+              </div>
+              <div class="side-by-side-item">
+                to:
+                <el-date-picker
+                  v-model="newRewardItem.expiry"
+                  type="date"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  :clearable="false"
+                  placeholder="Select end date"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_loyalty_reward_id"
+                  v-model="newRewardItem.loyalty_reward_id"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newRewardItem.loyalty_reward_id.length}"
+                >
+                <label for="form_control_loyalty_reward_id">
+                  Loyalty Reward ID
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_3"
+                  v-model="newRewardItem.points"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newRewardItem.points.length}"
+                >
+                <label for="form_control_3">
+                  Reward Item Points
+                </label>
+              </div>
+              <button
+                type="submit"
+                class="btn blue btn-outline inline"
+                @click.prevent="displayMenuModifierTreeModal(newRewardItem, $event)"
+              >
+                Select Items
+              </button>
+              <p
+                v-if="newRewardItem.sku.length"
+                class="margin-top-10 margin-left-10 inline"
+              >
+                Selected
+                <span>{{ newRewardItem.sku.length }}</span>
+                <span v-if="newRewardItem.sku.length > 1">
+                  items
+                </span>
+                <span v-else>
+                  item
+                </span>
+              </p>
+            </div>
+          </div>
+          <div class="form-actions right">
+            <button
+              type="submit"
+              class="btn blue"
+              :disabled="creating"
+            >
+              Create
+              <i
+                v-show="creating"
+                class="fa fa-spinner fa-pulse fa-fw"
+              />
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- END CREATE NEW -->
+    <div>
+      <div class="portlet light portlet-fit bordered margin-top-20">
+        <div class="portlet-title bg-blue-chambray">
+          <div class="caption">
+            <span class="caption-subject font-default bold uppercase">
+              {{ $router.passedTier.name }}
+            </span>
+            <div class="caption-desc font-grey-cascade">
+              Edit a reward item or select items to apply the reward to.
+            </div>
+          </div>
+        </div>
+        <div class="portlet-body relative-block">
+          <div class="row">
+            <div class="col-md-12">
+              <div
+                v-show="listErrorMessage"
+                ref="listErrorMessage"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  @click="clearError('listErrorMessage')"
+                />
+                <span>{{ listErrorMessage }}</span>
+              </div>
+            </div>
+          </div>
 
-					<loading-screen :show="loadingRewardItems"
-					                :color="'#2C3E50'"
-					                :display="'inline'"></loading-screen>
+          <loading-screen
+            :show="loadingRewardItems"
+            :color="'#2C3E50'"
+            :display="'inline'"
+          />
 
-					<div class="mt-element-list margin-top-15"
-					     v-if="rewardItems.length && !loadingRewardItems">
-						<div class="mt-list-container list-news ext-1 no-border">
-							<ul>
-								<li class="mt-list-item actions-at-left margin-top-15"
-								    v-for="item in rewardItems"
-								    :id="'reward-' + item.id"
-								    :key="item.id">
-									<div class="list-item-actions">
-										<el-tooltip v-if="$root.permissions['reward_tiers items update']"
-										            content="Edit"
-										            effect="light"
-										            placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="showEditRewardItemModal(item)">
-												<i class="fa fa-lg fa-pencil"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['reward_tiers items read'] && !$root.permissions['reward_tiers items update']"
-										            content="View"
-										            effect="light"
-										            placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="showEditRewardItemModal(item)">
-												<i class="fa fa-lg fa-eye"></i>
-											</a>
-										</el-tooltip>
-										<el-tooltip v-if="$root.permissions['reward_tiers items update'] && $root.activeLocation.is_corporate"
-										            content="Apply to items"
-										            effect="light"
-										            placement="right">
-											<a class="btn btn-circle btn-icon-only btn-default"
-											   @click="checkForLocation(item, $event)">
-												<i class="icon-layers"></i>
-											</a>
-										</el-tooltip>
-									</div>
-									<div style="min-height:95px">
-										<div class="col-sm-12">
-											<div class="bold uppercase font-red">
-												<span>{{ item.name }}</span>
-											</div>
-										</div>
-										<div class="col-sm-4">
-											<div>
-												<strong>Value:</strong>
-												<span v-if="item.value_type === 'dollar'">$</span>
-												<span>{{ item.value }}</span>
-												<span v-if="item.value_type === 'percentage'">%</span>
-											</div>
-											<div>
-												<strong>Points:</strong>
-												<span>{{ item.points }}</span>
-											</div>
-										</div>
-										<div class="col-sm-4">
-											<div>
-												<strong>Starts:</strong>
-												<span>{{ item.start_on }}</span>
-											</div>
-										</div>
-										<div class="col-sm-4">
-											<div>
-												<strong>Expires:</strong>
-												<span>{{ item.expiry }}</span>
-											</div>
-										</div>
-										<div class="col-sm-4">
-											<div>
-												<strong>Applied to:</strong>
-												<span>{{ item.sku_array.length }}
-													<span v-if="item.sku_array.length !== 1">items</span>
-													<span v-else>item</span>
-												</span>
-											</div>
-										</div>
-									</div>
+          <div
+            v-if="rewardItems.length && !loadingRewardItems"
+            class="mt-element-list margin-top-15"
+          >
+            <div class="mt-list-container list-news ext-1 no-border">
+              <ul>
+                <li
+                  v-for="item in rewardItems"
+                  :id="'reward-' + item.id"
+                  :key="item.id"
+                  class="mt-list-item actions-at-left margin-top-15"
+                >
+                  <div class="list-item-actions">
+                    <el-tooltip
+                      v-if="$root.permissions['reward_tiers items update']"
+                      content="Edit"
+                      effect="light"
+                      placement="right"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="showEditRewardItemModal(item)"
+                      >
+                        <i class="fa fa-lg fa-pencil" />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['reward_tiers items read'] && !$root.permissions['reward_tiers items update']"
+                      content="View"
+                      effect="light"
+                      placement="right"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="showEditRewardItemModal(item)"
+                      >
+                        <i class="fa fa-lg fa-eye" />
+                      </a>
+                    </el-tooltip>
+                    <el-tooltip
+                      v-if="$root.permissions['reward_tiers items update'] && $root.activeLocation.is_corporate"
+                      content="Apply to items"
+                      effect="light"
+                      placement="right"
+                    >
+                      <a
+                        class="btn btn-circle btn-icon-only btn-default"
+                        @click="checkForLocation(item, $event)"
+                      >
+                        <i class="icon-layers" />
+                      </a>
+                    </el-tooltip>
+                  </div>
+                  <div style="min-height:95px">
+                    <div class="col-sm-12">
+                      <div class="bold uppercase font-red">
+                        <span>{{ item.name }}</span>
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div>
+                        <strong>Value:</strong>
+                        <span v-if="item.value_type === 'dollar'">
+                          $
+                        </span>
+                        <span>{{ item.value }}</span>
+                        <span v-if="item.value_type === 'percentage'">
+                          %
+                        </span>
+                      </div>
+                      <div>
+                        <strong>Points:</strong>
+                        <span>{{ item.points }}</span>
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div>
+                        <strong>Starts:</strong>
+                        <span>{{ item.start_on }}</span>
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div>
+                        <strong>Expires:</strong>
+                        <span>{{ item.expiry }}</span>
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div>
+                        <strong>Applied to:</strong>
+                        <span>
+                          {{ item.sku_array.length }}
+                          <span v-if="item.sku_array.length !== 1">
+                            items
+                          </span>
+                          <span v-else>
+                            item
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div v-if="!rewardItems.length && !loadingRewardItems">
+            <no-results
+              :show="true"
+              :type="'reward items'"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <edit-reward-item
+      v-if="displayEditRewardItemModal"
+      :passed-reward-item="passedRewardItem"
+      :passed-reward-tier-id="passedRewardTierId"
+      @updateRewardItemDetails="updateRewardItemDetails"
+      @closeRewardItemModal="closeRewardItemModal"
+    />
 
-								</li>
-							</ul>
-						</div>
-					</div>
-					<div v-if="!rewardItems.length && !loadingRewardItems">
-						<no-results :show="true"
-						            :type="'reward items'"></no-results>
-					</div>
-				</div>
-			</div>
-		</div>
-		<edit-reward-item v-if="displayEditRewardItemModal"
-		                  :passedRewardItem="passedRewardItem"
-		                  :passedRewardTierId="passedRewardTierId"
-		                  @updateRewardItemDetails="updateRewardItemDetails"
-		                  @closeRewardItemModal="closeRewardItemModal"></edit-reward-item>
+    <menu-modifier-tree
+      v-if="showMenuModifierTreeModal"
+      :selected-object="selectedItem"
+      :header-text="headerText"
+      update-type="combo"
+      :error-message="menuModifierTreeErrorMessage"
+      @closeMenuModifierTreeModal="closeMenuModifierTreeModal"
+      @closeMenuModifierTreeModalAndUpdate="skusSelected"
+    />
 
-		<menu-modifier-tree v-if="showMenuModifierTreeModal"
-		                    :selectedObject="selectedItem"
-		                    :headerText="headerText"
-		                    updateType="combo"
-		                    :errorMessage="menuModifierTreeErrorMessage"
-		                    @closeMenuModifierTreeModal="closeMenuModifierTreeModal"
-		                    @closeMenuModifierTreeModalAndUpdate="skusSelected">
-		</menu-modifier-tree>
-
-		<!-- DELETE MODAL START -->
-		<modal :show="displayDeleteModal"
-		       effect="fade"
-		       @closeOnEscape="closeDeleteModal"
-		       ref="deleteModal">
-			<div slot="modal-header"
-			     class="modal-header">
-				<button type="button"
-				        class="close"
-				        @click="closeDeleteModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Delete Reward Item</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<div class="row"
-				     v-show="deleteErrorMessage"
-				     ref="deleteErrorMessage">
-					<div class="col-md-12">
-						<div class="alert alert-danger">
-							<button class="close"
-							        @click.stop="clearDeleteError()"></button>
-							<span>{{deleteErrorMessage}}</span>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<p>Are you sure you want to delete {{itemToBeDeleted.name}}?</p>
-					</div>
-				</div>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer">
-				<button type="submit"
-				        class="btn blue"
-				        @click.stop="deleteItem()"
-				        :disabled="deleting">
-					Delete
-					<i v-show="deleting"
-					   class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-			</div>
-		</modal>
-		<!-- DELETE MODAL END -->
-	</div>
+    <!-- DELETE MODAL START -->
+    <modal
+      ref="deleteModal"
+      :show="displayDeleteModal"
+      effect="fade"
+      @closeOnEscape="closeDeleteModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeDeleteModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Delete Reward Item
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <div
+          v-show="deleteErrorMessage"
+          ref="deleteErrorMessage"
+          class="row"
+        >
+          <div class="col-md-12">
+            <div class="alert alert-danger">
+              <button
+                class="close"
+                @click.stop="clearDeleteError()"
+              />
+              <span>{{ deleteErrorMessage }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <p>Are you sure you want to delete {{ itemToBeDeleted.name }}?</p>
+          </div>
+        </div>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer"
+      >
+        <button
+          type="submit"
+          class="btn blue"
+          :disabled="deleting"
+          @click.stop="deleteItem()"
+        >
+          Delete
+          <i
+            v-show="deleting"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+      </div>
+    </modal>
+    <!-- DELETE MODAL END -->
+  </div>
 </template>
 
 <script>
@@ -321,6 +431,14 @@ import EditRewardItem from './Rewards/EditRewardItem'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
+	components: {
+		Breadcrumb,
+		NoResults,
+		LoadingScreen,
+		EditRewardItem,
+		MenuModifierTree,
+		Modal
+	},
 	data () {
 		return {
 			breadcrumbArray: [
@@ -362,6 +480,7 @@ export default {
 			menuModifierTreeErrorMessage: ''
 		}
 	},
+	watch: {},
 	mounted () {
 		this.getRewardItems()
 	},
@@ -841,15 +960,6 @@ export default {
 		closeDeleteModal () {
 			this.displayDeleteModal = false
 		}
-	},
-	watch: {},
-	components: {
-		Breadcrumb,
-		NoResults,
-		LoadingScreen,
-		EditRewardItem,
-		MenuModifierTree,
-		Modal
 	}
 }
 </script>

@@ -1,32 +1,39 @@
 <template>
-	<div
-		v-if="totalResults && activePage"
-		class="display-flex align-items-center"
-	>
-		<small>{{pageStart}}&nbsp;-</small>
-		<el-dropdown
-			class="pl-5px"
-			trigger="click"
-			@command="updateResultsPerPage"
-			size="mini"
-			:show-timeout="50"
-			:hide-timeout="50">
-			<el-button size="mini">
-				{{ resultsPerPage }}
-				<i class="el-icon-arrow-down el-icon--right"></i>
-			</el-button>
-			<el-dropdown-menu slot="dropdown">
-				<el-dropdown-item :command="25">25</el-dropdown-item>
-				<el-dropdown-item :command="50">50</el-dropdown-item>
-				<el-dropdown-item :command="100">100</el-dropdown-item>
-			</el-dropdown-menu>
-		</el-dropdown>
-		<small
-			class="pl-5px"
-		>
-			of&nbsp;{{ totalResults }}
-		</small>
-	</div>
+  <div
+    v-if="totalResults && activePage"
+    class="display-flex align-items-center"
+  >
+    <small>{{ pageStart }}&nbsp;-</small>
+    <el-dropdown
+      class="pl-5px"
+      trigger="click"
+      size="mini"
+      :show-timeout="50"
+      :hide-timeout="50"
+      @command="updateResultsPerPage"
+    >
+      <el-button size="mini">
+        {{ resultsPerPage }}
+        <i class="el-icon-arrow-down el-icon--right" />
+      </el-button>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item :command="25">
+          25
+        </el-dropdown-item>
+        <el-dropdown-item :command="50">
+          50
+        </el-dropdown-item>
+        <el-dropdown-item :command="100">
+          100
+        </el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
+    <small
+      class="pl-5px"
+    >
+      of&nbsp;{{ totalResults }}
+    </small>
+  </div>
 </template>
 
 <script>
@@ -39,7 +46,10 @@ import Dropdown from './Dropdown'
 /** Create a variable that will hold the default number of results. */
 var defaultResults = 25
 export default {
-	name: 'page-results',
+	name: 'PageResults',
+	components: {
+		Dropdown
+	},
 	props: {
 		// Total number of items to display
 		totalResults: {
@@ -54,19 +64,6 @@ export default {
 		return {
 			resultsPerPage: defaultResults
 		}
-	},
-	/**
-	 * Run on `created` to retrieve the users preference from localStorage or to set it as the default value. Also let the parent know that the results have been set.
-	 * @function
-	 * @returns {undefined}
-	 */
-	created () {
-		if (this.checkLocalStorage()) {
-			this.resultsPerPage = parseInt(this.checkLocalStorage())
-		} else {
-			this.setLocalStorage(defaultResults)
-		}
-		this.emitResults()
 	},
 	computed: {
 		/**
@@ -96,6 +93,19 @@ export default {
 			}
 			return localPageEnd
 		}
+	},
+	/**
+	 * Run on `created` to retrieve the users preference from localStorage or to set it as the default value. Also let the parent know that the results have been set.
+	 * @function
+	 * @returns {undefined}
+	 */
+	created () {
+		if (this.checkLocalStorage()) {
+			this.resultsPerPage = parseInt(this.checkLocalStorage())
+		} else {
+			this.setLocalStorage(defaultResults)
+		}
+		this.emitResults()
 	},
 	methods: {
 		/**
@@ -143,9 +153,6 @@ export default {
 		emitResults () {
 			this.$emit('pageResults', this.resultsPerPage)
 		}
-	},
-	components: {
-		Dropdown
 	}
 }
 </script>

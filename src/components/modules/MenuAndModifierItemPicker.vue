@@ -1,27 +1,26 @@
 <template>
-	<tabset 
-		:active="activeTab"
-	>
-		<tab
-			header="Menu Items"
-			:disabled="menuDisabled"
-		>
-			<menu-item-picker 
-				:previouslySelected="previouslySelected"
-				@update="menuItemsSelected">
-			</menu-item-picker>
-		</tab>
-		<tab
-			header="Modifier Items"
-			:disabled="modifierDisabled"
-		>
-			<modifier-item-picker
-				:previouslySelected="previouslySelected"
-				@update="modifierItemsSelected"
-			>
-			</modifier-item-picker>
-		</tab>
-	</tabset>
+  <tabset 
+    :active="activeTab"
+  >
+    <tab
+      header="Menu Items"
+      :disabled="menuDisabled"
+    >
+      <menu-item-picker 
+        :previously-selected="previouslySelected"
+        @update="menuItemsSelected"
+      />
+    </tab>
+    <tab
+      header="Modifier Items"
+      :disabled="modifierDisabled"
+    >
+      <modifier-item-picker
+        :previously-selected="previouslySelected"
+        @update="modifierItemsSelected"
+      />
+    </tab>
+  </tabset>
 </template>
 <script>
 import Tab from '@/components/modules/Tab'

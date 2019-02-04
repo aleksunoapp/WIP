@@ -1,43 +1,62 @@
 <template>
-	<modal :show="showModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal">
-		<div slot="modal-header"
-		     class="modal-header">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Assign Modifiers</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="row">
-				<div class="col-xs-12">
-					<div class="alert alert-danger"
-					     v-show="errorMessage.length"
-					     ref="errorMessage">
-						<button class="close"
-						        @click.prevent="clearError('errorMessage')"></button>
-						<span>{{errorMessage}}</span>
-					</div>
-				</div>
-			</div>
-			<modifier-picker v-if="assignedModifiers !== null"
-			                 :previouslySelected="assignedModifiers"
-			                 @selected="updateSelected">
-			</modifier-picker>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button @click="assignModifiers()"
-			        type="button"
-			        class="btn btn-primary">
-				Save
-			</button>
-		</div>
-	</modal>
+  <modal
+    :show="showModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Assign Modifiers
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div class="row">
+        <div class="col-xs-12">
+          <div
+            v-show="errorMessage.length"
+            ref="errorMessage"
+            class="alert alert-danger"
+          >
+            <button
+              class="close"
+              @click.prevent="clearError('errorMessage')"
+            />
+            <span>{{ errorMessage }}</span>
+          </div>
+        </div>
+      </div>
+      <modifier-picker
+        v-if="assignedModifiers !== null"
+        :previously-selected="assignedModifiers"
+        @selected="updateSelected"
+      />
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        type="button"
+        class="btn btn-primary"
+        @click="assignModifiers()"
+      >
+        Save
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -48,6 +67,17 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	name: 'AssignModifiersToModifierTier',
+	components: {
+		Modal,
+		ModifierPicker
+	},
+	props: {
+		tier: {
+			type: Object,
+			required: true,
+			default: () => {}
+		}
+	},
 	data: () => ({
 		showModal: false,
 		errorMessage: '',
@@ -57,13 +87,6 @@ export default {
 			modifiers_to_remove: []
 		}
 	}),
-	props: {
-		tier: {
-			type: Object,
-			required: true,
-			default: () => {}
-		}
-	},
 	created () {
 		this.getModifierTierDetails(this.tier)
 	},
@@ -169,10 +192,6 @@ export default {
 		closeModal () {
 			this.$emit('close')
 		}
-	},
-	components: {
-		Modal,
-		ModifierPicker
 	}
 }
 </script>

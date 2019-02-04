@@ -1,111 +1,138 @@
 <template>
-	<div class="select-locations-popup-container">
-		<div class="row">
-			<div class="col-xs-12">
-				<div class="alert alert-danger"
-				     v-show="errorMessage"
-				     ref="errorMessage">
-					<button class="close"
-					        @click="clearError()"></button>
-					<span>{{errorMessage}}</span>
-				</div>
-			</div>
-		</div>
+  <div class="select-locations-popup-container">
+    <div class="row">
+      <div class="col-xs-12">
+        <div
+          v-show="errorMessage"
+          ref="errorMessage"
+          class="alert alert-danger"
+        >
+          <button
+            class="close"
+            @click="clearError()"
+          />
+          <span>{{ errorMessage }}</span>
+        </div>
+      </div>
+    </div>
 
-		<div class="row">
-			<div class="col-xs-6">
-				<el-dropdown trigger="click"
-				             @command="selectGroup"
-				             size="mini"
-				             :show-timeout="50"
-				             :hide-timeout="50">
-					<el-button size="mini">
-						{{ selectedGroup.name || 'All stores' }}
-						<i class="el-icon-arrow-down el-icon--right"></i>
-					</el-button>
-					<el-dropdown-menu slot="dropdown">
-						<el-dropdown-item :command="{}">All stores</el-dropdown-item>
-						<el-dropdown-item v-for="group in groups"
-						                  :command="group"
-						                  :key="group.id">{{ group.name }}</el-dropdown-item>
-					</el-dropdown-menu>
-				</el-dropdown>
-			</div>
-			<div class="col-xs-6">
-				<div class="form-group form-md-line-input form-md-floating-label form-md-line-input-trimmed">
-					<div class="input-icon right">
-						<input type="text"
-						       placeholder="Search Stores"
-						       class="form-control input-sm"
-						       :class="{'edited': searchTerm.length}"
-						       v-model="searchTerm"
-						       id="search_locations">
-						<i class="fa fa-times-circle-o clickable"
-						   @click.prevent="resetSearch()"
-						   aria-hidden="true"></i>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="margin-top-15 locations-container">
-			<table class="table">
-				<thead>
-					<tr>
-						<th>
-							<div class="md-checkbox has-success">
-								<input type="checkbox"
-								       id="locations-selectAll"
-								       class="md-check"
-								       @change="selectAll()"
-								       v-model="selectAllSelected"
-											 :disabled="!editable">
-								<label for="locations-selectAll">
-									<span class="inc"></span>
-									<span class="check"></span>
-									<span class="box"></span>
-								</label>
-							</div>
-						</th>
-						<th> Store Name </th>
-						<th> Street Address </th>
-						<th> City, Province, Country </th>
-					</tr>
-				</thead>
-				<tbody v-show="!loading">
-					<tr v-for="store in searchResults"
-					    :key="store.id">
-						<td>
-							<div class="md-checkbox has-success">
-								<input type="checkbox"
-								       :id="`store-${store.id}`"
-								       class="md-check"
-								       v-model="store.selected"
-								       @change="syncSelectAll(store.selected)"
-											 :disabled="!editable">
-								<label :for="`store-${store.id}`">
-									<span class="inc"></span>
-									<span class="check"></span>
-									<span class="box"></span>
-								</label>
-							</div>
-						</td>
-						<td> {{ store.display_name }} </td>
-						<td> {{ store.address_line_1 }} </td>
-						<td> {{ store.city }}, {{ store.province }}, {{ store.country }} </td>
-					</tr>
-				</tbody>
-			</table>
+    <div class="row">
+      <div class="col-xs-6">
+        <el-dropdown
+          trigger="click"
+          size="mini"
+          :show-timeout="50"
+          :hide-timeout="50"
+          @command="selectGroup"
+        >
+          <el-button size="mini">
+            {{ selectedGroup.name || 'All stores' }}
+            <i class="el-icon-arrow-down el-icon--right" />
+          </el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item :command="{}">
+              All stores
+            </el-dropdown-item>
+            <el-dropdown-item
+              v-for="group in groups"
+              :key="group.id"
+              :command="group"
+            >
+              {{ group.name }}
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </div>
+      <div class="col-xs-6">
+        <div class="form-group form-md-line-input form-md-floating-label form-md-line-input-trimmed">
+          <div class="input-icon right">
+            <input
+              id="search_locations"
+              v-model="searchTerm"
+              type="text"
+              placeholder="Search Stores"
+              class="form-control input-sm"
+              :class="{'edited': searchTerm.length}"
+            >
+            <i
+              class="fa fa-times-circle-o clickable"
+              aria-hidden="true"
+              @click.prevent="resetSearch()"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="margin-top-15 locations-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>
+              <div class="md-checkbox has-success">
+                <input
+                  id="locations-selectAll"
+                  v-model="selectAllSelected"
+                  type="checkbox"
+                  class="md-check"
+                  :disabled="!editable"
+                  @change="selectAll()"
+                >
+                <label for="locations-selectAll">
+                  <span class="inc" />
+                  <span class="check" />
+                  <span class="box" />
+                </label>
+              </div>
+            </th>
+            <th> Store Name </th>
+            <th> Street Address </th>
+            <th> City, Province, Country </th>
+          </tr>
+        </thead>
+        <tbody v-show="!loading">
+          <tr
+            v-for="store in searchResults"
+            :key="store.id"
+          >
+            <td>
+              <div class="md-checkbox has-success">
+                <input
+                  :id="`store-${store.id}`"
+                  v-model="store.selected"
+                  type="checkbox"
+                  class="md-check"
+                  :disabled="!editable"
+                  @change="syncSelectAll(store.selected)"
+                >
+                <label :for="`store-${store.id}`">
+                  <span class="inc" />
+                  <span class="check" />
+                  <span class="box" />
+                </label>
+              </div>
+            </td>
+            <td> {{ store.display_name }} </td>
+            <td> {{ store.address_line_1 }} </td>
+            <td> {{ store.city }}, {{ store.province }}, {{ store.country }} </td>
+          </tr>
+        </tbody>
+      </table>
 
-			<loading-screen :show="loading" />
-
-		</div>
-		<div class="clear"
-		     v-show="withButton">
-			<button type="button"
-			        class="pull-right margin-top-15 btn btn-primary"
-			        @click="selectLocations()">{{editable ? 'Select' : 'Close'}}</button>
-		</div>
-	</div>
+      <loading-screen :show="loading" />
+    </div>
+    <div
+      v-show="withButton"
+      class="clear"
+    >
+      <button
+        type="button"
+        class="pull-right margin-top-15 btn btn-primary"
+        @click="selectLocations()"
+      >
+        {{ editable ? 'Select' : 'Close' }}
+      </button>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -116,17 +143,9 @@ import LoadingScreen from '@/components/modules/LoadingScreen'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	data () {
-		return {
-			locations: [],
-			loading: false,
-			groups: [],
-			selectedGroup: {},
-			selectAllSelected: false,
-			selectedLocations: [],
-			errorMessage: '',
-			searchTerm: ''
-		}
+	components: {
+		Dropdown,
+		LoadingScreen
 	},
 	props: {
 		previouslySelected: {
@@ -148,6 +167,18 @@ export default {
 			type: Boolean,
 			required: false,
 			default: () => true
+		}
+	},
+	data () {
+		return {
+			locations: [],
+			loading: false,
+			groups: [],
+			selectedGroup: {},
+			selectAllSelected: false,
+			selectedLocations: [],
+			errorMessage: '',
+			searchTerm: ''
 		}
 	},
 	computed: {
@@ -375,10 +406,6 @@ export default {
 					})
 				})
 		}
-	},
-	components: {
-		Dropdown,
-		LoadingScreen
 	}
 }
 </script>

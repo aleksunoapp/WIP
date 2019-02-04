@@ -1,55 +1,64 @@
 <template>
-	<div class="roles-picker">
-		<table class="table">
-			<thead>
-				<tr>
-					<th></th>
-					<th> Role </th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr v-for="role in currentActiveRoles"
-				    :key="role.id">
-					<td>
-						<div class="md-checkbox has-success">
-							<input type="checkbox"
-							       :id="`${instanceId}-${role.id}`"
-							       class="md-check"
-										 :disabled="!editable"
-							       v-model="role.selected"
-							       @change="rolesSelected()">
-							<label :for="`${instanceId}-${role.id}`">
-								<span class="inc"></span>
-								<span class="check"></span>
-								<span class="box"></span>
-							</label>
-						</div>
-					</td>
-					<td> {{ role.name }} </td>
-				</tr>
-			</tbody>
-		</table>
-		<div class="row__wrapper">
-			<div class="half-width">
-				<div class="form-group form-md-line-input form-md-floating-label">
-					<input ref="newRoleName"
-					       type="text"
-					       class="form-control input-sm"
-					       id="form_control_roles_search"
-					       v-model="rolesSearchQuery"
-					       :class="{'edited': rolesSearchQuery.length}">
-					<label for="form_control_roles_search">Search roles</label>
-				</div>
-			</div>
-			<div class="half-width">
-				<pagination class="pull-left"
-				            :passedPage="rolesPage"
-				            :numPages="Math.ceil(roles.length / 10)"
-				            @activePageChange="changeRolesPage">
-				</pagination>
-			</div>
-		</div>
-	</div>
+  <div class="roles-picker">
+    <table class="table">
+      <thead>
+        <tr>
+          <th />
+          <th> Role </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="role in currentActiveRoles"
+          :key="role.id"
+        >
+          <td>
+            <div class="md-checkbox has-success">
+              <input
+                :id="`${instanceId}-${role.id}`"
+                v-model="role.selected"
+                type="checkbox"
+                class="md-check"
+                :disabled="!editable"
+                @change="rolesSelected()"
+              >
+              <label :for="`${instanceId}-${role.id}`">
+                <span class="inc" />
+                <span class="check" />
+                <span class="box" />
+              </label>
+            </div>
+          </td>
+          <td> {{ role.name }} </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="row__wrapper">
+      <div class="half-width">
+        <div class="form-group form-md-line-input form-md-floating-label">
+          <input
+            id="form_control_roles_search"
+            ref="newRoleName"
+            v-model="rolesSearchQuery"
+            type="text"
+            class="form-control input-sm"
+            :class="{'edited': rolesSearchQuery.length}"
+          >
+          <label for="form_control_roles_search">
+            Search roles
+          </label>
+        </div>
+      </div>
+      <div class="half-width">
+        <pagination
+          class="pull-left"
+          :passed-page="rolesPage"
+          :num-pages="Math.ceil(roles.length / 10)"
+          @activePageChange="changeRolesPage"
+        />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -60,7 +69,7 @@ import RolesFunctions from '@/controllers/Roles'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	name: 'roles-picker',
+	name: 'RolesPicker',
 	components: {
 		Pagination
 	},

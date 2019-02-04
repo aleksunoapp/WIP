@@ -1,417 +1,542 @@
 <template>
-	<modal :show="showModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       :width="800"
-	       ref="modal">
-		<div slot="modal-header"
-		     class="modal-header center">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">
-				<span v-show="view === 'new'">Add</span>
-				<span v-show="view === 'existing'">Edit</span> Menu Hours</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="row">
-				<div class="col-xs-12">
-					<div class="alert alert-danger"
-					     v-show="errorMessage.length"
-					     ref="errorMessage">
-						<button class="close"
-						        @click="clearError('errorMessage')"></button>
-						<span>{{ errorMessage }}</span>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-xs-12">
-					<div class="alert alert-info"
-					     v-show="saveMessage.length"
-					     ref="saveMessage">
-						<button class="close"
-						        @click="clearError('saveMessage')"></button>
-						<span>{{ saveMessage }}</span>
-					</div>
-				</div>
-			</div>
-			<div class="row"
-			     v-show="view === 'new'">
-				<div class="col-xs-12">
-					<table class="table cells-vertically-centred">
-						<thead>
-							<th>Day</th>
-							<th>From</th>
-							<th>To</th>
-						</thead>
-						<tbody>
-							<tr>
-								<td>Monday</td>
-								<td>
-									<el-time-select :disabled="!$root.permissions['menu_manager menus menu_hours create']"
-									                v-model="newHours.hours[1].open_time"
-									                placeholder="Start"
-									                :picker-options="{
-											start: '00:00',
-											step: '00:01',
-											end: '23:59'
-										}">
-									</el-time-select>
-									<button title="Copy to all"
-									        class="btn btn-icon-only btn-outline blue"
-									        @click="applyOpenTimeToAll(newHours.hours[1].open_time, newHours.hours)">
-										<i class="fa fa-clone"
-										   aria-hidden="true"></i>
-									</button>
-								</td>
-								<td>
-									<el-time-select :disabled="!$root.permissions['menu_manager menus menu_hours create']"
-									                v-model="newHours.hours[1].close_time"
-									                placeholder="End"
-									                :picker-options="{
-											start: '00:00',
-											step: '00:01',
-											end: '23:59'
-										}">
-									</el-time-select>
-									<button title="Copy to all"
-									        class="btn btn-icon-only btn-outline blue"
-									        @click="applyCloseTimeToAll(newHours.hours[1].close_time, newHours.hours)">
-										<i class="fa fa-clone"
-										   aria-hidden="true"></i>
-									</button>
-								</td>
-							</tr>
-							<tr>
-								<td>Tuesday</td>
-								<td>
-									<el-time-select :disabled="!$root.permissions['menu_manager menus menu_hours create']"
-									                v-model="newHours.hours[2].open_time"
-									                placeholder="Start"
-									                :picker-options="{
-											start: '00:00',
-											step: '00:01',
-											end: '23:59'
-										}">
-									</el-time-select>
-									<button title="Copy to all"
-									        class="btn btn-icon-only btn-outline blue"
-									        @click="applyOpenTimeToAll(newHours.hours[2].open_time, newHours.hours)">
-										<i class="fa fa-clone"
-										   aria-hidden="true"></i>
-									</button>
-								</td>
-								<td>
-									<el-time-select :disabled="!$root.permissions['menu_manager menus menu_hours create']"
-									                v-model="newHours.hours[2].close_time"
-									                placeholder="End"
-									                :picker-options="{
-											start: '00:00',
-											step: '00:01',
-											end: '23:59'
-										}">
-									</el-time-select>
-									<button title="Copy to all"
-									        class="btn btn-icon-only btn-outline blue"
-									        @click="applyCloseTimeToAll(newHours.hours[2].close_time, newHours.hours)">
-										<i class="fa fa-clone"
-										   aria-hidden="true"></i>
-									</button>
-								</td>
-							</tr>
-							<tr>
-								<td>Wednesday</td>
-								<td>
-									<el-time-select :disabled="!$root.permissions['menu_manager menus menu_hours create']"
-									                v-model="newHours.hours[3].open_time"
-									                placeholder="Start"
-									                :picker-options="{
-											start: '00:00',
-											step: '00:01',
-											end: '23:59'
-										}">
-									</el-time-select>
-									<button title="Copy to all"
-									        class="btn btn-icon-only btn-outline blue"
-									        @click="applyOpenTimeToAll(newHours.hours[3].open_time, newHours.hours)">
-										<i class="fa fa-clone"
-										   aria-hidden="true"></i>
-									</button>
-								</td>
-								<td>
-									<el-time-select :disabled="!$root.permissions['menu_manager menus menu_hours create']"
-									                v-model="newHours.hours[3].close_time"
-									                placeholder="End"
-									                :picker-options="{
-											start: '00:00',
-											step: '00:01',
-											end: '23:59'
-										}">
-									</el-time-select>
-									<button title="Copy to all"
-									        class="btn btn-icon-only btn-outline blue"
-									        @click="applyCloseTimeToAll(newHours.hours[3].close_time, newHours.hours)">
-										<i class="fa fa-clone"
-										   aria-hidden="true"></i>
-									</button>
-								</td>
-							</tr>
-							<tr>
-								<td>Thursday</td>
-								<td>
-									<el-time-select :disabled="!$root.permissions['menu_manager menus menu_hours create']"
-									                v-model="newHours.hours[4].open_time"
-									                placeholder="Start"
-									                :picker-options="{
-											start: '00:00',
-											step: '00:01',
-											end: '23:59'
-										}">
-									</el-time-select>
-									<button title="Copy to all"
-									        class="btn btn-icon-only btn-outline blue"
-									        @click="applyOpenTimeToAll(newHours.hours[4].open_time, newHours.hours)">
-										<i class="fa fa-clone"
-										   aria-hidden="true"></i>
-									</button>
-								</td>
-								<td>
-									<el-time-select :disabled="!$root.permissions['menu_manager menus menu_hours create']"
-									                v-model="newHours.hours[4].close_time"
-									                placeholder="End"
-									                :picker-options="{
-											start: '00:00',
-											step: '00:01',
-											end: '23:59'
-										}">
-									</el-time-select>
-									<button title="Copy to all"
-									        class="btn btn-icon-only btn-outline blue"
-									        @click="applyCloseTimeToAll(newHours.hours[4].close_time, newHours.hours)">
-										<i class="fa fa-clone"
-										   aria-hidden="true"></i>
-									</button>
-								</td>
-							</tr>
-							<tr>
-								<td>Friday</td>
-								<td>
-									<el-time-select :disabled="!$root.permissions['menu_manager menus menu_hours create']"
-									                v-model="newHours.hours[5].open_time"
-									                placeholder="Start"
-									                :picker-options="{
-											start: '00:00',
-											step: '00:01',
-											end: '23:59'
-										}">
-									</el-time-select>
-									<button title="Copy to all"
-									        class="btn btn-icon-only btn-outline blue"
-									        @click="applyOpenTimeToAll(newHours.hours[5].open_time, newHours.hours)">
-										<i class="fa fa-clone"
-										   aria-hidden="true"></i>
-									</button>
-								</td>
-								<td>
-									<el-time-select :disabled="!$root.permissions['menu_manager menus menu_hours create']"
-									                v-model="newHours.hours[5].close_time"
-									                placeholder="End"
-									                :picker-options="{
-											start: '00:00',
-											step: '00:01',
-											end: '23:59'
-										}">
-									</el-time-select>
-									<button title="Copy to all"
-									        class="btn btn-icon-only btn-outline blue"
-									        @click="applyCloseTimeToAll(newHours.hours[5].close_time, newHours.hours)">
-										<i class="fa fa-clone"
-										   aria-hidden="true"></i>
-									</button>
-								</td>
-							</tr>
-							<tr>
-								<td>Saturday</td>
-								<td>
-									<el-time-select :disabled="!$root.permissions['menu_manager menus menu_hours create']"
-									                v-model="newHours.hours[6].open_time"
-									                placeholder="Start"
-									                :picker-options="{
-											start: '00:00',
-											step: '00:01',
-											end: '23:59'
-										}">
-									</el-time-select>
-									<button title="Copy to all"
-									        class="btn btn-icon-only btn-outline blue"
-									        @click="applyOpenTimeToAll(newHours.hours[6].open_time, newHours.hours)">
-										<i class="fa fa-clone"
-										   aria-hidden="true"></i>
-									</button>
-								</td>
-								<td>
-									<el-time-select :disabled="!$root.permissions['menu_manager menus menu_hours create']"
-									                v-model="newHours.hours[6].close_time"
-									                placeholder="End"
-									                :picker-options="{
-											start: '00:00',
-											step: '00:01',
-											end: '23:59'
-										}">
-									</el-time-select>
-									<button title="Copy to all"
-									        class="btn btn-icon-only btn-outline blue"
-									        @click="applyCloseTimeToAll(newHours.hours[6].close_time, newHours.hours)">
-										<i class="fa fa-clone"
-										   aria-hidden="true"></i>
-									</button>
-								</td>
-							</tr>
-							<tr>
-								<td>Sunday</td>
-								<td>
-									<el-time-select :disabled="!$root.permissions['menu_manager menus menu_hours create']"
-									                v-model="newHours.hours[0].open_time"
-									                placeholder="Start"
-									                :picker-options="{
-											start: '00:00',
-											step: '00:01',
-											end: '23:59'
-										}">
-									</el-time-select>
-									<button title="Copy to all"
-									        class="btn btn-icon-only btn-outline blue"
-									        @click="applyOpenTimeToAll(newHours.hours[0].open_time, newHours.hours)">
-										<i class="fa fa-clone"
-										   aria-hidden="true"></i>
-									</button>
-								</td>
-								<td>
-									<el-time-select :disabled="!$root.permissions['menu_manager menus menu_hours create']"
-									                v-model="newHours.hours[0].close_time"
-									                placeholder="End"
-									                :picker-options="{
-											start: '00:00',
-											step: '00:01',
-											end: '23:59'
-										}">
-									</el-time-select>
-									<button title="Copy to all"
-									        class="btn btn-icon-only btn-outline blue"
-									        @click="applyCloseTimeToAll(newHours.hours[0].close_time, newHours.hours)">
-										<i class="fa fa-clone"
-										   aria-hidden="true"></i>
-									</button>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-			<div class="row"
-			     v-show="view === 'existing'">
-				<div class="col-xs-12"
-				     v-show="!existingHours.length">
-					<no-results :show="!existingHours.length"
-					            :type="'hours'"></no-results>
-				</div>
-			</div>
-			<div class="row"
-			     v-show="view === 'existing'">
-				<div class="col-xs-12"
-				     v-show="existingHours.length">
-					<table class="table cells-vertically-centred">
-						<thead>
-							<th>Day</th>
-							<th>From</th>
-							<th>To</th>
-							<th></th>
-						</thead>
-						<tbody>
-							<tr v-for="day in existingHours"
-							    :key="day.id">
-								<td>{{dayNames[day.day]}}</td>
-								<td>
-									<el-time-select :disabled="!$root.permissions['menu_manager menus menu_hours update']"
-									                v-model="day.open_time"
-									                class="narrow-picker"
-									                placeholder="Start"
-									                :picker-options="{
-											start: '00:00',
-											step: '00:01',
-											end: '23:59'
-										}">
-									</el-time-select>
-									<button title="Copy to all"
-									        class="btn btn-icon-only btn-outline blue"
-									        @click="applyOpenTimeToAll(day.open_time, existingHours)">
-										<i class="fa fa-clone"
-										   aria-hidden="true"></i>
-									</button>
-								</td>
-								<td>
-									<el-time-select :disabled="!$root.permissions['menu_manager menus menu_hours update']"
-									                v-model="day.close_time"
-									                class="narrow-picker"
-									                placeholder="End"
-									                :picker-options="{
-											start: '00:00',
-											step: '00:01',
-											end: '23:59'
-										}">
-									</el-time-select>
-									<button title="Copy to all"
-									        class="btn btn-icon-only btn-outline blue"
-									        @click="applyCloseTimeToAll(day.close_time, existingHours)">
-										<i class="fa fa-clone"
-										   aria-hidden="true"></i>
-									</button>
-								</td>
-								<td>
-									<button :disabled="!$root.permissions['menu_manager menus menu_hours update']"
-									        @click.stop.prevent="updateMenuHours(day)"
-									        type="button"
-									        class="btn btn-primary">
-										Save
-									</button>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button @click="useStoreHours()"
-			        type="button"
-			        class="btn"
-			        :class="{
-					'btn-primary' : view === 'existing',
-					'blue btn-outline' : view === 'new'
-				}"
-			        :disabled="copying">
-				Use store hours
-				<i v-show="copying"
-				   class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-			<button :disabled="!$root.permissions['menu_manager menus menu_hours create'] || creating"
-			        v-show="view === 'new'"
-			        @click="createMenuHours()"
-			        type="button"
-			        class="btn btn-primary">
-				Save
-				<i v-show="creating"
-				   class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-		</div>
-	</modal>
+  <modal
+    ref="modal"
+    :show="showModal"
+    effect="fade"
+    :width="800"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header center"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        <span v-show="view === 'new'">
+          Add
+        </span>
+        <span v-show="view === 'existing'">
+          Edit
+        </span> Menu Hours
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div class="row">
+        <div class="col-xs-12">
+          <div
+            v-show="errorMessage.length"
+            ref="errorMessage"
+            class="alert alert-danger"
+          >
+            <button
+              class="close"
+              @click="clearError('errorMessage')"
+            />
+            <span>{{ errorMessage }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div
+            v-show="saveMessage.length"
+            ref="saveMessage"
+            class="alert alert-info"
+          >
+            <button
+              class="close"
+              @click="clearError('saveMessage')"
+            />
+            <span>{{ saveMessage }}</span>
+          </div>
+        </div>
+      </div>
+      <div
+        v-show="view === 'new'"
+        class="row"
+      >
+        <div class="col-xs-12">
+          <table class="table cells-vertically-centred">
+            <thead>
+              <th>Day</th>
+              <th>From</th>
+              <th>To</th>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Monday</td>
+                <td>
+                  <el-time-select
+                    v-model="newHours.hours[1].open_time"
+                    :disabled="!$root.permissions['menu_manager menus menu_hours create']"
+                    placeholder="Start"
+                    :picker-options="{
+                      start: '00:00',
+                      step: '00:01',
+                      end: '23:59'
+                    }"
+                  />
+                  <button
+                    title="Copy to all"
+                    class="btn btn-icon-only btn-outline blue"
+                    @click="applyOpenTimeToAll(newHours.hours[1].open_time, newHours.hours)"
+                  >
+                    <i
+                      class="fa fa-clone"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </td>
+                <td>
+                  <el-time-select
+                    v-model="newHours.hours[1].close_time"
+                    :disabled="!$root.permissions['menu_manager menus menu_hours create']"
+                    placeholder="End"
+                    :picker-options="{
+                      start: '00:00',
+                      step: '00:01',
+                      end: '23:59'
+                    }"
+                  />
+                  <button
+                    title="Copy to all"
+                    class="btn btn-icon-only btn-outline blue"
+                    @click="applyCloseTimeToAll(newHours.hours[1].close_time, newHours.hours)"
+                  >
+                    <i
+                      class="fa fa-clone"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>Tuesday</td>
+                <td>
+                  <el-time-select
+                    v-model="newHours.hours[2].open_time"
+                    :disabled="!$root.permissions['menu_manager menus menu_hours create']"
+                    placeholder="Start"
+                    :picker-options="{
+                      start: '00:00',
+                      step: '00:01',
+                      end: '23:59'
+                    }"
+                  />
+                  <button
+                    title="Copy to all"
+                    class="btn btn-icon-only btn-outline blue"
+                    @click="applyOpenTimeToAll(newHours.hours[2].open_time, newHours.hours)"
+                  >
+                    <i
+                      class="fa fa-clone"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </td>
+                <td>
+                  <el-time-select
+                    v-model="newHours.hours[2].close_time"
+                    :disabled="!$root.permissions['menu_manager menus menu_hours create']"
+                    placeholder="End"
+                    :picker-options="{
+                      start: '00:00',
+                      step: '00:01',
+                      end: '23:59'
+                    }"
+                  />
+                  <button
+                    title="Copy to all"
+                    class="btn btn-icon-only btn-outline blue"
+                    @click="applyCloseTimeToAll(newHours.hours[2].close_time, newHours.hours)"
+                  >
+                    <i
+                      class="fa fa-clone"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>Wednesday</td>
+                <td>
+                  <el-time-select
+                    v-model="newHours.hours[3].open_time"
+                    :disabled="!$root.permissions['menu_manager menus menu_hours create']"
+                    placeholder="Start"
+                    :picker-options="{
+                      start: '00:00',
+                      step: '00:01',
+                      end: '23:59'
+                    }"
+                  />
+                  <button
+                    title="Copy to all"
+                    class="btn btn-icon-only btn-outline blue"
+                    @click="applyOpenTimeToAll(newHours.hours[3].open_time, newHours.hours)"
+                  >
+                    <i
+                      class="fa fa-clone"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </td>
+                <td>
+                  <el-time-select
+                    v-model="newHours.hours[3].close_time"
+                    :disabled="!$root.permissions['menu_manager menus menu_hours create']"
+                    placeholder="End"
+                    :picker-options="{
+                      start: '00:00',
+                      step: '00:01',
+                      end: '23:59'
+                    }"
+                  />
+                  <button
+                    title="Copy to all"
+                    class="btn btn-icon-only btn-outline blue"
+                    @click="applyCloseTimeToAll(newHours.hours[3].close_time, newHours.hours)"
+                  >
+                    <i
+                      class="fa fa-clone"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>Thursday</td>
+                <td>
+                  <el-time-select
+                    v-model="newHours.hours[4].open_time"
+                    :disabled="!$root.permissions['menu_manager menus menu_hours create']"
+                    placeholder="Start"
+                    :picker-options="{
+                      start: '00:00',
+                      step: '00:01',
+                      end: '23:59'
+                    }"
+                  />
+                  <button
+                    title="Copy to all"
+                    class="btn btn-icon-only btn-outline blue"
+                    @click="applyOpenTimeToAll(newHours.hours[4].open_time, newHours.hours)"
+                  >
+                    <i
+                      class="fa fa-clone"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </td>
+                <td>
+                  <el-time-select
+                    v-model="newHours.hours[4].close_time"
+                    :disabled="!$root.permissions['menu_manager menus menu_hours create']"
+                    placeholder="End"
+                    :picker-options="{
+                      start: '00:00',
+                      step: '00:01',
+                      end: '23:59'
+                    }"
+                  />
+                  <button
+                    title="Copy to all"
+                    class="btn btn-icon-only btn-outline blue"
+                    @click="applyCloseTimeToAll(newHours.hours[4].close_time, newHours.hours)"
+                  >
+                    <i
+                      class="fa fa-clone"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>Friday</td>
+                <td>
+                  <el-time-select
+                    v-model="newHours.hours[5].open_time"
+                    :disabled="!$root.permissions['menu_manager menus menu_hours create']"
+                    placeholder="Start"
+                    :picker-options="{
+                      start: '00:00',
+                      step: '00:01',
+                      end: '23:59'
+                    }"
+                  />
+                  <button
+                    title="Copy to all"
+                    class="btn btn-icon-only btn-outline blue"
+                    @click="applyOpenTimeToAll(newHours.hours[5].open_time, newHours.hours)"
+                  >
+                    <i
+                      class="fa fa-clone"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </td>
+                <td>
+                  <el-time-select
+                    v-model="newHours.hours[5].close_time"
+                    :disabled="!$root.permissions['menu_manager menus menu_hours create']"
+                    placeholder="End"
+                    :picker-options="{
+                      start: '00:00',
+                      step: '00:01',
+                      end: '23:59'
+                    }"
+                  />
+                  <button
+                    title="Copy to all"
+                    class="btn btn-icon-only btn-outline blue"
+                    @click="applyCloseTimeToAll(newHours.hours[5].close_time, newHours.hours)"
+                  >
+                    <i
+                      class="fa fa-clone"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>Saturday</td>
+                <td>
+                  <el-time-select
+                    v-model="newHours.hours[6].open_time"
+                    :disabled="!$root.permissions['menu_manager menus menu_hours create']"
+                    placeholder="Start"
+                    :picker-options="{
+                      start: '00:00',
+                      step: '00:01',
+                      end: '23:59'
+                    }"
+                  />
+                  <button
+                    title="Copy to all"
+                    class="btn btn-icon-only btn-outline blue"
+                    @click="applyOpenTimeToAll(newHours.hours[6].open_time, newHours.hours)"
+                  >
+                    <i
+                      class="fa fa-clone"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </td>
+                <td>
+                  <el-time-select
+                    v-model="newHours.hours[6].close_time"
+                    :disabled="!$root.permissions['menu_manager menus menu_hours create']"
+                    placeholder="End"
+                    :picker-options="{
+                      start: '00:00',
+                      step: '00:01',
+                      end: '23:59'
+                    }"
+                  />
+                  <button
+                    title="Copy to all"
+                    class="btn btn-icon-only btn-outline blue"
+                    @click="applyCloseTimeToAll(newHours.hours[6].close_time, newHours.hours)"
+                  >
+                    <i
+                      class="fa fa-clone"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>Sunday</td>
+                <td>
+                  <el-time-select
+                    v-model="newHours.hours[0].open_time"
+                    :disabled="!$root.permissions['menu_manager menus menu_hours create']"
+                    placeholder="Start"
+                    :picker-options="{
+                      start: '00:00',
+                      step: '00:01',
+                      end: '23:59'
+                    }"
+                  />
+                  <button
+                    title="Copy to all"
+                    class="btn btn-icon-only btn-outline blue"
+                    @click="applyOpenTimeToAll(newHours.hours[0].open_time, newHours.hours)"
+                  >
+                    <i
+                      class="fa fa-clone"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </td>
+                <td>
+                  <el-time-select
+                    v-model="newHours.hours[0].close_time"
+                    :disabled="!$root.permissions['menu_manager menus menu_hours create']"
+                    placeholder="End"
+                    :picker-options="{
+                      start: '00:00',
+                      step: '00:01',
+                      end: '23:59'
+                    }"
+                  />
+                  <button
+                    title="Copy to all"
+                    class="btn btn-icon-only btn-outline blue"
+                    @click="applyCloseTimeToAll(newHours.hours[0].close_time, newHours.hours)"
+                  >
+                    <i
+                      class="fa fa-clone"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div
+        v-show="view === 'existing'"
+        class="row"
+      >
+        <div
+          v-show="!existingHours.length"
+          class="col-xs-12"
+        >
+          <no-results
+            :show="!existingHours.length"
+            :type="'hours'"
+          />
+        </div>
+      </div>
+      <div
+        v-show="view === 'existing'"
+        class="row"
+      >
+        <div
+          v-show="existingHours.length"
+          class="col-xs-12"
+        >
+          <table class="table cells-vertically-centred">
+            <thead>
+              <th>Day</th>
+              <th>From</th>
+              <th>To</th>
+              <th />
+            </thead>
+            <tbody>
+              <tr
+                v-for="day in existingHours"
+                :key="day.id"
+              >
+                <td>{{ dayNames[day.day] }}</td>
+                <td>
+                  <el-time-select
+                    v-model="day.open_time"
+                    :disabled="!$root.permissions['menu_manager menus menu_hours update']"
+                    class="narrow-picker"
+                    placeholder="Start"
+                    :picker-options="{
+                      start: '00:00',
+                      step: '00:01',
+                      end: '23:59'
+                    }"
+                  />
+                  <button
+                    title="Copy to all"
+                    class="btn btn-icon-only btn-outline blue"
+                    @click="applyOpenTimeToAll(day.open_time, existingHours)"
+                  >
+                    <i
+                      class="fa fa-clone"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </td>
+                <td>
+                  <el-time-select
+                    v-model="day.close_time"
+                    :disabled="!$root.permissions['menu_manager menus menu_hours update']"
+                    class="narrow-picker"
+                    placeholder="End"
+                    :picker-options="{
+                      start: '00:00',
+                      step: '00:01',
+                      end: '23:59'
+                    }"
+                  />
+                  <button
+                    title="Copy to all"
+                    class="btn btn-icon-only btn-outline blue"
+                    @click="applyCloseTimeToAll(day.close_time, existingHours)"
+                  >
+                    <i
+                      class="fa fa-clone"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </td>
+                <td>
+                  <button
+                    :disabled="!$root.permissions['menu_manager menus menu_hours update']"
+                    type="button"
+                    class="btn btn-primary"
+                    @click.stop.prevent="updateMenuHours(day)"
+                  >
+                    Save
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        type="button"
+        class="btn"
+        :class="{
+          'btn-primary' : view === 'existing',
+          'blue btn-outline' : view === 'new'
+        }"
+        :disabled="copying"
+        @click="useStoreHours()"
+      >
+        Use store hours
+        <i
+          v-show="copying"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+      <button
+        v-show="view === 'new'"
+        :disabled="!$root.permissions['menu_manager menus menu_hours create'] || creating"
+        type="button"
+        class="btn btn-primary"
+        @click="createMenuHours()"
+      >
+        Save
+        <i
+          v-show="creating"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -421,6 +546,17 @@ import MenusFunctions from '../../../../controllers/Menus'
 import ajaxErrorHandler from '../../../../controllers/ErrorController'
 
 export default {
+	components: {
+		Modal,
+		NoResults
+	},
+	props: {
+		menu: {
+			type: Object,
+			required: true,
+			default: () => {}
+		}
+	},
 	data () {
 		return {
 			showModal: false,
@@ -488,13 +624,6 @@ export default {
 				'Friday',
 				'Saturday'
 			]
-		}
-	},
-	props: {
-		menu: {
-			type: Object,
-			required: true,
-			default: () => {}
 		}
 	},
 	created () {
@@ -762,10 +891,6 @@ export default {
 		closeModal () {
 			this.$emit('closeHoursModal')
 		}
-	},
-	components: {
-		Modal,
-		NoResults
 	}
 }
 </script>

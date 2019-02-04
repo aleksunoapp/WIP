@@ -1,64 +1,93 @@
 <template>
-	<modal :show="showEditTierModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="editModal">
-		<div slot="modal-header"
-		     class="modal-header center">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Edit Menu Tier</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body height-mod">
-			<div class="alert alert-danger"
-			     v-show="errorMessage"
-			     ref="errorMessage">
-				<button class="close"
-				        @click="clearError()"></button>
-				<span>{{errorMessage}}</span>
-			</div>
-			<div class="col-md-12">
-				<fieldset :disabled="!$root.permissions['menu_manager tiers update']">
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<input type="text"
-						       class="form-control input-sm edited"
-						       id="form_control_1"
-						       v-model="menuTierToBeEdited.name">
-						<label for="form_control_1">Menu Tier Name</label>
-					</div>
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<input type="text"
-						       class="form-control input-sm edited"
-						       id="form_control_2"
-						       v-model="menuTierToBeEdited.description">
-						<label for="form_control_2">Menu Tier Description</label>
-					</div>
-				</fieldset>
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer clear">
-			<button v-if="!$root.permissions['menu_manager tiers update']"
-			        type="button"
-			        class="btn btn-primary"
-			        @click="closeModal()">
-				Close
-			</button>
-			<button v-else
-			        type="button"
-			        class="btn btn-primary"
-			        @click="updateMenuTier()">
-				Save
-				<i v-show="saving"
-						class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-		</div>
-	</modal>
+  <modal
+    ref="editModal"
+    :show="showEditTierModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header center"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Edit Menu Tier
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body height-mod"
+    >
+      <div
+        v-show="errorMessage"
+        ref="errorMessage"
+        class="alert alert-danger"
+      >
+        <button
+          class="close"
+          @click="clearError()"
+        />
+        <span>{{ errorMessage }}</span>
+      </div>
+      <div class="col-md-12">
+        <fieldset :disabled="!$root.permissions['menu_manager tiers update']">
+          <div class="form-group form-md-line-input form-md-floating-label">
+            <input
+              id="form_control_1"
+              v-model="menuTierToBeEdited.name"
+              type="text"
+              class="form-control input-sm edited"
+            >
+            <label for="form_control_1">
+              Menu Tier Name
+            </label>
+          </div>
+          <div class="form-group form-md-line-input form-md-floating-label">
+            <input
+              id="form_control_2"
+              v-model="menuTierToBeEdited.description"
+              type="text"
+              class="form-control input-sm edited"
+            >
+            <label for="form_control_2">
+              Menu Tier Description
+            </label>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer clear"
+    >
+      <button
+        v-if="!$root.permissions['menu_manager tiers update']"
+        type="button"
+        class="btn btn-primary"
+        @click="closeModal()"
+      >
+        Close
+      </button>
+      <button
+        v-else
+        type="button"
+        class="btn btn-primary"
+        @click="updateMenuTier()"
+      >
+        Save
+        <i
+          v-show="saving"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -67,6 +96,15 @@ import MenuTiersFunctions from '../../../../controllers/MenuTiers'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
+	components: {
+		Modal
+	},
+	props: {
+		passedTierId: {
+			type: Number,
+			default: 0
+		}
+	},
 	data () {
 		return {
 			showEditTierModal: false,
@@ -75,12 +113,6 @@ export default {
 			},
 			errorMessage: '',
 			saving: false
-		}
-	},
-	props: {
-		passedTierId: {
-			type: Number,
-			default: 0
 		}
 	},
 	created () {
@@ -228,9 +260,6 @@ export default {
 		closeModalAndUpdate () {
 			this.$emit('updateMenuTier')
 		}
-	},
-	components: {
-		Modal
 	}
 }
 </script>

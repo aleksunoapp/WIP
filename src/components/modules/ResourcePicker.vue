@@ -1,238 +1,345 @@
 <template>
-	<div class="resource-picker">
-		<img v-show="imageButton && !showResourceModal"
-		     @click.stop.prevent="openResourceModal()"
-		     :src="placeholderUrl"
-		     alt="A greyed out outline of a mountain and the sun">
-		<button v-show="!showResourceModal && !noButton"
-		        class="btn blue btn-outline"
-		        @click.stop.prevent="openResourceModal()">{{ buttonText }}</button>
-		<section v-show="showResourceModal">
-			<div class="col-sm-4 margin-top-10">
-				<div class="panel panel-default">
-				<div class="panel-heading">Select a Folder</div>
-					<div class="panel-body">
-					</div>
-				<div class="jstree-default">
-					<ul class="jstree-container-ul jstree-children">
-						<li class="jstree-node jstree-last"
-						    :class="{'jstree-open': folders.expanded, 'jstree-closed': !folders.expanded}">
-							<i class="jstree-icon jstree-ocl"
-							   @click="expandNode(folders)"></i>
-							<a class="jstree-anchor"
-							   @click="activePageUpdate(1, folders, true)"
-							   :class="{'jstree-clicked': folders.id === activeFolder.id}">
-								{{ activeLocationId ? activeLocationName : activeBusinessName }} Resources
-							</a>
-							<ul class="jstree-children"
-							    v-if="folders.expanded">
-								<li v-if="!selectOnly && $root.permissions['gallery create']"
-								    class="jstree-node jstree-leaf"
-								    :class="{'jstree-last': !folders.children || !folders.children.length}">
-									<i class="jstree-icon jstree-ocl"></i>
-									<a class="jstree-anchor"
-									   @click="createFolder(folders)">
-										<button class="btn blue btn-xs btn-outline">Create Folder</button>
-									</a>
-								</li>
-								<template v-for="(folder, index) in folders.children">
-									<resource-folder :folder="folder"
-									                 :activeFolder="activeFolder.id"
-									                 :last="index === folders.children.length - 1"
-									                 @expandNode="expandNode"
-									                 @createFolder="createFolder"
-									                 @manageFolder="manageFolder"
-									                 @getResources="activePageUpdate"
-									                 :selectOnly="selectOnly"
-									                 :key="index">
-									</resource-folder>
-								</template>
-							</ul>
-						</li>
-					</ul>
-				</div>
-				</div>
-			</div>			
-			<div class="col-sm-8  margin-top-10" v-show="activeFolder.id && !allFoldersView">
-				<div class="panel panel-default ">
-				<div class="panel-heading">Select an Image</div>
-					<div class="panel-body">
-					</div>	
-				<div v-if="!activeFolder.id && !allFoldersView"
-				     class="center margin-top-20 font-red bold">Select a folder to view resources.</div>
-				<div v-if="activeFolder.id || allFoldersView">
-					<loading-screen :show="loadingResourceData || isSaving"
-					                :color="'#3598dc'"
-					                :display="'inline'"></loading-screen>
-					<div class="relative cbp cbp-caption-active cbp-caption-overlayBottomReveal cbp-ready">
-						<file-upload v-show="!allFoldersView && $root.permissions['gallery create']"
-													:folderId="activeFolder.id"
-													@savingUpdate="checkSaving"
-													@uploadSuccess="imageUploaded()">
-						</file-upload>
-						<div class="cbp-wrapper-outer">
-							<div class="cbp-wrapper center">
-								<div v-show="!loadingResourceData && !isSaving">
-									<div v-show="currentResources.length">
-										<dropdown>
-											<button slot="button"
-											        type="button"
-											        class="btn btn-sm btn-outline dropdown-toggle btn-default"
-											        data-toggle="dropdown">
-												<span v-if="sortBy.field">
-													<b>{{ sortOptions[sortBy.field] }}
-														<i class="fa fa-sort-alpha-asc"
-														   v-if="sortBy.order === 'asc'"></i>
-														<i class="fa fa-sort-alpha-desc"
-														   v-if="sortBy.order === 'desc'"></i>
-													</b>
-												</span>
-												<i class="fa fa-angle-down"></i>
-											</button>
-											<ul slot="dropdown-menu"
-											    class="dropdown-menu">
-												<li class="rounded-button-group-block">
-													<div class="btn-group"
-													     data-toggle="buttons">
-														<label class="btn blue btn-outline"
-														       for="sort_asc"
-														       :class="{'active': sortBy.order === 'asc'}">
-															<input type="radio"
-															       class="toggle"
-															       id="sort_asc"
-															       value="asc"
-															       v-model="sortBy.order">
-															<i class="fa fa-sort-alpha-asc"></i>
-														</label>
-														<label class="btn blue btn-outline"
-														       for="sort_desc"
-														       :class="{'active': sortBy.order === 'desc'}">
-															<input type="radio"
-															       class="toggle"
-															       id="sort_desc"
-															       value="desc"
-															       v-model="sortBy.order">
-															<i class="fa fa-sort-alpha-desc"></i>
-														</label>
-													</div>
-												</li>
-												<li :class="{'active': sortBy.field === 'name'}">
-													<a @click="setSortField('name')">Name</a>
-												</li>
-												<li :class="{'active': sortBy.field === 'size'}">
-													<a @click="setSortField('size')">Size</a>
-												</li>
-												<li :class="{'active': sortBy.field === 'created_at'}">
-													<a @click="setSortField('created_at')">Date Added</a>
-												</li>
-											</ul>
-										</dropdown>
-										<button type="button"
-										        class="btn btn-sm btn-outline btn-default"
-										        @click="toggleFilterPanel()">
-											<i v-if="filterCollapse"
-											   class="fa fa-filter"
-											   aria-hidden="true"></i>
-											<i v-else
-											   class="fa fa-times-circle"
-											   aria-hidden="true"></i>
-										</button>
-										<div class="portlet-body margin-x-10"
-										     :class="{'display-hide': filterCollapse}">
-											<form role="form"
-											      @submit.prevent="advancedResourceSearch()">
-												<div class="alert alert-danger"
-												     v-if="searchError.length">
-													<button class="close"
-													        data-close="alert"
-													        @click="clearSearchError()"></button>
-													<span>{{ searchError }}</span>
-												</div>
-												<div class="filter-tags margin-top-10"
-												     v-if="tags.length">
-													<label>Resource Tags
-														<small>(Toggle the tags you want to filter by.)</small>
-													</label>
-													<div>
-														<template v-for="(tag, index) in tags">
-															<button type="button"
-															        class="btn btn-default btn-xs"
-															        :class="{'blue': tag.active}"
-															        @click="toggleTag(tag)"
-															        :key="index">
-																{{ tag.name }}
-															</button>
-														</template>
-													</div>
-												</div>
-												<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-													<input type="text"
-													       class="form-control input-sm"
-													       id="search_options_search"
-													       :class="{'edited': advancedSearch.search.length}"
-													       v-model="advancedSearch.search">
-													<label for="search_options_search">Search</label>
-												</div>
-												<div class="form-actions right">
-													<button type="button"
-													        class="btn btn-default"
-													        @click="resetResourceSearch()"> Reset Search </button>
-													<button type="submit"
-													        class="btn blue">
-														<i class="fa fa-search"></i> Search </button>
-												</div>
-											</form>
-										</div>
-									</div>
-									<page-results v-show="currentResources.length" class="margin-top-10 margin-bottom-10"
-									              :totalResults="totalResults"
-									              :activePage="activePage"
-									              @pageResults="updatePerPage"></page-results>
-									<div class="cbp-no-files text-center margin-top-20"
-									     v-if="!currentResources.length">There are currently no resources in this folder.</div>
-									<div class="row">
-										<template v-for="resource in currentResources">
-											<div class="col-xs-6 margin-bottom-10"
-													:ref="resource.id"
-													:key="resource.id">
-												<div @click="setResource(resource)"
-														@dblclick="selectAndComplete(resource)"
-														class="resource-wrapper clickable"
-														:class="{'selected': selectedResource.id === resource.id}">
-													<img class="resource-image"
-															:src="resource.url">
-												</div>
-											</div>
-										</template>
-									</div>
-									<div v-if="currentResources.length">
-										<pagination :passedPage="activePage"
-										            :numPages="numPages"
-										            @activePageChange="activePageUpdate"></pagination>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				</div>
-			</div>
-			<div class="col-sm-12 margin-top-10">
-				<button v-if="showDoneButton"
-				        type="button"
-				        class="btn btn-default pull-right"
-				        @click="closeResourceModal()">
-					Done
-				</button>
-				<button v-show="selectedResource.id"
-				        type="button"
-				        class="btn btn-primary pull-right margin-right-10"
-				        @click="resourceSelectionComplete()">
-					Select
-				</button>
-			</div>
-		</section>
-	</div>
+  <div class="resource-picker">
+    <img
+      v-show="imageButton && !showResourceModal"
+      :src="placeholderUrl"
+      alt="A greyed out outline of a mountain and the sun"
+      @click.stop.prevent="openResourceModal()"
+    >
+    <button
+      v-show="!showResourceModal && !noButton"
+      class="btn blue btn-outline"
+      @click.stop.prevent="openResourceModal()"
+    >
+      {{ buttonText }}
+    </button>
+    <section v-show="showResourceModal">
+      <div class="col-sm-4 margin-top-10">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Select a Folder
+          </div>
+          <div class="panel-body" />
+          <div class="jstree-default">
+            <ul class="jstree-container-ul jstree-children">
+              <li
+                class="jstree-node jstree-last"
+                :class="{'jstree-open': folders.expanded, 'jstree-closed': !folders.expanded}"
+              >
+                <i
+                  class="jstree-icon jstree-ocl"
+                  @click="expandNode(folders)"
+                />
+                <a
+                  class="jstree-anchor"
+                  :class="{'jstree-clicked': folders.id === activeFolder.id}"
+                  @click="activePageUpdate(1, folders, true)"
+                >
+                  {{ activeLocationId ? activeLocationName : activeBusinessName }} Resources
+                </a>
+                <ul
+                  v-if="folders.expanded"
+                  class="jstree-children"
+                >
+                  <li
+                    v-if="!selectOnly && $root.permissions['gallery create']"
+                    class="jstree-node jstree-leaf"
+                    :class="{'jstree-last': !folders.children || !folders.children.length}"
+                  >
+                    <i class="jstree-icon jstree-ocl" />
+                    <a
+                      class="jstree-anchor"
+                      @click="createFolder(folders)"
+                    >
+                      <button class="btn blue btn-xs btn-outline">
+                        Create Folder
+                      </button>
+                    </a>
+                  </li>
+                  <template v-for="(folder, index) in folders.children">
+                    <resource-folder
+                      :folder="folder"
+                      :key="index"
+                      :active-folder="activeFolder.id"
+                      :last="index === folders.children.length - 1"
+                      :select-only="selectOnly"
+                      @expandNode="expandNode"
+                      @createFolder="createFolder"
+                      @manageFolder="manageFolder"
+                      @getResources="activePageUpdate"
+                    />
+                  </template>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>			
+      <div
+        v-show="activeFolder.id && !allFoldersView"
+        class="col-sm-8  margin-top-10"
+      >
+        <div class="panel panel-default ">
+          <div class="panel-heading">
+            Select an Image
+          </div>
+          <div class="panel-body" />	
+          <div
+            v-if="!activeFolder.id && !allFoldersView"
+            class="center margin-top-20 font-red bold"
+          >
+            Select a folder to view resources.
+          </div>
+          <div v-if="activeFolder.id || allFoldersView">
+            <loading-screen
+              :show="loadingResourceData || isSaving"
+              :color="'#3598dc'"
+              :display="'inline'"
+            />
+            <div class="relative cbp cbp-caption-active cbp-caption-overlayBottomReveal cbp-ready">
+              <file-upload
+                v-show="!allFoldersView && $root.permissions['gallery create']"
+                :folder-id="activeFolder.id"
+                @savingUpdate="checkSaving"
+                @uploadSuccess="imageUploaded()"
+              />
+              <div class="cbp-wrapper-outer">
+                <div class="cbp-wrapper center">
+                  <div v-show="!loadingResourceData && !isSaving">
+                    <div v-show="currentResources.length">
+                      <dropdown>
+                        <button
+                          slot="button"
+                          type="button"
+                          class="btn btn-sm btn-outline dropdown-toggle btn-default"
+                          data-toggle="dropdown"
+                        >
+                          <span v-if="sortBy.field">
+                            <b>
+                              {{ sortOptions[sortBy.field] }}
+                              <i
+                                v-if="sortBy.order === 'asc'"
+                                class="fa fa-sort-alpha-asc"
+                              />
+                              <i
+                                v-if="sortBy.order === 'desc'"
+                                class="fa fa-sort-alpha-desc"
+                              />
+                            </b>
+                          </span>
+                          <i class="fa fa-angle-down" />
+                        </button>
+                        <ul
+                          slot="dropdown-menu"
+                          class="dropdown-menu"
+                        >
+                          <li class="rounded-button-group-block">
+                            <div
+                              class="btn-group"
+                              data-toggle="buttons"
+                            >
+                              <label
+                                class="btn blue btn-outline"
+                                for="sort_asc"
+                                :class="{'active': sortBy.order === 'asc'}"
+                              >
+                                <input
+                                  id="sort_asc"
+                                  v-model="sortBy.order"
+                                  type="radio"
+                                  class="toggle"
+                                  value="asc"
+                                >
+                                <i class="fa fa-sort-alpha-asc" />
+                              </label>
+                              <label
+                                class="btn blue btn-outline"
+                                for="sort_desc"
+                                :class="{'active': sortBy.order === 'desc'}"
+                              >
+                                <input
+                                  id="sort_desc"
+                                  v-model="sortBy.order"
+                                  type="radio"
+                                  class="toggle"
+                                  value="desc"
+                                >
+                                <i class="fa fa-sort-alpha-desc" />
+                              </label>
+                            </div>
+                          </li>
+                          <li :class="{'active': sortBy.field === 'name'}">
+                            <a @click="setSortField('name')">
+                              Name
+                            </a>
+                          </li>
+                          <li :class="{'active': sortBy.field === 'size'}">
+                            <a @click="setSortField('size')">
+                              Size
+                            </a>
+                          </li>
+                          <li :class="{'active': sortBy.field === 'created_at'}">
+                            <a @click="setSortField('created_at')">
+                              Date Added
+                            </a>
+                          </li>
+                        </ul>
+                      </dropdown>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline btn-default"
+                        @click="toggleFilterPanel()"
+                      >
+                        <i
+                          v-if="filterCollapse"
+                          class="fa fa-filter"
+                          aria-hidden="true"
+                        />
+                        <i
+                          v-else
+                          class="fa fa-times-circle"
+                          aria-hidden="true"
+                        />
+                      </button>
+                      <div
+                        class="portlet-body margin-x-10"
+                        :class="{'display-hide': filterCollapse}"
+                      >
+                        <form
+                          role="form"
+                          @submit.prevent="advancedResourceSearch()"
+                        >
+                          <div
+                            v-if="searchError.length"
+                            class="alert alert-danger"
+                          >
+                            <button
+                              class="close"
+                              data-close="alert"
+                              @click="clearSearchError()"
+                            />
+                            <span>{{ searchError }}</span>
+                          </div>
+                          <div
+                            v-if="tags.length"
+                            class="filter-tags margin-top-10"
+                          >
+                            <label>
+                              Resource Tags
+                              <small>(Toggle the tags you want to filter by.)</small>
+                            </label>
+                            <div>
+                              <template v-for="(tag, index) in tags">
+                                <button
+                                  :key="index"
+                                  type="button"
+                                  class="btn btn-default btn-xs"
+                                  :class="{'blue': tag.active}"
+                                  @click="toggleTag(tag)"
+                                >
+                                  {{ tag.name }}
+                                </button>
+                              </template>
+                            </div>
+                          </div>
+                          <div class="form-group form-md-line-input form-md-floating-label margin-top-10">
+                            <input
+                              id="search_options_search"
+                              v-model="advancedSearch.search"
+                              type="text"
+                              class="form-control input-sm"
+                              :class="{'edited': advancedSearch.search.length}"
+                            >
+                            <label for="search_options_search">
+                              Search
+                            </label>
+                          </div>
+                          <div class="form-actions right">
+                            <button
+                              type="button"
+                              class="btn btn-default"
+                              @click="resetResourceSearch()"
+                            >
+                              Reset Search
+                            </button>
+                            <button
+                              type="submit"
+                              class="btn blue"
+                            >
+                              <i class="fa fa-search" /> Search
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                    <page-results
+                      v-show="currentResources.length"
+                      class="margin-top-10 margin-bottom-10"
+                      :total-results="totalResults"
+                      :active-page="activePage"
+                      @pageResults="updatePerPage"
+                    />
+                    <div
+                      v-if="!currentResources.length"
+                      class="cbp-no-files text-center margin-top-20"
+                    >
+                      There are currently no resources in this folder.
+                    </div>
+                    <div class="row">
+                      <template v-for="resource in currentResources">
+                        <div
+                          :ref="resource.id"
+                          :key="resource.id"
+                          class="col-xs-6 margin-bottom-10"
+                        >
+                          <div
+                            class="resource-wrapper clickable"
+                            :class="{'selected': selectedResource.id === resource.id}"
+                            @click="setResource(resource)"
+                            @dblclick="selectAndComplete(resource)"
+                          >
+                            <img
+                              class="resource-image"
+                              :src="resource.url"
+                            >
+                          </div>
+                        </div>
+                      </template>
+                    </div>
+                    <div v-if="currentResources.length">
+                      <pagination
+                        :passed-page="activePage"
+                        :num-pages="numPages"
+                        @activePageChange="activePageUpdate"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 margin-top-10">
+        <button
+          v-if="showDoneButton"
+          type="button"
+          class="btn btn-default pull-right"
+          @click="closeResourceModal()"
+        >
+          Done
+        </button>
+        <button
+          v-show="selectedResource.id"
+          type="button"
+          class="btn btn-primary pull-right margin-right-10"
+          @click="resourceSelectionComplete()"
+        >
+          Select
+        </button>
+      </div>
+    </section>
+  </div>
 </template>
 <script>
 import Dropdown from './Dropdown'
@@ -255,7 +362,16 @@ import global from '@/global.js'
  */
 
 export default {
-	name: 'resource-picker',
+	name: 'ResourcePicker',
+	components: {
+		Dropdown,
+		LoadingScreen,
+		Modal,
+		PageResults,
+		Pagination,
+		FileUpload,
+		ResourceFolder
+	},
 	props: {
 		buttonText: {
 			type: String,
@@ -334,6 +450,17 @@ export default {
 				return this.imageUrl
 			} else {
 				return ImagePlaceholder
+			}
+		}
+	},
+	watch: {
+		'sortBy.order' () {
+			if (this.sortBy.field) {
+				if (parseInt(this.activePage) === 1) {
+					this.getResources(this.activeFolder, 1)
+				} else {
+					this.activePageUpdate(1, this.activeFolder)
+				}
 			}
 		}
 	},
@@ -860,26 +987,6 @@ export default {
 		selectAndComplete (resource) {
 			this.setResource(resource)
 			this.resourceSelectionComplete()
-		}
-	},
-	components: {
-		Dropdown,
-		LoadingScreen,
-		Modal,
-		PageResults,
-		Pagination,
-		FileUpload,
-		ResourceFolder
-	},
-	watch: {
-		'sortBy.order' () {
-			if (this.sortBy.field) {
-				if (parseInt(this.activePage) === 1) {
-					this.getResources(this.activeFolder, 1)
-				} else {
-					this.activePageUpdate(1, this.activeFolder)
-				}
-			}
 		}
 	}
 }

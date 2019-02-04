@@ -1,496 +1,639 @@
 <template>
-	<div>
-		<!-- BEGIN PAGE BAR -->
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
-		<!-- END PAGE BAR -->
-		<!-- BEGIN PAGE TITLE-->
-		<h1 class="page-title">User Profile</h1>
-		<!-- END PAGE TITLE-->
-		<div class="profile">
-			<div class="content">
-				<div class="row">
-					<div class="col-md-3">
-						<ul class="list-unstyled profile-nav">
-							<li>
-								<div class="portlet light profile-sidebar-portlet ">
-									<!-- SIDEBAR USERPIC -->
-									<div class="profile-userpic">
-										<img src="http://www.clker.com/cliparts/B/R/Y/m/P/e/blank-profile-hi.png"
-										     style="width:150px;height:150px;"
-										     class="img-responsive"
-										     alt=""> </div>
-										<!-- END SIDEBAR USERPIC -->
-										<!-- SIDEBAR USER TITLE -->
-										<div style="text-align:center"
-										     class="profile-usertitle">
-											<div class="profile-usertitle-name">
-												<h2>{{ $route.params.name }}</h2>
-											</div>
-										</div>
-										<!-- END SIDEBAR USER TITLE -->
-										<!-- SIDEBAR BUTTONS -->
-										<div class="profile-userbuttons"
-										     v-if="can('user_manager users message')">
-											<button type="button"
-											        class="btn btn-circle red btn-sm"
-											        @click="showMessageModal()">Message</button>
-											<button
-												v-if="can('user_manager users update')"
-												type="button"
-												class="btn btn-circle btn-outline red btn-sm"
-												@click="editUser()"
-												:disabled="user.id === undefined"
-											>
-												Edit
-											</button>
-										</div>
-										<!-- END SIDEBAR BUTTONS -->
-										<!-- SIDEBAR MENU -->
-										<div class="profile-usermenu">
-											<ul class="nav">
-												<li :class="{ 'active': tab === 0 }">
-													<a a
-													   @click="changeTab(0)"
-													   aria-expanded="true">
-														<i class="fa fa-list-ol"
-														   aria-hidden="true"></i> Orders </a>
-												</li>
-												<li :class="{ 'active': this.tab === 1 }">
-													<a a
-													   @click="changeTab(1)"
-													   aria-expanded="true">
-														<i class="fa fa-picture-o"
-														   aria-hidden="true"></i> Gallery </a>
-												</li>
-												<li
-													v-if="can('user_manager transactions read')"
-													:class="{ 'active': this.tab === 2 }"
-												>
-													<a a
-													   @click="changeTab(2)"
-													   aria-expanded="true">
-														<i class="fa fa-list-alt"
-														   aria-hidden="true"></i> Transactions </a>
-												</li>
-											</ul>
-										</div>
-										<!-- END MENU -->
-									</div>
-							</li>
-							<li>
-								<div class="portlet light ">
-									<!-- STAT -->
-									<div class="row list-separated profile-stat">
-										<div>
-											<div class="uppercase profile-stat-title"> {{ formatInteger(user.total_orders, '&infin;') }} </div>
-											<div class="uppercase profile-stat-text"> Total Orders </div>
-										</div>
-										<div class="margin-top-20">
-											<div class="uppercase profile-stat-title">{{ formatUSD(user.total_spent, '&infin;') }} </div>
-											<div class="uppercase profile-stat-text"> Total Spent </div>
-										</div>
-									</div>
-								</div>
-							</li>
-							<li v-if="can('user_manager users add_points create')">
-								<div class="portlet light">
-									<div class="alert alert-danger"
-									     v-show="addErrorMessage"
-									     ref="addErrorMessage">
-										<button class="close"
-										        @click.prevent="clearError('addErrorMessage')"></button>
-										<span>{{addErrorMessage}}</span>
-									</div>
-									<div class="add-points__container">
-										<div class="add-points__input form-group form-md-line-input form-md-floating-label">
-											<input type="text"
-											       class="form-control input-sm"
-											       :class="{'edited': points.length}"
-											       id="form_control_name"
-														 name="add_points"
-											       v-model="points">
-											<label for="form_control_name">Add Points</label>
-										</div>
-										<div class="add-points__button">
-											<button @click="addPoints()"
-											        type="button"
-											        class="btn blue pull-right"
-											        :disabled="adding">
-												<i v-show="adding"
-												   class="fa fa-spinner fa-pulse fa-fw">
-												</i>
-												Add
-											</button>
-										</div>
-									</div>
-								</div>
-							</li>
-							<li>
-								<div class="portlet light"
-								     v-show="userAttributes.length">
-									<div class="uppercase profile-stat-text margin-bottom-20"> Attributes </div>
-									<span class="badge badge-info margin-bottom-10 margin-right-10"
-									      v-for="attribute in userAttributes"
-									      :key="attribute.id">
-										{{attribute.name}}
-									</span>
-								</div>
-							</li>
-							<li>
-								<div class="portlet light" v-if="userItems.length">
-									<!-- STAT -->
-									<div class="uppercase profile-stat-text margin-bottom-10"> Items </div>
-									<div class="container__flex--column">
-										<div v-for="item in userItems"
-										     :key="item.id"
-										     class="container__flex--row">
-											<div class="container__item--image margin-right-10">
-												<img :src="item.image_url"
-												     style="width: 40px; height: 40px;" />
-											</div>
-												<p class="font-blue-madison margin-left-10">
-													{{item.name}}
-												</p>
-											</div>
-										</div>
-									</div>
-							</li>
-						</ul>
-					</div>
-					<div class="col-md-9"
-					     v-show="errorMessage"
-					     ref="errorMessage">
-						<div class="alert alert-danger">
-							<button class="close"
-							        @click.prevent="clearError('errorMessage')"></button>
-							<span>{{errorMessage}}</span>
-						</div>
-					</div>
-					<div class="col-md-9">
-						<div class="tabbable-custom-profile">
-							<div class="tab-content">
-								<!--tab-pane-->
-								<div v-show="tab === 0"
-								     class="tab-pane active">
-									<div
-										v-show="loadingOrders"
-									>
-										<div class="col-xs-12 relative-block">
-											<loading-screen :show="loadingOrders" class="margin-top-20">
-											</loading-screen>
-										</div>
-									</div>
-									<div
-										v-show="!loadingOrders"
-										class="portlet-body"
-									>
-										<div class="clearfix margin-bottom-10"
-										     v-if="orders.length">
-											<el-dropdown trigger="click"
-											             @command="updateSortByOrder"
-											             size="mini"
-											             :show-timeout="50"
-											             :hide-timeout="50">
-												<el-button size="mini">
-													Sort by
-													<span>
-														<i class="fa fa-sort-alpha-asc"
-														   v-if="sortBy.order === 'ASC'"></i>
-														<i class="fa fa-sort-alpha-desc"
-														   v-if="sortBy.order === 'DESC'"></i>
-													</span>
-													<i class="el-icon-arrow-down el-icon--right"></i>
-												</el-button>
-												<el-dropdown-menu slot="dropdown">
-													<el-dropdown-item command="ASC">
-														<i class="fa fa-sort-alpha-asc"></i>
-													</el-dropdown-item>
-													<el-dropdown-item command="DESC">
-														<i class="fa fa-sort-alpha-desc"></i>
-													</el-dropdown-item>
-												</el-dropdown-menu>
-											</el-dropdown>
-											<a @click="downloadCsv()"
-											   :download="`${user.first_name} ${user.last_name} Orders.csv`"
-												 ref="csv"
-												 class="margin-left-5">
-												Save as CSV
-												<i class="fa fa-download"
-												   aria-hidden="true"></i>
-											</a>
-											<page-results class="pull-right"
-											              :totalResults="orders.length"
-											              :activePage="activePage"
-											              @pageResults="pageResultsUpdate"></page-results>
-										</div>
-										<table class="table table-striped table-advance table-hover">
-											<thead>
-												<tr>
-													<th>
-														<span class="white-space-no-wrap">
-															<i class="fa fa-building"></i> Store
-														</span>
-													</th>
-													<th class="hidden-xs">
-														<span class="white-space-no-wrap">
-															<i class="fa fa-usd"></i> Amount
-														</span>
-													</th>
-													<th>
-														<span class="white-space-no-wrap">
-															<i class="fa fa-calendar"></i> Order Date
-														</span>
-													</th>
-													<th>
-														<span class="white-space-no-wrap">
-															<i class="fa fa-hourglass-start"></i> Status
-														</span>
-													</th>
-													<th>
-													</th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr v-for="order in currentActivePageOrders"
-												    :key="order.id">
-													<td class="align-middle">
-														<span v-if="order.location_name !=='NULL'"> {{ order.location_name }} </span>
-													</td>
-													<td class="align-middle"> ${{ order.total }} </td>
-													<td class="align-middle"> {{ order.created_at.substring(0, 10) }} </td>
-													<td class="align-middle">
-														<span class="label label-sm"
-														      :class="{ 
-																'label-info' : order.status === 'pending',
-																'label-warning' : order.status === 'submitted', 
-																'label-success' : order.status === 'completed', 
-																'label-danger' : order.status === 'overdue',
-																'label-danger' : order.status === 'cancelled' || order.status === 'refunded'
-															}">
-															{{ order.status }}
-														</span>
-													</td>
-													<td class="align-middle">
-														<a class="btn btn-sm grey-salsa btn-outline"
-														   @click="showViewOrderModal(order)"> View </a>
-													</td>
-												</tr>
-											</tbody>
-										</table>
-										<div class="clearfix"
-										     v-if="orders.length && numPages > 1">
-											<pagination :passedPage="activePage"
-											            :numPages="numPages"
-											            @activePageChange="activePageUpdate"></pagination>
-										</div>
-										<p v-if="!orders.length"
-										   class="text-center">
-											This user hasn't made any orders yet
-										</p>
-									</div>
-								</div>
-								<!--tab-pane-->
-								<div v-show="tab === 1"
-								     class="tab-pane active">
-									<div class="row"
-									     v-if="socialFeed.length">
-										<div class="col-md-3 col-sm-3 col-xs-4"
-										     v-for="feed in socialFeed"
-										     :key="feed.id">
-											<div class="blog-post-sm blog-container blog-shadow"
-											     :id="'social-feed-' + feed.id">
-												<div class="blog-top-wrap">
-													<div class="pull-left">
-														<span v-if="feed.short_description.length">{{ feed.short_description }}</span>
-														<span v-else>NO TITLE</span>
-													</div>
-												</div>
-												<div class="blog-img-thumb small-blog-img-thumb"
-												     :class="{'blog-img-thumb-bordered': !feed.url.length}">
-													<img class="small-image"
-													     v-if="feed.url.length"
-													     :src="feed.url">
-													<img v-else
-													     class="small-image"
-													     src="../../../assets/img/app/image-placeholder.png">
-												</div>
-													<div class="blog-post-content">
-														<p class="blog-post-desc"> {{ feed.description }} </p>
-														<div class="blog-post-foot"
-														     v-if="feed.facebook || feed.twitter || feed.instagram">
-															<div class="socicons">
-																<a v-if="feed.facebook"
-																   class="socicon-btn socicon-btn-circle socicon-facebook"></a>
-																<a v-if="feed.twitter"
-																   class="socicon-btn socicon-btn-circle socicon-twitter"></a>
-																<a v-if="feed.instagram"
-																   class="socicon-btn socicon-btn-circle socicon-instagram"></a>
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-									<!--tab-pane-->
-								</div>
-								<div v-show="tab === 2"
-								     class="tab-pane active">
-									<div
-										v-show="transactions.loading"
-									>
-										<div class="col-xs-12 relative-block">
-											<loading-screen :show="transactions.loading" class="margin-top-20">
-											</loading-screen>
-										</div>
-									</div>
-									<div
-										v-show="!transactions.loading"
-										class="portlet-body"
-									>
-										<div
-											v-if="currentActivePageTransactions.length"
-											class="clearfix margin-bottom-10"
-										>
-											<el-select 
-												v-model="transactions.sortBy"
-												size="mini"
-												@change="sortTransactions"
-											>
-												<el-option
-													key="newest"
-													label="New to old ↓"
-													value="newest"
-												>
-												</el-option>
-												<el-option
-													key="oldest"
-													label="Old to new ↑"
-													value="oldest"
-												>
-												</el-option>
-											</el-select>
-											<a 
-												@click="downloadTransactionsCSV()"
-												:download="`${user.first_name} ${user.last_name} Transactions.csv`"
-												 ref="transactionsCSV"
-												 class="margin-left-5">
-												Save as CSV
-												<i class="fa fa-download" aria-hidden="true"></i>
-											</a>
-											<page-results 
-												class="pull-right"
-												:totalResults="transactions.data.length"
-												:activePage="transactions.activePage"
-												@pageResults="transactionsPageResultsUpdate"
-											>
-											</page-results>
-										</div>
-										<table class="table table-striped table-advance">
-											<thead>
-												<tr>
-													<th>
-														ID
-													</th>
-													<th>
-														<span class="white-space-no-wrap">
-															Order ID
-														</span>
-													</th>
-													<th>
-														Status
-													</th>
-													<th>
-														<span class="white-space-no-wrap">
-															<i class="fa fa-usd"></i> Amount
-														</span>
-													</th>
-													<th>
-														App
-													</th>
-													<th>
-														Transaction no
-													</th>
-													<th>
-														<span class="white-space-no-wrap">
-															<i class="fa fa-clock-o"></i> Time
-														</span>
-													</th>
-												</tr>
-											</thead>
+  <div>
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
+    <!-- END PAGE BAR -->
+    <!-- BEGIN PAGE TITLE-->
+    <h1 class="page-title">
+      User Profile
+    </h1>
+    <!-- END PAGE TITLE-->
+    <div class="profile">
+      <div class="content">
+        <div class="row">
+          <div class="col-md-3">
+            <ul class="list-unstyled profile-nav">
+              <li>
+                <div class="portlet light profile-sidebar-portlet ">
+                  <!-- SIDEBAR USERPIC -->
+                  <div class="profile-userpic">
+                    <img
+                      src="http://www.clker.com/cliparts/B/R/Y/m/P/e/blank-profile-hi.png"
+                      style="width:150px;height:150px;"
+                      class="img-responsive"
+                      alt=""
+                    >
+                  </div>
+                  <!-- END SIDEBAR USERPIC -->
+                  <!-- SIDEBAR USER TITLE -->
+                  <div
+                    style="text-align:center"
+                    class="profile-usertitle"
+                  >
+                    <div class="profile-usertitle-name">
+                      <h2>{{ $route.params.name }}</h2>
+                    </div>
+                  </div>
+                  <!-- END SIDEBAR USER TITLE -->
+                  <!-- SIDEBAR BUTTONS -->
+                  <div
+                    v-if="can('user_manager users message')"
+                    class="profile-userbuttons"
+                  >
+                    <button
+                      type="button"
+                      class="btn btn-circle red btn-sm"
+                      @click="showMessageModal()"
+                    >
+                      Message
+                    </button>
+                    <button
+                      v-if="can('user_manager users update')"
+                      type="button"
+                      class="btn btn-circle btn-outline red btn-sm"
+                      :disabled="user.id === undefined"
+                      @click="editUser()"
+                    >
+                      Edit
+                    </button>
+                  </div>
+                  <!-- END SIDEBAR BUTTONS -->
+                  <!-- SIDEBAR MENU -->
+                  <div class="profile-usermenu">
+                    <ul class="nav">
+                      <li :class="{ 'active': tab === 0 }">
+                        <a
+                          a
+                          aria-expanded="true"
+                          @click="changeTab(0)"
+                        >
+                          <i
+                            class="fa fa-list-ol"
+                            aria-hidden="true"
+                          /> Orders
+                        </a>
+                      </li>
+                      <li :class="{ 'active': this.tab === 1 }">
+                        <a
+                          a
+                          aria-expanded="true"
+                          @click="changeTab(1)"
+                        >
+                          <i
+                            class="fa fa-picture-o"
+                            aria-hidden="true"
+                          /> Gallery
+                        </a>
+                      </li>
+                      <li
+                        v-if="can('user_manager transactions read')"
+                        :class="{ 'active': this.tab === 2 }"
+                      >
+                        <a
+                          a
+                          aria-expanded="true"
+                          @click="changeTab(2)"
+                        >
+                          <i
+                            class="fa fa-list-alt"
+                            aria-hidden="true"
+                          /> Transactions
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                  <!-- END MENU -->
+                </div>
+              </li>
+              <li>
+                <div class="portlet light ">
+                  <!-- STAT -->
+                  <div class="row list-separated profile-stat">
+                    <div>
+                      <div class="uppercase profile-stat-title">
+                        {{ formatInteger(user.total_orders, '&infin;') }}
+                      </div>
+                      <div class="uppercase profile-stat-text">
+                        Total Orders
+                      </div>
+                    </div>
+                    <div class="margin-top-20">
+                      <div class="uppercase profile-stat-title">
+                        {{ formatUSD(user.total_spent, '&infin;') }}
+                      </div>
+                      <div class="uppercase profile-stat-text">
+                        Total Spent
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li v-if="can('user_manager users add_points create')">
+                <div class="portlet light">
+                  <div
+                    v-show="addErrorMessage"
+                    ref="addErrorMessage"
+                    class="alert alert-danger"
+                  >
+                    <button
+                      class="close"
+                      @click.prevent="clearError('addErrorMessage')"
+                    />
+                    <span>{{ addErrorMessage }}</span>
+                  </div>
+                  <div class="add-points__container">
+                    <div class="add-points__input form-group form-md-line-input form-md-floating-label">
+                      <input
+                        id="form_control_name"
+                        v-model="points"
+                        type="text"
+                        class="form-control input-sm"
+                        :class="{'edited': points.length}"
+                        name="add_points"
+                      >
+                      <label for="form_control_name">
+                        Add Points
+                      </label>
+                    </div>
+                    <div class="add-points__button">
+                      <button
+                        type="button"
+                        class="btn blue pull-right"
+                        :disabled="adding"
+                        @click="addPoints()"
+                      >
+                        <i
+                          v-show="adding"
+                          class="fa fa-spinner fa-pulse fa-fw"
+                        />
+                        Add
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div
+                  v-show="userAttributes.length"
+                  class="portlet light"
+                >
+                  <div class="uppercase profile-stat-text margin-bottom-20">
+                    Attributes
+                  </div>
+                  <span
+                    v-for="attribute in userAttributes"
+                    :key="attribute.id"
+                    class="badge badge-info margin-bottom-10 margin-right-10"
+                  >
+                    {{ attribute.name }}
+                  </span>
+                </div>
+              </li>
+              <li>
+                <div
+                  v-if="userItems.length"
+                  class="portlet light"
+                >
+                  <!-- STAT -->
+                  <div class="uppercase profile-stat-text margin-bottom-10">
+                    Items
+                  </div>
+                  <div class="container__flex--column">
+                    <div
+                      v-for="item in userItems"
+                      :key="item.id"
+                      class="container__flex--row"
+                    >
+                      <div class="container__item--image margin-right-10">
+                        <img
+                          :src="item.image_url"
+                          style="width: 40px; height: 40px;"
+                        >
+                      </div>
+                      <p class="font-blue-madison margin-left-10">
+                        {{ item.name }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div
+            v-show="errorMessage"
+            ref="errorMessage"
+            class="col-md-9"
+          >
+            <div class="alert alert-danger">
+              <button
+                class="close"
+                @click.prevent="clearError('errorMessage')"
+              />
+              <span>{{ errorMessage }}</span>
+            </div>
+          </div>
+          <div class="col-md-9">
+            <div class="tabbable-custom-profile">
+              <div class="tab-content">
+                <!--tab-pane-->
+                <div
+                  v-show="tab === 0"
+                  class="tab-pane active"
+                >
+                  <div
+                    v-show="loadingOrders"
+                  >
+                    <div class="col-xs-12 relative-block">
+                      <loading-screen
+                        :show="loadingOrders"
+                        class="margin-top-20"
+                      />
+                    </div>
+                  </div>
+                  <div
+                    v-show="!loadingOrders"
+                    class="portlet-body"
+                  >
+                    <div
+                      v-if="orders.length"
+                      class="clearfix margin-bottom-10"
+                    >
+                      <el-dropdown
+                        trigger="click"
+                        size="mini"
+                        :show-timeout="50"
+                        :hide-timeout="50"
+                        @command="updateSortByOrder"
+                      >
+                        <el-button size="mini">
+                          Sort by
+                          <span>
+                            <i
+                              v-if="sortBy.order === 'ASC'"
+                              class="fa fa-sort-alpha-asc"
+                            />
+                            <i
+                              v-if="sortBy.order === 'DESC'"
+                              class="fa fa-sort-alpha-desc"
+                            />
+                          </span>
+                          <i class="el-icon-arrow-down el-icon--right" />
+                        </el-button>
+                        <el-dropdown-menu slot="dropdown">
+                          <el-dropdown-item command="ASC">
+                            <i class="fa fa-sort-alpha-asc" />
+                          </el-dropdown-item>
+                          <el-dropdown-item command="DESC">
+                            <i class="fa fa-sort-alpha-desc" />
+                          </el-dropdown-item>
+                        </el-dropdown-menu>
+                      </el-dropdown>
+                      <a
+                        ref="csv"
+                        :download="`${user.first_name} ${user.last_name} Orders.csv`"
+                        class="margin-left-5"
+                        @click="downloadCsv()"
+                      >
+                        Save as CSV
+                        <i
+                          class="fa fa-download"
+                          aria-hidden="true"
+                        />
+                      </a>
+                      <page-results
+                        class="pull-right"
+                        :total-results="orders.length"
+                        :active-page="activePage"
+                        @pageResults="pageResultsUpdate"
+                      />
+                    </div>
+                    <table class="table table-striped table-advance table-hover">
+                      <thead>
+                        <tr>
+                          <th>
+                            <span class="white-space-no-wrap">
+                              <i class="fa fa-building" /> Store
+                            </span>
+                          </th>
+                          <th class="hidden-xs">
+                            <span class="white-space-no-wrap">
+                              <i class="fa fa-usd" /> Amount
+                            </span>
+                          </th>
+                          <th>
+                            <span class="white-space-no-wrap">
+                              <i class="fa fa-calendar" /> Order Date
+                            </span>
+                          </th>
+                          <th>
+                            <span class="white-space-no-wrap">
+                              <i class="fa fa-hourglass-start" /> Status
+                            </span>
+                          </th>
+                          <th />
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr
+                          v-for="order in currentActivePageOrders"
+                          :key="order.id"
+                        >
+                          <td class="align-middle">
+                            <span v-if="order.location_name !=='NULL'">
+                              {{ order.location_name }}
+                            </span>
+                          </td>
+                          <td class="align-middle">
+                            ${{ order.total }}
+                          </td>
+                          <td class="align-middle">
+                            {{ order.created_at.substring(0, 10) }}
+                          </td>
+                          <td class="align-middle">
+                            <span
+                              class="label label-sm"
+                              :class="{ 
+                                'label-info' : order.status === 'pending',
+                                'label-warning' : order.status === 'submitted', 
+                                'label-success' : order.status === 'completed', 
+                                'label-danger' : order.status === 'overdue',
+                                'label-danger' : order.status === 'cancelled' || order.status === 'refunded'
+                              }"
+                            >
+                              {{ order.status }}
+                            </span>
+                          </td>
+                          <td class="align-middle">
+                            <a
+                              class="btn btn-sm grey-salsa btn-outline"
+                              @click="showViewOrderModal(order)"
+                            >
+                              View
+                            </a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div
+                      v-if="orders.length && numPages > 1"
+                      class="clearfix"
+                    >
+                      <pagination
+                        :passed-page="activePage"
+                        :num-pages="numPages"
+                        @activePageChange="activePageUpdate"
+                      />
+                    </div>
+                    <p
+                      v-if="!orders.length"
+                      class="text-center"
+                    >
+                      This user hasn't made any orders yet
+                    </p>
+                  </div>
+                </div>
+                <!--tab-pane-->
+                <div
+                  v-show="tab === 1"
+                  class="tab-pane active"
+                >
+                  <div
+                    v-if="socialFeed.length"
+                    class="row"
+                  >
+                    <div
+                      v-for="feed in socialFeed"
+                      :key="feed.id"
+                      class="col-md-3 col-sm-3 col-xs-4"
+                    >
+                      <div
+                        :id="'social-feed-' + feed.id"
+                        class="blog-post-sm blog-container blog-shadow"
+                      >
+                        <div class="blog-top-wrap">
+                          <div class="pull-left">
+                            <span v-if="feed.short_description.length">
+                              {{ feed.short_description }}
+                            </span>
+                            <span v-else>
+                              NO TITLE
+                            </span>
+                          </div>
+                        </div>
+                        <div
+                          class="blog-img-thumb small-blog-img-thumb"
+                          :class="{'blog-img-thumb-bordered': !feed.url.length}"
+                        >
+                          <img
+                            v-if="feed.url.length"
+                            class="small-image"
+                            :src="feed.url"
+                          >
+                          <img
+                            v-else
+                            class="small-image"
+                            src="../../../assets/img/app/image-placeholder.png"
+                          >
+                        </div>
+                        <div class="blog-post-content">
+                          <p class="blog-post-desc">
+                            {{ feed.description }}
+                          </p>
+                          <div
+                            v-if="feed.facebook || feed.twitter || feed.instagram"
+                            class="blog-post-foot"
+                          >
+                            <div class="socicons">
+                              <a
+                                v-if="feed.facebook"
+                                class="socicon-btn socicon-btn-circle socicon-facebook"
+                              />
+                              <a
+                                v-if="feed.twitter"
+                                class="socicon-btn socicon-btn-circle socicon-twitter"
+                              />
+                              <a
+                                v-if="feed.instagram"
+                                class="socicon-btn socicon-btn-circle socicon-instagram"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!--tab-pane-->
+              </div>
+              <div
+                v-show="tab === 2"
+                class="tab-pane active"
+              >
+                <div
+                  v-show="transactions.loading"
+                >
+                  <div class="col-xs-12 relative-block">
+                    <loading-screen
+                      :show="transactions.loading"
+                      class="margin-top-20"
+                    />
+                  </div>
+                </div>
+                <div
+                  v-show="!transactions.loading"
+                  class="portlet-body"
+                >
+                  <div
+                    v-if="currentActivePageTransactions.length"
+                    class="clearfix margin-bottom-10"
+                  >
+                    <el-select 
+                      v-model="transactions.sortBy"
+                      size="mini"
+                      @change="sortTransactions"
+                    >
+                      <el-option
+                        key="newest"
+                        label="New to old ↓"
+                        value="newest"
+                      />
+                      <el-option
+                        key="oldest"
+                        label="Old to new ↑"
+                        value="oldest"
+                      />
+                    </el-select>
+                    <a 
+                      ref="transactionsCSV"
+                      :download="`${user.first_name} ${user.last_name} Transactions.csv`"
+                      class="margin-left-5"
+                      @click="downloadTransactionsCSV()"
+                    >
+                      Save as CSV
+                      <i
+                        class="fa fa-download"
+                        aria-hidden="true"
+                      />
+                    </a>
+                    <page-results 
+                      class="pull-right"
+                      :total-results="transactions.data.length"
+                      :active-page="transactions.activePage"
+                      @pageResults="transactionsPageResultsUpdate"
+                    />
+                  </div>
+                  <table class="table table-striped table-advance">
+                    <thead>
+                      <tr>
+                        <th>
+                          ID
+                        </th>
+                        <th>
+                          <span class="white-space-no-wrap">
+                            Order ID
+                          </span>
+                        </th>
+                        <th>
+                          Status
+                        </th>
+                        <th>
+                          <span class="white-space-no-wrap">
+                            <i class="fa fa-usd" /> Amount
+                          </span>
+                        </th>
+                        <th>
+                          App
+                        </th>
+                        <th>
+                          Transaction no
+                        </th>
+                        <th>
+                          <span class="white-space-no-wrap">
+                            <i class="fa fa-clock-o" /> Time
+                          </span>
+                        </th>
+                      </tr>
+                    </thead>
 
-											<tbody>
-												<tr
-													v-for="transaction in currentActivePageTransactions"
-													:key="transaction.id"
-												>
-													<td class="align-middle">
-														{{transaction.external_id}}
-													</td>
-													<td class="align-middle">
-														{{transaction.order_id}}
-													</td>
-													<td class="align-middle">
-														<span
-															class="label label-sm"
-															:class="{ 
-																'label-success' : transaction.status === 'success',
-																'label-info' : transaction.status !== 'success',
-																'label-danger' : transaction.status === 'fail'
-															}"
-														>
-															{{ transaction.status }}
-														</span>
-													</td>
-													<td class="align-middle">
-														{{formatUSD(transaction.total)}}<br/>
-														<span class="text-muted">{{transaction.type}}</span>
-													</td>
-													<td class="align-middle">
-														{{transaction.app_version}}<br/>
-														<span class="text-muted">{{getPlatformName(transaction.platform)}}</span>
-													</td>
-													<td class="align-middle">
-														{{transaction.tr_number}}
-													</td>
-													<td class="align-middle">
-														{{transaction.updated_at}}
-													</td>
-												</tr>
-											</tbody>
-										</table>
-										<div
-											v-if="currentActivePageTransactions.length && transactionsNumPages > 1"
-										>
-											<pagination 
-												:passedPage="transactions.activePage"
-												:numPages="transactionsNumPages"
-												@activePageChange="transactionsActivePageUpdate"
-											>
-											</pagination>
-										</div>
-										<p
-											v-if="!transactions.data.length"
-											class="text-center"
-										>
-											There are no transactions for this user
-										</p>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<view-order v-if="viewOrderModalDisplayed"
-			            :order="orderBeingViewed"
-			            @closeViewOrderModal="closeViewOrderModal"></view-order>
-			<message v-if="messageModalDisplayed"
-			         :userId="user.id"
-			         @closeMessageModal="closeMessageModal"></message>
-		</div>
+                    <tbody>
+                      <tr
+                        v-for="transaction in currentActivePageTransactions"
+                        :key="transaction.id"
+                      >
+                        <td class="align-middle">
+                          {{ transaction.external_id }}
+                        </td>
+                        <td class="align-middle">
+                          {{ transaction.order_id }}
+                        </td>
+                        <td class="align-middle">
+                          <span
+                            class="label label-sm"
+                            :class="{ 
+                              'label-success' : transaction.status === 'success',
+                              'label-info' : transaction.status !== 'success',
+                              'label-danger' : transaction.status === 'fail'
+                            }"
+                          >
+                            {{ transaction.status }}
+                          </span>
+                        </td>
+                        <td class="align-middle">
+                          {{ formatUSD(transaction.total) }}<br>
+                          <span class="text-muted">
+                            {{ transaction.type }}
+                          </span>
+                        </td>
+                        <td class="align-middle">
+                          {{ transaction.app_version }}<br>
+                          <span class="text-muted">
+                            {{ getPlatformName(transaction.platform) }}
+                          </span>
+                        </td>
+                        <td class="align-middle">
+                          {{ transaction.tr_number }}
+                        </td>
+                        <td class="align-middle">
+                          {{ transaction.updated_at }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div
+                    v-if="currentActivePageTransactions.length && transactionsNumPages > 1"
+                  >
+                    <pagination 
+                      :passed-page="transactions.activePage"
+                      :num-pages="transactionsNumPages"
+                      @activePageChange="transactionsActivePageUpdate"
+                    />
+                  </div>
+                  <p
+                    v-if="!transactions.data.length"
+                    class="text-center"
+                  >
+                    There are no transactions for this user
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <view-order
+      v-if="viewOrderModalDisplayed"
+      :order="orderBeingViewed"
+      @closeViewOrderModal="closeViewOrderModal"
+    />
+    <message
+      v-if="messageModalDisplayed"
+      :user-id="user.id"
+      @closeMessageModal="closeMessageModal"
+    />
+  </div>
 </template>
 
 <script>

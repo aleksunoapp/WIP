@@ -1,84 +1,123 @@
 <template>
-	<modal :show="showEditTagModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="modal">
-		<div slot="modal-header"
-		     class="modal-header center">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center"
-			    v-if="!selectImageMode">Update Tag</h4>
-			<h4 class="modal-title center"
-			    v-if="selectImageMode"
-			    key="selectImageMode">Select Image</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="col-xs-12">
-				<div class="alert alert-danger"
-				     v-show="errorMessage"
-				     ref="errorMessage">
-					<button class="close"
-					        @click="clearError()"></button>
-					<span>{{errorMessage}}</span>
-				</div>
-				<div :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
-					<resource-picker @open="goToPageTwo()"
-					                 @close="goToPageOne()"
-					                 @selected="updateImage"
-					                 :imageButton="true"
-					                 :imageUrl="tagToBeEdited.image_url"
-					                 class="margin-top-15">
-					</resource-picker>
-				</div>
-				<div class="col-md-12"
-				     v-show="!selectImageMode">
-					<el-dropdown trigger="click"
-					             @command="updateTagToBeEdited"
-					             size="small"
-					             :show-timeout="50"
-					             :hide-timeout="50"
-					             class='margin-bottom-20'>
-						<el-button size="small">
-							{{ tagTypeLabel }}
-							<i class="el-icon-arrow-down el-icon--right"></i>
-						</el-button>
-						<el-dropdown-menu slot="dropdown">
-							<el-dropdown-item command="contains">contains</el-dropdown-item>
-							<el-dropdown-item command="may_contain">may contain</el-dropdown-item>
-						</el-dropdown-menu>
-					</el-dropdown>
-					<div class="form-group form-md-line-input form-md-floating-label margin-top-10">
-						<input :disabled="!$root.permissions['menu_manager tags update']"
-						       type="text"
-						       class="form-control input-sm edited"
-						       id="form_control_1"
-						       v-model="tagToBeEdited.name">
-						<label for="form_control_1">Tag Name</label>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button v-if="!selectImageMode && !$root.permissions['menu_manager tags update']"
-			        type="button"
-			        class="btn btn-primary"
-			        @click="closeModal()">
-				Close
-			</button>
-			<button v-if="!selectImageMode && $root.permissions['menu_manager tags update']"
-			        type="button"
-			        class="btn btn-primary"
-			        @click="updateTag()">
-				Save
-			</button>
-		</div>
-	</modal>
+  <modal
+    ref="modal"
+    :show="showEditTagModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header center"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4
+        v-if="!selectImageMode"
+        class="modal-title center"
+      >
+        Update Tag
+      </h4>
+      <h4
+        v-if="selectImageMode"
+        key="selectImageMode"
+        class="modal-title center"
+      >
+        Select Image
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div class="col-xs-12">
+        <div
+          v-show="errorMessage"
+          ref="errorMessage"
+          class="alert alert-danger"
+        >
+          <button
+            class="close"
+            @click="clearError()"
+          />
+          <span>{{ errorMessage }}</span>
+        </div>
+        <div :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
+          <resource-picker
+            :image-button="true"
+            :image-url="tagToBeEdited.image_url"
+            class="margin-top-15"
+            @open="goToPageTwo()"
+            @close="goToPageOne()"
+            @selected="updateImage"
+          />
+        </div>
+        <div
+          v-show="!selectImageMode"
+          class="col-md-12"
+        >
+          <el-dropdown
+            trigger="click"
+            size="small"
+            :show-timeout="50"
+            :hide-timeout="50"
+            class="margin-bottom-20"
+            @command="updateTagToBeEdited"
+          >
+            <el-button size="small">
+              {{ tagTypeLabel }}
+              <i class="el-icon-arrow-down el-icon--right" />
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="contains">
+                contains
+              </el-dropdown-item>
+              <el-dropdown-item command="may_contain">
+                may contain
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+          <div class="form-group form-md-line-input form-md-floating-label margin-top-10">
+            <input
+              id="form_control_1"
+              v-model="tagToBeEdited.name"
+              :disabled="!$root.permissions['menu_manager tags update']"
+              type="text"
+              class="form-control input-sm edited"
+            >
+            <label for="form_control_1">
+              Tag Name
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        v-if="!selectImageMode && !$root.permissions['menu_manager tags update']"
+        type="button"
+        class="btn btn-primary"
+        @click="closeModal()"
+      >
+        Close
+      </button>
+      <button
+        v-if="!selectImageMode && $root.permissions['menu_manager tags update']"
+        type="button"
+        class="btn btn-primary"
+        @click="updateTag()"
+      >
+        Save
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -90,6 +129,12 @@ import SelectLocationsPopup from '../../../modules/SelectLocationsPopup'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
+	components: {
+		Modal,
+		Dropdown,
+		ResourcePicker,
+		SelectLocationsPopup
+	},
 	data () {
 		return {
 			showEditTagModal: false,
@@ -292,12 +337,6 @@ export default {
 			}
 			this.goToPageOne()
 		}
-	},
-	components: {
-		Modal,
-		Dropdown,
-		ResourcePicker,
-		SelectLocationsPopup
 	}
 }
 </script>

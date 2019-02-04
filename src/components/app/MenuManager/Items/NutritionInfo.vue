@@ -1,290 +1,422 @@
 <template>
-	<modal v-bind:show="showNutritionModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="nutritionModal">
-		<div slot="modal-header"
-		     class="modal-header">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<transition name="fade"
-			            mode="out-in">
-				<h4 class="modal-title center"
-				    v-if="!selectLocationMode"
-				    key="mainEditMode">Item Nutrition Info</h4>
-				<h4 class="modal-title center"
-				    v-if="selectLocationMode"
-				    key="selectLocationMode">
-					<i class="fa fa-chevron-left clickable pull-left back-button"
-					   @click="closeSelectLocationsPopup()"></i>Select Stores</h4>
-			</transition>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body"
-		     v-if="!creatingNutritionInfo">
-			<div class="margin-top-20"
-			     v-show="errorMessage"
-			     ref="errorMessage">
-				<div class="alert alert-info">
-					<span>{{ errorMessage }}</span>
-				</div>
-			</div>
-			<div
-				class="margin-top-15"
-				v-if="itemNutritionInfo.length === 0">
-				<button type="button"
-				        class="btn blue"
-				        @click="enableCreate()"
-				>Add Nutrition Info</button>
-			</div>
-			<div class="portlet light bg-inverse clear"
-			     v-if="!errorMessage.length && !selectLocationMode">
-				<div class="portlet-title">
-					<div class="caption">Click on the button on the right to edit</div>
-					<div class="actions">
-						<a class="btn btn-circle btn-icon-only btn-default"
-						   @click="enableEdit()">
-							<i class="fa fa-lg fa-pencil"></i>
-						</a>
-					</div>
-				</div>
-				<div class="portlet-body">
-					<div v-show="editNutritionError"
-					     ref="editNutritionError">
-						<div class="alert alert-danger">
-							<button class="close"
-							        @click="clearError('editNutritionError')"></button>
-							<span>{{ editNutritionError }}</span>
-						</div>
-					</div>
-					<div class='table-scrollable table-fixed-height'>
-						<table class='table'>
-							<thead>
-								<tr>
-									<th> Category </th>
-									<th> Value </th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr v-for="info in itemNutritionInfo"
-									v-if="info.key !== 'kcal'"
-								    :key="info.id">
-									<td v-if="info.key !== 'id' && info.key !== 'item_id'"> {{ info.name }} </td>
-									<td v-if="info.key !== 'id' && info.key !== 'item_id'">
-										<input :disabled="!editingNutritionInfo || !can('menu_manager menus categories subcategories items nutrition update')"
-										       type="text"
-										       class="form-control input-sm"
-										       v-model="info.value">
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					<div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<label>Display calories as kilocalories?</label><br>
-							<el-switch :disabled="!editingNutritionInfo || !can('menu_manager menus categories subcategories items nutrition update')"
-							           v-model="kcal"
-							           active-color="#0c6"
-							           inactive-color="#ff4949"
-							           :active-value="1"
-							           :inactive-value="0"
-							           active-text="Yes"
-							           inactive-text="No">
-							</el-switch>
-						</div>
-					</div>
-					<div>
-						<p class="margin-bottom-10 margin-top-30 margin-right-10">Select locations to apply the changes to:</p>
-						<button type="submit"
-						        class="btn blue btn-outline"
-						        @click="selectLocations($event)">Select locations</button>
-						<p class="grey-label margin-top-10"
-						   v-if="selectedLocations.length">Selected {{ selectedLocations.length }}
-							<span v-if="selectedLocations.length !== 1">locations</span>
-							<span v-else>location</span>
-						</p>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<label>Update all items?</label><br>
-							<el-switch :disabled="!editingNutritionInfo || !can('menu_manager menus categories subcategories items nutrition update')"
-							           v-model="update_all_items"
-							           active-color="#0c6"
-							           inactive-color="#ff4949"
-							           :active-value="1"
-							           :inactive-value="0"
-							           active-text="Yes"
-							           inactive-text="No">
-							</el-switch>
-						</div>
-					</div>
-				</div>
-			</div>
+  <modal
+    ref="nutritionModal"
+    :show="showNutritionModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <transition
+        name="fade"
+        mode="out-in"
+      >
+        <h4
+          v-if="!selectLocationMode"
+          key="mainEditMode"
+          class="modal-title center"
+        >
+          Item Nutrition Info
+        </h4>
+        <h4
+          v-if="selectLocationMode"
+          key="selectLocationMode"
+          class="modal-title center"
+        >
+          <i
+            class="fa fa-chevron-left clickable pull-left back-button"
+            @click="closeSelectLocationsPopup()"
+          />Select Stores
+        </h4>
+      </transition>
+    </div>
+    <div
+      v-if="!creatingNutritionInfo"
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div
+        v-show="errorMessage"
+        ref="errorMessage"
+        class="margin-top-20"
+      >
+        <div class="alert alert-info">
+          <span>{{ errorMessage }}</span>
+        </div>
+      </div>
+      <div
+        v-if="itemNutritionInfo.length === 0"
+        class="margin-top-15"
+      >
+        <button
+          type="button"
+          class="btn blue"
+          @click="enableCreate()"
+        >
+          Add Nutrition Info
+        </button>
+      </div>
+      <div
+        v-if="!errorMessage.length && !selectLocationMode"
+        class="portlet light bg-inverse clear"
+      >
+        <div class="portlet-title">
+          <div class="caption">
+            Click on the button on the right to edit
+          </div>
+          <div class="actions">
+            <a
+              class="btn btn-circle btn-icon-only btn-default"
+              @click="enableEdit()"
+            >
+              <i class="fa fa-lg fa-pencil" />
+            </a>
+          </div>
+        </div>
+        <div class="portlet-body">
+          <div
+            v-show="editNutritionError"
+            ref="editNutritionError"
+          >
+            <div class="alert alert-danger">
+              <button
+                class="close"
+                @click="clearError('editNutritionError')"
+              />
+              <span>{{ editNutritionError }}</span>
+            </div>
+          </div>
+          <div class="table-scrollable table-fixed-height">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th> Category </th>
+                  <th> Value </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="info in itemNutritionInfo"
+                  v-if="info.key !== 'kcal'"
+                  :key="info.id"
+                >
+                  <td v-if="info.key !== 'id' && info.key !== 'item_id'">
+                    {{ info.name }}
+                  </td>
+                  <td v-if="info.key !== 'id' && info.key !== 'item_id'">
+                    <input
+                      v-model="info.value"
+                      :disabled="!editingNutritionInfo || !can('menu_manager menus categories subcategories items nutrition update')"
+                      type="text"
+                      class="form-control input-sm"
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <label>Display calories as kilocalories?</label><br>
+              <el-switch
+                v-model="kcal"
+                :disabled="!editingNutritionInfo || !can('menu_manager menus categories subcategories items nutrition update')"
+                active-color="#0c6"
+                inactive-color="#ff4949"
+                :active-value="1"
+                :inactive-value="0"
+                active-text="Yes"
+                inactive-text="No"
+              />
+            </div>
+          </div>
+          <div>
+            <p class="margin-bottom-10 margin-top-30 margin-right-10">
+              Select locations to apply the changes to:
+            </p>
+            <button
+              type="submit"
+              class="btn blue btn-outline"
+              @click="selectLocations($event)"
+            >
+              Select locations
+            </button>
+            <p
+              v-if="selectedLocations.length"
+              class="grey-label margin-top-10"
+            >
+              Selected {{ selectedLocations.length }}
+              <span v-if="selectedLocations.length !== 1">
+                locations
+              </span>
+              <span v-else>
+                location
+              </span>
+            </p>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <label>Update all items?</label><br>
+              <el-switch
+                v-model="update_all_items"
+                :disabled="!editingNutritionInfo || !can('menu_manager menus categories subcategories items nutrition update')"
+                active-color="#0c6"
+                inactive-color="#ff4949"
+                :active-value="1"
+                :inactive-value="0"
+                active-text="Yes"
+                inactive-text="No"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
 
-			<store-picker-with-button
-				v-if="selectLocationMode"
-				:previouslySelected="selectedLocations"
-				@close="updateSelectedLocations"
-			>
-			</store-picker-with-button>
-
-		</div>
-		<div slot="modal-body"
-		     class="modal-body"
-		     v-if="creatingNutritionInfo">
-			<div class="portlet light bg-inverse clear">
-				<div class="portlet-title">
-					<div class="caption">Add nutrition info for '{{ item.name }}'</div>
-				</div>
-				<div class="portlet-body">
-					<div class="margin-top-20"
-					     v-show="createNutritionError"
-					     ref="createNutritionError">
-						<div class="alert alert-danger">
-							<button class="close"
-							        @click="clearError('createNutritionError')"></button>
-							<span>{{ createNutritionError }}</span>
-						</div>
-					</div>
-					<div class='table-scrollable table-fixed-height'>
-						<fieldset :disabled="!can('menu_manager menus categories subcategories items nutrition create')">
-							<table class='table'>
-								<thead>
-									<tr>
-										<th> Category </th>
-										<th> Value </th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td> Calories </td>
-										<td> <input type="text"
-											       class="form-control input-sm"
-											       v-model="newNutritionInfo.calories"> </td>
-									</tr>
-									<tr>
-										<td> Minimum Calories </td>
-										<td> <input type="text"
-											       class="form-control input-sm"
-											       v-model="newNutritionInfo.min_cal"> </td>
-									</tr>
-									<tr>
-										<td> Total Fat </td>
-										<td> <input type="text"
-											       class="form-control input-sm"
-											       v-model="newNutritionInfo.total_fat"> </td>
-									</tr>
-									<tr>
-										<td> Saturated Fat </td>
-										<td> <input type="text"
-											       class="form-control input-sm"
-											       v-model="newNutritionInfo.saturated_fat"> </td>
-									</tr>
-									<tr>
-										<td> Trans Fat </td>
-										<td> <input type="text"
-											       class="form-control input-sm"
-											       v-model="newNutritionInfo.trans_fat"> </td>
-									</tr>
-									<tr>
-										<td> Cholesterol </td>
-										<td> <input type="text"
-											       class="form-control input-sm"
-											       v-model="newNutritionInfo.cholesterol"> </td>
-									</tr>
-									<tr>
-										<td> Sodium </td>
-										<td> <input type="text"
-											       class="form-control input-sm"
-											       v-model="newNutritionInfo.sodium"> </td>
-									</tr>
-									<tr>
-										<td> Carbohydrates </td>
-										<td> <input type="text"
-											       class="form-control input-sm"
-											       v-model="newNutritionInfo.carbs"> </td>
-									</tr>
-									<tr>
-										<td> Fibre </td>
-										<td> <input type="text"
-											       class="form-control input-sm"
-											       v-model="newNutritionInfo.fibre"> </td>
-									</tr>
-									<tr>
-										<td> Sugar </td>
-										<td> <input type="text"
-											       class="form-control input-sm"
-											       v-model="newNutritionInfo.sugar"> </td>
-									</tr>
-									<tr>
-										<td> Protein </td>
-										<td> <input type="text"
-											       class="form-control input-sm"
-											       v-model="newNutritionInfo.protein"> </td>
-									</tr>
-									<tr>
-										<td> Vitamin A </td>
-										<td> <input type="text"
-											       class="form-control input-sm"
-											       v-model="newNutritionInfo.vit_a"> </td>
-									</tr>
-									<tr>
-										<td> Vitamin C </td>
-										<td> <input type="text"
-											       class="form-control input-sm"
-											       v-model="newNutritionInfo.vit_c"> </td>
-									</tr>
-									<tr>
-										<td> Calcium </td>
-										<td> <input type="text"
-											       class="form-control input-sm"
-											       v-model="newNutritionInfo.calcium"> </td>
-									</tr>
-									<tr>
-										<td> Iron </td>
-										<td> <input type="text"
-											       class="form-control input-sm"
-											       v-model="newNutritionInfo.iron"> </td>
-									</tr>
-								</tbody>
-							</table>
-						</fieldset>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button type="button"
-			        class="btn btn-primary"
-			        v-if="editingNutritionInfo && !creatingNutritionInfo && !selectLocationMode"
-			        @click="updateItemNutritionInfo()"
-			        :disabled="updating">
-				Save
-				<i v-show="updating"
-				   class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-			<button type="button"
-			        class="btn btn-primary"
-			        v-if="!editingNutritionInfo && creatingNutritionInfo && !selectLocationMode"
-			        @click="createItemNutritionInfo()"
-			        :disabled="creating">
-				Create
-				<i v-show="creating"
-				   class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-			<button type="button"
-			        class="btn btn-primary"
-			        v-if="!editingNutritionInfo && !creatingNutritionInfo && !selectLocationMode"
-			        @click="closeModal()">
-				Close
-			</button>
-		</div>
-	</modal>
+      <store-picker-with-button
+        v-if="selectLocationMode"
+        :previously-selected="selectedLocations"
+        @close="updateSelectedLocations"
+      />
+    </div>
+    <div
+      v-if="creatingNutritionInfo"
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div class="portlet light bg-inverse clear">
+        <div class="portlet-title">
+          <div class="caption">
+            Add nutrition info for '{{ item.name }}'
+          </div>
+        </div>
+        <div class="portlet-body">
+          <div
+            v-show="createNutritionError"
+            ref="createNutritionError"
+            class="margin-top-20"
+          >
+            <div class="alert alert-danger">
+              <button
+                class="close"
+                @click="clearError('createNutritionError')"
+              />
+              <span>{{ createNutritionError }}</span>
+            </div>
+          </div>
+          <div class="table-scrollable table-fixed-height">
+            <fieldset :disabled="!can('menu_manager menus categories subcategories items nutrition create')">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th> Category </th>
+                    <th> Value </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td> Calories </td>
+                    <td>
+                      <input
+                        v-model="newNutritionInfo.calories"
+                        type="text"
+                        class="form-control input-sm"
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td> Minimum Calories </td>
+                    <td>
+                      <input
+                        v-model="newNutritionInfo.min_cal"
+                        type="text"
+                        class="form-control input-sm"
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td> Total Fat </td>
+                    <td>
+                      <input
+                        v-model="newNutritionInfo.total_fat"
+                        type="text"
+                        class="form-control input-sm"
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td> Saturated Fat </td>
+                    <td>
+                      <input
+                        v-model="newNutritionInfo.saturated_fat"
+                        type="text"
+                        class="form-control input-sm"
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td> Trans Fat </td>
+                    <td>
+                      <input
+                        v-model="newNutritionInfo.trans_fat"
+                        type="text"
+                        class="form-control input-sm"
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td> Cholesterol </td>
+                    <td>
+                      <input
+                        v-model="newNutritionInfo.cholesterol"
+                        type="text"
+                        class="form-control input-sm"
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td> Sodium </td>
+                    <td>
+                      <input
+                        v-model="newNutritionInfo.sodium"
+                        type="text"
+                        class="form-control input-sm"
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td> Carbohydrates </td>
+                    <td>
+                      <input
+                        v-model="newNutritionInfo.carbs"
+                        type="text"
+                        class="form-control input-sm"
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td> Fibre </td>
+                    <td>
+                      <input
+                        v-model="newNutritionInfo.fibre"
+                        type="text"
+                        class="form-control input-sm"
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td> Sugar </td>
+                    <td>
+                      <input
+                        v-model="newNutritionInfo.sugar"
+                        type="text"
+                        class="form-control input-sm"
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td> Protein </td>
+                    <td>
+                      <input
+                        v-model="newNutritionInfo.protein"
+                        type="text"
+                        class="form-control input-sm"
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td> Vitamin A </td>
+                    <td>
+                      <input
+                        v-model="newNutritionInfo.vit_a"
+                        type="text"
+                        class="form-control input-sm"
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td> Vitamin C </td>
+                    <td>
+                      <input
+                        v-model="newNutritionInfo.vit_c"
+                        type="text"
+                        class="form-control input-sm"
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td> Calcium </td>
+                    <td>
+                      <input
+                        v-model="newNutritionInfo.calcium"
+                        type="text"
+                        class="form-control input-sm"
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td> Iron </td>
+                    <td>
+                      <input
+                        v-model="newNutritionInfo.iron"
+                        type="text"
+                        class="form-control input-sm"
+                      >
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        v-if="editingNutritionInfo && !creatingNutritionInfo && !selectLocationMode"
+        type="button"
+        class="btn btn-primary"
+        :disabled="updating"
+        @click="updateItemNutritionInfo()"
+      >
+        Save
+        <i
+          v-show="updating"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+      <button
+        v-if="!editingNutritionInfo && creatingNutritionInfo && !selectLocationMode"
+        type="button"
+        class="btn btn-primary"
+        :disabled="creating"
+        @click="createItemNutritionInfo()"
+      >
+        Create
+        <i
+          v-show="creating"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+      <button
+        v-if="!editingNutritionInfo && !creatingNutritionInfo && !selectLocationMode"
+        type="button"
+        class="btn btn-primary"
+        @click="closeModal()"
+      >
+        Close
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -319,6 +451,10 @@ export default {
 	},
 	computed: {
 		...mapGetters(['can', 'canAny'])
+	},
+	components: {
+		Modal,
+		StorePickerWithButton
 	},
 	props: {
 		item: {
@@ -655,10 +791,6 @@ export default {
 		closeModal () {
 			this.$emit('deactivateNutritionInfoModal')
 		}
-	},
-	components: {
-		Modal,
-		StorePickerWithButton
 	}
 }
 </script>

@@ -1,99 +1,134 @@
 <template>
-	<modal :show="showModifierModal"
-	       :width="700"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="modal">
-		<div slot="modal-header"
-		     class="modal-header">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Select Modifiers</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="alert alert-danger"
-			     v-show="errorMessage"
-			     ref="errorMessage">
-				<button class="close"
-				        @click="clearError()"></button>
-				<span>{{errorMessage}}</span>
-			</div>
-			<div v-if="storeModifiers.length"
-			     class="table-scrollable table-fixed-height">
-				<table class="table">
-					<thead>
-						<tr>
-							<th>
-								<div class="md-checkbox has-success">
-									<input type="checkbox"
-									       id="select_all"
-									       class="md-check"
-									       @click="selectAllModifiers"
-									       v-model="allSelected">
-									<label for="select_all">
-										<span class="inc"></span>
-										<span class="check"></span>
-										<span class="box"></span>
-									</label>
-								</div>
-							</th>
-							<th> Image </th>
-							<th> Name </th>
-							<th> Description </th>
-							<th> Max </th>
-							<th> Min </th>
-							<th> Status </th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="modifier in storeModifiers"
-						    :key="modifier.id">
-							<td>
-								<div class="md-checkbox has-success">
-									<input type="checkbox"
-									       :id="'modifier_checkbox_' + modifier.id"
-									       class="md-check"
-									       v-model="modifier.selected">
-									<label :for="'modifier_checkbox_' + modifier.id">
-										<span class="inc"></span>
-										<span class="check"></span>
-										<span class="box"></span>
-									</label>
-								</div>
-							</td>
-							<td> <img :src="modifier.image_url"
-								     width="30"
-								     height="30"> </td>
-							<td> {{modifier.name}} </td>
-							<td> {{modifier.desc}} </td>
-							<td> {{modifier.max}} </td>
-							<td> {{modifier.min}} </td>
-							<td>
-								<span v-if="modifier.status === 1">Available</span>
-								<span v-if="modifier.status === 0">Sold Out</span>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button type="button"
-			        class="btn btn-primary"
-			        :disabled="!storeModifiers.length || applying"
-			        @click="applyModifiersToItem()">
-				Apply Modifiers
-				<i v-show="applying"
-				   class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-		</div>
-	</modal>
+  <modal
+    ref="modal"
+    :show="showModifierModal"
+    :width="700"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Select Modifiers
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div
+        v-show="errorMessage"
+        ref="errorMessage"
+        class="alert alert-danger"
+      >
+        <button
+          class="close"
+          @click="clearError()"
+        />
+        <span>{{ errorMessage }}</span>
+      </div>
+      <div
+        v-if="storeModifiers.length"
+        class="table-scrollable table-fixed-height"
+      >
+        <table class="table">
+          <thead>
+            <tr>
+              <th>
+                <div class="md-checkbox has-success">
+                  <input
+                    id="select_all"
+                    v-model="allSelected"
+                    type="checkbox"
+                    class="md-check"
+                    @click="selectAllModifiers"
+                  >
+                  <label for="select_all">
+                    <span class="inc" />
+                    <span class="check" />
+                    <span class="box" />
+                  </label>
+                </div>
+              </th>
+              <th> Image </th>
+              <th> Name </th>
+              <th> Description </th>
+              <th> Max </th>
+              <th> Min </th>
+              <th> Status </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="modifier in storeModifiers"
+              :key="modifier.id"
+            >
+              <td>
+                <div class="md-checkbox has-success">
+                  <input
+                    :id="'modifier_checkbox_' + modifier.id"
+                    v-model="modifier.selected"
+                    type="checkbox"
+                    class="md-check"
+                  >
+                  <label :for="'modifier_checkbox_' + modifier.id">
+                    <span class="inc" />
+                    <span class="check" />
+                    <span class="box" />
+                  </label>
+                </div>
+              </td>
+              <td>
+                <img
+                  :src="modifier.image_url"
+                  width="30"
+                  height="30"
+                >
+              </td>
+              <td> {{ modifier.name }} </td>
+              <td> {{ modifier.desc }} </td>
+              <td> {{ modifier.max }} </td>
+              <td> {{ modifier.min }} </td>
+              <td>
+                <span v-if="modifier.status === 1">
+                  Available
+                </span>
+                <span v-if="modifier.status === 0">
+                  Sold Out
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        type="button"
+        class="btn btn-primary"
+        :disabled="!storeModifiers.length || applying"
+        @click="applyModifiersToItem()"
+      >
+        Apply Modifiers
+        <i
+          v-show="applying"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -102,14 +137,8 @@ import ModifiersFunctions from '../../../../controllers/Modifiers'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	data () {
-		return {
-			showModifierModal: false,
-			applying: false,
-			errorMessage: '',
-			storeModifiers: [],
-			allSelected: false
-		}
+	components: {
+		Modal
 	},
 	props: {
 		appliedModifiers: {
@@ -119,6 +148,15 @@ export default {
 		selectedItemId: {
 			type: Number,
 			default: 0
+		}
+	},
+	data () {
+		return {
+			showModifierModal: false,
+			applying: false,
+			errorMessage: '',
+			storeModifiers: [],
+			allSelected: false
 		}
 	},
 	created () {
@@ -273,9 +311,6 @@ export default {
 				this.storeModifiers[i].selected = this.allSelected
 			}
 		}
-	},
-	components: {
-		Modal
 	}
 }
 </script>

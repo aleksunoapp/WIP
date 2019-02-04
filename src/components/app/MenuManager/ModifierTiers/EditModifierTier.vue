@@ -1,47 +1,71 @@
 <template>
-	<modal :show="showModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal">
-		<div slot="modal-header"
-		     class="modal-header">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Edit Modifier Tier</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="row">
-				<div class="col-xs-12">
-					<div class="alert alert-danger"
-					     v-show="errorMessage.length"
-					     ref="errorMessage">
-						<button class="close"
-						        @click.prevent="clearError('errorMessage')"></button>
-						<span>{{errorMessage}}</span>
-					</div>
-				</div>
-				<div class="col-xs-12">
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<input type="text"
-						       class="form-control input-sm"
-						       id="form_control_1"
-						       :class="{'edited': tierToEdit.name.length}"
-						       v-model="tierToEdit.name">
-						<label for="form_control_1">Modifier Tier Name</label>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button @click="updateModifierTier()"
-			        type="button"
-			        class="btn btn-primary">Save</button>
-		</div>
-	</modal>
+  <modal
+    :show="showModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Edit Modifier Tier
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div class="row">
+        <div class="col-xs-12">
+          <div
+            v-show="errorMessage.length"
+            ref="errorMessage"
+            class="alert alert-danger"
+          >
+            <button
+              class="close"
+              @click.prevent="clearError('errorMessage')"
+            />
+            <span>{{ errorMessage }}</span>
+          </div>
+        </div>
+        <div class="col-xs-12">
+          <div class="form-group form-md-line-input form-md-floating-label">
+            <input
+              id="form_control_1"
+              v-model="tierToEdit.name"
+              type="text"
+              class="form-control input-sm"
+              :class="{'edited': tierToEdit.name.length}"
+            >
+            <label for="form_control_1">
+              Modifier Tier Name
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        type="button"
+        class="btn btn-primary"
+        @click="updateModifierTier()"
+      >
+        Save
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -51,6 +75,9 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
 	name: 'EditModifierTier',
+	components: {
+		Modal
+	},
 	props: {
 		tier: {
 			type: Object,
@@ -134,9 +161,6 @@ export default {
 					})
 				})
 		}
-	},
-	components: {
-		Modal
 	}
 }
 </script>

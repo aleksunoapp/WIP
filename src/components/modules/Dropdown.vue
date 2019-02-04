@@ -1,39 +1,47 @@
 <template>
-	<li v-if="isLi"
-	    :class="classes"
-	    @keyup.esc="open = false">
-		<slot name="button">
-			<a class="dropdown-toggle"
-			   role="button"
-			   :class="{disabled: disabled}">
-				{{ text }}
-				<span class="caret"></span>
-			</a>
-		</slot>
-		<slot name="dropdown-menu">
-			<ul class="dropdown-menu">
-				<slot></slot>
-			</ul>
-		</slot>
-	</li>
-	<div v-else
-	     :class="classes">
-		<slot name="before"></slot>
-		<slot name="button">
-			<button type="button"
-			        class="btn dropdown-toggle"
-			        :disabled="disabled"
-			        :class="type">
-				{{ text }}
-				<span class="caret"></span>
-			</button>
-		</slot>
-		<slot name="dropdown-menu">
-			<ul class="dropdown-menu">
-				<slot></slot>
-			</ul>
-		</slot>
-	</div>
+  <li
+    v-if="isLi"
+    :class="classes"
+    @keyup.esc="open = false"
+  >
+    <slot name="button">
+      <a
+        class="dropdown-toggle"
+        role="button"
+        :class="{disabled: disabled}"
+      >
+        {{ text }}
+        <span class="caret" />
+      </a>
+    </slot>
+    <slot name="dropdown-menu">
+      <ul class="dropdown-menu">
+        <slot />
+      </ul>
+    </slot>
+  </li>
+  <div
+    v-else
+    :class="classes"
+  >
+    <slot name="before" />
+    <slot name="button">
+      <button
+        type="button"
+        class="btn dropdown-toggle"
+        :disabled="disabled"
+        :class="type"
+      >
+        {{ text }}
+        <span class="caret" />
+      </button>
+    </slot>
+    <slot name="dropdown-menu">
+      <ul class="dropdown-menu">
+        <slot />
+      </ul>
+    </slot>
+  </div>
 </template>
 <script>
 /**
@@ -51,12 +59,6 @@
 import $ from 'jquery'
 
 export default {
-	data () {
-		return {
-			open: false,
-			displayLeft: false
-		}
-	},
 	props: {
 		isLi: {
 			default: false
@@ -79,6 +81,12 @@ export default {
 		},
 		customTop: {
 			default: ''
+		}
+	},
+	data () {
+		return {
+			open: false,
+			displayLeft: false
 		}
 	},
 	computed: {
@@ -171,6 +179,19 @@ export default {
 			this.checkTop()
 		})
 	},
+	/**
+	 * Run before `destroyed` to remove all dropdown focus
+	 * @function
+	 * @returns {undefined}
+	 * @memberof Dropdown
+	 * @version 0.0.4
+	 */
+	beforeDestroy () {
+		const $el = $(this.$el)
+		$(document).unbind('click')
+		$el.find('a,button').off()
+		$el.find('ul').off()
+	},
 	methods: {
 		/**
 		 * Check if the element is going to get cut off on the right side of the page and apply the proper class if it is
@@ -220,19 +241,6 @@ export default {
 				$el.find('ul').css('top', '100%')
 			}
 		}
-	},
-	/**
-	 * Run before `destroyed` to remove all dropdown focus
-	 * @function
-	 * @returns {undefined}
-	 * @memberof Dropdown
-	 * @version 0.0.4
-	 */
-	beforeDestroy () {
-		const $el = $(this.$el)
-		$(document).unbind('click')
-		$el.find('a,button').off()
-		$el.find('ul').off()
 	}
 }
 </script>

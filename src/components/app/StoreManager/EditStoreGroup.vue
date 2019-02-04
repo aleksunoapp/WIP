@@ -1,66 +1,101 @@
 <template>
-	<modal :show="showEditGroupModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="modal">
-		<div slot="modal-header"
-		     class="modal-header">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center"
-			    v-if="$root.permissions['stores groups update']">Edit Store Group</h4>
-			<h4 class="modal-title center"
-			    v-if="!$root.permissions['stores groups update'] && $root.permissions['stores groups read']">View Store Group</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="alert alert-danger"
-			     v-show="errorMessage"
-			     ref="errorMessage">
-				<button class="close"
-				        @click="clearError()"></button>
-				<span>{{errorMessage}}</span>
-			</div>
-			<div class="form-group form-md-line-input form-md-floating-label">
-				<input type="text"
-				       class="form-control input-sm edited"
-				       id="form_control_1"
-				       v-model="groupToBeEdited.name"
-				       :disabled="!$root.permissions['stores groups update']">
-				<label for="form_control_1">Group Name</label>
-			</div>
-			<div class="form-group form-md-line-input form-md-floating-label">
-				<input type="text"
-				       class="form-control input-sm edited"
-				       id="form_control_2"
-				       v-model="groupToBeEdited.description"
-				       :disabled="!$root.permissions['stores groups update']">
-				<label for="form_control_2">Group Description</label>
-			</div>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button v-if="$root.permissions['stores groups update']"
-			        type="button"
-			        class="btn btn-primary"
-			        @click="updateGroup()"
-			        :disabled="updating">
-				Save
-				<i v-show="updating"
-				   class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-			<button v-if="!$root.permissions['stores groups update'] && $root.permissions['stores groups read']"
-			        type="button"
-			        class="btn btn-primary"
-			        @click="closeModal()">
-				Close
-			</button>
-		</div>
-	</modal>
+  <modal
+    ref="modal"
+    :show="showEditGroupModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4
+        v-if="$root.permissions['stores groups update']"
+        class="modal-title center"
+      >
+        Edit Store Group
+      </h4>
+      <h4
+        v-if="!$root.permissions['stores groups update'] && $root.permissions['stores groups read']"
+        class="modal-title center"
+      >
+        View Store Group
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div
+        v-show="errorMessage"
+        ref="errorMessage"
+        class="alert alert-danger"
+      >
+        <button
+          class="close"
+          @click="clearError()"
+        />
+        <span>{{ errorMessage }}</span>
+      </div>
+      <div class="form-group form-md-line-input form-md-floating-label">
+        <input
+          id="form_control_1"
+          v-model="groupToBeEdited.name"
+          type="text"
+          class="form-control input-sm edited"
+          :disabled="!$root.permissions['stores groups update']"
+        >
+        <label for="form_control_1">
+          Group Name
+        </label>
+      </div>
+      <div class="form-group form-md-line-input form-md-floating-label">
+        <input
+          id="form_control_2"
+          v-model="groupToBeEdited.description"
+          type="text"
+          class="form-control input-sm edited"
+          :disabled="!$root.permissions['stores groups update']"
+        >
+        <label for="form_control_2">
+          Group Description
+        </label>
+      </div>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        v-if="$root.permissions['stores groups update']"
+        type="button"
+        class="btn btn-primary"
+        :disabled="updating"
+        @click="updateGroup()"
+      >
+        Save
+        <i
+          v-show="updating"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+      <button
+        v-if="!$root.permissions['stores groups update'] && $root.permissions['stores groups read']"
+        type="button"
+        class="btn btn-primary"
+        @click="closeModal()"
+      >
+        Close
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -69,17 +104,20 @@ import StoreGroupsFunctions from '../../../controllers/StoreGroups'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
+	components: {
+		Modal
+	},
+	props: {
+		passedGroupId: {
+			type: Number
+		}
+	},
 	data () {
 		return {
 			showEditGroupModal: false,
 			updating: false,
 			groupToBeEdited: {},
 			errorMessage: ''
-		}
-	},
-	props: {
-		passedGroupId: {
-			type: Number
 		}
 	},
 	created () {
@@ -210,9 +248,6 @@ export default {
 				payload
 			})
 		}
-	},
-	components: {
-		Modal
 	}
 }
 </script>

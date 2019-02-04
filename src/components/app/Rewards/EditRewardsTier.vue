@@ -1,77 +1,114 @@
 <template>
-	<modal :show="showEditTierModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="modal">
-		<div slot="modal-header"
-		     class="modal-header">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">{{$root.permissions['reward_tiers update'] ? 'Edit' : ''}} Reward Tier - {{ passedRewardTier.name }}</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="alert alert-danger"
-			     v-show="errorMessage"
-			     ref="errorMessage">
-				<button class="close"
-				        @click="clearError()"></button>
-				<span>{{errorMessage}}</span>
-			</div>
-			<fieldset :disabled="!$root.permissions['reward_tiers update']">
-				<div class="form-group form-md-line-input form-md-floating-label">
-					<input type="text"
-					       class="form-control input-sm edited"
-					       id="form_control_1"
-					       v-model="rewardTierToBeEdited.name">
-					<label for="form_control_1">Tier Name</label>
-				</div>
-				<div class="form-group form-md-line-input form-md-floating-label">
-					<input type="text"
-					       class="form-control input-sm edited"
-					       id="form_control_1"
-					       v-model="rewardTierToBeEdited.description">
-					<label for="form_control_1">Tier Description</label>
-				</div>
-				<div class="form-group form-md-line-input form-md-floating-label">
-					<input type="text"
-					       class="form-control input-sm edited"
-					       id="form_control_2"
-					       v-model="rewardTierToBeEdited.points">
-					<label for="form_control_2">Tier Points</label>
-				</div>
-				<div class="form-group form-md-line-input form-md-floating-label">
-					<input type="text"
-					       class="form-control input-sm edited"
-					       id="form_control_3"
-					       v-model="rewardTierToBeEdited.stars">
-					<label for="form_control_3">Tier Stars</label>
-				</div>
-			</fieldset>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button v-if="!$root.permissions['reward_tiers update']"
-			        type="button"
-			        class="btn btn-primary"
-			        @click="closeModal()">
-				Close
-			</button>
-			<button v-else
-			        type="button"
-			        class="btn btn-primary"
-			        @click="updateRewardTier()"
-			        :disabled="updating">
-				Save
-				<i v-show="updating"
-				   class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-		</div>
-	</modal>
+  <modal
+    ref="modal"
+    :show="showEditTierModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        {{ $root.permissions['reward_tiers update'] ? 'Edit' : '' }} Reward Tier - {{ passedRewardTier.name }}
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div
+        v-show="errorMessage"
+        ref="errorMessage"
+        class="alert alert-danger"
+      >
+        <button
+          class="close"
+          @click="clearError()"
+        />
+        <span>{{ errorMessage }}</span>
+      </div>
+      <fieldset :disabled="!$root.permissions['reward_tiers update']">
+        <div class="form-group form-md-line-input form-md-floating-label">
+          <input
+            id="form_control_1"
+            v-model="rewardTierToBeEdited.name"
+            type="text"
+            class="form-control input-sm edited"
+          >
+          <label for="form_control_1">
+            Tier Name
+          </label>
+        </div>
+        <div class="form-group form-md-line-input form-md-floating-label">
+          <input
+            id="form_control_1"
+            v-model="rewardTierToBeEdited.description"
+            type="text"
+            class="form-control input-sm edited"
+          >
+          <label for="form_control_1">
+            Tier Description
+          </label>
+        </div>
+        <div class="form-group form-md-line-input form-md-floating-label">
+          <input
+            id="form_control_2"
+            v-model="rewardTierToBeEdited.points"
+            type="text"
+            class="form-control input-sm edited"
+          >
+          <label for="form_control_2">
+            Tier Points
+          </label>
+        </div>
+        <div class="form-group form-md-line-input form-md-floating-label">
+          <input
+            id="form_control_3"
+            v-model="rewardTierToBeEdited.stars"
+            type="text"
+            class="form-control input-sm edited"
+          >
+          <label for="form_control_3">
+            Tier Stars
+          </label>
+        </div>
+      </fieldset>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        v-if="!$root.permissions['reward_tiers update']"
+        type="button"
+        class="btn btn-primary"
+        @click="closeModal()"
+      >
+        Close
+      </button>
+      <button
+        v-else
+        type="button"
+        class="btn btn-primary"
+        :disabled="updating"
+        @click="updateRewardTier()"
+      >
+        Save
+        <i
+          v-show="updating"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -81,13 +118,8 @@ import RewardsFunctions from '../../../controllers/Rewards'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	data () {
-		return {
-			showEditTierModal: false,
-			updating: false,
-			rewardTierToBeEdited: {},
-			errorMessage: ''
-		}
+	components: {
+		Modal
 	},
 	props: {
 		passedRewardTier: {
@@ -95,6 +127,14 @@ export default {
 			default: () => {
 				return {}
 			}
+		}
+	},
+	data () {
+		return {
+			showEditTierModal: false,
+			updating: false,
+			rewardTierToBeEdited: {},
+			errorMessage: ''
 		}
 	},
 	mounted () {
@@ -201,9 +241,6 @@ export default {
 		closeModalAndUpdate () {
 			this.$emit('updateRewardTier', this.rewardTierToBeEdited)
 		}
-	},
-	components: {
-		Modal
 	}
 }
 </script>

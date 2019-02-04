@@ -1,146 +1,189 @@
 <template>
-	<modal :show="showEditGroupModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="modal">
-		<div slot="modal-header"
-		     class="modal-header">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<h4 class="modal-title center">Edit User Group</h4>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<form role="form">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="alert alert-danger"
-						     v-show="errorMessage"
-						     ref="errorMessage">
-							<button class="close"
-							        @click="clearError()"></button>
-							<span>{{errorMessage}}</span>
-						</div>
-					</div>
-					<div class="col-md-12">
-						<fieldset :disabled="!$root.permissions['user_manager user_groups update']">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       id="form_control_1"
-								       v-model="groupToBeEdited.name"
-								       :class="{'edited': groupToBeEdited.name.length}">
-								<label for="form_control_1">Group Name</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       id="form_control_2"
-								       v-model="groupToBeEdited.description"
-								       :class="{'edited': groupToBeEdited.description.length}">
-								<label for="form_control_2">Group Description</label>
-							</div>
-							<h4 class="margin-top-20">All users with:</h4>
-							<div>
-								<el-dropdown trigger="click"
-								             @command="updateSignUpDate"
-								             size="mini"
-								             :show-timeout="50"
-								             :hide-timeout="50"
-														 placement="bottom-start"
-								             class="margin-top-15">
-									<el-button size="mini">
-										{{ selectedSignUpDate }}
-										<i class="el-icon-arrow-down el-icon--right"></i>
-									</el-button>
-									<el-dropdown-menu slot="dropdown">
-										<el-dropdown-item :command="7">
-											Signed up in the last 7 days
-										</el-dropdown-item>
-										<el-dropdown-item :command="14">
-											Signed up in the last 14 days
-										</el-dropdown-item>
-										<el-dropdown-item :command="30">
-											Signed up in the last 30 days
-										</el-dropdown-item>
-									</el-dropdown-menu>
-								</el-dropdown>
-							</div>
-							<div>
-								<el-dropdown trigger="click"
-								             @command="updateTotalOrders"
-								             size="mini"
-								             :show-timeout="50"
-								             :hide-timeout="50"
-														 placement="bottom-start"
-								             class="margin-top-15">
-									<el-button size="mini">
-										{{ selectedTotalOrders }}
-										<i class="el-icon-arrow-down el-icon--right"></i>
-									</el-button>
-									<el-dropdown-menu slot="dropdown">
-										<el-dropdown-item :command="[10, '<']">
-											Less than 10 orders
-										</el-dropdown-item>
-										<el-dropdown-item :command="[25, '>']">
-											More than 25 orders
-										</el-dropdown-item>
-										<el-dropdown-item :command="[50, '>']">
-											More than 50 orders
-										</el-dropdown-item>
-									</el-dropdown-menu>
-								</el-dropdown>
-							</div>
-							<div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       class="form-control input-sm"
-									       id="form_control_3"
-									       v-model="city"
-									       :class="{'edited': city.length}"
-									       v-on:change="addRule('city')">
-									<label for="form_control_3">City</label>
-								</div>
-							</div>
-							<div>
-								<div class="form-group form-md-line-input form-md-floating-label">
-									<input type="text"
-									       class="form-control input-sm"
-									       id="form_control_4"
-									       v-model="province"
-									       :class="{'edited': province.length}"
-									       v-on:change="addRule('province')">
-									<label for="form_control_4">Province</label>
-								</div>
-							</div>
-						</fieldset>
-					</div>
-				</div>
-			</form>
-		</div>
-		<div slot="modal-footer"
-		     class="modal-footer">
-			<button v-if="!$root.permissions['user_manager user_groups update']"
-			        type="button"
-			        class="btn btn-primary"
-			        @click="closeModal()">
-				Close
-			</button>
-			<button v-else
-			        type="button"
-			        class="btn btn-primary"
-			        @click="updateGroup()"
-			        :disabled="updating">
-				Save
-				<i v-show="updating"
-				   class="fa fa-spinner fa-pulse fa-fw">
-				</i>
-			</button>
-		</div>
-	</modal>
+  <modal
+    ref="modal"
+    :show="showEditGroupModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <h4 class="modal-title center">
+        Edit User Group
+      </h4>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <form role="form">
+        <div class="row">
+          <div class="col-md-12">
+            <div
+              v-show="errorMessage"
+              ref="errorMessage"
+              class="alert alert-danger"
+            >
+              <button
+                class="close"
+                @click="clearError()"
+              />
+              <span>{{ errorMessage }}</span>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <fieldset :disabled="!$root.permissions['user_manager user_groups update']">
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_1"
+                  v-model="groupToBeEdited.name"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': groupToBeEdited.name.length}"
+                >
+                <label for="form_control_1">
+                  Group Name
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_2"
+                  v-model="groupToBeEdited.description"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': groupToBeEdited.description.length}"
+                >
+                <label for="form_control_2">
+                  Group Description
+                </label>
+              </div>
+              <h4 class="margin-top-20">
+                All users with:
+              </h4>
+              <div>
+                <el-dropdown
+                  trigger="click"
+                  size="mini"
+                  :show-timeout="50"
+                  :hide-timeout="50"
+                  placement="bottom-start"
+                  class="margin-top-15"
+                  @command="updateSignUpDate"
+                >
+                  <el-button size="mini">
+                    {{ selectedSignUpDate }}
+                    <i class="el-icon-arrow-down el-icon--right" />
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item :command="7">
+                      Signed up in the last 7 days
+                    </el-dropdown-item>
+                    <el-dropdown-item :command="14">
+                      Signed up in the last 14 days
+                    </el-dropdown-item>
+                    <el-dropdown-item :command="30">
+                      Signed up in the last 30 days
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
+              <div>
+                <el-dropdown
+                  trigger="click"
+                  size="mini"
+                  :show-timeout="50"
+                  :hide-timeout="50"
+                  placement="bottom-start"
+                  class="margin-top-15"
+                  @command="updateTotalOrders"
+                >
+                  <el-button size="mini">
+                    {{ selectedTotalOrders }}
+                    <i class="el-icon-arrow-down el-icon--right" />
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item :command="[10, '<']">
+                      Less than 10 orders
+                    </el-dropdown-item>
+                    <el-dropdown-item :command="[25, '>']">
+                      More than 25 orders
+                    </el-dropdown-item>
+                    <el-dropdown-item :command="[50, '>']">
+                      More than 50 orders
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
+              <div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_3"
+                    v-model="city"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': city.length}"
+                    @change="addRule('city')"
+                  >
+                  <label for="form_control_3">
+                    City
+                  </label>
+                </div>
+              </div>
+              <div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="form_control_4"
+                    v-model="province"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': province.length}"
+                    @change="addRule('province')"
+                  >
+                  <label for="form_control_4">
+                    Province
+                  </label>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div
+      slot="modal-footer"
+      class="modal-footer"
+    >
+      <button
+        v-if="!$root.permissions['user_manager user_groups update']"
+        type="button"
+        class="btn btn-primary"
+        @click="closeModal()"
+      >
+        Close
+      </button>
+      <button
+        v-else
+        type="button"
+        class="btn btn-primary"
+        :disabled="updating"
+        @click="updateGroup()"
+      >
+        Save
+        <i
+          v-show="updating"
+          class="fa fa-spinner fa-pulse fa-fw"
+        />
+      </button>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -150,6 +193,15 @@ import UserGroupsFunctions from '../../../controllers/UserGroups'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
+	components: {
+		Modal,
+		Dropdown
+	},
+	props: {
+		passedGroup: {
+			type: Object
+		}
+	},
 	data () {
 		return {
 			showEditGroupModal: false,
@@ -200,11 +252,6 @@ export default {
 				}
 			}
 			return text
-		}
-	},
-	props: {
-		passedGroup: {
-			type: Object
 		}
 	},
 	mounted () {
@@ -428,10 +475,6 @@ export default {
 		closeModalAndUpdate () {
 			this.$emit('updateGroup', this.groupToBeEdited)
 		}
-	},
-	components: {
-		Modal,
-		Dropdown
 	}
 }
 </script>

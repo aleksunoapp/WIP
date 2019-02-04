@@ -1,41 +1,53 @@
 <template>
-	<li>
-		<div :class="{bold: isFolder}"
-		     @click="toggle">
-			<input v-if="model.show_checkbox"
-			       type="checkbox"
-			       :id="'item_checkbox_' + model.id"
-			       class="md-check"
-			       v-model="model.selected">
-			<i v-if="!open"
-			   class="fa fa-folder"
-			   :class="{'font-default': model.font === 'font-default', 'font-yellow': model.font === 'font-yellow', 'font-red': model.font === 'font-red'}"></i>
-			<i v-else
-			   class="fa fa-folder-open"
-			   :class="{'font-default': model.font === 'font-default', 'font-yellow': model.font === 'font-yellow', 'font-red': model.font === 'font-red'}"></i>
-			{{ model.name }}
-		</div>
-		<ul v-show="open"
-		    v-if="isFolder">
-			<tree-view class="item"
-			           v-for="model in model.children"
-			           :model="model"
-					   :key="model.id"></tree-view>
-		</ul>
-	</li>
+  <li>
+    <div
+      :class="{bold: isFolder}"
+      @click="toggle"
+    >
+      <input
+        v-if="model.show_checkbox"
+        :id="'item_checkbox_' + model.id"
+        v-model="model.selected"
+        type="checkbox"
+        class="md-check"
+      >
+      <i
+        v-if="!open"
+        class="fa fa-folder"
+        :class="{'font-default': model.font === 'font-default', 'font-yellow': model.font === 'font-yellow', 'font-red': model.font === 'font-red'}"
+      />
+      <i
+        v-else
+        class="fa fa-folder-open"
+        :class="{'font-default': model.font === 'font-default', 'font-yellow': model.font === 'font-yellow', 'font-red': model.font === 'font-red'}"
+      />
+      {{ model.name }}
+    </div>
+    <ul
+      v-show="open"
+      v-if="isFolder"
+    >
+      <tree-view
+        v-for="model in model.children"
+        :key="model.id"
+        class="item"
+        :model="model"
+      />
+    </ul>
+  </li>
 </template>
 
 <script>
 export default {
-	name: 'tree-view',
-	data() {
-		return {
-			open: false
-		}
-	},
+	name: 'TreeView',
 	props: {
 		model: {
 			type: Object
+		}
+	},
+	data() {
+		return {
+			open: false
 		}
 	},
 	computed: {

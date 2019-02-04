@@ -1,500 +1,676 @@
 <template>
-	<div>
-		<!-- BEGIN PAGE BAR -->
-		<div class="page-bar">
-			<breadcrumb v-bind:crumbs="breadcrumbArray"></breadcrumb>
-		</div>
-		<!-- END PAGE BAR -->
+  <div>
+    <!-- BEGIN PAGE BAR -->
+    <div class="page-bar">
+      <breadcrumb :crumbs="breadcrumbArray" />
+    </div>
+    <!-- END PAGE BAR -->
 
-		<!-- BEGIN PAGE TITLE-->
-		<h1 class="page-title">Order Settings</h1>
-		<!-- END PAGE TITLE -->
-		<div class="note note-info">
-			<p>Add and manage order settings for the active store.</p>
-		</div>
+    <!-- BEGIN PAGE TITLE-->
+    <h1 class="page-title">
+      Order Settings
+    </h1>
+    <!-- END PAGE TITLE -->
+    <div class="note note-info">
+      <p>Add and manage order settings for the active store.</p>
+    </div>
 
-		<div class="row">
-			<div class="col-md-12"
-			     v-show="activeLocationId === undefined">
-				<div class="alert center alert-info">
-					<h4>No Store Selected</h4>
-					<p>Please select a store from the stores panel on the right to view order settings and apply them to the store.</p>
-				</div>
-			</div>
-		</div>
+    <div class="row">
+      <div
+        v-show="activeLocationId === undefined"
+        class="col-md-12"
+      >
+        <div class="alert center alert-info">
+          <h4>No Store Selected</h4>
+          <p>Please select a store from the stores panel on the right to view order settings and apply them to the store.</p>
+        </div>
+      </div>
+    </div>
 
-		<!-- BEGIN CREATE -->
-		<div class="portlet box blue-hoki"
-		     v-if="activeLocationId !== undefined && orderSettingsToEdit.id === undefined && $root.permissions['stores order_settings update']">
-			<div class="portlet-title bg-blue-chambray"
-			     @click="toggleCreatePanel()">
-				<div class="caption">
-					<i class="fa fa-2x fa-plus-circle"></i>
-					Create Order Settings
-				</div>
-				<div class="tools">
-					<a :class="{'expand': !createNewCollapse, 'collapse': createNewCollapse}"></a>
-				</div>
-			</div>
-			<div class="portlet-body relative-block"
-			     :class="{'display-hide': createNewCollapse}">
-				<form role="form"
-				      @submit.prevent="createOrderSettings()"
-				      v-show="activeLocationId !== undefined">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="alert alert-danger"
-							     v-show="createErrorMessage.length"
-							     ref="createErrorMessage">
-								<button class="close"
-								        data-close="alert"
-								        @click.prevent="clearError('createErrorMessage')"></button>
-								<span>{{ createErrorMessage }}</span>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-6">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newOrderSettings.pickup_time_slot.length}"
-								       id="form_control_1"
-								       v-model="newOrderSettings.pickup_time_slot">
-								<label for="form_control_1">Pickup Time Slot</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newOrderSettings.pickup_orders_per_slot.length}"
-								       id="form_control_3"
-								       v-model="newOrderSettings.pickup_orders_per_slot">
-								<label for="form_control_3">Pickup Orders Per Slot</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newOrderSettings.pickup_order_time_cut_off.length}"
-								       id="create_pickup_order_time_cut_off"
-								       v-model="newOrderSettings.pickup_order_time_cut_off">
-								<label for="create_pickup_order_time_cut_off">Pickup Order Time Cut Off</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newOrderSettings.pickup_cancellation_time_cut_off.length}"
-								       id="form_control_3"
-								       v-model="newOrderSettings.pickup_cancellation_time_cut_off">
-								<label for="form_control_3">Pickup Cancellation Time Cut Off</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<label>Pickup Cancellation Enabled</label><br>
-								<el-switch v-model="newOrderSettings.pickup_cancellation_enabled"
-								           active-color="#0c6"
-								           inactive-color="#ff4949"
-								           active-value="1"
-								           inactive-value="0"
-								           active-text="Yes"
-								           inactive-text="No">
-								</el-switch>
-							</div>
+    <!-- BEGIN CREATE -->
+    <div
+      v-if="activeLocationId !== undefined && orderSettingsToEdit.id === undefined && $root.permissions['stores order_settings update']"
+      class="portlet box blue-hoki"
+    >
+      <div
+        class="portlet-title bg-blue-chambray"
+        @click="toggleCreatePanel()"
+      >
+        <div class="caption">
+          <i class="fa fa-2x fa-plus-circle" />
+          Create Order Settings
+        </div>
+        <div class="tools">
+          <a :class="{'expand': !createNewCollapse, 'collapse': createNewCollapse}" />
+        </div>
+      </div>
+      <div
+        class="portlet-body relative-block"
+        :class="{'display-hide': createNewCollapse}"
+      >
+        <form
+          v-show="activeLocationId !== undefined"
+          role="form"
+          @submit.prevent="createOrderSettings()"
+        >
+          <div class="row">
+            <div class="col-md-12">
+              <div
+                v-show="createErrorMessage.length"
+                ref="createErrorMessage"
+                class="alert alert-danger"
+              >
+                <button
+                  class="close"
+                  data-close="alert"
+                  @click.prevent="clearError('createErrorMessage')"
+                />
+                <span>{{ createErrorMessage }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_1"
+                  v-model="newOrderSettings.pickup_time_slot"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newOrderSettings.pickup_time_slot.length}"
+                >
+                <label for="form_control_1">
+                  Pickup Time Slot
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_3"
+                  v-model="newOrderSettings.pickup_orders_per_slot"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newOrderSettings.pickup_orders_per_slot.length}"
+                >
+                <label for="form_control_3">
+                  Pickup Orders Per Slot
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="create_pickup_order_time_cut_off"
+                  v-model="newOrderSettings.pickup_order_time_cut_off"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newOrderSettings.pickup_order_time_cut_off.length}"
+                >
+                <label for="create_pickup_order_time_cut_off">
+                  Pickup Order Time Cut Off
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_3"
+                  v-model="newOrderSettings.pickup_cancellation_time_cut_off"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newOrderSettings.pickup_cancellation_time_cut_off.length}"
+                >
+                <label for="form_control_3">
+                  Pickup Cancellation Time Cut Off
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <label>Pickup Cancellation Enabled</label><br>
+                <el-switch
+                  v-model="newOrderSettings.pickup_cancellation_enabled"
+                  active-color="#0c6"
+                  inactive-color="#ff4949"
+                  active-value="1"
+                  inactive-value="0"
+                  active-text="Yes"
+                  inactive-text="No"
+                />
+              </div>
 
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newOrderSettings.group_order_time_slot.length}"
-								       id="form_control_1"
-								       v-model="newOrderSettings.group_order_time_slot">
-								<label for="form_control_1">Group Order Time Slot</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newOrderSettings.group_order_order_time_cut_off.length}"
-								       id="form_control_3"
-								       v-model="newOrderSettings.group_order_order_time_cut_off">
-								<label for="form_control_3">Group Order Time Cut Off</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newOrderSettings.group_order_cancellation_time_cut_off.length}"
-								       id="form_control_3"
-								       v-model="newOrderSettings.group_order_cancellation_time_cut_off">
-								<label for="form_control_3">Group Order Cancellation Time Cut Off</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<label>Group Order Cancellation Enabled</label><br>
-								<el-switch v-model="newOrderSettings.group_order_cancellation_enabled"
-								           active-color="#0c6"
-								           inactive-color="#ff4949"
-								           active-value="1"
-								           inactive-value="0"
-								           active-text="Active"
-								           inactive-text="Inactive">
-								</el-switch>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newOrderSettings.delivery_time_slot.length}"
-								       id="form_control_1"
-								       v-model="newOrderSettings.delivery_time_slot">
-								<label for="form_control_1">Delivery Time Slot</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newOrderSettings.delivery_orders_per_slot.length}"
-								       id="create_delivery_orders_per_slot"
-								       v-model="newOrderSettings.delivery_orders_per_slot">
-								<label for="create_delivery_orders_per_slot">Delivery Orders Per Slot</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newOrderSettings.delivery_order_time_cut_off.length}"
-								       id="form_control_3"
-								       v-model="newOrderSettings.delivery_order_time_cut_off">
-								<label for="form_control_3">Delivery Order Time Cut Off</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newOrderSettings.delivery_cancellation_time_cut_off.length}"
-								       id="form_control_3"
-								       v-model="newOrderSettings.delivery_cancellation_time_cut_off">
-								<label for="form_control_3">Delivery Cancellation Time Cut Off</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<label>Delivery Cancellation Enabled</label><br>
-								<el-switch v-model="newOrderSettings.delivery_cancellation_enabled"
-								           active-color="#0c6"
-								           inactive-color="#ff4949"
-								           active-value="1"
-								           inactive-value="0"
-								           active-text="Active"
-								           inactive-text="Inactive">
-								</el-switch>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newOrderSettings.catering_time_slot.length}"
-								       id="form_control_1"
-								       v-model="newOrderSettings.catering_time_slot">
-								<label for="form_control_1">Catering Time Slot</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newOrderSettings.catering_order_time_cut_off.length}"
-								       id="form_control_3"
-								       v-model="newOrderSettings.catering_order_time_cut_off">
-								<label for="form_control_3">Catering Order Time Cut Off</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<input type="text"
-								       class="form-control input-sm"
-								       :class="{'edited': newOrderSettings.catering_cancellation_time_cut_off.length}"
-								       id="form_control_3"
-								       v-model="newOrderSettings.catering_cancellation_time_cut_off">
-								<label for="form_control_3">Catering Cancellation Time Cut Off</label>
-							</div>
-							<div class="form-group form-md-line-input form-md-floating-label">
-								<label>Catering Cancellation Enabled</label><br>
-								<el-switch v-model="newOrderSettings.catering_cancellation_enabled"
-								           active-color="#0c6"
-								           inactive-color="#ff4949"
-								           active-value="1"
-								           inactive-value="0"
-								           active-text="Active"
-								           inactive-text="Inactive">
-								</el-switch>
-							</div>
-							<button type="submit"
-							        class="btn blue pull-right"
-							        :disabled="creating">
-								Create
-								<i v-show="creating"
-								   class="fa fa-spinner fa-pulse fa-fw">
-								</i>
-							</button>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-		<!-- END CREATE -->
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_1"
+                  v-model="newOrderSettings.group_order_time_slot"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newOrderSettings.group_order_time_slot.length}"
+                >
+                <label for="form_control_1">
+                  Group Order Time Slot
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_3"
+                  v-model="newOrderSettings.group_order_order_time_cut_off"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newOrderSettings.group_order_order_time_cut_off.length}"
+                >
+                <label for="form_control_3">
+                  Group Order Time Cut Off
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_3"
+                  v-model="newOrderSettings.group_order_cancellation_time_cut_off"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newOrderSettings.group_order_cancellation_time_cut_off.length}"
+                >
+                <label for="form_control_3">
+                  Group Order Cancellation Time Cut Off
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <label>Group Order Cancellation Enabled</label><br>
+                <el-switch
+                  v-model="newOrderSettings.group_order_cancellation_enabled"
+                  active-color="#0c6"
+                  inactive-color="#ff4949"
+                  active-value="1"
+                  inactive-value="0"
+                  active-text="Active"
+                  inactive-text="Inactive"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_1"
+                  v-model="newOrderSettings.delivery_time_slot"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newOrderSettings.delivery_time_slot.length}"
+                >
+                <label for="form_control_1">
+                  Delivery Time Slot
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="create_delivery_orders_per_slot"
+                  v-model="newOrderSettings.delivery_orders_per_slot"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newOrderSettings.delivery_orders_per_slot.length}"
+                >
+                <label for="create_delivery_orders_per_slot">
+                  Delivery Orders Per Slot
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_3"
+                  v-model="newOrderSettings.delivery_order_time_cut_off"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newOrderSettings.delivery_order_time_cut_off.length}"
+                >
+                <label for="form_control_3">
+                  Delivery Order Time Cut Off
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_3"
+                  v-model="newOrderSettings.delivery_cancellation_time_cut_off"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newOrderSettings.delivery_cancellation_time_cut_off.length}"
+                >
+                <label for="form_control_3">
+                  Delivery Cancellation Time Cut Off
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <label>Delivery Cancellation Enabled</label><br>
+                <el-switch
+                  v-model="newOrderSettings.delivery_cancellation_enabled"
+                  active-color="#0c6"
+                  inactive-color="#ff4949"
+                  active-value="1"
+                  inactive-value="0"
+                  active-text="Active"
+                  inactive-text="Inactive"
+                />
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_1"
+                  v-model="newOrderSettings.catering_time_slot"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newOrderSettings.catering_time_slot.length}"
+                >
+                <label for="form_control_1">
+                  Catering Time Slot
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_3"
+                  v-model="newOrderSettings.catering_order_time_cut_off"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newOrderSettings.catering_order_time_cut_off.length}"
+                >
+                <label for="form_control_3">
+                  Catering Order Time Cut Off
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_3"
+                  v-model="newOrderSettings.catering_cancellation_time_cut_off"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newOrderSettings.catering_cancellation_time_cut_off.length}"
+                >
+                <label for="form_control_3">
+                  Catering Cancellation Time Cut Off
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <label>Catering Cancellation Enabled</label><br>
+                <el-switch
+                  v-model="newOrderSettings.catering_cancellation_enabled"
+                  active-color="#0c6"
+                  inactive-color="#ff4949"
+                  active-value="1"
+                  inactive-value="0"
+                  active-text="Active"
+                  inactive-text="Inactive"
+                />
+              </div>
+              <button
+                type="submit"
+                class="btn blue pull-right"
+                :disabled="creating"
+              >
+                Create
+                <i
+                  v-show="creating"
+                  class="fa fa-spinner fa-pulse fa-fw"
+                />
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- END CREATE -->
 
-		<!-- BEGIN LIST -->
-		<div v-show="activeLocationId !== undefined">
-			<div class="portlet light portlet-fit bordered margin-top-20">
-				<div class="portlet-title bg-blue-chambray">
-					<div class="menu-image-main">
-						<img src="../../../../public/client_logo.png">
-					</div>
-					<div class="caption">
-						<span class="caption-subject font-default bold uppercase">Order Settings</span>
-						<div class="caption-desc font-grey-cascade">Create, edit or delete Order Settings for the active store.</div>
-					</div>
-				</div>
-				<div class="col-md-12">
-					<div class="alert alert-danger"
-					     v-show="listErrorMessage.length"
-					     ref="listErrorMessage">
-						<button class="close"
-						        data-close="alert"
-						        @click="clearError('listErrorMessage')"></button>
-						<span>{{ listErrorMessage }}</span>
-					</div>
-				</div>
-				<div class="portlet-body relative-block">
-					<loading-screen :show="loading"
-					                :color="'#2C3E50'"
-					                :display="'inline'"></loading-screen>
-					<div class="mt-element-list margin-top-15"
-					     v-if="!loading && orderSettingsToEdit.id !== undefined">
-						<fieldset :disabled="!$root.permissions['stores order_settings update']">
-							<div class="row">
-								<div class="col-md-6">
-									<div class="form-group form-md-line-input form-md-floating-label">
-										<input type="text"
-										       class="form-control input-sm"
-										       :class="{'edited': orderSettingsToEdit.pickup_time_slot.length}"
-										       id="form_control_1"
-										       v-model="orderSettingsToEdit.pickup_time_slot">
-										<label for="form_control_1">Pickup Time Slot</label>
-									</div>
-									<div class="form-group form-md-line-input form-md-floating-label">
-										<input type="text"
-										       class="form-control input-sm"
-										       :class="{'edited': orderSettingsToEdit.pickup_orders_per_slot.length}"
-										       id="form_control_3"
-										       v-model="orderSettingsToEdit.pickup_orders_per_slot">
-										<label for="form_control_3">Pickup Orders Per Slot</label>
-									</div>
-									<div class="form-group form-md-line-input form-md-floating-label">
-										<input type="text"
-										       class="form-control input-sm"
-										       :class="{'edited': orderSettingsToEdit.pickup_order_time_cut_off.length}"
-										       id="create_pickup_order_time_cut_off"
-										       v-model="orderSettingsToEdit.pickup_order_time_cut_off">
-										<label for="create_pickup_order_time_cut_off">Pickup Order Time Cut Off</label>
-									</div>
-									<div class="form-group form-md-line-input form-md-floating-label">
-										<input type="text"
-										       class="form-control input-sm"
-										       :class="{'edited': orderSettingsToEdit.pickup_cancellation_time_cut_off.length}"
-										       id="form_control_3"
-										       v-model="orderSettingsToEdit.pickup_cancellation_time_cut_off">
-										<label for="form_control_3">Pickup Cancellation Time Cut Off</label>
-									</div>
-									<div class="form-group form-md-line-input form-md-floating-label">
-										<label>Pickup Cancellation Enabled:</label><br>
-										<el-switch v-model="orderSettingsToEdit.pickup_cancellation_enabled"
-										           active-color="#0c6"
-										           inactive-color="#ff4949"
-										           active-value="1"
-										           inactive-value="0"
-										           active-text="Yes"
-										           inactive-text="No"
-										           :disabled="!$root.permissions['stores order_settings update']">
-										</el-switch>
-									</div>
-									<div class="form-group form-md-line-input form-md-floating-label">
-										<input type="text"
-										       class="form-control input-sm"
-										       :class="{'edited': orderSettingsToEdit.group_order_time_slot.length}"
-										       id="form_control_1"
-										       v-model="orderSettingsToEdit.group_order_time_slot">
-										<label for="form_control_1">Group Order Time Slot</label>
-									</div>
-									<div class="form-group form-md-line-input form-md-floating-label">
-										<input type="text"
-										       class="form-control input-sm"
-										       :class="{'edited': orderSettingsToEdit.group_order_order_time_cut_off.length}"
-										       id="form_control_3"
-										       v-model="orderSettingsToEdit.group_order_order_time_cut_off">
-										<label for="form_control_3">Group Order Time Cut Off</label>
-									</div>
-									<div class="form-group form-md-line-input form-md-floating-label">
-										<input type="text"
-										       class="form-control input-sm"
-										       :class="{'edited': orderSettingsToEdit.group_order_cancellation_time_cut_off.length}"
-										       id="form_control_3"
-										       v-model="orderSettingsToEdit.group_order_cancellation_time_cut_off">
-										<label for="form_control_3">Group Order Cancellation Time Cut Off</label>
-									</div>
-									<div class="form-group form-md-line-input form-md-floating-label">
-										<label>Group Order Cancellation Enabled:</label><br>
-										<el-switch v-model="orderSettingsToEdit.group_order_cancellation_enabled"
-										           active-color="#0c6"
-										           inactive-color="#ff4949"
-										           active-value="1"
-										           inactive-value="0"
-										           active-text="Active"
-										           inactive-text="Inactive"
-										           :disabled="!$root.permissions['stores order_settings update']">
-										</el-switch>
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="form-group form-md-line-input form-md-floating-label">
-										<input type="text"
-										       class="form-control input-sm"
-										       :class="{'edited': orderSettingsToEdit.delivery_time_slot.length}"
-										       id="form_control_1"
-										       v-model="orderSettingsToEdit.delivery_time_slot">
-										<label for="form_control_1">Delivery Time Slot</label>
-									</div>
-									<div class="form-group form-md-line-input form-md-floating-label">
-										<input type="text"
-										       class="form-control input-sm"
-										       :class="{'edited': orderSettingsToEdit.delivery_orders_per_slot.length}"
-										       id="create_delivery_orders_per_slot"
-										       v-model="orderSettingsToEdit.delivery_orders_per_slot">
-										<label for="create_delivery_orders_per_slot">Delivery Orders Per Slot</label>
-									</div>
-									<div class="form-group form-md-line-input form-md-floating-label">
-										<input type="text"
-										       class="form-control input-sm"
-										       :class="{'edited': orderSettingsToEdit.delivery_order_time_cut_off.length}"
-										       id="form_control_3"
-										       v-model="orderSettingsToEdit.delivery_order_time_cut_off">
-										<label for="form_control_3">Delivery Order Time Cut Off</label>
-									</div>
-									<div class="form-group form-md-line-input form-md-floating-label">
-										<input type="text"
-										       class="form-control input-sm"
-										       :class="{'edited': orderSettingsToEdit.delivery_cancellation_time_cut_off.length}"
-										       id="form_control_3"
-										       v-model="orderSettingsToEdit.delivery_cancellation_time_cut_off">
-										<label for="form_control_3">Delivery Cancellation Time Cut Off</label>
-									</div>
-									<div class="form-group form-md-line-input form-md-floating-label">
-										<label>Delivery Cancellation Enabled:</label><br>
-										<el-switch v-model="orderSettingsToEdit.delivery_cancellation_enabled"
-										           active-color="#0c6"
-										           inactive-color="#ff4949"
-										           active-value="1"
-										           inactive-value="0"
-										           active-text="Active"
-										           inactive-text="Inactive"
-										           :disabled="!$root.permissions['stores order_settings update']">
-										</el-switch>
-									</div>
-									<div class="form-group form-md-line-input form-md-floating-label">
-										<input type="text"
-										       class="form-control input-sm"
-										       :class="{'edited': orderSettingsToEdit.catering_time_slot.length}"
-										       id="form_control_1"
-										       v-model="orderSettingsToEdit.catering_time_slot">
-										<label for="form_control_1">Catering Time Slot</label>
-									</div>
-									<div class="form-group form-md-line-input form-md-floating-label">
-										<input type="text"
-										       class="form-control input-sm"
-										       :class="{'edited': orderSettingsToEdit.catering_order_time_cut_off.length}"
-										       id="form_control_3"
-										       v-model="orderSettingsToEdit.catering_order_time_cut_off">
-										<label for="form_control_3">Catering Order Time Cut Off</label>
-									</div>
-									<div class="form-group form-md-line-input form-md-floating-label">
-										<input type="text"
-										       class="form-control input-sm"
-										       :class="{'edited': orderSettingsToEdit.catering_cancellation_time_cut_off.length}"
-										       id="form_control_3"
-										       v-model="orderSettingsToEdit.catering_cancellation_time_cut_off">
-										<label for="form_control_3">Catering Cancellation Time Cut Off</label>
-									</div>
-									<div class="form-group form-md-line-input form-md-floating-label">
-										<label>Catering Cancellation Enabled:</label><br>
-										<el-switch v-model="orderSettingsToEdit.catering_cancellation_enabled"
-										           active-color="#0c6"
-										           inactive-color="#ff4949"
-										           active-value="1"
-										           inactive-value="0"
-										           active-text="Active"
-										           inactive-text="Inactive"
-										           :disabled="!$root.permissions['stores order_settings update']">
-										</el-switch>
-									</div>
-								</div>
-								<div class="col-xs-12 right margin-top-20">
-									<div class="pull-right">
-										<button v-if="$root.permissions['stores order_settings delete']"
-										        type="button"
-										        class="btn btn-outline blue margin-right-10"
-										        @click.stop.prevent="confirmDelete()">
-											Delete
-										</button>
-										<button v-if="$root.permissions['stores order_settings update']"
-										        type="button"
-										        class="btn blue"
-										        @click="updateOrderSettings()"
-										        :disabled="updating">
-											Save
-											<i v-show="updating"
-											   class="fa fa-spinner fa-pulse fa-fw">
-											</i>
-										</button>
-									</div>
-								</div>
-							</div>
-						</fieldset>
-					</div>
-					<div class="margin-top-20">
-						<no-results :show="!loading && orderSettingsToEdit.id === undefined"
-						            :type="'order settings'">
-						</no-results>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- END LIST -->
+    <!-- BEGIN LIST -->
+    <div v-show="activeLocationId !== undefined">
+      <div class="portlet light portlet-fit bordered margin-top-20">
+        <div class="portlet-title bg-blue-chambray">
+          <div class="menu-image-main">
+            <img src="../../../../public/client_logo.png">
+          </div>
+          <div class="caption">
+            <span class="caption-subject font-default bold uppercase">
+              Order Settings
+            </span>
+            <div class="caption-desc font-grey-cascade">
+              Create, edit or delete Order Settings for the active store.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div
+            v-show="listErrorMessage.length"
+            ref="listErrorMessage"
+            class="alert alert-danger"
+          >
+            <button
+              class="close"
+              data-close="alert"
+              @click="clearError('listErrorMessage')"
+            />
+            <span>{{ listErrorMessage }}</span>
+          </div>
+        </div>
+        <div class="portlet-body relative-block">
+          <loading-screen
+            :show="loading"
+            :color="'#2C3E50'"
+            :display="'inline'"
+          />
+          <div
+            v-if="!loading && orderSettingsToEdit.id !== undefined"
+            class="mt-element-list margin-top-15"
+          >
+            <fieldset :disabled="!$root.permissions['stores order_settings update']">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group form-md-line-input form-md-floating-label">
+                    <input
+                      id="form_control_1"
+                      v-model="orderSettingsToEdit.pickup_time_slot"
+                      type="text"
+                      class="form-control input-sm"
+                      :class="{'edited': orderSettingsToEdit.pickup_time_slot.length}"
+                    >
+                    <label for="form_control_1">
+                      Pickup Time Slot
+                    </label>
+                  </div>
+                  <div class="form-group form-md-line-input form-md-floating-label">
+                    <input
+                      id="form_control_3"
+                      v-model="orderSettingsToEdit.pickup_orders_per_slot"
+                      type="text"
+                      class="form-control input-sm"
+                      :class="{'edited': orderSettingsToEdit.pickup_orders_per_slot.length}"
+                    >
+                    <label for="form_control_3">
+                      Pickup Orders Per Slot
+                    </label>
+                  </div>
+                  <div class="form-group form-md-line-input form-md-floating-label">
+                    <input
+                      id="create_pickup_order_time_cut_off"
+                      v-model="orderSettingsToEdit.pickup_order_time_cut_off"
+                      type="text"
+                      class="form-control input-sm"
+                      :class="{'edited': orderSettingsToEdit.pickup_order_time_cut_off.length}"
+                    >
+                    <label for="create_pickup_order_time_cut_off">
+                      Pickup Order Time Cut Off
+                    </label>
+                  </div>
+                  <div class="form-group form-md-line-input form-md-floating-label">
+                    <input
+                      id="form_control_3"
+                      v-model="orderSettingsToEdit.pickup_cancellation_time_cut_off"
+                      type="text"
+                      class="form-control input-sm"
+                      :class="{'edited': orderSettingsToEdit.pickup_cancellation_time_cut_off.length}"
+                    >
+                    <label for="form_control_3">
+                      Pickup Cancellation Time Cut Off
+                    </label>
+                  </div>
+                  <div class="form-group form-md-line-input form-md-floating-label">
+                    <label>Pickup Cancellation Enabled:</label><br>
+                    <el-switch
+                      v-model="orderSettingsToEdit.pickup_cancellation_enabled"
+                      active-color="#0c6"
+                      inactive-color="#ff4949"
+                      active-value="1"
+                      inactive-value="0"
+                      active-text="Yes"
+                      inactive-text="No"
+                      :disabled="!$root.permissions['stores order_settings update']"
+                    />
+                  </div>
+                  <div class="form-group form-md-line-input form-md-floating-label">
+                    <input
+                      id="form_control_1"
+                      v-model="orderSettingsToEdit.group_order_time_slot"
+                      type="text"
+                      class="form-control input-sm"
+                      :class="{'edited': orderSettingsToEdit.group_order_time_slot.length}"
+                    >
+                    <label for="form_control_1">
+                      Group Order Time Slot
+                    </label>
+                  </div>
+                  <div class="form-group form-md-line-input form-md-floating-label">
+                    <input
+                      id="form_control_3"
+                      v-model="orderSettingsToEdit.group_order_order_time_cut_off"
+                      type="text"
+                      class="form-control input-sm"
+                      :class="{'edited': orderSettingsToEdit.group_order_order_time_cut_off.length}"
+                    >
+                    <label for="form_control_3">
+                      Group Order Time Cut Off
+                    </label>
+                  </div>
+                  <div class="form-group form-md-line-input form-md-floating-label">
+                    <input
+                      id="form_control_3"
+                      v-model="orderSettingsToEdit.group_order_cancellation_time_cut_off"
+                      type="text"
+                      class="form-control input-sm"
+                      :class="{'edited': orderSettingsToEdit.group_order_cancellation_time_cut_off.length}"
+                    >
+                    <label for="form_control_3">
+                      Group Order Cancellation Time Cut Off
+                    </label>
+                  </div>
+                  <div class="form-group form-md-line-input form-md-floating-label">
+                    <label>Group Order Cancellation Enabled:</label><br>
+                    <el-switch
+                      v-model="orderSettingsToEdit.group_order_cancellation_enabled"
+                      active-color="#0c6"
+                      inactive-color="#ff4949"
+                      active-value="1"
+                      inactive-value="0"
+                      active-text="Active"
+                      inactive-text="Inactive"
+                      :disabled="!$root.permissions['stores order_settings update']"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group form-md-line-input form-md-floating-label">
+                    <input
+                      id="form_control_1"
+                      v-model="orderSettingsToEdit.delivery_time_slot"
+                      type="text"
+                      class="form-control input-sm"
+                      :class="{'edited': orderSettingsToEdit.delivery_time_slot.length}"
+                    >
+                    <label for="form_control_1">
+                      Delivery Time Slot
+                    </label>
+                  </div>
+                  <div class="form-group form-md-line-input form-md-floating-label">
+                    <input
+                      id="create_delivery_orders_per_slot"
+                      v-model="orderSettingsToEdit.delivery_orders_per_slot"
+                      type="text"
+                      class="form-control input-sm"
+                      :class="{'edited': orderSettingsToEdit.delivery_orders_per_slot.length}"
+                    >
+                    <label for="create_delivery_orders_per_slot">
+                      Delivery Orders Per Slot
+                    </label>
+                  </div>
+                  <div class="form-group form-md-line-input form-md-floating-label">
+                    <input
+                      id="form_control_3"
+                      v-model="orderSettingsToEdit.delivery_order_time_cut_off"
+                      type="text"
+                      class="form-control input-sm"
+                      :class="{'edited': orderSettingsToEdit.delivery_order_time_cut_off.length}"
+                    >
+                    <label for="form_control_3">
+                      Delivery Order Time Cut Off
+                    </label>
+                  </div>
+                  <div class="form-group form-md-line-input form-md-floating-label">
+                    <input
+                      id="form_control_3"
+                      v-model="orderSettingsToEdit.delivery_cancellation_time_cut_off"
+                      type="text"
+                      class="form-control input-sm"
+                      :class="{'edited': orderSettingsToEdit.delivery_cancellation_time_cut_off.length}"
+                    >
+                    <label for="form_control_3">
+                      Delivery Cancellation Time Cut Off
+                    </label>
+                  </div>
+                  <div class="form-group form-md-line-input form-md-floating-label">
+                    <label>Delivery Cancellation Enabled:</label><br>
+                    <el-switch
+                      v-model="orderSettingsToEdit.delivery_cancellation_enabled"
+                      active-color="#0c6"
+                      inactive-color="#ff4949"
+                      active-value="1"
+                      inactive-value="0"
+                      active-text="Active"
+                      inactive-text="Inactive"
+                      :disabled="!$root.permissions['stores order_settings update']"
+                    />
+                  </div>
+                  <div class="form-group form-md-line-input form-md-floating-label">
+                    <input
+                      id="form_control_1"
+                      v-model="orderSettingsToEdit.catering_time_slot"
+                      type="text"
+                      class="form-control input-sm"
+                      :class="{'edited': orderSettingsToEdit.catering_time_slot.length}"
+                    >
+                    <label for="form_control_1">
+                      Catering Time Slot
+                    </label>
+                  </div>
+                  <div class="form-group form-md-line-input form-md-floating-label">
+                    <input
+                      id="form_control_3"
+                      v-model="orderSettingsToEdit.catering_order_time_cut_off"
+                      type="text"
+                      class="form-control input-sm"
+                      :class="{'edited': orderSettingsToEdit.catering_order_time_cut_off.length}"
+                    >
+                    <label for="form_control_3">
+                      Catering Order Time Cut Off
+                    </label>
+                  </div>
+                  <div class="form-group form-md-line-input form-md-floating-label">
+                    <input
+                      id="form_control_3"
+                      v-model="orderSettingsToEdit.catering_cancellation_time_cut_off"
+                      type="text"
+                      class="form-control input-sm"
+                      :class="{'edited': orderSettingsToEdit.catering_cancellation_time_cut_off.length}"
+                    >
+                    <label for="form_control_3">
+                      Catering Cancellation Time Cut Off
+                    </label>
+                  </div>
+                  <div class="form-group form-md-line-input form-md-floating-label">
+                    <label>Catering Cancellation Enabled:</label><br>
+                    <el-switch
+                      v-model="orderSettingsToEdit.catering_cancellation_enabled"
+                      active-color="#0c6"
+                      inactive-color="#ff4949"
+                      active-value="1"
+                      inactive-value="0"
+                      active-text="Active"
+                      inactive-text="Inactive"
+                      :disabled="!$root.permissions['stores order_settings update']"
+                    />
+                  </div>
+                </div>
+                <div class="col-xs-12 right margin-top-20">
+                  <div class="pull-right">
+                    <button
+                      v-if="$root.permissions['stores order_settings delete']"
+                      type="button"
+                      class="btn btn-outline blue margin-right-10"
+                      @click.stop.prevent="confirmDelete()"
+                    >
+                      Delete
+                    </button>
+                    <button
+                      v-if="$root.permissions['stores order_settings update']"
+                      type="button"
+                      class="btn blue"
+                      :disabled="updating"
+                      @click="updateOrderSettings()"
+                    >
+                      Save
+                      <i
+                        v-show="updating"
+                        class="fa fa-spinner fa-pulse fa-fw"
+                      />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+          <div class="margin-top-20">
+            <no-results
+              :show="!loading && orderSettingsToEdit.id === undefined"
+              :type="'order settings'"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END LIST -->
 
-		<modal :show="showDeleteModal"
-		       effect="fade"
-		       @closeOnEscape="closeDeleteModal">
-			<div slot="modal-header"
-			     class="modal-header center">
-				<button type="button"
-				        class="close"
-				        @click="closeDeleteModal()">
-					<span>&times;</span>
-				</button>
-				<h4 class="modal-title center">Delete Order Settings</h4>
-			</div>
-			<div slot="modal-body"
-			     class="modal-body">
-				<div class="alert alert-danger"
-				     v-show="deleteErrorMessage.length">
-					<button class="close"
-					        ref="deleteErrorMessage"
-					        @click="clearError('deleteErrorMessage')"></button>
-					<span>{{deleteErrorMessage}}</span>
-				</div>
-				<div class="col-md-12">
-					Are you sure you want to delete order settings for {{$root.activeLocation.name}}?
-				</div>
-			</div>
-			<div slot="modal-footer"
-			     class="modal-footer clear">
-				<button type="button"
-				        class="btn btn-primary"
-				        @click="deleteOrderSettings()"
-				        :disabled="deleting">
-					Delete
-					<i v-show="deleting"
-					   class="fa fa-spinner fa-pulse fa-fw">
-					</i>
-				</button>
-			</div>
-		</modal>
-	</div>
+    <modal
+      :show="showDeleteModal"
+      effect="fade"
+      @closeOnEscape="closeDeleteModal"
+    >
+      <div
+        slot="modal-header"
+        class="modal-header center"
+      >
+        <button
+          type="button"
+          class="close"
+          @click="closeDeleteModal()"
+        >
+          <span>&times;</span>
+        </button>
+        <h4 class="modal-title center">
+          Delete Order Settings
+        </h4>
+      </div>
+      <div
+        slot="modal-body"
+        class="modal-body"
+      >
+        <div
+          v-show="deleteErrorMessage.length"
+          class="alert alert-danger"
+        >
+          <button
+            ref="deleteErrorMessage"
+            class="close"
+            @click="clearError('deleteErrorMessage')"
+          />
+          <span>{{ deleteErrorMessage }}</span>
+        </div>
+        <div class="col-md-12">
+          Are you sure you want to delete order settings for {{ $root.activeLocation.name }}?
+        </div>
+      </div>
+      <div
+        slot="modal-footer"
+        class="modal-footer clear"
+      >
+        <button
+          type="button"
+          class="btn btn-primary"
+          :disabled="deleting"
+          @click="deleteOrderSettings()"
+        >
+          Delete
+          <i
+            v-show="deleting"
+            class="fa fa-spinner fa-pulse fa-fw"
+          />
+        </button>
+      </div>
+    </modal>
+  </div>
 </template>
 
 <script>
@@ -507,6 +683,13 @@ import NoResults from '../../modules/NoResults'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
 
 export default {
+	components: {
+		Breadcrumb,
+		LoadingScreen,
+		Modal,
+		NoResults,
+		ResourcePicker
+	},
 	data () {
 		return {
 			breadcrumbArray: [
@@ -1077,13 +1260,6 @@ export default {
 		closeDeleteModal () {
 			this.showDeleteModal = false
 		}
-	},
-	components: {
-		Breadcrumb,
-		LoadingScreen,
-		Modal,
-		NoResults,
-		ResourcePicker
 	}
 }
 </script>

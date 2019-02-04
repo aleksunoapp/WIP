@@ -1,154 +1,194 @@
 <template>
-	<div>
-		<div class="row">
-			<div class="col-md-12">
-				<div class="portlet box blue-hoki">
-					<div class="portlet-title bg-blue-chambray">
-						<div class="caption"
-						     style="font-size:14px">
-							<span class="fa-stack fa-sm">
-								<i class="fa fa-circle fa-stack-2x"
-								   aria-hidden="true"
-								   style="color:rgb(26,188,156);line-height: inherit"></i>
-								<i class="fa fa-user fa-stack-1x"
-								   aria-hidden="true"
-								   style="color:rgb(255,255,255);line-height:inherit"></i>
-							</span>
-							New User Registrations by Month
-						</div>
-					</div>
-					<div class="portlet-body">
-						<div class="row">
-							<div class="col-md-12 center">
-								<el-date-picker v-model="from_date"
-								                @change="dateFromSelected()"
-								                :editable="false"
-								                type="date"
-								                format="yyyy-MM-dd"
-								                value-format="yyyy-MM-dd"
-								                :clearable="false"
-								                placeholder="From"></el-date-picker>
-								<el-date-picker v-model="to_date"
-								                @change="dateToSelected()"
-								                type="date"
-								                format="yyyy-MM-dd"
-								                value-format="yyyy-MM-dd"
-								                :clearable="false"
-								                placeholder="To"></el-date-picker>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-12">
-								<div id="chart_div"
-								     style="height:350px"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-6">
-				<div class="portlet box blue-hoki">
-					<div class="portlet-title bg-blue-chambray">
-						<div class="caption"
-						     style="font-size:14px">
-							<span class="fa-stack fa-sm">
-								<i class="fa fa-circle fa-stack-2x"
-								   aria-hidden="true"
-								   style="color:#e67e22;line-height: inherit"></i>
-								<i class="fa fa-user fa-stack-1x"
-								   aria-hidden="true"
-								   style="color:rgb(255,255,255);line-height:inherit"></i>
-							</span>
-							Users by Platform
-						</div>
-					</div>
-					<div class="portlet-body">
-						<div class="row">
-							<div class="col-md-12">
-								<div id="chart_div_usersByPlatform"
-								     style="height:350px"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-6">
-				<div class="portlet box blue-hoki">
-					<div class="portlet-title bg-blue-chambray">
-						<div class="caption"
-						     style="font-size:14px">
-							<span class="fa-stack fa-sm">
-								<i class="fa fa-circle fa-stack-2x"
-								   aria-hidden="true"
-								   style="color:#9b59b6;line-height: inherit"></i>
-								<i class="fa fa-user fa-stack-1x"
-								   aria-hidden="true"
-								   style="color:rgb(255,255,255);line-height:inherit"></i>
-							</span>
-							Active Users
-						</div>
-					</div>
-					<div class="portlet-body">
-						<div class="row">
-							<div class="col-md-12">
-								<div id="chart_div_activeUsers"
-								     style="height:350px"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-6">
-				<div class="portlet box blue-hoki">
-					<div class="portlet-title bg-blue-chambray">
-						<div class="caption"
-						     style="font-size:14px">
-							<span class="fa-stack fa-sm">
-								<i class="fa fa-circle fa-stack-2x"
-								   aria-hidden="true"
-								   style="color:#e67e22;line-height: inherit"></i>
-								<i class="fa fa-user fa-stack-1x"
-								   aria-hidden="true"
-								   style="color:rgb(255,255,255);line-height:inherit"></i>
-							</span>
-							Users by Order Count
-						</div>
-					</div>
-					<div class="portlet-body">
-						<div class="row">
-							<div class="col-md-12 center">
-								<el-date-picker v-model="order_count_from_date"
-								                @change="orderCountDateFromSelected()"
-								                :editable="false"
-								                type="date"
-								                format="yyyy-MM-dd"
-								                value-format="yyyy-MM-dd"
-								                :clearable="false"
-								                placeholder="From"></el-date-picker>
-								<el-date-picker v-model="order_count_to_date"
-								                @change="orderCountDateToSelected()"
-								                type="date"
-								                format="yyyy-MM-dd"
-								                value-format="yyyy-MM-dd"
-								                :clearable="false"
-								                placeholder="To"></el-date-picker>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-12">
-								<div id="chart_div_usersByOrderCount"
-								     style="height:350px"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+  <div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="portlet box blue-hoki">
+          <div class="portlet-title bg-blue-chambray">
+            <div
+              class="caption"
+              style="font-size:14px"
+            >
+              <span class="fa-stack fa-sm">
+                <i
+                  class="fa fa-circle fa-stack-2x"
+                  aria-hidden="true"
+                  style="color:rgb(26,188,156);line-height: inherit"
+                />
+                <i
+                  class="fa fa-user fa-stack-1x"
+                  aria-hidden="true"
+                  style="color:rgb(255,255,255);line-height:inherit"
+                />
+              </span>
+              New User Registrations by Month
+            </div>
+          </div>
+          <div class="portlet-body">
+            <div class="row">
+              <div class="col-md-12 center">
+                <el-date-picker
+                  v-model="from_date"
+                  :editable="false"
+                  type="date"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  :clearable="false"
+                  placeholder="From"
+                  @change="dateFromSelected()"
+                />
+                <el-date-picker
+                  v-model="to_date"
+                  type="date"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  :clearable="false"
+                  placeholder="To"
+                  @change="dateToSelected()"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div
+                  id="chart_div"
+                  style="height:350px"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="portlet box blue-hoki">
+          <div class="portlet-title bg-blue-chambray">
+            <div
+              class="caption"
+              style="font-size:14px"
+            >
+              <span class="fa-stack fa-sm">
+                <i
+                  class="fa fa-circle fa-stack-2x"
+                  aria-hidden="true"
+                  style="color:#e67e22;line-height: inherit"
+                />
+                <i
+                  class="fa fa-user fa-stack-1x"
+                  aria-hidden="true"
+                  style="color:rgb(255,255,255);line-height:inherit"
+                />
+              </span>
+              Users by Platform
+            </div>
+          </div>
+          <div class="portlet-body">
+            <div class="row">
+              <div class="col-md-12">
+                <div
+                  id="chart_div_usersByPlatform"
+                  style="height:350px"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="portlet box blue-hoki">
+          <div class="portlet-title bg-blue-chambray">
+            <div
+              class="caption"
+              style="font-size:14px"
+            >
+              <span class="fa-stack fa-sm">
+                <i
+                  class="fa fa-circle fa-stack-2x"
+                  aria-hidden="true"
+                  style="color:#9b59b6;line-height: inherit"
+                />
+                <i
+                  class="fa fa-user fa-stack-1x"
+                  aria-hidden="true"
+                  style="color:rgb(255,255,255);line-height:inherit"
+                />
+              </span>
+              Active Users
+            </div>
+          </div>
+          <div class="portlet-body">
+            <div class="row">
+              <div class="col-md-12">
+                <div
+                  id="chart_div_activeUsers"
+                  style="height:350px"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="portlet box blue-hoki">
+          <div class="portlet-title bg-blue-chambray">
+            <div
+              class="caption"
+              style="font-size:14px"
+            >
+              <span class="fa-stack fa-sm">
+                <i
+                  class="fa fa-circle fa-stack-2x"
+                  aria-hidden="true"
+                  style="color:#e67e22;line-height: inherit"
+                />
+                <i
+                  class="fa fa-user fa-stack-1x"
+                  aria-hidden="true"
+                  style="color:rgb(255,255,255);line-height:inherit"
+                />
+              </span>
+              Users by Order Count
+            </div>
+          </div>
+          <div class="portlet-body">
+            <div class="row">
+              <div class="col-md-12 center">
+                <el-date-picker
+                  v-model="order_count_from_date"
+                  :editable="false"
+                  type="date"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  :clearable="false"
+                  placeholder="From"
+                  @change="orderCountDateFromSelected()"
+                />
+                <el-date-picker
+                  v-model="order_count_to_date"
+                  type="date"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  :clearable="false"
+                  placeholder="To"
+                  @change="orderCountDateToSelected()"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div
+                  id="chart_div_usersByOrderCount"
+                  style="height:350px"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>

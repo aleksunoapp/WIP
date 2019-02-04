@@ -1,224 +1,333 @@
 <template>
-	<modal :show="showEditMenuModal"
-	       effect="fade"
-	       @closeOnEscape="closeModal"
-	       ref="editModal">
-		<div slot="modal-header"
-		     class="modal-header center">
-			<button type="button"
-			        class="close"
-			        @click="closeModal()">
-				<span>&times;</span>
-			</button>
-			<transition name="fade"
-			            mode="out-in">
-				<h4 class="modal-title center"
-				    v-if="!selectImageMode && !selectLocationMode"
-				    key="mainEditMode">Edit Menu</h4>
-				<h4 class="modal-title center"
-				    v-if="!selectImageMode && selectLocationMode"
-				    key="selectLocationMode">
-					<i class="fa fa-chevron-left clickable pull-left back-button"
-					   @click="closeSelectLocationsPopup()"></i>Select Stores</h4>
-				<h4 class="modal-title center"
-				    v-if="selectImageMode && !selectLocationMode"
-				    key="selectImageMode">Select An Image</h4>
-			</transition>
-		</div>
-		<div slot="modal-body"
-		     class="modal-body">
-			<div class="row">
-				<div class="col-xs-12">
-					<div class="alert alert-danger"
-					     v-show="errorMessage.length"
-					     ref="errorMessage">
-						<button class="close"
-						        data-close="alert"
-						        @click="clearError()"></button>
-						<span>{{errorMessage}}</span>
-					</div>
-				</div>
-				<div v-if="!selectLocationMode"
-				     :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}">
-					<resource-picker @open="goToPageTwo()"
-					                 @close="goToPageOne()"
-					                 @selected="updateImage"
-					                 :imageButton="true"
-					                 :imageUrl="menuToBeEdited.image_url"
-					                 class="margin-top-15">
-					</resource-picker>
-				</div>
+  <modal
+    ref="editModal"
+    :show="showEditMenuModal"
+    effect="fade"
+    @closeOnEscape="closeModal"
+  >
+    <div
+      slot="modal-header"
+      class="modal-header center"
+    >
+      <button
+        type="button"
+        class="close"
+        @click="closeModal()"
+      >
+        <span>&times;</span>
+      </button>
+      <transition
+        name="fade"
+        mode="out-in"
+      >
+        <h4
+          v-if="!selectImageMode && !selectLocationMode"
+          key="mainEditMode"
+          class="modal-title center"
+        >
+          Edit Menu
+        </h4>
+        <h4
+          v-if="!selectImageMode && selectLocationMode"
+          key="selectLocationMode"
+          class="modal-title center"
+        >
+          <i
+            class="fa fa-chevron-left clickable pull-left back-button"
+            @click="closeSelectLocationsPopup()"
+          />Select Stores
+        </h4>
+        <h4
+          v-if="selectImageMode && !selectLocationMode"
+          key="selectImageMode"
+          class="modal-title center"
+        >
+          Select An Image
+        </h4>
+      </transition>
+    </div>
+    <div
+      slot="modal-body"
+      class="modal-body"
+    >
+      <div class="row">
+        <div class="col-xs-12">
+          <div
+            v-show="errorMessage.length"
+            ref="errorMessage"
+            class="alert alert-danger"
+          >
+            <button
+              class="close"
+              data-close="alert"
+              @click="clearError()"
+            />
+            <span>{{ errorMessage }}</span>
+          </div>
+        </div>
+        <div
+          v-if="!selectLocationMode"
+          :class="{'col-xs-4 col-xs-offset-4': !selectImageMode, 'col-xs-12': selectImageMode}"
+        >
+          <resource-picker
+            :image-button="true"
+            :image-url="menuToBeEdited.image_url"
+            class="margin-top-15"
+            @open="goToPageTwo()"
+            @close="goToPageOne()"
+            @selected="updateImage"
+          />
+        </div>
 
-				<div class="col-xs-12"
-					v-if="selectLocationMode"
-				>
-					<store-picker-with-button
-						:previouslySelected="selectedLocations"
-						@close="updateSelectedLocations"
-					>
-					</store-picker-with-button>
-				</div>
+        <div
+          v-if="selectLocationMode"
+          class="col-xs-12"
+        >
+          <store-picker-with-button
+            :previously-selected="selectedLocations"
+            @close="updateSelectedLocations"
+          />
+        </div>
 
-				<div class="col-md-12"
-				     v-show="!selectImageMode && !selectLocationMode">
-					<fieldset :disabled="!$root.permissions['menu_manager menus update']">
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-							       class="form-control input-sm edited"
-							       id="form_control_1"
-							       v-model="menuToBeEdited.name">
-							<label for="form_control_1">Menu Name</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-							       class="form-control input-sm edited"
-							       id="form_control_2"
-							       v-model="menuToBeEdited.desc">
-							<label for="form_control_2">Menu Description</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-							       class="form-control input-sm edited"
-							       id="form_control_3"
-							       v-model="menuToBeEdited.sku">
-							<label for="form_control_3">Menu SKU</label>
-						</div>
-						<div class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-							       class="form-control input-sm edited"
-							       id="form_control_4"
-							       v-model="menuToBeEdited.order">
-							<label for="form_control_4">Menu Order</label>
-						</div>
-					</fieldset>
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<label>Menu Status:</label><br>
-						<el-switch :disabled="!$root.permissions['menu_manager menus update']"
-						           v-model="menuToBeEdited.status"
-						           active-color="#0c6"
-						           inactive-color="#ff4949"
-						           :active-value="1"
-						           :inactive-value="0"
-						           active-text="Active"
-						           inactive-text="Sold Out">
-						</el-switch>
-					</div>
-					<fieldset :disabled="!$root.permissions['menu_manager menus update']">
-					<div class="form-group form-md-checkboxes">
-						<label>Availability</label>
-						<div class="md-checkbox-inline">
-							<div class="md-checkbox">
-								<input v-model="menuToBeEdited.pos" type="checkbox" id="availability_pos_edit" class="md-check">
-								<label for="availability_pos_edit">
-									<span></span>
-									<span class="check"></span>
-									<span class="box"></span> POS </label>
-							</div>
-							<div class="md-checkbox">
-								<input v-model="menuToBeEdited.kiosk" type="checkbox" id="availability_kiosk_edit" class="md-check" checked="">
-								<label for="availability_kiosk_edit">
-									<span></span>
-									<span class="check"></span>
-									<span class="box"></span> Kiosk </label>
-							</div>
-							<div class="md-checkbox">
-								<input v-model="menuToBeEdited.online" type="checkbox" id="availability_online_edit" class="md-check">
-								<label for="availability_online_edit">
-									<span></span>
-									<span class="check"></span>
-									<span class="box"></span> Online </label>
-							</div>
-							<div class="md-checkbox">
-								<input v-model="menuToBeEdited.web" type="checkbox" id="availability_web_edit" class="md-check">
-								<label for="availability_web_edit">
-									<span></span>
-									<span class="check"></span>
-									<span class="box"></span> Web </label>
-							</div>
-						</div>
-					</div>
-					</fieldset>
-					<el-date-picker :disabled="!$root.permissions['menu_manager menus update']"
-					                v-model="menuToBeEdited.start_from"
-					                :editable="false"
-					                type="date"
-					                class="narrow-datepicker"
-					                format="yyyy-MM-dd"
-					                value-format="yyyy-MM-dd"
-					                placeholder="From"></el-date-picker>
-					-
-					<el-date-picker :disabled="!$root.permissions['menu_manager menus update']"
-					                v-model="menuToBeEdited.stop_on"
-					                :editable="false"
-					                type="date"
-					                class="narrow-datepicker"
-					                format="yyyy-MM-dd"
-					                value-format="yyyy-MM-dd"
-					                placeholder="To"></el-date-picker>
-					<div class="form-group form-md-line-input form-md-floating-label">
-						<label>Catering:</label><br>
-						<el-switch :disabled="!$root.permissions['menu_manager menus update']"
-						           v-model="menuToBeEdited.catering"
-						           active-color="#0c6"
-						           inactive-color="#ff4949"
-						           :active-value="1"
-						           :inactive-value="0"
-						           active-text="Available"
-						           inactive-text="Unavailable">
-						</el-switch>
-					</div>
-					<fieldset :disabled="!$root.permissions['menu_manager menus update']">
-						<div v-if="menuToBeEdited.catering"
-						     class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-							       class="form-control input-sm"
-							       id="form_control_5"
-							       :class="{'edited': menuToBeEdited.min.length}"
-							       v-model="menuToBeEdited.min">
-							<label for="form_control_5">Minimum order value</label>
-						</div>
-						<div v-if="menuToBeEdited.catering"
-						     class="form-group form-md-line-input form-md-floating-label">
-							<input type="text"
-							       class="form-control input-sm"
-							       id="form_control_6"
-							       :class="{'edited': menuToBeEdited.max.length}"
-							       v-model="menuToBeEdited.max">
-							<label for="form_control_6">Maximum order value</label>
-						</div>
-					</fieldset>
-					<div>
-						<p class="margin-bottom-10 margin-top-30 margin-right-10">Select locations to apply the changes to:</p>
-						<button type="submit"
-						        class="btn blue btn-outline"
-						        @click="selectLocations($event)">Select locations</button>
-						<p class="grey-label margin-top-10"
-						   v-if="selectedLocations.length">Selected {{ selectedLocations.length }}
-							<span v-if="selectedLocations.length !== 1">locations</span>
-							<span v-else>location</span>
-						</p>
-					</div>
-					<button v-if="!$root.permissions['menu_manager menus update']"
-					        type="button"
-					        class="btn btn-primary pull-right"
-					        @click="closeModal()">
-						Close
-					</button>
-					<button v-else
-					        type="button"
-					        class="btn btn-primary pull-right"
-					        @click="updateMenu()"
-					        :disabled="updating">
-						Save
-						<i v-show="updating"
-						   class="fa fa-spinner fa-pulse fa-fw">
-						</i>
-					</button>
-				</div>
-			</div>
-		</div>
-		<div slot="modal-footer"></div>
-	</modal>
+        <div
+          v-show="!selectImageMode && !selectLocationMode"
+          class="col-md-12"
+        >
+          <fieldset :disabled="!$root.permissions['menu_manager menus update']">
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_1"
+                v-model="menuToBeEdited.name"
+                type="text"
+                class="form-control input-sm edited"
+              >
+              <label for="form_control_1">
+                Menu Name
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_2"
+                v-model="menuToBeEdited.desc"
+                type="text"
+                class="form-control input-sm edited"
+              >
+              <label for="form_control_2">
+                Menu Description
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_3"
+                v-model="menuToBeEdited.sku"
+                type="text"
+                class="form-control input-sm edited"
+              >
+              <label for="form_control_3">
+                Menu SKU
+              </label>
+            </div>
+            <div class="form-group form-md-line-input form-md-floating-label">
+              <input
+                id="form_control_4"
+                v-model="menuToBeEdited.order"
+                type="text"
+                class="form-control input-sm edited"
+              >
+              <label for="form_control_4">
+                Menu Order
+              </label>
+            </div>
+          </fieldset>
+          <div class="form-group form-md-line-input form-md-floating-label">
+            <label>Menu Status:</label><br>
+            <el-switch
+              v-model="menuToBeEdited.status"
+              :disabled="!$root.permissions['menu_manager menus update']"
+              active-color="#0c6"
+              inactive-color="#ff4949"
+              :active-value="1"
+              :inactive-value="0"
+              active-text="Active"
+              inactive-text="Sold Out"
+            />
+          </div>
+          <fieldset :disabled="!$root.permissions['menu_manager menus update']">
+            <div class="form-group form-md-checkboxes">
+              <label>Availability</label>
+              <div class="md-checkbox-inline">
+                <div class="md-checkbox">
+                  <input
+                    id="availability_pos_edit"
+                    v-model="menuToBeEdited.pos"
+                    type="checkbox"
+                    class="md-check"
+                  >
+                  <label for="availability_pos_edit">
+                    <span />
+                    <span class="check" />
+                    <span class="box" /> POS
+                  </label>
+                </div>
+                <div class="md-checkbox">
+                  <input
+                    id="availability_kiosk_edit"
+                    v-model="menuToBeEdited.kiosk"
+                    type="checkbox"
+                    class="md-check"
+                    checked=""
+                  >
+                  <label for="availability_kiosk_edit">
+                    <span />
+                    <span class="check" />
+                    <span class="box" /> Kiosk
+                  </label>
+                </div>
+                <div class="md-checkbox">
+                  <input
+                    id="availability_online_edit"
+                    v-model="menuToBeEdited.online"
+                    type="checkbox"
+                    class="md-check"
+                  >
+                  <label for="availability_online_edit">
+                    <span />
+                    <span class="check" />
+                    <span class="box" /> Online
+                  </label>
+                </div>
+                <div class="md-checkbox">
+                  <input
+                    id="availability_web_edit"
+                    v-model="menuToBeEdited.web"
+                    type="checkbox"
+                    class="md-check"
+                  >
+                  <label for="availability_web_edit">
+                    <span />
+                    <span class="check" />
+                    <span class="box" /> Web
+                  </label>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+          <el-date-picker
+            v-model="menuToBeEdited.start_from"
+            :disabled="!$root.permissions['menu_manager menus update']"
+            :editable="false"
+            type="date"
+            class="narrow-datepicker"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"
+            placeholder="From"
+          />
+          -
+          <el-date-picker
+            v-model="menuToBeEdited.stop_on"
+            :disabled="!$root.permissions['menu_manager menus update']"
+            :editable="false"
+            type="date"
+            class="narrow-datepicker"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"
+            placeholder="To"
+          />
+          <div class="form-group form-md-line-input form-md-floating-label">
+            <label>Catering:</label><br>
+            <el-switch
+              v-model="menuToBeEdited.catering"
+              :disabled="!$root.permissions['menu_manager menus update']"
+              active-color="#0c6"
+              inactive-color="#ff4949"
+              :active-value="1"
+              :inactive-value="0"
+              active-text="Available"
+              inactive-text="Unavailable"
+            />
+          </div>
+          <fieldset :disabled="!$root.permissions['menu_manager menus update']">
+            <div
+              v-if="menuToBeEdited.catering"
+              class="form-group form-md-line-input form-md-floating-label"
+            >
+              <input
+                id="form_control_5"
+                v-model="menuToBeEdited.min"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': menuToBeEdited.min.length}"
+              >
+              <label for="form_control_5">
+                Minimum order value
+              </label>
+            </div>
+            <div
+              v-if="menuToBeEdited.catering"
+              class="form-group form-md-line-input form-md-floating-label"
+            >
+              <input
+                id="form_control_6"
+                v-model="menuToBeEdited.max"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': menuToBeEdited.max.length}"
+              >
+              <label for="form_control_6">
+                Maximum order value
+              </label>
+            </div>
+          </fieldset>
+          <div>
+            <p class="margin-bottom-10 margin-top-30 margin-right-10">
+              Select locations to apply the changes to:
+            </p>
+            <button
+              type="submit"
+              class="btn blue btn-outline"
+              @click="selectLocations($event)"
+            >
+              Select locations
+            </button>
+            <p
+              v-if="selectedLocations.length"
+              class="grey-label margin-top-10"
+            >
+              Selected {{ selectedLocations.length }}
+              <span v-if="selectedLocations.length !== 1">
+                locations
+              </span>
+              <span v-else>
+                location
+              </span>
+            </p>
+          </div>
+          <button
+            v-if="!$root.permissions['menu_manager menus update']"
+            type="button"
+            class="btn btn-primary pull-right"
+            @click="closeModal()"
+          >
+            Close
+          </button>
+          <button
+            v-else
+            type="button"
+            class="btn btn-primary pull-right"
+            :disabled="updating"
+            @click="updateMenu()"
+          >
+            Save
+            <i
+              v-show="updating"
+              class="fa fa-spinner fa-pulse fa-fw"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+    <div slot="modal-footer" />
+  </modal>
 </template>
 
 <script>
@@ -230,6 +339,16 @@ import ResourcePicker from '../../../modules/ResourcePicker'
 import StorePickerWithButton from '@/components/modules/StorePickerWithButton'
 
 export default {
+	components: {
+		Modal,
+		ResourcePicker,
+		StorePickerWithButton
+	},
+	props: {
+		passedMenuId: {
+			type: Number
+		}
+	},
 	data () {
 		return {
 			showEditMenuModal: false,
@@ -243,11 +362,6 @@ export default {
 			statusChecked: false,
 			selectLocationMode: false,
 			selectedLocations: []
-		}
-	},
-	props: {
-		passedMenuId: {
-			type: Number
 		}
 	},
 	created () {
@@ -496,11 +610,6 @@ export default {
 				this.menuToBeEdited.image_url = val.image_url
 			}
 		}
-	},
-	components: {
-		Modal,
-		ResourcePicker,
-		StorePickerWithButton
 	}
 }
 </script>
