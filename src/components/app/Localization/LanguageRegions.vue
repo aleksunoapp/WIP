@@ -104,7 +104,7 @@
 		     id="languages-container">
 			<div class="portlet-title bg-blue-chambray">
 				<div class="menu-image-main">
-					<img src="../../../../static/client_logo.png">
+					<img src="../../../../public/client_logo.png">
 				</div>
 				<div class="caption">
 					<span class="caption-subject font-default bold uppercase">Language Regions</span>

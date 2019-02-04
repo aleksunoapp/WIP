@@ -123,7 +123,7 @@
 				<div class="portlet light portlet-fit bordered margin-top-20">
 					<div class="portlet-title bg-blue-chambray">
 						<div class="menu-image-main">
-							<img src="../../../../static/client_logo.png">
+							<img src="../../../../public/client_logo.png">
 						</div>
 						<div class="caption">
 							<span class="caption-subject font-default bold uppercase">Permissions</span>
@@ -230,7 +230,7 @@
 				<div class="portlet light portlet-fit bordered margin-top-20">
 					<div class="portlet-title bg-blue-chambray">
 						<div class="menu-image-main">
-							<img src="../../../../static/client_logo.png">
+							<img src="../../../../public/client_logo.png">
 						</div>
 						<div class="caption">
 							<span class="caption-subject font-default bold uppercase">Search Results</span>

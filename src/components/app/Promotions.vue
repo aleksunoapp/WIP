@@ -284,7 +284,7 @@
 			     id="promotions-container">
 				<div class="portlet-title bg-blue-chambray">
 					<div class="menu-image-main">
-						<img src="../../../static/client_logo.png">
+						<img src="../../../public/client_logo.png">
 					</div>
 					<div class="caption">
 						<span class="caption-subject font-default bold uppercase">Promotions</span>
@@ -869,7 +869,7 @@ import EditPromotion from './Promotions/EditPromotion'
 import DeletePromotion from './Promotions/DeletePromotion'
 import AssignCountriesToPromotion from './Promotions/AssignCountriesToPromotion'
 import $ from 'jquery'
-import freshiiLogo from '../../../static/client_logo.png'
+import freshiiLogo from '../../../public/client_logo.png'
 import { mapGetters } from 'vuex'
 
 export default {
