@@ -35,6 +35,9 @@ export const getters = {
     const category = state.categories.find((category) => category.id === id)
     return category ? category.name : ''
   },
+  categoryById: (state) => (id) => {
+    return state.categories.find((category) => category.id === id)
+  },
   categoryServicesShownOnRoute: (state, getters) => (id) => {
     if (state.route.name === 'additional-services') {
       return getters.categoryServices(id).filter(service => service.isHighlighted)

@@ -10,7 +10,10 @@
       @click="openService(service)"
       @keydown.enter="openService(service)"
     >
-      <div class="left">
+      <div
+        v-if="!isPass"
+        class="left"
+      >
         <img
           :src="service.imageUrl"
           class="image"
@@ -82,7 +85,7 @@
 </template>
 
 <script>
-import { mapActions, mapMutations } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 import { formatCurrency, getServiceDisplayPrice } from '@/mixins.js'
 
 export default {
@@ -103,6 +106,18 @@ export default {
       default: () => {}
     }
   },
+  computed: {
+    ...mapGetters([
+      'categoryById'
+    ]),
+    isPass () {
+      const category = this.$store.getters.categoryById(this.service.category)
+      if (category && typeof category.serviceCategoryType === 'string') {
+        return category.serviceCategoryType.toLowerCase() === 'pass'
+      }
+      return false
+    }
+  },
   methods: {
     ...mapActions([
       'viewService'
@@ -113,7 +128,7 @@ export default {
       'logEvent'
     ]),
     openService (service) {
-      if (!(typeof service.serviceCategoryType === 'string' && service.serviceCategoryType.toLowerCase() === 'pass')) {
+      if (!this.isPass) {
         this.viewService(service)
       }
     },

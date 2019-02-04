@@ -18,10 +18,13 @@ export const formatCurrency = {
 export const getServiceDisplayPrice = {
   methods: {
     getServiceDisplayPrice (service) {
-      if (typeof service.serviceCategoryType === 'string') {
-        if (service.serviceCategoryType.toLowerCase() === 'pass') {
-          return false
-        }
+      const category = this.$store.getters.categoryById(service.category)
+      if (
+        category &&
+        typeof category.serviceCategoryType === 'string' &&
+        category.serviceCategoryType.toLowerCase() === 'pass'
+      ) {
+        return false
       } else if (service.category === '8') {
         return false
       } else if (service.category > '5' && !service.parentServiceId) {
