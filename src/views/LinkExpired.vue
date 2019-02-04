@@ -12,7 +12,7 @@
       <div class="links">
         <a
           class="link"
-          :href="`sms:${dealer.phone}`"
+          :href="`tel:${dealer.phone}`"
         >
           <img
             src="@/assets/images/phone.svg"
@@ -25,7 +25,7 @@
         </a>
         <a
           class="link"
-          :href="`tel:${dealer.smsPhone}`"
+          :href="`sms:${dealer.smsPhone}`"
         >
           <img
             src="@/assets/images/message-bubble.svg"
