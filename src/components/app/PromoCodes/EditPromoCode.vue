@@ -86,12 +86,12 @@
                   :disabled="!can('promocodes update')"
                 >
                 <label for="form_control_2">
-                  Value of Promo Code
+                  Value
                 </label>
               </div>
               <el-select
                 v-model="promoCode.value_type"
-                placeholder="Select type"
+                placeholder="% or $"
                 size="mini"
                 class="margin-bottom-15"
                 :disabled="!can('promocodes update')"
@@ -735,10 +735,6 @@ export default {
 	margin-left: 10px;
 }
 @media (max-width: 1150px) {
-	.side-by-side-wrapper {
-		flex-direction: column;
-		align-items: flex-start;
-	}
 	.side-by-side-item {
 		max-width: 100%;
 	}

@@ -75,7 +75,7 @@
                     Enter a Code
                   </label>
                 </div>
-                <div class="side-by-side-wrapper center">
+                <div class="side-by-side-wrapper">
                   <div class="form-group form-md-line-input form-md-floating-label side-by-side-item margin-right-10">
                     <input
                       id="form_control_2"
@@ -85,7 +85,7 @@
                       :class="{'edited': newPromoCode.value}"
                     >
                     <label for="form_control_2">
-                      Value of Promo Code
+                      Value
                     </label>
                   </div>
                   <el-dropdown
@@ -109,7 +109,7 @@
                     </el-dropdown-menu>
                   </el-dropdown>
                 </div>
-                <div class="side-by-side-wrapper center">
+                <div class="side-by-side-wrapper">
                   <el-select
                     v-model="newPromoCode.apply_on"
                     placeholder="Discount is applied to"
@@ -620,7 +620,7 @@ export default {
 			} else if (this.newPromoCode.value_type === 'dollar') {
 				return '$'
 			} else {
-				return 'Select value type'
+				return '$ or %'
 			}
 		},
 		newPromoCodeTypeLabel () {
@@ -1101,12 +1101,7 @@ export default {
 	display: flex;
 	flex-direction: row;
 	justify-content: flex-start;
-}
-.side-by-side-wrapper.start {
-	align-items: flex-start;
-}
-.side-by-side-wrapper.center {
-	align-items: center;
+  align-items: center;
 }
 .side-by-side-item {
 	max-width: 45%;
