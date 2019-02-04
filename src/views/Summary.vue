@@ -83,13 +83,22 @@
           <p class="prompt">
             {{ $t("please_sign_below") }}
           </p>
-          <button
-            class="sign"
-            @click="sign()"
-            @keydown.enter="sign()"
-          >
-            {{ $t("click_to_sign") }}
-          </button>
+          <div class="controls">
+            <button
+              class="clear"
+              @click="clear()"
+            >
+              {{ $t("clear") }}
+            </button>
+            <button
+              class="sign"
+              :disabled="panned"
+              @click="sign()"
+              @keydown.enter="sign()"
+            >
+              {{ $t("click_to_sign") }}
+            </button>
+          </div>
         </div>
         <div class="wrapper">
           <canvas
@@ -220,17 +229,12 @@ export default Vue.extend({
   },
   mounted () {
     if (this.count.actionable) {
-      this.pad = new Pad(this.$refs.canvas, { backgroundColor: '#f7f7fa' })
-      this.setCanvasResolutionAndBackground()
-      window.addEventListener('resize', this.setCanvasResolutionAndBackground)
-      const hammer = new Hammer(this.$refs.canvas)
-      hammer.on('pan', this.signed)
+      this.buildPad()
     }
     this.logEvent('Started viewing summary page')
   },
   beforeDestroy () {
     this.logEvent('Finished viewing summary page')
-    window.removeEventListener('resize', this.setCanvasResolutionAndBackground)
   },
   methods: {
     ...mapMutations([
@@ -242,7 +246,23 @@ export default Vue.extend({
     ...mapActions({
       sendServices: 'sendServices'
     }),
-    setCanvasResolutionAndBackground () {
+    clear () {
+      if (!this.pad.isEmpty() || this.panned) {
+        const context = this.$refs.canvas.getContext('2d')
+        const canvas = this.$refs.canvas
+        this.panned = false
+        this.pad.off()
+        context.clearRect(0, 0, canvas.width, canvas.height)
+        this.buildPad()
+      }
+    },
+    buildPad () {
+      this.pad = new Pad(this.$refs.canvas, { backgroundColor: '#f7f7fa' })
+      this.setCanvasBackground()
+      const hammer = new Hammer(this.$refs.canvas)
+      hammer.on('pan', this.signed)
+    },
+    setCanvasBackground () {
       const canvas = this.$refs.canvas
       const context = canvas.getContext('2d')
       canvas.width = canvas.offsetWidth
@@ -384,14 +404,26 @@ export default Vue.extend({
           font-size: 1.2rem;
           text-transform: uppercase;
         }
-        .sign {
-          border: none;
-          padding: 1rem;
-          background-color: var(--white);
-          text-transform: uppercase;
-          font-weight: 700;
-          @media (min-width: 992px) {
-            background-color: var(--grey-light-background);
+        .controls {
+          display: flex;
+          justify-content: flex-end;
+          flex-wrap: wrap;
+          .sign, .clear {
+            margin: 1px;
+            border: none;
+            padding: 1rem;
+            background-color: var(--white);
+            text-transform: uppercase;
+            font-weight: 700;
+            transition: opacity 0.3;
+            @media (min-width: 992px) {
+              background-color: var(--grey-light-background);
+            }
+          }
+          .sign:disabled {
+            opacity: 0.75;
+            transition: opacity 0.3;
+            font-weight: 400;
           }
         }
       }
