@@ -106,8 +106,8 @@
             </div>
             <button
               class="toggle"
-              @click.stop
-              @keydown.enter="toggleCategory(category)"
+              @click.stop="toggleCategory(category)"
+              @keydown.enter.prevent="toggleCategory(category)"
             >
               <img
                 class="chevron"
