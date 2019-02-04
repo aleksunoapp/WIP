@@ -7,7 +7,8 @@ import {
   fetchInspectionReportUrl,
   fetchAdvisor,
   fetchTax,
-  postServices
+  postServices,
+  postLog
 } from '@/services'
 
 export const actions = {
@@ -194,6 +195,12 @@ export const actions = {
     if (!state.modal) {
       commit('openService')
     }
+  },
+  sendLog ({ commit, dispatch }) {
+    postLog()
+      .catch((error) => {
+        console.log({ error })
+      })
   }
 }
 

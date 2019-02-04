@@ -75,7 +75,7 @@
 
 <script>
 import Vue from 'vue'
-import { mapGetters, mapState, mapMutations } from 'vuex'
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import ImageContainer from '@/components/ImageContainer.vue'
 
 export default Vue.extend({
@@ -100,6 +100,7 @@ export default Vue.extend({
   },
   created () {
     this.logEvent('Started viewing thanks page')
+    this.sendLog()
   },
   methods: {
     getPickupTime () {
@@ -112,6 +113,9 @@ export default Vue.extend({
         return `${this.$d(this.readyBy, 'dateAndTime')}`
       }
     },
+    ...mapActions([
+      'sendLog'
+    ]),
     ...mapMutations([
       'logEvent'
     ])
