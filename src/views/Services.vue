@@ -169,7 +169,7 @@ export default Vue.extend({
       'previouslyUnapprovedServices',
       'total',
       'count',
-      'highlightedServices'
+      'additionalServices'
     ]),
     ...mapState([
       'activeCategory'
@@ -186,8 +186,8 @@ export default Vue.extend({
       return total
     },
     countTotal () {
-      if (this.highlightedServices.length) {
-        return this.highlightedServices.length
+      if (this.additionalServices.length) {
+        return this.additionalServices.length
       } else {
         return this.count.concern + this.count.fail + this.count.warning
       }

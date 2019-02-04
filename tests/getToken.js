@@ -3,8 +3,8 @@
 // paste in browser console
 
 (function ({
-    additional = false, // include isHighlighted services (route: additional-services)
-    unselected = true, // include unselected services (route: wait-services)
+    additional = true, // include Additional services (isHighlighted = true, route = additional-services)
+    unselected = true, // include unselected services (isSelected = false, route = wait-services)
     empty = false // zero services
 }) {
     const payload = {

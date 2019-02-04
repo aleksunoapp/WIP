@@ -14,11 +14,11 @@
           </p>
           <p class="text large">
             <span class="blue">
-              {{ highlightedServices.length }}
-            </span> {{ $tc('additional_recommendation', highlightedServices.length) }}
+              {{ additionalServices.length }}
+            </span> {{ $tc('additional_recommendation', additionalServices.length) }}
           </p>
           <p class="text">
-            {{ $tc('that_need_your_attention', highlightedServices.length) }}
+            {{ $tc('that_need_your_attention', additionalServices.length) }}
           </p>
         </div>
       </div>
@@ -26,7 +26,7 @@
         class="button cta"
         @click="$router.push({name: 'additional-services'})"
       >
-        {{ $tc("view_recommendations", highlightedServices.length) }}
+        {{ $tc("view_recommendations", additionalServices.length) }}
       </button>
     </main>
   </div>
@@ -37,7 +37,7 @@ import Vue from 'vue'
 import { mapGetters, mapMutations, mapState } from 'vuex'
 export default Vue.extend({
   computed: {
-    ...mapGetters(['highlightedServices']),
+    ...mapGetters(['additionalServices']),
     ...mapState(['customer'])
   },
   created () {

@@ -22,12 +22,15 @@ export const getters = {
   },
   categoriesShownOnRoute: (state, getters) => {
     if (state.route.name === 'additional-services' || state.route.name === 'additional-summary') {
-      return getters.categoriesShown
-        .filter(category => getters.categoryContainsHiglightedServices(category.id))
+      return getters.categoriesShown.filter(category => {
+        return getters.categoryContainsHiglightedServices(category.id) && !getters.isPass(category.id)
+      })
     }
     if (state.route.name === 'wait-services') {
-      return getters.categoriesShown
-        .filter(category => getters.categoryContainsUnhiglightedUnselectedServices(category.id))
+      return getters.categoriesShown.filter(category => {
+        return getters.categoryContainsUnhiglightedUnselectedServices(category.id) &&
+          !getters.isPass(category.id)
+      })
     }
     return getters.categoriesShown
   },
@@ -45,6 +48,27 @@ export const getters = {
     }
     const category = state.categories.find((category) => category.id === idMap[id])
     return category ? category.name : ''
+  },
+  isPass: (state) => (id) => {
+    const idMap = {
+      1: '1',
+      2: '2',
+      3: '3',
+      4: '4',
+      5: '5',
+      6: '5',
+      7: '5',
+      8: '5',
+      9: '5'
+    }
+    const category = state.categories.find((category) => category.id === idMap[id])
+    if (
+      category &&
+      typeof category.serviceCategoryType === 'string' &&
+      category.serviceCategoryType.toLowerCase() === 'pass'
+    ) {
+      return true
+    } else return false
   },
   categoryById: (state) => (id) => {
     return state.categories.find((category) => category.id === id)
@@ -145,24 +169,12 @@ export const getters = {
       actionable: fail + warning + concern
     }
   },
-  highlightedServices: (state, getters) => {
-    const highlighted = []
-    for (const service of state.services) {
-      const children = []
-      if (service.subServices) {
-        for (const subService of service.subServices) {
-          if (subService.isHighlighted) {
-            children.push(subService)
-          }
-        }
-      }
-      if (children.length) {
-        highlighted.push({
-          ...service,
-          subServices: children
-        })
-      } else if (service.isHighlighted) {
-        highlighted.push(service)
+  additionalServices: (state, getters) => {
+    let highlighted = []
+    for (const category of state.categories) {
+      if (!getters.isPass(category.id) && category.id !== '4') {
+        const services = getters.categoryServices(category.id).filter(service => service.isHighlighted)
+        highlighted = highlighted.concat(services)
       }
     }
     return highlighted
@@ -263,9 +275,11 @@ export const getters = {
   previouslyUnapprovedServices: (state, getters) => {
     const services = []
     for (const category of getters.categoriesShown) {
-      for (const service of getters.categoryServices(category.id)) {
-        if (!service.isHighlighted && !service.isSelected) {
-          services.push(service)
+      if (!getters.isPass(category.id) && category.id !== '4') {
+        for (const service of getters.categoryServices(category.id)) {
+          if (!service.isHighlighted && !service.isSelected) {
+            services.push(service)
+          }
         }
       }
     }

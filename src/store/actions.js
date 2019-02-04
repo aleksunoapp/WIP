@@ -123,7 +123,7 @@ export const actions = {
     }
   },
   routeAfterLogin ({ commit, getters, state }) {
-    if (getters.highlightedServices.length) {
+    if (getters.additionalServices.length) {
       router.push({ name: 'additional' })
     } else {
       if (getters.count.actionable) {
