@@ -20,6 +20,60 @@ export const getters = {
 
     return categoriesShown
   },
+  // ADDITIONAL
+  // trigger additional if findServices({isHighlighted: true}) has length
+  // show findServices({isHighlighted: true})
+  // then show findServices({isHighlighted: false, wasSelected: true})
+
+  findServices: function (state, getters) {
+    return function ({
+      isHighlighted,
+      isSelected,
+      wasSelected,
+      categories,
+      categoryTypes
+    }) {
+      const services = []
+      if (arguments.length) {
+        for (const service of services) {
+          const category = getters.categoryById(service.category)
+          let match = false
+          if (isHighlighted !== undefined) {
+            if (service.isHighlighted === isHighlighted) {
+              match = true
+            }
+          }
+          if (isSelected !== undefined && !match) {
+            if (service.isSelected === isSelected) {
+              match = true
+            }
+          }
+          if (wasSelected !== undefined && !match) {
+            if (service.wasSelected === wasSelected) {
+              match = true
+            }
+          }
+          if (categories !== undefined && !match) {
+            if (categories.includes(service.category)) {
+              match = true
+            }
+          }
+          if (categoryTypes !== undefined && !match) {
+            if (categoryTypes.includes(category.serviceCategoryType)) {
+              match = true
+            }
+          }
+          if (match) {
+            services.push({
+              ...service,
+              sortOrder: category.sortOrder
+            })
+          }
+        }
+      }
+      return services.sort((a, b) => a.sortOrder - b.sortOrder)
+    }
+  },
   categoriesShownOnRoute: (state, getters) => {
     if (state.route.name === 'additional-services' || state.route.name === 'additional-summary') {
       return getters.categoriesShown.filter(category => {
