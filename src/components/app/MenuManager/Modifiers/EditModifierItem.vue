@@ -181,6 +181,18 @@
               inactive-text="No"
             />
           </div>
+          <div class="form-group form-md-line-input form-md-floating-label">
+            <label>Show on POS?</label><br>
+            <el-switch
+              v-model="itemToBeEdited.show_on_pos"
+              active-color="#0c6"
+              inactive-color="#ff4949"
+              :active-value="1"
+              :inactive-value="0"
+              active-text="Yes"
+              inactive-text="No"
+            />
+          </div>
           <div>
             <p class="margin-bottom-10 margin-top-30 margin-right-10">
               Select locations to apply the changes to:

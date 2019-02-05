@@ -165,11 +165,6 @@
                   Nutrition Summary
                 </label>
               </div>
-            </div>
-            <div
-              v-show="!showCorporateItems && !imageMode.newMenu"
-              class="col-md-5"
-            >
               <div class="form-group form-md-line-input form-md-floating-label">
                 <input
                   id="form_control_4"
@@ -182,6 +177,11 @@
                   Item Order
                 </label>
               </div>
+            </div>
+            <div
+              v-show="!showCorporateItems && !imageMode.newMenu"
+              class="col-md-5"
+            >
               <div class="form-group form-md-line-input form-md-floating-label">
                 <input
                   id="form_control_5"
@@ -193,6 +193,18 @@
                 >
                 <label for="form_control_5">
                   Item SKU
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_pos_name"
+                  v-model="newItem.pos_name"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newItem.pos_name}"
+                >
+                <label for="form_control_pos_name">
+                  POS Name
                 </label>
               </div>
               <div
@@ -605,8 +617,8 @@
                           <span v-if="modifier.preset_item_modifier_item_option_item.length > 0">
                             (
                             <span
-                              v-for="(option, index) in modifier.preset_item_modifier_item_option_item"
-                              :key="index"
+                              v-for="(option, optionIndex) in modifier.preset_item_modifier_item_option_item"
+                              :key="optionIndex"
                             >
                               {{ option.option_item_name }}
                               <span v-show="modifier.preset_item_modifier_item_option_item.length - 1 !== index">
@@ -988,7 +1000,7 @@ export default {
       displayTagsListModal: false,
       displayCreateTagModal: false,
       customText:
-				'There are no items in this category. Click on the button above to add one.',
+        'There are no items in this category. Click on the button above to add one.',
       errorMessage: '',
       createItemCollapse: true,
       creating: false,
@@ -1006,7 +1018,8 @@ export default {
         item_type_id: null,
         nutrition_summary: '',
         type: '',
-        preset_item_modifier_item: []
+        preset_item_modifier_item: [],
+        pos_name: ''
       },
       itemCopied: false,
       copyMode: true,
@@ -1052,9 +1065,9 @@ export default {
     showCorporateItems () {
       if (
         this.$root.activeLocation.is_corporate !== undefined &&
-				this.$root.activeLocation.is_corporate !== 1 &&
-				!this.itemCopied &&
-				this.copyMode
+        this.$root.activeLocation.is_corporate !== 1 &&
+        !this.itemCopied &&
+        this.copyMode
       ) {
         return true
       } else {
@@ -1064,19 +1077,19 @@ export default {
     SKUreadonly () {
       if (
         this.$root.activeLocation.is_corporate !== undefined &&
-				this.$root.activeLocation.is_corporate === 1
+        this.$root.activeLocation.is_corporate === 1
       ) {
         return false
       } else if (
         this.$root.activeLocation.is_corporate !== undefined &&
-				this.$root.activeLocation.is_corporate !== 1 &&
-				!this.copyMode
+        this.$root.activeLocation.is_corporate !== 1 &&
+        !this.copyMode
       ) {
         return false
       } else if (
         this.$root.activeLocation.is_corporate !== undefined &&
-				this.$root.activeLocation.is_corporate !== 1 &&
-				this.copyMode
+        this.$root.activeLocation.is_corporate !== 1 &&
+        this.copyMode
       ) {
         return true
       }
@@ -1106,8 +1119,8 @@ export default {
   mounted () {
     if (
       this.$root.activeLocation &&
-			this.$root.activeLocation.id &&
-			this.$route.params.category_id
+      this.$root.activeLocation.id &&
+      this.$route.params.category_id
     ) {
       this.getCategoryDetails()
       this.getCategoryItems()
@@ -1117,20 +1130,20 @@ export default {
   },
   methods: {
     /**
-		 * To update selection of items
-		 * @function
-		 * @param {array} items - Array of items selected by user
-		 * @returns {undefined}
-		 */
+     * To update selection of items
+     * @function
+     * @param {array} items - Array of items selected by user
+     * @returns {undefined}
+     */
     itemsSelected (items) {
       this.copyItem(items[0])
     },
     /**
-		 * To get the preset settings of an item.
-		 * @function
-		 * @param {integer} itemId - The selected item id
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get the preset settings of an item.
+     * @function
+     * @param {integer} itemId - The selected item id
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getPresetDetails (itemId) {
       var itemsVue = this
       return ItemsFunctions.getPresetDetails(
@@ -1162,22 +1175,22 @@ export default {
         })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showPresetItemAlert (payload = {}) {
       let title = 'Success'
       let html = `
-				<div>
-					The Item has been created
-					<br/>
-					<br/>
-					<strong>
-						Do you want to add preset settings now?
-					</strong>
-				</div>`
+        <div>
+          The Item has been created
+          <br/>
+          <br/>
+          <strong>
+            Do you want to add preset settings now?
+          </strong>
+        </div>`
       let type = 'success'
       let showCancelButton = true
       let confirmButtonText = 'Yes'
@@ -1186,9 +1199,9 @@ export default {
       if (payload.pending_approval) {
         title = 'Approval Required'
         html = `
-					<div>
-						The Item has been sent for approval
-					</div>`
+          <div>
+            The Item has been sent for approval
+          </div>`
         type = 'info'
         showCancelButton = false
         confirmButtonText = 'OK'
@@ -1215,33 +1228,33 @@ export default {
     },
 
     /**
-		 * To display the Preset settings modal
-		 * @function
-		 * @param {object} item - The item to set Preset Settings for
-		 * @returns {undefined}
-		 */
+     * To display the Preset settings modal
+     * @function
+     * @param {object} item - The item to set Preset Settings for
+     * @returns {undefined}
+     */
     showPresetModal (item) {
       this.itemToSetPresetSettingsFor.id = item.id
       this.itemToSetPresetSettingsFor.name = item.name
       this.itemToSetPresetSettingsFor.modifiers = item.modifiers || []
       this.itemToSetPresetSettingsFor.preset_item_modifier_item =
-				item.preset_item_modifier_item
+        item.preset_item_modifier_item
       this.displayPresetModal = true
     },
     /**
-		 * To close the Preset settings modal
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the Preset settings modal
+     * @function
+     * @returns {undefined}
+     */
     closePresetModal () {
       this.displayPresetModal = false
     },
     /**
-		 * To close the Preset settings modal and update Preset settins
-		 * @function
-		 * @param {array} updatedSettings - The updated settings
-		 * @returns {undefined}
-		 */
+     * To close the Preset settings modal and update Preset settins
+     * @function
+     * @param {array} updatedSettings - The updated settings
+     * @returns {undefined}
+     */
     closePresetModalAndUpdate ({ updatedSettings, payload }) {
       this.categoryItems.forEach(item => {
         if (item.id === this.itemToSetPresetSettingsFor.id) {
@@ -1255,11 +1268,11 @@ export default {
       this.itemToSetPresetSettingsFor.preset_item_modifier_item = []
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     confirmPresetSettings (payload = {}) {
       let title = 'Success'
       let text = 'The Preset Settings have been saved'
@@ -1278,34 +1291,34 @@ export default {
       })
     },
     /**
-		 * To update the type field of the new item
-		 * @function
-		 * @param {string} type - The selected type
-		 * @returns {undefined}
-		 */
+     * To update the type field of the new item
+     * @function
+     * @param {string} type - The selected type
+     * @returns {undefined}
+     */
     updateItemType (type) {
       this.newItem.type = type
     },
     /**
-		 * To toggle between the open and closed state of the resource picker
-		 * @function
-		 * @param {string} object - The name of the object the image is for
-		 * @param {object} value - The open / closed value of the picker
-		 * @returns {undefined}
-		 */
+     * To toggle between the open and closed state of the resource picker
+     * @function
+     * @param {string} object - The name of the object the image is for
+     * @param {object} value - The open / closed value of the picker
+     * @returns {undefined}
+     */
     toggleImageMode (object, value) {
       this.imageMode[object] = value
     },
     /**
-		 * To apply an Item to selected locations
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To apply an Item to selected locations
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     applyItemToLocations () {
       var itemsVue = this
       if (!this.locationsToApplyItemTo.length) {
         this.applyToLocationsErrorMessage =
-					'Please select at least one location'
+          'Please select at least one location'
         return
       }
 
@@ -1342,11 +1355,11 @@ export default {
         })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     confirmItemsAppliedToLocaions (payload = {}) {
       let title = 'Success'
       let text = 'The Items have been saved'
@@ -1365,84 +1378,84 @@ export default {
       })
     },
     /**
-		 * To record the selected locations
-		 * @function
-		 * @param {array} locations - An array of location ids
-		 * @returns {undefined}
-		 */
+     * To record the selected locations
+     * @function
+     * @param {array} locations - An array of location ids
+     * @returns {undefined}
+     */
     selectedLocations (locations) {
       this.locationsToApplyItemTo = locations
     },
     /**
-		 * To clear the error message in modal for applying to locations
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To clear the error message in modal for applying to locations
+     * @function
+     * @returns {undefined}
+     */
     clearLocationsError () {
       this.applyToLocationsErrorMessage = ''
     },
     /**
-		 * To close the modal to copy an item to multiple locations
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the modal to copy an item to multiple locations
+     * @function
+     * @returns {undefined}
+     */
     closeApplyToLocationsModal () {
       this.applyToLocationsModalActive = false
       this.passedItemId = null
       this.clearLocationsError()
     },
     /**
-		 * To display the modal to copy an item to multiple locations
-		 * @function
-		 * @param {object} item - The selected item
-		 * @param {object} event - The click event that prompted this function.
-		 * @returns {undefined}
-		 */
+     * To display the modal to copy an item to multiple locations
+     * @function
+     * @param {object} item - The selected item
+     * @param {object} event - The click event that prompted this function.
+     * @returns {undefined}
+     */
     displayApplyToLocationsModal (item, event) {
       event.stopPropagation()
       this.applyToLocationsModalActive = true
       this.passedItemId = item.id
     },
     /**
-		 * To view the images of an item.
-		 * @function
-		 * @param {object} item - The selected item
-		 * @param {object} event - The click event that prompted this function.
-		 * @returns {undefined}
-		 */
+     * To view the images of an item.
+     * @function
+     * @param {object} item - The selected item
+     * @param {object} event - The click event that prompted this function.
+     * @returns {undefined}
+     */
     openImagesModal (item, event) {
       event.stopPropagation()
       this.selectedItem = item
       this.displayImagesModal = true
     },
     /**
-		 * To close the images modal.
-		 * @function
-		 * @param {object} item - The selected item
-		 * @param {object} event - The click event that prompted this function.
-		 * @returns {undefined}
-		 */
+     * To close the images modal.
+     * @function
+     * @param {object} item - The selected item
+     * @param {object} event - The click event that prompted this function.
+     * @returns {undefined}
+     */
     closeImagesModal () {
       this.getCategoryItems()
       this.displayImagesModal = false
       this.selectedItem = {}
     },
     /**
-		 * To close the images modal and refresh the list of items.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the images modal and refresh the list of items.
+     * @function
+     * @returns {undefined}
+     */
     closeImagesModalAndUpdate () {
       this.getCategoryItems()
       this.displayImagesModal = false
       this.selectedItem = {}
     },
     /**
-		 * To to highlight the recently updated item
-		 * @function
-		 * @param {integer} id - The id of the item to animate
-		 * @returns {undefined}
-		 */
+     * To to highlight the recently updated item
+     * @function
+     * @param {integer} id - The id of the item to animate
+     * @returns {undefined}
+     */
     nutritionInfoSaved (id) {
       this.displayNutritionModal = false
       this.animated = `item-${id}`
@@ -1452,20 +1465,20 @@ export default {
       }, 3000)
     },
     /**
-		 * To switch copying an item and creating an item from scratch.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To switch copying an item and creating an item from scratch.
+     * @function
+     * @returns {undefined}
+     */
     flipCopyCreate () {
       this.clearNewItem()
       this.copyMode = !this.copyMode
     },
     /**
-		 * To copy item data into the newItem object.
-		 * @function
-		 * @param {object} item - The selected item
-		 * @returns {undefined}
-		 */
+     * To copy item data into the newItem object.
+     * @function
+     * @param {object} item - The selected item
+     * @returns {undefined}
+     */
     copyItem (item) {
       this.newItem.name = item.name
       this.newItem.desc = item.desc
@@ -1480,39 +1493,40 @@ export default {
       this.newItem.type = item.type || 'custom'
       this.itemCopied = true
       this.newItem.preset_item_modifier_item =
-				item.preset_item_modifier_item || []
+        item.preset_item_modifier_item || []
+      this.newItem.pos_name = item.pos_name
     },
     /**
-		 * To clear an error.
-		 * @function
-		 * @param {string} name - Name of the error variable to clear
-		 * @returns {undefined}
-		 */
+     * To clear an error.
+     * @function
+     * @param {string} name - Name of the error variable to clear
+     * @returns {undefined}
+     */
     clearError (name) {
       this[name] = ''
     },
     /**
-		 * To set the image to be same as the one emitted by the gallery modal.
-		 * @function
-		 * @param {object} val - The emitted image object.
-		 * @returns {undefined}
-		 */
+     * To set the image to be same as the one emitted by the gallery modal.
+     * @function
+     * @param {object} val - The emitted image object.
+     * @returns {undefined}
+     */
     updateImage (val) {
       this.newItem.image_url = val.image_url
     },
     /**
-		 * To toggle the create item panel, initially set to opened
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To toggle the create item panel, initially set to opened
+     * @function
+     * @returns {undefined}
+     */
     toggleCreateItemPanel () {
       this.createItemCollapse = !this.createItemCollapse
     },
     /**
-		 * To check if the item data is valid before submitting to the backend.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
+     * To check if the item data is valid before submitting to the backend.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
     validateItemData () {
       var itemsVue = this
       return new Promise(function (resolve, reject) {
@@ -1530,6 +1544,8 @@ export default {
           reject('Item order should be a number')
         } else if (!itemsVue.newItem.sku.length) {
           reject('Item SKU cannot be blank')
+        } else if (!itemsVue.newItem.pos_name) {
+          reject('POS Name cannot be blank')
         } else if (!itemsVue.newItem.item_type_id) {
           reject('Select an item type')
         } else if (!itemsVue.newItem.image_url.length) {
@@ -1541,10 +1557,10 @@ export default {
       })
     },
     /**
-		 * To add the new item to the category and close the modal and redirect to the categories page.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To add the new item to the category and close the modal and redirect to the categories page.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     addNewCategoryItem () {
       var itemsVue = this
       itemsVue.clearError('errorMessage')
@@ -1595,10 +1611,10 @@ export default {
         })
     },
     /**
-		 * To get the deatils of the category to show the items for.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get the deatils of the category to show the items for.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getCategoryDetails () {
       var itemsVue = this
       CategoriesFunctions.getCategoryDetails(
@@ -1622,10 +1638,10 @@ export default {
         })
     },
     /**
-		 * To get a list of items for the current category.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get a list of items for the current category.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getCategoryItems () {
       this.displayItemData = true
       var itemsVue = this
@@ -1659,11 +1675,11 @@ export default {
         })
     },
     /**
-		 * To expand/collapse the dropdown div under an item.
-		 * @function
-		 * @param {object} item - The selected item
-		 * @returns {undefined}
-		 */
+     * To expand/collapse the dropdown div under an item.
+     * @function
+     * @param {object} item - The selected item
+     * @returns {undefined}
+     */
     expandDetails (item) {
       if (this.expanded === item.id) return
 
@@ -1680,11 +1696,11 @@ export default {
       })
     },
     /**
-		 * To get the complete details of an item.
-		 * @function
-		 * @param {integer} itemId - The selected item id
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get the complete details of an item.
+     * @function
+     * @param {integer} itemId - The selected item id
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getItemDetailsFull (itemId) {
       var itemsVue = this
       return ItemsFunctions.getItemDetailsFull(
@@ -1720,21 +1736,21 @@ export default {
         })
     },
     /**
-		 * To show the modal to add attributes.
-		 * @function
-		 * @param {object} item - The Item to assign Item Attributes to
-		 * @returns {undefined}
-		 */
+     * To show the modal to add attributes.
+     * @function
+     * @param {object} item - The Item to assign Item Attributes to
+     * @returns {undefined}
+     */
     showAttributesModal (item) {
       this.itemToAssignItemAttributesTo.id = item.id
       this.itemToAssignItemAttributesTo.name = item.name
       this.showAssignItemAttributesModal = true
     },
     /**
-		 * To get a list of Item Attributes.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get a list of Item Attributes.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     listItemAttributes () {
       this.loadingItemAttributes = true
       const itemsVue = this
@@ -1762,11 +1778,11 @@ export default {
         })
     },
     /**
-		 * To get the attributes of an item.
-		 * @function
-		 * @param {integer} itemId - The selected item id
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get the attributes of an item.
+     * @function
+     * @param {integer} itemId - The selected item id
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getItemAttributesOfItem (itemId) {
       this.selectedItemAttributes = []
       var itemsVue = this
@@ -1816,21 +1832,21 @@ export default {
         })
     },
     /**
-		 * To select all or deselect all
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To select all or deselect all
+     * @function
+     * @returns {undefined}
+     */
     selectAllAttributes () {
       for (var i = 0; i < this.itemAttributes.length; i++) {
         this.itemAttributes[i].selected = this.selectAllAttributesSelected
       }
     },
     /**
-		 * To sync Select All checkbox
-		 * @function
-		 * @param {boolean} value - The value of the checkbox
-		 * @returns {undefined}
-		 */
+     * To sync Select All checkbox
+     * @function
+     * @param {boolean} value - The value of the checkbox
+     * @returns {undefined}
+     */
     syncSelectAllAttributes (value) {
       if (!value) {
         this.selectAllAttributesSelected = false
@@ -1843,10 +1859,10 @@ export default {
       }
     },
     /**
-		 * To assign Item Attributes to the Item
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To assign Item Attributes to the Item
+     * @function
+     * @returns {undefined}
+     */
     assignItemAttributesToItem () {
       this.assigningAttributes = true
       let payload = {
@@ -1883,7 +1899,7 @@ export default {
           } else {
             window.scrollTo(0, 0)
             itemsVue.assignItemAttributesErrorMessage =
-							'Something went wrong ...'
+              'Something went wrong ...'
           }
         })
         .catch(reason => {
@@ -1900,29 +1916,29 @@ export default {
         })
     },
     /**
-		 * To clear the error.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To clear the error.
+     * @function
+     * @returns {undefined}
+     */
     clearAttributesError () {
       this.assignItemAttributesErrorMessage = ''
     },
     /**
-		 * To reset assign Item Attributes
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To reset assign Item Attributes
+     * @function
+     * @returns {undefined}
+     */
     resetAssignItemAttributes () {
       this.selectAllAttributesSelected = false
       this.itemToAssignItemAttributesTo.id = null
       this.itemToAssignItemAttributesTo.name = ''
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     confirmAssignItemAttributes (payload = {}) {
       let title = 'Success'
       let text = 'The Item Attributes have been saved'
@@ -1941,61 +1957,61 @@ export default {
       })
     },
     /**
-		 * To close the modal to add attributes.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the modal to add attributes.
+     * @function
+     * @returns {undefined}
+     */
     closeAssignItemAttributesModal () {
       this.clearAttributesError()
       this.showAssignItemAttributesModal = false
     },
     /**
-		 * To display the modal to add items.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To display the modal to add items.
+     * @function
+     * @returns {undefined}
+     */
     displayAddItemModal () {
       this.addItemModalActive = true
       this.$router.push(
         '/app/menu_manager/items/' +
-					this.$route.params.category_id +
-					'/add_item'
+          this.$route.params.category_id +
+          '/add_item'
       )
     },
     /**
-		 * To display the modal to edit items.
-		 * @function
-		 * @param {object} item - The selected item
-		 * @param {object} event - The click event that prompted this function.
-		 * @returns {undefined}
-		 */
+     * To display the modal to edit items.
+     * @function
+     * @param {object} item - The selected item
+     * @param {object} event - The click event that prompted this function.
+     * @returns {undefined}
+     */
     displayEditItemModal (item, event) {
       event.stopPropagation()
       this.editItemModalActive = true
       this.$router.push(
         '/app/menu_manager/items/' +
-					this.$route.params.category_id +
-					'/edit_item/' +
-					item.id
+          this.$route.params.category_id +
+          '/edit_item/' +
+          item.id
       )
     },
     /**
-		 * To display the modal to delete item.
-		 * @function
-		 * @param {object} item - The selected item
-		 * @param {object} event - The click event that prompted this function.
-		 * @returns {undefined}
-		 */
+     * To display the modal to delete item.
+     * @function
+     * @param {object} item - The selected item
+     * @param {object} event - The click event that prompted this function.
+     * @returns {undefined}
+     */
     displayDeleteItemModal (item, event) {
       event.stopPropagation()
       this.deleteItemModalActive = true
       this.passedItemId = item.id
     },
     /**
-		 * To clear the new item form.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To clear the new item form.
+     * @function
+     * @returns {undefined}
+     */
     clearNewItem () {
       this.newItem = {
         category_id: this.$route.params.category_id,
@@ -2011,16 +2027,17 @@ export default {
         item_type_id: null,
         nutrition_summary: '',
         type: 'custom',
-        preset_item_modifier_item: []
+        preset_item_modifier_item: [],
+        pos_name: ''
       }
       this.itemCopied = false
     },
     /**
-		 * To add the item emitted by the child to the items list.
-		 * @function
-		 * @param {object} val - The new item
-		 * @returns {undefined}
-		 */
+     * To add the item emitted by the child to the items list.
+     * @function
+     * @param {object} val - The new item
+     * @returns {undefined}
+     */
     addItem (val) {
       if (parseInt(val.order) > 0) {
         var done = false
@@ -2039,11 +2056,11 @@ export default {
       }
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showAlert (payload = {}) {
       let title = 'Success'
       let text = 'The Item has been created'
@@ -2062,11 +2079,11 @@ export default {
       })
     },
     /**
-		 * To update the item emitted by the child and highlist it on the items list.
-		 * @function
-		 * @param {object} val - The updated item
-		 * @returns {undefined}
-		 */
+     * To update the item emitted by the child and highlist it on the items list.
+     * @function
+     * @param {object} val - The updated item
+     * @returns {undefined}
+     */
     editItem (val) {
       this.getItemDetailsFull(val.id)
       if (val.type === 'preset') {
@@ -2076,91 +2093,91 @@ export default {
       this.getCategoryItems()
     },
     /**
-		 * To close the modal to edit an item.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the modal to edit an item.
+     * @function
+     * @returns {undefined}
+     */
     closeEditItemModal () {
       this.editItemModalActive = false
     },
     /**
-		 * To close the modal to delete an item.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the modal to delete an item.
+     * @function
+     * @returns {undefined}
+     */
     closeDeleteItemModal () {
       this.deleteItemModalActive = false
     },
     /**
-		 * To close the modal to delete an item.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the modal to delete an item.
+     * @function
+     * @returns {undefined}
+     */
     deleteItemAndCloseModal () {
       this.deleteItemModalActive = false
       this.getCategoryItems()
     },
     /**
-		 * To view the nutrition info of an item.
-		 * @function
-		 * @param {object} item - The selected item
-		 * @param {object} event - The click event that prompted this function.
-		 * @returns {undefined}
-		 */
+     * To view the nutrition info of an item.
+     * @function
+     * @param {object} item - The selected item
+     * @param {object} event - The click event that prompted this function.
+     * @returns {undefined}
+     */
     viewNutritionInfo (item, event) {
       event.stopPropagation()
       this.displayNutritionModal = true
       this.selectedItem = item
     },
     /**
-		 * To display the modal that lists all available modifiers.
-		 * @function
-		 * @param {integer} itemId - The selected item id
-		 * @param {object} appliedModifiers - The modifiers already applied to the item.
-		 * @returns {undefined}
-		 */
+     * To display the modal that lists all available modifiers.
+     * @function
+     * @param {integer} itemId - The selected item id
+     * @param {object} appliedModifiers - The modifiers already applied to the item.
+     * @returns {undefined}
+     */
     showModifierModal (itemId, appliedModifiers) {
       this.appliedModifiers = appliedModifiers
       this.selectedItemId = itemId
       this.displayModifierModal = true
     },
     /**
-		 * To close the modifier modal.
-		 * @function
-		 * @param {object} val - The selected item
-		 * @returns {undefined}
-		 */
+     * To close the modifier modal.
+     * @function
+     * @param {object} val - The selected item
+     * @returns {undefined}
+     */
     closeModifierModal (val) {
       this.displayModifierModal = false
       this.getItemDetailsFull(val)
     },
     /**
-		 * To display the modal to create new tags.
-		 * @function
-		 * @param {integer} itemId - The selected item id
-		 * @param {object} appliedTags - The tags already applied to the item.
-		 * @returns {undefined}
-		 */
+     * To display the modal to create new tags.
+     * @function
+     * @param {integer} itemId - The selected item id
+     * @param {object} appliedTags - The tags already applied to the item.
+     * @returns {undefined}
+     */
     showTagsModal (itemId, appliedTags) {
       this.appliedTags = appliedTags
       this.selectedItemId = itemId
       this.displayTagsListModal = true
     },
     /**
-		 * To close the tags modal and update the item to show the updated tags.
-		 * @function
-		 * @param {integer} val - The id of the item to which the tags were applied
-		 * @returns {undefined}
-		 */
+     * To close the tags modal and update the item to show the updated tags.
+     * @function
+     * @param {integer} val - The id of the item to which the tags were applied
+     * @returns {undefined}
+     */
     closeTagsListModal (val) {
       this.displayTagsListModal = false
       this.getItemDetailsFull(val)
     },
     /**
-		 * To get a list of all item types.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get a list of all item types.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getItemTypes () {
       var _this = this
       let payload = { location_id: this.$root.activeLocation.id }
@@ -2187,11 +2204,11 @@ export default {
         })
     },
     /**
-		 * To update the item_type_id field of the new item
-		 * @function
-		 * @param {integer} id - The selected id
-		 * @returns {undefined}
-		 */
+     * To update the item_type_id field of the new item
+     * @function
+     * @param {integer} id - The selected id
+     * @returns {undefined}
+     */
     getItemTypeName (id) {
       if (!id || !this.itemTypes.length) {
         return 'n/a'
@@ -2202,11 +2219,11 @@ export default {
       }
     },
     /**
-		 * To update the item_type_id field of the new item
-		 * @function
-		 * @param {integer} id - The selected id
-		 * @returns {undefined}
-		 */
+     * To update the item_type_id field of the new item
+     * @function
+     * @param {integer} id - The selected id
+     * @returns {undefined}
+     */
     updateTaxClass (id) {
       this.newItem.item_type_id = id
     }
@@ -2215,9 +2232,9 @@ export default {
 </script>
 <style scoped>
 .dd-handle {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .actions-on-top {
   margin-top: -5px;
@@ -2252,6 +2269,6 @@ export default {
   animation: listItemHighlight 1s 3 ease-in-out both;
 }
 .ma-5 {
-	margin: 5px;
+  margin: 5px;
 }
 </style>

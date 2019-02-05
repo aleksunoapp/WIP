@@ -198,6 +198,18 @@
               Item Order
             </label>
           </div>
+          <div class="form-group form-md-line-input form-md-floating-label">
+            <input
+              id="form_control_pos_name"
+              v-model="itemToBeEdited.pos_name"
+              :disabled="!can('menu_manager menus categories subcategories items update')"
+              type="text"
+              class="form-control input-sm edited"
+            >
+            <label for="form_control_pos_name">
+              POS Name
+            </label>
+          </div>
           <div
             v-if="itemTypes.length"
             class="form-group form-md-line-input form-md-floating-label"
@@ -394,36 +406,36 @@ export default {
   },
   methods: {
     /**
-		 * To show a confirmation prompt before editing the SKU
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To show a confirmation prompt before editing the SKU
+     * @function
+     * @returns {undefined}
+     */
     confirmSkuEdit () {
       this.confirmingSkuEdit = true
     },
     /**
-		 * To dismiss the SKU edit confirmation prompt without editing
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To dismiss the SKU edit confirmation prompt without editing
+     * @function
+     * @returns {undefined}
+     */
     cancelSkuEdit () {
       this.confirmingSkuEdit = false
     },
     /**
-		 * To dismiss the SKU edit confirmation prompt and enable editing
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To dismiss the SKU edit confirmation prompt and enable editing
+     * @function
+     * @returns {undefined}
+     */
     enableSkuEdit () {
       this.confirmingSkuEdit = false
       this.skuDisabled = false
     },
     /**
-		 * To update the type field of the item
-		 * @function
-		 * @param {string} type - The selected type
-		 * @returns {undefined}
-		 */
+     * To update the type field of the item
+     * @function
+     * @param {string} type - The selected type
+     * @returns {undefined}
+     */
     updateItemType (type) {
       if (
         this.can(
@@ -434,21 +446,21 @@ export default {
       }
     },
     /**
-		 * To toggle select location mode on.
-		 * @function
-		 * @param {object} event - The event that triggered the action
-		 * @returns {undefined}
-		 */
+     * To toggle select location mode on.
+     * @function
+     * @param {object} event - The event that triggered the action
+     * @returns {undefined}
+     */
     selectLocations (event) {
       event.preventDefault()
       this.selectLocationMode = true
     },
     /**
-		 * To toggle select location mode on.
-		 * @function
-		 * @param {array} locations - The array of selected locations
-		 * @returns {undefined}
-		 */
+     * To toggle select location mode on.
+     * @function
+     * @param {array} locations - The array of selected locations
+     * @returns {undefined}
+     */
     updateSelectedLocations (locations) {
       if (
         this.can(
@@ -460,18 +472,18 @@ export default {
       this.closeSelectLocationsPopup()
     },
     /**
-		 * To toggle select location mode on.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To toggle select location mode on.
+     * @function
+     * @returns {undefined}
+     */
     closeSelectLocationsPopup () {
       this.selectLocationMode = false
     },
     /**
-		 * To check if the item data is valid before submitting to the backend.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
+     * To check if the item data is valid before submitting to the backend.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
     validateCategoryData () {
       var editItemVue = this
       return new Promise(function (resolve, reject) {
@@ -495,6 +507,8 @@ export default {
           reject('Item image URL cannot be blank')
         } else if (!$.isNumeric(editItemVue.itemToBeEdited.order)) {
           reject('Item order should be a number')
+        } else if (!editItemVue.itemToBeEdited.pos_name) {
+          reject('POS Name cannot be blank')
         } else if (!editItemVue.itemToBeEdited.item_type_id) {
           reject('Select an item type')
         } else if (!$.isNumeric(editItemVue.itemToBeEdited.status)) {
@@ -504,18 +518,18 @@ export default {
       })
     },
     /**
-		 * To clear the current error.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To clear the current error.
+     * @function
+     * @returns {undefined}
+     */
     clearError () {
       this.errorMessage = ''
     },
     /**
-		 * To get the details of the item to be updated.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get the details of the item to be updated.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getItemDetails () {
       var editItemVue = this
       ItemsFunctions.getItemDetails(
@@ -540,17 +554,17 @@ export default {
         })
     },
     /**
-		 * To update the item and close the modal.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To update the item and close the modal.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     updateCategoryItem () {
       var editItemVue = this
       editItemVue.itemToBeEdited.user_id = editItemVue.$root.createdBy
       editItemVue.itemToBeEdited.update_locations =
-				editItemVue.selectedLocations
+        editItemVue.selectedLocations
       if (!editItemVue.itemToBeEdited.type) {
-        editItemVue.itemToBeEdited.type === 'custom'
+        editItemVue.itemToBeEdited.type = 'custom'
       }
       editItemVue.clearError()
 
@@ -567,7 +581,7 @@ export default {
             .then(response => {
               if (
                 response.code === 200 &&
-								response.status === 'ok'
+                response.status === 'ok'
               ) {
                 this.showUpdateSuccess(response.payload)
                 this.closeModalAndUpdate()
@@ -596,11 +610,11 @@ export default {
         })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showUpdateSuccess (payload = {}) {
       let title = 'Success'
       let text = 'The Item has been saved'
@@ -619,10 +633,10 @@ export default {
       })
     },
     /**
-		 * To close the modal and emit the updated item object to the parent.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the modal and emit the updated item object to the parent.
+     * @function
+     * @returns {undefined}
+     */
     closeModalAndUpdate () {
       this.$emit('editItem', this.itemToBeEdited)
       this.$router.push(
@@ -630,10 +644,10 @@ export default {
       )
     },
     /**
-		 * To just close the modal when the user clicks on the 'x' to close the modal.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To just close the modal when the user clicks on the 'x' to close the modal.
+     * @function
+     * @returns {undefined}
+     */
     closeModal () {
       this.$emit('deactivateEditItemModal')
       this.$router.push(
@@ -641,36 +655,36 @@ export default {
       )
     },
     /**
-		 * To change the page to the gallery view on the modal.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To change the page to the gallery view on the modal.
+     * @function
+     * @returns {undefined}
+     */
     goToPageTwo () {
       this.selectImageMode = true
     },
     /**
-		 * To change the page to the main/form view on the modal.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To change the page to the main/form view on the modal.
+     * @function
+     * @returns {undefined}
+     */
     goToPageOne () {
       this.selectImageMode = false
     },
     /**
-		 * To set the image to be same as the one emitted by the gallery modal.
-		 * @function
-		 * @param {object} val - The emitted image object.
-		 * @returns {undefined}
-		 */
+     * To set the image to be same as the one emitted by the gallery modal.
+     * @function
+     * @param {object} val - The emitted image object.
+     * @returns {undefined}
+     */
     updateImage (val) {
       this.goToPageOne()
       this.itemToBeEdited.image_url = val.image_url
     },
     /**
-		 * To get a list of all item types.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get a list of all item types.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getItemTypes () {
       var _this = this
       let payload = { location_id: this.$root.activeLocation.id }
@@ -698,11 +712,11 @@ export default {
         })
     },
     /**
-		 * To update the item_type_id field of the new item
-		 * @function
-		 * @param {integer} id - The selected id
-		 * @returns {undefined}
-		 */
+     * To update the item_type_id field of the new item
+     * @function
+     * @param {integer} id - The selected id
+     * @returns {undefined}
+     */
     getItemTypeName (id) {
       if (!id || !this.itemTypes.length) {
         return 'n/a'
@@ -713,11 +727,11 @@ export default {
       }
     },
     /**
-		 * To update the item_type_id field of the new item
-		 * @function
-		 * @param {integer} id - The selected id
-		 * @returns {undefined}
-		 */
+     * To update the item_type_id field of the new item
+     * @function
+     * @param {integer} id - The selected id
+     * @returns {undefined}
+     */
     updateTaxClass (id) {
       if (
         this.can(

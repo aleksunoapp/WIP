@@ -113,11 +113,6 @@
                   Modifier Item SKU
                 </label>
               </div>
-            </div>
-            <div
-              v-show="!imageMode.newMenu"
-              class="col-md-5"
-            >
               <div class="form-group form-md-line-input form-md-floating-label">
                 <input
                   id="form_control_5"
@@ -154,6 +149,11 @@
                   Modifier Item Order
                 </label>
               </div>
+            </div>
+            <div
+              v-show="!imageMode.newMenu"
+              class="col-md-5"
+            >
               <div class="form-group form-md-line-input form-md-floating-label">
                 <label>Modifier Item Status:</label><br>
                 <el-switch
@@ -170,6 +170,18 @@
                 <label>Override:</label><br>
                 <el-switch
                   v-model="newModifierItem.override"
+                  active-color="#0c6"
+                  inactive-color="#ff4949"
+                  :active-value="1"
+                  :inactive-value="0"
+                  active-text="Yes"
+                  inactive-text="No"
+                />
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <label>Show on POS?</label><br>
+                <el-switch
+                  v-model="newModifierItem.show_on_pos"
                   active-color="#0c6"
                   inactive-color="#ff4949"
                   :active-value="1"
@@ -669,7 +681,7 @@ export default {
       selectedItemId: 0,
       displayTagsListModal: false,
       customText:
-				'There are no items in this category. Click on the button above to add one.',
+        'There are no items in this category. Click on the button above to add one.',
       createModifierItemCollapse: true,
       creating: false,
       newModifierItem: {
@@ -684,7 +696,8 @@ export default {
         min: null,
         max: null,
         order: null,
-        override: 0
+        override: 0,
+        show_on_pos: 0
       },
       showGalleryModal: false,
       errorMessage: '',
@@ -704,8 +717,8 @@ export default {
   mounted () {
     if (
       this.$root.activeLocation &&
-			this.$root.activeLocation.id &&
-			this.$route.params.modifier_id
+      this.$root.activeLocation.id &&
+      this.$route.params.modifier_id
     ) {
       this.getModifierCategoryDetails()
       this.getModifierCategoryItems()
@@ -713,20 +726,20 @@ export default {
   },
   methods: {
     /**
-		 * To update the locations selected in the child component
-		 * @function
-		 * @param {array} locations - Arrray of store ids
-		 * @returns {undefined}
-		 */
+     * To update the locations selected in the child component
+     * @function
+     * @param {array} locations - Arrray of store ids
+     * @returns {undefined}
+     */
     selectedLocations (locations) {
       this.modifierToApplyToLocations.locations = locations
     },
     /**
-		 * To open the modal for applying a modifier to locations
-		 * @function
-		 * @param {object} modifier - Modifier the user clicked
-		 * @returns {undefined}
-		 */
+     * To open the modal for applying a modifier to locations
+     * @function
+     * @param {object} modifier - Modifier the user clicked
+     * @returns {undefined}
+     */
     openApplyToLocationsModal (modifier) {
       this.modifierToApplyToLocations = {
         ...modifier,
@@ -735,19 +748,19 @@ export default {
       this.showApplyToLocationsModal = true
     },
     /**
-		 * To close the modal for applying a modifier to locations
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the modal for applying a modifier to locations
+     * @function
+     * @returns {undefined}
+     */
     closeApplyToLocationsModal () {
       this.modifierToApplyToLocations = {}
       this.showApplyToLocationsModal = false
     },
     /**
-		 * To check if data is ready to post
-		 * @function
-		 * @returns {object} - A resolved promise if ok, a reject with error message if failed
-		 */
+     * To check if data is ready to post
+     * @function
+     * @returns {object} - A resolved promise if ok, a reject with error message if failed
+     */
     validateApplyToLocations () {
       var modifierItemsVue = this
       return new Promise(function (resolve, reject) {
@@ -758,10 +771,10 @@ export default {
       })
     },
     /**
-		 * To save selected modifier-locaton links in the API
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To save selected modifier-locaton links in the API
+     * @function
+     * @returns {undefined}
+     */
     applyModifierToLocations () {
       var modifierItemsVue = this
       modifierItemsVue.clearError('applyErrorMessage')
@@ -798,11 +811,11 @@ export default {
         })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showApplySuccess (payload = {}) {
       let title = 'Success'
       let text = 'The Modifier Items have been saved'
@@ -821,47 +834,47 @@ export default {
       })
     },
     /**
-		 * To toggle between the open and closed state of the resource picker
-		 * @function
-		 * @param {string} object - The name of the object the image is for
-		 * @param {object} value - The open / closed value of the picker
-		 * @returns {undefined}
-		 */
+     * To toggle between the open and closed state of the resource picker
+     * @function
+     * @param {string} object - The name of the object the image is for
+     * @param {object} value - The open / closed value of the picker
+     * @returns {undefined}
+     */
     toggleImageMode (object, value) {
       this.imageMode[object] = value
     },
     /**
-		 * To clear an error.
-		 * @function
-		 * @param {string} name - Name of the error to clear
-		 * @returns {undefined}
-		 */
+     * To clear an error.
+     * @function
+     * @param {string} name - Name of the error to clear
+     * @returns {undefined}
+     */
     clearError (name) {
       this[name] = ''
     },
     /**
-		 * To set the image to be same as the one emitted by the gallery modal.
-		 * @function
-		 * @param {object} val - The emitted image object.
-		 * @returns {undefined}
-		 */
+     * To set the image to be same as the one emitted by the gallery modal.
+     * @function
+     * @param {object} val - The emitted image object.
+     * @returns {undefined}
+     */
     updateImage (val) {
       this.showGalleryModal = false
       this.newModifierItem.image_url = val.image_url
     },
     /**
-		 * To toggle the create menu panel, initially set to opened
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To toggle the create menu panel, initially set to opened
+     * @function
+     * @returns {undefined}
+     */
     toggleCreateModifierItemPanel () {
       this.createModifierItemCollapse = !this.createModifierItemCollapse
     },
     /**
-		 * To check if the modifier item data is valid before submitting to the backend.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
+     * To check if the modifier item data is valid before submitting to the backend.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
     validateModifierItemData () {
       var modifierItemsVue = this
       return new Promise(function (resolve, reject) {
@@ -883,7 +896,7 @@ export default {
           reject('Modifier Item max should be a number')
         } else if (
           Number(modifierItemsVue.newModifierItem.min) >
-					Number(modifierItemsVue.newModifierItem.max)
+          Number(modifierItemsVue.newModifierItem.max)
         ) {
           reject('Modifier Item max cannot be larger than min')
         } else if (!$.isNumeric(modifierItemsVue.newModifierItem.order)) {
@@ -893,10 +906,10 @@ export default {
       })
     },
     /**
-		 * To add the new modifier item and close the modal and redirect to the modifier categories page.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To add the new modifier item and close the modal and redirect to the modifier categories page.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     addNewModifierItem () {
       var modifierItemsVue = this
       modifierItemsVue.clearError('errorMessage')
@@ -913,7 +926,7 @@ export default {
             .then(response => {
               if (response.code === 200 && response.status === 'ok') {
                 modifierItemsVue.newModifierItem.id =
-									response.payload.new_modifier_item_id
+                  response.payload.new_modifier_item_id
                 if (response.payload && response.payload.pending_approval !== true) {
                   modifierItemsVue.addModifierItem(
                     modifierItemsVue.newModifierItem
@@ -945,10 +958,10 @@ export default {
         })
     },
     /**
-		 * To get the details of the selected modifier category.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get the details of the selected modifier category.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getModifierCategoryDetails () {
       var modifierItemsVue = this
       ModifiersFunctions.getModifierCategoryDetails(
@@ -971,10 +984,10 @@ export default {
         })
     },
     /**
-		 * To get the list of modifier items for the selected modifier category.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get the list of modifier items for the selected modifier category.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getModifierCategoryItems () {
       this.displayModifierItemData = true
       var modifierItemsVue = this
@@ -1003,11 +1016,11 @@ export default {
         })
     },
     /**
-		 * To get the complete details of a modifier item.
-		 * @function
-		 * @param {integer} modifierItemId - The selected item id
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get the complete details of a modifier item.
+     * @function
+     * @param {integer} modifierItemId - The selected item id
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getModifierItemDetails (modifierItemId) {
       var modifierItemsVue = this
       ModifiersFunctions.getModifierItemDetails(
@@ -1054,48 +1067,48 @@ export default {
         })
     },
     /**
-		 * To expand/collapse the dropdown div under a modifier item.
-		 * @function
-		 * @param {integer} itemId - The selected modifier item id
-		 * @returns {undefined}
-		 */
+     * To expand/collapse the dropdown div under a modifier item.
+     * @function
+     * @param {integer} itemId - The selected modifier item id
+     * @returns {undefined}
+     */
     expandDetails (itemId) {
       this.expanded = itemId
     },
     /**
-		 * To display the modal to edit modifier items.
-		 * @function
-		 * @param {object} modifierItem - The selected modifier item
-		 * @param {object} event - The click event that prompted this function.
-		 * @returns {undefined}
-		 */
+     * To display the modal to edit modifier items.
+     * @function
+     * @param {object} modifierItem - The selected modifier item
+     * @param {object} event - The click event that prompted this function.
+     * @returns {undefined}
+     */
     displayEditItemModal (modifierItem, event) {
       event.stopPropagation()
       this.editItemModalActive = true
       this.$router.push(
         '/app/menu_manager/modifier_items/' +
-					this.$route.params.modifier_id +
-					'/edit_modifier_item/' +
-					modifierItem.id
+          this.$route.params.modifier_id +
+          '/edit_modifier_item/' +
+          modifierItem.id
       )
     },
     /**
-		 * To display the modal to delete modifier item.
-		 * @function
-		 * @param {object} modifierItem - The selected modifier item
-		 * @param {object} event - The click event that prompted this function.
-		 * @returns {undefined}
-		 */
+     * To display the modal to delete modifier item.
+     * @function
+     * @param {object} modifierItem - The selected modifier item
+     * @param {object} event - The click event that prompted this function.
+     * @returns {undefined}
+     */
     displayDeleteItemModal (modifierItem, event) {
       event.stopPropagation()
       this.selectedItemId = modifierItem.id
       this.deleteItemModalActive = true
     },
     /**
-		 * To clear the new modifier item form.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To clear the new modifier item form.
+     * @function
+     * @returns {undefined}
+     */
     clearNewModifierItem () {
       this.newModifierItem = {
         modifier_id: this.$route.params.modifier_id,
@@ -1109,15 +1122,16 @@ export default {
         min: null,
         max: null,
         order: null,
-        override: 0
+        override: 0,
+        show_on_pos: 0
       }
     },
     /**
-		 * To add the modifier item emitted by the child to the items list.
-		 * @function
-		 * @param {object} val - The new modifier item
-		 * @returns {undefined}
-		 */
+     * To add the modifier item emitted by the child to the items list.
+     * @function
+     * @param {object} val - The new modifier item
+     * @returns {undefined}
+     */
     addModifierItem (val) {
       if (parseInt(val.order) > 0) {
         var done = false
@@ -1138,11 +1152,11 @@ export default {
       }
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showAlert (payload = {}) {
       let title = 'Success'
       let text = 'The Modifier Item has been created'
@@ -1161,114 +1175,114 @@ export default {
       })
     },
     /**
-		 * To update the modifier item emitted by the child and highlist it on the items list.
-		 * @function
-		 * @param {object} val - The updated item
-		 * @returns {undefined}
-		 */
+     * To update the modifier item emitted by the child and highlist it on the items list.
+     * @function
+     * @param {object} val - The updated item
+     * @returns {undefined}
+     */
     editModifierItem (val) {
       this.editItemModalActive = false
       this.getModifierCategoryItems()
     },
     /**
-		 * To close the modal to edit a modifier item.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the modal to edit a modifier item.
+     * @function
+     * @returns {undefined}
+     */
     closeEditItemModal () {
       this.editItemModalActive = false
     },
     /**
-		 * To close the modal to delete a modifier item.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the modal to delete a modifier item.
+     * @function
+     * @returns {undefined}
+     */
     closeDeleteItemModal () {
       this.deleteItemModalActive = false
     },
     /**
-		 * To close the modal to delete a modifier item.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the modal to delete a modifier item.
+     * @function
+     * @returns {undefined}
+     */
     deleteModifierItemAndCloseModal () {
       this.deleteItemModalActive = false
       this.getModifierCategoryItems()
     },
     /**
-		 * To view the nutrition info of a modifier item.
-		 * @function
-		 * @param {object} item - The selected item
-		 * @param {object} event - The click event that prompted this function.
-		 * @returns {undefined}
-		 */
+     * To view the nutrition info of a modifier item.
+     * @function
+     * @param {object} item - The selected item
+     * @param {object} event - The click event that prompted this function.
+     * @returns {undefined}
+     */
     viewModifierNutritionInfo (item, event) {
       event.stopPropagation()
       this.displayNutritionModal = true
       this.selectedItem = item
     },
     /**
-		 * To show the modal to apply tags to an item.
-		 * @function
-		 * @param {integer} modifierItemId - The selected modifier item id
-		 * @param {object} appliedTags - The tags already applied to the item.
-		 * @returns {undefined}
-		 */
+     * To show the modal to apply tags to an item.
+     * @function
+     * @param {integer} modifierItemId - The selected modifier item id
+     * @param {object} appliedTags - The tags already applied to the item.
+     * @returns {undefined}
+     */
     showTagsModal (modifierItemId, appliedTags) {
       this.appliedTags = appliedTags
       this.selectedItemId = modifierItemId
       this.displayTagsListModal = true
     },
     /**
-		 * To show the modal to apply portions to an item.
-		 * @function
-		 * @param {integer} modifierItemId - The selected modifier item id
-		 * @param {object} appliedPortions - The portions already applied to the item.
-		 * @returns {undefined}
-		 */
+     * To show the modal to apply portions to an item.
+     * @function
+     * @param {integer} modifierItemId - The selected modifier item id
+     * @param {object} appliedPortions - The portions already applied to the item.
+     * @returns {undefined}
+     */
     showPortionsModal (modifierItemId, appliedPortions) {
       this.appliedPortions = appliedPortions
       this.selectedItemId = modifierItemId
       this.displayPortionsListModal = true
     },
     /**
-		 * To show the modal to apply options to an item.
-		 * @function
-		 * @param {integer} modifierItemId - The selected modifier item id
-		 * @param {object} appliedOptions - The portions already applied to the item.
-		 * @returns {undefined}
-		 */
+     * To show the modal to apply options to an item.
+     * @function
+     * @param {integer} modifierItemId - The selected modifier item id
+     * @param {object} appliedOptions - The portions already applied to the item.
+     * @returns {undefined}
+     */
     showOptionsModal (modifierItemId, appliedOptions) {
       this.appliedOptions = appliedOptions
       this.selectedItemId = modifierItemId
       this.displayOptionsListModal = true
     },
     /**
-		 * To close the tags modal and update the item to show the updated tags.
-		 * @function
-		 * @param {integer} val - The id of the item to which the tags were applied
-		 * @returns {undefined}
-		 */
+     * To close the tags modal and update the item to show the updated tags.
+     * @function
+     * @param {integer} val - The id of the item to which the tags were applied
+     * @returns {undefined}
+     */
     closeTagsListModal (val) {
       this.displayTagsListModal = false
       this.getModifierItemDetails(val)
     },
     /**
-		 * To close the portions modal and update the item to show the updated portions.
-		 * @function
-		 * @param {integer} val - The id of the item to which the portions were applied
-		 * @returns {undefined}
-		 */
+     * To close the portions modal and update the item to show the updated portions.
+     * @function
+     * @param {integer} val - The id of the item to which the portions were applied
+     * @returns {undefined}
+     */
     closePortionsListModal (val) {
       this.displayPortionsListModal = false
       this.getModifierItemDetails(val)
     },
     /**
-		 * To close the options modal and update the item to show the updated options.
-		 * @function
-		 * @param {integer} val - The id of the item to which the options were applied
-		 * @returns {undefined}
-		 */
+     * To close the options modal and update the item to show the updated options.
+     * @function
+     * @param {integer} val - The id of the item to which the options were applied
+     * @returns {undefined}
+     */
     closeOptionsListModal (val) {
       this.displayOptionsListModal = false
       this.getModifierItemDetails(val)
