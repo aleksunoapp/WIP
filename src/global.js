@@ -9,7 +9,7 @@ const laprep = 'laprep'
 let client = window.location.hostname.split('.')[0]
 
 if (client === 'localhost') {
-  client = laprep
+  client = pitapit
 }
 
 const fileRouter = (function () {
