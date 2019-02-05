@@ -118,7 +118,7 @@ export default Vue.extend({
         this.page++
         this.logEvent(`Started viewing tutorial page ${this.page}`)
       } else {
-        this.$router.push({ name: 'at-a-glance' })
+        this.$router.go(-1)
       }
     },
     showPage (i) {
