@@ -44,7 +44,7 @@
             </div>
             <div class="right">
               <span
-                v-if="categoryContainsHiglightedServices(category.id)"
+                v-if="$route.name === 'additional-services' && categoryContainsHiglightedServices(category.id)"
                 class="badge"
               >
                 {{ $t("updated") }}
