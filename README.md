@@ -2,6 +2,12 @@
 
 ## Documentation
 
+ADD
+UPDATE
+FIX
+IMPROVE
+REMOVE
+
 Every module should include the following code at the top of the file:
 
 ``` bash
