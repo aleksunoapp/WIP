@@ -396,396 +396,396 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 import LoadingScreen from '@/components/modules/LoadingScreen'
 
 export default {
-	components: {
-		Breadcrumb,
-		PageResults,
-		Pagination,
-		Dropdown,
-		EditNewsFeed,
-		NoResults,
-		ResourcePicker,
-		Modal,
-		LoadingScreen
-	},
-	data () {
-		return {
-			breadcrumbArray: [{ name: 'News Feed', link: false }],
-			sortBy: {
-				order: 'ASC'
-			},
-			pageResultsValue: 0,
-			numPages: 0,
-			totalResults: 0,
-			activePage: 1,
-			newsFeed: [],
-			errorMessage: '',
-			createFeedCollapse: true,
-			newNewsFeed: {
-				title: '',
-				short_description: '',
-				body: '',
-				image: '',
-				external_url: ''
-			},
-			createFeedError: '',
-			creating: false,
-			showEditFeedModal: false,
-			updateFeedError: '',
-			selectedFeedId: 0,
-			imageMode: {
-				newMenu: false
-			},
-			showDeleteModal: false,
-			newsToDelete: {},
-			deleting: false,
-			deleteErrorMessage: '',
-			displayNewsFeedData: false
-		}
-	},
-	watch: {
-		'sortBy.order' () {
-			if (this.sortBy.order) {
-				this.activePageUpdate(1)
-				this.getNewsFeed(0)
-			}
-		}
-	},
-	created () {
-		this.getNewsFeed(0)
-	},
-	methods: {
-		/**
+  components: {
+    Breadcrumb,
+    PageResults,
+    Pagination,
+    Dropdown,
+    EditNewsFeed,
+    NoResults,
+    ResourcePicker,
+    Modal,
+    LoadingScreen
+  },
+  data () {
+    return {
+      breadcrumbArray: [{ name: 'News Feed', link: false }],
+      sortBy: {
+        order: 'ASC'
+      },
+      pageResultsValue: 0,
+      numPages: 0,
+      totalResults: 0,
+      activePage: 1,
+      newsFeed: [],
+      errorMessage: '',
+      createFeedCollapse: true,
+      newNewsFeed: {
+        title: '',
+        short_description: '',
+        body: '',
+        image: '',
+        external_url: ''
+      },
+      createFeedError: '',
+      creating: false,
+      showEditFeedModal: false,
+      updateFeedError: '',
+      selectedFeedId: 0,
+      imageMode: {
+        newMenu: false
+      },
+      showDeleteModal: false,
+      newsToDelete: {},
+      deleting: false,
+      deleteErrorMessage: '',
+      displayNewsFeedData: false
+    }
+  },
+  watch: {
+    'sortBy.order' () {
+      if (this.sortBy.order) {
+        this.activePageUpdate(1)
+        this.getNewsFeed(0)
+      }
+    }
+  },
+  created () {
+    this.getNewsFeed(0)
+  },
+  methods: {
+    /**
 		 * To close the modal for deleting a promotion and remove that promotion from DOM.
 		 * @function
 		 * @returns {undefined}
 		 */
-		deleteNewsFeed () {
-			this.deleting = true
-			var _this = this
-			return NewsFeedFunctions.deleteNewsFeed(_this.newsToDelete.id)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						_this.getNewsFeed(_this.activePage)
-						_this.closeDeleteModal()
-						_this.showDeleteSuccess(response.payload)
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: `We could not delete the news feed`,
-						errorName: 'deleteErrorMessage',
-						vue: _this,
-						containerRef: 'deleteModal'
-					})
-				})
-				.finally(() => {
-					_this.deleting = false
-				})
-		},
-		/**
+    deleteNewsFeed () {
+      this.deleting = true
+      var _this = this
+      return NewsFeedFunctions.deleteNewsFeed(_this.newsToDelete.id)
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            _this.getNewsFeed(_this.activePage)
+            _this.closeDeleteModal()
+            _this.showDeleteSuccess(response.payload)
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: `We could not delete the news feed`,
+            errorName: 'deleteErrorMessage',
+            vue: _this,
+            containerRef: 'deleteModal'
+          })
+        })
+        .finally(() => {
+          _this.deleting = false
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The News Feed has been deleted'
-			let type = 'success'
+    showDeleteSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The News Feed has been deleted'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The removal has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The removal has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To clear an error
 		 * @function
 		 * @param {string} name - Name of the variable to clear
 		 * @returns {undefined}
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To show the delete modal
 		 * @function
 		 * @param {object} news - The news object to delete
 		 * @returns {undefined}
 		 */
-		openDeleteModal (news) {
-			this.newsToDelete = { ...news }
-			this.showDeleteModal = true
-		},
-		closeDeleteModal () {
-			this.clearError('deleteErrorMessage')
-			this.showDeleteModal = false
-		},
-		/**
+    openDeleteModal (news) {
+      this.newsToDelete = { ...news }
+      this.showDeleteModal = true
+    },
+    closeDeleteModal () {
+      this.clearError('deleteErrorMessage')
+      this.showDeleteModal = false
+    },
+    /**
 		 * To toggle between the open and closed state of the resource picker
 		 * @function
 		 * @param {string} object - The name of the object the image is for
 		 * @param {object} value - The open / closed value of the picker
 		 * @returns {undefined}
 		 */
-		toggleImageMode (object, value) {
-			this.imageMode[object] = value
-		},
-		/**
+    toggleImageMode (object, value) {
+      this.imageMode[object] = value
+    },
+    /**
 		 * To set the image to be same as the one emitted by the resource picker.
 		 * @function
 		 * @param {object} val - The emitted image object.
 		 * @returns {undefined}
 		 */
-		updateImage (val) {
-			this.newNewsFeed.image = val.image_url
-		},
-		/**
+    updateImage (val) {
+      this.newNewsFeed.image = val.image_url
+    },
+    /**
 		 * To update the order property of sortBy.
 		 * @function
 		 * @param {object} value - The new value to assign.
 		 * @returns {undefined}
 		 */
-		updateSortByOrder (value) {
-			this.sortBy.order = value
-		},
-		/**
+    updateSortByOrder (value) {
+      this.sortBy.order = value
+    },
+    /**
 		 * To catch updates from the PageResults component when the number of page results is updated.
 		 * @function
 		 * @param {integer} val - The number of page results to be returned.
 		 * @returns {undefined}
 		 */
-		pageResultsUpdate (val) {
-			if (parseInt(this.pageResultsValue) !== parseInt(val)) {
-				this.pageResultsValue = val
-				this.activePageUpdate(1)
-				this.getNewsFeed(0)
-			}
-		},
-		/**
+    pageResultsUpdate (val) {
+      if (parseInt(this.pageResultsValue) !== parseInt(val)) {
+        this.pageResultsValue = val
+        this.activePageUpdate(1)
+        this.getNewsFeed(0)
+      }
+    },
+    /**
 		 * To update the currently active pagination page.
 		 * @function
 		 * @param {integer} val - An integer representing the page number that we are updating to.
 		 * @returns {undefined}
 		 */
-		activePageUpdate (val) {
-			if (parseInt(this.activePage) !== parseInt(val)) {
-				this.activePage = val
-				this.getNewsFeed(this.activePage)
-			}
-		},
-		/**
+    activePageUpdate (val) {
+      if (parseInt(this.activePage) !== parseInt(val)) {
+        this.activePage = val
+        this.getNewsFeed(this.activePage)
+      }
+    },
+    /**
 		 * To get the news feed for the current page.
 		 * @function
 		 * @param {integer} pageNumber - The current page that we are retrieving results for.
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getNewsFeed (pageNumber) {
-			this.displayNewsFeedData = true
-			this.newsFeed = []
-			var newsFeedVue = this
-			return NewsFeedFunctions.getNewsFeed({
-				page: pageNumber,
-				order: newsFeedVue.sortBy.order,
-				itemsPerPage: newsFeedVue.pageResultsValue
-			})
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						newsFeedVue.totalResults = response.payload.data.length
-						newsFeedVue.newsFeed = response.payload.data
-						for (var i = 0; i < newsFeedVue.newsFeed.length; i++) {
-							var item = newsFeedVue.newsFeed[i].created_on.split(' ')
-							if (item[0] !== '0000-00-00') {
-								var date = new Date(item[0])
-								var dateSplit = date.toString().split(' ')
-								newsFeedVue.$set(
-									newsFeedVue.newsFeed[i],
-									'formatted_date',
-									dateSplit[1] + ' ' + dateSplit[2] + ', ' + dateSplit[3]
-								)
-							} else {
-								newsFeedVue.$set(
-									newsFeedVue.newsFeed[i],
-									'formatted_date',
-									'Invalid Date'
-								)
-							}
-						}
-					} else {
-						newsFeedVue.errorMessage = response.message
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch news feeds',
-						errorName: 'errorMessage',
-						vue: newsFeedVue
-					})
-				}).finally(() => {
-					newsFeedVue.displayNewsFeedData = false
-				})
-		},
-		/**
+    getNewsFeed (pageNumber) {
+      this.displayNewsFeedData = true
+      this.newsFeed = []
+      var newsFeedVue = this
+      return NewsFeedFunctions.getNewsFeed({
+        page: pageNumber,
+        order: newsFeedVue.sortBy.order,
+        itemsPerPage: newsFeedVue.pageResultsValue
+      })
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            newsFeedVue.totalResults = response.payload.data.length
+            newsFeedVue.newsFeed = response.payload.data
+            for (var i = 0; i < newsFeedVue.newsFeed.length; i++) {
+              var item = newsFeedVue.newsFeed[i].created_on.split(' ')
+              if (item[0] !== '0000-00-00') {
+                var date = new Date(item[0])
+                var dateSplit = date.toString().split(' ')
+                newsFeedVue.$set(
+                  newsFeedVue.newsFeed[i],
+                  'formatted_date',
+                  dateSplit[1] + ' ' + dateSplit[2] + ', ' + dateSplit[3]
+                )
+              } else {
+                newsFeedVue.$set(
+                  newsFeedVue.newsFeed[i],
+                  'formatted_date',
+                  'Invalid Date'
+                )
+              }
+            }
+          } else {
+            newsFeedVue.errorMessage = response.message
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch news feeds',
+            errorName: 'errorMessage',
+            vue: newsFeedVue
+          })
+        }).finally(() => {
+          newsFeedVue.displayNewsFeedData = false
+        })
+    },
+    /**
 		 * To toggle the create feed panel, initially set to closed
 		 * @function
 		 * @returns {undefined}
 		 * @memberof Users
 		 * @version 0.0.4
 		 */
-		toggleCreateFeedPanel () {
-			this.createFeedCollapse = !this.createFeedCollapse
-		},
-		/**
+    toggleCreateFeedPanel () {
+      this.createFeedCollapse = !this.createFeedCollapse
+    },
+    /**
 		 * To clear the current search error.
 		 * @function
 		 * @returns {undefined}
 		 * @memberof Users
 		 * @version 0.0.4
 		 */
-		clearCreateFeedError () {
-			this.createFeedError = ''
-		},
-		/**
+    clearCreateFeedError () {
+      this.createFeedError = ''
+    },
+    /**
 		 * To clear the create feed form.
 		 * @function
 		 * @returns {undefined}
 		 * @memberof Users
 		 * @version 0.0.4
 		 */
-		resetForm () {
-			this.newNewsFeed = {
-				title: '',
-				short_description: '',
-				body: '',
-				image: '',
-				external_url: ''
-			}
-			this.clearCreateFeedError()
-		},
-		/**
+    resetForm () {
+      this.newNewsFeed = {
+        title: '',
+        short_description: '',
+        body: '',
+        image: '',
+        external_url: ''
+      }
+      this.clearCreateFeedError()
+    },
+    /**
 		 * To check if the news feed information are valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateNewsFeedData () {
-			var newsFeedVue = this
-			return new Promise(function (resolve, reject) {
-				if (!newsFeedVue.newNewsFeed.title.length) {
-					reject('Title cannot be blank')
-				} else if (!newsFeedVue.newNewsFeed.short_description.length) {
-					reject('Short description cannot be blank')
-				} else if (!newsFeedVue.newNewsFeed.body.length) {
-					reject('Body cannot be blank')
-				} else if (!newsFeedVue.newNewsFeed.image.length) {
-					reject('Image cannot be blank')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateNewsFeedData () {
+      var newsFeedVue = this
+      return new Promise(function (resolve, reject) {
+        if (!newsFeedVue.newNewsFeed.title.length) {
+          reject('Title cannot be blank')
+        } else if (!newsFeedVue.newNewsFeed.short_description.length) {
+          reject('Short description cannot be blank')
+        } else if (!newsFeedVue.newNewsFeed.body.length) {
+          reject('Body cannot be blank')
+        } else if (!newsFeedVue.newNewsFeed.image.length) {
+          reject('Image cannot be blank')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To prompt the backend call that creates a new news feed.
 		 * @function
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {object} A promise that will either return an error message or display the success screen
 		 */
-		createNewsFeed (event) {
-			var newsFeedVue = this
+    createNewsFeed (event) {
+      var newsFeedVue = this
 
-			this.clearCreateFeedError()
-			return newsFeedVue
-				.validateNewsFeedData()
-				.then(response => {
-					newsFeedVue.creating = true
-					NewsFeedFunctions.createNewsFeed(
-						newsFeedVue.newNewsFeed,
-						newsFeedVue.$root.userToken,
-						newsFeedVue.$root.appId,
-						newsFeedVue.$root.appSecret
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								newsFeedVue.getNewsFeed()
-								newsFeedVue.showCreateSuccess(response.payload)
-								newsFeedVue.resetForm()
-							} else {
-								newsFeedVue.createFeedError = response.message
-							}
-						})
-						.catch(reason => {
-							console.log({reason})
-							ajaxErrorHandler({
-								reason,
-								errorText: 'Could not create news feed',
-								errorName: 'createFeedError',
-								vue: newsFeedVue
-							})
-						})
-						.finally(() => {
-							newsFeedVue.creating = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					newsFeedVue.createFeedError = reason
-					window.scrollTo(0, 0)
-					throw reason
-				})
-		},
-		/**
+      this.clearCreateFeedError()
+      return newsFeedVue
+        .validateNewsFeedData()
+        .then(response => {
+          newsFeedVue.creating = true
+          NewsFeedFunctions.createNewsFeed(
+            newsFeedVue.newNewsFeed,
+            newsFeedVue.$root.userToken,
+            newsFeedVue.$root.appId,
+            newsFeedVue.$root.appSecret
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                newsFeedVue.getNewsFeed()
+                newsFeedVue.showCreateSuccess(response.payload)
+                newsFeedVue.resetForm()
+              } else {
+                newsFeedVue.createFeedError = response.message
+              }
+            })
+            .catch(reason => {
+              console.log({ reason })
+              ajaxErrorHandler({
+                reason,
+                errorText: 'Could not create news feed',
+                errorName: 'createFeedError',
+                vue: newsFeedVue
+              })
+            })
+            .finally(() => {
+              newsFeedVue.creating = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          newsFeedVue.createFeedError = reason
+          window.scrollTo(0, 0)
+          throw reason
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showCreateSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The News Feed has been created'
-			let type = 'success'
+    showCreateSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The News Feed has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The News Feed has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The News Feed has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To show input fields instead of the plain text for news feed.
 		 * @function
 		 * @param {object} news - The news object to be edited
 		 * @returns {undefined}
 		 */
-		editNewsFeed (news) {
-			this.showEditFeedModal = true
-			this.selectedFeedId = news.id
-		},
-		/**
+    editNewsFeed (news) {
+      this.showEditFeedModal = true
+      this.selectedFeedId = news.id
+    },
+    /**
 		 * To close the edit feed modal and get the updated list of news feed
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeEditFeedModal () {
-			this.showEditFeedModal = false
-		},
-		updateNewsFeed (val) {
-			this.showEditFeedModal = false
-			this.getNewsFeed()
-		}
-	}
+    closeEditFeedModal () {
+      this.showEditFeedModal = false
+    },
+    updateNewsFeed (val) {
+      this.showEditFeedModal = false
+      this.getNewsFeed()
+    }
+  }
 }
 </script>
 <style scoped>

@@ -277,279 +277,279 @@ import ResourcePicker from '../../modules/ResourcePicker'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Breadcrumb,
-		Modal,
-		LoadingScreen,
-		NoResults,
-		Dropdown,
-		EditOption,
-		ModifierTree,
-		ResourcePicker
-	},
-	data () {
-		return {
-			breadcrumbArray: [
-				{ name: 'Menu Manager', link: false },
-				{ name: 'Options', link: false }
-			],
-			createOptionCollapse: true,
-			errorMessage: '',
-			loadingOptionsData: false,
-			listErrorMessage: '',
-			newOption: {
-				name: '',
-				description: '',
-				image_url: '',
-				order: null,
-				status: 1
-			},
-			options: [],
-			showEditOptionModal: false,
-			selectedOption: {},
-			headerText: '',
-			imageMode: {
-				newMenu: false
-			},
-			showModifierTreeModal: false
-		}
-	},
-	mounted () {
-		// get the list of available options
-		this.getOptions()
-	},
-	methods: {
-		/**
+  components: {
+    Breadcrumb,
+    Modal,
+    LoadingScreen,
+    NoResults,
+    Dropdown,
+    EditOption,
+    ModifierTree,
+    ResourcePicker
+  },
+  data () {
+    return {
+      breadcrumbArray: [
+        { name: 'Menu Manager', link: false },
+        { name: 'Options', link: false }
+      ],
+      createOptionCollapse: true,
+      errorMessage: '',
+      loadingOptionsData: false,
+      listErrorMessage: '',
+      newOption: {
+        name: '',
+        description: '',
+        image_url: '',
+        order: null,
+        status: 1
+      },
+      options: [],
+      showEditOptionModal: false,
+      selectedOption: {},
+      headerText: '',
+      imageMode: {
+        newMenu: false
+      },
+      showModifierTreeModal: false
+    }
+  },
+  mounted () {
+    // get the list of available options
+    this.getOptions()
+  },
+  methods: {
+    /**
 		 * To toggle between the open and closed state of the resource picker
 		 * @function
 		 * @param {string} object - The name of the object the image is for
 		 * @param {object} value - The open / closed value of the picker
 		 * @returns {undefined}
 		 */
-		toggleImageMode (object, value) {
-			this.imageMode[object] = value
-		},
-		/**
+    toggleImageMode (object, value) {
+      this.imageMode[object] = value
+    },
+    /**
 		 * To display the modal to apply a option to multiple modifier items.
 		 * @function
 		 * @param {object} option - The selected option.
 		 * @param {object} event - The click event that triggered the action.
 		 * @returns {undefined}
 		 */
-		displayMenuTreeModal (option, event) {
-			event.stopPropagation()
-			this.selectedOption = option
-			this.headerText = "Option '" + this.selectedOption.name + "'"
-			this.showModifierTreeModal = true
-		},
-		/**
+    displayMenuTreeModal (option, event) {
+      event.stopPropagation()
+      this.selectedOption = option
+      this.headerText = "Option '" + this.selectedOption.name + "'"
+      this.showModifierTreeModal = true
+    },
+    /**
 		 * To close the menu tree modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModifierTreeModal () {
-			this.showModifierTreeModal = false
-		},
-		/**
+    closeModifierTreeModal () {
+      this.showModifierTreeModal = false
+    },
+    /**
 		 * To route to the items page for the selected option.
 		 * @function
 		 * @param {object} option - The selected option
 		 * @returns {undefined}
 		 */
-		viewOptionItems (option) {
-			this.$router.push(
-				'/app/menu_manager/options/' + option.id + '/option_items'
-			)
-		},
-		/**
+    viewOptionItems (option) {
+      this.$router.push(
+        '/app/menu_manager/options/' + option.id + '/option_items'
+      )
+    },
+    /**
 		 * To toggle the create option panel, initially set to closed
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCreateOptionPanel () {
-			this.createOptionCollapse = !this.createOptionCollapse
-		},
-		/**
+    toggleCreateOptionPanel () {
+      this.createOptionCollapse = !this.createOptionCollapse
+    },
+    /**
 		 * To get the list of available options.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getOptions () {
-			this.loadingOptionsData = true
-			var optionsVue = this
-			optionsVue.options = []
-			OptionsFunctions.getOptions(
-				optionsVue.$root.appId,
-				optionsVue.$root.appSecret,
-				optionsVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						optionsVue.loadingOptionsData = false
-						optionsVue.options = response.payload
-					} else {
-						optionsVue.loadingOptionsData = false
-					}
-				})
-				.catch(reason => {
-					optionsVue.loadingOptionsData = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch option categories',
-						errorName: 'listErrorMessage',
-						vue: optionsVue
-					})
-				})
-		},
-		/**
+    getOptions () {
+      this.loadingOptionsData = true
+      var optionsVue = this
+      optionsVue.options = []
+      OptionsFunctions.getOptions(
+        optionsVue.$root.appId,
+        optionsVue.$root.appSecret,
+        optionsVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            optionsVue.loadingOptionsData = false
+            optionsVue.options = response.payload
+          } else {
+            optionsVue.loadingOptionsData = false
+          }
+        })
+        .catch(reason => {
+          optionsVue.loadingOptionsData = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch option categories',
+            errorName: 'listErrorMessage',
+            vue: optionsVue
+          })
+        })
+    },
+    /**
 		 * To set the image to be same as the one emitted by the gallery modal.
 		 * @function
 		 * @param {object} val - The emitted image object.
 		 * @returns {undefined}
 		 */
-		updateImage (val) {
-			this.newOption.image_url = val.image_url
-		},
-		/**
+    updateImage (val) {
+      this.newOption.image_url = val.image_url
+    },
+    /**
 		 * To check if the option data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateOptionData () {
-			var optionsVue = this
-			return new Promise(function (resolve, reject) {
-				if (!optionsVue.newOption.name.length) {
-					reject('Option name cannot be blank')
-				} else if (!optionsVue.newOption.image_url.length) {
-					reject('Option image URL cannot be blank')
-				} else if (!$.isNumeric(optionsVue.newOption.order)) {
-					reject('Option order should be numerical')
-				} else if (!optionsVue.newOption.description.length) {
-					reject('Option description cannot be blank')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateOptionData () {
+      var optionsVue = this
+      return new Promise(function (resolve, reject) {
+        if (!optionsVue.newOption.name.length) {
+          reject('Option name cannot be blank')
+        } else if (!optionsVue.newOption.image_url.length) {
+          reject('Option image URL cannot be blank')
+        } else if (!$.isNumeric(optionsVue.newOption.order)) {
+          reject('Option order should be numerical')
+        } else if (!optionsVue.newOption.description.length) {
+          reject('Option description cannot be blank')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To create a new option type.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		createOption () {
-			var optionsVue = this
-			optionsVue.clearError('errorMessage')
+    createOption () {
+      var optionsVue = this
+      optionsVue.clearError('errorMessage')
 
-			return optionsVue
-				.validateOptionData()
-				.then(response => {
-					OptionsFunctions.createOption(
-						optionsVue.newOption,
-						optionsVue.$root.appId,
-						optionsVue.$root.appSecret,
-						optionsVue.$root.userToken
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								optionsVue.newOption.id = response.payload.id
-								optionsVue.getOptions()
-								optionsVue.showAlert(response.payload)
-								optionsVue.clearNewOption()
-							} else {
-								optionsVue.errorMessage = response.message
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not add the option category',
-								errorName: 'errorMessage',
-								vue: optionsVue
-							})
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					optionsVue.errorMessage = reason
-					window.scrollTo(0, 0)
-					throw reason
-				})
-		},
-		/**
+      return optionsVue
+        .validateOptionData()
+        .then(response => {
+          OptionsFunctions.createOption(
+            optionsVue.newOption,
+            optionsVue.$root.appId,
+            optionsVue.$root.appSecret,
+            optionsVue.$root.userToken
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                optionsVue.newOption.id = response.payload.id
+                optionsVue.getOptions()
+                optionsVue.showAlert(response.payload)
+                optionsVue.clearNewOption()
+              } else {
+                optionsVue.errorMessage = response.message
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not add the option category',
+                errorName: 'errorMessage',
+                vue: optionsVue
+              })
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          optionsVue.errorMessage = reason
+          window.scrollTo(0, 0)
+          throw reason
+        })
+    },
+    /**
 		 * To clear the new menu form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearNewOption () {
-			this.newOption = {
-				name: '',
-				description: '',
-				image_url: '',
-				order: null,
-				status: 1
-			}
-		},
-		/**
+    clearNewOption () {
+      this.newOption = {
+        name: '',
+        description: '',
+        image_url: '',
+        order: null,
+        status: 1
+      }
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert (payload = {}) {
-			let title = 'Success'
-			let text = 'The Option has been created'
-			let type = 'success'
+    showAlert (payload = {}) {
+      let title = 'Success'
+      let text = 'The Option has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Option has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Option has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @param {string} name - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To show the modal to edit option details.
 		 * @function
 		 * @param {object} option - The selected option object.
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		editOption (option, event) {
-			event.stopPropagation()
-			this.selectedOption = option
-			this.showEditOptionModal = true
-		},
-		/**
+    editOption (option, event) {
+      event.stopPropagation()
+      this.selectedOption = option
+      this.showEditOptionModal = true
+    },
+    /**
 		 * To close the modal to edit option details.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeEditOptionModal () {
-			this.showEditOptionModal = false
-		},
-		/**
+    closeEditOptionModal () {
+      this.showEditOptionModal = false
+    },
+    /**
 		 * To close the modal to edit option details and update the selected option on the options list.
 		 * @function
 		 * @param {object} val - The option object to be updated on the list.
 		 * @returns {undefined}
 		 */
-		updateOption (val) {
-			this.showEditOptionModal = false
-			this.getOptions()
-		}
-	}
+    updateOption (val) {
+      this.showEditOptionModal = false
+      this.getOptions()
+    }
+  }
 }
 </script>

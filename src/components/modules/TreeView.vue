@@ -39,29 +39,29 @@
 
 <script>
 export default {
-	name: 'TreeView',
-	props: {
-		model: {
-			type: Object
-		}
-	},
-	data() {
-		return {
-			open: false
-		}
-	},
-	computed: {
-		isFolder() {
-			return this.model.children && this.model.children.length
-		}
-	},
-	methods: {
-		toggle() {
-			if (this.isFolder) {
-				this.open = !this.open
-			}
-		}
-	}
+  name: 'TreeView',
+  props: {
+    model: {
+      type: Object
+    }
+  },
+  data () {
+    return {
+      open: false
+    }
+  },
+  computed: {
+    isFolder () {
+      return this.model.children && this.model.children.length
+    }
+  },
+  methods: {
+    toggle () {
+      if (this.isFolder) {
+        this.open = !this.open
+      }
+    }
+  }
 }
 </script>
 <style scoped>

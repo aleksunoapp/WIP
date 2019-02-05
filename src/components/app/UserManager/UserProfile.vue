@@ -354,10 +354,10 @@
                           <td class="align-middle">
                             <span
                               class="label label-sm"
-                              :class="{ 
+                              :class="{
                                 'label-info' : order.status === 'pending',
-                                'label-warning' : order.status === 'submitted', 
-                                'label-success' : order.status === 'completed', 
+                                'label-warning' : order.status === 'submitted',
+                                'label-success' : order.status === 'completed',
                                 'label-danger' : order.status === 'overdue',
                                 'label-danger' : order.status === 'cancelled' || order.status === 'refunded'
                               }"
@@ -489,7 +489,7 @@
                     v-if="currentActivePageTransactions.length"
                     class="clearfix margin-bottom-10"
                   >
-                    <el-select 
+                    <el-select
                       v-model="transactions.sortBy"
                       size="mini"
                       @change="sortTransactions"
@@ -505,7 +505,7 @@
                         value="oldest"
                       />
                     </el-select>
-                    <a 
+                    <a
                       ref="transactionsCSV"
                       :download="`${user.first_name} ${user.last_name} Transactions.csv`"
                       class="margin-left-5"
@@ -517,7 +517,7 @@
                         aria-hidden="true"
                       />
                     </a>
-                    <page-results 
+                    <page-results
                       class="pull-right"
                       :total-results="transactions.data.length"
                       :active-page="transactions.activePage"
@@ -571,7 +571,7 @@
                         <td class="align-middle">
                           <span
                             class="label label-sm"
-                            :class="{ 
+                            :class="{
                               'label-success' : transaction.status === 'success',
                               'label-info' : transaction.status !== 'success',
                               'label-danger' : transaction.status === 'fail'
@@ -604,7 +604,7 @@
                   <div
                     v-if="currentActivePageTransactions.length && transactionsNumPages > 1"
                   >
-                    <pagination 
+                    <pagination
                       :passed-page="transactions.activePage"
                       :num-pages="transactionsNumPages"
                       @activePageChange="transactionsActivePageUpdate"
@@ -659,868 +659,868 @@ import json2csv from 'json2csv'
 import { formatUSD, formatInteger } from '@/controllers/utils'
 
 export default {
-	components: {
-		Breadcrumb,
-		Tabset,
-		Tab,
-		ViewOrder,
-		ButtonGroup,
-		Checkbox,
-		Message,
-		Pagination,
-		PageResults,
-		Dropdown,
-		LoadingScreen
-	},
-	data () {
-		return {
-			breadcrumbArray: [
-				{ name: 'Users', link: '/app/user_manager/users' },
-				{ name: 'User Profile', link: false }
-			],
-			tab: 0,
-			user: {
-				total_orders: '',
-				total_spent: ''
-			},
-			loading: false,
-			loadingOrders: false,
-			orders: [],
-			orderBeingViewed: {},
-			viewOrderModalDisplayed: false,
-			socialFeed: [],
-			messageModalDisplayed: false,
-			activePage: 1,
-			resultsPerPage: 25,
-			sortBy: {
-				order: 'DESC'
-			},
-			userAttributes: [],
-			userItems: [],
-			errorMessage: '',
-			points: '',
-			adding: false,
-			addErrorMessage: '',
-			parser: null,
-			transactions: {
-				loading: false,
-				data: [],
-				activePage: 1,
-				resultsPerPage: 25,
-				sortBy: 'newest',
-				parser: null
-			},
-			platforms: {
-				android: 'Android',
-				ios: 'iOS',
-				web: 'web'
-			}
-		}
-	},
-	computed: {
-		numPages () {
-			return Math.ceil(this.orders.length / this.resultsPerPage)
-		},
-		currentActivePageOrders () {
-			return this.userSort(this.orders).slice(
-				this.resultsPerPage * (this.activePage - 1),
-				this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
-			)
-		},
-		currentActivePageTransactions () {
-			return this.transactions.data.slice(
-				this.transactions.resultsPerPage * (this.transactions.activePage - 1),
-				this.transactions.resultsPerPage * (this.transactions.activePage - 1) + this.transactions.resultsPerPage
-			)
-		},
-		transactionsNumPages () {
-			return Math.ceil(this.transactions.data.length / this.transactions.resultsPerPage)
-		},
-		...mapGetters(['can'])
-	},
-	mounted () {
-		this.getUserDetails()
-		this.getAttributesOfUser()
-		this.getItemsOfuser()
-		this.getUserOrders()
-		this.getUserSocialFeed()
-		this.getUserTransactions()
+  components: {
+    Breadcrumb,
+    Tabset,
+    Tab,
+    ViewOrder,
+    ButtonGroup,
+    Checkbox,
+    Message,
+    Pagination,
+    PageResults,
+    Dropdown,
+    LoadingScreen
+  },
+  data () {
+    return {
+      breadcrumbArray: [
+        { name: 'Users', link: '/app/user_manager/users' },
+        { name: 'User Profile', link: false }
+      ],
+      tab: 0,
+      user: {
+        total_orders: '',
+        total_spent: ''
+      },
+      loading: false,
+      loadingOrders: false,
+      orders: [],
+      orderBeingViewed: {},
+      viewOrderModalDisplayed: false,
+      socialFeed: [],
+      messageModalDisplayed: false,
+      activePage: 1,
+      resultsPerPage: 25,
+      sortBy: {
+        order: 'DESC'
+      },
+      userAttributes: [],
+      userItems: [],
+      errorMessage: '',
+      points: '',
+      adding: false,
+      addErrorMessage: '',
+      parser: null,
+      transactions: {
+        loading: false,
+        data: [],
+        activePage: 1,
+        resultsPerPage: 25,
+        sortBy: 'newest',
+        parser: null
+      },
+      platforms: {
+        android: 'Android',
+        ios: 'iOS',
+        web: 'web'
+      }
+    }
+  },
+  computed: {
+    numPages () {
+      return Math.ceil(this.orders.length / this.resultsPerPage)
+    },
+    currentActivePageOrders () {
+      return this.userSort(this.orders).slice(
+        this.resultsPerPage * (this.activePage - 1),
+        this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
+      )
+    },
+    currentActivePageTransactions () {
+      return this.transactions.data.slice(
+        this.transactions.resultsPerPage * (this.transactions.activePage - 1),
+        this.transactions.resultsPerPage * (this.transactions.activePage - 1) + this.transactions.resultsPerPage
+      )
+    },
+    transactionsNumPages () {
+      return Math.ceil(this.transactions.data.length / this.transactions.resultsPerPage)
+    },
+    ...mapGetters(['can'])
+  },
+  mounted () {
+    this.getUserDetails()
+    this.getAttributesOfUser()
+    this.getItemsOfuser()
+    this.getUserOrders()
+    this.getUserSocialFeed()
+    this.getUserTransactions()
 
-		this.parser = new json2csv.Parser({
-			fields: [
-				{
-					label: 'Order ID',
-					value: 'external_id',
-					default: ''
-				},
-				{
-					label: 'Store',
-					value: 'location_name',
-					default: ''
-				},
-				{
-					label: 'Total',
-					value: 'total',
-					default: ''
-				},
-				{
-					label: 'Rewards Claimed ($)',
-					value: 'reward_amount',
-					default: ''
-				},
-				{
-					label: 'Points Earned',
-					value: 'points_earned',
-					default: ''
-				},
-				{
-					label: 'Order Date',
-					value: 'created_at',
-					default: ''
-				},
-				{
-					label: 'Platform',
-					value: 'platform',
-					default: ''
-				},
-				{
-					label: 'Status',
-					value: 'status',
-					default: ''
-				}
-			]
-		})
-	},
-	methods: {
-		...mapMutations({
-			setUser: 'users/SET_USER'
-		}),
-		/**
+    this.parser = new json2csv.Parser({
+      fields: [
+        {
+          label: 'Order ID',
+          value: 'external_id',
+          default: ''
+        },
+        {
+          label: 'Store',
+          value: 'location_name',
+          default: ''
+        },
+        {
+          label: 'Total',
+          value: 'total',
+          default: ''
+        },
+        {
+          label: 'Rewards Claimed ($)',
+          value: 'reward_amount',
+          default: ''
+        },
+        {
+          label: 'Points Earned',
+          value: 'points_earned',
+          default: ''
+        },
+        {
+          label: 'Order Date',
+          value: 'created_at',
+          default: ''
+        },
+        {
+          label: 'Platform',
+          value: 'platform',
+          default: ''
+        },
+        {
+          label: 'Status',
+          value: 'status',
+          default: ''
+        }
+      ]
+    })
+  },
+  methods: {
+    ...mapMutations({
+      setUser: 'users/SET_USER'
+    }),
+    /**
 		 * Copy user to store and redirect to edit route
 		 * @function
 		 * @returns {undefined}
 		 */
-		editUser () {
-			this.setUser(this.user)
-			this.$router.push({name: 'EditUser'})
-		},
-		sortTransactions () {
-			this.transactions.data.sort((a, b) => {
-				if (a.created_at > b.created_at) {
-					return this.transactions.sortBy === 'newest' ? -1 : 1
-				} else if (a.created_at < b.created_at) {
-					return this.transactions.sortBy === 'newest' ? -1 : 1
-				} else {
-					if (a.id > b.id) {
-						return -1
-					} else if (a.id < b.id) {
-						return 1
-					} else {
-						return 0
-					}
-				}
-			})
-		},
-		/**
+    editUser () {
+      this.setUser(this.user)
+      this.$router.push({ name: 'EditUser' })
+    },
+    sortTransactions () {
+      this.transactions.data.sort((a, b) => {
+        if (a.created_at > b.created_at) {
+          return this.transactions.sortBy === 'newest' ? -1 : 1
+        } else if (a.created_at < b.created_at) {
+          return this.transactions.sortBy === 'newest' ? -1 : 1
+        } else {
+          if (a.id > b.id) {
+            return -1
+          } else if (a.id < b.id) {
+            return 1
+          } else {
+            return 0
+          }
+        }
+      })
+    },
+    /**
 		 * To format a number as currency
 		 * @function
 		 * @param {string} val - The number to format
 		 * @param {string} fallback - Preferred fallback return value
 		 * @returns {string} The formatted currency amount
 		 */
-		formatUSD: formatUSD,
-		/**
+    formatUSD: formatUSD,
+    /**
 		 * To format a number as currency
 		 * @function
 		 * @param {string} val - The number to format
 		 * @param {string} fallback - Preferred fallback return value
 		 * @returns {string} The formatted currency amount
 		 */
-		formatInteger: formatInteger,
-		/**
+    formatInteger: formatInteger,
+    /**
 		 * To download orders in a CSV file
 		 * @function
 		 * @returns {undefined}
 		 */
-		downloadCsv () {
-			this.$refs.csv.href = `data:text/csv,${this.parser.parse(this.orders)}`
-		},
-		/**
+    downloadCsv () {
+      this.$refs.csv.href = `data:text/csv,${this.parser.parse(this.orders)}`
+    },
+    /**
 		 * To download transactions in a CSV file
 		 * @function
 		 * @returns {undefined}
 		 */
-		downloadTransactionsCSV () {
-			if (this.transactions.parser === null) {
-				this.transactions.parser = new json2csv.Parser({
-					fields: [
-						{
-							label: 'Id',
-							value: 'id',
-							default: ''
-						},
-						{
-							label: 'Order Id',
-							value: 'order_id',
-							default: ''
-						},
-						{
-							label: 'Tr Number',
-							value: 'tr_number',
-							default: ''
-						},
-						{
-							label: 'External Id',
-							value: 'external_id',
-							default: ''
-						},
-						{
-							label: 'Total',
-							value: 'total',
-							default: ''
-						},
-						{
-							label: 'Type',
-							value: 'type',
-							default: ''
-						},
-						{
-							label: 'Billing Id',
-							value: 'billing_id',
-							default: ''
-						},
-						{
-							label: 'Status',
-							value: 'status',
-							default: ''
-						},
-						{
-							label: 'Platform',
-							value: 'platform',
-							default: ''
-						},
-						{
-							label: 'Ip Address',
-							value: 'ip_address',
-							default: ''
-						},
-						{
-							label: 'App Version',
-							value: 'app_version',
-							default: ''
-						},
-						{
-							label: 'Created At',
-							value: 'created_at',
-							default: ''
-						},
-						{
-							label: 'Updated At',
-							value: 'updated_at',
-							default: ''
-						},
-						{
-							label: 'Request Merchid',
-							value: 'request_merchid',
-							default: ''
-						},
-						{
-							label: 'Request Amount',
-							value: 'request_amount',
-							default: ''
-						},
-						{
-							label: 'Request Orderid',
-							value: 'request_orderid',
-							default: ''
-						},
-						{
-							label: 'Request Capture',
-							value: 'request_capture',
-							default: ''
-						},
-						{
-							label: 'Request Account',
-							value: 'request_account',
-							default: ''
-						},
-						{
-							label: 'Request Expiry',
-							value: 'request_expiry',
-							default: ''
-						},
-						{
-							label: 'Request Profile',
-							value: 'request_profile',
-							default: ''
-						},
-						{
-							label: 'Request Acctid',
-							value: 'request_acctid',
-							default: ''
-						},
-						{
-							label: 'Response Respproc',
-							value: 'response_respproc',
-							default: ''
-						},
-						{
-							label: 'Response Amount',
-							value: 'response_amount',
-							default: ''
-						},
-						{
-							label: 'Response Resptext',
-							value: 'response_resptext',
-							default: ''
-						},
-						{
-							label: 'Response Cardproc',
-							value: 'response_cardproc',
-							default: ''
-						},
-						{
-							label: 'Response Acctid',
-							value: 'response_acctid',
-							default: ''
-						},
-						{
-							label: 'Response Retref',
-							value: 'response_retref',
-							default: ''
-						},
-						{
-							label: 'Response Respstat',
-							value: 'response_respstat',
-							default: ''
-						},
-						{
-							label: 'Response Respcode',
-							value: 'response_respcode',
-							default: ''
-						},
-						{
-							label: 'Response Account',
-							value: 'response_account',
-							default: ''
-						},
-						{
-							label: 'Response Merchid',
-							value: 'response_merchid',
-							default: ''
-						},
-						{
-							label: 'Response Token',
-							value: 'response_token',
-							default: ''
-						}
-					]
-				})
-			}
-			this.$refs.transactionsCSV.href = `data:text/csv,${this.transactions.parser.parse(this.transactions.data)}`
-		},
-		/**
+    downloadTransactionsCSV () {
+      if (this.transactions.parser === null) {
+        this.transactions.parser = new json2csv.Parser({
+          fields: [
+            {
+              label: 'Id',
+              value: 'id',
+              default: ''
+            },
+            {
+              label: 'Order Id',
+              value: 'order_id',
+              default: ''
+            },
+            {
+              label: 'Tr Number',
+              value: 'tr_number',
+              default: ''
+            },
+            {
+              label: 'External Id',
+              value: 'external_id',
+              default: ''
+            },
+            {
+              label: 'Total',
+              value: 'total',
+              default: ''
+            },
+            {
+              label: 'Type',
+              value: 'type',
+              default: ''
+            },
+            {
+              label: 'Billing Id',
+              value: 'billing_id',
+              default: ''
+            },
+            {
+              label: 'Status',
+              value: 'status',
+              default: ''
+            },
+            {
+              label: 'Platform',
+              value: 'platform',
+              default: ''
+            },
+            {
+              label: 'Ip Address',
+              value: 'ip_address',
+              default: ''
+            },
+            {
+              label: 'App Version',
+              value: 'app_version',
+              default: ''
+            },
+            {
+              label: 'Created At',
+              value: 'created_at',
+              default: ''
+            },
+            {
+              label: 'Updated At',
+              value: 'updated_at',
+              default: ''
+            },
+            {
+              label: 'Request Merchid',
+              value: 'request_merchid',
+              default: ''
+            },
+            {
+              label: 'Request Amount',
+              value: 'request_amount',
+              default: ''
+            },
+            {
+              label: 'Request Orderid',
+              value: 'request_orderid',
+              default: ''
+            },
+            {
+              label: 'Request Capture',
+              value: 'request_capture',
+              default: ''
+            },
+            {
+              label: 'Request Account',
+              value: 'request_account',
+              default: ''
+            },
+            {
+              label: 'Request Expiry',
+              value: 'request_expiry',
+              default: ''
+            },
+            {
+              label: 'Request Profile',
+              value: 'request_profile',
+              default: ''
+            },
+            {
+              label: 'Request Acctid',
+              value: 'request_acctid',
+              default: ''
+            },
+            {
+              label: 'Response Respproc',
+              value: 'response_respproc',
+              default: ''
+            },
+            {
+              label: 'Response Amount',
+              value: 'response_amount',
+              default: ''
+            },
+            {
+              label: 'Response Resptext',
+              value: 'response_resptext',
+              default: ''
+            },
+            {
+              label: 'Response Cardproc',
+              value: 'response_cardproc',
+              default: ''
+            },
+            {
+              label: 'Response Acctid',
+              value: 'response_acctid',
+              default: ''
+            },
+            {
+              label: 'Response Retref',
+              value: 'response_retref',
+              default: ''
+            },
+            {
+              label: 'Response Respstat',
+              value: 'response_respstat',
+              default: ''
+            },
+            {
+              label: 'Response Respcode',
+              value: 'response_respcode',
+              default: ''
+            },
+            {
+              label: 'Response Account',
+              value: 'response_account',
+              default: ''
+            },
+            {
+              label: 'Response Merchid',
+              value: 'response_merchid',
+              default: ''
+            },
+            {
+              label: 'Response Token',
+              value: 'response_token',
+              default: ''
+            }
+          ]
+        })
+      }
+      this.$refs.transactionsCSV.href = `data:text/csv,${this.transactions.parser.parse(this.transactions.data)}`
+    },
+    /**
 		 * To format a platform name
 		 * @function
 		 * @param {string} name - The name to format
 		 * @returns {string} The formatted platform name
 		 */
-		getPlatformName (name) {
-			try {
-				return this.platforms[name.toLowerCase()] || name
-			} catch (e) {
-				return ''
-			}
-		},
-		/**
+    getPlatformName (name) {
+      try {
+        return this.platforms[name.toLowerCase()] || name
+      } catch (e) {
+        return ''
+      }
+    },
+    /**
 		 * To clear an error
 		 * @function
 		 * @param {string} errorName - The name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearError (errorName) {
-			this[errorName] = ''
-		},
-		/**
+    clearError (errorName) {
+      this[errorName] = ''
+    },
+    /**
 		 * To update the order property of sortBy.
 		 * @function
 		 * @param {object} value - The new value to assign.
 		 * @returns {undefined}
 		 */
-		updateSortByOrder (value) {
-			this.sortBy.order = value
-		},
-		/**
+    updateSortByOrder (value) {
+      this.sortBy.order = value
+    },
+    /**
 		 * To sort the orders list.
 		 * @function
 		 * @param {array} orders - The array of orders.
 		 * @returns {array} - The sorted array of orders
 		 */
-		userSort (orders) {
-			let input = orders
-			function asc (a, b) {
-				if (new Date(a.created_at) < new Date(b.created_at)) {
-					return -1
-				} else if (new Date(a.created_at) > new Date(b.created_at)) {
-					return 1
-				} else {
-					if (a.id > b.id) {
-						return -1
-					} else if (a.id < b.id) {
-						return 1
-					} else {
-						return 0
-					}
-				}
-			}
+    userSort (orders) {
+      let input = orders
+      function asc (a, b) {
+        if (new Date(a.created_at) < new Date(b.created_at)) {
+          return -1
+        } else if (new Date(a.created_at) > new Date(b.created_at)) {
+          return 1
+        } else {
+          if (a.id > b.id) {
+            return -1
+          } else if (a.id < b.id) {
+            return 1
+          } else {
+            return 0
+          }
+        }
+      }
 
-			function desc (a, b) {
-				if (new Date(a.created_at) > new Date(b.created_at)) {
-					return -1
-				} else if (new Date(a.created_at) < new Date(b.created_at)) {
-					return 1
-				} else {
-					if (a.id > b.id) {
-						return -1
-					} else if (a.id < b.id) {
-						return 1
-					} else {
-						return 0
-					}
-				}
-			}
+      function desc (a, b) {
+        if (new Date(a.created_at) > new Date(b.created_at)) {
+          return -1
+        } else if (new Date(a.created_at) < new Date(b.created_at)) {
+          return 1
+        } else {
+          if (a.id > b.id) {
+            return -1
+          } else if (a.id < b.id) {
+            return 1
+          } else {
+            return 0
+          }
+        }
+      }
 
-			if (this.sortBy.order === 'ASC') {
-				return input.sort(asc)
-			} else {
-				return input.sort(desc)
-			}
-		},
-		/**
+      if (this.sortBy.order === 'ASC') {
+        return input.sort(asc)
+      } else {
+        return input.sort(desc)
+      }
+    },
+    /**
 		 * To catch updates from the PageResults component when the number of page results is updated.
 		 * @function
 		 * @param {integer} val - The number of page results to be returned.
 		 * @returns {undefined}
 		 */
-		pageResultsUpdate (val) {
-			if (parseInt(this.resultsPerPage) !== parseInt(val)) {
-				this.resultsPerPage = val
-				this.activePage = 1
-			}
-		},
-		/**
+    pageResultsUpdate (val) {
+      if (parseInt(this.resultsPerPage) !== parseInt(val)) {
+        this.resultsPerPage = val
+        this.activePage = 1
+      }
+    },
+    /**
 		 * To catch updates from the PageResults component when the number of page results is updated.
 		 * @function
 		 * @param {integer} val - The number of page results to be returned.
 		 * @returns {undefined}
 		 */
-		transactionsPageResultsUpdate (val) {
-			if (parseInt(this.transactions.resultsPerPage) !== parseInt(val)) {
-				this.transactions.resultsPerPage = val
-				this.transactions.activePage = 1
-			}
-		},
-		/**
+    transactionsPageResultsUpdate (val) {
+      if (parseInt(this.transactions.resultsPerPage) !== parseInt(val)) {
+        this.transactions.resultsPerPage = val
+        this.transactions.activePage = 1
+      }
+    },
+    /**
 		 * To update the currently active pagination page.
 		 * @function
 		 * @param {integer} val - An integer representing the page number that we are updating to.
 		 * @returns {undefined}
 		 */
-		activePageUpdate (val) {
-			if (parseInt(this.activePage) !== parseInt(val)) {
-				this.activePage = val
-			}
-		},
-		/**
+    activePageUpdate (val) {
+      if (parseInt(this.activePage) !== parseInt(val)) {
+        this.activePage = val
+      }
+    },
+    /**
 		 * To update the currently active pagination page.
 		 * @function
 		 * @param {integer} val - An integer representing the page number that we are updating to.
 		 * @returns {undefined}
 		 */
-		transactionsActivePageUpdate (val) {
-			if (parseInt(this.transactions.activePage) !== parseInt(val)) {
-				this.transactions.activePage = val
-			}
-		},
-		/**
+    transactionsActivePageUpdate (val) {
+      if (parseInt(this.transactions.activePage) !== parseInt(val)) {
+        this.transactions.activePage = val
+      }
+    },
+    /**
 		 * To display a modal with the details of an order.
 		 * @function
 		 * @param {object} order - The order object whose details should be displayed.
 		 * @returns {undefined}
 		 */
-		showViewOrderModal (order) {
-			this.orderBeingViewed = order
-			this.getOrderDetails()
-		},
-		/**
+    showViewOrderModal (order) {
+      this.orderBeingViewed = order
+      this.getOrderDetails()
+    },
+    /**
 		 * To get the details of a user.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getOrderDetails () {
-			var usersVue = this
+    getOrderDetails () {
+      var usersVue = this
 
-			UsersFunctions.getOrderDetails(
-				usersVue.$root.appId,
-				usersVue.$root.appSecret,
-				usersVue.$root.userToken,
-				usersVue.orderBeingViewed.id
-			)
-				.then(response => {
-					usersVue.orderBeingViewed.order_items =
+      UsersFunctions.getOrderDetails(
+        usersVue.$root.appId,
+        usersVue.$root.appSecret,
+        usersVue.$root.userToken,
+        usersVue.orderBeingViewed.id
+      )
+        .then(response => {
+          usersVue.orderBeingViewed.order_items =
 						response.payload.order_items || []
-					usersVue.viewOrderModalDisplayed = true
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch order info',
-						errorName: 'errorMessage',
-						vue: usersVue
-					})
-				})
-		},
-		/**
+          usersVue.viewOrderModalDisplayed = true
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch order info',
+            errorName: 'errorMessage',
+            vue: usersVue
+          })
+        })
+    },
+    /**
 		 * To close the modal with the details of an order.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeViewOrderModal () {
-			this.orderBeingViewed = {}
-			this.viewOrderModalDisplayed = false
-		},
-		/**
+    closeViewOrderModal () {
+      this.orderBeingViewed = {}
+      this.viewOrderModalDisplayed = false
+    },
+    /**
 		 * To display a message modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		showMessageModal () {
-			this.messageModalDisplayed = true
-		},
-		/**
+    showMessageModal () {
+      this.messageModalDisplayed = true
+    },
+    /**
 		 * To close the message modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeMessageModal () {
-			this.messageModalDisplayed = false
-		},
-		/**
+    closeMessageModal () {
+      this.messageModalDisplayed = false
+    },
+    /**
 		 * To set the passed in tab as the active tab.
 		 * @function
 		 * @param {integer} val - The value of the tab.
 		 * @returns {undefined}
 		 */
-		changeTab (val) {
-			this.tab = val
-		},
-		/**
+    changeTab (val) {
+      this.tab = val
+    },
+    /**
 		 * To get the details of a user.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getUserDetails () {
-			this.displayUserData = true
-			var usersVue = this
+    getUserDetails () {
+      this.displayUserData = true
+      var usersVue = this
 
-			UsersFunctions.getUserDetails(
-				usersVue.$root.appId,
-				usersVue.$root.appSecret,
-				usersVue.$root.userToken,
-				usersVue.$route.params.id
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						usersVue.user = response.payload
-						usersVue.displayUserData = false
-					} else {
-						usersVue.displayUserData = false
-					}
-				})
-				.catch(reason => {
-					usersVue.displayUserData = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch user info',
-						errorName: 'errorMessage',
-						vue: usersVue
-					})
-				})
-		},
-		/**
+      UsersFunctions.getUserDetails(
+        usersVue.$root.appId,
+        usersVue.$root.appSecret,
+        usersVue.$root.userToken,
+        usersVue.$route.params.id
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            usersVue.user = response.payload
+            usersVue.displayUserData = false
+          } else {
+            usersVue.displayUserData = false
+          }
+        })
+        .catch(reason => {
+          usersVue.displayUserData = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch user info',
+            errorName: 'errorMessage',
+            vue: usersVue
+          })
+        })
+    },
+    /**
 		 * To get a list of user's attributes.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getAttributesOfUser () {
-			var usersVue = this
+    getAttributesOfUser () {
+      var usersVue = this
 
-			UserAttributesFunctions.getAttributesOfUser(
-				usersVue.$root.appId,
-				usersVue.$root.appSecret,
-				usersVue.$root.userToken,
-				usersVue.$route.params.id
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						usersVue.userAttributes = response.payload.userattributes
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch user attributes',
-						errorName: 'errorMessage',
-						vue: usersVue
-					})
-				})
-		},
-		/**
+      UserAttributesFunctions.getAttributesOfUser(
+        usersVue.$root.appId,
+        usersVue.$root.appSecret,
+        usersVue.$root.userToken,
+        usersVue.$route.params.id
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            usersVue.userAttributes = response.payload.userattributes
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch user attributes',
+            errorName: 'errorMessage',
+            vue: usersVue
+          })
+        })
+    },
+    /**
 		 * To get a list of user's attributes.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getItemsOfuser () {
-			var usersVue = this
+    getItemsOfuser () {
+      var usersVue = this
 
-			UserAttributesFunctions.getItemsOfuser(
-				usersVue.$root.appId,
-				usersVue.$root.appSecret,
-				usersVue.$root.userToken,
-				usersVue.$route.params.id
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						usersVue.userItems = response.payload
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch user items',
-						errorName: 'errorMessage',
-						vue: usersVue
-					})
-				})
-		},
-		/**
+      UserAttributesFunctions.getItemsOfuser(
+        usersVue.$root.appId,
+        usersVue.$root.appSecret,
+        usersVue.$root.userToken,
+        usersVue.$route.params.id
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            usersVue.userItems = response.payload
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch user items',
+            errorName: 'errorMessage',
+            vue: usersVue
+          })
+        })
+    },
+    /**
 		 * To get a list of user's orders.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getUserOrders () {
-			this.displayUserData = true
-			this.loadingOrders = true
-			var usersVue = this
+    getUserOrders () {
+      this.displayUserData = true
+      this.loadingOrders = true
+      var usersVue = this
 
-			UsersFunctions.getUserOrders(
-				usersVue.$root.appId,
-				usersVue.$root.appSecret,
-				usersVue.$root.userToken,
-				usersVue.$route.params.id
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						usersVue.orders = response.payload
-						usersVue.displayUserData = false
-					} else {
-						usersVue.displayUserData = false
-					}
-				})
-				.catch(reason => {
-					usersVue.displayUserData = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch user orders',
-						errorName: 'errorMessage',
-						vue: usersVue
-					})
-				})
-				.finally(() => {
-					usersVue.loadingOrders = false
-				})
-		},
-		/**
+      UsersFunctions.getUserOrders(
+        usersVue.$root.appId,
+        usersVue.$root.appSecret,
+        usersVue.$root.userToken,
+        usersVue.$route.params.id
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            usersVue.orders = response.payload
+            usersVue.displayUserData = false
+          } else {
+            usersVue.displayUserData = false
+          }
+        })
+        .catch(reason => {
+          usersVue.displayUserData = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch user orders',
+            errorName: 'errorMessage',
+            vue: usersVue
+          })
+        })
+        .finally(() => {
+          usersVue.loadingOrders = false
+        })
+    },
+    /**
 		 * To get a list of user's orders.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getUserTransactions () {
-			this.transactions.loading = true
-			var usersVue = this
+    getUserTransactions () {
+      this.transactions.loading = true
+      var usersVue = this
 
-			TransactionsFunctions.getTransactionsForUser(
-				usersVue.$route.params.id
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						usersVue.transactions.data = response.payload.map(transaction => {
-							let request = {}
-							let response = {}
-							try {
-								request = JSON.parse(transaction.request)
-							} catch (e) {
-								if (this.env === 'development') console.log(e)
-							}
-							try {
-								response = JSON.parse(transaction.response)
-							} catch (e) {
-								if (this.env === 'development') console.log(e)
-							}
+      TransactionsFunctions.getTransactionsForUser(
+        usersVue.$route.params.id
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            usersVue.transactions.data = response.payload.map(transaction => {
+              let request = {}
+              let response = {}
+              try {
+                request = JSON.parse(transaction.request)
+              } catch (e) {
+                if (this.env === 'development') console.log(e)
+              }
+              try {
+                response = JSON.parse(transaction.response)
+              } catch (e) {
+                if (this.env === 'development') console.log(e)
+              }
 
-							let flattened = {...transaction}
-							for (let key of Object.keys(request)) {
-								flattened[`request_${key}`] = request[key]
-							}
-							for (let key of Object.keys(response)) {
-								flattened[`response_${key}`] = response[key]
-							}
-							delete flattened.request
-							delete flattened.response
+              let flattened = { ...transaction }
+              for (let key of Object.keys(request)) {
+                flattened[`request_${key}`] = request[key]
+              }
+              for (let key of Object.keys(response)) {
+                flattened[`response_${key}`] = response[key]
+              }
+              delete flattened.request
+              delete flattened.response
 
-							return flattened
-						})
-						usersVue.displayUserData = false
-					} else {
-						usersVue.displayUserData = false
-					}
-				})
-				.catch(reason => {
-					console.log({reason})
-					usersVue.displayUserData = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch user orders',
-						errorName: 'errorMessage',
-						vue: usersVue
-					})
-				})
-				.finally(() => {
-					usersVue.transactions.loading = false
-				})
-		},
-		/**
+              return flattened
+            })
+            usersVue.displayUserData = false
+          } else {
+            usersVue.displayUserData = false
+          }
+        })
+        .catch(reason => {
+          console.log({ reason })
+          usersVue.displayUserData = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch user orders',
+            errorName: 'errorMessage',
+            vue: usersVue
+          })
+        })
+        .finally(() => {
+          usersVue.transactions.loading = false
+        })
+    },
+    /**
 		 * To get a list of user's social media posts.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getUserSocialFeed () {
-			this.displayUserData = true
-			var usersVue = this
+    getUserSocialFeed () {
+      this.displayUserData = true
+      var usersVue = this
 
-			UsersFunctions.getUserSocialFeed(
-				usersVue.$root.appId,
-				usersVue.$root.appSecret,
-				usersVue.$root.userToken,
-				usersVue.$route.params.id
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						usersVue.socialFeed = response.payload
-						usersVue.displayUserData = false
-					} else {
-						usersVue.displayUserData = false
-					}
-				})
-				.catch(reason => {
-					usersVue.displayUserData = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch the social feed',
-						errorName: 'errorMessage',
-						vue: usersVue
-					})
-				})
-		},
-		/**
+      UsersFunctions.getUserSocialFeed(
+        usersVue.$root.appId,
+        usersVue.$root.appSecret,
+        usersVue.$root.userToken,
+        usersVue.$route.params.id
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            usersVue.socialFeed = response.payload
+            usersVue.displayUserData = false
+          } else {
+            usersVue.displayUserData = false
+          }
+        })
+        .catch(reason => {
+          usersVue.displayUserData = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch the social feed',
+            errorName: 'errorMessage',
+            vue: usersVue
+          })
+        })
+    },
+    /**
 		 * To validate data before submitting to the backend
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		validatePoints () {
-			var usersVue = this
-			return new Promise(function (resolve, reject) {
-				if (!usersVue.points.length) {
-					reject('Enter points')
-				} else if (!$.isNumeric(usersVue.points)) {
-					reject('Points must be a number')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validatePoints () {
+      var usersVue = this
+      return new Promise(function (resolve, reject) {
+        if (!usersVue.points.length) {
+          reject('Enter points')
+        } else if (!$.isNumeric(usersVue.points)) {
+          reject('Points must be a number')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To get a list of user's social media posts.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		addPoints () {
-			var usersVue = this
-			return this.validatePoints()
-				.then(response => {
-					this.adding = true
+    addPoints () {
+      var usersVue = this
+      return this.validatePoints()
+        .then(response => {
+          this.adding = true
 
-					let payload = {
-						user_ids: [this.user.id],
-						points: this.points
-					}
-					UsersFunctions.addPoints(payload)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								usersVue.showAddSuccess(response.payload)
-								usersVue.resetPoints()
-							} else {
-								throw Error('Something went wrong')
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not add points',
-								errorName: 'addErrorMessage',
-								vue: usersVue
-							})
-						})
-						.finally(() => {
-							usersVue.adding = false
-						})
-				})
-				.catch(reason => {
-					usersVue.addErrorMessage = reason
-				})
-		},
-		/**
+          let payload = {
+            user_ids: [this.user.id],
+            points: this.points
+          }
+          UsersFunctions.addPoints(payload)
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                usersVue.showAddSuccess(response.payload)
+                usersVue.resetPoints()
+              } else {
+                throw Error('Something went wrong')
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not add points',
+                errorName: 'addErrorMessage',
+                vue: usersVue
+              })
+            })
+            .finally(() => {
+              usersVue.adding = false
+            })
+        })
+        .catch(reason => {
+          usersVue.addErrorMessage = reason
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAddSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Points have been added'
-			let type = 'success'
+    showAddSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Points have been added'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To reset the point adding box.
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetPoints () {
-			this.clearError('addErrorMessage')
-			this.points = ''
-		}
-	}
+    resetPoints () {
+      this.clearError('addErrorMessage')
+      this.points = ''
+    }
+  }
 }
 </script>
 <style scoped>

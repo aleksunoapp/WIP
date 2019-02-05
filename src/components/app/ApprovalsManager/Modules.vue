@@ -734,783 +734,783 @@ import ajaxErrorHandler from '../../../controllers/ErrorController'
 import PermissionsPicker from './PermissionsPicker'
 
 export default {
-	components: {
-		Breadcrumb,
-		NoResults,
-		LoadingScreen,
-		Modal,
-		Pagination,
-		PageResults,
-		PermissionsPicker
-	},
-	data () {
-		return {
-			breadcrumbArray: [
-				{ name: 'Admin Manager', link: false },
-				{ name: 'Modules', link: false }
-			],
-			createCollapse: true,
-			creating: false,
-			createErrorMessage: '',
-			newModule: {
-				name: '',
-				parent_module: null,
-				sort_order: '1'
-			},
-			editErrorMessage: '',
-			updating: false,
-			moduleToEdit: {
-				id: null,
-				name: '',
-				parent_module: null,
-				sort_order: 1,
-				permissions: [],
-				sub_modules: []
-			},
-			loading: false,
-			modules: [],
-			showEditModuleModal: false,
-			animated: '',
-			searchCollapse: true,
-			searchError: '',
-			filteredResults: [],
-			searchTerm: '',
-			activePage: 1,
-			resultsPerPage: 25,
-			sortBy: {
-				order: 'ASC'
-			},
-			searchActivePage: 1,
-			moduleTree: [],
-			applying: false,
-			moduleToEditApplyPermissionsTo: {
-				name: ''
-			},
-			showEditModulePermissionsModal: false,
-			editPermissionsErrorMessage: '',
-			showDeleteModuleModal: false,
-			deleting: false,
-			moduleToDelete: {
-				name: ''
-			},
-			deleteErrorMessage: ''
-		}
-	},
-	computed: {
-		numPages () {
-			return Math.ceil(this.modules.length / this.resultsPerPage)
-		},
-		currentActivePageItems () {
-			return this.userSort(this.modules).slice(
-				this.resultsPerPage * (this.activePage - 1),
-				this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
-			)
-		},
-		searchNumPages () {
-			return Math.ceil(this.filteredResults.length / this.resultsPerPage)
-		},
-		currentActiveSearchPageItems () {
-			return this.userSort(this.filteredResults).slice(
-				this.resultsPerPage * (this.searchActivePage - 1),
-				this.resultsPerPage * (this.searchActivePage - 1) + this.resultsPerPage
-			)
-		}
-	},
-	created () {
-		this.getModules()
-	},
-	methods: {
-		/**
+  components: {
+    Breadcrumb,
+    NoResults,
+    LoadingScreen,
+    Modal,
+    Pagination,
+    PageResults,
+    PermissionsPicker
+  },
+  data () {
+    return {
+      breadcrumbArray: [
+        { name: 'Admin Manager', link: false },
+        { name: 'Modules', link: false }
+      ],
+      createCollapse: true,
+      creating: false,
+      createErrorMessage: '',
+      newModule: {
+        name: '',
+        parent_module: null,
+        sort_order: '1'
+      },
+      editErrorMessage: '',
+      updating: false,
+      moduleToEdit: {
+        id: null,
+        name: '',
+        parent_module: null,
+        sort_order: 1,
+        permissions: [],
+        sub_modules: []
+      },
+      loading: false,
+      modules: [],
+      showEditModuleModal: false,
+      animated: '',
+      searchCollapse: true,
+      searchError: '',
+      filteredResults: [],
+      searchTerm: '',
+      activePage: 1,
+      resultsPerPage: 25,
+      sortBy: {
+        order: 'ASC'
+      },
+      searchActivePage: 1,
+      moduleTree: [],
+      applying: false,
+      moduleToEditApplyPermissionsTo: {
+        name: ''
+      },
+      showEditModulePermissionsModal: false,
+      editPermissionsErrorMessage: '',
+      showDeleteModuleModal: false,
+      deleting: false,
+      moduleToDelete: {
+        name: ''
+      },
+      deleteErrorMessage: ''
+    }
+  },
+  computed: {
+    numPages () {
+      return Math.ceil(this.modules.length / this.resultsPerPage)
+    },
+    currentActivePageItems () {
+      return this.userSort(this.modules).slice(
+        this.resultsPerPage * (this.activePage - 1),
+        this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
+      )
+    },
+    searchNumPages () {
+      return Math.ceil(this.filteredResults.length / this.resultsPerPage)
+    },
+    currentActiveSearchPageItems () {
+      return this.userSort(this.filteredResults).slice(
+        this.resultsPerPage * (this.searchActivePage - 1),
+        this.resultsPerPage * (this.searchActivePage - 1) + this.resultsPerPage
+      )
+    }
+  },
+  created () {
+    this.getModules()
+  },
+  methods: {
+    /**
 		 * To show the modal
 		 * @function
 		 * @param {object} mod - The module to delete
 		 * @returns {undefined}
 		 */
-		showDeleteModal (mod) {
-			this.moduleToDelete = { ...mod }
-			this.showDeleteModuleModal = true
-		},
-		/**
+    showDeleteModal (mod) {
+      this.moduleToDelete = { ...mod }
+      this.showDeleteModuleModal = true
+    },
+    /**
 		 * To close the modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeDeleteModal () {
-			this.clearDeleteError()
-			this.showDeleteModuleModal = false
-		},
-		/**
+    closeDeleteModal () {
+      this.clearDeleteError()
+      this.showDeleteModuleModal = false
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearDeleteError () {
-			this.deleteErrorMessage = ''
-		},
-		/**
+    clearDeleteError () {
+      this.deleteErrorMessage = ''
+    },
+    /**
 		 * To confirm deletion
 		 * @function
 		 * @param {array} permissions - An array of permission ids
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess () {
-			this.$swal({
-				title: 'Success',
-				text: 'Module deleted',
-				type: 'success'
-			})
-		},
-		/**
+    showDeleteSuccess () {
+      this.$swal({
+        title: 'Success',
+        text: 'Module deleted',
+        type: 'success'
+      })
+    },
+    /**
 		 * To reset the create new form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetDeleteForm () {
-			this.moduleToDelete = {
-				name: ''
-			}
-		},
-		/**
+    resetDeleteForm () {
+      this.moduleToDelete = {
+        name: ''
+      }
+    },
+    /**
 		 * To delete the module
 		 * @function
 		 * @returns {object} - A promise
 		 */
-		deleteModule () {
-			this.deleting = true
-			this.clearDeleteError()
-			var modulesVue = this
-			return ModulesFunctions.deleteModule(modulesVue.moduleToDelete)
-				.then(response => {
-					modulesVue.filteredResults = modulesVue.filteredResults.filter(
-						module => module.id !== !modulesVue.moduleToDelete.id
-					)
-					modulesVue.modules = modulesVue.modules.filter(
-						module => module.id !== modulesVue.moduleToDelete.id
-					)
-					modulesVue.advancedSearch()
-					modulesVue.closeDeleteModal()
-					modulesVue.showDeleteSuccess()
-					modulesVue.resetDeleteForm()
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Could not delete module',
-						errorName: 'deleteErrorMessage',
-						vue: modulesVue,
-						containerRef: 'modal'
-					})
-				})
-				.finally(() => {
-					modulesVue.deleting = false
-				})
-		},
-		/**
+    deleteModule () {
+      this.deleting = true
+      this.clearDeleteError()
+      var modulesVue = this
+      return ModulesFunctions.deleteModule(modulesVue.moduleToDelete)
+        .then(response => {
+          modulesVue.filteredResults = modulesVue.filteredResults.filter(
+            module => module.id !== !modulesVue.moduleToDelete.id
+          )
+          modulesVue.modules = modulesVue.modules.filter(
+            module => module.id !== modulesVue.moduleToDelete.id
+          )
+          modulesVue.advancedSearch()
+          modulesVue.closeDeleteModal()
+          modulesVue.showDeleteSuccess()
+          modulesVue.resetDeleteForm()
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'Could not delete module',
+            errorName: 'deleteErrorMessage',
+            vue: modulesVue,
+            containerRef: 'modal'
+          })
+        })
+        .finally(() => {
+          modulesVue.deleting = false
+        })
+    },
+    /**
 		 * To update permissions based on user's selection
 		 * @function
 		 * @param {array} permissions - An array of permission ids
 		 * @returns {undefined}
 		 */
-		updateNewRolePermissions (permissions) {
-			this.moduleToEditApplyPermissionsTo.permissions = permissions
-		},
-		/**
+    updateNewRolePermissions (permissions) {
+      this.moduleToEditApplyPermissionsTo.permissions = permissions
+    },
+    /**
 		 * To update parent module based on user's selection
 		 * @function
 		 * @param {object} mod - The module to set as parent
 		 * @returns {undefined}
 		 */
-		setParentModule (mod) {
-			this.newModule.parent_module = mod.id
-		},
-		/**
+    setParentModule (mod) {
+      this.newModule.parent_module = mod.id
+    },
+    /**
 		 * To format a phone number
 		 * @function
 		 * @param {string} phone - The phone number to format
 		 * @returns {string} The formatted phone string
 		 */
-		formatPhone (phone) {
-			try {
-				let digits = phone.replace(/\D/g, '')
-				return (
-					digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
-				)
-			} catch (err) {
-				return ''
-			}
-		},
-		/**
+    formatPhone (phone) {
+      try {
+        let digits = phone.replace(/\D/g, '')
+        return (
+          digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
+        )
+      } catch (err) {
+        return ''
+      }
+    },
+    /**
 		 * To update the order property of sortBy.
 		 * @function
 		 * @param {object} value - The new value to assign.
 		 * @returns {undefined}
 		 */
-		updateSortByOrder (value) {
-			this.sortBy.order = value
-			this.filteredResults.length
-				? this.activeSearchPageUpdate(1)
-				: this.activePageUpdate(1)
-		},
-		/**
+    updateSortByOrder (value) {
+      this.sortBy.order = value
+      this.filteredResults.length
+        ? this.activeSearchPageUpdate(1)
+        : this.activePageUpdate(1)
+    },
+    /**
 		 * To sort the orders list.
 		 * @function
 		 * @param {array} orders - The array of orders.
 		 * @returns {array} - The sorted array of orders
 		 */
-		userSort (orders) {
-			let input = orders
-			function asc (a, b) {
-				if (a.name.toLowerCase() < b.name.toLowerCase()) {
-					return -1
-				} else if (a.name.toLowerCase() > b.name.toLowerCase()) {
-					return 1
-				} else {
-					if (a.id > b.id) {
-						return -1
-					} else if (a.id < b.id) {
-						return 1
-					} else {
-						return 0
-					}
-				}
-			}
+    userSort (orders) {
+      let input = orders
+      function asc (a, b) {
+        if (a.name.toLowerCase() < b.name.toLowerCase()) {
+          return -1
+        } else if (a.name.toLowerCase() > b.name.toLowerCase()) {
+          return 1
+        } else {
+          if (a.id > b.id) {
+            return -1
+          } else if (a.id < b.id) {
+            return 1
+          } else {
+            return 0
+          }
+        }
+      }
 
-			function desc (a, b) {
-				if (a.name.toLowerCase() > b.name.toLowerCase()) {
-					return -1
-				} else if (a.name.toLowerCase() < b.name.toLowerCase()) {
-					return 1
-				} else {
-					if (a.id > b.id) {
-						return -1
-					} else if (a.id < b.id) {
-						return 1
-					} else {
-						return 0
-					}
-				}
-			}
+      function desc (a, b) {
+        if (a.name.toLowerCase() > b.name.toLowerCase()) {
+          return -1
+        } else if (a.name.toLowerCase() < b.name.toLowerCase()) {
+          return 1
+        } else {
+          if (a.id > b.id) {
+            return -1
+          } else if (a.id < b.id) {
+            return 1
+          } else {
+            return 0
+          }
+        }
+      }
 
-			if (this.sortBy.order === 'ASC') {
-				return input.sort(asc)
-			} else {
-				return input.sort(desc)
-			}
-		},
-		/**
+      if (this.sortBy.order === 'ASC') {
+        return input.sort(asc)
+      } else {
+        return input.sort(desc)
+      }
+    },
+    /**
 		 * To catch updates from the PageResults component when the number of page results is updated.
 		 * @function
 		 * @param {integer} val - The number of page results to be returned.
 		 * @returns {undefined}
 		 */
-		pageResultsUpdate (val) {
-			if (parseInt(this.resultsPerPage) !== parseInt(val)) {
-				this.resultsPerPage = val
-				this.filteredResults.length
-					? this.activeSearchPageUpdate(1)
-					: this.activePageUpdate(1)
-			}
-		},
-		/**
+    pageResultsUpdate (val) {
+      if (parseInt(this.resultsPerPage) !== parseInt(val)) {
+        this.resultsPerPage = val
+        this.filteredResults.length
+          ? this.activeSearchPageUpdate(1)
+          : this.activePageUpdate(1)
+      }
+    },
+    /**
 		 * To update the currently active pagination page.
 		 * @function
 		 * @param {integer} val - An integer representing the page number that we are updating to.
 		 * @returns {undefined}
 		 */
-		activePageUpdate (val) {
-			if (parseInt(this.activePage) !== parseInt(val)) {
-				this.activePage = val
-				window.scrollTo(0, 0)
-			}
-		},
-		/**
+    activePageUpdate (val) {
+      if (parseInt(this.activePage) !== parseInt(val)) {
+        this.activePage = val
+        window.scrollTo(0, 0)
+      }
+    },
+    /**
 		 * To update the currently active pagination page.
 		 * @function
 		 * @param {integer} val - An integer representing the page number that we are updating to.
 		 * @returns {undefined}
 		 */
-		activeSearchPageUpdate (val) {
-			if (parseInt(this.searchActivePage) !== parseInt(val)) {
-				this.searchActivePage = val
-				window.scrollTo(0, 0)
-			}
-		},
-		/**
+    activeSearchPageUpdate (val) {
+      if (parseInt(this.searchActivePage) !== parseInt(val)) {
+        this.searchActivePage = val
+        window.scrollTo(0, 0)
+      }
+    },
+    /**
 		 * To toggle the search panel
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleSearchPanel () {
-			this.searchCollapse = !this.searchCollapse
-			this.$nextTick(function () {
-				if (!this.searchCollapse) {
-					this.$refs.search.focus()
-				}
-			})
-		},
-		/**
+    toggleSearchPanel () {
+      this.searchCollapse = !this.searchCollapse
+      this.$nextTick(function () {
+        if (!this.searchCollapse) {
+          this.$refs.search.focus()
+        }
+      })
+    },
+    /**
 		 * To filter the results based on the search term.
 		 * @function
 		 * @returns {undefined}
 		 */
-		advancedSearch () {
-			this.clearSearchError()
-			this.filteredResults = []
-			if (this.searchTerm.length) {
-				if (this.searchTerm.length < 3) {
-					this.searchError = 'Search term must be at least 3 characters.'
-				} else {
-					for (var i = 0; i < this.modules.length; i++) {
-						if (
-							this.modules[i].name
-								.toLowerCase()
-								.indexOf(this.searchTerm.toLowerCase()) > -1
-						) {
-							this.filteredResults.push(this.modules[i])
-						}
-					}
-					if (!this.filteredResults.length) {
-						this.searchError =
+    advancedSearch () {
+      this.clearSearchError()
+      this.filteredResults = []
+      if (this.searchTerm.length) {
+        if (this.searchTerm.length < 3) {
+          this.searchError = 'Search term must be at least 3 characters.'
+        } else {
+          for (var i = 0; i < this.modules.length; i++) {
+            if (
+              this.modules[i].name
+                .toLowerCase()
+                .indexOf(this.searchTerm.toLowerCase()) > -1
+            ) {
+              this.filteredResults.push(this.modules[i])
+            }
+          }
+          if (!this.filteredResults.length) {
+            this.searchError =
 							'There are no matching records. Please try again.'
-					}
-				}
-			} else {
-				this.$refs.search.focus()
-			}
-		},
-		/**
+          }
+        }
+      } else {
+        this.$refs.search.focus()
+      }
+    },
+    /**
 		 * To clear the current search error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearSearchError () {
-			this.searchError = ''
-		},
-		/**
+    clearSearchError () {
+      this.searchError = ''
+    },
+    /**
 		 * To clear the current search criteria.
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetSearch () {
-			this.searchTerm = ''
-			this.filteredResults = []
-			this.activePage = 1
-			this.searchActivePage = 1
-			this.clearSearchError()
-		},
-		/**
+    resetSearch () {
+      this.searchTerm = ''
+      this.filteredResults = []
+      this.activePage = 1
+      this.searchActivePage = 1
+      this.clearSearchError()
+    },
+    /**
 		 * To display the edit modal
 		 * @function
 		 * @param {object} module - The module object to be edited
 		 * @returns {undefined}
 		 */
-		editModule (module) {
-			this.moduleToEdit = { ...module }
-			this.showEditModuleModal = true
-		},
-		/**
+    editModule (module) {
+      this.moduleToEdit = { ...module }
+      this.showEditModuleModal = true
+    },
+    /**
 		 * To display the edit modal
 		 * @function
 		 * @param {object} module - The module object to be edited
 		 * @returns {undefined}
 		 */
-		editModulePermissions (module) {
-			let _this = this
-			ModulesFunctions.getPermissionsForModule(module)
-				.then(response => {
-					this.moduleToEditApplyPermissionsTo = {
-						...module,
-						permissions: response.payload.permissions
-					}
-					this.showEditModulePermissionsModal = true
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not find permissions for this module',
-						errorName: 'editPermissionsErrorMessage',
-						vue: _this
-					})
-				})
-		},
-		/**
+    editModulePermissions (module) {
+      let _this = this
+      ModulesFunctions.getPermissionsForModule(module)
+        .then(response => {
+          this.moduleToEditApplyPermissionsTo = {
+            ...module,
+            permissions: response.payload.permissions
+          }
+          this.showEditModulePermissionsModal = true
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not find permissions for this module',
+            errorName: 'editPermissionsErrorMessage',
+            vue: _this
+          })
+        })
+    },
+    /**
 		 * To close the edit modal
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		closeEditModuleModal () {
-			this.showEditModuleModal = false
-		},
-		/**
+    closeEditModuleModal () {
+      this.showEditModuleModal = false
+    },
+    /**
 		 * To close the edit modal
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		closeEditModulePermissionsModal () {
-			this.clearPermissionsEditError()
-			this.showEditModulePermissionsModal = false
-		},
-		/**
+    closeEditModulePermissionsModal () {
+      this.clearPermissionsEditError()
+      this.showEditModulePermissionsModal = false
+    },
+    /**
 		 * To get a list of brand admins.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getModules () {
-			this.loading = true
-			this.clearListError()
-			var modulesVue = this
-			return ModulesFunctions.getModules()
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						modulesVue.loading = false
-						if (!response.payload.length) {
-							modulesVue.newModule.parent_module = 0
-						} else {
-							modulesVue.moduleTree = modulesVue.listToTree(
-								response.payload,
-								response.payload.filter(mod => mod.parent_module === 0)[0]
-							)
-							modulesVue.modules = response.payload
-						}
-					} else {
-						modulesVue.loading = false
-					}
-				})
-				.catch(reason => {
-					modulesVue.loading = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Could not get modules',
-						errorName: 'listErrorMessage',
-						vue: modulesVue
-					})
-				})
-		},
-		/**
+    getModules () {
+      this.loading = true
+      this.clearListError()
+      var modulesVue = this
+      return ModulesFunctions.getModules()
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            modulesVue.loading = false
+            if (!response.payload.length) {
+              modulesVue.newModule.parent_module = 0
+            } else {
+              modulesVue.moduleTree = modulesVue.listToTree(
+                response.payload,
+                response.payload.filter(mod => mod.parent_module === 0)[0]
+              )
+              modulesVue.modules = response.payload
+            }
+          } else {
+            modulesVue.loading = false
+          }
+        })
+        .catch(reason => {
+          modulesVue.loading = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'Could not get modules',
+            errorName: 'listErrorMessage',
+            vue: modulesVue
+          })
+        })
+    },
+    /**
 		 * To convert a flat list of nodes into a tree.
 		 * @function
 		 * @param {array} arr - The flat array
 		 * @param {parent} parent - The root node
 		 * @returns {array} - An array of nested nodes
 		 */
-		listToTree (arr, parent) {
-			try {
-				let tree = []
-				let mappedArr = {}
-				let arrElem
-				let mappedElem
+    listToTree (arr, parent) {
+      try {
+        let tree = []
+        let mappedArr = {}
+        let arrElem
+        let mappedElem
 
-				// First map the nodes of the array to an object -> create a hash table.
-				for (var i = 0, len = arr.length; i < len; i++) {
-					arrElem = arr[i]
-					mappedArr[arrElem.id] = arrElem
-					mappedArr[arrElem.id]['sub_modules'] = []
-				}
+        // First map the nodes of the array to an object -> create a hash table.
+        for (var i = 0, len = arr.length; i < len; i++) {
+          arrElem = arr[i]
+          mappedArr[arrElem.id] = arrElem
+          mappedArr[arrElem.id]['sub_modules'] = []
+        }
 
-				for (var id in mappedArr) {
-					if (mappedArr.hasOwnProperty(id)) {
-						mappedElem = mappedArr[id]
-						// If the element is not at the root level, add it to its parent array of children.
-						if (mappedElem.parent_module) {
-							mappedArr[mappedElem['parent_module']]['sub_modules'].push(
-								mappedElem
-							)
-							// If the element is at the root level, add it to first level elements array.
-						} else {
-							tree.push(mappedElem)
-						}
-					}
-				}
-				return [
-					{
-						name: 'module container',
-						id: 0,
-						parent_module: 0,
-						sub_modules: tree
-					}
-				]
-			} catch (e) {}
-		},
-		/**
+        for (var id in mappedArr) {
+          if (mappedArr.hasOwnProperty(id)) {
+            mappedElem = mappedArr[id]
+            // If the element is not at the root level, add it to its parent array of children.
+            if (mappedElem.parent_module) {
+              mappedArr[mappedElem['parent_module']]['sub_modules'].push(
+                mappedElem
+              )
+              // If the element is at the root level, add it to first level elements array.
+            } else {
+              tree.push(mappedElem)
+            }
+          }
+        }
+        return [
+          {
+            name: 'module container',
+            id: 0,
+            parent_module: 0,
+            sub_modules: tree
+          }
+        ]
+      } catch (e) {}
+    },
+    /**
 		 * To get a list of brand admins.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		createModule () {
-			var modulesVue = this
+    createModule () {
+      var modulesVue = this
 
-			return this.validateNewModuleData()
-				.then(response => {
-					modulesVue.creating = true
-					modulesVue.clearCreateError()
-					return ModulesFunctions.createModule(modulesVue.newModule)
-						.then(response => {
-							modulesVue.getModules()
-							modulesVue.resetCreateForm()
-							modulesVue.showCreateSuccess()
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'Could not get create module',
-								errorName: 'createErrorMessage',
-								vue: modulesVue
-							})
-						})
-						.finally(() => {
-							modulesVue.creating = false
-						})
-				})
-				.catch(reason => {
-					modulesVue.createErrorMessage = reason
-					modulesVue.$scrollTo(modulesVue.$refs.createErrorMessage, 1000, {
-						offset: -50
-					})
-				})
-		},
-		/**
+      return this.validateNewModuleData()
+        .then(response => {
+          modulesVue.creating = true
+          modulesVue.clearCreateError()
+          return ModulesFunctions.createModule(modulesVue.newModule)
+            .then(response => {
+              modulesVue.getModules()
+              modulesVue.resetCreateForm()
+              modulesVue.showCreateSuccess()
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'Could not get create module',
+                errorName: 'createErrorMessage',
+                vue: modulesVue
+              })
+            })
+            .finally(() => {
+              modulesVue.creating = false
+            })
+        })
+        .catch(reason => {
+          modulesVue.createErrorMessage = reason
+          modulesVue.$scrollTo(modulesVue.$refs.createErrorMessage, 1000, {
+            offset: -50
+          })
+        })
+    },
+    /**
 		 * To reset the create new form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetCreateForm () {
-			this.newModule = {
-				name: '',
-				parent_module: null,
-				sort_order: '1'
-			}
-		},
-		/**
+    resetCreateForm () {
+      this.newModule = {
+        name: '',
+        parent_module: null,
+        sort_order: '1'
+      }
+    },
+    /**
 		 * To reset the create new form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetEditForm () {
-			this.moduleToEdit = {
-				id: null,
-				name: '',
-				parent_module: null,
-				sort_order: 1,
-				permissions: [],
-				sub_modules: []
-			}
-		},
-		/**
+    resetEditForm () {
+      this.moduleToEdit = {
+        id: null,
+        name: '',
+        parent_module: null,
+        sort_order: 1,
+        permissions: [],
+        sub_modules: []
+      }
+    },
+    /**
 		 * To notify user that the operation succeeded.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		showCreateSuccess () {
-			this.$swal({
-				title: 'Success',
-				text: 'Module successfully created',
-				type: 'success'
-			})
-		},
-		/**
+    showCreateSuccess () {
+      this.$swal({
+        title: 'Success',
+        text: 'Module successfully created',
+        type: 'success'
+      })
+    },
+    /**
 		 * To notify user that the operation succeeded.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		showEditSuccess () {
-			this.$swal({
-				title: 'Success',
-				text: 'Module saved',
-				type: 'success'
-			})
-		},
-		/**
+    showEditSuccess () {
+      this.$swal({
+        title: 'Success',
+        text: 'Module saved',
+        type: 'success'
+      })
+    },
+    /**
 		 * To notify user that the operation succeeded.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		showAssignSuccess () {
-			this.$swal({
-				title: 'Success',
-				text: 'Permissions saved',
-				type: 'success'
-			})
-		},
-		/**
+    showAssignSuccess () {
+      this.$swal({
+        title: 'Success',
+        text: 'Permissions saved',
+        type: 'success'
+      })
+    },
+    /**
 		 * To toggle the create new panel.
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCreateModulePanel () {
-			this.createCollapse = !this.createCollapse
-			this.$nextTick(function () {
-				if (!this.createCollapse) {
-					this.$refs.newModuleName.focus()
-				}
-			})
-		},
-		/**
+    toggleCreateModulePanel () {
+      this.createCollapse = !this.createCollapse
+      this.$nextTick(function () {
+        if (!this.createCollapse) {
+          this.$refs.newModuleName.focus()
+        }
+      })
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearCreateError () {
-			this.createErrorMessage = ''
-		},
-		/**
+    clearCreateError () {
+      this.createErrorMessage = ''
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearEditError () {
-			this.editErrorMessage = ''
-		},
-		/**
+    clearEditError () {
+      this.editErrorMessage = ''
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearListError () {
-			this.listErrorMessage = ''
-		},
-		/**
+    clearListError () {
+      this.listErrorMessage = ''
+    },
+    /**
 		 * To update a module.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		updateModule () {
-			var modulesVue = this
+    updateModule () {
+      var modulesVue = this
 
-			return this.validateEditedModuleData()
-				.then(response => {
-					modulesVue.updating = true
-					modulesVue.clearEditError()
-					return ModulesFunctions.updateModule(modulesVue.moduleToEdit)
-						.then(response => {
-							modulesVue.closeEditModuleModal()
-							modulesVue.showEditSuccess()
-							for (var i = 0; i < modulesVue.modules.length; i++) {
-								if (modulesVue.modules[i].id === modulesVue.moduleToEdit.id) {
-									modulesVue.modules[i].name = modulesVue.moduleToEdit.name
-								}
-							}
-							modulesVue.animated = `module-${modulesVue.moduleToEdit.id}`
-							modulesVue.resetEditForm()
-							window.setTimeout(() => {
-								modulesVue.animated = ''
-							}, 3000)
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'Could not get save module',
-								errorName: 'editErrorMessage',
-								vue: modulesVue
-							})
-						})
-						.finally(() => {
-							modulesVue.updating = false
-						})
-				})
-				.catch(reason => {
-					modulesVue.editErrorMessage = reason
-					modulesVue.$scrollTo(modulesVue.$refs.editErrorMessage, 1000, {
-						offset: -50
-					})
-				})
-		},
-		/**
+      return this.validateEditedModuleData()
+        .then(response => {
+          modulesVue.updating = true
+          modulesVue.clearEditError()
+          return ModulesFunctions.updateModule(modulesVue.moduleToEdit)
+            .then(response => {
+              modulesVue.closeEditModuleModal()
+              modulesVue.showEditSuccess()
+              for (var i = 0; i < modulesVue.modules.length; i++) {
+                if (modulesVue.modules[i].id === modulesVue.moduleToEdit.id) {
+                  modulesVue.modules[i].name = modulesVue.moduleToEdit.name
+                }
+              }
+              modulesVue.animated = `module-${modulesVue.moduleToEdit.id}`
+              modulesVue.resetEditForm()
+              window.setTimeout(() => {
+                modulesVue.animated = ''
+              }, 3000)
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'Could not get save module',
+                errorName: 'editErrorMessage',
+                vue: modulesVue
+              })
+            })
+            .finally(() => {
+              modulesVue.updating = false
+            })
+        })
+        .catch(reason => {
+          modulesVue.editErrorMessage = reason
+          modulesVue.$scrollTo(modulesVue.$refs.editErrorMessage, 1000, {
+            offset: -50
+          })
+        })
+    },
+    /**
 		 * To clear the error
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearPermissionsEditError () {
-			this.editPermissionsErrorMessage = ''
-		},
-		/**
+    clearPermissionsEditError () {
+      this.editPermissionsErrorMessage = ''
+    },
+    /**
 		 * To validate data before submitting to the backend
 		 * @function
 		 * @returns {object} - A promise
 		 */
-		validateModulePermissions () {
-			// var modulesVue = this
-			return new Promise(function (resolve, reject) {
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateModulePermissions () {
+      // var modulesVue = this
+      return new Promise(function (resolve, reject) {
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To update permissions assigned to a module
 		 * @function
 		 * @returns {object} - A promise
 		 */
-		updateModulePermissions () {
-			var modulesVue = this
+    updateModulePermissions () {
+      var modulesVue = this
 
-			return this.validateModulePermissions()
-				.then(response => {
-					modulesVue.applying = true
-					modulesVue.clearPermissionsEditError()
-					return ModulesFunctions.assignPermissionsToModule(
-						modulesVue.moduleToEditApplyPermissionsTo
-					)
-						.then(response => {
-							modulesVue.getModules()
-							modulesVue.closeEditModulePermissionsModal()
-							modulesVue.showAssignSuccess()
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'Could not assign permissions',
-								errorName: 'editPermissionsErrorMessage',
-								vue: modulesVue
-							})
-						})
-						.finally(() => {
-							modulesVue.applying = false
-						})
-				})
-				.catch(reason => {
-					modulesVue.editPermissionsErrorMessage = reason
-					modulesVue.$scrollTo(
-						modulesVue.$refs.editPermissionsErrorMessage,
-						1000,
-						{ offset: -50 }
-					)
-				})
-		},
-		/**
+      return this.validateModulePermissions()
+        .then(response => {
+          modulesVue.applying = true
+          modulesVue.clearPermissionsEditError()
+          return ModulesFunctions.assignPermissionsToModule(
+            modulesVue.moduleToEditApplyPermissionsTo
+          )
+            .then(response => {
+              modulesVue.getModules()
+              modulesVue.closeEditModulePermissionsModal()
+              modulesVue.showAssignSuccess()
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'Could not assign permissions',
+                errorName: 'editPermissionsErrorMessage',
+                vue: modulesVue
+              })
+            })
+            .finally(() => {
+              modulesVue.applying = false
+            })
+        })
+        .catch(reason => {
+          modulesVue.editPermissionsErrorMessage = reason
+          modulesVue.$scrollTo(
+            modulesVue.$refs.editPermissionsErrorMessage,
+            1000,
+            { offset: -50 }
+          )
+        })
+    },
+    /**
 		 * To check if the item data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateNewModuleData () {
-			var modulesVue = this
-			return new Promise(function (resolve, reject) {
-				if (!modulesVue.newModule.name.length) {
-					reject('Name cannot be blank')
-				} else if (!$.isNumeric(modulesVue.newModule.sort_order)) {
-					reject('Sort order must be a number')
-				} else if (modulesVue.newModule.parent_module === null) {
-					reject('Select a parent module')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateNewModuleData () {
+      var modulesVue = this
+      return new Promise(function (resolve, reject) {
+        if (!modulesVue.newModule.name.length) {
+          reject('Name cannot be blank')
+        } else if (!$.isNumeric(modulesVue.newModule.sort_order)) {
+          reject('Sort order must be a number')
+        } else if (modulesVue.newModule.parent_module === null) {
+          reject('Select a parent module')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To check if the item data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateEditedModuleData () {
-			var modulesVue = this
-			return new Promise(function (resolve, reject) {
-				if (!modulesVue.moduleToEdit.name.length) {
-					reject('Name cannot be blank')
-				} else if (!$.isNumeric(modulesVue.moduleToEdit.sort_order)) {
-					reject('Sort order must be a number')
-				} else if (modulesVue.moduleToEdit.parent_module === null) {
-					reject('Select a parent module')
-				}
-				resolve('Hurray')
-			})
-		}
-	}
+    validateEditedModuleData () {
+      var modulesVue = this
+      return new Promise(function (resolve, reject) {
+        if (!modulesVue.moduleToEdit.name.length) {
+          reject('Name cannot be blank')
+        } else if (!$.isNumeric(modulesVue.moduleToEdit.sort_order)) {
+          reject('Sort order must be a number')
+        } else if (modulesVue.moduleToEdit.parent_module === null) {
+          reject('Select a parent module')
+        }
+        resolve('Hurray')
+      })
+    }
+  }
 }
 </script>
 

@@ -615,628 +615,628 @@ import PageResults from '../../modules/PageResults'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
 
 export default {
-	components: {
-		Breadcrumb,
-		NoResults,
-		LoadingScreen,
-		Modal,
-		Pagination,
-		PageResults
-	},
-	data () {
-		return {
-			breadcrumbArray: [
-				{ name: 'Admin Manager', link: false },
-				{ name: 'Permissions', link: false }
-			],
-			createCollapse: true,
-			createErrorMessage: '',
-			creating: false,
-			newPermission: {
-				name: '',
-				guard_name: 'admin',
-				permissions: []
-			},
-			editErrorMessage: '',
-			updating: false,
-			permissionToEdit: {
-				name: '',
-				guard_name: 'admin',
-				permissions: []
-			},
-			loading: false,
-			permissions: [],
-			showEditPermissionModal: false,
-			animated: '',
-			searchCollapse: true,
-			searchError: '',
-			filteredResults: [],
-			searchTerm: '',
-			activePage: 1,
-			resultsPerPage: 25,
-			sortBy: {
-				order: 'ASC'
-			},
-			searchActivePage: 1,
-			showDeletePermissionModal: false,
-			permissionToDelete: {
-				name: ''
-			},
-			deleting: false,
-			deleteErrorMessage: '',
-			listErrorMessage: ''
-		}
-	},
-	computed: {
-		numPages () {
-			return Math.ceil(this.permissions.length / this.resultsPerPage)
-		},
-		currentActivePageItems () {
-			return this.userSort(this.permissions).slice(
-				this.resultsPerPage * (this.activePage - 1),
-				this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
-			)
-		},
-		searchNumPages () {
-			return Math.ceil(this.filteredResults.length / this.resultsPerPage)
-		},
-		currentActiveSearchPageItems () {
-			return this.userSort(this.filteredResults).slice(
-				this.resultsPerPage * (this.searchActivePage - 1),
-				this.resultsPerPage * (this.searchActivePage - 1) + this.resultsPerPage
-			)
-		}
-	},
-	mounted () {
-		this.getAllPermissions()
-	},
-	methods: {
-		/**
+  components: {
+    Breadcrumb,
+    NoResults,
+    LoadingScreen,
+    Modal,
+    Pagination,
+    PageResults
+  },
+  data () {
+    return {
+      breadcrumbArray: [
+        { name: 'Admin Manager', link: false },
+        { name: 'Permissions', link: false }
+      ],
+      createCollapse: true,
+      createErrorMessage: '',
+      creating: false,
+      newPermission: {
+        name: '',
+        guard_name: 'admin',
+        permissions: []
+      },
+      editErrorMessage: '',
+      updating: false,
+      permissionToEdit: {
+        name: '',
+        guard_name: 'admin',
+        permissions: []
+      },
+      loading: false,
+      permissions: [],
+      showEditPermissionModal: false,
+      animated: '',
+      searchCollapse: true,
+      searchError: '',
+      filteredResults: [],
+      searchTerm: '',
+      activePage: 1,
+      resultsPerPage: 25,
+      sortBy: {
+        order: 'ASC'
+      },
+      searchActivePage: 1,
+      showDeletePermissionModal: false,
+      permissionToDelete: {
+        name: ''
+      },
+      deleting: false,
+      deleteErrorMessage: '',
+      listErrorMessage: ''
+    }
+  },
+  computed: {
+    numPages () {
+      return Math.ceil(this.permissions.length / this.resultsPerPage)
+    },
+    currentActivePageItems () {
+      return this.userSort(this.permissions).slice(
+        this.resultsPerPage * (this.activePage - 1),
+        this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
+      )
+    },
+    searchNumPages () {
+      return Math.ceil(this.filteredResults.length / this.resultsPerPage)
+    },
+    currentActiveSearchPageItems () {
+      return this.userSort(this.filteredResults).slice(
+        this.resultsPerPage * (this.searchActivePage - 1),
+        this.resultsPerPage * (this.searchActivePage - 1) + this.resultsPerPage
+      )
+    }
+  },
+  mounted () {
+    this.getAllPermissions()
+  },
+  methods: {
+    /**
 		 * To format a phone number
 		 * @function
 		 * @param {string} phone - The phone number to format
 		 * @returns {string} The formatted phone string
 		 */
-		formatPhone (phone) {
-			try {
-				let digits = phone.replace(/\D/g, '')
-				return (
-					digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
-				)
-			} catch (err) {
-				return ''
-			}
-		},
-		/**
+    formatPhone (phone) {
+      try {
+        let digits = phone.replace(/\D/g, '')
+        return (
+          digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
+        )
+      } catch (err) {
+        return ''
+      }
+    },
+    /**
 		 * To update the order property of sortBy.
 		 * @function
 		 * @param {object} value - The new value to assign.
 		 * @returns {undefined}
 		 */
-		updateSortByOrder (value) {
-			this.sortBy.order = value
-			this.filteredResults.length
-				? this.activeSearchPageUpdate(1)
-				: this.activePageUpdate(1)
-		},
-		/**
+    updateSortByOrder (value) {
+      this.sortBy.order = value
+      this.filteredResults.length
+        ? this.activeSearchPageUpdate(1)
+        : this.activePageUpdate(1)
+    },
+    /**
 		 * To sort the orders list.
 		 * @function
 		 * @param {array} orders - The array of orders.
 		 * @returns {array} - The sorted array of orders
 		 */
-		userSort (orders) {
-			let input = orders
-			function asc (a, b) {
-				if (a.name.toLowerCase() < b.name.toLowerCase()) {
-					return -1
-				} else if (a.name.toLowerCase() > b.name.toLowerCase()) {
-					return 1
-				} else {
-					if (a.id > b.id) {
-						return -1
-					} else if (a.id < b.id) {
-						return 1
-					} else {
-						return 0
-					}
-				}
-			}
+    userSort (orders) {
+      let input = orders
+      function asc (a, b) {
+        if (a.name.toLowerCase() < b.name.toLowerCase()) {
+          return -1
+        } else if (a.name.toLowerCase() > b.name.toLowerCase()) {
+          return 1
+        } else {
+          if (a.id > b.id) {
+            return -1
+          } else if (a.id < b.id) {
+            return 1
+          } else {
+            return 0
+          }
+        }
+      }
 
-			function desc (a, b) {
-				if (a.name.toLowerCase() > b.name.toLowerCase()) {
-					return -1
-				} else if (a.name.toLowerCase() < b.name.toLowerCase()) {
-					return 1
-				} else {
-					if (a.id > b.id) {
-						return -1
-					} else if (a.id < b.id) {
-						return 1
-					} else {
-						return 0
-					}
-				}
-			}
+      function desc (a, b) {
+        if (a.name.toLowerCase() > b.name.toLowerCase()) {
+          return -1
+        } else if (a.name.toLowerCase() < b.name.toLowerCase()) {
+          return 1
+        } else {
+          if (a.id > b.id) {
+            return -1
+          } else if (a.id < b.id) {
+            return 1
+          } else {
+            return 0
+          }
+        }
+      }
 
-			if (this.sortBy.order === 'ASC') {
-				return input.sort(asc)
-			} else {
-				return input.sort(desc)
-			}
-		},
-		/**
+      if (this.sortBy.order === 'ASC') {
+        return input.sort(asc)
+      } else {
+        return input.sort(desc)
+      }
+    },
+    /**
 		 * To catch updates from the PageResults component when the number of page results is updated.
 		 * @function
 		 * @param {integer} val - The number of page results to be returned.
 		 * @returns {undefined}
 		 */
-		pageResultsUpdate (val) {
-			if (parseInt(this.resultsPerPage) !== parseInt(val)) {
-				this.resultsPerPage = val
-				this.filteredResults.length
-					? this.activeSearchPageUpdate(1)
-					: this.activePageUpdate(1)
-			}
-		},
-		/**
+    pageResultsUpdate (val) {
+      if (parseInt(this.resultsPerPage) !== parseInt(val)) {
+        this.resultsPerPage = val
+        this.filteredResults.length
+          ? this.activeSearchPageUpdate(1)
+          : this.activePageUpdate(1)
+      }
+    },
+    /**
 		 * To update the currently active pagination page.
 		 * @function
 		 * @param {integer} val - An integer representing the page number that we are updating to.
 		 * @returns {undefined}
 		 */
-		activePageUpdate (val) {
-			if (parseInt(this.activePage) !== parseInt(val)) {
-				this.activePage = val
-				window.scrollTo(0, 0)
-			}
-		},
-		/**
+    activePageUpdate (val) {
+      if (parseInt(this.activePage) !== parseInt(val)) {
+        this.activePage = val
+        window.scrollTo(0, 0)
+      }
+    },
+    /**
 		 * To update the currently active pagination page.
 		 * @function
 		 * @param {integer} val - An integer representing the page number that we are updating to.
 		 * @returns {undefined}
 		 */
-		activeSearchPageUpdate (val) {
-			if (parseInt(this.searchActivePage) !== parseInt(val)) {
-				this.searchActivePage = val
-				window.scrollTo(0, 0)
-			}
-		},
-		/**
+    activeSearchPageUpdate (val) {
+      if (parseInt(this.searchActivePage) !== parseInt(val)) {
+        this.searchActivePage = val
+        window.scrollTo(0, 0)
+      }
+    },
+    /**
 		 * To toggle the search panel
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleSearchPanel () {
-			this.searchCollapse = !this.searchCollapse
-			this.$nextTick(function () {
-				if (!this.searchCollapse) {
-					this.$refs.search.focus()
-				}
-			})
-		},
-		/**
+    toggleSearchPanel () {
+      this.searchCollapse = !this.searchCollapse
+      this.$nextTick(function () {
+        if (!this.searchCollapse) {
+          this.$refs.search.focus()
+        }
+      })
+    },
+    /**
 		 * To filter the results based on the search term.
 		 * @function
 		 * @returns {undefined}
 		 */
-		advancedSearch () {
-			this.clearSearchError()
-			this.filteredResults = []
-			if (this.searchTerm.length) {
-				if (this.searchTerm.length < 3) {
-					this.searchError = 'Search term must be at least 3 characters.'
-				} else {
-					for (var i = 0; i < this.permissions.length; i++) {
-						if (
-							this.permissions[i].name
-								.toLowerCase()
-								.indexOf(this.searchTerm.toLowerCase()) > -1
-						) {
-							this.filteredResults.push(this.permissions[i])
-						}
-					}
-					if (!this.filteredResults.length) {
-						this.searchError =
+    advancedSearch () {
+      this.clearSearchError()
+      this.filteredResults = []
+      if (this.searchTerm.length) {
+        if (this.searchTerm.length < 3) {
+          this.searchError = 'Search term must be at least 3 characters.'
+        } else {
+          for (var i = 0; i < this.permissions.length; i++) {
+            if (
+              this.permissions[i].name
+                .toLowerCase()
+                .indexOf(this.searchTerm.toLowerCase()) > -1
+            ) {
+              this.filteredResults.push(this.permissions[i])
+            }
+          }
+          if (!this.filteredResults.length) {
+            this.searchError =
 							'There are no matching records. Please try again.'
-					}
-				}
-			} else {
-				this.$refs.search.focus()
-			}
-		},
-		/**
+          }
+        }
+      } else {
+        this.$refs.search.focus()
+      }
+    },
+    /**
 		 * To clear the current search error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearSearchError () {
-			this.searchError = ''
-		},
-		/**
+    clearSearchError () {
+      this.searchError = ''
+    },
+    /**
 		 * To clear the current search criteria.
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetSearch () {
-			this.searchTerm = ''
-			this.filteredResults = []
-			this.activePage = 1
-			this.searchActivePage = 1
-			this.clearSearchError()
-		},
-		/**
+    resetSearch () {
+      this.searchTerm = ''
+      this.filteredResults = []
+      this.activePage = 1
+      this.searchActivePage = 1
+      this.clearSearchError()
+    },
+    /**
 		 * To display the edit modal
 		 * @function
 		 * @param {object} permission - The permission object to be edited
 		 * @returns {undefined}
 		 */
-		editPermission (permission) {
-			this.permissionToEdit = { ...permission }
-			this.showEditPermissionModal = true
-		},
-		/**
+    editPermission (permission) {
+      this.permissionToEdit = { ...permission }
+      this.showEditPermissionModal = true
+    },
+    /**
 		 * To display the delete modal
 		 * @function
 		 * @param {object} permission - The permission object to be edited
 		 * @returns {undefined}
 		 */
-		showDeleteModal (permission) {
-			this.permissionToDelete = { ...permission }
-			this.showDeletePermissionModal = true
-		},
-		/**
+    showDeleteModal (permission) {
+      this.permissionToDelete = { ...permission }
+      this.showDeletePermissionModal = true
+    },
+    /**
 		 * To close the delete modal
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		closeDeletePermissionModal () {
-			this.clearDeleteError()
-			this.showDeletePermissionModal = false
-		},
-		/**
+    closeDeletePermissionModal () {
+      this.clearDeleteError()
+      this.showDeletePermissionModal = false
+    },
+    /**
 		 * To delete a permission.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		deletePermission () {
-			this.deleting = true
-			this.clearDeleteError()
-			var permissionsVue = this
-			return PermissionsFunctions.deletePermission(
-				permissionsVue.permissionToDelete
-			)
-				.then(response => {
-					permissionsVue.getAllPermissions()
-					permissionsVue.closeDeletePermissionModal()
-					permissionsVue.showDeleteSuccess(response.payload)
-					permissionsVue.resetDeleteForm()
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Could not delete permission',
-						errorName: 'deleteErrorMessage',
-						vue: permissionsVue
-					})
-				})
-				.finally(() => {
-					permissionsVue.deleting = false
-				})
-		},
-		/**
+    deletePermission () {
+      this.deleting = true
+      this.clearDeleteError()
+      var permissionsVue = this
+      return PermissionsFunctions.deletePermission(
+        permissionsVue.permissionToDelete
+      )
+        .then(response => {
+          permissionsVue.getAllPermissions()
+          permissionsVue.closeDeletePermissionModal()
+          permissionsVue.showDeleteSuccess(response.payload)
+          permissionsVue.resetDeleteForm()
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'Could not delete permission',
+            errorName: 'deleteErrorMessage',
+            vue: permissionsVue
+          })
+        })
+        .finally(() => {
+          permissionsVue.deleting = false
+        })
+    },
+    /**
 		 * To close the edit modal
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		closeEditPermissionModal () {
-			this.clearEditError()
-			this.showEditPermissionModal = false
-		},
-		/**
+    closeEditPermissionModal () {
+      this.clearEditError()
+      this.showEditPermissionModal = false
+    },
+    /**
 		 * To get a list of brand admins.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getAllPermissions () {
-			this.loading = true
-			this.clearListError()
-			var permissionsVue = this
-			return PermissionsFunctions.getAllPermissions()
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						permissionsVue.loading = false
-						permissionsVue.permissions = response.payload
-					} else {
-						permissionsVue.loading = false
-					}
-				})
-				.catch(reason => {
-					permissionsVue.loading = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Could not get permissions',
-						errorName: 'listErrorMessage',
-						vue: permissionsVue
-					})
-				})
-		},
-		/**
+    getAllPermissions () {
+      this.loading = true
+      this.clearListError()
+      var permissionsVue = this
+      return PermissionsFunctions.getAllPermissions()
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            permissionsVue.loading = false
+            permissionsVue.permissions = response.payload
+          } else {
+            permissionsVue.loading = false
+          }
+        })
+        .catch(reason => {
+          permissionsVue.loading = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'Could not get permissions',
+            errorName: 'listErrorMessage',
+            vue: permissionsVue
+          })
+        })
+    },
+    /**
 		 * To get a list of brand admins.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		createPermission () {
-			var permissionsVue = this
+    createPermission () {
+      var permissionsVue = this
 
-			return this.validateNewPermissionData()
-				.then(response => {
-					permissionsVue.creating = true
-					permissionsVue.clearCreateError()
-					return PermissionsFunctions.createPermission(
-						permissionsVue.newPermission
-					)
-						.then(response => {
-							permissionsVue.getAllPermissions()
-							permissionsVue.resetCreateForm()
-							permissionsVue.showCreateSuccess(response.payload)
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'Could not get create permission',
-								errorName: 'createErrorMessage',
-								vue: permissionsVue
-							})
-						})
-				})
-				.catch(reason => {
-					permissionsVue.createErrorMessage = reason
-					permissionsVue.$scrollTo(
-						permissionsVue.$refs.createErrorMessage,
-						1000,
-						{ offset: -50 }
-					)
-				})
-				.finally(() => {
-					permissionsVue.creating = false
-				})
-		},
-		/**
+      return this.validateNewPermissionData()
+        .then(response => {
+          permissionsVue.creating = true
+          permissionsVue.clearCreateError()
+          return PermissionsFunctions.createPermission(
+            permissionsVue.newPermission
+          )
+            .then(response => {
+              permissionsVue.getAllPermissions()
+              permissionsVue.resetCreateForm()
+              permissionsVue.showCreateSuccess(response.payload)
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'Could not get create permission',
+                errorName: 'createErrorMessage',
+                vue: permissionsVue
+              })
+            })
+        })
+        .catch(reason => {
+          permissionsVue.createErrorMessage = reason
+          permissionsVue.$scrollTo(
+            permissionsVue.$refs.createErrorMessage,
+            1000,
+            { offset: -50 }
+          )
+        })
+        .finally(() => {
+          permissionsVue.creating = false
+        })
+    },
+    /**
 		 * To reset the create new form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetCreateForm () {
-			this.newPermission = {
-				name: '',
-				guard_name: 'admin',
-				permissions: []
-			}
-		},
-		/**
+    resetCreateForm () {
+      this.newPermission = {
+        name: '',
+        guard_name: 'admin',
+        permissions: []
+      }
+    },
+    /**
 		 * To reset the create new form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetEditForm () {
-			this.permissionToEdit = {
-				name: '',
-				guard_name: 'admin',
-				permissions: []
-			}
-		},
-		/**
+    resetEditForm () {
+      this.permissionToEdit = {
+        name: '',
+        guard_name: 'admin',
+        permissions: []
+      }
+    },
+    /**
 		 * To reset the delete form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetDeleteForm () {
-			this.permissionToDelete = {
-				name: ''
-			}
-		},
-		/**
+    resetDeleteForm () {
+      this.permissionToDelete = {
+        name: ''
+      }
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showCreateSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Permission has been created'
-			let type = 'success'
+    showCreateSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Permission has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Permission has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Permission has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Permission has been updated'
-			let type = 'success'
+    showEditSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Permission has been updated'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Permission has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Permission has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Permission has been deleted'
-			let type = 'success'
+    showDeleteSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Permission has been deleted'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The removal has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The removal has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To toggle the create new panel.
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCreatePermissionPanel () {
-			this.createCollapse = !this.createCollapse
-			this.$nextTick(function () {
-				if (!this.createCollapse) {
-					this.$refs.newPermissionName.focus()
-				}
-			})
-		},
-		/**
+    toggleCreatePermissionPanel () {
+      this.createCollapse = !this.createCollapse
+      this.$nextTick(function () {
+        if (!this.createCollapse) {
+          this.$refs.newPermissionName.focus()
+        }
+      })
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearCreateError () {
-			this.createErrorMessage = ''
-		},
-		/**
+    clearCreateError () {
+      this.createErrorMessage = ''
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearEditError () {
-			this.editErrorMessage = ''
-		},
-		/**
+    clearEditError () {
+      this.editErrorMessage = ''
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearListError () {
-			this.listErrorMessage = ''
-		},
-		/**
+    clearListError () {
+      this.listErrorMessage = ''
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearDeleteError () {
-			this.deleteErrorMessage = ''
-		},
-		/**
+    clearDeleteError () {
+      this.deleteErrorMessage = ''
+    },
+    /**
 		 * To update a permission.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		updatePermission () {
-			var permissionsVue = this
+    updatePermission () {
+      var permissionsVue = this
 
-			return this.validateEditedPermissionData()
-				.then(response => {
-					permissionsVue.updating = true
-					permissionsVue.clearEditError()
-					return PermissionsFunctions.updatePermission(
-						permissionsVue.permissionToEdit
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								permissionsVue.closeEditPermissionModal()
-								permissionsVue.showEditSuccess(response.payload)
-								for (var i = 0; i < permissionsVue.permissions.length; i++) {
-									if (
-										permissionsVue.permissions[i].id === response.payload.id
-									) {
-										permissionsVue.permissions[i].name = response.payload.name
-									}
-								}
-								permissionsVue.animated = `permission-${response.payload.id}`
-								permissionsVue.resetEditForm()
-								window.setTimeout(() => {
-									permissionsVue.animated = ''
-								}, 3000)
-							} else {
-								let me = new Error(response)
-								throw me
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'Could not get save permission',
-								errorName: 'editErrorMessage',
-								vue: permissionsVue
-							})
-						})
-						.finally(() => {
-							permissionsVue.updating = false
-						})
-				})
-				.catch(reason => {
-					permissionsVue.editErrorMessage = reason
-					permissionsVue.$scrollTo(
-						permissionsVue.$refs.editErrorMessage,
-						1000,
-						{ offset: -50 }
-					)
-				})
-		},
-		/**
+      return this.validateEditedPermissionData()
+        .then(response => {
+          permissionsVue.updating = true
+          permissionsVue.clearEditError()
+          return PermissionsFunctions.updatePermission(
+            permissionsVue.permissionToEdit
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                permissionsVue.closeEditPermissionModal()
+                permissionsVue.showEditSuccess(response.payload)
+                for (var i = 0; i < permissionsVue.permissions.length; i++) {
+                  if (
+                    permissionsVue.permissions[i].id === response.payload.id
+                  ) {
+                    permissionsVue.permissions[i].name = response.payload.name
+                  }
+                }
+                permissionsVue.animated = `permission-${response.payload.id}`
+                permissionsVue.resetEditForm()
+                window.setTimeout(() => {
+                  permissionsVue.animated = ''
+                }, 3000)
+              } else {
+                let me = new Error(response)
+                throw me
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'Could not get save permission',
+                errorName: 'editErrorMessage',
+                vue: permissionsVue
+              })
+            })
+            .finally(() => {
+              permissionsVue.updating = false
+            })
+        })
+        .catch(reason => {
+          permissionsVue.editErrorMessage = reason
+          permissionsVue.$scrollTo(
+            permissionsVue.$refs.editErrorMessage,
+            1000,
+            { offset: -50 }
+          )
+        })
+    },
+    /**
 		 * To check if the item data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateNewPermissionData () {
-			var permissionsVue = this
-			return new Promise(function (resolve, reject) {
-				if (!permissionsVue.newPermission.name.length) {
-					reject('Name cannot be blank')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateNewPermissionData () {
+      var permissionsVue = this
+      return new Promise(function (resolve, reject) {
+        if (!permissionsVue.newPermission.name.length) {
+          reject('Name cannot be blank')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To check if the item data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateEditedPermissionData () {
-			var permissionsVue = this
-			return new Promise(function (resolve, reject) {
-				if (!permissionsVue.permissionToEdit.name.length) {
-					reject('Name cannot be blank')
-				}
-				resolve('Hurray')
-			})
-		}
-	}
+    validateEditedPermissionData () {
+      var permissionsVue = this
+      return new Promise(function (resolve, reject) {
+        if (!permissionsVue.permissionToEdit.name.length) {
+          reject('Name cannot be blank')
+        }
+        resolve('Hurray')
+      })
+    }
+  }
 }
 </script>
 

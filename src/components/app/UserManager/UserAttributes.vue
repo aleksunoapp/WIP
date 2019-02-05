@@ -629,794 +629,794 @@ import UserAttributesFunctions from '../../../controllers/UserAttributes'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Breadcrumb,
-		NoResults,
-		Modal,
-		Pagination,
-		PageResults
-	},
-	data () {
-		return {
-			breadcrumbArray: [
-				{ name: 'User Manager', link: false },
-				{ name: 'User Attributes', link: false }
-			],
-			loadingUserAttributes: false,
-			creating: false,
-			updating: false,
-			assigning: false,
-			deleting: false,
-			createErrorMessage: '',
-			listErrorMessage: '',
-			updateErrorMessage: '',
-			deleteErrorMessage: '',
-			searchErrorMessage: '',
-			assignItemAttributesErrorMessage: '',
-			expandCreateForm: false,
-			expandSearchPanel: false,
-			animatedId: null,
-			showDeleteModal: false,
-			showEditModal: false,
-			showAssignItemAttributesModal: false,
-			newUserAttribute: {
-				name: ''
-			},
-			userAttributes: [],
-			sortBy: {
-				order: 'ASC'
-			},
-			activePage: 1,
-			resultsPerPage: 25,
-			numPages: 1,
-			searchTerm: '',
-			currentSearchPage: 1,
-			itemsPerSearchPage: 25,
-			userAttributeToEdit: {
-				id: null,
-				name: ''
-			},
-			userAttributeToDelete: {
-				id: null
-			},
-			itemAttributes: [],
-			selectAllSelected: false,
-			itemAttributesOfUserAttribute: [],
-			userAttributeToAssignItemAttributesTo: {}
-		}
-	},
-	computed: {
-		searchResults () {
-			if (this.searchTerm.length > 2) {
-				let filtered = this.searchUserAttributes()
-				this.numPages = Math.ceil(filtered.length / this.resultsPerPage)
-				return this.sortUserAttributes(filtered).slice(
-					this.resultsPerPage * (this.activePage - 1),
-					this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
-				)
-			} else {
-				this.numPages = Math.ceil(
-					this.userAttributes.length / this.resultsPerPage
-				)
-				return this.sortUserAttributes(this.userAttributes).slice(
-					this.resultsPerPage * (this.activePage - 1),
-					this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
-				)
-			}
-		}
-	},
-	mounted () {
-		this.listUserAttributes()
-	},
-	methods: {
-		/**
+  components: {
+    Breadcrumb,
+    NoResults,
+    Modal,
+    Pagination,
+    PageResults
+  },
+  data () {
+    return {
+      breadcrumbArray: [
+        { name: 'User Manager', link: false },
+        { name: 'User Attributes', link: false }
+      ],
+      loadingUserAttributes: false,
+      creating: false,
+      updating: false,
+      assigning: false,
+      deleting: false,
+      createErrorMessage: '',
+      listErrorMessage: '',
+      updateErrorMessage: '',
+      deleteErrorMessage: '',
+      searchErrorMessage: '',
+      assignItemAttributesErrorMessage: '',
+      expandCreateForm: false,
+      expandSearchPanel: false,
+      animatedId: null,
+      showDeleteModal: false,
+      showEditModal: false,
+      showAssignItemAttributesModal: false,
+      newUserAttribute: {
+        name: ''
+      },
+      userAttributes: [],
+      sortBy: {
+        order: 'ASC'
+      },
+      activePage: 1,
+      resultsPerPage: 25,
+      numPages: 1,
+      searchTerm: '',
+      currentSearchPage: 1,
+      itemsPerSearchPage: 25,
+      userAttributeToEdit: {
+        id: null,
+        name: ''
+      },
+      userAttributeToDelete: {
+        id: null
+      },
+      itemAttributes: [],
+      selectAllSelected: false,
+      itemAttributesOfUserAttribute: [],
+      userAttributeToAssignItemAttributesTo: {}
+    }
+  },
+  computed: {
+    searchResults () {
+      if (this.searchTerm.length > 2) {
+        let filtered = this.searchUserAttributes()
+        this.numPages = Math.ceil(filtered.length / this.resultsPerPage)
+        return this.sortUserAttributes(filtered).slice(
+          this.resultsPerPage * (this.activePage - 1),
+          this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
+        )
+      } else {
+        this.numPages = Math.ceil(
+          this.userAttributes.length / this.resultsPerPage
+        )
+        return this.sortUserAttributes(this.userAttributes).slice(
+          this.resultsPerPage * (this.activePage - 1),
+          this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
+        )
+      }
+    }
+  },
+  mounted () {
+    this.listUserAttributes()
+  },
+  methods: {
+    /**
 		 * To open or close the create form
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCreatePanel () {
-			this.expandCreateForm = !this.expandCreateForm
-		},
-		/**
+    toggleCreatePanel () {
+      this.expandCreateForm = !this.expandCreateForm
+    },
+    /**
 		 * To clear an error
 		 * @function
 		 * @param {string} name - The variable name of the error to clear
 		 * @returns {undefined}
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To validate data in the create form
 		 * @function
 		 * @returns {undefined}
 		 */
-		validateNewUserAttribute () {
-			this.clearError('createErrorMessage')
-			const attributesVue = this
-			return new Promise(function (resolve, reject) {
-				if (!attributesVue.newUserAttribute.name.length) {
-					reject('Name cannot be blank')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateNewUserAttribute () {
+      this.clearError('createErrorMessage')
+      const attributesVue = this
+      return new Promise(function (resolve, reject) {
+        if (!attributesVue.newUserAttribute.name.length) {
+          reject('Name cannot be blank')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To make the API call to the create endpoint
 		 * @function
 		 * @returns {undefined}
 		 */
-		createUserAttribute () {
-			const attributesVue = this
+    createUserAttribute () {
+      const attributesVue = this
 
-			return this.validateNewUserAttribute()
-				.then(response => {
-					attributesVue.creating = true
-					attributesVue.clearError('createErrorMessage')
-					return UserAttributesFunctions.createUserAttribute(
-						attributesVue.$root.appId,
-						attributesVue.$root.appSecret,
-						attributesVue.$root.userToken,
-						attributesVue.newUserAttribute
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								attributesVue.confirmCreated(response.payload)
-							} else {
-								attributesVue.createErrorMessage =
+      return this.validateNewUserAttribute()
+        .then(response => {
+          attributesVue.creating = true
+          attributesVue.clearError('createErrorMessage')
+          return UserAttributesFunctions.createUserAttribute(
+            attributesVue.$root.appId,
+            attributesVue.$root.appSecret,
+            attributesVue.$root.userToken,
+            attributesVue.newUserAttribute
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                attributesVue.confirmCreated(response.payload)
+              } else {
+                attributesVue.createErrorMessage =
 									response.message || 'Something went wrong ...'
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not delete the modifier',
-								errorName: 'createErrorMessage',
-								vue: attributesVue
-							})
-						})
-						.finally(() => {
-							attributesVue.creating = false
-						})
-				})
-				.catch(reason => {
-					// Catch validation error
-					attributesVue.createErrorMessage = reason
-					window.scrollTo(0, 0)
-				})
-		},
-		/**
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not delete the modifier',
+                errorName: 'createErrorMessage',
+                vue: attributesVue
+              })
+            })
+            .finally(() => {
+              attributesVue.creating = false
+            })
+        })
+        .catch(reason => {
+          // Catch validation error
+          attributesVue.createErrorMessage = reason
+          window.scrollTo(0, 0)
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmCreated (payload = {}) {
-			let title = 'Success'
-			let text = 'The User Attribute has been created'
-			let type = 'success'
+    confirmCreated (payload = {}) {
+      let title = 'Success'
+      let text = 'The User Attribute has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The User Attribute has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The User Attribute has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			}).then(() => {
-				this.userAttributes.push(payload)
-				if (!payload.pending_approval) {
-					this.animatedId = payload.id
-					window.setTimeout(() => {
-						this.animatedId = null
-					}, 3000)
-				}
-				this.resetNewUserAttribute()
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      }).then(() => {
+        this.userAttributes.push(payload)
+        if (!payload.pending_approval) {
+          this.animatedId = payload.id
+          window.setTimeout(() => {
+            this.animatedId = null
+          }, 3000)
+        }
+        this.resetNewUserAttribute()
+      })
+    },
+    /**
 		 * To reset the create form
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetNewUserAttribute () {
-			this.newUserAttribute = {
-				name: ''
-			}
-		},
-		/**
+    resetNewUserAttribute () {
+      this.newUserAttribute = {
+        name: ''
+      }
+    },
+    /**
 		 * To open or close the search form
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleSearchPanel () {
-			this.expandSearchPanel = !this.expandSearchPanel
-		},
-		/**
+    toggleSearchPanel () {
+      this.expandSearchPanel = !this.expandSearchPanel
+    },
+    /**
 		 * To reset the search form
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetSearch () {
-			this.searchTerm = ''
-		},
-		/**
+    resetSearch () {
+      this.searchTerm = ''
+    },
+    /**
 		 * To get a list of existing User Attributes
 		 * @function
 		 * @returns {undefined}
 		 */
-		listUserAttributes () {
-			this.loadingUserAttributes = true
-			const attributesVue = this
+    listUserAttributes () {
+      this.loadingUserAttributes = true
+      const attributesVue = this
 
-			return UserAttributesFunctions.listUserAttributes(
-				attributesVue.$root.appId,
-				attributesVue.$root.appSecret,
-				attributesVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						attributesVue.userAttributes = response.payload
-						attributesVue.loadingUserAttributes = false
-					} else {
-						attributesVue.loadingUserAttributes = false
-					}
-				})
-				.catch(reason => {
-					attributesVue.loadingUserAttributes = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch user attributes',
-						errorName: 'listErrorMessage',
-						vue: attributesVue
-					})
-				})
-		},
-		/**
+      return UserAttributesFunctions.listUserAttributes(
+        attributesVue.$root.appId,
+        attributesVue.$root.appSecret,
+        attributesVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            attributesVue.userAttributes = response.payload
+            attributesVue.loadingUserAttributes = false
+          } else {
+            attributesVue.loadingUserAttributes = false
+          }
+        })
+        .catch(reason => {
+          attributesVue.loadingUserAttributes = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch user attributes',
+            errorName: 'listErrorMessage',
+            vue: attributesVue
+          })
+        })
+    },
+    /**
 		 * To filter the display list
 		 * @function
 		 * @returns {array} An array of User Attributes
 		 */
-		searchUserAttributes () {
-			return this.userAttributes.filter(userAttribute => {
-				return userAttribute.name
-					.toLowerCase()
-					.includes(this.searchTerm.toLowerCase())
-			})
-		},
-		/**
+    searchUserAttributes () {
+      return this.userAttributes.filter(userAttribute => {
+        return userAttribute.name
+          .toLowerCase()
+          .includes(this.searchTerm.toLowerCase())
+      })
+    },
+    /**
 		 * To sort the display list
 		 * @function
 		 * @param {array} attributes - The list to sort
 		 * @returns {array} An array of User Attributes
 		 */
-		sortUserAttributes (attributes) {
-			const asc = function (a, b) {
-				if (a.name.toLowerCase() < b.name.toLowerCase()) {
-					return -1
-				} else if (a.name.toLowerCase() > b.name.toLowerCase()) {
-					return 1
-				} else {
-					if (a.id > b.id) {
-						return -1
-					} else if (a.id < b.id) {
-						return 1
-					} else {
-						return 0
-					}
-				}
-			}
-			const desc = function (a, b) {
-				if (a.name.toLowerCase() > b.name.toLowerCase()) {
-					return -1
-				} else if (a.name.toLowerCase() < b.name.toLowerCase()) {
-					return 1
-				} else {
-					if (a.id > b.id) {
-						return -1
-					} else if (a.id < b.id) {
-						return 1
-					} else {
-						return 0
-					}
-				}
-			}
+    sortUserAttributes (attributes) {
+      const asc = function (a, b) {
+        if (a.name.toLowerCase() < b.name.toLowerCase()) {
+          return -1
+        } else if (a.name.toLowerCase() > b.name.toLowerCase()) {
+          return 1
+        } else {
+          if (a.id > b.id) {
+            return -1
+          } else if (a.id < b.id) {
+            return 1
+          } else {
+            return 0
+          }
+        }
+      }
+      const desc = function (a, b) {
+        if (a.name.toLowerCase() > b.name.toLowerCase()) {
+          return -1
+        } else if (a.name.toLowerCase() < b.name.toLowerCase()) {
+          return 1
+        } else {
+          if (a.id > b.id) {
+            return -1
+          } else if (a.id < b.id) {
+            return 1
+          } else {
+            return 0
+          }
+        }
+      }
 
-			return this.sortBy.order === 'ASC'
-				? attributes.sort(asc)
-				: attributes.sort(desc)
-		},
-		/**
+      return this.sortBy.order === 'ASC'
+        ? attributes.sort(asc)
+        : attributes.sort(desc)
+    },
+    /**
 		 * To update the order property of sortBy.
 		 * @function
 		 * @param {object} value - The new value to assign.
 		 * @returns {undefined}
 		 */
-		updateSortByOrder (value) {
-			this.sortBy.order = value
-			this.activePageUpdate(1)
-		},
-		/**
+    updateSortByOrder (value) {
+      this.sortBy.order = value
+      this.activePageUpdate(1)
+    },
+    /**
 		 * To catch updates from the PageResults component when the number of page results is updated.
 		 * @function
 		 * @param {integer} val - The number of page results to be returned.
 		 * @returns {undefined}
 		 */
-		pageResultsUpdate (val) {
-			if (parseInt(this.resultsPerPage) !== parseInt(val)) {
-				this.resultsPerPage = val
-				this.activePageUpdate(1)
-			}
-		},
-		/**
+    pageResultsUpdate (val) {
+      if (parseInt(this.resultsPerPage) !== parseInt(val)) {
+        this.resultsPerPage = val
+        this.activePageUpdate(1)
+      }
+    },
+    /**
 		 * To update the currently active pagination page.
 		 * @function
 		 * @param {integer} val - An integer representing the page number that we are updating to.
 		 * @returns {undefined}
 		 */
-		activePageUpdate (val) {
-			if (parseInt(this.activePage) !== parseInt(val)) {
-				this.activePage = val
-				window.scrollTo(0, 0)
-			}
-		},
-		/**
+    activePageUpdate (val) {
+      if (parseInt(this.activePage) !== parseInt(val)) {
+        this.activePage = val
+        window.scrollTo(0, 0)
+      }
+    },
+    /**
 		 * To open the edit modal
 		 * @function
 		 * @param {object} userAttribute - The User Attribute to edit
 		 * @returns {undefined}
 		 */
-		openEditModal (userAttribute) {
-			this.userAttributeToEdit.id = userAttribute.id
-			this.userAttributeToEdit.name = userAttribute.name
-			this.showEditModal = true
-		},
-		/**
+    openEditModal (userAttribute) {
+      this.userAttributeToEdit.id = userAttribute.id
+      this.userAttributeToEdit.name = userAttribute.name
+      this.showEditModal = true
+    },
+    /**
 		 * To open the edit modal
 		 * @function
 		 * @param {string} userAttribute - The User Attribute to edit
 		 * @returns {undefined}
 		 */
-		validateUserAttributeToEdit () {
-			this.clearError('updateErrorMessage')
-			const attributesVue = this
-			return new Promise(function (resolve, reject) {
-				if (!attributesVue.userAttributeToEdit.name.length) {
-					reject('Name cannot be blank')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateUserAttributeToEdit () {
+      this.clearError('updateErrorMessage')
+      const attributesVue = this
+      return new Promise(function (resolve, reject) {
+        if (!attributesVue.userAttributeToEdit.name.length) {
+          reject('Name cannot be blank')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To make the API call to the update endpoint
 		 * @function
 		 * @returns {undefined}
 		 */
-		updateUserAttribute () {
-			const attributesVue = this
+    updateUserAttribute () {
+      const attributesVue = this
 
-			return this.validateUserAttributeToEdit()
-				.then(response => {
-					attributesVue.updating = true
-					attributesVue.clearError('updateErrorMessage')
-					return UserAttributesFunctions.updateUserAttribute(
-						attributesVue.$root.appId,
-						attributesVue.$root.appSecret,
-						attributesVue.$root.userToken,
-						attributesVue.userAttributeToEdit
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								let edited = attributesVue.userAttributes.findIndex(
-									userAttribute => {
-										return (
-											userAttribute.id === attributesVue.userAttributeToEdit.id
-										)
-									}
-								)
-								attributesVue.userAttributes[edited].name =
+      return this.validateUserAttributeToEdit()
+        .then(response => {
+          attributesVue.updating = true
+          attributesVue.clearError('updateErrorMessage')
+          return UserAttributesFunctions.updateUserAttribute(
+            attributesVue.$root.appId,
+            attributesVue.$root.appSecret,
+            attributesVue.$root.userToken,
+            attributesVue.userAttributeToEdit
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                let edited = attributesVue.userAttributes.findIndex(
+                  userAttribute => {
+                    return (
+                      userAttribute.id === attributesVue.userAttributeToEdit.id
+                    )
+                  }
+                )
+                attributesVue.userAttributes[edited].name =
 									attributesVue.userAttributeToEdit.name
-								attributesVue.closeEditModal()
-								attributesVue.confirmUpdated(response.payload)
-							} else {
-								attributesVue.updateErrorMessage =
+                attributesVue.closeEditModal()
+                attributesVue.confirmUpdated(response.payload)
+              } else {
+                attributesVue.updateErrorMessage =
 									response.message || 'Something went wrong ...'
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not update the attribute',
-								errorName: 'updateErrorMessage',
-								vue: attributesVue,
-								containerRef: 'editModal'
-							})
-						})
-						.finally(() => {
-							attributesVue.updating = false
-						})
-				})
-				.catch(reason => {
-					// Catch validation error
-					attributesVue.createErrorMessage = reason
-					window.scrollTo(0, 0)
-				})
-		},
-		/**
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not update the attribute',
+                errorName: 'updateErrorMessage',
+                vue: attributesVue,
+                containerRef: 'editModal'
+              })
+            })
+            .finally(() => {
+              attributesVue.updating = false
+            })
+        })
+        .catch(reason => {
+          // Catch validation error
+          attributesVue.createErrorMessage = reason
+          window.scrollTo(0, 0)
+        })
+    },
+    /**
 		 * To close the edit modal
 		 * @function
 		 * @param {string} userAttribute - The User Attribute to edit
 		 * @returns {undefined}
 		 */
-		closeEditModal () {
-			this.clearError('updateErrorMessage')
-			this.showEditModal = false
-		},
-		/**
+    closeEditModal () {
+      this.clearError('updateErrorMessage')
+      this.showEditModal = false
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmUpdated (payload = {}) {
-			let title = 'Success'
-			let text = 'The User Attribute has been saved'
-			let type = 'success'
+    confirmUpdated (payload = {}) {
+      let title = 'Success'
+      let text = 'The User Attribute has been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			}).then(() => {
-				if (!payload.pending_approval) {
-					this.animatedId = this.userAttributeToEdit.id
-					window.setTimeout(() => {
-						this.animatedId = null
-					}, 3000)
-				}
-				this.resetUserAttributeToEdit()
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      }).then(() => {
+        if (!payload.pending_approval) {
+          this.animatedId = this.userAttributeToEdit.id
+          window.setTimeout(() => {
+            this.animatedId = null
+          }, 3000)
+        }
+        this.resetUserAttributeToEdit()
+      })
+    },
+    /**
 		 * To reset edit
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetUserAttributeToEdit () {
-			this.userAttributeToEdit = {
-				id: null,
-				name: ''
-			}
-		},
-		/**
+    resetUserAttributeToEdit () {
+      this.userAttributeToEdit = {
+        id: null,
+        name: ''
+      }
+    },
+    /**
 		 * To open the assign Item Attributes modal
 		 * @function
 		 * @param {object} userAttribute - The User Attribute to assign to
 		 * @returns {undefined}
 		 */
-		openAssignItemAttributesModal (userAttribute) {
-			this.userAttributeToAssignItemAttributesTo.id = userAttribute.id
-			this.userAttributeToAssignItemAttributesTo.name = userAttribute.name
-			this.listItemAttributes()
-		},
-		/**
+    openAssignItemAttributesModal (userAttribute) {
+      this.userAttributeToAssignItemAttributesTo.id = userAttribute.id
+      this.userAttributeToAssignItemAttributesTo.name = userAttribute.name
+      this.listItemAttributes()
+    },
+    /**
 		 * To get a list of existing Item Attributes
 		 * @function
 		 * @returns {undefined}
 		 */
-		listItemAttributes () {
-			const attributesVue = this
+    listItemAttributes () {
+      const attributesVue = this
 
-			return ItemAttributesFunctions.listItemAttributes(
-				attributesVue.$root.appId,
-				attributesVue.$root.appSecret,
-				attributesVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						attributesVue.itemAttributes = response.payload.map(
-							itemAttribute => {
-								itemAttribute.selected = false
-								return itemAttribute
-							}
-						)
-						attributesVue.listItemAttributesofUserAttribute()
-					} else {
-						attributesVue.assignItemAttributesErrorMessage =
+      return ItemAttributesFunctions.listItemAttributes(
+        attributesVue.$root.appId,
+        attributesVue.$root.appSecret,
+        attributesVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            attributesVue.itemAttributes = response.payload.map(
+              itemAttribute => {
+                itemAttribute.selected = false
+                return itemAttribute
+              }
+            )
+            attributesVue.listItemAttributesofUserAttribute()
+          } else {
+            attributesVue.assignItemAttributesErrorMessage =
 							'Something went wrong ...'
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch attribute info',
-						errorName: 'assignItemAttributesErrorMessage',
-						vue: attributesVue,
-						containerRef: 'assignItemsModal'
-					})
-				})
-		},
-		/**
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch attribute info',
+            errorName: 'assignItemAttributesErrorMessage',
+            vue: attributesVue,
+            containerRef: 'assignItemsModal'
+          })
+        })
+    },
+    /**
 		 * To get a list of Item Attributes assigned to a User Attribute
 		 * @function
 		 * @returns {undefined}
 		 */
-		listItemAttributesofUserAttribute () {
-			const attributesVue = this
-			return UserAttributesFunctions.listItemAttributesofUserAttribute(
-				attributesVue.$root.appId,
-				attributesVue.$root.appSecret,
-				attributesVue.$root.userToken,
-				attributesVue.userAttributeToAssignItemAttributesTo.id
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						for (let r = 0; r < attributesVue.itemAttributes.length; r++) {
-							if (response.payload.attributes_userattributes.length) {
-								for (
-									let s = 0;
-									s < response.payload.attributes_userattributes.length;
-									s++
-								) {
-									let itemAttribute = attributesVue.itemAttributes[r]
-									if (
-										itemAttribute.id ===
+    listItemAttributesofUserAttribute () {
+      const attributesVue = this
+      return UserAttributesFunctions.listItemAttributesofUserAttribute(
+        attributesVue.$root.appId,
+        attributesVue.$root.appSecret,
+        attributesVue.$root.userToken,
+        attributesVue.userAttributeToAssignItemAttributesTo.id
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            for (let r = 0; r < attributesVue.itemAttributes.length; r++) {
+              if (response.payload.attributes_userattributes.length) {
+                for (
+                  let s = 0;
+                  s < response.payload.attributes_userattributes.length;
+                  s++
+                ) {
+                  let itemAttribute = attributesVue.itemAttributes[r]
+                  if (
+                    itemAttribute.id ===
 										response.payload.attributes_userattributes[s].id
-									) {
-										itemAttribute.selected = true
-										break
-									} else {
-										itemAttribute.selected = false
-									}
-								}
-							}
-						}
-						let notAll = attributesVue.itemAttributes.some(itemAttribute => {
-							return itemAttribute.selected === false
-						})
-						notAll
-							? (attributesVue.selectAllSelected = false)
-							: (attributesVue.selectAllSelected = true)
-						attributesVue.showAssignItemAttributesModal = true
-					} else {
-						attributesVue.assignItemAttributesErrorMessage =
+                  ) {
+                    itemAttribute.selected = true
+                    break
+                  } else {
+                    itemAttribute.selected = false
+                  }
+                }
+              }
+            }
+            let notAll = attributesVue.itemAttributes.some(itemAttribute => {
+              return itemAttribute.selected === false
+            })
+            notAll
+              ? (attributesVue.selectAllSelected = false)
+              : (attributesVue.selectAllSelected = true)
+            attributesVue.showAssignItemAttributesModal = true
+          } else {
+            attributesVue.assignItemAttributesErrorMessage =
 							'Something went wrong ...'
-						attributesVue.showAssignItemAttributesModal = true
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch attribute info',
-						errorName: 'assignItemAttributesErrorMessage',
-						vue: attributesVue,
-						containerRef: 'assignItemsModal'
-					})
-				})
-		},
-		/**
+            attributesVue.showAssignItemAttributesModal = true
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch attribute info',
+            errorName: 'assignItemAttributesErrorMessage',
+            vue: attributesVue,
+            containerRef: 'assignItemsModal'
+          })
+        })
+    },
+    /**
 		 * To select all or deselect all
 		 * @function
 		 * @returns {undefined}
 		 */
-		selectAll () {
-			for (var i = 0; i < this.itemAttributes.length; i++) {
-				this.itemAttributes[i].selected = this.selectAllSelected
-			}
-		},
-		/**
+    selectAll () {
+      for (var i = 0; i < this.itemAttributes.length; i++) {
+        this.itemAttributes[i].selected = this.selectAllSelected
+      }
+    },
+    /**
 		 * To sync Select All checkbox
 		 * @function
 		 * @param {boolean} value - The value of the checkbox
 		 * @returns {undefined}
 		 */
-		syncSelectAll (value) {
-			if (!value) {
-				this.selectAllSelected = false
-			} else {
-				this.selectAllSelected = this.itemAttributes.every(itemAttribute => {
-					return itemAttribute.selected === true
-				})
-			}
-		},
-		/**
+    syncSelectAll (value) {
+      if (!value) {
+        this.selectAllSelected = false
+      } else {
+        this.selectAllSelected = this.itemAttributes.every(itemAttribute => {
+          return itemAttribute.selected === true
+        })
+      }
+    },
+    /**
 		 * To assign Item Attributes to an User Attribute
 		 * @function
 		 * @returns {undefined}
 		 */
-		assignItemAttributesToUserAttributes () {
-			this.assigning = true
-			let payload = {
-				attribute: []
-			}
-			this.itemAttributes.forEach(itemAttribute => {
-				if (itemAttribute.selected) {
-					payload.attribute.push({
-						id: itemAttribute.id,
-						created_by: itemAttribute.created_by
-					})
-				}
-			})
-			const attributesVue = this
-			return UserAttributesFunctions.assignItemAttributesToUserAttributes(
-				attributesVue.$root.appId,
-				attributesVue.$root.appSecret,
-				attributesVue.$root.userToken,
-				attributesVue.userAttributeToAssignItemAttributesTo.id,
-				payload
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						attributesVue.closeAssignItemAttributesModal()
-						attributesVue.confirmAssignItemAttributes(response.payload)
-					} else {
-						window.scrollTo(0, 0)
-						attributesVue.assignItemAttributesErrorMessage =
+    assignItemAttributesToUserAttributes () {
+      this.assigning = true
+      let payload = {
+        attribute: []
+      }
+      this.itemAttributes.forEach(itemAttribute => {
+        if (itemAttribute.selected) {
+          payload.attribute.push({
+            id: itemAttribute.id,
+            created_by: itemAttribute.created_by
+          })
+        }
+      })
+      const attributesVue = this
+      return UserAttributesFunctions.assignItemAttributesToUserAttributes(
+        attributesVue.$root.appId,
+        attributesVue.$root.appSecret,
+        attributesVue.$root.userToken,
+        attributesVue.userAttributeToAssignItemAttributesTo.id,
+        payload
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            attributesVue.closeAssignItemAttributesModal()
+            attributesVue.confirmAssignItemAttributes(response.payload)
+          } else {
+            window.scrollTo(0, 0)
+            attributesVue.assignItemAttributesErrorMessage =
 							'Something went wrong ...'
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not assign the attributes',
-						errorName: 'assignItemAttributesErrorMessage',
-						vue: attributesVue,
-						containerRef: 'assignItemsModal'
-					})
-				})
-				.finally(() => {
-					attributesVue.assigning = false
-				})
-		},
-		/**
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not assign the attributes',
+            errorName: 'assignItemAttributesErrorMessage',
+            vue: attributesVue,
+            containerRef: 'assignItemsModal'
+          })
+        })
+        .finally(() => {
+          attributesVue.assigning = false
+        })
+    },
+    /**
 		 * To close the assign Item Attributes modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeAssignItemAttributesModal () {
-			this.clearError('assignItemAttributesErrorMessage')
-			this.showAssignItemAttributesModal = false
-		},
-		/**
+    closeAssignItemAttributesModal () {
+      this.clearError('assignItemAttributesErrorMessage')
+      this.showAssignItemAttributesModal = false
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmAssignItemAttributes (payload = {}) {
-			let title = 'Success'
-			let text = 'The Item Attributes has been saved'
-			let type = 'success'
+    confirmAssignItemAttributes (payload = {}) {
+      let title = 'Success'
+      let text = 'The Item Attributes has been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			}).then(() => {
-				if (!payload.pending_approval) {
-					this.animatedId = this.userAttributeToAssignItemAttributesTo.id
-					window.setTimeout(() => {
-						this.animatedId = null
-					}, 3000)
-				}
-				this.resetAssignItemAttributes()
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      }).then(() => {
+        if (!payload.pending_approval) {
+          this.animatedId = this.userAttributeToAssignItemAttributesTo.id
+          window.setTimeout(() => {
+            this.animatedId = null
+          }, 3000)
+        }
+        this.resetAssignItemAttributes()
+      })
+    },
+    /**
 		 * To reset assign Item Attributes
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetAssignItemAttributes () {
-			this.userAttributeToAssignItemAttributesTo = {
-				id: null,
-				name: ''
-			}
-			this.itemAttributesOfUserAttribute = []
-		},
-		/**
+    resetAssignItemAttributes () {
+      this.userAttributeToAssignItemAttributesTo = {
+        id: null,
+        name: ''
+      }
+      this.itemAttributesOfUserAttribute = []
+    },
+    /**
 		 * To open the delete modal
 		 * @function
 		 * @param {object} userAttribute - The User Attribute to delete
 		 * @returns {undefined}
 		 */
-		openDeleteModal (userAttribute) {
-			this.userAttributeToDelete.id = userAttribute.id
-			this.userAttributeToDelete.name = userAttribute.name
-			this.showDeleteModal = true
-		},
-		/**
+    openDeleteModal (userAttribute) {
+      this.userAttributeToDelete.id = userAttribute.id
+      this.userAttributeToDelete.name = userAttribute.name
+      this.showDeleteModal = true
+    },
+    /**
 		 * To make the API call to the delete endpoint
 		 * @function
 		 * @returns {undefined}
 		 */
-		deleteUserAttribute () {
-			this.deleting = true
-			const attributesVue = this
+    deleteUserAttribute () {
+      this.deleting = true
+      const attributesVue = this
 
-			return UserAttributesFunctions.deleteUserAttribute(
-				attributesVue.$root.appId,
-				attributesVue.$root.appSecret,
-				attributesVue.$root.userToken,
-				attributesVue.userAttributeToDelete
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						attributesVue.userAttributes = attributesVue.userAttributes.filter(
-							userAttribute => {
-								return (
-									userAttribute.id !== attributesVue.userAttributeToDelete.id
-								)
-							}
-						)
-						attributesVue.closeDeleteModal()
-						attributesVue.confirmDelete(response.payload)
-					} else throw response
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not delete the attribute',
-						errorName: 'deleteErrorMessage',
-						vue: attributesVue,
-						containerRef: 'deleteModal'
-					})
-				})
-				.finally(() => {
-					attributesVue.deleting = false
-				})
-		},
-		/**
+      return UserAttributesFunctions.deleteUserAttribute(
+        attributesVue.$root.appId,
+        attributesVue.$root.appSecret,
+        attributesVue.$root.userToken,
+        attributesVue.userAttributeToDelete
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            attributesVue.userAttributes = attributesVue.userAttributes.filter(
+              userAttribute => {
+                return (
+                  userAttribute.id !== attributesVue.userAttributeToDelete.id
+                )
+              }
+            )
+            attributesVue.closeDeleteModal()
+            attributesVue.confirmDelete(response.payload)
+          } else throw response
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not delete the attribute',
+            errorName: 'deleteErrorMessage',
+            vue: attributesVue,
+            containerRef: 'deleteModal'
+          })
+        })
+        .finally(() => {
+          attributesVue.deleting = false
+        })
+    },
+    /**
 		 * To close the delete modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeDeleteModal () {
-			this.clearError('deleteErrorMessage')
-			this.showDeleteModal = false
-		},
-		/**
+    closeDeleteModal () {
+      this.clearError('deleteErrorMessage')
+      this.showDeleteModal = false
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmDelete (payload = {}) {
-			let title = 'Success'
-			let text = 'The User Attribute has been deleted'
-			let type = 'success'
+    confirmDelete (payload = {}) {
+      let title = 'Success'
+      let text = 'The User Attribute has been deleted'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The removal has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The removal has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			}).then(() => {
-				this.userAttributeToDelete.id = null
-				this.userAttributeToDelete.name = ''
-			})
-		}
-	}
+      this.$swal({
+        title,
+        text,
+        type
+      }).then(() => {
+        this.userAttributeToDelete.id = null
+        this.userAttributeToDelete.name = ''
+      })
+    }
+  }
 }
 </script>
 

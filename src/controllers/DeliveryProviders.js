@@ -8,19 +8,19 @@ import GlobalFunctions from '@/global.js'
  * @returns {object} A promise
  */
 export const listDeliveryProviderForStore = (storeId) => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'GET',
-			dataType: 'json',
-			url: `/app/location_delivery_provider/${storeId}`,
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'GET',
+      dataType: 'json',
+      url: `/app/location_delivery_provider/${storeId}`,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 /**
@@ -30,20 +30,20 @@ export const listDeliveryProviderForStore = (storeId) => {
  * @returns {object} A promise
  */
 export const createDeliveryProvider = (deliveryProvider) => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'POST',
-			dataType: 'json',
-			url: `/app/location_delivery_provider`,
-			data: deliveryProvider,
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'POST',
+      dataType: 'json',
+      url: `/app/location_delivery_provider`,
+      data: deliveryProvider,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 /**
@@ -53,20 +53,20 @@ export const createDeliveryProvider = (deliveryProvider) => {
  * @returns {object} A promise
  */
 export const updateDeliveryProvider = (deliveryProvider) => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'PUT',
-			dataType: 'json',
-			url: `/app/location_delivery_provider/${deliveryProvider.id}`,
-			data: deliveryProvider,
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'PUT',
+      dataType: 'json',
+      url: `/app/location_delivery_provider/${deliveryProvider.id}`,
+      data: deliveryProvider,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 /**
@@ -76,23 +76,23 @@ export const updateDeliveryProvider = (deliveryProvider) => {
 * @returns {object} A promise
 */
 export const deleteDeliveryProvider = (deliveryProviderId) => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'DELETE',
-			url: `/app/location_delivery_provider/${deliveryProviderId}`,
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'DELETE',
+      url: `/app/location_delivery_provider/${deliveryProviderId}`,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 export default {
-	listDeliveryProviderForStore,
-	createDeliveryProvider,
-	updateDeliveryProvider,
-	deleteDeliveryProvider
+  listDeliveryProviderForStore,
+  createDeliveryProvider,
+  updateDeliveryProvider,
+  deleteDeliveryProvider
 }

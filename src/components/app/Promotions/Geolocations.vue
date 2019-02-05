@@ -369,442 +369,442 @@ import MapArea from '../../modules/MapArea'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Breadcrumb,
-		LoadingScreen,
-		NoResults,
-		Modal,
-		MapArea
-	},
-	data () {
-		return {
-			breadcrumbArray: [{ name: 'Geolocations', link: false }],
-			newCollapse: true,
-			creating: false,
-			newGeolocation: {
-				name: '',
-				polygon: []
-			},
-			createErrorMessage: '',
-			loadingGeolocations: false,
-			listErrorMessage: '',
-			geolocations: [],
-			showEditModal: false,
-			updating: false,
-			editErrorMessage: '',
-			editedGeolocation: {
-				name: '',
-				id: 0
-			},
-			animated: null,
-			showDeleteModal: false,
-			selectedGeolocation: {
-				name: '',
-				id: 0
-			},
-			deleting: false,
-			deleteErrorMessage: ''
-		}
-	},
-	computed: {
-		latitude () {
-			if (
-				this.$root.activeLocation.latitude !== null &&
+  components: {
+    Breadcrumb,
+    LoadingScreen,
+    NoResults,
+    Modal,
+    MapArea
+  },
+  data () {
+    return {
+      breadcrumbArray: [{ name: 'Geolocations', link: false }],
+      newCollapse: true,
+      creating: false,
+      newGeolocation: {
+        name: '',
+        polygon: []
+      },
+      createErrorMessage: '',
+      loadingGeolocations: false,
+      listErrorMessage: '',
+      geolocations: [],
+      showEditModal: false,
+      updating: false,
+      editErrorMessage: '',
+      editedGeolocation: {
+        name: '',
+        id: 0
+      },
+      animated: null,
+      showDeleteModal: false,
+      selectedGeolocation: {
+        name: '',
+        id: 0
+      },
+      deleting: false,
+      deleteErrorMessage: ''
+    }
+  },
+  computed: {
+    latitude () {
+      if (
+        this.$root.activeLocation.latitude !== null &&
 				this.$root.activeLocation.latitude !== undefined
-			) {
-				return Number(this.$root.activeLocation.latitude)
-			} else {
-				return 43.6532
-			}
-		},
-		longitude () {
-			if (
-				this.$root.activeLocation.longitude !== null &&
+      ) {
+        return Number(this.$root.activeLocation.latitude)
+      } else {
+        return 43.6532
+      }
+    },
+    longitude () {
+      if (
+        this.$root.activeLocation.longitude !== null &&
 				this.$root.activeLocation.longitude !== undefined
-			) {
-				return Number(this.$root.activeLocation.longitude)
-			} else {
-				return -79.3832
-			}
-		}
-	},
-	mounted () {
-		this.getGeolocations()
-	},
-	methods: {
-		/**
+      ) {
+        return Number(this.$root.activeLocation.longitude)
+      } else {
+        return -79.3832
+      }
+    }
+  },
+  mounted () {
+    this.getGeolocations()
+  },
+  methods: {
+    /**
 		 * To update map area when user creates or edits it
 		 * @function
 		 * @param {array} polygons - An array of objects containing polygon paths and color
 		 * @returns {undefined}
 		 */
-		updateEditedPolygon (polygons) {
-			if (polygons.length) {
-				this.editedGeolocation.polygon = polygons[0].paths
-			} else {
-				this.editedGeolocation.polygon = []
-			}
-		},
-		/**
+    updateEditedPolygon (polygons) {
+      if (polygons.length) {
+        this.editedGeolocation.polygon = polygons[0].paths
+      } else {
+        this.editedGeolocation.polygon = []
+      }
+    },
+    /**
 		 * To update map area when user creates or edits it
 		 * @function
 		 * @param {array} polygons - An array of objects containing polygon paths and color
 		 * @returns {undefined}
 		 */
-		updateNewPolygon (polygons) {
-			if (polygons.length) {
-				this.newGeolocation.polygon = polygons[0].paths
-			} else {
-				this.newGeolocation.polygon = []
-			}
-		},
-		/**
+    updateNewPolygon (polygons) {
+      if (polygons.length) {
+        this.newGeolocation.polygon = polygons[0].paths
+      } else {
+        this.newGeolocation.polygon = []
+      }
+    },
+    /**
 		 * To toggle the create new panel
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleNewPanel () {
-			this.newCollapse = !this.newCollapse
-		},
-		/**
+    toggleNewPanel () {
+      this.newCollapse = !this.newCollapse
+    },
+    /**
 		 * To get a list of geolocations.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getGeolocations () {
-			this.loadingGeolocations = true
-			var geolocationsVue = this
-			PromotionsFunctions.getGeolocations(
-				geolocationsVue.$root.appId,
-				geolocationsVue.$root.appSecret,
-				geolocationsVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						geolocationsVue.geolocations = response.payload
-						geolocationsVue.loadingGeolocations = false
-					} else {
-						geolocationsVue.loadingGeolocations = false
-					}
-				})
-				.catch(reason => {
-					geolocationsVue.loadingGeolocations = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch geolocations',
-						errorName: 'listErrorMessage',
-						vue: geolocationsVue
-					})
-				})
-		},
-		/**
+    getGeolocations () {
+      this.loadingGeolocations = true
+      var geolocationsVue = this
+      PromotionsFunctions.getGeolocations(
+        geolocationsVue.$root.appId,
+        geolocationsVue.$root.appSecret,
+        geolocationsVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            geolocationsVue.geolocations = response.payload
+            geolocationsVue.loadingGeolocations = false
+          } else {
+            geolocationsVue.loadingGeolocations = false
+          }
+        })
+        .catch(reason => {
+          geolocationsVue.loadingGeolocations = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch geolocations',
+            errorName: 'listErrorMessage',
+            vue: geolocationsVue
+          })
+        })
+    },
+    /**
 		 * To check if the data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateGeolocationData () {
-			var geolocationsVue = this
-			return new Promise(function (resolve, reject) {
-				if (!geolocationsVue.newGeolocation.name.length) {
-					reject('Geolocation name cannot be blank')
-				} else if (!geolocationsVue.newGeolocation.polygon.length) {
-					reject('Please draw an area on the map.')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateGeolocationData () {
+      var geolocationsVue = this
+      return new Promise(function (resolve, reject) {
+        if (!geolocationsVue.newGeolocation.name.length) {
+          reject('Geolocation name cannot be blank')
+        } else if (!geolocationsVue.newGeolocation.polygon.length) {
+          reject('Please draw an area on the map.')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To create a geolocation.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		createNewGeolocation () {
-			var geolocationsVue = this
-			return this.validateGeolocationData()
-				.then(response => {
-					geolocationsVue.creating = true
-					PromotionsFunctions.createGeolocation(
-						geolocationsVue.$root.appId,
-						geolocationsVue.$root.appSecret,
-						geolocationsVue.$root.userToken,
-						geolocationsVue.newGeolocation
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								geolocationsVue.getGeolocations()
-								geolocationsVue.resetForm()
-								geolocationsVue.confirmCreated(response.payload)
-							} else {
-								geolocationsVue.createErrorMessage = 'Something went wrong ...'
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not add the geolocations',
-								errorName: 'createErrorMessage',
-								vue: geolocationsVue
-							})
-						})
-						.finally(() => {
-							geolocationsVue.creating = false
-						})
-				})
-				.catch(reason => {
-					geolocationsVue.createErrorMessage = reason
-				})
-		},
-		/**
+    createNewGeolocation () {
+      var geolocationsVue = this
+      return this.validateGeolocationData()
+        .then(response => {
+          geolocationsVue.creating = true
+          PromotionsFunctions.createGeolocation(
+            geolocationsVue.$root.appId,
+            geolocationsVue.$root.appSecret,
+            geolocationsVue.$root.userToken,
+            geolocationsVue.newGeolocation
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                geolocationsVue.getGeolocations()
+                geolocationsVue.resetForm()
+                geolocationsVue.confirmCreated(response.payload)
+              } else {
+                geolocationsVue.createErrorMessage = 'Something went wrong ...'
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not add the geolocations',
+                errorName: 'createErrorMessage',
+                vue: geolocationsVue
+              })
+            })
+            .finally(() => {
+              geolocationsVue.creating = false
+            })
+        })
+        .catch(reason => {
+          geolocationsVue.createErrorMessage = reason
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmCreated (payload = {}) {
-			let title = 'Success'
-			let text = 'The Geolocation has been created'
-			let type = 'success'
+    confirmCreated (payload = {}) {
+      let title = 'Success'
+      let text = 'The Geolocation has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Geolocation has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Geolocation has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To clear the error.
 		 * @function
 		 * @param {string} type - The type of error to clear
 		 * @returns {undefined}
 		 */
-		clearError (type) {
-			this[type] = ''
-		},
-		/**
+    clearError (type) {
+      this[type] = ''
+    },
+    /**
 		 * To reset the create form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetForm () {
-			this.newCollapse = true
-			this.newGeolocation = {
-				name: '',
-				polygon: []
-			}
-		},
-		/**
+    resetForm () {
+      this.newCollapse = true
+      this.newGeolocation = {
+        name: '',
+        polygon: []
+      }
+    },
+    /**
 		 * To close the edit modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeEditModal () {
-			this.editedGeolocation.name = ''
-			this.editedGeolocation.id = 0
-			this.showEditModal = false
-		},
-		/**
+    closeEditModal () {
+      this.editedGeolocation.name = ''
+      this.editedGeolocation.id = 0
+      this.showEditModal = false
+    },
+    /**
 		 * To check if the data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateEditedData () {
-			var geolocationsVue = this
-			return new Promise(function (resolve, reject) {
-				if (!geolocationsVue.editedGeolocation.name.length) {
-					reject('Geolocation name cannot be blank')
-				} else if (!geolocationsVue.editedGeolocation.polygon.length) {
-					reject('Please draw an area on the map.')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateEditedData () {
+      var geolocationsVue = this
+      return new Promise(function (resolve, reject) {
+        if (!geolocationsVue.editedGeolocation.name.length) {
+          reject('Geolocation name cannot be blank')
+        } else if (!geolocationsVue.editedGeolocation.polygon.length) {
+          reject('Please draw an area on the map.')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To update the geolocation
 		 * @function
 		 * @returns {undefined}
 		 */
-		updateGeolocation () {
-			var geolocationsVue = this
-			return this.validateEditedData()
-				.then(response => {
-					geolocationsVue.updating = true
-					PromotionsFunctions.updateGeolocation(
-						geolocationsVue.$root.appId,
-						geolocationsVue.$root.appSecret,
-						geolocationsVue.$root.userToken,
-						geolocationsVue.editedGeolocation
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								geolocationsVue.getGeolocations()
-								geolocationsVue.resetEdited()
-								geolocationsVue.closeEditModal()
-								geolocationsVue.confirmEdited(response.payload)
-							} else {
-								throw response
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not update the geolocation',
-								errorName: 'editErrorMessage',
-								vue: geolocationsVue,
-								containerRef: 'editModal'
-							})
-						})
-						.finally(() => {
-							geolocationsVue.updating = false
-						})
-				})
-				.catch(reason => {
-					geolocationsVue.editErrorMessage = reason
-					geolocationsVue.$scrollTo(
-						geolocationsVue.$refs.editErrorMessage,
-						1000
-					)
-				})
-		},
-		/**
+    updateGeolocation () {
+      var geolocationsVue = this
+      return this.validateEditedData()
+        .then(response => {
+          geolocationsVue.updating = true
+          PromotionsFunctions.updateGeolocation(
+            geolocationsVue.$root.appId,
+            geolocationsVue.$root.appSecret,
+            geolocationsVue.$root.userToken,
+            geolocationsVue.editedGeolocation
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                geolocationsVue.getGeolocations()
+                geolocationsVue.resetEdited()
+                geolocationsVue.closeEditModal()
+                geolocationsVue.confirmEdited(response.payload)
+              } else {
+                throw response
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not update the geolocation',
+                errorName: 'editErrorMessage',
+                vue: geolocationsVue,
+                containerRef: 'editModal'
+              })
+            })
+            .finally(() => {
+              geolocationsVue.updating = false
+            })
+        })
+        .catch(reason => {
+          geolocationsVue.editErrorMessage = reason
+          geolocationsVue.$scrollTo(
+            geolocationsVue.$refs.editErrorMessage,
+            1000
+          )
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmEdited (payload = {}) {
-			let title = 'Success'
-			let text = 'The Geolocation has been saved'
-			let type = 'success'
+    confirmEdited (payload = {}) {
+      let title = 'Success'
+      let text = 'The Geolocation has been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To open the edit modal
 		 * @function
 		 * @param {object} geolocation - The geolocation to edit
 		 * @returns {undefined}
 		 */
-		editGeolocation (geolocation) {
-			this.editedGeolocation.name = geolocation.name
-			this.editedGeolocation.polygon = geolocation.polygon
-			this.editedGeolocation.paths = geolocation.polygon
-			this.editedGeolocation.id = geolocation.id
-			this.showEditModal = true
-		},
-		/**
+    editGeolocation (geolocation) {
+      this.editedGeolocation.name = geolocation.name
+      this.editedGeolocation.polygon = geolocation.polygon
+      this.editedGeolocation.paths = geolocation.polygon
+      this.editedGeolocation.id = geolocation.id
+      this.showEditModal = true
+    },
+    /**
 		 * To clear the edited geolocation
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetEdited () {
-			this.editedGeolocation.name = ''
-			this.editedGeolocation.id = 0
-		},
-		/**
+    resetEdited () {
+      this.editedGeolocation.name = ''
+      this.editedGeolocation.id = 0
+    },
+    /**
 		 * To clear the selected geolocation
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetSelected () {
-			this.selectedGeolocation.name = ''
-			this.selectedGeolocation.id = 0
-		},
-		/**
+    resetSelected () {
+      this.selectedGeolocation.name = ''
+      this.selectedGeolocation.id = 0
+    },
+    /**
 		 * To close the delte modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeDeleteModal () {
-			this.showDeleteModal = false
-		},
-		/**
+    closeDeleteModal () {
+      this.showDeleteModal = false
+    },
+    /**
 		 * To open the delete modal
 		 * @function
 		 * @param {object} geolocation - The selected geolocation
 		 * @returns {undefined}
 		 */
-		openDelete (geolocation) {
-			this.selectedGeolocation.name = geolocation.name
-			this.selectedGeolocation.id = geolocation.id
-			this.showDeleteModal = true
-		},
-		/**
+    openDelete (geolocation) {
+      this.selectedGeolocation.name = geolocation.name
+      this.selectedGeolocation.id = geolocation.id
+      this.showDeleteModal = true
+    },
+    /**
 		 * To update the geolocation
 		 * @function
 		 * @returns {undefined}
 		 */
-		deleteGeolocation () {
-			this.deleting = true
-			let geolocationsVue = this
-			PromotionsFunctions.deleteGeolocation(
-				geolocationsVue.$root.appId,
-				geolocationsVue.$root.appSecret,
-				geolocationsVue.$root.userToken,
-				geolocationsVue.selectedGeolocation
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						geolocationsVue.getGeolocations()
-						geolocationsVue.resetSelected()
-						geolocationsVue.closeDeleteModal()
-						geolocationsVue.confirmDeleted(response.payload)
-					} else {
-						geolocationsVue.deleteErrorMessage = 'Something went wrong ...'
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not delete the geolocation',
-						errorName: 'deleteErrorMessage',
-						vue: geolocationsVue,
-						containerRef: 'deleteModal'
-					})
-				})
-				.finally(() => {
-					geolocationsVue.deleting = false
-				})
-		},
-		/**
+    deleteGeolocation () {
+      this.deleting = true
+      let geolocationsVue = this
+      PromotionsFunctions.deleteGeolocation(
+        geolocationsVue.$root.appId,
+        geolocationsVue.$root.appSecret,
+        geolocationsVue.$root.userToken,
+        geolocationsVue.selectedGeolocation
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            geolocationsVue.getGeolocations()
+            geolocationsVue.resetSelected()
+            geolocationsVue.closeDeleteModal()
+            geolocationsVue.confirmDeleted(response.payload)
+          } else {
+            geolocationsVue.deleteErrorMessage = 'Something went wrong ...'
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not delete the geolocation',
+            errorName: 'deleteErrorMessage',
+            vue: geolocationsVue,
+            containerRef: 'deleteModal'
+          })
+        })
+        .finally(() => {
+          geolocationsVue.deleting = false
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmDeleted (payload = {}) {
-			let title = 'Success'
-			let text = 'The Geolocation has been deleted'
-			let type = 'success'
+    confirmDeleted (payload = {}) {
+      let title = 'Success'
+      let text = 'The Geolocation has been deleted'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The removal has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The removal has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		}
-	}
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    }
+  }
 }
 </script>
 

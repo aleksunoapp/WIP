@@ -463,519 +463,519 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 import ModifierTiersFunctions from '@/controllers/ModifierTiers'
 
 export default {
-	components: {
-		Breadcrumb,
-		Modal,
-		LoadingScreen,
-		EditModifierCategory,
-		DeleteModifierCategory,
-		NoResults,
-		MenuTree,
-		ResourcePicker,
-		ApplyModifierToItemsAtLocations,
-		CopyModifierToLocations
-	},
-	data () {
-		return {
-			breadcrumbArray: [
-				{ name: 'Menu Manager', link: false },
-				{ name: 'Modifiers', link: false }
-			],
-			displayModifierData: false,
-			editCategoryModalActive: false,
-			deleteCategoryModalActive: false,
-			storeModifiers: [],
-			newCategory: {
-				name: '',
-				desc: '',
-				sku: '',
-				image_url: '',
-				user_id: this.$root.createdBy,
-				status: 1,
-				min: null,
-				max: null,
-				included: null,
-				order: null
-			},
-			errorMessage: '',
-			createModifierCollapse: true,
-			showMenuTreeModal: false,
-			selectedModifier: {},
-			passedModifierCategoryId: 0,
-			headerText: '',
-			imageMode: {
-				newMenu: false
-			},
-			modifierToApplyToItemsAtLocations: {},
-			showModifierToApplyToItemsAtLocationsModal: false,
-			modifierTiers: null,
-			listErrorMessage: '',
-			indexOfTierToDisplay: null,
-			showCopyModifierToLocationsModal: false,
-			modifierToCopyToLocations: {}
-		}
-	},
-	computed: {
-		customText () {
-			if (this.indexOfTierToDisplay === '') {
-				return 'This location does not have any Modifier Categories.'
-			} else {
-				return 'This tier does not have any Modifier Categories.'
-			}
-		}
-	},
-	watch: {
-		'$root.activeLocation' () {
-			this.getStoreModifiers()
-			this.indexOfTierToDisplay = null
-			this.getModifierTiers()
-		}
-	},
-	mounted () {
-		if (this.$root.activeLocation && this.$root.activeLocation.id) {
-			this.getStoreModifiers()
-		}
-		this.getModifierTiers()
-	},
-	methods: {
-		/**
+  components: {
+    Breadcrumb,
+    Modal,
+    LoadingScreen,
+    EditModifierCategory,
+    DeleteModifierCategory,
+    NoResults,
+    MenuTree,
+    ResourcePicker,
+    ApplyModifierToItemsAtLocations,
+    CopyModifierToLocations
+  },
+  data () {
+    return {
+      breadcrumbArray: [
+        { name: 'Menu Manager', link: false },
+        { name: 'Modifiers', link: false }
+      ],
+      displayModifierData: false,
+      editCategoryModalActive: false,
+      deleteCategoryModalActive: false,
+      storeModifiers: [],
+      newCategory: {
+        name: '',
+        desc: '',
+        sku: '',
+        image_url: '',
+        user_id: this.$root.createdBy,
+        status: 1,
+        min: null,
+        max: null,
+        included: null,
+        order: null
+      },
+      errorMessage: '',
+      createModifierCollapse: true,
+      showMenuTreeModal: false,
+      selectedModifier: {},
+      passedModifierCategoryId: 0,
+      headerText: '',
+      imageMode: {
+        newMenu: false
+      },
+      modifierToApplyToItemsAtLocations: {},
+      showModifierToApplyToItemsAtLocationsModal: false,
+      modifierTiers: null,
+      listErrorMessage: '',
+      indexOfTierToDisplay: null,
+      showCopyModifierToLocationsModal: false,
+      modifierToCopyToLocations: {}
+    }
+  },
+  computed: {
+    customText () {
+      if (this.indexOfTierToDisplay === '') {
+        return 'This location does not have any Modifier Categories.'
+      } else {
+        return 'This tier does not have any Modifier Categories.'
+      }
+    }
+  },
+  watch: {
+    '$root.activeLocation' () {
+      this.getStoreModifiers()
+      this.indexOfTierToDisplay = null
+      this.getModifierTiers()
+    }
+  },
+  mounted () {
+    if (this.$root.activeLocation && this.$root.activeLocation.id) {
+      this.getStoreModifiers()
+    }
+    this.getModifierTiers()
+  },
+  methods: {
+    /**
 		 * To update the modifiers shown in the list based on user's filter selection
 		 * @function
 		 * @returns {undefined}
 		 */
-		updateList () {
-			if (this.indexOfTierToDisplay !== '') {
-				this.getModifierTierDetails()
-			} else {
-				this.getStoreModifiers()
-			}
-		},
-		/**
+    updateList () {
+      if (this.indexOfTierToDisplay !== '') {
+        this.getModifierTierDetails()
+      } else {
+        this.getStoreModifiers()
+      }
+    },
+    /**
 		 * To fetch a list of modifiers for a tier
 		 * @function
 		 * @returns {object} - A network call promise
 		 */
-		getModifierTierDetails () {
-			let modifiersVue = this
-			const tier = modifiersVue.modifierTiers[modifiersVue.indexOfTierToDisplay]
-			return ModifierTiersFunctions.getModifierTierDetails(tier)
-				.then(response => {
-					modifiersVue.storeModifiers = response.payload
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorName: 'listErrorMessage',
-						errorText: "We couldn't fetch modifiers for this tier",
-						vue: modifiersVue
-					})
-				})
-		},
-		/**
+    getModifierTierDetails () {
+      let modifiersVue = this
+      const tier = modifiersVue.modifierTiers[modifiersVue.indexOfTierToDisplay]
+      return ModifierTiersFunctions.getModifierTierDetails(tier)
+        .then(response => {
+          modifiersVue.storeModifiers = response.payload
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorName: 'listErrorMessage',
+            errorText: "We couldn't fetch modifiers for this tier",
+            vue: modifiersVue
+          })
+        })
+    },
+    /**
 		 * To fetch a list of Modifier Tiers
 		 * @function
 		 * @returns {object} Network call promise
 		 */
-		getModifierTiers () {
-			let modifiersVue = this
-			return ModifierTiersFunctions.getModifierTiers()
-				.then(response => {
-					modifiersVue.modifierTiers = response.payload
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorName: 'listErrorMessage',
-						errorText: "We couldn't fetch modifier tiers",
-						vue: modifiersVue
-					})
-				})
-		},
-		/**
+    getModifierTiers () {
+      let modifiersVue = this
+      return ModifierTiersFunctions.getModifierTiers()
+        .then(response => {
+          modifiersVue.modifierTiers = response.payload
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorName: 'listErrorMessage',
+            errorText: "We couldn't fetch modifier tiers",
+            vue: modifiersVue
+          })
+        })
+    },
+    /**
 		 * To display the modal to apply a modifier to selected items at selected locations.
 		 * @function
 		 * @param {object} modifier - The selected modifier category.
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		displayApplyToItemsAtLocationsModal (modifier, event) {
-			event.stopPropagation()
-			this.modifierToApplyToItemsAtLocations = modifier
-			this.showModifierToApplyToItemsAtLocationsModal = true
-		},
-		/**
+    displayApplyToItemsAtLocationsModal (modifier, event) {
+      event.stopPropagation()
+      this.modifierToApplyToItemsAtLocations = modifier
+      this.showModifierToApplyToItemsAtLocationsModal = true
+    },
+    /**
 		 * To display the modal to copy a modifier to selected locations.
 		 * @function
 		 * @param {object} modifier - The selected modifier category.
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		displayCopyToLocationsModal (modifier, event) {
-			event.stopPropagation()
-			this.modifierToCopyToLocations = modifier
-			this.showCopyModifierToLocationsModal = true
-		},
-		/**
+    displayCopyToLocationsModal (modifier, event) {
+      event.stopPropagation()
+      this.modifierToCopyToLocations = modifier
+      this.showCopyModifierToLocationsModal = true
+    },
+    /**
 		 * To close the modal to copy a modifier to selected locations.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeCopyModifierToLocationsModal () {
-			this.showCopyModifierToLocationsModal = false
-		},
-		/**
+    closeCopyModifierToLocationsModal () {
+      this.showCopyModifierToLocationsModal = false
+    },
+    /**
 		 * To close the modal to apply a modifier to selected items at selected locations.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeApplyModifierToItemsAtLocationsModal () {
-			this.showModifierToApplyToItemsAtLocationsModal = false
-		},
-		/**
+    closeApplyModifierToItemsAtLocationsModal () {
+      this.showModifierToApplyToItemsAtLocationsModal = false
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showApplyModifierToItemsAtLocationsSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Modifiers have been saved'
-			let type = 'success'
+    showApplyModifierToItemsAtLocationsSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Modifiers have been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Modifiers have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Modifiers have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showCopyModifierToLocationsSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Modifier has been created'
-			let type = 'success'
+    showCopyModifierToLocationsSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Modifier has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Modifier has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Modifier has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To toggle between the open and closed state of the resource picker
 		 * @function
 		 * @param {string} object - The name of the object the image is for
 		 * @param {object} value - The open / closed value of the picker
 		 * @returns {undefined}
 		 */
-		toggleImageMode (object, value) {
-			this.imageMode[object] = value
-		},
-		/**
+    toggleImageMode (object, value) {
+      this.imageMode[object] = value
+    },
+    /**
 		 * To set the image to be same as the one emitted by the gallery modal.
 		 * @function
 		 * @param {object} val - The emitted image object.
 		 * @returns {undefined}
 		 */
-		updateImage (val) {
-			this.newCategory.image_url = val.image_url
-		},
-		/**
+    updateImage (val) {
+      this.newCategory.image_url = val.image_url
+    },
+    /**
 		 * To display the modal to apply a modifier to multiple items.
 		 * @function
 		 * @param {object} modifier - The selected modifier category
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		displayMenuTreeModal (modifier, event) {
-			event.stopPropagation()
-			this.selectedModifier = modifier
-			this.headerText = "Modifier '" + this.selectedModifier.name + "'"
-			this.showMenuTreeModal = true
-		},
-		/**
+    displayMenuTreeModal (modifier, event) {
+      event.stopPropagation()
+      this.selectedModifier = modifier
+      this.headerText = "Modifier '" + this.selectedModifier.name + "'"
+      this.showMenuTreeModal = true
+    },
+    /**
 		 * To close the menu tree modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeMenuTreeModal () {
-			this.showMenuTreeModal = false
-		},
-		/**
+    closeMenuTreeModal () {
+      this.showMenuTreeModal = false
+    },
+    /**
 		 * To get a list of modifier categories for the current store.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getStoreModifiers () {
-			this.displayModifierData = true
-			var menusVue = this
-			menusVue.storeModifiers = []
-			return ModifiersFunctions.getStoreModifiers(
-				menusVue.$root.activeLocation.id
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						menusVue.displayModifierData = false
-						menusVue.storeModifiers = response.payload
-					} else {
-						menusVue.displayModifierData = false
-					}
-				})
-				.catch(reason => {
-					menusVue.displayModifierData = false
-					ajaxErrorHandler({
-						reason,
-						errorName: 'listErrorMessage',
-						errorText: 'We could not fetch modifiers',
-						vue: menusVue
-					})
-				})
-		},
-		/**
+    getStoreModifiers () {
+      this.displayModifierData = true
+      var menusVue = this
+      menusVue.storeModifiers = []
+      return ModifiersFunctions.getStoreModifiers(
+        menusVue.$root.activeLocation.id
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            menusVue.displayModifierData = false
+            menusVue.storeModifiers = response.payload
+          } else {
+            menusVue.displayModifierData = false
+          }
+        })
+        .catch(reason => {
+          menusVue.displayModifierData = false
+          ajaxErrorHandler({
+            reason,
+            errorName: 'listErrorMessage',
+            errorText: 'We could not fetch modifiers',
+            vue: menusVue
+          })
+        })
+    },
+    /**
 		 * To display the modal to edit a modifier category.
 		 * @function
 		 * @param {object} modifier - The selected modifier category
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		editModifierCategory (modifier, event) {
-			event.stopPropagation()
-			this.editCategoryModalActive = true
-			this.$router.push(
-				'/app/menu_manager/modifiers/edit_category/' + modifier.id
-			)
-		},
-		/**
+    editModifierCategory (modifier, event) {
+      event.stopPropagation()
+      this.editCategoryModalActive = true
+      this.$router.push(
+        '/app/menu_manager/modifiers/edit_category/' + modifier.id
+      )
+    },
+    /**
 		 * To display the modal to delete a modifier category.
 		 * @function
 		 * @param {object} modifier - The selected modifier category
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		deleteModifierCategory (modifier, event) {
-			event.stopPropagation()
-			this.deleteCategoryModalActive = true
-			this.passedModifierCategoryId = modifier.id
-		},
-		/**
+    deleteModifierCategory (modifier, event) {
+      event.stopPropagation()
+      this.deleteCategoryModalActive = true
+      this.passedModifierCategoryId = modifier.id
+    },
+    /**
 		 * To update the modifier category list and close the edit modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		updateModifierCategory () {
-			this.getStoreModifiers()
-			this.editCategoryModalActive = false
-		},
-		/**
+    updateModifierCategory () {
+      this.getStoreModifiers()
+      this.editCategoryModalActive = false
+    },
+    /**
 		 * To check if the input is a positive number
 		 * @function
 		 * @param {string} input - User's input
 		 * @returns {boolean} True is positive integer or float, false is not
 		 */
-		isNonNegativeNumber (input) {
-			try {
-				const inputString = String(input)
-				if (inputString.length > inputString.replace(/[^\d.]/g, '').length) {
-					return false
-				}
-				const value = Number(input)
-				if (value < 0) {
-					return false
-				}
-				return true
-			} catch (e) {
-				if (this.environment !== 'production') {
-					console.log({e})
-				}
-				return false
-			}
-		},
-		/**
+    isNonNegativeNumber (input) {
+      try {
+        const inputString = String(input)
+        if (inputString.length > inputString.replace(/[^\d.]/g, '').length) {
+          return false
+        }
+        const value = Number(input)
+        if (value < 0) {
+          return false
+        }
+        return true
+      } catch (e) {
+        if (this.environment !== 'production') {
+          console.log({ e })
+        }
+        return false
+      }
+    },
+    /**
 		 * To check if the modifier category data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateModifierCategoryData () {
-			var addModifierCategoryVue = this
-			return new Promise(function (resolve, reject) {
-				if (!addModifierCategoryVue.newCategory.image_url.length) {
-					reject('Modifier Category image cannot be blank')
-				} else if (!addModifierCategoryVue.newCategory.name.length) {
-					reject('Modifier Category Name cannot be blank')
-				} else if (!addModifierCategoryVue.newCategory.desc.length) {
-					reject('Modifier Category Description cannot be blank')
-				} else if (!addModifierCategoryVue.isNonNegativeNumber(addModifierCategoryVue.newCategory.min)) {
-					reject('Modifier Category Min must be zero or more')
-				} else if (!addModifierCategoryVue.isNonNegativeNumber(addModifierCategoryVue.newCategory.max)) {
-					reject('Modifier Category Max must be zero or more')
-				} else if (Number(addModifierCategoryVue.newCategory.min) > Number(addModifierCategoryVue.newCategory.max)) {
-					reject('Modifier Category Min cannot be larger than Max')
-				} else if (!addModifierCategoryVue.newCategory.sku.length) {
-					reject('Modifier Category SKU cannot be blank')
-				} else if (!addModifierCategoryVue.isNonNegativeNumber(addModifierCategoryVue.newCategory.included)) {
-					reject('Modifier Category Number Free cannot be negative')
-				} else if (!addModifierCategoryVue.isNonNegativeNumber(addModifierCategoryVue.newCategory.order)) {
-					reject('Modifier Category Order cannot be negative')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateModifierCategoryData () {
+      var addModifierCategoryVue = this
+      return new Promise(function (resolve, reject) {
+        if (!addModifierCategoryVue.newCategory.image_url.length) {
+          reject('Modifier Category image cannot be blank')
+        } else if (!addModifierCategoryVue.newCategory.name.length) {
+          reject('Modifier Category Name cannot be blank')
+        } else if (!addModifierCategoryVue.newCategory.desc.length) {
+          reject('Modifier Category Description cannot be blank')
+        } else if (!addModifierCategoryVue.isNonNegativeNumber(addModifierCategoryVue.newCategory.min)) {
+          reject('Modifier Category Min must be zero or more')
+        } else if (!addModifierCategoryVue.isNonNegativeNumber(addModifierCategoryVue.newCategory.max)) {
+          reject('Modifier Category Max must be zero or more')
+        } else if (Number(addModifierCategoryVue.newCategory.min) > Number(addModifierCategoryVue.newCategory.max)) {
+          reject('Modifier Category Min cannot be larger than Max')
+        } else if (!addModifierCategoryVue.newCategory.sku.length) {
+          reject('Modifier Category SKU cannot be blank')
+        } else if (!addModifierCategoryVue.isNonNegativeNumber(addModifierCategoryVue.newCategory.included)) {
+          reject('Modifier Category Number Free cannot be negative')
+        } else if (!addModifierCategoryVue.isNonNegativeNumber(addModifierCategoryVue.newCategory.order)) {
+          reject('Modifier Category Order cannot be negative')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To clear the new menu form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearNewCategory () {
-			this.newCategory = {
-				name: '',
-				desc: '',
-				sku: '',
-				image_url: '',
-				user_id: this.$root.createdBy,
-				status: 1,
-				min: null,
-				max: null,
-				included: null,
-				order: null
-			}
-		},
-		/**
+    clearNewCategory () {
+      this.newCategory = {
+        name: '',
+        desc: '',
+        sku: '',
+        image_url: '',
+        user_id: this.$root.createdBy,
+        status: 1,
+        min: null,
+        max: null,
+        included: null,
+        order: null
+      }
+    },
+    /**
 		 * To add the new modifier category and close the modal and redirect to the modifiers page.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		addNewModifierCategory () {
-			var addModifierCategoryVue = this
-			addModifierCategoryVue.clearError()
+    addNewModifierCategory () {
+      var addModifierCategoryVue = this
+      addModifierCategoryVue.clearError()
 
-			return addModifierCategoryVue
-				.validateModifierCategoryData()
-				.then(response => {
-					addModifierCategoryVue.newCategory.location_id =
+      return addModifierCategoryVue
+        .validateModifierCategoryData()
+        .then(response => {
+          addModifierCategoryVue.newCategory.location_id =
 						addModifierCategoryVue.$root.activeLocation.id
-					ModifiersFunctions.addNewModifierCategory(
-						addModifierCategoryVue.newCategory,
-						addModifierCategoryVue.$root.appId,
-						addModifierCategoryVue.$root.appSecret,
-						addModifierCategoryVue.$root.userToken
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								addModifierCategoryVue.newCategory.id = response.payload.id
-								addModifierCategoryVue.getStoreModifiers()
-								addModifierCategoryVue.showAlert(response.payload)
-								addModifierCategoryVue.clearNewCategory()
-							} else {
-								addModifierCategoryVue.errorMessage = response.message
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorName: 'errorMessage',
-								errorText: 'We could not create the modifier category',
-								vue: addModifierCategoryVue
-							})
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					addModifierCategoryVue.errorMessage = reason
-					window.scrollTo(0, 0)
-					throw reason
-				})
-		},
-		/**
+          ModifiersFunctions.addNewModifierCategory(
+            addModifierCategoryVue.newCategory,
+            addModifierCategoryVue.$root.appId,
+            addModifierCategoryVue.$root.appSecret,
+            addModifierCategoryVue.$root.userToken
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                addModifierCategoryVue.newCategory.id = response.payload.id
+                addModifierCategoryVue.getStoreModifiers()
+                addModifierCategoryVue.showAlert(response.payload)
+                addModifierCategoryVue.clearNewCategory()
+              } else {
+                addModifierCategoryVue.errorMessage = response.message
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorName: 'errorMessage',
+                errorText: 'We could not create the modifier category',
+                vue: addModifierCategoryVue
+              })
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          addModifierCategoryVue.errorMessage = reason
+          window.scrollTo(0, 0)
+          throw reason
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert (payload = {}) {
-			let title = 'Success'
-			let text = 'The Modifier Category has been created'
-			let type = 'success'
+    showAlert (payload = {}) {
+      let title = 'Success'
+      let text = 'The Modifier Category has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Modifier Category has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Modifier Category has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To close the modal to edit a modifier category.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeEditCategoryModal () {
-			this.editCategoryModalActive = false
-		},
-		/**
+    closeEditCategoryModal () {
+      this.editCategoryModalActive = false
+    },
+    /**
 		 * To close the modal to delete a modifier category.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeDeleteModifierCategoryModal () {
-			this.deleteCategoryModalActive = false
-		},
-		/**
+    closeDeleteModifierCategoryModal () {
+      this.deleteCategoryModalActive = false
+    },
+    /**
 		 * To close the modal to delete a modifier category.
 		 * @function
 		 * @returns {undefined}
 		 */
-		deleteModifierCategoryAndCloseModal () {
-			this.deleteCategoryModalActive = false
-			this.getStoreModifiers()
-		},
-		/**
+    deleteModifierCategoryAndCloseModal () {
+      this.deleteCategoryModalActive = false
+      this.getStoreModifiers()
+    },
+    /**
 		 * To route to the modifier items page.
 		 * @function
 		 * @param {object} modifier - The selected modifier category
 		 * @returns {undefined}
 		 */
-		viewModifierCategoryItems (modifier) {
-			this.$router.push('/app/menu_manager/modifier_items/' + modifier.id)
-		},
-		/**
+    viewModifierCategoryItems (modifier) {
+      this.$router.push('/app/menu_manager/modifier_items/' + modifier.id)
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @param {string} name - Name of the error variable
 		 * @returns {undefined}
 		 */
-		clearError (name = 'errorMessage') {
-			this[name] = ''
-		},
-		/**
+    clearError (name = 'errorMessage') {
+      this[name] = ''
+    },
+    /**
 		 * To toggle the create menu panel, initially set to opened
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCreateModifierPanel () {
-			this.createModifierCollapse = !this.createModifierCollapse
-		}
-	}
+    toggleCreateModifierPanel () {
+      this.createModifierCollapse = !this.createModifierCollapse
+    }
+  }
 }
 </script>
 
@@ -984,4 +984,3 @@ export default {
   margin-top: -5px;
 }
 </style>
-

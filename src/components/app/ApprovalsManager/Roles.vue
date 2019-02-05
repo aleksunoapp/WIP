@@ -70,7 +70,7 @@
                   :data="roleTree"
                   :highlight-current="true"
                   :props="{
-                    'label': 'name', 
+                    'label': 'name',
                     'children': 'combined',
                     'disabled': 'disabled'
                   }"
@@ -541,8 +541,8 @@
         </div>
         <el-tree
           v-if="showEditRoleModal"
-          :data="roleTree"
           ref="editedRoleTree"
+          :data="roleTree"
           :highlight-current="true"
           :props="{'label': 'name', 'children': 'combined', 'disabled': 'disabled'}"
           :expand-on-click-node="true"
@@ -666,849 +666,849 @@ import ModulesFunctions from '../../../controllers/Modules'
 import { mapMutations } from 'vuex'
 
 export default {
-	data () {
-		return {
-			breadcrumbArray: [
-				{ name: 'Admin Manager', link: false },
-				{ name: 'Roles', link: false }
-			],
-			createCollapse: true,
-			creating: false,
-			createErrorMessage: '',
-			newRole: {
-				name: '',
-				guard_name: 'admin',
-				permissions: []
-			},
-			editErrorMessage: '',
-			updating: false,
-			roleToEdit: {
-				name: '',
-				guard_name: 'admin',
-				permissions: []
-			},
-			loading: false,
-			roles: [],
-			showEditRoleModal: false,
-			showDeleteModal: false,
-			deleteErrorMessage: '',
-			deleting: false,
-			roleToDelete: {},
-			animated: '',
-			searchCollapse: true,
-			searchError: '',
-			filteredResults: [],
-			searchTerm: '',
-			activePage: 1,
-			resultsPerPage: 25,
-			sortBy: {
-				order: 'ASC'
-			},
-			searchActivePage: 1,
-			roleTree: [],
-			cleanRoleTree: [],
-			modules: []
-		}
-	},
-	computed: {
-		numPages () {
-			return Math.ceil(this.roles.length / this.resultsPerPage)
-		},
-		currentActivePageItems () {
-			return this.userSort(this.roles).slice(
-				this.resultsPerPage * (this.activePage - 1),
-				this.resultsPerPage * (this.activePage - 1) +
+  data () {
+    return {
+      breadcrumbArray: [
+        { name: 'Admin Manager', link: false },
+        { name: 'Roles', link: false }
+      ],
+      createCollapse: true,
+      creating: false,
+      createErrorMessage: '',
+      newRole: {
+        name: '',
+        guard_name: 'admin',
+        permissions: []
+      },
+      editErrorMessage: '',
+      updating: false,
+      roleToEdit: {
+        name: '',
+        guard_name: 'admin',
+        permissions: []
+      },
+      loading: false,
+      roles: [],
+      showEditRoleModal: false,
+      showDeleteModal: false,
+      deleteErrorMessage: '',
+      deleting: false,
+      roleToDelete: {},
+      animated: '',
+      searchCollapse: true,
+      searchError: '',
+      filteredResults: [],
+      searchTerm: '',
+      activePage: 1,
+      resultsPerPage: 25,
+      sortBy: {
+        order: 'ASC'
+      },
+      searchActivePage: 1,
+      roleTree: [],
+      cleanRoleTree: [],
+      modules: []
+    }
+  },
+  computed: {
+    numPages () {
+      return Math.ceil(this.roles.length / this.resultsPerPage)
+    },
+    currentActivePageItems () {
+      return this.userSort(this.roles).slice(
+        this.resultsPerPage * (this.activePage - 1),
+        this.resultsPerPage * (this.activePage - 1) +
 					this.resultsPerPage
-			)
-		},
-		searchNumPages () {
-			return Math.ceil(this.filteredResults.length / this.resultsPerPage)
-		},
-		currentActiveSearchPageItems () {
-			return this.userSort(this.filteredResults).slice(
-				this.resultsPerPage * (this.searchActivePage - 1),
-				this.resultsPerPage * (this.searchActivePage - 1) +
+      )
+    },
+    searchNumPages () {
+      return Math.ceil(this.filteredResults.length / this.resultsPerPage)
+    },
+    currentActiveSearchPageItems () {
+      return this.userSort(this.filteredResults).slice(
+        this.resultsPerPage * (this.searchActivePage - 1),
+        this.resultsPerPage * (this.searchActivePage - 1) +
 					this.resultsPerPage
-			)
-		}
-	},
-	mounted () {
-		this.getRoles()
-		this.getModules()
-	},
-	methods: {
-		/**
+      )
+    }
+  },
+  mounted () {
+    this.getRoles()
+    this.getModules()
+  },
+  methods: {
+    /**
 		 * To get a list of brand admins.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getModules () {
-			this.loading = true
-			this.clearListError()
-			var rolesVue = this
-			return ModulesFunctions.getFullModules()
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						rolesVue.loading = false
+    getModules () {
+      this.loading = true
+      this.clearListError()
+      var rolesVue = this
+      return ModulesFunctions.getFullModules()
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            rolesVue.loading = false
 
-						let role = rolesVue.listToTree(
-							response.payload,
-							response.payload.filter(
-								mod => mod.parent_module === 0
-							)[0]
-						)
+            let role = rolesVue.listToTree(
+              response.payload,
+              response.payload.filter(
+                mod => mod.parent_module === 0
+              )[0]
+            )
 
-						for (let mod of role) {
-							rolesVue.combinePermissionsAndModules(mod)
-						}
+            for (let mod of role) {
+              rolesVue.combinePermissionsAndModules(mod)
+            }
 
-						rolesVue.cleanRoleTree = role
-						rolesVue.roleTree = role
+            rolesVue.cleanRoleTree = role
+            rolesVue.roleTree = role
 
-						rolesVue.modules = response.payload
-					} else {
-						rolesVue.loading = false
-					}
-				})
-				.catch(reason => {
-					rolesVue.loading = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Could not get modules',
-						errorName: 'listErrorMessage',
-						vue: rolesVue
-					})
-				})
-		},
-		/**
+            rolesVue.modules = response.payload
+          } else {
+            rolesVue.loading = false
+          }
+        })
+        .catch(reason => {
+          rolesVue.loading = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'Could not get modules',
+            errorName: 'listErrorMessage',
+            vue: rolesVue
+          })
+        })
+    },
+    /**
 		 * To convert a flat list of nodes into a tree.
 		 * @function
 		 * @param {array} arr - The flat array
 		 * @param {parent} parent - The root node
 		 * @returns {array} - An array of nested nodes
 		 */
-		listToTree (arr, parent) {
-			try {
-				let tree = []
-				let mappedArr = {}
-				let arrElem
-				let mappedElem
+    listToTree (arr, parent) {
+      try {
+        let tree = []
+        let mappedArr = {}
+        let arrElem
+        let mappedElem
 
-				// First map the nodes of the array to an object -> create a hash table.
-				for (var i = 0, len = arr.length; i < len; i++) {
-					arrElem = arr[i]
-					mappedArr[arrElem.id] = arrElem
-				}
+        // First map the nodes of the array to an object -> create a hash table.
+        for (var i = 0, len = arr.length; i < len; i++) {
+          arrElem = arr[i]
+          mappedArr[arrElem.id] = arrElem
+        }
 
-				for (var id in mappedArr) {
-					if (mappedArr.hasOwnProperty(id)) {
-						mappedElem = mappedArr[id]
-						// If the element is not at the root level, add it to its parent array of children.
-						if (mappedElem.parent_module) {
-							mappedArr[mappedElem['parent_module']]['sub_modules'].push(mappedElem)
-							// If the element is at the root level, add it to first level elements array.
-						} else {
-							mappedElem.disabled =
+        for (var id in mappedArr) {
+          if (mappedArr.hasOwnProperty(id)) {
+            mappedElem = mappedArr[id]
+            // If the element is not at the root level, add it to its parent array of children.
+            if (mappedElem.parent_module) {
+              mappedArr[mappedElem['parent_module']]['sub_modules'].push(mappedElem)
+              // If the element is at the root level, add it to first level elements array.
+            } else {
+              mappedElem.disabled =
 								this.$root.permissions['update role'] ===
 								undefined
-							tree.push(mappedElem)
-						}
-					}
-				}
-				return tree
-			} catch (e) {}
-		},
-		/**
+              tree.push(mappedElem)
+            }
+          }
+        }
+        return tree
+      } catch (e) {}
+    },
+    /**
 		 * To combine permissions and sub_modules into a field for the tree component to display
 		 * @function
 		 * @param {object} current - The tree node to process
 		 * @returns {undefined}
 		 */
-		combinePermissionsAndModules (current) {
-			try {
-				const _this = this
-				let ownPermissions = current.permissions.filter(
-					permission => this.$root.permissions[permission.name]
-				)
-				current.combined = [...ownPermissions, ...current.sub_modules]
-				current.combined = current.combined.map(item => {
-					item.nodeId =
+    combinePermissionsAndModules (current) {
+      try {
+        const _this = this
+        let ownPermissions = current.permissions.filter(
+          permission => this.$root.permissions[permission.name]
+        )
+        current.combined = [...ownPermissions, ...current.sub_modules]
+        current.combined = current.combined.map(item => {
+          item.nodeId =
 						item.module_id === undefined
-							? `m${item.id}`
-							: `p${item.id}`
-					item.disabled =
+						  ? `m${item.id}`
+						  : `p${item.id}`
+          item.disabled =
 						_this.$root.permissions['update role'] === undefined
-					return item
-				})
-				current.disabled = current.combined.length === 0
+          return item
+        })
+        current.disabled = current.combined.length === 0
 
-				var children = current.sub_modules
-				for (var i = 0; i < children.length; i++) {
-					_this.combinePermissionsAndModules(children[i])
-				}
-			} catch (e) {}
-		},
-		/**
+        var children = current.sub_modules
+        for (var i = 0; i < children.length; i++) {
+          _this.combinePermissionsAndModules(children[i])
+        }
+      } catch (e) {}
+    },
+    /**
 		 * To update the permissions selection when editing a role
 		 * @function
 		 * @returns {undefined}
 		 */
-		setEditedRolePermission () {
-			this.roleToEdit.permissions = this.$refs.editedRoleTree
-				.getCheckedNodes()
-				.filter(node => node.module_id !== undefined)
-				.map(node => node.id)
-		},
-		/**
+    setEditedRolePermission () {
+      this.roleToEdit.permissions = this.$refs.editedRoleTree
+        .getCheckedNodes()
+        .filter(node => node.module_id !== undefined)
+        .map(node => node.id)
+    },
+    /**
 		 * To update the permissions selection when creating a role
 		 * @function
 		 * @returns {undefined}
 		 */
-		setNewRolePermission () {
-			this.newRole.permissions = this.$refs.newRoleTree
-				.getCheckedNodes()
-				.filter(node => node.module_id !== undefined)
-				.map(node => node.id)
-		},
-		/**
+    setNewRolePermission () {
+      this.newRole.permissions = this.$refs.newRoleTree
+        .getCheckedNodes()
+        .filter(node => node.module_id !== undefined)
+        .map(node => node.id)
+    },
+    /**
 		 * To update permissions based on user's selection
 		 * @function
 		 * @param {array} permissions - An array of permission ids
 		 * @returns {undefined}
 		 */
-		updateNewRolePermissions (permissions) {
-			this.newRole.permissions = permissions
-		},
-		/**
+    updateNewRolePermissions (permissions) {
+      this.newRole.permissions = permissions
+    },
+    /**
 		 * To update permissions based on user's selection
 		 * @function
 		 * @param {array} permissions - An array of permission ids
 		 * @returns {undefined}
 		 */
-		updateEditedRolePermissions (permissions) {
-			this.roleToEdit.permissions = [...permissions]
-		},
-		/**
+    updateEditedRolePermissions (permissions) {
+      this.roleToEdit.permissions = [...permissions]
+    },
+    /**
 		 * To format a phone number
 		 * @function
 		 * @param {string} phone - The phone number to format
 		 * @returns {string} The formatted phone string
 		 */
-		formatPhone (phone) {
-			try {
-				let digits = phone.replace(/\D/g, '')
-				return (
-					digits.slice(0, 3) +
+    formatPhone (phone) {
+      try {
+        let digits = phone.replace(/\D/g, '')
+        return (
+          digits.slice(0, 3) +
 					'-' +
 					digits.slice(3, 6) +
 					'-' +
 					digits.slice(6)
-				)
-			} catch (err) {
-				return ''
-			}
-		},
-		/**
+        )
+      } catch (err) {
+        return ''
+      }
+    },
+    /**
 		 * To update the order property of sortBy.
 		 * @function
 		 * @param {object} value - The new value to assign.
 		 * @returns {undefined}
 		 */
-		updateSortByOrder (value) {
-			this.sortBy.order = value
-			this.filteredResults.length
-				? this.activeSearchPageUpdate(1)
-				: this.activePageUpdate(1)
-		},
-		/**
+    updateSortByOrder (value) {
+      this.sortBy.order = value
+      this.filteredResults.length
+        ? this.activeSearchPageUpdate(1)
+        : this.activePageUpdate(1)
+    },
+    /**
 		 * To sort the orders list.
 		 * @function
 		 * @param {array} orders - The array of orders.
 		 * @returns {array} - The sorted array of orders
 		 */
-		userSort (orders) {
-			let input = orders
-			function asc (a, b) {
-				if (a.name.toLowerCase() < b.name.toLowerCase()) {
-					return -1
-				} else if (a.name.toLowerCase() > b.name.toLowerCase()) {
-					return 1
-				} else {
-					if (a.id > b.id) {
-						return -1
-					} else if (a.id < b.id) {
-						return 1
-					} else {
-						return 0
-					}
-				}
-			}
+    userSort (orders) {
+      let input = orders
+      function asc (a, b) {
+        if (a.name.toLowerCase() < b.name.toLowerCase()) {
+          return -1
+        } else if (a.name.toLowerCase() > b.name.toLowerCase()) {
+          return 1
+        } else {
+          if (a.id > b.id) {
+            return -1
+          } else if (a.id < b.id) {
+            return 1
+          } else {
+            return 0
+          }
+        }
+      }
 
-			function desc (a, b) {
-				if (a.name.toLowerCase() > b.name.toLowerCase()) {
-					return -1
-				} else if (a.name.toLowerCase() < b.name.toLowerCase()) {
-					return 1
-				} else {
-					if (a.id > b.id) {
-						return -1
-					} else if (a.id < b.id) {
-						return 1
-					} else {
-						return 0
-					}
-				}
-			}
+      function desc (a, b) {
+        if (a.name.toLowerCase() > b.name.toLowerCase()) {
+          return -1
+        } else if (a.name.toLowerCase() < b.name.toLowerCase()) {
+          return 1
+        } else {
+          if (a.id > b.id) {
+            return -1
+          } else if (a.id < b.id) {
+            return 1
+          } else {
+            return 0
+          }
+        }
+      }
 
-			if (this.sortBy.order === 'ASC') {
-				return input.sort(asc)
-			} else {
-				return input.sort(desc)
-			}
-		},
-		/**
+      if (this.sortBy.order === 'ASC') {
+        return input.sort(asc)
+      } else {
+        return input.sort(desc)
+      }
+    },
+    /**
 		 * To catch updates from the PageResults component when the number of page results is updated.
 		 * @function
 		 * @param {integer} val - The number of page results to be returned.
 		 * @returns {undefined}
 		 */
-		pageResultsUpdate (val) {
-			if (parseInt(this.resultsPerPage) !== parseInt(val)) {
-				this.resultsPerPage = val
-				this.filteredResults.length
-					? this.activeSearchPageUpdate(1)
-					: this.activePageUpdate(1)
-			}
-		},
-		/**
+    pageResultsUpdate (val) {
+      if (parseInt(this.resultsPerPage) !== parseInt(val)) {
+        this.resultsPerPage = val
+        this.filteredResults.length
+          ? this.activeSearchPageUpdate(1)
+          : this.activePageUpdate(1)
+      }
+    },
+    /**
 		 * To update the currently active pagination page.
 		 * @function
 		 * @param {integer} val - An integer representing the page number that we are updating to.
 		 * @returns {undefined}
 		 */
-		activePageUpdate (val) {
-			if (parseInt(this.activePage) !== parseInt(val)) {
-				this.activePage = val
-				window.scrollTo(0, 0)
-			}
-		},
-		/**
+    activePageUpdate (val) {
+      if (parseInt(this.activePage) !== parseInt(val)) {
+        this.activePage = val
+        window.scrollTo(0, 0)
+      }
+    },
+    /**
 		 * To update the currently active pagination page.
 		 * @function
 		 * @param {integer} val - An integer representing the page number that we are updating to.
 		 * @returns {undefined}
 		 */
-		activeSearchPageUpdate (val) {
-			if (parseInt(this.searchActivePage) !== parseInt(val)) {
-				this.searchActivePage = val
-				window.scrollTo(0, 0)
-			}
-		},
-		/**
+    activeSearchPageUpdate (val) {
+      if (parseInt(this.searchActivePage) !== parseInt(val)) {
+        this.searchActivePage = val
+        window.scrollTo(0, 0)
+      }
+    },
+    /**
 		 * To toggle the search panel
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleSearchPanel () {
-			this.searchCollapse = !this.searchCollapse
-			this.$nextTick(function () {
-				if (!this.searchCollapse) {
-					this.$refs.search.focus()
-				}
-			})
-		},
-		/**
+    toggleSearchPanel () {
+      this.searchCollapse = !this.searchCollapse
+      this.$nextTick(function () {
+        if (!this.searchCollapse) {
+          this.$refs.search.focus()
+        }
+      })
+    },
+    /**
 		 * To filter the results based on the search term.
 		 * @function
 		 * @returns {undefined}
 		 */
-		advancedSearch () {
-			this.clearSearchError()
-			this.filteredResults = []
-			if (this.searchTerm.length) {
-				if (this.searchTerm.length < 3) {
-					this.searchError =
+    advancedSearch () {
+      this.clearSearchError()
+      this.filteredResults = []
+      if (this.searchTerm.length) {
+        if (this.searchTerm.length < 3) {
+          this.searchError =
 						'Search term must be at least 3 characters.'
-				} else {
-					for (var i = 0; i < this.roles.length; i++) {
-						if (
-							this.roles[i].name
-								.toLowerCase()
-								.indexOf(this.searchTerm.toLowerCase()) > -1
-						) {
-							this.filteredResults.push(this.roles[i])
-						}
-					}
-					if (!this.filteredResults.length) {
-						this.searchError =
+        } else {
+          for (var i = 0; i < this.roles.length; i++) {
+            if (
+              this.roles[i].name
+                .toLowerCase()
+                .indexOf(this.searchTerm.toLowerCase()) > -1
+            ) {
+              this.filteredResults.push(this.roles[i])
+            }
+          }
+          if (!this.filteredResults.length) {
+            this.searchError =
 							'There are no matching records. Please try again.'
-					}
-				}
-			} else {
-				this.$refs.search.focus()
-			}
-		},
-		/**
+          }
+        }
+      } else {
+        this.$refs.search.focus()
+      }
+    },
+    /**
 		 * To clear the current search error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearSearchError () {
-			this.searchError = ''
-		},
-		/**
+    clearSearchError () {
+      this.searchError = ''
+    },
+    /**
 		 * To clear the current search criteria.
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetSearch () {
-			this.searchTerm = ''
-			this.filteredResults = []
-			this.activePage = 1
-			this.searchActivePage = 1
-			this.clearSearchError()
-		},
-		/**
+    resetSearch () {
+      this.searchTerm = ''
+      this.filteredResults = []
+      this.activePage = 1
+      this.searchActivePage = 1
+      this.clearSearchError()
+    },
+    /**
 		 * To display the edit modal
 		 * @function
 		 * @param {object} role - The role object to be edited
 		 * @returns {undefined}
 		 */
-		editRole (role) {
-			let rolesVue = this
-			this.listRolePermissions(role)
-				.then(permissions => {
-					rolesVue.roleToEdit = {
-						...role,
-						permissions,
-						previouslySelected: permissions.map(id => `p${id}`)
-					}
-					rolesVue.showEditRoleModal = true
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not get role details',
-						errorName: 'listErrorMessage',
-						vue: rolesVue
-					})
-				})
-		},
-		/**
+    editRole (role) {
+      let rolesVue = this
+      this.listRolePermissions(role)
+        .then(permissions => {
+          rolesVue.roleToEdit = {
+            ...role,
+            permissions,
+            previouslySelected: permissions.map(id => `p${id}`)
+          }
+          rolesVue.showEditRoleModal = true
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not get role details',
+            errorName: 'listErrorMessage',
+            vue: rolesVue
+          })
+        })
+    },
+    /**
 		 * To fetch permissions for a role
 		 * @function
 		 * @param {object} role - The role to fetch permissions for
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		listRolePermissions (role) {
-			return RolesFunctions.listRolePermissions(role)
-				.then(response => {
-					return response.payload.permissions.map(
-						permission => permission.id
-					)
-				})
-				.catch(reason => {
-					return []
-				})
-		},
-		/**
+    listRolePermissions (role) {
+      return RolesFunctions.listRolePermissions(role)
+        .then(response => {
+          return response.payload.permissions.map(
+            permission => permission.id
+          )
+        })
+        .catch(reason => {
+          return []
+        })
+    },
+    /**
 		 * To close the edit modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeEditRoleModal () {
-			this.clearEditError()
-			this.showEditRoleModal = false
-		},
-		/**
+    closeEditRoleModal () {
+      this.clearEditError()
+      this.showEditRoleModal = false
+    },
+    /**
 		 * To get a list of brand admins.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getRoles () {
-			this.loading = true
-			this.clearListError()
-			var rolesVue = this
-			return RolesFunctions.getRoles()
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						rolesVue.loading = false
-						if (this.$root.roles.some(role => role.name === 'super admin')) {
-							rolesVue.roles = response.payload
-						} else {
-							rolesVue.roles = response.payload.filter(
-								role => role.name !== 'super admin'
-							)
-						}
-					} else {
-						rolesVue.loading = false
-					}
-				})
-				.catch(reason => {
-					rolesVue.loading = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Could not get roles',
-						errorName: 'listErrorMessage',
-						vue: rolesVue
-					})
-				})
-		},
-		/**
+    getRoles () {
+      this.loading = true
+      this.clearListError()
+      var rolesVue = this
+      return RolesFunctions.getRoles()
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            rolesVue.loading = false
+            if (this.$root.roles.some(role => role.name === 'super admin')) {
+              rolesVue.roles = response.payload
+            } else {
+              rolesVue.roles = response.payload.filter(
+                role => role.name !== 'super admin'
+              )
+            }
+          } else {
+            rolesVue.loading = false
+          }
+        })
+        .catch(reason => {
+          rolesVue.loading = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'Could not get roles',
+            errorName: 'listErrorMessage',
+            vue: rolesVue
+          })
+        })
+    },
+    /**
 		 * To get a list of brand admins.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		createRole () {
-			var rolesVue = this
+    createRole () {
+      var rolesVue = this
 
-			return this.validateNewRoleData()
-				.then(response => {
-					rolesVue.creating = true
-					rolesVue.clearCreateError()
-					return RolesFunctions.createRole(rolesVue.newRole)
-						.then(response => {
-							rolesVue.getRoles()
-							rolesVue.resetCreateForm()
-							rolesVue.showCreateSuccess()
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'Could not create role',
-								errorName: 'createErrorMessage',
-								vue: rolesVue
-							})
-						})
-						.finally(() => {
-							rolesVue.creating = false
-						})
-				})
-				.catch(reason => {
-					rolesVue.createErrorMessage = reason
-					rolesVue.$scrollTo(
-						rolesVue.$refs.createErrorMessage,
-						1000,
-						{
-							offset: -50
-						}
-					)
-				})
-		},
-		/**
+      return this.validateNewRoleData()
+        .then(response => {
+          rolesVue.creating = true
+          rolesVue.clearCreateError()
+          return RolesFunctions.createRole(rolesVue.newRole)
+            .then(response => {
+              rolesVue.getRoles()
+              rolesVue.resetCreateForm()
+              rolesVue.showCreateSuccess()
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'Could not create role',
+                errorName: 'createErrorMessage',
+                vue: rolesVue
+              })
+            })
+            .finally(() => {
+              rolesVue.creating = false
+            })
+        })
+        .catch(reason => {
+          rolesVue.createErrorMessage = reason
+          rolesVue.$scrollTo(
+            rolesVue.$refs.createErrorMessage,
+            1000,
+            {
+              offset: -50
+            }
+          )
+        })
+    },
+    /**
 		 * To reset the create new form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetCreateForm () {
-			this.createCollapse = true
-			this.newRole = {
-				name: '',
-				guard_name: 'admin',
-				permissions: []
-			}
-			this.roleTree = [...this.cleanRoleTree]
-		},
-		/**
+    resetCreateForm () {
+      this.createCollapse = true
+      this.newRole = {
+        name: '',
+        guard_name: 'admin',
+        permissions: []
+      }
+      this.roleTree = [...this.cleanRoleTree]
+    },
+    /**
 		 * To reset the create new form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetEditForm () {
-			this.roleToEdit = {
-				name: '',
-				guard_name: 'admin',
-				permissions: []
-			}
-		},
-		/**
+    resetEditForm () {
+      this.roleToEdit = {
+        name: '',
+        guard_name: 'admin',
+        permissions: []
+      }
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showCreateSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Role has been created'
-			let type = 'success'
+    showCreateSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Role has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Role has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Role has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Role has been saved'
-			let type = 'success'
+    showEditSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Role has been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To toggle the create new panel.
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCreateRolePanel () {
-			this.createCollapse = !this.createCollapse
-			this.$nextTick(function () {
-				if (!this.createCollapse) {
-					this.$refs.newRoleName.focus()
-				}
-			})
-		},
-		/**
+    toggleCreateRolePanel () {
+      this.createCollapse = !this.createCollapse
+      this.$nextTick(function () {
+        if (!this.createCollapse) {
+          this.$refs.newRoleName.focus()
+        }
+      })
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearCreateError () {
-			this.createErrorMessage = ''
-		},
-		/**
+    clearCreateError () {
+      this.createErrorMessage = ''
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearEditError () {
-			this.editErrorMessage = ''
-		},
-		/**
+    clearEditError () {
+      this.editErrorMessage = ''
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearListError () {
-			this.listErrorMessage = ''
-		},
-		/**
+    clearListError () {
+      this.listErrorMessage = ''
+    },
+    /**
 		 * To update a role.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		updateRole () {
-			var rolesVue = this
+    updateRole () {
+      var rolesVue = this
 
-			return this.validateEditedRoleData()
-				.then(response => {
-					rolesVue.updating = true
-					rolesVue.clearEditError()
-					return RolesFunctions.updateRole(rolesVue.roleToEdit)
-						.then(response => {
-							rolesVue.closeEditRoleModal()
-							rolesVue.refreshUserPermissions(response.payload)
-							rolesVue.showEditSuccess(response.payload)
-							for (var i = 0; i < rolesVue.roles.length; i++) {
-								if (
-									rolesVue.roles[i].id ===
+      return this.validateEditedRoleData()
+        .then(response => {
+          rolesVue.updating = true
+          rolesVue.clearEditError()
+          return RolesFunctions.updateRole(rolesVue.roleToEdit)
+            .then(response => {
+              rolesVue.closeEditRoleModal()
+              rolesVue.refreshUserPermissions(response.payload)
+              rolesVue.showEditSuccess(response.payload)
+              for (var i = 0; i < rolesVue.roles.length; i++) {
+                if (
+                  rolesVue.roles[i].id ===
 									rolesVue.roleToEdit.id
-								) {
-									rolesVue.roles[i].name =
+                ) {
+                  rolesVue.roles[i].name =
 										response.payload.name
-								}
-							}
-							rolesVue.animated = `role-${rolesVue.roleToEdit.id}`
-							rolesVue.resetEditForm(response.payload)
-							window.setTimeout(() => {
-								rolesVue.animated = ''
-							}, 3000)
-						})
-						.catch(reason => {
-							rolesVue.$refs.editModal.$el.scrollTop = 0
-							ajaxErrorHandler({
-								reason,
-								errorText: 'Could not save role',
-								errorName: 'editErrorMessage',
-								vue: rolesVue,
-								containerRef: 'editModal'
-							})
-						})
-						.finally(() => {
-							rolesVue.updating = false
-						})
-				})
-				.catch(reason => {
-					rolesVue.editErrorMessage = reason
-					rolesVue.$refs.editModal.$el.scrollTop = 0
-				})
-		},
-		/**
+                }
+              }
+              rolesVue.animated = `role-${rolesVue.roleToEdit.id}`
+              rolesVue.resetEditForm(response.payload)
+              window.setTimeout(() => {
+                rolesVue.animated = ''
+              }, 3000)
+            })
+            .catch(reason => {
+              rolesVue.$refs.editModal.$el.scrollTop = 0
+              ajaxErrorHandler({
+                reason,
+                errorText: 'Could not save role',
+                errorName: 'editErrorMessage',
+                vue: rolesVue,
+                containerRef: 'editModal'
+              })
+            })
+            .finally(() => {
+              rolesVue.updating = false
+            })
+        })
+        .catch(reason => {
+          rolesVue.editErrorMessage = reason
+          rolesVue.$refs.editModal.$el.scrollTop = 0
+        })
+    },
+    /**
 		 * To current user roles and permissions.
 		 * @function
 		 * @param {object} updatedRole - The updated role
 		 * @returns {undefined}
 		 */
-		refreshUserPermissions (updatedRole) {
-			let index = this.$root.roles.findIndex(
-				role => role.id === this.roleToEdit.id
-			)
+    refreshUserPermissions (updatedRole) {
+      let index = this.$root.roles.findIndex(
+        role => role.id === this.roleToEdit.id
+      )
 
-			console.log({index}, {updatedRole})
+      console.log({ index }, { updatedRole })
 
-			if (index !== -1) {
-				this.$root.roles[index] = updatedRole
-				let newPermissions = {}
-				this.$root.roles.forEach(role => {
-					role.permissions.forEach(permission => {
-						newPermissions[permission.name] = true
-					})
-				})
-				console.log({newPermissions})
-				this.setPermissions(newPermissions)
-			}
-		},
-		/**
+      if (index !== -1) {
+        this.$root.roles[index] = updatedRole
+        let newPermissions = {}
+        this.$root.roles.forEach(role => {
+          role.permissions.forEach(permission => {
+            newPermissions[permission.name] = true
+          })
+        })
+        console.log({ newPermissions })
+        this.setPermissions(newPermissions)
+      }
+    },
+    /**
 		 * To check if the item data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateNewRoleData () {
-			var rolesVue = this
-			return new Promise(function (resolve, reject) {
-				if (!rolesVue.newRole.name.length) {
-					reject('Name cannot be blank')
-				} else if (!rolesVue.newRole.permissions.length) {
-					reject('Select at least one permission')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateNewRoleData () {
+      var rolesVue = this
+      return new Promise(function (resolve, reject) {
+        if (!rolesVue.newRole.name.length) {
+          reject('Name cannot be blank')
+        } else if (!rolesVue.newRole.permissions.length) {
+          reject('Select at least one permission')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To check if the item data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateEditedRoleData () {
-			var rolesVue = this
-			return new Promise(function (resolve, reject) {
-				if (!rolesVue.roleToEdit.name.length) {
-					reject('Name cannot be blank')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateEditedRoleData () {
+      var rolesVue = this
+      return new Promise(function (resolve, reject) {
+        if (!rolesVue.roleToEdit.name.length) {
+          reject('Name cannot be blank')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To open the delete modal
 		 * @function
 		 * @param {object} role - The role to delete
 		 * @returns {undefined}
 		 */
-		openDeleteModal (role) {
-			this.roleToDelete = { ...role }
-			this.showDeleteModal = true
-		},
-		/**
+    openDeleteModal (role) {
+      this.roleToDelete = { ...role }
+      this.showDeleteModal = true
+    },
+    /**
 		 * To close the delete modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeDeleteModal () {
-			this.showDeleteModal = false
-			this.resetDeleteForm()
-		},
-		/**
+    closeDeleteModal () {
+      this.showDeleteModal = false
+      this.resetDeleteForm()
+    },
+    /**
 		 * To clear the delete form
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetDeleteForm () {
-			this.roleToDelete = {}
-		},
-		/**
+    resetDeleteForm () {
+      this.roleToDelete = {}
+    },
+    /**
 		 * To clear the delete error
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearDeleteError () {
-			this.deleteErrorMessage = ''
-		},
-		/**
+    clearDeleteError () {
+      this.deleteErrorMessage = ''
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Role has been deleted'
-			let type = 'success'
+    showDeleteSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Role has been deleted'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The removal has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The removal has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To delete a role
 		 * @function
 		 * @returns {undefined}
 		 */
-		deleteRole () {
-			this.deleting = true
-			this.clearDeleteError()
-			var rolesVue = this
-			return RolesFunctions.deleteRole(rolesVue.roleToDelete)
-				.then(response => {
-					rolesVue.getRoles()
-					rolesVue.closeDeleteModal()
-					rolesVue.showDeleteSuccess(response.payload)
-					rolesVue.resetDeleteForm()
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Could not delete role',
-						errorName: 'deleteErrorMessage',
-						vue: rolesVue
-					})
-				})
-				.finally(() => {
-					rolesVue.deleting = false
-				})
-		},
-		...mapMutations({
-			setPermissions: 'SET_PERMISSIONS'
-		})
-	},
-	components: {
-		Breadcrumb,
-		NoResults,
-		LoadingScreen,
-		Modal,
-		Pagination,
-		PageResults,
-		PermissionsPicker
-	}
+    deleteRole () {
+      this.deleting = true
+      this.clearDeleteError()
+      var rolesVue = this
+      return RolesFunctions.deleteRole(rolesVue.roleToDelete)
+        .then(response => {
+          rolesVue.getRoles()
+          rolesVue.closeDeleteModal()
+          rolesVue.showDeleteSuccess(response.payload)
+          rolesVue.resetDeleteForm()
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'Could not delete role',
+            errorName: 'deleteErrorMessage',
+            vue: rolesVue
+          })
+        })
+        .finally(() => {
+          rolesVue.deleting = false
+        })
+    },
+    ...mapMutations({
+      setPermissions: 'SET_PERMISSIONS'
+    })
+  },
+  components: {
+    Breadcrumb,
+    NoResults,
+    LoadingScreen,
+    Modal,
+    Pagination,
+    PageResults,
+    PermissionsPicker
+  }
 }
 </script>
 

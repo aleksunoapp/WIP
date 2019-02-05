@@ -74,125 +74,124 @@ import ModifierTiersFunctions from '@/controllers/ModifierTiers'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	name: 'AssignModifiersToModifierTier',
-	components: {
-		Modal,
-		MenuItemPicker
-	},
-	props: {
-		tier: {
-			type: Object,
-			required: true,
-			default: () => {}
-		}
-	},
-	data: () => ({
-		saving: false,
-		showModal: false,
-		errorMessage: '',
-		assignedModifiers: null,
-		payload: {
-			modifier_tier_id: null,
-			items: []
-		}
-	}),
-	mounted () {
-		this.showModal = true
-	},
-	methods: {
-		/**
+  name: 'AssignModifiersToModifierTier',
+  components: {
+    Modal,
+    MenuItemPicker
+  },
+  props: {
+    tier: {
+      type: Object,
+      required: true,
+      default: () => {}
+    }
+  },
+  data: () => ({
+    saving: false,
+    showModal: false,
+    errorMessage: '',
+    assignedModifiers: null,
+    payload: {
+      modifier_tier_id: null,
+      items: []
+    }
+  }),
+  mounted () {
+    this.showModal = true
+  },
+  methods: {
+    /**
 		 * To update selection of items
 		 * @function
 		 * @param {array} items - Array of items selected by user
 		 * @returns {undefined}
 		 */
-		itemsSelected (items) {
-			this.payload.items = items.map(item => item.id)
-		},
-		/**
+    itemsSelected (items) {
+      this.payload.items = items.map(item => item.id)
+    },
+    /**
 		 * To clear an error
 		 * @function
 		 * @param {string} name - Name of the error variable
 		 * @returns {undefined}
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To update selection based on picker data
 		 * @function
 		 * @param {array} tiers - Array of tiers
 		 * @returns {undefined}
 		 */
-		updateSelected (tiers) {
-			this.payload.modifiers_to_add = tiers
-				.filter(tier => tier.selected)
-				.map(tier => tier.id)
-			this.payload.modifiers_to_remove = tiers
-				.filter(tier => !tier.selected)
-				.map(tier => tier.id)
-		},
-		/**
+    updateSelected (tiers) {
+      this.payload.modifiers_to_add = tiers
+        .filter(tier => tier.selected)
+        .map(tier => tier.id)
+      this.payload.modifiers_to_remove = tiers
+        .filter(tier => !tier.selected)
+        .map(tier => tier.id)
+    },
+    /**
 		 * To validate data before submitting it
 		 * @function
 		 * @returns {undefined}
 		 */
-		validate () {
-			const assignTiersVue = this
-			return new Promise(function (resolve, reject) {
-				if (!assignTiersVue.payload.items.length) {
-					reject('Please select at least one item')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validate () {
+      const assignTiersVue = this
+      return new Promise(function (resolve, reject) {
+        if (!assignTiersVue.payload.items.length) {
+          reject('Please select at least one item')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To post modifier selection to the API
 		 * @function
 		 * @returns {object} - A network call promise
 		 */
-		applyModifierToMenuItems () {
-			const assignTiersVue = this
-			let payload = {
-				...this.payload,
-				modifier_tier_id: this.tier.id
-			}
-			this.validate()
-				.then(response => {
-					assignTiersVue.saving = true
-					return ModifierTiersFunctions.applyModifierTierToMenuItems(payload)
-						.then(response => {
-							assignTiersVue.$emit('assigned', response.payload)
-						})
-						.catch(reason => {
-							assignTiersVue.showModal = true
-							ajaxErrorHandler({
-								reason,
-								errorName: 'errorMessage',
-								errorText: "We couldn't assign modifiers",
-								vue: assignTiersVue
-							})
-						})
-						.finally(() => {
-							assignTiersVue.saving = false
-						})
-				})
-				.catch(reason => {
-					assignTiersVue.errorMessage = reason
-					assignTiersVue.$scrollTo(assignTiersVue.$refs.errorMessage, 1000, {
-						offset: -50
-					})
-				})
-		},
-		/**
+    applyModifierToMenuItems () {
+      const assignTiersVue = this
+      let payload = {
+        ...this.payload,
+        modifier_tier_id: this.tier.id
+      }
+      this.validate()
+        .then(response => {
+          assignTiersVue.saving = true
+          return ModifierTiersFunctions.applyModifierTierToMenuItems(payload)
+            .then(response => {
+              assignTiersVue.$emit('assigned', response.payload)
+            })
+            .catch(reason => {
+              assignTiersVue.showModal = true
+              ajaxErrorHandler({
+                reason,
+                errorName: 'errorMessage',
+                errorText: "We couldn't assign modifiers",
+                vue: assignTiersVue
+              })
+            })
+            .finally(() => {
+              assignTiersVue.saving = false
+            })
+        })
+        .catch(reason => {
+          assignTiersVue.errorMessage = reason
+          assignTiersVue.$scrollTo(assignTiersVue.$refs.errorMessage, 1000, {
+            offset: -50
+          })
+        })
+    },
+    /**
 		 * To emit a close event
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('close')
-		}
-	}
+    closeModal () {
+      this.$emit('close')
+    }
+  }
 }
 </script>
-

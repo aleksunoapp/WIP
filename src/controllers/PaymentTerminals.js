@@ -8,19 +8,19 @@ import GlobalFunctions from '@/global.js'
  * @returns {object} A promise
  */
 export const listPaymentTerminalForStore = (storeId) => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'GET',
-			dataType: 'json',
-			url: `/app/location/payment_terminal/${storeId}`,
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'GET',
+      dataType: 'json',
+      url: `/app/location/payment_terminal/${storeId}`,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 /**
@@ -31,20 +31,20 @@ export const listPaymentTerminalForStore = (storeId) => {
  * @returns {object} A promise
  */
 export const createPaymentTerminal = (paymentTerminal, storeId) => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'POST',
-			dataType: 'json',
-			url: `/app/location/payment_terminal/create/${storeId}`,
-			data: paymentTerminal,
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'POST',
+      dataType: 'json',
+      url: `/app/location/payment_terminal/create/${storeId}`,
+      data: paymentTerminal,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 /**
@@ -54,20 +54,20 @@ export const createPaymentTerminal = (paymentTerminal, storeId) => {
  * @returns {object} A promise
  */
 export const updatePaymentTerminal = (paymentTerminal) => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'POST',
-			dataType: 'json',
-			url: `/app/location/payment_terminal/update/${paymentTerminal.id}`,
-			data: paymentTerminal,
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'POST',
+      dataType: 'json',
+      url: `/app/location/payment_terminal/update/${paymentTerminal.id}`,
+      data: paymentTerminal,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 /**
@@ -77,23 +77,23 @@ export const updatePaymentTerminal = (paymentTerminal) => {
 * @returns {object} A promise
 */
 export const deletePaymentTerminal = (paymentTerminalId) => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'DELETE',
-			url: `/app/location/payment_terminal/${paymentTerminalId}`,
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'DELETE',
+      url: `/app/location/payment_terminal/${paymentTerminalId}`,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 export default {
-	listPaymentTerminalForStore,
-	createPaymentTerminal,
-	updatePaymentTerminal,
-	deletePaymentTerminal
+  listPaymentTerminalForStore,
+  createPaymentTerminal,
+  updatePaymentTerminal,
+  deletePaymentTerminal
 }

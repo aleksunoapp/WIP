@@ -8,19 +8,19 @@ import GlobalFunctions from '@/global.js'
  * @returns {object} A promise
  */
 export const listDiscountsForStore = (storeId) => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'GET',
-			dataType: 'json',
-			url: `/app/location/discounts/${storeId}`,
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'GET',
+      dataType: 'json',
+      url: `/app/location/discounts/${storeId}`,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 /**
@@ -31,20 +31,20 @@ export const listDiscountsForStore = (storeId) => {
  * @returns {object} A promise
  */
 export const createDiscount = (discount, storeId) => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'POST',
-			dataType: 'json',
-			url: `/app/location/discounts/create/${storeId}`,
-			data: discount,
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'POST',
+      dataType: 'json',
+      url: `/app/location/discounts/create/${storeId}`,
+      data: discount,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 /**
@@ -54,20 +54,20 @@ export const createDiscount = (discount, storeId) => {
  * @returns {object} A promise
  */
 export const updateDiscount = (discount) => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'POST',
-			dataType: 'json',
-			url: `/app/location/discounts/update/${discount.id}`,
-			data: discount,
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'POST',
+      dataType: 'json',
+      url: `/app/location/discounts/update/${discount.id}`,
+      data: discount,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 /**
@@ -77,23 +77,23 @@ export const updateDiscount = (discount) => {
 * @returns {object} A promise
 */
 export const deleteDiscount = (discountId) => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'DELETE',
-			url: `/app/location/discounts/${discountId}`,
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'DELETE',
+      url: `/app/location/discounts/${discountId}`,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 export default {
-	listDiscountsForStore,
-	createDiscount,
-	updateDiscount,
-	deleteDiscount
+  listDiscountsForStore,
+  createDiscount,
+  updateDiscount,
+  deleteDiscount
 }

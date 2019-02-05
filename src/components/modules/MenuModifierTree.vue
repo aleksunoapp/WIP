@@ -206,240 +206,240 @@ import ajaxErrorHandler from '../../controllers/ErrorController'
 import MenuItemPicker from '@/components/modules/MenuItemPicker'
 
 export default {
-	components: {
-		Modal,
-		Tab,
-		Tabset,
-		MenuItemPicker
-	},
-	props: {
-		selectedObject: {
-			type: Object,
-			default: () => ({ skuArray: [] })
-		},
-		errorMessage: {
-			type: String,
-			default: () => ''
-		},
-		showModifierItems: {
-			type: Boolean,
-			default: () => true
-		}
-	},
-	data () {
-		return {
-			showMenuModifierTreeModal: false,
-			modifiers: [],
-			modifierItems: [],
-			isModifierCategorySelected: false,
-			activeModifier: {},
-			activeTab: 0,
-			selectedSKUs: [],
-			selectedItems: [],
-			internalErrorMessage: '',
-			menuAll: false,
-			modifierAll: false,
-			loadingMenus: false,
-			loadingMenuCategories: false,
-			loadingMenuItems: false,
-			loadingModifiers: false,
-			loadingModifierItems: false
-		}
-	},
-	computed: {
-		selectAllMenuItemsSelected () {
-			if (this.items.length) {
-				return !this.items.some(item => !item.selected)
-			}
-			return false
-		},
-		selectAllModifierItemsSelected () {
-			if (this.modifierItems.length) {
-				return !this.modifierItems.some(item => !item.selected)
-			}
-			return false
-		}
-	},
-	created () {
-		this.getModifiers()
-	},
-	mounted () {
-		this.showMenuModifierTreeModal = true
-		if (this.selectedObject.skuArray) {
-			this.selectedObject.skuArray.forEach(sku => this.selectedSKUs.push(sku))
-		}
-	},
-	methods: {
-		/**
+  components: {
+    Modal,
+    Tab,
+    Tabset,
+    MenuItemPicker
+  },
+  props: {
+    selectedObject: {
+      type: Object,
+      default: () => ({ skuArray: [] })
+    },
+    errorMessage: {
+      type: String,
+      default: () => ''
+    },
+    showModifierItems: {
+      type: Boolean,
+      default: () => true
+    }
+  },
+  data () {
+    return {
+      showMenuModifierTreeModal: false,
+      modifiers: [],
+      modifierItems: [],
+      isModifierCategorySelected: false,
+      activeModifier: {},
+      activeTab: 0,
+      selectedSKUs: [],
+      selectedItems: [],
+      internalErrorMessage: '',
+      menuAll: false,
+      modifierAll: false,
+      loadingMenus: false,
+      loadingMenuCategories: false,
+      loadingMenuItems: false,
+      loadingModifiers: false,
+      loadingModifierItems: false
+    }
+  },
+  computed: {
+    selectAllMenuItemsSelected () {
+      if (this.items.length) {
+        return !this.items.some(item => !item.selected)
+      }
+      return false
+    },
+    selectAllModifierItemsSelected () {
+      if (this.modifierItems.length) {
+        return !this.modifierItems.some(item => !item.selected)
+      }
+      return false
+    }
+  },
+  created () {
+    this.getModifiers()
+  },
+  mounted () {
+    this.showMenuModifierTreeModal = true
+    if (this.selectedObject.skuArray) {
+      this.selectedObject.skuArray.forEach(sku => this.selectedSKUs.push(sku))
+    }
+  },
+  methods: {
+    /**
 		 * To update selection of items
 		 * @function
 		 * @param {array} items - Array of selected items
 		 * @returns {undefined}
 		 */
-		itemsSelected (items) {
-			this.selectedItems = items.map(item => item.sku)
-		},
-		/**
+    itemsSelected (items) {
+      this.selectedItems = items.map(item => item.sku)
+    },
+    /**
 		 * To select or unselect the SKU.
 		 * @param {object} item - The item to toggle.
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleSKUSelected (item) {
-			const i = this.selectedSKUs.indexOf(item.sku)
-			if (i !== -1) {
-				this.selectedSKUs.splice(i, 1)
-				this.$set(item, 'selected', false)
-			} else {
-				this.selectedSKUs.push(item.sku)
-				this.$set(item, 'selected', true)
-			}
-		},
-		/**
+    toggleSKUSelected (item) {
+      const i = this.selectedSKUs.indexOf(item.sku)
+      if (i !== -1) {
+        this.selectedSKUs.splice(i, 1)
+        this.$set(item, 'selected', false)
+      } else {
+        this.selectedSKUs.push(item.sku)
+        this.$set(item, 'selected', true)
+      }
+    },
+    /**
 		 * To clear the items array.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearModifierItems () {
-			this.modifierItems = []
-		},
-		/**
+    clearModifierItems () {
+      this.modifierItems = []
+    },
+    /**
 		 * To set the value of the variable 'activeModifier' as the selected modifier object.
 		 * @function
 		 * @param {object} modifier - The selected modifier.
 		 * @param {object} event - The click event that initiated the action.
 		 * @returns {undefined}
 		 */
-		selectModifier (modifier, event) {
-			event.stopPropagation()
-			event.preventDefault()
-			this.activeModifier = modifier
-			this.isModifierCategorySelected = true
-			this.clearModifierItems()
-			this.getItemsForActiveModifier()
-		},
-		/**
+    selectModifier (modifier, event) {
+      event.stopPropagation()
+      event.preventDefault()
+      this.activeModifier = modifier
+      this.isModifierCategorySelected = true
+      this.clearModifierItems()
+      this.getItemsForActiveModifier()
+    },
+    /**
 		 * To get a list of all item for the current active modifier category.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getItemsForActiveModifier () {
-			this.loadingModifierItems = true
-			var modifierTreeVue = this
-			modifierTreeVue.modifierItems = []
-			return ModifiersFunctions.getModifierCategoryItems(
-				modifierTreeVue.activeModifier.id,
-				modifierTreeVue.$root.appId,
-				modifierTreeVue.$root.appSecret
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						response.payload.forEach(item => {
-							modifierTreeVue.selectedSKUs.forEach(previous => {
-								if (item.sku === previous) {
-									item.selected = true
-								} else if (item.selected !== true) {
-									item.selected = false
-								}
-							})
-						})
-						modifierTreeVue.modifierItems = response.payload
-						modifierTreeVue.modifierAll = Boolean(
-							modifierTreeVue.selectAllModifierItemsSelected
-						)
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch modifier items',
-						errorName: 'internalErrorMessage',
-						vue: modifierTreeVue
-					})
-				})
-				.finally(() => {
-					modifierTreeVue.loadingModifierItems = false
-				})
-		},
-		/**
+    getItemsForActiveModifier () {
+      this.loadingModifierItems = true
+      var modifierTreeVue = this
+      modifierTreeVue.modifierItems = []
+      return ModifiersFunctions.getModifierCategoryItems(
+        modifierTreeVue.activeModifier.id,
+        modifierTreeVue.$root.appId,
+        modifierTreeVue.$root.appSecret
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            response.payload.forEach(item => {
+              modifierTreeVue.selectedSKUs.forEach(previous => {
+                if (item.sku === previous) {
+                  item.selected = true
+                } else if (item.selected !== true) {
+                  item.selected = false
+                }
+              })
+            })
+            modifierTreeVue.modifierItems = response.payload
+            modifierTreeVue.modifierAll = Boolean(
+              modifierTreeVue.selectAllModifierItemsSelected
+            )
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch modifier items',
+            errorName: 'internalErrorMessage',
+            vue: modifierTreeVue
+          })
+        })
+        .finally(() => {
+          modifierTreeVue.loadingModifierItems = false
+        })
+    },
+    /**
 		 * To get a list of all modifiers for the current active location.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getModifiers () {
-			this.loadingModifiers = true
-			this.modifiers = []
-			var modifierTreeVue = this
-			return ModifiersFunctions.getStoreModifiers(
-				modifierTreeVue.$root.activeLocation.id
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						modifierTreeVue.modifiers = response.payload
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch modifier categories',
-						errorName: 'internalErrorMessage',
-						vue: modifierTreeVue
-					})
-				})
-				.finally(() => {
-					modifierTreeVue.loadingModifiers = false
-				})
-		},
-		/**
+    getModifiers () {
+      this.loadingModifiers = true
+      this.modifiers = []
+      var modifierTreeVue = this
+      return ModifiersFunctions.getStoreModifiers(
+        modifierTreeVue.$root.activeLocation.id
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            modifierTreeVue.modifiers = response.payload
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch modifier categories',
+            errorName: 'internalErrorMessage',
+            vue: modifierTreeVue
+          })
+        })
+        .finally(() => {
+          modifierTreeVue.loadingModifiers = false
+        })
+    },
+    /**
 		 * To close the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('closeMenuModifierTreeModal')
-		},
-		/**
+    closeModal () {
+      this.$emit('closeMenuModifierTreeModal')
+    },
+    /**
 		 * To select all or deselect all items
 		 * @function
 		 * @returns {undefined}
 		 */
-		selectAllModifierItems () {
-			this.modifierAll = !this.modifierAll
-			for (var i = 0; i < this.modifierItems.length; i++) {
-				var item = this.modifierItems[i]
-				this.$set(item, 'selected', this.modifierAll)
-				const index = this.selectedSKUs.indexOf(item.sku)
-				if (index !== -1) {
-					this.selectedSKUs.splice(index, 1)
-				} else {
-					this.selectedSKUs.push(item.sku)
-				}
-			}
-		},
-		/**
+    selectAllModifierItems () {
+      this.modifierAll = !this.modifierAll
+      for (var i = 0; i < this.modifierItems.length; i++) {
+        var item = this.modifierItems[i]
+        this.$set(item, 'selected', this.modifierAll)
+        const index = this.selectedSKUs.indexOf(item.sku)
+        if (index !== -1) {
+          this.selectedSKUs.splice(index, 1)
+        } else {
+          this.selectedSKUs.push(item.sku)
+        }
+      }
+    },
+    /**
 		 * To determine which function to call based on the update type passed in by the parent as a prop.
 		 * @function
 		 * @returns {undefined}
 		 */
-		applySelectedItems () {
-			this.$emit('closeMenuModifierTreeModalAndUpdate', {
-				selectedSKUs:
+    applySelectedItems () {
+      this.$emit('closeMenuModifierTreeModalAndUpdate', {
+        selectedSKUs:
 				[
-					...this.selectedSKUs,
-					...this.selectedItems
+				  ...this.selectedSKUs,
+				  ...this.selectedItems
 				]
-			})
-		},
-		/**
+      })
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @param {string} errorName - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearError (errorName) {
-			this[errorName] = ''
-		}
-	}
+    clearError (errorName) {
+      this[errorName] = ''
+    }
+  }
 }
 </script>
 <style scoped>

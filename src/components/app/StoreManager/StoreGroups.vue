@@ -316,409 +316,409 @@ import Modal from '@/components/modules/Modal'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Breadcrumb,
-		NoResults,
-		LoadingScreen,
-		AssignStores,
-		EditStoreGroup,
-		MenuTiersPicker,
-		Modal
-	},
-	data () {
-		return {
-			breadcrumbArray: [
-				{ name: 'Store Manager', link: false },
-				{ name: 'Store Groups', link: false }
-			],
-			createGroupCollapse: true,
-			errorMessage: '',
-			loadingGroupsData: false,
-			listErrorMessage: '',
-			groups: [],
-			computedHeight: 0,
-			selectedGroupId: 0,
-			showEditGroupModal: false,
-			passedGroupId: 0,
-			creating: false,
-			newGroup: {
-				name: '',
-				description: '',
-				status: 1,
-				created_by: this.$root.createdBy
-			},
-			showAssignStoresModal: false,
-			assigning: false,
-			groupToAssignMenuTiersTo: {},
-			showTiersModal: false,
-			tiersErrorMessage: ''
-		}
-	},
-	mounted () {
-		this.getGroups()
-	},
-	methods: {
-		/**
+  components: {
+    Breadcrumb,
+    NoResults,
+    LoadingScreen,
+    AssignStores,
+    EditStoreGroup,
+    MenuTiersPicker,
+    Modal
+  },
+  data () {
+    return {
+      breadcrumbArray: [
+        { name: 'Store Manager', link: false },
+        { name: 'Store Groups', link: false }
+      ],
+      createGroupCollapse: true,
+      errorMessage: '',
+      loadingGroupsData: false,
+      listErrorMessage: '',
+      groups: [],
+      computedHeight: 0,
+      selectedGroupId: 0,
+      showEditGroupModal: false,
+      passedGroupId: 0,
+      creating: false,
+      newGroup: {
+        name: '',
+        description: '',
+        status: 1,
+        created_by: this.$root.createdBy
+      },
+      showAssignStoresModal: false,
+      assigning: false,
+      groupToAssignMenuTiersTo: {},
+      showTiersModal: false,
+      tiersErrorMessage: ''
+    }
+  },
+  mounted () {
+    this.getGroups()
+  },
+  methods: {
+    /**
 		 * To get the list of locations that belong to the current group.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getGroupLocations () {
-			var storeGroupsVue = this
+    getGroupLocations () {
+      var storeGroupsVue = this
 
-			StoreGroupsFunctions.getGroupLocations(
-				storeGroupsVue.groupToAssignMenuTiersTo.id
-			)
-				.then(response => {
-					storeGroupsVue.groupToAssignMenuTiersTo.locations = response.payload.locations.map(
-						location => location.id
-					)
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Could not get tier details',
-						errorName: 'tiersErrorMessage',
-						vue: storeGroupsVue
-					})
-				})
-		},
-		/**
+      StoreGroupsFunctions.getGroupLocations(
+        storeGroupsVue.groupToAssignMenuTiersTo.id
+      )
+        .then(response => {
+          storeGroupsVue.groupToAssignMenuTiersTo.locations = response.payload.locations.map(
+            location => location.id
+          )
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'Could not get tier details',
+            errorName: 'tiersErrorMessage',
+            vue: storeGroupsVue
+          })
+        })
+    },
+    /**
 		 * To update the selected tier in the storage object
 		 * @function
 		 * @param {integer} id - ID of the tier selected
 		 * @returns {undefined}
 		 */
-		updateTier (id) {
-			this.groupToAssignMenuTiersTo.tier = id
-		},
-		/**
+    updateTier (id) {
+      this.groupToAssignMenuTiersTo.tier = id
+    },
+    /**
 		 * To close the Assign Tiers To Group modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeTiersModal () {
-			this.showTiersModal = false
-			this.groupToAssignMenuTiersTo = {
-				tier: null,
-				replaceExisting: 0,
-				locations: []
-			}
-		},
-		/**
+    closeTiersModal () {
+      this.showTiersModal = false
+      this.groupToAssignMenuTiersTo = {
+        tier: null,
+        replaceExisting: 0,
+        locations: []
+      }
+    },
+    /**
 		 * To init a storage object and display Assign Tiers modal
 		 * @function
 		 * @param {object} group - Group the user clicked
 		 * @returns {undefined}
 		 */
-		displayTiersModal (group) {
-			this.clearError('tiersErrorMessage')
-			this.groupToAssignMenuTiersTo = {
-				...group,
-				tier: null,
-				replaceExisting: 0,
-				locations: []
-			}
-			this.getGroupLocations()
-			this.showTiersModal = true
-		},
-		/**
+    displayTiersModal (group) {
+      this.clearError('tiersErrorMessage')
+      this.groupToAssignMenuTiersTo = {
+        ...group,
+        tier: null,
+        replaceExisting: 0,
+        locations: []
+      }
+      this.getGroupLocations()
+      this.showTiersModal = true
+    },
+    /**
 		 * To save the assignment
 		 * @function
 		 * @returns {undefined}
 		 */
-		assignMenuTiers () {
-			let storeGroupsVue = this
-			this.assigning = true
-			let payload = {
-				tier: this.groupToAssignMenuTiersTo.tier,
-				replace_existing: this.groupToAssignMenuTiersTo.replaceExisting,
-				locations: this.groupToAssignMenuTiersTo.locations
-			}
-			StoreGroupsFunctions.assignMenuTiersToGroup(
-				payload,
-				storeGroupsVue.$root.appId,
-				storeGroupsVue.$root.appSecret,
-				storeGroupsVue.$root.userToken
-			)
-				.then(response => {
-					storeGroupsVue.closeTiersModal()
-					storeGroupsVue.showAssignTiersSuccess(response.payload)
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Could not get tier details',
-						errorName: 'tiersErrorMessage',
-						vue: storeGroupsVue,
-						containerRef: 'applyToStoreGroupModal'
-					})
-				})
-				.finally(() => {
-					storeGroupsVue.assigning = false
-				})
-		},
-		/**
+    assignMenuTiers () {
+      let storeGroupsVue = this
+      this.assigning = true
+      let payload = {
+        tier: this.groupToAssignMenuTiersTo.tier,
+        replace_existing: this.groupToAssignMenuTiersTo.replaceExisting,
+        locations: this.groupToAssignMenuTiersTo.locations
+      }
+      StoreGroupsFunctions.assignMenuTiersToGroup(
+        payload,
+        storeGroupsVue.$root.appId,
+        storeGroupsVue.$root.appSecret,
+        storeGroupsVue.$root.userToken
+      )
+        .then(response => {
+          storeGroupsVue.closeTiersModal()
+          storeGroupsVue.showAssignTiersSuccess(response.payload)
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'Could not get tier details',
+            errorName: 'tiersErrorMessage',
+            vue: storeGroupsVue,
+            containerRef: 'applyToStoreGroupModal'
+          })
+        })
+        .finally(() => {
+          storeGroupsVue.assigning = false
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAssignTiersSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Menu Tiers have been saved'
-			let type = 'success'
+    showAssignTiersSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Menu Tiers have been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To get a list of store groups.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getGroups () {
-			this.loadingGroupsData = true
-			var storeGroupsVue = this
-			storeGroupsVue.groups = []
-			return StoreGroupsFunctions.getGroups(
-				storeGroupsVue.$root.appId,
-				storeGroupsVue.$root.appSecret,
-				storeGroupsVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						storeGroupsVue.loadingGroupsData = false
-						storeGroupsVue.groups = response.payload
-					} else {
-						storeGroupsVue.loadingGroupsData = false
-					}
-				})
-				.catch(reason => {
-					storeGroupsVue.loadingGroupsData = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch store groups',
-						errorName: 'listErrorMessage',
-						vue: storeGroupsVue
-					})
-				})
-		},
-		/**
+    getGroups () {
+      this.loadingGroupsData = true
+      var storeGroupsVue = this
+      storeGroupsVue.groups = []
+      return StoreGroupsFunctions.getGroups(
+        storeGroupsVue.$root.appId,
+        storeGroupsVue.$root.appSecret,
+        storeGroupsVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            storeGroupsVue.loadingGroupsData = false
+            storeGroupsVue.groups = response.payload
+          } else {
+            storeGroupsVue.loadingGroupsData = false
+          }
+        })
+        .catch(reason => {
+          storeGroupsVue.loadingGroupsData = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch store groups',
+            errorName: 'listErrorMessage',
+            vue: storeGroupsVue
+          })
+        })
+    },
+    /**
 		 * To compute height to display based on window height and navbar.
 		 * @function
 		 * @returns {undefined}
 		 */
-		computeHeight () {
-			const height = $(window).height() - 50
-			this.computedHeight = height + 'px'
-		},
-		/**
+    computeHeight () {
+      const height = $(window).height() - 50
+      this.computedHeight = height + 'px'
+    },
+    /**
 		 * To toggle the create group panel, initially set to closed.
 		 * @function
 		 * @returns {undefined}
 		 * @memberof Users
 		 * @version 0.0.4
 		 */
-		toggleCreateGroupPanel () {
-			this.createGroupCollapse = !this.createGroupCollapse
-		},
-		/**
+    toggleCreateGroupPanel () {
+      this.createGroupCollapse = !this.createGroupCollapse
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @param {string} name - Name of the error variable
 		 * @returns {undefined}
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To activate the right half panel which lists the store locations.
 		 * @function
 		 * @param {object} group - The selected group.
 		 * @returns {undefined}
 		 */
-		assignStoresToGroup (group) {
-			this.showAssignStoresModal = true
-			this.selectedGroupId = group.id
-		},
-		/**
+    assignStoresToGroup (group) {
+      this.showAssignStoresModal = true
+      this.selectedGroupId = group.id
+    },
+    /**
 		 * To close anything active in the side panel
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeAssignStoresModal () {
-			this.showAssignStoresModal = false
-		},
-		/**
+    closeAssignStoresModal () {
+      this.showAssignStoresModal = false
+    },
+    /**
 		 * To display the edit group modal.
 		 * @function
 		 * @param {object} group - The selected group.
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		displayEditGroupModal (group, event) {
-			event.stopPropagation()
-			this.showEditGroupModal = true
-			this.passedGroupId = group.id
-		},
-		/**
+    displayEditGroupModal (group, event) {
+      event.stopPropagation()
+      this.showEditGroupModal = true
+      this.passedGroupId = group.id
+    },
+    /**
 		 * To close the edit group modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeEditGroupModal () {
-			this.showEditGroupModal = false
-		},
-		/**
+    closeEditGroupModal () {
+      this.showEditGroupModal = false
+    },
+    /**
 		 * To update the group object emitted by the child.
 		 * @function
 		 * @param {object} group - The passed group object
 		 * @param {object} payload - The payload property of the server response
 		 * @returns {undefined}
 		 */
-		updateGroup ({group, payload}) {
-			this.showEditGroupModal = false
-			if (!payload.pending_approval) {
-				this.getGroups()
-			}
-			this.confirmUpdated(payload)
-		},
-		/**
+    updateGroup ({ group, payload }) {
+      this.showEditGroupModal = false
+      if (!payload.pending_approval) {
+        this.getGroups()
+      }
+      this.confirmUpdated(payload)
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmUpdated (payload = {}) {
-			let title = 'Success'
-			let text = 'The Store Group has been updated'
-			let type = 'success'
+    confirmUpdated (payload = {}) {
+      let title = 'Success'
+      let text = 'The Store Group has been updated'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To clear the new group form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearNewGroup () {
-			this.newGroup = {
-				name: '',
-				description: '',
-				status: 1,
-				created_by: this.$root.createdBy
-			}
-		},
-		/**
+    clearNewGroup () {
+      this.newGroup = {
+        name: '',
+        description: '',
+        status: 1,
+        created_by: this.$root.createdBy
+      }
+    },
+    /**
 		 * To check if the item data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateGroupData () {
-			var storeGroupsVue = this
-			return new Promise(function (resolve, reject) {
-				if (!storeGroupsVue.newGroup.name.length) {
-					reject('Group name cannot be blank')
-				} else if (!storeGroupsVue.newGroup.description.length) {
-					reject('Group description cannot be blank')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateGroupData () {
+      var storeGroupsVue = this
+      return new Promise(function (resolve, reject) {
+        if (!storeGroupsVue.newGroup.name.length) {
+          reject('Group name cannot be blank')
+        } else if (!storeGroupsVue.newGroup.description.length) {
+          reject('Group description cannot be blank')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To call the endpoint to create a new location group.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		createNewGroup () {
-			var storeGroupsVue = this
-			storeGroupsVue.clearError('errorMessage')
+    createNewGroup () {
+      var storeGroupsVue = this
+      storeGroupsVue.clearError('errorMessage')
 
-			return storeGroupsVue
-				.validateGroupData()
-				.then(response => {
-					storeGroupsVue.creating = true
-					StoreGroupsFunctions.createNewGroup(
-						storeGroupsVue.newGroup,
-						storeGroupsVue.$root.appId,
-						storeGroupsVue.$root.appSecret,
-						storeGroupsVue.$root.userToken
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								storeGroupsVue.newGroup.id = response.payload.id
-								if (response.payload && response.payload.pending_approval !== true) {
-									storeGroupsVue.getGroups()
-								}
-								storeGroupsVue.clearNewGroup()
-								storeGroupsVue.confirmCreated(response.payload)
-							} else {
-								storeGroupsVue.errorMessage = response.message
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not add the group',
-								errorName: 'errorMessage',
-								vue: storeGroupsVue
-							})
-						})
-						.finally(() => {
-							storeGroupsVue.creating = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					storeGroupsVue.errorMessage = reason
-					window.scrollTo(0, 0)
-					throw reason
-				})
-		},
-		/**
+      return storeGroupsVue
+        .validateGroupData()
+        .then(response => {
+          storeGroupsVue.creating = true
+          StoreGroupsFunctions.createNewGroup(
+            storeGroupsVue.newGroup,
+            storeGroupsVue.$root.appId,
+            storeGroupsVue.$root.appSecret,
+            storeGroupsVue.$root.userToken
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                storeGroupsVue.newGroup.id = response.payload.id
+                if (response.payload && response.payload.pending_approval !== true) {
+                  storeGroupsVue.getGroups()
+                }
+                storeGroupsVue.clearNewGroup()
+                storeGroupsVue.confirmCreated(response.payload)
+              } else {
+                storeGroupsVue.errorMessage = response.message
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not add the group',
+                errorName: 'errorMessage',
+                vue: storeGroupsVue
+              })
+            })
+            .finally(() => {
+              storeGroupsVue.creating = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          storeGroupsVue.errorMessage = reason
+          window.scrollTo(0, 0)
+          throw reason
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmCreated (payload = {}) {
-			let title = 'Success'
-			let text = 'The Store Group has been created'
-			let type = 'success'
+    confirmCreated (payload = {}) {
+      let title = 'Success'
+      let text = 'The Store Group has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Store Group has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Store Group has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		}
-	}
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    }
+  }
 }
 </script>
 

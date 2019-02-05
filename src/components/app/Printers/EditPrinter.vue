@@ -175,185 +175,185 @@ import Dropdown from '../../modules/Dropdown'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Modal,
-		Dropdown
-	},
-	props: {
-		printerId: {
-			type: Number,
-			required: true
-		}
-	},
-	data () {
-		return {
-			showEditPrinterModal: false,
-			updating: false,
-			printerToBeEdited: {
-				location_id: '',
-				printer_serialno: '',
-				printer_key: '',
-				printer_name: '',
-				created_by: '',
-				paper_width: '',
-				copies: '1',
-				status: 0,
-				version: ''
-			},
-			errorMessage: ''
-		}
-	},
-	created () {
-		// get printer details by printer id passed as route param
-		this.getPrinterDetails()
-	},
-	mounted () {
-		this.showEditPrinterModal = true
-	},
-	methods: {
-		/**
+  components: {
+    Modal,
+    Dropdown
+  },
+  props: {
+    printerId: {
+      type: Number,
+      required: true
+    }
+  },
+  data () {
+    return {
+      showEditPrinterModal: false,
+      updating: false,
+      printerToBeEdited: {
+        location_id: '',
+        printer_serialno: '',
+        printer_key: '',
+        printer_name: '',
+        created_by: '',
+        paper_width: '',
+        copies: '1',
+        status: 0,
+        version: ''
+      },
+      errorMessage: ''
+    }
+  },
+  created () {
+    // get printer details by printer id passed as route param
+    this.getPrinterDetails()
+  },
+  mounted () {
+    this.showEditPrinterModal = true
+  },
+  methods: {
+    /**
 		 * To check if the category data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validatePrinterData () {
-			var addPrinterVue = this
-			return new Promise(function (resolve, reject) {
-				if (!addPrinterVue.printerToBeEdited.printer_name.length) {
-					reject('Printer name cannot be blank')
-				} else if (!addPrinterVue.printerToBeEdited.printer_key.length) {
-					reject('Printer key cannot be blank')
-				} else if (!addPrinterVue.printerToBeEdited.printer_serialno.length) {
-					reject('Printer serial number cannot be blank')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validatePrinterData () {
+      var addPrinterVue = this
+      return new Promise(function (resolve, reject) {
+        if (!addPrinterVue.printerToBeEdited.printer_name.length) {
+          reject('Printer name cannot be blank')
+        } else if (!addPrinterVue.printerToBeEdited.printer_key.length) {
+          reject('Printer key cannot be blank')
+        } else if (!addPrinterVue.printerToBeEdited.printer_serialno.length) {
+          reject('Printer serial number cannot be blank')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To get the details of the category to be updated.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getPrinterDetails () {
-			var editPrinterVue = this
-			PrintersFunctions.getPrinterDetails(
-				editPrinterVue.printerId,
-				editPrinterVue.$root.appId,
-				editPrinterVue.$root.appSecret,
-				editPrinterVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						editPrinterVue.printerToBeEdited = response.payload
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch printer info',
-						errorName: 'errorMessage',
-						vue: editPrinterVue,
-						containerRef: 'modal'
-					})
-				})
-		},
-		/**
+    getPrinterDetails () {
+      var editPrinterVue = this
+      PrintersFunctions.getPrinterDetails(
+        editPrinterVue.printerId,
+        editPrinterVue.$root.appId,
+        editPrinterVue.$root.appSecret,
+        editPrinterVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            editPrinterVue.printerToBeEdited = response.payload
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch printer info',
+            errorName: 'errorMessage',
+            vue: editPrinterVue,
+            containerRef: 'modal'
+          })
+        })
+    },
+    /**
 		 * To update the category and close the modal.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		updatePrinter () {
-			var editPrinterVue = this
-			editPrinterVue.clearError()
-			editPrinterVue.printerToBeEdited.updated_by =
+    updatePrinter () {
+      var editPrinterVue = this
+      editPrinterVue.clearError()
+      editPrinterVue.printerToBeEdited.updated_by =
 				editPrinterVue.$root.createdBy
 
-			return editPrinterVue
-				.validatePrinterData()
-				.then(response => {
-					editPrinterVue.updating = true
-					PrintersFunctions.updatePrinter(
-						editPrinterVue.printerToBeEdited,
-						editPrinterVue.$root.appId,
-						editPrinterVue.$root.appSecret,
-						editPrinterVue.$root.userToken
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								this.closeModalAndUpdate()
-								this.showEditSuccess(response.payload)
-							} else {
-								editPrinterVue.errorMessage = response.message
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not update the printer',
-								errorName: 'errorMessage',
-								vue: editPrinterVue,
-								containerRef: 'modal'
-							})
-						})
-						.finally(() => {
-							editPrinterVue.updating = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					editPrinterVue.errorMessage = reason
-					window.scrollTo(0, 0)
-					throw reason
-				})
-		},
-		/**
+      return editPrinterVue
+        .validatePrinterData()
+        .then(response => {
+          editPrinterVue.updating = true
+          PrintersFunctions.updatePrinter(
+            editPrinterVue.printerToBeEdited,
+            editPrinterVue.$root.appId,
+            editPrinterVue.$root.appSecret,
+            editPrinterVue.$root.userToken
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                this.closeModalAndUpdate()
+                this.showEditSuccess(response.payload)
+              } else {
+                editPrinterVue.errorMessage = response.message
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not update the printer',
+                errorName: 'errorMessage',
+                vue: editPrinterVue,
+                containerRef: 'modal'
+              })
+            })
+            .finally(() => {
+              editPrinterVue.updating = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          editPrinterVue.errorMessage = reason
+          window.scrollTo(0, 0)
+          throw reason
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Printer has been saved'
-			let type = 'success'
+    showEditSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Printer has been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('closeEditPrinterModal')
-		},
-		/**
+    closeModal () {
+      this.$emit('closeEditPrinterModal')
+    },
+    /**
 		 * To close the modal and emit the updated category object to the parent.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModalAndUpdate () {
-			this.$emit('updatePrinter', this.printerToBeEdited)
-		}
-	}
+    closeModalAndUpdate () {
+      this.$emit('updatePrinter', this.printerToBeEdited)
+    }
+  }
 }
 </script>
 

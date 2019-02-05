@@ -58,8 +58,8 @@
                   </li>
                   <template v-for="(folder, index) in folders.children">
                     <resource-folder
-                      :folder="folder"
                       :key="index"
+                      :folder="folder"
                       :active-folder="activeFolder.id"
                       :last="index === folders.children.length - 1"
                       :select-only="selectOnly"
@@ -74,7 +74,7 @@
             </ul>
           </div>
         </div>
-      </div>			
+      </div>
       <div
         v-show="activeFolder.id && !allFoldersView"
         class="col-sm-8  margin-top-10"
@@ -83,7 +83,7 @@
           <div class="panel-heading">
             Select an Image
           </div>
-          <div class="panel-body" />	
+          <div class="panel-body" />
           <div
             v-if="!activeFolder.id && !allFoldersView"
             class="center margin-top-20 font-red bold"
@@ -362,115 +362,115 @@ import global from '@/global.js'
  */
 
 export default {
-	name: 'ResourcePicker',
-	components: {
-		Dropdown,
-		LoadingScreen,
-		Modal,
-		PageResults,
-		Pagination,
-		FileUpload,
-		ResourceFolder
-	},
-	props: {
-		buttonText: {
-			type: String,
-			default: 'Select Resource'
-		},
-		noButton: {
-			type: Boolean,
-			default: () => true
-		},
-		imageUrl: {
-			type: String,
-			default: ImagePlaceholder
-		},
-		imageButton: {
-			type: Boolean,
-			default: () => false
-		},
-		showDoneButton: {
-			type: Boolean,
-			default: true
-		},
-		selectOnly: {
-			type: Boolean,
-			default: true
-		}
-	},
-	data () {
-		return {
-			showResourceModal: false,
-			filterCollapse: true,
-			folders: {},
-			activeFolder: {},
-			currentResources: [],
-			numPages: 0,
-			totalResults: 0,
-			activePage: 1,
-			recordsPerPage: 25,
-			loadingResourceData: false,
-			allFoldersView: false,
-			advancedSearch: {
-				search: '',
-				range: 'this_folder',
-				searchOptions: [
-					{ name: 'All Folders', value: 'all_folders' },
-					{ name: 'This Folder', value: 'this_folder' }
-				]
-			},
-			sortBy: {
-				field: 'name',
-				order: 'asc'
-			},
-			sortOptions: {
-				name: 'Name',
-				size: 'Size',
-				created_at: 'Date Added'
-			},
-			isSaving: false,
-			searchError: '',
-			tags: [],
-			fileTypes: [
-				{ name: 'image', icon: 'fa fa-file-image-o', active: false },
-				{ name: 'video', icon: 'fa fa-file-video-o', active: false },
-				{ name: 'documents', icon: 'fa fa-file-text-o', active: false },
-				{ name: 'other', icon: 'fa fa-file-o', active: false }
-			],
-			selectedResource: {},
-			activeBusinessName: null,
-			activeLocationId: null,
-			activeLocationName: null,
-			errorMessage: ''
-		}
-	},
-	computed: {
-		placeholderUrl () {
-			if (this.imageUrl) {
-				return this.imageUrl
-			} else {
-				return ImagePlaceholder
-			}
-		}
-	},
-	watch: {
-		'sortBy.order' () {
-			if (this.sortBy.field) {
-				if (parseInt(this.activePage) === 1) {
-					this.getResources(this.activeFolder, 1)
-				} else {
-					this.activePageUpdate(1, this.activeFolder)
-				}
-			}
-		}
-	},
-	mounted () {
-		if (!this.imageButton && this.noButton) {
-			this.openResourceModal()
-		}
-	},
-	methods: {
-		/**
+  name: 'ResourcePicker',
+  components: {
+    Dropdown,
+    LoadingScreen,
+    Modal,
+    PageResults,
+    Pagination,
+    FileUpload,
+    ResourceFolder
+  },
+  props: {
+    buttonText: {
+      type: String,
+      default: 'Select Resource'
+    },
+    noButton: {
+      type: Boolean,
+      default: () => true
+    },
+    imageUrl: {
+      type: String,
+      default: ImagePlaceholder
+    },
+    imageButton: {
+      type: Boolean,
+      default: () => false
+    },
+    showDoneButton: {
+      type: Boolean,
+      default: true
+    },
+    selectOnly: {
+      type: Boolean,
+      default: true
+    }
+  },
+  data () {
+    return {
+      showResourceModal: false,
+      filterCollapse: true,
+      folders: {},
+      activeFolder: {},
+      currentResources: [],
+      numPages: 0,
+      totalResults: 0,
+      activePage: 1,
+      recordsPerPage: 25,
+      loadingResourceData: false,
+      allFoldersView: false,
+      advancedSearch: {
+        search: '',
+        range: 'this_folder',
+        searchOptions: [
+          { name: 'All Folders', value: 'all_folders' },
+          { name: 'This Folder', value: 'this_folder' }
+        ]
+      },
+      sortBy: {
+        field: 'name',
+        order: 'asc'
+      },
+      sortOptions: {
+        name: 'Name',
+        size: 'Size',
+        created_at: 'Date Added'
+      },
+      isSaving: false,
+      searchError: '',
+      tags: [],
+      fileTypes: [
+        { name: 'image', icon: 'fa fa-file-image-o', active: false },
+        { name: 'video', icon: 'fa fa-file-video-o', active: false },
+        { name: 'documents', icon: 'fa fa-file-text-o', active: false },
+        { name: 'other', icon: 'fa fa-file-o', active: false }
+      ],
+      selectedResource: {},
+      activeBusinessName: null,
+      activeLocationId: null,
+      activeLocationName: null,
+      errorMessage: ''
+    }
+  },
+  computed: {
+    placeholderUrl () {
+      if (this.imageUrl) {
+        return this.imageUrl
+      } else {
+        return ImagePlaceholder
+      }
+    }
+  },
+  watch: {
+    'sortBy.order' () {
+      if (this.sortBy.field) {
+        if (parseInt(this.activePage) === 1) {
+          this.getResources(this.activeFolder, 1)
+        } else {
+          this.activePageUpdate(1, this.activeFolder)
+        }
+      }
+    }
+  },
+  mounted () {
+    if (!this.imageButton && this.noButton) {
+      this.openResourceModal()
+    }
+  },
+  methods: {
+    /**
 		 * To initialize the edit folder process by redirecting to the edit folder route
 		 * @function
 		 * @param {object} folder - The parent folder where the user is creating a new folder
@@ -478,12 +478,12 @@ export default {
 		 * @memberof Resources
 		 * @version 0.0.9
 		 */
-		manageFolder (folder) {
-			this.$router.push({
-				path: `/app/gallery/edit_folder/${JSON.stringify(folder)}`
-			})
-		},
-		/**
+    manageFolder (folder) {
+      this.$router.push({
+        path: `/app/gallery/edit_folder/${JSON.stringify(folder)}`
+      })
+    },
+    /**
 		 * To initialize the create folder process by redirecting to the create folder route
 		 * @function
 		 * @param {object} folder - The parent folder where the user is creating a new folder
@@ -491,10 +491,10 @@ export default {
 		 * @memberof Resources
 		 * @version 0.0.9
 		 */
-		createFolder (folder) {
-			this.$router.push({ path: `/app/gallery/create_folder/${folder.id}` })
-		},
-		/**
+    createFolder (folder) {
+      this.$router.push({ path: `/app/gallery/create_folder/${folder.id}` })
+    },
+    /**
 		 * To update the number of images shown on a page
 		 * @function
 		 * @param {integer} val - The number of items to display
@@ -502,34 +502,34 @@ export default {
 		 * @memberof ResourceModal
 		 * @version 0.0.9
 		 */
-		updatePerPage (val) {
-			this.recordsPerPage = val
-		},
-		/**
+    updatePerPage (val) {
+      this.recordsPerPage = val
+    },
+    /**
 		 * To open the resource modal and initialize content
 		 * @function
 		 * @returns {undefined}
 		 * @memberof ResourceModal
 		 * @version 0.0.9
 		 */
-		openResourceModal () {
-			this.$emit('open')
-			this.showResourceModal = true
-			this.getFolders()
-			this.getTags()
-		},
-		/**
+    openResourceModal () {
+      this.$emit('open')
+      this.showResourceModal = true
+      this.getFolders()
+      this.getTags()
+    },
+    /**
 		 * To close the resource modal
 		 * @function
 		 * @returns {undefined}
 		 * @memberof ResourceModal
 		 * @version 0.0.9
 		 */
-		closeResourceModal () {
-			this.showResourceModal = false
-			this.$emit('close')
-		},
-		/**
+    closeResourceModal () {
+      this.showResourceModal = false
+      this.$emit('close')
+    },
+    /**
 		 * To pull in folders under the selected parent id (or root)
 		 * @function
 		 * @param {integer} parentId - The id of the parent folder being pulled from.
@@ -538,62 +538,62 @@ export default {
 		 * @memberof ResourceModal
 		 * @version 0.0.9
 		 */
-		getFolders (parentId, folder) {
-			let _this = this
-			const businessId = global.resourcesBusinessId
-			const locationId = this.activeLocationId
-			const pageNumber = 1
-			const recordsPerPage = this.recordsPerPage
-			if (!parentId) {
-				parentId = 0
-			}
+    getFolders (parentId, folder) {
+      let _this = this
+      const businessId = global.resourcesBusinessId
+      const locationId = this.activeLocationId
+      const pageNumber = 1
+      const recordsPerPage = this.recordsPerPage
+      if (!parentId) {
+        parentId = 0
+      }
 
-			return Resources.getFolders(
-				businessId,
-				locationId,
-				parentId,
-				pageNumber,
-				recordsPerPage
-			)
-				.then(response => {
-					if (parentId === 0) {
-						_this.folders = Object.assign(
-							{},
-							_this.folders,
-							response.payload.folders[0]
-						)
-						_this.$set(_this.folders, 'expanded', false)
-						_this.$set(_this.folders, 'children_fetched', false)
-						_this.activePageUpdate(1, _this.folders, true)
-						_this.expandNode(_this.folders)
-					} else {
-						_this.$set(folder, 'children_fetched', true)
-						_this.$set(folder, 'children', response.payload.folders)
-					}
-				})
-				.catch(
-					_this.$root.errorWrapper(e => {
-						if (e.responseJSON) {
-							switch (e.responseJSON.declaration) {
-							case 'folder_not_found':
-								_this.$set(folder, 'children_fetched', true)
-								_this.$set(folder, 'children', [])
-								break
+      return Resources.getFolders(
+        businessId,
+        locationId,
+        parentId,
+        pageNumber,
+        recordsPerPage
+      )
+        .then(response => {
+          if (parentId === 0) {
+            _this.folders = Object.assign(
+              {},
+              _this.folders,
+              response.payload.folders[0]
+            )
+            _this.$set(_this.folders, 'expanded', false)
+            _this.$set(_this.folders, 'children_fetched', false)
+            _this.activePageUpdate(1, _this.folders, true)
+            _this.expandNode(_this.folders)
+          } else {
+            _this.$set(folder, 'children_fetched', true)
+            _this.$set(folder, 'children', response.payload.folders)
+          }
+        })
+        .catch(
+          _this.$root.errorWrapper(e => {
+            if (e.responseJSON) {
+              switch (e.responseJSON.declaration) {
+                case 'folder_not_found':
+                  _this.$set(folder, 'children_fetched', true)
+                  _this.$set(folder, 'children', [])
+                  break
 
-							case 'business_not_found':
-								break
+                case 'business_not_found':
+                  break
 
-							case 'invalid_page_number':
-								break
+                case 'invalid_page_number':
+                  break
 
-							default:
+                default:
 								// No default
-							}
-						}
-					})
-				)
-		},
-		/**
+              }
+            }
+          })
+        )
+    },
+    /**
 		 * To expand or collapse the selected folder and to pull in all child folders.
 		 * @function
 		 * @param {object} folder - The folder being toggled.
@@ -601,16 +601,16 @@ export default {
 		 * @memberof ResourceModal
 		 * @version 0.0.9
 		 */
-		expandNode (folder) {
-			if (folder.expanded) {
-				this.$set(folder, 'expanded', false)
-			} else {
-				this.$set(folder, 'expanded', true)
+    expandNode (folder) {
+      if (folder.expanded) {
+        this.$set(folder, 'expanded', false)
+      } else {
+        this.$set(folder, 'expanded', true)
 
-				this.getFolders(folder.id, folder)
-			}
-		},
-		/**
+        this.getFolders(folder.id, folder)
+      }
+    },
+    /**
 		 * To update the currently active pagination page.
 		 * @function
 		 * @param {integer} val - An integer representing the page number that we are updating to.
@@ -620,73 +620,73 @@ export default {
 		 * @memberof ResourceModal
 		 * @version 0.0.9
 		 */
-		activePageUpdate (val, folder, override) {
-			if (parseInt(this.activePage) !== parseInt(val)) {
-				this.activePage = val
-				if (folder) {
-					this.getResources(folder, this.activePage)
-				} else {
-					this.getResources(this.activeFolder, this.activePage)
-				}
-			} else if (override) {
-				if (folder) {
-					this.getResources(folder, this.activePage)
-				} else {
-					this.getResources(this.activeFolder, this.activePage)
-				}
-			}
-		},
-		/**
+    activePageUpdate (val, folder, override) {
+      if (parseInt(this.activePage) !== parseInt(val)) {
+        this.activePage = val
+        if (folder) {
+          this.getResources(folder, this.activePage)
+        } else {
+          this.getResources(this.activeFolder, this.activePage)
+        }
+      } else if (override) {
+        if (folder) {
+          this.getResources(folder, this.activePage)
+        } else {
+          this.getResources(this.activeFolder, this.activePage)
+        }
+      }
+    },
+    /**
 		 * To format the search criteria for use in the api call
 		 * @function
 		 * @returns {object} - An object of the formated search data
 		 * @memberof ResourceModal
 		 * @version 0.0.9
 		 */
-		formatSearchCriteria () {
-			let searchCriteria = {}
+    formatSearchCriteria () {
+      let searchCriteria = {}
 
-			if (this.advancedSearch.search.length > 2) {
-				searchCriteria.search_query = this.advancedSearch.search
-				searchCriteria.search_in = 'name'
-			}
+      if (this.advancedSearch.search.length > 2) {
+        searchCriteria.search_query = this.advancedSearch.search
+        searchCriteria.search_in = 'name'
+      }
 
-			if (this.tags.length) {
-				searchCriteria.tags = []
-				this.tags.forEach(tag => {
-					if (tag.active) {
-						searchCriteria.tags.push(tag.id)
-					}
-				})
-			}
+      if (this.tags.length) {
+        searchCriteria.tags = []
+        this.tags.forEach(tag => {
+          if (tag.active) {
+            searchCriteria.tags.push(tag.id)
+          }
+        })
+      }
 
-			return searchCriteria
-		},
-		/**
+      return searchCriteria
+    },
+    /**
 		 * To preload images to avoid delayed loading in the UI.
 		 * @function
 		 * @returns {object} A promise that will return either a success object or an error object.
 		 * @memberof ResourceModal
 		 * @version 0.0.9
 		 */
-		// preloadImages () {
-		// 	let _this = this
+    // preloadImages () {
+    // 	let _this = this
 
-		// 	return new Promise((resolve, reject) => {
-		// 		if (!_this.currentResources.length) {
-		// 			resolve()
-		// 		}
+    // 	return new Promise((resolve, reject) => {
+    // 		if (!_this.currentResources.length) {
+    // 			resolve()
+    // 		}
 
-		// 		_this.currentResources.forEach(resource => {
-		// 		/* eslint-disable no-undef */
-		// 			let img = new Image()
-		// 			img.src = resource.url
-		// 		})
+    // 		_this.currentResources.forEach(resource => {
+    // 		/* eslint-disable no-undef */
+    // 			let img = new Image()
+    // 			img.src = resource.url
+    // 		})
 
-		// 		resolve()
-		// 	})
-		// },
-		/**
+    // 		resolve()
+    // 	})
+    // },
+    /**
 		 * To fetch the resources in the selected folder.
 		 * @function
 		 * @param {object} folder - The folder being fetched.
@@ -695,130 +695,130 @@ export default {
 		 * @memberof ResourceModal
 		 * @version 0.0.9
 		 */
-		getResources (folder, pageNumber) {
-			this.loadingResourceData = true
-			this.currentResources = []
+    getResources (folder, pageNumber) {
+      this.loadingResourceData = true
+      this.currentResources = []
 
-			let _this = this
-			const businessId = global.resourcesBusinessId
-			const locationId = this.activeLocationId
-			const recordsPerPage = this.recordsPerPage
-			const searchCriteria = this.formatSearchCriteria()
-			const sortCriteria = {
-				sort_by: this.sortBy.field,
-				sort_order: this.sortBy.order
-			}
+      let _this = this
+      const businessId = global.resourcesBusinessId
+      const locationId = this.activeLocationId
+      const recordsPerPage = this.recordsPerPage
+      const searchCriteria = this.formatSearchCriteria()
+      const sortCriteria = {
+        sort_by: this.sortBy.field,
+        sort_order: this.sortBy.order
+      }
 
-			if (!pageNumber) {
-				pageNumber = this.activePage
-			}
+      if (!pageNumber) {
+        pageNumber = this.activePage
+      }
 
-			let folderId = folder.id
-			if (this.advancedSearch.range === 'all_folders') {
-				folderId = null
-				this.allFoldersView = true
-				this.activeFolder = Object.assign({})
-			} else {
-				this.allFoldersView = false
-				this.activeFolder = Object.assign({}, folder)
-			}
+      let folderId = folder.id
+      if (this.advancedSearch.range === 'all_folders') {
+        folderId = null
+        this.allFoldersView = true
+        this.activeFolder = Object.assign({})
+      } else {
+        this.allFoldersView = false
+        this.activeFolder = Object.assign({}, folder)
+      }
 
-			return Resources.getResources(
-				businessId,
-				locationId,
-				folderId,
-				pageNumber,
-				recordsPerPage,
-				searchCriteria,
-				sortCriteria
-			)
-				.then(response => {
-					_this.currentResources = response.payload.files
-					_this.numPages = response.payload.number_of_pages
-					_this.totalResults = response.payload.number_of_records
-					_this.loadingResourceData = false
-				})
-				.catch(
-					_this.$root.errorWrapper(e => {
-						if (e.responseJSON) {
-							switch (e.responseJSON.declaration) {
-							case 'file_not_found':
-								_this.numPages = 0
-								_this.totalResults = 0
-								break
+      return Resources.getResources(
+        businessId,
+        locationId,
+        folderId,
+        pageNumber,
+        recordsPerPage,
+        searchCriteria,
+        sortCriteria
+      )
+        .then(response => {
+          _this.currentResources = response.payload.files
+          _this.numPages = response.payload.number_of_pages
+          _this.totalResults = response.payload.number_of_records
+          _this.loadingResourceData = false
+        })
+        .catch(
+          _this.$root.errorWrapper(e => {
+            if (e.responseJSON) {
+              switch (e.responseJSON.declaration) {
+                case 'file_not_found':
+                  _this.numPages = 0
+                  _this.totalResults = 0
+                  break
 
-							case 'business_not_found':
-								_this.numPages = 0
-								_this.totalResults = 0
-								_this.$swal({
-									title: 'Error',
-									html:
+                case 'business_not_found':
+                  _this.numPages = 0
+                  _this.totalResults = 0
+                  _this.$swal({
+                    title: 'Error',
+                    html:
 											'There is an issue with your business account. Please contact your admin.',
-									type: 'warning'
-								})
-								break
+                    type: 'warning'
+                  })
+                  break
 
-							case 'invalid_page_number':
-								_this.numPages = e.responseJSON.payload.number_of_pages
-								_this.totalResults = e.responseJSON.payload.number_of_records
-								if (_this.numPages !== 0) {
-									_this.getResources(
-											this.activeFolder,
-											e.responseJSON.payload.number_of_pages
-										)
-								}
-								break
+                case 'invalid_page_number':
+                  _this.numPages = e.responseJSON.payload.number_of_pages
+                  _this.totalResults = e.responseJSON.payload.number_of_records
+                  if (_this.numPages !== 0) {
+                    _this.getResources(
+                      this.activeFolder,
+                      e.responseJSON.payload.number_of_pages
+                    )
+                  }
+                  break
 
-							default:
+                default:
 								// No default
-							}
-						}
-						_this.loadingResourceData = false
-					})
-				)
-		},
-		/**
+              }
+            }
+            _this.loadingResourceData = false
+          })
+        )
+    },
+    /**
 		 * To pull in all tags belonging to the business or location
 		 * @function
 		 * @returns {undefined}
 		 * @memberof ResourceModal
 		 * @version 0.0.9
 		 */
-		getTags () {
-			let _this = this
-			const businessId = global.resourcesBusinessId
-			const locationId = this.activeLocationId
-			const pageNumber = 1
-			const recordsPerPage = this.recordsPerPage
+    getTags () {
+      let _this = this
+      const businessId = global.resourcesBusinessId
+      const locationId = this.activeLocationId
+      const pageNumber = 1
+      const recordsPerPage = this.recordsPerPage
 
-			return Resources.getTags(
-				businessId,
-				locationId,
-				pageNumber,
-				recordsPerPage
-			)
-				.then(response => {
-					_this.tags = response.payload.tags.map(tag => {
-						tag.active = false
-						return tag
-					})
-				})
-				.catch(
-					_this.$root.errorWrapper(e => {
-						if (e.responseJSON) {
-							switch (e.responseJSON.declaration) {
-							case 'tags_not_found':
-								_this.tags = []
-								return
+      return Resources.getTags(
+        businessId,
+        locationId,
+        pageNumber,
+        recordsPerPage
+      )
+        .then(response => {
+          _this.tags = response.payload.tags.map(tag => {
+            tag.active = false
+            return tag
+          })
+        })
+        .catch(
+          _this.$root.errorWrapper(e => {
+            if (e.responseJSON) {
+              switch (e.responseJSON.declaration) {
+                case 'tags_not_found':
+                  _this.tags = []
+                  return
 
-							default:
-								_this.errorMessage = "We couldn't fetch file types"
-							}
-						}
-					})
-				)
-		},
-		/**
+                default:
+                  _this.errorMessage = "We couldn't fetch file types"
+              }
+            }
+          })
+        )
+    },
+    /**
 		 * To check whether or not a file is currently being uploaded.
 		 * @function
 		 * @param {boolean} val - Whether or not a file is currently being uploaded.
@@ -826,10 +826,10 @@ export default {
 		 * @memberof ResourceModal
 		 * @version 0.0.9
 		 */
-		checkSaving (val) {
-			this.isSaving = val
-		},
-		/**
+    checkSaving (val) {
+      this.isSaving = val
+    },
+    /**
 		 * Called when a file is uploaded to give the user the opportunity to manage the file.
 		 * @function
 		 * @param {integer} val - The id of the uploaded file.
@@ -837,10 +837,10 @@ export default {
 		 * @memberof ResourceModal
 		 * @version 0.0.9
 		 */
-		imageUploaded (val) {
-			this.getResources(this.activeFolder, this.activePage)
-		},
-		/**
+    imageUploaded (val) {
+      this.getResources(this.activeFolder, this.activePage)
+    },
+    /**
 		 * To update the sort by field and make a backend call to pull the sorted data.
 		 * @function
 		 * @param {string} field - The field that the user wants to sort by.
@@ -848,27 +848,27 @@ export default {
 		 * @memberof ResourceModal
 		 * @version 0.0.9
 		 */
-		setSortField (field) {
-			if (field !== this.sortBy.field) {
-				this.sortBy.field = field
-				if (parseInt(this.activePage) === 1) {
-					this.getResources(this.activeFolder, 1)
-				} else {
-					this.activePageUpdate(1, this.activeFolder)
-				}
-			}
-		},
-		/**
+    setSortField (field) {
+      if (field !== this.sortBy.field) {
+        this.sortBy.field = field
+        if (parseInt(this.activePage) === 1) {
+          this.getResources(this.activeFolder, 1)
+        } else {
+          this.activePageUpdate(1, this.activeFolder)
+        }
+      }
+    },
+    /**
 		 * To toggle the filter panel, initially set to closed
 		 * @function
 		 * @returns {undefined}
 		 * @memberof ResourceModal
 		 * @version 0.0.9
 		 */
-		toggleFilterPanel () {
-			this.filterCollapse = !this.filterCollapse
-		},
-		/**
+    toggleFilterPanel () {
+      this.filterCollapse = !this.filterCollapse
+    },
+    /**
 		 * To toggle a tag on and off as a filter option.
 		 * @function
 		 * @param {object} tag - The tag being toggled
@@ -876,10 +876,10 @@ export default {
 		 * @memberof ResourceModal
 		 * @version 0.0.9
 		 */
-		toggleTag (tag) {
-			tag.active = !tag.active
-		},
-		/**
+    toggleTag (tag) {
+      tag.active = !tag.active
+    },
+    /**
 		 * To toggle a file type on and off as a filter option.
 		 * @function
 		 * @param {object} type - The type being toggled
@@ -887,43 +887,43 @@ export default {
 		 * @memberof ResourceModal
 		 * @version 0.0.9
 		 */
-		toggleFileType (type) {
-			type.active = !type.active
-		},
-		/**
+    toggleFileType (type) {
+      type.active = !type.active
+    },
+    /**
 		 * To clear the current search error.
 		 * @function
 		 * @returns {undefined}
 		 * @memberof ResourceModal
 		 * @version 0.0.9
 		 */
-		clearSearchError () {
-			this.searchError = ''
-		},
-		/**
+    clearSearchError () {
+      this.searchError = ''
+    },
+    /**
 		 * To send the advanced search options to the backend to fetch resources.
 		 * @function
 		 * @returns {undefined}
 		 * @memberof ResourceModal
 		 * @version 0.0.9
 		 */
-		advancedResourceSearch () {
-			this.clearSearchError()
-			if (
-				this.advancedSearch.search.length &&
+    advancedResourceSearch () {
+      this.clearSearchError()
+      if (
+        this.advancedSearch.search.length &&
 				this.advancedSearch.search.length < 3
-			) {
-				this.searchError =
+      ) {
+        this.searchError =
 					'In order to use the search field your term must be at least 3 characters.'
-			} else {
-				if (parseInt(this.activePage) === 1) {
-					this.getResources(this.activeFolder, 1)
-				} else {
-					this.activePageUpdate(1, this.activeFolder)
-				}
-			}
-		},
-		/**
+      } else {
+        if (parseInt(this.activePage) === 1) {
+          this.getResources(this.activeFolder, 1)
+        } else {
+          this.activePageUpdate(1, this.activeFolder)
+        }
+      }
+    },
+    /**
 		 * To select a resource to use.
 		 * @function
 		 * @param {object} resource - The resource being selected.
@@ -931,52 +931,52 @@ export default {
 		 * @memberof ResourceModal
 		 * @version 0.0.9
 		 */
-		setResource (resource) {
-			this.selectedResource = Object.assign({}, resource)
-		},
-		/**
+    setResource (resource) {
+      this.selectedResource = Object.assign({}, resource)
+    },
+    /**
 		 * To clear the current resource search criteria.
 		 * @function
 		 * @returns {undefined}
 		 * @memberof ResourceModal
 		 * @version 0.0.9
 		 */
-		resetResourceSearch () {
-			this.advancedSearch = {
-				search: '',
-				range: 'this_folder',
-				searchOptions: [
-					{ name: 'All Folders', value: 'all_folders' },
-					{ name: 'This Folder', value: 'this_folder' }
-				]
-			}
+    resetResourceSearch () {
+      this.advancedSearch = {
+        search: '',
+        range: 'this_folder',
+        searchOptions: [
+          { name: 'All Folders', value: 'all_folders' },
+          { name: 'This Folder', value: 'this_folder' }
+        ]
+      }
 
-			this.tags.forEach(tag => {
-				tag.active = false
-			})
-			this.fileTypes.forEach(type => {
-				type.active = false
-			})
+      this.tags.forEach(tag => {
+        tag.active = false
+      })
+      this.fileTypes.forEach(type => {
+        type.active = false
+      })
 
-			this.clearSearchError()
-			this.getResources(this.activeFolder, 1)
-		},
-		/**
+      this.clearSearchError()
+      this.getResources(this.activeFolder, 1)
+    },
+    /**
 		 * To close the resource modal and emit the selected resource
 		 * @function
 		 * @returns {undefined}
 		 * @memberof ResourceModal
 		 * @version 0.0.9
 		 */
-		resourceSelectionComplete () {
-			let payload = { ...this.selectedResource }
-			payload.image_url = payload.url
-			this.$emit('selected', payload)
-			if (this.showDoneButton) {
-				this.closeResourceModal()
-			}
-		},
-		/**
+    resourceSelectionComplete () {
+      let payload = { ...this.selectedResource }
+      payload.image_url = payload.url
+      this.$emit('selected', payload)
+      if (this.showDoneButton) {
+        this.closeResourceModal()
+      }
+    },
+    /**
 		 * To select the resource and complete the selection process
 		 * @function
 		 * @param {object} resource - The selected resource
@@ -984,11 +984,11 @@ export default {
 		 * @memberof ResourceModal
 		 * @version 0.0.9
 		 */
-		selectAndComplete (resource) {
-			this.setResource(resource)
-			this.resourceSelectionComplete()
-		}
-	}
+    selectAndComplete (resource) {
+      this.setResource(resource)
+      this.resourceSelectionComplete()
+    }
+  }
 }
 </script>
 

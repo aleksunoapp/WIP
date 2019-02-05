@@ -66,63 +66,63 @@ const STATUS_SUCCESS = 2
 const STATUS_FAILED = 3
 
 export default {
-	name: 'FileUpload',
-	components: {
-		LoadingScreen
-	},
-	props: {
-		folderId: {
-			default: 0
-		}
-	},
-	data () {
-		return {
-			uploadedFiles: [],
-			uploadError: null,
-			currentStatus: null,
-			uploadFieldName: 'file',
-			activeLocationId: null
-		}
-	},
-	computed: {
-		isInitial () {
-			return this.currentStatus === STATUS_INITIAL
-		},
-		isSaving () {
-			return this.currentStatus === STATUS_SAVING
-		},
-		isSuccess () {
-			return this.currentStatus === STATUS_SUCCESS
-		},
-		isFailed () {
-			return this.currentStatus === STATUS_FAILED
-		}
-	},
-	/**
+  name: 'FileUpload',
+  components: {
+    LoadingScreen
+  },
+  props: {
+    folderId: {
+      default: 0
+    }
+  },
+  data () {
+    return {
+      uploadedFiles: [],
+      uploadError: null,
+      currentStatus: null,
+      uploadFieldName: 'file',
+      activeLocationId: null
+    }
+  },
+  computed: {
+    isInitial () {
+      return this.currentStatus === STATUS_INITIAL
+    },
+    isSaving () {
+      return this.currentStatus === STATUS_SAVING
+    },
+    isSuccess () {
+      return this.currentStatus === STATUS_SUCCESS
+    },
+    isFailed () {
+      return this.currentStatus === STATUS_FAILED
+    }
+  },
+  /**
 	 * Run on `created` to run the reset function to initialize data.
 	 * @function
 	 * @returns {undefined}
 	 * @memberof FileUpload
 	 * @version 0.0.9
 	 */
-	created () {
-		this.reset()
-	},
-	methods: {
-		/**
+  created () {
+    this.reset()
+  },
+  methods: {
+    /**
 		 * To reset the initial values of the data
 		 * @function
 		 * @returns {undefined}
 		 * @memberof FileUpload
 		 * @version 0.0.9
 		 */
-		reset () {
-			// reset form to initial state
-			this.currentStatus = STATUS_INITIAL
-			this.uploadedFiles = []
-			this.uploadError = null
-		},
-		/**
+    reset () {
+      // reset form to initial state
+      this.currentStatus = STATUS_INITIAL
+      this.uploadedFiles = []
+      this.uploadError = null
+    },
+    /**
 		 * Run when the file input changes to format the file for upload.
 		 * @function
 		 * @param {string} fieldName - The name to be set in the FormData object.
@@ -131,22 +131,22 @@ export default {
 		 * @memberof FileUpload
 		 * @version 0.0.9
 		 */
-		filesChange (fieldName, fileList) {
-			// handle file changes
-			/* eslint-disable no-undef */
-			const formData = new FormData()
+    filesChange (fieldName, fileList) {
+      // handle file changes
+      /* eslint-disable no-undef */
+      const formData = new FormData()
 
-			if (!fileList.length) return
+      if (!fileList.length) return
 
-			// append the files to FormData
-			Array.from(Array(fileList.length).keys()).map(x => {
-				formData.append(fieldName, fileList[x], fileList[x].name)
-			})
+      // append the files to FormData
+      Array.from(Array(fileList.length).keys()).map(x => {
+        formData.append(fieldName, fileList[x], fileList[x].name)
+      })
 
-			// save it
-			this.upload(formData)
-		},
-		/**
+      // save it
+      this.upload(formData)
+    },
+    /**
 		 * To make the call to the UNOapp API to upload the file to the selected folder
 		 * @function
 		 * @param {object} form - The formatted FormData object being sent to the backend.
@@ -154,29 +154,29 @@ export default {
 		 * @memberof FileUpload
 		 * @version 0.0.9
 		 */
-		upload (form) {
-			let _this = this
-			const businessId = global.resourcesBusinessId
-			const locationId = this.activeLocationId
-			this.currentStatus = STATUS_SAVING
-			this.$emit('savingUpdate', true)
+    upload (form) {
+      let _this = this
+      const businessId = global.resourcesBusinessId
+      const locationId = this.activeLocationId
+      this.currentStatus = STATUS_SAVING
+      this.$emit('savingUpdate', true)
 
-			return Resources.upload(businessId, locationId, _this.folderId, form)
-				.then(response => {
-					_this.currentStatus = STATUS_INITIAL
-					_this.$emit('savingUpdate', false)
-					_this.$emit('uploadSuccess', response.payload.file_id)
-				})
-				.catch(
-					_this.$root.errorWrapper(e => {
-						setTimeout(() => {
-							_this.currentStatus = STATUS_INITIAL
-							_this.$emit('savingUpdate', false)
-						}, 200)
-					})
-				)
-		}
-	}
+      return Resources.upload(businessId, locationId, _this.folderId, form)
+        .then(response => {
+          _this.currentStatus = STATUS_INITIAL
+          _this.$emit('savingUpdate', false)
+          _this.$emit('uploadSuccess', response.payload.file_id)
+        })
+        .catch(
+          _this.$root.errorWrapper(e => {
+            setTimeout(() => {
+              _this.currentStatus = STATUS_INITIAL
+              _this.$emit('savingUpdate', false)
+            }, 200)
+          })
+        )
+    }
+  }
 }
 </script>
 <style>

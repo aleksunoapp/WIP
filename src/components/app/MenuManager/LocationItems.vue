@@ -126,66 +126,66 @@ import ItemsFunctions from '@/controllers/Items'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	name: 'LocationItems',
-	components: {
-		LoadingScreen,
-		NoResults,
-		Breadcrumb
-	},
-	data: () => ({
-		breadcrumbArray: [
-			{ name: 'Menu Manager', link: false },
-			{ name: 'Location Items', link: false }
-		],
-		errorMessage: '',
-		loadingItems: false,
-		items: []
-	}),
-	watch: {
-		'$root.activeLocation'() {
-			this.getAllItemsOfLocation()
-		}
-	},
-	mounted() {
-		this.getAllItemsOfLocation()
-	},
-	methods: {
-		/**
+  name: 'LocationItems',
+  components: {
+    LoadingScreen,
+    NoResults,
+    Breadcrumb
+  },
+  data: () => ({
+    breadcrumbArray: [
+      { name: 'Menu Manager', link: false },
+      { name: 'Location Items', link: false }
+    ],
+    errorMessage: '',
+    loadingItems: false,
+    items: []
+  }),
+  watch: {
+    '$root.activeLocation' () {
+      this.getAllItemsOfLocation()
+    }
+  },
+  mounted () {
+    this.getAllItemsOfLocation()
+  },
+  methods: {
+    /**
 		 * To clear an error
 		 * @function
 		 * @param {string} name - Name of the error variable to clear
 		 * @returns {object} - A network call promise
 		 */
-		clearError(name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To fetch items for the current active location
 		 * @function
 		 * @returns {object} - A network call promise
 		 */
-		getAllItemsOfLocation() {
-			if (this.$root.activeLocation.id === undefined) return
-			const locationItemsVue = this
-			this.loadingItems = true
-			this.items = []
+    getAllItemsOfLocation () {
+      if (this.$root.activeLocation.id === undefined) return
+      const locationItemsVue = this
+      this.loadingItems = true
+      this.items = []
 
-			return ItemsFunctions.getAllItemsOfLocation(this.$root.activeLocation.id)
-				.then(response => {
-					locationItemsVue.items = response.payload
-					locationItemsVue.loadingItems = false
-				})
-				.catch(reason => {
-					locationItemsVue.loadingItems = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch items',
-						errorName: 'errorMessage',
-						vue: locationItemsVue
-					})
-				})
-		}
-	}
+      return ItemsFunctions.getAllItemsOfLocation(this.$root.activeLocation.id)
+        .then(response => {
+          locationItemsVue.items = response.payload
+          locationItemsVue.loadingItems = false
+        })
+        .catch(reason => {
+          locationItemsVue.loadingItems = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch items',
+            errorName: 'errorMessage',
+            vue: locationItemsVue
+          })
+        })
+    }
+  }
 }
 </script>
 
@@ -194,4 +194,3 @@ export default {
   background-color: #fff;
 }
 </style>
-

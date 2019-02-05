@@ -4,7 +4,7 @@
 import GlobalFunctions from '../global'
 
 export default {
-	/**
+  /**
 	 * Call to pitapit API to get the news feed.
 	 * @function
 	 * @param {number} page - The page number.
@@ -12,31 +12,31 @@ export default {
 	 * @param {string} itemsPerPage - The number of items to show on a page.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	getNewsFeed: function ({
-		page,
-		order,
-		itemsPerPage
-	}) {
-		return new Promise(function (resolve, reject) {
-			GlobalFunctions.$ajax({
-				method: 'GET',
-				dataType: 'json',
-				url: '/application/news',
-				data: {
-					page,
-					item_per_page: itemsPerPage,
-					order
-				},
-				success: function (response) {
-					resolve(response)
-				},
-				error: function (error) {
-					reject(error)
-				}
-			})
-		})
-	},
-	/**
+  getNewsFeed: function ({
+    page,
+    order,
+    itemsPerPage
+  }) {
+    return new Promise(function (resolve, reject) {
+      GlobalFunctions.$ajax({
+        method: 'GET',
+        dataType: 'json',
+        url: '/application/news',
+        data: {
+          page,
+          item_per_page: itemsPerPage,
+          order
+        },
+        success: function (response) {
+          resolve(response)
+        },
+        error: function (error) {
+          reject(error)
+        }
+      })
+    })
+  },
+  /**
 	 * Call to pitapit API to create news feed.
 	 * @function
 	 * @param {object} newsFeed - The news feed to be created.
@@ -45,28 +45,28 @@ export default {
 	 * @param {string} appSecret - The appSecret of the current application.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	createNewsFeed: function (newsFeed, userToken, appId, appSecret) {
-		return new Promise(function (resolve, reject) {
-			GlobalFunctions.$ajax({
-				method: 'POST',
-				dataType: 'json',
-				url: '/application/news/create',
-				data: { news: newsFeed },
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader('auth-token', userToken)
-					xhr.setRequestHeader('app-id', appId)
-					xhr.setRequestHeader('app-secret', appSecret)
-				},
-				success: function (response) {
-					resolve(response)
-				},
-				error: function (error) {
-					reject(error)
-				}
-			})
-		})
-	},
-	/**
+  createNewsFeed: function (newsFeed, userToken, appId, appSecret) {
+    return new Promise(function (resolve, reject) {
+      GlobalFunctions.$ajax({
+        method: 'POST',
+        dataType: 'json',
+        url: '/application/news/create',
+        data: { news: newsFeed },
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('auth-token', userToken)
+          xhr.setRequestHeader('app-id', appId)
+          xhr.setRequestHeader('app-secret', appSecret)
+        },
+        success: function (response) {
+          resolve(response)
+        },
+        error: function (error) {
+          reject(error)
+        }
+      })
+    })
+  },
+  /**
 	 * Call to pitapit API to update news feed.
 	 * @function
 	 * @param {object} newsFeed - The news feed object to be updated.
@@ -75,28 +75,28 @@ export default {
 	 * @param {string} appSecret - The appSecret of the current application.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	saveEditedFeed: function (newsFeed, userToken, appId, appSecret) {
-		return new Promise(function (resolve, reject) {
-			GlobalFunctions.$ajax({
-				method: 'POST',
-				dataType: 'json',
-				url: '/application/news/update/' + newsFeed.id,
-				data: newsFeed,
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader('auth-token', userToken)
-					xhr.setRequestHeader('app-id', appId)
-					xhr.setRequestHeader('app-secret', appSecret)
-				},
-				success: function (response) {
-					resolve(response)
-				},
-				error: function (error) {
-					reject(error)
-				}
-			})
-		})
-	},
-	/**
+  saveEditedFeed: function (newsFeed, userToken, appId, appSecret) {
+    return new Promise(function (resolve, reject) {
+      GlobalFunctions.$ajax({
+        method: 'POST',
+        dataType: 'json',
+        url: '/application/news/update/' + newsFeed.id,
+        data: newsFeed,
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('auth-token', userToken)
+          xhr.setRequestHeader('app-id', appId)
+          xhr.setRequestHeader('app-secret', appSecret)
+        },
+        success: function (response) {
+          resolve(response)
+        },
+        error: function (error) {
+          reject(error)
+        }
+      })
+    })
+  },
+  /**
 	 * Call to pitapit API to get the details of a specific news feed.
 	 * @function
 	 * @param {integer} newsFeedId - The id of the selected news feed.
@@ -105,47 +105,47 @@ export default {
 	 * @param {string} appSecret - The appSecret of the current application.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	getNewsFeedDetails: function (newsFeedId, userToken, appId, appSecret) {
-		return new Promise(function (resolve, reject) {
-			GlobalFunctions.$ajax({
-				method: 'GET',
-				dataType: 'json',
-				url: '/application/news/show/' + newsFeedId,
-				data: {},
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader('auth-token', userToken)
-					xhr.setRequestHeader('app-id', appId)
-					xhr.setRequestHeader('app-secret', appSecret)
-				},
-				success: function (response) {
-					resolve(response)
-				},
-				error: function (error) {
-					reject(error)
-				}
-			})
-		})
-	},
-	/**
+  getNewsFeedDetails: function (newsFeedId, userToken, appId, appSecret) {
+    return new Promise(function (resolve, reject) {
+      GlobalFunctions.$ajax({
+        method: 'GET',
+        dataType: 'json',
+        url: '/application/news/show/' + newsFeedId,
+        data: {},
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('auth-token', userToken)
+          xhr.setRequestHeader('app-id', appId)
+          xhr.setRequestHeader('app-secret', appSecret)
+        },
+        success: function (response) {
+          resolve(response)
+        },
+        error: function (error) {
+          reject(error)
+        }
+      })
+    })
+  },
+  /**
 	 * Call to pitapit API to get the details of a specific news feed.
 	 * @function
 	 * @param {integer} newsFeedId - The id of the selected news feed.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	deleteNewsFeed: function (newsFeedId) {
-		return new Promise(function (resolve, reject) {
-			GlobalFunctions.$ajax({
-				method: 'DELETE',
-				dataType: 'json',
-				url: '/application/news/delete/' + newsFeedId,
-				data: {},
-				success: function (response) {
-					resolve(response)
-				},
-				error: function (error) {
-					reject(error)
-				}
-			})
-		})
-	}
+  deleteNewsFeed: function (newsFeedId) {
+    return new Promise(function (resolve, reject) {
+      GlobalFunctions.$ajax({
+        method: 'DELETE',
+        dataType: 'json',
+        url: '/application/news/delete/' + newsFeedId,
+        data: {},
+        success: function (response) {
+          resolve(response)
+        },
+        error: function (error) {
+          reject(error)
+        }
+      })
+    })
+  }
 }

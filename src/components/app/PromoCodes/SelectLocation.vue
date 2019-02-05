@@ -52,52 +52,52 @@ import Modal from '../../modules/Modal'
 import StorePicker from '@/components/modules/StorePicker'
 
 export default {
-	components: {
-		Modal,
-		StorePicker
-	},
-	props: {
-		promoCode: {
-			type: Object
-		}
-	},
-	data () {
-		return {
-			showSelectLocationModal: false,
-			selected: []
-		}
-	},
-	mounted () {
-		this.showSelectLocationModal = true
-	},
-	methods: {
-		/**
+  components: {
+    Modal,
+    StorePicker
+  },
+  props: {
+    promoCode: {
+      type: Object
+    }
+  },
+  data () {
+    return {
+      showSelectLocationModal: false,
+      selected: []
+    }
+  },
+  mounted () {
+    this.showSelectLocationModal = true
+  },
+  methods: {
+    /**
 		 * To record the selected locations in the new or edited promo code object.
 		 * @function
 		 * @param {array} stores - Array of selected store IDs
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		updateSelection (stores) {
-			this.selected = stores
-		},
-		/**
+    updateSelection (stores) {
+      this.selected = stores
+    },
+    /**
 		 * To record the selected locations in the new or edited promo code object.
 		 * @function
 		 * @param {array} stores - Array of selected store IDs
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		selectStores (stores) {
-			this.$emit('closeSelectLocationModal', this.selected)
-		},
-		/**
+    selectStores (stores) {
+      this.$emit('closeSelectLocationModal', this.selected)
+    },
+    /**
 		 * To just close the modal when the user clicks on the 'x' to close the modal without creating a new tag.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('closeSelectLocationModal')
-		}
-	}
+    closeModal () {
+      this.$emit('closeSelectLocationModal')
+    }
+  }
 }
 </script>
 

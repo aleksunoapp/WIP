@@ -37,7 +37,7 @@
           </div>
         </div>
       </div>
-      <div 
+      <div
         v-else
         class="portlet light bordered height-mod"
       >
@@ -154,7 +154,7 @@
       slot="modal-footer"
       class="modal-footer"
     >
-      <button 
+      <button
         v-if="$root.activeLocation.id === undefined || !modifiers.length"
         type="button"
         class="btn btn-primary"
@@ -162,7 +162,7 @@
       >
         Close
       </button>
-      <button 
+      <button
         v-else
         type="button"
         class="btn btn-primary"
@@ -184,367 +184,367 @@ import OptionsFunctions from '../../controllers/Options'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Modal
-	},
-	props: {
-		headerText: {
-			type: String
-		},
-		selectedObject: {
-			type: Object
-		},
-		updateType: {
-			type: String
-		}
-	},
-	data () {
-		return {
-			errorMessage: '',
-			showModifierTreeModal: false,
-			loadingModifiers: false,
-			modifiers: [],
-			loadingModifierItems: false,
-			items: [],
-			isModifierCategorySelected: false,
-			activeModifier: {}
-		}
-	},
-	created () {
-		this.getModifiers()
-	},
-	mounted () {
-		this.showModifierTreeModal = true
-	},
-	methods: {
-		/**
+  components: {
+    Modal
+  },
+  props: {
+    headerText: {
+      type: String
+    },
+    selectedObject: {
+      type: Object
+    },
+    updateType: {
+      type: String
+    }
+  },
+  data () {
+    return {
+      errorMessage: '',
+      showModifierTreeModal: false,
+      loadingModifiers: false,
+      modifiers: [],
+      loadingModifierItems: false,
+      items: [],
+      isModifierCategorySelected: false,
+      activeModifier: {}
+    }
+  },
+  created () {
+    this.getModifiers()
+  },
+  mounted () {
+    this.showModifierTreeModal = true
+  },
+  methods: {
+    /**
 		 * To clear an error.
 		 * @function
 		 * @param {string} name - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To close the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('closeModifierTreeModal')
-		},
-		/**
+    closeModal () {
+      this.$emit('closeModifierTreeModal')
+    },
+    /**
 		 * To get a list of all modifiers for the current active location.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getModifiers () {
-			if (this.$root.activeLocation.id === undefined) {
-				throw Error('Please select a store to view Modifiers.')
-			}
-			this.loadingModifiers = true
-			this.modifiers = []
-			var modifierTreeVue = this
-			return ModifiersFunctions.getStoreModifiers(
-				modifierTreeVue.$root.activeLocation.id
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						modifierTreeVue.modifiers = response.payload
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch modifiers',
-						errorName: 'errorMessage',
-						vue: modifierTreeVue,
-						containerRef: 'modal'
-					})
-				})
-				.finally(() => {
-					modifierTreeVue.loadingModifiers = false
-				})
-		},
-		/**
+    getModifiers () {
+      if (this.$root.activeLocation.id === undefined) {
+        throw Error('Please select a store to view Modifiers.')
+      }
+      this.loadingModifiers = true
+      this.modifiers = []
+      var modifierTreeVue = this
+      return ModifiersFunctions.getStoreModifiers(
+        modifierTreeVue.$root.activeLocation.id
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            modifierTreeVue.modifiers = response.payload
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch modifiers',
+            errorName: 'errorMessage',
+            vue: modifierTreeVue,
+            containerRef: 'modal'
+          })
+        })
+        .finally(() => {
+          modifierTreeVue.loadingModifiers = false
+        })
+    },
+    /**
 		 * To get a list of all item for the current active modifier category.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getItemsForActiveModifier () {
-			this.loadingModifierItems = true
-			var modifierTreeVue = this
-			modifierTreeVue.items = []
-			return ModifiersFunctions.getModifierCategoryItems(
-				modifierTreeVue.activeModifier.id,
-				modifierTreeVue.$root.appId,
-				modifierTreeVue.$root.appSecret
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						modifierTreeVue.items = response.payload
+    getItemsForActiveModifier () {
+      this.loadingModifierItems = true
+      var modifierTreeVue = this
+      modifierTreeVue.items = []
+      return ModifiersFunctions.getModifierCategoryItems(
+        modifierTreeVue.activeModifier.id,
+        modifierTreeVue.$root.appId,
+        modifierTreeVue.$root.appSecret
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            modifierTreeVue.items = response.payload
 
-						if (modifierTreeVue.updateType === 'portion') {
-							for (var i = 0; i < modifierTreeVue.items.length; i++) {
-								if (modifierTreeVue.items[i].modifier_item_portions.length) {
-									for (
-										var j = 0;
-										j < modifierTreeVue.items[i].modifier_item_portions.length;
-										j++
-									) {
-										var portionItem = modifierTreeVue.items[i]
-										if (
-											portionItem.modifier_item_portions[j].id ===
+            if (modifierTreeVue.updateType === 'portion') {
+              for (var i = 0; i < modifierTreeVue.items.length; i++) {
+                if (modifierTreeVue.items[i].modifier_item_portions.length) {
+                  for (
+                    var j = 0;
+                    j < modifierTreeVue.items[i].modifier_item_portions.length;
+                    j++
+                  ) {
+                    var portionItem = modifierTreeVue.items[i]
+                    if (
+                      portionItem.modifier_item_portions[j].id ===
 											modifierTreeVue.selectedObject.id
-										) {
-											modifierTreeVue.$set(portionItem, 'selected', true)
-											break
-										} else {
-											modifierTreeVue.$set(portionItem, 'selected', false)
-										}
-									}
-								}
-							}
-						} else if (modifierTreeVue.updateType === 'tag') {
-							for (var x = 0; x < modifierTreeVue.items.length; x++) {
-								if (modifierTreeVue.items[x].tags.length) {
-									for (
-										var y = 0;
-										y < modifierTreeVue.items[x].tags.length;
-										y++
-									) {
-										var tagItem = modifierTreeVue.items[x]
-										if (
-											tagItem.tags[y].id === modifierTreeVue.selectedObject.id
-										) {
-											modifierTreeVue.$set(tagItem, 'selected', true)
-											break
-										} else {
-											modifierTreeVue.$set(tagItem, 'selected', false)
-										}
-									}
-								}
-							}
-						}
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch items',
-						errorName: 'errorMessage',
-						vue: modifierTreeVue,
-						containerRef: 'modal'
-					})
-				})
-				.finally(() => {
-					modifierTreeVue.loadingModifierItems = false
-				})
-		},
-		/**
+                    ) {
+                      modifierTreeVue.$set(portionItem, 'selected', true)
+                      break
+                    } else {
+                      modifierTreeVue.$set(portionItem, 'selected', false)
+                    }
+                  }
+                }
+              }
+            } else if (modifierTreeVue.updateType === 'tag') {
+              for (var x = 0; x < modifierTreeVue.items.length; x++) {
+                if (modifierTreeVue.items[x].tags.length) {
+                  for (
+                    var y = 0;
+                    y < modifierTreeVue.items[x].tags.length;
+                    y++
+                  ) {
+                    var tagItem = modifierTreeVue.items[x]
+                    if (
+                      tagItem.tags[y].id === modifierTreeVue.selectedObject.id
+                    ) {
+                      modifierTreeVue.$set(tagItem, 'selected', true)
+                      break
+                    } else {
+                      modifierTreeVue.$set(tagItem, 'selected', false)
+                    }
+                  }
+                }
+              }
+            }
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch items',
+            errorName: 'errorMessage',
+            vue: modifierTreeVue,
+            containerRef: 'modal'
+          })
+        })
+        .finally(() => {
+          modifierTreeVue.loadingModifierItems = false
+        })
+    },
+    /**
 		 * To clear the items array.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearItems () {
-			this.items = []
-		},
-		/**
+    clearItems () {
+      this.items = []
+    },
+    /**
 		 * To set the value of the variable 'activeModifier' as the selected modifier object.
 		 * @function
 		 * @param {object} modifier - The selected modifier.
 		 * @returns {undefined}
 		 */
-		selectModifier (modifier) {
-			this.activeModifier = modifier
-			this.isModifierCategorySelected = true
-			this.clearItems()
-			this.getItemsForActiveModifier()
-		},
-		/**
+    selectModifier (modifier) {
+      this.activeModifier = modifier
+      this.isModifierCategorySelected = true
+      this.clearItems()
+      this.getItemsForActiveModifier()
+    },
+    /**
 		 * To apply the selected portion to all the checked off modifier items.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		applyPortionToSelectedItems () {
-			var modifierTreeVue = this
-			var selectedModifierItems = []
-			var unselectedModifierItems = []
-			for (var i = 0; i < modifierTreeVue.items.length; i++) {
-				if (modifierTreeVue.items[i].selected) {
-					selectedModifierItems.push(modifierTreeVue.items[i].id)
-				} else {
-					unselectedModifierItems.push(modifierTreeVue.items[i].id)
-				}
-			}
-			PortionsFunctions.applyPortionToMultipleModItems(
-				modifierTreeVue.selectedObject.id,
-				selectedModifierItems,
-				unselectedModifierItems,
-				modifierTreeVue.$root.appId,
-				modifierTreeVue.$root.appSecret,
-				modifierTreeVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						modifierTreeVue.closeModal()
-						modifierTreeVue.showApplyPortionToModifierItemsSuccess(response.payload)
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not apply the portion',
-						errorName: 'errorMessage',
-						vue: modifierTreeVue,
-						containerRef: 'modal'
-					})
-				})
-		},
-		/**
+    applyPortionToSelectedItems () {
+      var modifierTreeVue = this
+      var selectedModifierItems = []
+      var unselectedModifierItems = []
+      for (var i = 0; i < modifierTreeVue.items.length; i++) {
+        if (modifierTreeVue.items[i].selected) {
+          selectedModifierItems.push(modifierTreeVue.items[i].id)
+        } else {
+          unselectedModifierItems.push(modifierTreeVue.items[i].id)
+        }
+      }
+      PortionsFunctions.applyPortionToMultipleModItems(
+        modifierTreeVue.selectedObject.id,
+        selectedModifierItems,
+        unselectedModifierItems,
+        modifierTreeVue.$root.appId,
+        modifierTreeVue.$root.appSecret,
+        modifierTreeVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            modifierTreeVue.closeModal()
+            modifierTreeVue.showApplyPortionToModifierItemsSuccess(response.payload)
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not apply the portion',
+            errorName: 'errorMessage',
+            vue: modifierTreeVue,
+            containerRef: 'modal'
+          })
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showApplyPortionToModifierItemsSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Portion has been saved'
-			let type = 'success'
+    showApplyPortionToModifierItemsSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Portion has been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To apply the selected tag to all the checked off modifier items.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		applyTagToSelectedItems () {
-			var modifierTreeVue = this
-			var selectedModifierItems = []
-			var unselectedModifierItems = []
-			for (var i = 0; i < modifierTreeVue.items.length; i++) {
-				if (modifierTreeVue.items[i].selected) {
-					selectedModifierItems.push(modifierTreeVue.items[i].id)
-				} else {
-					unselectedModifierItems.push(modifierTreeVue.items[i].id)
-				}
-			}
-			TagsFunctions.applyTagToMultipleModItems(
-				modifierTreeVue.selectedObject.id,
-				selectedModifierItems,
-				unselectedModifierItems,
-				modifierTreeVue.$root.appId,
-				modifierTreeVue.$root.appSecret,
-				modifierTreeVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						modifierTreeVue.closeModal()
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not apply the tag',
-						errorName: 'errorMessage',
-						vue: modifierTreeVue,
-						containerRef: 'modal'
-					})
-				})
-		},
-		/**
+    applyTagToSelectedItems () {
+      var modifierTreeVue = this
+      var selectedModifierItems = []
+      var unselectedModifierItems = []
+      for (var i = 0; i < modifierTreeVue.items.length; i++) {
+        if (modifierTreeVue.items[i].selected) {
+          selectedModifierItems.push(modifierTreeVue.items[i].id)
+        } else {
+          unselectedModifierItems.push(modifierTreeVue.items[i].id)
+        }
+      }
+      TagsFunctions.applyTagToMultipleModItems(
+        modifierTreeVue.selectedObject.id,
+        selectedModifierItems,
+        unselectedModifierItems,
+        modifierTreeVue.$root.appId,
+        modifierTreeVue.$root.appSecret,
+        modifierTreeVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            modifierTreeVue.closeModal()
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not apply the tag',
+            errorName: 'errorMessage',
+            vue: modifierTreeVue,
+            containerRef: 'modal'
+          })
+        })
+    },
+    /**
 		 * To apply the selected option to all the checked off modifier items.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		applyOptionToSelectedItems () {
-			var modifierTreeVue = this
-			var selectedModifierItems = []
-			var unselectedModifierItems = []
-			for (var i = 0; i < modifierTreeVue.items.length; i++) {
-				if (modifierTreeVue.items[i].selected) {
-					selectedModifierItems.push(modifierTreeVue.items[i].id)
-				} else {
-					unselectedModifierItems.push(modifierTreeVue.items[i].id)
-				}
-			}
-			var payload = {
-				modifier_items_to_add: selectedModifierItems,
-				modifier_items_to_remove: unselectedModifierItems
-			}
-			OptionsFunctions.applyOptionToMultipleModItems(
-				modifierTreeVue.selectedObject.id,
-				payload,
-				modifierTreeVue.$root.appId,
-				modifierTreeVue.$root.appSecret,
-				modifierTreeVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						modifierTreeVue.closeModal()
-						modifierTreeVue.showApplyOptionToModifierItemsSuccess(response.payload)
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not apply the option',
-						errorName: 'errorMessage',
-						vue: modifierTreeVue,
-						containerRef: 'modal'
-					})
-				})
-		},
-		/**
+    applyOptionToSelectedItems () {
+      var modifierTreeVue = this
+      var selectedModifierItems = []
+      var unselectedModifierItems = []
+      for (var i = 0; i < modifierTreeVue.items.length; i++) {
+        if (modifierTreeVue.items[i].selected) {
+          selectedModifierItems.push(modifierTreeVue.items[i].id)
+        } else {
+          unselectedModifierItems.push(modifierTreeVue.items[i].id)
+        }
+      }
+      var payload = {
+        modifier_items_to_add: selectedModifierItems,
+        modifier_items_to_remove: unselectedModifierItems
+      }
+      OptionsFunctions.applyOptionToMultipleModItems(
+        modifierTreeVue.selectedObject.id,
+        payload,
+        modifierTreeVue.$root.appId,
+        modifierTreeVue.$root.appSecret,
+        modifierTreeVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            modifierTreeVue.closeModal()
+            modifierTreeVue.showApplyOptionToModifierItemsSuccess(response.payload)
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not apply the option',
+            errorName: 'errorMessage',
+            vue: modifierTreeVue,
+            containerRef: 'modal'
+          })
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showApplyOptionToModifierItemsSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Option has been saved'
-			let type = 'success'
+    showApplyOptionToModifierItemsSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Option has been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To determine which function to call based on the update type passed in by the parent as a prop.
 		 * @function
 		 * @returns {undefined}
 		 */
-		applySelectedItems () {
-			if (this.updateType === 'portion') {
-				this.applyPortionToSelectedItems()
-			} else if (this.updateType === 'tag') {
-				this.applyTagToSelectedItems()
-			} else if (this.updateType === 'option') {
-				this.applyOptionToSelectedItems()
-			}
-		}
-	}
+    applySelectedItems () {
+      if (this.updateType === 'portion') {
+        this.applyPortionToSelectedItems()
+      } else if (this.updateType === 'tag') {
+        this.applyTagToSelectedItems()
+      } else if (this.updateType === 'option') {
+        this.applyOptionToSelectedItems()
+      }
+    }
+  }
 }
 </script>
 <style scoped>

@@ -344,385 +344,385 @@ import ResourcePicker from '../../modules/ResourcePicker'
 import GlobalFunctions from '../../../global.js'
 
 export default {
-	components: {
-		Modal,
-		ButtonGroup,
-		Checkbox,
-		ResourcePicker,
-		Dropdown
-	},
-	props: {
-		isOpen: {
-			type: Boolean,
-			required: true,
-			default: () => false
-		},
-		users: {
-			type: Array,
-			required: true,
-			default: () => []
-		}
-	},
-	data () {
-		return {
-			selectUsersMode: true,
-			selectImageMode: false,
-			errorMessage: '',
-			message: {
-				user_alias: [],
-				notification_type: '',
-				push_message: '',
-				title: '',
-				message: '',
-				payload: {},
-				is_sdk_notification: '1',
-				media_id: '',
-				media_path: '',
-				mime_type: 'image/jpg',
-				call_to_action: '',
-				app_action_id: '',
-				action_value: '',
-				expire_at: null
-			},
-			sending: false,
-			currentPage: 1,
-			allUsersSelected: false,
-			searchString: '',
-			omaActions: GlobalFunctions.OMAMessageAction
-		}
-	},
-	computed: {
-		numberOrUrl () {
-			if (this.message.call_to_action === 'CALL') {
-				return 'Enter number'
-			} else if (this.message.call_to_action === 'GOTO_LINK') {
-				return 'Enter link'
-			}
-		},
-		selectedCallLabel () {
-			if (this.message.call_to_action === '') {
-				return 'Choose call to action'
-			} else if (this.message.call_to_action === 'GOTO_LINK') {
-				return 'Website'
-			} else if (this.message.call_to_action === 'CAMERA') {
-				return 'Camera'
-			} else if (this.message.call_to_action === 'CALL') {
-				return 'Call'
-			} else if (this.message.call_to_action === 'CLOSE') {
-				return 'Close'
-			}
-		},
-		searchedUsers () {
-			if (this.searchString) {
-				return this.users.filter(user => {
-					return (
-						user.email.toLowerCase().includes(this.searchString.toLowerCase()) ||
+  components: {
+    Modal,
+    ButtonGroup,
+    Checkbox,
+    ResourcePicker,
+    Dropdown
+  },
+  props: {
+    isOpen: {
+      type: Boolean,
+      required: true,
+      default: () => false
+    },
+    users: {
+      type: Array,
+      required: true,
+      default: () => []
+    }
+  },
+  data () {
+    return {
+      selectUsersMode: true,
+      selectImageMode: false,
+      errorMessage: '',
+      message: {
+        user_alias: [],
+        notification_type: '',
+        push_message: '',
+        title: '',
+        message: '',
+        payload: {},
+        is_sdk_notification: '1',
+        media_id: '',
+        media_path: '',
+        mime_type: 'image/jpg',
+        call_to_action: '',
+        app_action_id: '',
+        action_value: '',
+        expire_at: null
+      },
+      sending: false,
+      currentPage: 1,
+      allUsersSelected: false,
+      searchString: '',
+      omaActions: GlobalFunctions.OMAMessageAction
+    }
+  },
+  computed: {
+    numberOrUrl () {
+      if (this.message.call_to_action === 'CALL') {
+        return 'Enter number'
+      } else if (this.message.call_to_action === 'GOTO_LINK') {
+        return 'Enter link'
+      }
+    },
+    selectedCallLabel () {
+      if (this.message.call_to_action === '') {
+        return 'Choose call to action'
+      } else if (this.message.call_to_action === 'GOTO_LINK') {
+        return 'Website'
+      } else if (this.message.call_to_action === 'CAMERA') {
+        return 'Camera'
+      } else if (this.message.call_to_action === 'CALL') {
+        return 'Call'
+      } else if (this.message.call_to_action === 'CLOSE') {
+        return 'Close'
+      }
+    },
+    searchedUsers () {
+      if (this.searchString) {
+        return this.users.filter(user => {
+          return (
+            user.email.toLowerCase().includes(this.searchString.toLowerCase()) ||
 						user.phone.replace(/\D/g, '').includes(this.searchString)
-					)
-				})
-			} else {
-				return this.users
-			}
-		},
-		usersOnCurrentPage () {
-			let begin = (this.currentPage - 1) * 10
-			let end = this.currentPage * 10
-			return this.searchedUsers.slice(begin, end)
-		}
-	},
-	methods: {
-		/**
+          )
+        })
+      } else {
+        return this.users
+      }
+    },
+    usersOnCurrentPage () {
+      let begin = (this.currentPage - 1) * 10
+      let end = this.currentPage * 10
+      return this.searchedUsers.slice(begin, end)
+    }
+  },
+  methods: {
+    /**
 		 * To toggle between the open and closed state of the resource picker
 		 * @function
 		 * @param {string} object - The name of the object the image is for
 		 * @param {object} value - The open / closed value of the picker
 		 * @returns {undefined}
 		 */
-		toggleImageMode (object, value) {
-			this[object] = value
-		},
-		/**
+    toggleImageMode (object, value) {
+      this[object] = value
+    },
+    /**
 		 * To clear the user search
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearSearch () {
-			this.searchString = ''
-		},
-		/**
+    clearSearch () {
+      this.searchString = ''
+    },
+    /**
 		 * To display the user selection view
 		 * @function
 		 * @returns {undefined}
 		 */
-		showUserSelect () {
-			this.selectUsersMode = true
-			this.currentPage = 1
-		},
-		/**
+    showUserSelect () {
+      this.selectUsersMode = true
+      this.currentPage = 1
+    },
+    /**
 		 * To select the users to send the message to
 		 * @function
 		 * @returns {undefined}
 		 */
-		selectUsers () {
-			this.selectUsersMode = false
-			this.message.user_alias = [
-				...this.users.filter(user => user.selected).map(user => `${GlobalFunctions.application_name}_${user.id}`)
-			]
-		},
-		/**
+    selectUsers () {
+      this.selectUsersMode = false
+      this.message.user_alias = [
+        ...this.users.filter(user => user.selected).map(user => `${GlobalFunctions.application_name}_${user.id}`)
+      ]
+    },
+    /**
 		 * To de/select all items
 		 * @function
 		 * @param {boolean} value - The value of the selection
 		 * @returns {undefined}
 		 */
-		toggleSelectAll (value) {
-			this.users.forEach(user => {
-				user.selected = value
-			})
-			this.allUsersSelected = value
-		},
-		/**
+    toggleSelectAll (value) {
+      this.users.forEach(user => {
+        user.selected = value
+      })
+      this.allUsersSelected = value
+    },
+    /**
 		 * To update the Select All checkbox status.
 		 * @function
 		 * @param {boolean} value - The value of the checkbox being manipulated
 		 * @returns {undefined}
 		 */
-		syncSelectAll (value) {
-			if (!value) {
-				this.allUsersSelected = false
-			} else if (!this.users.filter(user => !user.selected).length) {
-				this.allUsersSelected = true
-			}
-		},
-		/**
+    syncSelectAll (value) {
+      if (!value) {
+        this.allUsersSelected = false
+      } else if (!this.users.filter(user => !user.selected).length) {
+        this.allUsersSelected = true
+      }
+    },
+    /**
 		 * To update the current page.
 		 * @function
 		 * @param {integer} page - The new current page number
 		 * @returns {undefined}
 		 */
-		changeCurrentPage (page) {
-			if (this.currentPage !== page) {
-				this.currentPage = page
-			}
-		},
-		/**
+    changeCurrentPage (page) {
+      if (this.currentPage !== page) {
+        this.currentPage = page
+      }
+    },
+    /**
 		 * To format a phone number
 		 * @function
 		 * @param {string} phone - The phone number to format
 		 * @returns {string} The formatted phone string
 		 */
-		formatPhone (phone) {
-			try {
-				let digits = phone.replace(/\D/g, '')
-				return (
-					digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
-				)
-			} catch (err) {
-				return 'n/a'
-			}
-		},
-		/**
+    formatPhone (phone) {
+      try {
+        let digits = phone.replace(/\D/g, '')
+        return (
+          digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
+        )
+      } catch (err) {
+        return 'n/a'
+      }
+    },
+    /**
 		 * To reset the message form
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetForm () {
-			this.users.forEach(user => {
-				user.selected = false
-			})
-			this.selectUsersMode = true
-			this.message.user_alias = []
-			this.message.notification_type = ''
-			this.message.push_message = ''
-			this.message.title = ''
-			this.message.message = ''
-			this.message.payload = {}
-			this.message.is_sdk_notification = '1'
-			this.message.media_id = ''
-			this.message.media_path = ''
-			this.message.mime_type = 'image/jpg'
-			this.message.call_to_action = ''
-			this.message.app_action_id = ''
-			this.message.action_value = ''
-			this.searchString = ''
-		},
-		/**
+    resetForm () {
+      this.users.forEach(user => {
+        user.selected = false
+      })
+      this.selectUsersMode = true
+      this.message.user_alias = []
+      this.message.notification_type = ''
+      this.message.push_message = ''
+      this.message.title = ''
+      this.message.message = ''
+      this.message.payload = {}
+      this.message.is_sdk_notification = '1'
+      this.message.media_id = ''
+      this.message.media_path = ''
+      this.message.mime_type = 'image/jpg'
+      this.message.call_to_action = ''
+      this.message.app_action_id = ''
+      this.message.action_value = ''
+      this.searchString = ''
+    },
+    /**
 		 * To check if the message information is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateMessageData () {
-			var messageVue = this
-			return new Promise(function (resolve, reject) {
-				if (!messageVue.message.notification_type) {
-					reject('Please choose notification type')
-				} else if (
-					messageVue.message.notification_type === 'inapp' &&
+    validateMessageData () {
+      var messageVue = this
+      return new Promise(function (resolve, reject) {
+        if (!messageVue.message.notification_type) {
+          reject('Please choose notification type')
+        } else if (
+          messageVue.message.notification_type === 'inapp' &&
 					!messageVue.message.media_path
-				) {
-					reject('Select an image')
-				} else if (
-					messageVue.message.notification_type === 'push' &&
+        ) {
+          reject('Select an image')
+        } else if (
+          messageVue.message.notification_type === 'push' &&
 					!messageVue.message.title
-				) {
-					reject('Title cannot be blank')
-				} else if (
-					messageVue.message.notification_type === 'push' &&
+        ) {
+          reject('Title cannot be blank')
+        } else if (
+          messageVue.message.notification_type === 'push' &&
 					!messageVue.message.message
-				) {
-					reject('Message cannot be blank')
-				} else if (
-					messageVue.message.notification_type === 'inapp' &&
+        ) {
+          reject('Message cannot be blank')
+        } else if (
+          messageVue.message.notification_type === 'inapp' &&
 					!messageVue.message.title
-				) {
-					reject('Title cannot be blank')
-				} else if (
-					messageVue.message.notification_type === 'inapp' &&
+        ) {
+          reject('Title cannot be blank')
+        } else if (
+          messageVue.message.notification_type === 'inapp' &&
 					!messageVue.message.push_message
-				) {
-					reject('Message cannot be blank')
-				} else if (
-					messageVue.message.notification_type === 'inapp' &&
+        ) {
+          reject('Message cannot be blank')
+        } else if (
+          messageVue.message.notification_type === 'inapp' &&
 					!messageVue.message.message
-				) {
-					reject('Body cannot be blank')
-				} else if (!messageVue.message.user_alias.length) {
-					reject('Please select at least one user')
-				} else if (
-					messageVue.message.notification_type === 'inapp' &&
+        ) {
+          reject('Body cannot be blank')
+        } else if (!messageVue.message.user_alias.length) {
+          reject('Please select at least one user')
+        } else if (
+          messageVue.message.notification_type === 'inapp' &&
 					!messageVue.message.call_to_action
-				) {
-					reject('Please select a call to action')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+        ) {
+          reject('Please select a call to action')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To prompt the backend call that sends the message.
 		 * @function
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {object} A promise that will either return an error message or display the success screen
 		 */
-		sendMessage (event) {
-			var messageVue = this
-			this.errorMessage = ''
-			return messageVue
-				.validateMessageData()
+    sendMessage (event) {
+      var messageVue = this
+      this.errorMessage = ''
+      return messageVue
+        .validateMessageData()
 
-				.then(response => {
-					if (messageVue.sending) {
-						return
-					}
-					messageVue.sending = true
-					let payload = { ...this.message }
-					if (Array.isArray(payload.user_alias)) {
-						payload.user_alias = payload.user_alias.toString()
-					}
-					MessageFunctions.sendMessage(
-						payload,
-						GlobalFunctions.OMAUsersMessageAppToken
-					)
-						.then(response => {
-							messageVue.sending = false
-							if (response.code === 200 && response.status === 'ok') {
-								messageVue.closeModal()
-								messageVue.showAlert(response.payload.warnings)
-							} else {
-								messageVue.createFAQError = response.message
-							}
-						})
-						.catch(reason => {
-							messageVue.sending = false
-							messageVue.errorMessage =
+        .then(response => {
+          if (messageVue.sending) {
+            return
+          }
+          messageVue.sending = true
+          let payload = { ...this.message }
+          if (Array.isArray(payload.user_alias)) {
+            payload.user_alias = payload.user_alias.toString()
+          }
+          MessageFunctions.sendMessage(
+            payload,
+            GlobalFunctions.OMAUsersMessageAppToken
+          )
+            .then(response => {
+              messageVue.sending = false
+              if (response.code === 200 && response.status === 'ok') {
+                messageVue.closeModal()
+                messageVue.showAlert(response.payload.warnings)
+              } else {
+                messageVue.createFAQError = response.message
+              }
+            })
+            .catch(reason => {
+              messageVue.sending = false
+              messageVue.errorMessage =
 								'Sorry, we could not send the notification'
-							window.scrollTo(0, 0)
-						})
-				})
-				.catch(reason => {
-					messageVue.sending = false
-					messageVue.errorMessage = reason
-					window.scrollTo(0, 0)
-				})
-		},
-		/**
+              window.scrollTo(0, 0)
+            })
+        })
+        .catch(reason => {
+          messageVue.sending = false
+          messageVue.errorMessage = reason
+          window.scrollTo(0, 0)
+        })
+    },
+    /**
 		 * To update the call to action
 		 * @function
 		 * @param {integer} id - The id of the selected call to action
 		 * @returns {undefined}
 		 */
-		updateCallToAction (id) {
-			let type
-			this.omaActions.forEach(function (action) {
-				if (id === action.id) {
-					type = action.type
-				}
-			})
-			this.message.call_to_action = type
-			this.message.app_action_id = id
-		},
-		/**
+    updateCallToAction (id) {
+      let type
+      this.omaActions.forEach(function (action) {
+        if (id === action.id) {
+          type = action.type
+        }
+      })
+      this.message.call_to_action = type
+      this.message.app_action_id = id
+    },
+    /**
 		 * To set the image to be same as the one emitted by the gallery modal.
 		 * @function
 		 * @param {object} val - The emitted image object.
 		 * @returns {undefined}
 		 */
-		updateIcon (val) {
-			this.message.media_path = val.image_url
-			this.selectImageMode = !this.selectImageMode
-		},
-		/**
+    updateIcon (val) {
+      this.message.media_path = val.image_url
+      this.selectImageMode = !this.selectImageMode
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To close the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.resetForm()
-			this.$emit('closeMessageModal', false)
-		},
-		/**
+    closeModal () {
+      this.resetForm()
+      this.$emit('closeMessageModal', false)
+    },
+    /**
 		 * To generate alert text
 		 * @function
 		 * @param {array} warnings - The array of warnings received after message was sent.
 		 * @returns {undefined}
 		 */
-		alertText (warnings) {
-			if (warnings.length) {
-				if (warnings.length === 1) {
-					return 'This user has no device. The message was not delivered.'
-				} else {
-					return 'Some users in the recipient list have no device and did not receive the message.'
-				}
-			} else {
-				return 'Message sent'
-			}
-		},
-		/**
+    alertText (warnings) {
+      if (warnings.length) {
+        if (warnings.length === 1) {
+          return 'This user has no device. The message was not delivered.'
+        } else {
+          return 'Some users in the recipient list have no device and did not receive the message.'
+        }
+      } else {
+        return 'Message sent'
+      }
+    },
+    /**
 		 * To alert the user that the message has been successfully sent.
 		 * @function
 		 * @param {array} warnings - The array of warnings received after message was sent.
 		 * @returns {undefined}
 		 */
-		showAlert (warnings) {
-			let alertTitle = warnings.length ? 'Warning' : 'Success!'
-			let alertText = this.alertText(warnings)
-			let alertType = warnings.length ? 'warning' : 'success'
+    showAlert (warnings) {
+      let alertTitle = warnings.length ? 'Warning' : 'Success!'
+      let alertText = this.alertText(warnings)
+      let alertType = warnings.length ? 'warning' : 'success'
 
-			this.$swal({
-				title: alertTitle,
-				text: alertText,
-				type: alertType,
-				confirmButtonText: 'OK'
-			})
-		}
-	}
+      this.$swal({
+        title: alertTitle,
+        text: alertText,
+        type: alertType,
+        confirmButtonText: 'OK'
+      })
+    }
+  }
 }
 </script>
 

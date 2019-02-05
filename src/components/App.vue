@@ -1,7 +1,7 @@
 <template>
   <div class="page-wrapper">
     <!-- BEGIN HEADER -->
-    <div 
+    <div
       class="page-header navbar navbar-fixed-top"
       :class="{'master' : $root.master, 'staging' : $root.staging}"
     >
@@ -300,206 +300,206 @@ import { mapMutations } from 'vuex'
  */
 
 export default {
-	data () {
-		return {
-			routeMessage: '',
-			activeTab: 0,
-			searchQuery: '',
-			activeLocation: {},
-			searchError: '',
-			currentPage: 1,
-			loading: false
-		}
-	},
-	computed: {
-		lastPage () {
-			this.currentPage = 1
-			if (this.searchQuery) {
-				return Math.ceil(this.searchResult.length / 5)
-			} else {
-				return Math.ceil(this.$root.storeLocations.length / 5)
-			}
-		},
-		searchResult () {
-			let searchArray = this.$root.storeLocations
+  data () {
+    return {
+      routeMessage: '',
+      activeTab: 0,
+      searchQuery: '',
+      activeLocation: {},
+      searchError: '',
+      currentPage: 1,
+      loading: false
+    }
+  },
+  computed: {
+    lastPage () {
+      this.currentPage = 1
+      if (this.searchQuery) {
+        return Math.ceil(this.searchResult.length / 5)
+      } else {
+        return Math.ceil(this.$root.storeLocations.length / 5)
+      }
+    },
+    searchResult () {
+      let searchArray = this.$root.storeLocations
 
-			const searchResult = searchArray.filter(store => {
-				let searchArea =
+      const searchResult = searchArray.filter(store => {
+        let searchArea =
 					store.display_name +
 					store.address_line_1 +
 					store.internal_id
-				return (
-					searchArea
-						.toLowerCase()
-						.indexOf(this.searchQuery.toLowerCase()) > -1
-				)
-			})
-			searchResult.sort((a, b) => a.display_name > b.display_name)
+        return (
+          searchArea
+            .toLowerCase()
+            .indexOf(this.searchQuery.toLowerCase()) > -1
+        )
+      })
+      searchResult.sort((a, b) => a.display_name > b.display_name)
 
-			let begin = (this.currentPage - 1) * 10
-			let end = this.currentPage * 10
+      let begin = (this.currentPage - 1) * 10
+      let end = this.currentPage * 10
 
-			return searchResult.slice(begin, end)
-		}
-	},
-	/**
+      return searchResult.slice(begin, end)
+    }
+  },
+  /**
 	 * Run on `mounted` to initialize the app defaults.
 	 * @function
 	 * @returns {undefined}
 	 */
-	mounted () {
-		// This will add all of the necessary classes to the body that aren't required outside of the app
-		$('body')
-			.addClass('page-header-fixed')
-			.addClass('page-sidebar-closed-hide-logo')
-			.addClass('page-content-white')
-			.addClass('page-md')
-			.addClass('app-body')
+  mounted () {
+    // This will add all of the necessary classes to the body that aren't required outside of the app
+    $('body')
+      .addClass('page-header-fixed')
+      .addClass('page-sidebar-closed-hide-logo')
+      .addClass('page-content-white')
+      .addClass('page-md')
+      .addClass('app-body')
 
-		AppFunctions.init()
-		AppFunctions.initApp()
+    AppFunctions.init()
+    AppFunctions.initApp()
 
-		// get list of stores
-		if (this.$root.accountType === 'application_admin') {
-			this.getStoreLocations()
-		}
+    // get list of stores
+    if (this.$root.accountType === 'application_admin') {
+      this.getStoreLocations()
+    }
 
-		// eslint-disable-next-line
+    // eslint-disable-next-line
 		const activeLocation = localStorage.getItem('activeLocation')
-		if (activeLocation !== null) {
-			this.selectLocation(JSON.parse(activeLocation))
-		}
-	},
-	methods: {
-		/**
+    if (activeLocation !== null) {
+      this.selectLocation(JSON.parse(activeLocation))
+    }
+  },
+  methods: {
+    /**
 		 * To move to the next page of stores.
 		 * @function
 		 * @returns {undefined}
 		 */
-		goToNextPage () {
-			if (this.currentPage < this.lastPage) {
-				this.currentPage = this.currentPage + 1
-			}
-		},
-		/**
+    goToNextPage () {
+      if (this.currentPage < this.lastPage) {
+        this.currentPage = this.currentPage + 1
+      }
+    },
+    /**
 		 * To move to the previous page of stores.
 		 * @function
 		 * @returns {undefined}
 		 */
-		goToPreviousPage () {
-			if (this.currentPage > 1) {
-				this.currentPage = this.currentPage - 1
-			}
-		},
-		/**
+    goToPreviousPage () {
+      if (this.currentPage > 1) {
+        this.currentPage = this.currentPage - 1
+      }
+    },
+    /**
 		 * To clear the search field.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearSearch () {
-			this.searchQuery = ''
-		},
-		/**
+    clearSearch () {
+      this.searchQuery = ''
+    },
+    /**
 		 * To toggle whether or not the sidebar should be toggled open.
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleQuickSidebar () {
-			if (this.$root.activeAccountType !== 'location') {
-				$('body').toggleClass('page-quick-sidebar-open')
-			}
-		},
-		/**
+    toggleQuickSidebar () {
+      if (this.$root.activeAccountType !== 'location') {
+        $('body').toggleClass('page-quick-sidebar-open')
+      }
+    },
+    /**
 		 * To get a list of store locations for the current application.
 		 * @function
 		 * @returns {undefined}
 		 */
-		getStoreLocations () {
-			this.loading = true
-			var appVue = this
-			AppFunctions.getPaginatedStoreLocations(
-				appVue.$root.appId,
-				appVue.$root.appSecret,
-				appVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						appVue.setStoreLocations(response.payload)
-						// set the active location if already present in local storage
-						// eslint-disable-next-line
+    getStoreLocations () {
+      this.loading = true
+      var appVue = this
+      AppFunctions.getPaginatedStoreLocations(
+        appVue.$root.appId,
+        appVue.$root.appSecret,
+        appVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            appVue.setStoreLocations(response.payload)
+            // set the active location if already present in local storage
+            // eslint-disable-next-line
 						var activeLocation = localStorage.getItem(
-							'activeLocation'
-						)
-						if (activeLocation) {
-							appVue.selectLocation(JSON.parse(activeLocation))
-						}
-						appVue.loading = false
-					}
-				})
-				.catch(reason => {
-					if (reason.responseJSON) {
-					}
-					throw reason
-				})
-		},
-		/**
+              'activeLocation'
+            )
+            if (activeLocation) {
+              appVue.selectLocation(JSON.parse(activeLocation))
+            }
+            appVue.loading = false
+          }
+        })
+        .catch(reason => {
+          if (reason.responseJSON) {
+          }
+          throw reason
+        })
+    },
+    /**
 		 * To select another location from the list of locations for the current application.
 		 * @function
 		 * @param {object} location - The location object to be selected.
 		 * @returns {undefined}
 		 */
-		selectLocation (location) {
-			// ToDo: make a call to the appropriate endpoint and update the logic once this part is scoped out
-			if (this.activeLocation && this.activeLocation.id) {
-				let temp = [...this.$root.storeLocations]
+    selectLocation (location) {
+      // ToDo: make a call to the appropriate endpoint and update the logic once this part is scoped out
+      if (this.activeLocation && this.activeLocation.id) {
+        let temp = [...this.$root.storeLocations]
 
-				temp.splice(
-					findIndex(this.$root.storeLocations, location),
-					1
-				)
-				temp.unshift(this.activeLocation)
-				this.setStoreLocations(temp)
-			} else {
-				let temp = [...this.$root.storeLocations]
-				temp.splice(
-					findIndex(this.$root.storeLocations, location),
-					1
-				)
-				this.setStoreLocations(temp)
-			}
-			this.activeLocation = location
-			this.$root.activeLocation = location
-			/* eslint-disable no-undef */
-			localStorage.setItem(
-				'activeLocation',
-				JSON.stringify(this.$root.activeLocation)
-			)
-			this.toggleQuickSidebar()
-		},
-		/**
+        temp.splice(
+          findIndex(this.$root.storeLocations, location),
+          1
+        )
+        temp.unshift(this.activeLocation)
+        this.setStoreLocations(temp)
+      } else {
+        let temp = [...this.$root.storeLocations]
+        temp.splice(
+          findIndex(this.$root.storeLocations, location),
+          1
+        )
+        this.setStoreLocations(temp)
+      }
+      this.activeLocation = location
+      this.$root.activeLocation = location
+      /* eslint-disable no-undef */
+      localStorage.setItem(
+        'activeLocation',
+        JSON.stringify(this.$root.activeLocation)
+      )
+      this.toggleQuickSidebar()
+    },
+    /**
 		 * To clear the selection of location.
 		 * @function
 		 * @param {object} event - The event that triggered the function.
 		 * @returns {undefined}
 		 */
-		unselectLocation (event) {
-			event.stopPropagation()
-			let temp = [...this.$root.storeLocations]
-			temp.unshift(this.activeLocation)
-			this.setStoreLocations(temp)
-			/* eslint-disable no-undef */
-			localStorage.removeItem('activeLocation')
-			this.$root.activeLocation = {}
-			this.activeLocation = {}
-		},
-		...mapMutations({
-			setStoreLocations: 'SET_STORE_LOCATIONS'
-		})
-	},
-	components: {
-		LeftSidebar,
-		LoadingScreen
-	}
+    unselectLocation (event) {
+      event.stopPropagation()
+      let temp = [...this.$root.storeLocations]
+      temp.unshift(this.activeLocation)
+      this.setStoreLocations(temp)
+      /* eslint-disable no-undef */
+      localStorage.removeItem('activeLocation')
+      this.$root.activeLocation = {}
+      this.activeLocation = {}
+    },
+    ...mapMutations({
+      setStoreLocations: 'SET_STORE_LOCATIONS'
+    })
+  },
+  components: {
+    LeftSidebar,
+    LoadingScreen
+  }
 }
 </script>
 
@@ -814,7 +814,6 @@ div.tab-pane::-webkit-scrollbar-track {
 	background-color: paleturquoise;
 }
 
-
 /* Atomic classes */
 .three-vertical-actions {
   min-height: 124px;
@@ -834,7 +833,6 @@ div.tab-pane::-webkit-scrollbar-track {
 .min-height-100px {
 	min-height: 100px;
 }
-
 
 .display-flex {
 	display: flex;

@@ -107,91 +107,91 @@ import MenusFunctions from '../../../../controllers/Menus'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Modal
-	},
-	props: {
-		selectedGroupId: {
-			type: Number,
-			default: 0
-		}
-	},
-	data() {
-		return {
-			showMenuListModal: false,
-			errorMessage: '',
-			allMenus: []
-		}
-	},
-	created() {
-		this.getCorporateStoreMenus()
-	},
-	mounted() {
-		this.showMenuListModal = true
-	},
-	methods: {
-		/**
+  components: {
+    Modal
+  },
+  props: {
+    selectedGroupId: {
+      type: Number,
+      default: 0
+    }
+  },
+  data () {
+    return {
+      showMenuListModal: false,
+      errorMessage: '',
+      allMenus: []
+    }
+  },
+  created () {
+    this.getCorporateStoreMenus()
+  },
+  mounted () {
+    this.showMenuListModal = true
+  },
+  methods: {
+    /**
 		 * To just close the modal and emit the selected item to the parent.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal() {
-			this.$emit('closeMenusListModal')
-		},
-		/**
+    closeModal () {
+      this.$emit('closeMenusListModal')
+    },
+    /**
 		 * To get a list of menus.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getCorporateStoreMenus() {
-			var selectMenusVue = this
-			selectMenusVue.allMenus = []
-			return MenusFunctions.getStoreMenus(
-				selectMenusVue.$root.appId,
-				selectMenusVue.$root.appSecret,
-				selectMenusVue.$root.corporateStoreId
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						selectMenusVue.allMenus = response.payload
-						for (var i = 0; i < selectMenusVue.allMenus.length; i++) {
-							selectMenusVue.$set(selectMenusVue.allMenus[i], 'selected', false)
-						}
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch menus',
-						errorName: 'errorMessage',
-						vue: selectMenusVue,
-						containerRef: 'selectModal'
-					})
-				})
-		},
-		/**
+    getCorporateStoreMenus () {
+      var selectMenusVue = this
+      selectMenusVue.allMenus = []
+      return MenusFunctions.getStoreMenus(
+        selectMenusVue.$root.appId,
+        selectMenusVue.$root.appSecret,
+        selectMenusVue.$root.corporateStoreId
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            selectMenusVue.allMenus = response.payload
+            for (var i = 0; i < selectMenusVue.allMenus.length; i++) {
+              selectMenusVue.$set(selectMenusVue.allMenus[i], 'selected', false)
+            }
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch menus',
+            errorName: 'errorMessage',
+            vue: selectMenusVue,
+            containerRef: 'selectModal'
+          })
+        })
+    },
+    /**
 		 * To apply some of the existing menus to a location group.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		applyMenusToGroup() {
-			// var selectMenusVue = this
-			// var menusToBeApplied = []
-			// for (var k = 0; k < selectMenusVue.allMenus.length; k++) {
-			// 	if (selectMenusVue.allMenus[k].selected) {
-			// 		menusToBeApplied.push(selectMenusVue.allMenus[k])
-			// 	}
-			// }
-			// StoreGroupsFunctions.applyMenusToGroup(selectMenusVue.selectedGroupId, menusToBeApplied, selectMenusVue.$root.appId, selectMenusVue.$root.appSecret, selectMenusVue.$root.userToken).then(response => {
-			// 	if (response.code === 200 && response.status === 'ok') {
-			// 		// show sweetalert to tell them it will change the menus on all child locations and then close the modal
-			// 	}
-			// }).catch(reason => {
-			// 	if (reason.responseJSON) {
-			// 	}
-			// 	throw reason
-			// })
-		}
-	}
+    applyMenusToGroup () {
+      // var selectMenusVue = this
+      // var menusToBeApplied = []
+      // for (var k = 0; k < selectMenusVue.allMenus.length; k++) {
+      // 	if (selectMenusVue.allMenus[k].selected) {
+      // 		menusToBeApplied.push(selectMenusVue.allMenus[k])
+      // 	}
+      // }
+      // StoreGroupsFunctions.applyMenusToGroup(selectMenusVue.selectedGroupId, menusToBeApplied, selectMenusVue.$root.appId, selectMenusVue.$root.appSecret, selectMenusVue.$root.userToken).then(response => {
+      // 	if (response.code === 200 && response.status === 'ok') {
+      // 		// show sweetalert to tell them it will change the menus on all child locations and then close the modal
+      // 	}
+      // }).catch(reason => {
+      // 	if (reason.responseJSON) {
+      // 	}
+      // 	throw reason
+      // })
+    }
+  }
 }
 </script>

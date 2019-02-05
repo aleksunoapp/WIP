@@ -131,7 +131,7 @@
                     :label="type.name"
                     :value="type.id"
                   />
-                  <el-option 
+                  <el-option
                     key="none"
                     label="none"
                     :value="0"
@@ -418,7 +418,7 @@
                     :label="type.name"
                     :value="type.id"
                   />
-                  <el-option 
+                  <el-option
                     key="none"
                     label="none"
                     :value="0"
@@ -537,513 +537,513 @@ import ajaxErrorHandler from '../../../controllers/ErrorController'
 import $ from 'jquery'
 
 export default {
-	components: {
-		Breadcrumb,
-		LoadingScreen,
-		Modal,
-		NoResults
-	},
-	data () {
-		return {
-			breadcrumbArray: [{ name: 'Tax Classes', link: false }],
+  components: {
+    Breadcrumb,
+    LoadingScreen,
+    Modal,
+    NoResults
+  },
+  data () {
+    return {
+      breadcrumbArray: [{ name: 'Tax Classes', link: false }],
 
-			createNewCollapse: true,
-			creating: false,
-			createErrorMessage: '',
-			newTaxClass: {
-				location_id: '',
-				name: '',
-				value: '',
-				min_amount: '',
-				max_amount: '',
-				paired_with: '',
-				apply: ''
-			},
+      createNewCollapse: true,
+      creating: false,
+      createErrorMessage: '',
+      newTaxClass: {
+        location_id: '',
+        name: '',
+        value: '',
+        min_amount: '',
+        max_amount: '',
+        paired_with: '',
+        apply: ''
+      },
 
-			loadingTaxClasses: false,
-			listErrorMessage: '',
-			taxClasses: [],
+      loadingTaxClasses: false,
+      listErrorMessage: '',
+      taxClasses: [],
 
-			showEditModal: false,
-			editErrorMessage: '',
-			updating: false,
-			taxClassToEdit: {
-				location_id: '',
-				name: '',
-				value: '',
-				paired_with: '',
-				apply: '',
-				min_amount: '',
-				max_amount: ''
-			},
+      showEditModal: false,
+      editErrorMessage: '',
+      updating: false,
+      taxClassToEdit: {
+        location_id: '',
+        name: '',
+        value: '',
+        paired_with: '',
+        apply: '',
+        min_amount: '',
+        max_amount: ''
+      },
 
-			showDeleteModal: false,
-			deleting: false,
-			deleteErrorMessage: '',
-			taxClassToDelete: {
-				name: ''
-			},
-			loadingItemTypes: false,
-			itemTypes: []
-		}
-	},
-	computed: {
-		activeLocationId: function () {
-			return this.$root.activeLocation.id
-		}
-	},
-	watch: {
-		activeLocationId: function (newId) {
-			if (newId !== undefined) {
-				this.clearError('listErrorMessage')
-				this.getTaxClasses()
-				this.getItemTypes()
-			}
-		}
-	},
-	mounted () {
-		if (this.$root.activeLocation.id !== undefined) {
-			this.getTaxClasses()
-			this.getItemTypes()
-		}
-	},
-	methods: {
-		/**
+      showDeleteModal: false,
+      deleting: false,
+      deleteErrorMessage: '',
+      taxClassToDelete: {
+        name: ''
+      },
+      loadingItemTypes: false,
+      itemTypes: []
+    }
+  },
+  computed: {
+    activeLocationId: function () {
+      return this.$root.activeLocation.id
+    }
+  },
+  watch: {
+    activeLocationId: function (newId) {
+      if (newId !== undefined) {
+        this.clearError('listErrorMessage')
+        this.getTaxClasses()
+        this.getItemTypes()
+      }
+    }
+  },
+  mounted () {
+    if (this.$root.activeLocation.id !== undefined) {
+      this.getTaxClasses()
+      this.getItemTypes()
+    }
+  },
+  methods: {
+    /**
 		 * To get a list of all item types.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getItemTypes () {
-			this.loadingItemTypes = true
-			this.itemTypes = []
-			var _this = this
-			let payload = { location_id: this.$root.activeLocation.id }
-			return ItemTypesFunctions.getItemTypes(
-				payload,
-				_this.$root.appId,
-				_this.$root.appSecret,
-				_this.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						_this.loadingItemTypes = false
-						_this.itemTypes = response.payload
-					} else {
-						_this.loadingItemTypes = false
-					}
-				})
-				.catch(reason => {
-					_this.loadingItemTypes = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch the list of item types',
-						errorName: 'createErrorMessage',
-						vue: _this
-					})
-				})
-		},
-		/**
+    getItemTypes () {
+      this.loadingItemTypes = true
+      this.itemTypes = []
+      var _this = this
+      let payload = { location_id: this.$root.activeLocation.id }
+      return ItemTypesFunctions.getItemTypes(
+        payload,
+        _this.$root.appId,
+        _this.$root.appSecret,
+        _this.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            _this.loadingItemTypes = false
+            _this.itemTypes = response.payload
+          } else {
+            _this.loadingItemTypes = false
+          }
+        })
+        .catch(reason => {
+          _this.loadingItemTypes = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch the list of item types',
+            errorName: 'createErrorMessage',
+            vue: _this
+          })
+        })
+    },
+    /**
 		 * To toggle the create tier panel, initially set to closed
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCreatePanel () {
-			this.createNewCollapse = !this.createNewCollapse
-		},
-		/**
+    toggleCreatePanel () {
+      this.createNewCollapse = !this.createNewCollapse
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @param {object} errorMessageName - The error message to be cleared.
 		 * @returns {undefined}
 		 */
-		clearError (errorMessageName) {
-			this[errorMessageName] = ''
-		},
-		/**
+    clearError (errorMessageName) {
+      this[errorMessageName] = ''
+    },
+    /**
 		 * To check if the input is a positive number
 		 * @function
 		 * @param {string} input - User's input
 		 * @returns {boolean} True is positive integer or float, false is not
 		 */
-		isNonNegativeNumber (input) {
-			try {
-				const inputString = String(input)
-				if (inputString.length > inputString.replace(/[^\d.]/g, '').length) {
-					return false
-				}
-				const value = Number(input)
-				if (value < 0) {
-					return false
-				}
-				return true
-			} catch (e) {
-				if (this.environment !== 'production') {
-					console.log({e})
-				}
-				return false
-			}
-		},
-		/**
+    isNonNegativeNumber (input) {
+      try {
+        const inputString = String(input)
+        if (inputString.length > inputString.replace(/[^\d.]/g, '').length) {
+          return false
+        }
+        const value = Number(input)
+        if (value < 0) {
+          return false
+        }
+        return true
+      } catch (e) {
+        if (this.environment !== 'production') {
+          console.log({ e })
+        }
+        return false
+      }
+    },
+    /**
 		 * To check if the tax class data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateNewTaxClassData () {
-			var _this = this
-			return new Promise(function (resolve, reject) {
-				if (!_this.newTaxClass.name.length) {
-					reject('Name cannot be blank')
-				} else if (!$.isNumeric(_this.newTaxClass.value)) {
-					reject('Value must be a number')
-				} else if (!_this.isNonNegativeNumber(_this.newTaxClass.min_amount)) {
-					reject('Minimum amount cannot be negative')
-				} else if (!_this.isNonNegativeNumber(_this.newTaxClass.max_amount)) {
-					reject('Maximum amount cannot be negative')
-				} else if (!(Number(_this.newTaxClass.max_amount) >= Number(_this.newTaxClass.min_amount))) {
-					reject('Maximum amount cannot be smaller than minimum amount')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateNewTaxClassData () {
+      var _this = this
+      return new Promise(function (resolve, reject) {
+        if (!_this.newTaxClass.name.length) {
+          reject('Name cannot be blank')
+        } else if (!$.isNumeric(_this.newTaxClass.value)) {
+          reject('Value must be a number')
+        } else if (!_this.isNonNegativeNumber(_this.newTaxClass.min_amount)) {
+          reject('Minimum amount cannot be negative')
+        } else if (!_this.isNonNegativeNumber(_this.newTaxClass.max_amount)) {
+          reject('Maximum amount cannot be negative')
+        } else if (!(Number(_this.newTaxClass.max_amount) >= Number(_this.newTaxClass.min_amount))) {
+          reject('Maximum amount cannot be smaller than minimum amount')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To create a new tax class.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		createTaxClass () {
-			var _this = this
-			_this.clearError('createErrorMessage')
-			this.newTaxClass.location_id = this.activeLocationId
+    createTaxClass () {
+      var _this = this
+      _this.clearError('createErrorMessage')
+      this.newTaxClass.location_id = this.activeLocationId
 
-			return _this
-				.validateNewTaxClassData()
-				.then(response => {
-					this.creating = true
-					let payload = this.newTaxClass
+      return _this
+        .validateNewTaxClassData()
+        .then(response => {
+          this.creating = true
+          let payload = this.newTaxClass
 
-					TaxClassesFunctions.createTaxClass(
-						payload,
-						_this.$root.appId,
-						_this.$root.appSecret,
-						_this.$root.userToken
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								_this.showCreateSuccess(response.payload)
-								_this.clearNewTaxClass()
-								_this.getTaxClasses()
-							} else {
-								_this.createErrorMessage = response.message
-								_this.$scrollTo(_this.$refs.createErrorMessage, 1000, {
-									offset: -50
-								})
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not create the tax class',
-								errorName: 'createErrorMessage',
-								vue: _this
-							})
-						})
-						.finally(() => {
-							_this.creating = false
-						})
-				})
-				.catch(reason => {
-					_this.createErrorMessage = reason
-					_this.$scrollTo(_this.$refs.createErrorMessage, 1000, { offset: -50 })
-				})
-		},
-		/**
+          TaxClassesFunctions.createTaxClass(
+            payload,
+            _this.$root.appId,
+            _this.$root.appSecret,
+            _this.$root.userToken
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                _this.showCreateSuccess(response.payload)
+                _this.clearNewTaxClass()
+                _this.getTaxClasses()
+              } else {
+                _this.createErrorMessage = response.message
+                _this.$scrollTo(_this.$refs.createErrorMessage, 1000, {
+                  offset: -50
+                })
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not create the tax class',
+                errorName: 'createErrorMessage',
+                vue: _this
+              })
+            })
+            .finally(() => {
+              _this.creating = false
+            })
+        })
+        .catch(reason => {
+          _this.createErrorMessage = reason
+          _this.$scrollTo(_this.$refs.createErrorMessage, 1000, { offset: -50 })
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showCreateSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Tax Class has been created'
-			let type = 'success'
+    showCreateSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Tax Class has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Tax Class has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Tax Class has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To clear the new tax class form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearNewTaxClass () {
-			this.newTaxClass = {
-				location_id: '',
-				name: '',
-				value: '',
-				min_amount: '',
-				max_amount: '',
-				paired_with: '',
-				apply: ''
-			}
-		},
-		/**
+    clearNewTaxClass () {
+      this.newTaxClass = {
+        location_id: '',
+        name: '',
+        value: '',
+        min_amount: '',
+        max_amount: '',
+        paired_with: '',
+        apply: ''
+      }
+    },
+    /**
 		 * To get a list of all tax classes.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getTaxClasses () {
-			this.loadingTaxClasses = true
-			this.taxClasses = []
-			var _this = this
-			let payload = { location_id: _this.activeLocationId }
-			return TaxClassesFunctions.getTaxClasses(
-				payload,
-				_this.$root.appId,
-				_this.$root.appSecret,
-				_this.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						_this.loadingTaxClasses = false
-						_this.taxClasses = response.payload
-					} else {
-						_this.loadingTaxClasses = false
-					}
-				})
-				.catch(reason => {
-					_this.loadingTaxClasses = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch the list of tax classes',
-						errorName: 'listErrorMessage',
-						vue: _this
-					})
-				})
-		},
-		/**
+    getTaxClasses () {
+      this.loadingTaxClasses = true
+      this.taxClasses = []
+      var _this = this
+      let payload = { location_id: _this.activeLocationId }
+      return TaxClassesFunctions.getTaxClasses(
+        payload,
+        _this.$root.appId,
+        _this.$root.appSecret,
+        _this.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            _this.loadingTaxClasses = false
+            _this.taxClasses = response.payload
+          } else {
+            _this.loadingTaxClasses = false
+          }
+        })
+        .catch(reason => {
+          _this.loadingTaxClasses = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch the list of tax classes',
+            errorName: 'listErrorMessage',
+            vue: _this
+          })
+        })
+    },
+    /**
 		 * To show the modal to edit an tax class details.
 		 * @function
 		 * @param {object} taxClass - The selected tax class.
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		editTaxClass (taxClass, event) {
-			event.stopPropagation()
-			this.taxClassToEdit = {
-				...taxClass,
-				value: String(taxClass.value),
-				min_amount: String(taxClass.min_amount),
-				max_amount: String(taxClass.max_amount)
-			}
-			this.showEditModal = true
-		},
-		/**
+    editTaxClass (taxClass, event) {
+      event.stopPropagation()
+      this.taxClassToEdit = {
+        ...taxClass,
+        value: String(taxClass.value),
+        min_amount: String(taxClass.min_amount),
+        max_amount: String(taxClass.max_amount)
+      }
+      this.showEditModal = true
+    },
+    /**
 		 * To check if the tax class data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateEditedTaxClassData () {
-			var _this = this
-			return new Promise(function (resolve, reject) {
-				if (!_this.taxClassToEdit.name.length) {
-					reject('Name cannot be blank')
-				} else if (!$.isNumeric(_this.taxClassToEdit.value)) {
-					reject('Value must be a number')
-				} else if (!_this.isNonNegativeNumber(_this.taxClassToEdit.min_amount)) {
-					reject('Minimum amount cannot be negative')
-				} else if (!_this.isNonNegativeNumber(_this.taxClassToEdit.max_amount)) {
-					reject('Maximum amount cannot be negative')
-				} else if (!(Number(_this.taxClassToEdit.max_amount) >= Number(_this.taxClassToEdit.min_amount))) {
-					reject('Maximum amount cannot be smaller than minimum amount')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateEditedTaxClassData () {
+      var _this = this
+      return new Promise(function (resolve, reject) {
+        if (!_this.taxClassToEdit.name.length) {
+          reject('Name cannot be blank')
+        } else if (!$.isNumeric(_this.taxClassToEdit.value)) {
+          reject('Value must be a number')
+        } else if (!_this.isNonNegativeNumber(_this.taxClassToEdit.min_amount)) {
+          reject('Minimum amount cannot be negative')
+        } else if (!_this.isNonNegativeNumber(_this.taxClassToEdit.max_amount)) {
+          reject('Maximum amount cannot be negative')
+        } else if (!(Number(_this.taxClassToEdit.max_amount) >= Number(_this.taxClassToEdit.min_amount))) {
+          reject('Maximum amount cannot be smaller than minimum amount')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To update a tax class.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		updateTaxClass () {
-			var _this = this
-			_this.clearError('editErrorMessage')
-			this.taxClassToEdit.location_id = this.activeLocationId
+    updateTaxClass () {
+      var _this = this
+      _this.clearError('editErrorMessage')
+      this.taxClassToEdit.location_id = this.activeLocationId
 
-			return _this
-				.validateEditedTaxClassData()
-				.then(response => {
-					this.updating = true
-					let payload = this.taxClassToEdit
+      return _this
+        .validateEditedTaxClassData()
+        .then(response => {
+          this.updating = true
+          let payload = this.taxClassToEdit
 
-					TaxClassesFunctions.updateTaxClass(
-						payload,
-						_this.$root.appId,
-						_this.$root.appSecret,
-						_this.$root.userToken
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								_this.getTaxClasses()
-								_this.closeEditModal()
-								_this.showEditSuccess(response.payload)
-								_this.resetEdit()
-							} else {
-								_this.editErrorMessage = response.message
-								_this.$scrollTo(_this.$refs.editErrorMessage, 1000, {
-									offset: -50
-								})
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not update the tax class',
-								errorName: 'editErrorMessage',
-								vue: _this
-							})
-						})
-						.finally(() => {
-							_this.updating = false
-						})
-				})
-				.catch(reason => {
-					_this.editErrorMessage = reason
-					_this.$scrollTo(_this.$refs.editErrorMessage, 1000, { offset: -50 })
-				})
-		},
-		/**
+          TaxClassesFunctions.updateTaxClass(
+            payload,
+            _this.$root.appId,
+            _this.$root.appSecret,
+            _this.$root.userToken
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                _this.getTaxClasses()
+                _this.closeEditModal()
+                _this.showEditSuccess(response.payload)
+                _this.resetEdit()
+              } else {
+                _this.editErrorMessage = response.message
+                _this.$scrollTo(_this.$refs.editErrorMessage, 1000, {
+                  offset: -50
+                })
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not update the tax class',
+                errorName: 'editErrorMessage',
+                vue: _this
+              })
+            })
+            .finally(() => {
+              _this.updating = false
+            })
+        })
+        .catch(reason => {
+          _this.editErrorMessage = reason
+          _this.$scrollTo(_this.$refs.editErrorMessage, 1000, { offset: -50 })
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Tax Class has been saved'
-			let type = 'success'
+    showEditSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Tax Class has been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To close the modal for editing a promotion.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeEditModal () {
-			this.showEditModal = false
-		},
-		/**
+    closeEditModal () {
+      this.showEditModal = false
+    },
+    /**
 		 * To reset the edit form
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetEdit () {
-			this.taxClassToEdit = {
-				location_id: '',
-				name: '',
-				value: '',
-				min_amount: '',
-				max_amount: '',
-				paired_with: '',
-				apply: ''
-			}
-		},
-		/**
+    resetEdit () {
+      this.taxClassToEdit = {
+        location_id: '',
+        name: '',
+        value: '',
+        min_amount: '',
+        max_amount: '',
+        paired_with: '',
+        apply: ''
+      }
+    },
+    /**
 		 * To display the modal for deleting an tax class.
 		 * @function
 		 * @param {object} taxClass - The selected taxClass
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		confirmDelete (taxClass, event) {
-			event.stopPropagation()
-			this.taxClassToDelete = { ...taxClass }
-			this.showDeleteModal = true
-		},
-		/**
+    confirmDelete (taxClass, event) {
+      event.stopPropagation()
+      this.taxClassToDelete = { ...taxClass }
+      this.showDeleteModal = true
+    },
+    /**
 		 * To close the modal for deleting a promotion and remove that promotion from DOM.
 		 * @function
 		 * @returns {undefined}
 		 */
-		deleteTaxClass () {
-			this.deleting = true
-			var _this = this
-			return TaxClassesFunctions.deleteTaxClass(
-				_this.taxClassToDelete.id,
-				_this.$root.appId,
-				_this.$root.appSecret,
-				_this.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						_this.getTaxClasses()
-						_this.closeDeleteModal()
-						_this.showDeleteSuccess(response.payload)
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: `We could not delete ${this.taxClassToDelete.name}`,
-						errorName: 'deleteErrorMessage',
-						vue: _this
-					})
-				})
-				.finally(() => {
-					_this.deleting = false
-				})
-		},
-		/**
+    deleteTaxClass () {
+      this.deleting = true
+      var _this = this
+      return TaxClassesFunctions.deleteTaxClass(
+        _this.taxClassToDelete.id,
+        _this.$root.appId,
+        _this.$root.appSecret,
+        _this.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            _this.getTaxClasses()
+            _this.closeDeleteModal()
+            _this.showDeleteSuccess(response.payload)
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: `We could not delete ${this.taxClassToDelete.name}`,
+            errorName: 'deleteErrorMessage',
+            vue: _this
+          })
+        })
+        .finally(() => {
+          _this.deleting = false
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Tax Class has been deleted'
-			let type = 'success'
+    showDeleteSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Tax Class has been deleted'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The removal has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The removal has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To close the delete modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeDeleteModal () {
-			this.showDeleteModal = false
-		}
-	}
+    closeDeleteModal () {
+      this.showDeleteModal = false
+    }
+  }
 }
 </script>
 

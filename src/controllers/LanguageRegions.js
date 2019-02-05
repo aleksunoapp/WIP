@@ -20,19 +20,19 @@ import GlobalFunctions from '@/global.js'
  * }]
  */
 export const listLocaleRegions = () => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'GET',
-			dataType: 'json',
-			url: `/app/locale_regions`,
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'GET',
+      dataType: 'json',
+      url: `/app/locale_regions`,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 /**
@@ -56,19 +56,19 @@ export const listLocaleRegions = () => {
  * }
  */
 export const showLocaleRegion = (id) => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'GET',
-			dataType: 'json',
-			url: `/app/locale_regions/show/${id}`,
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'GET',
+      dataType: 'json',
+      url: `/app/locale_regions/show/${id}`,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 /**
@@ -92,20 +92,20 @@ export const showLocaleRegion = (id) => {
  * }
  */
 export const createLocaleRegion = (localeRegion) => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'POST',
-			dataType: 'json',
-			url: '/app/locale_regions/create',
-			data: localeRegion,
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'POST',
+      dataType: 'json',
+      url: '/app/locale_regions/create',
+      data: localeRegion,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 /**
@@ -129,20 +129,20 @@ export const createLocaleRegion = (localeRegion) => {
  * }
  */
 export const updateLocaleRegion = (localeRegion) => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'POST',
-			dataType: 'json',
-			url: `/app/locale_regions/update/${localeRegion.id}`,
-			data: localeRegion,
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'POST',
+      dataType: 'json',
+      url: `/app/locale_regions/update/${localeRegion.id}`,
+      data: localeRegion,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 /**
@@ -152,25 +152,25 @@ export const updateLocaleRegion = (localeRegion) => {
  * @returns {object} A promise with response shaped ...
  */
 export const deleteLocaleRegion = ({ id = null }) => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'DELETE',
-			dataType: 'json',
-			url: `/app/locale_regions/delete/${id}`,
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'DELETE',
+      dataType: 'json',
+      url: `/app/locale_regions/delete/${id}`,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 export default {
-	listLocaleRegions,
-	showLocaleRegion,
-	createLocaleRegion,
-	updateLocaleRegion,
-	deleteLocaleRegion
+  listLocaleRegions,
+  showLocaleRegion,
+  createLocaleRegion,
+  updateLocaleRegion,
+  deleteLocaleRegion
 }

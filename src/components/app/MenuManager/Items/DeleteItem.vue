@@ -66,111 +66,111 @@ import ItemsFunctions from '../../../../controllers/Items'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Modal
-	},
-	props: {
-		passedItemId: {
-			type: Number
-		}
-	},
-	data () {
-		return {
-			showDeleteItemModal: false,
-			deleting: false,
-			errorMessage: '',
-			customWidth: 90
-		}
-	},
-	mounted () {
-		this.showDeleteItemModal = true
-	},
-	methods: {
-		/**
+  components: {
+    Modal
+  },
+  props: {
+    passedItemId: {
+      type: Number
+    }
+  },
+  data () {
+    return {
+      showDeleteItemModal: false,
+      deleting: false,
+      errorMessage: '',
+      customWidth: 90
+    }
+  },
+  mounted () {
+    this.showDeleteItemModal = true
+  },
+  methods: {
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To delete the item and close the modal.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		deleteItem () {
-			this.deleting = true
-			var deleteItemVue = this
-			deleteItemVue.clearError()
+    deleteItem () {
+      this.deleting = true
+      var deleteItemVue = this
+      deleteItemVue.clearError()
 
-			ItemsFunctions.deleteItem(
-				deleteItemVue.passedItemId,
-				deleteItemVue.$root.appId,
-				deleteItemVue.$root.appSecret,
-				deleteItemVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						this.showDeleteSuccess(response.payload)
-						this.deleteItemAndCloseModal()
-					} else {
-						deleteItemVue.errorMessage = response.message
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not delete the item',
-						errorName: 'errorMessage',
-						vue: deleteItemVue,
-						containerRef: 'deleteModal'
-					})
-				})
-				.finally(() => {
-					deleteItemVue.deleting = false
-				})
-		},
-		/**
+      ItemsFunctions.deleteItem(
+        deleteItemVue.passedItemId,
+        deleteItemVue.$root.appId,
+        deleteItemVue.$root.appSecret,
+        deleteItemVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            this.showDeleteSuccess(response.payload)
+            this.deleteItemAndCloseModal()
+          } else {
+            deleteItemVue.errorMessage = response.message
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not delete the item',
+            errorName: 'errorMessage',
+            vue: deleteItemVue,
+            containerRef: 'deleteModal'
+          })
+        })
+        .finally(() => {
+          deleteItemVue.deleting = false
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Item has been deleted'
-			let type = 'success'
+    showDeleteSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Item has been deleted'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The removal has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The removal has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('closeDeleteItemModal')
-		},
-		/**
+    closeModal () {
+      this.$emit('closeDeleteItemModal')
+    },
+    /**
 		 * To close the modal and delete the item.
 		 * @function
 		 * @returns {undefined}
 		 */
-		deleteItemAndCloseModal () {
-			this.$emit('deleteItemAndCloseModal')
-		}
-	}
+    deleteItemAndCloseModal () {
+      this.$emit('deleteItemAndCloseModal')
+    }
+  }
 }
 </script>
 <style>

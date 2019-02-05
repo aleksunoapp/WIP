@@ -65,65 +65,64 @@ import ModifierTierFunctions from '@/controllers/ModifierTiers'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	name: 'DeleteModifierTier',
-	components: {
-		Modal
-	},
-	props: {
-		tier: {
-			type: Object,
-			required: false,
-			default: () => ({
-				name: ''
-			})
-		}
-	},
-	data: () => ({
-		showModal: false,
-		errorMessage: ''
-	}),
-	mounted () {
-		this.showModal = true
-	},
-	methods: {
-		/**
+  name: 'DeleteModifierTier',
+  components: {
+    Modal
+  },
+  props: {
+    tier: {
+      type: Object,
+      required: false,
+      default: () => ({
+        name: ''
+      })
+    }
+  },
+  data: () => ({
+    showModal: false,
+    errorMessage: ''
+  }),
+  mounted () {
+    this.showModal = true
+  },
+  methods: {
+    /**
 		 * To clear an error
 		 * @function
 		 * @param {string} name - Name of the error variable
 		 * @returns {undefined}
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To make the delete call
 		 * @function
 		 * @returns {undefined}
 		 */
-		deleteModifierTier () {
-			const deleteTierVue = this
-			ModifierTierFunctions.deleteModifierTier(deleteTierVue.tier)
-				.then(response => {
-					deleteTierVue.$emit('deleted', response.payload)
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorName: 'errorMessage',
-						errorText: "We couldn't delete the tier",
-						vue: deleteTierVue
-					})
-				})
-		},
-		/**
+    deleteModifierTier () {
+      const deleteTierVue = this
+      ModifierTierFunctions.deleteModifierTier(deleteTierVue.tier)
+        .then(response => {
+          deleteTierVue.$emit('deleted', response.payload)
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorName: 'errorMessage',
+            errorText: "We couldn't delete the tier",
+            vue: deleteTierVue
+          })
+        })
+    },
+    /**
 		 * To emit a close event
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('close')
-		}
-	}
+    closeModal () {
+      this.$emit('close')
+    }
+  }
 }
 </script>
-

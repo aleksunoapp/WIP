@@ -37,7 +37,7 @@
           class="fa check"
           :class="{
             'transparent': !menuSelectable(activeMenu) || single,
-            'fa-check-square checked': allCategoriesSelected, 
+            'fa-check-square checked': allCategoriesSelected,
             'fa-square-o unchecked': !allCategoriesSelected
           }"
           aria-hidden="true"
@@ -57,7 +57,7 @@
           class="fa check"
           :class="{
             'transparent' : !activeItems.length || single,
-            'fa-check-square checked': allItemsSelected, 
+            'fa-check-square checked': allItemsSelected,
             'fa-square-o unchecked': !allItemsSelected
           }"
           aria-hidden="true"
@@ -70,7 +70,7 @@
     </div>
     <div class="col-xs-4">
       <div
-        v-if="loading.menus" 
+        v-if="loading.menus"
         class="width-100 display-flex justify-content-center"
       >
         <i
@@ -100,7 +100,7 @@
                   class="fa check"
                   :class="{
                     'transparent' : !menuSelectable(menu),
-                    'fa-check-square checked': menuSelected(menu), 
+                    'fa-check-square checked': menuSelected(menu),
                     'fa-minus-square checked': menuPartiallySelected(menu),
                     'fa-square-o unchecked': !menuSelected(menu)
                   }"
@@ -122,14 +122,14 @@
     </div>
     <div class="col-xs-4">
       <div
-        v-if="loading.items || loading.categories" 
+        v-if="loading.items || loading.categories"
         class="width-100 display-flex justify-content-center"
       >
         <i
           class="margin-top-20 fa fa-spinner fa-pulse fa-fw"
         />
       </div>
-      <div 
+      <div
         v-else
         id="nestable_list_2"
         class="dd"
@@ -152,7 +152,7 @@
                   class="fa check"
                   :class="{
                     'transparent' : !categorySelectable(category),
-                    'fa-check-square checked': categorySelected(category), 
+                    'fa-check-square checked': categorySelected(category),
                     'fa-minus-square checked': categoryPartiallySelected(category),
                     'fa-square-o unchecked': !categorySelected(category)
                   }"
@@ -198,7 +198,7 @@
                 <i
                   class="fa check"
                   :class="{
-                    'fa-check-square checked': item.selected, 
+                    'fa-check-square checked': item.selected,
                     'fa-square-o unchecked': !item.selected
                   }"
                   aria-hidden="true"
@@ -226,457 +226,457 @@ import CategoriesFunctions from '@/controllers/Categories'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	name: 'MenuItemPicker',
-	props: {
-		/**
+  name: 'MenuItemPicker',
+  props: {
+    /**
 		 * @property {array} previouslySelected - An array of SKU strings of previously selected items
 		 */
-		previouslySelected: {
-			type: Array,
-			default: () => [],
-			required: false
-		},
-		/**
+    previouslySelected: {
+      type: Array,
+      default: () => [],
+      required: false
+    },
+    /**
 		 * @property {boolean} single - Limits selection to one item only
 		 */
-		single: {
-			type: Boolean,
-			default: () => false,
-			required: false
-		}
-	},
-	data: () => ({
-		loading: {
-			menus: false,
-			categories: false,
-			items: false
-		},
-		previous: [],
-		errorMessage: '',
-		menus: [],
-		activeMenu: {
-			categories: [],
-			items: []
-		},
-		activeCategory: {}
-	}),
-	computed: {
-		activeItems () {
-			if (this.activeMenu.items) {
-				return this.activeMenu.items.filter(item => {
-					return item.category.parent_category === 0 ? item.category.id === this.activeCategory.id : item.category.parent_category === this.activeCategory.id
-				})
-			} else {
-				return []
-			}
-		},
-		allCategoriesSelected () {
-			if (this.activeMenu.categories && this.activeMenu.items) {
-				return (
-					this.activeMenu.items.length &&
+    single: {
+      type: Boolean,
+      default: () => false,
+      required: false
+    }
+  },
+  data: () => ({
+    loading: {
+      menus: false,
+      categories: false,
+      items: false
+    },
+    previous: [],
+    errorMessage: '',
+    menus: [],
+    activeMenu: {
+      categories: [],
+      items: []
+    },
+    activeCategory: {}
+  }),
+  computed: {
+    activeItems () {
+      if (this.activeMenu.items) {
+        return this.activeMenu.items.filter(item => {
+          return item.category.parent_category === 0 ? item.category.id === this.activeCategory.id : item.category.parent_category === this.activeCategory.id
+        })
+      } else {
+        return []
+      }
+    },
+    allCategoriesSelected () {
+      if (this.activeMenu.categories && this.activeMenu.items) {
+        return (
+          this.activeMenu.items.length &&
 					!this.activeMenu.items.some(item => !item.selected)
-				)
-			} else {
-				return false
-			}
-		},
-		allItemsSelected () {
-			return (
-				this.activeItems.length &&
+        )
+      } else {
+        return false
+      }
+    },
+    allItemsSelected () {
+      return (
+        this.activeItems.length &&
 				!this.activeItems.some(item => !item.selected)
-			)
-		},
-		infoMessage () {
-			if (this.$root.activeLocation.id === undefined) {
-				return 'Please select a store to view its Menus.'
-			} else {
-				return ''
-			}
-		}
-	},
-	watch: {
-		'$root.activeLocation': function (location) {
-			if (location.id !== undefined) {
-				this.getMenus()
-			}
-		}
-	},
-	created () {
-		this.previous = [...this.previouslySelected]
-		if (this.$root.activeLocation.id !== undefined) {
-			this.getMenus()
-		}
-	},
-	methods: {
-		/**
+      )
+    },
+    infoMessage () {
+      if (this.$root.activeLocation.id === undefined) {
+        return 'Please select a store to view its Menus.'
+      } else {
+        return ''
+      }
+    }
+  },
+  watch: {
+    '$root.activeLocation': function (location) {
+      if (location.id !== undefined) {
+        this.getMenus()
+      }
+    }
+  },
+  created () {
+    this.previous = [...this.previouslySelected]
+    if (this.$root.activeLocation.id !== undefined) {
+      this.getMenus()
+    }
+  },
+  methods: {
+    /**
 		 * To change selection an item
 		 * @function
 		 * @param {object} item - The item to toggle
 		 * @returns {undefined}
 		 */
-		toggleItem (item) {
-			if (this.single) {
-				this.activeMenu.items.forEach(menuItem => {
-					if (item.id !== menuItem.id) {
-						menuItem.selected = false
-					}
-				})
-				this.menus.forEach(menu => {
-					if (this.menuPartiallySelected(menu) || this.menuSelected(menu)) {
-						menu.items.forEach(item => {
-							item.selected = false
-						})
-					}
-				})
-			}
-			if (item.selected) {
-				const previousIndex = this.previous.indexOf(item.sku)
-				if (previousIndex !== -1) {
-					this.previous.splice(previousIndex, 1)
-				}
-			}
-			item.selected = !item.selected
-			this.update()
-		},
-		/**
+    toggleItem (item) {
+      if (this.single) {
+        this.activeMenu.items.forEach(menuItem => {
+          if (item.id !== menuItem.id) {
+            menuItem.selected = false
+          }
+        })
+        this.menus.forEach(menu => {
+          if (this.menuPartiallySelected(menu) || this.menuSelected(menu)) {
+            menu.items.forEach(item => {
+              item.selected = false
+            })
+          }
+        })
+      }
+      if (item.selected) {
+        const previousIndex = this.previous.indexOf(item.sku)
+        if (previousIndex !== -1) {
+          this.previous.splice(previousIndex, 1)
+        }
+      }
+      item.selected = !item.selected
+      this.update()
+    },
+    /**
 		 * To toggle selection of all items
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleAllItems () {
-			if (this.single) return
-			const selected = this.allItemsSelected
-			this.activeItems.forEach(item => {
-				item.selected = !selected
-			})
-			if (selected) {
-				this.activeItems.forEach(item => {
-					const previousIndex = this.previous.indexOf(item.sku)
-					if (previousIndex !== -1) {
-						this.previous.splice(previousIndex, 1)
-					}
-				})
-			}
-			this.update()
-		},
-		/**
+    toggleAllItems () {
+      if (this.single) return
+      const selected = this.allItemsSelected
+      this.activeItems.forEach(item => {
+        item.selected = !selected
+      })
+      if (selected) {
+        this.activeItems.forEach(item => {
+          const previousIndex = this.previous.indexOf(item.sku)
+          if (previousIndex !== -1) {
+            this.previous.splice(previousIndex, 1)
+          }
+        })
+      }
+      this.update()
+    },
+    /**
 		 * To change the active category
 		 * @function
 		 * @param {object} category - Selected category
 		 * @returns {undefined}
 		 */
-		toggleCategory (category) {
-			this.activeCategory = category
-			this.update()
-		},
-		/**
+    toggleCategory (category) {
+      this.activeCategory = category
+      this.update()
+    },
+    /**
 		 * To toggle selection of all categories
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleAllCategories () {
-			if (this.single) return
-			const selected = this.allCategoriesSelected
-			this.activeMenu.items.forEach(item => {
-				item.selected = !selected
-			})
-			if (selected) {
-				this.activeMenu.items.forEach(item => {
-					const previousIndex = this.previous.indexOf(item.sku)
-					if (previousIndex !== -1) {
-						this.previous.splice(previousIndex, 1)
-					}
-				})
-			}
-			this.update()
-		},
-		/**
+    toggleAllCategories () {
+      if (this.single) return
+      const selected = this.allCategoriesSelected
+      this.activeMenu.items.forEach(item => {
+        item.selected = !selected
+      })
+      if (selected) {
+        this.activeMenu.items.forEach(item => {
+          const previousIndex = this.previous.indexOf(item.sku)
+          if (previousIndex !== -1) {
+            this.previous.splice(previousIndex, 1)
+          }
+        })
+      }
+      this.update()
+    },
+    /**
 		 * To select a menu and fetch its items
 		 * @function
 		 * @param {object} menu - The selected menu.
 		 * @returns {undefined}
 		 */
-		toggleMenu (menu) {
-			this.activeCategory = {}
-			this.activeMenu = menu
-			if (menu.items === undefined) {
-				return Promise.all([
-					this.getAllItemsInMenu(),
-					this.getMenuCategories()
-				])
-			}
-		},
-		/**
+    toggleMenu (menu) {
+      this.activeCategory = {}
+      this.activeMenu = menu
+      if (menu.items === undefined) {
+        return Promise.all([
+          this.getAllItemsInMenu(),
+          this.getMenuCategories()
+        ])
+      }
+    },
+    /**
 		 * To change selection of all items in a menu
 		 * @function
 		 * @param {object} menu - The menu of items to toggle
 		 * @returns {undefined}
 		 */
-		toggleAllInMenu (menu) {
-			if (this.single) return
-			const selected = this.menuSelected(menu)
-			if (menu.items) {
-				menu.items.forEach(item => {
-					if (selected) {
-						const previousIndex = this.previous.indexOf(item.sku)
-						if (previousIndex !== -1) {
-							this.previous.splice(previousIndex, 1)
-						}
-					}
-					item.selected = !selected
-				})
-				this.update()
-			} else {
-				this.toggleMenu(menu).then(() => {
-					this.activeMenu.items.forEach(item => {
-						if (selected) {
-							const previousIndex = this.previous.indexOf(item.sku)
-							if (previousIndex !== -1) {
-								this.previous.splice(previousIndex, 1)
-							}
-						}
-						item.selected = !selected
-					})
-					this.update()
-				})
-			}
-		},
-		/**
+    toggleAllInMenu (menu) {
+      if (this.single) return
+      const selected = this.menuSelected(menu)
+      if (menu.items) {
+        menu.items.forEach(item => {
+          if (selected) {
+            const previousIndex = this.previous.indexOf(item.sku)
+            if (previousIndex !== -1) {
+              this.previous.splice(previousIndex, 1)
+            }
+          }
+          item.selected = !selected
+        })
+        this.update()
+      } else {
+        this.toggleMenu(menu).then(() => {
+          this.activeMenu.items.forEach(item => {
+            if (selected) {
+              const previousIndex = this.previous.indexOf(item.sku)
+              if (previousIndex !== -1) {
+                this.previous.splice(previousIndex, 1)
+              }
+            }
+            item.selected = !selected
+          })
+          this.update()
+        })
+      }
+    },
+    /**
 		 * To change selection of all items in a category
 		 * @function
 		 * @param {object} category - The category of items to toggle
 		 * @returns {undefined}
 		 */
-		toggleAllInCategory (category) {
-			if (this.single) return
-			const selected = this.categorySelected(category)
-			let menu = this.menus.filter(menu => menu.id === category.menu_id)[0]
-			let items = menu.items.filter(item => {
-				return item.category.parent_category === 0 ? item.category.id === category.id : item.category.parent_category === category.id
-			})
-			items.forEach(item => {
-				if (selected) {
-					const previousIndex = this.previous.indexOf(item.sku)
-					if (previousIndex !== -1) {
-						this.previous.splice(previousIndex, 1)
-					}
-				}
-				item.selected = !selected
-			})
-			if (this.activeCategory.id !== category.id) {
-				this.toggleCategory(category)
-			}
-			this.update()
-		},
-		/**
+    toggleAllInCategory (category) {
+      if (this.single) return
+      const selected = this.categorySelected(category)
+      let menu = this.menus.filter(menu => menu.id === category.menu_id)[0]
+      let items = menu.items.filter(item => {
+        return item.category.parent_category === 0 ? item.category.id === category.id : item.category.parent_category === category.id
+      })
+      items.forEach(item => {
+        if (selected) {
+          const previousIndex = this.previous.indexOf(item.sku)
+          if (previousIndex !== -1) {
+            this.previous.splice(previousIndex, 1)
+          }
+        }
+        item.selected = !selected
+      })
+      if (this.activeCategory.id !== category.id) {
+        this.toggleCategory(category)
+      }
+      this.update()
+    },
+    /**
 		 * To clear an error variable
 		 * @function
 		 * @param {string} name - Name of the variable to clear
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To get a list of all menus for the current active location
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getMenus () {
-			this.loading.menus = true
-			this.menus = []
-			var pickerVue = this
-			return MenusFunctions.getStoreMenus(
-				pickerVue.$root.appId,
-				pickerVue.$root.appSecret,
-				pickerVue.$root.activeLocation.id,
-				{
-					all_type: 1
-				}
-			)
-				.then(response => {
-					pickerVue.menus = response.payload.map(menu => {
-						return {
-							...menu,
-							selected: false,
-							indeterminate: false
-						}
-					})
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not get menus',
-						errorName: 'errorMessage',
-						vue: pickerVue
-					})
-				})
-				.finally(() => {
-					pickerVue.loading.menus = false
-				})
-		},
-		/**
+    getMenus () {
+      this.loading.menus = true
+      this.menus = []
+      var pickerVue = this
+      return MenusFunctions.getStoreMenus(
+        pickerVue.$root.appId,
+        pickerVue.$root.appSecret,
+        pickerVue.$root.activeLocation.id,
+        {
+          all_type: 1
+        }
+      )
+        .then(response => {
+          pickerVue.menus = response.payload.map(menu => {
+            return {
+              ...menu,
+              selected: false,
+              indeterminate: false
+            }
+          })
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not get menus',
+            errorName: 'errorMessage',
+            vue: pickerVue
+          })
+        })
+        .finally(() => {
+          pickerVue.loading.menus = false
+        })
+    },
+    /**
 		 * To get a list of categories for a menu.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getMenuCategories () {
-			this.loading.categories = true
-			let pickerVue = this
-			return CategoriesFunctions.getMenuCategories(this.activeMenu.id)
-				.then(response => {
-					let categories = response.payload.map(category => ({
-						...category,
-						selected: false
-					}))
+    getMenuCategories () {
+      this.loading.categories = true
+      let pickerVue = this
+      return CategoriesFunctions.getMenuCategories(this.activeMenu.id)
+        .then(response => {
+          let categories = response.payload.map(category => ({
+            ...category,
+            selected: false
+          }))
 
-					pickerVue.$set(pickerVue.activeMenu, 'categories', categories)
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not get categories',
-						errorName: 'errorMessage',
-						vue: pickerVue
-					})
-				})
-				.finally(() => {
-					pickerVue.loading.categories = false
-				})
-		},
-		/**
+          pickerVue.$set(pickerVue.activeMenu, 'categories', categories)
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not get categories',
+            errorName: 'errorMessage',
+            vue: pickerVue
+          })
+        })
+        .finally(() => {
+          pickerVue.loading.categories = false
+        })
+    },
+    /**
 		 * To get a list of all items for a menu.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getAllItemsInMenu () {
-			this.loading.items = true
-			var pickerVue = this
-			return MenusFunctions.getAllItemsInMenu(pickerVue.activeMenu.id)
-				.then(response => {
-					let menu = pickerVue.menus.filter(
-						menu => menu.id === pickerVue.activeMenu.id
-					)[0]
-					let items = response.payload.map(item => {
-						return {
-							...item,
-							selected: pickerVue.previous.includes(item.sku)
-						}
-					})
-					pickerVue.$set(menu, 'items', items)
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not get menu items',
-						errorName: 'errorMessage',
-						vue: pickerVue
-					})
-				})
-				.finally(() => {
-					pickerVue.loading.items = false
-				})
-		},
-		/**
+    getAllItemsInMenu () {
+      this.loading.items = true
+      var pickerVue = this
+      return MenusFunctions.getAllItemsInMenu(pickerVue.activeMenu.id)
+        .then(response => {
+          let menu = pickerVue.menus.filter(
+            menu => menu.id === pickerVue.activeMenu.id
+          )[0]
+          let items = response.payload.map(item => {
+            return {
+              ...item,
+              selected: pickerVue.previous.includes(item.sku)
+            }
+          })
+          pickerVue.$set(menu, 'items', items)
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not get menu items',
+            errorName: 'errorMessage',
+            vue: pickerVue
+          })
+        })
+        .finally(() => {
+          pickerVue.loading.items = false
+        })
+    },
+    /**
 		 * To determine if a menu contains items to select
 		 * @function
 		 * @param {object} menu - The menu to check
 		 * @returns {boolean} True if it contains items, false if not
 		 */
-		menuSelectable (menu) {
-			if (!menu.items) {
-				return false
-			} else {
-				return menu.items.length !== 0
-			}
-		},
-		/**
+    menuSelectable (menu) {
+      if (!menu.items) {
+        return false
+      } else {
+        return menu.items.length !== 0
+      }
+    },
+    /**
 		 * To determine if a category contains items to select
 		 * @function
 		 * @param {object} category - The category to check
 		 * @returns {boolean} True if it contains items, false if not
 		 */
-		categorySelectable (category) {
-			let menu = this.menus.filter(menu => menu.id === category.menu_id)[0]
-			return menu.items.length !== 0
-		},
-		/**
+    categorySelectable (category) {
+      let menu = this.menus.filter(menu => menu.id === category.menu_id)[0]
+      return menu.items.length !== 0
+    },
+    /**
 		 * To determine if a menu is selected
 		 * @function
 		 * @param {object} menu - The menu to check
 		 * @returns {boolean} True if it's selected, false if not
 		 */
-		menuSelected (menu) {
-			if (menu.items) {
-				return !menu.items.some(item => !item.selected)
-			} else {
-				return false
-			}
-		},
-		/**
+    menuSelected (menu) {
+      if (menu.items) {
+        return !menu.items.some(item => !item.selected)
+      } else {
+        return false
+      }
+    },
+    /**
 		 * To determine if a menu is partially selected (indeterminate)
 		 * @function
 		 * @param {object} menu - The menu to check
 		 * @returns {boolean} True if it's partially selected, false if not
 		 */
-		menuPartiallySelected (menu) {
-			if (menu.items) {
-				let itemsLength = menu.items.length
-				let selectedItems = menu.items.filter(item => item.selected)
-				let selectedItemsLength = selectedItems.length
-				return selectedItemsLength !== 0 && selectedItemsLength !== itemsLength
-			} else {
-				return false
-			}
-		},
-		/**
+    menuPartiallySelected (menu) {
+      if (menu.items) {
+        let itemsLength = menu.items.length
+        let selectedItems = menu.items.filter(item => item.selected)
+        let selectedItemsLength = selectedItems.length
+        return selectedItemsLength !== 0 && selectedItemsLength !== itemsLength
+      } else {
+        return false
+      }
+    },
+    /**
 		 * To determine if a category is selected
 		 * @function
 		 * @param {object} category - The category to check
 		 * @returns {boolean} True if it's selected, false if not
 		 */
-		categorySelected (category) {
-			let menu = this.menus.filter(menu => menu.id === category.menu_id)[0]
-			let items = menu.items.filter(item => {
-				return item.category.parent_category === 0 ? item.category.id === category.id : item.category.parent_category === category.id
-			})
-			return items.length && !items.some(item => !item.selected)
-		},
-		/**
+    categorySelected (category) {
+      let menu = this.menus.filter(menu => menu.id === category.menu_id)[0]
+      let items = menu.items.filter(item => {
+        return item.category.parent_category === 0 ? item.category.id === category.id : item.category.parent_category === category.id
+      })
+      return items.length && !items.some(item => !item.selected)
+    },
+    /**
 		 * To determine if a category is partially selected (indeterminate)
 		 * @function
 		 * @param {object} category - The category to check
 		 * @returns {boolean} True if it's partially selected, false if not
 		 */
-		categoryPartiallySelected (category) {
-			let menu = this.menus.filter(menu => menu.id === category.menu_id)[0]
-			let items = menu.items.filter(item => {
-				return item.category.parent_category === 0 ? item.category.id === category.id : item.category.parent_category === category.id
-			})
-			let itemsLength = items.length
-			let selectedItems = items.filter(item => item.selected)
-			let selectedItemsLength = selectedItems.length
-			return selectedItemsLength !== 0 && selectedItemsLength !== itemsLength
-		},
-		/**
+    categoryPartiallySelected (category) {
+      let menu = this.menus.filter(menu => menu.id === category.menu_id)[0]
+      let items = menu.items.filter(item => {
+        return item.category.parent_category === 0 ? item.category.id === category.id : item.category.parent_category === category.id
+      })
+      let itemsLength = items.length
+      let selectedItems = items.filter(item => item.selected)
+      let selectedItemsLength = selectedItems.length
+      return selectedItemsLength !== 0 && selectedItemsLength !== itemsLength
+    },
+    /**
 		 * To notify the parent item selection has changed
 		 * @function
 		 * @returns {undefined}
 		 */
-		update () {
-			let selected = []
-			let menusWithItems = this.menus.filter(menu => menu.items !== undefined)
-			menusWithItems.forEach(menu => {
-				let selectedMenuItems = menu.items.filter(item => item.selected)
-				selected = selected.concat(selectedMenuItems)
-			})
-			selected = [
-				...this.previous.map(sku => ({previous: true, sku, name: ''})),
-				...selected.filter(item => !this.previous.includes(item.sku))
-			]
-			this.$emit('update', selected)
-		}
-	}
+    update () {
+      let selected = []
+      let menusWithItems = this.menus.filter(menu => menu.items !== undefined)
+      menusWithItems.forEach(menu => {
+        let selectedMenuItems = menu.items.filter(item => item.selected)
+        selected = selected.concat(selectedMenuItems)
+      })
+      selected = [
+        ...this.previous.map(sku => ({ previous: true, sku, name: '' })),
+        ...selected.filter(item => !this.previous.includes(item.sku))
+      ]
+      this.$emit('update', selected)
+    }
+  }
 }
 </script>
 <style scoped>

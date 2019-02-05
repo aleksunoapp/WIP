@@ -512,621 +512,621 @@ import NoResults from '../../modules/NoResults'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
 
 export default {
-	components: {
-		Breadcrumb,
-		LoadingScreen,
-		Modal,
-		NoResults
-	},
-	data () {
-		return {
-			breadcrumbArray: [{ name: 'Item Types', link: false }],
+  components: {
+    Breadcrumb,
+    LoadingScreen,
+    Modal,
+    NoResults
+  },
+  data () {
+    return {
+      breadcrumbArray: [{ name: 'Item Types', link: false }],
 
-			createNewCollapse: true,
-			creating: false,
-			createErrorMessage: '',
-			newItemType: {
-				name: ''
-			},
+      createNewCollapse: true,
+      creating: false,
+      createErrorMessage: '',
+      newItemType: {
+        name: ''
+      },
 
-			loadingItemTypes: false,
-			listErrorMessage: '',
-			itemTypes: [],
+      loadingItemTypes: false,
+      listErrorMessage: '',
+      itemTypes: [],
 
-			showEditModal: false,
-			updating: false,
-			editErrorMessage: '',
-			itemTypeToEdit: {
-				name: ''
-			},
+      showEditModal: false,
+      updating: false,
+      editErrorMessage: '',
+      itemTypeToEdit: {
+        name: ''
+      },
 
-			showDeleteModal: false,
-			deleting: false,
-			deleteErrorMessage: '',
-			itemTypeToDelete: {
-				name: ''
-			},
+      showDeleteModal: false,
+      deleting: false,
+      deleteErrorMessage: '',
+      itemTypeToDelete: {
+        name: ''
+      },
 
-			loadingTaxClasses: false,
-			taxClasses: [],
-			applying: false,
-			applyErrorMessage: '',
-			itemTypeToAssignTo: {},
-			showApplyModal: false
-		}
-	},
-	computed: {
-		activeLocationId: function () {
-			return this.$root.activeLocation.id
-		},
-		selectAllSelected () {
-			if (this.taxClasses.length) {
-				return (
-					!this.taxClasses.filter(taxClass => !taxClass.selected).length > 0
-				)
-			}
-			return false
-		}
-	},
-	watch: {
-		activeLocationId: function (newId) {
-			if (newId !== undefined) {
-				this.getItemTypes()
-			}
-		}
-	},
-	mounted () {
-		this.getItemTypes()
-	},
-	methods: {
-		/**
+      loadingTaxClasses: false,
+      taxClasses: [],
+      applying: false,
+      applyErrorMessage: '',
+      itemTypeToAssignTo: {},
+      showApplyModal: false
+    }
+  },
+  computed: {
+    activeLocationId: function () {
+      return this.$root.activeLocation.id
+    },
+    selectAllSelected () {
+      if (this.taxClasses.length) {
+        return (
+          !this.taxClasses.filter(taxClass => !taxClass.selected).length > 0
+        )
+      }
+      return false
+    }
+  },
+  watch: {
+    activeLocationId: function (newId) {
+      if (newId !== undefined) {
+        this.getItemTypes()
+      }
+    }
+  },
+  mounted () {
+    this.getItemTypes()
+  },
+  methods: {
+    /**
 		 * To toggle the create tier panel, initially set to closed
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCreatePanel () {
-			this.createNewCollapse = !this.createNewCollapse
-		},
-		/**
+    toggleCreatePanel () {
+      this.createNewCollapse = !this.createNewCollapse
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @param {object} errorMessageName - The error message to be cleared.
 		 * @returns {undefined}
 		 */
-		clearError (errorMessageName) {
-			this[errorMessageName] = ''
-		},
-		/**
+    clearError (errorMessageName) {
+      this[errorMessageName] = ''
+    },
+    /**
 		 * To check if the item type data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateNewItemTypeData () {
-			var _this = this
-			return new Promise(function (resolve, reject) {
-				if (!_this.newItemType.name.length) {
-					reject('Name cannot be blank')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateNewItemTypeData () {
+      var _this = this
+      return new Promise(function (resolve, reject) {
+        if (!_this.newItemType.name.length) {
+          reject('Name cannot be blank')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To create a new item type.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		createItemType () {
-			var _this = this
-			_this.clearError('createErrorMessage')
-			this.newItemType.location_id = this.activeLocationId
+    createItemType () {
+      var _this = this
+      _this.clearError('createErrorMessage')
+      this.newItemType.location_id = this.activeLocationId
 
-			return _this
-				.validateNewItemTypeData()
-				.then(response => {
-					_this.creating = true
-					ItemTypesFunctions.createItemType(
-						_this.newItemType,
-						_this.$root.appId,
-						_this.$root.appSecret,
-						_this.$root.userToken
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								_this.showCreateSuccess(response.payload)
-								_this.clearNewItemType()
-								_this.getItemTypes()
-							} else {
-								_this.createErrorMessage = response.message
-								_this.$scrollTo(_this.$refs.createErrorMessage, 1000, {
-									offset: -50
-								})
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not create the item type',
-								errorName: 'createErrorMessage',
-								vue: _this
-							})
-						})
-						.finally(() => {
-							_this.creating = false
-						})
-				})
-				.catch(reason => {
-					_this.createErrorMessage = reason
-					_this.$scrollTo(_this.$refs.createErrorMessage, 1000, { offset: -50 })
-				})
-		},
-		/**
+      return _this
+        .validateNewItemTypeData()
+        .then(response => {
+          _this.creating = true
+          ItemTypesFunctions.createItemType(
+            _this.newItemType,
+            _this.$root.appId,
+            _this.$root.appSecret,
+            _this.$root.userToken
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                _this.showCreateSuccess(response.payload)
+                _this.clearNewItemType()
+                _this.getItemTypes()
+              } else {
+                _this.createErrorMessage = response.message
+                _this.$scrollTo(_this.$refs.createErrorMessage, 1000, {
+                  offset: -50
+                })
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not create the item type',
+                errorName: 'createErrorMessage',
+                vue: _this
+              })
+            })
+            .finally(() => {
+              _this.creating = false
+            })
+        })
+        .catch(reason => {
+          _this.createErrorMessage = reason
+          _this.$scrollTo(_this.$refs.createErrorMessage, 1000, { offset: -50 })
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showCreateSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Item Type has been created'
-			let type = 'success'
+    showCreateSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Item Type has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Item Type has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Item Type has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To clear the new item type form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearNewItemType () {
-			this.newItemType = {
-				location_id: '',
-				name: ''
-			}
-		},
-		/**
+    clearNewItemType () {
+      this.newItemType = {
+        location_id: '',
+        name: ''
+      }
+    },
+    /**
 		 * To get a list of all item types.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getItemTypes () {
-			this.clearError('listErrorMessage')
-			this.loadingItemTypes = true
-			this.itemTypes = []
-			var _this = this
-			let payload = { location_id: _this.activeLocationId }
-			return ItemTypesFunctions.getItemTypes(
-				payload,
-				_this.$root.appId,
-				_this.$root.appSecret,
-				_this.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						_this.loadingItemTypes = false
-						_this.itemTypes = response.payload
-					} else {
-						_this.loadingItemTypes = false
-					}
-				})
-				.catch(reason => {
-					_this.loadingItemTypes = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch the list of item types',
-						errorName: 'listErrorMessage',
-						vue: _this
-					})
-				})
-		},
-		/**
+    getItemTypes () {
+      this.clearError('listErrorMessage')
+      this.loadingItemTypes = true
+      this.itemTypes = []
+      var _this = this
+      let payload = { location_id: _this.activeLocationId }
+      return ItemTypesFunctions.getItemTypes(
+        payload,
+        _this.$root.appId,
+        _this.$root.appSecret,
+        _this.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            _this.loadingItemTypes = false
+            _this.itemTypes = response.payload
+          } else {
+            _this.loadingItemTypes = false
+          }
+        })
+        .catch(reason => {
+          _this.loadingItemTypes = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch the list of item types',
+            errorName: 'listErrorMessage',
+            vue: _this
+          })
+        })
+    },
+    /**
 		 * To show the modal to edit an item type details.
 		 * @function
 		 * @param {object} itemType - The selected item type.
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		editItemType (itemType, event) {
-			event.stopPropagation()
-			this.itemTypeToEdit = { ...itemType }
-			this.showEditModal = true
-		},
-		/**
+    editItemType (itemType, event) {
+      event.stopPropagation()
+      this.itemTypeToEdit = { ...itemType }
+      this.showEditModal = true
+    },
+    /**
 		 * To check if the item type data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateEditedItemTypeData () {
-			var _this = this
-			return new Promise(function (resolve, reject) {
-				if (!_this.itemTypeToEdit.name.length) {
-					reject('Name cannot be blank')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateEditedItemTypeData () {
+      var _this = this
+      return new Promise(function (resolve, reject) {
+        if (!_this.itemTypeToEdit.name.length) {
+          reject('Name cannot be blank')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To update a item type.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		updateItemType () {
-			var _this = this
-			_this.clearError('editErrorMessage')
-			let payload = { ...this.itemTypeToEdit }
-			payload.location_id = this.activeLocationId
+    updateItemType () {
+      var _this = this
+      _this.clearError('editErrorMessage')
+      let payload = { ...this.itemTypeToEdit }
+      payload.location_id = this.activeLocationId
 
-			return _this
-				.validateEditedItemTypeData()
-				.then(response => {
-					_this.updating = true
-					ItemTypesFunctions.updateItemType(
-						payload,
-						_this.$root.appId,
-						_this.$root.appSecret,
-						_this.$root.userToken
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								_this.getItemTypes()
-								_this.closeEditModal()
-								_this.showEditSuccess(response.payload)
-								_this.resetEdit()
-							} else {
-								_this.editErrorMessage = response.message
-								_this.$scrollTo(_this.$refs.editErrorMessage, 1000, {
-									offset: -50
-								})
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not update the item type',
-								errorName: 'editErrorMessage',
-								vue: _this
-							})
-						})
-						.finally(() => {
-							_this.updating = false
-						})
-				})
-				.catch(reason => {
-					_this.editErrorMessage = reason
-					_this.$scrollTo(_this.$refs.editErrorMessage, 1000, { offset: -50 })
-				})
-		},
-		/**
+      return _this
+        .validateEditedItemTypeData()
+        .then(response => {
+          _this.updating = true
+          ItemTypesFunctions.updateItemType(
+            payload,
+            _this.$root.appId,
+            _this.$root.appSecret,
+            _this.$root.userToken
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                _this.getItemTypes()
+                _this.closeEditModal()
+                _this.showEditSuccess(response.payload)
+                _this.resetEdit()
+              } else {
+                _this.editErrorMessage = response.message
+                _this.$scrollTo(_this.$refs.editErrorMessage, 1000, {
+                  offset: -50
+                })
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not update the item type',
+                errorName: 'editErrorMessage',
+                vue: _this
+              })
+            })
+            .finally(() => {
+              _this.updating = false
+            })
+        })
+        .catch(reason => {
+          _this.editErrorMessage = reason
+          _this.$scrollTo(_this.$refs.editErrorMessage, 1000, { offset: -50 })
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Item Type has been saved'
-			let type = 'success'
+    showEditSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Item Type has been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To close the modal for editing a promotion.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeEditModal () {
-			this.showEditModal = false
-		},
-		/**
+    closeEditModal () {
+      this.showEditModal = false
+    },
+    /**
 		 * To reset the edit form
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetEdit () {
-			this.itemTypeToEdit = {
-				location_id: '',
-				name: ''
-			}
-		},
-		/**
+    resetEdit () {
+      this.itemTypeToEdit = {
+        location_id: '',
+        name: ''
+      }
+    },
+    /**
 		 * To display the modal for deleting an item type.
 		 * @function
 		 * @param {object} itemType - The selected itemType
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		confirmDelete (itemType, event) {
-			event.stopPropagation()
-			this.itemTypeToDelete = { ...itemType }
-			this.showDeleteModal = true
-		},
-		/**
+    confirmDelete (itemType, event) {
+      event.stopPropagation()
+      this.itemTypeToDelete = { ...itemType }
+      this.showDeleteModal = true
+    },
+    /**
 		 * To close the modal for deleting a promotion and remove that promotion from DOM.
 		 * @function
 		 * @returns {undefined}
 		 */
-		deleteItemType () {
-			this.deleting = true
-			var _this = this
-			return ItemTypesFunctions.deleteItemType(
-				_this.itemTypeToDelete.id,
-				_this.$root.appId,
-				_this.$root.appSecret,
-				_this.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						_this.getItemTypes()
-						_this.closeDeleteModal()
-						_this.showDeleteSuccess(response.payload)
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: `We could not delete ${this.itemTypeToDelete.name}`,
-						errorName: 'deleteErrorMessage',
-						vue: _this
-					})
-				})
-				.finally(() => {
-					_this.deleting = false
-				})
-		},
-		/**
+    deleteItemType () {
+      this.deleting = true
+      var _this = this
+      return ItemTypesFunctions.deleteItemType(
+        _this.itemTypeToDelete.id,
+        _this.$root.appId,
+        _this.$root.appSecret,
+        _this.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            _this.getItemTypes()
+            _this.closeDeleteModal()
+            _this.showDeleteSuccess(response.payload)
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: `We could not delete ${this.itemTypeToDelete.name}`,
+            errorName: 'deleteErrorMessage',
+            vue: _this
+          })
+        })
+        .finally(() => {
+          _this.deleting = false
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Item Type has been deleted'
-			let type = 'success'
+    showDeleteSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Item Type has been deleted'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The removal has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The removal has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To close the delete modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeDeleteModal () {
-			this.showDeleteModal = false
-		},
-		/**
+    closeDeleteModal () {
+      this.showDeleteModal = false
+    },
+    /**
 		 * To show the modal to assign Tax Classes to an Item Type.
 		 * @function
 		 * @param {object} itemType - The selected item type.
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		openApplyModal (itemType, event) {
-			event.stopPropagation()
-			this.itemTypeToAssignTo = { ...itemType }
-			let _this = this
-			Promise.all([_this.getTaxClasses(), _this.getTaxClassesForItemType()])
-				.then(response => {
-					if (_this.itemTypeToAssignTo.taxclasses) {
-						_this.taxClasses.forEach(taxClass => {
-							let included = _this.itemTypeToAssignTo.taxclasses.filter(
-								globalTaxClass => globalTaxClass.id === taxClass.id
-							)
-							if (included.length) {
-								taxClass.selected = true
-							}
-						})
-					}
-				})
-				.catch(reason => {
-					_this.applyErrorMessage = 'Something went wrong ...'
-				})
-			this.showApplyModal = true
-		},
-		/**
+    openApplyModal (itemType, event) {
+      event.stopPropagation()
+      this.itemTypeToAssignTo = { ...itemType }
+      let _this = this
+      Promise.all([_this.getTaxClasses(), _this.getTaxClassesForItemType()])
+        .then(response => {
+          if (_this.itemTypeToAssignTo.taxclasses) {
+            _this.taxClasses.forEach(taxClass => {
+              let included = _this.itemTypeToAssignTo.taxclasses.filter(
+                globalTaxClass => globalTaxClass.id === taxClass.id
+              )
+              if (included.length) {
+                taxClass.selected = true
+              }
+            })
+          }
+        })
+        .catch(reason => {
+          _this.applyErrorMessage = 'Something went wrong ...'
+        })
+      this.showApplyModal = true
+    },
+    /**
 		 * To get a list of all tax classes.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getTaxClasses () {
-			this.loadingTaxClasses = true
-			this.taxClasses = []
-			var _this = this
-			let payload = { location_id: _this.activeLocationId }
-			return TaxClassesFunctions.getTaxClasses(
-				payload,
-				_this.$root.appId,
-				_this.$root.appSecret,
-				_this.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						_this.loadingTaxClasses = false
-						_this.taxClasses = response.payload.map(taxClass => {
-							taxClass.selected = false
-							return taxClass
-						})
-					} else {
-						_this.loadingTaxClasses = false
-					}
-				})
-				.catch(reason => {
-					_this.loadingTaxClasses = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch the list of tax classes',
-						errorName: 'applyErrorMessage',
-						vue: _this
-					})
-				})
-		},
-		/**
+    getTaxClasses () {
+      this.loadingTaxClasses = true
+      this.taxClasses = []
+      var _this = this
+      let payload = { location_id: _this.activeLocationId }
+      return TaxClassesFunctions.getTaxClasses(
+        payload,
+        _this.$root.appId,
+        _this.$root.appSecret,
+        _this.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            _this.loadingTaxClasses = false
+            _this.taxClasses = response.payload.map(taxClass => {
+              taxClass.selected = false
+              return taxClass
+            })
+          } else {
+            _this.loadingTaxClasses = false
+          }
+        })
+        .catch(reason => {
+          _this.loadingTaxClasses = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch the list of tax classes',
+            errorName: 'applyErrorMessage',
+            vue: _this
+          })
+        })
+    },
+    /**
 		 * To get a list of all item types.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getTaxClassesForItemType () {
-			var _this = this
-			return ItemTypesFunctions.getTaxClassesForItemType(
-				_this.itemTypeToAssignTo.id,
-				_this.$root.appId,
-				_this.$root.appSecret,
-				_this.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						_this.itemTypeToAssignTo = response.payload
-					} else {
-						_this.applyErrorMessage = response.message
-						_this.$scrollTo(_this.$refs.applyErrorMessage, 1000, {
-							offset: -50
-						})
-					}
-				})
-				.catch(reason => {
-					_this.loadingItemTypes = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch the list of item types',
-						errorName: 'listErrorMessage',
-						vue: _this
-					})
-				})
-		},
-		validateTaxClassesToApply () {
-			var _this = this
-			return new Promise(function (resolve, reject) {
-				if (!_this.taxClasses.some(taxClass => taxClass.selected)) {
-					reject('Select at least one')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    getTaxClassesForItemType () {
+      var _this = this
+      return ItemTypesFunctions.getTaxClassesForItemType(
+        _this.itemTypeToAssignTo.id,
+        _this.$root.appId,
+        _this.$root.appSecret,
+        _this.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            _this.itemTypeToAssignTo = response.payload
+          } else {
+            _this.applyErrorMessage = response.message
+            _this.$scrollTo(_this.$refs.applyErrorMessage, 1000, {
+              offset: -50
+            })
+          }
+        })
+        .catch(reason => {
+          _this.loadingItemTypes = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch the list of item types',
+            errorName: 'listErrorMessage',
+            vue: _this
+          })
+        })
+    },
+    validateTaxClassesToApply () {
+      var _this = this
+      return new Promise(function (resolve, reject) {
+        if (!_this.taxClasses.some(taxClass => taxClass.selected)) {
+          reject('Select at least one')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To get a list of all item types.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		applyTaxClassesToItemType () {
-			this.clearError('applyErrorMessage')
-			var _this = this
-			return this.validateTaxClassesToApply()
-				.then(response => {
-					_this.applying = true
-					let payload = {
-						tax_classes: this.taxClasses
-							.filter(taxClass => taxClass.selected)
-							.map(taxClass => taxClass.id)
-					}
-					return ItemTypesFunctions.applyTaxClassesToItemType(
-						_this.itemTypeToAssignTo.id,
-						payload,
-						_this.$root.appId,
-						_this.$root.appSecret,
-						_this.$root.userToken
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								_this.closeApplyModal()
-								_this.showApplySuccess(response.payload)
-							} else {
-								_this.applyErrorMessage = response.message
-								_this.$scrollTo(_this.$refs.applyErrorMessage, 1000, {
-									offset: -50
-								})
-							}
-						})
-						.catch(reason => {
-							_this.loadingItemTypes = false
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not apply tax classes to this item type',
-								errorName: 'applyErrorMessage',
-								vue: _this
-							})
-						})
-						.finally(() => {
-							_this.applying = false
-						})
-				})
-				.catch(reason => {
-					_this.applyErrorMessage = reason
-					_this.$scrollTo(_this.$refs.applyErrorMessage, 1000, { offset: -50 })
-				})
-		},
-		/**
+    applyTaxClassesToItemType () {
+      this.clearError('applyErrorMessage')
+      var _this = this
+      return this.validateTaxClassesToApply()
+        .then(response => {
+          _this.applying = true
+          let payload = {
+            tax_classes: this.taxClasses
+              .filter(taxClass => taxClass.selected)
+              .map(taxClass => taxClass.id)
+          }
+          return ItemTypesFunctions.applyTaxClassesToItemType(
+            _this.itemTypeToAssignTo.id,
+            payload,
+            _this.$root.appId,
+            _this.$root.appSecret,
+            _this.$root.userToken
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                _this.closeApplyModal()
+                _this.showApplySuccess(response.payload)
+              } else {
+                _this.applyErrorMessage = response.message
+                _this.$scrollTo(_this.$refs.applyErrorMessage, 1000, {
+                  offset: -50
+                })
+              }
+            })
+            .catch(reason => {
+              _this.loadingItemTypes = false
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not apply tax classes to this item type',
+                errorName: 'applyErrorMessage',
+                vue: _this
+              })
+            })
+            .finally(() => {
+              _this.applying = false
+            })
+        })
+        .catch(reason => {
+          _this.applyErrorMessage = reason
+          _this.$scrollTo(_this.$refs.applyErrorMessage, 1000, { offset: -50 })
+        })
+    },
+    /**
 		 * To close the apply modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeApplyModal () {
-			this.clearError('applyErrorMessage')
-			this.showApplyModal = false
-		},
-		/**
+    closeApplyModal () {
+      this.clearError('applyErrorMessage')
+      this.showApplyModal = false
+    },
+    /**
 		 * To select or deselect all items.
 		 * @function
 		 * @returns {undefined}
 		 */
-		selectAll () {
-			let current = this.selectAllSelected
-			this.taxClasses.forEach(taxClass => {
-				taxClass.selected = !current
-			})
-		},
-		/**
+    selectAll () {
+      let current = this.selectAllSelected
+      this.taxClasses.forEach(taxClass => {
+        taxClass.selected = !current
+      })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showApplySuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Tax Classes have been saved'
-			let type = 'success'
+    showApplySuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Tax Classes have been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		}
-	}
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    }
+  }
 }
 </script>
 

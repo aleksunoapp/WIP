@@ -1199,1240 +1199,1239 @@ import StoreImages from '@/components/app/StoreManager/StoreImages'
 var emailPattern = /^.+@.+\..+$/
 
 export default {
-	data () {
-		return {
-			breadcrumbArray: [
-				{ name: 'Store Manager', link: false },
-				{ name: 'Stores', link: '/app/store_manager/stores' },
-				{ name: 'Edit Store', link: false }
-			],
-			storeInformationError: '',
-			storeMetaError: '',
-			storeHourError: '',
-			holidayHoursError: '',
-			updatingStoreInfo: false,
-			storeToBeEdited: {},
-			updatingStoreMeta: false,
-			metaToBeEdited: {},
-			updatingStoreHours: false,
-			hoursToBeEdited: [
-				{
-					created_by: this.$root.createdBy,
-					day: 1,
-					open: 1,
-					open_time: '00:00',
-					close_time: '00:00',
-					status: 1
-				},
-				{
-					created_by: this.$root.createdBy,
-					day: 2,
-					open: 1,
-					open_time: '00:00',
-					close_time: '00:00',
-					status: 1
-				},
-				{
-					created_by: this.$root.createdBy,
-					day: 3,
-					open: 1,
-					open_time: '00:00',
-					close_time: '00:00',
-					status: 1
-				},
-				{
-					created_by: this.$root.createdBy,
-					day: 4,
-					open: 1,
-					open_time: '00:00',
-					close_time: '00:00',
-					status: 1
-				},
-				{
-					created_by: this.$root.createdBy,
-					day: 5,
-					open: 1,
-					open_time: '00:00',
-					close_time: '00:00',
-					status: 1
-				},
-				{
-					created_by: this.$root.createdBy,
-					day: 6,
-					open: 1,
-					open_time: '00:00',
-					close_time: '00:00',
-					status: 1
-				},
-				{
-					created_by: this.$root.createdBy,
-					day: 0,
-					open: 1,
-					open_time: '00:00',
-					close_time: '00:00',
-					status: 1
-				}
-			],
-			holidayHoursToBeEdited: [],
-			displayLocationsDropdown: false,
-			googleSearchResults: [],
-			locationDetails: {},
-			customText:
+  data () {
+    return {
+      breadcrumbArray: [
+        { name: 'Store Manager', link: false },
+        { name: 'Stores', link: '/app/store_manager/stores' },
+        { name: 'Edit Store', link: false }
+      ],
+      storeInformationError: '',
+      storeMetaError: '',
+      storeHourError: '',
+      holidayHoursError: '',
+      updatingStoreInfo: false,
+      storeToBeEdited: {},
+      updatingStoreMeta: false,
+      metaToBeEdited: {},
+      updatingStoreHours: false,
+      hoursToBeEdited: [
+        {
+          created_by: this.$root.createdBy,
+          day: 1,
+          open: 1,
+          open_time: '00:00',
+          close_time: '00:00',
+          status: 1
+        },
+        {
+          created_by: this.$root.createdBy,
+          day: 2,
+          open: 1,
+          open_time: '00:00',
+          close_time: '00:00',
+          status: 1
+        },
+        {
+          created_by: this.$root.createdBy,
+          day: 3,
+          open: 1,
+          open_time: '00:00',
+          close_time: '00:00',
+          status: 1
+        },
+        {
+          created_by: this.$root.createdBy,
+          day: 4,
+          open: 1,
+          open_time: '00:00',
+          close_time: '00:00',
+          status: 1
+        },
+        {
+          created_by: this.$root.createdBy,
+          day: 5,
+          open: 1,
+          open_time: '00:00',
+          close_time: '00:00',
+          status: 1
+        },
+        {
+          created_by: this.$root.createdBy,
+          day: 6,
+          open: 1,
+          open_time: '00:00',
+          close_time: '00:00',
+          status: 1
+        },
+        {
+          created_by: this.$root.createdBy,
+          day: 0,
+          open: 1,
+          open_time: '00:00',
+          close_time: '00:00',
+          status: 1
+        }
+      ],
+      holidayHoursToBeEdited: [],
+      displayLocationsDropdown: false,
+      googleSearchResults: [],
+      locationDetails: {},
+      customText:
 				'Click on the button above to add holiday hours for this location.',
-			showHolidayHoursModal: false,
-			noProfileData: '',
-			noHoursData: '',
-			newHolidayHours: [],
-			storeGroups: [],
-			isCorporateUpdated: false,
-			addAHoliday: true,
-			mode: 'list',
-			loadingImages: false,
-			imagesErrorMessage: '',
-			images: [],
-			imageToPreview: {
-				id: null
-			},
-			imageToCreate: {
-				url: '',
-				order: '',
-				type: 'image',
-				default: 0
-			},
-			imageToEdit: {},
-			imageToDelete: {},
-			timezones: [],
-			holidayHourToDelete: {},
-			showDeleteHolidayHoursModal: false,
-			deleteHolidayHoursErrorMessage: ''
-		}
-	},
-	created () {
-		this.timezones = TimezonesArray
-		this.getStoreDetails()
-		this.getStoreHolidayHours()
-	},
-	methods: {
-		flipAddCreateHoliday () {
-			this.addAHoliday = !this.addAHoliday
-		},
-		/**
+      showHolidayHoursModal: false,
+      noProfileData: '',
+      noHoursData: '',
+      newHolidayHours: [],
+      storeGroups: [],
+      isCorporateUpdated: false,
+      addAHoliday: true,
+      mode: 'list',
+      loadingImages: false,
+      imagesErrorMessage: '',
+      images: [],
+      imageToPreview: {
+        id: null
+      },
+      imageToCreate: {
+        url: '',
+        order: '',
+        type: 'image',
+        default: 0
+      },
+      imageToEdit: {},
+      imageToDelete: {},
+      timezones: [],
+      holidayHourToDelete: {},
+      showDeleteHolidayHoursModal: false,
+      deleteHolidayHoursErrorMessage: ''
+    }
+  },
+  created () {
+    this.timezones = TimezonesArray
+    this.getStoreDetails()
+    this.getStoreHolidayHours()
+  },
+  methods: {
+    flipAddCreateHoliday () {
+      this.addAHoliday = !this.addAHoliday
+    },
+    /**
 		 * To copy the time to other days.
 		 * @function
 		 * @param {string} time - The time to copy
 		 * @param {object} event - The click event that initiated the action
 		 * @returns {undefined}
 		 */
-		applyOpeningTimeToAll (time, event) {
-			event.preventDefault()
-			this.hoursToBeEdited.forEach(day => {
-				day.open_time = time
-			})
-		},
-		/**
+    applyOpeningTimeToAll (time, event) {
+      event.preventDefault()
+      this.hoursToBeEdited.forEach(day => {
+        day.open_time = time
+      })
+    },
+    /**
 		 * To copy the time to other days.
 		 * @function
 		 * @param {string} time - The time to copy
 		 * @param {object} event - The click event that initiated the action
 		 * @returns {undefined}
 		 */
-		applyClosingTimeToAll (time, event) {
-			event.preventDefault()
-			this.hoursToBeEdited.forEach(day => {
-				day.close_time = time
-			})
-		},
-		/**
+    applyClosingTimeToAll (time, event) {
+      event.preventDefault()
+      this.hoursToBeEdited.forEach(day => {
+        day.close_time = time
+      })
+    },
+    /**
 		 * To update the selected provider.
 		 * @function
 		 * @param {sring} provider - The selected provider.
 		 * @returns {undefined}
 		 */
-		updatePOSprovider (provider) {
-			this.storeToBeEdited.pos_partner.pos_provider = provider
-		},
-		/**
+    updatePOSprovider (provider) {
+      this.storeToBeEdited.pos_partner.pos_provider = provider
+    },
+    /**
 		 * To add location POS settings.
 		 * @function
 		 * @returns {undefined}
 		 */
-		displayPOSsettingsForm () {
-			this.storeToBeEdited.pos_partner = {
-				pos_provider: '',
-				domain: '',
-				user: '',
-				key: '',
-				company_id: '',
-				note: ''
-			}
-		},
-		/**
+    displayPOSsettingsForm () {
+      this.storeToBeEdited.pos_partner = {
+        pos_provider: '',
+        domain: '',
+        user: '',
+        key: '',
+        company_id: '',
+        note: ''
+      }
+    },
+    /**
 		 * To get a list of store groups.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getStoreGroups () {
-			var storeGroupsVue = this
-			storeGroupsVue.storeGroups = []
-			return StoreGroupsFunctions.getGroups(
-				storeGroupsVue.$root.appId,
-				storeGroupsVue.$root.appSecret,
-				storeGroupsVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						storeGroupsVue.storeGroups = response.payload
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch store groups',
-						errorName: 'storeInformationError',
-						vue: storeGroupsVue
-					})
-				})
-		},
-		/**
+    getStoreGroups () {
+      var storeGroupsVue = this
+      storeGroupsVue.storeGroups = []
+      return StoreGroupsFunctions.getGroups(
+        storeGroupsVue.$root.appId,
+        storeGroupsVue.$root.appSecret,
+        storeGroupsVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            storeGroupsVue.storeGroups = response.payload
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch store groups',
+            errorName: 'storeInformationError',
+            vue: storeGroupsVue
+          })
+        })
+    },
+    /**
 		 * To add holiday hours emitted by the child modal, to the list of holiday hours and submits the same to the backend.
 		 * @function
 		 * @param {object} val - The object emitted by the child.
 		 * @returns {undefined}
 		 */
-		addHolidayHours (val) {
-			this.showHolidayHoursModal = false
-			this.createHolidayHours(val)
-		},
-		determineMonth (monthName) {
-			if (monthName === 'Jan') {
-				return '01'
-			} else if (monthName === 'Feb') {
-				return '02'
-			} else if (monthName === 'Mar') {
-				return '03'
-			} else if (monthName === 'Apr') {
-				return '04'
-			} else if (monthName === 'May') {
-				return '05'
-			} else if (monthName === 'Jun') {
-				return '06'
-			} else if (monthName === 'Jul') {
-				return '07'
-			} else if (monthName === 'Aug') {
-				return '08'
-			} else if (monthName === 'Sep') {
-				return '09'
-			} else if (monthName === 'Oct') {
-				return '10'
-			} else if (monthName === 'Nov') {
-				return '11'
-			} else if (monthName === 'Dec') {
-				return '12'
-			}
-		},
-		/**
+    addHolidayHours (val) {
+      this.showHolidayHoursModal = false
+      this.createHolidayHours(val)
+    },
+    determineMonth (monthName) {
+      if (monthName === 'Jan') {
+        return '01'
+      } else if (monthName === 'Feb') {
+        return '02'
+      } else if (monthName === 'Mar') {
+        return '03'
+      } else if (monthName === 'Apr') {
+        return '04'
+      } else if (monthName === 'May') {
+        return '05'
+      } else if (monthName === 'Jun') {
+        return '06'
+      } else if (monthName === 'Jul') {
+        return '07'
+      } else if (monthName === 'Aug') {
+        return '08'
+      } else if (monthName === 'Sep') {
+        return '09'
+      } else if (monthName === 'Oct') {
+        return '10'
+      } else if (monthName === 'Nov') {
+        return '11'
+      } else if (monthName === 'Dec') {
+        return '12'
+      }
+    },
+    /**
 		 * To submit the holiday hours (that are oassed in a parameter) to the backend.
 		 * @function
 		 * @param {object} val - The object emitted by the child.
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		createHolidayHours (val) {
-			var editStoreVue = this
+    createHolidayHours (val) {
+      var editStoreVue = this
 
-			StoresFunctions.createHolidayHours(
-				val,
-				editStoreVue.$root.appId,
-				editStoreVue.$root.appSecret,
-				editStoreVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						if (response.payload && response.payload.pending_approval !== true) {
-							const sunday = response.payload.findIndex(day => day.day === 0)
-							let weekStartingMonday = response.payload
-							weekStartingMonday.push(response.payload[sunday])
-							weekStartingMonday.splice(sunday, 1)
-							editStoreVue.holidayHoursToBeEdited = weekStartingMonday.map(day => {
-								return {
-									...day,
-									open_time: day.open_time.substr(0, 5),
-									close_time: day.close_time.substr(0, 5)
-								}
-							})
-						}
-						editStoreVue.showAlert(response.payload)
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not add the holiday hours',
-						errorName: 'holidayHoursError',
-						vue: editStoreVue
-					})
-				})
-		},
-		/**
+      StoresFunctions.createHolidayHours(
+        val,
+        editStoreVue.$root.appId,
+        editStoreVue.$root.appSecret,
+        editStoreVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            if (response.payload && response.payload.pending_approval !== true) {
+              const sunday = response.payload.findIndex(day => day.day === 0)
+              let weekStartingMonday = response.payload
+              weekStartingMonday.push(response.payload[sunday])
+              weekStartingMonday.splice(sunday, 1)
+              editStoreVue.holidayHoursToBeEdited = weekStartingMonday.map(day => {
+                return {
+                  ...day,
+                  open_time: day.open_time.substr(0, 5),
+                  close_time: day.close_time.substr(0, 5)
+                }
+              })
+            }
+            editStoreVue.showAlert(response.payload)
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not add the holiday hours',
+            errorName: 'holidayHoursError',
+            vue: editStoreVue
+          })
+        })
+    },
+    /**
 		 * To submit the holiday hours (that are oassed in a parameter) to the backend.
 		 * @function
 		 * @param {object} val - The object emitted by the child.
 		 * @param {object} event - The click event that initiated the action.
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		updateHolidayHours (val, event) {
-			event.stopPropagation()
-			event.preventDefault()
-			var editStoreVue = this
-			val.loading = true
+    updateHolidayHours (val, event) {
+      event.stopPropagation()
+      event.preventDefault()
+      var editStoreVue = this
+      val.loading = true
 
-			let payload = {
-				close_time: val.close_time,
-				created_at: val.created_at,
-				created_by: val.created_by,
-				day: val.day,
-				end_date: val.end_date,
-				id: val.id,
-				location_id: val.location_id,
-				name: val.name,
-				open: val.open,
-				open_time: val.open_time,
-				start_date: val.start_date,
-				status: val.status,
-				updated_at: val.updated_at,
-				updated_by: val.updated_by
-			}
+      let payload = {
+        close_time: val.close_time,
+        created_at: val.created_at,
+        created_by: val.created_by,
+        day: val.day,
+        end_date: val.end_date,
+        id: val.id,
+        location_id: val.location_id,
+        name: val.name,
+        open: val.open,
+        open_time: val.open_time,
+        start_date: val.start_date,
+        status: val.status,
+        updated_at: val.updated_at,
+        updated_by: val.updated_by
+      }
 
-			StoresFunctions.updateHolidayHours(
-				payload,
-				editStoreVue.$root.appId,
-				editStoreVue.$root.appSecret,
-				editStoreVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						editStoreVue.showHoursUpdateSuccess(response.payload)
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not update the holiday hours',
-						errorName: 'holidayHoursError',
-						vue: editStoreVue
-					})
-				})
-				.finally(() => {
-					val.loading = false
-				})
-		},
-		/**
+      StoresFunctions.updateHolidayHours(
+        payload,
+        editStoreVue.$root.appId,
+        editStoreVue.$root.appSecret,
+        editStoreVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            editStoreVue.showHoursUpdateSuccess(response.payload)
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not update the holiday hours',
+            errorName: 'holidayHoursError',
+            vue: editStoreVue
+          })
+        })
+        .finally(() => {
+          val.loading = false
+        })
+    },
+    /**
 		 * To open the delete holiday hours modal
 		 * @function
 		 * @param {object} hour - The hour to delete
 		 * @returns {undefined}
 		 */
-		openDeleteHolidayHoursModal (hour) {
-			this.holidayHourToDelete = hour
-			this.showDeleteHolidayHoursModal = true
-		},
-		/**
+    openDeleteHolidayHoursModal (hour) {
+      this.holidayHourToDelete = hour
+      this.showDeleteHolidayHoursModal = true
+    },
+    /**
 		 * To close the delete holiday hours modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeDeleteHolidayHoursModal () {
-			this.showDeleteHolidayHoursModal = false
-		},
-		/**
+    closeDeleteHolidayHoursModal () {
+      this.showDeleteHolidayHoursModal = false
+    },
+    /**
 		 * To clear the error
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearDeleteHolidayHoursError () {
-			this.deleteHolidayHoursErrorMessage = ''
-		},
-		/**
+    clearDeleteHolidayHoursError () {
+      this.deleteHolidayHoursErrorMessage = ''
+    },
+    /**
 		 * To submit delete the hours from the database
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		deleteHolidayHours () {
-			this.holidayHourToDelete.deleting = true
-			var editStoreVue = this
+    deleteHolidayHours () {
+      this.holidayHourToDelete.deleting = true
+      var editStoreVue = this
 
-			let payload = {
-				id: this.holidayHourToDelete.id,
-				location_id: this.holidayHourToDelete.location_id
-			}
+      let payload = {
+        id: this.holidayHourToDelete.id,
+        location_id: this.holidayHourToDelete.location_id
+      }
 
-			StoresFunctions.deleteStoreHolidayHours(
-				payload,
-				editStoreVue.$root.appId,
-				editStoreVue.$root.appSecret,
-				editStoreVue.$root.userToken
-			)
-				.then(response => {
-					this.getStoreHolidayHours()
-					this.closeDeleteHolidayHoursModal()
-					this.confirmHolidayHoursDeleted(response.payload)
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not delete the holiday hours',
-						errorName: 'deleteHolidayHoursErrorMessage',
-						vue: editStoreVue
-					})
-				})
-				.finally(() => {
-					editStoreVue.holidayHourToDelete.deleting = false
-				})
-		},
-		/**
+      StoresFunctions.deleteStoreHolidayHours(
+        payload,
+        editStoreVue.$root.appId,
+        editStoreVue.$root.appSecret,
+        editStoreVue.$root.userToken
+      )
+        .then(response => {
+          this.getStoreHolidayHours()
+          this.closeDeleteHolidayHoursModal()
+          this.confirmHolidayHoursDeleted(response.payload)
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not delete the holiday hours',
+            errorName: 'deleteHolidayHoursErrorMessage',
+            vue: editStoreVue
+          })
+        })
+        .finally(() => {
+          editStoreVue.holidayHourToDelete.deleting = false
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmHolidayHoursDeleted (payload = {}) {
-			let title = 'Success'
-			let text = 'The Holiday Hours have been deleted'
-			let type = 'success'
+    confirmHolidayHoursDeleted (payload = {}) {
+      let title = 'Success'
+      let text = 'The Holiday Hours have been deleted'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The removal has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The removal has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert (payload = {}) {
-			let title = 'Success'
-			let text = 'The Holiday Hours have been created'
-			let type = 'success'
+    showAlert (payload = {}) {
+      let title = 'Success'
+      let text = 'The Holiday Hours have been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Holiday Hours have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Holiday Hours have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			}).then(() => {
-				window.scrollTo(0, 0)
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      }).then(() => {
+        window.scrollTo(0, 0)
+      })
+    },
+    /**
 		 * To add location holiday hours.
 		 * @function
 		 * @returns {undefined}
 		 */
-		displayHolidayHoursModal () {
-			this.showHolidayHoursModal = true
-		},
-		/**
+    displayHolidayHoursModal () {
+      this.showHolidayHoursModal = true
+    },
+    /**
 		 * To update the value of the 'is_corporate' field.
 		 * @function
 		 * @returns {undefined}
 		 */
-		updateStoreIsCorporate () {
-			this.isCorporateUpdated = true
-		},
-		/**
+    updateStoreIsCorporate () {
+      this.isCorporateUpdated = true
+    },
+    /**
 		 * To capitalize a value (note that this is currently only functional for words with 1 space)
 		 * @function
 		 * @param {string} val - The value to be capitalized.
 		 * @returns {undefined}
 		 */
-		capitalize (val) {
-			var output
+    capitalize (val) {
+      var output
 
-			val = val.replace(/_/g, ' ')
-			var index = val.indexOf(' ')
+      val = val.replace(/_/g, ' ')
+      var index = val.indexOf(' ')
 
-			if (index !== -1) {
-				output =
+      if (index !== -1) {
+        output =
 					val.substring(0, 1).toUpperCase() +
 					val.substring(1, index + 1) +
 					val.substring(index + 1, index + 2).toUpperCase() +
 					val.substring(index + 2)
-			} else {
-				output = val.substring(0, 1).toUpperCase() + val.substring(1)
-			}
-			return output
-		},
-		/**
+      } else {
+        output = val.substring(0, 1).toUpperCase() + val.substring(1)
+      }
+      return output
+    },
+    /**
 		 * To clear the passed in error.
 		 * @function
 		 * @param {string} val - The error/message to be cleared
 		 * @returns {undefined}
 		 */
-		clearError (val) {
-			this[val] = ''
-		},
-		/**
+    clearError (val) {
+      this[val] = ''
+    },
+    /**
 		 * To alert the user that the menu has been synced.
 		 * @function
 		 * @returns {undefined}
 		 */
-		showSyncSuccessful () {
-			this.$swal({
-				title: 'Success!',
-				text: 'Menu synced',
-				type: 'success',
-				confirmButtonText: 'OK'
-			})
-		},
-		/**
+    showSyncSuccessful () {
+      this.$swal({
+        title: 'Success!',
+        text: 'Menu synced',
+        type: 'success',
+        confirmButtonText: 'OK'
+      })
+    },
+    /**
 		 * To get the details of a specific store.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getStoreDetails () {
-			var editStoreVue = this
-			StoresFunctions.getStoreDetails(
-				editStoreVue.$route.params.store_id,
-				editStoreVue.$root.appId,
-				editStoreVue.$root.appSecret
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						editStoreVue.storeToBeEdited = {
-							...response.payload,
-							country_code: response.payload.country_code ? response.payload.country_code : ''
-						}
-						editStoreVue.getStoreMeta()
-						editStoreVue.getStoreGroups()
-					} else {
-						throw response
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch store information',
-						errorName: 'storeInformationError',
-						vue: editStoreVue
-					})
-				})
-		},
-		/**
+    getStoreDetails () {
+      var editStoreVue = this
+      StoresFunctions.getStoreDetails(
+        editStoreVue.$route.params.store_id,
+        editStoreVue.$root.appId,
+        editStoreVue.$root.appSecret
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            editStoreVue.storeToBeEdited = {
+              ...response.payload,
+              country_code: response.payload.country_code ? response.payload.country_code : ''
+            }
+            editStoreVue.getStoreMeta()
+            editStoreVue.getStoreGroups()
+          } else {
+            throw response
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch store information',
+            errorName: 'storeInformationError',
+            vue: editStoreVue
+          })
+        })
+    },
+    /**
 		 * To get the meta/profile of the current store.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getStoreMeta () {
-			var editStoreVue = this
-			StoresFunctions.getStoreMeta(
-				editStoreVue.$route.params.store_id,
-				editStoreVue.$root.appId,
-				editStoreVue.$root.appSecret,
-				editStoreVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						if (response.message === 'No profile to display') {
-							editStoreVue.noProfileData = response.message
-						} else {
-							editStoreVue.metaToBeEdited = response.payload
-						}
-						editStoreVue.getStoreHours()
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch store profile info',
-						errorName: 'storeMetaError',
-						vue: editStoreVue
-					})
-				})
-		},
-		/**
+    getStoreMeta () {
+      var editStoreVue = this
+      StoresFunctions.getStoreMeta(
+        editStoreVue.$route.params.store_id,
+        editStoreVue.$root.appId,
+        editStoreVue.$root.appSecret,
+        editStoreVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            if (response.message === 'No profile to display') {
+              editStoreVue.noProfileData = response.message
+            } else {
+              editStoreVue.metaToBeEdited = response.payload
+            }
+            editStoreVue.getStoreHours()
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch store profile info',
+            errorName: 'storeMetaError',
+            vue: editStoreVue
+          })
+        })
+    },
+    /**
 		 * To get the hours of the current store.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getStoreHours () {
-			var editStoreVue = this
-			StoresFunctions.getStoreHours(
-				editStoreVue.$route.params.store_id,
-				editStoreVue.$root.appId,
-				editStoreVue.$root.appSecret,
-				editStoreVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						if (response.message === 'No hours to display') {
-							editStoreVue.noHoursData = response.message
-						} else {
-							const sunday = response.payload.findIndex(day => day.day === 0)
-							let weekStartingMonday = response.payload
-							weekStartingMonday.push(response.payload[sunday])
-							weekStartingMonday.splice(sunday, 1)
-							editStoreVue.hoursToBeEdited = weekStartingMonday.map(day => {
-								return {
-									...day,
-									open_time: day.open_time.substr(0, 5),
-									close_time: day.close_time.substr(0, 5)
-								}
-							})
-						}
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch store hours',
-						errorName: 'storeHourError',
-						vue: editStoreVue
-					})
-				})
-		},
-		/**
+    getStoreHours () {
+      var editStoreVue = this
+      StoresFunctions.getStoreHours(
+        editStoreVue.$route.params.store_id,
+        editStoreVue.$root.appId,
+        editStoreVue.$root.appSecret,
+        editStoreVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            if (response.message === 'No hours to display') {
+              editStoreVue.noHoursData = response.message
+            } else {
+              const sunday = response.payload.findIndex(day => day.day === 0)
+              let weekStartingMonday = response.payload
+              weekStartingMonday.push(response.payload[sunday])
+              weekStartingMonday.splice(sunday, 1)
+              editStoreVue.hoursToBeEdited = weekStartingMonday.map(day => {
+                return {
+                  ...day,
+                  open_time: day.open_time.substr(0, 5),
+                  close_time: day.close_time.substr(0, 5)
+                }
+              })
+            }
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch store hours',
+            errorName: 'storeHourError',
+            vue: editStoreVue
+          })
+        })
+    },
+    /**
 		 * To get the holiday hours of the current store.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getStoreHolidayHours () {
-			var editStoreVue = this
-			StoresFunctions.getStoreHolidayHours(
-				editStoreVue.$route.params.store_id,
-				editStoreVue.$root.appId,
-				editStoreVue.$root.appSecret,
-				editStoreVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						response.payload.location_holiday_hours.forEach(day => {
-							day.open_time = day.open_time.slice(0, -3)
-							day.close_time = day.close_time.slice(0, -3)
-							day.loading = false
-							day.deleting = false
-						})
-						const sunday = response.payload.location_holiday_hours.findIndex(
-							day => day.day === 0
-						)
-						let weekStartingMonday = response.payload.location_holiday_hours
-						weekStartingMonday.push(
-							response.payload.location_holiday_hours[sunday]
-						)
-						weekStartingMonday.splice(sunday, 1)
-						editStoreVue.holidayHoursToBeEdited = weekStartingMonday.map(day => {
-							return {
-								...day,
-								open_time: day.open_time.substr(0, 5),
-								close_time: day.close_time.substr(0, 5)
-							}
-						})
-					} else throw response
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch holiday hours',
-						errorName: 'holidayHoursError',
-						vue: editStoreVue
-					})
-				})
-		},
-		/**
+    getStoreHolidayHours () {
+      var editStoreVue = this
+      StoresFunctions.getStoreHolidayHours(
+        editStoreVue.$route.params.store_id,
+        editStoreVue.$root.appId,
+        editStoreVue.$root.appSecret,
+        editStoreVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            response.payload.location_holiday_hours.forEach(day => {
+              day.open_time = day.open_time.slice(0, -3)
+              day.close_time = day.close_time.slice(0, -3)
+              day.loading = false
+              day.deleting = false
+            })
+            const sunday = response.payload.location_holiday_hours.findIndex(
+              day => day.day === 0
+            )
+            let weekStartingMonday = response.payload.location_holiday_hours
+            weekStartingMonday.push(
+              response.payload.location_holiday_hours[sunday]
+            )
+            weekStartingMonday.splice(sunday, 1)
+            editStoreVue.holidayHoursToBeEdited = weekStartingMonday.map(day => {
+              return {
+                ...day,
+                open_time: day.open_time.substr(0, 5),
+                close_time: day.close_time.substr(0, 5)
+              }
+            })
+          } else throw response
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch holiday hours',
+            errorName: 'holidayHoursError',
+            vue: editStoreVue
+          })
+        })
+    },
+    /**
 		 * To check if the menu data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateStoreInformation () {
-			var editStoreVue = this
-			return new Promise(function (resolve, reject) {
-				if (!editStoreVue.storeToBeEdited.name.length) {
-					reject('Store name cannot be blank')
-				} else if (!editStoreVue.storeToBeEdited.address_line_1.length) {
-					reject('Address line 1 cannot be blank')
-				} else if (!editStoreVue.storeToBeEdited.city.length) {
-					reject('Store city cannot be blank')
-				} else if (!editStoreVue.storeToBeEdited.province.length) {
-					reject('Store province cannot be blank')
-				} else if (!editStoreVue.storeToBeEdited.country.length) {
-					reject('Store country cannot be blank')
-				} else if (!editStoreVue.storeToBeEdited.country_code.length) {
-					reject('Country code cannot be blank')
-				} else if (!editStoreVue.storeToBeEdited.postal_code.length) {
-					reject('Store postal code cannot be blank')
-				} else if (!editStoreVue.storeToBeEdited.phone) {
-					reject('Store phone cannot be blank')
-				} else if (
-					editStoreVue.storeToBeEdited.fax &&
+    validateStoreInformation () {
+      var editStoreVue = this
+      return new Promise(function (resolve, reject) {
+        if (!editStoreVue.storeToBeEdited.name.length) {
+          reject('Store name cannot be blank')
+        } else if (!editStoreVue.storeToBeEdited.address_line_1.length) {
+          reject('Address line 1 cannot be blank')
+        } else if (!editStoreVue.storeToBeEdited.city.length) {
+          reject('Store city cannot be blank')
+        } else if (!editStoreVue.storeToBeEdited.province.length) {
+          reject('Store province cannot be blank')
+        } else if (!editStoreVue.storeToBeEdited.country.length) {
+          reject('Store country cannot be blank')
+        } else if (!editStoreVue.storeToBeEdited.country_code.length) {
+          reject('Country code cannot be blank')
+        } else if (!editStoreVue.storeToBeEdited.postal_code.length) {
+          reject('Store postal code cannot be blank')
+        } else if (!editStoreVue.storeToBeEdited.phone) {
+          reject('Store phone cannot be blank')
+        } else if (
+          editStoreVue.storeToBeEdited.fax &&
 					editStoreVue.storeToBeEdited.fax.length < 10
-				) {
-					reject('Store fax number should be at least 10 characters')
-				} else if (!editStoreVue.storeToBeEdited.email.length) {
-					reject('Store email cannot be blank')
-				} else if (!emailPattern.test(editStoreVue.storeToBeEdited.email)) {
-					reject('Please enter a valid store email')
-				} else if (!editStoreVue.storeToBeEdited.display_name.length) {
-					reject('Store display name cannot be blank')
-				} else if (!editStoreVue.storeToBeEdited.timezone.length) {
-					reject('Store timezone cannot be blank')
-				} else if (editStoreVue.storeToBeEdited.internal_id === null) {
-					reject('Store internal id cannot be blank')
-				} else if (!editStoreVue.storeToBeEdited.currency.length) {
-					reject('Store currency cannot be blank')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+        ) {
+          reject('Store fax number should be at least 10 characters')
+        } else if (!editStoreVue.storeToBeEdited.email.length) {
+          reject('Store email cannot be blank')
+        } else if (!emailPattern.test(editStoreVue.storeToBeEdited.email)) {
+          reject('Please enter a valid store email')
+        } else if (!editStoreVue.storeToBeEdited.display_name.length) {
+          reject('Store display name cannot be blank')
+        } else if (!editStoreVue.storeToBeEdited.timezone.length) {
+          reject('Store timezone cannot be blank')
+        } else if (editStoreVue.storeToBeEdited.internal_id === null) {
+          reject('Store internal id cannot be blank')
+        } else if (!editStoreVue.storeToBeEdited.currency.length) {
+          reject('Store currency cannot be blank')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To update the store information in the backend.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		updateStoreInformation () {
-			var editStoreVue = this
-			editStoreVue.storeInformationError = ''
+    updateStoreInformation () {
+      var editStoreVue = this
+      editStoreVue.storeInformationError = ''
 
-			return editStoreVue
-				.validateStoreInformation()
-				.then(response => {
-					editStoreVue.updatingStoreInfo = true
-					if (!editStoreVue.storeToBeEdited.fax) {
-						editStoreVue.storeToBeEdited.fax = '0000000000'
-					}
-					StoresFunctions.updateStoreInformation(
-						editStoreVue.storeToBeEdited,
-						editStoreVue.$root.appId,
-						editStoreVue.$root.appSecret,
-						editStoreVue.$root.userToken
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								editStoreVue.showSuccessAlert(response.payload)
-							} else {
-								editStoreVue.storeInformationError = response.message
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not update the store',
-								errorName: 'storeInformationError',
-								vue: editStoreVue
-							})
-						})
-						.finally(() => {
-							editStoreVue.updatingStoreInfo = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					editStoreVue.storeInformationError = reason
-					window.scrollTo(0, 0)
-					throw reason
-				})
-		},
-		/**
+      return editStoreVue
+        .validateStoreInformation()
+        .then(response => {
+          editStoreVue.updatingStoreInfo = true
+          if (!editStoreVue.storeToBeEdited.fax) {
+            editStoreVue.storeToBeEdited.fax = '0000000000'
+          }
+          StoresFunctions.updateStoreInformation(
+            editStoreVue.storeToBeEdited,
+            editStoreVue.$root.appId,
+            editStoreVue.$root.appSecret,
+            editStoreVue.$root.userToken
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                editStoreVue.showSuccessAlert(response.payload)
+              } else {
+                editStoreVue.storeInformationError = response.message
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not update the store',
+                errorName: 'storeInformationError',
+                vue: editStoreVue
+              })
+            })
+            .finally(() => {
+              editStoreVue.updatingStoreInfo = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          editStoreVue.storeInformationError = reason
+          window.scrollTo(0, 0)
+          throw reason
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showSuccessAlert (payload = {}) {
-			let title = 'Success'
-			let text = 'The Store Information has been created'
-			let type = 'success'
+    showSuccessAlert (payload = {}) {
+      let title = 'Success'
+      let text = 'The Store Information has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Store Information has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Store Information has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showMetaUpdateSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Store Profile has been saved'
-			let type = 'success'
+    showMetaUpdateSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Store Profile has been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showMetaCreateSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Store Profile has been created'
-			let type = 'success'
+    showMetaCreateSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Store Profile has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Store Profile has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Store Profile has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showHoursUpdateSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Store Hours have been saved'
-			let type = 'success'
+    showHoursUpdateSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Store Hours have been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showHoursCreateSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Store Hours have been created'
-			let type = 'success'
+    showHoursCreateSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Store Hours have been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To check if the store meta data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateStoreMeta () {
-			var editStoreVue = this
-			return new Promise(function (resolve, reject) {
-				if (editStoreVue.metaToBeEdited.opening_soon === 1) {
-					resolve('Hurray')
-				} else if (
-					editStoreVue.metaToBeEdited.external_online_ordering_enabled &&
+    validateStoreMeta () {
+      var editStoreVue = this
+      return new Promise(function (resolve, reject) {
+        if (editStoreVue.metaToBeEdited.opening_soon === 1) {
+          resolve('Hurray')
+        } else if (
+          editStoreVue.metaToBeEdited.external_online_ordering_enabled &&
 					!editStoreVue.metaToBeEdited.external_online_ordering_url
-				) {
-					reject('The external online ordering enabled field is required')
-				} else if (editStoreVue.metaToBeEdited.gateway_name === null) {
-					reject('Gateway Name cannot be blank')
-				} else if (editStoreVue.metaToBeEdited.merchant_id === '') {
-					reject('Merchant ID cannot be blank')
-				} else if (editStoreVue.metaToBeEdited.merchant_key === '') {
-					reject('Merchant Key cannot be blank')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+        ) {
+          reject('The external online ordering enabled field is required')
+        } else if (editStoreVue.metaToBeEdited.gateway_name === null) {
+          reject('Gateway Name cannot be blank')
+        } else if (editStoreVue.metaToBeEdited.merchant_id === '') {
+          reject('Merchant ID cannot be blank')
+        } else if (editStoreVue.metaToBeEdited.merchant_key === '') {
+          reject('Merchant Key cannot be blank')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To update the store meta in the backend.
 		 * @function
 		 * @param {object} meta - The meta object to be updated.
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		updateStoreMeta () {
-			var editStoreVue = this
-			editStoreVue.storeMetaError = ''
+    updateStoreMeta () {
+      var editStoreVue = this
+      editStoreVue.storeMetaError = ''
 
-			editStoreVue.metaToBeEdited.updated_by = editStoreVue.$root.createdBy
-			return editStoreVue
-				.validateStoreMeta()
-				.then(response => {
-					editStoreVue.updatingStoreMeta = true
-					if (editStoreVue.metaToBeEdited.opening_soon === 1) {
-						if (!editStoreVue.metaToBeEdited.merchant_id) {
-							editStoreVue.metaToBeEdited.merchant_id = 0
-						}
-						if (!editStoreVue.metaToBeEdited.merchant_key) {
-							editStoreVue.metaToBeEdited.merchant_key = 0
-						}
-					}
+      editStoreVue.metaToBeEdited.updated_by = editStoreVue.$root.createdBy
+      return editStoreVue
+        .validateStoreMeta()
+        .then(response => {
+          editStoreVue.updatingStoreMeta = true
+          if (editStoreVue.metaToBeEdited.opening_soon === 1) {
+            if (!editStoreVue.metaToBeEdited.merchant_id) {
+              editStoreVue.metaToBeEdited.merchant_id = 0
+            }
+            if (!editStoreVue.metaToBeEdited.merchant_key) {
+              editStoreVue.metaToBeEdited.merchant_key = 0
+            }
+          }
 
-					if (editStoreVue.noProfileData === 'No profile to display') {
-						editStoreVue.metaToBeEdited.created_by =
+          if (editStoreVue.noProfileData === 'No profile to display') {
+            editStoreVue.metaToBeEdited.created_by =
 							editStoreVue.$root.createdBy
-						StoresFunctions.createStoreMeta(
-							editStoreVue.storeToBeEdited.id,
-							editStoreVue.metaToBeEdited,
-							editStoreVue.$root.appId,
-							editStoreVue.$root.appSecret,
-							editStoreVue.$root.userToken
-						)
-							.then(response => {
-								editStoreVue.noProfileData = ''
-								editStoreVue.showMetaCreateSuccess(response.payload)
-							})
-							.catch(reason => {
-								ajaxErrorHandler({
-									reason,
-									errorText: 'We could not update the store profile',
-									errorName: 'storeMetaError',
-									vue: editStoreVue
-								})
-							})
-							.finally(() => {
-								editStoreVue.updatingStoreMeta = false
-							})
-					} else {
-						StoresFunctions.updateStoreMeta(
-							editStoreVue.metaToBeEdited,
-							editStoreVue.$route.params.store_id,
-							editStoreVue.$root.appId,
-							editStoreVue.$root.appSecret,
-							editStoreVue.$root.userToken
-						)
-							.then(response => {
-								if (response.code === 200 && response.status === 'ok') {
-									editStoreVue.showMetaUpdateSuccess(response.payload)
-								} else {
-									editStoreVue.storeMetaError = response.message
-								}
-							})
-							.catch(reason => {
-								ajaxErrorHandler({
-									reason,
-									errorText: 'We could not update the store profile',
-									errorName: 'storeMetaError',
-									vue: editStoreVue
-								})
-							})
-							.finally(() => {
-								editStoreVue.updatingStoreMeta = false
-							})
-					}
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					editStoreVue.storeMetaError = reason
-					window.scrollTo(0, 0)
-					throw reason
-				})
-		},
-		/**
+            StoresFunctions.createStoreMeta(
+              editStoreVue.storeToBeEdited.id,
+              editStoreVue.metaToBeEdited,
+              editStoreVue.$root.appId,
+              editStoreVue.$root.appSecret,
+              editStoreVue.$root.userToken
+            )
+              .then(response => {
+                editStoreVue.noProfileData = ''
+                editStoreVue.showMetaCreateSuccess(response.payload)
+              })
+              .catch(reason => {
+                ajaxErrorHandler({
+                  reason,
+                  errorText: 'We could not update the store profile',
+                  errorName: 'storeMetaError',
+                  vue: editStoreVue
+                })
+              })
+              .finally(() => {
+                editStoreVue.updatingStoreMeta = false
+              })
+          } else {
+            StoresFunctions.updateStoreMeta(
+              editStoreVue.metaToBeEdited,
+              editStoreVue.$route.params.store_id,
+              editStoreVue.$root.appId,
+              editStoreVue.$root.appSecret,
+              editStoreVue.$root.userToken
+            )
+              .then(response => {
+                if (response.code === 200 && response.status === 'ok') {
+                  editStoreVue.showMetaUpdateSuccess(response.payload)
+                } else {
+                  editStoreVue.storeMetaError = response.message
+                }
+              })
+              .catch(reason => {
+                ajaxErrorHandler({
+                  reason,
+                  errorText: 'We could not update the store profile',
+                  errorName: 'storeMetaError',
+                  vue: editStoreVue
+                })
+              })
+              .finally(() => {
+                editStoreVue.updatingStoreMeta = false
+              })
+          }
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          editStoreVue.storeMetaError = reason
+          window.scrollTo(0, 0)
+          throw reason
+        })
+    },
+    /**
 		 * To check if the store data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateStoreHours () {
-			var editStoreVue = this
-			return new Promise(function (resolve, reject) {
-				let hoursMissing = false
-				let regex = new RegExp('[0-2][0-9]:[0-5][0-9]')
-				editStoreVue.hoursToBeEdited.forEach(day => {
-					if (!regex.test(day.open_time) || !regex.test(day.close_time)) {
-						hoursMissing = true
-						return
-					}
-				})
-				if (hoursMissing) {
-					reject(
-						'Opening and Closing Times cannot be empty. Enter 00:00 for days when the Store is closed.'
-					)
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateStoreHours () {
+      var editStoreVue = this
+      return new Promise(function (resolve, reject) {
+        let hoursMissing = false
+        let regex = new RegExp('[0-2][0-9]:[0-5][0-9]')
+        editStoreVue.hoursToBeEdited.forEach(day => {
+          if (!regex.test(day.open_time) || !regex.test(day.close_time)) {
+            hoursMissing = true
+          }
+        })
+        if (hoursMissing) {
+          reject(
+            'Opening and Closing Times cannot be empty. Enter 00:00 for days when the Store is closed.'
+          )
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To update the hours of operation for a store.
 		 * @function
 		 * @param {string} day - The day of the week to be updated
 		 * @param {object} hours - The details of the day to be updated
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		updateStoreHours (day, hours) {
-			var editStoreVue = this
+    updateStoreHours (day, hours) {
+      var editStoreVue = this
 
-			if (editStoreVue.noHoursData === 'No hours to display') {
-				return editStoreVue
-					.validateStoreHours()
-					.then(response => {
-						editStoreVue.updatingStoreHours = true
-						StoresFunctions.createStoreHours(
-							editStoreVue.$route.params.store_id,
-							editStoreVue.hoursToBeEdited,
-							editStoreVue.$root.appId,
-							editStoreVue.$root.appSecret,
-							editStoreVue.$root.userToken
-						)
-							.then(response => {
-								if (response.code === 200 && response.status === 'ok') {
-									editStoreVue.getStoreHours()
-									editStoreVue.showHoursCreateSuccess(response.payload)
-								} else {
-									editStoreVue.storeHourError = response.message
-								}
-							})
-							.catch(reason => {
-								ajaxErrorHandler({
-									reason,
-									errorText: 'We could not add the hours',
-									errorName: 'storeHourError',
-									vue: editStoreVue
-								})
-							})
-							.finally(() => {
-								editStoreVue.updatingStoreHours = false
-							})
-					})
-					.catch(reason => {
-						editStoreVue.storeHourError = reason
-						window.scrollTo(0, 0)
-					})
-			} else {
-				return editStoreVue
-					.validateStoreHours()
-					.then(response => {
-						StoresFunctions.updateStoreHours(
-							editStoreVue.$route.params.store_id,
-							editStoreVue.hoursToBeEdited,
-							editStoreVue.$root.appId,
-							editStoreVue.$root.appSecret,
-							editStoreVue.$root.userToken
-						)
-							.then(response => {
-								if (response.code === 200 && response.status === 'ok') {
-									editStoreVue.showHoursUpdateSuccess(response.payload)
-								} else {
-									editStoreVue.storeHourError = response.message
-								}
-							})
-							.catch(reason => {
-								ajaxErrorHandler({
-									reason,
-									errorText: 'We could not update the hours',
-									errorName: 'storeHourError',
-									vue: editStoreVue
-								})
-							})
-					})
-					.catch(reason => {
-						editStoreVue.storeHourError = reason
-						window.scrollTo(0, 0)
-					})
-			}
-		},
-		/**
+      if (editStoreVue.noHoursData === 'No hours to display') {
+        return editStoreVue
+          .validateStoreHours()
+          .then(response => {
+            editStoreVue.updatingStoreHours = true
+            StoresFunctions.createStoreHours(
+              editStoreVue.$route.params.store_id,
+              editStoreVue.hoursToBeEdited,
+              editStoreVue.$root.appId,
+              editStoreVue.$root.appSecret,
+              editStoreVue.$root.userToken
+            )
+              .then(response => {
+                if (response.code === 200 && response.status === 'ok') {
+                  editStoreVue.getStoreHours()
+                  editStoreVue.showHoursCreateSuccess(response.payload)
+                } else {
+                  editStoreVue.storeHourError = response.message
+                }
+              })
+              .catch(reason => {
+                ajaxErrorHandler({
+                  reason,
+                  errorText: 'We could not add the hours',
+                  errorName: 'storeHourError',
+                  vue: editStoreVue
+                })
+              })
+              .finally(() => {
+                editStoreVue.updatingStoreHours = false
+              })
+          })
+          .catch(reason => {
+            editStoreVue.storeHourError = reason
+            window.scrollTo(0, 0)
+          })
+      } else {
+        return editStoreVue
+          .validateStoreHours()
+          .then(response => {
+            StoresFunctions.updateStoreHours(
+              editStoreVue.$route.params.store_id,
+              editStoreVue.hoursToBeEdited,
+              editStoreVue.$root.appId,
+              editStoreVue.$root.appSecret,
+              editStoreVue.$root.userToken
+            )
+              .then(response => {
+                if (response.code === 200 && response.status === 'ok') {
+                  editStoreVue.showHoursUpdateSuccess(response.payload)
+                } else {
+                  editStoreVue.storeHourError = response.message
+                }
+              })
+              .catch(reason => {
+                ajaxErrorHandler({
+                  reason,
+                  errorText: 'We could not update the hours',
+                  errorName: 'storeHourError',
+                  vue: editStoreVue
+                })
+              })
+          })
+          .catch(reason => {
+            editStoreVue.storeHourError = reason
+            window.scrollTo(0, 0)
+          })
+      }
+    },
+    /**
 		 * To check if the POS settings are valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validatePOSsettings () {
-			var editStoreVue = this
-			return new Promise(function (resolve, reject) {
-				if (!editStoreVue.storeToBeEdited.pos_partner.pos_provider) {
-					reject('Selct a POS provider.')
-				} else if (!editStoreVue.storeToBeEdited.pos_partner.domain) {
-					reject('Domain cannot be blank.')
-				} else if (!editStoreVue.storeToBeEdited.pos_partner.user) {
-					reject('User cannot be blank.')
-				} else if (!editStoreVue.storeToBeEdited.pos_partner.key) {
-					reject('Key cannot be blank.')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validatePOSsettings () {
+      var editStoreVue = this
+      return new Promise(function (resolve, reject) {
+        if (!editStoreVue.storeToBeEdited.pos_partner.pos_provider) {
+          reject('Selct a POS provider.')
+        } else if (!editStoreVue.storeToBeEdited.pos_partner.domain) {
+          reject('Domain cannot be blank.')
+        } else if (!editStoreVue.storeToBeEdited.pos_partner.user) {
+          reject('User cannot be blank.')
+        } else if (!editStoreVue.storeToBeEdited.pos_partner.key) {
+          reject('Key cannot be blank.')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To set the selected location and get its details.
 		 * @function
 		 * @param {object} location - The selected location object.
 		 * @returns {undefined}
 		 */
-		selectLocation (location) {
-			if (this.displayLocationsDropdown) {
-				this.displayLocationsDropdown = false
-			}
-			var commaIndex = location.description.indexOf(',')
-			var locationSubString = location.description.substring(0, commaIndex)
-			this.storeToBeEdited.address_line_1 = locationSubString
-			this.getGoogleLocationDetails(location.place_id)
-		},
-		/**
+    selectLocation (location) {
+      if (this.displayLocationsDropdown) {
+        this.displayLocationsDropdown = false
+      }
+      var commaIndex = location.description.indexOf(',')
+      var locationSubString = location.description.substring(0, commaIndex)
+      this.storeToBeEdited.address_line_1 = locationSubString
+      this.getGoogleLocationDetails(location.place_id)
+    },
+    /**
 		 * To show/hide the location suggestions dropdown.
 		 * @function
 		 * @param {boolean} focus - To determine whether to show/hide the dropdown.
 		 * @returns {undefined}
 		 */
-		locationFocus (focus) {
-			this.displayLocationsDropdown = focus
-		},
-		/**
+    locationFocus (focus) {
+      this.displayLocationsDropdown = focus
+    },
+    /**
 		 * To get complete details of a particular location using the google places API.
 		 * @function
 		 * @param {string} placeId - To google placeId of the selected location.
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getGoogleLocationDetails (placeId) {
-			var editStoreVue = this
-			AppFunctions.getGoogleLocationDetails(
-				placeId,
-				editStoreVue.$root.appId,
-				editStoreVue.$root.appSecret
-			)
-				.then(response => {
-					editStoreVue.locationDetails = response
-					editStoreVue.storeToBeEdited.latitude =
+    getGoogleLocationDetails (placeId) {
+      var editStoreVue = this
+      AppFunctions.getGoogleLocationDetails(
+        placeId,
+        editStoreVue.$root.appId,
+        editStoreVue.$root.appSecret
+      )
+        .then(response => {
+          editStoreVue.locationDetails = response
+          editStoreVue.storeToBeEdited.latitude =
 						editStoreVue.locationDetails.geometry.location.lat
-					editStoreVue.storeToBeEdited.longitude =
+          editStoreVue.storeToBeEdited.longitude =
 						editStoreVue.locationDetails.geometry.location.lng
 
-					// empty all fields initially
-					editStoreVue.storeToBeEdited.country = ''
-					editStoreVue.storeToBeEdited.country_code = ''
-					editStoreVue.storeToBeEdited.province = ''
-					editStoreVue.storeToBeEdited.city = ''
+          // empty all fields initially
+          editStoreVue.storeToBeEdited.country = ''
+          editStoreVue.storeToBeEdited.country_code = ''
+          editStoreVue.storeToBeEdited.province = ''
+          editStoreVue.storeToBeEdited.city = ''
 
-					// save new search location details
-					for (
-						var i = 0;
-						i < editStoreVue.locationDetails.address_components.length;
-						i++
-					) {
-						var item = editStoreVue.locationDetails.address_components[i]
-						for (var j = 0; j < item.types.length; j++) {
-							var subItem = item.types[j]
-							if (
-								subItem === 'postal_code' ||
+          // save new search location details
+          for (
+            var i = 0;
+            i < editStoreVue.locationDetails.address_components.length;
+            i++
+          ) {
+            var item = editStoreVue.locationDetails.address_components[i]
+            for (var j = 0; j < item.types.length; j++) {
+              var subItem = item.types[j]
+              if (
+                subItem === 'postal_code' ||
 								subItem === 'postal_code_prefix'
-							) {
-								editStoreVue.storeToBeEdited.postal = item.long_name
-							} else if (subItem === 'country') {
-								editStoreVue.storeToBeEdited.country_code = item.short_name
-								editStoreVue.storeToBeEdited.country = item.long_name
-							} else if (subItem === 'administrative_area_level_1') {
-								editStoreVue.storeToBeEdited.province = item.long_name
-							} else if (subItem === 'locality') {
-								editStoreVue.storeToBeEdited.city = item.long_name
-							}
-						}
-					}
-				})
-				.catch(reason => {})
-		},
-		/**
+              ) {
+                editStoreVue.storeToBeEdited.postal = item.long_name
+              } else if (subItem === 'country') {
+                editStoreVue.storeToBeEdited.country_code = item.short_name
+                editStoreVue.storeToBeEdited.country = item.long_name
+              } else if (subItem === 'administrative_area_level_1') {
+                editStoreVue.storeToBeEdited.province = item.long_name
+              } else if (subItem === 'locality') {
+                editStoreVue.storeToBeEdited.city = item.long_name
+              }
+            }
+          }
+        })
+        .catch(reason => {})
+    },
+    /**
 		 * To clear the location details set using google search.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearGoogleLocationDetails () {
-			this.storeToBeEdited.address_line_2 = ''
-			this.storeToBeEdited.latitude = ''
-			this.storeToBeEdited.longitude = ''
-			this.storeToBeEdited.country = ''
-			this.storeToBeEdited.country_code = ''
-			this.storeToBeEdited.province = ''
-			this.storeToBeEdited.city = ''
-			this.storeToBeEdited.postal = ''
-		},
-		/**
+    clearGoogleLocationDetails () {
+      this.storeToBeEdited.address_line_2 = ''
+      this.storeToBeEdited.latitude = ''
+      this.storeToBeEdited.longitude = ''
+      this.storeToBeEdited.country = ''
+      this.storeToBeEdited.country_code = ''
+      this.storeToBeEdited.province = ''
+      this.storeToBeEdited.city = ''
+      this.storeToBeEdited.postal = ''
+    },
+    /**
 		 * To get results based off google's places search API.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getGooglePlaces: debounce(function () {
-			var editStoreVue = this
-			if (editStoreVue.storeToBeEdited.address_line_1.length >= 3) {
-				AppFunctions.getGoogleLocationSearchResults(
-					editStoreVue.storeToBeEdited.address_line_1,
-					editStoreVue.$root.appId,
-					editStoreVue.$root.appSecret
-				)
-					.then(response => {
-						editStoreVue.googleSearchResults = response
-					})
-					.catch(reason => {
-						if (reason.responseJSON) {
-						}
-						throw reason
-					})
-			} else {
-				editStoreVue.googleSearchResults = []
-			}
-		}, 500)
-	},
-	watch: {
-		'storeToBeEdited.address_line_1' (val) {
-			if (val.length) {
-				this.getGooglePlaces()
-			} else {
-				this.googleSearchResults = []
-				this.clearGoogleLocationDetails()
-			}
-		},
-		'metaToBeEdited.opening_soon' (val) {
-			if (val === 0) {
-			}
-		}
-	},
-	components: {
-		Breadcrumb,
-		Tab,
-		Tabset,
-		Dropdown,
-		NoResults,
-		AddHolidayHours,
-		LoadingScreen,
-		Modal,
-		StoreImages
-	}
+    getGooglePlaces: debounce(function () {
+      var editStoreVue = this
+      if (editStoreVue.storeToBeEdited.address_line_1.length >= 3) {
+        AppFunctions.getGoogleLocationSearchResults(
+          editStoreVue.storeToBeEdited.address_line_1,
+          editStoreVue.$root.appId,
+          editStoreVue.$root.appSecret
+        )
+          .then(response => {
+            editStoreVue.googleSearchResults = response
+          })
+          .catch(reason => {
+            if (reason.responseJSON) {
+            }
+            throw reason
+          })
+      } else {
+        editStoreVue.googleSearchResults = []
+      }
+    }, 500)
+  },
+  watch: {
+    'storeToBeEdited.address_line_1' (val) {
+      if (val.length) {
+        this.getGooglePlaces()
+      } else {
+        this.googleSearchResults = []
+        this.clearGoogleLocationDetails()
+      }
+    },
+    'metaToBeEdited.opening_soon' (val) {
+      if (val === 0) {
+      }
+    }
+  },
+  components: {
+    Breadcrumb,
+    Tab,
+    Tabset,
+    Dropdown,
+    NoResults,
+    AddHolidayHours,
+    LoadingScreen,
+    Modal,
+    StoreImages
+  }
 }
 </script>
 <style scoped>

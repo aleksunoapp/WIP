@@ -125,11 +125,11 @@
 
 <script>
 export default {
-	name: 'MenuTreePopup',
-	props: {},
-	data: function() {
-return {};
-},
-	methods: {}
+  name: 'MenuTreePopup',
+  props: {},
+  data: function () {
+    return {}
+  },
+  methods: {}
 }
 </script>

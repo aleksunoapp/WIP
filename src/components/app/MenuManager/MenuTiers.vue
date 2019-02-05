@@ -238,247 +238,247 @@ import AssignMenus from './MenuTiers/AssignMenus'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Breadcrumb,
-		LoadingScreen,
-		NoResults,
-		Modal,
-		EditMenuTier,
-		AssignMenus
-	},
-	data () {
-		return {
-			breadcrumbArray: [
-				{ name: 'Menu Manager', link: false },
-				{ name: 'Menu Tiers', link: false }
-			],
-			menuTiers: [],
-			displayMenuTiersData: false,
-			errorMessage: '',
-			createMenuTierCollapse: true,
-			passedTierId: 0,
-			showEditTierModal: false,
-			showAssignMenusModal: false,
-			newMenuTier: {
-				name: '',
-				description: '',
-				location_id: this.$root.corporateStoreId
-			},
-			noCorporateStore: false,
-			listErrorMessage: ''
-		}
-	},
-	created () {
-		if (this.$root.corporateStoreId !== null) {
-			this.getMenuTiers()
-		} else {
-			this.noCorporateStore = true
-		}
-	},
-	methods: {
-		/**
+  components: {
+    Breadcrumb,
+    LoadingScreen,
+    NoResults,
+    Modal,
+    EditMenuTier,
+    AssignMenus
+  },
+  data () {
+    return {
+      breadcrumbArray: [
+        { name: 'Menu Manager', link: false },
+        { name: 'Menu Tiers', link: false }
+      ],
+      menuTiers: [],
+      displayMenuTiersData: false,
+      errorMessage: '',
+      createMenuTierCollapse: true,
+      passedTierId: 0,
+      showEditTierModal: false,
+      showAssignMenusModal: false,
+      newMenuTier: {
+        name: '',
+        description: '',
+        location_id: this.$root.corporateStoreId
+      },
+      noCorporateStore: false,
+      listErrorMessage: ''
+    }
+  },
+  created () {
+    if (this.$root.corporateStoreId !== null) {
+      this.getMenuTiers()
+    } else {
+      this.noCorporateStore = true
+    }
+  },
+  methods: {
+    /**
 		 * To close anything active in the side panel
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeAssignMenusModal () {
-			this.showAssignMenusModal = false
-			this.passedTierId = 0
-		},
-		/**
+    closeAssignMenusModal () {
+      this.showAssignMenusModal = false
+      this.passedTierId = 0
+    },
+    /**
 		 * To activate the right half panel which lists the menus.
 		 * @function
 		 * @param {object} tier - The selected tier.
 		 * @returns {undefined}
 		 */
-		assignMenusToTier (tier) {
-			this.showAssignMenusModal = true
-			this.passedTierId = tier.id
-		},
-		/**
+    assignMenusToTier (tier) {
+      this.showAssignMenusModal = true
+      this.passedTierId = tier.id
+    },
+    /**
 		 * To get a list of menu tiers.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getMenuTiers () {
-			this.displayMenuTiersData = true
-			this.menuTiers = []
-			var menuTiersVue = this
-			return MenuTiersFunctions.getMenuTiers(
-				menuTiersVue.$root.corporateStoreId,
-				menuTiersVue.$root.appId,
-				menuTiersVue.$root.appSecret,
-				menuTiersVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						menuTiersVue.displayMenuTiersData = false
-						menuTiersVue.menuTiers = response.payload
-					} else {
-						menuTiersVue.displayMenuTiersData = false
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch menu tiers',
-						errorName: 'listErrorMessage',
-						vue: menuTiersVue
-					})
-				})
-		},
-		/**
+    getMenuTiers () {
+      this.displayMenuTiersData = true
+      this.menuTiers = []
+      var menuTiersVue = this
+      return MenuTiersFunctions.getMenuTiers(
+        menuTiersVue.$root.corporateStoreId,
+        menuTiersVue.$root.appId,
+        menuTiersVue.$root.appSecret,
+        menuTiersVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            menuTiersVue.displayMenuTiersData = false
+            menuTiersVue.menuTiers = response.payload
+          } else {
+            menuTiersVue.displayMenuTiersData = false
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch menu tiers',
+            errorName: 'listErrorMessage',
+            vue: menuTiersVue
+          })
+        })
+    },
+    /**
 		 * To display the modal for editing menu tiers.
 		 * @function
 		 * @param {object} tier - The selected menu tier.
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		editMenuTier (tier, event) {
-			event.stopPropagation()
-			this.passedTierId = tier.id
-			this.showEditTierModal = true
-		},
-		/**
+    editMenuTier (tier, event) {
+      event.stopPropagation()
+      this.passedTierId = tier.id
+      this.showEditTierModal = true
+    },
+    /**
 		 * To close the modal for editing menu tiers.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeEditTierModal () {
-			this.showEditTierModal = false
-		},
-		/**
+    closeEditTierModal () {
+      this.showEditTierModal = false
+    },
+    /**
 		 * To clear the new menu tier form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearNewMenuTier () {
-			this.newMenuTier = {
-				name: '',
-				description: '',
-				location_id: this.$root.corporateStoreId
-			}
-		},
-		/**
+    clearNewMenuTier () {
+      this.newMenuTier = {
+        name: '',
+        description: '',
+        location_id: this.$root.corporateStoreId
+      }
+    },
+    /**
 		 * To add the newly created menu to the list.
 		 * @function
 		 * @param {object} val - The new menu object
 		 * @returns {undefined}
 		 */
-		addMenuTier (val) {
-			this.menuTiers.push(val)
-			this.clearNewMenuTier()
-		},
-		/**
+    addMenuTier (val) {
+      this.menuTiers.push(val)
+      this.clearNewMenuTier()
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert (payload = {}) {
-			let title = 'Success'
-			let text = 'The Menu Tier has been created'
-			let type = 'success'
+    showAlert (payload = {}) {
+      let title = 'Success'
+      let text = 'The Menu Tier has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Menu Tier has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Menu Tier has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To update the menu object emitted by the child.
 		 * @function
 		 * @param {object} val - The updated menu object
 		 * @returns {undefined}
 		 */
-		updateMenuTier (val) {
-			this.showEditTierModal = false
-			this.getMenuTiers()
-		},
-		/**
+    updateMenuTier (val) {
+      this.showEditTierModal = false
+      this.getMenuTiers()
+    },
+    /**
 		 * To check if the menu data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateMenuTierData () {
-			var menuTiersVue = this
-			return new Promise(function (resolve, reject) {
-				if (!menuTiersVue.newMenuTier.name.length) {
-					reject('Menu tier name cannot be blank')
-				} else if (!menuTiersVue.newMenuTier.description.length) {
-					reject('Menu tier description cannot be blank')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateMenuTierData () {
+      var menuTiersVue = this
+      return new Promise(function (resolve, reject) {
+        if (!menuTiersVue.newMenuTier.name.length) {
+          reject('Menu tier name cannot be blank')
+        } else if (!menuTiersVue.newMenuTier.description.length) {
+          reject('Menu tier description cannot be blank')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To create a new menu tier.
 		 * @function
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		createNewMenuTier (event) {
-			var menuTiersVue = this
-			menuTiersVue.clearError()
+    createNewMenuTier (event) {
+      var menuTiersVue = this
+      menuTiersVue.clearError()
 
-			return menuTiersVue
-				.validateMenuTierData()
-				.then(response => {
-					MenuTiersFunctions.createNewMenuTier(
-						menuTiersVue.newMenuTier,
-						menuTiersVue.$root.appId,
-						menuTiersVue.$root.appSecret,
-						menuTiersVue.$root.userToken
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								menuTiersVue.showAlert(response.payload)
-								menuTiersVue.newMenuTier.id = response.payload.id
-								menuTiersVue.addMenuTier(menuTiersVue.newMenuTier)
-							} else {
-								menuTiersVue.errorMessage = response.message
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not create the tier',
-								errorName: 'errorMessage',
-								vue: menuTiersVue
-							})
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					menuTiersVue.errorMessage = reason
-					window.scrollTo(0, 0)
-					throw reason
-				})
-		},
-		/**
+      return menuTiersVue
+        .validateMenuTierData()
+        .then(response => {
+          MenuTiersFunctions.createNewMenuTier(
+            menuTiersVue.newMenuTier,
+            menuTiersVue.$root.appId,
+            menuTiersVue.$root.appSecret,
+            menuTiersVue.$root.userToken
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                menuTiersVue.showAlert(response.payload)
+                menuTiersVue.newMenuTier.id = response.payload.id
+                menuTiersVue.addMenuTier(menuTiersVue.newMenuTier)
+              } else {
+                menuTiersVue.errorMessage = response.message
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not create the tier',
+                errorName: 'errorMessage',
+                vue: menuTiersVue
+              })
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          menuTiersVue.errorMessage = reason
+          window.scrollTo(0, 0)
+          throw reason
+        })
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To toggle the create menu panel, initially set to opened
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCreateMenuTierPanel () {
-			this.createMenuTierCollapse = !this.createMenuTierCollapse
-		}
-	}
+    toggleCreateMenuTierPanel () {
+      this.createMenuTierCollapse = !this.createMenuTierCollapse
+    }
+  }
 }
 </script>
 

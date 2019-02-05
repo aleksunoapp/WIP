@@ -109,113 +109,113 @@ import UserGroupFunctions from '../../../controllers/UserGroups'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Modal
-	},
-	props: {
-		selectedPromotionId: {
-			type: Number
-		}
-	},
-	data () {
-		return {
-			showDeletePromotionModal: false,
-			deleting: false,
-			errorMessage: '',
-			customWidth: 90,
-			deleted: false
-		}
-	},
-	mounted () {
-		this.showDeletePromotionModal = true
-	},
-	methods: {
-		/**
+  components: {
+    Modal
+  },
+  props: {
+    selectedPromotionId: {
+      type: Number
+    }
+  },
+  data () {
+    return {
+      showDeletePromotionModal: false,
+      deleting: false,
+      errorMessage: '',
+      customWidth: 90,
+      deleted: false
+    }
+  },
+  mounted () {
+    this.showDeletePromotionModal = true
+  },
+  methods: {
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To delete the promotion and close the modal.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		deleteGroup () {
-			this.deleting = true
-			var deleteGroupVue = this
-			deleteGroupVue.clearError()
+    deleteGroup () {
+      this.deleting = true
+      var deleteGroupVue = this
+      deleteGroupVue.clearError()
 
-			UserGroupFunctions.deleteGroup(
-				deleteGroupVue.selectedPromotionId,
-				deleteGroupVue.$root.appId,
-				deleteGroupVue.$root.appSecret,
-				deleteGroupVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						deleteGroupVue.deleted = response.payload.pending_approval
-						deleteGroupVue.deleteGroupAndCloseModal()
-						deleteGroupVue.showDeleteSuccess(response.payload)
-					} else {
-						deleteGroupVue.errorMessage = response.message
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not delete the group',
-						errorName: 'errorMessage',
-						vue: deleteGroupVue,
-						containerRef: 'modal'
-					})
-				})
-				.finally(() => {
-					deleteGroupVue.deleting = false
-				})
-		},
-		/**
+      UserGroupFunctions.deleteGroup(
+        deleteGroupVue.selectedPromotionId,
+        deleteGroupVue.$root.appId,
+        deleteGroupVue.$root.appSecret,
+        deleteGroupVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            deleteGroupVue.deleted = response.payload.pending_approval
+            deleteGroupVue.deleteGroupAndCloseModal()
+            deleteGroupVue.showDeleteSuccess(response.payload)
+          } else {
+            deleteGroupVue.errorMessage = response.message
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not delete the group',
+            errorName: 'errorMessage',
+            vue: deleteGroupVue,
+            containerRef: 'modal'
+          })
+        })
+        .finally(() => {
+          deleteGroupVue.deleting = false
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Country has been deleted'
-			let type = 'success'
+    showDeleteSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Country has been deleted'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The removal has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The removal has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('closeDeleteGroupModal')
-		},
-		/**
+    closeModal () {
+      this.$emit('closeDeleteGroupModal')
+    },
+    /**
 		 * To close the modal and delete the promotion.
 		 * @function
 		 * @returns {undefined}
 		 */
-		deleteGroupAndCloseModal () {
-			this.$emit('deleteGroupAndCloseModal', this.selectedPromotionId)
-		}
-	}
+    deleteGroupAndCloseModal () {
+      this.$emit('deleteGroupAndCloseModal', this.selectedPromotionId)
+    }
+  }
 }
 </script>
 <style>

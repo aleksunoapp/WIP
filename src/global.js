@@ -9,21 +9,21 @@ const laprep = 'laprep'
 let client = window.location.hostname.split('.')[0]
 
 if (client === 'localhost') {
-	client = freshii
+  client = laprep
 }
 
 const fileRouter = (function () {
-	if (client === freshii) {
-		return freshiiConfig
-	} else if (client === pitapit) {
-		return pitapitConfig
-	} else if (client === pitaDashPit) {
-		return pitapitConfig
-	} else if (client === laprep) {
-		return laprepConfig
-	} else {
-		return null
-	}
+  if (client === freshii) {
+    return freshiiConfig
+  } else if (client === pitapit) {
+    return pitapitConfig
+  } else if (client === pitaDashPit) {
+    return pitapitConfig
+  } else if (client === laprep) {
+    return laprepConfig
+  } else {
+    return null
+  }
 })()
 
 export default fileRouter

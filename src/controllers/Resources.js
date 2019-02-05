@@ -7,7 +7,7 @@ import GlobalFunctions from '../global'
 import { App } from '../main.js'
 
 export default {
-	/**
+  /**
 	 * Call to unoapp API that gets folders within a parent folder.
 	 * @function
 	 * @param {integer} businessId - The id of the business where the folder is being pulled from.
@@ -18,45 +18,45 @@ export default {
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 * @version 0.0.8
 	 */
-	getFolders (businessId, locationId, parentId, pageNumber, recordsPerPage) {
-		let httpParams = {
-			parent_folder_id: parentId,
-			sort_by: 'name',
-			sort_order: 'asc',
-			page_number: pageNumber,
-			records_per_page: recordsPerPage
-		}
-		let url
+  getFolders (businessId, locationId, parentId, pageNumber, recordsPerPage) {
+    let httpParams = {
+      parent_folder_id: parentId,
+      sort_by: 'name',
+      sort_order: 'asc',
+      page_number: pageNumber,
+      records_per_page: recordsPerPage
+    }
+    let url
 
-		if (locationId) {
-			httpParams.location_id = locationId
-			url = '/resources/search/location_folders'
-		} else {
-			httpParams.business_id = businessId
-			url = '/resources/search/business_folders'
-		}
+    if (locationId) {
+      httpParams.location_id = locationId
+      url = '/resources/search/location_folders'
+    } else {
+      httpParams.business_id = businessId
+      url = '/resources/search/business_folders'
+    }
 
-		return new Promise((resolve, reject) => {
-			const options = {
-				method: 'POST',
-				dataType: 'json',
-				url,
-				data: httpParams,
-				contentType: 'application/json',
-				xhrFields: {
-					withCredentials: true
-				},
-				success (response) {
-					resolve(response)
-				},
-				error (e) {
-					reject(e)
-				}
-			}
-			GlobalFunctions.$ajax(options, 'resources')
-		})
-	},
-	/**
+    return new Promise((resolve, reject) => {
+      const options = {
+        method: 'POST',
+        dataType: 'json',
+        url,
+        data: httpParams,
+        contentType: 'application/json',
+        xhrFields: {
+          withCredentials: true
+        },
+        success (response) {
+          resolve(response)
+        },
+        error (e) {
+          reject(e)
+        }
+      }
+      GlobalFunctions.$ajax(options, 'resources')
+    })
+  },
+  /**
 	 * Call to unoapp API that gets the details of a folder.
 	 * @function
 	 * @param {integer} businessId - The id of the business where the folder is being pulled from.
@@ -65,39 +65,39 @@ export default {
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 * @version 0.0.8
 	 */
-	getFolder (businessId, locationId, folderId) {
-		let httpParams = { folder_id: folderId }
-		let url
+  getFolder (businessId, locationId, folderId) {
+    let httpParams = { folder_id: folderId }
+    let url
 
-		if (locationId) {
-			httpParams.location_id = locationId
-			url = '/resources/location_folders'
-		} else {
-			httpParams.business_id = businessId
-			url = '/resources/business_folders'
-		}
+    if (locationId) {
+      httpParams.location_id = locationId
+      url = '/resources/location_folders'
+    } else {
+      httpParams.business_id = businessId
+      url = '/resources/business_folders'
+    }
 
-		return new Promise((resolve, reject) => {
-			const options = {
-				method: 'POST',
-				dataType: 'json',
-				url,
-				data: httpParams,
-				contentType: 'application/json',
-				xhrFields: {
-					withCredentials: true
-				},
-				success (response) {
-					resolve(response)
-				},
-				error (e) {
-					reject(e)
-				}
-			}
-			GlobalFunctions.$ajax(options, 'resources')
-		})
-	},
-	/**
+    return new Promise((resolve, reject) => {
+      const options = {
+        method: 'POST',
+        dataType: 'json',
+        url,
+        data: httpParams,
+        contentType: 'application/json',
+        xhrFields: {
+          withCredentials: true
+        },
+        success (response) {
+          resolve(response)
+        },
+        error (e) {
+          reject(e)
+        }
+      }
+      GlobalFunctions.$ajax(options, 'resources')
+    })
+  },
+  /**
 	 * Call to unoapp API that creates a new folder.
 	 * @function
 	 * @param {integer} businessId - The id of the business where the folder is being created.
@@ -107,38 +107,38 @@ export default {
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 * @version 0.0.8
 	 */
-	createFolder (businessId, locationId, folder, parentFolderId) {
-		let httpParams = { name: folder.name, parent_id: parentFolderId }
-		let url
+  createFolder (businessId, locationId, folder, parentFolderId) {
+    let httpParams = { name: folder.name, parent_id: parentFolderId }
+    let url
 
-		if (locationId) {
-			httpParams.location_id = locationId
-			url = '/resources/location_folders'
-		} else {
-			httpParams.business_id = businessId
-			httpParams.is_shared = folder.is_shared
-			url = '/resources/business_folders'
-		}
-		return new Promise((resolve, reject) => {
-			const options = {
-				method: 'PUT',
-				dataType: 'json',
-				url,
-				data: httpParams,
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader('token', App.accountToken)
-				},
-				success (response) {
-					resolve(response)
-				},
-				error (e) {
-					reject(e)
-				}
-			}
-			GlobalFunctions.$ajax(options, 'resources')
-		})
-	},
-	/**
+    if (locationId) {
+      httpParams.location_id = locationId
+      url = '/resources/location_folders'
+    } else {
+      httpParams.business_id = businessId
+      httpParams.is_shared = folder.is_shared
+      url = '/resources/business_folders'
+    }
+    return new Promise((resolve, reject) => {
+      const options = {
+        method: 'PUT',
+        dataType: 'json',
+        url,
+        data: httpParams,
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('token', App.accountToken)
+        },
+        success (response) {
+          resolve(response)
+        },
+        error (e) {
+          reject(e)
+        }
+      }
+      GlobalFunctions.$ajax(options, 'resources')
+    })
+  },
+  /**
 	 * Call to unoapp API that updates an existing folder.
 	 * @function
 	 * @param {integer} businessId - The id of the business where the folder is being created.
@@ -149,39 +149,39 @@ export default {
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 * @version 0.0.8
 	 */
-	updateFolder (businessId, locationId, folderId, folderName, folderPrivacy) {
-		let httpParams = { folder_id: folderId, name: folderName }
-		let url
+  updateFolder (businessId, locationId, folderId, folderName, folderPrivacy) {
+    let httpParams = { folder_id: folderId, name: folderName }
+    let url
 
-		if (locationId) {
-			httpParams.location_id = locationId
-			url = '/resources/location_folders'
-		} else {
-			httpParams.business_id = businessId
-			httpParams.is_shared = folderPrivacy
-			url = '/resources/business_folders'
-		}
+    if (locationId) {
+      httpParams.location_id = locationId
+      url = '/resources/location_folders'
+    } else {
+      httpParams.business_id = businessId
+      httpParams.is_shared = folderPrivacy
+      url = '/resources/business_folders'
+    }
 
-		return new Promise((resolve, reject) => {
-			const options = {
-				method: 'PATCH',
-				dataType: 'json',
-				url,
-				data: httpParams,
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader('token', App.accountToken)
-				},
-				success (response) {
-					resolve(response)
-				},
-				error (e) {
-					reject(e)
-				}
-			}
-			GlobalFunctions.$ajax(options, 'resources')
-		})
-	},
-	/**
+    return new Promise((resolve, reject) => {
+      const options = {
+        method: 'PATCH',
+        dataType: 'json',
+        url,
+        data: httpParams,
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('token', App.accountToken)
+        },
+        success (response) {
+          resolve(response)
+        },
+        error (e) {
+          reject(e)
+        }
+      }
+      GlobalFunctions.$ajax(options, 'resources')
+    })
+  },
+  /**
 	 * Call to unoapp API that returns an array of resources for the specified page and search criteria.
 	 * @function
 	 * @param {integer} businessId - The id of the business where the resources are being fetched.
@@ -194,66 +194,66 @@ export default {
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 * @version 0.0.9
 	 */
-	getResources (
-		businessId,
-		locationId,
-		folderId,
-		pageNumber,
-		recordsPerPage,
-		searchCriteria,
-		sortCriteria
-	) {
-		let httpParams = {
-			page_number: pageNumber,
-			records_per_page: recordsPerPage
-		}
-		let url
+  getResources (
+    businessId,
+    locationId,
+    folderId,
+    pageNumber,
+    recordsPerPage,
+    searchCriteria,
+    sortCriteria
+  ) {
+    let httpParams = {
+      page_number: pageNumber,
+      records_per_page: recordsPerPage
+    }
+    let url
 
-		if (locationId) {
-			httpParams.location_id = locationId
-			url = '/resources/search/location_files'
-		} else {
-			httpParams.business_id = businessId
-			url = '/resources/search/business_files'
-		}
+    if (locationId) {
+      httpParams.location_id = locationId
+      url = '/resources/search/location_files'
+    } else {
+      httpParams.business_id = businessId
+      url = '/resources/search/business_files'
+    }
 
-		if (folderId) {
-			httpParams.folder_id = folderId
-		}
+    if (folderId) {
+      httpParams.folder_id = folderId
+    }
 
-		if (sortCriteria) {
-			for (let sortKey in sortCriteria) {
-				httpParams[sortKey] = sortCriteria[sortKey]
-			}
-		}
+    if (sortCriteria) {
+      for (let sortKey in sortCriteria) {
+        httpParams[sortKey] = sortCriteria[sortKey]
+      }
+    }
 
-		if (searchCriteria) {
-			for (let searchKey in searchCriteria) {
-				httpParams[searchKey] = searchCriteria[searchKey]
-			}
-		}
+    if (searchCriteria) {
+      for (let searchKey in searchCriteria) {
+        httpParams[searchKey] = searchCriteria[searchKey]
+      }
+    }
 
-		return new Promise((resolve, reject) => {
-			const options = {
-				method: 'POST',
-				dataType: 'json',
-				url,
-				data: httpParams,
-				contentType: 'application/json',
-				xhrFields: {
-					withCredentials: true
-				},
-				success (response) {
-					resolve(response)
-				},
-				error (e) {
-					reject(e)
-				}
-			}
-			GlobalFunctions.$ajax(options, 'resources')
-		})
-	},
-	/**
+    return new Promise((resolve, reject) => {
+      const options = {
+        method: 'POST',
+        dataType: 'json',
+        url,
+        data: httpParams,
+        contentType: 'application/json',
+        xhrFields: {
+          withCredentials: true
+        },
+        success (response) {
+          resolve(response)
+        },
+        error (e) {
+          reject(e)
+        }
+      }
+      GlobalFunctions.$ajax(options, 'resources')
+    })
+  },
+  /**
 	 * Call to unoapp API that gets the details of a resource.
 	 * @function
 	 * @param {integer} businessId - The id of the business where the resource is being pulled from.
@@ -262,39 +262,39 @@ export default {
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 * @version 0.0.9
 	 */
-	getResource (businessId, locationId, resourceId) {
-		let httpParams = { file_id: resourceId }
-		let url
+  getResource (businessId, locationId, resourceId) {
+    let httpParams = { file_id: resourceId }
+    let url
 
-		if (locationId) {
-			httpParams.location_id = locationId
-			url = '/resources/location_file'
-		} else {
-			httpParams.business_id = businessId
-			url = '/resources/business_file'
-		}
+    if (locationId) {
+      httpParams.location_id = locationId
+      url = '/resources/location_file'
+    } else {
+      httpParams.business_id = businessId
+      url = '/resources/business_file'
+    }
 
-		return new Promise((resolve, reject) => {
-			const options = {
-				method: 'POST',
-				dataType: 'json',
-				url,
-				data: httpParams,
-				contentType: 'application/json',
-				xhrFields: {
-					withCredentials: true
-				},
-				success (response) {
-					resolve(response)
-				},
-				error (e) {
-					reject(e)
-				}
-			}
-			GlobalFunctions.$ajax(options, 'resources')
-		})
-	},
-	/**
+    return new Promise((resolve, reject) => {
+      const options = {
+        method: 'POST',
+        dataType: 'json',
+        url,
+        data: httpParams,
+        contentType: 'application/json',
+        xhrFields: {
+          withCredentials: true
+        },
+        success (response) {
+          resolve(response)
+        },
+        error (e) {
+          reject(e)
+        }
+      }
+      GlobalFunctions.$ajax(options, 'resources')
+    })
+  },
+  /**
 	 * Call to unoapp API that updates an existing resource.
 	 * @function
 	 * @param {integer} businessId - The id of the business where the resource is being updated.
@@ -304,35 +304,35 @@ export default {
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 * @version 0.0.8
 	 */
-	updateResource (businessId, locationId, resourceId, resourceName) {
-		let httpParams = { file_id: resourceId, name: resourceName }
-		let url
+  updateResource (businessId, locationId, resourceId, resourceName) {
+    let httpParams = { file_id: resourceId, name: resourceName }
+    let url
 
-		if (locationId) {
-			httpParams.location_id = locationId
-			url = '/resources/location_file'
-		} else {
-			httpParams.business_id = businessId
-			url = '/resources/business_file'
-		}
+    if (locationId) {
+      httpParams.location_id = locationId
+      url = '/resources/location_file'
+    } else {
+      httpParams.business_id = businessId
+      url = '/resources/business_file'
+    }
 
-		return new Promise((resolve, reject) => {
-			const options = {
-				method: 'PATCH',
-				dataType: 'json',
-				url,
-				data: httpParams,
-				success (response) {
-					resolve(response)
-				},
-				error (e) {
-					reject(e)
-				}
-			}
-			GlobalFunctions.$ajax(options, 'resources')
-		})
-	},
-	/**
+    return new Promise((resolve, reject) => {
+      const options = {
+        method: 'PATCH',
+        dataType: 'json',
+        url,
+        data: httpParams,
+        success (response) {
+          resolve(response)
+        },
+        error (e) {
+          reject(e)
+        }
+      }
+      GlobalFunctions.$ajax(options, 'resources')
+    })
+  },
+  /**
 	 * Call to unoapp API that updates an existing resources tags.
 	 * @function
 	 * @param {integer} businessId - The id of the business where the resource is being updated.
@@ -342,35 +342,35 @@ export default {
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 * @version 0.0.8
 	 */
-	updateResourceTags (businessId, locationId, resourceId, tags) {
-		let httpParams = { file_id: resourceId, tags }
-		let url
+  updateResourceTags (businessId, locationId, resourceId, tags) {
+    let httpParams = { file_id: resourceId, tags }
+    let url
 
-		if (locationId) {
-			httpParams.location_id = locationId
-			url = '/resources/location_files/update_tags'
-		} else {
-			httpParams.business_id = businessId
-			url = '/resources/business_files/update_tags'
-		}
+    if (locationId) {
+      httpParams.location_id = locationId
+      url = '/resources/location_files/update_tags'
+    } else {
+      httpParams.business_id = businessId
+      url = '/resources/business_files/update_tags'
+    }
 
-		return new Promise((resolve, reject) => {
-			const options = {
-				method: 'PUT',
-				dataType: 'json',
-				url,
-				data: httpParams,
-				success (response) {
-					resolve(response)
-				},
-				error (e) {
-					reject(e)
-				}
-			}
-			GlobalFunctions.$ajax(options, 'resources')
-		})
-	},
-	/**
+    return new Promise((resolve, reject) => {
+      const options = {
+        method: 'PUT',
+        dataType: 'json',
+        url,
+        data: httpParams,
+        success (response) {
+          resolve(response)
+        },
+        error (e) {
+          reject(e)
+        }
+      }
+      GlobalFunctions.$ajax(options, 'resources')
+    })
+  },
+  /**
 	 * Call to unoapp API that uploads a file to a business resource folder.
 	 * @function
 	 * @param {integer} businessId - The id of the business where the file is being uploaded.
@@ -380,42 +380,42 @@ export default {
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 * @version 0.0.9
 	 */
-	upload (businessId, locationId, folderId, file) {
-		let url
-		if (locationId) {
-			url = '/resources/location_file/' +
+  upload (businessId, locationId, folderId, file) {
+    let url
+    if (locationId) {
+      url = '/resources/location_file/' +
 				locationId +
 				'/' +
 				folderId
-		} else {
-			url = '/resources/business_file/' +
+    } else {
+      url = '/resources/business_file/' +
 				businessId +
 				'/' +
 				folderId
-		}
+    }
 
-		return new Promise((resolve, reject) => {
-			const options = {
-				method: 'POST',
-				dataType: 'json',
-				url,
-				data: file,
-				contentType: false,
-				processData: false,
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader('token', App.accountToken)
-				},
-				success (response) {
-					resolve(response)
-				},
-				error (e) {
-					reject(e)
-				}
-			}
-			GlobalFunctions.$ajax(options, 'resources')
-		})
-	},
-	/**
+    return new Promise((resolve, reject) => {
+      const options = {
+        method: 'POST',
+        dataType: 'json',
+        url,
+        data: file,
+        contentType: false,
+        processData: false,
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('token', App.accountToken)
+        },
+        success (response) {
+          resolve(response)
+        },
+        error (e) {
+          reject(e)
+        }
+      }
+      GlobalFunctions.$ajax(options, 'resources')
+    })
+  },
+  /**
 	 * Call to unoapp API that gets all tags belonging to a business or location.
 	 * @function
 	 * @param {integer} businessId - The id of the business where the tags are being pulled from.
@@ -425,44 +425,44 @@ export default {
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 * @version 0.0.8
 	 */
-	getTags (businessId, locationId, pageNumber, recordsPerPage) {
-		let httpParams = {
-			sort_by: 'name',
-			sort_order: 'asc',
-			page_number: pageNumber,
-			records_per_page: recordsPerPage
-		}
-		let url
+  getTags (businessId, locationId, pageNumber, recordsPerPage) {
+    let httpParams = {
+      sort_by: 'name',
+      sort_order: 'asc',
+      page_number: pageNumber,
+      records_per_page: recordsPerPage
+    }
+    let url
 
-		if (locationId) {
-			httpParams.location_id = locationId
-			url = '/resources/location_tags'
-		} else {
-			httpParams.business_id = businessId
-			url = '/resources/business_tags'
-		}
+    if (locationId) {
+      httpParams.location_id = locationId
+      url = '/resources/location_tags'
+    } else {
+      httpParams.business_id = businessId
+      url = '/resources/business_tags'
+    }
 
-		return new Promise((resolve, reject) => {
-			const options = {
-				method: 'POST',
-				dataType: 'json',
-				url,
-				data: httpParams,
-				contentType: 'application/json',
-				xhrFields: {
-					withCredentials: true
-				},
-				success (response) {
-					resolve(response)
-				},
-				error (e) {
-					reject(e)
-				}
-			}
-			GlobalFunctions.$ajax(options, 'resources')
-		})
-	},
-	/**
+    return new Promise((resolve, reject) => {
+      const options = {
+        method: 'POST',
+        dataType: 'json',
+        url,
+        data: httpParams,
+        contentType: 'application/json',
+        xhrFields: {
+          withCredentials: true
+        },
+        success (response) {
+          resolve(response)
+        },
+        error (e) {
+          reject(e)
+        }
+      }
+      GlobalFunctions.$ajax(options, 'resources')
+    })
+  },
+  /**
 	 * Call to unoapp API that deletes a resource
 	 * @function
 	 * @param {integer} businessId - The id of the business where the resource is being deleted.
@@ -470,25 +470,25 @@ export default {
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 * @version 0.0.8
 	 */
-	deleteResource (businessId, resourceId) {
-		let httpParams = { file_id: resourceId, business_id: businessId }
+  deleteResource (businessId, resourceId) {
+    let httpParams = { file_id: resourceId, business_id: businessId }
 
-		return new Promise((resolve, reject) => {
-			const options = {
-				method: 'DELETE',
-				dataType: 'json',
-				url: '/resources/business_file',
-				data: httpParams,
-				contentType: 'application/json',
-				processData: false,
-				success (response) {
-					resolve(response)
-				},
-				error (e) {
-					reject(e)
-				}
-			}
-			GlobalFunctions.$ajax(options, 'resources')
-		})
-	}
+    return new Promise((resolve, reject) => {
+      const options = {
+        method: 'DELETE',
+        dataType: 'json',
+        url: '/resources/business_file',
+        data: httpParams,
+        contentType: 'application/json',
+        processData: false,
+        success (response) {
+          resolve(response)
+        },
+        error (e) {
+          reject(e)
+        }
+      }
+      GlobalFunctions.$ajax(options, 'resources')
+    })
+  }
 }

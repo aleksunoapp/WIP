@@ -839,790 +839,790 @@ import { mapGetters } from 'vuex'
 var emailPattern = /^.+@.+\..+$/
 
 export default {
-	data () {
-		return {
-			breadcrumbArray: [
-				{ name: 'Admin Manager', link: false },
-				{ name: 'Brand Admins', link: false }
-			],
-			createBrandAdminCollapse: true,
-			createErrorMessage: '',
-			creating: false,
-			newBrandAdmin: {
-				name: '',
-				phone: '',
-				email: '',
-				password: '',
-				type: 'admin',
-				active: 1,
-				created_by: this.$root.createdBy
-			},
-			listErrorMessage: '',
-			editErrorMessage: '',
-			updating: false,
-			brandAdminToBeEdited: {
-				name: '',
-				phone: '',
-				active: 1,
-				type: 'admin'
-			},
-			loadingBrandAdminsData: false,
-			brandAdmins: [],
-			showEditBrandAdminModal: false,
-			animated: '',
-			searchCollapse: true,
-			searchError: '',
-			filteredResults: [],
-			searchTerm: '',
-			activePage: 1,
-			resultsPerPage: 25,
-			sortBy: {
-				order: 'ASC'
-			},
-			searchActivePage: 1,
-			passwordMasked: true,
-			passwordConfirmMasked: true,
-			passwordCheck: '',
-			brandAdminToAssignRolesTo: {},
-			assigning: false,
-			showAssignRolesModal: false,
-			assignRolesErrorMessage: ''
-		}
-	},
-	computed: {
-		numPages () {
-			return Math.ceil(this.brandAdmins.length / this.resultsPerPage)
-		},
-		currentActivePageItems () {
-			return this.userSort(this.brandAdmins).slice(
-				this.resultsPerPage * (this.activePage - 1),
-				this.resultsPerPage * (this.activePage - 1) +
+  data () {
+    return {
+      breadcrumbArray: [
+        { name: 'Admin Manager', link: false },
+        { name: 'Brand Admins', link: false }
+      ],
+      createBrandAdminCollapse: true,
+      createErrorMessage: '',
+      creating: false,
+      newBrandAdmin: {
+        name: '',
+        phone: '',
+        email: '',
+        password: '',
+        type: 'admin',
+        active: 1,
+        created_by: this.$root.createdBy
+      },
+      listErrorMessage: '',
+      editErrorMessage: '',
+      updating: false,
+      brandAdminToBeEdited: {
+        name: '',
+        phone: '',
+        active: 1,
+        type: 'admin'
+      },
+      loadingBrandAdminsData: false,
+      brandAdmins: [],
+      showEditBrandAdminModal: false,
+      animated: '',
+      searchCollapse: true,
+      searchError: '',
+      filteredResults: [],
+      searchTerm: '',
+      activePage: 1,
+      resultsPerPage: 25,
+      sortBy: {
+        order: 'ASC'
+      },
+      searchActivePage: 1,
+      passwordMasked: true,
+      passwordConfirmMasked: true,
+      passwordCheck: '',
+      brandAdminToAssignRolesTo: {},
+      assigning: false,
+      showAssignRolesModal: false,
+      assignRolesErrorMessage: ''
+    }
+  },
+  computed: {
+    numPages () {
+      return Math.ceil(this.brandAdmins.length / this.resultsPerPage)
+    },
+    currentActivePageItems () {
+      return this.userSort(this.brandAdmins).slice(
+        this.resultsPerPage * (this.activePage - 1),
+        this.resultsPerPage * (this.activePage - 1) +
 					this.resultsPerPage
-			)
-		},
-		searchNumPages () {
-			return Math.ceil(this.filteredResults.length / this.resultsPerPage)
-		},
-		currentActiveSearchPageItems () {
-			return this.userSort(this.filteredResults).slice(
-				this.resultsPerPage * (this.searchActivePage - 1),
-				this.resultsPerPage * (this.searchActivePage - 1) +
+      )
+    },
+    searchNumPages () {
+      return Math.ceil(this.filteredResults.length / this.resultsPerPage)
+    },
+    currentActiveSearchPageItems () {
+      return this.userSort(this.filteredResults).slice(
+        this.resultsPerPage * (this.searchActivePage - 1),
+        this.resultsPerPage * (this.searchActivePage - 1) +
 					this.resultsPerPage
-			)
-		},
-		...mapGetters(['can', 'canAny'])
-	},
-	mounted () {
-		this.getAllBrandAdmins()
-	},
-	methods: {
-		/**
+      )
+    },
+    ...mapGetters(['can', 'canAny'])
+  },
+  mounted () {
+    this.getAllBrandAdmins()
+  },
+  methods: {
+    /**
 		 * To format a phone number
 		 * @function
 		 * @param {string} phone - The phone number to format
 		 * @returns {string} The formatted phone string
 		 */
-		formatPhone (phone) {
-			let digits = phone.replace(/\D/g, '')
-			return (
-				digits.slice(0, 3) +
+    formatPhone (phone) {
+      let digits = phone.replace(/\D/g, '')
+      return (
+        digits.slice(0, 3) +
 				'-' +
 				digits.slice(3, 6) +
 				'-' +
 				digits.slice(6)
-			)
-		},
-		/**
+      )
+    },
+    /**
 		 * To switch bewteen masked and unmasked password fields.
 		 * @function
 		 * @returns {undefined}
 		 */
-		flipPasswordMask () {
-			this.passwordMasked = !this.passwordMasked
-		},
-		/**
+    flipPasswordMask () {
+      this.passwordMasked = !this.passwordMasked
+    },
+    /**
 		 * To switch bewteen masked and unmasked password confirm fields.
 		 * @function
 		 * @returns {undefined}
 		 */
-		flipPasswordConfirmMask () {
-			this.passwordConfirmMasked = !this.passwordConfirmMasked
-		},
-		/**
+    flipPasswordConfirmMask () {
+      this.passwordConfirmMasked = !this.passwordConfirmMasked
+    },
+    /**
 		 * To update the order property of sortBy.
 		 * @function
 		 * @param {object} value - The new value to assign.
 		 * @returns {undefined}
 		 */
-		updateSortByOrder (value) {
-			this.sortBy.order = value
-			this.filteredResults.length
-				? this.activeSearchPageUpdate(1)
-				: this.activePageUpdate(1)
-		},
-		/**
+    updateSortByOrder (value) {
+      this.sortBy.order = value
+      this.filteredResults.length
+        ? this.activeSearchPageUpdate(1)
+        : this.activePageUpdate(1)
+    },
+    /**
 		 * To sort the orders list.
 		 * @function
 		 * @param {array} orders - The array of orders.
 		 * @returns {array} - The sorted array of orders
 		 */
-		userSort (orders) {
-			let input = orders
-			function asc (a, b) {
-				if (a.name.toLowerCase() < b.name.toLowerCase()) {
-					return -1
-				} else if (a.name.toLowerCase() > b.name.toLowerCase()) {
-					return 1
-				} else {
-					if (a.id > b.id) {
-						return -1
-					} else if (a.id < b.id) {
-						return 1
-					} else {
-						return 0
-					}
-				}
-			}
+    userSort (orders) {
+      let input = orders
+      function asc (a, b) {
+        if (a.name.toLowerCase() < b.name.toLowerCase()) {
+          return -1
+        } else if (a.name.toLowerCase() > b.name.toLowerCase()) {
+          return 1
+        } else {
+          if (a.id > b.id) {
+            return -1
+          } else if (a.id < b.id) {
+            return 1
+          } else {
+            return 0
+          }
+        }
+      }
 
-			function desc (a, b) {
-				if (a.name.toLowerCase() > b.name.toLowerCase()) {
-					return -1
-				} else if (a.name.toLowerCase() < b.name.toLowerCase()) {
-					return 1
-				} else {
-					if (a.id > b.id) {
-						return -1
-					} else if (a.id < b.id) {
-						return 1
-					} else {
-						return 0
-					}
-				}
-			}
+      function desc (a, b) {
+        if (a.name.toLowerCase() > b.name.toLowerCase()) {
+          return -1
+        } else if (a.name.toLowerCase() < b.name.toLowerCase()) {
+          return 1
+        } else {
+          if (a.id > b.id) {
+            return -1
+          } else if (a.id < b.id) {
+            return 1
+          } else {
+            return 0
+          }
+        }
+      }
 
-			if (this.sortBy.order === 'ASC') {
-				return input.sort(asc)
-			} else {
-				return input.sort(desc)
-			}
-		},
-		/**
+      if (this.sortBy.order === 'ASC') {
+        return input.sort(asc)
+      } else {
+        return input.sort(desc)
+      }
+    },
+    /**
 		 * To catch updates from the PageResults component when the number of page results is updated.
 		 * @function
 		 * @param {integer} val - The number of page results to be returned.
 		 * @returns {undefined}
 		 */
-		pageResultsUpdate (val) {
-			if (parseInt(this.resultsPerPage) !== parseInt(val)) {
-				this.resultsPerPage = val
-				this.filteredResults.length
-					? this.activeSearchPageUpdate(1)
-					: this.activePageUpdate(1)
-			}
-		},
-		/**
+    pageResultsUpdate (val) {
+      if (parseInt(this.resultsPerPage) !== parseInt(val)) {
+        this.resultsPerPage = val
+        this.filteredResults.length
+          ? this.activeSearchPageUpdate(1)
+          : this.activePageUpdate(1)
+      }
+    },
+    /**
 		 * To update the currently active pagination page.
 		 * @function
 		 * @param {integer} val - An integer representing the page number that we are updating to.
 		 * @returns {undefined}
 		 */
-		activePageUpdate (val) {
-			if (parseInt(this.activePage) !== parseInt(val)) {
-				this.activePage = val
-				window.scrollTo(0, 0)
-			}
-		},
-		/**
+    activePageUpdate (val) {
+      if (parseInt(this.activePage) !== parseInt(val)) {
+        this.activePage = val
+        window.scrollTo(0, 0)
+      }
+    },
+    /**
 		 * To update the currently active pagination page.
 		 * @function
 		 * @param {integer} val - An integer representing the page number that we are updating to.
 		 * @returns {undefined}
 		 */
-		activeSearchPageUpdate (val) {
-			if (parseInt(this.searchActivePage) !== parseInt(val)) {
-				this.searchActivePage = val
-				window.scrollTo(0, 0)
-			}
-		},
-		/**
+    activeSearchPageUpdate (val) {
+      if (parseInt(this.searchActivePage) !== parseInt(val)) {
+        this.searchActivePage = val
+        window.scrollTo(0, 0)
+      }
+    },
+    /**
 		 * To toggle the search panel
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleSearchPanel () {
-			this.searchCollapse = !this.searchCollapse
-			this.$nextTick(function () {
-				if (!this.searchCollapse) {
-					this.$refs.search.focus()
-				}
-			})
-		},
-		/**
+    toggleSearchPanel () {
+      this.searchCollapse = !this.searchCollapse
+      this.$nextTick(function () {
+        if (!this.searchCollapse) {
+          this.$refs.search.focus()
+        }
+      })
+    },
+    /**
 		 * To filter the results based on the search term.
 		 * @function
 		 * @returns {undefined}
 		 */
-		advancedSearch () {
-			this.clearError('searchError')
-			this.filteredResults = []
-			if (this.searchTerm.length) {
-				if (this.searchTerm.length < 3) {
-					this.searchError =
+    advancedSearch () {
+      this.clearError('searchError')
+      this.filteredResults = []
+      if (this.searchTerm.length) {
+        if (this.searchTerm.length < 3) {
+          this.searchError =
 						'Search term must be at least 3 characters.'
-				} else {
-					for (var i = 0; i < this.brandAdmins.length; i++) {
-						if (
-							this.brandAdmins[i].name
-								.toLowerCase()
-								.indexOf(this.searchTerm.toLowerCase()) > -1 ||
+        } else {
+          for (var i = 0; i < this.brandAdmins.length; i++) {
+            if (
+              this.brandAdmins[i].name
+                .toLowerCase()
+                .indexOf(this.searchTerm.toLowerCase()) > -1 ||
 							this.brandAdmins[i].email
-								.toLowerCase()
-								.indexOf(this.searchTerm.toLowerCase()) > -1
-						) {
-							this.filteredResults.push(this.brandAdmins[i])
-						}
-					}
-					if (!this.filteredResults.length) {
-						this.searchError =
+							  .toLowerCase()
+							  .indexOf(this.searchTerm.toLowerCase()) > -1
+            ) {
+              this.filteredResults.push(this.brandAdmins[i])
+            }
+          }
+          if (!this.filteredResults.length) {
+            this.searchError =
 							'There are no matching records. Please try again.'
-					}
-				}
-			} else {
-				this.$refs.search.focus()
-			}
-		},
-		/**
+          }
+        }
+      } else {
+        this.$refs.search.focus()
+      }
+    },
+    /**
 		 * To clear an error.
 		 * @function
 		 * @param {string} name - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To clear the current search criteria.
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetSearch () {
-			this.searchTerm = ''
-			this.filteredResults = []
-			this.activePage = 1
-			this.searchActivePage = 1
-			this.clearError('searchError')
-		},
-		/**
+    resetSearch () {
+      this.searchTerm = ''
+      this.filteredResults = []
+      this.activePage = 1
+      this.searchActivePage = 1
+      this.clearError('searchError')
+    },
+    /**
 		 * To get roles already assigned to the user
 		 * @function
 		 * @param {object} user - The user to fetch roles for
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getUserRoles (user) {
-			return AdminManagerFunctions.getUserRoles(user)
-				.then(response => {
-					return response.payload.map(role => role.id)
-				})
-				.catch(reason => {
-					return []
-				})
-		},
-		/**
+    getUserRoles (user) {
+      return AdminManagerFunctions.getUserRoles(user)
+        .then(response => {
+          return response.payload.map(role => role.id)
+        })
+        .catch(reason => {
+          return []
+        })
+    },
+    /**
 		 * To update the roles based on user's selection
 		 * @function
 		 * @param {array} roles - An array of role ids
 		 * @returns {undefined}
 		 */
-		updateRoles (roles) {
-			this.brandAdminToAssignRolesTo.roles = roles
-		},
-		/**
+    updateRoles (roles) {
+      this.brandAdminToAssignRolesTo.roles = roles
+    },
+    /**
 		 * To validate data before submitting to the backend
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		validateRoles () {
-			var brandAdminsVue = this
-			return new Promise(function (resolve, reject) {
-				if (!brandAdminsVue.brandAdminToAssignRolesTo.roles.length) {
-					reject('Select at least one role')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateRoles () {
+      var brandAdminsVue = this
+      return new Promise(function (resolve, reject) {
+        if (!brandAdminsVue.brandAdminToAssignRolesTo.roles.length) {
+          reject('Select at least one role')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To assign roles to a user
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		assignRoles () {
-			var brandAdminsVue = this
+    assignRoles () {
+      var brandAdminsVue = this
 
-			return this.validateRoles()
-				.then(response => {
-					brandAdminsVue.assigning = true
-					brandAdminsVue.clearError('assignRolesErrorMessage')
-					return AdminManagerFunctions.assignRoles(
-						brandAdminsVue.brandAdminToAssignRolesTo,
-						brandAdminsVue.$root.appId,
-						brandAdminsVue.$root.appSecret,
-						brandAdminsVue.$root.userToken
-					)
-						.then(response => {
-							brandAdminsVue.closeRolesModal()
-							brandAdminsVue.showRolesSuccess(response.payload)
-							this.animated = `brandAdmin-${
-								brandAdminsVue.brandAdminToBeEdited.id
-							}`
-							window.setTimeout(() => {
-								brandAdminsVue.animated = ''
-							}, 3000)
-							brandAdminsVue.resetRolesForm()
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'Could not assign roles',
-								errorName: 'assignRolesErrorMessage',
-								vue: brandAdminsVue,
-								containerRef: 'rolesModal'
-							})
-						})
-						.finally(() => {
-							brandAdminsVue.assigning = false
-						})
-				})
-				.catch(reason => {
-					brandAdminsVue.assignRolesErrorMessage = reason
-					brandAdminsVue.$scrollTo(
-						brandAdminsVue.$refs.assignRolesErrorMessage,
-						1000,
-						{ offset: -50 }
-					)
-				})
-		},
-		/**
+      return this.validateRoles()
+        .then(response => {
+          brandAdminsVue.assigning = true
+          brandAdminsVue.clearError('assignRolesErrorMessage')
+          return AdminManagerFunctions.assignRoles(
+            brandAdminsVue.brandAdminToAssignRolesTo,
+            brandAdminsVue.$root.appId,
+            brandAdminsVue.$root.appSecret,
+            brandAdminsVue.$root.userToken
+          )
+            .then(response => {
+              brandAdminsVue.closeRolesModal()
+              brandAdminsVue.showRolesSuccess(response.payload)
+              this.animated = `brandAdmin-${
+                brandAdminsVue.brandAdminToBeEdited.id
+              }`
+              window.setTimeout(() => {
+                brandAdminsVue.animated = ''
+              }, 3000)
+              brandAdminsVue.resetRolesForm()
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'Could not assign roles',
+                errorName: 'assignRolesErrorMessage',
+                vue: brandAdminsVue,
+                containerRef: 'rolesModal'
+              })
+            })
+            .finally(() => {
+              brandAdminsVue.assigning = false
+            })
+        })
+        .catch(reason => {
+          brandAdminsVue.assignRolesErrorMessage = reason
+          brandAdminsVue.$scrollTo(
+            brandAdminsVue.$refs.assignRolesErrorMessage,
+            1000,
+            { offset: -50 }
+          )
+        })
+    },
+    /**
 		 * To open the roles modal
 		 * @function
 		 * @param {object} brandAdmin - The selected brand admin
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		openRolesModal (brandAdmin) {
-			let brandAdminsVue = this
-			this.getUserRoles(brandAdmin)
-				.then(roles => {
-					brandAdminsVue.brandAdminToAssignRolesTo = {
-						...brandAdmin,
-						roles
-					}
-				})
-				.catch(err => {
-					brandAdminsVue.brandAdminToAssignRolesTo = {
-						...brandAdmin,
-						roles: []
-					}
-					err
-				})
-				.finally(() => {
-					brandAdminsVue.showAssignRolesModal = true
-				})
-		},
-		/**
+    openRolesModal (brandAdmin) {
+      let brandAdminsVue = this
+      this.getUserRoles(brandAdmin)
+        .then(roles => {
+          brandAdminsVue.brandAdminToAssignRolesTo = {
+            ...brandAdmin,
+            roles
+          }
+        })
+        .catch(err => {
+          brandAdminsVue.brandAdminToAssignRolesTo = {
+            ...brandAdmin,
+            roles: []
+          }
+          err
+        })
+        .finally(() => {
+          brandAdminsVue.showAssignRolesModal = true
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showRolesSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Roles have been saved'
-			let type = 'success'
+    showRolesSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Roles have been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To close the modal
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		closeRolesModal () {
-			this.clearError('assignRolesErrorMessage')
-			this.showAssignRolesModal = false
-		},
-		/**
+    closeRolesModal () {
+      this.clearError('assignRolesErrorMessage')
+      this.showAssignRolesModal = false
+    },
+    /**
 		 * To reset the roles form
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetRolesForm () {
-			this.brandAdminToAssignRolesTo = {}
-		},
-		/**
+    resetRolesForm () {
+      this.brandAdminToAssignRolesTo = {}
+    },
+    /**
 		 * To display the edit modal
 		 * @function
 		 * @param {object} brandAdmin - The brand admin object to be edited
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		editBrandAdmin (brandAdmin) {
-			this.brandAdminToBeEdited.name = brandAdmin.name
-			this.brandAdminToBeEdited.phone = brandAdmin.phone
-			this.brandAdminToBeEdited.active = brandAdmin.active
-			this.brandAdminToBeEdited.id = brandAdmin.id
-			this.showEditBrandAdminModal = true
-		},
-		/**
+    editBrandAdmin (brandAdmin) {
+      this.brandAdminToBeEdited.name = brandAdmin.name
+      this.brandAdminToBeEdited.phone = brandAdmin.phone
+      this.brandAdminToBeEdited.active = brandAdmin.active
+      this.brandAdminToBeEdited.id = brandAdmin.id
+      this.showEditBrandAdminModal = true
+    },
+    /**
 		 * To close the edit modal
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		closeEditBrandAdminModal () {
-			this.clearError('editErrorMessage')
-			this.showEditBrandAdminModal = false
-		},
-		/**
+    closeEditBrandAdminModal () {
+      this.clearError('editErrorMessage')
+      this.showEditBrandAdminModal = false
+    },
+    /**
 		 * To get a list of brand admins.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getAllBrandAdmins () {
-			this.loadingBrandAdminsData = true
-			var brandAdminsVue = this
-			return AdminManagerFunctions.getAllAdmins(
-				brandAdminsVue.$root.appId,
-				brandAdminsVue.$root.appSecret,
-				brandAdminsVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						brandAdminsVue.loadingBrandAdminsData = false
-						let filtered = []
-						response.payload.forEach(admin => {
-							if (admin.type === 'admin') {
-								filtered.push(admin)
-							}
-						})
-						brandAdminsVue.brandAdmins = filtered
-					} else {
-						brandAdminsVue.loadingBrandAdminsData = false
-					}
-				})
-				.catch(reason => {
-					brandAdminsVue.loadingBrandAdminsData = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch Brand Admins',
-						errorName: 'listErrorMessage',
-						vue: brandAdminsVue
-					})
-				})
-		},
-		/**
+    getAllBrandAdmins () {
+      this.loadingBrandAdminsData = true
+      var brandAdminsVue = this
+      return AdminManagerFunctions.getAllAdmins(
+        brandAdminsVue.$root.appId,
+        brandAdminsVue.$root.appSecret,
+        brandAdminsVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            brandAdminsVue.loadingBrandAdminsData = false
+            let filtered = []
+            response.payload.forEach(admin => {
+              if (admin.type === 'admin') {
+                filtered.push(admin)
+              }
+            })
+            brandAdminsVue.brandAdmins = filtered
+          } else {
+            brandAdminsVue.loadingBrandAdminsData = false
+          }
+        })
+        .catch(reason => {
+          brandAdminsVue.loadingBrandAdminsData = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch Brand Admins',
+            errorName: 'listErrorMessage',
+            vue: brandAdminsVue
+          })
+        })
+    },
+    /**
 		 * To get a list of brand admins.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		createBrandAdmin () {
-			var brandAdminsVue = this
+    createBrandAdmin () {
+      var brandAdminsVue = this
 
-			return this.validateNewBrandAdminData()
-				.then(response => {
-					brandAdminsVue.creating = true
-					brandAdminsVue.clearError('createErrorMessage')
-					return AdminManagerFunctions.createAdmin(
-						brandAdminsVue.newBrandAdmin,
-						brandAdminsVue.$root.appId,
-						brandAdminsVue.$root.appSecret,
-						brandAdminsVue.$root.userToken
-					)
-						.then(response => {
-							if (
-								response.code === 200 &&
+      return this.validateNewBrandAdminData()
+        .then(response => {
+          brandAdminsVue.creating = true
+          brandAdminsVue.clearError('createErrorMessage')
+          return AdminManagerFunctions.createAdmin(
+            brandAdminsVue.newBrandAdmin,
+            brandAdminsVue.$root.appId,
+            brandAdminsVue.$root.appSecret,
+            brandAdminsVue.$root.userToken
+          )
+            .then(response => {
+              if (
+                response.code === 200 &&
 								response.status === 'ok'
-							) {
-								brandAdminsVue.getAllBrandAdmins()
-								brandAdminsVue.resetCreateForm()
-								brandAdminsVue.showCreateSuccess(response.payload)
-							} else {
-								brandAdminsVue.createErrorMessage =
+              ) {
+                brandAdminsVue.getAllBrandAdmins()
+                brandAdminsVue.resetCreateForm()
+                brandAdminsVue.showCreateSuccess(response.payload)
+              } else {
+                brandAdminsVue.createErrorMessage =
 									response.message
-							}
-						})
-						.catch(reason => {
-							if (reason.responseJSON && reason.responseJSON.message === 'The email has already been taken.') {
-								reason.responseJSON.message = 'A Brand Admin or a Location Manager with this email already exists.'
-							}
-							ajaxErrorHandler({
-								reason,
-								errorText:
+              }
+            })
+            .catch(reason => {
+              if (reason.responseJSON && reason.responseJSON.message === 'The email has already been taken.') {
+                reason.responseJSON.message = 'A Brand Admin or a Location Manager with this email already exists.'
+              }
+              ajaxErrorHandler({
+                reason,
+                errorText:
 									'We could not create the Brand Admin',
-								errorName: 'createErrorMessage',
-								vue: brandAdminsVue
-							})
-						})
-						.finally(() => {
-							brandAdminsVue.creating = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					if (reason.responseJSON) {
-						brandAdminsVue.createErrorMessage =
+                errorName: 'createErrorMessage',
+                vue: brandAdminsVue
+              })
+            })
+            .finally(() => {
+              brandAdminsVue.creating = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          if (reason.responseJSON) {
+            brandAdminsVue.createErrorMessage =
 							reason.responseJSON.message
-						window.scrollTo(0, 0)
-					} else {
-						brandAdminsVue.createErrorMessage = reason
-						window.scrollTo(0, 0)
-					}
-				})
-		},
-		/**
+            window.scrollTo(0, 0)
+          } else {
+            brandAdminsVue.createErrorMessage = reason
+            window.scrollTo(0, 0)
+          }
+        })
+    },
+    /**
 		 * To reset the create new form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetCreateForm () {
-			this.newBrandAdmin = {
-				name: '',
-				phone: '',
-				email: '',
-				password: '',
-				type: 'admin',
-				active: 1,
-				created_by: this.$root.createdBy
-			}
-			this.passwordCheck = ''
-		},
-		/**
+    resetCreateForm () {
+      this.newBrandAdmin = {
+        name: '',
+        phone: '',
+        email: '',
+        password: '',
+        type: 'admin',
+        active: 1,
+        created_by: this.$root.createdBy
+      }
+      this.passwordCheck = ''
+    },
+    /**
 		 * To reset the create new form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetEditForm () {
-			this.brandAdminToBeEdited = {
-				name: '',
-				phone: '',
-				active: 1,
-				type: 'admin'
-			}
-		},
-		/**
+    resetEditForm () {
+      this.brandAdminToBeEdited = {
+        name: '',
+        phone: '',
+        active: 1,
+        type: 'admin'
+      }
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showCreateSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Brand Admin has been created'
-			let type = 'success'
+    showCreateSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Brand Admin has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Brand Admin has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Brand Admin has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Brand Admin has been updated'
-			let type = 'success'
+    showEditSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Brand Admin has been updated'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Brand Admin has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Brand Admin has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To toggle the create new panel.
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCreateBrandAdminPanel () {
-			this.createBrandAdminCollapse = !this.createBrandAdminCollapse
-			this.$nextTick(function () {
-				if (!this.createBrandAdminCollapse) {
-					this.$refs.newBrandAdminName.focus()
-				}
-			})
-		},
-		/**
+    toggleCreateBrandAdminPanel () {
+      this.createBrandAdminCollapse = !this.createBrandAdminCollapse
+      this.$nextTick(function () {
+        if (!this.createBrandAdminCollapse) {
+          this.$refs.newBrandAdminName.focus()
+        }
+      })
+    },
+    /**
 		 * To update the brand admin object.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		updateBrandAdmin () {
-			var brandAdminsVue = this
+    updateBrandAdmin () {
+      var brandAdminsVue = this
 
-			return this.validateEditedBrandAdminData()
-				.then(response => {
-					brandAdminsVue.updating = true
-					brandAdminsVue.clearError('editErrorMessage')
-					return AdminManagerFunctions.updateAdmin(
-						brandAdminsVue.brandAdminToBeEdited,
-						brandAdminsVue.$root.appId,
-						brandAdminsVue.$root.appSecret,
-						brandAdminsVue.$root.userToken
-					)
-						.then(response => {
-							if (
-								response.code === 200 &&
+      return this.validateEditedBrandAdminData()
+        .then(response => {
+          brandAdminsVue.updating = true
+          brandAdminsVue.clearError('editErrorMessage')
+          return AdminManagerFunctions.updateAdmin(
+            brandAdminsVue.brandAdminToBeEdited,
+            brandAdminsVue.$root.appId,
+            brandAdminsVue.$root.appSecret,
+            brandAdminsVue.$root.userToken
+          )
+            .then(response => {
+              if (
+                response.code === 200 &&
 								response.status === 'ok'
-							) {
-								brandAdminsVue.closeEditBrandAdminModal()
-								brandAdminsVue.showEditSuccess(response.payload)
-								for (
-									var i = 0;
-									i < this.brandAdmins.length;
-									i++
-								) {
-									if (
-										this.brandAdmins[i].id ===
+              ) {
+                brandAdminsVue.closeEditBrandAdminModal()
+                brandAdminsVue.showEditSuccess(response.payload)
+                for (
+                  var i = 0;
+                  i < this.brandAdmins.length;
+                  i++
+                ) {
+                  if (
+                    this.brandAdmins[i].id ===
 										brandAdminsVue.brandAdminToBeEdited.id
-									) {
-										this.brandAdmins[i].name =
+                  ) {
+                    this.brandAdmins[i].name =
 											brandAdminsVue.brandAdminToBeEdited.name
-										this.brandAdmins[i].phone =
+                    this.brandAdmins[i].phone =
 											brandAdminsVue.brandAdminToBeEdited.phone
-										this.brandAdmins[i].active =
+                    this.brandAdmins[i].active =
 											brandAdminsVue.brandAdminToBeEdited.active
-									}
-								}
-								brandAdminsVue.resetEditForm()
-								this.animated = `brandAdmin-${
-									brandAdminsVue.brandAdminToBeEdited.id
-								}`
-								window.setTimeout(() => {
-									brandAdminsVue.animated = ''
-								}, 3000)
-							} else {
-								brandAdminsVue.editErrorMessage =
+                  }
+                }
+                brandAdminsVue.resetEditForm()
+                this.animated = `brandAdmin-${
+                  brandAdminsVue.brandAdminToBeEdited.id
+                }`
+                window.setTimeout(() => {
+                  brandAdminsVue.animated = ''
+                }, 3000)
+              } else {
+                brandAdminsVue.editErrorMessage =
 									response.message
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText:
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText:
 									'We could not update the Brand Admin',
-								errorName: 'editErrorMessage',
-								vue: brandAdminsVue,
-								containerRef: 'editModal'
-							})
-						})
-						.finally(() => {
-							brandAdminsVue.updating = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					if (reason.responseJSON) {
-						brandAdminsVue.editErrorMessage =
+                errorName: 'editErrorMessage',
+                vue: brandAdminsVue,
+                containerRef: 'editModal'
+              })
+            })
+            .finally(() => {
+              brandAdminsVue.updating = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          if (reason.responseJSON) {
+            brandAdminsVue.editErrorMessage =
 							reason.responseJSON.message
-						window.scrollTo(0, 0)
-					} else {
-						brandAdminsVue.editErrorMessage = reason
-						window.scrollTo(0, 0)
-					}
-				})
-		},
-		/**
+            window.scrollTo(0, 0)
+          } else {
+            brandAdminsVue.editErrorMessage = reason
+            window.scrollTo(0, 0)
+          }
+        })
+    },
+    /**
 		 * To check if the item data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateNewBrandAdminData () {
-			var brandAdminsVue = this
-			const passwordRegex = new RegExp(
-				/^((?=\S*?[A-Z])(?=\S*?[0-9]).{7,})\S$/
-			)
-			return new Promise(function (resolve, reject) {
-				if (!brandAdminsVue.newBrandAdmin.name.length) {
-					reject('Name cannot be blank')
-				} else if (
-					brandAdminsVue.newBrandAdmin.phone.replace(/\D/g, '')
-						.length < 10
-				) {
-					reject('Phone number should have at least 10 digits')
-				} else if (!brandAdminsVue.newBrandAdmin.email.length) {
-					reject('Email cannot be blank')
-				} else if (
-					!emailPattern.test(brandAdminsVue.newBrandAdmin.email)
-				) {
-					reject('Please enter a valid email')
-				} else if (
-					!passwordRegex.test(brandAdminsVue.newBrandAdmin.password)
-				) {
-					reject(
-						'Password should: be at least 8 characters long, contain only English letters and numbers, contain at least one uppercase letter and one number'
-					)
-				} else if (
-					brandAdminsVue.newBrandAdmin.password !==
+    validateNewBrandAdminData () {
+      var brandAdminsVue = this
+      const passwordRegex = new RegExp(
+        /^((?=\S*?[A-Z])(?=\S*?[0-9]).{7,})\S$/
+      )
+      return new Promise(function (resolve, reject) {
+        if (!brandAdminsVue.newBrandAdmin.name.length) {
+          reject('Name cannot be blank')
+        } else if (
+          brandAdminsVue.newBrandAdmin.phone.replace(/\D/g, '')
+            .length < 10
+        ) {
+          reject('Phone number should have at least 10 digits')
+        } else if (!brandAdminsVue.newBrandAdmin.email.length) {
+          reject('Email cannot be blank')
+        } else if (
+          !emailPattern.test(brandAdminsVue.newBrandAdmin.email)
+        ) {
+          reject('Please enter a valid email')
+        } else if (
+          !passwordRegex.test(brandAdminsVue.newBrandAdmin.password)
+        ) {
+          reject(
+            'Password should: be at least 8 characters long, contain only English letters and numbers, contain at least one uppercase letter and one number'
+          )
+        } else if (
+          brandAdminsVue.newBrandAdmin.password !==
 					brandAdminsVue.passwordCheck
-				) {
-					reject('Passwords do not match')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+        ) {
+          reject('Passwords do not match')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To check if the item data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateEditedBrandAdminData () {
-			var brandAdminsVue = this
-			return new Promise(function (resolve, reject) {
-				if (!brandAdminsVue.brandAdminToBeEdited.name.length) {
-					reject('Name cannot be blank')
-				} else if (
-					brandAdminsVue.brandAdminToBeEdited.phone.replace(/\D/g, '')
-						.length < 10
-				) {
-					reject('Phone number should have at least 10 digits')
-				}
-				resolve('Hurray')
-			})
-		}
-	},
-	components: {
-		Breadcrumb,
-		NoResults,
-		LoadingScreen,
-		Modal,
-		Dropdown,
-		Pagination,
-		PageResults,
-		RolesPicker
-	}
+    validateEditedBrandAdminData () {
+      var brandAdminsVue = this
+      return new Promise(function (resolve, reject) {
+        if (!brandAdminsVue.brandAdminToBeEdited.name.length) {
+          reject('Name cannot be blank')
+        } else if (
+          brandAdminsVue.brandAdminToBeEdited.phone.replace(/\D/g, '')
+            .length < 10
+        ) {
+          reject('Phone number should have at least 10 digits')
+        }
+        resolve('Hurray')
+      })
+    }
+  },
+  components: {
+    Breadcrumb,
+    NoResults,
+    LoadingScreen,
+    Modal,
+    Dropdown,
+    Pagination,
+    PageResults,
+    RolesPicker
+  }
 }
 </script>
 

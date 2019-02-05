@@ -930,929 +930,929 @@ import { mapGetters } from 'vuex'
 var emailPattern = /^.+@.+\..+$/
 
 export default {
-	data () {
-		return {
-			breadcrumbArray: [
-				{ name: 'Admin Manager', link: false },
-				{ name: 'Location Managers', link: false }
-			],
-			createLocationManagerCollapse: true,
-			createErrorMessage: '',
-			creating: false,
-			newLocationManager: {
-				name: '',
-				phone: '',
-				email: '',
-				password: '',
-				type: 'restricted',
-				active: 1,
-				created_by: this.$root.createdBy
-			},
-			editErrorMessage: '',
-			updating: false,
-			locationManagerToBeEdited: {
-				name: '',
-				phone: '',
-				active: 1,
-				type: 'restricted'
-			},
-			selectedLocationManager: {
-				locations: []
-			},
-			assigningStores: false,
-			loadingLocationManagersData: false,
-			assignErrorMessage: '',
-			listErrorMessage: '',
-			locationManagers: [],
-			showAssignStoresModal: false,
-			showEditLocationManagerModal: false,
-			animated: '',
-			searchCollapse: true,
-			searchError: '',
-			filteredResults: [],
-			searchTerm: '',
-			activePage: 1,
-			resultsPerPage: 25,
-			sortBy: {
-				order: 'ASC'
-			},
-			searchActivePage: 1,
-			passwordMasked: true,
-			passwordConfirmMasked: true,
-			passwordCheck: '',
-			locationManagerToAssignRolesTo: {},
-			assigningRoles: false,
-			showAssignRolesModal: false,
-			assignRolesErrorMessage: ''
-		}
-	},
-	computed: {
-		numPages () {
-			return Math.ceil(this.locationManagers.length / this.resultsPerPage)
-		},
-		currentActivePageItems () {
-			return this.userSort(this.locationManagers).slice(
-				this.resultsPerPage * (this.activePage - 1),
-				this.resultsPerPage * (this.activePage - 1) +
+  data () {
+    return {
+      breadcrumbArray: [
+        { name: 'Admin Manager', link: false },
+        { name: 'Location Managers', link: false }
+      ],
+      createLocationManagerCollapse: true,
+      createErrorMessage: '',
+      creating: false,
+      newLocationManager: {
+        name: '',
+        phone: '',
+        email: '',
+        password: '',
+        type: 'restricted',
+        active: 1,
+        created_by: this.$root.createdBy
+      },
+      editErrorMessage: '',
+      updating: false,
+      locationManagerToBeEdited: {
+        name: '',
+        phone: '',
+        active: 1,
+        type: 'restricted'
+      },
+      selectedLocationManager: {
+        locations: []
+      },
+      assigningStores: false,
+      loadingLocationManagersData: false,
+      assignErrorMessage: '',
+      listErrorMessage: '',
+      locationManagers: [],
+      showAssignStoresModal: false,
+      showEditLocationManagerModal: false,
+      animated: '',
+      searchCollapse: true,
+      searchError: '',
+      filteredResults: [],
+      searchTerm: '',
+      activePage: 1,
+      resultsPerPage: 25,
+      sortBy: {
+        order: 'ASC'
+      },
+      searchActivePage: 1,
+      passwordMasked: true,
+      passwordConfirmMasked: true,
+      passwordCheck: '',
+      locationManagerToAssignRolesTo: {},
+      assigningRoles: false,
+      showAssignRolesModal: false,
+      assignRolesErrorMessage: ''
+    }
+  },
+  computed: {
+    numPages () {
+      return Math.ceil(this.locationManagers.length / this.resultsPerPage)
+    },
+    currentActivePageItems () {
+      return this.userSort(this.locationManagers).slice(
+        this.resultsPerPage * (this.activePage - 1),
+        this.resultsPerPage * (this.activePage - 1) +
 					this.resultsPerPage
-			)
-		},
-		searchNumPages () {
-			return Math.ceil(this.filteredResults.length / this.resultsPerPage)
-		},
-		currentActiveSearchPageItems () {
-			return this.userSort(this.filteredResults).slice(
-				this.resultsPerPage * (this.searchActivePage - 1),
-				this.resultsPerPage * (this.searchActivePage - 1) +
+      )
+    },
+    searchNumPages () {
+      return Math.ceil(this.filteredResults.length / this.resultsPerPage)
+    },
+    currentActiveSearchPageItems () {
+      return this.userSort(this.filteredResults).slice(
+        this.resultsPerPage * (this.searchActivePage - 1),
+        this.resultsPerPage * (this.searchActivePage - 1) +
 					this.resultsPerPage
-			)
-		},
-		previouslySelected () {
-			return this.selectedLocationManager.locations.map(x => x.id) || []
-		},
-		...mapGetters(['can', 'canAny'])
-	},
-	mounted () {
-		this.getAllLocationManagers()
-	},
-	methods: {
-		/**
+      )
+    },
+    previouslySelected () {
+      return this.selectedLocationManager.locations.map(x => x.id) || []
+    },
+    ...mapGetters(['can', 'canAny'])
+  },
+  mounted () {
+    this.getAllLocationManagers()
+  },
+  methods: {
+    /**
 		 * To get roles already assigned to the user
 		 * @function
 		 * @param {object} user - The user to fetch roles for
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getUserRoles (user) {
-			return AdminManagerFunctions.getUserRoles(user)
-				.then(response => {
-					return response.payload.map(role => role.id)
-				})
-				.catch(reason => {
-					return []
-				})
-		},
-		/**
+    getUserRoles (user) {
+      return AdminManagerFunctions.getUserRoles(user)
+        .then(response => {
+          return response.payload.map(role => role.id)
+        })
+        .catch(reason => {
+          return []
+        })
+    },
+    /**
 		 * To update the roles based on user's selection
 		 * @function
 		 * @param {array} roles - An array of role ids
 		 * @returns {undefined}
 		 */
-		updateRoles (roles) {
-			this.locationManagerToAssignRolesTo.roles = roles
-		},
-		/**
+    updateRoles (roles) {
+      this.locationManagerToAssignRolesTo.roles = roles
+    },
+    /**
 		 * To validate data before submitting to the backend
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		validateRoles () {
-			var locationManagersVue = this
-			return new Promise(function (resolve, reject) {
-				if (
-					!locationManagersVue.locationManagerToAssignRolesTo.roles
-						.length
-				) {
-					reject('Select at least one role')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateRoles () {
+      var locationManagersVue = this
+      return new Promise(function (resolve, reject) {
+        if (
+          !locationManagersVue.locationManagerToAssignRolesTo.roles
+            .length
+        ) {
+          reject('Select at least one role')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To assign roles to a user
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		assignRoles () {
-			var locationManagersVue = this
+    assignRoles () {
+      var locationManagersVue = this
 
-			return this.validateRoles()
-				.then(response => {
-					locationManagersVue.assigningRoles = true
-					locationManagersVue.clearError('assignRolesErrorMessage')
-					return AdminManagerFunctions.assignRoles(
-						locationManagersVue.locationManagerToAssignRolesTo,
-						locationManagersVue.$root.appId,
-						locationManagersVue.$root.appSecret,
-						locationManagersVue.$root.userToken
-					)
-						.then(response => {
-							locationManagersVue.closeRolesModal()
-							locationManagersVue.showRolesSuccess(response.payload)
-							this.animated = `locationManager-${
-								locationManagersVue.locationManagerToBeEdited.id
-							}`
-							window.setTimeout(() => {
-								locationManagersVue.animated = ''
-							}, 3000)
-							locationManagersVue.resetRolesForm()
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'Could not assign roles',
-								errorName: 'assignRolesErrorMessage',
-								vue: locationManagersVue,
-								containerRef: 'rolesModal'
-							})
-						})
-						.finally(() => {
-							locationManagersVue.assigningRoles = false
-						})
-				})
-				.catch(reason => {
-					locationManagersVue.assignRolesErrorMessage = reason
-					locationManagersVue.$scrollTo(
-						locationManagersVue.$refs.assignRolesErrorMessage,
-						1000,
-						{ offset: -50 }
-					)
-				})
-		},
-		/**
+      return this.validateRoles()
+        .then(response => {
+          locationManagersVue.assigningRoles = true
+          locationManagersVue.clearError('assignRolesErrorMessage')
+          return AdminManagerFunctions.assignRoles(
+            locationManagersVue.locationManagerToAssignRolesTo,
+            locationManagersVue.$root.appId,
+            locationManagersVue.$root.appSecret,
+            locationManagersVue.$root.userToken
+          )
+            .then(response => {
+              locationManagersVue.closeRolesModal()
+              locationManagersVue.showRolesSuccess(response.payload)
+              this.animated = `locationManager-${
+                locationManagersVue.locationManagerToBeEdited.id
+              }`
+              window.setTimeout(() => {
+                locationManagersVue.animated = ''
+              }, 3000)
+              locationManagersVue.resetRolesForm()
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'Could not assign roles',
+                errorName: 'assignRolesErrorMessage',
+                vue: locationManagersVue,
+                containerRef: 'rolesModal'
+              })
+            })
+            .finally(() => {
+              locationManagersVue.assigningRoles = false
+            })
+        })
+        .catch(reason => {
+          locationManagersVue.assignRolesErrorMessage = reason
+          locationManagersVue.$scrollTo(
+            locationManagersVue.$refs.assignRolesErrorMessage,
+            1000,
+            { offset: -50 }
+          )
+        })
+    },
+    /**
 		 * To open the roles modal
 		 * @function
 		 * @param {object} locationManager - The selected locations manager
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		openRolesModal (locationManager) {
-			let locationManagersVue = this
-			this.getUserRoles(locationManager)
-				.then(roles => {
-					locationManagersVue.locationManagerToAssignRolesTo = {
-						...locationManager,
-						roles
-					}
-				})
-				.catch(err => {
-					locationManagersVue.locationManagerToAssignRolesTo = {
-						...locationManager,
-						roles: []
-					}
-					err
-				})
-				.finally(() => {
-					locationManagersVue.showAssignRolesModal = true
-				})
-		},
-		/**
+    openRolesModal (locationManager) {
+      let locationManagersVue = this
+      this.getUserRoles(locationManager)
+        .then(roles => {
+          locationManagersVue.locationManagerToAssignRolesTo = {
+            ...locationManager,
+            roles
+          }
+        })
+        .catch(err => {
+          locationManagersVue.locationManagerToAssignRolesTo = {
+            ...locationManager,
+            roles: []
+          }
+          err
+        })
+        .finally(() => {
+          locationManagersVue.showAssignRolesModal = true
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showRolesSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Roles have been saved'
-			let type = 'success'
+    showRolesSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Roles have been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Roles have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Roles have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To close the modal
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		closeRolesModal () {
-			this.clearError('assignRolesErrorMessage')
-			this.showAssignRolesModal = false
-		},
-		/**
+    closeRolesModal () {
+      this.clearError('assignRolesErrorMessage')
+      this.showAssignRolesModal = false
+    },
+    /**
 		 * To reset the roles form
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetRolesForm () {
-			this.locationManagerToAssignRolesTo = {}
-		},
-		/**
+    resetRolesForm () {
+      this.locationManagerToAssignRolesTo = {}
+    },
+    /**
 		 * To format a phone number
 		 * @function
 		 * @param {string} phone - The phone number to format
 		 * @returns {string} The formatted phone string
 		 */
-		formatPhone (phone) {
-			let digits = phone.replace(/\D/g, '')
-			return (
-				digits.slice(0, 3) +
+    formatPhone (phone) {
+      let digits = phone.replace(/\D/g, '')
+      return (
+        digits.slice(0, 3) +
 				'-' +
 				digits.slice(3, 6) +
 				'-' +
 				digits.slice(6)
-			)
-		},
-		/**
+      )
+    },
+    /**
 		 * To switch bewteen masked and unmasked password fields.
 		 * @function
 		 * @returns {undefined}
 		 */
-		flipPasswordMask () {
-			this.passwordMasked = !this.passwordMasked
-		},
-		/**
+    flipPasswordMask () {
+      this.passwordMasked = !this.passwordMasked
+    },
+    /**
 		 * To switch bewteen masked and unmasked password fields.
 		 * @function
 		 * @returns {undefined}
 		 */
-		flipPasswordConfirmMask () {
-			this.passwordConfirmMasked = !this.passwordConfirmMasked
-		},
-		/**
+    flipPasswordConfirmMask () {
+      this.passwordConfirmMasked = !this.passwordConfirmMasked
+    },
+    /**
 		 * To update the order property of sortBy.
 		 * @function
 		 * @param {object} value - The new value to assign.
 		 * @returns {undefined}
 		 */
-		updateSortByOrder (value) {
-			this.sortBy.order = value
-			this.filteredResults.length
-				? this.activeSearchPageUpdate(1)
-				: this.activePageUpdate(1)
-		},
-		/**
+    updateSortByOrder (value) {
+      this.sortBy.order = value
+      this.filteredResults.length
+        ? this.activeSearchPageUpdate(1)
+        : this.activePageUpdate(1)
+    },
+    /**
 		 * To sort the orders list.
 		 * @function
 		 * @param {array} orders - The array of orders.
 		 * @returns {array} - The sorted array of orders
 		 */
-		userSort (orders) {
-			let input = orders
-			function asc (a, b) {
-				if (a.name.toLowerCase() < b.name.toLowerCase()) {
-					return -1
-				} else if (a.name.toLowerCase() > b.name.toLowerCase()) {
-					return 1
-				} else {
-					if (a.id > b.id) {
-						return -1
-					} else if (a.id < b.id) {
-						return 1
-					} else {
-						return 0
-					}
-				}
-			}
+    userSort (orders) {
+      let input = orders
+      function asc (a, b) {
+        if (a.name.toLowerCase() < b.name.toLowerCase()) {
+          return -1
+        } else if (a.name.toLowerCase() > b.name.toLowerCase()) {
+          return 1
+        } else {
+          if (a.id > b.id) {
+            return -1
+          } else if (a.id < b.id) {
+            return 1
+          } else {
+            return 0
+          }
+        }
+      }
 
-			function desc (a, b) {
-				if (a.name.toLowerCase() > b.name.toLowerCase()) {
-					return -1
-				} else if (a.name.toLowerCase() < b.name.toLowerCase()) {
-					return 1
-				} else {
-					if (a.id > b.id) {
-						return -1
-					} else if (a.id < b.id) {
-						return 1
-					} else {
-						return 0
-					}
-				}
-			}
+      function desc (a, b) {
+        if (a.name.toLowerCase() > b.name.toLowerCase()) {
+          return -1
+        } else if (a.name.toLowerCase() < b.name.toLowerCase()) {
+          return 1
+        } else {
+          if (a.id > b.id) {
+            return -1
+          } else if (a.id < b.id) {
+            return 1
+          } else {
+            return 0
+          }
+        }
+      }
 
-			if (this.sortBy.order === 'ASC') {
-				return input.sort(asc)
-			} else {
-				return input.sort(desc)
-			}
-		},
-		/**
+      if (this.sortBy.order === 'ASC') {
+        return input.sort(asc)
+      } else {
+        return input.sort(desc)
+      }
+    },
+    /**
 		 * To catch updates from the PageResults component when the number of page results is updated.
 		 * @function
 		 * @param {integer} val - The number of page results to be returned.
 		 * @returns {undefined}
 		 */
-		pageResultsUpdate (val) {
-			if (parseInt(this.resultsPerPage) !== parseInt(val)) {
-				this.resultsPerPage = val
-				this.filteredResults.length
-					? this.activeSearchPageUpdate(1)
-					: this.activePageUpdate(1)
-			}
-		},
-		/**
+    pageResultsUpdate (val) {
+      if (parseInt(this.resultsPerPage) !== parseInt(val)) {
+        this.resultsPerPage = val
+        this.filteredResults.length
+          ? this.activeSearchPageUpdate(1)
+          : this.activePageUpdate(1)
+      }
+    },
+    /**
 		 * To update the currently active pagination page.
 		 * @function
 		 * @param {integer} val - An integer representing the page number that we are updating to.
 		 * @returns {undefined}
 		 */
-		activePageUpdate (val) {
-			if (parseInt(this.activePage) !== parseInt(val)) {
-				this.activePage = val
-				window.scrollTo(0, 0)
-			}
-		},
-		/**
+    activePageUpdate (val) {
+      if (parseInt(this.activePage) !== parseInt(val)) {
+        this.activePage = val
+        window.scrollTo(0, 0)
+      }
+    },
+    /**
 		 * To update the currently active pagination page.
 		 * @function
 		 * @param {integer} val - An integer representing the page number that we are updating to.
 		 * @returns {undefined}
 		 */
-		activeSearchPageUpdate (val) {
-			if (parseInt(this.searchActivePage) !== parseInt(val)) {
-				this.searchActivePage = val
-				window.scrollTo(0, 0)
-			}
-		},
-		/**
+    activeSearchPageUpdate (val) {
+      if (parseInt(this.searchActivePage) !== parseInt(val)) {
+        this.searchActivePage = val
+        window.scrollTo(0, 0)
+      }
+    },
+    /**
 		 * To toggle the search panel
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleSearchPanel () {
-			this.searchCollapse = !this.searchCollapse
-			this.$nextTick(function () {
-				if (!this.searchCollapse) {
-					this.$refs.search.focus()
-				}
-			})
-		},
-		/**
+    toggleSearchPanel () {
+      this.searchCollapse = !this.searchCollapse
+      this.$nextTick(function () {
+        if (!this.searchCollapse) {
+          this.$refs.search.focus()
+        }
+      })
+    },
+    /**
 		 * To filter the results based on the search term.
 		 * @function
 		 * @returns {undefined}
 		 */
-		advancedSearch () {
-			this.clearError('searchError')
-			this.filteredResults = []
-			if (this.searchTerm.length) {
-				if (this.searchTerm.length < 3) {
-					this.searchError =
+    advancedSearch () {
+      this.clearError('searchError')
+      this.filteredResults = []
+      if (this.searchTerm.length) {
+        if (this.searchTerm.length < 3) {
+          this.searchError =
 						'Search term must be at least 3 characters.'
-				} else {
-					for (var i = 0; i < this.locationManagers.length; i++) {
-						if (
-							this.locationManagers[i].name
-								.toLowerCase()
-								.indexOf(this.searchTerm.toLowerCase()) > -1 ||
+        } else {
+          for (var i = 0; i < this.locationManagers.length; i++) {
+            if (
+              this.locationManagers[i].name
+                .toLowerCase()
+                .indexOf(this.searchTerm.toLowerCase()) > -1 ||
 							this.locationManagers[i].email
-								.toLowerCase()
-								.indexOf(this.searchTerm.toLowerCase()) > -1
-						) {
-							this.filteredResults.push(this.locationManagers[i])
-						}
-					}
-					if (!this.filteredResults.length) {
-						this.searchError =
+							  .toLowerCase()
+							  .indexOf(this.searchTerm.toLowerCase()) > -1
+            ) {
+              this.filteredResults.push(this.locationManagers[i])
+            }
+          }
+          if (!this.filteredResults.length) {
+            this.searchError =
 							'There are no matching records. Please try again.'
-					}
-				}
-			} else {
-				this.$refs.search.focus()
-			}
-		},
-		/**
+          }
+        }
+      } else {
+        this.$refs.search.focus()
+      }
+    },
+    /**
 		 * To clear the current search criteria.
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetSearch () {
-			this.searchTerm = ''
-			this.filteredResults = []
-			this.activePage = 1
-			this.searchActivePage = 1
-			this.clearError('searchError')
-		},
-		/**
+    resetSearch () {
+      this.searchTerm = ''
+      this.filteredResults = []
+      this.activePage = 1
+      this.searchActivePage = 1
+      this.clearError('searchError')
+    },
+    /**
 		 * To update the locations selected in the child component
 		 * @function
 		 * @param {array} locations - Arrray of store ids
 		 * @returns {undefined}
 		 */
-		selectedLocations (locations) {
-			this.selectedLocationManager.selectedLocations = locations
-		},
-		/**
+    selectedLocations (locations) {
+      this.selectedLocationManager.selectedLocations = locations
+    },
+    /**
 		 * To assign the selected stores to the current user.
 		 * @function
 		 * @param {array} storesToBeAssigned - An array of store ids
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		assignStores (storesToBeAssigned) {
-			var assignStoresVue = this
-			if (this.selectedLocationManager.selectedLocations.length === 0) {
-				this.assignErrorMessage = 'You have not selected any stores'
-				this.$el.scrollTop = 0
-				return
-			}
-			this.assigningStores = true
-			let payload = {
-				locations:
+    assignStores (storesToBeAssigned) {
+      var assignStoresVue = this
+      if (this.selectedLocationManager.selectedLocations.length === 0) {
+        this.assignErrorMessage = 'You have not selected any stores'
+        this.$el.scrollTop = 0
+        return
+      }
+      this.assigningStores = true
+      let payload = {
+        locations:
 					assignStoresVue.selectedLocationManager.selectedLocations,
-				admin: assignStoresVue.selectedLocationManager.id
-			}
-			this.clearError('assignErrorMessage')
-			AdminManagerFunctions.assignStores(
-				payload,
-				assignStoresVue.$root.appId,
-				assignStoresVue.$root.appSecret,
-				assignStoresVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						assignStoresVue.getAllLocationManagers()
-						assignStoresVue.closeAssignStoresModal()
-						assignStoresVue.resetAssignForm()
-						assignStoresVue.resetSearch()
-						assignStoresVue.showAssignSuccess(response.payload)
-						assignStoresVue.showAssignStoresModal = false
-						assignStoresVue.animated = `locationManager-${
-							assignStoresVue.selectedLocationManager.id
-						}`
-						window.setTimeout(() => {
-							assignStoresVue.animated = ''
-						}, 3000)
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not assign the stores',
-						errorName: 'assignErrorMessage',
-						vue: assignStoresVue,
-						containerRef: 'assignModal'
-					})
-				})
-				.finally(() => {
-					assignStoresVue.assigningStores = false
-				})
-		},
-		/**
+        admin: assignStoresVue.selectedLocationManager.id
+      }
+      this.clearError('assignErrorMessage')
+      AdminManagerFunctions.assignStores(
+        payload,
+        assignStoresVue.$root.appId,
+        assignStoresVue.$root.appSecret,
+        assignStoresVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            assignStoresVue.getAllLocationManagers()
+            assignStoresVue.closeAssignStoresModal()
+            assignStoresVue.resetAssignForm()
+            assignStoresVue.resetSearch()
+            assignStoresVue.showAssignSuccess(response.payload)
+            assignStoresVue.showAssignStoresModal = false
+            assignStoresVue.animated = `locationManager-${
+              assignStoresVue.selectedLocationManager.id
+            }`
+            window.setTimeout(() => {
+              assignStoresVue.animated = ''
+            }, 3000)
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not assign the stores',
+            errorName: 'assignErrorMessage',
+            vue: assignStoresVue,
+            containerRef: 'assignModal'
+          })
+        })
+        .finally(() => {
+          assignStoresVue.assigningStores = false
+        })
+    },
+    /**
 		 * To display the edit modal
 		 * @function
 		 * @param {object} locationManager - The location manager object to be edited
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		editLocationManager (locationManager) {
-			this.locationManagerToBeEdited.name = locationManager.name
-			this.locationManagerToBeEdited.phone = locationManager.phone
-			this.locationManagerToBeEdited.status = locationManager.active
-			this.locationManagerToBeEdited.id = locationManager.id
-			this.showEditLocationManagerModal = true
-		},
-		/**
+    editLocationManager (locationManager) {
+      this.locationManagerToBeEdited.name = locationManager.name
+      this.locationManagerToBeEdited.phone = locationManager.phone
+      this.locationManagerToBeEdited.status = locationManager.active
+      this.locationManagerToBeEdited.id = locationManager.id
+      this.showEditLocationManagerModal = true
+    },
+    /**
 		 * To close the edit modal
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		closeEditLocationManagerModal () {
-			this.clearError('editErrorMessage')
-			this.showEditLocationManagerModal = false
-		},
-		/**
+    closeEditLocationManagerModal () {
+      this.clearError('editErrorMessage')
+      this.showEditLocationManagerModal = false
+    },
+    /**
 		 * To get a list of location managers.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getAllLocationManagers () {
-			this.loadingLocationManagersData = true
-			var locationManagersVue = this
-			return AdminManagerFunctions.getAllAdmins(
-				locationManagersVue.$root.appId,
-				locationManagersVue.$root.appSecret,
-				locationManagersVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						locationManagersVue.loadingLocationManagersData = false
-						let filtered = []
-						response.payload.forEach(admin => {
-							if (admin.type === 'restricted') {
-								filtered.push(admin)
-							}
-						})
-						locationManagersVue.locationManagers = filtered
-					} else {
-						locationManagersVue.loadingLocationManagersData = false
-					}
-				})
-				.catch(reason => {
-					locationManagersVue.loadingLocationManagersData = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch Location Managers',
-						errorName: 'listErrorMessage',
-						vue: locationManagersVue
-					})
-				})
-		},
-		/**
+    getAllLocationManagers () {
+      this.loadingLocationManagersData = true
+      var locationManagersVue = this
+      return AdminManagerFunctions.getAllAdmins(
+        locationManagersVue.$root.appId,
+        locationManagersVue.$root.appSecret,
+        locationManagersVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            locationManagersVue.loadingLocationManagersData = false
+            let filtered = []
+            response.payload.forEach(admin => {
+              if (admin.type === 'restricted') {
+                filtered.push(admin)
+              }
+            })
+            locationManagersVue.locationManagers = filtered
+          } else {
+            locationManagersVue.loadingLocationManagersData = false
+          }
+        })
+        .catch(reason => {
+          locationManagersVue.loadingLocationManagersData = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch Location Managers',
+            errorName: 'listErrorMessage',
+            vue: locationManagersVue
+          })
+        })
+    },
+    /**
 		 * To get a list of location managers.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		createLocationManager () {
-			var locationManagersVue = this
+    createLocationManager () {
+      var locationManagersVue = this
 
-			return this.validateNewLocationManagerData()
-				.then(response => {
-					locationManagersVue.creating = true
-					locationManagersVue.clearError('createErrorMessage')
-					return AdminManagerFunctions.createAdmin(
-						locationManagersVue.newLocationManager,
-						locationManagersVue.$root.appId,
-						locationManagersVue.$root.appSecret,
-						locationManagersVue.$root.userToken
-					)
-						.then(response => {
-							if (
-								response.code === 200 &&
+      return this.validateNewLocationManagerData()
+        .then(response => {
+          locationManagersVue.creating = true
+          locationManagersVue.clearError('createErrorMessage')
+          return AdminManagerFunctions.createAdmin(
+            locationManagersVue.newLocationManager,
+            locationManagersVue.$root.appId,
+            locationManagersVue.$root.appSecret,
+            locationManagersVue.$root.userToken
+          )
+            .then(response => {
+              if (
+                response.code === 200 &&
 								response.status === 'ok'
-							) {
-								locationManagersVue.getAllLocationManagers()
-								locationManagersVue.resetCreateForm()
-								locationManagersVue.showCreateSuccess(response.payload)
-							} else {
-								locationManagersVue.createErrorMessage =
+              ) {
+                locationManagersVue.getAllLocationManagers()
+                locationManagersVue.resetCreateForm()
+                locationManagersVue.showCreateSuccess(response.payload)
+              } else {
+                locationManagersVue.createErrorMessage =
 									response.message
-							}
-						})
-						.catch(reason => {
-							if (reason.responseJSON && reason.responseJSON.message === 'The email has already been taken.') {
-								reason.responseJSON.message = 'A Brand Admin or a Location Manager with this email already exists.'
-							}
-							ajaxErrorHandler({
-								reason,
-								errorText:
+              }
+            })
+            .catch(reason => {
+              if (reason.responseJSON && reason.responseJSON.message === 'The email has already been taken.') {
+                reason.responseJSON.message = 'A Brand Admin or a Location Manager with this email already exists.'
+              }
+              ajaxErrorHandler({
+                reason,
+                errorText:
 									'We could not create the Location Manager',
-								errorName: 'createErrorMessage',
-								vue: locationManagersVue
-							})
-						})
-						.finally(() => {
-							locationManagersVue.creating = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					if (reason.responseJSON) {
-						locationManagersVue.createErrorMessage =
+                errorName: 'createErrorMessage',
+                vue: locationManagersVue
+              })
+            })
+            .finally(() => {
+              locationManagersVue.creating = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          if (reason.responseJSON) {
+            locationManagersVue.createErrorMessage =
 							reason.responseJSON.message
-						window.scrollTo(0, 0)
-					} else {
-						locationManagersVue.createErrorMessage = reason
-						window.scrollTo(0, 0)
-					}
-				})
-		},
-		/**
+            window.scrollTo(0, 0)
+          } else {
+            locationManagersVue.createErrorMessage = reason
+            window.scrollTo(0, 0)
+          }
+        })
+    },
+    /**
 		 * To reset the create new form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetCreateForm () {
-			this.newLocationManager = {
-				name: '',
-				phone: '',
-				email: '',
-				password: '',
-				type: 'restricted',
-				active: 1,
-				created_by: this.$root.createdBy
-			}
-			this.passwordCheck = ''
-		},
-		/**
+    resetCreateForm () {
+      this.newLocationManager = {
+        name: '',
+        phone: '',
+        email: '',
+        password: '',
+        type: 'restricted',
+        active: 1,
+        created_by: this.$root.createdBy
+      }
+      this.passwordCheck = ''
+    },
+    /**
 		 * To reset the create new form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetAssignForm () {
-			this.selectedLocationManager = {
-				locations: []
-			}
-		},
-		/**
+    resetAssignForm () {
+      this.selectedLocationManager = {
+        locations: []
+      }
+    },
+    /**
 		 * To reset the create new form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetEditForm () {
-			this.locationManagerToBeEdited = {
-				name: '',
-				phone: '',
-				active: 1,
-				type: 'restricted'
-			}
-		},
-		/**
+    resetEditForm () {
+      this.locationManagerToBeEdited = {
+        name: '',
+        phone: '',
+        active: 1,
+        type: 'restricted'
+      }
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAssignSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Stores have been assigned'
-			let type = 'success'
+    showAssignSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Stores have been assigned'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showCreateSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Location Manager has been created'
-			let type = 'success'
+    showCreateSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Location Manager has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Location Manager has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Location Manager has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Location Manager has been saved'
-			let type = 'success'
+    showEditSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Location Manager has been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Location Manager has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Location Manager has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To toggle the create new panel.
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCreateLocationManagerPanel () {
-			this.createLocationManagerCollapse = !this
-				.createLocationManagerCollapse
-			this.$nextTick(function () {
-				if (!this.createLocationManagerCollapse) {
-					this.$refs.newLocationManagerName.focus()
-				}
-			})
-		},
-		/**
+    toggleCreateLocationManagerPanel () {
+      this.createLocationManagerCollapse = !this
+        .createLocationManagerCollapse
+      this.$nextTick(function () {
+        if (!this.createLocationManagerCollapse) {
+          this.$refs.newLocationManagerName.focus()
+        }
+      })
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @param {string} name - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To activate the right half panel which lists the store locations.
 		 * @function
 		 * @param {object} locationManager - The selected location manager.
 		 * @returns {undefined}
 		 */
-		assignStoresToLocationManager (locationManager) {
-			this.selectedLocationManager = locationManager
-			this.selectedLocationManager.selectedLocations = []
-			this.showAssignStoresModal = true
-		},
-		/**
+    assignStoresToLocationManager (locationManager) {
+      this.selectedLocationManager = locationManager
+      this.selectedLocationManager.selectedLocations = []
+      this.showAssignStoresModal = true
+    },
+    /**
 		 * To close anything active in the side panel
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeAssignStoresModal () {
-			this.clearError('assignErrorMessage')
-			this.showAssignStoresModal = false
-		},
-		/**
+    closeAssignStoresModal () {
+      this.clearError('assignErrorMessage')
+      this.showAssignStoresModal = false
+    },
+    /**
 		 * To update the location manager object.
 		 * @function
 		 * @returns {undefined}
 		 */
-		updateLocationManager () {
-			var locationManagersVue = this
+    updateLocationManager () {
+      var locationManagersVue = this
 
-			return this.validateEditedLocationManagerData()
-				.then(response => {
-					locationManagersVue.updating = true
-					locationManagersVue.clearError('editErrorMessage')
-					return AdminManagerFunctions.updateAdmin(
-						locationManagersVue.locationManagerToBeEdited,
-						locationManagersVue.$root.appId,
-						locationManagersVue.$root.appSecret,
-						locationManagersVue.$root.userToken
-					)
-						.then(response => {
-							if (
-								response.code === 200 &&
+      return this.validateEditedLocationManagerData()
+        .then(response => {
+          locationManagersVue.updating = true
+          locationManagersVue.clearError('editErrorMessage')
+          return AdminManagerFunctions.updateAdmin(
+            locationManagersVue.locationManagerToBeEdited,
+            locationManagersVue.$root.appId,
+            locationManagersVue.$root.appSecret,
+            locationManagersVue.$root.userToken
+          )
+            .then(response => {
+              if (
+                response.code === 200 &&
 								response.status === 'ok'
-							) {
-								locationManagersVue.closeEditLocationManagerModal()
-								locationManagersVue.showEditSuccess(response.payload)
-								for (
-									var i = 0;
-									i < this.locationManagers.length;
-									i++
-								) {
-									if (
-										this.locationManagers[i].id ===
+              ) {
+                locationManagersVue.closeEditLocationManagerModal()
+                locationManagersVue.showEditSuccess(response.payload)
+                for (
+                  var i = 0;
+                  i < this.locationManagers.length;
+                  i++
+                ) {
+                  if (
+                    this.locationManagers[i].id ===
 										locationManagersVue
-											.locationManagerToBeEdited.id
-									) {
-										this.locationManagers[i].name =
+										  .locationManagerToBeEdited.id
+                  ) {
+                    this.locationManagers[i].name =
 											locationManagersVue.locationManagerToBeEdited.name
-										this.locationManagers[i].phone =
+                    this.locationManagers[i].phone =
 											locationManagersVue.locationManagerToBeEdited.phone
-										this.locationManagers[i].active =
+                    this.locationManagers[i].active =
 											locationManagersVue.locationManagerToBeEdited.active
-									}
-								}
-								locationManagersVue.resetEditForm()
-								this.animated = `locationManager-${
-									locationManagersVue
-										.locationManagerToBeEdited.id
-								}`
-								window.setTimeout(() => {
-									locationManagersVue.animated = ''
-								}, 3000)
-							} else {
-								locationManagersVue.editErrorMessage =
+                  }
+                }
+                locationManagersVue.resetEditForm()
+                this.animated = `locationManager-${
+                  locationManagersVue
+                    .locationManagerToBeEdited.id
+                }`
+                window.setTimeout(() => {
+                  locationManagersVue.animated = ''
+                }, 3000)
+              } else {
+                locationManagersVue.editErrorMessage =
 									response.message
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText:
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText:
 									'We could not update the Location Manager',
-								errorName: 'editErrorMessage',
-								vue: locationManagersVue,
-								containerRef: 'editModal'
-							})
-						})
-						.finally(() => {
-							locationManagersVue.updating = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					locationManagersVue.editErrorMessage = reason
-					window.scrollTo(0, 0)
-				})
-		},
-		/**
+                errorName: 'editErrorMessage',
+                vue: locationManagersVue,
+                containerRef: 'editModal'
+              })
+            })
+            .finally(() => {
+              locationManagersVue.updating = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          locationManagersVue.editErrorMessage = reason
+          window.scrollTo(0, 0)
+        })
+    },
+    /**
 		 * To check if the item data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateNewLocationManagerData () {
-			var locationManagersVue = this
-			const passwordRegex = new RegExp(
-				/^((?=\S*?[A-Z])(?=\S*?[0-9]).{7,})\S$/
-			)
-			return new Promise(function (resolve, reject) {
-				if (!locationManagersVue.newLocationManager.name.length) {
-					reject('Name cannot be blank')
-				} else if (
-					locationManagersVue.newLocationManager.phone.replace(
-						/\D/g,
-						''
-					).length < 10
-				) {
-					reject('Phone number should have at least 10 digits')
-				} else if (
-					!locationManagersVue.newLocationManager.email.length
-				) {
-					reject('Email cannot be blank')
-				} else if (
-					!emailPattern.test(
-						locationManagersVue.newLocationManager.email
-					)
-				) {
-					reject('Please enter a valid email')
-				} else if (
-					!passwordRegex.test(
-						locationManagersVue.newLocationManager.password
-					)
-				) {
-					reject(
-						'Password should: be at least 8 characters long, contain only English letters and numbers, contain at least one uppercase letter and one number'
-					)
-				} else if (
-					locationManagersVue.newLocationManager.password !==
+    validateNewLocationManagerData () {
+      var locationManagersVue = this
+      const passwordRegex = new RegExp(
+        /^((?=\S*?[A-Z])(?=\S*?[0-9]).{7,})\S$/
+      )
+      return new Promise(function (resolve, reject) {
+        if (!locationManagersVue.newLocationManager.name.length) {
+          reject('Name cannot be blank')
+        } else if (
+          locationManagersVue.newLocationManager.phone.replace(
+            /\D/g,
+            ''
+          ).length < 10
+        ) {
+          reject('Phone number should have at least 10 digits')
+        } else if (
+          !locationManagersVue.newLocationManager.email.length
+        ) {
+          reject('Email cannot be blank')
+        } else if (
+          !emailPattern.test(
+            locationManagersVue.newLocationManager.email
+          )
+        ) {
+          reject('Please enter a valid email')
+        } else if (
+          !passwordRegex.test(
+            locationManagersVue.newLocationManager.password
+          )
+        ) {
+          reject(
+            'Password should: be at least 8 characters long, contain only English letters and numbers, contain at least one uppercase letter and one number'
+          )
+        } else if (
+          locationManagersVue.newLocationManager.password !==
 					locationManagersVue.passwordCheck
-				) {
-					reject('Passwords do not match')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+        ) {
+          reject('Passwords do not match')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To check if the item data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateEditedLocationManagerData () {
-			var locationManagersVue = this
-			return new Promise(function (resolve, reject) {
-				if (
-					!locationManagersVue.locationManagerToBeEdited.name.length
-				) {
-					reject('Name cannot be blank')
-				} else if (
-					locationManagersVue.locationManagerToBeEdited.phone.replace(
-						/\D/g,
-						''
-					).length < 10
-				) {
-					reject('Phone number should have at least 10 digits')
-				}
-				resolve('Hurray')
-			})
-		}
-	},
-	components: {
-		Breadcrumb,
-		NoResults,
-		LoadingScreen,
-		Modal,
-		Dropdown,
-		Pagination,
-		PageResults,
-		StorePicker,
-		RolesPicker
-	}
+    validateEditedLocationManagerData () {
+      var locationManagersVue = this
+      return new Promise(function (resolve, reject) {
+        if (
+          !locationManagersVue.locationManagerToBeEdited.name.length
+        ) {
+          reject('Name cannot be blank')
+        } else if (
+          locationManagersVue.locationManagerToBeEdited.phone.replace(
+            /\D/g,
+            ''
+          ).length < 10
+        ) {
+          reject('Phone number should have at least 10 digits')
+        }
+        resolve('Hurray')
+      })
+    }
+  },
+  components: {
+    Breadcrumb,
+    NoResults,
+    LoadingScreen,
+    Modal,
+    Dropdown,
+    Pagination,
+    PageResults,
+    StorePicker,
+    RolesPicker
+  }
 }
 </script>
 

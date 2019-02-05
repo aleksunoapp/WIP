@@ -11,20 +11,20 @@ import GlobalFunctions from '@/global.js'
  * ]
  */
 export const listPlatforms = () => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'GET',
-			dataType: 'json',
-			url: '/app/platform',
-			data: {},
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'GET',
+      dataType: 'json',
+      url: '/app/platform',
+      data: {},
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 /**
@@ -33,26 +33,26 @@ export const listPlatforms = () => {
  * @returns {object} A promise with response shaped ...
  */
 export const createPlatform = ({ name = '', code = '' }) => {
-	if (!name) {
-		return Error('Please provide a name')
-	}
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'POST',
-			dataType: 'json',
-			url: '/app/platform/create',
-			data: {
-				name,
-				code
-			},
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  if (!name) {
+    return Error('Please provide a name')
+  }
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'POST',
+      dataType: 'json',
+      url: '/app/platform/create',
+      data: {
+        name,
+        code
+      },
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 /**
@@ -61,29 +61,29 @@ export const createPlatform = ({ name = '', code = '' }) => {
  * @returns {object} A promise with response shaped ...
  */
 export const updatePlatform = ({ name = '', code = '', id = null }) => {
-	if (!name) {
-		return Error('Please provide a name')
-	}
-	if (!id && id !== 0) {
-		return Error('Platform ID is missing.')
-	}
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'POST',
-			dataType: 'json',
-			url: `/app/platform/${id}/update`,
-			data: {
-				name,
-				code
-			},
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  if (!name) {
+    return Error('Please provide a name')
+  }
+  if (!id && id !== 0) {
+    return Error('Platform ID is missing.')
+  }
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'POST',
+      dataType: 'json',
+      url: `/app/platform/${id}/update`,
+      data: {
+        name,
+        code
+      },
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 /**
@@ -92,30 +92,30 @@ export const updatePlatform = ({ name = '', code = '', id = null }) => {
  * @returns {object} A promise with response shaped ...
  */
 export const deletePlatform = ({ id = null }) => {
-	return new Promise(function (resolve, reject) {
-		if (id !== 0 && !id) {
-			reject('Platform ID is missing.')
-			return
-		}
+  return new Promise(function (resolve, reject) {
+    if (id !== 0 && !id) {
+      reject('Platform ID is missing.')
+      return
+    }
 
-		GlobalFunctions.$ajax({
-			method: 'DELETE',
-			dataType: 'json',
-			url: `/app/platform/${id}/delete`,
-			data: {},
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+    GlobalFunctions.$ajax({
+      method: 'DELETE',
+      dataType: 'json',
+      url: `/app/platform/${id}/delete`,
+      data: {},
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 export default {
-	listPlatforms,
-	createPlatform,
-	updatePlatform,
-	deletePlatform
+  listPlatforms,
+  createPlatform,
+  updatePlatform,
+  deletePlatform
 }

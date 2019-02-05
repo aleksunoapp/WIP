@@ -435,418 +435,418 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 import { mapGetters } from 'vuex'
 
 export default {
-	data () {
-		return {
-			showEditPromotionModal: false,
-			updating: false,
-			promotionToBeEdited: {
-				name: '',
-				description: '',
-				image: '',
-				start_date: '',
-				end_date: '',
-				apply_to_all_locations: 0,
-				apply_to_a_store_group: 0,
-				location_group_id: '',
-				location_group_name: '',
-				created_by: this.$root.createdBy,
-				cta_type: '',
-				cta_value: '',
-				skuArray: [],
-				cta_text: '',
-				featured: 0,
-				short_description: '',
-				sort_order: '',
-				web: 0,
-				ios: 0,
-				android: 0
-			},
-			errorMessage: '',
-			selectImageMode: false,
-			showMenuModifierTreeModal: false,
-			selectPromoCodesMode: false,
-			promoCodes: []
-		}
-	},
-	computed: {
-		modalWidth () {
-			return this.showMenuModifierTreeModal ? 900 : null
-		},
-		...mapGetters(['can', 'canAny'])
-	},
-	components: {
-		Modal,
-		ResourcePicker,
-		MenuModifierTree
-	},
-	props: {
-		selectedPromotionId: {
-			type: Number
-		}
-	},
-	mounted () {
-		this.showEditPromotionModal = true
-		this.getPromotionDetails()
-		$('body').off('click', '.el-date-editor')
-		$('body').on('click', '.el-date-editor', function () {
-			$('.el-date-picker').css('z-index', '10501')
-			$('.el-time-panel').css('z-index', '10501')
-			$('.time-select').css('z-index', '10501')
-		})
-		this.getAllPromoCodes()
-	},
-	methods: {
-		/**
+  data () {
+    return {
+      showEditPromotionModal: false,
+      updating: false,
+      promotionToBeEdited: {
+        name: '',
+        description: '',
+        image: '',
+        start_date: '',
+        end_date: '',
+        apply_to_all_locations: 0,
+        apply_to_a_store_group: 0,
+        location_group_id: '',
+        location_group_name: '',
+        created_by: this.$root.createdBy,
+        cta_type: '',
+        cta_value: '',
+        skuArray: [],
+        cta_text: '',
+        featured: 0,
+        short_description: '',
+        sort_order: '',
+        web: 0,
+        ios: 0,
+        android: 0
+      },
+      errorMessage: '',
+      selectImageMode: false,
+      showMenuModifierTreeModal: false,
+      selectPromoCodesMode: false,
+      promoCodes: []
+    }
+  },
+  computed: {
+    modalWidth () {
+      return this.showMenuModifierTreeModal ? 900 : null
+    },
+    ...mapGetters(['can', 'canAny'])
+  },
+  components: {
+    Modal,
+    ResourcePicker,
+    MenuModifierTree
+  },
+  props: {
+    selectedPromotionId: {
+      type: Number
+    }
+  },
+  mounted () {
+    this.showEditPromotionModal = true
+    this.getPromotionDetails()
+    $('body').off('click', '.el-date-editor')
+    $('body').on('click', '.el-date-editor', function () {
+      $('.el-date-picker').css('z-index', '10501')
+      $('.el-time-panel').css('z-index', '10501')
+      $('.time-select').css('z-index', '10501')
+    })
+    this.getAllPromoCodes()
+  },
+  methods: {
+    /**
 		 * To open menu item selection.
 		 * @function
 		 * @returns {undefined}
 		 */
-		openMenuModifierTree () {
-			this.showMenuModifierTreeModal = true
-		},
-		/**
+    openMenuModifierTree () {
+      this.showMenuModifierTreeModal = true
+    },
+    /**
 		 * To close menu items selection
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeMenuModifierTree () {
-			this.showMenuModifierTreeModal = false
-		},
-		/**
+    closeMenuModifierTree () {
+      this.showMenuModifierTreeModal = false
+    },
+    /**
 		 * To record the selected items
 		 * @function
 		 * @param {object} data - An object containing a selectedSKUs property
 		 * @returns {undefined}
 		 */
-		setSelectedItems (data) {
-			if (this.can('promotions update')) {
-				this.promotionToBeEdited.skuArray = data.selectedSKUs
-			}
-			this.showMenuModifierTreeModal = false
-		},
-		/**
+    setSelectedItems (data) {
+      if (this.can('promotions update')) {
+        this.promotionToBeEdited.skuArray = data.selectedSKUs
+      }
+      this.showMenuModifierTreeModal = false
+    },
+    /**
 		 * To open the promo codes selection
 		 * @function
 		 * @returns {undefined}
 		 */
-		openPromoCodesCodeModal () {
-			this.selectPromoCodesMode = true
-		},
-		/**
+    openPromoCodesCodeModal () {
+      this.selectPromoCodesMode = true
+    },
+    /**
 		 * To close the promo codes modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		closePromoCodesCodeModal () {
-			this.clearError('promoCodesErrorMessage')
-			this.selectPromoCodesMode = false
-		},
-		/**
+    closePromoCodesCodeModal () {
+      this.clearError('promoCodesErrorMessage')
+      this.selectPromoCodesMode = false
+    },
+    /**
 		 * To set the selected promo codes as cta_value and close promo code selection
 		 * @function
 		 * @returns {undefined}
 		 */
-		selectPromoCodes () {
-			this.promotionToBeEdited.cta_value = this.promoCodes
-				.filter(code => code.selected)
-				.map(code => code.id)
-				.toString()
-			this.closePromoCodesCodeModal()
-		},
-		/**
+    selectPromoCodes () {
+      this.promotionToBeEdited.cta_value = this.promoCodes
+        .filter(code => code.selected)
+        .map(code => code.id)
+        .toString()
+      this.closePromoCodesCodeModal()
+    },
+    /**
 		 * To reset the cta_value when cta_type changes.
 		 * @function
 		 * @returns {undefined}
 		 */
-		ctaValueChanged () {
-			this.promoCodes.forEach(promoCode => { promoCode.selected = false })
-			this.promotionToBeEdited.cta_value = ''
-		},
-		/**
+    ctaValueChanged () {
+      this.promoCodes.forEach(promoCode => { promoCode.selected = false })
+      this.promotionToBeEdited.cta_value = ''
+    },
+    /**
 		 * To get a list of all promoCodes.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getAllPromoCodes () {
-			var editPromotionVue = this
-			return PromoCodesFunctions.getAllPromoCodes(
-				editPromotionVue.$root.appId,
-				editPromotionVue.$root.appSecret,
-				editPromotionVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						editPromotionVue.promoCodes = response.payload.map(
-							code => {
-								code.selected = false
-								return code
-							}
-						)
-					} else {
-						throw new Error(
-							'We could not fetch a list of promo codes'
-						)
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch a list of promo codes',
-						errorName: 'promoCodesErrorMessage',
-						vue: editPromotionVue
-					})
-				})
-		},
-		/**
+    getAllPromoCodes () {
+      var editPromotionVue = this
+      return PromoCodesFunctions.getAllPromoCodes(
+        editPromotionVue.$root.appId,
+        editPromotionVue.$root.appSecret,
+        editPromotionVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            editPromotionVue.promoCodes = response.payload.map(
+              code => {
+                code.selected = false
+                return code
+              }
+            )
+          } else {
+            throw new Error(
+              'We could not fetch a list of promo codes'
+            )
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch a list of promo codes',
+            errorName: 'promoCodesErrorMessage',
+            vue: editPromotionVue
+          })
+        })
+    },
+    /**
 		 * To check if the promotion data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validatePromotionData () {
-			var editPromotionVue = this
-			return new Promise(function (resolve, reject) {
-				if (!editPromotionVue.promotionToBeEdited.image.length) {
-					reject('Promotion image cannot be blank')
-				} else if (!editPromotionVue.promotionToBeEdited.name.length) {
-					reject('Promotion name cannot be blank')
-				} else if (
-					!editPromotionVue.promotionToBeEdited.description.length
-				) {
-					reject('Promotion description cannot be blank')
-				} else if (
-					!editPromotionVue.promotionToBeEdited.short_description
-						.length
-				) {
-					reject('Promotion short description cannot be blank')
-				} else if (
-					!$.isNumeric(
-						editPromotionVue.promotionToBeEdited.sort_order
-					)
-				) {
-					reject('Sort order must be a number')
-				} else if (!editPromotionVue.promotionToBeEdited.start_date) {
-					reject('Please provide Start Date and Time')
-				} else if (!editPromotionVue.promotionToBeEdited.end_date) {
-					reject('Please provide End Date and Time')
-				} else if (!editPromotionVue.promotionToBeEdited.cta_type) {
-					reject('Please select type of call to action')
-				} else if (
-					editPromotionVue.promotionToBeEdited.cta_type ===
+    validatePromotionData () {
+      var editPromotionVue = this
+      return new Promise(function (resolve, reject) {
+        if (!editPromotionVue.promotionToBeEdited.image.length) {
+          reject('Promotion image cannot be blank')
+        } else if (!editPromotionVue.promotionToBeEdited.name.length) {
+          reject('Promotion name cannot be blank')
+        } else if (
+          !editPromotionVue.promotionToBeEdited.description.length
+        ) {
+          reject('Promotion description cannot be blank')
+        } else if (
+          !editPromotionVue.promotionToBeEdited.short_description
+            .length
+        ) {
+          reject('Promotion short description cannot be blank')
+        } else if (
+          !$.isNumeric(
+            editPromotionVue.promotionToBeEdited.sort_order
+          )
+        ) {
+          reject('Sort order must be a number')
+        } else if (!editPromotionVue.promotionToBeEdited.start_date) {
+          reject('Please provide Start Date and Time')
+        } else if (!editPromotionVue.promotionToBeEdited.end_date) {
+          reject('Please provide End Date and Time')
+        } else if (!editPromotionVue.promotionToBeEdited.cta_type) {
+          reject('Please select type of call to action')
+        } else if (
+          editPromotionVue.promotionToBeEdited.cta_type ===
 						'menu_item' &&
 					!editPromotionVue.promotionToBeEdited.skuArray.length
-				) {
-					reject('Select at least one menu item')
-				} else if (
-					editPromotionVue.promotionToBeEdited.cta_type ===
+        ) {
+          reject('Select at least one menu item')
+        } else if (
+          editPromotionVue.promotionToBeEdited.cta_type ===
 						'promo_code' &&
 					!editPromotionVue.promotionToBeEdited.cta_value.length
-				) {
-					reject('Select at least one promo code')
-				} else if (
-					editPromotionVue.promotionToBeEdited.cta_type !==
+        ) {
+          reject('Select at least one promo code')
+        } else if (
+          editPromotionVue.promotionToBeEdited.cta_type !==
 						'menu_item' &&
 					editPromotionVue.promotionToBeEdited.cta_type !==
 						'promo_code' &&
 					!editPromotionVue.promotionToBeEdited.cta_value
-				) {
-					reject('Call to action value cannot be blank')
-				} else if (!editPromotionVue.promotionToBeEdited.cta_text) {
-					reject('Call to action text cannot be blank')
-				} else if (
-					new Date(editPromotionVue.promotionToBeEdited.start_date) >
+        ) {
+          reject('Call to action value cannot be blank')
+        } else if (!editPromotionVue.promotionToBeEdited.cta_text) {
+          reject('Call to action text cannot be blank')
+        } else if (
+          new Date(editPromotionVue.promotionToBeEdited.start_date) >
 					new Date(editPromotionVue.promotionToBeEdited.end_date)
-				) {
-					reject('Start Date cannot be after End Date')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+        ) {
+          reject('Start Date cannot be after End Date')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To format a date object into a string.
 		 * @function
 		 * @param {object} date - The date object that is to be formatted.
 		 * @returns {string} A string formatted YYYY-MM-DD HH:MM:SS
 		 */
-		formatDateTimeForApi (date) {
-			let year = date.getFullYear()
-			let month = date.getMonth() + 1
-			let day = date.getDate()
-			let hours = date.getHours()
-			let minutes = date.getMinutes()
-			let seconds = date.getSeconds()
+    formatDateTimeForApi (date) {
+      let year = date.getFullYear()
+      let month = date.getMonth() + 1
+      let day = date.getDate()
+      let hours = date.getHours()
+      let minutes = date.getMinutes()
+      let seconds = date.getSeconds()
 
-			if (month < 10) {
-				month = '0' + month
-			}
-			if (day < 10) {
-				day = '0' + day
-			}
-			if (hours < 10) {
-				hours = '0' + hours
-			}
-			if (minutes < 10) {
-				minutes = '0' + minutes
-			}
-			if (seconds < 10) {
-				seconds = '0' + seconds
-			}
+      if (month < 10) {
+        month = '0' + month
+      }
+      if (day < 10) {
+        day = '0' + day
+      }
+      if (hours < 10) {
+        hours = '0' + hours
+      }
+      if (minutes < 10) {
+        minutes = '0' + minutes
+      }
+      if (seconds < 10) {
+        seconds = '0' + seconds
+      }
 
-			return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
-		},
-		/**
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To get the details of a specific promotion.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getPromotionDetails () {
-			var editPromotionVue = this
-			PromotionsFunctions.getPromotionDetails(
-				editPromotionVue.selectedPromotionId,
-				editPromotionVue.$root.appId,
-				editPromotionVue.$root.appSecret
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						response.payload.cta_type === 'menu_item'
-							? (response.payload.skuArray = response.payload.cta_value.split(','))
-							: (response.payload.skuArray = [])
-						editPromotionVue.promotionToBeEdited = response.payload
-						editPromotionVue.promotionToBeEdited.start_date = new Date(
-							response.payload.start_date
-						)
-						editPromotionVue.promotionToBeEdited.end_date = new Date(
-							response.payload.end_date
-						)
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch promotion info',
-						errorName: 'errorMessage',
-						vue: editPromotionVue,
-						containerRef: 'modal'
-					})
-				})
-		},
-		/**
+    getPromotionDetails () {
+      var editPromotionVue = this
+      PromotionsFunctions.getPromotionDetails(
+        editPromotionVue.selectedPromotionId,
+        editPromotionVue.$root.appId,
+        editPromotionVue.$root.appSecret
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            response.payload.cta_type === 'menu_item'
+              ? (response.payload.skuArray = response.payload.cta_value.split(','))
+              : (response.payload.skuArray = [])
+            editPromotionVue.promotionToBeEdited = response.payload
+            editPromotionVue.promotionToBeEdited.start_date = new Date(
+              response.payload.start_date
+            )
+            editPromotionVue.promotionToBeEdited.end_date = new Date(
+              response.payload.end_date
+            )
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch promotion info',
+            errorName: 'errorMessage',
+            vue: editPromotionVue,
+            containerRef: 'modal'
+          })
+        })
+    },
+    /**
 		 * To update an existing promotion.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		updatePromotion () {
-			var editPromotionVue = this
-			editPromotionVue.clearError()
+    updatePromotion () {
+      var editPromotionVue = this
+      editPromotionVue.clearError()
 
-			return editPromotionVue
-				.validatePromotionData()
-				.then(response => {
-					editPromotionVue.updating = true
-					let payload = { ...editPromotionVue.promotionToBeEdited }
-					payload.start_date = editPromotionVue.formatDateTimeForApi(
-						payload.start_date
-					)
-					payload.end_date = editPromotionVue.formatDateTimeForApi(
-						payload.end_date
-					)
-					if (payload.cta_type === 'menu_item') {
-						payload.cta_value = payload.skuArray.toString()
-					}
-					delete payload.skuArray
+      return editPromotionVue
+        .validatePromotionData()
+        .then(response => {
+          editPromotionVue.updating = true
+          let payload = { ...editPromotionVue.promotionToBeEdited }
+          payload.start_date = editPromotionVue.formatDateTimeForApi(
+            payload.start_date
+          )
+          payload.end_date = editPromotionVue.formatDateTimeForApi(
+            payload.end_date
+          )
+          if (payload.cta_type === 'menu_item') {
+            payload.cta_value = payload.skuArray.toString()
+          }
+          delete payload.skuArray
 
-					PromotionsFunctions.updatePromotion(
-						payload,
-						editPromotionVue.$root.appId,
-						editPromotionVue.$root.appSecret,
-						editPromotionVue.$root.userToken
-					)
-						.then(response => {
-							if (
-								response.code === 200 &&
+          PromotionsFunctions.updatePromotion(
+            payload,
+            editPromotionVue.$root.appId,
+            editPromotionVue.$root.appSecret,
+            editPromotionVue.$root.userToken
+          )
+            .then(response => {
+              if (
+                response.code === 200 &&
 								response.status === 'ok'
-							) {
-								this.closeModalAndUpdate(response.payload)
-							} else {
-								editPromotionVue.errorMessage = response.message
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not update the promotion',
-								errorName: 'errorMessage',
-								vue: editPromotionVue,
-								containerRef: 'modal'
-							})
-						})
-						.finally(() => {
-							editPromotionVue.updating = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					editPromotionVue.errorMessage = reason
-					window.scrollTo(0, 0)
-					throw reason
-				})
-		},
-		/**
+              ) {
+                this.closeModalAndUpdate(response.payload)
+              } else {
+                editPromotionVue.errorMessage = response.message
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not update the promotion',
+                errorName: 'errorMessage',
+                vue: editPromotionVue,
+                containerRef: 'modal'
+              })
+            })
+            .finally(() => {
+              editPromotionVue.updating = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          editPromotionVue.errorMessage = reason
+          window.scrollTo(0, 0)
+          throw reason
+        })
+    },
+    /**
 		 * To close the modal and emit the updated promotion object to the parent.
 		 * @function
 		 * @param {object} payload - The payload property of the response
 		 * @returns {undefined}
 		 */
-		closeModalAndUpdate (payload = {}) {
-			this.$emit('updatePromotion', {
-				promotion: this.promotionToBeEdited,
-				payload
-			})
-		},
-		/**
+    closeModalAndUpdate (payload = {}) {
+      this.$emit('updatePromotion', {
+        promotion: this.promotionToBeEdited,
+        payload
+      })
+    },
+    /**
 		 * To just close the modal when the user clicks on the 'x' to close the modal without creating a new tag.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('closeEditPromotionModal')
-		},
-		/**
+    closeModal () {
+      this.$emit('closeEditPromotionModal')
+    },
+    /**
 		 * To change the page to the gallery view on the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		goToPageTwo () {
-			this.selectImageMode = true
-		},
-		/**
+    goToPageTwo () {
+      this.selectImageMode = true
+    },
+    /**
 		 * To change the page to the main/form view on the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		goToPageOne () {
-			this.selectImageMode = false
-		},
-		/**
+    goToPageOne () {
+      this.selectImageMode = false
+    },
+    /**
 		 * To set the image to be same as the one emitted by the gallery modal.
 		 * @function
 		 * @param {object} val - The emitted image object.
 		 * @returns {undefined}
 		 */
-		updateIcon (val) {
-			if (this.can('promotions update')) {
-				this.promotionToBeEdited.image = val.image_url
-			}
-			this.goToPageOne()
-		}
-	}
+    updateIcon (val) {
+      if (this.can('promotions update')) {
+        this.promotionToBeEdited.image = val.image_url
+      }
+      this.goToPageOne()
+    }
+  }
 }
 </script>
 

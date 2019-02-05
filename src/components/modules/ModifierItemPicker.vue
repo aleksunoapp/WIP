@@ -16,7 +16,7 @@
         </div>
       </div>
     </div>
-    <div 
+    <div
       v-else
     >
       <div class="portlet-body">
@@ -130,178 +130,178 @@ import ModifiersFunctions from '../../controllers/Modifiers'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	props: {
-        /**
+  props: {
+    /**
          * @property {array} previouslySelected - An array of SKU strings of previously selected items
          */
-		previouslySelected: {
-			type: Array,
-			default: () => [],
-			required: false
-		}
-	},
-	data () {
-		return {
-			errorMessage: '',
-			showModifierTreeModal: false,
-			previous: [],
-			loadingModifiers: false,
-			modifiers: [],
-			loadingModifierItems: false,
-			items: [],
-			isModifierCategorySelected: false,
-			activeModifier: {
-				items: []
-			}
-		}
-	},
-	computed: {
-		selectedItems () {
-			let allItems = []
-			this.modifiers.forEach(modifier => {
-				if (modifier.items !== null) {
-					allItems = allItems.concat(modifier.items)
-				}
-			})
-			return allItems.filter(item => item.selected)
-		}
-	},
-	watch: {
-		'$root.activeLocation': function () {
-			this.getModifiers()
-		}
-	},
-	created () {
-		this.previous = [...this.previouslySelected]
-		this.getModifiers()
-	},
-	mounted () {
-		this.showModifierTreeModal = true
-	},
-	methods: {
-		/**
+    previouslySelected: {
+      type: Array,
+      default: () => [],
+      required: false
+    }
+  },
+  data () {
+    return {
+      errorMessage: '',
+      showModifierTreeModal: false,
+      previous: [],
+      loadingModifiers: false,
+      modifiers: [],
+      loadingModifierItems: false,
+      items: [],
+      isModifierCategorySelected: false,
+      activeModifier: {
+        items: []
+      }
+    }
+  },
+  computed: {
+    selectedItems () {
+      let allItems = []
+      this.modifiers.forEach(modifier => {
+        if (modifier.items !== null) {
+          allItems = allItems.concat(modifier.items)
+        }
+      })
+      return allItems.filter(item => item.selected)
+    }
+  },
+  watch: {
+    '$root.activeLocation': function () {
+      this.getModifiers()
+    }
+  },
+  created () {
+    this.previous = [...this.previouslySelected]
+    this.getModifiers()
+  },
+  mounted () {
+    this.showModifierTreeModal = true
+  },
+  methods: {
+    /**
 		 * To clear an error.
 		 * @function
 		 * @param {string} name - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To close the modal.
 		 * @function
 		 * @param {object} item - The item toggled by the user
 		 * @returns {undefined}
 		 */
-		itemsSelected (item) {
-			if (!item.selected) {
-				const previousIndex = this.previous.indexOf(item.sku)
-				if (previousIndex !== -1) {
-					this.previous.splice(previousIndex, 1)
-				}
-			}
-			const selected = [
-				...this.previous.map(sku => ({previous: true, sku, name: ''})),
-				...this.selectedItems.filter(item => !this.previous.includes(item.sku))
-			]
-			this.$emit('update', selected)
-		},
-		/**
+    itemsSelected (item) {
+      if (!item.selected) {
+        const previousIndex = this.previous.indexOf(item.sku)
+        if (previousIndex !== -1) {
+          this.previous.splice(previousIndex, 1)
+        }
+      }
+      const selected = [
+        ...this.previous.map(sku => ({ previous: true, sku, name: '' })),
+        ...this.selectedItems.filter(item => !this.previous.includes(item.sku))
+      ]
+      this.$emit('update', selected)
+    },
+    /**
 		 * To get a list of all modifiers for the current active location.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getModifiers () {
-			if (this.$root.activeLocation.id === undefined) {
-				this.errorMessage = 'Please select a store to view Modifiers.'
-				return
-			}
-			this.clearError('errorMessage')
-			this.loadingModifiers = true
-			this.modifiers = []
-			var modifierTreeVue = this
-			return ModifiersFunctions.getStoreModifiers(
-				modifierTreeVue.$root.activeLocation.id
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						modifierTreeVue.modifiers = response.payload.map(modifier => ({
-							...modifier,
-							items: null,
-							selected: false,
-							partiallySelected: false
-						}))
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch modifiers',
-						errorName: 'errorMessage',
-						vue: modifierTreeVue,
-						containerRef: 'modal'
-					})
-				})
-				.finally(() => {
-					modifierTreeVue.loadingModifiers = false
-				})
-		},
-		/**
+    getModifiers () {
+      if (this.$root.activeLocation.id === undefined) {
+        this.errorMessage = 'Please select a store to view Modifiers.'
+        return
+      }
+      this.clearError('errorMessage')
+      this.loadingModifiers = true
+      this.modifiers = []
+      var modifierTreeVue = this
+      return ModifiersFunctions.getStoreModifiers(
+        modifierTreeVue.$root.activeLocation.id
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            modifierTreeVue.modifiers = response.payload.map(modifier => ({
+              ...modifier,
+              items: null,
+              selected: false,
+              partiallySelected: false
+            }))
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch modifiers',
+            errorName: 'errorMessage',
+            vue: modifierTreeVue,
+            containerRef: 'modal'
+          })
+        })
+        .finally(() => {
+          modifierTreeVue.loadingModifiers = false
+        })
+    },
+    /**
 		 * To get a list of all item for the current active modifier category.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getItemsForActiveModifier () {
-			this.loadingModifierItems = true
-			var modifierTreeVue = this
-			modifierTreeVue.items = []
-			return ModifiersFunctions.getModifierCategoryItems(
-				modifierTreeVue.activeModifier.id,
-				modifierTreeVue.$root.appId,
-				modifierTreeVue.$root.appSecret
-			)
-				.then(response => {
-					modifierTreeVue.activeModifier.items = response.payload.map(item => ({
-						...item,
-						selected: modifierTreeVue.previous.includes(item.sku)
-					}))
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch items',
-						errorName: 'errorMessage',
-						vue: modifierTreeVue,
-						containerRef: 'modal'
-					})
-				})
-				.finally(() => {
-					modifierTreeVue.loadingModifierItems = false
-				})
-		},
-		/**
+    getItemsForActiveModifier () {
+      this.loadingModifierItems = true
+      var modifierTreeVue = this
+      modifierTreeVue.items = []
+      return ModifiersFunctions.getModifierCategoryItems(
+        modifierTreeVue.activeModifier.id,
+        modifierTreeVue.$root.appId,
+        modifierTreeVue.$root.appSecret
+      )
+        .then(response => {
+          modifierTreeVue.activeModifier.items = response.payload.map(item => ({
+            ...item,
+            selected: modifierTreeVue.previous.includes(item.sku)
+          }))
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch items',
+            errorName: 'errorMessage',
+            vue: modifierTreeVue,
+            containerRef: 'modal'
+          })
+        })
+        .finally(() => {
+          modifierTreeVue.loadingModifierItems = false
+        })
+    },
+    /**
 		 * To clear the items array.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearItems () {
-			this.items = []
-		},
-		/**
+    clearItems () {
+      this.items = []
+    },
+    /**
 		 * To set the value of the variable 'activeModifier' as the selected modifier object.
 		 * @function
 		 * @param {object} modifier - The selected modifier.
 		 * @returns {undefined}
 		 */
-		selectModifier (modifier) {
-			this.activeModifier = modifier
-			this.isModifierCategorySelected = true
-			if (this.activeModifier.items === null) {
-				this.getItemsForActiveModifier()
-			}
-		}
-	}
+    selectModifier (modifier) {
+      this.activeModifier = modifier
+      this.isModifierCategorySelected = true
+      if (this.activeModifier.items === null) {
+        this.getItemsForActiveModifier()
+      }
+    }
+  }
 }
 </script>
 <style scoped>

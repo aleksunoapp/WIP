@@ -321,251 +321,251 @@ import Dropdown from '../../modules/Dropdown'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Breadcrumb,
-		LoadingScreen,
-		EditPrinter,
-		NoResults,
-		Dropdown
-	},
-	data () {
-		return {
-			breadcrumbArray: [{ name: 'Printers', link: false }],
-			displayPrinters: false,
-			listErrorMessage: '',
-			storePrinters: [],
-			showEditPrinterModal: false,
-			selectedPrinterId: 0,
-			creating: false,
-			newPrinter: {
-				printer_serialno: '',
-				printer_key: '',
-				printer_name: '',
-				created_by: this.$root.createdBy,
-				paper_width: '',
-				copies: '1',
-				status: 1,
-				version: ''
-			},
-			errorMessage: '',
-			newPrinterCollapse: true
-		}
-	},
-	computed: {
-		activeLocationId: function () {
-			return this.$root.activeLocation.id
-		}
-	},
-	watch: {
-		activeLocationId: function () {
-			if (this.$root.activeLocation.id) {
-				this.getStorePrinters()
-			}
-		}
-	},
-	mounted () {
-		if (this.$root.activeLocation && this.$root.activeLocation.id) {
-			this.getStorePrinters()
-		}
-	},
-	methods: {
-		/**
+  components: {
+    Breadcrumb,
+    LoadingScreen,
+    EditPrinter,
+    NoResults,
+    Dropdown
+  },
+  data () {
+    return {
+      breadcrumbArray: [{ name: 'Printers', link: false }],
+      displayPrinters: false,
+      listErrorMessage: '',
+      storePrinters: [],
+      showEditPrinterModal: false,
+      selectedPrinterId: 0,
+      creating: false,
+      newPrinter: {
+        printer_serialno: '',
+        printer_key: '',
+        printer_name: '',
+        created_by: this.$root.createdBy,
+        paper_width: '',
+        copies: '1',
+        status: 1,
+        version: ''
+      },
+      errorMessage: '',
+      newPrinterCollapse: true
+    }
+  },
+  computed: {
+    activeLocationId: function () {
+      return this.$root.activeLocation.id
+    }
+  },
+  watch: {
+    activeLocationId: function () {
+      if (this.$root.activeLocation.id) {
+        this.getStorePrinters()
+      }
+    }
+  },
+  mounted () {
+    if (this.$root.activeLocation && this.$root.activeLocation.id) {
+      this.getStorePrinters()
+    }
+  },
+  methods: {
+    /**
 		 * To reset the create form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetForm () {
-			this.newPrinter.printer_serialno = ''
-			this.newPrinter.printer_key = ''
-			this.newPrinter.printer_name = ''
-			this.newPrinter.paper_width = ''
-			this.newPrinter.copies = '1'
-			this.newPrinter.status = 1
-			this.newPrinter.version = ''
-		},
-		/**
+    resetForm () {
+      this.newPrinter.printer_serialno = ''
+      this.newPrinter.printer_key = ''
+      this.newPrinter.printer_name = ''
+      this.newPrinter.paper_width = ''
+      this.newPrinter.copies = '1'
+      this.newPrinter.status = 1
+      this.newPrinter.version = ''
+    },
+    /**
 		 * To get the printers for a store.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getStorePrinters () {
-			this.displayPrinters = true
-			var printersVue = this
-			PrintersFunctions.getStorePrinters(
-				printersVue.$root.activeLocation.id,
-				printersVue.$root.appId,
-				printersVue.$root.appSecret,
-				printersVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						printersVue.storePrinters = response.payload
-						printersVue.displayPrinters = false
-					} else {
-						printersVue.displayPrinters = false
-					}
-				})
-				.catch(reason => {
-					printersVue.displayPrinters = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch printers',
-						errorName: 'listErrorMessage',
-						vue: printersVue
-					})
-				})
-		},
-		/**
+    getStorePrinters () {
+      this.displayPrinters = true
+      var printersVue = this
+      PrintersFunctions.getStorePrinters(
+        printersVue.$root.activeLocation.id,
+        printersVue.$root.appId,
+        printersVue.$root.appSecret,
+        printersVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            printersVue.storePrinters = response.payload
+            printersVue.displayPrinters = false
+          } else {
+            printersVue.displayPrinters = false
+          }
+        })
+        .catch(reason => {
+          printersVue.displayPrinters = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch printers',
+            errorName: 'listErrorMessage',
+            vue: printersVue
+          })
+        })
+    },
+    /**
 		 * To show the modal to edit printer details.
 		 * @function
 		 * @param {object} printer - The selected printer.
 		 * @returns {undefined}
 		 */
-		editPrinter (printer) {
-			this.showEditPrinterModal = true
-			this.selectedPrinterId = printer.id
-		},
-		/**
+    editPrinter (printer) {
+      this.showEditPrinterModal = true
+      this.selectedPrinterId = printer.id
+    },
+    /**
 		 * To add the newly created printer to the printers list.
 		 * @function
 		 * @param {object} val - The printer object to be added to the list.
 		 * @returns {undefined}
 		 */
-		addPrinter (val) {
-			this.storePrinters = [...this.storePrinters, val]
-		},
-		/**
+    addPrinter (val) {
+      this.storePrinters = [...this.storePrinters, val]
+    },
+    /**
 		 * To close the modal to edit printer details and update the selected printer on the printers list.
 		 * @function
 		 * @param {object} val - The printer object to be updated on the list.
 		 * @returns {undefined}
 		 */
-		updatePrinter (val) {
-			this.showEditPrinterModal = false
-			this.getStorePrinters()
-		},
-		/**
+    updatePrinter (val) {
+      this.showEditPrinterModal = false
+      this.getStorePrinters()
+    },
+    /**
 		 * To close the modal to edit printer details.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeEditPrinterModal () {
-			this.showEditPrinterModal = false
-		},
-		/**
+    closeEditPrinterModal () {
+      this.showEditPrinterModal = false
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @param {string} name - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To check if the category data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validatePrinterData () {
-			var addPrinterVue = this
-			return new Promise(function (resolve, reject) {
-				if (!addPrinterVue.newPrinter.printer_name.length) {
-					reject('Printer name cannot be blank')
-				} else if (!addPrinterVue.newPrinter.printer_key.length) {
-					reject('Printer key cannot be blank')
-				} else if (!addPrinterVue.newPrinter.printer_serialno.length) {
-					reject('Printer serial number cannot be blank')
-				} else if (!addPrinterVue.newPrinter.paper_width.length) {
-					reject('Select paper width')
-				} else if (!addPrinterVue.newPrinter.version) {
-					reject('Select version')
-				} else if (!/^\+?(0|[1-9]\d*)$/.test(addPrinterVue.newPrinter.copies)) {
-					reject('Select number of copies')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validatePrinterData () {
+      var addPrinterVue = this
+      return new Promise(function (resolve, reject) {
+        if (!addPrinterVue.newPrinter.printer_name.length) {
+          reject('Printer name cannot be blank')
+        } else if (!addPrinterVue.newPrinter.printer_key.length) {
+          reject('Printer key cannot be blank')
+        } else if (!addPrinterVue.newPrinter.printer_serialno.length) {
+          reject('Printer serial number cannot be blank')
+        } else if (!addPrinterVue.newPrinter.paper_width.length) {
+          reject('Select paper width')
+        } else if (!addPrinterVue.newPrinter.version) {
+          reject('Select version')
+        } else if (!/^\+?(0|[1-9]\d*)$/.test(addPrinterVue.newPrinter.copies)) {
+          reject('Select number of copies')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To add the new category to the menu and close the modal and redirect to the menus page.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		createNewPrinter () {
-			var addPrinterVue = this
-			addPrinterVue.clearError('errorMessage')
+    createNewPrinter () {
+      var addPrinterVue = this
+      addPrinterVue.clearError('errorMessage')
 
-			return addPrinterVue
-				.validatePrinterData()
-				.then(response => {
-					addPrinterVue.creating = true
-					addPrinterVue.newPrinter.location_id = this.$root.activeLocation.id
-					PrintersFunctions.createNewPrinter(
-						addPrinterVue.newPrinter,
-						addPrinterVue.$root.appId,
-						addPrinterVue.$root.appSecret,
-						addPrinterVue.$root.userToken
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								addPrinterVue.newPrinter.id = response.payload.new_printer_id
-								addPrinterVue.getStorePrinters()
-								addPrinterVue.resetForm()
-								addPrinterVue.showAlert(response.payload)
-							} else {
-								addPrinterVue.errorMessage = response.message
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not add the printer',
-								errorName: 'errorMessage',
-								vue: addPrinterVue
-							})
-						})
-						.finally(() => {
-							addPrinterVue.creating = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					addPrinterVue.errorMessage = reason
-					window.scrollTo(0, 0)
-					throw reason
-				})
-		},
-		/**
+      return addPrinterVue
+        .validatePrinterData()
+        .then(response => {
+          addPrinterVue.creating = true
+          addPrinterVue.newPrinter.location_id = this.$root.activeLocation.id
+          PrintersFunctions.createNewPrinter(
+            addPrinterVue.newPrinter,
+            addPrinterVue.$root.appId,
+            addPrinterVue.$root.appSecret,
+            addPrinterVue.$root.userToken
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                addPrinterVue.newPrinter.id = response.payload.new_printer_id
+                addPrinterVue.getStorePrinters()
+                addPrinterVue.resetForm()
+                addPrinterVue.showAlert(response.payload)
+              } else {
+                addPrinterVue.errorMessage = response.message
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not add the printer',
+                errorName: 'errorMessage',
+                vue: addPrinterVue
+              })
+            })
+            .finally(() => {
+              addPrinterVue.creating = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          addPrinterVue.errorMessage = reason
+          window.scrollTo(0, 0)
+          throw reason
+        })
+    },
+    /**
 		 * To toggle the create printer panel, initially set to closed
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleNewPrinterPanel () {
-			this.newPrinterCollapse = !this.newPrinterCollapse
-		},
-		/**
+    toggleNewPrinterPanel () {
+      this.newPrinterCollapse = !this.newPrinterCollapse
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert (payload = {}) {
-			let title = 'Success'
-			let text = 'The Printer has been created'
-			let type = 'success'
+    showAlert (payload = {}) {
+      let title = 'Success'
+      let text = 'The Printer has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Printer has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Printer has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		}
-	}
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    }
+  }
 }
 </script>
 

@@ -429,335 +429,335 @@ import StorePickerWithButton from '@/components/modules/StorePickerWithButton'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Modal,
-		StorePickerWithButton
-	},
-	props: {
-		modifierItem: {
-			type: Object,
-			default: {}
-		}
-	},
-	data () {
-		return {
-			showNutritionModal: false,
-			itemNutritionInfo: [],
-			editingModifierNutritionInfo: false,
-			creatingModifierNutritionInfo: false,
-			createModifierNutritionError: '',
-			errorMessage: '',
-			editNutritionError: '',
-			newModifierNutritionInfo: {
-				modifier_item_id: this.modifierItem.id,
-				user_id: this.$root.createdBy
-			},
-			selectLocationMode: false,
-			selectedLocations: [],
-			update_all_items: false,
-			saving: false,
-			creating: false,
-			kcal: 0
+  components: {
+    Modal,
+    StorePickerWithButton
+  },
+  props: {
+    modifierItem: {
+      type: Object,
+      default: {}
+    }
+  },
+  data () {
+    return {
+      showNutritionModal: false,
+      itemNutritionInfo: [],
+      editingModifierNutritionInfo: false,
+      creatingModifierNutritionInfo: false,
+      createModifierNutritionError: '',
+      errorMessage: '',
+      editNutritionError: '',
+      newModifierNutritionInfo: {
+        modifier_item_id: this.modifierItem.id,
+        user_id: this.$root.createdBy
+      },
+      selectLocationMode: false,
+      selectedLocations: [],
+      update_all_items: false,
+      saving: false,
+      creating: false,
+      kcal: 0
 
-		}
-	},
-	mounted () {
-		this.showNutritionModal = true
-		this.getModifierItemNutritionInfo()
-	},
-	methods: {
-		/**
+    }
+  },
+  mounted () {
+    this.showNutritionModal = true
+    this.getModifierItemNutritionInfo()
+  },
+  methods: {
+    /**
 		 * To toggle select location mode on.
 		 * @function
 		 * @param {object} event - The event that triggered the action
 		 * @returns {undefined}
 		 */
-		selectLocations (event) {
-			event.preventDefault()
-			this.selectLocationMode = true
-		},
-		/**
+    selectLocations (event) {
+      event.preventDefault()
+      this.selectLocationMode = true
+    },
+    /**
 		 * To toggle select location mode on.
 		 * @function
 		 * @param {array} locations - The array of selected locations
 		 * @returns {undefined}
 		 */
-		updateSelectedLocations (locations) {
-			this.selectedLocations = locations
-			this.closeSelectLocationsPopup()
-		},
-		/**
+    updateSelectedLocations (locations) {
+      this.selectedLocations = locations
+      this.closeSelectLocationsPopup()
+    },
+    /**
 		 * To toggle select location mode on.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeSelectLocationsPopup () {
-			this.selectLocationMode = false
-		},
-		/**
+    closeSelectLocationsPopup () {
+      this.selectLocationMode = false
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To get the nutrition info for the modifier item.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getModifierItemNutritionInfo () {
-			var nutritionInfoVue = this
-			nutritionInfoVue.itemNutritionInfo = []
-			nutritionInfoVue.errorMessage = ''
-			ModifiersFunctions.getModifierItemNutritionInfo(
-				nutritionInfoVue.modifierItem.id,
-				nutritionInfoVue.$root.appId,
-				nutritionInfoVue.$root.appSecret
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						nutritionInfoVue.itemNutritionInfo = response.payload[0]
-						let kcal = response.payload[0].find(field => field.key === 'kcal')
-						nutritionInfoVue.kcal = kcal === undefined ? 0 : kcal.value
-					} else {
-						nutritionInfoVue.errorMessage = response.payload
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch nutrition info',
-						errorName: 'errorMessage',
-						vue: nutritionInfoVue,
-						containerRef: 'modal'
-					})
-				})
-		},
-		/**
+    getModifierItemNutritionInfo () {
+      var nutritionInfoVue = this
+      nutritionInfoVue.itemNutritionInfo = []
+      nutritionInfoVue.errorMessage = ''
+      ModifiersFunctions.getModifierItemNutritionInfo(
+        nutritionInfoVue.modifierItem.id,
+        nutritionInfoVue.$root.appId,
+        nutritionInfoVue.$root.appSecret
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            nutritionInfoVue.itemNutritionInfo = response.payload[0]
+            let kcal = response.payload[0].find(field => field.key === 'kcal')
+            nutritionInfoVue.kcal = kcal === undefined ? 0 : kcal.value
+          } else {
+            nutritionInfoVue.errorMessage = response.payload
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch nutrition info',
+            errorName: 'errorMessage',
+            vue: nutritionInfoVue,
+            containerRef: 'modal'
+          })
+        })
+    },
+    /**
 		 * To check if the nutrition data is valid before submitting to the backend.
 		 * @function
 		 * @param {object} inputObject - The object to be validated
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateNutritionData (inputObject) {
-			return new Promise(function (resolve, reject) {
-				if (!$.isNumeric(inputObject.calories)) {
-					reject('Calories should be a number')
-					// } else if (!$.isNumeric(inputObject.min_cal)) {
-					// 	reject('Minimum Calories should be a number')
-				} else if (!$.isNumeric(inputObject.total_fat)) {
-					reject('Total Fat should be a number')
-				} else if (!$.isNumeric(inputObject.saturated_fat)) {
-					reject('Saturated Fat should be a number')
-				} else if (!$.isNumeric(inputObject.trans_fat)) {
-					reject('Trans Fat should be a number')
-				} else if (!$.isNumeric(inputObject.cholesterol)) {
-					reject('Cholesterol should be a number')
-				} else if (!$.isNumeric(inputObject.sodium)) {
-					reject('Sodium should be a number')
-				} else if (!$.isNumeric(inputObject.carbs)) {
-					reject('Carbohydrates should be a number')
-				} else if (!$.isNumeric(inputObject.fibre)) {
-					reject('Fibre should be a number')
-				} else if (!$.isNumeric(inputObject.sugar)) {
-					reject('Sugar should be a number')
-				} else if (!$.isNumeric(inputObject.protein)) {
-					reject('Protein should be a number')
-				} else if (!$.isNumeric(inputObject.vit_a)) {
-					reject('Vitamin A should be a number')
-				} else if (!$.isNumeric(inputObject.vit_c)) {
-					reject('Vitamin C should be a number')
-				} else if (!$.isNumeric(inputObject.calcium)) {
-					reject('Calcium should be a number')
-				} else if (!$.isNumeric(inputObject.iron)) {
-					reject('Iron should be a number')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateNutritionData (inputObject) {
+      return new Promise(function (resolve, reject) {
+        if (!$.isNumeric(inputObject.calories)) {
+          reject('Calories should be a number')
+          // } else if (!$.isNumeric(inputObject.min_cal)) {
+          // 	reject('Minimum Calories should be a number')
+        } else if (!$.isNumeric(inputObject.total_fat)) {
+          reject('Total Fat should be a number')
+        } else if (!$.isNumeric(inputObject.saturated_fat)) {
+          reject('Saturated Fat should be a number')
+        } else if (!$.isNumeric(inputObject.trans_fat)) {
+          reject('Trans Fat should be a number')
+        } else if (!$.isNumeric(inputObject.cholesterol)) {
+          reject('Cholesterol should be a number')
+        } else if (!$.isNumeric(inputObject.sodium)) {
+          reject('Sodium should be a number')
+        } else if (!$.isNumeric(inputObject.carbs)) {
+          reject('Carbohydrates should be a number')
+        } else if (!$.isNumeric(inputObject.fibre)) {
+          reject('Fibre should be a number')
+        } else if (!$.isNumeric(inputObject.sugar)) {
+          reject('Sugar should be a number')
+        } else if (!$.isNumeric(inputObject.protein)) {
+          reject('Protein should be a number')
+        } else if (!$.isNumeric(inputObject.vit_a)) {
+          reject('Vitamin A should be a number')
+        } else if (!$.isNumeric(inputObject.vit_c)) {
+          reject('Vitamin C should be a number')
+        } else if (!$.isNumeric(inputObject.calcium)) {
+          reject('Calcium should be a number')
+        } else if (!$.isNumeric(inputObject.iron)) {
+          reject('Iron should be a number')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To send the updated modifier nutrition info to the backend and close the modal.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		updateModifierNutritionInfo () {
-			var nutritionInfoVue = this
-			var updatedNutritionInfo = {}
-			for (
-				var i = 0;
-				i < nutritionInfoVue.itemNutritionInfo.length;
-				i++
-			) {
-				if (
-					nutritionInfoVue.itemNutritionInfo[i].key !==
+    updateModifierNutritionInfo () {
+      var nutritionInfoVue = this
+      var updatedNutritionInfo = {}
+      for (
+        var i = 0;
+        i < nutritionInfoVue.itemNutritionInfo.length;
+        i++
+      ) {
+        if (
+          nutritionInfoVue.itemNutritionInfo[i].key !==
 					'modifier_item_id'
-				) {
-					if (nutritionInfoVue.itemNutritionInfo[i].key === 'id') {
-						updatedNutritionInfo.id =
+        ) {
+          if (nutritionInfoVue.itemNutritionInfo[i].key === 'id') {
+            updatedNutritionInfo.id =
 							nutritionInfoVue.itemNutritionInfo[i].value
-					}
-					var tempKey = nutritionInfoVue.itemNutritionInfo[i].key
-					updatedNutritionInfo[tempKey] =
+          }
+          var tempKey = nutritionInfoVue.itemNutritionInfo[i].key
+          updatedNutritionInfo[tempKey] =
 						nutritionInfoVue.itemNutritionInfo[i].value
-				}
-			}
-			updatedNutritionInfo.modifier_item_id =
+        }
+      }
+      updatedNutritionInfo.modifier_item_id =
 				nutritionInfoVue.modifierItem.id
-			updatedNutritionInfo.user_id = nutritionInfoVue.$root.createdBy
-			updatedNutritionInfo.update_locations =
+      updatedNutritionInfo.user_id = nutritionInfoVue.$root.createdBy
+      updatedNutritionInfo.update_locations =
 				nutritionInfoVue.selectedLocations
-			updatedNutritionInfo.update_all_items =
+      updatedNutritionInfo.update_all_items =
 				nutritionInfoVue.update_all_items
-			updatedNutritionInfo.kcal = nutritionInfoVue.kcal
-			nutritionInfoVue.editNutritionError = ''
+      updatedNutritionInfo.kcal = nutritionInfoVue.kcal
+      nutritionInfoVue.editNutritionError = ''
 
-			return nutritionInfoVue
-				.validateNutritionData(updatedNutritionInfo)
-				.then(response => {
-					this.saving = true
-					ModifiersFunctions.updateModifierNutritionInfo(
-						updatedNutritionInfo,
-						nutritionInfoVue.$root.appId,
-						nutritionInfoVue.$root.appSecret,
-						nutritionInfoVue.$root.userToken
-					)
-						.then(response => {
-							if (
-								response.code === 200 &&
+      return nutritionInfoVue
+        .validateNutritionData(updatedNutritionInfo)
+        .then(response => {
+          this.saving = true
+          ModifiersFunctions.updateModifierNutritionInfo(
+            updatedNutritionInfo,
+            nutritionInfoVue.$root.appId,
+            nutritionInfoVue.$root.appSecret,
+            nutritionInfoVue.$root.userToken
+          )
+            .then(response => {
+              if (
+                response.code === 200 &&
 								response.status === 'ok'
-							) {
-								this.closeModal()
-								this.showEditSuccess(response.payload)
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText:
+              ) {
+                this.closeModal()
+                this.showEditSuccess(response.payload)
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText:
 									'We could not update the nutrition info',
-								errorName: 'errorMessage',
-								vue: 'editNutritionError',
-								containerRef: 'modal'
-							})
-						})
-						.finally(() => {
-							updatedNutritionInfo.saving = false
-							updatedNutritionInfo.editingModifierNutritionInfo = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					nutritionInfoVue.editNutritionError = reason
-					window.scrollTo(0, 0)
-					throw reason
-				})
-		},
-		/**
+                errorName: 'errorMessage',
+                vue: 'editNutritionError',
+                containerRef: 'modal'
+              })
+            })
+            .finally(() => {
+              updatedNutritionInfo.saving = false
+              updatedNutritionInfo.editingModifierNutritionInfo = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          nutritionInfoVue.editNutritionError = reason
+          window.scrollTo(0, 0)
+          throw reason
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Nutrition Info has been saved'
-			let type = 'success'
+    showEditSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Nutrition Info has been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To create new nutrition info for the modifier item (if it doesn't exist) and send it to the backend and close the modal.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		createModifierNutritionInfo () {
-			var nutritionInfoVue = this
+    createModifierNutritionInfo () {
+      var nutritionInfoVue = this
 
-			return nutritionInfoVue
-				.validateNutritionData(
-					nutritionInfoVue.newModifierNutritionInfo
-				)
-				.then(response => {
-					nutritionInfoVue.creating = true
-					ModifiersFunctions.createModifierNutritionInfo(
-						nutritionInfoVue.newModifierNutritionInfo,
-						nutritionInfoVue.$root.appId,
-						nutritionInfoVue.$root.appSecret,
-						nutritionInfoVue.$root.userToken
-					)
-						.then(response => {
-							if (
-								response.code === 200 &&
+      return nutritionInfoVue
+        .validateNutritionData(
+          nutritionInfoVue.newModifierNutritionInfo
+        )
+        .then(response => {
+          nutritionInfoVue.creating = true
+          ModifiersFunctions.createModifierNutritionInfo(
+            nutritionInfoVue.newModifierNutritionInfo,
+            nutritionInfoVue.$root.appId,
+            nutritionInfoVue.$root.appSecret,
+            nutritionInfoVue.$root.userToken
+          )
+            .then(response => {
+              if (
+                response.code === 200 &&
 								response.status === 'ok'
-							) {
-								this.closeModal()
-								this.showCreateSuccess(response.payload)
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText:
+              ) {
+                this.closeModal()
+                this.showCreateSuccess(response.payload)
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText:
 									'We could not add the nutrition info',
-								errorName: 'createModifierNutritionError',
-								vue: nutritionInfoVue,
-								containerRef: 'modal'
-							})
-						})
-						.finally(() => {
-							nutritionInfoVue.creating = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					nutritionInfoVue.createModifierNutritionError = reason
-					window.scrollTo(0, 0)
-					throw reason
-				})
-		},
-		/**
+                errorName: 'createModifierNutritionError',
+                vue: nutritionInfoVue,
+                containerRef: 'modal'
+              })
+            })
+            .finally(() => {
+              nutritionInfoVue.creating = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          nutritionInfoVue.createModifierNutritionError = reason
+          window.scrollTo(0, 0)
+          throw reason
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showCreateSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Nutrition Info has been created'
-			let type = 'success'
+    showCreateSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Nutrition Info has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Nutrition Info has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Nutrition Info has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To just close the modal when the user clicks on the 'x' to close the modal without creating a new category.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('deactivateNutritionInfoModal')
-		}
-	}
+    closeModal () {
+      this.$emit('deactivateNutritionInfoModal')
+    }
+  }
 }
 </script>

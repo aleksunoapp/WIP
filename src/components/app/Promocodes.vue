@@ -566,579 +566,579 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 import { isNonNegativeNumber } from '@/controllers/utils'
 
 export default {
-	components: {
-		Breadcrumb,
-		LoadingScreen,
-		Modal,
-		NoResults,
-		EditPromoCode,
-		DeletePromoCode,
-		Dropdown,
-		SelectLocation,
-		MenuAndModifierItemPicker
-	},
-	data () {
-		return {
-			breadcrumbArray: [{ name: 'Promo codes', link: false }],
-			displayPromoCodesData: false,
-			promoCodes: [],
-			createErrorMessage: '',
-			listErrorMessage: '',
-			assignErrorMessage: '',
-			createNewPromoCodeCollapse: true,
-			creating: false,
-			newPromoCode: {
-				apply_on: '',
-				codes: '',
-				end_on: '',
-				locations: [],
-				max_use: '',
-				max_use_per_person: '',
-				sku: [],
-				start_from: '',
-				type: '',
-				value: '',
-				value_type: '',
-				description: ''
-			},
-			editedPromoCode: {},
-			showGalleryModal: false,
-			showEditPromoCodeModal: false,
-			selectedPromoCodeId: 0,
-			deletePromoCodeModalActive: false,
-			showSidewaysPageTwo: false,
-			passedPromoCode: {},
-			animated: '',
-			showSelectLocationModal: false,
-			showMenuTreeModal: false
-		}
-	},
-	computed: {
-		newPromoCodeValueTypeLabel () {
-			if (this.newPromoCode.value_type === 'percentage') {
-				return '%'
-			} else if (this.newPromoCode.value_type === 'dollar') {
-				return '$'
-			} else {
-				return '$ or %'
-			}
-		},
-		newPromoCodeTypeLabel () {
-			if (this.newPromoCode.type === 'single_use') {
-				return 'Single'
-			} else if (this.newPromoCode.type === 'multi_use') {
-				return 'Multi'
-			} else {
-				return 'Single or Multi Use?'
-			}
-		}
-	},
-	mounted () {
-		this.getAllPromoCodes()
-	},
-	methods: {
-		/**
-		 * To update selection of items
-		 * @function
-		 * @param {array} items - Array of SKUs of items selected by user
-		 * @returns {undefined}
-		 */
-		itemsSelected (items) {
-			this.newPromoCode.sku = items
-		},
-		/**
-		 * To generate a random string from the characters provided
-		 * @function
-		 * @param {ingeger} length - The length of the string provided]
-		 * @param {string} chars - All the characters allowed in the string
-		 * @returns {string} A random string of the length provided
-		 */
-		randomString (length, chars) {
-			var result = ''
-			for (var i = length; i > 0; --i) {
-				result += chars[Math.floor(Math.random() * chars.length)]
-			}
-			return result
-		},
-		/**
-		 * To set the promo code to a random 6 digit all caps alphanumeric string
-		 * @function
-		 * @param {object} code - The code object to modify
-		 * @returns {undefined}
-		 */
-		setRandomCode (code) {
-			code.codes = this.randomString(
-				6,
-				'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-			)
-		},
-		/**
-		 * To update the value_type property of newPromoCode.
-		 * @function
-		 * @param {object} value - The new value to assign.
-		 * @returns {undefined}
-		 */
-		updateNewPromoCodeValueType (value) {
-			this.newPromoCode.value_type = value
-		},
-		/**
-		 * To update the type property of newPromoCode.
-		 * @function
-		 * @param {object} value - The new value to assign.
-		 * @returns {undefined}
-		 */
-		updateNewPromoCodeType (value) {
-			if (value === 'single_use') {
-				this.newPromoCode.max_use_per_person = '1'
-			}
-			this.newPromoCode.type = value
-		},
-		/**
-		 * To display the modal to select items.
-		 * @function
-		 * @param {object} event - The click event that prompted this function.
-		 * @returns {undefined}
-		 */
-		displayMenuTreeModal (event) {
-			event.preventDefault()
-			if (!this.$root.activeLocation.id) {
-				this.showLocationAlert()
-				return
-			}
-			this.showMenuTreeModal = true
-		},
-		/**
-		 * To display a prompt to select a location.
-		 * @function
-		 * @returns {undefined}
-		 */
-		showLocationAlert () {
-			this.$swal({
-				title: 'No location',
-				text: 'Please select a store from the stores panel first.',
-				type: 'warning',
-				confirmButtonText: 'OK'
-			})
-		},
-		/**
-		 * To close the menu tree modal.
-		 * @function
-		 * @param {object} items - An object containing the selected items
-		 * @returns {undefined}
-		 */
-		closeMenuTreeModal (items) {
-			this.showMenuTreeModal = false
-		},
-		/**
-		 * To close anything active in the side panel
-		 * @function
-		 * @param {object} selectedLocations - The array of selected locations
-		 * @returns {undefined}
-		 */
-		closeSelectLocationModal (selectedLocations) {
-			if (selectedLocations) {
-				this.newPromoCode.locations = selectedLocations
-			}
-			this.showSelectLocationModal = false
-		},
-		/**
-		 * To activate the right half panel which lists the store locations.
-		 * @function
-		 * @param {object} promoCode - The selected promoCode
-		 * @param {object} event - The click event that triggered the function
-		 * @returns {undefined}
-		 */
-		selectLocations (promoCode, event) {
-			event.preventDefault()
-			this.passedPromoCode = promoCode
-			this.showSelectLocationModal = true
-		},
-		/**
-		 * To display the modal for deleting a promoCode.
-		 * @function
-		 * @param {object} promoCode - The selected promoCode
-		 * @param {object} event - The click event that prompted this function.
-		 * @returns {undefined}
-		 */
-		deletePromoCode (promoCode, event) {
-			event.stopPropagation()
-			this.selectedPromoCodeId = promoCode.id
-			this.deletePromoCodeModalActive = true
-		},
-		/**
-		 * To close the modal for deleting a promoCode.
-		 * @function
-		 * @returns {undefined}
-		 */
-		closeDeletePromoCodeModal () {
-			this.deletePromoCodeModalActive = false
-		},
-		/**
-		 * To close the modal for deleting a promoCode and remove that promoCode from DOM.
-		 * @function
-		 * @returns {undefined}
-		 */
-		deletePromoCodeAndCloseModal () {
-			this.deletePromoCodeModalActive = false
-			this.getAllPromoCodes()
-		},
-		/**
-		 * To show the modal to edit a promo code's details.
-		 * @function
-		 * @param {object} promoCode - The selected promo code object.
-		 * @param {object} event - The click event that prompted this function.
-		 * @returns {undefined}
-		 */
-		editPromoCode (promoCode, event) {
-			event.stopPropagation()
-			if (!this.$root.activeLocation.id) {
-				this.showLocationAlert()
-				return
-			}
-			this.passedPromoCode = promoCode
-			this.showEditPromoCodeModal = true
-		},
-		/**
-		 * To get a list of all promoCodes.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
-		getAllPromoCodes () {
-			this.displayPromoCodesData = true
-			this.promoCodes = []
-			var promoCodesVue = this
-			return PromoCodesFunctions.getAllPromoCodes(
-				promoCodesVue.$root.appId,
-				promoCodesVue.$root.appSecret,
-				promoCodesVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						promoCodesVue.displayPromoCodesData = false
-						promoCodesVue.promoCodes = response.payload
-						for (
-							var i = 0;
-							i < promoCodesVue.promoCodes.length;
-							i++
-						) {
-							promoCodesVue.$set(
-								promoCodesVue.promoCodes[i],
-								'selected',
-								false
-							)
-						}
-					} else {
-						promoCodesVue.displayPromoCodesData = false
-					}
-				})
-				.catch(reason => {
-					promoCodesVue.displayPromoCodesData = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch promocodes',
-						errorName: 'listErrorMessage',
-						vue: promoCodesVue
-					})
-				})
-		},
-		/**
-		 * To close the modal for editing a promoCode.
-		 * @function
-		 * @returns {undefined}
-		 */
-		closeEditPromoCodeModal () {
-			this.showEditPromoCodeModal = false
-		},
-		/**
-		 * To clear the new promoCode form.
-		 * @function
-		 * @returns {undefined}
-		 */
-		clearNewPromoCode () {
-			this.newPromoCode = {
-				apply_on: '',
-				codes: '',
-				end_on: '',
-				locations: [],
-				max_use: '',
-				max_use_per_person: '',
-				sku: [],
-				start_from: '',
-				type: '',
-				value: '',
-				value_type: '',
-				description: ''
-			}
-		},
-		/**
-		 * To check if a date is in the past.
-		 * @function
-		 * @param {string} date - The date string to verify.
-		 * @returns {boolean} True if date is in the past, false if not
-		 */
-		isPast (date) {
-			let input = new Date(date)
-			input.setMinutes(input.getMinutes() + input.getTimezoneOffset())
-			let today = new Date()
-			let inputDay = input.getDate()
-			if (inputDay < 10) {
-				inputDay = '0' + inputDay
-			}
-			let inputMonth = input.getMonth()
-			if (inputMonth < 10) {
-				inputMonth = '0' + inputMonth
-			}
-			let inputYear = input.getFullYear()
-			let todayDay = today.getDate()
-			if (todayDay < 10) {
-				todayDay = '0' + todayDay
-			}
-			let todayMonth = today.getMonth()
-			if (todayMonth < 10) {
-				todayMonth = '0' + todayMonth
-			}
-			let todayYear = today.getFullYear()
+  components: {
+    Breadcrumb,
+    LoadingScreen,
+    Modal,
+    NoResults,
+    EditPromoCode,
+    DeletePromoCode,
+    Dropdown,
+    SelectLocation,
+    MenuAndModifierItemPicker
+  },
+  data () {
+    return {
+      breadcrumbArray: [{ name: 'Promo codes', link: false }],
+      displayPromoCodesData: false,
+      promoCodes: [],
+      createErrorMessage: '',
+      listErrorMessage: '',
+      assignErrorMessage: '',
+      createNewPromoCodeCollapse: true,
+      creating: false,
+      newPromoCode: {
+        apply_on: '',
+        codes: '',
+        end_on: '',
+        locations: [],
+        max_use: '',
+        max_use_per_person: '',
+        sku: [],
+        start_from: '',
+        type: '',
+        value: '',
+        value_type: '',
+        description: ''
+      },
+      editedPromoCode: {},
+      showGalleryModal: false,
+      showEditPromoCodeModal: false,
+      selectedPromoCodeId: 0,
+      deletePromoCodeModalActive: false,
+      showSidewaysPageTwo: false,
+      passedPromoCode: {},
+      animated: '',
+      showSelectLocationModal: false,
+      showMenuTreeModal: false
+    }
+  },
+  computed: {
+    newPromoCodeValueTypeLabel () {
+      if (this.newPromoCode.value_type === 'percentage') {
+        return '%'
+      } else if (this.newPromoCode.value_type === 'dollar') {
+        return '$'
+      } else {
+        return '$ or %'
+      }
+    },
+    newPromoCodeTypeLabel () {
+      if (this.newPromoCode.type === 'single_use') {
+        return 'Single'
+      } else if (this.newPromoCode.type === 'multi_use') {
+        return 'Multi'
+      } else {
+        return 'Single or Multi Use?'
+      }
+    }
+  },
+  mounted () {
+    this.getAllPromoCodes()
+  },
+  methods: {
+    /**
+     * To update selection of items
+     * @function
+     * @param {array} items - Array of SKUs of items selected by user
+     * @returns {undefined}
+     */
+    itemsSelected (items) {
+      this.newPromoCode.sku = items
+    },
+    /**
+     * To generate a random string from the characters provided
+     * @function
+     * @param {ingeger} length - The length of the string provided]
+     * @param {string} chars - All the characters allowed in the string
+     * @returns {string} A random string of the length provided
+     */
+    randomString (length, chars) {
+      var result = ''
+      for (var i = length; i > 0; --i) {
+        result += chars[Math.floor(Math.random() * chars.length)]
+      }
+      return result
+    },
+    /**
+     * To set the promo code to a random 6 digit all caps alphanumeric string
+     * @function
+     * @param {object} code - The code object to modify
+     * @returns {undefined}
+     */
+    setRandomCode (code) {
+      code.codes = this.randomString(
+        6,
+        '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+      )
+    },
+    /**
+     * To update the value_type property of newPromoCode.
+     * @function
+     * @param {object} value - The new value to assign.
+     * @returns {undefined}
+     */
+    updateNewPromoCodeValueType (value) {
+      this.newPromoCode.value_type = value
+    },
+    /**
+     * To update the type property of newPromoCode.
+     * @function
+     * @param {object} value - The new value to assign.
+     * @returns {undefined}
+     */
+    updateNewPromoCodeType (value) {
+      if (value === 'single_use') {
+        this.newPromoCode.max_use_per_person = '1'
+      }
+      this.newPromoCode.type = value
+    },
+    /**
+     * To display the modal to select items.
+     * @function
+     * @param {object} event - The click event that prompted this function.
+     * @returns {undefined}
+     */
+    displayMenuTreeModal (event) {
+      event.preventDefault()
+      if (!this.$root.activeLocation.id) {
+        this.showLocationAlert()
+        return
+      }
+      this.showMenuTreeModal = true
+    },
+    /**
+     * To display a prompt to select a location.
+     * @function
+     * @returns {undefined}
+     */
+    showLocationAlert () {
+      this.$swal({
+        title: 'No location',
+        text: 'Please select a store from the stores panel first.',
+        type: 'warning',
+        confirmButtonText: 'OK'
+      })
+    },
+    /**
+     * To close the menu tree modal.
+     * @function
+     * @param {object} items - An object containing the selected items
+     * @returns {undefined}
+     */
+    closeMenuTreeModal (items) {
+      this.showMenuTreeModal = false
+    },
+    /**
+     * To close anything active in the side panel
+     * @function
+     * @param {object} selectedLocations - The array of selected locations
+     * @returns {undefined}
+     */
+    closeSelectLocationModal (selectedLocations) {
+      if (selectedLocations) {
+        this.newPromoCode.locations = selectedLocations
+      }
+      this.showSelectLocationModal = false
+    },
+    /**
+     * To activate the right half panel which lists the store locations.
+     * @function
+     * @param {object} promoCode - The selected promoCode
+     * @param {object} event - The click event that triggered the function
+     * @returns {undefined}
+     */
+    selectLocations (promoCode, event) {
+      event.preventDefault()
+      this.passedPromoCode = promoCode
+      this.showSelectLocationModal = true
+    },
+    /**
+     * To display the modal for deleting a promoCode.
+     * @function
+     * @param {object} promoCode - The selected promoCode
+     * @param {object} event - The click event that prompted this function.
+     * @returns {undefined}
+     */
+    deletePromoCode (promoCode, event) {
+      event.stopPropagation()
+      this.selectedPromoCodeId = promoCode.id
+      this.deletePromoCodeModalActive = true
+    },
+    /**
+     * To close the modal for deleting a promoCode.
+     * @function
+     * @returns {undefined}
+     */
+    closeDeletePromoCodeModal () {
+      this.deletePromoCodeModalActive = false
+    },
+    /**
+     * To close the modal for deleting a promoCode and remove that promoCode from DOM.
+     * @function
+     * @returns {undefined}
+     */
+    deletePromoCodeAndCloseModal () {
+      this.deletePromoCodeModalActive = false
+      this.getAllPromoCodes()
+    },
+    /**
+     * To show the modal to edit a promo code's details.
+     * @function
+     * @param {object} promoCode - The selected promo code object.
+     * @param {object} event - The click event that prompted this function.
+     * @returns {undefined}
+     */
+    editPromoCode (promoCode, event) {
+      event.stopPropagation()
+      if (!this.$root.activeLocation.id) {
+        this.showLocationAlert()
+        return
+      }
+      this.passedPromoCode = promoCode
+      this.showEditPromoCodeModal = true
+    },
+    /**
+     * To get a list of all promoCodes.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
+    getAllPromoCodes () {
+      this.displayPromoCodesData = true
+      this.promoCodes = []
+      var promoCodesVue = this
+      return PromoCodesFunctions.getAllPromoCodes(
+        promoCodesVue.$root.appId,
+        promoCodesVue.$root.appSecret,
+        promoCodesVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            promoCodesVue.displayPromoCodesData = false
+            promoCodesVue.promoCodes = response.payload
+            for (
+              var i = 0;
+              i < promoCodesVue.promoCodes.length;
+              i++
+            ) {
+              promoCodesVue.$set(
+                promoCodesVue.promoCodes[i],
+                'selected',
+                false
+              )
+            }
+          } else {
+            promoCodesVue.displayPromoCodesData = false
+          }
+        })
+        .catch(reason => {
+          promoCodesVue.displayPromoCodesData = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch promocodes',
+            errorName: 'listErrorMessage',
+            vue: promoCodesVue
+          })
+        })
+    },
+    /**
+     * To close the modal for editing a promoCode.
+     * @function
+     * @returns {undefined}
+     */
+    closeEditPromoCodeModal () {
+      this.showEditPromoCodeModal = false
+    },
+    /**
+     * To clear the new promoCode form.
+     * @function
+     * @returns {undefined}
+     */
+    clearNewPromoCode () {
+      this.newPromoCode = {
+        apply_on: '',
+        codes: '',
+        end_on: '',
+        locations: [],
+        max_use: '',
+        max_use_per_person: '',
+        sku: [],
+        start_from: '',
+        type: '',
+        value: '',
+        value_type: '',
+        description: ''
+      }
+    },
+    /**
+     * To check if a date is in the past.
+     * @function
+     * @param {string} date - The date string to verify.
+     * @returns {boolean} True if date is in the past, false if not
+     */
+    isPast (date) {
+      let input = new Date(date)
+      input.setMinutes(input.getMinutes() + input.getTimezoneOffset())
+      let today = new Date()
+      let inputDay = input.getDate()
+      if (inputDay < 10) {
+        inputDay = '0' + inputDay
+      }
+      let inputMonth = input.getMonth()
+      if (inputMonth < 10) {
+        inputMonth = '0' + inputMonth
+      }
+      let inputYear = input.getFullYear()
+      let todayDay = today.getDate()
+      if (todayDay < 10) {
+        todayDay = '0' + todayDay
+      }
+      let todayMonth = today.getMonth()
+      if (todayMonth < 10) {
+        todayMonth = '0' + todayMonth
+      }
+      let todayYear = today.getFullYear()
 
-			return (
-				`${todayYear}-${todayMonth}-${todayDay}` >
-				`${inputYear}-${inputMonth}-${inputDay}`
-			)
-		},
+      return (
+        `${todayYear}-${todayMonth}-${todayDay}` >
+        `${inputYear}-${inputMonth}-${inputDay}`
+      )
+    },
 
-		/**
-		 * To check if the promo code data is valid before submitting to the backend.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
-		validatePromoCodeData () {
-			var promoCodesVue = this
-			return new Promise(function (resolve, reject) {
-				if (!promoCodesVue.newPromoCode.codes.length) {
-					reject('Code cannot be blank')
-				} else if (!isNonNegativeNumber(promoCodesVue.newPromoCode.value)) {
-					reject('Value Of Promo Code must be zero or more')
-				} else if (!promoCodesVue.newPromoCode.value_type.length) {
-					reject('Value Type cannot be blank')
-				} else if (!promoCodesVue.newPromoCode.apply_on.length) {
-					reject('Discount Is Applied To cannot be blank')
-				} else if (
-					promoCodesVue.newPromoCode.apply_on === 'items' &&
-					promoCodesVue.newPromoCode.sku.length === 0
-				) {
-					reject('Select at least one item')
-				} else if (!promoCodesVue.newPromoCode.type.length) {
-					reject('Single or Multi Use cannot be blank')
-				} else if (!isNonNegativeNumber(promoCodesVue.newPromoCode.max_use_per_person)) {
-					reject('Maximum Redemptions Per User must be zero or more')
-				} else if (!isNonNegativeNumber(promoCodesVue.newPromoCode.max_use)) {
-					reject('Total Redemptions Permitted must be zero or more')
-				} else if (promoCodesVue.newPromoCode.max_use < promoCodesVue.newPromoCode.max_use_per_person) {
-					reject('Total Redemptions Permitted cannot be smaller than Maximum Redemptions Per User')
-				} else if (!promoCodesVue.newPromoCode.description) {
-					reject('Description cannot be blank')
-				} else if (!promoCodesVue.newPromoCode.start_from.length) {
-					reject('Please select Start Date')
-				} else if (promoCodesVue.isPast(promoCodesVue.newPromoCode.start_from)) {
-					reject('Start Date cannot be in the past')
-				} else if (!promoCodesVue.newPromoCode.end_on.length) {
-					reject('Please select End Date')
-				} else if (promoCodesVue.isPast(promoCodesVue.newPromoCode.end_on)) {
-					reject('End Date cannot be in the past')
-				} else if (new Date(promoCodesVue.newPromoCode.end_on) < new Date(promoCodesVue.newPromoCode.start_from)) {
-					reject('End Date cannot be before Start Date')
-				} else if (!promoCodesVue.newPromoCode.locations.length) {
-					reject('Select at least one location')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
-		 * To create a new promoCode.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
-		createNewPromoCode () {
-			var promoCodesVue = this
-			promoCodesVue.clearError('createErrorMessage')
+    /**
+     * To check if the promo code data is valid before submitting to the backend.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
+    validatePromoCodeData () {
+      var promoCodesVue = this
+      return new Promise(function (resolve, reject) {
+        if (!promoCodesVue.newPromoCode.codes.length) {
+          reject('Code cannot be blank')
+        } else if (!isNonNegativeNumber(promoCodesVue.newPromoCode.value)) {
+          reject('Value Of Promo Code must be zero or more')
+        } else if (!promoCodesVue.newPromoCode.value_type.length) {
+          reject('Value Type cannot be blank')
+        } else if (!promoCodesVue.newPromoCode.apply_on.length) {
+          reject('Discount Is Applied To cannot be blank')
+        } else if (
+          promoCodesVue.newPromoCode.apply_on === 'items' &&
+          promoCodesVue.newPromoCode.sku.length === 0
+        ) {
+          reject('Select at least one item')
+        } else if (!promoCodesVue.newPromoCode.type.length) {
+          reject('Single or Multi Use cannot be blank')
+        } else if (!isNonNegativeNumber(promoCodesVue.newPromoCode.max_use_per_person)) {
+          reject('Maximum Redemptions Per User must be zero or more')
+        } else if (!isNonNegativeNumber(promoCodesVue.newPromoCode.max_use)) {
+          reject('Total Redemptions Permitted must be zero or more')
+        } else if (promoCodesVue.newPromoCode.max_use < promoCodesVue.newPromoCode.max_use_per_person) {
+          reject('Total Redemptions Permitted cannot be smaller than Maximum Redemptions Per User')
+        } else if (!promoCodesVue.newPromoCode.description) {
+          reject('Description cannot be blank')
+        } else if (!promoCodesVue.newPromoCode.start_from.length) {
+          reject('Please select Start Date')
+        } else if (promoCodesVue.isPast(promoCodesVue.newPromoCode.start_from)) {
+          reject('Start Date cannot be in the past')
+        } else if (!promoCodesVue.newPromoCode.end_on.length) {
+          reject('Please select End Date')
+        } else if (promoCodesVue.isPast(promoCodesVue.newPromoCode.end_on)) {
+          reject('End Date cannot be in the past')
+        } else if (new Date(promoCodesVue.newPromoCode.end_on) < new Date(promoCodesVue.newPromoCode.start_from)) {
+          reject('End Date cannot be before Start Date')
+        } else if (!promoCodesVue.newPromoCode.locations.length) {
+          reject('Select at least one location')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
+     * To create a new promoCode.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
+    createNewPromoCode () {
+      var promoCodesVue = this
+      promoCodesVue.clearError('createErrorMessage')
 
-			return promoCodesVue
-				.validatePromoCodeData()
-				.then(response => {
-					promoCodesVue.creating = true
-					let newPromoCode = promoCodesVue.newPromoCode
-					newPromoCode.codes = newPromoCode.codes.toUpperCase()
-					newPromoCode.locations = newPromoCode.locations.toString()
-					newPromoCode.sku = newPromoCode.sku.toString()
-					PromoCodesFunctions.createNewPromoCode(
-						promoCodesVue.newPromoCode,
-						promoCodesVue.$root.appId,
-						promoCodesVue.$root.appSecret,
-						promoCodesVue.$root.userToken
-					)
-						.then(response => {
-							if (
-								response.code === 200 &&
-								response.status === 'ok'
-							) {
-								promoCodesVue.getAllPromoCodes()
-								promoCodesVue.showAlert(response.payload)
-								promoCodesVue.clearNewPromoCode()
-							} else {
-								promoCodesVue.createErrorMessage =
-									response.message
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not add the promocode',
-								errorName: 'createErrorMessage',
-								vue: promoCodesVue
-							})
-						})
-						.finally(() => {
-							promoCodesVue.creating = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					promoCodesVue.createErrorMessage = reason
-					window.scrollTo(0, 0)
-					throw reason
-				})
-		},
-		/**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
-		showAlert (payload = {}) {
-			let title = 'Success'
-			let text = 'The Promocode has been created'
-			let type = 'success'
+      return promoCodesVue
+        .validatePromoCodeData()
+        .then(response => {
+          promoCodesVue.creating = true
+          let newPromoCode = promoCodesVue.newPromoCode
+          newPromoCode.codes = newPromoCode.codes.toUpperCase()
+          newPromoCode.locations = newPromoCode.locations.toString()
+          newPromoCode.sku = newPromoCode.sku.toString()
+          PromoCodesFunctions.createNewPromoCode(
+            promoCodesVue.newPromoCode,
+            promoCodesVue.$root.appId,
+            promoCodesVue.$root.appSecret,
+            promoCodesVue.$root.userToken
+          )
+            .then(response => {
+              if (
+                response.code === 200 &&
+                response.status === 'ok'
+              ) {
+                promoCodesVue.getAllPromoCodes()
+                promoCodesVue.showAlert(response.payload)
+                promoCodesVue.clearNewPromoCode()
+              } else {
+                promoCodesVue.createErrorMessage =
+                  response.message
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not add the promocode',
+                errorName: 'createErrorMessage',
+                vue: promoCodesVue
+              })
+            })
+            .finally(() => {
+              promoCodesVue.creating = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          promoCodesVue.createErrorMessage = reason
+          window.scrollTo(0, 0)
+          throw reason
+        })
+    },
+    /**
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
+    showAlert (payload = {}) {
+      let title = 'Success'
+      let text = 'The Promocode has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Promocode has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Promocode has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
-		 * To update the promoCode info.
-		 * @function
-		 * @param {object} promoCode - The promoCode object that is to be updated.
-		 * @returns {undefined}
-		 */
-		updatePromoCode (promoCode) {
-			this.displayEditPromoCodeModal = false
-			this.getAllPromoCodes()
-		},
-		/**
-		 * To clear the current error.
-		 * @function
-		 * @param {object} errorMessageName - The error message to be cleared.
-		 * @returns {undefined}
-		 */
-		clearError (errorMessageName) {
-			this[errorMessageName] = ''
-		},
-		/**
-		 * To toggle the create tier panel, initially set to closed
-		 * @function
-		 * @returns {undefined}
-		 */
-		toggleCreatePromoCodePanel () {
-			this.createNewPromoCodeCollapse = !this.createNewPromoCodeCollapse
-		},
-		/**
-		 * To open the gallery modal.
-		 * @function
-		 * @returns {undefined}
-		 */
-		openGalleryPopup () {
-			this.showGalleryModal = true
-		},
-		/**
-		 * To close the gallery popup.
-		 * @function
-		 * @returns {undefined}
-		 */
-		closeGalleryModal () {
-			this.showGalleryModal = false
-		},
-		/**
-		 * To set the image to be same as the one emitted by the gallery modal.
-		 * @function
-		 * @param {object} val - The emitted image object.
-		 * @returns {undefined}
-		 */
-		updateImage (val) {
-			this.showGalleryModal = false
-			this.newPromoCode.image = val.image_url
-		}
-	}
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
+     * To update the promoCode info.
+     * @function
+     * @param {object} promoCode - The promoCode object that is to be updated.
+     * @returns {undefined}
+     */
+    updatePromoCode (promoCode) {
+      this.displayEditPromoCodeModal = false
+      this.getAllPromoCodes()
+    },
+    /**
+     * To clear the current error.
+     * @function
+     * @param {object} errorMessageName - The error message to be cleared.
+     * @returns {undefined}
+     */
+    clearError (errorMessageName) {
+      this[errorMessageName] = ''
+    },
+    /**
+     * To toggle the create tier panel, initially set to closed
+     * @function
+     * @returns {undefined}
+     */
+    toggleCreatePromoCodePanel () {
+      this.createNewPromoCodeCollapse = !this.createNewPromoCodeCollapse
+    },
+    /**
+     * To open the gallery modal.
+     * @function
+     * @returns {undefined}
+     */
+    openGalleryPopup () {
+      this.showGalleryModal = true
+    },
+    /**
+     * To close the gallery popup.
+     * @function
+     * @returns {undefined}
+     */
+    closeGalleryModal () {
+      this.showGalleryModal = false
+    },
+    /**
+     * To set the image to be same as the one emitted by the gallery modal.
+     * @function
+     * @param {object} val - The emitted image object.
+     * @returns {undefined}
+     */
+    updateImage (val) {
+      this.showGalleryModal = false
+      this.newPromoCode.image = val.image_url
+    }
+  }
 }
 </script>
 
 <style scoped>
 .sideways-page-one.disabled {
-	overflow: hidden;
+  overflow: hidden;
 }
 .sideways-page-two {
-	overflow-y: scroll;
+  overflow-y: scroll;
 }
 .dropdown {
-	margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 .side-by-side-wrapper {
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-start;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
   align-items: center;
 }
 .side-by-side-item {
-	max-width: 45%;
+  max-width: 45%;
 }
 .dropdown.side-by-side-item {
-	margin-left: 10px;
+  margin-left: 10px;
 }
 .date-label {
-	color: rgb(136, 136, 136);
-	font-size: 13px;
-	margin-bottom: 5px;
+  color: rgb(136, 136, 136);
+  font-size: 13px;
+  margin-bottom: 5px;
 }
 .grey-label {
-	color: rgb(153, 153, 153);
+  color: rgb(153, 153, 153);
 }
 .mb-0 {
-	margin-bottom: 0;
+  margin-bottom: 0;
 }
 .mt-element-list
-	.list-news.ext-1.mt-list-container
-	ul
-	> .mt-list-item
-	> .list-datetime,
+  .list-news.ext-1.mt-list-container
+  ul
+  > .mt-list-item
+  > .list-datetime,
 .mt-element-list
-	.list-news.ext-1.mt-list-container
-	ul
-	> .mt-list-item
-	> .list-item-content {
-	padding-left: 20px;
+  .list-news.ext-1.mt-list-container
+  ul
+  > .mt-list-item
+  > .list-item-content {
+  padding-left: 20px;
 }
 .animated {
-	animation: listItemHighlight 1s 2 ease-in-out both;
+  animation: listItemHighlight 1s 2 ease-in-out both;
 }
 .mt-element-list .list-news.ext-1.mt-list-container ul > .mt-list-item:hover {
-	background-color: white;
+  background-color: white;
 }
 .two-vertical-actions {
-	min-height: 90px;
+  min-height: 90px;
 }
 </style>

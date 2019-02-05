@@ -143,270 +143,270 @@ import LoadingScreen from '@/components/modules/LoadingScreen'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Dropdown,
-		LoadingScreen
-	},
-	props: {
-		previouslySelected: {
-			type: Array,
-			default: () => [],
-			required: false
-		},
-		withButton: {
-			type: Boolean,
-			default: true,
-			required: false
-		},
-		exclude: {
-			type: Array,
-			default: () => [],
-			required: false
-		},
-		editable: {
-			type: Boolean,
-			required: false,
-			default: () => true
-		}
-	},
-	data () {
-		return {
-			locations: [],
-			loading: false,
-			groups: [],
-			selectedGroup: {},
-			selectAllSelected: false,
-			selectedLocations: [],
-			errorMessage: '',
-			searchTerm: ''
-		}
-	},
-	computed: {
-		searchResults () {
-			if (this.searchTerm.length) {
-				return this.locations.filter(location => {
-					let searchIn =
+  components: {
+    Dropdown,
+    LoadingScreen
+  },
+  props: {
+    previouslySelected: {
+      type: Array,
+      default: () => [],
+      required: false
+    },
+    withButton: {
+      type: Boolean,
+      default: true,
+      required: false
+    },
+    exclude: {
+      type: Array,
+      default: () => [],
+      required: false
+    },
+    editable: {
+      type: Boolean,
+      required: false,
+      default: () => true
+    }
+  },
+  data () {
+    return {
+      locations: [],
+      loading: false,
+      groups: [],
+      selectedGroup: {},
+      selectAllSelected: false,
+      selectedLocations: [],
+      errorMessage: '',
+      searchTerm: ''
+    }
+  },
+  computed: {
+    searchResults () {
+      if (this.searchTerm.length) {
+        return this.locations.filter(location => {
+          let searchIn =
 						location.display_name +
 						location.address_line_1 +
 						location.city +
 						location.province +
 						location.country
-					return searchIn.toLowerCase().includes(this.searchTerm.toLowerCase())
-				})
-			} else {
-				return this.locations
-			}
-		}
-	},
-	mounted () {
-		this.getGroups()
-		this.getPaginatedStoreLocations()
-		if (!this.withButton) {
-			this.$emit('selectedLocations', [...this.previouslySelected])
-		}
-	},
-	methods: {
-		/**
+          return searchIn.toLowerCase().includes(this.searchTerm.toLowerCase())
+        })
+      } else {
+        return this.locations
+      }
+    }
+  },
+  mounted () {
+    this.getGroups()
+    this.getPaginatedStoreLocations()
+    if (!this.withButton) {
+      this.$emit('selectedLocations', [...this.previouslySelected])
+    }
+  },
+  methods: {
+    /**
 		 * To clear the search term
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetSearch () {
-			this.searchTerm = ''
-		},
-		/**
+    resetSearch () {
+      this.searchTerm = ''
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To add the selected locations to the selected locations array
 		 * @function
 		 * @returns {undefined}
 		 */
-		selectLocations () {
-			this.locations.forEach(location => {
-				if (location.selected) {
-					this.selectedLocations.push(location.id)
-				}
-			})
-			this.$emit('closeSelectLocationsPopup', this.selectedLocations)
-		},
-		/**
+    selectLocations () {
+      this.locations.forEach(location => {
+        if (location.selected) {
+          this.selectedLocations.push(location.id)
+        }
+      })
+      this.$emit('closeSelectLocationsPopup', this.selectedLocations)
+    },
+    /**
 		 * To select or deselect all stores
 		 * @function
 		 * @returns {undefined}
 		 */
-		selectAll () {
-			for (var i = 0; i < this.searchResults.length; i++) {
-				this.searchResults[i].selected = this.selectAllSelected
-			}
-			let payload = []
-			this.locations.forEach(location => {
-				if (location.selected) {
-					payload.push(location.id)
-				}
-			})
-			this.$emit('selectedLocations', payload)
-		},
-		/**
+    selectAll () {
+      for (var i = 0; i < this.searchResults.length; i++) {
+        this.searchResults[i].selected = this.selectAllSelected
+      }
+      let payload = []
+      this.locations.forEach(location => {
+        if (location.selected) {
+          payload.push(location.id)
+        }
+      })
+      this.$emit('selectedLocations', payload)
+    },
+    /**
 		 * To select all or deselect all items
 		 * @function
 		 * @param {boolean} value - The value of the checkbox
 		 * @returns {undefined}
 		 */
-		syncSelectAll (value) {
-			let payload = []
-			this.locations.forEach(location => {
-				if (location.selected) {
-					payload.push(location.id)
-				}
-			})
-			if (payload.length === this.locations.length) {
-				this.selectAllSelected = true
-			} else {
-				this.selectAllSelected = false
-			}
-			if (!this.withButton) {
-				this.$emit('selectedLocations', payload)
-			}
-		},
-		/**
+    syncSelectAll (value) {
+      let payload = []
+      this.locations.forEach(location => {
+        if (location.selected) {
+          payload.push(location.id)
+        }
+      })
+      if (payload.length === this.locations.length) {
+        this.selectAllSelected = true
+      } else {
+        this.selectAllSelected = false
+      }
+      if (!this.withButton) {
+        this.$emit('selectedLocations', payload)
+      }
+    },
+    /**
 		 * To get a list of location for the current application/business.
 		 * @function
 		 * @param {object} group - The object containing details of the selected store group
 		 * @returns {undefined}
 		 */
-		selectGroup (group) {
-			this.selectedGroup = group
-			if (group.name) {
-				this.getGroupLocations()
-			} else {
-				this.getPaginatedStoreLocations()
-			}
-		},
-		/**
+    selectGroup (group) {
+      this.selectedGroup = group
+      if (group.name) {
+        this.getGroupLocations()
+      } else {
+        this.getPaginatedStoreLocations()
+      }
+    },
+    /**
 		 * To get a list of location for the current application/business.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getPaginatedStoreLocations () {
-			this.loading = true
-			var selectLocationsVue = this
+    getPaginatedStoreLocations () {
+      this.loading = true
+      var selectLocationsVue = this
 
-			App.getPaginatedStoreLocations(
-				selectLocationsVue.$root.appId,
-				selectLocationsVue.$root.appSecret,
-				selectLocationsVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						let all = true
-						response.payload.forEach(store => {
-							if (!selectLocationsVue.previouslySelected.includes(store.id)) {
-								all = false
-							}
-							selectLocationsVue.previouslySelected.forEach(previous => {
-								if (store.id === previous) {
-									store.selected = true
-								} else if (store.selected !== true) {
-									store.selected = false
-								}
-							})
-						})
-						selectLocationsVue.selectAllSelected = all
-						selectLocationsVue.locations = response.payload.filter(
-							location => !selectLocationsVue.exclude.includes(location.id)
-						)
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch stores',
-						errorName: 'errorMessage',
-						vue: selectLocationsVue
-					})
-				})
-				.finally(() => {
-					selectLocationsVue.loading = false
-				})
-		},
-		/**
+      App.getPaginatedStoreLocations(
+        selectLocationsVue.$root.appId,
+        selectLocationsVue.$root.appSecret,
+        selectLocationsVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            let all = true
+            response.payload.forEach(store => {
+              if (!selectLocationsVue.previouslySelected.includes(store.id)) {
+                all = false
+              }
+              selectLocationsVue.previouslySelected.forEach(previous => {
+                if (store.id === previous) {
+                  store.selected = true
+                } else if (store.selected !== true) {
+                  store.selected = false
+                }
+              })
+            })
+            selectLocationsVue.selectAllSelected = all
+            selectLocationsVue.locations = response.payload.filter(
+              location => !selectLocationsVue.exclude.includes(location.id)
+            )
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch stores',
+            errorName: 'errorMessage',
+            vue: selectLocationsVue
+          })
+        })
+        .finally(() => {
+          selectLocationsVue.loading = false
+        })
+    },
+    /**
 		 * To get the details of the selected group.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getGroupLocations () {
-			var selectLocationsVue = this
+    getGroupLocations () {
+      var selectLocationsVue = this
 
-			StoreGroupsFunctions.getGroupLocations(
-				selectLocationsVue.selectedGroup.id,
-				selectLocationsVue.$root.appId,
-				selectLocationsVue.$root.appSecret,
-				selectLocationsVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						let all = true
-						response.payload.locations.forEach(store => {
-							if (!selectLocationsVue.previouslySelected.includes(store.id)) {
-								all = false
-							}
-							selectLocationsVue.previouslySelected.forEach(previous => {
-								if (store.id === previous) {
-									store.selected = true
-								} else if (store.selected !== true) {
-									store.selected = false
-								}
-							})
-						})
-						selectLocationsVue.selectAllSelected = all
-						selectLocationsVue.locations = response.payload.locations.filter(
-							location => !selectLocationsVue.exclude.includes(location.id)
-						)
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch group info',
-						errorName: 'errorMessage',
-						vue: selectLocationsVue
-					})
-				})
-		},
-		/**
+      StoreGroupsFunctions.getGroupLocations(
+        selectLocationsVue.selectedGroup.id,
+        selectLocationsVue.$root.appId,
+        selectLocationsVue.$root.appSecret,
+        selectLocationsVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            let all = true
+            response.payload.locations.forEach(store => {
+              if (!selectLocationsVue.previouslySelected.includes(store.id)) {
+                all = false
+              }
+              selectLocationsVue.previouslySelected.forEach(previous => {
+                if (store.id === previous) {
+                  store.selected = true
+                } else if (store.selected !== true) {
+                  store.selected = false
+                }
+              })
+            })
+            selectLocationsVue.selectAllSelected = all
+            selectLocationsVue.locations = response.payload.locations.filter(
+              location => !selectLocationsVue.exclude.includes(location.id)
+            )
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch group info',
+            errorName: 'errorMessage',
+            vue: selectLocationsVue
+          })
+        })
+    },
+    /**
 		 * To get the details of the selected group.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getGroups () {
-			var selectLocationsVue = this
+    getGroups () {
+      var selectLocationsVue = this
 
-			StoreGroupsFunctions.getGroups(
-				selectLocationsVue.$root.appId,
-				selectLocationsVue.$root.appSecret,
-				selectLocationsVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						selectLocationsVue.groups = response.payload
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch store groups',
-						errorName: 'errorMessage',
-						vue: selectLocationsVue
-					})
-				})
-		}
-	}
+      StoreGroupsFunctions.getGroups(
+        selectLocationsVue.$root.appId,
+        selectLocationsVue.$root.appSecret,
+        selectLocationsVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            selectLocationsVue.groups = response.payload
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch store groups',
+            errorName: 'errorMessage',
+            vue: selectLocationsVue
+          })
+        })
+    }
+  }
 }
 </script>
 

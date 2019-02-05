@@ -444,8 +444,8 @@
     <!-- ASSIGN ITEMS START -->
     <menu-tree
       v-if="showAssignItemsModal"
-      update-type="attribute"
       ref="menuTree"
+      update-type="attribute"
       :header-text="itemAttributeToAssignItemsTo.name"
       :show-corporate-menus="true"
       :selected-object="itemAttributeToAssignItemsTo"
@@ -653,922 +653,922 @@ import UserAttributesFunctions from '../../../controllers/UserAttributes'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Breadcrumb,
-		NoResults,
-		Modal,
-		MenuTree,
-		Pagination,
-		PageResults
-	},
-	data () {
-		return {
-			breadcrumbArray: [
-				{ name: 'Menu Manager', link: false },
-				{ name: 'Item Attributes', link: false }
-			],
-			loadingItemAttributes: false,
-			listErrorMessage: '',
-			createErrorMessage: '',
-			updateErrorMessage: '',
-			deleteErrorMessage: '',
-			searchErrorMessage: '',
-			assignUserAttributesErrorMessage: '',
-			assignItemsErrorMessage: '',
-			expandCreateForm: false,
-			expandSearchPanel: false,
-			animatedId: null,
-			showDeleteModal: false,
-			showEditModal: false,
-			showAssignUserAttributesModal: false,
-			showAssignItemsModal: false,
-			newItemAttribute: {
-				name: ''
-			},
-			itemAttributes: [],
-			sortBy: {
-				order: 'ASC'
-			},
-			activePage: 1,
-			resultsPerPage: 25,
-			searchTerm: '',
-			currentSearchPage: 1,
-			itemsPerSearchPage: 25,
-			itemAttributeToEdit: {
-				id: null,
-				name: ''
-			},
-			itemAttributeToDelete: {
-				id: null
-			},
-			itemsOfItemAttribute: [],
-			itemAttributeToAssignItemsTo: {
-				id: null,
-				name: ''
-			},
-			userAttributes: [],
-			selectAllSelected: false,
-			userAttributesOfItemAttribute: [],
-			itemAttributeToAssignUserAttributesTo: {}
-		}
-	},
-	computed: {
-		searchResults () {
-			if (this.searchTerm.length > 2) {
-				let filtered = this.searchItemAttributes()
-				this.numPages = Math.ceil(filtered.length / this.resultsPerPage)
-				return this.sortItemAttributes(filtered).slice(
-					this.resultsPerPage * (this.activePage - 1),
-					this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
-				)
-			} else {
-				this.numPages = Math.ceil(
-					this.itemAttributes.length / this.resultsPerPage
-				)
-				return this.sortItemAttributes(this.itemAttributes).slice(
-					this.resultsPerPage * (this.activePage - 1),
-					this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
-				)
-			}
-		}
-	},
-	mounted () {
-		this.listItemAttributes()
-	},
-	methods: {
-		/**
+  components: {
+    Breadcrumb,
+    NoResults,
+    Modal,
+    MenuTree,
+    Pagination,
+    PageResults
+  },
+  data () {
+    return {
+      breadcrumbArray: [
+        { name: 'Menu Manager', link: false },
+        { name: 'Item Attributes', link: false }
+      ],
+      loadingItemAttributes: false,
+      listErrorMessage: '',
+      createErrorMessage: '',
+      updateErrorMessage: '',
+      deleteErrorMessage: '',
+      searchErrorMessage: '',
+      assignUserAttributesErrorMessage: '',
+      assignItemsErrorMessage: '',
+      expandCreateForm: false,
+      expandSearchPanel: false,
+      animatedId: null,
+      showDeleteModal: false,
+      showEditModal: false,
+      showAssignUserAttributesModal: false,
+      showAssignItemsModal: false,
+      newItemAttribute: {
+        name: ''
+      },
+      itemAttributes: [],
+      sortBy: {
+        order: 'ASC'
+      },
+      activePage: 1,
+      resultsPerPage: 25,
+      searchTerm: '',
+      currentSearchPage: 1,
+      itemsPerSearchPage: 25,
+      itemAttributeToEdit: {
+        id: null,
+        name: ''
+      },
+      itemAttributeToDelete: {
+        id: null
+      },
+      itemsOfItemAttribute: [],
+      itemAttributeToAssignItemsTo: {
+        id: null,
+        name: ''
+      },
+      userAttributes: [],
+      selectAllSelected: false,
+      userAttributesOfItemAttribute: [],
+      itemAttributeToAssignUserAttributesTo: {}
+    }
+  },
+  computed: {
+    searchResults () {
+      if (this.searchTerm.length > 2) {
+        let filtered = this.searchItemAttributes()
+        this.numPages = Math.ceil(filtered.length / this.resultsPerPage)
+        return this.sortItemAttributes(filtered).slice(
+          this.resultsPerPage * (this.activePage - 1),
+          this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
+        )
+      } else {
+        this.numPages = Math.ceil(
+          this.itemAttributes.length / this.resultsPerPage
+        )
+        return this.sortItemAttributes(this.itemAttributes).slice(
+          this.resultsPerPage * (this.activePage - 1),
+          this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
+        )
+      }
+    }
+  },
+  mounted () {
+    this.listItemAttributes()
+  },
+  methods: {
+    /**
 		 * To open or close the create form
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCreatePanel () {
-			this.expandCreateForm = !this.expandCreateForm
-		},
-		/**
+    toggleCreatePanel () {
+      this.expandCreateForm = !this.expandCreateForm
+    },
+    /**
 		 * To clear an error
 		 * @function
 		 * @param {string} name - The variable name of the error to clear
 		 * @returns {undefined}
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To validate data in the create form
 		 * @function
 		 * @returns {undefined}
 		 */
-		validateNewItemAttribute () {
-			this.clearError('createErrorMessage')
-			const attributesVue = this
-			return new Promise(function (resolve, reject) {
-				if (!attributesVue.newItemAttribute.name.length) {
-					reject('Name cannot be blank')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateNewItemAttribute () {
+      this.clearError('createErrorMessage')
+      const attributesVue = this
+      return new Promise(function (resolve, reject) {
+        if (!attributesVue.newItemAttribute.name.length) {
+          reject('Name cannot be blank')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To make the API call to the create endpoint
 		 * @function
 		 * @returns {undefined}
 		 */
-		createItemAttribute () {
-			const attributesVue = this
+    createItemAttribute () {
+      const attributesVue = this
 
-			return this.validateNewItemAttribute()
-				.then(response => {
-					attributesVue.clearError('createErrorMessage')
-					return ItemAttributesFunctions.createItemAttribute(
-						attributesVue.$root.appId,
-						attributesVue.$root.appSecret,
-						attributesVue.$root.userToken,
-						attributesVue.newItemAttribute
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								attributesVue.confirmCreated(response.payload)
-							} else {
-								attributesVue.createErrorMessage =
+      return this.validateNewItemAttribute()
+        .then(response => {
+          attributesVue.clearError('createErrorMessage')
+          return ItemAttributesFunctions.createItemAttribute(
+            attributesVue.$root.appId,
+            attributesVue.$root.appSecret,
+            attributesVue.$root.userToken,
+            attributesVue.newItemAttribute
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                attributesVue.confirmCreated(response.payload)
+              } else {
+                attributesVue.createErrorMessage =
 									response.message || 'Something went wrong ...'
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not create the attribute',
-								errorName: 'createErrorMessage',
-								vue: attributesVue
-							})
-						})
-				})
-				.catch(reason => {
-					// Catch validation error
-					attributesVue.createErrorMessage = reason
-					window.scrollTo(0, 0)
-				})
-		},
-		/**
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not create the attribute',
+                errorName: 'createErrorMessage',
+                vue: attributesVue
+              })
+            })
+        })
+        .catch(reason => {
+          // Catch validation error
+          attributesVue.createErrorMessage = reason
+          window.scrollTo(0, 0)
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmCreated (payload = {}) {
-			let title = 'Success'
-			let text = 'The Item Attribute has been created'
-			let type = 'success'
+    confirmCreated (payload = {}) {
+      let title = 'Success'
+      let text = 'The Item Attribute has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Item Attribute has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Item Attribute has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			}).then(() => {
-				this.itemAttributes.push(payload)
-				if (!payload.pending_approval) {
-					this.animatedId = payload.id
-					window.setTimeout(() => {
-						this.animatedId = null
-					}, 3000)
-				}
-				this.resetNewItemAttribute()
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      }).then(() => {
+        this.itemAttributes.push(payload)
+        if (!payload.pending_approval) {
+          this.animatedId = payload.id
+          window.setTimeout(() => {
+            this.animatedId = null
+          }, 3000)
+        }
+        this.resetNewItemAttribute()
+      })
+    },
+    /**
 		 * To reset the create form
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetNewItemAttribute () {
-			this.newItemAttribute = {
-				name: ''
-			}
-		},
-		/**
+    resetNewItemAttribute () {
+      this.newItemAttribute = {
+        name: ''
+      }
+    },
+    /**
 		 * To open or close the search form
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleSearchPanel () {
-			this.expandSearchPanel = !this.expandSearchPanel
-		},
-		/**
+    toggleSearchPanel () {
+      this.expandSearchPanel = !this.expandSearchPanel
+    },
+    /**
 		 * To reset the search form
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetSearch () {
-			this.searchTerm = ''
-		},
-		/**
+    resetSearch () {
+      this.searchTerm = ''
+    },
+    /**
 		 * To get a list of existing Item Attributes
 		 * @function
 		 * @returns {undefined}
 		 */
-		listItemAttributes () {
-			this.loadingItemAttributes = true
-			const attributesVue = this
+    listItemAttributes () {
+      this.loadingItemAttributes = true
+      const attributesVue = this
 
-			return ItemAttributesFunctions.listItemAttributes(
-				attributesVue.$root.appId,
-				attributesVue.$root.appSecret,
-				attributesVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						attributesVue.itemAttributes = response.payload
-						attributesVue.loadingItemAttributes = false
-					} else {
-						attributesVue.loadingItemAttributes = false
-					}
-				})
-				.catch(reason => {
-					attributesVue.loadingItemAttributes = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch attributes',
-						errorName: 'listErrorMessage',
-						vue: attributesVue
-					})
-				})
-		},
-		/**
+      return ItemAttributesFunctions.listItemAttributes(
+        attributesVue.$root.appId,
+        attributesVue.$root.appSecret,
+        attributesVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            attributesVue.itemAttributes = response.payload
+            attributesVue.loadingItemAttributes = false
+          } else {
+            attributesVue.loadingItemAttributes = false
+          }
+        })
+        .catch(reason => {
+          attributesVue.loadingItemAttributes = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch attributes',
+            errorName: 'listErrorMessage',
+            vue: attributesVue
+          })
+        })
+    },
+    /**
 		 * To filter the display list
 		 * @function
 		 * @returns {array} An array of Item Attributes
 		 */
-		searchItemAttributes () {
-			return this.itemAttributes.filter(itemAttribute => {
-				return itemAttribute.name
-					.toLowerCase()
-					.includes(this.searchTerm.toLowerCase())
-			})
-		},
-		/**
+    searchItemAttributes () {
+      return this.itemAttributes.filter(itemAttribute => {
+        return itemAttribute.name
+          .toLowerCase()
+          .includes(this.searchTerm.toLowerCase())
+      })
+    },
+    /**
 		 * To sort the display list
 		 * @function
 		 * @param {array} attributes - The list to sort
 		 * @returns {array} An array of Item Attributes
 		 */
-		sortItemAttributes (attributes) {
-			const asc = function (a, b) {
-				if (a.name.toLowerCase() < b.name.toLowerCase()) {
-					return -1
-				} else if (a.name.toLowerCase() > b.name.toLowerCase()) {
-					return 1
-				} else {
-					if (a.id > b.id) {
-						return -1
-					} else if (a.id < b.id) {
-						return 1
-					} else {
-						return 0
-					}
-				}
-			}
-			const desc = function (a, b) {
-				if (a.name.toLowerCase() > b.name.toLowerCase()) {
-					return -1
-				} else if (a.name.toLowerCase() < b.name.toLowerCase()) {
-					return 1
-				} else {
-					if (a.id > b.id) {
-						return -1
-					} else if (a.id < b.id) {
-						return 1
-					} else {
-						return 0
-					}
-				}
-			}
+    sortItemAttributes (attributes) {
+      const asc = function (a, b) {
+        if (a.name.toLowerCase() < b.name.toLowerCase()) {
+          return -1
+        } else if (a.name.toLowerCase() > b.name.toLowerCase()) {
+          return 1
+        } else {
+          if (a.id > b.id) {
+            return -1
+          } else if (a.id < b.id) {
+            return 1
+          } else {
+            return 0
+          }
+        }
+      }
+      const desc = function (a, b) {
+        if (a.name.toLowerCase() > b.name.toLowerCase()) {
+          return -1
+        } else if (a.name.toLowerCase() < b.name.toLowerCase()) {
+          return 1
+        } else {
+          if (a.id > b.id) {
+            return -1
+          } else if (a.id < b.id) {
+            return 1
+          } else {
+            return 0
+          }
+        }
+      }
 
-			return this.sortBy.order === 'ASC'
-				? attributes.sort(asc)
-				: attributes.sort(desc)
-		},
-		/**
+      return this.sortBy.order === 'ASC'
+        ? attributes.sort(asc)
+        : attributes.sort(desc)
+    },
+    /**
 		 * To update the order property of sortBy.
 		 * @function
 		 * @param {object} value - The new value to assign.
 		 * @returns {undefined}
 		 */
-		updateSortByOrder (value) {
-			this.sortBy.order = value
-			this.activePageUpdate(1)
-		},
-		/**
+    updateSortByOrder (value) {
+      this.sortBy.order = value
+      this.activePageUpdate(1)
+    },
+    /**
 		 * To catch updates from the PageResults component when the number of page results is updated.
 		 * @function
 		 * @param {integer} val - The number of page results to be returned.
 		 * @returns {undefined}
 		 */
-		pageResultsUpdate (val) {
-			if (parseInt(this.resultsPerPage) !== parseInt(val)) {
-				this.resultsPerPage = val
-				this.activePageUpdate(1)
-			}
-		},
-		/**
+    pageResultsUpdate (val) {
+      if (parseInt(this.resultsPerPage) !== parseInt(val)) {
+        this.resultsPerPage = val
+        this.activePageUpdate(1)
+      }
+    },
+    /**
 		 * To update the currently active pagination page.
 		 * @function
 		 * @param {integer} val - An integer representing the page number that we are updating to.
 		 * @returns {undefined}
 		 */
-		activePageUpdate (val) {
-			if (parseInt(this.activePage) !== parseInt(val)) {
-				this.activePage = val
-				window.scrollTo(0, 0)
-			}
-		},
-		/**
+    activePageUpdate (val) {
+      if (parseInt(this.activePage) !== parseInt(val)) {
+        this.activePage = val
+        window.scrollTo(0, 0)
+      }
+    },
+    /**
 		 * To open the edit modal
 		 * @function
 		 * @param {object} itemAttribute - The Item Attribute to edit
 		 * @returns {undefined}
 		 */
-		openEditModal (itemAttribute) {
-			this.itemAttributeToEdit.id = itemAttribute.id
-			this.itemAttributeToEdit.name = itemAttribute.name
-			this.showEditModal = true
-		},
-		/**
+    openEditModal (itemAttribute) {
+      this.itemAttributeToEdit.id = itemAttribute.id
+      this.itemAttributeToEdit.name = itemAttribute.name
+      this.showEditModal = true
+    },
+    /**
 		 * To open the edit modal
 		 * @function
 		 * @param {string} itemAttribute - The Item Attribute to edit
 		 * @returns {undefined}
 		 */
-		validateItemAttributeToEdit () {
-			this.clearError('updateErrorMessage')
-			const attributesVue = this
-			return new Promise(function (resolve, reject) {
-				if (!attributesVue.itemAttributeToEdit.name.length) {
-					reject('Name cannot be blank')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateItemAttributeToEdit () {
+      this.clearError('updateErrorMessage')
+      const attributesVue = this
+      return new Promise(function (resolve, reject) {
+        if (!attributesVue.itemAttributeToEdit.name.length) {
+          reject('Name cannot be blank')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To make the API call to the update endpoint
 		 * @function
 		 * @returns {undefined}
 		 */
-		updateItemAttribute () {
-			const attributesVue = this
+    updateItemAttribute () {
+      const attributesVue = this
 
-			return this.validateItemAttributeToEdit()
-				.then(response => {
-					attributesVue.clearError('updateErrorMessage')
-					return ItemAttributesFunctions.updateItemAttribute(
-						attributesVue.$root.appId,
-						attributesVue.$root.appSecret,
-						attributesVue.$root.userToken,
-						attributesVue.itemAttributeToEdit
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								let edited = attributesVue.itemAttributes.findIndex(
-									itemAttribute => {
-										return (
-											itemAttribute.id === attributesVue.itemAttributeToEdit.id
-										)
-									}
-								)
-								attributesVue.itemAttributes[edited].name =
+      return this.validateItemAttributeToEdit()
+        .then(response => {
+          attributesVue.clearError('updateErrorMessage')
+          return ItemAttributesFunctions.updateItemAttribute(
+            attributesVue.$root.appId,
+            attributesVue.$root.appSecret,
+            attributesVue.$root.userToken,
+            attributesVue.itemAttributeToEdit
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                let edited = attributesVue.itemAttributes.findIndex(
+                  itemAttribute => {
+                    return (
+                      itemAttribute.id === attributesVue.itemAttributeToEdit.id
+                    )
+                  }
+                )
+                attributesVue.itemAttributes[edited].name =
 									attributesVue.itemAttributeToEdit.name
-								attributesVue.closeEditModal()
-								attributesVue.confirmUpdated(response.payload)
-							} else {
-								attributesVue.updateErrorMessage =
+                attributesVue.closeEditModal()
+                attributesVue.confirmUpdated(response.payload)
+              } else {
+                attributesVue.updateErrorMessage =
 									response.message || 'Something went wrong ...'
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not update the attribute',
-								errorName: 'updateErrorMessage',
-								vue: attributesVue,
-								containerRef: 'editModal'
-							})
-						})
-				})
-				.catch(reason => {
-					// Catch validation error
-					attributesVue.createErrorMessage = reason
-					window.scrollTo(0, 0)
-				})
-		},
-		/**
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not update the attribute',
+                errorName: 'updateErrorMessage',
+                vue: attributesVue,
+                containerRef: 'editModal'
+              })
+            })
+        })
+        .catch(reason => {
+          // Catch validation error
+          attributesVue.createErrorMessage = reason
+          window.scrollTo(0, 0)
+        })
+    },
+    /**
 		 * To close the edit modal
 		 * @function
 		 * @param {string} itemAttribute - The Item Attribute to edit
 		 * @returns {undefined}
 		 */
-		closeEditModal () {
-			this.clearError('updateErrorMessage')
-			this.showEditModal = false
-		},
-		/**
+    closeEditModal () {
+      this.clearError('updateErrorMessage')
+      this.showEditModal = false
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmUpdated (payload = {}) {
-			let title = 'Success'
-			let text = 'The Item Attribute has been saved'
-			let type = 'success'
+    confirmUpdated (payload = {}) {
+      let title = 'Success'
+      let text = 'The Item Attribute has been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Item Attribute has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Item Attribute has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			}).then(() => {
-				if (!payload.pending_approval) {
-					this.animatedId = this.itemAttributeToEdit.id
-					window.setTimeout(() => {
-						this.animatedId = null
-					}, 3000)
-				}
-				this.resetItemAttributeToEdit()
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      }).then(() => {
+        if (!payload.pending_approval) {
+          this.animatedId = this.itemAttributeToEdit.id
+          window.setTimeout(() => {
+            this.animatedId = null
+          }, 3000)
+        }
+        this.resetItemAttributeToEdit()
+      })
+    },
+    /**
 		 * To reset edit
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetItemAttributeToEdit () {
-			this.itemAttributeToEdit = {
-				id: null,
-				name: ''
-			}
-		},
-		/**
+    resetItemAttributeToEdit () {
+      this.itemAttributeToEdit = {
+        id: null,
+        name: ''
+      }
+    },
+    /**
 		 * To open the assign Items modal
 		 * @function
 		 * @param {object} itemAttribute - The Item Attribute to assign to
 		 * @returns {undefined}
 		 */
-		openAssignItemsModal (itemAttribute) {
-			this.itemAttributeToAssignItemsTo.id = itemAttribute.id
-			this.itemAttributeToAssignItemsTo.name = itemAttribute.name
-			this.listItemsOfItemAttribute()
-		},
-		/**
+    openAssignItemsModal (itemAttribute) {
+      this.itemAttributeToAssignItemsTo.id = itemAttribute.id
+      this.itemAttributeToAssignItemsTo.name = itemAttribute.name
+      this.listItemsOfItemAttribute()
+    },
+    /**
 		 * To get a list of Items assigned to an Item Attribute
 		 * @function
 		 * @returns {undefined}
 		 */
-		listItemsOfItemAttribute () {
-			const attributesVue = this
-			return ItemAttributesFunctions.listItemsOfItemAttribute(
-				attributesVue.$root.appId,
-				attributesVue.$root.appSecret,
-				attributesVue.$root.userToken,
-				attributesVue.itemAttributeToAssignItemsTo.id
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						attributesVue.itemsOfItemAttribute = response.payload.map(item => {
-							return item.sku
-						})
-						attributesVue.showAssignItemsModal = true
-					} else {
-						attributesVue.assignItemsErrorMessage = 'Something went wrong ...'
-						attributesVue.showAssignItemsModal = true
-					}
-				})
-				.catch(reason => {
-					attributesVue.showAssignItemsModal = true
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch attribute info',
-						errorName: 'assignItemsErrorMessage',
-						vue: attributesVue,
-						containerRef: 'menuTree'
-					})
-				})
-		},
-		/**
+    listItemsOfItemAttribute () {
+      const attributesVue = this
+      return ItemAttributesFunctions.listItemsOfItemAttribute(
+        attributesVue.$root.appId,
+        attributesVue.$root.appSecret,
+        attributesVue.$root.userToken,
+        attributesVue.itemAttributeToAssignItemsTo.id
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            attributesVue.itemsOfItemAttribute = response.payload.map(item => {
+              return item.sku
+            })
+            attributesVue.showAssignItemsModal = true
+          } else {
+            attributesVue.assignItemsErrorMessage = 'Something went wrong ...'
+            attributesVue.showAssignItemsModal = true
+          }
+        })
+        .catch(reason => {
+          attributesVue.showAssignItemsModal = true
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch attribute info',
+            errorName: 'assignItemsErrorMessage',
+            vue: attributesVue,
+            containerRef: 'menuTree'
+          })
+        })
+    },
+    /**
 		 * To assign Items to an Item Attribute
 		 * @function
 		 * @param {object} items - Items to add and remove
 		 * @returns {undefined}
 		 */
-		assignItemsToItemAttribute (items) {
-			let payload = {
-				items_to_add: items.selectedItems,
-				items_to_remove: items.unselectedItems
-			}
-			const attributesVue = this
-			return ItemAttributesFunctions.assignItemsToItemAttribute(
-				attributesVue.$root.appId,
-				attributesVue.$root.appSecret,
-				attributesVue.$root.userToken,
-				attributesVue.itemAttributeToAssignItemsTo.id,
-				payload
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						attributesVue.closeAssignItemsModal()
-						attributesVue.confirmAssignItems(response.payload)
-					} else {
-						window.scrollTo(0, 0)
-						attributesVue.assignItemsErrorMessage = 'Something went wrong ...'
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not assign the items',
-						errorName: 'assignItemsErrorMessage',
-						vue: attributesVue,
-						containerRef: 'menuTree'
-					})
-				})
-		},
-		/**
+    assignItemsToItemAttribute (items) {
+      let payload = {
+        items_to_add: items.selectedItems,
+        items_to_remove: items.unselectedItems
+      }
+      const attributesVue = this
+      return ItemAttributesFunctions.assignItemsToItemAttribute(
+        attributesVue.$root.appId,
+        attributesVue.$root.appSecret,
+        attributesVue.$root.userToken,
+        attributesVue.itemAttributeToAssignItemsTo.id,
+        payload
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            attributesVue.closeAssignItemsModal()
+            attributesVue.confirmAssignItems(response.payload)
+          } else {
+            window.scrollTo(0, 0)
+            attributesVue.assignItemsErrorMessage = 'Something went wrong ...'
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not assign the items',
+            errorName: 'assignItemsErrorMessage',
+            vue: attributesVue,
+            containerRef: 'menuTree'
+          })
+        })
+    },
+    /**
 		 * To close the assign Items modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeAssignItemsModal () {
-			this.clearError('assignItemsErrorMessage')
-			this.showAssignItemsModal = false
-		},
-		/**
+    closeAssignItemsModal () {
+      this.clearError('assignItemsErrorMessage')
+      this.showAssignItemsModal = false
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmAssignItems (payload = {}) {
-			if (payload === null) payload = {}
-			let title = 'Success'
-			let text = 'The Items have been saved'
-			let type = 'success'
+    confirmAssignItems (payload = {}) {
+      if (payload === null) payload = {}
+      let title = 'Success'
+      let text = 'The Items have been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Items have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Items have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			}).then(() => {
-				if (!payload.pending_approval) {
-					this.animatedId = this.itemAttributeToAssignItemsTo.id
-					window.setTimeout(() => {
-						this.animatedId = null
-					}, 3000)
-				}
-				this.resetAssignItems()
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      }).then(() => {
+        if (!payload.pending_approval) {
+          this.animatedId = this.itemAttributeToAssignItemsTo.id
+          window.setTimeout(() => {
+            this.animatedId = null
+          }, 3000)
+        }
+        this.resetAssignItems()
+      })
+    },
+    /**
 		 * To reset asssign Items
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetAssignItems () {
-			this.itemAttributeToAssignItemsTo = {
-				id: null,
-				name: ''
-			}
-			this.itemsOfItemAttribute = []
-		},
-		/**
+    resetAssignItems () {
+      this.itemAttributeToAssignItemsTo = {
+        id: null,
+        name: ''
+      }
+      this.itemsOfItemAttribute = []
+    },
+    /**
 		 * To open the assign User Attributes modal
 		 * @function
 		 * @param {object} itemAttribute - The Item Attribute to assign to
 		 * @returns {undefined}
 		 */
-		openAssignUserAttributesModal (itemAttribute) {
-			this.itemAttributeToAssignUserAttributesTo.id = itemAttribute.id
-			this.itemAttributeToAssignUserAttributesTo.name = itemAttribute.name
-			this.listUserAttributes()
-		},
-		/**
+    openAssignUserAttributesModal (itemAttribute) {
+      this.itemAttributeToAssignUserAttributesTo.id = itemAttribute.id
+      this.itemAttributeToAssignUserAttributesTo.name = itemAttribute.name
+      this.listUserAttributes()
+    },
+    /**
 		 * To get a list of existing User Attributes
 		 * @function
 		 * @returns {undefined}
 		 */
-		listUserAttributes () {
-			const attributesVue = this
+    listUserAttributes () {
+      const attributesVue = this
 
-			return UserAttributesFunctions.listUserAttributes(
-				attributesVue.$root.appId,
-				attributesVue.$root.appSecret,
-				attributesVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						attributesVue.userAttributes = response.payload.map(
-							userAttribute => {
-								userAttribute.selected = false
-								return userAttribute
-							}
-						)
-						attributesVue.listUserAttributesofItemAttribute()
-					} else {
-						attributesVue.assignUserAttributesErrorMessage =
+      return UserAttributesFunctions.listUserAttributes(
+        attributesVue.$root.appId,
+        attributesVue.$root.appSecret,
+        attributesVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            attributesVue.userAttributes = response.payload.map(
+              userAttribute => {
+                userAttribute.selected = false
+                return userAttribute
+              }
+            )
+            attributesVue.listUserAttributesofItemAttribute()
+          } else {
+            attributesVue.assignUserAttributesErrorMessage =
 							'Something went wrong ...'
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch attribute info',
-						errorName: 'assignUserAttributesErrorMessage',
-						vue: attributesVue,
-						containerRef: 'assignModal'
-					})
-				})
-		},
-		/**
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch attribute info',
+            errorName: 'assignUserAttributesErrorMessage',
+            vue: attributesVue,
+            containerRef: 'assignModal'
+          })
+        })
+    },
+    /**
 		 * To get a list of User Attributes assigned to an Item Attribute
 		 * @function
 		 * @returns {undefined}
 		 */
-		listUserAttributesofItemAttribute () {
-			const attributesVue = this
-			return ItemAttributesFunctions.listUserAttributesofItemAttribute(
-				attributesVue.$root.appId,
-				attributesVue.$root.appSecret,
-				attributesVue.$root.userToken,
-				attributesVue.itemAttributeToAssignUserAttributesTo.id
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						for (let r = 0; r < attributesVue.userAttributes.length; r++) {
-							if (response.payload.attributes_userattributes.length) {
-								for (
-									let s = 0;
-									s < response.payload.attributes_userattributes.length;
-									s++
-								) {
-									let userAttribute = attributesVue.userAttributes[r]
-									if (
-										userAttribute.id ===
+    listUserAttributesofItemAttribute () {
+      const attributesVue = this
+      return ItemAttributesFunctions.listUserAttributesofItemAttribute(
+        attributesVue.$root.appId,
+        attributesVue.$root.appSecret,
+        attributesVue.$root.userToken,
+        attributesVue.itemAttributeToAssignUserAttributesTo.id
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            for (let r = 0; r < attributesVue.userAttributes.length; r++) {
+              if (response.payload.attributes_userattributes.length) {
+                for (
+                  let s = 0;
+                  s < response.payload.attributes_userattributes.length;
+                  s++
+                ) {
+                  let userAttribute = attributesVue.userAttributes[r]
+                  if (
+                    userAttribute.id ===
 										response.payload.attributes_userattributes[s].id
-									) {
-										userAttribute.selected = true
-										break
-									} else {
-										userAttribute.selected = false
-									}
-								}
-							}
-						}
-						let notAll = attributesVue.userAttributes.some(userAttribute => {
-							return userAttribute.selected === false
-						})
-						notAll
-							? (attributesVue.selectAllSelected = false)
-							: (attributesVue.selectAllSelected = true)
-						attributesVue.showAssignUserAttributesModal = true
-					} else {
-						attributesVue.assignUserAttributesErrorMessage =
+                  ) {
+                    userAttribute.selected = true
+                    break
+                  } else {
+                    userAttribute.selected = false
+                  }
+                }
+              }
+            }
+            let notAll = attributesVue.userAttributes.some(userAttribute => {
+              return userAttribute.selected === false
+            })
+            notAll
+              ? (attributesVue.selectAllSelected = false)
+              : (attributesVue.selectAllSelected = true)
+            attributesVue.showAssignUserAttributesModal = true
+          } else {
+            attributesVue.assignUserAttributesErrorMessage =
 							'Something went wrong ...'
-						attributesVue.showAssignUserAttributesModal = true
-					}
-				})
-				.catch(reason => {
-					attributesVue.showAssignUserAttributesModal = true
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch attribute info',
-						errorName: 'assignUserAttributesErrorMessage',
-						vue: attributesVue,
-						containerRef: 'assignModal'
-					})
-				})
-		},
-		/**
+            attributesVue.showAssignUserAttributesModal = true
+          }
+        })
+        .catch(reason => {
+          attributesVue.showAssignUserAttributesModal = true
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch attribute info',
+            errorName: 'assignUserAttributesErrorMessage',
+            vue: attributesVue,
+            containerRef: 'assignModal'
+          })
+        })
+    },
+    /**
 		 * To select all or deselect all
 		 * @function
 		 * @returns {undefined}
 		 */
-		selectAll () {
-			for (var i = 0; i < this.userAttributes.length; i++) {
-				this.userAttributes[i].selected = this.selectAllSelected
-			}
-		},
-		/**
+    selectAll () {
+      for (var i = 0; i < this.userAttributes.length; i++) {
+        this.userAttributes[i].selected = this.selectAllSelected
+      }
+    },
+    /**
 		 * To sync Select All checkbox
 		 * @function
 		 * @param {boolean} value - The value of the checkbox
 		 * @returns {undefined}
 		 */
-		syncSelectAll (value) {
-			if (!value) {
-				this.selectAllSelected = false
-			} else {
-				this.selectAllSelected = this.userAttributes.every(userAttribute => {
-					return userAttribute.selected === true
-				})
-			}
-		},
-		/**
+    syncSelectAll (value) {
+      if (!value) {
+        this.selectAllSelected = false
+      } else {
+        this.selectAllSelected = this.userAttributes.every(userAttribute => {
+          return userAttribute.selected === true
+        })
+      }
+    },
+    /**
 		 * To assign User Attributes to an Item Attribute
 		 * @function
 		 * @returns {undefined}
 		 */
-		assignUserAttributesToItemAttributes () {
-			let payload = {
-				attribute: []
-			}
-			this.userAttributes.forEach(userAttribute => {
-				if (userAttribute.selected) {
-					payload.attribute.push({
-						id: userAttribute.id,
-						created_by: userAttribute.created_by
-					})
-				}
-			})
-			const attributesVue = this
-			return ItemAttributesFunctions.assignUserAttributesToItemAttributes(
-				attributesVue.$root.appId,
-				attributesVue.$root.appSecret,
-				attributesVue.$root.userToken,
-				attributesVue.itemAttributeToAssignUserAttributesTo.id,
-				payload
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						attributesVue.closeAssignUserAttributesModal()
-						attributesVue.confirmAssignUserAttributes(response.payload)
-					} else {
-						window.scrollTo(0, 0)
-						attributesVue.assignUserAttributesErrorMessage =
+    assignUserAttributesToItemAttributes () {
+      let payload = {
+        attribute: []
+      }
+      this.userAttributes.forEach(userAttribute => {
+        if (userAttribute.selected) {
+          payload.attribute.push({
+            id: userAttribute.id,
+            created_by: userAttribute.created_by
+          })
+        }
+      })
+      const attributesVue = this
+      return ItemAttributesFunctions.assignUserAttributesToItemAttributes(
+        attributesVue.$root.appId,
+        attributesVue.$root.appSecret,
+        attributesVue.$root.userToken,
+        attributesVue.itemAttributeToAssignUserAttributesTo.id,
+        payload
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            attributesVue.closeAssignUserAttributesModal()
+            attributesVue.confirmAssignUserAttributes(response.payload)
+          } else {
+            window.scrollTo(0, 0)
+            attributesVue.assignUserAttributesErrorMessage =
 							'Something went wrong ...'
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch attribute info',
-						errorName: 'assignUserAttributesErrorMessage',
-						vue: attributesVue,
-						containerRef: 'assignModal'
-					})
-				})
-		},
-		/**
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch attribute info',
+            errorName: 'assignUserAttributesErrorMessage',
+            vue: attributesVue,
+            containerRef: 'assignModal'
+          })
+        })
+    },
+    /**
 		 * To close the assign User Attributes modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeAssignUserAttributesModal () {
-			this.clearError('assignUserAttributesErrorMessage')
-			this.showAssignUserAttributesModal = false
-		},
-		/**
+    closeAssignUserAttributesModal () {
+      this.clearError('assignUserAttributesErrorMessage')
+      this.showAssignUserAttributesModal = false
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmAssignUserAttributes (payload = {}) {
-			let title = 'Success'
-			let text = 'The User Attributes have been saved'
-			let type = 'success'
+    confirmAssignUserAttributes (payload = {}) {
+      let title = 'Success'
+      let text = 'The User Attributes have been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The User Attributes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The User Attributes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			}).then(() => {
-				if (!payload.pending_approval) {
-					this.animatedId = this.itemAttributeToAssignUserAttributesTo.id
-					window.setTimeout(() => {
-						this.animatedId = null
-					}, 3000)
-				}
-				this.resetAssignUserAttributes()
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      }).then(() => {
+        if (!payload.pending_approval) {
+          this.animatedId = this.itemAttributeToAssignUserAttributesTo.id
+          window.setTimeout(() => {
+            this.animatedId = null
+          }, 3000)
+        }
+        this.resetAssignUserAttributes()
+      })
+    },
+    /**
 		 * To reset assign User Attributes
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetAssignUserAttributes () {
-			this.itemAttributeToAssignUserAttributesTo = {
-				id: null,
-				name: ''
-			}
-			this.userAttributesOfItemAttribute = []
-		},
-		/**
+    resetAssignUserAttributes () {
+      this.itemAttributeToAssignUserAttributesTo = {
+        id: null,
+        name: ''
+      }
+      this.userAttributesOfItemAttribute = []
+    },
+    /**
 		 * To open the delete modal
 		 * @function
 		 * @param {object} itemAttribute - The Item Attribute to delete
 		 * @returns {undefined}
 		 */
-		openDeleteModal (itemAttribute) {
-			this.itemAttributeToDelete.id = itemAttribute.id
-			this.itemAttributeToDelete.name = itemAttribute.name
-			this.showDeleteModal = true
-		},
-		/**
+    openDeleteModal (itemAttribute) {
+      this.itemAttributeToDelete.id = itemAttribute.id
+      this.itemAttributeToDelete.name = itemAttribute.name
+      this.showDeleteModal = true
+    },
+    /**
 		 * To make the API call to the delete endpoint
 		 * @function
 		 * @returns {undefined}
 		 */
-		deleteItemAttribute () {
-			const attributesVue = this
+    deleteItemAttribute () {
+      const attributesVue = this
 
-			return ItemAttributesFunctions.deleteItemAttribute(
-				attributesVue.$root.appId,
-				attributesVue.$root.appSecret,
-				attributesVue.$root.userToken,
-				attributesVue.itemAttributeToDelete
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						attributesVue.itemAttributes = attributesVue.itemAttributes.filter(
-							itemAttribute => {
-								return (
-									itemAttribute.id !== attributesVue.itemAttributeToDelete.id
-								)
-							}
-						)
-						attributesVue.closeDeleteModal()
-						attributesVue.confirmDelete(response.payload)
-					} else {
-						attributesVue.deleteErrorMessage =
+      return ItemAttributesFunctions.deleteItemAttribute(
+        attributesVue.$root.appId,
+        attributesVue.$root.appSecret,
+        attributesVue.$root.userToken,
+        attributesVue.itemAttributeToDelete
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            attributesVue.itemAttributes = attributesVue.itemAttributes.filter(
+              itemAttribute => {
+                return (
+                  itemAttribute.id !== attributesVue.itemAttributeToDelete.id
+                )
+              }
+            )
+            attributesVue.closeDeleteModal()
+            attributesVue.confirmDelete(response.payload)
+          } else {
+            attributesVue.deleteErrorMessage =
 							response.message || 'Something went wrong ...'
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not delete the attribute',
-						errorName: 'deleteErrorMessage',
-						vue: attributesVue,
-						containerRef: 'deleteModal'
-					})
-				})
-		},
-		/**
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not delete the attribute',
+            errorName: 'deleteErrorMessage',
+            vue: attributesVue,
+            containerRef: 'deleteModal'
+          })
+        })
+    },
+    /**
 		 * To close the delete modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeDeleteModal () {
-			this.clearError('deleteErrorMessage')
-			this.showDeleteModal = false
-		},
-		/**
+    closeDeleteModal () {
+      this.clearError('deleteErrorMessage')
+      this.showDeleteModal = false
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmDelete (payload = {}) {
-			let title = 'Success'
-			let text = 'The Item Attribute has been deleted'
-			let type = 'success'
+    confirmDelete (payload = {}) {
+      let title = 'Success'
+      let text = 'The Item Attribute has been deleted'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The removal has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The removal has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			}).then(() => {
-				this.itemAttributeToDelete.id = null
-				this.itemAttributeToDelete.name = ''
-			})
-		}
-	}
+      this.$swal({
+        title,
+        text,
+        type
+      }).then(() => {
+        this.itemAttributeToDelete.id = null
+        this.itemAttributeToDelete.name = ''
+      })
+    }
+  }
 }
 </script>
 

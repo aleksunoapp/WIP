@@ -65,111 +65,111 @@ import CategoriesFunctions from '../../../../controllers/Categories'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Modal
-	},
-	props: {
-		passedCategoryId: {
-			type: Number
-		}
-	},
-	data () {
-		return {
-			showDeleteCategoryModal: false,
-			deleting: false,
-			errorMessage: '',
-			customWidth: 90
-		}
-	},
-	mounted () {
-		this.showDeleteCategoryModal = true
-	},
-	methods: {
-		/**
+  components: {
+    Modal
+  },
+  props: {
+    passedCategoryId: {
+      type: Number
+    }
+  },
+  data () {
+    return {
+      showDeleteCategoryModal: false,
+      deleting: false,
+      errorMessage: '',
+      customWidth: 90
+    }
+  },
+  mounted () {
+    this.showDeleteCategoryModal = true
+  },
+  methods: {
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To delete the category and close the modal.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		deleteCategory () {
-			this.deleting = true
-			var deleteCategoryVue = this
-			deleteCategoryVue.clearError()
+    deleteCategory () {
+      this.deleting = true
+      var deleteCategoryVue = this
+      deleteCategoryVue.clearError()
 
-			CategoriesFunctions.deleteCategory(
-				deleteCategoryVue.passedCategoryId,
-				deleteCategoryVue.$root.appId,
-				deleteCategoryVue.$root.appSecret,
-				deleteCategoryVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						this.showDeleteSuccess(response.payload)
-						this.deleteCategoryAndCloseModal()
-					} else {
-						deleteCategoryVue.errorMessage = response.message
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not delete the category',
-						errorName: 'errorMessage',
-						vue: deleteCategoryVue,
-						containerRef: 'deleteModal'
-					})
-				})
-				.finally(() => {
-					deleteCategoryVue.deleting = false
-				})
-		},
-		/**
+      CategoriesFunctions.deleteCategory(
+        deleteCategoryVue.passedCategoryId,
+        deleteCategoryVue.$root.appId,
+        deleteCategoryVue.$root.appSecret,
+        deleteCategoryVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            this.showDeleteSuccess(response.payload)
+            this.deleteCategoryAndCloseModal()
+          } else {
+            deleteCategoryVue.errorMessage = response.message
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not delete the category',
+            errorName: 'errorMessage',
+            vue: deleteCategoryVue,
+            containerRef: 'deleteModal'
+          })
+        })
+        .finally(() => {
+          deleteCategoryVue.deleting = false
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Category has been deleted'
-			let type = 'success'
+    showDeleteSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Category has been deleted'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The removal has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The removal has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('closeDeleteCategoryModal')
-		},
-		/**
+    closeModal () {
+      this.$emit('closeDeleteCategoryModal')
+    },
+    /**
 		 * To close the modal and delete the category.
 		 * @function
 		 * @returns {undefined}
 		 */
-		deleteCategoryAndCloseModal () {
-			this.$emit('deleteCategoryAndCloseModal')
-		}
-	}
+    deleteCategoryAndCloseModal () {
+      this.$emit('deleteCategoryAndCloseModal')
+    }
+  }
 }
 </script>
 <style>

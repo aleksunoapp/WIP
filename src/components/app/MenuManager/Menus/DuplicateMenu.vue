@@ -84,88 +84,88 @@ import MenusFunctions from '../../../../controllers/Menus'
 import ajaxErrorHandler from '../../../../controllers/ErrorController'
 
 export default {
-	components: {
-		Modal
-	},
-	props: {
-		passedMenuId: {
-			type: Number
-		}
-	},
-	data () {
-		return {
-			showDuplicateMenuModal: false,
-			duplicating: false,
-			errorMessage: '',
-			replaceExisting: 0
-		}
-	},
-	mounted () {
-		this.showDuplicateMenuModal = true
-	},
-	methods: {
-		/**
+  components: {
+    Modal
+  },
+  props: {
+    passedMenuId: {
+      type: Number
+    }
+  },
+  data () {
+    return {
+      showDuplicateMenuModal: false,
+      duplicating: false,
+      errorMessage: '',
+      replaceExisting: 0
+    }
+  },
+  mounted () {
+    this.showDuplicateMenuModal = true
+  },
+  methods: {
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To update the menu and close the modal.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		duplicateMenu () {
-			this.duplicating = true
-			var editMenuVue = this
-			editMenuVue.clearError()
-			let payload = {
-				menu_id: this.passedMenuId,
-				location_id: this.$root.activeLocation.id,
-				replace_existing: this.replaceExisting
-			}
+    duplicateMenu () {
+      this.duplicating = true
+      var editMenuVue = this
+      editMenuVue.clearError()
+      let payload = {
+        menu_id: this.passedMenuId,
+        location_id: this.$root.activeLocation.id,
+        replace_existing: this.replaceExisting
+      }
 
-			MenusFunctions.duplicateMenu(
-				payload,
-				editMenuVue.$root.appId,
-				editMenuVue.$root.appSecret,
-				editMenuVue.$root.userToken
-			)
-				.then(response => {
-					this.emitDuplicateSuccess(response.payload)
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not duplicate the menu',
-						errorName: 'errorMessage',
-						vue: editMenuVue
-					})
-				})
-				.finally(() => {
-					editMenuVue.duplicating = false
-				})
-		},
-		/**
+      MenusFunctions.duplicateMenu(
+        payload,
+        editMenuVue.$root.appId,
+        editMenuVue.$root.appSecret,
+        editMenuVue.$root.userToken
+      )
+        .then(response => {
+          this.emitDuplicateSuccess(response.payload)
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not duplicate the menu',
+            errorName: 'errorMessage',
+            vue: editMenuVue
+          })
+        })
+        .finally(() => {
+          editMenuVue.duplicating = false
+        })
+    },
+    /**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('closeDuplicateMenuModal')
-		},
-		/**
+    closeModal () {
+      this.$emit('closeDuplicateMenuModal')
+    },
+    /**
 		 * To notify parent the duplication succeeded
 		 * @function
 		 * @param {object} payload - The payload property of the response
 		 * @returns {undefined}
 		 */
-		emitDuplicateSuccess (payload = {}) {
-			this.$emit('duplicateSuccess', payload)
-		}
-	}
+    emitDuplicateSuccess (payload = {}) {
+      this.$emit('duplicateSuccess', payload)
+    }
+  }
 }
 </script>
 <style scoped>
@@ -190,4 +190,3 @@ export default {
   margin-bottom: 0 !important;
 }
 </style>
-

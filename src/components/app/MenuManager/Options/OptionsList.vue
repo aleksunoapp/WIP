@@ -105,184 +105,184 @@ import OptionsFunctions from '../../../../controllers/Options'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Modal
-	},
-	props: {
-		appliedOptions: {
-			type: Array,
-			default: []
-		},
-		selectedItemId: {
-			type: Number,
-			default: 0
-		},
-		itemType: {
-			type: String,
-			default: 'modifier-item'
-		}
-	},
-	data () {
-		return {
-			showOptionsModal: false,
-			errorMessage: '',
-			options: [],
-			saving: false
-		}
-	},
-	created () {
-		this.getOptions()
-	},
-	mounted () {
-		this.showOptionsModal = true
-	},
-	methods: {
-		/**
+  components: {
+    Modal
+  },
+  props: {
+    appliedOptions: {
+      type: Array,
+      default: []
+    },
+    selectedItemId: {
+      type: Number,
+      default: 0
+    },
+    itemType: {
+      type: String,
+      default: 'modifier-item'
+    }
+  },
+  data () {
+    return {
+      showOptionsModal: false,
+      errorMessage: '',
+      options: [],
+      saving: false
+    }
+  },
+  created () {
+    this.getOptions()
+  },
+  mounted () {
+    this.showOptionsModal = true
+  },
+  methods: {
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To get a list of modifier categories for a store.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getOptions () {
-			var optionsListVue = this
-			optionsListVue.options = []
-			OptionsFunctions.getOptions(
-				optionsListVue.$root.appId,
-				optionsListVue.$root.appSecret,
-				optionsListVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						optionsListVue.options = response.payload
-						if (optionsListVue.appliedOptions.length) {
-							for (var i = 0; i < optionsListVue.options.length; i++) {
-								for (var j = 0; j < optionsListVue.appliedOptions.length; j++) {
-									if (
-										optionsListVue.options[i].id ===
+    getOptions () {
+      var optionsListVue = this
+      optionsListVue.options = []
+      OptionsFunctions.getOptions(
+        optionsListVue.$root.appId,
+        optionsListVue.$root.appSecret,
+        optionsListVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            optionsListVue.options = response.payload
+            if (optionsListVue.appliedOptions.length) {
+              for (var i = 0; i < optionsListVue.options.length; i++) {
+                for (var j = 0; j < optionsListVue.appliedOptions.length; j++) {
+                  if (
+                    optionsListVue.options[i].id ===
 										optionsListVue.appliedOptions[j].id
-									) {
-										optionsListVue.$set(
-											optionsListVue.options[i],
-											'selected',
-											true
-										)
-										break
-									} else {
-										optionsListVue.$set(
-											optionsListVue.options[i],
-											'selected',
-											false
-										)
-									}
-								}
-								optionsListVue.$set(
-									optionsListVue.options[i],
-									'created_by',
-									optionsListVue.$root.createdBy
-								)
-							}
-						} else {
-							for (var k = 0; k < optionsListVue.options.length; k++) {
-								optionsListVue.$set(
-									optionsListVue.options[k],
-									'created_by',
-									optionsListVue.$root.createdBy
-								)
-							}
-						}
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch option categories',
-						errorName: 'errorMessage',
-						vue: optionsListVue,
-						containerRef: 'modal'
-					})
-				})
-		},
-		/**
+                  ) {
+                    optionsListVue.$set(
+                      optionsListVue.options[i],
+                      'selected',
+                      true
+                    )
+                    break
+                  } else {
+                    optionsListVue.$set(
+                      optionsListVue.options[i],
+                      'selected',
+                      false
+                    )
+                  }
+                }
+                optionsListVue.$set(
+                  optionsListVue.options[i],
+                  'created_by',
+                  optionsListVue.$root.createdBy
+                )
+              }
+            } else {
+              for (var k = 0; k < optionsListVue.options.length; k++) {
+                optionsListVue.$set(
+                  optionsListVue.options[k],
+                  'created_by',
+                  optionsListVue.$root.createdBy
+                )
+              }
+            }
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch option categories',
+            errorName: 'errorMessage',
+            vue: optionsListVue,
+            containerRef: 'modal'
+          })
+        })
+    },
+    /**
 		 * To apply some of the existing modifiers to an item.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		applyOptionsToItem () {
-			this.saving = true
-			var optionsListVue = this
-			var optionsToBeApplied = []
-			for (var k = 0; k < optionsListVue.options.length; k++) {
-				if (optionsListVue.options[k].selected) {
-					optionsToBeApplied.push(optionsListVue.options[k].id)
-				}
-			}
-			if (optionsListVue.itemType === 'modifier-item') {
-				OptionsFunctions.applyOptionsToModifierItem(
-					optionsListVue.selectedItemId,
-					this.$root.createdBy,
-					optionsToBeApplied,
-					optionsListVue.$root.appId,
-					optionsListVue.$root.appSecret,
-					optionsListVue.$root.userToken
-				)
-					.then(response => {
-						if (response.code === 200 && response.status === 'ok') {
-							optionsListVue.closeModal()
-							optionsListVue.showEditSuccess(response.payload)
-						}
-					})
-					.catch(reason => {
-						ajaxErrorHandler({
-							reason,
-							errorText: 'We could not apply the options',
-							errorName: 'errorMessage',
-							vue: optionsListVue,
-							containerRef: 'modal'
-						})
-					})
-					.finally(() => {
-						optionsListVue.saving = false
-					})
-			}
-		},
-		/**
+    applyOptionsToItem () {
+      this.saving = true
+      var optionsListVue = this
+      var optionsToBeApplied = []
+      for (var k = 0; k < optionsListVue.options.length; k++) {
+        if (optionsListVue.options[k].selected) {
+          optionsToBeApplied.push(optionsListVue.options[k].id)
+        }
+      }
+      if (optionsListVue.itemType === 'modifier-item') {
+        OptionsFunctions.applyOptionsToModifierItem(
+          optionsListVue.selectedItemId,
+          this.$root.createdBy,
+          optionsToBeApplied,
+          optionsListVue.$root.appId,
+          optionsListVue.$root.appSecret,
+          optionsListVue.$root.userToken
+        )
+          .then(response => {
+            if (response.code === 200 && response.status === 'ok') {
+              optionsListVue.closeModal()
+              optionsListVue.showEditSuccess(response.payload)
+            }
+          })
+          .catch(reason => {
+            ajaxErrorHandler({
+              reason,
+              errorText: 'We could not apply the options',
+              errorName: 'errorMessage',
+              vue: optionsListVue,
+              containerRef: 'modal'
+            })
+          })
+          .finally(() => {
+            optionsListVue.saving = false
+          })
+      }
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Modifier Item has been saved'
-			let type = 'success'
+    showEditSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Modifier Item has been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('closeOptionsListModal', this.selectedItemId)
-		}
-	}
+    closeModal () {
+      this.$emit('closeOptionsListModal', this.selectedItemId)
+    }
+  }
 }
 </script>

@@ -49,8 +49,8 @@
       </li>
       <template v-for="(subfolder, subindex) in folder.children">
         <resource-folder
-          :folder="subfolder"
           :key="subindex"
+          :folder="subfolder"
           :active-folder="activeFolder"
           :last="subindex === folder.children.length - 1"
           :select-only="selectOnly"
@@ -75,37 +75,37 @@
  */
 
 export default {
-	name: 'ResourceFolder',
-	props: {
-		folder: {
-			type: Object,
-			required: true,
-			default: () => {
-				return {}
-			}
-		},
-		last: {
-			type: Boolean,
-			required: true,
-			default: false
-		},
-		activeFolder: {
-			type: Number,
-			required: false,
-			default: 0
-		},
-		selectOnly: {
-			type: Boolean,
-			default: false
-		}
-	},
-	data () {
-		return {
-			activeLocationId: null
-		}
-	},
-	methods: {
-		/**
+  name: 'ResourceFolder',
+  props: {
+    folder: {
+      type: Object,
+      required: true,
+      default: () => {
+        return {}
+      }
+    },
+    last: {
+      type: Boolean,
+      required: true,
+      default: false
+    },
+    activeFolder: {
+      type: Number,
+      required: false,
+      default: 0
+    },
+    selectOnly: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data () {
+    return {
+      activeLocationId: null
+    }
+  },
+  methods: {
+    /**
 		 * To emit that the node has been expanded or collapsed to the parent component until it reaches the top of the hierarchy
 		 * @function
 		 * @param {object} passedFolder - The folder being passed to the parent for modification
@@ -113,14 +113,14 @@ export default {
 		 * @memberof ResourceFolder
 		 * @version 0.0.9
 		 */
-		expandNode (passedFolder) {
-			if (passedFolder) {
-				this.$emit('expandNode', passedFolder)
-			} else {
-				this.$emit('expandNode', this.folder)
-			}
-		},
-		/**
+    expandNode (passedFolder) {
+      if (passedFolder) {
+        this.$emit('expandNode', passedFolder)
+      } else {
+        this.$emit('expandNode', this.folder)
+      }
+    },
+    /**
 		 * To emit that the user wants to create a new folder to the parent component until it reaches the top of the hierarchy
 		 * @function
 		 * @param {object} passedFolder - The folder being passed to the parent for modification
@@ -128,14 +128,14 @@ export default {
 		 * @memberof ResourceFolder
 		 * @version 0.0.9
 		 */
-		createFolder (passedFolder) {
-			if (passedFolder) {
-				this.$emit('createFolder', passedFolder)
-			} else {
-				this.$emit('createFolder', this.folder)
-			}
-		},
-		/**
+    createFolder (passedFolder) {
+      if (passedFolder) {
+        this.$emit('createFolder', passedFolder)
+      } else {
+        this.$emit('createFolder', this.folder)
+      }
+    },
+    /**
 		 * To emit that the user wants to manage a folder to the parent component until it reaches the top of the hierarchy
 		 * @function
 		 * @param {object} passedFolder - The folder being passed to the parent for modification
@@ -143,14 +143,14 @@ export default {
 		 * @memberof ResourceFolder
 		 * @version 0.0.9
 		 */
-		manageFolder (passedFolder) {
-			if (passedFolder) {
-				this.$emit('manageFolder', passedFolder)
-			} else {
-				this.$emit('manageFolder', this.folder)
-			}
-		},
-		/**
+    manageFolder (passedFolder) {
+      if (passedFolder) {
+        this.$emit('manageFolder', passedFolder)
+      } else {
+        this.$emit('manageFolder', this.folder)
+      }
+    },
+    /**
 		 * To emit that the user wants to pull in the resources in the folder to the parent component until it reaches the top of the hierarchy
 		 * @function
 		 * @param {integer} pageNumber - The page number to be passed to the parent.
@@ -159,14 +159,14 @@ export default {
 		 * @memberof ResourceFolder
 		 * @version 0.0.9
 		 */
-		getResources (pageNumber, passedFolder) {
-			if (passedFolder) {
-				this.$emit('getResources', pageNumber, passedFolder, true)
-			} else {
-				this.$emit('getResources', pageNumber, this.folder, true)
-			}
-		}
-	}
+    getResources (pageNumber, passedFolder) {
+      if (passedFolder) {
+        this.$emit('getResources', pageNumber, passedFolder, true)
+      } else {
+        this.$emit('getResources', pageNumber, this.folder, true)
+      }
+    }
+  }
 }
 </script>
 <style scoped>

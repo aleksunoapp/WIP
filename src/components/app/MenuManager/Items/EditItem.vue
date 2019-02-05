@@ -344,393 +344,393 @@ import ajaxErrorHandler from '../../../../controllers/ErrorController'
 import { mapGetters } from 'vuex'
 
 export default {
-	data () {
-		return {
-			showEditItemModal: false,
-			updating: false,
-			itemToBeEdited: {
-				image_url: '',
-				nutrition_summary: '',
-				sku: ''
-			},
-			errorMessage: '',
-			selectImageMode: false,
-			selectedLocations: [],
-			selectLocationMode: false,
-			itemTypes: [],
-			noItemTypes: false,
-			skuDisabled: true,
-			confirmingSkuEdit: false
-		}
-	},
-	computed: {
-		taxClassLabel () {
-			if (!this.itemToBeEdited.item_type_id) {
-				return 'Select'
-			} else {
-				return this.itemTypes
-					.filter(
-						type => type.id === this.itemToBeEdited.item_type_id
-					)
-					.map(type => type.name)[0]
-			}
-		},
-		itemTypeLabel () {
-			if (!this.itemToBeEdited.type) {
-				return 'Select'
-			} else {
-				return this.itemToBeEdited.type
-			}
-		},
-		...mapGetters(['can', 'canAny'])
-	},
-	created () {
-		// get category details by category id passed as route param
-		this.getItemDetails()
-		this.getItemTypes()
-	},
-	mounted () {
-		this.showEditItemModal = true
-	},
-	methods: {
-		/**
+  data () {
+    return {
+      showEditItemModal: false,
+      updating: false,
+      itemToBeEdited: {
+        image_url: '',
+        nutrition_summary: '',
+        sku: ''
+      },
+      errorMessage: '',
+      selectImageMode: false,
+      selectedLocations: [],
+      selectLocationMode: false,
+      itemTypes: [],
+      noItemTypes: false,
+      skuDisabled: true,
+      confirmingSkuEdit: false
+    }
+  },
+  computed: {
+    taxClassLabel () {
+      if (!this.itemToBeEdited.item_type_id) {
+        return 'Select'
+      } else {
+        return this.itemTypes
+          .filter(
+            type => type.id === this.itemToBeEdited.item_type_id
+          )
+          .map(type => type.name)[0]
+      }
+    },
+    itemTypeLabel () {
+      if (!this.itemToBeEdited.type) {
+        return 'Select'
+      } else {
+        return this.itemToBeEdited.type
+      }
+    },
+    ...mapGetters(['can', 'canAny'])
+  },
+  created () {
+    // get category details by category id passed as route param
+    this.getItemDetails()
+    this.getItemTypes()
+  },
+  mounted () {
+    this.showEditItemModal = true
+  },
+  methods: {
+    /**
 		 * To show a confirmation prompt before editing the SKU
 		 * @function
 		 * @returns {undefined}
 		 */
-		confirmSkuEdit () {
-			this.confirmingSkuEdit = true
-		},
-		/**
+    confirmSkuEdit () {
+      this.confirmingSkuEdit = true
+    },
+    /**
 		 * To dismiss the SKU edit confirmation prompt without editing
 		 * @function
 		 * @returns {undefined}
 		 */
-		cancelSkuEdit () {
-			this.confirmingSkuEdit = false
-		},
-		/**
+    cancelSkuEdit () {
+      this.confirmingSkuEdit = false
+    },
+    /**
 		 * To dismiss the SKU edit confirmation prompt and enable editing
 		 * @function
 		 * @returns {undefined}
 		 */
-		enableSkuEdit () {
-			this.confirmingSkuEdit = false
-			this.skuDisabled = false
-		},
-		/**
+    enableSkuEdit () {
+      this.confirmingSkuEdit = false
+      this.skuDisabled = false
+    },
+    /**
 		 * To update the type field of the item
 		 * @function
 		 * @param {string} type - The selected type
 		 * @returns {undefined}
 		 */
-		updateItemType (type) {
-			if (
-				this.can(
-					'menu_manager menus categories subcategories items update'
-				)
-			) {
-				this.itemToBeEdited.type = type
-			}
-		},
-		/**
+    updateItemType (type) {
+      if (
+        this.can(
+          'menu_manager menus categories subcategories items update'
+        )
+      ) {
+        this.itemToBeEdited.type = type
+      }
+    },
+    /**
 		 * To toggle select location mode on.
 		 * @function
 		 * @param {object} event - The event that triggered the action
 		 * @returns {undefined}
 		 */
-		selectLocations (event) {
-			event.preventDefault()
-			this.selectLocationMode = true
-		},
-		/**
+    selectLocations (event) {
+      event.preventDefault()
+      this.selectLocationMode = true
+    },
+    /**
 		 * To toggle select location mode on.
 		 * @function
 		 * @param {array} locations - The array of selected locations
 		 * @returns {undefined}
 		 */
-		updateSelectedLocations (locations) {
-			if (
-				this.can(
-					'menu_manager menus categories subcategories items update'
-				)
-			) {
-				this.selectedLocations = locations
-			}
-			this.closeSelectLocationsPopup()
-		},
-		/**
+    updateSelectedLocations (locations) {
+      if (
+        this.can(
+          'menu_manager menus categories subcategories items update'
+        )
+      ) {
+        this.selectedLocations = locations
+      }
+      this.closeSelectLocationsPopup()
+    },
+    /**
 		 * To toggle select location mode on.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeSelectLocationsPopup () {
-			this.selectLocationMode = false
-		},
-		/**
+    closeSelectLocationsPopup () {
+      this.selectLocationMode = false
+    },
+    /**
 		 * To check if the item data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateCategoryData () {
-			var editItemVue = this
-			return new Promise(function (resolve, reject) {
-				if (!editItemVue.itemToBeEdited.name.length) {
-					reject('Item name cannot be blank')
-				} else if (!editItemVue.itemToBeEdited.desc.length) {
-					reject('Item description cannot be blank')
-				} else if (
-					!editItemVue.itemToBeEdited.short_description.length
-				) {
-					reject('Item short description cannot be blank')
-				} else if (!editItemVue.itemToBeEdited.price.length) {
-					reject('Item price cannot be blank')
-				} else if (
-					!editItemVue.itemToBeEdited.nutrition_summary.length
-				) {
-					reject('Nutrition summary cannot be blank')
-				} else if (!editItemVue.itemToBeEdited.sku.length) {
-					reject('Item SKU cannot be blank')
-				} else if (!editItemVue.itemToBeEdited.image_url.length) {
-					reject('Item image URL cannot be blank')
-				} else if (!$.isNumeric(editItemVue.itemToBeEdited.order)) {
-					reject('Item order should be a number')
-				} else if (!editItemVue.itemToBeEdited.item_type_id) {
-					reject('Select an item type')
-				} else if (!$.isNumeric(editItemVue.itemToBeEdited.status)) {
-					reject('Item status cannot be blank')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateCategoryData () {
+      var editItemVue = this
+      return new Promise(function (resolve, reject) {
+        if (!editItemVue.itemToBeEdited.name.length) {
+          reject('Item name cannot be blank')
+        } else if (!editItemVue.itemToBeEdited.desc.length) {
+          reject('Item description cannot be blank')
+        } else if (
+          !editItemVue.itemToBeEdited.short_description.length
+        ) {
+          reject('Item short description cannot be blank')
+        } else if (!editItemVue.itemToBeEdited.price.length) {
+          reject('Item price cannot be blank')
+        } else if (
+          !editItemVue.itemToBeEdited.nutrition_summary.length
+        ) {
+          reject('Nutrition summary cannot be blank')
+        } else if (!editItemVue.itemToBeEdited.sku.length) {
+          reject('Item SKU cannot be blank')
+        } else if (!editItemVue.itemToBeEdited.image_url.length) {
+          reject('Item image URL cannot be blank')
+        } else if (!$.isNumeric(editItemVue.itemToBeEdited.order)) {
+          reject('Item order should be a number')
+        } else if (!editItemVue.itemToBeEdited.item_type_id) {
+          reject('Select an item type')
+        } else if (!$.isNumeric(editItemVue.itemToBeEdited.status)) {
+          reject('Item status cannot be blank')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To get the details of the item to be updated.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getItemDetails () {
-			var editItemVue = this
-			ItemsFunctions.getItemDetails(
-				editItemVue.$route.params.item_id,
-				editItemVue.$root.appId,
-				editItemVue.$root.appSecret,
-				editItemVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						editItemVue.itemToBeEdited = response.payload
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not get item info',
-						errorName: 'errorMessage',
-						vue: editItemVue,
-						containerRef: 'editModal'
-					})
-				})
-		},
-		/**
+    getItemDetails () {
+      var editItemVue = this
+      ItemsFunctions.getItemDetails(
+        editItemVue.$route.params.item_id,
+        editItemVue.$root.appId,
+        editItemVue.$root.appSecret,
+        editItemVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            editItemVue.itemToBeEdited = response.payload
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not get item info',
+            errorName: 'errorMessage',
+            vue: editItemVue,
+            containerRef: 'editModal'
+          })
+        })
+    },
+    /**
 		 * To update the item and close the modal.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		updateCategoryItem () {
-			var editItemVue = this
-			editItemVue.itemToBeEdited.user_id = editItemVue.$root.createdBy
-			editItemVue.itemToBeEdited.update_locations =
+    updateCategoryItem () {
+      var editItemVue = this
+      editItemVue.itemToBeEdited.user_id = editItemVue.$root.createdBy
+      editItemVue.itemToBeEdited.update_locations =
 				editItemVue.selectedLocations
-			if (!editItemVue.itemToBeEdited.type) {
-				editItemVue.itemToBeEdited.type === 'custom'
-			}
-			editItemVue.clearError()
+      if (!editItemVue.itemToBeEdited.type) {
+        editItemVue.itemToBeEdited.type === 'custom'
+      }
+      editItemVue.clearError()
 
-			return editItemVue
-				.validateCategoryData()
-				.then(response => {
-					editItemVue.updating = true
-					ItemsFunctions.updateCategoryItem(
-						editItemVue.itemToBeEdited,
-						editItemVue.$root.appId,
-						editItemVue.$root.appSecret,
-						editItemVue.$root.userToken
-					)
-						.then(response => {
-							if (
-								response.code === 200 &&
+      return editItemVue
+        .validateCategoryData()
+        .then(response => {
+          editItemVue.updating = true
+          ItemsFunctions.updateCategoryItem(
+            editItemVue.itemToBeEdited,
+            editItemVue.$root.appId,
+            editItemVue.$root.appSecret,
+            editItemVue.$root.userToken
+          )
+            .then(response => {
+              if (
+                response.code === 200 &&
 								response.status === 'ok'
-							) {
-								this.showUpdateSuccess(response.payload)
-								this.closeModalAndUpdate()
-							} else {
-								editItemVue.errorMessage = response.message
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not update the item',
-								errorName: 'errorMessage',
-								vue: editItemVue,
-								containerRef: 'editModal'
-							})
-						})
-						.finally(() => {
-							editItemVue.updating = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					editItemVue.errorMessage = reason
-					window.scrollTo(0, 0)
-					throw reason
-				})
-		},
-		/**
+              ) {
+                this.showUpdateSuccess(response.payload)
+                this.closeModalAndUpdate()
+              } else {
+                editItemVue.errorMessage = response.message
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not update the item',
+                errorName: 'errorMessage',
+                vue: editItemVue,
+                containerRef: 'editModal'
+              })
+            })
+            .finally(() => {
+              editItemVue.updating = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          editItemVue.errorMessage = reason
+          window.scrollTo(0, 0)
+          throw reason
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showUpdateSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Item has been saved'
-			let type = 'success'
+    showUpdateSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Item has been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To close the modal and emit the updated item object to the parent.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModalAndUpdate () {
-			this.$emit('editItem', this.itemToBeEdited)
-			this.$router.push(
-				'/app/menu_manager/items/' + this.$route.params.category_id
-			)
-		},
-		/**
+    closeModalAndUpdate () {
+      this.$emit('editItem', this.itemToBeEdited)
+      this.$router.push(
+        '/app/menu_manager/items/' + this.$route.params.category_id
+      )
+    },
+    /**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('deactivateEditItemModal')
-			this.$router.push(
-				'/app/menu_manager/items/' + this.$route.params.category_id
-			)
-		},
-		/**
+    closeModal () {
+      this.$emit('deactivateEditItemModal')
+      this.$router.push(
+        '/app/menu_manager/items/' + this.$route.params.category_id
+      )
+    },
+    /**
 		 * To change the page to the gallery view on the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		goToPageTwo () {
-			this.selectImageMode = true
-		},
-		/**
+    goToPageTwo () {
+      this.selectImageMode = true
+    },
+    /**
 		 * To change the page to the main/form view on the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		goToPageOne () {
-			this.selectImageMode = false
-		},
-		/**
+    goToPageOne () {
+      this.selectImageMode = false
+    },
+    /**
 		 * To set the image to be same as the one emitted by the gallery modal.
 		 * @function
 		 * @param {object} val - The emitted image object.
 		 * @returns {undefined}
 		 */
-		updateImage (val) {
-			this.goToPageOne()
-			this.itemToBeEdited.image_url = val.image_url
-		},
-		/**
+    updateImage (val) {
+      this.goToPageOne()
+      this.itemToBeEdited.image_url = val.image_url
+    },
+    /**
 		 * To get a list of all item types.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getItemTypes () {
-			var _this = this
-			let payload = { location_id: this.$root.activeLocation.id }
-			return ItemTypesFunctions.getItemTypes(
-				payload,
-				_this.$root.appId,
-				_this.$root.appSecret,
-				_this.$root.userToken
-			)
-				.then(response => {
-					_this.itemTypes = response.payload
-					if (response.payload.length === 0) {
-						this.noItemTypes = true
-					}
-				})
-				.catch(reason => {
-					_this.loadingItemTypes = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch the list of item types',
-						errorName: 'errorMessage',
-						vue: _this,
-						containerRef: 'editModal'
-					})
-				})
-		},
-		/**
+    getItemTypes () {
+      var _this = this
+      let payload = { location_id: this.$root.activeLocation.id }
+      return ItemTypesFunctions.getItemTypes(
+        payload,
+        _this.$root.appId,
+        _this.$root.appSecret,
+        _this.$root.userToken
+      )
+        .then(response => {
+          _this.itemTypes = response.payload
+          if (response.payload.length === 0) {
+            this.noItemTypes = true
+          }
+        })
+        .catch(reason => {
+          _this.loadingItemTypes = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch the list of item types',
+            errorName: 'errorMessage',
+            vue: _this,
+            containerRef: 'editModal'
+          })
+        })
+    },
+    /**
 		 * To update the item_type_id field of the new item
 		 * @function
 		 * @param {integer} id - The selected id
 		 * @returns {undefined}
 		 */
-		getItemTypeName (id) {
-			if (!id || !this.itemTypes.length) {
-				return 'n/a'
-			} else {
-				return this.itemTypes
-					.filter(type => type.id === id)
-					.map(type => type.name)[0]
-			}
-		},
-		/**
+    getItemTypeName (id) {
+      if (!id || !this.itemTypes.length) {
+        return 'n/a'
+      } else {
+        return this.itemTypes
+          .filter(type => type.id === id)
+          .map(type => type.name)[0]
+      }
+    },
+    /**
 		 * To update the item_type_id field of the new item
 		 * @function
 		 * @param {integer} id - The selected id
 		 * @returns {undefined}
 		 */
-		updateTaxClass (id) {
-			if (
-				this.can(
-					'menu_manager menus categories subcategories items update'
-				)
-			) {
-				this.itemToBeEdited.item_type_id = id
-			}
-		}
-	},
-	components: {
-		Modal,
-		StorePickerWithButton
-	}
+    updateTaxClass (id) {
+      if (
+        this.can(
+          'menu_manager menus categories subcategories items update'
+        )
+      ) {
+        this.itemToBeEdited.item_type_id = id
+      }
+    }
+  },
+  components: {
+    Modal,
+    StorePickerWithButton
+  }
 }
 </script>

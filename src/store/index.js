@@ -12,22 +12,22 @@ const environment = require('../environment.js')
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
-	modules: {
-		permissions,
-		auth,
-		stores,
-		combos,
-		users
-	},
-	actions: {},
-	strict: environment.development,
-	plugins: environment.development
-		? [
-			createPersistedState(),
-			createLogger()
-		] : [
-			createPersistedState()
-		]
+  modules: {
+    permissions,
+    auth,
+    stores,
+    combos,
+    users
+  },
+  actions: {},
+  strict: environment.development,
+  plugins: environment.development
+    ? [
+      createPersistedState(),
+      createLogger()
+    ] : [
+      createPersistedState()
+    ]
 })
 
 export default store

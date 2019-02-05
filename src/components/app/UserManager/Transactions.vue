@@ -2,11 +2,11 @@
   <div>
     <div class="row">
       <div class="col-xs-12">
-        <div 
+        <div
           v-show="alert"
           class="alert alert-danger"
         >
-          <button 
+          <button
             class="close"
             @click="clearError('alert')"
           />
@@ -20,7 +20,7 @@
       class="row"
     >
       <div class="col-xs-12">
-        <el-date-picker 
+        <el-date-picker
           v-model="fromDate"
           type="date"
           format="yyyy-MM-dd"
@@ -29,7 +29,7 @@
           placeholder="From"
           class="mb-5px"
         />
-        <el-date-picker 
+        <el-date-picker
           v-model="toDate"
           type="date"
           format="yyyy-MM-dd"
@@ -38,7 +38,7 @@
           placeholder="To"
           class="mb-5px"
         />
-        <el-input 
+        <el-input
           v-model="externalId"
           class="input-width mb-5px"
           placeholder="Order ID"
@@ -144,7 +144,7 @@
               <td class="align-middle">
                 <span
                   class="label label-sm"
-                  :class="{ 
+                  :class="{
                     'label-success' : transaction.status === 'success',
                     'label-info' : transaction.status !== 'success',
                     'label-danger' : transaction.status === 'fail'
@@ -222,205 +222,205 @@ import ajaxErrorHandler from '../../../controllers/ErrorController'
 import { formatUSD } from '@/controllers/utils'
 
 export default {
-	components: {
-		NoResults,
-		PageResults,
-		LoadingScreen,
-		Pagination
-	},
-	data: function () {
-		return {
-			// search filters
-			fromDate: '',
-			toDate: '',
-			externalId: '',
-			lastFourDigits: '',
-			// UI
-			loading: false,
-			alert: '',
-			noResults: '',
-			platforms: {
-				android: 'Android',
-				ios: 'iOS',
-				web: 'web'
-			},
-			// API data
-			payload: {},
-			transactions: [],
-			// pagination
-			total: 0,
-			lastPage: 1,
-			page: 1,
-			perPage: 25,
-			sortBy: 'DESC'
-		}
-	},
-	mounted () {
-		let today = new Date()
-		let yesterday = new Date()
-		yesterday.setDate(today.getDate() - 1)
+  components: {
+    NoResults,
+    PageResults,
+    LoadingScreen,
+    Pagination
+  },
+  data: function () {
+    return {
+      // search filters
+      fromDate: '',
+      toDate: '',
+      externalId: '',
+      lastFourDigits: '',
+      // UI
+      loading: false,
+      alert: '',
+      noResults: '',
+      platforms: {
+        android: 'Android',
+        ios: 'iOS',
+        web: 'web'
+      },
+      // API data
+      payload: {},
+      transactions: [],
+      // pagination
+      total: 0,
+      lastPage: 1,
+      page: 1,
+      perPage: 25,
+      sortBy: 'DESC'
+    }
+  },
+  mounted () {
+    let today = new Date()
+    let yesterday = new Date()
+    yesterday.setDate(today.getDate() - 1)
 
-		let yearFrom = yesterday.getFullYear()
-		let monthFrom = yesterday.getMonth() + 1
-		if (monthFrom < 10) {
-			monthFrom = '0' + monthFrom
-		}
-		let dayFrom = yesterday.getDate()
-		if (dayFrom < 10) {
-			dayFrom = '0' + dayFrom
-		}
+    let yearFrom = yesterday.getFullYear()
+    let monthFrom = yesterday.getMonth() + 1
+    if (monthFrom < 10) {
+      monthFrom = '0' + monthFrom
+    }
+    let dayFrom = yesterday.getDate()
+    if (dayFrom < 10) {
+      dayFrom = '0' + dayFrom
+    }
 
-		this.fromDate = `${yearFrom}-${monthFrom}-${dayFrom}`
+    this.fromDate = `${yearFrom}-${monthFrom}-${dayFrom}`
 
-		let yearTo = today.getFullYear()
-		let monthTo = today.getMonth() + 1
-		if (monthTo < 10) {
-			monthTo = '0' + monthTo
-		}
-		let dayTo = today.getDate()
-		if (dayTo < 10) {
-			dayTo = '0' + dayTo
-		}
+    let yearTo = today.getFullYear()
+    let monthTo = today.getMonth() + 1
+    if (monthTo < 10) {
+      monthTo = '0' + monthTo
+    }
+    let dayTo = today.getDate()
+    if (dayTo < 10) {
+      dayTo = '0' + dayTo
+    }
 
-		this.toDate = `${yearTo}-${monthTo}-${dayTo}`
+    this.toDate = `${yearTo}-${monthTo}-${dayTo}`
 
-		this.searchTransactions()
-	},
-	methods: {
-		/**
+    this.searchTransactions()
+  },
+  methods: {
+    /**
 		 * To format a number as currency
 		 * @function
 		 * @param {string} val - The number to format
 		 * @returns {string} The formatted currency amount
 		 */
-		formatUSD: formatUSD,
-		/**
+    formatUSD: formatUSD,
+    /**
 		 * To format a platform name
 		 * @function
 		 * @param {string} name - The name to format
 		 * @returns {string} The formatted platform name
 		 */
-		getPlatformName (name) {
-			try {
-				return this.platforms[name.toLowerCase()] || name
-			} catch (e) {
-				return ''
-			}
-		},
-		/**
+    getPlatformName (name) {
+      try {
+        return this.platforms[name.toLowerCase()] || name
+      } catch (e) {
+        return ''
+      }
+    },
+    /**
 		 * To change the current page
 		 * @function
 		 * @param {number} page - The new page number
 		 * @returns {undefined}
 		 */
-		changePage (page) {
-			if (this.page !== page) {
-				this.page = page
-				this.searchTransactions()
-			}
-		},
-		/**
+    changePage (page) {
+      if (this.page !== page) {
+        this.page = page
+        this.searchTransactions()
+      }
+    },
+    /**
 		 * To change the number of results displayed on a page
 		 * @function
 		 * @param {number} perPage - The new number of results per page
 		 * @returns {undefined}
 		 */
-		changePerPage (perPage) {
-			if (this.perPage !== perPage) {
-				this.page = 1
-				this.perPage = perPage
-				this.searchTransactions()
-			}
-		},
-		/**
+    changePerPage (perPage) {
+      if (this.perPage !== perPage) {
+        this.page = 1
+        this.perPage = perPage
+        this.searchTransactions()
+      }
+    },
+    /**
 		 * To resort the results
 		 * @function
 		 * @param {string} order - ASC or DESC
 		 * @returns {undefined}
 		 */
-		changeSortBy (order) {
-			if (this.sortBy !== order) {
-				this.sortBy = order
-				this.searchTransactions()
-			}
-		},
-		/**
+    changeSortBy (order) {
+      if (this.sortBy !== order) {
+        this.sortBy = order
+        this.searchTransactions()
+      }
+    },
+    /**
 		 * To clear an error
 		 * @function
 		 * @param {string} name - The name of the error variable
 		 * @returns {undefined}
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To validate data before making a call
 		 * @function
 		 * @returns {undefined}
 		 */
-		validateSearchTerms () {
-			if (
-				!this.fromDate &&
+    validateSearchTerms () {
+      if (
+        !this.fromDate &&
 				!this.toDate &&
 				!this.externalId &&
 				!this.lastFourDigits
-			) { return }
-			this.page = 1
-			this.searchTransactions()
-		},
-		/**
+      ) { return }
+      this.page = 1
+      this.searchTransactions()
+    },
+    /**
 		 * To make a search transactions call
 		 * @function
 		 * @returns {object} A network promise call
 		 */
-		searchTransactions () {
-			this.loading = true
-			this.$scrollTo(this.$refs.searchRow, 500, {force: false})
-			const _this = this
+    searchTransactions () {
+      this.loading = true
+      this.$scrollTo(this.$refs.searchRow, 500, { force: false })
+      const _this = this
 
-			this.payload = {
-				from_date: this.fromDate,
-				to_date: this.toDate,
-				// external_id: this.externalId ? this.externalId : undefined,
-				last_four_digits: this.lastFourDigits,
-				per_page: this.perPage
-				// page: this.page,
-				// order: this.sortBy,
-			}
+      this.payload = {
+        from_date: this.fromDate,
+        to_date: this.toDate,
+        // external_id: this.externalId ? this.externalId : undefined,
+        last_four_digits: this.lastFourDigits,
+        per_page: this.perPage
+        // page: this.page,
+        // order: this.sortBy,
+      }
 
-			return TransactionsFunctions.searchTransactions(this.payload)
-				.then(response => {
-					if (response.code !== 200) {
-						throw Error('Something went wrong')
-					} else if (response.payload.total === 0) {
-						_this.noResults = 'There are no matching transactions'
-						_this.transactions = response.payload.data
-						_this.total = response.payload.total
-						_this.lastPage = response.payload.last_page
-					} else {
-						_this.transactions = response.payload.data
-						_this.total = response.payload.total
-						_this.lastPage = response.payload.last_page
-					}
-				})
-				.catch(reason => {
-					if (reason.message === 'The selected ID is invalid.') {
-						_this.transactions = []
-						_this.total = 0
-						return
-					}
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Something went wrong',
-						errorName: 'alert',
-						vue: _this
-					})
-				})
-				.finally(() => {
-					_this.loading = false
-				})
-		}
-	}
+      return TransactionsFunctions.searchTransactions(this.payload)
+        .then(response => {
+          if (response.code !== 200) {
+            throw Error('Something went wrong')
+          } else if (response.payload.total === 0) {
+            _this.noResults = 'There are no matching transactions'
+            _this.transactions = response.payload.data
+            _this.total = response.payload.total
+            _this.lastPage = response.payload.last_page
+          } else {
+            _this.transactions = response.payload.data
+            _this.total = response.payload.total
+            _this.lastPage = response.payload.last_page
+          }
+        })
+        .catch(reason => {
+          if (reason.message === 'The selected ID is invalid.') {
+            _this.transactions = []
+            _this.total = 0
+            return
+          }
+          ajaxErrorHandler({
+            reason,
+            errorText: 'Something went wrong',
+            errorName: 'alert',
+            vue: _this
+          })
+        })
+        .finally(() => {
+          _this.loading = false
+        })
+    }
+  }
 }
 </script>
 

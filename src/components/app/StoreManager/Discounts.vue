@@ -83,7 +83,7 @@
                 >
                   Type:
                 </label>
-                <el-select 
+                <el-select
                   v-model="newDiscount.type"
                   placeholder="% or $"
                   size="small"
@@ -114,13 +114,13 @@
           </div>
           <div class="row">
             <div class="col-md-6">
-              <button 
+              <button
                 type="submit"
                 class="btn blue pull-right"
                 :disabled="creating"
               >
                 Create
-                <i 
+                <i
                   v-show="creating"
                   class="fa fa-spinner fa-pulse fa-fw"
                 />
@@ -257,7 +257,7 @@
         slot="modal-header"
         class="modal-header"
       >
-        <button 
+        <button
           type="button"
           class="close"
           @click="closeEditModal()"
@@ -275,7 +275,7 @@
         <form role="form">
           <div class="row">
             <div class="col-md-12">
-              <div 
+              <div
                 v-show="editErrorMessage.length"
                 ref="editErrorMessage"
                 class="alert alert-danger"
@@ -307,7 +307,7 @@
                   >
                     Type:
                   </label>
-                  <el-select 
+                  <el-select
                     v-model="discountToEdit.type"
                     placeholder="% or $"
                     size="small"
@@ -359,7 +359,7 @@
           @click="updateDiscount()"
         >
           Save
-          <i 
+          <i
             v-show="updating"
             class="fa fa-spinner fa-pulse fa-fw"
           />
@@ -444,429 +444,429 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 import { isNonNegativeNumber } from '@/controllers/utils'
 
 export default {
-	components: {
-		Breadcrumb,
-		LoadingScreen,
-		Modal,
-		NoResults
-	},
-	data () {
-		return {
-			breadcrumbArray: [{ name: 'Discounts', link: false }],
+  components: {
+    Breadcrumb,
+    LoadingScreen,
+    Modal,
+    NoResults
+  },
+  data () {
+    return {
+      breadcrumbArray: [{ name: 'Discounts', link: false }],
 
-			createNewCollapse: true,
-			creating: false,
-			createErrorMessage: '',
-			newDiscount: {
-				name: '',
-				type: '',
-				value: ''
-			},
+      createNewCollapse: true,
+      creating: false,
+      createErrorMessage: '',
+      newDiscount: {
+        name: '',
+        type: '',
+        value: ''
+      },
 
-			loadingDiscounts: false,
-			listErrorMessage: '',
-			discounts: [],
+      loadingDiscounts: false,
+      listErrorMessage: '',
+      discounts: [],
 
-			showEditModal: false,
-			editErrorMessage: '',
-			updating: false,
-			discountToEdit: {
-				name: '',
-				type: '',
-				value: ''
-			},
+      showEditModal: false,
+      editErrorMessage: '',
+      updating: false,
+      discountToEdit: {
+        name: '',
+        type: '',
+        value: ''
+      },
 
-			showDeleteModal: false,
-			deleting: false,
-			deleteErrorMessage: '',
-			discountToDelete: {
-				name: '',
-				type: '',
-				value: ''
-			}
-		}
-	},
-	computed: {
-		activeLocationId: function () {
-			return this.$root.activeLocation.id
-		}
-	},
-	watch: {
-		activeLocationId: {
-			handler: function (newId) {
-				if (newId !== undefined) {
-					this.clearError('listErrorMessage')
-					this.getDiscounts()
-				} else {
-					this.discounts = []
-				}
-			},
-			immediate: true
-		}
-	},
-	methods: {
-		/**
+      showDeleteModal: false,
+      deleting: false,
+      deleteErrorMessage: '',
+      discountToDelete: {
+        name: '',
+        type: '',
+        value: ''
+      }
+    }
+  },
+  computed: {
+    activeLocationId: function () {
+      return this.$root.activeLocation.id
+    }
+  },
+  watch: {
+    activeLocationId: {
+      handler: function (newId) {
+        if (newId !== undefined) {
+          this.clearError('listErrorMessage')
+          this.getDiscounts()
+        } else {
+          this.discounts = []
+        }
+      },
+      immediate: true
+    }
+  },
+  methods: {
+    /**
 		 * To toggle the create tier panel, initially set to closed
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCreatePanel () {
-			this.createNewCollapse = !this.createNewCollapse
-		},
-		/**
+    toggleCreatePanel () {
+      this.createNewCollapse = !this.createNewCollapse
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @param {object} errorMessageName - The error message to be cleared.
 		 * @returns {undefined}
 		 */
-		clearError (errorMessageName) {
-			this[errorMessageName] = ''
-		},
-		/**
+    clearError (errorMessageName) {
+      this[errorMessageName] = ''
+    },
+    /**
 		 * To check if the discount data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateNewDiscountData () {
-			var _this = this
-			return new Promise(function (resolve, reject) {
-				if (!_this.newDiscount.name) {
-					reject('Name cannot be blank')
-				} else if (!_this.newDiscount.type) {
-					reject('Select a type')
-				} else if (!_this.newDiscount.value.length) {
-					reject('Enter a vaule')
-				} else if (!isNonNegativeNumber(_this.newDiscount.value)) {
-					reject('Value must be zero or more')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateNewDiscountData () {
+      var _this = this
+      return new Promise(function (resolve, reject) {
+        if (!_this.newDiscount.name) {
+          reject('Name cannot be blank')
+        } else if (!_this.newDiscount.type) {
+          reject('Select a type')
+        } else if (!_this.newDiscount.value.length) {
+          reject('Enter a vaule')
+        } else if (!isNonNegativeNumber(_this.newDiscount.value)) {
+          reject('Value must be zero or more')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To create a new discount.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		createDiscount () {
-			var _this = this
-			_this.clearError('createErrorMessage')
+    createDiscount () {
+      var _this = this
+      _this.clearError('createErrorMessage')
 
-			return _this
-				.validateNewDiscountData()
-				.then(response => {
-					this.creating = true
+      return _this
+        .validateNewDiscountData()
+        .then(response => {
+          this.creating = true
 
-					DiscountsFunctions.createDiscount(this.newDiscount, this.activeLocationId)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								_this.showCreateSuccess(response.payload)
-								_this.clearNewDiscount()
-								_this.getDiscounts()
-							} else {
-								_this.createErrorMessage = response.message
-								_this.$scrollTo(
-									_this.$refs.createErrorMessage,
-									1000,
-									{
-										force: false
-									}
-								)
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not create the discount',
-								errorName: 'createErrorMessage',
-								vue: _this
-							})
-						})
-						.finally(() => {
-							_this.creating = false
-						})
-				})
-				.catch(reason => {
-					_this.createErrorMessage = reason
-					_this.$scrollTo(
-						_this.$refs.createErrorMessage,
-						1000
-					)
-				})
-		},
-		/**
+          DiscountsFunctions.createDiscount(this.newDiscount, this.activeLocationId)
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                _this.showCreateSuccess(response.payload)
+                _this.clearNewDiscount()
+                _this.getDiscounts()
+              } else {
+                _this.createErrorMessage = response.message
+                _this.$scrollTo(
+                  _this.$refs.createErrorMessage,
+                  1000,
+                  {
+                    force: false
+                  }
+                )
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not create the discount',
+                errorName: 'createErrorMessage',
+                vue: _this
+              })
+            })
+            .finally(() => {
+              _this.creating = false
+            })
+        })
+        .catch(reason => {
+          _this.createErrorMessage = reason
+          _this.$scrollTo(
+            _this.$refs.createErrorMessage,
+            1000
+          )
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showCreateSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Discount has been created'
-			let type = 'success'
+    showCreateSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Discount has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Discount has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Discount has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To clear the new discount form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearNewDiscount () {
-			this.newDiscount = {
-				name: '',
-				type: '',
-				value: ''
-			}
-		},
-		/**
+    clearNewDiscount () {
+      this.newDiscount = {
+        name: '',
+        type: '',
+        value: ''
+      }
+    },
+    /**
 		 * To get a list of all discounts.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getDiscounts () {
-			this.loadingDiscounts = true
-			this.discounts = []
-			var _this = this
-			return DiscountsFunctions.listDiscountsForStore(this.activeLocationId)
-				.then(response => {
-					_this.discounts = response.payload.sort((a, b) => {
-						if (a.name.toLowerCase() < b.name.toLowerCase()) {
-							return -1
-						} else if (a.name.toLowerCase() > b.name.toLowerCase()) {
-							return 1
-						} else {
-							return 0
-						}
-					})
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch the list of discounts',
-						errorName: 'listErrorMessage',
-						vue: _this
-					})
-				})
-				.finally(() => {
-					_this.loadingDiscounts = false
-				})
-		},
-		/**
+    getDiscounts () {
+      this.loadingDiscounts = true
+      this.discounts = []
+      var _this = this
+      return DiscountsFunctions.listDiscountsForStore(this.activeLocationId)
+        .then(response => {
+          _this.discounts = response.payload.sort((a, b) => {
+            if (a.name.toLowerCase() < b.name.toLowerCase()) {
+              return -1
+            } else if (a.name.toLowerCase() > b.name.toLowerCase()) {
+              return 1
+            } else {
+              return 0
+            }
+          })
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch the list of discounts',
+            errorName: 'listErrorMessage',
+            vue: _this
+          })
+        })
+        .finally(() => {
+          _this.loadingDiscounts = false
+        })
+    },
+    /**
 		 * To show the modal to edit an discount details.
 		 * @function
 		 * @param {object} discount - The selected discount.
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		editDiscount (discount, event) {
-			event.stopPropagation()
-			this.discountToEdit = {...discount}
-			this.showEditModal = true
-		},
-		/**
+    editDiscount (discount, event) {
+      event.stopPropagation()
+      this.discountToEdit = { ...discount }
+      this.showEditModal = true
+    },
+    /**
 		 * To check if the discount data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateEditedDiscountData () {
-			var _this = this
-			return new Promise(function (resolve, reject) {
-				if (!_this.discountToEdit.name) {
-					reject('Name cannot be blank')
-				} else if (!_this.discountToEdit.type) {
-					reject('Select a type')
-				} else if (!_this.discountToEdit.value.length) {
-					reject('Enter a vaule')
-				} else if (!isNonNegativeNumber(_this.discountToEdit.value)) {
-					reject('Value must be zero or more')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateEditedDiscountData () {
+      var _this = this
+      return new Promise(function (resolve, reject) {
+        if (!_this.discountToEdit.name) {
+          reject('Name cannot be blank')
+        } else if (!_this.discountToEdit.type) {
+          reject('Select a type')
+        } else if (!_this.discountToEdit.value.length) {
+          reject('Enter a vaule')
+        } else if (!isNonNegativeNumber(_this.discountToEdit.value)) {
+          reject('Value must be zero or more')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To update a discount.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		updateDiscount () {
-			var _this = this
-			_this.clearError('editErrorMessage')
-			let payload = {...this.discountToEdit}
-			payload.location_id = this.activeLocationId
+    updateDiscount () {
+      var _this = this
+      _this.clearError('editErrorMessage')
+      let payload = { ...this.discountToEdit }
+      payload.location_id = this.activeLocationId
 
-			return _this
-				.validateEditedDiscountData()
-				.then(response => {
-					this.updating = true
+      return _this
+        .validateEditedDiscountData()
+        .then(response => {
+          this.updating = true
 
-					DiscountsFunctions.updateDiscount(payload)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								_this.getDiscounts()
-								_this.closeEditModal()
-								_this.showEditSuccess(response.payload)
-								_this.resetEdit()
-							} else {
-								_this.editErrorMessage = response.message
-								_this.$scrollTo(
-									_this.$refs.editErrorMessage,
-									1000,
-									{
-										force: false,
-										container: _this.$refs.editModal.$el
-									}
-								)
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not update the discount',
-								errorName: 'editErrorMessage',
-								vue: _this
-							})
-						})
-						.finally(() => {
-							_this.updating = false
-						})
-				})
-				.catch(reason => {
-					_this.editErrorMessage = reason
-					_this.$scrollTo(
-						_this.$refs.editErrorMessage,
-						1000,
-						{
-							force: false
-						}
-					)
-				})
-		},
-		/**
+          DiscountsFunctions.updateDiscount(payload)
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                _this.getDiscounts()
+                _this.closeEditModal()
+                _this.showEditSuccess(response.payload)
+                _this.resetEdit()
+              } else {
+                _this.editErrorMessage = response.message
+                _this.$scrollTo(
+                  _this.$refs.editErrorMessage,
+                  1000,
+                  {
+                    force: false,
+                    container: _this.$refs.editModal.$el
+                  }
+                )
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not update the discount',
+                errorName: 'editErrorMessage',
+                vue: _this
+              })
+            })
+            .finally(() => {
+              _this.updating = false
+            })
+        })
+        .catch(reason => {
+          _this.editErrorMessage = reason
+          _this.$scrollTo(
+            _this.$refs.editErrorMessage,
+            1000,
+            {
+              force: false
+            }
+          )
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Discount has been saved'
-			let type = 'success'
+    showEditSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Discount has been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To close the modal for editing a promotion.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeEditModal () {
-			this.showEditModal = false
-		},
-		/**
+    closeEditModal () {
+      this.showEditModal = false
+    },
+    /**
 		 * To reset the edit form
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetEdit () {
-			this.discountToEdit = {
-				name: '',
-				type: '',
-				value: ''
-			}
-		},
-		/**
+    resetEdit () {
+      this.discountToEdit = {
+        name: '',
+        type: '',
+        value: ''
+      }
+    },
+    /**
 		 * To display the modal for deleting an discount.
 		 * @function
 		 * @param {object} discount - The selected discount
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		confirmDelete (discount, event) {
-			event.stopPropagation()
-			this.discountToDelete = { ...discount }
-			this.showDeleteModal = true
-		},
-		/**
+    confirmDelete (discount, event) {
+      event.stopPropagation()
+      this.discountToDelete = { ...discount }
+      this.showDeleteModal = true
+    },
+    /**
 		 * To close the modal for deleting a promotion and remove that promotion from DOM.
 		 * @function
 		 * @returns {undefined}
 		 */
-		deleteDiscount () {
-			this.deleting = true
-			var _this = this
-			return DiscountsFunctions.deleteDiscount(_this.discountToDelete.id)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						_this.getDiscounts()
-						_this.closeDeleteModal()
-						_this.showDeleteSuccess(response.payload)
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: `We could not delete ${this.discountToDelete.name}`,
-						errorName: 'deleteErrorMessage',
-						vue: _this,
-						containerRef: 'deleteModal'
-					})
-				})
-				.finally(() => {
-					_this.deleting = false
-				})
-		},
-		/**
+    deleteDiscount () {
+      this.deleting = true
+      var _this = this
+      return DiscountsFunctions.deleteDiscount(_this.discountToDelete.id)
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            _this.getDiscounts()
+            _this.closeDeleteModal()
+            _this.showDeleteSuccess(response.payload)
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: `We could not delete ${this.discountToDelete.name}`,
+            errorName: 'deleteErrorMessage',
+            vue: _this,
+            containerRef: 'deleteModal'
+          })
+        })
+        .finally(() => {
+          _this.deleting = false
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Discount has been deleted'
-			let type = 'success'
+    showDeleteSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Discount has been deleted'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The removal has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The removal has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To close the delete modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeDeleteModal () {
-			this.showDeleteModal = false
-		}
-	}
+    closeDeleteModal () {
+      this.showDeleteModal = false
+    }
+  }
 }
 </script>
 

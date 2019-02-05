@@ -4,14 +4,14 @@ module.exports = {
     node: true
   },
   extends: [
-    "plugin:vue/recommended"
-    // "@vue/prettier"
+    'plugin:vue/recommended',
+    '@vue/standard'
   ],
   rules: {
-    "no-console": process.env.NODE_ENV === "production" ? "error" : "off",
-    "no-debugger": process.env.NODE_ENV === "production" ? "error" : "off"
+    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
   },
   parserOptions: {
-    parser: "babel-eslint"
+    parser: 'babel-eslint'
   }
-};
+}

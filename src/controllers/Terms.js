@@ -11,20 +11,20 @@ import GlobalFunctions from '@/global.js'
  * ]
  */
 export const listTerms = () => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'GET',
-			dataType: 'json',
-			url: '/app/term',
-			data: {},
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'GET',
+      dataType: 'json',
+      url: '/app/term',
+      data: {},
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 /**
@@ -41,23 +41,23 @@ export const listTerms = () => {
  */
 
 export const listTermsForLanguage = (locale = '', platform = '') => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'GET',
-			dataType: 'json',
-			url: '/app/term_translation/allTermswithTranslationsByLanguage',
-			data: {
-				locale,
-				platform
-			},
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'GET',
+      dataType: 'json',
+      url: '/app/term_translation/allTermswithTranslationsByLanguage',
+      data: {
+        locale,
+        platform
+      },
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 /**
@@ -76,23 +76,23 @@ export const listTermsForLanguage = (locale = '', platform = '') => {
  */
 
 export const translateTerms = ({ localeId = null, translations = null }) => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'POST',
-			dataType: 'json',
-			url: '/app/term_translation/update',
-			data: {
-				locale_id: localeId,
-				translations
-			},
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'POST',
+      dataType: 'json',
+      url: '/app/term_translation/update',
+      data: {
+        locale_id: localeId,
+        translations
+      },
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 /**
@@ -107,20 +107,20 @@ export const translateTerms = ({ localeId = null, translations = null }) => {
  *  }
  */
 export const createTerm = (term) => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'POST',
-			dataType: 'json',
-			url: '/app/term/create',
-			data: term,
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'POST',
+      dataType: 'json',
+      url: '/app/term/create',
+      data: term,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 /**
@@ -136,20 +136,20 @@ export const createTerm = (term) => {
  * }
  */
 export const updateTerm = (term) => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'POST',
-			dataType: 'json',
-			url: `/app/term/${term.id}/update`,
-			data: term,
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'POST',
+      dataType: 'json',
+      url: `/app/term/${term.id}/update`,
+      data: term,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 /**
@@ -158,27 +158,27 @@ export const updateTerm = (term) => {
  * @returns {object} A promise with response shaped ...
  */
 export const deleteTerm = ({ id = null }) => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'DELETE',
-			dataType: 'json',
-			url: `/app/term/${id}/delete`,
-			data: {},
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'DELETE',
+      dataType: 'json',
+      url: `/app/term/${id}/delete`,
+      data: {},
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 export default {
-	listTerms,
-	listTermsForLanguage,
-	translateTerms,
-	createTerm,
-	updateTerm,
-	deleteTerm
+  listTerms,
+  listTermsForLanguage,
+  translateTerms,
+  createTerm,
+  updateTerm,
+  deleteTerm
 }

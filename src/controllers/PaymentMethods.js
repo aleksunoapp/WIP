@@ -8,19 +8,19 @@ import GlobalFunctions from '@/global.js'
  * @returns {object} A promise
  */
 export const listPaymentMethodsForStore = (storeId) => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'GET',
-			dataType: 'json',
-			url: `/app/payment_methods/${storeId}`,
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'GET',
+      dataType: 'json',
+      url: `/app/payment_methods/${storeId}`,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 /**
@@ -30,20 +30,20 @@ export const listPaymentMethodsForStore = (storeId) => {
  * @returns {object} A promise
  */
 export const createPaymentMethods = (paymentMethods) => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'POST',
-			dataType: 'json',
-			url: `/app/payment_methods/create`,
-			data: paymentMethods,
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'POST',
+      dataType: 'json',
+      url: `/app/payment_methods/create`,
+      data: paymentMethods,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 /**
@@ -53,20 +53,20 @@ export const createPaymentMethods = (paymentMethods) => {
  * @returns {object} A promise
  */
 export const updatePaymentMethods = (paymentMethods) => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'POST',
-			dataType: 'json',
-			url: `/app/payment_methods/update/${paymentMethods.id}`,
-			data: paymentMethods,
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'POST',
+      dataType: 'json',
+      url: `/app/payment_methods/update/${paymentMethods.id}`,
+      data: paymentMethods,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 /**
@@ -76,23 +76,23 @@ export const updatePaymentMethods = (paymentMethods) => {
 * @returns {object} A promise
 */
 export const deletePaymentMethods = (paymentMethodsId) => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'DELETE',
-			url: `/app/payment_methods/delete/${paymentMethodsId}`,
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'DELETE',
+      url: `/app/payment_methods/delete/${paymentMethodsId}`,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 export default {
-	listPaymentMethodsForStore,
-	createPaymentMethods,
-	updatePaymentMethods,
-	deletePaymentMethods
+  listPaymentMethodsForStore,
+  createPaymentMethods,
+  updatePaymentMethods,
+  deletePaymentMethods
 }

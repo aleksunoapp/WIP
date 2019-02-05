@@ -118,129 +118,129 @@ import RewardsFunctions from '../../../controllers/Rewards'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Modal
-	},
-	props: {
-		passedRewardTier: {
-			type: Object,
-			default: () => {
-				return {}
-			}
-		}
-	},
-	data () {
-		return {
-			showEditTierModal: false,
-			updating: false,
-			rewardTierToBeEdited: {},
-			errorMessage: ''
-		}
-	},
-	mounted () {
-		this.showEditTierModal = true
-		if (this.passedRewardTier && this.passedRewardTier.id) {
-			this.rewardTierToBeEdited = { ...this.passedRewardTier }
-		}
-	},
-	methods: {
-		/**
+  components: {
+    Modal
+  },
+  props: {
+    passedRewardTier: {
+      type: Object,
+      default: () => {
+        return {}
+      }
+    }
+  },
+  data () {
+    return {
+      showEditTierModal: false,
+      updating: false,
+      rewardTierToBeEdited: {},
+      errorMessage: ''
+    }
+  },
+  mounted () {
+    this.showEditTierModal = true
+    if (this.passedRewardTier && this.passedRewardTier.id) {
+      this.rewardTierToBeEdited = { ...this.passedRewardTier }
+    }
+  },
+  methods: {
+    /**
 		 * To check if the tier data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateTierData () {
-			var editRewardsTierVue = this
-			return new Promise(function (resolve, reject) {
-				if (!editRewardsTierVue.rewardTierToBeEdited.name.length) {
-					reject('Reward tier name cannot be blank')
-				} else if (
-					!editRewardsTierVue.rewardTierToBeEdited.description.length
-				) {
-					reject('Reward tier description cannot be blank')
-				} else if (
-					!$.isNumeric(editRewardsTierVue.rewardTierToBeEdited.points)
-				) {
-					reject('Reward tier points should be a number')
-				} else if (
-					!$.isNumeric(editRewardsTierVue.rewardTierToBeEdited.stars)
-				) {
-					reject('Reward tier stars should be a number')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateTierData () {
+      var editRewardsTierVue = this
+      return new Promise(function (resolve, reject) {
+        if (!editRewardsTierVue.rewardTierToBeEdited.name.length) {
+          reject('Reward tier name cannot be blank')
+        } else if (
+          !editRewardsTierVue.rewardTierToBeEdited.description.length
+        ) {
+          reject('Reward tier description cannot be blank')
+        } else if (
+          !$.isNumeric(editRewardsTierVue.rewardTierToBeEdited.points)
+        ) {
+          reject('Reward tier points should be a number')
+        } else if (
+          !$.isNumeric(editRewardsTierVue.rewardTierToBeEdited.stars)
+        ) {
+          reject('Reward tier stars should be a number')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To update the tier and close the modal.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		updateRewardTier () {
-			var editRewardsTierVue = this
-			editRewardsTierVue.clearError()
-			editRewardsTierVue.rewardTierToBeEdited.updated_by =
+    updateRewardTier () {
+      var editRewardsTierVue = this
+      editRewardsTierVue.clearError()
+      editRewardsTierVue.rewardTierToBeEdited.updated_by =
 				editRewardsTierVue.$root.createdBy
-			return editRewardsTierVue
-				.validateTierData()
-				.then(response => {
-					editRewardsTierVue.updating = true
-					RewardsFunctions.updateRewardTier(
-						editRewardsTierVue.rewardTierToBeEdited,
-						editRewardsTierVue.$root.appId,
-						editRewardsTierVue.$root.appSecret,
-						editRewardsTierVue.$root.userToken
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								this.closeModalAndUpdate()
-							} else {
-								editRewardsTierVue.errorMessage = response.message
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not update the reward tier',
-								errorName: 'errorMessage',
-								vue: editRewardsTierVue,
-								containerRef: 'modal'
-							})
-						})
-						.finally(() => {
-							editRewardsTierVue.updating = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					editRewardsTierVue.errorMessage = reason
-					window.scrollTo(0, 0)
-					throw reason
-				})
-		},
-		/**
+      return editRewardsTierVue
+        .validateTierData()
+        .then(response => {
+          editRewardsTierVue.updating = true
+          RewardsFunctions.updateRewardTier(
+            editRewardsTierVue.rewardTierToBeEdited,
+            editRewardsTierVue.$root.appId,
+            editRewardsTierVue.$root.appSecret,
+            editRewardsTierVue.$root.userToken
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                this.closeModalAndUpdate()
+              } else {
+                editRewardsTierVue.errorMessage = response.message
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not update the reward tier',
+                errorName: 'errorMessage',
+                vue: editRewardsTierVue,
+                containerRef: 'modal'
+              })
+            })
+            .finally(() => {
+              editRewardsTierVue.updating = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          editRewardsTierVue.errorMessage = reason
+          window.scrollTo(0, 0)
+          throw reason
+        })
+    },
+    /**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('closeEditTierModal')
-		},
-		/**
+    closeModal () {
+      this.$emit('closeEditTierModal')
+    },
+    /**
 		 * To close the modal and emit the updated folder object to the parent.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModalAndUpdate () {
-			this.$emit('updateRewardTier', this.rewardTierToBeEdited)
-		}
-	}
+    closeModalAndUpdate () {
+      this.$emit('updateRewardTier', this.rewardTierToBeEdited)
+    }
+  }
 }
 </script>

@@ -169,10 +169,10 @@
               <td class="align-middle">
                 <span
                   class="label label-sm"
-                  :class="{ 
+                  :class="{
                     'label-info' : order.status === 'pending',
-                    'label-warning' : order.status === 'submitted', 
-                    'label-success' : order.status === 'completed', 
+                    'label-warning' : order.status === 'submitted',
+                    'label-success' : order.status === 'completed',
                     'label-danger' : order.status === 'overdue',
                     'label-danger' : order.status === 'cancelled' || order.status === 'refunded'
                   }"
@@ -300,220 +300,220 @@ import LoadingScreen from '@/components/modules/LoadingScreen'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
 
 export default {
-	components: {
-		'no-results': NoResults,
-		'page-results': PageResults,
-		'loading-screen': LoadingScreen,
-		pagination: Pagination
-	},
-	data: function () {
-		return {
-			// search filters
-			locationId: '',
-			fromDate: '',
-			toDate: '',
-			externalId: '',
-			// results contents
-			orderItems: 0,
-			orderItemModifier: 0,
-			orderModifierOption: 0,
-			user: 1,
-			location: 1,
-			// UI
-			loading: false,
-			alert: '',
-			noResults: 'Search for something',
-			validations: {
-				locationId: '',
-				fromDate: '',
-				toDate: '',
-				externalId: ''
-			},
-			// API data
-			payload: {},
-			orders: [],
-			// pagination
-			total: 0,
-			lastPage: 1,
-			page: 1,
-			perPage: 25,
-			sortBy: 'DESC'
-		}
-	},
-	computed: {
-		stores: function () {
-			let combined = [...this.$root.storeLocations, this.$root.activeLocation]
-			return combined.sort((a, b) => a.display_name > b.display_name)
-		}
-	},
-	mounted () {
-		let today = new Date()
-		let yesterday = new Date()
-		yesterday.setDate(today.getDate() - 1)
+  components: {
+    'no-results': NoResults,
+    'page-results': PageResults,
+    'loading-screen': LoadingScreen,
+    pagination: Pagination
+  },
+  data: function () {
+    return {
+      // search filters
+      locationId: '',
+      fromDate: '',
+      toDate: '',
+      externalId: '',
+      // results contents
+      orderItems: 0,
+      orderItemModifier: 0,
+      orderModifierOption: 0,
+      user: 1,
+      location: 1,
+      // UI
+      loading: false,
+      alert: '',
+      noResults: 'Search for something',
+      validations: {
+        locationId: '',
+        fromDate: '',
+        toDate: '',
+        externalId: ''
+      },
+      // API data
+      payload: {},
+      orders: [],
+      // pagination
+      total: 0,
+      lastPage: 1,
+      page: 1,
+      perPage: 25,
+      sortBy: 'DESC'
+    }
+  },
+  computed: {
+    stores: function () {
+      let combined = [...this.$root.storeLocations, this.$root.activeLocation]
+      return combined.sort((a, b) => a.display_name > b.display_name)
+    }
+  },
+  mounted () {
+    let today = new Date()
+    let yesterday = new Date()
+    yesterday.setDate(today.getDate() - 1)
 
-		let yearFrom = yesterday.getFullYear()
-		let monthFrom = yesterday.getMonth() + 1
-		if (monthFrom < 10) {
-			monthFrom = '0' + monthFrom
-		}
-		let dayFrom = yesterday.getDate()
-		if (dayFrom < 10) {
-			dayFrom = '0' + dayFrom
-		}
+    let yearFrom = yesterday.getFullYear()
+    let monthFrom = yesterday.getMonth() + 1
+    if (monthFrom < 10) {
+      monthFrom = '0' + monthFrom
+    }
+    let dayFrom = yesterday.getDate()
+    if (dayFrom < 10) {
+      dayFrom = '0' + dayFrom
+    }
 
-		this.fromDate = `${yearFrom}-${monthFrom}-${dayFrom}`
+    this.fromDate = `${yearFrom}-${monthFrom}-${dayFrom}`
 
-		let yearTo = today.getFullYear()
-		let monthTo = today.getMonth() + 1
-		if (monthTo < 10) {
-			monthTo = '0' + monthTo
-		}
-		let dayTo = today.getDate()
-		if (dayTo < 10) {
-			dayTo = '0' + dayTo
-		}
+    let yearTo = today.getFullYear()
+    let monthTo = today.getMonth() + 1
+    if (monthTo < 10) {
+      monthTo = '0' + monthTo
+    }
+    let dayTo = today.getDate()
+    if (dayTo < 10) {
+      dayTo = '0' + dayTo
+    }
 
-		this.toDate = `${yearTo}-${monthTo}-${dayTo}`
+    this.toDate = `${yearTo}-${monthTo}-${dayTo}`
 
-		this.searchOrders()
-	},
-	methods: {
-		/**
+    this.searchOrders()
+  },
+  methods: {
+    /**
 		 * To format a phone number
 		 * @function
 		 * @param {string} phone - The phone number to format
 		 * @returns {string} The formatted phone string
 		 */
-		formatPhone (phone) {
-			try {
-				let digits = phone.replace(/\D/g, '')
-				return (
-					digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
-				)
-			} catch (err) {
-				return 'n/a'
-			}
-		},
-		/**
+    formatPhone (phone) {
+      try {
+        let digits = phone.replace(/\D/g, '')
+        return (
+          digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
+        )
+      } catch (err) {
+        return 'n/a'
+      }
+    },
+    /**
 		 * To change the current page
 		 * @function
 		 * @param {number} page - The new page number
 		 * @returns {undefined}
 		 */
-		changePage (page) {
-			if (this.page !== page) {
-				this.page = page
-				this.searchOrders()
-			}
-		},
-		/**
+    changePage (page) {
+      if (this.page !== page) {
+        this.page = page
+        this.searchOrders()
+      }
+    },
+    /**
 		 * To change the number of results displayed on a page
 		 * @function
 		 * @param {number} perPage - The new number of results per page
 		 * @returns {undefined}
 		 */
-		changePerPage (perPage) {
-			if (this.perPage !== perPage) {
-				this.page = 1
-				this.perPage = perPage
-				this.searchOrders()
-			}
-		},
-		/**
+    changePerPage (perPage) {
+      if (this.perPage !== perPage) {
+        this.page = 1
+        this.perPage = perPage
+        this.searchOrders()
+      }
+    },
+    /**
 		 * To resort the results
 		 * @function
 		 * @param {string} order - ASC or DESC
 		 * @returns {undefined}
 		 */
-		changeSortBy (order) {
-			if (this.sortBy !== order) {
-				this.sortBy = order
-				this.searchOrders()
-			}
-		},
-		/**
+    changeSortBy (order) {
+      if (this.sortBy !== order) {
+        this.sortBy = order
+        this.searchOrders()
+      }
+    },
+    /**
 		 * To clear an error
 		 * @function
 		 * @param {string} name - The name of the error variable
 		 * @returns {undefined}
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To validate data before making a call
 		 * @function
 		 * @returns {undefined}
 		 */
-		validateData () {
-			if (
-				!this.fromDate &&
+    validateData () {
+      if (
+        !this.fromDate &&
 				!this.toDate &&
 				!this.locationId &&
 				!this.externalId
-			)				{ return }
-			this.page = 1
-			this.searchOrders()
-		},
-		/**
+      )				{ return }
+      this.page = 1
+      this.searchOrders()
+    },
+    /**
 		 * To make a search orders call
 		 * @function
 		 * @returns {object} A network promise call
 		 */
-		searchOrders () {
-			this.loading = true
-			this.$scrollTo(this.$refs.searchRow, 0, {offset: -100})
-			const _this = this
-			this.payload = {
-				location_id: this.locationId,
-				from_date: this.fromDate,
-				to_date: this.toDate,
-				external_id: this.externalId,
+    searchOrders () {
+      this.loading = true
+      this.$scrollTo(this.$refs.searchRow, 0, { offset: -100 })
+      const _this = this
+      this.payload = {
+        location_id: this.locationId,
+        from_date: this.fromDate,
+        to_date: this.toDate,
+        external_id: this.externalId,
 
-				order_items: this.orderItems,
-				order_item_modifier: this.orderItemModifier,
-				order_modifier_option: this.orderModifierOption,
-				user: this.user,
-				location: this.location,
+        order_items: this.orderItems,
+        order_item_modifier: this.orderItemModifier,
+        order_modifier_option: this.orderModifierOption,
+        user: this.user,
+        location: this.location,
 
-				page: this.page,
-				order: this.sortBy,
-				per_page: this.perPage
-			}
+        page: this.page,
+        order: this.sortBy,
+        per_page: this.perPage
+      }
 
-			return AnalyticsFunctions.searchOrders(this.payload)
-				.then(response => {
-					if (response.code !== 200) {
-						throw Error('Something went wrong')
-					} else if (response.payload.total === 0) {
-						_this.noResults = 'There are no matching orders'
-						_this.orders = response.payload.data
-						_this.total = response.payload.total
-						_this.lastPage = response.payload.last_page
-					} else {
-						_this.orders = response.payload.data
-						_this.total = response.payload.total
-						_this.lastPage = response.payload.last_page
-					}
-				})
-				.catch(reason => {
-					if (reason.message === 'The selected order id is invalid.') {
-						_this.orders = []
-						_this.total = 0
-						return
-					}
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Something went wrong',
-						errorName: 'alert',
-						vue: _this
-					})
-				})
-				.finally(() => {
-					_this.loading = false
-				})
-		}
-	}
+      return AnalyticsFunctions.searchOrders(this.payload)
+        .then(response => {
+          if (response.code !== 200) {
+            throw Error('Something went wrong')
+          } else if (response.payload.total === 0) {
+            _this.noResults = 'There are no matching orders'
+            _this.orders = response.payload.data
+            _this.total = response.payload.total
+            _this.lastPage = response.payload.last_page
+          } else {
+            _this.orders = response.payload.data
+            _this.total = response.payload.total
+            _this.lastPage = response.payload.last_page
+          }
+        })
+        .catch(reason => {
+          if (reason.message === 'The selected order id is invalid.') {
+            _this.orders = []
+            _this.total = 0
+            return
+          }
+          ajaxErrorHandler({
+            reason,
+            errorText: 'Something went wrong',
+            errorName: 'alert',
+            vue: _this
+          })
+        })
+        .finally(() => {
+          _this.loading = false
+        })
+    }
+  }
 }
 </script>
 

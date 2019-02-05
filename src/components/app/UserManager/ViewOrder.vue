@@ -198,97 +198,97 @@ import UsersFunctions from '../../../controllers/Users'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Modal
-	},
-	props: {
-		order: {
-			order: Object,
-			default: {}
-		}
-	},
-	data () {
-		return {
-			viewOrderModalDisplayed: false,
-			refunding: false,
-			errorMessage: ''
-		}
-	},
-	mounted () {
-		this.viewOrderModalDisplayed = true
-	},
-	methods: {
-		/**
+  components: {
+    Modal
+  },
+  props: {
+    order: {
+      order: Object,
+      default: {}
+    }
+  },
+  data () {
+    return {
+      viewOrderModalDisplayed: false,
+      refunding: false,
+      errorMessage: ''
+    }
+  },
+  mounted () {
+    this.viewOrderModalDisplayed = true
+  },
+  methods: {
+    /**
 		 * To close the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('closeViewOrderModal')
-		},
-		/**
+    closeModal () {
+      this.$emit('closeViewOrderModal')
+    },
+    /**
 		 * To clear the error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To format a number as currency
 		 * @function
 		 * @param {string} val - The number to format
 		 * @returns {string} The formatted currency amount
 		 */
-		formatUSD (val = '') {
-			if (val !== null && val !== undefined) {
-				let local = Number(val)
-				local = local.toLocaleString('en-US', {
-					style: 'currency',
-					currency: 'USD'
-				})
-				return local
-			} else {
-				return 'n/a'
-			}
-		},
-		/**
+    formatUSD (val = '') {
+      if (val !== null && val !== undefined) {
+        let local = Number(val)
+        local = local.toLocaleString('en-US', {
+          style: 'currency',
+          currency: 'USD'
+        })
+        return local
+      } else {
+        return 'n/a'
+      }
+    },
+    /**
 		 * To refund the order.
 		 * @function
 		 * @returns {undefined}
 		 */
-		refund () {
-			this.refunding = true
-			var viewOrderVue = this
+    refund () {
+      this.refunding = true
+      var viewOrderVue = this
 
-			UsersFunctions.refundOrder(
-				viewOrderVue.$root.appId,
-				viewOrderVue.$root.appSecret,
-				viewOrderVue.$root.userToken,
-				viewOrderVue.order.id
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						viewOrderVue.order.status = 'refunded'
-					} else {
-						viewOrderVue.errorMessage = 'Could not refund this order'
-						window.scrollTo(0, 0)
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not refund the order',
-						errorName: 'errorMessage',
-						vue: viewOrderVue,
-						containerRef: 'modal'
-					})
-				})
-				.finally(() => {
-					viewOrderVue.refunding = false
-				})
-		}
-	}
+      UsersFunctions.refundOrder(
+        viewOrderVue.$root.appId,
+        viewOrderVue.$root.appSecret,
+        viewOrderVue.$root.userToken,
+        viewOrderVue.order.id
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            viewOrderVue.order.status = 'refunded'
+          } else {
+            viewOrderVue.errorMessage = 'Could not refund this order'
+            window.scrollTo(0, 0)
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not refund the order',
+            errorName: 'errorMessage',
+            vue: viewOrderVue,
+            containerRef: 'modal'
+          })
+        })
+        .finally(() => {
+          viewOrderVue.refunding = false
+        })
+    }
+  }
 }
 </script>
 

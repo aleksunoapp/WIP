@@ -27,7 +27,7 @@
           </div>
           <p class="my-0">
             <strong>Name</strong>
-            <i 
+            <i
               :class="{
                 'fa fa-arrow-up' : sortBy('display_name') === true,
                 'fa fa-arrow-down' : sortBy('display_name') === false
@@ -43,7 +43,7 @@
       >
         <p class="my-0">
           <strong>Address</strong>
-          <i 
+          <i
             :class="{
               'fa fa-arrow-up' : sortBy('address') === true,
               'fa fa-arrow-down' : sortBy('address') === false
@@ -58,7 +58,7 @@
       >
         <p class="my-0">
           <strong>ID</strong>
-          <i 
+          <i
             :class="{
               'fa fa-arrow-up' : sortBy('internal_id') === true,
               'fa fa-arrow-down' : sortBy('internal_id') === false
@@ -114,7 +114,7 @@
                   <span class="box" />
                 </label>
               </div>
-              <div 
+              <div
                 v-else
                 class="md-radio"
               >
@@ -158,7 +158,7 @@
       class="alert alert-danger mt-1em"
     >
       <span>{{ errorMessage }}</span>
-      <i 
+      <i
         class="fa fa-repeat"
         aria-hidden="true"
         @click="getAllStores()"
@@ -173,7 +173,7 @@
       v-show="!errorMessage"
       class="options"
     >
-      <div 
+      <div
         v-show="stores.length"
         class="display-flex justify-content-space-between align-items-center pt-1em"
       >
@@ -223,7 +223,7 @@
           </div>
         </div>
       </div>
-      <div 
+      <div
         v-show="stores.length"
         class="display-flex justify-content-space-between align-items-center pt-1em"
       >
@@ -259,320 +259,320 @@ import PageResults from '@/components/modules/PageResults'
 import Pagination from '@/components/modules/Pagination-1.1'
 
 export default {
-	components: {
-		LoadingScreen,
-		NoResults,
-		PageResults,
-		Pagination
-	},
-	props: {
-		exclude: {
-			default: () => []
-		},
-		previouslySelected: {
-			default: () => []
-		},
-		locations: {
-			default: () => null
-		},
-		multiple: {
-			default: () => true
-		},
-		editable: {
-			default: () => true
-		}
-	},
-	data: () => ({
-		errorMessage: '',
-		noResults: 'No matches',
-		loading: false,
-		previous: [],
-		groups: [],
-		selectedGroups: [],
-		stores: [],
-		searchTerm: '',
-		pageSize: 25,
-		page: 1,
-		sort: [
-			{
-				field: 'internal_id',
-				ascending: true
-			},
-			{
-				field: 'address',
-				ascending: true
-			},
-			{
-				field: 'display_name',
-				ascending: true
-			}
-		],
-		filter: {
-			selected: false,
-			corporate: false
-		},
-		single: null
-	}),
-	computed: {
-		allSelected: {
-			get () {
-				return this.filteredStores.length && !this.filteredStores.some(store => !store.selected)
-			},
-			set (value) {
-				this.filteredStores.forEach(store => {
-					store.selected = value
-				})
-				if (!value) { this.filter.selected = false }
-			}
-		},
-		lastPage () {
-			return Math.ceil(this.filteredStores.length / this.pageSize)
-		},
-		selectedGroupStores () {
-			if (this.selectedGroups.length) {
-				let all = []
-				this.groups.forEach(group => {
-					if (this.selectedGroups.includes(group.id)) {
-						all = all.concat(group.locations)
-					}
-				})
-				return all
-			} else {
-				return []
-			}
-		},
-		unexcludedStores () {
-			if (this.exclude.length) {
-				return this.stores
-					.filter(
-						store => !this.exclude.includes(store.id)
-					)
-			} else {
-				return this.stores
-			}
-		},
-		filteredStores () {
-			return this.unexcludedStores
-				.filter(
-					store => {
-						if (this.selectedGroupStores.length) {
-							return this.selectedGroupStores.includes(store.id)
-						} else {
-							return true
-						}
-					}
-				)
-				.filter(
-					store => {
-						if (this.searchTerm) {
-							const searchArea = `${store.display_name} ${store.internal_id}`
-							return searchArea.toLowerCase().includes(this.searchTerm.toLowerCase())
-						} else return true
-					}
-				)
-				.filter(
-					store => {
-						if (this.filter.selected) {
-							if (this.multiple) {
-								return store.selected
-							} else {
-								return this.single === store.id
-							}
-						} else return true
-					}
-				)
-				.filter(
-					store => {
-						if (this.filter.corporate) {
-							return store.is_corporate === 1
-						} else return true
-					}
-				)
-		},
-		sortedStores () {
-			let sorted = [...this.filteredStores]
-			for (let step of this.sort) {
-				let field = step.field
-				let ascending = step.ascending
-				sorted.sort(this.compareValues(field, ascending).bind(this))
-			}
-			return sorted
-		},
-		displayedStores () {
-			return this.sortedStores
-				.filter(
-					(store, index) => {
-						const from = (this.page - 1) * this.pageSize
-						const to = this.page * this.pageSize
-						return (index >= from) && (index <= to)
-					}
-				)
-		},
-		selected () {
-			return this.stores.filter(store => {
-				return this.multiple ? store.selected : store.id === this.single
-			})
-		}
-	},
-	created () {
-		this.getGroups()
-		if (this.locations === null) {
-			this.getAllStores()
-		}
-		if (this.previouslySelected.length) {
-			this.previous = [...this.previouslySelected]
-			if (this.multiple) {
-				if (this.locations) {
-					this.stores = [
-						...this.locations.map(location => (
-							{
-								...location,
-								selected: this.previous.includes(location.id)
-							}
-						))
-					]
-				}
-			} else {
-				this.single = this.previouslySelected[0]
-			}
-		}
-	},
-	methods: {
-		getAllStores () {
-			this.loading = true
-			return AppFunctions.getPaginatedStoreLocations()
-				.then(response => {
-					if (response.payload && response.payload.length) {
-						if (this.multiple) {
-							this.stores = response.payload
-								.map(location => (
-									{
-										...location,
-										selected: this.previous.includes(location.id)
-									}
-								))
-						} else {
-							this.stores = response.payload
-							this.single = this.previouslySelected[0]
-						}
-					} else {
-						this.noResults = 'You don\'t have any stores yet'
-					}
-				})
-				.catch(reason => {
-					this.noResults = ''
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We couldn\'t fetch stores.',
-						errorName: 'errorMessage',
-						vue: this
-					})
-				})
-				.finally(() => {
-					this.loading = false
-				})
-		},
-		getGroups () {
-			StoreGroupsFunctions.getGroups()
-				.then(response => {
-					response.payload.forEach(group => this.getGroupLocations(group))
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch store groups',
-						errorName: 'errorMessage',
-						vue: this
-					})
-				})
-		},
-		/**
+  components: {
+    LoadingScreen,
+    NoResults,
+    PageResults,
+    Pagination
+  },
+  props: {
+    exclude: {
+      default: () => []
+    },
+    previouslySelected: {
+      default: () => []
+    },
+    locations: {
+      default: () => null
+    },
+    multiple: {
+      default: () => true
+    },
+    editable: {
+      default: () => true
+    }
+  },
+  data: () => ({
+    errorMessage: '',
+    noResults: 'No matches',
+    loading: false,
+    previous: [],
+    groups: [],
+    selectedGroups: [],
+    stores: [],
+    searchTerm: '',
+    pageSize: 25,
+    page: 1,
+    sort: [
+      {
+        field: 'internal_id',
+        ascending: true
+      },
+      {
+        field: 'address',
+        ascending: true
+      },
+      {
+        field: 'display_name',
+        ascending: true
+      }
+    ],
+    filter: {
+      selected: false,
+      corporate: false
+    },
+    single: null
+  }),
+  computed: {
+    allSelected: {
+      get () {
+        return this.filteredStores.length && !this.filteredStores.some(store => !store.selected)
+      },
+      set (value) {
+        this.filteredStores.forEach(store => {
+          store.selected = value
+        })
+        if (!value) { this.filter.selected = false }
+      }
+    },
+    lastPage () {
+      return Math.ceil(this.filteredStores.length / this.pageSize)
+    },
+    selectedGroupStores () {
+      if (this.selectedGroups.length) {
+        let all = []
+        this.groups.forEach(group => {
+          if (this.selectedGroups.includes(group.id)) {
+            all = all.concat(group.locations)
+          }
+        })
+        return all
+      } else {
+        return []
+      }
+    },
+    unexcludedStores () {
+      if (this.exclude.length) {
+        return this.stores
+          .filter(
+            store => !this.exclude.includes(store.id)
+          )
+      } else {
+        return this.stores
+      }
+    },
+    filteredStores () {
+      return this.unexcludedStores
+        .filter(
+          store => {
+            if (this.selectedGroupStores.length) {
+              return this.selectedGroupStores.includes(store.id)
+            } else {
+              return true
+            }
+          }
+        )
+        .filter(
+          store => {
+            if (this.searchTerm) {
+              const searchArea = `${store.display_name} ${store.internal_id}`
+              return searchArea.toLowerCase().includes(this.searchTerm.toLowerCase())
+            } else return true
+          }
+        )
+        .filter(
+          store => {
+            if (this.filter.selected) {
+              if (this.multiple) {
+                return store.selected
+              } else {
+                return this.single === store.id
+              }
+            } else return true
+          }
+        )
+        .filter(
+          store => {
+            if (this.filter.corporate) {
+              return store.is_corporate === 1
+            } else return true
+          }
+        )
+    },
+    sortedStores () {
+      let sorted = [...this.filteredStores]
+      for (let step of this.sort) {
+        let field = step.field
+        let ascending = step.ascending
+        sorted.sort(this.compareValues(field, ascending).bind(this))
+      }
+      return sorted
+    },
+    displayedStores () {
+      return this.sortedStores
+        .filter(
+          (store, index) => {
+            const from = (this.page - 1) * this.pageSize
+            const to = this.page * this.pageSize
+            return (index >= from) && (index <= to)
+          }
+        )
+    },
+    selected () {
+      return this.stores.filter(store => {
+        return this.multiple ? store.selected : store.id === this.single
+      })
+    }
+  },
+  created () {
+    this.getGroups()
+    if (this.locations === null) {
+      this.getAllStores()
+    }
+    if (this.previouslySelected.length) {
+      this.previous = [...this.previouslySelected]
+      if (this.multiple) {
+        if (this.locations) {
+          this.stores = [
+            ...this.locations.map(location => (
+              {
+                ...location,
+                selected: this.previous.includes(location.id)
+              }
+            ))
+          ]
+        }
+      } else {
+        this.single = this.previouslySelected[0]
+      }
+    }
+  },
+  methods: {
+    getAllStores () {
+      this.loading = true
+      return AppFunctions.getPaginatedStoreLocations()
+        .then(response => {
+          if (response.payload && response.payload.length) {
+            if (this.multiple) {
+              this.stores = response.payload
+                .map(location => (
+                  {
+                    ...location,
+                    selected: this.previous.includes(location.id)
+                  }
+                ))
+            } else {
+              this.stores = response.payload
+              this.single = this.previouslySelected[0]
+            }
+          } else {
+            this.noResults = 'You don\'t have any stores yet'
+          }
+        })
+        .catch(reason => {
+          this.noResults = ''
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We couldn\'t fetch stores.',
+            errorName: 'errorMessage',
+            vue: this
+          })
+        })
+        .finally(() => {
+          this.loading = false
+        })
+    },
+    getGroups () {
+      StoreGroupsFunctions.getGroups()
+        .then(response => {
+          response.payload.forEach(group => this.getGroupLocations(group))
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch store groups',
+            errorName: 'errorMessage',
+            vue: this
+          })
+        })
+    },
+    /**
 		 * To get the details of the selected group.
 		 * @function
 		 * @param {number} group - Group to get locations for
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getGroupLocations (group) {
-			var selectLocationsVue = this
+    getGroupLocations (group) {
+      var selectLocationsVue = this
 
-			StoreGroupsFunctions.getGroupLocations(group.id)
-				.then(response => {
-					this.groups.push({
-						...response.payload,
-						locations: response.payload.locations.map(location => location.id)
-					})
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch group info',
-						errorName: 'errorMessage',
-						vue: selectLocationsVue
-					})
-				})
-		},
-		sortBy (field) {
-			return this.sort.find(key => key.field === field).ascending
-		},
-		addKey (store, name, component1, component2) {
-			try {
-				return {...store, [name]: `${store[component1]} ${store[component2]}`}
-			} catch (e) {
-				return
-			}
-		},
-		compareValues (key, ascending) {
-			return function (a, b) {
-				if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
-					a = this.addKey(a, 'address', 'city', 'province')
-					b = this.addKey(b, 'address', 'city', 'province')
-				}
+      StoreGroupsFunctions.getGroupLocations(group.id)
+        .then(response => {
+          this.groups.push({
+            ...response.payload,
+            locations: response.payload.locations.map(location => location.id)
+          })
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch group info',
+            errorName: 'errorMessage',
+            vue: selectLocationsVue
+          })
+        })
+    },
+    sortBy (field) {
+      return this.sort.find(key => key.field === field).ascending
+    },
+    addKey (store, name, component1, component2) {
+      try {
+        return { ...store, [name]: `${store[component1]} ${store[component2]}` }
+      } catch (e) {
 
-				if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
-					return 0
-				}
+      }
+    },
+    compareValues (key, ascending) {
+      return function (a, b) {
+        if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+          a = this.addKey(a, 'address', 'city', 'province')
+          b = this.addKey(b, 'address', 'city', 'province')
+        }
 
-				const varA = (typeof a[key] === 'string')
-					? a[key].toUpperCase() : a[key]
-				const varB = (typeof b[key] === 'string')
-					? b[key].toUpperCase() : b[key]
+        if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+          return 0
+        }
 
-				let comparison = 0
-				if (varA > varB) {
-					comparison = 1
-				} else if (varA < varB) {
-					comparison = -1
-				}
-				return (
-					(!ascending) ? (comparison * -1) : comparison
-				)
-			}
-		},
-		resort (field) {
-			let index = this.sort.findIndex(key => key.field === field)
-			let patch = !this.sort[index].ascending
-			this.sort.splice(index, 1)
-			this.sort.push({field: field, ascending: patch})
-		},
-		setPageSize (value) {
-			if (this.page !== value) {
-				this.pageSize = value
-				this.setPage(1)
-			}
-		},
-		setPage (page) {
-			this.page = page
-		},
-		toggleSelectedFilter () {
-			this.filter.selected = !this.filter.selected
-		},
-		toggle () {
-			this.$emit('update', this.multiple ? this.selected.map(store => store.id) : this.single)
-		},
-		clearError (name) {
-			this[name] = ''
-		}
-	}
+        const varA = (typeof a[key] === 'string')
+          ? a[key].toUpperCase() : a[key]
+        const varB = (typeof b[key] === 'string')
+          ? b[key].toUpperCase() : b[key]
+
+        let comparison = 0
+        if (varA > varB) {
+          comparison = 1
+        } else if (varA < varB) {
+          comparison = -1
+        }
+        return (
+          (!ascending) ? (comparison * -1) : comparison
+        )
+      }
+    },
+    resort (field) {
+      let index = this.sort.findIndex(key => key.field === field)
+      let patch = !this.sort[index].ascending
+      this.sort.splice(index, 1)
+      this.sort.push({ field: field, ascending: patch })
+    },
+    setPageSize (value) {
+      if (this.page !== value) {
+        this.pageSize = value
+        this.setPage(1)
+      }
+    },
+    setPage (page) {
+      this.page = page
+    },
+    toggleSelectedFilter () {
+      this.filter.selected = !this.filter.selected
+    },
+    toggle () {
+      this.$emit('update', this.multiple ? this.selected.map(store => store.id) : this.single)
+    },
+    clearError (name) {
+      this[name] = ''
+    }
+  }
 }
 </script>
 <style scoped>
@@ -593,17 +593,17 @@ export default {
 	max-height: calc(100% - 9em);
 	overflow-y: auto;
 	overflow-x: hidden;
-	box-shadow: inset  0  5px 5px -5px grey, 
+	box-shadow: inset  0  5px 5px -5px grey,
 							inset  0 -5px 5px -5px grey;
 }
 .list::-webkit-scrollbar {
 	width: 5px;
 }
- 
+
 .list::-webkit-scrollbar-track {
 	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
 }
- 
+
 .list::-webkit-scrollbar-thumb {
 	background-color: darkgrey;
 	outline: 1px solid slategrey;
@@ -616,7 +616,7 @@ export default {
 	min-height: 100px;
 	display: flex;
 	flex-direction: column;
-	justify-content: flex-end; 
+	justify-content: flex-end;
 }
 .search__input {
 	max-width: 300px;

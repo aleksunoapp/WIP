@@ -78,7 +78,6 @@
           />
         </div>
 
-
         <store-picker-with-button
           v-if="selectLocationMode"
           :previously-selected="selectedLocations"
@@ -233,278 +232,278 @@ import ResourcePicker from '../../../modules/ResourcePicker'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Modal,
-		ResourcePicker,
-		StorePickerWithButton
-	},
-	data () {
-		return {
-			showEditCategoryModal: false,
-			categoryToBeEdited: {
-				image_url: ''
-			},
-			saving: false,
-			errorMessage: '',
-			selectImageMode: false,
-			customWidth: 90,
-			selectLocationMode: false,
-			selectedLocations: []
-		}
-	},
-	created () {
-		// get category details by category id passed as route param
-		this.getModifierCategoryDetails()
-	},
-	mounted () {
-		this.showEditCategoryModal = true
-	},
-	methods: {
-		/**
+  components: {
+    Modal,
+    ResourcePicker,
+    StorePickerWithButton
+  },
+  data () {
+    return {
+      showEditCategoryModal: false,
+      categoryToBeEdited: {
+        image_url: ''
+      },
+      saving: false,
+      errorMessage: '',
+      selectImageMode: false,
+      customWidth: 90,
+      selectLocationMode: false,
+      selectedLocations: []
+    }
+  },
+  created () {
+    // get category details by category id passed as route param
+    this.getModifierCategoryDetails()
+  },
+  mounted () {
+    this.showEditCategoryModal = true
+  },
+  methods: {
+    /**
 		 * To toggle select location mode on.
 		 * @function
 		 * @param {object} event - The event that triggered the action
 		 * @returns {undefined}
 		 */
-		selectLocations (event) {
-			event.preventDefault()
-			this.selectLocationMode = true
-		},
-		/**
+    selectLocations (event) {
+      event.preventDefault()
+      this.selectLocationMode = true
+    },
+    /**
 		 * To toggle select location mode on.
 		 * @function
 		 * @param {array} locations - The array of selected locations
 		 * @returns {undefined}
 		 */
-		updateSelectedLocations (locations) {
-			if (this.$root.permissions['menu_manager modifiers update']) {
-				this.selectedLocations = locations
-			}
-			this.closeSelectLocationsPopup()
-		},
-		/**
+    updateSelectedLocations (locations) {
+      if (this.$root.permissions['menu_manager modifiers update']) {
+        this.selectedLocations = locations
+      }
+      this.closeSelectLocationsPopup()
+    },
+    /**
 		 * To toggle select location mode on.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeSelectLocationsPopup () {
-			this.selectLocationMode = false
-		},
-		/**
+    closeSelectLocationsPopup () {
+      this.selectLocationMode = false
+    },
+    /**
 		 * To check if the input is a positive number
 		 * @function
 		 * @param {string} input - User's input
 		 * @returns {boolean} True is positive integer or float, false is not
 		 */
-		isNonNegativeNumber (input) {
-			try {
-				const inputString = String(input)
-				if (inputString.length > inputString.replace(/[^\d.]/g, '').length) {
-					return false
-				}
-				const value = Number(input)
-				if (value < 0) {
-					return false
-				}
-				return true
-			} catch (e) {
-				if (this.environment !== 'production') {
-					console.log({e})
-				}
-				return false
-			}
-		},
-		/**
+    isNonNegativeNumber (input) {
+      try {
+        const inputString = String(input)
+        if (inputString.length > inputString.replace(/[^\d.]/g, '').length) {
+          return false
+        }
+        const value = Number(input)
+        if (value < 0) {
+          return false
+        }
+        return true
+      } catch (e) {
+        if (this.environment !== 'production') {
+          console.log({ e })
+        }
+        return false
+      }
+    },
+    /**
 		 * To check if the modifier category data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateModifierCategoryData () {
-			var editModifierCategoryVue = this
-			return new Promise(function (resolve, reject) {
-				if (!editModifierCategoryVue.categoryToBeEdited.image_url.length) {
-					reject('Modifier Category image cannot be blank')
-				} else if (!editModifierCategoryVue.categoryToBeEdited.name.length) {
-					reject('Modifier Category Name cannot be blank')
-				} else if (!editModifierCategoryVue.categoryToBeEdited.desc.length) {
-					reject('Modifier Category Description cannot be blank')
-				} else if (!editModifierCategoryVue.isNonNegativeNumber(editModifierCategoryVue.categoryToBeEdited.min)) {
-					reject('Modifier Category Min must be zero or more')
-				} else if (!editModifierCategoryVue.isNonNegativeNumber(editModifierCategoryVue.categoryToBeEdited.max)) {
-					reject('Modifier Category Max must be zero or more')
-				} else if (Number(editModifierCategoryVue.categoryToBeEdited.min) > Number(editModifierCategoryVue.categoryToBeEdited.max)) {
-					reject('Modifier Category Min cannot be larger than Max')
-				} else if (!editModifierCategoryVue.categoryToBeEdited.sku.length) {
-					reject('Modifier Category SKU cannot be blank')
-				} else if (!editModifierCategoryVue.isNonNegativeNumber(editModifierCategoryVue.categoryToBeEdited.included)) {
-					reject('Modifier Category Number Free cannot be negative')
-				} else if (!editModifierCategoryVue.isNonNegativeNumber(editModifierCategoryVue.categoryToBeEdited.order)) {
-					reject('Modifier Category Order cannot be negative')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateModifierCategoryData () {
+      var editModifierCategoryVue = this
+      return new Promise(function (resolve, reject) {
+        if (!editModifierCategoryVue.categoryToBeEdited.image_url.length) {
+          reject('Modifier Category image cannot be blank')
+        } else if (!editModifierCategoryVue.categoryToBeEdited.name.length) {
+          reject('Modifier Category Name cannot be blank')
+        } else if (!editModifierCategoryVue.categoryToBeEdited.desc.length) {
+          reject('Modifier Category Description cannot be blank')
+        } else if (!editModifierCategoryVue.isNonNegativeNumber(editModifierCategoryVue.categoryToBeEdited.min)) {
+          reject('Modifier Category Min must be zero or more')
+        } else if (!editModifierCategoryVue.isNonNegativeNumber(editModifierCategoryVue.categoryToBeEdited.max)) {
+          reject('Modifier Category Max must be zero or more')
+        } else if (Number(editModifierCategoryVue.categoryToBeEdited.min) > Number(editModifierCategoryVue.categoryToBeEdited.max)) {
+          reject('Modifier Category Min cannot be larger than Max')
+        } else if (!editModifierCategoryVue.categoryToBeEdited.sku.length) {
+          reject('Modifier Category SKU cannot be blank')
+        } else if (!editModifierCategoryVue.isNonNegativeNumber(editModifierCategoryVue.categoryToBeEdited.included)) {
+          reject('Modifier Category Number Free cannot be negative')
+        } else if (!editModifierCategoryVue.isNonNegativeNumber(editModifierCategoryVue.categoryToBeEdited.order)) {
+          reject('Modifier Category Order cannot be negative')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To get the details of the modifier category to be updated.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getModifierCategoryDetails () {
-			var editModifierCategoryVue = this
-			ModifiersFunctions.getModifierCategoryDetails(
-				editModifierCategoryVue.$route.params.modifier_category_id,
-				editModifierCategoryVue.$root.appId,
-				editModifierCategoryVue.$root.appSecret
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						editModifierCategoryVue.categoryToBeEdited =
+    getModifierCategoryDetails () {
+      var editModifierCategoryVue = this
+      ModifiersFunctions.getModifierCategoryDetails(
+        editModifierCategoryVue.$route.params.modifier_category_id,
+        editModifierCategoryVue.$root.appId,
+        editModifierCategoryVue.$root.appSecret
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            editModifierCategoryVue.categoryToBeEdited =
 							response.payload
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch modifier info',
-						errorName: 'errorMessage',
-						vue: editModifierCategoryVue,
-						containerRef: 'modal'
-					})
-				})
-		},
-		/**
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch modifier info',
+            errorName: 'errorMessage',
+            vue: editModifierCategoryVue,
+            containerRef: 'modal'
+          })
+        })
+    },
+    /**
 		 * To update the modifier category and close the modal.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		updateModifierCategory () {
-			var editModifierCategoryVue = this
-			editModifierCategoryVue.categoryToBeEdited.user_id =
+    updateModifierCategory () {
+      var editModifierCategoryVue = this
+      editModifierCategoryVue.categoryToBeEdited.user_id =
 				editModifierCategoryVue.$root.createdBy
-			editModifierCategoryVue.categoryToBeEdited.update_locations =
+      editModifierCategoryVue.categoryToBeEdited.update_locations =
 				editModifierCategoryVue.selectedLocations
-			editModifierCategoryVue.clearError()
+      editModifierCategoryVue.clearError()
 
-			return editModifierCategoryVue
-				.validateModifierCategoryData()
-				.then(response => {
-					editModifierCategoryVue.saving = true
-					ModifiersFunctions.updateModifierCategory(
-						editModifierCategoryVue.categoryToBeEdited,
-						editModifierCategoryVue.$root.appId,
-						editModifierCategoryVue.$root.appSecret,
-						editModifierCategoryVue.$root.userToken
-					)
-						.then(response => {
-							if (
-								response.code === 200 &&
+      return editModifierCategoryVue
+        .validateModifierCategoryData()
+        .then(response => {
+          editModifierCategoryVue.saving = true
+          ModifiersFunctions.updateModifierCategory(
+            editModifierCategoryVue.categoryToBeEdited,
+            editModifierCategoryVue.$root.appId,
+            editModifierCategoryVue.$root.appSecret,
+            editModifierCategoryVue.$root.userToken
+          )
+            .then(response => {
+              if (
+                response.code === 200 &&
 								response.status === 'ok'
-							) {
-								this.closeModalAndUpdate()
-								this.showEditSuccess(response.payload)
-							} else {
-								editModifierCategoryVue.errorMessage =
+              ) {
+                this.closeModalAndUpdate()
+                this.showEditSuccess(response.payload)
+              } else {
+                editModifierCategoryVue.errorMessage =
 									response.message
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not update the modifier',
-								errorName: 'errorMessage',
-								vue: editModifierCategoryVue,
-								containerRef: 'modal'
-							})
-						})
-						.finally(() => {
-							editModifierCategoryVue.saving = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					editModifierCategoryVue.errorMessage = reason
-					window.scrollTo(0, 0)
-					throw reason
-				})
-		},
-		/**
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not update the modifier',
+                errorName: 'errorMessage',
+                vue: editModifierCategoryVue,
+                containerRef: 'modal'
+              })
+            })
+            .finally(() => {
+              editModifierCategoryVue.saving = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          editModifierCategoryVue.errorMessage = reason
+          window.scrollTo(0, 0)
+          throw reason
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Modifier has been updated'
-			let type = 'success'
+    showEditSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Modifier has been updated'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Modifier has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Modifier has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('deactivateEditCategoryModal')
-			this.$router.push('/app/menu_manager/modifiers')
-		},
-		/**
+    closeModal () {
+      this.$emit('deactivateEditCategoryModal')
+      this.$router.push('/app/menu_manager/modifiers')
+    },
+    /**
 		 * To close the modal and emit the updated modifier category object to the parent.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModalAndUpdate () {
-			this.$emit('updateModifierCategory')
-			this.$router.push('/app/menu_manager/modifiers')
-		},
-		/**
+    closeModalAndUpdate () {
+      this.$emit('updateModifierCategory')
+      this.$router.push('/app/menu_manager/modifiers')
+    },
+    /**
 		 * To change the page to the gallery view on the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		goToPageTwo () {
-			this.selectImageMode = true
-		},
-		/**
+    goToPageTwo () {
+      this.selectImageMode = true
+    },
+    /**
 		 * To change the page to the main/form view on the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		goToPageOne () {
-			this.selectImageMode = false
-		},
-		/**
+    goToPageOne () {
+      this.selectImageMode = false
+    },
+    /**
 		 * To set the image to be same as the one emitted by the gallery modal.
 		 * @function
 		 * @param {object} val - The emitted image object.
 		 * @returns {undefined}
 		 */
-		updateImage (val) {
-			if (this.$root.permissions['menu_manager modifiers update']) {
-				this.categoryToBeEdited.image_url = val.image_url
-			}
-			this.goToPageOne()
-		}
-	}
+    updateImage (val) {
+      if (this.$root.permissions['menu_manager modifiers update']) {
+        this.categoryToBeEdited.image_url = val.image_url
+      }
+      this.goToPageOne()
+    }
+  }
 }
 </script>
 </script>

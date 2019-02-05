@@ -272,289 +272,289 @@ import ResourcePicker from '../../modules/ResourcePicker'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Breadcrumb,
-		Modal,
-		LoadingScreen,
-		NoResults,
-		Dropdown,
-		EditPortion,
-		ModifierTree,
-		ResourcePicker
-	},
-	data () {
-		return {
-			breadcrumbArray: [
-				{ name: 'Menu Manager', link: false },
-				{ name: 'Portions', link: false }
-			],
-			createPortionCollapse: true,
-			errorMessage: '',
-			loadingPortionsData: false,
-			listErrorMessage: '',
-			newPortion: {
-				name: '',
-				multiplier: '',
-				icon_url: '',
-				order: null
-			},
-			portions: [],
-			showEditPortionModal: false,
-			selectedPortionId: 0,
-			showModifierTreeModal: false,
-			selectedPortion: {},
-			headerText: '',
-			imageMode: {
-				newMenu: false
-			}
-		}
-	},
-	mounted () {
-		// get the list of available portions
-		this.getPortions()
-	},
-	methods: {
-		/**
+  components: {
+    Breadcrumb,
+    Modal,
+    LoadingScreen,
+    NoResults,
+    Dropdown,
+    EditPortion,
+    ModifierTree,
+    ResourcePicker
+  },
+  data () {
+    return {
+      breadcrumbArray: [
+        { name: 'Menu Manager', link: false },
+        { name: 'Portions', link: false }
+      ],
+      createPortionCollapse: true,
+      errorMessage: '',
+      loadingPortionsData: false,
+      listErrorMessage: '',
+      newPortion: {
+        name: '',
+        multiplier: '',
+        icon_url: '',
+        order: null
+      },
+      portions: [],
+      showEditPortionModal: false,
+      selectedPortionId: 0,
+      showModifierTreeModal: false,
+      selectedPortion: {},
+      headerText: '',
+      imageMode: {
+        newMenu: false
+      }
+    }
+  },
+  mounted () {
+    // get the list of available portions
+    this.getPortions()
+  },
+  methods: {
+    /**
 		 * To toggle between the open and closed state of the resource picker
 		 * @function
 		 * @param {string} object - The name of the object the image is for
 		 * @param {object} value - The open / closed value of the picker
 		 * @returns {undefined}
 		 */
-		toggleImageMode (object, value) {
-			this.imageMode[object] = value
-		},
-		/**
+    toggleImageMode (object, value) {
+      this.imageMode[object] = value
+    },
+    /**
 		 * To set the image to be same as the one emitted by the gallery modal.
 		 * @function
 		 * @param {object} val - The emitted image object.
 		 * @returns {undefined}
 		 */
-		updateImage (val) {
-			this.newPortion.icon_url = val.image_url
-		},
-		/**
+    updateImage (val) {
+      this.newPortion.icon_url = val.image_url
+    },
+    /**
 		 * To display the modal to apply a portion to multiple modifier items.
 		 * @function
 		 * @param {object} portion - The selected portion.
 		 * @returns {undefined}
 		 */
-		displayMenuTreeModal (portion) {
-			this.selectedPortion = portion
-			this.headerText = "Portion '" + this.selectedPortion.name + "'"
-			this.showModifierTreeModal = true
-		},
-		/**
+    displayMenuTreeModal (portion) {
+      this.selectedPortion = portion
+      this.headerText = "Portion '" + this.selectedPortion.name + "'"
+      this.showModifierTreeModal = true
+    },
+    /**
 		 * To close the menu tree modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModifierTreeModal () {
-			this.showModifierTreeModal = false
-		},
-		/**
+    closeModifierTreeModal () {
+      this.showModifierTreeModal = false
+    },
+    /**
 		 * To toggle the create portion panel, initially set to closed
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCreatePortionPanel () {
-			this.createPortionCollapse = !this.createPortionCollapse
-		},
-		/**
+    toggleCreatePortionPanel () {
+      this.createPortionCollapse = !this.createPortionCollapse
+    },
+    /**
 		 * To get the list of available portions.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getPortions () {
-			this.loadingPortionsData = true
-			var portionsVue = this
-			portionsVue.portions = []
-			PortionsFunctions.getPortions(
-				portionsVue.$root.appId,
-				portionsVue.$root.appSecret,
-				portionsVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						portionsVue.loadingPortionsData = false
-						portionsVue.portions = response.payload
-					} else {
-						portionsVue.loadingPortionsData = false
-					}
-				})
-				.catch(reason => {
-					portionsVue.loadingPortionsData = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch portions',
-						errorName: 'listErrorMessage',
-						vue: portionsVue
-					})
-				})
-		},
-		/**
+    getPortions () {
+      this.loadingPortionsData = true
+      var portionsVue = this
+      portionsVue.portions = []
+      PortionsFunctions.getPortions(
+        portionsVue.$root.appId,
+        portionsVue.$root.appSecret,
+        portionsVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            portionsVue.loadingPortionsData = false
+            portionsVue.portions = response.payload
+          } else {
+            portionsVue.loadingPortionsData = false
+          }
+        })
+        .catch(reason => {
+          portionsVue.loadingPortionsData = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch portions',
+            errorName: 'listErrorMessage',
+            vue: portionsVue
+          })
+        })
+    },
+    /**
 		 * To check if the portion data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validatePortionData () {
-			var portionsVue = this
-			return new Promise(function (resolve, reject) {
-				if (!portionsVue.newPortion.name.length) {
-					reject('Portion name cannot be blank')
-				} else if (!portionsVue.newPortion.icon_url.length) {
-					reject('Portion icon URL cannot be blank')
-				} else if (!$.isNumeric(portionsVue.newPortion.order)) {
-					reject('Portion order should be numerical')
-				} else if (!$.isNumeric(portionsVue.newPortion.multiplier)) {
-					reject('Portion multiplier should be numerical')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validatePortionData () {
+      var portionsVue = this
+      return new Promise(function (resolve, reject) {
+        if (!portionsVue.newPortion.name.length) {
+          reject('Portion name cannot be blank')
+        } else if (!portionsVue.newPortion.icon_url.length) {
+          reject('Portion icon URL cannot be blank')
+        } else if (!$.isNumeric(portionsVue.newPortion.order)) {
+          reject('Portion order should be numerical')
+        } else if (!$.isNumeric(portionsVue.newPortion.multiplier)) {
+          reject('Portion multiplier should be numerical')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To create a new portion type.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		createPortion () {
-			var portionsVue = this
-			portionsVue.clearError('errorMessage')
+    createPortion () {
+      var portionsVue = this
+      portionsVue.clearError('errorMessage')
 
-			return portionsVue
-				.validatePortionData()
-				.then(response => {
-					PortionsFunctions.createPortion(
-						portionsVue.newPortion,
-						portionsVue.$root.appId,
-						portionsVue.$root.appSecret,
-						portionsVue.$root.userToken
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								portionsVue.newPortion.id = response.payload.new_portion
-								if (response.payload && response.payload.pending_approval !== true) {
-									portionsVue.addPortion(portionsVue.newPortion)
-								}
-								portionsVue.showAlert(response.payload)
-								portionsVue.clearNewPortion()
-							} else {
-								portionsVue.errorMessage = response.message
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not add the portion',
-								errorName: 'errorMessage',
-								vue: portionsVue
-							})
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					portionsVue.errorMessage = reason
-					window.scrollTo(0, 0)
-					throw reason
-				})
-		},
-		/**
+      return portionsVue
+        .validatePortionData()
+        .then(response => {
+          PortionsFunctions.createPortion(
+            portionsVue.newPortion,
+            portionsVue.$root.appId,
+            portionsVue.$root.appSecret,
+            portionsVue.$root.userToken
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                portionsVue.newPortion.id = response.payload.new_portion
+                if (response.payload && response.payload.pending_approval !== true) {
+                  portionsVue.addPortion(portionsVue.newPortion)
+                }
+                portionsVue.showAlert(response.payload)
+                portionsVue.clearNewPortion()
+              } else {
+                portionsVue.errorMessage = response.message
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not add the portion',
+                errorName: 'errorMessage',
+                vue: portionsVue
+              })
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          portionsVue.errorMessage = reason
+          window.scrollTo(0, 0)
+          throw reason
+        })
+    },
+    /**
 		 * To clear the new menu form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearNewPortion () {
-			this.newPortion = {
-				name: '',
-				multiplier: '',
-				icon_url: '',
-				order: null
-			}
-		},
-		/**
+    clearNewPortion () {
+      this.newPortion = {
+        name: '',
+        multiplier: '',
+        icon_url: '',
+        order: null
+      }
+    },
+    /**
 		 * To close the modal to create tags and add the newly created tag to the list.
 		 * @function
 		 * @param {object} val - The tag object to be added to the list.
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		addPortion (val) {
-			if (parseInt(val.order) > 0) {
-				var done = false
-				for (var i = 0; i < this.portions.length; i++) {
-					if (parseInt(this.portions[i].order) < parseInt(val.order)) {
-						this.portions.splice(i, 0, val)
-						done = true
-						break
-					}
-				}
-				if (!done) {
-					this.portions.push(val)
-				}
-			} else {
-				this.portions.push(val)
-			}
-		},
-		/**
+    addPortion (val) {
+      if (parseInt(val.order) > 0) {
+        var done = false
+        for (var i = 0; i < this.portions.length; i++) {
+          if (parseInt(this.portions[i].order) < parseInt(val.order)) {
+            this.portions.splice(i, 0, val)
+            done = true
+            break
+          }
+        }
+        if (!done) {
+          this.portions.push(val)
+        }
+      } else {
+        this.portions.push(val)
+      }
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert (payload = {}) {
-			let title = 'Success'
-			let text = 'The Portion has been created'
-			let type = 'success'
+    showAlert (payload = {}) {
+      let title = 'Success'
+      let text = 'The Portion has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Portion has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Portion has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @param {string} name - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To show the modal to edit portion details.
 		 * @function
 		 * @param {object} portion - The selected portion object.
 		 * @returns {undefined}
 		 */
-		editPortion (portion) {
-			this.selectedPortionId = portion.id
-			this.showEditPortionModal = true
-		},
-		/**
+    editPortion (portion) {
+      this.selectedPortionId = portion.id
+      this.showEditPortionModal = true
+    },
+    /**
 		 * To close the modal to edit portion details.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeEditPortionModal () {
-			this.showEditPortionModal = false
-		},
-		/**
+    closeEditPortionModal () {
+      this.showEditPortionModal = false
+    },
+    /**
 		 * To close the modal to edit portion details and update the selected portion on the portions list.
 		 * @function
 		 * @param {object} val - The portion object to be updated on the list.
 		 * @returns {undefined}
 		 */
-		updatePortion (val) {
-			this.showEditPortionModal = false
-			this.getPortions()
-		}
-	}
+    updatePortion (val) {
+      this.showEditPortionModal = false
+      this.getPortions()
+    }
+  }
 }
 </script>
 <style scoped>

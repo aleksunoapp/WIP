@@ -495,467 +495,467 @@ import Modal from '@/components/modules/Modal'
 import NoResults from '@/components/modules/NoResults'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 import { isNonNegativeNumber } from '@/controllers/utils'
-import {mapActions} from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
-	data () {
-		return {
-			breadcrumbArray: [{ name: 'Combos', link: false }],
+  data () {
+    return {
+      breadcrumbArray: [{ name: 'Combos', link: false }],
 
-			createNewCollapse: true,
-			creating: false,
-			createErrorMessage: '',
-			newComboOffer: {
-				name: '',
-				discount: '',
-				discount_type: '',
-				number_of_items: '',
-				start_from: '',
-				end_on: ''
-			},
-			newStartOptions: {
-				disabledDate (time) {
-					return time.getTime() < Date.now()
-				}
-			},
-			newEndOptions: {
-				disabledDate (time) {
-					return time.getTime() < Date.now()
-				}
-			},
+      createNewCollapse: true,
+      creating: false,
+      createErrorMessage: '',
+      newComboOffer: {
+        name: '',
+        discount: '',
+        discount_type: '',
+        number_of_items: '',
+        start_from: '',
+        end_on: ''
+      },
+      newStartOptions: {
+        disabledDate (time) {
+          return time.getTime() < Date.now()
+        }
+      },
+      newEndOptions: {
+        disabledDate (time) {
+          return time.getTime() < Date.now()
+        }
+      },
 
-			loadingComboOffers: false,
-			listErrorMessage: '',
-			comboOffers: [
-				{
-					id: 5,
-					name: 'Offer 1',
-					discount: '10.00',
-					discount_type: 'flat',
-					start_from: '2018-01-09',
-					end_on: '2018-11-25',
-					number_of_items: 2,
-					combo_item: [
-						{
-							combo_id: 5,
-							combo_item_sku: [
-								{
-									id: 34,
-									combo_item_id: 7,
-									sku: 'a'
-								}
-							]
-						}
-					]
-				}
-			],
+      loadingComboOffers: false,
+      listErrorMessage: '',
+      comboOffers: [
+        {
+          id: 5,
+          name: 'Offer 1',
+          discount: '10.00',
+          discount_type: 'flat',
+          start_from: '2018-01-09',
+          end_on: '2018-11-25',
+          number_of_items: 2,
+          combo_item: [
+            {
+              combo_id: 5,
+              combo_item_sku: [
+                {
+                  id: 34,
+                  combo_item_id: 7,
+                  sku: 'a'
+                }
+              ]
+            }
+          ]
+        }
+      ],
 
-			showEditModal: false,
-			updating: false,
-			editErrorMessage: '',
-			comboOfferToEdit: {
-				name: '',
-				discount: '',
-				discount_type: '',
-				number_of_items: '',
-				start_from: '',
-				end_on: ''
-			},
-			editedStartOptions: {
-				disabledDate (time) {
-					return time.getTime() < Date.now()
-				}
-			},
-			editedEndOptions: {
-				disabledDate (time) {
-					return time.getTime() < Date.now()
-				}
-			},
+      showEditModal: false,
+      updating: false,
+      editErrorMessage: '',
+      comboOfferToEdit: {
+        name: '',
+        discount: '',
+        discount_type: '',
+        number_of_items: '',
+        start_from: '',
+        end_on: ''
+      },
+      editedStartOptions: {
+        disabledDate (time) {
+          return time.getTime() < Date.now()
+        }
+      },
+      editedEndOptions: {
+        disabledDate (time) {
+          return time.getTime() < Date.now()
+        }
+      },
 
-			showDeleteModal: false,
-			deleting: false,
-			deleteErrorMessage: '',
-			comboOfferToDelete: {
-				name: ''
-			}
-		}
-	},
-	mounted () {
-		this.getComboOffers()
-	},
-	methods: {
-		logger (val) {
-			console.log({val})
-			return true
-		},
-		/**
+      showDeleteModal: false,
+      deleting: false,
+      deleteErrorMessage: '',
+      comboOfferToDelete: {
+        name: ''
+      }
+    }
+  },
+  mounted () {
+    this.getComboOffers()
+  },
+  methods: {
+    logger (val) {
+      console.log({ val })
+      return true
+    },
+    /**
 		 * To toggle the create tier panel, initially set to closed
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCreatePanel () {
-			this.createNewCollapse = !this.createNewCollapse
-		},
-		/**
+    toggleCreatePanel () {
+      this.createNewCollapse = !this.createNewCollapse
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @param {object} errorMessageName - The error message to be cleared.
 		 * @returns {undefined}
 		 */
-		clearError (errorMessageName) {
-			this[errorMessageName] = ''
-		},
-		/**
+    clearError (errorMessageName) {
+      this[errorMessageName] = ''
+    },
+    /**
 		 * To check if the comboOffer data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateNewComboOfferData () {
-			var _this = this
-			return new Promise(function (resolve, reject) {
-				if (!_this.newComboOffer.name.length) {
-					reject('Name cannot be blank')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateNewComboOfferData () {
+      var _this = this
+      return new Promise(function (resolve, reject) {
+        if (!_this.newComboOffer.name.length) {
+          reject('Name cannot be blank')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To create a new comboOffer.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		createComboOffer () {
-			var _this = this
-			_this.clearError('createErrorMessage')
+    createComboOffer () {
+      var _this = this
+      _this.clearError('createErrorMessage')
 
-			return _this
-				.validateNewComboOfferData()
-				.then(response => {
-					_this.creating = true
-					ComboOffersFunctions.createComboOffer(_this.newComboOffer)
-						.then(response => {
-							_this.getComboOffers()
-							_this.showCreateSuccess(response.payload)
-							_this.clearNewComboOffer()
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not create the comboOffer',
-								errorName: 'createErrorMessage',
-								vue: _this
-							})
-						})
-						.finally(() => {
-							_this.creating = false
-						})
-				})
-				.catch(reason => {
-					_this.createErrorMessage = reason
-					_this.$scrollTo(_this.$refs.createErrorMessage, 1000, { offset: -50 })
-				})
-		},
-		/**
+      return _this
+        .validateNewComboOfferData()
+        .then(response => {
+          _this.creating = true
+          ComboOffersFunctions.createComboOffer(_this.newComboOffer)
+            .then(response => {
+              _this.getComboOffers()
+              _this.showCreateSuccess(response.payload)
+              _this.clearNewComboOffer()
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not create the comboOffer',
+                errorName: 'createErrorMessage',
+                vue: _this
+              })
+            })
+            .finally(() => {
+              _this.creating = false
+            })
+        })
+        .catch(reason => {
+          _this.createErrorMessage = reason
+          _this.$scrollTo(_this.$refs.createErrorMessage, 1000, { offset: -50 })
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showCreateSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Combo Offer has been created'
-			let type = 'success'
+    showCreateSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Combo Offer has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Combo Offer has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Combo Offer has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To clear the new combo offer form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearNewComboOffer () {
-			this.newComboOffer = {
-				name: '',
-				discount: '',
-				discount_type: '',
-				number_of_items: '',
-				start_from: '',
-				end_on: ''
-			}
-		},
-		/**
+    clearNewComboOffer () {
+      this.newComboOffer = {
+        name: '',
+        discount: '',
+        discount_type: '',
+        number_of_items: '',
+        start_from: '',
+        end_on: ''
+      }
+    },
+    /**
 		 * To get a list of all combo offers.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getComboOffers () {
-			this.clearError('listErrorMessage')
-			this.loadingComboOffers = true
-			this.comboOffers = []
-			var _this = this
-			return ComboOffersFunctions.listComboOffers()
-				.then(response => {
-					_this.loadingComboOffers = false
-					_this.comboOffers = response.payload
-					.map(offer => ({
-						...offer,
-						number_of_items: String(offer.number_of_items)
-					}))
-					.sort((a, b) => {
-						if (a.name.toLowerCase() < b.name.toLowerCase()) {
-							return -1
-						} else if (a.name.toLowerCase() > b.name.toLowerCase()) {
-							return 1
-						} else {
-							return 0
-						}
-					})
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch the list of comboOffers',
-						errorName: 'listErrorMessage',
-						vue: _this
-					})
-				})
-				.finally(() => {
-					_this.loadingComboOffers = false
-				})
-		},
-		/**
+    getComboOffers () {
+      this.clearError('listErrorMessage')
+      this.loadingComboOffers = true
+      this.comboOffers = []
+      var _this = this
+      return ComboOffersFunctions.listComboOffers()
+        .then(response => {
+          _this.loadingComboOffers = false
+          _this.comboOffers = response.payload
+            .map(offer => ({
+              ...offer,
+              number_of_items: String(offer.number_of_items)
+            }))
+            .sort((a, b) => {
+              if (a.name.toLowerCase() < b.name.toLowerCase()) {
+                return -1
+              } else if (a.name.toLowerCase() > b.name.toLowerCase()) {
+                return 1
+              } else {
+                return 0
+              }
+            })
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch the list of comboOffers',
+            errorName: 'listErrorMessage',
+            vue: _this
+          })
+        })
+        .finally(() => {
+          _this.loadingComboOffers = false
+        })
+    },
+    /**
 		 * To show the modal to edit an comboOffer details.
 		 * @function
 		 * @param {object} comboOffer - The selected comboOffer.
 		 * @returns {undefined}
 		 */
-		editComboOffer (comboOffer) {
-			this.comboOfferToEdit = { ...comboOffer }
-			this.showEditModal = true
-		},
-		/**
+    editComboOffer (comboOffer) {
+      this.comboOfferToEdit = { ...comboOffer }
+      this.showEditModal = true
+    },
+    /**
 		 * To check if the comboOffer data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateEditedComboOfferData () {
-			var _this = this
-			return new Promise(function (resolve, reject) {
-				if (!_this.comboOfferToEdit.name.length) {
-					reject('Name cannot be blank')
-				} else if (!isNonNegativeNumber(_this.comboOfferToEdit.discount)) {
-					reject('Discount value must be zero or more')
-				} else if (!_this.comboOfferToEdit.discount_type.length) {
-					reject('Name cannot be blank')
-				} else if (!isNonNegativeNumber(_this.comboOfferToEdit.number_of_items)) {
-					reject('Name cannot be blank')
-				} else if (!_this.comboOfferToEdit.start_from.length) {
-					reject('Start date cannot be blank')
-				} else if (!_this.comboOfferToEdit.end_on.length) {
-					reject('End date cannot be blank')
-				} else if (_this.comboOfferToEdit.end_on < _this.comboOfferToEdit.start_from) {
-					reject('Start date cannot be after end date')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateEditedComboOfferData () {
+      var _this = this
+      return new Promise(function (resolve, reject) {
+        if (!_this.comboOfferToEdit.name.length) {
+          reject('Name cannot be blank')
+        } else if (!isNonNegativeNumber(_this.comboOfferToEdit.discount)) {
+          reject('Discount value must be zero or more')
+        } else if (!_this.comboOfferToEdit.discount_type.length) {
+          reject('Name cannot be blank')
+        } else if (!isNonNegativeNumber(_this.comboOfferToEdit.number_of_items)) {
+          reject('Name cannot be blank')
+        } else if (!_this.comboOfferToEdit.start_from.length) {
+          reject('Start date cannot be blank')
+        } else if (!_this.comboOfferToEdit.end_on.length) {
+          reject('End date cannot be blank')
+        } else if (_this.comboOfferToEdit.end_on < _this.comboOfferToEdit.start_from) {
+          reject('Start date cannot be after end date')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To update a combo offer.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		updateComboOffer () {
-			var _this = this
-			this.updating = true
-			_this.clearError('editErrorMessage')
-			let payload = { ...this.comboOfferToEdit }
+    updateComboOffer () {
+      var _this = this
+      this.updating = true
+      _this.clearError('editErrorMessage')
+      let payload = { ...this.comboOfferToEdit }
 
-			return _this
-				.validateEditedComboOfferData()
-				.then(response => {
-					_this.updating = true
-					ComboOffersFunctions.updateComboOffer(payload)
-						.then(response => {
-							_this.getComboOffers()
-							_this.closeEditModal()
-							_this.resetEdit()
-							_this.showEditSuccess(response.payload)
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not update the combo offer',
-								errorName: 'editErrorMessage',
-								vue: _this,
-								containerRef: 'editModal'
-							})
-						})
-						.finally(() => {
-							_this.updating = false
-						})
-				})
-				.catch(reason => {
-					_this.editErrorMessage = reason
-					_this.$scrollTo(
-						_this.$refs.editErrorMessage,
-						1000,
-						{
-							container: _this.$refs.editModal.$el
-						}
-					)
-				})
-		},
-		/**
+      return _this
+        .validateEditedComboOfferData()
+        .then(response => {
+          _this.updating = true
+          ComboOffersFunctions.updateComboOffer(payload)
+            .then(response => {
+              _this.getComboOffers()
+              _this.closeEditModal()
+              _this.resetEdit()
+              _this.showEditSuccess(response.payload)
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not update the combo offer',
+                errorName: 'editErrorMessage',
+                vue: _this,
+                containerRef: 'editModal'
+              })
+            })
+            .finally(() => {
+              _this.updating = false
+            })
+        })
+        .catch(reason => {
+          _this.editErrorMessage = reason
+          _this.$scrollTo(
+            _this.$refs.editErrorMessage,
+            1000,
+            {
+              container: _this.$refs.editModal.$el
+            }
+          )
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Combo Offer has been saved'
-			let type = 'success'
+    showEditSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Combo Offer has been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Combo Offer has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Combo Offer has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To close the modal for editing a promotion.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeEditModal () {
-			this.showEditModal = false
-		},
-		/**
+    closeEditModal () {
+      this.showEditModal = false
+    },
+    /**
 		 * To reset the edit form
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetEdit () {
-			this.comboOfferToEdit = {
-				name: '',
-				discount: '',
-				discount_type: '',
-				number_of_items: '',
-				start_from: '',
-				end_on: ''
-			}
-		},
-		/**
+    resetEdit () {
+      this.comboOfferToEdit = {
+        name: '',
+        discount: '',
+        discount_type: '',
+        number_of_items: '',
+        start_from: '',
+        end_on: ''
+      }
+    },
+    /**
 		 * To display the modal for deleting an comboOffer.
 		 * @function
 		 * @param {object} comboOffer - The selected comboOffer
 		 * @returns {undefined}
 		 */
-		confirmDelete (comboOffer) {
-			this.comboOfferToDelete = { ...comboOffer }
-			this.showDeleteModal = true
-		},
-		/**
+    confirmDelete (comboOffer) {
+      this.comboOfferToDelete = { ...comboOffer }
+      this.showDeleteModal = true
+    },
+    /**
 		 * To close the modal for deleting a promotion and remove that promotion from DOM.
 		 * @function
 		 * @returns {undefined}
 		 */
-		deleteComboOffer () {
-			this.deleting = true
-			var _this = this
-			return ComboOffersFunctions.deleteComboOffer(_this.comboOfferToDelete.id)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						_this.getComboOffers()
-						_this.closeDeleteModal()
-						_this.showDeleteSuccess(response.payload)
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: `We could not delete ${this.comboOfferToDelete.name}`,
-						errorName: 'deleteErrorMessage',
-						vue: _this,
-						containerRef: 'deleteModal'
-					})
-				})
-				.finally(() => {
-					_this.deleting = false
-				})
-		},
-		/**
+    deleteComboOffer () {
+      this.deleting = true
+      var _this = this
+      return ComboOffersFunctions.deleteComboOffer(_this.comboOfferToDelete.id)
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            _this.getComboOffers()
+            _this.closeDeleteModal()
+            _this.showDeleteSuccess(response.payload)
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: `We could not delete ${this.comboOfferToDelete.name}`,
+            errorName: 'deleteErrorMessage',
+            vue: _this,
+            containerRef: 'deleteModal'
+          })
+        })
+        .finally(() => {
+          _this.deleting = false
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Combo Offer has been deleted'
-			let type = 'success'
+    showDeleteSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Combo Offer has been deleted'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The removal has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The removal has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To close the delete modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeDeleteModal () {
-			this.showDeleteModal = false
-		},
-		/**
+    closeDeleteModal () {
+      this.showDeleteModal = false
+    },
+    /**
 		 * To save the combo offer before leaving route.
 		 * @function
 		 * @returns {undefined}
 		 */
-		...mapActions({
-			setComboOffer: 'combos/setComboOffer'
-		}),
-		/**
+    ...mapActions({
+      setComboOffer: 'combos/setComboOffer'
+    }),
+    /**
 		 * To navigate to the items page
 		 * @function
 		 * @param {object} comboOffer - The combo offer to save
 		 * @returns {undefined}
 		 */
-		editItems (comboOffer) {
-			this.setComboOffer(comboOffer)
-			this.$router.push({name: 'ComboOfferItems', params: { offer_id: comboOffer.id }})
-		}
-	},
-	components: {
-		Breadcrumb,
-		LoadingScreen,
-		Modal,
-		NoResults
-	}
+    editItems (comboOffer) {
+      this.setComboOffer(comboOffer)
+      this.$router.push({ name: 'ComboOfferItems', params: { offer_id: comboOffer.id } })
+    }
+  },
+  components: {
+    Breadcrumb,
+    LoadingScreen,
+    Modal,
+    NoResults
+  }
 }
 </script>
 

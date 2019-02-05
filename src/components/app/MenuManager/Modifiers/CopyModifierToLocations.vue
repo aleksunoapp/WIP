@@ -89,110 +89,110 @@ import StorePicker from '@/components/modules/StorePicker'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	name: 'CopyModifierToLocations',
-	components: {
-		Modal,
-		StorePicker
-	},
-	props: {
-		modifier: {
-			type: Object,
-			required: true
-		}
-	},
-	data () {
-		return {
-			saving: false,
-			errorMessage: '',
-			showComponent: false,
-			create_duplicate: 0,
-			selectedLocations: [],
-			modifierToCopyToLocations: {}
-		}
-	},
-	mounted () {
-		this.showComponent = true
-	},
-	methods: {
-		/**
+  name: 'CopyModifierToLocations',
+  components: {
+    Modal,
+    StorePicker
+  },
+  props: {
+    modifier: {
+      type: Object,
+      required: true
+    }
+  },
+  data () {
+    return {
+      saving: false,
+      errorMessage: '',
+      showComponent: false,
+      create_duplicate: 0,
+      selectedLocations: [],
+      modifierToCopyToLocations: {}
+    }
+  },
+  mounted () {
+    this.showComponent = true
+  },
+  methods: {
+    /**
 		 * To update the locations selected in the child component
 		 * @function
 		 * @param {array} locations - Arrray of store ids
 		 * @returns {undefined}
 		 */
-		updateLocations (locations) {
-			this.selectedLocations = locations
-		},
-		/**
+    updateLocations (locations) {
+      this.selectedLocations = locations
+    },
+    /**
 		 * To clear an error
 		 * @function
 		 * @param {string} name - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To apply the selected modifier to all the checked off menu items.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		copyModifierToLocations () {
-			if (!this.selectedLocations.length) {
-				this.errorMessage = 'Select at least one store'
-				return
-			}
+    copyModifierToLocations () {
+      if (!this.selectedLocations.length) {
+        this.errorMessage = 'Select at least one store'
+        return
+      }
 
-			this.saving = true
-			var copyModifierVue = this
-			let payload = {
-				modifier_id: this.modifier.id,
-				create_duplicate: this.create_duplicate,
-				locations: this.selectedLocations
-			}
-			ModifiersFunctions.copyModifierToMultipleLocations(
-				payload,
-				copyModifierVue.$root.appId,
-				copyModifierVue.$root.appSecret,
-				copyModifierVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						copyModifierVue.closeModal()
-						copyModifierVue.emitSuccess(response.payload)
-					} else {
-						throw Error(response.message)
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Could not apply modifier to stores',
-						errorName: 'errorMessage',
-						vue: copyModifierVue
-					})
-				})
-				.finally(() => {
-					copyModifierVue.saving = false
-				})
-		},
-		/**
+      this.saving = true
+      var copyModifierVue = this
+      let payload = {
+        modifier_id: this.modifier.id,
+        create_duplicate: this.create_duplicate,
+        locations: this.selectedLocations
+      }
+      ModifiersFunctions.copyModifierToMultipleLocations(
+        payload,
+        copyModifierVue.$root.appId,
+        copyModifierVue.$root.appSecret,
+        copyModifierVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            copyModifierVue.closeModal()
+            copyModifierVue.emitSuccess(response.payload)
+          } else {
+            throw Error(response.message)
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'Could not apply modifier to stores',
+            errorName: 'errorMessage',
+            vue: copyModifierVue
+          })
+        })
+        .finally(() => {
+          copyModifierVue.saving = false
+        })
+    },
+    /**
 		 * To close the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('closeCopyModifierToLocations')
-		},
-		/**
+    closeModal () {
+      this.$emit('closeCopyModifierToLocations')
+    },
+    /**
 		 * To close the modal.
 		 * @function
 		 * @param {object} payload - The payload property of the response
 		 * @returns {undefined}
 		 */
-		emitSuccess (payload = {}) {
-			this.$emit('copyModifierToLocationsSuccess', payload)
-		}
-	}
+    emitSuccess (payload = {}) {
+      this.$emit('copyModifierToLocationsSuccess', payload)
+    }
+  }
 }
 </script>

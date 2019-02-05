@@ -66,111 +66,111 @@ import PromoCodesFunctions from '../../../controllers/PromoCodes'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Modal
-	},
-	props: {
-		selectedPromoCodeId: {
-			type: Number
-		}
-	},
-	data () {
-		return {
-			showDeletePromoCodeModal: false,
-			deleting: false,
-			errorMessage: '',
-			customWidth: 90
-		}
-	},
-	mounted () {
-		this.showDeletePromoCodeModal = true
-	},
-	methods: {
-		/**
+  components: {
+    Modal
+  },
+  props: {
+    selectedPromoCodeId: {
+      type: Number
+    }
+  },
+  data () {
+    return {
+      showDeletePromoCodeModal: false,
+      deleting: false,
+      errorMessage: '',
+      customWidth: 90
+    }
+  },
+  mounted () {
+    this.showDeletePromoCodeModal = true
+  },
+  methods: {
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To delete the promoCode and close the modal.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		deletePromoCode () {
-			this.deleting = true
-			var deletePromoCodeVue = this
-			deletePromoCodeVue.clearError()
+    deletePromoCode () {
+      this.deleting = true
+      var deletePromoCodeVue = this
+      deletePromoCodeVue.clearError()
 
-			PromoCodesFunctions.deletePromoCode(
-				deletePromoCodeVue.selectedPromoCodeId,
-				deletePromoCodeVue.$root.appId,
-				deletePromoCodeVue.$root.appSecret,
-				deletePromoCodeVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						this.deletePromoCodeAndCloseModal()
-						this.showAlert(response.payload)
-					} else {
-						deletePromoCodeVue.errorMessage = response.message
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not delete the promocode',
-						errorName: 'errorMessage',
-						vue: deletePromoCodeVue,
-						containerRef: 'modal'
-					})
-				})
-				.finally(() => {
-					deletePromoCodeVue.deleting = false
-				})
-		},
-		/**
+      PromoCodesFunctions.deletePromoCode(
+        deletePromoCodeVue.selectedPromoCodeId,
+        deletePromoCodeVue.$root.appId,
+        deletePromoCodeVue.$root.appSecret,
+        deletePromoCodeVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            this.deletePromoCodeAndCloseModal()
+            this.showAlert(response.payload)
+          } else {
+            deletePromoCodeVue.errorMessage = response.message
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not delete the promocode',
+            errorName: 'errorMessage',
+            vue: deletePromoCodeVue,
+            containerRef: 'modal'
+          })
+        })
+        .finally(() => {
+          deletePromoCodeVue.deleting = false
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert (payload = {}) {
-			let title = 'Success'
-			let text = 'The Promocode has been deleted'
-			let type = 'success'
+    showAlert (payload = {}) {
+      let title = 'Success'
+      let text = 'The Promocode has been deleted'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The removal has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The removal has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('closeDeletePromoCodeModal')
-		},
-		/**
+    closeModal () {
+      this.$emit('closeDeletePromoCodeModal')
+    },
+    /**
 		 * To close the modal and delete the promoCode.
 		 * @function
 		 * @returns {undefined}
 		 */
-		deletePromoCodeAndCloseModal () {
-			this.$emit('deletePromoCodeAndCloseModal')
-		}
-	}
+    deletePromoCodeAndCloseModal () {
+      this.$emit('deletePromoCodeAndCloseModal')
+    }
+  }
 }
 </script>
 <style>

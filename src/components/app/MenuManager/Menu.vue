@@ -340,7 +340,7 @@
             class="btn-group-vertical pull-right"
             data-toggle="buttons"
           >
-            <button 
+            <button
               ref="filterButton0"
               class="btn blue btn-xs"
               :class="{'btn-outline no-hover-highlight' : !menuFilter.includes('0')}"
@@ -348,7 +348,7 @@
             >
               Regular Menus
             </button>
-            <button 
+            <button
               ref="filterButton1"
               class="btn blue btn-xs"
               :class="{'btn-outline no-hover-highlight' : !menuFilter.includes('1')}"
@@ -356,7 +356,7 @@
             >
               Catering Menus
             </button>
-            <button 
+            <button
               ref="filterButton2"
               class="btn blue btn-xs"
               :class="{'btn-outline no-hover-highlight' : !menuFilter.includes('2')}"
@@ -638,691 +638,691 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 import MenuTiersFunctions from '@/controllers/MenuTiers'
 
 export default {
-	components: {
-		Breadcrumb,
-		LoadingScreen,
-		Categories,
-		ApplyAddOnCategories,
-		EditMenu,
-		DeleteMenu,
-		NoResults,
-		Modal,
-		MenuHours,
-		ResourcePicker,
-		DuplicateMenu,
-		CopyMenu
-	},
-	data () {
-		return {
-			breadcrumbArray: [
-				{ name: 'Menu Manager', link: false },
-				{ name: 'Menus', link: false }
-			],
-			storeMenus: [],
-			loadingMenus: false,
-			errorMessage: '',
-			editMenuModalActive: false,
-			deleteMenuModalActive: false,
-			addOnCategoriesModalActive: false,
-			passedMenuId: 0,
-			passedMenu: {},
-			creating: false,
-			newMenu: {
-				id: 'new',
-				name: '',
-				desc: '',
-				image_url: '',
-				user_id: this.$root.createdBy,
-				status: 1,
-				addon: 0,
-				catering: 0,
-				min: '',
-				max: '',
-				sku: '',
-				order: null,
-				start_from: '',
-				stop_on: '',
-				add_on: [],
-				pos: false,
-				kiosk: false,
-				online: false,
-				web: false
-			},
-			createMenuCollapse: true,
-			menuHoursModalActive: false,
-			promptForLocation: false,
-			menuFilter: ['0'],
-			animated: '',
-			menuToAssignHoursTo: {},
-			imageMode: {
-				newMenu: false
-			},
-			duplicateMenuModalActive: false,
-			copyMenuModalActive: false,
-			menuTiers: null,
-			listErrorMessage: '',
-			indexOfTierToDisplay: null
-		}
-	},
-	computed: {
-		customText () {
-			if (!this.indexOfTierToDisplay) {
-				return 'This location does not have any Menus.'
-			} else {
-				return 'This Tier does not have any Menus.'
-			}
-		}
-	},
-	watch: {
-		'$root.activeLocation' () {
-			this.getStoreMenus()
-			this.indexOfTierToDisplay = null
-			this.getMenuTiers()
-		},
-		menuFilter () {
-			this.getStoreMenus()
-		}
-	},
-	mounted () {
-		if (this.$root.activeLocation && this.$root.activeLocation.id) {
-			this.getStoreMenus()
-		}
-		this.getMenuTiers()
-	},
-	methods: {
-		setMenuFilter (selectedType) {
-			const indexOfSelected = this.menuFilter.indexOf(selectedType)
-			let updated = []
+  components: {
+    Breadcrumb,
+    LoadingScreen,
+    Categories,
+    ApplyAddOnCategories,
+    EditMenu,
+    DeleteMenu,
+    NoResults,
+    Modal,
+    MenuHours,
+    ResourcePicker,
+    DuplicateMenu,
+    CopyMenu
+  },
+  data () {
+    return {
+      breadcrumbArray: [
+        { name: 'Menu Manager', link: false },
+        { name: 'Menus', link: false }
+      ],
+      storeMenus: [],
+      loadingMenus: false,
+      errorMessage: '',
+      editMenuModalActive: false,
+      deleteMenuModalActive: false,
+      addOnCategoriesModalActive: false,
+      passedMenuId: 0,
+      passedMenu: {},
+      creating: false,
+      newMenu: {
+        id: 'new',
+        name: '',
+        desc: '',
+        image_url: '',
+        user_id: this.$root.createdBy,
+        status: 1,
+        addon: 0,
+        catering: 0,
+        min: '',
+        max: '',
+        sku: '',
+        order: null,
+        start_from: '',
+        stop_on: '',
+        add_on: [],
+        pos: false,
+        kiosk: false,
+        online: false,
+        web: false
+      },
+      createMenuCollapse: true,
+      menuHoursModalActive: false,
+      promptForLocation: false,
+      menuFilter: ['0'],
+      animated: '',
+      menuToAssignHoursTo: {},
+      imageMode: {
+        newMenu: false
+      },
+      duplicateMenuModalActive: false,
+      copyMenuModalActive: false,
+      menuTiers: null,
+      listErrorMessage: '',
+      indexOfTierToDisplay: null
+    }
+  },
+  computed: {
+    customText () {
+      if (!this.indexOfTierToDisplay) {
+        return 'This location does not have any Menus.'
+      } else {
+        return 'This Tier does not have any Menus.'
+      }
+    }
+  },
+  watch: {
+    '$root.activeLocation' () {
+      this.getStoreMenus()
+      this.indexOfTierToDisplay = null
+      this.getMenuTiers()
+    },
+    menuFilter () {
+      this.getStoreMenus()
+    }
+  },
+  mounted () {
+    if (this.$root.activeLocation && this.$root.activeLocation.id) {
+      this.getStoreMenus()
+    }
+    this.getMenuTiers()
+  },
+  methods: {
+    setMenuFilter (selectedType) {
+      const indexOfSelected = this.menuFilter.indexOf(selectedType)
+      let updated = []
 
-			if (selectedType === '0') {
-				updated = ['0']
-			} else {
-				if (indexOfSelected === -1) {
-					updated = this.menuFilter.filter(type => type !== '0')
-					updated.push(selectedType)
-				} else {
-					updated = this.menuFilter.filter(type => type !== selectedType)
-				}
-			}
-			if (updated.length === 0) {
-				updated = ['0']
-			}
-			this.menuFilter = updated
-			this.$refs[`filterButton${selectedType}`].blur()
-		},
-		/**
+      if (selectedType === '0') {
+        updated = ['0']
+      } else {
+        if (indexOfSelected === -1) {
+          updated = this.menuFilter.filter(type => type !== '0')
+          updated.push(selectedType)
+        } else {
+          updated = this.menuFilter.filter(type => type !== selectedType)
+        }
+      }
+      if (updated.length === 0) {
+        updated = ['0']
+      }
+      this.menuFilter = updated
+      this.$refs[`filterButton${selectedType}`].blur()
+    },
+    /**
 		 * To update the modifiers shown in the list based on user's filter selection
 		 * @function
 		 * @returns {undefined}
 		 */
-		updateList () {
-			if (this.indexOfTierToDisplay !== '') {
-				this.getMenuTierDetails()
-			} else {
-				this.getStoreMenus()
-			}
-		},
-		/**
+    updateList () {
+      if (this.indexOfTierToDisplay !== '') {
+        this.getMenuTierDetails()
+      } else {
+        this.getStoreMenus()
+      }
+    },
+    /**
 		 * To fetch a list of modifiers for a tier
 		 * @function
 		 * @returns {object} - A network call promise
 		 */
-		getMenuTierDetails () {
-			let menusVue = this
-			const tier = menusVue.menuTiers[menusVue.indexOfTierToDisplay]
-			return MenuTiersFunctions.getTierMenus(tier.id)
-				.then(response => {
-					menusVue.storeMenus = response.payload
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorName: 'listErrorMessage',
-						errorText: "We couldn't fetch modifiers for this tier",
-						vue: menusVue
-					})
-				})
-		},
-		/**
+    getMenuTierDetails () {
+      let menusVue = this
+      const tier = menusVue.menuTiers[menusVue.indexOfTierToDisplay]
+      return MenuTiersFunctions.getTierMenus(tier.id)
+        .then(response => {
+          menusVue.storeMenus = response.payload
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorName: 'listErrorMessage',
+            errorText: "We couldn't fetch modifiers for this tier",
+            vue: menusVue
+          })
+        })
+    },
+    /**
 		 * To fetch a list of Menu Tiers
 		 * @function
 		 * @returns {object} Network call promise
 		 */
-		getMenuTiers () {
-			let menusVue = this
-			return MenuTiersFunctions.getMenuTiers()
-				.then(response => {
-					menusVue.menuTiers = response.payload
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorName: 'listErrorMessage',
-						errorText: "We couldn't fetch modifier tiers",
-						vue: menusVue
-					})
-				})
-		},
-		/**
+    getMenuTiers () {
+      let menusVue = this
+      return MenuTiersFunctions.getMenuTiers()
+        .then(response => {
+          menusVue.menuTiers = response.payload
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorName: 'listErrorMessage',
+            errorText: "We couldn't fetch modifier tiers",
+            vue: menusVue
+          })
+        })
+    },
+    /**
 		 * To display the modal for copying menus.
 		 * @function
 		 * @param {object} menu - The selected menu
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		copyMenu (menu, event) {
-			event.stopPropagation()
-			this.passedMenuId = menu.id
-			this.copyMenuModalActive = true
-		},
-		/**
+    copyMenu (menu, event) {
+      event.stopPropagation()
+      this.passedMenuId = menu.id
+      this.copyMenuModalActive = true
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {integer} ids - Array of location IDs menu was copied to
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmCopySuccess ({ids, payload}) {
-			if (ids.includes(this.$root.activeLocation.id)) {
-				this.getStoreMenus()
-			}
-			this.closeCopyMenuModal()
+    confirmCopySuccess ({ ids, payload }) {
+      if (ids.includes(this.$root.activeLocation.id)) {
+        this.getStoreMenus()
+      }
+      this.closeCopyMenuModal()
 
-			let title = 'Success'
-			let text = 'The Menu has been created'
-			let type = 'success'
+      let title = 'Success'
+      let text = 'The Menu has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Menu has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Menu has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To close the menu copy modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeCopyMenuModal () {
-			this.copyMenuModalActive = false
-		},
-		/**
+    closeCopyMenuModal () {
+      this.copyMenuModalActive = false
+    },
+    /**
 		 * To display the modal for duplicating menus.
 		 * @function
 		 * @param {object} menu - The selected menu
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		duplicateMenu (menu, event) {
-			event.stopPropagation()
-			this.passedMenuId = menu.id
-			this.duplicateMenuModalActive = true
-		},
-		/**
+    duplicateMenu (menu, event) {
+      event.stopPropagation()
+      this.passedMenuId = menu.id
+      this.duplicateMenuModalActive = true
+    },
+    /**
 		 * To confirm the duplication succeeded
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmDuplicateSuccess (payload = {}) {
-			this.getStoreMenus()
-			this.closeDuplicateMenuModal()
+    confirmDuplicateSuccess (payload = {}) {
+      this.getStoreMenus()
+      this.closeDuplicateMenuModal()
 
-			let title = 'Success'
-			let text = 'The Menu has been created'
-			let type = 'success'
+      let title = 'Success'
+      let text = 'The Menu has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Menu has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Menu has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To close the menu duplication modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeDuplicateMenuModal () {
-			this.duplicateMenuModalActive = false
-		},
-		/**
+    closeDuplicateMenuModal () {
+      this.duplicateMenuModalActive = false
+    },
+    /**
 		 * To toggle between the open and closed state of the resource picker
 		 * @function
 		 * @param {string} object - The name of the object the image is for
 		 * @param {object} value - The open / closed value of the picker
 		 * @returns {undefined}
 		 */
-		toggleImageMode (object, value) {
-			this.imageMode[object] = value
-		},
-		/**
+    toggleImageMode (object, value) {
+      this.imageMode[object] = value
+    },
+    /**
 		 * To display the add-on categories modal
 		 * @function
 		 * @param {object} menu - The menu to apply the category to
 		 * @param {object} event - The click event that initiated the action
 		 * @returns {undefined}
 		 */
-		selectAddOnCategories (menu, event) {
-			event.stopPropagation()
-			event.preventDefault()
-			this.passedMenu = menu
-			this.addOnCategoriesModalActive = true
-		},
-		/**
+    selectAddOnCategories (menu, event) {
+      event.stopPropagation()
+      event.preventDefault()
+      this.passedMenu = menu
+      this.addOnCategoriesModalActive = true
+    },
+    /**
 		 * To display the add-on categories modal
 		 * @function
 		 * @param {object} menu - The menu to apply the category to
 		 * @param {object} event - The click event that initiated the action
 		 * @returns {undefined}
 		 */
-		applyAddOnCategories (menu, event) {
-			event.stopPropagation()
-			event.preventDefault()
-			this.passedMenu = menu
-			this.addOnCategoriesModalActive = true
-		},
-		/**
+    applyAddOnCategories (menu, event) {
+      event.stopPropagation()
+      event.preventDefault()
+      this.passedMenu = menu
+      this.addOnCategoriesModalActive = true
+    },
+    /**
 		 * To get a list of menus for the current store.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getStoreMenus () {
-			this.loadingMenus = true
-			this.storeMenus = []
-			var menusVue = this
-			let params = {}
-			if (this.menuFilter.includes('1')) {
-				params.catering = 1
-			}
-			if (this.menuFilter.includes('2')) {
-				params.addon = 1
-			}
-			return MenusFunctions.getStoreMenus(
-				menusVue.$root.appId,
-				menusVue.$root.appSecret,
-				menusVue.$root.activeLocation.id,
-				params
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						menusVue.storeMenus = response.payload
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorName: 'listErrorMessage',
-						errorText: 'We could not fetch menus',
-						vue: menusVue
-					})
-				})
-				.finally(() => {
-					menusVue.loadingMenus = false
-				})
-		},
-		/**
+    getStoreMenus () {
+      this.loadingMenus = true
+      this.storeMenus = []
+      var menusVue = this
+      let params = {}
+      if (this.menuFilter.includes('1')) {
+        params.catering = 1
+      }
+      if (this.menuFilter.includes('2')) {
+        params.addon = 1
+      }
+      return MenusFunctions.getStoreMenus(
+        menusVue.$root.appId,
+        menusVue.$root.appSecret,
+        menusVue.$root.activeLocation.id,
+        params
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            menusVue.storeMenus = response.payload
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorName: 'listErrorMessage',
+            errorText: 'We could not fetch menus',
+            vue: menusVue
+          })
+        })
+        .finally(() => {
+          menusVue.loadingMenus = false
+        })
+    },
+    /**
 		 * To route to the categories page for the selected menu.
 		 * @function
 		 * @param {object} menu - The selected menu
 		 * @returns {undefined}
 		 */
-		viewMenuCategories (menu) {
-			this.$root.activeMenuId = menu.id
-			this.$router.push('categories/' + menu.id)
-		},
-		/**
+    viewMenuCategories (menu) {
+      this.$root.activeMenuId = menu.id
+      this.$router.push('categories/' + menu.id)
+    },
+    /**
 		 * To display the modal for editing menus.
 		 * @function
 		 * @param {object} menu - The selected menu
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		editMenu (menu, event) {
-			event.stopPropagation()
-			this.passedMenuId = menu.id
-			this.editMenuModalActive = true
-		},
-		/**
+    editMenu (menu, event) {
+      event.stopPropagation()
+      this.passedMenuId = menu.id
+      this.editMenuModalActive = true
+    },
+    /**
 		 * To display the modal for menus hours.
 		 * @function
 		 * @param {object} menu - The selected menu
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		showMenuHours (menu, event) {
-			event.stopPropagation()
-			this.menuToAssignHoursTo = menu
-			this.menuHoursModalActive = true
-		},
-		/**
+    showMenuHours (menu, event) {
+      event.stopPropagation()
+      this.menuToAssignHoursTo = menu
+      this.menuHoursModalActive = true
+    },
+    /**
 		 * To display the modal for deleting menu.
 		 * @function
 		 * @param {object} menu - The selected menu
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		deleteMenu (menu, event) {
-			event.stopPropagation()
-			this.passedMenuId = menu.id
-			this.deleteMenuModalActive = true
-		},
-		/**
+    deleteMenu (menu, event) {
+      event.stopPropagation()
+      this.passedMenuId = menu.id
+      this.deleteMenuModalActive = true
+    },
+    /**
 		 * To close the modal for editing menus.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeEditMenuModal () {
-			this.editMenuModalActive = false
-		},
-		/**
+    closeEditMenuModal () {
+      this.editMenuModalActive = false
+    },
+    /**
 		 * To close the modal for menu hours.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeMenuHoursModal () {
-			this.menuHoursModalActive = false
-		},
-		/**
+    closeMenuHoursModal () {
+      this.menuHoursModalActive = false
+    },
+    /**
 		 * To close the modal for deleting menus.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeDeleteMenuModal () {
-			this.deleteMenuModalActive = false
-		},
-		/**
+    closeDeleteMenuModal () {
+      this.deleteMenuModalActive = false
+    },
+    /**
 		 * To close the modal for adding add-on categories.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeAddOnCategoriesModal () {
-			this.addOnCategoriesModalActive = false
-		},
-		/**
+    closeAddOnCategoriesModal () {
+      this.addOnCategoriesModalActive = false
+    },
+    /**
 		 * To close the modal for deleting menus and remove menu from DOM.
 		 * @function
 		 * @returns {undefined}
 		 */
-		deleteMenuAndCloseModal () {
-			this.deleteMenuModalActive = false
-			this.getStoreMenus()
-		},
-		/**
+    deleteMenuAndCloseModal () {
+      this.deleteMenuModalActive = false
+      this.getStoreMenus()
+    },
+    /**
 		 * To clear the new menu form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearNewMenu () {
-			this.newMenu = {
-				id: 'new',
-				name: '',
-				desc: '',
-				image_url: '',
-				user_id: this.$root.createdBy,
-				status: 1,
-				addon: 0,
-				catering: 0,
-				min: '',
-				max: '',
-				sku: '',
-				order: null,
-				start_from: '',
-				stop_on: '',
-				add_on: [],
-				pos: false,
-				kiosk: false,
-				online: false,
-				web: false
-			}
-		},
-		/**
+    clearNewMenu () {
+      this.newMenu = {
+        id: 'new',
+        name: '',
+        desc: '',
+        image_url: '',
+        user_id: this.$root.createdBy,
+        status: 1,
+        addon: 0,
+        catering: 0,
+        min: '',
+        max: '',
+        sku: '',
+        order: null,
+        start_from: '',
+        stop_on: '',
+        add_on: [],
+        pos: false,
+        kiosk: false,
+        online: false,
+        web: false
+      }
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert (payload = {}) {
-			let title = 'Success'
-			let text = 'The Menu has been created'
-			let type = 'success'
+    showAlert (payload = {}) {
+      let title = 'Success'
+      let text = 'The Menu has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Menu has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Menu has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To update the menu object emitted by the child.
 		 * @function
 		 * @param {object} menu - The updated menu object
 		 * @returns {undefined}
 		 */
-		updateMenu ({menu, payload}) {
-			this.editMenuModalActive = false
-			for (let i = 0; i < this.storeMenus.length; i++) {
-				if (this.storeMenus[i].id === menu.id) {
-					this.storeMenus.splice(i, 1)
-					break
-				}
-			}
-			var done = false
-			for (let i = 0; i < this.storeMenus.length; i++) {
-				if (
-					parseInt(this.storeMenus[i].order) < parseInt(menu.order) ||
+    updateMenu ({ menu, payload }) {
+      this.editMenuModalActive = false
+      for (let i = 0; i < this.storeMenus.length; i++) {
+        if (this.storeMenus[i].id === menu.id) {
+          this.storeMenus.splice(i, 1)
+          break
+        }
+      }
+      var done = false
+      for (let i = 0; i < this.storeMenus.length; i++) {
+        if (
+          parseInt(this.storeMenus[i].order) < parseInt(menu.order) ||
 					(parseInt(this.storeMenus[i].order) === parseInt(menu.order) &&
 						parseInt(this.storeMenus[i].id) > parseInt(menu.id))
-				) {
-					this.storeMenus.splice(i, 0, menu)
-					done = true
-					break
-				}
-			}
-			if (!done) {
-				this.storeMenus.push(menu)
-			}
-			setTimeout(function () {
-				$('#menu-' + menu.id).addClass('highlight')
-				setTimeout(function () {
-					$('#menu-' + menu.id).removeClass('highlight')
-				}, 2000)
-			}, 10)
+        ) {
+          this.storeMenus.splice(i, 0, menu)
+          done = true
+          break
+        }
+      }
+      if (!done) {
+        this.storeMenus.push(menu)
+      }
+      setTimeout(function () {
+        $('#menu-' + menu.id).addClass('highlight')
+        setTimeout(function () {
+          $('#menu-' + menu.id).removeClass('highlight')
+        }, 2000)
+      }, 10)
 
-			this.showUpdateSuccess(payload)
-		},
-		/**
+      this.showUpdateSuccess(payload)
+    },
+    /**
 		 * To confirm the duplication succeeded
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showUpdateSuccess (payload = {}) {
-			this.getStoreMenus()
-			this.closeDuplicateMenuModal()
+    showUpdateSuccess (payload = {}) {
+      this.getStoreMenus()
+      this.closeDuplicateMenuModal()
 
-			let title = 'Success'
-			let text = 'The Menu has been updated'
-			let type = 'success'
+      let title = 'Success'
+      let text = 'The Menu has been updated'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To update the add on categories.
 		 * @function
 		 * @param {object} val - The updated categories
 		 * @returns {undefined}
 		 */
-		updateAddOnCategories (val) {
-			if (this.passedMenu.id === 'new') {
-				this.newMenu.add_on = val.map(category => category.addon_category_id)
-			} else {
-				this.storeMenus.forEach(menu => {
-					if (menu.id === this.passedMenu.id) {
-						menu.add_on = val
-					}
-				})
-				this.animated = `menu-${this.passedMenu.id}`
-				let menusVue = this
-				window.setTimeout(() => {
-					menusVue.animated = ''
-				}, 3000)
-			}
-			this.addOnCategoriesModalActive = false
-			this.passedMenu = {}
-		},
-		/**
+    updateAddOnCategories (val) {
+      if (this.passedMenu.id === 'new') {
+        this.newMenu.add_on = val.map(category => category.addon_category_id)
+      } else {
+        this.storeMenus.forEach(menu => {
+          if (menu.id === this.passedMenu.id) {
+            menu.add_on = val
+          }
+        })
+        this.animated = `menu-${this.passedMenu.id}`
+        let menusVue = this
+        window.setTimeout(() => {
+          menusVue.animated = ''
+        }, 3000)
+      }
+      this.addOnCategoriesModalActive = false
+      this.passedMenu = {}
+    },
+    /**
 		 * To check if the menu data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateMenuData () {
-			var createMenuVue = this
-			return new Promise(function (resolve, reject) {
-				if (!createMenuVue.newMenu.image_url.length) {
-					reject('Menu image cannot be blank')
-				} else if (!createMenuVue.newMenu.name.length) {
-					reject('Menu name cannot be blank')
-				} else if (!$.isNumeric(createMenuVue.newMenu.order)) {
-					reject('Menu order should be a number')
-				} else if (!createMenuVue.newMenu.desc.length) {
-					reject('Menu description cannot be blank')
-				} else if (!createMenuVue.newMenu.sku.length) {
-					reject('Menu SKU cannot be blank')
-				} else if (
-					createMenuVue.newMenu.start_from &&
+    validateMenuData () {
+      var createMenuVue = this
+      return new Promise(function (resolve, reject) {
+        if (!createMenuVue.newMenu.image_url.length) {
+          reject('Menu image cannot be blank')
+        } else if (!createMenuVue.newMenu.name.length) {
+          reject('Menu name cannot be blank')
+        } else if (!$.isNumeric(createMenuVue.newMenu.order)) {
+          reject('Menu order should be a number')
+        } else if (!createMenuVue.newMenu.desc.length) {
+          reject('Menu description cannot be blank')
+        } else if (!createMenuVue.newMenu.sku.length) {
+          reject('Menu SKU cannot be blank')
+        } else if (
+          createMenuVue.newMenu.start_from &&
 					!createMenuVue.newMenu.stop_on
-				) {
-					reject('Please provide an end date')
-				} else if (
-					!createMenuVue.newMenu.start_from.length &&
+        ) {
+          reject('Please provide an end date')
+        } else if (
+          !createMenuVue.newMenu.start_from.length &&
 					createMenuVue.newMenu.stop_on.length
-				) {
-					reject('Please provide a start date')
-				} else if (
-					createMenuVue.newMenu.catering &&
+        ) {
+          reject('Please provide a start date')
+        } else if (
+          createMenuVue.newMenu.catering &&
 					!createMenuVue.newMenu.min
-				) {
-					reject('Minimum order value cannot be blank')
-				} else if (
-					createMenuVue.newMenu.catering &&
+        ) {
+          reject('Minimum order value cannot be blank')
+        } else if (
+          createMenuVue.newMenu.catering &&
 					!createMenuVue.newMenu.max
-				) {
-					reject('Maximum order value cannot be blank')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+        ) {
+          reject('Maximum order value cannot be blank')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To create a new menu.
 		 * @function
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		createNewMenu (event) {
-			var createMenuVue = this
-			createMenuVue.clearError()
+    createNewMenu (event) {
+      var createMenuVue = this
+      createMenuVue.clearError()
 
-			return createMenuVue
-				.validateMenuData()
-				.then(response => {
-					createMenuVue.creating = true
-					let payload = {
-						...createMenuVue.newMenu,
-						location_id: createMenuVue.$root.activeLocation.id,
-						pos: createMenuVue.newMenu.pos ? 1 : 0,
-						kiosk: createMenuVue.newMenu.kiosk ? 1 : 0,
-						online: createMenuVue.newMenu.online ? 1 : 0,
-						web: createMenuVue.newMenu.web ? 1 : 0
-					}
-					MenusFunctions.createNewMenu(
-						payload,
-						createMenuVue.$root.appId,
-						createMenuVue.$root.appSecret,
-						createMenuVue.$root.userToken
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								createMenuVue.getStoreMenus()
-								createMenuVue.clearNewMenu()
-								createMenuVue.showAlert(response.payload)
-							} else {
-								createMenuVue.errorMessage = response.message
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorName: 'errorMessage',
-								errorText: 'We could not create the menu',
-								vue: createMenuVue
-							})
-						})
-						.finally(() => {
-							createMenuVue.creating = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					createMenuVue.errorMessage = reason
-					window.scrollTo(0, 0)
-					throw reason
-				})
-		},
-		/**
+      return createMenuVue
+        .validateMenuData()
+        .then(response => {
+          createMenuVue.creating = true
+          let payload = {
+            ...createMenuVue.newMenu,
+            location_id: createMenuVue.$root.activeLocation.id,
+            pos: createMenuVue.newMenu.pos ? 1 : 0,
+            kiosk: createMenuVue.newMenu.kiosk ? 1 : 0,
+            online: createMenuVue.newMenu.online ? 1 : 0,
+            web: createMenuVue.newMenu.web ? 1 : 0
+          }
+          MenusFunctions.createNewMenu(
+            payload,
+            createMenuVue.$root.appId,
+            createMenuVue.$root.appSecret,
+            createMenuVue.$root.userToken
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                createMenuVue.getStoreMenus()
+                createMenuVue.clearNewMenu()
+                createMenuVue.showAlert(response.payload)
+              } else {
+                createMenuVue.errorMessage = response.message
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorName: 'errorMessage',
+                errorText: 'We could not create the menu',
+                vue: createMenuVue
+              })
+            })
+            .finally(() => {
+              createMenuVue.creating = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          createMenuVue.errorMessage = reason
+          window.scrollTo(0, 0)
+          throw reason
+        })
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To set the image to be same as the one emitted by the gallery modal.
 		 * @function
 		 * @param {object} val - The emitted image object.
 		 * @returns {undefined}
 		 */
-		updateImage (val) {
-			this.newMenu.image_url = val.image_url
-		},
-		/**
+    updateImage (val) {
+      this.newMenu.image_url = val.image_url
+    },
+    /**
 		 * To toggle the create menu panel, initially set to opened
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCreateMenuPanel () {
-			this.createMenuCollapse = !this.createMenuCollapse
-		}
-	}
+    toggleCreateMenuPanel () {
+      this.createMenuCollapse = !this.createMenuCollapse
+    }
+  }
 }
 </script>
 

@@ -32,97 +32,97 @@
 import qrCodeWithLogo from 'qr-code-with-logo'
 
 export default {
-	props: {
-		// content to encode; string, required
-		content: {
-			type: String,
-			default: () => '',
-			required: true
-		},
+  props: {
+    // content to encode; string, required
+    content: {
+      type: String,
+      default: () => '',
+      required: true
+    },
 
-		// hex color value
-		color: {
-			type: String,
-			default: () => '#000000',
-			required: false
-		},
+    // hex color value
+    color: {
+      type: String,
+      default: () => '#000000',
+      required: false
+    },
 
-		// hex color value
-		backgroundColor: {
-			type: String,
-			default: () => '#ffffff',
-			required: false
-		},
+    // hex color value
+    backgroundColor: {
+      type: String,
+      default: () => '#ffffff',
+      required: false
+    },
 
-		// name of downloaded file
-		downloadName: {
-			type: String,
-			required: false,
-			default: () => 'UNOcode.png'
-		},
+    // name of downloaded file
+    downloadName: {
+      type: String,
+      required: false,
+      default: () => 'UNOcode.png'
+    },
 
-		// path to file containing image to place in center; string
-		image: {
-			type: String,
-			default: () => '',
-			required: false
-		},
+    // path to file containing image to place in center; string
+    image: {
+      type: String,
+      default: () => '',
+      required: false
+    },
 
-		// number of pixels (I think) to use as value of CSS width; positive float
-		width: {
-			type: Number,
-			default: () => 1000,
-			required: false
-		},
+    // number of pixels (I think) to use as value of CSS width; positive float
+    width: {
+      type: Number,
+      default: () => 1000,
+      required: false
+    },
 
-		// value of id attribute of HTML canvas element; string, required
-		id: {
-			type: String,
-			default: () => 'canvasVue',
-			required: true
-		}
-	},
-	mounted () {
-		const options = {
-			image: this.$refs.imageTag,
-			download: false,
-			content: this.content,
-			width: this.width,
-			logo: {
-				src: this.image ? this.image : undefined
-			},
-			nodeQrCodeOptions: {
-				color: {
-					dark: this.color,
-					light: this.backgroundColor
-				}
-			}
-		}
+    // value of id attribute of HTML canvas element; string, required
+    id: {
+      type: String,
+      default: () => 'canvasVue',
+      required: true
+    }
+  },
+  mounted () {
+    const options = {
+      image: this.$refs.imageTag,
+      download: false,
+      content: this.content,
+      width: this.width,
+      logo: {
+        src: this.image ? this.image : undefined
+      },
+      nodeQrCodeOptions: {
+        color: {
+          dark: this.color,
+          light: this.backgroundColor
+        }
+      }
+    }
 
-		qrCodeWithLogo.toImage(options)
-	},
-	methods: {
-		downloadAsImage () {
-			const options = {
-				image: this.$refs.imageTag,
-				download: true,
-				downloadName: this.downloadName,
-				content: this.content,
-				width: this.width,
-				logo: {
-					src: this.image ? this.image : undefined
-				},
-				nodeQrCodeOptions: {
-					color: {
-						dark: this.color,
-						light: this.backgroundColor
-					}
-				}
-			}
+    qrCodeWithLogo.toImage(options)
+  },
+  methods: {
+    downloadAsImage () {
+      const options = {
+        image: this.$refs.imageTag,
+        download: true,
+        downloadName: this.downloadName,
+        content: this.content,
+        width: this.width,
+        logo: {
+          src: this.image ? this.image : undefined
+        },
+        nodeQrCodeOptions: {
+          color: {
+            dark: this.color,
+            light: this.backgroundColor
+          }
+        }
+      }
 
-			qrCodeWithLogo.toImage(options)
-		}
-	}
+      qrCodeWithLogo.toImage(options)
+    }
+  }
 }
 </script>
 <style scoped>

@@ -74,66 +74,65 @@ import ModifierTiersFunctions from '@/controllers/ModifierTiers'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	name: 'ModifierTierPicker',
-	props: {
-		previouslySelected: {
-			type: Array,
-			required: false,
-			default: () => []
-		}
-	},
-	data: () => ({
-		errorMessage: '',
-		modifierTiers: []
-	}),
-	computed: {
-		selectAllSelected() {
-			return (
-				this.modifierTiers.length &&
+  name: 'ModifierTierPicker',
+  props: {
+    previouslySelected: {
+      type: Array,
+      required: false,
+      default: () => []
+    }
+  },
+  data: () => ({
+    errorMessage: '',
+    modifierTiers: []
+  }),
+  computed: {
+    selectAllSelected () {
+      return (
+        this.modifierTiers.length &&
 				!this.modifierTiers.some(tier => !tier.selected)
-			)
-		}
-	},
-	created() {
-		this.getModifierTiers()
-	},
-	methods: {
-		toggleAll() {
-			const selected = this.selectAllSelected
-			this.modifierTiers.forEach(tier => {
-				tier.selected = !selected
-			})
-			this.emit()
-		},
-		clearError(name) {
-			this[name] = ''
-		},
-		getModifierTiers() {
-			let pickerVue = this
-			return ModifierTiersFunctions.getModifierTiers()
-				.then(response => {
-					pickerVue.modifierTiers = response.payload.map(tier => {
-						return {
-							...tier,
-							selected: pickerVue.previouslySelected.includes(tier.id)
-						}
-					})
-					pickerVue.loading = false
-				})
-				.catch(reason => {
-					pickerVue.loading = false
-					ajaxErrorHandler({
-						reason,
-						errorName: 'errorMessage',
-						errorText: "We couldn't fetch modifier tiers",
-						vue: pickerVue
-					})
-				})
-		},
-		emit() {
-			this.$emit('selected', this.modifierTiers)
-		}
-	}
+      )
+    }
+  },
+  created () {
+    this.getModifierTiers()
+  },
+  methods: {
+    toggleAll () {
+      const selected = this.selectAllSelected
+      this.modifierTiers.forEach(tier => {
+        tier.selected = !selected
+      })
+      this.emit()
+    },
+    clearError (name) {
+      this[name] = ''
+    },
+    getModifierTiers () {
+      let pickerVue = this
+      return ModifierTiersFunctions.getModifierTiers()
+        .then(response => {
+          pickerVue.modifierTiers = response.payload.map(tier => {
+            return {
+              ...tier,
+              selected: pickerVue.previouslySelected.includes(tier.id)
+            }
+          })
+          pickerVue.loading = false
+        })
+        .catch(reason => {
+          pickerVue.loading = false
+          ajaxErrorHandler({
+            reason,
+            errorName: 'errorMessage',
+            errorText: "We couldn't fetch modifier tiers",
+            vue: pickerVue
+          })
+        })
+    },
+    emit () {
+      this.$emit('selected', this.modifierTiers)
+    }
+  }
 }
 </script>
-

@@ -241,265 +241,265 @@ import StorePickerWithButton from '@/components/modules/StorePickerWithButton'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Modal,
-		ResourcePicker,
-		StorePickerWithButton
-	},
-	data () {
-		return {
-			showEditItemModal: false,
-			itemToBeEdited: {
-				image_url: ''
-			},
-			errorMessage: '',
-			selectImageMode: false,
-			selectLocationMode: false,
-			selectedLocations: []
-		}
-	},
-	created () {
-		// get category details by category id passed as route param
-		this.getModifierItemDetails()
-	},
-	mounted () {
-		this.showEditItemModal = true
-	},
-	methods: {
-		/**
+  components: {
+    Modal,
+    ResourcePicker,
+    StorePickerWithButton
+  },
+  data () {
+    return {
+      showEditItemModal: false,
+      itemToBeEdited: {
+        image_url: ''
+      },
+      errorMessage: '',
+      selectImageMode: false,
+      selectLocationMode: false,
+      selectedLocations: []
+    }
+  },
+  created () {
+    // get category details by category id passed as route param
+    this.getModifierItemDetails()
+  },
+  mounted () {
+    this.showEditItemModal = true
+  },
+  methods: {
+    /**
 		 * To toggle select location mode on.
 		 * @function
 		 * @param {object} event - The event that triggered the action
 		 * @returns {undefined}
 		 */
-		selectLocations (event) {
-			event.preventDefault()
-			this.selectLocationMode = true
-		},
-		/**
+    selectLocations (event) {
+      event.preventDefault()
+      this.selectLocationMode = true
+    },
+    /**
 		 * To toggle select location mode on.
 		 * @function
 		 * @param {array} locations - The array of selected locations
 		 * @returns {undefined}
 		 */
-		updateSelectedLocations (locations) {
-			if (this.$root.permissions['menu_manager modifiers items update']) {
-				this.selectedLocations = locations
-			}
-			this.closeSelectLocationsPopup()
-		},
-		/**
+    updateSelectedLocations (locations) {
+      if (this.$root.permissions['menu_manager modifiers items update']) {
+        this.selectedLocations = locations
+      }
+      this.closeSelectLocationsPopup()
+    },
+    /**
 		 * To toggle select location mode on.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeSelectLocationsPopup () {
-			this.selectLocationMode = false
-		},
-		/**
+    closeSelectLocationsPopup () {
+      this.selectLocationMode = false
+    },
+    /**
 		 * To check if the modifier item data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateModifierItemData () {
-			var editModifierItemVue = this
-			return new Promise(function (resolve, reject) {
-				if (!editModifierItemVue.itemToBeEdited.name.length) {
-					reject('Item name cannot be blank')
-				} else if (!editModifierItemVue.itemToBeEdited.desc.length) {
-					reject('Item description cannot be blank')
-				} else if (!editModifierItemVue.itemToBeEdited.price.length) {
-					reject('Item price cannot be blank')
-				} else if (
-					!editModifierItemVue.itemToBeEdited.image_url.length
-				) {
-					reject('Item image URL cannot be blank')
-				} else if (
-					!$.isNumeric(editModifierItemVue.itemToBeEdited.status)
-				) {
-					reject('Item status cannot be blank')
-				} else if (
-					!$.isNumeric(editModifierItemVue.itemToBeEdited.min)
-				) {
-					reject('Modifier Item min should be a number')
-				} else if (
-					!$.isNumeric(editModifierItemVue.itemToBeEdited.max)
-				) {
-					reject('Modifier Item max should be a number')
-				} else if (
-					Number(editModifierItemVue.itemToBeEdited.min) >
+    validateModifierItemData () {
+      var editModifierItemVue = this
+      return new Promise(function (resolve, reject) {
+        if (!editModifierItemVue.itemToBeEdited.name.length) {
+          reject('Item name cannot be blank')
+        } else if (!editModifierItemVue.itemToBeEdited.desc.length) {
+          reject('Item description cannot be blank')
+        } else if (!editModifierItemVue.itemToBeEdited.price.length) {
+          reject('Item price cannot be blank')
+        } else if (
+          !editModifierItemVue.itemToBeEdited.image_url.length
+        ) {
+          reject('Item image URL cannot be blank')
+        } else if (
+          !$.isNumeric(editModifierItemVue.itemToBeEdited.status)
+        ) {
+          reject('Item status cannot be blank')
+        } else if (
+          !$.isNumeric(editModifierItemVue.itemToBeEdited.min)
+        ) {
+          reject('Modifier Item min should be a number')
+        } else if (
+          !$.isNumeric(editModifierItemVue.itemToBeEdited.max)
+        ) {
+          reject('Modifier Item max should be a number')
+        } else if (
+          Number(editModifierItemVue.itemToBeEdited.min) >
 					Number(editModifierItemVue.itemToBeEdited.max)
-				) {
-					reject('Modifier Item max cannot be larger than min')
-				} else if (
-					!$.isNumeric(editModifierItemVue.itemToBeEdited.order)
-				) {
-					reject('Modifier Item order should be a number')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+        ) {
+          reject('Modifier Item max cannot be larger than min')
+        } else if (
+          !$.isNumeric(editModifierItemVue.itemToBeEdited.order)
+        ) {
+          reject('Modifier Item order should be a number')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To get the details of the modifier item to be updated.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getModifierItemDetails () {
-			var editModifierItemVue = this
-			ModifiersFunctions.getModifierItemDetails(
-				editModifierItemVue.$route.params.modifier_item_id,
-				editModifierItemVue.$root.appId,
-				editModifierItemVue.$root.appSecret,
-				editModifierItemVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						editModifierItemVue.itemToBeEdited = response.payload[0]
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not get modifier info',
-						errorName: 'errorMessage',
-						vue: editModifierItemVue,
-						containerRef: 'modal'
-					})
-				})
-		},
-		/**
+    getModifierItemDetails () {
+      var editModifierItemVue = this
+      ModifiersFunctions.getModifierItemDetails(
+        editModifierItemVue.$route.params.modifier_item_id,
+        editModifierItemVue.$root.appId,
+        editModifierItemVue.$root.appSecret,
+        editModifierItemVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            editModifierItemVue.itemToBeEdited = response.payload[0]
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not get modifier info',
+            errorName: 'errorMessage',
+            vue: editModifierItemVue,
+            containerRef: 'modal'
+          })
+        })
+    },
+    /**
 		 * To update the modifier item and close the modal.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		updateModifierItem () {
-			var editModifierItemVue = this
-			editModifierItemVue.itemToBeEdited.user_id =
+    updateModifierItem () {
+      var editModifierItemVue = this
+      editModifierItemVue.itemToBeEdited.user_id =
 				editModifierItemVue.$root.createdBy
-			editModifierItemVue.itemToBeEdited.update_locations =
+      editModifierItemVue.itemToBeEdited.update_locations =
 				editModifierItemVue.selectedLocations
-			editModifierItemVue.clearError()
+      editModifierItemVue.clearError()
 
-			return editModifierItemVue
-				.validateModifierItemData()
-				.then(response => {
-					ModifiersFunctions.updateModifierItem(
-						editModifierItemVue.itemToBeEdited,
-						editModifierItemVue.$root.appId,
-						editModifierItemVue.$root.appSecret,
-						editModifierItemVue.$root.userToken
-					)
-						.then(response => {
-							if (
-								response.code === 200 &&
+      return editModifierItemVue
+        .validateModifierItemData()
+        .then(response => {
+          ModifiersFunctions.updateModifierItem(
+            editModifierItemVue.itemToBeEdited,
+            editModifierItemVue.$root.appId,
+            editModifierItemVue.$root.appSecret,
+            editModifierItemVue.$root.userToken
+          )
+            .then(response => {
+              if (
+                response.code === 200 &&
 								response.status === 'ok'
-							) {
-								this.closeModalAndUpdate()
-								this.showEditSuccess(response.payload)
-							} else {
-								editModifierItemVue.errorMessage =
+              ) {
+                this.closeModalAndUpdate()
+                this.showEditSuccess(response.payload)
+              } else {
+                editModifierItemVue.errorMessage =
 									response.message
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not get modifier info',
-								errorName: 'errorMessage',
-								vue: editModifierItemVue,
-								containerRef: 'modal'
-							})
-						})
-				})
-				.catch(reason => {
-					editModifierItemVue.errorMessage = reason
-					window.scrollTo(0, 0)
-				})
-		},
-		/**
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not get modifier info',
+                errorName: 'errorMessage',
+                vue: editModifierItemVue,
+                containerRef: 'modal'
+              })
+            })
+        })
+        .catch(reason => {
+          editModifierItemVue.errorMessage = reason
+          window.scrollTo(0, 0)
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Modifier Item has been saved'
-			let type = 'success'
+    showEditSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Modifier Item has been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To close the modal and emit the updated modifier item object to the parent.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModalAndUpdate () {
-			this.$emit('editModifierItem')
-			this.$router.push(
-				'/app/menu_manager/modifier_items/' +
+    closeModalAndUpdate () {
+      this.$emit('editModifierItem')
+      this.$router.push(
+        '/app/menu_manager/modifier_items/' +
 					this.$route.params.modifier_id
-			)
-		},
-		/**
+      )
+    },
+    /**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('deactivateEditItemModal')
-			this.$router.push(
-				'/app/menu_manager/modifier_items/' +
+    closeModal () {
+      this.$emit('deactivateEditItemModal')
+      this.$router.push(
+        '/app/menu_manager/modifier_items/' +
 					this.$route.params.modifier_id
-			)
-		},
-		/**
+      )
+    },
+    /**
 		 * To change the page to the gallery view on the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		goToPageTwo () {
-			this.selectImageMode = true
-		},
-		/**
+    goToPageTwo () {
+      this.selectImageMode = true
+    },
+    /**
 		 * To change the page to the main/form view on the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		goToPageOne () {
-			this.selectImageMode = false
-		},
-		/**
+    goToPageOne () {
+      this.selectImageMode = false
+    },
+    /**
 		 * To set the image to be same as the one emitted by the gallery modal.
 		 * @function
 		 * @param {object} val - The emitted image object.
 		 * @returns {undefined}
 		 */
-		updateImage (val) {
-			if (this.$root.permissions['menu_manager modifiers items update']) {
-				this.itemToBeEdited.image_url = val.image_url
-			}
-			this.goToPageOne()
-		}
-	}
+    updateImage (val) {
+      if (this.$root.permissions['menu_manager modifiers items update']) {
+        this.itemToBeEdited.image_url = val.image_url
+      }
+      this.goToPageOne()
+    }
+  }
 }
 </script>
 <style scoped>

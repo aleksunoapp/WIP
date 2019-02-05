@@ -51,14 +51,14 @@
           <span>{{ errorMessage }}</span>
         </div>
 
-        <loading-screen 
+        <loading-screen
           :show="loading"
           :color="'#2C3E50'"
           :display="'inline'"
         />
 
         <!-- LIST -->
-        <div 
+        <div
           v-show="view === 'list'"
           class="width-100 display-flex flex-wrap-wrap justify-content-space-between pa-1em"
         >
@@ -66,7 +66,7 @@
             v-for="item in comboOffer.combo_item"
             v-show="!loading"
             :key="item.id"
-            class="position-relative display-flex flex-basis-48 flex-direction-column min-height-100 mb-1em card--shadow" 
+            class="position-relative display-flex flex-basis-48 flex-direction-column min-height-100 mb-1em card--shadow"
             :class="{'active' : item.id === activeComboOfferItem.id}"
             @click="setActive(item)"
           >
@@ -221,7 +221,7 @@
           />
           <div class="width-100 display-flex justify-content-space-between align-items-flex-end">
             <p class="my-0em text-muted">
-              {{ this.selected === null ? 
+              {{ this.selected === null ?
                 `${this.currentSkus.length} selected` :
                 `${this.selected.length} selected`
               }}
@@ -264,384 +264,384 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
-	name: 'ComboOfferItems',
-	components: {
-		Breadcrumb,
-		LoadingScreen,
-		Modal,
-		MenuAndModifierItemPicker
-	},
-	data () {
-		return {
-			breadcrumbArray: [
-				{ name: 'Combos', link: '/app/combos/offers' },
-				{ name: 'Combos Offer Items', link: false }
-			],
+  name: 'ComboOfferItems',
+  components: {
+    Breadcrumb,
+    LoadingScreen,
+    Modal,
+    MenuAndModifierItemPicker
+  },
+  data () {
+    return {
+      breadcrumbArray: [
+        { name: 'Combos', link: '/app/combos/offers' },
+        { name: 'Combos Offer Items', link: false }
+      ],
 
-			comboOffer: {},
+      comboOffer: {},
 
-			errorMessage: '',
-			infoMessage: '',
+      errorMessage: '',
+      infoMessage: '',
 
-			view: 'list',
-			tab: 0,
+      view: 'list',
+      tab: 0,
 
-			loading: false,
+      loading: false,
 
-			activeComboOfferItem: {
-				id: null,
-				deleting: false,
-				deleted: false
-			},
-			selected: null,
+      activeComboOfferItem: {
+        id: null,
+        deleting: false,
+        deleted: false
+      },
+      selected: null,
 
-			SkuToDelete: {},
+      SkuToDelete: {},
 
-			deleting: false,
-			creating: false
-		}
-	},
-	computed: {
-		currentSkus () {
-			if (!this.activeComboOfferItem.combo_item_sku) {
-				return []
-			} else {
-				return this.activeComboOfferItem.combo_item_sku.map(sku => sku.sku)
-			}
-		},
-		...mapGetters({
-			parentComboOffer: 'combos/comboOffer'
-		})
-	},
-	watch: {
-		'$root.activeLocation': function (location) {
-			if (location.id !== undefined && this.infoMessage) {
-				this.infoMessage = ''
-			}
-		}
-	},
-	created () {
-		if (this.parentComboOffer.id === null) {
-			this.$router.push({name: 'ComboOffers'})
-		}
+      deleting: false,
+      creating: false
+    }
+  },
+  computed: {
+    currentSkus () {
+      if (!this.activeComboOfferItem.combo_item_sku) {
+        return []
+      } else {
+        return this.activeComboOfferItem.combo_item_sku.map(sku => sku.sku)
+      }
+    },
+    ...mapGetters({
+      parentComboOffer: 'combos/comboOffer'
+    })
+  },
+  watch: {
+    '$root.activeLocation': function (location) {
+      if (location.id !== undefined && this.infoMessage) {
+        this.infoMessage = ''
+      }
+    }
+  },
+  created () {
+    if (this.parentComboOffer.id === null) {
+      this.$router.push({ name: 'ComboOffers' })
+    }
 
-		this.copyComboOffer(this.parentComboOffer)
-	},
-	beforeDestroy () {
-		this.clearComboOffer({})
-	},
-	methods: {
-		/**
+    this.copyComboOffer(this.parentComboOffer)
+  },
+  beforeDestroy () {
+    this.clearComboOffer({})
+  },
+  methods: {
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @param {object} errorMessageName - The error message to be cleared.
 		 * @returns {undefined}
 		 */
-		clearError (errorMessageName) {
-			this[errorMessageName] = ''
-		},
+    clearError (errorMessageName) {
+      this[errorMessageName] = ''
+    },
 
-		/**
+    /**
 		 * To append display properties to the API format.
 		 * @function
 		 * @param {object} comboOffer - The original offer object
 		 * @returns {undefined}
 		 */
-		copyComboOffer (comboOffer) {
-			this.comboOffer = {
-				...comboOffer,
-				combo_item: comboOffer.combo_item.map(item => ({
-					...item,
-					deleting: false,
-					view: 'initial',
-					combo_item_sku: item.combo_item_sku.map(sku => ({
-						...sku,
-						deleting: false
-					}))
-				}))
-			}
-		},
+    copyComboOffer (comboOffer) {
+      this.comboOffer = {
+        ...comboOffer,
+        combo_item: comboOffer.combo_item.map(item => ({
+          ...item,
+          deleting: false,
+          view: 'initial',
+          combo_item_sku: item.combo_item_sku.map(sku => ({
+            ...sku,
+            deleting: false
+          }))
+        }))
+      }
+    },
 
-		/**
+    /**
 		 * To make an item active
 		 * @function
 		 * @param {object} item - The item to make active
 		 * @returns {undefined}
 		 */
-		setActive (item) {
-			this.activeComboOfferItem = item
-		},
+    setActive (item) {
+      this.activeComboOfferItem = item
+    },
 
-		/**
+    /**
 		 * To show the create view
 		 * @function
 		 * @returns {undefined}
 		 */
-		showAddView () {
-			if (this.$root.activeLocation.id === undefined) {
-				this.infoMessage = 'Please select a store to view Menu and Modifier Items'
-				return
-			}
-			this.activeComboOfferItem = {
-				id: null,
-				deleting: false,
-				deleted: false
-			}
-			this.view = 'add'
-		},
-		/**
+    showAddView () {
+      if (this.$root.activeLocation.id === undefined) {
+        this.infoMessage = 'Please select a store to view Menu and Modifier Items'
+        return
+      }
+      this.activeComboOfferItem = {
+        id: null,
+        deleting: false,
+        deleted: false
+      }
+      this.view = 'add'
+    },
+    /**
 		 * To show the list view
 		 * @function
 		 * @returns {undefined}
 		 */
-		showListView () {
-			this.view = 'list'
-		},
+    showListView () {
+      this.view = 'list'
+    },
 
-		/**
+    /**
 		 * To display the modal for deleting an comboOfferItem.
 		 * @function
 		 * @param {object} item - The selected comboOfferItem
 		 * @returns {undefined}
 		 */
-		confirmItemDelete (item) {
-			item.view = 'delete'
-			this.activeComboOfferItem = item
-		},
-		/**
+    confirmItemDelete (item) {
+      item.view = 'delete'
+      this.activeComboOfferItem = item
+    },
+    /**
 		 * To close the confirmation view.
 		 * @function
 		 * @returns {undefined}
 		 */
-		cancelItemDelete () {
-			this.activeComboOfferItem.view = 'initial'
-		},
-		/**
+    cancelItemDelete () {
+      this.activeComboOfferItem.view = 'initial'
+    },
+    /**
 		 * To remove an item from the database
 		 * @function
 		 * @returns {undefined}
 		 */
-		removeItem () {
-			this.activeComboOfferItem.deleting = true
-			const _this = this
-			return ComboOffersFunctions.deleteComboOfferItem(_this.activeComboOfferItem.id)
-				.then(response => {
-					if (response.payload.pending_approval !== true) {
-						const index = _this.comboOffer.combo_item.findIndex(item => item.id === _this.activeComboOfferItem.id)
-						_this.comboOffer.combo_item.splice(index, 1)
-					}
-					_this.showRemoveItemSuccess(response.payload)
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not create the comboOffer',
-						errorName: 'errorMessage',
-						vue: _this
-					})
-				})
-				.finally(() => {
-					_this.SkuToDelete.deleting = false
-				})
-		},
-		/**
+    removeItem () {
+      this.activeComboOfferItem.deleting = true
+      const _this = this
+      return ComboOffersFunctions.deleteComboOfferItem(_this.activeComboOfferItem.id)
+        .then(response => {
+          if (response.payload.pending_approval !== true) {
+            const index = _this.comboOffer.combo_item.findIndex(item => item.id === _this.activeComboOfferItem.id)
+            _this.comboOffer.combo_item.splice(index, 1)
+          }
+          _this.showRemoveItemSuccess(response.payload)
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not create the comboOffer',
+            errorName: 'errorMessage',
+            vue: _this
+          })
+        })
+        .finally(() => {
+          _this.SkuToDelete.deleting = false
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @functionsku
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showRemoveItemSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Combo Offer Item has been removed'
-			let type = 'success'
+    showRemoveItemSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Combo Offer Item has been removed'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The removal has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The removal has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
 
-		/**
+    /**
 		 * To show delete confirmation view.
 		 * @function
 		 * @param {object} sku - The selected SKU
 		 * @returns {undefined}
 		 */
-		deleteSku (sku) {
-			if (this.SkuToDelete.id !== sku.id) {
-				this.SkuToDelete = sku
-			}
-		},
-		/**
+    deleteSku (sku) {
+      if (this.SkuToDelete.id !== sku.id) {
+        this.SkuToDelete = sku
+      }
+    },
+    /**
 		 * To close delete confirmation view.
 		 * @function
 		 * @returns {undefined}
 		 */
-		cancelSkuDelete () {
-			this.SkuToDelete = {}
-		},
-		/**
+    cancelSkuDelete () {
+      this.SkuToDelete = {}
+    },
+    /**
 		 * To remove the SKU from the database
 		 * @function
 		 * @returns {undefined}
 		 */
-		removeSku () {
-			this.SkuToDelete.deleting = true
-			const _this = this
-			return ComboOffersFunctions.deleteSKUFromComboOfferItem(_this.SkuToDelete.id)
-				.then(response => {
-					if (response.payload.pending_approval !== true) {
-						const parent = _this.comboOffer.combo_item.find(item => item.id === _this.SkuToDelete.combo_item_id)
-						const index = parent.combo_item_sku.findIndex(sku => sku.id === _this.SkuToDelete.id)
-						parent.combo_item_sku.splice(index, 1)
-					}
-					_this.showRemoveSkuSuccess(response.payload)
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not create the comboOffer',
-						errorName: 'errorMessage',
-						vue: _this
-					})
-				})
-				.finally(() => {
-					_this.SkuToDelete.deleting = false
-				})
-		},
-		/**
+    removeSku () {
+      this.SkuToDelete.deleting = true
+      const _this = this
+      return ComboOffersFunctions.deleteSKUFromComboOfferItem(_this.SkuToDelete.id)
+        .then(response => {
+          if (response.payload.pending_approval !== true) {
+            const parent = _this.comboOffer.combo_item.find(item => item.id === _this.SkuToDelete.combo_item_id)
+            const index = parent.combo_item_sku.findIndex(sku => sku.id === _this.SkuToDelete.id)
+            parent.combo_item_sku.splice(index, 1)
+          }
+          _this.showRemoveSkuSuccess(response.payload)
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not create the comboOffer',
+            errorName: 'errorMessage',
+            vue: _this
+          })
+        })
+        .finally(() => {
+          _this.SkuToDelete.deleting = false
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showRemoveSkuSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The SKU has been removed'
-			let type = 'success'
+    showRemoveSkuSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The SKU has been removed'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The removal has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The removal has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
 
-		/**
+    /**
 		 * To show view for adding Skus to an item
 		 * @function
 		 * @param {object} item - Item selected by user
 		 * @returns {undefined}
 		 */
-		addSkusToItem (item) {
-			if (this.$root.activeLocation.id === undefined) {
-				this.infoMessage = 'Please select a store to view Menu and Modifier Items'
-				return
-			}
-			this.activeComboOfferItem = item
-			this.selected = [...this.currentSkus]
-			this.view = 'add'
-		},
-		/**
+    addSkusToItem (item) {
+      if (this.$root.activeLocation.id === undefined) {
+        this.infoMessage = 'Please select a store to view Menu and Modifier Items'
+        return
+      }
+      this.activeComboOfferItem = item
+      this.selected = [...this.currentSkus]
+      this.view = 'add'
+    },
+    /**
 		 * To save menu item selection
 		 * @function
 		 * @param {array} selected - An array of selected item Skus
 		 * @returns {undefined}
 		 */
-		itemsSelected (selected) {
-			console.log({selected})
-			this.selected = selected
-		},
-		/**
+    itemsSelected (selected) {
+      console.log({ selected })
+      this.selected = selected
+    },
+    /**
 		 * To create an item, if necessary, and save its Skus
 		 * @function
 		 * @returns {undefined}
 		 */
-		async saveSkus () {
-			this.creating = true
-			const _this = this
-			if (this.activeComboOfferItem.id === null) {
-				const response = await ComboOffersFunctions.createComboOfferItem(this.comboOffer.id)
-				_this.comboOffer.combo_item.push({
-					...response.payload,
-					deleting: false,
-					view: 'initial',
-					combo_item_sku: []
-				})
-				_this.activeComboOfferItem = _this.comboOffer.combo_item[_this.comboOffer.combo_item.length - 1]
-			}
-			return ComboOffersFunctions.createComboOfferItemSKUs({
-				combo_item_id: _this.activeComboOfferItem.id,
-				sku: [...this.selected]
-			})
-				.then(response => {
-					if (response.payload.pending_approval !== true) {
-						_this.activeComboOfferItem.combo_item_sku = response.payload.combo_item_sku.map(sku => ({
-							...sku,
-							deleting: false
-						}))
-					}
-					_this.view = 'list'
-					_this.showAddSkusSuccess(response.payload)
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch data',
-						errorName: 'errorMessage',
-						vue: _this
-					})
-				})
-				.finally(() => {
-					_this.creating = false
-				})
-		},
-		/**
+    async saveSkus () {
+      this.creating = true
+      const _this = this
+      if (this.activeComboOfferItem.id === null) {
+        const response = await ComboOffersFunctions.createComboOfferItem(this.comboOffer.id)
+        _this.comboOffer.combo_item.push({
+          ...response.payload,
+          deleting: false,
+          view: 'initial',
+          combo_item_sku: []
+        })
+        _this.activeComboOfferItem = _this.comboOffer.combo_item[_this.comboOffer.combo_item.length - 1]
+      }
+      return ComboOffersFunctions.createComboOfferItemSKUs({
+        combo_item_id: _this.activeComboOfferItem.id,
+        sku: [...this.selected]
+      })
+        .then(response => {
+          if (response.payload.pending_approval !== true) {
+            _this.activeComboOfferItem.combo_item_sku = response.payload.combo_item_sku.map(sku => ({
+              ...sku,
+              deleting: false
+            }))
+          }
+          _this.view = 'list'
+          _this.showAddSkusSuccess(response.payload)
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch data',
+            errorName: 'errorMessage',
+            vue: _this
+          })
+        })
+        .finally(() => {
+          _this.creating = false
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAddSkusSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Item has been saved'
-			let type = 'success'
+    showAddSkusSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Item has been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
 
-		/**
+    /**
 		 * To clear the combo offer before navigating away.
 		 * @function
 		 * @returns {undefined}
 		 */
-		...mapActions({
-			clearComboOffer: 'combos/clearComboOffer'
-		})
-	}
+    ...mapActions({
+      clearComboOffer: 'combos/clearComboOffer'
+    })
+  }
 }
 </script>
 

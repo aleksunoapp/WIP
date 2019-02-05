@@ -376,465 +376,465 @@ import OptionsFunctions from '../../../../controllers/Options'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Modal
-	},
-	props: {
-		item: {
-			type: Object,
-			default: () => ({
-				id: null,
-				name: '',
-				preset_item_modifier_item: []
-			})
-		}
-	},
-	data () {
-		return {
-			showModal: false,
-			errorMessage: '',
-			saving: false,
-			preset_item_modifier_item: [
-				{
-					preset_item_modifier_item_option_item: []
-				}
-			],
-			activeSetting: {
-				modifier_id: null,
-				modifier_item_id: null
-			},
-			updateMode: false,
-			showModifiersSelection: false,
-			showOptionsSelection: false,
-			activeModifierCategory: {
-				id: null,
-				name: ''
-			},
-			loadingModifierItems: false,
-			modifierItems: [],
-			loadingOptionsCategories: false,
-			optionCategories: [],
-			loadingOptionItems: false,
-			optionItems: [],
-			activeOptionCategory: {
-				id: null,
-				name: ''
-			},
-			loadingOptionItemsData: false
-		}
-	},
-	created () {
-		this.getOptionCategories()
-	},
-	mounted () {
-		this.preset_item_modifier_item = [...this.item.preset_item_modifier_item]
-		this.showModal = true
+  components: {
+    Modal
+  },
+  props: {
+    item: {
+      type: Object,
+      default: () => ({
+        id: null,
+        name: '',
+        preset_item_modifier_item: []
+      })
+    }
+  },
+  data () {
+    return {
+      showModal: false,
+      errorMessage: '',
+      saving: false,
+      preset_item_modifier_item: [
+        {
+          preset_item_modifier_item_option_item: []
+        }
+      ],
+      activeSetting: {
+        modifier_id: null,
+        modifier_item_id: null
+      },
+      updateMode: false,
+      showModifiersSelection: false,
+      showOptionsSelection: false,
+      activeModifierCategory: {
+        id: null,
+        name: ''
+      },
+      loadingModifierItems: false,
+      modifierItems: [],
+      loadingOptionsCategories: false,
+      optionCategories: [],
+      loadingOptionItems: false,
+      optionItems: [],
+      activeOptionCategory: {
+        id: null,
+        name: ''
+      },
+      loadingOptionItemsData: false
+    }
+  },
+  created () {
+    this.getOptionCategories()
+  },
+  mounted () {
+    this.preset_item_modifier_item = [...this.item.preset_item_modifier_item]
+    this.showModal = true
 
-		// set focus to modal
-		this.$nextTick(function () {
-			this.$refs.closeModalButton.focus()
-		})
-	},
-	methods: {
-		/**
+    // set focus to modal
+    this.$nextTick(function () {
+      this.$refs.closeModalButton.focus()
+    })
+  },
+  methods: {
+    /**
 		 * To get the list of available options.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getOptionCategories () {
-			this.loadingOptionsCategories = true
-			var presetsVue = this
-			presetsVue.optionCategories = []
-			OptionsFunctions.getOptions(
-				presetsVue.$root.appId,
-				presetsVue.$root.appSecret,
-				presetsVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						presetsVue.loadingOptionsCategories = false
-						presetsVue.optionCategories = response.payload
-					} else {
-						presetsVue.loadingOptionsCategories = false
-					}
-				})
-				.catch(reason => {
-					presetsVue.loadingOptionsCategories = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Could not get options',
-						errorName: 'errorMessage',
-						vue: presetsVue
-					})
-				})
-		},
-		/**
+    getOptionCategories () {
+      this.loadingOptionsCategories = true
+      var presetsVue = this
+      presetsVue.optionCategories = []
+      OptionsFunctions.getOptions(
+        presetsVue.$root.appId,
+        presetsVue.$root.appSecret,
+        presetsVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            presetsVue.loadingOptionsCategories = false
+            presetsVue.optionCategories = response.payload
+          } else {
+            presetsVue.loadingOptionsCategories = false
+          }
+        })
+        .catch(reason => {
+          presetsVue.loadingOptionsCategories = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'Could not get options',
+            errorName: 'errorMessage',
+            vue: presetsVue
+          })
+        })
+    },
+    /**
 		 * To close the modal without saving
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('closePresetModal', null)
-		},
-		/**
+    closeModal () {
+      this.$emit('closePresetModal', null)
+    },
+    /**
 		 * To clear the error message.
 		 * @function
 		 * @param {string} errorName - The name of the variable to clear
 		 * @returns {undefined}
 		 */
-		clearError (errorName) {
-			this[errorName] = ''
-		},
-		/**
+    clearError (errorName) {
+      this[errorName] = ''
+    },
+    /**
 		 * To set details of the setting being edited.
 		 * @function
 		 * @param {string} setting - The setting object
 		 * @returns {undefined}
 		 */
-		setActive (setting) {
-			this.activeSetting.modifier_id = setting.modifier_id
-			this.activeSetting.modifier_item_id = setting.modifier_item_id
-		},
-		/**
+    setActive (setting) {
+      this.activeSetting.modifier_id = setting.modifier_id
+      this.activeSetting.modifier_item_id = setting.modifier_item_id
+    },
+    /**
 		 * To increment the quantity of the modifier item.
 		 * @function
 		 * @param {object} modifier - The modifier item to increment the quantity of
 		 * @param {integer} index - The index of the modifier in the preset_item_modifier_item array
 		 * @returns {undefined}
 		 */
-		incrementAmount (modifier, index) {
-			if (
-				this.preset_item_modifier_item[index].qty <
+    incrementAmount (modifier, index) {
+      if (
+        this.preset_item_modifier_item[index].qty <
 				this.preset_item_modifier_item[index].modifier_item_max
-			) {
-				this.preset_item_modifier_item[index].qty++
-			}
-		},
-		/**
+      ) {
+        this.preset_item_modifier_item[index].qty++
+      }
+    },
+    /**
 		 * To decrement the quantity of the modifier item.
 		 * @function
 		 * @param {object} modifier - The modifier item to decrement the quantity of
 		 * @param {integer} index - The index of the modifier in the preset_item_modifier_item array
 		 * @returns {undefined}
 		 */
-		decrementAmount (modifier, index) {
-			if (
-				this.preset_item_modifier_item[index].qty >
+    decrementAmount (modifier, index) {
+      if (
+        this.preset_item_modifier_item[index].qty >
 				this.preset_item_modifier_item[index].modifier_item_min
-			) {
-				this.preset_item_modifier_item[index].qty--
-			}
-		},
-		/**
+      ) {
+        this.preset_item_modifier_item[index].qty--
+      }
+    },
+    /**
 		 * To decrement the quantity of the modifier item.
 		 * @function
 		 * @param {integer} index - The index of the modifier in the preset_item_modifier_item array
 		 * @returns {undefined}
 		 */
-		removeModifierCategory (index) {
-			this.preset_item_modifier_item.splice(index, 1)
-		},
-		/**
+    removeModifierCategory (index) {
+      this.preset_item_modifier_item.splice(index, 1)
+    },
+    /**
 		 * To decrement the quantity of the modifier item.
 		 * @function
 		 * @param {object} modifier - The setting to remove the option from
 		 * @param {integer} index - The index of the modifier in the preset_item_modifier_item_option_item
 		 * @returns {undefined}
 		 */
-		removeOption (modifier, index) {
-			modifier.preset_item_modifier_item_option_item.splice(index, 1)
-		},
-		/**
+    removeOption (modifier, index) {
+      modifier.preset_item_modifier_item_option_item.splice(index, 1)
+    },
+    /**
 		 * To display modifier selection.
 		 * @function
 		 * @returns {undefined}
 		 */
-		displayModifiersSelection () {
-			this.$refs.modal.$el.scrollTop = 0
-			this.activeModifierCategory.id = null
-			this.activeModifierCategory.name = ''
-			this.showOptionsSelection = false
-			this.showModifiersSelection = true
-		},
-		/**
+    displayModifiersSelection () {
+      this.$refs.modal.$el.scrollTop = 0
+      this.activeModifierCategory.id = null
+      this.activeModifierCategory.name = ''
+      this.showOptionsSelection = false
+      this.showModifiersSelection = true
+    },
+    /**
 		 * To select a modifier category
 		 * @function
 		 * @param {object} modifierCategory - The selected modifier category
 		 * @returns {undefined}
 		 */
-		selectModifierCategory (modifierCategory) {
-			this.activeModifierCategory.id = modifierCategory.id
-			this.getModifierItems()
-			this.activeModifierCategory.name = modifierCategory.name
-		},
-		/**
+    selectModifierCategory (modifierCategory) {
+      this.activeModifierCategory.id = modifierCategory.id
+      this.getModifierItems()
+      this.activeModifierCategory.name = modifierCategory.name
+    },
+    /**
 		 * To get a list of all item for the current active modifier category.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getModifierItems () {
-			this.loadingModifierItems = true
-			var presetsVue = this
-			presetsVue.modifierItems = []
-			return ModifiersFunctions.getModifierCategoryItems(
-				presetsVue.activeModifierCategory.id,
-				presetsVue.$root.appId,
-				presetsVue.$root.appSecret
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						response.payload.forEach(item => {
-							item.selected = false
-						})
-						presetsVue.modifierItems = response.payload
-						presetsVue.loadingModifierItems = false
-					} else {
-						presetsVue.loadingModifierItems = false
-					}
-				})
-				.catch(reason => {
-					presetsVue.loadingModifierItems = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Could not get modifiers',
-						errorName: 'errorMessage',
-						vue: presetsVue
-					})
-				})
-		},
-		/**
+    getModifierItems () {
+      this.loadingModifierItems = true
+      var presetsVue = this
+      presetsVue.modifierItems = []
+      return ModifiersFunctions.getModifierCategoryItems(
+        presetsVue.activeModifierCategory.id,
+        presetsVue.$root.appId,
+        presetsVue.$root.appSecret
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            response.payload.forEach(item => {
+              item.selected = false
+            })
+            presetsVue.modifierItems = response.payload
+            presetsVue.loadingModifierItems = false
+          } else {
+            presetsVue.loadingModifierItems = false
+          }
+        })
+        .catch(reason => {
+          presetsVue.loadingModifierItems = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'Could not get modifiers',
+            errorName: 'errorMessage',
+            vue: presetsVue
+          })
+        })
+    },
+    /**
 		 * To check if the modifier is already included in settings
 		 * @function
 		 * @param {object} item - The item to find
 		 * @returns {undefined}
 		 */
-		modifierInSettings (item) {
-			let included = this.preset_item_modifier_item.findIndex(function (
-				element
-			) {
-				return (
-					element.modifier_item_id === item.id &&
+    modifierInSettings (item) {
+      let included = this.preset_item_modifier_item.findIndex(function (
+        element
+      ) {
+        return (
+          element.modifier_item_id === item.id &&
 					element.modifier_id === item.modifier_id
-				)
-			})
-			return included !== -1
-		},
-		/**
+        )
+      })
+      return included !== -1
+    },
+    /**
 		 * To select a modifier
 		 * @function
 		 * @param {object} item - The selected modifier item
 		 * @returns {undefined}
 		 */
-		selectModifierItem (item) {
-			if (!this.modifierInSettings(item)) {
-				this.preset_item_modifier_item.push({
-					modifier_item_id: item.id,
-					modifier_item_name: item.name,
-					modifier_item_min: item.min,
-					modifier_item_max: item.max,
-					modifier_id: this.activeModifierCategory.id,
-					qty: 1,
-					preset_item_modifier_item_option_item: [],
-					can_remove: 1,
-					calculate_price_difference: 0
-				})
-			} else {
-				let i = this.preset_item_modifier_item.findIndex(function (element) {
-					return (
-						element.modifier_item_id === item.id &&
+    selectModifierItem (item) {
+      if (!this.modifierInSettings(item)) {
+        this.preset_item_modifier_item.push({
+          modifier_item_id: item.id,
+          modifier_item_name: item.name,
+          modifier_item_min: item.min,
+          modifier_item_max: item.max,
+          modifier_id: this.activeModifierCategory.id,
+          qty: 1,
+          preset_item_modifier_item_option_item: [],
+          can_remove: 1,
+          calculate_price_difference: 0
+        })
+      } else {
+        let i = this.preset_item_modifier_item.findIndex(function (element) {
+          return (
+            element.modifier_item_id === item.id &&
 						element.modifier_id === item.modifier_id
-					)
-				})
-				this.preset_item_modifier_item.splice(i, 1)
-			}
-		},
-		/**
+          )
+        })
+        this.preset_item_modifier_item.splice(i, 1)
+      }
+    },
+    /**
 		 * To hide modifier selection.
 		 * @function
 		 * @returns {undefined}
 		 */
-		hideModifiersSelection () {
-			this.showModifiersSelection = false
-		},
-		/**
+    hideModifiersSelection () {
+      this.showModifiersSelection = false
+    },
+    /**
 		 * To display option selection.
 		 * @function
 		 * @returns {undefined}
 		 */
-		displayOptionsSelection () {
-			this.$refs.modal.$el.scrollTop = 0
-			this.showModifiersSelection = false
-			this.showOptionsSelection = true
-		},
-		/**
+    displayOptionsSelection () {
+      this.$refs.modal.$el.scrollTop = 0
+      this.showModifiersSelection = false
+      this.showOptionsSelection = true
+    },
+    /**
 		 * To select a option category
 		 * @function
 		 * @param {object} optionCategory - The selected option category
 		 * @returns {undefined}
 		 */
-		selectOptionCategory (optionCategory) {
-			this.activeOptionCategory.id = optionCategory.id
-			this.getOptionItems()
-			this.activeOptionCategory.name = optionCategory.name
-		},
-		/**
+    selectOptionCategory (optionCategory) {
+      this.activeOptionCategory.id = optionCategory.id
+      this.getOptionItems()
+      this.activeOptionCategory.name = optionCategory.name
+    },
+    /**
 		 * To get a list of all items for the current active option category.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getOptionItems () {
-			this.loadingOptionItems = true
-			var presetsVue = this
-			presetsVue.optionItems = []
-			OptionsFunctions.getOptionItems(
-				presetsVue.activeOptionCategory.id,
-				presetsVue.$root.appId,
-				presetsVue.$root.appSecret,
-				presetsVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						presetsVue.loadingOptionItems = false
-						presetsVue.optionItems = response.payload
-					} else {
-						presetsVue.loadingOptionItems = false
-					}
-				})
-				.catch(reason => {
-					presetsVue.loadingOptionItems = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Could not get options',
-						errorName: 'errorMessage',
-						vue: presetsVue
-					})
-				})
-		},
-		/**
+    getOptionItems () {
+      this.loadingOptionItems = true
+      var presetsVue = this
+      presetsVue.optionItems = []
+      OptionsFunctions.getOptionItems(
+        presetsVue.activeOptionCategory.id,
+        presetsVue.$root.appId,
+        presetsVue.$root.appSecret,
+        presetsVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            presetsVue.loadingOptionItems = false
+            presetsVue.optionItems = response.payload
+          } else {
+            presetsVue.loadingOptionItems = false
+          }
+        })
+        .catch(reason => {
+          presetsVue.loadingOptionItems = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'Could not get options',
+            errorName: 'errorMessage',
+            vue: presetsVue
+          })
+        })
+    },
+    /**
 		 * To check if the option is already included in the active setting
 		 * @function
 		 * @param {object} item - The item to find
 		 * @returns {undefined}
 		 */
-		optionInSetting (item) {
-			let included
-			this.preset_item_modifier_item.forEach(modifier => {
-				if (modifier.modifier_item_id === this.activeSetting.modifier_item_id) {
-					included = modifier.preset_item_modifier_item_option_item.findIndex(
-						function (element) {
-							return (
-								element.option_item_id === item.id &&
+    optionInSetting (item) {
+      let included
+      this.preset_item_modifier_item.forEach(modifier => {
+        if (modifier.modifier_item_id === this.activeSetting.modifier_item_id) {
+          included = modifier.preset_item_modifier_item_option_item.findIndex(
+            function (element) {
+              return (
+                element.option_item_id === item.id &&
 								element.option_id === item.option_id
-							)
-						}
-					)
-				}
-			})
-			return included !== -1
-		},
-		/**
+              )
+            }
+          )
+        }
+      })
+      return included !== -1
+    },
+    /**
 		 * To select an option
 		 * @function
 		 * @param {object} optionItem - The selected option item
 		 * @returns {undefined}
 		 */
-		selectOptionItem (optionItem) {
-			this.preset_item_modifier_item.forEach(modifier => {
-				if (modifier.modifier_item_id === this.activeSetting.modifier_item_id) {
-					if (!this.optionInSetting(optionItem)) {
-						modifier.preset_item_modifier_item_option_item.push({
-							option_id: optionItem.option_id,
-							option_item_id: optionItem.id,
-							option_item_name: optionItem.name
-						})
-					} else {
-						let i = modifier.preset_item_modifier_item_option_item.findIndex(
-							function (element) {
-								return (
-									element.option_id === optionItem.option_id &&
+    selectOptionItem (optionItem) {
+      this.preset_item_modifier_item.forEach(modifier => {
+        if (modifier.modifier_item_id === this.activeSetting.modifier_item_id) {
+          if (!this.optionInSetting(optionItem)) {
+            modifier.preset_item_modifier_item_option_item.push({
+              option_id: optionItem.option_id,
+              option_item_id: optionItem.id,
+              option_item_name: optionItem.name
+            })
+          } else {
+            let i = modifier.preset_item_modifier_item_option_item.findIndex(
+              function (element) {
+                return (
+                  element.option_id === optionItem.option_id &&
 									element.option_item_id === optionItem.id
-								)
-							}
-						)
-						modifier.preset_item_modifier_item_option_item.splice(i, 1)
-					}
-				}
-			})
-		},
-		/**
+                )
+              }
+            )
+            modifier.preset_item_modifier_item_option_item.splice(i, 1)
+          }
+        }
+      })
+    },
+    /**
 		 * To hide option selection.
 		 * @function
 		 * @returns {undefined}
 		 */
-		hideOptionsSelection () {
-			this.showOptionsSelection = false
-		},
-		/**
+    hideOptionsSelection () {
+      this.showOptionsSelection = false
+    },
+    /**
 		 * To call the API to update the preset settings
 		 * @function
 		 * @returns {object} A promise that will resolve or return an error
 		 */
-		savePresetSettings () {
-			this.saving = true
-			var presetsVue = this
+    savePresetSettings () {
+      this.saving = true
+      var presetsVue = this
 
-			let payload = { modifier_items: [] }
-			presetsVue.preset_item_modifier_item.forEach(modifier => {
-				payload.modifier_items.push({
-					modifier_item_id: modifier.modifier_item_id,
-					modifier_id: modifier.modifier_id,
-					qty: modifier.qty,
-					option_items: modifier.preset_item_modifier_item_option_item.map(
-						function (option) {
-							return {
-								option_item_id: option.option_item_id,
-								option_id: option.option_id
-							}
-						}
-					)
-				})
-			})
+      let payload = { modifier_items: [] }
+      presetsVue.preset_item_modifier_item.forEach(modifier => {
+        payload.modifier_items.push({
+          modifier_item_id: modifier.modifier_item_id,
+          modifier_id: modifier.modifier_id,
+          qty: modifier.qty,
+          option_items: modifier.preset_item_modifier_item_option_item.map(
+            function (option) {
+              return {
+                option_item_id: option.option_item_id,
+                option_id: option.option_id
+              }
+            }
+          )
+        })
+      })
 
-			ItemsFunctions.updatePresetItem(
-				presetsVue.$root.appId,
-				presetsVue.$root.appSecret,
-				presetsVue.$root.userToken,
-				presetsVue.item.id,
-				payload
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						presetsVue.closeModalAndUpdate(response.payload)
-					} else {
-						presetsVue.errorMessage = response.message
-					}
-				})
-				.catch(reason => {
-					presetsVue.loadingModifierItems = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Could not save preset settings',
-						errorName: 'errorMessage',
-						vue: presetsVue
-					})
-				})
-				.finally(() => {
-					presetsVue.saving = false
-				})
-		},
-		/**
+      ItemsFunctions.updatePresetItem(
+        presetsVue.$root.appId,
+        presetsVue.$root.appSecret,
+        presetsVue.$root.userToken,
+        presetsVue.item.id,
+        payload
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            presetsVue.closeModalAndUpdate(response.payload)
+          } else {
+            presetsVue.errorMessage = response.message
+          }
+        })
+        .catch(reason => {
+          presetsVue.loadingModifierItems = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'Could not save preset settings',
+            errorName: 'errorMessage',
+            vue: presetsVue
+          })
+        })
+        .finally(() => {
+          presetsVue.saving = false
+        })
+    },
+    /**
 		 * To close the modal and emit settings
 		 * @function
 		 * @param {object} payload - The payload property of the response
 		 * @returns {undefined}
 		 */
-		closeModalAndUpdate (payload = {}) {
-			this.$emit('closeAndUpdate', {
-				updatedSettings: this.preset_item_modifier_item,
-				payload
-			})
-		}
-	}
+    closeModalAndUpdate (payload = {}) {
+      this.$emit('closeAndUpdate', {
+        updatedSettings: this.preset_item_modifier_item,
+        payload
+      })
+    }
+  }
 }
 </script>
 

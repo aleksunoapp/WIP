@@ -15,18 +15,18 @@
 import spinner from '@/assets/img/loading.gif'
 
 export default {
-	props: {
-		show: {
-			type: Boolean,
-			required: false,
-			default: () => true
-		}
-	},
-	data () {
-		return {
-			spinner: spinner
-		}
-	}
+  props: {
+    show: {
+      type: Boolean,
+      required: false,
+      default: () => true
+    }
+  },
+  data () {
+    return {
+      spinner: spinner
+    }
+  }
 }
 </script>
 

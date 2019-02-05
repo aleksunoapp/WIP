@@ -77,225 +77,225 @@ import StorePicker from '../../modules/StorePicker'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Modal,
-		LoadingScreen,
-		StorePicker
-	},
-	props: {
-		passedGroupId: {
-			type: Number
-		}
-	},
-	data () {
-		return {
-			errorMessage: '',
-			assigning: false,
-			groupDetails: {},
-			stores: [],
-			groupLocations: [],
-			showAssignStoresModal: false,
-			selectAllSelected: false,
-			displaySpinner: false
-		}
-	},
-	watch: {
-		passedGroupId () {
-			if (this.passedGroupId > 0) {
-				this.groupDetails = {}
-				this.stores = []
-				this.groupLocations = []
-				this.getGroupDetails()
-			}
-		}
-	},
-	mounted () {
-		this.showAssignStoresModal = true
-		// get the details of the selected group
-		this.getGroupDetails()
-	},
-	methods: {
-		/**
+  components: {
+    Modal,
+    LoadingScreen,
+    StorePicker
+  },
+  props: {
+    passedGroupId: {
+      type: Number
+    }
+  },
+  data () {
+    return {
+      errorMessage: '',
+      assigning: false,
+      groupDetails: {},
+      stores: [],
+      groupLocations: [],
+      showAssignStoresModal: false,
+      selectAllSelected: false,
+      displaySpinner: false
+    }
+  },
+  watch: {
+    passedGroupId () {
+      if (this.passedGroupId > 0) {
+        this.groupDetails = {}
+        this.stores = []
+        this.groupLocations = []
+        this.getGroupDetails()
+      }
+    }
+  },
+  mounted () {
+    this.showAssignStoresModal = true
+    // get the details of the selected group
+    this.getGroupDetails()
+  },
+  methods: {
+    /**
 		 * To clear an error
 		 * @function
 		 * @param {string} name - Name of the variable to clear
 		 * @returns {undefined}
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		selectStores (selectedStores) {
-			this.groupLocations = selectedStores
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    selectStores (selectedStores) {
+      this.groupLocations = selectedStores
+    },
+    /**
 		 * To notify the parent to close the sideways page.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.getGroupDetails()
-			this.$emit('closeAssignStoresModal')
-		},
-		/**
+    closeModal () {
+      this.getGroupDetails()
+      this.$emit('closeAssignStoresModal')
+    },
+    /**
 		 * To select all or deselect all items
 		 * @function
 		 * @param {boolean} value - The value of the checkbox
 		 * @returns {undefined}
 		 */
-		syncSelectAll (value) {
-			if (!value) {
-				this.selectAllSelected = false
-			}
-		},
-		/**
+    syncSelectAll (value) {
+      if (!value) {
+        this.selectAllSelected = false
+      }
+    },
+    /**
 		 * To select all or deselect all items
 		 * @function
 		 * @returns {undefined}
 		 */
-		selectAll () {
-			for (var i = 0; i < this.stores.length; i++) {
-				this.stores[i].selected = this.selectAllSelected
-			}
-		},
-		/**
+    selectAll () {
+      for (var i = 0; i < this.stores.length; i++) {
+        this.stores[i].selected = this.selectAllSelected
+      }
+    },
+    /**
 		 * To get the details of the selected group.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getGroupDetails () {
-			this.displaySpinner = true
-			var assignStoresVue = this
+    getGroupDetails () {
+      this.displaySpinner = true
+      var assignStoresVue = this
 
-			StoreGroupsFunctions.getGroupDetails(
-				assignStoresVue.passedGroupId,
-				assignStoresVue.$root.appId,
-				assignStoresVue.$root.appSecret,
-				assignStoresVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						assignStoresVue.groupDetails = response.payload
-					}
-					assignStoresVue.getGroupLocations()
-				})
-				.catch(reason => {
-					assignStoresVue.displaySpinner = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not assign the stores',
-						errorName: 'errorMessage',
-						vue: assignStoresVue,
-						containerRef: 'modal'
-					})
-				})
-		},
-		/**
+      StoreGroupsFunctions.getGroupDetails(
+        assignStoresVue.passedGroupId,
+        assignStoresVue.$root.appId,
+        assignStoresVue.$root.appSecret,
+        assignStoresVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            assignStoresVue.groupDetails = response.payload
+          }
+          assignStoresVue.getGroupLocations()
+        })
+        .catch(reason => {
+          assignStoresVue.displaySpinner = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not assign the stores',
+            errorName: 'errorMessage',
+            vue: assignStoresVue,
+            containerRef: 'modal'
+          })
+        })
+    },
+    /**
 		 * To get the list of locations that belong to the current group.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getGroupLocations () {
-			var assignStoresVue = this
+    getGroupLocations () {
+      var assignStoresVue = this
 
-			StoreGroupsFunctions.getGroupLocations(
-				assignStoresVue.passedGroupId,
-				assignStoresVue.$root.appId,
-				assignStoresVue.$root.appSecret,
-				assignStoresVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						assignStoresVue.groupLocations = response.payload.locations.map(
-							location => location.id
-						)
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch group info',
-						errorName: 'errorMessage',
-						vue: assignStoresVue,
-						containerRef: 'modal'
-					})
-				})
-				.finally(() => {
-					assignStoresVue.displaySpinner = false
-				})
-		},
-		/**
+      StoreGroupsFunctions.getGroupLocations(
+        assignStoresVue.passedGroupId,
+        assignStoresVue.$root.appId,
+        assignStoresVue.$root.appSecret,
+        assignStoresVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            assignStoresVue.groupLocations = response.payload.locations.map(
+              location => location.id
+            )
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch group info',
+            errorName: 'errorMessage',
+            vue: assignStoresVue,
+            containerRef: 'modal'
+          })
+        })
+        .finally(() => {
+          assignStoresVue.displaySpinner = false
+        })
+    },
+    /**
 		 * To assign the selected stores to the current group.
 		 * @function
 		 * @param {array} storesToBeAssigned - An array of store ids
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		assignStoresToGroup () {
-			var assignStoresVue = this
-			if (this.groupLocations.length === 0) {
-				this.errorMessage = 'You have not selected any stores'
-				this.$el.scrollTop = 0
-				return
-			}
-			this.assigning = true
-			StoreGroupsFunctions.assignStoresToGroup(
-				assignStoresVue.passedGroupId,
-				assignStoresVue.groupLocations,
-				assignStoresVue.$root.appId,
-				assignStoresVue.$root.appSecret,
-				assignStoresVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						assignStoresVue.closeModal()
-						assignStoresVue.showAlert(response.payload)
-						assignStoresVue.closeSidewaysPage()
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not assign the stores',
-						errorName: 'errorMessage',
-						vue: assignStoresVue,
-						containerRef: 'modal'
-					})
-				})
-				.finally(() => {
-					assignStoresVue.assigning = false
-				})
-		},
-		/**
+    assignStoresToGroup () {
+      var assignStoresVue = this
+      if (this.groupLocations.length === 0) {
+        this.errorMessage = 'You have not selected any stores'
+        this.$el.scrollTop = 0
+        return
+      }
+      this.assigning = true
+      StoreGroupsFunctions.assignStoresToGroup(
+        assignStoresVue.passedGroupId,
+        assignStoresVue.groupLocations,
+        assignStoresVue.$root.appId,
+        assignStoresVue.$root.appSecret,
+        assignStoresVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            assignStoresVue.closeModal()
+            assignStoresVue.showAlert(response.payload)
+            assignStoresVue.closeSidewaysPage()
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not assign the stores',
+            errorName: 'errorMessage',
+            vue: assignStoresVue,
+            containerRef: 'modal'
+          })
+        })
+        .finally(() => {
+          assignStoresVue.assigning = false
+        })
+    },
+    /**
 		 * To notify the parent to close the sideways page.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeSidewaysPage () {
-			this.$emit('closeSidewaysPage')
-		},
-		/**
+    closeSidewaysPage () {
+      this.$emit('closeSidewaysPage')
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert (payload = {}) {
-			let title = 'Success'
-			let text = 'The Stores have been saved'
-			let type = 'success'
+    showAlert (payload = {}) {
+      let title = 'Success'
+      let text = 'The Stores have been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		}
-	}
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    }
+  }
 }
 </script>
 <style scoped>

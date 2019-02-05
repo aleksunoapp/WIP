@@ -947,229 +947,229 @@ import PresetSettings from '@/components/app/MenuManager/Items/PresetSettings'
 import MenuItemPicker from '@/components/modules/MenuItemPicker'
 
 export default {
-	components: {
-		Breadcrumb,
-		Modal,
-		LoadingScreen,
-		EditItem,
-		DeleteItem,
-		NutritionInfo,
-		ModifiersList,
-		TagsList,
-		NoResults,
-		ResourcePicker,
-		ItemImages,
-		StorePicker,
-		PresetSettings,
-		MenuItemPicker
-	},
-	data () {
-		return {
-			breadcrumbArray: [
-				{ name: 'Menu Manager', link: false },
-				{ name: 'Menus', link: '/app/menu_manager/menus' },
-				{
-					name: 'Categories',
-					link: '/app/menu_manager/categories/' + this.$root.activeMenuId
-				},
-				{ name: 'Items', link: false }
-			],
-			editItemModalActive: false,
-			deleteItemModalActive: false,
-			displayItemData: false,
-			displayNutritionModal: false,
-			categoryDetails: {},
-			categoryItems: [],
-			selectedItem: {},
-			displayModifierModal: false,
-			appliedModifiers: [],
-			appliedTags: [],
-			selectedItemId: 0,
-			displayTagsListModal: false,
-			displayCreateTagModal: false,
-			customText:
+  components: {
+    Breadcrumb,
+    Modal,
+    LoadingScreen,
+    EditItem,
+    DeleteItem,
+    NutritionInfo,
+    ModifiersList,
+    TagsList,
+    NoResults,
+    ResourcePicker,
+    ItemImages,
+    StorePicker,
+    PresetSettings,
+    MenuItemPicker
+  },
+  data () {
+    return {
+      breadcrumbArray: [
+        { name: 'Menu Manager', link: false },
+        { name: 'Menus', link: '/app/menu_manager/menus' },
+        {
+          name: 'Categories',
+          link: '/app/menu_manager/categories/' + this.$root.activeMenuId
+        },
+        { name: 'Items', link: false }
+      ],
+      editItemModalActive: false,
+      deleteItemModalActive: false,
+      displayItemData: false,
+      displayNutritionModal: false,
+      categoryDetails: {},
+      categoryItems: [],
+      selectedItem: {},
+      displayModifierModal: false,
+      appliedModifiers: [],
+      appliedTags: [],
+      selectedItemId: 0,
+      displayTagsListModal: false,
+      displayCreateTagModal: false,
+      customText:
 				'There are no items in this category. Click on the button above to add one.',
-			errorMessage: '',
-			createItemCollapse: true,
-			creating: false,
-			newItem: {
-				category_id: this.$route.params.category_id,
-				name: '',
-				desc: '',
-				short_description: '',
-				sku: '',
-				image_url: '',
-				user_id: this.$root.createdBy,
-				status: 1,
-				price: '',
-				order: null,
-				item_type_id: null,
-				nutrition_summary: '',
-				type: '',
-				preset_item_modifier_item: []
-			},
-			itemCopied: false,
-			copyMode: true,
-			expanded: null,
-			loadingItemAttributes: false,
-			itemAttributes: [],
-			assigningAttributes: false,
-			itemToAssignItemAttributesTo: {
-				id: null,
-				name: ''
-			},
-			showAssignItemAttributesModal: false,
-			selectAllAttributesSelected: false,
-			assignItemAttributesErrorMessage: '',
-			selectedItemAttributes: [],
-			animated: null,
-			displayImagesModal: false,
-			loadingImages: false,
-			imagesErrorMessage: '',
-			itemImages: [],
-			selectedImage: {},
-			itemTypes: [],
-			applyToLocationsModalActive: false,
-			applyToLocationsErrorMessage: '',
-			passedItemId: null,
-			applyingItemToLocations: false,
-			locationsToApplyItemTo: [],
-			replaceExisting: 0,
-			imageMode: {
-				newMenu: false
-			},
-			noItemTypes: false,
-			displayPresetModal: false,
-			itemToSetPresetSettingsFor: {
-				id: null,
-				name: '',
-				preset_item_modifier_item: []
-			},
-			listErrorMessage: ''
-		}
-	},
-	computed: {
-		showCorporateItems () {
-			if (
-				this.$root.activeLocation.is_corporate !== undefined &&
+      errorMessage: '',
+      createItemCollapse: true,
+      creating: false,
+      newItem: {
+        category_id: this.$route.params.category_id,
+        name: '',
+        desc: '',
+        short_description: '',
+        sku: '',
+        image_url: '',
+        user_id: this.$root.createdBy,
+        status: 1,
+        price: '',
+        order: null,
+        item_type_id: null,
+        nutrition_summary: '',
+        type: '',
+        preset_item_modifier_item: []
+      },
+      itemCopied: false,
+      copyMode: true,
+      expanded: null,
+      loadingItemAttributes: false,
+      itemAttributes: [],
+      assigningAttributes: false,
+      itemToAssignItemAttributesTo: {
+        id: null,
+        name: ''
+      },
+      showAssignItemAttributesModal: false,
+      selectAllAttributesSelected: false,
+      assignItemAttributesErrorMessage: '',
+      selectedItemAttributes: [],
+      animated: null,
+      displayImagesModal: false,
+      loadingImages: false,
+      imagesErrorMessage: '',
+      itemImages: [],
+      selectedImage: {},
+      itemTypes: [],
+      applyToLocationsModalActive: false,
+      applyToLocationsErrorMessage: '',
+      passedItemId: null,
+      applyingItemToLocations: false,
+      locationsToApplyItemTo: [],
+      replaceExisting: 0,
+      imageMode: {
+        newMenu: false
+      },
+      noItemTypes: false,
+      displayPresetModal: false,
+      itemToSetPresetSettingsFor: {
+        id: null,
+        name: '',
+        preset_item_modifier_item: []
+      },
+      listErrorMessage: ''
+    }
+  },
+  computed: {
+    showCorporateItems () {
+      if (
+        this.$root.activeLocation.is_corporate !== undefined &&
 				this.$root.activeLocation.is_corporate !== 1 &&
 				!this.itemCopied &&
 				this.copyMode
-			) {
-				return true
-			} else {
-				return false
-			}
-		},
-		SKUreadonly () {
-			if (
-				this.$root.activeLocation.is_corporate !== undefined &&
+      ) {
+        return true
+      } else {
+        return false
+      }
+    },
+    SKUreadonly () {
+      if (
+        this.$root.activeLocation.is_corporate !== undefined &&
 				this.$root.activeLocation.is_corporate === 1
-			) {
-				return false
-			} else if (
-				this.$root.activeLocation.is_corporate !== undefined &&
+      ) {
+        return false
+      } else if (
+        this.$root.activeLocation.is_corporate !== undefined &&
 				this.$root.activeLocation.is_corporate !== 1 &&
 				!this.copyMode
-			) {
-				return false
-			} else if (
-				this.$root.activeLocation.is_corporate !== undefined &&
+      ) {
+        return false
+      } else if (
+        this.$root.activeLocation.is_corporate !== undefined &&
 				this.$root.activeLocation.is_corporate !== 1 &&
 				this.copyMode
-			) {
-				return true
-			}
-		},
-		newTaxClassLabel () {
-			if (this.newItem.item_type_id === null) {
-				return 'Select'
-			} else {
-				return this.itemTypes
-					.filter(type => type.id === this.newItem.item_type_id)
-					.map(type => type.name)[0]
-			}
-		},
-		newItemTypeLabel () {
-			if (!this.newItem.type) {
-				return 'Select'
-			} else {
-				return this.newItem.type
-			}
-		}
-	},
-	watch: {
-		'$root.activeLocation' () {
-			this.$router.push({ name: 'Menus' })
-		}
-	},
-	mounted () {
-		if (
-			this.$root.activeLocation &&
+      ) {
+        return true
+      }
+    },
+    newTaxClassLabel () {
+      if (this.newItem.item_type_id === null) {
+        return 'Select'
+      } else {
+        return this.itemTypes
+          .filter(type => type.id === this.newItem.item_type_id)
+          .map(type => type.name)[0]
+      }
+    },
+    newItemTypeLabel () {
+      if (!this.newItem.type) {
+        return 'Select'
+      } else {
+        return this.newItem.type
+      }
+    }
+  },
+  watch: {
+    '$root.activeLocation' () {
+      this.$router.push({ name: 'Menus' })
+    }
+  },
+  mounted () {
+    if (
+      this.$root.activeLocation &&
 			this.$root.activeLocation.id &&
 			this.$route.params.category_id
-		) {
-			this.getCategoryDetails()
-			this.getCategoryItems()
-		}
-		this.listItemAttributes()
-		this.getItemTypes()
-	},
-	methods: {
-		/**
+    ) {
+      this.getCategoryDetails()
+      this.getCategoryItems()
+    }
+    this.listItemAttributes()
+    this.getItemTypes()
+  },
+  methods: {
+    /**
 		 * To update selection of items
 		 * @function
 		 * @param {array} items - Array of items selected by user
 		 * @returns {undefined}
 		 */
-		itemsSelected (items) {
-			this.copyItem(items[0])
-		},
-		/**
+    itemsSelected (items) {
+      this.copyItem(items[0])
+    },
+    /**
 		 * To get the preset settings of an item.
 		 * @function
 		 * @param {integer} itemId - The selected item id
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getPresetDetails (itemId) {
-			var itemsVue = this
-			return ItemsFunctions.getPresetDetails(
-				itemId,
-				itemsVue.$root.appId,
-				itemsVue.$root.appSecret,
-				itemsVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						for (var i = 0; i < itemsVue.categoryItems.length; i++) {
-							if (itemsVue.categoryItems[i].id === itemId) {
-								itemsVue.$set(
-									itemsVue.categoryItems[i],
-									'preset_item_modifier_item',
-									response.payload.preset_item_modifier_item
-								)
-							}
-						}
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not get preset info',
-						errorName: 'listErrorMessage',
-						vue: itemsVue
-					})
-				})
-		},
-		/**
+    getPresetDetails (itemId) {
+      var itemsVue = this
+      return ItemsFunctions.getPresetDetails(
+        itemId,
+        itemsVue.$root.appId,
+        itemsVue.$root.appSecret,
+        itemsVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            for (var i = 0; i < itemsVue.categoryItems.length; i++) {
+              if (itemsVue.categoryItems[i].id === itemId) {
+                itemsVue.$set(
+                  itemsVue.categoryItems[i],
+                  'preset_item_modifier_item',
+                  response.payload.preset_item_modifier_item
+                )
+              }
+            }
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not get preset info',
+            errorName: 'listErrorMessage',
+            vue: itemsVue
+          })
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showPresetItemAlert (payload = {}) {
-			let title = 'Success'
-			let html = `
+    showPresetItemAlert (payload = {}) {
+      let title = 'Success'
+      let html = `
 				<div>
 					The Item has been created
 					<br/>
@@ -1178,1044 +1178,1044 @@ export default {
 						Do you want to add preset settings now?
 					</strong>
 				</div>`
-			let type = 'success'
-			let showCancelButton = true
-			let confirmButtonText = 'Yes'
-			let cancelButtonText = 'No'
+      let type = 'success'
+      let showCancelButton = true
+      let confirmButtonText = 'Yes'
+      let cancelButtonText = 'No'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				html = `
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        html = `
 					<div>
 						The Item has been sent for approval
 					</div>`
-				type = 'info'
-				showCancelButton = false
-				confirmButtonText = 'OK'
-			}
+        type = 'info'
+        showCancelButton = false
+        confirmButtonText = 'OK'
+      }
 
-			this.$swal({
-				title,
-				html,
-				type,
-				showCancelButton,
-				confirmButtonText,
-				cancelButtonText
-			}).then(
-				() => {
-					if (!payload.pending_approval) {
-						this.showPresetModal({
-							...this.newItem,
-							id: payload.new_item_id
-						})
-					}
-				},
-				dismiss => {}
-			)
-		},
+      this.$swal({
+        title,
+        html,
+        type,
+        showCancelButton,
+        confirmButtonText,
+        cancelButtonText
+      }).then(
+        () => {
+          if (!payload.pending_approval) {
+            this.showPresetModal({
+              ...this.newItem,
+              id: payload.new_item_id
+            })
+          }
+        },
+        dismiss => {}
+      )
+    },
 
-		/**
+    /**
 		 * To display the Preset settings modal
 		 * @function
 		 * @param {object} item - The item to set Preset Settings for
 		 * @returns {undefined}
 		 */
-		showPresetModal (item) {
-			this.itemToSetPresetSettingsFor.id = item.id
-			this.itemToSetPresetSettingsFor.name = item.name
-			this.itemToSetPresetSettingsFor.modifiers = item.modifiers || []
-			this.itemToSetPresetSettingsFor.preset_item_modifier_item =
+    showPresetModal (item) {
+      this.itemToSetPresetSettingsFor.id = item.id
+      this.itemToSetPresetSettingsFor.name = item.name
+      this.itemToSetPresetSettingsFor.modifiers = item.modifiers || []
+      this.itemToSetPresetSettingsFor.preset_item_modifier_item =
 				item.preset_item_modifier_item
-			this.displayPresetModal = true
-		},
-		/**
+      this.displayPresetModal = true
+    },
+    /**
 		 * To close the Preset settings modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		closePresetModal () {
-			this.displayPresetModal = false
-		},
-		/**
+    closePresetModal () {
+      this.displayPresetModal = false
+    },
+    /**
 		 * To close the Preset settings modal and update Preset settins
 		 * @function
 		 * @param {array} updatedSettings - The updated settings
 		 * @returns {undefined}
 		 */
-		closePresetModalAndUpdate ({updatedSettings, payload}) {
-			this.categoryItems.forEach(item => {
-				if (item.id === this.itemToSetPresetSettingsFor.id) {
-					item.preset_item_modifier_item = updatedSettings
-				}
-			})
-			this.displayPresetModal = false
-			this.confirmPresetSettings(payload)
-			this.itemToSetPresetSettingsFor.id = null
-			this.itemToSetPresetSettingsFor.name = ''
-			this.itemToSetPresetSettingsFor.preset_item_modifier_item = []
-		},
-		/**
+    closePresetModalAndUpdate ({ updatedSettings, payload }) {
+      this.categoryItems.forEach(item => {
+        if (item.id === this.itemToSetPresetSettingsFor.id) {
+          item.preset_item_modifier_item = updatedSettings
+        }
+      })
+      this.displayPresetModal = false
+      this.confirmPresetSettings(payload)
+      this.itemToSetPresetSettingsFor.id = null
+      this.itemToSetPresetSettingsFor.name = ''
+      this.itemToSetPresetSettingsFor.preset_item_modifier_item = []
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmPresetSettings (payload = {}) {
-			let title = 'Success'
-			let text = 'The Preset Settings have been saved'
-			let type = 'success'
+    confirmPresetSettings (payload = {}) {
+      let title = 'Success'
+      let text = 'The Preset Settings have been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Preset Settings have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Preset Settings have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To update the type field of the new item
 		 * @function
 		 * @param {string} type - The selected type
 		 * @returns {undefined}
 		 */
-		updateItemType (type) {
-			this.newItem.type = type
-		},
-		/**
+    updateItemType (type) {
+      this.newItem.type = type
+    },
+    /**
 		 * To toggle between the open and closed state of the resource picker
 		 * @function
 		 * @param {string} object - The name of the object the image is for
 		 * @param {object} value - The open / closed value of the picker
 		 * @returns {undefined}
 		 */
-		toggleImageMode (object, value) {
-			this.imageMode[object] = value
-		},
-		/**
+    toggleImageMode (object, value) {
+      this.imageMode[object] = value
+    },
+    /**
 		 * To apply an Item to selected locations
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		applyItemToLocations () {
-			var itemsVue = this
-			if (!this.locationsToApplyItemTo.length) {
-				this.applyToLocationsErrorMessage =
+    applyItemToLocations () {
+      var itemsVue = this
+      if (!this.locationsToApplyItemTo.length) {
+        this.applyToLocationsErrorMessage =
 					'Please select at least one location'
-				return
-			}
+        return
+      }
 
-			this.applyingItemToLocations = true
-			let payload = {
-				item_id: this.passedItemId,
-				locations: this.locationsToApplyItemTo,
-				replace_existing: this.replaceExisting
-			}
-			return ItemsFunctions.applyItemToLocations(
-				payload,
-				itemsVue.$root.appId,
-				itemsVue.$root.appSecret,
-				itemsVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						itemsVue.passedItemId = null
-						itemsVue.closeApplyToLocationsModal()
-						itemsVue.confirmItemsAppliedToLocaions(response.payload)
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not apply the item',
-						errorName: 'applyToLocationsErrorMessage',
-						vue: itemsVue,
-						containerRef: 'applyToLocationsModal'
-					})
-				})
-				.finally(() => {
-					itemsVue.applyingItemToLocations = false
-				})
-		},
-		/**
+      this.applyingItemToLocations = true
+      let payload = {
+        item_id: this.passedItemId,
+        locations: this.locationsToApplyItemTo,
+        replace_existing: this.replaceExisting
+      }
+      return ItemsFunctions.applyItemToLocations(
+        payload,
+        itemsVue.$root.appId,
+        itemsVue.$root.appSecret,
+        itemsVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            itemsVue.passedItemId = null
+            itemsVue.closeApplyToLocationsModal()
+            itemsVue.confirmItemsAppliedToLocaions(response.payload)
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not apply the item',
+            errorName: 'applyToLocationsErrorMessage',
+            vue: itemsVue,
+            containerRef: 'applyToLocationsModal'
+          })
+        })
+        .finally(() => {
+          itemsVue.applyingItemToLocations = false
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmItemsAppliedToLocaions (payload = {}) {
-			let title = 'Success'
-			let text = 'The Items have been saved'
-			let type = 'success'
+    confirmItemsAppliedToLocaions (payload = {}) {
+      let title = 'Success'
+      let text = 'The Items have been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To record the selected locations
 		 * @function
 		 * @param {array} locations - An array of location ids
 		 * @returns {undefined}
 		 */
-		selectedLocations (locations) {
-			this.locationsToApplyItemTo = locations
-		},
-		/**
+    selectedLocations (locations) {
+      this.locationsToApplyItemTo = locations
+    },
+    /**
 		 * To clear the error message in modal for applying to locations
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearLocationsError () {
-			this.applyToLocationsErrorMessage = ''
-		},
-		/**
+    clearLocationsError () {
+      this.applyToLocationsErrorMessage = ''
+    },
+    /**
 		 * To close the modal to copy an item to multiple locations
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeApplyToLocationsModal () {
-			this.applyToLocationsModalActive = false
-			this.passedItemId = null
-			this.clearLocationsError()
-		},
-		/**
+    closeApplyToLocationsModal () {
+      this.applyToLocationsModalActive = false
+      this.passedItemId = null
+      this.clearLocationsError()
+    },
+    /**
 		 * To display the modal to copy an item to multiple locations
 		 * @function
 		 * @param {object} item - The selected item
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		displayApplyToLocationsModal (item, event) {
-			event.stopPropagation()
-			this.applyToLocationsModalActive = true
-			this.passedItemId = item.id
-		},
-		/**
+    displayApplyToLocationsModal (item, event) {
+      event.stopPropagation()
+      this.applyToLocationsModalActive = true
+      this.passedItemId = item.id
+    },
+    /**
 		 * To view the images of an item.
 		 * @function
 		 * @param {object} item - The selected item
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		openImagesModal (item, event) {
-			event.stopPropagation()
-			this.selectedItem = item
-			this.displayImagesModal = true
-		},
-		/**
+    openImagesModal (item, event) {
+      event.stopPropagation()
+      this.selectedItem = item
+      this.displayImagesModal = true
+    },
+    /**
 		 * To close the images modal.
 		 * @function
 		 * @param {object} item - The selected item
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		closeImagesModal () {
-			this.getCategoryItems()
-			this.displayImagesModal = false
-			this.selectedItem = {}
-		},
-		/**
+    closeImagesModal () {
+      this.getCategoryItems()
+      this.displayImagesModal = false
+      this.selectedItem = {}
+    },
+    /**
 		 * To close the images modal and refresh the list of items.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeImagesModalAndUpdate () {
-			this.getCategoryItems()
-			this.displayImagesModal = false
-			this.selectedItem = {}
-		},
-		/**
+    closeImagesModalAndUpdate () {
+      this.getCategoryItems()
+      this.displayImagesModal = false
+      this.selectedItem = {}
+    },
+    /**
 		 * To to highlight the recently updated item
 		 * @function
 		 * @param {integer} id - The id of the item to animate
 		 * @returns {undefined}
 		 */
-		nutritionInfoSaved (id) {
-			this.displayNutritionModal = false
-			this.animated = `item-${id}`
-			var itemsVue = this
-			window.setTimeout(() => {
-				itemsVue.animated = `item-${id}`
-			}, 3000)
-		},
-		/**
+    nutritionInfoSaved (id) {
+      this.displayNutritionModal = false
+      this.animated = `item-${id}`
+      var itemsVue = this
+      window.setTimeout(() => {
+        itemsVue.animated = `item-${id}`
+      }, 3000)
+    },
+    /**
 		 * To switch copying an item and creating an item from scratch.
 		 * @function
 		 * @returns {undefined}
 		 */
-		flipCopyCreate () {
-			this.clearNewItem()
-			this.copyMode = !this.copyMode
-		},
-		/**
+    flipCopyCreate () {
+      this.clearNewItem()
+      this.copyMode = !this.copyMode
+    },
+    /**
 		 * To copy item data into the newItem object.
 		 * @function
 		 * @param {object} item - The selected item
 		 * @returns {undefined}
 		 */
-		copyItem (item) {
-			this.newItem.name = item.name
-			this.newItem.desc = item.desc
-			this.newItem.short_description = item.short_description
-			this.newItem.sku = item.sku
-			this.newItem.image_url = item.image_url
-			this.newItem.status = item.status
-			this.newItem.price = item.price
-			this.newItem.nutrition_summary = item.nutrition_summary
-			this.newItem.order = item.order
-			this.newItem.item_type_id = item.item_type_id
-			this.newItem.type = item.type || 'custom'
-			this.itemCopied = true
-			this.newItem.preset_item_modifier_item =
+    copyItem (item) {
+      this.newItem.name = item.name
+      this.newItem.desc = item.desc
+      this.newItem.short_description = item.short_description
+      this.newItem.sku = item.sku
+      this.newItem.image_url = item.image_url
+      this.newItem.status = item.status
+      this.newItem.price = item.price
+      this.newItem.nutrition_summary = item.nutrition_summary
+      this.newItem.order = item.order
+      this.newItem.item_type_id = item.item_type_id
+      this.newItem.type = item.type || 'custom'
+      this.itemCopied = true
+      this.newItem.preset_item_modifier_item =
 				item.preset_item_modifier_item || []
-		},
-		/**
+    },
+    /**
 		 * To clear an error.
 		 * @function
 		 * @param {string} name - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To set the image to be same as the one emitted by the gallery modal.
 		 * @function
 		 * @param {object} val - The emitted image object.
 		 * @returns {undefined}
 		 */
-		updateImage (val) {
-			this.newItem.image_url = val.image_url
-		},
-		/**
+    updateImage (val) {
+      this.newItem.image_url = val.image_url
+    },
+    /**
 		 * To toggle the create item panel, initially set to opened
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCreateItemPanel () {
-			this.createItemCollapse = !this.createItemCollapse
-		},
-		/**
+    toggleCreateItemPanel () {
+      this.createItemCollapse = !this.createItemCollapse
+    },
+    /**
 		 * To check if the item data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateItemData () {
-			var itemsVue = this
-			return new Promise(function (resolve, reject) {
-				if (!itemsVue.newItem.name.length) {
-					reject('Item name cannot be blank')
-				} else if (!itemsVue.newItem.desc.length) {
-					reject('Item description cannot be blank')
-				} else if (!itemsVue.newItem.short_description.length) {
-					reject('Item short description cannot be blank')
-				} else if (!itemsVue.newItem.price.length) {
-					reject('Item price cannot be blank')
-				} else if (!itemsVue.newItem.nutrition_summary.length) {
-					reject('Nutrition summary cannot be blank')
-				} else if (!$.isNumeric(itemsVue.newItem.order)) {
-					reject('Item order should be a number')
-				} else if (!itemsVue.newItem.sku.length) {
-					reject('Item SKU cannot be blank')
-				} else if (!itemsVue.newItem.item_type_id) {
-					reject('Select an item type')
-				} else if (!itemsVue.newItem.image_url.length) {
-					reject('Item image URL cannot be blank')
-				} else if (!$.isNumeric(itemsVue.newItem.status)) {
-					reject('Item status cannot be blank')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateItemData () {
+      var itemsVue = this
+      return new Promise(function (resolve, reject) {
+        if (!itemsVue.newItem.name.length) {
+          reject('Item name cannot be blank')
+        } else if (!itemsVue.newItem.desc.length) {
+          reject('Item description cannot be blank')
+        } else if (!itemsVue.newItem.short_description.length) {
+          reject('Item short description cannot be blank')
+        } else if (!itemsVue.newItem.price.length) {
+          reject('Item price cannot be blank')
+        } else if (!itemsVue.newItem.nutrition_summary.length) {
+          reject('Nutrition summary cannot be blank')
+        } else if (!$.isNumeric(itemsVue.newItem.order)) {
+          reject('Item order should be a number')
+        } else if (!itemsVue.newItem.sku.length) {
+          reject('Item SKU cannot be blank')
+        } else if (!itemsVue.newItem.item_type_id) {
+          reject('Select an item type')
+        } else if (!itemsVue.newItem.image_url.length) {
+          reject('Item image URL cannot be blank')
+        } else if (!$.isNumeric(itemsVue.newItem.status)) {
+          reject('Item status cannot be blank')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To add the new item to the category and close the modal and redirect to the categories page.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		addNewCategoryItem () {
-			var itemsVue = this
-			itemsVue.clearError('errorMessage')
+    addNewCategoryItem () {
+      var itemsVue = this
+      itemsVue.clearError('errorMessage')
 
-			return itemsVue
-				.validateItemData()
-				.then(response => {
-					itemsVue.creating = true
-					ItemsFunctions.addNewCategoryItem(
-						itemsVue.newItem,
-						itemsVue.$root.appId,
-						itemsVue.$root.appSecret,
-						itemsVue.$root.userToken
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								itemsVue.newItem.id = response.payload.new_item_id
-								if (response.payload && response.payload.pending_approval !== true) {
-									itemsVue.addItem(itemsVue.newItem)
-								}
-								if (itemsVue.newItem.type === 'preset') {
-									itemsVue.showPresetItemAlert(response.payload)
-								} else {
-									itemsVue.showAlert(response.payload)
-								}
-								itemsVue.clearNewItem()
-							} else {
-								itemsVue.errorMessage = response.message
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could fetch categories',
-								errorName: 'errorMessage',
-								vue: itemsVue
-							})
-						})
-						.finally(() => {
-							itemsVue.creating = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					itemsVue.errorMessage = reason
-					window.scrollTo(0, 0)
-					throw reason
-				})
-		},
-		/**
+      return itemsVue
+        .validateItemData()
+        .then(response => {
+          itemsVue.creating = true
+          ItemsFunctions.addNewCategoryItem(
+            itemsVue.newItem,
+            itemsVue.$root.appId,
+            itemsVue.$root.appSecret,
+            itemsVue.$root.userToken
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                itemsVue.newItem.id = response.payload.new_item_id
+                if (response.payload && response.payload.pending_approval !== true) {
+                  itemsVue.addItem(itemsVue.newItem)
+                }
+                if (itemsVue.newItem.type === 'preset') {
+                  itemsVue.showPresetItemAlert(response.payload)
+                } else {
+                  itemsVue.showAlert(response.payload)
+                }
+                itemsVue.clearNewItem()
+              } else {
+                itemsVue.errorMessage = response.message
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could fetch categories',
+                errorName: 'errorMessage',
+                vue: itemsVue
+              })
+            })
+            .finally(() => {
+              itemsVue.creating = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          itemsVue.errorMessage = reason
+          window.scrollTo(0, 0)
+          throw reason
+        })
+    },
+    /**
 		 * To get the deatils of the category to show the items for.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getCategoryDetails () {
-			var itemsVue = this
-			CategoriesFunctions.getCategoryDetails(
-				itemsVue.$route.params.category_id,
-				itemsVue.$root.appId,
-				itemsVue.$root.appSecret,
-				itemsVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						itemsVue.categoryDetails = response.payload[0]
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch category info',
-						errorName: 'listErrorMessage',
-						vue: itemsVue
-					})
-				})
-		},
-		/**
+    getCategoryDetails () {
+      var itemsVue = this
+      CategoriesFunctions.getCategoryDetails(
+        itemsVue.$route.params.category_id,
+        itemsVue.$root.appId,
+        itemsVue.$root.appSecret,
+        itemsVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            itemsVue.categoryDetails = response.payload[0]
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch category info',
+            errorName: 'listErrorMessage',
+            vue: itemsVue
+          })
+        })
+    },
+    /**
 		 * To get a list of items for the current category.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getCategoryItems () {
-			this.displayItemData = true
-			var itemsVue = this
-			itemsVue.categoryItems = []
-			return ItemsFunctions.getCategoryItems(
-				itemsVue.$route.params.category_id,
-				itemsVue.$root.appId,
-				itemsVue.$root.appSecret
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						itemsVue.displayItemData = false
-						itemsVue.categoryItems = response.payload.sort(
-							(a, b) => a.name > b.name
-						)
-					} else {
-						itemsVue.displayItemData = false
-					}
-				})
-				.catch(reason => {
-					itemsVue.displayItemData = false
-					if (reason && reason.responseJSON && reason.responseJSON.payload === 'No data found for this Item.') {
-						return
-					}
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch items',
-						errorName: 'listErrorMessage',
-						vue: itemsVue
-					})
-				})
-		},
-		/**
+    getCategoryItems () {
+      this.displayItemData = true
+      var itemsVue = this
+      itemsVue.categoryItems = []
+      return ItemsFunctions.getCategoryItems(
+        itemsVue.$route.params.category_id,
+        itemsVue.$root.appId,
+        itemsVue.$root.appSecret
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            itemsVue.displayItemData = false
+            itemsVue.categoryItems = response.payload.sort(
+              (a, b) => a.name > b.name
+            )
+          } else {
+            itemsVue.displayItemData = false
+          }
+        })
+        .catch(reason => {
+          itemsVue.displayItemData = false
+          if (reason && reason.responseJSON && reason.responseJSON.payload === 'No data found for this Item.') {
+            return
+          }
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch items',
+            errorName: 'listErrorMessage',
+            vue: itemsVue
+          })
+        })
+    },
+    /**
 		 * To expand/collapse the dropdown div under an item.
 		 * @function
 		 * @param {object} item - The selected item
 		 * @returns {undefined}
 		 */
-		expandDetails (item) {
-			if (this.expanded === item.id) return
+    expandDetails (item) {
+      if (this.expanded === item.id) return
 
-			const itemsVue = this
-			Promise.all([
-				itemsVue.getItemDetailsFull(item.id),
-				itemsVue.getItemAttributesOfItem(item.id),
-				item.type === 'preset' ? itemsVue.getPresetDetails(item.id) : null
-			]).then(() => {
-				itemsVue.expanded = item.id
-			})
-			this.itemAttributes.forEach(itemAttribute => {
-				itemAttribute.selected = false
-			})
-		},
-		/**
+      const itemsVue = this
+      Promise.all([
+        itemsVue.getItemDetailsFull(item.id),
+        itemsVue.getItemAttributesOfItem(item.id),
+        item.type === 'preset' ? itemsVue.getPresetDetails(item.id) : null
+      ]).then(() => {
+        itemsVue.expanded = item.id
+      })
+      this.itemAttributes.forEach(itemAttribute => {
+        itemAttribute.selected = false
+      })
+    },
+    /**
 		 * To get the complete details of an item.
 		 * @function
 		 * @param {integer} itemId - The selected item id
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getItemDetailsFull (itemId) {
-			var itemsVue = this
-			return ItemsFunctions.getItemDetailsFull(
-				itemId,
-				itemsVue.$root.appId,
-				itemsVue.$root.appSecret
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						for (var i = 0; i < itemsVue.categoryItems.length; i++) {
-							if (itemsVue.categoryItems[i].id === itemId) {
-								itemsVue.$set(
-									itemsVue.categoryItems[i],
-									'modifiers',
-									response.payload.modifiers
-								)
-								itemsVue.$set(
-									itemsVue.categoryItems[i],
-									'tags',
-									response.payload.tags
-								)
-							}
-						}
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch item info',
-						errorName: 'listErrorMessage',
-						vue: itemsVue
-					})
-				})
-		},
-		/**
+    getItemDetailsFull (itemId) {
+      var itemsVue = this
+      return ItemsFunctions.getItemDetailsFull(
+        itemId,
+        itemsVue.$root.appId,
+        itemsVue.$root.appSecret
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            for (var i = 0; i < itemsVue.categoryItems.length; i++) {
+              if (itemsVue.categoryItems[i].id === itemId) {
+                itemsVue.$set(
+                  itemsVue.categoryItems[i],
+                  'modifiers',
+                  response.payload.modifiers
+                )
+                itemsVue.$set(
+                  itemsVue.categoryItems[i],
+                  'tags',
+                  response.payload.tags
+                )
+              }
+            }
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch item info',
+            errorName: 'listErrorMessage',
+            vue: itemsVue
+          })
+        })
+    },
+    /**
 		 * To show the modal to add attributes.
 		 * @function
 		 * @param {object} item - The Item to assign Item Attributes to
 		 * @returns {undefined}
 		 */
-		showAttributesModal (item) {
-			this.itemToAssignItemAttributesTo.id = item.id
-			this.itemToAssignItemAttributesTo.name = item.name
-			this.showAssignItemAttributesModal = true
-		},
-		/**
+    showAttributesModal (item) {
+      this.itemToAssignItemAttributesTo.id = item.id
+      this.itemToAssignItemAttributesTo.name = item.name
+      this.showAssignItemAttributesModal = true
+    },
+    /**
 		 * To get a list of Item Attributes.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		listItemAttributes () {
-			this.loadingItemAttributes = true
-			const itemsVue = this
+    listItemAttributes () {
+      this.loadingItemAttributes = true
+      const itemsVue = this
 
-			return ItemAttributesFunctions.listItemAttributes(
-				itemsVue.$root.appId,
-				itemsVue.$root.appSecret,
-				itemsVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						itemsVue.itemAttributes = response.payload
-					} else {
-						itemsVue.loadingItemAttributes = false
-					}
-				})
-				.catch(reason => {
-					itemsVue.loadingItemAttributes = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch attributes',
-						errorName: 'errorMessage',
-						vue: itemsVue
-					})
-				})
-		},
-		/**
+      return ItemAttributesFunctions.listItemAttributes(
+        itemsVue.$root.appId,
+        itemsVue.$root.appSecret,
+        itemsVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            itemsVue.itemAttributes = response.payload
+          } else {
+            itemsVue.loadingItemAttributes = false
+          }
+        })
+        .catch(reason => {
+          itemsVue.loadingItemAttributes = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch attributes',
+            errorName: 'errorMessage',
+            vue: itemsVue
+          })
+        })
+    },
+    /**
 		 * To get the attributes of an item.
 		 * @function
 		 * @param {integer} itemId - The selected item id
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getItemAttributesOfItem (itemId) {
-			this.selectedItemAttributes = []
-			var itemsVue = this
-			return ItemAttributesFunctions.getItemAttributesOfItem(
-				itemsVue.$root.appId,
-				itemsVue.$root.appSecret,
-				itemsVue.$root.userToken,
-				itemId
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						for (let r = 0; r < itemsVue.itemAttributes.length; r++) {
-							if (response.payload.itemattributes.length) {
-								for (
-									let s = 0;
-									s < response.payload.itemattributes.length;
-									s++
-								) {
-									let itemAttribute = itemsVue.itemAttributes[r]
-									if (
-										itemAttribute.id === response.payload.itemattributes[s].id
-									) {
-										itemAttribute.selected = true
-										break
-									} else {
-										itemAttribute.selected = false
-									}
-								}
-							}
-						}
-						let notAll = itemsVue.itemAttributes.some(itemAttribute => {
-							return itemAttribute.selected === false
-						})
-						notAll
-							? (itemsVue.selectAllAttributesSelected = false)
-							: (itemsVue.selectAllAttributesSelected = true)
-						itemsVue.selectedItemAttributes = response.payload.itemattributes
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch attributes',
-						errorName: 'listErrorMessage',
-						vue: itemsVue
-					})
-				})
-		},
-		/**
+    getItemAttributesOfItem (itemId) {
+      this.selectedItemAttributes = []
+      var itemsVue = this
+      return ItemAttributesFunctions.getItemAttributesOfItem(
+        itemsVue.$root.appId,
+        itemsVue.$root.appSecret,
+        itemsVue.$root.userToken,
+        itemId
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            for (let r = 0; r < itemsVue.itemAttributes.length; r++) {
+              if (response.payload.itemattributes.length) {
+                for (
+                  let s = 0;
+                  s < response.payload.itemattributes.length;
+                  s++
+                ) {
+                  let itemAttribute = itemsVue.itemAttributes[r]
+                  if (
+                    itemAttribute.id === response.payload.itemattributes[s].id
+                  ) {
+                    itemAttribute.selected = true
+                    break
+                  } else {
+                    itemAttribute.selected = false
+                  }
+                }
+              }
+            }
+            let notAll = itemsVue.itemAttributes.some(itemAttribute => {
+              return itemAttribute.selected === false
+            })
+            notAll
+              ? (itemsVue.selectAllAttributesSelected = false)
+              : (itemsVue.selectAllAttributesSelected = true)
+            itemsVue.selectedItemAttributes = response.payload.itemattributes
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch attributes',
+            errorName: 'listErrorMessage',
+            vue: itemsVue
+          })
+        })
+    },
+    /**
 		 * To select all or deselect all
 		 * @function
 		 * @returns {undefined}
 		 */
-		selectAllAttributes () {
-			for (var i = 0; i < this.itemAttributes.length; i++) {
-				this.itemAttributes[i].selected = this.selectAllAttributesSelected
-			}
-		},
-		/**
+    selectAllAttributes () {
+      for (var i = 0; i < this.itemAttributes.length; i++) {
+        this.itemAttributes[i].selected = this.selectAllAttributesSelected
+      }
+    },
+    /**
 		 * To sync Select All checkbox
 		 * @function
 		 * @param {boolean} value - The value of the checkbox
 		 * @returns {undefined}
 		 */
-		syncSelectAllAttributes (value) {
-			if (!value) {
-				this.selectAllAttributesSelected = false
-			} else {
-				this.selectAllAttributesSelected = this.itemAttributes.every(
-					itemAttribute => {
-						return itemAttribute.selected === true
-					}
-				)
-			}
-		},
-		/**
+    syncSelectAllAttributes (value) {
+      if (!value) {
+        this.selectAllAttributesSelected = false
+      } else {
+        this.selectAllAttributesSelected = this.itemAttributes.every(
+          itemAttribute => {
+            return itemAttribute.selected === true
+          }
+        )
+      }
+    },
+    /**
 		 * To assign Item Attributes to the Item
 		 * @function
 		 * @returns {undefined}
 		 */
-		assignItemAttributesToItem () {
-			this.assigningAttributes = true
-			let payload = {
-				attribute: []
-			}
-			this.itemAttributes.forEach(itemAttribute => {
-				if (itemAttribute.selected) {
-					payload.attribute.push({
-						id: itemAttribute.id,
-						created_by: itemAttribute.created_by
-					})
-				}
-			})
-			const itemsVue = this
-			return ItemAttributesFunctions.assignItemAttributesToItem(
-				itemsVue.$root.appId,
-				itemsVue.$root.appSecret,
-				itemsVue.$root.userToken,
-				itemsVue.itemToAssignItemAttributesTo.id,
-				payload
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						let newAttributesArray = []
-						this.itemAttributes.forEach(itemAttribute => {
-							if (itemAttribute.selected) {
-								newAttributesArray.push(itemAttribute)
-							}
-						})
-						this.selectedItemAttributes = newAttributesArray
-						itemsVue.closeAssignItemAttributesModal()
-						itemsVue.confirmAssignItemAttributes(response.payload)
-						itemsVue.resetAssignItemAttributes()
-					} else {
-						window.scrollTo(0, 0)
-						itemsVue.assignItemAttributesErrorMessage =
+    assignItemAttributesToItem () {
+      this.assigningAttributes = true
+      let payload = {
+        attribute: []
+      }
+      this.itemAttributes.forEach(itemAttribute => {
+        if (itemAttribute.selected) {
+          payload.attribute.push({
+            id: itemAttribute.id,
+            created_by: itemAttribute.created_by
+          })
+        }
+      })
+      const itemsVue = this
+      return ItemAttributesFunctions.assignItemAttributesToItem(
+        itemsVue.$root.appId,
+        itemsVue.$root.appSecret,
+        itemsVue.$root.userToken,
+        itemsVue.itemToAssignItemAttributesTo.id,
+        payload
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            let newAttributesArray = []
+            this.itemAttributes.forEach(itemAttribute => {
+              if (itemAttribute.selected) {
+                newAttributesArray.push(itemAttribute)
+              }
+            })
+            this.selectedItemAttributes = newAttributesArray
+            itemsVue.closeAssignItemAttributesModal()
+            itemsVue.confirmAssignItemAttributes(response.payload)
+            itemsVue.resetAssignItemAttributes()
+          } else {
+            window.scrollTo(0, 0)
+            itemsVue.assignItemAttributesErrorMessage =
 							'Something went wrong ...'
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not apply the item',
-						errorName: 'assignItemAttributesErrorMessage',
-						vue: itemsVue,
-						containerRef: 'assignItemAttributesModal'
-					})
-				})
-				.finally(() => {
-					itemsVue.assigningAttributes = false
-				})
-		},
-		/**
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not apply the item',
+            errorName: 'assignItemAttributesErrorMessage',
+            vue: itemsVue,
+            containerRef: 'assignItemAttributesModal'
+          })
+        })
+        .finally(() => {
+          itemsVue.assigningAttributes = false
+        })
+    },
+    /**
 		 * To clear the error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearAttributesError () {
-			this.assignItemAttributesErrorMessage = ''
-		},
-		/**
+    clearAttributesError () {
+      this.assignItemAttributesErrorMessage = ''
+    },
+    /**
 		 * To reset assign Item Attributes
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetAssignItemAttributes () {
-			this.selectAllAttributesSelected = false
-			this.itemToAssignItemAttributesTo.id = null
-			this.itemToAssignItemAttributesTo.name = ''
-		},
-		/**
+    resetAssignItemAttributes () {
+      this.selectAllAttributesSelected = false
+      this.itemToAssignItemAttributesTo.id = null
+      this.itemToAssignItemAttributesTo.name = ''
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmAssignItemAttributes (payload = {}) {
-			let title = 'Success'
-			let text = 'The Item Attributes have been saved'
-			let type = 'success'
+    confirmAssignItemAttributes (payload = {}) {
+      let title = 'Success'
+      let text = 'The Item Attributes have been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To close the modal to add attributes.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeAssignItemAttributesModal () {
-			this.clearAttributesError()
-			this.showAssignItemAttributesModal = false
-		},
-		/**
+    closeAssignItemAttributesModal () {
+      this.clearAttributesError()
+      this.showAssignItemAttributesModal = false
+    },
+    /**
 		 * To display the modal to add items.
 		 * @function
 		 * @returns {undefined}
 		 */
-		displayAddItemModal () {
-			this.addItemModalActive = true
-			this.$router.push(
-				'/app/menu_manager/items/' +
+    displayAddItemModal () {
+      this.addItemModalActive = true
+      this.$router.push(
+        '/app/menu_manager/items/' +
 					this.$route.params.category_id +
 					'/add_item'
-			)
-		},
-		/**
+      )
+    },
+    /**
 		 * To display the modal to edit items.
 		 * @function
 		 * @param {object} item - The selected item
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		displayEditItemModal (item, event) {
-			event.stopPropagation()
-			this.editItemModalActive = true
-			this.$router.push(
-				'/app/menu_manager/items/' +
+    displayEditItemModal (item, event) {
+      event.stopPropagation()
+      this.editItemModalActive = true
+      this.$router.push(
+        '/app/menu_manager/items/' +
 					this.$route.params.category_id +
 					'/edit_item/' +
 					item.id
-			)
-		},
-		/**
+      )
+    },
+    /**
 		 * To display the modal to delete item.
 		 * @function
 		 * @param {object} item - The selected item
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		displayDeleteItemModal (item, event) {
-			event.stopPropagation()
-			this.deleteItemModalActive = true
-			this.passedItemId = item.id
-		},
-		/**
+    displayDeleteItemModal (item, event) {
+      event.stopPropagation()
+      this.deleteItemModalActive = true
+      this.passedItemId = item.id
+    },
+    /**
 		 * To clear the new item form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearNewItem () {
-			this.newItem = {
-				category_id: this.$route.params.category_id,
-				name: '',
-				desc: '',
-				short_description: '',
-				sku: '',
-				image_url: '',
-				user_id: this.$root.createdBy,
-				status: 1,
-				price: '',
-				order: null,
-				item_type_id: null,
-				nutrition_summary: '',
-				type: 'custom',
-				preset_item_modifier_item: []
-			}
-			this.itemCopied = false
-		},
-		/**
+    clearNewItem () {
+      this.newItem = {
+        category_id: this.$route.params.category_id,
+        name: '',
+        desc: '',
+        short_description: '',
+        sku: '',
+        image_url: '',
+        user_id: this.$root.createdBy,
+        status: 1,
+        price: '',
+        order: null,
+        item_type_id: null,
+        nutrition_summary: '',
+        type: 'custom',
+        preset_item_modifier_item: []
+      }
+      this.itemCopied = false
+    },
+    /**
 		 * To add the item emitted by the child to the items list.
 		 * @function
 		 * @param {object} val - The new item
 		 * @returns {undefined}
 		 */
-		addItem (val) {
-			if (parseInt(val.order) > 0) {
-				var done = false
-				for (var i = 0; i < this.categoryItems.length; i++) {
-					if (parseInt(this.categoryItems[i].order) < parseInt(val.order)) {
-						this.categoryItems.splice(i, 0, val)
-						done = true
-						break
-					}
-				}
-				if (!done) {
-					this.categoryItems.push(val)
-				}
-			} else {
-				this.categoryItems.push(val)
-			}
-		},
-		/**
+    addItem (val) {
+      if (parseInt(val.order) > 0) {
+        var done = false
+        for (var i = 0; i < this.categoryItems.length; i++) {
+          if (parseInt(this.categoryItems[i].order) < parseInt(val.order)) {
+            this.categoryItems.splice(i, 0, val)
+            done = true
+            break
+          }
+        }
+        if (!done) {
+          this.categoryItems.push(val)
+        }
+      } else {
+        this.categoryItems.push(val)
+      }
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert (payload = {}) {
-			let title = 'Success'
-			let text = 'The Item has been created'
-			let type = 'success'
+    showAlert (payload = {}) {
+      let title = 'Success'
+      let text = 'The Item has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Item has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Item has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To update the item emitted by the child and highlist it on the items list.
 		 * @function
 		 * @param {object} val - The updated item
 		 * @returns {undefined}
 		 */
-		editItem (val) {
-			this.getItemDetailsFull(val.id)
-			if (val.type === 'preset') {
-				this.getPresetDetails(val.id)
-			}
-			this.editItemModalActive = false
-			this.getCategoryItems()
-		},
-		/**
+    editItem (val) {
+      this.getItemDetailsFull(val.id)
+      if (val.type === 'preset') {
+        this.getPresetDetails(val.id)
+      }
+      this.editItemModalActive = false
+      this.getCategoryItems()
+    },
+    /**
 		 * To close the modal to edit an item.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeEditItemModal () {
-			this.editItemModalActive = false
-		},
-		/**
+    closeEditItemModal () {
+      this.editItemModalActive = false
+    },
+    /**
 		 * To close the modal to delete an item.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeDeleteItemModal () {
-			this.deleteItemModalActive = false
-		},
-		/**
+    closeDeleteItemModal () {
+      this.deleteItemModalActive = false
+    },
+    /**
 		 * To close the modal to delete an item.
 		 * @function
 		 * @returns {undefined}
 		 */
-		deleteItemAndCloseModal () {
-			this.deleteItemModalActive = false
-			this.getCategoryItems()
-		},
-		/**
+    deleteItemAndCloseModal () {
+      this.deleteItemModalActive = false
+      this.getCategoryItems()
+    },
+    /**
 		 * To view the nutrition info of an item.
 		 * @function
 		 * @param {object} item - The selected item
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		viewNutritionInfo (item, event) {
-			event.stopPropagation()
-			this.displayNutritionModal = true
-			this.selectedItem = item
-		},
-		/**
+    viewNutritionInfo (item, event) {
+      event.stopPropagation()
+      this.displayNutritionModal = true
+      this.selectedItem = item
+    },
+    /**
 		 * To display the modal that lists all available modifiers.
 		 * @function
 		 * @param {integer} itemId - The selected item id
 		 * @param {object} appliedModifiers - The modifiers already applied to the item.
 		 * @returns {undefined}
 		 */
-		showModifierModal (itemId, appliedModifiers) {
-			this.appliedModifiers = appliedModifiers
-			this.selectedItemId = itemId
-			this.displayModifierModal = true
-		},
-		/**
+    showModifierModal (itemId, appliedModifiers) {
+      this.appliedModifiers = appliedModifiers
+      this.selectedItemId = itemId
+      this.displayModifierModal = true
+    },
+    /**
 		 * To close the modifier modal.
 		 * @function
 		 * @param {object} val - The selected item
 		 * @returns {undefined}
 		 */
-		closeModifierModal (val) {
-			this.displayModifierModal = false
-			this.getItemDetailsFull(val)
-		},
-		/**
+    closeModifierModal (val) {
+      this.displayModifierModal = false
+      this.getItemDetailsFull(val)
+    },
+    /**
 		 * To display the modal to create new tags.
 		 * @function
 		 * @param {integer} itemId - The selected item id
 		 * @param {object} appliedTags - The tags already applied to the item.
 		 * @returns {undefined}
 		 */
-		showTagsModal (itemId, appliedTags) {
-			this.appliedTags = appliedTags
-			this.selectedItemId = itemId
-			this.displayTagsListModal = true
-		},
-		/**
+    showTagsModal (itemId, appliedTags) {
+      this.appliedTags = appliedTags
+      this.selectedItemId = itemId
+      this.displayTagsListModal = true
+    },
+    /**
 		 * To close the tags modal and update the item to show the updated tags.
 		 * @function
 		 * @param {integer} val - The id of the item to which the tags were applied
 		 * @returns {undefined}
 		 */
-		closeTagsListModal (val) {
-			this.displayTagsListModal = false
-			this.getItemDetailsFull(val)
-		},
-		/**
+    closeTagsListModal (val) {
+      this.displayTagsListModal = false
+      this.getItemDetailsFull(val)
+    },
+    /**
 		 * To get a list of all item types.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getItemTypes () {
-			var _this = this
-			let payload = { location_id: this.$root.activeLocation.id }
-			return ItemTypesFunctions.getItemTypes(
-				payload,
-				_this.$root.appId,
-				_this.$root.appSecret,
-				_this.$root.userToken
-			)
-				.then(response => {
-					_this.itemTypes = response.payload
-					if (response.payload.length === 0) {
-						this.noItemTypes = true
-					}
-				})
-				.catch(reason => {
-					_this.loadingItemTypes = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch the list of item types',
-						errorName: 'errorMessage',
-						vue: _this
-					})
-				})
-		},
-		/**
+    getItemTypes () {
+      var _this = this
+      let payload = { location_id: this.$root.activeLocation.id }
+      return ItemTypesFunctions.getItemTypes(
+        payload,
+        _this.$root.appId,
+        _this.$root.appSecret,
+        _this.$root.userToken
+      )
+        .then(response => {
+          _this.itemTypes = response.payload
+          if (response.payload.length === 0) {
+            this.noItemTypes = true
+          }
+        })
+        .catch(reason => {
+          _this.loadingItemTypes = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch the list of item types',
+            errorName: 'errorMessage',
+            vue: _this
+          })
+        })
+    },
+    /**
 		 * To update the item_type_id field of the new item
 		 * @function
 		 * @param {integer} id - The selected id
 		 * @returns {undefined}
 		 */
-		getItemTypeName (id) {
-			if (!id || !this.itemTypes.length) {
-				return 'n/a'
-			} else {
-				return this.itemTypes
-					.filter(type => type.id === id)
-					.map(type => type.name)[0]
-			}
-		},
-		/**
+    getItemTypeName (id) {
+      if (!id || !this.itemTypes.length) {
+        return 'n/a'
+      } else {
+        return this.itemTypes
+          .filter(type => type.id === id)
+          .map(type => type.name)[0]
+      }
+    },
+    /**
 		 * To update the item_type_id field of the new item
 		 * @function
 		 * @param {integer} id - The selected id
 		 * @returns {undefined}
 		 */
-		updateTaxClass (id) {
-			this.newItem.item_type_id = id
-		}
-	}
+    updateTaxClass (id) {
+      this.newItem.item_type_id = id
+    }
+  }
 }
 </script>
 <style scoped>
 .dd-handle {
-	white-space: nowrap; 
+	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }

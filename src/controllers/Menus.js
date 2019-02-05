@@ -4,7 +4,7 @@
 import GlobalFunctions from '../global'
 
 export default {
-	/**
+  /**
 	 * Call to pitapit API to get store menus for a given store id.
 	 * @function
 	 * @param {string} appId - The appId of the current application.
@@ -13,27 +13,27 @@ export default {
 	 * @param {object} params - An object containing filter parameters.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	getStoreMenus (appId, appSecret, storeId, params = {}) {
-		return new Promise(function (resolve, reject) {
-			GlobalFunctions.$ajax({
-				method: 'GET',
-				dataType: 'json',
-				url: '/app/menus/' + storeId,
-				data: params,
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader('app-id', appId)
-					xhr.setRequestHeader('app-secret', appSecret)
-				},
-				success: function (response) {
-					resolve(response)
-				},
-				error: function (error) {
-					reject(error)
-				}
-			})
-		})
-	},
-	/**
+  getStoreMenus (appId, appSecret, storeId, params = {}) {
+    return new Promise(function (resolve, reject) {
+      GlobalFunctions.$ajax({
+        method: 'GET',
+        dataType: 'json',
+        url: '/app/menus/' + storeId,
+        data: params,
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('app-id', appId)
+          xhr.setRequestHeader('app-secret', appSecret)
+        },
+        success: function (response) {
+          resolve(response)
+        },
+        error: function (error) {
+          reject(error)
+        }
+      })
+    })
+  },
+  /**
 	 * Call to pitapit API to create a new menu.
 	 * @function
 	 * @param {object} menu - The object of the menu to be created.
@@ -42,28 +42,28 @@ export default {
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	createNewMenu (menu, appId, appSecret, userToken) {
-		return new Promise(function (resolve, reject) {
-			GlobalFunctions.$ajax({
-				method: 'POST',
-				dataType: 'json',
-				url: '/app/menus/create',
-				data: menu,
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader('auth-token', userToken)
-					xhr.setRequestHeader('app-id', appId)
-					xhr.setRequestHeader('app-secret', appSecret)
-				},
-				success: function (response) {
-					resolve(response)
-				},
-				error: function (error) {
-					reject(error)
-				}
-			})
-		})
-	},
-	/**
+  createNewMenu (menu, appId, appSecret, userToken) {
+    return new Promise(function (resolve, reject) {
+      GlobalFunctions.$ajax({
+        method: 'POST',
+        dataType: 'json',
+        url: '/app/menus/create',
+        data: menu,
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('auth-token', userToken)
+          xhr.setRequestHeader('app-id', appId)
+          xhr.setRequestHeader('app-secret', appSecret)
+        },
+        success: function (response) {
+          resolve(response)
+        },
+        error: function (error) {
+          reject(error)
+        }
+      })
+    })
+  },
+  /**
 	 * Call to pitapit API to update a menu.
 	 * @function
 	 * @param {object} updatedMenu - The object of the menu to be updated.
@@ -72,28 +72,28 @@ export default {
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	updateMenu (updatedMenu, appId, appSecret, userToken) {
-		return new Promise(function (resolve, reject) {
-			GlobalFunctions.$ajax({
-				method: 'POST',
-				dataType: 'json',
-				url: '/app/menus/update/' + updatedMenu.id,
-				data: updatedMenu,
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader('auth-token', userToken)
-					xhr.setRequestHeader('app-id', appId)
-					xhr.setRequestHeader('app-secret', appSecret)
-				},
-				success: function (response) {
-					resolve(response)
-				},
-				error: function (error) {
-					reject(error)
-				}
-			})
-		})
-	},
-	/**
+  updateMenu (updatedMenu, appId, appSecret, userToken) {
+    return new Promise(function (resolve, reject) {
+      GlobalFunctions.$ajax({
+        method: 'POST',
+        dataType: 'json',
+        url: '/app/menus/update/' + updatedMenu.id,
+        data: updatedMenu,
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('auth-token', userToken)
+          xhr.setRequestHeader('app-id', appId)
+          xhr.setRequestHeader('app-secret', appSecret)
+        },
+        success: function (response) {
+          resolve(response)
+        },
+        error: function (error) {
+          reject(error)
+        }
+      })
+    })
+  },
+  /**
 	 * Call to pitapit API to duplicate a menu.
 	 * @function
 	 * @param {object} data - Object containing id of menu to duplicate and id of target location
@@ -102,28 +102,28 @@ export default {
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	duplicateMenu (data, appId, appSecret, userToken) {
-		return new Promise(function (resolve, reject) {
-			GlobalFunctions.$ajax({
-				method: 'POST',
-				dataType: 'json',
-				url: '/app/copy/menu_to_location',
-				data,
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader('auth-token', userToken)
-					xhr.setRequestHeader('app-id', appId)
-					xhr.setRequestHeader('app-secret', appSecret)
-				},
-				success: function (response) {
-					resolve(response)
-				},
-				error: function (error) {
-					reject(error)
-				}
-			})
-		})
-	},
-	/**
+  duplicateMenu (data, appId, appSecret, userToken) {
+    return new Promise(function (resolve, reject) {
+      GlobalFunctions.$ajax({
+        method: 'POST',
+        dataType: 'json',
+        url: '/app/copy/menu_to_location',
+        data,
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('auth-token', userToken)
+          xhr.setRequestHeader('app-id', appId)
+          xhr.setRequestHeader('app-secret', appSecret)
+        },
+        success: function (response) {
+          resolve(response)
+        },
+        error: function (error) {
+          reject(error)
+        }
+      })
+    })
+  },
+  /**
 	 * Call to pitapit API to copy a menu.
 	 * @function
 	 * @param {object} data - Object containing id of menu to copy and id of target locations
@@ -132,28 +132,28 @@ export default {
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	copyMenu (data, appId, appSecret, userToken) {
-		return new Promise(function (resolve, reject) {
-			GlobalFunctions.$ajax({
-				method: 'POST',
-				dataType: 'json',
-				url: '/app/sync/menu_to_locations',
-				data,
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader('auth-token', userToken)
-					xhr.setRequestHeader('app-id', appId)
-					xhr.setRequestHeader('app-secret', appSecret)
-				},
-				success: function (response) {
-					resolve(response)
-				},
-				error: function (error) {
-					reject(error)
-				}
-			})
-		})
-	},
-	/**
+  copyMenu (data, appId, appSecret, userToken) {
+    return new Promise(function (resolve, reject) {
+      GlobalFunctions.$ajax({
+        method: 'POST',
+        dataType: 'json',
+        url: '/app/sync/menu_to_locations',
+        data,
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('auth-token', userToken)
+          xhr.setRequestHeader('app-id', appId)
+          xhr.setRequestHeader('app-secret', appSecret)
+        },
+        success: function (response) {
+          resolve(response)
+        },
+        error: function (error) {
+          reject(error)
+        }
+      })
+    })
+  },
+  /**
 	 * Call to pitapit API to delete a menu.
 	 * @function
 	 * @param {object} menuId - The menuId to be deleted.
@@ -162,28 +162,28 @@ export default {
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	deleteMenu (menuId, appId, appSecret, userToken) {
-		return new Promise(function (resolve, reject) {
-			GlobalFunctions.$ajax({
-				method: 'DELETE',
-				dataType: 'json',
-				url: '/app/menus/' + menuId + '/delete',
-				data: {},
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader('auth-token', userToken)
-					xhr.setRequestHeader('app-id', appId)
-					xhr.setRequestHeader('app-secret', appSecret)
-				},
-				success: function (response) {
-					resolve(response)
-				},
-				error: function (error) {
-					reject(error)
-				}
-			})
-		})
-	},
-	/**
+  deleteMenu (menuId, appId, appSecret, userToken) {
+    return new Promise(function (resolve, reject) {
+      GlobalFunctions.$ajax({
+        method: 'DELETE',
+        dataType: 'json',
+        url: '/app/menus/' + menuId + '/delete',
+        data: {},
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('auth-token', userToken)
+          xhr.setRequestHeader('app-id', appId)
+          xhr.setRequestHeader('app-secret', appSecret)
+        },
+        success: function (response) {
+          resolve(response)
+        },
+        error: function (error) {
+          reject(error)
+        }
+      })
+    })
+  },
+  /**
 	 * Call to pitapit API to get the details of a menu.
 	 * @function
 	 * @param {integer} menuId - The id of the menu to get the details of.
@@ -191,27 +191,27 @@ export default {
 	 * @param {string} appSecret - The appSecret of the current application.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	getMenuDetails (menuId, appId, appSecret) {
-		return new Promise(function (resolve, reject) {
-			GlobalFunctions.$ajax({
-				method: 'GET',
-				dataType: 'json',
-				url: '/app/menus/show/' + menuId,
-				data: {},
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader('app-id', appId)
-					xhr.setRequestHeader('app-secret', appSecret)
-				},
-				success: function (response) {
-					resolve(response)
-				},
-				error: function (error) {
-					reject(error)
-				}
-			})
-		})
-	},
-	/**
+  getMenuDetails (menuId, appId, appSecret) {
+    return new Promise(function (resolve, reject) {
+      GlobalFunctions.$ajax({
+        method: 'GET',
+        dataType: 'json',
+        url: '/app/menus/show/' + menuId,
+        data: {},
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('app-id', appId)
+          xhr.setRequestHeader('app-secret', appSecret)
+        },
+        success: function (response) {
+          resolve(response)
+        },
+        error: function (error) {
+          reject(error)
+        }
+      })
+    })
+  },
+  /**
 	 * Call to pitapit API to get the details of a menu.
 	 * @function
 	 * @param {integer} menuId - The id of the menu to get the details of.
@@ -220,28 +220,28 @@ export default {
 	 * @param {string} userToken - The user's auth token of the current application.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	getAllItemsInMenu (menuId, appId, appSecret, userToken) {
-		return new Promise(function (resolve, reject) {
-			GlobalFunctions.$ajax({
-				method: 'GET',
-				dataType: 'json',
-				url: '/app/menus/' + menuId + '/items',
-				data: {},
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader('app-id', appId)
-					xhr.setRequestHeader('app-secret', appSecret)
-					xhr.setRequestHeader('auth-token', userToken)
-				},
-				success: function (response) {
-					resolve(response)
-				},
-				error: function (error) {
-					reject(error)
-				}
-			})
-		})
-	},
-	/**
+  getAllItemsInMenu (menuId, appId, appSecret, userToken) {
+    return new Promise(function (resolve, reject) {
+      GlobalFunctions.$ajax({
+        method: 'GET',
+        dataType: 'json',
+        url: '/app/menus/' + menuId + '/items',
+        data: {},
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('app-id', appId)
+          xhr.setRequestHeader('app-secret', appSecret)
+          xhr.setRequestHeader('auth-token', userToken)
+        },
+        success: function (response) {
+          resolve(response)
+        },
+        error: function (error) {
+          reject(error)
+        }
+      })
+    })
+  },
+  /**
 	 * Call to pitapit API to get add-on categories.
 	 * @function
 	 * @param {integer} locationId - The id of the location to get the categories for.
@@ -250,28 +250,28 @@ export default {
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	getAddOnCategories (locationId, appId, appSecret, userToken) {
-		return new Promise(function (resolve, reject) {
-			GlobalFunctions.$ajax({
-				method: 'GET',
-				dataType: 'json',
-				url: '/app/categories/' + locationId + '/getAddonCategories',
-				data: {},
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader('auth-token', userToken)
-					xhr.setRequestHeader('app-id', appId)
-					xhr.setRequestHeader('app-secret', appSecret)
-				},
-				success: function (response) {
-					resolve(response)
-				},
-				error: function (error) {
-					reject(error)
-				}
-			})
-		})
-	},
-	/**
+  getAddOnCategories (locationId, appId, appSecret, userToken) {
+    return new Promise(function (resolve, reject) {
+      GlobalFunctions.$ajax({
+        method: 'GET',
+        dataType: 'json',
+        url: '/app/categories/' + locationId + '/getAddonCategories',
+        data: {},
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('auth-token', userToken)
+          xhr.setRequestHeader('app-id', appId)
+          xhr.setRequestHeader('app-secret', appSecret)
+        },
+        success: function (response) {
+          resolve(response)
+        },
+        error: function (error) {
+          reject(error)
+        }
+      })
+    })
+  },
+  /**
 	 * Call to pitapit API to get add-on categories.
 	 * @function
 	 * @param {integer} menuId - The id of the menu to apply categories to.
@@ -281,28 +281,28 @@ export default {
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	updateAddOnCategories (menuId, categories, appId, appSecret, userToken) {
-		return new Promise(function (resolve, reject) {
-			GlobalFunctions.$ajax({
-				method: 'POST',
-				dataType: 'json',
-				url: '/app/menus/' + menuId + '/addCategoryAddons',
-				data: categories,
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader('auth-token', userToken)
-					xhr.setRequestHeader('app-id', appId)
-					xhr.setRequestHeader('app-secret', appSecret)
-				},
-				success: function (response) {
-					resolve(response)
-				},
-				error: function (error) {
-					reject(error)
-				}
-			})
-		})
-	},
-	/**
+  updateAddOnCategories (menuId, categories, appId, appSecret, userToken) {
+    return new Promise(function (resolve, reject) {
+      GlobalFunctions.$ajax({
+        method: 'POST',
+        dataType: 'json',
+        url: '/app/menus/' + menuId + '/addCategoryAddons',
+        data: categories,
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('auth-token', userToken)
+          xhr.setRequestHeader('app-id', appId)
+          xhr.setRequestHeader('app-secret', appSecret)
+        },
+        success: function (response) {
+          resolve(response)
+        },
+        error: function (error) {
+          reject(error)
+        }
+      })
+    })
+  },
+  /**
 	 * Call to pitapit API to get hours for a menu.
 	 * @function
 	 * @param {integer} menuId - The id of the menu to get hours for.
@@ -311,28 +311,28 @@ export default {
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	getMenuHours: function (menuId, appId, appSecret, userToken) {
-		return new Promise(function (resolve, reject) {
-			GlobalFunctions.$ajax({
-				method: 'GET',
-				dataType: 'json',
-				url: '/app/menuHours/forMenu/' + menuId,
-				data: {},
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader('auth-token', userToken)
-					xhr.setRequestHeader('app-id', appId)
-					xhr.setRequestHeader('app-secret', appSecret)
-				},
-				success: function (response) {
-					resolve(response)
-				},
-				error: function (error) {
-					reject(error)
-				}
-			})
-		})
-	},
-	/**
+  getMenuHours: function (menuId, appId, appSecret, userToken) {
+    return new Promise(function (resolve, reject) {
+      GlobalFunctions.$ajax({
+        method: 'GET',
+        dataType: 'json',
+        url: '/app/menuHours/forMenu/' + menuId,
+        data: {},
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('auth-token', userToken)
+          xhr.setRequestHeader('app-id', appId)
+          xhr.setRequestHeader('app-secret', appSecret)
+        },
+        success: function (response) {
+          resolve(response)
+        },
+        error: function (error) {
+          reject(error)
+        }
+      })
+    })
+  },
+  /**
 	 * Call to pitapit API to create hours for a menu.
 	 * @function
 	 * @param {object} hours - The object containing hours to add.
@@ -341,28 +341,28 @@ export default {
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	createMenuHours: function (hours, appId, appSecret, userToken) {
-		return new Promise(function (resolve, reject) {
-			GlobalFunctions.$ajax({
-				method: 'POST',
-				dataType: 'json',
-				url: '/app/menuHours/create',
-				data: hours,
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader('auth-token', userToken)
-					xhr.setRequestHeader('app-id', appId)
-					xhr.setRequestHeader('app-secret', appSecret)
-				},
-				success: function (response) {
-					resolve(response)
-				},
-				error: function (error) {
-					reject(error)
-				}
-			})
-		})
-	},
-	/**
+  createMenuHours: function (hours, appId, appSecret, userToken) {
+    return new Promise(function (resolve, reject) {
+      GlobalFunctions.$ajax({
+        method: 'POST',
+        dataType: 'json',
+        url: '/app/menuHours/create',
+        data: hours,
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('auth-token', userToken)
+          xhr.setRequestHeader('app-id', appId)
+          xhr.setRequestHeader('app-secret', appSecret)
+        },
+        success: function (response) {
+          resolve(response)
+        },
+        error: function (error) {
+          reject(error)
+        }
+      })
+    })
+  },
+  /**
 	 * Call to pitapit API to update hours for a menu.
 	 * @function
 	 * @param {object} hours - The object containing hours to add.
@@ -371,47 +371,47 @@ export default {
 	 * @param {string} userToken - The token of the current logged in user.
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	updateMenuHours: function (hours, appId, appSecret, userToken) {
-		return new Promise(function (resolve, reject) {
-			GlobalFunctions.$ajax({
-				method: 'POST',
-				dataType: 'json',
-				url: '/app/menuHours/update/' + hours.id,
-				data: hours,
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader('auth-token', userToken)
-					xhr.setRequestHeader('app-id', appId)
-					xhr.setRequestHeader('app-secret', appSecret)
-				},
-				success: function (response) {
-					resolve(response)
-				},
-				error: function (error) {
-					reject(error)
-				}
-			})
-		})
-	},
-	/**
+  updateMenuHours: function (hours, appId, appSecret, userToken) {
+    return new Promise(function (resolve, reject) {
+      GlobalFunctions.$ajax({
+        method: 'POST',
+        dataType: 'json',
+        url: '/app/menuHours/update/' + hours.id,
+        data: hours,
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('auth-token', userToken)
+          xhr.setRequestHeader('app-id', appId)
+          xhr.setRequestHeader('app-secret', appSecret)
+        },
+        success: function (response) {
+          resolve(response)
+        },
+        error: function (error) {
+          reject(error)
+        }
+      })
+    })
+  },
+  /**
 	 * Call to API to set menu hours to be the same as store hours.
 	 * @function
 	 * @param {integer} menuId - ID of menu to copy store hours to
 	 * @returns {object} A promise that will return either a success object or an error object.
 	 */
-	copyStoreHoursToMenuHours: function (menuId) {
-		return new Promise(function (resolve, reject) {
-			GlobalFunctions.$ajax({
-				method: 'GET',
-				dataType: 'json',
-				url: '/app/menuHours/copyStoreHoursToMenuHours/' + menuId,
-				data: {},
-				success: function (response) {
-					resolve(response)
-				},
-				error: function (error) {
-					reject(error)
-				}
-			})
-		})
-	}
+  copyStoreHoursToMenuHours: function (menuId) {
+    return new Promise(function (resolve, reject) {
+      GlobalFunctions.$ajax({
+        method: 'GET',
+        dataType: 'json',
+        url: '/app/menuHours/copyStoreHoursToMenuHours/' + menuId,
+        data: {},
+        success: function (response) {
+          resolve(response)
+        },
+        error: function (error) {
+          reject(error)
+        }
+      })
+    })
+  }
 }

@@ -238,15 +238,15 @@
 </template>
 
 <script>
-import Breadcrumb from "@/components/modules/Breadcrumb";
-import NoResults from "@/components/modules/NoResults";
-import LoadingScreen from "@/components/modules/LoadingScreen";
-import ModifierTiersFunctions from "@/controllers/ModifierTiers";
-import EditModifierTier from "@/components/app/MenuManager/ModifierTiers/EditModifierTier";
-import DeleteModifierTier from "@/components/app/MenuManager/ModifierTiers/DeleteModifierTier";
-import AssignModifiers from "@/components/app/MenuManager/ModifierTiers/AssignModifiersToModifierTier";
-import ApplyModifierTierToMenuItems from "@/components/app/MenuManager/ModifierTiers/ApplyModifierTierToMenuItems";
-import ajaxErrorHandler from "@/controllers/ErrorController";
+import Breadcrumb from '@/components/modules/Breadcrumb'
+import NoResults from '@/components/modules/NoResults'
+import LoadingScreen from '@/components/modules/LoadingScreen'
+import ModifierTiersFunctions from '@/controllers/ModifierTiers'
+import EditModifierTier from '@/components/app/MenuManager/ModifierTiers/EditModifierTier'
+import DeleteModifierTier from '@/components/app/MenuManager/ModifierTiers/DeleteModifierTier'
+import AssignModifiers from '@/components/app/MenuManager/ModifierTiers/AssignModifiersToModifierTier'
+import ApplyModifierTierToMenuItems from '@/components/app/MenuManager/ModifierTiers/ApplyModifierTierToMenuItems'
+import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
   components: {
@@ -258,21 +258,21 @@ export default {
     DeleteModifierTier,
     ApplyModifierTierToMenuItems
   },
-  data() {
+  data () {
     return {
       breadcrumbArray: [
-        { name: "Menu Manager", link: false },
-        { name: "Modifier Tiers", link: false }
+        { name: 'Menu Manager', link: false },
+        { name: 'Modifier Tiers', link: false }
       ],
       createModifierTierCollapse: true,
-      createErrorMessage: "",
+      createErrorMessage: '',
       newModifierTier: {
-        name: ""
+        name: ''
       },
       loadingModifierTiers: false,
-      listErrorMessage: "",
+      listErrorMessage: '',
       modifierTiers: [],
-      animated: "",
+      animated: '',
       showAssignModifiersModal: false,
       tierToAssignTo: {},
       showEditTierModal: false,
@@ -281,17 +281,17 @@ export default {
       tierToApplyToMenuItems: {},
       showDeleteTierModal: false,
       tierToDelete: {}
-    };
-  },
-  computed: {
-    corporate() {
-      return (
-        this.$root.activeLocation && this.$root.activeLocation.is_corporate
-      );
     }
   },
-  created() {
-    this.getModifierTiers();
+  computed: {
+    corporate () {
+      return (
+        this.$root.activeLocation && this.$root.activeLocation.is_corporate
+      )
+    }
+  },
+  created () {
+    this.getModifierTiers()
   },
   methods: {
     /**
@@ -299,25 +299,25 @@ export default {
      * @function
      * @returns {object} - A promise that will either return an error message or perform an action.
      */
-    getModifierTiers() {
-      this.loadingModifierTiers = true;
-      var modifierTiersVue = this;
+    getModifierTiers () {
+      this.loadingModifierTiers = true
+      var modifierTiersVue = this
       return ModifierTiersFunctions.getModifierTiers()
         .then(response => {
           modifierTiersVue.modifierTiers = response.payload.sort(
             (a, b) => a.name > b.name
-          );
-          modifierTiersVue.loadingModifierTiers = false;
+          )
+          modifierTiersVue.loadingModifierTiers = false
         })
         .catch(reason => {
-          modifierTiersVue.loadingModifierTiers = false;
+          modifierTiersVue.loadingModifierTiers = false
           ajaxErrorHandler({
             reason,
             errorText: "We couldn't fetch Modifier Tiers",
-            errorName: "listErrorMessage",
+            errorName: 'listErrorMessage',
             vue: modifierTiersVue
-          });
-        });
+          })
+        })
     },
     /**
      * To clear an error.
@@ -325,26 +325,26 @@ export default {
      * @param {string} name - Name of the variable to clear
      * @returns {undefined}
      */
-    clearError(name) {
-      this[name] = "";
+    clearError (name) {
+      this[name] = ''
     },
     /**
      * To toggle the create menu panel
      * @function
      * @returns {undefined}
      */
-    toggleCreateModifierTierPanel() {
-      this.createModifierTierCollapse = !this.createModifierTierCollapse;
+    toggleCreateModifierTierPanel () {
+      this.createModifierTierCollapse = !this.createModifierTierCollapse
     },
     /**
      * To clear the new modifier tier form.
      * @function
      * @returns {undefined}
      */
-    clearNewModifierTier() {
+    clearNewModifierTier () {
       this.newModifierTier = {
-        name: ""
-      };
+        name: ''
+      }
     },
 
     /**
@@ -352,53 +352,53 @@ export default {
      * @function
      * @returns {object} A promise that will validate the input form
      */
-    validateModifierTierData() {
-      var modifierTiersVue = this;
-      return new Promise(function(resolve, reject) {
+    validateModifierTierData () {
+      var modifierTiersVue = this
+      return new Promise(function (resolve, reject) {
         if (!modifierTiersVue.newModifierTier.name.length) {
-          reject("Modifier tier name cannot be blank");
+          reject('Modifier tier name cannot be blank')
         }
-        resolve("Hurray");
-      });
+        resolve('Hurray')
+      })
     },
     /**
      * To create a new modifier tier.
      * @function
      * @returns {object} - A promise that will either return an error message or perform an action.
      */
-    createNewModifierTier() {
-      var modifierTiersVue = this;
-      modifierTiersVue.clearError("createErrorMessage");
+    createNewModifierTier () {
+      var modifierTiersVue = this
+      modifierTiersVue.clearError('createErrorMessage')
       const payload = {
         ...this.newModifierTier,
         location_id: this.$root.activeLocation.id
-      };
+      }
 
       return modifierTiersVue
         .validateModifierTierData()
         .then(response => {
           ModifierTiersFunctions.createModifierTier(payload)
             .then(response => {
-              modifierTiersVue.confirmCreated(response.payload);
-              modifierTiersVue.addMenuTier(response.payload);
+              modifierTiersVue.confirmCreated(response.payload)
+              modifierTiersVue.addMenuTier(response.payload)
             })
             .catch(reason => {
               ajaxErrorHandler({
                 reason,
                 errorText: "We couldn't create the tier",
-                errorName: "createErrorMessage",
+                errorName: 'createErrorMessage',
                 vue: modifierTiersVue
-              });
-            });
+              })
+            })
         })
         .catch(reason => {
-          modifierTiersVue.createErrorMessage = reason;
+          modifierTiersVue.createErrorMessage = reason
           modifierTiersVue.$scrollTo(
             modifierTiersVue.$refs.createErrorMessage,
             1000,
             { offset: -50 }
-          );
-        });
+          )
+        })
     },
     /**
      * To notify user of the outcome of the call
@@ -406,22 +406,22 @@ export default {
      * @param {object} payload - The payload object from the server response
      * @returns {undefined}
      */
-    confirmCreated(payload = {}) {
-      let title = "Success";
-      let text = "The Modifier Tier has been created";
-      let type = "success";
+    confirmCreated (payload = {}) {
+      let title = 'Success'
+      let text = 'The Modifier Tier has been created'
+      let type = 'success'
 
       if (payload.pending_approval) {
-        title = "Approval Required";
-        text = "The Modifier Tier has been sent for approval";
-        type = "info";
+        title = 'Approval Required'
+        text = 'The Modifier Tier has been sent for approval'
+        type = 'info'
       }
 
       this.$swal({
         title,
         text,
         type
-      });
+      })
     },
     /**
      * To add the newly created tier to the list.
@@ -429,10 +429,10 @@ export default {
      * @param {object} tier - The new modifier tier object
      * @returns {undefined}
      */
-    addMenuTier(tier) {
-      this.modifierTiers.push(tier);
-      this.modifierTiers.sort((a, b) => a.name > b.name);
-      this.clearNewModifierTier();
+    addMenuTier (tier) {
+      this.modifierTiers.push(tier)
+      this.modifierTiers.sort((a, b) => a.name > b.name)
+      this.clearNewModifierTier()
     },
     /**
      * To display the modal for editing a modifier tier.
@@ -440,17 +440,17 @@ export default {
      * @param {object} tier - The selected modifier tier.
      * @returns {undefined}
      */
-    openEditModal(tier) {
-      this.tierToEdit = tier;
-      this.showEditTierModal = true;
+    openEditModal (tier) {
+      this.tierToEdit = tier
+      this.showEditTierModal = true
     },
     /**
      * To close the modal for editing a modifier tier.
      * @function
      * @returns {undefined}
      */
-    closeEditModal() {
-      this.showEditTierModal = false;
+    closeEditModal () {
+      this.showEditTierModal = false
     },
     /**
      * To update a tier.
@@ -458,33 +458,33 @@ export default {
      * @param {object} payload - The payload object from the server response
      * @returns {undefined}
      */
-    updateTier(payload = {}) {
-      this.tierToEdit = payload;
+    updateTier (payload = {}) {
+      this.tierToEdit = payload
       this.modifierTiers.forEach(t => {
         if (t.id === payload.id) {
-          t.name = payload.name;
+          t.name = payload.name
         }
-      });
-      this.closeEditModal();
+      })
+      this.closeEditModal()
 
-      let title = "Success";
-      let text = "The Modifier Tier has been saved";
-      let type = "success";
+      let title = 'Success'
+      let text = 'The Modifier Tier has been saved'
+      let type = 'success'
 
       if (payload.pending_approval) {
-        title = "Approval Required";
-        text = "The changes have been sent for approval";
-        type = "info";
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
       }
 
       this.$swal({
         title,
         text,
         type
-      });
+      })
 
       if (!payload.pending_approval) {
-        this.animated = `tier-${payload.id}`;
+        this.animated = `tier-${payload.id}`
       }
     },
     /**
@@ -493,9 +493,9 @@ export default {
      * @param {object} tier - The selected modifier tier.
      * @returns {undefined}
      */
-    openAssignModal(tier) {
-      this.tierToAssignTo = tier;
-      this.showAssignModifiersModal = true;
+    openAssignModal (tier) {
+      this.tierToAssignTo = tier
+      this.showAssignModifiersModal = true
     },
     /**
      * To notify user of the outcome of the call
@@ -503,32 +503,32 @@ export default {
      * @param {object} payload - The payload object from the server response
      * @returns {undefined}
      */
-    confirmAssigned(payload = {}) {
-      this.closeAssignModal();
+    confirmAssigned (payload = {}) {
+      this.closeAssignModal()
 
-      let title = "Success";
-      let text = "The Modifiers have been saved";
-      let type = "success";
+      let title = 'Success'
+      let text = 'The Modifiers have been saved'
+      let type = 'success'
 
       if (payload.pending_approval) {
-        title = "Approval Required";
-        text = "The changes have been sent for approval";
-        type = "info";
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
       }
 
       this.$swal({
         title,
         text,
         type
-      });
+      })
     },
     /**
      * To close the modal for assigning modifiers to a menu tier.
      * @function
      * @returns {undefined}
      */
-    closeAssignModal() {
-      this.showAssignModifiersModal = false;
+    closeAssignModal () {
+      this.showAssignModifiersModal = false
     },
     /**
      * To display the modal for applying a modifier tier to menu items.
@@ -536,9 +536,9 @@ export default {
      * @param {object} tier - The selected modifier tier.
      * @returns {undefined}
      */
-    openApplyToMenuItemsModal(tier) {
-      this.tierToApplyToMenuItems = tier;
-      this.showApplyToMenuItemsModal = true;
+    openApplyToMenuItemsModal (tier) {
+      this.tierToApplyToMenuItems = tier
+      this.showApplyToMenuItemsModal = true
     },
     /**
      * To notify user of the outcome of the call
@@ -546,32 +546,32 @@ export default {
      * @param {object} payload - The payload object from the server response
      * @returns {undefined}
      */
-    confirmAppliedToMenuItems(payload = {}) {
-      this.closeApplyToMenuItemsModal();
+    confirmAppliedToMenuItems (payload = {}) {
+      this.closeApplyToMenuItemsModal()
 
-      let title = "Success";
-      let text = "The Modifier Tiers have been saved";
-      let type = "success";
+      let title = 'Success'
+      let text = 'The Modifier Tiers have been saved'
+      let type = 'success'
 
       if (payload.pending_approval) {
-        title = "Approval Required";
-        text = "The changes have been sent for approval";
-        type = "info";
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
       }
 
       this.$swal({
         title,
         text,
         type
-      });
+      })
     },
     /**
      * To close the modal for applying a modifier tier to menu items.
      * @function
      * @returns {undefined}
      */
-    closeApplyToMenuItemsModal() {
-      this.showApplyToMenuItemsModal = false;
+    closeApplyToMenuItemsModal () {
+      this.showApplyToMenuItemsModal = false
     },
     /**
      * To display the modal for deleting a modifier tier.
@@ -579,17 +579,17 @@ export default {
      * @param {object} tier - The selected modifier tier.
      * @returns {undefined}
      */
-    openDeleteModal(tier) {
-      this.tierToDelete = tier;
-      this.showDeleteTierModal = true;
+    openDeleteModal (tier) {
+      this.tierToDelete = tier
+      this.showDeleteTierModal = true
     },
     /**
      * To close the modal for deleting a modifier tier.
      * @function
      * @returns {undefined}
      */
-    closeDeleteModal() {
-      this.showDeleteTierModal = false;
+    closeDeleteModal () {
+      this.showDeleteTierModal = false
     },
     /**
      * To remove a tier and notify user of the outcome of the call
@@ -597,33 +597,33 @@ export default {
      * @param {object} payload - The payload object from the server response
      * @returns {undefined}
      */
-    removeTier(payload = {}) {
-      this.closeDeleteModal();
+    removeTier (payload = {}) {
+      this.closeDeleteModal()
 
-      let title = "Success";
-      let text = "The Modifier has been deleted";
-      let type = "success";
+      let title = 'Success'
+      let text = 'The Modifier has been deleted'
+      let type = 'success'
 
       if (payload.pending_approval) {
-        title = "Approval Required";
-        text = "The removal has been sent for approval";
-        type = "info";
+        title = 'Approval Required'
+        text = 'The removal has been sent for approval'
+        type = 'info'
       }
 
       this.$swal({
         title,
         text,
         type
-      });
+      })
 
       if (!payload.pending_approval) {
         this.modifierTiers = this.modifierTiers.filter(
           t => t.id !== this.tierToDelete.id
-        );
+        )
       }
     }
   }
-};
+}
 </script>
 
 <style scoped>

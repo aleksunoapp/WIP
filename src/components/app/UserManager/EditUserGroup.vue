@@ -193,288 +193,288 @@ import UserGroupsFunctions from '../../../controllers/UserGroups'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Modal,
-		Dropdown
-	},
-	props: {
-		passedGroup: {
-			type: Object
-		}
-	},
-	data () {
-		return {
-			showEditGroupModal: false,
-			errorMessage: '',
-			updating: false,
-			city: '',
-			province: '',
-			groupToBeEdited: {
-				brand_id: 0,
-				created_at: '',
-				created_by: 0,
-				description: '',
-				id: 0,
-				name: '',
-				rules: [],
-				updated_at: '',
-				updated_by: 0
-			}
-		}
-	},
-	computed: {
-		selectedSignUpDate () {
-			let text = 'Select sign-up date'
-			if (this.groupToBeEdited.rules.length) {
-				for (let i = 0; i < this.groupToBeEdited.rules.length; i++) {
-					if (this.groupToBeEdited.rules[i].parameter === 'sign-up-date') {
-						let period = this.groupToBeEdited.rules[i].text.replace(/\D/g, '')
-						let fromDate = new Date(this.groupToBeEdited.rules[i].value)
-						fromDate.setMinutes(fromDate.getMinutes() + fromDate.getTimezoneOffset())
-						let toDate = new Date(this.groupToBeEdited.rules[i].value)
-						toDate.setMinutes(toDate.getMinutes() + toDate.getTimezoneOffset())
-						fromDate = `${fromDate.getMonth() + 1}/${fromDate.getDate()}/${fromDate.getFullYear()}`
-						toDate.setDate(toDate.getDate() + Number(period))
-						toDate = `${toDate.getMonth() + 1}/${toDate.getDate()}/${toDate.getFullYear()}`
-						text = `Signed up between ${fromDate} and ${toDate}`
-					}
-				}
-			}
-			return text
-		},
-		selectedTotalOrders () {
-			let text = 'Select total orders'
-			if (this.groupToBeEdited.rules.length) {
-				for (let i = 0; i < this.groupToBeEdited.rules.length; i++) {
-					if (this.groupToBeEdited.rules[i].parameter === 'total-orders') {
-						text = this.groupToBeEdited.rules[i].text
-					}
-				}
-			}
-			return text
-		}
-	},
-	mounted () {
-		this.groupToBeEdited.brand_id = this.passedGroup.brand_id
-		this.groupToBeEdited.created_at = this.passedGroup.created_at
-		this.groupToBeEdited.created_by = this.passedGroup.created_by
-		this.groupToBeEdited.description = this.passedGroup.description
-		this.groupToBeEdited.id = this.passedGroup.id
-		this.groupToBeEdited.name = this.passedGroup.name
-		this.groupToBeEdited.rules = this.passedGroup.rules
-		this.groupToBeEdited.updated_at = this.passedGroup.updated_at
-		this.groupToBeEdited.updated_by = this.passedGroup.updated_by
-		this.groupToBeEdited.rules = this.passedGroup.rules
+  components: {
+    Modal,
+    Dropdown
+  },
+  props: {
+    passedGroup: {
+      type: Object
+    }
+  },
+  data () {
+    return {
+      showEditGroupModal: false,
+      errorMessage: '',
+      updating: false,
+      city: '',
+      province: '',
+      groupToBeEdited: {
+        brand_id: 0,
+        created_at: '',
+        created_by: 0,
+        description: '',
+        id: 0,
+        name: '',
+        rules: [],
+        updated_at: '',
+        updated_by: 0
+      }
+    }
+  },
+  computed: {
+    selectedSignUpDate () {
+      let text = 'Select sign-up date'
+      if (this.groupToBeEdited.rules.length) {
+        for (let i = 0; i < this.groupToBeEdited.rules.length; i++) {
+          if (this.groupToBeEdited.rules[i].parameter === 'sign-up-date') {
+            let period = this.groupToBeEdited.rules[i].text.replace(/\D/g, '')
+            let fromDate = new Date(this.groupToBeEdited.rules[i].value)
+            fromDate.setMinutes(fromDate.getMinutes() + fromDate.getTimezoneOffset())
+            let toDate = new Date(this.groupToBeEdited.rules[i].value)
+            toDate.setMinutes(toDate.getMinutes() + toDate.getTimezoneOffset())
+            fromDate = `${fromDate.getMonth() + 1}/${fromDate.getDate()}/${fromDate.getFullYear()}`
+            toDate.setDate(toDate.getDate() + Number(period))
+            toDate = `${toDate.getMonth() + 1}/${toDate.getDate()}/${toDate.getFullYear()}`
+            text = `Signed up between ${fromDate} and ${toDate}`
+          }
+        }
+      }
+      return text
+    },
+    selectedTotalOrders () {
+      let text = 'Select total orders'
+      if (this.groupToBeEdited.rules.length) {
+        for (let i = 0; i < this.groupToBeEdited.rules.length; i++) {
+          if (this.groupToBeEdited.rules[i].parameter === 'total-orders') {
+            text = this.groupToBeEdited.rules[i].text
+          }
+        }
+      }
+      return text
+    }
+  },
+  mounted () {
+    this.groupToBeEdited.brand_id = this.passedGroup.brand_id
+    this.groupToBeEdited.created_at = this.passedGroup.created_at
+    this.groupToBeEdited.created_by = this.passedGroup.created_by
+    this.groupToBeEdited.description = this.passedGroup.description
+    this.groupToBeEdited.id = this.passedGroup.id
+    this.groupToBeEdited.name = this.passedGroup.name
+    this.groupToBeEdited.rules = this.passedGroup.rules
+    this.groupToBeEdited.updated_at = this.passedGroup.updated_at
+    this.groupToBeEdited.updated_by = this.passedGroup.updated_by
+    this.groupToBeEdited.rules = this.passedGroup.rules
 
-		const cityIndex = this.passedGroup.rules.findIndex(rule => rule.parameter === 'city')
-		const provinceIndex = this.passedGroup.rules.findIndex(rule => rule.parameter === 'province')
-		if (cityIndex !== -1) {
-			this.city = this.passedGroup.rules[cityIndex].value
-		}
-		if (provinceIndex !== -1) {
-			this.province = this.passedGroup.rules[provinceIndex].value
-		}
+    const cityIndex = this.passedGroup.rules.findIndex(rule => rule.parameter === 'city')
+    const provinceIndex = this.passedGroup.rules.findIndex(rule => rule.parameter === 'province')
+    if (cityIndex !== -1) {
+      this.city = this.passedGroup.rules[cityIndex].value
+    }
+    if (provinceIndex !== -1) {
+      this.province = this.passedGroup.rules[provinceIndex].value
+    }
 
-		this.showEditGroupModal = true
-	},
-	methods: {
-		/**
+    this.showEditGroupModal = true
+  },
+  methods: {
+    /**
 		 * To update the total orders rule of the group.
 		 * @function
 		 * @param {integer} days - The number of days
 		 * @returns {undefined}
 		 */
-		updateSignUpDate (days) {
-			if (this.$root.permissions['user_manager user_groups update']) {
-				let rule = {
-					parameter: 'sign-up-date',
-					value: this.daysBeforeToday(days),
-					operator: '>',
-					text: `Signed up in the last ${days} days`
-				}
+    updateSignUpDate (days) {
+      if (this.$root.permissions['user_manager user_groups update']) {
+        let rule = {
+          parameter: 'sign-up-date',
+          value: this.daysBeforeToday(days),
+          operator: '>',
+          text: `Signed up in the last ${days} days`
+        }
 
-				for (let i = 0; i < this.groupToBeEdited.rules.length; i++) {
-					if (this.groupToBeEdited.rules[i].parameter === 'sign-up-date') {
-						this.groupToBeEdited.rules.splice(i, 1)
-					}
-				}
+        for (let i = 0; i < this.groupToBeEdited.rules.length; i++) {
+          if (this.groupToBeEdited.rules[i].parameter === 'sign-up-date') {
+            this.groupToBeEdited.rules.splice(i, 1)
+          }
+        }
 
-				this.groupToBeEdited.rules.push(rule)
-			}
-		},
-		/**
+        this.groupToBeEdited.rules.push(rule)
+      }
+    },
+    /**
 		 * To update the total orders rule of the group.
 		 * @function
 		 * @param {array} argsArray - An array of [integer, string] where integer is the number of orders and string is the operator
 		 * @returns {undefined}
 		 */
-		updateTotalOrders (argsArray) {
-			if (this.$root.permissions['user_manager user_groups update']) {
-				let rule = {
-					parameter: 'total-orders',
-					value: argsArray[0],
-					operator: argsArray[1],
-					text: `${argsArray[1] === '<' ? 'Less' : 'More'} than ${
-						argsArray[0]
-					} orders`
-				}
+    updateTotalOrders (argsArray) {
+      if (this.$root.permissions['user_manager user_groups update']) {
+        let rule = {
+          parameter: 'total-orders',
+          value: argsArray[0],
+          operator: argsArray[1],
+          text: `${argsArray[1] === '<' ? 'Less' : 'More'} than ${
+            argsArray[0]
+          } orders`
+        }
 
-				for (let i = 0; i < this.groupToBeEdited.rules.length; i++) {
-					if (this.groupToBeEdited.rules[i].parameter === 'total-orders') {
-						this.groupToBeEdited.rules.splice(i, 1)
-					}
-				}
+        for (let i = 0; i < this.groupToBeEdited.rules.length; i++) {
+          if (this.groupToBeEdited.rules[i].parameter === 'total-orders') {
+            this.groupToBeEdited.rules.splice(i, 1)
+          }
+        }
 
-				this.groupToBeEdited.rules.push(rule)
-			}
-		},
-		daysBeforeToday (days) {
-			let date = new Date(new Date().setDate(new Date().getDate() - days))
-			let year = date.getFullYear()
-			let day = date.getDate()
-			let month = date.getMonth() + 1
-			if (month < 10) {
-				month = '0' + month
-			}
-			if (day < 10) {
-				day = '0' + day
-			}
-			return year + '-' + month + '-' + day
-		},
-		updateRule (parameter, value, operator, text) {
-			let val = ''
-			if (parameter === 'sign-up-date') {
-				val = this.daysBeforeToday(value)
-			} else {
-				val = value
-			}
-			let rule = {
-				parameter: parameter,
-				value: val,
-				operator: operator,
-				text: text
-			}
+        this.groupToBeEdited.rules.push(rule)
+      }
+    },
+    daysBeforeToday (days) {
+      let date = new Date(new Date().setDate(new Date().getDate() - days))
+      let year = date.getFullYear()
+      let day = date.getDate()
+      let month = date.getMonth() + 1
+      if (month < 10) {
+        month = '0' + month
+      }
+      if (day < 10) {
+        day = '0' + day
+      }
+      return year + '-' + month + '-' + day
+    },
+    updateRule (parameter, value, operator, text) {
+      let val = ''
+      if (parameter === 'sign-up-date') {
+        val = this.daysBeforeToday(value)
+      } else {
+        val = value
+      }
+      let rule = {
+        parameter: parameter,
+        value: val,
+        operator: operator,
+        text: text
+      }
 
-			for (let i = 0; i < this.groupToBeEdited.rules.length; i++) {
-				if (this.groupToBeEdited.rules[i].parameter === parameter) {
-					this.groupToBeEdited.rules.splice(i, 1)
-				}
-			}
+      for (let i = 0; i < this.groupToBeEdited.rules.length; i++) {
+        if (this.groupToBeEdited.rules[i].parameter === parameter) {
+          this.groupToBeEdited.rules.splice(i, 1)
+        }
+      }
 
-			this.groupToBeEdited.rules.push(rule)
-		},
-		/**
+      this.groupToBeEdited.rules.push(rule)
+    },
+    /**
 		 * To check if the item data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateGroupData () {
-			var editGroupVue = this
-			return new Promise(function (resolve, reject) {
-				if (!editGroupVue.groupToBeEdited.name.length) {
-					reject('Group name cannot be blank')
-				} else if (!editGroupVue.groupToBeEdited.description.length) {
-					reject('Group description cannot be blank')
-				} else if (!editGroupVue.groupToBeEdited.rules.length) {
-					reject('Select at least one rule')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateGroupData () {
+      var editGroupVue = this
+      return new Promise(function (resolve, reject) {
+        if (!editGroupVue.groupToBeEdited.name.length) {
+          reject('Group name cannot be blank')
+        } else if (!editGroupVue.groupToBeEdited.description.length) {
+          reject('Group description cannot be blank')
+        } else if (!editGroupVue.groupToBeEdited.rules.length) {
+          reject('Select at least one rule')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To update the group and close the modal.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		updateGroup () {
-			var editGroupVue = this
-			editGroupVue.clearError()
+    updateGroup () {
+      var editGroupVue = this
+      editGroupVue.clearError()
 
-			return editGroupVue
-				.validateGroupData()
-				.then(response => {
-					editGroupVue.updating = true
-					UserGroupsFunctions.updateGroup(
-						editGroupVue.groupToBeEdited,
-						editGroupVue.$root.appId,
-						editGroupVue.$root.appSecret,
-						editGroupVue.$root.userToken
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								this.closeModalAndUpdate()
-								this.showEditSuccess(response.payload)
-							} else {
-								editGroupVue.errorMessage = response.message
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not update the group',
-								errorName: 'errorMessage',
-								vue: editGroupVue,
-								containerRef: 'modal'
-							})
-						})
-						.finally(() => {
-							editGroupVue.updating = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					editGroupVue.errorMessage = reason
-					window.scrollTo(0, 0)
-					throw reason
-				})
-		},
-		/**
+      return editGroupVue
+        .validateGroupData()
+        .then(response => {
+          editGroupVue.updating = true
+          UserGroupsFunctions.updateGroup(
+            editGroupVue.groupToBeEdited,
+            editGroupVue.$root.appId,
+            editGroupVue.$root.appSecret,
+            editGroupVue.$root.userToken
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                this.closeModalAndUpdate()
+                this.showEditSuccess(response.payload)
+              } else {
+                editGroupVue.errorMessage = response.message
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not update the group',
+                errorName: 'errorMessage',
+                vue: editGroupVue,
+                containerRef: 'modal'
+              })
+            })
+            .finally(() => {
+              editGroupVue.updating = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          editGroupVue.errorMessage = reason
+          window.scrollTo(0, 0)
+          throw reason
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The User Group has been saved'
-			let type = 'success'
+    showEditSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The User Group has been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The User Group has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The User Group has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('closeEditGroupModal')
-		},
-		/**
+    closeModal () {
+      this.$emit('closeEditGroupModal')
+    },
+    /**
 		 * To close the modal and emit the updated folder object to the parent.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModalAndUpdate () {
-			this.$emit('updateGroup', this.groupToBeEdited)
-		}
-	}
+    closeModalAndUpdate () {
+      this.$emit('updateGroup', this.groupToBeEdited)
+    }
+  }
 }
 </script>

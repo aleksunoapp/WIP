@@ -493,528 +493,528 @@ import ResourcePicker from '../../modules/ResourcePicker'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Breadcrumb,
-		Modal,
-		LoadingScreen,
-		EditCategory,
-		DeleteCategory,
-		AddSubCategory,
-		EditSubCategory,
-		DeleteSubCategory,
-		NoResults,
-		ResourcePicker,
-		CategoryHours
-	},
-	data () {
-		return {
-			breadcrumbArray: [
-				{ name: 'Menu Manager', link: false },
-				{ name: 'Menus', link: '/app/menu_manager/menus' },
-				{ name: 'Categories', link: false }
-			],
-			editCategoryModalActive: false,
-			displayCategoryData: false,
-			addSubCategoryModalActive: false,
-			editSubCategoryModalActive: false,
-			deleteCategoryModalActive: false,
-			deleteSubCategoryModalActive: false,
-			menuDetails: {},
-			listErrorMessage: '',
-			menuCategories: [],
-			errorMessage: '',
-			selectedCategoryId: 0,
-			customText:
+  components: {
+    Breadcrumb,
+    Modal,
+    LoadingScreen,
+    EditCategory,
+    DeleteCategory,
+    AddSubCategory,
+    EditSubCategory,
+    DeleteSubCategory,
+    NoResults,
+    ResourcePicker,
+    CategoryHours
+  },
+  data () {
+    return {
+      breadcrumbArray: [
+        { name: 'Menu Manager', link: false },
+        { name: 'Menus', link: '/app/menu_manager/menus' },
+        { name: 'Categories', link: false }
+      ],
+      editCategoryModalActive: false,
+      displayCategoryData: false,
+      addSubCategoryModalActive: false,
+      editSubCategoryModalActive: false,
+      deleteCategoryModalActive: false,
+      deleteSubCategoryModalActive: false,
+      menuDetails: {},
+      listErrorMessage: '',
+      menuCategories: [],
+      errorMessage: '',
+      selectedCategoryId: 0,
+      customText:
 				'There are no categories in this menu. Click on the button above to add one.',
-			createCategoryCollapse: true,
-			creating: false,
-			newCategory: {
-				menu_id: this.$route.params.menu_id,
-				name: '',
-				desc: '',
-				sku: '',
-				image_url: '',
-				user_id: this.$root.createdBy,
-				status: 1,
-				order: null,
-				parent_category: 0
-			},
-			hoursModalActive: false,
-			categoryToAssignHoursTo: {},
-			imageMode: {
-				newMenu: false
-			}
-		}
-	},
-	watch: {
-		'$root.activeLocation' () {
-			this.$router.push({ name: 'Menus' })
-		}
-	},
-	mounted () {
-		if (
-			this.$root.activeLocation &&
+      createCategoryCollapse: true,
+      creating: false,
+      newCategory: {
+        menu_id: this.$route.params.menu_id,
+        name: '',
+        desc: '',
+        sku: '',
+        image_url: '',
+        user_id: this.$root.createdBy,
+        status: 1,
+        order: null,
+        parent_category: 0
+      },
+      hoursModalActive: false,
+      categoryToAssignHoursTo: {},
+      imageMode: {
+        newMenu: false
+      }
+    }
+  },
+  watch: {
+    '$root.activeLocation' () {
+      this.$router.push({ name: 'Menus' })
+    }
+  },
+  mounted () {
+    if (
+      this.$root.activeLocation &&
 			this.$root.activeLocation.id &&
 			this.$route.params.menu_id
-		) {
-			this.getMenuDetails()
-			this.getMenuCategories()
-		}
-	},
-	methods: {
-		/**
+    ) {
+      this.getMenuDetails()
+      this.getMenuCategories()
+    }
+  },
+  methods: {
+    /**
 		 * To toggle between the open and closed state of the resource picker
 		 * @function
 		 * @param {string} object - The name of the object the image is for
 		 * @param {object} value - The open / closed value of the picker
 		 * @returns {undefined}
 		 */
-		toggleImageMode (object, value) {
-			this.imageMode[object] = value
-		},
-		/**
+    toggleImageMode (object, value) {
+      this.imageMode[object] = value
+    },
+    /**
 		 * To set the image to be same as the one emitted by the gallery modal.
 		 * @function
 		 * @param {object} val - The emitted image object.
 		 * @returns {undefined}
 		 */
-		updateImage (val) {
-			this.newCategory.image_url = val.image_url
-		},
-		/**
+    updateImage (val) {
+      this.newCategory.image_url = val.image_url
+    },
+    /**
 		 * To display the modal for category hours.
 		 * @function
 		 * @param {object} category - The selected category
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		showHoursModal (category, event) {
-			event.stopPropagation()
-			this.categoryToAssignHoursTo = category
-			this.hoursModalActive = true
-		},
-		/**
+    showHoursModal (category, event) {
+      event.stopPropagation()
+      this.categoryToAssignHoursTo = category
+      this.hoursModalActive = true
+    },
+    /**
 		 * To close the modal for category hours.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeHoursModal () {
-			this.hoursModalActive = false
-		},
-		/**
+    closeHoursModal () {
+      this.hoursModalActive = false
+    },
+    /**
 		 * To toggle the create category panel, initially set to opened
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCreateCategoryPanel () {
-			this.createCategoryCollapse = !this.createCategoryCollapse
-		},
-		/**
+    toggleCreateCategoryPanel () {
+      this.createCategoryCollapse = !this.createCategoryCollapse
+    },
+    /**
 		 * To check if the category data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateCategoryData () {
-			var addCategoryVue = this
-			return new Promise(function (resolve, reject) {
-				if (!addCategoryVue.newCategory.name.length) {
-					reject('Category name cannot be blank')
-				} else if (!addCategoryVue.newCategory.desc.length) {
-					reject('Category description cannot be blank')
-				} else if (!addCategoryVue.newCategory.sku.length) {
-					reject('Category SKU cannot be blank')
-				} else if (!addCategoryVue.newCategory.image_url.length) {
-					reject('Category image URL cannot be blank')
-				} else if (!$.isNumeric(addCategoryVue.newCategory.status)) {
-					reject('Category status cannot be blank')
-				} else if (!$.isNumeric(addCategoryVue.newCategory.order)) {
-					reject('Category order should be a number')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateCategoryData () {
+      var addCategoryVue = this
+      return new Promise(function (resolve, reject) {
+        if (!addCategoryVue.newCategory.name.length) {
+          reject('Category name cannot be blank')
+        } else if (!addCategoryVue.newCategory.desc.length) {
+          reject('Category description cannot be blank')
+        } else if (!addCategoryVue.newCategory.sku.length) {
+          reject('Category SKU cannot be blank')
+        } else if (!addCategoryVue.newCategory.image_url.length) {
+          reject('Category image URL cannot be blank')
+        } else if (!$.isNumeric(addCategoryVue.newCategory.status)) {
+          reject('Category status cannot be blank')
+        } else if (!$.isNumeric(addCategoryVue.newCategory.order)) {
+          reject('Category order should be a number')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To add the new category to the menu and close the modal and redirect to the menus page.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		addNewMenuCategory () {
-			var addCategoryVue = this
-			addCategoryVue.clearError()
+    addNewMenuCategory () {
+      var addCategoryVue = this
+      addCategoryVue.clearError()
 
-			return addCategoryVue
-				.validateCategoryData()
-				.then(response => {
-					addCategoryVue.creating = true
-					CategoriesFunctions.addNewMenuCategory(
-						addCategoryVue.newCategory,
-						addCategoryVue.$root.appId,
-						addCategoryVue.$root.appSecret,
-						addCategoryVue.$root.userToken
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								addCategoryVue.newCategory.id = response.payload.new_category_id
-								if (response.payload && response.payload.pending_approval !== true) {
-									addCategoryVue.addCategory(addCategoryVue.newCategory)
-								}
-								addCategoryVue.showAlert(response.payload)
-								addCategoryVue.clearNewCategory()
-							} else {
-								addCategoryVue.errorMessage = response.message
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not create the menu',
-								errorName: 'errorMessage',
-								vue: addCategoryVue
-							})
-						})
-						.finally(() => {
-							addCategoryVue.creating = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					addCategoryVue.errorMessage = reason
-					window.scrollTo(0, 0)
-					throw reason
-				})
-		},
-		/**
+      return addCategoryVue
+        .validateCategoryData()
+        .then(response => {
+          addCategoryVue.creating = true
+          CategoriesFunctions.addNewMenuCategory(
+            addCategoryVue.newCategory,
+            addCategoryVue.$root.appId,
+            addCategoryVue.$root.appSecret,
+            addCategoryVue.$root.userToken
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                addCategoryVue.newCategory.id = response.payload.new_category_id
+                if (response.payload && response.payload.pending_approval !== true) {
+                  addCategoryVue.addCategory(addCategoryVue.newCategory)
+                }
+                addCategoryVue.showAlert(response.payload)
+                addCategoryVue.clearNewCategory()
+              } else {
+                addCategoryVue.errorMessage = response.message
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not create the menu',
+                errorName: 'errorMessage',
+                vue: addCategoryVue
+              })
+            })
+            .finally(() => {
+              addCategoryVue.creating = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          addCategoryVue.errorMessage = reason
+          window.scrollTo(0, 0)
+          throw reason
+        })
+    },
+    /**
 		 * To get the deatils of the menu to show the categories for.
 		 * @function
 		 * @returns {undefined}
 		 */
-		getMenuDetails () {
-			var categoriesVue = this
-			MenusFunctions.getMenuDetails(
-				categoriesVue.$route.params.menu_id,
-				categoriesVue.$root.appId,
-				categoriesVue.$root.appSecret
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						categoriesVue.menuDetails = response.payload
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch menu info',
-						errorName: 'listErrorMessage',
-						vue: categoriesVue
-					})
-				})
-		},
-		/**
+    getMenuDetails () {
+      var categoriesVue = this
+      MenusFunctions.getMenuDetails(
+        categoriesVue.$route.params.menu_id,
+        categoriesVue.$root.appId,
+        categoriesVue.$root.appSecret
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            categoriesVue.menuDetails = response.payload
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch menu info',
+            errorName: 'listErrorMessage',
+            vue: categoriesVue
+          })
+        })
+    },
+    /**
 		 * To get a list of categories for the current menu.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getMenuCategories () {
-			this.displayCategoryData = true
-			var categoriesVue = this
-			categoriesVue.menuCategories = []
-			return CategoriesFunctions.getMenuCategories(
-				categoriesVue.$route.params.menu_id,
-				categoriesVue.$root.appId,
-				categoriesVue.$root.appSecret,
-				categoriesVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						categoriesVue.displayCategoryData = false
-						categoriesVue.menuCategories = response.payload
-					} else {
-						categoriesVue.displayCategoryData = false
-					}
-				})
-				.catch(reason => {
-					categoriesVue.displayCategoryData = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch categories',
-						errorName: 'listErrorMessage',
-						vue: categoriesVue
-					})
-				})
-		},
-		/**
+    getMenuCategories () {
+      this.displayCategoryData = true
+      var categoriesVue = this
+      categoriesVue.menuCategories = []
+      return CategoriesFunctions.getMenuCategories(
+        categoriesVue.$route.params.menu_id,
+        categoriesVue.$root.appId,
+        categoriesVue.$root.appSecret,
+        categoriesVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            categoriesVue.displayCategoryData = false
+            categoriesVue.menuCategories = response.payload
+          } else {
+            categoriesVue.displayCategoryData = false
+          }
+        })
+        .catch(reason => {
+          categoriesVue.displayCategoryData = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch categories',
+            errorName: 'listErrorMessage',
+            vue: categoriesVue
+          })
+        })
+    },
+    /**
 		 * To route to the items page.
 		 * @function
 		 * @param {object} category - The selected category
 		 * @returns {undefined}
 		 */
-		viewCategoryItems (category) {
-			this.$router.push('/app/menu_manager/items/' + category.id)
-		},
-		/**
+    viewCategoryItems (category) {
+      this.$router.push('/app/menu_manager/items/' + category.id)
+    },
+    /**
 		 * To display the modal to edit a category.
 		 * @function
 		 * @param {object} category - The selected category
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		editCategory (category, event) {
-			event.stopPropagation()
-			this.editCategoryModalActive = true
-			this.$router.push(
-				'/app/menu_manager/categories/' +
+    editCategory (category, event) {
+      event.stopPropagation()
+      this.editCategoryModalActive = true
+      this.$router.push(
+        '/app/menu_manager/categories/' +
 					this.$route.params.menu_id +
 					'/edit_category/' +
 					category.id
-			)
-		},
-		/**
+      )
+    },
+    /**
 		 * To display the modal to delete a category.
 		 * @function
 		 * @param {object} category - The selected category
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		deleteCategory (category, event) {
-			event.stopPropagation()
-			this.deleteCategoryModalActive = true
-			this.passedCategoryId = category.id
-		},
-		/**
+    deleteCategory (category, event) {
+      event.stopPropagation()
+      this.deleteCategoryModalActive = true
+      this.passedCategoryId = category.id
+    },
+    /**
 		 * To display the modal to edit a sub category.
 		 * @function
 		 * @param {object} subCategory - The selected sub category
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		editSubCategory (subCategory, event) {
-			event.stopPropagation()
-			this.editSubCategoryModalActive = true
-			this.$router.push(
-				'/app/menu_manager/categories/' +
+    editSubCategory (subCategory, event) {
+      event.stopPropagation()
+      this.editSubCategoryModalActive = true
+      this.$router.push(
+        '/app/menu_manager/categories/' +
 					this.$route.params.menu_id +
 					'/edit_sub_category/' +
 					subCategory.id
-			)
-		},
-		/**
+      )
+    },
+    /**
 		 * To display the modal to delete a sub-category.
 		 * @function
 		 * @param {object} subCategory - The selected sub-category
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		deleteSubCategory (subCategory, event) {
-			event.stopPropagation()
-			this.deleteSubCategoryModalActive = true
-			this.passedCategoryId = subCategory.parent_category
-			this.passedSubCategoryId = subCategory.id
-		},
-		/**
+    deleteSubCategory (subCategory, event) {
+      event.stopPropagation()
+      this.deleteSubCategoryModalActive = true
+      this.passedCategoryId = subCategory.parent_category
+      this.passedSubCategoryId = subCategory.id
+    },
+    /**
 		 * To display the modal to add a new category.
 		 * @function
 		 * @param {object} category - The selected category
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		displayAddSubCategoryModal (category, event) {
-			event.stopPropagation()
-			this.selectedCategoryId = category.id
-			this.addSubCategoryModalActive = true
-			this.$router.push(
-				'/app/menu_manager/categories/' +
+    displayAddSubCategoryModal (category, event) {
+      event.stopPropagation()
+      this.selectedCategoryId = category.id
+      this.addSubCategoryModalActive = true
+      this.$router.push(
+        '/app/menu_manager/categories/' +
 					this.$route.params.menu_id +
 					'/add_sub_category'
-			)
-		},
-		/**
+      )
+    },
+    /**
 		 * To clear the new category form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearNewCategory () {
-			this.newCategory = {
-				menu_id: this.$route.params.menu_id,
-				name: '',
-				desc: '',
-				sku: '',
-				image_url: '',
-				user_id: this.$root.createdBy,
-				status: 1,
-				order: null,
-				parent_category: 0
-			}
-		},
-		/**
+    clearNewCategory () {
+      this.newCategory = {
+        menu_id: this.$route.params.menu_id,
+        name: '',
+        desc: '',
+        sku: '',
+        image_url: '',
+        user_id: this.$root.createdBy,
+        status: 1,
+        order: null,
+        parent_category: 0
+      }
+    },
+    /**
 		 * To add the category emitted by the child to the categories list.
 		 * @function
 		 * @param {object} val - The new category
 		 * @returns {undefined}
 		 */
-		addCategory (val) {
-			if (parseInt(val.order) > 0) {
-				var done = false
-				for (var i = 0; i < this.menuCategories.length; i++) {
-					if (parseInt(this.menuCategories[i].order) < parseInt(val.order)) {
-						this.menuCategories.splice(i, 0, val)
-						done = true
-						break
-					}
-				}
-				if (!done) {
-					this.menuCategories.push(val)
-				}
-			} else {
-				this.menuCategories.push(val)
-			}
-		},
-		/**
+    addCategory (val) {
+      if (parseInt(val.order) > 0) {
+        var done = false
+        for (var i = 0; i < this.menuCategories.length; i++) {
+          if (parseInt(this.menuCategories[i].order) < parseInt(val.order)) {
+            this.menuCategories.splice(i, 0, val)
+            done = true
+            break
+          }
+        }
+        if (!done) {
+          this.menuCategories.push(val)
+        }
+      } else {
+        this.menuCategories.push(val)
+      }
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert (payload = {}) {
-			let title = 'Success'
-			let text = 'The Category has been created'
-			let type = 'success'
+    showAlert (payload = {}) {
+      let title = 'Success'
+      let text = 'The Category has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Category has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Category has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To add the sub category emitted by the child to the sub categories list.
 		 * @function
 		 * @param {object} val - The new sub category
 		 * @returns {undefined}
 		 */
-		addSubCategory (val) {
-			this.addSubCategoryModalActive = false
-			this.getMenuCategories()
-		},
-		/**
+    addSubCategory (val) {
+      this.addSubCategoryModalActive = false
+      this.getMenuCategories()
+    },
+    /**
 		 * To update the category emitted by the child and highlist it on the categories list.
 		 * @function
 		 * @param {object} val - The updated category
 		 * @returns {undefined}
 		 */
-		updateCategory (val) {
-			this.editCategoryModalActive = false
-			this.getMenuCategories()
-		},
-		/**
+    updateCategory (val) {
+      this.editCategoryModalActive = false
+      this.getMenuCategories()
+    },
+    /**
 		 * To update the sub category emitted by the child and highlist it on the categories list.
 		 * @function
 		 * @param {object} val - The updated sub category
 		 * @returns {undefined}
 		 */
-		updateSubCategory (val) {
-			this.editSubCategoryModalActive = false
-			this.getMenuCategories()
-		},
-		/**
+    updateSubCategory (val) {
+      this.editSubCategoryModalActive = false
+      this.getMenuCategories()
+    },
+    /**
 		 * To close the modal to edit a category.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeEditCategoryModal () {
-			this.editCategoryModalActive = false
-		},
-		/**
+    closeEditCategoryModal () {
+      this.editCategoryModalActive = false
+    },
+    /**
 		 * To close the modal to delete a category.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeDeleteCategoryModal () {
-			this.deleteCategoryModalActive = false
-		},
-		/**
+    closeDeleteCategoryModal () {
+      this.deleteCategoryModalActive = false
+    },
+    /**
 		 * To close the modal to delete a category.
 		 * @function
 		 * @returns {undefined}
 		 */
-		deleteCategoryAndCloseModal () {
-			this.getMenuCategories()
-			this.deleteCategoryModalActive = false
-		},
-		/**
+    deleteCategoryAndCloseModal () {
+      this.getMenuCategories()
+      this.deleteCategoryModalActive = false
+    },
+    /**
 		 * To close the modal to edit a sub category.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeEditSubCategoryModal () {
-			this.editSubCategoryModalActive = false
-		},
-		/**
+    closeEditSubCategoryModal () {
+      this.editSubCategoryModalActive = false
+    },
+    /**
 		 * To close the modal to delete a sub-category.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeDeleteSubCategoryModal () {
-			this.deleteSubCategoryModalActive = false
-		},
-		/**
+    closeDeleteSubCategoryModal () {
+      this.deleteSubCategoryModalActive = false
+    },
+    /**
 		 * To close the modal to delete a sub-category.
 		 * @function
 		 * @returns {undefined}
 		 */
-		deleteSubCategoryAndCloseModal () {
-			this.deleteSubCategoryModalActive = false
-			this.getMenuCategories()
-		},
-		/**
+    deleteSubCategoryAndCloseModal () {
+      this.deleteSubCategoryModalActive = false
+      this.getMenuCategories()
+    },
+    /**
 		 * To close the modal to add a sub category.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeAddSubCategoryModal () {
-			this.addSubCategoryModalActive = false
-		},
-		/**
+    closeAddSubCategoryModal () {
+      this.addSubCategoryModalActive = false
+    },
+    /**
 		 * To determine if the dropdown or the items page should be displayed based on whether the category has subcategories or not.
 		 * @function
 		 * @param {object} category - The selected category
 		 * @returns {undefined}
 		 */
-		determineNextAction (category) {
-			if (category.subcategories && category.subcategories.length) {
-				if ($('#category-details-' + category.id).hasClass('collapsed')) {
-					$('#category-details-' + category.id).removeClass('collapsed')
-					$('#category-details-' + category.id).addClass('expanded')
+    determineNextAction (category) {
+      if (category.subcategories && category.subcategories.length) {
+        if ($('#category-details-' + category.id).hasClass('collapsed')) {
+          $('#category-details-' + category.id).removeClass('collapsed')
+          $('#category-details-' + category.id).addClass('expanded')
 
-					// change the icon
-					$('#icon-' + category.id).removeClass('fa-angle-right')
-					$('#icon-' + category.id).addClass('fa-angle-down')
-				} else if ($('#category-details-' + category.id).hasClass('expanded')) {
-					$('#category-details-' + category.id).removeClass('expanded')
-					$('#category-details-' + category.id).addClass('collapsed')
+          // change the icon
+          $('#icon-' + category.id).removeClass('fa-angle-right')
+          $('#icon-' + category.id).addClass('fa-angle-down')
+        } else if ($('#category-details-' + category.id).hasClass('expanded')) {
+          $('#category-details-' + category.id).removeClass('expanded')
+          $('#category-details-' + category.id).addClass('collapsed')
 
-					// change the icon
-					$('#icon-' + category.id).removeClass('fa-angle-down')
-					$('#icon-' + category.id).addClass('fa-angle-right')
-				}
-			} else if (!category.subcategories || !category.subcategories.length) {
-				this.viewCategoryItems(category)
-			}
-		}
-	}
+          // change the icon
+          $('#icon-' + category.id).removeClass('fa-angle-down')
+          $('#icon-' + category.id).addClass('fa-angle-right')
+        }
+      } else if (!category.subcategories || !category.subcategories.length) {
+        this.viewCategoryItems(category)
+      }
+    }
+  }
 }
 </script>
 <style scoped>

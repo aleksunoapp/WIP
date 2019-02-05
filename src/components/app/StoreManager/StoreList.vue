@@ -457,358 +457,358 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 import Modal from '@/components/modules/Modal'
 
 export default {
-	components: {
-		Breadcrumb,
-		LoadingScreen,
-		NoResults,
-		Dropdown,
-		Pagination,
-		PageResults,
-		Modal
-	},
-	data () {
-		return {
-			breadcrumbArray: [
-				{ name: 'Store Manager', link: false },
-				{ name: 'Stores', link: false }
-			],
-			displayStoreData: false,
-			stores: [],
-			storeSearchCollapse: true,
-			searchError: '',
-			searchTerm: '',
-			loadingSearchResults: false,
-			listErrorMessage: '',
-			activePage: 1,
-			resultsPerPage: 25,
-			sortBy: {
-				order: 'ASC'
-			},
-			searchActivePage: 1,
-			filteredResults: [],
-			storeToDelete: {},
-			showDeleteModal: false,
-			deleteErrorMessage: '',
-			deleting: false
-		}
-	},
-	computed: {
-		numPages () {
-			return Math.ceil(this.stores.length / this.resultsPerPage)
-		},
-		currentActivePageItems () {
-			return this.userSort(this.stores).slice(
-				this.resultsPerPage * (this.activePage - 1),
-				this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
-			)
-		},
-		searchNumPages () {
-			return Math.ceil(this.filteredResults.length / this.resultsPerPage)
-		},
-		currentActiveSearchPageItems () {
-			let begin = this.resultsPerPage * (this.searchActivePage - 1)
-			let end = this.resultsPerPage * (this.searchActivePage - 1) + this.resultsPerPage
-			return this.userSort(this.filteredResults).slice(
-				begin,
-				end
-			)
-		}
-	},
-	watch: {
-		searchTerm () {
-			if (!this.searchTerm.length) {
-				this.filteredResults = []
-			}
-		}
-	},
-	mounted () {
-		if (this.$root.accountType === 'application_admin') {
-			this.getStores()
-		} else if (this.$root.accountType === 'store_admin') {
-			this.stores = this.$root.storeLocations
-		}
-	},
-	methods: {
-		/**
+  components: {
+    Breadcrumb,
+    LoadingScreen,
+    NoResults,
+    Dropdown,
+    Pagination,
+    PageResults,
+    Modal
+  },
+  data () {
+    return {
+      breadcrumbArray: [
+        { name: 'Store Manager', link: false },
+        { name: 'Stores', link: false }
+      ],
+      displayStoreData: false,
+      stores: [],
+      storeSearchCollapse: true,
+      searchError: '',
+      searchTerm: '',
+      loadingSearchResults: false,
+      listErrorMessage: '',
+      activePage: 1,
+      resultsPerPage: 25,
+      sortBy: {
+        order: 'ASC'
+      },
+      searchActivePage: 1,
+      filteredResults: [],
+      storeToDelete: {},
+      showDeleteModal: false,
+      deleteErrorMessage: '',
+      deleting: false
+    }
+  },
+  computed: {
+    numPages () {
+      return Math.ceil(this.stores.length / this.resultsPerPage)
+    },
+    currentActivePageItems () {
+      return this.userSort(this.stores).slice(
+        this.resultsPerPage * (this.activePage - 1),
+        this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
+      )
+    },
+    searchNumPages () {
+      return Math.ceil(this.filteredResults.length / this.resultsPerPage)
+    },
+    currentActiveSearchPageItems () {
+      let begin = this.resultsPerPage * (this.searchActivePage - 1)
+      let end = this.resultsPerPage * (this.searchActivePage - 1) + this.resultsPerPage
+      return this.userSort(this.filteredResults).slice(
+        begin,
+        end
+      )
+    }
+  },
+  watch: {
+    searchTerm () {
+      if (!this.searchTerm.length) {
+        this.filteredResults = []
+      }
+    }
+  },
+  mounted () {
+    if (this.$root.accountType === 'application_admin') {
+      this.getStores()
+    } else if (this.$root.accountType === 'store_admin') {
+      this.stores = this.$root.storeLocations
+    }
+  },
+  methods: {
+    /**
 		 * To update the order property of sortBy.
 		 * @function
 		 * @param {object} store - Store the user clicked on
 		 * @returns {undefined}
 		 */
-		confirmDelete (store) {
-			this.storeToDelete = {
-				...store
-			}
-			this.showDeleteModal = true
-		},
-		/**
+    confirmDelete (store) {
+      this.storeToDelete = {
+        ...store
+      }
+      this.showDeleteModal = true
+    },
+    /**
 		 * To close the delete modal
 		 * @function
 		 * @param {object} store - Store the user clicked on
 		 * @returns {undefined}
 		 */
-		closeDeleteModal (store) {
-			this.clearError('deleteErrorMessage')
-			this.showDeleteModal = false
-		},
-		/**
+    closeDeleteModal (store) {
+      this.clearError('deleteErrorMessage')
+      this.showDeleteModal = false
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Store has been deleted'
-			let type = 'success'
+    showDeleteSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Store has been deleted'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The removal has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The removal has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To delete store from the database
 		 * @function
 		 * @returns {undefined}
 		 */
-		deleteStore () {
-			this.deleting = true
-			var storesVue = this
-			StoresFunctions.deleteStore(storesVue.storeToDelete.id)
-				.then(response => {
-					storesVue.getStores()
-					storesVue.closeDeleteModal()
-					storesVue.showDeleteSuccess(response.payload)
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Could not delete store',
-						errorName: 'deleteErrorMessage',
-						vue: storesVue,
-						containerRef: 'deleteModal'
-					})
-				})
-				.finally(() => {
-					storesVue.deleting = false
-				})
-		},
-		/**
+    deleteStore () {
+      this.deleting = true
+      var storesVue = this
+      StoresFunctions.deleteStore(storesVue.storeToDelete.id)
+        .then(response => {
+          storesVue.getStores()
+          storesVue.closeDeleteModal()
+          storesVue.showDeleteSuccess(response.payload)
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'Could not delete store',
+            errorName: 'deleteErrorMessage',
+            vue: storesVue,
+            containerRef: 'deleteModal'
+          })
+        })
+        .finally(() => {
+          storesVue.deleting = false
+        })
+    },
+    /**
 		 * To update the order property of sortBy.
 		 * @function
 		 * @param {object} value - The new value to assign.
 		 * @returns {undefined}
 		 */
-		updateSortByOrder (value) {
-			this.sortBy.order = value
-			this.filteredResults.length
-				? this.activeSearchPageUpdate(1)
-				: this.activePageUpdate(1)
-		},
-		/**
+    updateSortByOrder (value) {
+      this.sortBy.order = value
+      this.filteredResults.length
+        ? this.activeSearchPageUpdate(1)
+        : this.activePageUpdate(1)
+    },
+    /**
 		 * To catch updates from the PageResults component when the number of page results is updated.
 		 * @function
 		 * @param {integer} val - The number of page results to be returned.
 		 * @returns {undefined}
 		 */
-		pageResultsUpdate (val) {
-			if (parseInt(this.resultsPerPage) !== parseInt(val)) {
-				this.resultsPerPage = val
-				this.filteredResults.length
-					? this.activeSearchPageUpdate(1)
-					: this.activePageUpdate(1)
-			}
-		},
-		/**
+    pageResultsUpdate (val) {
+      if (parseInt(this.resultsPerPage) !== parseInt(val)) {
+        this.resultsPerPage = val
+        this.filteredResults.length
+          ? this.activeSearchPageUpdate(1)
+          : this.activePageUpdate(1)
+      }
+    },
+    /**
 		 * To update the currently active pagination page.
 		 * @function
 		 * @param {integer} val - An integer representing the page number that we are updating to.
 		 * @returns {undefined}
 		 */
-		activePageUpdate (val) {
-			if (parseInt(this.activePage) !== parseInt(val)) {
-				this.activePage = val
-				window.scrollTo(0, 0)
-			}
-		},
-		/**
+    activePageUpdate (val) {
+      if (parseInt(this.activePage) !== parseInt(val)) {
+        this.activePage = val
+        window.scrollTo(0, 0)
+      }
+    },
+    /**
 		 * To update the currently active pagination page.
 		 * @function
 		 * @param {integer} val - An integer representing the page number that we are updating to.
 		 * @returns {undefined}
 		 */
-		activeSearchPageUpdate (val) {
-			if (parseInt(this.searchActivePage) !== parseInt(val)) {
-				this.searchActivePage = val
-				window.scrollTo(0, 0)
-			}
-		},
-		/**
+    activeSearchPageUpdate (val) {
+      if (parseInt(this.searchActivePage) !== parseInt(val)) {
+        this.searchActivePage = val
+        window.scrollTo(0, 0)
+      }
+    },
+    /**
 		 * To sort the stores list.
 		 * @function
 		 * @param {array} stores - The array of stores.
 		 * @returns {array} - The sorted array of stores
 		 */
-		userSort (stores) {
-			let input = stores
-			function asc (a, b) {
-				if (a.display_name.toLowerCase() < b.display_name.toLowerCase()) {
-					return -1
-				} else if (
-					a.display_name.toLowerCase() > b.display_name.toLowerCase()
-				) {
-					return 1
-				} else {
-					if (a.id > b.id) {
-						return -1
-					} else if (a.id < b.id) {
-						return 1
-					} else {
-						return 0
-					}
-				}
-			}
+    userSort (stores) {
+      let input = stores
+      function asc (a, b) {
+        if (a.display_name.toLowerCase() < b.display_name.toLowerCase()) {
+          return -1
+        } else if (
+          a.display_name.toLowerCase() > b.display_name.toLowerCase()
+        ) {
+          return 1
+        } else {
+          if (a.id > b.id) {
+            return -1
+          } else if (a.id < b.id) {
+            return 1
+          } else {
+            return 0
+          }
+        }
+      }
 
-			function desc (a, b) {
-				if (a.display_name.toLowerCase() > b.display_name.toLowerCase()) {
-					return -1
-				} else if (
-					a.display_name.toLowerCase() < b.display_name.toLowerCase()
-				) {
-					return 1
-				} else {
-					if (a.id > b.id) {
-						return -1
-					} else if (a.id < b.id) {
-						return 1
-					} else {
-						return 0
-					}
-				}
-			}
+      function desc (a, b) {
+        if (a.display_name.toLowerCase() > b.display_name.toLowerCase()) {
+          return -1
+        } else if (
+          a.display_name.toLowerCase() < b.display_name.toLowerCase()
+        ) {
+          return 1
+        } else {
+          if (a.id > b.id) {
+            return -1
+          } else if (a.id < b.id) {
+            return 1
+          } else {
+            return 0
+          }
+        }
+      }
 
-			if (this.sortBy.order === 'ASC') {
-				return input.sort(asc)
-			} else {
-				return input.sort(desc)
-			}
-		},
-		/**
+      if (this.sortBy.order === 'ASC') {
+        return input.sort(asc)
+      } else {
+        return input.sort(desc)
+      }
+    },
+    /**
 		 * To toggle the search panel, initially set to closed
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleStoreSearchPanel () {
-			this.storeSearchCollapse = !this.storeSearchCollapse
-		},
-		/**
+    toggleStoreSearchPanel () {
+      this.storeSearchCollapse = !this.storeSearchCollapse
+    },
+    /**
 		 * To clear the current search error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearSearchError () {
-			this.searchError = ''
-		},
-		/**
+    clearSearchError () {
+      this.searchError = ''
+    },
+    /**
 		 * To clear an error.
 		 * @function
 		 * @param {string} name - Name of the error variable
 		 * @returns {undefined}
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To clear the current store search criteria.
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetStoreSearch () {
-			this.searchTerm = ''
-			this.filteredResults = []
-			this.clearSearchError()
-		},
-		/**
+    resetStoreSearch () {
+      this.searchTerm = ''
+      this.filteredResults = []
+      this.clearSearchError()
+    },
+    /**
 		 * To filter the stores based on the search term.
 		 * @function
 		 * @returns {undefined}
 		 */
-		advancedSearch () {
-			this.clearSearchError()
-			this.filteredResults = []
-			if (this.searchTerm.length) {
-				if (this.searchTerm.length < 3) {
-					this.searchError =
+    advancedSearch () {
+      this.clearSearchError()
+      this.filteredResults = []
+      if (this.searchTerm.length) {
+        if (this.searchTerm.length < 3) {
+          this.searchError =
 						'In order to use the search field your term must be at least 3 characters.'
-				} else {
-					for (var i = 0; i < this.stores.length; i++) {
-						let searchArea =
+        } else {
+          for (var i = 0; i < this.stores.length; i++) {
+            let searchArea =
 							this.stores[i].display_name.toLowerCase() +
 							this.stores[i].address_line_1.toLowerCase() +
 							this.stores[i].city.toLowerCase() +
 							this.stores[i].internal_id.toLowerCase()
-						if (searchArea.indexOf(this.searchTerm.toLowerCase()) > -1) {
-							this.filteredResults.push(this.stores[i])
-						}
-					}
-					if (!this.filteredResults.length) {
-						this.searchError =
+            if (searchArea.indexOf(this.searchTerm.toLowerCase()) > -1) {
+              this.filteredResults.push(this.stores[i])
+            }
+          }
+          if (!this.filteredResults.length) {
+            this.searchError =
 							'There are no matching records. Please try again.'
-					}
-				}
-			}
-		},
-		/**
+          }
+        }
+      }
+    },
+    /**
 		 * To get a list of store for the current application/business.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getStores () {
-			this.filteredResults = []
-			this.displayStoreData = true
-			var storeListVue = this
-			App.getPaginatedStoreLocations(
-				storeListVue.$root.appId,
-				storeListVue.$root.appSecret,
-				storeListVue.$root.userToken,
-				{ brand_id: storeListVue.$root.brandId }
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						storeListVue.stores = response.payload
-						storeListVue.displayStoreData = false
-					} else {
-						storeListVue.displayStoreData = false
-					}
-				})
-				.catch(reason => {
-					storeListVue.displayStoreData = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch stores',
-						errorName: 'listErrorMessage',
-						vue: storeListVue
-					})
-				})
-		},
-		/**
+    getStores () {
+      this.filteredResults = []
+      this.displayStoreData = true
+      var storeListVue = this
+      App.getPaginatedStoreLocations(
+        storeListVue.$root.appId,
+        storeListVue.$root.appSecret,
+        storeListVue.$root.userToken,
+        { brand_id: storeListVue.$root.brandId }
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            storeListVue.stores = response.payload
+            storeListVue.displayStoreData = false
+          } else {
+            storeListVue.displayStoreData = false
+          }
+        })
+        .catch(reason => {
+          storeListVue.displayStoreData = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch stores',
+            errorName: 'listErrorMessage',
+            vue: storeListVue
+          })
+        })
+    },
+    /**
 		 * To edit a store's details.
 		 * @function
 		 * @param {object} store - The store object to be edited.
 		 * @returns {undefined}
 		 */
-		editStore (store) {
-			this.$router.push('/app/store_manager/edit_store/' + store.id)
-		}
-	}
+    editStore (store) {
+      this.$router.push('/app/store_manager/edit_store/' + store.id)
+    }
+  }
 }
 </script>
 

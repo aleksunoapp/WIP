@@ -7,9 +7,9 @@
       >
         <li
           v-if="canAny([
-            'analytics overview read', 
-            'analytics store read', 
-            'analytics item read', 
+            'analytics overview read',
+            'analytics store read',
+            'analytics item read',
             'analytics user read',
             'analytics order read'
           ])"
@@ -115,10 +115,10 @@
         </li>
         <li
           v-if="canAny([
-            'approvals read', 
-            'approvals request read', 
-            'list role', 
-            'list permission', 
+            'approvals read',
+            'approvals request read',
+            'list role',
+            'list permission',
             'approvals modules read'
           ])"
           id="admin_manager_link"
@@ -211,9 +211,9 @@
         </li>
         <li
           v-if="canAny([
-            'admin brand_admins read', 
-            'admin location_managers read', 
-            'admin oma_users read', 
+            'admin brand_admins read',
+            'admin location_managers read',
+            'admin oma_users read',
             'admin store_app_users read'
           ])"
           id="admin_manager_link"
@@ -302,10 +302,10 @@
         </li>
         <li
           v-if="canAny([
-            'stores info read', 
-            'stores info create', 
-            'stores groups read', 
-            'stores amenities read', 
+            'stores info read',
+            'stores info create',
+            'stores groups read',
+            'stores amenities read',
             'stores order_settings read'
           ])"
           id="store_manager_link"
@@ -536,7 +536,7 @@
         </li>
         <li
           v-if="canAny([
-            'tax tax_classes read', 
+            'tax tax_classes read',
             'tax item_types read'
           ])"
           id="tax_manager_link"
@@ -593,12 +593,12 @@
         </li>
         <li
           v-if="canAny([
-            'menu_manager menus read', 
-            'menu_manager tiers read', 
-            'menu_manager modifiers read', 
+            'menu_manager menus read',
+            'menu_manager tiers read',
+            'menu_manager modifiers read',
             'menu_manager tags read',
-            'menu_manager portions read', 
-            'menu_manager options read', 
+            'menu_manager portions read',
+            'menu_manager options read',
             'menu_manager attributes read'
           ])"
           id="menu_manager_link"
@@ -1239,106 +1239,106 @@ import { mapGetters } from 'vuex'
 import ApprovalsFunctions from '@/controllers/Approvals'
 
 export default {
-	name: 'LeftSidebar',
-	data: () => ({
-		currentRoute: '',
-		currentSubRoute: ''
-	}),
-	computed: {
-		...mapGetters(['can', 'canAny'])
-	},
-	watch: {
-		/**
+  name: 'LeftSidebar',
+  data: () => ({
+    currentRoute: '',
+    currentSubRoute: ''
+  }),
+  computed: {
+    ...mapGetters(['can', 'canAny'])
+  },
+  watch: {
+    /**
 		 * Watch `$route` so that we can reset the current route on change.
 		 * @function
 		 * @returns {undefined}
 		 */
-		$route () {
-			this.setCurrentRoute()
-		}
-	},
-	created () {
-		this.setCurrentRoute()
-		this.getRequests()
-	},
-	methods: {
-		/**
+    $route () {
+      this.setCurrentRoute()
+    }
+  },
+  created () {
+    this.setCurrentRoute()
+    this.getRequests()
+  },
+  methods: {
+    /**
 		 * To get a list of pending requests.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getRequests () {
-			var appVue = this
-			let pagination = {
-				page: 1,
-				records_per_page: 1,
-				status: 0
-			}
-			return ApprovalsFunctions.getRequests(pagination)
-				.then(response => {
-					if (response.payload.docs.length) {
-						appVue.$root.requestsPending = true
-					} else {
-						appVue.$root.requestsPending = false
-					}
-				})
-				.catch(reason => {})
-		},
-		/**
+    getRequests () {
+      var appVue = this
+      let pagination = {
+        page: 1,
+        records_per_page: 1,
+        status: 0
+      }
+      return ApprovalsFunctions.getRequests(pagination)
+        .then(response => {
+          if (response.payload.docs.length) {
+            appVue.$root.requestsPending = true
+          } else {
+            appVue.$root.requestsPending = false
+          }
+        })
+        .catch(reason => {})
+    },
+    /**
 		 * To set the name of the current route and sub route for selecting active navigation.
 		 * @function
 		 * @returns {undefined}
 		 */
-		setCurrentRoute () {
-			if (this.$route) {
-				var firstIndex = this.$route.path.indexOf('/', 1)
-				var secondIndex = this.$route.path.indexOf('/', firstIndex + 1)
+    setCurrentRoute () {
+      if (this.$route) {
+        var firstIndex = this.$route.path.indexOf('/', 1)
+        var secondIndex = this.$route.path.indexOf('/', firstIndex + 1)
 
-				if (secondIndex === -1) {
-					secondIndex = this.$route.path.length
-				}
-				this.currentRoute = this.$route.path.substring(
-					firstIndex + 1,
-					secondIndex
-				)
+        if (secondIndex === -1) {
+          secondIndex = this.$route.path.length
+        }
+        this.currentRoute = this.$route.path.substring(
+          firstIndex + 1,
+          secondIndex
+        )
 
-				if (secondIndex < this.$route.path.length - 1) {
-					var thirdIndex = this.$route.path.indexOf(
-						'/',
-						secondIndex + 1
-					)
-					if (thirdIndex === -1) {
-						thirdIndex = this.$route.path.length
-					}
-					this.currentSubRoute = this.$route.path.substring(
-						secondIndex + 1,
-						thirdIndex
-					)
-				} else {
-					this.currentSubRoute = ''
-				}
-			}
-		},
-		/**
+        if (secondIndex < this.$route.path.length - 1) {
+          var thirdIndex = this.$route.path.indexOf(
+            '/',
+            secondIndex + 1
+          )
+          if (thirdIndex === -1) {
+            thirdIndex = this.$route.path.length
+          }
+          this.currentSubRoute = this.$route.path.substring(
+            secondIndex + 1,
+            thirdIndex
+          )
+        } else {
+          this.currentSubRoute = ''
+        }
+      }
+    },
+    /**
 		 * To toggle whether or not a submenu should be toggled open.
 		 * @function
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		toggleNavigation (event) {
-			var target = $(event.target).closest('.nav-item')
-			if (!target.hasClass('active')) {
-				// Active menus can't be closed
-				if (target.hasClass('open')) {
-					target.removeClass('open')
-					target.find('.arrow').removeClass('open')
-				} else {
-					target.addClass('open')
-					target.find('.arrow').addClass('open')
-				}
-			}
-		}
-	}
+    toggleNavigation (event) {
+      var target = $(event.target).closest('.nav-item')
+      if (!target.hasClass('active')) {
+        // Active menus can't be closed
+        if (target.hasClass('open')) {
+          target.removeClass('open')
+          target.find('.arrow').removeClass('open')
+        } else {
+          target.addClass('open')
+          target.find('.arrow').addClass('open')
+        }
+      }
+    }
+  }
 }
 </script>
 

@@ -64,111 +64,111 @@ import ModifiersFunctions from '../../../../controllers/Modifiers'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Modal
-	},
-	props: {
-		itemId: {
-			type: Number
-		}
-	},
-	data () {
-		return {
-			showDeleteModifierItemModal: false,
-			errorMessage: '',
-			customWidth: 90,
-			deleting: false
-		}
-	},
-	mounted () {
-		this.showDeleteModifierItemModal = true
-	},
-	methods: {
-		/**
+  components: {
+    Modal
+  },
+  props: {
+    itemId: {
+      type: Number
+    }
+  },
+  data () {
+    return {
+      showDeleteModifierItemModal: false,
+      errorMessage: '',
+      customWidth: 90,
+      deleting: false
+    }
+  },
+  mounted () {
+    this.showDeleteModifierItemModal = true
+  },
+  methods: {
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To delete the modifier item and close the modal.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		deleteModifierItem () {
-			var deleteModifierItemVue = this
-			this.deleting = true
-			deleteModifierItemVue.clearError()
+    deleteModifierItem () {
+      var deleteModifierItemVue = this
+      this.deleting = true
+      deleteModifierItemVue.clearError()
 
-			ModifiersFunctions.deleteModifierItem(
-				deleteModifierItemVue.itemId,
-				deleteModifierItemVue.$root.appId,
-				deleteModifierItemVue.$root.appSecret,
-				deleteModifierItemVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						this.deleteModifierItemAndCloseModal()
-						this.showDeleteSuccess(response.payload)
-					} else {
-						deleteModifierItemVue.errorMessage = response.message
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not delete the modifier item',
-						errorName: 'errorMessage',
-						vue: deleteModifierItemVue,
-						containerRef: 'deleteModal'
-					})
-				})
-				.finally(() => {
-					deleteModifierItemVue.deleting = false
-				})
-		},
-		/**
+      ModifiersFunctions.deleteModifierItem(
+        deleteModifierItemVue.itemId,
+        deleteModifierItemVue.$root.appId,
+        deleteModifierItemVue.$root.appSecret,
+        deleteModifierItemVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            this.deleteModifierItemAndCloseModal()
+            this.showDeleteSuccess(response.payload)
+          } else {
+            deleteModifierItemVue.errorMessage = response.message
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not delete the modifier item',
+            errorName: 'errorMessage',
+            vue: deleteModifierItemVue,
+            containerRef: 'deleteModal'
+          })
+        })
+        .finally(() => {
+          deleteModifierItemVue.deleting = false
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Modifier Item has been deleted'
-			let type = 'success'
+    showDeleteSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Modifier Item has been deleted'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The removal has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The removal has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('closeDeleteModifierItemModal')
-		},
-		/**
+    closeModal () {
+      this.$emit('closeDeleteModifierItemModal')
+    },
+    /**
 		 * To close the modal and delete the modifier item.
 		 * @function
 		 * @returns {undefined}
 		 */
-		deleteModifierItemAndCloseModal () {
-			this.$emit('deleteModifierItemAndCloseModal')
-		}
-	}
+    deleteModifierItemAndCloseModal () {
+      this.$emit('deleteModifierItemAndCloseModal')
+    }
+  }
 }
 </script>
 <style>

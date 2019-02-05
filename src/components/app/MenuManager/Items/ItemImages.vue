@@ -346,370 +346,370 @@ import ResourcePicker from '../../../modules/ResourcePicker'
 import ajaxErrorHandler from '../../../../controllers/ErrorController'
 
 export default {
-	components: {
-		Modal,
-		LoadingScreen,
-		ResourcePicker
-	},
-	props: {
-		item: {
-			type: Object,
-			default: () => ({
-				name: ''
-			}),
-			required: true
-		}
-	},
-	data () {
-		return {
-			displayModal: false,
-			mode: 'list',
-			loadingImages: false,
-			errorMessage: '',
-			images: [],
-			imageToPreview: {
-				id: null
-			},
-			imageToCreate: {
-				url: '',
-				order: '',
-				type: 'image',
-				default: 0,
-				update_all_locations: 0
-			},
-			imageToEdit: {},
-			deleting: false,
-			imageToDelete: {}
-		}
-	},
-	mounted () {
-		this.getItemImages()
-		this.displayModal = true
-	},
-	methods: {
-		/**
+  components: {
+    Modal,
+    LoadingScreen,
+    ResourcePicker
+  },
+  props: {
+    item: {
+      type: Object,
+      default: () => ({
+        name: ''
+      }),
+      required: true
+    }
+  },
+  data () {
+    return {
+      displayModal: false,
+      mode: 'list',
+      loadingImages: false,
+      errorMessage: '',
+      images: [],
+      imageToPreview: {
+        id: null
+      },
+      imageToCreate: {
+        url: '',
+        order: '',
+        type: 'image',
+        default: 0,
+        update_all_locations: 0
+      },
+      imageToEdit: {},
+      deleting: false,
+      imageToDelete: {}
+    }
+  },
+  mounted () {
+    this.getItemImages()
+    this.displayModal = true
+  },
+  methods: {
+    /**
 		 * To get images for the selected item.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getItemImages () {
-			this.loadingImages = true
-			var itemsVue = this
-			itemsVue.images = []
-			return ItemsFunctions.getItemImages(
-				itemsVue.$root.appId,
-				itemsVue.$root.appSecret,
-				itemsVue.$root.userToken,
-				itemsVue.item.id
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						itemsVue.images = response.payload.item_images
-						itemsVue.loadingImages = false
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: `We could not fetch images for ${itemsVue.item.name}`,
-						errorName: 'errorMessage',
-						vue: itemsVue
-					})
-				})
-		},
-		/**
+    getItemImages () {
+      this.loadingImages = true
+      var itemsVue = this
+      itemsVue.images = []
+      return ItemsFunctions.getItemImages(
+        itemsVue.$root.appId,
+        itemsVue.$root.appSecret,
+        itemsVue.$root.userToken,
+        itemsVue.item.id
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            itemsVue.images = response.payload.item_images
+            itemsVue.loadingImages = false
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: `We could not fetch images for ${itemsVue.item.name}`,
+            errorName: 'errorMessage',
+            vue: itemsVue
+          })
+        })
+    },
+    /**
 		 * To determine the tooltip text
 		 * @function
 		 * @param {integer} isDefault - The default status of the image
 		 * @returns {string} - The tooltip text
 		 */
-		defaultButtonText (isDefault) {
-			return isDefault ? 'Remove Default' : 'Make Default'
-		},
-		/**
+    defaultButtonText (isDefault) {
+      return isDefault ? 'Remove Default' : 'Make Default'
+    },
+    /**
 		 * To clear the error
 		 * @param {string} errorName - The error to clear
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError (errorName) {
-			this[errorName] = ''
-		},
-		/**
+    clearError (errorName) {
+      this[errorName] = ''
+    },
+    /**
 		 * To set the active image.
 		 * @function
 		 * @param {object} image - The selected image.
 		 * @returns {undefined}
 		 */
-		previewMode (image) {
-			this.clearError('errorMessage')
-			this.imageToPreview = image
-			this.mode = 'preview'
-		},
-		/**
+    previewMode (image) {
+      this.clearError('errorMessage')
+      this.imageToPreview = image
+      this.mode = 'preview'
+    },
+    /**
 		 * To open the create interface
 		 * @function
 		 * @returns {undefined}
 		 */
-		createMode () {
-			this.clearError('errorMessage')
-			this.mode = 'create'
-			this.$nextTick(function () {
-				this.$refs.order.focus()
-			})
-		},
-		/**
+    createMode () {
+      this.clearError('errorMessage')
+      this.mode = 'create'
+      this.$nextTick(function () {
+        this.$refs.order.focus()
+      })
+    },
+    /**
 		 * To replace the url with the selected url
 		 * @function
 		 * @param {object} image - The image to edit
 		 * @returns {undefined}
 		 */
-		updateImageToCreate (image) {
-			this.imageToCreate.url = image.image_url
-			this.createImage()
-		},
-		/**
+    updateImageToCreate (image) {
+      this.imageToCreate.url = image.image_url
+      this.createImage()
+    },
+    /**
 		 * To validate new image data before submitting
 		 * @function
 		 * @returns {undefined}
 		 */
-		validateImageToCreate () {
-			var imagesVue = this
-			return new Promise(function (resolve, reject) {
-				if (!$.isNumeric(imagesVue.imageToCreate.order)) {
-					reject('Order must be a number')
-				} else if (!imagesVue.imageToCreate.url.length) {
-					reject('Select an image')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateImageToCreate () {
+      var imagesVue = this
+      return new Promise(function (resolve, reject) {
+        if (!$.isNumeric(imagesVue.imageToCreate.order)) {
+          reject('Order must be a number')
+        } else if (!imagesVue.imageToCreate.url.length) {
+          reject('Select an image')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To add an image to an item
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		createImage () {
-			const imagesVue = this
-			this.clearError('errorMessage')
-			return imagesVue
-				.validateImageToCreate()
-				.then(response => {
-					return ItemsFunctions.createItemImage(
-						imagesVue.$root.appId,
-						imagesVue.$root.appSecret,
-						imagesVue.$root.userToken,
-						imagesVue.item.id,
-						imagesVue.imageToCreate
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								imagesVue.images = response.payload.item_images
-								imagesVue.mode = 'list'
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: `We could not set the image as default`,
-								errorName: 'errorMessage',
-								vue: imagesVue
-							})
-						})
-				})
-				.catch(reason => {
-					imagesVue.errorMessage = reason
-					imagesVue.$scrollTo(imagesVue.$refs.errorMessage, 1000, {
-						offset: -50
-					})
-				})
-		},
-		/**
+    createImage () {
+      const imagesVue = this
+      this.clearError('errorMessage')
+      return imagesVue
+        .validateImageToCreate()
+        .then(response => {
+          return ItemsFunctions.createItemImage(
+            imagesVue.$root.appId,
+            imagesVue.$root.appSecret,
+            imagesVue.$root.userToken,
+            imagesVue.item.id,
+            imagesVue.imageToCreate
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                imagesVue.images = response.payload.item_images
+                imagesVue.mode = 'list'
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: `We could not set the image as default`,
+                errorName: 'errorMessage',
+                vue: imagesVue
+              })
+            })
+        })
+        .catch(reason => {
+          imagesVue.errorMessage = reason
+          imagesVue.$scrollTo(imagesVue.$refs.errorMessage, 1000, {
+            offset: -50
+          })
+        })
+    },
+    /**
 		 * To reset the create form
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearCreateForm () {
-			this.imageToCreate = {
-				url: '',
-				order: '',
-				type: 'image',
-				default: 0,
-				update_all_locations: 0
-			}
-		},
-		/**
+    clearCreateForm () {
+      this.imageToCreate = {
+        url: '',
+        order: '',
+        type: 'image',
+        default: 0,
+        update_all_locations: 0
+      }
+    },
+    /**
 		 * To open the main list interface
 		 * @function
 		 * @param {object} image - The image to edit
 		 * @returns {undefined}
 		 */
-		listMode () {
-			this.clearError('errorMessage')
-			if (this.mode === 'create') {
-				this.clearCreateForm()
-			} else if (this.mode === 'edit') {
-				this.clearEditForm()
-			}
-			this.mode = 'list'
-		},
-		/**
+    listMode () {
+      this.clearError('errorMessage')
+      if (this.mode === 'create') {
+        this.clearCreateForm()
+      } else if (this.mode === 'edit') {
+        this.clearEditForm()
+      }
+      this.mode = 'list'
+    },
+    /**
 		 * To set an image as the default image
 		 * @function
 		 * @param {object} image - The image to make default
 		 * @returns {undefined}
 		 */
-		flipDefault (image) {
-			this.imageToEdit = {
-				...image,
-				default: Number(image.default) === 1 ? 0 : 1
-			}
-			this.editImage()
-		},
-		/**
+    flipDefault (image) {
+      this.imageToEdit = {
+        ...image,
+        default: Number(image.default) === 1 ? 0 : 1
+      }
+      this.editImage()
+    },
+    /**
 		 * To open the image edit interface
 		 * @function
 		 * @param {object} image - The image to edit
 		 * @returns {undefined}
 		 */
-		editMode (image) {
-			this.clearError('errorMessage')
-			this.imageToEdit = {
-				...image,
-				order: String(image.order)
-			}
-			this.mode = 'edit'
-		},
-		/**
+    editMode (image) {
+      this.clearError('errorMessage')
+      this.imageToEdit = {
+        ...image,
+        order: String(image.order)
+      }
+      this.mode = 'edit'
+    },
+    /**
 		 * To replace the url with the selected url
 		 * @function
 		 * @param {object} image - The image to edit
 		 * @returns {undefined}
 		 */
-		updateImageToEdit (image) {
-			this.imageToEdit.url = image.image_url
-			this.editImage()
-		},
-		/**
+    updateImageToEdit (image) {
+      this.imageToEdit.url = image.image_url
+      this.editImage()
+    },
+    /**
 		 * To validate new image data before submitting
 		 * @function
 		 * @returns {undefined}
 		 */
-		validateImageToEdit () {
-			var imagesVue = this
-			return new Promise(function (resolve, reject) {
-				if (!$.isNumeric(imagesVue.imageToEdit.order)) {
-					reject('Order must be a number')
-				} else if (!imagesVue.imageToEdit.url.length) {
-					reject('Select an image')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateImageToEdit () {
+      var imagesVue = this
+      return new Promise(function (resolve, reject) {
+        if (!$.isNumeric(imagesVue.imageToEdit.order)) {
+          reject('Order must be a number')
+        } else if (!imagesVue.imageToEdit.url.length) {
+          reject('Select an image')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To update image data in the backend
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		editImage () {
-			var imagesVue = this
-			this.clearError('errorMessage')
-			return imagesVue
-				.validateImageToEdit()
-				.then(response => {
-					return ItemsFunctions.updateItemImage(
-						imagesVue.$root.appId,
-						imagesVue.$root.appSecret,
-						imagesVue.$root.userToken,
-						imagesVue.item.id,
-						imagesVue.imageToEdit
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								imagesVue.images = response.payload.item_images
-								imagesVue.mode = 'list'
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: `We could not update the image`,
-								errorName: 'errorMessage',
-								vue: imagesVue
-							})
-						})
-				})
-				.catch(reason => {
-					imagesVue.errorMessage = reason
-					imagesVue.$scrollTo(imagesVue.$refs.errorMessage, 1000, {
-						offset: -50
-					})
-				})
-		},
-		/**
+    editImage () {
+      var imagesVue = this
+      this.clearError('errorMessage')
+      return imagesVue
+        .validateImageToEdit()
+        .then(response => {
+          return ItemsFunctions.updateItemImage(
+            imagesVue.$root.appId,
+            imagesVue.$root.appSecret,
+            imagesVue.$root.userToken,
+            imagesVue.item.id,
+            imagesVue.imageToEdit
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                imagesVue.images = response.payload.item_images
+                imagesVue.mode = 'list'
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: `We could not update the image`,
+                errorName: 'errorMessage',
+                vue: imagesVue
+              })
+            })
+        })
+        .catch(reason => {
+          imagesVue.errorMessage = reason
+          imagesVue.$scrollTo(imagesVue.$refs.errorMessage, 1000, {
+            offset: -50
+          })
+        })
+    },
+    /**
 		 * To reset the edit form
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearEditForm () {
-			this.imageToEdit = {}
-		},
-		/**
+    clearEditForm () {
+      this.imageToEdit = {}
+    },
+    /**
 		 * To open the delete interface
 		 * @function
 		 * @param {object} image - The image to delete
 		 * @returns {undefined}
 		 */
-		deleteMode (image) {
-			this.clearError('errorMessage')
-			this.imageToDelete = image
-			this.mode = 'delete'
-		},
-		/**
+    deleteMode (image) {
+      this.clearError('errorMessage')
+      this.imageToDelete = image
+      this.mode = 'delete'
+    },
+    /**
 		 * To delete the image
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		deleteImage () {
-			this.deleting = true
-			var imagesVue = this
+    deleteImage () {
+      this.deleting = true
+      var imagesVue = this
 
-			return ItemsFunctions.deleteItemImage(
-				imagesVue.$root.appId,
-				imagesVue.$root.appSecret,
-				imagesVue.$root.userToken,
-				imagesVue.item.id,
-				imagesVue.imageToDelete.id
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						imagesVue.images = imagesVue.images.filter(image => {
-							return image.id !== imagesVue.imageToDelete.id
-						})
-						imagesVue.mode = 'list'
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: `We could not delete the image`,
-						errorName: 'errorMessage',
-						vue: imagesVue
-					})
-				})
-				.finally(() => {
-					imagesVue.deleting = false
-				})
-		},
-		/**
+      return ItemsFunctions.deleteItemImage(
+        imagesVue.$root.appId,
+        imagesVue.$root.appSecret,
+        imagesVue.$root.userToken,
+        imagesVue.item.id,
+        imagesVue.imageToDelete.id
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            imagesVue.images = imagesVue.images.filter(image => {
+              return image.id !== imagesVue.imageToDelete.id
+            })
+            imagesVue.mode = 'list'
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: `We could not delete the image`,
+            errorName: 'errorMessage',
+            vue: imagesVue
+          })
+        })
+        .finally(() => {
+          imagesVue.deleting = false
+        })
+    },
+    /**
 		 * To close the images modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('closeImagesModal')
-		}
-	}
+    closeModal () {
+      this.$emit('closeImagesModal')
+    }
+  }
 }
 </script>
 

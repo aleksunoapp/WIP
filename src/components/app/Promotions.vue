@@ -1249,1342 +1249,1342 @@ import freshiiLogo from '../../../public/client_logo.png'
 import { mapGetters } from 'vuex'
 
 export default {
-	data () {
-		return {
-			breadcrumbArray: [{ name: 'Promotions', link: false }],
-			displayPromotionsData: false,
-			promotions: [],
-			createErrorMessage: '',
-			listErrorMessage: '',
-			createNewPromotionCollapse: true,
-			creating: false,
-			newPromotion: {
-				name: '',
-				description: '',
-				image: '',
-				start_date: '',
-				end_date: '',
-				apply_to_all_locations: 0,
-				apply_to_a_store_group: 0,
-				location_group_id: '',
-				location_group_name: '',
-				created_by: this.$root.createdBy,
-				cta_type: '',
-				cta_value: '',
-				skuArray: [],
-				cta_text: '',
-				featured: 0,
-				short_description: '',
-				sort_order: '',
-				web: 0,
-				ios: 0,
-				android: 0
-			},
-			showEditPromotionModal: false,
-			selectedPromotionId: 0,
-			deletePromotionModalActive: false,
-			showStoreGroupsModal: false,
-			loadingGroupsData: false,
-			storeGroups: [],
-			geolocations: [],
-			storeGroupsError: '',
-			showApplyPromotionModal: false,
-			selectedPromotion: {},
-			applyMode: 'all',
-			selectedGroupId: null,
-			applyErrorMessage: '',
-			selectedGeolocationId: null,
-			loadingUserGroupsData: false,
-			userGroups: [],
-			selectedUserGroupId: null,
-			pageCount: 1,
-			currentPage: 1,
-			showQrCodeModal: false,
-			promotionForQrCode: {
-				name: '',
-				promotion_id: null,
-				allLocations: false,
-				qr_code: '',
-				qr_code_id: null,
-				showStoreSelector: false,
-				locations: [],
-				min_loyalty_points: '',
-				max_use: '',
-				max_use_per_person: ''
-			},
-			qrCodes: [],
-			qrErrorMessage: '',
-			showMenuModifierTreeModal: false,
-			showPromoCodesModal: false,
-			promoCodesErrorMessage: '',
-			promoCodes: [],
-			provider: {
-				downloadTrigger: false,
-				width: 200
-			},
-			freshiiLogo: freshiiLogo,
-			imageMode: {
-				newMenu: false
-			},
-			applyingToUserGroup: false,
-			applyingToAllStores: false,
-			applyingToGroup: false,
-			applyingToGeolocation: false,
-			updating: false,
-			generating: false,
-			deleting: false,
+  data () {
+    return {
+      breadcrumbArray: [{ name: 'Promotions', link: false }],
+      displayPromotionsData: false,
+      promotions: [],
+      createErrorMessage: '',
+      listErrorMessage: '',
+      createNewPromotionCollapse: true,
+      creating: false,
+      newPromotion: {
+        name: '',
+        description: '',
+        image: '',
+        start_date: '',
+        end_date: '',
+        apply_to_all_locations: 0,
+        apply_to_a_store_group: 0,
+        location_group_id: '',
+        location_group_name: '',
+        created_by: this.$root.createdBy,
+        cta_type: '',
+        cta_value: '',
+        skuArray: [],
+        cta_text: '',
+        featured: 0,
+        short_description: '',
+        sort_order: '',
+        web: 0,
+        ios: 0,
+        android: 0
+      },
+      showEditPromotionModal: false,
+      selectedPromotionId: 0,
+      deletePromotionModalActive: false,
+      showStoreGroupsModal: false,
+      loadingGroupsData: false,
+      storeGroups: [],
+      geolocations: [],
+      storeGroupsError: '',
+      showApplyPromotionModal: false,
+      selectedPromotion: {},
+      applyMode: 'all',
+      selectedGroupId: null,
+      applyErrorMessage: '',
+      selectedGeolocationId: null,
+      loadingUserGroupsData: false,
+      userGroups: [],
+      selectedUserGroupId: null,
+      pageCount: 1,
+      currentPage: 1,
+      showQrCodeModal: false,
+      promotionForQrCode: {
+        name: '',
+        promotion_id: null,
+        allLocations: false,
+        qr_code: '',
+        qr_code_id: null,
+        showStoreSelector: false,
+        locations: [],
+        min_loyalty_points: '',
+        max_use: '',
+        max_use_per_person: ''
+      },
+      qrCodes: [],
+      qrErrorMessage: '',
+      showMenuModifierTreeModal: false,
+      showPromoCodesModal: false,
+      promoCodesErrorMessage: '',
+      promoCodes: [],
+      provider: {
+        downloadTrigger: false,
+        width: 200
+      },
+      freshiiLogo: freshiiLogo,
+      imageMode: {
+        newMenu: false
+      },
+      applyingToUserGroup: false,
+      applyingToAllStores: false,
+      applyingToGroup: false,
+      applyingToGeolocation: false,
+      updating: false,
+      generating: false,
+      deleting: false,
 
-			showAssignCountriesModal: false,
-			promotionToAssignCountriesTo: {}
-		}
-	},
-	computed: {
-		activeLocationId: function () {
-			return this.$root.activeLocation.id
-		},
-		...mapGetters(['can', 'canAny'])
-	},
-	watch: {
-		activeLocationId: function () {
-			this.getPromotionsForAStore()
-		},
-		'newPromotion.apply_to_all_locations' (newVal) {
-			if (newVal) {
-				this.newPromotion.apply_to_a_store_group = 0
-			}
-		},
-		'newPromotion.apply_to_a_store_group' (newVal) {
-			if (newVal) {
-				this.newPromotion.apply_to_all_locations = 0
-			} else {
-				this.newPromotion.location_group_id = ''
-				this.newPromotion.location_group_name = ''
-			}
-		}
-	},
-	mounted () {
-		this.getAllPromotions()
-		this.getGroups()
-		this.getGeolocations()
-		this.getUserGroups()
-		this.getQrCodes()
-		this.getAllPromoCodes()
-	},
-	methods: {
-		/**
+      showAssignCountriesModal: false,
+      promotionToAssignCountriesTo: {}
+    }
+  },
+  computed: {
+    activeLocationId: function () {
+      return this.$root.activeLocation.id
+    },
+    ...mapGetters(['can', 'canAny'])
+  },
+  watch: {
+    activeLocationId: function () {
+      this.getPromotionsForAStore()
+    },
+    'newPromotion.apply_to_all_locations' (newVal) {
+      if (newVal) {
+        this.newPromotion.apply_to_a_store_group = 0
+      }
+    },
+    'newPromotion.apply_to_a_store_group' (newVal) {
+      if (newVal) {
+        this.newPromotion.apply_to_all_locations = 0
+      } else {
+        this.newPromotion.location_group_id = ''
+        this.newPromotion.location_group_name = ''
+      }
+    }
+  },
+  mounted () {
+    this.getAllPromotions()
+    this.getGroups()
+    this.getGeolocations()
+    this.getUserGroups()
+    this.getQrCodes()
+    this.getAllPromoCodes()
+  },
+  methods: {
+    /**
 		 * To toggle between the open and closed state of the resource picker
 		 * @function
 		 * @param {string} object - The name of the object the image is for
 		 * @param {object} value - The open / closed value of the picker
 		 * @returns {undefined}
 		 */
-		toggleImageMode (object, value) {
-			this.imageMode[object] = value
-		},
-		/**
+    toggleImageMode (object, value) {
+      this.imageMode[object] = value
+    },
+    /**
 		 * To set the image to be same as the one emitted by the gallery modal.
 		 * @function
 		 * @param {object} val - The emitted image object.
 		 * @returns {undefined}
 		 */
-		updateImage (val) {
-			this.newPromotion.image = val.image_url
-		},
-		/**
+    updateImage (val) {
+      this.newPromotion.image = val.image_url
+    },
+    /**
 		 * To open menu item selection.
 		 * @function
 		 * @returns {undefined}
 		 */
-		openMenuModifierTree () {
-			this.showMenuModifierTreeModal = true
-		},
-		/**
+    openMenuModifierTree () {
+      this.showMenuModifierTreeModal = true
+    },
+    /**
 		 * To close menu items selection
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeMenuModifierTree () {
-			this.showMenuModifierTreeModal = false
-		},
-		/**
+    closeMenuModifierTree () {
+      this.showMenuModifierTreeModal = false
+    },
+    /**
 		 * To record the selected items
 		 * @function
 		 * @param {object} data - An object containing a selectedSKUs property
 		 * @returns {undefined}
 		 */
-		setSelectedItems (data) {
-			this.newPromotion.skuArray = data.selectedSKUs
-			this.showMenuModifierTreeModal = false
-		},
-		/**
+    setSelectedItems (data) {
+      this.newPromotion.skuArray = data.selectedSKUs
+      this.showMenuModifierTreeModal = false
+    },
+    /**
 		 * To open the promo codes selection
 		 * @function
 		 * @returns {undefined}
 		 */
-		openPromoCodesCodeModal () {
-			this.showPromoCodesModal = true
-		},
-		/**
+    openPromoCodesCodeModal () {
+      this.showPromoCodesModal = true
+    },
+    /**
 		 * To close the promo codes modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		closePromoCodesCodeModal () {
-			this.clearError('promoCodesErrorMessage')
-			this.showPromoCodesModal = false
-		},
-		/**
+    closePromoCodesCodeModal () {
+      this.clearError('promoCodesErrorMessage')
+      this.showPromoCodesModal = false
+    },
+    /**
 		 * To set the selected promo codes as cta_value and close promo code selection
 		 * @function
 		 * @returns {undefined}
 		 */
-		selectPromoCodes () {
-			this.newPromotion.cta_value = this.promoCodes
-				.filter(code => code.selected)
-				.map(code => code.id)
-				.toString()
-			this.closePromoCodesCodeModal()
-		},
-		/**
+    selectPromoCodes () {
+      this.newPromotion.cta_value = this.promoCodes
+        .filter(code => code.selected)
+        .map(code => code.id)
+        .toString()
+      this.closePromoCodesCodeModal()
+    },
+    /**
 		 * To reset the cta_value when cta_type changes.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearCtaValue () {
-			this.newPromotion.cta_value = ''
-		},
-		/**
+    clearCtaValue () {
+      this.newPromotion.cta_value = ''
+    },
+    /**
 		 * To get a list of all promoCodes.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getAllPromoCodes () {
-			var promotionsVue = this
-			return PromoCodesFunctions.getAllPromoCodes(
-				promotionsVue.$root.appId,
-				promotionsVue.$root.appSecret,
-				promotionsVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						promotionsVue.promoCodes = response.payload.map(
-							code => {
-								code.selected = false
-								return code
-							}
-						)
-					} else {
-						throw new Error(
-							'We could not fetch a list of promo codes'
-						)
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch a list of promo codes',
-						errorName: 'promoCodesErrorMessage',
-						vue: promotionsVue
-					})
-				})
-		},
-		/**
+    getAllPromoCodes () {
+      var promotionsVue = this
+      return PromoCodesFunctions.getAllPromoCodes(
+        promotionsVue.$root.appId,
+        promotionsVue.$root.appSecret,
+        promotionsVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            promotionsVue.promoCodes = response.payload.map(
+              code => {
+                code.selected = false
+                return code
+              }
+            )
+          } else {
+            throw new Error(
+              'We could not fetch a list of promo codes'
+            )
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch a list of promo codes',
+            errorName: 'promoCodesErrorMessage',
+            vue: promotionsVue
+          })
+        })
+    },
+    /**
 		 * To to move the selected locations to the QR code settings object
 		 * @function
 		 * @param {array} locations - IDs of selected stores
 		 * @returns {undefined}
 		 */
-		selectQrLocations (locations) {
-			this.promotionForQrCode.locations = locations
-		},
-		/**
+    selectQrLocations (locations) {
+      this.promotionForQrCode.locations = locations
+    },
+    /**
 		 * To to move the selected locations to the QR code settings object
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeStorePicker () {
-			this.promotionForQrCode.showStoreSelector = false
-		},
-		/**
+    closeStorePicker () {
+      this.promotionForQrCode.showStoreSelector = false
+    },
+    /**
 		 * To set the QR code settings to select locations.
 		 * @function
 		 * @returns {undefined}
 		 */
-		qrForSelectLocations () {
-			this.promotionForQrCode.allLocations = false
-			this.promotionForQrCode.showStoreSelector = true
-		},
-		/**
+    qrForSelectLocations () {
+      this.promotionForQrCode.allLocations = false
+      this.promotionForQrCode.showStoreSelector = true
+    },
+    /**
 		 * To get a list of QR codes.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getQrCodes () {
-			var promotionsVue = this
-			PromotionsFunctions.getQrCodes(
-				promotionsVue.$root.appId,
-				promotionsVue.$root.appSecret,
-				promotionsVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						promotionsVue.qrCodes = response.payload
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not get a list of QR codes',
-						errorName: 'qrErrorMessage',
-						vue: promotionsVue
-					})
-				})
-		},
-		/**
+    getQrCodes () {
+      var promotionsVue = this
+      PromotionsFunctions.getQrCodes(
+        promotionsVue.$root.appId,
+        promotionsVue.$root.appSecret,
+        promotionsVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            promotionsVue.qrCodes = response.payload
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not get a list of QR codes',
+            errorName: 'qrErrorMessage',
+            vue: promotionsVue
+          })
+        })
+    },
+    /**
 		 * To display the modal for QR codes.
 		 * @function
 		 * @param {object} promotion - The selected promotion
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		openQrCodeModal (promotion, event) {
-			this.clearError('qrErrorMessage')
-			event.stopPropagation()
-			let filtered = this.qrCodes.filter(
-				code => code.promotion_id === promotion.id
-			)
-			if (filtered.length) {
-				this.promotionForQrCode.name = promotion.name
-				this.promotionForQrCode.qr_code = filtered[0].qr_code
-				this.promotionForQrCode.qr_code_id = filtered[0].id
-				this.promotionForQrCode.locations = filtered[0].locations
-				this.promotionForQrCode.max_use = filtered[0].max_use
-				this.promotionForQrCode.max_use_per_person =
+    openQrCodeModal (promotion, event) {
+      this.clearError('qrErrorMessage')
+      event.stopPropagation()
+      let filtered = this.qrCodes.filter(
+        code => code.promotion_id === promotion.id
+      )
+      if (filtered.length) {
+        this.promotionForQrCode.name = promotion.name
+        this.promotionForQrCode.qr_code = filtered[0].qr_code
+        this.promotionForQrCode.qr_code_id = filtered[0].id
+        this.promotionForQrCode.locations = filtered[0].locations
+        this.promotionForQrCode.max_use = filtered[0].max_use
+        this.promotionForQrCode.max_use_per_person =
 					filtered[0].max_use_per_person
-				this.promotionForQrCode.min_loyalty_points =
+        this.promotionForQrCode.min_loyalty_points =
 					filtered[0].min_loyalty_points
-			} else {
-				this.promotionForQrCode.promotion_id = promotion.id
-			}
-			this.showQrCodeModal = true
-		},
-		/**
+      } else {
+        this.promotionForQrCode.promotion_id = promotion.id
+      }
+      this.showQrCodeModal = true
+    },
+    /**
 		 * To reset the QR code's promotion object.
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetPromotionForQrCode () {
-			this.promotionForQrCode = {
-				name: '',
-				promotion_id: null,
-				allLocations: false,
-				qr_code: '',
-				qr_code_id: null,
-				showStoreSelector: false,
-				locations: [],
-				min_loyalty_points: '',
-				max_use: '',
-				max_use_per_person: ''
-			}
-		},
-		/**
+    resetPromotionForQrCode () {
+      this.promotionForQrCode = {
+        name: '',
+        promotion_id: null,
+        allLocations: false,
+        qr_code: '',
+        qr_code_id: null,
+        showStoreSelector: false,
+        locations: [],
+        min_loyalty_points: '',
+        max_use: '',
+        max_use_per_person: ''
+      }
+    },
+    /**
 		 * To check if the input is a positive number
 		 * @function
 		 * @param {string} input - User's input
 		 * @returns {boolean} True is positive integer or float, false is not
 		 */
-		isNonNegativeNumber (input) {
-			try {
-				const inputString = String(input)
-				if (inputString.length > inputString.replace(/[^\d.]/g, '').length) {
-					return false
-				}
-				const value = Number(input)
-				if (value < 0) {
-					return false
-				}
-				return true
-			} catch (e) {
-				if (this.environment !== 'production') {
-					console.log({e})
-				}
-				return false
-			}
-		},
-		/**
+    isNonNegativeNumber (input) {
+      try {
+        const inputString = String(input)
+        if (inputString.length > inputString.replace(/[^\d.]/g, '').length) {
+          return false
+        }
+        const value = Number(input)
+        if (value < 0) {
+          return false
+        }
+        return true
+      } catch (e) {
+        if (this.environment !== 'production') {
+          console.log({ e })
+        }
+        return false
+      }
+    },
+    /**
 		 * To check if the category data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateQRCodeData () {
-			var promotionsVue = this
-			return new Promise(function (resolve, reject) {
-				if (!promotionsVue.promotionForQrCode.min_loyalty_points.length) {
-					reject('Minimum Loyalty Points cannot be blank')
-				} else if (!promotionsVue.isNonNegativeNumber(promotionsVue.promotionForQrCode.min_loyalty_points)) {
-					reject('Minimum Loyalty Points cannot be negative')
-				} else if (!promotionsVue.promotionForQrCode.max_use.length) {
-					reject('Maximum Redemptions cannot be blank')
-				} else if (!promotionsVue.isNonNegativeNumber(promotionsVue.promotionForQrCode.max_use)) {
-					reject('Maximum Redemptions cannot be negative')
-				} else if (!promotionsVue.promotionForQrCode.max_use_per_person.length) {
-					reject('Maximum Redemptions Per Person cannot be blank')
-				} else if (!promotionsVue.isNonNegativeNumber(promotionsVue.promotionForQrCode.max_use_per_person)) {
-					reject('Maximum Redemptions Per Person cannot be negative')
-				} else if (!promotionsVue.promotionForQrCode.locations.length && !promotionsVue.promotionForQrCode.allLocations) {
-					reject('Select at least one store')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateQRCodeData () {
+      var promotionsVue = this
+      return new Promise(function (resolve, reject) {
+        if (!promotionsVue.promotionForQrCode.min_loyalty_points.length) {
+          reject('Minimum Loyalty Points cannot be blank')
+        } else if (!promotionsVue.isNonNegativeNumber(promotionsVue.promotionForQrCode.min_loyalty_points)) {
+          reject('Minimum Loyalty Points cannot be negative')
+        } else if (!promotionsVue.promotionForQrCode.max_use.length) {
+          reject('Maximum Redemptions cannot be blank')
+        } else if (!promotionsVue.isNonNegativeNumber(promotionsVue.promotionForQrCode.max_use)) {
+          reject('Maximum Redemptions cannot be negative')
+        } else if (!promotionsVue.promotionForQrCode.max_use_per_person.length) {
+          reject('Maximum Redemptions Per Person cannot be blank')
+        } else if (!promotionsVue.isNonNegativeNumber(promotionsVue.promotionForQrCode.max_use_per_person)) {
+          reject('Maximum Redemptions Per Person cannot be negative')
+        } else if (!promotionsVue.promotionForQrCode.locations.length && !promotionsVue.promotionForQrCode.allLocations) {
+          reject('Select at least one store')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To get a QR code from the api.
 		 * @function
 		 * @returns {object} - A promise
 		 */
-		generateQrCode () {
-			this.clearError('qrErrorMessage')
-			var promotionsVue = this
-			this.validateQRCodeData()
-				.then(response => {
-					promotionsVue.generating = true
-					PromotionsFunctions.generateQrcode(
-						promotionsVue.$root.appId,
-						promotionsVue.$root.appSecret,
-						promotionsVue.$root.userToken,
-						promotionsVue.promotionForQrCode
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								promotionsVue.promotionForQrCode.qr_code =
+    generateQrCode () {
+      this.clearError('qrErrorMessage')
+      var promotionsVue = this
+      this.validateQRCodeData()
+        .then(response => {
+          promotionsVue.generating = true
+          PromotionsFunctions.generateQrcode(
+            promotionsVue.$root.appId,
+            promotionsVue.$root.appSecret,
+            promotionsVue.$root.userToken,
+            promotionsVue.promotionForQrCode
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                promotionsVue.promotionForQrCode.qr_code =
 									response.payload.qr_code
-								promotionsVue.promotionForQrCode.qr_code_id =
+                promotionsVue.promotionForQrCode.qr_code_id =
 									response.payload.qr_code.id
-								promotionsVue.getQrCodes()
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not generate the QR code',
-								errorName: 'qrErrorMessage',
-								vue: promotionsVue
-							})
-						})
-						.finally(() => {
-							promotionsVue.generating = false
-						})
-				})
-				.catch(reason => {
-					promotionsVue.qrErrorMessage = reason
-				})
-		},
-		/**
+                promotionsVue.getQrCodes()
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not generate the QR code',
+                errorName: 'qrErrorMessage',
+                vue: promotionsVue
+              })
+            })
+            .finally(() => {
+              promotionsVue.generating = false
+            })
+        })
+        .catch(reason => {
+          promotionsVue.qrErrorMessage = reason
+        })
+    },
+    /**
 		 * To delete a QR code from the api.
 		 * @function
 		 * @returns {object} - A promise
 		 */
-		deleteQrCode () {
-			this.deleting = true
-			if (this.promotionForQrCode.qr_code_id === undefined) {
-				const code = this.qrCodes.find(code => code.promotion_id === this.promotionForQrCode.promotion_id)
-				if (code !== undefined) {
-					this.promotionForQrCode.qr_code_id = code.id
-				}
-			}
+    deleteQrCode () {
+      this.deleting = true
+      if (this.promotionForQrCode.qr_code_id === undefined) {
+        const code = this.qrCodes.find(code => code.promotion_id === this.promotionForQrCode.promotion_id)
+        if (code !== undefined) {
+          this.promotionForQrCode.qr_code_id = code.id
+        }
+      }
 
-			var promotionsVue = this
-			PromotionsFunctions.deleteQrCode(
-				promotionsVue.$root.appId,
-				promotionsVue.$root.appSecret,
-				promotionsVue.$root.userToken,
-				promotionsVue.promotionForQrCode.qr_code_id
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						promotionsVue.closeQrCodeModal()
-						promotionsVue.getQrCodes()
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not delete the QR code',
-						errorName: 'qrErrorMessage',
-						vue: promotionsVue
-					})
-				})
-				.finally(() => {
-					promotionsVue.deleting = false
-				})
-		},
-		/**
+      var promotionsVue = this
+      PromotionsFunctions.deleteQrCode(
+        promotionsVue.$root.appId,
+        promotionsVue.$root.appSecret,
+        promotionsVue.$root.userToken,
+        promotionsVue.promotionForQrCode.qr_code_id
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            promotionsVue.closeQrCodeModal()
+            promotionsVue.getQrCodes()
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not delete the QR code',
+            errorName: 'qrErrorMessage',
+            vue: promotionsVue
+          })
+        })
+        .finally(() => {
+          promotionsVue.deleting = false
+        })
+    },
+    /**
 		 * To close the QR code modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeQrCodeModal () {
-			this.resetPromotionForQrCode()
-			this.showQrCodeModal = false
-		},
-		/**
+    closeQrCodeModal () {
+      this.resetPromotionForQrCode()
+      this.showQrCodeModal = false
+    },
+    /**
 		 * To get a text label for the CTA type
 		 * @function
 		 * @param {string} val - The api value
 		 * @returns {undefined}
 		 */
-		ctaLabel (val) {
-			switch (val) {
-			case 'hyperlink':
-				return 'hyperlink'
-			case 'menu_item':
-				return 'menu item'
-			case 'promo_code':
-				return 'promo code'
-			case 'camera':
-				return 'camera'
-			case 'call':
-				return 'call'
-			case 'sms':
-				return 'SMS'
-			case 'video':
-				return 'video'
-			default:
-				return 'n/a'
-			}
-		},
-		/**
+    ctaLabel (val) {
+      switch (val) {
+        case 'hyperlink':
+          return 'hyperlink'
+        case 'menu_item':
+          return 'menu item'
+        case 'promo_code':
+          return 'promo code'
+        case 'camera':
+          return 'camera'
+        case 'call':
+          return 'call'
+        case 'sms':
+          return 'SMS'
+        case 'video':
+          return 'video'
+        default:
+          return 'n/a'
+      }
+    },
+    /**
 		 * To update the current page.
 		 * @function
 		 * @param {integer} page - The new current page number
 		 * @returns {undefined}
 		 */
-		changeCurrentPage (page) {
-			this.currentPage = page
-			this.getUserGroups()
-		},
-		/**
+    changeCurrentPage (page) {
+      this.currentPage = page
+      this.getUserGroups()
+    },
+    /**
 		 * To reset applying promotion to stores
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetApply () {
-			this.storeGroupsError = ''
-			this.showApplyPromotionModal = false
-			this.selectedPromotion = {}
-			this.applyMode = 'all'
+    resetApply () {
+      this.storeGroupsError = ''
+      this.showApplyPromotionModal = false
+      this.selectedPromotion = {}
+      this.applyMode = 'all'
 
-			if (this.storeGroups.length) {
-				this.selectedGroupId = this.storeGroups[0].id
-			} else {
-				this.selectedGroupId = null
-			}
+      if (this.storeGroups.length) {
+        this.selectedGroupId = this.storeGroups[0].id
+      } else {
+        this.selectedGroupId = null
+      }
 
-			if (this.userGroups.length) {
-				this.selectedUserGroupId = this.userGroups[0].id
-			} else {
-				this.selectedUserGroupId = null
-			}
+      if (this.userGroups.length) {
+        this.selectedUserGroupId = this.userGroups[0].id
+      } else {
+        this.selectedUserGroupId = null
+      }
 
-			if (this.geolocations.length) {
-				this.selectedGeolocationId = this.geolocations[0].id
-			} else {
-				this.selectedGeolocationId = null
-			}
+      if (this.geolocations.length) {
+        this.selectedGeolocationId = this.geolocations[0].id
+      } else {
+        this.selectedGeolocationId = null
+      }
 
-			this.applyErrorMessage = ''
-		},
-		/**
+      this.applyErrorMessage = ''
+    },
+    /**
 		 * To get a list of geolocations.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getGeolocations () {
-			var promotionsVue = this
-			PromotionsFunctions.getGeolocations(
-				promotionsVue.$root.appId,
-				promotionsVue.$root.appSecret,
-				promotionsVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						promotionsVue.geolocations = response.payload
-						if (response.payload.length) {
-							promotionsVue.selectedGeolocationId =
+    getGeolocations () {
+      var promotionsVue = this
+      PromotionsFunctions.getGeolocations(
+        promotionsVue.$root.appId,
+        promotionsVue.$root.appSecret,
+        promotionsVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            promotionsVue.geolocations = response.payload
+            if (response.payload.length) {
+              promotionsVue.selectedGeolocationId =
 								response.payload[0].id
-						}
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch geolocations',
-						errorName: 'listErrorMessage',
-						vue: promotionsVue
-					})
-				})
-		},
-		/**
+            }
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch geolocations',
+            errorName: 'listErrorMessage',
+            vue: promotionsVue
+          })
+        })
+    },
+    /**
 		 * To get a list of user groups.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getUserGroups () {
-			this.loadingUserGroupsData = true
-			var promotionsVue = this
-			promotionsVue.userGroups = []
-			let paginationPreferences = {
-				page: this.currentPage
-			}
-			return UserGroupsFunctions.getGroups(
-				promotionsVue.$root.appId,
-				promotionsVue.$root.appSecret,
-				promotionsVue.$root.userToken,
-				paginationPreferences
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						promotionsVue.userGroups = response.payload.data
-						promotionsVue.pageCount = response.payload.last_page
-					} else {
-						promotionsVue.loadingUserGroupsData = false
-					}
-				})
-				.catch(reason => {
-					promotionsVue.loadingUserGroupsData = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch user groups',
-						errorName: 'applyErrorMessage',
-						vue: promotionsVue,
-						containerRef: 'applyModal'
-					})
-				})
-		},
-		/**
+    getUserGroups () {
+      this.loadingUserGroupsData = true
+      var promotionsVue = this
+      promotionsVue.userGroups = []
+      let paginationPreferences = {
+        page: this.currentPage
+      }
+      return UserGroupsFunctions.getGroups(
+        promotionsVue.$root.appId,
+        promotionsVue.$root.appSecret,
+        promotionsVue.$root.userToken,
+        paginationPreferences
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            promotionsVue.userGroups = response.payload.data
+            promotionsVue.pageCount = response.payload.last_page
+          } else {
+            promotionsVue.loadingUserGroupsData = false
+          }
+        })
+        .catch(reason => {
+          promotionsVue.loadingUserGroupsData = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch user groups',
+            errorName: 'applyErrorMessage',
+            vue: promotionsVue,
+            containerRef: 'applyModal'
+          })
+        })
+    },
+    /**
 		 * To apply promotion to a user group
 		 * @function
 		 * @returns {undefined}
 		 */
-		applyToUserGroup () {
-			this.applyingToUserGroup = true
-			var promotionsVue = this
-			let payload = {
-				promotions: [this.selectedPromotion.id]
-			}
-			return PromotionsFunctions.applyToUserGroup(
-				promotionsVue.$root.appId,
-				promotionsVue.$root.appSecret,
-				promotionsVue.$root.userToken,
-				payload,
-				promotionsVue.selectedUserGroupId
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						promotionsVue.closeApplyModal()
-						promotionsVue.showAssignSuccess(response.payload)
-						promotionsVue.resetApply()
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch user groups',
-						errorName: 'applyErrorMessage',
-						vue: promotionsVue,
-						containerRef: 'applyModal'
-					})
-				})
-				.finally(() => {
-					promotionsVue.applyingToUserGroup = false
-				})
-		},
-		/**
+    applyToUserGroup () {
+      this.applyingToUserGroup = true
+      var promotionsVue = this
+      let payload = {
+        promotions: [this.selectedPromotion.id]
+      }
+      return PromotionsFunctions.applyToUserGroup(
+        promotionsVue.$root.appId,
+        promotionsVue.$root.appSecret,
+        promotionsVue.$root.userToken,
+        payload,
+        promotionsVue.selectedUserGroupId
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            promotionsVue.closeApplyModal()
+            promotionsVue.showAssignSuccess(response.payload)
+            promotionsVue.resetApply()
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch user groups',
+            errorName: 'applyErrorMessage',
+            vue: promotionsVue,
+            containerRef: 'applyModal'
+          })
+        })
+        .finally(() => {
+          promotionsVue.applyingToUserGroup = false
+        })
+    },
+    /**
 		 * To apply promotion to all stores
 		 * @function
 		 * @param {integer} id - The id of the group
 		 * @returns {undefined}
 		 */
-		applyToAllStores () {
-			this.applyingToAllStores = true
-			var promotionsVue = this
-			let payload = {
-				promotions: [this.selectedPromotion.id]
-			}
-			return PromotionsFunctions.applyToAllStores(
-				promotionsVue.$root.appId,
-				promotionsVue.$root.appSecret,
-				promotionsVue.$root.userToken,
-				payload
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						promotionsVue.closeApplyModal()
-						promotionsVue.showAssignSuccess(response.payload)
-						promotionsVue.resetApply()
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch user groups',
-						errorName: 'applyErrorMessage',
-						vue: promotionsVue,
-						containerRef: 'applyModal'
-					})
-				})
-				.finally(() => {
-					promotionsVue.applyingToAllStores = false
-				})
-		},
-		/**
+    applyToAllStores () {
+      this.applyingToAllStores = true
+      var promotionsVue = this
+      let payload = {
+        promotions: [this.selectedPromotion.id]
+      }
+      return PromotionsFunctions.applyToAllStores(
+        promotionsVue.$root.appId,
+        promotionsVue.$root.appSecret,
+        promotionsVue.$root.userToken,
+        payload
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            promotionsVue.closeApplyModal()
+            promotionsVue.showAssignSuccess(response.payload)
+            promotionsVue.resetApply()
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch user groups',
+            errorName: 'applyErrorMessage',
+            vue: promotionsVue,
+            containerRef: 'applyModal'
+          })
+        })
+        .finally(() => {
+          promotionsVue.applyingToAllStores = false
+        })
+    },
+    /**
 		 * To apply promotion to a store group
 		 * @function
 		 * @param {integer} id - The id of the group
 		 * @returns {undefined}
 		 */
-		applyToGroup () {
-			this.applyingToGroup = true
-			var promotionsVue = this
-			let payload = {
-				promotions: [this.selectedPromotion.id]
-			}
-			return PromotionsFunctions.applyToGroup(
-				promotionsVue.$root.appId,
-				promotionsVue.$root.appSecret,
-				promotionsVue.$root.userToken,
-				payload,
-				promotionsVue.selectedGroupId
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						promotionsVue.closeApplyModal()
-						promotionsVue.showAssignSuccess(response.payload)
-						promotionsVue.resetApply()
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch user groups',
-						errorName: 'applyErrorMessage',
-						vue: promotionsVue,
-						containerRef: 'applyModal'
-					})
-				})
-				.finally(() => {
-					promotionsVue.applyingToGroup = false
-				})
-		},
-		/**
+    applyToGroup () {
+      this.applyingToGroup = true
+      var promotionsVue = this
+      let payload = {
+        promotions: [this.selectedPromotion.id]
+      }
+      return PromotionsFunctions.applyToGroup(
+        promotionsVue.$root.appId,
+        promotionsVue.$root.appSecret,
+        promotionsVue.$root.userToken,
+        payload,
+        promotionsVue.selectedGroupId
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            promotionsVue.closeApplyModal()
+            promotionsVue.showAssignSuccess(response.payload)
+            promotionsVue.resetApply()
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch user groups',
+            errorName: 'applyErrorMessage',
+            vue: promotionsVue,
+            containerRef: 'applyModal'
+          })
+        })
+        .finally(() => {
+          promotionsVue.applyingToGroup = false
+        })
+    },
+    /**
 		 * To apply promotion to a store group
 		 * @function
 		 * @param {integer} id - The id of the group
 		 * @returns {undefined}
 		 */
-		applyToGeolocation () {
-			this.applyingToGeolocation = true
-			var promotionsVue = this
-			let payload = {
-				promotions: [this.selectedPromotion.id]
-			}
-			return PromotionsFunctions.applyToGeolocation(
-				promotionsVue.$root.appId,
-				promotionsVue.$root.appSecret,
-				promotionsVue.$root.userToken,
-				payload,
-				promotionsVue.selectedGeolocationId
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						promotionsVue.closeApplyModal()
-						promotionsVue.showAssignSuccess(response.payload)
-						promotionsVue.resetApply()
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch user groups',
-						errorName: 'applyErrorMessage',
-						vue: promotionsVue,
-						containerRef: 'applyModal'
-					})
-				})
-				.finally(() => {
-					promotionsVue.applyingToGeolocation = false
-				})
-		},
-		/**
+    applyToGeolocation () {
+      this.applyingToGeolocation = true
+      var promotionsVue = this
+      let payload = {
+        promotions: [this.selectedPromotion.id]
+      }
+      return PromotionsFunctions.applyToGeolocation(
+        promotionsVue.$root.appId,
+        promotionsVue.$root.appSecret,
+        promotionsVue.$root.userToken,
+        payload,
+        promotionsVue.selectedGeolocationId
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            promotionsVue.closeApplyModal()
+            promotionsVue.showAssignSuccess(response.payload)
+            promotionsVue.resetApply()
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch user groups',
+            errorName: 'applyErrorMessage',
+            vue: promotionsVue,
+            containerRef: 'applyModal'
+          })
+        })
+        .finally(() => {
+          promotionsVue.applyingToGeolocation = false
+        })
+    },
+    /**
 		 * To save the name of the selected group
 		 * @function
 		 * @param {integer} id - The id of the group
 		 * @returns {undefined}
 		 */
-		saveGroupName (id) {
-			let selected = this.storeGroups.find(group => {
-				return group.id === id
-			})
-			this.newPromotion.location_group_name = selected.name
-		},
-		/**
+    saveGroupName (id) {
+      let selected = this.storeGroups.find(group => {
+        return group.id === id
+      })
+      this.newPromotion.location_group_name = selected.name
+    },
+    /**
 		 * To get a list of store groups.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getGroups () {
-			this.loadingGroupsData = true
-			var promotionsVue = this
-			return StoreGroupsFunctions.getGroups(
-				promotionsVue.$root.appId,
-				promotionsVue.$root.appSecret,
-				promotionsVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						promotionsVue.loadingGroupsData = false
-						promotionsVue.storeGroups = response.payload
-						if (response.payload.length) {
-							promotionsVue.selectedGroupId =
+    getGroups () {
+      this.loadingGroupsData = true
+      var promotionsVue = this
+      return StoreGroupsFunctions.getGroups(
+        promotionsVue.$root.appId,
+        promotionsVue.$root.appSecret,
+        promotionsVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            promotionsVue.loadingGroupsData = false
+            promotionsVue.storeGroups = response.payload
+            if (response.payload.length) {
+              promotionsVue.selectedGroupId =
 								response.payload[0].id
-						}
-					} else {
-						promotionsVue.loadingGroupsData = false
-					}
-				})
-				.catch(reason => {
-					promotionsVue.loadingGroupsData = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch store groups',
-						errorName: 'storeGroupsError',
-						vue: promotionsVue,
-						containerRef: 'storesModal'
-					})
-				})
-		},
-		/**
+            }
+          } else {
+            promotionsVue.loadingGroupsData = false
+          }
+        })
+        .catch(reason => {
+          promotionsVue.loadingGroupsData = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch store groups',
+            errorName: 'storeGroupsError',
+            vue: promotionsVue,
+            containerRef: 'storesModal'
+          })
+        })
+    },
+    /**
 		 * To open the store groups modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		openStoreGroupsModal () {
-			this.showStoreGroupsModal = true
-		},
-		/**
+    openStoreGroupsModal () {
+      this.showStoreGroupsModal = true
+    },
+    /**
 		 * To close the store groups modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeStoreGroupsModal () {
-			this.showStoreGroupsModal = false
-		},
-		/**
+    closeStoreGroupsModal () {
+      this.showStoreGroupsModal = false
+    },
+    /**
 		 * To check if a location has been selected.
 		 * @function
 		 * @returns {undefined}
 		 */
-		checkForLocation () {
-			if (this.$root.activeLocation && this.$root.activeLocation.id) {
-				this.applySelectedPromotions()
-			} else {
-				this.showLocationAlert()
-			}
-		},
-		/**
+    checkForLocation () {
+      if (this.$root.activeLocation && this.$root.activeLocation.id) {
+        this.applySelectedPromotions()
+      } else {
+        this.showLocationAlert()
+      }
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAssignSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Promotions have been saved'
-			let type = 'success'
+    showAssignSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Promotions have been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To apply the selected promotion(s) to the current store.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		applySelectedPromotions () {
-			this.updating = true
-			var promotionsVue = this
-			var selectedItems = []
-			var unselectedItems = []
-			for (var i = 0; i < promotionsVue.promotions.length; i++) {
-				if (promotionsVue.promotions[i].selected) {
-					selectedItems.push(promotionsVue.promotions[i].id)
-				} else {
-					unselectedItems.push(promotionsVue.promotions[i].id)
-				}
-			}
-			if (selectedItems.length) {
-				PromotionsFunctions.assignPromotionsToLocation(
-					promotionsVue.$root.activeLocation.id,
-					selectedItems,
-					promotionsVue.$root.appId,
-					promotionsVue.$root.appSecret,
-					promotionsVue.$root.userToken
-				)
-					.then(response => {
-						if (response.code === 200 && response.status === 'ok') {
-							promotionsVue.showAssignSuccess(response.payload)
-						} else {
-							throw new Error(response.message)
-						}
-					})
-					.catch(error => {
-						this.listErrorMessage = error.message
-					})
-					.finally(() => {
-						promotionsVue.updating = false
-					})
-			} else {
-				this.listErrorMessage = 'Please select at least one promotion.'
-			}
-		},
-		/**
+    applySelectedPromotions () {
+      this.updating = true
+      var promotionsVue = this
+      var selectedItems = []
+      var unselectedItems = []
+      for (var i = 0; i < promotionsVue.promotions.length; i++) {
+        if (promotionsVue.promotions[i].selected) {
+          selectedItems.push(promotionsVue.promotions[i].id)
+        } else {
+          unselectedItems.push(promotionsVue.promotions[i].id)
+        }
+      }
+      if (selectedItems.length) {
+        PromotionsFunctions.assignPromotionsToLocation(
+          promotionsVue.$root.activeLocation.id,
+          selectedItems,
+          promotionsVue.$root.appId,
+          promotionsVue.$root.appSecret,
+          promotionsVue.$root.userToken
+        )
+          .then(response => {
+            if (response.code === 200 && response.status === 'ok') {
+              promotionsVue.showAssignSuccess(response.payload)
+            } else {
+              throw new Error(response.message)
+            }
+          })
+          .catch(error => {
+            this.listErrorMessage = error.message
+          })
+          .finally(() => {
+            promotionsVue.updating = false
+          })
+      } else {
+        this.listErrorMessage = 'Please select at least one promotion.'
+      }
+    },
+    /**
 		 * To toggle the checkbox of the promotion.
 		 * @function
 		 * @param {object} promotion - The selected promotion
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		toggleChecked (promotion, event) {
-			event.stopPropagation()
-			this.promotions.forEach(promo => {
-				if (promo.id === promotion.id) {
-					promo.selected = !promo.selected
-				}
-			})
-		},
-		/**
+    toggleChecked (promotion, event) {
+      event.stopPropagation()
+      this.promotions.forEach(promo => {
+        if (promo.id === promotion.id) {
+          promo.selected = !promo.selected
+        }
+      })
+    },
+    /**
 		 * To display the modal for deleting a promotion.
 		 * @function
 		 * @param {object} promotion - The selected promotion
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		deletePromotion (promotion, event) {
-			event.stopPropagation()
-			this.selectedPromotionId = promotion.id
-			this.deletePromotionModalActive = true
-		},
-		/**
+    deletePromotion (promotion, event) {
+      event.stopPropagation()
+      this.selectedPromotionId = promotion.id
+      this.deletePromotionModalActive = true
+    },
+    /**
 		 * To close the modal for deleting a promotion.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeDeletePromotionModal () {
-			this.deletePromotionModalActive = false
-		},
-		/**
+    closeDeletePromotionModal () {
+      this.deletePromotionModalActive = false
+    },
+    /**
 		 * To close the modal for deleting a promotion and remove that promotion from DOM.
 		 * @function
 		 * @returns {undefined}
 		 */
-		deletePromotionAndCloseModal () {
-			this.deletePromotionModalActive = false
-			this.getAllPromotions()
-		},
-		/**
+    deletePromotionAndCloseModal () {
+      this.deletePromotionModalActive = false
+      this.getAllPromotions()
+    },
+    /**
 		 * To show the modal to apply a promotion to stores.
 		 * @function
 		 * @param {object} promotion - The selected promotion object.
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		applyPromotion (promotion, event) {
-			event.stopPropagation()
-			if (!this.$root.activeLocation.id) {
-				this.showLocationAlert()
-				return
-			}
-			this.selectedPromotion = promotion
-			this.showApplyPromotionModal = true
-		},
-		/**
+    applyPromotion (promotion, event) {
+      event.stopPropagation()
+      if (!this.$root.activeLocation.id) {
+        this.showLocationAlert()
+        return
+      }
+      this.selectedPromotion = promotion
+      this.showApplyPromotionModal = true
+    },
+    /**
 		 * To display a prompt to select a location.
 		 * @function
 		 * @returns {undefined}
 		 */
-		showLocationAlert () {
-			this.$swal({
-				title: 'No location',
-				text: 'Please select a store from the stores panel first.',
-				type: 'warning'
-			})
-		},
-		/**
+    showLocationAlert () {
+      this.$swal({
+        title: 'No location',
+        text: 'Please select a store from the stores panel first.',
+        type: 'warning'
+      })
+    },
+    /**
 		 * To show the modal to edit a promotion's details.
 		 * @function
 		 * @param {object} promotion - The selected promotion object.
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		editPromotion (promotion, event) {
-			event.stopPropagation()
-			this.selectedPromotionId = promotion.id
-			this.showEditPromotionModal = true
-		},
-		/**
+    editPromotion (promotion, event) {
+      event.stopPropagation()
+      this.selectedPromotionId = promotion.id
+      this.showEditPromotionModal = true
+    },
+    /**
 		 * To get a list of all promotions.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getAllPromotions () {
-			this.displayPromotionsData = true
-			this.promotions = []
-			var promotionsVue = this
-			return PromotionsFunctions.getPromotionsList(
-				promotionsVue.$root.appId,
-				promotionsVue.$root.appSecret,
-				promotionsVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						promotionsVue.displayPromotionsData = false
-						promotionsVue.promotions = response.payload
-						for (
-							var i = 0;
-							i < promotionsVue.promotions.length;
-							i++
-						) {
-							promotionsVue.$set(
-								promotionsVue.promotions[i],
-								'selected',
-								false
-							)
-						}
-						if (promotionsVue.$root.activeLocation.id) {
-							promotionsVue.getPromotionsForAStore()
-						}
-					} else {
-						promotionsVue.displayPromotionsData = false
-					}
-				})
-				.catch(reason => {
-					promotionsVue.displayPromotionsData = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch promotions',
-						errorName: 'listErrorMessage',
-						vue: promotionsVue
-					})
-				})
-		},
-		/**
+    getAllPromotions () {
+      this.displayPromotionsData = true
+      this.promotions = []
+      var promotionsVue = this
+      return PromotionsFunctions.getPromotionsList(
+        promotionsVue.$root.appId,
+        promotionsVue.$root.appSecret,
+        promotionsVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            promotionsVue.displayPromotionsData = false
+            promotionsVue.promotions = response.payload
+            for (
+              var i = 0;
+              i < promotionsVue.promotions.length;
+              i++
+            ) {
+              promotionsVue.$set(
+                promotionsVue.promotions[i],
+                'selected',
+                false
+              )
+            }
+            if (promotionsVue.$root.activeLocation.id) {
+              promotionsVue.getPromotionsForAStore()
+            }
+          } else {
+            promotionsVue.displayPromotionsData = false
+          }
+        })
+        .catch(reason => {
+          promotionsVue.displayPromotionsData = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch promotions',
+            errorName: 'listErrorMessage',
+            vue: promotionsVue
+          })
+        })
+    },
+    /**
 		 * To get a list of promotions for the selected store.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getPromotionsForAStore () {
-			var promotionsVue = this
-			return PromotionsFunctions.getPromotionsForAStore(promotionsVue.$root.activeLocation.id)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						response.payload.promotions.forEach(storePromotion => {
-							promotionsVue.promotions.forEach(
-								globalPromotion => {
-									if (
-										globalPromotion.id === storePromotion.id
-									) {
-										globalPromotion.selected = true
-									}
-								}
-							)
-						})
-					} else {
-						promotionsVue.displayPromotionsData = false
-					}
-				})
-				.catch(reason => {
-					promotionsVue.displayPromotionsData = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch user groups',
-						errorName: 'applyErrorMessage',
-						vue: promotionsVue,
-						containerRef: 'applyModal'
-					})
-				})
-		},
-		/**
+    getPromotionsForAStore () {
+      var promotionsVue = this
+      return PromotionsFunctions.getPromotionsForAStore(promotionsVue.$root.activeLocation.id)
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            response.payload.promotions.forEach(storePromotion => {
+              promotionsVue.promotions.forEach(
+                globalPromotion => {
+                  if (
+                    globalPromotion.id === storePromotion.id
+                  ) {
+                    globalPromotion.selected = true
+                  }
+                }
+              )
+            })
+          } else {
+            promotionsVue.displayPromotionsData = false
+          }
+        })
+        .catch(reason => {
+          promotionsVue.displayPromotionsData = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch user groups',
+            errorName: 'applyErrorMessage',
+            vue: promotionsVue,
+            containerRef: 'applyModal'
+          })
+        })
+    },
+    /**
 		 * To close the modal for editing a promotion.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeEditPromotionModal () {
-			this.showEditPromotionModal = false
-		},
-		/**
+    closeEditPromotionModal () {
+      this.showEditPromotionModal = false
+    },
+    /**
 		 * To clear the new promotion form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearNewPromotion () {
-			this.newPromotion = {
-				name: '',
-				description: '',
-				image: '',
-				start_date: '',
-				end_date: '',
-				apply_to_all_locations: 0,
-				apply_to_a_store_group: 0,
-				location_group_id: '',
-				location_group_name: '',
-				created_by: this.$root.createdBy,
-				cta_type: '',
-				cta_value: '',
-				skuArray: [],
-				cta_text: '',
-				featured: 0,
-				short_description: '',
-				sort_order: '',
-				web: 0,
-				ios: 0,
-				android: 0
-			}
-			this.promoCodes.forEach(code => {
-				code.selected = false
-			})
-		},
-		/**
+    clearNewPromotion () {
+      this.newPromotion = {
+        name: '',
+        description: '',
+        image: '',
+        start_date: '',
+        end_date: '',
+        apply_to_all_locations: 0,
+        apply_to_a_store_group: 0,
+        location_group_id: '',
+        location_group_name: '',
+        created_by: this.$root.createdBy,
+        cta_type: '',
+        cta_value: '',
+        skuArray: [],
+        cta_text: '',
+        featured: 0,
+        short_description: '',
+        sort_order: '',
+        web: 0,
+        ios: 0,
+        android: 0
+      }
+      this.promoCodes.forEach(code => {
+        code.selected = false
+      })
+    },
+    /**
 		 * To check if the category data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validatePromotionData () {
-			var promotionsVue = this
-			return new Promise(function (resolve, reject) {
-				if (!promotionsVue.newPromotion.image.length) {
-					reject('Promotion image cannot be blank')
-				} else if (!promotionsVue.newPromotion.name.length) {
-					reject('Promotion name cannot be blank')
-				} else if (!promotionsVue.newPromotion.description.length) {
-					reject('Promotion description cannot be blank')
-				} else if (
-					!promotionsVue.newPromotion.short_description.length
-				) {
-					reject('Promotion short description cannot be blank')
-				} else if (
-					!$.isNumeric(promotionsVue.newPromotion.sort_order)
-				) {
-					reject('Sort order must be a number')
-				} else if (!promotionsVue.newPromotion.start_date) {
-					reject('Please provide Start Date and Time')
-				} else if (!promotionsVue.newPromotion.end_date) {
-					reject('Please provide End Date and Time')
-				} else if (!promotionsVue.newPromotion.cta_type) {
-					reject('Please select type of call to action')
-				} else if (
-					promotionsVue.newPromotion.cta_type === 'menu_item' &&
+    validatePromotionData () {
+      var promotionsVue = this
+      return new Promise(function (resolve, reject) {
+        if (!promotionsVue.newPromotion.image.length) {
+          reject('Promotion image cannot be blank')
+        } else if (!promotionsVue.newPromotion.name.length) {
+          reject('Promotion name cannot be blank')
+        } else if (!promotionsVue.newPromotion.description.length) {
+          reject('Promotion description cannot be blank')
+        } else if (
+          !promotionsVue.newPromotion.short_description.length
+        ) {
+          reject('Promotion short description cannot be blank')
+        } else if (
+          !$.isNumeric(promotionsVue.newPromotion.sort_order)
+        ) {
+          reject('Sort order must be a number')
+        } else if (!promotionsVue.newPromotion.start_date) {
+          reject('Please provide Start Date and Time')
+        } else if (!promotionsVue.newPromotion.end_date) {
+          reject('Please provide End Date and Time')
+        } else if (!promotionsVue.newPromotion.cta_type) {
+          reject('Please select type of call to action')
+        } else if (
+          promotionsVue.newPromotion.cta_type === 'menu_item' &&
 					!promotionsVue.newPromotion.skuArray.length
-				) {
-					reject('Select at least one menu item')
-				} else if (
-					promotionsVue.newPromotion.cta_type === 'promo_code' &&
+        ) {
+          reject('Select at least one menu item')
+        } else if (
+          promotionsVue.newPromotion.cta_type === 'promo_code' &&
 					!promotionsVue.newPromotion.cta_value.length
-				) {
-					reject('Select at least one promo code')
-				} else if (
-					promotionsVue.newPromotion.cta_type !== 'menu_item' &&
+        ) {
+          reject('Select at least one promo code')
+        } else if (
+          promotionsVue.newPromotion.cta_type !== 'menu_item' &&
 					promotionsVue.newPromotion.cta_type !== 'promo_code' &&
 					!promotionsVue.newPromotion.cta_value
-				) {
-					reject('Call to action value cannot be blank')
-				} else if (!promotionsVue.newPromotion.cta_text) {
-					reject('Call to action text cannot be blank')
-				} else if (
-					new Date(promotionsVue.newPromotion.start_date) >
+        ) {
+          reject('Call to action value cannot be blank')
+        } else if (!promotionsVue.newPromotion.cta_text) {
+          reject('Call to action text cannot be blank')
+        } else if (
+          new Date(promotionsVue.newPromotion.start_date) >
 					new Date(promotionsVue.newPromotion.end_date)
-				) {
-					reject('Start Date cannot be after End Date')
-				} else if (
-					promotionsVue.newPromotion.apply_to_a_store_group &&
+        ) {
+          reject('Start Date cannot be after End Date')
+        } else if (
+          promotionsVue.newPromotion.apply_to_a_store_group &&
 					promotionsVue.newPromotion.location_group_id === ''
-				) {
-					reject('Please select a store group')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+        ) {
+          reject('Please select a store group')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To create a new promotion.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		createNewPromotion () {
-			var promotionsVue = this
-			promotionsVue.clearError()
+    createNewPromotion () {
+      var promotionsVue = this
+      promotionsVue.clearError()
 
-			return promotionsVue
-				.validatePromotionData()
-				.then(response => {
-					promotionsVue.creating = true
-					let payload = { ...promotionsVue.newPromotion }
-					if (payload.cta_type === 'menu_item') {
-						payload.cta_value = payload.skuArray.toString()
-						delete payload.skuArray
-					}
-					PromotionsFunctions.createNewPromotion(
-						payload,
-						promotionsVue.$root.appId,
-						promotionsVue.$root.appSecret,
-						promotionsVue.$root.userToken
-					)
-						.then(response => {
-							if (
-								response.code === 200 &&
+      return promotionsVue
+        .validatePromotionData()
+        .then(response => {
+          promotionsVue.creating = true
+          let payload = { ...promotionsVue.newPromotion }
+          if (payload.cta_type === 'menu_item') {
+            payload.cta_value = payload.skuArray.toString()
+            delete payload.skuArray
+          }
+          PromotionsFunctions.createNewPromotion(
+            payload,
+            promotionsVue.$root.appId,
+            promotionsVue.$root.appSecret,
+            promotionsVue.$root.userToken
+          )
+            .then(response => {
+              if (
+                response.code === 200 &&
 								response.status === 'ok'
-							) {
-								promotionsVue.showAlert(response.payload)
-								promotionsVue.clearNewPromotion()
-								promotionsVue.getAllPromotions()
-							} else {
-								promotionsVue.createErrorMessage =
+              ) {
+                promotionsVue.showAlert(response.payload)
+                promotionsVue.clearNewPromotion()
+                promotionsVue.getAllPromotions()
+              } else {
+                promotionsVue.createErrorMessage =
 									response.message
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not add the promotion',
-								errorName: 'createErrorMessage',
-								vue: promotionsVue
-							})
-						})
-						.finally(() => {
-							promotionsVue.creating = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					promotionsVue.createErrorMessage = reason
-					window.scrollTo(0, 0)
-					throw reason
-				})
-		},
-		/**
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not add the promotion',
+                errorName: 'createErrorMessage',
+                vue: promotionsVue
+              })
+            })
+            .finally(() => {
+              promotionsVue.creating = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          promotionsVue.createErrorMessage = reason
+          window.scrollTo(0, 0)
+          throw reason
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert (payload = {}) {
-			let title = 'Success'
-			let text = 'The Promotion has been created'
-			let type = 'success'
+    showAlert (payload = {}) {
+      let title = 'Success'
+      let text = 'The Promotion has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Promotion has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Promotion has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To update the promotion info.
 		 * @function
 		 * @param {object} promotion - The promotion object that is to be updated.
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		updatePromotion ({promotion, payload}) {
-			this.showEditPromotionModal = false
-			this.getAllPromotions()
+    updatePromotion ({ promotion, payload }) {
+      this.showEditPromotionModal = false
+      this.getAllPromotions()
 
-			let title = 'Success'
-			let text = 'The Promotion has been saved'
-			let type = 'success'
+      let title = 'Success'
+      let text = 'The Promotion has been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @param {object} errorMessageName - The error message to be cleared.
 		 * @returns {undefined}
 		 */
-		clearError (errorMessageName) {
-			this[errorMessageName] = ''
-		},
-		/**
+    clearError (errorMessageName) {
+      this[errorMessageName] = ''
+    },
+    /**
 		 * To toggle the create tier panel, initially set to closed
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCreatePromotionPanel () {
-			this.createNewPromotionCollapse = !this.createNewPromotionCollapse
-		},
-		/**
+    toggleCreatePromotionPanel () {
+      this.createNewPromotionCollapse = !this.createNewPromotionCollapse
+    },
+    /**
 		 * To close the apply promotion modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeApplyModal () {
-			this.showApplyPromotionModal = false
-		},
-		/**
+    closeApplyModal () {
+      this.showApplyPromotionModal = false
+    },
+    /**
 		 * To open the assign countries modal.
 		 * @function
 		 * @param {object} promotion - Selected promotion
 		 * @returns {undefined}
 		 */
-		openAssignCountriesModal (promotion) {
-			this.promotionToAssignCountriesTo = promotion
-			this.showAssignCountriesModal = true
-		},
-		/**
+    openAssignCountriesModal (promotion) {
+      this.promotionToAssignCountriesTo = promotion
+      this.showAssignCountriesModal = true
+    },
+    /**
 		 * To open the assign countries modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeAssignCountriesModal () {
-			this.showAssignCountriesModal = false
-		}
-	},
-	components: {
-		Breadcrumb,
-		LoadingScreen,
-		Modal,
-		ResourcePicker,
-		NoResults,
-		EditPromotion,
-		DeletePromotion,
-		Qrcode,
-		MenuModifierTree,
-		AssignCountriesToPromotion,
-		StorePicker
-	}
+    closeAssignCountriesModal () {
+      this.showAssignCountriesModal = false
+    }
+  },
+  components: {
+    Breadcrumb,
+    LoadingScreen,
+    Modal,
+    ResourcePicker,
+    NoResults,
+    EditPromotion,
+    DeletePromotion,
+    Qrcode,
+    MenuModifierTree,
+    AssignCountriesToPromotion,
+    StorePicker
+  }
 }
 </script>
 

@@ -74,94 +74,93 @@ import ModifierTierFunctions from '@/controllers/ModifierTiers'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	name: 'EditModifierTier',
-	components: {
-		Modal
-	},
-	props: {
-		tier: {
-			type: Object,
-			required: true,
-			default: () => ({
-				name: ''
-			})
-		}
-	},
-	data: () => ({
-		showModal: false,
-		errorMessage: '',
-		tierToEdit: {
-			name: ''
-		}
-	}),
-	created () {
-		this.tierToEdit = { ...this.tier }
-	},
-	mounted () {
-		this.showModal = true
-	},
-	methods: {
-		/**
+  name: 'EditModifierTier',
+  components: {
+    Modal
+  },
+  props: {
+    tier: {
+      type: Object,
+      required: true,
+      default: () => ({
+        name: ''
+      })
+    }
+  },
+  data: () => ({
+    showModal: false,
+    errorMessage: '',
+    tierToEdit: {
+      name: ''
+    }
+  }),
+  created () {
+    this.tierToEdit = { ...this.tier }
+  },
+  mounted () {
+    this.showModal = true
+  },
+  methods: {
+    /**
 		 * To clear an error
 		 * @function
 		 * @param {string} name - Name of the variable to clear
 		 * @returns {undefined}
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To emit the close event
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('close')
-		},
-		/**
+    closeModal () {
+      this.$emit('close')
+    },
+    /**
 		 * To validate form data
 		 * @function
 		 * @returns {object} - Promise that rejects incorrect fields with an error message
 		 */
-		validate () {
-			const editTierVue = this
-			return new Promise(function (resolve, reject) {
-				if (!editTierVue.tierToEdit.name.length) {
-					reject('Name cannot be blank')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validate () {
+      const editTierVue = this
+      return new Promise(function (resolve, reject) {
+        if (!editTierVue.tierToEdit.name.length) {
+          reject('Name cannot be blank')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To make the update call
 		 * @function
 		 * @returns {undefined}
 		 */
-		updateModifierTier () {
-			const editTierVue = this
-			this.validate()
-				.then(response => {
-					ModifierTierFunctions.updateModifierTier(editTierVue.tierToEdit)
-						.then(response => {
-							editTierVue.$emit('updated', response.payload)
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorName: 'errorMessage',
-								errorText: "We couldn't fetch tier info",
-								vue: editTierVue
-							})
-						})
-				})
-				.catch(reason => {
-					editTierVue.errorMessage = reason
-					editTierVue.$scrollTo(editTierVue.$refs.errorMessage, 1000, {
-						offset: -50
-					})
-				})
-		}
-	}
+    updateModifierTier () {
+      const editTierVue = this
+      this.validate()
+        .then(response => {
+          ModifierTierFunctions.updateModifierTier(editTierVue.tierToEdit)
+            .then(response => {
+              editTierVue.$emit('updated', response.payload)
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorName: 'errorMessage',
+                errorText: "We couldn't fetch tier info",
+                vue: editTierVue
+              })
+            })
+        })
+        .catch(reason => {
+          editTierVue.errorMessage = reason
+          editTierVue.$scrollTo(editTierVue.$refs.errorMessage, 1000, {
+            offset: -50
+          })
+        })
+    }
+  }
 }
 </script>
-

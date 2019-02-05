@@ -89,150 +89,150 @@ import ajaxErrorHandler from '../../../../controllers/ErrorController'
 import StorePicker from '@/components/modules/StorePicker'
 
 export default {
-	components: {
-		Modal,
-		StorePicker
-	},
-	props: {
-		passedMenuId: {
-			type: Number
-		}
-	},
-	data () {
-		return {
-			showCopyMenuModal: false,
-			copying: false,
-			errorMessage: '',
-			selectedLocations: [],
-			locations: [],
-			groups: [],
-			selectedGroup: {},
-			searchTerm: '',
-			idPrefix: 'cpm',
-			replaceExisting: 0
-		}
-	},
-	computed: {
-		searchResults () {
-			if (this.searchTerm.length) {
-				return this.locations.filter(location => {
-					let searchIn =
+  components: {
+    Modal,
+    StorePicker
+  },
+  props: {
+    passedMenuId: {
+      type: Number
+    }
+  },
+  data () {
+    return {
+      showCopyMenuModal: false,
+      copying: false,
+      errorMessage: '',
+      selectedLocations: [],
+      locations: [],
+      groups: [],
+      selectedGroup: {},
+      searchTerm: '',
+      idPrefix: 'cpm',
+      replaceExisting: 0
+    }
+  },
+  computed: {
+    searchResults () {
+      if (this.searchTerm.length) {
+        return this.locations.filter(location => {
+          let searchIn =
 						location.display_name +
 						location.address_line_1 +
 						location.city +
 						location.province +
 						location.country
-					return searchIn.toLowerCase().includes(this.searchTerm)
-				})
-			} else {
-				return this.locations
-			}
-		}
-	},
-	created () {
-		this.idPrefix = this._uid
-	},
-	mounted () {
-		this.showCopyMenuModal = true
-	},
-	methods: {
-		/**
+          return searchIn.toLowerCase().includes(this.searchTerm)
+        })
+      } else {
+        return this.locations
+      }
+    }
+  },
+  created () {
+    this.idPrefix = this._uid
+  },
+  mounted () {
+    this.showCopyMenuModal = true
+  },
+  methods: {
+    /**
 		 * To update the selected locations
 		 * @function
 		 * @param {array} selected - An array of selected location ids
 		 * @returns {object} A promise that will validate the input form
 		 */
-		updateLocations (selected) {
-			this.selectedLocations = selected
-		},
-		/**
+    updateLocations (selected) {
+      this.selectedLocations = selected
+    },
+    /**
 		 * To check if the menu data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateCategoryData () {
-			var copyMenuVue = this
-			return new Promise(function (resolve, reject) {
-				if (!copyMenuVue.selectedLocations.length) {
-					reject('Select a location')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateCategoryData () {
+      var copyMenuVue = this
+      return new Promise(function (resolve, reject) {
+        if (!copyMenuVue.selectedLocations.length) {
+          reject('Select a location')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To copy the menu and close the modal.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		copyMenu () {
-			var editMenuVue = this
-			editMenuVue.clearError()
-			let payload = {
-				menu_id: this.passedMenuId,
-				locations: this.selectedLocations,
-				replace_existing: this.replaceExisting
-			}
+    copyMenu () {
+      var editMenuVue = this
+      editMenuVue.clearError()
+      let payload = {
+        menu_id: this.passedMenuId,
+        locations: this.selectedLocations,
+        replace_existing: this.replaceExisting
+      }
 
-			return editMenuVue
-				.validateCategoryData()
-				.then(response => {
-					editMenuVue.copying = true
-					MenusFunctions.copyMenu(
-						payload,
-						editMenuVue.$root.appId,
-						editMenuVue.$root.appSecret,
-						editMenuVue.$root.userToken
-					)
-						.then(response => {
-							this.emitCopySuccess(response.payload)
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not copy the menu',
-								errorName: 'errorMessage',
-								vue: editMenuVue
-							})
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					editMenuVue.errorMessage = reason
-					window.scrollTo(0, 0)
-				})
-				.finally(() => {
-					editMenuVue.copying = false
-				})
-		},
-		/**
+      return editMenuVue
+        .validateCategoryData()
+        .then(response => {
+          editMenuVue.copying = true
+          MenusFunctions.copyMenu(
+            payload,
+            editMenuVue.$root.appId,
+            editMenuVue.$root.appSecret,
+            editMenuVue.$root.userToken
+          )
+            .then(response => {
+              this.emitCopySuccess(response.payload)
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not copy the menu',
+                errorName: 'errorMessage',
+                vue: editMenuVue
+              })
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          editMenuVue.errorMessage = reason
+          window.scrollTo(0, 0)
+        })
+        .finally(() => {
+          editMenuVue.copying = false
+        })
+    },
+    /**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('closeCopyMenuModal')
-		},
-		/**
+    closeModal () {
+      this.$emit('closeCopyMenuModal')
+    },
+    /**
 		 * To notify parent the copy succeeded
 		 * @function
 		 * @param {object} payload - The payload property of the response
 		 * @returns {undefined}
 		 */
-		emitCopySuccess (payload = {}) {
-			this.$emit('copySuccess', {
-				ids: this.selectedLocations,
-				payload
-			})
-		}
-	}
+    emitCopySuccess (payload = {}) {
+      this.$emit('copySuccess', {
+        ids: this.selectedLocations,
+        payload
+      })
+    }
+  }
 }
 </script>
 <style scoped>
@@ -257,4 +257,3 @@ export default {
   margin-bottom: 0 !important;
 }
 </style>
-

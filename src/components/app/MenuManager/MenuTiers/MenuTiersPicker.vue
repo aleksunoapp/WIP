@@ -38,67 +38,67 @@
 <script>
 import MenuTiersFunctions from '@/controllers/MenuTiers.js'
 export default {
-	name: 'MenuTiersPicker',
-	props: {
-		radio: {
-			required: false,
-			default: true
-		}
-	},
-	data: () => ({
-		idPrefix: '',
-		sourceTiers: [],
-		search: '',
-		radioValue: null
-	}),
-	computed: {
-		/**
+  name: 'MenuTiersPicker',
+  props: {
+    radio: {
+      required: false,
+      default: true
+    }
+  },
+  data: () => ({
+    idPrefix: '',
+    sourceTiers: [],
+    search: '',
+    radioValue: null
+  }),
+  computed: {
+    /**
 		 * To get filter the list of available tiers through a search term
 		 * @function
 		 * @returns {array} An array of menu tiers whose names include the search string
 		 */
-		displayTiers () {
-			return this.sourceTiers.filter(tier => {
-				return tier.name.includes(this.search)
-			})
-		}
-	},
-	created () {
-		this.idPrefix = this._uid
-		this.getMenuTiers()
-	},
-	methods: {
-		tiersSelected () {
-			if (this.radio) {
-				this.$emit('tiersSelect', this.radioValue)
-			}
-		},
-		/**
+    displayTiers () {
+      return this.sourceTiers.filter(tier => {
+        return tier.name.includes(this.search)
+      })
+    }
+  },
+  created () {
+    this.idPrefix = this._uid
+    this.getMenuTiers()
+  },
+  methods: {
+    tiersSelected () {
+      if (this.radio) {
+        this.$emit('tiersSelect', this.radioValue)
+      }
+    },
+    /**
 		 * To get a list of menu tiers.
 		 * @function
 		 * @returns {undefined}
 		 */
-		getMenuTiers () {
-			let pickerVue = this
-			MenuTiersFunctions.getMenuTiers(
-				pickerVue.$root.corporateStoreId,
-				pickerVue.$root.appId,
-				pickerVue.$root.appSecret,
-				pickerVue.$root.userToken
-			)
-				.then(response => {
-					pickerVue.sourceTiers = response.payload.map(tier => {
-						return {
-							...tier,
-							selected: false
-						}
-					})
-				})
-				.catch(reason => {
-					this.$emit('fetchError', reason)
-				})
-		}
-	}
+    getMenuTiers () {
+      let pickerVue = this
+      MenuTiersFunctions.getMenuTiers(
+        pickerVue.$root.corporateStoreId,
+        pickerVue.$root.appId,
+        pickerVue.$root.appSecret,
+        pickerVue.$root.userToken
+      )
+        .then(response => {
+          pickerVue.sourceTiers = response.payload.map(tier => {
+            return {
+              ...tier,
+              selected: false
+            }
+          })
+        })
+        .catch(reason => {
+          this.$emit('fetchError', reason)
+        })
+    }
+  }
 }
 </script>
 

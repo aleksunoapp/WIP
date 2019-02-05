@@ -74,89 +74,88 @@ import ModifiersFunctions from '@/controllers/Modifiers'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	name: 'ModifierCategoryPicker',
-	props: {
-		previouslySelected: {
-			type: Array,
-			required: false,
-			default: () => []
-		}
-	},
-	data: () => ({
-		errorMessage: '',
-		modifierCategories: []
-	}),
-	computed: {
-		selectAllSelected () {
-			return (
-				this.modifierCategories.length &&
+  name: 'ModifierCategoryPicker',
+  props: {
+    previouslySelected: {
+      type: Array,
+      required: false,
+      default: () => []
+    }
+  },
+  data: () => ({
+    errorMessage: '',
+    modifierCategories: []
+  }),
+  computed: {
+    selectAllSelected () {
+      return (
+        this.modifierCategories.length &&
 				!this.modifierCategories.some(category => !category.selected)
-			)
-		}
-	},
-	created () {
-		this.getModifierCategories()
-	},
-	methods: {
-		/**
+      )
+    }
+  },
+  created () {
+    this.getModifierCategories()
+  },
+  methods: {
+    /**
 		 * To toggle selection on all
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleAll () {
-			const selected = this.selectAllSelected
-			this.modifierCategories.forEach(category => {
-				category.selected = !selected
-			})
-			this.emit()
-		},
-		/**
+    toggleAll () {
+      const selected = this.selectAllSelected
+      this.modifierCategories.forEach(category => {
+        category.selected = !selected
+      })
+      this.emit()
+    },
+    /**
 		 * To clear an error
 		 * @function
 		 * @param {string} name - Name of the variable to clear
 		 * @returns {undefined}
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To get a list of modifier categories for the current store.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getModifierCategories () {
-			let pickerVue = this
-			return ModifiersFunctions.getStoreModifiers(
-				pickerVue.$root.activeLocation.id
-			)
-				.then(response => {
-					pickerVue.modifierCategories = response.payload.map(category => {
-						return {
-							...category,
-							selected: pickerVue.previouslySelected.includes(category.id)
-						}
-					})
-					pickerVue.loading = false
-				})
-				.catch(reason => {
-					pickerVue.loading = false
-					ajaxErrorHandler({
-						reason,
-						errorName: 'errorMessage',
-						errorText: "We couldn't fetch modifier categories",
-						vue: pickerVue
-					})
-				})
-		},
-		/**
+    getModifierCategories () {
+      let pickerVue = this
+      return ModifiersFunctions.getStoreModifiers(
+        pickerVue.$root.activeLocation.id
+      )
+        .then(response => {
+          pickerVue.modifierCategories = response.payload.map(category => {
+            return {
+              ...category,
+              selected: pickerVue.previouslySelected.includes(category.id)
+            }
+          })
+          pickerVue.loading = false
+        })
+        .catch(reason => {
+          pickerVue.loading = false
+          ajaxErrorHandler({
+            reason,
+            errorName: 'errorMessage',
+            errorText: "We couldn't fetch modifier categories",
+            vue: pickerVue
+          })
+        })
+    },
+    /**
 		 * To emit an updated selection
 		 * @function
 		 * @returns {undefined}
 		 */
-		emit () {
-			this.$emit('selected', this.modifierCategories)
-		}
-	}
+    emit () {
+      this.$emit('selected', this.modifierCategories)
+    }
+  }
 }
 </script>
-

@@ -190,243 +190,243 @@ import ajaxErrorHandler from '../../../controllers/ErrorController'
 import LoadingScreen from '@/components/modules/LoadingScreen'
 
 export default {
-	components: {
-		Breadcrumb,
-		Dropdown,
-		Modal,
-		ResourcePicker,
-		LoadingScreen
-	},
-	data () {
-		return {
-			breadcrumbArray: [{ name: 'Custom Translations', link: false }],
+  components: {
+    Breadcrumb,
+    Dropdown,
+    Modal,
+    ResourcePicker,
+    LoadingScreen
+  },
+  data () {
+    return {
+      breadcrumbArray: [{ name: 'Custom Translations', link: false }],
 
-			loadingPlatforms: false,
-			platforms: [],
-			selectedPlatfrom: '',
-			platformAccordionOpen: 'platform-accordion',
+      loadingPlatforms: false,
+      platforms: [],
+      selectedPlatfrom: '',
+      platformAccordionOpen: 'platform-accordion',
 
-			allLocales: [],
-			languageAccordionOpen: 'locale-accordion',
+      allLocales: [],
+      languageAccordionOpen: 'locale-accordion',
 
-			localeForTranslation: {
-				country: '',
-				language_code: ''
-			},
+      localeForTranslation: {
+        country: '',
+        language_code: ''
+      },
 
-			loadingTerms: false,
-			terms: [],
-			translationsTableErrorMessage: '',
-			saving: false
-		}
-	},
-	created () {
-		this.getLocales()
-		this.getPlatforms()
-	},
-	methods: {
-		/**
+      loadingTerms: false,
+      terms: [],
+      translationsTableErrorMessage: '',
+      saving: false
+    }
+  },
+  created () {
+    this.getLocales()
+    this.getPlatforms()
+  },
+  methods: {
+    /**
 		 * To get the locales for a store.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getLocales () {
-			var localizationVue = this
-			LocalizationFunctions.getLocales()
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						if (response.payload.length) {
-							localizationVue.allLocales = response.payload
-							.map(language => {
-								return {
-									...language,
-									country_name: language.country ? language.country.name : ''
-								}
-							})
-							.sort((a, b) => {
-								if (
-									a.language_code.toLowerCase() > b.language_code.toLowerCase()
-								) {
-									return 1
-								} else if (
-									a.language_code.toLowerCase() < b.language_code.toLowerCase()
-								) {
-									return -1
-								} else {
-									return 0
-								}
-							})
-						}
-					} else {
-						localizationVue.translationsTableErrorMessage = response.message
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch available languages',
-						errorName: 'translationsTableErrorMessage',
-						vue: localizationVue
-					})
-				})
-		},
-		/**
+    getLocales () {
+      var localizationVue = this
+      LocalizationFunctions.getLocales()
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            if (response.payload.length) {
+              localizationVue.allLocales = response.payload
+                .map(language => {
+                  return {
+                    ...language,
+                    country_name: language.country ? language.country.name : ''
+                  }
+                })
+                .sort((a, b) => {
+                  if (
+                    a.language_code.toLowerCase() > b.language_code.toLowerCase()
+                  ) {
+                    return 1
+                  } else if (
+                    a.language_code.toLowerCase() < b.language_code.toLowerCase()
+                  ) {
+                    return -1
+                  } else {
+                    return 0
+                  }
+                })
+            }
+          } else {
+            localizationVue.translationsTableErrorMessage = response.message
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch available languages',
+            errorName: 'translationsTableErrorMessage',
+            vue: localizationVue
+          })
+        })
+    },
+    /**
 		 * To get a list of all platforms.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getPlatforms () {
-			this.clearError('errorMessage')
-			this.loadingPlatforms = true
-			this.platforms = []
-			var _this = this
-			return PlatformsFunctions.listPlatforms()
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						_this.loadingPlatforms = false
-						_this.platforms = response.payload
-					} else {
-						_this.loadingPlatforms = false
-					}
-				})
-				.catch(reason => {
-					_this.loadingPlatforms = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch the list of platforms',
-						errorName: 'errorMessage',
-						vue: _this
-					})
-				})
-		},
-		/**
+    getPlatforms () {
+      this.clearError('errorMessage')
+      this.loadingPlatforms = true
+      this.platforms = []
+      var _this = this
+      return PlatformsFunctions.listPlatforms()
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            _this.loadingPlatforms = false
+            _this.platforms = response.payload
+          } else {
+            _this.loadingPlatforms = false
+          }
+        })
+        .catch(reason => {
+          _this.loadingPlatforms = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch the list of platforms',
+            errorName: 'errorMessage',
+            vue: _this
+          })
+        })
+    },
+    /**
 		 * To select a platform to translate for.
 		 * @function
 		 * @param {object} platform - An object containing the selected platform
 		 * @returns {undefined}
 		 */
-		selectPlatformForTranslation (platform) {
-			this.selectedPlatfrom = platform.name
-			this.getTermsForLanguage()
-		},
-		/**
+    selectPlatformForTranslation (platform) {
+      this.selectedPlatfrom = platform.name
+      this.getTermsForLanguage()
+    },
+    /**
 		 * To update the status of the locale selected for translation.
 		 * @function
 		 * @param {object} locale - An object containing the selected locale
 		 * @returns {undefined}
 		 */
-		selectLocaleForTranslation (locale) {
-			this.localeForTranslation.id = locale.id
-			this.localeForTranslation.country = locale.country
-			this.localeForTranslation.language_code = locale.language_code
-			this.getTermsForLanguage()
-		},
-		/**
+    selectLocaleForTranslation (locale) {
+      this.localeForTranslation.id = locale.id
+      this.localeForTranslation.country = locale.country
+      this.localeForTranslation.language_code = locale.language_code
+      this.getTermsForLanguage()
+    },
+    /**
 		 * To fetch terms for the selected language
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getTermsForLanguage () {
-			if (!this.selectedPlatfrom || !this.localeForTranslation.language_code) return
-			this.clearError('translationsTableErrorMessage')
-			this.loadingTerms = true
-			var localizationVue = this
-			TermsFunctions.listTermsForLanguage(
-				this.localeForTranslation.language_code,
-				this.selectedPlatfrom
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						this.terms = response.payload.map(term => {
-							return {
-								...term,
-								translation: term.translation === null ? '' : term.translation
-							}
-						})
-					} else {
-						localizationVue.translationsTableErrorMessage = response.message
-					}
-					localizationVue.loadingTerms = false
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch terms',
-						errorName: 'translationsTableErrorMessage',
-						vue: localizationVue
-					})
-					localizationVue.loadingTerms = false
-				})
-		},
-		/**
+    getTermsForLanguage () {
+      if (!this.selectedPlatfrom || !this.localeForTranslation.language_code) return
+      this.clearError('translationsTableErrorMessage')
+      this.loadingTerms = true
+      var localizationVue = this
+      TermsFunctions.listTermsForLanguage(
+        this.localeForTranslation.language_code,
+        this.selectedPlatfrom
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            this.terms = response.payload.map(term => {
+              return {
+                ...term,
+                translation: term.translation === null ? '' : term.translation
+              }
+            })
+          } else {
+            localizationVue.translationsTableErrorMessage = response.message
+          }
+          localizationVue.loadingTerms = false
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch terms',
+            errorName: 'translationsTableErrorMessage',
+            vue: localizationVue
+          })
+          localizationVue.loadingTerms = false
+        })
+    },
+    /**
 		 * To fetch terms for the selected language
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		translateTerms () {
-			this.saving = true
-			this.clearError('translationsTableErrorMessage')
-			var localizationVue = this
-			const payload = {
-				localeId: this.localeForTranslation.id,
-				translations: this.terms.map(term => ({
-					term_id: term.id,
-					translation: term.translation
-				}))
-			}
-			TermsFunctions.translateTerms(payload)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						localizationVue.showSaveSuccess(response.payload)
-					} else {
-						localizationVue.translationsTableErrorMessage = response.message
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not save the translations',
-						errorName: 'translationsTableErrorMessage',
-						vue: localizationVue
-					})
-				})
-				.finally(() => {
-					localizationVue.saving = false
-				})
-		},
-		/**
+    translateTerms () {
+      this.saving = true
+      this.clearError('translationsTableErrorMessage')
+      var localizationVue = this
+      const payload = {
+        localeId: this.localeForTranslation.id,
+        translations: this.terms.map(term => ({
+          term_id: term.id,
+          translation: term.translation
+        }))
+      }
+      TermsFunctions.translateTerms(payload)
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            localizationVue.showSaveSuccess(response.payload)
+          } else {
+            localizationVue.translationsTableErrorMessage = response.message
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not save the translations',
+            errorName: 'translationsTableErrorMessage',
+            vue: localizationVue
+          })
+        })
+        .finally(() => {
+          localizationVue.saving = false
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showSaveSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Translations have been saved'
-			let type = 'success'
+    showSaveSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Translations have been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Translations have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Translations have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @param {string} type - The type of error to be cleared.
 		 * @returns {undefined}
 		 */
-		clearError (type) {
-			this[type] = ''
-		}
-	}
+    clearError (type) {
+      this[type] = ''
+    }
+  }
 }
 </script>
 

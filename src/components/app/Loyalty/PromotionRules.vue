@@ -759,659 +759,659 @@ import ajaxErrorHandler from '../../../controllers/ErrorController'
 import MenuModifierTree from '../../modules/MenuModifierTree'
 
 export default {
-	components: {
-		Breadcrumb,
-		NoResults,
-		LoadingScreen,
-		Modal,
-		MenuModifierTree
-	},
-	data () {
-		return {
-			breadcrumbArray: [
-				{ name: 'Loyalty', link: false },
-				{ name: 'Promotion Rules', link: false }
-			],
-			createNewCollapse: true,
-			creating: false,
-			createErrorMessage: '',
-			newRule: {
-				name: '', // name
-				start_from: '', // start date
-				end_on: '', // end date
-				parameter: '', // points awarded for:
-				// 'total-spend' - total amount spent
-				// 'sku' - purchasing items
-				// 'time' - purchases made during specified times
-				// 'sku-combination' - purchasing items during specified times
-				min_amount: '', // minimum purchase amount
-				bonus_type: '', // type of points reward
-				// 'multiplier' - proportional bonus
-				// 'add-on' - flat-rate bonus
-				bonus: '', // multiplier for bonus points / number of bonus points
-				sku: '', // apply to all items / select items
-				start: '', // from
-				end: '' // to
-			},
-			listErrorMessage: '',
-			loading: false,
-			rules: [],
-			animated: '',
-			showEditModal: false,
-			updating: false,
-			ruleToEdit: {
-				id: null,
-				name: '',
-				start_from: '',
-				end_on: '',
-				parameter: '',
-				min_amount: '',
-				bonus_type: '',
-				bonus: '',
-				sku: '',
-				start: '',
-				end: ''
-			},
-			editErrorMessage: '',
-			showDeleteModal: false,
-			deleting: false,
-			ruleToDelete: {
-				name: ''
-			},
-			deleteErrorMessage: '',
-			showMenuModifierTreeModal: false,
-			ruleToSelectSKUsFor: {}
-		}
-	},
-	computed: {
-		numberOfItemsNew () {
-			return this.newRule.sku === ''
-				? 0
-				: this.newRule.sku.length
-		},
-		numberOfItemsEdited () {
-			return this.ruleToEdit.sku === ''
-				? 0
-				: this.ruleToEdit.sku.length
-		}
-	},
-	mounted () {
-		this.getRules()
-	},
-	methods: {
-		/**
+  components: {
+    Breadcrumb,
+    NoResults,
+    LoadingScreen,
+    Modal,
+    MenuModifierTree
+  },
+  data () {
+    return {
+      breadcrumbArray: [
+        { name: 'Loyalty', link: false },
+        { name: 'Promotion Rules', link: false }
+      ],
+      createNewCollapse: true,
+      creating: false,
+      createErrorMessage: '',
+      newRule: {
+        name: '', // name
+        start_from: '', // start date
+        end_on: '', // end date
+        parameter: '', // points awarded for:
+        // 'total-spend' - total amount spent
+        // 'sku' - purchasing items
+        // 'time' - purchases made during specified times
+        // 'sku-combination' - purchasing items during specified times
+        min_amount: '', // minimum purchase amount
+        bonus_type: '', // type of points reward
+        // 'multiplier' - proportional bonus
+        // 'add-on' - flat-rate bonus
+        bonus: '', // multiplier for bonus points / number of bonus points
+        sku: '', // apply to all items / select items
+        start: '', // from
+        end: '' // to
+      },
+      listErrorMessage: '',
+      loading: false,
+      rules: [],
+      animated: '',
+      showEditModal: false,
+      updating: false,
+      ruleToEdit: {
+        id: null,
+        name: '',
+        start_from: '',
+        end_on: '',
+        parameter: '',
+        min_amount: '',
+        bonus_type: '',
+        bonus: '',
+        sku: '',
+        start: '',
+        end: ''
+      },
+      editErrorMessage: '',
+      showDeleteModal: false,
+      deleting: false,
+      ruleToDelete: {
+        name: ''
+      },
+      deleteErrorMessage: '',
+      showMenuModifierTreeModal: false,
+      ruleToSelectSKUsFor: {}
+    }
+  },
+  computed: {
+    numberOfItemsNew () {
+      return this.newRule.sku === ''
+        ? 0
+        : this.newRule.sku.length
+    },
+    numberOfItemsEdited () {
+      return this.ruleToEdit.sku === ''
+        ? 0
+        : this.ruleToEdit.sku.length
+    }
+  },
+  mounted () {
+    this.getRules()
+  },
+  methods: {
+    /**
 		 * To toggle the create new panel.
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCreateNew () {
-			this.createNewCollapse = !this.createNewCollapse
-			this.$nextTick(function () {
-				if (!this.createNewCollapse) {
-					this.$refs.newName.focus()
-				}
-			})
-		},
-		/**
+    toggleCreateNew () {
+      this.createNewCollapse = !this.createNewCollapse
+      this.$nextTick(function () {
+        if (!this.createNewCollapse) {
+          this.$refs.newName.focus()
+        }
+      })
+    },
+    /**
 		 * To clear the error.
 		 * @param {string} errorName - The name of the variable to clear
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError (errorName) {
-			this[errorName] = ''
-		},
-		/**
+    clearError (errorName) {
+      this[errorName] = ''
+    },
+    /**
 		 * To select all items for the rule.
 		 * @param {object} rule - The rule to modify
 		 * @function
 		 * @returns {undefined}
 		 */
-		selectAllItems (rule) {
-			rule.sku = 'all'
-		},
-		/**
+    selectAllItems (rule) {
+      rule.sku = 'all'
+    },
+    /**
 		 * To select all items for the rule.
 		 * @param {object} rule - The rule to modify
 		 * @function
 		 * @returns {undefined}
 		 */
-		selectItems (rule) {
-			this.ruleToSelectSKUsFor = rule
-			this.showMenuModifierTreeModal = true
-		},
-		/**
+    selectItems (rule) {
+      this.ruleToSelectSKUsFor = rule
+      this.showMenuModifierTreeModal = true
+    },
+    /**
 		 * To record the items selected.
 		 * @param {object} items - An object containing the selected items
 		 * @function
 		 * @returns {undefined}
 		 */
-		setSelectedItems (items) {
-			this.ruleToSelectSKUsFor.sku = items.selectedSKUs.toString()
-			this.showMenuModifierTreeModal = false
-		},
-		/**
+    setSelectedItems (items) {
+      this.ruleToSelectSKUsFor.sku = items.selectedSKUs.toString()
+      this.showMenuModifierTreeModal = false
+    },
+    /**
 		 * To close the menu modifier tree modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeMenuModifierTree () {
-			this.showMenuModifierTreeModal = false
-		},
-		/**
+    closeMenuModifierTree () {
+      this.showMenuModifierTreeModal = false
+    },
+    /**
 		 * To check if a date is in the past.
 		 * @function
 		 * @param {string} date - The date string to verify.
 		 * @returns {boolean} True if date is in the past, false if not
 		 */
-		isPast (date) {
-			let input = new Date(date)
-			input.setMinutes(input.getMinutes() + input.getTimezoneOffset())
-			let today = new Date()
-			let inputDay = input.getDate()
-			if (inputDay < 10) {
-				inputDay = '0' + inputDay
-			}
-			let inputMonth = input.getMonth()
-			if (inputMonth < 10) {
-				inputMonth = '0' + inputMonth
-			}
-			let inputYear = input.getFullYear()
-			let todayDay = today.getDate()
-			if (todayDay < 10) {
-				todayDay = '0' + todayDay
-			}
-			let todayMonth = today.getMonth()
-			if (todayMonth < 10) {
-				todayMonth = '0' + todayMonth
-			}
-			let todayYear = today.getFullYear()
+    isPast (date) {
+      let input = new Date(date)
+      input.setMinutes(input.getMinutes() + input.getTimezoneOffset())
+      let today = new Date()
+      let inputDay = input.getDate()
+      if (inputDay < 10) {
+        inputDay = '0' + inputDay
+      }
+      let inputMonth = input.getMonth()
+      if (inputMonth < 10) {
+        inputMonth = '0' + inputMonth
+      }
+      let inputYear = input.getFullYear()
+      let todayDay = today.getDate()
+      if (todayDay < 10) {
+        todayDay = '0' + todayDay
+      }
+      let todayMonth = today.getMonth()
+      if (todayMonth < 10) {
+        todayMonth = '0' + todayMonth
+      }
+      let todayYear = today.getFullYear()
 
-			return (
-				`${todayYear}-${todayMonth}-${todayDay}` >
+      return (
+        `${todayYear}-${todayMonth}-${todayDay}` >
 				`${inputYear}-${inputMonth}-${inputDay}`
-			)
-		},
-		/**
+      )
+    },
+    /**
 		 * To check if the data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateNewRule () {
-			var rulesVue = this
-			return new Promise(function (resolve, reject) {
-				if (!rulesVue.newRule.name.length) {
-					reject('Name cannot be blank')
-				} else if (!rulesVue.newRule.start_from.length) {
-					reject('Start date cannot be blank')
-				} else if (rulesVue.isPast(rulesVue.newRule.start_from)) {
-					reject('Start Date cannot be in the past')
-				} else if (!rulesVue.newRule.end_on.length) {
-					reject('End date cannot be blank')
-				} else if (
-					new Date(rulesVue.newRule.end_on) <
+    validateNewRule () {
+      var rulesVue = this
+      return new Promise(function (resolve, reject) {
+        if (!rulesVue.newRule.name.length) {
+          reject('Name cannot be blank')
+        } else if (!rulesVue.newRule.start_from.length) {
+          reject('Start date cannot be blank')
+        } else if (rulesVue.isPast(rulesVue.newRule.start_from)) {
+          reject('Start Date cannot be in the past')
+        } else if (!rulesVue.newRule.end_on.length) {
+          reject('End date cannot be blank')
+        } else if (
+          new Date(rulesVue.newRule.end_on) <
 					new Date(rulesVue.newRule.start_from)
-				) {
-					reject('End Date cannot be before Start Date')
-				} else if (!rulesVue.newRule.parameter.length) {
-					reject('Points awarded for cannot be blank')
-				} else if (!rulesVue.newRule.min_amount.length) {
-					reject('Minimum purchase amount cannot be blank')
-				} else if (rulesVue.newRule.bonus_type === '') {
-					reject('Select type of points reward')
-				} else if (
-					rulesVue.newRule.bonus_type === 'multiplier' &&
+        ) {
+          reject('End Date cannot be before Start Date')
+        } else if (!rulesVue.newRule.parameter.length) {
+          reject('Points awarded for cannot be blank')
+        } else if (!rulesVue.newRule.min_amount.length) {
+          reject('Minimum purchase amount cannot be blank')
+        } else if (rulesVue.newRule.bonus_type === '') {
+          reject('Select type of points reward')
+        } else if (
+          rulesVue.newRule.bonus_type === 'multiplier' &&
 					!$.isNumeric(rulesVue.newRule.bonus)
-				) {
-					reject('Multiplier for bonus points cannot be blank')
-				} else if (
-					rulesVue.newRule.bonus_type === 'add-on' &&
+        ) {
+          reject('Multiplier for bonus points cannot be blank')
+        } else if (
+          rulesVue.newRule.bonus_type === 'add-on' &&
 					!$.isNumeric(rulesVue.newRule.bonus)
-				) {
-					reject('Number of bonus points cannot be blank')
-				} else if (
-					(rulesVue.newRule.parameter === 'sku' ||
+        ) {
+          reject('Number of bonus points cannot be blank')
+        } else if (
+          (rulesVue.newRule.parameter === 'sku' ||
 						rulesVue.newRule.parameter === 'sku') &&
 					rulesVue.newRule.parameter.length === 0
-				) {
-					reject('Select at least one item')
-				} else if (
-					(rulesVue.newRule.bonus_type === 'time' ||
+        ) {
+          reject('Select at least one item')
+        } else if (
+          (rulesVue.newRule.bonus_type === 'time' ||
 						rulesVue.newRule.parameter === 'sku-combination') &&
 					rulesVue.newRule.start.length === 0
-				) {
-					reject('Start time cannot be blank')
-				} else if (
-					(rulesVue.newRule.parameter === 'time' ||
+        ) {
+          reject('Start time cannot be blank')
+        } else if (
+          (rulesVue.newRule.parameter === 'time' ||
 						rulesVue.newRule.parameter === 'sku-combination') &&
 					rulesVue.newRule.end.length === 0
-				) {
-					reject('End time cannot be blank')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+        ) {
+          reject('End time cannot be blank')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To create a rule
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		createRule () {
-			const rulesVue = this
+    createRule () {
+      const rulesVue = this
 
-			return this.validateNewRule()
-				.then(response => {
-					rulesVue.creating = true
-					let payload = { ...this.newRule }
-					if (
-						payload.parameter !== 'sku' &&
+      return this.validateNewRule()
+        .then(response => {
+          rulesVue.creating = true
+          let payload = { ...this.newRule }
+          if (
+            payload.parameter !== 'sku' &&
 						payload.parameter !== 'sku-combination'
-					) {
-						payload.sku = 'all'
-					} else {
-						payload.sku = payload.sku.toString()
-					}
-					if (
-						payload.parameter !== 'time' &&
+          ) {
+            payload.sku = 'all'
+          } else {
+            payload.sku = payload.sku.toString()
+          }
+          if (
+            payload.parameter !== 'time' &&
 						payload.parameter !== 'sku-combination'
-					) {
-						payload.start = ''
-						payload.end = ''
-					}
-					rulesVue.clearError('createErrorMessage')
+          ) {
+            payload.start = ''
+            payload.end = ''
+          }
+          rulesVue.clearError('createErrorMessage')
 
-					return LoyaltyFunctions.createPromotionRule(payload)
-						.then(response => {
-							if (
-								response.code === 200 &&
+          return LoyaltyFunctions.createPromotionRule(payload)
+            .then(response => {
+              if (
+                response.code === 200 &&
 								response.status === 'ok'
-							) {
-								rulesVue.getRules()
-								rulesVue.showCreateSuccess(response.payload)
-								rulesVue.resetCreateForm()
-							} else {
-								rulesVue.createErrorMessage = response.message
-								rulesVue.$scrollTo(
-									rulesVue.$refs.createErrorMessage,
-									1000,
-									{
-										offset: -50
-									}
-								)
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not create the rule',
-								errorName: 'createErrorMessage',
-								vue: rulesVue
-							})
-						})
-						.finally(() => {
-							rulesVue.creating = false
-						})
-				})
-				.catch(reason => {
-					rulesVue.createErrorMessage = reason
-					rulesVue.$scrollTo(
-						rulesVue.$refs.createErrorMessage,
-						1000,
-						{
-							offset: -50
-						}
-					)
-				})
-		},
-		/**
+              ) {
+                rulesVue.getRules()
+                rulesVue.showCreateSuccess(response.payload)
+                rulesVue.resetCreateForm()
+              } else {
+                rulesVue.createErrorMessage = response.message
+                rulesVue.$scrollTo(
+                  rulesVue.$refs.createErrorMessage,
+                  1000,
+                  {
+                    offset: -50
+                  }
+                )
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not create the rule',
+                errorName: 'createErrorMessage',
+                vue: rulesVue
+              })
+            })
+            .finally(() => {
+              rulesVue.creating = false
+            })
+        })
+        .catch(reason => {
+          rulesVue.createErrorMessage = reason
+          rulesVue.$scrollTo(
+            rulesVue.$refs.createErrorMessage,
+            1000,
+            {
+              offset: -50
+            }
+          )
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showCreateSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Promotion Rule has been created'
-			let type = 'success'
+    showCreateSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Promotion Rule has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Promotion Rule has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Promotion Rule has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To reset the create form
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetCreateForm () {
-			this.newRule = {
-				name: '',
-				start_from: '',
-				end_on: '',
-				parameter: '',
-				min_amount: '',
-				bonus_type: '',
-				bonus: '',
-				sku: '',
-				start: '',
-				end: ''
-			}
-		},
-		/**
+    resetCreateForm () {
+      this.newRule = {
+        name: '',
+        start_from: '',
+        end_on: '',
+        parameter: '',
+        min_amount: '',
+        bonus_type: '',
+        bonus: '',
+        sku: '',
+        start: '',
+        end: ''
+      }
+    },
+    /**
 		 * To get a list of rules
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getRules () {
-			this.loading = true
-			const rulesVue = this
-			return LoyaltyFunctions.getPromotionRules()
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						rulesVue.rules = response.payload
-						rulesVue.loading = false
-					} else {
-						rulesVue.loading = false
-						rulesVue.listErrorMessage = response.message
-						rulesVue.$scrollTo(
-							rulesVue.$refs.listErrorMessage,
-							1000,
-							{
-								offset: -50
-							}
-						)
-					}
-				})
-				.catch(reason => {
-					rulesVue.loading = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch the base rule',
-						errorName: 'listErrorMessage',
-						vue: rulesVue
-					})
-				})
-		},
-		/**
+    getRules () {
+      this.loading = true
+      const rulesVue = this
+      return LoyaltyFunctions.getPromotionRules()
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            rulesVue.rules = response.payload
+            rulesVue.loading = false
+          } else {
+            rulesVue.loading = false
+            rulesVue.listErrorMessage = response.message
+            rulesVue.$scrollTo(
+              rulesVue.$refs.listErrorMessage,
+              1000,
+              {
+                offset: -50
+              }
+            )
+          }
+        })
+        .catch(reason => {
+          rulesVue.loading = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch the base rule',
+            errorName: 'listErrorMessage',
+            vue: rulesVue
+          })
+        })
+    },
+    /**
 		 * To open the edit modal
 		 * @function
 		 * @param {object} rule - The rule to edit
 		 * @returns {undefined}
 		 */
-		openEditModal (rule) {
-			let sku
-			if (rule.sku === 'all') {
-				sku = rule.sku
-			} else if (typeof rule.sku === 'string' && rule.sku.length) {
-				sku = rule.sku.split(',')
-			} else {
-				sku = []
-			}
-			this.ruleToEdit = {
-				...rule,
-				bonus: String(rule.bonus),
-				min_amount: String(rule.min_amount),
-				sku,
-				start: rule.start.substr(0, 5),
-				end: rule.end.substr(0, 5)
-			}
-			this.showEditModal = true
-		},
-		/**
+    openEditModal (rule) {
+      let sku
+      if (rule.sku === 'all') {
+        sku = rule.sku
+      } else if (typeof rule.sku === 'string' && rule.sku.length) {
+        sku = rule.sku.split(',')
+      } else {
+        sku = []
+      }
+      this.ruleToEdit = {
+        ...rule,
+        bonus: String(rule.bonus),
+        min_amount: String(rule.min_amount),
+        sku,
+        start: rule.start.substr(0, 5),
+        end: rule.end.substr(0, 5)
+      }
+      this.showEditModal = true
+    },
+    /**
 		 * To check if the data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateEditedRule () {
-			var rulesVue = this
-			return new Promise(function (resolve, reject) {
-				if (!rulesVue.ruleToEdit.name.length) {
-					reject('Name cannot be blank')
-				} else if (!rulesVue.ruleToEdit.start_from.length) {
-					reject('Start date cannot be blank')
-				} else if (rulesVue.isPast(rulesVue.ruleToEdit.start_from)) {
-					reject('Start Date cannot be in the past')
-				} else if (!rulesVue.ruleToEdit.end_on.length) {
-					reject('End date cannot be blank')
-				} else if (
-					new Date(rulesVue.ruleToEdit.end_on) <
+    validateEditedRule () {
+      var rulesVue = this
+      return new Promise(function (resolve, reject) {
+        if (!rulesVue.ruleToEdit.name.length) {
+          reject('Name cannot be blank')
+        } else if (!rulesVue.ruleToEdit.start_from.length) {
+          reject('Start date cannot be blank')
+        } else if (rulesVue.isPast(rulesVue.ruleToEdit.start_from)) {
+          reject('Start Date cannot be in the past')
+        } else if (!rulesVue.ruleToEdit.end_on.length) {
+          reject('End date cannot be blank')
+        } else if (
+          new Date(rulesVue.ruleToEdit.end_on) <
 					new Date(rulesVue.ruleToEdit.start_from)
-				) {
-					reject('End Date cannot be before Start Date')
-				} else if (!rulesVue.ruleToEdit.parameter.length) {
-					reject('Points awarded for cannot be blank')
-				} else if (!rulesVue.ruleToEdit.min_amount.length) {
-					reject('Minimum purchase amount cannot be blank')
-				} else if (rulesVue.ruleToEdit.bonus_type === '') {
-					reject('Select type of points reward')
-				} else if (
-					rulesVue.ruleToEdit.bonus_type === 'multiplier' &&
+        ) {
+          reject('End Date cannot be before Start Date')
+        } else if (!rulesVue.ruleToEdit.parameter.length) {
+          reject('Points awarded for cannot be blank')
+        } else if (!rulesVue.ruleToEdit.min_amount.length) {
+          reject('Minimum purchase amount cannot be blank')
+        } else if (rulesVue.ruleToEdit.bonus_type === '') {
+          reject('Select type of points reward')
+        } else if (
+          rulesVue.ruleToEdit.bonus_type === 'multiplier' &&
 					!$.isNumeric(rulesVue.ruleToEdit.bonus)
-				) {
-					reject('Multiplier for bonus points cannot be blank')
-				} else if (
-					rulesVue.ruleToEdit.bonus_type === 'add-on' &&
+        ) {
+          reject('Multiplier for bonus points cannot be blank')
+        } else if (
+          rulesVue.ruleToEdit.bonus_type === 'add-on' &&
 					!$.isNumeric(rulesVue.ruleToEdit.bonus)
-				) {
-					reject('Number of bonus points cannot be blank')
-				} else if (
-					(rulesVue.ruleToEdit.parameter === 'sku' ||
+        ) {
+          reject('Number of bonus points cannot be blank')
+        } else if (
+          (rulesVue.ruleToEdit.parameter === 'sku' ||
 						rulesVue.ruleToEdit.parameter === 'sku') &&
 					rulesVue.ruleToEdit.parameter.length === 0
-				) {
-					reject('Select at least one item')
-				} else if (
-					(rulesVue.ruleToEdit.bonus_type === 'time' ||
+        ) {
+          reject('Select at least one item')
+        } else if (
+          (rulesVue.ruleToEdit.bonus_type === 'time' ||
 						rulesVue.ruleToEdit.parameter === 'sku-combination') &&
 					rulesVue.ruleToEdit.start.length === 0
-				) {
-					reject('Start time cannot be blank')
-				} else if (
-					(rulesVue.ruleToEdit.parameter === 'time' ||
+        ) {
+          reject('Start time cannot be blank')
+        } else if (
+          (rulesVue.ruleToEdit.parameter === 'time' ||
 						rulesVue.ruleToEdit.parameter === 'sku-combination') &&
 					rulesVue.ruleToEdit.end.length === 0
-				) {
-					reject('End time cannot be blank')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+        ) {
+          reject('End time cannot be blank')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To update a rule
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		updateRule () {
-			if (this.ruleToEdit.type === 'transactions-to-points') {
-				this.ruleToEdit.base_counter = '1'
-			}
-			const rulesVue = this
+    updateRule () {
+      if (this.ruleToEdit.type === 'transactions-to-points') {
+        this.ruleToEdit.base_counter = '1'
+      }
+      const rulesVue = this
 
-			return this.validateEditedRule()
-				.then(response => {
-					rulesVue.updating = true
-					let payload = { ...this.ruleToEdit }
-					if (
-						payload.parameter !== 'sku' &&
+      return this.validateEditedRule()
+        .then(response => {
+          rulesVue.updating = true
+          let payload = { ...this.ruleToEdit }
+          if (
+            payload.parameter !== 'sku' &&
 						payload.parameter !== 'sku-combination'
-					) {
-						payload.sku = 'all'
-					} else {
-						payload.sku = payload.sku.toString()
-					}
-					if (
-						payload.parameter !== 'time' &&
+          ) {
+            payload.sku = 'all'
+          } else {
+            payload.sku = payload.sku.toString()
+          }
+          if (
+            payload.parameter !== 'time' &&
 						payload.parameter !== 'sku-combination'
-					) {
-						payload.start = ''
-						payload.end = ''
-					}
-					rulesVue.clearError('editErrorMessage')
+          ) {
+            payload.start = ''
+            payload.end = ''
+          }
+          rulesVue.clearError('editErrorMessage')
 
-					return LoyaltyFunctions.updatePromotionRule(payload)
-						.then(response => {
-							if (
-								response.code === 200 &&
+          return LoyaltyFunctions.updatePromotionRule(payload)
+            .then(response => {
+              if (
+                response.code === 200 &&
 								response.status === 'ok'
-							) {
-								rulesVue.getRules()
-								rulesVue.closeEditModal()
-								rulesVue.showEditSuccess(response.payload)
-							} else {
-								rulesVue.editErrorMessage = response.message
-								rulesVue.$scrollTo(
-									rulesVue.$refs.editErrorMessage,
-									1000,
-									{
-										offset: -50
-									}
-								)
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not update the rule',
-								errorName: 'editErrorMessage',
-								vue: rulesVue
-							})
-						})
-						.finally(() => {
-							rulesVue.updating = false
-						})
-				})
-				.catch(reason => {
-					rulesVue.editErrorMessage = reason
-					rulesVue.$scrollTo(
-						rulesVue.$refs.createErrorMessage,
-						1000,
-						{
-							offset: -50
-						}
-					)
-				})
-		},
-		/**
+              ) {
+                rulesVue.getRules()
+                rulesVue.closeEditModal()
+                rulesVue.showEditSuccess(response.payload)
+              } else {
+                rulesVue.editErrorMessage = response.message
+                rulesVue.$scrollTo(
+                  rulesVue.$refs.editErrorMessage,
+                  1000,
+                  {
+                    offset: -50
+                  }
+                )
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not update the rule',
+                errorName: 'editErrorMessage',
+                vue: rulesVue
+              })
+            })
+            .finally(() => {
+              rulesVue.updating = false
+            })
+        })
+        .catch(reason => {
+          rulesVue.editErrorMessage = reason
+          rulesVue.$scrollTo(
+            rulesVue.$refs.createErrorMessage,
+            1000,
+            {
+              offset: -50
+            }
+          )
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Promotion Rule has been saved'
-			let type = 'success'
+    showEditSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Promotion Rule has been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To close the edit modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeEditModal () {
-			this.editErrorMessage = ''
-			this.showEditModal = false
-		},
-		/**
+    closeEditModal () {
+      this.editErrorMessage = ''
+      this.showEditModal = false
+    },
+    /**
 		 * To open the delete modal
 		 * @function
 		 * @param {object} rule - The rule to delete
 		 * @returns {undefined}
 		 */
-		openDeleteModal (rule) {
-			this.ruleToDelete = { ...rule }
-			this.showDeleteModal = true
-		},
-		/**
+    openDeleteModal (rule) {
+      this.ruleToDelete = { ...rule }
+      this.showDeleteModal = true
+    },
+    /**
 		 * To delete a rule
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		deleteRule () {
-			const rulesVue = this
-			rulesVue.clearError('deleteErrorMessage')
-			return LoyaltyFunctions.deletePromotionRule(rulesVue.ruleToDelete.id)
-				.then(response => {
-					rulesVue.deleting = true
-					if (response.code === 200 && response.status === 'ok') {
-						rulesVue.getRules()
-						rulesVue.closeDeleteModal()
-						rulesVue.showDeleteSuccess(response.payload)
-					} else {
-						rulesVue.editErrorMessage = response.message
-						rulesVue.$scrollTo(
-							rulesVue.$refs.deleteErrorMessage,
-							1000,
-							{
-								offset: -50
-							}
-						)
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not delete the rule',
-						errorName: 'deleteErrorMessage',
-						vue: rulesVue
-					})
-				})
-				.finally(() => {
-					rulesVue.deleting = false
-				})
-		},
-		/**
+    deleteRule () {
+      const rulesVue = this
+      rulesVue.clearError('deleteErrorMessage')
+      return LoyaltyFunctions.deletePromotionRule(rulesVue.ruleToDelete.id)
+        .then(response => {
+          rulesVue.deleting = true
+          if (response.code === 200 && response.status === 'ok') {
+            rulesVue.getRules()
+            rulesVue.closeDeleteModal()
+            rulesVue.showDeleteSuccess(response.payload)
+          } else {
+            rulesVue.editErrorMessage = response.message
+            rulesVue.$scrollTo(
+              rulesVue.$refs.deleteErrorMessage,
+              1000,
+              {
+                offset: -50
+              }
+            )
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not delete the rule',
+            errorName: 'deleteErrorMessage',
+            vue: rulesVue
+          })
+        })
+        .finally(() => {
+          rulesVue.deleting = false
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Promotion Rule has been deleted'
-			let type = 'success'
+    showDeleteSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Promotion Rule has been deleted'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The removal has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The removal has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To close the delete modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeDeleteModal () {
-			this.deleteErrorMessage = ''
-			this.showDeleteModal = false
-		}
-	}
+    closeDeleteModal () {
+      this.deleteErrorMessage = ''
+      this.showDeleteModal = false
+    }
+  }
 }
 </script>
 

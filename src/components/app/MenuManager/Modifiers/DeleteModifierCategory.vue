@@ -60,106 +60,106 @@ import ModifiersFunctions from '../../../../controllers/Modifiers'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Modal
-	},
-	props: {
-		passedModifierCategoryId: {
-			type: Number
-		}
-	},
-	data () {
-		return {
-			showDeleteModifierCategoryModal: false,
-			errorMessage: '',
-			customWidth: 90
-		}
-	},
-	mounted () {
-		this.showDeleteModifierCategoryModal = true
-	},
-	methods: {
-		/**
+  components: {
+    Modal
+  },
+  props: {
+    passedModifierCategoryId: {
+      type: Number
+    }
+  },
+  data () {
+    return {
+      showDeleteModifierCategoryModal: false,
+      errorMessage: '',
+      customWidth: 90
+    }
+  },
+  mounted () {
+    this.showDeleteModifierCategoryModal = true
+  },
+  methods: {
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To delete the modifier category and close the modal.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		deleteModifierCategory () {
-			var deleteModifierCategoryVue = this
-			deleteModifierCategoryVue.clearError()
+    deleteModifierCategory () {
+      var deleteModifierCategoryVue = this
+      deleteModifierCategoryVue.clearError()
 
-			ModifiersFunctions.deleteModifierCategory(
-				deleteModifierCategoryVue.passedModifierCategoryId,
-				deleteModifierCategoryVue.$root.appId,
-				deleteModifierCategoryVue.$root.appSecret,
-				deleteModifierCategoryVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						this.deleteModifierCategoryAndCloseModal()
-						this.showDeleteSuccess(response.payload)
-					} else {
-						deleteModifierCategoryVue.errorMessage = response.message
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not delete the modifier',
-						errorName: 'errorMessage',
-						vue: deleteModifierCategoryVue,
-						containerRef: 'deleteModal'
-					})
-				})
-		},
-		/**
+      ModifiersFunctions.deleteModifierCategory(
+        deleteModifierCategoryVue.passedModifierCategoryId,
+        deleteModifierCategoryVue.$root.appId,
+        deleteModifierCategoryVue.$root.appSecret,
+        deleteModifierCategoryVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            this.deleteModifierCategoryAndCloseModal()
+            this.showDeleteSuccess(response.payload)
+          } else {
+            deleteModifierCategoryVue.errorMessage = response.message
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not delete the modifier',
+            errorName: 'errorMessage',
+            vue: deleteModifierCategoryVue,
+            containerRef: 'deleteModal'
+          })
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Modifier has been deleted'
-			let type = 'success'
+    showDeleteSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Modifier has been deleted'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The removal has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The removal has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('closeDeleteModifierCategoryModal')
-		},
-		/**
+    closeModal () {
+      this.$emit('closeDeleteModifierCategoryModal')
+    },
+    /**
 		 * To close the modal and delete the modifier category.
 		 * @function
 		 * @returns {undefined}
 		 */
-		deleteModifierCategoryAndCloseModal () {
-			this.$emit('deleteModifierCategoryAndCloseModal')
-		}
-	}
+    deleteModifierCategoryAndCloseModal () {
+      this.$emit('deleteModifierCategoryAndCloseModal')
+    }
+  }
 }
 </script>
 <style>

@@ -144,197 +144,197 @@ import ResourcePicker from '../../modules/ResourcePicker'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Modal,
-		ResourcePicker
-	},
-	props: {
-		selectedFeedId: {
-			type: Number
-		}
-	},
-	data () {
-		return {
-			showEditFeedModal: false,
-			newsToBeEdited: {
-				image: ''
-			},
-			updating: false,
-			errorMessage: '',
-			selectImageMode: false
-		}
-	},
-	created () {
-		// get category details by category id passed as route param
-		this.getNewsFeedDetails()
-	},
-	mounted () {
-		this.showEditFeedModal = true
-	},
-	methods: {
-		/**
+  components: {
+    Modal,
+    ResourcePicker
+  },
+  props: {
+    selectedFeedId: {
+      type: Number
+    }
+  },
+  data () {
+    return {
+      showEditFeedModal: false,
+      newsToBeEdited: {
+        image: ''
+      },
+      updating: false,
+      errorMessage: '',
+      selectImageMode: false
+    }
+  },
+  created () {
+    // get category details by category id passed as route param
+    this.getNewsFeedDetails()
+  },
+  mounted () {
+    this.showEditFeedModal = true
+  },
+  methods: {
+    /**
 		 * To check if the category data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateFeedData () {
-			var editNewsFeedVue = this
-			return new Promise(function (resolve, reject) {
-				if (!editNewsFeedVue.newsToBeEdited.title.length) {
-					reject('News Feed title cannot be blank')
-				} else if (!editNewsFeedVue.newsToBeEdited.short_description.length) {
-					reject('News Feed description cannot be blank')
-				} else if (!editNewsFeedVue.newsToBeEdited.image.length) {
-					reject('News Feed image URL cannot be blank')
-				} else if (!editNewsFeedVue.newsToBeEdited.body.length) {
-					reject('News Feed body cannot be blank')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateFeedData () {
+      var editNewsFeedVue = this
+      return new Promise(function (resolve, reject) {
+        if (!editNewsFeedVue.newsToBeEdited.title.length) {
+          reject('News Feed title cannot be blank')
+        } else if (!editNewsFeedVue.newsToBeEdited.short_description.length) {
+          reject('News Feed description cannot be blank')
+        } else if (!editNewsFeedVue.newsToBeEdited.image.length) {
+          reject('News Feed image URL cannot be blank')
+        } else if (!editNewsFeedVue.newsToBeEdited.body.length) {
+          reject('News Feed body cannot be blank')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To get the details of the category to be updated.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getNewsFeedDetails () {
-			var editNewsFeedVue = this
-			NewsFeedFunctions.getNewsFeedDetails(
-				editNewsFeedVue.selectedFeedId,
-				editNewsFeedVue.$root.userToken,
-				editNewsFeedVue.$root.appId,
-				editNewsFeedVue.$root.appSecret
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						editNewsFeedVue.newsToBeEdited = response.payload
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch feed info',
-						errorName: 'errorMessage',
-						vue: editNewsFeedVue,
-						containerRef: 'modal'
-					})
-				})
-		},
-		/**
+    getNewsFeedDetails () {
+      var editNewsFeedVue = this
+      NewsFeedFunctions.getNewsFeedDetails(
+        editNewsFeedVue.selectedFeedId,
+        editNewsFeedVue.$root.userToken,
+        editNewsFeedVue.$root.appId,
+        editNewsFeedVue.$root.appSecret
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            editNewsFeedVue.newsToBeEdited = response.payload
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch feed info',
+            errorName: 'errorMessage',
+            vue: editNewsFeedVue,
+            containerRef: 'modal'
+          })
+        })
+    },
+    /**
 		 * To prompt the backend call that updates a news feed.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		saveEditedFeed () {
-			var editNewsFeedVue = this
-			editNewsFeedVue.clearError()
+    saveEditedFeed () {
+      var editNewsFeedVue = this
+      editNewsFeedVue.clearError()
 
-			return editNewsFeedVue
-				.validateFeedData()
-				.then(response => {
-					editNewsFeedVue.updating = true
-					NewsFeedFunctions.saveEditedFeed(
-						editNewsFeedVue.newsToBeEdited,
-						editNewsFeedVue.$root.userToken,
-						editNewsFeedVue.$root.appId,
-						editNewsFeedVue.$root.appSecret
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								editNewsFeedVue.showEditSuccess(response.payload)
-								editNewsFeedVue.closeModalAndUpdate()
-							} else {
-								editNewsFeedVue.errorMessage = response.message
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not update the news feed',
-								errorName: 'errorMessage',
-								vue: editNewsFeedVue,
-								containerRef: 'modal'
-							})
-						})
-						.finally(() => {
-							editNewsFeedVue.updating = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					editNewsFeedVue.errorMessage = reason
-					window.scrollTo(0, 0)
-					throw reason
-				})
-		},
-		/**
+      return editNewsFeedVue
+        .validateFeedData()
+        .then(response => {
+          editNewsFeedVue.updating = true
+          NewsFeedFunctions.saveEditedFeed(
+            editNewsFeedVue.newsToBeEdited,
+            editNewsFeedVue.$root.userToken,
+            editNewsFeedVue.$root.appId,
+            editNewsFeedVue.$root.appSecret
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                editNewsFeedVue.showEditSuccess(response.payload)
+                editNewsFeedVue.closeModalAndUpdate()
+              } else {
+                editNewsFeedVue.errorMessage = response.message
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not update the news feed',
+                errorName: 'errorMessage',
+                vue: editNewsFeedVue,
+                containerRef: 'modal'
+              })
+            })
+            .finally(() => {
+              editNewsFeedVue.updating = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          editNewsFeedVue.errorMessage = reason
+          window.scrollTo(0, 0)
+          throw reason
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The News Feed has been saved'
-			let type = 'success'
+    showEditSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The News Feed has been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To close the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('closeEditFeedModal')
-		},
-		closeModalAndUpdate () {
-			this.$emit('updateNewsFeed', this.newsToBeEdited)
-		},
-		/**
+    closeModal () {
+      this.$emit('closeEditFeedModal')
+    },
+    closeModalAndUpdate () {
+      this.$emit('updateNewsFeed', this.newsToBeEdited)
+    },
+    /**
 		 * To change the page to the gallery view on the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		goToPageTwo () {
-			this.selectImageMode = true
-		},
-		/**
+    goToPageTwo () {
+      this.selectImageMode = true
+    },
+    /**
 		 * To change the page to the main/form view on the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		goToPageOne () {
-			this.selectImageMode = false
-		},
-		/**
+    goToPageOne () {
+      this.selectImageMode = false
+    },
+    /**
 		 * To set the image to be same as the one emitted by the gallery modal.
 		 * @function
 		 * @param {object} val - The emitted image object.
 		 * @returns {undefined}
 		 */
-		updateImage (val) {
-			this.goToPageOne()
-			this.newsToBeEdited.image = val.image_url
-		}
-	}
+    updateImage (val) {
+      this.goToPageOne()
+      this.newsToBeEdited.image = val.image_url
+    }
+  }
 }
 </script>

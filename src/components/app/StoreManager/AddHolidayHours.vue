@@ -191,214 +191,213 @@
 
 <script>
 export default {
-	props: {
-		selectedLocationId: {
-			type: Number,
-			default: 0
-		},
-		savingHolidayHours: {
-			type: Boolean,
-			default: () => false
-		}
-	},
-	data () {
-		return {
-			showHolidayHoursModal: false,
-			errorMessage: '',
-			holidayHourDetails: {
-				location_id: this.selectedLocationId,
-				created_by: this.$root.createdBy,
-				start_date: '',
-				end_date: '',
-				name: '',
-				holidayhour: [
-					{
-						day: 1,
-						open: 1,
-						open_time: '00:00',
-						close_time: '00:00',
-						status: 1
-					},
-					{
-						day: 2,
-						open: 1,
-						open_time: '00:00',
-						close_time: '00:00',
-						status: 1
-					},
-					{
-						day: 3,
-						open: 1,
-						open_time: '00:00',
-						close_time: '00:00',
-						status: 1
-					},
-					{
-						day: 4,
-						open: 1,
-						open_time: '00:00',
-						close_time: '00:00',
-						status: 1
-					},
-					{
-						day: 5,
-						open: 1,
-						open_time: '00:00',
-						close_time: '00:00',
-						status: 1
-					},
-					{
-						day: 6,
-						open: 1,
-						open_time: '00:00',
-						close_time: '00:00',
-						status: 1
-					},
-					{
-						day: 0,
-						open: 1,
-						open_time: '00:00',
-						close_time: '00:00',
-						status: 1
-					}
-				]
-			}
-		}
-	},
-	mounted () {
-		this.showHolidayHoursModal = true
-	},
-	methods: {
-		/**
+  props: {
+    selectedLocationId: {
+      type: Number,
+      default: 0
+    },
+    savingHolidayHours: {
+      type: Boolean,
+      default: () => false
+    }
+  },
+  data () {
+    return {
+      showHolidayHoursModal: false,
+      errorMessage: '',
+      holidayHourDetails: {
+        location_id: this.selectedLocationId,
+        created_by: this.$root.createdBy,
+        start_date: '',
+        end_date: '',
+        name: '',
+        holidayhour: [
+          {
+            day: 1,
+            open: 1,
+            open_time: '00:00',
+            close_time: '00:00',
+            status: 1
+          },
+          {
+            day: 2,
+            open: 1,
+            open_time: '00:00',
+            close_time: '00:00',
+            status: 1
+          },
+          {
+            day: 3,
+            open: 1,
+            open_time: '00:00',
+            close_time: '00:00',
+            status: 1
+          },
+          {
+            day: 4,
+            open: 1,
+            open_time: '00:00',
+            close_time: '00:00',
+            status: 1
+          },
+          {
+            day: 5,
+            open: 1,
+            open_time: '00:00',
+            close_time: '00:00',
+            status: 1
+          },
+          {
+            day: 6,
+            open: 1,
+            open_time: '00:00',
+            close_time: '00:00',
+            status: 1
+          },
+          {
+            day: 0,
+            open: 1,
+            open_time: '00:00',
+            close_time: '00:00',
+            status: 1
+          }
+        ]
+      }
+    }
+  },
+  mounted () {
+    this.showHolidayHoursModal = true
+  },
+  methods: {
+    /**
 		 * To copy the time to other days.
 		 * @function
 		 * @param {string} time - The time to copy
 		 * @returns {undefined}
 		 */
-		applyOpeningTimeToAll (time) {
-			this.holidayHourDetails.holidayhour.forEach(day => {
-				day.open_time = time
-			})
-		},
-		/**
+    applyOpeningTimeToAll (time) {
+      this.holidayHourDetails.holidayhour.forEach(day => {
+        day.open_time = time
+      })
+    },
+    /**
 		 * To copy the time to other days.
 		 * @function
 		 * @param {string} time - The time to copy
 		 * @returns {undefined}
 		 */
-		applyClosingTimeToAll (time) {
-			this.holidayHourDetails.holidayhour.forEach(day => {
-				day.close_time = time
-			})
-		},
-		/**
+    applyClosingTimeToAll (time) {
+      this.holidayHourDetails.holidayhour.forEach(day => {
+        day.close_time = time
+      })
+    },
+    /**
 		 * To clear the error
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To emit the holiday hour details to the parent.
 		 * @function
 		 * @returns {undefined}
 		 */
-		addHolidayHours () {
-			this.holidayHourDetails.location_id = this.selectedLocationId
-			let hoursMissing = false
-			let regex = new RegExp('[0-2][0-9]:[0-5][0-9]')
-			this.holidayHourDetails.holidayhour.forEach(day => {
-				if (!regex.test(day.open_time) || !regex.test(day.close_time)) {
-					hoursMissing = true
-					return
-				}
-			})
-			if (!this.holidayHourDetails.name.length) {
-				this.errorMessage = 'Holiday name is required.'
-			} else if (!this.holidayHourDetails.start_date) {
-				this.errorMessage = 'Start Date cannot be blank.'
-			} else if (!this.holidayHourDetails.end_date) {
-				this.errorMessage = 'End Date cannot be blank.'
-			} else if (
-				this.holidayHourDetails.start_date > this.holidayHourDetails.end_date
-			) {
-				this.errorMessage = 'Start Date cannot be after End Date.'
-			} else if (hoursMissing) {
-				this.errorMessage =
+    addHolidayHours () {
+      this.holidayHourDetails.location_id = this.selectedLocationId
+      let hoursMissing = false
+      let regex = new RegExp('[0-2][0-9]:[0-5][0-9]')
+      this.holidayHourDetails.holidayhour.forEach(day => {
+        if (!regex.test(day.open_time) || !regex.test(day.close_time)) {
+          hoursMissing = true
+        }
+      })
+      if (!this.holidayHourDetails.name.length) {
+        this.errorMessage = 'Holiday name is required.'
+      } else if (!this.holidayHourDetails.start_date) {
+        this.errorMessage = 'Start Date cannot be blank.'
+      } else if (!this.holidayHourDetails.end_date) {
+        this.errorMessage = 'End Date cannot be blank.'
+      } else if (
+        this.holidayHourDetails.start_date > this.holidayHourDetails.end_date
+      ) {
+        this.errorMessage = 'Start Date cannot be after End Date.'
+      } else if (hoursMissing) {
+        this.errorMessage =
 					'Opening and Closing Times cannot be empty. Enter 00:00 for days when the Store is closed.'
-			} else {
-				this.$emit('addHolidayHours', this.holidayHourDetails)
-				this.resetForm()
-			}
-		},
-		/**
+      } else {
+        this.$emit('addHolidayHours', this.holidayHourDetails)
+        this.resetForm()
+      }
+    },
+    /**
 		 * To reset the form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetForm () {
-			this.errorMessage = ''
-			this.holidayHourDetails = {
-				location_id: this.selectedLocationId,
-				created_by: this.$root.createdBy,
-				start_date: '',
-				end_date: '',
-				name: '',
-				holidayhour: [
-					{
-						day: 1,
-						open: 1,
-						open_time: '00:00',
-						close_time: '00:00',
-						status: 1
-					},
-					{
-						day: 2,
-						open: 1,
-						open_time: '00:00',
-						close_time: '00:00',
-						status: 1
-					},
-					{
-						day: 3,
-						open: 1,
-						open_time: '00:00',
-						close_time: '00:00',
-						status: 1
-					},
-					{
-						day: 4,
-						open: 1,
-						open_time: '00:00',
-						close_time: '00:00',
-						status: 1
-					},
-					{
-						day: 5,
-						open: 1,
-						open_time: '00:00',
-						close_time: '00:00',
-						status: 1
-					},
-					{
-						day: 6,
-						open: 1,
-						open_time: '00:00',
-						close_time: '00:00',
-						status: 1
-					},
-					{
-						day: 0,
-						open: 1,
-						open_time: '00:00',
-						close_time: '00:00',
-						status: 1
-					}
-				]
-			}
-		}
-	}
+    resetForm () {
+      this.errorMessage = ''
+      this.holidayHourDetails = {
+        location_id: this.selectedLocationId,
+        created_by: this.$root.createdBy,
+        start_date: '',
+        end_date: '',
+        name: '',
+        holidayhour: [
+          {
+            day: 1,
+            open: 1,
+            open_time: '00:00',
+            close_time: '00:00',
+            status: 1
+          },
+          {
+            day: 2,
+            open: 1,
+            open_time: '00:00',
+            close_time: '00:00',
+            status: 1
+          },
+          {
+            day: 3,
+            open: 1,
+            open_time: '00:00',
+            close_time: '00:00',
+            status: 1
+          },
+          {
+            day: 4,
+            open: 1,
+            open_time: '00:00',
+            close_time: '00:00',
+            status: 1
+          },
+          {
+            day: 5,
+            open: 1,
+            open_time: '00:00',
+            close_time: '00:00',
+            status: 1
+          },
+          {
+            day: 6,
+            open: 1,
+            open_time: '00:00',
+            close_time: '00:00',
+            status: 1
+          },
+          {
+            day: 0,
+            open: 1,
+            open_time: '00:00',
+            close_time: '00:00',
+            status: 1
+          }
+        ]
+      }
+    }
+  }
 }
 </script>
 

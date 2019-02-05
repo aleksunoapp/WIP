@@ -105,188 +105,188 @@ import PortionsFunctions from '../../../../controllers/Portions'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Modal
-	},
-	props: {
-		appliedPortions: {
-			type: Array,
-			default: []
-		},
-		selectedItemId: {
-			type: Number,
-			default: 0
-		},
-		itemType: {
-			type: String,
-			default: 'modifier-item'
-		}
-	},
-	data () {
-		return {
-			showPortionsModal: false,
-			errorMessage: '',
-			portions: [],
-			saving: false
-		}
-	},
-	created () {
-		this.getPortions()
-	},
-	mounted () {
-		this.showPortionsModal = true
-	},
-	methods: {
-		/**
+  components: {
+    Modal
+  },
+  props: {
+    appliedPortions: {
+      type: Array,
+      default: []
+    },
+    selectedItemId: {
+      type: Number,
+      default: 0
+    },
+    itemType: {
+      type: String,
+      default: 'modifier-item'
+    }
+  },
+  data () {
+    return {
+      showPortionsModal: false,
+      errorMessage: '',
+      portions: [],
+      saving: false
+    }
+  },
+  created () {
+    this.getPortions()
+  },
+  mounted () {
+    this.showPortionsModal = true
+  },
+  methods: {
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To get a list of modifier categories for a store.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getPortions () {
-			var portionsListVue = this
-			portionsListVue.portions = []
-			PortionsFunctions.getPortions(
-				portionsListVue.$root.appId,
-				portionsListVue.$root.appSecret,
-				portionsListVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						portionsListVue.portions = response.payload
-						if (portionsListVue.appliedPortions.length) {
-							for (var i = 0; i < portionsListVue.portions.length; i++) {
-								for (
-									var j = 0;
-									j < portionsListVue.appliedPortions.length;
-									j++
-								) {
-									if (
-										portionsListVue.portions[i].id ===
+    getPortions () {
+      var portionsListVue = this
+      portionsListVue.portions = []
+      PortionsFunctions.getPortions(
+        portionsListVue.$root.appId,
+        portionsListVue.$root.appSecret,
+        portionsListVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            portionsListVue.portions = response.payload
+            if (portionsListVue.appliedPortions.length) {
+              for (var i = 0; i < portionsListVue.portions.length; i++) {
+                for (
+                  var j = 0;
+                  j < portionsListVue.appliedPortions.length;
+                  j++
+                ) {
+                  if (
+                    portionsListVue.portions[i].id ===
 										portionsListVue.appliedPortions[j].id
-									) {
-										portionsListVue.$set(
-											portionsListVue.portions[i],
-											'selected',
-											true
-										)
-										break
-									} else {
-										portionsListVue.$set(
-											portionsListVue.portions[i],
-											'selected',
-											false
-										)
-									}
-								}
-								portionsListVue.$set(
-									portionsListVue.portions[i],
-									'created_by',
-									portionsListVue.$root.createdBy
-								)
-							}
-						} else {
-							for (var k = 0; k < portionsListVue.portions.length; k++) {
-								portionsListVue.$set(
-									portionsListVue.portions[k],
-									'created_by',
-									portionsListVue.$root.createdBy
-								)
-							}
-						}
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch portions',
-						errorName: 'errorMessage',
-						vue: portionsListVue,
-						containerRef: 'modal'
-					})
-				})
-		},
-		/**
+                  ) {
+                    portionsListVue.$set(
+                      portionsListVue.portions[i],
+                      'selected',
+                      true
+                    )
+                    break
+                  } else {
+                    portionsListVue.$set(
+                      portionsListVue.portions[i],
+                      'selected',
+                      false
+                    )
+                  }
+                }
+                portionsListVue.$set(
+                  portionsListVue.portions[i],
+                  'created_by',
+                  portionsListVue.$root.createdBy
+                )
+              }
+            } else {
+              for (var k = 0; k < portionsListVue.portions.length; k++) {
+                portionsListVue.$set(
+                  portionsListVue.portions[k],
+                  'created_by',
+                  portionsListVue.$root.createdBy
+                )
+              }
+            }
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch portions',
+            errorName: 'errorMessage',
+            vue: portionsListVue,
+            containerRef: 'modal'
+          })
+        })
+    },
+    /**
 		 * To apply some of the existing modifiers to an item.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		applyPortionsToItem () {
-			this.saving = true
-			var portionsListVue = this
-			var portionsToBeApplied = []
-			for (var k = 0; k < portionsListVue.portions.length; k++) {
-				if (portionsListVue.portions[k].selected) {
-					portionsToBeApplied.push(portionsListVue.portions[k].id)
-				}
-			}
-			if (portionsListVue.itemType === 'modifier-item') {
-				PortionsFunctions.applyPortionsToModifierItem(
-					portionsListVue.selectedItemId,
-					this.$root.createdBy,
-					portionsToBeApplied,
-					portionsListVue.$root.appId,
-					portionsListVue.$root.appSecret,
-					portionsListVue.$root.userToken
-				)
-					.then(response => {
-						if (response.code === 200 && response.status === 'ok') {
-							portionsListVue.closeModal()
-							portionsListVue.showEditSuccess(response.payload)
-						}
-					})
-					.catch(reason => {
-						ajaxErrorHandler({
-							reason,
-							errorText: 'We could not apply the portion',
-							errorName: 'errorMessage',
-							vue: portionsListVue,
-							containerRef: 'modal'
-						})
-					})
-					.finally(() => {
-						portionsListVue.saving = false
-					})
-			}
-		},
-		/**
+    applyPortionsToItem () {
+      this.saving = true
+      var portionsListVue = this
+      var portionsToBeApplied = []
+      for (var k = 0; k < portionsListVue.portions.length; k++) {
+        if (portionsListVue.portions[k].selected) {
+          portionsToBeApplied.push(portionsListVue.portions[k].id)
+        }
+      }
+      if (portionsListVue.itemType === 'modifier-item') {
+        PortionsFunctions.applyPortionsToModifierItem(
+          portionsListVue.selectedItemId,
+          this.$root.createdBy,
+          portionsToBeApplied,
+          portionsListVue.$root.appId,
+          portionsListVue.$root.appSecret,
+          portionsListVue.$root.userToken
+        )
+          .then(response => {
+            if (response.code === 200 && response.status === 'ok') {
+              portionsListVue.closeModal()
+              portionsListVue.showEditSuccess(response.payload)
+            }
+          })
+          .catch(reason => {
+            ajaxErrorHandler({
+              reason,
+              errorText: 'We could not apply the portion',
+              errorName: 'errorMessage',
+              vue: portionsListVue,
+              containerRef: 'modal'
+            })
+          })
+          .finally(() => {
+            portionsListVue.saving = false
+          })
+      }
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Modifier Item has been saved'
-			let type = 'success'
+    showEditSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Modifier Item has been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('closePortionsListModal', this.selectedItemId)
-		}
-	}
+    closeModal () {
+      this.$emit('closePortionsListModal', this.selectedItemId)
+    }
+  }
 }
 </script>

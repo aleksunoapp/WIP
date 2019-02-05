@@ -38,15 +38,15 @@
 
 <script>
 export default {
-	computed: {
-		userLocationCount () {
-			let count = this.$root.storeLocations.length
-			if (this.$root.activeLocation.id !== undefined) {
-				return count + 1
-			} else {
-				return count
-			}
-		}
-	}
+  computed: {
+    userLocationCount () {
+      let count = this.$root.storeLocations.length
+      if (this.$root.activeLocation.id !== undefined) {
+        return count + 1
+      } else {
+        return count
+      }
+    }
+  }
 }
 </script>

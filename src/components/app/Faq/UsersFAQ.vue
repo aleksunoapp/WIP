@@ -394,409 +394,409 @@ import CountriesFunctions from '@/controllers/Countries'
 import PlatformsFunctions from '@/controllers/Platforms'
 
 export default {
-	components: {
-		Breadcrumb,
-		EditUserFaq,
-		NoResults,
-		LoadingScreen,
-		Modal
-	},
-	data () {
-		return {
-			breadcrumbArray: [
-				{ name: 'FAQ', link: false },
-				{ name: 'Users FAQ', link: false }
-			],
-			createFAQCollapse: true,
-			creating: false,
-			createFAQError: '',
-			newFAQ: {
-				question: '',
-				answer: '',
-				external_link: '',
-				status: 1,
-				user_id: this.$root.createdBy,
-				cta_type: '',
-				cta_value: '',
-				country_id: null,
-				platform_id: null
-			},
-			faqs: [],
-			errorMessage: '',
-			showEditFAQModal: false,
-			selectedFAQId: 0,
-			displayUserFAQData: false,
-			deleteErrorMessage: '',
-			faqToDelete: {},
-			showDeleteModal: false,
-			deleting: false
-		}
-	},
-	created () {
-		this.getUserFAQs()
-		this.getCountries()
-		this.getPlatforms()
-	},
-	methods: {
-		/**
+  components: {
+    Breadcrumb,
+    EditUserFaq,
+    NoResults,
+    LoadingScreen,
+    Modal
+  },
+  data () {
+    return {
+      breadcrumbArray: [
+        { name: 'FAQ', link: false },
+        { name: 'Users FAQ', link: false }
+      ],
+      createFAQCollapse: true,
+      creating: false,
+      createFAQError: '',
+      newFAQ: {
+        question: '',
+        answer: '',
+        external_link: '',
+        status: 1,
+        user_id: this.$root.createdBy,
+        cta_type: '',
+        cta_value: '',
+        country_id: null,
+        platform_id: null
+      },
+      faqs: [],
+      errorMessage: '',
+      showEditFAQModal: false,
+      selectedFAQId: 0,
+      displayUserFAQData: false,
+      deleteErrorMessage: '',
+      faqToDelete: {},
+      showDeleteModal: false,
+      deleting: false
+    }
+  },
+  created () {
+    this.getUserFAQs()
+    this.getCountries()
+    this.getPlatforms()
+  },
+  methods: {
+    /**
 		 * To get the FAQs for stores.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getUserFAQs () {
-			this.displayUserFAQData = true
-			this.faqs = []
-			var usersFAQVue = this
-			return FAQFunctions.getUserFAQs(
-				usersFAQVue.$root.appId,
-				usersFAQVue.$root.appSecret
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						usersFAQVue.faqs = response.payload
-					} else {
-						usersFAQVue.errorMessage = response.message
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch FAQs',
-						errorName: 'errorMessage',
-						vue: usersFAQVue
-					})
-				})
-				.finally(() => {
-					usersFAQVue.displayUserFAQData = false
-				})
-		},
-		/**
+    getUserFAQs () {
+      this.displayUserFAQData = true
+      this.faqs = []
+      var usersFAQVue = this
+      return FAQFunctions.getUserFAQs(
+        usersFAQVue.$root.appId,
+        usersFAQVue.$root.appSecret
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            usersFAQVue.faqs = response.payload
+          } else {
+            usersFAQVue.errorMessage = response.message
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch FAQs',
+            errorName: 'errorMessage',
+            vue: usersFAQVue
+          })
+        })
+        .finally(() => {
+          usersFAQVue.displayUserFAQData = false
+        })
+    },
+    /**
 		 * To get a list of all countries.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getCountries () {
-			this.clearError('errorMessage')
-			this.loadingCountries = true
-			this.countries = []
-			var _this = this
-			return CountriesFunctions.listCountries()
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						_this.loadingCountries = false
-						_this.countries = response.payload
-					} else {
-						_this.loadingCountries = false
-					}
-				})
-				.catch(reason => {
-					_this.loadingCountries = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch the list of countries',
-						errorName: 'errorMessage',
-						vue: _this
-					})
-				})
-		},
-		/**
+    getCountries () {
+      this.clearError('errorMessage')
+      this.loadingCountries = true
+      this.countries = []
+      var _this = this
+      return CountriesFunctions.listCountries()
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            _this.loadingCountries = false
+            _this.countries = response.payload
+          } else {
+            _this.loadingCountries = false
+          }
+        })
+        .catch(reason => {
+          _this.loadingCountries = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch the list of countries',
+            errorName: 'errorMessage',
+            vue: _this
+          })
+        })
+    },
+    /**
 		 * To get a list of all platforms.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getPlatforms () {
-			this.clearError('errorMessage')
-			this.loadingPlatforms = true
-			this.platforms = []
-			var _this = this
-			return PlatformsFunctions.listPlatforms()
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						_this.loadingPlatforms = false
-						_this.platforms = response.payload
-					} else {
-						_this.loadingPlatforms = false
-					}
-				})
-				.catch(reason => {
-					_this.loadingPlatforms = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch the list of platforms',
-						errorName: 'errorMessage',
-						vue: _this
-					})
-				})
-		},
-		/**
+    getPlatforms () {
+      this.clearError('errorMessage')
+      this.loadingPlatforms = true
+      this.platforms = []
+      var _this = this
+      return PlatformsFunctions.listPlatforms()
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            _this.loadingPlatforms = false
+            _this.platforms = response.payload
+          } else {
+            _this.loadingPlatforms = false
+          }
+        })
+        .catch(reason => {
+          _this.loadingPlatforms = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch the list of platforms',
+            errorName: 'errorMessage',
+            vue: _this
+          })
+        })
+    },
+    /**
 		 * To toggle the create faq panel, initially set to closed
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCreateFAQPanel () {
-			this.createFAQCollapse = !this.createFAQCollapse
-		},
-		/**
+    toggleCreateFAQPanel () {
+      this.createFAQCollapse = !this.createFAQCollapse
+    },
+    /**
 		 * To clear an error.
 		 * @function
 		 * @param {string} name - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To clear the create faq form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetForm () {
-			this.newFAQ = {
-				question: '',
-				answer: '',
-				external_link: '',
-				status: 1,
-				user_id: this.$root.createdBy,
-				cta_type: '',
-				cta_value: '',
-				country_id: null,
-				platform_id: null
-			}
-			this.clearError('createFAQError')
-		},
-		/**
+    resetForm () {
+      this.newFAQ = {
+        question: '',
+        answer: '',
+        external_link: '',
+        status: 1,
+        user_id: this.$root.createdBy,
+        cta_type: '',
+        cta_value: '',
+        country_id: null,
+        platform_id: null
+      }
+      this.clearError('createFAQError')
+    },
+    /**
 		 * To check if the faq information are valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateFAQData () {
-			var usersFAQVue = this
-			return new Promise(function (resolve, reject) {
-				if (!usersFAQVue.newFAQ.question.length) {
-					reject('Question cannot be blank')
-				} else if (!usersFAQVue.newFAQ.answer.length) {
-					reject('Answer cannot be blank')
-				} else if (!usersFAQVue.newFAQ.external_link.length) {
-					reject('External link cannot be blank')
-				} else if (
-					usersFAQVue.newFAQ.cta_type &&
+    validateFAQData () {
+      var usersFAQVue = this
+      return new Promise(function (resolve, reject) {
+        if (!usersFAQVue.newFAQ.question.length) {
+          reject('Question cannot be blank')
+        } else if (!usersFAQVue.newFAQ.answer.length) {
+          reject('Answer cannot be blank')
+        } else if (!usersFAQVue.newFAQ.external_link.length) {
+          reject('External link cannot be blank')
+        } else if (
+          usersFAQVue.newFAQ.cta_type &&
 					!usersFAQVue.newFAQ.cta_value
-				) {
-					reject('Call to action value cannot be blank')
-				} else if (usersFAQVue.newFAQ.country_id === null) {
-					reject('Select a country')
-				} else if (usersFAQVue.newFAQ.platform_id === null) {
-					reject('Select a platform')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+        ) {
+          reject('Call to action value cannot be blank')
+        } else if (usersFAQVue.newFAQ.country_id === null) {
+          reject('Select a country')
+        } else if (usersFAQVue.newFAQ.platform_id === null) {
+          reject('Select a platform')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To prompt the backend call that creates a new FAQ.
 		 * @function
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {object} A promise that will either return an error message or display the success screen
 		 */
-		createUserFAQ (event) {
-			var disabledButton = GlobalFunctions.disableButton(event)
-			var usersFAQVue = this
+    createUserFAQ (event) {
+      var disabledButton = GlobalFunctions.disableButton(event)
+      var usersFAQVue = this
 
-			this.clearError('createFAQError')
-			return usersFAQVue
-				.validateFAQData()
-				.then(response => {
-					usersFAQVue.creating = true
-					FAQFunctions.createUserFAQ(
-						usersFAQVue.newFAQ,
-						usersFAQVue.$root.appId,
-						usersFAQVue.$root.appSecret,
-						usersFAQVue.$root.userToken
-					)
-						.then(response => {
-							if (
-								response.code === 200 &&
+      this.clearError('createFAQError')
+      return usersFAQVue
+        .validateFAQData()
+        .then(response => {
+          usersFAQVue.creating = true
+          FAQFunctions.createUserFAQ(
+            usersFAQVue.newFAQ,
+            usersFAQVue.$root.appId,
+            usersFAQVue.$root.appSecret,
+            usersFAQVue.$root.userToken
+          )
+            .then(response => {
+              if (
+                response.code === 200 &&
 								response.status === 'ok'
-							) {
-								usersFAQVue.newFAQ.id =
+              ) {
+                usersFAQVue.newFAQ.id =
 									response.payload.new_faq_id
-								usersFAQVue.faqs.push(usersFAQVue.newFAQ)
-								usersFAQVue.showAlert(response.payload)
-								usersFAQVue.resetForm()
-								disabledButton.complete()
-							} else {
-								usersFAQVue.createFAQError = response.message
-								disabledButton.cancel()
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not create the FAQ',
-								errorName: 'createFAQError',
-								vue: usersFAQVue
-							})
-						})
-						.finally(() => {
-							usersFAQVue.creating = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					usersFAQVue.createFAQError = reason
-					window.scrollTo(0, 0)
-					disabledButton.cancel()
-					throw reason
-				})
-		},
-		/**
+                usersFAQVue.faqs.push(usersFAQVue.newFAQ)
+                usersFAQVue.showAlert(response.payload)
+                usersFAQVue.resetForm()
+                disabledButton.complete()
+              } else {
+                usersFAQVue.createFAQError = response.message
+                disabledButton.cancel()
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not create the FAQ',
+                errorName: 'createFAQError',
+                vue: usersFAQVue
+              })
+            })
+            .finally(() => {
+              usersFAQVue.creating = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          usersFAQVue.createFAQError = reason
+          window.scrollTo(0, 0)
+          disabledButton.cancel()
+          throw reason
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert (payload = {}) {
-			let title = 'Success'
-			let text = 'The User FAQ has been created'
-			let type = 'success'
+    showAlert (payload = {}) {
+      let title = 'Success'
+      let text = 'The User FAQ has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The User FAQ has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The User FAQ has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To prompt the backend call that updates a user FAQ.
 		 * @function
 		 * @param {object} faq - The selected FAQ object.
 		 * @returns {undefined}
 		 */
-		editFAQ (faq) {
-			this.showEditFAQModal = true
-			this.selectedFAQId = faq.id
-		},
-		/**
+    editFAQ (faq) {
+      this.showEditFAQModal = true
+      this.selectedFAQId = faq.id
+    },
+    /**
 		 * To close the modal to edit user FAQs.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeEditStoreFAQModal () {
-			this.showEditFAQModal = false
-		},
-		/**
+    closeEditStoreFAQModal () {
+      this.showEditFAQModal = false
+    },
+    /**
 		 * To close the modal and highlight the recently updated user faq.
 		 * @function
 		 * @param {object} payload - response.payload from the edit call
 		 * @returns {undefined}
 		 */
-		highlightFAQ (payload) {
-			this.getUserFAQs()
-			this.showEditFAQModal = false
-			this.showEditSuccess(payload)
-		},
-		/**
+    highlightFAQ (payload) {
+      this.getUserFAQs()
+      this.showEditFAQModal = false
+      this.showEditSuccess(payload)
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The User FAQ has been saved'
-			let type = 'success'
+    showEditSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The User FAQ has been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The User FAQ has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The User FAQ has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To open the modal to delete an FAQs.
 		 * @function
 		 * @param {object} faq - The selected FAQ
 		 * @returns {undefined}
 		 */
-		confirmDelete (faq) {
-			this.faqToDelete = faq
-			this.showDeleteModal = true
-		},
-		/**
+    confirmDelete (faq) {
+      this.faqToDelete = faq
+      this.showDeleteModal = true
+    },
+    /**
 		 * To close the modal to delete an FAQs.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeDeleteModal () {
-			this.showDeleteModal = false
-			this.clearError('deleteErrorMessage')
-			this.faqToDelete = {}
-		},
-		/**
+    closeDeleteModal () {
+      this.showDeleteModal = false
+      this.clearError('deleteErrorMessage')
+      this.faqToDelete = {}
+    },
+    /**
 		 * To prompt the backend call that deletes an FAQ.
 		 * @function
 		 * @returns {object} A promise that will either return an error message or display the success screen
 		 */
-		deleteFAQ () {
-			this.deleting = true
-			this.clearError('deleteErrorMessage')
-			var usersFAQVue = this
-			return FAQFunctions.deleteUserFAQ(
-				usersFAQVue.faqToDelete.id
-			)
-				.then(response => {
-					usersFAQVue.getUserFAQs()
-					usersFAQVue.closeDeleteModal()
-					usersFAQVue.showDeleteSuccess(response.payload)
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not delete the FAQ',
-						errorName: 'deleteErrorMessage',
-						vue: usersFAQVue,
-						containerRef: 'deleteModal'
-					})
-				})
-				.finally(() => {
-					usersFAQVue.deleting = false
-				})
-		},
-		/**
+    deleteFAQ () {
+      this.deleting = true
+      this.clearError('deleteErrorMessage')
+      var usersFAQVue = this
+      return FAQFunctions.deleteUserFAQ(
+        usersFAQVue.faqToDelete.id
+      )
+        .then(response => {
+          usersFAQVue.getUserFAQs()
+          usersFAQVue.closeDeleteModal()
+          usersFAQVue.showDeleteSuccess(response.payload)
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not delete the FAQ',
+            errorName: 'deleteErrorMessage',
+            vue: usersFAQVue,
+            containerRef: 'deleteModal'
+          })
+        })
+        .finally(() => {
+          usersFAQVue.deleting = false
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The User FAQ has been deleted'
-			let type = 'success'
+    showDeleteSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The User FAQ has been deleted'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The removal has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The removal has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		}
-	}
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    }
+  }
 }
 </script>
 <style scoped>

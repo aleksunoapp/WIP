@@ -29,112 +29,112 @@
 <script>
 import $ from 'jquery'
 export default {
-	props: {
-		value: {
-			default: true
-		},
-		checked: {
-			type: Boolean,
-			default: false
-		},
-		button: {
-			type: Boolean,
-			default: false
-		},
-		disabled: {
-			type: Boolean,
-			default: false
-		},
-		name: {
-			type: String,
-			default: null
-		},
-		readonly: {
-			type: Boolean,
-			default: false
-		},
-		type: {
-			type: String,
-			default: null
-		}
-	},
-	computed: {
-		active () {
-			return typeof this.value !== 'boolean' && this.group
-				? ~this.$parent.value.indexOf(this.value)
-				: this.checked === this.value
-		},
-		isButton () {
-			return this.button || (this.group && this.$parent.buttons)
-		},
-		group () {
-			return this.$parent && this.$parent._checkboxGroup
-		},
-		typeColor () {
-			return this.type || (this.$parent && this.$parent.type) || 'default'
-		}
-	},
-	watch: {
-		checked (val) {
-			if (typeof this.value !== 'boolean' && this.group) {
-				if (this.checked && !~this.$parent.value.indexOf(this.value)) {
-					this.$parent.value.push(this.value)
-				}
-				if (!this.checked && ~this.$parent.value.indexOf(this.value)) {
-					this.$parent.value.$remove(this.value)
-				}
-			}
-		}
-	},
-	created () {
-		if (typeof this.value === 'boolean') {
-			return
-		}
-		const parent = this.$parent
-		if (parent && parent._btnGroup && !parent._radioGroup) {
-			parent._checkboxGroup = true
-			if (!(parent.value instanceof Array)) {
-				parent.value = []
-			}
-		}
-	},
-	mounted () {
-		if (!this.$parent._checkboxGroup || typeof this.value === 'boolean') {
-			return
-		}
-		if (this.$parent.value.length) {
-			this.checked = ~this.$parent.value.indexOf(this.value)
-		} else if (this.checked) {
-			this.$parent.value.push(this.value)
-		}
-	},
-	methods: {
-		eval () {
-			if (typeof this.value !== 'boolean' && this.group) {
-				this.checked = ~this.$parent.value.indexOf(this.value)
-			}
-		},
-		focus () {
-			$(this.$refs.input).focus()
-		},
-		toggle () {
-			if (!this.disabled) {
-				this.focus()
-				if (!this.readonly) {
-					this.checked = this.checked ? null : this.value
-					if (this.group && typeof this.value !== 'boolean') {
-						const index = this.$parent.value.indexOf(this.value)
-						if (index >= 0) {
-							this.$parent.value.splice(index, 1)
-						} else if (index < 0) {
-							this.$parent.value.push(this.value)
-						}
-					}
-				}
-			}
-			return false
-		}
-	}
+  props: {
+    value: {
+      default: true
+    },
+    checked: {
+      type: Boolean,
+      default: false
+    },
+    button: {
+      type: Boolean,
+      default: false
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    name: {
+      type: String,
+      default: null
+    },
+    readonly: {
+      type: Boolean,
+      default: false
+    },
+    type: {
+      type: String,
+      default: null
+    }
+  },
+  computed: {
+    active () {
+      return typeof this.value !== 'boolean' && this.group
+        ? ~this.$parent.value.indexOf(this.value)
+        : this.checked === this.value
+    },
+    isButton () {
+      return this.button || (this.group && this.$parent.buttons)
+    },
+    group () {
+      return this.$parent && this.$parent._checkboxGroup
+    },
+    typeColor () {
+      return this.type || (this.$parent && this.$parent.type) || 'default'
+    }
+  },
+  watch: {
+    checked (val) {
+      if (typeof this.value !== 'boolean' && this.group) {
+        if (this.checked && !~this.$parent.value.indexOf(this.value)) {
+          this.$parent.value.push(this.value)
+        }
+        if (!this.checked && ~this.$parent.value.indexOf(this.value)) {
+          this.$parent.value.$remove(this.value)
+        }
+      }
+    }
+  },
+  created () {
+    if (typeof this.value === 'boolean') {
+      return
+    }
+    const parent = this.$parent
+    if (parent && parent._btnGroup && !parent._radioGroup) {
+      parent._checkboxGroup = true
+      if (!(parent.value instanceof Array)) {
+        parent.value = []
+      }
+    }
+  },
+  mounted () {
+    if (!this.$parent._checkboxGroup || typeof this.value === 'boolean') {
+      return
+    }
+    if (this.$parent.value.length) {
+      this.checked = ~this.$parent.value.indexOf(this.value)
+    } else if (this.checked) {
+      this.$parent.value.push(this.value)
+    }
+  },
+  methods: {
+    eval () {
+      if (typeof this.value !== 'boolean' && this.group) {
+        this.checked = ~this.$parent.value.indexOf(this.value)
+      }
+    },
+    focus () {
+      $(this.$refs.input).focus()
+    },
+    toggle () {
+      if (!this.disabled) {
+        this.focus()
+        if (!this.readonly) {
+          this.checked = this.checked ? null : this.value
+          if (this.group && typeof this.value !== 'boolean') {
+            const index = this.$parent.value.indexOf(this.value)
+            if (index >= 0) {
+              this.$parent.value.splice(index, 1)
+            } else if (index < 0) {
+              this.$parent.value.push(this.value)
+            }
+          }
+        }
+      }
+      return false
+    }
+  }
 }
 </script>
 

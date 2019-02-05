@@ -110,168 +110,168 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 import LoadingScreen from '@/components/modules/LoadingScreen'
 
 export default {
-	components: {
-		LoadingScreen
-	},
-	data () {
-		return {
-			loadingItemSummary: false,
-			itemSummary: [],
-			errorMessage: ''
-		}
-	},
-	created () {
-		this.getItemSummary()
-	},
-	methods: {
-		/**
+  components: {
+    LoadingScreen
+  },
+  data () {
+    return {
+      loadingItemSummary: false,
+      itemSummary: [],
+      errorMessage: ''
+    }
+  },
+  created () {
+    this.getItemSummary()
+  },
+  methods: {
+    /**
 		 * To clear an error.
 		 * @function
 		 * @param {string} name - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To save data as a CSV
 		 * @function
 		 * @param {array} dataSource - An array of objects containing summary data
 		 * @returns {undefined}
 		 */
-		downloadCSV (dataSource) {
-			var data = [...dataSource]
+    downloadCSV (dataSource) {
+      var data = [...dataSource]
 
-			let strip = function (text) {
-				return text.toString().replace(',', ' ')
-			}
+      let strip = function (text) {
+        return text.toString().replace(',', ' ')
+      }
 
-			// Each CSV column is separated by ";" and new line "\n" for next row
-			var csvContent = 'Name,Price,Total sales,SKU,Category\n'
-			data.forEach(function (row, index) {
-				let dataString = `${strip(row.name)},${strip(row.actual_price)},${strip(
-					row.total_sale
-				)},${strip(row.item_sku)},${strip(row.category)}`
-				csvContent += index < data.length ? dataString + '\n' : dataString
-			})
+      // Each CSV column is separated by ";" and new line "\n" for next row
+      var csvContent = 'Name,Price,Total sales,SKU,Category\n'
+      data.forEach(function (row, index) {
+        let dataString = `${strip(row.name)},${strip(row.actual_price)},${strip(
+          row.total_sale
+        )},${strip(row.item_sku)},${strip(row.category)}`
+        csvContent += index < data.length ? dataString + '\n' : dataString
+      })
 
-			/* eslint-disable no-undef */
-			// The download function takes a CSV string, the filename and mimeType as parameters
-			var download = function (content, fileName, mimeType) {
-				var a = document.createElement('a')
-				mimeType = mimeType || 'application/octet-stream'
+      /* eslint-disable no-undef */
+      // The download function takes a CSV string, the filename and mimeType as parameters
+      var download = function (content, fileName, mimeType) {
+        var a = document.createElement('a')
+        mimeType = mimeType || 'application/octet-stream'
 
-				if (navigator.msSaveBlob) {
-					// IE10
-					navigator.msSaveBlob(
-						new Blob([content], {
-							type: mimeType
-						}),
-						fileName
-					)
-				} else if (URL && 'download' in a) {
-					// html5 A[download]
-					a.href = URL.createObjectURL(
-						new Blob([content], {
-							type: mimeType
-						})
-					)
-					a.setAttribute('download', fileName)
-					document.body.appendChild(a)
-					a.click()
-					document.body.removeChild(a)
-				} else {
-					location.href =
+        if (navigator.msSaveBlob) {
+          // IE10
+          navigator.msSaveBlob(
+            new Blob([content], {
+              type: mimeType
+            }),
+            fileName
+          )
+        } else if (URL && 'download' in a) {
+          // html5 A[download]
+          a.href = URL.createObjectURL(
+            new Blob([content], {
+              type: mimeType
+            })
+          )
+          a.setAttribute('download', fileName)
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+        } else {
+          location.href =
 						'data:application/octet-stream,' + encodeURIComponent(content) // only this mime type is supported
-				}
-			}
+        }
+      }
 
-			download(csvContent, 'Top10Items.csv', 'text/csv;encoding:utf-8')
-			/* eslint-enable no-undef */
-		},
-		/**
+      download(csvContent, 'Top10Items.csv', 'text/csv;encoding:utf-8')
+      /* eslint-enable no-undef */
+    },
+    /**
 		 * To format a number
 		 * @function
 		 * @param {string} val - The number to format
 		 * @returns {string} The formatted currency amount
 		 */
-		formatNumber (val) {
-			if (val !== null && val !== undefined) {
-				return val.toLocaleString('en-US', { style: 'decimal' })
-			} else {
-				return 'n/a'
-			}
-		},
-		/**
+    formatNumber (val) {
+      if (val !== null && val !== undefined) {
+        return val.toLocaleString('en-US', { style: 'decimal' })
+      } else {
+        return 'n/a'
+      }
+    },
+    /**
 		 * To format a number as currency
 		 * @function
 		 * @param {string} val - The number to format
 		 * @returns {string} The formatted currency amount
 		 */
-		formatUSD (val) {
-			if (val !== null && val !== undefined) {
-				let local = Number(val)
-				local = local.toLocaleString('en-US', {
-					style: 'currency',
-					currency: 'USD'
-				})
-				return local
-			} else {
-				return 'n/a'
-			}
-		},
-		/**
+    formatUSD (val) {
+      if (val !== null && val !== undefined) {
+        let local = Number(val)
+        local = local.toLocaleString('en-US', {
+          style: 'currency',
+          currency: 'USD'
+        })
+        return local
+      } else {
+        return 'n/a'
+      }
+    },
+    /**
 		 * el-table compliant cell data formatting function
 		 * @function
 		 * @param {object} row - The row to format
 		 * @param {object} column - The column to format
 		 * @returns {string} The formatted currency amount
 		 */
-		tableFormatNumber (row, column) {
-			return this.formatNumber(row.total_sale)
-		},
-		/**
+    tableFormatNumber (row, column) {
+      return this.formatNumber(row.total_sale)
+    },
+    /**
 		 * el-table compliant cell data formatting function
 		 * @function
 		 * @param {object} row - The row to format
 		 * @param {object} column - The column to format
 		 * @returns {string} The formatted currency amount
 		 */
-		tableFormatUSD (row, column) {
-			return this.formatUSD(row.actual_price)
-		},
-		/**
+    tableFormatUSD (row, column) {
+      return this.formatUSD(row.actual_price)
+    },
+    /**
 		 * To get top selling items data
 		 * @function
 		 * @returns {undefined}
 		 */
-		getItemSummary () {
-			this.loadingItemSummary = true
-			var analyticsVue = this
-			return AnalyticsFunctions.getItemSummary(
-				analyticsVue.$root.appId,
-				analyticsVue.$root.appSecret,
-				analyticsVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						analyticsVue.itemSummary = response.payload
-						analyticsVue.loadingItemSummary = false
-					} else {
-						analyticsVue.loadingItemSummary = false
-					}
-				})
-				.catch(reason => {
-					analyticsVue.loadingItemSummary = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch data',
-						errorName: 'errorMessage',
-						vue: analyticsVue
-					})
-				})
-		}
-	}
+    getItemSummary () {
+      this.loadingItemSummary = true
+      var analyticsVue = this
+      return AnalyticsFunctions.getItemSummary(
+        analyticsVue.$root.appId,
+        analyticsVue.$root.appSecret,
+        analyticsVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            analyticsVue.itemSummary = response.payload
+            analyticsVue.loadingItemSummary = false
+          } else {
+            analyticsVue.loadingItemSummary = false
+          }
+        })
+        .catch(reason => {
+          analyticsVue.loadingItemSummary = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch data',
+            errorName: 'errorMessage',
+            vue: analyticsVue
+          })
+        })
+    }
+  }
 }
 </script>
 

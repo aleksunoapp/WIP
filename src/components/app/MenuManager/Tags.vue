@@ -266,303 +266,303 @@ import ResourcePicker from '../../modules/ResourcePicker'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Breadcrumb,
-		Modal,
-		LoadingScreen,
-		EditTag,
-		NoResults,
-		Dropdown,
-		MenuTree,
-		ResourcePicker
-	},
-	data () {
-		return {
-			breadcrumbArray: [
-				{ name: 'Menu Manager', link: false },
-				{ name: 'Tags', link: false }
-			],
-			displayTagsData: false,
-			listErrorMessage: '',
-			displayEditTagModal: false,
-			tags: [],
-			createTagCollapse: true,
-			errorMessage: '',
-			newTag: {
-				name: '',
-				type: '',
-				image_url: '',
-				user_id: this.$root.createdBy
-			},
-			showMenuTreeModal: false,
-			selectedTag: {},
-			headerText: '',
-			imageMode: {
-				newMenu: false
-			}
-		}
-	},
-	computed: {
-		tagTypeLabel () {
-			if (!this.newTag.type) {
-				return 'Select Tag type'
-			} else if (this.newTag.type === 'contains') {
-				return 'contains'
-			} else if (this.newTag.type === 'may_contain') {
-				return 'may contain'
-			}
-		}
-	},
-	mounted () {
-		// get the list of available tags
-		this.getTags()
-	},
-	methods: {
-		/**
+  components: {
+    Breadcrumb,
+    Modal,
+    LoadingScreen,
+    EditTag,
+    NoResults,
+    Dropdown,
+    MenuTree,
+    ResourcePicker
+  },
+  data () {
+    return {
+      breadcrumbArray: [
+        { name: 'Menu Manager', link: false },
+        { name: 'Tags', link: false }
+      ],
+      displayTagsData: false,
+      listErrorMessage: '',
+      displayEditTagModal: false,
+      tags: [],
+      createTagCollapse: true,
+      errorMessage: '',
+      newTag: {
+        name: '',
+        type: '',
+        image_url: '',
+        user_id: this.$root.createdBy
+      },
+      showMenuTreeModal: false,
+      selectedTag: {},
+      headerText: '',
+      imageMode: {
+        newMenu: false
+      }
+    }
+  },
+  computed: {
+    tagTypeLabel () {
+      if (!this.newTag.type) {
+        return 'Select Tag type'
+      } else if (this.newTag.type === 'contains') {
+        return 'contains'
+      } else if (this.newTag.type === 'may_contain') {
+        return 'may contain'
+      }
+    }
+  },
+  mounted () {
+    // get the list of available tags
+    this.getTags()
+  },
+  methods: {
+    /**
 		 * To provide a formatted version of the tag type.
 		 * @function
 		 * @param {string} type - The tag type to format.
 		 * @returns {string} The formatted string
 		 */
-		readableTagType (type) {
-			if (type === 'contains') {
-				return 'contains'
-			} else if (type === 'may_contain') {
-				return 'may contain'
-			}
-		},
-		/**
+    readableTagType (type) {
+      if (type === 'contains') {
+        return 'contains'
+      } else if (type === 'may_contain') {
+        return 'may contain'
+      }
+    },
+    /**
 		 * To toggle between the open and closed state of the resource picker
 		 * @function
 		 * @param {string} object - The name of the object the image is for
 		 * @param {object} value - The open / closed value of the picker
 		 * @returns {undefined}
 		 */
-		toggleImageMode (object, value) {
-			this.imageMode[object] = value
-		},
-		/**
+    toggleImageMode (object, value) {
+      this.imageMode[object] = value
+    },
+    /**
 		 * To update the type property of newTag.
 		 * @function
 		 * @param {object} value - The new value to assign.
 		 * @returns {undefined}
 		 */
-		updateNewTagType (value) {
-			this.newTag.type = value
-		},
-		/**
+    updateNewTagType (value) {
+      this.newTag.type = value
+    },
+    /**
 		 * To display the modal to apply a tag to multiple modifier items.
 		 * @function
 		 * @param {object} tag - The selected tag.
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		displayMenuTreeModal (tag, event) {
-			event.stopPropagation()
-			this.selectedTag = tag
-			this.headerText = "Tag '" + this.selectedTag.name + "'"
-			this.showMenuTreeModal = true
-		},
-		/**
+    displayMenuTreeModal (tag, event) {
+      event.stopPropagation()
+      this.selectedTag = tag
+      this.headerText = "Tag '" + this.selectedTag.name + "'"
+      this.showMenuTreeModal = true
+    },
+    /**
 		 * To close the menu tree modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeMenuTreeModal () {
-			this.showMenuTreeModal = false
-		},
-		/**
+    closeMenuTreeModal () {
+      this.showMenuTreeModal = false
+    },
+    /**
 		 * To get the list of available tags.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getTags () {
-			this.displayTagsData = true
-			var tagsVue = this
-			tagsVue.tags = []
-			TagsFunctions.getTags(tagsVue.$root.appId, tagsVue.$root.appSecret)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						tagsVue.displayTagsData = false
-						tagsVue.tags = response.payload
-					} else {
-						tagsVue.displayTagsData = false
-					}
-				})
-				.catch(reason => {
-					tagsVue.displayTagsData = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch tags',
-						errorName: 'listErrorMessage',
-						vue: tagsVue
-					})
-				})
-		},
-		/**
+    getTags () {
+      this.displayTagsData = true
+      var tagsVue = this
+      tagsVue.tags = []
+      TagsFunctions.getTags(tagsVue.$root.appId, tagsVue.$root.appSecret)
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            tagsVue.displayTagsData = false
+            tagsVue.tags = response.payload
+          } else {
+            tagsVue.displayTagsData = false
+          }
+        })
+        .catch(reason => {
+          tagsVue.displayTagsData = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch tags',
+            errorName: 'listErrorMessage',
+            vue: tagsVue
+          })
+        })
+    },
+    /**
 		 * To clear the new menu form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearNewTag () {
-			this.newTag = {
-				name: '',
-				type: '',
-				image_url: '',
-				user_id: this.$root.createdBy
-			}
-		},
-		/**
+    clearNewTag () {
+      this.newTag = {
+        name: '',
+        type: '',
+        image_url: '',
+        user_id: this.$root.createdBy
+      }
+    },
+    /**
 		 * To check if the tag data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateTagData () {
-			var createTagVue = this
-			return new Promise(function (resolve, reject) {
-				if (!createTagVue.newTag.name.length) {
-					reject('Tag name cannot be blank')
-				} else if (!createTagVue.newTag.type.length) {
-					reject('Tag type cannot be blank')
-				} else if (!createTagVue.newTag.image_url.length) {
-					reject('Tag image URL cannot be blank')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateTagData () {
+      var createTagVue = this
+      return new Promise(function (resolve, reject) {
+        if (!createTagVue.newTag.name.length) {
+          reject('Tag name cannot be blank')
+        } else if (!createTagVue.newTag.type.length) {
+          reject('Tag type cannot be blank')
+        } else if (!createTagVue.newTag.image_url.length) {
+          reject('Tag image URL cannot be blank')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To create a new tag.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		createTag () {
-			var createTagVue = this
-			createTagVue.clearError('errorMessage')
+    createTag () {
+      var createTagVue = this
+      createTagVue.clearError('errorMessage')
 
-			return createTagVue
-				.validateTagData()
-				.then(response => {
-					TagsFunctions.createTag(
-						createTagVue.newTag,
-						createTagVue.$root.appId,
-						createTagVue.$root.appSecret,
-						createTagVue.$root.userToken
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								createTagVue.newTag.id = response.payload.new_tag_id
-								createTagVue.addTag(createTagVue.newTag)
-								createTagVue.showAlert(response.payload)
-								createTagVue.clearNewTag()
-							} else {
-								createTagVue.errorMessage = response.message
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not add the tag',
-								errorName: 'errorMessage',
-								vue: createTagVue
-							})
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					createTagVue.errorMessage = reason
-					window.scrollTo(0, 0)
-					throw reason
-				})
-		},
-		/**
+      return createTagVue
+        .validateTagData()
+        .then(response => {
+          TagsFunctions.createTag(
+            createTagVue.newTag,
+            createTagVue.$root.appId,
+            createTagVue.$root.appSecret,
+            createTagVue.$root.userToken
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                createTagVue.newTag.id = response.payload.new_tag_id
+                createTagVue.addTag(createTagVue.newTag)
+                createTagVue.showAlert(response.payload)
+                createTagVue.clearNewTag()
+              } else {
+                createTagVue.errorMessage = response.message
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not add the tag',
+                errorName: 'errorMessage',
+                vue: createTagVue
+              })
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          createTagVue.errorMessage = reason
+          window.scrollTo(0, 0)
+          throw reason
+        })
+    },
+    /**
 		 * To close the modal to create tags and add the newly created tag to the list.
 		 * @function
 		 * @param {object} val - The tag object to be added to the list.
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		addTag (val) {
-			this.tags.push(val)
-		},
-		/**
+    addTag (val) {
+      this.tags.push(val)
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert (payload = {}) {
-			let title = 'Success'
-			let text = 'The Tag has been created'
-			let type = 'success'
+    showAlert (payload = {}) {
+      let title = 'Success'
+      let text = 'The Tag has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Tag has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Tag has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To show the modal to edit tag details.
 		 * @function
 		 * @param {object} tag - The tag selected object.
 		 * @returns {undefined}
 		 */
-		editTag (tag) {
-			this.displayEditTagModal = true
-			this.$router.push('/app/menu_manager/tags/edit_tag/' + tag.id)
-		},
-		/**
+    editTag (tag) {
+      this.displayEditTagModal = true
+      this.$router.push('/app/menu_manager/tags/edit_tag/' + tag.id)
+    },
+    /**
 		 * To close the modal to edit tag details and update the selected tag on the tags list.
 		 * @function
 		 * @param {object} val - The tag object to be updated on the list.
 		 * @returns {undefined}
 		 */
-		updateTag (val) {
-			this.displayEditTagModal = false
-			this.getTags()
-		},
-		/**
+    updateTag (val) {
+      this.displayEditTagModal = false
+      this.getTags()
+    },
+    /**
 		 * To close the modal to edit tag details.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeEditTagModal () {
-			this.displayEditTagModal = false
-			this.$router.push('/app/menu_manager/tags')
-		},
-		/**
+    closeEditTagModal () {
+      this.displayEditTagModal = false
+      this.$router.push('/app/menu_manager/tags')
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @param {string} name - Name of the variable to clear
 		 * @returns {undefined}
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To set the image to be same as the one emitted by the gallery modal.
 		 * @function
 		 * @param {object} val - The emitted image object.
 		 * @returns {undefined}
 		 */
-		updateImage (val) {
-			this.showGalleryModal = false
-			this.newTag.image_url = val.image_url
-		},
-		/**
+    updateImage (val) {
+      this.showGalleryModal = false
+      this.newTag.image_url = val.image_url
+    },
+    /**
 		 * To toggle the create tag panel, initially set to closed
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCreateTagPanel () {
-			this.createTagCollapse = !this.createTagCollapse
-		}
-	}
+    toggleCreateTagPanel () {
+      this.createTagCollapse = !this.createTagCollapse
+    }
+  }
 }
 </script>
 <style scoped>

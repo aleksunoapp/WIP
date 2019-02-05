@@ -7,19 +7,19 @@ import GlobalFunctions from '@/global.js'
  * @returns {object} A promise
  */
 export const getTransactionsForUser = (userId) => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'GET',
-			dataType: 'json',
-			url: `/application/admin/user_transactions/${userId}`,
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'GET',
+      dataType: 'json',
+      url: `/application/admin/user_transactions/${userId}`,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 /**
@@ -29,23 +29,23 @@ export const getTransactionsForUser = (userId) => {
  * @returns {object} A promise
  */
 export const searchTransactions = (params) => {
-	return new Promise(function (resolve, reject) {
-		GlobalFunctions.$ajax({
-			method: 'GET',
-			dataType: 'json',
-			data: params,
-			url: `/application/admin/all_transactions`,
-			success: function (response) {
-				resolve(response)
-			},
-			error: function (error) {
-				reject(error)
-			}
-		})
-	})
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'GET',
+      dataType: 'json',
+      data: params,
+      url: `/application/admin/all_transactions`,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
 }
 
 export default {
-	getTransactionsForUser,
-	searchTransactions
+  getTransactionsForUser,
+  searchTransactions
 }

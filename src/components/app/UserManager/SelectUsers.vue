@@ -140,166 +140,166 @@ import UserGroupsFunctions from '../../../controllers/UserGroups'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Modal
-	},
-	props: {
-		passedGroupId: {
-			type: Number
-		},
-		passedGroupName: {
-			type: String
-		}
-	},
-	data () {
-		return {
-			errorMessage: '',
-			users: [],
-			selectedUsers: [],
-			selectAllSelected: false,
-			showSelectUsersModal: false,
-			pageCount: 1,
-			currentPage: 1
-		}
-	},
-	mounted () {
-		this.getGroupDetails()
-		this.showSelectUsersModal = true
-	},
-	methods: {
-		/**
+  components: {
+    Modal
+  },
+  props: {
+    passedGroupId: {
+      type: Number
+    },
+    passedGroupName: {
+      type: String
+    }
+  },
+  data () {
+    return {
+      errorMessage: '',
+      users: [],
+      selectedUsers: [],
+      selectAllSelected: false,
+      showSelectUsersModal: false,
+      pageCount: 1,
+      currentPage: 1
+    }
+  },
+  mounted () {
+    this.getGroupDetails()
+    this.showSelectUsersModal = true
+  },
+  methods: {
+    /**
 		 * To add or remove selected user and sync up the Select All checkbox.
 		 * @function
 		 * @param {integer} user - The user being un/selected
 		 * @returns {undefined}
 		 */
-		checkBox (user) {
-			let i = this.selectedUsers.indexOf(user.id)
-			if (!user.selected && i !== -1) {
-				this.selectAllSelected = false
-				this.selectedUsers.splice(i, 1)
-			} else if (user.selected && i === -1) {
-				this.selectedUsers.push(user.id)
-			}
-		},
-		/**
+    checkBox (user) {
+      let i = this.selectedUsers.indexOf(user.id)
+      if (!user.selected && i !== -1) {
+        this.selectAllSelected = false
+        this.selectedUsers.splice(i, 1)
+      } else if (user.selected && i === -1) {
+        this.selectedUsers.push(user.id)
+      }
+    },
+    /**
 		 * To update the current page.
 		 * @function
 		 * @param {integer} page - The new current page number
 		 * @returns {undefined}
 		 */
-		changeCurrentPage (page) {
-			this.currentPage = page
-			this.getGroupDetails()
-		},
-		/**
+    changeCurrentPage (page) {
+      this.currentPage = page
+      this.getGroupDetails()
+    },
+    /**
 		 * To record the selected users in the new or edited promo code object.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		selectUsers () {
-			if (this.selectedUsers.length === 0) {
-				this.errorMessage = 'You have not selected any users'
-				this.$el.scrollTop = 0
-				return
-			}
-			this.$emit('closeSelectUsersModal', this.selectedUsers)
-		},
-		/**
+    selectUsers () {
+      if (this.selectedUsers.length === 0) {
+        this.errorMessage = 'You have not selected any users'
+        this.$el.scrollTop = 0
+        return
+      }
+      this.$emit('closeSelectUsersModal', this.selectedUsers)
+    },
+    /**
 		 * To select all or deselect all items
 		 * @function
 		 * @param {boolean} value - The value of the checkbox
 		 * @returns {undefined}
 		 */
-		syncSelectAll (value) {
-			if (!value) {
-				this.selectAllSelected = false
-			}
-		},
-		/**
+    syncSelectAll (value) {
+      if (!value) {
+        this.selectAllSelected = false
+      }
+    },
+    /**
 		 * To select all or deselect all items
 		 * @function
 		 * @returns {undefined}
 		 */
-		selectAll () {
-			this.selectAllSelected = !this.selectAllSelected
-			this.users.forEach(user => {
-				user.selected = this.selectAllSelected
-				this.checkBox(user)
-			})
-		},
-		/**
+    selectAll () {
+      this.selectAllSelected = !this.selectAllSelected
+      this.users.forEach(user => {
+        user.selected = this.selectAllSelected
+        this.checkBox(user)
+      })
+    },
+    /**
 		 * To get the details of the selected group.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getGroupDetails () {
-			var selectUsersVue = this
-			let paginationPreferences = {
-				page: this.currentPage
-			}
+    getGroupDetails () {
+      var selectUsersVue = this
+      let paginationPreferences = {
+        page: this.currentPage
+      }
 
-			UserGroupsFunctions.getGroupDetails(
-				paginationPreferences,
-				selectUsersVue.passedGroupId,
-				selectUsersVue.$root.appId,
-				selectUsersVue.$root.appSecret,
-				selectUsersVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						selectUsersVue.pageCount = response.payload.last_page
+      UserGroupsFunctions.getGroupDetails(
+        paginationPreferences,
+        selectUsersVue.passedGroupId,
+        selectUsersVue.$root.appId,
+        selectUsersVue.$root.appSecret,
+        selectUsersVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            selectUsersVue.pageCount = response.payload.last_page
 
-						let selectedUsers = selectUsersVue.selectedUsers
-						let allUsers = response.payload.data
-						for (var i = 0; i < selectedUsers.length; i++) {
-							for (var j = 0; j < allUsers.length; j++) {
-								if (selectedUsers[i] === allUsers[j].id) {
-									allUsers[j].selected = true
-								} else if (allUsers[j].selected !== true) {
-									allUsers[j].selected = false
-								}
-							}
-						}
-						if (
-							allUsers.some(user => {
-								return user.selected === false || user.selected === undefined
-							})
-						) {
-							selectUsersVue.selectAllSelected = false
-						} else {
-							selectUsersVue.selectAllSelected = true
-						}
-						selectUsersVue.users = allUsers
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch group info',
-						errorName: 'errorMessage',
-						vue: selectUsersVue,
-						containerRef: 'modal'
-					})
-				})
-		},
-		/**
+            let selectedUsers = selectUsersVue.selectedUsers
+            let allUsers = response.payload.data
+            for (var i = 0; i < selectedUsers.length; i++) {
+              for (var j = 0; j < allUsers.length; j++) {
+                if (selectedUsers[i] === allUsers[j].id) {
+                  allUsers[j].selected = true
+                } else if (allUsers[j].selected !== true) {
+                  allUsers[j].selected = false
+                }
+              }
+            }
+            if (
+              allUsers.some(user => {
+                return user.selected === false || user.selected === undefined
+              })
+            ) {
+              selectUsersVue.selectAllSelected = false
+            } else {
+              selectUsersVue.selectAllSelected = true
+            }
+            selectUsersVue.users = allUsers
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch group info',
+            errorName: 'errorMessage',
+            vue: selectUsersVue,
+            containerRef: 'modal'
+          })
+        })
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To just close the modal when the user clicks on the 'x' to close the modal without creating a new tag.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('closeSelectUsersModal')
-		}
-	}
+    closeModal () {
+      this.$emit('closeSelectUsersModal')
+    }
+  }
 }
 </script>
 <style scoped>

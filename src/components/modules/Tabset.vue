@@ -51,51 +51,51 @@
 import dropdown from './Dropdown.vue'
 
 export default {
-	components: {
-		dropdown
-	},
-	props: {
-		navStyle: {
-			type: String,
-			default: 'tabs'
-		},
-		effect: {
-			type: String,
-			default: 'fadein'
-		},
-		active: {
-			twoWay: true,
-			type: Number,
-			default: 0
-		}
-	},
-	data () {
-		return {
-			show: null,
-			headers: [],
-			tabs: [],
-			activeTab: this.active
-		}
-	},
-	watch: {
-		active (val) {
-			this.show = this.tabs[val]
-		}
-	},
-	created () {
-		this._tabset = true
-	},
-	mounted () {
-		this.show = this.tabs[this.activeTab]
-	},
-	methods: {
-		select (tab) {
-			if (!tab.disabled) {
-				this.activeTab = tab.index
-				this.show = this.tabs[this.activeTab]
-			}
-		}
-	}
+  components: {
+    dropdown
+  },
+  props: {
+    navStyle: {
+      type: String,
+      default: 'tabs'
+    },
+    effect: {
+      type: String,
+      default: 'fadein'
+    },
+    active: {
+      twoWay: true,
+      type: Number,
+      default: 0
+    }
+  },
+  data () {
+    return {
+      show: null,
+      headers: [],
+      tabs: [],
+      activeTab: this.active
+    }
+  },
+  watch: {
+    active (val) {
+      this.show = this.tabs[val]
+    }
+  },
+  created () {
+    this._tabset = true
+  },
+  mounted () {
+    this.show = this.tabs[this.activeTab]
+  },
+  methods: {
+    select (tab) {
+      if (!tab.disabled) {
+        this.activeTab = tab.index
+        this.show = this.tabs[this.activeTab]
+      }
+    }
+  }
 }
 </script>
 

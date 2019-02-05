@@ -23,11 +23,11 @@
 
 <script>
 export default {
-	name: 'Breadcrumb',
-	props: {
-		crumbs: {
-			default: []
-		}
-	}
+  name: 'Breadcrumb',
+  props: {
+    crumbs: {
+      default: []
+    }
+  }
 }
 </script>

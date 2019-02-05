@@ -273,7 +273,7 @@
                 class="col-md-12"
                 style="height:350px"
               />
-              <div 
+              <div
                 v-if="totals.show"
                 class="col-md-12 text-center revenue-tracker-totals"
               >
@@ -367,515 +367,515 @@ import AppFunctions from '../../../controllers/App'
 import { GoogleCharts } from 'google-charts'
 
 export default {
-	data () {
-		return {
-			loadingGlobalRevenueSummary: false,
-			globalRevenueSummary: {
-				total_revenue: 0,
-				today_revenue: 0,
-				week_revenue: 0,
-				month_revenue: 0,
-				year_revenue: 0
-			},
-			grsErrorMessage: '',
-			loadingMostRecentOrders: false,
-			mostRecentOrders: [],
-			gosErrorMessage: '',
-			loadingTop10GlobalOrders: false,
-			top10globalItems: {
-				total_order: 0,
-				daily_order: 0,
-				weekly_order: 0,
-				monthly_order: 0
-			},
-			t10giErrorMessage: '',
-			globalRevenueByDay: null,
-			grbdErrorMessage: '',
-			stores: [],
-			selectedLocations: [],
-			chartTitle: '',
-			searchPeriod: 'week',
-			from_date: '',
-			to_date: ''
-		}
-	},
-	computed: {
-		totals () {
-			let show = false
-			let revenue = 0
-			let orders = 0
-			if (this.globalRevenueByDay !== null) {
-				show = true
-				const values = [...this.globalRevenueByDay]
-				values.shift()
-				values.forEach(day => {
-					revenue = revenue + day[1]
-					orders = orders + day[2]
-				})
-			}
-			return {
-				show,
-				revenue: this.formatUSD(revenue),
-				orders: this.formatNumber(orders)
-			}
-		}
-	},
-	created () {
-		window.addEventListener('resize', x => {
-			this.drawChart()
-		})
+  data () {
+    return {
+      loadingGlobalRevenueSummary: false,
+      globalRevenueSummary: {
+        total_revenue: 0,
+        today_revenue: 0,
+        week_revenue: 0,
+        month_revenue: 0,
+        year_revenue: 0
+      },
+      grsErrorMessage: '',
+      loadingMostRecentOrders: false,
+      mostRecentOrders: [],
+      gosErrorMessage: '',
+      loadingTop10GlobalOrders: false,
+      top10globalItems: {
+        total_order: 0,
+        daily_order: 0,
+        weekly_order: 0,
+        monthly_order: 0
+      },
+      t10giErrorMessage: '',
+      globalRevenueByDay: null,
+      grbdErrorMessage: '',
+      stores: [],
+      selectedLocations: [],
+      chartTitle: '',
+      searchPeriod: 'week',
+      from_date: '',
+      to_date: ''
+    }
+  },
+  computed: {
+    totals () {
+      let show = false
+      let revenue = 0
+      let orders = 0
+      if (this.globalRevenueByDay !== null) {
+        show = true
+        const values = [...this.globalRevenueByDay]
+        values.shift()
+        values.forEach(day => {
+          revenue = revenue + day[1]
+          orders = orders + day[2]
+        })
+      }
+      return {
+        show,
+        revenue: this.formatUSD(revenue),
+        orders: this.formatNumber(orders)
+      }
+    }
+  },
+  created () {
+    window.addEventListener('resize', x => {
+      this.drawChart()
+    })
 
-		this.getGlobalRevenueSummary()
-		this.getMostRecentOrders()
-		this.getTop10globalItems()
-		this.getStores()
-	},
-	methods: {
-		/**
+    this.getGlobalRevenueSummary()
+    this.getMostRecentOrders()
+    this.getTop10globalItems()
+    this.getStores()
+  },
+  methods: {
+    /**
 		 * To determine if a data update is necessary
 		 * @function
 		 * @returns {undefined}
 		 */
-		weekSelected () {
-			if (this.searchPeriod === 'week') {
-				this.getGlobalRevenueByDay()
-			}
-		},
-		/**
+    weekSelected () {
+      if (this.searchPeriod === 'week') {
+        this.getGlobalRevenueByDay()
+      }
+    },
+    /**
 		 * To determine if a data update is necessary
 		 * @function
 		 * @returns {undefined}
 		 */
-		dateFromSelected () {
-			if (this.to_date.length) {
-				this.getGlobalRevenueByDay()
-			}
-		},
-		/**
+    dateFromSelected () {
+      if (this.to_date.length) {
+        this.getGlobalRevenueByDay()
+      }
+    },
+    /**
 		 * To determine if a data update is necessary
 		 * @function
 		 * @returns {undefined}
 		 */
-		dateToSelected () {
-			if (this.from_date.length) {
-				this.getGlobalRevenueByDay()
-			}
-		},
-		/**
+    dateToSelected () {
+      if (this.from_date.length) {
+        this.getGlobalRevenueByDay()
+      }
+    },
+    /**
 		 * To determine if a data update is necessary
 		 * @function
 		 * @param {array} selectedLocations - The selected locations
 		 * @returns {undefined}
 		 */
-		locationsSelected (selectedLocations) {
-			this.getGlobalRevenueByDay()
-		},
-		/**
+    locationsSelected (selectedLocations) {
+      this.getGlobalRevenueByDay()
+    },
+    /**
 		 * To set the title for the chart
 		 * @function
 		 * @returns {undefined}
 		 */
-		setChartTitle () {
-			if (this.selectedLocations.length === 0) {
-				this.chartTitle = 'All stores'
-			} else if (this.selectedLocations.length === 1) {
-				this.chartTitle = this.selectedLocations[0].label
-			} else {
-				this.chartTitle = `${this.selectedLocations[0].label} and ${this
-					.selectedLocations.length - 1} ${
-					this.selectedLocations.length - 1 === 1
-						? 'other store'
-						: 'other stores'
-				}`
-			}
-		},
-		/**
+    setChartTitle () {
+      if (this.selectedLocations.length === 0) {
+        this.chartTitle = 'All stores'
+      } else if (this.selectedLocations.length === 1) {
+        this.chartTitle = this.selectedLocations[0].label
+      } else {
+        this.chartTitle = `${this.selectedLocations[0].label} and ${this
+          .selectedLocations.length - 1} ${
+          this.selectedLocations.length - 1 === 1
+            ? 'other store'
+            : 'other stores'
+        }`
+      }
+    },
+    /**
 		 * To filter table rows through a tag
 		 * @function
 		 * @param {string} value - The value of the filter
 		 * @param {string} row - The row being considered
 		 * @returns {bool} A boolean representing if the row passed or failed the filter test
 		 */
-		filterTag (value, row) {
-			return row.status === value
-		},
-		/**
+    filterTag (value, row) {
+      return row.status === value
+    },
+    /**
 		 * To format a number
 		 * @function
 		 * @param {string} val - The number to format
 		 * @returns {string} The formatted currency amount
 		 */
-		formatNumber (val) {
-			if (val !== null && val !== undefined) {
-				return val.toLocaleString('en-US', { style: 'decimal' })
-			} else {
-				return 'n/a'
-			}
-		},
-		/**
+    formatNumber (val) {
+      if (val !== null && val !== undefined) {
+        return val.toLocaleString('en-US', { style: 'decimal' })
+      } else {
+        return 'n/a'
+      }
+    },
+    /**
 		 * To format a number as currency
 		 * @function
 		 * @param {string} val - The number to format
 		 * @returns {string} The formatted currency amount
 		 */
-		formatUSD (val) {
-			if (val !== null && val !== undefined) {
-				let local = Number(val)
-				local = local.toLocaleString('en-US', {
-					style: 'currency',
-					currency: 'USD'
-				})
-				return local
-			} else {
-				return 'n/a'
-			}
-		},
-		/**
+    formatUSD (val) {
+      if (val !== null && val !== undefined) {
+        let local = Number(val)
+        local = local.toLocaleString('en-US', {
+          style: 'currency',
+          currency: 'USD'
+        })
+        return local
+      } else {
+        return 'n/a'
+      }
+    },
+    /**
 		 * el-table compliant cell data formatting function
 		 * @function
 		 * @param {object} row - The row to format
 		 * @param {object} column - The column to format
 		 * @returns {string} The formatted currency amount
 		 */
-		tableFormatNumber (row, column) {
-			return this.formatNumber(row.value)
-		},
-		/**
+    tableFormatNumber (row, column) {
+      return this.formatNumber(row.value)
+    },
+    /**
 		 * el-table compliant cell data formatting function
 		 * @function
 		 * @param {object} row - The row to format
 		 * @param {object} column - The column to format
 		 * @returns {string} The formatted currency amount
 		 */
-		tableFormatUSD (row, column) {
-			return this.formatUSD(row.total)
-		},
-		/**
+    tableFormatUSD (row, column) {
+      return this.formatUSD(row.total)
+    },
+    /**
 		 * To get global revenue summary data
 		 * @function
 		 * @returns {undefined}
 		 */
-		getGlobalRevenueSummary () {
-			this.loadingGlobalRevenueSummary = true
-			var analyticsVue = this
-			return AnalyticsFunctions.globalRevenueSummary(
-				analyticsVue.$root.appId,
-				analyticsVue.$root.appSecret,
-				analyticsVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						analyticsVue.globalRevenueSummary.total_revenue =
+    getGlobalRevenueSummary () {
+      this.loadingGlobalRevenueSummary = true
+      var analyticsVue = this
+      return AnalyticsFunctions.globalRevenueSummary(
+        analyticsVue.$root.appId,
+        analyticsVue.$root.appSecret,
+        analyticsVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            analyticsVue.globalRevenueSummary.total_revenue =
 							response.payload.total_revenue
-						analyticsVue.globalRevenueSummary.today_revenue =
+            analyticsVue.globalRevenueSummary.today_revenue =
 							response.payload.today_revenue
-						analyticsVue.globalRevenueSummary.week_revenue =
+            analyticsVue.globalRevenueSummary.week_revenue =
 							response.payload.week_revenue
-						analyticsVue.globalRevenueSummary.month_revenue =
+            analyticsVue.globalRevenueSummary.month_revenue =
 							response.payload.month_revenue
-						analyticsVue.globalRevenueSummary.year_revenue =
+            analyticsVue.globalRevenueSummary.year_revenue =
 							response.payload.year_revenue
-						analyticsVue.loadingGlobalRevenueSummary = false
-					} else {
-						analyticsVue.loadingGlobalRevenueSummary = false
-					}
-				})
-				.catch(reason => {
-					if (
-						reason.responseJSON.code === 401 &&
+            analyticsVue.loadingGlobalRevenueSummary = false
+          } else {
+            analyticsVue.loadingGlobalRevenueSummary = false
+          }
+        })
+        .catch(reason => {
+          if (
+            reason.responseJSON.code === 401 &&
 						reason.responseJSON.status === 'unauthorized'
-					) {
-						analyticsVue.$router.push('/login/expired')
-						return
-					}
-					analyticsVue.loadingGlobalRevenueSummary = false
-					if (reason.responseJSON) {
-						analyticsVue.grsErrorMessage =
+          ) {
+            analyticsVue.$router.push('/login/expired')
+            return
+          }
+          analyticsVue.loadingGlobalRevenueSummary = false
+          if (reason.responseJSON) {
+            analyticsVue.grsErrorMessage =
 							reason.responseJSON.message
-					}
-				})
-		},
-		/**
+          }
+        })
+    },
+    /**
 		 * To get global orders summary data
 		 * @function
 		 * @returns {undefined}
 		 */
-		getMostRecentOrders () {
-			this.loadingMostRecentOrders = true
-			var analyticsVue = this
-			return AnalyticsFunctions.globalMostRecentOrders(
-				analyticsVue.$root.appId,
-				analyticsVue.$root.appSecret,
-				analyticsVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						analyticsVue.mostRecentOrders = response.payload
-						analyticsVue.loadingMostRecentOrders = false
-					} else {
-						analyticsVue.loadingMostRecentOrders = false
-					}
-				})
-				.catch(reason => {
-					if (
-						reason.responseJSON.code === 401 &&
+    getMostRecentOrders () {
+      this.loadingMostRecentOrders = true
+      var analyticsVue = this
+      return AnalyticsFunctions.globalMostRecentOrders(
+        analyticsVue.$root.appId,
+        analyticsVue.$root.appSecret,
+        analyticsVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            analyticsVue.mostRecentOrders = response.payload
+            analyticsVue.loadingMostRecentOrders = false
+          } else {
+            analyticsVue.loadingMostRecentOrders = false
+          }
+        })
+        .catch(reason => {
+          if (
+            reason.responseJSON.code === 401 &&
 						reason.responseJSON.status === 'unauthorized'
-					) {
-						analyticsVue.$router.push('/login/expired')
-						return
-					}
-					analyticsVue.loadingMostRecentOrders = false
-					if (reason.responseJSON) {
-						analyticsVue.gosErrorMessage =
+          ) {
+            analyticsVue.$router.push('/login/expired')
+            return
+          }
+          analyticsVue.loadingMostRecentOrders = false
+          if (reason.responseJSON) {
+            analyticsVue.gosErrorMessage =
 							reason.responseJSON.message
-					}
-				})
-		},
-		/**
+          }
+        })
+    },
+    /**
 		 * To get global revenue summary data
 		 * @function
 		 * @returns {undefined}
 		 */
-		getTop10globalItems () {
-			this.loadingTop10GlobalOrders = true
-			var analyticsVue = this
-			return AnalyticsFunctions.globalTop10Items(
-				analyticsVue.$root.appId,
-				analyticsVue.$root.appSecret,
-				analyticsVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						analyticsVue.top10globalItems.total_order =
+    getTop10globalItems () {
+      this.loadingTop10GlobalOrders = true
+      var analyticsVue = this
+      return AnalyticsFunctions.globalTop10Items(
+        analyticsVue.$root.appId,
+        analyticsVue.$root.appSecret,
+        analyticsVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            analyticsVue.top10globalItems.total_order =
 							response.payload.total_order
-						analyticsVue.top10globalItems.daily_order =
+            analyticsVue.top10globalItems.daily_order =
 							response.payload.daily_order
-						analyticsVue.top10globalItems.weekly_order =
+            analyticsVue.top10globalItems.weekly_order =
 							response.payload.weekly_order
-						analyticsVue.top10globalItems.monthly_order =
+            analyticsVue.top10globalItems.monthly_order =
 							response.payload.monthly_order
-						analyticsVue.top10globalItems.yearly_order =
+            analyticsVue.top10globalItems.yearly_order =
 							response.payload.yearly_order
-						analyticsVue.loadingTop10GlobalOrders = false
-					} else {
-						analyticsVue.loadingTop10GlobalOrders = false
-					}
-				})
-				.catch(reason => {
-					if (
-						reason.responseJSON.code === 401 &&
+            analyticsVue.loadingTop10GlobalOrders = false
+          } else {
+            analyticsVue.loadingTop10GlobalOrders = false
+          }
+        })
+        .catch(reason => {
+          if (
+            reason.responseJSON.code === 401 &&
 						reason.responseJSON.status === 'unauthorized'
-					) {
-						analyticsVue.$router.push('/login/expired')
-						return
-					}
-					analyticsVue.loadingTop10GlobalOrders = false
-					if (reason.responseJSON) {
-						analyticsVue.t10giErrorMessage =
+          ) {
+            analyticsVue.$router.push('/login/expired')
+            return
+          }
+          analyticsVue.loadingTop10GlobalOrders = false
+          if (reason.responseJSON) {
+            analyticsVue.t10giErrorMessage =
 							reason.responseJSON.message
-					}
-				})
-		},
-		/**
+          }
+        })
+    },
+    /**
 		 * To get global revenue summary data
 		 * @function
 		 * @returns {undefined}
 		 */
-		getGlobalRevenueByDay () {
-			this.loadingGlobalRevenueByDay = true
-			this.setChartTitle()
+    getGlobalRevenueByDay () {
+      this.loadingGlobalRevenueByDay = true
+      this.setChartTitle()
 
-			const selectedStores = this.selectedLocations.length ? this.selectedLocations.map(x => x.value) : this.stores.map(x => x.value)
+      const selectedStores = this.selectedLocations.length ? this.selectedLocations.map(x => x.value) : this.stores.map(x => x.value)
 
-			var analyticsVue = this
-			let requestParams = {
-				location_id: selectedStores,
-				search_type: this.searchPeriod
-			}
-			if (this.searchPeriod === 'custom') {
-				requestParams.from_date = this.from_date
-				requestParams.to_date = this.to_date
-			}
+      var analyticsVue = this
+      let requestParams = {
+        location_id: selectedStores,
+        search_type: this.searchPeriod
+      }
+      if (this.searchPeriod === 'custom') {
+        requestParams.from_date = this.from_date
+        requestParams.to_date = this.to_date
+      }
 
-			return AnalyticsFunctions.globalRevenueByDay(
-				analyticsVue.$root.appId,
-				analyticsVue.$root.appSecret,
-				analyticsVue.$root.userToken,
-				requestParams
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						let payload = [['Day', 'Revenue', 'Orders']]
-						response.payload.forEach(day => {
-							payload.push([
-								day.date,
-								Number(day.sales_per_day),
-								day.total
-							])
-						})
-						if (payload.length === 1) {
-							payload.push([
-								`No orders at ${
-									analyticsVue.selectedLocations.length > 1
-										? 'this'
-										: 'these'
-								} location${
-									analyticsVue.selectedLocations.length > 1
-										? 's'
-										: ''
-								} during this period`,
-								0,
-								0
-							])
-						}
-						analyticsVue.globalRevenueByDay = payload
+      return AnalyticsFunctions.globalRevenueByDay(
+        analyticsVue.$root.appId,
+        analyticsVue.$root.appSecret,
+        analyticsVue.$root.userToken,
+        requestParams
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            let payload = [['Day', 'Revenue', 'Orders']]
+            response.payload.forEach(day => {
+              payload.push([
+                day.date,
+                Number(day.sales_per_day),
+                day.total
+              ])
+            })
+            if (payload.length === 1) {
+              payload.push([
+                `No orders at ${
+                  analyticsVue.selectedLocations.length > 1
+                    ? 'this'
+                    : 'these'
+                } location${
+                  analyticsVue.selectedLocations.length > 1
+                    ? 's'
+                    : ''
+                } during this period`,
+                0,
+                0
+              ])
+            }
+            analyticsVue.globalRevenueByDay = payload
 
-						analyticsVue.drawChart()
-						analyticsVue.loadingGlobalRevenueByDay = false
-					} else {
-						analyticsVue.loadingGlobalRevenueByDay = false
-					}
-				})
-				.catch(reason => {
-					if (
-						reason.responseJSON.code === 401 &&
+            analyticsVue.drawChart()
+            analyticsVue.loadingGlobalRevenueByDay = false
+          } else {
+            analyticsVue.loadingGlobalRevenueByDay = false
+          }
+        })
+        .catch(reason => {
+          if (
+            reason.responseJSON.code === 401 &&
 						reason.responseJSON.status === 'unauthorized'
-					) {
-						analyticsVue.$router.push('/login/expired')
-						return
-					}
-					analyticsVue.loadingGlobalRevenueByDay = false
-					if (reason.responseJSON) {
-						analyticsVue.grbdErrorMessage =
+          ) {
+            analyticsVue.$router.push('/login/expired')
+            return
+          }
+          analyticsVue.loadingGlobalRevenueByDay = false
+          if (reason.responseJSON) {
+            analyticsVue.grbdErrorMessage =
 							reason.responseJSON.message
-					}
-				})
-		},
-		/**
+          }
+        })
+    },
+    /**
 		 * To get a list of store for the current application/business.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getStores () {
-			var analyticsVue = this
+    getStores () {
+      var analyticsVue = this
 
-			AppFunctions.getStoreLocations(
-				analyticsVue.$root.appId,
-				analyticsVue.$root.appSecret,
-				analyticsVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						analyticsVue.stores = response.payload.map(store => {
-							return {
-								value: store.id,
-								label: store.display_name
-							}
-						})
-						if (analyticsVue.stores.length) {
-							analyticsVue.getGlobalRevenueByDay()
-						}
-						analyticsVue.displaySpinner = false
-					}
-				})
-				.catch(reason => {
-					if (
-						reason.responseJSON.code === 401 &&
+      AppFunctions.getStoreLocations(
+        analyticsVue.$root.appId,
+        analyticsVue.$root.appSecret,
+        analyticsVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            analyticsVue.stores = response.payload.map(store => {
+              return {
+                value: store.id,
+                label: store.display_name
+              }
+            })
+            if (analyticsVue.stores.length) {
+              analyticsVue.getGlobalRevenueByDay()
+            }
+            analyticsVue.displaySpinner = false
+          }
+        })
+        .catch(reason => {
+          if (
+            reason.responseJSON.code === 401 &&
 						reason.responseJSON.status === 'unauthorized'
-					) {
-						analyticsVue.$router.push('/login/expired')
-						return
-					}
-					if (reason.responseJSON) {
-					}
-					analyticsVue.displaySpinner = false
-					throw reason
-				})
-		},
+          ) {
+            analyticsVue.$router.push('/login/expired')
+            return
+          }
+          if (reason.responseJSON) {
+          }
+          analyticsVue.displaySpinner = false
+          throw reason
+        })
+    },
 
-		/**
+    /**
 		 * To render the chart
 		 * @function
 		 * @returns {undefined}
 		 */
-		drawChart () {
-			let analyticsVue = this
+    drawChart () {
+      let analyticsVue = this
 
-			// load library and call back the actual draw function
-			GoogleCharts.load(function () {
-				var data = GoogleCharts.api.visualization.arrayToDataTable(
-					analyticsVue.globalRevenueByDay
-				)
+      // load library and call back the actual draw function
+      GoogleCharts.load(function () {
+        var data = GoogleCharts.api.visualization.arrayToDataTable(
+          analyticsVue.globalRevenueByDay
+        )
 
-				function formatUSDlabel (column, dataTable, row) {
-					try {
-						return (
-							'$' +
+        function formatUSDlabel (column, dataTable, row) {
+          try {
+            return (
+              '$' +
 							dataTable.getFormattedValue(row, column).toLocaleString('en-US', {
-								style: 'currency',
-								currency: 'USD'
+							  style: 'currency',
+							  currency: 'USD'
 							})
-						)
-					} catch (e) {
-						console.log(e)
-						return ''
-					}
-				}
+            )
+          } catch (e) {
+            console.log(e)
+            return ''
+          }
+        }
 
-				var view = new GoogleCharts.api.visualization.DataView(data)
-				view.setColumns([
-					0,
-					1,
-					{
-						calc: formatUSDlabel.bind(undefined, 1),
-						sourceColumn: 1,
-						type: 'string',
-						role: 'annotation'
-					},
-					2,
-					{
-						calc: 'stringify',
-						sourceColumn: 2,
-						type: 'string',
-						role: 'annotation'
-					}
-				])
+        var view = new GoogleCharts.api.visualization.DataView(data)
+        view.setColumns([
+          0,
+          1,
+          {
+            calc: formatUSDlabel.bind(undefined, 1),
+            sourceColumn: 1,
+            type: 'string',
+            role: 'annotation'
+          },
+          2,
+          {
+            calc: 'stringify',
+            sourceColumn: 2,
+            type: 'string',
+            role: 'annotation'
+          }
+        ])
 
-				var options = {
-					title: analyticsVue.chartTitle,
-					titleTextStyle: {
-						fontSize: 20,
-						color: '#5a5e66'
-					},
-					hAxis: {
-						titleTextStyle: {
-							color: '#333'
-						},
-						color: '#000'
-					},
-					vAxis: {
-						minValue: 0
-					},
-					pointSize: 8,
-					animation: {
-						startup: true,
-						easing: 'inAndOut',
-						duration: 200
-					},
-					curveType: 'function',
-					legend: { position: 'bottom' },
-					series: {
-						0: { color: '#3498db' },
-						1: { color: '#e67e22' }
-					}
-				}
-				var chart = new GoogleCharts.api.visualization.BarChart(
-					document.getElementById('chart_div')
-				)
-				chart.draw(view, options)
-			})
-		}
-	}
+        var options = {
+          title: analyticsVue.chartTitle,
+          titleTextStyle: {
+            fontSize: 20,
+            color: '#5a5e66'
+          },
+          hAxis: {
+            titleTextStyle: {
+              color: '#333'
+            },
+            color: '#000'
+          },
+          vAxis: {
+            minValue: 0
+          },
+          pointSize: 8,
+          animation: {
+            startup: true,
+            easing: 'inAndOut',
+            duration: 200
+          },
+          curveType: 'function',
+          legend: { position: 'bottom' },
+          series: {
+            0: { color: '#3498db' },
+            1: { color: '#e67e22' }
+          }
+        }
+        var chart = new GoogleCharts.api.visualization.BarChart(
+          document.getElementById('chart_div')
+        )
+        chart.draw(view, options)
+      })
+    }
+  }
 }
 </script>
 

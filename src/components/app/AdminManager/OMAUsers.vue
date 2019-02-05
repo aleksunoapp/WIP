@@ -305,7 +305,6 @@
     </div>
     <!-- LIST END -->
 
-
     <!-- MESSAGE MODAL START -->
     <OMAUsersMessage
       :is-open="showMessageModal"
@@ -336,825 +335,825 @@ import OMAUsersMessage from './OMAUsersMessage'
 var emailPattern = /^.+@.+\..+$/
 
 export default {
-	components: {
-		Breadcrumb,
-		NoResults,
-		LoadingScreen,
-		Modal,
-		Dropdown,
-		Pagination,
-		PageResults,
-		SelectLocationsPopup,
-		OMAUsersMessage
-	},
-	data () {
-		return {
-			breadcrumbArray: [
-				{ name: 'Admin Manager', link: false },
-				{ name: 'OMA Users', link: false }
-			],
-			createOMAUserCollapse: true,
-			creating: false,
-			createErrorMessage: '',
-			newOMAUser: {
-				email: '',
-				password: '',
-				phone: '',
-				type: null,
-				locations: []
-			},
-			editErrorMessage: '',
-			updating: false,
-			OMAUserToBeEdited: {
-				email: '',
-				password: '',
-				phone: '',
-				type: null,
-				locations: []
-			},
-			selectedOMAUser: {
-				email: '',
-				location_id: 0,
-				is_active: 1
-			},
-			selectedLocationId: 1,
-			selectedOMAUserType: '',
-			loadingOMAUsersData: false,
-			assignErrorMessage: '',
-			OMAUsers: [],
-			showAssignStoresModal: false,
-			showEditOMAUserModal: false,
-			animated: '',
-			editLocationMode: false,
-			showDeleteOMAUserModal: false,
-			deleting: false,
-			searchCollapse: true,
-			searchError: '',
-			filteredResults: [],
-			searchTerm: '',
-			activePage: 1,
-			resultsPerPage: 25,
-			sortBy: {
-				order: 'ASC'
-			},
-			searchActivePage: 1,
-			passwordMasked: true,
-			passwordCheck: '',
-			showMessageModal: false
-		}
-	},
-	computed: {
-		numPages () {
-			return Math.ceil(this.OMAUsers.length / this.resultsPerPage)
-		},
-		currentActivePageItems () {
-			return this.userSort(this.OMAUsers).slice(
-				this.resultsPerPage * (this.activePage - 1),
-				this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
-			)
-		},
-		searchNumPages () {
-			return Math.ceil(this.filteredResults.length / this.resultsPerPage)
-		},
-		currentActiveSearchPageItems () {
-			return this.userSort(this.filteredResults).slice(
-				this.resultsPerPage * (this.searchActivePage - 1),
-				this.resultsPerPage * (this.searchActivePage - 1) + this.resultsPerPage
-			)
-		},
-		newPreviouslySelected () {
-			return this.newOMAUser.locations.map(x => x.id) || []
-		}
-	},
-	mounted () {
-		this.getAllOMAUsers()
-	},
-	methods: {
-		toggleMessageModal (value) {
-			this.showMessageModal = value
-		},
-		/**
+  components: {
+    Breadcrumb,
+    NoResults,
+    LoadingScreen,
+    Modal,
+    Dropdown,
+    Pagination,
+    PageResults,
+    SelectLocationsPopup,
+    OMAUsersMessage
+  },
+  data () {
+    return {
+      breadcrumbArray: [
+        { name: 'Admin Manager', link: false },
+        { name: 'OMA Users', link: false }
+      ],
+      createOMAUserCollapse: true,
+      creating: false,
+      createErrorMessage: '',
+      newOMAUser: {
+        email: '',
+        password: '',
+        phone: '',
+        type: null,
+        locations: []
+      },
+      editErrorMessage: '',
+      updating: false,
+      OMAUserToBeEdited: {
+        email: '',
+        password: '',
+        phone: '',
+        type: null,
+        locations: []
+      },
+      selectedOMAUser: {
+        email: '',
+        location_id: 0,
+        is_active: 1
+      },
+      selectedLocationId: 1,
+      selectedOMAUserType: '',
+      loadingOMAUsersData: false,
+      assignErrorMessage: '',
+      OMAUsers: [],
+      showAssignStoresModal: false,
+      showEditOMAUserModal: false,
+      animated: '',
+      editLocationMode: false,
+      showDeleteOMAUserModal: false,
+      deleting: false,
+      searchCollapse: true,
+      searchError: '',
+      filteredResults: [],
+      searchTerm: '',
+      activePage: 1,
+      resultsPerPage: 25,
+      sortBy: {
+        order: 'ASC'
+      },
+      searchActivePage: 1,
+      passwordMasked: true,
+      passwordCheck: '',
+      showMessageModal: false
+    }
+  },
+  computed: {
+    numPages () {
+      return Math.ceil(this.OMAUsers.length / this.resultsPerPage)
+    },
+    currentActivePageItems () {
+      return this.userSort(this.OMAUsers).slice(
+        this.resultsPerPage * (this.activePage - 1),
+        this.resultsPerPage * (this.activePage - 1) + this.resultsPerPage
+      )
+    },
+    searchNumPages () {
+      return Math.ceil(this.filteredResults.length / this.resultsPerPage)
+    },
+    currentActiveSearchPageItems () {
+      return this.userSort(this.filteredResults).slice(
+        this.resultsPerPage * (this.searchActivePage - 1),
+        this.resultsPerPage * (this.searchActivePage - 1) + this.resultsPerPage
+      )
+    },
+    newPreviouslySelected () {
+      return this.newOMAUser.locations.map(x => x.id) || []
+    }
+  },
+  mounted () {
+    this.getAllOMAUsers()
+  },
+  methods: {
+    toggleMessageModal (value) {
+      this.showMessageModal = value
+    },
+    /**
 		 * To update the locations selected in the child component
 		 * @function
 		 * @param {array} locations - Arrray of store ids
 		 * @returns {undefined}
 		 */
-		selectedLocations (locations) {
-			this.selectedOMAUserType === 'new'
-				? (this.newOMAUser.selectedLocations = locations)
-				: (this.OMAUserToBeEdited.selectedLocations = locations)
-		},
-		/**
+    selectedLocations (locations) {
+      this.selectedOMAUserType === 'new'
+        ? (this.newOMAUser.selectedLocations = locations)
+        : (this.OMAUserToBeEdited.selectedLocations = locations)
+    },
+    /**
 		 * To format a phone number
 		 * @function
 		 * @param {string} phone - The phone number to format
 		 * @returns {string} The formatted phone string
 		 */
-		formatPhone (phone) {
-			let digits = phone.replace(/\D/g, '')
-			return (
-				digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
-			)
-		},
-		/**
+    formatPhone (phone) {
+      let digits = phone.replace(/\D/g, '')
+      return (
+        digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
+      )
+    },
+    /**
 		 * To switch bewteen masked and unmasked password fields.
 		 * @function
 		 * @returns {undefined}
 		 */
-		flipPasswordMask () {
-			this.passwordMasked = !this.passwordMasked
-		},
-		/**
+    flipPasswordMask () {
+      this.passwordMasked = !this.passwordMasked
+    },
+    /**
 		 * To update the order property of sortBy.
 		 * @function
 		 * @param {object} value - The new value to assign.
 		 * @returns {undefined}
 		 */
-		updateSortByOrder (value) {
-			this.sortBy.order = value
-			this.filteredResults.length
-				? this.activeSearchPageUpdate(1)
-				: this.activePageUpdate(1)
-		},
-		/**
+    updateSortByOrder (value) {
+      this.sortBy.order = value
+      this.filteredResults.length
+        ? this.activeSearchPageUpdate(1)
+        : this.activePageUpdate(1)
+    },
+    /**
 		 * To sort the orders list.
 		 * @function
 		 * @param {array} orders - The array of orders.
 		 * @returns {array} - The sorted array of orders
 		 */
-		userSort (orders) {
-			let input = orders
-			function asc (a, b) {
-				if (a.email.toLowerCase() < b.email.toLowerCase()) {
-					return -1
-				} else if (a.email.toLowerCase() > b.email.toLowerCase()) {
-					return 1
-				} else {
-					if (a.id > b.id) {
-						return -1
-					} else if (a.id < b.id) {
-						return 1
-					} else {
-						return 0
-					}
-				}
-			}
+    userSort (orders) {
+      let input = orders
+      function asc (a, b) {
+        if (a.email.toLowerCase() < b.email.toLowerCase()) {
+          return -1
+        } else if (a.email.toLowerCase() > b.email.toLowerCase()) {
+          return 1
+        } else {
+          if (a.id > b.id) {
+            return -1
+          } else if (a.id < b.id) {
+            return 1
+          } else {
+            return 0
+          }
+        }
+      }
 
-			function desc (a, b) {
-				if (a.email.toLowerCase() > b.email.toLowerCase()) {
-					return -1
-				} else if (a.email.toLowerCase() < b.email.toLowerCase()) {
-					return 1
-				} else {
-					if (a.id > b.id) {
-						return -1
-					} else if (a.id < b.id) {
-						return 1
-					} else {
-						return 0
-					}
-				}
-			}
+      function desc (a, b) {
+        if (a.email.toLowerCase() > b.email.toLowerCase()) {
+          return -1
+        } else if (a.email.toLowerCase() < b.email.toLowerCase()) {
+          return 1
+        } else {
+          if (a.id > b.id) {
+            return -1
+          } else if (a.id < b.id) {
+            return 1
+          } else {
+            return 0
+          }
+        }
+      }
 
-			if (this.sortBy.order === 'ASC') {
-				return input.sort(asc)
-			} else {
-				return input.sort(desc)
-			}
-		},
-		/**
+      if (this.sortBy.order === 'ASC') {
+        return input.sort(asc)
+      } else {
+        return input.sort(desc)
+      }
+    },
+    /**
 		 * To catch updates from the PageResults component when the number of page results is updated.
 		 * @function
 		 * @param {integer} val - The number of page results to be returned.
 		 * @returns {undefined}
 		 */
-		pageResultsUpdate (val) {
-			if (parseInt(this.resultsPerPage) !== parseInt(val)) {
-				this.resultsPerPage = val
-				this.filteredResults.length
-					? this.activeSearchPageUpdate(1)
-					: this.activePageUpdate(1)
-			}
-		},
-		/**
+    pageResultsUpdate (val) {
+      if (parseInt(this.resultsPerPage) !== parseInt(val)) {
+        this.resultsPerPage = val
+        this.filteredResults.length
+          ? this.activeSearchPageUpdate(1)
+          : this.activePageUpdate(1)
+      }
+    },
+    /**
 		 * To update the currently active pagination page.
 		 * @function
 		 * @param {integer} val - An integer representing the page number that we are updating to.
 		 * @returns {undefined}
 		 */
-		activePageUpdate (val) {
-			if (parseInt(this.activePage) !== parseInt(val)) {
-				this.activePage = val
-				window.scrollTo(0, 0)
-			}
-		},
-		/**
+    activePageUpdate (val) {
+      if (parseInt(this.activePage) !== parseInt(val)) {
+        this.activePage = val
+        window.scrollTo(0, 0)
+      }
+    },
+    /**
 		 * To update the currently active pagination page.
 		 * @function
 		 * @param {integer} val - An integer representing the page number that we are updating to.
 		 * @returns {undefined}
 		 */
-		activeSearchPageUpdate (val) {
-			if (parseInt(this.searchActivePage) !== parseInt(val)) {
-				this.searchActivePage = val
-				window.scrollTo(0, 0)
-			}
-		},
-		/**
+    activeSearchPageUpdate (val) {
+      if (parseInt(this.searchActivePage) !== parseInt(val)) {
+        this.searchActivePage = val
+        window.scrollTo(0, 0)
+      }
+    },
+    /**
 		 * To toggle the search panel
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleSearchPanel () {
-			this.searchCollapse = !this.searchCollapse
-			this.$nextTick(function () {
-				if (!this.searchCollapse) {
-					this.$refs.search.focus()
-				}
-			})
-		},
-		/**
+    toggleSearchPanel () {
+      this.searchCollapse = !this.searchCollapse
+      this.$nextTick(function () {
+        if (!this.searchCollapse) {
+          this.$refs.search.focus()
+        }
+      })
+    },
+    /**
 		 * To filter the results based on the search term.
 		 * @function
 		 * @returns {undefined}
 		 */
-		advancedSearch () {
-			this.clearSearchError()
-			this.filteredResults = []
-			if (this.searchTerm.length) {
-				if (this.searchTerm.length < 3) {
-					this.searchError = 'Search term must be at least 3 characters.'
-				} else {
-					for (var i = 0; i < this.OMAUsers.length; i++) {
-						if (
-							this.OMAUsers[i].email
-								.toLowerCase()
-								.indexOf(this.searchTerm.toLowerCase()) > -1
-						) {
-							this.filteredResults.push(this.OMAUsers[i])
-						}
-					}
-					if (!this.filteredResults.length) {
-						this.searchError =
+    advancedSearch () {
+      this.clearSearchError()
+      this.filteredResults = []
+      if (this.searchTerm.length) {
+        if (this.searchTerm.length < 3) {
+          this.searchError = 'Search term must be at least 3 characters.'
+        } else {
+          for (var i = 0; i < this.OMAUsers.length; i++) {
+            if (
+              this.OMAUsers[i].email
+                .toLowerCase()
+                .indexOf(this.searchTerm.toLowerCase()) > -1
+            ) {
+              this.filteredResults.push(this.OMAUsers[i])
+            }
+          }
+          if (!this.filteredResults.length) {
+            this.searchError =
 							'There are no matching records. Please try again.'
-					}
-				}
-			} else {
-				this.$refs.search.focus()
-			}
-		},
-		/**
+          }
+        }
+      } else {
+        this.$refs.search.focus()
+      }
+    },
+    /**
 		 * To clear the current search error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearSearchError () {
-			this.searchError = ''
-		},
-		/**
+    clearSearchError () {
+      this.searchError = ''
+    },
+    /**
 		 * To clear the current search criteria.
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetSearch () {
-			this.searchTerm = ''
-			this.filteredResults = []
-			this.activePage = 1
-			this.searchActivePage = 1
-			this.clearSearchError()
-		},
-		/**
+    resetSearch () {
+      this.searchTerm = ''
+      this.filteredResults = []
+      this.activePage = 1
+      this.searchActivePage = 1
+      this.clearSearchError()
+    },
+    /**
 		 * To return to the main edit modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeEditLocationMode () {
-			this.editLocationMode = false
-		},
-		/**
+    closeEditLocationMode () {
+      this.editLocationMode = false
+    },
+    /**
 		 * To display the delete modal.
 		 * @function
 		 * @param {object} user - The user to delete
 		 * @returns {undefined}
 		 */
-		showDeleteModal (user) {
-			this.selectedOMAUser.id = user.id
-			this.showDeleteOMAUserModal = true
-		},
-		/**
+    showDeleteModal (user) {
+      this.selectedOMAUser.id = user.id
+      this.showDeleteOMAUserModal = true
+    },
+    /**
 		 * To close the delete modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeDeleteOMAUserModal () {
-			this.showDeleteOMAUserModal = false
-		},
-		/**
+    closeDeleteOMAUserModal () {
+      this.showDeleteOMAUserModal = false
+    },
+    /**
 		 * To assign the selected stores to the current user.
 		 * @function
 		 * @param {object} event - The event that initiated the action
 		 * @returns {undefined}
 		 */
-		assignStores (event) {
-			event.preventDefault()
-			if (this.selectedOMAUserType === 'new') {
-				this.newOMAUser.locations = [...this.newOMAUser.selectedLocations]
-				this.selectedLocationId = null
-				this.selectedOMAUserType = ''
-				this.showAssignStoresModal = false
-			} else if (this.selectedOMAUserType === 'existing') {
-				this.OMAUserToBeEdited.locations = [
-					...this.OMAUserToBeEdited.selectedLocations
-				]
-				this.selectedLocationId = null
-				this.selectedOMAUserType = ''
-				this.editLocationMode = false
-			}
-		},
-		/**
+    assignStores (event) {
+      event.preventDefault()
+      if (this.selectedOMAUserType === 'new') {
+        this.newOMAUser.locations = [...this.newOMAUser.selectedLocations]
+        this.selectedLocationId = null
+        this.selectedOMAUserType = ''
+        this.showAssignStoresModal = false
+      } else if (this.selectedOMAUserType === 'existing') {
+        this.OMAUserToBeEdited.locations = [
+          ...this.OMAUserToBeEdited.selectedLocations
+        ]
+        this.selectedLocationId = null
+        this.selectedOMAUserType = ''
+        this.editLocationMode = false
+      }
+    },
+    /**
 		 * To display the edit modal
 		 * @function
 		 * @param {object} OMAUser - The OMA user object to be edited
 		 * @returns {undefined}
 		 */
-		editOMAUser (OMAUser) {
-			this.OMAUserToBeEdited.email = OMAUser.email
-			this.OMAUserToBeEdited.password = OMAUser.password || ''
-			this.OMAUserToBeEdited.phone = OMAUser.phone
-			this.OMAUserToBeEdited.type = OMAUser.privilege_id
-			this.OMAUserToBeEdited.locations = OMAUser.locations
-			this.OMAUserToBeEdited.id = OMAUser.id
-			this.OMAUserToBeEdited.selectedLocations = []
-			this.showEditOMAUserModal = true
-			this.$nextTick(function () {
-				this.$refs.editedOMAUserType.$children[0].$el.focus()
-			})
-		},
-		/**
+    editOMAUser (OMAUser) {
+      this.OMAUserToBeEdited.email = OMAUser.email
+      this.OMAUserToBeEdited.password = OMAUser.password || ''
+      this.OMAUserToBeEdited.phone = OMAUser.phone
+      this.OMAUserToBeEdited.type = OMAUser.privilege_id
+      this.OMAUserToBeEdited.locations = OMAUser.locations
+      this.OMAUserToBeEdited.id = OMAUser.id
+      this.OMAUserToBeEdited.selectedLocations = []
+      this.showEditOMAUserModal = true
+      this.$nextTick(function () {
+        this.$refs.editedOMAUserType.$children[0].$el.focus()
+      })
+    },
+    /**
 		 * To close the edit modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeEditOMAUserModal () {
-			this.closeEditLocationMode()
-			this.showEditOMAUserModal = false
-		},
-		/**
+    closeEditOMAUserModal () {
+      this.closeEditLocationMode()
+      this.showEditOMAUserModal = false
+    },
+    /**
 		 * To sync the value of the switch with the state.
 		 * @function
 		 * @param {number} value - The value of the switch
 		 * @returns {undefined}
 		 */
-		updateNewOMAUserActive (value) {
-			this.newOMAUser.is_active = value
-		},
-		/**
+    updateNewOMAUserActive (value) {
+      this.newOMAUser.is_active = value
+    },
+    /**
 		 * To sync the value of the switch with the state.
 		 * @function
 		 * @param {number} value - The value of the switch
 		 * @returns {undefined}
 		 */
-		updateEditedOMAUserActive (value) {
-			this.OMAUserToBeEdited.is_active = value
-		},
-		/**
+    updateEditedOMAUserActive (value) {
+      this.OMAUserToBeEdited.is_active = value
+    },
+    /**
 		 * To get a list of OMA users.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getAllOMAUsers () {
-			this.loadingOMAUsersData = true
-			var OMAUsersVue = this
-			return AdminManagerFunctions.getAllOMAUsers(
-				OMAUsersVue.$root.appId,
-				OMAUsersVue.$root.appSecret,
-				OMAUsersVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						OMAUsersVue.loadingOMAUsersData = false
-						OMAUsersVue.OMAUsers = response.payload
-					} else {
-						OMAUsersVue.loadingOMAUsersData = false
-					}
-				})
-				.catch(reason => {
-					if (
-						reason.responseJSON.code === 401 &&
+    getAllOMAUsers () {
+      this.loadingOMAUsersData = true
+      var OMAUsersVue = this
+      return AdminManagerFunctions.getAllOMAUsers(
+        OMAUsersVue.$root.appId,
+        OMAUsersVue.$root.appSecret,
+        OMAUsersVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            OMAUsersVue.loadingOMAUsersData = false
+            OMAUsersVue.OMAUsers = response.payload
+          } else {
+            OMAUsersVue.loadingOMAUsersData = false
+          }
+        })
+        .catch(reason => {
+          if (
+            reason.responseJSON.code === 401 &&
 						reason.responseJSON.status === 'unauthorized'
-					) {
-						OMAUsersVue.$router.push('/login/expired')
-						return
-					}
-					OMAUsersVue.loadingOMAUsersData = false
-					if (reason.responseJSON) {
-						console.log(reason.responseJSON.message)
-					}
-				})
-		},
-		/**
+          ) {
+            OMAUsersVue.$router.push('/login/expired')
+            return
+          }
+          OMAUsersVue.loadingOMAUsersData = false
+          if (reason.responseJSON) {
+            console.log(reason.responseJSON.message)
+          }
+        })
+    },
+    /**
 		 * To get a list of OMA users.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		createOMAUser () {
-			var OMAUsersVue = this
+    createOMAUser () {
+      var OMAUsersVue = this
 
-			return this.validateNewOMAUserData()
-				.then(response => {
-					OMAUsersVue.creating = true
-					OMAUsersVue.clearCreateError()
-					return AdminManagerFunctions.createOMAUser(
-						OMAUsersVue.newOMAUser,
-						OMAUsersVue.$root.appId,
-						OMAUsersVue.$root.appSecret,
-						OMAUsersVue.$root.userToken
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								OMAUsersVue.getAllOMAUsers()
-								OMAUsersVue.resetCreateForm()
-								OMAUsersVue.showCreateSuccess()
-							} else {
-								OMAUsersVue.createErrorMessage = response.message
-							}
-						})
-						.catch(reason => {
-							if (
-								reason.responseJSON.code === 401 &&
+      return this.validateNewOMAUserData()
+        .then(response => {
+          OMAUsersVue.creating = true
+          OMAUsersVue.clearCreateError()
+          return AdminManagerFunctions.createOMAUser(
+            OMAUsersVue.newOMAUser,
+            OMAUsersVue.$root.appId,
+            OMAUsersVue.$root.appSecret,
+            OMAUsersVue.$root.userToken
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                OMAUsersVue.getAllOMAUsers()
+                OMAUsersVue.resetCreateForm()
+                OMAUsersVue.showCreateSuccess()
+              } else {
+                OMAUsersVue.createErrorMessage = response.message
+              }
+            })
+            .catch(reason => {
+              if (
+                reason.responseJSON.code === 401 &&
 								reason.responseJSON.status === 'unauthorized'
-							) {
-								OMAUsersVue.$router.push('/login/expired')
-								return
-							}
-							if (reason.responseJSON) {
-								OMAUsersVue.createErrorMessage = reason.responseJSON.message
-								window.scrollTo(0, 0)
-							}
-						})
-						.finally(() => {
-							OMAUsersVue.creating = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					if (reason.responseJSON) {
-						OMAUsersVue.createErrorMessage = reason.responseJSON.message
-						window.scrollTo(0, 0)
-					} else {
-						OMAUsersVue.createErrorMessage = reason
-						window.scrollTo(0, 0)
-					}
-				})
-		},
-		/**
+              ) {
+                OMAUsersVue.$router.push('/login/expired')
+                return
+              }
+              if (reason.responseJSON) {
+                OMAUsersVue.createErrorMessage = reason.responseJSON.message
+                window.scrollTo(0, 0)
+              }
+            })
+            .finally(() => {
+              OMAUsersVue.creating = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          if (reason.responseJSON) {
+            OMAUsersVue.createErrorMessage = reason.responseJSON.message
+            window.scrollTo(0, 0)
+          } else {
+            OMAUsersVue.createErrorMessage = reason
+            window.scrollTo(0, 0)
+          }
+        })
+    },
+    /**
 		 * To check if the item data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateNewOMAUserData () {
-			var OMAUsersVue = this
-			return new Promise(function (resolve, reject) {
-				if (!OMAUsersVue.newOMAUser.type) {
-					reject('Please select a type')
-				} else if (!OMAUsersVue.newOMAUser.email.length) {
-					reject('Email cannot be blank')
-				} else if (!emailPattern.test(OMAUsersVue.newOMAUser.email)) {
-					reject('Please enter a valid email')
-				} else if (
-					OMAUsersVue.newOMAUser.phone.replace(/\D/g, '').length < 10
-				) {
-					reject('Phone number should have at least 10 digits')
-				} else if (
-					OMAUsersVue.newOMAUser.password !== OMAUsersVue.passwordCheck
-				) {
-					reject('Passwords do not match')
-				} else if (!OMAUsersVue.newOMAUser.locations.length) {
-					reject('Please select at least one location')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateNewOMAUserData () {
+      var OMAUsersVue = this
+      return new Promise(function (resolve, reject) {
+        if (!OMAUsersVue.newOMAUser.type) {
+          reject('Please select a type')
+        } else if (!OMAUsersVue.newOMAUser.email.length) {
+          reject('Email cannot be blank')
+        } else if (!emailPattern.test(OMAUsersVue.newOMAUser.email)) {
+          reject('Please enter a valid email')
+        } else if (
+          OMAUsersVue.newOMAUser.phone.replace(/\D/g, '').length < 10
+        ) {
+          reject('Phone number should have at least 10 digits')
+        } else if (
+          OMAUsersVue.newOMAUser.password !== OMAUsersVue.passwordCheck
+        ) {
+          reject('Passwords do not match')
+        } else if (!OMAUsersVue.newOMAUser.locations.length) {
+          reject('Please select at least one location')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To reset the create new form.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		resetCreateForm () {
-			this.newOMAUser = {
-				name: '',
-				email: '',
-				password: '',
-				phone: '',
-				type: null,
-				locations: []
-			}
-			this.passwordCheck = ''
-		},
-		/**
+    resetCreateForm () {
+      this.newOMAUser = {
+        name: '',
+        email: '',
+        password: '',
+        phone: '',
+        type: null,
+        locations: []
+      }
+      this.passwordCheck = ''
+    },
+    /**
 		 * To reset the create new form.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		resetAssignForm () {
-			this.selectedOMAUser = {
-				email: '',
-				location_id: 0,
-				is_active: 1
-			}
-		},
-		/**
+    resetAssignForm () {
+      this.selectedOMAUser = {
+        email: '',
+        location_id: 0,
+        is_active: 1
+      }
+    },
+    /**
 		 * To reset the create new form.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		resetEditForm () {
-			this.OMAUserToBeEdited = {
-				email: '',
-				password: '',
-				phone: '',
-				type: null,
-				locations: [],
-				selectedLocations: []
-			}
-		},
+    resetEditForm () {
+      this.OMAUserToBeEdited = {
+        email: '',
+        password: '',
+        phone: '',
+        type: null,
+        locations: [],
+        selectedLocations: []
+      }
+    },
 
-		/**
+    /**
 		 * To notify user that the operation succeeded.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		showAssignSuccess () {
-			this.$swal({
-				title: 'Success',
-				text: 'Stores successfully assigned',
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// do nothing
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
-		},
-		/**
+    showAssignSuccess () {
+      this.$swal({
+        title: 'Success',
+        text: 'Stores successfully assigned',
+        type: 'success',
+        confirmButtonText: 'OK'
+      }).then(
+        () => {
+          // do nothing
+        },
+        dismiss => {
+          // do nothing
+        }
+      )
+    },
+    /**
 		 * To notify user that the operation succeeded.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		showCreateSuccess () {
-			this.$swal({
-				title: 'Success',
-				text: 'OMA User successfully created',
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// do nothing
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
-		},
-		/**
+    showCreateSuccess () {
+      this.$swal({
+        title: 'Success',
+        text: 'OMA User successfully created',
+        type: 'success',
+        confirmButtonText: 'OK'
+      }).then(
+        () => {
+          // do nothing
+        },
+        dismiss => {
+          // do nothing
+        }
+      )
+    },
+    /**
 		 * To notify user that the operation succeeded.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		showEditSuccess () {
-			this.$swal({
-				title: 'Success',
-				text: 'OMA User successfully updated',
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// do nothing
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
-		},
-		/**
+    showEditSuccess () {
+      this.$swal({
+        title: 'Success',
+        text: 'OMA User successfully updated',
+        type: 'success',
+        confirmButtonText: 'OK'
+      }).then(
+        () => {
+          // do nothing
+        },
+        dismiss => {
+          // do nothing
+        }
+      )
+    },
+    /**
 		 * To toggle the create new panel.
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCreateOMAUserPanel () {
-			this.createOMAUserCollapse = !this.createOMAUserCollapse
-			this.$nextTick(function () {
-				if (!this.createOMAUserCollapse) {
-					this.$refs.newOMAUserType.focus()
-				}
-			})
-		},
-		/**
+    toggleCreateOMAUserPanel () {
+      this.createOMAUserCollapse = !this.createOMAUserCollapse
+      this.$nextTick(function () {
+        if (!this.createOMAUserCollapse) {
+          this.$refs.newOMAUserType.focus()
+        }
+      })
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearCreateError () {
-			this.createErrorMessage = ''
-		},
-		/**
+    clearCreateError () {
+      this.createErrorMessage = ''
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearEditError () {
-			this.editErrorMessage = ''
-		},
-		/**
+    clearEditError () {
+      this.editErrorMessage = ''
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearAssignError () {
-			this.assignErrorMessage = ''
-		},
-		/**
+    clearAssignError () {
+      this.assignErrorMessage = ''
+    },
+    /**
 		 * To activate the right half panel which lists the store locations.
 		 * @function
 		 * @param {object} user - The user a store is selected for
 		 * @param {string} type - The type of use (new or existing)
 		 * @returns {undefined}
 		 */
-		assignStoreToOMAUser (user, type) {
-			this.selectedOMAUser = user
-			this.selectedOMAUserType = type
-			if (type === 'existing') {
-				this.editLocationMode = true
-			} else {
-				this.showAssignStoresModal = true
-			}
-		},
-		/**
+    assignStoreToOMAUser (user, type) {
+      this.selectedOMAUser = user
+      this.selectedOMAUserType = type
+      if (type === 'existing') {
+        this.editLocationMode = true
+      } else {
+        this.showAssignStoresModal = true
+      }
+    },
+    /**
 		 * To close the store selection modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeAssignStoresModal () {
-			this.showAssignStoresModal = false
-		},
-		/**
+    closeAssignStoresModal () {
+      this.showAssignStoresModal = false
+    },
+    /**
 		 * To update the OMA user object.
 		 * @function
 		 * @returns {undefined}
 		 */
-		updateOMAUser () {
-			var OMAUsersVue = this
+    updateOMAUser () {
+      var OMAUsersVue = this
 
-			return this.validateEditedOMAUserData()
-				.then(response => {
-					OMAUsersVue.updating = true
-					OMAUsersVue.clearCreateError()
-					let payload = {
-						email: OMAUsersVue.OMAUserToBeEdited.email,
-						password: OMAUsersVue.OMAUserToBeEdited.password,
-						phone: OMAUsersVue.OMAUserToBeEdited.phone,
-						type: OMAUsersVue.OMAUserToBeEdited.type,
-						locations_edit: OMAUsersVue.OMAUserToBeEdited.locations,
-						id: OMAUsersVue.OMAUserToBeEdited.id
-					}
-					return AdminManagerFunctions.updateOMAUser(
-						payload,
-						OMAUsersVue.$root.appId,
-						OMAUsersVue.$root.appSecret,
-						OMAUsersVue.$root.userToken
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								OMAUsersVue.closeEditOMAUserModal()
-								OMAUsersVue.showEditSuccess()
-								OMAUsersVue.getAllOMAUsers()
-								this.animated = `OMAUser-${OMAUsersVue.OMAUserToBeEdited.id}`
-								window.setTimeout(() => {
-									OMAUsersVue.animated = ''
-								}, 3000)
-								OMAUsersVue.resetEditForm()
-							} else {
-								OMAUsersVue.editErrorMessage = response.message
-							}
-						})
-						.catch(reason => {
-							if (
-								reason.responseJSON.code === 401 &&
+      return this.validateEditedOMAUserData()
+        .then(response => {
+          OMAUsersVue.updating = true
+          OMAUsersVue.clearCreateError()
+          let payload = {
+            email: OMAUsersVue.OMAUserToBeEdited.email,
+            password: OMAUsersVue.OMAUserToBeEdited.password,
+            phone: OMAUsersVue.OMAUserToBeEdited.phone,
+            type: OMAUsersVue.OMAUserToBeEdited.type,
+            locations_edit: OMAUsersVue.OMAUserToBeEdited.locations,
+            id: OMAUsersVue.OMAUserToBeEdited.id
+          }
+          return AdminManagerFunctions.updateOMAUser(
+            payload,
+            OMAUsersVue.$root.appId,
+            OMAUsersVue.$root.appSecret,
+            OMAUsersVue.$root.userToken
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                OMAUsersVue.closeEditOMAUserModal()
+                OMAUsersVue.showEditSuccess()
+                OMAUsersVue.getAllOMAUsers()
+                this.animated = `OMAUser-${OMAUsersVue.OMAUserToBeEdited.id}`
+                window.setTimeout(() => {
+                  OMAUsersVue.animated = ''
+                }, 3000)
+                OMAUsersVue.resetEditForm()
+              } else {
+                OMAUsersVue.editErrorMessage = response.message
+              }
+            })
+            .catch(reason => {
+              if (
+                reason.responseJSON.code === 401 &&
 								reason.responseJSON.status === 'unauthorized'
-							) {
-								OMAUsersVue.$router.push('/login/expired')
-								return
-							}
-							if (reason.responseJSON) {
-								OMAUsersVue.editErrorMessage = reason.responseJSON.message
-								window.scrollTo(0, 0)
-							}
-						})
-						.finally(() => {
-							OMAUsersVue.updating = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					if (reason.responseJSON) {
-						OMAUsersVue.editErrorMessage = reason.responseJSON.message
-						window.scrollTo(0, 0)
-					} else {
-						OMAUsersVue.editErrorMessage = reason
-						window.scrollTo(0, 0)
-					}
-				})
-		},
-		/**
+              ) {
+                OMAUsersVue.$router.push('/login/expired')
+                return
+              }
+              if (reason.responseJSON) {
+                OMAUsersVue.editErrorMessage = reason.responseJSON.message
+                window.scrollTo(0, 0)
+              }
+            })
+            .finally(() => {
+              OMAUsersVue.updating = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          if (reason.responseJSON) {
+            OMAUsersVue.editErrorMessage = reason.responseJSON.message
+            window.scrollTo(0, 0)
+          } else {
+            OMAUsersVue.editErrorMessage = reason
+            window.scrollTo(0, 0)
+          }
+        })
+    },
+    /**
 		 * To check if the item data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateEditedOMAUserData () {
-			this.clearEditError()
-			var OMAUsersVue = this
-			return new Promise(function (resolve, reject) {
-				if (!OMAUsersVue.OMAUserToBeEdited.type) {
-					reject('Please select a type')
-				} else if (!OMAUsersVue.OMAUserToBeEdited.email.length) {
-					reject('Email cannot be blank')
-				} else if (!emailPattern.test(OMAUsersVue.OMAUserToBeEdited.email)) {
-					reject('Please enter a valid email')
-				} else if (
-					OMAUsersVue.OMAUserToBeEdited.phone.replace(/\D/g, '').length < 10
-				) {
-					reject('Phone number should have at least 10 digits')
-				} else if (!OMAUsersVue.OMAUserToBeEdited.locations.length) {
-					reject('Please select at least one location')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateEditedOMAUserData () {
+      this.clearEditError()
+      var OMAUsersVue = this
+      return new Promise(function (resolve, reject) {
+        if (!OMAUsersVue.OMAUserToBeEdited.type) {
+          reject('Please select a type')
+        } else if (!OMAUsersVue.OMAUserToBeEdited.email.length) {
+          reject('Email cannot be blank')
+        } else if (!emailPattern.test(OMAUsersVue.OMAUserToBeEdited.email)) {
+          reject('Please enter a valid email')
+        } else if (
+          OMAUsersVue.OMAUserToBeEdited.phone.replace(/\D/g, '').length < 10
+        ) {
+          reject('Phone number should have at least 10 digits')
+        } else if (!OMAUsersVue.OMAUserToBeEdited.locations.length) {
+          reject('Please select at least one location')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To delete the OMA user.
 		 * @function
 		 * @returns {undefined}
 		 */
-		deleteOMAUser () {
-			var OMAUsersVue = this
-			this.deleting = true
-			return AdminManagerFunctions.deleteOMAUser(
-				OMAUsersVue.selectedOMAUser.id,
-				OMAUsersVue.$root.appId,
-				OMAUsersVue.$root.appSecret,
-				OMAUsersVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						OMAUsersVue.closeDeleteOMAUserModal()
-						OMAUsersVue.getAllOMAUsers()
-						OMAUsersVue.showDeleteSuccess()
-						OMAUsersVue.resetAssignForm()
-					} else {
-						OMAUsersVue.editErrorMessage = response.message
-					}
-				})
-				.catch(reason => {
-					if (
-						reason.responseJSON.code === 401 &&
+    deleteOMAUser () {
+      var OMAUsersVue = this
+      this.deleting = true
+      return AdminManagerFunctions.deleteOMAUser(
+        OMAUsersVue.selectedOMAUser.id,
+        OMAUsersVue.$root.appId,
+        OMAUsersVue.$root.appSecret,
+        OMAUsersVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            OMAUsersVue.closeDeleteOMAUserModal()
+            OMAUsersVue.getAllOMAUsers()
+            OMAUsersVue.showDeleteSuccess()
+            OMAUsersVue.resetAssignForm()
+          } else {
+            OMAUsersVue.editErrorMessage = response.message
+          }
+        })
+        .catch(reason => {
+          if (
+            reason.responseJSON.code === 401 &&
 						reason.responseJSON.status === 'unauthorized'
-					) {
-						OMAUsersVue.$router.push('/login/expired')
-						return
-					}
-					if (reason.responseJSON) {
-						OMAUsersVue.editErrorMessage = reason.responseJSON.message
-						window.scrollTo(0, 0)
-					}
-				})
-				.finally(() => {
-					OMAUsersVue.deleting = false
-				})
-		},
-		/**
+          ) {
+            OMAUsersVue.$router.push('/login/expired')
+            return
+          }
+          if (reason.responseJSON) {
+            OMAUsersVue.editErrorMessage = reason.responseJSON.message
+            window.scrollTo(0, 0)
+          }
+        })
+        .finally(() => {
+          OMAUsersVue.deleting = false
+        })
+    },
+    /**
 		 * To notify user that the operation succeeded.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		showDeleteSuccess () {
-			this.$swal({
-				title: 'Success',
-				text: 'OMA User successfully deleted',
-				type: 'success',
-				confirmButtonText: 'OK'
-			}).then(
-				() => {
-					// do nothing
-				},
-				dismiss => {
-					// do nothing
-				}
-			)
-		}
-	}
+    showDeleteSuccess () {
+      this.$swal({
+        title: 'Success',
+        text: 'OMA User successfully deleted',
+        type: 'success',
+        confirmButtonText: 'OK'
+      }).then(
+        () => {
+          // do nothing
+        },
+        dismiss => {
+          // do nothing
+        }
+      )
+    }
+  }
 }
 </script>
 

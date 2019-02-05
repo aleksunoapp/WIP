@@ -471,318 +471,318 @@ import LoadingScreen from '../../modules/LoadingScreen'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Breadcrumb,
-		PageResults,
-		Pagination,
-		Dropdown,
-		Modal,
-		NoResults,
-		LoadingScreen
-	},
-	data () {
-		return {
-			breadcrumbArray: [
-				{ name: 'Users Manager', link: false },
-				{ name: 'Users', link: false }
-			],
-			view: 'all',
-			loadingAll: false,
-			listErrorMessage: '',
-			users: [],
-			searchCollapse: true,
-			search: {
-				first_name: '',
-				last_name: '',
-				email: '',
-				phone: ''
-			},
-			searchError: '',
-			searchResults: [],
-			resultsPerPage: 50,
-			totalResults: 0,
-			sortBy: {
-				order: 'ASC'
-			},
-			activePage: 1,
-			numPages: 1,
-			searchActivePage: 1,
-			searchNumPages: 1,
-			loadingSearch: false,
-			searching: false
-		}
-	},
-	watch: {
-		activePage () {
-			this.getUsers()
-		}
-	},
-	mounted () {
-		this.getUsers()
-	},
-	methods: {
-		/**
+  components: {
+    Breadcrumb,
+    PageResults,
+    Pagination,
+    Dropdown,
+    Modal,
+    NoResults,
+    LoadingScreen
+  },
+  data () {
+    return {
+      breadcrumbArray: [
+        { name: 'Users Manager', link: false },
+        { name: 'Users', link: false }
+      ],
+      view: 'all',
+      loadingAll: false,
+      listErrorMessage: '',
+      users: [],
+      searchCollapse: true,
+      search: {
+        first_name: '',
+        last_name: '',
+        email: '',
+        phone: ''
+      },
+      searchError: '',
+      searchResults: [],
+      resultsPerPage: 50,
+      totalResults: 0,
+      sortBy: {
+        order: 'ASC'
+      },
+      activePage: 1,
+      numPages: 1,
+      searchActivePage: 1,
+      searchNumPages: 1,
+      loadingSearch: false,
+      searching: false
+    }
+  },
+  watch: {
+    activePage () {
+      this.getUsers()
+    }
+  },
+  mounted () {
+    this.getUsers()
+  },
+  methods: {
+    /**
 		 * To clear an error.
 		 * @function
 		 * @param {string} name - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To format a phone number
 		 * @function
 		 * @param {string} phone - The phone number to format
 		 * @returns {string} The formatted phone string
 		 */
-		formatPhone (phone) {
-			try {
-				let digits = phone.replace(/\D/g, '')
-				return (
-					digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
-				)
-			} catch (err) {
-				return '--'
-			}
-		},
-		/**
+    formatPhone (phone) {
+      try {
+        let digits = phone.replace(/\D/g, '')
+        return (
+          digits.slice(0, 3) + '-' + digits.slice(3, 6) + '-' + digits.slice(6)
+        )
+      } catch (err) {
+        return '--'
+      }
+    },
+    /**
 		 * To update the order property of sortBy.
 		 * @function
 		 * @param {object} value - The new value to assign.
 		 * @returns {undefined}
 		 */
-		updateSortByOrder (value) {
-			this.sortBy.order = value
-			this.searchResults.length
-				? this.activeSearchPageUpdate(1)
-				: this.activePageUpdate(1)
-		},
-		/**
+    updateSortByOrder (value) {
+      this.sortBy.order = value
+      this.searchResults.length
+        ? this.activeSearchPageUpdate(1)
+        : this.activePageUpdate(1)
+    },
+    /**
 		 * To catch updates from the PageResults component when the number of page results is updated.
 		 * @function
 		 * @param {integer} val - The number of page results to be returned.
 		 * @returns {undefined}
 		 */
-		resultsPerPageUpdate (val) {
-			if (parseInt(this.resultsPerPage) !== parseInt(val)) {
-				this.resultsPerPage = val
-				this.searchResults.length
-					? this.activeSearchPageUpdate(1)
-					: this.activePageUpdate(1)
-			}
-		},
-		/**
+    resultsPerPageUpdate (val) {
+      if (parseInt(this.resultsPerPage) !== parseInt(val)) {
+        this.resultsPerPage = val
+        this.searchResults.length
+          ? this.activeSearchPageUpdate(1)
+          : this.activePageUpdate(1)
+      }
+    },
+    /**
 		 * To update the currently active pagination page.
 		 * @function
 		 * @param {integer} val - An integer representing the page number that we are updating to.
 		 * @returns {undefined}
 		 */
-		activePageUpdate (val) {
-			if (parseInt(this.activePage) !== parseInt(val)) {
-				this.activePage = val
-				this.getUsers()
-			} else {
-				this.getUsers()
-			}
-		},
-		/**
+    activePageUpdate (val) {
+      if (parseInt(this.activePage) !== parseInt(val)) {
+        this.activePage = val
+        this.getUsers()
+      } else {
+        this.getUsers()
+      }
+    },
+    /**
 		 * To update the currently active pagination page.
 		 * @function
 		 * @param {integer} val - An integer representing the page number that we are updating to.
 		 * @returns {undefined}
 		 */
-		activeSearchPageUpdate (val) {
-			if (parseInt(this.searchActivePage) !== parseInt(val)) {
-				this.searchActivePage = val
-				this.searchUsers()
-			} else {
-				this.searchUsers()
-			}
-		},
-		/**
+    activeSearchPageUpdate (val) {
+      if (parseInt(this.searchActivePage) !== parseInt(val)) {
+        this.searchActivePage = val
+        this.searchUsers()
+      } else {
+        this.searchUsers()
+      }
+    },
+    /**
 		 * To toggle the search panel
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleSearchPanel () {
-			this.searchCollapse = !this.searchCollapse
-		},
-		/**
+    toggleSearchPanel () {
+      this.searchCollapse = !this.searchCollapse
+    },
+    /**
 		 * To clear the current search error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearSearchError () {
-			this.searchError = ''
-		},
-		/**
+    clearSearchError () {
+      this.searchError = ''
+    },
+    /**
 		 * To clear the current search criteria.
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetSearch () {
-			this.toggleSearchPanel()
+    resetSearch () {
+      this.toggleSearchPanel()
 
-			if (this.view !== 'all') {
-				this.view = 'all'
-				this.getUsers()
-				this.search = {
-					first_name: '',
-					last_name: '',
-					email: '',
-					phone: ''
-				}
-				this.searchResults = []
-				this.searchActivePage = 1
-			}
-		},
-		/**
+      if (this.view !== 'all') {
+        this.view = 'all'
+        this.getUsers()
+        this.search = {
+          first_name: '',
+          last_name: '',
+          email: '',
+          phone: ''
+        }
+        this.searchResults = []
+        this.searchActivePage = 1
+      }
+    },
+    /**
 		 * To navigate to the profile page of a user.
 		 * @function
 		 * @param {object} user - The selected user.
 		 * @returns {undefined}
 		 */
-		openUserProfile (user) {
-			this.$router.push({
-				name: 'UserProfile',
-				params: {
-					id: user.id,
-					name: `${user.first_name} ${user.last_name}`
-				}
-			})
-		},
-		/**
+    openUserProfile (user) {
+      this.$router.push({
+        name: 'UserProfile',
+        params: {
+          id: user.id,
+          name: `${user.first_name} ${user.last_name}`
+        }
+      })
+    },
+    /**
 		 * To get a list of users.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getUsers () {
-			this.loadingAll = true
-			var usersVue = this
-			let paginationPreferences = {
-				page: this.activePage,
-				order: this.sortBy.order,
-				per_page: this.resultsPerPage
-			}
-			UsersFunctions.getUsers(
-				usersVue.$root.appId,
-				usersVue.$root.appSecret,
-				usersVue.$root.userToken,
-				paginationPreferences
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						usersVue.numPages = response.payload.last_page
-						usersVue.totalResults = response.payload.total
-						usersVue.users = response.payload.data
-						window.scrollTo(0, 0)
-						usersVue.loadingAll = false
-					} else {
-						usersVue.loadingAll = false
-					}
-				})
-				.catch(reason => {
-					usersVue.loadingAll = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch users',
-						errorName: 'listErrorMessage',
-						vue: usersVue
-					})
-				})
-		},
-		/**
+    getUsers () {
+      this.loadingAll = true
+      var usersVue = this
+      let paginationPreferences = {
+        page: this.activePage,
+        order: this.sortBy.order,
+        per_page: this.resultsPerPage
+      }
+      UsersFunctions.getUsers(
+        usersVue.$root.appId,
+        usersVue.$root.appSecret,
+        usersVue.$root.userToken,
+        paginationPreferences
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            usersVue.numPages = response.payload.last_page
+            usersVue.totalResults = response.payload.total
+            usersVue.users = response.payload.data
+            window.scrollTo(0, 0)
+            usersVue.loadingAll = false
+          } else {
+            usersVue.loadingAll = false
+          }
+        })
+        .catch(reason => {
+          usersVue.loadingAll = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch users',
+            errorName: 'listErrorMessage',
+            vue: usersVue
+          })
+        })
+    },
+    /**
 		 * To check if the search data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateSearchData () {
-			var userListVue = this
-			return new Promise(function (resolve, reject) {
-				if (
-					!userListVue.search.first_name &&
+    validateSearchData () {
+      var userListVue = this
+      return new Promise(function (resolve, reject) {
+        if (
+          !userListVue.search.first_name &&
 					!userListVue.search.last_name &&
 					!userListVue.search.email &&
 					!userListVue.search.phone
-				) {
-					reject('Enter at least one search term')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+        ) {
+          reject('Enter at least one search term')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To call the endpoint to create a new location group.
 		 * @function
 		 * @param {integer} page - Integer for search page
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		searchUsers (page) {
-			var userListVue = this
-			userListVue.clearSearchError()
-			return userListVue
-				.validateSearchData()
-				.then(response => {
-					if (page !== undefined) {
-						userListVue.searching = true
-					}
-					userListVue.view = 'search'
-					userListVue.loadingSearch = true
-					let searchParams = {}
-					searchParams.first_name = this.search.first_name
-					searchParams.last_name = this.search.last_name
-					searchParams.email = this.search.email
-					searchParams.phone = this.search.phone
-					searchParams.order = this.sortBy.order
-					searchParams.per_page = this.resultsPerPage
-					searchParams.page = page === undefined ? this.searchActivePage : page
+    searchUsers (page) {
+      var userListVue = this
+      userListVue.clearSearchError()
+      return userListVue
+        .validateSearchData()
+        .then(response => {
+          if (page !== undefined) {
+            userListVue.searching = true
+          }
+          userListVue.view = 'search'
+          userListVue.loadingSearch = true
+          let searchParams = {}
+          searchParams.first_name = this.search.first_name
+          searchParams.last_name = this.search.last_name
+          searchParams.email = this.search.email
+          searchParams.phone = this.search.phone
+          searchParams.order = this.sortBy.order
+          searchParams.per_page = this.resultsPerPage
+          searchParams.page = page === undefined ? this.searchActivePage : page
 
-					UsersFunctions.searchUsers(
-						userListVue.$root.appId,
-						userListVue.$root.appSecret,
-						userListVue.$root.userToken,
-						searchParams
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								if (response.payload.data.length === 0) {
-									userListVue.searchError = 'No results found'
-									userListVue.searchNumPages = 1
-									userListVue.totalResults = 0
-								} else {
-									if (page !== undefined) {
-										userListVue.searchActivePage = page
-									}
-									userListVue.searchNumPages = response.payload.last_page
-									userListVue.totalResults = response.payload.total
-								}
-								userListVue.searchResults = response.payload.data
-								window.scrollTo(0, 0)
-							} else {
-								userListVue.searchError = response.message
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not fetch users',
-								errorName: 'searchError',
-								vue: userListVue
-							})
-						})
-						.finally(() => {
-							userListVue.loadingSearch = false
-							userListVue.searching = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					userListVue.searchError = reason
-					window.scrollTo(0, 0)
-					throw reason
-				})
-		}
-	}
+          UsersFunctions.searchUsers(
+            userListVue.$root.appId,
+            userListVue.$root.appSecret,
+            userListVue.$root.userToken,
+            searchParams
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                if (response.payload.data.length === 0) {
+                  userListVue.searchError = 'No results found'
+                  userListVue.searchNumPages = 1
+                  userListVue.totalResults = 0
+                } else {
+                  if (page !== undefined) {
+                    userListVue.searchActivePage = page
+                  }
+                  userListVue.searchNumPages = response.payload.last_page
+                  userListVue.totalResults = response.payload.total
+                }
+                userListVue.searchResults = response.payload.data
+                window.scrollTo(0, 0)
+              } else {
+                userListVue.searchError = response.message
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not fetch users',
+                errorName: 'searchError',
+                vue: userListVue
+              })
+            })
+            .finally(() => {
+              userListVue.loadingSearch = false
+              userListVue.searching = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          userListVue.searchError = reason
+          window.scrollTo(0, 0)
+          throw reason
+        })
+    }
+  }
 }
 </script>
 <style>

@@ -52,29 +52,29 @@
  */
 
 export default {
-	name: 'NoResults',
-	props: {
-		show: {
-			default: false
-		},
-		type: {
-			default: 'results'
-		},
-		custom: {
-			default: false
-		},
-		text: {
-			default: ''
-		}
-	},
-	data () {
-		return {
-			display: false,
-			customDisplay: false
-		}
-	},
-	watch: {
-		/**
+  name: 'NoResults',
+  props: {
+    show: {
+      default: false
+    },
+    type: {
+      default: 'results'
+    },
+    custom: {
+      default: false
+    },
+    text: {
+      default: ''
+    }
+  },
+  data () {
+    return {
+      display: false,
+      customDisplay: false
+    }
+  },
+  watch: {
+    /**
 		 * Watch `show` value to determine whether to display the message or not
 		 * @function
 		 * @param {boolean} val - The current value of this.show
@@ -82,35 +82,35 @@ export default {
 		 * @memberof NoResults
 		 * @version 0.0.4
 		 */
-		show (val) {
-			if (val) {
-				if (!this.custom) {
-					this.display = true
-				} else {
-					this.customDisplay = true
-				}
-			} else {
-				if (!this.custom) {
-					this.display = false
-				} else {
-					this.customDisplay = false
-				}
-			}
-		}
-	},
-	/**
+    show (val) {
+      if (val) {
+        if (!this.custom) {
+          this.display = true
+        } else {
+          this.customDisplay = true
+        }
+      } else {
+        if (!this.custom) {
+          this.display = false
+        } else {
+          this.customDisplay = false
+        }
+      }
+    }
+  },
+  /**
 	 * Run on `created` to set the display variable equal to the show value
 	 * @function
 	 * @return {undefined}
 	 * @memberof NoResults
 	 * @version 0.0.4
 	 */
-	created () {
-		if (!this.custom) {
-			this.display = Boolean(this.show)
-		} else {
-			this.customDisplay = Boolean(this.show)
-		}
-	}
+  created () {
+    if (!this.custom) {
+      this.display = Boolean(this.show)
+    } else {
+      this.customDisplay = Boolean(this.show)
+    }
+  }
 }
 </script>

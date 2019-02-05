@@ -339,278 +339,278 @@ import ResourcePicker from '../../../modules/ResourcePicker'
 import StorePickerWithButton from '@/components/modules/StorePickerWithButton'
 
 export default {
-	components: {
-		Modal,
-		ResourcePicker,
-		StorePickerWithButton
-	},
-	props: {
-		passedMenuId: {
-			type: Number
-		}
-	},
-	data () {
-		return {
-			showEditMenuModal: false,
-			menuToBeEdited: {
-				image_url: ''
-			},
-			updating: false,
-			errorMessage: '',
-			selectImageMode: false,
-			customWidth: 90,
-			statusChecked: false,
-			selectLocationMode: false,
-			selectedLocations: []
-		}
-	},
-	created () {
-		// get category details by category id passed as route param
-		this.getMenuDetails()
-	},
-	mounted () {
-		this.showEditMenuModal = true
-	},
-	methods: {
-		/**
+  components: {
+    Modal,
+    ResourcePicker,
+    StorePickerWithButton
+  },
+  props: {
+    passedMenuId: {
+      type: Number
+    }
+  },
+  data () {
+    return {
+      showEditMenuModal: false,
+      menuToBeEdited: {
+        image_url: ''
+      },
+      updating: false,
+      errorMessage: '',
+      selectImageMode: false,
+      customWidth: 90,
+      statusChecked: false,
+      selectLocationMode: false,
+      selectedLocations: []
+    }
+  },
+  created () {
+    // get category details by category id passed as route param
+    this.getMenuDetails()
+  },
+  mounted () {
+    this.showEditMenuModal = true
+  },
+  methods: {
+    /**
 		 * To toggle select location mode on.
 		 * @function
 		 * @param {object} event - The event that triggered the action
 		 * @returns {undefined}
 		 */
-		selectLocations (event) {
-			event.preventDefault()
-			this.selectLocationMode = true
-		},
-		/**
+    selectLocations (event) {
+      event.preventDefault()
+      this.selectLocationMode = true
+    },
+    /**
 		 * To toggle select location mode on.
 		 * @function
 		 * @param {array} locations - The array of selected locations
 		 * @returns {undefined}
 		 */
-		updateSelectedLocations (locations) {
-			if (this.$root.permissions['menu_manager menus update']) {
-				this.selectedLocations = locations
-			}
-			this.closeSelectLocationsPopup()
-		},
-		/**
+    updateSelectedLocations (locations) {
+      if (this.$root.permissions['menu_manager menus update']) {
+        this.selectedLocations = locations
+      }
+      this.closeSelectLocationsPopup()
+    },
+    /**
 		 * To toggle select location mode on.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeSelectLocationsPopup () {
-			this.selectLocationMode = false
-		},
-		/**
+    closeSelectLocationsPopup () {
+      this.selectLocationMode = false
+    },
+    /**
 		 * To check if the menu data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateCategoryData () {
-			var editMenuVue = this
-			return new Promise(function (resolve, reject) {
-				if (!editMenuVue.menuToBeEdited.image_url.length) {
-					reject('Menu image cannot be blank')
-				} else if (!editMenuVue.menuToBeEdited.name.length) {
-					reject('Menu name cannot be blank')
-				} else if (!editMenuVue.menuToBeEdited.desc.length) {
-					reject('Menu description cannot be blank')
-				} else if (!editMenuVue.menuToBeEdited.sku) {
-					reject('Menu SKU cannot be blank')
-				} else if (!$.isNumeric(editMenuVue.menuToBeEdited.order)) {
-					reject('Menu order should be a number')
-				} else if (
-					editMenuVue.menuToBeEdited.start_from &&
+    validateCategoryData () {
+      var editMenuVue = this
+      return new Promise(function (resolve, reject) {
+        if (!editMenuVue.menuToBeEdited.image_url.length) {
+          reject('Menu image cannot be blank')
+        } else if (!editMenuVue.menuToBeEdited.name.length) {
+          reject('Menu name cannot be blank')
+        } else if (!editMenuVue.menuToBeEdited.desc.length) {
+          reject('Menu description cannot be blank')
+        } else if (!editMenuVue.menuToBeEdited.sku) {
+          reject('Menu SKU cannot be blank')
+        } else if (!$.isNumeric(editMenuVue.menuToBeEdited.order)) {
+          reject('Menu order should be a number')
+        } else if (
+          editMenuVue.menuToBeEdited.start_from &&
 					!editMenuVue.menuToBeEdited.stop_on
-				) {
-					reject('Please provide an end date')
-				} else if (
-					!editMenuVue.menuToBeEdited.start_from &&
+        ) {
+          reject('Please provide an end date')
+        } else if (
+          !editMenuVue.menuToBeEdited.start_from &&
 					editMenuVue.menuToBeEdited.stop_on
-				) {
-					reject('Please provide a start date')
-				} else if (
-					editMenuVue.menuToBeEdited.catering &&
+        ) {
+          reject('Please provide a start date')
+        } else if (
+          editMenuVue.menuToBeEdited.catering &&
 					!editMenuVue.menuToBeEdited.min
-				) {
-					reject('Minimum order value cannot be blank')
-				} else if (
-					editMenuVue.menuToBeEdited.catering &&
+        ) {
+          reject('Minimum order value cannot be blank')
+        } else if (
+          editMenuVue.menuToBeEdited.catering &&
 					!editMenuVue.menuToBeEdited.max
-				) {
-					reject('Maximum order value cannot be blank')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+        ) {
+          reject('Maximum order value cannot be blank')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To get the details of the menu to be updated.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getMenuDetails () {
-			var editMenuVue = this
-			MenusFunctions.getMenuDetails(
-				editMenuVue.passedMenuId,
-				editMenuVue.$root.appId,
-				editMenuVue.$root.appSecret
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						editMenuVue.menuToBeEdited = {
-							...response.payload,
-							pos: !!editMenuVue.menuToBeEdited.pos,
-							kiosk: !!editMenuVue.menuToBeEdited.kiosk,
-							online: !!editMenuVue.menuToBeEdited.online,
-							web: !!editMenuVue.menuToBeEdited.web
-						}
-						if (
-							editMenuVue.menuToBeEdited.min === 0 ||
+    getMenuDetails () {
+      var editMenuVue = this
+      MenusFunctions.getMenuDetails(
+        editMenuVue.passedMenuId,
+        editMenuVue.$root.appId,
+        editMenuVue.$root.appSecret
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            editMenuVue.menuToBeEdited = {
+              ...response.payload,
+              pos: !!editMenuVue.menuToBeEdited.pos,
+              kiosk: !!editMenuVue.menuToBeEdited.kiosk,
+              online: !!editMenuVue.menuToBeEdited.online,
+              web: !!editMenuVue.menuToBeEdited.web
+            }
+            if (
+              editMenuVue.menuToBeEdited.min === 0 ||
 							editMenuVue.menuToBeEdited.min
-						) {
-							editMenuVue.menuToBeEdited.min = editMenuVue.menuToBeEdited.min.toString()
-						}
-						if (
-							editMenuVue.menuToBeEdited.max === 0 ||
+            ) {
+              editMenuVue.menuToBeEdited.min = editMenuVue.menuToBeEdited.min.toString()
+            }
+            if (
+              editMenuVue.menuToBeEdited.max === 0 ||
 							editMenuVue.menuToBeEdited.max
-						) {
-							editMenuVue.menuToBeEdited.max = editMenuVue.menuToBeEdited.max.toString()
-						}
-						if (editMenuVue.menuToBeEdited.status === 1) {
-							editMenuVue.statusChecked = true
-						}
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch menu info',
-						errorName: 'errorMessage',
-						vue: editMenuVue,
-						containerRef: 'editModal'
-					})
-				})
-		},
-		/**
+            ) {
+              editMenuVue.menuToBeEdited.max = editMenuVue.menuToBeEdited.max.toString()
+            }
+            if (editMenuVue.menuToBeEdited.status === 1) {
+              editMenuVue.statusChecked = true
+            }
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch menu info',
+            errorName: 'errorMessage',
+            vue: editMenuVue,
+            containerRef: 'editModal'
+          })
+        })
+    },
+    /**
 		 * To update the menu and close the modal.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		updateMenu () {
-			var editMenuVue = this
-			editMenuVue.menuToBeEdited.user_id = editMenuVue.$root.createdBy
-			editMenuVue.menuToBeEdited.location_id =
+    updateMenu () {
+      var editMenuVue = this
+      editMenuVue.menuToBeEdited.user_id = editMenuVue.$root.createdBy
+      editMenuVue.menuToBeEdited.location_id =
 				editMenuVue.$root.activeLocation.id
-			editMenuVue.menuToBeEdited.update_locations =
+      editMenuVue.menuToBeEdited.update_locations =
 				editMenuVue.selectedLocations
-			editMenuVue.clearError()
+      editMenuVue.clearError()
 
-			return editMenuVue
-				.validateCategoryData()
-				.then(response => {
-					editMenuVue.updating = true
-					let payload = {
-						...editMenuVue.menuToBeEdited,
-						pos: editMenuVue.menuToBeEdited.pos ? 1 : 0,
-						kiosk: editMenuVue.menuToBeEdited.kiosk ? 1 : 0,
-						online: editMenuVue.menuToBeEdited.online ? 1 : 0,
-						web: editMenuVue.menuToBeEdited.web ? 1 : 0
-					}
+      return editMenuVue
+        .validateCategoryData()
+        .then(response => {
+          editMenuVue.updating = true
+          let payload = {
+            ...editMenuVue.menuToBeEdited,
+            pos: editMenuVue.menuToBeEdited.pos ? 1 : 0,
+            kiosk: editMenuVue.menuToBeEdited.kiosk ? 1 : 0,
+            online: editMenuVue.menuToBeEdited.online ? 1 : 0,
+            web: editMenuVue.menuToBeEdited.web ? 1 : 0
+          }
 
-					MenusFunctions.updateMenu(
-						payload,
-						editMenuVue.$root.appId,
-						editMenuVue.$root.appSecret,
-						editMenuVue.$root.userToken
-					)
-						.then(response => {
-							if (
-								response.code === 200 &&
+          MenusFunctions.updateMenu(
+            payload,
+            editMenuVue.$root.appId,
+            editMenuVue.$root.appSecret,
+            editMenuVue.$root.userToken
+          )
+            .then(response => {
+              if (
+                response.code === 200 &&
 								response.status === 'ok'
-							) {
-								this.closeModalAndUpdate(response.payload)
-							} else {
-								editMenuVue.errorMessage = response.message
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not update the item',
-								errorName: 'errorMessage',
-								vue: editMenuVue,
-								containerRef: 'editModal'
-							})
-						})
-						.finally(() => {
-							editMenuVue.updating = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					editMenuVue.errorMessage = reason
-					window.scrollTo(0, 0)
-					throw reason
-				})
-		},
-		/**
+              ) {
+                this.closeModalAndUpdate(response.payload)
+              } else {
+                editMenuVue.errorMessage = response.message
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not update the item',
+                errorName: 'errorMessage',
+                vue: editMenuVue,
+                containerRef: 'editModal'
+              })
+            })
+            .finally(() => {
+              editMenuVue.updating = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          editMenuVue.errorMessage = reason
+          window.scrollTo(0, 0)
+          throw reason
+        })
+    },
+    /**
 		 * To just close the modal when the user clicks on the 'x' to close the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('closeEditMenuModal')
-		},
-		/**
+    closeModal () {
+      this.$emit('closeEditMenuModal')
+    },
+    /**
 		 * To close the modal and update the menu details.
 		 * @function
 		 * @param {object} payload - The payload parameter of the server response
 		 * @returns {undefined}
 		 */
-		closeModalAndUpdate (payload = {}) {
-			this.$emit('updateMenu', {
-				menu: this.menuToBeEdited,
-				payload
-			})
-		},
-		/**
+    closeModalAndUpdate (payload = {}) {
+      this.$emit('updateMenu', {
+        menu: this.menuToBeEdited,
+        payload
+      })
+    },
+    /**
 		 * To change the page to the gallery view on the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		goToPageTwo () {
-			this.selectImageMode = true
-		},
-		/**
+    goToPageTwo () {
+      this.selectImageMode = true
+    },
+    /**
 		 * To change the page to the main/form view on the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		goToPageOne () {
-			this.selectImageMode = false
-		},
-		/**
+    goToPageOne () {
+      this.selectImageMode = false
+    },
+    /**
 		 * To set the image to be same as the one emitted by the gallery modal.
 		 * @function
 		 * @param {object} val - The emitted image object.
 		 * @returns {undefined}
 		 */
-		updateImage (val) {
-			this.goToPageOne()
-			if (this.$root.permissions['menu_manager menus update']) {
-				this.menuToBeEdited.image_url = val.image_url
-			}
-		}
-	}
+    updateImage (val) {
+      this.goToPageOne()
+      if (this.$root.permissions['menu_manager menus update']) {
+        this.menuToBeEdited.image_url = val.image_url
+      }
+    }
+  }
 }
 </script>
 <style scoped>

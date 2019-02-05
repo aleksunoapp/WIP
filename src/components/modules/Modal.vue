@@ -61,143 +61,143 @@ import $ from 'jquery'
  * @returns {interget} - A number that represents the width of the scroll bar
  */
 var getScrollBarWidth = function () {
-	if (
-		document.documentElement.scrollHeight <=
+  if (
+    document.documentElement.scrollHeight <=
 		document.documentElement.clientHeight
-	) {
-		return 0
-	}
-	let inner = document.createElement('p')
-	inner.style.width = '100%'
-	inner.style.height = '200px'
+  ) {
+    return 0
+  }
+  let inner = document.createElement('p')
+  inner.style.width = '100%'
+  inner.style.height = '200px'
 
-	let outer = document.createElement('div')
-	outer.style.position = 'absolute'
-	outer.style.top = '0px'
-	outer.style.left = '0px'
-	outer.style.visibility = 'hidden'
-	outer.style.width = '200px'
-	outer.style.height = '150px'
-	outer.style.overflow = 'hidden'
-	outer.appendChild(inner)
+  let outer = document.createElement('div')
+  outer.style.position = 'absolute'
+  outer.style.top = '0px'
+  outer.style.left = '0px'
+  outer.style.visibility = 'hidden'
+  outer.style.width = '200px'
+  outer.style.height = '150px'
+  outer.style.overflow = 'hidden'
+  outer.appendChild(inner)
 
-	document.body.appendChild(outer)
-	let w1 = inner.offsetWidth
-	outer.style.overflow = 'scroll'
-	let w2 = inner.offsetWidth
-	if (w1 === w2) w2 = outer.clientWidth
+  document.body.appendChild(outer)
+  let w1 = inner.offsetWidth
+  outer.style.overflow = 'scroll'
+  let w2 = inner.offsetWidth
+  if (w1 === w2) w2 = outer.clientWidth
 
-	document.body.removeChild(outer)
+  document.body.removeChild(outer)
 
-	return w1 - w2
+  return w1 - w2
 }
 
 export default {
-	name: 'Modal',
-	props: {
-		backdrop: {
-			default: false
-		},
-		cancelText: {
-			default: 'Close'
-		},
-		effect: {
-			default: 'fade'
-		},
-		okText: {
-			default: 'Save'
-		},
-		show: {
-			required: true,
-			twoWay: true
-		},
-		title: {
-			default: ''
-		},
-		width: {
-			default: null
-		}
-	},
-	computed: {
-		/**
+  name: 'Modal',
+  props: {
+    backdrop: {
+      default: false
+    },
+    cancelText: {
+      default: 'Close'
+    },
+    effect: {
+      default: 'fade'
+    },
+    okText: {
+      default: 'Save'
+    },
+    show: {
+      required: true,
+      twoWay: true
+    },
+    title: {
+      default: ''
+    },
+    width: {
+      default: null
+    }
+  },
+  computed: {
+    /**
 		 * Compute width to display as pixels vs just a straight integer
 		 * @function
 		 * @returns {string} - A string combination of number and pixels
 		 */
-		computedWidth: function () {
-			if (this.width === null) {
-				return null
-			} else if (Number.isInteger(this.width)) {
-				return this.width + 'px'
-			}
-			return this.width
-		}
-	},
-	watch: {
-		/**
+    computedWidth: function () {
+      if (this.width === null) {
+        return null
+      } else if (Number.isInteger(this.width)) {
+        return this.width + 'px'
+      }
+      return this.width
+    }
+  },
+  watch: {
+    /**
 		 * Watch `show` to determine whether or not to show the modal
 		 * @function
 		 * @param {boolean} val - Used to determine whether the modal should show or not
 		 * @returns {undefined}
 		 */
-		show: function (val) {
-			var modalVue = this
-			const el = this.$el
-			const body = document.body
-			const scrollBarWidth = getScrollBarWidth()
-			if (val) {
-				$(el)
-					.find('.modal-content')
-					.focus()
-				el.style.display = 'block'
-				setTimeout(() => $(el).addClass('in'), 0)
-				$(body).addClass('modal-open-noscroll')
-				if (scrollBarWidth !== 0) {
-					body.style.paddingRight = scrollBarWidth + 'px'
-				}
-				if (this.backdrop) {
-					$(el).on('click', e => {
-						if (e.target === el) this.show = false
-					})
-				}
-				$(document).keyup(function (e) {
-					if (e.keyCode === 27) {
-						modalVue.$emit('closeOnEscape')
-					}
-				})
-			} else {
-				body.style.paddingRight = null
-				$(body).removeClass('modal-open-noscroll')
-				$(el)
-					.removeClass('in')
-					.on('transitionend', () => {
-						$(el).off('click transitionend')
-						el.style.display = 'none'
-					})
-			}
-		}
-	},
-	beforeDestroy () {
-		$(document.body).removeClass('modal-open-noscroll')
-	},
-	methods: {
-		/**
+    show: function (val) {
+      var modalVue = this
+      const el = this.$el
+      const body = document.body
+      const scrollBarWidth = getScrollBarWidth()
+      if (val) {
+        $(el)
+          .find('.modal-content')
+          .focus()
+        el.style.display = 'block'
+        setTimeout(() => $(el).addClass('in'), 0)
+        $(body).addClass('modal-open-noscroll')
+        if (scrollBarWidth !== 0) {
+          body.style.paddingRight = scrollBarWidth + 'px'
+        }
+        if (this.backdrop) {
+          $(el).on('click', e => {
+            if (e.target === el) this.show = false
+          })
+        }
+        $(document).keyup(function (e) {
+          if (e.keyCode === 27) {
+            modalVue.$emit('closeOnEscape')
+          }
+        })
+      } else {
+        body.style.paddingRight = null
+        $(body).removeClass('modal-open-noscroll')
+        $(el)
+          .removeClass('in')
+          .on('transitionend', () => {
+            $(el).off('click transitionend')
+            el.style.display = 'none'
+          })
+      }
+    }
+  },
+  beforeDestroy () {
+    $(document.body).removeClass('modal-open-noscroll')
+  },
+  methods: {
+    /**
 		 * Used to close the modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		close: function () {
-			this.show = false
-		},
-		/**
+    close: function () {
+      this.show = false
+    },
+    /**
 		 * Used to perform a callback when an action is selected on the modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		callback: function () {
-			this.$emit('callback')
-		}
-	}
+    callback: function () {
+      this.$emit('callback')
+    }
+  }
 }
 </script>
 <style>

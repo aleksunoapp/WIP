@@ -122,112 +122,112 @@ import Modal from '@/components/modules/Modal'
 import global from '@/global'
 
 export default {
-	components: {
-		Breadcrumb,
-		NoResults,
-		LoadingScreen,
-		ResourcePicker,
-		Modal
-	},
-	data () {
-		return {
-			breadcrumbArray: [{ name: 'Gallery', link: false }],
-			image: {
-				image_url: ''
-			},
-			previewMode: false,
-			pickerKey: 1,
-			deleteErrorMessage: '',
-			showDeleteModal: false
-		}
-	},
-	watch: {},
-	methods: {
-		/**
+  components: {
+    Breadcrumb,
+    NoResults,
+    LoadingScreen,
+    ResourcePicker,
+    Modal
+  },
+  data () {
+    return {
+      breadcrumbArray: [{ name: 'Gallery', link: false }],
+      image: {
+        image_url: ''
+      },
+      previewMode: false,
+      pickerKey: 1,
+      deleteErrorMessage: '',
+      showDeleteModal: false
+    }
+  },
+  watch: {},
+  methods: {
+    /**
 		 * To toggle between the open and closed state of the resource picker
 		 * @function
 		 * @param {object} val - The open / closed value of the picker
 		 * @returns {undefined}
 		 */
-		toggleImageMode (val) {
-			this.previewMode = val
-		},
-		/**
+    toggleImageMode (val) {
+      this.previewMode = val
+    },
+    /**
 		 * To set the image to be same as the one emitted by the gallery modal.
 		 * @function
 		 * @param {object} val - The emitted image object.
 		 * @returns {undefined}
 		 */
-		updateImage (val) {
-			this.image = val
-			this.toggleImageMode(true)
-		},
-		/**
+    updateImage (val) {
+      this.image = val
+      this.toggleImageMode(true)
+    },
+    /**
 		 * To close the resource modal
 		 * @function
 		 * @returns {undefined}
 		 * @memberof ResourceModal
 		 * @version 0.0.9
 		 */
-		closePreview () {
-			this.previewMode = false
-		},
-		openDeleteModal () {
-			this.showDeleteModal = true
-		},
-		closeDeleteModal () {
-			this.deleteErrorMessage = ''
-			this.showDeleteModal = false
-		},
-		clearDeleteErrorMessage () {
-			this.deleteErrorMessage = ''
-		},
-		deleteImage () {
-			let galleryVue = this
-			return ResourcesFunctions.deleteResource(
-				global.resourcesBusinessId,
-				galleryVue.image.id
-			)
-				.then(response => {
-					galleryVue.closeDeleteModal()
-					galleryVue.confirmDelete(response.payload)
-					galleryVue.pickerKey++
-					galleryVue.previewMode = false
-					galleryVue.image = { image_url: '' }
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not delete the image',
-						errorName: 'deleteErrorMessage',
-						vue: galleryVue
-					})
-				})
-		},
-		/**
+    closePreview () {
+      this.previewMode = false
+    },
+    openDeleteModal () {
+      this.showDeleteModal = true
+    },
+    closeDeleteModal () {
+      this.deleteErrorMessage = ''
+      this.showDeleteModal = false
+    },
+    clearDeleteErrorMessage () {
+      this.deleteErrorMessage = ''
+    },
+    deleteImage () {
+      let galleryVue = this
+      return ResourcesFunctions.deleteResource(
+        global.resourcesBusinessId,
+        galleryVue.image.id
+      )
+        .then(response => {
+          galleryVue.closeDeleteModal()
+          galleryVue.confirmDelete(response.payload)
+          galleryVue.pickerKey++
+          galleryVue.previewMode = false
+          galleryVue.image = { image_url: '' }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not delete the image',
+            errorName: 'deleteErrorMessage',
+            vue: galleryVue
+          })
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		confirmDelete (payload = {}) {
-			let title = 'Success'
-			let text = 'The Resource has been deleted'
-			let type = 'success'
+    confirmDelete (payload = {}) {
+      let title = 'Success'
+      let text = 'The Resource has been deleted'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The removal has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The removal has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		}
-	}
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    }
+  }
 }
 </script>
 

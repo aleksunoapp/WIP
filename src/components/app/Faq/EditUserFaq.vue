@@ -209,236 +209,236 @@ import CountriesFunctions from '@/controllers/Countries'
 import PlatformsFunctions from '@/controllers/Platforms'
 
 export default {
-	components: {
-		Modal
-	},
-	props: {
-		faqId: {
-			type: Number,
-			default: 0
-		}
-	},
-	data () {
-		return {
-			showEditFAQModal: false,
-			updating: false,
-			faqToBeEdited: {
-				question: '',
-				answer: '',
-				external_link: '',
-				cta_type: '',
-				cta_value: ''
-			},
-			errorMessage: '',
-			loadingCountries: false,
-			countries: [],
-			loadingPlatforms: false,
-			platforms: []
-		}
-	},
-	created () {
-		// get category details by category id passed as route param
-		this.getUserFAQDetails()
-		this.getCountries()
-		this.getPlatforms()
-	},
-	mounted () {
-		this.showEditFAQModal = true
-	},
-	methods: {
-		/**
+  components: {
+    Modal
+  },
+  props: {
+    faqId: {
+      type: Number,
+      default: 0
+    }
+  },
+  data () {
+    return {
+      showEditFAQModal: false,
+      updating: false,
+      faqToBeEdited: {
+        question: '',
+        answer: '',
+        external_link: '',
+        cta_type: '',
+        cta_value: ''
+      },
+      errorMessage: '',
+      loadingCountries: false,
+      countries: [],
+      loadingPlatforms: false,
+      platforms: []
+    }
+  },
+  created () {
+    // get category details by category id passed as route param
+    this.getUserFAQDetails()
+    this.getCountries()
+    this.getPlatforms()
+  },
+  mounted () {
+    this.showEditFAQModal = true
+  },
+  methods: {
+    /**
 		 * To get a list of all countries.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getCountries () {
-			this.clearError('errorMessage')
-			this.loadingCountries = true
-			this.countries = []
-			var _this = this
-			return CountriesFunctions.listCountries()
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						_this.countries = response.payload
-						_this.$nextTick(function () {
-							_this.loadingCountries = false
-						})
-					} else {
-						_this.loadingCountries = false
-					}
-				})
-				.catch(reason => {
-					_this.loadingCountries = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch the list of countries',
-						errorName: 'errorMessage',
-						vue: _this,
-						containerRef: 'editModal'
-					})
-				})
-		},
-		/**
+    getCountries () {
+      this.clearError('errorMessage')
+      this.loadingCountries = true
+      this.countries = []
+      var _this = this
+      return CountriesFunctions.listCountries()
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            _this.countries = response.payload
+            _this.$nextTick(function () {
+              _this.loadingCountries = false
+            })
+          } else {
+            _this.loadingCountries = false
+          }
+        })
+        .catch(reason => {
+          _this.loadingCountries = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch the list of countries',
+            errorName: 'errorMessage',
+            vue: _this,
+            containerRef: 'editModal'
+          })
+        })
+    },
+    /**
 		 * To get a list of all platforms.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getPlatforms () {
-			this.clearError('errorMessage')
-			this.loadingPlatforms = true
-			this.platforms = []
-			var _this = this
-			return PlatformsFunctions.listPlatforms()
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						_this.loadingPlatforms = false
-						_this.platforms = response.payload
-					} else {
-						_this.loadingPlatforms = false
-					}
-				})
-				.catch(reason => {
-					_this.loadingPlatforms = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch the list of platforms',
-						errorName: 'errorMessage',
-						vue: _this,
-						containerRef: 'editModal'
-					})
-				})
-		},
-		/**
+    getPlatforms () {
+      this.clearError('errorMessage')
+      this.loadingPlatforms = true
+      this.platforms = []
+      var _this = this
+      return PlatformsFunctions.listPlatforms()
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            _this.loadingPlatforms = false
+            _this.platforms = response.payload
+          } else {
+            _this.loadingPlatforms = false
+          }
+        })
+        .catch(reason => {
+          _this.loadingPlatforms = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch the list of platforms',
+            errorName: 'errorMessage',
+            vue: _this,
+            containerRef: 'editModal'
+          })
+        })
+    },
+    /**
 		 * To check if the category data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateFAQData () {
-			var editFAQVue = this
-			return new Promise(function (resolve, reject) {
-				if (!editFAQVue.faqToBeEdited.question.length) {
-					reject('Question cannot be blank')
-				} else if (!editFAQVue.faqToBeEdited.answer.length) {
-					reject('Answer cannot be blank')
-				} else if (!editFAQVue.faqToBeEdited.external_link.length) {
-					reject('External link cannot be blank')
-				} else if (
-					editFAQVue.faqToBeEdited.cta_type &&
+    validateFAQData () {
+      var editFAQVue = this
+      return new Promise(function (resolve, reject) {
+        if (!editFAQVue.faqToBeEdited.question.length) {
+          reject('Question cannot be blank')
+        } else if (!editFAQVue.faqToBeEdited.answer.length) {
+          reject('Answer cannot be blank')
+        } else if (!editFAQVue.faqToBeEdited.external_link.length) {
+          reject('External link cannot be blank')
+        } else if (
+          editFAQVue.faqToBeEdited.cta_type &&
 					!editFAQVue.faqToBeEdited.cta_value
-				) {
-					reject('Call to action value cannot be blank')
-				} else if (editFAQVue.faqToBeEdited.country_id === null) {
-					reject('Select a country')
-				} else if (editFAQVue.faqToBeEdited.platform_id === null) {
-					reject('Select a platform')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+        ) {
+          reject('Call to action value cannot be blank')
+        } else if (editFAQVue.faqToBeEdited.country_id === null) {
+          reject('Select a country')
+        } else if (editFAQVue.faqToBeEdited.platform_id === null) {
+          reject('Select a platform')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError () {
-			this.errorMessage = ''
-		},
-		/**
+    clearError () {
+      this.errorMessage = ''
+    },
+    /**
 		 * To get the details of the category to be updated.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getUserFAQDetails () {
-			var editFAQVue = this
-			FAQFunctions.getUserFAQDetails(
-				editFAQVue.faqId,
-				editFAQVue.$root.appId,
-				editFAQVue.$root.appSecret
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						editFAQVue.faqToBeEdited = response.payload
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch FAQ info',
-						errorName: 'errorMessage',
-						vue: editFAQVue,
-						containerRef: 'editModal'
-					})
-				})
-		},
-		/**
+    getUserFAQDetails () {
+      var editFAQVue = this
+      FAQFunctions.getUserFAQDetails(
+        editFAQVue.faqId,
+        editFAQVue.$root.appId,
+        editFAQVue.$root.appSecret
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            editFAQVue.faqToBeEdited = response.payload
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch FAQ info',
+            errorName: 'errorMessage',
+            vue: editFAQVue,
+            containerRef: 'editModal'
+          })
+        })
+    },
+    /**
 		 * To prompt the backend call that updates a news feed.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		saveEditedUserFAQ () {
-			var editFAQVue = this
-			editFAQVue.clearError()
+    saveEditedUserFAQ () {
+      var editFAQVue = this
+      editFAQVue.clearError()
 
-			return editFAQVue
-				.validateFAQData()
-				.then(response => {
-					editFAQVue.updating = true
-					editFAQVue.faqToBeEdited.user_id = editFAQVue.$root.createdBy
-					FAQFunctions.saveEditedUserFAQ(
-						editFAQVue.faqToBeEdited,
-						editFAQVue.$root.appId,
-						editFAQVue.$root.appSecret,
-						editFAQVue.$root.userToken
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								editFAQVue.closeModalAndUpdate(response.payload)
-							} else {
-								editFAQVue.errorMessage = response.message
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not save the FAQ',
-								errorName: 'errorMessage',
-								vue: editFAQVue,
-								containerRef: 'editModal'
-							})
-						})
-						.finally(() => {
-							editFAQVue.updating = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					editFAQVue.errorMessage = reason
-					editFAQVue.$scrollTo(
-						editFAQVue.$refs.errorMessage,
-						1000,
-						{
-							container: editFAQVue.$refs.editModal.$el
-						}
-					)
-				})
-		},
-		/**
+      return editFAQVue
+        .validateFAQData()
+        .then(response => {
+          editFAQVue.updating = true
+          editFAQVue.faqToBeEdited.user_id = editFAQVue.$root.createdBy
+          FAQFunctions.saveEditedUserFAQ(
+            editFAQVue.faqToBeEdited,
+            editFAQVue.$root.appId,
+            editFAQVue.$root.appSecret,
+            editFAQVue.$root.userToken
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                editFAQVue.closeModalAndUpdate(response.payload)
+              } else {
+                editFAQVue.errorMessage = response.message
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not save the FAQ',
+                errorName: 'errorMessage',
+                vue: editFAQVue,
+                containerRef: 'editModal'
+              })
+            })
+            .finally(() => {
+              editFAQVue.updating = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          editFAQVue.errorMessage = reason
+          editFAQVue.$scrollTo(
+            editFAQVue.$refs.errorMessage,
+            1000,
+            {
+              container: editFAQVue.$refs.editModal.$el
+            }
+          )
+        })
+    },
+    /**
 		 * To close the modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeModal () {
-			this.$emit('closeEditStoreFAQModal')
-		},
-		/**
+    closeModal () {
+      this.$emit('closeEditStoreFAQModal')
+    },
+    /**
 		 * To close the modal and update the edited faq.
 		 * @function
 		 * @param {object} payload - Payload of the update response
 		 * @returns {undefined}
 		 */
-		closeModalAndUpdate (payload = {}) {
-			this.$emit('highlightFAQ', payload)
-		}
-	}
+    closeModalAndUpdate (payload = {}) {
+      this.$emit('highlightFAQ', payload)
+    }
+  }
 }
 </script>

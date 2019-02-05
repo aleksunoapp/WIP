@@ -485,411 +485,411 @@ import Modal from '../../modules/Modal'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
 
 export default {
-	components: {
-		Breadcrumb,
-		NoResults,
-		LoadingScreen,
-		Modal
-	},
-	data () {
-		return {
-			breadcrumbArray: [
-				{ name: 'Loyalty', link: false },
-				{ name: 'Base Rule', link: false }
-			],
-			createNewCollapse: true,
-			creating: false,
-			createErrorMessage: '',
-			newRule: {
-				name: '',
-				type: '', // "dollar-to-points", "transactions-to-points"
-				base_counter: '', // for every X dollars, does not apply to transaction to points (pass 1 anyway)
-				min_amount: '', // minimum number of dollars spent? (0 if does not apply)
-				points: '' // no of points awarded
-			},
-			listErrorMessage: '',
-			loading: false,
-			rules: [],
-			animated: '',
-			showEditModal: false,
-			updating: false,
-			ruleToEdit: {
-				id: null,
-				name: '',
-				type: '',
-				base_counter: '',
-				min_amount: '',
-				points: ''
-			},
-			editErrorMessage: '',
-			showDeleteModal: false,
-			deleting: false,
-			ruleToDelete: {
-				name: ''
-			},
-			deleteErrorMessage: ''
-		}
-	},
-	mounted () {
-		this.getRules()
-	},
-	methods: {
-		/**
+  components: {
+    Breadcrumb,
+    NoResults,
+    LoadingScreen,
+    Modal
+  },
+  data () {
+    return {
+      breadcrumbArray: [
+        { name: 'Loyalty', link: false },
+        { name: 'Base Rule', link: false }
+      ],
+      createNewCollapse: true,
+      creating: false,
+      createErrorMessage: '',
+      newRule: {
+        name: '',
+        type: '', // "dollar-to-points", "transactions-to-points"
+        base_counter: '', // for every X dollars, does not apply to transaction to points (pass 1 anyway)
+        min_amount: '', // minimum number of dollars spent? (0 if does not apply)
+        points: '' // no of points awarded
+      },
+      listErrorMessage: '',
+      loading: false,
+      rules: [],
+      animated: '',
+      showEditModal: false,
+      updating: false,
+      ruleToEdit: {
+        id: null,
+        name: '',
+        type: '',
+        base_counter: '',
+        min_amount: '',
+        points: ''
+      },
+      editErrorMessage: '',
+      showDeleteModal: false,
+      deleting: false,
+      ruleToDelete: {
+        name: ''
+      },
+      deleteErrorMessage: ''
+    }
+  },
+  mounted () {
+    this.getRules()
+  },
+  methods: {
+    /**
 		 * To toggle the create new panel.
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCreateNew () {
-			this.createNewCollapse = !this.createNewCollapse
-			this.$nextTick(function () {
-				if (!this.createNewCollapse) {
-					this.$refs.newName.focus()
-				}
-			})
-		},
-		/**
+    toggleCreateNew () {
+      this.createNewCollapse = !this.createNewCollapse
+      this.$nextTick(function () {
+        if (!this.createNewCollapse) {
+          this.$refs.newName.focus()
+        }
+      })
+    },
+    /**
 		 * To clear the error.
 		 * @param {string} errorName - The name of the variable to clear
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearError (errorName) {
-			this[errorName] = ''
-		},
-		/**
+    clearError (errorName) {
+      this[errorName] = ''
+    },
+    /**
 		 * To check if the data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateNewRule () {
-			var rulesVue = this
-			return new Promise(function (resolve, reject) {
-				if (!rulesVue.newRule.name.length) {
-					reject('Name cannot be blank')
-				} else if (rulesVue.newRule.type === '') {
-					reject('Select type')
-				} else if (
-					rulesVue.newRule.type === 'dollar-to-points' &&
+    validateNewRule () {
+      var rulesVue = this
+      return new Promise(function (resolve, reject) {
+        if (!rulesVue.newRule.name.length) {
+          reject('Name cannot be blank')
+        } else if (rulesVue.newRule.type === '') {
+          reject('Select type')
+        } else if (
+          rulesVue.newRule.type === 'dollar-to-points' &&
 					!$.isNumeric(rulesVue.newRule.base_counter)
-				) {
-					reject('Amount to award points for must be a number')
-				} else if (!$.isNumeric(rulesVue.newRule.min_amount)) {
-					reject('Minimum purchase amount must be a number')
-				} else if (!$.isNumeric(rulesVue.newRule.points)) {
-					reject('Points must be a number')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+        ) {
+          reject('Amount to award points for must be a number')
+        } else if (!$.isNumeric(rulesVue.newRule.min_amount)) {
+          reject('Minimum purchase amount must be a number')
+        } else if (!$.isNumeric(rulesVue.newRule.points)) {
+          reject('Points must be a number')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To create a rule
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		createRule () {
-			if (this.newRule.type === 'transactions-to-points') {
-				this.newRule.base_counter = '1'
-			}
-			const rulesVue = this
+    createRule () {
+      if (this.newRule.type === 'transactions-to-points') {
+        this.newRule.base_counter = '1'
+      }
+      const rulesVue = this
 
-			return this.validateNewRule()
-				.then(response => {
-					rulesVue.creating = true
-					rulesVue.clearError('createErrorMessage')
-					return LoyaltyFunctions.createRule(rulesVue.newRule)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								rulesVue.getRules()
-								rulesVue.resetCreateForm()
-								rulesVue.showCreateSuccess(response.payload)
-							} else {
-								rulesVue.createErrorMessage = response.message
-								rulesVue.$scrollTo(rulesVue.$refs.createErrorMessage, 1000, {
-									offset: -50
-								})
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not create the rule',
-								errorName: 'createErrorMessage',
-								vue: rulesVue
-							})
-						})
-						.finally(() => {
-							rulesVue.creating = false
-						})
-				})
-				.catch(reason => {
-					rulesVue.createErrorMessage = reason
-					rulesVue.$scrollTo(rulesVue.$refs.createErrorMessage, 1000, {
-						offset: -50
-					})
-				})
-		},
-		/**
+      return this.validateNewRule()
+        .then(response => {
+          rulesVue.creating = true
+          rulesVue.clearError('createErrorMessage')
+          return LoyaltyFunctions.createRule(rulesVue.newRule)
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                rulesVue.getRules()
+                rulesVue.resetCreateForm()
+                rulesVue.showCreateSuccess(response.payload)
+              } else {
+                rulesVue.createErrorMessage = response.message
+                rulesVue.$scrollTo(rulesVue.$refs.createErrorMessage, 1000, {
+                  offset: -50
+                })
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not create the rule',
+                errorName: 'createErrorMessage',
+                vue: rulesVue
+              })
+            })
+            .finally(() => {
+              rulesVue.creating = false
+            })
+        })
+        .catch(reason => {
+          rulesVue.createErrorMessage = reason
+          rulesVue.$scrollTo(rulesVue.$refs.createErrorMessage, 1000, {
+            offset: -50
+          })
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showCreateSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Base Rule has been created'
-			let type = 'success'
+    showCreateSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Base Rule has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Base Rule has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Base Rule has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To reset the create form
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetCreateForm () {
-			this.newRule = {
-				name: '',
-				type: '',
-				base_counter: '',
-				min_amount: '',
-				points: ''
-			}
-		},
-		/**
+    resetCreateForm () {
+      this.newRule = {
+        name: '',
+        type: '',
+        base_counter: '',
+        min_amount: '',
+        points: ''
+      }
+    },
+    /**
 		 * To get a list of rules
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getRules () {
-			this.loading = true
-			const rulesVue = this
-			return LoyaltyFunctions.getRules()
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						rulesVue.rules = response.payload
-						rulesVue.loading = false
-					} else {
-						rulesVue.loading = false
-						rulesVue.listErrorMessage = response.message
-						rulesVue.$scrollTo(rulesVue.$refs.listErrorMessage, 1000, {
-							offset: -50
-						})
-					}
-				})
-				.catch(reason => {
-					rulesVue.loading = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch the base rule',
-						errorName: 'listErrorMessage',
-						vue: rulesVue
-					})
-				})
-		},
-		/**
+    getRules () {
+      this.loading = true
+      const rulesVue = this
+      return LoyaltyFunctions.getRules()
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            rulesVue.rules = response.payload
+            rulesVue.loading = false
+          } else {
+            rulesVue.loading = false
+            rulesVue.listErrorMessage = response.message
+            rulesVue.$scrollTo(rulesVue.$refs.listErrorMessage, 1000, {
+              offset: -50
+            })
+          }
+        })
+        .catch(reason => {
+          rulesVue.loading = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch the base rule',
+            errorName: 'listErrorMessage',
+            vue: rulesVue
+          })
+        })
+    },
+    /**
 		 * To open the edit modal
 		 * @function
 		 * @param {object} rule - The rule to edit
 		 * @returns {undefined}
 		 */
-		openEditModal (rule) {
-			this.ruleToEdit = {
-				...rule,
-				base_counter: String(rule.base_counter),
-				min_amount: String(rule.min_amount),
-				points: String(rule.points)
-			}
-			this.showEditModal = true
-		},
-		/**
+    openEditModal (rule) {
+      this.ruleToEdit = {
+        ...rule,
+        base_counter: String(rule.base_counter),
+        min_amount: String(rule.min_amount),
+        points: String(rule.points)
+      }
+      this.showEditModal = true
+    },
+    /**
 		 * To check if the data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateEditedRule () {
-			var rulesVue = this
-			return new Promise(function (resolve, reject) {
-				if (!rulesVue.ruleToEdit.name.length) {
-					reject('Name cannot be blank')
-				} else if (
-					rulesVue.ruleToEdit.type === 'dollar-to-points' &&
+    validateEditedRule () {
+      var rulesVue = this
+      return new Promise(function (resolve, reject) {
+        if (!rulesVue.ruleToEdit.name.length) {
+          reject('Name cannot be blank')
+        } else if (
+          rulesVue.ruleToEdit.type === 'dollar-to-points' &&
 					!$.isNumeric(rulesVue.ruleToEdit.base_counter)
-				) {
-					reject('Amount to award points for must be a number')
-				} else if (!$.isNumeric(rulesVue.ruleToEdit.min_amount)) {
-					reject('Minimum purchase amount must be a number')
-				} else if (!$.isNumeric(rulesVue.ruleToEdit.points)) {
-					reject('Points must be a number')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+        ) {
+          reject('Amount to award points for must be a number')
+        } else if (!$.isNumeric(rulesVue.ruleToEdit.min_amount)) {
+          reject('Minimum purchase amount must be a number')
+        } else if (!$.isNumeric(rulesVue.ruleToEdit.points)) {
+          reject('Points must be a number')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To update a rule
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		updateRule () {
-			if (this.ruleToEdit.type === 'transactions-to-points') {
-				this.ruleToEdit.base_counter = '1'
-			}
-			const rulesVue = this
+    updateRule () {
+      if (this.ruleToEdit.type === 'transactions-to-points') {
+        this.ruleToEdit.base_counter = '1'
+      }
+      const rulesVue = this
 
-			return this.validateEditedRule()
-				.then(response => {
-					rulesVue.updating = true
-					rulesVue.clearError('editErrorMessage')
-					return LoyaltyFunctions.updateRule(rulesVue.ruleToEdit)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								rulesVue.getRules()
-								rulesVue.closeEditModal()
-								rulesVue.showEditSuccess(response.payload)
-							} else {
-								rulesVue.editErrorMessage = response.message
-								rulesVue.$scrollTo(rulesVue.$refs.editErrorMessage, 1000, {
-									offset: -50
-								})
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not update the rule',
-								errorName: 'editErrorMessage',
-								vue: rulesVue
-							})
-						})
-						.finally(() => {
-							rulesVue.updating = false
-						})
-				})
-				.catch(reason => {
-					rulesVue.editErrorMessage = reason
-					rulesVue.$scrollTo(rulesVue.$refs.createErrorMessage, 1000, {
-						offset: -50
-					})
-				})
-		},
-		/**
+      return this.validateEditedRule()
+        .then(response => {
+          rulesVue.updating = true
+          rulesVue.clearError('editErrorMessage')
+          return LoyaltyFunctions.updateRule(rulesVue.ruleToEdit)
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                rulesVue.getRules()
+                rulesVue.closeEditModal()
+                rulesVue.showEditSuccess(response.payload)
+              } else {
+                rulesVue.editErrorMessage = response.message
+                rulesVue.$scrollTo(rulesVue.$refs.editErrorMessage, 1000, {
+                  offset: -50
+                })
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not update the rule',
+                errorName: 'editErrorMessage',
+                vue: rulesVue
+              })
+            })
+            .finally(() => {
+              rulesVue.updating = false
+            })
+        })
+        .catch(reason => {
+          rulesVue.editErrorMessage = reason
+          rulesVue.$scrollTo(rulesVue.$refs.createErrorMessage, 1000, {
+            offset: -50
+          })
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Base Rule has been saved'
-			let type = 'success'
+    showEditSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Base Rule has been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To close the edit modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeEditModal () {
-			this.editErrorMessage = ''
-			this.showEditModal = false
-		},
-		/**
+    closeEditModal () {
+      this.editErrorMessage = ''
+      this.showEditModal = false
+    },
+    /**
 		 * To open the delete modal
 		 * @function
 		 * @param {object} rule - The rule to delete
 		 * @returns {undefined}
 		 */
-		openDeleteModal (rule) {
-			this.ruleToDelete = { ...rule }
-			this.showDeleteModal = true
-		},
-		/**
+    openDeleteModal (rule) {
+      this.ruleToDelete = { ...rule }
+      this.showDeleteModal = true
+    },
+    /**
 		 * To delete a rule
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		deleteRule () {
-			this.deleting = true
-			const rulesVue = this
-			rulesVue.clearError('deleteErrorMessage')
-			return LoyaltyFunctions.deleteRule(rulesVue.ruleToDelete.id)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						rulesVue.getRules()
-						rulesVue.closeDeleteModal()
-						rulesVue.showDeleteSuccess(response.payload)
-					} else {
-						rulesVue.editErrorMessage = response.message
-						rulesVue.$scrollTo(rulesVue.$refs.deleteErrorMessage, 1000, {
-							offset: -50
-						})
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not delete the rule',
-						errorName: 'deleteErrorMessage',
-						vue: rulesVue
-					})
-				})
-				.finally(() => {
-					rulesVue.deleting = false
-				})
-		},
-		/**
+    deleteRule () {
+      this.deleting = true
+      const rulesVue = this
+      rulesVue.clearError('deleteErrorMessage')
+      return LoyaltyFunctions.deleteRule(rulesVue.ruleToDelete.id)
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            rulesVue.getRules()
+            rulesVue.closeDeleteModal()
+            rulesVue.showDeleteSuccess(response.payload)
+          } else {
+            rulesVue.editErrorMessage = response.message
+            rulesVue.$scrollTo(rulesVue.$refs.deleteErrorMessage, 1000, {
+              offset: -50
+            })
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not delete the rule',
+            errorName: 'deleteErrorMessage',
+            vue: rulesVue
+          })
+        })
+        .finally(() => {
+          rulesVue.deleting = false
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Base Rule has been deleted'
-			let type = 'success'
+    showDeleteSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Base Rule has been deleted'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The removal has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The removal has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To close the delete modal
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeDeleteModal () {
-			this.deleteErrorMessage = ''
-			this.showDeleteModal = false
-		}
-	}
+    closeDeleteModal () {
+      this.deleteErrorMessage = ''
+      this.showDeleteModal = false
+    }
+  }
 }
 </script>
 

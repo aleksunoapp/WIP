@@ -25,51 +25,51 @@
 import StorePicker from '@/components/modules/StorePicker'
 
 export default {
-	name: 'StorePickerWithButton',
-	components: {
-		StorePicker
-	},
-	props: {
-		previouslySelected: {
-			type: Array,
-			default: () => [],
-			required: false
-		},
-		withButton: {
-			type: Boolean,
-			default: true,
-			required: false
-		},
-		editable: {
-			type: Boolean,
-			required: false,
-			default: () => true
-		}
-	},
-	data () {
-		return {
-			locations: []
-		}
-	},
-	methods: {
-		/**
+  name: 'StorePickerWithButton',
+  components: {
+    StorePicker
+  },
+  props: {
+    previouslySelected: {
+      type: Array,
+      default: () => [],
+      required: false
+    },
+    withButton: {
+      type: Boolean,
+      default: true,
+      required: false
+    },
+    editable: {
+      type: Boolean,
+      required: false,
+      default: () => true
+    }
+  },
+  data () {
+    return {
+      locations: []
+    }
+  },
+  methods: {
+    /**
 		 * Pass up user selection
 		 * @function
 		 * @param {array} locations - Selected store IDs
 		 * @returns {undefined}
 		 */
-		update (locations) {
-			this.locations = locations
-			this.$emit('update', locations)
-		},
-		/**
+    update (locations) {
+      this.locations = locations
+      this.$emit('update', locations)
+    },
+    /**
 		 * Emit a close event with selected values
 		 * @function
 		 * @returns {undefined}
 		 */
-		selectLocations () {
-			this.$emit('close', this.locations)
-		}
-	}
+    selectLocations () {
+      this.$emit('close', this.locations)
+    }
+  }
 }
 </script>

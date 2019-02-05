@@ -683,583 +683,583 @@ import NoResults from '../../modules/NoResults'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
 
 export default {
-	components: {
-		Breadcrumb,
-		LoadingScreen,
-		Modal,
-		NoResults,
-		ResourcePicker
-	},
-	data () {
-		return {
-			breadcrumbArray: [
-				{ name: 'Menu Manager', link: false },
-				{ name: 'Order Settings', link: false }
-			],
-			createNewCollapse: true,
-			creating: false,
-			createErrorMessage: '',
-			newOrderSettings: {
-				pickup_time_slot: '',
-				pickup_orders_per_slot: '',
-				pickup_order_time_cut_off: '',
-				pickup_cancellation_time_cut_off: '',
-				pickup_cancellation_enabled: '0',
-				catering_time_slot: '',
-				catering_order_time_cut_off: '',
-				catering_cancellation_time_cut_off: '',
-				catering_cancellation_enabled: '0',
-				delivery_time_slot: '',
-				delivery_orders_per_slot: '',
-				delivery_order_time_cut_off: '',
-				delivery_cancellation_time_cut_off: '',
-				delivery_cancellation_enabled: '0',
-				group_order_time_slot: '',
-				group_order_order_time_cut_off: '',
-				group_order_cancellation_time_cut_off: '',
-				group_order_cancellation_enabled: '0'
-			},
-			listErrorMessage: '',
-			loading: false,
-			updating: false,
-			orderSettingsToEdit: {
-				pickup_orders_per_slot: '',
-				pickup_order_time_cut_off: '',
-				pickup_cancellation_time_cut_off: '',
-				pickup_cancellation_enabled: '0',
-				catering_time_slot: '',
-				catering_order_time_cut_off: '',
-				catering_cancellation_time_cut_off: '',
-				catering_cancellation_enabled: '0',
-				delivery_time_slot: '',
-				delivery_orders_per_slot: '',
-				delivery_order_time_cut_off: '',
-				delivery_cancellation_time_cut_off: '',
-				delivery_cancellation_enabled: '0',
-				group_order_time_slot: '',
-				group_order_order_time_cut_off: '',
-				group_order_cancellation_time_cut_off: '',
-				group_order_cancellation_enabled: '0'
-			},
-			showDeleteModal: false,
-			deleting: false,
-			deleteErrorMessage: ''
-		}
-	},
-	computed: {
-		activeLocationId: function () {
-			return this.$root.activeLocation.id
-		}
-	},
-	watch: {
-		activeLocationId: function (newId) {
-			if (newId !== undefined) {
-				this.getOrderSettingsForStore()
-			}
-		}
-	},
-	created () {
-		if (this.activeLocationId) {
-			this.getOrderSettingsForStore()
-		}
-	},
-	methods: {
-		/**
+  components: {
+    Breadcrumb,
+    LoadingScreen,
+    Modal,
+    NoResults,
+    ResourcePicker
+  },
+  data () {
+    return {
+      breadcrumbArray: [
+        { name: 'Menu Manager', link: false },
+        { name: 'Order Settings', link: false }
+      ],
+      createNewCollapse: true,
+      creating: false,
+      createErrorMessage: '',
+      newOrderSettings: {
+        pickup_time_slot: '',
+        pickup_orders_per_slot: '',
+        pickup_order_time_cut_off: '',
+        pickup_cancellation_time_cut_off: '',
+        pickup_cancellation_enabled: '0',
+        catering_time_slot: '',
+        catering_order_time_cut_off: '',
+        catering_cancellation_time_cut_off: '',
+        catering_cancellation_enabled: '0',
+        delivery_time_slot: '',
+        delivery_orders_per_slot: '',
+        delivery_order_time_cut_off: '',
+        delivery_cancellation_time_cut_off: '',
+        delivery_cancellation_enabled: '0',
+        group_order_time_slot: '',
+        group_order_order_time_cut_off: '',
+        group_order_cancellation_time_cut_off: '',
+        group_order_cancellation_enabled: '0'
+      },
+      listErrorMessage: '',
+      loading: false,
+      updating: false,
+      orderSettingsToEdit: {
+        pickup_orders_per_slot: '',
+        pickup_order_time_cut_off: '',
+        pickup_cancellation_time_cut_off: '',
+        pickup_cancellation_enabled: '0',
+        catering_time_slot: '',
+        catering_order_time_cut_off: '',
+        catering_cancellation_time_cut_off: '',
+        catering_cancellation_enabled: '0',
+        delivery_time_slot: '',
+        delivery_orders_per_slot: '',
+        delivery_order_time_cut_off: '',
+        delivery_cancellation_time_cut_off: '',
+        delivery_cancellation_enabled: '0',
+        group_order_time_slot: '',
+        group_order_order_time_cut_off: '',
+        group_order_cancellation_time_cut_off: '',
+        group_order_cancellation_enabled: '0'
+      },
+      showDeleteModal: false,
+      deleting: false,
+      deleteErrorMessage: ''
+    }
+  },
+  computed: {
+    activeLocationId: function () {
+      return this.$root.activeLocation.id
+    }
+  },
+  watch: {
+    activeLocationId: function (newId) {
+      if (newId !== undefined) {
+        this.getOrderSettingsForStore()
+      }
+    }
+  },
+  created () {
+    if (this.activeLocationId) {
+      this.getOrderSettingsForStore()
+    }
+  },
+  methods: {
+    /**
 		 * To toggle the create tier panel, initially set to closed
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCreatePanel () {
-			this.createNewCollapse = !this.createNewCollapse
-		},
-		/**
+    toggleCreatePanel () {
+      this.createNewCollapse = !this.createNewCollapse
+    },
+    /**
 		 * To clear the current error.
 		 * @function
 		 * @param {object} errorMessageName - The error message to be cleared.
 		 * @returns {undefined}
 		 */
-		clearError (errorMessageName) {
-			this[errorMessageName] = ''
-		},
-		/**
+    clearError (errorMessageName) {
+      this[errorMessageName] = ''
+    },
+    /**
 		 * To check if the input is a positive number
 		 * @function
 		 * @param {string} input - User's input
 		 * @returns {boolean} True is positive integer or float, false is not
 		 */
-		isNonNegativeNumber (input) {
-			try {
-				const inputString = String(input)
-				if (inputString.length > inputString.replace(/[^\d.]/g, '').length) {
-					return false
-				}
-				const value = Number(input)
-				if (value < 0) {
-					return false
-				}
-				return true
-			} catch (e) {
-				if (this.environment !== 'production') {
-					console.log({e})
-				}
-				return false
-			}
-		},
-		/**
+    isNonNegativeNumber (input) {
+      try {
+        const inputString = String(input)
+        if (inputString.length > inputString.replace(/[^\d.]/g, '').length) {
+          return false
+        }
+        const value = Number(input)
+        if (value < 0) {
+          return false
+        }
+        return true
+      } catch (e) {
+        if (this.environment !== 'production') {
+          console.log({ e })
+        }
+        return false
+      }
+    },
+    /**
 		 * To check if the OrderSettings data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validatenewOrderSettingsData () {
-			var orderSettingsVue = this
-			return new Promise(function (resolve, reject) {
-				if (!orderSettingsVue.newOrderSettings.pickup_time_slot) {
-					reject('Pickup Time Slot cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.pickup_time_slot)) {
-					reject('Pickup Time Slot cannot be negative')
-				} else if (!orderSettingsVue.newOrderSettings.pickup_orders_per_slot) {
-					reject('Pickup Orders Per Slot cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.pickup_orders_per_slot)) {
-					reject('Pickup Orders Per Slot cannot be negative')
-				} else if (
-					!orderSettingsVue.newOrderSettings.pickup_order_time_cut_off
-				) {
-					reject('Pickup Order Time Cut Off cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.pickup_order_time_cut_off)) {
-					reject('Pickup Order Time Cut Off cannot be negative')
-				} else if (
-					!orderSettingsVue.newOrderSettings.pickup_cancellation_time_cut_off
-				) {
-					reject('Pickup Cancellation Time Cut Off cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.pickup_cancellation_time_cut_off)) {
-					reject('Pickup Cancellation Time Cut Off cannot be negative')
-				} else if (!orderSettingsVue.newOrderSettings.group_order_time_slot) {
-					reject('Group Order Time Slot cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.group_order_time_slot)) {
-					reject('Group Order Time Slot cannot be negative')
-				} else if (
-					!orderSettingsVue.newOrderSettings.group_order_order_time_cut_off
-				) {
-					reject('Group Order Time Cut Off cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.group_order_order_time_cut_off)) {
-					reject('Group Order Time Cut Off cannot be negative')
-				} else if (
-					!orderSettingsVue.newOrderSettings
-						.group_order_cancellation_time_cut_off
-				) {
-					reject('Group Order Cancellation Time Cut Off cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.group_order_cancellation_time_cut_off)) {
-					reject('Group Order Cancellation Time Cut Off cannot be negative')
-				} else if (!orderSettingsVue.newOrderSettings.delivery_time_slot) {
-					reject('Delivery Time Slot cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.delivery_time_slot)) {
-					reject('Delivery Time Slot cannot be negative')
-				} else if (
-					!orderSettingsVue.newOrderSettings.delivery_orders_per_slot
-				) {
-					reject('Delivery Orders Per Slot cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.delivery_orders_per_slot)) {
-					reject('Delivery Orders Per Slot cannot be negative')
-				} else if (
-					!orderSettingsVue.newOrderSettings.delivery_order_time_cut_off
-				) {
-					reject('Delivery Order Time Cut Off cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.delivery_order_time_cut_off)) {
-					reject('Delivery Order Time Cut Off cannot be negative')
-				} else if (
-					!orderSettingsVue.newOrderSettings.delivery_cancellation_time_cut_off
-				) {
-					reject('Delivery Cancellation Time Cut Off cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.delivery_cancellation_time_cut_off)) {
-					reject('Delivery Cancellation Time Cut Off cannot be negative')
-				} else if (!orderSettingsVue.newOrderSettings.catering_time_slot) {
-					reject('Catering Time Slot cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.catering_time_slot)) {
-					reject('Catering Time Slot cannot be negative')
-				} else if (
-					!orderSettingsVue.newOrderSettings.catering_order_time_cut_off
-				) {
-					reject('Catering Order Time Cut Off cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.catering_order_time_cut_off)) {
-					reject('Catering Order Time Cut Off cannot be negative')
-				} else if (
-					!orderSettingsVue.newOrderSettings.catering_cancellation_time_cut_off
-				) {
-					reject('Catering Cancellation Time Cut Off cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.catering_cancellation_time_cut_off)) {
-					reject('Catering Cancellation Time Cut Off cannot be negative')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validatenewOrderSettingsData () {
+      var orderSettingsVue = this
+      return new Promise(function (resolve, reject) {
+        if (!orderSettingsVue.newOrderSettings.pickup_time_slot) {
+          reject('Pickup Time Slot cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.pickup_time_slot)) {
+          reject('Pickup Time Slot cannot be negative')
+        } else if (!orderSettingsVue.newOrderSettings.pickup_orders_per_slot) {
+          reject('Pickup Orders Per Slot cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.pickup_orders_per_slot)) {
+          reject('Pickup Orders Per Slot cannot be negative')
+        } else if (
+          !orderSettingsVue.newOrderSettings.pickup_order_time_cut_off
+        ) {
+          reject('Pickup Order Time Cut Off cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.pickup_order_time_cut_off)) {
+          reject('Pickup Order Time Cut Off cannot be negative')
+        } else if (
+          !orderSettingsVue.newOrderSettings.pickup_cancellation_time_cut_off
+        ) {
+          reject('Pickup Cancellation Time Cut Off cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.pickup_cancellation_time_cut_off)) {
+          reject('Pickup Cancellation Time Cut Off cannot be negative')
+        } else if (!orderSettingsVue.newOrderSettings.group_order_time_slot) {
+          reject('Group Order Time Slot cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.group_order_time_slot)) {
+          reject('Group Order Time Slot cannot be negative')
+        } else if (
+          !orderSettingsVue.newOrderSettings.group_order_order_time_cut_off
+        ) {
+          reject('Group Order Time Cut Off cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.group_order_order_time_cut_off)) {
+          reject('Group Order Time Cut Off cannot be negative')
+        } else if (
+          !orderSettingsVue.newOrderSettings
+            .group_order_cancellation_time_cut_off
+        ) {
+          reject('Group Order Cancellation Time Cut Off cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.group_order_cancellation_time_cut_off)) {
+          reject('Group Order Cancellation Time Cut Off cannot be negative')
+        } else if (!orderSettingsVue.newOrderSettings.delivery_time_slot) {
+          reject('Delivery Time Slot cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.delivery_time_slot)) {
+          reject('Delivery Time Slot cannot be negative')
+        } else if (
+          !orderSettingsVue.newOrderSettings.delivery_orders_per_slot
+        ) {
+          reject('Delivery Orders Per Slot cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.delivery_orders_per_slot)) {
+          reject('Delivery Orders Per Slot cannot be negative')
+        } else if (
+          !orderSettingsVue.newOrderSettings.delivery_order_time_cut_off
+        ) {
+          reject('Delivery Order Time Cut Off cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.delivery_order_time_cut_off)) {
+          reject('Delivery Order Time Cut Off cannot be negative')
+        } else if (
+          !orderSettingsVue.newOrderSettings.delivery_cancellation_time_cut_off
+        ) {
+          reject('Delivery Cancellation Time Cut Off cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.delivery_cancellation_time_cut_off)) {
+          reject('Delivery Cancellation Time Cut Off cannot be negative')
+        } else if (!orderSettingsVue.newOrderSettings.catering_time_slot) {
+          reject('Catering Time Slot cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.catering_time_slot)) {
+          reject('Catering Time Slot cannot be negative')
+        } else if (
+          !orderSettingsVue.newOrderSettings.catering_order_time_cut_off
+        ) {
+          reject('Catering Order Time Cut Off cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.catering_order_time_cut_off)) {
+          reject('Catering Order Time Cut Off cannot be negative')
+        } else if (
+          !orderSettingsVue.newOrderSettings.catering_cancellation_time_cut_off
+        ) {
+          reject('Catering Cancellation Time Cut Off cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.newOrderSettings.catering_cancellation_time_cut_off)) {
+          reject('Catering Cancellation Time Cut Off cannot be negative')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To create a new OrderSettings.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		createOrderSettings () {
-			var orderSettingsVue = this
-			orderSettingsVue.clearError('createErrorMessage')
+    createOrderSettings () {
+      var orderSettingsVue = this
+      orderSettingsVue.clearError('createErrorMessage')
 
-			let payload = { ...this.newOrderSettings }
-			payload.location_id = this.$root.activeLocation.id
+      let payload = { ...this.newOrderSettings }
+      payload.location_id = this.$root.activeLocation.id
 
-			return orderSettingsVue
-				.validatenewOrderSettingsData()
-				.then(response => {
-					orderSettingsVue.creating = true
-					OrderSettingsFunctions.setOrderSettings(
-						orderSettingsVue.$root.appId,
-						orderSettingsVue.$root.appSecret,
-						orderSettingsVue.$root.userToken,
-						payload
-					)
-						.then(response => {
-							orderSettingsVue.showCreateSuccess(response.payload)
-							orderSettingsVue.newOrderSettings = orderSettingsVue.blankOrderSettings()
-							orderSettingsVue.getOrderSettingsForStore()
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not create order settings',
-								errorName: 'createErrorMessage',
-								vue: orderSettingsVue
-							})
-						})
-						.finally(() => {
-							orderSettingsVue.creating = false
-						})
-				})
-				.catch(reason => {
-					orderSettingsVue.createErrorMessage = reason
-					orderSettingsVue.$scrollTo(
-						orderSettingsVue.$refs.createErrorMessage,
-						1000)
-				})
-		},
-		/**
+      return orderSettingsVue
+        .validatenewOrderSettingsData()
+        .then(response => {
+          orderSettingsVue.creating = true
+          OrderSettingsFunctions.setOrderSettings(
+            orderSettingsVue.$root.appId,
+            orderSettingsVue.$root.appSecret,
+            orderSettingsVue.$root.userToken,
+            payload
+          )
+            .then(response => {
+              orderSettingsVue.showCreateSuccess(response.payload)
+              orderSettingsVue.newOrderSettings = orderSettingsVue.blankOrderSettings()
+              orderSettingsVue.getOrderSettingsForStore()
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not create order settings',
+                errorName: 'createErrorMessage',
+                vue: orderSettingsVue
+              })
+            })
+            .finally(() => {
+              orderSettingsVue.creating = false
+            })
+        })
+        .catch(reason => {
+          orderSettingsVue.createErrorMessage = reason
+          orderSettingsVue.$scrollTo(
+            orderSettingsVue.$refs.createErrorMessage,
+            1000)
+        })
+    },
+    /**
 		 * To update order settings.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		updateOrderSettings () {
-			var orderSettingsVue = this
-			orderSettingsVue.clearError('createErrorMessage')
+    updateOrderSettings () {
+      var orderSettingsVue = this
+      orderSettingsVue.clearError('createErrorMessage')
 
-			return orderSettingsVue
-				.validateEditedOrderSettingsData()
-				.then(response => {
-					orderSettingsVue.updating = true
-					OrderSettingsFunctions.setOrderSettings(
-						orderSettingsVue.$root.appId,
-						orderSettingsVue.$root.appSecret,
-						orderSettingsVue.$root.userToken,
-						orderSettingsVue.orderSettingsToEdit
-					)
-						.then(response => {
-							orderSettingsVue.showEditSuccess(response.payload)
-							orderSettingsVue.getOrderSettingsForStore()
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'We could not create order settings',
-								errorName: 'listErrorMessage',
-								vue: orderSettingsVue
-							})
-						})
-						.finally(() => {
-							orderSettingsVue.updating = false
-						})
-				})
-				.catch(reason => {
-					orderSettingsVue.listErrorMessage = reason
-					orderSettingsVue.$scrollTo(
-						orderSettingsVue.$refs.listErrorMessage,
-						1000)
-				})
-		},
-		/**
+      return orderSettingsVue
+        .validateEditedOrderSettingsData()
+        .then(response => {
+          orderSettingsVue.updating = true
+          OrderSettingsFunctions.setOrderSettings(
+            orderSettingsVue.$root.appId,
+            orderSettingsVue.$root.appSecret,
+            orderSettingsVue.$root.userToken,
+            orderSettingsVue.orderSettingsToEdit
+          )
+            .then(response => {
+              orderSettingsVue.showEditSuccess(response.payload)
+              orderSettingsVue.getOrderSettingsForStore()
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'We could not create order settings',
+                errorName: 'listErrorMessage',
+                vue: orderSettingsVue
+              })
+            })
+            .finally(() => {
+              orderSettingsVue.updating = false
+            })
+        })
+        .catch(reason => {
+          orderSettingsVue.listErrorMessage = reason
+          orderSettingsVue.$scrollTo(
+            orderSettingsVue.$refs.listErrorMessage,
+            1000)
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showCreateSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Order Settings have been created'
-			let type = 'success'
+    showCreateSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Order Settings have been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Order Settings have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Order Settings have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To clear the new OrderSetting form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		blankOrderSettings () {
-			return {
-				pickup_time_slot: '',
-				pickup_orders_per_slot: '',
-				pickup_order_time_cut_off: '',
-				pickup_cancellation_time_cut_off: '',
-				pickup_cancellation_enabled: '',
-				catering_time_slot: '',
-				catering_order_time_cut_off: '',
-				catering_cancellation_time_cut_off: '',
-				catering_cancellation_enabled: '',
-				delivery_time_slot: '',
-				delivery_orders_per_slot: '',
-				delivery_order_time_cut_off: '',
-				delivery_cancellation_time_cut_off: '',
-				delivery_cancellation_enabled: '',
-				group_order_time_slot: '',
-				group_order_order_time_cut_off: '',
-				group_order_cancellation_time_cut_off: '',
-				group_order_cancellation_enabled: ''
-			}
-		},
-		/**
+    blankOrderSettings () {
+      return {
+        pickup_time_slot: '',
+        pickup_orders_per_slot: '',
+        pickup_order_time_cut_off: '',
+        pickup_cancellation_time_cut_off: '',
+        pickup_cancellation_enabled: '',
+        catering_time_slot: '',
+        catering_order_time_cut_off: '',
+        catering_cancellation_time_cut_off: '',
+        catering_cancellation_enabled: '',
+        delivery_time_slot: '',
+        delivery_orders_per_slot: '',
+        delivery_order_time_cut_off: '',
+        delivery_cancellation_time_cut_off: '',
+        delivery_cancellation_enabled: '',
+        group_order_time_slot: '',
+        group_order_order_time_cut_off: '',
+        group_order_cancellation_time_cut_off: '',
+        group_order_cancellation_enabled: ''
+      }
+    },
+    /**
 		 * To get a list of OrderSettings for the current active store.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getOrderSettingsForStore () {
-			this.loading = true
-			var orderSettingsVue = this
+    getOrderSettingsForStore () {
+      this.loading = true
+      var orderSettingsVue = this
 
-			return OrderSettingsFunctions.getOrderSettingsForStore(
-				orderSettingsVue.$root.appId,
-				orderSettingsVue.$root.appSecret,
-				orderSettingsVue.$root.userToken,
-				orderSettingsVue.$root.activeLocation.id
-			)
-				.then(response => {
-					orderSettingsVue.loading = false
-					Object.keys(response.payload).forEach(key => {
-						orderSettingsVue.orderSettingsToEdit[key] = String(
-							response.payload[key]
-						)
-					})
-				})
-				.catch(reason => {
-					orderSettingsVue.loading = false
-					if (
-						reason.responseJSON.message ===
+      return OrderSettingsFunctions.getOrderSettingsForStore(
+        orderSettingsVue.$root.appId,
+        orderSettingsVue.$root.appSecret,
+        orderSettingsVue.$root.userToken,
+        orderSettingsVue.$root.activeLocation.id
+      )
+        .then(response => {
+          orderSettingsVue.loading = false
+          Object.keys(response.payload).forEach(key => {
+            orderSettingsVue.orderSettingsToEdit[key] = String(
+              response.payload[key]
+            )
+          })
+        })
+        .catch(reason => {
+          orderSettingsVue.loading = false
+          if (
+            reason.responseJSON.message ===
 						'Location order configurations for selected location doesnt exist.'
-					) {
-						orderSettingsVue.orderSettingsToEdit = orderSettingsVue.blankOrderSettings()
-						return
-					}
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not fetch order settings',
-						errorName: 'listErrorMessage',
-						vue: orderSettingsVue
-					})
-				})
-		},
-		/**
+          ) {
+            orderSettingsVue.orderSettingsToEdit = orderSettingsVue.blankOrderSettings()
+            return
+          }
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch order settings',
+            errorName: 'listErrorMessage',
+            vue: orderSettingsVue
+          })
+        })
+    },
+    /**
 		 * To check if the order data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateEditedOrderSettingsData () {
-			var orderSettingsVue = this
-			return new Promise(function (resolve, reject) {
-				if (!orderSettingsVue.orderSettingsToEdit.pickup_time_slot) {
-					reject('Pickup Time Slot cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.pickup_time_slot)) {
-					reject('Pickup Time Slot cannot be negative')
-				} else if (!orderSettingsVue.orderSettingsToEdit.pickup_orders_per_slot) {
-					reject('Pickup Orders Per Slot cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.pickup_orders_per_slot)) {
-					reject('Pickup Orders Per Slot cannot be negative')
-				} else if (
-					!orderSettingsVue.orderSettingsToEdit.pickup_order_time_cut_off
-				) {
-					reject('Pickup Order Time Cut Off cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.pickup_order_time_cut_off)) {
-					reject('Pickup Order Time Cut Off cannot be negative')
-				} else if (
-					!orderSettingsVue.orderSettingsToEdit.pickup_cancellation_time_cut_off
-				) {
-					reject('Pickup Cancellation Time Cut Off cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.pickup_cancellation_time_cut_off)) {
-					reject('Pickup Cancellation Time Cut Off cannot be negative')
-				} else if (!orderSettingsVue.orderSettingsToEdit.group_order_time_slot) {
-					reject('Group Order Time Slot cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.group_order_time_slot)) {
-					reject('Group Order Time Slot cannot be negative')
-				} else if (
-					!orderSettingsVue.orderSettingsToEdit.group_order_order_time_cut_off
-				) {
-					reject('Group Order Time Cut Off cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.group_order_order_time_cut_off)) {
-					reject('Group Order Time Cut Off cannot be negative')
-				} else if (
-					!orderSettingsVue.orderSettingsToEdit
-						.group_order_cancellation_time_cut_off
-				) {
-					reject('Group Order Cancellation Time Cut Off cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.group_order_cancellation_time_cut_off)) {
-					reject('Group Order Cancellation Time Cut Off cannot be negative')
-				} else if (!orderSettingsVue.orderSettingsToEdit.delivery_time_slot) {
-					reject('Delivery Time Slot cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.delivery_time_slot)) {
-					reject('Delivery Time Slot cannot be negative')
-				} else if (
-					!orderSettingsVue.orderSettingsToEdit.delivery_orders_per_slot
-				) {
-					reject('Delivery Orders Per Slot cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.delivery_orders_per_slot)) {
-					reject('Delivery Orders Per Slot cannot be negative')
-				} else if (
-					!orderSettingsVue.orderSettingsToEdit.delivery_order_time_cut_off
-				) {
-					reject('Delivery Order Time Cut Off cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.delivery_order_time_cut_off)) {
-					reject('Delivery Order Time Cut Off cannot be negative')
-				} else if (
-					!orderSettingsVue.orderSettingsToEdit.delivery_cancellation_time_cut_off
-				) {
-					reject('Delivery Cancellation Time Cut Off cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.delivery_cancellation_time_cut_off)) {
-					reject('Delivery Cancellation Time Cut Off cannot be negative')
-				} else if (!orderSettingsVue.orderSettingsToEdit.catering_time_slot) {
-					reject('Catering Time Slot cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.catering_time_slot)) {
-					reject('Catering Time Slot cannot be negative')
-				} else if (
-					!orderSettingsVue.orderSettingsToEdit.catering_order_time_cut_off
-				) {
-					reject('Catering Order Time Cut Off cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.catering_order_time_cut_off)) {
-					reject('Catering Order Time Cut Off cannot be negative')
-				} else if (
-					!orderSettingsVue.orderSettingsToEdit.catering_cancellation_time_cut_off
-				) {
-					reject('Catering Cancellation Time Cut Off cannot be blank')
-				} else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.catering_cancellation_time_cut_off)) {
-					reject('Catering Cancellation Time Cut Off cannot be negative')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateEditedOrderSettingsData () {
+      var orderSettingsVue = this
+      return new Promise(function (resolve, reject) {
+        if (!orderSettingsVue.orderSettingsToEdit.pickup_time_slot) {
+          reject('Pickup Time Slot cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.pickup_time_slot)) {
+          reject('Pickup Time Slot cannot be negative')
+        } else if (!orderSettingsVue.orderSettingsToEdit.pickup_orders_per_slot) {
+          reject('Pickup Orders Per Slot cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.pickup_orders_per_slot)) {
+          reject('Pickup Orders Per Slot cannot be negative')
+        } else if (
+          !orderSettingsVue.orderSettingsToEdit.pickup_order_time_cut_off
+        ) {
+          reject('Pickup Order Time Cut Off cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.pickup_order_time_cut_off)) {
+          reject('Pickup Order Time Cut Off cannot be negative')
+        } else if (
+          !orderSettingsVue.orderSettingsToEdit.pickup_cancellation_time_cut_off
+        ) {
+          reject('Pickup Cancellation Time Cut Off cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.pickup_cancellation_time_cut_off)) {
+          reject('Pickup Cancellation Time Cut Off cannot be negative')
+        } else if (!orderSettingsVue.orderSettingsToEdit.group_order_time_slot) {
+          reject('Group Order Time Slot cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.group_order_time_slot)) {
+          reject('Group Order Time Slot cannot be negative')
+        } else if (
+          !orderSettingsVue.orderSettingsToEdit.group_order_order_time_cut_off
+        ) {
+          reject('Group Order Time Cut Off cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.group_order_order_time_cut_off)) {
+          reject('Group Order Time Cut Off cannot be negative')
+        } else if (
+          !orderSettingsVue.orderSettingsToEdit
+            .group_order_cancellation_time_cut_off
+        ) {
+          reject('Group Order Cancellation Time Cut Off cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.group_order_cancellation_time_cut_off)) {
+          reject('Group Order Cancellation Time Cut Off cannot be negative')
+        } else if (!orderSettingsVue.orderSettingsToEdit.delivery_time_slot) {
+          reject('Delivery Time Slot cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.delivery_time_slot)) {
+          reject('Delivery Time Slot cannot be negative')
+        } else if (
+          !orderSettingsVue.orderSettingsToEdit.delivery_orders_per_slot
+        ) {
+          reject('Delivery Orders Per Slot cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.delivery_orders_per_slot)) {
+          reject('Delivery Orders Per Slot cannot be negative')
+        } else if (
+          !orderSettingsVue.orderSettingsToEdit.delivery_order_time_cut_off
+        ) {
+          reject('Delivery Order Time Cut Off cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.delivery_order_time_cut_off)) {
+          reject('Delivery Order Time Cut Off cannot be negative')
+        } else if (
+          !orderSettingsVue.orderSettingsToEdit.delivery_cancellation_time_cut_off
+        ) {
+          reject('Delivery Cancellation Time Cut Off cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.delivery_cancellation_time_cut_off)) {
+          reject('Delivery Cancellation Time Cut Off cannot be negative')
+        } else if (!orderSettingsVue.orderSettingsToEdit.catering_time_slot) {
+          reject('Catering Time Slot cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.catering_time_slot)) {
+          reject('Catering Time Slot cannot be negative')
+        } else if (
+          !orderSettingsVue.orderSettingsToEdit.catering_order_time_cut_off
+        ) {
+          reject('Catering Order Time Cut Off cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.catering_order_time_cut_off)) {
+          reject('Catering Order Time Cut Off cannot be negative')
+        } else if (
+          !orderSettingsVue.orderSettingsToEdit.catering_cancellation_time_cut_off
+        ) {
+          reject('Catering Cancellation Time Cut Off cannot be blank')
+        } else if (!orderSettingsVue.isNonNegativeNumber(orderSettingsVue.orderSettingsToEdit.catering_cancellation_time_cut_off)) {
+          reject('Catering Cancellation Time Cut Off cannot be negative')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showEditSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Order Settings have been saved'
-			let type = 'success'
+    showEditSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Order Settings have been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To reset the edit form
 		 * @function
 		 * @returns {undefined}
 		 */
-		resetEdit () {
-			// TODO
-		},
-		/**
+    resetEdit () {
+      // TODO
+    },
+    /**
 		 * To display the modal for deleting an order.
 		 * @function
 		 * @returns {undefined}
 		 */
-		confirmDelete () {
-			this.showDeleteModal = true
-		},
-		/**
+    confirmDelete () {
+      this.showDeleteModal = true
+    },
+    /**
 		 * To close the modal for deleting a promotion and remove that promotion from DOM.
 		 * @function
 		 * @returns {undefined}
 		 */
-		deleteOrderSettings () {
-			this.deleting = true
-			var orderSettingsVue = this
-			return OrderSettingsFunctions.deleteOrderSettings(
-				orderSettingsVue.$root.appId,
-				orderSettingsVue.$root.appSecret,
-				orderSettingsVue.$root.userToken,
-				orderSettingsVue.$root.activeLocation.id
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						orderSettingsVue.getOrderSettingsForStore()
-						orderSettingsVue.closeDeleteModal()
-						orderSettingsVue.showDeleteSuccess(response.payload)
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: `We could not delete order settings`,
-						errorName: 'deleteErrorMessage',
-						vue: orderSettingsVue
-					})
-				})
-				.finally(() => {
-					orderSettingsVue.deleting = false
-				})
-		},
-		/**
+    deleteOrderSettings () {
+      this.deleting = true
+      var orderSettingsVue = this
+      return OrderSettingsFunctions.deleteOrderSettings(
+        orderSettingsVue.$root.appId,
+        orderSettingsVue.$root.appSecret,
+        orderSettingsVue.$root.userToken,
+        orderSettingsVue.$root.activeLocation.id
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            orderSettingsVue.getOrderSettingsForStore()
+            orderSettingsVue.closeDeleteModal()
+            orderSettingsVue.showDeleteSuccess(response.payload)
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: `We could not delete order settings`,
+            errorName: 'deleteErrorMessage',
+            vue: orderSettingsVue
+          })
+        })
+        .finally(() => {
+          orderSettingsVue.deleting = false
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showDeleteSuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Order Settings have been deleted'
-			let type = 'success'
+    showDeleteSuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Order Settings have been deleted'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The removal has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The removal has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To close the delete modal.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeDeleteModal () {
-			this.showDeleteModal = false
-		}
-	}
+    closeDeleteModal () {
+      this.showDeleteModal = false
+    }
+  }
 }
 </script>

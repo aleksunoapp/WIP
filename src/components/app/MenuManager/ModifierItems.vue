@@ -635,645 +635,645 @@ import StorePicker from '@/components/modules/StorePicker'
 import Modal from '@/components/modules/Modal'
 
 export default {
-	components: {
-		Breadcrumb,
-		LoadingScreen,
-		EditModifierItem,
-		DeleteModifierItem,
-		ModifierNutritionInfo,
-		TagsList,
-		NoResults,
-		ResourcePicker,
-		PortionsList,
-		OptionsList,
-		StorePicker,
-		Modal
-	},
-	data () {
-		return {
-			breadcrumbArray: [
-				{ name: 'Menu Manager', link: false },
-				{ name: 'Modifiers', link: '/app/menu_manager/modifiers' },
-				{ name: 'Modifier Items', link: false }
-			],
-			editItemModalActive: false,
-			deleteItemModalActive: false,
-			displayModifierItemData: false,
-			displayNutritionModal: false,
-			modifierCategoryDetails: {},
-			modifierCategoryItems: [],
-			selectedItem: {},
-			appliedTags: [],
-			appliedPortions: [],
-			appliedOptions: [],
-			selectedItemId: 0,
-			displayTagsListModal: false,
-			customText:
+  components: {
+    Breadcrumb,
+    LoadingScreen,
+    EditModifierItem,
+    DeleteModifierItem,
+    ModifierNutritionInfo,
+    TagsList,
+    NoResults,
+    ResourcePicker,
+    PortionsList,
+    OptionsList,
+    StorePicker,
+    Modal
+  },
+  data () {
+    return {
+      breadcrumbArray: [
+        { name: 'Menu Manager', link: false },
+        { name: 'Modifiers', link: '/app/menu_manager/modifiers' },
+        { name: 'Modifier Items', link: false }
+      ],
+      editItemModalActive: false,
+      deleteItemModalActive: false,
+      displayModifierItemData: false,
+      displayNutritionModal: false,
+      modifierCategoryDetails: {},
+      modifierCategoryItems: [],
+      selectedItem: {},
+      appliedTags: [],
+      appliedPortions: [],
+      appliedOptions: [],
+      selectedItemId: 0,
+      displayTagsListModal: false,
+      customText:
 				'There are no items in this category. Click on the button above to add one.',
-			createModifierItemCollapse: true,
-			creating: false,
-			newModifierItem: {
-				modifier_id: this.$route.params.modifier_id,
-				name: '',
-				desc: '',
-				sku: '',
-				image_url: '',
-				user_id: this.$root.createdBy,
-				status: 1,
-				price: '',
-				min: null,
-				max: null,
-				order: null,
-				override: 0
-			},
-			showGalleryModal: false,
-			errorMessage: '',
-			displayPortionsListModal: false,
-			displayOptionsListModal: false,
-			expanded: null,
-			imageMode: {
-				newMenu: false
-			},
-			showApplyToLocationsModal: false,
-			assigningModifierToLocations: false,
-			modifierToApplyToLocations: {},
-			applyErrorMessage: '',
-			listErrorMessage: ''
-		}
-	},
-	mounted () {
-		if (
-			this.$root.activeLocation &&
+      createModifierItemCollapse: true,
+      creating: false,
+      newModifierItem: {
+        modifier_id: this.$route.params.modifier_id,
+        name: '',
+        desc: '',
+        sku: '',
+        image_url: '',
+        user_id: this.$root.createdBy,
+        status: 1,
+        price: '',
+        min: null,
+        max: null,
+        order: null,
+        override: 0
+      },
+      showGalleryModal: false,
+      errorMessage: '',
+      displayPortionsListModal: false,
+      displayOptionsListModal: false,
+      expanded: null,
+      imageMode: {
+        newMenu: false
+      },
+      showApplyToLocationsModal: false,
+      assigningModifierToLocations: false,
+      modifierToApplyToLocations: {},
+      applyErrorMessage: '',
+      listErrorMessage: ''
+    }
+  },
+  mounted () {
+    if (
+      this.$root.activeLocation &&
 			this.$root.activeLocation.id &&
 			this.$route.params.modifier_id
-		) {
-			this.getModifierCategoryDetails()
-			this.getModifierCategoryItems()
-		}
-	},
-	methods: {
-		/**
+    ) {
+      this.getModifierCategoryDetails()
+      this.getModifierCategoryItems()
+    }
+  },
+  methods: {
+    /**
 		 * To update the locations selected in the child component
 		 * @function
 		 * @param {array} locations - Arrray of store ids
 		 * @returns {undefined}
 		 */
-		selectedLocations (locations) {
-			this.modifierToApplyToLocations.locations = locations
-		},
-		/**
+    selectedLocations (locations) {
+      this.modifierToApplyToLocations.locations = locations
+    },
+    /**
 		 * To open the modal for applying a modifier to locations
 		 * @function
 		 * @param {object} modifier - Modifier the user clicked
 		 * @returns {undefined}
 		 */
-		openApplyToLocationsModal (modifier) {
-			this.modifierToApplyToLocations = {
-				...modifier,
-				locations: []
-			}
-			this.showApplyToLocationsModal = true
-		},
-		/**
+    openApplyToLocationsModal (modifier) {
+      this.modifierToApplyToLocations = {
+        ...modifier,
+        locations: []
+      }
+      this.showApplyToLocationsModal = true
+    },
+    /**
 		 * To close the modal for applying a modifier to locations
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeApplyToLocationsModal () {
-			this.modifierToApplyToLocations = {}
-			this.showApplyToLocationsModal = false
-		},
-		/**
+    closeApplyToLocationsModal () {
+      this.modifierToApplyToLocations = {}
+      this.showApplyToLocationsModal = false
+    },
+    /**
 		 * To check if data is ready to post
 		 * @function
 		 * @returns {object} - A resolved promise if ok, a reject with error message if failed
 		 */
-		validateApplyToLocations () {
-			var modifierItemsVue = this
-			return new Promise(function (resolve, reject) {
-				if (!modifierItemsVue.modifierToApplyToLocations.locations.length) {
-					reject('Select at least one store')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+    validateApplyToLocations () {
+      var modifierItemsVue = this
+      return new Promise(function (resolve, reject) {
+        if (!modifierItemsVue.modifierToApplyToLocations.locations.length) {
+          reject('Select at least one store')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To save selected modifier-locaton links in the API
 		 * @function
 		 * @returns {undefined}
 		 */
-		applyModifierToLocations () {
-			var modifierItemsVue = this
-			modifierItemsVue.clearError('applyErrorMessage')
+    applyModifierToLocations () {
+      var modifierItemsVue = this
+      modifierItemsVue.clearError('applyErrorMessage')
 
-			this.validateApplyToLocations()
-				.then(response => {
-					modifierItemsVue.assigningModifierToLocations = true
-					let payload = {
-						modifier_item_id: modifierItemsVue.modifierToApplyToLocations.id,
-						locations: modifierItemsVue.modifierToApplyToLocations.locations
-					}
-					ModifiersFunctions.applyModifierToLocations(payload)
-						.then(response => {
-							modifierItemsVue.closeApplyToLocationsModal()
-							modifierItemsVue.showApplySuccess(response.payload)
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'Could not apply modifier to stores',
-								errorName: 'applyErrorMessage',
-								vue: modifierItemsVue,
-								containterRef: 'applyToLocationsModal'
-							})
-						})
-						.finally(() => {
-							modifierItemsVue.assigningModifierToLocations = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					modifierItemsVue.applyErrorMessage = reason
-					window.scrollTo(0, 0)
-				})
-		},
-		/**
+      this.validateApplyToLocations()
+        .then(response => {
+          modifierItemsVue.assigningModifierToLocations = true
+          let payload = {
+            modifier_item_id: modifierItemsVue.modifierToApplyToLocations.id,
+            locations: modifierItemsVue.modifierToApplyToLocations.locations
+          }
+          ModifiersFunctions.applyModifierToLocations(payload)
+            .then(response => {
+              modifierItemsVue.closeApplyToLocationsModal()
+              modifierItemsVue.showApplySuccess(response.payload)
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'Could not apply modifier to stores',
+                errorName: 'applyErrorMessage',
+                vue: modifierItemsVue,
+                containterRef: 'applyToLocationsModal'
+              })
+            })
+            .finally(() => {
+              modifierItemsVue.assigningModifierToLocations = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          modifierItemsVue.applyErrorMessage = reason
+          window.scrollTo(0, 0)
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showApplySuccess (payload = {}) {
-			let title = 'Success'
-			let text = 'The Modifier Items have been saved'
-			let type = 'success'
+    showApplySuccess (payload = {}) {
+      let title = 'Success'
+      let text = 'The Modifier Items have been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To toggle between the open and closed state of the resource picker
 		 * @function
 		 * @param {string} object - The name of the object the image is for
 		 * @param {object} value - The open / closed value of the picker
 		 * @returns {undefined}
 		 */
-		toggleImageMode (object, value) {
-			this.imageMode[object] = value
-		},
-		/**
+    toggleImageMode (object, value) {
+      this.imageMode[object] = value
+    },
+    /**
 		 * To clear an error.
 		 * @function
 		 * @param {string} name - Name of the error to clear
 		 * @returns {undefined}
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To set the image to be same as the one emitted by the gallery modal.
 		 * @function
 		 * @param {object} val - The emitted image object.
 		 * @returns {undefined}
 		 */
-		updateImage (val) {
-			this.showGalleryModal = false
-			this.newModifierItem.image_url = val.image_url
-		},
-		/**
+    updateImage (val) {
+      this.showGalleryModal = false
+      this.newModifierItem.image_url = val.image_url
+    },
+    /**
 		 * To toggle the create menu panel, initially set to opened
 		 * @function
 		 * @returns {undefined}
 		 */
-		toggleCreateModifierItemPanel () {
-			this.createModifierItemCollapse = !this.createModifierItemCollapse
-		},
-		/**
+    toggleCreateModifierItemPanel () {
+      this.createModifierItemCollapse = !this.createModifierItemCollapse
+    },
+    /**
 		 * To check if the modifier item data is valid before submitting to the backend.
 		 * @function
 		 * @returns {object} A promise that will validate the input form
 		 */
-		validateModifierItemData () {
-			var modifierItemsVue = this
-			return new Promise(function (resolve, reject) {
-				if (!modifierItemsVue.newModifierItem.name.length) {
-					reject('Modifier Item name cannot be blank')
-				} else if (!modifierItemsVue.newModifierItem.desc.length) {
-					reject('Modifier Item description cannot be blank')
-				} else if (!modifierItemsVue.newModifierItem.sku.length) {
-					reject('Modifier Item SKU cannot be blank')
-				} else if (!modifierItemsVue.newModifierItem.price.length) {
-					reject('Modifier Item price cannot be blank')
-				} else if (!modifierItemsVue.newModifierItem.image_url.length) {
-					reject('Modifier Item image URL cannot be blank')
-				} else if (!$.isNumeric(modifierItemsVue.newModifierItem.status)) {
-					reject('Modifier Item status cannot be blank')
-				} else if (!$.isNumeric(modifierItemsVue.newModifierItem.min)) {
-					reject('Modifier Item min should be a number')
-				} else if (!$.isNumeric(modifierItemsVue.newModifierItem.max)) {
-					reject('Modifier Item max should be a number')
-				} else if (
-					Number(modifierItemsVue.newModifierItem.min) >
+    validateModifierItemData () {
+      var modifierItemsVue = this
+      return new Promise(function (resolve, reject) {
+        if (!modifierItemsVue.newModifierItem.name.length) {
+          reject('Modifier Item name cannot be blank')
+        } else if (!modifierItemsVue.newModifierItem.desc.length) {
+          reject('Modifier Item description cannot be blank')
+        } else if (!modifierItemsVue.newModifierItem.sku.length) {
+          reject('Modifier Item SKU cannot be blank')
+        } else if (!modifierItemsVue.newModifierItem.price.length) {
+          reject('Modifier Item price cannot be blank')
+        } else if (!modifierItemsVue.newModifierItem.image_url.length) {
+          reject('Modifier Item image URL cannot be blank')
+        } else if (!$.isNumeric(modifierItemsVue.newModifierItem.status)) {
+          reject('Modifier Item status cannot be blank')
+        } else if (!$.isNumeric(modifierItemsVue.newModifierItem.min)) {
+          reject('Modifier Item min should be a number')
+        } else if (!$.isNumeric(modifierItemsVue.newModifierItem.max)) {
+          reject('Modifier Item max should be a number')
+        } else if (
+          Number(modifierItemsVue.newModifierItem.min) >
 					Number(modifierItemsVue.newModifierItem.max)
-				) {
-					reject('Modifier Item max cannot be larger than min')
-				} else if (!$.isNumeric(modifierItemsVue.newModifierItem.order)) {
-					reject('Modifier Item order should be a number')
-				}
-				resolve('Hurray')
-			})
-		},
-		/**
+        ) {
+          reject('Modifier Item max cannot be larger than min')
+        } else if (!$.isNumeric(modifierItemsVue.newModifierItem.order)) {
+          reject('Modifier Item order should be a number')
+        }
+        resolve('Hurray')
+      })
+    },
+    /**
 		 * To add the new modifier item and close the modal and redirect to the modifier categories page.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		addNewModifierItem () {
-			var modifierItemsVue = this
-			modifierItemsVue.clearError('errorMessage')
-			this.creating = true
-			return modifierItemsVue
-				.validateModifierItemData()
-				.then(response => {
-					ModifiersFunctions.addNewModifierItem(
-						modifierItemsVue.newModifierItem,
-						modifierItemsVue.$root.appId,
-						modifierItemsVue.$root.appSecret,
-						modifierItemsVue.$root.userToken
-					)
-						.then(response => {
-							if (response.code === 200 && response.status === 'ok') {
-								modifierItemsVue.newModifierItem.id =
+    addNewModifierItem () {
+      var modifierItemsVue = this
+      modifierItemsVue.clearError('errorMessage')
+      this.creating = true
+      return modifierItemsVue
+        .validateModifierItemData()
+        .then(response => {
+          ModifiersFunctions.addNewModifierItem(
+            modifierItemsVue.newModifierItem,
+            modifierItemsVue.$root.appId,
+            modifierItemsVue.$root.appSecret,
+            modifierItemsVue.$root.userToken
+          )
+            .then(response => {
+              if (response.code === 200 && response.status === 'ok') {
+                modifierItemsVue.newModifierItem.id =
 									response.payload.new_modifier_item_id
-								if (response.payload && response.payload.pending_approval !== true) {
-									modifierItemsVue.addModifierItem(
-										modifierItemsVue.newModifierItem
-									)
-								}
-								modifierItemsVue.showAlert(response.payload)
-								modifierItemsVue.clearNewModifierItem()
-							} else {
-								modifierItemsVue.errorMessage = response.message
-							}
-						})
-						.catch(reason => {
-							ajaxErrorHandler({
-								reason,
-								errorText: 'Could not create the item',
-								errorName: 'errorMessage',
-								vue: modifierItemsVue
-							})
-						})
-						.finally(() => {
-							this.creating = false
-						})
-				})
-				.catch(reason => {
-					// If validation fails then display the error message
-					modifierItemsVue.errorMessage = reason
-					window.scrollTo(0, 0)
-					throw reason
-				})
-		},
-		/**
+                if (response.payload && response.payload.pending_approval !== true) {
+                  modifierItemsVue.addModifierItem(
+                    modifierItemsVue.newModifierItem
+                  )
+                }
+                modifierItemsVue.showAlert(response.payload)
+                modifierItemsVue.clearNewModifierItem()
+              } else {
+                modifierItemsVue.errorMessage = response.message
+              }
+            })
+            .catch(reason => {
+              ajaxErrorHandler({
+                reason,
+                errorText: 'Could not create the item',
+                errorName: 'errorMessage',
+                vue: modifierItemsVue
+              })
+            })
+            .finally(() => {
+              this.creating = false
+            })
+        })
+        .catch(reason => {
+          // If validation fails then display the error message
+          modifierItemsVue.errorMessage = reason
+          window.scrollTo(0, 0)
+          throw reason
+        })
+    },
+    /**
 		 * To get the details of the selected modifier category.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getModifierCategoryDetails () {
-			var modifierItemsVue = this
-			ModifiersFunctions.getModifierCategoryDetails(
-				modifierItemsVue.$route.params.modifier_id,
-				modifierItemsVue.$root.appId,
-				modifierItemsVue.$root.appSecret
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						modifierItemsVue.modifierCategoryDetails = response.payload
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Could not get category info',
-						errorName: 'listErrorMessage',
-						vue: modifierItemsVue
-					})
-				})
-		},
-		/**
+    getModifierCategoryDetails () {
+      var modifierItemsVue = this
+      ModifiersFunctions.getModifierCategoryDetails(
+        modifierItemsVue.$route.params.modifier_id,
+        modifierItemsVue.$root.appId,
+        modifierItemsVue.$root.appSecret
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            modifierItemsVue.modifierCategoryDetails = response.payload
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'Could not get category info',
+            errorName: 'listErrorMessage',
+            vue: modifierItemsVue
+          })
+        })
+    },
+    /**
 		 * To get the list of modifier items for the selected modifier category.
 		 * @function
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getModifierCategoryItems () {
-			this.displayModifierItemData = true
-			var modifierItemsVue = this
-			modifierItemsVue.modifierCategoryItems = []
-			return ModifiersFunctions.getModifierCategoryItems(
-				modifierItemsVue.$route.params.modifier_id,
-				modifierItemsVue.$root.appId,
-				modifierItemsVue.$root.appSecret
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						modifierItemsVue.displayModifierItemData = false
-						modifierItemsVue.modifierCategoryItems = response.payload
-					} else {
-						modifierItemsVue.displayModifierItemData = false
-					}
-				})
-				.catch(reason => {
-					modifierItemsVue.displayModifierItemData = false
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Could not fetch items',
-						errorName: 'listErrorMessage',
-						vue: modifierItemsVue
-					})
-				})
-		},
-		/**
+    getModifierCategoryItems () {
+      this.displayModifierItemData = true
+      var modifierItemsVue = this
+      modifierItemsVue.modifierCategoryItems = []
+      return ModifiersFunctions.getModifierCategoryItems(
+        modifierItemsVue.$route.params.modifier_id,
+        modifierItemsVue.$root.appId,
+        modifierItemsVue.$root.appSecret
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            modifierItemsVue.displayModifierItemData = false
+            modifierItemsVue.modifierCategoryItems = response.payload
+          } else {
+            modifierItemsVue.displayModifierItemData = false
+          }
+        })
+        .catch(reason => {
+          modifierItemsVue.displayModifierItemData = false
+          ajaxErrorHandler({
+            reason,
+            errorText: 'Could not fetch items',
+            errorName: 'listErrorMessage',
+            vue: modifierItemsVue
+          })
+        })
+    },
+    /**
 		 * To get the complete details of a modifier item.
 		 * @function
 		 * @param {integer} modifierItemId - The selected item id
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getModifierItemDetails (modifierItemId) {
-			var modifierItemsVue = this
-			ModifiersFunctions.getModifierItemDetails(
-				modifierItemId,
-				modifierItemsVue.$root.appId,
-				modifierItemsVue.$root.appSecret
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						for (
-							var i = 0;
-							i < modifierItemsVue.modifierCategoryItems.length;
-							i++
-						) {
-							if (
-								modifierItemsVue.modifierCategoryItems[i].id === modifierItemId
-							) {
-								modifierItemsVue.$set(
-									modifierItemsVue.modifierCategoryItems[i],
-									'tags',
-									response.payload[0].tags
-								)
-								modifierItemsVue.$set(
-									modifierItemsVue.modifierCategoryItems[i],
-									'modifier_item_portions',
-									response.payload[0].modifier_item_portions
-								)
-								modifierItemsVue.$set(
-									modifierItemsVue.modifierCategoryItems[i],
-									'options',
-									response.payload[0].options
-								)
-							}
-						}
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'Could not fetch item info',
-						errorName: 'listErrorMessage',
-						vue: modifierItemsVue
-					})
-				})
-		},
-		/**
+    getModifierItemDetails (modifierItemId) {
+      var modifierItemsVue = this
+      ModifiersFunctions.getModifierItemDetails(
+        modifierItemId,
+        modifierItemsVue.$root.appId,
+        modifierItemsVue.$root.appSecret
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            for (
+              var i = 0;
+              i < modifierItemsVue.modifierCategoryItems.length;
+              i++
+            ) {
+              if (
+                modifierItemsVue.modifierCategoryItems[i].id === modifierItemId
+              ) {
+                modifierItemsVue.$set(
+                  modifierItemsVue.modifierCategoryItems[i],
+                  'tags',
+                  response.payload[0].tags
+                )
+                modifierItemsVue.$set(
+                  modifierItemsVue.modifierCategoryItems[i],
+                  'modifier_item_portions',
+                  response.payload[0].modifier_item_portions
+                )
+                modifierItemsVue.$set(
+                  modifierItemsVue.modifierCategoryItems[i],
+                  'options',
+                  response.payload[0].options
+                )
+              }
+            }
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'Could not fetch item info',
+            errorName: 'listErrorMessage',
+            vue: modifierItemsVue
+          })
+        })
+    },
+    /**
 		 * To expand/collapse the dropdown div under a modifier item.
 		 * @function
 		 * @param {integer} itemId - The selected modifier item id
 		 * @returns {undefined}
 		 */
-		expandDetails (itemId) {
-			this.expanded = itemId
-		},
-		/**
+    expandDetails (itemId) {
+      this.expanded = itemId
+    },
+    /**
 		 * To display the modal to edit modifier items.
 		 * @function
 		 * @param {object} modifierItem - The selected modifier item
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		displayEditItemModal (modifierItem, event) {
-			event.stopPropagation()
-			this.editItemModalActive = true
-			this.$router.push(
-				'/app/menu_manager/modifier_items/' +
+    displayEditItemModal (modifierItem, event) {
+      event.stopPropagation()
+      this.editItemModalActive = true
+      this.$router.push(
+        '/app/menu_manager/modifier_items/' +
 					this.$route.params.modifier_id +
 					'/edit_modifier_item/' +
 					modifierItem.id
-			)
-		},
-		/**
+      )
+    },
+    /**
 		 * To display the modal to delete modifier item.
 		 * @function
 		 * @param {object} modifierItem - The selected modifier item
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		displayDeleteItemModal (modifierItem, event) {
-			event.stopPropagation()
-			this.selectedItemId = modifierItem.id
-			this.deleteItemModalActive = true
-		},
-		/**
+    displayDeleteItemModal (modifierItem, event) {
+      event.stopPropagation()
+      this.selectedItemId = modifierItem.id
+      this.deleteItemModalActive = true
+    },
+    /**
 		 * To clear the new modifier item form.
 		 * @function
 		 * @returns {undefined}
 		 */
-		clearNewModifierItem () {
-			this.newModifierItem = {
-				modifier_id: this.$route.params.modifier_id,
-				name: '',
-				desc: '',
-				sku: '',
-				image_url: '',
-				user_id: this.$root.createdBy,
-				status: 1,
-				price: '',
-				min: null,
-				max: null,
-				order: null,
-				override: 0
-			}
-		},
-		/**
+    clearNewModifierItem () {
+      this.newModifierItem = {
+        modifier_id: this.$route.params.modifier_id,
+        name: '',
+        desc: '',
+        sku: '',
+        image_url: '',
+        user_id: this.$root.createdBy,
+        status: 1,
+        price: '',
+        min: null,
+        max: null,
+        order: null,
+        override: 0
+      }
+    },
+    /**
 		 * To add the modifier item emitted by the child to the items list.
 		 * @function
 		 * @param {object} val - The new modifier item
 		 * @returns {undefined}
 		 */
-		addModifierItem (val) {
-			if (parseInt(val.order) > 0) {
-				var done = false
-				for (var i = 0; i < this.modifierCategoryItems.length; i++) {
-					if (
-						parseInt(this.modifierCategoryItems[i].order) < parseInt(val.order)
-					) {
-						this.modifierCategoryItems.splice(i, 0, val)
-						done = true
-						break
-					}
-				}
-				if (!done) {
-					this.modifierCategoryItems.push(val)
-				}
-			} else {
-				this.modifierCategoryItems.push(val)
-			}
-		},
-		/**
+    addModifierItem (val) {
+      if (parseInt(val.order) > 0) {
+        var done = false
+        for (var i = 0; i < this.modifierCategoryItems.length; i++) {
+          if (
+            parseInt(this.modifierCategoryItems[i].order) < parseInt(val.order)
+          ) {
+            this.modifierCategoryItems.splice(i, 0, val)
+            done = true
+            break
+          }
+        }
+        if (!done) {
+          this.modifierCategoryItems.push(val)
+        }
+      } else {
+        this.modifierCategoryItems.push(val)
+      }
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showAlert (payload = {}) {
-			let title = 'Success'
-			let text = 'The Modifier Item has been created'
-			let type = 'success'
+    showAlert (payload = {}) {
+      let title = 'Success'
+      let text = 'The Modifier Item has been created'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The Modifier Item has been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The Modifier Item has been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		},
-		/**
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    },
+    /**
 		 * To update the modifier item emitted by the child and highlist it on the items list.
 		 * @function
 		 * @param {object} val - The updated item
 		 * @returns {undefined}
 		 */
-		editModifierItem (val) {
-			this.editItemModalActive = false
-			this.getModifierCategoryItems()
-		},
-		/**
+    editModifierItem (val) {
+      this.editItemModalActive = false
+      this.getModifierCategoryItems()
+    },
+    /**
 		 * To close the modal to edit a modifier item.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeEditItemModal () {
-			this.editItemModalActive = false
-		},
-		/**
+    closeEditItemModal () {
+      this.editItemModalActive = false
+    },
+    /**
 		 * To close the modal to delete a modifier item.
 		 * @function
 		 * @returns {undefined}
 		 */
-		closeDeleteItemModal () {
-			this.deleteItemModalActive = false
-		},
-		/**
+    closeDeleteItemModal () {
+      this.deleteItemModalActive = false
+    },
+    /**
 		 * To close the modal to delete a modifier item.
 		 * @function
 		 * @returns {undefined}
 		 */
-		deleteModifierItemAndCloseModal () {
-			this.deleteItemModalActive = false
-			this.getModifierCategoryItems()
-		},
-		/**
+    deleteModifierItemAndCloseModal () {
+      this.deleteItemModalActive = false
+      this.getModifierCategoryItems()
+    },
+    /**
 		 * To view the nutrition info of a modifier item.
 		 * @function
 		 * @param {object} item - The selected item
 		 * @param {object} event - The click event that prompted this function.
 		 * @returns {undefined}
 		 */
-		viewModifierNutritionInfo (item, event) {
-			event.stopPropagation()
-			this.displayNutritionModal = true
-			this.selectedItem = item
-		},
-		/**
+    viewModifierNutritionInfo (item, event) {
+      event.stopPropagation()
+      this.displayNutritionModal = true
+      this.selectedItem = item
+    },
+    /**
 		 * To show the modal to apply tags to an item.
 		 * @function
 		 * @param {integer} modifierItemId - The selected modifier item id
 		 * @param {object} appliedTags - The tags already applied to the item.
 		 * @returns {undefined}
 		 */
-		showTagsModal (modifierItemId, appliedTags) {
-			this.appliedTags = appliedTags
-			this.selectedItemId = modifierItemId
-			this.displayTagsListModal = true
-		},
-		/**
+    showTagsModal (modifierItemId, appliedTags) {
+      this.appliedTags = appliedTags
+      this.selectedItemId = modifierItemId
+      this.displayTagsListModal = true
+    },
+    /**
 		 * To show the modal to apply portions to an item.
 		 * @function
 		 * @param {integer} modifierItemId - The selected modifier item id
 		 * @param {object} appliedPortions - The portions already applied to the item.
 		 * @returns {undefined}
 		 */
-		showPortionsModal (modifierItemId, appliedPortions) {
-			this.appliedPortions = appliedPortions
-			this.selectedItemId = modifierItemId
-			this.displayPortionsListModal = true
-		},
-		/**
+    showPortionsModal (modifierItemId, appliedPortions) {
+      this.appliedPortions = appliedPortions
+      this.selectedItemId = modifierItemId
+      this.displayPortionsListModal = true
+    },
+    /**
 		 * To show the modal to apply options to an item.
 		 * @function
 		 * @param {integer} modifierItemId - The selected modifier item id
 		 * @param {object} appliedOptions - The portions already applied to the item.
 		 * @returns {undefined}
 		 */
-		showOptionsModal (modifierItemId, appliedOptions) {
-			this.appliedOptions = appliedOptions
-			this.selectedItemId = modifierItemId
-			this.displayOptionsListModal = true
-		},
-		/**
+    showOptionsModal (modifierItemId, appliedOptions) {
+      this.appliedOptions = appliedOptions
+      this.selectedItemId = modifierItemId
+      this.displayOptionsListModal = true
+    },
+    /**
 		 * To close the tags modal and update the item to show the updated tags.
 		 * @function
 		 * @param {integer} val - The id of the item to which the tags were applied
 		 * @returns {undefined}
 		 */
-		closeTagsListModal (val) {
-			this.displayTagsListModal = false
-			this.getModifierItemDetails(val)
-		},
-		/**
+    closeTagsListModal (val) {
+      this.displayTagsListModal = false
+      this.getModifierItemDetails(val)
+    },
+    /**
 		 * To close the portions modal and update the item to show the updated portions.
 		 * @function
 		 * @param {integer} val - The id of the item to which the portions were applied
 		 * @returns {undefined}
 		 */
-		closePortionsListModal (val) {
-			this.displayPortionsListModal = false
-			this.getModifierItemDetails(val)
-		},
-		/**
+    closePortionsListModal (val) {
+      this.displayPortionsListModal = false
+      this.getModifierItemDetails(val)
+    },
+    /**
 		 * To close the options modal and update the item to show the updated options.
 		 * @function
 		 * @param {integer} val - The id of the item to which the options were applied
 		 * @returns {undefined}
 		 */
-		closeOptionsListModal (val) {
-			this.displayOptionsListModal = false
-			this.getModifierItemDetails(val)
-		}
-	}
+    closeOptionsListModal (val) {
+      this.displayOptionsListModal = false
+      this.getModifierItemDetails(val)
+    }
+  }
 }
 </script>
 <style scoped>

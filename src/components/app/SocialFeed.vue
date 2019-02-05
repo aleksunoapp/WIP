@@ -229,265 +229,265 @@ import { findIndex } from 'lodash'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
-	components: {
-		Breadcrumb,
-		ButtonGroup,
-		Checkbox,
-		NoResults,
-		Pagination,
-		Dropdown,
-		PageResults,
-		LoadingScreen
-	},
-	data () {
-		return {
-			breadcrumbArray: [{ name: 'Social Feed', link: false }],
-			listErrorMessage: '',
-			filterBy: ['facebook', 'twitter', 'instagram'],
-			filteredSocialFeed: [],
-			socialFeed: [],
-			numPages: 0,
-			activePage: 1,
-			pageResultsValue: 25,
-			sortBy: {
-				order: 'ASC'
-			},
-			totalResults: 0,
-			loadingFilteredData: false,
-			updating: false
-		}
-	},
-	watch: {
-		'sortBy.order' () {
-			if (this.sortBy.order) {
-				this.activePageUpdate(1)
-				this.getSocialFeed(0)
-			}
-		},
-		filterBy () {
-			this.getFilteredSocialFeed()
-		}
-	},
-	mounted () {
-		// get the social feed
-		this.getSocialFeed(0)
-	},
-	methods: {
-		/**
+  components: {
+    Breadcrumb,
+    ButtonGroup,
+    Checkbox,
+    NoResults,
+    Pagination,
+    Dropdown,
+    PageResults,
+    LoadingScreen
+  },
+  data () {
+    return {
+      breadcrumbArray: [{ name: 'Social Feed', link: false }],
+      listErrorMessage: '',
+      filterBy: ['facebook', 'twitter', 'instagram'],
+      filteredSocialFeed: [],
+      socialFeed: [],
+      numPages: 0,
+      activePage: 1,
+      pageResultsValue: 25,
+      sortBy: {
+        order: 'ASC'
+      },
+      totalResults: 0,
+      loadingFilteredData: false,
+      updating: false
+    }
+  },
+  watch: {
+    'sortBy.order' () {
+      if (this.sortBy.order) {
+        this.activePageUpdate(1)
+        this.getSocialFeed(0)
+      }
+    },
+    filterBy () {
+      this.getFilteredSocialFeed()
+    }
+  },
+  mounted () {
+    // get the social feed
+    this.getSocialFeed(0)
+  },
+  methods: {
+    /**
 		 * To update the order property of sortBy.
 		 * @function
 		 * @param {object} value - The new value to assign.
 		 * @returns {undefined}
 		 */
-		updateSortByOrder (value) {
-			this.sortBy.order = value
-		},
-		/**
+    updateSortByOrder (value) {
+      this.sortBy.order = value
+    },
+    /**
 		 * To clear an error.
 		 * @function
 		 * @param {string} name - Name of the error variable to clear
 		 * @returns {undefined}
 		 */
-		clearError (name) {
-			this[name] = ''
-		},
-		/**
+    clearError (name) {
+      this[name] = ''
+    },
+    /**
 		 * To get the social feed for the current page.
 		 * @function
 		 * @param {integer} pageNumber - The current page that we are retrieving results for.
 		 * @returns {object} - A promise that will either return an error message or perform an action.
 		 */
-		getSocialFeed (pageNumber) {
-			this.loadingFilteredData = true
-			this.socialFeed = []
+    getSocialFeed (pageNumber) {
+      this.loadingFilteredData = true
+      this.socialFeed = []
 
-			var socialFeedVue = this
-			return SocialFeedFunctions.getSocialFeed(
-				pageNumber,
-				socialFeedVue.pageResultsValue,
-				socialFeedVue.sortBy.order,
-				socialFeedVue.$root.appId,
-				socialFeedVue.$root.appSecret,
-				socialFeedVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						socialFeedVue.loadingFilteredData = false
-						socialFeedVue.socialFeed = response.payload
-						socialFeedVue.updateImagePaths()
-						socialFeedVue.getFilteredSocialFeed()
-					} else {
-						socialFeedVue.loadingFilteredData = false
-					}
-				})
-				.catch(reason => {
-					console.log({reason})
-					socialFeedVue.loadingFilteredData = false
-					if (reason && reason.responseJSON && reason.responseJSON.code === 500 && reason.responseJSON.payload === 'No media found.') {
-						return
-					} else {
-						ajaxErrorHandler({
-							reason,
-							errorText: 'We could not fetch social feeds',
-							errorName: 'listErrorMessage',
-							vue: socialFeedVue
-						})
-					}
-				})
-		},
-		/**
+      var socialFeedVue = this
+      return SocialFeedFunctions.getSocialFeed(
+        pageNumber,
+        socialFeedVue.pageResultsValue,
+        socialFeedVue.sortBy.order,
+        socialFeedVue.$root.appId,
+        socialFeedVue.$root.appSecret,
+        socialFeedVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            socialFeedVue.loadingFilteredData = false
+            socialFeedVue.socialFeed = response.payload
+            socialFeedVue.updateImagePaths()
+            socialFeedVue.getFilteredSocialFeed()
+          } else {
+            socialFeedVue.loadingFilteredData = false
+          }
+        })
+        .catch(reason => {
+          console.log({ reason })
+          socialFeedVue.loadingFilteredData = false
+          if (reason && reason.responseJSON && reason.responseJSON.code === 500 && reason.responseJSON.payload === 'No media found.') {
+
+          } else {
+            ajaxErrorHandler({
+              reason,
+              errorText: 'We could not fetch social feeds',
+              errorName: 'listErrorMessage',
+              vue: socialFeedVue
+            })
+          }
+        })
+    },
+    /**
 		 * To update the currently active pagination page.
 		 * @function
 		 * @param {integer} val - An integer representing the page number that we are updating to.
 		 * @returns {undefined}
 		 */
-		activePageUpdate (val) {
-			if (parseInt(this.activePage) !== parseInt(val)) {
-				this.activePage = val
-				this.getSocialFeed(this.activePage)
-			}
-		},
-		/**
+    activePageUpdate (val) {
+      if (parseInt(this.activePage) !== parseInt(val)) {
+        this.activePage = val
+        this.getSocialFeed(this.activePage)
+      }
+    },
+    /**
 		 * To catch updates from the PageResults component when the number of page results is updated.
 		 * @function
 		 * @param {integer} val - The number of page results to be returned.
 		 * @returns {undefined}
 		 */
-		pageResultsUpdate (val) {
-			if (parseInt(this.pageResultsValue) !== parseInt(val)) {
-				this.pageResultsValue = val
-				this.activePageUpdate(1)
-				this.getSocialFeed(0)
-			}
-		},
-		/**
+    pageResultsUpdate (val) {
+      if (parseInt(this.pageResultsValue) !== parseInt(val)) {
+        this.pageResultsValue = val
+        this.activePageUpdate(1)
+        this.getSocialFeed(0)
+      }
+    },
+    /**
 		 * To update the paths of the social feed images so that they are absolute.
 		 * @function
 		 * @returns {undefined}
 		 */
-		updateImagePaths () {
-			for (var i = 0; i < this.socialFeed.length; i++) {
-				var tokens = this.socialFeed[i].url.split('/')
-				this.socialFeed[i].url =
+    updateImagePaths () {
+      for (var i = 0; i < this.socialFeed.length; i++) {
+        var tokens = this.socialFeed[i].url.split('/')
+        this.socialFeed[i].url =
 					'http://35.162.38.115:8005/uploads/' + tokens[2] + '/' + tokens[3]
-			}
-		},
-		/**
+      }
+    },
+    /**
 		 * To update the results based on the applied filters.
 		 * @function
 		 * @returns {undefined}
 		 */
-		getFilteredSocialFeed () {
-			this.loadingFilteredData = true
-			this.filteredSocialFeed = []
-			for (var i = 0; i < this.socialFeed.length; i++) {
-				// push appropriate objects (if it does not already exist) in filteredSocialFeed[]
-				if (
-					this.socialFeed[i].facebook === 1 &&
+    getFilteredSocialFeed () {
+      this.loadingFilteredData = true
+      this.filteredSocialFeed = []
+      for (var i = 0; i < this.socialFeed.length; i++) {
+        // push appropriate objects (if it does not already exist) in filteredSocialFeed[]
+        if (
+          this.socialFeed[i].facebook === 1 &&
 					findIndex(this.filteredSocialFeed, this.socialFeed[i]) === -1
-				) {
-					if (this.filterBy.indexOf('facebook') >= 0) {
-						this.filteredSocialFeed.push(this.socialFeed[i])
-					}
-				}
-				if (
-					this.socialFeed[i].twitter === 1 &&
+        ) {
+          if (this.filterBy.indexOf('facebook') >= 0) {
+            this.filteredSocialFeed.push(this.socialFeed[i])
+          }
+        }
+        if (
+          this.socialFeed[i].twitter === 1 &&
 					findIndex(this.filteredSocialFeed, this.socialFeed[i]) === -1
-				) {
-					if (this.filterBy.indexOf('twitter') >= 0) {
-						this.filteredSocialFeed.push(this.socialFeed[i])
-					}
-				}
-				if (
-					this.socialFeed[i].instagram === 1 &&
+        ) {
+          if (this.filterBy.indexOf('twitter') >= 0) {
+            this.filteredSocialFeed.push(this.socialFeed[i])
+          }
+        }
+        if (
+          this.socialFeed[i].instagram === 1 &&
 					findIndex(this.filteredSocialFeed, this.socialFeed[i]) === -1
-				) {
-					if (this.filterBy.indexOf('instagram') >= 0) {
-						this.filteredSocialFeed.push(this.socialFeed[i])
-					}
-				}
-				if (
-					this.socialFeed[i].facebook === 0 &&
+        ) {
+          if (this.filterBy.indexOf('instagram') >= 0) {
+            this.filteredSocialFeed.push(this.socialFeed[i])
+          }
+        }
+        if (
+          this.socialFeed[i].facebook === 0 &&
 					this.socialFeed[i].instagram === 0 &&
 					this.socialFeed[i].twitter === 0 &&
 					findIndex(this.filteredSocialFeed, this.socialFeed[i]) === -1
-				) {
-					if (
-						this.filterBy.indexOf('facebook') === -1 &&
+        ) {
+          if (
+            this.filterBy.indexOf('facebook') === -1 &&
 						this.filterBy.indexOf('twitter') === -1 &&
 						this.filterBy.indexOf('instagram') === -1
-					) {
-						this.filteredSocialFeed.push(this.socialFeed[i])
-					}
-				}
-			}
-			setTimeout(() => {
-				this.loadingFilteredData = false
-			}, 500)
-		},
-		/**
+          ) {
+            this.filteredSocialFeed.push(this.socialFeed[i])
+          }
+        }
+      }
+      setTimeout(() => {
+        this.loadingFilteredData = false
+      }, 500)
+    },
+    /**
 		 * To update the status field of a particular feed.
 		 * @function
 		 * @param {object} feed - The selected feed.
 		 * @param {integer} val - The new value.
 		 * @returns {undefined}
 		 */
-		updateFeedStatus (feed, val) {
-			if (!this.$root.permissions['social_feed update']) return
+    updateFeedStatus (feed, val) {
+      if (!this.$root.permissions['social_feed update']) return
 
-			this.updating = true
-			var socialFeedVue = this
-			SocialFeedFunctions.updateFeedStatus(
-				feed.id,
-				val,
-				socialFeedVue.$root.appId,
-				socialFeedVue.$root.appSecret,
-				socialFeedVue.$root.userToken
-			)
-				.then(response => {
-					if (response.code === 200 && response.status === 'ok') {
-						feed.status = val
-						socialFeedVue.showSuccessAlert(response.payload)
-					} else {
-						throw new Error()
-					}
-				})
-				.catch(reason => {
-					ajaxErrorHandler({
-						reason,
-						errorText: 'We could not update the feed',
-						errorName: 'listErrorMessage',
-						vue: socialFeedVue
-					})
-				})
-				.finally(() => {
-					socialFeedVue.updating = false
-				})
-		},
-		/**
+      this.updating = true
+      var socialFeedVue = this
+      SocialFeedFunctions.updateFeedStatus(
+        feed.id,
+        val,
+        socialFeedVue.$root.appId,
+        socialFeedVue.$root.appSecret,
+        socialFeedVue.$root.userToken
+      )
+        .then(response => {
+          if (response.code === 200 && response.status === 'ok') {
+            feed.status = val
+            socialFeedVue.showSuccessAlert(response.payload)
+          } else {
+            throw new Error()
+          }
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not update the feed',
+            errorName: 'listErrorMessage',
+            vue: socialFeedVue
+          })
+        })
+        .finally(() => {
+          socialFeedVue.updating = false
+        })
+    },
+    /**
 		 * To notify user of the outcome of the call
 		 * @function
 		 * @param {object} payload - The payload object from the server response
 		 * @returns {undefined}
 		 */
-		showSuccessAlert (payload = {}) {
-			let title = 'Success'
-			let text = 'The Social Feed has been saved'
-			let type = 'success'
+    showSuccessAlert (payload = {}) {
+      let title = 'Success'
+      let text = 'The Social Feed has been saved'
+      let type = 'success'
 
-			if (payload.pending_approval) {
-				title = 'Approval Required'
-				text = 'The changes have been sent for approval'
-				type = 'info'
-			}
+      if (payload.pending_approval) {
+        title = 'Approval Required'
+        text = 'The changes have been sent for approval'
+        type = 'info'
+      }
 
-			this.$swal({
-				title,
-				text,
-				type
-			})
-		}
-	}
+      this.$swal({
+        title,
+        text,
+        type
+      })
+    }
+  }
 }
 </script>
 <style scoped>
