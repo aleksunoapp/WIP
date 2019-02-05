@@ -139,7 +139,7 @@
 </template>
 <script>
 import Vue from 'vue'
-import { formatCurrency } from '@/mixins.js'
+import { getTotal, formatCurrency } from '@/mixins.js'
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import ServiceCard from '@/components/ServiceCard.vue'
 import TransitionHeight from '@/components/TransitionHeight.vue'
@@ -154,7 +154,7 @@ export default Vue.extend({
     ServiceCard,
     TransitionHeight
   },
-  mixins: [formatCurrency],
+  mixins: [getTotal, formatCurrency],
   data: () => ({
     service: null,
     loading: false,
@@ -177,20 +177,24 @@ export default Vue.extend({
     displayTotal () {
       let total = ''
       if (this.$route.name === 'additional-services') {
-        total = this.formatCurrency(this.total.additional)
+        total = this.formatCurrency(this.getTotal(this.additionalServices))
       } else if (this.$route.name === 'wait-services') {
-        total = this.formatCurrency(this.total.additional)
+        total = this.formatCurrency(this.getTotal(this.previouslyUnapprovedServices))
       } else if (this.$route.name === 'services') {
         total = this.formatCurrency(this.total.inspection)
       }
       return total
     },
     countTotal () {
-      if (this.additionalServices.length) {
-        return this.additionalServices.length
-      } else {
-        return this.count.concern + this.count.fail + this.count.warning
+      let total = ''
+      if (this.$route.name === 'additional-services') {
+        total = this.additionalServices.length
+      } else if (this.$route.name === 'wait-services') {
+        total = this.previouslyUnapprovedServices.length
+      } else if (this.$route.name === 'services') {
+        total = this.count.concern + this.count.fail + this.count.warning
       }
+      return total
     }
   },
   mounted () {
