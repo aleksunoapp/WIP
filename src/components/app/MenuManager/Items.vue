@@ -1183,7 +1183,7 @@ export default {
       let confirmButtonText = 'Yes'
       let cancelButtonText = 'No'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         html = `
 					<div>
@@ -1265,7 +1265,7 @@ export default {
       let text = 'The Preset Settings have been saved'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The Preset Settings have been sent for approval'
         type = 'info'
@@ -1352,7 +1352,7 @@ export default {
       let text = 'The Items have been saved'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The changes have been sent for approval'
         type = 'info'
@@ -1928,7 +1928,7 @@ export default {
       let text = 'The Item Attributes have been saved'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The changes have been sent for approval'
         type = 'info'
@@ -2049,7 +2049,7 @@ export default {
       let text = 'The Item has been created'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The Item has been sent for approval'
         type = 'info'

@@ -192,16 +192,29 @@
                     </a>
                   </el-tooltip>
                   <el-tooltip
-                    v-if="$root.permissions['menu_manager tags add items']"
-                    content="Apply to multiple"
+                    v-if="can('menu_manager tags add items by sku')"
+                    content="Apply to Menu Items"
                     effect="light"
                     placement="right"
                   >
                     <a
                       class="btn btn-circle btn-icon-only btn-default"
-                      @click="displayMenuTreeModal(tag, $event)"
+                      @click.stop="openApplyTagToMenuItemsModal(tag)"
                     >
-                      <i class="icon-layers" />
+                      <dish-icon />
+                    </a>
+                  </el-tooltip>
+                  <el-tooltip
+                    v-if="can('menu_manager tags add modifier items by sku')"
+                    content="Apply to Modifier Items"
+                    effect="light"
+                    placement="right"
+                  >
+                    <a
+                      class="btn btn-circle btn-icon-only btn-default"
+                      @click.stop="openApplyTagToModifierItemsModal(tag)"
+                    >
+                      <extras-and-sides-icon />
                     </a>
                   </el-tooltip>
                 </div>
@@ -243,38 +256,44 @@
       @updateTag="updateTag"
       @closeEditTagModal="closeEditTagModal"
     />
-    <menu-tree
-      v-if="showMenuTreeModal"
-      :selected-object="selectedTag"
-      :header-text="headerText"
-      :update-type="'tag'"
-      @closeMenuTreeModal="closeMenuTreeModal"
+    <apply-tag-to-menu-items
+      v-if="showApplyTagToMenuItemsModal"
+      :tag="selectedTag"
+      @close="closeApplyTagToMenuItemsModal()"
+    />
+    <apply-tag-to-modifier-items
+      v-if="showApplyTagToModifierItemsModal"
+      :tag="selectedTag"
+      @close="closeApplyTagToModifierItemsModal()"
     />
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import Breadcrumb from '../../modules/Breadcrumb'
 import NoResults from '../../modules/NoResults'
-import Modal from '../../modules/Modal'
+import ApplyTagToMenuItems from '@/components/app/MenuManager/Tags/ApplyTagToMenuItems'
+import ApplyTagToModifierItems from '@/components/app/MenuManager/Tags/ApplyTagToModifierItems'
 import LoadingScreen from '../../modules/LoadingScreen'
 import TagsFunctions from '../../../controllers/Tags'
 import EditTag from './Tags/EditTag'
-import Dropdown from '../../modules/Dropdown'
-import MenuTree from '../../modules/MenuTree'
 import ResourcePicker from '../../modules/ResourcePicker'
 import ajaxErrorHandler from '@/controllers/ErrorController'
+import DishIcon from '@/assets/icons/dish.svg'
+import ExtrasAndSidesIcon from '@/assets/icons/extras-and-sides.svg'
 
 export default {
   components: {
+    ApplyTagToMenuItems,
+    ApplyTagToModifierItems,
     Breadcrumb,
-    Modal,
     LoadingScreen,
     EditTag,
     NoResults,
-    Dropdown,
-    MenuTree,
-    ResourcePicker
+    ResourcePicker,
+    DishIcon,
+    ExtrasAndSidesIcon
   },
   data () {
     return {
@@ -294,7 +313,8 @@ export default {
         image_url: '',
         user_id: this.$root.createdBy
       },
-      showMenuTreeModal: false,
+      showApplyTagToMenuItemsModal: false,
+      showApplyTagToModifierItemsModal: false,
       selectedTag: {},
       headerText: '',
       imageMode: {
@@ -303,6 +323,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['can']),
     tagTypeLabel () {
       if (!this.newTag.type) {
         return 'Select Tag type'
@@ -319,11 +340,11 @@ export default {
   },
   methods: {
     /**
-		 * To provide a formatted version of the tag type.
-		 * @function
-		 * @param {string} type - The tag type to format.
-		 * @returns {string} The formatted string
-		 */
+     * To provide a formatted version of the tag type.
+     * @function
+     * @param {string} type - The tag type to format.
+     * @returns {string} The formatted string
+     */
     readableTagType (type) {
       if (type === 'contains') {
         return 'contains'
@@ -332,50 +353,67 @@ export default {
       }
     },
     /**
-		 * To toggle between the open and closed state of the resource picker
-		 * @function
-		 * @param {string} object - The name of the object the image is for
-		 * @param {object} value - The open / closed value of the picker
-		 * @returns {undefined}
-		 */
+     * To toggle between the open and closed state of the resource picker
+     * @function
+     * @param {string} object - The name of the object the image is for
+     * @param {object} value - The open / closed value of the picker
+     * @returns {undefined}
+     */
     toggleImageMode (object, value) {
       this.imageMode[object] = value
     },
     /**
-		 * To update the type property of newTag.
-		 * @function
-		 * @param {object} value - The new value to assign.
-		 * @returns {undefined}
-		 */
+     * To update the type property of newTag.
+     * @function
+     * @param {object} value - The new value to assign.
+     * @returns {undefined}
+     */
     updateNewTagType (value) {
       this.newTag.type = value
     },
     /**
-		 * To display the modal to apply a tag to multiple modifier items.
-		 * @function
-		 * @param {object} tag - The selected tag.
-		 * @param {object} event - The click event that prompted this function.
-		 * @returns {undefined}
-		 */
-    displayMenuTreeModal (tag, event) {
-      event.stopPropagation()
+     * To display the modal to apply a tag to menu items.
+     * @function
+     * @param {object} tag - The selected tag.
+     * @returns {undefined}
+     */
+    openApplyTagToMenuItemsModal (tag) {
       this.selectedTag = tag
-      this.headerText = "Tag '" + this.selectedTag.name + "'"
-      this.showMenuTreeModal = true
+      this.showApplyTagToMenuItemsModal = true
     },
     /**
-		 * To close the menu tree modal.
-		 * @function
-		 * @returns {undefined}
-		 */
-    closeMenuTreeModal () {
-      this.showMenuTreeModal = false
+     * To display the modal to apply a tag to menu items.
+     * @function
+     * @returns {undefined}
+     */
+    closeApplyTagToMenuItemsModal () {
+      this.showApplyTagToMenuItemsModal = false
+      this.selectedTag = {}
     },
     /**
-		 * To get the list of available tags.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To display the modal to apply a tag to modifier items.
+     * @function
+     * @param {object} tag - The selected tag.
+     * @returns {undefined}
+     */
+    openApplyTagToModifierItemsModal (tag) {
+      this.selectedTag = tag
+      this.showApplyTagToModifierItemsModal = true
+    },
+    /**
+     * To close the modal to apply a tag to modifier items.
+     * @function
+     * @returns {undefined}
+     */
+    closeApplyTagToModifierItemsModal () {
+      this.showApplyTagToModifierItemsModal = false
+      this.selectedTag = {}
+    },
+    /**
+     * To get the list of available tags.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getTags () {
       this.displayTagsData = true
       var tagsVue = this
@@ -400,10 +438,10 @@ export default {
         })
     },
     /**
-		 * To clear the new menu form.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To clear the new menu form.
+     * @function
+     * @returns {undefined}
+     */
     clearNewTag () {
       this.newTag = {
         name: '',
@@ -413,10 +451,10 @@ export default {
       }
     },
     /**
-		 * To check if the tag data is valid before submitting to the backend.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
+     * To check if the tag data is valid before submitting to the backend.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
     validateTagData () {
       var createTagVue = this
       return new Promise(function (resolve, reject) {
@@ -431,10 +469,10 @@ export default {
       })
     },
     /**
-		 * To create a new tag.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To create a new tag.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     createTag () {
       var createTagVue = this
       createTagVue.clearError('errorMessage')
@@ -475,26 +513,26 @@ export default {
         })
     },
     /**
-		 * To close the modal to create tags and add the newly created tag to the list.
-		 * @function
-		 * @param {object} val - The tag object to be added to the list.
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To close the modal to create tags and add the newly created tag to the list.
+     * @function
+     * @param {object} val - The tag object to be added to the list.
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     addTag (val) {
       this.tags.push(val)
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showAlert (payload = {}) {
       let title = 'Success'
       let text = 'The Tag has been created'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The Tag has been sent for approval'
         type = 'info'
@@ -507,58 +545,58 @@ export default {
       })
     },
     /**
-		 * To show the modal to edit tag details.
-		 * @function
-		 * @param {object} tag - The tag selected object.
-		 * @returns {undefined}
-		 */
+     * To show the modal to edit tag details.
+     * @function
+     * @param {object} tag - The tag selected object.
+     * @returns {undefined}
+     */
     editTag (tag) {
       this.displayEditTagModal = true
       this.$router.push('/app/menu_manager/tags/edit_tag/' + tag.id)
     },
     /**
-		 * To close the modal to edit tag details and update the selected tag on the tags list.
-		 * @function
-		 * @param {object} val - The tag object to be updated on the list.
-		 * @returns {undefined}
-		 */
+     * To close the modal to edit tag details and update the selected tag on the tags list.
+     * @function
+     * @param {object} val - The tag object to be updated on the list.
+     * @returns {undefined}
+     */
     updateTag (val) {
       this.displayEditTagModal = false
       this.getTags()
     },
     /**
-		 * To close the modal to edit tag details.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the modal to edit tag details.
+     * @function
+     * @returns {undefined}
+     */
     closeEditTagModal () {
       this.displayEditTagModal = false
       this.$router.push('/app/menu_manager/tags')
     },
     /**
-		 * To clear the current error.
-		 * @function
-		 * @param {string} name - Name of the variable to clear
-		 * @returns {undefined}
-		 */
+     * To clear the current error.
+     * @function
+     * @param {string} name - Name of the variable to clear
+     * @returns {undefined}
+     */
     clearError (name) {
       this[name] = ''
     },
     /**
-		 * To set the image to be same as the one emitted by the gallery modal.
-		 * @function
-		 * @param {object} val - The emitted image object.
-		 * @returns {undefined}
-		 */
+     * To set the image to be same as the one emitted by the gallery modal.
+     * @function
+     * @param {object} val - The emitted image object.
+     * @returns {undefined}
+     */
     updateImage (val) {
       this.showGalleryModal = false
       this.newTag.image_url = val.image_url
     },
     /**
-		 * To toggle the create tag panel, initially set to closed
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To toggle the create tag panel, initially set to closed
+     * @function
+     * @returns {undefined}
+     */
     toggleCreateTagPanel () {
       this.createTagCollapse = !this.createTagCollapse
     }

@@ -1808,7 +1808,7 @@ export default {
 				</div>`
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         html = `
 					<div>

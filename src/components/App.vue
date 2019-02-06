@@ -507,6 +507,13 @@ export default {
 body .modal {
 	z-index: 100;
 }
+
+svg {
+  max-width: 100%;
+  max-height: 100%;
+  fill: black;
+}
+
 .app-bg {
 	position: absolute;
 	width: 100%;

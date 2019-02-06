@@ -494,7 +494,7 @@ export default {
       let text = 'The News Feed has been deleted'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The removal has been sent for approval'
         type = 'info'
@@ -751,7 +751,7 @@ export default {
       let text = 'The News Feed has been created'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The News Feed has been sent for approval'
         type = 'info'

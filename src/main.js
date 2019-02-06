@@ -14,7 +14,7 @@ import GlobalFunctions from '@/global'
 import AppFunctions from '@/controllers/App'
 import environment from '@/environment.js'
 
-require('./assets/css/font-awesome/css/font-awesome.min.css')
+// require('./assets/css/font-awesome/css/font-awesome.min.css')
 require('./assets/css/simple-line-icons/simple-line-icons.min.css')
 require('./assets/css/bootstrap/css/bootstrap.min.css')
 require('./assets/css/components-md.min.css')

@@ -573,7 +573,7 @@ export default {
       let text = 'The Delivery Provider has been created'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The Delivery Provider has been sent for approval'
         type = 'info'
@@ -732,7 +732,7 @@ export default {
       let text = 'The Delivery Provider has been saved'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The changes have been sent for approval'
         type = 'info'
@@ -814,7 +814,7 @@ export default {
       let text = 'The Delivery Provider has been deleted'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The removal has been sent for approval'
         type = 'info'

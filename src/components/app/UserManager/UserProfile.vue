@@ -1499,7 +1499,7 @@ export default {
       let text = 'The Points have been added'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The changes have been sent for approval'
         type = 'info'

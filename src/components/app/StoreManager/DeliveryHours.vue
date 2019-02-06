@@ -563,7 +563,7 @@ export default {
       let text = 'The Delivery Hours have been created'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The Delivery Hours have been sent for approval'
         type = 'info'
@@ -650,7 +650,7 @@ export default {
       let text = 'The Delivery Hours have been updated'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The changes have been sent for approval'
         type = 'info'
@@ -712,7 +712,7 @@ export default {
       let text = 'The Delivery Hours have been deleted'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The removal has been sent for approval'
         type = 'info'

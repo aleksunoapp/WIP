@@ -659,7 +659,7 @@ export default {
       let text = 'The User FAQ has been created'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The User FAQ has been sent for approval'
         type = 'info'
@@ -711,7 +711,7 @@ export default {
       let text = 'The User FAQ has been saved'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The User FAQ has been sent for approval'
         type = 'info'
@@ -784,7 +784,7 @@ export default {
       let text = 'The User FAQ has been deleted'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The removal has been sent for approval'
         type = 'info'
