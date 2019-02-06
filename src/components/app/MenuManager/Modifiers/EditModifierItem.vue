@@ -447,7 +447,7 @@ export default {
       let text = 'The Modifier Item has been saved'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The changes have been sent for approval'
         type = 'info'

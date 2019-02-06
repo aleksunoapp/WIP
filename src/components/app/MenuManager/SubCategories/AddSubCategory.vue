@@ -282,7 +282,7 @@ export default {
       let text = 'The Subcategory has been created'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The Subcategory has been sent for approval'
         type = 'info'

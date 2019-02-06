@@ -592,7 +592,7 @@ export default {
       let text = 'The Store FAQ has been created'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The Store FAQ has been sent for approval'
         type = 'info'
@@ -693,7 +693,7 @@ export default {
       let text = 'The Store FAQ has been deleted'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The removal has been sent for approval'
         type = 'info'

@@ -519,7 +519,7 @@ export default {
       let text = 'The Reward Tier has been created'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The Reward Tier has been sent for approval'
         type = 'info'
@@ -639,7 +639,7 @@ export default {
       let text = 'The Reward Tier has been deleted'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The removal has been sent for approval'
         type = 'info'

@@ -1145,7 +1145,7 @@ export default {
       let text = 'The Roles have been saved'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The Roles have been sent for approval'
         type = 'info'
@@ -1594,7 +1594,7 @@ export default {
       let text = 'The Stores have been assigned'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The changes have been sent for approval'
         type = 'info'
@@ -1617,7 +1617,7 @@ export default {
       let text = 'The Location Manager has been created'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The Location Manager has been sent for approval'
         type = 'info'
@@ -1640,7 +1640,7 @@ export default {
       let text = 'The Location Manager has been saved'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The Location Manager has been sent for approval'
         type = 'info'

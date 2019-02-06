@@ -1018,7 +1018,7 @@ export default {
       let text = 'The Promocode has been created'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The Promocode has been sent for approval'
         type = 'info'

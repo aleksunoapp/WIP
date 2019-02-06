@@ -887,7 +887,7 @@ export default {
       let text = 'The Category has been created'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The Category has been sent for approval'
         type = 'info'

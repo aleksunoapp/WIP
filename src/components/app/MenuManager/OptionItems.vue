@@ -526,7 +526,7 @@ export default {
       let text = 'The Option Item has been created'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The Option Item has been sent for approval'
         type = 'info'

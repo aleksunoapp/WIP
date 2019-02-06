@@ -447,7 +447,7 @@ export default {
       let text = 'The User Group has been saved'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The User Group has been sent for approval'
         type = 'info'

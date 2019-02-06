@@ -998,7 +998,7 @@ export default {
       let text = partial ? payload.message : 'The Category Hours have been saved'
       let type = partial ? 'info' : 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The Category Hours have been sent for approval'
         type = 'info'

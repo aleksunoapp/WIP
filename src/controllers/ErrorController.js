@@ -17,6 +17,7 @@ export default function ajaxErrorHandler ({
   try {
     // Expired ecomm token
     if (
+      reason &&
       reason.responseJSON &&
       reason.responseJSON.code === 401 &&
       reason.responseJSON.status === `unauthorized`
@@ -25,7 +26,7 @@ export default function ajaxErrorHandler ({
       return
     }
     // Show error message from backend
-    if (reason.responseJSON.message.length) {
+    if (reason && reason.responseJSON.message.length) {
       vue[errorName.toString()] = reason.responseJSON.message
       return
     }

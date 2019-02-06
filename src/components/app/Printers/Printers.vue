@@ -553,7 +553,7 @@ export default {
       let text = 'The Printer has been created'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The Printer has been sent for approval'
         type = 'info'

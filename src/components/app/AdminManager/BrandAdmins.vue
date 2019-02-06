@@ -1238,7 +1238,7 @@ export default {
       let text = 'The Roles have been saved'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The changes have been sent for approval'
         type = 'info'
@@ -1426,7 +1426,7 @@ export default {
       let text = 'The Brand Admin has been created'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The Brand Admin has been sent for approval'
         type = 'info'
@@ -1449,7 +1449,7 @@ export default {
       let text = 'The Brand Admin has been updated'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The Brand Admin has been sent for approval'
         type = 'info'

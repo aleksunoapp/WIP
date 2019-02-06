@@ -1599,7 +1599,7 @@ export default {
       let text = 'The Holiday Hours have been deleted'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The removal has been sent for approval'
         type = 'info'
@@ -1622,7 +1622,7 @@ export default {
       let text = 'The Holiday Hours have been created'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The Holiday Hours have been sent for approval'
         type = 'info'
@@ -1954,7 +1954,7 @@ export default {
       let text = 'The Store Information has been created'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The Store Information has been sent for approval'
         type = 'info'
@@ -1977,7 +1977,7 @@ export default {
       let text = 'The Store Profile has been saved'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The changes have been sent for approval'
         type = 'info'
@@ -2000,7 +2000,7 @@ export default {
       let text = 'The Store Profile has been created'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The Store Profile has been sent for approval'
         type = 'info'
@@ -2023,7 +2023,7 @@ export default {
       let text = 'The Store Hours have been saved'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The changes have been sent for approval'
         type = 'info'
@@ -2046,7 +2046,7 @@ export default {
       let text = 'The Store Hours have been created'
       let type = 'success'
 
-      if (payload.pending_approval) {
+      if (payload && payload.pending_approval) {
         title = 'Approval Required'
         text = 'The changes have been sent for approval'
         type = 'info'
