@@ -11,17 +11,17 @@
 There are 5 categories. There are 9, but 6-9 are treated as aliases of 5, for values like category name and whether the category is displayed or expanded. Most category names are found in the `name` field of the category, except for category 5, whose name is sent separately as a field called `customerConcernsLabel`.
 
 Categories:
-|`id`|`serviceCategoryType`||
-|---|---|---|
-|1|SAFETY|fail/safety-related|
-|2|ATTN|warning|
-|3|PASS|pass, no price|
-|4|PRE|approved|
-|5|CC|concern, container category for categories 6-9|
-|6|n/a|child of `id: 5`, critical/safety-related?|
-|7|n/a|child of `id: 5`, moderate?|
-|8|n/a|child of `id: 5`, optional?|
-|9|n/a|child of `id: 5`, optional?|
+| `id` | `serviceCategoryType` |notes                                           |
+|:----:|-----------------------|------------------------------------------------|
+| 1    | SAFETY                | fail/safety-related                            |
+| 2    | ATTN                  | warning                                        |
+| 3    | PASS                  | pass, no price                                 |
+| 4    | PRE                   | approved                                       |
+| 5    | CC                    | concern, container category for categories 6-9 |
+| 6    | n/a                   | child of `id: 5`, critical/safety-related?     |
+| 7    | n/a                   | child of `id: 5`, moderate?                    |
+| 8    | n/a                   | child of `id: 5`, optional?                    |
+| 9    | n/a                   | child of `id: 5`, optional?                    |
 
 #### Services
 A service belongs to one category. A service may be its own thing, or it may be a parent of other services. There may be duplicate parent services and they should be deleted.
@@ -51,13 +51,13 @@ Services in category type PRE are not shown in a popup.
   - services with `isHighlighted: true`
   - summary
   - thanks
-- Additional: `isHighlighted: true` first, then
+- Additional:
   - login
   - additional welcome screen
   - services with `isHighlighted: true`
   - wait screen, if any unhighlightes services are unselected
-  - services with `isSelected: false`, if any
-  - summary
+  - services with `isSelected: false`, if any - show `isSelected: true`?
+  - summary - if `isSelected: true` not shown on previous screen, inlclude in total and / or payload?
   - thanks
 
 ### CSS
