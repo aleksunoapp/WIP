@@ -44,21 +44,26 @@ Images are not shown for services in category type PRE.
 Services in category type PRE are not shown in a popup.
 
 ### Flows
-- Empty: services array is empty
-- Original: 
-  - login
-  - welcome screen (at-a-glance)
-  - services with `isHighlighted: true`
-  - summary
-  - thanks
-- Additional:
-  - login
-  - additional welcome screen
-  - services with `isHighlighted: true`
-  - wait screen, if any unhighlightes services are unselected
-  - services with `isSelected: false`, if any - show `isSelected: true`?
-  - summary - if `isSelected: true` not shown on previous screen, inlclude in total and / or payload?
-  - thanks
+- Empty:
+  * login
+  * summary
+  * thanks
+- Original (when no services have the `isHighlighted` flag): 
+  * login
+  * at-a-glance
+  * all services
+  * summary, signature
+  * thanks
+- Additional (when any service has the `isHighlighted` flag):
+  * login
+  * additional welcome screen
+  * updated services
+  * wait screen - only if any of the remaining services are unselected
+  * remaining unselected services, if any
+    QUESTION: Should we show selected services here too?
+  * summary, signature
+    QUESTION: If selected services are hidden on the previous screen, should their prices be inlcluded in the total? Should they be sent back to the server as approved?
+  * thanks
 
 ### CSS
 SCSS, scoped and nested the same way as HTML, or CSS.
