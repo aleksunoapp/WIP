@@ -15,9 +15,42 @@ const checkStatus = function (response) {
   }
 }
 
+const fetchWithTimeout = async function (url, options = {}) {
+  let didTimeOut = false
+  return new Promise(function (resolve, reject) {
+    let timeout
+    if (options.timeout) {
+      timeout = setTimeout(function () {
+        didTimeOut = true
+        reject(new Error('timeout'))
+      }, options.timeout)
+    }
+
+    fetch(url, options)
+      .then(function (response) {
+        if (options.timeout) {
+          clearTimeout(timeout)
+        }
+        if (!didTimeOut) {
+          resolve(response)
+        }
+      })
+      .catch(function (err) {
+        if (didTimeOut) return
+        reject(err)
+      })
+  })
+    .then(function (response) {
+      return response
+    })
+    .catch(function (err) {
+      throw err
+    })
+}
+
 export const fetchMetadata = () => {
   const url = new URL(`${baseUrl}/metadata/${store.state.slug}`)
-  return fetch(url)
+  return fetchWithTimeout(url)
     .then((response) => checkStatus(response))
     .then((response) => response.json())
     .then((response) => response)
@@ -36,7 +69,7 @@ export const fetchToken = async () => {
     'accept': '*/*',
     'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
   })
-  return fetch(url, {
+  return fetchWithTimeout(url, {
     method: 'POST',
     body,
     headers
@@ -52,7 +85,7 @@ export const fetchServices = async () => {
   const headers = new Headers({
     Authorization: `Bearer ${store.state.token}`
   })
-  return fetch(url, {
+  return fetchWithTimeout(url, {
     headers
   })
     .then((response) => checkStatus(response))
@@ -66,7 +99,7 @@ export const fetchInspectionReportUrl = async () => {
   const headers = new Headers({
     Authorization: `Bearer ${store.state.token}`
   })
-  return fetch(url, {
+  return fetchWithTimeout(url, {
     headers
   })
     .then((response) => checkStatus(response))
@@ -80,7 +113,7 @@ export const fetchAdvisor = async () => {
   const headers = new Headers({
     Authorization: `Bearer ${store.state.token}`
   })
-  return fetch(url, {
+  return fetchWithTimeout(url, {
     headers
   })
     .then((response) => checkStatus(response))
@@ -114,7 +147,7 @@ export const fetchTax = async () => {
   })
   const body = '{ selectedServices: ' + JSON.stringify(selectedServices) + '}'
 
-  return fetch(url, {
+  return fetchWithTimeout(url, {
     method: 'POST',
     headers,
     body
@@ -165,7 +198,7 @@ export const postServices = async () => {
     customerSignature: store.state.signature
   })
 
-  return fetch(url, {
+  return fetchWithTimeout(url, {
     method: 'POST',
     headers,
     body
@@ -183,7 +216,7 @@ export const postLog = async () => {
   })
   const body = JSON.stringify(store.state.log)
 
-  return fetch(url, {
+  return fetchWithTimeout(url, {
     method: 'POST',
     headers,
     body
