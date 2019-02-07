@@ -271,30 +271,6 @@
                         </label>
                       </div>
                       <div class="form-group form-md-line-input form-md-floating-label">
-                        <input
-                          id="form_control_tax"
-                          v-model="storeToBeEdited.tax"
-                          type="text"
-                          class="form-control input-sm edited"
-                        >
-                        <label for="form_control_tax">
-                          Tax
-                        </label>
-                      </div>
-                      <div class="form-group form-md-line-input form-md-floating-label">
-                        <label>Price Includes Tax:</label><br>
-                        <el-switch
-                          v-model="storeToBeEdited.price_includes_tax"
-                          :disabled="!$root.permissions['stores info update']? true : false"
-                          active-color="#0c6"
-                          inactive-color="#ff4949"
-                          :active-value="1"
-                          :inactive-value="0"
-                          active-text="Yes"
-                          inactive-text="No"
-                        />
-                      </div>
-                      <div class="form-group form-md-line-input form-md-floating-label">
                         <label>Store Is Corporate:</label><br>
                         <el-switch
                           v-model="storeToBeEdited.is_corporate"
@@ -663,6 +639,17 @@
                             </td>
                           </tr>
                           <tr>
+                            <td>Tax</td>
+                            <td>
+                              <input
+                                id="form_control_tax"
+                                v-model="metaToBeEdited.tax"
+                                type="text"
+                                class="form-control input-sm edited"
+                              >
+                            </td>
+                          </tr>
+                          <tr>
                             <td>
                               Delivery Tax
                             </td>
@@ -673,6 +660,21 @@
                                 class="form-control input-sm"
                                 :disabled="metaToBeEdited.opening_soon === 1"
                               >
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Price Includes Tax</td>
+                            <td>
+                              <el-switch
+                                v-model="storeToBeEdited.price_includes_tax"
+                                :disabled="!$root.permissions['stores info update']? true : false"
+                                active-color="#0c6"
+                                inactive-color="#ff4949"
+                                :active-value="1"
+                                :inactive-value="0"
+                                active-text="Yes"
+                                inactive-text="No"
+                              />
                             </td>
                           </tr>
                           <tr>
@@ -1278,7 +1280,7 @@ export default {
       googleSearchResults: [],
       locationDetails: {},
       customText:
-				'Click on the button above to add holiday hours for this location.',
+        'Click on the button above to add holiday hours for this location.',
       showHolidayHoursModal: false,
       noProfileData: '',
       noHoursData: '',
@@ -1317,12 +1319,12 @@ export default {
       this.addAHoliday = !this.addAHoliday
     },
     /**
-		 * To copy the time to other days.
-		 * @function
-		 * @param {string} time - The time to copy
-		 * @param {object} event - The click event that initiated the action
-		 * @returns {undefined}
-		 */
+     * To copy the time to other days.
+     * @function
+     * @param {string} time - The time to copy
+     * @param {object} event - The click event that initiated the action
+     * @returns {undefined}
+     */
     applyOpeningTimeToAll (time, event) {
       event.preventDefault()
       this.hoursToBeEdited.forEach(day => {
@@ -1330,12 +1332,12 @@ export default {
       })
     },
     /**
-		 * To copy the time to other days.
-		 * @function
-		 * @param {string} time - The time to copy
-		 * @param {object} event - The click event that initiated the action
-		 * @returns {undefined}
-		 */
+     * To copy the time to other days.
+     * @function
+     * @param {string} time - The time to copy
+     * @param {object} event - The click event that initiated the action
+     * @returns {undefined}
+     */
     applyClosingTimeToAll (time, event) {
       event.preventDefault()
       this.hoursToBeEdited.forEach(day => {
@@ -1343,19 +1345,19 @@ export default {
       })
     },
     /**
-		 * To update the selected provider.
-		 * @function
-		 * @param {sring} provider - The selected provider.
-		 * @returns {undefined}
-		 */
+     * To update the selected provider.
+     * @function
+     * @param {sring} provider - The selected provider.
+     * @returns {undefined}
+     */
     updatePOSprovider (provider) {
       this.storeToBeEdited.pos_partner.pos_provider = provider
     },
     /**
-		 * To add location POS settings.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To add location POS settings.
+     * @function
+     * @returns {undefined}
+     */
     displayPOSsettingsForm () {
       this.storeToBeEdited.pos_partner = {
         pos_provider: '',
@@ -1367,10 +1369,10 @@ export default {
       }
     },
     /**
-		 * To get a list of store groups.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get a list of store groups.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getStoreGroups () {
       var storeGroupsVue = this
       storeGroupsVue.storeGroups = []
@@ -1394,11 +1396,11 @@ export default {
         })
     },
     /**
-		 * To add holiday hours emitted by the child modal, to the list of holiday hours and submits the same to the backend.
-		 * @function
-		 * @param {object} val - The object emitted by the child.
-		 * @returns {undefined}
-		 */
+     * To add holiday hours emitted by the child modal, to the list of holiday hours and submits the same to the backend.
+     * @function
+     * @param {object} val - The object emitted by the child.
+     * @returns {undefined}
+     */
     addHolidayHours (val) {
       this.showHolidayHoursModal = false
       this.createHolidayHours(val)
@@ -1431,11 +1433,11 @@ export default {
       }
     },
     /**
-		 * To submit the holiday hours (that are oassed in a parameter) to the backend.
-		 * @function
-		 * @param {object} val - The object emitted by the child.
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To submit the holiday hours (that are oassed in a parameter) to the backend.
+     * @function
+     * @param {object} val - The object emitted by the child.
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     createHolidayHours (val) {
       var editStoreVue = this
 
@@ -1473,12 +1475,12 @@ export default {
         })
     },
     /**
-		 * To submit the holiday hours (that are oassed in a parameter) to the backend.
-		 * @function
-		 * @param {object} val - The object emitted by the child.
-		 * @param {object} event - The click event that initiated the action.
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To submit the holiday hours (that are oassed in a parameter) to the backend.
+     * @function
+     * @param {object} val - The object emitted by the child.
+     * @param {object} event - The click event that initiated the action.
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     updateHolidayHours (val, event) {
       event.stopPropagation()
       event.preventDefault()
@@ -1526,36 +1528,36 @@ export default {
         })
     },
     /**
-		 * To open the delete holiday hours modal
-		 * @function
-		 * @param {object} hour - The hour to delete
-		 * @returns {undefined}
-		 */
+     * To open the delete holiday hours modal
+     * @function
+     * @param {object} hour - The hour to delete
+     * @returns {undefined}
+     */
     openDeleteHolidayHoursModal (hour) {
       this.holidayHourToDelete = hour
       this.showDeleteHolidayHoursModal = true
     },
     /**
-		 * To close the delete holiday hours modal
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the delete holiday hours modal
+     * @function
+     * @returns {undefined}
+     */
     closeDeleteHolidayHoursModal () {
       this.showDeleteHolidayHoursModal = false
     },
     /**
-		 * To clear the error
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To clear the error
+     * @function
+     * @returns {undefined}
+     */
     clearDeleteHolidayHoursError () {
       this.deleteHolidayHoursErrorMessage = ''
     },
     /**
-		 * To submit delete the hours from the database
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To submit delete the hours from the database
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     deleteHolidayHours () {
       this.holidayHourToDelete.deleting = true
       var editStoreVue = this
@@ -1589,11 +1591,11 @@ export default {
         })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     confirmHolidayHoursDeleted (payload = {}) {
       let title = 'Success'
       let text = 'The Holiday Hours have been deleted'
@@ -1612,11 +1614,11 @@ export default {
       })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showAlert (payload = {}) {
       let title = 'Success'
       let text = 'The Holiday Hours have been created'
@@ -1637,27 +1639,27 @@ export default {
       })
     },
     /**
-		 * To add location holiday hours.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To add location holiday hours.
+     * @function
+     * @returns {undefined}
+     */
     displayHolidayHoursModal () {
       this.showHolidayHoursModal = true
     },
     /**
-		 * To update the value of the 'is_corporate' field.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To update the value of the 'is_corporate' field.
+     * @function
+     * @returns {undefined}
+     */
     updateStoreIsCorporate () {
       this.isCorporateUpdated = true
     },
     /**
-		 * To capitalize a value (note that this is currently only functional for words with 1 space)
-		 * @function
-		 * @param {string} val - The value to be capitalized.
-		 * @returns {undefined}
-		 */
+     * To capitalize a value (note that this is currently only functional for words with 1 space)
+     * @function
+     * @param {string} val - The value to be capitalized.
+     * @returns {undefined}
+     */
     capitalize (val) {
       var output
 
@@ -1666,29 +1668,29 @@ export default {
 
       if (index !== -1) {
         output =
-					val.substring(0, 1).toUpperCase() +
-					val.substring(1, index + 1) +
-					val.substring(index + 1, index + 2).toUpperCase() +
-					val.substring(index + 2)
+          val.substring(0, 1).toUpperCase() +
+          val.substring(1, index + 1) +
+          val.substring(index + 1, index + 2).toUpperCase() +
+          val.substring(index + 2)
       } else {
         output = val.substring(0, 1).toUpperCase() + val.substring(1)
       }
       return output
     },
     /**
-		 * To clear the passed in error.
-		 * @function
-		 * @param {string} val - The error/message to be cleared
-		 * @returns {undefined}
-		 */
+     * To clear the passed in error.
+     * @function
+     * @param {string} val - The error/message to be cleared
+     * @returns {undefined}
+     */
     clearError (val) {
       this[val] = ''
     },
     /**
-		 * To alert the user that the menu has been synced.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To alert the user that the menu has been synced.
+     * @function
+     * @returns {undefined}
+     */
     showSyncSuccessful () {
       this.$swal({
         title: 'Success!',
@@ -1698,10 +1700,10 @@ export default {
       })
     },
     /**
-		 * To get the details of a specific store.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get the details of a specific store.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getStoreDetails () {
       var editStoreVue = this
       StoresFunctions.getStoreDetails(
@@ -1731,10 +1733,10 @@ export default {
         })
     },
     /**
-		 * To get the meta/profile of the current store.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get the meta/profile of the current store.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getStoreMeta () {
       var editStoreVue = this
       StoresFunctions.getStoreMeta(
@@ -1763,10 +1765,10 @@ export default {
         })
     },
     /**
-		 * To get the hours of the current store.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get the hours of the current store.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getStoreHours () {
       var editStoreVue = this
       StoresFunctions.getStoreHours(
@@ -1804,10 +1806,10 @@ export default {
         })
     },
     /**
-		 * To get the holiday hours of the current store.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get the holiday hours of the current store.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getStoreHolidayHours () {
       var editStoreVue = this
       StoresFunctions.getStoreHolidayHours(
@@ -1851,10 +1853,10 @@ export default {
         })
     },
     /**
-		 * To check if the menu data is valid before submitting to the backend.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
+     * To check if the menu data is valid before submitting to the backend.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
     validateStoreInformation () {
       var editStoreVue = this
       return new Promise(function (resolve, reject) {
@@ -1876,7 +1878,7 @@ export default {
           reject('Store phone cannot be blank')
         } else if (
           editStoreVue.storeToBeEdited.fax &&
-					editStoreVue.storeToBeEdited.fax.length < 10
+          editStoreVue.storeToBeEdited.fax.length < 10
         ) {
           reject('Store fax number should be at least 10 characters')
         } else if (!editStoreVue.storeToBeEdited.email.length) {
@@ -1896,10 +1898,10 @@ export default {
       })
     },
     /**
-		 * To update the store information in the backend.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To update the store information in the backend.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     updateStoreInformation () {
       var editStoreVue = this
       editStoreVue.storeInformationError = ''
@@ -1944,11 +1946,11 @@ export default {
         })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showSuccessAlert (payload = {}) {
       let title = 'Success'
       let text = 'The Store Information has been created'
@@ -1967,11 +1969,11 @@ export default {
       })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showMetaUpdateSuccess (payload = {}) {
       let title = 'Success'
       let text = 'The Store Profile has been saved'
@@ -1990,11 +1992,11 @@ export default {
       })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showMetaCreateSuccess (payload = {}) {
       let title = 'Success'
       let text = 'The Store Profile has been created'
@@ -2013,11 +2015,11 @@ export default {
       })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showHoursUpdateSuccess (payload = {}) {
       let title = 'Success'
       let text = 'The Store Hours have been saved'
@@ -2036,11 +2038,11 @@ export default {
       })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showHoursCreateSuccess (payload = {}) {
       let title = 'Success'
       let text = 'The Store Hours have been created'
@@ -2059,10 +2061,10 @@ export default {
       })
     },
     /**
-		 * To check if the store meta data is valid before submitting to the backend.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
+     * To check if the store meta data is valid before submitting to the backend.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
     validateStoreMeta () {
       var editStoreVue = this
       return new Promise(function (resolve, reject) {
@@ -2070,9 +2072,11 @@ export default {
           resolve('Hurray')
         } else if (
           editStoreVue.metaToBeEdited.external_online_ordering_enabled &&
-					!editStoreVue.metaToBeEdited.external_online_ordering_url
+          !editStoreVue.metaToBeEdited.external_online_ordering_url
         ) {
           reject('The external online ordering enabled field is required')
+        } else if (!editStoreVue.metaToBeEdited.tax) {
+          reject('Tax cannot be blank')
         } else if (editStoreVue.metaToBeEdited.gateway_name === null) {
           reject('Gateway Name cannot be blank')
         } else if (editStoreVue.metaToBeEdited.merchant_id === '') {
@@ -2084,11 +2088,11 @@ export default {
       })
     },
     /**
-		 * To update the store meta in the backend.
-		 * @function
-		 * @param {object} meta - The meta object to be updated.
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To update the store meta in the backend.
+     * @function
+     * @param {object} meta - The meta object to be updated.
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     updateStoreMeta () {
       var editStoreVue = this
       editStoreVue.storeMetaError = ''
@@ -2109,7 +2113,7 @@ export default {
 
           if (editStoreVue.noProfileData === 'No profile to display') {
             editStoreVue.metaToBeEdited.created_by =
-							editStoreVue.$root.createdBy
+              editStoreVue.$root.createdBy
             StoresFunctions.createStoreMeta(
               editStoreVue.storeToBeEdited.id,
               editStoreVue.metaToBeEdited,
@@ -2168,10 +2172,10 @@ export default {
         })
     },
     /**
-		 * To check if the store data is valid before submitting to the backend.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
+     * To check if the store data is valid before submitting to the backend.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
     validateStoreHours () {
       var editStoreVue = this
       return new Promise(function (resolve, reject) {
@@ -2191,12 +2195,12 @@ export default {
       })
     },
     /**
-		 * To update the hours of operation for a store.
-		 * @function
-		 * @param {string} day - The day of the week to be updated
-		 * @param {object} hours - The details of the day to be updated
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To update the hours of operation for a store.
+     * @function
+     * @param {string} day - The day of the week to be updated
+     * @param {object} hours - The details of the day to be updated
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     updateStoreHours (day, hours) {
       var editStoreVue = this
 
@@ -2270,10 +2274,10 @@ export default {
       }
     },
     /**
-		 * To check if the POS settings are valid before submitting to the backend.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
+     * To check if the POS settings are valid before submitting to the backend.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
     validatePOSsettings () {
       var editStoreVue = this
       return new Promise(function (resolve, reject) {
@@ -2290,11 +2294,11 @@ export default {
       })
     },
     /**
-		 * To set the selected location and get its details.
-		 * @function
-		 * @param {object} location - The selected location object.
-		 * @returns {undefined}
-		 */
+     * To set the selected location and get its details.
+     * @function
+     * @param {object} location - The selected location object.
+     * @returns {undefined}
+     */
     selectLocation (location) {
       if (this.displayLocationsDropdown) {
         this.displayLocationsDropdown = false
@@ -2305,20 +2309,20 @@ export default {
       this.getGoogleLocationDetails(location.place_id)
     },
     /**
-		 * To show/hide the location suggestions dropdown.
-		 * @function
-		 * @param {boolean} focus - To determine whether to show/hide the dropdown.
-		 * @returns {undefined}
-		 */
+     * To show/hide the location suggestions dropdown.
+     * @function
+     * @param {boolean} focus - To determine whether to show/hide the dropdown.
+     * @returns {undefined}
+     */
     locationFocus (focus) {
       this.displayLocationsDropdown = focus
     },
     /**
-		 * To get complete details of a particular location using the google places API.
-		 * @function
-		 * @param {string} placeId - To google placeId of the selected location.
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get complete details of a particular location using the google places API.
+     * @function
+     * @param {string} placeId - To google placeId of the selected location.
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getGoogleLocationDetails (placeId) {
       var editStoreVue = this
       AppFunctions.getGoogleLocationDetails(
@@ -2329,9 +2333,9 @@ export default {
         .then(response => {
           editStoreVue.locationDetails = response
           editStoreVue.storeToBeEdited.latitude =
-						editStoreVue.locationDetails.geometry.location.lat
+            editStoreVue.locationDetails.geometry.location.lat
           editStoreVue.storeToBeEdited.longitude =
-						editStoreVue.locationDetails.geometry.location.lng
+            editStoreVue.locationDetails.geometry.location.lng
 
           // empty all fields initially
           editStoreVue.storeToBeEdited.country = ''
@@ -2350,7 +2354,7 @@ export default {
               var subItem = item.types[j]
               if (
                 subItem === 'postal_code' ||
-								subItem === 'postal_code_prefix'
+                subItem === 'postal_code_prefix'
               ) {
                 editStoreVue.storeToBeEdited.postal = item.long_name
               } else if (subItem === 'country') {
@@ -2367,10 +2371,10 @@ export default {
         .catch(reason => {})
     },
     /**
-		 * To clear the location details set using google search.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To clear the location details set using google search.
+     * @function
+     * @returns {undefined}
+     */
     clearGoogleLocationDetails () {
       this.storeToBeEdited.address_line_2 = ''
       this.storeToBeEdited.latitude = ''
@@ -2382,10 +2386,10 @@ export default {
       this.storeToBeEdited.postal = ''
     },
     /**
-		 * To get results based off google's places search API.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get results based off google's places search API.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getGooglePlaces: debounce(function () {
       var editStoreVue = this
       if (editStoreVue.storeToBeEdited.address_line_1.length >= 3) {
