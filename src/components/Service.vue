@@ -307,6 +307,8 @@ export default Vue.extend({
   background-color: var(--grey-transparent);
   .modal {
     height: 100%;
+    width: 100%;
+    max-width: 768px;
     overflow: scroll;
     margin: 0;
     @media (min-width: 992px) {
