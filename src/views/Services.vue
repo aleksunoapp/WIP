@@ -192,40 +192,9 @@ export default Vue.extend({
   overflow: hidden;
   background-color: var(--grey-light-background);
 }
-.navigation, .view {
-  width: 100%;
-}
-.navigation {display: none}
-@media (min-width: 992px) {
-  .navigation {
-    display: block;
-  }
-}
-
-.navigation {
-  background-color: var(--white);
-  min-height: 100%;
-  overflow: scroll;
-  .total {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-left: 1.6rem;
-    font-size: 1.6rem;
-  }
-  .price {
-    margin-right: 2rem;
-    color: var(--blue);
-    font-weight: 700;
-    letter-spacing: 0.0625rem;
-    font-family: 'Futura Heavy';
-    background-color: var(--grey-light-background);
-    padding: 0.5rem 1rem;
-    border-radius: 500px;
-  }
-}
 
 .view {
+  width: 100%;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -248,9 +217,6 @@ export default Vue.extend({
       }
       .header {
         display: flex;
-        @media (min-width: 992px) {
-          display: none;
-        }
         justify-content: space-between;
         align-items: center;
         border-top-left-radius: 3px;
