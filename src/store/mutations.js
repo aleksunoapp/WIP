@@ -46,6 +46,11 @@ export const mutations = {
   openReason (state) {
     state.reason = true
   },
+  setReason (state, reasonId) {
+    if (state.service.id !== undefined) {
+      state.service.declinedReasonId = reasonId
+    }
+  },
   closeReason (state) {
     state.reason = false
   },
@@ -54,11 +59,6 @@ export const mutations = {
   },
   closeHelp (state) {
     state.help = false
-  },
-  setReason (state, reasonId) {
-    if (state.service.id !== undefined) {
-      state.service.declinedReasonId = reasonId
-    }
   },
   setSlug (state, slug) {
     state.log.clientId = slug

@@ -12,23 +12,6 @@ import {
 } from '@/services'
 
 export const actions = {
-  async handleError ({ state, commit }, e) {
-    let text = i18n.t('something_went_wrong')
-    try {
-      if (e.message) {
-        text = e.message
-      } else if (e.response) {
-        await e.response.json().then((response) => {
-          if (typeof response.error === 'string') {
-            text = `${i18n.t('were_sorry_we_dont_recognize')} ${state.code} ${i18n.t('in_our_database')}`
-          }
-        })
-      }
-    } catch (e) {
-      console.log('DMPI error: ', e)
-    }
-    commit('setError', text)
-  },
   async getMetadata ({ state, commit, dispatch }) {
     commit('setLoading', { key: 'getMetadata', loading: true })
     await fetchMetadata()
@@ -92,17 +75,6 @@ export const actions = {
         commit('setLoading', { key: 'getMetadata', loading: false })
       })
   },
-  async sendServices ({ commit, dispatch }) {
-    commit('setLoading', { key: 'sendServices', loading: true })
-    await postServices()
-      .catch((error) => {
-        dispatch('handleError', error)
-      })
-      .finally(() => {
-        commit('setLoading', { key: 'sendServices', loading: false })
-        dispatch('routeAfterApprove')
-      })
-  },
   async getTax ({ commit, dispatch }) {
     commit('setLoading', { key: 'getTax', loading: true })
     await fetchTax()
@@ -117,26 +89,22 @@ export const actions = {
         commit('setLoading', { key: 'getTax', loading: false })
       })
   },
-  routeAfterMetadata ({ state }) {
-    if (state.expired) {
-      router.push({ name: 'link-expired' })
-    }
-  },
-  routeAfterLogin ({ commit, getters, state }) {
-    if (getters.additionalServices.length) {
-      router.push({ name: 'additional' })
-    } else {
-      if (state.services.length) {
-        router.push({ name: 'at-a-glance' })
-      } else {
-        router.push({ name: 'summary' })
+  async handleError ({ state, commit }, e) {
+    let text = i18n.t('something_went_wrong')
+    try {
+      if (e.message) {
+        text = e.message
+      } else if (e.response) {
+        await e.response.json().then((response) => {
+          if (typeof response.error === 'string') {
+            text = `${i18n.t('were_sorry_we_dont_recognize')} ${state.code} ${i18n.t('in_our_database')}`
+          }
+        })
       }
+    } catch (e) {
+      console.log('DMPI error: ', e)
     }
-    commit('setLoading', { key: 'logIn', loading: false })
-  },
-  routeAfterApprove ({ commit }) {
-    router.push({ name: 'thanks' })
-    commit('setExpired', true)
+    commit('setError', text)
   },
   async logIn ({ commit, dispatch }) {
     commit('setLoading', { key: 'logIn', loading: true })
@@ -182,6 +150,44 @@ export const actions = {
         commit('setLoading', { key: 'logIn', loading: false })
       })
   },
+  sendLog ({ commit, dispatch }) {
+    postLog()
+      .catch((error) => {
+        console.log({ error })
+      })
+  },
+  async sendServices ({ commit, dispatch }) {
+    commit('setLoading', { key: 'sendServices', loading: true })
+    await postServices()
+      .catch((error) => {
+        dispatch('handleError', error)
+      })
+      .finally(() => {
+        commit('setLoading', { key: 'sendServices', loading: false })
+        dispatch('routeAfterApprove')
+      })
+  },
+  routeAfterApprove ({ commit }) {
+    router.push({ name: 'thanks' })
+    commit('setExpired', true)
+  },
+  routeAfterLogin ({ commit, getters, state }) {
+    if (getters.additionalServices.length) {
+      router.push({ name: 'additional' })
+    } else {
+      if (state.services.length) {
+        router.push({ name: 'at-a-glance' })
+      } else {
+        router.push({ name: 'summary' })
+      }
+    }
+    commit('setLoading', { key: 'logIn', loading: false })
+  },
+  routeAfterMetadata ({ state }) {
+    if (state.expired) {
+      router.push({ name: 'link-expired' })
+    }
+  },
   viewService ({ commit, state }, service) {
     if (state.service.id !== undefined) {
       commit('logEvent', `Finished viewing service ${service.id}`)
@@ -191,12 +197,6 @@ export const actions = {
     if (!state.modal) {
       commit('openService')
     }
-  },
-  sendLog ({ commit, dispatch }) {
-    postLog()
-      .catch((error) => {
-        console.log({ error })
-      })
   }
 }
 

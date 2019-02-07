@@ -15,8 +15,8 @@ export const state = {
   },
   customerConcernsLabel: '',
   deadlines: {
-    respondBy: null,
-    readyBy: null
+    readyBy: null,
+    respondBy: null
   },
   dealer: {
     address: '',
