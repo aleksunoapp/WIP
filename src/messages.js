@@ -7,6 +7,11 @@ export const dateTimeFormats = {
       day: 'numeric',
       month: 'short',
       year: 'numeric'
+    },
+    time: {
+      // Jan. 15, 2019, 1:00 p.m.
+      hour: 'numeric',
+      minute: 'numeric'
     }
   },
   'en-CA': {
@@ -17,6 +22,11 @@ export const dateTimeFormats = {
       day: 'numeric',
       month: 'short',
       year: 'numeric'
+    },
+    time: {
+      // Jan. 15, 2019, 1:00 p.m.
+      hour: 'numeric',
+      minute: 'numeric'
     }
   },
   'fr-CA': {
@@ -27,6 +37,11 @@ export const dateTimeFormats = {
       day: 'numeric',
       month: 'short',
       year: 'numeric'
+    },
+    time: {
+      // Jan. 15, 2019, 1:00 p.m.
+      hour: 'numeric',
+      minute: 'numeric'
     }
   },
   'es-MX': {
@@ -37,6 +52,11 @@ export const dateTimeFormats = {
       day: 'numeric',
       month: 'short',
       year: 'numeric'
+    },
+    time: {
+      // Jan. 15, 2019, 1:00 p.m.
+      hour: 'numeric',
+      minute: 'numeric'
     }
   }
 }
