@@ -60,7 +60,10 @@
               </div>
             </div>
             <div class="images">
-              <div class="badge">
+              <div
+                v-if="service.isHighlighted"
+                class="badge"
+              >
                 {{ $t("updated") }}
               </div>
               <img
