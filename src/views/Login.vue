@@ -442,6 +442,7 @@ export default Vue.extend({
         font-weight: 700;
         letter-spacing: 1px;
         font-size: 2rem;
+        text-align: center;
         @media (min-width: 768px) {
           font-size: 2.5rem;
         }
