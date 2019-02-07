@@ -563,10 +563,7 @@ export default Vue.extend({
           let unit = getComputedStyle(label).getPropertyValue('--unit')
           unit = unit.substr(0, unit.length - 2)
           this.approve.checked = input.checked
-          let top = label.offsetTop
-          if (window.innerWidth < 992) {
-            top = top - unit + 60
-          }
+          let top = label.offsetTop - unit + 60
           this.approve.style.top = top
           this.approve.style.left = label.offsetLeft + listScrollContainer.offsetLeft
           this.approve.show = true
