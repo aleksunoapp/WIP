@@ -71,7 +71,8 @@ export const messages = {
     services_approved: 'Services Approved',
     how_it_works: 'How It Works',
     // login
-    header: 'Vehicle Inspection Update',
+    header_first_half: 'Vehicle Inspection Update',
+    header_second_half: '',
     enter: 'Enter',
     please_enter_your_last_name: 'Please enter your last name',
     please_enter_your_company_name: 'Please enter your company name',
@@ -178,7 +179,8 @@ export const messages = {
     services_approved: 'Services Approved',
     how_it_works: 'How It Works',
     // login
-    header: 'Vehicle Inspection Update',
+    header_first_half: 'Vehicle Inspection Update',
+    header_second_half: '',
     enter: 'Enter',
     please_enter_your_last_name: 'Please enter your last name',
     please_enter_your_company_name: 'Please enter your company name',
@@ -285,7 +287,8 @@ export const messages = {
     services_approved: 'Services Précédemment Approuvés',
     how_it_works: 'Comment cela fonctionne-t-il?',
     // login
-    header: 'Résultats d\'inspection',
+    header_first_half: 'Résultats d\'inspection',
+    header_second_half: 'Résultats d\'inspection',
     enter: 'Soumettre',
     please_enter_your_last_name: 'Veuillez inscrire votre nom de famille',
     please_enter_your_company_name: 'Veuillez inscrire le nom de votre compagnie',
@@ -392,7 +395,8 @@ export const messages = {
     services_approved: 'Servicios Aprobados Previamente',
     how_it_works: 'Cómo funciona',
     // login
-    header: 'Actualización de inspección del vehículo',
+    header_first_half: 'Actualización de inspección',
+    header_second_half: 'del vehículo',
     enter: 'Introducir',
     please_enter_your_last_name: 'Por favor ingrese su apellido',
     please_enter_your_company_name: 'Por favor ingrese el nombre de su compañia',

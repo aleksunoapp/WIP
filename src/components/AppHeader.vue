@@ -169,6 +169,7 @@ export default Vue.extend({
   box-shadow: var(--shadow);
 }
 .text {
+  padding: 0 0 0 1rem;
   font-size: 1.5rem;
 }
 .uppercase {

@@ -16,7 +16,12 @@
           :src="dealer.logoUrl"
         />
         <h1 class="header">
-          {{ $t("header") }}
+          <span class="half">
+{{ $t("header_first_half") }}
+</span>
+          <span class="half">
+{{ $t("header_second_half") }}
+</span>
         </h1>
         <fieldset
           class="fieldset"
@@ -443,6 +448,9 @@ export default Vue.extend({
         letter-spacing: 1px;
         font-size: 2rem;
         text-align: center;
+        .half {
+          display: block;
+        }
         @media (min-width: 768px) {
           font-size: 2.5rem;
         }
