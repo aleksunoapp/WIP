@@ -60,16 +60,16 @@
                   </p>
                 </div>
                 <div class="images">
+                  <image-container
+                    :src="service.imageUrl"
+                    class="image"
+                  />
                   <div
                     v-if="service.isHighlighted"
                     class="badge"
                   >
                     {{ $t("updated") }}
                   </div>
-                  <image-container
-                    :src="service.imageUrl"
-                    class="image"
-                  />
                 </div>
                 <p
                   v-if="comment"

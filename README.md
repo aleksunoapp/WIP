@@ -7,7 +7,6 @@
 
 ### Data
 
-
 #### Categories
 There are 5 categories. There are 9, but 6-9 are treated as aliases of 5, for values like category name and whether the category is displayed or expanded. Most category names are found in the `name` field of the category, except for category 5, whose name is sent separately as a field called `customerConcernsLabel`.
 
