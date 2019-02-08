@@ -191,6 +191,7 @@ export default Vue.extend({
       margin: 0 1rem;
     }
     .card {
+      margin: 4rem 0;
       display: flex;
       justify-content: center;
       align-items: center;

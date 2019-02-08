@@ -231,6 +231,9 @@ export default Vue.extend({
         .left {
           display: flex;
           align-items: center;
+          .name {
+            padding: 0.5rem;
+          }
           .count {
             width: 4rem;
             height: 4rem;

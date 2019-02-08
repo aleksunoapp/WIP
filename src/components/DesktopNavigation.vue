@@ -1,7 +1,7 @@
 <template>
   <div class="navigation">
     <p class="total">
-      <span>
+      <span class="text">
         {{ $t("total_estimate") }}
         <span class="bold">
           ({{ countTotal }})
@@ -135,7 +135,9 @@ export default {
     justify-content: space-between;
     align-items: center;
     margin-left: 1.6rem;
-    font-size: 1.6rem;
+    .text {
+      display: inline;
+    }
   }
   .price {
     margin-right: 2rem;
@@ -177,7 +179,7 @@ export default {
   background-color: var(--white);
   box-shadow: var(--shadow-light);
   font-family: 'Futura Heavy';
-  font-size: 1.5rem;
+  font-size: 1em;
   font-weight: 700;
 }
 .border {
@@ -224,6 +226,7 @@ export default {
   }
   .name {
     margin-left: 1rem;
+    text-align: left;
     text-transform: uppercase;
   }
 }

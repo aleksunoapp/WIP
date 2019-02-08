@@ -67,6 +67,7 @@
                 {{ $t("updated") }}
               </div>
               <img
+                v-if="service.imageUrl"
                 :src="service.imageUrl"
                 alt=""
                 class="image"
@@ -381,14 +382,14 @@ export default Vue.extend({
       .name {
         flex: 100 100 50%;
         display: flex;
+        padding: 1rem;
         align-items: center;
         border-right: 2px solid var(--white);
-        padding: 1rem 0;
       }
       .price {
         flex: 100 100 30%;
         display: flex;
-        justify-content: center;
+        justify-content: flex-end;
         align-items: center;
         padding: 1rem;
       }
@@ -402,13 +403,13 @@ export default Vue.extend({
         padding: 1rem;
       }
       .price {
-        margin-right: 2rem;
         color: var(--blue);
         font-weight: 700;
         letter-spacing: 0.0625rem;
         font-family: 'Futura Heavy';
         background-color: var(--grey-light-background);
-        padding: 0.5rem 1rem;
+        padding: 1rem;
+        margin: 0 1rem;
         border-radius: 500px;
       }
     }
@@ -425,7 +426,6 @@ export default Vue.extend({
         position: absolute;
         top: 1rem;
         left: 2rem;
-        margin: 0.5rem 2rem 0.5rem 0.5rem;
         padding: 0.5rem 1rem;
         background-color: var(--green-pastel);
         border-radius: 500px;
