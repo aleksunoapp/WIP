@@ -32,6 +32,25 @@ export default {
       imageSrc: this.placeholder
     }
   },
+  computed: {
+    sanitizedSrc () {
+      let source = this.placeholder
+      if (typeof this.src === 'string') {
+        source = this.src
+      }
+      return source
+    }
+  },
+  watch: {
+    sanitizedSrc () {
+      const img = new Image()
+      const _this = this
+      img.onload = function () {
+        _this.imageSrc = _this.sanitizedSrc
+      }
+      img.src = this.sanitizedSrc
+    }
+  },
   mounted: function () {
     const img = new Image()
     const _this = this
