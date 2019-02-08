@@ -18,30 +18,30 @@
             class="modal"
             @click.stop
           >
-            <div
-              class="header"
-            >
-              <p>
-                {{ $t('recommendation') }}
-              </p>
-              <button
-                class="close"
-                @click.stop="closeService"
-                @keydown.enter.prevent="closeService"
+            <div class="top">
+              <div
+                class="header"
               >
-                <div class="top" />
-                <div class="bottom" />
-              </button>
-            </div>
-            <div
-              class="category"
-              :class="categoryColor"
-            >
-              <div class="name">
-                {{ categoryName }}
-              </div>
-              <div class="price">
                 <p>
+                  {{ $t('recommendation') }}
+                </p>
+                <button
+                  class="close"
+                  @click.stop="closeService"
+                  @keydown.enter.prevent="closeService"
+                >
+                  <div class="top" />
+                  <div class="bottom" />
+                </button>
+              </div>
+              <div
+                class="category"
+                :class="categoryColor"
+              >
+                <p class="name">
+                  {{ categoryName }}
+                </p>
+                <p class="price">
                   <span>
                     {{ $t("total") }}:
                   </span>
@@ -50,66 +50,68 @@
                   </span>
                 </p>
               </div>
-            </div>
-            <div class="service">
-              <div class="name">
-                {{ name }}
+              <div class="body">
+                <div class="service">
+                  <p class="name">
+                    {{ name }}
+                  </p>
+                  <p class="price">
+                    {{ price }}
+                  </p>
+                </div>
+                <div class="images">
+                  <div
+                    v-if="service.isHighlighted"
+                    class="badge"
+                  >
+                    {{ $t("updated") }}
+                  </div>
+                  <image-container
+                    :src="service.imageUrl"
+                    class="image"
+                  />
+                </div>
+                <p
+                  v-if="comment"
+                  class="description"
+                >
+                  {{ comment }}
+                </p>
+                <p class="description">
+                  {{ advisorComment }}
+                </p>
               </div>
-              <div class="price">
-                {{ price }}
-              </div>
             </div>
-            <div class="images">
-              <div
-                v-if="service.isHighlighted"
-                class="badge"
-              >
-                {{ $t("updated") }}
+            <div class="footer">
+              <nav class="navigation">
+                <button
+                  class="back"
+                  @click="back()"
+                >
+                  {{ $t("back") }}
+                </button>
+                <button
+                  class="next"
+                  @click="next()"
+                >
+                  {{ $t("next") }}
+                </button>
+              </nav>
+              <div class="buttons">
+                <button
+                  class="button cta green"
+                  @click="approve()"
+                >
+                  {{ $t("approve") }}
+                </button>
+                <button
+                  class="button skip"
+                  @click="reject()"
+                  @keydown.tab="$refs.service.focus()"
+                >
+                  {{ $t("not_today") }}
+                </button>
               </div>
-              <img
-                v-if="service.imageUrl"
-                :src="service.imageUrl"
-                alt=""
-                class="image"
-              >
-            </div>
-            <p
-              v-if="comment"
-              class="description"
-            >
-              {{ comment }}
-            </p>
-            <p class="description">
-              {{ advisorComment }}
-            </p>
-            <nav class="navigation">
-              <button
-                class="back"
-                @click="back()"
-              >
-                {{ $t("back") }}
-              </button>
-              <button
-                class="next"
-                @click="next()"
-              >
-                {{ $t("next") }}
-              </button>
-            </nav>
-            <div class="buttons">
-              <button
-                class="button cta green"
-                @click="approve()"
-              >
-                {{ $t("approve") }}
-              </button>
-              <button
-                class="button skip"
-                @click="reject()"
-                @keydown.tab="$refs.service.focus()"
-              >
-                {{ $t("not_today") }}
-              </button>
             </div>
           </div>
         </transition>
@@ -122,8 +124,12 @@
 import Vue from 'vue'
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import { focus, formatCurrency } from '@/mixins.js'
+import ImageContainer from '@/components/ImageContainer.vue'
 
 export default Vue.extend({
+  components: {
+    ImageContainer
+  },
   mixins: [focus, formatCurrency],
   computed: {
     ...mapState([
@@ -310,162 +316,199 @@ export default Vue.extend({
     height: 100%;
     width: 100%;
     max-width: 768px;
-    overflow: scroll;
     margin: 0;
+    display: flex;
+    flex-direction: column;
     @media (min-width: 992px) {
       max-height: calc(100% - 4rem);
       margin: 0 2rem;
     }
     background-color: var(--white);
     pointer-events: initial;
-    .header {
-      position: relative;
+    .top {
       display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 6rem;
-      border-bottom: 1px solid var(--grey-medium-background);
-      .close {
-        position: absolute;
-        top: 2rem;
-        right: 2rem;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0px;
+      .header {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 6rem;
+        border-bottom: 1px solid var(--grey-medium-background);
+        .close {
+          position: absolute;
+          top: 2rem;
+          right: 2rem;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          width: 2rem;
+          height: 2rem;
+          min-height: 2rem;
+          min-width: 2rem;
+          max-height: 2rem;
+          max-width: 2rem;
+          padding: 0;
+          margin: 0;
+          background-color: inherit;
+          border: none;
+          .top, .bottom {
+            width: 3rem;
+            height: 2px;
+            min-width: 2rem;
+            min-height: 2px;
+            max-width: 2.2rem;
+            max-height: 2px;
+            border-radius: 500px;
+            background-color: var(--blue);
+          }
+          .top {
+            transform: rotate(45deg);
+            transform-origin: -1px 4px;
+          }
+          .bottom {
+            transform: rotate(-45deg);
+            transform-origin: 0 -2px;
+          }
+        }
+      }
+      .category {
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem;
+        color: var(--white);
+        &.red {
+          background-color: var(--red);
+        }
+        &.yellow {
+          background-color: var(--yellow);
+        }
+        &.green {
+          background-color: var(--green-pastel);
+        }
+        &.grey {
+          background-color: var(--grey-dark-background);
+        }
+        .name {
+          flex: 100 100 50%;
+          display: flex;
+          margin: 0;
+          padding: 1rem;
+          align-items: center;
+          border-right: 2px solid var(--white);
+        }
+        .price {
+          flex: 100 100 30%;
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+          margin: 0;
+          padding: 1rem;
+        }
+      }
+      .body {
         display: flex;
         flex-direction: column;
+        overflow: scroll;
+        .service {
+          flex-shrink: 0;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 1rem;
+          .name {
+            margin: 0;
+            padding: 1rem;
+          }
+          .price {
+            margin: 0;
+            padding: 1rem;
+            border-radius: 500px;
+            color: var(--blue);
+            font-weight: 700;
+            letter-spacing: 0.0625rem;
+            font-family: 'Futura Heavy';
+            background-color: var(--grey-light-background);
+          }
+        }
+        .images {
+          position: relative;
+          height: 200px;
+          flex-shrink: 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 1rem 0;
+          background-color: var(--grey-light-background);
+          @media (min-height: 768px) {
+            height: 300px;
+          }
+          .badge {
+            position: absolute;
+            top: 1rem;
+            left: 2rem;
+            padding: 0.5rem 1rem;
+            background-color: var(--green-pastel);
+            border-radius: 500px;
+            font-family: 'Futura Heavy';
+            color: var(--white);
+            text-transform: uppercase;
+          }
+          .image {
+            max-width: 100%;
+          }
+          .pagination {
+            position: absolute;
+            bottom: 2rem;
+          }
+        }
+        .description {
+          flex-shrink: 0;
+          margin: 2rem;
+        }
+      }
+    }
+    .footer {
+      box-shadow: 0px -4px 3px rgba(24,31,77,0.05);
+      .navigation {
+        display: flex;
         justify-content: space-between;
-        width: 2rem;
-        height: 2rem;
-        min-height: 2rem;
-        min-width: 2rem;
-        max-height: 2rem;
-        max-width: 2rem;
-        padding: 0;
-        margin: 0;
-        background-color: inherit;
-        border: none;
-        .top, .bottom {
-          width: 3rem;
-          height: 2px;
-          min-width: 2rem;
-          min-height: 2px;
-          max-width: 2.2rem;
-          max-height: 2px;
-          border-radius: 500px;
-          background-color: var(--blue);
+        padding: 0 2rem;
+        @media (min-height: 768px) {
+          padding: 1rem 2rem;
         }
-        .top {
-          transform: rotate(45deg);
-          transform-origin: -1px 4px;
+        .back, .next {
+          padding: 1rem;
+          border: none;
+          background-color: var(--white);
+          font-size: 1.5rem;
+          text-transform: uppercase;
         }
-        .bottom {
-          transform: rotate(-45deg);
-          transform-origin: 0 -2px;
+        .back {
+          color: var(--blue);
+        }
+        .next {
+          font-family: 'Futura Heavy';
+          font-weight: 700;
         }
       }
-    }
-    .category {
-      display: flex;
-      justify-content: space-between;
-      padding: 0 1rem;
-      color: var(--white);
-      &.red {
-        background-color: var(--red);
+      .buttons {
+        margin: 0 2rem;
+        @media (min-height: 768px) {
+          margin: 0 2rem 2rem 2rem;
+        }
+        .button {
+          margin: 0;
+          @media (min-height: 768px) {
+            margin: 1rem 0;
+          }
+          &.skip {
+            margin: 1rem 0;
+          }
+        }
       }
-      &.yellow {
-        background-color: var(--yellow);
-      }
-      &.green {
-        background-color: var(--green-pastel);
-      }
-      &.grey {
-        background-color: var(--grey-dark-background);
-      }
-      .name {
-        flex: 100 100 50%;
-        display: flex;
-        padding: 1rem;
-        align-items: center;
-        border-right: 2px solid var(--white);
-      }
-      .price {
-        flex: 100 100 30%;
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        padding: 1rem;
-      }
-    }
-    .service {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem;
-      .name {
-        padding: 1rem;
-      }
-      .price {
-        color: var(--blue);
-        font-weight: 700;
-        letter-spacing: 0.0625rem;
-        font-family: 'Futura Heavy';
-        background-color: var(--grey-light-background);
-        padding: 1rem;
-        margin: 0 1rem;
-        border-radius: 500px;
-      }
-    }
-    .images {
-      position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 60px;
-      max-height: 50vh;
-      padding: 1rem 0;
-      background-color: var(--grey-light-background);
-      .badge {
-        position: absolute;
-        top: 1rem;
-        left: 2rem;
-        padding: 0.5rem 1rem;
-        background-color: var(--green-pastel);
-        border-radius: 500px;
-        font-family: 'Futura Heavy';
-        color: var(--white);
-        text-transform: uppercase;
-      }
-      .image {
-        max-height: calc(50vh - 2rem);
-        max-width: 100%;
-      }
-      .pagination {
-        position: absolute;
-        bottom: 2rem;
-      }
-    }
-    .description {
-      margin: 2rem;
-    }
-    .navigation {
-      display: flex;
-      justify-content: space-between;
-      padding: 1rem 2rem;
-      .back, .next {
-        padding: 1rem;
-        border: none;
-        background-color: var(--white);
-        font-size: 1.5rem;
-        text-transform: uppercase;
-      }
-      .back {
-        color: var(--blue);
-      }
-      .next {
-        font-family: 'Futura Heavy';
-        font-weight: 700;
-      }
-    }
-    .buttons {
-      margin: 0 2rem 2rem 2rem;
     }
   }
 }
