@@ -17,11 +17,11 @@
         />
         <h1 class="header">
           <span class="half">
-{{ $t("header_first_half") }}
-</span>
+            {{ $t("header_first_half") }}
+          </span>
           <span class="half">
-{{ $t("header_second_half") }}
-</span>
+            {{ $t("header_second_half") }}
+          </span>
         </h1>
         <fieldset
           class="fieldset"
@@ -360,7 +360,8 @@ export default Vue.extend({
 }
 .container {
   height: 100%;
-  overflow: scroll;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   display: flex;
   flex-direction: column;
   justify-content: center;

@@ -198,7 +198,8 @@ export default Vue.extend({
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: scroll;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   background-color: var(--grey-light-background);
   .wrapper {
     padding: 1rem 0;

@@ -50,8 +50,10 @@
                   </span>
                 </p>
               </div>
-              <div ref="body"
-class="body">
+              <div
+                ref="body"
+                class="body"
+              >
                 <div class="service">
                   <p class="name">
                     {{ name }}
@@ -421,7 +423,8 @@ export default Vue.extend({
       .body {
         display: flex;
         flex-direction: column;
-        overflow: scroll;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
         .service {
           flex-shrink: 0;
           display: flex;

@@ -30,7 +30,8 @@ export default {
 .container {
   position: relative;
   height: calc(100% - var(--header-height));
-  overflow: scroll;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   outline: none;
 }
 </style>

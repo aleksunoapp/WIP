@@ -129,7 +129,8 @@ export default {
 .navigation {
   background-color: var(--white);
   min-height: 100%;
-  overflow: scroll;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   .total {
     display: flex;
     justify-content: space-between;
@@ -150,6 +151,7 @@ export default {
     border-radius: 500px;
   }
 }
+
 .categories {
   display: flex;
   flex-direction: column;

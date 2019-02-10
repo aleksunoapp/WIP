@@ -58,6 +58,7 @@ export default Vue.extend({
 .container {
   height: 100%;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   display: flex;
   flex-direction: column;
   align-items: center;
