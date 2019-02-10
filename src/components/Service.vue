@@ -50,7 +50,8 @@
                   </span>
                 </p>
               </div>
-              <div class="body">
+              <div ref="body"
+class="body">
                 <div class="service">
                   <p class="name">
                     {{ name }}
@@ -218,6 +219,15 @@ export default Vue.extend({
         this.focus('#service')
       } else {
         this.focus(`#card${this.service.id}`)
+      }
+    },
+    service () {
+      if (this.$refs.body) {
+        this.$refs.body.scrollTo({
+          left: 0,
+          top: 0,
+          behavior: 'smooth'
+        })
       }
     }
   },
