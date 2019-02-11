@@ -101,8 +101,8 @@ export const mutations = {
   setToken (state, token) {
     state.token = token
   },
-  setCustomerConcernsLabel (state, label) {
-    state.customerConcernsLabel = label
+  setCustomerCommentsLabel (state, label) {
+    state.customerCommentsLabel = label
   },
   setServices (state, services) {
     state.services = services

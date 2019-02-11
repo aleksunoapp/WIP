@@ -13,7 +13,7 @@ export const state = {
     isBusiness: false,
     lastName: ''
   },
-  customerConcernsLabel: '',
+  customerCommentsLabel: '',
   deadlines: {
     readyBy: null,
     respondBy: null

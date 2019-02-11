@@ -74,21 +74,42 @@
                     {{ $t("updated") }}
                   </div>
                 </div>
-                <p
-                  v-if="warranty"
-                  class="warranty"
-                >
-                  {{ warranty }}
-                </p>
-                <p
-                  v-if="comment"
-                  class="description"
-                >
-                  {{ comment }}
-                </p>
-                <p class="description">
-                  {{ advisorComment }}
-                </p>
+                <div class="details">
+                  <p
+                    v-if="warranty"
+                    class="warranty"
+                  >
+                    {{ warranty }}
+                  </p>
+                  <p
+                    v-if="advisorComment"
+                    class="title"
+                  >
+                    {{ $t('advisor_comments') }}
+                  </p>
+                  <p
+                    v-if="comment"
+                    class="comment"
+                  >
+                    {{ comment }}
+                  </p>
+                  <div
+                    v-if="comment && advisorComment"
+                    class="divider"
+                  />
+                  <p
+                    v-if="advisorComment"
+                    class="title"
+                  >
+                    {{ $t('advisor_comments') }}
+                  </p>
+                  <p
+                    v-if="advisorComment"
+                    class="comment"
+                  >
+                    {{ advisorComment }}
+                  </p>
+                </div>
               </div>
             </div>
             <div class="footer">
@@ -213,6 +234,8 @@ export default Vue.extend({
       return text
     },
     comment () {
+      let header = ''
+      let text = ''
       if (this.service.category > '5') {
         if (this.service.parentServiceId) {
           return this.serviceById(this.service.parentServiceId).comment
@@ -224,10 +247,16 @@ export default Vue.extend({
       }
     },
     advisorComment () {
+      let header = ''
+      let text = ''
       if (this.service.category > '5') {
-        return this.service.serviceAdvisorComments
+        header = this.$t('advisor_comment')
+        text = this.service.serviceAdvisorComments
       }
-      return ''
+      return {
+        header,
+        text
+      }
     }
   },
   watch: {
@@ -492,23 +521,37 @@ export default Vue.extend({
             bottom: 2rem;
           }
         }
-        .description, .warranty {
-          flex-shrink: 0;
-          margin: 2rem;
-        }
-        .warranty {
-          color: var(--blue);
+        .details {
+          padding: 2rem;
+          .warranty {
+            color: var(--blue);
+          }
+          .comment, .warranty {
+            margin: 1rem 0 2rem 0;
+            flex-shrink: 0;
+          }
+          .title {
+            margin-bottom: 0;
+            font-family: 'Futura Heavy';
+            font-weight: 700;
+          }
+          .divider {
+            width: 100%;
+            height: 1px;
+            background-color: var(--grey-light-background);
+          }
         }
       }
     }
     .footer {
-      box-shadow: 0px -4px 3px rgba(24,31,77,0.05);
       .navigation {
         display: flex;
         justify-content: space-between;
         padding: 0 2rem;
+        border-top: 1px solid var(--grey-light-background);
         @media (min-height: 768px) {
           padding: 1rem 2rem;
+          border-bottom: 1px solid var(--grey-light-background);
         }
         .back, .next {
           padding: 1rem;

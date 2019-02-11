@@ -66,7 +66,7 @@ export interface InitialState {
     isBusiness: boolean,
     lastName: string,
   };
-  customerConcernsLabel: string;
+  customerCommentsLabel: string;
   deadlines: {
     respondBy: Date | null,
     readyBy: Date | null,

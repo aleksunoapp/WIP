@@ -23,6 +23,7 @@ export const actions = {
           lastName,
           isBusiness,
           customerConcernsLabel,
+          customerCommentsLabel,
           supportedLanguages,
           serviceCategories,
           local,
@@ -54,6 +55,7 @@ export const actions = {
           } else { return category }
         })
 
+        commit('setCustomerCommentsLabel', customerCommentsLabel)
         commit('setLanguages', supportedLanguages)
         commit('setCustomer', { firstName, lastName, isBusiness })
         commit('setCategories', categories)
