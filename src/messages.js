@@ -288,7 +288,7 @@ export const messages = {
     how_it_works: 'Comment cela fonctionne-t-il?',
     // login
     header_first_half: 'Résultats d\'inspection',
-    header_second_half: 'Résultats d\'inspection',
+    header_second_half: '',
     enter: 'Soumettre',
     please_enter_your_last_name: 'Veuillez inscrire votre nom de famille',
     please_enter_your_company_name: 'Veuillez inscrire le nom de votre compagnie',
