@@ -44,7 +44,7 @@ const fetchWithTimeout = async function (url, options = {}) {
       return response
     })
     .catch(function (err) {
-      throw err
+      return err
     })
 }
 
