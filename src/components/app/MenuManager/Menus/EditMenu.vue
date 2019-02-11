@@ -159,7 +159,7 @@
                 <div class="md-checkbox">
                   <input
                     id="availability_pos_edit"
-                    v-model="menuToBeEdited.pos"
+                    v-model="pos"
                     type="checkbox"
                     class="md-check"
                   >
@@ -172,7 +172,7 @@
                 <div class="md-checkbox">
                   <input
                     id="availability_kiosk_edit"
-                    v-model="menuToBeEdited.kiosk"
+                    v-model="kiosk"
                     type="checkbox"
                     class="md-check"
                     checked=""
@@ -186,7 +186,7 @@
                 <div class="md-checkbox">
                   <input
                     id="availability_online_edit"
-                    v-model="menuToBeEdited.online"
+                    v-model="online"
                     type="checkbox"
                     class="md-check"
                   >
@@ -199,7 +199,7 @@
                 <div class="md-checkbox">
                   <input
                     id="availability_web_edit"
-                    v-model="menuToBeEdited.web"
+                    v-model="web"
                     type="checkbox"
                     class="md-check"
                   >
@@ -364,6 +364,32 @@ export default {
       selectedLocations: []
     }
   },
+  computed: {
+    pos: {
+      get () { return this.menuToBeEdited.pos === 1 },
+      set (val) {
+        val ? this.menuToBeEdited.pos = 1 : this.menuToBeEdited.pos = 0
+      }
+    },
+    kiosk: {
+      get () { return this.menuToBeEdited.kiosk === 1 },
+      set (val) {
+        val ? this.menuToBeEdited.kiosk = 1 : this.menuToBeEdited.kiosk = 0
+      }
+    },
+    online: {
+      get () { return this.menuToBeEdited.online === 1 },
+      set (val) {
+        val ? this.menuToBeEdited.online = 1 : this.menuToBeEdited.online = 0
+      }
+    },
+    web: {
+      get () { return this.menuToBeEdited.web === 1 },
+      set (val) {
+        val ? this.menuToBeEdited.web = 1 : this.menuToBeEdited.web = 0
+      }
+    }
+  },
   created () {
     // get category details by category id passed as route param
     this.getMenuDetails()
@@ -373,21 +399,21 @@ export default {
   },
   methods: {
     /**
-		 * To toggle select location mode on.
-		 * @function
-		 * @param {object} event - The event that triggered the action
-		 * @returns {undefined}
-		 */
+     * To toggle select location mode on.
+     * @function
+     * @param {object} event - The event that triggered the action
+     * @returns {undefined}
+     */
     selectLocations (event) {
       event.preventDefault()
       this.selectLocationMode = true
     },
     /**
-		 * To toggle select location mode on.
-		 * @function
-		 * @param {array} locations - The array of selected locations
-		 * @returns {undefined}
-		 */
+     * To toggle select location mode on.
+     * @function
+     * @param {array} locations - The array of selected locations
+     * @returns {undefined}
+     */
     updateSelectedLocations (locations) {
       if (this.$root.permissions['menu_manager menus update']) {
         this.selectedLocations = locations
@@ -395,18 +421,18 @@ export default {
       this.closeSelectLocationsPopup()
     },
     /**
-		 * To toggle select location mode on.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To toggle select location mode on.
+     * @function
+     * @returns {undefined}
+     */
     closeSelectLocationsPopup () {
       this.selectLocationMode = false
     },
     /**
-		 * To check if the menu data is valid before submitting to the backend.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
+     * To check if the menu data is valid before submitting to the backend.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
     validateCategoryData () {
       var editMenuVue = this
       return new Promise(function (resolve, reject) {
@@ -422,22 +448,22 @@ export default {
           reject('Menu order should be a number')
         } else if (
           editMenuVue.menuToBeEdited.start_from &&
-					!editMenuVue.menuToBeEdited.stop_on
+          !editMenuVue.menuToBeEdited.stop_on
         ) {
           reject('Please provide an end date')
         } else if (
           !editMenuVue.menuToBeEdited.start_from &&
-					editMenuVue.menuToBeEdited.stop_on
+          editMenuVue.menuToBeEdited.stop_on
         ) {
           reject('Please provide a start date')
         } else if (
           editMenuVue.menuToBeEdited.catering &&
-					!editMenuVue.menuToBeEdited.min
+          !editMenuVue.menuToBeEdited.min
         ) {
           reject('Minimum order value cannot be blank')
         } else if (
           editMenuVue.menuToBeEdited.catering &&
-					!editMenuVue.menuToBeEdited.max
+          !editMenuVue.menuToBeEdited.max
         ) {
           reject('Maximum order value cannot be blank')
         }
@@ -445,18 +471,18 @@ export default {
       })
     },
     /**
-		 * To clear the current error.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To clear the current error.
+     * @function
+     * @returns {undefined}
+     */
     clearError () {
       this.errorMessage = ''
     },
     /**
-		 * To get the details of the menu to be updated.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get the details of the menu to be updated.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getMenuDetails () {
       var editMenuVue = this
       MenusFunctions.getMenuDetails(
@@ -466,22 +492,16 @@ export default {
       )
         .then(response => {
           if (response.code === 200 && response.status === 'ok') {
-            editMenuVue.menuToBeEdited = {
-              ...response.payload,
-              pos: !!editMenuVue.menuToBeEdited.pos,
-              kiosk: !!editMenuVue.menuToBeEdited.kiosk,
-              online: !!editMenuVue.menuToBeEdited.online,
-              web: !!editMenuVue.menuToBeEdited.web
-            }
+            editMenuVue.menuToBeEdited = response.payload
             if (
               editMenuVue.menuToBeEdited.min === 0 ||
-							editMenuVue.menuToBeEdited.min
+              editMenuVue.menuToBeEdited.min
             ) {
               editMenuVue.menuToBeEdited.min = editMenuVue.menuToBeEdited.min.toString()
             }
             if (
               editMenuVue.menuToBeEdited.max === 0 ||
-							editMenuVue.menuToBeEdited.max
+              editMenuVue.menuToBeEdited.max
             ) {
               editMenuVue.menuToBeEdited.max = editMenuVue.menuToBeEdited.max.toString()
             }
@@ -501,17 +521,17 @@ export default {
         })
     },
     /**
-		 * To update the menu and close the modal.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To update the menu and close the modal.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     updateMenu () {
       var editMenuVue = this
       editMenuVue.menuToBeEdited.user_id = editMenuVue.$root.createdBy
       editMenuVue.menuToBeEdited.location_id =
-				editMenuVue.$root.activeLocation.id
+        editMenuVue.$root.activeLocation.id
       editMenuVue.menuToBeEdited.update_locations =
-				editMenuVue.selectedLocations
+        editMenuVue.selectedLocations
       editMenuVue.clearError()
 
       return editMenuVue
@@ -535,7 +555,7 @@ export default {
             .then(response => {
               if (
                 response.code === 200 &&
-								response.status === 'ok'
+                response.status === 'ok'
               ) {
                 this.closeModalAndUpdate(response.payload)
               } else {
@@ -563,19 +583,19 @@ export default {
         })
     },
     /**
-		 * To just close the modal when the user clicks on the 'x' to close the modal.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To just close the modal when the user clicks on the 'x' to close the modal.
+     * @function
+     * @returns {undefined}
+     */
     closeModal () {
       this.$emit('closeEditMenuModal')
     },
     /**
-		 * To close the modal and update the menu details.
-		 * @function
-		 * @param {object} payload - The payload parameter of the server response
-		 * @returns {undefined}
-		 */
+     * To close the modal and update the menu details.
+     * @function
+     * @param {object} payload - The payload parameter of the server response
+     * @returns {undefined}
+     */
     closeModalAndUpdate (payload = {}) {
       this.$emit('updateMenu', {
         menu: this.menuToBeEdited,
@@ -583,27 +603,27 @@ export default {
       })
     },
     /**
-		 * To change the page to the gallery view on the modal.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To change the page to the gallery view on the modal.
+     * @function
+     * @returns {undefined}
+     */
     goToPageTwo () {
       this.selectImageMode = true
     },
     /**
-		 * To change the page to the main/form view on the modal.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To change the page to the main/form view on the modal.
+     * @function
+     * @returns {undefined}
+     */
     goToPageOne () {
       this.selectImageMode = false
     },
     /**
-		 * To set the image to be same as the one emitted by the gallery modal.
-		 * @function
-		 * @param {object} val - The emitted image object.
-		 * @returns {undefined}
-		 */
+     * To set the image to be same as the one emitted by the gallery modal.
+     * @function
+     * @param {object} val - The emitted image object.
+     * @returns {undefined}
+     */
     updateImage (val) {
       this.goToPageOne()
       if (this.$root.permissions['menu_manager menus update']) {
@@ -615,10 +635,10 @@ export default {
 </script>
 <style scoped>
 .image-container {
-	border: 1px dotted #c2cad8;
-	text-align: center;
+  border: 1px dotted #c2cad8;
+  text-align: center;
 }
 .narrow-datepicker {
-	max-width: 40%;
+  max-width: 40%;
 }
 </style>
