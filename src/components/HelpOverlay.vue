@@ -176,14 +176,13 @@
             @click.stop
           >
             <div class="images">
+              <image-container
+                :src="service.imageUrl"
+                class="image"
+              />
               <div class="badge">
                 {{ $t("updated") }}
               </div>
-              <img
-                :src="service.imageUrl"
-                alt=""
-                class="image"
-              >
             </div>
             <div class="bubble">
               <img
@@ -332,11 +331,13 @@
 <script>
 import Vue from 'vue'
 import { mapGetters, mapMutations, mapState, mapActions } from 'vuex'
+import ImageContainer from '@/components/ImageContainer.vue'
 import Pagination from '@/components/Pagination.vue'
 import { formatCurrency } from '@/mixins.js'
 
 export default Vue.extend({
   components: {
+    ImageContainer,
     Pagination
   },
   mixins: [formatCurrency],
@@ -929,6 +930,7 @@ export default Vue.extend({
     .images {
       position: relative;
       width: 100%;
+      height: 200px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -936,6 +938,9 @@ export default Vue.extend({
       max-height: 50vh;
       padding: 1rem 0;
       background-color: var(--grey-light-background);
+      @media (min-height: 768px) {
+        height: 300px;
+      }
       .badge {
         position: absolute;
         top: 1rem;
@@ -949,7 +954,6 @@ export default Vue.extend({
         text-transform: uppercase;
       }
       .image {
-        max-height: calc(50vh - 2rem);
         max-width: 100%;
       }
       .pagination {
