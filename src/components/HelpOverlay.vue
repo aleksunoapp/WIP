@@ -543,28 +543,22 @@ export default Vue.extend({
       }
 
       if (page === 2) {
-        if (listScrollContainer) {
-          const category = listScrollContainer.querySelector('.category')
-          if (category) {
-            category.classList.add('open')
-          }
-          listScrollContainer.scrollTo({
-            left: 0,
-            top: 0,
-            behavior: 'smooth'
-          })
-        }
-
         const input = document.querySelector('input[type="checkbox"]')
         const label = document.querySelector('.checkbox')
 
         if (!input || !label) {
           this.approve.show = false
         } else {
-          let unit = getComputedStyle(label).getPropertyValue('--unit')
-          unit = unit.substr(0, unit.length - 2)
+          if (listScrollContainer) {
+            listScrollContainer.scrollTo({
+              left: 0,
+              top: label.offsetTop + 30,
+              behavior: 'smooth'
+            })
+          }
+
           this.approve.checked = input.checked
-          let top = label.offsetTop - unit + 60
+          let top = 20
           this.approve.style.top = top
           this.approve.style.left = label.offsetLeft + listScrollContainer.offsetLeft
           this.approve.show = true
