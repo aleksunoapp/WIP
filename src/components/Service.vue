@@ -75,6 +75,12 @@
                   </div>
                 </div>
                 <p
+                  v-if="warranty"
+                  class="warranty"
+                >
+                  {{ warranty }}
+                </p>
+                <p
                   v-if="comment"
                   class="description"
                 >
@@ -187,15 +193,24 @@ export default Vue.extend({
       }
     },
     price () {
-      if (this.service.price === 0 && this.service.price.laborMatrixPayment) {
+      if (this.service.price === 0 && this.service.laborMatrixPayment) {
         if (this.service.laborMatrixPayment !== 'NA' && this.service.laborMatrixPayment !== 'None') {
-          return this.$t(`${this.service.laborMatrixPayment}`)
+          return this.service.laborMatrixPaymentTranslations
         } else {
           return this.formatCurrency(this.service.price)
         }
       } else {
         return this.formatCurrency(this.service.price)
       }
+    },
+    warranty () {
+      let text = ''
+      if (this.service.price === 0 && this.service.laborMatrixPayment) {
+        if (this.service.laborMatrixPayment !== 'NA' && this.service.laborMatrixPayment !== 'None') {
+          text = this.$t(`${this.service.laborMatrixPayment}`)
+        }
+      }
+      return text
     },
     comment () {
       if (this.service.category > '5') {
@@ -477,9 +492,12 @@ export default Vue.extend({
             bottom: 2rem;
           }
         }
-        .description {
+        .description, .warranty {
           flex-shrink: 0;
           margin: 2rem;
+        }
+        .warranty {
+          color: var(--blue);
         }
       }
     }

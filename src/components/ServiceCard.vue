@@ -232,20 +232,25 @@ export default {
       .bottom {
         display: flex;
         justify-content: space-between;
+        align-items: flex-end;
         margin-top: 1rem;
         .price {
+          margin: 0 0.5rem 0 0;
+          padding: 0.5rem 1rem;
+          border-radius: 500px;
           color: var(--blue);
           font-weight: 700;
           letter-spacing: 0.0625rem;
+          text-align: center;
+          line-height: 1;
           font-family: 'Futura Heavy';
           background-color: var(--grey-light-background);
-          padding: 0.5rem 1rem;
-          border-radius: 500px;
         }
         input {
           display: none;
         }
         .checkbox {
+          float: right;
           display: flex;
           align-items: center;
           transition: all .2s ease-in;
