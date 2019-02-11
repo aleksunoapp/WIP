@@ -1,9 +1,17 @@
 <template>
   <div class="background">
     <main class="contents">
-      <p>{{ $t("you_have") }}</p>
-      <h1>{{ totalCount }} {{ $tc("recommendations", totalCount) }}</h1>
-      <p>{{ $tc("that_need_your_attention", totalCount) }}</p>
+      <h1 class="text">
+        <span class="regular">
+          {{ $t("you_have") }}
+        </span><br>
+        <span class="large">
+          {{ totalCount }} {{ $tc("recommendations", totalCount) }}
+        </span><br>
+        <span class="regular">
+          {{ $tc("that_need_your_attention", totalCount) }}
+        </span>
+      </h1>
 
       <figure class="card">
         <img
@@ -25,10 +33,12 @@
       <template
         v-if="timer.total > 0"
       >
-        <p>{{ $t("select_your_services_in") }}</p>
+        <p class="text">
+          {{ $t("select_your_services_in") }}
+        </p>
         <p
           v-if="timer.total"
-          class="time"
+          class="text time"
         >
           <span
             v-if="timer.days"
@@ -60,9 +70,11 @@
             </span>s
           </span>
         </p>
-        <p>{{ $t("to_have_your_vehicle_ready_by") }}</p>
+        <p class="text">
+          {{ $t("to_have_your_vehicle_ready_by") }}
+        </p>
 
-        <div class="card wide">
+        <div class="card">
           <div class="clock__background">
             <img
               class="clock"
@@ -71,7 +83,7 @@
             >
           </div>
           <p
-            class="pickup__time"
+            class="text pickup__time"
           >
             {{ getPickupTime() }}
           </p>
@@ -179,19 +191,23 @@ export default Vue.extend({
   .contents {
     width: 100%;
     max-width: 350px;
+    min-height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    margin: 2rem 0rem;
-    @media (min-width: 768px) {
-      margin: 5rem 1rem;
+    @media (min-height: 768px) {
+      justify-content: flex-start;
     }
-    .dealer__name {
-      margin: 0 1rem;
+    .text {
+      margin: 1rem;
+      text-align: center;
+      .regular {
+        font-size: 0.5em;
+      }
     }
     .card {
-      margin: 4rem 0;
+      width: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -199,9 +215,9 @@ export default Vue.extend({
       background-color: var(--white);
       border-radius: 3px;
       box-shadow: var(--shadow);
-    }
-    .card.wide {
-      width: 100%;
+      @media (min-width: 768px) {
+        width: auto;
+      }
     }
     .avatar {
       max-width: 70px;
