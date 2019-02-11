@@ -150,6 +150,7 @@
       </div>
       <button
         class="button cta green"
+        :disabled="loading.sendServices"
         @click="approve()"
       >
         {{ count.actionable ? $t("approve") : $t("next") }}
@@ -193,7 +194,8 @@ export default Vue.extend({
       }
     },
     ...mapState([
-      'customer'
+      'customer',
+      'loading'
     ]),
     ...mapGetters([
       'count',
@@ -212,9 +214,7 @@ export default Vue.extend({
       if (this.$route.name === 'additional-summary') {
         let subsum = 0
         subsum += this.getTotal(this.previouslyUnapprovedServices)
-        console.log({ subsum })
         subsum += this.getTotal(this.additionalServices)
-        console.log({ subsum })
         total = this.formatCurrency(subsum)
       }
       return total
