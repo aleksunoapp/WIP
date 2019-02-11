@@ -144,7 +144,7 @@ export default Vue.extend({
   width: 100%;
   margin: 1rem 0;
   padding: 0 0 0 3rem;
-  font-size: 1.5rem;
+  font-size: 1.2em;
   font-weight: normal;
   text-align: center;
   text-transform: uppercase;
