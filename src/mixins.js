@@ -49,25 +49,27 @@ export const getTotal = {
     getTotal (services) {
       let total = 0
       for (const service of services) {
-        const category = this.$store.getters.categoryById(service.category)
-        if (
-          category &&
-          typeof category.serviceCategoryType === 'string' &&
-          category.serviceCategoryType.toLowerCase() === 'pass'
-        ) {
-          total += 0
-        } else if (service.category === '8') {
-          total += 0
-        } else if (service.category > '5' && !service.parentServiceId) {
-          total += 0
-        } else if (service.price === 0 && service.laborMatrixPayment) {
-          if (service.laborMatrixPayment === 'NA' || service.laborMatrixPayment === 'None') {
+        if (service.isSelected) {
+          const category = this.$store.getters.categoryById(service.category)
+          if (
+            category &&
+            typeof category.serviceCategoryType === 'string' &&
+            category.serviceCategoryType.toLowerCase() === 'pass'
+          ) {
+            total += 0
+          } else if (service.category === '8') {
+            total += 0
+          } else if (service.category > '5' && !service.parentServiceId) {
+            total += 0
+          } else if (service.price === 0 && service.laborMatrixPayment) {
+            if (service.laborMatrixPayment === 'NA' || service.laborMatrixPayment === 'None') {
+              total += service.price
+            }
+          } else if (service.price === 0) {
+            total += 0
+          } else {
             total += service.price
           }
-        } else if (service.price === 0) {
-          total += 0
-        } else {
-          total += service.price
         }
       }
       return total

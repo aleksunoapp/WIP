@@ -86,7 +86,7 @@
 </template>
 <script>
 import Vue from 'vue'
-import { getTotal, formatCurrency } from '@/mixins.js'
+import { formatCurrency } from '@/mixins.js'
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 import ServiceCard from '@/components/ServiceCard.vue'
 import TransitionHeight from '@/components/TransitionHeight.vue'
@@ -103,7 +103,7 @@ export default Vue.extend({
     TransitionHeight,
     DesktopNavigation
   },
-  mixins: [getTotal, formatCurrency],
+  mixins: [formatCurrency],
   data: () => ({
     service: null,
     loading: false,

@@ -53,7 +53,7 @@
             {{ $t("estimate") }}
           </p>
           <p class="price">
-            {{ inspectionTotal }}
+            {{ displayTotal }}
           </p>
         </div>
         <div class="row">
@@ -164,13 +164,13 @@ import Pad from 'signature_pad'
 import TransitionHeight from '@/components/TransitionHeight.vue'
 import Hammer from 'hammerjs'
 import { mapGetters, mapState, mapMutations, mapActions } from 'vuex'
-import { formatCurrency, getServiceDisplayPrice } from '@/mixins.js'
+import { getTotal, formatCurrency, getServiceDisplayPrice } from '@/mixins.js'
 
 export default Vue.extend({
   components: {
     TransitionHeight
   },
-  mixins: [formatCurrency, getServiceDisplayPrice],
+  mixins: [getTotal, formatCurrency, getServiceDisplayPrice],
   data: () => ({
     pad: null,
     panned: false,
@@ -197,18 +197,25 @@ export default Vue.extend({
     ]),
     ...mapGetters([
       'count',
-      'categoryServices'
+      'categoryServices',
+      'additionalServices',
+      'previouslyUnapprovedServices'
     ]),
     serviceTotal () {
       return this.formatCurrency(this.$store.getters.total.service)
     },
-    inspectionTotal () {
+    displayTotal () {
       let total = ''
       if (this.$route.name === 'summary') {
         total = this.formatCurrency(this.$store.getters.total.inspection)
       }
       if (this.$route.name === 'additional-summary') {
-        total = this.formatCurrency(this.$store.getters.total.additional)
+        let subsum = 0
+        subsum += this.getTotal(this.previouslyUnapprovedServices)
+        console.log({ subsum })
+        subsum += this.getTotal(this.additionalServices)
+        console.log({ subsum })
+        total = this.formatCurrency(subsum)
       }
       return total
     },
