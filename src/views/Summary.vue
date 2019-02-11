@@ -76,7 +76,6 @@
       </div>
       <div class="divider" />
       <div
-        v-if="count.actionable"
         class="signature"
       >
         <div class="row">
@@ -278,13 +277,19 @@ export default Vue.extend({
       const text = `${this.customer.firstName} ${this.customer.lastName}`
       let offsetX = 20
       let offsetY = 20
+      let fontSize = 2000
       const canvas = this.$refs.canvas
-      const maxWidth = canvas.offsetWidth - 40
-      const maxHeight = canvas.offsetHeight - 40
+      const maxWidth = canvas.offsetWidth - 50
+      const maxHeight = canvas.offsetHeight - 50
       const context = canvas.getContext('2d')
-      context.font = '2rem Arial'
+      context.font = `${fontSize}px Arial`
       context.fillStyle = '#000000'
-      const textWidth = context.measureText(text).width
+      let textWidth = context.measureText(text).width
+      while (textWidth > maxWidth && fontSize > 0) {
+        fontSize--
+        context.font = `${fontSize}px Arial`
+        textWidth = context.measureText(text).width
+      }
       let textHeight = getComputedStyle(canvas).fontSize
       textHeight = textHeight.substr(0, textHeight.length - 2) * 2
       offsetX = ((maxWidth - textWidth) / 2) > 20 ? ((maxWidth - textWidth) / 2) : offsetX
