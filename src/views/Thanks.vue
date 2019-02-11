@@ -101,6 +101,7 @@ export default Vue.extend({
   created () {
     this.logEvent('Started viewing thanks page')
     this.sendLog()
+    document.querySelector('#route.container').scrollTo(0, 0)
   },
   methods: {
     getPickupTime () {
