@@ -104,6 +104,13 @@
             ref="canvas"
             class="panel"
           />
+          <p
+            v-show="printed"
+            ref="printed"
+            class="printed"
+          >
+            {{ `${customer.firstName} ${customer.lastName}` }}
+          </p>
           <img
             src="@/assets/images/signature.svg"
             alt="sample signature"
@@ -175,6 +182,7 @@ export default Vue.extend({
   data: () => ({
     pad: null,
     panned: false,
+    printed: false,
     error: false,
     previousExpanded: false
   }),
@@ -257,6 +265,8 @@ export default Vue.extend({
         const context = this.$refs.canvas.getContext('2d')
         const canvas = this.$refs.canvas
         this.panned = false
+        this.$refs.printed.style.color = 'transparent'
+        this.printed = false
         this.pad.off()
         context.clearRect(0, 0, canvas.width, canvas.height)
         this.buildPad()
@@ -281,27 +291,14 @@ export default Vue.extend({
       context.fillRect(0, 0, canvas.width, canvas.height)
     },
     sign () {
-      const text = `${this.customer.firstName} ${this.customer.lastName}`
-      let offsetX = 20
-      let offsetY = 20
-      let fontSize = 2000
-      const canvas = this.$refs.canvas
-      const maxWidth = canvas.offsetWidth - 50
-      const maxHeight = canvas.offsetHeight - 50
-      const context = canvas.getContext('2d')
-      context.font = `${fontSize}px Arial`
-      context.fillStyle = '#000000'
-      let textWidth = context.measureText(text).width
-      while (textWidth > maxWidth && fontSize > 0) {
-        fontSize--
-        context.font = `${fontSize}px Arial`
-        textWidth = context.measureText(text).width
-      }
-      let textHeight = getComputedStyle(canvas).fontSize
-      textHeight = textHeight.substr(0, textHeight.length - 2) * 2
-      offsetX = ((maxWidth - textWidth) / 2) > 20 ? ((maxWidth - textWidth) / 2) : offsetX
-      offsetY = ((maxHeight - textHeight) / 2) > 20 ? ((maxHeight - textHeight) / 2) : offsetY
-      context.fillText(text, offsetX, offsetY, maxWidth)
+      this.printed = true
+      this.$nextTick(function () {
+        const marginX = (this.$refs.canvas.offsetWidth - this.$refs.printed.offsetWidth) / 2
+        const marginY = (this.$refs.canvas.offsetHeight - this.$refs.printed.offsetHeight) / 2
+        this.$refs.printed.style.left = `${marginX}px`
+        this.$refs.printed.style.top = `${marginY}px`
+        this.$refs.printed.style.color = '#000000'
+      })
       this.panned = true
       this.logEvent('Clicked to sign')
     },
@@ -444,6 +441,16 @@ export default Vue.extend({
         .panel {
           width: 100%;
           height: 200px;
+        }
+        .printed {
+          max-width: 100%;
+          position: absolute;
+          margin: 0;
+          padding: 1rem;
+          color: transparent;
+          font-size: 2em;
+          font-family: serif;
+          font-style: italic;
         }
         .sample {
           position: absolute;
