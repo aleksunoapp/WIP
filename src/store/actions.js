@@ -159,12 +159,14 @@ export const actions = {
   async sendServices ({ commit, dispatch }) {
     commit('setLoading', { key: 'sendServices', loading: true })
     await postServices()
+      .then(() => {
+        dispatch('routeAfterApprove')
+      })
       .catch((error) => {
         dispatch('handleError', error)
       })
       .finally(() => {
         commit('setLoading', { key: 'sendServices', loading: false })
-        dispatch('routeAfterApprove')
       })
   },
   routeAfterApprove ({ commit }) {
