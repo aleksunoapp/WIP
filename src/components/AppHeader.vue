@@ -42,7 +42,7 @@
         <div class="placeholder">
           <transition name="fade">
             <button
-              v-if="$route.name === 'services'"
+              v-if="$route.name === 'services' && !modal"
               class="help"
               :disabled="help"
               aria-label="help"
@@ -53,6 +53,15 @@
                 src="@/assets/images/question-mark.svg"
                 aria-hidden="true"
               >
+            </button>
+            <button
+              v-else-if="modal"
+              class="close"
+              @click.stop="closeService"
+              @keydown.enter.prevent="closeService"
+            >
+              <div class="top" />
+              <div class="bottom" />
             </button>
           </transition>
         </div>
@@ -76,7 +85,8 @@ export default Vue.extend({
       'languages',
       'dealer',
       'help',
-      'locale'
+      'locale',
+      'modal'
     ]),
     locale: {
       get () {
@@ -115,10 +125,11 @@ export default Vue.extend({
         return this.$t('services_approved')
       }
     },
-    ...mapMutations({
-      setLocale: 'setLocale',
-      openHelp: 'openHelp'
-    }),
+    ...mapMutations([
+      'setLocale',
+      'openHelp',
+      'closeService'
+    ]),
     ...mapActions({
       getMetadata: 'getMetadata'
     })
@@ -177,6 +188,9 @@ export default Vue.extend({
 }
 .placeholder {
   width: 6rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   .help {
     max-width: 6rem;
     max-height: calc(6rem - 2px);
@@ -186,6 +200,40 @@ export default Vue.extend({
     .image {
       max-width: 100%;
       max-height: 100%;
+    }
+  }
+  .close {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 2rem;
+    height: 2rem;
+    min-height: 2rem;
+    min-width: 2rem;
+    max-height: 2rem;
+    max-width: 2rem;
+    padding: 0;
+    margin: 0;
+    background-color: inherit;
+    border: none;
+    .top, .bottom {
+      width: 3rem;
+      height: 2px;
+      min-width: 2rem;
+      min-height: 2px;
+      max-width: 2.2rem;
+      max-height: 2px;
+      border-radius: 500px;
+      background-color: var(--blue);
+    }
+    .top {
+      transform: rotate(45deg);
+      transform-origin: -1px 4px;
+    }
+    .bottom {
+      transform: rotate(-45deg);
+      transform-origin: 0 -2px;
     }
   }
 }

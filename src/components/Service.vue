@@ -20,21 +20,6 @@
           >
             <div class="top">
               <div
-                class="header"
-              >
-                <p>
-                  {{ $t('recommendation') }}
-                </p>
-                <button
-                  class="close"
-                  @click.stop="closeService"
-                  @keydown.enter.prevent="closeService"
-                >
-                  <div class="top" />
-                  <div class="bottom" />
-                </button>
-              </div>
-              <div
                 class="category"
                 :class="categoryColor"
               >
@@ -291,6 +276,9 @@ export default Vue.extend({
       }
     }
   },
+  destroyed () {
+    this.closeService()
+  },
   methods: {
     ...mapMutations([
       'closeService',
@@ -400,50 +388,6 @@ export default Vue.extend({
       flex-direction: column;
       flex: 1;
       min-height: 0px;
-      .header {
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 6rem;
-        border-bottom: 1px solid var(--grey-medium-background);
-        .close {
-          position: absolute;
-          top: 2rem;
-          right: 2rem;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          width: 2rem;
-          height: 2rem;
-          min-height: 2rem;
-          min-width: 2rem;
-          max-height: 2rem;
-          max-width: 2rem;
-          padding: 0;
-          margin: 0;
-          background-color: inherit;
-          border: none;
-          .top, .bottom {
-            width: 3rem;
-            height: 2px;
-            min-width: 2rem;
-            min-height: 2px;
-            max-width: 2.2rem;
-            max-height: 2px;
-            border-radius: 500px;
-            background-color: var(--blue);
-          }
-          .top {
-            transform: rotate(45deg);
-            transform-origin: -1px 4px;
-          }
-          .bottom {
-            transform: rotate(-45deg);
-            transform-origin: 0 -2px;
-          }
-        }
-      }
       .category {
         display: flex;
         justify-content: space-between;

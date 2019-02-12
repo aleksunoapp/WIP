@@ -390,7 +390,8 @@ export default Vue.extend({
   computed: {
     ...mapState([
       'help',
-      'service'
+      'service',
+      'reason'
     ]),
     ...mapGetters([
       'categoriesShownOnRoute',
@@ -421,6 +422,10 @@ export default Vue.extend({
       if (open) {
         this.closeDrawer()
         this.closeService()
+        if (this.reason) {
+          this.selectService()
+          this.closeReason()
+        }
         window.addEventListener('resize', this.exitHelp)
         const scrollContainer = document.querySelector('.view')
         if (scrollContainer) { this.start.scrollTop = scrollContainer.scrollTop }
@@ -453,7 +458,9 @@ export default Vue.extend({
       'closeHelp',
       'closeService',
       'closeDrawer',
-      'logEvent'
+      'logEvent',
+      'selectService',
+      'closeReason'
     ]),
     ...mapActions({
       viewService: 'viewService'
