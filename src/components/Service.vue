@@ -537,7 +537,7 @@ export default Vue.extend({
             margin: 1rem 0;
           }
           &.skip {
-            margin: 1rem 0;
+            margin: .5rem 0 0 0;
           }
         }
       }
