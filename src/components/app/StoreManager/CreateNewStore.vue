@@ -365,6 +365,23 @@
                     inactive-text="Inactive"
                   />
                 </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <label>Calculate tax on:</label><br>
+                  <el-select
+                    v-model="newStore.calculate_tax_on"
+                    placeholder="select"
+                    size="mini"
+                  >
+                    <el-option
+                      label="items"
+                      value="item"
+                    />
+                    <el-option
+                      label="subtotal"
+                      value="subtotal"
+                    />
+                  </el-select>
+                </div>
               </div>
               <div class="form-actions noborder clear">
                 <div class="col-md-12">
@@ -1035,7 +1052,8 @@ export default {
         created_by: this.$root.createdBy,
         is_corporate: 0,
         api_key: null,
-        menu_tier_id: null
+        menu_tier_id: null,
+        calculate_tax_on: ''
       },
       locationDetails: {},
       activeTab: 0,
@@ -1361,7 +1379,8 @@ export default {
         created_by: this.$root.createdBy,
         is_corporate: 0,
         api_key: null,
-        menu_tier_id: null
+        menu_tier_id: null,
+        calculate_tax_on: ''
       }
     },
     /**
@@ -1510,6 +1529,8 @@ export default {
           reject('Store email cannot be blank')
         } else if (!emailPattern.test(createStoreVue.newStore.email)) {
           reject('Please enter a valid store email')
+        } else if (!createStoreVue.newStore.calculate_tax_on) {
+          reject('Calculate tax on cannot be blank')
         }
         resolve('Hurray')
       })
@@ -1800,21 +1821,21 @@ export default {
     showHolidayHoursAlert (payload = {}) {
       let title = 'Success'
       let html = `
-				<div>
-					The Holiday Hours have been created
-					<br/><br/>
-					<strong>
-						Do you want to add store images?
-					</strong>
-				</div>`
+        <div>
+          The Holiday Hours have been created
+          <br/><br/>
+          <strong>
+            Do you want to add store images?
+          </strong>
+        </div>`
       let type = 'success'
 
       if (payload && payload.pending_approval) {
         title = 'Approval Required'
         html = `
-					<div>
-						The Holiday Hours have been sent for approval
-					</div>`
+          <div>
+            The Holiday Hours have been sent for approval
+          </div>`
         type = 'info'
       }
 

@@ -300,6 +300,23 @@
                           inactive-text="Inactive"
                         />
                       </div>
+                      <div class="form-group form-md-line-input form-md-floating-label">
+                        <label>Calculate tax on:</label><br>
+                        <el-select
+                          v-model="storeToBeEdited.calculate_tax_on"
+                          placeholder="select"
+                          size="mini"
+                        >
+                          <el-option
+                            label="items"
+                            value="item"
+                          />
+                          <el-option
+                            label="subtotal"
+                            value="subtotal"
+                          />
+                        </el-select>
+                      </div>
                     </div>
                   </div>
                   <div class="form-actions noborder clear">
@@ -1893,6 +1910,8 @@ export default {
           reject('Store internal id cannot be blank')
         } else if (!editStoreVue.storeToBeEdited.currency.length) {
           reject('Store currency cannot be blank')
+        } else if (!editStoreVue.storeToBeEdited.calculate_tax_on) {
+          reject('Calculate tax on cannot be blank')
         }
         resolve('Hurray')
       })
