@@ -10,7 +10,7 @@
         <div class="border" />
         <div class="wrapper">
           <p class="text">
-            {{ $t('hey') }}, {{ customer.firstName }}, {{ $t('you_have').toLowerCase() }}
+            {{ customer.firstName }}, {{ $t('you_have').toLowerCase() }}
           </p>
           <p class="text large">
             <span class="blue">

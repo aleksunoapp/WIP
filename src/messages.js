@@ -168,7 +168,6 @@ const enCA = {
   wait_there_are: 'Wait, there are still',
   pending_approval: 'pending approval',
   // additional
-  hey: 'Hey',
   additional_recommendation: 'Additional Recommendation | Additional Recommendations'
 }
 const frCA = {
@@ -278,7 +277,6 @@ const frCA = {
   wait_there_are: 'Attendez, il vous reste encore',
   pending_approval: 'à approuver',
   // additional
-  hey: '',
   additional_recommendation: 'Recommandation supplémentaire | Recommandations supplémentaires'
 }
 const esMX = {
@@ -388,7 +386,6 @@ const esMX = {
   wait_there_are: 'Espere, todavía hay',
   pending_approval: 'pendientes de aprobación',
   // additional
-  hey: '',
   additional_recommendation: 'Recomendación adicional | Recomendaciones adicionales'
 }
 
