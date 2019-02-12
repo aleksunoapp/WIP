@@ -82,32 +82,32 @@
                     {{ warranty }}
                   </p>
                   <p
-                    v-if="advisorComment"
+                    v-if="comments.customer.header"
                     class="title"
                   >
-                    {{ $t('advisor_comments') }}
+                    {{ comments.customer.header }}:
                   </p>
                   <p
-                    v-if="comment"
+                    v-if="comments.customer.text"
                     class="comment"
                   >
-                    {{ comment }}
+                    {{ comments.customer.text }}
                   </p>
                   <div
-                    v-if="comment && advisorComment"
+                    v-if="comments.divider"
                     class="divider"
                   />
                   <p
-                    v-if="advisorComment"
+                    v-if="comments.advisor.header"
                     class="title"
                   >
-                    {{ $t('advisor_comments') }}
+                    {{ comments.advisor.header }}:
                   </p>
                   <p
-                    v-if="advisorComment"
+                    v-if="comments.advisor.text"
                     class="comment"
                   >
-                    {{ advisorComment }}
+                    {{ comments.advisor.text }}
                   </p>
                 </div>
               </div>
@@ -164,7 +164,8 @@ export default Vue.extend({
   computed: {
     ...mapState([
       'modal',
-      'service'
+      'service',
+      'customerCommentsLabel'
     ]),
     ...mapGetters([
       'serviceById',
@@ -233,29 +234,42 @@ export default Vue.extend({
       }
       return text
     },
-    comment () {
-      let header = ''
-      let text = ''
+    comments () {
+      let customer = {
+        header: '',
+        text: ''
+      }
+      let advisor = {
+        header: '',
+        text: ''
+      }
+
       if (this.service.category > '5') {
         if (this.service.parentServiceId) {
-          return this.serviceById(this.service.parentServiceId).comment
+          customer.text = this.serviceById(this.service.parentServiceId).comment
         } else {
-          return this.service.comment
+          customer.text = this.service.comment
+        }
+        if (customer.text) {
+          customer.header = this.customerCommentsLabel
+        }
+
+        if (this.service.serviceAdvisorComments) {
+          advisor.text = this.service.serviceAdvisorComments
+        }
+        if (advisor.text) {
+          advisor.header = this.$t('advisor_comments')
         }
       } else {
-        return this.service.serviceAdvisorComments
+        advisor.text = this.service.serviceAdvisorComments
       }
-    },
-    advisorComment () {
-      let header = ''
-      let text = ''
-      if (this.service.category > '5') {
-        header = this.$t('advisor_comment')
-        text = this.service.serviceAdvisorComments
-      }
+
+      let divider = customer.text && advisor.text
+
       return {
-        header,
-        text
+        customer,
+        advisor,
+        divider
       }
     }
   },
@@ -561,7 +575,7 @@ export default Vue.extend({
           text-transform: uppercase;
         }
         .back {
-          color: var(--blue);
+          color: var(--grey-dark-background);
         }
         .next {
           font-family: 'Futura Heavy';
