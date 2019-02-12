@@ -11,7 +11,10 @@
         >
           <div class="previous">
             <p class="item">
-              {{ $t("previous") }}
+              {{ $t("previously_approved_services") }}
+              <span class="taxes">
+                {{ $t("taxes_and_fees_included") }}
+              </span>
             </p>
             <button
               class="toggle"
@@ -48,6 +51,7 @@
             </div>
           </div>
         </transition-height>
+        <div class="divider" />
         <div class="row bold">
           <p class="item">
             {{ $t("estimate") }}
@@ -360,10 +364,16 @@ export default Vue.extend({
         .previous {
           display: flex;
           align-items: center;
+          .taxes {
+            display: block;
+            text-transform: uppercase;
+            font-size: 0.7em;
+          }
           .toggle {
             display: flex;
             justify-content: center;
             align-items: center;
+            margin: 0 0 0 1rem;
             border: none;
             padding: 1.5rem 1rem;
             background-color: var(--white);

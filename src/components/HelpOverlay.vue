@@ -209,12 +209,16 @@
             <div class="card">
               <div class="row">
                 <p class="item">
-                  {{ $t("previous") }}
+                  {{ $t("previously_approved_services") }}
+                  <span class="taxes">
+                    {{ $t("taxes_and_fees_included") }}
+                  </span>
                 </p>
                 <p class="price">
                   {{ serviceTotal }}
                 </p>
               </div>
+              <div class="divider" />
               <div class="row bold">
                 <p class="item">
                   {{ $t("estimate") }}
@@ -998,6 +1002,12 @@ export default Vue.extend({
       .row {
         display: flex;
         justify-content: space-between;
+        align-items: center;
+        .taxes {
+          display: block;
+          text-transform: uppercase;
+          font-size: 0.7em;
+        }
         &.total {
           color: var(--blue);
         }
@@ -1011,6 +1021,19 @@ export default Vue.extend({
         height: 2px;
         margin: 1rem 0;
         background-color: var(--grey-light-background)
+      }
+      .total .price {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        padding: .5rem;
+        border-radius: 500px;
+        color: var(--blue);
+        font-weight: 700;
+        letter-spacing: 0.0625rem;
+        font-family: 'Futura Heavy';
+        background-color: var(--grey-light-background);
       }
     }
     .bubble {
