@@ -82,7 +82,7 @@ html, body {
   --black: #474b66;
   --white: #ffffff;
   --red: #d0021b;
-  --yellow: #f8e71c;
+  --yellow: #ecdf00;
   --grey-input-border: #c3c3c3;
   --grey-text: #989898;
   --grey-pagination: #d6d6da;
