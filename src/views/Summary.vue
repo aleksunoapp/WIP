@@ -353,6 +353,7 @@ export default Vue.extend({
       .row {
         display: flex;
         justify-content: space-between;
+        align-items: center;
         &.total {
           color: var(--blue);
         }
@@ -391,13 +392,21 @@ export default Vue.extend({
         margin: 1rem 0;
         background-color: var(--grey-light-background)
       }
+      .total .price {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        padding: .5rem;
+        border-radius: 500px;
+        color: var(--blue);
+        font-weight: 700;
+        letter-spacing: 0.0625rem;
+        font-family: 'Futura Heavy';
+        background-color: var(--grey-light-background);
+      }
     }
-    .divider {
-      width: 100%;
-      height: 2px;
-      margin: 1rem 0;
-      background-color: var(--grey-light-background)
-    }
+
     .signature {
       padding: 0 1rem;
       @media (min-width: 992px) {

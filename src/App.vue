@@ -53,10 +53,6 @@ export default App
   box-sizing: border-box;
   outline: none;
   overflow-wrap: break-word;
-
-  font-family: 'Futura Book';
-  -webkit-font-smoothing: auto;
-  -moz-osx-font-smoothing: auto;
 }
 *:focus {
   outline: 1px solid #3d56f5;
@@ -74,6 +70,9 @@ html, body {
   position: relative;
 
   font-size: 1.5rem;
+  font-family: 'Futura Book';
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
 
   --green: #2eaf4d;
   --green-pastel: #71C986;
@@ -162,6 +161,7 @@ html, body {
 }
 
 .bold {
-  font-weight: bold;
+  font-family: 'Futura Heavy';
+  font-weight: 700;
 }
 </style>
