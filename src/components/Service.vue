@@ -31,7 +31,7 @@
                     {{ $t("total") }}:
                   </span>
                   <span class="total">
-                    {{ total }}
+                    {{ displayTotal }}
                   </span>
                 </p>
               </div>
@@ -138,14 +138,14 @@
 <script>
 import Vue from 'vue'
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
-import { focus, formatCurrency } from '@/mixins.js'
+import { getTotal, focus, formatCurrency } from '@/mixins.js'
 import ImageContainer from '@/components/ImageContainer.vue'
 
 export default Vue.extend({
   components: {
     ImageContainer
   },
-  mixins: [focus, formatCurrency],
+  mixins: [getTotal, focus, formatCurrency],
   computed: {
     ...mapState([
       'modal',
@@ -158,7 +158,9 @@ export default Vue.extend({
       'categoryServicesShownOnRoute',
       'count',
       'isPass',
-      'previouslyUnapprovedServices'
+      'previouslyUnapprovedServices',
+      'additionalServices',
+      'total'
     ]),
     services () {
       let services = []
@@ -182,15 +184,16 @@ export default Vue.extend({
     categoryName () {
       return this.$store.getters.categoryName(this.service.category)
     },
-    total () {
-      let formatted = ''
-      if (this.$route.name === 'services') {
-        formatted = this.formatCurrency(this.$store.getters.total.inspection)
-      }
+    displayTotal () {
+      let total = ''
       if (this.$route.name === 'additional-services') {
-        formatted = this.formatCurrency(this.$store.getters.total.additional)
+        total = this.formatCurrency(this.getTotal(this.additionalServices))
+      } else if (this.$route.name === 'wait-services') {
+        total = this.formatCurrency(this.getTotal(this.previouslyUnapprovedServices) + this.getTotal(this.additionalServices))
+      } else if (this.$route.name === 'services') {
+        total = this.formatCurrency(this.total.inspection)
       }
-      return formatted
+      return total
     },
     name () {
       if (!this.service.parentServiceId) {

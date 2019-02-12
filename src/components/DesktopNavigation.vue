@@ -78,7 +78,7 @@ export default {
       if (this.$route.name === 'additional-services') {
         total = this.formatCurrency(this.getTotal(this.additionalServices))
       } else if (this.$route.name === 'wait-services') {
-        total = this.formatCurrency(this.getTotal(this.previouslyUnapprovedServices))
+        total = this.formatCurrency(this.getTotal(this.previouslyUnapprovedServices) + this.getTotal(this.additionalServices))
       } else if (this.$route.name === 'services') {
         total = this.formatCurrency(this.total.inspection)
       }
