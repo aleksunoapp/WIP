@@ -34,7 +34,7 @@ export default {
   -webkit-overflow-scrolling: touch;
   outline: none;
 }
-.container.scroll-y-hidden {
+.container.overflow-y-hidden {
   overflow-y: hidden;
 }
 </style>

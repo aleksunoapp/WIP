@@ -42,7 +42,7 @@
         <div class="placeholder">
           <transition name="fade">
             <button
-              v-if="$route.name === 'services' && !modal"
+              v-if="$route.name === 'services' && !help && !modal"
               class="help"
               :disabled="help"
               aria-label="help"
@@ -55,7 +55,7 @@
               >
             </button>
             <button
-              v-else-if="modal"
+              v-else-if="modal && !help"
               class="close"
               @click.stop="closeService"
               @keydown.enter.prevent="closeService"

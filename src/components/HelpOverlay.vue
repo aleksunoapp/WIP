@@ -450,6 +450,9 @@ export default Vue.extend({
       }
     }
   },
+  destroyed () {
+    window.removeEventListener('resize', this.exitHelp)
+  },
   methods: {
     next () {
       if (this.page < 5) {
@@ -475,7 +478,7 @@ export default Vue.extend({
         this.closeService()
         this.$router.replace({ name: this.start.route })
         this.closeHelp()
-        document.querySelector('#route.container').classList.remove('scroll-y-hidden')
+        document.querySelector('#route.container').classList.remove('overflow-y-hidden')
         window.removeEventListener('resize', this.exitHelp)
         setTimeout(() => {
           const scrollContainer = document.querySelector('.view')
@@ -599,7 +602,7 @@ export default Vue.extend({
       if (page === 4) {
         this.$router.replace({ name: 'summary' })
 
-        document.querySelector('#route.container').classList.add('scroll-y-hidden')
+        document.querySelector('#route.container').classList.add('overflow-y-hidden')
         setTimeout(() => {
           const summary = document.querySelector('#summary')
           if (!summary) {
@@ -616,7 +619,6 @@ export default Vue.extend({
       }
 
       if (page === 5) {
-        document.querySelector('#route.container').classList.remove('scroll-y-hidden')
         this.page = page
       }
     }
