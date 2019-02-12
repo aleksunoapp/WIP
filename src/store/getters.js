@@ -1,4 +1,21 @@
 export const getters = {
+// displayPrice(service)
+// categoryName(id)
+// service({id: 0})
+// getTotal([])
+// services({
+//   isHighlighted,
+//   isSelected,
+//   wasSelected,
+//   categories,
+//   categoryTypes
+// })
+// categories({
+//   ids,
+//   types,
+//   shownOnInspection,
+//   services
+// })
   categoriesShown: (state, getters) => {
     let categoriesShown = []
     for (const category of state.categories) {
@@ -20,15 +37,11 @@ export const getters = {
 
     return categoriesShown
   },
-  // ADDITIONAL
-  // trigger additional if findServices({isHighlighted: true}) has length
-  // show findServices({isHighlighted: true})
-  // then show findServices({isHighlighted: false, wasSelected: true})
-
-  findServices: function (state, getters) {
+  findServices: (state, getters) => {
     return function ({
       isHighlighted,
       isSelected,
+
       wasSelected,
       categories,
       categoryTypes
