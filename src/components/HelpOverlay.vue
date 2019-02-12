@@ -956,10 +956,6 @@ export default Vue.extend({
       .image {
         max-width: 100%;
       }
-      .pagination {
-        position: absolute;
-        bottom: 2rem;
-      }
     }
     .bubble {
       position: relative;
@@ -1076,6 +1072,9 @@ export default Vue.extend({
     display: flex;
     flex-direction: column;
     align-items: center;
+    .pagination {
+      margin-bottom: 1rem;
+    }
     .skip {
       color: var(--white);
     }

@@ -506,6 +506,7 @@ export default Vue.extend({
     .error {
       .text {
         margin: 0;
+        padding: 1rem;
         text-align: center;
         color: var(--red);
       }

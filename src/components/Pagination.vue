@@ -52,7 +52,9 @@ export default Vue.extend({
   width: 1.5rem;
   height: 1.5rem;
   margin-right: .5rem;
-  padding: .5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .item:last-child {
   margin-right: 0;

@@ -250,6 +250,9 @@ export default Vue.extend({
     .pickup__time {
       font-weight: 700;
     }
+    .button {
+      margin: 2rem 0 0 0;
+    }
   }
 }
 </style>

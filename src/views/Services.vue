@@ -304,7 +304,6 @@ export default Vue.extend({
   .confirm {
     width: 100%;
     min-height: 5rem;
-    margin-top: 1rem;
     padding: 1.5rem;
     color: var(--white);
     background-color: var(--blue);

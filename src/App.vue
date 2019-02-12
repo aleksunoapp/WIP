@@ -116,8 +116,8 @@ html, body {
 
 .button {
   width: 100%;
-  margin: 1rem 0;
-  padding: 0;
+  margin: 0;
+  padding: 1rem;
   text-transform: uppercase;
   text-align: center;
   border: none;
@@ -140,7 +140,7 @@ html, body {
   background-color: var(--green);
 }
 .button.skip {
-  height: 2.5rem;
+  height: 4rem;
   background-color: rgba(0, 0, 0, 0);
   color: var(--black);
 }
