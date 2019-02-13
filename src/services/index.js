@@ -53,7 +53,11 @@ export const fetchMetadata = () => {
   return fetchWithTimeout(url)
     .then((response) => checkStatus(response))
     .then((response) => response.json())
-    .then((response) => response)
+    .then((response) => {
+      if (response.message === 'Token not found') {
+        throw new Error(response.message)
+      } else return response
+    })
     .catch((e) => { throw e })
 }
 
