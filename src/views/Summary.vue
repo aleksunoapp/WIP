@@ -240,7 +240,11 @@ export default Vue.extend({
         total = this.formatCurrency(this.$store.getters.total.service + this.$store.getters.total.inspection + this.$store.state.tax)
       }
       if (this.$route.name === 'additional-summary') {
-        total = this.formatCurrency(this.$store.getters.total.service + this.$store.getters.total.additional + this.$store.state.tax)
+        let subsum = 0
+        subsum += this.getTotal(this.getServices({ wasSelected: false, isHighlighted: false, categories: ['1', '2', '5'] }))
+        subsum += this.getTotal(this.additionalServices)
+
+        total = this.formatCurrency(this.$store.getters.total.service + subsum + this.$store.state.tax)
       }
       return total
     }
