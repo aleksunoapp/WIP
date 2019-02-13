@@ -469,9 +469,7 @@ export default Vue.extend({
       'selectService',
       'closeReason'
     ]),
-    ...mapActions({
-      viewService: 'viewService'
-    }),
+    ...mapActions(['viewService']),
     exitHelp () {
       if (this.help) {
         this.logEvent(`Finished viewing help page ${this.page}`)
@@ -582,7 +580,21 @@ export default Vue.extend({
       }
 
       if (page === 3) {
-        this.viewService(this.categoryServicesShownOnRoute(this.categoriesShownOnRoute[0].id)[0])
+        let service
+        // find first service with image
+        for (const category of this.categoriesShownOnRoute) {
+          if (category.id < '5') {
+            if (typeof category.serviceCategoryType === 'string') {
+              if (category.serviceCategoryType.toLowerCase() !== 'pass') {
+                service = this.categoryServicesShownOnRoute(category.id)[0]
+              }
+            }
+          }
+        }
+        if (!service) {
+          service = this.categoryServicesShownOnRoute(this.categoriesShownOnRoute[0].id)[0]
+        }
+        this.viewService(service)
 
         setTimeout(() => {
           const details = document.querySelector('.images')

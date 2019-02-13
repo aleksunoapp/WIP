@@ -11,7 +11,7 @@
       @keydown.enter="openService(service)"
     >
       <div
-        v-if="!isPass"
+        v-if="showImage"
         class="left"
       >
         <img
@@ -110,12 +110,12 @@ export default {
     ...mapGetters([
       'categoryById'
     ]),
-    isPass () {
+    showImage () {
       const category = this.$store.getters.categoryById(this.service.category)
       if (category && typeof category.serviceCategoryType === 'string') {
-        return category.serviceCategoryType.toLowerCase() === 'pass'
+        return category.serviceCategoryType.toLowerCase() !== 'pass' && category.id < '5'
       }
-      return false
+      return true
     }
   },
   methods: {

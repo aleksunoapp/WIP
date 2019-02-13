@@ -47,7 +47,10 @@
                     {{ price }}
                   </p>
                 </div>
-                <div class="images">
+                <div
+                  v-if="showImage"
+                  class="images"
+                >
                   <image-container
                     :src="service.imageUrl"
                     class="image"
@@ -189,7 +192,14 @@ export default Vue.extend({
       if (this.$route.name === 'additional-services') {
         total = this.formatCurrency(this.getTotal(this.additionalServices))
       } else if (this.$route.name === 'wait-services') {
-        total = this.formatCurrency(this.getTotal(this.getServices({wasSelected: false, isHighlighted: false, categories: ['1', '2', '5']})) + this.getTotal(this.additionalServices))
+        total = this.formatCurrency(
+          this.getTotal(
+            this.getServices({
+              wasSelected: false,
+              isHighlighted: false,
+              categories: ['1', '2', '5']
+            })
+          ) + this.getTotal(this.additionalServices))
       } else if (this.$route.name === 'services') {
         total = this.formatCurrency(this.total.inspection)
       }
@@ -221,6 +231,13 @@ export default Vue.extend({
         }
       }
       return text
+    },
+    showImage () {
+      const category = this.$store.getters.categoryById(this.service.category)
+      if (category && typeof category.serviceCategoryType === 'string') {
+        return category.serviceCategoryType.toLowerCase() !== 'pass' && category.id < '5'
+      }
+      return true
     },
     comments () {
       let customer = {
@@ -320,7 +337,7 @@ export default Vue.extend({
         }
         if (this.$route.name === 'additional-services') {
           if (this.count.actionable) {
-            if (this.getServices({wasSelected: false, isHighlighted: false, categories: ['1', '2', '5']}).length) {
+            if (this.getServices({ wasSelected: false, isHighlighted: false, categories: ['1', '2', '5'] }).length) {
               this.$router.push({ name: 'wait' })
             } else {
               this.getTax()

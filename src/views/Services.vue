@@ -53,6 +53,7 @@
             </div>
             <button
               class="toggle"
+              aria-label="toggle category"
               @click.stop="toggleCategory(category)"
               @keydown.enter.prevent="toggleCategory(category)"
             >
@@ -161,7 +162,7 @@ export default Vue.extend({
         return
       }
 
-      if (this.getServices({wasSelected: false, isHighlighted: false, categories: ['1', '2', '5']}).length) {
+      if (this.getServices({ wasSelected: false, isHighlighted: false, categories: ['1', '2', '5'] }).length) {
         this.$router.push({ name: 'wait' })
       } else {
         this.getTax()
