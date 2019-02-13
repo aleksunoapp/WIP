@@ -24,7 +24,7 @@
       </div>
       <button
         class="button cta"
-        @click="$router.push({name: 'additional-services'})"
+        @click="viewAdditional()"
       >
         {{ $tc("view_recommendations", additionalServices.length) }}
       </button>
@@ -34,7 +34,7 @@
 
 <script>
 import Vue from 'vue'
-import { mapGetters, mapMutations, mapState } from 'vuex'
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 export default Vue.extend({
   computed: {
     ...mapGetters(['additionalServices']),
@@ -47,8 +47,15 @@ export default Vue.extend({
     this.logEvent('Finished viewing additional page')
   },
   methods: {
+    viewAdditional () {
+      this.viewService(this.additionalServices[0])
+      this.$router.push({ name: 'additional-services' })
+    },
     ...mapMutations([
       'logEvent'
+    ]),
+    ...mapActions([
+      'viewService'
     ])
   }
 })
