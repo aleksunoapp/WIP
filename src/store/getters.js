@@ -396,19 +396,6 @@ export const getters = {
       inspection: inspectionTotal,
       additional: additionalTotal
     }
-  },
-  previouslyUnapprovedServices: (state, getters) => {
-    const services = []
-    for (const category of getters.categoriesShown) {
-      if (!getters.isPass(category.id) && category.id !== '4') {
-        for (const service of getters.categoryServices(category.id)) {
-          if (!service.isHighlighted && !service.wasSelected) {
-            services.push(service)
-          }
-        }
-      }
-    }
-    return services
   }
 }
 

@@ -14,7 +14,7 @@
           </p>
           <p class="text large">
             <span class="green">
-              {{ previouslyUnapprovedServices.length }}
+              {{ count }}
             </span> {{ $t('recommendations') }}
           </p>
           <p class="text">
@@ -26,7 +26,7 @@
         class="button cta green"
         @click="$router.push({name: 'wait-services'})"
       >
-        {{ $tc("view_recommendations", previouslyUnapprovedServices.length) }}
+        {{ $tc("view_recommendations", count) }}
       </button>
     </main>
   </div>
@@ -37,7 +37,14 @@ import Vue from 'vue'
 import { mapGetters, mapMutations } from 'vuex'
 export default Vue.extend({
   computed: {
-    ...mapGetters(['getServices'])
+    ...mapGetters(['getServices']),
+    count () {
+      return this.getServices({
+        wasSelected: false,
+        isHighlighted: false,
+        categories: ['1', '2', '5'] }
+      ).length
+    }
   },
   created () {
     this.logEvent('Started viewing wait page')
