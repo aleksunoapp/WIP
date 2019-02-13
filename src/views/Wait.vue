@@ -37,7 +37,7 @@ import Vue from 'vue'
 import { mapGetters, mapMutations } from 'vuex'
 export default Vue.extend({
   computed: {
-    ...mapGetters(['previouslyUnapprovedServices'])
+    ...mapGetters(['getServices'])
   },
   created () {
     this.logEvent('Started viewing wait page')

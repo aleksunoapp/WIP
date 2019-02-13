@@ -213,7 +213,7 @@ export default Vue.extend({
       'count',
       'categoryServices',
       'additionalServices',
-      'previouslyUnapprovedServices'
+      'getServices'
     ]),
     serviceTotal () {
       return this.formatCurrency(this.$store.getters.total.service)
@@ -225,7 +225,7 @@ export default Vue.extend({
       }
       if (this.$route.name === 'additional-summary') {
         let subsum = 0
-        subsum += this.getTotal(this.previouslyUnapprovedServices)
+        subsum += this.getTotal(this.getServices({ wasSelected: false, isHighlighted: false, categories: ['1', '2', '5'] }))
         subsum += this.getTotal(this.additionalServices)
         total = this.formatCurrency(subsum)
       }

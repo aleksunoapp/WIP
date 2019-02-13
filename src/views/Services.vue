@@ -114,7 +114,7 @@ export default Vue.extend({
     ...mapGetters([
       'categoryServicesShownOnRoute',
       'categoriesShownOnRoute',
-      'previouslyUnapprovedServices',
+      'getServices',
       'count'
     ])
   },
@@ -161,7 +161,7 @@ export default Vue.extend({
         return
       }
 
-      if (this.previouslyUnapprovedServices.length) {
+      if (this.getServices({wasSelected: false, isHighlighted: false, categories: ['1', '2', '5']}).length) {
         this.$router.push({ name: 'wait' })
       } else {
         this.getTax()

@@ -10,12 +10,120 @@ export const getters = {
 //   categories,
 //   categoryTypes
 // })
-// categories({
-//   ids,
-//   types,
-//   shownOnInspection,
-//   services
-// })
+  getServices: (state, getters) => {
+    return function ({
+      isHighlighted,
+      isSelected,
+      wasSelected,
+      categories,
+      categoryTypes
+    }) {
+      const services = []
+      if (arguments.length) {
+        for (const service of state.services) {
+          const category = getters.categoryById(service.category)
+          let matches = []
+          if (service.subServices) {
+            for (const subService of service.subServices) {
+              if (isHighlighted !== undefined) {
+                if (subService.isHighlighted === isHighlighted) {
+                  matches.push(true)
+                } else {
+                  matches.push(false)
+                }
+              }
+              if (isSelected !== undefined) {
+                if (subService.isSelected === isSelected) {
+                  matches.push(true)
+                } else {
+                  matches.push(false)
+                }
+              }
+              if (wasSelected !== undefined) {
+                if (subService.wasSelected === wasSelected) {
+                  matches.push(true)
+                } else {
+                  matches.push(false)
+                }
+              }
+              if (categories !== undefined) {
+                const id = state.categoryIdMap[subService.category]
+                if (categories.includes(id)) {
+                  matches.push(true)
+                } else {
+                  matches.push(false)
+                }
+              }
+              if (categoryTypes !== undefined) {
+                if (categoryTypes.includes(category.serviceCategoryType)) {
+                  matches.push(true)
+                } else {
+                  matches.push(false)
+                }
+              }
+              if (!matches.includes(false)) {
+                services.push({
+                  ...subService,
+                  sortOrder: category.sortOrder
+                })
+              }
+            }
+          } else {
+            if (isHighlighted !== undefined) {
+              if (service.isHighlighted === isHighlighted) {
+                matches.push(true)
+              } else {
+                matches.push(false)
+              }
+            }
+            if (isSelected !== undefined) {
+              if (service.isSelected === isSelected) {
+                matches.push(true)
+              } else {
+                matches.push(false)
+              }
+            }
+            if (wasSelected !== undefined) {
+              if (service.wasSelected === wasSelected) {
+                matches.push(true)
+              } else {
+                matches.push(false)
+              }
+            }
+            if (categories !== undefined) {
+              const id = state.categoryIdMap[service.category]
+              if (categories.includes(id)) {
+                matches.push(true)
+              } else {
+                matches.push(false)
+              }
+            }
+            if (categoryTypes !== undefined) {
+              if (categoryTypes.includes(category.serviceCategoryType)) {
+                matches.push(true)
+              } else {
+                matches.push(false)
+              }
+            }
+            if (!matches.includes(false)) {
+              services.push({
+                ...service,
+                sortOrder: category.sortOrder
+              })
+            }
+          }
+        }
+      }
+      services.sort((a, b) => a.sortOrder - b.sortOrder)
+      return services
+    }
+  },
+  // categories({
+  //   ids,
+  //   types,
+  //   shownOnInspection,
+  //   services
+  // })
   categoriesShown: (state, getters) => {
     let categoriesShown = []
     for (const category of state.categories) {
@@ -36,56 +144,6 @@ export const getters = {
     }
 
     return categoriesShown
-  },
-  findServices: (state, getters) => {
-    return function ({
-      isHighlighted,
-      isSelected,
-
-      wasSelected,
-      categories,
-      categoryTypes
-    }) {
-      const services = []
-      if (arguments.length) {
-        for (const service of services) {
-          const category = getters.categoryById(service.category)
-          let match = false
-          if (isHighlighted !== undefined) {
-            if (service.isHighlighted === isHighlighted) {
-              match = true
-            }
-          }
-          if (isSelected !== undefined && !match) {
-            if (service.isSelected === isSelected) {
-              match = true
-            }
-          }
-          if (wasSelected !== undefined && !match) {
-            if (service.wasSelected === wasSelected) {
-              match = true
-            }
-          }
-          if (categories !== undefined && !match) {
-            if (categories.includes(service.category)) {
-              match = true
-            }
-          }
-          if (categoryTypes !== undefined && !match) {
-            if (categoryTypes.includes(category.serviceCategoryType)) {
-              match = true
-            }
-          }
-          if (match) {
-            services.push({
-              ...service,
-              sortOrder: category.sortOrder
-            })
-          }
-        }
-      }
-      return services.sort((a, b) => a.sortOrder - b.sortOrder)
-    }
   },
   categoriesShownOnRoute: (state, getters) => {
     if (state.route.name === 'additional-services' || state.route.name === 'additional-summary') {
@@ -138,7 +196,7 @@ export const getters = {
     } else return false
   },
   categoryById: (state) => (id) => {
-    return state.categories.find((category) => category.id === id)
+    return state.categories.find((category) => state.categoryIdMap[id] === category.id)
   },
   categoryServicesShownOnRoute: (state, getters) => (id) => {
     if (state.route.name === 'additional-services') {

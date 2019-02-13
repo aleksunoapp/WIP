@@ -158,7 +158,7 @@ export default Vue.extend({
       'categoryServicesShownOnRoute',
       'count',
       'isPass',
-      'previouslyUnapprovedServices',
+      'getServices',
       'additionalServices',
       'total'
     ]),
@@ -189,7 +189,7 @@ export default Vue.extend({
       if (this.$route.name === 'additional-services') {
         total = this.formatCurrency(this.getTotal(this.additionalServices))
       } else if (this.$route.name === 'wait-services') {
-        total = this.formatCurrency(this.getTotal(this.previouslyUnapprovedServices) + this.getTotal(this.additionalServices))
+        total = this.formatCurrency(this.getTotal(this.getServices({wasSelected: false, isHighlighted: false, categories: ['1', '2', '5']})) + this.getTotal(this.additionalServices))
       } else if (this.$route.name === 'services') {
         total = this.formatCurrency(this.total.inspection)
       }
@@ -320,7 +320,7 @@ export default Vue.extend({
         }
         if (this.$route.name === 'additional-services') {
           if (this.count.actionable) {
-            if (this.previouslyUnapprovedServices.length) {
+            if (this.getServices({wasSelected: false, isHighlighted: false, categories: ['1', '2', '5']}).length) {
               this.$router.push({ name: 'wait' })
             } else {
               this.getTax()
