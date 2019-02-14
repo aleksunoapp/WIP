@@ -365,23 +365,6 @@
                     inactive-text="Inactive"
                   />
                 </div>
-                <div class="form-group form-md-line-input form-md-floating-label">
-                  <label>Calculate tax on:</label><br>
-                  <el-select
-                    v-model="newStore.calculate_tax_on"
-                    placeholder="select"
-                    size="mini"
-                  >
-                    <el-option
-                      label="items"
-                      value="item"
-                    />
-                    <el-option
-                      label="subtotal"
-                      value="subtotal"
-                    />
-                  </el-select>
-                </div>
               </div>
               <div class="form-actions noborder clear">
                 <div class="col-md-12">
@@ -715,6 +698,25 @@
                             active-text="Yes"
                             inactive-text="No"
                           />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Calculate tax on</td>
+                        <td>
+                          <el-select
+                            v-model="newStoreMeta.calculate_tax_on"
+                            placeholder="select"
+                            size="mini"
+                          >
+                            <el-option
+                              label="items"
+                              value="item"
+                            />
+                            <el-option
+                              label="subtotal"
+                              value="subtotal"
+                            />
+                          </el-select>
                         </td>
                       </tr>
                       <tr>
@@ -1052,8 +1054,7 @@ export default {
         created_by: this.$root.createdBy,
         is_corporate: 0,
         api_key: null,
-        menu_tier_id: null,
-        calculate_tax_on: ''
+        menu_tier_id: null
       },
       locationDetails: {},
       activeTab: 0,
@@ -1083,7 +1084,8 @@ export default {
         external_online_ordering_url: '',
         enable_promocode: 0,
         tax: '',
-        price_includes_tax: 0
+        price_includes_tax: 0,
+        calculate_tax_on: ''
       },
       savingStoreHours: false,
       newStoreHours: [
@@ -1379,8 +1381,7 @@ export default {
         created_by: this.$root.createdBy,
         is_corporate: 0,
         api_key: null,
-        menu_tier_id: null,
-        calculate_tax_on: ''
+        menu_tier_id: null
       }
     },
     /**
@@ -1416,7 +1417,8 @@ export default {
         external_online_ordering_url: '',
         enable_promocode: 0,
         tax: '',
-        price_includes_tax: 0
+        price_includes_tax: 0,
+        calculate_tax_on: ''
       }
       this.newHolidayHours = []
       this.newStoreHours = [
@@ -1529,8 +1531,6 @@ export default {
           reject('Store email cannot be blank')
         } else if (!emailPattern.test(createStoreVue.newStore.email)) {
           reject('Please enter a valid store email')
-        } else if (!createStoreVue.newStore.calculate_tax_on) {
-          reject('Calculate tax on cannot be blank')
         }
         resolve('Hurray')
       })
@@ -1613,6 +1613,8 @@ export default {
           reject('The external order link is required')
         } else if (!createStoreVue.newStoreMeta.tax) {
           reject('Tax cannot be blank')
+        } else if (!createStoreVue.newStoreMeta.calculate_tax_on) {
+          reject('Select an option for calculating tax')
         } else if (createStoreVue.newStoreMeta.merchant_id === null) {
           reject('Merchant ID cannot be blank')
         } else if (createStoreVue.newStoreMeta.merchant_key === null) {

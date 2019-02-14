@@ -300,23 +300,6 @@
                           inactive-text="Inactive"
                         />
                       </div>
-                      <div class="form-group form-md-line-input form-md-floating-label">
-                        <label>Calculate tax on:</label><br>
-                        <el-select
-                          v-model="storeToBeEdited.calculate_tax_on"
-                          placeholder="select"
-                          size="mini"
-                        >
-                          <el-option
-                            label="items"
-                            value="item"
-                          />
-                          <el-option
-                            label="subtotal"
-                            value="subtotal"
-                          />
-                        </el-select>
-                      </div>
                     </div>
                   </div>
                   <div class="form-actions noborder clear">
@@ -692,6 +675,25 @@
                                 active-text="Yes"
                                 inactive-text="No"
                               />
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Calculate tax on</td>
+                            <td>
+                              <el-select
+                                v-model="metaToBeEdited.calculate_tax_on"
+                                placeholder="select"
+                                size="mini"
+                              >
+                                <el-option
+                                  label="items"
+                                  value="item"
+                                />
+                                <el-option
+                                  label="subtotal"
+                                  value="subtotal"
+                                />
+                              </el-select>
                             </td>
                           </tr>
                           <tr>
@@ -1910,8 +1912,6 @@ export default {
           reject('Store internal id cannot be blank')
         } else if (!editStoreVue.storeToBeEdited.currency.length) {
           reject('Store currency cannot be blank')
-        } else if (!editStoreVue.storeToBeEdited.calculate_tax_on) {
-          reject('Calculate tax on cannot be blank')
         }
         resolve('Hurray')
       })
@@ -2096,6 +2096,8 @@ export default {
           reject('The external online ordering enabled field is required')
         } else if (!editStoreVue.metaToBeEdited.tax) {
           reject('Tax cannot be blank')
+        } else if (!editStoreVue.metaToBeEdited.calculate_tax_on) {
+          reject('Select an option for calculating tax')
         } else if (editStoreVue.metaToBeEdited.gateway_name === null) {
           reject('Gateway Name cannot be blank')
         } else if (editStoreVue.metaToBeEdited.merchant_id === '') {
