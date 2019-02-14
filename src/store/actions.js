@@ -29,7 +29,8 @@ export const actions = {
           local,
           promise,
           responseBy,
-          expired
+          expired,
+          topImageUrl
         } = response
 
         const order = {
@@ -68,6 +69,7 @@ export const actions = {
         commit('setReadyBy', promise)
         commit('setExpired', expired)
         commit('setDealer', dealerContactInfo)
+        commit('setTopImageUrl', topImageUrl || '')
         dispatch('routeAfterMetadata')
       })
       .catch((error) => {

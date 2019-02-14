@@ -67,7 +67,8 @@ export const state = {
   signature: null,
   slug: '',
   tax: 0,
-  token: ''
+  token: '',
+  topImageUrl: ''
 }
 
 export default state

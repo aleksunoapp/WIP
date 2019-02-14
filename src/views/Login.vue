@@ -13,7 +13,7 @@
       >
         <image-container
           class="logo"
-          :src="dealer.logoUrl"
+          :src="topImageUrl"
         />
         <h1 class="header">
           <span class="half">
@@ -76,7 +76,8 @@ export default Vue.extend({
       'drawer',
       'customer',
       'dealer',
-      'loading'
+      'loading',
+      'topImageUrl'
     ]),
     code: {
       get () {

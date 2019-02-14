@@ -3,7 +3,7 @@
     <main class="contents">
       <image-container
         class="logo"
-        :src="dealer.logoUrl"
+        :src="topImageUrl"
         :alt="`${dealer.name} logo`"
       />
 
@@ -88,7 +88,8 @@ export default Vue.extend({
   computed: {
     ...mapState([
       'dealer',
-      'advisor'
+      'advisor',
+      'topImageUrl'
     ]),
     ...mapGetters([
       'readyBy',
@@ -141,13 +142,12 @@ export default Vue.extend({
     margin: 0 1rem;
   }
   .logo {
-    max-width: 50%;
-    height: 20vh;
+    width: 350px;
+    height: 15rem;
+    min-height: 100px;
+    margin: 4rem 0 0 0;
     object-fit: contain;
-    margin: 2rem 0rem;
-    @media (min-width: 768px) {
-      margin: 5rem 1rem;
-    }
+
   }
   .description {
     text-align: center;

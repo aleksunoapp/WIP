@@ -74,7 +74,7 @@ export interface InitialState {
   dealer: {
     address: string,
     email: string,
-    logoUrl: string,
+    topImageUrl: string,
     name: string,
     phone: string,
     smsPhone: string,

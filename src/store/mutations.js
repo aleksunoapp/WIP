@@ -80,6 +80,9 @@ export const mutations = {
   setDealer (state, dealerContactInfo) {
     state.dealer = dealerContactInfo
   },
+  setTopImageUrl (state, topImageUrl) {
+    state.topImageUrl = topImageUrl
+  },
   setExpired (state, expired) {
     state.expired = expired
   },
