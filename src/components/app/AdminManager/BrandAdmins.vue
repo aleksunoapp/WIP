@@ -779,7 +779,7 @@
             'sync roles for user'
           ])"
           :previously-selected="brandAdminToAssignRolesTo.roles"
-          @rolesSelected="updateRoles"
+          @selected="updateRoles"
         />
       </div>
       <div

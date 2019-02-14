@@ -2,23 +2,90 @@
 import GlobalFunctions from '@/global.js'
 
 /**
- * Call to API to get a discount for a store.
- * @function
- * @param {number} storeId - ID of the store
- * @returns {object} A promise
- */
-export const listDiscountsForStore = (storeId) => {
+  * Call to API to create a discount category
+  * @function
+  * @param {string} locationId - ID of the location
+  * @param {string} data - Discount category details
+  * @returns {object} A promise that will return API response or an error.
+  */
+export const createDiscountCategory = function ({ locationId, data }) {
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'POST',
+      data,
+      url: `/app/location/discount_category/create/${locationId}`,
+      success: (r) => resolve(r),
+      error: (e) => reject(e)
+    })
+  })
+}
+
+/**
+  * Call to API to update a discount category
+  * @function
+  * @param {string} data - Details of the category
+  * @returns {object} A promise that will return API response or an error.
+  */
+export const updateDiscountCategory = function (data) {
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'POST',
+      data,
+      url: `/app/location/discount_category/update/${data.id}`,
+      success: (r) => resolve(r),
+      error: (e) => reject(e)
+    })
+  })
+}
+
+/**
+  * Call to API to get discount categories for a location
+  * @function
+  * @param {string} locationId - ID of the location
+  * @returns {object} A promise that will return API response or an error.
+  */
+export const getDiscountCategoriesForLocation = function (locationId) {
   return new Promise(function (resolve, reject) {
     GlobalFunctions.$ajax({
       method: 'GET',
-      dataType: 'json',
-      url: `/app/location/discounts/${storeId}`,
-      success: function (response) {
-        resolve(response)
-      },
-      error: function (error) {
-        reject(error)
-      }
+      url: `/app/location/discount_category/${locationId}`,
+      success: (r) => resolve(r),
+      error: (e) => reject(e)
+    })
+  })
+}
+
+/**
+  * Call to API to delete a discount category
+  * @function
+  * @param {string} categoryId
+  * @returns {object} A promise that will return API response or an error.
+  */
+export const deleteDiscountCategory = function (categoryId) {
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'DELETE',
+      url: `/app/location/discount_category/${categoryId}`,
+      success: (r) => resolve(r),
+      error: (e) => reject(e)
+    })
+  })
+}
+
+/**
+ * Call to API to get a discount for a category.
+ * @function
+ * @param {number} categoryId - ID of the category
+ * @returns {object} A promise
+ */
+export const getDiscountsInCategory = (categoryId) => {
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'GET',
+      data: {},
+      url: `/app/location/discount_category/show/${categoryId}`,
+      success: (r) => resolve(r),
+      error: (e) => reject(e)
     })
   })
 }
@@ -27,15 +94,15 @@ export const listDiscountsForStore = (storeId) => {
  * Call to API to create a discount
  * @function
  * @param {object} discount - The discount to create
- * @param {number} storeId - ID of the store the discount belongs to
+ * @param {number} categoryId - ID of the category the discount belongs to
  * @returns {object} A promise
  */
-export const createDiscount = (discount, storeId) => {
+export const createDiscount = (discount, categoryId) => {
   return new Promise(function (resolve, reject) {
     GlobalFunctions.$ajax({
       method: 'POST',
       dataType: 'json',
-      url: `/app/location/discounts/create/${storeId}`,
+      url: `/app/location/discounts/create/${categoryId}`,
       data: discount,
       success: function (response) {
         resolve(response)
@@ -91,9 +158,51 @@ export const deleteDiscount = (discountId) => {
   })
 }
 
+/**
+  * Call to API to get roles a discount is associated with
+  * @function
+  * @param {string} id - ID of the discount
+  * @returns {object} A promise that will return API response or an error.
+  */
+export const getRolesOfDiscount = function (id) {
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'GET',
+      url: `/app/location/discounts/${id}/roles`,
+      success: (r) => resolve(r),
+      error: (e) => reject(e)
+    })
+  })
+}
+
+/**
+  * Call to API to get discount categories for a location
+  * @function
+  * @param {string} id - ID of the discount
+  * @param {string} data - Array of role IDs
+  * @returns {object} A promise that will return API response or an error.
+  */
+export const assignRolesToDiscount = function ({ id, data }) {
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'PUT',
+      data,
+      url: `/app/location/discounts/${id}/roles`,
+      success: (r) => resolve(r),
+      error: (e) => reject(e)
+    })
+  })
+}
+
 export default {
-  listDiscountsForStore,
+  createDiscountCategory,
+  updateDiscountCategory,
+  getDiscountCategoriesForLocation,
+  deleteDiscountCategory,
+  getDiscountsInCategory,
   createDiscount,
   updateDiscount,
-  deleteDiscount
+  deleteDiscount,
+  getRolesOfDiscount,
+  assignRolesToDiscount
 }

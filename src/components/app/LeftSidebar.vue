@@ -487,13 +487,13 @@
               </router-link>
             </li>
             <li
-              v-if="can('stores discounts read')"
+
               id="store_manager_discounts_link"
               class="nav-item"
-              :class="{'active': currentRoute === 'store_manager' && currentSubRoute === 'discounts'}"
+              :class="{'active': routeName === 'DiscountCategories'}"
             >
               <router-link
-                to="/app/store_manager/discounts"
+                :to="{name: 'DiscountCategories'}"
                 class="nav-link"
               >
                 <i class="fa fa-arrow-down" />
@@ -1245,14 +1245,17 @@ export default {
     currentSubRoute: ''
   }),
   computed: {
+    routeName () {
+      return this.$route.name
+    },
     ...mapGetters(['can', 'canAny'])
   },
   watch: {
     /**
-		 * Watch `$route` so that we can reset the current route on change.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * Watch `$route` so that we can reset the current route on change.
+     * @function
+     * @returns {undefined}
+     */
     $route () {
       this.setCurrentRoute()
     }
@@ -1263,10 +1266,10 @@ export default {
   },
   methods: {
     /**
-		 * To get a list of pending requests.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get a list of pending requests.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getRequests () {
       var appVue = this
       let pagination = {
@@ -1285,10 +1288,10 @@ export default {
         .catch(reason => {})
     },
     /**
-		 * To set the name of the current route and sub route for selecting active navigation.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To set the name of the current route and sub route for selecting active navigation.
+     * @function
+     * @returns {undefined}
+     */
     setCurrentRoute () {
       if (this.$route) {
         var firstIndex = this.$route.path.indexOf('/', 1)
@@ -1320,11 +1323,11 @@ export default {
       }
     },
     /**
-		 * To toggle whether or not a submenu should be toggled open.
-		 * @function
-		 * @param {object} event - The click event that prompted this function.
-		 * @returns {undefined}
-		 */
+     * To toggle whether or not a submenu should be toggled open.
+     * @function
+     * @param {object} event - The click event that prompted this function.
+     * @returns {undefined}
+     */
     toggleNavigation (event) {
       var target = $(event.target).closest('.nav-item')
       if (!target.hasClass('active')) {
@@ -1344,6 +1347,6 @@ export default {
 
 <style>
 .page-sidebar-menu-closed .fa-chevron-down:before {
-	display: none;
+  display: none;
 }
 </style>

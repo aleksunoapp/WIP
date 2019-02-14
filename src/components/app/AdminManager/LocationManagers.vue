@@ -869,7 +869,7 @@
             'sync roles for user'
           ])"
           :previously-selected="locationManagerToAssignRolesTo.roles"
-          @rolesSelected="updateRoles"
+          @selected="updateRoles"
         />
       </div>
       <div

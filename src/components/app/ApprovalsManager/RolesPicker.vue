@@ -1,68 +1,79 @@
 <template>
   <div class="roles-picker">
-    <table class="table">
-      <thead>
-        <tr>
-          <th />
-          <th> Role </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="role in currentActiveRoles"
-          :key="role.id"
-        >
-          <td>
-            <div class="md-checkbox has-success">
+    <loading-screen :show="loadingRoles" />
+    <template v-if="!loadingRoles && !roles.length">
+      <p class="text-center">
+        There are no roles
+      </p>
+    </template>
+    <template v-else-if="roles.length">
+      <div class="column__wrapper">
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="fit-to-content" />
+              <th> Role </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="role in currentActiveRoles"
+              :key="role.id"
+            >
+              <td class="fit-to-content">
+                <div class="md-checkbox has-success">
+                  <input
+                    :id="`${instanceId}-${role.id}`"
+                    v-model="role.selected"
+                    type="checkbox"
+                    class="md-check"
+                    :disabled="!editable"
+                    @change="rolesSelected()"
+                  >
+                  <label :for="`${instanceId}-${role.id}`">
+                    <span class="inc" />
+                    <span class="check" />
+                    <span class="box" />
+                  </label>
+                </div>
+              </td>
+              <td> {{ role.name }} </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="row__wrapper">
+          <div class="half-width">
+            <div class="form-group form-md-line-input form-md-floating-label">
               <input
-                :id="`${instanceId}-${role.id}`"
-                v-model="role.selected"
-                type="checkbox"
-                class="md-check"
-                :disabled="!editable"
-                @change="rolesSelected()"
+                id="form_control_roles_search"
+                ref="newRoleName"
+                v-model="rolesSearchQuery"
+                type="text"
+                class="form-control input-sm"
+                :class="{'edited': rolesSearchQuery.length}"
               >
-              <label :for="`${instanceId}-${role.id}`">
-                <span class="inc" />
-                <span class="check" />
-                <span class="box" />
+              <label for="form_control_roles_search">
+                Search roles
               </label>
             </div>
-          </td>
-          <td> {{ role.name }} </td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="row__wrapper">
-      <div class="half-width">
-        <div class="form-group form-md-line-input form-md-floating-label">
-          <input
-            id="form_control_roles_search"
-            ref="newRoleName"
-            v-model="rolesSearchQuery"
-            type="text"
-            class="form-control input-sm"
-            :class="{'edited': rolesSearchQuery.length}"
-          >
-          <label for="form_control_roles_search">
-            Search roles
-          </label>
+          </div>
+          <div class="half-width">
+            <pagination
+              class="pull-left"
+              :passed-page="rolesPage"
+              :num-pages="Math.ceil(roles.length / 10)"
+              @activePageChange="changeRolesPage"
+            />
+          </div>
         </div>
       </div>
-      <div class="half-width">
-        <pagination
-          class="pull-left"
-          :passed-page="rolesPage"
-          :num-pages="Math.ceil(roles.length / 10)"
-          @activePageChange="changeRolesPage"
-        />
-      </div>
-    </div>
+    </template>
   </div>
 </template>
 
 <script>
 // components
+import LoadingScreen from '@/components/modules/LoadingScreen'
 import Pagination from '@/components/modules/Pagination'
 // controllers
 import RolesFunctions from '@/controllers/Roles'
@@ -71,6 +82,7 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 export default {
   name: 'RolesPicker',
   components: {
+    LoadingScreen,
     Pagination
   },
   props: {
@@ -100,7 +112,7 @@ export default {
         return this.roles
       } else {
         return this.roles.filter(role => {
-          return role.name.includes(this.rolesSearchQuery)
+          return role.name.toLowerCase().includes(this.rolesSearchQuery.toLowerCase())
         })
       }
     },
@@ -119,30 +131,30 @@ export default {
   },
   methods: {
     /**
-		 * To update the roles based on the user's selection.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To update the roles based on the user's selection.
+     * @function
+     * @returns {undefined}
+     */
     rolesSelected () {
       let selected = this.roles
         .filter(role => role.selected)
         .map(role => role.id)
-      this.$emit('rolesSelected', selected)
+      this.$emit('selected', selected)
     },
     /**
-		 * To update the roles page being displayed.
-		 * @function
-		 * @param {integer} number - The new page number
-		 * @returns {undefined}
-		 */
+     * To update the roles page being displayed.
+     * @function
+     * @param {integer} number - The new page number
+     * @returns {undefined}
+     */
     changeRolesPage (number) {
       this.rolesPage = number
     },
     /**
-		 * To get a list of brand admins.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get a list of brand admins.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getRoles () {
       this.loadingRoles = true
       var rolesVue = this
@@ -166,6 +178,7 @@ export default {
           rolesVue.loadingRoles = false
         })
         .catch(reason => {
+          console.log({ reason })
           rolesVue.loadingRoles = false
           ajaxErrorHandler({
             reason,
@@ -181,13 +194,26 @@ export default {
 <style scoped>
 .roles-picker {
   width: 100%;
+  height: 500px;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+}
+.column__wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .row__wrapper {
   width: 100%;
   display: flex;
   align-items: center;
+}
+.fit-to-content {
+  width: 1%;
 }
 .half-width {
   display: inline-block;

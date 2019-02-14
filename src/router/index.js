@@ -36,7 +36,6 @@ import DeliveryZones from '@/components/app/StoreManager/DeliveryZones'
 import PaymentMethods from '@/components/app/StoreManager/PaymentMethods'
 import DeliveryProviders from '@/components/app/StoreManager/DeliveryProviders'
 import PaymentTerminals from '@/components/app/StoreManager/PaymentTerminals'
-import Discounts from '@/components/app/StoreManager/Discounts'
 // News Feed
 import NewsFeed from '@/components/app/NewsFeed'
 // Social Feed
@@ -96,6 +95,8 @@ import CustomTranslations from '@/components/app/Localization/CustomTranslations
 import StorePicker from '@/components/modules/StorePicker'
 // list of permissions
 import { App } from '@/main.js'
+const DiscountCategories = () => import('@/components/app/StoreManager/Discounts/DiscountCategories')
+const Discounts = () => import('@/components/app/StoreManager/Discounts/Discounts')
 
 Vue.use(Router)
 
@@ -366,7 +367,15 @@ export const routes = [
         }
       },
       {
-        path: 'store_manager/discounts',
+        path: 'store_manager/discounts/categories',
+        name: 'DiscountCategories',
+        component: DiscountCategories,
+        meta: {
+          permissions: ['stores discount categories read']
+        }
+      },
+      {
+        path: 'store_manager/discounts/category/:id',
         name: 'Discounts',
         component: Discounts,
         meta: {
