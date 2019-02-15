@@ -868,8 +868,8 @@ div.tab-pane::-webkit-scrollbar-track {
 .align-items-flex-end {
 	align-items: flex-end;
 }
-.align-self-flex-end {
-	align-self: flex-end;
+.align-self-end {
+	align-self: end;
 }
 
 .pa-1em {

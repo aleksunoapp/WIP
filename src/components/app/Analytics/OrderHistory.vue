@@ -20,47 +20,53 @@
       class="row"
     >
       <div class="col-xs-12">
-        <el-date-picker
-          v-model="fromDate"
-          type="date"
-          format="yyyy-MM-dd"
-          value-format="yyyy-MM-dd"
-          :clearable="true"
-          placeholder="From"
-        />
-        <el-date-picker
-          v-model="toDate"
-          type="date"
-          format="yyyy-MM-dd"
-          value-format="yyyy-MM-dd"
-          :clearable="true"
-          placeholder="To"
-        />
-        <el-select
-          v-model="locationId"
-          filterable
-          clearable
-          placeholder="Select store"
-        >
-          <el-option
-            v-for="store in stores"
-            :key="store.id"
-            :label="store.display_name"
-            :value="store.id"
+        <div class="controls">
+          <el-date-picker
+            v-model="fromDate"
+            type="date"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"
+            :clearable="true"
+            placeholder="From"
+            class="date-from"
           />
-        </el-select>
-        <el-input
-          v-model="externalId"
-          class="input-width"
-          placeholder="Order ID"
-        />
-        <el-button
-          type="primary"
-          :loading="loading"
-          @click="validateData()"
-        >
-          Search
-        </el-button>
+          <el-date-picker
+            v-model="toDate"
+            type="date"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"
+            :clearable="true"
+            placeholder="To"
+            class="date-to"
+          />
+          <el-select
+            v-model="locationId"
+            filterable
+            clearable
+            placeholder="Select store"
+            class="store"
+          >
+            <el-option
+              v-for="store in stores"
+              :key="store.id"
+              :label="store.display_name"
+              :value="store.id"
+            />
+          </el-select>
+          <el-input
+            v-model="externalId"
+            placeholder="Order ID"
+            class="order-id"
+          />
+          <el-button
+            type="primary"
+            :loading="loading"
+            class="search"
+            @click="validateData()"
+          >
+            Search
+          </el-button>
+        </div>
       </div>
     </div>
 
@@ -70,10 +76,10 @@
     >
       <div
         class="
-					col-xs-12
-					margin-top-20
-					margin-bottom-20
-				"
+          col-xs-12
+          margin-top-20
+          margin-bottom-20
+        "
       >
         <el-dropdown
           trigger="click"
@@ -119,19 +125,16 @@
                 ID
               </th>
               <th>
-                <i class="fa fa-calendar" />
-                Order Date
+                Date
               </th>
               <th>
                 Status
               </th>
               <th>
-                <i class="fa fa-usd" />
                 Amount
               </th>
 
               <th v-if="location">
-                <i class="fa fa-home" />
                 Store
               </th>
               <th v-if="orderItems">
@@ -144,14 +147,9 @@
                 Options
               </th>
               <th v-if="user">
-                Name
+                Customer
               </th>
-              <th v-if="user">
-                Email
-              </th>
-              <th v-if="user">
-                Phone
-              </th>
+              <th />
             </tr>
           </thead>
 
@@ -231,21 +229,31 @@
               </td>
               <td
                 v-if="user"
-                class="align-middle"
+                class="align-middle line-height-2"
               >
-                {{ order.user.first_name }} {{ order.user.last_name }}
-              </td>
-              <td
-                v-if="user"
-                class="align-middle"
-              >
-                {{ order.user.email }}
-              </td>
-              <td
-                v-if="user"
-                class="align-middle"
-              >
+                {{ order.user.first_name }} {{ order.user.last_name }}<br>
+                {{ order.user.email }}<br>
                 {{ formatPhone(order.user.phone) }}
+              </td>
+              <td>
+                <button
+                  class="btn btn-sm grey-salsa btn-outline"
+                  :disabled="orderBeingViewed.id === order.id && orderBeingViewed.loading"
+                  @click="showViewOrderModal(order)"
+                >
+                  <span
+                    v-if="!(
+                      orderBeingViewed.id === order.id &&
+                      orderBeingViewed.loading
+                    )"
+                  >
+                    View
+                  </span>
+                  <i
+                    v-show="orderBeingViewed.id === order.id && orderBeingViewed.loading"
+                    class="fa fa-spinner fa-pulse fa-fw"
+                  />
+                </button>
               </td>
             </tr>
           </tbody>
@@ -288,6 +296,12 @@
         />
       </div>
     </div>
+
+    <view-order
+      v-if="viewOrderModalDisplayed"
+      :order="orderBeingViewed"
+      @closeViewOrderModal="closeViewOrderModal"
+    />
   </div>
 </template>
 
@@ -298,13 +312,17 @@ import PageResults from '@/components/modules/PageResults'
 import Pagination from '@/components/modules/Pagination'
 import LoadingScreen from '@/components/modules/LoadingScreen'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
+import UsersFunctions from '@/controllers/Users'
+import ViewOrder from '@/components/app/UserManager/ViewOrder'
 
 export default {
+  name: 'OrderHistory',
   components: {
-    'no-results': NoResults,
-    'page-results': PageResults,
-    'loading-screen': LoadingScreen,
-    pagination: Pagination
+    NoResults,
+    PageResults,
+    LoadingScreen,
+    Pagination,
+    ViewOrder
   },
   data: function () {
     return {
@@ -337,7 +355,9 @@ export default {
       lastPage: 1,
       page: 1,
       perPage: 25,
-      sortBy: 'DESC'
+      sortBy: 'DESC',
+      viewOrderModalDisplayed: false,
+      orderBeingViewed: {}
     }
   },
   computed: {
@@ -379,11 +399,11 @@ export default {
   },
   methods: {
     /**
-		 * To format a phone number
-		 * @function
-		 * @param {string} phone - The phone number to format
-		 * @returns {string} The formatted phone string
-		 */
+     * To format a phone number
+     * @function
+     * @param {string} phone - The phone number to format
+     * @returns {string} The formatted phone string
+     */
     formatPhone (phone) {
       try {
         let digits = phone.replace(/\D/g, '')
@@ -395,11 +415,11 @@ export default {
       }
     },
     /**
-		 * To change the current page
-		 * @function
-		 * @param {number} page - The new page number
-		 * @returns {undefined}
-		 */
+     * To change the current page
+     * @function
+     * @param {number} page - The new page number
+     * @returns {undefined}
+     */
     changePage (page) {
       if (this.page !== page) {
         this.page = page
@@ -407,11 +427,11 @@ export default {
       }
     },
     /**
-		 * To change the number of results displayed on a page
-		 * @function
-		 * @param {number} perPage - The new number of results per page
-		 * @returns {undefined}
-		 */
+     * To change the number of results displayed on a page
+     * @function
+     * @param {number} perPage - The new number of results per page
+     * @returns {undefined}
+     */
     changePerPage (perPage) {
       if (this.perPage !== perPage) {
         this.page = 1
@@ -420,11 +440,11 @@ export default {
       }
     },
     /**
-		 * To resort the results
-		 * @function
-		 * @param {string} order - ASC or DESC
-		 * @returns {undefined}
-		 */
+     * To resort the results
+     * @function
+     * @param {string} order - ASC or DESC
+     * @returns {undefined}
+     */
     changeSortBy (order) {
       if (this.sortBy !== order) {
         this.sortBy = order
@@ -432,34 +452,34 @@ export default {
       }
     },
     /**
-		 * To clear an error
-		 * @function
-		 * @param {string} name - The name of the error variable
-		 * @returns {undefined}
-		 */
+     * To clear an error
+     * @function
+     * @param {string} name - The name of the error variable
+     * @returns {undefined}
+     */
     clearError (name) {
       this[name] = ''
     },
     /**
-		 * To validate data before making a call
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To validate data before making a call
+     * @function
+     * @returns {undefined}
+     */
     validateData () {
       if (
         !this.fromDate &&
-				!this.toDate &&
-				!this.locationId &&
-				!this.externalId
-      )				{ return }
+        !this.toDate &&
+        !this.locationId &&
+        !this.externalId
+      ) return
       this.page = 1
       this.searchOrders()
     },
     /**
-		 * To make a search orders call
-		 * @function
-		 * @returns {object} A network promise call
-		 */
+     * To make a search orders call
+     * @function
+     * @returns {object} A network promise call
+     */
     searchOrders () {
       this.loading = true
       this.$scrollTo(this.$refs.searchRow, 0, { offset: -100 })
@@ -512,13 +532,82 @@ export default {
         .finally(() => {
           _this.loading = false
         })
+    },
+    /**
+     * To display a modal with the details of an order.
+     * @function
+     * @param {object} order - The order object whose details should be displayed.
+     * @returns {undefined}
+     */
+    showViewOrderModal (order) {
+      this.orderBeingViewed = {
+        ...order,
+        loading: true
+      }
+      this.getOrderDetails()
+    },
+    /**
+     * To get the details of a user.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
+    getOrderDetails () {
+      var usersVue = this
+
+      UsersFunctions.getOrderDetails(
+        usersVue.$root.appId,
+        usersVue.$root.appSecret,
+        usersVue.$root.userToken,
+        usersVue.orderBeingViewed.id
+      )
+        .then(response => {
+          usersVue.orderBeingViewed.order_items =
+            response.payload.order_items || []
+          usersVue.viewOrderModalDisplayed = true
+        })
+        .catch(reason => {
+          ajaxErrorHandler({
+            reason,
+            errorText: 'We could not fetch order info',
+            errorName: 'errorMessage',
+            vue: usersVue
+          })
+        })
+        .finally(() => {
+          usersVue.orderBeingViewed.loading = false
+        })
+    },
+    /**
+     * To close the modal with the details of an order.
+     * @function
+     * @returns {undefined}
+     */
+    closeViewOrderModal () {
+      this.orderBeingViewed = {}
+      this.viewOrderModalDisplayed = false
     }
   }
 }
 </script>
 
-<style scoped>
-.input-width {
-  width: 150px;
+<style scoped lang="scss">
+.controls {
+  max-width: 100%;
+  display: grid;
+  grid-gap: 5px;
+  grid-template-columns: auto;
+  justify-content: center;
+  @media (min-width: 500px) {
+    grid-template-columns: 220px 220px;
+    .search {
+      grid-column: 2;
+    }
+  }
+  @media (min-width: 1400px) {
+    grid-template-columns: 220px 220px 220px 220px 220px;
+    .search {
+      grid-column: 5;
+    }
+  }
 }
 </style>

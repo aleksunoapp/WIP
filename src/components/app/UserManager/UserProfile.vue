@@ -382,9 +382,21 @@
                           <td class="align-middle">
                             <a
                               class="btn btn-sm grey-salsa btn-outline"
+                              :disabled="orderBeingViewed.id === order.id && orderBeingViewed.loading"
                               @click="showViewOrderModal(order)"
                             >
-                              View
+                              <span
+                                v-if="!(
+                                  orderBeingViewed.id === order.id &&
+                                  orderBeingViewed.loading
+                                )"
+                              >
+                                View
+                              </span>
+                              <i
+                                v-show="orderBeingViewed.id === order.id && orderBeingViewed.loading"
+                                class="fa fa-spinner fa-pulse fa-fw"
+                              />
                             </a>
                           </td>
                         </tr>
@@ -1155,7 +1167,10 @@ export default {
      * @returns {undefined}
      */
     showViewOrderModal (order) {
-      this.orderBeingViewed = order
+      this.orderBeingViewed = {
+        ...order,
+        loading: true
+      }
       this.getOrderDetails()
     },
     /**
@@ -1184,6 +1199,9 @@ export default {
             errorName: 'errorMessage',
             vue: usersVue
           })
+        })
+        .finally(() => {
+          usersVue.orderBeingViewed.loading = false
         })
     },
     /**

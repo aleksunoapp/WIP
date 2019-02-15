@@ -115,7 +115,7 @@
             </tr>
             <tr>
               <th> Tax </th>
-              <td> {{ order.tax_percentage }}% </td>
+              <td> {{ order.tax_percentage ? `${order.tax_percentage}%` : '' }} </td>
             </tr>
             <tr>
               <th> Tax amount </th>
@@ -123,7 +123,7 @@
             </tr>
             <tr>
               <th> Delivery fee </th>
-              <td> ${{ order.delivery_fee }} </td>
+              <td> {{ formatUSD(order.delivery_fee) }} </td>
             </tr>
             <tr>
               <th> Total </th>
@@ -203,8 +203,8 @@ export default {
   },
   props: {
     order: {
-      order: Object,
-      default: {}
+      type: Object,
+      required: true
     }
   },
   data () {
@@ -219,27 +219,27 @@ export default {
   },
   methods: {
     /**
-		 * To close the modal.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the modal.
+     * @function
+     * @returns {undefined}
+     */
     closeModal () {
       this.$emit('closeViewOrderModal')
     },
     /**
-		 * To clear the error.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To clear the error.
+     * @function
+     * @returns {undefined}
+     */
     clearError () {
       this.errorMessage = ''
     },
     /**
-		 * To format a number as currency
-		 * @function
-		 * @param {string} val - The number to format
-		 * @returns {string} The formatted currency amount
-		 */
+     * To format a number as currency
+     * @function
+     * @param {string} val - The number to format
+     * @returns {string} The formatted currency amount
+     */
     formatUSD (val = '') {
       if (val !== null && val !== undefined) {
         let local = Number(val)
@@ -253,10 +253,10 @@ export default {
       }
     },
     /**
-		 * To refund the order.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To refund the order.
+     * @function
+     * @returns {undefined}
+     */
     refund () {
       this.refunding = true
       var viewOrderVue = this
