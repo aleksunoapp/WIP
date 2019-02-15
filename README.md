@@ -3,7 +3,13 @@
 ## Project notes
 
 ### Resources
-[Designs (Dropbox)](https://www.dropbox.com/sh/dy34i2m7is072bx/AACLWvABQESnNiwCz1pkf0CFa?dl=0)
+* [Designs (Dropbox)](https://www.dropbox.com/sh/dy34i2m7is072bx/AACLWvABQESnNiwCz1pkf0CFa?dl=0)
+* [UNOapp repo](https://bitbucket.org/unoapp/dmpi2/src/develop/)
+  * HTTP: https://bitbucket.org/unoapp/dmpi2/src/develop/
+  * SSH: git@bitbucket.org:unoapp/dmpi2.git
+* [DFX repo](https://dealer-fx.visualstudio.com/Digital%20MPI/_git/CustomerSite)
+  * HTTP: https://dealer-fx.visualstudio.com/Digital%20MPI/_git/CustomerSite
+  * SSH: dealer-fx@vs-ssh.visualstudio.com:v3/dealer-fx/Digital%20MPI/CustomerSite
 
 ### Data
 
