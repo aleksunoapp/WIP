@@ -13,7 +13,7 @@
     <div class="profile">
       <div class="content">
         <div class="row">
-          <div class="col-md-3">
+          <div class="col-sm-4 col-md-5 col-lg-4">
             <ul class="list-unstyled profile-nav">
               <li>
                 <div class="portlet light profile-sidebar-portlet ">
@@ -37,6 +37,20 @@
                     </div>
                   </div>
                   <!-- END SIDEBAR USER TITLE -->
+                  <div class="status">
+                    <div
+                      v-show="user.status"
+                      class="label label-sm"
+                      :class="{
+                        'label-default' : user.status === 'inactive',
+                        'label-warning' : user.status === 'at_risk',
+                        'label-success' : user.status === 'active',
+                        'label-danger' : user.status === 'banned'
+                      }"
+                    >
+                      {{ user.status }}
+                    </div>
+                  </div>
                   <!-- SIDEBAR BUTTONS -->
                   <div
                     v-if="can('user_manager users message')"
@@ -50,7 +64,7 @@
                       Message
                     </button>
                     <button
-                      v-if="can('user_manager users update')"
+                      v-if="canAny(['user_manager users update', 'user_manager users update status'])"
                       type="button"
                       class="btn btn-circle btn-outline red btn-sm"
                       :disabled="user.id === undefined"
@@ -224,7 +238,7 @@
           <div
             v-show="errorMessage"
             ref="errorMessage"
-            class="col-md-9"
+            class="col-sm-8 col-md-7 col-lg-8"
           >
             <div class="alert alert-danger">
               <button
@@ -234,7 +248,7 @@
               <span>{{ errorMessage }}</span>
             </div>
           </div>
-          <div class="col-md-9">
+          <div class="col-sm-8 col-md-7 col-lg-8">
             <div class="tabbable-custom-profile">
               <div class="tab-content">
                 <!--tab-pane-->
@@ -638,18 +652,13 @@
 
 <script>
 import Breadcrumb from '../../modules/Breadcrumb'
-import Tabset from '../../modules/Tabset'
 import ViewOrder from './ViewOrder'
 import Message from './Message'
-import Tab from '../../modules/Tab'
 import '../../../assets/css/profile.min.css'
 import UsersFunctions from '../../../controllers/Users'
 import UserAttributesFunctions from '../../../controllers/UserAttributes'
 import TransactionsFunctions from '@/controllers/Transactions'
-import ButtonGroup from '../../modules/ButtonGroup'
-import Checkbox from '../../modules/Checkbox'
 import LoadingScreen from '../../modules/LoadingScreen'
-import Dropdown from '../../modules/Dropdown'
 import Pagination from '../../modules/Pagination'
 import PageResults from '../../modules/PageResults'
 import ajaxErrorHandler from '../../../controllers/ErrorController'
@@ -659,17 +668,13 @@ import json2csv from 'json2csv'
 import { formatUSD, formatInteger } from '@/controllers/utils'
 
 export default {
+  name: 'UserProfile',
   components: {
     Breadcrumb,
-    Tabset,
-    Tab,
     ViewOrder,
-    ButtonGroup,
-    Checkbox,
     Message,
     Pagination,
     PageResults,
-    Dropdown,
     LoadingScreen
   },
   data () {
@@ -681,7 +686,8 @@ export default {
       tab: 0,
       user: {
         total_orders: '',
-        total_spent: ''
+        total_spent: '',
+        status: ''
       },
       loading: false,
       loadingOrders: false,
@@ -736,7 +742,7 @@ export default {
     transactionsNumPages () {
       return Math.ceil(this.transactions.data.length / this.transactions.resultsPerPage)
     },
-    ...mapGetters(['can'])
+    ...mapGetters(['can', 'canAny'])
   },
   mounted () {
     this.getUserDetails()
@@ -796,10 +802,10 @@ export default {
       setUser: 'users/SET_USER'
     }),
     /**
-		 * Copy user to store and redirect to edit route
-		 * @function
-		 * @returns {undefined}
-		 */
+     * Copy user to store and redirect to edit route
+     * @function
+     * @returns {undefined}
+     */
     editUser () {
       this.setUser(this.user)
       this.$router.push({ name: 'EditUser' })
@@ -822,34 +828,34 @@ export default {
       })
     },
     /**
-		 * To format a number as currency
-		 * @function
-		 * @param {string} val - The number to format
-		 * @param {string} fallback - Preferred fallback return value
-		 * @returns {string} The formatted currency amount
-		 */
+     * To format a number as currency
+     * @function
+     * @param {string} val - The number to format
+     * @param {string} fallback - Preferred fallback return value
+     * @returns {string} The formatted currency amount
+     */
     formatUSD: formatUSD,
     /**
-		 * To format a number as currency
-		 * @function
-		 * @param {string} val - The number to format
-		 * @param {string} fallback - Preferred fallback return value
-		 * @returns {string} The formatted currency amount
-		 */
+     * To format a number as currency
+     * @function
+     * @param {string} val - The number to format
+     * @param {string} fallback - Preferred fallback return value
+     * @returns {string} The formatted currency amount
+     */
     formatInteger: formatInteger,
     /**
-		 * To download orders in a CSV file
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To download orders in a CSV file
+     * @function
+     * @returns {undefined}
+     */
     downloadCsv () {
       this.$refs.csv.href = `data:text/csv,${this.parser.parse(this.orders)}`
     },
     /**
-		 * To download transactions in a CSV file
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To download transactions in a CSV file
+     * @function
+     * @returns {undefined}
+     */
     downloadTransactionsCSV () {
       if (this.transactions.parser === null) {
         this.transactions.parser = new json2csv.Parser({
@@ -1020,11 +1026,11 @@ export default {
       this.$refs.transactionsCSV.href = `data:text/csv,${this.transactions.parser.parse(this.transactions.data)}`
     },
     /**
-		 * To format a platform name
-		 * @function
-		 * @param {string} name - The name to format
-		 * @returns {string} The formatted platform name
-		 */
+     * To format a platform name
+     * @function
+     * @param {string} name - The name to format
+     * @returns {string} The formatted platform name
+     */
     getPlatformName (name) {
       try {
         return this.platforms[name.toLowerCase()] || name
@@ -1033,29 +1039,29 @@ export default {
       }
     },
     /**
-		 * To clear an error
-		 * @function
-		 * @param {string} errorName - The name of the error variable to clear
-		 * @returns {undefined}
-		 */
+     * To clear an error
+     * @function
+     * @param {string} errorName - The name of the error variable to clear
+     * @returns {undefined}
+     */
     clearError (errorName) {
       this[errorName] = ''
     },
     /**
-		 * To update the order property of sortBy.
-		 * @function
-		 * @param {object} value - The new value to assign.
-		 * @returns {undefined}
-		 */
+     * To update the order property of sortBy.
+     * @function
+     * @param {object} value - The new value to assign.
+     * @returns {undefined}
+     */
     updateSortByOrder (value) {
       this.sortBy.order = value
     },
     /**
-		 * To sort the orders list.
-		 * @function
-		 * @param {array} orders - The array of orders.
-		 * @returns {array} - The sorted array of orders
-		 */
+     * To sort the orders list.
+     * @function
+     * @param {array} orders - The array of orders.
+     * @returns {array} - The sorted array of orders
+     */
     userSort (orders) {
       let input = orders
       function asc (a, b) {
@@ -1097,11 +1103,11 @@ export default {
       }
     },
     /**
-		 * To catch updates from the PageResults component when the number of page results is updated.
-		 * @function
-		 * @param {integer} val - The number of page results to be returned.
-		 * @returns {undefined}
-		 */
+     * To catch updates from the PageResults component when the number of page results is updated.
+     * @function
+     * @param {integer} val - The number of page results to be returned.
+     * @returns {undefined}
+     */
     pageResultsUpdate (val) {
       if (parseInt(this.resultsPerPage) !== parseInt(val)) {
         this.resultsPerPage = val
@@ -1109,11 +1115,11 @@ export default {
       }
     },
     /**
-		 * To catch updates from the PageResults component when the number of page results is updated.
-		 * @function
-		 * @param {integer} val - The number of page results to be returned.
-		 * @returns {undefined}
-		 */
+     * To catch updates from the PageResults component when the number of page results is updated.
+     * @function
+     * @param {integer} val - The number of page results to be returned.
+     * @returns {undefined}
+     */
     transactionsPageResultsUpdate (val) {
       if (parseInt(this.transactions.resultsPerPage) !== parseInt(val)) {
         this.transactions.resultsPerPage = val
@@ -1121,42 +1127,42 @@ export default {
       }
     },
     /**
-		 * To update the currently active pagination page.
-		 * @function
-		 * @param {integer} val - An integer representing the page number that we are updating to.
-		 * @returns {undefined}
-		 */
+     * To update the currently active pagination page.
+     * @function
+     * @param {integer} val - An integer representing the page number that we are updating to.
+     * @returns {undefined}
+     */
     activePageUpdate (val) {
       if (parseInt(this.activePage) !== parseInt(val)) {
         this.activePage = val
       }
     },
     /**
-		 * To update the currently active pagination page.
-		 * @function
-		 * @param {integer} val - An integer representing the page number that we are updating to.
-		 * @returns {undefined}
-		 */
+     * To update the currently active pagination page.
+     * @function
+     * @param {integer} val - An integer representing the page number that we are updating to.
+     * @returns {undefined}
+     */
     transactionsActivePageUpdate (val) {
       if (parseInt(this.transactions.activePage) !== parseInt(val)) {
         this.transactions.activePage = val
       }
     },
     /**
-		 * To display a modal with the details of an order.
-		 * @function
-		 * @param {object} order - The order object whose details should be displayed.
-		 * @returns {undefined}
-		 */
+     * To display a modal with the details of an order.
+     * @function
+     * @param {object} order - The order object whose details should be displayed.
+     * @returns {undefined}
+     */
     showViewOrderModal (order) {
       this.orderBeingViewed = order
       this.getOrderDetails()
     },
     /**
-		 * To get the details of a user.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get the details of a user.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getOrderDetails () {
       var usersVue = this
 
@@ -1168,7 +1174,7 @@ export default {
       )
         .then(response => {
           usersVue.orderBeingViewed.order_items =
-						response.payload.order_items || []
+            response.payload.order_items || []
           usersVue.viewOrderModalDisplayed = true
         })
         .catch(reason => {
@@ -1181,44 +1187,44 @@ export default {
         })
     },
     /**
-		 * To close the modal with the details of an order.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the modal with the details of an order.
+     * @function
+     * @returns {undefined}
+     */
     closeViewOrderModal () {
       this.orderBeingViewed = {}
       this.viewOrderModalDisplayed = false
     },
     /**
-		 * To display a message modal.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To display a message modal.
+     * @function
+     * @returns {undefined}
+     */
     showMessageModal () {
       this.messageModalDisplayed = true
     },
     /**
-		 * To close the message modal.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the message modal.
+     * @function
+     * @returns {undefined}
+     */
     closeMessageModal () {
       this.messageModalDisplayed = false
     },
     /**
-		 * To set the passed in tab as the active tab.
-		 * @function
-		 * @param {integer} val - The value of the tab.
-		 * @returns {undefined}
-		 */
+     * To set the passed in tab as the active tab.
+     * @function
+     * @param {integer} val - The value of the tab.
+     * @returns {undefined}
+     */
     changeTab (val) {
       this.tab = val
     },
     /**
-		 * To get the details of a user.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get the details of a user.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getUserDetails () {
       this.displayUserData = true
       var usersVue = this
@@ -1248,10 +1254,10 @@ export default {
         })
     },
     /**
-		 * To get a list of user's attributes.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get a list of user's attributes.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getAttributesOfUser () {
       var usersVue = this
 
@@ -1276,10 +1282,10 @@ export default {
         })
     },
     /**
-		 * To get a list of user's attributes.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get a list of user's attributes.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getItemsOfuser () {
       var usersVue = this
 
@@ -1304,10 +1310,10 @@ export default {
         })
     },
     /**
-		 * To get a list of user's orders.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get a list of user's orders.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getUserOrders () {
       this.displayUserData = true
       this.loadingOrders = true
@@ -1341,10 +1347,10 @@ export default {
         })
     },
     /**
-		 * To get a list of user's orders.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get a list of user's orders.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getUserTransactions () {
       this.transactions.loading = true
       var usersVue = this
@@ -1400,10 +1406,10 @@ export default {
         })
     },
     /**
-		 * To get a list of user's social media posts.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get a list of user's social media posts.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getUserSocialFeed () {
       this.displayUserData = true
       var usersVue = this
@@ -1433,10 +1439,10 @@ export default {
         })
     },
     /**
-		 * To validate data before submitting to the backend
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To validate data before submitting to the backend
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     validatePoints () {
       var usersVue = this
       return new Promise(function (resolve, reject) {
@@ -1449,10 +1455,10 @@ export default {
       })
     },
     /**
-		 * To get a list of user's social media posts.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get a list of user's social media posts.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     addPoints () {
       var usersVue = this
       return this.validatePoints()
@@ -1489,11 +1495,11 @@ export default {
         })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showAddSuccess (payload = {}) {
       let title = 'Success'
       let text = 'The Points have been added'
@@ -1512,10 +1518,10 @@ export default {
       })
     },
     /**
-		 * To reset the point adding box.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To reset the point adding box.
+     * @function
+     * @returns {undefined}
+     */
     resetPoints () {
       this.clearError('addErrorMessage')
       this.points = ''
@@ -1549,6 +1555,15 @@ export default {
   background: transparent;
   border-left: none;
   padding: 10px 15px;
+}
+.status {
+  min-height: 26px;
+  display: flex;
+  justify-content: center;
+  padding: .5rem;
+}
+.profile-usermenu {
+  margin-top: 15px;
 }
 .profile-usermenu ul li.active a {
   color: #5b9bd1;
