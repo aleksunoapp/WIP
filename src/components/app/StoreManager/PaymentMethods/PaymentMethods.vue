@@ -12,7 +12,7 @@
     </h1>
     <!-- END PAGE TITLE -->
     <div class="note note-info">
-      <p>Add and manage payment methods.</p>
+      <p>Add and manage payment methods and non-integrated payment methods.</p>
     </div>
 
     <!-- BEGIN CREATE -->
@@ -177,14 +177,14 @@
     >
       <div class="portlet-title bg-blue-chambray">
         <div class="menu-image-main">
-          <img src="../../../../public/client_logo.png">
+          <img src="@/../public/client_logo.png">
         </div>
         <div class="caption">
           <span class="caption-subject font-default bold uppercase">
             Payment Methods
           </span>
           <div class="caption-desc font-grey-cascade">
-            Create, edit or delete payment methods.
+            Edit or delete payment methods.
           </div>
         </div>
       </div>
@@ -424,6 +424,7 @@ import NoResults from '@/components/modules/NoResults'
 import ajaxErrorHandler from '@/controllers/ErrorController'
 
 export default {
+  name: 'PaymentMethods',
   components: {
     Breadcrumb,
     LoadingScreen,
@@ -475,27 +476,27 @@ export default {
   },
   methods: {
     /**
-		 * To toggle the create tier panel, initially set to closed
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To toggle the create tier panel, initially set to closed
+     * @function
+     * @returns {undefined}
+     */
     toggleCreatePanel () {
       this.createNewCollapse = !this.createNewCollapse
     },
     /**
-		 * To clear the current error.
-		 * @function
-		 * @param {object} errorMessageName - The error message to be cleared.
-		 * @returns {undefined}
-		 */
+     * To clear the current error.
+     * @function
+     * @param {object} errorMessageName - The error message to be cleared.
+     * @returns {undefined}
+     */
     clearError (errorMessageName) {
       this[errorMessageName] = ''
     },
     /**
-		 * To check if the payment method data is valid before submitting to the backend.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
+     * To check if the payment method data is valid before submitting to the backend.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
     validateNewPaymentMethodData () {
       // var _this = this
       return new Promise(function (resolve, reject) {
@@ -503,10 +504,10 @@ export default {
       })
     },
     /**
-		 * To create a new payment method.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
+     * To create a new payment method.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
     createPaymentMethods () {
       var _this = this
       _this.clearError('createErrorMessage')
@@ -554,11 +555,11 @@ export default {
         })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showCreateSuccess (payload = {}) {
       let title = 'Success'
       let text = 'The Payment Methods have been created'
@@ -577,10 +578,10 @@ export default {
       })
     },
     /**
-		 * To clear the new payment method form.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To clear the new payment method form.
+     * @function
+     * @returns {undefined}
+     */
     clearNewPaymentMethod () {
       this.newPaymentMethod = {
         cash: 0,
@@ -591,10 +592,10 @@ export default {
       }
     },
     /**
-		 * To get a list of all payment methods.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get a list of all payment methods.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getPaymentMethods () {
       this.clearError('listErrorMessage')
       if (this.activeLocationId === undefined) return
@@ -626,10 +627,10 @@ export default {
         })
     },
     /**
-		 * To check if the paymentMethod data is valid before submitting to the backend.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
+     * To check if the paymentMethod data is valid before submitting to the backend.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
     validateEditedPaymentMethodData () {
       // var _this = this
       return new Promise(function (resolve, reject) {
@@ -637,10 +638,10 @@ export default {
       })
     },
     /**
-		 * To update a paymentMethod.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
+     * To update a paymentMethod.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
     updatePaymentMethods () {
       var _this = this
       _this.clearError('listErrorMessage')
@@ -685,11 +686,11 @@ export default {
         })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showEditSuccess (payload = {}) {
       let title = 'Success'
       let text = 'The Payment Methods have been saved'
@@ -708,18 +709,18 @@ export default {
       })
     },
     /**
-		 * To display the modal for deleting an payment method.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To display the modal for deleting an payment method.
+     * @function
+     * @returns {undefined}
+     */
     confirmDelete () {
       this.showDeleteModal = true
     },
     /**
-		 * To close the modal for deleting a promotion and remove that promotion from DOM.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the modal for deleting a promotion and remove that promotion from DOM.
+     * @function
+     * @returns {undefined}
+     */
     deletePaymentMethods () {
       this.clearError('deleteErrorMessage')
       this.deleting = true
@@ -746,11 +747,11 @@ export default {
         })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showDeleteSuccess (payload = {}) {
       let title = 'Success'
       let text = 'The Payment Methods have been deleted'
@@ -769,10 +770,10 @@ export default {
       })
     },
     /**
-		 * To close the delete modal.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the delete modal.
+     * @function
+     * @returns {undefined}
+     */
     closeDeleteModal () {
       this.clearError('deleteErrorMessage')
       this.showDeleteModal = false
@@ -783,21 +784,21 @@ export default {
 
 <style scoped>
 .display-flex {
-	display: flex;
+  display: flex;
 }
 .align-items-center {
-	align-items: center;
+  align-items: center;
 }
 .ma-0 {
-	margin: 0;
+  margin: 0;
 }
 .margin-right-20 {
-	margin-right: 20px;
+  margin-right: 20px;
 }
 .mt-element-list .list-news.ext-1.mt-list-container ul > .mt-list-item:hover {
-	background-color: white;
+  background-color: white;
 }
 .three-vertical-actions {
-	min-height: 124px;
+  min-height: 124px;
 }
 </style>

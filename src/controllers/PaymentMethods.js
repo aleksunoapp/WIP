@@ -90,9 +90,104 @@ export const deletePaymentMethods = (paymentMethodsId) => {
   })
 }
 
+/**
+ * Call to API to list payment methods
+ * @function
+ * @param {object} locationId - ID of the store to get the payment methods for
+ * @returns {object} A promise
+ */
+export const listNonIntegratedPaymentMethods = ({ locationId }) => {
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'GET',
+      dataType: 'json',
+      url: `/app/locations/${locationId}/LocationNonIntegratedPaymentMethod/`,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
+}
+/**
+ * Call to API to update a payment method
+ * @function
+ * @param {object} locationId - ID of the store to create the payment methods for
+ * @param {object} paymentMethod - The updated payment methods
+ * @returns {object} A promise
+ */
+export const createNonIntegratedPaymentMethod = ({ locationId, paymentMethod }) => {
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'POST',
+      dataType: 'json',
+      url: `/app/locations/${locationId}/LocationNonIntegratedPaymentMethod/`,
+      data: paymentMethod,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
+}
+
+/**
+ * Call to API to update payment methods
+ * @function
+ * @param {object} paymentMethod - The updated payment method
+ * @returns {object} A promise
+ */
+export const updateNonIntegratedPaymentMethod = ({ locationId, paymentMethod }) => {
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'PUT',
+      dataType: 'json',
+      url: `/app/locations/${locationId}/LocationNonIntegratedPaymentMethod/${paymentMethod.id}`,
+      data: paymentMethod,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
+}
+
+/**
+ * Call to API to delete a payment method
+ * @function
+ * @param {object} locationId - ID of the store the payment method belongs to
+ * @param {object} paymentMethod - The payment method to delete
+ * @returns {object} A promise
+ */
+export const deleteNonIntegratedPaymentMethod = ({ locationId, paymentMethod }) => {
+  return new Promise(function (resolve, reject) {
+    GlobalFunctions.$ajax({
+      method: 'DELETE',
+      dataType: 'json',
+      url: `/app/locations/${locationId}/LocationNonIntegratedPaymentMethod/${paymentMethod.id}`,
+      success: function (response) {
+        resolve(response)
+      },
+      error: function (error) {
+        reject(error)
+      }
+    })
+  })
+}
+
 export default {
   listPaymentMethodsForStore,
   createPaymentMethods,
   updatePaymentMethods,
-  deletePaymentMethods
+  deletePaymentMethods,
+  listNonIntegratedPaymentMethods,
+  createNonIntegratedPaymentMethod,
+  updateNonIntegratedPaymentMethod,
+  deleteNonIntegratedPaymentMethod
 }

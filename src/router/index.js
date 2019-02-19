@@ -33,7 +33,7 @@ import OrderSettings from '@/components/app/StoreManager/OrderSettings'
 import DeliveryHours from '@/components/app/StoreManager/DeliveryHours'
 import StoreGroups from '@/components/app/StoreManager/StoreGroups'
 import DeliveryZones from '@/components/app/StoreManager/DeliveryZones'
-import PaymentMethods from '@/components/app/StoreManager/PaymentMethods'
+import PaymentMethods from '@/components/app/StoreManager/PaymentMethods/index'
 import DeliveryProviders from '@/components/app/StoreManager/DeliveryProviders'
 import PaymentTerminals from '@/components/app/StoreManager/PaymentTerminals'
 // News Feed
