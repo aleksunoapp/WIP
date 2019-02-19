@@ -487,6 +487,22 @@
               </router-link>
             </li>
             <li
+              v-if="can('stores accepted_currencies read')"
+              id="store_manager_currencies_link"
+              class="nav-item"
+              :class="{'active': currentRoute === 'store_manager' && currentSubRoute === 'currencies'}"
+            >
+              <router-link
+                to="/app/store_manager/currencies"
+                class="nav-link"
+              >
+                <i class="fa fa-usd" />
+                <span class="title">
+                  Currencies
+                </span>
+              </router-link>
+            </li>
+            <li
 
               id="store_manager_discounts_link"
               class="nav-item"

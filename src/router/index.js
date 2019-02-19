@@ -95,8 +95,10 @@ import CustomTranslations from '@/components/app/Localization/CustomTranslations
 import StorePicker from '@/components/modules/StorePicker'
 // list of permissions
 import { App } from '@/main.js'
+// Store Manager
 const DiscountCategories = () => import('@/components/app/StoreManager/Discounts/DiscountCategories')
 const Discounts = () => import('@/components/app/StoreManager/Discounts/Discounts')
+const Currencies = () => import('@/components/app/StoreManager/Currencies')
 
 Vue.use(Router)
 
@@ -364,6 +366,14 @@ export const routes = [
         component: PaymentTerminals,
         meta: {
           permissions: ['stores payment terminals read']
+        }
+      },
+      {
+        path: 'store_manager/currencies',
+        name: 'Currencies',
+        component: Currencies,
+        meta: {
+          permissions: ['stores accepted_currencies read']
         }
       },
       {
