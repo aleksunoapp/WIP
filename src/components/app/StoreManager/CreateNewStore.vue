@@ -495,7 +495,7 @@
                         </td>
                       </tr>
                       <tr>
-                        <td>Store Has Immediate Delivery</td>
+                        <td>ASAP Delivery</td>
                         <td>
                           <el-switch
                             v-model="newStoreMeta.delivery_immediate"

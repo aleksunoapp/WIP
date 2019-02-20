@@ -444,7 +444,7 @@
                           </tr>
                           <tr>
                             <td>
-                              Store Has Immediate Delivery
+                              ASAP Delivery
                             </td>
                             <td>
                               <el-switch
