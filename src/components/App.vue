@@ -424,15 +424,18 @@ export default {
       )
         .then(response => {
           if (response.code === 200 && response.status === 'ok') {
-            appVue.setStoreLocations(response.payload)
             // set the active location if already present in local storage
             // eslint-disable-next-line
 						var activeLocation = localStorage.getItem(
               'activeLocation'
             )
+						let stores = response.payload
             if (activeLocation) {
-              appVue.selectLocation(JSON.parse(activeLocation))
+							activeLocation = JSON.parse(activeLocation)
+							appVue.selectLocation(activeLocation)
+							stores = stores.filter(store => store.id !== activeLocation.id)
             }
+						appVue.setStoreLocations(stores)
             appVue.loading = false
           }
         })

@@ -70,7 +70,7 @@ var App = new Vue({
       storeLocations: state => state.stores.storeLocations
     })
   },
-  mounted () {
+	created () {
     this.readLocalStorage()
   },
   methods: {

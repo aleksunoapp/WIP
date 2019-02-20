@@ -23,10 +23,20 @@ const store = new Vuex.Store({
   strict: environment.development,
   plugins: environment.development
     ? [
-      createPersistedState(),
+			createPersistedState({
+				reducer: state => ({
+					'permissions': state.permissions,
+					'auth': state.auth
+				})
+			}),
       createLogger()
     ] : [
-      createPersistedState()
+			createPersistedState({
+				reducer: state => ({
+					'permissions': state.permissions,
+					'auth': state.auth
+				})
+			})
     ]
 })
 
