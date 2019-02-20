@@ -51,7 +51,10 @@
             </div>
           </div>
         </transition-height>
-        <div class="divider" />
+        <div
+          v-if="categoryServices('4').length"
+          class="divider"
+        />
         <div class="row bold">
           <p class="item">
             {{ $t("estimate") }}
@@ -78,8 +81,12 @@
           </p>
         </div>
       </div>
-      <div class="divider" />
       <div
+        v-if="services.length"
+        class="divider"
+      />
+      <div
+        v-if="services.length"
         class="signature"
       >
         <div class="row">
@@ -207,7 +214,8 @@ export default Vue.extend({
     },
     ...mapState([
       'customer',
-      'loading'
+      'loading',
+      'services'
     ]),
     ...mapGetters([
       'count',

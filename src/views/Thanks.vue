@@ -96,7 +96,7 @@ export default Vue.extend({
       'respondBy'
     ]),
     tooLate () {
-      return (this.respondBy - Date.now()) > 0
+      return (this.respondBy - Date.now()) <= 0
     }
   },
   created () {
@@ -156,6 +156,7 @@ export default Vue.extend({
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 0 0 2rem 0;
     padding: 1rem;
     background-color: var(--white);
     border-radius: 3px;
