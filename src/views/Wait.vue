@@ -15,7 +15,7 @@
           <p class="text large">
             <span class="green">
               {{ services.length }}
-            </span> {{ $t('recommendations') }}
+            </span> {{ $tc("recommendations", services.length) }}
           </p>
           <p class="text">
             {{ $t('pending_approval') }}
