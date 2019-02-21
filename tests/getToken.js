@@ -434,9 +434,20 @@
   }
 
   const getServiceName = (service) => {
+    const idMap = {
+      '1': '1',
+      '2': '2',
+      '3': '3',
+      '4': '4',
+      '5': '5',
+      '6': '5',
+      '7': '5',
+      '8': '5',
+      '9': '5'
+    }
     const category = payload.serviceCategory.find(
-      category => category.serviceCategoryId === service.serviceCategoryId
-    )
+      category => category.serviceCategoryId === idMap[service.serviceCategoryId]
+      )
     const name = `${category.name} Service ${service.serviceId}`
     const nameTranslations = payload.supportedLanguages.map(language => ({
       culture: language.culture,
