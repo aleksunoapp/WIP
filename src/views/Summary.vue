@@ -261,9 +261,11 @@ export default Vue.extend({
     if (this.count.actionable) {
       this.buildPad()
     }
+    window.addEventListener('resize', this.setCanvasBackground)
     this.logEvent('Started viewing summary page')
   },
   beforeDestroy () {
+    window.removeEventListener('resize', this.setCanvasBackground)
     this.logEvent('Finished viewing summary page')
   },
   methods: {
@@ -359,7 +361,8 @@ export default Vue.extend({
     background-color: var(--grey-light-background);
   }
   .contents {
-    max-width: 992px;
+    width: 600px;
+    max-width: 100%;
     @media (min-width: 992px) {
       padding: 1rem;
     }
