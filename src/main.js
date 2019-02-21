@@ -70,7 +70,7 @@ var App = new Vue({
       storeLocations: state => state.stores.storeLocations
     })
   },
-	created () {
+  created () {
     this.readLocalStorage()
   },
   methods: {
@@ -123,7 +123,7 @@ var App = new Vue({
         }).catch(error => {
           this.logOut(error)
         })
-      } else {
+      } else if (!this.$route.query.token) {
         this.logOut()
       }
     },

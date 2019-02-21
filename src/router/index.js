@@ -112,7 +112,7 @@ export const routes = [
     }
   },
   {
-    path: '/login/:expired',
+    path: '/expired',
     component: Login,
     name: 'LoginExpired',
     meta: {

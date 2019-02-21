@@ -22,7 +22,7 @@ export default function ajaxErrorHandler ({
       reason.responseJSON.code === 401 &&
       reason.responseJSON.status === `unauthorized`
     ) {
-      vue.$router.push(`/login/expired`)
+      vue.$router.push({ name: 'LoginExpired' })
       return
     }
     // Show error message from backend

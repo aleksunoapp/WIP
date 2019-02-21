@@ -585,7 +585,7 @@ export default {
             reason.responseJSON.code === 401 &&
 						reason.responseJSON.status === 'unauthorized'
           ) {
-            analyticsVue.$router.push('/login/expired')
+            analyticsVue.$router.push({ name: 'LoginExpired' })
             return
           }
           analyticsVue.loadingGlobalRevenueSummary = false
@@ -621,7 +621,7 @@ export default {
             reason.responseJSON.code === 401 &&
 						reason.responseJSON.status === 'unauthorized'
           ) {
-            analyticsVue.$router.push('/login/expired')
+            analyticsVue.$router.push({ name: 'LoginExpired' })
             return
           }
           analyticsVue.loadingMostRecentOrders = false
@@ -666,7 +666,7 @@ export default {
             reason.responseJSON.code === 401 &&
 						reason.responseJSON.status === 'unauthorized'
           ) {
-            analyticsVue.$router.push('/login/expired')
+            analyticsVue.$router.push({ name: 'LoginExpired' })
             return
           }
           analyticsVue.loadingTop10GlobalOrders = false
@@ -741,7 +741,7 @@ export default {
             reason.responseJSON.code === 401 &&
 						reason.responseJSON.status === 'unauthorized'
           ) {
-            analyticsVue.$router.push('/login/expired')
+            analyticsVue.$router.push({ name: 'LoginExpired' })
             return
           }
           analyticsVue.loadingGlobalRevenueByDay = false
@@ -783,7 +783,7 @@ export default {
             reason.responseJSON.code === 401 &&
 						reason.responseJSON.status === 'unauthorized'
           ) {
-            analyticsVue.$router.push('/login/expired')
+            analyticsVue.$router.push({ name: 'LoginExpired' })
             return
           }
           if (reason.responseJSON) {

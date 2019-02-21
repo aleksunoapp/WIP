@@ -475,7 +475,7 @@ export default {
             reason.responseJSON.code === 401 &&
             reason.responseJSON.status === 'unauthorized'
           ) {
-            editPromoCodeVue.$router.push('/login/expired')
+            editPromoCodeVue.$router.push({ name: 'LoginExpired' })
             return
           }
           if (reason.responseJSON) {

@@ -384,7 +384,7 @@ export default {
             reason.responseJSON.code === 401 &&
 						reason.responseJSON.status === 'unauthorized'
           ) {
-            analyticsVue.$router.push('/login/expired')
+            analyticsVue.$router.push({ name: 'LoginExpired' })
             return
           }
           analyticsVue.loadingUserBasics = false
@@ -437,7 +437,7 @@ export default {
             reason.responseJSON.code === 401 &&
 						reason.responseJSON.status === 'unauthorized'
           ) {
-            analyticsVue.$router.push('/login/expired')
+            analyticsVue.$router.push({ name: 'LoginExpired' })
             return
           }
           analyticsVue.loadingUsersByMonth = false
@@ -494,7 +494,7 @@ export default {
             reason.responseJSON.code === 401 &&
 						reason.responseJSON.status === 'unauthorized'
           ) {
-            analyticsVue.$router.push('/login/expired')
+            analyticsVue.$router.push({ name: 'LoginExpired' })
             return
           }
           analyticsVue.loadingUsersByOrderCount = false

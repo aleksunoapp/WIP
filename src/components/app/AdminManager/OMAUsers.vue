@@ -742,7 +742,7 @@ export default {
             reason.responseJSON.code === 401 &&
 						reason.responseJSON.status === 'unauthorized'
           ) {
-            OMAUsersVue.$router.push('/login/expired')
+            OMAUsersVue.$router.push({ name: 'LoginExpired' })
             return
           }
           OMAUsersVue.loadingOMAUsersData = false
@@ -783,7 +783,7 @@ export default {
                 reason.responseJSON.code === 401 &&
 								reason.responseJSON.status === 'unauthorized'
               ) {
-                OMAUsersVue.$router.push('/login/expired')
+                OMAUsersVue.$router.push({ name: 'LoginExpired' })
                 return
               }
               if (reason.responseJSON) {
@@ -1044,7 +1044,7 @@ export default {
                 reason.responseJSON.code === 401 &&
 								reason.responseJSON.status === 'unauthorized'
               ) {
-                OMAUsersVue.$router.push('/login/expired')
+                OMAUsersVue.$router.push({ name: 'LoginExpired' })
                 return
               }
               if (reason.responseJSON) {
@@ -1121,7 +1121,7 @@ export default {
             reason.responseJSON.code === 401 &&
 						reason.responseJSON.status === 'unauthorized'
           ) {
-            OMAUsersVue.$router.push('/login/expired')
+            OMAUsersVue.$router.push({ name: 'LoginExpired' })
             return
           }
           if (reason.responseJSON) {
