@@ -181,7 +181,7 @@ export const actions = {
     if (getters.additionalServices.length) {
       router.push({ name: 'additional' })
     } else {
-      if (state.services.length) {
+      if (getters.count.actionable) {
         router.push({ name: 'at-a-glance' })
       } else {
         router.push({ name: 'summary' })

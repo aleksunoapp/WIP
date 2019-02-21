@@ -82,11 +82,11 @@
         </div>
       </div>
       <div
-        v-if="services.length"
+        v-if="count.actionable"
         class="divider"
       />
       <div
-        v-if="services.length"
+        v-if="count.actionable"
         class="signature"
       >
         <div class="row">
@@ -401,6 +401,7 @@ export default Vue.extend({
         }
         .price {
           min-width: 100px;
+          padding-left: 1rem;
           text-align: right;
         }
       }
