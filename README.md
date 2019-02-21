@@ -1,5 +1,23 @@
 # eComm
 
+## Branches
+develop, ancestor of
+  freshii-develop
+  laprep-develop
+  pitapit-develop
+
+master, ancestor of
+  freshii-master
+  pitapit-master
+
+staging, ancestor of
+
+==============
+holiday-hours, unmerged feature
+multicorpo, once used as master
+staging-old, once used as staging
+
+
 ## Documentation
 
 ADD
