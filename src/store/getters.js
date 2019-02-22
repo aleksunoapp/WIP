@@ -132,14 +132,10 @@ export const getters = {
         category.serviceCategoryType !== 'PRE' &&
         category.serviceCategoryType !== 'CC'
       ) {
-        if (getters.categoryServices(category.id).length) {
-          categoriesShown.push(category)
-        }
+        categoriesShown.push(category)
       }
       if (category.serviceCategoryType === 'CC') {
-        if (getters.categoryServices(category.id).length) {
-          categoriesShown.push(category)
-        }
+        categoriesShown.push(category)
       }
     }
 

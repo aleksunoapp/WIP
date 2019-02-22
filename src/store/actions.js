@@ -184,7 +184,7 @@ export const actions = {
       if (getters.count.actionable) {
         router.push({ name: 'at-a-glance' })
       } else {
-        router.push({ name: 'summary' })
+        router.push({ name: 'services' })
       }
     }
     commit('setLoading', { key: 'logIn', loading: false })

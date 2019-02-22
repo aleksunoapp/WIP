@@ -52,6 +52,7 @@
               </div>
             </div>
             <button
+              v-if="categoryServicesShownOnRoute(category.id).length"
               class="toggle"
               aria-label="toggle category"
               @click.stop="toggleCategory(category)"
@@ -147,22 +148,17 @@ export default Vue.extend({
     confirm () {
       this.logEvent('Clicked confirm button')
       if (this.$route.name === 'services') {
-        if (this.count.fail || this.count.warning || this.count.concern) {
+        if (this.count.actionable) {
           this.getTax()
-          this.$router.push({ name: 'summary' })
-          return
-        } else {
-          this.$router.push({ name: 'thanks' })
-          return
         }
-      }
-
-      if (this.$route.name === 'wait-services') {
+        this.$router.push({ name: 'summary' })
+      } else if (this.$route.name === 'wait-services') {
         this.$router.push({ name: 'additional-summary' })
-        return
-      }
-
-      if (this.getServices({ wasSelected: false, isHighlighted: false, categories: ['1', '2', '5'] }).length) {
+      } else if (this.getServices({
+        wasSelected: false,
+        isHighlighted: false,
+        categories: ['1', '2', '5']
+      }).length) {
         this.$router.push({ name: 'wait' })
       } else {
         this.getTax()
