@@ -948,7 +948,8 @@ export default {
   computed: {
     selectedNewLocationName () {
       let name = ''
-      this.$root.storeLocations.forEach(store => {
+      const combined = [...this.$root.storeLocations, this.$root.activeLocation]
+      combined.forEach(store => {
         if (store.id === this.newStoreAppUser.location_id) {
           name = store.display_name
         }
@@ -957,11 +958,13 @@ export default {
     },
     selectedEditedLocationName () {
       let name = ''
-      this.$root.storeLocations.forEach(store => {
+      const combined = [...this.$root.storeLocations, this.$root.activeLocation]
+      combined.forEach(store => {
         if (store.id === this.storeAppUserToBeEdited.location_id) {
           name = store.display_name
         }
       })
+      if (name === '') { name = 'one location' }
       return name
     },
     numPages () {
