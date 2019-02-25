@@ -90,6 +90,42 @@
                   Sort Order
                 </label>
               </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_app_id"
+                  v-model="newDeliveryProvider.app_id"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newDeliveryProvider.app_id}"
+                >
+                <label for="form_control_app_id">
+                  App ID
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_app_secret"
+                  v-model="newDeliveryProvider.app_secret"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newDeliveryProvider.app_secret}"
+                >
+                <label for="form_control_app_secret">
+                  App Secret
+                </label>
+              </div>
+              <div class="form-group form-md-line-input form-md-floating-label">
+                <input
+                  id="form_control_api_key"
+                  v-model="newDeliveryProvider.api_key"
+                  type="text"
+                  class="form-control input-sm"
+                  :class="{'edited': newDeliveryProvider.api_key}"
+                >
+                <label for="form_control_api_key">
+                  API Key
+                </label>
+              </div>
             </div>
           </div>
           <div class="row">
@@ -272,26 +308,62 @@
               <fieldset :disabled="!$root.permissions['stores delivery_provider update']">
                 <div class="form-group form-md-line-input form-md-floating-label">
                   <input
-                    id="form_control_1"
+                    id="edit_1"
                     v-model="deliveryProviderToEdit.provider_name"
                     type="text"
                     class="form-control input-sm"
                     :class="{'edited': deliveryProviderToEdit.provider_name.length}"
                   >
-                  <label for="form_control_1">
+                  <label for="edit_1">
                     Name
                   </label>
                 </div>
                 <div class="form-group form-md-line-input form-md-floating-label">
                   <input
-                    id="form_control_3"
+                    id="edit_3"
                     v-model="deliveryProviderToEdit.sort_order"
                     type="text"
                     class="form-control input-sm"
                     :class="{'edited': deliveryProviderToEdit.sort_order.length}"
                   >
-                  <label for="form_control_3">
+                  <label for="edit_3">
                     Sort Order
+                  </label>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="edit_app_id"
+                    v-model="deliveryProviderToEdit.app_id"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': deliveryProviderToEdit.app_id}"
+                  >
+                  <label for="edit_app_id">
+                    App ID
+                  </label>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="edit_app_secret"
+                    v-model="deliveryProviderToEdit.app_secret"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': deliveryProviderToEdit.app_secret}"
+                  >
+                  <label for="edit_app_secret">
+                    App Secret
+                  </label>
+                </div>
+                <div class="form-group form-md-line-input form-md-floating-label">
+                  <input
+                    id="edit_api_key"
+                    v-model="deliveryProviderToEdit.api_key"
+                    type="text"
+                    class="form-control input-sm"
+                    :class="{'edited': deliveryProviderToEdit.api_key}"
+                  >
+                  <label for="edit_api_key">
+                    API Key
                   </label>
                 </div>
               </fieldset>
@@ -418,7 +490,10 @@ export default {
       createErrorMessage: '',
       newDeliveryProvider: {
         name: '',
-        sort_order: ''
+        sort_order: '',
+        app_id: '',
+        app_secret: '',
+        api_key: ''
       },
 
       loadingDeliveryProviders: false,
@@ -430,7 +505,10 @@ export default {
       updating: false,
       deliveryProviderToEdit: {
         provider_name: '',
-        sort_order: ''
+        sort_order: '',
+        app_id: '',
+        app_secret: '',
+        api_key: ''
       },
 
       showDeleteModal: false,
@@ -461,28 +539,28 @@ export default {
   },
   methods: {
     /**
-		 * To toggle the create tier panel, initially set to closed
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To toggle the create tier panel, initially set to closed
+     * @function
+     * @returns {undefined}
+     */
     toggleCreatePanel () {
       this.createNewCollapse = !this.createNewCollapse
     },
     /**
-		 * To clear the current error.
-		 * @function
-		 * @param {object} errorMessageName - The error message to be cleared.
-		 * @returns {undefined}
-		 */
+     * To clear the current error.
+     * @function
+     * @param {object} errorMessageName - The error message to be cleared.
+     * @returns {undefined}
+     */
     clearError (errorMessageName) {
       this[errorMessageName] = ''
     },
     /**
-		 * To check if the input is a positive number
-		 * @function
-		 * @param {string} input - User's input
-		 * @returns {boolean} True is positive integer or float, false is not
-		 */
+     * To check if the input is a positive number
+     * @function
+     * @param {string} input - User's input
+     * @returns {boolean} True is positive integer or float, false is not
+     */
     isNonNegativeNumber (input) {
       try {
         const inputString = String(input)
@@ -502,10 +580,10 @@ export default {
       }
     },
     /**
-		 * To check if the delivery provider data is valid before submitting to the backend.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
+     * To check if the delivery provider data is valid before submitting to the backend.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
     validateNewDeliveryProviderData () {
       var _this = this
       return new Promise(function (resolve, reject) {
@@ -513,15 +591,21 @@ export default {
           reject('Name cannot be blank')
         } else if (!_this.isNonNegativeNumber(_this.newDeliveryProvider.sort_order)) {
           reject('Sort order must be zero or more')
+        } else if (!_this.newDeliveryProvider.app_id) {
+          reject('App ID cannot be blank')
+        } else if (!_this.newDeliveryProvider.app_secret) {
+          reject('App Secret cannot be blank')
+        } else if (!_this.newDeliveryProvider.api_key) {
+          reject('API Key cannot be blank')
         }
         resolve('Hurray')
       })
     },
     /**
-		 * To create a new delivery provider.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
+     * To create a new delivery provider.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
     createDeliveryProvider () {
       var _this = this
       _this.clearError('createErrorMessage')
@@ -563,11 +647,11 @@ export default {
         })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showCreateSuccess (payload = {}) {
       let title = 'Success'
       let text = 'The Delivery Provider has been created'
@@ -586,21 +670,24 @@ export default {
       })
     },
     /**
-		 * To clear the new delivery provider form.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To clear the new delivery provider form.
+     * @function
+     * @returns {undefined}
+     */
     clearNewDeliveryProvider () {
       this.newDeliveryProvider = {
         name: '',
-        sort_order: ''
+        sort_order: '',
+        app_id: '',
+        app_secret: '',
+        api_key: ''
       }
     },
     /**
-		 * To get a list of all delivery providers.
-		 * @function
-		 * @returns {object} - A promise that will either return an error message or perform an action.
-		 */
+     * To get a list of all delivery providers.
+     * @function
+     * @returns {object} - A promise that will either return an error message or perform an action.
+     */
     getDeliveryProviders () {
       this.loadingDeliveryProviders = true
       this.deliveryProviders = []
@@ -645,22 +732,22 @@ export default {
         })
     },
     /**
-		 * To show the modal to edit an delivery provider details.
-		 * @function
-		 * @param {object} deliveryProvider - The selected delivery provider.
-		 * @param {object} event - The click event that prompted this function.
-		 * @returns {undefined}
-		 */
+     * To show the modal to edit an delivery provider details.
+     * @function
+     * @param {object} deliveryProvider - The selected delivery provider.
+     * @param {object} event - The click event that prompted this function.
+     * @returns {undefined}
+     */
     editDeliveryProvider (deliveryProvider, event) {
       event.stopPropagation()
       this.deliveryProviderToEdit = { ...deliveryProvider }
       this.showEditModal = true
     },
     /**
-		 * To check if the delivery provider data is valid before submitting to the backend.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
+     * To check if the delivery provider data is valid before submitting to the backend.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
     validateEditedDeliveryProviderData () {
       var _this = this
       return new Promise(function (resolve, reject) {
@@ -668,15 +755,21 @@ export default {
           reject('Name cannot be blank')
         } else if (!_this.isNonNegativeNumber(_this.deliveryProviderToEdit.sort_order)) {
           reject('Sort order must be zero or more')
+        } else if (!_this.deliveryProviderToEdit.app_id) {
+          reject('App ID cannot be blank')
+        } else if (!_this.deliveryProviderToEdit.app_secret) {
+          reject('App Secret cannot be blank')
+        } else if (!_this.deliveryProviderToEdit.api_key) {
+          reject('API Key cannot be blank')
         }
         resolve('Hurray')
       })
     },
     /**
-		 * To update a delivery provider.
-		 * @function
-		 * @returns {object} A promise that will validate the input form
-		 */
+     * To update a delivery provider.
+     * @function
+     * @returns {object} A promise that will validate the input form
+     */
     updateDeliveryProvider () {
       var _this = this
       _this.clearError('editErrorMessage')
@@ -722,11 +815,11 @@ export default {
         })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showEditSuccess (payload = {}) {
       let title = 'Success'
       let text = 'The Delivery Provider has been saved'
@@ -745,41 +838,44 @@ export default {
       })
     },
     /**
-		 * To close the modal for editing a promotion.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the modal for editing a promotion.
+     * @function
+     * @returns {undefined}
+     */
     closeEditModal () {
       this.showEditModal = false
     },
     /**
-		 * To reset the edit form
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To reset the edit form
+     * @function
+     * @returns {undefined}
+     */
     resetEdit () {
       this.deliveryProviderToEdit = {
         provider_name: '',
-        sort_order: ''
+        sort_order: '',
+        app_id: '',
+        app_secret: '',
+        api_key: ''
       }
     },
     /**
-		 * To display the modal for deleting an delivery provider.
-		 * @function
-		 * @param {object} deliveryProvider - The selected deliveryProvider
-		 * @param {object} event - The click event that prompted this function.
-		 * @returns {undefined}
-		 */
+     * To display the modal for deleting an delivery provider.
+     * @function
+     * @param {object} deliveryProvider - The selected deliveryProvider
+     * @param {object} event - The click event that prompted this function.
+     * @returns {undefined}
+     */
     confirmDelete (deliveryProvider, event) {
       event.stopPropagation()
       this.deliveryProviderToDelete = { ...deliveryProvider }
       this.showDeleteModal = true
     },
     /**
-		 * To close the modal for deleting a promotion and remove that promotion from DOM.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the modal for deleting a promotion and remove that promotion from DOM.
+     * @function
+     * @returns {undefined}
+     */
     deleteDeliveryProvider () {
       this.deleting = true
       var _this = this
@@ -804,11 +900,11 @@ export default {
         })
     },
     /**
-		 * To notify user of the outcome of the call
-		 * @function
-		 * @param {object} payload - The payload object from the server response
-		 * @returns {undefined}
-		 */
+     * To notify user of the outcome of the call
+     * @function
+     * @param {object} payload - The payload object from the server response
+     * @returns {undefined}
+     */
     showDeleteSuccess (payload = {}) {
       let title = 'Success'
       let text = 'The Delivery Provider has been deleted'
@@ -827,10 +923,10 @@ export default {
       })
     },
     /**
-		 * To close the delete modal.
-		 * @function
-		 * @returns {undefined}
-		 */
+     * To close the delete modal.
+     * @function
+     * @returns {undefined}
+     */
     closeDeleteModal () {
       this.showDeleteModal = false
     }
