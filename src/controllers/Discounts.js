@@ -159,16 +159,16 @@ export const deleteDiscount = (discountId) => {
 }
 
 /**
-  * Call to API to get roles a discount is associated with
+  * Call to API to get permissions a discount is associated with
   * @function
   * @param {string} id - ID of the discount
   * @returns {object} A promise that will return API response or an error.
   */
-export const getRolesOfDiscount = function (id) {
+export const getPermissionsOfDiscount = function (id) {
   return new Promise(function (resolve, reject) {
     GlobalFunctions.$ajax({
       method: 'GET',
-      url: `/app/location/discounts/${id}/roles`,
+      url: `/app/location/discounts/${id}/permissions`,
       success: (r) => resolve(r),
       error: (e) => reject(e)
     })
@@ -179,15 +179,15 @@ export const getRolesOfDiscount = function (id) {
   * Call to API to get discount categories for a location
   * @function
   * @param {string} id - ID of the discount
-  * @param {string} data - Array of role IDs
+  * @param {string} data - Array of permission IDs
   * @returns {object} A promise that will return API response or an error.
   */
-export const assignRolesToDiscount = function ({ id, data }) {
+export const assignPermissionsToDiscount = function ({ id, data }) {
   return new Promise(function (resolve, reject) {
     GlobalFunctions.$ajax({
       method: 'PUT',
       data,
-      url: `/app/location/discounts/${id}/roles`,
+      url: `/app/location/discounts/${id}/permissions`,
       success: (r) => resolve(r),
       error: (e) => reject(e)
     })
@@ -203,6 +203,6 @@ export default {
   createDiscount,
   updateDiscount,
   deleteDiscount,
-  getRolesOfDiscount,
-  assignRolesToDiscount
+  getPermissionsOfDiscount,
+  assignPermissionsToDiscount
 }

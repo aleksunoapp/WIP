@@ -17,7 +17,7 @@
         <span>&times;</span>
       </button>
       <h4 class="modal-title center">
-        Select Roles for {{ discount.name }}
+        Select Permissions for {{ discount.name }}
       </h4>
     </div>
     <div
@@ -41,7 +41,7 @@
           </div>
           <div class="col-md-12 picker">
             <loading-screen :show="loading" />
-            <roles-picker
+            <permissions-picker
               v-if="!loading"
               :previously-selected="previous"
               @selected="update"
@@ -55,7 +55,7 @@
       class="modal-footer clear"
     >
       <button
-        v-if="!$root.permissions['stores discounts role sync']"
+        v-if="!$root.permissions['stores discounts permission sync']"
         type="button"
         class="btn blue"
         @click="close()"
@@ -84,14 +84,14 @@ import ajaxErrorHandler from '@/controllers/ErrorController'
 import DiscountsFunctions from '@/controllers/Discounts'
 import LoadingScreen from '@/components/modules/LoadingScreen'
 import Modal from '@/components/modules/Modal'
-import RolesPicker from '@/components/app/ApprovalsManager/RolesPicker'
+import PermissionsPicker from '@/components/app/ApprovalsManager/PermissionsPicker'
 
 export default {
-  name: 'AssignRolesToDiscount',
+  name: 'AssignPermissionsToDiscount',
   components: {
     LoadingScreen,
     Modal,
-    RolesPicker
+    PermissionsPicker
   },
   props: {
     discount: {
@@ -105,10 +105,10 @@ export default {
     loading: false,
     saving: false,
     previous: [],
-    roles: []
+    permissions: []
   }),
   created () {
-    this.getRoles()
+    this.getPermissions()
   },
   mounted () {
     this.show = true
@@ -135,8 +135,14 @@ export default {
       this.discountToEdit = { ...discount }
       this.show = true
     },
+    /**
+     * To save user's selection of permissions.
+     * @function
+     * @param {object} selection - The selected permissions.
+     * @returns {undefined}
+     */
     update (selection) {
-      this.roles = selection
+      this.permissions = selection
     },
     /**
      * To check if the discount data is valid before submitting to the backend.
@@ -146,8 +152,8 @@ export default {
     validate () {
       var _this = this
       return new Promise(function (resolve, reject) {
-        if (!_this.roles.length) {
-          reject('Select at least one role')
+        if (!_this.permissions.length) {
+          reject('Select at least one permission')
         }
         resolve('Hurray')
       })
@@ -157,12 +163,12 @@ export default {
      * @function
      * @returns {object} A promise that will validate the input form
      */
-    getRoles () {
+    getPermissions () {
       this.loading = true
       var _this = this
-      DiscountsFunctions.getRolesOfDiscount(this.discount.id)
+      DiscountsFunctions.getPermissionsOfDiscount(this.discount.id)
         .then(response => {
-          this.previous = response.payload.roles.map(role => role.id)
+          this.previous = response.payload.permissions.map(permission => permission.id)
         })
         .catch(reason => {
           ajaxErrorHandler({
@@ -191,9 +197,9 @@ export default {
         .then(response => {
           this.saving = true
 
-          DiscountsFunctions.assignRolesToDiscount({
+          DiscountsFunctions.assignPermissionsToDiscount({
             id: this.discount.id,
-            data: { roles: this.roles }
+            data: { permissions: this.permissions }
           })
             .then(response => {
               _this.close()

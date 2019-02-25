@@ -12,7 +12,7 @@
           v-for="permission in currentActivePermissions"
           :key="permission.id"
         >
-          <td>
+          <td class="fit-to-content">
             <div class="md-checkbox has-success">
               <input
                 :id="`${instanceId}-${permission.id}`"
@@ -121,7 +121,7 @@ export default {
       let selected = this.permissions
         .filter(permission => permission.selected)
         .map(permission => permission.id)
-      this.$emit('permissionsSelected', selected)
+      this.$emit('selected', selected)
     },
     /**
 		 * To update the permissions page being displayed.
@@ -168,8 +168,13 @@ export default {
 <style scoped>
 .permissions-picker {
   width: 100%;
+  height: 500px;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+}
+.fit-to-content {
+  width: 1%;
 }
 .row__wrapper {
   width: 100%;
@@ -179,5 +184,6 @@ export default {
 .half-width {
   display: inline-block;
   width: 50%;
+  margin-right: 2rem;
 }
 </style>

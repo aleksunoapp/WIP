@@ -636,7 +636,7 @@
         <permissions-picker
           v-if="showEditModulePermissionsModal"
           :previously-selected="moduleToEditApplyPermissionsTo.permissions.map(p => p.id)"
-          @permissionsSelected="updateNewRolePermissions"
+          @selected="updateNewRolePermissions"
         />
       </div>
       <div

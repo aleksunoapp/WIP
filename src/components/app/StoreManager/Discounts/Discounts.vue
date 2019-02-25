@@ -161,7 +161,7 @@
             Discounts
           </span>
           <div class="caption-desc font-grey-cascade">
-            Edit or delete store discounts. Assign discounts to user roles.
+            Edit or delete store discounts. Assign discounts to permissions.
           </div>
         </div>
       </div>
@@ -231,8 +231,8 @@
                     </a>
                   </el-tooltip>
                   <el-tooltip
-                    v-if="$root.permissions['stores discounts role sync']"
-                    content="Roles"
+                    v-if="$root.permissions['stores discounts permission sync']"
+                    content="Permissions"
                     effect="light"
                     placement="right"
                   >
@@ -240,7 +240,7 @@
                       class="btn btn-circle btn-icon-only btn-default"
                       @click.stop="sync(discount)"
                     >
-                      <i class="fa fa-lg fa-id-badge" />
+                      <i class="fa fa-lg fa-ban" />
                     </a>
                   </el-tooltip>
                   <el-tooltip
@@ -279,7 +279,7 @@
     </div>
     <!-- END LIST -->
 
-    <assign-roles-to-discount
+    <assign-permissions-to-discount
       v-if="showSyncModal"
       :discount="toSync"
       @close="closeSyncModal"
@@ -495,7 +495,7 @@
 </template>
 
 <script>
-import AssignRolesToDiscount from '@/components/app/StoreManager/Discounts/AssignRolesToDiscount'
+import AssignPermissionsToDiscount from '@/components/app/StoreManager/Discounts/AssignPermissionsToDiscount'
 import ClientLogo from '@/components/modules/ClientLogo'
 import LoadingScreen from '@/components/modules/LoadingScreen'
 import Modal from '@/components/modules/Modal'
@@ -507,7 +507,7 @@ import { isNonNegativeNumber } from '@/controllers/utils'
 export default {
   name: 'Discounts',
   components: {
-    AssignRolesToDiscount,
+    AssignPermissionsToDiscount,
     ClientLogo,
     LoadingScreen,
     Modal,
@@ -872,7 +872,7 @@ export default {
       }
     },
     /**
-     * To display the modal for assigning roles to a discount.
+     * To display the modal for assigning permissions to a discount.
      * @function
      * @param {object} item - The selected discount
      * @returns {undefined}
