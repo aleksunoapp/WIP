@@ -211,7 +211,13 @@ export default {
       usersByOrderCount: [['Orders', 'Users']],
       ubocErrorMessage: '',
       order_count_from_date: '',
-      order_count_to_date: ''
+      order_count_to_date: '',
+      charts: {
+        chart_div: null,
+        chart_div_usersByPlatform: null,
+        chart_div_usersByOrderCount: null,
+        chart_div_activeUsers: null
+      }
     }
   },
   created () {
@@ -564,10 +570,10 @@ export default {
           },
           legend: { position: 'bottom' }
         }
-        var chart = new GoogleCharts.api.visualization.BarChart(
+        analyticsVue.charts.chart_div = new GoogleCharts.api.visualization.BarChart(
           document.getElementById('chart_div')
         )
-        chart.draw(view, options)
+        analyticsVue.charts.chart_div.draw(view, options)
       })
     },
     /**
@@ -634,10 +640,10 @@ export default {
           legend: { position: 'bottom' },
           colors: ['#3366cc', '#dc3912', '#ff9900', '#ffffff']
         }
-        var chart = new GoogleCharts.api.visualization.PieChart(
+        analyticsVue.charts.chart_div_usersByPlatform = new GoogleCharts.api.visualization.PieChart(
           document.getElementById('chart_div_usersByPlatform')
         )
-        chart.draw(view, options)
+        analyticsVue.charts.chart_div_usersByPlatform.draw(view, options)
       })
     },
     /**
@@ -704,10 +710,10 @@ export default {
           legend: { position: 'bottom' },
           colors: ['#3366cc', '#dc3912', '#ff9900', '#4CB944', '#ffffff']
         }
-        var chart = new GoogleCharts.api.visualization.PieChart(
+        analyticsVue.charts.chart_div_usersByOrderCount = new GoogleCharts.api.visualization.PieChart(
           document.getElementById('chart_div_usersByOrderCount')
         )
-        chart.draw(view, options)
+        analyticsVue.charts.chart_div_usersByOrderCount.draw(view, options)
       })
     },
     /**
@@ -773,10 +779,10 @@ export default {
           },
           legend: { position: 'bottom' }
         }
-        var chart = new GoogleCharts.api.visualization.BarChart(
+        analyticsVue.charts.chart_div_activeUsers = new GoogleCharts.api.visualization.BarChart(
           document.getElementById('chart_div_activeUsers')
         )
-        chart.draw(view, options)
+        analyticsVue.charts.chart_div_activeUsers.draw(view, options)
       })
     }
   }

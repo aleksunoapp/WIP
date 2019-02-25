@@ -396,7 +396,8 @@ export default {
       chartTitle: '',
       searchPeriod: 'week',
       from_date: '',
-      to_date: ''
+      to_date: '',
+      chart: null
     }
   },
   computed: {
@@ -869,10 +870,10 @@ export default {
             1: { color: '#e67e22' }
           }
         }
-        var chart = new GoogleCharts.api.visualization.BarChart(
+        analyticsVue.chart = new GoogleCharts.api.visualization.BarChart(
           document.getElementById('chart_div')
         )
-        chart.draw(view, options)
+        analyticsVue.chart.draw(view, options)
       })
     }
   }
